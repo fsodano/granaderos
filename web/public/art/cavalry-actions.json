@@ -1,0 +1,245 @@
+{
+  "image": "cavalry-actions.png",
+  "width": 1536,
+  "height": 768,
+  "cell": [
+    384,
+    384
+  ],
+  "columns": 4,
+  "rows": 2,
+  "anchor": [
+    0.5,
+    0.9375
+  ],
+  "source": "assets/source/cavalry-actions-v3.png",
+  "source_sha256": "e96c6e96cbcf96fcc220e96e76c1a28d4e72be46d41cfeadaf5a031abb99d39a",
+  "prompt": "assets/prompts/cavalry-actions-v3.txt",
+  "frames": [
+    {
+      "name": "se-idle",
+      "index": 0,
+      "rect": [
+        0,
+        0,
+        384,
+        384
+      ],
+      "source_rect": [
+        35,
+        0,
+        400,
+        435
+      ],
+      "source_foot": [
+        220,
+        420
+      ],
+      "file": "cavalry-se-idle.png",
+      "alpha_bounds": [
+        95,
+        109,
+        296,
+        369
+      ],
+      "sha256": "6e450273c5da285d91b8b07400a3673f612267fd118ba080cb4f4ec07f5d730e"
+    },
+    {
+      "name": "se-fire",
+      "index": 1,
+      "rect": [
+        384,
+        0,
+        384,
+        384
+      ],
+      "source_rect": [
+        465,
+        0,
+        815,
+        435
+      ],
+      "source_foot": [
+        634,
+        425
+      ],
+      "file": "cavalry-se-fire.png",
+      "alpha_bounds": [
+        98,
+        116,
+        296,
+        365
+      ],
+      "sha256": "0e4aefa4a57636c28f34e004d54850fbb64da4e5258ce35ed743eb217b8a9d95"
+    },
+    {
+      "name": "se-strike",
+      "index": 2,
+      "rect": [
+        768,
+        0,
+        384,
+        384
+      ],
+      "source_rect": [
+        840,
+        0,
+        1268,
+        435
+      ],
+      "source_foot": [
+        1087,
+        427
+      ],
+      "file": "cavalry-se-strike.png",
+      "alpha_bounds": [
+        52,
+        123,
+        295,
+        365
+      ],
+      "sha256": "7e39c27fbdf64a107ed68b9ddeaac30655f36d39d06e28fc11913d970acdfdca"
+    },
+    {
+      "name": "se-charge",
+      "index": 3,
+      "rect": [
+        1152,
+        0,
+        384,
+        384
+      ],
+      "source_rect": [
+        1270,
+        0,
+        1774,
+        435
+      ],
+      "source_foot": [
+        1510,
+        425
+      ],
+      "file": "cavalry-se-charge.png",
+      "alpha_bounds": [
+        52,
+        153,
+        340,
+        362
+      ],
+      "sha256": "3f1056065bf86d664a3b2ea4c70b1933b6ea60087e70d4d1b06de18290e20337"
+    },
+    {
+      "name": "sw-idle",
+      "index": 4,
+      "rect": [
+        0,
+        384,
+        384,
+        384
+      ],
+      "source_rect": [
+        35,
+        435,
+        405,
+        887
+      ],
+      "source_foot": [
+        210,
+        856
+      ],
+      "file": "cavalry-sw-idle.png",
+      "alpha_bounds": [
+        94,
+        107,
+        309,
+        362
+      ],
+      "sha256": "3f822a9a931402598e7d3b99e7509b72fea0f6edce320c605df99a03bfe2e172"
+    },
+    {
+      "name": "sw-fire",
+      "index": 5,
+      "rect": [
+        384,
+        384,
+        384,
+        384
+      ],
+      "source_rect": [
+        470,
+        435,
+        825,
+        887
+      ],
+      "source_foot": [
+        645,
+        852
+      ],
+      "file": "cavalry-sw-fire.png",
+      "alpha_bounds": [
+        95,
+        111,
+        300,
+        365
+      ],
+      "sha256": "18a55071900c9520e07ccf5f286487f2c199d04ad93355dce31c69c994493077"
+    },
+    {
+      "name": "sw-strike",
+      "index": 6,
+      "rect": [
+        768,
+        384,
+        384,
+        384
+      ],
+      "source_rect": [
+        825,
+        435,
+        1255,
+        887
+      ],
+      "source_foot": [
+        1050,
+        849
+      ],
+      "file": "cavalry-sw-strike.png",
+      "alpha_bounds": [
+        57,
+        112,
+        315,
+        365
+      ],
+      "sha256": "fcc3eb11153c24c00360dfdb91dd8974417eb4fd7647de7af446f8191ec47851"
+    },
+    {
+      "name": "sw-charge",
+      "index": 7,
+      "rect": [
+        1152,
+        384,
+        384,
+        384
+      ],
+      "source_rect": [
+        1255,
+        435,
+        1774,
+        868
+      ],
+      "source_foot": [
+        1510,
+        835
+      ],
+      "file": "cavalry-sw-charge.png",
+      "alpha_bounds": [
+        39,
+        122,
+        340,
+        377
+      ],
+      "sha256": "dcde050b51ba91e24bdd7587d3694256fd78c61858270f5317bc2a5abfbf6caf"
+    }
+  ],
+  "sha256": "2b70b741763c681d58c9c474f74e7c904bddd1f385f79d69f732a17180aaae0a"
+}

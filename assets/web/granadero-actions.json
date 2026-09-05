@@ -1,0 +1,245 @@
+{
+  "image": "granadero-actions.png",
+  "width": 1280,
+  "height": 640,
+  "cell": [
+    320,
+    320
+  ],
+  "columns": 4,
+  "rows": 2,
+  "anchor": [
+    0.5,
+    0.9375
+  ],
+  "source": "assets/source/granadero-actions-v1.png",
+  "source_sha256": "00d0c9fe0c3e5505092c8b06bd89b04b6323f8d5c5a2949fc83eba089d1b85ae",
+  "prompt": "assets/prompts/granadero-actions-v1.txt",
+  "frames": [
+    {
+      "name": "se-idle",
+      "index": 0,
+      "rect": [
+        0,
+        0,
+        320,
+        320
+      ],
+      "source_rect": [
+        145,
+        0,
+        325,
+        432
+      ],
+      "source_foot": [
+        233,
+        420
+      ],
+      "file": "granadero-se-idle.png",
+      "alpha_bounds": [
+        122,
+        90,
+        201,
+        304
+      ],
+      "sha256": "a4f25595b76c950238ca77488d5af2d8569c168625156666558981a7fdaee93c"
+    },
+    {
+      "name": "se-fire",
+      "index": 1,
+      "rect": [
+        320,
+        0,
+        320,
+        320
+      ],
+      "source_rect": [
+        520,
+        0,
+        925,
+        432
+      ],
+      "source_foot": [
+        631,
+        407
+      ],
+      "file": "granadero-se-fire.png",
+      "alpha_bounds": [
+        110,
+        106,
+        300,
+        302
+      ],
+      "sha256": "144296e90a8ad740d59e8c74eddd2343bf8d951d1342b9c6a9c9ddb46b262d6b"
+    },
+    {
+      "name": "se-reload",
+      "index": 2,
+      "rect": [
+        640,
+        0,
+        320,
+        320
+      ],
+      "source_rect": [
+        1000,
+        0,
+        1195,
+        432
+      ],
+      "source_foot": [
+        1100,
+        421
+      ],
+      "file": "granadero-se-reload.png",
+      "alpha_bounds": [
+        115,
+        96,
+        203,
+        302
+      ],
+      "sha256": "3bde75ca0490138b99f2a8a6f9941d5f49b06c7d9f10f4b56fdbe3714c8014c7"
+    },
+    {
+      "name": "se-strike",
+      "index": 3,
+      "rect": [
+        960,
+        0,
+        320,
+        320
+      ],
+      "source_rect": [
+        1380,
+        0,
+        1760,
+        432
+      ],
+      "source_foot": [
+        1510,
+        420
+      ],
+      "file": "granadero-se-strike.png",
+      "alpha_bounds": [
+        100,
+        119,
+        279,
+        303
+      ],
+      "sha256": "88408f7abb02cf851deab61e699ff37435cb2eb11f7d0a0e01c8042194802760"
+    },
+    {
+      "name": "sw-idle",
+      "index": 4,
+      "rect": [
+        0,
+        320,
+        320,
+        320
+      ],
+      "source_rect": [
+        115,
+        432,
+        308,
+        880
+      ],
+      "source_foot": [
+        228,
+        858
+      ],
+      "file": "granadero-sw-idle.png",
+      "alpha_bounds": [
+        110,
+        87,
+        194,
+        305
+      ],
+      "sha256": "cfe2f759db82ec16275de153f65d4aae6d2e8aa5854c0871bea4cfc436ac1563"
+    },
+    {
+      "name": "sw-fire",
+      "index": 5,
+      "rect": [
+        320,
+        320,
+        320,
+        320
+      ],
+      "source_rect": [
+        370,
+        432,
+        790,
+        880
+      ],
+      "source_foot": [
+        676,
+        846
+      ],
+      "file": "granadero-sw-fire.png",
+      "alpha_bounds": [
+        13,
+        107,
+        212,
+        305
+      ],
+      "sha256": "9b3668f8f2979163e2442ff183be4adadf1d2f73b115fcaa3796cb0e16afa26a"
+    },
+    {
+      "name": "sw-reload",
+      "index": 6,
+      "rect": [
+        640,
+        320,
+        320,
+        320
+      ],
+      "source_rect": [
+        985,
+        432,
+        1185,
+        880
+      ],
+      "source_foot": [
+        1099,
+        858
+      ],
+      "file": "granadero-sw-reload.png",
+      "alpha_bounds": [
+        109,
+        90,
+        198,
+        302
+      ],
+      "sha256": "5d1f008b3efa2df78e8a248fb556020e594517a7dc028b8b28e4ae93a87de8cf"
+    },
+    {
+      "name": "sw-strike",
+      "index": 7,
+      "rect": [
+        960,
+        320,
+        320,
+        320
+      ],
+      "source_rect": [
+        1295,
+        432,
+        1700,
+        880
+      ],
+      "source_foot": [
+        1575,
+        852
+      ],
+      "file": "granadero-sw-strike.png",
+      "alpha_bounds": [
+        25,
+        112,
+        222,
+        306
+      ],
+      "sha256": "55c3c4574c14d015acec810bc7a1bd583d10b7c9c0eb6b3dece2ba0475fef22d"
+    }
+  ],
+  "sha256": "76dd9f9e664426e000094b2db33e6e631f3fcda3f58c2026d0477b02ae9ec57d"
+}

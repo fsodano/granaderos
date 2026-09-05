@@ -1,6 +1,6 @@
 {
-  "name": "sites-project",
-  "version": "0.1.0",
+  "name": "granaderos-web",
+  "version": "0.1.0-dev.2",
   "private": true,
   "engines": {
     "node": ">=22.13.0"

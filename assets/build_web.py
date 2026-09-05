@@ -15,6 +15,8 @@ SPECS = [
     ('granadero-cavalry-v1.png','cavalry.png',384,[0.55,0.97]),
     ('san-carlos-convent-v1.png','convent.png',512,[0.5,0.85]),
     ('grassland-v1.png','grassland.webp',512,None),
+    ('bronze-field-cannon-v1.png','cannon.png',384,[0.5,0.94]),
+    ('colonial-foundry-v1.png','foundry.png',512,[0.5,0.89]),
 ]
 PORTRAITS = [(0,"martin-miguel-de-guemes"),(1,"juana-azurduy"),(2,"fray-luis-beltran"),(3,"juan-bautista-cabral"),(4,"manuel-dorrego"),(5,"guillermo-brown"),(6,"hipolito-bouchard"),(7,"lorenzo-barcala"),(8,"macacha-guemes"),(9,"facundo-quiroga"),(10,"james-paroissien"),(11,"jose-maria-paz"),(57,"jose-de-san-martin")]
 SPECS.extend((f"{name}-v1.png",f"portrait-{id}.webp",384,None) for id,name in PORTRAITS)

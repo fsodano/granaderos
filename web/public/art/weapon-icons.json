@@ -1,0 +1,414 @@
+{
+  "generated_with": "OpenAI built-in image_gen",
+  "dimensions": [
+    256,
+    128
+  ],
+  "interpretation": "Original historical game illustrations; display lengths are normalized, not physical scale.",
+  "sources": [
+    {
+      "path": "assets/source/firearms-inventory-v1.png",
+      "sha256": "2241041d3b962706ebe0e01fb1926df0a546f67d28e5d9abb9cbe8441995c782",
+      "prompt": "assets/prompts/firearms-inventory-v1.txt"
+    },
+    {
+      "path": "assets/source/melee-inventory-v1.png",
+      "sha256": "e2f054d7971f1150b12321f7db59c9be9141def4017b39f7fe46b8c6aee6bab2",
+      "prompt": "assets/prompts/melee-inventory-v1.txt"
+    }
+  ],
+  "weapons": [
+    {
+      "id": 1800,
+      "name": "Brown Bess modelo India",
+      "file": "weapon-1800.png",
+      "source_index": 0,
+      "source_cell": [
+        0,
+        0,
+        418,
+        418
+      ],
+      "source_content_bounds": [
+        10,
+        74,
+        416,
+        339
+      ],
+      "width": 256,
+      "height": 128,
+      "alpha_bounds": [
+        42,
+        8,
+        214,
+        120
+      ],
+      "bytes": 13107,
+      "sha256": "4ebae998ccd55fae2b1d00c65a6eb8ca31d8bada15e28a97750c2beaac6a1ef8"
+    },
+    {
+      "id": 1801,
+      "name": "Charleville Modèle 1777",
+      "file": "weapon-1801.png",
+      "source_index": 0,
+      "source_cell": [
+        418,
+        0,
+        836,
+        418
+      ],
+      "source_content_bounds": [
+        8,
+        75,
+        409,
+        341
+      ],
+      "width": 256,
+      "height": 128,
+      "alpha_bounds": [
+        43,
+        8,
+        212,
+        120
+      ],
+      "bytes": 13068,
+      "sha256": "58694633646440dd86be3dd2492e7a5e20a3b56161c9e322a1d9a270a97e069c"
+    },
+    {
+      "id": 1802,
+      "name": "Fusil Baker 1800",
+      "file": "weapon-1802.png",
+      "source_index": 0,
+      "source_cell": [
+        836,
+        0,
+        1254,
+        418
+      ],
+      "source_content_bounds": [
+        6,
+        93,
+        405,
+        336
+      ],
+      "width": 256,
+      "height": 128,
+      "alpha_bounds": [
+        36,
+        8,
+        220,
+        120
+      ],
+      "bytes": 17260,
+      "sha256": "eeab88a10a5735a6e496563ac9ebee1395ece0fab41f9459cd66099e77e1b37c"
+    },
+    {
+      "id": 1803,
+      "name": "Tercerola de Caballería",
+      "file": "weapon-1803.png",
+      "source_index": 0,
+      "source_cell": [
+        0,
+        418,
+        418,
+        836
+      ],
+      "source_content_bounds": [
+        11,
+        73,
+        409,
+        310
+      ],
+      "width": 256,
+      "height": 128,
+      "alpha_bounds": [
+        34,
+        8,
+        222,
+        120
+      ],
+      "bytes": 18579,
+      "sha256": "c91ccb3d7b0d015bad8d0b2f8ca264c10358074c14df96aa291b8bd95344a794"
+    },
+    {
+      "id": 1804,
+      "name": "Escopeta Criolla",
+      "file": "weapon-1804.png",
+      "source_index": 0,
+      "source_cell": [
+        418,
+        418,
+        836,
+        836
+      ],
+      "source_content_bounds": [
+        4,
+        66,
+        415,
+        305
+      ],
+      "width": 256,
+      "height": 128,
+      "alpha_bounds": [
+        31,
+        8,
+        224,
+        120
+      ],
+      "bytes": 12826,
+      "sha256": "e926d713237e12adaa9310f9b5ba54740a700b373c0894e5bd31bf731b48324a"
+    },
+    {
+      "id": 1805,
+      "name": "Pistola de Arzón",
+      "file": "weapon-1805.png",
+      "source_index": 0,
+      "source_cell": [
+        836,
+        418,
+        1254,
+        836
+      ],
+      "source_content_bounds": [
+        18,
+        80,
+        404,
+        321
+      ],
+      "width": 256,
+      "height": 128,
+      "alpha_bounds": [
+        38,
+        8,
+        217,
+        120
+      ],
+      "bytes": 19168,
+      "sha256": "f9f7f35ef74d07d81c56e6383a0a6cfa455d7fd8d3b1988309264af4847988ed"
+    },
+    {
+      "id": 1806,
+      "name": "Pistola de Duelo",
+      "file": "weapon-1806.png",
+      "source_index": 0,
+      "source_cell": [
+        0,
+        836,
+        418,
+        1254
+      ],
+      "source_content_bounds": [
+        22,
+        82,
+        411,
+        317
+      ],
+      "width": 256,
+      "height": 128,
+      "alpha_bounds": [
+        35,
+        8,
+        220,
+        120
+      ],
+      "bytes": 17071,
+      "sha256": "083a63193f6d9f0101a8dc4310adf388efb0ac371ec10bffccdcc9ced1c7696a"
+    },
+    {
+      "id": 1807,
+      "name": "Trabuco Naranjero",
+      "file": "weapon-1807.png",
+      "source_index": 0,
+      "source_cell": [
+        418,
+        836,
+        836,
+        1254
+      ],
+      "source_content_bounds": [
+        9,
+        71,
+        412,
+        302
+      ],
+      "width": 256,
+      "height": 128,
+      "alpha_bounds": [
+        30,
+        8,
+        225,
+        120
+      ],
+      "bytes": 20635,
+      "sha256": "f063cf3aeee48cf805ef0e2838fa510466f4c6b9284105475b964652abdf7a78"
+    },
+    {
+      "id": 1808,
+      "name": "Pistola Doble Cañón",
+      "file": "weapon-1808.png",
+      "source_index": 0,
+      "source_cell": [
+        836,
+        836,
+        1254,
+        1254
+      ],
+      "source_content_bounds": [
+        15,
+        86,
+        405,
+        316
+      ],
+      "width": 256,
+      "height": 128,
+      "alpha_bounds": [
+        33,
+        8,
+        223,
+        120
+      ],
+      "bytes": 23233,
+      "sha256": "41df9572f84e84b2c78026b6069b151cb8a4e2b4c1fd53a0b07a82afe2943b72"
+    },
+    {
+      "id": 1809,
+      "name": "Sable Corvo Sanmartiniano",
+      "file": "weapon-1809.png",
+      "source_index": 1,
+      "source_cell": [
+        0,
+        0,
+        1254,
+        285
+      ],
+      "source_content_bounds": [
+        39,
+        37,
+        1226,
+        253
+      ],
+      "width": 256,
+      "height": 128,
+      "alpha_bounds": [
+        8,
+        42,
+        248,
+        86
+      ],
+      "bytes": 13195,
+      "sha256": "21c48a9f6d986cb496ad104be54a9f871ccbeb2c60e8d653df9b9cfa4ab2a504"
+    },
+    {
+      "id": 1810,
+      "name": "Sable de Caroya",
+      "file": "weapon-1810.png",
+      "source_index": 1,
+      "source_cell": [
+        0,
+        285,
+        1254,
+        515
+      ],
+      "source_content_bounds": [
+        39,
+        21,
+        1226,
+        206
+      ],
+      "width": 256,
+      "height": 128,
+      "alpha_bounds": [
+        8,
+        45,
+        248,
+        82
+      ],
+      "bytes": 11204,
+      "sha256": "d865ae4bc0c6402c09edcd900ea02ecc6d4819efee773256e74d944227a53555"
+    },
+    {
+      "id": 1811,
+      "name": "Bayoneta de Cubo",
+      "file": "weapon-1811.png",
+      "source_index": 1,
+      "source_cell": [
+        0,
+        515,
+        1254,
+        745
+      ],
+      "source_content_bounds": [
+        35,
+        38,
+        1217,
+        194
+      ],
+      "width": 256,
+      "height": 128,
+      "alpha_bounds": [
+        8,
+        48,
+        248,
+        80
+      ],
+      "bytes": 7562,
+      "sha256": "d713d67a939941d65cce0be2e6574d7a56526cd5affe37836fa27f4ccb5bc793"
+    },
+    {
+      "id": 1812,
+      "name": "Lanza de Tacuara",
+      "file": "weapon-1812.png",
+      "source_index": 1,
+      "source_cell": [
+        0,
+        745,
+        1254,
+        935
+      ],
+      "source_content_bounds": [
+        29,
+        67,
+        1226,
+        139
+      ],
+      "width": 256,
+      "height": 128,
+      "alpha_bounds": [
+        8,
+        57,
+        248,
+        71
+      ],
+      "bytes": 5640,
+      "sha256": "1a298745523a9c29fe48db0350c4b680e3eb217bd2d5362836fa6ae5bb65c813"
+    },
+    {
+      "id": 1813,
+      "name": "Facón Gaucho",
+      "file": "weapon-1813.png",
+      "source_index": 1,
+      "source_cell": [
+        0,
+        935,
+        1254,
+        1254
+      ],
+      "source_content_bounds": [
+        38,
+        76,
+        1222,
+        237
+      ],
+      "width": 256,
+      "height": 128,
+      "alpha_bounds": [
+        8,
+        47,
+        248,
+        80
+      ],
+      "bytes": 14065,
+      "sha256": "903d9fea5ed64c69150ed329364de10f8ee66bd5b76e6eaff46a2d9683de8496"
+    }
+  ]
+}

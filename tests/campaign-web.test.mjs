@@ -1,7 +1,8 @@
+import {marchToFront} from './campaign-test-helpers.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign as dispatch,isSupplied,recruitmentStatus,restoreCampaign,serializeCampaign,OPERATIVES,CAMPAIGN_SECTORS,PHASES,RECIPES} from '../game/campaign.js';
-const order=(s,action)=>{const next=dispatch(s,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);return next;};
+const order=(s,action)=>{const next=dispatch(marchToFront(s,action),action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);return next;};
 const capture=(s,id)=>{s=order(s,{type:'attack',sector:id});return order(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'victory',survivors:s.pendingBattle.squad.map(o=>({id:o.id,hp:o.hp}))});};
 test('historical geography, roster and phase definitions preserve requested scope',()=>{
  assert.equal(CAMPAIGN_SECTORS.length,13);assert.equal(new Set(CAMPAIGN_SECTORS.map(s=>s.grid)).size,13);assert.equal(new Set(CAMPAIGN_SECTORS.map(s=>s.theater)).size,4);assert.equal(OPERATIVES.length,13);assert.equal(PHASES.length,5);
@@ -64,9 +65,9 @@ test('full campaign reaches liberation through reducer orders and timed producti
  for(const id of ['san_nicolas','san_lorenzo','cordoba','tucuman','salta'])s=capture(s,id);
  s=order(s,{type:'diplomacy',kind:'northPact'});
  for(const id of ['santa_fe','jujuy','humahuaca','mendoza','uspallata','los_patos'])s=capture(s,id);
- s=order(s,{type:'recruit',id:2});s=order(s,{type:'foundry'});
+ s=order(s,{type:'travel',sector:'mendoza'});s=order(s,{type:'recruit',id:2});s=order(s,{type:'foundry'});
  for(const id of ['mendoza','uspallata','los_patos','san_nicolas','jujuy'])s=order(s,{type:'fortify',sector:id});
- for(const id of ['san_nicolas','jujuy'])s=order(s,{type:'militia',sector:id,rank:0});
+ for(const id of ['san_nicolas','jujuy','jujuy'])s=order(s,{type:'militia',sector:id,rank:0});
  s=order(s,{type:'produce',recipe:'sabres',sector:'cordoba'});s=order(s,{type:'wait',hours:24});
  s=order(s,{type:'diplomacy',kind:'parliament'});
  // Manufacture actual supplies. Daily provincial output funds the full preparation.
@@ -87,5 +88,5 @@ test('full campaign reaches liberation through reducer orders and timed producti
 test('southern winter closes Andean passes while northern gorge remains operational',()=>{
  let s=initialCampaign();s.hour=2160; // June1, after the March start.
  s.sectors.cordoba.owner='patriot';s.sectors.mendoza.owner='patriot';s.sectors.tucuman.owner='patriot';s.sectors.salta.owner='patriot';s.sectors.jujuy.owner='patriot';
- assert.ok(dispatch(s,{type:'attack',sector:'uspallata'}).lastError);assert.equal(dispatch(s,{type:'attack',sector:'humahuaca'}).lastError,null);
+ assert.ok(dispatch(s,{type:'attack',sector:'uspallata'}).lastError);assert.equal(dispatch(marchToFront(s,{type:'attack',sector:'humahuaca'}),{type:'attack',sector:'humahuaca'}).lastError,null);
 });

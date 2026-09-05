@@ -139,6 +139,48 @@
       "source_sha256": "3b24c408b15113c498c2b5fc444e90d23a046ad390842a882de29f26de74ffa6"
     },
     {
+      "path": "cannon.png",
+      "width": 384,
+      "height": 384,
+      "mode": "RGBA",
+      "source": "assets/source/bronze-field-cannon-v1.png",
+      "prompt": "assets/prompts/bronze-field-cannon-v1.txt",
+      "anchor": [
+        0.5,
+        0.94
+      ],
+      "alpha_bounds": [
+        3,
+        1,
+        384,
+        374
+      ],
+      "bytes": 179789,
+      "sha256": "379a40a85460a71abbce98d70bac6462c8058d332bdb81e4a0092086a472208e",
+      "source_sha256": "e4c5df79ebb2679489ec093bba7fb9ab295e01348b2cef51ca59570ee571f323"
+    },
+    {
+      "path": "foundry.png",
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA",
+      "source": "assets/source/colonial-foundry-v1.png",
+      "prompt": "assets/prompts/colonial-foundry-v1.txt",
+      "anchor": [
+        0.5,
+        0.89
+      ],
+      "alpha_bounds": [
+        18,
+        40,
+        498,
+        496
+      ],
+      "bytes": 375385,
+      "sha256": "5bea7b6a8f74f51b2b04404a4f4710f8c23d65d1d93c7fcab687aa7451933811",
+      "source_sha256": "808269c0f7fd92c509e9f2e330401ff5088afc543a6a3a29e585e79df466f7df"
+    },
+    {
       "path": "portrait-0.webp",
       "width": 384,
       "height": 384,

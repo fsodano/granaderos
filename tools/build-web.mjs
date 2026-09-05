@@ -50,6 +50,16 @@ for(const file of sourceFiles){
     for(const match of css.matchAll(/url\(\s*["']?([^"')\s]+)["']?\s*\)/g))requireAsset(match[1],name);
   }
 }
+// Dynamic portrait and action-frame URLs are not visible to literal URL scans.
+for(const id of [0,1,2,3,4,5,6,7,8,9,10,11,57])requireAsset(`/art/portrait-${id}.webp`,'roster');
+for(let id=1800;id<=1813;id++)requireAsset(`/art/weapon-${id}.png`,'armory');
+for(const direction of ['se','sw'])for(const pose of ['idle','fire','reload','strike'])requireAsset(`/art/granadero-${direction}-${pose}.png`,'tactical sprites');
+const artwork=JSON.parse(await readFile(resolve(source,'art/manifest.json'),'utf8'));
+for(const asset of artwork.assets){
+  requireAsset(`/art/${asset.path}`,'art manifest');
+  const actual=createHash('sha256').update(await readFile(resolve(source,'art',asset.path))).digest('hex');
+  if(actual!==asset.sha256)throw Error(`Artwork checksum mismatch: ${asset.path}`);
+}
 const manifest=JSON.parse(await readFile(resolve(source,'.vite/manifest.json'),'utf8'));
 for(const [key,entry] of Object.entries(manifest)){
   if(entry.file)requireAsset(`/${entry.file}`,`manifest:${key}`);

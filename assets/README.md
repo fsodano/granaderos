@@ -95,3 +95,62 @@ portrait. All masters and prompts are retained. `build_web.py` includes the
 full set in the hash manifest. Copies are installed in `web/public/art/` at
 the repository root. See [portrait-references.md](portrait-references.md) for
 historical context and limits of the interpretive likenesses.
+
+## Artillery, foundry and infantry action poses
+
+`web/cannon.png` (384×384, RGBA) is an original southeast-facing bronze
+smoothbore field cannon. It can represent the 4 lb class; scaling the same art for
+8 lb guns is a gameplay symbol, not evidence of exact historical dimensions.
+`web/foundry.png` (512×512, RGBA) depicts a colonial ordnance workshop with an
+open forge, anvil and barrel stock. Both are installed in `web/public/art` and
+included by `build_web.py`.
+
+`web/granadero-actions.png` is a 1280×640 transparent atlas, with 4 columns and
+2 rows of 320×320 cells. Row 0 faces southeast and row 1 southwest. Columns are
+idle, aimed fire, ramrod reload, and bayonet strike. The matching JSON gives
+all source and atlas rectangles, hashes, names and anchors. Foot anchor is
+(160,300), normalized (0.5,0.9375). Single frame files are also shipped as
+`granadero-{se|sw}-{idle|fire|reload|strike}.png`, so the UI can switch action
+poses without atlas cropping. All use a common scale and anchored baseline.
+
+Rebuild the atlas with `python3 assets/build_action_atlas.py`. This mechanically
+extracts the generated figures from measured source rectangles and packs them
+into uniform cells. The raw generated sheet is not uniformly sliceable because
+some musket barrels extend across its approximate grid; the delivered atlas
+fixes packing without altering the artwork. It was visually checked for
+separated figures, intact weapons, consistent uniforms and baseline placement.
+
+These are action-state keyframes rather than fluid animation sequences. Each
+action currently has one pose, two view directions exist, firing has no baked
+muzzle flash, and the reload is a representative ramrod pose rather than a
+complete historical drill. Equipment, anatomy and timing still need review.
+The sprite carries a musket and bayonet; do not present it as a pistol or saber
+animation. The initial separate Granadero token carries a saber. The first
+source idle plume touches the source image edge, a small generation limitation
+preserved in the source record. Other directions and walk cycles remain open.
+
+## Weapon inventory icons
+
+`web/weapon-1800.png` through `web/weapon-1813.png` are fourteen original
+256×128 transparent inventory images mapped directly to `game/data.js` IDs.
+`web/weapon-icons.json` supplies Spanish names, source sheets and measured
+extraction bounds, dimensions, alpha bounds and hashes. There is no text baked
+into the images. Rebuild with `python3 assets/build_weapon_icons.py`.
+
+The nine firearm icons distinguish long muskets, the Baker brass patchbox,
+compact cavalry carbine, slender rustic shotgun, cavalry pistol, octagonal
+barrel dueling pistol, bell-mouthed blunderbuss, and visibly double-barreled
+pistol. The five melee icons show the curved Mameluke-style hilt, standard
+cavalry knuckle guard, offset tubular socket bayonet, bamboo lance and facón.
+Each was inspected after extraction. All outputs have real alpha, unclipped
+content bounds, and a common inventory canvas. The sizes are normalized for
+legibility, not a diagram of comparative physical weapon lengths.
+
+Historical context was checked against the
+[Australian War Memorial India Pattern musket record](https://www.awm.gov.au/collection/C236722)
+and [Museo Histórico Nacional discussion of San Martín's saber](https://museohistoriconacional.cultura.gob.ar/noticia/sable-corvo-del-general-jose-de-san-martin/).
+The exact firearm fittings, manufactured proportions, and generic local weapon
+models remain artistic interpretations pending specialist review. No reference
+photograph was provided to generation and these icons are not museum scans.
+The 0–15 alpha source padding is excluded only for
+content-bound measurement; surviving generated alpha is preserved in outputs.
