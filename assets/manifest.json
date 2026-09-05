@@ -1,0 +1,58 @@
+{
+  "generator": "OpenAI built-in image_gen",
+  "generated_date": "2026-09-05",
+  "assets": [
+    {
+      "source": "assets/source/san-lorenzo-menu-v2.png",
+      "source_sha256": "317a9d0bde81aeda5b28ce1c29108f239ad842b3a2dda4e5de98b57a5f7e6f47",
+      "prompt": "assets/prompts/san-lorenzo-menu-v2.txt",
+      "output": "assets/engine/san-lorenzo-menu.sti",
+      "sha256": "1465b97ca3d233429900ca995d1b0e00213c5e1dd11446d9e909decb6ed15c9b",
+      "dimensions": [
+        640,
+        480
+      ],
+      "format": "rgb565",
+      "installed": "mod/Data-Granaderos/Loadscreens/MainMenuBackground.sti"
+    },
+    {
+      "source": "assets/source/juan-bautista-cabral-v1.png",
+      "source_sha256": "645b85b5e9fabe22ad6a4e532007e2fb8b09c24f4910b2adac909d0197940b63",
+      "prompt": "assets/prompts/juan-bautista-cabral-v1.txt",
+      "output": "assets/engine/cabral-tactical.sti",
+      "sha256": "d4df964f84044142a3d4a68b5e05f5e37d4cd0afd74fdc9ac6cfe9d12d28f479",
+      "dimensions": [
+        48,
+        43
+      ],
+      "format": "etrle",
+      "installed": "mod/Data-Granaderos/Faces/03.sti"
+    },
+    {
+      "source": "assets/source/juan-bautista-cabral-v1.png",
+      "source_sha256": "645b85b5e9fabe22ad6a4e532007e2fb8b09c24f4910b2adac909d0197940b63",
+      "prompt": "assets/prompts/juan-bautista-cabral-v1.txt",
+      "output": "assets/engine/cabral-dialogue.sti",
+      "sha256": "ff6506c681d43ff8b0f79f92ce1eae874788b024d33b03edcd1a6b5bfdd30eca",
+      "dimensions": [
+        90,
+        100
+      ],
+      "format": "etrle",
+      "installed": "mod/Data-Granaderos/Faces/b03.sti"
+    },
+    {
+      "source": "assets/source/juan-bautista-cabral-v1.png",
+      "source_sha256": "645b85b5e9fabe22ad6a4e532007e2fb8b09c24f4910b2adac909d0197940b63",
+      "prompt": "assets/prompts/juan-bautista-cabral-v1.txt",
+      "output": "assets/engine/cabral-recruitment.sti",
+      "sha256": "915c75ab0ff76669a75061e7aebe941fb61bc00a76e97207e92ae387a30b1288",
+      "dimensions": [
+        106,
+        122
+      ],
+      "format": "etrle",
+      "installed": "mod/Data-Granaderos/Faces/BIGFACES/03.sti"
+    }
+  ]
+}

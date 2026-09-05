@@ -1,0 +1,175 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 030683acc..15223e872 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -8,6 +8,11 @@ endif()
+ 
+ project(ja2)
+ 
++option(GRANADEROS "Enable Granaderos historical conversion rules" OFF)
++if(GRANADEROS)
++  add_compile_definitions(GRANADEROS)
++endif()
++
+ option(USE_SCCACHE "Cache compiled objects with sccache if installed" ON)
+ if(USE_SCCACHE)
+   find_program(SCCACHE_PROGRAM sccache)
+diff --git a/Tactical/Points.cpp b/Tactical/Points.cpp
+index fe2019d89..98323db13 100644
+--- a/Tactical/Points.cpp
++++ b/Tactical/Points.cpp
+@@ -36,6 +36,9 @@
+ #include "connect.h"
+ 
+ #include "GameInitOptionsScreen.h"
++#ifdef GRANADEROS
++#include "GranaderosBlackPowder.h"
++#endif
+ 
+ //rain
+ //#define BREATH_GAIN_REDUCTION_PER_RAIN_INTENSITY 25
+@@ -1661,6 +1664,10 @@ INT16 CalcTotalAPsToAttack( SOLDIERTYPE *pSoldier, INT32 sGridNo, UINT8 ubAddTur
+ 			else
+ 				sAPCost += CalcAPsToBurst( pSoldier->CalcActionPoints( ), AttackingWeapon, pSoldier );
+ 		}
++#ifdef GRANADEROS
++		if (granaderos::isFirearm(usUBItemNum))
++			return sAPCost + __max(0, bAimTime) * granaderos::aimAP(usUBItemNum);
++#endif
+ 		//else //ddd comment for aimed burst
+ 		{
+ 			if (gGameExternalOptions.fIncreasedAimingCost )
+@@ -1872,6 +1879,9 @@ INT16 CalcAimSkill( SOLDIERTYPE * pSoldier, UINT16 usWeapon )
+ 
+ INT16 BaseAPsToShootOrStab( INT16 bAPs, INT16 bAimSkill, OBJECTTYPE * pObj, SOLDIERTYPE* pSoldier )
+ {
++#ifdef GRANADEROS
++	if (granaderos::isFirearm(pObj->usItem)) return (INT16)granaderos::fireAP(pObj->usItem);
++#endif
+ 	INT32	Top, Bottom;
+ 	FLOAT	rof;
+ //	INT8	bAttachPos;
+@@ -1956,6 +1966,9 @@ INT16 BaseAPsToShootOrStab( INT16 bAPs, INT16 bAimSkill, OBJECTTYPE * pObj, SOLD
+ // HEADROCK HAM 4: Same function as above, except no modifier.
+ INT16 BaseAPsToShootOrStabNoModifier( INT16 bAPs, INT16 bAimSkill, UINT16 usItem )
+ {
++#ifdef GRANADEROS
++	if (granaderos::isFirearm(usItem)) return (INT16)granaderos::fireAP(usItem);
++#endif
+ 	INT32	Top, Bottom;
+ 	FLOAT	rof;
+ 
+@@ -2845,6 +2858,13 @@ UINT16 GetAPsToGiveItem( SOLDIERTYPE *pSoldier, INT32 usMapPos )
+ 
+ INT16 GetAPsToReloadGunWithAmmo( SOLDIERTYPE *pSoldier, OBJECTTYPE * pGun, OBJECTTYPE * pAmmo, BOOLEAN usAllAPs )
+ {
++#ifdef GRANADEROS
++	if (granaderos::isFirearm(pGun->usItem))
++		return (INT16)granaderos::reloadAP(pGun->usItem,
++			GetMagSize(pGun) - (*pGun)[0]->data.gun.ubGunShotsLeft,
++			(*pAmmo)[0]->data.ubShotsLeft,
++			gAnimControl[pSoldier->usAnimState].ubEndHeight == ANIM_PRONE);
++#endif
+ 	if (Item[ pGun->usItem ].usItemClass == IC_LAUNCHER)
+ 	{
+ 		// always standard AP cost
+diff --git a/Tactical/Weapons.cpp b/Tactical/Weapons.cpp
+index 0ca23368d..9a8dc446a 100644
+--- a/Tactical/Weapons.cpp
++++ b/Tactical/Weapons.cpp
+@@ -52,6 +52,9 @@
+ // anv: for taunts on miss
+ #include "Civ Quotes.h"
+ #include "GameInitOptionsScreen.h"
++#ifdef GRANADEROS
++#include "GranaderosBlackPowder.h"
++#endif
+ 
+ 
+ //forward declarations of common classes to eliminate includes
+@@ -1348,7 +1351,48 @@ void AdjustImpactByHitLocation( INT32 iImpact, UINT8 ubHitLocation, INT32 * piNe
+ 
+ BOOLEAN CheckForGunJam( SOLDIERTYPE * pSoldier ) 
+ { 
+-	OBJECTTYPE * pObj; 
++	OBJECTTYPE * pObj;
++#ifdef GRANADEROS
++	// Black-powder ignition applies to both armies, independent of modern jam settings.
++	pObj = pSoldier->GetUsedWeapon(&pSoldier->inv[pSoldier->ubAttackingHand]);
++	if (pObj && pObj->exists() && granaderos::isFirearm(pObj->usItem))
++	{
++		auto& gun = (*pObj)[0]->data.gun;
++		if (gun.bGunAmmoStatus < 0)
++		{
++			if (!EnoughPoints(pSoldier, granaderos::reprimeAP, 0, TRUE)) return TRUE;
++			DeductPoints(pSoldier, granaderos::reprimeAP, 0);
++			gun.bGunAmmoStatus *= -1;
++			DirtyMercPanelInterface(pSoldier, DIRTYLEVEL2);
++			return 255; // re-prime is an action, not a simultaneous shot
++		}
++		if (gun.ubGunShotsLeft == 0) return FALSE;
++		int rain = 0;
++		int humidity = 0;
++		if (!pSoldier->bSectorZ)
++		{
++			const auto weather = SectorInfo[SECTOR(pSoldier->sSectorX, pSoldier->sSectorY)].usWeather;
++			if (weather == WEATHER_FORECAST_RAIN) rain = 40;
++			if (weather == WEATHER_FORECAST_THUNDERSHOWERS) rain = 80;
++			if (weather == WEATHER_FORECAST_SNOW) rain = 20;
++			// Eastern river sectors are humid even without active rain.
++			if (pSoldier->sSectorX >= 7) humidity = 5;
++		}
++		const int chance = granaderos::misfirePercent(gun.bGunStatus, rain, humidity);
++		if ((INT32)PreRandom(100) < chance || gfNextFireJam)
++		{
++			gfNextFireJam = FALSE;
++			// Only the flashpan burns. Preserve the loaded main charge and cartridge.
++			gun.bGunAmmoStatus = -__max(1, gun.bGunAmmoStatus);
++			DeductPoints(pSoldier, CalcTotalAPsToAttack(pSoldier, pSoldier->sTargetGridNo, FALSE, pSoldier->aiData.bAimTime), 0);
++			if (pSoldier->bTeam == gbPlayerNum)
++				ScreenMsg(FONT_MCOLOR_LTYELLOW, MSG_INTERFACE, L"Fallo de encendido. Cebar la llave: 15 PA.");
++			DirtyMercPanelInterface(pSoldier, DIRTYLEVEL2);
++			return TRUE;
++		}
++		return FALSE;
++	}
++#endif
+ 	// INT32 iChance, iResult; 
+  
+ 	// should jams apply to enemies? 
+@@ -2698,6 +2742,11 @@ BOOLEAN UseGunNCTH( SOLDIERTYPE *pSoldier , INT32 sTargetGridNo )
+ 
+ 		// Deduct AMMO!
+ 		DeductAmmo( pSoldier, pSoldier->ubAttackingHand );
++#ifdef GRANADEROS
++		// Both OCTH and NCTH firing paths create engine smoke with real LOS effects.
++		if (granaderos::isFirearm(usUBItem))
++			NewSmokeEffect(pSoldier->sGridNo, granaderos::smokeItem, pSoldier->pathing.bLevel, pSoldier->ubID);
++#endif
+ 
+ 		// ATE: Check if we should say quote...
+ 		if ( (*pObjHand)[0]->data.gun.ubGunShotsLeft == 0 && 
+@@ -3521,6 +3570,11 @@ BOOLEAN UseGun( SOLDIERTYPE *pSoldier , INT32 sTargetGridNo )
+ 
+ 		// Deduct AMMO!
+ 		DeductAmmo( pSoldier, pSoldier->ubAttackingHand );
++#ifdef GRANADEROS
++		// Both OCTH and NCTH firing paths create engine smoke with real LOS effects.
++		if (granaderos::isFirearm(usUBItem))
++			NewSmokeEffect(pSoldier->sGridNo, granaderos::smokeItem, pSoldier->pathing.bLevel, pSoldier->ubID);
++#endif
+ 
+ 		// ATE: Check if we should say quote...		
+ 		if ( (*pObjUsed)[0]->data.gun.ubGunShotsLeft == 0 && 
+@@ -7635,6 +7689,11 @@ UINT32 CalcChanceToHitGun(SOLDIERTYPE *pSoldier, INT32 sGridNo, INT16 ubAimTime,
+ 	}
+ 	/////////////////////////////////////////////////////////////////////////////////////
+ 	
++#ifdef GRANADEROS
++	const UINT16 historicalItem = pSoldier->GetUsedWeaponNumber(&pSoldier->inv[HANDPOS]);
++	if (granaderos::isFirearm(historicalItem))
++		iChance = __min(iChance, granaderos::rangeCeiling(historicalItem, PythSpacesAway(pSoldier->sGridNo, sGridNo)));
++#endif
+    DebugMsg(TOPIC_JA2,DBG_LEVEL_3,String("CalcChanceToHitGun: ichance = %d",iChance));
+    return (iChance);
+ }

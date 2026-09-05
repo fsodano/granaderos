@@ -1,0 +1,451 @@
+{
+  "frame_size": [
+    256,
+    256
+  ],
+  "anchor": [
+    0.5000002384185791,
+    0.882874459028244
+  ],
+  "frames_per_direction": 8,
+  "fps": 10,
+  "directions": {
+    "n": 225,
+    "ne": 180,
+    "e": 135,
+    "se": 90,
+    "s": 45,
+    "sw": 0,
+    "w": 315,
+    "nw": 270
+  },
+  "model": "assets/rig/cavalry-model.blend",
+  "frames": [
+    {
+      "faction": "cavalry",
+      "direction": "n",
+      "frame": 0,
+      "file": "cavalry-walk-n-0.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "n",
+      "frame": 1,
+      "file": "cavalry-walk-n-1.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "n",
+      "frame": 2,
+      "file": "cavalry-walk-n-2.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "n",
+      "frame": 3,
+      "file": "cavalry-walk-n-3.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "n",
+      "frame": 4,
+      "file": "cavalry-walk-n-4.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "n",
+      "frame": 5,
+      "file": "cavalry-walk-n-5.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "n",
+      "frame": 6,
+      "file": "cavalry-walk-n-6.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "n",
+      "frame": 7,
+      "file": "cavalry-walk-n-7.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "ne",
+      "frame": 0,
+      "file": "cavalry-walk-ne-0.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "ne",
+      "frame": 1,
+      "file": "cavalry-walk-ne-1.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "ne",
+      "frame": 2,
+      "file": "cavalry-walk-ne-2.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "ne",
+      "frame": 3,
+      "file": "cavalry-walk-ne-3.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "ne",
+      "frame": 4,
+      "file": "cavalry-walk-ne-4.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "ne",
+      "frame": 5,
+      "file": "cavalry-walk-ne-5.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "ne",
+      "frame": 6,
+      "file": "cavalry-walk-ne-6.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "ne",
+      "frame": 7,
+      "file": "cavalry-walk-ne-7.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "e",
+      "frame": 0,
+      "file": "cavalry-walk-e-0.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "e",
+      "frame": 1,
+      "file": "cavalry-walk-e-1.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "e",
+      "frame": 2,
+      "file": "cavalry-walk-e-2.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "e",
+      "frame": 3,
+      "file": "cavalry-walk-e-3.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "e",
+      "frame": 4,
+      "file": "cavalry-walk-e-4.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "e",
+      "frame": 5,
+      "file": "cavalry-walk-e-5.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "e",
+      "frame": 6,
+      "file": "cavalry-walk-e-6.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "e",
+      "frame": 7,
+      "file": "cavalry-walk-e-7.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "se",
+      "frame": 0,
+      "file": "cavalry-walk-se-0.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "se",
+      "frame": 1,
+      "file": "cavalry-walk-se-1.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "se",
+      "frame": 2,
+      "file": "cavalry-walk-se-2.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "se",
+      "frame": 3,
+      "file": "cavalry-walk-se-3.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "se",
+      "frame": 4,
+      "file": "cavalry-walk-se-4.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "se",
+      "frame": 5,
+      "file": "cavalry-walk-se-5.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "se",
+      "frame": 6,
+      "file": "cavalry-walk-se-6.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "se",
+      "frame": 7,
+      "file": "cavalry-walk-se-7.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "s",
+      "frame": 0,
+      "file": "cavalry-walk-s-0.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "s",
+      "frame": 1,
+      "file": "cavalry-walk-s-1.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "s",
+      "frame": 2,
+      "file": "cavalry-walk-s-2.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "s",
+      "frame": 3,
+      "file": "cavalry-walk-s-3.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "s",
+      "frame": 4,
+      "file": "cavalry-walk-s-4.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "s",
+      "frame": 5,
+      "file": "cavalry-walk-s-5.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "s",
+      "frame": 6,
+      "file": "cavalry-walk-s-6.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "s",
+      "frame": 7,
+      "file": "cavalry-walk-s-7.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "sw",
+      "frame": 0,
+      "file": "cavalry-walk-sw-0.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "sw",
+      "frame": 1,
+      "file": "cavalry-walk-sw-1.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "sw",
+      "frame": 2,
+      "file": "cavalry-walk-sw-2.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "sw",
+      "frame": 3,
+      "file": "cavalry-walk-sw-3.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "sw",
+      "frame": 4,
+      "file": "cavalry-walk-sw-4.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "sw",
+      "frame": 5,
+      "file": "cavalry-walk-sw-5.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "sw",
+      "frame": 6,
+      "file": "cavalry-walk-sw-6.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "sw",
+      "frame": 7,
+      "file": "cavalry-walk-sw-7.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "w",
+      "frame": 0,
+      "file": "cavalry-walk-w-0.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "w",
+      "frame": 1,
+      "file": "cavalry-walk-w-1.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "w",
+      "frame": 2,
+      "file": "cavalry-walk-w-2.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "w",
+      "frame": 3,
+      "file": "cavalry-walk-w-3.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "w",
+      "frame": 4,
+      "file": "cavalry-walk-w-4.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "w",
+      "frame": 5,
+      "file": "cavalry-walk-w-5.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "w",
+      "frame": 6,
+      "file": "cavalry-walk-w-6.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "w",
+      "frame": 7,
+      "file": "cavalry-walk-w-7.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "nw",
+      "frame": 0,
+      "file": "cavalry-walk-nw-0.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "nw",
+      "frame": 1,
+      "file": "cavalry-walk-nw-1.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "nw",
+      "frame": 2,
+      "file": "cavalry-walk-nw-2.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "nw",
+      "frame": 3,
+      "file": "cavalry-walk-nw-3.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "nw",
+      "frame": 4,
+      "file": "cavalry-walk-nw-4.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "nw",
+      "frame": 5,
+      "file": "cavalry-walk-nw-5.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "nw",
+      "frame": 6,
+      "file": "cavalry-walk-nw-6.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "nw",
+      "frame": 7,
+      "file": "cavalry-walk-nw-7.png"
+    }
+  ],
+  "idle": [
+    {
+      "faction": "cavalry",
+      "direction": "n",
+      "file": "cavalry-idle-n.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "ne",
+      "file": "cavalry-idle-ne.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "e",
+      "file": "cavalry-idle-e.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "se",
+      "file": "cavalry-idle-se.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "s",
+      "file": "cavalry-idle-s.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "sw",
+      "file": "cavalry-idle-sw.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "w",
+      "file": "cavalry-idle-w.png"
+    },
+    {
+      "faction": "cavalry",
+      "direction": "nw",
+      "file": "cavalry-idle-nw.png"
+    }
+  ]
+}

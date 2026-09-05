@@ -1,0 +1,144 @@
+{
+  "schema": 1,
+  "smoke_item": 1840,
+  "smoke_explosive_class": 106,
+  "upstream_commit": "ddb691318eb3dd0cdc6eab42139739b6d498c645",
+  "source_sha256": {
+    "AIMAvailability.xml": "faa01a0596eb78b94c6e698113dfeb109bddfdad1db4ca673f3bcabea38f17a0",
+    "MercProfiles.xml": "6508487728bd0312cfed4ab31eb1e04107e5ef75df06a7a95579b8fb634abbad",
+    "MercAvailability.xml": "b2ae13976d333a92c6aec4d06246ce0c08eecee2df882b988a72385a13f8ea61",
+    "Layout/LayoutMainMenu.xml": "c3cbd79ac727d1621ce6b2bfc918ba784be2830dd54c89883071bb2c9dd21bbc",
+    "Inventory/EnemyGunChoices.xml": "07bf86b5e40c7cac5dfd99cb82fd50108c762a4a1e31ea15400e921bb132c79d",
+    "Inventory/ItemChoices_Enemy_Elite.xml": "1a8b301567c5f068af8bc311e8ecf60f64ff1c1bd6ba05a3ff11caeb9f4af553",
+    "Inventory/GunChoices_Enemy_Regular.xml": "d296959d4dd9ae78b2683adacd188f16052d98c27401b8b732a2c307ad977383",
+    "Inventory/GunChoices_Militia_Regular.xml": "521cf5ee04d5a394e9d87c53b42161c89674262b8757b3122c92d142a87799ab",
+    "Inventory/ItemChoices_Militia_Green.xml": "64023ff49ae106e57533a987e96b0fe1995cf4659a95fe7d9c3e6de12857189f",
+    "Inventory/MercStartingGear.xml": "36e7635a6f63359ae95e99590606c22cbae1f5ea36e2ab28fe9117ca0bacd527",
+    "Inventory/GunChoices_Enemy_Elite.xml": "031945c0e9d3fc0c9e5f27e333bfbc12974e947b283454936d605283ad832d6c",
+    "Inventory/GunChoices_Militia_Elite.xml": "1e14a8a6755c9248b255d6a4f6646eecb92b9f0bd7accaa1900b87637b1a08c9",
+    "Inventory/ItemChoices_Militia_Elite.xml": "23c7c5b3131f15c92640e36a07b68f2de06c34f842718ec22677221c7254aa76",
+    "Inventory/EnemyItemChoices.xml": "b995346179d7f98f460baa35f4af9d089379154ad54cdaae21300512a0ceab26",
+    "Inventory/ItemChoices_Militia_Regular.xml": "77079f16b6a86bc677659525697cfe1d4353958b86161404621ffc539eeda8c1",
+    "Inventory/ItemChoices_Enemy_Admin.xml": "0021d1c55e79ffbb6161c471223d67eaed8ec350949c888f8dafaf404a773d94",
+    "Inventory/GunChoices_Militia_Green.xml": "3f2f9fa7adfbaf01c0a613fdd8675e99b28a454927422366f5644086c43e6290",
+    "Inventory/ItemChoices_Enemy_Regular.xml": "e47cef87cf35944fc7b53f44d8c4eac413fa75cf74606322fadb3d756c340ede",
+    "Inventory/GunChoices_Enemy_Admin.xml": "e1fb2a6131ce9391727e16c5ee794527ffb91d9ce030a8b3c65a9f1e7ef91be8",
+    "Items/Weapons.xml": "52d759787c975137cafb0fc270420f7d42d40c0017a89adf61bf45e64342b87c",
+    "Items/Items.xml": "fc01e7c703bedf647f2e8dbd54e918425397b5f5e55f751c9cee2bcb07b47124",
+    "Items/Magazines.xml": "e5e727b26f2809850192addb4b2630d1f4e1c8f3c6e1459c775bec9f92113931",
+    "Items/AmmoStrings.xml": "b80d0f9aa16d2491d45092e9310e0134d9ace9c0b6caa1d47eb7f7c0d46d5090",
+    "Items/Explosives.xml": "fc8333b99f56b2d04d1eca34fe97c33195494c4bed67b6b17bfd8be6663c99f9"
+  },
+  "profiles": [
+    {
+      "id": 0,
+      "name": "Martín Miguel de Güemes"
+    },
+    {
+      "id": 1,
+      "name": "Juana Azurduy"
+    },
+    {
+      "id": 2,
+      "name": "Fray Luis Beltrán"
+    },
+    {
+      "id": 3,
+      "name": "Juan Bautista Cabral"
+    },
+    {
+      "id": 4,
+      "name": "Manuel Dorrego"
+    },
+    {
+      "id": 5,
+      "name": "Guillermo Brown"
+    },
+    {
+      "id": 6,
+      "name": "Hipólito Bouchard"
+    },
+    {
+      "id": 7,
+      "name": "Lorenzo Barcala"
+    },
+    {
+      "id": 8,
+      "name": "Macacha Güemes"
+    },
+    {
+      "id": 9,
+      "name": "Facundo Quiroga"
+    },
+    {
+      "id": 10,
+      "name": "James Paroissien"
+    },
+    {
+      "id": 11,
+      "name": "José María Paz"
+    },
+    {
+      "id": 57,
+      "name": "José de San Martín"
+    }
+  ],
+  "allowed_items": [
+    201,
+    202,
+    203,
+    1800,
+    1801,
+    1802,
+    1803,
+    1804,
+    1805,
+    1806,
+    1807,
+    1808,
+    1809,
+    1810,
+    1811,
+    1812,
+    1813,
+    1900,
+    1901,
+    1902,
+    1903,
+    1904,
+    1905,
+    1906,
+    1907,
+    1908,
+    1909,
+    1910,
+    1911,
+    1912,
+    1913,
+    1914,
+    1915,
+    1916,
+    1917
+  ],
+  "calibers": {
+    "Bala de plomo .75": 51,
+    "Bala de plomo .69": 52,
+    "Bala con parche .62": 53,
+    "Bala corta .65": 54,
+    "Perdigón calibre 16": 55,
+    "Bala de precisión .50": 56,
+    "Metralla": 57,
+    "Bala de plomo .54": 58
+  },
+  "gun_ammunition": {
+    "1800": 1901,
+    "1801": 1903,
+    "1802": 1905,
+    "1803": 1907,
+    "1804": 1909,
+    "1805": 1911,
+    "1806": 1913,
+    "1807": 1915,
+    "1808": 1917
+  }
+}

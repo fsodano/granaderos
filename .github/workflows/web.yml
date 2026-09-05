@@ -1,0 +1,35 @@
+name: Web game build and tests
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install browser dependencies
+        run: npm ci --prefix web
+      - name: Test tactical and strategic simulation
+        run: npm test
+      - name: Check browser types
+        run: npm run typecheck
+      - name: Build and verify static game export
+        run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Granaderos-web
+          path: dist/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 14

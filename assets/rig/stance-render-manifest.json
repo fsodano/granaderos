@@ -1,0 +1,1738 @@
+{
+  "frame_size": [
+    192,
+    192
+  ],
+  "frames_per_direction": 8,
+  "fps": 10,
+  "directions": {
+    "n": 225,
+    "ne": 180,
+    "e": 135,
+    "se": 90,
+    "s": 45,
+    "sw": 0,
+    "w": 315,
+    "nw": 270
+  },
+  "stances": {
+    "crouch": {
+      "frames": [
+        {
+          "faction": "granadero",
+          "direction": "n",
+          "frame": 0,
+          "file": "granadero-crouch-walk-n-0.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "n",
+          "frame": 1,
+          "file": "granadero-crouch-walk-n-1.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "n",
+          "frame": 2,
+          "file": "granadero-crouch-walk-n-2.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "n",
+          "frame": 3,
+          "file": "granadero-crouch-walk-n-3.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "n",
+          "frame": 4,
+          "file": "granadero-crouch-walk-n-4.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "n",
+          "frame": 5,
+          "file": "granadero-crouch-walk-n-5.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "n",
+          "frame": 6,
+          "file": "granadero-crouch-walk-n-6.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "n",
+          "frame": 7,
+          "file": "granadero-crouch-walk-n-7.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "ne",
+          "frame": 0,
+          "file": "granadero-crouch-walk-ne-0.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "ne",
+          "frame": 1,
+          "file": "granadero-crouch-walk-ne-1.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "ne",
+          "frame": 2,
+          "file": "granadero-crouch-walk-ne-2.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "ne",
+          "frame": 3,
+          "file": "granadero-crouch-walk-ne-3.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "ne",
+          "frame": 4,
+          "file": "granadero-crouch-walk-ne-4.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "ne",
+          "frame": 5,
+          "file": "granadero-crouch-walk-ne-5.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "ne",
+          "frame": 6,
+          "file": "granadero-crouch-walk-ne-6.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "ne",
+          "frame": 7,
+          "file": "granadero-crouch-walk-ne-7.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "e",
+          "frame": 0,
+          "file": "granadero-crouch-walk-e-0.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "e",
+          "frame": 1,
+          "file": "granadero-crouch-walk-e-1.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "e",
+          "frame": 2,
+          "file": "granadero-crouch-walk-e-2.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "e",
+          "frame": 3,
+          "file": "granadero-crouch-walk-e-3.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "e",
+          "frame": 4,
+          "file": "granadero-crouch-walk-e-4.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "e",
+          "frame": 5,
+          "file": "granadero-crouch-walk-e-5.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "e",
+          "frame": 6,
+          "file": "granadero-crouch-walk-e-6.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "e",
+          "frame": 7,
+          "file": "granadero-crouch-walk-e-7.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "se",
+          "frame": 0,
+          "file": "granadero-crouch-walk-se-0.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "se",
+          "frame": 1,
+          "file": "granadero-crouch-walk-se-1.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "se",
+          "frame": 2,
+          "file": "granadero-crouch-walk-se-2.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "se",
+          "frame": 3,
+          "file": "granadero-crouch-walk-se-3.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "se",
+          "frame": 4,
+          "file": "granadero-crouch-walk-se-4.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "se",
+          "frame": 5,
+          "file": "granadero-crouch-walk-se-5.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "se",
+          "frame": 6,
+          "file": "granadero-crouch-walk-se-6.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "se",
+          "frame": 7,
+          "file": "granadero-crouch-walk-se-7.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "s",
+          "frame": 0,
+          "file": "granadero-crouch-walk-s-0.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "s",
+          "frame": 1,
+          "file": "granadero-crouch-walk-s-1.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "s",
+          "frame": 2,
+          "file": "granadero-crouch-walk-s-2.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "s",
+          "frame": 3,
+          "file": "granadero-crouch-walk-s-3.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "s",
+          "frame": 4,
+          "file": "granadero-crouch-walk-s-4.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "s",
+          "frame": 5,
+          "file": "granadero-crouch-walk-s-5.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "s",
+          "frame": 6,
+          "file": "granadero-crouch-walk-s-6.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "s",
+          "frame": 7,
+          "file": "granadero-crouch-walk-s-7.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "sw",
+          "frame": 0,
+          "file": "granadero-crouch-walk-sw-0.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "sw",
+          "frame": 1,
+          "file": "granadero-crouch-walk-sw-1.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "sw",
+          "frame": 2,
+          "file": "granadero-crouch-walk-sw-2.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "sw",
+          "frame": 3,
+          "file": "granadero-crouch-walk-sw-3.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "sw",
+          "frame": 4,
+          "file": "granadero-crouch-walk-sw-4.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "sw",
+          "frame": 5,
+          "file": "granadero-crouch-walk-sw-5.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "sw",
+          "frame": 6,
+          "file": "granadero-crouch-walk-sw-6.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "sw",
+          "frame": 7,
+          "file": "granadero-crouch-walk-sw-7.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "w",
+          "frame": 0,
+          "file": "granadero-crouch-walk-w-0.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "w",
+          "frame": 1,
+          "file": "granadero-crouch-walk-w-1.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "w",
+          "frame": 2,
+          "file": "granadero-crouch-walk-w-2.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "w",
+          "frame": 3,
+          "file": "granadero-crouch-walk-w-3.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "w",
+          "frame": 4,
+          "file": "granadero-crouch-walk-w-4.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "w",
+          "frame": 5,
+          "file": "granadero-crouch-walk-w-5.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "w",
+          "frame": 6,
+          "file": "granadero-crouch-walk-w-6.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "w",
+          "frame": 7,
+          "file": "granadero-crouch-walk-w-7.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "nw",
+          "frame": 0,
+          "file": "granadero-crouch-walk-nw-0.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "nw",
+          "frame": 1,
+          "file": "granadero-crouch-walk-nw-1.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "nw",
+          "frame": 2,
+          "file": "granadero-crouch-walk-nw-2.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "nw",
+          "frame": 3,
+          "file": "granadero-crouch-walk-nw-3.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "nw",
+          "frame": 4,
+          "file": "granadero-crouch-walk-nw-4.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "nw",
+          "frame": 5,
+          "file": "granadero-crouch-walk-nw-5.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "nw",
+          "frame": 6,
+          "file": "granadero-crouch-walk-nw-6.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "nw",
+          "frame": 7,
+          "file": "granadero-crouch-walk-nw-7.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "n",
+          "frame": 0,
+          "file": "royalist-crouch-walk-n-0.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "n",
+          "frame": 1,
+          "file": "royalist-crouch-walk-n-1.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "n",
+          "frame": 2,
+          "file": "royalist-crouch-walk-n-2.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "n",
+          "frame": 3,
+          "file": "royalist-crouch-walk-n-3.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "n",
+          "frame": 4,
+          "file": "royalist-crouch-walk-n-4.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "n",
+          "frame": 5,
+          "file": "royalist-crouch-walk-n-5.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "n",
+          "frame": 6,
+          "file": "royalist-crouch-walk-n-6.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "n",
+          "frame": 7,
+          "file": "royalist-crouch-walk-n-7.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "ne",
+          "frame": 0,
+          "file": "royalist-crouch-walk-ne-0.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "ne",
+          "frame": 1,
+          "file": "royalist-crouch-walk-ne-1.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "ne",
+          "frame": 2,
+          "file": "royalist-crouch-walk-ne-2.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "ne",
+          "frame": 3,
+          "file": "royalist-crouch-walk-ne-3.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "ne",
+          "frame": 4,
+          "file": "royalist-crouch-walk-ne-4.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "ne",
+          "frame": 5,
+          "file": "royalist-crouch-walk-ne-5.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "ne",
+          "frame": 6,
+          "file": "royalist-crouch-walk-ne-6.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "ne",
+          "frame": 7,
+          "file": "royalist-crouch-walk-ne-7.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "e",
+          "frame": 0,
+          "file": "royalist-crouch-walk-e-0.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "e",
+          "frame": 1,
+          "file": "royalist-crouch-walk-e-1.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "e",
+          "frame": 2,
+          "file": "royalist-crouch-walk-e-2.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "e",
+          "frame": 3,
+          "file": "royalist-crouch-walk-e-3.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "e",
+          "frame": 4,
+          "file": "royalist-crouch-walk-e-4.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "e",
+          "frame": 5,
+          "file": "royalist-crouch-walk-e-5.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "e",
+          "frame": 6,
+          "file": "royalist-crouch-walk-e-6.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "e",
+          "frame": 7,
+          "file": "royalist-crouch-walk-e-7.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "se",
+          "frame": 0,
+          "file": "royalist-crouch-walk-se-0.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "se",
+          "frame": 1,
+          "file": "royalist-crouch-walk-se-1.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "se",
+          "frame": 2,
+          "file": "royalist-crouch-walk-se-2.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "se",
+          "frame": 3,
+          "file": "royalist-crouch-walk-se-3.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "se",
+          "frame": 4,
+          "file": "royalist-crouch-walk-se-4.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "se",
+          "frame": 5,
+          "file": "royalist-crouch-walk-se-5.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "se",
+          "frame": 6,
+          "file": "royalist-crouch-walk-se-6.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "se",
+          "frame": 7,
+          "file": "royalist-crouch-walk-se-7.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "s",
+          "frame": 0,
+          "file": "royalist-crouch-walk-s-0.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "s",
+          "frame": 1,
+          "file": "royalist-crouch-walk-s-1.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "s",
+          "frame": 2,
+          "file": "royalist-crouch-walk-s-2.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "s",
+          "frame": 3,
+          "file": "royalist-crouch-walk-s-3.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "s",
+          "frame": 4,
+          "file": "royalist-crouch-walk-s-4.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "s",
+          "frame": 5,
+          "file": "royalist-crouch-walk-s-5.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "s",
+          "frame": 6,
+          "file": "royalist-crouch-walk-s-6.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "s",
+          "frame": 7,
+          "file": "royalist-crouch-walk-s-7.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "sw",
+          "frame": 0,
+          "file": "royalist-crouch-walk-sw-0.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "sw",
+          "frame": 1,
+          "file": "royalist-crouch-walk-sw-1.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "sw",
+          "frame": 2,
+          "file": "royalist-crouch-walk-sw-2.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "sw",
+          "frame": 3,
+          "file": "royalist-crouch-walk-sw-3.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "sw",
+          "frame": 4,
+          "file": "royalist-crouch-walk-sw-4.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "sw",
+          "frame": 5,
+          "file": "royalist-crouch-walk-sw-5.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "sw",
+          "frame": 6,
+          "file": "royalist-crouch-walk-sw-6.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "sw",
+          "frame": 7,
+          "file": "royalist-crouch-walk-sw-7.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "w",
+          "frame": 0,
+          "file": "royalist-crouch-walk-w-0.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "w",
+          "frame": 1,
+          "file": "royalist-crouch-walk-w-1.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "w",
+          "frame": 2,
+          "file": "royalist-crouch-walk-w-2.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "w",
+          "frame": 3,
+          "file": "royalist-crouch-walk-w-3.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "w",
+          "frame": 4,
+          "file": "royalist-crouch-walk-w-4.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "w",
+          "frame": 5,
+          "file": "royalist-crouch-walk-w-5.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "w",
+          "frame": 6,
+          "file": "royalist-crouch-walk-w-6.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "w",
+          "frame": 7,
+          "file": "royalist-crouch-walk-w-7.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "nw",
+          "frame": 0,
+          "file": "royalist-crouch-walk-nw-0.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "nw",
+          "frame": 1,
+          "file": "royalist-crouch-walk-nw-1.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "nw",
+          "frame": 2,
+          "file": "royalist-crouch-walk-nw-2.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "nw",
+          "frame": 3,
+          "file": "royalist-crouch-walk-nw-3.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "nw",
+          "frame": 4,
+          "file": "royalist-crouch-walk-nw-4.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "nw",
+          "frame": 5,
+          "file": "royalist-crouch-walk-nw-5.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "nw",
+          "frame": 6,
+          "file": "royalist-crouch-walk-nw-6.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "nw",
+          "frame": 7,
+          "file": "royalist-crouch-walk-nw-7.png"
+        }
+      ],
+      "idle": [
+        {
+          "faction": "granadero",
+          "direction": "n",
+          "file": "granadero-crouch-idle-n.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "ne",
+          "file": "granadero-crouch-idle-ne.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "e",
+          "file": "granadero-crouch-idle-e.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "se",
+          "file": "granadero-crouch-idle-se.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "s",
+          "file": "granadero-crouch-idle-s.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "sw",
+          "file": "granadero-crouch-idle-sw.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "w",
+          "file": "granadero-crouch-idle-w.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "nw",
+          "file": "granadero-crouch-idle-nw.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "n",
+          "file": "royalist-crouch-idle-n.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "ne",
+          "file": "royalist-crouch-idle-ne.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "e",
+          "file": "royalist-crouch-idle-e.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "se",
+          "file": "royalist-crouch-idle-se.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "s",
+          "file": "royalist-crouch-idle-s.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "sw",
+          "file": "royalist-crouch-idle-sw.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "w",
+          "file": "royalist-crouch-idle-w.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "nw",
+          "file": "royalist-crouch-idle-nw.png"
+        }
+      ],
+      "anchor": [
+        0.5000002384185791,
+        0.8830497935414314
+      ],
+      "orthographic_scale": 2.5999999046325684
+    },
+    "prone": {
+      "frames": [
+        {
+          "faction": "granadero",
+          "direction": "n",
+          "frame": 0,
+          "file": "granadero-prone-walk-n-0.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "n",
+          "frame": 1,
+          "file": "granadero-prone-walk-n-1.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "n",
+          "frame": 2,
+          "file": "granadero-prone-walk-n-2.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "n",
+          "frame": 3,
+          "file": "granadero-prone-walk-n-3.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "n",
+          "frame": 4,
+          "file": "granadero-prone-walk-n-4.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "n",
+          "frame": 5,
+          "file": "granadero-prone-walk-n-5.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "n",
+          "frame": 6,
+          "file": "granadero-prone-walk-n-6.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "n",
+          "frame": 7,
+          "file": "granadero-prone-walk-n-7.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "ne",
+          "frame": 0,
+          "file": "granadero-prone-walk-ne-0.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "ne",
+          "frame": 1,
+          "file": "granadero-prone-walk-ne-1.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "ne",
+          "frame": 2,
+          "file": "granadero-prone-walk-ne-2.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "ne",
+          "frame": 3,
+          "file": "granadero-prone-walk-ne-3.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "ne",
+          "frame": 4,
+          "file": "granadero-prone-walk-ne-4.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "ne",
+          "frame": 5,
+          "file": "granadero-prone-walk-ne-5.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "ne",
+          "frame": 6,
+          "file": "granadero-prone-walk-ne-6.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "ne",
+          "frame": 7,
+          "file": "granadero-prone-walk-ne-7.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "e",
+          "frame": 0,
+          "file": "granadero-prone-walk-e-0.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "e",
+          "frame": 1,
+          "file": "granadero-prone-walk-e-1.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "e",
+          "frame": 2,
+          "file": "granadero-prone-walk-e-2.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "e",
+          "frame": 3,
+          "file": "granadero-prone-walk-e-3.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "e",
+          "frame": 4,
+          "file": "granadero-prone-walk-e-4.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "e",
+          "frame": 5,
+          "file": "granadero-prone-walk-e-5.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "e",
+          "frame": 6,
+          "file": "granadero-prone-walk-e-6.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "e",
+          "frame": 7,
+          "file": "granadero-prone-walk-e-7.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "se",
+          "frame": 0,
+          "file": "granadero-prone-walk-se-0.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "se",
+          "frame": 1,
+          "file": "granadero-prone-walk-se-1.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "se",
+          "frame": 2,
+          "file": "granadero-prone-walk-se-2.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "se",
+          "frame": 3,
+          "file": "granadero-prone-walk-se-3.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "se",
+          "frame": 4,
+          "file": "granadero-prone-walk-se-4.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "se",
+          "frame": 5,
+          "file": "granadero-prone-walk-se-5.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "se",
+          "frame": 6,
+          "file": "granadero-prone-walk-se-6.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "se",
+          "frame": 7,
+          "file": "granadero-prone-walk-se-7.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "s",
+          "frame": 0,
+          "file": "granadero-prone-walk-s-0.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "s",
+          "frame": 1,
+          "file": "granadero-prone-walk-s-1.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "s",
+          "frame": 2,
+          "file": "granadero-prone-walk-s-2.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "s",
+          "frame": 3,
+          "file": "granadero-prone-walk-s-3.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "s",
+          "frame": 4,
+          "file": "granadero-prone-walk-s-4.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "s",
+          "frame": 5,
+          "file": "granadero-prone-walk-s-5.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "s",
+          "frame": 6,
+          "file": "granadero-prone-walk-s-6.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "s",
+          "frame": 7,
+          "file": "granadero-prone-walk-s-7.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "sw",
+          "frame": 0,
+          "file": "granadero-prone-walk-sw-0.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "sw",
+          "frame": 1,
+          "file": "granadero-prone-walk-sw-1.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "sw",
+          "frame": 2,
+          "file": "granadero-prone-walk-sw-2.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "sw",
+          "frame": 3,
+          "file": "granadero-prone-walk-sw-3.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "sw",
+          "frame": 4,
+          "file": "granadero-prone-walk-sw-4.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "sw",
+          "frame": 5,
+          "file": "granadero-prone-walk-sw-5.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "sw",
+          "frame": 6,
+          "file": "granadero-prone-walk-sw-6.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "sw",
+          "frame": 7,
+          "file": "granadero-prone-walk-sw-7.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "w",
+          "frame": 0,
+          "file": "granadero-prone-walk-w-0.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "w",
+          "frame": 1,
+          "file": "granadero-prone-walk-w-1.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "w",
+          "frame": 2,
+          "file": "granadero-prone-walk-w-2.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "w",
+          "frame": 3,
+          "file": "granadero-prone-walk-w-3.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "w",
+          "frame": 4,
+          "file": "granadero-prone-walk-w-4.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "w",
+          "frame": 5,
+          "file": "granadero-prone-walk-w-5.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "w",
+          "frame": 6,
+          "file": "granadero-prone-walk-w-6.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "w",
+          "frame": 7,
+          "file": "granadero-prone-walk-w-7.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "nw",
+          "frame": 0,
+          "file": "granadero-prone-walk-nw-0.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "nw",
+          "frame": 1,
+          "file": "granadero-prone-walk-nw-1.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "nw",
+          "frame": 2,
+          "file": "granadero-prone-walk-nw-2.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "nw",
+          "frame": 3,
+          "file": "granadero-prone-walk-nw-3.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "nw",
+          "frame": 4,
+          "file": "granadero-prone-walk-nw-4.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "nw",
+          "frame": 5,
+          "file": "granadero-prone-walk-nw-5.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "nw",
+          "frame": 6,
+          "file": "granadero-prone-walk-nw-6.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "nw",
+          "frame": 7,
+          "file": "granadero-prone-walk-nw-7.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "n",
+          "frame": 0,
+          "file": "royalist-prone-walk-n-0.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "n",
+          "frame": 1,
+          "file": "royalist-prone-walk-n-1.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "n",
+          "frame": 2,
+          "file": "royalist-prone-walk-n-2.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "n",
+          "frame": 3,
+          "file": "royalist-prone-walk-n-3.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "n",
+          "frame": 4,
+          "file": "royalist-prone-walk-n-4.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "n",
+          "frame": 5,
+          "file": "royalist-prone-walk-n-5.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "n",
+          "frame": 6,
+          "file": "royalist-prone-walk-n-6.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "n",
+          "frame": 7,
+          "file": "royalist-prone-walk-n-7.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "ne",
+          "frame": 0,
+          "file": "royalist-prone-walk-ne-0.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "ne",
+          "frame": 1,
+          "file": "royalist-prone-walk-ne-1.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "ne",
+          "frame": 2,
+          "file": "royalist-prone-walk-ne-2.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "ne",
+          "frame": 3,
+          "file": "royalist-prone-walk-ne-3.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "ne",
+          "frame": 4,
+          "file": "royalist-prone-walk-ne-4.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "ne",
+          "frame": 5,
+          "file": "royalist-prone-walk-ne-5.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "ne",
+          "frame": 6,
+          "file": "royalist-prone-walk-ne-6.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "ne",
+          "frame": 7,
+          "file": "royalist-prone-walk-ne-7.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "e",
+          "frame": 0,
+          "file": "royalist-prone-walk-e-0.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "e",
+          "frame": 1,
+          "file": "royalist-prone-walk-e-1.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "e",
+          "frame": 2,
+          "file": "royalist-prone-walk-e-2.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "e",
+          "frame": 3,
+          "file": "royalist-prone-walk-e-3.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "e",
+          "frame": 4,
+          "file": "royalist-prone-walk-e-4.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "e",
+          "frame": 5,
+          "file": "royalist-prone-walk-e-5.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "e",
+          "frame": 6,
+          "file": "royalist-prone-walk-e-6.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "e",
+          "frame": 7,
+          "file": "royalist-prone-walk-e-7.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "se",
+          "frame": 0,
+          "file": "royalist-prone-walk-se-0.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "se",
+          "frame": 1,
+          "file": "royalist-prone-walk-se-1.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "se",
+          "frame": 2,
+          "file": "royalist-prone-walk-se-2.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "se",
+          "frame": 3,
+          "file": "royalist-prone-walk-se-3.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "se",
+          "frame": 4,
+          "file": "royalist-prone-walk-se-4.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "se",
+          "frame": 5,
+          "file": "royalist-prone-walk-se-5.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "se",
+          "frame": 6,
+          "file": "royalist-prone-walk-se-6.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "se",
+          "frame": 7,
+          "file": "royalist-prone-walk-se-7.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "s",
+          "frame": 0,
+          "file": "royalist-prone-walk-s-0.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "s",
+          "frame": 1,
+          "file": "royalist-prone-walk-s-1.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "s",
+          "frame": 2,
+          "file": "royalist-prone-walk-s-2.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "s",
+          "frame": 3,
+          "file": "royalist-prone-walk-s-3.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "s",
+          "frame": 4,
+          "file": "royalist-prone-walk-s-4.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "s",
+          "frame": 5,
+          "file": "royalist-prone-walk-s-5.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "s",
+          "frame": 6,
+          "file": "royalist-prone-walk-s-6.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "s",
+          "frame": 7,
+          "file": "royalist-prone-walk-s-7.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "sw",
+          "frame": 0,
+          "file": "royalist-prone-walk-sw-0.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "sw",
+          "frame": 1,
+          "file": "royalist-prone-walk-sw-1.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "sw",
+          "frame": 2,
+          "file": "royalist-prone-walk-sw-2.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "sw",
+          "frame": 3,
+          "file": "royalist-prone-walk-sw-3.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "sw",
+          "frame": 4,
+          "file": "royalist-prone-walk-sw-4.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "sw",
+          "frame": 5,
+          "file": "royalist-prone-walk-sw-5.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "sw",
+          "frame": 6,
+          "file": "royalist-prone-walk-sw-6.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "sw",
+          "frame": 7,
+          "file": "royalist-prone-walk-sw-7.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "w",
+          "frame": 0,
+          "file": "royalist-prone-walk-w-0.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "w",
+          "frame": 1,
+          "file": "royalist-prone-walk-w-1.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "w",
+          "frame": 2,
+          "file": "royalist-prone-walk-w-2.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "w",
+          "frame": 3,
+          "file": "royalist-prone-walk-w-3.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "w",
+          "frame": 4,
+          "file": "royalist-prone-walk-w-4.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "w",
+          "frame": 5,
+          "file": "royalist-prone-walk-w-5.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "w",
+          "frame": 6,
+          "file": "royalist-prone-walk-w-6.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "w",
+          "frame": 7,
+          "file": "royalist-prone-walk-w-7.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "nw",
+          "frame": 0,
+          "file": "royalist-prone-walk-nw-0.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "nw",
+          "frame": 1,
+          "file": "royalist-prone-walk-nw-1.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "nw",
+          "frame": 2,
+          "file": "royalist-prone-walk-nw-2.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "nw",
+          "frame": 3,
+          "file": "royalist-prone-walk-nw-3.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "nw",
+          "frame": 4,
+          "file": "royalist-prone-walk-nw-4.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "nw",
+          "frame": 5,
+          "file": "royalist-prone-walk-nw-5.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "nw",
+          "frame": 6,
+          "file": "royalist-prone-walk-nw-6.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "nw",
+          "frame": 7,
+          "file": "royalist-prone-walk-nw-7.png"
+        }
+      ],
+      "idle": [
+        {
+          "faction": "granadero",
+          "direction": "n",
+          "file": "granadero-prone-idle-n.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "ne",
+          "file": "granadero-prone-idle-ne.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "e",
+          "file": "granadero-prone-idle-e.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "se",
+          "file": "granadero-prone-idle-se.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "s",
+          "file": "granadero-prone-idle-s.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "sw",
+          "file": "granadero-prone-idle-sw.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "w",
+          "file": "granadero-prone-idle-w.png"
+        },
+        {
+          "faction": "granadero",
+          "direction": "nw",
+          "file": "granadero-prone-idle-nw.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "n",
+          "file": "royalist-prone-idle-n.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "ne",
+          "file": "royalist-prone-idle-ne.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "e",
+          "file": "royalist-prone-idle-e.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "se",
+          "file": "royalist-prone-idle-se.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "s",
+          "file": "royalist-prone-idle-s.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "sw",
+          "file": "royalist-prone-idle-sw.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "w",
+          "file": "royalist-prone-idle-w.png"
+        },
+        {
+          "faction": "royalist",
+          "direction": "nw",
+          "file": "royalist-prone-idle-nw.png"
+        }
+      ],
+      "anchor": [
+        0.5000002384185791,
+        0.6396817266941071
+      ],
+      "orthographic_scale": 3.0999999046325684
+    }
+  }
+}

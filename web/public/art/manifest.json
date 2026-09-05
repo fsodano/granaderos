@@ -1,0 +1,353 @@
+{
+  "generator": "OpenAI built-in image_gen",
+  "date": "2026-09-05",
+  "assets": [
+    {
+      "path": "main-menu.webp",
+      "width": 1448,
+      "height": 1086,
+      "mode": "RGB",
+      "source": "assets/source/san-lorenzo-menu-v2.png",
+      "prompt": "assets/prompts/san-lorenzo-menu-v2.txt",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 181648,
+      "sha256": "c1960033605006638b3970838556050d3efc1687ed87a7e4597dbf73252c2a03",
+      "source_sha256": "317a9d0bde81aeda5b28ce1c29108f239ad842b3a2dda4e5de98b57a5f7e6f47"
+    },
+    {
+      "path": "san-lorenzo.webp",
+      "width": 1448,
+      "height": 1086,
+      "mode": "RGB",
+      "source": "assets/source/san-lorenzo-menu-v1.png",
+      "prompt": "assets/prompts/san-lorenzo-menu-v1.txt",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 141706,
+      "sha256": "e833d05f860805622243fd2d21e6dcfb7d752c97a5e869ba5dfda38e0e256e5d",
+      "source_sha256": "61ab2cace602e661a09b0c8ea4588e6d95d1cfc418067aabf744f59ecafa5f81"
+    },
+    {
+      "path": "cabral.webp",
+      "width": 384,
+      "height": 384,
+      "mode": "RGB",
+      "source": "assets/source/juan-bautista-cabral-v1.png",
+      "prompt": "assets/prompts/juan-bautista-cabral-v1.txt",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 12060,
+      "sha256": "bb99cb3ffbb97a01fbba10cd0c6f62914c03df8859c01dee1f1c41a2471a24fd",
+      "source_sha256": "645b85b5e9fabe22ad6a4e532007e2fb8b09c24f4910b2adac909d0197940b63"
+    },
+    {
+      "path": "granadero.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGBA",
+      "source": "assets/source/granadero-infantry-v1.png",
+      "prompt": "assets/prompts/granadero-infantry-v1.txt",
+      "anchor": [
+        0.5,
+        0.95
+      ],
+      "alpha_bounds": [
+        43,
+        0,
+        185,
+        249
+      ],
+      "bytes": 41255,
+      "sha256": "7d6f91b6ce81de62ba8797f7a4d283ccaec2e2a2766377513e734f1e1b722f2c",
+      "source_sha256": "e4b49e6d62b07cdf5244ae5333d825302fa1ebeedbff658c1a68957edfd25cb0"
+    },
+    {
+      "path": "royalist.png",
+      "width": 256,
+      "height": 256,
+      "mode": "RGBA",
+      "source": "assets/source/royalist-infantry-v1.png",
+      "prompt": "assets/prompts/royalist-infantry-v1.txt",
+      "anchor": [
+        0.5,
+        0.95
+      ],
+      "alpha_bounds": [
+        20,
+        1,
+        216,
+        248
+      ],
+      "bytes": 42236,
+      "sha256": "8ada56455f19ba781b3bdb990fe48d80b900aab7660dd8f078232c1b3de83bac",
+      "source_sha256": "c158a8bdb03c773b694ea20fbac928dba165746ace18f66831ef1103b271bb85"
+    },
+    {
+      "path": "cavalry.png",
+      "width": 384,
+      "height": 384,
+      "mode": "RGBA",
+      "source": "assets/source/granadero-cavalry-v1.png",
+      "prompt": "assets/prompts/granadero-cavalry-v1.txt",
+      "anchor": [
+        0.55,
+        0.97
+      ],
+      "alpha_bounds": [
+        0,
+        0,
+        367,
+        384
+      ],
+      "bytes": 126697,
+      "sha256": "24b73cef2e3106472ed5fba9cd262973c72c636d45bab55da34a4f4d003c176b",
+      "source_sha256": "9c70c238155534b90a58aaf720953d4473e8e9726a1599038d251c64783c5edb"
+    },
+    {
+      "path": "convent.png",
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA",
+      "source": "assets/source/san-carlos-convent-v1.png",
+      "prompt": "assets/prompts/san-carlos-convent-v1.txt",
+      "anchor": [
+        0.5,
+        0.85
+      ],
+      "alpha_bounds": [
+        10,
+        30,
+        503,
+        482
+      ],
+      "bytes": 280878,
+      "sha256": "c4cd73ca02c6f0e32dbb1e62735eff966cc263bc9a8d8d2451257355d69e7ae0",
+      "source_sha256": "6b4611c2dd372cbf09a09605e17efd4c28760ef5bf29eba5c7eb1a401bf53ea9"
+    },
+    {
+      "path": "grassland.webp",
+      "width": 512,
+      "height": 512,
+      "mode": "RGB",
+      "source": "assets/source/grassland-v1.png",
+      "prompt": "assets/prompts/grassland-v1.txt",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 86538,
+      "sha256": "665b5578671a28c6c36c96bee623814784beb6673317482409618cb36dd373a0",
+      "source_sha256": "3b24c408b15113c498c2b5fc444e90d23a046ad390842a882de29f26de74ffa6"
+    },
+    {
+      "path": "cannon.png",
+      "width": 384,
+      "height": 384,
+      "mode": "RGBA",
+      "source": "assets/source/bronze-field-cannon-v1.png",
+      "prompt": "assets/prompts/bronze-field-cannon-v1.txt",
+      "anchor": [
+        0.5,
+        0.94
+      ],
+      "alpha_bounds": [
+        3,
+        1,
+        384,
+        374
+      ],
+      "bytes": 179789,
+      "sha256": "379a40a85460a71abbce98d70bac6462c8058d332bdb81e4a0092086a472208e",
+      "source_sha256": "e4c5df79ebb2679489ec093bba7fb9ab295e01348b2cef51ca59570ee571f323"
+    },
+    {
+      "path": "foundry.png",
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA",
+      "source": "assets/source/colonial-foundry-v1.png",
+      "prompt": "assets/prompts/colonial-foundry-v1.txt",
+      "anchor": [
+        0.5,
+        0.89
+      ],
+      "alpha_bounds": [
+        18,
+        40,
+        498,
+        496
+      ],
+      "bytes": 375385,
+      "sha256": "5bea7b6a8f74f51b2b04404a4f4710f8c23d65d1d93c7fcab687aa7451933811",
+      "source_sha256": "808269c0f7fd92c509e9f2e330401ff5088afc543a6a3a29e585e79df466f7df"
+    },
+    {
+      "path": "portrait-0.webp",
+      "width": 384,
+      "height": 384,
+      "mode": "RGB",
+      "source": "assets/source/martin-miguel-de-guemes-v1.png",
+      "prompt": "assets/prompts/martin-miguel-de-guemes-v1.txt",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 20082,
+      "sha256": "69dce231f1ecef9e094899bd47674c7c4504935ebe2a2843e24314af8c85f759",
+      "source_sha256": "8daedc047f9e3a079f0498f1810ccaa136c58486b1450bacdc6c84e40c3b5c91"
+    },
+    {
+      "path": "portrait-1.webp",
+      "width": 384,
+      "height": 384,
+      "mode": "RGB",
+      "source": "assets/source/juana-azurduy-v1.png",
+      "prompt": "assets/prompts/juana-azurduy-v1.txt",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 14306,
+      "sha256": "52412fb9d5b8e737289943a5c52c6b030a130f297eee2b7bd80f67a983d529e4",
+      "source_sha256": "fcc04d9c4a4ec02adfcff1e99bc55997a6f6c0ebd3b4ec929aba4a169e09360d"
+    },
+    {
+      "path": "portrait-2.webp",
+      "width": 384,
+      "height": 384,
+      "mode": "RGB",
+      "source": "assets/source/fray-luis-beltran-v1.png",
+      "prompt": "assets/prompts/fray-luis-beltran-v1.txt",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 15934,
+      "sha256": "408cc92c683cf1e3d7e34b2aae03b56cbdb232f758692902a0210970115630d0",
+      "source_sha256": "a709c9921fd71f2c181fc724b29e37504e49cc6401cde85017ecb956d9220395"
+    },
+    {
+      "path": "portrait-3.webp",
+      "width": 384,
+      "height": 384,
+      "mode": "RGB",
+      "source": "assets/source/juan-bautista-cabral-v1.png",
+      "prompt": "assets/prompts/juan-bautista-cabral-v1.txt",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 12060,
+      "sha256": "bb99cb3ffbb97a01fbba10cd0c6f62914c03df8859c01dee1f1c41a2471a24fd",
+      "source_sha256": "645b85b5e9fabe22ad6a4e532007e2fb8b09c24f4910b2adac909d0197940b63"
+    },
+    {
+      "path": "portrait-4.webp",
+      "width": 384,
+      "height": 384,
+      "mode": "RGB",
+      "source": "assets/source/manuel-dorrego-v1.png",
+      "prompt": "assets/prompts/manuel-dorrego-v1.txt",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 15000,
+      "sha256": "626dc3825d1e5d94ee46fc0099abc6e14337b396bf6c117be27d62d4020359de",
+      "source_sha256": "fbeefcd7ce9d08ba50ec4e1188c5310005f05ca711f21196f05773661093bc34"
+    },
+    {
+      "path": "portrait-5.webp",
+      "width": 384,
+      "height": 384,
+      "mode": "RGB",
+      "source": "assets/source/guillermo-brown-v1.png",
+      "prompt": "assets/prompts/guillermo-brown-v1.txt",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 16558,
+      "sha256": "c7dcf1edbf828e7f83d8e3263081ec4d2e91a4a8ec29599a141428b939d2efd2",
+      "source_sha256": "d0fc030a7038664e0ba3ac8856e4ceeba9ca7c46b25f512f87d62a8f06362c5e"
+    },
+    {
+      "path": "portrait-6.webp",
+      "width": 384,
+      "height": 384,
+      "mode": "RGB",
+      "source": "assets/source/hipolito-bouchard-v1.png",
+      "prompt": "assets/prompts/hipolito-bouchard-v1.txt",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 15182,
+      "sha256": "c1ef55a3bd18c29f81bce2aa2229d5e8b790d892df666d8c7271e0574c6b58d3",
+      "source_sha256": "cf79a348246a58fe34a0911b935dd21a0945ee325f0d75b5bd981a0a1d239eeb"
+    },
+    {
+      "path": "portrait-7.webp",
+      "width": 384,
+      "height": 384,
+      "mode": "RGB",
+      "source": "assets/source/lorenzo-barcala-v1.png",
+      "prompt": "assets/prompts/lorenzo-barcala-v1.txt",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 11424,
+      "sha256": "fea616e701198dfbc35cdd0961549488d5ae706ac2a8a60ee2ea94df3233f08f",
+      "source_sha256": "ecfec3ea30c9f8aee78f8d1927e41864dd9932ac4a5ac6a73dea388e2e5fd60f"
+    },
+    {
+      "path": "portrait-8.webp",
+      "width": 384,
+      "height": 384,
+      "mode": "RGB",
+      "source": "assets/source/macacha-guemes-v1.png",
+      "prompt": "assets/prompts/macacha-guemes-v1.txt",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 14664,
+      "sha256": "a5bfe7d937a40a514397b650853c605e974987039a7c006d665aa46f55fc697a",
+      "source_sha256": "55bf6866ff1a550910e97347282dd6d68a5d829900e42e305a3b1cf0bd557c9f"
+    },
+    {
+      "path": "portrait-9.webp",
+      "width": 384,
+      "height": 384,
+      "mode": "RGB",
+      "source": "assets/source/facundo-quiroga-v1.png",
+      "prompt": "assets/prompts/facundo-quiroga-v1.txt",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 15352,
+      "sha256": "c103b93f590de47188e03b7e88df5c54da2d17fd35c5ab655c54e9ff1321ffdf",
+      "source_sha256": "890a2ed08306b2e0199ec828b4c287a56a9d37972478ec7b681bc889f34e5f67"
+    },
+    {
+      "path": "portrait-10.webp",
+      "width": 384,
+      "height": 384,
+      "mode": "RGB",
+      "source": "assets/source/james-paroissien-v1.png",
+      "prompt": "assets/prompts/james-paroissien-v1.txt",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 17948,
+      "sha256": "fdb9c19da761fca0e48c8231690659adb20d9a6217ba737a8e7ee684d31892a6",
+      "source_sha256": "0326df0fbd10231ddadcdcbc280cc3dc76e833ce99ea7ae909ef902f407842ff"
+    },
+    {
+      "path": "portrait-11.webp",
+      "width": 384,
+      "height": 384,
+      "mode": "RGB",
+      "source": "assets/source/jose-maria-paz-v1.png",
+      "prompt": "assets/prompts/jose-maria-paz-v1.txt",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 12580,
+      "sha256": "8eadae9527d9d5469b1599df227054d911895ed811a4e139937323c142983f07",
+      "source_sha256": "109a9d9154409b510ada035b72211c8edcec865b38da87e312bb88ed8b59219d"
+    },
+    {
+      "path": "portrait-57.webp",
+      "width": 384,
+      "height": 384,
+      "mode": "RGB",
+      "source": "assets/source/jose-de-san-martin-v1.png",
+      "prompt": "assets/prompts/jose-de-san-martin-v1.txt",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 15284,
+      "sha256": "11786bc0b648ffa686ac81924b72c1da548c46ee72b2f6156a5fc5f7e766d421",
+      "source_sha256": "4d54cb6f5e29772de2f212fa3c6a1fba97b78aec11c86740bfae421704f4a2d5"
+    }
+  ]
+}

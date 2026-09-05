@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MAINMENU>
+  <IMAGE>
+    <uiIndex>0</uiIndex>
+    <Description>Menu Buttons</Description>
+    <MainMenuX>320</MainMenuX>
+    <MainMenuY>230</MainMenuY>
+    <MainMenuYSpace>37</MainMenuYSpace>
+  </IMAGE>
+  <IMAGE>
+    <uiIndex>1</uiIndex>
+    <Visible>1</Visible>
+    <Description>Granaderos original San Lorenzo artwork</Description>
+    <FileName>LOADSCREENS\MainMenuBackground.sti</FileName>
+    <FitToScreen>1</FitToScreen>
+    <StretchImage>0</StretchImage>
+    <CenterImage>0</CenterImage>
+    <ImagePositionRelative>0</ImagePositionRelative>
+    <ImagePositionX>0</ImagePositionX>
+    <ImagePositionY>0</ImagePositionY>
+  </IMAGE>
+  <IMAGE>
+    <uiIndex>2</uiIndex>
+    <Visible>0</Visible>
+    <Description>Original engine logo disabled; title is part of background</Description>
+  </IMAGE>
+</MAINMENU>

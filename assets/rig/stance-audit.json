@@ -1,0 +1,26 @@
+{
+  "granadero-crouch": {
+    "closed_loop": true,
+    "all_hip_knee_and_shoulder_joints_move": true,
+    "torso_height": 0.6520000100135803,
+    "torso_pitch": 0.2199999988079071
+  },
+  "royalist-crouch": {
+    "closed_loop": true,
+    "all_hip_knee_and_shoulder_joints_move": true,
+    "torso_height": 0.6520000100135803,
+    "torso_pitch": 0.2199999988079071
+  },
+  "granadero-prone": {
+    "closed_loop": true,
+    "all_hip_knee_and_shoulder_joints_move": true,
+    "torso_height": 0.28999999165534973,
+    "torso_pitch": 1.5707963705062866
+  },
+  "royalist-prone": {
+    "closed_loop": true,
+    "all_hip_knee_and_shoulder_joints_move": true,
+    "torso_height": 0.28999999165534973,
+    "torso_pitch": 1.5707963705062866
+  }
+}
