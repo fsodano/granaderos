@@ -31,3 +31,15 @@ test('ten earned points cap practice growth and malformed training is rejected',
  s=actBattle(s,{type:'heal',unitId:1000});assert.equal(s.lastError,null);assert.equal(s.units[0].medical,50);assert.equal(s.units[0].trainedStats.medical,10);assert.equal(s.units[0].skillPractice.medical,39);
  assert.throws(()=>validateTraining({trainedStats:{medical:11}}));assert.throws(()=>validateTraining({skillPractice:{medical:-1}}));
 });
+test('real assigned mount movement trains riding once per tile and invalid moves grant nothing',()=>{
+ let s=make({mounted:true,ridingSkill:40,mount:{id:'h',stamina:100,condition:100},skillPractice:{ridingSkill:39}});
+ s=actBattle(s,{type:'move',unitId:1000,x:2,y:1});assert.equal(s.lastError,null);assert.equal(s.units[0].ridingSkill,41);assert.equal(s.units[0].trainedStats.ridingSkill,1);assert.ok(s.units[0].mount.stamina<100);
+ s=actBattle(s,{type:'move',unitId:1000,x:1,y:1});const points=s.units[0].skillPractice.ridingSkill;s=actBattle(s,{type:'move',unitId:1000,x:2,y:1});assert.equal(s.units[0].skillPractice.ridingSkill,points);
+ const invalid=actBattle(s,{type:'move',unitId:1000,x:-1,y:1});assert.ok(invalid.lastError);assert.deepEqual(invalid.units[0].skillPractice,s.units[0].skillPractice);
+});
+test('sector re-entry preserves separate sneaking and riding tile histories',async()=>{
+ const {enterSector}=await import('../game/world.js');
+ const request={sector:'retiro',exploration:true,squad:[{id:1000,weapon:1803,ridingSkill:41,trainedStats:{ridingSkill:1},skillPractice:{ridingSkill:2}}]};
+ const previous=enterSector(request);previous.units[0].practiceTiles=['2,1'];previous.units[0].ridingPracticeTiles=['3,1'];
+ const current=enterSector(request,JSON.parse(JSON.stringify(previous)));assert.deepEqual(current.units[0].practiceTiles,['2,1']);assert.deepEqual(current.units[0].ridingPracticeTiles,['3,1']);assert.equal(current.units[0].ridingSkill,41);assert.equal(current.units[0].skillPractice.ridingSkill,2);
+});

@@ -9,8 +9,9 @@ export function enterSector(request,previous=null){
    // A new occupation creates a garrison. An unfinished engagement retains its survivors.
    if(!request.exploration&&!previous.sectorCleared)map.enemies=structuredClone(previous.units.filter(u=>u.side==='enemy'));
  }
- const state=createBattle(map.squad,map);
+ const state=createBattle([...map.squad,...(request.garrison??[])],map);
  if(previous){
+   for(const unit of state.units.filter(u=>u.side==='player'&&u.hp>0)){const old=previous.units.find(u=>u.id===unit.id&&u.side==='player');for(const key of ['practiceTiles','ridingPracticeTiles'])if(old?.[key])unit[key]=structuredClone(old[key]);}
    for(const key of ['groundItems','droppedWeapons','revealedRooms'])state[key]=structuredClone(previous[key]??[]);
    const elapsed=Math.max(0,(request.hour??0)-(previous.savedHour??previous.enteredHour??request.hour??0));
    // One strategic hour advances six ten-minute tactical light intervals.
@@ -18,6 +19,7 @@ export function enterSector(request,previous=null){
    state.lights=structuredClone(previous.lights??map.lights??[]).map(light=>Number.isFinite(light.turns)?{...light,turns:Math.max(0,light.turns-ticks),age:(light.age||0)+ticks}:light).filter(light=>light.turns!==0);
    if(!request.exploration&&!previous.sectorCleared)state.units=state.units.filter(u=>u.side==='player').concat(structuredClone(previous.units.filter(u=>u.side==='enemy')));
  }
+ if(previous)state.units.push(...structuredClone(previous.units.filter(u=>u.militia&&u.hp<=0&&!state.units.some(v=>v.id===u.id))));
  const occupied=new Set(state.units.filter(u=>u.side==='enemy'&&u.hp>0&&!u.routed).map(u=>`${u.x},${u.y}`));
  const reserve=(preferred)=>{
    const candidates=state.tiles.filter(t=>!t.blocked&&!occupied.has(`${t.x},${t.y}`));
@@ -25,7 +27,7 @@ export function enterSector(request,previous=null){
    if(!candidates[0])throw Error('No queda espacio libre para entrar en el sector.');
    const {x,y}=candidates[0];occupied.add(`${x},${y}`);return{x,y};
  };
- for(const unit of state.units.filter(u=>u.side==='player')){
+ for(const unit of state.units.filter(u=>u.side==='player'&&u.hp>0)){
    const prior=previous?.units.find(v=>v.side==='player'&&v.id===unit.id);
    Object.assign(unit,reserve(prior??unit));
  }

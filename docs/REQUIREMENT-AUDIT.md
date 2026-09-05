@@ -97,3 +97,28 @@ The largest substantive gaps are tactical militia garrisons; full historical equ
 The browser has visible entry points for the desk, squads, local NPC talk, armory, logistics, recovered inventory and horses. Nevertheless, code wiring is weaker evidence than successful player interaction. In this worker's most recent UI attempt, CUA returned no browser surfaces and rejected creation of a hidden in-app tab. Therefore this audit does **not** assert that every control was browser-tested, that all layouts work at every viewport, or that the horse purchase/assignment/feed acceptance sequence has been visually verified. Parent-agent browser QA may provide separate evidence.
 
 Focused campaign, encounter and horse tests passed during the preceding implementation work, including real reducer progression and post-victory breeding. Tests do not demonstrate all original requirements or historical fidelity. The original specification also contains historical assumptions and anachronistic equipment descriptions; implementing them is distinct from independently validating their historical accuracy.
+
+
+## 0.3.0 continuation evidence (2026-09-05)
+
+The original table above records an earlier snapshot. The following gaps now have
+additional authoritative implementation:
+
+- Tactical militia: game/garrison.js plus campaign/world integration, finite
+  issued ammunition, stable IDs, injuries, casualty counts and lootable corpses.
+  tests/garrison-web.test.mjs covers actual tactical returns. Browser training
+  and entry displayed three local militia, separate from the hired squad.
+  Formation doctrine and autonomous formation AI remain incomplete.
+- Practice: game/skill-training.js already contained sneaking; its earlier
+  'Missing' designation was stale. Riding now progresses, and both retain unique
+  practiced tiles across sector re-entry. TrainingProgress is visible in game.
+- Factions: docs/FACTION-POLICIES.md records real import pricing, weekly tax
+  decisions, neglect penalties and frontier agreement consequences. Privateering
+  and full estate livestock simulation remain incomplete.
+- Hotkeys: docs/TACTICAL-HOTKEYS.md lists expanded controls with actual input
+  guards and Spanish help. This is an adapted set, not modern JA2 feature parity.
+- Ending speech: living companions emit authored lines once at actual campaign
+  completion; ending-speech tests check event coverage and no repeats.
+
+Full suite: 209 passed; types and export pass. This is progress toward the full
+objective, not its completion certificate.

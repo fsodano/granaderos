@@ -11,7 +11,7 @@ import {withCharacterSpeech} from '../../game/character-events.js';
 import {enterSector} from '../../game/world.js';
 import {createBattle,actBattle,endTurn} from '../../game/tactical.js';
 import {encodeSave,decodeSave,SAVE_KEY} from '../../game/save.js';
-const VERSION='0.2.0-dev.1';
+const VERSION='0.3.0-dev.1';
 const storageKey=()=>typeof window!=='undefined'&&new URLSearchParams(window.location.search).get('qa')==='1'?SAVE_KEY+'.qa':SAVE_KEY;
 export default function Home(){
   const audio=useRef<BattleAudio|null>(null);const [sound,setSound]=useState(false);

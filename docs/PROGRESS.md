@@ -113,3 +113,23 @@ acceptance and scope limits. All 192 tests, typecheck and static build pass.
 Previous milestone PR #1 merged as e8cc25d92352cd02b1d44f3e41c8065c9dcb1615.
 Current branch: feat/0.2.0-personal-campaign-start. Native engine submodule edits
 are pre-existing and excluded from this web milestone.
+
+
+## Full implementation continuation — active
+
+The user resumed the complete game objective after the campaign-start milestone.
+Do not treat PR #2 or its 192 tests as complete-game acceptance. The broader
+REQUIREMENT-AUDIT.md remains the gap ledger and has stale entries that must be
+rechecked against current code. Root is adding actual faction policy consequences;
+campaign_data owns live tactical militia and casualty conservation; engine_build
+owns practiced riding/sneaking persistence and UI; graphics owns adapted keyboard
+controls. Screenshot capture was blocked by the locked Mac; this does not block
+implementation or automated verification. Do not mark the full goal complete.
+
+Final 0.3.0-dev.1 checkpoint: 209 tests, typecheck and production export pass.
+Browser QA tab9 (?qa=1) resumes with Sosa and three Retiro militia. After reload,
+Z on a focused command button correctly selected Agachado y sigiloso. Spanish
+help opens, save/resume preserves the sector, and console error list is empty.
+Two requested screenshots were displayed inline (recruitment desk and map).
+Local dev server session36459 was started on port3000.
+Next work is detailed in NEXT-IMPLEMENTATION.md; full goal remains active.
