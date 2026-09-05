@@ -51,3 +51,11 @@ Historical support for gaucho use of boleadoras: Colegio Militar de la Nación, 
 ## Lighting clarification
 
 The user additionally requires night illumination with period substitutes for modern light sticks. Throwable torches, lanterns and campfires must change tile luminosity and detection/line of sight. Night-vision skill should extend sight by one or two tiles. The provided day/night screenshots illustrate tactical visibility overlays and localized light, rather than simply darkening the whole screen. Completion requires light-source range, occlusion, lifetime and skill tests, plus a clear rendered visibility overlay.
+
+## Building clarification
+
+Buildings must have walkable multi-tile interiors. Walls block movement/sight; windows permit sight into rooms while remaining physical obstacles. Roofs/facades hide interiors until observed by a squad member. Door leaves occupy individual cells with separate open/closed states, including adjacent leaves that form a double doorway. The earlier solid rectangular building blockers do not meet this requirement and are being replaced.
+
+## Correspondence desk and recruitment
+
+The third primary screen is the Spanish-language Escritorio de campaña, entered from the strategic map. Its catalogue contains available service records; encounter-only people are excluded from hiring cards. Important leaders require physical sector conversations and campaign conditions. The desk lists their locations as contacts without a hiring action. Foreign recruits must have era-appropriate backgrounds; fictional biographies must remain clearly identified.

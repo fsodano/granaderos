@@ -91,3 +91,7 @@ Status: TODO = not proved; PARTIAL = implemented subset with limitations; VERIFI
 ## Additional gameplay requirements
 
 The user supplied twelve detailed JA2-style gameplay comments and six reference screenshots. The expanded requirements and separate acceptance ledger are preserved in `specification/gameplay-expansion.md`. Persistent sector exploration, multiple squads, NPC dialogue, full dossiers, individual inventories/loot, energy/unconsciousness, night play, horses and true movement animation are required for completion. Current battle-only encounter generation does not satisfy this scope.
+
+### Recruitment desk and encounter integration checkpoint
+
+Implemented a separate Spanish Escritorio screen with service dossiers and a return to the strategic map. Encounter-only characters have no hire card. Tactical NPC markers open conversations, gated by adjacency and backend campaign requirements. Browser verification in an isolated QA save: opened desk, returned to map, entered Retiro, approached the sergeant and received his dialogue. Combined engine tests: 145 passed; TypeScript and static production build passed before the next animation/horse UI batch. The full game remains incomplete.
