@@ -4,10 +4,10 @@ import {placeBuilding} from './buildings.js';
 // Authored tactical plans. Buildings are solid footprints, never walkable painted facades.
 // The strategic grid is schematic; these tactical layouts are original gameplay maps,
 // not archaeological reconstructions or surveyed historical plans.
-export const MAP_IDS = [...CAMPAIGN_SECTORS.map(s=>s.id),'san_lorenzo'];
+export const MAP_IDS = [...CAMPAIGN_SECTORS.map(s=>s.id),'san_lorenzo','yatasto'];
 const WIDTH=20,HEIGHT=16;
 const clone=value=>JSON.parse(JSON.stringify(value));
-const names={buenos_aires:'Plaza Mayor y Cabildo',retiro:'Cuartel de Retiro',ensenada:'Puerto de Ensenada',san_nicolas:'Paso de San Nicolás',santa_fe:'Puerto de Santa Fe',cordoba:'Talleres de Caroya',mendoza:'Campamento de El Plumerillo',uspallata:'Desfiladero de Uspallata',los_patos:'Senda de Los Patos',tucuman:'La Ciudadela de Tucumán',salta:'Quebradas de Salta',jujuy:'Posta de Jujuy',humahuaca:'Entrada a la Quebrada',san_lorenzo:'Convento de San Carlos · San Lorenzo'};
+const names={yatasto:'Posta de Yatasto · Conferencia del Ejército del Norte',buenos_aires:'Plaza Mayor y Cabildo',retiro:'Cuartel de Retiro',ensenada:'Puerto de Ensenada',san_nicolas:'Paso de San Nicolás',santa_fe:'Puerto de Santa Fe',cordoba:'Talleres de Caroya',mendoza:'Campamento de El Plumerillo',uspallata:'Desfiladero de Uspallata',los_patos:'Senda de Los Patos',tucuman:'La Ciudadela de Tucumán',salta:'Quebradas de Salta',jujuy:'Posta de Jujuy',humahuaca:'Entrada a la Quebrada',san_lorenzo:'Convento de San Carlos · San Lorenzo'};
 
 function canvas(base='grass'){
  const tiles=Array.from({length:WIDTH*HEIGHT},(_,i)=>({x:i%WIDTH,y:Math.floor(i/WIDTH),type:base,blocked:false,cover:base==='forest'?20:0}));
@@ -67,6 +67,8 @@ function plan(id){
  case 'humahuaca':
    rect(0,0,20,4,'stone',true);rect(0,12,20,4,'stone',true);rect(6,4,3,2,'stone',true);rect(6,10,3,2,'stone',true);
    rect(12,4,3,3,'stone',true);rect(12,9,3,3,'stone',true);hroad(7);rect(16,5,1,2,'wall');rect(16,10,1,1,'wall');break;
+ case 'yatasto':
+   hroad(12);vroad(3);woods([[0,0,3,4],[15,2,4,5],[14,12,5,3]]);rect(5,4,8,6,'grass',false);break;
  case 'san_lorenzo':
    coast(18);rect(17,0,1,16,'stone',true); // The bluff is impassable; no painted traversable river.
    rect(4,5,5,6,'wall');decor.push({type:'convent',asset:'/art/convent.png',name:'Convento de San Carlos',x:4,y:5,width:5,height:6});
@@ -74,13 +76,20 @@ function plan(id){
    woods([[9,5,2,2],[9,9,2,2],[2,0,2,2],[2,14,2,2]]);break;
  default:throw Error('No existe un plano para ese sector.');
  }
- const footprints={buenos_aires:[3,1,5,3],retiro:[6,6,5,4],ensenada:[5,2,4,3],san_nicolas:[5,10,3,3],santa_fe:[12,11,3,3],cordoba:[12,2,5,3],mendoza:[5,1,5,3],tucuman:[11,5,4,4],salta:[12,11,4,3],jujuy:[6,3,4,3],san_lorenzo:[4,5,5,6]};
+ const footprints={yatasto:[5,4,8,6],buenos_aires:[3,1,5,3],retiro:[6,6,5,4],ensenada:[5,2,4,3],san_nicolas:[5,10,3,3],santa_fe:[12,11,3,3],cordoba:[12,2,5,3],mendoza:[5,1,5,3],tucuman:[11,5,4,4],salta:[12,11,4,3],jujuy:[6,3,4,3],san_lorenzo:[4,5,5,6]};
  const buildings=[],lights=[];const footprint=footprints[id];
  if(footprint){const[x,y,width,height]=footprint,doorX=x+Math.floor(width/2),doorY=y+height-1;
-   const doors=[{id:`${id}:door-left`,x:doorX,y:doorY}];if(width>=5)doors.push({id:`${id}:door-right`,x:doorX+1,y:doorY});
-   const result=placeBuilding(c.tiles,{id:`${id}:building`,name:id==='san_lorenzo'?'Convento de San Carlos':id==='mendoza'?'Maestranza de El Plumerillo':'Casa del sector',x,y,width,height,doors,windows:[{x,y:y+1}],material:'adobe'});
+   const doors=[{id:`${id}:door-left`,x:doorX,y:doorY,open:id==='yatasto'}];if(width>=5)doors.push({id:`${id}:door-right`,x:doorX+1,y:doorY});
+   const result=placeBuilding(c.tiles,{id:`${id}:building`,name:id==='yatasto'?'Posta de Yatasto':id==='san_lorenzo'?'Convento de San Carlos':id==='mendoza'?'Maestranza de El Plumerillo':'Casa del sector',x,y,width,height,doors,windows:[{x,y:y+1}],material:'adobe'});
    c.tiles.splice(0,c.tiles.length,...result.tiles);buildings.push(result.building);
    lights.push({id:`${id}:lantern`,type:'lantern',x:doorX,y:Math.min(15,doorY+1),radius:3,intensity:.8});
+ }
+ // Convert the other settlement footprints into enterable houses as well.
+ const extras={buenos_aires:[[11,1,6,3],[4,12,4,3],[12,12,5,3]],retiro:[[4,0,9,3],[5,13,8,3]],ensenada:[[7,11,5,3]],san_nicolas:[[5,2,3,3]],santa_fe:[[4,1,3,3]],cordoba:[[5,2,3,3],[5,11,3,4],[12,11,4,3]],mendoza:[[5,12,5,3],[13,2,3,3]],salta:[[12,1,4,3]],jujuy:[[8,11,4,3]]};
+ for(const [index,box]of (extras[id]??[]).entries()){
+   const [x,y,width,height]=box,doorY=y+height>=HEIGHT?y:y+height-1,doorX=x+Math.floor(width/2);
+   const result=placeBuilding(c.tiles,{id:`${id}:house-${index}`,name:id==='retiro'?'Barraca del cuartel':`Casa ${index+2} del poblado`,x,y,width,height,doors:[{x:doorX,y:doorY}],windows:[{x,y:y+1}],material:'adobe',roof:'tile'});
+   c.tiles.splice(0,c.tiles.length,...result.tiles);buildings.push(result.building);
  }
  return {...c,decor,buildings,lights};
 }
@@ -89,7 +98,7 @@ function connected(tiles,start){
  const reached=new Set([key(start)]),queue=[start];while(queue.length){const p=queue.shift();for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const x=p.x+dx,y=p.y+dy,t=tiles[y*WIDTH+x];if(x>=0&&x<WIDTH&&y>=0&&y<HEIGHT&&t&&!t.blocked&&!reached.has(key(t))){reached.add(key(t));queue.push(t);}}}return reached;
 }
 export function buildSectorMap(request={}){
- const id=request.sector??request.id??'san_lorenzo';const authored=plan(id),tiles=authored.tiles;
+ const id=request.sceneId??request.sector??request.id??'san_lorenzo';const authored=plan(id),tiles=authored.tiles;
  const open=tiles.filter(t=>!t.blocked);const component=connected(tiles,open.find(t=>t.x<=2&&t.y>=5)??open[0]);
  const reserved=new Set(),choose=(preferred,side)=>{
    const candidates=open.filter(t=>component.has(key(t))&&!reserved.has(key(t)));
@@ -104,5 +113,5 @@ export function buildSectorMap(request={}){
  const enemyCount=request.enemies?.length??Math.max(3,squad.length+(request.difficulty??1)-1);
  const enemies=Array.from({length:enemyCount},(_,i)=>({id:`enemy-${i}`,name:`Soldado realista ${i+1}`,weapon:i%3===0?1801:1800,marksmanship:50+(request.difficulty??1)*5,morale:60+(request.difficulty??1)*5,...clone(request.enemies?.[i]??{}),...choose({x:id==='santa_fe'?15:id==='san_lorenzo'?15:17,y:3+i%10},'enemy')}));
  const artillery=(request.artillery??Array.from({length:Math.min(request.cannons??0,3)},()=>({type:'bronze4',side:'player',loaded:true,ammo:6}))).map((gun,i)=>({...clone(gun),...choose({x:3,y:4+i*3},'player')}));
- return {...clone(request),sector:id,name:request.name??names[id],width:WIDTH,height:HEIGHT,tiles,decor:authored.decor,buildings:authored.buildings,lights:authored.lights,squad,enemies,artillery,mapTitle:names[id]};
+ return {...clone(request),sector:request.sceneId?request.sector:id,name:request.name??names[id],width:WIDTH,height:HEIGHT,tiles,decor:authored.decor,buildings:authored.buildings,lights:authored.lights,squad,enemies,artillery,mapTitle:names[id]};
 }

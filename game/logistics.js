@@ -1,6 +1,6 @@
 import {CAMPAIGN_SECTORS,RESOURCE_NAMES} from './data.js';
 // Cargo weights are simulation units in kg; an artillery piece cannot ride a courier horse.
-export const CARGO_WEIGHTS={treasury:.01,horses:400,powder:1,copper:1,textiles:.5,infantry:80,muskets:4,sabres:1.3,cartridges:.04,uniforms:2,cannons:500,ponchos:2};
+export const CARGO_WEIGHTS={timber:1,scrapIron:1,lead:1,leather:1,saltpeter:1,charcoal:1,sulfur:1,treasury:.01,horses:400,powder:1,copper:1,textiles:.5,infantry:80,muskets:4,sabres:1.3,cartridges:.04,uniforms:2,cannons:500,ponchos:2};
 export const TRANSPORT_OPTIONS=[
  {id:'posta',name:'Chasques y postas',capacity:30,hoursPerLeg:4,description:'Despachos y cargas ligeras; consume un caballo de remonta por tramo.'},
  {id:'carts',name:'Carretas de Cuyo',capacity:1000,hoursPerLeg:18,description:'Carga pesada y artillería por caminos terrestres.'},

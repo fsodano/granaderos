@@ -1,7 +1,7 @@
 export function returnAmmunition(request,reports,snapshot){
  let looted=0;
  if(snapshot){
-  for(const source of [...(request.garrison??[]),...(request.garrisonLootSources??[])]){const current=snapshot.units.find(u=>u.militia&&String(u.id)===String(source.id));if(current&&(current.hp<=0||current.unconscious||current.routed))looted+=Math.max(0,(source.ammo??0)+(source.loaded??0)-(current.ammo??0)-(current.loaded??0));}
+  for(const source of [...(request.garrison??[]),...(request.garrisonLootSources??[]),...(request.missionAllies??[])]){const current=snapshot.units.find(u=>(u.militia||u.missionAlly)&&String(u.id)===String(source.id));if(current&&(current.hp<=0||current.unconscious||current.routed))looted+=Math.max(0,(source.ammo??0)+(source.loaded??0)-(current.ammo??0)-(current.loaded??0));}
   for(const source of request.ammunitionSources??request.enemies??[]){const current=snapshot.units.find(u=>u.side==='enemy'&&String(u.id)===String(source.id));if(current&&(current.hp<=0||current.unconscious||current.routed))looted+=Math.max(0,(source.ammo??12)-(current.ammo??0));}
  }
  let returned=0;

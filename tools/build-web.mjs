@@ -1,4 +1,5 @@
 // Build the browser-only game and stage a verified static export for hosting.
+import {verifyTacticalAssets} from './verify-tactical-assets.mjs';
 import {spawnSync} from 'node:child_process';
 import {cp,readFile,readdir,rm,stat} from 'node:fs/promises';
 import {resolve,dirname,relative,extname} from 'node:path';
@@ -75,6 +76,7 @@ for(const action of ["idle","walk"])requireAsset(`/art/cavalry-${action}-atlas.p
 requireAsset("/art/cavalry-animation.json","cavalry animation metadata");
 for(const faction of ["granadero","royalist"])for(const stance of ["crouch","prone"])for(const action of ["idle","walk"])requireAsset(`/art/${faction}-${stance}-${action}-atlas.png`,"low stance animation");
 requireAsset("/art/stance-animation.json","stance animation metadata");
+await verifyTacticalAssets(source,requireAsset);
 await rm(destination,{recursive:true,force:true});
 await cp(source,destination,{recursive:true});
 for(const file of sourceFiles){

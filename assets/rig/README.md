@@ -66,3 +66,20 @@ JA2's indexed palette because no STI runtime is used here.
 Further polish remains: textured clothing, more distinctive faces, equipment
 variants, mounted gait, additional action animation and more nuanced weight
 transfer. The current set provides real reusable eight-direction locomotion.
+
+## Refined field-scale infantry and combat cycles
+
+The 2026-09-05 refinement replaces the rounded torso with a tailored coat,
+reduces head, boot and epaulette volume, narrows limbs, and uses matte muted wool
+with more directional shading. Standing, walking, crouching and prone frames
+are rendered from the same revised model. Recommended browser standing box is
+52 pixels (~40 pixel silhouette), with the fixed ground reference unchanged.
+
+`render_combat.py` adds independently articulated run, fire, reload and thrust
+cycles for both uniforms and all eight facings. `pack_combat.py` verifies every
+silhouette is unclipped and writes `combat-animation.json`. Run uses the normal
+camera scale; firearm actions expand the camera from 2.6 to 3.5 while preserving
+the normalized ground reference. Multiply the action draw size by 3.5/2.6 to
+keep body size consistent and leave room for the horizontal musket. The browser
+`SpriteFigure.tsx` implements that contract, including a compact contact shadow.
+These are original geometry/animations; no JA2 sprite art was copied.

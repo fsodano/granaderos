@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "source": "/Users/fsodano/.codex/generated_images/01a07018-1184-7702-8fd0-2300d77c1372/exec-4c640930-0940-4397-924b-63e11fd6be66.png",
+  "asset": "3x3 original terrain and building texture atlas",
+  "cells": [
+    "dry-grass",
+    "dirt",
+    "cobble",
+    "green-grass",
+    "mud",
+    "floor",
+    "plaster",
+    "roof",
+    "wood"
+  ],
+  "prompt": "Top-down seamless square material swatches, muted finely detailed realistic 1990s tactical strategy aesthetic. Dry olive grass, dusty ochre dirt, beige cobble; green grass, mud, terracotta floor; aged plaster, clay roof tiles, worn timber. No labels, objects, raised edges or scene.",
+  "preparation": "Equal-grid crop with three-pixel seam inset, 256px WebP output."
+}

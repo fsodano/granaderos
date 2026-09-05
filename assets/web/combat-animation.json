@@ -1,0 +1,5200 @@
+{
+  "frame_size": [
+    192,
+    192
+  ],
+  "anchor": [
+    0.5000002384185791,
+    0.8830497935414314
+  ],
+  "direction_rows": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "frames_per_direction": 8,
+  "fps": 10,
+  "actions": {
+    "granadero-run": {
+      "file": "granadero-run-atlas.png",
+      "world_scale": 1,
+      "frames": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "bounds": [
+            70,
+            28,
+            122,
+            177
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "bounds": [
+            70,
+            30,
+            122,
+            160
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "bounds": [
+            70,
+            33,
+            122,
+            165
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "bounds": [
+            70,
+            30,
+            122,
+            172
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 4,
+          "bounds": [
+            70,
+            28,
+            122,
+            177
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 5,
+          "bounds": [
+            70,
+            30,
+            122,
+            160
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 6,
+          "bounds": [
+            70,
+            33,
+            122,
+            166
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 7,
+          "bounds": [
+            70,
+            30,
+            122,
+            171
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "bounds": [
+            56,
+            26,
+            132,
+            171
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "bounds": [
+            61,
+            29,
+            136,
+            165
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "bounds": [
+            65,
+            31,
+            137,
+            169
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "bounds": [
+            61,
+            29,
+            136,
+            173
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 4,
+          "bounds": [
+            56,
+            26,
+            132,
+            177
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 5,
+          "bounds": [
+            52,
+            29,
+            126,
+            162
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 6,
+          "bounds": [
+            52,
+            31,
+            125,
+            163
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 7,
+          "bounds": [
+            52,
+            29,
+            127,
+            167
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "bounds": [
+            59,
+            23,
+            140,
+            170
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "bounds": [
+            67,
+            25,
+            131,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "bounds": [
+            70,
+            27,
+            132,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "bounds": [
+            67,
+            25,
+            131,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 4,
+          "bounds": [
+            59,
+            23,
+            140,
+            170
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 5,
+          "bounds": [
+            54,
+            25,
+            146,
+            162
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 6,
+          "bounds": [
+            54,
+            27,
+            147,
+            162
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 7,
+          "bounds": [
+            54,
+            25,
+            146,
+            161
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "bounds": [
+            69,
+            19,
+            142,
+            180
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "bounds": [
+            69,
+            21,
+            134,
+            176
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "bounds": [
+            68,
+            24,
+            129,
+            172
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "bounds": [
+            69,
+            21,
+            134,
+            168
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 4,
+          "bounds": [
+            66,
+            19,
+            142,
+            174
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 5,
+          "bounds": [
+            69,
+            21,
+            146,
+            170
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 6,
+          "bounds": [
+            68,
+            24,
+            147,
+            166
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 7,
+          "bounds": [
+            69,
+            21,
+            146,
+            165
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "bounds": [
+            70,
+            18,
+            122,
+            181
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "bounds": [
+            70,
+            20,
+            122,
+            176
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "bounds": [
+            70,
+            22,
+            122,
+            170
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "bounds": [
+            70,
+            20,
+            122,
+            164
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 4,
+          "bounds": [
+            70,
+            18,
+            122,
+            181
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 5,
+          "bounds": [
+            70,
+            20,
+            122,
+            176
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 6,
+          "bounds": [
+            70,
+            22,
+            122,
+            170
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 7,
+          "bounds": [
+            70,
+            20,
+            122,
+            165
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "bounds": [
+            60,
+            19,
+            136,
+            173
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "bounds": [
+            56,
+            21,
+            130,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "bounds": [
+            55,
+            24,
+            127,
+            166
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "bounds": [
+            56,
+            21,
+            130,
+            165
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 4,
+          "bounds": [
+            60,
+            19,
+            136,
+            180
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 5,
+          "bounds": [
+            66,
+            21,
+            140,
+            176
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 6,
+          "bounds": [
+            67,
+            24,
+            140,
+            173
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 7,
+          "bounds": [
+            65,
+            21,
+            140,
+            168
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "bounds": [
+            52,
+            23,
+            133,
+            170
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "bounds": [
+            61,
+            25,
+            125,
+            162
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "bounds": [
+            60,
+            27,
+            121,
+            162
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "bounds": [
+            61,
+            25,
+            125,
+            162
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 4,
+          "bounds": [
+            52,
+            23,
+            133,
+            170
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 5,
+          "bounds": [
+            46,
+            25,
+            138,
+            170
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 6,
+          "bounds": [
+            45,
+            27,
+            138,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 7,
+          "bounds": [
+            46,
+            25,
+            138,
+            171
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "bounds": [
+            50,
+            27,
+            124,
+            177
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "bounds": [
+            58,
+            29,
+            124,
+            162
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "bounds": [
+            62,
+            31,
+            123,
+            163
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "bounds": [
+            58,
+            29,
+            124,
+            167
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 4,
+          "bounds": [
+            50,
+            27,
+            126,
+            171
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 5,
+          "bounds": [
+            46,
+            29,
+            124,
+            165
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 6,
+          "bounds": [
+            45,
+            31,
+            123,
+            169
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 7,
+          "bounds": [
+            46,
+            29,
+            124,
+            174
+          ]
+        }
+      ],
+      "sha256": "20f2535051bc1dd69128473b53e76c84cd0a50751e155c92d169d4fedd986510"
+    },
+    "granadero-fire": {
+      "file": "granadero-fire-atlas.png",
+      "world_scale": 1.346153846153846,
+      "frames": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "bounds": [
+            76,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "bounds": [
+            76,
+            62,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "bounds": [
+            76,
+            62,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "bounds": [
+            76,
+            62,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 4,
+          "bounds": [
+            76,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 5,
+          "bounds": [
+            76,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 6,
+          "bounds": [
+            76,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 7,
+          "bounds": [
+            76,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "bounds": [
+            77,
+            61,
+            144,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "bounds": [
+            77,
+            62,
+            143,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "bounds": [
+            77,
+            62,
+            143,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "bounds": [
+            77,
+            62,
+            143,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 4,
+          "bounds": [
+            77,
+            61,
+            144,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 5,
+          "bounds": [
+            77,
+            61,
+            144,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 6,
+          "bounds": [
+            77,
+            61,
+            144,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 7,
+          "bounds": [
+            77,
+            61,
+            144,
+            168
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "bounds": [
+            80,
+            62,
+            176,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "bounds": [
+            79,
+            61,
+            175,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "bounds": [
+            78,
+            62,
+            175,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "bounds": [
+            79,
+            61,
+            176,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 4,
+          "bounds": [
+            80,
+            62,
+            177,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 5,
+          "bounds": [
+            80,
+            62,
+            177,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 6,
+          "bounds": [
+            80,
+            62,
+            176,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 7,
+          "bounds": [
+            80,
+            62,
+            176,
+            171
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "bounds": [
+            78,
+            62,
+            163,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "bounds": [
+            77,
+            61,
+            163,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "bounds": [
+            77,
+            61,
+            162,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "bounds": [
+            77,
+            61,
+            163,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 4,
+          "bounds": [
+            78,
+            62,
+            164,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 5,
+          "bounds": [
+            78,
+            62,
+            164,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 6,
+          "bounds": [
+            78,
+            62,
+            164,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 7,
+          "bounds": [
+            78,
+            62,
+            164,
+            173
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "bounds": [
+            76,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "bounds": [
+            76,
+            61,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "bounds": [
+            76,
+            61,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "bounds": [
+            76,
+            61,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 4,
+          "bounds": [
+            76,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 5,
+          "bounds": [
+            76,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 6,
+          "bounds": [
+            76,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 7,
+          "bounds": [
+            76,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "bounds": [
+            49,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "bounds": [
+            49,
+            61,
+            115,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "bounds": [
+            49,
+            61,
+            115,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "bounds": [
+            49,
+            61,
+            115,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 4,
+          "bounds": [
+            48,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 5,
+          "bounds": [
+            48,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 6,
+          "bounds": [
+            48,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 7,
+          "bounds": [
+            49,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "bounds": [
+            16,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "bounds": [
+            17,
+            61,
+            113,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "bounds": [
+            17,
+            62,
+            113,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "bounds": [
+            16,
+            61,
+            113,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 4,
+          "bounds": [
+            15,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 5,
+          "bounds": [
+            15,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 6,
+          "bounds": [
+            15,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 7,
+          "bounds": [
+            16,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "bounds": [
+            29,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "bounds": [
+            29,
+            61,
+            115,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "bounds": [
+            29,
+            62,
+            115,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "bounds": [
+            29,
+            61,
+            115,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 4,
+          "bounds": [
+            28,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 5,
+          "bounds": [
+            28,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 6,
+          "bounds": [
+            28,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 7,
+          "bounds": [
+            28,
+            61,
+            114,
+            172
+          ]
+        }
+      ],
+      "sha256": "8ca61936405b526eb83d1d7b228f539f8df0e5ceab93a4b5cbe87efe4c056010"
+    },
+    "granadero-reload": {
+      "file": "granadero-reload-atlas.png",
+      "world_scale": 1.346153846153846,
+      "frames": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "bounds": [
+            77,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "bounds": [
+            77,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "bounds": [
+            77,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "bounds": [
+            77,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 4,
+          "bounds": [
+            77,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 5,
+          "bounds": [
+            77,
+            61,
+            115,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 6,
+          "bounds": [
+            77,
+            61,
+            115,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 7,
+          "bounds": [
+            77,
+            61,
+            115,
+            169
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "bounds": [
+            77,
+            60,
+            114,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "bounds": [
+            77,
+            60,
+            116,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "bounds": [
+            77,
+            60,
+            117,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "bounds": [
+            77,
+            60,
+            116,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 4,
+          "bounds": [
+            77,
+            60,
+            114,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 5,
+          "bounds": [
+            77,
+            60,
+            114,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 6,
+          "bounds": [
+            77,
+            60,
+            114,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 7,
+          "bounds": [
+            77,
+            60,
+            114,
+            168
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "bounds": [
+            80,
+            62,
+            121,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "bounds": [
+            80,
+            62,
+            121,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "bounds": [
+            80,
+            62,
+            121,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "bounds": [
+            80,
+            62,
+            121,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 4,
+          "bounds": [
+            80,
+            62,
+            121,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 5,
+          "bounds": [
+            80,
+            62,
+            121,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 6,
+          "bounds": [
+            80,
+            62,
+            121,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 7,
+          "bounds": [
+            80,
+            62,
+            121,
+            171
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "bounds": [
+            78,
+            62,
+            123,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "bounds": [
+            78,
+            62,
+            123,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "bounds": [
+            78,
+            62,
+            123,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "bounds": [
+            78,
+            62,
+            123,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 4,
+          "bounds": [
+            78,
+            62,
+            123,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 5,
+          "bounds": [
+            78,
+            62,
+            123,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 6,
+          "bounds": [
+            78,
+            62,
+            123,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 7,
+          "bounds": [
+            78,
+            62,
+            123,
+            173
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "bounds": [
+            77,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "bounds": [
+            77,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "bounds": [
+            77,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "bounds": [
+            77,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 4,
+          "bounds": [
+            77,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 5,
+          "bounds": [
+            77,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 6,
+          "bounds": [
+            77,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 7,
+          "bounds": [
+            77,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "bounds": [
+            78,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "bounds": [
+            76,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "bounds": [
+            75,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "bounds": [
+            76,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 4,
+          "bounds": [
+            78,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 5,
+          "bounds": [
+            78,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 6,
+          "bounds": [
+            78,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 7,
+          "bounds": [
+            78,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "bounds": [
+            71,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "bounds": [
+            71,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "bounds": [
+            71,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "bounds": [
+            71,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 4,
+          "bounds": [
+            71,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 5,
+          "bounds": [
+            71,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 6,
+          "bounds": [
+            71,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 7,
+          "bounds": [
+            71,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "bounds": [
+            69,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "bounds": [
+            69,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "bounds": [
+            69,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "bounds": [
+            69,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 4,
+          "bounds": [
+            69,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 5,
+          "bounds": [
+            69,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 6,
+          "bounds": [
+            69,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 7,
+          "bounds": [
+            69,
+            61,
+            114,
+            172
+          ]
+        }
+      ],
+      "sha256": "5e2bcf52680dd69c164bb6ec550da7ac3cf602e0101d76ac60eef19014a6619b"
+    },
+    "granadero-strike": {
+      "file": "granadero-strike-atlas.png",
+      "world_scale": 1.346153846153846,
+      "frames": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "bounds": [
+            76,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "bounds": [
+            76,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "bounds": [
+            76,
+            60,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "bounds": [
+            76,
+            60,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 4,
+          "bounds": [
+            76,
+            59,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 5,
+          "bounds": [
+            76,
+            60,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 6,
+          "bounds": [
+            76,
+            60,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 7,
+          "bounds": [
+            76,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "bounds": [
+            77,
+            61,
+            144,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "bounds": [
+            78,
+            61,
+            144,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "bounds": [
+            79,
+            61,
+            145,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "bounds": [
+            80,
+            60,
+            146,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 4,
+          "bounds": [
+            80,
+            60,
+            147,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 5,
+          "bounds": [
+            80,
+            60,
+            146,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 6,
+          "bounds": [
+            79,
+            61,
+            145,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 7,
+          "bounds": [
+            78,
+            61,
+            144,
+            168
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "bounds": [
+            80,
+            62,
+            176,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "bounds": [
+            81,
+            62,
+            177,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "bounds": [
+            81,
+            62,
+            178,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "bounds": [
+            83,
+            62,
+            180,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 4,
+          "bounds": [
+            83,
+            62,
+            181,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 5,
+          "bounds": [
+            83,
+            62,
+            180,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 6,
+          "bounds": [
+            81,
+            62,
+            178,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 7,
+          "bounds": [
+            81,
+            62,
+            177,
+            171
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "bounds": [
+            78,
+            62,
+            163,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "bounds": [
+            78,
+            62,
+            164,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "bounds": [
+            79,
+            63,
+            165,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "bounds": [
+            79,
+            63,
+            166,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 4,
+          "bounds": [
+            80,
+            63,
+            166,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 5,
+          "bounds": [
+            79,
+            63,
+            166,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 6,
+          "bounds": [
+            79,
+            63,
+            165,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 7,
+          "bounds": [
+            78,
+            62,
+            164,
+            173
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "bounds": [
+            76,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "bounds": [
+            76,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "bounds": [
+            76,
+            63,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "bounds": [
+            76,
+            64,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 4,
+          "bounds": [
+            76,
+            64,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 5,
+          "bounds": [
+            76,
+            64,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 6,
+          "bounds": [
+            76,
+            63,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 7,
+          "bounds": [
+            76,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "bounds": [
+            49,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "bounds": [
+            48,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "bounds": [
+            47,
+            62,
+            113,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "bounds": [
+            46,
+            63,
+            113,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 4,
+          "bounds": [
+            45,
+            63,
+            112,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 5,
+          "bounds": [
+            46,
+            63,
+            113,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 6,
+          "bounds": [
+            47,
+            62,
+            113,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 7,
+          "bounds": [
+            48,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "bounds": [
+            16,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "bounds": [
+            15,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "bounds": [
+            13,
+            62,
+            110,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "bounds": [
+            12,
+            62,
+            110,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 4,
+          "bounds": [
+            11,
+            62,
+            109,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 5,
+          "bounds": [
+            12,
+            62,
+            110,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 6,
+          "bounds": [
+            13,
+            62,
+            110,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 7,
+          "bounds": [
+            15,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "bounds": [
+            29,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "bounds": [
+            28,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "bounds": [
+            27,
+            61,
+            113,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "bounds": [
+            26,
+            61,
+            113,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 4,
+          "bounds": [
+            26,
+            61,
+            112,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 5,
+          "bounds": [
+            26,
+            61,
+            113,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 6,
+          "bounds": [
+            27,
+            61,
+            113,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 7,
+          "bounds": [
+            28,
+            61,
+            114,
+            172
+          ]
+        }
+      ],
+      "sha256": "d087746dd18a3f6d0b02dec73d6ab4645c6c477aaa217382b6ba8345149c8df3"
+    },
+    "royalist-run": {
+      "file": "royalist-run-atlas.png",
+      "world_scale": 1,
+      "frames": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "bounds": [
+            70,
+            28,
+            122,
+            177
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "bounds": [
+            70,
+            30,
+            122,
+            160
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "bounds": [
+            70,
+            33,
+            122,
+            165
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "bounds": [
+            70,
+            30,
+            122,
+            172
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 4,
+          "bounds": [
+            70,
+            28,
+            122,
+            177
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 5,
+          "bounds": [
+            70,
+            30,
+            122,
+            160
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 6,
+          "bounds": [
+            70,
+            33,
+            122,
+            166
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 7,
+          "bounds": [
+            70,
+            30,
+            122,
+            171
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "bounds": [
+            56,
+            26,
+            132,
+            171
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "bounds": [
+            61,
+            29,
+            136,
+            165
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "bounds": [
+            65,
+            31,
+            137,
+            169
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "bounds": [
+            61,
+            29,
+            136,
+            173
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 4,
+          "bounds": [
+            56,
+            26,
+            132,
+            177
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 5,
+          "bounds": [
+            52,
+            29,
+            126,
+            162
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 6,
+          "bounds": [
+            52,
+            31,
+            125,
+            163
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 7,
+          "bounds": [
+            52,
+            29,
+            127,
+            167
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "bounds": [
+            59,
+            23,
+            140,
+            170
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "bounds": [
+            67,
+            25,
+            131,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "bounds": [
+            70,
+            27,
+            132,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "bounds": [
+            67,
+            25,
+            131,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 4,
+          "bounds": [
+            59,
+            23,
+            140,
+            170
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 5,
+          "bounds": [
+            54,
+            25,
+            146,
+            162
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 6,
+          "bounds": [
+            54,
+            27,
+            147,
+            162
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 7,
+          "bounds": [
+            54,
+            25,
+            146,
+            161
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "bounds": [
+            69,
+            19,
+            142,
+            180
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "bounds": [
+            69,
+            21,
+            134,
+            176
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "bounds": [
+            68,
+            24,
+            129,
+            172
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "bounds": [
+            69,
+            21,
+            134,
+            168
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 4,
+          "bounds": [
+            66,
+            19,
+            142,
+            174
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 5,
+          "bounds": [
+            69,
+            21,
+            146,
+            170
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 6,
+          "bounds": [
+            68,
+            24,
+            147,
+            166
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 7,
+          "bounds": [
+            69,
+            21,
+            146,
+            165
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "bounds": [
+            70,
+            18,
+            122,
+            181
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "bounds": [
+            70,
+            20,
+            122,
+            176
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "bounds": [
+            70,
+            22,
+            122,
+            170
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "bounds": [
+            70,
+            20,
+            122,
+            164
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 4,
+          "bounds": [
+            70,
+            18,
+            122,
+            181
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 5,
+          "bounds": [
+            70,
+            20,
+            122,
+            176
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 6,
+          "bounds": [
+            70,
+            22,
+            122,
+            170
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 7,
+          "bounds": [
+            70,
+            20,
+            122,
+            165
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "bounds": [
+            60,
+            19,
+            136,
+            173
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "bounds": [
+            56,
+            21,
+            130,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "bounds": [
+            55,
+            24,
+            127,
+            166
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "bounds": [
+            56,
+            21,
+            130,
+            165
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 4,
+          "bounds": [
+            60,
+            19,
+            136,
+            180
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 5,
+          "bounds": [
+            66,
+            21,
+            140,
+            176
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 6,
+          "bounds": [
+            67,
+            24,
+            140,
+            173
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 7,
+          "bounds": [
+            65,
+            21,
+            140,
+            168
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "bounds": [
+            52,
+            23,
+            133,
+            170
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "bounds": [
+            61,
+            25,
+            125,
+            162
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "bounds": [
+            60,
+            27,
+            121,
+            162
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "bounds": [
+            61,
+            25,
+            125,
+            162
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 4,
+          "bounds": [
+            52,
+            23,
+            133,
+            170
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 5,
+          "bounds": [
+            46,
+            25,
+            138,
+            170
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 6,
+          "bounds": [
+            45,
+            27,
+            138,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 7,
+          "bounds": [
+            46,
+            25,
+            138,
+            171
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "bounds": [
+            50,
+            27,
+            124,
+            177
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "bounds": [
+            58,
+            29,
+            124,
+            162
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "bounds": [
+            62,
+            31,
+            123,
+            163
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "bounds": [
+            58,
+            29,
+            124,
+            167
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 4,
+          "bounds": [
+            50,
+            27,
+            126,
+            171
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 5,
+          "bounds": [
+            46,
+            29,
+            124,
+            165
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 6,
+          "bounds": [
+            45,
+            31,
+            123,
+            169
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 7,
+          "bounds": [
+            46,
+            29,
+            124,
+            174
+          ]
+        }
+      ],
+      "sha256": "8ec49692e5c8f324e77170ccdc701273e0a4ad0297b642954ca500f34269b75c"
+    },
+    "royalist-fire": {
+      "file": "royalist-fire-atlas.png",
+      "world_scale": 1.346153846153846,
+      "frames": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "bounds": [
+            76,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "bounds": [
+            76,
+            62,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "bounds": [
+            76,
+            62,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "bounds": [
+            76,
+            62,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 4,
+          "bounds": [
+            76,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 5,
+          "bounds": [
+            76,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 6,
+          "bounds": [
+            76,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 7,
+          "bounds": [
+            76,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "bounds": [
+            77,
+            61,
+            144,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "bounds": [
+            77,
+            62,
+            143,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "bounds": [
+            77,
+            62,
+            143,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "bounds": [
+            77,
+            62,
+            143,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 4,
+          "bounds": [
+            77,
+            61,
+            144,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 5,
+          "bounds": [
+            77,
+            61,
+            144,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 6,
+          "bounds": [
+            77,
+            61,
+            144,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 7,
+          "bounds": [
+            77,
+            61,
+            144,
+            168
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "bounds": [
+            80,
+            62,
+            176,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "bounds": [
+            79,
+            61,
+            175,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "bounds": [
+            78,
+            62,
+            175,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "bounds": [
+            79,
+            61,
+            176,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 4,
+          "bounds": [
+            80,
+            62,
+            177,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 5,
+          "bounds": [
+            80,
+            62,
+            177,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 6,
+          "bounds": [
+            80,
+            62,
+            176,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 7,
+          "bounds": [
+            80,
+            62,
+            176,
+            171
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "bounds": [
+            78,
+            62,
+            163,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "bounds": [
+            77,
+            61,
+            163,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "bounds": [
+            77,
+            61,
+            162,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "bounds": [
+            77,
+            61,
+            163,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 4,
+          "bounds": [
+            78,
+            62,
+            164,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 5,
+          "bounds": [
+            78,
+            62,
+            164,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 6,
+          "bounds": [
+            78,
+            62,
+            164,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 7,
+          "bounds": [
+            78,
+            62,
+            164,
+            173
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "bounds": [
+            76,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "bounds": [
+            76,
+            61,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "bounds": [
+            76,
+            61,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "bounds": [
+            76,
+            61,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 4,
+          "bounds": [
+            76,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 5,
+          "bounds": [
+            76,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 6,
+          "bounds": [
+            76,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 7,
+          "bounds": [
+            76,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "bounds": [
+            49,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "bounds": [
+            49,
+            61,
+            115,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "bounds": [
+            49,
+            61,
+            115,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "bounds": [
+            49,
+            61,
+            115,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 4,
+          "bounds": [
+            48,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 5,
+          "bounds": [
+            48,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 6,
+          "bounds": [
+            48,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 7,
+          "bounds": [
+            49,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "bounds": [
+            16,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "bounds": [
+            17,
+            61,
+            113,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "bounds": [
+            17,
+            62,
+            113,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "bounds": [
+            16,
+            61,
+            113,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 4,
+          "bounds": [
+            15,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 5,
+          "bounds": [
+            15,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 6,
+          "bounds": [
+            15,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 7,
+          "bounds": [
+            16,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "bounds": [
+            29,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "bounds": [
+            29,
+            61,
+            115,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "bounds": [
+            29,
+            62,
+            115,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "bounds": [
+            29,
+            61,
+            115,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 4,
+          "bounds": [
+            28,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 5,
+          "bounds": [
+            28,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 6,
+          "bounds": [
+            28,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 7,
+          "bounds": [
+            28,
+            61,
+            114,
+            172
+          ]
+        }
+      ],
+      "sha256": "42fd50fe94025c4daefd7e4c0d6a5011ce8ab24bf137ea533617777f6a919b49"
+    },
+    "royalist-reload": {
+      "file": "royalist-reload-atlas.png",
+      "world_scale": 1.346153846153846,
+      "frames": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "bounds": [
+            77,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "bounds": [
+            77,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "bounds": [
+            77,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "bounds": [
+            77,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 4,
+          "bounds": [
+            77,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 5,
+          "bounds": [
+            77,
+            61,
+            115,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 6,
+          "bounds": [
+            77,
+            61,
+            115,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 7,
+          "bounds": [
+            77,
+            61,
+            115,
+            169
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "bounds": [
+            77,
+            60,
+            114,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "bounds": [
+            77,
+            60,
+            116,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "bounds": [
+            77,
+            60,
+            117,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "bounds": [
+            77,
+            60,
+            116,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 4,
+          "bounds": [
+            77,
+            60,
+            114,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 5,
+          "bounds": [
+            77,
+            60,
+            114,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 6,
+          "bounds": [
+            77,
+            60,
+            114,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 7,
+          "bounds": [
+            77,
+            60,
+            114,
+            168
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "bounds": [
+            80,
+            62,
+            121,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "bounds": [
+            80,
+            62,
+            121,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "bounds": [
+            80,
+            62,
+            121,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "bounds": [
+            80,
+            62,
+            121,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 4,
+          "bounds": [
+            80,
+            62,
+            121,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 5,
+          "bounds": [
+            80,
+            62,
+            121,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 6,
+          "bounds": [
+            80,
+            62,
+            121,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 7,
+          "bounds": [
+            80,
+            62,
+            121,
+            171
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "bounds": [
+            78,
+            62,
+            123,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "bounds": [
+            78,
+            62,
+            123,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "bounds": [
+            78,
+            62,
+            123,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "bounds": [
+            78,
+            62,
+            123,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 4,
+          "bounds": [
+            78,
+            62,
+            123,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 5,
+          "bounds": [
+            78,
+            62,
+            123,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 6,
+          "bounds": [
+            78,
+            62,
+            123,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 7,
+          "bounds": [
+            78,
+            62,
+            123,
+            173
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "bounds": [
+            77,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "bounds": [
+            77,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "bounds": [
+            77,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "bounds": [
+            77,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 4,
+          "bounds": [
+            77,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 5,
+          "bounds": [
+            77,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 6,
+          "bounds": [
+            77,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 7,
+          "bounds": [
+            77,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "bounds": [
+            78,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "bounds": [
+            76,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "bounds": [
+            75,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "bounds": [
+            76,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 4,
+          "bounds": [
+            78,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 5,
+          "bounds": [
+            78,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 6,
+          "bounds": [
+            78,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 7,
+          "bounds": [
+            78,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "bounds": [
+            71,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "bounds": [
+            71,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "bounds": [
+            71,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "bounds": [
+            71,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 4,
+          "bounds": [
+            71,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 5,
+          "bounds": [
+            71,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 6,
+          "bounds": [
+            71,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 7,
+          "bounds": [
+            71,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "bounds": [
+            69,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "bounds": [
+            69,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "bounds": [
+            69,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "bounds": [
+            69,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 4,
+          "bounds": [
+            69,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 5,
+          "bounds": [
+            69,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 6,
+          "bounds": [
+            69,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 7,
+          "bounds": [
+            69,
+            61,
+            114,
+            172
+          ]
+        }
+      ],
+      "sha256": "676c76b5b54674b3b8880d8912544c196e2f585b8c3ad58a272cac0c5e29c4cf"
+    },
+    "royalist-strike": {
+      "file": "royalist-strike-atlas.png",
+      "world_scale": 1.346153846153846,
+      "frames": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "bounds": [
+            76,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "bounds": [
+            76,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "bounds": [
+            76,
+            60,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "bounds": [
+            76,
+            60,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 4,
+          "bounds": [
+            76,
+            59,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 5,
+          "bounds": [
+            76,
+            60,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 6,
+          "bounds": [
+            76,
+            60,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "n",
+          "frame": 7,
+          "bounds": [
+            76,
+            61,
+            116,
+            169
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "bounds": [
+            77,
+            61,
+            144,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "bounds": [
+            78,
+            61,
+            144,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "bounds": [
+            79,
+            61,
+            145,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "bounds": [
+            80,
+            60,
+            146,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 4,
+          "bounds": [
+            80,
+            60,
+            147,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 5,
+          "bounds": [
+            80,
+            60,
+            146,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 6,
+          "bounds": [
+            79,
+            61,
+            145,
+            168
+          ]
+        },
+        {
+          "direction": "ne",
+          "frame": 7,
+          "bounds": [
+            78,
+            61,
+            144,
+            168
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "bounds": [
+            80,
+            62,
+            176,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "bounds": [
+            81,
+            62,
+            177,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "bounds": [
+            81,
+            62,
+            178,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "bounds": [
+            83,
+            62,
+            180,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 4,
+          "bounds": [
+            83,
+            62,
+            181,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 5,
+          "bounds": [
+            83,
+            62,
+            180,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 6,
+          "bounds": [
+            81,
+            62,
+            178,
+            171
+          ]
+        },
+        {
+          "direction": "e",
+          "frame": 7,
+          "bounds": [
+            81,
+            62,
+            177,
+            171
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "bounds": [
+            78,
+            62,
+            163,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "bounds": [
+            78,
+            62,
+            164,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "bounds": [
+            79,
+            63,
+            165,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "bounds": [
+            79,
+            63,
+            166,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 4,
+          "bounds": [
+            80,
+            63,
+            166,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 5,
+          "bounds": [
+            79,
+            63,
+            166,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 6,
+          "bounds": [
+            79,
+            63,
+            165,
+            173
+          ]
+        },
+        {
+          "direction": "se",
+          "frame": 7,
+          "bounds": [
+            78,
+            62,
+            164,
+            173
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "bounds": [
+            76,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "bounds": [
+            76,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "bounds": [
+            76,
+            63,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "bounds": [
+            76,
+            64,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 4,
+          "bounds": [
+            76,
+            64,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 5,
+          "bounds": [
+            76,
+            64,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 6,
+          "bounds": [
+            76,
+            63,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "s",
+          "frame": 7,
+          "bounds": [
+            76,
+            62,
+            116,
+            172
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "bounds": [
+            49,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "bounds": [
+            48,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "bounds": [
+            47,
+            62,
+            113,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "bounds": [
+            46,
+            63,
+            113,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 4,
+          "bounds": [
+            45,
+            63,
+            112,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 5,
+          "bounds": [
+            46,
+            63,
+            113,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 6,
+          "bounds": [
+            47,
+            62,
+            113,
+            170
+          ]
+        },
+        {
+          "direction": "sw",
+          "frame": 7,
+          "bounds": [
+            48,
+            62,
+            114,
+            170
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "bounds": [
+            16,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "bounds": [
+            15,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "bounds": [
+            13,
+            62,
+            110,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "bounds": [
+            12,
+            62,
+            110,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 4,
+          "bounds": [
+            11,
+            62,
+            109,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 5,
+          "bounds": [
+            12,
+            62,
+            110,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 6,
+          "bounds": [
+            13,
+            62,
+            110,
+            171
+          ]
+        },
+        {
+          "direction": "w",
+          "frame": 7,
+          "bounds": [
+            15,
+            62,
+            112,
+            171
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "bounds": [
+            29,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "bounds": [
+            28,
+            61,
+            114,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "bounds": [
+            27,
+            61,
+            113,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "bounds": [
+            26,
+            61,
+            113,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 4,
+          "bounds": [
+            26,
+            61,
+            112,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 5,
+          "bounds": [
+            26,
+            61,
+            113,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 6,
+          "bounds": [
+            27,
+            61,
+            113,
+            172
+          ]
+        },
+        {
+          "direction": "nw",
+          "frame": 7,
+          "bounds": [
+            28,
+            61,
+            114,
+            172
+          ]
+        }
+      ],
+      "sha256": "e576ad219e69eb0c15f7551165c687cf809b9af805b8b3d6da626e2863a004d5"
+    }
+  }
+}
