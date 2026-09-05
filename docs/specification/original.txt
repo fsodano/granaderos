@@ -1,0 +1,653 @@
+GRANADEROS: Jagged Alliance 2 Engine Historical Conversion Specification
+
+1. Historical Context and Narrative Mapping (1810–1820)
+
+Spanish Royalist Command Hierarchy
+
+The structural antagonist architecture of the Jagged Alliance 2 engine—originally centered on Queen Deidranna’s centralized dictatorship in Arulco—is mapped directly to the Spanish Royalist command hierarchy operating under the authority of King Fernando VII and the Viceroyalty structure. Rather than confronting an isolated monarch in a single fortified palace, the liberation forces must dismantle a coordinated, multi-tiered colonial military apparatus operating across Argentine territory.
+
+The Royalist opposition is organized into three operational commands that mirror the strategic threats historically faced by the United Provinces of the Río de la Plata. In the northern theater, the Royal Army of Peru represents the primary conventional threat, executing recurring counter-invasions southward through the mountain corridors of the Humahuaca gorge. General Joaquín de la Pezuela serves as the supreme Royalist field antagonist, commanding veteran Peninsular battalions and formidable artillery trains with methodical tactical discipline. Assisting him is Brigadier General Pío Tristán, who leads the aggressive forward divisions invading Jujuy and Salta, presenting an immediate operational obstacle that players must neutralize during the campaign's middle chapters.
+
+Along the maritime and riverine frontier, Viceroy Francisco Javier de Elío and Governor Gaspar de Vigodet direct naval forces out of the fortified stronghold of Montevideo. Their riverine squadron, commanded by naval officers such as Jacinto de Romarate, conducts sustained corsair incursions and amphibious raids along the Paraná and Uruguay rivers. This naval pressure constricts maritime commerce, raids coastal settlements such as San Nicolás and San Pedro, and threatens the capital's supply lines. Meanwhile, in the interior provinces, Royalist Cabildos and Loyalist partisans organize covert counter-revolutionary networks, orchestrating sabotage against Patriot ammunition trains and raiding frontier estancias.
+
+Arulco Antagonist Entity	1810s Argentine Historical Counterpart	Operational Command	Core Doctrinal Behavior
+Queen Deidranna Reitman	Viceroy Francisco Javier de Elío & Crown Council	Central Colonial Governance	Authorizes trade embargoes, directs naval blockades, and coordinates royalist counter-revolutions.
+General Mike (Elite Adversary)	General Joaquín de la Pezuela	Royal Army of Peru (Northern Front)	Deploys veteran Peninsular infantry lines, heavy battery concentrations, and systematic counter-sieges.
+Elliot (Forward Commander)	Brigadier General Pío Tristán	Vanguard Division (Salta & Jujuy)	Leads deep strategic penetrations into the northern interior to recapture lost colonial administrative seats.
+Arulco Coastal Guard	Commander Jacinto de Romarate	Flotilla Realista del Plata	Executes riverine interdiction, amphibious landing raids, and customs tariff strangulation.
+Army Patrol Cadres	Loyalist Partisans & Talavera Battalions	Interior Provincial Garrisons	Enforces martial law, executes punitive cattle requisitions, and suppresses local civic revolts.
+
+General José de San Martín: The Revolutionary Catalyst
+
+In the standard campaign structure, the rebel leader Miguel Cordona is discovered early as an underground commander who joins the squad once basic trust parameters are satisfied. In GRANADEROS, General José de San Martín assumes this catalyst role through an expanded narrative arc that reflects his historical transformation from an arriving continental officer into the supreme architect of liberation. Rather than being recruited in the early game, San Martín operates as an off-map strategic mentor, administrative catalyst, and mission coordinator whose personal field deployment marks the culmination of an extensive preparation phase.
+
+Phase 1: Retiro Military Academy (Buenos Aires)
+  Establishment of the Cuartel de Retiro and formation of the Granaderos a Caballo.
+Phase 2: Riverine Baptism of Fire (San Lorenzo)
+  Tactical ambush on the Paraná bluffs to secure riverine communications.
+Phase 3: Northern Command Realization (Yatasto & Tucumán)
+  Assumption of Northern Army command; recognizing Upper Peru as a cul-de-sac; entrusting the border to Güemes.
+Phase 4: The Cuyo Redoubt (Campamento de El Plumerillo, Mendoza)
+  Construction of war foundries with Fray Luis Beltrán; logistic mobilization of arms, mounts, and uniforms.
+Phase 5: Field Integration (Supreme Operative Unlock)
+  San Martín unlocks as a deployable field operative for final liberation strikes across Argentine territory.
+
+
+The progression begins in Buenos Aires following San Martín's arrival aboard the frigate George Canning in 1812. During this opening phase, he oversees the creation of the Cuartel de Retiro and establishes the Regimiento de Granaderos a Caballo. Players support his efforts by investing funds, acquiring quality mounts, and funneling high-strength recruits into rigorous cavalry training. The second milestone triggers when Royalist naval detachments ascend the Paraná River to forage and plunder coastal settlements. The player participates alongside San Martín in the historical encounter at San Lorenzo, executing a coordinated tactical strike that secures riverine shipping and establishes the operational prestige of the Granaderos doctrine.
+
+Following catastrophic Patriot defeats at Vilcapugio and Ayohuma, San Martín is dispatched north to relieve General Manuel Belgrano at the Posta de Yatasto. Here, San Martín operates as a non-player strategic commander who analyzes the theater and concludes that a direct offensive through the mountainous terrain of Upper Peru is militarily non-viable. He entrusts the northern frontier entirely to Martín Miguel de Güemes and his gaucho cavalry, redirecting the revolution's strategic axis westward toward Cuyo.
+
+In the fourth phase, San Martín assumes the Governorship of Cuyo and establishes the sprawling Campamento de El Plumerillo outside Mendoza. Unlocking San Martín as an active field operative requires fulfilling demanding logistical criteria: establishing raw material supply chains to feed Fray Luis Beltrán’s ordnance foundries, outfitting three thousand infantrymen with local textiles and leather, and concluding diplomatic pacts (parlamentos) with southern Pehuenche caciques to secure mountain passes and mislead Royalist spies. Once El Plumerillo achieves maximum military output and the Cuyo border is fortified, General José de San Martín joins the active player roster as a deployable commander possessing exceptional leadership, tactical vision, and combat bonuses.
+
+Regional Factions and Political Alignment
+
+Strategic diplomacy requires balancing six factions whose dynamic reputation scales dictate recruit availability, trade tariffs, local militia morale, and regional stability. Sector control directly affects these standings based on how players interact with municipal institutions and local populations.
+
+The central government in Buenos Aires, represented by the Patriot Directory, seeks centralized administrative authority, professional military standardization, and revenue collection through customs duties. Liberating urban centers and suppressing Royalist naval blockades dramatically improves standing with the Directory, yielding financial subsidies and European arms shipments. Conversely, imposing heavy requisitions or disregarding national tax edicts provokes political friction.
+
+In the rugged northern provinces of Salta and Jujuy, the Gauchos de Güemes—known colloquially as Los Infernales—wage asymmetrical guerrilla warfare against invading Spanish columns. Their loyalty depends on respecting regional autonomy and supporting their frontline defense. Providing carbines, lead, and horses to northern estancias elevates this relationship to allied status, unlocking elite irregular scouts; conversely, expropriating cattle or attempting to enforce rigid centralist discipline alienation turns the local population hostile.
+
+The Regimientos de Pardos y Morenos represent the free black and freedman population whose units formed the shock infantry backbone of the revolutionary armies. Their loyalty increases when the player liberates enslaved populations from captured royalist properties, enforces the Libertad de Vientres decree, and commissions Afro-Argentine officers. A strong alignment ensures high recruitment numbers for disciplined line infantry and resilient artillery crews.
+
+Foreign volunteers, privateers, and British merchants operate primarily across maritime corridors, the port of Buenos Aires, and riverine trade depots. Motivated by commercial access and naval commissions, their standing is tied directly to regular payments in silver, privateering captures, and the protection of merchant shipping against Spanish corsairs. Maintaining good relations unlocks access to British military-pattern flintlocks and naval ordnance.
+
+Along the southern Andean foothills and the Pampas border, Indigenous confederacies—including Pehuenche and Ranquel tribes—control territorial corridors and access to critical mountain tracks. Their diplomatic posture is governed by formal parlamentos, reciprocal trade (yerba mate, textiles, knives), and respect for their autonomy. Betraying treaties or encroaching upon tribal grazing lands incites lightning frontier counter-raids that can disrupt logistical convoys traversing the interior.
+
+Finally, the Spanish Royalists and absolutist partisans represent the immutable enemy faction. Sustained Royalist control over a sector imposes martial law, disarms the civilian population, and extracts resources to fund imperial counter-invasions, creating a persistent economic drain until the sector is liberated.
+
+Faction Name	Alignment & Motivation	Strategic Stronghold	Asset Contribution	Reputation Dynamics
+Patriot Directory	Centralized Republic; institutional order	Buenos Aires & Litoral capitals	Regular line infantry, formal artillery, customs silver.	Increases with sector liberation and naval defense; drops if local taxes are retained.
+Gauchos de Güemes	Regional autonomy; asymmetric resistance	Salta, Jujuy & Quebrada corridors	Irregular cavalry, expert scouts, mountain skirmishers.	Increases by supplying arms and defending the border; drops via centralist interference.
+Pardos y Morenos	Social emancipation; republican loyalty	Urban centers & military cantonments	Shock line infantry, bayonet assault units, gun crews.	Increases by liberating slaves and commissioning black officers; decays under neglect.
+Foreign Volunteers	Mercenary contracts; republican liberalism	Buenos Aires Harbor & riverine routes	Veteran officers, corsair captains, specialized arms.	Increases through timely silver pay and privateering prize shares; decays through arrears.
+Indigenous Allies	Territorial sovereignty; diplomatic barter	Southern Cuyo & Pampas frontier borders	Fast desert cavalry, wilderness pathfinders, guides.	Increases through gifts and respectful parlamentos; collapses into open war if betrayed.
+Spanish Royalists	Absolutist Monarchy; colonial restoration	Upper Peru border, fortified enclaves	Peninsular regular infantry, heavy smoothbore batteries.	Permanent adversary; sector occupation extracts wealth and enforces forced conscription.
+
+2. Mechanic Re-skinning and System Conversions
+
+Recruitment Framework: Logia Lautaro and Clandestine Bulletins
+
+The in-game digital interface of Jagged Alliance 2 is converted into a period-authentic desk view displaying handwritten broadsheets, wax-sealed letters, and leather-bound service records.
+
+The Association of International Mercenaries (A.I.M.) is re-engineered as the clandestine roster of the Logia Lautaro. This secret revolutionary society—established historically by San Martín, Carlos María de Alvear, and Matías Zapiola—operates as a network of committed officers, veteran Creoles with European combat experience, and ideologically motivated foreign fighters. Inductions into this roster are framed as solemn revolutionary oaths. Contracts do not expire on arbitrary daily timers; instead, operatives demand monthly stipends (sueldos de campaña) disbursed via bills of exchange drawn upon the national treasury, alongside assurances that campaign objectives align with continental independence.
+
+The secondary recruitment organization, M.E.R.C., is transformed into El Boletín Revolucionario Cívico. This administrative board is maintained by municipal Cabildos to mobilize local heroes, displaced provincial militia officers, escaped indentured peons, and rough-and-tumble gaucho fighters. Operatives hired from this bulletin demand modest compensation, arrive with rustic indigenous weapons such as shortened escopetas and work knives, and possess unrefined initial statistics that improve dramatically as they gain combat experience across the campaign.
+
+Patriot Officer Creation: Examen de Aptitud del Cabildo
+
+The modern psychological evaluation of the Institute for Mercenary Profiling (I.M.P.) is reimagined as an administrative and martial examination conducted by the military commission of the Cabildo de Buenos Aires. The questionnaire evaluates the candidate’s social background, equestrian training, doctrinal philosophy, and leadership temperament during crisis moments.
+
+The v1.13 New Trait System (NTS) is re-mapped into historical competencies that reflect early 19th-century martial disciplines:
+
+• The Cavalry Commander trait replaces Auto Weapons / Heavy Weapons proficiencies, substantially decreasing Action Point (AP) costs when mounting, maneuvering, and fighting from horseback, while conferring defensive morale bonuses to adjacent mounted troops.
+
+• The Guerrilla Tactician trait adapts the Ranger and Stealth mechanics, eliminating movement stamina penalties when navigating broken scrub, increasing concealment within tall pampas grass, and granting ambush critical bonuses.
+
+• The Maestro Armero / Artillerist trait adapts Technician and Bombardier skills, accelerating the field clearing and reloading of smoothbore ordnance, reducing misfire rates in adverse weather, and optimizing the repair of damaged flintlocks in camp workshops.
+
+• The Tirador de Línea trait converts modern sniper mechanics to rifled muzzleloaders such as the British Baker rifle, improving target acquisition speeds and mitigating accuracy penalties when aiming through lingering black powder smoke.
+
+Strategic Transport Logistics
+
+The strategic transport functionality originally provided by the helicopter pilot Skyrider is mapped across three distinct historical transportation networks:
+
+The Chasque Courier and Posta Relay Network governs rapid overland tactical transport. By securing post-houses (postas) along the historical Camino Real, players establish horse relays that allow small operative detachments to traverse flat provinces at high speed. Utilizing this system consumes horse stamina and requires purchasing remounts from local estancias.
+
+The Flotilla Fluvial del Plata replaces air transport along the eastern theater. Players can commission armed river schooners, gunboats (balandras artilladas), and swift feluccas operating out of Buenos Aires, Rosario, and Santa Fe. Riverine travel bypasses impassable wetlands and muddy roads, allowing squads to rapidly redeploy heavy field pieces along the Paraná and Uruguay river corridors while executing amphibious flanking maneuvers against Royalist ports.
+
+The Tropas de Carretas de Cuyo represent the heavy supply trains essential for sustained campaigns. These lumbering, two-wheeled ox-drawn carts transport heavy artillery, gunpowder barrels, forge equipment, and stockpiled uniforms between industrial centers and forward cantonments. While their strategic speed is low, they possess vast inventory capacities and are vital for stocking forward supply depots.
+
+Arms Procurement: Contrabando and Domestic Maestranzas
+
+The online firearms store Bobby Ray’s is converted into two distinct supply mechanisms that model the wartime procurement realities of the 1810s:
+
+The Contrabando del Río de la Plata represents trade with British merchant vessels that operate covertly along the coast or anchor at shallow roadsteads off Ensenada de Barragán. Through foreign merchant factors, players purchase surplus British military hardware, including India Pattern Brown Bess muskets, Baker rifles, officers' sabres, and refined English flintstones. These transactions demand liquid silver cash, and shipments arrive with a variable delay of 72 to 120 hours via clandestine coastal couriers.
+
+The Maestranza y Sala de Armas del Estado provides domestic industrial production. Unlocked by capturing and funding state arsenals—primarily the Retiro workshops in Buenos Aires and Fray Luis Beltrán’s foundries in Mendoza—this interface allows players to forge cavalry sabres, recondition captured Spanish muskets, cast bronze artillery from melted church bells, and produce paper powder cartridges. Production throughput scales with regional control of copper deposits, timber, and saltpeter deposits.
+
+Territorial Economy: Estancias, Foundries, and Customs
+
+The mineral mines of Arulco are replaced by the authentic economic engines of the Río de la Plata:
+
+• Grandes Estancias y Saladeros generate the bulk of regional income through the cattle industry. Liberated sectors provide regular silver revenues derived from the production and sale of salted beef (tasajo), tallow, and cured hides. However, sector productivity is vulnerable to disruption; if enemy raiding parties sweep through pasturelands, livestock is scattered or destroyed, requiring several game weeks of peace to recover.
+
+• The Aduana de Buenos Aires y Puertos Litorales represents maritime customs collection, yielding massive recurring revenues from import-export tariffs. This revenue drops dramatically whenever Royalist naval squadrons establish blockades across the river mouth, directly linking the player's financial health to riverine defense.
+
+• Reales Cajas y Casas de Moneda represent provincial treasuries located in historical administrative centers such as Córdoba, Salta, and Mendoza. Securing these sectors yields substantial immediate cash reserves, followed by modest ongoing municipal tax revenues.
+
+Militia Training Doctrine: Cívicos, Montoneras, and Granaderos
+
+Training civilian militia to defend liberated territory is restructured to reflect 19th-century social mobilization:
+
+• Milicianos Cívicos Urbanos (Green Tier): Recruited from urban townsfolk, guild apprentices, and shopkeepers. Armed with pikes, hunting escopetas, or obsolete flintlocks, these units are inexpensive to raise and garrison captured settlements effectively, though their morale is fragile under artillery bombardment.
+
+• Montoneras Provinciales (Regular Tier): Recruited from rural gauchos, drovers, and farm hands. Equipped with lances, boleadoras, and fighting knives, they excel at skirmishing, leveraging terrain concealment, and mounting aggressive harassment strikes against enemy supply columns.
+
+• Regimiento de Granaderos a Caballo y Batallones de Línea (Veteran Tier): Elite regulars trained under strict European tactical drill. Armed with standardized military-pattern muskets, socket bayonets, and precision-tempered sabres, they possess high morale stability, form defensive squares against cavalry, and execute devastating bayonet charges without breaking formation.
+
+Modern JA2 System	1810s Granaderos Adaptation	Core Engine Data Mapping	Tactical & Strategic Role
+A.I.M. Mercenaries	Logia Lautaro Registry	MercProfiles.xml	High-tier historical officers and elite cavalry commanders; contract extensions tied to patriotic campaigns.
+M.E.R.C. Enlistment	Boletín Cívico Provincial	MercProfiles.xml	Inexpensive regional volunteers, gauchos, and escaped indentured troops with high growth potential.
+I.M.P. Creation	Examen del Cabildo	IMPProfiles.xml	Custom Patriot Officer creation via a martial interview determining tactical attributes and traits.
+Skyrider / Helipad	Postas & Flotilla Fluvial	Vehicles.xml	Fast horse relays overland; armed river schooners traversing the Paraná and Uruguay river basins.
+Bobby Ray’s Guns	Contrabando Británico	StoreInventory.xml	Offshore British smuggling vessels delivering military surplus flintlocks and gunsmithing tools.
+Bobbys Ray’s Ammo	Sala de Armas / Maestranza	ItemRepair.xml	Domestic foundries converting copper, scrap iron, and powder into cartridges, blades, and artillery.
+Mining Extraction	Estancias y Saladeros	Mines.xml	Economic sectors generating silver from livestock and hide exports; vulnerable to raiding.
+Town Militia	Cívicos, Montonera, Línea	TownMilitia.xml	Progressive three-tier defense force from town watchmen to regular line infantry and elite cavalry.
+
+3. Tactical Combat and Black Powder Ballistics
+
+Firearm Dynamics in the 100-AP Framework
+
+Adapting the Jagged Alliance 2 v1.13 tactical combat engine to early 19th-century black powder warfare requires sweeping changes to weapon balance, line-of-sight algorithms, and the underlying Action Point (AP) economy. Within the expanded 100-AP framework, smoothbore and rifled muzzleloaders are rebalanced around prolonged reload cycles offset by lethal kinetic trauma.
+
+Reloading an avancarga smoothbore musket—such as the Brown Bess or Charleville Modèle 1777—requires biting the paper cartridge, pouring gunpowder down the muzzle, seating the spherical lead ball with a ramrod, priming the flashpan, and cocking the hammer. In the modified engine, this multi-step process demands 40 to 50 AP. Rifled muskets utilizing tightly patched lead balls, such as the Baker rifle, demand 65 to 75 AP to cycle completely. Furthermore, these reloading animations are strictly restricted by stance flags: reloading can only be executed while standing or kneeling. Attempting to reload while prone is disabled, or incurs a severe 50% AP penalty, forcing soldiers to expose themselves during reloading cycles.
+
+Ballistic flight modeling in Weapons.xml reflects the realities of spherical soft-lead projectiles fired through unrifled barrels. Smoothbore weapons exhibit sharp ballistic dispersion beyond point-blank distances. Chance to Hit (CTH) is calibrated to 85% at close quarters (0 to 15 tiles), dropping sharply to 35% at medium range (25 tiles), and decaying to less than 10% beyond 35 tiles. Conversely, rifled arms maintain tight ballistic cones out to 50 tiles, providing unmatched long-range precision at the cost of slow cycling times.
+
+Every discharge of a black powder weapon spawns an expanding, opaque smoke cloud object directly on the firer's tile that lingers across multiple turns. These volumetric clouds obstruct line of sight, degrade long-range accuracy by 40% to 70%, and break tactical interrupts. Following two or three coordinated volleys, battlefields become shrouded in blinding white smoke, obscuring visibility and setting the stage for decisive close-quarters melee assaults.
+
+The reliability calculation in the combat engine is updated to model flintlock ignition failure influenced by weather and fouling:
+
+$$\text{Chance of Misfire} = \text{Base Inaccuracy} + (100 - \text{Item Condition}) \times 0.20 + \text{Precipitation Intensity} \times 0.50 + \text{Relative Humidity Modifier}$$
+
+During heavy pampas downpours or morning river fogs, misfire rates escalate substantially. A failed roll triggers a "Flash in the Pan" event: the powder in the external priming pan burns off without igniting the main powder charge within the breech, expending the trigger AP and requiring a 15-AP remedial action to re-prime the lock. Furthermore, striking flints lose durability with every discharge, requiring operatives to keep replacement flints in their personal load-bearing equipment.
+
+Melee Combat Mechanics and Morale Shock
+
+Because firearms are slow to reload and inaccurate over distance, cold steel serves as the decisive battlefield weapon. The combat engine is revised to prioritize melee charges, weapon reach, and morale shock:
+
+The Charge Action allows an operative to expend their entire remaining AP pool in a straight-line sprint toward an enemy, culminating in a devastating thrust or slash. For every tile traversed in a continuous charge sprint, the final attack gains a cumulative +10% kinetic damage multiplier and increased armor penetration, reflecting the physical momentum of the runner or charging horse.
+
+Weapon types fulfill distinct tactical roles:
+
+• The Sable Corvo (curved sabre) features low swing costs (12 to 14 AP) and deals massive slashing damage that inflicts immediate, heavy bleeding wounds.
+
+• The Bayoneta de Cubo (socket bayonet), affixed to the muzzle of an unloaded musket, transforms the firearm into an eight-foot spear, granting a two-tile tactical reach, defensive intercept bonuses against enemy melee charges, and piercing damage capable of puncturing heavy uniforms.
+
+• The Lanza de Tacuara (gaucho lance) delivers extreme shock damage when wielded by mounted troops, knocking enemy infantry off their feet or out of the saddle.
+
+• The Facón Gaucho (heavy utility knife) allows swift, close-range defensive parries (8 AP) when combined with an off-hand wrapped poncho (poncho al brazo), which absorbs incoming blade strikes.
+
+The suppression mechanic is overhauled into a Morale Shock Engine. When an infantry formation is targeted by an organized bayonet advance or a mounted cavalry charge, every soldier in the impact zone must pass a morale check scaled against the incoming unit's Leadership and raw combat speed. Conscripts or low-morale militia who fail this check break formation immediately, drop their weapons, and flee toward the sector boundary, reproducing historical routs observed during the revolutionary wars.
+
+Artillery and Crew-Served Ordnance
+
+Crew-served artillery replaces modern mortar and missile slots in the engine:
+
+Smoothbore bronze field cannons (4-pounder and 8-pounder pieces) operate as multi-crew tactical installations requiring a gunner to establish line-of-sight elevation and a loader to swab, ram, and prime the tube. Repositioning and pivoting these field pieces consumes significant AP, encouraging players to site guns defensively along likely avenues of approach.
+
+Solid iron round shot delivers flat-trajectory direct fire that obliterates stone barricades, punches through adobe walls, and travels through multiple human targets caught in its line of flight, inflicting immediate lethal damage. Conversely, canister and grapeshot transform artillery into devastating close-range weapons. Upon discharge, the canister ruptures at the muzzle, projecting a widening spread of iron balls across a 25-tile cone. Grapeshot inflicts massive suppression, limb loss, and casualty spikes, devastating tight infantry ranks caught in the open.
+
+Smaller ordnance, including pedreros (swivel guns) and lightweight mountain howitzers, can be packed onto pack mules or mounted along the gunwales of armed river schooners, offering versatile fire support in rugged terrain and naval boardings.
+
+4. Campaign Map and Sector Architecture
+
+Operational Sectors of the Argentine Campaign Map
+
+The strategic map comprises four operational theaters, tracking the historical geography of the United Provinces of the Río de la Plata:
+
+The Buenos Aires and Riverine Litoral theater encompasses the political capital, primary customs houses, and fortified naval strongholds along the river system. Controlling Buenos Aires (Sectors G8, G9, H8) provides the financial and administrative core of the revolution, housing the central Cabildo and the military workshops at Retiro. Northward along the Paraná River lie Santa Fe, San Nicolás, and Rosario (Sectors E7, F7, F8), which are vulnerable to amphibious Royalist landings and corsair blockades originating from the estuary.
+
+The Central Crossroads of Córdoba (Sectors F4, F5) forms the strategic hub linking the capital to the interior provinces. Córdoba is essential for inland logistical routing and houses the historic Jesuit Estancia of Caroya, the primary domestic workshop for manufacturing sabres, lances, and leather accoutrements.
+
+The Cuyo and Andean Frontier (Sectors G1, H1, H2, H3) comprises the provinces of Mendoza and San Juan, backed against the Andes mountains. Mendoza hosts the Campamento de El Plumerillo, where San Martín and Fray Luis Beltrán organize logistics and manufacture artillery. Farther west lie the rugged mountain passes of Uspallata and Los Patos, acting as formidable defensive barriers against Royalist incursions.
+
+The Northern War of Attrition (Sectors A1, A2, B2, D4) spans the frontline territories of Tucumán, Salta, and Jujuy. Tucumán acts as a central fortified redoubt, anchored by the Ciudadela fortress. Salta and Jujuy represent the active operational zone where Güemes’s gauchos wage continuous partisan warfare. At the northern limit lies the Quebrada de Humahuaca (Sector A1), a deep mountain gorge that serves as the entry bottleneck for invading Royalist armies descending from Upper Peru.
+
+Sector ID	Sector Name & Municipality	Regional Biome	Strategic & Economic Assets	Key Defensive & Choke Properties
+G8	Buenos Aires: Plaza Mayor & Cabildo	Urban Colonial Seat	Political authority; recruitment access; treasury.	Capital center; loss causes catastrophic morale drop nationwide.
+G9	Buenos Aires: Fuerte & Retiro Barracks	Military Fortification	Sala de Armas; cavalry drill grounds; coastal guns.	Fortified artillery emplacements; command base for Granaderos.
+H8	Puerto de Ensenada de Barragán	Coastal Estuary	Deepwater anchorage; British smuggling depot.	Vulnerable to naval blockade; primary maritime contraband port.
+F7	San Nicolás de los Arroyos	Riparian Riverbank	Riverine trade wharf; customs monitoring.	Fluvial bottleneck on the Paraná; site of coastal battery defense.
+E7	Santa Fe de la Vera Cruz	Litoral Wetland	Inland port; cattle ranches; riverine links.	Marshy approach terrain; provides logistics link between Cuyo and Coast.
+F5	Córdoba: Ciudad & Caroya Workshops	Scrubland Crossroads	Cold-steel weapons factory; inland customs hub.	Strategic junction uniting the Northern, Cuyo, and Coastal roads.
+H1	Mendoza: El Plumerillo Cantonment	Pre-Cordillera Foothills	Foundry of Fray Luis Beltrán; army training camp.	Western logistics base; staging sector for late-game unlock.
+H2	Paso de Uspallata	Alpine High Cordillera	Choke route; high-altitude observation redoubts.	High-altitude pass; impassable during winter snowstorms.
+H3	Paso de Los Patos	Steep Mountain Valley	Concealed high-altitude goat paths; alpine trails.	Extreme mountain terrain; high attrition rate from cold and altitude.
+D4	San Miguel de Tucumán: La Ciudadela	Subtropical Woodland	Fortified cantonment; arms repair workshops.	Defensive bulwark; halting point for northern counter-invasions.
+B2	Ciudadela de Salta	Mountain Foothill Basin	Headquarters of Martín Miguel de Güemes; trade hub.	Flanked by rugged ridges; ideal terrain for guerrilla ambushes.
+A2	San Salvador de Jujuy	Mountain Valley	Staging depot; cattle distribution point.	Historical evacuation point (Éxodo Jujeño) during major retreats.
+A1	Quebrada de Humahuaca	High Canyon Corridor	Northern border portal; customs watchpost.	Primary operational choke point; funnel for Royalist invasions.
+
+Strategic Choke Points and Supply Routes
+
+Strategic logistics depend entirely on maintaining control over the primary trade arteries:
+
+• The Camino Real del Norte connects Buenos Aires through Córdoba and Tucumán up to the Quebrada de Humahuaca. Transporting munitions, lead, and troop reinforcements along this road is necessary to sustain the Northern Army. If Royalist forces or loyalist partisans capture intermediate post-houses, such as Santiago del Estero, forward garrisons in Salta and Jujuy suffer supply cutoffs, causing their combat performance and recovery rates to deteriorate.
+
+• The Paso de San Nicolás on the Paraná River acts as an amphibious choke point. Enemy dominance along this river corridor severs the connection between the coastal capital and the western interior, preventing waterborne supply and forcing detachments onto difficult overland routes.
+
+• The High Andean Passes (Uspallata and Los Patos) serve as rugged natural bottlenecks where small, well-placed detachments can repel substantially larger advancing forces.
+
+Environmental Hazards and Biome Modifiers
+
+Combat maps feature distinct environmental parameters based on local geography:
+
+The Litoral Deltas and Swamps feature deep mud, thick marsh grass, and torrential cloudbursts. Slogging through deep mud increases movement AP costs by 50% for infantry and 100% for mounted cavalry. High humidity rapidly rusts metal components, doubling the rate of firearm fouling and increasing flintlock misfire rates during rainstorms.
+
+The Pampas and Monte Scrublands present flat terrain covered with tall wild grasses and scattered scrub. Operatives face intense summer heat, which rapidly drains stamina and accelerates dehydration during extended maneuvers. The open terrain offers little natural vertical cover, requiring soldiers to utilize tall brush for concealment, lay prone, or execute swift cavalry strikes.
+
+The High Andean Passes and Quebradas feature thin atmosphere, steep vertical drops, and sub-zero night temperatures. Operatives without cold-weather wool ponchos suffer ongoing stamina damage and hypothermia. Unacclimated soldiers suffer from apunamiento (altitude sickness), which reduces their maximum AP pool by 20% to 30% unless offset by high physical Health and Strength. Winter snows completely close these alpine sectors, preventing all transit.
+
+Royalist Strategic AI Logic
+
+The Spanish Strategic AI pursues clear operational objectives rather than dispatching random patrols:
+
+• When Patriot control over the northern provinces falters, the AI organizes an expeditionary corps in Upper Peru—combining Peninsular line infantry, regular cavalry, and field artillery—and drives south down the Humahuaca canyon to retake Jujuy, Salta, and Tucumán.
+
+• Along the coast, the Royalist naval AI tracks customs revenues in Buenos Aires and Santa Fe. If Patriot maritime income rises above target thresholds, the AI launches amphibious flotillas to raid coastal towns, bombard shore batteries, and sever supply routes.
+
+• In interior provinces with low popular loyalty, the AI equips Loyalist partisans to conduct guerrilla raids against Patriot estancias, burning crops and slaughtering cattle to bleed the revolutionary treasury.
+
+5. Historical Operative Roster
+
+Operative Roster and Statistical Profiles
+
+The operative roster features historical figures and period-accurate soldiers. Attributes and skills operate on the standard 0–100 scale: Health (HEA), Agility (AGI), Dexterity (DEX), Strength (STR), Leadership (LEA), Wisdom (WIS), Marksmanship (MRK), Mechanical (MEC), Explosives (EXP), and Medical (MED). Combat specialties are assigned using the v1.13 New Trait System.
+
+Martín Miguel de Güemes
+
+• Role: Guerrilla Warlord & Vanguard Cavalry Commander.
+
+• Recruitment Platform: Northern Front Milestone (Salta Cabildo Alliance).
+
+• Salary / Motivation: Patriotic Duty ($0/week; requires player to respect northern autonomy and supply regular arms to local estancias).
+
+• Attributes & Skills: HEA: 82, AGI: 90, DEX: 85, STR: 78, LEA: 95, WIS: 88, MRK: 81, MEC: 35, EXP: 40, MED: 30.
+
+• Traits: Major: Cavalry Commander, Hunter/Ranger. Minor: Stealthy, Night Ops.
+
+• Starting Equipment: Rifled Cavalry Carbine (Tercerola), Toledo Curved Sabre, Leather Guardamontes, Red Poncho Salteño.
+
+• Operational Profile: The premier irregular commander of the northern border. Provides substantial mobility and stealth bonuses to cavalry squads traversing broken terrain, making his detachment exceptionally lethal when ambushing enemy supply columns.
+
+Juana Azurduy de Padilla
+
+• Role: Partisan Field Lieutenant & Assault Leader.
+
+• Recruitment Platform: Northern Guerrilla Outposts.
+
+• Salary / Motivation: Anti-Royalist Conviction (Joins after player delivers fifty muskets to partisan resistance caches).
+
+• Attributes & Skills: HEA: 88, AGI: 89, DEX: 86, STR: 80, LEA: 91, WIS: 82, MRK: 77, MEC: 20, EXP: 45, MED: 52.
+
+• Traits: Major: Melee Specialist, Guerrilla Tactician. Minor: Ambidextrous, Bravery.
+
+• Starting Equipment: Officer's Cavalry Sabre, Pair of Flintlock Pocket Pistols, Light Bamboo Lance, Leather Amazon Tunic.
+
+• Operational Profile: An aggressive frontline commander who excels in mounted shock assaults and counter-charges. Her presence prevents local militia from breaking under fire and shields allied squads from intimidation effects.
+
+Fray Luis Beltrán
+
+• Role: Master Armorer, Military Engineer & Ordnance Artisan.
+
+• Recruitment Platform: Logia Lautaro / Cuyo Directorate.
+
+• Salary / Motivation: Revolutionary Devotion ($400/week to support his monastic ordnance workshops).
+
+• Attributes & Skills: HEA: 76, AGI: 65, DEX: 94, STR: 84, LEA: 72, WIS: 96, MRK: 50, MEC: 99, EXP: 90, MED: 45.
+
+• Traits: Major: Master Engineer, Heavy Weapons. Minor: Lockpicking/Toolmaster, Gunsmith.
+
+• Starting Equipment: Blacksmithing Hammer, Gunsmith Reamers, Sighting Calipers, Franciscan Friar's Habit, Gunpowder Measure.
+
+• Operational Profile: The technical core of the revolutionary war effort. Stationed in base workshops, Beltrán casts bronze field guns, repairs damaged firearms, manufactures carriage wheels, and processes unrefined ores into munitions.
+
+Juan Bautista Cabral
+
+• Role: Elite Heavy Granadero & Dedicated Bodyguard.
+
+• Recruitment Platform: Regimiento de Granaderos a Caballo (Retiro Barracks).
+
+• Salary / Motivation: Regular Soldier's Pay ($150/week).
+
+• Attributes & Skills: HEA: 96, AGI: 84, DEX: 80, STR: 92, LEA: 60, WIS: 70, MRK: 68, MEC: 40, EXP: 25, MED: 35.
+
+• Traits: Major: Bodyguard, Martial Arts. Minor: Athletic, Tough.
+
+• Starting Equipment: Model 1812 Granaderos Sabre Corvo, Socket Bayonet, Heavy Leather Granadero Shako, Wool Regimental Uniform.
+
+• Operational Profile: A physically imposing soldier specializing in personal protection and close-quarters melee. When stationed adjacent to commanding officers, Cabral automatically absorbs reaction fire and executes lethal counter-attacks against charging enemies.
+
+Manuel Dorrego
+
+• Role: Cazador Commander & Light Skirmisher.
+
+• Recruitment Platform: Logia Lautaro Bulletin.
+
+• Salary / Motivation: Aristocratic Patriot ($600/week; prone to political friction with centralist directors).
+
+• Attributes & Skills: HEA: 84, AGI: 92, DEX: 88, STR: 74, LEA: 80, WIS: 78, MRK: 89, MEC: 30, EXP: 35, MED: 20.
+
+• Traits: Major: Gunslinger, Skirmisher. Minor: Quick Eyes, Daring.
+
+• Starting Equipment: Double-Barreled English Flintlock Pistol, Short Hunting Rifle, Silver-Mounted Facón, Green Cazador Coatee.
+
+• Operational Profile: A daring light infantry officer specializing in forward scouting, rapid skirmish maneuvers, and disruptive hit-and-run strikes with pistols and carbines.
+
+Guillermo (William) Brown
+
+• Role: Naval Commander, Privateer & Heavy Artillery Specialist.
+
+• Recruitment Platform: Foreign Volunteer Registry (Buenos Aires Harbor).
+
+• Salary / Motivation: Privateer Contract ($900/week plus a share of captured naval prizes).
+
+• Attributes & Skills: HEA: 85, AGI: 72, DEX: 80, STR: 86, LEA: 92, WIS: 90, MRK: 75, MEC: 78, EXP: 85, MED: 40.
+
+• Traits: Major: Heavy Ordnance / Bombardier, Naval Tactics. Minor: Fearless, Navigator.
+
+• Starting Equipment: Heavy Naval Boarding Pistol, Boarding Cutlass, Brass Marine Telescope, Sea-Service Greatcoat.
+
+• Operational Profile: The master of riverine operations. When deployed aboard gunboats or directing coastal artillery, Brown grants significant accuracy bonuses to heavy ordnance and provides decisive advantages during boarding actions.
+
+Hipólito Bouchard
+
+• Role: Privateer Corsair & Assault Breacher.
+
+• Recruitment Platform: Foreign Volunteer Network (Buenos Aires).
+
+• Salary / Motivation: Letter of Marque ($800/week).
+
+• Attributes & Skills: HEA: 86, AGI: 85, DEX: 87, STR: 85, LEA: 76, WIS: 84, MRK: 78, MEC: 60, EXP: 75, MED: 30.
+
+• Traits: Major: Night Ops, Assault Breacher. Minor: Ruthless, Demolitions.
+
+• Starting Equipment: Brass Blunderbuss (Trabuco), Heavy Boarding Axe, Large Flintlock Belt Pistol, Leather Rigging Vest.
+
+• Operational Profile: Highly effective in close-quarters urban assaults, nocturnal raids, and fortress breaches, utilizing high-spread blunderbusses to clear entrenched defenders.
+
+Lorenzo Barcala
+
+• Role: Disciplined Artillerist & Pardo Battalion Veteran.
+
+• Recruitment Platform: Regimiento de Pardos y Morenos Enlistment.
+
+• Salary / Motivation: Emancipation Champion ($180/week).
+
+• Attributes & Skills: HEA: 85, AGI: 80, DEX: 91, STR: 79, LEA: 78, WIS: 85, MRK: 84, MEC: 72, EXP: 80, MED: 35.
+
+• Traits: Major: Artillery Precision, Master Gunner. Minor: Disciplined, Resilient.
+
+• Starting Equipment: Pattern 1777 Infantry Musket with Bayonet, Powder Measure, Sighting Rule, Pardo Regimental Coatee.
+
+• Operational Profile: Calm under concentrated enemy fire, Barcala maximizes smoothbore artillery accuracy and maintains rigid volley discipline when directing Pardo infantry lines.
+
+Macacha Güemes (María Magdalena Dámasa Güemes)
+
+• Role: Spymaster, Covert Courier & Intelligence Agent.
+
+• Recruitment Platform: Salta Espionage Network (unlocked alongside Martín Güemes).
+
+• Salary / Motivation: Family Honor & Independence ($250/week disbursed to regional informant networks).
+
+• Attributes & Skills: HEA: 70, AGI: 88, DEX: 86, STR: 55, LEA: 89, WIS: 94, MRK: 65, MEC: 45, EXP: 20, MED: 65.
+
+• Traits: Major: Clandestine Operations, Master Scout. Minor: Disguise, Silver Tongue.
+
+• Starting Equipment: Concealed Boot Knife, Small Flintlock Pocket Pistol, Salteña Riding Mantle, Forged Royalist Safe-Conduct Passes.
+
+• Operational Profile: Unrivaled in gathering strategic intelligence, Macacha neutralizes ambush threats in the northern theater, exposes enemy garrison strengths, and facilitates diplomatic accords with reluctant municipal Cabildos.
+
+Facundo Quiroga (Young Chieftain)
+
+• Role: Montonero Shock Lancer & Frontier Warlord.
+
+• Recruitment Platform: La Rioja Interior Enlistment.
+
+• Salary / Motivation: Regional Autonomy & Cattle Security ($350/week).
+
+• Attributes & Skills: HEA: 92, AGI: 87, DEX: 76, STR: 94, LEA: 86, WIS: 68, MRK: 55, MEC: 30, EXP: 20, MED: 25.
+
+• Traits: Major: Savage Melee, Heavy Lancer. Minor: Intimidating, Iron Will.
+
+• Starting Equipment: 9-foot Ash-wood Lance, Heavy Rawhide-wrapped Facón, Heavy Leather Poncho, Boleadoras.
+
+• Operational Profile: A ferocious cavalry shock combatant whose mounted charges inflict massive kinetic trauma, while his intimidating presence triggers morale checks across opposing peasant levies.
+
+Dr. James Paroissien
+
+• Role: Surgeon General, Field Medic & Chemical Specialist.
+
+• Recruitment Platform: British Volunteer Cadre (Buenos Aires).
+
+• Salary / Motivation: Professional Medical Contract ($550/week).
+
+• Attributes & Skills: HEA: 72, AGI: 70, DEX: 89, STR: 62, LEA: 65, WIS: 95, MRK: 60, MEC: 68, EXP: 65, MED: 98.
+
+• Traits: Major: Doctor, Chemist. Minor: Scientific, Field Triage.
+
+• Starting Equipment: Surgical Amputation Kit, Scalpels, Bandage Rolls, Carbolic Spirits, Clean Linen Apron.
+
+• Operational Profile: Exceptional field medical capability, rapidly stabilizing critical battlefield injuries, preventing permanent attribute decay from wounds, and optimizing gunpowder refining in regional mills.
+
+José María Paz
+
+• **Role: Methodical Gunnery Specialist & Cavalry Tactician.
+
+• Recruitment Platform: Córdoba Officer Cadre.
+
+• Salary / Motivation: Professional Military Service ($450/week).
+
+• Attributes & Skills: HEA: 78, AGI: 82, DEX: 88, STR: 72, LEA: 82, WIS: 92, MRK: 91, MEC: 65, EXP: 70, MED: 30.
+
+• Traits: Major: Master Tactician, Sharpshooter. Minor: Ambidextrous, Disciplined.
+
+• Starting Equipment: Baker Rifle, Mathematical Firing Tables, Officer's Straight Sabre, Cordobés Uniform Coatee.
+
+• Operational Profile: A calculating, analytical officer who provides passive accuracy and interrupt bonuses to all squad members within his command radius during defensive engagements.
+
+General José de San Martín (Unlocked Revolutionary Catalyst)
+
+• Role: Supreme Commander of the Liberation Army.
+
+• Recruitment Platform: Campaign Milestone (completion of El Plumerillo preparations).
+
+• Salary / Motivation: Father of the Republic ($0/week; non-mercenary leader).
+
+• Attributes & Skills: HEA: 88, AGI: 88, DEX: 90, STR: 84, LEA: 99, WIS: 98, MRK: 92, MEC: 65, EXP: 60, MED: 50.
+
+• Traits: Major: Grand Strategist, Master Cavalry Commander. Minor: Resolute, Iron Will, Teacher.
+
+• Starting Equipment: Custom Mameluke Curved Sabre, English Double-Barreled Flintlock Carbine, General’s Embroidered Bicorne, Brass Monocular, Map of Andean Passes.
+
+• Operational Profile: The preeminent operative in the game. Completely eliminates squad travel fatigue across mountain passes, prevents allied panic checks, maximizes squad interrupt initiative, and executes devastating precision cavalry charges.
+
+Operative Name	Role & Specialization	HEA	AGI	DEX	STR	LEA	WIS	MRK	MEC	EXP	MED	Core Traits (v1.13 System)
+M. M. de Güemes	Guerrilla Cavalry Leader	82	90	85	78	95	88	81	35	40	30	Cavalry Commander, Hunter/Ranger
+Juana Azurduy	Shock Partisan Leader	88	89	86	80	91	82	77	20	45	52	Melee Specialist, Guerrilla Tactician
+Fray Luis Beltrán	Ordnance Engineer & Smith	76	65	94	84	72	96	50	99	90	45	Master Engineer, Heavy Weapons
+Juan B. Cabral	Elite Granadero Bodyguard	96	84	80	92	60	70	68	40	25	35	Bodyguard, Martial Arts, Tough
+Manuel Dorrego	Cazador Light Skirmisher	84	92	88	74	80	78	89	30	35	20	Gunslinger, Skirmisher, Daring
+Guillermo Brown	Naval & Coastal Artillerist	85	72	80	86	92	90	75	78	85	40	Heavy Weapons, Naval Tactics
+Hipólito Bouchard	Corsair Assault Breacher	86	85	87	85	76	84	78	60	75	30	Night Ops, Assault Breacher
+Lorenzo Barcala	Pardo Artillery Specialist	85	80	91	79	78	85	84	72	80	35	Master Gunner, Disciplined
+Macacha Güemes	Spymaster & Intelligence	70	88	86	55	89	94	65	45	20	65	Clandestine Ops, Master Scout
+Facundo Quiroga	Montonero Heavy Lancer	92	87	76	94	86	68	55	30	20	25	Savage Melee, Heavy Lancer
+James Paroissien	Surgeon & Military Chemist	72	70	89	62	65	95	60	68	65	98	Doctor, Chemist, Field Triage
+José María Paz	Defensive Line Tactician 	78	82	88	72	82	92	91	65	70	30	Master Tactician, Sharpshooter
+José de San Martín	Supreme Army Commander	88	88	90	84	99	98	92	65	60	50	Grand Strategist, Cavalry Commander
+
+6. Weaponry, Ordnance, and Equipment Data Tables
+
+Long Arms: Muskets, Rifles, and Carbines
+
+Long arms are configured for integration into Weapons.xml and Items.xml using the JA2 v1.13 standard 100-AP combat framework. Calibers, cycle costs, effective engagement ranges, and ballistic properties reflect early 19th-century muzzle-loading realities.
+
+Item Designation	Historical Caliber	Mag Size	Damage (Raw)	AP Fire (Ready/Aim)	AP Reload (Full)	Effective Range (Tiles)	Special Historical Properties
+Brown Bess (India Pattern)	.75 Lead Ball	1	58	12 / 6	45	18	Heavy kinetic trauma; accepts Socket Bayonet; generates dense smoke.
+Charleville Modèle 1777	.69 Lead Ball	1	52	11 / 5	42	22	Superior lock geometry; +10% reliability in humid environments.
+Baker Rifle (British 1800)	.62 Patched Ball	1	64	16 / 10	70	45	Rifled bore; requires patch; sniper critical bonus; minimal dispersion.
+Tercerola de Caballería	.65 Short Ball	1	44	9 / 4	38	12	Short barrel; low AP to shoulder; wieldable from horseback without penalty.
+Escopeta Criolla	16-Gauge Shot	1	48	10 / 4	35	10	Wide pellet dispersion; produced by local blacksmiths; prone to fouling.
+
+Handguns and Close-Quarters Fire
+
+Handguns provide emergency backup fire prior to entering hand-to-hand melee combat, featuring quick unholstering times and high stopping power at point-blank range.
+
+Item Designation	Historical Caliber	Mag Size	Damage (Raw)	AP Fire (Ready/Aim)	AP Reload (Full)	Effective Range (Tiles)	Special Historical Properties
+Pistola de Arzón	.69 Lead Ball	1	42	7 / 3	32	8	Holstered in saddle; high close-range kinetic knockdown.
+Pistola de Duelo de Oficial	.50 Precision Ball	1	38	6 / 2	28	12	Precision rifled lock; reduced misfire rate; fits belt holsters.
+Trabuco Naranjero	Blunderbuss Scrap	1	75	12 / 5	40	6	Devastating 3-tile wide cone; massive suppression; negligible long-range hit.
+Pistola Doble Cañón	.54 Lead Ball	2	40	8 / 3	55	9	Double barrel assembly; delivers two shots before cycling reload.
+
+Melee Weaponry and Cold Steel
+
+Cold steel represents the primary decisive offensive weapon in GRANADEROS, tuned for high damage output, tactical reach, and morale trauma.
+
+Item Designation	Blade Length	Weight (kg)	AP Strike / Slash	Kinetic Damage	Armor Penetration	Special Tactical Mechanics
+Sable Corvo Sanmartiniano	90 cm	1.1	12	46	Medium	Curved slashing bonus; inflicts severe bleeding; parry advantage.
+Sable de Caroya	92 cm	1.3	14	42	Medium	Standard issue; tempered steel; exceptional blade durability.
+Bayoneta de Cubo	42 cm	0.5	16	50	Very High	2-tile tactical spear reach; momentum charge damage bonus.
+Lanza de Tacuara	280 cm	2.2	18	56	Extreme	Mounted shock weapon; inflicts knockdown; reach advantage.
+Facón Gaucho con Poncho	45 cm	0.6	8	32	Low	Swift counter-strike; off-hand wrapped poncho absorbs melee hits.
+
+Artillery and Crew-Served Ordnance
+
+Ordnance configurations adapted into Heavy[span_617](start_span)[span_617](end_span)Weapons.xml simulate smoothbore bronze field pieces, gunboat swivel artillery, and anti-personnel canister fire.
+
+Ordnance Designation	Ammunition Type	Crew Req.	AP Fire / Reload	Blast / Spread Radius	Max Range (Tiles)	Battlefield Structural Impact
+Cañón de Bronce de 4 lb	4 lb Solid / Metralla	2 Men	30 / 60	4 Tiles (Metralla)	80	Severe: breaches adobe walls and field barricades.
+Cañón de Campaña de 8 lb	8 lb Solid / Canister	3 Men	40 / 75	6 Tiles (Canister)	110	Massive: destroys stone redoubts, penetrates deep infantry ranks.
+Pedrero de Regala	1 lb Canister / Stone	1 Man	20 / 35	3 Tiles	35	Light: anti-personnel sweeping fire during riverine boardings.
+
+Munitions, Field Consumables, and Accoutrements
+
+Field consumables and equipment managed within the Load-Bearing Equipment (LBE) pocket hierarchy simulate logistics maintenance and medical triage during operations.
+
+Consumable / Equipment Item	Functional Description	Weight (kg)	LBE Pocket Assignment	Consumption & Operational Effect
+Cartuchos de Papel (x20)	Pre-measured black powder and spherical lead balls wrapped in paper.	0.8	Cartridge Box (Cartuchera)	Consumes 1 cartridge per firearm discharge cycle.
+Frasco de Pólvora de Cebar	Fine-grain sulfur and saltpeter mix for priming external flashpans.	0.3	Small Belt Pocket 	Contains 50 pan charges; prevents misfires caused by coarse powder.
+Piedras de Sílex (x4)	Knapped striking flints fitted to hammer jaws.	0.1	Ammunition Pouch	Consumed to restore degraded firearm condition caused by sparking.
+Tasajo y Vendas de Lino	Dried salt-cured beef rations paired with clean linen bandages.	1.2	Haversack / Backpack	Restores lost tactical stamina; arrests active bleeding wounds.
+Albardas de Carga para Mula	Specialized rawhide pack-saddle rig for alpine transit.	6.0	Pack Animal Equipment Slot	Expands squad carry capacity by 40 kg through mountain sectors.
+
+7. Technical Implementation and Engine Conversion
+
+Adapting the Jagged Alliance 2 v1.13 C++ codebase into GRANADEROS transitions an established tactical engine into a historical simulation of the Argentine War of Independence. By utilizing the modularity of the v1.13 Tabledata XML directory structure—particularly Weapons.xml, Items.xml, MercProfiles.xml, and Cities.xml—the historical conversion is achieved while preserving the underlying tactical depth.
+
+At the strategic level, the modern mercenary economic cycle is successfully adapted to 19th-century reality: clandestine revolutionary registries replace corporate merc networks, riverine gunboats and horse relays replace helicopters, and livestock estancias replace mineral extraction. These strategic conversions directly feed into the core campaign progression, where player investments into logistics, ordnance foundries, and regional alliances pave the way for unlocking General José de San Martín and launching the final liberation offensives.
+
+Tactically, black powder ballistics, smoke obscuration, weather-induced ignition failure, and devastating melee charges transform the pacing of turn-based combat. Firefights become deliberate engagements defined by slow reload cycles and smoke-covered corridors, where victory is decided by combined-arms coordination: pinning opposing formations with musket volleys, unleashing canister shot from field guns, and executing decisive saber charges with elite Granaderos. This design framework delivers an authentic tactical simulation that honors the military history of the South American Wars of Independence.
+
+
+
+
+Sources used in the report
+  JA2 v1.13 / Revision History - PBworks
+
+  JA2 v1.13 / XML - Items
+
+  Features - JA2 v1.13 / FrontPage
+
+  Armas de fuego durante el periodo Virreinal en el Rio de la Plata y
+
+  Armas del Ejército Argenino: Guerra del Paraguay - Zona Militar
+
+  LAS ARMAS DE LA INDEPENDENCIA
+
+  el cuerpo, las armas y el combate - Portal AmeliCA
+
+  ARMAS QUE HICIERON HISTORIA - Bitácora de Vuelo
+
+  Reseña histórica del Armamento utilizado - Población Santa Fe
+
+  Los cambios que hicieron posible ganar la Guerra de la
+
+  Regimiento de Granaderos a Caballo - Wikipedia, la enciclopedia
+
+  Los soldados del Ejército de los Andes - Continuemos estudiando
+
+  El olvidado batallón de Buenos Aires. Parte I - Revista El Arcón de
+
+  Argentina $ 21,90 - Googleapis.com
+
+  El primer metalúrgico y su rol fundamental en la gesta libertadora
+
+  fray luis beltran - INFO>SOBERANA
+
+  Hoy se homenajea a Fray Luis Beltrán: ´el primer metalúrgico
+
+  A pocos días de cumplir 100 años, la historia del Monumento al
+
+  Regimiento de Pardos y Morenos - Wikipedia, la enciclopedia libre
+
+  Batallón de Castas - Wikipedia, la enciclopedia libre
+
+  ANIVERSARIO DE LA CREACIÓN DEL REGIMIENTO CÍVICO DE
+
+  El papel del afro americano en la guerra de la Independencia
+
+  Guerra de la Independencia Argentina - Wikipedia
+
+  Presentan el libro “Batallón de Patricios Pardos y Morenos
+
+  Historia del Ejército Argentino | Zona Militar
+
+  El fenómeno de la deserción en las guerras de la revolución ... - EIAL
+
+  Ejército del Norte (Provincias Unidas del Río de la Plata) - Wikipedia
+
+  Historia Argentina - Primer Triunvirato - La reorganización militar
+
+  Breve Descripción de las Batallas Argentinas
+
+  BATALLAS Y COMBATES EN LA HISTORIA ARGENTINA (1806/1893)
+
+  Batalla de Maipu :: Guerra Independencia Americana :: Campaña
+
+  los casos de las batallas de Cepeda (1859) - RepHip UNR
+
+  ARQUEOLOGÍA DE LAS BATALLAS DE CEPEDA (1859) Y PAVÓN
+
+  v1.13 XML Customization » IMP Starting Items - The Bears Pit
+
+  v1.13 Idea Incubation Lab » Split the 'Ranger' trait - The Bears Pit
+
+  Logia Lautaro - Wikipedia, la enciclopedia libre
+
+  ¿FUE LA LOGIA LAUTARO MASONICA? - Critica Revisionista
+
+  San Martín se mimetizó con la Logia Lautaro, pero nunca fue masón
+
+  Fermín Chávez – La historia poco conocida de San Martín
+
+  v1.13 XML Customization » Creating Molle Items (Guide)
+
+
+
+
+Sources read but not used
+  Item-making Tutorial for JA2 1.13
+
+  La increíble historia del Fray Luis Beltrán, el cura artillero de San
+
+  El General San Martín: sabiduría práctica y los cinco principios del
+
+  Bicentenario del Cruce de Los Andes y de la ... - mendoza.edu.ar |
+
+  Fotos Antiguas de Mendoza, Argentina y el Mundo de cada década
+
+  Jovita María, Novillo (UNT). - Acta Académica
+
+  El espíritu incaico y la argentinidad - La Capital
+
+  Coraje Bantu en las guerras de independencia argentina
+
+  18 de Noviembre de 1866 - Tradición Gaucha
+
+  Historia del Ejército Argentino - Wikipedia, la enciclopedia libre
+
+  SAN MARTIN Y LA MASONERIA Gran Capitan Libertador General
+
+  SAN MARTÍN Y LA LOGIA LAUTARO (1812)
+
+  Blog Archive » Logia Lautaro - Revisionistas
+
+  All about modding JA2 » Too many items for an attachment?
+
+
+
+
+Thoughts
