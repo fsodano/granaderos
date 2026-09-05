@@ -1,5 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign,rosterFor,restoreCampaign,serializeCampaign} from '../game/campaign.js';
+import {dispatchCampaign,rosterFor,restoreCampaign,serializeCampaign} from '../game/campaign.js';
+import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {enterSector} from '../game/world.js';
 test('earned practice persists through sector return and is applied exactly once on re-entry',()=>{
  let s=initialCampaign();const base=rosterFor(s).find(o=>o.id===3).marksmanship;s=dispatchCampaign(s,{type:'visitSector'});const battle=enterSector(s.pendingBattle);const u=battle.units.find(u=>u.id==='3');u.trainedStats={marksmanship:1};u.skillPractice={marksmanship:5};u.marksmanship=base+1;

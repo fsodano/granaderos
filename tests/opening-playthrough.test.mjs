@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign as dispatch} from '../game/campaign.js';
+import {dispatchCampaign as dispatch} from '../game/campaign.js';
+import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {buildSectorMap} from '../game/maps.js';
 import {createBattle,actBattle,endTurn,getReachable,bladeFor,hasLineOfSight,shotChance} from '../game/tactical.js';
 function fight(request){const map=buildSectorMap(request);let b=createBattle(map.squad,map),actions=0;

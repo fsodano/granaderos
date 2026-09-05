@@ -99,3 +99,17 @@ Implemented a separate Spanish Escritorio screen with service dossiers and a ret
 ### dev.4 evidence checkpoint
 
 166 tests pass, TypeScript passes, static build verifies 155 files and 73 asset references. Original infantry walk/crouch/crawl and cavalry walk rigs are preserved with render and verification scripts. Browser checks cover the separate desk, adjacent Retiro greeting and horse buy/assign/feed. The legal opening playthrough wins both opening battles without injected victories; this does not establish full campaign balance. See REQUIREMENT-AUDIT.md for remaining requirements.
+
+
+## 2026-09-05 — 0.2.0-dev.1 personal campaign start
+
+New campaigns start at the desk with no personnel. One free custom officer has
+manual attributes, original portrait, class and an effective trait questionnaire.
+Seven fictional paid volunteers use finite day/week/month contracts with XP pay
+growth and elite daily limits; historical figures remain tactical encounters.
+The strategic map now focuses on personnel, sectors, time and city militia.
+NPC supply quests award city loyalty once. See NEW-START-AUDIT.md for browser
+acceptance and scope limits. All 192 tests, typecheck and static build pass.
+Previous milestone PR #1 merged as e8cc25d92352cd02b1d44f3e41c8065c9dcb1615.
+Current branch: feat/0.2.0-personal-campaign-start. Native engine submodule edits
+are pre-existing and excluded from this web milestone.

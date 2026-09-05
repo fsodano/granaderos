@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign as dispatch,isSupplied,royalistIntel,mentorDispatch} from '../game/campaign.js';
+import {dispatchCampaign as dispatch,isSupplied,royalistIntel,mentorDispatch} from '../game/campaign.js';
+import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {NORTHERN_AXIS,coastalRevenue} from '../game/narrative.js';
 const wait=(s,hours)=>{const n=dispatch(s,{type:'wait',hours});assert.equal(n.lastError,null);return n;};
 test('Tristán advances down the actual northern corridor under Pezuela orders',()=>{

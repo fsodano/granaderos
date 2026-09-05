@@ -109,3 +109,23 @@ The campaign clock advances feed, condition, rental expiry, gestation and maturi
 ### Foreign volunteer catalogue
 
 Morel and Doyle are explicitly fictional paid volunteers with maritime gunner and sailor backgrounds. Their roles are a design inference from documented foreign and corsair service, not claims about real people or an organized mercenary marketplace. Historical context: https://sanmartiniano.cultura.gob.ar/noticia/aportes-a-las-acciones-maritimas-sanmartinianas/ . They use the existing finite stipend and provincial recruitment system, with their own attributes, personalities and seven Spanish speech events.
+
+## Empty start, prepaid contracts and civic cities (2026-09-05 redesign)
+
+`initialCampaign()` now starts with an empty hired roster and an empty first squad. It does not grant Cabral, Dorrego or Paroissien. Character creation accepts `{type:'createOfficer',name,answers,profile}`; profile is the version-2 class/portrait/550-point object validated by `character-profile.js`. The custom officer serves permanently. Old saves retain their actual roster and acquire explicit `legacy` service records without retroactive fees.
+
+The paid desk roster consists of fictional civic volunteers; regional occupation does not hide their contract offers. `recruitCivic {id,term}` pays in advance for `day` (24 hours), `week` (168) or `month` (720). The default is a day. `contractQuote(state,operative,term)` returns availability, reason, price, hours and elite status. Daily rates round up from monthly baseline, with 10% increases per 100 combat XP. Explicit elite profiles, marksmanship 90+, or level 5+ accept one-day terms only. These are disclosed game-balance rules, not historical wage claims.
+
+`renewContract {id,term}` extends the existing expiry using a fresh experience-dependent quote. `dismiss {id}` ends service without refund; the player's officer cannot be dismissed. At expiry, the volunteer leaves hired lists and squads, stops militia instruction and releases any assigned horse. Personal gear remains with that service record; rehiring does not refill supplies or create another loadout. No automatic renewal charges apply. Legacy service alone retains the old monthly-payroll model. Time is currently advanced strategically; an open tactical sector pauses strategic expiry.
+
+Historical figures are physical NPC contacts, never paid desk hires. All thirteen now have encounter locations and retain their campaign/leadership prerequisites. Their new agreements are permanent `patriot` service. Remaining contacts added in this revision place Cabral at Retiro, Dorrego and Paroissien in Buenos Aires, Bouchard in Ensenada, Barcala in Mendoza and Quiroga in Córdoba. These meeting placements are game-design abstractions, not a dated historical itinerary.
+
+Militia training additionally requires an eligible populated city: all its grouped sectors must be Patriot-controlled and average loyalty must reach 50%. Rural passes are ineligible. Courses pause when civic eligibility is lost. `cities.js` records stable quest and battle events once, applying regional loyalty changes for actual outcomes. Teacher speciality shortens training in addition to leadership and tactical-doctrine bonuses.
+
+`tests/contracts-web.test.mjs` exercises the real empty-start/profile/hire/travel/visit/save flow. Older subsystem tests explicitly import `tests/legacy-campaign-fixture.mjs` to test continuity of established pre-redesign saves; that helper is not used by runtime code. Full-campaign legacy integration remains a separate regression, not proof that the new opening has been browser-accepted.
+
+### Physical NPC errands
+
+`quests.js:questForNPC(state,npcId)` exposes three authored requests: Retiro's sergeant needs 10 textiles, San Nicolás's postmaster needs 5 powder, and Macacha needs 5 muskets plus 2 reserve remounts after Salta and Jujuy are secured. These are individual narrative errands, separate from the global diplomacy flags.
+
+An adjacent `talkNPC` with `approach:'quest'` first records an offer without consuming goods. A second physical conversation delivers exact goods only when the conditions and inventory suffice. Completion raises the associated city's loyalty by eight once, using a stable event identifier; repeat completion is rejected and cannot charge or reward again. `state.quests` preserves offered/completed stages and timestamps and is validated on restore. The dialogue options advertise `quest` while unfinished. Macacha's request should be completed before recruiting her, as recruited historical contacts leave the local NPC list. These are designed game errands rather than authenticated historical orders.

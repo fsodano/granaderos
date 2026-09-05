@@ -1,0 +1,50 @@
+[
+  {
+    "id": "avatar-woman-scout",
+    "file": "/art/avatar-woman-scout.webp",
+    "source": "assets/source/avatar-woman-scout-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 13294,
+    "sha256": "795b266ead6b931a5cf06d45a2db79c2677077351fc3cbefa9a016bcf85c1f57",
+    "fictional": true
+  },
+  {
+    "id": "avatar-woman-civilian",
+    "file": "/art/avatar-woman-civilian.webp",
+    "source": "assets/source/avatar-woman-civilian-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 11676,
+    "sha256": "658da0308ccee8b8fb5c5b5547d7163aa0b220d43a293a68926a4d7e4e0284c4",
+    "fictional": true
+  },
+  {
+    "id": "avatar-man-gaucho",
+    "file": "/art/avatar-man-gaucho.webp",
+    "source": "assets/source/avatar-man-gaucho-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 16532,
+    "sha256": "159f09e1a0fb9a3ce5e4bfc540e48a593d552d2e91d68576446b1bd6134e8b19",
+    "fictional": true
+  },
+  {
+    "id": "avatar-man-soldier",
+    "file": "/art/avatar-man-soldier.webp",
+    "source": "assets/source/avatar-man-soldier-v1.png",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 11376,
+    "sha256": "4791863e467396bf4a96c891dbe6ed1e1fbc77cc437c2ac9a66456112753ef70",
+    "fictional": true
+  }
+]
