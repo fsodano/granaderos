@@ -1,7 +1,8 @@
 import {marchToFront} from './campaign-test-helpers.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign as dispatch,restoreCampaign,serializeCampaign} from '../game/campaign.js';
+import {dispatchCampaign as dispatch,restoreCampaign,serializeCampaign} from '../game/campaign.js';
+import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {TRANSPORT_OPTIONS,transferOptions,cargoWeight} from '../game/logistics.js';
 const order=(s,a)=>{const n=dispatch(marchToFront(s,a),a);assert.equal(n.lastError,null,n.lastError);return n;};
 const transfer=(goods,mode='carts',source='reserve',destination='retiro')=>({type:'supplyTransfer',goods,mode,source,destination});

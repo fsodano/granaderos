@@ -1,11 +1,23 @@
 'use client';
+import {useState} from 'react';
 import Recruitment from './Recruitment';
+import CharacterCreator from './CharacterCreator';
+import CampaignOffice from './CampaignOffice';
+import {PHASES} from '../../game/data.js';
+import {rosterFor} from '../../game/campaign.js';
 import {ENCOUNTERS} from '../../game/encounters.js';
 import {CAMPAIGN_SECTORS} from '../../game/data.js';
-export default function Desk({state,dispatch,onClose}:{state:any;dispatch:(action:any)=>void;onClose:()=>void}){
- return <div className="campaign"><header className="campaign-heading"><div><p className="eyebrow">CUARTEL GENERAL · CORRESPONDENCIA</p><h1>Escritorio de campaña</h1><p>Hojas de servicio, recomendaciones y contactos de las provincias.</p></div><button className="line-button" onClick={onClose}>← Volver a la carta de operaciones</button></header>
- {state.lastError&&<p className="notice error" role="alert">{state.lastError}</p>}
- <Recruitment state={state} dispatch={dispatch}/>
- <section className="recruit-heading"><p className="eyebrow">CONTACTOS EN EL TERRITORIO</p><h2>Encuentros y alianzas</h2><p>Viajá hasta el sector y conversá personalmente. Su colaboración depende de tus actos, del liderazgo del interlocutor y de la situación de la campaña.</p><div className="roster-grid">{ENCOUNTERS.filter((n:any)=>n.operativeId!==undefined&&!state.recruited.includes(n.operativeId)).map(n=><article className="officer" key={n.id}><h3>{n.name}</h3><p>{CAMPAIGN_SECTORS.find(s=>s.id===n.sector)?.name}</p><small>Encuentro personal · No se contrata por correspondencia</small></article>)}</div></section>
- </div>;
+import {portraitFor} from '../lib/portraits';
+import './desk.css';
+const tabs=[['overview','Resumen'],['create','Tu granadero'],['hire','Contrataciones'],['contacts','Correspondencia'],['workshop','Maestranza'],['diplomacy','Cabildo'],['journal','Cuaderno']];
+export default function Desk({state:s,dispatch,onClose}:{state:any;dispatch:(action:any)=>void;onClose:()=>void}){
+ const [tab,setTab]=useState('overview');const own=rosterFor(s).find(o=>o.id===1000);const phase=PHASES[s.phase];
+ return <div className="desk-screen"><aside className="desk-sidebar"><p className="eyebrow">CUARTEL GENERAL</p><h1>Escritorio</h1><div className="desk-seal" aria-hidden="true">G</div><nav aria-label="Carpetas del escritorio">{tabs.map(([id,name])=><button key={id} aria-current={tab===id?'page':undefined} onClick={()=>setTab(id)}>{name}{id==='create'&&s.officer?' ✓':''}</button>)}</nav><div className="desk-balance"><span>Tesorería</span><strong>{s.resources.treasury.toLocaleString('es-AR')} pesos</strong><small>{s.recruited.length} {s.recruited.length===1?'granadero':'granaderos'} en servicio</small></div><button className="gold-button" onClick={onClose}>Carta de operaciones →</button></aside>
+ <main className="desk-paper"><header><p className="eyebrow">PROVINCIAS UNIDAS · DÍA {Math.floor(s.hour/24)+1}</p><h2>{tabs.find(t=>t[0]===tab)?.[1]}</h2></header>{s.lastError&&<p className="notice error" role="alert">{s.lastError}</p>}
+ {tab==='overview'&&<section className="desk-overview"><p className="desk-lead">La campaña empieza con tu nombre.</p><p>El Cabildo pone los recursos a tu disposición. Vos elegís quién marchará, qué pueblos defender y en quién confiar.</p><ol className="desk-checklist"><li><strong>{s.officer?'✓ Tu hoja de servicio está firmada':'Creá tu granadero'}</strong><p>Elegí un rostro, un oficio y tus aptitudes. Tus respuestas definen la forma de afrontar la campaña.</p><button className="line-button" onClick={()=>setTab('create')}>{s.officer?'Ver mi granadero':'Crear mi granadero'}</button></li><li><strong>Reuní tu escuadra</strong><p>Consultá antecedentes y contratá por un día, una semana o un mes. Los especialistas de élite aceptan un día por vez.</p><button className="line-button" onClick={()=>setTab('hire')}>Examinar candidatos</button></li><li><strong>{phase.name}</strong><p>{phase.objective}</p>{!s.flags.academy&&<button className="gold-button" disabled={Boolean(s.pendingBattle)} onClick={()=>dispatch({type:'academy'})}>Fundar el regimiento · 300 pesos</button>}{s.phase===1&&s.sectors.san_nicolas.owner==='patriot'&&!s.flags.sanLorenzo&&<button className="gold-button" disabled={Boolean(s.pendingBattle)} onClick={()=>dispatch({type:'attack',sector:'san_lorenzo'})}>Marchar a San Lorenzo</button>}<button className="line-button" onClick={onClose}>Abrir la carta</button></li></ol></section>}
+ {tab==='create'&&(s.officer&&own?<section className="creator-finished">{portraitFor((own as any).portraitId??own.id)&&<img src={portraitFor((own as any).portraitId??own.id)!} alt={own.name}/>}<h3>{own.name}</h3><p>{own.role}</p><p>Tu personaje ya está creado. Su hoja de servicio y su progreso se consultan desde la carta de operaciones.</p><button className="gold-button" onClick={onClose}>Ver mi granadero en la carta</button></section>:<CharacterCreator onCreate={(name,answers,profile)=>dispatch({type:'createOfficer',name,answers,profile})}/>)}
+ {tab==='hire'&&<Recruitment state={s} dispatch={dispatch}/>}
+ {tab==='contacts'&&<section><p>Estos contactos se encuentran en el territorio. Su colaboración depende de conversaciones y compromisos cumplidos.</p><div className="contact-list">{ENCOUNTERS.filter((n:any)=>n.operativeId!==undefined&&!s.recruited.includes(n.operativeId)).map(n=><article key={n.id}><strong>{n.name}</strong><span>{CAMPAIGN_SECTORS.find(d=>d.id===n.sector)?.name}</span></article>)}</div></section>}
+ {['workshop','diplomacy','journal'].includes(tab)&&<CampaignOffice state={s} dispatch={dispatch} section={tab}/>}
+ </main></div>;
 }

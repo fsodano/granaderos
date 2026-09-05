@@ -17,7 +17,7 @@ import {encounterForOperative} from '../game/encounters.js';
 import {buildSectorMap} from '../game/maps.js';
 import {createBattle,actBattle} from '../game/tactical.js';
 export function meetLocalRecruit(state,action){
- if(!['recruit','recruitCivic'].includes(action.type))return null;
+ if(action.type!=='recruit')return null;
  const npc=encounterForOperative(action.id);if(!npc)return null;
  let s=state;if(s.location!==npc.sector){s=dispatchCampaign(s,{type:'travel',sector:npc.sector});if(s.lastError)throw Error(s.lastError);}
  s=dispatchCampaign(s,{type:'visitSector'});if(s.lastError)throw Error(s.lastError);

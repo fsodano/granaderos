@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign as dispatch,restoreCampaign,serializeCampaign} from '../game/campaign.js';
+import {dispatchCampaign as dispatch,restoreCampaign,serializeCampaign} from '../game/campaign.js';
+import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {buildSectorMap} from '../game/maps.js';
 import {createBattle} from '../game/tactical.js';
 import {GESTATION_HOURS} from '../game/horses.js';

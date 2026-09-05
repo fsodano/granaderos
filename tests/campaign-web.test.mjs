@@ -1,7 +1,8 @@
 import {marchToFront,meetLocalRecruit} from './campaign-test-helpers.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign as dispatch,isSupplied,recruitmentStatus,restoreCampaign,serializeCampaign,OPERATIVES,CAMPAIGN_SECTORS,PHASES,RECIPES} from '../game/campaign.js';
+import {dispatchCampaign as dispatch,isSupplied,recruitmentStatus,restoreCampaign,serializeCampaign,OPERATIVES,CAMPAIGN_SECTORS,PHASES,RECIPES} from '../game/campaign.js';
+import {initialCampaign} from './legacy-campaign-fixture.mjs';
 const order=(s,action)=>{const next=meetLocalRecruit(s,action)??dispatch(marchToFront(s,action),action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);return next;};
 const capture=(s,id)=>{s=order(s,{type:'attack',sector:id});return order(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'victory',survivors:s.pendingBattle.squad.map(o=>({id:o.id,hp:o.hp}))});};
 test('historical geography, roster and phase definitions preserve requested scope',()=>{
@@ -82,7 +83,7 @@ test('full campaign reaches liberation through reducer orders and timed producti
    if(s.blockade)s=capture(s,'san_nicolas');
  }
  assert.equal(s.resources.infantry,3000);assert.equal(s.phase,4);for(const def of CAMPAIGN_SECTORS)if(s.sectors[def.id].owner==='royalist')s=capture(s,def.id);
- for(let i=0;i<2;i++)s=order(s,{type:'fortify',sector:'humahuaca'});s=order(s,{type:'travel',sector:'humahuaca'});for(let i=0;i<3;i++){s=order(s,{type:'militia',sector:'humahuaca',rank:0,trainerId:4});s=order(s,{type:'wait',hours:s.militiaTraining[0].remaining});}
+ for(let i=0;i<2;i++)s=order(s,{type:'fortify',sector:'humahuaca'});s=order(s,{type:'travel',sector:'jujuy'});for(let i=0;i<3;i++){s=order(s,{type:'militia',sector:'jujuy',rank:0,trainerId:4});s=order(s,{type:'wait',hours:s.militiaTraining[0].remaining});}
  s=order(s,{type:'recruit',id:57});for(const def of CAMPAIGN_SECTORS)if(s.sectors[def.id].owner==='royalist')s=capture(s,def.id);if(s.blockade)s=capture(s,'san_nicolas');assert.equal(s.completed,true);assert.ok(s.hour<24*150,`Preparation took ${s.hour/24} days`);
 });
 

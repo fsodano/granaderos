@@ -36,3 +36,13 @@ Validation: 155 engine tests passed before final presentation integration; brows
 - Reproducible opening two-battle legal-action playthrough and full requirement audit.
 
 Validation: 166 tests pass; TypeScript and static build pass (155 files, 73 checked references). Campaign remains incomplete; audit documents remaining work.
+
+## 0.2.0-dev.1
+
+- New campaigns begin with an empty roster at a sidebar Escritorio.
+- One free personal Granadero with original portrait choice, nickname, manual attributes, era class and operational questionnaire-derived traits/personality.
+- Fictional paid volunteer catalogue with full dossiers, portraits, day/week/month contracts, experience-scaled quotes and capped daily elite contracts.
+- Compact strategic personnel/map/orders screen with delimited city areas.
+- Complete-city control and loyalty gate militia; adjacent NPC supply errands reward local loyalty once.
+- Historical figures remain personal encounters. Legacy saved campaigns are preserved.
+- Workshop, diplomacy, journal and campaign objective actions are available from desk folders.

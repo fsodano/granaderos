@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign as dispatch,serializeCampaign,restoreCampaign} from '../game/campaign.js';
+import {dispatchCampaign as dispatch,serializeCampaign,restoreCampaign} from '../game/campaign.js';
+import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {createBattle,actBattle,endTurn,getReachable,bladeFor,hasLineOfSight,shotChance} from '../game/tactical.js';
 function fight(seed=1812){
 let c=dispatch(dispatch(initialCampaign(seed),{type:'travel',sector:'buenos_aires'}),{type:'attack',sector:'san_nicolas'});if(c.lastError)throw Error(c.lastError);let b=createBattle(c.pendingBattle.squad,c.pendingBattle);let actions=1;b=actBattle(b,{type:'fire',unitId:4,targetId:'enemy-0',aim:2});b=endTurn(b);

@@ -1,6 +1,12 @@
 import {CAMPAIGN_SECTORS,OPERATIVES} from './data.js';
 import {CIVIC_RECRUITS} from './recruitment.js';
 const local=[
+ {id:'cabral',operativeId:3,sector:'retiro',requiredLeadership:30,requiredLiberated:1,requiredSector:'retiro',greeting:'Estoy dispuesto a servir. Quiero conocer al oficial que marchará con nosotros.'},
+ {id:'dorrego',operativeId:4,sector:'buenos_aires',requiredLeadership:40,requiredLiberated:1,requiredSector:'buenos_aires',greeting:'Hablemos de la campaña. La causa necesita hombres resueltos.'},
+ {id:'bouchard',operativeId:6,sector:'ensenada',requiredLeadership:50,requiredLiberated:2,requiredSector:'ensenada',greeting:'La lucha también está en los puertos. Veamos si podemos servir juntos.'},
+ {id:'barcala',operativeId:7,sector:'mendoza',requiredLeadership:45,requiredLiberated:3,requiredSector:'mendoza',greeting:'La disciplina exige dignidad. Quiero saber qué lugar tendrán mis hombres.'},
+ {id:'quiroga',operativeId:9,sector:'cordoba',requiredLeadership:50,requiredLiberated:3,requiredSector:'cordoba',greeting:'Vengo de los pueblos del interior. Su autonomía también merece defensa.'},
+ {id:'paroissien',operativeId:10,sector:'buenos_aires',requiredLeadership:35,requiredLiberated:1,requiredSector:'buenos_aires',greeting:'Puedo atender a los heridos. Antes debo conocer a quienes pondrán sus vidas en tus manos.'},
  {id:'san-martin',operativeId:57,sector:'mendoza',x:3,y:9,requiredLeadership:80,requiredLiberated:6,requiredSector:'mendoza',greeting:'La libertad requiere preparación. Cuando la fundición, la tropa y los pasos estén listos, asumiré el mando de la fuerza de campaña.'},
  {id:'guemes',operativeId:0,sector:'salta',x:3,y:5,requiredLeadership:65,requiredLiberated:4,requiredSector:'salta',greeting:'Defenderemos el norte si se respeta a sus pueblos. La alianza exige armas, caballos y autonomía para los gauchos.'},
  {id:'azurduy',operativeId:1,sector:'tucuman',x:3,y:5,requiredLeadership:60,requiredLiberated:4,requiredSector:'tucuman',greeting:'Las partidas resisten, pero faltan armas. Cuando lleguen los cincuenta mosquetes, podremos marchar juntos.'},
