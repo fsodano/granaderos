@@ -95,3 +95,7 @@ The user supplied twelve detailed JA2-style gameplay comments and six reference 
 ### Recruitment desk and encounter integration checkpoint
 
 Implemented a separate Spanish Escritorio screen with service dossiers and a return to the strategic map. Encounter-only characters have no hire card. Tactical NPC markers open conversations, gated by adjacency and backend campaign requirements. Browser verification in an isolated QA save: opened desk, returned to map, entered Retiro, approached the sergeant and received his dialogue. Combined engine tests: 145 passed; TypeScript and static production build passed before the next animation/horse UI batch. The full game remains incomplete.
+
+### dev.4 evidence checkpoint
+
+166 tests pass, TypeScript passes, static build verifies 155 files and 73 asset references. Original infantry walk/crouch/crawl and cavalry walk rigs are preserved with render and verification scripts. Browser checks cover the separate desk, adjacent Retiro greeting and horse buy/assign/feed. The legal opening playthrough wins both opening battles without injected victories; this does not establish full campaign balance. See REQUIREMENT-AUDIT.md for remaining requirements.

@@ -1,4 +1,5 @@
 'use client';
+import {portraitFor} from '../lib/portraits';
 import {useState} from 'react';
 import {recruitmentStatus,rosterFor,civicStatus} from '../../game/campaign.js';
 import {OFFICER_QUESTIONS,OFFICER_TRAITS,CIVIC_RECRUITS} from '../../game/recruitment.js';
@@ -18,7 +19,7 @@ export default function Recruitment({state:s,dispatch}:Props){
    const civic=civicIds.has(o.id),gate=civic?civicStatus(s,o.id):recruitmentStatus(s,o.id);
    const full=s.squad.length>=6,only=active&&s.squad.length===1;
    return <article className={`officer ${active?'in-squad':''}`} key={o.id}>
-    <div className="officer-head"><button className="officer-avatar dossier-open" aria-label={`Ver hoja de servicio de ${o.name}`} onClick={()=>setDossierId(o.id)}>{o.id<100?<img src={`/art/portrait-${o.id}.webp`} alt={o.name}/>:<span aria-hidden="true">{o.name.split(' ').filter(Boolean).slice(0,2).map((part:string)=>part[0]).join('')}</span>}</button><div><p className="eyebrow">{o.role}</p><h3>{o.name}</h3></div></div>
+    <div className="officer-head"><button className="officer-avatar dossier-open" aria-label={`Ver hoja de servicio de ${o.name}`} onClick={()=>setDossierId(o.id)}>{portraitFor(o.id)?<img src={portraitFor(o.id)!} alt={o.name}/>:<span aria-hidden="true">{o.name.split(' ').filter(Boolean).slice(0,2).map((part:string)=>part[0]).join('')}</span>}</button><div><p className="eyebrow">{o.role}</p><h3>{o.name}</h3></div></div>
     <p className="officer-bio">{o.biography}</p>{civic&&<small>Personaje ficticio creado para la campaña.</small>}<button className="dossier-link" onClick={()=>setDossierId(o.id)}>Ver atributos, especialidades y equipo →</button>
     <div className="officer-stats"><span>Salud <b>{Math.round(record?.hp??o.maxHp)}/{o.maxHp}</b></span><span>Puntería <b>{o.marksmanship}</b></span><span>Liderazgo <b>{o.leadership}</b></span></div>
     {o.traits?.length>0&&<p className="recruit-trait">{o.traits.map((id:string)=>OFFICER_TRAITS.find(t=>t.id===id)?.name??'Instrucción de campaña').join(' · ')}</p>}

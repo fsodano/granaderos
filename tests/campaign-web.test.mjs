@@ -67,7 +67,7 @@ test('full campaign reaches liberation through reducer orders and timed producti
  for(const id of ['santa_fe','jujuy','humahuaca','mendoza','uspallata','los_patos'])s=capture(s,id);
  s=order(s,{type:'travel',sector:'mendoza'});s=order(s,{type:'recruit',id:2});s=order(s,{type:'foundry'});
  for(const id of ['mendoza','uspallata','los_patos','san_nicolas','jujuy'])s=order(s,{type:'fortify',sector:id});
- for(const id of ['san_nicolas','jujuy','jujuy'])s=order(s,{type:'militia',sector:id,rank:0});
+ for(const id of ['san_nicolas','jujuy','jujuy']){if(s.sectors[id].owner==='royalist')s=capture(s,id);s=order(s,{type:'travel',sector:id});s=order(s,{type:'militia',sector:id,rank:0,trainerId:4});s=order(s,{type:'wait',hours:s.militiaTraining[0].remaining});}s=order(s,{type:'travel',sector:'mendoza'});
  s=order(s,{type:'produce',recipe:'sabres',sector:'cordoba'});s=order(s,{type:'wait',hours:24});
  s=order(s,{type:'diplomacy',kind:'parliament'});
  // Manufacture actual supplies. Daily provincial output funds the full preparation.
@@ -82,8 +82,8 @@ test('full campaign reaches liberation through reducer orders and timed producti
    if(s.blockade)s=capture(s,'san_nicolas');
  }
  assert.equal(s.resources.infantry,3000);assert.equal(s.phase,4);for(const def of CAMPAIGN_SECTORS)if(s.sectors[def.id].owner==='royalist')s=capture(s,def.id);
- for(let i=0;i<2;i++)s=order(s,{type:'fortify',sector:'humahuaca'});for(let i=0;i<3;i++)s=order(s,{type:'militia',sector:'humahuaca',rank:0});
- s=order(s,{type:'recruit',id:57});assert.equal(s.completed,true);assert.ok(s.hour<24*120,`Preparation took ${s.hour/24} days`);
+ for(let i=0;i<2;i++)s=order(s,{type:'fortify',sector:'humahuaca'});s=order(s,{type:'travel',sector:'humahuaca'});for(let i=0;i<3;i++){s=order(s,{type:'militia',sector:'humahuaca',rank:0,trainerId:4});s=order(s,{type:'wait',hours:s.militiaTraining[0].remaining});}
+ s=order(s,{type:'recruit',id:57});for(const def of CAMPAIGN_SECTORS)if(s.sectors[def.id].owner==='royalist')s=capture(s,def.id);if(s.blockade)s=capture(s,'san_nicolas');assert.equal(s.completed,true);assert.ok(s.hour<24*150,`Preparation took ${s.hour/24} days`);
 });
 
 test('southern winter closes Andean passes while northern gorge remains operational',()=>{

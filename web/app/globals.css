@@ -26,3 +26,10 @@
 .artillery-orders{display:grid;grid-template-columns:1fr;gap:6px;margin-block:8px}.artillery-control small{display:block;line-height:1.5;margin:8px 0}
 
 .weapon-icon{width:100%;height:85px;object-fit:contain;background:#e3d6b31a;margin:6px 0 8px}.missing-page{display:grid;min-height:100svh;place-content:center;text-align:center;padding:25px;gap:15px}.missing-page h1{font-size:38px}.missing-page a{color:#e3c985}
+
+.movement-orders {display:grid;gap:.55rem;margin:1.2rem 0;padding-top:1rem;border-top:1px solid #52645a;}
+.movement-orders select {width:100%;padding:.65rem;background:#182d2d;color:#e9dfc5;border:1px solid #667b6a;border-radius:2px;}
+.movement-orders .line-button {width:100%;text-align:left;white-space:normal;}
+.meter.energy i {background:#a9b985;}
+.field-supplies > div {padding:.5rem 0;border-bottom:1px solid #52645a;}
+.field-supplies > div .line-button {margin:.25rem .25rem .25rem 0;}

@@ -50,6 +50,7 @@ for(const file of sourceFiles){
     for(const match of css.matchAll(/url\(\s*["']?([^"')\s]+)["']?\s*\)/g))requireAsset(match[1],name);
   }
 }
+for(const id of [103,104])requireAsset(`/art/portrait-${id}.png`,'foreign volunteer portrait');
 // Dynamic portrait and action-frame URLs are not visible to literal URL scans.
 for(const id of [0,1,2,3,4,5,6,7,8,9,10,11,57])requireAsset(`/art/portrait-${id}.webp`,'roster');
 for(let id=1800;id<=1813;id++)requireAsset(`/art/weapon-${id}.png`,'armory');
@@ -69,6 +70,10 @@ for(const [key,entry] of Object.entries(manifest)){
   }
 }
 for(const faction of ["granadero","royalist"])for(const action of ["idle","walk"])requireAsset(`/art/${faction}-${action}-atlas.png`,"infantry animation");
+for(const action of ["idle","walk"])requireAsset(`/art/cavalry-${action}-atlas.png`,"cavalry animation");
+requireAsset("/art/cavalry-animation.json","cavalry animation metadata");
+for(const faction of ["granadero","royalist"])for(const stance of ["crouch","prone"])for(const action of ["idle","walk"])requireAsset(`/art/${faction}-${stance}-${action}-atlas.png`,"low stance animation");
+requireAsset("/art/stance-animation.json","stance animation metadata");
 await rm(destination,{recursive:true,force:true});
 await cp(source,destination,{recursive:true});
 for(const file of sourceFiles){

@@ -26,3 +26,13 @@ Initial playable Spanish browser campaign and tactical milestone. Thirteen histo
 - Shared validation for save files and persistent sectors.
 
 Validation: 155 engine tests passed before final presentation integration; browser checks exercised desk navigation, adjacent NPC greeting, horse purchase/assignment/feeding. Full campaign fidelity and cavalry gait remain ongoing work.
+
+## 0.1.0-dev.4
+
+- Actual eight-direction cavalry walking, crouched infantry movement and prone crawling, with original Blender sources.
+- Timed militia courses led by local hired instructors, finite promotions, supply pauses and assignment restrictions.
+- Capped use-based skill gains with persistent trained attributes.
+- Original foreign volunteer portraits and browser-friendly tactical keyboard controls.
+- Reproducible opening two-battle legal-action playthrough and full requirement audit.
+
+Validation: 166 tests pass; TypeScript and static build pass (155 files, 73 checked references). Campaign remains incomplete; audit documents remaining work.

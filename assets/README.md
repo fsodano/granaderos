@@ -179,3 +179,10 @@ plus eight neutral idle views. Browser-ready atlases and metadata are installed
 in `web/public/art`. The frames animate separate limb joints and preserve a
 fixed projected world reference; they are not transformed copies of paintings.
 The simplified miniature style differs from the painted action keyframes.
+
+Original mounted locomotion is now provided separately by the
+[Blender cavalry rig](rig/CAVALRY.md): eight walking directions and neutral idle
+views, installed and integrated with the battlefield mounted sprite renderer.
+
+[Original crouch and prone animation](rig/LOW_STANCES.md) now covers both
+infantry factions in eight directions, with posture-specific camera anchors.

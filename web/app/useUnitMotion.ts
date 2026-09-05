@@ -28,7 +28,7 @@ export function useUnitMotion(battle:any){
   useEffect(()=>{
     const before=previous.current,now=performance.now();
     for(const unit of battle.units){const old=before.units.find((v:any)=>v.id===unit.id);if(old&&(old.x!==unit.x||old.y!==unit.y)){
-      const points=route(before,old,unit,battle.log?.slice(before.log.length).some((text:string)=>text.startsWith(`${unit.name} ejecuta una carga`)));tracks.current.set(unit.id,{points,start:now,step:unit.mounted?150:unit.movementMode==='run'?150:240,direction:positions.current[unit.id]?.direction??3});
+      const points=route(before,old,unit,battle.log?.slice(before.log.length).some((text:string)=>text.startsWith(`${unit.name} ejecuta una carga`)));tracks.current.set(unit.id,{points,start:now,step:unit.mounted?150:unit.stance==='prone'||unit.movementMode==='prone'?420:unit.movementMode==='crouch'?320:unit.movementMode==='run'?150:240,direction:positions.current[unit.id]?.direction??3});
     }else if(!tracks.current.has(unit.id))positions.current[unit.id]={x:unit.x,y:unit.y,direction:positions.current[unit.id]?.direction??(unit.side==='player'?3:7),frame:0,moving:false};}
     previous.current=battle;let request=0;
     const tick=(time:number)=>{for(const [id,track] of tracks.current){const elapsed=Math.max(0,time-track.start),progress=elapsed/track.step,index=Math.floor(progress),last=track.points.length-1;
