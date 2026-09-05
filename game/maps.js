@@ -1,4 +1,5 @@
 import {CAMPAIGN_SECTORS} from './data.js';
+import {placeBuilding} from './buildings.js';
 
 // Authored tactical plans. Buildings are solid footprints, never walkable painted facades.
 // The strategic grid is schematic; these tactical layouts are original gameplay maps,
@@ -73,7 +74,15 @@ function plan(id){
    woods([[9,5,2,2],[9,9,2,2],[2,0,2,2],[2,14,2,2]]);break;
  default:throw Error('No existe un plano para ese sector.');
  }
- return {...c,decor};
+ const footprints={buenos_aires:[3,1,5,3],retiro:[6,6,5,4],ensenada:[5,2,4,3],san_nicolas:[5,10,3,3],santa_fe:[12,11,3,3],cordoba:[12,2,5,3],mendoza:[5,1,5,3],tucuman:[11,5,4,4],salta:[12,11,4,3],jujuy:[6,3,4,3],san_lorenzo:[4,5,5,6]};
+ const buildings=[],lights=[];const footprint=footprints[id];
+ if(footprint){const[x,y,width,height]=footprint,doorX=x+Math.floor(width/2),doorY=y+height-1;
+   const doors=[{id:`${id}:door-left`,x:doorX,y:doorY}];if(width>=5)doors.push({id:`${id}:door-right`,x:doorX+1,y:doorY});
+   const result=placeBuilding(c.tiles,{id:`${id}:building`,name:id==='san_lorenzo'?'Convento de San Carlos':id==='mendoza'?'Maestranza de El Plumerillo':'Casa del sector',x,y,width,height,doors,windows:[{x,y:y+1}],material:'adobe'});
+   c.tiles.splice(0,c.tiles.length,...result.tiles);buildings.push(result.building);
+   lights.push({id:`${id}:lantern`,type:'lantern',x:doorX,y:Math.min(15,doorY+1),radius:3,intensity:.8});
+ }
+ return {...c,decor,buildings,lights};
 }
 const key=p=>`${p.x},${p.y}`;
 function connected(tiles,start){
@@ -95,5 +104,5 @@ export function buildSectorMap(request={}){
  const enemyCount=request.enemies?.length??Math.max(3,squad.length+(request.difficulty??1)-1);
  const enemies=Array.from({length:enemyCount},(_,i)=>({id:`enemy-${i}`,name:`Soldado realista ${i+1}`,weapon:i%3===0?1801:1800,marksmanship:50+(request.difficulty??1)*5,morale:60+(request.difficulty??1)*5,...clone(request.enemies?.[i]??{}),...choose({x:id==='santa_fe'?15:id==='san_lorenzo'?15:17,y:3+i%10},'enemy')}));
  const artillery=(request.artillery??Array.from({length:Math.min(request.cannons??0,3)},()=>({type:'bronze4',side:'player',loaded:true,ammo:6}))).map((gun,i)=>({...clone(gun),...choose({x:3,y:4+i*3},'player')}));
- return {...clone(request),sector:id,name:request.name??names[id],width:WIDTH,height:HEIGHT,tiles,decor:authored.decor,squad,enemies,artillery,mapTitle:names[id]};
+ return {...clone(request),sector:id,name:request.name??names[id],width:WIDTH,height:HEIGHT,tiles,decor:authored.decor,buildings:authored.buildings,lights:authored.lights,squad,enemies,artillery,mapTitle:names[id]};
 }

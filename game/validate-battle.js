@@ -1,0 +1,36 @@
+import {WEAPONS,BLADES,ARTILLERY} from './tactical.js';
+const object=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
+const number=(x,lo,hi)=>typeof x==='number'&&Number.isFinite(x)&&x>=lo&&x<=hi;
+const integer=(x,lo,hi)=>Number.isInteger(x)&&number(x,lo,hi);
+const text=x=>typeof x==='string'&&x.length<=1000;
+function need(ok,label){if(!ok)throw Error(`La partida contiene ${label} inválidos.`);}
+function safeTree(value,depth=0){need(depth<=20,'objetos anidados');if(typeof value==='number')need(Number.isFinite(value),'números');if(value&&typeof value==='object'){need(Object.keys(value).length<=10000,'colecciones');for(const[k,v]of Object.entries(value)){need(!['__proto__','constructor','prototype'].includes(k),'claves');safeTree(v,depth+1);}}}
+export function validateBattleSnapshot(value){
+need(object(value),'datos tácticos');safeTree(value);need(JSON.stringify(value).length<=3000000,'tamaño táctico');const s=structuredClone(value);
+need(integer(s.width,4,128)&&integer(s.height,4,128),'dimensiones');const coord=p=>object(p)&&integer(p.x,0,s.width-1)&&integer(p.y,0,s.height-1);
+need(Array.isArray(s.tiles)&&s.tiles.length===s.width*s.height,'casillas');const seen=new Set();
+for(const t of s.tiles){need(coord(t)&&!seen.has(`${t.x},${t.y}`),'posiciones');seen.add(`${t.x},${t.y}`);need(['wall','grass','road','water','stone','mud','forest','scrub','floor','door','window','rubble','cliff'].includes(t.type)&&typeof t.blocked==='boolean'&&number(t.cover,0,100),'terreno');for(const key of ['blocksSight','open','locked'])if(t[key]!==undefined)need(typeof t[key]==='boolean','puertas');for(const key of ['buildingId','roomId','doorId'])if(t[key]!=null)need(text(t[key]),'habitaciones');}
+s.mode??='combat';s.phase??='player';s.status??='active';s.seed??=1812;s.turn??=1;s.weather??={rain:0,humidity:0};need(['combat','exploration'].includes(s.mode)&&['player','enemy'].includes(s.phase)&&['active','victory','defeat'].includes(s.status)&&integer(s.seed,0,4294967295)&&integer(s.turn,1,1e9),'turnos');need(object(s.weather)&&number(s.weather.rain,0,100)&&number(s.weather.humidity,0,100),'clima');
+need(Array.isArray(s.units)&&s.units.length<=200,'combatientes');const ids=new Set();
+for(const u of s.units){need(coord(u)&&text(u.id)&&!ids.has(u.id)&&text(u.name)&&['player','enemy'].includes(u.side),'combatientes');ids.add(u.id);
+const defaults={maxHp:100,ap:100,morale:80,condition:100,marksmanship:50,agility:50,strength:50,medical:30,bleeding:0,loaded:0,ammo:0,weapon:1800,stance:'standing',activeSlot:'primary',energy:100,unconscious:u.energy===0,movementMode:'walk',fatigue:0,priming:50,flints:4,rations:2,torches:2,boleadoras:1,strengthTraining:0,inventory:{}};for(const[k,v]of Object.entries(defaults))if(u[k]===undefined)u[k]=v;
+need(number(u.maxHp,1,1000)&&number(u.hp,0,u.maxHp)&&number(u.ap,0,100),'salud o acción');for(const key of ['morale','condition','marksmanship','agility','strength','medical','bleeding','energy','fatigue'])need(number(u[key],0,100),'atributos');
+need(integer(u.weapon,0,65535),'armas');if(u.blade!==undefined)need(integer(u.blade,0,65535),'armas blancas');need(integer(u.loaded,0,WEAPONS[u.weapon]?.capacity??(BLADES[u.weapon]?0:100)),'cargas');
+for(const k of ['ammo','priming','flints','rations','torches','boleadoras','medkits','strengthTraining'])if(u[k]!==undefined)need(integer(u[k],0,1000000),'suministros');
+for(const k of ['unconscious','knockedDown','weaponDropped','fled','braced','mounted','horse','canMount','jammed','routed','entangled','poncho','overwatch'])if(u[k]!==undefined)need(typeof u[k]==='boolean','estados del soldado');
+need(['standing','prone'].includes(u.stance)&&['primary','blade'].includes(u.activeSlot)&&['walk','run','crouch','prone'].includes(u.movementMode),'posturas');
+need(u.unconscious===(u.energy===0),'agotamiento');
+for(const key of ['leadership','wisdom','dexterity','mechanical','explosives','maxAP'])if(u[key]!==undefined)need(number(u[key],0,100),'atributos adicionales');for(const key of ['reactionSpent','reactionTurn','interceptTurn','parryTurn','counterTurn','braceTurn','momentum'])if(u[key]!==undefined)need(number(u[key],0,1000000000),'iniciativa');if(u.lastDirection!=null)need(text(u.lastDirection),'dirección');
+if(u.traits!==undefined)need(Array.isArray(u.traits)&&u.traits.length<=30&&u.traits.every(text),'rasgos');
+need(object(u.inventory)&&Object.keys(u.inventory).length<=1000,'inventario');for(const record of Object.values(u.inventory)){if(typeof record==='number'){need(integer(record,0,1000000),'cantidades');continue;}need(object(record)&&integer(record.count,0,1000000)&&number(record.weight,0,10000),'pertrechos');if(record.weapon!==undefined)need(integer(record.weapon,0,65535),'objetos recuperados');if(record.loaded!==undefined)need(integer(record.loaded,0,100),'cargas recuperadas');if(record.condition!==undefined)need(number(record.condition,0,100),'condición recuperada');}
+for(const k of ['weight','carryWeight','ridingSkill'])if(u[k]!==undefined)need(number(u[k],0,k==='ridingSkill'?100:100000),'peso o equitación');if(u.mount!==undefined)need(object(u.mount)&&text(u.mount.id)&&number(u.mount.stamina,0,100)&&number(u.mount.condition,0,100),'monturas');if(u.fleePath!==undefined)need(Array.isArray(u.fleePath)&&u.fleePath.every(coord),'retirada');}
+for(const key of ['smoke','artillery','log','decor','npcs','groundItems','droppedWeapons','lights','buildings','revealedRooms']){if(s[key]===undefined)s[key]=[];need(Array.isArray(s[key])&&s[key].length<=2000,key);}
+for(const k of ['night','sectorCleared'])if(s[k]!==undefined)need(typeof s[k]==='boolean','situación táctica');need(s.log.every(text),'diario');need(s.smoke.every(v=>coord(v)&&number(v.radius,0,20)&&integer(v.turns,1,100)),'humo');
+for(const g of s.artillery)need(coord(g)&&text(g.id)&&ARTILLERY[g.type]&&['player','enemy'].includes(g.side)&&typeof g.loaded==='boolean'&&integer(g.ammo,0,1000000)&&(g.facing===undefined||number(g.facing,-Math.PI*2,Math.PI*2)),'artillería');
+for(const l of s.lights)need(coord(l)&&number(l.radius,0,100)&&(l.intensity===undefined||number(l.intensity,0,1))&&(l.turns===undefined||integer(l.turns,0,1000000)),'luces');
+for(const n of s.npcs)need(coord(n)&&text(n.id)&&text(n.name),'personajes');
+for(const g of s.groundItems)need(coord(g)&&text(g.id)&&text(g.type)&&integer(g.count,0,1000000)&&(g.heldBy==null||text(g.heldBy)),'objetos del suelo');
+for(const d of s.droppedWeapons)need(coord(d)&&integer(d.weapon,0,65535)&&number(d.condition,0,100)&&integer(d.loaded,0,100)&&(d.taken===undefined||typeof d.taken==='boolean'),'equipo abandonado');
+for(const d of s.decor)need(coord(d)&&integer(d.width,1,s.width)&&integer(d.height,1,s.height)&&d.x+d.width<=s.width&&d.y+d.height<=s.height&&text(d.type),'decoración');
+for(const b of s.buildings){need(coord(b)&&text(b.id)&&integer(b.width,1,s.width)&&integer(b.height,1,s.height)&&b.x+b.width<=s.width&&b.y+b.height<=s.height&&Array.isArray(b.rooms),'edificios');for(const room of b.rooms)need(object(room)&&text(room.id)&&Array.isArray(room.cells)&&room.cells.every(coord),'habitaciones');}need(s.revealedRooms.every(text),'habitaciones vistas');return s;
+}

@@ -127,7 +127,8 @@ complete historical drill. Equipment, anatomy and timing still need review.
 The sprite carries a musket and bayonet; do not present it as a pistol or saber
 animation. The initial separate Granadero token carries a saber. The first
 source idle plume touches the source image edge, a small generation limitation
-preserved in the source record. Other directions and walk cycles remain open.
+preserved in the source record. These painted action poses remain limited to two
+directions. Separate original 3D infantry locomotion is now available below.
 
 ## Weapon inventory icons
 
@@ -154,3 +155,27 @@ models remain artistic interpretations pending specialist review. No reference
 photograph was provided to generation and these icons are not museum scans.
 The 0–15 alpha source padding is excluded only for
 content-bound measurement; surviving generated alpha is preserved in outputs.
+
+
+## Cavalry action poses
+
+`web/cavalry-actions.png` contains eight transparent keyframes in a 1536×768
+atlas of 384×384 cells. Rows are southeast and southwest; columns are idle,
+mounted fire, saber strike and charge. Every cell shares the foot reference
+(192,360), normalized (0.5,0.9375). The matching JSON records source rectangles,
+anchors and hashes; individual `cavalry-{direction}-{action}.png` files are also
+installed in the browser. Rebuild with `python3 assets/build_cavalry_atlas.py`.
+
+The accepted v3 source has true alpha. The earlier v1 source is retained only as
+a rejected generation record because it baked a checkerboard into its pixels.
+The mounted poses are action keyframes, not a horse locomotion cycle.
+
+## Original eight-direction infantry locomotion
+
+[The rig documentation](rig/README.md) describes the original Blender models,
+articulated gait, reproducible rendering, frame offsets and verification.
+Granadero and Royalist each have eight distinct walking poses in eight views
+plus eight neutral idle views. Browser-ready atlases and metadata are installed
+in `web/public/art`. The frames animate separate limb joints and preserve a
+fixed projected world reference; they are not transformed copies of paintings.
+The simplified miniature style differs from the painted action keyframes.

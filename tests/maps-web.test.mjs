@@ -15,8 +15,12 @@ test('maximum normal deployments and artillery are collision-free, unblocked and
  for(const sector of MAP_IDS){const map=buildSectorMap({sector,squad:OPERATIVES.slice(0,6),difficulty:4,cannons:3}),all=[...map.squad,...map.enemies,...map.artillery];assert.equal(new Set(all.map(key)).size,all.length,sector);
  for(const unit of all){assert.equal(map.tiles[unit.y*map.width+unit.x].blocked,false,`${sector}:${key(unit)}`);assert.ok(path(map,map.squad[0],unit),`${sector}: disconnected spawn ${key(unit)}`);}}
 });
-test('San Lorenzo convent footprint matches blocked architecture exactly',()=>{
- const map=buildSectorMap({sector:'san_lorenzo',squad:OPERATIVES.slice(0,6)}),d=map.decor[0];assert.equal(d.type,'convent');assert.equal(d.asset,'/art/convent.png');for(let y=d.y;y<d.y+d.height;y++)for(let x=d.x;x<d.x+d.width;x++){assert.equal(map.tiles[y*map.width+x].blocked,true);assert.equal(map.tiles[y*map.width+x].type,'wall');}
+test('San Lorenzo convent has an enterable interior, windows and independent double doors',()=>{
+ const map=buildSectorMap({sector:'san_lorenzo',squad:OPERATIVES.slice(0,6)}),d=map.decor[0];assert.equal(d.type,'convent');assert.equal(d.asset,'/art/convent.png');
+ const interior=map.tiles.filter(t=>t.buildingId==='san_lorenzo:building');assert.equal(interior.length,d.width*d.height);
+ const floor=interior.filter(t=>t.type==='floor');assert.equal(floor.length,(d.width-2)*(d.height-2));assert.ok(floor.every(t=>!t.blocked));
+ const doors=interior.filter(t=>t.type==='door');assert.equal(doors.length,2);assert.notEqual(doors[0].doorId,doors[1].doorId);assert.equal(doors[0].y,doors[1].y);assert.equal(Math.abs(doors[0].x-doors[1].x),1);
+ assert.ok(interior.some(t=>t.type==='window'&&t.blocked&&!t.blocksSight));
 });
 test('San Lorenzo has two independent charge avenues around the convent',()=>{
  const map=buildSectorMap({sector:'san_lorenzo'});const north=path(map,{x:2,y:2},{x:15,y:2}),south=path(map,{x:2,y:13},{x:15,y:13});assert.ok(north);assert.ok(south);assert.ok(north.every(p=>p.y<5));assert.ok(south.every(p=>p.y>=11));const blockedNorth=new Set(north.map(key));assert.ok(path(map,{x:2,y:13},{x:15,y:13},blockedNorth));

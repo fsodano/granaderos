@@ -1,9 +1,9 @@
-import {marchToFront} from './campaign-test-helpers.mjs';
+import {marchToFront,meetLocalRecruit} from './campaign-test-helpers.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign as dispatch,restoreCampaign,serializeCampaign,rosterFor} from '../game/campaign.js';
 import {OFFICER_TRAITS,OFFICER_QUESTIONS,CIVIC_RECRUITS} from '../game/recruitment.js';
-const order=(s,a)=>{const n=dispatch(marchToFront(s,a),a);assert.equal(n.lastError,null,n.lastError);return n;};
+const order=(s,a)=>{const n=meetLocalRecruit(s,a)??dispatch(marchToFront(s,a),a);assert.equal(n.lastError,null,n.lastError);return n;};
 const officer=(doctrine='cavalry_commander')=>({type:'createOfficer',name:'María del Valle',answers:{origin:'estancia',doctrine,crisis:'rally'}});
 test('Cabildo questionnaire creates one bounded officer with each tactical trait',()=>{
  assert.equal(OFFICER_TRAITS.length,4);assert.equal(OFFICER_QUESTIONS.length,3);
@@ -13,7 +13,7 @@ test('incomplete examination and markup names roll back',()=>{
  for(const action of [{...officer(),name:'<img>'},{...officer(),answers:{origin:'estancia'}},{...officer(),name:'A'}]){const s=dispatch(initialCampaign(),action);assert.ok(s.lastError);assert.equal(s.resources.treasury,3200);assert.equal(s.officer,null);}
 });
 test('civic bulletin has regional access gates and modest monthly pay',()=>{
- let s=initialCampaign();assert.ok(dispatch(s,{type:'recruitCivic',id:101}).lastError);s=order(s,{type:'recruitCivic',id:100});assert.equal(s.resources.treasury,3020);assert.ok(s.squad.includes(100));assert.ok(dispatch(s,{type:'recruitCivic',id:100}).lastError);assert.ok(CIVIC_RECRUITS.every(o=>o.monthlyPay<=220));
+ let s=initialCampaign();assert.ok(dispatch(s,{type:'recruitCivic',id:101}).lastError);s=order(s,{type:'recruitCivic',id:100});assert.equal(s.resources.treasury,3020);assert.ok(s.squad.includes(100));assert.ok(dispatch(s,{type:'recruitCivic',id:100}).lastError);assert.ok(CIVIC_RECRUITS.filter(o=>!o.foreign).every(o=>o.monthlyPay<=220));
 });
 test('civic combat experience actually improves battle statistics and persists',()=>{
  let s=order(initialCampaign(),{type:'recruitCivic',id:100});s=order(s,{type:'squad',ids:[3,100]});const original=rosterFor(s).find(o=>o.id===100).marksmanship;
@@ -24,4 +24,9 @@ test('civic combat experience actually improves battle statistics and persists',
 test('legacy version1 saves migrate without losing historical stats',()=>{
  const old=initialCampaign();delete old.officer;for(const id of [100,101,102])delete old.operativeState[id];for(const op of Object.values(old.operativeState)){delete op.xp;delete op.priming;delete op.flints;delete op.rations;delete op.condition;}
  const s=restoreCampaign(JSON.stringify(old));assert.equal(s.officer,null);assert.equal(s.operativeState[100].xp,0);assert.equal(s.operativeState[3].priming,50);assert.equal(rosterFor(s).find(o=>o.id===57).leadership,99);
+});
+
+test('fictional foreign volunteers have finite contracts and persist in legacy-compatible saves',()=>{
+ let s=initialCampaign();
+ for(const o of CIVIC_RECRUITS.filter(o=>o.foreign)){const before=s.resources.treasury;s=dispatch(s,{type:'recruitCivic',id:o.id});assert.equal(s.lastError,null);assert.ok(s.recruited.includes(o.id));assert.equal(s.resources.treasury,before-o.monthlyPay);s=restoreCampaign(serializeCampaign(s));assert.ok(s.recruited.includes(o.id));const paid=s.resources.treasury;s=dispatch(s,{type:'recruitCivic',id:o.id});assert.ok(s.lastError);assert.equal(s.resources.treasury,paid);}
 });

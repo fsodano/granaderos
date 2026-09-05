@@ -1,3 +1,5 @@
+import {initialHorseState,migrateHorseState,applyHorseAction,mountForOperative} from './horses.js';
+import {returnAmmunition} from './ammunition.js';
 import {ENCOUNTERS,encounterForOperative,encountersFor,encounterRequirements} from './encounters.js';
 export {ENCOUNTERS,encountersFor} from './encounters.js';
 import {migrateSquads,activeSquad,operativeLocation,synchronizeSquad,validateSectorSnapshot,validatePersonalInventory} from './squads.js';
@@ -8,11 +10,14 @@ import {planTransfer,convoyStatus} from './logistics.js';
 export {TRANSPORT_OPTIONS,transferOptions,inventoryAt,cargoWeight} from './logistics.js';
 import {ROYALIST_COMMANDS,NORTHERN_AXIS,coastalRevenue,royalistIntel,mentorDispatch,oppositionFor} from './narrative.js';
 export {ROYALIST_COMMANDS,royalistIntel,mentorDispatch} from './narrative.js';
-import {rosterFor as baseRosterFor,CIVIC_RECRUITS,civicStatus,createOfficerRecord} from './recruitment.js';
-export {CIVIC_RECRUITS,civicStatus} from './recruitment.js';
+import {rosterFor as baseRosterFor,CIVIC_RECRUITS,civicStatus as baseCivicStatus,createOfficerRecord} from './recruitment.js';
+export {CIVIC_RECRUITS} from './recruitment.js';
+export function civicStatus(s,id,local=false){if(!local&&encounterForOperative(id)&&!s.recruited.includes(Number(id)))return {available:false,reason:'Buscá al voluntario en el Cabildo de su localidad.'};return baseCivicStatus(s,id);}
 import {OPERATIVES, WEAPONS, CAMPAIGN_SECTORS, FACTIONS, PHASES, RECIPES, RESOURCE_NAMES} from './data.js';
 export {OPERATIVES, WEAPONS, CAMPAIGN_SECTORS, FACTIONS, PHASES, RECIPES, RESOURCE_NAMES};
 export function rosterFor(s){return baseRosterFor(s).map(o=>({...o,...(s.loadouts?.[o.id]??{}),strength:Math.max(o.strength,Math.min(100,s.operativeState?.[o.id]?.strength??o.strength))}));}
+function returnMount(s,id,report){if(!report.mount)return;const horse=s.horseState?.horses.find(h=>h.id===report.mount.id&&h.assignedTo===id&&!h.returned);requireThat(horse,'La montura no pertenece al combatiente.');for(const field of ['stamina','condition']){requireThat(Number.isFinite(report.mount[field])&&report.mount[field]>=0&&report.mount[field]<=100,'El estado de la montura es inválido.');horse[field]=report.mount[field];}}
+function moveMounts(s,destination,hours){for(const horse of s.horseState?.horses??[])if(!horse.returned&&s.squad.includes(horse.assignedTo)){horse.location=destination;horse.stamina=Math.max(0,horse.stamina-Math.ceil(hours*2));}}
 const clone = value => JSON.parse(JSON.stringify(value));
 const clamp = value => Math.max(-100,Math.min(100,value));
 export function campaignDate(s){const day=Math.floor(s.hour/24);return {year:1812+Math.floor((2+Math.floor(day/30))/12),month:(2+Math.floor(day/30))%12+1,day:day%30+1,hour:s.hour%24};}
@@ -24,7 +29,7 @@ const pay = (s,cost) => {for(const [key,value] of Object.entries(cost))requireTh
 const add = (s,values) => {for(const [key,value] of Object.entries(values))s.resources[key]=(s.resources[key]??0)+value;};
 const standing = (s,id,value) => {if(id!=='royalists')s.reputation[id]=clamp(s.reputation[id]+value);};
 export function initialCampaign(seed=1812){
-  return {version:1,seed:seed>>>0,hour:0,phase:0,location:'retiro',activeSquadId:'squad-1',squads:[{id:'squad-1',name:'Primera escuadra',members:[3,4,10],location:'retiro'}],sectorStates:{},resources:{treasury:3200,horses:35,powder:100,copper:35,textiles:240,infantry:0,muskets:90,sabres:25,cartridges:300,uniforms:0,cannons:0,ponchos:6},reputation:{directory:35,gauchos:0,pardos:10,foreign:20,indigenous:0,royalists:-100},sectors:Object.fromEntries(CAMPAIGN_SECTORS.map(x=>[x.id,{owner:['buenos_aires','retiro','ensenada'].includes(x.id)?'patriot':'royalist',loyalty:['buenos_aires','retiro','ensenada'].includes(x.id)?65:25,militia:[0,0,0],damageUntil:0,fort:0}])),artillerySelection:[],armory:{},loadouts:{},lastConversation:null,conversations:{},officer:null,recruited:[3,4,10],squad:[3,4,10],operativeState:Object.fromEntries([...OPERATIVES,...CIVIC_RECRUITS].map(o=>[o.id,{hp:o.maxHp,fatigue:0,alive:true,xp:0,priming:50,flints:4,rations:2,torches:2,condition:100}])),flags:{academy:false,sanLorenzo:false,northPact:false,partisanSupply:false,foundry:false,parliament:false,emancipation:false,commission:false,mentoring:false},production:[],shipments:[],depots:{},convoys:[],routes:{posta:false,flotilla:false,carts:false,mules:false},blockade:false,pendingBattle:null,completed:false,defeated:false,log:[{hour:0,text:'Buenos Aires, 1812. El Cabildo encomienda la formación de los Granaderos. Cabral, Dorrego y Paroissien están a tus órdenes.'}],lastError:null};
+  return {horseState:initialHorseState(),version:1,seed:seed>>>0,hour:0,phase:0,location:'retiro',activeSquadId:'squad-1',squads:[{id:'squad-1',name:'Primera escuadra',members:[3,4,10],location:'retiro'}],sectorStates:{},resources:{treasury:3200,horses:35,powder:100,copper:35,textiles:240,infantry:0,muskets:90,sabres:25,cartridges:300,uniforms:0,cannons:0,ponchos:6},reputation:{directory:35,gauchos:0,pardos:10,foreign:20,indigenous:0,royalists:-100},sectors:Object.fromEntries(CAMPAIGN_SECTORS.map(x=>[x.id,{owner:['buenos_aires','retiro','ensenada'].includes(x.id)?'patriot':'royalist',loyalty:['buenos_aires','retiro','ensenada'].includes(x.id)?65:25,militia:[0,0,0],damageUntil:0,fort:0}])),artillerySelection:[],armory:{},loadouts:{},lastConversation:null,conversations:{},officer:null,recruited:[3,4,10],squad:[3,4,10],operativeState:Object.fromEntries([...OPERATIVES,...CIVIC_RECRUITS].map(o=>[o.id,{hp:o.maxHp,fatigue:0,alive:true,xp:0,priming:50,flints:4,rations:2,torches:2,condition:100}])),flags:{academy:false,sanLorenzo:false,northPact:false,partisanSupply:false,foundry:false,parliament:false,emancipation:false,commission:false,mentoring:false},production:[],shipments:[],depots:{},convoys:[],routes:{posta:false,flotilla:false,carts:false,mules:false},blockade:false,pendingBattle:null,completed:false,defeated:false,log:[{hour:0,text:'Buenos Aires, 1812. El Cabildo encomienda la formación de los Granaderos. Cabral, Dorrego y Paroissien están a tus órdenes.'}],lastError:null};
 }
 export function isSupplied(s,id){
   if(s.sectors[id]?.owner!=='patriot')return false;
@@ -57,6 +62,7 @@ export function availableActions(s){
   return {recruits:OPERATIVES.map(o=>({...o,...recruitmentStatus(s,o.id)})),destinations:CAMPAIGN_SECTORS.filter(x=>x.id!==s.location),recipes:Object.entries(RECIPES).map(([id,r])=>({id,...r})),phase:PHASES[s.phase]};
 }
 function progress(s){
+  if(s.completed)return;
   if(s.phase===0&&s.flags.academy){s.phase=1;note(s,'La academia de Retiro está organizada. Llegan noticias de un desembarco realista junto a San Lorenzo.');}
   if(s.phase===1&&s.flags.sanLorenzo){s.phase=2;standing(s,'directory',15);note(s,'Victoria en San Lorenzo. San Martín marcha al norte para estudiar la situación del Ejército del Norte.');}
   if(s.phase===2&&s.sectors.tucuman.owner==='patriot'&&s.flags.northPact&&isSupplied(s,'salta')){s.phase=3;s.flags.mentoring=true;note(s,'En Yatasto, San Martín confía el norte a Güemes. El esfuerzo principal se traslada a Cuyo.');}
@@ -84,7 +90,7 @@ function raid(s,theater){
 function tick(s,hours){
   requireThat(Number.isInteger(hours)&&hours>=1&&hours<=240,'El avance debe ser de 1 a 240 horas.');
   for(let i=0;i<hours;i++){
-    s.hour++;
+    s.hour++;s.horseState=applyHorseAction(s.horseState,{type:'advance',hour:s.hour});
     for(const convoy of [...(s.convoys??[])])if(convoyStatus(s,convoy).ready){
       const inventory=convoy.destination==='reserve'?s.resources:(s.depots[convoy.destination]??={});
       for(const [key,value] of Object.entries(convoy.goods))inventory[key]=(inventory[key]??0)+value;
@@ -100,24 +106,33 @@ function tick(s,hours){
       note(s,`Las estancias y aduanas aportaron ${income} pesos a la tesorería.`);
     }
     if(s.hour%720===0){const payroll=s.recruited.reduce((sum,id)=>sum+rosterFor(s).find(o=>o.id===id).monthlyPay,0);if(s.resources.treasury>=payroll){s.resources.treasury-=payroll;standing(s,'foreign',5);note(s,`Se abonaron ${payroll} pesos en estipendios mensuales.`);}else{standing(s,'foreign',-20);standing(s,'directory',-10);note(s,'La tesorería no pudo abonar los sueldos. Los voluntarios reclaman el pago.');}}
-    if(s.hour%120===0)raid(s,'north');
-    if(s.hour%168===0&&coastalRevenue(s)>=500)raid(s,'coast');
-    if(s.hour%144===0)raid(s,'interior');
-    progress(s);if(s.defeated||s.completed)break;
+    if(!s.completed&&s.hour%120===0)raid(s,'north');
+    if(!s.completed&&s.hour%168===0&&coastalRevenue(s)>=500)raid(s,'coast');
+    if(!s.completed&&s.hour%144===0)raid(s,'interior');
+    progress(s);if(s.defeated)break;
   }
 }
 function travelPath(s,from,to){
   const queue=[[from]],seen=new Set([from]);while(queue.length){const path=queue.shift(),last=path.at(-1);if(last===to)return path;for(const id of sector(last).neighbors)if(!seen.has(id)&&s.sectors[id].owner==='patriot'){seen.add(id);queue.push([...path,id]);}}return null;
 }
 export function dispatchCampaign(previous,action){
-  const s=migrateSquads(clone(previous));s.lastError=null;
+  const s=migrateSquads(clone(previous));s.horseState??={...initialHorseState(),hour:s.hour};s.lastError=null;
   try{
     requireThat(action&&typeof action.type==='string','La orden no es válida.');
-    requireThat(!s.completed&&!s.defeated,'La campaña ha terminado. Inicia otra campaña para continuar.');
+    requireThat(!s.defeated,'La campaña ha terminado. Inicia otra campaña para continuar.');
+    requireThat(!s.completed||['wait','horseAction','travel','visitSector','leaveSector','talkNPC','createSquad','selectSquad','squad','equip','resupply','repairWeapon','purchaseEquipment','supplyTransfer','transport'].includes(action.type),'La campaña está ganada. Puedes recorrer las provincias y atender a tus escuadras y estancias.');
     requireThat(!s.pendingBattle||['battleResult','leaveSector','talkNPC'].includes(action.type),'Hay una batalla pendiente. Resuélvela antes de dar nuevas órdenes.');
     switch(action.type){
       case 'wait':tick(s,action.hours??24);break;
       case 'academy':requireThat(!s.flags.academy,'La academia ya está organizada.');pay(s,{treasury:300,horses:20,muskets:40,textiles:60});s.flags.academy=true;note(s,'Se funda la academia de Granaderos en Retiro.');break;
+      case 'horseAction':{
+        const order=action.order;requireThat(order&&['acquire','hire','feed','assign','unassign','breed'].includes(order.type),'La orden de caballada es inválida.');
+        requireThat(s.sectors[s.location]?.owner==='patriot','La caballada requiere una localidad segura.');
+        if(order.name!==undefined)requireThat(typeof order.name==='string'&&order.name.trim().length>0&&order.name.length<=30&&!/[<>]/.test(order.name),'El nombre de la montura es inválido.');
+        if(order.horseId)requireThat(s.horseState?.horses.some(h=>h.id===order.horseId&&h.location===s.location),'La montura está en otra localidad.');
+        if(order.type==='assign')requireThat(s.recruited.includes(order.operativeId)&&s.operativeState[order.operativeId].alive&&operativeLocation(s,order.operativeId)===s.location,'El jinete debe estar presente en la localidad.');
+        const horses=applyHorseAction(s.horseState,{...order,location:s.location,funds:s.resources.treasury});requireThat(!horses.lastError,horses.lastError);pay(s,{treasury:horses.cost??0});s.horseState=horses;note(s,horses.log[0]??'La orden de caballada quedó cumplida.');break;
+      }
       case 'purchaseEquipment':{
         const item=EQUIPMENT_CATALOG.find(o=>String(o.item)===String(action.item)),quantity=action.quantity??1;
         requireThat(item&&Number.isInteger(quantity)&&quantity>0&&quantity<=100,'El pedido de armamento es inválido.');
@@ -170,22 +185,22 @@ export function dispatchCampaign(previous,action){
         requireThat(npc&&actor&&unit&&local&&s.squad.includes(id)&&unit.hp>0,'El interlocutor no está disponible en este sector.');requireThat(snapshot.mode==='exploration'||snapshot.status==='victory'||snapshot.sectorCleared,'Terminá el combate antes de conversar.');requireThat(Number.isInteger(local.x)&&Number.isInteger(local.y)&&Math.abs(unit.x-local.x)+Math.abs(unit.y-local.y)<=1,'Acercá al combatiente al interlocutor para hablar.');
         requireThat(['friendly','direct','recruit'].includes(action.approach),'La forma de dirigirse al interlocutor es inválida.');
         let text=npc.greeting,outcome='conversation';
-        if(action.approach==='direct')text=npc.operativeId!==undefined?`Para incorporarme necesito un mando con ${npc.requiredLeadership} de liderazgo, ${npc.requiredLiberated} sectores seguros y que se cumplan mis compromisos regionales.`:npc.greeting;
+        if(action.approach==='direct')text=npc.operativeId!==undefined?`Para incorporarme necesito un mando con ${npc.requiredLeadership} de liderazgo, ${npc.requiredLiberated} localidades seguras y que se cumplan mis compromisos regionales.`:npc.greeting;
         if(action.approach==='recruit'){
           requireThat(npc.operativeId!==undefined,'Este habitante no es un recluta.');requireThat(!s.recruited.includes(npc.operativeId),'Este combatiente ya se incorporó.');const reason=encounterRequirements(s,npc,actor);requireThat(!reason,reason);
-          const gate=npc.operativeId>=100?civicStatus(s,npc.operativeId):recruitmentStatus(s,npc.operativeId,true);requireThat(gate.available,gate.reason);const op=rosterFor(s).find(o=>o.id===npc.operativeId);pay(s,{treasury:op.monthlyPay});s.recruited.push(op.id);s.operativeState[op.id].location=s.location;if(s.squad.length<6){s.squad.push(op.id);s.pendingBattle.squad.push({...clone(op),...clone(s.operativeState[op.id]),loaded:0,ammo:0});}text=`Acepto servir junto a ustedes. ${op.name} se incorpora a la fuerza patriota.`;outcome='recruited';note(s,text);
+          const gate=npc.operativeId>=100?civicStatus(s,npc.operativeId,true):recruitmentStatus(s,npc.operativeId,true);requireThat(gate.available,gate.reason);const op=rosterFor(s).find(o=>o.id===npc.operativeId);pay(s,{treasury:op.monthlyPay});s.recruited.push(op.id);s.operativeState[op.id].location=s.location;if(s.squad.length<6){s.squad.push(op.id);s.pendingBattle.squad.push({...clone(op),...clone(s.operativeState[op.id]),loaded:0,ammo:0});}text=`Acepto servir junto a ustedes. ${op.name} se incorpora a la fuerza patriota.`;outcome='recruited';note(s,text);
         }
         s.conversations??={};s.conversations[npc.id]={met:true,lastApproach:action.approach,hour:s.hour};s.lastConversation={npcId:npc.id,speaker:npc.name,text,outcome,operativeId:npc.operativeId??null,options:npc.operativeId!==undefined&&!s.recruited.includes(npc.operativeId)?['friendly','direct','recruit']:['friendly','direct']};break;
       }
       case 'visitSector':{
-        const at=action.sector??s.location;requireThat(at===s.location,'La escuadra debe viajar al sector antes de entrar.');requireThat(s.sectors[at]?.owner==='patriot','El sector está ocupado; prepará un ataque.');requireThat(s.squad.length>0,'La escuadra no tiene combatientes.');const def=sector(at),allocated={};let stock=s.resources.cartridges;for(const id of s.squad){const capacity=WEAPONS[rosterFor(s).find(o=>o.id===id).weapon]?.capacity??0,rounds=capacity?Math.min(10,stock):0;allocated[id]={loaded:Math.min(capacity,rounds),ammo:Math.max(0,rounds-capacity)};stock-=rounds;}const issued=s.resources.cartridges-stock;s.resources.cartridges=stock;
-        s.pendingBattle={id:`visit-${at}-${s.hour}-${s.seed}`,sector:at,name:def.name,biome:def.biome,theater:def.theater,seed:s.seed,exploration:true,night:s.hour%24<6||s.hour%24>=20,issuedCartridges:issued,wasRoyalist:false,npcs:encountersFor(s,at),squad:s.squad.map(id=>({...clone(rosterFor(s).find(o=>o.id===id)),...clone(s.operativeState[id]),...allocated[id]})),enemies:[],artillery:[],weather:{rain:false,humidity:def.theater==='coast'?.8:.3}};note(s,`La escuadra entra en ${def.name} para reconocer el lugar y hablar con sus habitantes.`);break;
+        const at=action.sector??s.location;requireThat(at===s.location,'La escuadra debe viajar al sector antes de entrar.');requireThat(s.sectors[at]?.owner==='patriot','El sector está ocupado; prepará un ataque.');requireThat(s.squad.length>0,'La escuadra no tiene combatientes.');const def=sector(at),allocated={},localAmmo=s.depots?.[at]?.cartridges??0;let stock=s.resources.cartridges+localAmmo;for(const id of s.squad){const capacity=WEAPONS[rosterFor(s).find(o=>o.id===id).weapon]?.capacity??0,rounds=capacity?Math.min(10,stock):0;allocated[id]={loaded:Math.min(capacity,rounds),ammo:Math.max(0,rounds-capacity)};stock-=rounds;}const issued=s.resources.cartridges+localAmmo-stock,fromDepot=Math.min(localAmmo,issued);s.resources.cartridges-=issued-fromDepot;if(fromDepot)s.depots[at].cartridges-=fromDepot;
+        s.pendingBattle={id:`visit-${at}-${s.hour}-${s.seed}`,sector:at,name:def.name,biome:def.biome,theater:def.theater,seed:s.seed,exploration:true,night:s.hour%24<6||s.hour%24>=20,issuedCartridges:issued,ammunitionSources:(s.sectorStates[at]?.units??[]).filter(u=>u.side==='enemy').map(u=>({id:u.id,ammo:u.ammo??0})),wasRoyalist:false,npcs:encountersFor(s,at),squad:s.squad.map(id=>({...clone(rosterFor(s).find(o=>o.id===id)),...clone(s.operativeState[id]),...allocated[id],...(mountForOperative(s.horseState,id)??{horse:false,canMount:false})})),enemies:[],artillery:[],weather:{rain:false,humidity:def.theater==='coast'?.8:.3}};note(s,`La escuadra entra en ${def.name} para reconocer el lugar y hablar con sus habitantes.`);break;
       }
       case 'leaveSector':{
-        requireThat(s.pendingBattle?.exploration&&action.battleId===s.pendingBattle.id,'La visita no corresponde al sector abierto.');const snapshot=validateSectorSnapshot(action.sectorState);s.sectorStates[s.pendingBattle.sector]=clone(snapshot);
-        const reports=action.survivors??[];requireThat(Array.isArray(reports),'El parte de la escuadra es inválido.');
-        for(const report of reports){const id=Number(report.id);requireThat(s.squad.includes(id),'El combatiente no pertenece a la visita.');for(const [field,max]of Object.entries({hp:rosterFor(s).find(o=>o.id===id).maxHp,energy:100,weight:1000,strength:100,strengthTraining:10000,priming:100000,flints:100000,rations:100000,torches:100000,condition:100,fatigue:100,boleadoras:100})){if(report[field]!==undefined){requireThat(Number.isFinite(report[field])&&report[field]>=0&&report[field]<=max,'El estado del combatiente es inválido.');s.operativeState[id][field]=report[field];}}s.operativeState[id].alive=s.operativeState[id].hp>0;if(report.inventory!==undefined){validatePersonalInventory(report.inventory);s.operativeState[id].inventory=clone(report.inventory);}}
-        s.squad=s.squad.filter(id=>s.operativeState[id].alive);if(!s.recruited.some(id=>s.operativeState[id].alive))s.defeated=true;s.pendingBattle=null;note(s,'La escuadra vuelve a la carta de operaciones.');break;
+        requireThat(s.pendingBattle?.exploration&&action.battleId===s.pendingBattle.id,'La visita no corresponde al sector abierto.');const snapshot=validateSectorSnapshot(action.sectorState);const visit=s.pendingBattle;
+        const reports=action.survivors??[];requireThat(Array.isArray(reports)&&new Set(reports.map(r=>Number(r.id))).size===reports.length,'El parte de la escuadra es inválido.');s.resources.cartridges+=returnAmmunition(visit,reports,snapshot);s.sectorStates[visit.sector]=clone(snapshot);
+        for(const report of reports){const id=Number(report.id);returnMount(s,id,report);requireThat(s.squad.includes(id),'El combatiente no pertenece a la visita.');for(const [field,max]of Object.entries({hp:rosterFor(s).find(o=>o.id===id).maxHp,energy:100,weight:1000,strength:100,strengthTraining:10000,priming:100000,flints:100000,rations:100000,torches:100000,condition:100,fatigue:100,boleadoras:100000})){if(report[field]!==undefined){requireThat(Number.isFinite(report[field])&&report[field]>=0&&report[field]<=max,'El estado del combatiente es inválido.');s.operativeState[id][field]=report[field];}}s.operativeState[id].alive=s.operativeState[id].hp>0;if(report.inventory!==undefined){validatePersonalInventory(report.inventory);s.operativeState[id].inventory=clone(report.inventory);}}
+        s.squad=s.squad.filter(id=>s.operativeState[id].alive);if(!s.completed&&!s.recruited.some(id=>s.operativeState[id].alive))s.defeated=true;s.pendingBattle=null;note(s,'La escuadra vuelve a la carta de operaciones.');break;
       }
       case 'travel':{
         requireThat(s.squad.length>0,'La escuadra no tiene combatientes para marchar.');
@@ -195,7 +210,7 @@ export function dispatchCampaign(previous,action){
         if(mode==='flotilla')requireThat(!s.blockade&&path.every(id=>sector(id).theater==='coast'),'La flotilla requiere una ruta costera sin bloqueo.');
         const mountain=path.some(id=>sector(id).biome==='mountain');requireThat(!(path.some(id=>['uspallata','los_patos'].includes(id))&&campaignDate(s).month>=6&&campaignDate(s).month<=8),'La nieve invernal ha cerrado los pasos.');
         if(mode==='posta')pay(s,{horses:Math.max(1,path.length-1)});
-        const hours=Math.max(1,Math.ceil((path.length-1)*(mode==='posta'?4:mode==='flotilla'?5:mode==='carts'?18:12)*(mountain?1.5:1)));tick(s,hours);const openPath=[];for(const id of path){if(s.sectors[id].owner!=='patriot')break;openPath.push(id);}s.location=openPath.at(-1)??s.location;if(s.location!==action.sector)note(s,'El avance se detiene: una incursión cortó la ruta durante la marcha.');
+        const hours=Math.max(1,Math.ceil((path.length-1)*(mode==='posta'?4:mode==='flotilla'?5:mode==='carts'?18:12)*(mountain?1.5:1)));tick(s,hours);const openPath=[];for(const id of path){if(s.sectors[id].owner!=='patriot')break;openPath.push(id);}s.location=openPath.at(-1)??s.location;moveMounts(s,s.location,hours);if(s.location!==action.sector)note(s,'El avance se detiene: una incursión cortó la ruta durante la marcha.');
         for(const id of s.squad)s.operativeState[id].fatigue=Math.min(90,s.operativeState[id].fatigue+(s.recruited.includes(57)?0:mountain?20:8));note(s,`El destacamento llega a ${sector(s.location).name}.`);break;
       }
       case 'supplyTransfer':{
@@ -236,20 +251,18 @@ export function dispatchCampaign(previous,action){
         requireThat(def,'No existe ese campo de batalla.');requireThat(san?s.location==='san_nicolas':(s.location===at||def.neighbors.includes(s.location)),'La escuadra debe marchar a un sector vecino antes de atacar.');requireThat(!(['uspallata','los_patos'].includes(at)&&campaignDate(s).month>=6&&campaignDate(s).month<=8),'La nieve invernal ha cerrado los pasos.');requireThat(s.squad.some(id=>s.operativeState[id].alive&&s.operativeState[id].hp>0),'No hay combatientes disponibles.');
         if(san)requireThat(s.phase>=1&&!s.flags.sanLorenzo&&s.sectors.san_nicolas.owner==='patriot','Organiza Retiro y libera San Nicolás antes de combatir en San Lorenzo.');
         else {requireThat(s.sectors[at].owner==='royalist'||(s.blockade&&def.theater==='coast'),'El sector ya está bajo control patriota.');requireThat(def.neighbors.some(id=>s.sectors[id].owner==='patriot'&&isSupplied(s,id)),'Debes abrir una ruta hasta el frente.');}
-        const origin=s.location;if(!san&&s.location!==at){tick(s,12);s.location=at;}
+        const origin=s.location;if(!san&&s.location!==at){tick(s,12);s.location=at;moveMounts(s,at,12);}
         const allocated={};const localAmmo=s.depots?.[origin]?.cartridges??0;let stock=s.resources.cartridges+localAmmo;
         for(const id of s.squad){const op=rosterFor(s).find(o=>o.id===id),capacity=WEAPONS[op.weapon]?.capacity??0;const rounds=capacity?Math.min(10,stock):0;allocated[id]={loaded:Math.min(capacity,rounds),ammo:Math.max(0,rounds-capacity)};stock-=rounds;}
         const issued=s.resources.cartridges+localAmmo-stock,fromDepot=Math.min(localAmmo,issued);pay(s,{cartridges:issued-fromDepot,powder:3});if(fromDepot)s.depots[origin].cartridges-=fromDepot;
-        s.pendingBattle={id:`${at}-${s.hour}-${s.seed}`,origin,sector:at,name:def.name,biome:def.biome,theater:def.theater,seed:Math.floor(random(s)*4294967296),issuedCartridges:issued,wasRoyalist:!san&&s.sectors[at].owner==='royalist',squad:s.squad.map(id=>({...clone(rosterFor(s).find(o=>o.id===id)),...clone(s.operativeState[id]),...allocated[id],horse:s.resources.horses>=s.squad.length,canMount:s.resources.horses>=s.squad.length,poncho:s.resources.ponchos>=s.squad.length})),difficulty:san?2:Math.min(4,1+Math.floor(s.hour/240)+(def.theater==='north'?1:0)),weather:{rain:def.biome==='wetland'||random(s)<0.2,humidity:def.theater==='coast'?0.8:0.3},cannons:s.resources.cannons+(s.depots?.[s.location]?.cannons??0)};s.pendingBattle.artillery=deployedArtillery({...s,location:origin});Object.assign(s.pendingBattle,oppositionFor(s.pendingBattle));note(s,`El destacamento se despliega para ${def.name}. Mando enemigo: ${s.pendingBattle.enemyCommander}.`);break;
+        s.pendingBattle={id:`${at}-${s.hour}-${s.seed}`,origin,sector:at,name:def.name,biome:def.biome,theater:def.theater,seed:Math.floor(random(s)*4294967296),issuedCartridges:issued,wasRoyalist:!san&&s.sectors[at].owner==='royalist',squad:s.squad.map(id=>({...clone(rosterFor(s).find(o=>o.id===id)),...clone(s.operativeState[id]),...allocated[id],...(mountForOperative(s.horseState,id)??{horse:false,canMount:false}),poncho:s.resources.ponchos>=s.squad.length})),difficulty:san?2:Math.min(4,1+Math.floor(s.hour/240)+(def.theater==='north'?1:0)),weather:{rain:def.biome==='wetland'||random(s)<0.2,humidity:def.theater==='coast'?0.8:0.3},cannons:s.resources.cannons+(s.depots?.[s.location]?.cannons??0)};s.pendingBattle.artillery=deployedArtillery({...s,location:origin});Object.assign(s.pendingBattle,oppositionFor(s.pendingBattle));note(s,`El destacamento se despliega para ${def.name}. Mando enemigo: ${s.pendingBattle.enemyCommander}.`);break;
       }
       case 'battleResult':{
         requireThat(s.pendingBattle&&!s.pendingBattle.exploration,'No hay batalla de conquista pendiente.');requireThat(action.battleId===s.pendingBattle.id,'El resultado no corresponde a la batalla pendiente.');requireThat(['victory','defeat','retreat'].includes(action.outcome),'Resultado de batalla inválido.');const request=s.pendingBattle;
         const survivors=action.survivors??[];requireThat(Array.isArray(survivors),'El parte de bajas es inválido.');
         requireThat(survivors.every(x=>x&&request.squad.some(o=>o.id===Number(x.id))&&Number.isFinite(x.hp)&&x.hp>=0)&&new Set(survivors.map(x=>Number(x.id))).size===survivors.length,'El parte de bajas contiene combatientes o heridas inválidos.');
-        let returned=0;
-        for(const report of survivors){if(report.hp>0){const issuedUnit=request.squad.find(o=>o.id===Number(report.id));returned+=Math.min(issuedUnit.loaded+issuedUnit.ammo,Math.max(0,Math.floor(Number(report.loaded)||0))+Math.max(0,Math.floor(Number(report.ammo)||0)));}}
-        s.resources.cartridges+=Math.min(request.issuedCartridges??0,returned);
-        for(const id of s.squad){const report=survivors.find(x=>Number(x.id)===id);if(report){const max=rosterFor(s).find(o=>o.id===id).maxHp;s.operativeState[id].hp=Math.max(0,Math.min(max,Number(report.hp)||0));s.operativeState[id].alive=s.operativeState[id].hp>0;for(const [field,limit] of Object.entries({priming:100000,flints:100000,rations:100000,torches:100000,condition:100,fatigue:100,energy:100,weight:1000,strength:100,strengthTraining:10000,boleadoras:100000}))if(report[field]!==undefined){requireThat(Number.isFinite(report[field])&&report[field]>=0&&report[field]<=limit,'El parte de suministros es inválido.');s.operativeState[id][field]=report[field];}if(report.inventory!==undefined)s.operativeState[id].inventory=clone(validatePersonalInventory(report.inventory));}else if(action.outcome!=='retreat'){s.operativeState[id].hp=0;s.operativeState[id].alive=false;}}
+        const battleSnapshot=action.sectorState?validateSectorSnapshot(action.sectorState):null;s.resources.cartridges+=returnAmmunition(request,survivors,battleSnapshot);
+        for(const id of s.squad){const report=survivors.find(x=>Number(x.id)===id);if(report){returnMount(s,id,report);const max=rosterFor(s).find(o=>o.id===id).maxHp;s.operativeState[id].hp=Math.max(0,Math.min(max,Number(report.hp)||0));s.operativeState[id].alive=s.operativeState[id].hp>0;for(const [field,limit] of Object.entries({priming:100000,flints:100000,rations:100000,torches:100000,condition:100,fatigue:100,energy:100,weight:1000,strength:100,strengthTraining:10000,boleadoras:100000}))if(report[field]!==undefined){requireThat(Number.isFinite(report[field])&&report[field]>=0&&report[field]<=limit,'El parte de suministros es inválido.');s.operativeState[id][field]=report[field];}if(report.inventory!==undefined)s.operativeState[id].inventory=clone(validatePersonalInventory(report.inventory));}else if(action.outcome!=='retreat'){s.operativeState[id].hp=0;s.operativeState[id].alive=false;}}
         for(const id of s.squad)if(CIVIC_RECRUITS.some(o=>o.id===id)&&s.operativeState[id].alive){
           const before=rosterFor(s).find(o=>o.id===id),xp=action.outcome==='victory'?60:action.outcome==='defeat'?20:10;
           s.operativeState[id].xp=(s.operativeState[id].xp??0)+xp;const after=rosterFor(s).find(o=>o.id===id);
@@ -259,7 +272,7 @@ export function dispatchCampaign(previous,action){
           if(request.sector==='san_lorenzo')s.flags.sanLorenzo=true;
           else {const region=s.sectors[request.sector];region.owner='patriot';region.loyalty=Math.max(50,region.loyalty);region.damageUntil=0;}
           if(request.theater==='coast')s.blockade=false;if(request.wasRoyalist||request.sector==='san_lorenzo')add(s,{treasury:250,muskets:15,cartridges:80});standing(s,'directory',5);standing(s,'gauchos',request.theater==='north'?10:2);note(s,`Victoria en ${request.name}. Se recuperan armas y fondos realistas.`);
-        }else{s.location=request.origin??s.location;standing(s,'directory',-5);note(s,`El destacamento se retira de ${request.name}.`);}
+        }else{s.location=request.origin??s.location;moveMounts(s,s.location,0);standing(s,'directory',-5);note(s,`El destacamento se retira de ${request.name}.`);}
         if(action.sectorState)s.sectorStates[request.sector]=clone(validateSectorSnapshot(action.sectorState));
         s.pendingBattle=null;s.squad=s.squad.filter(id=>s.operativeState[id].alive);if(!s.squad.length){const reserve=s.recruited.filter(id=>s.operativeState[id].alive&&operativeLocation(s,id)===s.location);s.squad=reserve.slice(0,6);if(!s.recruited.some(id=>s.operativeState[id].alive)){s.defeated=true;note(s,'No quedan combatientes. La campaña ha terminado.');}}break;
       }
@@ -289,6 +302,8 @@ export function restoreCampaign(text){
   requireThat(object(s.depots)&&Object.entries(s.depots).every(([id,goods])=>sector(id)&&object(goods)&&Object.entries(goods).every(([key,v])=>key in base.resources&&integer(v,0,1e9))),'Los depósitos guardados son inválidos.');
   requireThat(Array.isArray(s.convoys)&&s.convoys.length<=1000&&s.convoys.every(c=>object(c)&&typeof c.id==='string'&&(c.source==='reserve'||sector(c.source))&&(c.destination==='reserve'||sector(c.destination))&&['posta','carts','flotilla','mules'].includes(c.mode)&&integer(c.due,0,1e9)&&object(c.goods)&&Object.entries(c.goods).every(([key,v])=>key in base.resources&&integer(v,1,1e9))),'Los convoyes guardados son inválidos.');
   s.lastConversation??=null;s.conversations??={};
+  requireThat(object(s.conversations)&&Object.entries(s.conversations).every(([id,c])=>ENCOUNTERS.some(n=>n.id===id)&&object(c)&&c.met===true&&['friendly','direct','recruit'].includes(c.lastApproach)&&integer(c.hour,0,1e9)),'Las conversaciones guardadas son inválidas.');
+  requireThat(s.lastConversation===null||(object(s.lastConversation)&&ENCOUNTERS.some(n=>n.id===s.lastConversation.npcId)&&typeof s.lastConversation.text==='string'&&s.lastConversation.text.length<2000&&typeof s.lastConversation.speaker==='string'&&s.lastConversation.speaker.length<100&&Array.isArray(s.lastConversation.options)&&s.lastConversation.options.every(o=>['friendly','direct','recruit'].includes(o))),'El diálogo guardado es inválido.');
   s.armory??={};s.loadouts??={};s.artillerySelection??=[];requireThat(Array.isArray(s.artillerySelection)&&s.artillerySelection.length<=3&&s.artillerySelection.every(t=>['bronze4','field8','swivel'].includes(t)),'La batería guardada es inválida.');
   requireThat(object(s.armory)&&Object.entries(s.armory).every(([key,v])=>EQUIPMENT_CATALOG.some(o=>String(o.item)===key)&&integer(v,0,100000)),'La armería guardada es inválida.');
   requireThat(object(s.loadouts)&&Object.entries(s.loadouts).every(([id,slots])=>baseRosterFor(s).some(o=>o.id===Number(id))&&object(slots)&&Object.entries(slots).every(([slot,v])=>['weapon','blade'].includes(slot)&&integer(v,slot==='blade'?1809:1800,1813))),'Los equipos guardados son inválidos.');
@@ -301,6 +316,10 @@ export function restoreCampaign(text){
   requireThat(Array.isArray(s.shipments)&&s.shipments.length<=1000&&s.shipments.every(p=>object(p)&&integer(p.due,0,1e9)&&resources(p.goods)),'Los cargamentos del archivo son inválidos.');
   requireThat(['blockade','completed','defeated'].every(k=>typeof s[k]==='boolean')&&Array.isArray(s.log)&&s.log.length<=80&&s.log.every(p=>object(p)&&integer(p.hour,0,1e9)&&typeof p.text==='string'&&p.text.length<=1000),'El registro del archivo es inválido.');
   if(s.pendingBattle!==null){const b=s.pendingBattle;requireThat(object(b)&&typeof b.id==='string'&&b.id.length<100&&(sector(b.sector)||b.sector==='san_lorenzo')&&integer(b.seed,0,4294967295)&&Array.isArray(b.squad)&&b.squad.length<=6&&b.squad.every(o=>object(o)&&s.squad.includes(o.id)&&integer(o.loaded,0,2)&&integer(o.ammo,0,10)&&integer(o.hp,1,100)),'La batalla guardada es inválida.');}
+  s.horseState??={...initialHorseState(),hour:s.hour};
+  requireThat(object(s.horseState)&&s.horseState.version===1&&integer(s.horseState.hour,0,s.hour)&&integer(s.horseState.nextId,1,100000)&&Array.isArray(s.horseState.horses)&&s.horseState.horses.length<=10000&&new Set(s.horseState.horses.map(h=>h?.id)).size===s.horseState.horses.length&&Array.isArray(s.horseState.log)&&s.horseState.log.length<=40&&s.horseState.log.every(t=>typeof t==='string'&&t.length<1000),'La caballada guardada es inválida.');
+  requireThat(s.horseState.horses.every(h=>object(h)&&typeof h.id==='string'&&typeof h.name==='string'&&h.name.length<=60&&['mare','stallion'].includes(h.sex)&&sector(h.location)&&integer(h.bornAt,-1000000,s.hour)&&typeof h.hired==='boolean'&&(h.returned===undefined||typeof h.returned==='boolean')&&(h.pregnantUntil===null||integer(h.pregnantUntil,0,1e9))&&(h.hireUntil===null||integer(h.hireUntil,0,1e9))&&Number.isFinite(h.stamina)&&h.stamina>=0&&h.stamina<=100&&Number.isFinite(h.condition)&&h.condition>=0&&h.condition<=100&&integer(h.feed,0,100000)&&(h.assignedTo===null||s.recruited.includes(h.assignedTo))),'Los caballos guardados son inválidos.');
+  const mounts=s.horseState.horses.filter(h=>!h.returned&&h.assignedTo!==null).map(h=>h.assignedTo);requireThat(new Set(mounts).size===mounts.length,'Un jinete no puede tener dos monturas asignadas.');
   migrateSquads(s);
   requireThat(Array.isArray(s.squads)&&s.squads.length>0&&s.squads.length<=8&&new Set(s.squads.map(q=>q.id)).size===s.squads.length&&s.squads.every(q=>object(q)&&typeof q.id==='string'&&/^squad-[1-9][0-9]*$/.test(q.id)&&typeof q.name==='string'&&q.name.length<=30&&sector(q.location)&&validIds(q.members)&&q.members.length<=6&&q.members.every(id=>s.recruited.includes(id))),'Las escuadras guardadas son inválidas.');
   const assigned=s.squads.flatMap(q=>q.members);requireThat(new Set(assigned).size===assigned.length,'Un combatiente no puede pertenecer a dos escuadras.');const selected=s.squads.find(q=>q.id===s.activeSquadId);requireThat(selected&&selected.location===s.location&&JSON.stringify(selected.members)===JSON.stringify(s.squad),'La escuadra activa del archivo es inválida.');

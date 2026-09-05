@@ -3,7 +3,7 @@
 
 This is mechanical sprite extraction and resizing, not hand repainting. The
 image generator's approximate grid is not directly sliceable at equal widths:
-long bayonets cross those nominal boundaries. Source rectangles are recorded
+weapons and horse tails cross those nominal boundaries. Source rectangles are recorded
 from the visible separated subjects. All frames use the same 0.6 scale.
 """
 import hashlib

@@ -36,6 +36,7 @@ export default function Recruitment({state:s,dispatch}:Props){
    </form>}
   </section>
   <div className="recruit-heading"><p className="eyebrow">LOGIA LAUTARO</p><h3>Hojas de servicio disponibles</h3></div><div className="roster-grid">{roster.filter(o=>!civicIds.has(o.id)&&!encounterForOperative(o.id)).map(card)}</div>
-  <div className="recruit-heading"><p className="eyebrow">BOLETÍN REVOLUCIONARIO CÍVICO</p><h3>Voluntarios de los pueblos</h3><p>Las municipalidades convocan a sus vecinos. Llegan con equipos sencillos y mejoran su instrucción en cada combate.</p></div><div className="roster-grid">{roster.filter(o=>civicIds.has(o.id)&&!encounterForOperative(o.id)).map(card)}</div>
+  <div className="recruit-heading"><p className="eyebrow">BOLETÍN REVOLUCIONARIO CÍVICO</p><h3>Voluntarios de los pueblos</h3><p>Las municipalidades convocan a sus vecinos. Llegan con equipos sencillos y mejoran su instrucción en cada combate.</p></div><div className="roster-grid">{roster.filter(o=>civicIds.has(o.id)&&o.id<103&&!encounterForOperative(o.id)).map(card)}</div>
+<div className="recruit-heading"><p className="eyebrow">RECOMENDACIONES DEL PUERTO</p><h3>Voluntarios extranjeros</h3><p>Marineros y especialistas por estipendio. Estos personajes son ficticios y sus antecedentes se inspiran en los oficios del período.</p></div><div className="roster-grid">{roster.filter(o=>[103,104].includes(o.id)).map(card)}</div>
  <CharacterDossier operative={roster.find(o=>o.id===dossierId)} record={s.operativeState[dossierId??-1]} onClose={()=>setDossierId(null)}/></section>;
 }

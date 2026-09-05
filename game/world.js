@@ -5,13 +5,17 @@ import {createBattle} from './tactical.js';
 export function enterSector(request,previous=null){
  const map=buildSectorMap(request);
  if(previous){
-   map.tiles=structuredClone(previous.tiles);map.decor=structuredClone(previous.decor??map.decor);
+   map.tiles=structuredClone(previous.tiles);map.decor=structuredClone(previous.decor??map.decor);map.buildings=structuredClone(previous.buildings??map.buildings);
    // A new occupation creates a garrison. An unfinished engagement retains its survivors.
    if(!request.exploration&&!previous.sectorCleared)map.enemies=structuredClone(previous.units.filter(u=>u.side==='enemy'));
  }
  const state=createBattle(map.squad,map);
  if(previous){
-   for(const key of ['groundItems','droppedWeapons','lights'])state[key]=structuredClone(previous[key]??[]);
+   for(const key of ['groundItems','droppedWeapons','revealedRooms'])state[key]=structuredClone(previous[key]??[]);
+   const elapsed=Math.max(0,(request.hour??0)-(previous.savedHour??previous.enteredHour??request.hour??0));
+   // One strategic hour advances six ten-minute tactical light intervals.
+   const ticks=Math.floor(elapsed*6);
+   state.lights=structuredClone(previous.lights??map.lights??[]).map(light=>Number.isFinite(light.turns)?{...light,turns:Math.max(0,light.turns-ticks),age:(light.age||0)+ticks}:light).filter(light=>light.turns!==0);
    if(!request.exploration&&!previous.sectorCleared)state.units=state.units.filter(u=>u.side==='player').concat(structuredClone(previous.units.filter(u=>u.side==='enemy')));
  }
  const occupied=new Set(state.units.filter(u=>u.side==='enemy'&&u.hp>0&&!u.routed).map(u=>`${u.x},${u.y}`));

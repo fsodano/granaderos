@@ -1,8 +1,8 @@
-import {marchToFront} from './campaign-test-helpers.mjs';
+import {marchToFront,meetLocalRecruit} from './campaign-test-helpers.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign as dispatch,isSupplied,recruitmentStatus,restoreCampaign,serializeCampaign,OPERATIVES,CAMPAIGN_SECTORS,PHASES,RECIPES} from '../game/campaign.js';
-const order=(s,action)=>{const next=dispatch(marchToFront(s,action),action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);return next;};
+const order=(s,action)=>{const next=meetLocalRecruit(s,action)??dispatch(marchToFront(s,action),action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);return next;};
 const capture=(s,id)=>{s=order(s,{type:'attack',sector:id});return order(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'victory',survivors:s.pendingBattle.squad.map(o=>({id:o.id,hp:o.hp}))});};
 test('historical geography, roster and phase definitions preserve requested scope',()=>{
  assert.equal(CAMPAIGN_SECTORS.length,13);assert.equal(new Set(CAMPAIGN_SECTORS.map(s=>s.grid)).size,13);assert.equal(new Set(CAMPAIGN_SECTORS.map(s=>s.theater)).size,4);assert.equal(OPERATIVES.length,13);assert.equal(PHASES.length,5);
@@ -15,7 +15,7 @@ test('orders immutable; failed purchases roll back all effects',()=>{
 test('five-phase campaign cannot unlock San Martín early',()=>{
  let s=initialCampaign();assert.equal(recruitmentStatus(s,57).available,false);s=order(s,{type:'academy'});assert.ok(dispatch(s,{type:'attack',sector:'san_lorenzo'}).lastError);
  s=capture(s,'san_nicolas');s=capture(s,'san_lorenzo');assert.equal(s.phase,2);
- s=capture(s,'cordoba');s=capture(s,'tucuman');s=capture(s,'salta');s=order(s,{type:'diplomacy',kind:'northPact'});assert.equal(s.phase,3);assert.equal(recruitmentStatus(s,0).available,true);assert.equal(recruitmentStatus(s,57).available,false);
+ s=capture(s,'cordoba');s=capture(s,'tucuman');s=capture(s,'salta');s=order(s,{type:'diplomacy',kind:'northPact'});assert.equal(s.phase,3);assert.equal(recruitmentStatus(s,0,true).available,true);assert.equal(recruitmentStatus(s,57).available,false);
  s=capture(s,'mendoza');s=order(s,{type:'recruit',id:2});s=order(s,{type:'foundry'});assert.equal(s.phase,3);
 });
 test('production consumes inputs, takes time and waits when cut off',()=>{
@@ -40,8 +40,8 @@ test('battle result IDs prevent stale victories and preserve casualties',()=>{
 test('Plumerillo requires 3000 equipped infantry, artillery, fortifications and parliament',()=>{
  let s=initialCampaign();s.phase=3;s.flags.foundry=true;s.flags.parliament=true;s.resources.infantry=2999;s.resources.cannons=3;
  for(const id of ['mendoza','uspallata','los_patos']){s.sectors[id].owner='patriot';s.sectors[id].fort=1;}
- s=order(s,{type:'wait',hours:1});assert.equal(s.phase,3);s.resources.infantry=3000;s=order(s,{type:'wait',hours:1});assert.equal(s.phase,4);assert.equal(recruitmentStatus(s,57).available,true);
- s=order(s,{type:'recruit',id:57});assert.equal(s.completed,false);for(const id of Object.keys(s.sectors))s.sectors[id].owner='patriot';s=order(s,{type:'wait',hours:1});assert.equal(s.completed,true);
+ s=order(s,{type:'wait',hours:1});assert.equal(s.phase,3);s.resources.infantry=3000;s=order(s,{type:'wait',hours:1});assert.equal(s.phase,4);assert.equal(recruitmentStatus(s,57,true).available,true);
+ for(const id of ['cordoba','san_nicolas','tucuman'])s.sectors[id].owner='patriot';s=order(s,{type:'recruit',id:57});assert.equal(s.completed,false);for(const id of Object.keys(s.sectors))s.sectors[id].owner='patriot';s=order(s,{type:'wait',hours:1});assert.equal(s.completed,true);
 });
 test('save reload is deterministic and invalid version rejected',()=>{
  const s=order(initialCampaign(17),{type:'contraband',offer:'supplies'});assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);assert.deepEqual(dispatch(s,{type:'wait',hours:96}),dispatch(restoreCampaign(serializeCampaign(s)),{type:'wait',hours:96}));assert.throws(()=>restoreCampaign('{"version":99}'));
@@ -82,6 +82,7 @@ test('full campaign reaches liberation through reducer orders and timed producti
    if(s.blockade)s=capture(s,'san_nicolas');
  }
  assert.equal(s.resources.infantry,3000);assert.equal(s.phase,4);for(const def of CAMPAIGN_SECTORS)if(s.sectors[def.id].owner==='royalist')s=capture(s,def.id);
+ for(let i=0;i<2;i++)s=order(s,{type:'fortify',sector:'humahuaca'});for(let i=0;i<3;i++)s=order(s,{type:'militia',sector:'humahuaca',rank:0});
  s=order(s,{type:'recruit',id:57});assert.equal(s.completed,true);assert.ok(s.hour<24*120,`Preparation took ${s.hour/24} days`);
 });
 

@@ -68,6 +68,7 @@ for(const [key,entry] of Object.entries(manifest)){
     if(!manifest[dependency])throw Error(`Missing manifest dependency: ${dependency} from ${key}`);
   }
 }
+for(const faction of ["granadero","royalist"])for(const action of ["idle","walk"])requireAsset(`/art/${faction}-${action}-atlas.png`,"infantry animation");
 await rm(destination,{recursive:true,force:true});
 await cp(source,destination,{recursive:true});
 for(const file of sourceFiles){
@@ -76,3 +77,4 @@ for(const file of sourceFiles){
   if(digest(await readFile(file))!==digest(await readFile(target)))throw Error(`Staged file differs: ${target}`);
 }
 console.log(`Static export verified: ${sourceFiles.length} files, ${checked.size} asset references, staged in dist/.`);
+
