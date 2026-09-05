@@ -1,0 +1,62 @@
+name: Windows engine and Granaderos package
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  compile:
+    runs-on: windows-2022
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        application: [JA2, JA2MAPEDITOR]
+    env:
+      SCCACHE_GHA_ENABLED: 'true'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: egor-tensin/vs-shell@v2
+        with:
+          arch: x86
+      - uses: mozilla-actions/sccache-action@v0.0.10
+      - name: Compile pinned engine
+        shell: pwsh
+        run: ./tools/build-windows.ps1 -Application '${{ matrix.application }}'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-${{ matrix.application }}
+          path: |
+            build/${{ matrix.application }}/${{ matrix.application }}.exe
+            build/${{ matrix.application }}/${{ matrix.application }}.pdb
+          if-no-files-found: error
+  package:
+    needs: compile
+    runs-on: windows-2022
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: windows-*
+          merge-multiple: true
+          path: build/binaries
+      - name: Assemble installable overlay
+        shell: pwsh
+        run: ./tools/build-package.ps1 -BinariesDirectory build/binaries
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Granaderos-windows-overlay
+          path: dist/Granaderos-*
+          if-no-files-found: error
+          retention-days: 14
