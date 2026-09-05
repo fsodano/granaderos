@@ -46,3 +46,23 @@ Validation: 166 tests pass; TypeScript and static build pass (155 files, 73 chec
 - Complete-city control and loyalty gate militia; adjacent NPC supply errands reward local loyalty once.
 - Historical figures remain personal encounters. Legacy saved campaigns are preserved.
 - Workshop, diplomacy, journal and campaign objective actions are available from desk folders.
+
+
+## 0.3.0-dev.1 — campaign consequences and local defenders
+
+- Trained militia deploy as persistent local tactical allies with finite ammunition,
+  rank equipment, retained injuries and conserved casualties.
+- Riding practice improves actual proficiency; practiced sector tiles survive
+  re-entry to prevent farming. Dossiers and tactical sheets expose progress.
+- Expanded era-appropriate keyboard commands and Spanish help; local militia
+  remains separate from the six hired squad shortcuts.
+- Foreign standing changes import prices, national contributions have deadlines,
+  neglected emancipation/commissions reduce support, and frontier requisitions
+  can break agreements and provoke economic raids.
+- Living companions deliver their campaign-ending lines once.
+
+Validation: 209 tests, TypeScript and production export pass. Browser acceptance
+trained three militia, entered their sector and opened the separate garrison panel.
+Recruitment and strategic-map screenshots were captured for the user. Full-game
+implementation remains active; naval missions, full equipment/industry chains,
+scripted campaign encounters and battlefield scale still require work.
