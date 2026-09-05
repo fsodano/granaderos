@@ -17,7 +17,9 @@ $commit = (& git -C $root rev-parse HEAD).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Cannot determine Granaderos source revision.' }
 $engineCommit = (& git -C (Join-Path $root 'engine') rev-parse HEAD).Trim()
 if ($LASTEXITCODE -ne 0) { throw 'Initialize the pinned engine submodule: git submodule update --init --recursive' }
-& cmake -S (Join-Path $root 'engine') -B $BuildDirectory -G Ninja "-DCMAKE_BUILD_TYPE=$Configuration" "-DApplications=$Application" "-DGIT_SHA=$($commit.Substring(0,9))" "-DGAME_BUILD_INFORMATION=Granaderos $version ($($commit.Substring(0,9))) / JA2 $($engineCommit.Substring(0,9))"
+& python (Join-Path $root 'tools/apply_engine_patch.py')
+if ($LASTEXITCODE -ne 0) { throw "Granaderos engine patch failed ($LASTEXITCODE)." }
+& cmake -S (Join-Path $root 'engine') -B $BuildDirectory -G Ninja "-DCMAKE_BUILD_TYPE=$Configuration" "-DApplications=$Application" "-DGRANADEROS=ON" "-DGIT_SHA=$($commit.Substring(0,9))" "-DGAME_BUILD_INFORMATION=Granaderos $version ($($commit.Substring(0,9))) / JA2 $($engineCommit.Substring(0,9))"
 if ($LASTEXITCODE -ne 0) { throw "CMake configure failed ($LASTEXITCODE)." }
 & cmake --build $BuildDirectory --target $Application --parallel $Parallel
 if ($LASTEXITCODE -ne 0) { throw "CMake build failed ($LASTEXITCODE)." }

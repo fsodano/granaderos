@@ -1,21 +1,37 @@
 # Granaderos
 
-A historical conversion of Jagged Alliance 2 v1.13 set during the Argentine War of Independence (1810–1820).
+A browser strategy and turn-based tactical game set during the Argentine War of Independence (1810–1820), based on the supplied historical conversion specification and informed by JA2 v1.13.
 
-**In development. No complete or launch-tested Granaderos release exists yet.** This repository tracks the full supplied conversion specification, including original graphics, rather than a standalone browser game.
+**In development. The complete specification has not yet passed its completion audit.** Player-facing content is Spanish; code and documentation are English. The playable browser implementation uses JavaScript and React; it does not execute the original Windows C++ engine.
+
+## Run locally
+
+Requires Node.js 22 or newer:
+
+```sh
+npm ci --prefix web
+npm run dev
+```
+
+Open http://localhost:3000. Campaign saves are stored in your browser; use **Guardar** to export a portable save file.
+
+```sh
+npm test
+npm run typecheck
+npm run build
+```
+
+The static production artifact is written to `dist/`. The browser build requires neither the engine submodule nor an original JA2 installation.
 
 ## Source layout
 
-- `engine/`: upstream [1dot13/source](https://github.com/1dot13/source), pinned as a Git submodule.
-- `mod/`: Granaderos game-data overlay.
-- `native/` and `patches/`: Granaderos engine extensions and integration patches.
-- `assets/`: original artwork, generation prompts, and engine-ready exports.
-- `tools/`: deterministic generation, build, installation, and verification tools.
-- `docs/specification/original.txt`: the supplied design, preserved verbatim.
-- `docs/PROGRESS.md`: requirement checklist and evidence, including incomplete work.
-
-Clone with `git clone --recurse-submodules https://github.com/fsodano/granaderos.git`.
-The upstream engine targets Windows x86. Its original JA2 data dependency remains; a conversion source checkout is not a replacement for a licensed JA2 installation.
+- `web/`: Spanish browser interface and installed original artwork.
+- `game/`: deterministic tactical rules, campaign economy, authored maps and save validation.
+- `assets/`: original artwork, prompts, historical references and reproducible exports.
+- `tests/`: rules, campaign, map and integration checks.
+- `docs/specification/original.txt`: supplied design preserved verbatim.
+- `docs/PROGRESS.md`: requirement checklist with incomplete work explicitly tracked.
+- `engine/`, `native/`, `patches/`, `mod/`: pinned upstream source and earlier native conversion work retained for reference; not browser runtime dependencies.
 
 ## Versioning and contributions
 

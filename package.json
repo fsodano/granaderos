@@ -1,0 +1,12 @@
+{
+  "name": "granaderos",
+  "version": "0.1.0-dev.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "dev": "npm --prefix web run dev",
+    "build": "node tools/build-web.mjs",
+    "typecheck": "node web/node_modules/typescript/bin/tsc --project web/tsconfig.json --noEmit"
+  }
+}

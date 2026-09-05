@@ -2,25 +2,25 @@
 
 ## Objective and completion rule
 
-Implement the entire supplied specification using the pinned JA2 v1.13 engine, including graphics. Build and test the actual game; use semver and check in progress through GitHub pull requests. A small playable encounter is a milestone, not completion. This file records evidence rather than planned work as accomplished.
+Implement the entire supplied specification as a WEB GAME, using the supplied JA2 v1.13 source as reference, including original graphics. Player-facing content must be Spanish; code and docs remain English. Build and test the actual game; use semver and check in progress through GitHub pull requests. A small playable encounter is a milestone, not completion. This file records evidence rather than planned work as accomplished.
 
-## Verified starting state
+## Current browser milestone
 
-- Upstream clone exists at `engine/`, revision `ddb691318eb3dd0cdc6eab42139739b6d498c645`.
-- Upstream includes Base/Data-1.13 data, Windows CMake presets, game and map editor sources.
-- Original JA2 installation path has been requested for runtime testing.
-- Earlier work stopped after downloading source. No earlier conversion or graphics were implemented.
-- The abandoned web scaffold has been moved outside this workspace.
+The user clarified that the deliverable is a web game. The browser implementation is now primary; earlier native build work is retained as reference. No licensed JA2 installation is needed to run this implementation.
+
+Implemented: Spanish campaign and tactical interface; thirteen historical operatives and portraits; fourteen authored tactical maps; five campaign phases; recruitment, diplomacy, production, transport and strategic raids; firearm reloads, misfires, smoke, melee, mounted charges, reactions, crew-served artillery and operative bonuses; local save/export/import.
+
+Evidence: see `WEB-SYSTEMS.md`, `tactical-verification.md`, and `tests/*.test.mjs`. Automated campaign progression uses injected victory results; it is not evidence of a complete human playthrough. Browser QA has exercised recruitment preparation, production completion, deployment, movement and rejected invalid orders through the real interface.
+
+Remaining full-release work includes custom officer creation, full animation and sound sets, complete historical narrative and faction behavior, broader tactical fidelity, balance and an end-to-end campaign playthrough. The checklist below preserves original acceptance criteria; TODO means not fully proved even where a subset is implemented.
 
 ## Milestones
 
-1. **0.1.0 development:** reproducible Windows engine build, data overlay, asset converter, actual first artwork, automated checks and installation flow.
-2. **0.2.0:** launch-tested Retiro/San Lorenzo scenario, historical squad and equipment, black-powder combat, save/load.
-3. **0.3.0:** four-theater strategic campaign, five progression phases, recruitment, economy and factions.
-4. **0.4.0:** mounted combat, artillery crews, transport networks, strategic AI and environmental effects.
-5. **1.0.0 candidate:** complete graphics/audio/interface conversion, campaign balancing, regression and full playthrough audit.
-
-Milestone labels describe scheduling; they do not remove or change requirements below.
+1. **0.1.0 development:** playable browser campaign and tactical core, original static art, saves, automated checks and static build.
+2. **0.2.0:** historical scenario and rules fidelity; complete recruitment flows.
+3. **0.3.0:** complete strategic logistics, faction behavior and campaign narrative.
+4. **0.4.0:** animation, sound and responsive interface polish.
+5. **1.0.0 candidate:** full specification audit, balancing and recorded campaign playthrough.
 
 ## Requirements and acceptance evidence
 
@@ -28,8 +28,8 @@ Status: TODO = not proved; PARTIAL = implemented subset with limitations; VERIFI
 
 | ID | Requirement | Status | Required acceptance evidence |
 |---|---|---|---|
-| ENG-01 | Build JA2 and map editor from supplied source | TODO | Successful CI executables, pinned source and reproducible commands |
-| ENG-02 | Install and launch conversion | TODO | Actual runtime loads Granaderos VFS, main menu and tactical map without errors |
+| ENG-01 | Build browser game using supplied source as reference | PARTIAL | Static build and browser QA; final release audit pending |
+| ENG-02 | Launch browser game | PARTIAL | Local browser menu/campaign/tactical runtime verified; hosted build pending |
 | ENG-03 | Save/load and versioning | TODO | Round-trip campaign/tactical saves and versioned package |
 | NAR-01 | Elío/Vigodet, Pezuela, Tristán, Romarate and Loyalist commands | TODO | In-game narrative and multi-command objectives |
 | NAR-02 | Retiro recruitment and training phase | TODO | Costs, recruits and mounts advance phase only on requirements |
@@ -83,3 +83,5 @@ Status: TODO = not proved; PARTIAL = implemented subset with limitations; VERIFI
 
 - Goal execution started: established Git repository and upstream submodule; dispatched independent engine-build, campaign-data and graphics work. No game-completion claim.
 
+
+- Web clarification implemented: browser rules and React interface are primary; all thirteen portraits and fourteen maps installed. Persistent goal remains active until full acceptance audit.

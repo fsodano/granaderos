@@ -1,16 +1,22 @@
 name: Windows engine and Granaderos package
 
 on:
-  push:
-    branches: [main]
-    tags: ['v*']
-  pull_request:
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
+  rules:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile and execute black-powder specification assertions
+        run: |
+          mkdir -p build
+          c++ -std=c++17 -Wall -Wextra -Werror -pedantic tests/black_powder_test.cpp -o build/black-powder-test
+          ./build/black-powder-test
   compile:
     runs-on: windows-2022
     timeout-minutes: 90
@@ -20,10 +26,16 @@ jobs:
         application: [JA2, JA2MAPEDITOR]
     env:
       SCCACHE_GHA_ENABLED: 'true'
+      PYTHONUTF8: '1'
     steps:
+      - name: Preserve source line endings for reviewed patches
+        run: git config --global core.autocrlf false
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
       - uses: egor-tensin/vs-shell@v2
         with:
           arch: x86
@@ -39,13 +51,24 @@ jobs:
             build/${{ matrix.application }}/${{ matrix.application }}.pdb
           if-no-files-found: error
   package:
-    needs: compile
+    needs: [compile, rules]
     runs-on: windows-2022
     timeout-minutes: 30
+    env:
+      PYTHONUTF8: '1'
     steps:
+      - name: Preserve source line endings for reviewed patches
+        run: git config --global core.autocrlf false
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Generate campaign overlay
+        run: python tools/generate_campaign.py
+      - name: Verify conversion data
+        run: python -m unittest discover -s tests -v
       - uses: actions/download-artifact@v4
         with:
           pattern: windows-*
