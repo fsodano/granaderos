@@ -5,7 +5,7 @@ import {tradeQuote} from '../game/politics.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null);return n;};
 test('actual import orders use reputation prices and retain shipping delay',()=>{
  let s=initialCampaign();s.reputation.foreign=60;const cash=s.resources.treasury;
- s=order(s,{type:'contraband',offer:'arms'});assert.equal(cash-s.resources.treasury,200);assert.ok(s.shipments[0].due>=72&&s.shipments[0].due<=120);
+ s=order(s,{type:'purchaseEquipment',item:1802});assert.equal(cash-s.resources.treasury,336);assert.ok(s.equipmentShipments[0].due>=72&&s.equipmentShipments[0].due<=120);
  assert.equal(tradeQuote({...s,reputation:{foreign:0}},250),300);
 });
 test('national contribution is payable once per period and neglect loses support',()=>{
@@ -16,10 +16,10 @@ test('national contribution is payable once per period and neglect loses support
  const continued=order(paid,{type:'wait',hours:168});assert.equal(continued.reputation.directory,before+8);
  assert.equal(restoreCampaign(JSON.stringify(paid)).politics.taxPaidPeriod,1);
 });
-test('cattle cannot be generated repeatedly and frontier betrayal breaks the pact',()=>{
+test('cash cannot be requisitioned repeatedly and frontier betrayal breaks the pact',()=>{
  let s=initialCampaign();s=order(s,{type:'diplomacy',kind:'requisition'});assert.ok(dispatchCampaign(s,{type:'diplomacy',kind:'requisition'}).lastError);
  s=initialCampaign();s.location='mendoza';s.squads[0].location='mendoza';s.sectors.mendoza.owner='patriot';s.flags.parliament=true;
- s=order(s,{type:'policy',kind:'frontierRequisition'});assert.equal(s.flags.parliament,false);assert.equal(s.resources.horses,43);assert.equal(s.reputation.indigenous,-35);
+ s=order(s,{type:'policy',kind:'frontierRequisition'});assert.equal(s.flags.parliament,false);assert.equal(s.resources.treasury,3360);assert.equal(s.reputation.indigenous,-35);
  const restored=restoreCampaign(JSON.stringify(s));assert.equal(restored.politics.requisitionAfter,336);
  s=order(s,{type:'wait',hours:168});assert.ok(s.sectors.mendoza.damageUntil>s.hour);assert.ok(s.log.some(e=>e.text.includes('partida de frontera')));
 });

@@ -1,3 +1,4 @@
+import {sectorCash} from './economy.js';
 import {buildSectorMap} from './maps.js';
 import {createBattle} from './tactical.js';
 
@@ -32,6 +33,10 @@ export function enterSector(request,previous=null){
    Object.assign(unit,reserve(prior??unit));
  }
  state.npcs=(request.npcs??[]).map(npc=>({...structuredClone(npc),...reserve(npc)}));
+ if(!previous&&!request.sceneId&&sectorCash(request.sector)){
+  const leader=state.units.find(u=>u.side==='player'),spot=leader&&state.tiles.find(t=>!t.blocked&&!occupied.has(`${t.x},${t.y}`)&&Math.abs(t.x-leader.x)+Math.abs(t.y-leader.y)===1);
+  if(spot)state.groundItems.push({id:`cash:${request.sector}`,type:'money',x:spot.x,y:spot.y,count:sectorCash(request.sector)});
+ }
  state.sceneId=request.sceneId??null;state.missionId=request.missionId??request.sceneId??null;
  state.enteredHour=request.hour??0;
  return state;

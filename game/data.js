@@ -549,20 +549,10 @@ export const CAMPAIGN_SECTORS = [
   {id:'humahuaca',grid:'A1',name:'Quebrada de Humahuaca',theater:'north',biome:'mountain',x:33,y:3,income:40,asset:'Paso fronterizo del Alto Perú',neighbors:['jujuy']},
 ];
 export const PHASES = [
-  {id:'retiro',name:'I · Formación en Retiro',objective:'Destina 20 caballos, 40 mosquetes, 60 textiles y 300 pesos a la academia.'},
+  {id:'retiro',name:'I · Formación en Retiro',objective:'Aboná 300 pesos para fundar el regimiento.'},
   {id:'san_lorenzo',name:'II · Bautismo de fuego',objective:'Libera San Nicolás y vence al desembarco realista en San Lorenzo.'},
   {id:'yatasto',name:'III · Encuentro de Yatasto',objective:'Libera Tucumán y Salta, asegura el Camino Real y pacta con Güemes.'},
-  {id:'plumerillo',name:'IV · Preparativos de El Plumerillo',objective:'Controla Cuyo, activa la fundición, equipa 3000 infantes y acuerda el paso con los pehuenches.'},
+  {id:'plumerillo',name:'IV · Preparativos de El Plumerillo',objective:'Controla Cuyo, activa la fundición, financia el ejército con 3000 pesos, compra tres cañones y fortifica los pasos y acuerda el paso con los pehuenches.'},
   {id:'liberation',name:'V · Ejército de los Andes',objective:'Incorpora a San Martín y elimina las últimas guarniciones realistas en los trece sectores.'},
 ];
-export const RECIPES = {
- powder:{name:'Pólvora de maestranza',hours:12,cost:{treasury:20,saltpeter:15,charcoal:3,sulfur:2},yield:{powder:20}},
- charcoal:{name:'Carbón de leña',hours:18,cost:{treasury:10,timber:12},yield:{charcoal:8}},
-  cartridges:{name:'Cartuchos de papel',hours:12,cost:{treasury:30,powder:5,lead:3},yield:{cartridges:60}},
-  muskets:{name:'Reacondicionar mosquetes',hours:24,cost:{treasury:80,copper:2,scrapIron:8,timber:8},yield:{muskets:50}},
-  sabres:{name:'Sables de Caroya',hours:18,cost:{treasury:60,copper:3,scrapIron:6,charcoal:3},yield:{sabres:20}},
-  cannon:{name:'Cañón de bronce de 4 libras',hours:48,cost:{treasury:180,copper:15,timber:10,charcoal:8},yield:{cannons:1}},
-  uniforms:{name:'Uniformes de campaña',hours:12,cost:{treasury:40,textiles:40,leather:10},yield:{uniforms:200}},
-  infantry:{name:'Instruir y equipar infantes',hours:24,cost:{treasury:100,muskets:200,uniforms:200,powder:5},yield:{infantry:200}},
-};
-export const RESOURCE_NAMES = {timber:'Madera',scrapIron:'Hierro recuperado',lead:'Plomo',leather:'Cuero curtido',saltpeter:'Salitre',charcoal:'Carbón vegetal',sulfur:'Azufre',treasury:'Pesos de plata',horses:'Caballos',powder:'Pólvora',copper:'Cobre',textiles:'Textiles',infantry:'Infantes equipados',muskets:'Mosquetes',sabres:'Sables',cartridges:'Cartuchos',uniforms:'Uniformes',cannons:'Cañones',ponchos:'Ponchos de lana'};
+export const RESOURCE_NAMES = {treasury:'Pesos de plata'};

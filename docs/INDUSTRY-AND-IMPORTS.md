@@ -1,37 +1,44 @@
-# Material industry and delayed personal imports
+# Money and equipment
 
-Full-game continuation after PR #4. Regional resource sites are explicit campaign
-abstractions; the quantities and locations are game balance rather than a claim
-about surveyed historical deposits.
+The browser campaign uses pesos as its only strategic resource. The Tesorería
+shows the balance, daily income, time until the next payment, and an optional
+breakdown by locality. There are no material stocks, production recipes,
+resource convoys, horse purchases, breeding, or feed.
 
-New materials: timber, recovered iron, lead, tanned leather, saltpeter, charcoal
-and sulfur. New campaigns receive finite starter stocks; older saves migrate
-missing stocks to zero rather than silently receiving free material.
+Controlled localities pay at midnight. Coastal income represents trade and
+customs; inland income represents local contributions. Occupied sites pay zero.
+Damage reduces income to 25%; coastal blockades apply another 25% multiplier.
+The screen and payment code both use `game/economy.js`. Income does not require
+managing supply routes. Territorial routes still affect travel and militia.
 
-Owned, supplied and undamaged sites yield materials daily. Córdoba supplies
-wood/iron, Santa Fe wood/leather, Mendoza copper/charcoal/sulfur, Salta lead/saltpeter,
-Tucumán saltpeter/leather and San Nicolás iron/leather. Each active site improves
-workshop throughput by 10%; the actual order duration and UI use the same helper.
-Site damage pauses that site's contribution until recovery. Resource cargo has
-explicit weight and can use existing finite depot convoy rules.
+These are design abstractions with balance values, not historical tariffs.
+Contributions and merchant financing are documented in [“Pagar la tropa”: vías
+de financiamiento y composición del gasto militar del Ejército de los Andes,
+1815–1818](https://portal.amelica.org/ameli/journal/237/2371031006/html/).
 
-Recipes consume actual material: powder uses saltpeter/charcoal/sulfur; cartridges
-also need lead; reconditioned muskets need wood and recovered iron; blades use iron
-and charcoal; bronze guns need wood/charcoal; uniforms consume leather. Charcoal
-can be made from timber. Free daily powder generation was removed. Imported raw
-materials offer an alternate finite supply route with existing shipment delays.
+Players also receive one-time NPC quest payments, 250 pesos for a first sector
+victory, and cash found on the tactical map. Use **Recoger** beside the gold money
+marker. A surviving soldier must bring the money out of the sector. The campaign
+records recovered caches so saves and repeat visits cannot pay them twice.
 
-Brown Bess and Baker personal weapons now enter a separate paid shipment queue,
-not the available armory immediately. Foreign reputation determines prices;
-Ensenada and willing merchants are required; delivery takes 72–120 hours and
-blockades/occupation hold due shipments. The armory UI shows pending orders.
-Local weapons retain workshop stock purchase. This does not yet implement every
-period accessory or fully custom individual weapon manufacture.
+Recruitment, militia, diplomacy, fortifications, and equipment all cost pesos.
+Organizing Retiro costs 300; El Plumerillo costs 500; funding the army costs 3000.
+The final preparation also needs three purchased guns, the parliament agreement,
+and fortified control of Mendoza and both Andean passes.
 
-Tests: industry-web covers ingredient depletion, timed completion, insufficient
-inputs, ownership/supply/damage effects, throughput, weighted cargo, import delay,
-blocked delivery, once-only arrival, and save migration/malformed queues. Existing
-equipment tests now wait for actual personal imports before equipping them.
+Personal weapons remain finite equipment. Brown Bess and Baker imports take
+72–120 hours and wait for an open Ensenada. Foreign relations affect their prices.
+Local weapons and artillery arrive immediately. Artillery is counted in the
+armory, with no separate resource counter.
 
-The full campaign acceptance playthrough must brew powder or import resources
-when stocks run low; do not restore free powder to make old tests pass.
+Each firearm receives ten cartridges on deployment at one peso per cartridge.
+Validated unused ammunition is refunded on return. Tactical ammunition remains
+finite. Militia training includes its initial kit. Cavalry access is automatic;
+there is no separate horse economy. Repairs and personal kit refills cost pesos.
+
+Start a new campaign for economy version 2. Earlier economy saves are rejected
+with a clear message; no save conversion is performed during active development.
+
+Validation: `tests/economy-web.test.mjs`, `tests/quests-web.test.mjs`,
+`tests/equipment-imports.test.mjs`, and the complete campaign playthrough cover
+the income, cash recovery, spending, and progression rules.

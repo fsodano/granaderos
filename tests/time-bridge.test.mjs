@@ -27,11 +27,10 @@ test('torch lifetime uses elapsed seconds through resting and strategic re-entry
  pair=syncBattleTime(pair.campaign,endTurn(pair.battle));assert.equal(pair.battle.lights.find(l=>l.id===torch.id).remainingSeconds,remaining-600);
  let s=order(pair.campaign,{type:'leaveSector',battleId:pair.campaign.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});s=order(s,{type:'wait',hours:1});s=order(s,{type:'visitSector'});const b=enterSector({...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour},s.sectorStates.retiro);assert.equal(b.lights.find(l=>l.id===torch.id)?.remainingSeconds,remaining-4200);
 });
-test('midnight cannot replenish a deployed horse and its tactical stamina returns intact',()=>{
- let s=initialCampaign();s=order(s,{type:'horseAction',order:{type:'acquire'}});s=order(s,{type:'horseAction',order:{type:'assign',horseId:'horse-1',operativeId:3}});s=order(s,{type:'wait',hours:23});s.secondOfHour=3590;
- let pair=visit(s);pair.battle=actBattle(pair.battle,{type:'mount',unitId:3});const u=pair.battle.units.find(u=>u.id==='3'),p=getReachable(pair.battle,u).find(p=>p.path.length===2);pair.battle=actBattle(pair.battle,{type:'move',unitId:3,x:p.x,y:p.y});const stamina=pair.battle.units.find(u=>u.id==='3').mount.stamina;
- pair=syncBattleTime(pair.campaign,endTurn(pair.battle));assert.equal(pair.error,null);assert.equal(pair.battle.units.find(u=>u.id==='3').mount.stamina,stamina);
- const n=order(pair.campaign,{type:'leaveSector',battleId:pair.campaign.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});assert.equal(n.horseState.horses[0].stamina,stamina);
+test('mounted troops cross midnight without a separate horse simulation',()=>{
+ let s=order(initialCampaign(),{type:'wait',hours:23});s.secondOfHour=3590;
+ let pair=visit(s);pair.battle=actBattle(pair.battle,{type:'mount',unitId:3});assert.equal(pair.battle.lastError,null);
+ pair=syncBattleTime(pair.campaign,endTurn(pair.battle));assert.equal(pair.error,null);assert.equal(pair.battle.units.find(u=>u.id==='3').mounted,true);assert.equal(pair.campaign.horseState,undefined);
 });
 test('stale clocks and mismatched deployment IDs cannot advance or load another battle',()=>{
  const pair=visit(initialCampaign());const advanced=syncBattleTime(pair.campaign,endTurn(pair.battle));assert.equal(advanced.error,null);assert.ok(syncBattleTime(advanced.campaign,pair.battle).error);assert.ok(syncBattleTime(pair.campaign,{...pair.battle,battleId:'other'}).error);

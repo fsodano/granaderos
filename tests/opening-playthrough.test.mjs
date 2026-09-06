@@ -11,7 +11,7 @@ for(const id of b.units.filter(u=>u.side==='player').map(u=>u.id)){
 for(let attempt=0;attempt<20&&b.status==='active';attempt++){
 const u=b.units.find(u=>u.id===id);if(u.hp<=0||u.routed||u.ap<6)break;
 const targets=b.units.filter(t=>t.side==='enemy'&&t.hp>0&&!t.routed).sort((a,b)=>Math.hypot(a.x-u.x,a.y-u.y)-Math.hypot(b.x-u.x,b.y-u.y));const t=targets[0];if(!t)break;
-const opts=[];if((u.bleeding||u.hp<u.maxHp-15)&&u.medkits)opts.push({type:'heal'});if(u.horse&&!u.mounted)opts.push({type:'mount'});
+const opts=[];if((u.bleeding||u.hp<u.maxHp-15)&&u.medkits)opts.push({type:'heal'});
 if(Math.hypot(t.x-u.x,t.y-u.y)<=bladeFor(u).reach)opts.push({type:'melee',targetId:t.id});
 
 if(u.jammed)opts.push({type:'reprime'});
