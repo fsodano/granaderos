@@ -1,6 +1,7 @@
 import {applyCharacterProfile} from './character-profile.js';
 export * from './character-profile.js';
 import {OPERATIVES} from './data.js';
+import {MERCENARY_ADDITIONS} from './mercenaries.js';
 export const OFFICER_TRAITS=[
  {id:'cavalry_commander',name:'Comandante de caballería',description:'Instrucción ecuestre, mando y maniobras a caballo.'},
  {id:'guerrilla_tactician',name:'Táctico de guerrillas',description:'Exploración, ocultamiento y movilidad en terreno quebrado.'},
@@ -22,6 +23,7 @@ export const CIVIC_RECRUITS=[
 
  {...common,id:105,classId:'soldado',foreign:true,tier:'elite',name:'Lucien Arnaud',nickname:'Arnaud',role:'Veterano fusilero francés',biography:'Personaje ficticio. Un veterano expatriado que vende su experiencia de combate por jornadas breves.',monthlyPay:1500,weeklyPay:420,marksmanship:92,agility:82,leadership:70,weapon:1802,traits:['line_marksman'],sector:'ensenada'},
  {...common,id:106,classId:'gaucho',foreign:false,tier:'elite',ridingSkill:80,name:'Manuel Leiva',nickname:'Leiva',role:'Sargento de frontera',biography:'Personaje ficticio. Un sargento experimentado que se incorpora mediante contratos de campaña.',monthlyPay:1200,weeklyPay:280,marksmanship:90,strength:83,leadership:75,traits:['teacher'],sector:'buenos_aires'},
+ ...MERCENARY_ADDITIONS,
 ];
 export function createOfficerRecord(name,answers,profile){
  if(typeof name!=='string'||name.trim().length<2||name.trim().length>30||/[<>\x00-\x1f]/u.test(name))throw Error('Escribe un nombre de entre 2 y 30 caracteres, sin símbolos de marcado.');

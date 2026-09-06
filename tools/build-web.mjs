@@ -1,5 +1,6 @@
 // Build the browser-only game and stage a verified static export for hosting.
 import {verifyTacticalAssets} from './verify-tactical-assets.mjs';
+import {MERCENARY_ADDITIONS} from '../game/mercenaries.js';
 import {spawnSync} from 'node:child_process';
 import {cp,readFile,readdir,rm,stat} from 'node:fs/promises';
 import {resolve,dirname,relative,extname} from 'node:path';
@@ -55,6 +56,7 @@ for(const id of [103,104])requireAsset(`/art/portrait-${id}.png`,'foreign volunt
 for(const id of ['avatar-woman-scout','avatar-woman-civilian','avatar-man-gaucho','avatar-man-soldier'])requireAsset(`/art/${id}.webp`,'custom avatar');
 // Dynamic portrait and action-frame URLs are not visible to literal URL scans.
 for(const id of [0,1,2,3,4,5,6,7,8,9,10,11,57,100,101,102,105,106])requireAsset(`/art/portrait-${id}.webp`,'roster');
+for(const {id} of MERCENARY_ADDITIONS)requireAsset(`/art/portrait-${id}.webp`,'paid mercenary roster');
 for(let id=1800;id<=1813;id++)requireAsset(`/art/weapon-${id}.png`,'armory');
 for(const direction of ['se','sw'])for(const pose of ['idle','fire','reload','strike'])requireAsset(`/art/granadero-${direction}-${pose}.png`,'tactical sprites');
 const artwork=JSON.parse(await readFile(resolve(source,'art/manifest.json'),'utf8'));
@@ -85,4 +87,3 @@ for(const file of sourceFiles){
   if(digest(await readFile(file))!==digest(await readFile(target)))throw Error(`Staged file differs: ${target}`);
 }
 console.log(`Static export verified: ${sourceFiles.length} files, ${checked.size} asset references, staged in dist/.`);
-

@@ -1,0 +1,248 @@
+[
+  {
+    "id": 107,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Inés Aguirre, a 38-year-old Afro-Argentine field nurse, dark brown skin, thoughtful steady eyes, round face, white linen head wrap and faded indigo shawl over a plain cream blouse. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-107-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 108,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Julián Pereyra. Appearance: 29-year-old tan Argentine man, broad jaw, unruly black curls, thin mustache, worn brown gaucho hat, red neckerchief. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-108-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 109,
+    "prompt": "Use case: historical-scene. Create one square individual mercenary portrait for Granaderos, a game set in the Río de la Plata in 1812. Original fictional male former senior officer: Edward Harcourt, Ex teniente coronel británico. Appearance: 54-year-old British former lieutenant colonel, pale weathered skin, long aristocratic face, gray sideburns, clean shaven chin, faded scarlet high-collared infantry officer coat with dark facings and worn gold shoulder epaulette, white neck stock, no hat. Head and upper shoulders, face large and centered, gaze toward viewer. Realistic oil-painted character art matching a sober early nineteenth-century portrait collection: finely modeled individual face, restrained brush texture, warm side lighting, dark umber background, earthy palette. His old uniform looks used and privately maintained; he no longer represents his former army. No text, no labels, no frame, no weapons, no modern medals, no twentieth-century uniforms. One man only. Production game portrait.",
+    "source": "assets/source/paid-portrait-109-v2.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 110,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Baltasar Acosta. Appearance: 42-year-old Black Argentine man, powerful build, close cropped hair, broad nose, dark blue plain militia coat with red collar. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-110-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 111,
+    "prompt": "Use case: historical-scene. Create one square individual mercenary portrait for Granaderos, a game set in the Río de la Plata in 1812. Original fictional male former senior officer: Armand Delatour, Ex mayor de ingenieros francés. Appearance: 43-year-old French former engineer major, olive skin, compact square face, black curly hair graying at temples, short neat mustache, dark blue high-collared engineer officer coat with black velvet facings, restrained brass buttons, worn gold shoulder trim. Head and upper shoulders, face large and centered, gaze toward viewer. Realistic oil-painted character art matching a sober early nineteenth-century portrait collection: finely modeled individual face, restrained brush texture, warm side lighting, dark umber background, earthy palette. His old uniform looks used and privately maintained; he no longer represents his former army. No text, no labels, no frame, no weapons, no modern medals, no twentieth-century uniforms. One man only. Production game portrait.",
+    "source": "assets/source/paid-portrait-111-v2.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 112,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Gaspar Villalba. Appearance: 51-year-old light olive skinned man, receding gray hair, small round period spectacles, clean shaven, brown waistcoat and white cravat. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-112-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 113,
+    "prompt": "Use case: historical-scene. Create one square individual mercenary portrait for Granaderos, a game set in the Río de la Plata in 1812. Original fictional male former senior officer: Alistair Kerr, Ex mayor de infantería ligera británico. Appearance: 46-year-old Scottish British former light infantry major, fair windburned skin, lean face, auburn graying sideburns, hazel eyes, clean shaven, worn dark green high-collared officer coat with black braiding and white neck stock. Head and upper shoulders, face large and centered, gaze toward viewer. Realistic oil-painted character art matching a sober early nineteenth-century portrait collection: finely modeled individual face, restrained brush texture, warm side lighting, dark umber background, earthy palette. His old uniform looks used and privately maintained; he no longer represents his former army. No text, no labels, no frame, no weapons, no modern medals, no twentieth-century uniforms. One man only. Production game portrait.",
+    "source": "assets/source/paid-portrait-113-v2.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 114,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Eusebio Ledesma. Appearance: 56-year-old brown-skinned man, gray horseshoe mustache, stern lined face, faded navy military coat, cropped gray hair. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-114-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 115,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Nicolás Funes. Appearance: 35-year-old olive-skinned man, lean angular face, dark sideburns, stubble, faded charcoal poncho, narrow focused eyes. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-115-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 116,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Petrona Lagos. Appearance: 45-year-old Afro-Argentine woman, strong square face, deep brown skin, cream headscarf tied behind head, weathered blue shawl. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-116-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 117,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Jacinto Ojeda. Appearance: 40-year-old tan man, heavy black mustache, broad weather-beaten face, dark flat brim gaucho hat, ochre poncho. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-117-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 118,
+    "prompt": "Use case: historical-scene. Create one square individual mercenary portrait for Granaderos, a game set in the Río de la Plata in 1812. Original fictional male former senior officer: Étienne Valcourt, Ex coronel de artillería francés. Appearance: 58-year-old French former artillery colonel, pale lined face, bald crown with swept back silver hair, thick gray eyebrows, clean shaven, worn dark navy artillery officer coat with red collar, modest tarnished gold epaulettes, white cravat. Head and upper shoulders, face large and centered, gaze toward viewer. Realistic oil-painted character art matching a sober early nineteenth-century portrait collection: finely modeled individual face, restrained brush texture, warm side lighting, dark umber background, earthy palette. His old uniform looks used and privately maintained; he no longer represents his former army. No text, no labels, no frame, no weapons, no modern medals, no twentieth-century uniforms. One man only. Production game portrait.",
+    "source": "assets/source/paid-portrait-118-v2.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 119,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Benjamín Duarte. Appearance: 20-year-old Black man, round youthful face, very short curly hair, plain patched brown jacket and open white linen collar. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-119-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 120,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Mercedes Quiroga. Appearance: 43-year-old Andean woman, russet brown skin, prominent cheekbones, black hair with silver streak, burgundy woven shawl. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-120-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 121,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Ramón Cáceres. Appearance: 46-year-old tan man, thick eyebrows, salt and pepper short beard, brown leather apron, sturdy neck, kindly eyes. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-121-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 122,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Isabel Molina. Appearance: 31-year-old light brown skinned woman, oval face, dark brown eyes, center parted black hair pinned back, muted green shawl. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-122-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 123,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Santiago Soria. Appearance: 49-year-old olive-skinned man, long thin face, short gray sideburns, neat mustache, weathered dark blue infantry coat. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-123-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 124,
+    "prompt": "Use case: historical-scene. Create one square individual mercenary portrait for Granaderos, a game set in the Río de la Plata in 1812. Original fictional male former senior officer: Thomas Ashford, Ex mayor de dragones británico. Appearance: 41-year-old British former dragoon major, fair ruddy skin, broad face, sandy blond hair, heavy sideburns and clean shaven chin, faded red cavalry officer jacket with dark blue collar and worn gold braid, white neck stock. Head and upper shoulders, face large and centered, gaze toward viewer. Realistic oil-painted character art matching a sober early nineteenth-century portrait collection: finely modeled individual face, restrained brush texture, warm side lighting, dark umber background, earthy palette. His old uniform looks used and privately maintained; he no longer represents his former army. No text, no labels, no frame, no weapons, no modern medals, no twentieth-century uniforms. One man only. Production game portrait.",
+    "source": "assets/source/paid-portrait-124-v2.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 125,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Diego Barrera. Appearance: 34-year-old brown-skinned man, stocky neck, broken nose, short black beard, plain russet work jacket. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-125-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 126,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Teresa Godoy. Appearance: 21-year-old tan woman, youthful narrow face, straight dark hair in single braid, plain undyed wool shawl. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-126-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 127,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Esteban Peralta. Appearance: 30-year-old Afro-Argentine man, medium dark skin, clean shaven, expressive eyes, curly hair, faded blue militia tunic. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-127-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 128,
+    "prompt": "Use case: historical-scene. Create one square individual mercenary portrait for Granaderos, a game set in the Río de la Plata in 1812. Original fictional male former senior officer: William Blackwood, Ex teniente coronel de fusileros británico. Appearance: 50-year-old British former rifle lieutenant colonel, pale skin, narrow angular face, dark hair with silver temples, small old scar beside eyebrow, clean shaven, dark green rifle officer coat with worn black braid and high collar. Head and upper shoulders, face large and centered, gaze toward viewer. Realistic oil-painted character art matching a sober early nineteenth-century portrait collection: finely modeled individual face, restrained brush texture, warm side lighting, dark umber background, earthy palette. His old uniform looks used and privately maintained; he no longer represents his former army. No text, no labels, no frame, no weapons, no modern medals, no twentieth-century uniforms. One man only. Production game portrait.",
+    "source": "assets/source/paid-portrait-128-v2.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 129,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Francisco Tapia. Appearance: 53-year-old tan man, full graying beard, deeply lined cheeks, soft brown felt hat, striped muted ochre poncho. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-129-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 130,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Ángela Cejas. Appearance: 23-year-old brown-skinned woman, round dark eyes, soft cheeks, black hair under simple cream kerchief, faded gray blue shawl. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-130-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 131,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Vicente Arce. Appearance: 39-year-old mestizo man, sharp cheekbones, black mustache, short hair, navy cavalry jacket with worn red trim. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-131-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 132,
+    "prompt": "Use case: historical-scene. Create one square individual mercenary portrait for Granaderos, a game set in the Río de la Plata in 1812. Original fictional male former senior officer: Charles Pembroke, Ex coronel de infantería británico. Appearance: 61-year-old British former infantry colonel, fair skin, full dignified face, thinning silver hair, long white sideburns, clean shaven, worn scarlet officer coat with buff collar, faded gold epaulettes and white stock. Head and upper shoulders, face large and centered, gaze toward viewer. Realistic oil-painted character art matching a sober early nineteenth-century portrait collection: finely modeled individual face, restrained brush texture, warm side lighting, dark umber background, earthy palette. His old uniform looks used and privately maintained; he no longer represents his former army. No text, no labels, no frame, no weapons, no modern medals, no twentieth-century uniforms. One man only. Production game portrait.",
+    "source": "assets/source/paid-portrait-132-v2.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 133,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Pedro Albornoz. Appearance: 48-year-old dark brown skinned man, massive shoulders, shaved head, short gray beard, worn leather blacksmith apron. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-133-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 134,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Mariano Véliz. Appearance: 33-year-old pale olive skinned man, deep set dark eyes, long nose, black shoulder length hair, charcoal wool scarf. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-134-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 135,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Josefa Roldán. Appearance: 58-year-old Andean woman, weathered copper skin, gray braided hair, deep smile lines, muted blue wool shawl over linen. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-135-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 136,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Lorenzo Silva. Appearance: 41-year-old Afro-Argentine man, broad square jaw, short beard, dark skin, brown traveling coat and ochre neckcloth. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-136-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 137,
+    "prompt": "Use case: historical-scene. Create one square individual mercenary portrait for Granaderos, a game set in the Río de la Plata in 1812. Original fictional male former senior officer: Louis Desforges, Ex teniente coronel de caballería francés. Appearance: 45-year-old French former cavalry lieutenant colonel, olive skin, handsome weathered face, black wavy hair, thick curled mustache, faded blue hussar officer dolman with restrained worn gold cords and red collar. Head and upper shoulders, face large and centered, gaze toward viewer. Realistic oil-painted character art matching a sober early nineteenth-century portrait collection: finely modeled individual face, restrained brush texture, warm side lighting, dark umber background, earthy palette. His old uniform looks used and privately maintained; he no longer represents his former army. No text, no labels, no frame, no weapons, no modern medals, no twentieth-century uniforms. One man only. Production game portrait.",
+    "source": "assets/source/paid-portrait-137-v2.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 138,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Henri Beaumont. Appearance: 47-year-old French man, pale weathered face, receding brown hair, bushy sideburns, dark naval artillery coat. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-138-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 139,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Bridget O’Connell. Appearance: 34-year-old Irish woman, fair freckled skin, red hair pinned back, green gray eyes, plain blue shawl and white linen blouse. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-139-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 140,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Matteo Ricci. Appearance: 28-year-old Italian man, olive complexion, slender face, wavy chestnut hair, fine mustache, leather vest over cream shirt. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-140-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 141,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Joaquim Ferreira. Appearance: 39-year-old Portuguese man, sun darkened olive skin, curly black beard, short hair, navy wool sailor jacket and red scarf. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-141-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 142,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Samuel Reed. Appearance: 44-year-old British man, fair ruddy skin, sandy graying hair, clean shaven angular face, dark green rifleman coat without insignia. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-142-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 143,
+    "prompt": "Use case: historical-scene. Create one square individual mercenary portrait for Granaderos, a game set in the Río de la Plata in 1812. Original fictional male former senior officer: Philippe Montreuil, Ex coronel de estado mayor francés. Appearance: 55-year-old French former staff colonel, pale olive skin, long thoughtful face, straight graying dark hair brushed back, clean shaven, dark blue high-collared officer coat, red facings, restrained gold shoulder trim, neatly tied white cravat. Head and upper shoulders, face large and centered, gaze toward viewer. Realistic oil-painted character art matching a sober early nineteenth-century portrait collection: finely modeled individual face, restrained brush texture, warm side lighting, dark umber background, earthy palette. His old uniform looks used and privately maintained; he no longer represents his former army. No text, no labels, no frame, no weapons, no modern medals, no twentieth-century uniforms. One man only. Production game portrait.",
+    "source": "assets/source/paid-portrait-143-v2.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 144,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Karl Weiss. Appearance: 52-year-old German man, pale skin, broad forehead, swept back graying blond hair, square beard, brown artisan waistcoat. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-144-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 145,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Domingo Farías. Appearance: 55-year-old tan Argentine man, weather-beaten face, thick silver mustache, black gaucho hat, deep red poncho. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-145-v1.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 146,
+    "prompt": "Use case: historical-scene. Create one square individual mercenary portrait for Granaderos, a game set in the Río de la Plata in 1812. Original fictional male former senior officer: Auguste Bellanger, Ex cirujano mayor del ejército francés. Appearance: 49-year-old French former senior army surgeon, light olive skin, tired kind eyes, receding dark hair with gray temples, small round period wire spectacles, clean shaven, plain dark blue medical officer coat with burgundy collar and white cravat. Head and upper shoulders, face large and centered, gaze toward viewer. Realistic oil-painted character art matching a sober early nineteenth-century portrait collection: finely modeled individual face, restrained brush texture, warm side lighting, dark umber background, earthy palette. His old uniform looks used and privately maintained; he no longer represents his former army. No text, no labels, no frame, no weapons, no modern medals, no twentieth-century uniforms. One man only. Production game portrait.",
+    "source": "assets/source/paid-portrait-146-v2.png",
+    "method": "built-in image_gen"
+  },
+  {
+    "id": 147,
+    "prompt": "Use case: historical-scene. Create a square individual hireable mercenary portrait for Granaderos, a game set in the Río de la Plata independence era, circa 1810-1820. Original fictional character: Andrés Montiel. Appearance: 46-year-old Andean man, deep copper skin, high cheekbones, black hair streaked gray, dark woven poncho, watchful eyes. Head and upper shoulders, face large and centered, looking toward viewer. Realistic oil-painted character art, finely modeled face, restrained brush texture, warm side lighting, dark umber studio backdrop, earthy palette, sober expression. No text, no labels, no frame, no weapons, no modern clothing. One person only. Final production game portrait.",
+    "source": "assets/source/paid-portrait-147-v1.png",
+    "method": "built-in image_gen"
+  }
+]
