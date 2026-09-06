@@ -1,0 +1,303 @@
+{
+  "pilot": false,
+  "provenance": {
+    "worktree": "/tmp/granaderos-illustrated-sprites-pr",
+    "baseCommit": "6096229",
+    "server": "http://127.0.0.1:4176/?qa=1",
+    "scope": "Focused shared sprite PR on main after the sector editor merge; existing gameplay UI"
+  },
+  "method": "Fresh isolated browser context. Real skirmish UI with synthetic condition fixtures, real movement orders and fire/reload/strike controls. Save imported through the game UI and restored after browser reload.",
+  "coverage": {
+    "actionAppearance": "woman-shawl",
+    "actionStates": 18,
+    "allSharedIdleAppearances": 19,
+    "visibleVariety": 6,
+    "gameZoom": [
+      1,
+      3
+    ]
+  },
+  "atlasCount": 328,
+  "manifestHashSha256": "c83b523d50283517290eac3b2cdddbef59b1b07afa7ab05b3a0efb1acac7a12f",
+  "checks": [
+    {
+      "appearance": "woman-shawl",
+      "sequence": "idle",
+      "viewBoxes": [
+        "468 0 156 156"
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "sequence": "crouch-idle",
+      "viewBoxes": [
+        "468 0 156 156"
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "sequence": "prone-armed-idle",
+      "viewBoxes": [
+        "720 0 240 240"
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "sequence": "prone-unarmed-idle",
+      "viewBoxes": [
+        "720 0 240 240"
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "sequence": "mounted-idle",
+      "viewBoxes": [
+        "684 0 228 228"
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "sequence": "dead-idle",
+      "viewBoxes": [
+        "720 0 240 240"
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "sequence": "unconscious-breathe",
+      "viewBoxes": [
+        "0 0 240 240",
+        "240 0 240 240"
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "sequence": "walk",
+      "viewBoxes": [
+        "0 468 156 156",
+        "156 468 156 156",
+        "312 468 156 156",
+        "468 468 156 156"
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "sequence": "run",
+      "viewBoxes": [
+        "0 468 156 156",
+        "156 468 156 156",
+        "312 468 156 156",
+        "468 468 156 156"
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "sequence": "crouch-walk",
+      "viewBoxes": [
+        "0 468 156 156",
+        "156 468 156 156",
+        "312 468 156 156",
+        "468 468 156 156"
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "sequence": "prone-armed-walk",
+      "viewBoxes": [
+        "0 864 288 288",
+        "288 864 288 288",
+        "576 864 288 288",
+        "864 864 288 288"
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "sequence": "prone-unarmed-walk",
+      "viewBoxes": [
+        "0 720 240 240",
+        "240 720 240 240",
+        "480 720 240 240",
+        "720 720 240 240"
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "sequence": "mounted-walk",
+      "viewBoxes": [
+        "0 684 228 228",
+        "228 684 228 228",
+        "456 684 228 228",
+        "684 684 228 228"
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "sequence": "fire",
+      "viewBoxes": [
+        "0 630 210 210",
+        "210 630 210 210",
+        "420 630 210 210",
+        "630 630 210 210"
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "sequence": "reload",
+      "viewBoxes": [
+        "0 630 210 210",
+        "210 630 210 210",
+        "420 630 210 210",
+        "630 630 210 210"
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "sequence": "prone-armed-fire",
+      "viewBoxes": [
+        "0 864 288 288",
+        "288 864 288 288",
+        "576 864 288 288",
+        "864 864 288 288"
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "sequence": "prone-armed-reload",
+      "viewBoxes": [
+        "0 864 288 288",
+        "288 864 288 288",
+        "576 864 288 288",
+        "864 864 288 288"
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "sequence": "strike",
+      "viewBoxes": [
+        "0 630 210 210",
+        "210 630 210 210",
+        "420 630 210 210",
+        "630 630 210 210"
+      ]
+    },
+    {
+      "appearance": "granadero",
+      "sequence": "idle",
+      "identity": true
+    },
+    {
+      "appearance": "royalist",
+      "sequence": "idle",
+      "identity": true
+    },
+    {
+      "appearance": "militia",
+      "sequence": "idle",
+      "identity": true
+    },
+    {
+      "appearance": "blue-officer",
+      "sequence": "idle",
+      "identity": true
+    },
+    {
+      "appearance": "scarlet-officer",
+      "sequence": "idle",
+      "identity": true
+    },
+    {
+      "appearance": "rifleman",
+      "sequence": "idle",
+      "identity": true
+    },
+    {
+      "appearance": "naval",
+      "sequence": "idle",
+      "identity": true
+    },
+    {
+      "appearance": "gaucho",
+      "sequence": "idle",
+      "identity": true
+    },
+    {
+      "appearance": "scout",
+      "sequence": "idle",
+      "identity": true
+    },
+    {
+      "appearance": "artisan",
+      "sequence": "idle",
+      "identity": true
+    },
+    {
+      "appearance": "worker",
+      "sequence": "idle",
+      "identity": true
+    },
+    {
+      "appearance": "civilian",
+      "sequence": "idle",
+      "identity": true
+    },
+    {
+      "appearance": "surgeon",
+      "sequence": "idle",
+      "identity": true
+    },
+    {
+      "appearance": "friar",
+      "sequence": "idle",
+      "identity": true
+    },
+    {
+      "appearance": "woman-scout",
+      "sequence": "idle",
+      "identity": true
+    },
+    {
+      "appearance": "woman-officer",
+      "sequence": "idle",
+      "identity": true
+    },
+    {
+      "appearance": "woman-shawl",
+      "sequence": "idle",
+      "identity": true
+    },
+    {
+      "appearance": "woman-headscarf",
+      "sequence": "idle",
+      "identity": true
+    },
+    {
+      "appearance": "woman-elder",
+      "sequence": "idle",
+      "identity": true
+    },
+    {
+      "appearance": "woman-shawl",
+      "sequence": "prone-armed-idle",
+      "saveReload": true
+    },
+    {
+      "variety": 6,
+      "zoom": [
+        1,
+        3
+      ]
+    }
+  ],
+  "errors": [],
+  "failed": [],
+  "storageIsolation": "fresh nonpersistent browser context, qa=1, isolated PR production4176 only",
+  "screenshots": [
+    "variety-1x.png",
+    "variety-3x.png",
+    "prone-armed-fire.png",
+    "prone-armed-reload.png",
+    "mounted-walk.png",
+    "dead-idle.png",
+    "unconscious-breathe.png"
+  ]
+}

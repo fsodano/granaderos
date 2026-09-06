@@ -1,0 +1,12 @@
+{
+  "source": "assets/previews/illustrated-sprites/packed/granadero-walk.png",
+  "sha256": "72451e54d1f5a317982cc949eb1d4c1b8a96a202189dc2fd61d2218f06e2ae78",
+  "directions": [
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "frames": 4,
+  "command": "node tools/illustrated-action-reference.mjs granadero-walk"
+}

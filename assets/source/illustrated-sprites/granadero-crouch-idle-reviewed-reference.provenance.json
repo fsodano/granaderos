@@ -1,0 +1,15 @@
+{
+  "source": "assets/previews/illustrated-sprites/packed/granadero-crouch-idle.png",
+  "sha256": "327ab0ccb7f3aafb070654c2dae7388e1a4af276639b6ad93783b122d2d37188",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "command": "node tools/illustrated-direction-reference.mjs granadero-crouch-idle"
+}

@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "appearance": "woman-elder",
+  "stage": "prone-armed-fire",
+  "pathBase": "repository-root",
+  "registrationOrder": [
+    "variants"
+  ],
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-prone-armed-fire-north-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-prone-armed-fire-north-v1.prompt.txt",
+      "name": "woman-elder-prone-armed-fire",
+      "reference": "granadero-prone-armed-fire",
+      "poseReference": "assets/source/illustrated-sprites/woman-headscarf-prone-armed-fire-north-v1.png",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-prone-armed-fire-south-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-prone-armed-fire-south-v1.prompt.txt",
+      "name": "woman-elder-prone-armed-fire",
+      "reference": "granadero-prone-armed-fire",
+      "poseReference": "assets/source/illustrated-sprites/woman-headscarf-prone-armed-fire-south-v1.png",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    }
+  ],
+  "corrections": [],
+  "qa": {
+    "notes": [
+      "All eight body headings and pistol directions preserved from accepted Headscarf targets.",
+      "Flash onlyframe1, smoke frame2, aim/recovery frames0/3. No phase reorder required.",
+      "Both sheets pass16figure count and crop bounds. Match body scale excluding flash/smoke."
+    ]
+  }
+}

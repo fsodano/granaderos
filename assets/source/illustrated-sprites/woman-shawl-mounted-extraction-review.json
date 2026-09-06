@@ -1,0 +1,26 @@
+[
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-mounted-idle-v1.png",
+    "width": 1774,
+    "height": 887,
+    "fixedCellMinimumMargin": 46,
+    "explicitRegions": false,
+    "review": "Full adult rider, complete bay horse and hooves. Correct compass and distinct four-phase horse gait."
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-mounted-walk-north-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "fixedCellMinimumMargin": 18,
+    "explicitRegions": false,
+    "review": "Full adult rider, complete bay horse and hooves. Correct compass and distinct four-phase horse gait."
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-mounted-walk-south-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "fixedCellMinimumMargin": 3,
+    "explicitRegions": false,
+    "review": "Full adult rider, complete bay horse and hooves. Correct compass and distinct four-phase horse gait."
+  }
+]

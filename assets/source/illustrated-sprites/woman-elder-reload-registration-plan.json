@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "appearance": "woman-elder",
+  "stage": "standing-reload",
+  "pathBase": "repository-root",
+  "registrationOrder": [
+    "variants",
+    "corrections"
+  ],
+  "variantTool": "tools/register-illustrated-variant.mjs SOURCE NAME REFERENCE HALF",
+  "correctionTool": "tools/register-illustrated-correction.mjs SOURCE NAME REFERENCE CORRECTION_SPEC_JSON",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-reload-north-v1.png",
+      "name": "woman-elder-reload",
+      "reference": "granadero-reload",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/woman-elder-reload-north-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-reload-south-v1.png",
+      "name": "woman-elder-reload",
+      "reference": "granadero-reload",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/woman-elder-reload-south-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    }
+  ],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-reload-nw-fix-v1.png",
+      "name": "woman-elder-reload",
+      "reference": "granadero-reload",
+      "half": "south",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-reload-nw-fix-v1.prompt.txt",
+      "sourceSize": [
+        1774,
+        887
+      ],
+      "calibration": {
+        "method": "one body scale across fourposes",
+        "anchor": "fixed hip/support-boot baseline, ignore pistol/raised ramrod extent"
+      },
+      "correctionSpec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "nw",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              85,
+              229,
+              258,
+              509
+            ]
+          },
+          {
+            "direction": "nw",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              592,
+              229,
+              197,
+              509
+            ]
+          },
+          {
+            "direction": "nw",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              995,
+              229,
+              196,
+              509
+            ]
+          },
+          {
+            "direction": "nw",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1368,
+              229,
+              255,
+              509
+            ]
+          }
+        ]
+      },
+      "note": "Replaces wrong northeast-facing fourth row of south main. Four correct rear-left loading phases."
+    }
+  ],
+  "qa": {
+    "countsAndBounds": "All2main+1correction sources pass count and crop checks.",
+    "notes": [
+      "Distinct paper-cartridge and short-ramrod phases with small flintlock pistol retained.",
+      "North loading phases turn head and shoulders slightly toward raised hand while planted feet remain north.",
+      "Entire NW row is corrected with consistent rear-left bodies.",
+      "Body scale must stay constant across raised-hand phases."
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "source": "assets/previews/illustrated-sprites/packed/granadero-reload.png",
+  "sha256": "8a68536bc2c09907f996986891302e3d3e157d5e08c524cd34bf721a74e885c6",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se"
+  ],
+  "frames": 4,
+  "command": "node tools/illustrated-action-reference.mjs granadero-reload"
+}

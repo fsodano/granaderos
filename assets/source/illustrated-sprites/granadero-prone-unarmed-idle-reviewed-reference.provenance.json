@@ -1,0 +1,15 @@
+{
+  "source": "assets/previews/illustrated-sprites/packed/granadero-prone-unarmed-idle.png",
+  "sha256": "883dcdd671d0ae43a403245e42232b0bc10f81b4a01f0b5307e5316d215da7e0",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "command": "node tools/illustrated-direction-reference.mjs granadero-prone-unarmed-idle"
+}

@@ -1,0 +1,29 @@
+{
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-mounted-walk-north-v1.png",
+      "name": "woman-headscarf-mounted-walk",
+      "reference": "granadero-mounted-walk",
+      "half": "north"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-mounted-walk-south-v1.png",
+      "name": "woman-headscarf-mounted-walk",
+      "reference": "granadero-mounted-walk",
+      "half": "south"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-run-north-v1.png",
+      "name": "woman-headscarf-run",
+      "reference": "granadero-run",
+      "half": "north"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-run-south-v1.png",
+      "name": "woman-headscarf-run",
+      "reference": "granadero-run",
+      "half": "south"
+    }
+  ],
+  "corrections": []
+}

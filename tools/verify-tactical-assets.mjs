@@ -7,6 +7,7 @@ import {
   SPRITE_FRAMES,
   SPRITE_FPS,
 } from "../game/sprite-layouts.js";
+import { ILLUSTRATED_SPRITE_ATLASES } from "../game/illustrated-sprite-atlases.js";
 export const TERRAIN_MATERIALS = [
   "dry-grass",
   "dirt",
@@ -28,6 +29,100 @@ export const ARCHITECTURE_MATERIALS = [
   "roof-clay",
   "roof-thatch",
 ];
+export async function verifyIllustratedSpriteAssets(directory, requireAsset = () => {}) {
+  const path = "illustrated/manifest.json";
+  requireAsset(`/art/${path}`, "illustrated sprite metadata");
+  const manifest = JSON.parse(await readFile(resolve(directory, "art", path), "utf8"));
+  if (
+    manifest.version !== 1 ||
+    manifest.style !== "illustrated-pixel-art" ||
+    manifest.directions?.join() !== SPRITE_DIRECTIONS.join()
+  )
+    throw Error("Invalid illustrated sprite manifest.");
+  const names = Object.keys(manifest.atlases ?? {}).sort();
+  if (names.join() !== Object.keys(ILLUSTRATED_SPRITE_ATLASES).sort().join())
+    throw Error("Illustrated sprite runtime index differs from published atlases.");
+  for (const name of names) {
+    const entry = manifest.atlases[name],
+      runtime = ILLUSTRATED_SPRITE_ATLASES[name];
+    const minimum = spriteLayout(name.includes("-mounted-") ? "cavalry-idle" : name).cell;
+    // Authored muzzle flashes may need more transparent padding than the old
+    // atlas. Validate its density and origin, not the old fixed rectangle.
+    const { cell, logicalCell, anchor } = entry;
+    const validCell =
+      Number.isInteger(logicalCell) &&
+      logicalCell >= minimum &&
+      logicalCell <= 128 &&
+      cell === logicalCell * 3;
+    const validAnchor =
+      anchor?.length === 2 &&
+      anchor.every((value) => Number.isInteger(value) && value > 0 && value < cell);
+    const still = name.endsWith("-idle"),
+      frames = entry.framesPerDirection,
+      width = cell * (still ? 8 : frames),
+      height = cell * (still ? 1 : 8);
+    if (
+      !/^[a-z-]+$/.test(name) ||
+      entry.file !== `${name}.png` ||
+      !validCell ||
+      !validAnchor ||
+      !Number.isInteger(frames) ||
+      (still
+        ? frames !== 1 || entry.fps !== 0
+        : frames < 2 || !Number.isFinite(entry.fps) || entry.fps <= 0) ||
+      entry.size?.join() !== [width, height].join() ||
+      !/^[a-f0-9]{64}$/.test(entry.sha256 ?? "") ||
+      entry.records?.length !== 8 * frames
+    )
+      throw Error(`Invalid illustrated sprite layout: ${name}`);
+    for (const key of [
+      "file",
+      "cell",
+      "anchor",
+      "logicalCell",
+      "framesPerDirection",
+      "fps",
+      "size",
+    ])
+      if (JSON.stringify(entry[key]) !== JSON.stringify(runtime[key]))
+        throw Error(`Illustrated sprite runtime index mismatch: ${name} ${key}`);
+    const seen = new Set();
+    for (const frame of entry.records) {
+      const key = `${frame.direction}:${frame.frame}`,
+        b = frame.bounds;
+      if (
+        !SPRITE_DIRECTIONS.includes(frame.direction) ||
+        !Number.isInteger(frame.frame) ||
+        frame.frame < 0 ||
+        frame.frame >= frames ||
+        seen.has(key) ||
+        b?.length !== 4 ||
+        !b.every(Number.isInteger) ||
+        b[0] <= 0 ||
+        b[1] <= 0 ||
+        b[2] >= cell ||
+        b[3] >= cell ||
+        b[0] >= b[2] ||
+        b[1] >= b[3] ||
+        !/^[a-f0-9]{64}$/.test(frame.sha256 ?? "")
+      )
+        throw Error(`Invalid illustrated sprite frame: ${name} ${key}`);
+      seen.add(key);
+    }
+    requireAsset(`/art/illustrated/${entry.file}`, "illustrated sprite atlas");
+    const bytes = await readFile(resolve(directory, "art", "illustrated", entry.file));
+    if (
+      bytes.length < 32 ||
+      bytes.subarray(0, 8).toString("hex") !== "89504e470d0a1a0a" ||
+      bytes.readUInt32BE(16) !== width ||
+      bytes.readUInt32BE(20) !== height
+    )
+      throw Error(`Invalid illustrated sprite dimensions: ${name}`);
+    if (createHash("sha256").update(bytes).digest("hex") !== entry.sha256)
+      throw Error(`Illustrated sprite checksum mismatch: ${name}`);
+  }
+}
+
 export async function verifyTacticalAssets(directory, requireAsset = () => {}) {
   const png = async (name, width, height, sha, contract = "tactical atlas") => {
     requireAsset(`/art/${name}`, `${contract} contract`);
@@ -60,8 +155,8 @@ export async function verifyTacticalAssets(directory, requireAsset = () => {}) {
       throw Error(`Invalid architecture manifest entry: ${name}`);
     await png(name, 512, 512, entry.sha256, "architecture material");
   }
-  // The browser selects only these native pixel atlases. Validate the full set,
-  // including idle frames, rather than accepting an old smooth atlas fallback.
+  // Native atlases remain explicit state-correct fallbacks. Verify their full
+  // contract alongside the illustrated sprite collection.
   const pixelPath = "pixel/manifest.json";
   requireAsset(`/art/${pixelPath}`, "native pixel sprites");
   const pixels = JSON.parse(await readFile(resolve(directory, "art", pixelPath), "utf8"));
@@ -140,6 +235,7 @@ export async function verifyTacticalAssets(directory, requireAsset = () => {}) {
     }
     await png(`pixel/${entry.file}`, cell * 8, cell * rows, entry.sha256);
   }
+  await verifyIllustratedSpriteAssets(directory, requireAsset);
   for (const faction of ["granadero", "royalist"]) {
     await png(`${faction}-idle-atlas.png`, 1536, 192);
     await png(`${faction}-walk-atlas.png`, 1536, 1536);

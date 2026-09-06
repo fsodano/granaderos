@@ -1,0 +1,19 @@
+{
+  "columns": 2,
+  "rows": 1,
+  "scaleMode": "height",
+  "slots": [
+    {
+      "direction": "n",
+      "frame": 2,
+      "row": 0,
+      "col": 1,
+      "rect": [
+        1224,
+        105,
+        229,
+        532
+      ]
+    }
+  ]
+}

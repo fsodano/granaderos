@@ -1,0 +1,272 @@
+{
+  "version": 1,
+  "appearance": "woman-shawl",
+  "states": [
+    "crouch-idle",
+    "crouch-walk",
+    "fire",
+    "reload",
+    "strike"
+  ],
+  "instructions": "Accepted standing batch except run. Register variants, retain includeDirections, then corrections. N fire and strike use exact rear corrections. Pistol club strike. N reload has small head turn and useful cartridge/rod hands, accepted. All magenta.",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-crouch-idle-v1.png",
+      "name": "woman-shawl-crouch-idle",
+      "reference": "granadero-crouch-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-crouch-walk-north-v1.png",
+      "name": "woman-shawl-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-crouch-walk-south-v1.png",
+      "name": "woman-shawl-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-fire-north-v1.png",
+      "name": "woman-shawl-fire",
+      "reference": "granadero-fire",
+      "half": "north",
+      "includeDirections": [
+        "NE",
+        "E",
+        "SE"
+      ],
+      "exportKey": "magenta",
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-fire-north-v1.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-fire-south-v1.png",
+      "name": "woman-shawl-fire",
+      "reference": "granadero-fire",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-reload-north-v1.png",
+      "name": "woman-shawl-reload",
+      "reference": "granadero-reload",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ],
+      "exportKey": "magenta",
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-reload-north-v1.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-reload-south-v1.png",
+      "name": "woman-shawl-reload",
+      "reference": "granadero-reload",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta",
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-reload-south-v1.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-strike-north-v1.png",
+      "name": "woman-shawl-strike",
+      "reference": "granadero-strike",
+      "half": "north",
+      "includeDirections": [
+        "NE",
+        "E",
+        "SE"
+      ],
+      "exportKey": "magenta",
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-strike-north-v1.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-strike-south-v1.png",
+      "name": "woman-shawl-strike",
+      "reference": "granadero-strike",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta",
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-strike-south-v1.regions.json"
+    }
+  ],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-fire-n-v2.png",
+      "name": "woman-shawl-fire",
+      "reference": "granadero-fire",
+      "half": "north",
+      "includeDirections": [
+        "N"
+      ],
+      "exportKey": "magenta",
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-fire-n-v2.regions.json",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "N",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              174,
+              116,
+              198,
+              546
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              714,
+              116,
+              199,
+              546
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              1257,
+              116,
+              199,
+              546
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1799,
+              116,
+              198,
+              546
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-strike-n-v2.png",
+      "name": "woman-shawl-strike",
+      "reference": "granadero-strike",
+      "half": "north",
+      "includeDirections": [
+        "N"
+      ],
+      "exportKey": "magenta",
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-strike-n-v2.regions.json",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "N",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              133,
+              157,
+              252,
+              642
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              552,
+              157,
+              274,
+              642
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              967,
+              157,
+              261,
+              642
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1404,
+              157,
+              252,
+              642
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,346 @@
+{
+  "schemaVersion": 1,
+  "appearance": "woman-elder",
+  "stage": "standing-fire",
+  "pathBase": "repository-root",
+  "registrationOrder": [
+    "variants",
+    "corrections"
+  ],
+  "variantTool": "tools/register-illustrated-variant.mjs SOURCE NAME REFERENCE HALF [REGIONS_JSON]",
+  "correctionTool": "tools/register-illustrated-correction.mjs SOURCE NAME REFERENCE CORRECTION_SPEC_JSON",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-fire-north-v1.png",
+      "name": "woman-elder-fire",
+      "reference": "granadero-fire",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/woman-elder-fire-north-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "regionSpec": [
+        {
+          "row": 0,
+          "col": 0,
+          "rect": [
+            132,
+            76,
+            85,
+            207
+          ]
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "rect": [
+            722,
+            76,
+            128,
+            207
+          ]
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "rect": [
+            421,
+            76,
+            117,
+            207
+          ]
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1024,
+            76,
+            118,
+            207
+          ]
+        },
+        {
+          "row": 1,
+          "col": 0,
+          "rect": [
+            129,
+            367,
+            128,
+            212
+          ]
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "rect": [
+            717,
+            367,
+            133,
+            212
+          ]
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "rect": [
+            416,
+            367,
+            139,
+            212
+          ]
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "rect": [
+            1020,
+            367,
+            129,
+            212
+          ]
+        },
+        {
+          "row": 2,
+          "col": 0,
+          "rect": [
+            129,
+            669,
+            144,
+            214
+          ]
+        },
+        {
+          "row": 2,
+          "col": 1,
+          "rect": [
+            719,
+            669,
+            180,
+            214
+          ]
+        },
+        {
+          "row": 2,
+          "col": 2,
+          "rect": [
+            416,
+            669,
+            157,
+            214
+          ]
+        },
+        {
+          "row": 2,
+          "col": 3,
+          "rect": [
+            1015,
+            669,
+            147,
+            214
+          ]
+        },
+        {
+          "row": 3,
+          "col": 0,
+          "rect": [
+            130,
+            965,
+            132,
+            215
+          ]
+        },
+        {
+          "row": 3,
+          "col": 1,
+          "rect": [
+            720,
+            965,
+            140,
+            215
+          ]
+        },
+        {
+          "row": 3,
+          "col": 2,
+          "rect": [
+            417,
+            965,
+            133,
+            215
+          ]
+        },
+        {
+          "row": 3,
+          "col": 3,
+          "rect": [
+            1021,
+            965,
+            132,
+            215
+          ]
+        }
+      ],
+      "note": "Pass regionSpec as REGIONS_JSON to variant tool. Logical frame1 reads sourcecol2 FLASH, logical frame2 reads sourcecol1 recover. North row later replaced entirely."
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-fire-south-v1.png",
+      "name": "woman-elder-fire",
+      "reference": "granadero-fire",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/woman-elder-fire-south-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ]
+    }
+  ],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-fire-n-fix-v1.png",
+      "name": "woman-elder-fire",
+      "reference": "granadero-fire",
+      "half": "north",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-fire-n-fix-v1.prompt.txt",
+      "sourceSize": [
+        1774,
+        887
+      ],
+      "calibration": {
+        "method": "one anatomical body scale per strip, root calibrates using head-to-boots height excluding extended weapon",
+        "anchor": "fixed support-boot baseline and hip position"
+      },
+      "correctionSpec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "n",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              174,
+              157,
+              194,
+              593
+            ]
+          },
+          {
+            "direction": "n",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              574,
+              157,
+              192,
+              593
+            ]
+          },
+          {
+            "direction": "n",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              976,
+              157,
+              192,
+              593
+            ]
+          },
+          {
+            "direction": "n",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1380,
+              157,
+              192,
+              593
+            ]
+          }
+        ]
+      },
+      "note": "Strict rear north pistol aim. Small flash onlysecond figure."
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-fire-sw-w-nw-2-fix-v1.png",
+      "name": "woman-elder-fire",
+      "reference": "granadero-fire",
+      "half": "south",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-fire-sw-w-nw-2-fix-v1.prompt.txt",
+      "sourceSize": [
+        2172,
+        724
+      ],
+      "calibration": {
+        "method": "one anatomical body scale per strip, root calibrates using head-to-boots height excluding extended weapon",
+        "anchor": "fixed support-boot baseline and hip position"
+      },
+      "correctionSpec": {
+        "columns": 3,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "sw",
+            "frame": 2,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              233,
+              104,
+              299,
+              572
+            ]
+          },
+          {
+            "direction": "w",
+            "frame": 2,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              856,
+              104,
+              366,
+              572
+            ]
+          },
+          {
+            "direction": "nw",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              1586,
+              104,
+              330,
+              572
+            ]
+          }
+        ]
+      },
+      "note": "Recovery retains visible pistol barrel, not source hidden/end-on gun."
+    }
+  ],
+  "qa": {
+    "countsAndBounds": "All2main+2correction sources pass counts and crop bounds.",
+    "notes": [
+      "North main requires explicit regionSpec phase order swap0,2,1,3. North row is replaced by a4pose correction.",
+      "One muzzle flash at logical frame1 in each direction after mapping.",
+      "Short pistol diagonal aim angles are relatively shallow in SE/SW/NW but body headings remain distinct.",
+      "Keep one body scale across each correction strip; north gun extension must not shrink anatomical body."
+    ]
+  }
+}

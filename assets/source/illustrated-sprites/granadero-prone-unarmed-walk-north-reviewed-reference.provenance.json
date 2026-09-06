@@ -1,0 +1,12 @@
+{
+  "source": "assets/previews/illustrated-sprites/packed/granadero-prone-unarmed-walk.png",
+  "sha256": "a1adb48e26eeafac4c6ab16d39fed93791572549d78bc6670353059e808297c6",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se"
+  ],
+  "frames": 4,
+  "command": "node tools/illustrated-action-reference.mjs granadero-prone-unarmed-walk"
+}

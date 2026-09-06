@@ -1,0 +1,982 @@
+{
+  "version": 1,
+  "basis": "Selected packed manifest at 299 atlases, before root common-scale N reload repair.",
+  "application": "Final multiplier applied once to current source slot scale. Leave atlas cells, logicalCell, global anchors and source slot anchor coordinates unchanged, so geometry scales about its current fixed map pivot. Do not multiply this plan twice. Entries with1 intentionally preserve scale. Root must merge existing per-frame N reload normalization first; this plan excludes those frame-specific fixes.",
+  "measurement": "Manual visual landmark review with coordinate-grid overlays at native raster density. Standing head widths are roughly14-17 px; broadside pistol-prone heads roughly21-27 px. Prone body spans excluding pistol are roughly115-135 px against standing heights108-113 px. Values use head breadth and torso/boot span together, avoiding over-shrinking a bent prone body based on head height alone. Measurements have about2 px uncertainty; recommendations are conservative reviewed scale corrections, not exact image segmentation.",
+  "anchors": "No additional translation recommended in this first scale pass. Recheck action transitions after packing, because weapon-based registration can shift pivots independently of size.",
+  "evidence": [
+    "/tmp/pistol-body-scale-e.png",
+    "/tmp/pistol-body-scale-n.png",
+    "/tmp/pistol-body-scale-s.png",
+    "/tmp/head-grid-worker-w.png",
+    "/tmp/head-grid-artisan-nw.png",
+    "/tmp/head-grid-surgeon-sw.png",
+    "/tmp/head-grid-surgeon-se.png",
+    "/tmp/head-grid-worker-n.png",
+    "/tmp/head-grid-surgeon-s.png"
+  ],
+  "groups": [
+    {
+      "appearance": "artisan",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-walk",
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 0.92,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "artisan",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "artisan",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-walk",
+        "prone-armed-fire",
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.88,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "artisan",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.78,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "artisan",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.82,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "artisan",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.76,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "artisan",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-walk",
+        "prone-armed-fire",
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.84,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "artisan",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-walk",
+        "prone-armed-fire",
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "artisan",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-walk",
+        "prone-armed-fire",
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.84,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "artisan",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-walk",
+        "prone-armed-fire",
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.78,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "artisan",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-walk",
+        "prone-armed-fire",
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.88,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "artisan",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 0.88,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "artisan",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.92,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "artisan",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "artisan",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "artisan",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 0.94,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "artisan",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "artisan",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "artisan",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.92,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "worker",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-walk",
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "worker",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 0.92,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "worker",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-walk",
+        "prone-armed-fire",
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.84,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "worker",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-walk",
+        "prone-armed-fire",
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.78,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "worker",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-walk",
+        "prone-armed-fire",
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.82,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "worker",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-walk",
+        "prone-armed-fire",
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 0.92,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "worker",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-walk",
+        "prone-armed-fire",
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.82,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "worker",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-walk",
+        "prone-armed-fire",
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.78,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "worker",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-walk",
+        "prone-armed-fire",
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.86,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "worker",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 0.88,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "worker",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "worker",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "worker",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.88,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "worker",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 0.94,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "worker",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.88,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "worker",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "worker",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "surgeon",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-walk",
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "surgeon",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "surgeon",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-walk",
+        "prone-armed-fire",
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.86,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "surgeon",
+      "states": [
+        "prone-armed-idle"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.78,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "surgeon",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.75,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "surgeon",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.74,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "surgeon",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.75,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "surgeon",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.78,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "surgeon",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.74,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "surgeon",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.7,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "surgeon",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-walk",
+        "prone-armed-fire",
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "surgeon",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-walk",
+        "prone-armed-fire",
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.84,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "surgeon",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-walk",
+        "prone-armed-fire",
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.78,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "surgeon",
+      "states": [
+        "prone-armed-idle",
+        "prone-armed-walk",
+        "prone-armed-fire",
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.88,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "surgeon",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 0.86,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "surgeon",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "surgeon",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.88,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "surgeon",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.86,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "surgeon",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 0.92,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "surgeon",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.88,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "surgeon",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.88,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "surgeon",
+      "states": [
+        "prone-unarmed-idle",
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    }
+  ],
+  "reviewedProposalPreviews": [
+    "/tmp/pistol-body-scale-proposed-e.png",
+    "/tmp/pistol-body-scale-proposed-n.png",
+    "/tmp/pistol-body-scale-proposed-s.png"
+  ],
+  "reviewResult": "The reduced broadside heads and torsos read closer to standing size. Cardinal N/S body lengths remain usable. Preserve root per-frame N reload normalization; final action anchor and all-direction playback checks still required after actual packing."
+}

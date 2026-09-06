@@ -1,0 +1,360 @@
+{
+  "version": 1,
+  "appearance": "scout",
+  "states": [
+    "run",
+    "fire",
+    "reload",
+    "strike",
+    "crouch-idle",
+    "crouch-walk"
+  ],
+  "instructions": "Register variants sequentially, retaining only includeDirections, then corrections. Run north v2 fixes missing barrel end; fire north v2 adds missing N flash. Single-row corrections replace N reload (visible compact carbine through cartridge/ramrod phases), N crouch walk (true rear body with moving legs), and W strike (all left-facing, wooden butt thrust). Ignore earlier source versions where replaced. All use magenta key.",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/scout-run-north-v2.png",
+      "name": "scout-run",
+      "reference": "granadero-run",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scout-run-south-v1.png",
+      "name": "scout-run",
+      "reference": "granadero-run",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scout-fire-north-v2.png",
+      "name": "scout-fire",
+      "reference": "granadero-fire",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scout-fire-south-v1.png",
+      "name": "scout-fire",
+      "reference": "granadero-fire",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scout-reload-north-v1.png",
+      "name": "scout-reload",
+      "reference": "granadero-reload",
+      "half": "north",
+      "includeDirections": [
+        "NE",
+        "E",
+        "SE"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scout-reload-south-v1.png",
+      "name": "scout-reload",
+      "reference": "granadero-reload",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta",
+      "regionFile": "assets/source/illustrated-sprites/scout-reload-south-v1.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scout-strike-north-v1.png",
+      "name": "scout-strike",
+      "reference": "granadero-strike",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scout-strike-south-v1.png",
+      "name": "scout-strike",
+      "reference": "granadero-strike",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "NW"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scout-crouch-idle-v1.png",
+      "name": "scout-crouch-idle",
+      "reference": "granadero-crouch-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scout-crouch-walk-north-v1.png",
+      "name": "scout-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "north",
+      "includeDirections": [
+        "NE",
+        "E",
+        "SE"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scout-crouch-walk-south-v1.png",
+      "name": "scout-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta"
+    }
+  ],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/scout-crouch-walk-n-v2.png",
+      "name": "scout-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "north",
+      "includeDirections": [
+        "N"
+      ],
+      "exportKey": "magenta",
+      "regionFile": "assets/source/illustrated-sprites/scout-crouch-walk-n-v2.regions.json",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "N",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              91,
+              215,
+              304,
+              431
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              631,
+              215,
+              301,
+              431
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              1169,
+              215,
+              306,
+              431
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1713,
+              215,
+              306,
+              431
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scout-reload-n-v2.png",
+      "name": "scout-reload",
+      "reference": "granadero-reload",
+      "half": "north",
+      "includeDirections": [
+        "N"
+      ],
+      "exportKey": "magenta",
+      "regionFile": "assets/source/illustrated-sprites/scout-reload-n-v2.regions.json",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "N",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              68,
+              82,
+              309,
+              666
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              562,
+              82,
+              262,
+              666
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              1040,
+              82,
+              262,
+              666
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1479,
+              82,
+              308,
+              666
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scout-strike-w-v2.png",
+      "name": "scout-strike",
+      "reference": "granadero-strike",
+      "half": "south",
+      "includeDirections": [
+        "W"
+      ],
+      "exportKey": "magenta",
+      "regionFile": "assets/source/illustrated-sprites/scout-strike-w-v2.regions.json",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "W",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              150,
+              162,
+              162,
+              447
+            ]
+          },
+          {
+            "direction": "W",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              521,
+              162,
+              344,
+              447
+            ]
+          },
+          {
+            "direction": "W",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              1092,
+              162,
+              426,
+              447
+            ]
+          },
+          {
+            "direction": "W",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1840,
+              162,
+              162,
+              447
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
