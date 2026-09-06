@@ -157,10 +157,10 @@
       {
         "x": 5,
         "y": 2,
-        "type": "wall",
+        "type": "window",
         "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
+        "blocksSight": false,
+        "cover": 25,
         "material": "adobe",
         "buildingId": "posta",
         "roomId": null
@@ -262,7 +262,11 @@
         "type": "window"
       }
     ],
-    "kind": "posta"
+    "kind": "posta",
+    "wallFinish": "ochre",
+    "roofFinish": "aged",
+    "doorStyle": "panelled",
+    "windowStyle": "shutters"
   },
   "features": [],
   "props": [

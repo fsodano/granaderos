@@ -227,10 +227,10 @@
       {
         "x": 7,
         "y": 2,
-        "type": "wall",
+        "type": "window",
         "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
+        "blocksSight": false,
+        "cover": 25,
         "material": "adobe",
         "buildingId": "barraca",
         "roomId": null
@@ -376,7 +376,11 @@
         "type": "window"
       }
     ],
-    "kind": "barracks"
+    "kind": "barracks",
+    "wallFinish": "limewash",
+    "roofFinish": "aged",
+    "doorStyle": "double",
+    "windowStyle": "small"
   },
   "features": [],
   "props": [

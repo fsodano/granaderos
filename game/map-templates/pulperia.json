@@ -251,10 +251,10 @@
       {
         "x": 0,
         "y": 2,
-        "type": "wall",
+        "type": "window",
         "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
+        "blocksSight": false,
+        "cover": 25,
         "material": "adobe",
         "buildingId": "pulperia",
         "roomId": null
@@ -262,10 +262,10 @@
       {
         "x": 7,
         "y": 2,
-        "type": "wall",
+        "type": "window",
         "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
+        "blocksSight": false,
+        "cover": 25,
         "material": "adobe",
         "buildingId": "pulperia",
         "roomId": null
@@ -295,10 +295,10 @@
       {
         "x": 0,
         "y": 4,
-        "type": "wall",
+        "type": "window",
         "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
+        "blocksSight": false,
+        "cover": 25,
         "material": "adobe",
         "buildingId": "pulperia",
         "roomId": null
@@ -306,10 +306,10 @@
       {
         "x": 7,
         "y": 4,
-        "type": "wall",
+        "type": "window",
         "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
+        "blocksSight": false,
+        "cover": 25,
         "material": "adobe",
         "buildingId": "pulperia",
         "roomId": null
@@ -416,7 +416,11 @@
         "type": "window"
       }
     ],
-    "kind": "pulperia"
+    "kind": "pulperia",
+    "wallFinish": "ochre",
+    "roofFinish": "clay",
+    "doorStyle": "double",
+    "windowStyle": "lattice"
   },
   "features": [],
   "props": [

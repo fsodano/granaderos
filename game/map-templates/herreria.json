@@ -200,10 +200,10 @@
       {
         "x": 0,
         "y": 2,
-        "type": "wall",
+        "type": "window",
         "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
+        "blocksSight": false,
+        "cover": 25,
         "material": "adobe",
         "buildingId": "herreria",
         "roomId": null
@@ -211,10 +211,10 @@
       {
         "x": 6,
         "y": 2,
-        "type": "wall",
+        "type": "window",
         "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
+        "blocksSight": false,
+        "cover": 25,
         "material": "adobe",
         "buildingId": "herreria",
         "roomId": null
@@ -332,7 +332,11 @@
         "type": "window"
       }
     ],
-    "kind": "smithy"
+    "kind": "smithy",
+    "wallFinish": "brick",
+    "roofFinish": "aged",
+    "doorStyle": "barn",
+    "windowStyle": "barred"
   },
   "features": [],
   "props": [

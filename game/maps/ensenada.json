@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "ensenada",
-  "revision": 0,
+  "revision": 1,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -2389,7 +2389,11 @@
           "buildingId": "ensenada:building",
           "roomId": null
         }
-      ]
+      ],
+      "wallFinish": "limewash",
+      "roofFinish": "clay",
+      "doorStyle": "panelled",
+      "windowStyle": "barred"
     },
     {
       "id": "ensenada:house-0",
@@ -2555,7 +2559,11 @@
           "buildingId": "ensenada:house-0",
           "roomId": null
         }
-      ]
+      ],
+      "wallFinish": "ochre",
+      "roofFinish": "aged",
+      "doorStyle": "plank",
+      "windowStyle": "shutters"
     }
   ],
   "props": [

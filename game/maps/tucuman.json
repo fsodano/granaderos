@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "tucuman",
-  "revision": 0,
+  "revision": 1,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -2419,7 +2419,11 @@
           "buildingId": "tucuman:building",
           "roomId": null
         }
-      ]
+      ],
+      "wallFinish": "limewash",
+      "roofFinish": "clay",
+      "doorStyle": "panelled",
+      "windowStyle": "barred"
     }
   ],
   "props": [

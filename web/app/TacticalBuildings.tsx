@@ -1,3 +1,5 @@
+import {buildingAppearance} from '../../game/building-appearance.js';
+import {WallSurface,Opening,WALL_COLOURS} from './TacticalArchitectureMaterials';
 import {buildingDetails} from './TacticalBuildingDetails';
 import type {ReactNode} from 'react';
 type Point={x:number;y:number};
@@ -26,33 +28,20 @@ export function buildBuildingObjects({state:s,revealed,project,light}:Args):Scen
    const start=project(t.x-(axis==='x'&&(!b||t.x>b.x)?.5:0),t.y-(axis==='y'&&(!b||t.y>b.y)?.5:0)),end=project(t.x+(axis==='x'&&(!b||t.x<b.x+b.width-1)?.5:0),t.y+(axis==='y'&&(!b||t.y<b.y+b.height-1)?.5:0));
    const width=40,dx=(end.x-start.x)/width,dy=(end.y-start.y)/width,seed=(t.x*17+t.y*31)%11;
    const isOpening=t.type!=='wall'&&index===0;
-   const plaster=b?.material==='stone'?'#b3ac96':'#d1c3a0';
+   const appearance=buildingAppearance(b);
+   const palette=WALL_COLOURS[appearance.wallFinish];
+   const plaster=palette.base;
    const top=(p:Point,z:number)=>`${p.x},${p.y-z}`;
    objects.push({key:`architecture-${t.x}-${t.y}-${axis}`,depth:t.x+t.y+.015,node:<g data-wall-tile={`${t.x},${t.y}`} data-cutaway={Boolean(cut)} pointerEvents="none" style={{filter:`brightness(${light(t.x,t.y)})`}}>
     {/* A shallow wall cap makes thickness readable without a full-tile cube. */}
-    <polygon points={`${top(start,height)} ${top(end,height)} ${end.x+4},${end.y-height-2} ${start.x+4},${start.y-height-2}`} fill={cut?'#bda980':'#d2c49e'} stroke="#807459" strokeWidth=".55"/>
-    <path d={`M${end.x},${end.y}v-${height}l4,-2v${height}Z`} fill="#8b8163"/>
+    <polygon points={`${top(start,height)} ${top(end,height)} ${end.x+4},${end.y-height-2} ${start.x+4},${start.y-height-2}`} fill={palette.trim} stroke={palette.shadow} strokeWidth=".55"/>
+    {corner&&<path d={`M${end.x},${end.y}v-${height}l4,-2v${height}Z`} fill={palette.shadow}/>}
     <g transform={`matrix(${dx} ${dy} 0 1 ${start.x} ${start.y})`}>
-     {!isOpening?<><rect x="0" y={-height} width={width} height={height} fill="url(#terrain-plaster)"/><rect y={-height} width="40" height={height} fill={plaster} opacity=".32"/></>:cut?<>
-      {/* Openings stay legible as thresholds and low jambs in the cutaway. */}
-      <path d="M0,0V-9H10V0ZM30,0V-9H40V0Z" fill={plaster}/>
-      <path d="M10,0H30" stroke="#b9a580" strokeWidth="3"/>
-      {t.type==='door'&&!t.open&&<path d="M12,-3H28" stroke="#62452c" strokeWidth="4"/>}
-      {t.type==='window'&&<path d="M10,-7H30V0H10Z" fill={plaster}/>}
-     </>:<>
-      <path d={`M0,0V-${height}H40V0H29V-${t.type==='door'?30:29}H11V0Z`} fill="url(#terrain-plaster)"/>
-      {t.type==='window'&&<rect x="10" y="-12" width="20" height="12" fill="url(#terrain-plaster)"/>}
-      <rect x="11" y={t.type==='door'?-30:-29} width="18" height={t.type==='door'?30:17} fill="#20251b"/>
-      <path d={`M10,0V-32H30V0M8,-33H32`} fill="none" stroke="#e3d5b5" strokeWidth="2.5"/>
-      {t.type==='door'?<g transform={t.open?'translate(11 0) skewY(-25) scale(.22 1) translate(-11 0)':undefined}><rect x="12" y="-30" width="16" height="30" fill="url(#terrain-wood)" stroke="#5c4931" strokeWidth=".8"/><path d="M15,-29V-1M20,-29V-1M25,-29V-1M12,-24H28M12,-7H28" stroke="#413725" strokeWidth=".7"/><circle cx="25" cy="-14" r="1" fill="#c1a16a"/></g>:<><path d="M14,-28V-13M18,-28V-13M22,-28V-13M26,-28V-13M12,-24H28M12,-17H28" stroke="#383b30" strokeWidth="1"/><path d="M9,-12H31" stroke="#e3d2a5" strokeWidth="3"/></>}
-     </>}
-     {/* Limewash wear is irregular but stable across renders. */}
-     {Array.from({length:cut?4:19},(_,i)=>{const n=noise(t.x*43+i,t.y*29+index),x=n%38+1,y=-(n%Math.max(1,height-3)+2);return <path key={i} d={`M${x},${y}h${1+n%3}`} stroke={i%3?'#796d50':'#fff1ce'} opacity={i%3?'.16':'.23'} strokeWidth=".6"/>;})}
-     {!cut&&<><path d="M0,-44H40" stroke="#eee0bd" strokeWidth="2"/><path d="M0,-41H40" stroke="#66553e" strokeWidth="2" opacity=".4"/></>}
-     {/* Broken plaster and jointed stone footing, deterministic per tile. */}
-     {!isOpening&&<><path d={`M${3+seed},-${Math.min(height-2,12)}l3,2 2,-1 2,4 -2,3 -6,-1Z`} fill="#a69570" opacity=".6"/>{height>15&&<path d={`M${27-seed},-34l-2,5 3,3 -1,5`} fill="none" stroke="#867d61" strokeWidth=".55" opacity=".75"/>}</>}
-     <path d={isOpening&&t.type==='door'?'M0,-5H10V0H0ZM30,-5H40V0H30Z':'M0,-5H40V0H0Z'} fill="#827b62"/>
-     <path d={isOpening?'M5,-5V0M35,-5V0':'M8,-5V0M21,-5V0M34,-5V0'} stroke="#595d4d" strokeWidth=".7"/>
+     <WallSurface finish={appearance.wallFinish} height={height} x={t.x} y={t.y}/>
+     {isOpening&&(cut?<><path d="M10,0H30" stroke={palette.trim} strokeWidth="3"/>{t.type==='door'&&!t.open&&<path d="M12,-3H28" stroke="#62452c" strokeWidth="4"/>}</>:<Opening type={t.type} style={t.style??(t.type==='door'?appearance.doorStyle:appearance.windowStyle)} open={t.open} trim={palette.trim}/>)}
+     {!cut&&<><path d="M0,-44H40" stroke={palette.trim} strokeWidth="2"/><path d="M0,-41H40" stroke={palette.shadow} strokeWidth="1" opacity=".25"/></>}
+     <path d={isOpening&&t.type==='door'?'M0,-5H10V0H0ZM30,-5H40V0H30Z':'M0,-5H40V0H0Z'} fill={palette.shadow}/>
+     <path d={isOpening?'M5,-5V0M35,-5V0':'M8,-5V0M21,-5V0M34,-5V0'} stroke={palette.base} strokeWidth=".7"/>
      {!isOpening&&<path d={`M0,-${height}H40`} stroke={cut?'#f0dcb0':'#ded0ac'} strokeWidth={cut?2:1}/>}
      {axis==='y'&&<path d={isOpening?`M0,0V-${height}H10V0ZM30,0V-${height}H40V0Z`:`M0,0V-${height}H40V0Z`} fill="#292c22" opacity=".14"/>}
     </g>
@@ -60,6 +49,9 @@ export function buildBuildingObjects({state:s,revealed,project,light}:Args):Scen
   });
  }
  for(const b of s.buildings??[])for(const room of ((b.rooms??[]).length>1&&b.rooms.every((r:any)=>!revealed.has(r.id))?[{...b.rooms[0],cells:b.rooms.flatMap((r:any)=>r.cells)}]:b.rooms??[])){
+  const appearance=buildingAppearance(b),palette=WALL_COLOURS[appearance.wallFinish];
+  const roofPalette=appearance.roofFinish==='aged'?['#756a56','#80735c','#8a795f','#796d58']:clay;
+  const straw=appearance.roofFinish==='thatch';
   const wholeRoof=b.rooms.every((r:any)=>!revealed.has(r.id));
   if(!room.cells?.length)continue;
   if(revealed.has(room.id)){
@@ -86,7 +78,7 @@ export function buildBuildingObjects({state:s,revealed,project,light}:Args):Scen
    continue;
   }
   const left=b.x-.18,right=b.x+b.width-.82,top=b.y-.18,bottom=b.y+b.height-.82,middle=(left+right)/2;
-  const rise=Math.min(30,(right-left)*7),eave=47;
+  const rise=Math.min(straw?35:30,(right-left)*7),eave=47;
   const roof=(x:number,y:number,z:number)=>{const p=project(x,y);return `${p.x},${p.y-z}`;};
   const heightAt=(x:number)=>eave+rise*(x<=middle?(x-left)/(middle-left):(right-x)/(right-middle));
   const clipId=`roof-${Array.from(String(room.id)).map(c=>c.codePointAt(0)?.toString(16)).join('-')}`;
@@ -105,32 +97,32 @@ export function buildBuildingObjects({state:s,revealed,project,light}:Args):Scen
   for(const side of [0,1]){
    const a=side?middle:left,c=side?right:middle;
    const z=(x:number)=>eave+rise*(side?(right-x)/(right-middle):(x-left)/(middle-left));
-   const rows=Math.ceil((c-a)*5),columns=Math.ceil((bottom-top)*5);
+   const rows=Math.ceil((c-a)*(straw?6:4)),columns=Math.ceil((bottom-top)*(straw?12:5));
    for(let row=0;row<rows;row++)for(let col=0;col<columns;col++){
     const x=a+(c-a)*row/rows,x2=a+(c-a)*(row+1)/rows,y=top+(bottom-top)*col/columns,y2=top+(bottom-top)*(col+1)/columns;
     const n=noise(row+b.x*31,col+b.y*17+side);
     tiles.push(<g key={`${side}-${row}-${col}`}>
-     <polygon points={`${roof(x,y,z(x))} ${roof(x2,y,z(x2))} ${roof(x2,y2,z(x2))} ${roof(x,y2,z(x))}`} fill={clay[n%clay.length]} stroke="#603e2d" strokeWidth=".35"/>
-     <path d={`M${roof(x,y+.035,z(x)+.3)}L${roof(x2,y+.035,z(x2)+.3)}`} stroke="#d59a69" strokeWidth=".85" opacity=".6"/>
+     <polygon points={`${roof(x,y,z(x))} ${roof(x2,y,z(x2))} ${roof(x2,y2,z(x2))} ${roof(x,y2,z(x))}`} fill={straw?['#ac955f','#b09a65','#b49d68','#a9935d'][n%4]:roofPalette[n%roofPalette.length]} stroke={straw?'none':'#644b37'} strokeWidth={straw?'.25':'.22'}/>
+     <path d={`M${roof(x,y+(straw?.012+(n%6)*.011:.035),z(x)+.3)}L${roof(x2,y+(straw?.012+(n%6)*.011:.035),z(x2)+.3)}`} stroke={straw?'#d1bd83':appearance.roofFinish==='aged'?'#b2a081':'#cf9164'} strokeWidth={straw?'.35':'.6'} opacity={straw?'.3':'.45'}/>
     </g>);
    }
   }
-  objects.push({key:`architecture-roof-${room.id}`,depth:right+bottom+.12,node:<g data-roof-room={room.id} pointerEvents="none" style={{filter:`brightness(${light(b.x,b.y)})`}}>
+  objects.push({key:`architecture-roof-${room.id}`,depth:right+bottom+.12,node:<g data-roof-room={room.id} data-roof-finish={appearance.roofFinish} pointerEvents="none" style={{filter:`brightness(${light(b.x,b.y)})`}}>
    {!wholeRoof&&<defs><clipPath id={clipId}>{roofCells}</clipPath></defs>}
    <g clipPath={wholeRoof?undefined:`url(#${clipId})`}>
    {/* A complete gable closes the old triangular gap above the front wall. */}
-   <polygon data-building-gable="true" points={`${roof(left,bottom,eave)} ${roof(middle,bottom,eave+rise)} ${roof(right,bottom,eave)}`} fill="url(#terrain-plaster)" stroke="#8b7856" strokeWidth=".7"/>
+   <polygon data-building-gable="true" points={`${roof(left,bottom,eave)} ${roof(middle,bottom,eave+rise)} ${roof(right,bottom,eave)}`} fill={palette.base} stroke={palette.shadow} strokeWidth=".7"/>
    <path d={`M${roof(middle,bottom,eave+9)}v-7`} stroke="#4d4533" strokeWidth="3"/>
    {tiles}
    <polygon points={`${roof(middle,top,eave+rise)} ${roof(right,top,eave)} ${roof(right,bottom,eave)} ${roof(middle,bottom,eave+rise)}`} fill="#27221a" opacity=".16"/>
    <path d={`M${roof(left,bottom,eave)}L${roof(middle,bottom,eave+rise)}L${roof(right,bottom,eave)}`} fill="none" stroke="#513926" strokeWidth="3"/>
-   <path d={`M${roof(left,top,eave)}L${roof(left,bottom,eave)}M${roof(right,top,eave)}L${roof(right,bottom,eave)}`} stroke="#663e29" strokeWidth="3"/>
-   <path d={`M${roof(middle,top,eave+rise)}L${roof(middle,bottom,eave+rise)}`} stroke="#cd8a59" strokeWidth="4"/>
-   {Array.from({length:Math.ceil((bottom-top)*5)},(_,i)=>{const y=top+i/5;return <path key={i} d={`M${roof(middle-.06,y,eave+rise-1)}L${roof(middle+.06,y,eave+rise-1)}`} stroke="#72452e" strokeWidth=".8"/>;})}
+   <path d={`M${roof(left,top,eave)}L${roof(left,bottom,eave)}M${roof(right,top,eave)}L${roof(right,bottom,eave)}`} stroke={straw?'#b9a371':'#663e29'} strokeWidth={straw?5:3}/>
+   <path d={`M${roof(middle,top,eave+rise)}L${roof(middle,bottom,eave+rise)}`} stroke={straw?'#827149':appearance.roofFinish==='aged'?'#a39271':'#b77550'} strokeWidth={straw?7:3}/>
+   {!straw&&Array.from({length:Math.ceil((bottom-top)*5)},(_,i)=>{const y=top+i/5;return <path key={i} d={`M${roof(middle-.025,y,eave+rise-.8)}L${roof(middle+.025,y,eave+rise-.8)}`} stroke="#72452e" strokeWidth=".8"/>;})}
    </g>
   </g>});
  }
- for(const b of s.buildings??[])objects.push(...buildingDetails(b,revealed,project));
+ for(const b of s.buildings??[])objects.push(...buildingDetails(b,revealed,project).map(o=>({...o,node:<g style={{filter:`brightness(${light(b.x,b.y)})`}}>{o.node}</g>})));
  return objects;
 }
 type WallAxis='x'|'y';

@@ -173,10 +173,10 @@
       {
         "x": 0,
         "y": 2,
-        "type": "wall",
+        "type": "window",
         "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
+        "blocksSight": false,
+        "cover": 25,
         "material": "adobe",
         "buildingId": "casa",
         "roomId": null
@@ -184,10 +184,10 @@
       {
         "x": 5,
         "y": 2,
-        "type": "wall",
+        "type": "window",
         "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
+        "blocksSight": false,
+        "cover": 25,
         "material": "adobe",
         "buildingId": "casa",
         "roomId": null
@@ -294,7 +294,11 @@
         "type": "window"
       }
     ],
-    "kind": "house"
+    "kind": "house",
+    "wallFinish": "adobe",
+    "roofFinish": "thatch",
+    "doorStyle": "plank",
+    "windowStyle": "shutters"
   },
   "features": [],
   "props": [

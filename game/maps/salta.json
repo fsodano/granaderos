@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "salta",
-  "revision": 0,
+  "revision": 1,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -2389,7 +2389,11 @@
           "buildingId": "salta:building",
           "roomId": null
         }
-      ]
+      ],
+      "wallFinish": "limewash",
+      "roofFinish": "clay",
+      "doorStyle": "panelled",
+      "windowStyle": "barred"
     },
     {
       "id": "salta:house-0",
@@ -2529,7 +2533,11 @@
           "buildingId": "salta:house-0",
           "roomId": null
         }
-      ]
+      ],
+      "wallFinish": "ochre",
+      "roofFinish": "aged",
+      "doorStyle": "plank",
+      "windowStyle": "shutters"
     }
   ],
   "props": [

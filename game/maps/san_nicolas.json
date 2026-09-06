@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "san_nicolas",
-  "revision": 0,
+  "revision": 1,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -2363,7 +2363,11 @@
           "buildingId": "san_nicolas:building",
           "roomId": null
         }
-      ]
+      ],
+      "wallFinish": "limewash",
+      "roofFinish": "clay",
+      "doorStyle": "panelled",
+      "windowStyle": "barred"
     },
     {
       "id": "san_nicolas:house-0",
@@ -2477,7 +2481,11 @@
           "buildingId": "san_nicolas:house-0",
           "roomId": null
         }
-      ]
+      ],
+      "wallFinish": "ochre",
+      "roofFinish": "aged",
+      "doorStyle": "plank",
+      "windowStyle": "shutters"
     }
   ],
   "props": [],

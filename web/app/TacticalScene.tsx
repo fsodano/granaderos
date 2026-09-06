@@ -6,11 +6,11 @@ import {isInteriorVisible} from '../../game/tactical-visibility.js';
 import {buildPropObjects} from './TacticalProps';
 import {canSee,tileIllumination,shotChance,ARTILLERY} from '../../game/tactical.js';
 import type {ReactNode} from 'react';
-type Props={terrainVisible?:boolean;interactive?:boolean;state:any;selected:any;unit:any;players:any[];units:any[];positions:any;poses:any;directions:any;hover:any;mode:string;aim:number;reachable:any[];showSight:boolean;sight:Set<string>;revealed:Set<string>;project:(x:number,y:number)=>{x:number;y:number};onTile:(t:any)=>void;onHover:(t:any)=>void;onTalk:(n:any)=>void;onCannon:(id:string)=>void;cannonId:string};
+type Props={groundOverlay?:ReactNode;terrainVisible?:boolean;interactive?:boolean;state:any;selected:any;unit:any;players:any[];units:any[];positions:any;poses:any;directions:any;hover:any;mode:string;aim:number;reachable:any[];showSight:boolean;sight:Set<string>;revealed:Set<string>;project:(x:number,y:number)=>{x:number;y:number};onTile:(t:any)=>void;onHover:(t:any)=>void;onTalk:(n:any)=>void;onCannon:(id:string)=>void;cannonId:string};
 const materials=['dry-grass','dirt','cobble','green-grass','mud','floor','plaster','roof','wood'];
 const diamond=(x:number,y:number)=>`${x},${y-14} ${x+26},${y} ${x},${y+14} ${x-26},${y}`;
 const hash=(x:number,y:number)=>((x*374761393+y*668265263)>>>0)%1000;
-export default function TacticalScene({terrainVisible=true,interactive=true,state:s,selected,unit:u,players,units,positions,poses,directions,hover,mode,aim,reachable,showSight,sight,revealed,project,onTile,onHover,onTalk,onCannon,cannonId}:Props){
+export default function TacticalScene({groundOverlay,terrainVisible=true,interactive=true,state:s,selected,unit:u,players,units,positions,poses,directions,hover,mode,aim,reachable,showSight,sight,revealed,project,onTile,onHover,onTalk,onCannon,cannonId}:Props){
  const objects:{depth:number;key:string;node:ReactNode}[]=[];
  const add=(key:string,x:number,y:number,node:ReactNode,bias=0)=>objects.push({key,depth:x+y+bias,node});
  const reachableSet=new Set(reachable.map(t=>`${t.x},${t.y}`));
@@ -55,6 +55,7 @@ export default function TacticalScene({terrainVisible=true,interactive=true,stat
  return <>
   <defs>{materials.map(name=><pattern key={name} id={`terrain-${name}`} patternUnits="userSpaceOnUse" width="128" height="128" patternTransform={['plaster','roof','wood'].includes(name)?undefined:'matrix(1 .538 -1 .538 0 0)'}><image href={`/art/terrain-${name}-v1.webp`} width="128" height="128"/></pattern>)}<radialGradient id="smokefill"><stop offset="0" stopColor="#d4ccae" stopOpacity=".65"/><stop offset="1" stopColor="#d4ccae" stopOpacity="0"/></radialGradient></defs>
   <g>{terrainVisible&&s.tiles.map((t:any)=>{const p=project(t.x,t.y),key=`${t.x},${t.y}`,isHover=hover?.x===t.x&&hover?.y===t.y,occupant=units.find(v=>v.x===t.x&&v.y===t.y&&!v.fled);return <g key={key} role={interactive?"button":undefined} tabIndex={interactive?0:undefined} aria-label={`${String.fromCharCode(65+t.y)}${t.x+1}${occupant?', '+occupant.name:(t.blocked||propBlocksAt(s,t.x,t.y))?', obstáculo':', accesible'}`} onClick={()=>onTile(t)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onTile(t);}}} onMouseEnter={()=>onHover(t)} onMouseLeave={()=>onHover(null)}><polygon points={diamond(p.x,p.y)} fill={t.type==='water'?'#516b67':`url(#terrain-${material(t)})`} stroke="none"/>{t.type==='water'&&<path d={`M${p.x-17},${p.y}l15,-3m-5,9l20,-3`} stroke="#a8b9a6" opacity=".22" strokeWidth=".7"/>}{s.night&&<polygon points={diamond(p.x,p.y)} fill="#050914" opacity={.78*(1-tileIllumination(s,t.x,t.y))} pointerEvents="none"/>}{showSight&&<polygon points={diamond(p.x,p.y)} fill={sight.has(key)?'#69ac54':'#a94536'} opacity=".32" pointerEvents="none"/>}{isHover&&<polygon points={diamond(p.x,p.y)} fill={mode==='move'&&reachableSet.has(key)?'#d8dca1':'#bd6f4d'} fillOpacity=".16" stroke="#ddd6a7" strokeWidth="1" pointerEvents="none"/>}</g>;})}</g>
+  {groundOverlay}
   {objects.sort((a,b)=>a.depth-b.depth||a.key.localeCompare(b.key)).map(o=><g key={o.key}>{o.node}</g>)}
   {(s.smoke??[]).map((v:any,i:number)=>{const p=project(v.x,v.y);return <ellipse key={i} cx={p.x} cy={p.y-24} rx={32*v.radius} ry={23*v.radius} fill="url(#smokefill)" pointerEvents="none"/>})}
  </>;

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "buenos_aires",
-  "revision": 0,
+  "revision": 1,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -2418,7 +2418,12 @@
           "buildingId": "buenos_aires:building",
           "roomId": null
         }
-      ]
+      ],
+      "kind": "cabildo",
+      "wallFinish": "limewash",
+      "roofFinish": "clay",
+      "doorStyle": "panelled",
+      "windowStyle": "barred"
     },
     {
       "id": "buenos_aires:house-0",
@@ -2610,7 +2615,11 @@
           "buildingId": "buenos_aires:house-0",
           "roomId": null
         }
-      ]
+      ],
+      "wallFinish": "ochre",
+      "roofFinish": "aged",
+      "doorStyle": "plank",
+      "windowStyle": "shutters"
     },
     {
       "id": "buenos_aires:house-1",
@@ -2750,7 +2759,11 @@
           "buildingId": "buenos_aires:house-1",
           "roomId": null
         }
-      ]
+      ],
+      "wallFinish": "adobe",
+      "roofFinish": "thatch",
+      "doorStyle": "double",
+      "windowStyle": "small"
     },
     {
       "id": "buenos_aires:house-2",
@@ -2916,7 +2929,11 @@
           "buildingId": "buenos_aires:house-2",
           "roomId": null
         }
-      ]
+      ],
+      "wallFinish": "limewash",
+      "roofFinish": "clay",
+      "doorStyle": "panelled",
+      "windowStyle": "barred"
     }
   ],
   "props": [

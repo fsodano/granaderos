@@ -170,10 +170,10 @@
       {
         "x": 0,
         "y": 2,
-        "type": "wall",
+        "type": "window",
         "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
+        "blocksSight": false,
+        "cover": 25,
         "material": "adobe",
         "buildingId": "capilla",
         "roomId": null
@@ -181,10 +181,10 @@
       {
         "x": 4,
         "y": 2,
-        "type": "wall",
+        "type": "window",
         "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
+        "blocksSight": false,
+        "cover": 25,
         "material": "adobe",
         "buildingId": "capilla",
         "roomId": null
@@ -236,10 +236,10 @@
       {
         "x": 0,
         "y": 5,
-        "type": "wall",
+        "type": "window",
         "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
+        "blocksSight": false,
+        "cover": 25,
         "material": "adobe",
         "buildingId": "capilla",
         "roomId": null
@@ -247,10 +247,10 @@
       {
         "x": 4,
         "y": 5,
-        "type": "wall",
+        "type": "window",
         "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
+        "blocksSight": false,
+        "cover": 25,
         "material": "adobe",
         "buildingId": "capilla",
         "roomId": null
@@ -324,7 +324,11 @@
         "type": "window"
       }
     ],
-    "kind": "chapel"
+    "kind": "chapel",
+    "wallFinish": "ochre",
+    "roofFinish": "aged",
+    "doorStyle": "arched",
+    "windowStyle": "small"
   },
   "features": [],
   "props": [

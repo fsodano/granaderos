@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "retiro",
-  "revision": 0,
+  "revision": 1,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -2452,7 +2452,12 @@
           "buildingId": "retiro:building",
           "roomId": null
         }
-      ]
+      ],
+      "kind": "barracks",
+      "wallFinish": "limewash",
+      "roofFinish": "aged",
+      "doorStyle": "double",
+      "windowStyle": "small"
     },
     {
       "id": "retiro:house-0",
@@ -2722,7 +2727,12 @@
           "buildingId": "retiro:house-0",
           "roomId": null
         }
-      ]
+      ],
+      "kind": "barracks",
+      "wallFinish": "limewash",
+      "roofFinish": "aged",
+      "doorStyle": "double",
+      "windowStyle": "small"
     },
     {
       "id": "retiro:house-1",
@@ -2966,7 +2976,12 @@
           "buildingId": "retiro:house-1",
           "roomId": null
         }
-      ]
+      ],
+      "kind": "barracks",
+      "wallFinish": "limewash",
+      "roofFinish": "aged",
+      "doorStyle": "double",
+      "windowStyle": "small"
     }
   ],
   "props": [

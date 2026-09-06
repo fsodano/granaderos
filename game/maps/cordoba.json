@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "cordoba",
-  "revision": 0,
+  "revision": 1,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -2418,7 +2418,12 @@
           "buildingId": "cordoba:building",
           "roomId": null
         }
-      ]
+      ],
+      "kind": "smithy",
+      "wallFinish": "brick",
+      "roofFinish": "aged",
+      "doorStyle": "barn",
+      "windowStyle": "barred"
     },
     {
       "id": "cordoba:house-0",
@@ -2532,7 +2537,11 @@
           "buildingId": "cordoba:house-0",
           "roomId": null
         }
-      ]
+      ],
+      "wallFinish": "ochre",
+      "roofFinish": "aged",
+      "doorStyle": "plank",
+      "windowStyle": "shutters"
     },
     {
       "id": "cordoba:house-1",
@@ -2672,7 +2681,11 @@
           "buildingId": "cordoba:house-1",
           "roomId": null
         }
-      ]
+      ],
+      "wallFinish": "adobe",
+      "roofFinish": "thatch",
+      "doorStyle": "double",
+      "windowStyle": "small"
     },
     {
       "id": "cordoba:house-2",
@@ -2812,7 +2825,11 @@
           "buildingId": "cordoba:house-2",
           "roomId": null
         }
-      ]
+      ],
+      "wallFinish": "limewash",
+      "roofFinish": "clay",
+      "doorStyle": "panelled",
+      "windowStyle": "barred"
     }
   ],
   "props": [

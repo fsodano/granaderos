@@ -329,10 +329,10 @@
       {
         "x": 0,
         "y": 2,
-        "type": "wall",
+        "type": "window",
         "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
+        "blocksSight": false,
+        "cover": 25,
         "material": "adobe",
         "buildingId": "cabildo",
         "roomId": null
@@ -340,10 +340,10 @@
       {
         "x": 10,
         "y": 2,
-        "type": "wall",
+        "type": "window",
         "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
+        "blocksSight": false,
+        "cover": 25,
         "material": "adobe",
         "buildingId": "cabildo",
         "roomId": null
@@ -373,10 +373,10 @@
       {
         "x": 0,
         "y": 4,
-        "type": "wall",
+        "type": "window",
         "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
+        "blocksSight": false,
+        "cover": 25,
         "material": "adobe",
         "buildingId": "cabildo",
         "roomId": null
@@ -384,10 +384,10 @@
       {
         "x": 10,
         "y": 4,
-        "type": "wall",
+        "type": "window",
         "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
+        "blocksSight": false,
+        "cover": 25,
         "material": "adobe",
         "buildingId": "cabildo",
         "roomId": null
@@ -555,7 +555,11 @@
         "locked": false
       }
     ],
-    "kind": "cabildo"
+    "kind": "cabildo",
+    "wallFinish": "limewash",
+    "roofFinish": "clay",
+    "doorStyle": "panelled",
+    "windowStyle": "barred"
   },
   "features": [],
   "props": [

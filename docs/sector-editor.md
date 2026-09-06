@@ -58,6 +58,29 @@ Export important work to a file; local storage is not a project database. Openin
 another sector does not save it into the repository. To change a shipped sector,
 replace its JSON file under `game/maps/`, validate, and rebuild the game.
 
+## Building finishes and openings
+
+Select a building. In **Propiedades**, choose **Acabado de paredes**, **Cubierta**,
+**Puertas del edificio** and **Ventanas del edificio**, then press
+**Aplicar propiedades**. Wall finishes include exposed adobe, white limewash,
+ochre limewash, stone masonry and exposed brick. Roofs include red clay tiles,
+aged tiles and thatch. Door and window catalogs each contain five styles.
+
+Under **Estilos de aberturas**, choose a style for a specific door or window by its
+tile coordinates. This change applies immediately. **Del edificio** removes the
+override and restores the building default. Changing an opening's style preserves
+its tile, door ID, open/locked state and movement rules. New openings inherit the
+building style. Styles are saved in JSON and follow moves, rotations and copies.
+
+Templates now use different combinations for rural, civic, religious, commercial
+and work buildings. They also include more side windows. Existing sector maps
+have varied finishes without changes to their original collision geometry.
+Imported older buildings use defaults for their kind when explicit finishes are
+absent. Saved campaign geometry is retained.
+
+The normal editor grid is drawn below buildings. Use **Obstáculos** or
+**Rutas accesibles** when you need a diagnostic overlay above the scene.
+
 ## Script editing
 
 Browser tools and Node scripts share `applyMapCommands`. A command batch either
@@ -87,7 +110,7 @@ Example `commands.json`:
 
 Other commands include `moveObject`, `rotateObject`, `transformSelection`,
 `duplicateObject`, `deleteObject`, `setObject`, `setMetadata`, `resizeBuilding`,
-`setWall`, `setDoor` and `stampTemplate`. See `game/map-commands.js` and
+`setWall`, `setDoor`, `setOpeningStyle` and `stampTemplate`. See `game/map-commands.js` and
 `tests/map-editor.test.mjs` for argument examples. `seededTerrainCommands` in
 `game/map-editor-tools.js` provides deterministic generation.
 

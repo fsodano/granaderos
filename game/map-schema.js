@@ -1,3 +1,4 @@
+import { WALL_FINISHES, ROOF_FINISHES, DOOR_STYLES, WINDOW_STYLES } from "./building-appearance.js";
 import {
   TERRAIN,
   BUILDING_KINDS,
@@ -138,6 +139,16 @@ export function validateMap(input, { playable = false } = {}) {
     const occupied = new Set(),
       roomIds = new Set();
     for (const b of d.buildings) {
+      for (const [key, catalog] of Object.entries({
+        wallFinish: WALL_FINISHES,
+        roofFinish: ROOF_FINISHES,
+        doorStyle: DOOR_STYLES,
+        windowStyle: WINDOW_STYLES,
+      }))
+        need(
+          b[key] === undefined || Object.hasOwn(catalog, b[key]),
+          "Acabado de edificio no válido.",
+        );
       need(
         Number.isInteger(b.width) &&
           Number.isInteger(b.height) &&
@@ -168,6 +179,12 @@ export function validateMap(input, { playable = false } = {}) {
             !wallKeys.has(cellKey(w)) &&
             ["wall", "door", "window"].includes(w.type),
           "Pared o abertura no válida.",
+        );
+        need(
+          w.style === undefined ||
+            (w.type === "door" && Object.hasOwn(DOOR_STYLES, w.style)) ||
+            (w.type === "window" && Object.hasOwn(WINDOW_STYLES, w.style)),
+          "Estilo de abertura no válido.",
         );
         wallKeys.add(cellKey(w));
         if (w.type === "door")

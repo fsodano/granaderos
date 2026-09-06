@@ -70,3 +70,8 @@ test('building types retain distinctive facades through transforms and cut away 
   }
  }
 });
+test('material and opening families render separately without changing door collision',async()=>{
+ const {WALL_FINISHES,DOOR_STYLES,WINDOW_STYLES}=await import('../game/building-appearance.js');const {WallSurface,Opening}=await import('../web/app/TacticalArchitectureMaterials.tsx');const React=await import('../web/node_modules/react/index.js');
+ const surfaces=Object.keys(WALL_FINISHES).map(finish=>render(React.createElement('svg',null,React.createElement(WallSurface,{finish,height:46,x:2,y:3}))));assert.equal(new Set(surfaces).size,5);assert.ok(surfaces.every(s=>!s.includes('terrain-plaster')));
+ for(const [type,styles] of [['door',DOOR_STYLES],['window',WINDOW_STYLES]]){const result=Object.keys(styles).map(style=>render(React.createElement('svg',null,React.createElement(Opening,{type,style,open:false,trim:'#eee'}))));assert.equal(new Set(result).size,5);assert.ok(result.every(s=>!s.includes('NaN')));}
+});

@@ -11,6 +11,10 @@ export function makeBuilding({
   name = "Casa",
   material = "adobe",
   kind,
+  wallFinish,
+  roofFinish,
+  doorStyle,
+  windowStyle,
 }) {
   if (
     ![x, y, width, height].every(Number.isInteger) ||
@@ -32,7 +36,15 @@ export function makeBuilding({
     material,
     doors: [{ x: x + Math.floor(width / 2), y: y + height - 1 }],
   });
-  return { ...building, ...(kind ? { kind } : {}), walls: tiles.filter((t) => t.type !== "floor") };
+  return {
+    ...building,
+    ...Object.fromEntries(
+      Object.entries({ kind, wallFinish, roofFinish, doorStyle, windowStyle }).filter(
+        ([, value]) => value !== undefined,
+      ),
+    ),
+    walls: tiles.filter((t) => t.type !== "floor"),
+  };
 }
 function entity(doc, id) {
   for (const layer of LAYERS) {
@@ -214,6 +226,14 @@ export function applyMapCommands(
         if (!door) throw Error("Puerta desconocida.");
         if (c.open !== undefined) door.open = c.open;
         if (c.locked !== undefined) door.locked = c.locked;
+      } else if (c.type === "setOpeningStyle") {
+        const { object: b } = entity(doc, c.buildingId);
+        const opening = b.walls?.find(
+          (w) => w.x === c.x && w.y === c.y && ["door", "window"].includes(w.type),
+        );
+        if (!opening) throw Error("Selecciona una puerta o ventana.");
+        if (c.style === null) delete opening.style;
+        else opening.style = c.style;
       } else if (c.type === "setWall") {
         const b = entity(doc, c.buildingId).object;
         if (!b.walls || c.x < b.x || c.x >= b.x + b.width || c.y < b.y || c.y >= b.y + b.height)
@@ -229,6 +249,7 @@ export function applyMapCommands(
             x: c.x,
             y: c.y,
             type: c.wallType,
+            ...(c.style ? { style: c.style } : {}),
             ...(c.wallType === "door"
               ? { doorId: c.doorId ?? `${b.id}:door:${c.x}:${c.y}`, open: false, locked: false }
               : {}),

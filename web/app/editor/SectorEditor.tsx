@@ -1,4 +1,11 @@
 'use client';
+import {
+  buildingAppearance,
+  WALL_FINISHES,
+  ROOF_FINISHES,
+  DOOR_STYLES,
+  WINDOW_STYLES,
+} from '../../../game/building-appearance.js';
 import { BUILDING_KINDS } from '../../../game/map-catalog.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import TacticalScene from '../TacticalScene';
@@ -776,6 +783,10 @@ export default function SectorEditor() {
       'name',
       'material',
       'kind',
+      'wallFinish',
+      'roofFinish',
+      'doorStyle',
+      'windowStyle',
       'count',
       'radius',
       'intensity',
@@ -1172,6 +1183,22 @@ export default function SectorEditor() {
             onContextMenu={(e) => e.preventDefault()}
           >
             <TacticalScene
+              groundOverlay={
+                overlay === 'grid' ? (
+                  <g data-editor-ground-grid="true" pointerEvents="none">
+                    {map.tiles.map((t: any) => (
+                      <polygon
+                        key={cellKey(t)}
+                        points={diamond(project(t.x, t.y))}
+                        fill="none"
+                        stroke="#e8dbb4"
+                        strokeOpacity=".19"
+                        strokeWidth=".6"
+                      />
+                    ))}
+                  </g>
+                ) : undefined
+              }
               terrainVisible={!hidden.includes('terrain')}
               interactive={false}
               state={scene}
@@ -1216,7 +1243,11 @@ export default function SectorEditor() {
                             : 'transparent'
                     }
                     fillOpacity=".27"
-                    stroke={overlay === 'none' ? 'transparent' : '#e8dbb4'}
+                    stroke={
+                      ['none', 'grid'].includes(overlay)
+                        ? 'transparent'
+                        : '#e8dbb4'
+                    }
                     strokeOpacity=".19"
                     strokeWidth=".6"
                     role="button"
@@ -1397,18 +1428,37 @@ export default function SectorEditor() {
                       ))}
                     </select>
                   </label>
-                  <label>
-                    Material
-                    <select
-                      value={fields.material}
-                      onChange={(e) =>
-                        setFields({ ...fields, material: e.target.value })
+                  {Object.entries({
+                    wallFinish: WALL_FINISHES,
+                    roofFinish: ROOF_FINISHES,
+                    doorStyle: DOOR_STYLES,
+                    windowStyle: WINDOW_STYLES,
+                  }).map(([key, catalog]) => (
+                    <label key={key}>
+                      {
+                        (
+                          {
+                            wallFinish: 'Acabado de paredes',
+                            roofFinish: 'Cubierta',
+                            doorStyle: 'Puertas del edificio',
+                            windowStyle: 'Ventanas del edificio',
+                          } as Record<string, string>
+                        )[key]
                       }
-                    >
-                      <option value="adobe">Adobe encalado</option>
-                      <option value="stone">Piedra</option>
-                    </select>
-                  </label>
+                      <select
+                        value={fields[key] ?? buildingAppearance(chosen)[key]}
+                        onChange={(e) =>
+                          setFields({ ...fields, [key]: e.target.value })
+                        }
+                      >
+                        {Object.entries(catalog).map(([id, name]) => (
+                          <option key={id} value={id}>
+                            {name}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  ))}
                 </>
               )}
               {['count', 'radius', 'intensity', 'target']
@@ -1535,6 +1585,39 @@ export default function SectorEditor() {
                   >
                     Guardar plantilla
                   </button>
+                  <h3>Estilos de aberturas</h3>
+                  {chosen.walls
+                    .filter((w: any) => ['door', 'window'].includes(w.type))
+                    .map((w: any) => (
+                      <label key={`${w.x},${w.y}`}>
+                        {w.type === 'door' ? 'Puerta' : 'Ventana'} ({w.x}, {w.y}
+                        )
+                        <select
+                          aria-label={`Estilo de ${w.type === 'door' ? 'puerta' : 'ventana'} ${w.x},${w.y}`}
+                          value={w.style ?? ''}
+                          onChange={(e) =>
+                            edit([
+                              {
+                                type: 'setOpeningStyle',
+                                buildingId: chosen.id,
+                                x: w.x,
+                                y: w.y,
+                                style: e.target.value || null,
+                              },
+                            ])
+                          }
+                        >
+                          <option value="">Del edificio</option>
+                          {Object.entries(
+                            w.type === 'door' ? DOOR_STYLES : WINDOW_STYLES,
+                          ).map(([id, name]) => (
+                            <option key={id} value={id}>
+                              {name}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    ))}
                   <h3>Puertas</h3>
                   {chosen.walls
                     .filter((w: any) => w.type === 'door')

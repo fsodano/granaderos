@@ -1,3 +1,5 @@
+import { buildingAppearance } from '../../game/building-appearance.js';
+import { WALL_COLOURS } from './TacticalArchitectureMaterials';
 import type { ReactNode } from 'react';
 type Point = { x: number; y: number };
 /** Details are anchored to the actual entrance, so rotations preserve the facade. */
@@ -7,6 +9,7 @@ export function buildingDetails(
   project: (x: number, y: number) => Point,
 ): { key: string; depth: number; node: ReactNode }[] {
   const kind = b.kind;
+  const palette = WALL_COLOURS[buildingAppearance(b).wallFinish];
   if (!kind || kind === 'house') return [];
   const door = b.walls?.find(
     (w: any) =>
@@ -32,11 +35,21 @@ export function buildingDetails(
       <>
         <path
           d={`M-25,-38V${top + 16}L0,${top}L25,${top + 16}V-38Z`}
-          fill="#d9ccb0"
+          fill={palette.base}
           stroke="#8e8064"
           strokeWidth="1.5"
         />
-        <path d={`M25,-38V${top + 16}l7,4V-35Z`} fill="#998b70" />
+        <path d={`M25,-38V${top + 16}l7,4V-35Z`} fill={palette.shadow} />
+        <path
+          data-facade-support="true"
+          d="M-25,0V-42H-12V0ZM12,0V-42H25V0Z"
+          fill={palette.base}
+        />
+        <path
+          d="M-25,-41H25M-27,-3H-12M12,-3H27"
+          stroke={palette.trim}
+          strokeWidth="2"
+        />
         <path
           d={`M-29,${top + 17}L0,${top - 3}L29,${top + 17}`}
           fill="none"
@@ -53,7 +66,7 @@ export function buildingDetails(
         <path d={`M-9,${top + 45}h18`} stroke="#d4b56c" strokeWidth="2" />
         <path
           d={`M-26,${top + 54}h52M-25,-43h50`}
-          stroke="#f0e2c5"
+          stroke={palette.trim}
           strokeWidth="4"
         />
         {religious ? (
@@ -81,7 +94,7 @@ export function buildingDetails(
                 <path
                   d="M-18,-3V-29Q0,-53 18,-29V-3"
                   fill="none"
-                  stroke="#eee0c1"
+                  stroke={palette.trim}
                   strokeWidth="5"
                 />
                 <path d="M-21,-44h42" stroke="#dfceb0" strokeWidth="5" />
@@ -93,7 +106,7 @@ export function buildingDetails(
           <>
             <path
               d="M-44,-4V-68h10v64M34,-4V-68h10v64"
-              fill="#dfd0ac"
+              fill={palette.trim}
               stroke="#9b8b6b"
             />
             <path d="M-48,-68H48" stroke="#eee0bd" strokeWidth="5" />

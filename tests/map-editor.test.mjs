@@ -31,18 +31,21 @@ test("all converted sectors preserve terrain, room membership, props and lightin
   for (const [id, d] of Object.entries(MAP_LIBRARY)) {
     assert.deepEqual(validateMap(d).errors, []);
     const m = compileMap(d);
+    // Exclude new visual metadata; keep the original gameplay geometry reference unchanged.
     // Normalise derived room ordering without changing room membership.
     const data = {
       tiles: m.tiles
         .map((t) => Object.fromEntries(Object.entries(t).sort()))
         .sort((a, b) => a.y - b.y || a.x - b.x),
-      buildings: m.buildings.map(({ walls, ...b }) => ({
-        ...b,
-        rooms: b.rooms.map((r) => ({
-          ...r,
-          cells: [...r.cells].sort((a, b) => a.y - b.y || a.x - b.x),
-        })),
-      })),
+      buildings: m.buildings.map(
+        ({ walls, wallFinish, roofFinish, doorStyle, windowStyle, kind, ...b }) => ({
+          ...b,
+          rooms: b.rooms.map((r) => ({
+            ...r,
+            cells: [...r.cells].sort((a, b) => a.y - b.y || a.x - b.x),
+          })),
+        }),
+      ),
       props: m.props,
       lights: m.lights,
       decor: m.decor,
@@ -289,4 +292,60 @@ test("all ten building types keep room floors reachable from an exterior start",
           `${id}: inaccessible room`,
         );
   }
+});
+test("appearance edits preserve geometry, opening IDs, door state and survive round trips", () => {
+  let d = execute(blankMap(), [
+    {
+      type: "addBuilding",
+      building: {
+        id: "house",
+        x: 3,
+        y: 3,
+        width: 6,
+        height: 6,
+        wallFinish: "ochre",
+        roofFinish: "aged",
+        doorStyle: "double",
+        windowStyle: "lattice",
+      },
+    },
+  ]);
+  assert.equal(d.buildings[0].windowStyle, "lattice");
+  const door = d.buildings[0].walls.find((w) => w.type === "door");
+  d = execute(d, [{ type: "setDoor", id: door.doorId, open: true, locked: true }]);
+  const before = compileMap(d).tiles;
+  d = execute(d, [
+    {
+      type: "setObject",
+      id: "house",
+      values: {
+        wallFinish: "brick",
+        roofFinish: "aged",
+        doorStyle: "double",
+        windowStyle: "shutters",
+      },
+    },
+    { type: "setOpeningStyle", buildingId: "house", x: door.x, y: door.y, style: "arched" },
+  ]);
+  assert.deepEqual(
+    compileMap(d).tiles.map(({ style, ...t }) => t),
+    before,
+  );
+  const saved = parseMap(serializeMap(d));
+  assert.equal(saved.buildings[0].wallFinish, "brick");
+  assert.equal(saved.buildings[0].walls.find((w) => w.doorId === door.doorId).style, "arched");
+  const moved = execute(saved, [{ type: "rotateObject", id: "house" }]);
+  const movedDoor = moved.buildings[0].walls.find((w) => w.doorId === door.doorId);
+  assert.equal(movedDoor.style, "arched");
+  assert.equal(movedDoor.open, true);
+  assert.equal(movedDoor.locked, true);
+  assert.ok(
+    applyMapCommands(d, [{ type: "setObject", id: "house", values: { wallFinish: "plastic" } }])
+      .errors.length,
+  );
+  assert.ok(
+    applyMapCommands(d, [
+      { type: "setOpeningStyle", buildingId: "house", x: door.x, y: door.y, style: "shutters" },
+    ]).errors.length,
+  );
 });

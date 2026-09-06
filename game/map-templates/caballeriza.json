@@ -281,10 +281,10 @@
       {
         "x": 0,
         "y": 2,
-        "type": "wall",
+        "type": "window",
         "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
+        "blocksSight": false,
+        "cover": 25,
         "material": "adobe",
         "buildingId": "caballeriza",
         "roomId": null
@@ -292,10 +292,10 @@
       {
         "x": 9,
         "y": 2,
-        "type": "wall",
+        "type": "window",
         "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
+        "blocksSight": false,
+        "cover": 25,
         "material": "adobe",
         "buildingId": "caballeriza",
         "roomId": null
@@ -446,7 +446,11 @@
         "type": "window"
       }
     ],
-    "kind": "stable"
+    "kind": "stable",
+    "wallFinish": "adobe",
+    "roofFinish": "thatch",
+    "doorStyle": "barn",
+    "windowStyle": "lattice"
   },
   "features": [],
   "props": [

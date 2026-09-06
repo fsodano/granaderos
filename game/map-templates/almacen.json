@@ -275,10 +275,10 @@
       {
         "x": 0,
         "y": 2,
-        "type": "wall",
+        "type": "window",
         "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
+        "blocksSight": false,
+        "cover": 25,
         "material": "adobe",
         "buildingId": "almacen",
         "roomId": null
@@ -286,10 +286,10 @@
       {
         "x": 7,
         "y": 2,
-        "type": "wall",
+        "type": "window",
         "blocked": true,
-        "blocksSight": true,
-        "cover": 40,
+        "blocksSight": false,
+        "cover": 25,
         "material": "adobe",
         "buildingId": "almacen",
         "roomId": null
@@ -462,7 +462,11 @@
         "type": "window"
       }
     ],
-    "kind": "warehouse"
+    "kind": "warehouse",
+    "wallFinish": "stone",
+    "roofFinish": "aged",
+    "doorStyle": "barn",
+    "windowStyle": "small"
   },
   "features": [],
   "props": [
