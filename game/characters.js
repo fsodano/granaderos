@@ -1,4 +1,5 @@
 // Original dramatic characterization and dialogue, not authenticated historical quotations.
+import {MERCENARY_ADDITIONS} from './mercenaries.js';
 // Events are stable identifiers shared by tactical and strategic presentation.
 export const ATTRIBUTE_LABELS={maxHp:'Salud',agility:'Agilidad',dexterity:'Destreza',strength:'Fuerza',leadership:'Liderazgo',wisdom:'Sabiduría',marksmanship:'Puntería',mechanical:'Mecánica',explosives:'Pólvora y artillería',medical:'Medicina'};
 const rows=[
@@ -26,7 +27,8 @@ const rows=[
 
 ];
 export const SPEECH_EVENTS=['hired','contact','cleared','wounded','exhausted','death','ending'];
-export const CHARACTER_PROFILES=Object.fromEntries(rows.map(([id,personality,skills,lines])=>[id,{personality,skills,speech:Object.fromEntries(SPEECH_EVENTS.map((event,i)=>[event,lines[i]])),registry:[5,6,10,103,104].includes(id)?'Registro de voluntarios extranjeros':id>=100?'Boletín Revolucionario Cívico':'Logia Lautaro y mandos provinciales'}]));
+for(const op of MERCENARY_ADDITIONS)rows.push([op.id,op.personalityText,[op.role,...op.traits.map(trait=>({field_rescuer:'Socorro bajo fuego',teacher:'Instrucción de reclutas',expert_rider:'Equitación experta',steadfast:'Ánimo firme',guerrilla_tactician:'Táctica de guerrillas',night_vision:'Reconocimiento nocturno',gunsmith_artillerist:'Armería y artillería',line_marksman:'Tiro de línea',cavalry_commander:'Mando de caballería',workshop_training:'Formación de taller'})[trait])],op.lines]);
+export const CHARACTER_PROFILES=Object.fromEntries(rows.map(([id,personality,skills,lines])=>[id,{personality,skills,speech:Object.fromEntries(SPEECH_EVENTS.map((event,i)=>[event,lines[i]])),registry:[5,6,10,103,104,105].includes(id)||MERCENARY_ADDITIONS.some(op=>op.id===id&&op.foreign)?'Registro de voluntarios extranjeros':id>=100?'Boletín Revolucionario Cívico':'Logia Lautaro y mandos provinciales'}]));
 export function characterProfile(operative){if(Number(operative.id)===1000)return customProfile(operative);return CHARACTER_PROFILES[operative.id]??{personality:'Oficial formado ante la comisión del Cabildo. Su carrera se define por las decisiones y experiencias de la campaña.',skills:operative.traits||[],registry:'Comisión del Cabildo',speech:{hired:'Acepto la comisión. Serviré con responsabilidad.',contact:'Enemigo a la vista. Prepárense.',cleared:'Sector asegurado. Revisen a los compañeros.',wounded:'Estoy herido. Necesito atención.',exhausted:'No puedo seguir así. Debo descansar.',death:'Continúen sin mí…',ending:'La campaña termina; nuestra responsabilidad continúa.'}};}
 export function speechFor(operative,event){return characterProfile(operative).speech[event]??null;}
 
