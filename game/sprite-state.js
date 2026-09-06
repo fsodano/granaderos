@@ -21,6 +21,7 @@ function spriteSequence(unit,motion,pose,kind){
  const condition=spriteCondition(unit);
  if(condition==='dead')return {sequence:'dead-idle',playback:'still'};
  if(condition==='unconscious')return {sequence:'unconscious-breathe',playback:'breathing'};
+ if(kind==='civilian'&&condition==='prone')return {sequence:'unconscious-breathe',playback:motion.moving?'movement':'breathing'};
  if(kind==='civilian')return {sequence:motion.moving?'walk':'idle',playback:motion.moving?'movement':'still'};
  if(unit.mounted)return {sequence:`mounted-${motion.moving?'walk':'idle'}`,playback:motion.moving?'movement':'still'};
  if(condition==='prone'){

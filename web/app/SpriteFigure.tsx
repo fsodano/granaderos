@@ -23,5 +23,8 @@ export default function SpriteFigure({unit,position,motion,pose='idle',drawSize=
  },[name,playback,actionKey,frames,fps]);
  const frame=playback==='movement'?spriteMovementFrame(motion,frames,fps):clock.name===name?clock.frame:0;
  const viewport=spriteViewport(sprite,position,motion.direction,frame,drawSize);
- return <g pointerEvents="none" data-sprite={name} data-requested-sprite={sprite.requestedName} data-playback={playback} data-sprite-style={sprite.style} data-sprite-fallback={sprite.fallbackReason??undefined}><ellipse cx={Math.round(position.x)} cy={Math.round(position.y)} rx={mounted?drawSize*.22:drawSize*.115} ry={drawSize*.045} fill="#171812" opacity=".36"/><svg {...viewport} overflow="hidden"><image href={sprite.href} width={sprite.size[0]} height={sprite.size[1]} style={{imageRendering:'pixelated'}}/></svg></g>;
+ if(appearance==='civilian'&&unit.hp>0&&!unit.unconscious&&unit.stance==='crouched'){
+  const height=viewport.height*.7;viewport.y+=viewport.height-height;viewport.height=height;
+ }
+ return <g pointerEvents="none" data-sprite={name} data-requested-sprite={sprite.requestedName} data-playback={playback} data-sprite-style={sprite.style} data-sprite-fallback={sprite.fallbackReason??undefined}><ellipse cx={Math.round(position.x)} cy={Math.round(position.y)} rx={mounted?drawSize*.22:drawSize*.115} ry={drawSize*.045} fill="#171812" opacity=".36"/><svg {...viewport} preserveAspectRatio={appearance==='civilian'&&unit.stance==='crouched'?'none':undefined} overflow="hidden"><image href={sprite.href} width={sprite.size[0]} height={sprite.size[1]} style={{imageRendering:'pixelated'}}/></svg></g>;
 }
