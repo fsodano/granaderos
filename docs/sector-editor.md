@@ -45,8 +45,13 @@ gobernador** under **Edificios → Plantilla**. The larger warehouse is **Depós
 mercantil** and the farmhouse is **Casa de estancia** in the same list. The church has a
 central aisle and a separate sacristy. Building kinds supply distinct facade
 details, tied to the entrance so they follow rotation. The inspector can change
-the kind independently of the layout. Bell structures and other tall facade
-details cut away with the interior view.
+the kind independently of the layout. The **Ayuntamiento** and **Palacio del
+gobernador** have visible second storeys with upper windows. The palace also has
+an iron balcony. These are exterior details only; rooms, furniture and movement remain on the ground floor. There
+are no stairs or upper-floor interiors. **Interiores** and **Habitación activa**
+remove the upper storey as soon as a ground-floor room is shown. Unrevealed rooms
+keep their roof cover at ground-floor height until those rooms are revealed.
+Bell structures and other tall facade details also cut away with the interior view.
 
 These are game-scale types, not measured replicas of named monuments. Historical
 references include the [rural church at Chamical](https://www.argentina.gob.ar/cultura/monumentos/capilla-san-francisco-chamical)
@@ -127,7 +132,10 @@ were migrated into JSON; reference hashes test their compiled geometry,
 props, lighting and decoration against the pre-migration output.
 
 Walls occupy full cells. Thin wall art does not change collision. Roofs use the
-building footprint, with clipped sections for revealed rooms. Exterior and
+building footprint, with clipped sections for revealed rooms in single-storey
+buildings. The town hall and palace lower their shell and remaining roof cover
+to ground-floor height when any room is revealed. Their extra storey is a renderer profile, with
+no extra floor records in the map JSON. Exterior and
 interior views share one map. Colonial limewashed adobe/stone, clay roof tiles,
 wooden doors and shutters match the existing historical setting.
 
@@ -143,7 +151,13 @@ map round trips, whole-building and group transforms, room partitions, doors,
 furniture routes, templates and container references, playtest isolation,
 malformed bounds, pointer projection, generators, CLI file protection and save
 re-entry. Renderer tests cover full and partial roofs, wall direction, corner
-geometry and two-cell furniture.
+geometry and two-cell furniture. Upper-storey coverage checks the town hall and
+palace in all four rotations, including full and partial interior revelation
+without changes to the ground-floor map.
+
+The two-storey civic revision was reviewed in 24 rendered views: exterior, full
+interior and partial revelation in every rotation. This renderer review does not
+claim a new browser interaction pass.
 
 Browser checks covered import, draft recovery, drag placement, invalid placement,
 undo/redo, rotated furniture, playtest movement, return without authoring changes,

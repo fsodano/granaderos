@@ -18,7 +18,8 @@ Historical references:
 `web/app/TacticalBuildings.tsx` projects structural wall segments from the map.
 `web/app/TacticalRoof.tsx` builds gable, hip and shed roofs from plane geometry.
 `game/building-profile.js` supplies the wall height, roof rise, eave depth and
-plinth height for each building type. The first exterior door defines the front
+plinth height for each building type. The town hall and palace also have a
+ground-floor height and a two-storey exterior profile. The first exterior door defines the front
 of the building. The roof, tower, porch and other details follow that frame when
 the map commands rotate a building. These visual dimensions do not change the
 collision cells.
@@ -39,7 +40,11 @@ the six dynamic filenames, PNG dimensions and checksums with
 `tools/verify-tactical-assets.mjs`. Tests also render the wall and roof definitions
 to confirm that every emitted material URL belongs to that build contract.
 
-Revealing a room removes only that room's roof. Adjacent front wall segments,
+For single-storey buildings, revealing a room removes only that room's roof.
+Revealing any ground-floor room in the town hall or palace removes the upper
+storey. Their remaining shell and roof use the original ground-floor height.
+Unrevealed rooms retain their clipped roof cover; revealing all rooms removes
+the remaining roof. Adjacent front wall segments,
 doors and windows reduce to low masonry and thresholds. Internal partition
 segments also lower when either adjacent room is revealed. Back exterior walls
 stay full height. Floor joints and perimeter shadows appear only in revealed rooms.
@@ -86,16 +91,20 @@ The catalog contains fourteen distinct tile footprints and furnished layouts:
 | Almacén de abastos | 8 × 8 | Stout gable, buttresses and loading canopy | Barrels, chests and fodder with clear aisles |
 | Herrería | 7 × 6 | Shed roof, brick forge chimney and awning | Workbench, water and tools |
 | Caballeriza | 10 × 6 | Gable, timber facade frame and loft louvres | Four fodder stations and water |
-| Ayuntamiento | 12 × 9 | Formal entrance columns, clock pediment and civic finials | Separate secretary, archive and council rooms |
-| Palacio del gobernador | 14 × 11 | Broad tiled portico, formal pediment and masonry pilasters | Reception, private office, governor's chamber and guest chamber |
+| Ayuntamiento | 12 × 9 | Two-storey civic facade, formal entrance columns, clock pediment and civic finials | Separate secretary, archive and council rooms on the ground floor |
+| Palacio del gobernador | 14 × 11 | Two-storey residence, iron balcony, columned entrance and tiled pediment | Ground-floor reception, private office, governor's chamber and guest chamber |
 | Depósito mercantil | 13 × 10 | Brick loading facade, masonry piers, broad timber canopy and timber hoist | Stock hall, counting office and secure store |
 | Casa de estancia | 11 × 8 | Low hip roof, timber front and return galleries, and paired domestic chimneys | Family room, separate bedroom and pantry |
 
 The ayuntamiento is the larger municipal template. Its three-room plan differs
 from the smaller two-room cabildo. The palace is a compact governor's residence
-with a broad reception room and three private rooms. Both are interpretations of
-colonial construction, with one playable floor. Their plans do not reproduce
-the multi-level layouts or patios of the historical references. Their entrances
+with a broad reception room and three private rooms. Both have a visible second
+storey, with upper windows and horizontal facade bands. The palace has a shallow
+iron balcony above its entrance columns. The upper level and balcony are exterior
+decoration. The map adds no upper rooms, stairs, furniture or accessible tiles.
+The existing ground-floor plans remain the only playable level. These are
+interpretations of colonial construction; their plans do not reproduce the
+upper rooms or patios of the historical references. Their entrances
 remain on perimeter tiles. Columns stand on solid facade cells; the portico
 stays shallow enough to keep the entrance and surrounding walking tiles clear.
 
@@ -127,6 +136,8 @@ node tools/preview-architecture-catalog.mjs /tmp/granaderos-architecture-catalog
 node tools/preview-architecture-catalog.mjs /tmp/granaderos-architecture-catalog --buildings=iglesia,cabildo --mode=exterior
 # Review the two larger civic buildings, including interiors
 node tools/preview-architecture-catalog.mjs /tmp/granaderos-civic-review --buildings=ayuntamiento,palacio
+# Reveal the first ground-floor room in each civic building, in all four rotations
+node tools/preview-architecture-catalog.mjs /tmp/granaderos-civic-review --buildings=ayuntamiento,palacio --mode=partial
 # Review the larger warehouse and farmhouse
 node tools/preview-architecture-catalog.mjs /tmp/granaderos-depot-farmhouse-review --buildings=deposito,estancia
 node --test tests/architecture-catalog.test.mjs
@@ -141,8 +152,10 @@ All generated map documents include a player spawn for a disposable playtest.
 `--interior-only` can also write to a new directory. Its pages then offer only
 the four interior rotations. A focused refresh does not prove that retained
 exterior views match the new renderer; use the full command for final acceptance.
-`--buildings` accepts comma-separated template IDs. `--mode=exterior` and
-`--mode=interior` select one mode across all four rotations. Targeted runs keep
+`--buildings` accepts comma-separated template IDs. `--mode=exterior`,
+`--mode=interior` and `--mode=partial` select one mode across all four rotations.
+Partial mode reveals the first ground-floor room and keeps the other rooms
+covered. The default run remains exterior plus full interior. Targeted runs keep
 other view files and their prior manifest records in an existing output folder.
 
 The automated catalog checks cover each template in every rotation. They prove
@@ -181,6 +194,16 @@ room functions, minimum-size shells and supports edited into doors or windows.
 Every new ground-level support is checked against a solid wall tile. The original
 review did not repeat live pointer interaction because the Mac was locked.
 No new browser interaction pass is claimed by this renderer review.
+
+The town hall and palace upper-storey revision passed a fresh review of 24 views:
+exterior, full interior and partial room revelation in all four rotations.
+The review confirmed that upper details disappear during room revelation and
+that the remaining roof meets the ground-floor shell. Unrevealed rooms keep
+their cover. Renderer tests also check each ground room separately and palace
+balcony supports retained only on one side: unsupported balcony doors and rails
+are omitted. Both civic template JSON files remain unchanged, including rooms,
+doors, furniture and tile routes. The earlier civic images record their previous
+one-storey silhouettes; use the new commands to review the current profiles.
 
 Regenerate the catalog after renderer or material changes; an earlier image is
 evidence only for the revision that produced it. Use the generated JSON maps in

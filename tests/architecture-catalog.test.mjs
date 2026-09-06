@@ -224,6 +224,28 @@ test("formal civic details stay finite on tiny shells and leave edited openings 
       ["authored", original],
       ["edited", edited],
       ["minimum", tiny],
+      [
+        "corner-door",
+        apply(tiny, [{ type: "setWall", buildingId: name, x: 3, y: 5, wallType: "door" }]),
+      ],
+      ...(name === "palacio"
+        ? [
+            ["left-only", [8, 10]],
+            ["right-only", [4, 6]],
+          ].map(([label, removed]) => [
+            label,
+            apply(
+              original,
+              removed.map((x) => ({
+                type: "setWall",
+                buildingId: name,
+                x: x + 3,
+                y: BUILDING_TEMPLATES[name].building.height + 2,
+                wallType: "window",
+              })),
+            ),
+          ])
+        : []),
     ]) {
       let document = first;
       for (let rotation = 0; rotation < 4; rotation++) {
@@ -249,6 +271,16 @@ test("formal civic details stay finite on tiny shells and leave edited openings 
         }
         if (caseName === "authored" && ["south", "east"].includes(frame.side))
           assert.equal(columns.length, supportX.length, "authored facade has all intended columns");
+        if (["minimum", "corner-door"].includes(caseName)) {
+          const sides = new Set(
+            [...markup.matchAll(/data-upper-window="([^:]+):/g)].map((m) => m[1]),
+          );
+          assert.equal(
+            sides.size,
+            2,
+            "tiny shells keep upper windows on both visible facades, including corner entrance cadence",
+          );
+        }
         if (caseName === "edited") {
           assert.equal(columns.length, 0, "edited doors and windows remain unobstructed");
           assert.ok(
@@ -257,6 +289,27 @@ test("formal civic details stay finite on tiny shells and leave edited openings 
             ),
             "unsupported pediment is omitted",
           );
+        }
+        if (["left-only", "right-only"].includes(caseName)) {
+          const frontVisible = ["south", "east"].includes(frame.side);
+          assert.equal(
+            columns.length,
+            frontVisible ? 2 : 0,
+            "surviving one-sided support pair still renders",
+          );
+          assert.ok(
+            !markup.includes('data-upper-balcony="palace"'),
+            "one-sided support pair cannot carry the central balcony",
+          );
+          assert.ok(
+            !markup.includes('data-upper-window="front:balcony"'),
+            "unsupported upper balcony doorway is omitted",
+          );
+          if (frontVisible)
+            assert.ok(
+              markup.includes(`data-upper-window="front:${frame.doorU}"`),
+              "ordinary upper window fills the unsupported central bay",
+            );
         }
         document = apply(document, [{ type: "rotateObject", id: name }]);
       }
@@ -506,6 +559,169 @@ test("repeated catalog stamps create independent buildings, doors, rooms and con
       secondProps,
       `${name}: deleting original retains copied contents`,
     );
+  }
+});
+
+test("civic upper storeys preserve the ground-floor map through every reveal and rotation", async () => {
+  const { register } = await import("node:module");
+  register("./tactical-render-loader.mjs", import.meta.url);
+  const { createElement: h } = await import("../web/node_modules/react/index.js");
+  const { renderToStaticMarkup: render } =
+    await import("../web/node_modules/react-dom/server.node.js");
+  const { buildBuildingObjects } = await import("../web/app/TacticalBuildings.tsx");
+  const { getBuildingProfile, getBuildingRenderProfile, entranceFrame } =
+    await import("../game/building-profile.js");
+  const project = (x, y) => ({ x: (x - y) * 26, y: (x + y) * 14 });
+  for (const [name, fullHeight, groundHeight] of [
+    ["ayuntamiento", 118, 66],
+    ["palacio", 124, 70],
+  ]) {
+    let document = fixture(name);
+    const authored = serializeMap(document),
+      originalIds = identities(document);
+    for (let rotation = 0; rotation < 4; rotation++) {
+      const state = compileMap(document),
+        building = state.buildings[0];
+      const beforeMap = JSON.stringify(state),
+        beforeSource = serializeMap(document);
+      const beforeRoutes = [...reachableMap(state, { x: 1, y: 1 })].sort();
+      const profile = getBuildingProfile(building);
+      assert.equal(profile.wallHeight, fullHeight);
+      assert.equal(profile.groundFloorHeight, groundHeight);
+      assert.equal(profile.floors, 2);
+      assert.ok(
+        !Object.hasOwn(building, "floors"),
+        "storey count belongs to rendering, not map geometry",
+      );
+      assert.ok(
+        !state.props.some((p) => /stairs|staircase/.test(p.type)),
+        "upper storey adds no route or stairs",
+      );
+      const cases = [
+        ["exterior", new Set()],
+        ...building.rooms.map((room) => [`partial ${room.name}`, new Set([room.id])]),
+        ["interior", new Set(building.rooms.map((room) => room.id))],
+      ];
+      for (const [mode, revealed] of cases) {
+        const visibleProfile = getBuildingRenderProfile(building, revealed);
+        const height = revealed.size ? groundHeight : fullHeight;
+        assert.equal(visibleProfile.wallHeight, height);
+        assert.equal(visibleProfile.floors, revealed.size ? 1 : 2);
+        const objects = buildBuildingObjects({ state, project, light: () => 1, revealed });
+        const markup = render(h("svg", null, ...objects.map((o) => o.node)));
+        assert.ok(
+          !/NaN|Infinity/.test(markup),
+          `${name} ${rotation * 90}° ${mode}: finite geometry`,
+        );
+        let wallCount = 0,
+          internalCount = 0;
+        for (const object of objects) {
+          const match = /^architecture-(\d+)-(\d+)-([xy])$/.exec(object.key);
+          if (!match) continue;
+          const x = Number(match[1]),
+            y = Number(match[2]);
+          const perimeter =
+            x === building.x ||
+            x === building.x + building.width - 1 ||
+            y === building.y ||
+            y === building.y + building.height - 1;
+          const cut = object.node.props["data-cutaway"];
+          const expectedHeight = cut ? 9 : perimeter ? height : groundHeight;
+          assert.equal(
+            object.node.props["data-wall-height"],
+            expectedHeight,
+            `${name} ${rotation * 90}° ${mode}: ${perimeter ? "exterior" : "partition"} ${x},${y}`,
+          );
+          assert.equal(
+            object.node.props["data-visible-storeys"],
+            !cut && perimeter && !revealed.size ? 2 : 1,
+          );
+          wallCount++;
+          if (!perimeter) internalCount++;
+        }
+        assert.ok(
+          wallCount > 0 && internalCount > 0,
+          "actual outer walls and internal partitions were checked",
+        );
+        const roofHeights = [...markup.matchAll(/data-roof-base-height="([\d.]+)"/g)].map((m) =>
+          Number(m[1]),
+        );
+        if (mode === "interior")
+          assert.equal(roofHeights.length, 0, "full revelation removes all roof cover");
+        else {
+          assert.ok(roofHeights.length > 0, "unrevealed rooms retain their roof cover");
+          assert.ok(
+            roofHeights.every((z) => z === height + 1),
+            "roof cover joins the effective wall height",
+          );
+        }
+        if (revealed.size) {
+          assert.ok(
+            !objects.some((o) => o.key.startsWith("architecture-detail")),
+            "upper windows and facade details cut away on partial and full reveal",
+          );
+          assert.ok(
+            !/data-upper-storey|data-upper-window|data-storey-band|data-upper-balcony/.test(markup),
+            "no upper facade remains over a revealed ground room",
+          );
+        } else {
+          assert.match(
+            markup,
+            new RegExp(`data-upper-storey="${building.kind}"`),
+            "exterior contains a distinct upper-storey group",
+          );
+          const windowSides = new Set(
+            [...markup.matchAll(/data-upper-window="([^:]+):/g)].map((m) => m[1]),
+          );
+          const bandSides = new Set(
+            [...markup.matchAll(/data-storey-band="([^\"]+)"/g)].map((m) => m[1]),
+          );
+          assert.equal(
+            windowSides.size,
+            2,
+            "both visible facades have upper windows in every rotation",
+          );
+          assert.deepEqual(
+            windowSides,
+            bandSides,
+            "storey bands follow the visible window facades",
+          );
+          const frontVisible = ["south", "east"].includes(entranceFrame(building).side);
+          assert.equal(
+            markup.includes('data-upper-balcony="palace"'),
+            name === "palacio" && frontVisible,
+            "palace balcony follows the front facade and camera orientation",
+          );
+        }
+        assert.equal(
+          JSON.stringify(state),
+          beforeMap,
+          "rendering preserves rooms, tiles, doors and furniture",
+        );
+        assert.equal(
+          serializeMap(document),
+          beforeSource,
+          "rendering leaves the authoring document unchanged",
+        );
+        assert.deepEqual(
+          [...reachableMap(state, { x: 1, y: 1 })].sort(),
+          beforeRoutes,
+          "rendering does not add or remove walking routes",
+        );
+      }
+      assert.deepEqual(identities(document), originalIds, "visual storeys add no map identities");
+      document = apply(document, [{ type: "rotateObject", id: name }]);
+    }
+    assert.equal(
+      serializeMap({ ...document, revision: 0 }),
+      serializeMap({ ...JSON.parse(authored), revision: 0 }),
+      "four rotations retain the original single playable floor",
+    );
+  }
+  for (const name of names.filter((id) => !["ayuntamiento", "palacio"].includes(id))) {
+    const profile = getBuildingProfile(BUILDING_TEMPLATES[name].building);
+    assert.equal(profile.floors, 1, `${name}: existing single-storey profile`);
+    assert.equal(profile.groundFloorHeight, profile.wallHeight);
   }
 });
 

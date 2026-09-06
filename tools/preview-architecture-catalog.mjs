@@ -24,8 +24,8 @@ const selectedNames = process.argv
 const selectedMode = process.argv.find((arg) => arg.startsWith("--mode="))?.slice("--mode=".length);
 if (selectedNames?.some((name) => !Object.hasOwn(BUILDING_TEMPLATES, name)))
   throw Error("Unknown building in --buildings.");
-if (selectedMode && !["exterior", "interior"].includes(selectedMode))
-  throw Error("--mode must be exterior or interior.");
+if (selectedMode && !["exterior", "interior", "partial"].includes(selectedMode))
+  throw Error("--mode must be exterior, interior or partial.");
 if (selectedMode && (overviewOnly || interiorOnly))
   throw Error("Use --mode or a focused shortcut, not both.");
 if (overviewOnly && interiorOnly) throw Error("Choose either --overview-only or --interior-only.");
@@ -170,7 +170,7 @@ for (const [id, template] of entries) {
     await writeFile(resolve(output, `${id}-${degrees}.json`), serializeMap(document));
     for (const mode of modes) {
       const name = `${id}-${degrees}-${mode}`,
-        markup = renderer(map, new Set(mode === "interior" ? b.rooms.map((r) => r.id) : []));
+        markup = renderer(map, new Set(mode === "interior" ? b.rooms.map((r) => r.id) : mode === "partial" ? [b.rooms[0].id] : []));
       if (/(?:NaN|Infinity)/.test(markup)) throw Error(`${name} contains invalid geometry`);
       const svg = await embeddedSvg(markup);
       await writeFile(resolve(output, `${name}.svg`), svg);

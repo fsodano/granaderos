@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { entranceFrame, getBuildingProfile } from '../../game/building-profile.js';
+import { entranceFrame, getBuildingRenderProfile } from '../../game/building-profile.js';
 import { buildingAppearance } from '../../game/building-appearance.js';
 import { WALL_COLOURS } from './TacticalArchitectureMaterials';
 
@@ -35,7 +35,7 @@ function clipToCell(points: Vertex[], cell: Cell, b: any, eave: number) {
 
 /** Roof images follow each 3D plane; courses stay parallel across clipped hips. */
 export function buildingRoof(b: any, revealed: Set<string>, project: Project, brightness: number) {
-  const profile = getBuildingProfile(b), appearance = buildingAppearance(b), frame = entranceFrame(b);
+  const profile = getBuildingRenderProfile(b, revealed), appearance = buildingAppearance(b), frame = entranceFrame(b);
   const rooms = b.rooms ?? [], hidden = rooms.filter((r: any) => !revealed.has(r.id));
   if (!hidden.length) return [];
   const whole = hidden.length === rooms.length, e = profile.eave, wide = frame.width, deep = frame.depth;
@@ -122,7 +122,7 @@ export function buildingRoof(b: any, revealed: Set<string>, project: Project, br
     }
   }
   return [{ key: `architecture-roof-${hidden[0].id}`, depth: b.x + b.y + b.width + b.height + .12, node:
-    <g data-roof-room={hidden[0].id} data-roof-shape={profile.roofShape} data-roof-finish={appearance.roofFinish} data-roof-partial={whole ? undefined : 'true'} pointerEvents="none" style={{ filter: `brightness(${brightness})` }}>
+    <g data-roof-room={hidden[0].id} data-roof-shape={profile.roofShape} data-roof-finish={appearance.roofFinish} data-roof-base-height={base} data-roof-partial={whole ? undefined : 'true'} pointerEvents="none" style={{ filter: `brightness(${brightness})` }}>
       <defs>{defs}</defs>
       {gables.map((points, i) => <g key={i} data-building-gable="true"><path d={path(points)} fill={palette.base}/><path d={path(points)} fill="url(#architecture-plaster)" opacity=".45"/></g>)}
       {fascia}{surfaces}{caps}

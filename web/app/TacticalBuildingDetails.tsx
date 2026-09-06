@@ -3,7 +3,7 @@ import {
   entranceFrame,
   getBuildingProfile,
 } from '../../game/building-profile.js';
-import { WALL_COLOURS } from './TacticalArchitectureMaterials';
+import { Opening, WALL_COLOURS } from './TacticalArchitectureMaterials';
 import {
   ArchitectureVolume,
   ProjectedRoofSurface,
@@ -32,7 +32,7 @@ export function buildingDetails(
   if (!b.kind || b.rooms?.some((r: any) => revealed.has(r.id))) return [];
   const f = entranceFrame(b),
     profile = getBuildingProfile(b),
-    h = profile.wallHeight;
+    h = profile.groundFloorHeight ?? profile.wallHeight;
   const palette = WALL_COLOURS[buildingAppearance(b).wallFinish];
   const nodes: ReactNode[] = [];
   const backNodes: ReactNode[] = [];
@@ -1067,10 +1067,249 @@ export function buildingDetails(
     }
   }
 
+  function civicUpperStorey(balconySupports: number[] = []) {
+    if (profile.floors !== 2) return;
+    const upper: ReactNode[] = [];
+    const total = profile.wallHeight;
+    const appearance = buildingAppearance(b);
+    const hasBalcony =
+      b.kind === 'palace' &&
+      balconySupports.length >= 2 &&
+      Math.min(...balconySupports) <= f.doorU - 0.66 &&
+      Math.max(...balconySupports) >= f.doorU + 0.66;
+    const facades = [
+      {
+        label: 'front',
+        length: f.width,
+        visible: frontVisible,
+        p: (a: number, outward = 0) => at(a, -outward),
+        wall: (a: number) => wallAt(a, 0),
+        strip: (a: number) => quad(0, -a, f.width, 0.12),
+      },
+      {
+        label: 'rear',
+        length: f.width,
+        visible: f.v.x + f.v.y > 0,
+        p: (a: number, outward = 0) => at(a, f.depth + outward),
+        wall: (a: number) => wallAt(a, f.depth),
+        strip: (a: number) => quad(0, f.depth - 0.12, f.width, f.depth + a),
+      },
+      {
+        label: 'left',
+        length: f.depth,
+        visible: -f.u.x - f.u.y > 0,
+        p: (a: number, outward = 0) => at(-outward, a),
+        wall: (a: number) => wallAt(0, a),
+        strip: (a: number) => quad(-a, 0, 0.12, f.depth),
+      },
+      {
+        label: 'right',
+        length: f.depth,
+        visible: f.u.x + f.u.y > 0,
+        p: (a: number, outward = 0) => at(f.width + outward, a),
+        wall: (a: number) => wallAt(f.width, a),
+        strip: (a: number) => quad(f.width - 0.12, 0, f.width + a, f.depth),
+      },
+    ];
+    for (const side of facades.filter((side) => side.visible)) {
+      upper.push(
+        <g key={`${side.label}-storey-band`} data-storey-band={side.label}>
+          <ArchitectureVolume
+            points={side.strip(0.22)}
+            bottom={h - 2}
+            top={h + 4}
+            palette={stone}
+            texture="stone"
+            project={project}
+            cap={false}
+          />
+          <ArchitectureVolume
+            points={side.strip(0.3)}
+            bottom={h + 3}
+            top={h + 5}
+            palette={stone}
+            texture="stone"
+            project={project}
+          />
+        </g>,
+      );
+      upper.push(
+        <ArchitectureVolume
+          key={`${side.label}-upper-cornice`}
+          label={`${b.kind}-upper-cornice-${side.label}`}
+          points={side.strip(0.21)}
+          bottom={total - 4}
+          top={total + 1}
+          palette={palette}
+          texture="plaster"
+          project={project}
+        />,
+      );
+      // These openings belong only to the visible upper facade. Ground-floor
+      // walls, room cells and pathfinding remain the authored tile geometry.
+      const parity = side.label === 'front' ? Math.round(f.doorU) % 2 : 1;
+      const windowPositions: number[] = [];
+      for (let along = parity || 2; along < side.length; along += 2)
+        windowPositions.push(along);
+      if (!windowPositions.length && side.length >= 2)
+        windowPositions.push(Math.round(side.length / 2));
+      for (const along of windowPositions) {
+        if (!side.wall(along)) continue;
+        if (
+          side.label === 'front' &&
+          hasBalcony &&
+          Math.abs(along - f.doorU) < 0.8
+        )
+          continue;
+        const left = side.p(along - 0.62, 0.055),
+          right = side.p(along + 0.62, 0.055);
+        upper.push(
+          <g
+            key={`${side.label}-window-${along}`}
+            data-upper-window={`${side.label}:${along}`}
+            transform={faceMatrix(left, right, project, h + 1)}
+          >
+            <g transform="scale(1 1.18)">
+              <Opening
+                type="window"
+                style={appearance.windowStyle}
+                open={false}
+                trim={palette.trim}
+              />
+            </g>
+          </g>,
+        );
+      }
+    }
+    for (const [u, v] of [
+      [0, 0],
+      [f.width, 0],
+      [0, f.depth],
+      [f.width, f.depth],
+    ]) {
+      if (wallAt(u, v)?.type !== 'wall') continue;
+      const p = at(u, v);
+      if (p.x !== b.x + b.width - 1 && p.y !== b.y + b.height - 1) continue;
+      upper.push(
+        solid(
+          `${b.kind}-upper-corner-${u}-${v}`,
+          u - 0.19,
+          v - 0.19,
+          u + 0.19,
+          v + 0.19,
+          h + 5,
+          total - 3,
+          stone,
+          'stone',
+        ),
+      );
+    }
+    nodes.push(
+      <g key={`${b.kind}-upper-storey`} data-upper-storey={b.kind}>
+        {upper}
+      </g>,
+    );
+    if (!hasBalcony || !frontVisible) return;
+    const u0 = Math.min(...balconySupports),
+      u1 = Math.max(...balconySupports),
+      floor = h + 6;
+    const balcony: ReactNode[] = [
+      solid(
+        'palace-balcony-slab',
+        u0 - 0.12,
+        -0.46,
+        u1 + 0.12,
+        0.3,
+        h + 1,
+        floor,
+        stone,
+        'stone',
+      ),
+    ];
+    // A shallow wrought-iron balcony rests on the ground entrance columns.
+    // The two upper pilasters form a separate storey beneath the pediment.
+    for (const u of [u0, u1]) {
+      balcony.push(
+        solid(
+          `palace-upper-pilaster-${u}`,
+          u - 0.17,
+          -0.26,
+          u + 0.17,
+          0.14,
+          floor,
+          total + 2,
+          palette,
+          'plaster',
+        ),
+      );
+      balcony.push(
+        solid(
+          `palace-balcony-rail-post-${u}`,
+          u - 0.065,
+          -0.48,
+          u + 0.065,
+          -0.35,
+          floor,
+          floor + 14,
+          stone,
+          'stone',
+        ),
+      );
+    }
+    const rail = (z: number) =>
+      line(point(u0, -0.425, z), point(u1, -0.425, z));
+    const rods = Math.max(2, Math.ceil((u1 - u0) / 0.23));
+    balcony.push(
+      <g key="palace-balcony-railing" stroke="#454436" fill="none">
+        <path d={`${rail(floor + 2)}${rail(floor + 13)}`} strokeWidth="1.5" />
+        {Array.from({ length: rods + 1 }, (_, i) => {
+          const u = u0 + ((u1 - u0) * i) / rods;
+          return (
+            <path
+              key={i}
+              d={line(
+                point(u, -0.425, floor + 2),
+                point(u, -0.425, floor + 13),
+              )}
+              strokeWidth=".85"
+            />
+          );
+        })}
+      </g>,
+    );
+    // The central upper door is decorative and cannot become a map entrance.
+    balcony.unshift(
+      <g
+        key="palace-balcony-door"
+        data-upper-window="front:balcony"
+        transform={faceMatrix(
+          at(f.doorU - 0.66, -0.06),
+          at(f.doorU + 0.66, -0.06),
+          project,
+          floor,
+        )}
+      >
+        <g transform="scale(1 1.13)">
+          <Opening
+            type="door"
+            style={appearance.doorStyle}
+            open={false}
+            trim={palette.trim}
+          />
+        </g>
+      </g>,
+    );
+    nodes.push(
+      <g key="palace-upper-balcony" data-upper-balcony="palace">
+        {balcony}
+      </g>,
+    );
+  }
+
   function clockPediment(u0: number, u1: number) {
     const target = frontVisible ? nodes : backNodes;
     const width = u1 - u0,
-      z0 = h + 4,
+      z0 = profile.wallHeight + 4,
       rise = Math.min(48, 24 + width * 5);
     const scale = rise / 46,
       face = frontVisible ? -0.31 : 0.22;
@@ -1136,14 +1375,14 @@ export function buildingDetails(
         -0.4,
         u1 + 0.1,
         0.28,
-        h - 2,
-        h + 5,
+        profile.wallHeight - 2,
+        profile.wallHeight + 5,
         stone,
         'stone',
       ),
     );
-    // Small stone finials follow the front bearing wall. There is no playable
-    // upper storey, balcony, or new obstacle below this clock-crowned parapet.
+    // Small stone finials follow the front bearing wall above the upper storey.
+    // They add no obstacle to the playable ground-floor plan.
     for (const [index, u] of [u0 + 0.16, u1 - 0.16].entries()) {
       target.push(
         solid(
@@ -1179,7 +1418,7 @@ export function buildingDetails(
     const front = -0.39,
       back = Math.min(1.2, f.depth - 0.3),
       middle = (u0 + u1) / 2;
-    const eave = h + 7,
+    const eave = profile.wallHeight + 7,
       peak = eave + Math.min(30, Math.max(13, (u1 - u0) * 4.5));
     const triangle = (v: number) => [
       point(u0, v, eave),
@@ -1487,6 +1726,7 @@ export function buildingDetails(
     pyramid('civic-cupola', u - 0.81, -0.4, u + 0.81, 0.51, top + 3, 17);
     if (!frontVisible) backNodes.push(...nodes.splice(cupolaStart));
   } else if (b.kind === 'townhall') {
+    civicUpperStorey();
     formalSidePilasters('townhall-wall-pilaster');
     const supports = formalSupports([-2, 2]);
     if (frontVisible) {
@@ -1498,8 +1738,9 @@ export function buildingDetails(
     if (supports.length >= 2)
       clockPediment(Math.min(...supports), Math.max(...supports));
   } else if (b.kind === 'palace') {
-    formalSidePilasters('palace-wall-pilaster');
     const supports = formalSupports([-3, -1, 1, 3]);
+    civicUpperStorey(supports);
+    formalSidePilasters('palace-wall-pilaster');
     if (frontVisible) {
       for (const u of supports) stoneColumn(u, h + 3, 'palace-portico-column');
       for (const u of [0, f.width])

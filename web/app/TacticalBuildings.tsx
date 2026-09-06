@@ -1,4 +1,4 @@
-import {getBuildingProfile} from '../../game/building-profile.js';
+import {getBuildingProfile,getBuildingRenderProfile} from '../../game/building-profile.js';
 import {buildingRoof} from './TacticalRoof';
 import {buildingAppearance} from '../../game/building-appearance.js';
 import {WallSurface,Opening,WALL_COLOURS} from './TacticalArchitectureMaterials';
@@ -30,7 +30,7 @@ export function buildBuildingObjects({state:s,revealed,project,light}:Args):Scen
   if(!axes.length){if(occupied.has(`${t.x-1},${t.y}`)||occupied.has(`${t.x+1},${t.y}`))axes.push('x');if(occupied.has(`${t.x},${t.y-1}`)||occupied.has(`${t.x},${t.y+1}`))axes.push('y');if(!axes.length)axes.push('x');}
   axes.forEach((axis,index)=>{
    // Revealed partitions lower from either room; the back exterior walls stay full height.
-   const canCutAway=b&&((!onX&&!onY)||(axis==='x'?t.y===b.y+b.height-1:t.x===b.x+b.width-1)),cut=roomOpen&&canCutAway,profile=getBuildingProfile(b),height=cut?9:profile.wallHeight;
+   const canCutAway=b&&((!onX&&!onY)||(axis==='x'?t.y===b.y+b.height-1:t.x===b.x+b.width-1)),cut=roomOpen&&canCutAway,profile=getBuildingRenderProfile(b,revealed),height=cut?9:onX||onY?profile.wallHeight:profile.groundFloorHeight;
    // Corner cells terminate at the wall intersection; extending both axes
    // by half a tile produced four projecting wings outside every building.
    const start=project(t.x-(axis==='x'&&(!b||t.x>b.x)?.5:0),t.y-(axis==='y'&&(!b||t.y>b.y)?.5:0)),end=project(t.x+(axis==='x'&&(!b||t.x<b.x+b.width-1)?.5:0),t.y+(axis==='y'&&(!b||t.y<b.y+b.height-1)?.5:0));
@@ -39,14 +39,14 @@ export function buildBuildingObjects({state:s,revealed,project,light}:Args):Scen
    const appearance=buildingAppearance(b);
    const palette=WALL_COLOURS[appearance.wallFinish];
    const top=(p:Point,z:number)=>`${p.x},${p.y-z}`;
-   objects.push({key:`architecture-${t.x}-${t.y}-${axis}`,depth:t.x+t.y+.015,node:<g data-wall-tile={`${t.x},${t.y}`} data-cutaway={Boolean(cut)} pointerEvents="none" style={{filter:`brightness(${light(t.x,t.y)})`}}>
+   objects.push({key:`architecture-${t.x}-${t.y}-${axis}`,depth:t.x+t.y+.015,node:<g data-wall-tile={`${t.x},${t.y}`} data-cutaway={Boolean(cut)} data-wall-height={height} data-visible-storeys={!cut&&(onX||onY)?profile.floors:1} pointerEvents="none" style={{filter:`brightness(${light(t.x,t.y)})`}}>
     {/* A shallow wall cap makes thickness readable without a full-tile cube. */}
     <polygon points={`${top(start,height)} ${top(end,height)} ${end.x+4},${end.y-height-2} ${start.x+4},${start.y-height-2}`} fill={palette.trim} stroke={palette.shadow} strokeWidth=".55"/>
     {corner&&<path d={`M${end.x},${end.y}v-${height}l4,-2v${height}Z`} fill={palette.shadow}/>}
     <g transform={`matrix(${dx} ${dy} 0 1 ${start.x} ${start.y})`}>
      <WallSurface finish={appearance.wallFinish} height={height} x={t.x} y={t.y}/>
      <g><path d={`M0,-${Math.min(height,profile.plinthHeight)}H40V0H0Z`} fill="url(#architecture-stone)"/><path d={`M0,-${Math.min(height,profile.plinthHeight)}H40`} stroke={palette.trim} strokeWidth="1" opacity=".6"/></g>
-     {isOpening&&(cut?<><path d="M10,0H30" stroke={palette.trim} strokeWidth="3"/>{t.type==='door'&&!t.open&&<path d="M12,-3H28" stroke="#62452c" strokeWidth="4"/>}</>:<g transform={`scale(1 ${Math.min(1.35,profile.wallHeight/46)})`}><Opening type={t.type} style={t.style??(t.type==='door'?appearance.doorStyle:appearance.windowStyle)} open={t.open} trim={palette.trim}/></g>)}
+     {isOpening&&(cut?<><path d="M10,0H30" stroke={palette.trim} strokeWidth="3"/>{t.type==='door'&&!t.open&&<path d="M12,-3H28" stroke="#62452c" strokeWidth="4"/>}</>:<g transform={`scale(1 ${Math.min(1.35,profile.groundFloorHeight/46)})`}><Opening type={t.type} style={t.style??(t.type==='door'?appearance.doorStyle:appearance.windowStyle)} open={t.open} trim={palette.trim}/></g>)}
      {!cut&&<><path d={`M0,-${height-2}H40`} stroke={palette.trim} strokeWidth="2"/><path d={`M0,-${height-5}H40`} stroke={palette.shadow} strokeWidth="1" opacity=".25"/></>}
      {!isOpening&&<path d={`M0,-${height}H40`} stroke={cut?'#f0dcb0':'#ded0ac'} strokeWidth={cut?2:1}/>}
      {axis==='y'&&<path d={isOpening?`M0,0V-${height}H10V0ZM30,0V-${height}H40V0Z`:`M0,0V-${height}H40V0Z`} fill="#292c22" opacity=".14"/>}

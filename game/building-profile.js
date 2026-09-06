@@ -8,8 +8,8 @@ const PROFILES = {
   church: { wallHeight: 64, roofRise: 38, roofShape: "gable", eave: 0.17, plinthHeight: 15 },
   chapel: { wallHeight: 53, roofRise: 30, roofShape: "gable", eave: 0.16, plinthHeight: 10 },
   cabildo: { wallHeight: 58, roofRise: 27, roofShape: "hip", eave: 0.2, plinthHeight: 12 },
-  townhall: { wallHeight: 66, roofRise: 29, roofShape: "hip", eave: 0.2, plinthHeight: 14 },
-  palace: { wallHeight: 70, roofRise: 31, roofShape: "hip", eave: 0.24, plinthHeight: 16 },
+  townhall: { wallHeight: 118, groundFloorHeight: 66, floors: 2, roofRise: 29, roofShape: "hip", eave: 0.2, plinthHeight: 14 },
+  palace: { wallHeight: 124, groundFloorHeight: 70, floors: 2, roofRise: 31, roofShape: "hip", eave: 0.24, plinthHeight: 16 },
   pulperia: { wallHeight: 45, roofRise: 24, roofShape: "hip", eave: 0.24, plinthHeight: 8 },
   warehouse: { wallHeight: 53, roofRise: 29, roofShape: "gable", eave: 0.2, plinthHeight: 14 },
   depot: { wallHeight: 58, roofRise: 32, roofShape: "gable", eave: 0.23, plinthHeight: 14 },
@@ -19,15 +19,29 @@ const PROFILES = {
 };
 
 export function getBuildingProfile(building = {}) {
-  return {
-    ...(PROFILES[building.kind] ?? {
-      wallHeight: 46,
-      roofRise: 30,
-      roofShape: "gable",
-      eave: 0.18,
-      plinthHeight: 7,
-    }),
+  const profile = PROFILES[building.kind] ?? {
+    wallHeight: 46,
+    roofRise: 30,
+    roofShape: "gable",
+    eave: 0.18,
+    plinthHeight: 7,
   };
+  return {
+    ...profile,
+    groundFloorHeight: profile.groundFloorHeight ?? profile.wallHeight,
+    floors: profile.floors ?? 1,
+  };
+}
+
+/** Upper storeys are exterior scenery. Cut them away as soon as the ground
+ * floor is inspected, keeping the remaining roof cover on the ground shell.
+ * Rooms and collision cells always describe the original playable floor.
+ */
+export function getBuildingRenderProfile(building = {}, revealed = new Set()) {
+  const profile = getBuildingProfile(building);
+  return profile.floors > 1 && building.rooms?.some((room) => revealed.has(room.id))
+    ? { ...profile, wallHeight: profile.groundFloorHeight, floors: 1 }
+    : profile;
 }
 
 /** An entrance-relative, rotation-preserving coordinate frame.
