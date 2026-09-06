@@ -46,6 +46,8 @@ export const BUILDING_KINDS = {
   church: "Iglesia",
   chapel: "Capilla",
   cabildo: "Cabildo",
+  townhall: "Ayuntamiento",
+  palace: "Palacio",
   pulperia: "Pulpería",
   warehouse: "Almacén",
   smithy: "Herrería",

@@ -190,7 +190,7 @@ test('a maximum-size partially revealed roof has bounded SVG complexity and pres
 });
 
 test('minimum-width and minimum-depth shells keep finite nonzero roof texture axes',()=>{
- for(const kind of ['house','posta','barracks','church','chapel','cabildo','pulperia','warehouse','smithy','stable']){
+ for(const kind of ['house','posta','barracks','church','chapel','cabildo','townhall','palace','pulperia','warehouse','smithy','stable']){
   for(const [width,height] of [[3,3],[3,64],[64,3]]){
    const built=buildBuilding({id:`narrow-${kind}`,x:0,y:0,width,height,doors:[{x:Math.floor(width/2),y:height-1}]});
    let building={...built.building,kind,walls:built.tiles.filter(t=>t.type!=='floor')};

@@ -11,6 +11,9 @@ Historical references:
 - [Posta de Sinsacate, national monuments register](https://www.argentina.gob.ar/capital-humano/cultura/monumentos/posta-de-sinsacate): stone walls set in adobe, brick floors, and timber, cane and tile roofs; a post used by the independence armies.
 - [Casa Natal de Sarmiento museum](https://casanatalsarmiento.cultura.gob.ar/info/museo/): adobe walls, timber openings and wrought iron window bars.
 - [Casa Natal de Sarmiento, national register](https://www.argentina.gob.ar/node/417682): the original 1801 house had an earth roof on poplar beams. Tile roofing is therefore a choice for the game's authored tiled buildings, not a claim that all regional houses had tiled roofs.
+- [Cabildo de Buenos Aires, national register](https://www.argentina.gob.ar/node/421639): arcaded civic frontage, a central tower, administrative offices and a council chamber inform the municipal building family.
+- [Casa del Virrey Sobremonte, national register](https://www.argentina.gob.ar/capital-humano/cultura/monumentos/casa-del-virrey-sobremonte): a governor's residence with limewashed masonry, clay roof tiles, a formal entrance and rooms arranged around patios informs the palace's colonial treatment.
+- [Espacio Virrey Liniers, Buenos Aires heritage service](https://buenosaires.gob.ar/gcaba_historico/cultura/casco-historico/espacio-virrey-liniers): thick walls, large openings and an emphasized main doorway provide further cues for the governor's residence.
 
 `web/app/TacticalBuildings.tsx` projects structural wall segments from the map.
 `web/app/TacticalRoof.tsx` builds gable, hip and shed roofs from plane geometry.
@@ -69,7 +72,7 @@ the material treatment. The town church must keep its own square bell tower and
 shaped facade. Other buildings share this material treatment, with their own
 proportions, roof shapes, entrances and functional details.
 
-The catalog contains ten distinct tile footprints and furnished layouts:
+The catalog contains twelve distinct tile footprints and furnished layouts:
 
 | Template | Footprint | Exterior form | Interior use |
 | --- | --- | --- | --- |
@@ -83,6 +86,16 @@ The catalog contains ten distinct tile footprints and furnished layouts:
 | Almacén de abastos | 8 × 8 | Stout gable, buttresses and loading canopy | Barrels, chests and fodder with clear aisles |
 | Herrería | 7 × 6 | Shed roof, brick forge chimney and awning | Workbench, water and tools |
 | Caballeriza | 10 × 6 | Gable, timber facade frame and loft louvres | Four fodder stations and water |
+| Ayuntamiento | 12 × 9 | Formal entrance columns, clock pediment and civic finials | Separate secretary, archive and council rooms |
+| Palacio del gobernador | 14 × 11 | Broad tiled portico, formal pediment and masonry pilasters | Reception, private office, governor's chamber and guest chamber |
+
+The ayuntamiento is the larger municipal template. Its three-room plan differs
+from the smaller two-room cabildo. The palace is a compact governor's residence
+with a broad reception room and three private rooms. Both are interpretations of
+colonial construction, with one playable floor. Their plans do not reproduce
+the multi-level layouts or patios of the historical references. Their entrances
+remain on perimeter tiles. Columns stand on solid facade cells; the portico
+stays shallow enough to keep the entrance and surrounding walking tiles clear.
 
 The parish tower has a reserved 2 × 2 solid corner in the template. It occupies
 structural cells, including the one former interior tile at `(1, 10)`. The two
@@ -96,20 +109,22 @@ Generate all review material with the same React renderer used by the game:
 node tools/preview-architecture-catalog.mjs
 # Optional output directory:
 node tools/preview-architecture-catalog.mjs /tmp/granaderos-architecture-catalog
-# Fast iteration: ten front exterior views only
+# Fast iteration: twelve front exterior views only
 node tools/preview-architecture-catalog.mjs /tmp/granaderos-architecture-quick --overview-only
-# Refresh all 40 interiors; keep existing exterior images and manifest records
+# Refresh all 48 interiors; keep existing exterior images and manifest records
 node tools/preview-architecture-catalog.mjs /tmp/granaderos-architecture-catalog --interior-only
 # Refresh the church and cabildo exteriors in every rotation
 node tools/preview-architecture-catalog.mjs /tmp/granaderos-architecture-catalog --buildings=iglesia,cabildo --mode=exterior
+# Review the two larger civic buildings, including interiors
+node tools/preview-architecture-catalog.mjs /tmp/granaderos-civic-review --buildings=ayuntamiento,palacio
 node --test tests/architecture-catalog.test.mjs
 ```
 
 The default output is `artifacts/architecture-catalog/`, which is excluded from
 Git. Open `index.html` to select a building. Each building page has close views
 for exterior and interior at 0°, 90°, 180° and 270°. Each view has an independent
-SVG with embedded textures and a PNG. The script also writes 40 importable map
-documents, `catalog.json` with all ten buildings, an overview PNG, and a manifest.
+SVG with embedded textures and a PNG. The script also writes 48 importable map
+documents, `catalog.json` with all twelve buildings, an overview PNG, and a manifest.
 All generated map documents include a player spawn for a disposable playtest.
 `--interior-only` can also write to a new directory. Its pages then offer only
 the four interior rotations. A focused refresh does not prove that retained
@@ -140,12 +155,15 @@ Use these acceptance gates for human review of the rendered files:
 Review every close view at a useful size. A contact sheet is only an index and
 cannot prove that the geometry or material treatment is correct.
 
-The ten template exteriors and interiors were reviewed across all four rotations
-(80 rendered views). The catalog route checks and renderer regressions cover
+The original ten template exteriors and interiors were reviewed across all four
+rotations (80 rendered views). The town hall and palace also passed exterior and
+interior review in all four rotations (16 additional views), including the final
+clock proportions and palace pediment paint order. The catalog route checks and renderer regressions cover
 walking space, object identity, partial roof revelation, partition junctions and
-the solid tower corner. Live pointer interaction in the web editor was not
-repeated for this revision because the Mac was locked. No browser interaction
-pass is claimed for this final review.
+the solid tower corner. Added civic checks also cover named room functions,
+minimum-size shells and supports edited into doors or windows. The original
+review did not repeat live pointer interaction because the Mac was locked.
+No new browser interaction pass is claimed by this renderer review.
 
 Regenerate the catalog after renderer or material changes; an earlier image is
 evidence only for the revision that produced it. Use the generated JSON maps in

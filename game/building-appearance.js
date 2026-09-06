@@ -48,6 +48,18 @@ export const BUILDING_APPEARANCES = {
     doorStyle: "panelled",
     windowStyle: "barred",
   },
+  townhall: {
+    wallFinish: "limewash",
+    roofFinish: "aged",
+    doorStyle: "double",
+    windowStyle: "barred",
+  },
+  palace: {
+    wallFinish: "ochre",
+    roofFinish: "clay",
+    doorStyle: "panelled",
+    windowStyle: "arched",
+  },
   pulperia: {
     wallFinish: "ochre",
     roofFinish: "clay",

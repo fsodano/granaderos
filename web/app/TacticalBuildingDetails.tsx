@@ -570,6 +570,350 @@ export function buildingDetails(
     );
   }
 
+  function formalSupports(offsets: number[]) {
+    return [
+      ...new Set(
+        offsets.map((offset) =>
+          Math.max(0, Math.min(f.width, Math.round(f.doorU + offset))),
+        ),
+      ),
+    ].filter((u) => wallAt(u, 0)?.type === 'wall');
+  }
+
+  function stoneColumn(u: number, height: number, label: string) {
+    if (wallAt(u, 0)?.type !== 'wall') return;
+    nodes.push(
+      solid(
+        `${label}-shaft-${u}`,
+        u - 0.14,
+        -0.34,
+        u + 0.14,
+        0.16,
+        0,
+        height,
+        stone,
+        'stone',
+      ),
+    );
+    nodes.push(
+      solid(
+        `${label}-base-${u}`,
+        u - 0.23,
+        -0.43,
+        u + 0.23,
+        0.24,
+        0,
+        profile.plinthHeight + 2,
+        stone,
+        'stone',
+        false,
+      ),
+    );
+    nodes.push(
+      solid(
+        `${label}-capital-${u}`,
+        u - 0.23,
+        -0.43,
+        u + 0.23,
+        0.24,
+        height - 3,
+        height + 1.5,
+        stone,
+        'stone',
+      ),
+    );
+  }
+
+  function formalSidePilasters(label: string) {
+    for (const wall of b.walls ?? []) {
+      const onX = wall.x === b.x + b.width - 1,
+        onY = wall.y === b.y + b.height - 1;
+      const localV =
+        (wall.x - f.origin.x) * f.v.x + (wall.y - f.origin.y) * f.v.y;
+      if (
+        wall.type !== 'wall' ||
+        (!onX && !onY) ||
+        localV < 1 ||
+        localV > f.depth - 1
+      )
+        continue;
+      const along = onX ? wall.y - b.y : wall.x - b.x;
+      if (along % 4 !== 2) continue;
+      const dx = onX ? 0.25 : 0.15,
+        dy = onX ? 0.15 : 0.25;
+      const points = [
+        { x: wall.x - dx, y: wall.y - dy },
+        { x: wall.x + dx, y: wall.y - dy },
+        { x: wall.x + dx, y: wall.y + dy },
+        { x: wall.x - dx, y: wall.y + dy },
+      ];
+      nodes.push(
+        <g
+          key={`${label}-${wall.x}-${wall.y}`}
+          data-architectural-volume={label}
+        >
+          <ArchitectureVolume
+            points={points}
+            top={h - 5}
+            palette={palette}
+            project={project}
+          />
+          <ArchitectureVolume
+            points={points}
+            top={profile.plinthHeight + 1}
+            palette={stone}
+            texture="stone"
+            cap={false}
+            project={project}
+          />
+        </g>,
+      );
+    }
+  }
+
+  function clockPediment(u0: number, u1: number) {
+    const target = frontVisible ? nodes : backNodes;
+    const width = u1 - u0,
+      z0 = h + 4,
+      rise = Math.min(48, 24 + width * 5);
+    const scale = rise / 46,
+      face = frontVisible ? -0.31 : 0.22;
+    const crown = `M0,0V-${7 * scale}H9V-${14 * scale}Q9,-${21 * scale} 14,-${25 * scale}V-${32 * scale}C14,-${48 * scale} 26,-${48 * scale} 26,-${32 * scale}V-${25 * scale}Q31,-${21 * scale} 31,-${14 * scale}V-${7 * scale}H40V0Z`;
+    target.push(
+      <g
+        key="townhall-clock-pediment"
+        data-architectural-volume="townhall-clock-pediment"
+      >
+        <g transform={faceMatrix(at(u0, 0.22), at(u1, 0.22), project, z0)}>
+          <path
+            d={crown}
+            fill={palette.shadow}
+            stroke={palette.shadow}
+            strokeWidth="3"
+          />
+        </g>
+        <g transform={faceMatrix(at(u0, face), at(u1, face), project, z0)}>
+          <path
+            d={crown}
+            fill={palette.base}
+            stroke={stone.shadow}
+            strokeWidth=".7"
+          />
+          <path d={crown} fill="url(#architecture-plaster)" opacity=".28" />
+          <path d={crown} fill="none" stroke={stone.trim} strokeWidth="2.8" />
+          <path d={crown} fill="none" stroke={stone.shadow} strokeWidth=".5" />
+          {frontVisible && (
+            <g
+              transform={`translate(20 ${-29 * scale}) scale(${40 / (width * 30)} 1)`}
+            >
+              <circle
+                r="7.5"
+                fill="#e2d5b7"
+                stroke="#8e7b58"
+                strokeWidth=".75"
+              />
+              {Array.from({ length: 12 }, (_, i) => (
+                <path
+                  key={i}
+                  d="M0,-6.2V-5.15"
+                  transform={`rotate(${i * 30})`}
+                  stroke="#6a583b"
+                  strokeWidth=".55"
+                />
+              ))}
+              <path
+                d="M0,-4V0L3.7,1.3"
+                fill="none"
+                stroke="#4e4230"
+                strokeWidth=".9"
+              />
+              <circle r=".75" fill="#6a583b" />
+            </g>
+          )}
+        </g>
+      </g>,
+    );
+    target.push(
+      solid(
+        'townhall-clock-entablature',
+        u0 - 0.1,
+        -0.4,
+        u1 + 0.1,
+        0.28,
+        h - 2,
+        h + 5,
+        stone,
+        'stone',
+      ),
+    );
+    // Small stone finials follow the front bearing wall. There is no playable
+    // upper storey, balcony, or new obstacle below this clock-crowned parapet.
+    for (const [index, u] of [u0 + 0.16, u1 - 0.16].entries()) {
+      target.push(
+        solid(
+          `townhall-finial-${index}`,
+          u - 0.1,
+          -0.29,
+          u + 0.1,
+          0.02,
+          z0 + 5,
+          z0 + 10,
+          stone,
+          'stone',
+        ),
+      );
+      const p = screenPoint(point(u, -0.13, z0 + 12), project);
+      target.push(
+        <ellipse
+          key={`townhall-finial-ball-${index}`}
+          cx={p.x}
+          cy={p.y}
+          rx="2.3"
+          ry="3"
+          fill={stone.trim}
+          stroke={stone.shadow}
+          strokeWidth=".55"
+        />,
+      );
+    }
+  }
+
+  function palacePortico(u0: number, u1: number) {
+    const target = frontVisible ? nodes : backNodes;
+    const front = -0.39,
+      back = Math.min(1.2, f.depth - 0.3),
+      middle = (u0 + u1) / 2;
+    const eave = h + 7,
+      peak = eave + Math.min(30, Math.max(13, (u1 - u0) * 4.5));
+    const triangle = (v: number) => [
+      point(u0, v, eave),
+      point(u1, v, eave),
+      point(middle, v, peak),
+    ];
+    const face = frontVisible ? front : back;
+    const pedimentFace = (
+      <g
+        key="palace-portico-pediment"
+        data-architectural-volume="palace-portico-pediment"
+      >
+        <polygon
+          points={polygon(triangle(face))}
+          fill={palette.base}
+          stroke={stone.shadow}
+          strokeWidth=".7"
+        />
+        <polygon
+          points={polygon(triangle(face))}
+          fill="url(#architecture-plaster)"
+          opacity=".32"
+        />
+        <path
+          d={`${line(point(u0, face, eave), point(middle, face, peak))}${line(point(middle, face, peak), point(u1, face, eave))}`}
+          fill="none"
+          stroke={stone.trim}
+          strokeWidth="3"
+        />
+        {frontVisible && (
+          <g
+            transform={faceMatrix(
+              at(middle - 0.38, face - 0.01),
+              at(middle + 0.38, face - 0.01),
+              project,
+              eave + 7,
+            )}
+          >
+            <path
+              d="M10,0V-10Q20,-15 30,-10V0L20,8Z"
+              fill="#c2ae83"
+              stroke="#867451"
+              strokeWidth="1"
+            />
+            <path
+              d="M14,-8H26M20,-9V4M15,0H25"
+              stroke="#8d7650"
+              strokeWidth="1"
+            />
+            <path
+              d="M6,0Q0,-6 5,-11M34,0Q40,-6 35,-11"
+              fill="none"
+              stroke="#ad986d"
+              strokeWidth="1.1"
+            />
+          </g>
+        )}
+      </g>
+    );
+    if (!frontVisible) target.push(pedimentFace);
+    target.push(
+      solid(
+        'palace-portico-entablature',
+        u0 - 0.13,
+        -0.44,
+        u1 + 0.13,
+        0.3,
+        eave - 6,
+        eave + 1,
+        stone,
+        'stone',
+      ),
+    );
+    // The roof projects back into the entrance bay. The columns remain on the
+    // perimeter wall cells, and the door tile remains a clear walking route.
+    const planes = [
+      [
+        point(u0, front, eave + 1),
+        point(u0, back, eave + 1),
+        point(middle, back, peak + 1),
+        point(middle, front, peak + 1),
+      ],
+      [
+        point(u1, back, eave + 1),
+        point(u1, front, eave + 1),
+        point(middle, front, peak + 1),
+        point(middle, back, peak + 1),
+      ],
+    ].sort(
+      (a, c) =>
+        a[0].x + a[0].y + a[1].x + a[1].y - c[0].x - c[0].y - c[1].x - c[1].y,
+    );
+    for (const [i, plane] of planes.entries())
+      target.push(
+        <ProjectedRoofSurface
+          key={`palace-portico-roof-${i}`}
+          id={`${b.id}-palace-portico-${i}`}
+          points={plane}
+          project={project}
+          finish={buildingAppearance(b).roofFinish}
+        />,
+      );
+    target.push(
+      <path
+        key="palace-portico-ridge"
+        d={line(
+          point(middle, front, peak + 1.4),
+          point(middle, back, peak + 1.4),
+        )}
+        stroke="#b38259"
+        strokeWidth="2.4"
+        strokeLinecap="round"
+      />,
+    );
+    // The forward tympanum is nearer than the roof slopes and cornice cap.
+    // Paint it last so those horizontal planes cannot cut across its crest.
+    if (frontVisible) target.push(pedimentFace);
+    // Near mouldings sit in front of the roof surface, with a narrow return.
+    if (frontVisible)
+      target.push(
+        <path
+          key="palace-portico-front-coping"
+          d={`${line(point(u0, front - 0.01, eave + 1), point(middle, front - 0.01, peak + 1.4))}${line(point(middle, front - 0.01, peak + 1.4), point(u1, front - 0.01, eave + 1))}`}
+          fill="none"
+          stroke={stone.trim}
+          strokeWidth="2.4"
+        />,
+      );
+  }
+
   if (b.kind === 'church') {
     sideButtresses('nave');
     if (frontVisible) {
@@ -746,6 +1090,27 @@ export function buildingDetails(
       );
     pyramid('civic-cupola', u - 0.81, -0.4, u + 0.81, 0.51, top + 3, 17);
     if (!frontVisible) backNodes.push(...nodes.splice(cupolaStart));
+  } else if (b.kind === 'townhall') {
+    formalSidePilasters('townhall-wall-pilaster');
+    const supports = formalSupports([-2, 2]);
+    if (frontVisible) {
+      for (const u of supports)
+        stoneColumn(u, h + 1, 'townhall-entrance-column');
+      for (const u of [0, f.width])
+        if (!supports.includes(u)) pier(u, 0, 0.27, h - 2, 'townhall-corner');
+    }
+    if (supports.length >= 2)
+      clockPediment(Math.min(...supports), Math.max(...supports));
+  } else if (b.kind === 'palace') {
+    formalSidePilasters('palace-wall-pilaster');
+    const supports = formalSupports([-3, -1, 1, 3]);
+    if (frontVisible) {
+      for (const u of supports) stoneColumn(u, h + 3, 'palace-portico-column');
+      for (const u of [0, f.width])
+        if (!supports.includes(u)) pier(u, 0, 0.31, h - 2, 'palace-corner');
+    }
+    if (supports.length >= 2)
+      palacePortico(Math.min(...supports), Math.max(...supports));
   } else if (b.kind === 'posta') {
     porch('posta-veranda', 0.15, f.width - 0.15, true);
     if (frontVisible) {
