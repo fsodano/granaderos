@@ -43,7 +43,7 @@ export default function StrategicMap({state:s,selected,onSelect,dispatch}:{state
  const active=selected===d.id&&district.id===tile.id;
  const choose=()=>{setDistrictId(tile.id);onSelect(d.id);};
  return <g key={tile.id} role="button" tabIndex={0} aria-pressed={active} aria-label={`${MAP_PLACES[d.id as keyof typeof MAP_PLACES].label} · ${tile.name} · ${ours?'patriota':'realista'}`} onClick={choose} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();choose();}}}>
- <title>{tile.name} · {d.name} · Sector {d.grid}</title>
+ <title>{`${tile.name} · ${d.name} · Sector ${d.grid}`}</title>
  <rect className="atlas-district" data-district={tile.id} x={tile.x} y={tile.y} width={MAP_TILE_SIZE} height={MAP_TILE_SIZE} fill={ours?'#7f9e61':'#876448'} fillOpacity={tile.urban?'.85':'.5'} stroke="#1c291b" strokeWidth=".8"/>
  {active&&<rect className="atlas-district-selected" x={tile.x+2} y={tile.y+2} width={MAP_TILE_SIZE-4} height={MAP_TILE_SIZE-4} fill="none" stroke="#fff3ad" strokeWidth="2"/>}
  {s.location===d.id&&tile.id===mapTilesForSector(d.id)[0].id&&<circle cx={tile.x+MAP_TILE_SIZE/2} cy={tile.y+MAP_TILE_SIZE/2} r="2.5" fill="#fff"/>}
