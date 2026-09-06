@@ -1,5 +1,12 @@
 # Original articulated infantry animation
 
+> Current runtime: [ground-state extension](../../docs/adr/002-prone-and-incapacitated-sprites.md) and [ADR 001](../../docs/adr/001-realistic-tactical-sprites.md)
+> defines the native pixel sprite pipeline. Run the renderers below, then
+> `python3 assets/rig/pack_pixel_sprites.py` to install all native atlases.
+> `field_art.py` supplies the current anatomy, cloth finish, camera, and pixel size.
+> The 192/256px layouts and miniature-style notes below describe the legacy exports.
+> They are retained as implementation history and are not the active browser art.
+
 This asset set is authored as original 3D geometry and joint animation in
 Blender, independent of the earlier generated paintings. No external meshes,
 textures, donor sprites or copyrighted original JA2 game art are inputs.

@@ -59,6 +59,12 @@ rod('saber_guard',(-.07,0,.08),(.07,0,.08),.018,materials['Brass'],hand)
 for i in range(7):
  a=(.16*(i/7)**2,0,.10+i*.09);b=(.16*((i+1)/7)**2,0,.10+(i+1)*.09)
  rod('curved_saber_blade',a,b,.016,materials['Steel'],hand)
+from field_art import cloth_material
+cloth_material(coat)
+# Reduce the round muzzle and ears; retain the horse articulation.
+for o in bpy.data.objects:
+ if o.name.startswith('horse_ear'):o.scale*=.76
+ if o.name.startswith('horse_muzzle'):o.scale.x*=.86
 legs=[]
 for front,y in [(True,-.48),(False,.51)]:
  for sign in [-1,1]:
@@ -97,7 +103,7 @@ def animate(frame,walking=True):
 for f in range(9):animate(f)
 SIZE=256
 camera=scene.camera;target=1.680;t=Vector((0,0,target));camera.location=(6,-6,target+math.sqrt(72)*math.tan(math.radians(30)));camera.rotation_euler=(t-camera.location).to_track_quat('-Z','Y').to_euler();camera.data.ortho_scale=3.8
-scene.render.resolution_x=SIZE;scene.render.resolution_y=SIZE;scene.frame_start=1;scene.frame_end=8;scene.render.fps=10
+native_pixels(scene,76);scene.frame_start=1;scene.frame_end=8;scene.render.fps=10
 output=ROOT/'rig/cavalry-frames';output.mkdir(exist_ok=True)
 from bpy_extras.object_utils import world_to_camera_view
 bpy.context.view_layer.update()

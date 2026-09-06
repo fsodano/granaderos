@@ -12,6 +12,8 @@ PREVIEW='--preview' in sys.argv
 FRAMES=8
 DIRECTIONS=[('n',225),('ne',180),('e',135),('se',90),('s',45),('sw',0),('w',315),('nw',270)]
 SIZE=192
+sys.path.insert(0,str(ROOT / "rig"))
+from field_art import finish_infantry, native_pixels
 
 def material(name,color,metal=0):
  m=bpy.data.materials.new(name);m.diffuse_color=(*color,1);m.use_nodes=True
@@ -114,6 +116,8 @@ for side,sign in [('left',-1),('right',1)]:
   rod('flintlock_cock',(-.025,-.04,.20),(-.025,-.07,.26),.01,mat['iron'],musket)
   musket.rotation_euler[0]=-.10
 
+finish_infantry()
+
 # Animation is stored as real per-joint curves, independently from map motion.
 def animate(frame, walking=True):
  phase=frame/FRAMES
@@ -139,7 +143,7 @@ def animate(frame, walking=True):
  for o in shoulders+elbows:o.keyframe_insert('rotation_euler',frame=frame+1)
 for frame in range(FRAMES+1):animate(frame)
 scene=bpy.context.scene;scene.frame_start=1;scene.frame_end=FRAMES;scene.render.fps=10
-# Orthographic camera follows the documented JA2 30degree elevation/45azimuth.
+# Initial orthographic camera; native_pixels matches the map projection and ground anchor.
 bpy.ops.object.camera_add(location=(6,-6,1.15+math.sqrt(72)*math.tan(math.radians(30))))
 camera=bpy.context.object;camera.name='JA2_orthographic_camera';camera.rotation_euler=(Vector((0,0,1.15))-camera.location).to_track_quat('-Z','Y').to_euler();camera.data.type='ORTHO';camera.data.ortho_scale=2.6;scene.camera=camera
 for loc,energy,size in [(( -3,-4,7),700,4),((4,1,5),190,3)]:
@@ -149,13 +153,14 @@ scene.render.engine='CYCLES';scene.cycles.samples=12;scene.cycles.use_denoising=
 scene.render.resolution_x=SIZE;scene.render.resolution_y=SIZE;scene.render.resolution_percentage=100
 scene.render.film_transparent=True;scene.render.image_settings.file_format='PNG';scene.render.image_settings.color_mode='RGBA'
 scene.view_settings.view_transform='Standard'
+native_pixels(scene,52)
 output=ROOT/'rig/frames';output.mkdir(parents=True,exist_ok=True)
 bpy.ops.wm.save_as_mainfile(filepath=str(ROOT/'rig/infantry-model.blend'))
 # Project the world origin once. This reference remains identical for all poses.
 from bpy_extras.object_utils import world_to_camera_view
 origin=world_to_camera_view(scene,camera,Vector((0,0,0)))
-meta={'frame_size':[SIZE,SIZE],'anchor':[origin.x,1-origin.y],'frames_per_direction':FRAMES,'fps':10,
- 'directions':dict(DIRECTIONS),'camera':{'elevation':30,'azimuth':45,'orthographic_scale':2.6},
+meta={'frame_size':[SIZE,SIZE],'logical_pixel_size':52,'anchor':[origin.x,1-origin.y],'frames_per_direction':FRAMES,'fps':10,
+ 'directions':dict(DIRECTIONS),'camera':{'elevation':math.degrees(math.asin(14/26)),'azimuth':45,'orthographic_scale':2.6},
  'rig':'Original articulated object hierarchy with keyframed hip/knee and shoulder/elbow pivots',
  'model':'assets/rig/infantry-model.blend','frames':[]}
 for faction in ['granadero','royalist']:

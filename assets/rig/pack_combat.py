@@ -11,7 +11,7 @@ for faction in ['granadero','royalist']:
   for row,direction in enumerate(base['direction_rows']):
    sequence=[]
    for frame in range(8):
-    source=ROOT/f'rig/combat-frames/{faction}-{action}-{direction}-{frame}.png';im=Image.open(source).convert('RGBA');bounds=im.getchannel('A').getbbox()
+    source=ROOT/f'rig/combat-frames/{faction}-{action}-{direction}-{frame}.png';im=Image.open(source).convert('RGBA').resize((size,size),Image.Resampling.NEAREST);bounds=im.getchannel('A').getbbox()
     assert bounds and min(bounds[:2])>0 and max(bounds[2:])<192,(str(source),bounds)
     atlas.alpha_composite(im,(frame*192,row*192));sequence.append(im);records.append({'direction':direction,'frame':frame,'bounds':bounds})
    if direction=='se':sequence[0].save(ROOT/f'web/{faction}-{action}-preview.webp',save_all=True,append_images=sequence[1:],duration=100,loop=0,lossless=True)
