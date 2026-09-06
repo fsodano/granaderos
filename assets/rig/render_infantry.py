@@ -15,7 +15,7 @@ SIZE=192
 
 def material(name,color,metal=0):
  m=bpy.data.materials.new(name);m.diffuse_color=(*color,1);m.use_nodes=True
- b=m.node_tree.nodes.get('Principled BSDF');b.inputs['Base Color'].default_value=(*color,1);b.inputs['Roughness'].default_value=.62;b.inputs['Metallic'].default_value=metal
+ b=m.node_tree.nodes.get('Principled BSDF');b.inputs['Base Color'].default_value=(*color,1);b.inputs['Roughness'].default_value=.9;b.inputs['Metallic'].default_value=metal
  return m
 
 def empty(name,loc,parent=None):
@@ -44,9 +44,9 @@ def rod(name,a,b,radius,mat,parent,vertices=12):
 
 bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
 mat={
- 'navy':material('Navy wool',(0.022,.058,.15)),
- 'white':material('Unbleached wool',(.78,.75,.63)),
- 'red':material('Crimson facings',(.53,.016,.022)),
+ 'navy':material('Navy wool',(0.018,.035,.073)),
+ 'white':material('Unbleached wool',(.67,.64,.53)),
+ 'red':material('Crimson facings',(.36,.025,.020)),
  'black':material('Black leather',(.022,.025,.029)),
  'skin':material('Warm skin',(.49,.25,.13)),
  'gold':material('Brass',(.62,.40,.10),.65),
@@ -56,7 +56,7 @@ mat={
 }
 root=empty('ROOT_world_reference',(0,0,0))
 body=empty('torso_pivot',(0,0,.96),root)
-coat=ball('wool_coat',(0,0,.28),(.255,.155,.34),mat['navy'],body)
+coat=box('wool_coat',(0,0,.29),(.43,.28,.59),mat['navy'],body,.065)
 # Front is negativeY. Chest facings, collars, belts, buttons and coat tails.
 box('red_chest',(0,-.146,.29),(.235,.027,.31),mat['red'],body)
 box('waist_belt',(0,-.153,.05),(.40,.035,.055),mat['white'],body)
@@ -67,7 +67,7 @@ for sign in [-1,1]:
  box('coat_tail',(sign*.10,.08,-.015),(.16,.12,.23),mat['navy'],body)
 rod('neck',(0,0,.56),(0,0,.68),.077,mat['skin'],body)
 rod('red_collar',(0,0,.55),(0,0,.64),.10,mat['red'],body)
-head=empty('head',(0,0,.76),body)
+head=empty('head',(0,0,.75),body);head.scale=(.88,.88,.92)
 ball('face',(0,-.017,0),(.139,.117,.168),mat['skin'],head)
 ball('nose',(0,-.131,.012),(.033,.037,.042),mat['skin'],head)
 for x in [-.055,.055]:
@@ -85,11 +85,11 @@ hips=[];knees=[]
 L=.43
 for side,sign in [('left',-1),('right',1)]:
  hip=empty(side+'_hip',(sign*.12,0,.94),root);knee=empty(side+'_knee',(0,0,-L),hip)
- rod(side+'_thigh',(0,0,-.025),(0,0,-L),.091,mat['navy'],hip)
+ rod(side+'_thigh',(0,0,-.025),(0,0,-L),.083,mat['navy'],hip)
  rod(side+'_shin',(0,0,0),(0,0,-L+.10),.077,mat['navy'],knee)
  rod(side+'_bootleg',(0,0,-.15),(0,0,-L+.01),.084,mat['black'],knee)
  foot=empty(side+'_ankle',(0,0,-L),knee)
- box(side+'_boot',(0,-.057,.025),(.17,.27,.13),mat['black'],foot,.04)
+ box(side+'_boot',(0,-.057,.025),(.145,.235,.11),mat['black'],foot,.025)
  hips.append(hip);knees.append(knee)
  # Save foot pivot so ankle rotation keeps boot level on contact.
  knee['foot_object']=foot.name
@@ -97,12 +97,12 @@ shoulders=[];elbows=[]
 for side,sign in [('left',-1),('right',1)]:
  shoulder=empty(side+'_shoulder',(sign*.255,0,.48),body)
  elbow=empty(side+'_elbow',(0,0,-.25),shoulder)
- rod(side+'_upperarm',(0,0,0),(0,0,-.25),.080,mat['navy'],shoulder)
+ rod(side+'_upperarm',(0,0,0),(0,0,-.25),.073,mat['navy'],shoulder)
  rod(side+'_forearm',(0,0,0),(0,0,-.22),.067,mat['navy'],elbow)
  rod(side+'_cuff',(0,0,-.15),(0,0,-.23),.070,mat['red'],elbow)
  hand=empty(side+'_hand',(0,0,-.26),elbow)
  ball(side+'_hand_skin',(0,0,0),(.068,.058,.077),mat['skin'],hand)
- ball(side+'_epaulette',(0,-.005,.015),(.104,.10,.032),mat['red'],shoulder)
+ ball(side+'_epaulette',(0,-.005,.015),(.09,.085,.022),mat['red'],shoulder)
  shoulders.append(shoulder);elbows.append(elbow)
  if side=='right':
   # Firearm is attached to the hand and therefore follows its own gait.
@@ -142,7 +142,7 @@ scene=bpy.context.scene;scene.frame_start=1;scene.frame_end=FRAMES;scene.render.
 # Orthographic camera follows the documented JA2 30degree elevation/45azimuth.
 bpy.ops.object.camera_add(location=(6,-6,1.15+math.sqrt(72)*math.tan(math.radians(30))))
 camera=bpy.context.object;camera.name='JA2_orthographic_camera';camera.rotation_euler=(Vector((0,0,1.15))-camera.location).to_track_quat('-Z','Y').to_euler();camera.data.type='ORTHO';camera.data.ortho_scale=2.6;scene.camera=camera
-for loc,energy,size in [(( -3,-4,7),700,4),((4,1,5),350,3)]:
+for loc,energy,size in [(( -3,-4,7),700,4),((4,1,5),190,3)]:
  bpy.ops.object.light_add(type='AREA',location=loc);o=bpy.context.object;o.data.energy=energy;o.data.shape='DISK';o.data.size=size;o.rotation_euler=(Vector((0,0,1))-o.location).to_track_quat('-Z','Y').to_euler()
 scene.world.color=(.3,.3,.3)
 scene.render.engine='CYCLES';scene.cycles.samples=12;scene.cycles.use_denoising=True

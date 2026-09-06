@@ -5,18 +5,18 @@ import {createBattle} from './tactical.js';
 export function enterSector(request,previous=null){
  const map=buildSectorMap(request);
  if(previous){
-   map.tiles=structuredClone(previous.tiles);map.decor=structuredClone(previous.decor??map.decor);map.buildings=structuredClone(previous.buildings??map.buildings);
+   map.props=structuredClone(previous.props??map.props);map.tiles=structuredClone(previous.tiles);map.decor=structuredClone(previous.decor??map.decor);map.buildings=structuredClone(previous.buildings??map.buildings);
    // A new occupation creates a garrison. An unfinished engagement retains its survivors.
    if(!request.exploration&&!previous.sectorCleared)map.enemies=structuredClone(previous.units.filter(u=>u.side==='enemy'));
  }
- const state=createBattle([...map.squad,...(request.garrison??[])],map);
+ const state=createBattle([...map.squad,...(request.garrison??[]),...(request.missionAllies??[])],map);
  if(previous){
    for(const unit of state.units.filter(u=>u.side==='player'&&u.hp>0)){const old=previous.units.find(u=>u.id===unit.id&&u.side==='player');for(const key of ['practiceTiles','ridingPracticeTiles'])if(old?.[key])unit[key]=structuredClone(old[key]);}
    for(const key of ['groundItems','droppedWeapons','revealedRooms'])state[key]=structuredClone(previous[key]??[]);
    const elapsed=Math.max(0,(request.hour??0)-(previous.savedHour??previous.enteredHour??request.hour??0));
    // One strategic hour advances six ten-minute tactical light intervals.
-   const ticks=Math.floor(elapsed*6);
-   state.lights=structuredClone(previous.lights??map.lights??[]).map(light=>Number.isFinite(light.turns)?{...light,turns:Math.max(0,light.turns-ticks),age:(light.age||0)+ticks}:light).filter(light=>light.turns!==0);
+   const elapsedSeconds=Math.max(0,elapsed*3600+(request.secondOfHour??0)-(previous.savedSecond??0));const ticks=Math.floor(elapsedSeconds/600);
+   state.lights=structuredClone(previous.lights??map.lights??[]).map(light=>Number.isFinite(light.turns)?{...light,remainingSeconds:Math.max(0,(light.remainingSeconds??light.turns*600)-elapsedSeconds),turns:Math.max(0,Math.ceil(((light.remainingSeconds??light.turns*600)-elapsedSeconds)/600)),age:(light.age||0)+ticks}:light).filter(light=>light.turns!==0);
    if(!request.exploration&&!previous.sectorCleared)state.units=state.units.filter(u=>u.side==='player').concat(structuredClone(previous.units.filter(u=>u.side==='enemy')));
  }
  if(previous)state.units.push(...structuredClone(previous.units.filter(u=>u.militia&&u.hp<=0&&!state.units.some(v=>v.id===u.id))));
@@ -32,6 +32,7 @@ export function enterSector(request,previous=null){
    Object.assign(unit,reserve(prior??unit));
  }
  state.npcs=(request.npcs??[]).map(npc=>({...structuredClone(npc),...reserve(npc)}));
+ state.sceneId=request.sceneId??null;state.missionId=request.missionId??request.sceneId??null;
  state.enteredHour=request.hour??0;
  return state;
 }

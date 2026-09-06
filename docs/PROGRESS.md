@@ -133,3 +133,10 @@ help opens, save/resume preserves the sector, and console error list is empty.
 Two requested screenshots were displayed inline (recruitment desk and map).
 Local dev server session36459 was started on port3000.
 Next work is detailed in NEXT-IMPLEMENTATION.md; full goal remains active.
+
+
+## 0.4.0-dev.1 — tactical visuals and campaign continuity
+
+The tactical renderer now uses original generated material textures and transparent vegetation, proportional eight-direction soldiers with stance and action atlases, depth sorting, textured building cutaways, and a compact bottom squad HUD. Camera zoom and panning make the field inspectable at playing scale. See TACTICAL-VISUALS.md for provenance and remaining visual gaps; this is an intermediate art pass, not final JA2-level scenery density.
+
+This checkpoint also integrates shared tactical/campaign time, authored historical encounters, finite industry inputs and delayed equipment imports. All 228 automated tests, TypeScript checks, and the static build passed before the version-only checkpoint update. Browser review verified the daylight San Lorenzo scene and camera controls.

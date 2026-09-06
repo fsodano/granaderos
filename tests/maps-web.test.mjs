@@ -8,8 +8,8 @@ function path(map,a,b,forbidden=new Set()){
  while(queue.length){const p=queue.shift(),last=p.at(-1);if(last.x===b.x&&last.y===b.y)return p;
  for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const x=last.x+dx,y=last.y+dy,t=map.tiles[y*map.width+x];if(x>=0&&x<map.width&&y>=0&&y<map.height&&t&&!t.blocked&&!seen.has(key(t))&&!forbidden.has(key(t))){seen.add(key(t));queue.push([...p,t]);}}}return null;
 }
-test('all fourteen authored maps have unique deterministic layouts',()=>{
- assert.equal(MAP_IDS.length,14);const signatures=new Set();for(const sector of MAP_IDS){const req={sector,squad:OPERATIVES.slice(0,6),difficulty:4,cannons:3};const a=buildSectorMap(req),b=buildSectorMap(req);assert.deepEqual(a,b);assert.equal(a.tiles.length,320);assert.equal(new Set(a.tiles.map(key)).size,320);signatures.add(JSON.stringify(a.tiles));}assert.equal(signatures.size,14);
+test('all fifteen authored maps have unique deterministic layouts',()=>{
+ assert.equal(MAP_IDS.length,15);const signatures=new Set();for(const sector of MAP_IDS){const req={sector,squad:OPERATIVES.slice(0,6),difficulty:4,cannons:3};const a=buildSectorMap(req),b=buildSectorMap(req);assert.deepEqual(a,b);assert.equal(a.tiles.length,320);assert.equal(new Set(a.tiles.map(key)).size,320);signatures.add(JSON.stringify(a.tiles));}assert.equal(signatures.size,15);
 });
 test('maximum normal deployments and artillery are collision-free, unblocked and connected',()=>{
  for(const sector of MAP_IDS){const map=buildSectorMap({sector,squad:OPERATIVES.slice(0,6),difficulty:4,cannons:3}),all=[...map.squad,...map.enemies,...map.artillery];assert.equal(new Set(all.map(key)).size,all.length,sector);

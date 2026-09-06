@@ -1,0 +1,134 @@
+{
+  "tree": {
+    "file": "scenery-tree-v1.webp",
+    "width": 512,
+    "height": 640,
+    "anchor": [
+      0.5,
+      0.9
+    ],
+    "contentBox": [
+      53,
+      223,
+      458,
+      576
+    ],
+    "sourceCrop": [
+      67,
+      120,
+      472,
+      473
+    ],
+    "bytes": 204936
+  },
+  "poplar": {
+    "file": "scenery-poplar-v1.webp",
+    "width": 512,
+    "height": 640,
+    "anchor": [
+      0.5,
+      0.9
+    ],
+    "contentBox": [
+      154,
+      70,
+      358,
+      576
+    ],
+    "sourceCrop": [
+      682,
+      16,
+      886,
+      522
+    ],
+    "bytes": 160098
+  },
+  "shrub": {
+    "file": "scenery-shrub-v1.webp",
+    "width": 512,
+    "height": 640,
+    "anchor": [
+      0.5,
+      0.9
+    ],
+    "contentBox": [
+      36,
+      232,
+      475,
+      576
+    ],
+    "sourceCrop": [
+      48,
+      609,
+      487,
+      953
+    ],
+    "bytes": 242396
+  },
+  "rocks": {
+    "file": "scenery-rocks-v1.webp",
+    "width": 512,
+    "height": 640,
+    "anchor": [
+      0.5,
+      0.9
+    ],
+    "contentBox": [
+      34,
+      273,
+      477,
+      576
+    ],
+    "sourceCrop": [
+      548,
+      626,
+      991,
+      929
+    ],
+    "bytes": 201884
+  },
+  "barrels": {
+    "file": "scenery-barrels-v1.webp",
+    "width": 512,
+    "height": 640,
+    "anchor": [
+      0.5,
+      0.9
+    ],
+    "contentBox": [
+      87,
+      296,
+      424,
+      576
+    ],
+    "sourceCrop": [
+      115,
+      1148,
+      452,
+      1428
+    ],
+    "bytes": 132198
+  },
+  "hay": {
+    "file": "scenery-hay-v1.webp",
+    "width": 512,
+    "height": 640,
+    "anchor": [
+      0.5,
+      0.9
+    ],
+    "contentBox": [
+      61,
+      129,
+      450,
+      576
+    ],
+    "sourceCrop": [
+      573,
+      1036,
+      962,
+      1483
+    ],
+    "bytes": 245534
+  }
+}

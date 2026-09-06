@@ -16,3 +16,11 @@ export function deployedArtillery(s){
  while(types.length<Math.min(available,3))types.push('bronze4');
  return types.map((type,i)=>({id:`gun-${i}`,type,side:'player',loaded:true,ammo:6}));
 }
+
+export function isImportedEquipment(item){return [1800,1802].includes(Number(item?.item));}
+export function deliverEquipmentShipments(s){
+ s.equipmentShipments??=[];
+ if(s.blockade||s.sectors.ensenada.owner!=='patriot')return;
+ for(const shipment of [...s.equipmentShipments])if(shipment.due<=s.hour){s.armory[shipment.item]=(s.armory[shipment.item]??0)+shipment.quantity;s.equipmentShipments.splice(s.equipmentShipments.indexOf(shipment),1);s.log.unshift({hour:s.hour,text:`Arriban a Ensenada ${shipment.quantity} armas importadas para la sala de armas.`});s.log=s.log.slice(0,80);}
+}
+export function validEquipmentShipments(s){return Array.isArray(s.equipmentShipments)&&s.equipmentShipments.length<=1000&&s.equipmentShipments.every(q=>q&&isImportedEquipment({item:q.item})&&Number.isInteger(q.quantity)&&q.quantity>0&&q.quantity<=100&&Number.isInteger(q.due)&&q.due>=0&&q.due<=1e9);}

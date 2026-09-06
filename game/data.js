@@ -556,11 +556,13 @@ export const PHASES = [
   {id:'liberation',name:'V · Ejército de los Andes',objective:'Incorpora a San Martín y elimina las últimas guarniciones realistas en los trece sectores.'},
 ];
 export const RECIPES = {
-  cartridges:{name:'Cartuchos de papel',hours:12,cost:{treasury:30,powder:5},yield:{cartridges:60}},
-  muskets:{name:'Reacondicionar mosquetes',hours:24,cost:{treasury:80,copper:2},yield:{muskets:50}},
-  sabres:{name:'Sables de Caroya',hours:18,cost:{treasury:60,copper:3},yield:{sabres:20}},
-  cannon:{name:'Cañón de bronce de 4 libras',hours:48,cost:{treasury:180,copper:15},yield:{cannons:1}},
-  uniforms:{name:'Uniformes de campaña',hours:12,cost:{treasury:40,textiles:40},yield:{uniforms:200}},
+ powder:{name:'Pólvora de maestranza',hours:12,cost:{treasury:20,saltpeter:15,charcoal:3,sulfur:2},yield:{powder:20}},
+ charcoal:{name:'Carbón de leña',hours:18,cost:{treasury:10,timber:12},yield:{charcoal:8}},
+  cartridges:{name:'Cartuchos de papel',hours:12,cost:{treasury:30,powder:5,lead:3},yield:{cartridges:60}},
+  muskets:{name:'Reacondicionar mosquetes',hours:24,cost:{treasury:80,copper:2,scrapIron:8,timber:8},yield:{muskets:50}},
+  sabres:{name:'Sables de Caroya',hours:18,cost:{treasury:60,copper:3,scrapIron:6,charcoal:3},yield:{sabres:20}},
+  cannon:{name:'Cañón de bronce de 4 libras',hours:48,cost:{treasury:180,copper:15,timber:10,charcoal:8},yield:{cannons:1}},
+  uniforms:{name:'Uniformes de campaña',hours:12,cost:{treasury:40,textiles:40,leather:10},yield:{uniforms:200}},
   infantry:{name:'Instruir y equipar infantes',hours:24,cost:{treasury:100,muskets:200,uniforms:200,powder:5},yield:{infantry:200}},
 };
-export const RESOURCE_NAMES = {treasury:'Pesos de plata',horses:'Caballos',powder:'Pólvora',copper:'Cobre',textiles:'Textiles',infantry:'Infantes equipados',muskets:'Mosquetes',sabres:'Sables',cartridges:'Cartuchos',uniforms:'Uniformes',cannons:'Cañones',ponchos:'Ponchos de lana'};
+export const RESOURCE_NAMES = {timber:'Madera',scrapIron:'Hierro recuperado',lead:'Plomo',leather:'Cuero curtido',saltpeter:'Salitre',charcoal:'Carbón vegetal',sulfur:'Azufre',treasury:'Pesos de plata',horses:'Caballos',powder:'Pólvora',copper:'Cobre',textiles:'Textiles',infantry:'Infantes equipados',muskets:'Mosquetes',sabres:'Sables',cartridges:'Cartuchos',uniforms:'Uniformes',cannons:'Cañones',ponchos:'Ponchos de lana'};

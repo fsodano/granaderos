@@ -1,3 +1,4 @@
+import {syncBattleTime} from '../game/time.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {dispatchCampaign} from '../game/campaign.js';
@@ -10,7 +11,7 @@ function deployed(){const campaign=dispatchCampaign(dispatchCampaign(initialCamp
 test('campaign and authored battle save round-trip keeps the next enemy turn deterministic',()=>{
  const {campaign,battle}=deployed();const u=battle.units.find(u=>u.side==='player');const p=getReachable(battle,u).find(p=>p.cost===8);
  const moved=actBattle(battle,{type:'move',unitId:u.id,x:p.x,y:p.y});
- const restored=decodeSave(encodeSave(campaign,moved));assert.deepEqual(restored,{campaign,battle:moved});assert.deepEqual(endTurn(restored.battle),endTurn(moved));
+ const pair=syncBattleTime(campaign,moved);const restored=decodeSave(encodeSave(pair.campaign,pair.battle));assert.deepEqual(restored,{campaign:pair.campaign,battle:pair.battle});assert.deepEqual(endTurn(restored.battle),endTurn(pair.battle));
  assert.deepEqual(decodeSave(encodeSave(initialCampaign())),{campaign:initialCampaign(),battle:null});
 });
 test('save rejects malformed data before it can enter the renderer or tactical rules',()=>{

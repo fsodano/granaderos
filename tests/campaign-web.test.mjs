@@ -1,11 +1,12 @@
+import {attendYatasto} from './mission-helpers.mjs';
 import {enterSector} from '../game/world.js';
 import {marchToFront,meetLocalRecruit} from './campaign-test-helpers.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {dispatchCampaign as dispatch,isSupplied,recruitmentStatus,restoreCampaign,serializeCampaign,OPERATIVES,CAMPAIGN_SECTORS,PHASES,RECIPES} from '../game/campaign.js';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
-const order=(s,action)=>{const next=meetLocalRecruit(s,action)??dispatch(marchToFront(s,action),action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);return next;};
-const capture=(s,id)=>{s=order(s,{type:'attack',sector:id});const snapshot=enterSector(s.pendingBattle,s.sectorStates[s.pendingBattle.sector]);return order(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'victory',sectorState:snapshot,survivors:snapshot.units.filter(u=>u.side==='player').map(o=>({...o,id:Number(o.id)}))});};
+const order=(s,action)=>{const next=meetLocalRecruit(s,action)??dispatch(marchToFront(s,action),action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);return action.type==='diplomacy'&&action.kind==='northPact'&&next.phase===2?attendYatasto(next):next;};
+const capture=(s,id)=>{if(s.resources.powder<3){s=order(s,{type:'produce',recipe:'powder',sector:'retiro'});s=order(s,{type:'wait',hours:12});}s=order(s,{type:'attack',sector:id});const snapshot=enterSector(s.pendingBattle,s.sectorStates[s.pendingBattle.sector]);if(id==='san_lorenzo'){snapshot.status='victory';snapshot.sectorCleared=true;for(const enemy of snapshot.units.filter(u=>u.side==='enemy'))enemy.hp=0;}return order(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'victory',sectorState:snapshot,survivors:snapshot.units.filter(u=>u.side==='player').map(o=>({...o,id:Number(o.id)}))});};
 test('historical geography, roster and phase definitions preserve requested scope',()=>{
  assert.equal(CAMPAIGN_SECTORS.length,13);assert.equal(new Set(CAMPAIGN_SECTORS.map(s=>s.grid)).size,13);assert.equal(new Set(CAMPAIGN_SECTORS.map(s=>s.theater)).size,4);assert.equal(OPERATIVES.length,13);assert.equal(PHASES.length,5);
  assert.equal(OPERATIVES.find(o=>o.id===0).weeklyPay,0);assert.equal(OPERATIVES.find(o=>o.id===2).weeklyPay,400);assert.equal(OPERATIVES.find(o=>o.id===10).medical,98);
@@ -78,7 +79,7 @@ test('full campaign reaches liberation through reducer orders and timed producti
  for(let i=0;i<15;i++){
    while(s.resources.muskets<200)make('muskets');
    if(s.resources.textiles<40){s=order(s,{type:'contraband',offer:'supplies'});s=order(s,{type:'wait',hours:120});}
-   make('uniforms');make('infantry');
+   make('uniforms');if(s.resources.powder<10)make('powder');make('infantry');
    // Repulse strategically scheduled raids and repair the supply corridor when needed.
    for(const id of ['san_nicolas','jujuy','salta','tucuman'])if(s.sectors[id].owner==='royalist')s=capture(s,id);
    if(s.blockade)s=capture(s,'san_nicolas');
