@@ -18,7 +18,7 @@ test('Romarate responds to actual customs revenue and suppresses that same econo
 });
 test('loyalist interior raids seize the supply junction and sack convoy stores',()=>{
  let s=initialCampaign();s.sectors.cordoba.owner='patriot';s.sectors.cordoba.loyalty=10;s.sectors.tucuman.owner='patriot';s.sectors.salta.owner='patriot';assert.equal(isSupplied(s,'salta'),true);const healthy={...s,sectors:JSON.parse(JSON.stringify(s.sectors))};healthy.sectors.cordoba.loyalty=70;
- s=wait(s,144);const control=wait(healthy,144);assert.equal(s.sectors.cordoba.owner,'royalist');assert.equal(isSupplied(s,'salta'),false);assert.equal(control.sectors.cordoba.owner,'patriot');assert.equal(control.resources.powder-s.resources.powder,20);assert.ok(s.log.some(e=>e.text.includes('convoyes de Cuyo')));
+ s=wait(s,144);const control=wait(healthy,144);assert.equal(s.sectors.cordoba.owner,'royalist');assert.equal(isSupplied(s,'salta'),false);assert.equal(control.sectors.cordoba.owner,'patriot');assert.equal(control.resources.treasury-s.resources.treasury,150);assert.ok(s.log.some(e=>e.text.includes('convoyes de Cuyo')));
 });
 test('battle briefing and troop names identify the opposing command',()=>{
  const s=dispatch(dispatch(initialCampaign(),{type:'travel',sector:'buenos_aires'}),{type:'attack',sector:'san_nicolas'});assert.equal(s.lastError,null);assert.equal(s.pendingBattle.enemyCommand,'naval');assert.equal(s.pendingBattle.enemyCommander,'Jacinto de Romarate');assert.ok(s.pendingBattle.enemies.some(o=>o.name.includes('Romarate')));assert.ok(s.pendingBattle.enemies.every(o=>o.weapon>=1800&&o.weapon<=1808));

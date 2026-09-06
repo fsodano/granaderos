@@ -1,5 +1,7 @@
 # 05 — Weapons, Items, Attachments, Ammo, and Economy
 
+> Economy update: the browser game now uses pesos only. The material, convoy, and horse-management mappings below describe the earlier implementation. See [the current economy rules](../INDUSTRY-AND-IMPORTS.md).
+
 **Audience:** an agent with zero prior JA2 knowledge who must port the engine's item/weapon
 systems into the browser clone (`game/` + `web/`). This document is the translation guide from
 the C++ engine (`engine/Tactical/`, `engine/Laptop/`, `engine/Strategic/`) and the JA2 v1.13

@@ -1,6 +1,6 @@
 import {dispatchCampaign} from '../game/campaign.js';
 import {CAMPAIGN_SECTORS} from '../game/data.js';
-import {transportPath} from '../game/logistics.js';
+function transportPath(s,from,to){const seen=new Set([from]),queue=[from];while(queue.length){const id=queue.shift();if(id===to)return true;for(const next of CAMPAIGN_SECTORS.find(d=>d.id===id).neighbors)if(!seen.has(next)&&s.sectors[next].owner==='patriot'){seen.add(next);queue.push(next);}}return false;}
 // Integration tests explicitly march through controlled sectors before a frontier attack.
 export function marchToFront(state,action){
  if(action.type!=='attack')return state;

@@ -20,19 +20,21 @@ The campaign is fought on two scales: a strategic map where you prepare your for
 | --- | --- |
 | Recruit officers and volunteers, equip squads, and pay stipends. | Move and fight with a limited action-point budget. |
 | Secure provinces and protect the routes that keep them supplied. | Balance musket fire and slow reloads against melee and mounted charges. |
-| Turn raw materials into uniforms, weapons, and artillery. | Account for smoke, misfires, terrain, and lines of sight. |
+| Use pesos to hire troops, buy equipment, and fund the army. | Account for smoke, misfires, terrain, and lines of sight. |
 | Negotiate with factions and prepare defenses against raids. | Bring surviving soldiers and remaining ammunition back to the campaign. |
 
-Battles have lasting consequences: casualties and spent supplies affect what you can do next. A successful advance needs recruits, production, diplomacy, and a route home as much as it needs a winning volley.
+Money comes from daily town income, paid quests, and cash found on the tactical map. The **Tesorería** shows your balance, daily income, and next payment. There are no material stockpiles, production chains, convoys, or horse care. Start a new campaign after this economy update; old saves are not converted.
+
+Battles have lasting consequences: casualties and spent supplies affect what you can do next. A successful advance needs recruits, money, diplomacy, and a route home as much as it needs a winning volley.
 
 ## From Retiro to the Andes
 
 The campaign follows five stages inspired by San Martín's military preparations:
 
-1. **Retiro** — gather the horses, muskets, and materials needed to organize the force.
+1. **Retiro** — pay 300 pesos to organize the force.
 2. **San Lorenzo** — fight the river encounter on its authored tactical map.
 3. **Yatasto** — secure the northern campaign and negotiate its support.
-4. **El Plumerillo** — fund the foundry and prepare equipped infantry and artillery.
+4. **El Plumerillo** — organize the camp, fund the army, and buy three artillery pieces.
 5. **The Andean preparations** — meet the military and diplomatic requirements that unlock San Martín and complete the campaign objectives.
 
 Thirteen strategic sectors connect the campaign's theaters, with fourteen authored tactical maps including San Lorenzo. This is a historical interpretation built around the [supplied game design](docs/specification/original.txt); logistics, geography, and events are adapted for play.

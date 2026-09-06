@@ -21,6 +21,6 @@ test('conversation requires adjacency and a cleared tactical situation',()=>{
  const fighting=structuredClone(battle);fighting.mode='combat';fighting.sectorCleared=false;fighting.status='active';assert.ok(dispatch(s,{type:'talkNPC',npcId:'sosa',approach:'friendly',unitId:4,sectorState:fighting}).lastError);
 });
 test('visits issue and return finite ammunition instead of erasing or generating rounds',()=>{
- let s=initialCampaign();const total=s.resources.cartridges;s=order(s,{type:'visitSector'});const issued=s.pendingBattle.issuedCartridges;assert.equal(issued,20);assert.equal(s.resources.cartridges,total-issued);const map=buildSectorMap(s.pendingBattle),battle=createBattle(map.squad,map);
- s=order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:battle,survivors:battle.units.filter(u=>u.side==='player').map(u=>({...u,id:Number(u.id)}))});assert.equal(s.resources.cartridges,total);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
+ let s=initialCampaign();const total=s.resources.treasury;s=order(s,{type:'visitSector'});const issued=s.pendingBattle.issuedCartridges;assert.equal(issued,20);assert.equal(s.resources.treasury,total-issued);const map=buildSectorMap(s.pendingBattle),battle=createBattle(map.squad,map);
+ s=order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:battle,survivors:battle.units.filter(u=>u.side==='player').map(u=>({...u,id:Number(u.id)}))});assert.equal(s.resources.treasury,total);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
 });

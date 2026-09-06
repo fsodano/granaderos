@@ -1,5 +1,7 @@
 # 07 — Strategic Layer (engine/Strategic → game/campaign.js + clock/world)
 
+> Economy update: the browser game now uses pesos only. The material, convoy, and horse-management mappings below describe the earlier implementation. See [the current economy rules](../INDUSTRY-AND-IMPORTS.md).
+
 Reference for porting the JA2 v1.13-derived strategic layer to the browser
 simulation. Every claim below is extracted from the C++ engine under
 `engine/Strategic/` and mapped to the JavaScript implementation in

@@ -1,5 +1,7 @@
 # Web Port Series 00 — Engine Overview
 
+> Economy update: the browser game now uses pesos only. The material, convoy, and horse-management mappings below describe the earlier implementation. See [the current economy rules](../INDUSTRY-AND-IMPORTS.md).
+
 > **Audience:** an agent with zero prior JA2 knowledge who must port engine behavior into the
 > browser clone (`game/` + `web/`). This is the index document for the `docs/web-port/` series.
 > It describes *what the engine is*, *how it is built*, *how it boots and flows between screens*,
