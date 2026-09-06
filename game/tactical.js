@@ -204,7 +204,7 @@ export function endTurn(state){
  if(!s.roundTimeCharged)advanceBattleClock(s,COMBAT_ROUND_SECONDS);
  s.roundTimeCharged=true;s.phase='enemy';
  runEnemyPhase(s);s.enemyTurns=(s.enemyTurns??0)+1;
- if(s.status!=='active'){s.phase='player';return s;}
+ if(s.status!=='active'){s.phase='player';if(s.roundFirstSide!=='enemy')s.turn++;return s;}
  if(s.roundFirstSide==='enemy'){s.enemyFirstAwaitingPlayer=true;s.phase='player';revealRooms(s);return s;}
  return finishCombatRound(s);
 }
