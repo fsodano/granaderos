@@ -22,7 +22,7 @@ export function meetLocalRecruit(state,action){
  let s=state;if(s.location!==npc.sector){s=dispatchCampaign(s,{type:'travel',sector:npc.sector});if(s.lastError)throw Error(s.lastError);}
  s=dispatchCampaign(s,{type:'visitSector'});if(s.lastError)throw Error(s.lastError);
  const map=buildSectorMap(s.pendingBattle);let battle=createBattle(map.squad,map);const actor=battle.units.filter(u=>u.side==='player').sort((a,b)=>b.leadership-a.leadership)[0];
- battle=actBattle(battle,{type:'move',unitId:actor.id,x:npc.x-1,y:npc.y});if(battle.lastError)throw Error(battle.lastError);
+ battle=actBattle(battle,{type:'move',unitId:actor.id,x:map.npcs.find(n=>n.id===npc.id).x-1,y:map.npcs.find(n=>n.id===npc.id).y});if(battle.lastError)throw Error(battle.lastError);
  s=dispatchCampaign(s,{type:'talkNPC',npcId:npc.id,approach:'recruit',unitId:Number(actor.id),sectorState:battle});if(s.lastError)return s;
  return dispatchCampaign(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:battle,survivors:battle.units.filter(u=>u.side==='player').map(u=>({...u,id:Number(u.id)}))});
 }

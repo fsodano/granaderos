@@ -1,3 +1,4 @@
+import {expandSectorMap} from './sector-expansion.js';
 import {propBlocksAt} from './props.js';
 import {CAMPAIGN_SECTORS} from './data.js';
 import {MAP_LIBRARY} from './map-library.js';
@@ -16,7 +17,7 @@ const key=p=>`${p.x},${p.y}`;
 function connected(tiles,start,props=[]){
  const reached=new Set([key(start)]),queue=[start];while(queue.length){const p=queue.shift();for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const x=p.x+dx,y=p.y+dy,t=tiles[y*WIDTH+x];if(x>=0&&x<WIDTH&&y>=0&&y<HEIGHT&&t&&!t.blocked&&!propBlocksAt({props},x,y)&&!reached.has(key(t))){reached.add(key(t));queue.push(t);}}}return reached;
 }
-export function buildSectorMap(request={}){
+function buildCompactSectorMap(request={}){
  const id=request.sceneId??request.sector??request.id??'san_lorenzo';const authored=plan(id),tiles=authored.tiles;
  const open=tiles.filter(t=>!t.blocked&&!propBlocksAt(authored,t.x,t.y));const component=connected(tiles,open.find(t=>t.x<=2&&t.y>=5)??open[0],authored.props);
  const reserved=new Set(),choose=(preferred,side)=>{
@@ -34,3 +35,5 @@ export function buildSectorMap(request={}){
  const artillery=(request.artillery??Array.from({length:Math.min(request.cannons??0,3)},()=>({type:'bronze4',side:'player',loaded:true,ammo:6}))).map((gun,i)=>({...clone(gun),...choose({x:3,y:4+i*3},'player')}));
  return {...clone(request),sector:request.sceneId?request.sector:id,name:request.name??names[id],width:WIDTH,height:HEIGHT,tiles,decor:authored.decor,props:authored.props,groundItems:authored.groundItems,sourceMapId:authored.sourceMapId,sourceMapRevision:authored.sourceMapRevision,buildings:authored.buildings,lights:authored.lights,squad,enemies,artillery,mapTitle:names[id]};
 }
+
+export function buildSectorMap(request={}){const core=buildCompactSectorMap(request);return request.compactLayout===true?core:expandSectorMap(core);}
