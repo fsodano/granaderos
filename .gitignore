@@ -11,3 +11,5 @@ output/
 
 
 *.tsbuildinfo
+
+/artifacts/
