@@ -1,3 +1,4 @@
+import {buildingDetails} from './TacticalBuildingDetails';
 import type {ReactNode} from 'react';
 type Point={x:number;y:number};
 type Args={state:any;revealed:Set<string>;project:(x:number,y:number)=>Point;light:(x:number,y:number)=>number};
@@ -17,7 +18,7 @@ export function buildBuildingObjects({state:s,revealed,project,light}:Args):Scen
   const roomOpen=b?.rooms.some((r:any)=>revealed.has(r.id)&&r.cells.some((c:any)=>corner?Math.abs(c.x-t.x)<=1&&Math.abs(c.y-t.y)<=1:Math.abs(c.x-t.x)+Math.abs(c.y-t.y)===1));
   const onX=b&&(t.x===b.x||t.x===b.x+b.width-1),onY=b&&(t.y===b.y||t.y===b.y+b.height-1);
   const axes:WallAxis[]=b?[...(onX?['y' as const]:[]),...(onY?['x' as const]:[])]:[occupied.has(`${t.x+1},${t.y}`)||occupied.has(`${t.x-1},${t.y}`)?'x':'y'];
-  if(!axes.length)axes.push('x');
+  if(!axes.length){if(occupied.has(`${t.x-1},${t.y}`)||occupied.has(`${t.x+1},${t.y}`))axes.push('x');if(occupied.has(`${t.x},${t.y-1}`)||occupied.has(`${t.x},${t.y+1}`))axes.push('y');if(!axes.length)axes.push('x');}
   axes.forEach((axis,index)=>{
    const isFront=b&&(axis==='x'?t.y===b.y+b.height-1:t.x===b.x+b.width-1),cut=roomOpen&&isFront,height=cut?9:46;
    // Corner cells terminate at the wall intersection; extending both axes
@@ -58,7 +59,8 @@ export function buildBuildingObjects({state:s,revealed,project,light}:Args):Scen
    </g>});
   });
  }
- for(const b of s.buildings??[])for(const room of b.rooms??[]){
+ for(const b of s.buildings??[])for(const room of ((b.rooms??[]).length>1&&b.rooms.every((r:any)=>!revealed.has(r.id))?[{...b.rooms[0],cells:b.rooms.flatMap((r:any)=>r.cells)}]:b.rooms??[])){
+  const wholeRoof=b.rooms.every((r:any)=>!revealed.has(r.id));
   if(!room.cells?.length)continue;
   if(revealed.has(room.id)){
    // Floor joints follow world coordinates, with perimeter wear and wall shadows.
@@ -83,10 +85,21 @@ export function buildBuildingObjects({state:s,revealed,project,light}:Args):Scen
    }
    continue;
   }
-  const xs=room.cells.map((p:any)=>p.x),ys=room.cells.map((p:any)=>p.y);
-  const left=Math.max(b.x-.18,Math.min(...xs)-1.18),right=Math.min(b.x+b.width-.82,Math.max(...xs)+1.18),top=Math.max(b.y-.18,Math.min(...ys)-1.18),bottom=Math.min(b.y+b.height-.82,Math.max(...ys)+1.18),middle=(left+right)/2;
+  const left=b.x-.18,right=b.x+b.width-.82,top=b.y-.18,bottom=b.y+b.height-.82,middle=(left+right)/2;
   const rise=Math.min(30,(right-left)*7),eave=47;
   const roof=(x:number,y:number,z:number)=>{const p=project(x,y);return `${p.x},${p.y-z}`;};
+  const heightAt=(x:number)=>eave+rise*(x<=middle?(x-left)/(middle-left):(right-x)/(right-middle));
+  const clipId=`roof-${Array.from(String(room.id)).map(c=>c.codePointAt(0)?.toString(16)).join('-')}`;
+  const roofCells:ReactNode[]=[];
+  if(!wholeRoof){
+   const floors=b.rooms.flatMap((r:any)=>r.cells.map((c:any)=>({...c,roomId:r.id})));
+   for(let y=b.y;y<b.y+b.height;y++)for(let x=b.x;x<b.x+b.width;x++){
+    const owner=floors.reduce((best:any,c:any)=>!best||Math.abs(c.x-x)+Math.abs(c.y-y)<Math.abs(best.x-x)+Math.abs(best.y-y)?c:best,null);
+    if(owner?.roomId!==room.id)continue;
+    const x0=Math.max(left,x-.5),x1=Math.min(right,x+.5),y0=Math.max(top,y-.5),y1=Math.min(bottom,y+.5);
+    for(const [a,c] of [[x0,Math.min(middle,x1)],[Math.max(middle,x0),x1]])if(c>a)roofCells.push(<polygon key={`${x}-${y}-${a}`} points={`${roof(a,y0,heightAt(a))} ${roof(c,y0,heightAt(c))} ${roof(c,y1,heightAt(c))} ${roof(a,y1,heightAt(a))}`}/>);
+   }
+  }
   const tiles:ReactNode[]=[];
   // Map each barrel tile onto its actual roof plane (never a screen-space pattern).
   for(const side of [0,1]){
@@ -103,6 +116,8 @@ export function buildBuildingObjects({state:s,revealed,project,light}:Args):Scen
    }
   }
   objects.push({key:`architecture-roof-${room.id}`,depth:right+bottom+.12,node:<g data-roof-room={room.id} pointerEvents="none" style={{filter:`brightness(${light(b.x,b.y)})`}}>
+   {!wholeRoof&&<defs><clipPath id={clipId}>{roofCells}</clipPath></defs>}
+   <g clipPath={wholeRoof?undefined:`url(#${clipId})`}>
    {/* A complete gable closes the old triangular gap above the front wall. */}
    <polygon data-building-gable="true" points={`${roof(left,bottom,eave)} ${roof(middle,bottom,eave+rise)} ${roof(right,bottom,eave)}`} fill="url(#terrain-plaster)" stroke="#8b7856" strokeWidth=".7"/>
    <path d={`M${roof(middle,bottom,eave+9)}v-7`} stroke="#4d4533" strokeWidth="3"/>
@@ -112,8 +127,10 @@ export function buildBuildingObjects({state:s,revealed,project,light}:Args):Scen
    <path d={`M${roof(left,top,eave)}L${roof(left,bottom,eave)}M${roof(right,top,eave)}L${roof(right,bottom,eave)}`} stroke="#663e29" strokeWidth="3"/>
    <path d={`M${roof(middle,top,eave+rise)}L${roof(middle,bottom,eave+rise)}`} stroke="#cd8a59" strokeWidth="4"/>
    {Array.from({length:Math.ceil((bottom-top)*5)},(_,i)=>{const y=top+i/5;return <path key={i} d={`M${roof(middle-.06,y,eave+rise-1)}L${roof(middle+.06,y,eave+rise-1)}`} stroke="#72452e" strokeWidth=".8"/>;})}
+   </g>
   </g>});
  }
+ for(const b of s.buildings??[])objects.push(...buildingDetails(b,revealed,project));
  return objects;
 }
 type WallAxis='x'|'y';

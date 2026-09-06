@@ -1,0 +1,11 @@
+import posta from './map-templates/posta.json' with {type:'json'};
+import barraca from './map-templates/barraca.json' with {type:'json'};
+import casa from './map-templates/casa.json' with {type:'json'};
+import capilla from './map-templates/capilla.json' with {type:'json'};
+import iglesia from './map-templates/iglesia.json' with {type:'json'};
+import cabildo from './map-templates/cabildo.json' with {type:'json'};
+import pulperia from './map-templates/pulperia.json' with {type:'json'};
+import almacen from './map-templates/almacen.json' with {type:'json'};
+import herreria from './map-templates/herreria.json' with {type:'json'};
+import caballeriza from './map-templates/caballeriza.json' with {type:'json'};
+export const BUILDING_TEMPLATES={posta,barraca,casa,capilla,iglesia,cabildo,pulperia,almacen,herreria,caballeriza};

@@ -1,0 +1,546 @@
+{
+  "version": 1,
+  "name": "Almacén de abastos",
+  "building": {
+    "id": "almacen",
+    "name": "Almacén de abastos",
+    "x": 0,
+    "y": 0,
+    "width": 8,
+    "height": 8,
+    "roof": "tile",
+    "material": "adobe",
+    "rooms": [
+      {
+        "id": "almacen:interior",
+        "cells": [
+          {
+            "x": 1,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 1
+          },
+          {
+            "x": 1,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 2
+          },
+          {
+            "x": 1,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 1
+          },
+          {
+            "x": 3,
+            "y": 2
+          },
+          {
+            "x": 2,
+            "y": 3
+          },
+          {
+            "x": 1,
+            "y": 4
+          },
+          {
+            "x": 5,
+            "y": 1
+          },
+          {
+            "x": 4,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 3
+          },
+          {
+            "x": 2,
+            "y": 4
+          },
+          {
+            "x": 1,
+            "y": 5
+          },
+          {
+            "x": 6,
+            "y": 1
+          },
+          {
+            "x": 5,
+            "y": 2
+          },
+          {
+            "x": 4,
+            "y": 3
+          },
+          {
+            "x": 3,
+            "y": 4
+          },
+          {
+            "x": 2,
+            "y": 5
+          },
+          {
+            "x": 1,
+            "y": 6
+          },
+          {
+            "x": 6,
+            "y": 2
+          },
+          {
+            "x": 5,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 4
+          },
+          {
+            "x": 3,
+            "y": 5
+          },
+          {
+            "x": 2,
+            "y": 6
+          },
+          {
+            "x": 6,
+            "y": 3
+          },
+          {
+            "x": 5,
+            "y": 4
+          },
+          {
+            "x": 4,
+            "y": 5
+          },
+          {
+            "x": 3,
+            "y": 6
+          },
+          {
+            "x": 6,
+            "y": 4
+          },
+          {
+            "x": 5,
+            "y": 5
+          },
+          {
+            "x": 4,
+            "y": 6
+          },
+          {
+            "x": 6,
+            "y": 5
+          },
+          {
+            "x": 5,
+            "y": 6
+          },
+          {
+            "x": 6,
+            "y": 6
+          }
+        ]
+      }
+    ],
+    "walls": [
+      {
+        "x": 0,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 1,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 3,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 4,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 5,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 6,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 7,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 1,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 7,
+        "y": 1,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 2,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 7,
+        "y": 2,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 3,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 7,
+        "y": 3,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 4,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 7,
+        "y": 4,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 7,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 6,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 7,
+        "y": 6,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 7,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 2,
+        "y": 7,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 3,
+        "y": 7,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 4,
+        "y": 7,
+        "type": "door",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 0,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null,
+        "doorId": "almacen:door:4:7",
+        "open": false,
+        "locked": false
+      },
+      {
+        "x": 5,
+        "y": 7,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 7,
+        "y": 7,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "almacen",
+        "roomId": null
+      },
+      {
+        "x": 1,
+        "y": 7,
+        "type": "window"
+      },
+      {
+        "x": 6,
+        "y": 7,
+        "type": "window"
+      }
+    ],
+    "kind": "warehouse"
+  },
+  "features": [],
+  "props": [
+    {
+      "id": "almacen-prop-0",
+      "type": "barrels",
+      "x": 1,
+      "y": 1,
+      "name": "Toneles",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "almacen-prop-1",
+      "type": "barrels",
+      "x": 1,
+      "y": 3,
+      "name": "Toneles",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "almacen-prop-2",
+      "type": "chest",
+      "x": 6,
+      "y": 1,
+      "name": "Cartuchos",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "almacen-prop-3",
+      "type": "chest",
+      "x": 6,
+      "y": 3,
+      "name": "Provisiones",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "almacen-prop-4",
+      "type": "hay",
+      "x": 1,
+      "y": 5,
+      "name": "Forraje",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "almacen-prop-5",
+      "type": "hay",
+      "x": 6,
+      "y": 5,
+      "name": "Forraje",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    }
+  ],
+  "items": [],
+  "spawns": [],
+  "exits": [],
+  "lights": []
+}

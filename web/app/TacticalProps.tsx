@@ -12,6 +12,7 @@ export function buildPropObjects({state, revealed, project, light}:Props){
   // dimensions stay fixed rather than stretching with the floor area.
   const at=(x:number,y:number,z=0)=>{const v=project(prop.x+x,prop.y+y);return `${v.x-p.x},${v.y-p.y-z}`;};
   const x0=-.4,y0=-.4,x1=size.width-.6,y1=size.height-.6;
+  const bedPoint=(u:number,v:number,z:number)=>{const rotation=prop.rotation??0;const x=rotation===90?1-v:rotation===180?1-u:rotation===270?v:u,y=rotation===90?u:rotation===180?1-v:rotation===270?1-u:v;return at(x0+(x1-x0)*x,y0+(y1-y0)*y,z);};
   const surface=(z:number)=>`${at(x0,y0,z)} ${at(x1,y0,z)} ${at(x1,y1,z)} ${at(x0,y1,z)}`;
   const plank=(x:number,y:number,width:number,depth:number,height:number)=><g transform={`translate(${x} ${y})`}><path d={`M${-width},0l${width},${depth} ${width},${-depth}v${-height}l${-width},${-depth} ${-width},${depth}Z`} fill="url(#terrain-wood)" stroke="#3c3021" strokeWidth=".6"/><path d={`M0,${depth}v${-height}l${width},${-depth}v${height}Z`} fill="#171710" opacity=".4"/><path d={`M${-width},${-height}L0,${-height-depth} ${width},${-height} 0,${depth-height}Z`} fill="url(#terrain-wood)" stroke="#b4a076" strokeWidth=".45"/></g>;
   if(prop.type==='barrels'||prop.type==='hay') furniture=<image href={`/art/scenery-${prop.type}-v1.webp`} x="-25" y="-40" width="50" height="48"/>;
@@ -27,9 +28,9 @@ export function buildPropObjects({state, revealed, project, light}:Props){
     <polygon points={`${at(x1,y0)} ${at(x1,y1)} ${at(x1,y1,height)} ${at(x1,y0,height)}`} fill="#493b29" stroke="#342c20" strokeWidth=".7"/>
     <polygon points={surface(height)} fill={prop.type==='bed'?'#7f856a':'url(#terrain-wood)'} stroke="#b5a781" strokeWidth=".7"/>
     {prop.type==='bed'&&<>
-     <polygon points={`${at(x0+.05,y0+.05,height+1)} ${at(x1-.05,y0+.05,height+1)} ${at(x1-.05,y0+.35,height+1)} ${at(x0+.05,y0+.35,height+1)}`} fill="#d9ceb1"/>
-     <polygon points={`${at(x0,y0+.5,height+.5)} ${at(x1,y0+.5,height+.5)} ${at(x1,y1,height+.5)} ${at(x0,y1,height+.5)}`} fill="#596d62"/>
-     <path d={`M${at(x0,y0)}L${at(x0,y0,18)}L${at(x1,y0,18)}L${at(x1,y0)}`} fill="none" stroke="#493823" strokeWidth="3"/>
+     <polygon points={`${bedPoint(.05,.04,height+1)} ${bedPoint(.95,.04,height+1)} ${bedPoint(.95,.23,height+1)} ${bedPoint(.05,.23,height+1)}`} fill="#d9ceb1"/>
+     <polygon points={`${bedPoint(0,.3,height+.5)} ${bedPoint(1,.3,height+.5)} ${bedPoint(1,1,height+.5)} ${bedPoint(0,1,height+.5)}`} fill="#596d62"/>
+     <path d={`M${bedPoint(0,0,0)}L${bedPoint(0,0,18)}L${bedPoint(1,0,18)}L${bedPoint(1,0,0)}`} fill="none" stroke="#493823" strokeWidth="3"/>
     </>}
    </>;
   }

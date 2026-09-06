@@ -1,9 +1,10 @@
 # Sector builder implementation plan
 
-Status: proposed editor; furniture footprints and placement validation are implemented.
-Scope: author tactical map sections (sectors), terrain, buildings, interiors,
-furniture, ground items, deployment points and lights. The editor itself is not
-implemented by this change.
+Status: implemented as the web editor at `/editor` in the dedicated feature worktree.
+See [the editor guide](../sector-editor.md) for controls, file workflows, limits
+and verification evidence. The sections below preserve the design rationale.
+The actual source format is version 1; unknown versions are rejected. All 15
+existing sector definitions are migrated and tested against reference hashes.
 
 ## Recommendation
 
@@ -16,14 +17,6 @@ This gives the editor an accurate view of roofs, room cutaways, furniture
 footprints and movement. Reuse the renderer, but extract a read-only scene surface
 from its battle HUD and selection handlers before embedding it in the editor.
 Do not build an independent drawing system with separate collision rules.
-
-Tiled is a credible alternative if getting a general-purpose desktop editor
-quickly is the priority. Its [custom properties](https://doc.mapeditor.org/en/stable/manual/custom-properties/)
-and [scripting API](https://www.mapeditor.org/docs/scripting/) support game-specific
-metadata and exporters. It would still need our building, room, collision and
-runtime conversion tools, plus a separate preview of the game renderer. For this
-project, prefer the integrated editor. Add a Tiled adapter only if it becomes
-useful; do not maintain two editable source formats at launch.
 
 ## Shared data and compilation
 
@@ -40,7 +33,7 @@ Node script or generator ───┘                         │
 files retain runtime state separately. Do not use screenshots, SVG coordinates,
 or a saved battle as the authoring format.
 
-Proposed files:
+Implemented files:
 
 - `game/maps/<sector-id>.json`: one authoring document per sector.
 - `game/map-schema.js`: validation, schema versions and migrations.
@@ -155,7 +148,7 @@ claiming that a complete sector is playable.
 
 ## Programmatic editing, templates and persistence
 
-Proposed public API:
+Public API:
 
 ```js
 const result = applyMapCommands(document, [

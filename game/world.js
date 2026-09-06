@@ -6,6 +6,7 @@ import {createBattle} from './tactical.js';
 export function enterSector(request,previous=null){
  const map=buildSectorMap(request);
  if(previous){
+   for(const key of ['sourceMapId','sourceMapRevision']){if(previous[key]!==undefined)map[key]=previous[key];else delete map[key];}
    map.props=structuredClone(previous.props??map.props);map.tiles=structuredClone(previous.tiles);map.decor=structuredClone(previous.decor??map.decor);map.buildings=structuredClone(previous.buildings??map.buildings);
    // A new occupation creates a garrison. An unfinished engagement retains its survivors.
    if(!request.exploration&&!previous.sectorCleared)map.enemies=structuredClone(previous.units.filter(u=>u.side==='enemy'));

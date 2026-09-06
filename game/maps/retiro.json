@@ -1,0 +1,3040 @@
+{
+  "schemaVersion": 1,
+  "id": "retiro",
+  "revision": 0,
+  "width": 20,
+  "height": 16,
+  "metadata": {
+    "title": "Cuartel de Retiro"
+  },
+  "terrain": [
+    {
+      "x": 0,
+      "y": 0,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 1,
+      "y": 0,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 2,
+      "y": 0,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 3,
+      "y": 0,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 4,
+      "y": 0,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 5,
+      "y": 0,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 6,
+      "y": 0,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 7,
+      "y": 0,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 8,
+      "y": 0,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 9,
+      "y": 0,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 10,
+      "y": 0,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 11,
+      "y": 0,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 12,
+      "y": 0,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 13,
+      "y": 0,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 14,
+      "y": 0,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 15,
+      "y": 0,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 16,
+      "y": 0,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 17,
+      "y": 0,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 18,
+      "y": 0,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 19,
+      "y": 0,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 0,
+      "y": 1,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 1,
+      "y": 1,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 2,
+      "y": 1,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 3,
+      "y": 1,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 4,
+      "y": 1,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 5,
+      "y": 1,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 6,
+      "y": 1,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 7,
+      "y": 1,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 8,
+      "y": 1,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 9,
+      "y": 1,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 10,
+      "y": 1,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 11,
+      "y": 1,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 12,
+      "y": 1,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 13,
+      "y": 1,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 14,
+      "y": 1,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 15,
+      "y": 1,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 16,
+      "y": 1,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 17,
+      "y": 1,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 18,
+      "y": 1,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 19,
+      "y": 1,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 0,
+      "y": 2,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 1,
+      "y": 2,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 2,
+      "y": 2,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 3,
+      "y": 2,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 4,
+      "y": 2,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 5,
+      "y": 2,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 6,
+      "y": 2,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 7,
+      "y": 2,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 8,
+      "y": 2,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 9,
+      "y": 2,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 10,
+      "y": 2,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 11,
+      "y": 2,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 12,
+      "y": 2,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 13,
+      "y": 2,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 14,
+      "y": 2,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 15,
+      "y": 2,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 16,
+      "y": 2,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 17,
+      "y": 2,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 18,
+      "y": 2,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 19,
+      "y": 2,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 0,
+      "y": 3,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 1,
+      "y": 3,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 2,
+      "y": 3,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 3,
+      "y": 3,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 4,
+      "y": 3,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 5,
+      "y": 3,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 6,
+      "y": 3,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 7,
+      "y": 3,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 8,
+      "y": 3,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 9,
+      "y": 3,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 10,
+      "y": 3,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 11,
+      "y": 3,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 12,
+      "y": 3,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 13,
+      "y": 3,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 14,
+      "y": 3,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 15,
+      "y": 3,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 16,
+      "y": 3,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 17,
+      "y": 3,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 18,
+      "y": 3,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 19,
+      "y": 3,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 0,
+      "y": 4,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 1,
+      "y": 4,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 2,
+      "y": 4,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 3,
+      "y": 4,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 4,
+      "y": 4,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 5,
+      "y": 4,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 6,
+      "y": 4,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 7,
+      "y": 4,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 8,
+      "y": 4,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 9,
+      "y": 4,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 10,
+      "y": 4,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 11,
+      "y": 4,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 12,
+      "y": 4,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 13,
+      "y": 4,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 14,
+      "y": 4,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 15,
+      "y": 4,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 16,
+      "y": 4,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40
+    },
+    {
+      "x": 17,
+      "y": 4,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 18,
+      "y": 4,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 19,
+      "y": 4,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 0,
+      "y": 5,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 1,
+      "y": 5,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 2,
+      "y": 5,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 3,
+      "y": 5,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 4,
+      "y": 5,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 5,
+      "y": 5,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 6,
+      "y": 5,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 7,
+      "y": 5,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 8,
+      "y": 5,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 9,
+      "y": 5,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 10,
+      "y": 5,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 11,
+      "y": 5,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 12,
+      "y": 5,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 13,
+      "y": 5,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 14,
+      "y": 5,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 15,
+      "y": 5,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 16,
+      "y": 5,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40
+    },
+    {
+      "x": 17,
+      "y": 5,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 18,
+      "y": 5,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 19,
+      "y": 5,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 0,
+      "y": 6,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 1,
+      "y": 6,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 2,
+      "y": 6,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 3,
+      "y": 6,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 4,
+      "y": 6,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 5,
+      "y": 6,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 6,
+      "y": 6,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 7,
+      "y": 6,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 8,
+      "y": 6,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 9,
+      "y": 6,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 10,
+      "y": 6,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 11,
+      "y": 6,
+      "type": "stone",
+      "blocked": false,
+      "cover": 10
+    },
+    {
+      "x": 12,
+      "y": 6,
+      "type": "stone",
+      "blocked": false,
+      "cover": 10
+    },
+    {
+      "x": 13,
+      "y": 6,
+      "type": "stone",
+      "blocked": false,
+      "cover": 10
+    },
+    {
+      "x": 14,
+      "y": 6,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 15,
+      "y": 6,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 16,
+      "y": 6,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40
+    },
+    {
+      "x": 17,
+      "y": 6,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 18,
+      "y": 6,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 19,
+      "y": 6,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 0,
+      "y": 7,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 1,
+      "y": 7,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 2,
+      "y": 7,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 3,
+      "y": 7,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 4,
+      "y": 7,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 5,
+      "y": 7,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 6,
+      "y": 7,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 7,
+      "y": 7,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 8,
+      "y": 7,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 9,
+      "y": 7,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 10,
+      "y": 7,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 11,
+      "y": 7,
+      "type": "stone",
+      "blocked": false,
+      "cover": 10
+    },
+    {
+      "x": 12,
+      "y": 7,
+      "type": "stone",
+      "blocked": false,
+      "cover": 10
+    },
+    {
+      "x": 13,
+      "y": 7,
+      "type": "stone",
+      "blocked": false,
+      "cover": 10
+    },
+    {
+      "x": 14,
+      "y": 7,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 15,
+      "y": 7,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 16,
+      "y": 7,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 17,
+      "y": 7,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 18,
+      "y": 7,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 19,
+      "y": 7,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 0,
+      "y": 8,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 1,
+      "y": 8,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 2,
+      "y": 8,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 3,
+      "y": 8,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 4,
+      "y": 8,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 5,
+      "y": 8,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 6,
+      "y": 8,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 7,
+      "y": 8,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 8,
+      "y": 8,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 9,
+      "y": 8,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 10,
+      "y": 8,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 11,
+      "y": 8,
+      "type": "stone",
+      "blocked": false,
+      "cover": 10
+    },
+    {
+      "x": 12,
+      "y": 8,
+      "type": "stone",
+      "blocked": false,
+      "cover": 10
+    },
+    {
+      "x": 13,
+      "y": 8,
+      "type": "stone",
+      "blocked": false,
+      "cover": 10
+    },
+    {
+      "x": 14,
+      "y": 8,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 15,
+      "y": 8,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 16,
+      "y": 8,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 17,
+      "y": 8,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 18,
+      "y": 8,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 19,
+      "y": 8,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 0,
+      "y": 9,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 1,
+      "y": 9,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 2,
+      "y": 9,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 3,
+      "y": 9,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 4,
+      "y": 9,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 5,
+      "y": 9,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 6,
+      "y": 9,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 7,
+      "y": 9,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 8,
+      "y": 9,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 9,
+      "y": 9,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 10,
+      "y": 9,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 11,
+      "y": 9,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40
+    },
+    {
+      "x": 12,
+      "y": 9,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40
+    },
+    {
+      "x": 13,
+      "y": 9,
+      "type": "stone",
+      "blocked": false,
+      "cover": 10
+    },
+    {
+      "x": 14,
+      "y": 9,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 15,
+      "y": 9,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 16,
+      "y": 9,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40
+    },
+    {
+      "x": 17,
+      "y": 9,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 18,
+      "y": 9,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 19,
+      "y": 9,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 0,
+      "y": 10,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 1,
+      "y": 10,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 2,
+      "y": 10,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 3,
+      "y": 10,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 4,
+      "y": 10,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 5,
+      "y": 10,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 6,
+      "y": 10,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 7,
+      "y": 10,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 8,
+      "y": 10,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 9,
+      "y": 10,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 10,
+      "y": 10,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 11,
+      "y": 10,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 12,
+      "y": 10,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 13,
+      "y": 10,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 14,
+      "y": 10,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 15,
+      "y": 10,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 16,
+      "y": 10,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40
+    },
+    {
+      "x": 17,
+      "y": 10,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 18,
+      "y": 10,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 19,
+      "y": 10,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 0,
+      "y": 11,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 1,
+      "y": 11,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 2,
+      "y": 11,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 3,
+      "y": 11,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 4,
+      "y": 11,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 5,
+      "y": 11,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 6,
+      "y": 11,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 7,
+      "y": 11,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 8,
+      "y": 11,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 9,
+      "y": 11,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 10,
+      "y": 11,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 11,
+      "y": 11,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 12,
+      "y": 11,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 13,
+      "y": 11,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 14,
+      "y": 11,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 15,
+      "y": 11,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 16,
+      "y": 11,
+      "type": "wall",
+      "blocked": true,
+      "cover": 40
+    },
+    {
+      "x": 17,
+      "y": 11,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 18,
+      "y": 11,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 19,
+      "y": 11,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 0,
+      "y": 12,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 1,
+      "y": 12,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 2,
+      "y": 12,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 3,
+      "y": 12,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 4,
+      "y": 12,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 5,
+      "y": 12,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 6,
+      "y": 12,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 7,
+      "y": 12,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 8,
+      "y": 12,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 9,
+      "y": 12,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 10,
+      "y": 12,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 11,
+      "y": 12,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 12,
+      "y": 12,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 13,
+      "y": 12,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 14,
+      "y": 12,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 15,
+      "y": 12,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 16,
+      "y": 12,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 17,
+      "y": 12,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 18,
+      "y": 12,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 19,
+      "y": 12,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 0,
+      "y": 13,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 1,
+      "y": 13,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 2,
+      "y": 13,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 3,
+      "y": 13,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 4,
+      "y": 13,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 5,
+      "y": 13,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 6,
+      "y": 13,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 7,
+      "y": 13,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 8,
+      "y": 13,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 9,
+      "y": 13,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 10,
+      "y": 13,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 11,
+      "y": 13,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 12,
+      "y": 13,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 13,
+      "y": 13,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 14,
+      "y": 13,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 15,
+      "y": 13,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 16,
+      "y": 13,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 17,
+      "y": 13,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 18,
+      "y": 13,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 19,
+      "y": 13,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 0,
+      "y": 14,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 1,
+      "y": 14,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 2,
+      "y": 14,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 3,
+      "y": 14,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 4,
+      "y": 14,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 5,
+      "y": 14,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 6,
+      "y": 14,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 7,
+      "y": 14,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 8,
+      "y": 14,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 9,
+      "y": 14,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 10,
+      "y": 14,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 11,
+      "y": 14,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 12,
+      "y": 14,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 13,
+      "y": 14,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 14,
+      "y": 14,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 15,
+      "y": 14,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 16,
+      "y": 14,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 17,
+      "y": 14,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 18,
+      "y": 14,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 19,
+      "y": 14,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 0,
+      "y": 15,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 1,
+      "y": 15,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 2,
+      "y": 15,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 3,
+      "y": 15,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 4,
+      "y": 15,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 5,
+      "y": 15,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 6,
+      "y": 15,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 7,
+      "y": 15,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 8,
+      "y": 15,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 9,
+      "y": 15,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 10,
+      "y": 15,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 11,
+      "y": 15,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 12,
+      "y": 15,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 13,
+      "y": 15,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 14,
+      "y": 15,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 15,
+      "y": 15,
+      "type": "road",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 16,
+      "y": 15,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 17,
+      "y": 15,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 18,
+      "y": 15,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    },
+    {
+      "x": 19,
+      "y": 15,
+      "type": "grass",
+      "blocked": false,
+      "cover": 0
+    }
+  ],
+  "features": [],
+  "buildings": [
+    {
+      "id": "retiro:building",
+      "name": "Casa del sector",
+      "x": 6,
+      "y": 6,
+      "width": 5,
+      "height": 4,
+      "roof": "tile",
+      "material": "adobe",
+      "rooms": [
+        {
+          "id": "retiro:building:interior",
+          "cells": [
+            {
+              "x": 7,
+              "y": 7
+            },
+            {
+              "x": 8,
+              "y": 7
+            },
+            {
+              "x": 9,
+              "y": 7
+            },
+            {
+              "x": 7,
+              "y": 8
+            },
+            {
+              "x": 8,
+              "y": 8
+            },
+            {
+              "x": 9,
+              "y": 8
+            }
+          ]
+        }
+      ],
+      "walls": [
+        {
+          "x": 6,
+          "y": 6,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null
+        },
+        {
+          "x": 7,
+          "y": 6,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null
+        },
+        {
+          "x": 8,
+          "y": 6,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null
+        },
+        {
+          "x": 9,
+          "y": 6,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 6,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null
+        },
+        {
+          "x": 6,
+          "y": 7,
+          "type": "window",
+          "blocked": true,
+          "blocksSight": false,
+          "cover": 25,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 7,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null
+        },
+        {
+          "x": 6,
+          "y": 8,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 8,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null
+        },
+        {
+          "x": 6,
+          "y": 9,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null
+        },
+        {
+          "x": 7,
+          "y": 9,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null
+        },
+        {
+          "x": 8,
+          "y": 9,
+          "type": "door",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 0,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null,
+          "doorId": "retiro:door-left",
+          "open": false,
+          "locked": false
+        },
+        {
+          "x": 9,
+          "y": 9,
+          "type": "door",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 0,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null,
+          "doorId": "retiro:door-right",
+          "open": false,
+          "locked": false
+        },
+        {
+          "x": 10,
+          "y": 9,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:building",
+          "roomId": null
+        }
+      ]
+    },
+    {
+      "id": "retiro:house-0",
+      "name": "Barraca del cuartel",
+      "x": 4,
+      "y": 0,
+      "width": 9,
+      "height": 3,
+      "roof": "tile",
+      "material": "adobe",
+      "rooms": [
+        {
+          "id": "retiro:house-0:interior",
+          "cells": [
+            {
+              "x": 5,
+              "y": 1
+            },
+            {
+              "x": 6,
+              "y": 1
+            },
+            {
+              "x": 7,
+              "y": 1
+            },
+            {
+              "x": 8,
+              "y": 1
+            },
+            {
+              "x": 9,
+              "y": 1
+            },
+            {
+              "x": 10,
+              "y": 1
+            },
+            {
+              "x": 11,
+              "y": 1
+            }
+          ]
+        }
+      ],
+      "walls": [
+        {
+          "x": 4,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 5,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 6,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 7,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 8,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 9,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 11,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 12,
+          "y": 0,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 4,
+          "y": 1,
+          "type": "window",
+          "blocked": true,
+          "blocksSight": false,
+          "cover": 25,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 12,
+          "y": 1,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 4,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 5,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 6,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 7,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 8,
+          "y": 2,
+          "type": "door",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 0,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null,
+          "doorId": "retiro:house-0:door:8:2",
+          "open": false,
+          "locked": false
+        },
+        {
+          "x": 9,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 11,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        },
+        {
+          "x": 12,
+          "y": 2,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-0",
+          "roomId": null
+        }
+      ]
+    },
+    {
+      "id": "retiro:house-1",
+      "name": "Barraca del cuartel",
+      "x": 5,
+      "y": 13,
+      "width": 8,
+      "height": 3,
+      "roof": "tile",
+      "material": "adobe",
+      "rooms": [
+        {
+          "id": "retiro:house-1:interior",
+          "cells": [
+            {
+              "x": 6,
+              "y": 14
+            },
+            {
+              "x": 7,
+              "y": 14
+            },
+            {
+              "x": 8,
+              "y": 14
+            },
+            {
+              "x": 9,
+              "y": 14
+            },
+            {
+              "x": 10,
+              "y": 14
+            },
+            {
+              "x": 11,
+              "y": 14
+            }
+          ]
+        }
+      ],
+      "walls": [
+        {
+          "x": 5,
+          "y": 13,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null
+        },
+        {
+          "x": 6,
+          "y": 13,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null
+        },
+        {
+          "x": 7,
+          "y": 13,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null
+        },
+        {
+          "x": 8,
+          "y": 13,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null
+        },
+        {
+          "x": 9,
+          "y": 13,
+          "type": "door",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 0,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null,
+          "doorId": "retiro:house-1:door:9:13",
+          "open": false,
+          "locked": false
+        },
+        {
+          "x": 10,
+          "y": 13,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null
+        },
+        {
+          "x": 11,
+          "y": 13,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null
+        },
+        {
+          "x": 12,
+          "y": 13,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null
+        },
+        {
+          "x": 5,
+          "y": 14,
+          "type": "window",
+          "blocked": true,
+          "blocksSight": false,
+          "cover": 25,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null
+        },
+        {
+          "x": 12,
+          "y": 14,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null
+        },
+        {
+          "x": 5,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null
+        },
+        {
+          "x": 6,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null
+        },
+        {
+          "x": 7,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null
+        },
+        {
+          "x": 8,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null
+        },
+        {
+          "x": 9,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null
+        },
+        {
+          "x": 10,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null
+        },
+        {
+          "x": 11,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null
+        },
+        {
+          "x": 12,
+          "y": 15,
+          "type": "wall",
+          "blocked": true,
+          "blocksSight": true,
+          "cover": 40,
+          "material": "adobe",
+          "buildingId": "retiro:house-1",
+          "roomId": null
+        }
+      ]
+    }
+  ],
+  "props": [
+    {
+      "id": "retiro:building:bed:7:7",
+      "type": "bed",
+      "x": 7,
+      "y": 7,
+      "buildingId": "retiro:building",
+      "roomId": "retiro:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "retiro:building:bench:9:7",
+      "type": "bench",
+      "x": 9,
+      "y": 7,
+      "buildingId": "retiro:building",
+      "roomId": "retiro:building:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "retiro:house-0:bench:11:1",
+      "type": "bench",
+      "x": 11,
+      "y": 1,
+      "buildingId": "retiro:house-0",
+      "roomId": "retiro:house-0:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "retiro:house-1:bench:11:14",
+      "type": "bench",
+      "x": 11,
+      "y": 14,
+      "buildingId": "retiro:house-1",
+      "roomId": "retiro:house-1:interior",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    }
+  ],
+  "items": [],
+  "spawns": [],
+  "exits": [],
+  "lights": [
+    {
+      "id": "retiro:lantern",
+      "type": "lantern",
+      "x": 8,
+      "y": 10,
+      "radius": 3,
+      "intensity": 0.8
+    }
+  ],
+  "decor": []
+}

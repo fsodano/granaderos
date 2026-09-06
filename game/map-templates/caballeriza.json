@@ -1,0 +1,518 @@
+{
+  "version": 1,
+  "name": "Caballeriza",
+  "building": {
+    "id": "caballeriza",
+    "name": "Caballeriza",
+    "x": 0,
+    "y": 0,
+    "width": 10,
+    "height": 6,
+    "roof": "tile",
+    "material": "adobe",
+    "rooms": [
+      {
+        "id": "caballeriza:interior",
+        "cells": [
+          {
+            "x": 1,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 1
+          },
+          {
+            "x": 1,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 2
+          },
+          {
+            "x": 1,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 1
+          },
+          {
+            "x": 3,
+            "y": 2
+          },
+          {
+            "x": 2,
+            "y": 3
+          },
+          {
+            "x": 1,
+            "y": 4
+          },
+          {
+            "x": 5,
+            "y": 1
+          },
+          {
+            "x": 4,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 3
+          },
+          {
+            "x": 2,
+            "y": 4
+          },
+          {
+            "x": 6,
+            "y": 1
+          },
+          {
+            "x": 5,
+            "y": 2
+          },
+          {
+            "x": 4,
+            "y": 3
+          },
+          {
+            "x": 3,
+            "y": 4
+          },
+          {
+            "x": 7,
+            "y": 1
+          },
+          {
+            "x": 6,
+            "y": 2
+          },
+          {
+            "x": 5,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 4
+          },
+          {
+            "x": 8,
+            "y": 1
+          },
+          {
+            "x": 7,
+            "y": 2
+          },
+          {
+            "x": 6,
+            "y": 3
+          },
+          {
+            "x": 5,
+            "y": 4
+          },
+          {
+            "x": 8,
+            "y": 2
+          },
+          {
+            "x": 7,
+            "y": 3
+          },
+          {
+            "x": 6,
+            "y": 4
+          },
+          {
+            "x": 8,
+            "y": 3
+          },
+          {
+            "x": 7,
+            "y": 4
+          },
+          {
+            "x": 8,
+            "y": 4
+          }
+        ]
+      }
+    ],
+    "walls": [
+      {
+        "x": 0,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 1,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 3,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 4,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 5,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 6,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 7,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 8,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 9,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 1,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 9,
+        "y": 1,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 2,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 9,
+        "y": 2,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 3,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 9,
+        "y": 3,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 4,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 9,
+        "y": 4,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 2,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 3,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 4,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 5,
+        "y": 5,
+        "type": "door",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 0,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null,
+        "doorId": "caballeriza:door:5:5",
+        "open": false,
+        "locked": false
+      },
+      {
+        "x": 6,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 7,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 9,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "caballeriza",
+        "roomId": null
+      },
+      {
+        "x": 1,
+        "y": 5,
+        "type": "window"
+      },
+      {
+        "x": 8,
+        "y": 5,
+        "type": "window"
+      }
+    ],
+    "kind": "stable"
+  },
+  "features": [],
+  "props": [
+    {
+      "id": "caballeriza-prop-0",
+      "type": "hay",
+      "x": 1,
+      "y": 1,
+      "name": "Forraje",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "caballeriza-prop-1",
+      "type": "hay",
+      "x": 3,
+      "y": 1,
+      "name": "Forraje",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "caballeriza-prop-2",
+      "type": "hay",
+      "x": 6,
+      "y": 1,
+      "name": "Forraje",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "caballeriza-prop-3",
+      "type": "hay",
+      "x": 8,
+      "y": 1,
+      "name": "Forraje",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "caballeriza-prop-4",
+      "type": "barrels",
+      "x": 1,
+      "y": 4,
+      "name": "Agua",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    }
+  ],
+  "items": [],
+  "spawns": [],
+  "exits": [],
+  "lights": []
+}

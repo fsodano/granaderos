@@ -1,0 +1,307 @@
+{
+  "version": 1,
+  "name": "Posta colonial",
+  "building": {
+    "id": "posta",
+    "name": "Posta colonial",
+    "x": 0,
+    "y": 0,
+    "width": 6,
+    "height": 5,
+    "roof": "tile",
+    "material": "adobe",
+    "rooms": [
+      {
+        "id": "posta:interior",
+        "cells": [
+          {
+            "x": 1,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 1
+          },
+          {
+            "x": 1,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 2
+          },
+          {
+            "x": 1,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 1
+          },
+          {
+            "x": 3,
+            "y": 2
+          },
+          {
+            "x": 2,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 3
+          }
+        ]
+      }
+    ],
+    "walls": [
+      {
+        "x": 0,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "posta",
+        "roomId": null
+      },
+      {
+        "x": 1,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "posta",
+        "roomId": null
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "posta",
+        "roomId": null
+      },
+      {
+        "x": 3,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "posta",
+        "roomId": null
+      },
+      {
+        "x": 4,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "posta",
+        "roomId": null
+      },
+      {
+        "x": 5,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "posta",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 1,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "posta",
+        "roomId": null
+      },
+      {
+        "x": 5,
+        "y": 1,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "posta",
+        "roomId": null
+      },
+      {
+        "x": 5,
+        "y": 2,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "posta",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 3,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "posta",
+        "roomId": null
+      },
+      {
+        "x": 5,
+        "y": 3,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "posta",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 4,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "posta",
+        "roomId": null
+      },
+      {
+        "x": 1,
+        "y": 4,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "posta",
+        "roomId": null
+      },
+      {
+        "x": 2,
+        "y": 4,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "posta",
+        "roomId": null
+      },
+      {
+        "x": 3,
+        "y": 4,
+        "type": "door",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 0,
+        "material": "adobe",
+        "buildingId": "posta",
+        "roomId": null,
+        "doorId": "posta:door:3:4",
+        "open": false,
+        "locked": false
+      },
+      {
+        "x": 4,
+        "y": 4,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "posta",
+        "roomId": null
+      },
+      {
+        "x": 5,
+        "y": 4,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "posta",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 2,
+        "type": "window"
+      }
+    ],
+    "kind": "posta"
+  },
+  "features": [],
+  "props": [
+    {
+      "id": "posta-0",
+      "type": "table",
+      "x": 1,
+      "y": 1,
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "posta-1",
+      "type": "bed",
+      "x": 4,
+      "y": 1,
+      "footprint": {
+        "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "posta-2",
+      "type": "chest",
+      "x": 4,
+      "y": 3,
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    }
+  ],
+  "items": [],
+  "spawns": [],
+  "exits": [],
+  "lights": []
+}
