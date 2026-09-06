@@ -1,3 +1,4 @@
+import {propBlocksAt} from './props.js';
 import {buildSectorMap} from './maps.js';
 import {createBattle} from './tactical.js';
 
@@ -22,7 +23,7 @@ export function enterSector(request,previous=null){
  if(previous)state.units.push(...structuredClone(previous.units.filter(u=>u.militia&&u.hp<=0&&!state.units.some(v=>v.id===u.id))));
  const occupied=new Set(state.units.filter(u=>u.side==='enemy'&&u.hp>0&&!u.routed).map(u=>`${u.x},${u.y}`));
  const reserve=(preferred)=>{
-   const candidates=state.tiles.filter(t=>!t.blocked&&!occupied.has(`${t.x},${t.y}`));
+   const candidates=state.tiles.filter(t=>!t.blocked&&!propBlocksAt(state,t.x,t.y)&&!occupied.has(`${t.x},${t.y}`));
    candidates.sort((a,b)=>Math.abs(a.x-preferred.x)+Math.abs(a.y-preferred.y)-Math.abs(b.x-preferred.x)-Math.abs(b.y-preferred.y)||a.y-b.y||a.x-b.x);
    if(!candidates[0])throw Error('No queda espacio libre para entrar en el sector.');
    const {x,y}=candidates[0];occupied.add(`${x},${y}`);return{x,y};
