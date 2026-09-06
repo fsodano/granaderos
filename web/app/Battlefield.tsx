@@ -108,6 +108,7 @@ export default function Battlefield({battle:s,onChange,onFinish,onRetreat,conver
       onCloseInventory={()=>setInventoryId(null)}
       onCameraCenter={()=>{setCameraFollowsSelection(true);setCameraOffset({x:0,y:0});}}
       onCameraPan={panCamera}
+      onZoom={delta=>setZoom(value=>Math.max(1,Math.min(3,value+delta)))}
       onCannonChange={(id)=>setCannonId(id)}
       onShotTypeChange={(t)=>setShotType(t)}
       onSetAim={(n)=>setAim(n)}

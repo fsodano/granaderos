@@ -5,3 +5,12 @@ test('actual looting, opened doors, interior reveal and a burning torch survive 
 test('legacy missing optional fields normalize without dropping original tactical objects',()=>{const s=played();delete s.mode;delete s.lights;delete s.groundItems;delete s.units[0].energy;delete s.units[0].movementMode;const n=validateBattleSnapshot(s);assert.equal(n.mode,'combat');assert.equal(n.units[0].energy,100);assert.equal(n.units[0].movementMode,'walk');assert.ok(n.buildings.length);assert.equal(n.tiles.find(t=>t.doorId==='front').open,true);});
 test('malformed nested state fails before rendering or tactical advancement',()=>{for(const corrupt of[s=>s.units[0].inventory.bad={count:-1,weight:1},s=>s.units[0].energy='empty',s=>s.units[0].unconscious=true,s=>s.lights[0].x=99,s=>s.buildings[0].rooms[0].cells[0].x=-1,s=>s.npcs=[null],s=>s.groundItems=[{id:'bola',type:'boleadoras',x:1,y:1,count:-1}],s=>s.units[0].weight=Infinity]){const s=played();corrupt(s);assert.throws(()=>validateBattleSnapshot(s));assert.throws(()=>validateSectorSnapshot(s));}});
 test('finite non-firearm recovered objects are valid inventory rather than a hard-coded gun whitelist',()=>{const s=played();s.units[0].inventory.bolas={count:3,weight:.7,weapon:1820,loaded:0,condition:80};assert.equal(validateBattleSnapshot(s).units[0].inventory.bolas.count,3);});
+
+test('furniture survives both save boundaries and malformed props are rejected',()=>{
+ const s=played();s.props=[{id:'table',type:'table',x:5,y:3,buildingId:'house',roomId:'house:interior'}];
+ for(const validate of [validateBattleSnapshot,validateSectorSnapshot]){
+  assert.deepEqual(validate(s).props,s.props);
+  for(const props of [{},[null],[{...s.props[0],x:99}],[{...s.props[0],type:'unknown'}],[s.props[0],s.props[0]],[{...s.props[0],roomId:{}}]])assert.throws(()=>validate({...s,props}));
+  const legacy=structuredClone(s);delete legacy.props;assert.deepEqual(validate(legacy).props,[]);
+ }
+});

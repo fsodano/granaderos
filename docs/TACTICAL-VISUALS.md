@@ -1,6 +1,6 @@
 # Tactical visual assets and compilation
 
-This document records the current original art pipeline. It does not assert visual parity with Jagged Alliance 2 or completion of the full Granaderos specification. No renderer changes accompany this documentation/script addition.
+This document records the current original art pipeline. It does not assert visual parity with Jagged Alliance 2 or completion of the full Granaderos specification.
 
 ## Ground and building materials
 
@@ -56,3 +56,26 @@ The terrain compiler reproduces all current terrain exports exactly. Scenery dim
 The remaining visual work includes judging perceived scale and camera consistency in real tactical scenes; preventing repetitive texture patterns; improving natural transitions between terrain types; richer damaged/interior structures; more regional vegetation variants; convincing mounted combat and action transitions; and character-specific silhouettes/equipment where gameplay warrants them. The six scenery objects alone do not supply an entire Argentine environmental art set. Current procedural building faces are an implementation choice rather than hand-authored artwork for every historic structure.
 
 Browser review must check occlusion, roof hiding, tree fading, unit selection, night lighting, zoom, movement anchors and readability at the actual viewport. A screenshot that looks better is evidence of that frame, not proof of all maps, all animations or complete JA2-level fidelity. Keep those claims separate from the reproducible asset pipeline documented here.
+
+
+## Completed civilian and interior pass
+
+Exploration NPCs use the original `civilian-idle-atlas.png` and
+`civilian-walk-atlas.png`. Reproduce them with `assets/rig/render_civilian.py`
+and `assets/rig/pack_civilian.py`; metadata records eight directions, eight walk
+frames per direction, 10 fps, and the fixed infantry ground anchor. The build
+checks dimensions, frame coverage, bounds, anchors, and pixel checksums.
+
+`TacticalBuildings.tsx` renders the authored collision cells and room roofs.
+`TacticalProps.tsx` renders furnished interiors from sector data. Props require
+their own room to be revealed; revealing another room in the same building does
+not expose them. Floors in unknown rooms are concealed on the radar. Units,
+props, lights, and dropped weapons share ground depth order; scenery and props
+retain local night illumination. Props persist through sector re-entry and save
+validation.
+
+The JA2 strip retains the desktop 26% screen-height proportion. The visual review
+corrected vitals to narrow bars beside faces, restored inventory names and
+readouts, and connected radar zoom. Browser checks covered 1280×800, 768×800,
+and 375×800 layouts, civilian idle/walk selection, revealed/hidden night rooms,
+and radar camera bounds. Smaller screens use local scrolling.

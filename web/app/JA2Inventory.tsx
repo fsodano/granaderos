@@ -17,10 +17,10 @@ type RadarProps = {
   battle: any; units: any[]; selected: any; project: (x: number, y: number) => { x: number; y: number };
   vw: number; vh: number; cameraRect: any; zoom: number; mode: any;
   missionAllies: any[]; localMilitia: any[];
-  onSelect: (id: any) => void; onRetreat: () => void; onCameraCenter: () => void; onCameraPan: (dx: number, dy: number) => void;
+  onSelect: (id: any) => void; onRetreat: () => void; onCameraCenter: () => void; onCameraPan: (dx: number, dy: number) => void; onZoom: (delta: number) => void;
 };
 // Shared far-right cluster (radar + locale + garrison popovers + Retirada), reused by MODE A (.ja2-right) and MODE B.
-export function RadarCluster({battle, units, selected, project, vw, vh, cameraRect, zoom, mode, missionAllies, localMilitia, onSelect, onRetreat, onCameraCenter, onCameraPan}: RadarProps) {
+export function RadarCluster({battle, units, selected, project, vw, vh, cameraRect, zoom, mode, missionAllies, localMilitia, onSelect, onRetreat, onCameraCenter, onCameraPan, onZoom}: RadarProps) {
   const enemies = visibleEnemies(battle);
   return (
     <>
@@ -32,9 +32,9 @@ export function RadarCluster({battle, units, selected, project, vw, vh, cameraRe
           <button aria-label="Centrar cámara en el combatiente seleccionado" onClick={onCameraCenter}>◎</button>
           <button aria-label="Desplazar cámara hacia abajo" onClick={() => onCameraPan(0, 65)}>↓</button>
           <button aria-label="Desplazar cámara a la derecha" onClick={() => onCameraPan(90, 0)}>→</button>
-          <button aria-label="Alejar campo" disabled>−</button>
+          <button aria-label="Alejar campo" disabled={zoom<=1} onClick={()=>onZoom(-.25)}>−</button>
           <span>{Math.round(zoom * 100)}%</span>
-          <button aria-label="Acercar campo" disabled>+</button>
+          <button aria-label="Acercar campo" disabled={zoom>=3} onClick={()=>onZoom(.25)}>+</button>
         </span>
       </div>
       <div className="ja2-locale">
@@ -56,9 +56,9 @@ type Props = {
   missionAllies: any[]; localMilitia: any[];
   vw: number; vh: number; cameraRect: any; project: (x: number, y: number) => { x: number; y: number }; zoom: number;
   onOrder: (a: any) => void; onMode: (id: any) => void; onToggleSight: () => void; onSelect: (id: any) => void;
-  onRetreat: () => void; onCameraCenter: () => void; onCameraPan: (dx: number, dy: number) => void; onCloseInventory: () => void;
+  onRetreat: () => void; onCameraCenter: () => void; onCameraPan: (dx: number, dy: number) => void; onZoom: (delta: number) => void; onCloseInventory: () => void;
 };
-export default function JA2Inventory({unit, battle, mode, showSight, busy, units, selected, missionAllies, localMilitia, vw, vh, cameraRect, project, zoom, onOrder, onMode, onToggleSight, onSelect, onRetreat, onCameraCenter, onCameraPan, onCloseInventory}: Props) {
+export default function JA2Inventory({unit, battle, mode, showSight, busy, units, selected, missionAllies, localMilitia, vw, vh, cameraRect, project, zoom, onOrder, onMode, onToggleSight, onSelect, onRetreat, onCameraCenter, onCameraPan, onZoom, onCloseInventory}: Props) {
   const inv: any = inventoryModel(battle, unit);
   const descriptors: any[] = orderDescriptors(battle, unit, {busy});
   const def = (id: string) => descriptors.find((d: any) => d.id === id);
@@ -140,7 +140,7 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
         <small>Los pertrechos se reparten entre el equipo de campaña de cada combatiente.</small>
       </div>
       <div className="ja2-right">
-        <RadarCluster battle={battle} units={units} selected={selected} project={project} vw={vw} vh={vh} cameraRect={cameraRect} zoom={zoom} mode={mode} missionAllies={missionAllies} localMilitia={localMilitia} onSelect={onSelect} onRetreat={onRetreat} onCameraCenter={onCameraCenter} onCameraPan={onCameraPan} />
+        <RadarCluster battle={battle} units={units} selected={selected} project={project} vw={vw} vh={vh} cameraRect={cameraRect} zoom={zoom} mode={mode} missionAllies={missionAllies} localMilitia={localMilitia} onSelect={onSelect} onRetreat={onRetreat} onCameraCenter={onCameraCenter} onCameraPan={onCameraPan} onZoom={onZoom} />
         <button className="ja2-done gold-button" onClick={onCloseInventory}>Listo</button>
       </div>
     </div>

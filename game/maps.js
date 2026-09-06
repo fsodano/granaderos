@@ -91,7 +91,15 @@ function plan(id){
    const result=placeBuilding(c.tiles,{id:`${id}:house-${index}`,name:id==='retiro'?'Barraca del cuartel':`Casa ${index+2} del poblado`,x,y,width,height,doors:[{x:doorX,y:doorY}],windows:[{x,y:y+1}],material:'adobe',roof:'tile'});
    c.tiles.splice(0,c.tiles.length,...result.tiles);buildings.push(result.building);
  }
- return {...c,decor,buildings,lights};
+ // Small, authored furnishings. They decorate walkable cells and do not alter rules.
+ const props=[];
+ const furnish=(building,type,x,y)=>{const room=building.rooms.find(r=>r.cells.some(c=>c.x===x&&c.y===y));if(room)props.push({id:`${building.id}:${type}:${x}:${y}`,type,x,y,buildingId:building.id,roomId:room.id});};
+ for(const b of buildings){
+   furnish(b,id==='retiro'?'bed':id==='ensenada'?'barrels':'table',b.x+1,b.y+1);
+   if(b.width>=5)furnish(b,id==='mendoza'||id==='cordoba'?'chest':'bench',b.x+b.width-2,b.y+1);
+   if(b.height>=5){furnish(b,'bed',b.x+1,b.y+b.height-2);furnish(b,'chest',b.x+b.width-2,b.y+b.height-2);}
+ }
+ return {...c,decor,buildings,lights,props};
 }
 const key=p=>`${p.x},${p.y}`;
 function connected(tiles,start){
@@ -113,5 +121,5 @@ export function buildSectorMap(request={}){
  const enemyCount=request.enemies?.length??Math.max(3,squad.length+(request.difficulty??1)-1);
  const enemies=Array.from({length:enemyCount},(_,i)=>({id:`enemy-${i}`,name:`Soldado realista ${i+1}`,weapon:i%3===0?1801:1800,marksmanship:50+(request.difficulty??1)*5,morale:60+(request.difficulty??1)*5,...clone(request.enemies?.[i]??{}),...choose({x:id==='santa_fe'?15:id==='san_lorenzo'?15:17,y:3+i%10},'enemy')}));
  const artillery=(request.artillery??Array.from({length:Math.min(request.cannons??0,3)},()=>({type:'bronze4',side:'player',loaded:true,ammo:6}))).map((gun,i)=>({...clone(gun),...choose({x:3,y:4+i*3},'player')}));
- return {...clone(request),sector:request.sceneId?request.sector:id,name:request.name??names[id],width:WIDTH,height:HEIGHT,tiles,decor:authored.decor,buildings:authored.buildings,lights:authored.lights,squad,enemies,artillery,mapTitle:names[id]};
+ return {...clone(request),sector:request.sceneId?request.sector:id,name:request.name??names[id],width:WIDTH,height:HEIGHT,tiles,decor:authored.decor,props:authored.props,buildings:authored.buildings,lights:authored.lights,squad,enemies,artillery,mapTitle:names[id]};
 }
