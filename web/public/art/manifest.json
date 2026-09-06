@@ -348,6 +348,114 @@
       "bytes": 15284,
       "sha256": "11786bc0b648ffa686ac81924b72c1da548c46ee72b2f6156a5fc5f7e766d421",
       "source_sha256": "4d54cb6f5e29772de2f212fa3c6a1fba97b78aec11c86740bfae421704f4a2d5"
+    },
+    {
+      "path": "architecture-plaster-v2.png",
+      "width": 512,
+      "height": 512,
+      "mode": "RGB",
+      "format": "PNG",
+      "generator": "OpenAI built-in image_gen",
+      "provenance": {
+        "record": "docs/art/architecture-materials-v2.json",
+        "asset": "plaster"
+      },
+      "prompt": "docs/art/architecture-materials-v2.json#/assets/0/prompt",
+      "optimization": "Generated 1254x1254 RGB originals were resized to 512x512 PNG with Sharp Lanczos3, lossless PNG compression level 9.",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 454479,
+      "sha256": "e22a9ae08b87c03c0845a1170660042373dba57510dd9db185e22a5c7a3069f8"
+    },
+    {
+      "path": "architecture-stone-v2.png",
+      "width": 512,
+      "height": 512,
+      "mode": "RGB",
+      "format": "PNG",
+      "generator": "OpenAI built-in image_gen",
+      "provenance": {
+        "record": "docs/art/architecture-materials-v2.json",
+        "asset": "stone"
+      },
+      "prompt": "docs/art/architecture-materials-v2.json#/assets/1/prompt",
+      "optimization": "Generated 1254x1254 RGB originals were resized to 512x512 PNG with Sharp Lanczos3, lossless PNG compression level 9.",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 576986,
+      "sha256": "e666253dc2c03968c8221cd4d3774a8190498fc4682b2110c43cd9f5588be6eb"
+    },
+    {
+      "path": "architecture-brick-v2.png",
+      "width": 512,
+      "height": 512,
+      "mode": "RGB",
+      "format": "PNG",
+      "generator": "OpenAI built-in image_gen",
+      "provenance": {
+        "record": "docs/art/architecture-materials-v2.json",
+        "asset": "brick"
+      },
+      "prompt": "docs/art/architecture-materials-v2.json#/assets/2/prompt",
+      "optimization": "Generated 1254x1254 RGB originals were resized to 512x512 PNG with Sharp Lanczos3, lossless PNG compression level 9.",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 624190,
+      "sha256": "c867d205c1046c53911d8d460b30cebe75044b7382c816ff0b53920b212529a8"
+    },
+    {
+      "path": "architecture-wood-v2.png",
+      "width": 512,
+      "height": 512,
+      "mode": "RGB",
+      "format": "PNG",
+      "generator": "OpenAI built-in image_gen",
+      "provenance": {
+        "record": "docs/art/architecture-materials-v2.json",
+        "asset": "wood"
+      },
+      "prompt": "docs/art/architecture-materials-v2.json#/assets/3/prompt",
+      "optimization": "Generated 1254x1254 RGB originals were resized to 512x512 PNG with Sharp Lanczos3, lossless PNG compression level 9.",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 433204,
+      "sha256": "1512e4169d32a2aaaa81e0c1dcdf6f25dd2d685cae0a1b94ef0c1016a5ea9d98"
+    },
+    {
+      "path": "architecture-roof-clay-v2.png",
+      "width": 512,
+      "height": 512,
+      "mode": "RGB",
+      "format": "PNG",
+      "generator": "OpenAI built-in image_gen",
+      "provenance": {
+        "record": "docs/art/architecture-materials-v2.json",
+        "asset": "roof-clay"
+      },
+      "prompt": "docs/art/architecture-materials-v2.json#/assets/4/prompt",
+      "optimization": "Generated 1254x1254 RGB originals were resized to 512x512 PNG with Sharp Lanczos3, lossless PNG compression level 9.",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 624816,
+      "sha256": "f8b29896d07a62609d9035f05a1909581b0b66f6ed5add0f06c24b0c6db226b6"
+    },
+    {
+      "path": "architecture-roof-thatch-v2.png",
+      "width": 512,
+      "height": 512,
+      "mode": "RGB",
+      "format": "PNG",
+      "generator": "OpenAI built-in image_gen",
+      "provenance": {
+        "record": "docs/art/architecture-materials-v2.json",
+        "asset": "roof-thatch"
+      },
+      "prompt": "docs/art/architecture-materials-v2.json#/assets/5/prompt",
+      "optimization": "Generated 1254x1254 RGB originals were resized to 512x512 PNG with Sharp Lanczos3, lossless PNG compression level 9.",
+      "anchor": null,
+      "alpha_bounds": null,
+      "bytes": 739898,
+      "sha256": "a57d7f51e20fa8766b0ce18682005420b52b33077173437a956ea65299bc6c10"
     }
   ]
 }

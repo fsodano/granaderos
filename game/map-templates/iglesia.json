@@ -183,10 +183,6 @@
             "y": 9
           },
           {
-            "x": 1,
-            "y": 10
-          },
-          {
             "x": 7,
             "y": 5
           },
@@ -587,13 +583,7 @@
       {
         "x": 0,
         "y": 10,
-        "type": "window",
-        "blocked": true,
-        "blocksSight": false,
-        "cover": 25,
-        "material": "adobe",
-        "buildingId": "iglesia",
-        "roomId": null
+        "type": "wall"
       },
       {
         "x": 8,
@@ -689,7 +679,7 @@
       {
         "x": 1,
         "y": 11,
-        "type": "window"
+        "type": "wall"
       },
       {
         "x": 7,
@@ -718,6 +708,11 @@
         "doorId": "iglesia:door:6:2",
         "open": false,
         "locked": false
+      },
+      {
+        "x": 1,
+        "y": 10,
+        "type": "wall"
       }
     ],
     "kind": "church",

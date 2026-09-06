@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "ensenada",
-  "revision": 1,
+  "revision": 2,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -2390,10 +2390,11 @@
           "roomId": null
         }
       ],
-      "wallFinish": "limewash",
-      "roofFinish": "clay",
-      "doorStyle": "panelled",
-      "windowStyle": "barred"
+      "wallFinish": "stone",
+      "roofFinish": "aged",
+      "doorStyle": "barn",
+      "windowStyle": "small",
+      "kind": "warehouse"
     },
     {
       "id": "ensenada:house-0",
@@ -2560,10 +2561,11 @@
           "roomId": null
         }
       ],
-      "wallFinish": "ochre",
-      "roofFinish": "aged",
+      "wallFinish": "adobe",
+      "roofFinish": "thatch",
       "doorStyle": "plank",
-      "windowStyle": "shutters"
+      "windowStyle": "shutters",
+      "kind": "house"
     }
   ],
   "props": [

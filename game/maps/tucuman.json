@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "tucuman",
-  "revision": 1,
+  "revision": 2,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -2421,9 +2421,10 @@
         }
       ],
       "wallFinish": "limewash",
-      "roofFinish": "clay",
-      "doorStyle": "panelled",
-      "windowStyle": "barred"
+      "roofFinish": "aged",
+      "doorStyle": "double",
+      "windowStyle": "small",
+      "kind": "barracks"
     }
   ],
   "props": [

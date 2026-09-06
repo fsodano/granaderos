@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "mendoza",
-  "revision": 1,
+  "revision": 2,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -2590,10 +2590,11 @@
           "roomId": null
         }
       ],
-      "wallFinish": "ochre",
-      "roofFinish": "aged",
-      "doorStyle": "plank",
-      "windowStyle": "shutters"
+      "wallFinish": "adobe",
+      "roofFinish": "thatch",
+      "doorStyle": "barn",
+      "windowStyle": "lattice",
+      "kind": "stable"
     },
     {
       "id": "mendoza:house-1",
@@ -2708,10 +2709,11 @@
           "roomId": null
         }
       ],
-      "wallFinish": "adobe",
-      "roofFinish": "thatch",
+      "wallFinish": "limewash",
+      "roofFinish": "aged",
       "doorStyle": "double",
-      "windowStyle": "small"
+      "windowStyle": "small",
+      "kind": "barracks"
     }
   ],
   "props": [

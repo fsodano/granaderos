@@ -8,84 +8,25 @@ export const WALL_COLOURS: Record<
   stone: { base: '#928f80', trim: '#c5bd9f', shadow: '#5e635c' },
   brick: { base: '#a17258', trim: '#cfb490', shadow: '#6f5140' },
 };
-const hash = (x: number, y: number) =>
-  (Math.imul(x + 91, 374761393) ^ Math.imul(y + 31, 668265263)) >>> 0;
-export function WallSurface({
-  finish,
-  height,
-  x,
-  y,
-}: {
-  finish: string;
-  height: number;
-  x: number;
-  y: number;
-}) {
-  const c = WALL_COLOURS[finish] ?? WALL_COLOURS.limewash;
-  const masonry = finish === 'stone' || finish === 'brick',
-    rows = Math.ceil(height / (finish === 'brick' ? 5 : 10));
-  return (
-    <g data-wall-finish={finish}>
-      <rect y={-height} width="40" height={height} fill={c.base} />
-      {masonry ? (
-        Array.from({ length: rows }, (_, row) => {
-          const h = height / rows,
-            cols = finish === 'brick' ? 4 : 3,
-            w = 40 / cols,
-            offset = row % 2 ? w / 2 : 0;
-          return (
-            <g key={row}>
-              {Array.from({ length: cols + 1 }, (_, col) => {
-                const a = Math.max(0, col * w - offset),
-                  b = Math.min(40, (col + 1) * w - offset),
-                  n = hash(x * 41 + col, y * 31 + row);
-                return b > a ? (
-                  <rect
-                    key={col}
-                    x={a + 0.3}
-                    y={-height + row * h + 0.35}
-                    width={Math.max(0.1, b - a - 0.6)}
-                    height={h - 0.7}
-                    rx={finish === 'stone' ? 1 : 0.25}
-                    fill={n % 3 ? c.base : c.trim}
-                    stroke={c.shadow}
-                    strokeWidth=".45"
-                    opacity={0.6 + (n % 4) * 0.08}
-                  />
-                ) : null;
-              })}
-            </g>
-          );
-        })
-      ) : (
-        <>
-          {Array.from({ length: 7 }, (_, i) => {
-            const n = hash(x * 37 + i, y * 53),
-              a = n % 37,
-              z = -2 - (n % Math.max(1, height - 4));
-            return (
-              <path
-                key={i}
-                d={`M${a},${z}h${2 + (n % 5)}`}
-                stroke={i % 2 ? c.shadow : c.trim}
-                strokeWidth=".65"
-                opacity=".14"
-              />
-            );
-          })}
-          {height > 15 && finish === 'adobe' && (
-            <path
-              d={`M${7 + (hash(x, y) % 20)},-31l-2,6 3,4 -1,5`}
-              stroke={c.shadow}
-              opacity=".4"
-              strokeWidth=".5"
-              fill="none"
-            />
-          )}
-        </>
-      )}
-    </g>
-  );
+export const ARCHITECTURE_TEXTURE_SIZE: Record<string, [number, number]> = {
+ plaster: [240, 160], stone: [120, 50], brick: [120, 60], wood: [80, 100],
+};
+export function ArchitectureDefs(){return <defs>
+ {Object.entries(ARCHITECTURE_TEXTURE_SIZE).map(([name,[width,height]])=><pattern key={name} id={`architecture-${name}`} patternUnits="userSpaceOnUse" width={width} height={height}><image href={`/art/architecture-${name}-v2.png`} width={width} height={height} preserveAspectRatio="none"/></pattern>)}
+ <linearGradient id="architecture-reveal" x1="0" y1="0" x2="1" y2=".6"><stop stopColor="#17170f"/><stop offset="1" stopColor="#4b4a36"/></linearGradient>
+ <linearGradient id="architecture-edge-shadow" x1="0" y1="0" x2="0" y2="1"><stop stopColor="#211c11" stopOpacity=".6"/><stop offset="1" stopColor="#211c11" stopOpacity="0"/></linearGradient>
+ </defs>;}
+export function WallSurface({finish,height,x,y,offset=0}:{finish:string;height:number;x:number;y:number;offset?:number}){
+ const c=WALL_COLOURS[finish]??WALL_COLOURS.limewash;
+ const material=finish==='stone'?'stone':finish==='brick'?'brick':'plaster';
+ // Sample a continuous facade run instead of restarting the image at every tile.
+ const sample=((x+y)*40+offset)%240;
+ return <g data-wall-finish={finish}>
+  <rect y={-height} width="40" height={height} fill={c.base}/>
+  <g transform={`translate(${-sample} 0)`}><rect x={sample} y={-height} width="40" height={height} fill={`url(#architecture-${material})`} opacity={material==='plaster'?.85:.92}/></g>
+  {['adobe','ochre'].includes(finish)&&<rect y={-height} width="40" height={height} fill={c.base} opacity={finish==='adobe'?.48:.34} style={{mixBlendMode:'multiply'}}/>}
+  <rect y={-height} width="40" height="7" fill="url(#architecture-edge-shadow)" opacity=".26"/>
+ </g>;
 }
 export function Opening({
   type,
@@ -101,21 +42,24 @@ export function Opening({
   const door = type === 'door',
     arched = style === 'arched',
     small = style === 'small';
-  const l = door && ['double', 'barn'].includes(style) ? 6 : small ? 15 : 11,
+  const l = door && ['double', 'barn', 'arched'].includes(style) ? 6 : small ? 15 : 11,
     r = 40 - l,
     bottom = door ? 0 : small ? -20 : -13,
-    top = door ? -33 : small ? -30 : -32;
+    top = door ? -33 : small ? -30 : arched ? -38 : -32;
   const shape = arched
-    ? `M${l},${bottom}V${top + 9}Q20,${top - 9} ${r},${top + 9}V${bottom}Z`
+    ? `M${l},${bottom}V${top+(r-l)/2}A${(r-l)/2},${(r-l)/2} 0 0 1 ${r},${top+(r-l)/2}V${bottom}Z`
     : `M${l},${bottom}V${top}H${r}V${bottom}Z`;
   return (
     <g data-opening-style={style}>
+      <path d={shape} fill="none" stroke="#675942" strokeWidth={arched?7:5}/>
       <path
         d={shape}
-        fill="#292d25"
+        fill="url(#architecture-reveal)"
         stroke={trim}
         strokeWidth={arched ? 3.5 : 2.5}
       />
+      <path d={`M${l+1},${bottom-1}V${arched?top+(r-l)/2:top+1}`} stroke="#171a13" strokeWidth="2" opacity=".8"/>
+      {arched&&Array.from({length:9},(_,i)=>{const a=Math.PI+i*Math.PI/8,cx=20,cy=top+(r-l)/2,ra=(r-l)/2;return <path key={i} d={`M${cx+Math.cos(a)*(ra+1.5)},${cy+Math.sin(a)*(ra+1.5)}L${cx+Math.cos(a)*(ra+3)},${cy+Math.sin(a)*(ra+3)}`} stroke="#7c6b4f" strokeWidth=".5" opacity=".65"/>;})}
       {door ? (
         <g
           transform={
@@ -127,11 +71,7 @@ export function Opening({
           <path
             d={shape}
             fill={
-              style === 'panelled'
-                ? '#66533d'
-                : style === 'barn'
-                  ? '#80654a'
-                  : '#75604a'
+              'url(#architecture-wood)'
             }
             stroke="#4f4130"
             strokeWidth=".7"
@@ -147,8 +87,8 @@ export function Opening({
                       y={z}
                       width="6"
                       height="10"
-                      fill="#534533"
-                      stroke="#a18b62"
+                      fill="#443927"
+                      stroke="#9c8058"
                       strokeWidth=".6"
                     />
                   ))}

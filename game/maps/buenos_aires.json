@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "buenos_aires",
-  "revision": 1,
+  "revision": 2,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -2617,9 +2617,10 @@
         }
       ],
       "wallFinish": "ochre",
-      "roofFinish": "aged",
-      "doorStyle": "plank",
-      "windowStyle": "shutters"
+      "roofFinish": "clay",
+      "doorStyle": "double",
+      "windowStyle": "lattice",
+      "kind": "pulperia"
     },
     {
       "id": "buenos_aires:house-1",
@@ -2762,8 +2763,9 @@
       ],
       "wallFinish": "adobe",
       "roofFinish": "thatch",
-      "doorStyle": "double",
-      "windowStyle": "small"
+      "doorStyle": "plank",
+      "windowStyle": "shutters",
+      "kind": "house"
     },
     {
       "id": "buenos_aires:house-2",
@@ -2930,10 +2932,11 @@
           "roomId": null
         }
       ],
-      "wallFinish": "limewash",
-      "roofFinish": "clay",
-      "doorStyle": "panelled",
-      "windowStyle": "barred"
+      "wallFinish": "ochre",
+      "roofFinish": "aged",
+      "doorStyle": "arched",
+      "windowStyle": "small",
+      "kind": "chapel"
     }
   ],
   "props": [

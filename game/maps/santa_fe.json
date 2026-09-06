@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "santa_fe",
-  "revision": 1,
+  "revision": 2,
   "width": 20,
   "height": 16,
   "metadata": {
@@ -2364,10 +2364,11 @@
           "roomId": null
         }
       ],
-      "wallFinish": "limewash",
-      "roofFinish": "clay",
-      "doorStyle": "panelled",
-      "windowStyle": "barred"
+      "wallFinish": "stone",
+      "roofFinish": "aged",
+      "doorStyle": "barn",
+      "windowStyle": "small",
+      "kind": "warehouse"
     },
     {
       "id": "santa_fe:house-0",
@@ -2483,9 +2484,10 @@
         }
       ],
       "wallFinish": "ochre",
-      "roofFinish": "aged",
-      "doorStyle": "plank",
-      "windowStyle": "shutters"
+      "roofFinish": "clay",
+      "doorStyle": "double",
+      "windowStyle": "lattice",
+      "kind": "pulperia"
     }
   ],
   "props": [],
