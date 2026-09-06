@@ -2,9 +2,9 @@
   "pilot": false,
   "provenance": {
     "worktree": "/tmp/granaderos-illustrated-sprites-pr",
-    "baseCommit": "c0653ec",
+    "baseCommit": "6096229",
     "server": "http://127.0.0.1:4176/?qa=1",
-    "scope": "Focused shared sprite PR; original main gameplay UI"
+    "scope": "Focused shared sprite PR on main after the sector editor merge; existing gameplay UI"
   },
   "method": "Fresh isolated browser context. Real skirmish UI with synthetic condition fixtures, real movement orders and fire/reload/strike controls. Save imported through the game UI and restored after browser reload.",
   "coverage": {

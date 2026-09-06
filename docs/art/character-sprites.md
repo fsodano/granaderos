@@ -96,8 +96,8 @@ The final coverage audit passed with 328 expected and 328 packed atlases, no
 missing states, and no invalid assets. All focused sprite tests passed, including
 packing every selected source frame, checking transparent margins and distinct
 frames, validating the published files, and checking runtime selection and timing.
-TypeScript and the production build passed. The static export contains 607 files
-and 518 verified asset references.
+TypeScript and the production build passed. The static export contains 619 files
+and 530 verified asset references.
 
 The [final browser report](../../assets/previews/illustrated-sprites/browser/final-sprite-qa.json)
 records 39 passing checks against the complete 328-atlas build. These cover all
@@ -112,8 +112,8 @@ The [300% battlefield screenshot](../../assets/previews/illustrated-sprites/brow
 shows the shared bodies in the game. The browser report lists additional action
 screenshots.
 
-PR verification uses a separate worktree based on `origin/main` at `c0653ec`.
-All 263 tests pass in that worktree, with no skipped or failed tests.
+PR verification uses a separate worktree based on `origin/main` at `6096229`.
+All 332 tests pass in that worktree, with no skipped or failed tests.
 The browser report and battlefield previews were regenerated there. The PR
 contains only sprite art, runtime selection and timing, related tools, tests,
 and documentation. Other gameplay changes remain outside this PR.

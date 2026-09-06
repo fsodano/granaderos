@@ -1,3 +1,4 @@
+import {propCells,propSize} from './props.js';
 import {validateTraining} from './skill-training.js';
 import {WEAPONS,BLADES,ARTILLERY} from './tactical.js';
 const object=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
@@ -32,7 +33,7 @@ for(const l of s.lights)need(coord(l)&&number(l.radius,0,100)&&(l.intensity===un
 for(const n of s.npcs)need(coord(n)&&text(n.id)&&text(n.name),'personajes');
 for(const g of s.groundItems)need(coord(g)&&text(g.id)&&text(g.type)&&integer(g.count,0,1000000)&&(g.heldBy==null||text(g.heldBy)),'objetos del suelo');
 for(const d of s.droppedWeapons)need(coord(d)&&integer(d.weapon,0,65535)&&number(d.condition,0,100)&&integer(d.loaded,0,100)&&(d.taken===undefined||typeof d.taken==='boolean'),'equipo abandonado');
-const propIds=new Set();for(const p of s.props){need(coord(p)&&text(p.id)&&p.id.length>0&&!propIds.has(p.id)&&['table','bench','bed','chest','barrels','hay'].includes(p.type),'mobiliario');propIds.add(p.id);for(const key of ['buildingId','roomId'])if(p[key]!=null)need(text(p[key]),'habitación del mobiliario');}
+const propIds=new Set();for(const p of s.props){need(coord(p)&&text(p.id)&&p.id.length>0&&!propIds.has(p.id)&&['table','bench','bed','chest','barrels','hay'].includes(p.type),'mobiliario');if(p.footprint!==undefined)need(object(p.footprint),'huella del mobiliario');const size=propSize(p);need(object(size)&&integer(size.width,1,8)&&integer(size.height,1,8),'dimensiones del mobiliario');need(propCells(p).every(coord),'huella del mobiliario');if(p.blocksMovement!==undefined)need(typeof p.blocksMovement==='boolean','colisión del mobiliario');propIds.add(p.id);for(const key of ['buildingId','roomId'])if(p[key]!=null)need(text(p[key]),'habitación del mobiliario');}
 for(const d of s.decor)need(coord(d)&&integer(d.width,1,s.width)&&integer(d.height,1,s.height)&&d.x+d.width<=s.width&&d.y+d.height<=s.height&&text(d.type),'decoración');
 for(const b of s.buildings){need(coord(b)&&text(b.id)&&integer(b.width,1,s.width)&&integer(b.height,1,s.height)&&b.x+b.width<=s.width&&b.y+b.height<=s.height&&Array.isArray(b.rooms),'edificios');for(const room of b.rooms)need(object(room)&&text(room.id)&&Array.isArray(room.cells)&&room.cells.every(coord),'habitaciones');}need(s.revealedRooms.every(text),'habitaciones vistas');return s;
 }

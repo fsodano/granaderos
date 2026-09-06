@@ -1,0 +1,346 @@
+{
+  "version": 1,
+  "name": "Casa rural",
+  "building": {
+    "id": "casa",
+    "name": "Casa rural",
+    "x": 0,
+    "y": 0,
+    "width": 6,
+    "height": 6,
+    "roof": "tile",
+    "material": "adobe",
+    "rooms": [
+      {
+        "id": "casa:interior",
+        "cells": [
+          {
+            "x": 1,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 1
+          },
+          {
+            "x": 1,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 2
+          },
+          {
+            "x": 1,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 1
+          },
+          {
+            "x": 3,
+            "y": 2
+          },
+          {
+            "x": 2,
+            "y": 3
+          },
+          {
+            "x": 1,
+            "y": 4
+          },
+          {
+            "x": 4,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 3
+          },
+          {
+            "x": 2,
+            "y": 4
+          },
+          {
+            "x": 4,
+            "y": 3
+          },
+          {
+            "x": 3,
+            "y": 4
+          },
+          {
+            "x": 4,
+            "y": 4
+          }
+        ]
+      }
+    ],
+    "walls": [
+      {
+        "x": 0,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "casa",
+        "roomId": null
+      },
+      {
+        "x": 1,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "casa",
+        "roomId": null
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "casa",
+        "roomId": null
+      },
+      {
+        "x": 3,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "casa",
+        "roomId": null
+      },
+      {
+        "x": 4,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "casa",
+        "roomId": null
+      },
+      {
+        "x": 5,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "casa",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 1,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "casa",
+        "roomId": null
+      },
+      {
+        "x": 5,
+        "y": 1,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "casa",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 2,
+        "type": "window",
+        "blocked": true,
+        "blocksSight": false,
+        "cover": 25,
+        "material": "adobe",
+        "buildingId": "casa",
+        "roomId": null
+      },
+      {
+        "x": 5,
+        "y": 2,
+        "type": "window",
+        "blocked": true,
+        "blocksSight": false,
+        "cover": 25,
+        "material": "adobe",
+        "buildingId": "casa",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 3,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "casa",
+        "roomId": null
+      },
+      {
+        "x": 5,
+        "y": 3,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "casa",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 4,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "casa",
+        "roomId": null
+      },
+      {
+        "x": 5,
+        "y": 4,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "casa",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "casa",
+        "roomId": null
+      },
+      {
+        "x": 2,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "casa",
+        "roomId": null
+      },
+      {
+        "x": 3,
+        "y": 5,
+        "type": "door",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 0,
+        "material": "adobe",
+        "buildingId": "casa",
+        "roomId": null,
+        "doorId": "casa:door:3:5",
+        "open": false,
+        "locked": false
+      },
+      {
+        "x": 5,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "casa",
+        "roomId": null
+      },
+      {
+        "x": 1,
+        "y": 5,
+        "type": "window"
+      },
+      {
+        "x": 4,
+        "y": 5,
+        "type": "window"
+      }
+    ],
+    "kind": "house",
+    "wallFinish": "adobe",
+    "roofFinish": "thatch",
+    "doorStyle": "plank",
+    "windowStyle": "shutters"
+  },
+  "features": [],
+  "props": [
+    {
+      "id": "casa-prop-0",
+      "type": "bed",
+      "x": 1,
+      "y": 1,
+      "name": "Lecho",
+      "footprint": {
+        "width": 1,
+        "height": 2
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "casa-prop-1",
+      "type": "table",
+      "x": 4,
+      "y": 2,
+      "name": "Mesa familiar",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "casa-prop-2",
+      "type": "chest",
+      "x": 4,
+      "y": 1,
+      "name": "Baúl familiar",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    }
+  ],
+  "items": [],
+  "spawns": [],
+  "exits": [],
+  "lights": []
+}
