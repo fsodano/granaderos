@@ -1,0 +1,3 @@
+
+# Preserve exact archived generation prompts, including original whitespace.
+assets/source/illustrated-sprites/*.prompt.txt -whitespace

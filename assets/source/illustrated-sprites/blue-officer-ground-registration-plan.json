@@ -1,0 +1,200 @@
+{
+  "version": 1,
+  "appearance": "blue-officer",
+  "states": [
+    "prone-armed-idle",
+    "prone-unarmed-idle",
+    "dead-idle",
+    "prone-armed-walk",
+    "prone-unarmed-walk",
+    "prone-armed-fire",
+    "prone-armed-reload",
+    "unconscious-breathe"
+  ],
+  "instructions": "All listed poses visually reviewed. Keep exact source-specific exportKey. Ground direction is actual head endpoint and opposite boot endpoint. Prone N has head up, boots down; S has head down, boots up. Unconscious is side-lying with closed eyes, empty hands and tiny chest variation. Use breathing south v2, not its v1 predecessor. Full 4x4 phase/direction layouts; stills 4x2. Prone fire south has a full S muzzle crossing its nominal row fraction; use the supplied clear-gutter regions to preserve it.",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-prone-armed-idle-v1.png",
+      "name": "blue-officer-prone-armed-idle",
+      "reference": "granadero-prone-armed-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-prone-unarmed-idle-v1.png",
+      "name": "blue-officer-prone-unarmed-idle",
+      "reference": "granadero-prone-unarmed-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-dead-idle-v1.png",
+      "name": "blue-officer-dead-idle",
+      "reference": "granadero-dead-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-prone-armed-walk-north-v1.png",
+      "name": "blue-officer-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ],
+      "exportKey": "white"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-prone-armed-walk-south-v1.png",
+      "name": "blue-officer-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "white"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-prone-unarmed-walk-north-v1.png",
+      "name": "blue-officer-prone-unarmed-walk",
+      "reference": "granadero-prone-unarmed-walk",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ],
+      "exportKey": "white"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-prone-unarmed-walk-south-v1.png",
+      "name": "blue-officer-prone-unarmed-walk",
+      "reference": "granadero-prone-unarmed-walk",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "white"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-prone-armed-fire-north-v1.png",
+      "name": "blue-officer-prone-armed-fire",
+      "reference": "granadero-prone-armed-fire",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ],
+      "exportKey": "white"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-prone-armed-fire-south-v1.png",
+      "name": "blue-officer-prone-armed-fire",
+      "reference": "granadero-prone-armed-fire",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "white",
+      "regionFile": "assets/source/illustrated-sprites/blue-officer-prone-armed-fire-south-v1.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-prone-armed-reload-north-v1.png",
+      "name": "blue-officer-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ],
+      "exportKey": "white"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-prone-armed-reload-south-v1.png",
+      "name": "blue-officer-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "white"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-unconscious-breathe-north-v1.png",
+      "name": "blue-officer-unconscious-breathe",
+      "reference": "granadero-unconscious-breathe",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ],
+      "exportKey": "white"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-unconscious-breathe-south-v2.png",
+      "name": "blue-officer-unconscious-breathe",
+      "reference": "granadero-unconscious-breathe",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "white"
+    }
+  ],
+  "corrections": []
+}

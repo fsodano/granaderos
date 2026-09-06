@@ -1,0 +1,31 @@
+{
+  "columns": 4,
+  "rows": 1,
+  "scaleMode": "height",
+  "slots": [
+    {
+      "direction": "s",
+      "frame": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "direction": "s",
+      "frame": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "direction": "s",
+      "frame": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "direction": "s",
+      "frame": 3,
+      "row": 0,
+      "col": 3
+    }
+  ]
+}

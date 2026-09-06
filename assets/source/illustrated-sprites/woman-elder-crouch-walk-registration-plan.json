@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "appearance": "woman-elder",
+  "stage": "crouch-walk",
+  "pathBase": "repository-root",
+  "registrationOrder": [
+    "variants",
+    "corrections"
+  ],
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-crouch-walk-north-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-crouch-walk-north-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "name": "woman-elder-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-crouch-walk-south-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-crouch-walk-south-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "name": "woman-elder-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4
+    }
+  ],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-crouch-walk-n-fix-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-crouch-walk-n-fix-v1.prompt.txt",
+      "sourceSize": [
+        1983,
+        793
+      ],
+      "name": "woman-elder-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "north",
+      "calibration": {
+        "method": "One anatomical body scale across each source strip. Match head, hips and boot baseline; ignore pistol extension."
+      },
+      "correctionSpec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "n",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              154,
+              242,
+              259,
+              364
+            ]
+          },
+          {
+            "direction": "n",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              620,
+              242,
+              248,
+              364
+            ]
+          },
+          {
+            "direction": "n",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1591,
+              242,
+              255,
+              364
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-crouch-walk-n-2-fix-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-crouch-walk-n-2-fix-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "name": "woman-elder-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "north",
+      "calibration": {
+        "method": "One anatomical body scale across each source strip. Match head, hips and boot baseline; ignore pistol extension."
+      },
+      "correctionSpec": {
+        "columns": 1,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "n",
+            "frame": 2,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              409,
+              248,
+              495,
+              735
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-crouch-walk-south-v2.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-crouch-walk-south-v2.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "name": "woman-elder-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "south",
+      "calibration": {
+        "method": "One anatomical body scale across each source strip. Match head, hips and boot baseline; ignore pistol extension."
+      },
+      "correctionSpec": {
+        "columns": 4,
+        "rows": 4,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "s",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              101,
+              107,
+              120,
+              190
+            ]
+          },
+          {
+            "direction": "s",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              413,
+              107,
+              118,
+              190
+            ]
+          },
+          {
+            "direction": "s",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              726,
+              107,
+              118,
+              190
+            ]
+          },
+          {
+            "direction": "s",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1038,
+              107,
+              120,
+              190
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "qa": {
+    "notes": [
+      "N full row replaced. Strip v1 phases0,1,3 plus single phase2 preserve opposite boot support. v2 N strip reset all legs to idle and is unselected.",
+      "South v2 ONLY top row selected to remove extra belt weapon. SW0 from v2 lost satchel, therefore retain main v1 for all non-S rows.",
+      "Skirt hides knee motion in side and diagonal views; boot articulation is subtle. Review packed cadence.",
+      "Single N2 has extra crossing strap segment on shawl; bag remains correct right hip, minor seam inconsistency."
+    ]
+  }
+}

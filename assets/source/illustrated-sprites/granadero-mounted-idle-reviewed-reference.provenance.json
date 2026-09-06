@@ -1,0 +1,15 @@
+{
+  "source": "assets/previews/illustrated-sprites/packed/granadero-mounted-idle.png",
+  "sha256": "79660b3ea9586040197ee416723deb7fd317dc5cd82473baf50810c941940fec",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "command": "node tools/illustrated-direction-reference.mjs granadero-mounted-idle"
+}

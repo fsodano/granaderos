@@ -1,0 +1,12 @@
+{
+  "source": "assets/previews/illustrated-sprites/packed/civilian-walk.png",
+  "sha256": "66e25fd580824981b1bc8cc6fbb2b094078d6392b318cf2179514f3ba11b1550",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se"
+  ],
+  "frames": 4,
+  "command": "node tools/illustrated-action-reference.mjs civilian-walk"
+}

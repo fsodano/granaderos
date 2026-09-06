@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "appearance": "scout",
+  "states": [
+    "mounted-idle",
+    "mounted-walk"
+  ],
+  "instructions": "Register all variants. Magenta export. Bay horse, full adult rider, charcoal poncho, compact carbine slung across back. The north rider has a small head glance; body and horse compass remain north and the complete horse gait is accepted.",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/scout-mounted-idle-v1.png",
+      "name": "scout-mounted-idle",
+      "reference": "granadero-mounted-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scout-mounted-walk-north-v1.png",
+      "name": "scout-mounted-walk",
+      "reference": "granadero-mounted-walk",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scout-mounted-walk-south-v1.png",
+      "name": "scout-mounted-walk",
+      "reference": "granadero-mounted-walk",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta"
+    }
+  ],
+  "corrections": []
+}

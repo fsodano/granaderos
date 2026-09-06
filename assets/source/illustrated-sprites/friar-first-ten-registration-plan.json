@@ -1,0 +1,294 @@
+{
+  "version": 1,
+  "appearance": "friar",
+  "states": [
+    "run",
+    "fire",
+    "reload",
+    "crouch-walk",
+    "strike",
+    "prone-armed-walk",
+    "crouch-idle",
+    "prone-armed-idle",
+    "prone-unarmed-idle",
+    "dead-idle"
+  ],
+  "instructions": "First ten complete Friar states. All reviewed; crouch-walk south v3 preserves improved shoe steps and restores missing pistol. North crouch motion remains shallow through robe but feet and folds vary. Strike north base excludes N, use exact-N strip correction. Use a common scale/feet anchor for strike strip phases as for Artisan. Minor reload head/shoulder glances are accepted with planted body heading. Armed crawl keeps both shoes and long habit; no military equipment. All source grids checked.",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/friar-run-north-v1.png",
+      "name": "friar-run",
+      "reference": "granadero-run",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-run-south-v1.png",
+      "name": "friar-run",
+      "reference": "granadero-run",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-fire-north-v1.png",
+      "name": "friar-fire",
+      "reference": "granadero-fire",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ],
+      "regionFile": "assets/source/illustrated-sprites/friar-fire-north-v1.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-fire-south-v1.png",
+      "name": "friar-fire",
+      "reference": "granadero-fire",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-reload-north-v1.png",
+      "name": "friar-reload",
+      "reference": "granadero-reload",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-reload-south-v1.png",
+      "name": "friar-reload",
+      "reference": "granadero-reload",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-crouch-walk-north-v1.png",
+      "name": "friar-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-crouch-walk-south-v3.png",
+      "name": "friar-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-strike-north-v1.png",
+      "name": "friar-strike",
+      "reference": "granadero-strike",
+      "half": "north",
+      "includeDirections": [
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-strike-south-v1.png",
+      "name": "friar-strike",
+      "reference": "granadero-strike",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-prone-armed-walk-north-v1.png",
+      "name": "friar-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-prone-armed-walk-south-v1.png",
+      "name": "friar-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-crouch-idle-v1.png",
+      "name": "friar-crouch-idle",
+      "reference": "granadero-crouch-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-prone-armed-idle-v1.png",
+      "name": "friar-prone-armed-idle",
+      "reference": "granadero-prone-armed-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-prone-unarmed-idle-v1.png",
+      "name": "friar-prone-unarmed-idle",
+      "reference": "granadero-prone-unarmed-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-dead-idle-v1.png",
+      "name": "friar-dead-idle",
+      "reference": "granadero-dead-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    }
+  ],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/friar-strike-n-fix-v1.png",
+      "name": "friar-strike",
+      "reference": "granadero-strike",
+      "half": "north",
+      "includeDirections": [
+        "N"
+      ],
+      "regionFile": "assets/source/illustrated-sprites/friar-strike-n-fix-v1.regions.json",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "N",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              112,
+              135,
+              239,
+              563
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              537,
+              135,
+              256,
+              563
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              968,
+              135,
+              228,
+              563
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1390,
+              135,
+              239,
+              563
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

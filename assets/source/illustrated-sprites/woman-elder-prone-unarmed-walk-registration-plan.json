@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "appearance": "woman-elder",
+  "stage": "prone-unarmed-walk",
+  "pathBase": "repository-root",
+  "registrationOrder": [
+    "variants"
+  ],
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-prone-unarmed-walk-north-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-prone-unarmed-walk-north-v1.prompt.txt",
+      "name": "woman-elder-prone-unarmed-walk",
+      "reference": "granadero-prone-unarmed-walk",
+      "poseReference": "assets/source/illustrated-sprites/woman-headscarf-prone-unarmed-walk-north-v1.png",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-prone-unarmed-walk-south-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-prone-unarmed-walk-south-v1.prompt.txt",
+      "name": "woman-elder-prone-unarmed-walk",
+      "reference": "granadero-prone-unarmed-walk",
+      "poseReference": "assets/source/illustrated-sprites/woman-headscarf-prone-unarmed-walk-south-v1.png",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    }
+  ],
+  "corrections": [],
+  "qa": {
+    "notes": [
+      "North and south v1 selected, exact appearance edits of approved Headscarf poses. All eight head vectors retained, hands empty, alternate elbow reach retained.",
+      "Skirt largely hides knees; boot changes and elbow reaches preserve target crawl rhythm. No clipping or extra figures, count16per sheet."
+    ]
+  }
+}

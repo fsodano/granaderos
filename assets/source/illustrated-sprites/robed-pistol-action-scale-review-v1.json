@@ -1,0 +1,2115 @@
+{
+  "version": 1,
+  "baseline": {
+    "stagedAtlasCount": 323
+  },
+  "application": "Apply these action multipliers once to the uncalibrated robed source slots. These are final action multipliers, not additional multipliers on top of the idle plan. Keep source-space and atlas anchors fixed for scale, then translate by offsetLogical (positive right/down logical pixels). Apply explicit frame normalizations before direction multipliers. No standing or mounted changes.",
+  "method": "Reviewed at3x logical size with a common map anchor. Head/shoulder/torso proportions compared with own proposed corrected prone idle. Arm/weapon extents excluded. Translation estimates use corresponding frame0 anatomical body-envelope centers with barrel tips removed; suppress shifts below2 logical pixels and use one offset for all4 authored phases, preserving actual motion. Offsets correct registration displacement, not different prone poses. Side/SE scale uncertainty about0.05.",
+  "pending": [
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-fire",
+        "prone-armed-reload",
+        "prone-unarmed-walk",
+        "unconscious-breathe"
+      ],
+      "reason": "Not present in the packed323 review baseline. Do not block application of reviewed groups; calibrate these final states against the now-corrected own idle after final pack."
+    }
+  ],
+  "normalizations": [
+    {
+      "appearance": "friar",
+      "state": "prone-armed-fire",
+      "direction": "S",
+      "source": "assets/source/illustrated-sprites/friar-prone-armed-fire-s-fix-v1.png",
+      "frames": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "setScaleBeforeMultiplier": 0.18556,
+      "setSourceAnchorBeforeMultiplier": [
+        133.70731707317074,
+        104.43902439024392
+      ],
+      "reason": "Four identical authored body sizes. Existing fire/smoke slots inflate body by10.7%/5.0% through effect bounds."
+    },
+    {
+      "appearance": "woman-shawl",
+      "state": "prone-armed-reload",
+      "direction": "NE",
+      "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-ne-v4.png",
+      "frames": [
+        0,
+        1,
+        3
+      ],
+      "setScaleBeforeMultiplier": 0.286325,
+      "setSourceAnchorBeforeMultiplier": [
+        218,
+        192.2089552238806
+      ],
+      "reason": "The authored boots, skirt and head retain the same size. Frame1 currently scales the fixed body about11% larger due to hand/weapon extent. Use one body scale and boot/head registration for strip phases."
+    },
+    {
+      "appearance": "woman-shawl",
+      "state": "prone-armed-reload",
+      "direction": "NE",
+      "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-ne-2-v5.png",
+      "frames": [
+        2
+      ],
+      "setScaleBeforeMultiplier": 0.14340975820379964,
+      "setSourceAnchorBeforeMultiplier": [
+        435.24827586206897,
+        383.7551209469892
+      ],
+      "reason": "Single-cell phase2 body spans579 source pixels versus290 in the corresponding strip, excluding weapon. Match this body span and the same local boot/head registration before the direction scale."
+    },
+    {
+      "appearance": "woman-shawl",
+      "state": "prone-armed-reload",
+      "direction": "SE",
+      "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-se-v4.png",
+      "frames": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "setScaleBeforeMultiplier": 0.316575,
+      "setSourceAnchorBeforeMultiplier": [
+        189.45833333333331,
+        121.29166666666666
+      ],
+      "reason": "Fixed boots, skirt and anatomical torso are the same authored size in four phases. Existing phase2 is12% smaller and its pivot moves. Keep the phase0 body scale and source registration for all four; slight head/hand movement remains authored motion."
+    }
+  ],
+  "findings": [
+    "Friar N animated prone bodies are already narrower than N idle; retain1.0 on armed N actions while idle uses0.82.",
+    "Headscarf/Shawl SW animated armed figures have much larger heads/torso than their SW idle: use0.72–0.75 on actions, not idle0.95.",
+    "Shawl SE crawl/fire are materially larger than SE idle;0.65/0.60 brings head/torso close to corrected idle0.73.",
+    "Most fire-frame0 body pivots match idle. Crawls and reloads require per-direction offsets, typically2–7 logical pixels.",
+    "No broad dead-idle reduction: existing head and body spans already fit standing anatomy."
+  ],
+  "groups": [
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        2,
+        -4
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        4,
+        -3
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.88,
+      "offsetLogical": [
+        7,
+        -3
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.72,
+      "offsetLogical": [
+        4,
+        3
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 1.1,
+      "offsetLogical": [
+        0,
+        6
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        0,
+        5
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        -6,
+        -3
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.86,
+      "offsetLogical": [
+        -3,
+        -2
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.82,
+      "offsetLogical": [
+        0,
+        -5
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.76,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.77,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.98,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.76,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.82,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.78,
+      "offsetLogical": [
+        3,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.8,
+      "offsetLogical": [
+        4,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.75,
+      "offsetLogical": [
+        3,
+        2
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 1.1,
+      "offsetLogical": [
+        0,
+        3
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.8,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.8,
+      "offsetLogical": [
+        -4,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        -4,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        0,
+        3
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.98,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.92,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.85,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 1.1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.98,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.96,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.88,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        2,
+        -4
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.8,
+      "offsetLogical": [
+        4,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.76,
+      "offsetLogical": [
+        7,
+        -5
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.73,
+      "offsetLogical": [
+        5,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        0,
+        6
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.72,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.75,
+      "offsetLogical": [
+        -5,
+        -4
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        -3,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.8,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.76,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.73,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.75,
+      "offsetLogical": [
+        0,
+        -3
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.73,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.88,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.78,
+      "offsetLogical": [
+        3,
+        6
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.75,
+      "offsetLogical": [
+        4,
+        -3
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.73,
+      "offsetLogical": [
+        3,
+        4
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        0,
+        4
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.74,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.75,
+      "offsetLogical": [
+        -4,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        -4,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        0,
+        3
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.86,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 1.05,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.85,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.88,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        3,
+        -4
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.8,
+      "offsetLogical": [
+        4,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.76,
+      "offsetLogical": [
+        6,
+        -3
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.65,
+      "offsetLogical": [
+        5,
+        -3
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        0,
+        6
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.72,
+      "offsetLogical": [
+        0,
+        2
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.75,
+      "offsetLogical": [
+        -5,
+        -4
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        -3,
+        -3
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.78,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.73,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.6,
+      "offsetLogical": [
+        0,
+        -5
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.75,
+      "offsetLogical": [
+        0,
+        -2
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.73,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.88,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.85,
+      "offsetLogical": [
+        4,
+        3
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.73,
+      "offsetLogical": [
+        4,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.75,
+      "offsetLogical": [
+        3,
+        2
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        0,
+        3
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.74,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.75,
+      "offsetLogical": [
+        -4,
+        -2
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        -3,
+        -3
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        2,
+        3
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.92,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.86,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.8,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.92,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.95,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        2,
+        -4
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        4,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.8,
+      "offsetLogical": [
+        6,
+        -5
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.76,
+      "offsetLogical": [
+        5,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        6
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.75,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.78,
+      "offsetLogical": [
+        -5,
+        -4
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-walk"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.85,
+      "offsetLogical": [
+        -3,
+        0
+      ]
+    },
+    {
+      "appearance": "friar",
+      "states": [
+        "dead-idle"
+      ],
+      "directions": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "dead-idle"
+      ],
+      "directions": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "dead-idle"
+      ],
+      "directions": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "dead-idle"
+      ],
+      "directions": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    }
+  ],
+  "evidence": [
+    "/tmp/robed-action-proposed-friar-north.png",
+    "/tmp/robed-action-proposed-friar-south.png",
+    "/tmp/robed-action-proposed-woman-headscarf-north.png",
+    "/tmp/robed-action-proposed-woman-headscarf-south.png",
+    "/tmp/robed-action-proposed-woman-shawl-north.png",
+    "/tmp/robed-action-proposed-woman-shawl-south.png"
+  ]
+}

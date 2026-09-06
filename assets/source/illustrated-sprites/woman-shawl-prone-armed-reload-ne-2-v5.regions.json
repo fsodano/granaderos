@@ -1,0 +1,19 @@
+{
+  "columns": 1,
+  "rows": 1,
+  "scaleMode": "longest",
+  "slots": [
+    {
+      "direction": "ne",
+      "frame": 2,
+      "row": 0,
+      "col": 0,
+      "rect": [
+        30,
+        509,
+        933,
+        587
+      ]
+    }
+  ]
+}

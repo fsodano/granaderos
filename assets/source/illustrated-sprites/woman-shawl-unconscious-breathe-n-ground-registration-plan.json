@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "appearance": "woman-shawl",
+  "stage": "north-ground-breathing-correction",
+  "pathBase": "repository-root",
+  "registrationOrder": [
+    "corrections"
+  ],
+  "variants": [],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-unconscious-breathe-n-ground-fix-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-shawl-unconscious-breathe-n-ground-fix-v1.prompt.txt",
+      "name": "woman-shawl-unconscious-breathe",
+      "reference": "granadero-unconscious-breathe",
+      "poseReference": "assets/source/illustrated-sprites/woman-elder-unconscious-breathe-n-fix-v1.png",
+      "half": "north",
+      "sourceSize": [
+        2172,
+        724
+      ],
+      "calibration": {
+        "method": "One anatomical scale for all4poses; preserve ground foreshortening. Match head/shoulder size to prone-unarmed idle. Do not stretch to prior upright-looking N breathing height.",
+        "startingPackedBodyHeight": [
+          86,
+          91
+        ],
+        "logicalBodyHeight": 29.04,
+        "anchor": "Ground pivot near waist/body center; not boots.",
+        "recommendedSourceScale": 0.22,
+        "packedBodyHeight": 87.12,
+        "recommendedAnchors": [
+          [
+            95.5,
+            198
+          ],
+          [
+            95,
+            198
+          ],
+          [
+            95,
+            198
+          ],
+          [
+            94.5,
+            198
+          ]
+        ],
+        "review": "Independent sprite_runtime review confirmed coherent grounded poses and crown size close to prone idle. Exclude side bun when measuring skull width."
+      },
+      "correctionSpec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "longest",
+        "slots": [
+          {
+            "direction": "n",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              236,
+              171,
+              191,
+              396
+            ]
+          },
+          {
+            "direction": "n",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              734,
+              171,
+              190,
+              396
+            ]
+          },
+          {
+            "direction": "n",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              1216,
+              171,
+              190,
+              396
+            ]
+          },
+          {
+            "direction": "n",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1698,
+              171,
+              189,
+              396
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "qa": {
+    "notes": [
+      "Same accepted Elder overhead sleeping pose, empty hands, head tucked into forearms, curled boots.",
+      "Only replace N0..3. Retain all other seven directions and root calibration.",
+      "All4figure count/crop QA passed. Body-height range supplied by independent sprite_runtime review as starting estimate; root final calibration."
+    ]
+  }
+}

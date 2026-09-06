@@ -1,0 +1,3618 @@
+[
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-n-fix-v1.png",
+    "direction": "n",
+    "frame": 0,
+    "before": {
+      "scale": 0.164027,
+      "anchor": [
+        102.35849056603773,
+        342.10377358490564
+      ]
+    },
+    "after": {
+      "scale": 0.164027,
+      "anchor": [
+        102.35849056603773,
+        342.10377358490564
+      ]
+    }
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-n-fix-v1.png",
+    "direction": "n",
+    "frame": 1,
+    "before": {
+      "scale": 0.170369,
+      "anchor": [
+        98.62264150943396,
+        329.44339622641513
+      ]
+    },
+    "after": {
+      "scale": 0.164027,
+      "anchor": [
+        113.85849056603773,
+        320.10377358490564
+      ]
+    }
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-n-fix-v1.png",
+    "direction": "n",
+    "frame": 2,
+    "before": {
+      "scale": 0.183518,
+      "anchor": [
+        91.7,
+        370.76666666666665
+      ]
+    },
+    "after": {
+      "scale": 0.164027,
+      "anchor": [
+        109.35849056603773,
+        349.10377358490564
+      ]
+    }
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-n-fix-v1.png",
+    "direction": "n",
+    "frame": 3,
+    "before": {
+      "scale": 0.162379,
+      "anchor": [
+        109.00943396226415,
+        339.92452830188677
+      ]
+    },
+    "after": {
+      "scale": 0.164027,
+      "anchor": [
+        102.85849056603773,
+        348.10377358490564
+      ]
+    }
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-n-fix-v2.png",
+    "direction": "n",
+    "frame": 0,
+    "before": {
+      "scale": 0.241595,
+      "anchor": [
+        73.32075471698113,
+        243.69811320754718
+      ]
+    },
+    "after": {
+      "scale": 0.241595,
+      "anchor": [
+        73.32075471698113,
+        243.69811320754718
+      ]
+    }
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-n-fix-v2.png",
+    "direction": "n",
+    "frame": 1,
+    "before": {
+      "scale": 0.230091,
+      "anchor": [
+        76.88679245283019,
+        255.78301886792454
+      ]
+    },
+    "after": {
+      "scale": 0.241595,
+      "anchor": [
+        72.32075471698113,
+        264.6981132075472
+      ]
+    }
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-n-fix-v2.png",
+    "direction": "n",
+    "frame": 2,
+    "before": {
+      "scale": 0.241327,
+      "anchor": [
+        73.4,
+        295.53333333333336
+      ]
+    },
+    "after": {
+      "scale": 0.241595,
+      "anchor": [
+        70.82075471698113,
+        299.6981132075472
+      ]
+    }
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-n-fix-v2.png",
+    "direction": "n",
+    "frame": 3,
+    "before": {
+      "scale": 0.223502,
+      "anchor": [
+        83.37735849056604,
+        258.9811320754717
+      ]
+    },
+    "after": {
+      "scale": 0.241595,
+      "anchor": [
+        70.32075471698113,
+        277.6981132075472
+      ]
+    }
+  },
+  {
+    "name": "artisan-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-idle-v1.png",
+    "direction": "n",
+    "frame": 0,
+    "beforeScale": 0.380268,
+    "scale": 0.349847
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-north-v1.png",
+    "direction": "n",
+    "frame": 0,
+    "beforeScale": 0.541615,
+    "scale": 0.498286
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-north-v1.png",
+    "direction": "n",
+    "frame": 1,
+    "beforeScale": 0.541615,
+    "scale": 0.498286
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-north-v1.png",
+    "direction": "n",
+    "frame": 2,
+    "beforeScale": 0.541615,
+    "scale": 0.498286
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-north-v1.png",
+    "direction": "n",
+    "frame": 3,
+    "beforeScale": 0.541615,
+    "scale": 0.498286
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-north-v1.png",
+    "direction": "n",
+    "frame": 0,
+    "beforeScale": 0.49846,
+    "scale": 0.458583
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-north-v1.png",
+    "direction": "n",
+    "frame": 1,
+    "beforeScale": 0.49846,
+    "scale": 0.458583
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-north-v1.png",
+    "direction": "n",
+    "frame": 2,
+    "beforeScale": 0.49846,
+    "scale": 0.458583
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-north-v1.png",
+    "direction": "n",
+    "frame": 3,
+    "beforeScale": 0.49846,
+    "scale": 0.458583
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-n-fix-v1.png",
+    "direction": "n",
+    "frame": 0,
+    "beforeScale": 0.164027,
+    "scale": 0.164027
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-n-fix-v1.png",
+    "direction": "n",
+    "frame": 1,
+    "beforeScale": 0.164027,
+    "scale": 0.164027
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-n-fix-v1.png",
+    "direction": "n",
+    "frame": 2,
+    "beforeScale": 0.164027,
+    "scale": 0.164027
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-n-fix-v1.png",
+    "direction": "n",
+    "frame": 3,
+    "beforeScale": 0.164027,
+    "scale": 0.164027
+  },
+  {
+    "name": "artisan-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-idle-v1.png",
+    "direction": "ne",
+    "frame": 0,
+    "beforeScale": 0.383942,
+    "scale": 0.337869
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-north-v1.png",
+    "direction": "ne",
+    "frame": 0,
+    "beforeScale": 0.55987,
+    "scale": 0.492686
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-north-v1.png",
+    "direction": "ne",
+    "frame": 1,
+    "beforeScale": 0.55987,
+    "scale": 0.492686
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-north-v1.png",
+    "direction": "ne",
+    "frame": 2,
+    "beforeScale": 0.55987,
+    "scale": 0.492686
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-north-v1.png",
+    "direction": "ne",
+    "frame": 3,
+    "beforeScale": 0.55987,
+    "scale": 0.492686
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-north-v1.png",
+    "direction": "ne",
+    "frame": 0,
+    "beforeScale": 0.630353,
+    "scale": 0.554711
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-north-v1.png",
+    "direction": "ne",
+    "frame": 1,
+    "beforeScale": 0.630353,
+    "scale": 0.554711
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-north-v1.png",
+    "direction": "ne",
+    "frame": 2,
+    "beforeScale": 0.630353,
+    "scale": 0.554711
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-north-v1.png",
+    "direction": "ne",
+    "frame": 3,
+    "beforeScale": 0.630353,
+    "scale": 0.554711
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-north-v1.png",
+    "direction": "ne",
+    "frame": 0,
+    "beforeScale": 0.524528,
+    "scale": 0.461585
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-north-v1.png",
+    "direction": "ne",
+    "frame": 1,
+    "beforeScale": 0.524528,
+    "scale": 0.461585
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-north-v1.png",
+    "direction": "ne",
+    "frame": 2,
+    "beforeScale": 0.524528,
+    "scale": 0.461585
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-north-v1.png",
+    "direction": "ne",
+    "frame": 3,
+    "beforeScale": 0.524528,
+    "scale": 0.461585
+  },
+  {
+    "name": "artisan-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-idle-v1.png",
+    "direction": "e",
+    "frame": 0,
+    "beforeScale": 0.413793,
+    "scale": 0.322759
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-north-v1.png",
+    "direction": "e",
+    "frame": 0,
+    "beforeScale": 0.637641,
+    "scale": 0.49736
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-north-v1.png",
+    "direction": "e",
+    "frame": 1,
+    "beforeScale": 0.637641,
+    "scale": 0.49736
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-north-v1.png",
+    "direction": "e",
+    "frame": 2,
+    "beforeScale": 0.637641,
+    "scale": 0.49736
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-north-v1.png",
+    "direction": "e",
+    "frame": 3,
+    "beforeScale": 0.637641,
+    "scale": 0.49736
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-north-v1.png",
+    "direction": "e",
+    "frame": 0,
+    "beforeScale": 0.600907,
+    "scale": 0.492744
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-north-v1.png",
+    "direction": "e",
+    "frame": 1,
+    "beforeScale": 0.600907,
+    "scale": 0.492744
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-north-v1.png",
+    "direction": "e",
+    "frame": 2,
+    "beforeScale": 0.600907,
+    "scale": 0.492744
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-north-v1.png",
+    "direction": "e",
+    "frame": 3,
+    "beforeScale": 0.600907,
+    "scale": 0.492744
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-north-v1.png",
+    "direction": "e",
+    "frame": 0,
+    "beforeScale": 0.579231,
+    "scale": 0.440216
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-north-v1.png",
+    "direction": "e",
+    "frame": 1,
+    "beforeScale": 0.579231,
+    "scale": 0.440216
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-north-v1.png",
+    "direction": "e",
+    "frame": 2,
+    "beforeScale": 0.579231,
+    "scale": 0.440216
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-north-v1.png",
+    "direction": "e",
+    "frame": 3,
+    "beforeScale": 0.579231,
+    "scale": 0.440216
+  },
+  {
+    "name": "artisan-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-idle-v1.png",
+    "direction": "se",
+    "frame": 0,
+    "beforeScale": 0.467179,
+    "scale": 0.39243
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-north-v1.png",
+    "direction": "se",
+    "frame": 0,
+    "beforeScale": 0.686201,
+    "scale": 0.576409
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-north-v1.png",
+    "direction": "se",
+    "frame": 1,
+    "beforeScale": 0.686201,
+    "scale": 0.576409
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-north-v1.png",
+    "direction": "se",
+    "frame": 2,
+    "beforeScale": 0.686201,
+    "scale": 0.576409
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-north-v1.png",
+    "direction": "se",
+    "frame": 3,
+    "beforeScale": 0.686201,
+    "scale": 0.576409
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-north-v1.png",
+    "direction": "se",
+    "frame": 0,
+    "beforeScale": 0.677759,
+    "scale": 0.569318
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-north-v1.png",
+    "direction": "se",
+    "frame": 1,
+    "beforeScale": 0.677759,
+    "scale": 0.569318
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-north-v1.png",
+    "direction": "se",
+    "frame": 2,
+    "beforeScale": 0.677759,
+    "scale": 0.569318
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-north-v1.png",
+    "direction": "se",
+    "frame": 3,
+    "beforeScale": 0.677759,
+    "scale": 0.569318
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-north-v1.png",
+    "direction": "se",
+    "frame": 0,
+    "beforeScale": 0.59394,
+    "scale": 0.49891
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-north-v1.png",
+    "direction": "se",
+    "frame": 1,
+    "beforeScale": 0.59394,
+    "scale": 0.49891
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-north-v1.png",
+    "direction": "se",
+    "frame": 2,
+    "beforeScale": 0.59394,
+    "scale": 0.49891
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-north-v1.png",
+    "direction": "se",
+    "frame": 3,
+    "beforeScale": 0.59394,
+    "scale": 0.49891
+  },
+  {
+    "name": "artisan-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-idle-v1.png",
+    "direction": "s",
+    "frame": 0,
+    "beforeScale": 0.32091,
+    "scale": 0.288819
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-south-v2.png",
+    "direction": "s",
+    "frame": 0,
+    "beforeScale": 0.560021,
+    "scale": 0.504019
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-south-v2.png",
+    "direction": "s",
+    "frame": 1,
+    "beforeScale": 0.560021,
+    "scale": 0.504019
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-south-v2.png",
+    "direction": "s",
+    "frame": 2,
+    "beforeScale": 0.560021,
+    "scale": 0.504019
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-south-v2.png",
+    "direction": "s",
+    "frame": 3,
+    "beforeScale": 0.560021,
+    "scale": 0.504019
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-south-v1.png",
+    "direction": "s",
+    "frame": 0,
+    "beforeScale": 0.376083,
+    "scale": 0.338475
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-south-v1.png",
+    "direction": "s",
+    "frame": 1,
+    "beforeScale": 0.376083,
+    "scale": 0.338475
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-south-v1.png",
+    "direction": "s",
+    "frame": 2,
+    "beforeScale": 0.376083,
+    "scale": 0.338475
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-south-v1.png",
+    "direction": "s",
+    "frame": 3,
+    "beforeScale": 0.376083,
+    "scale": 0.338475
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-south-v1.png",
+    "direction": "s",
+    "frame": 0,
+    "beforeScale": 0.341239,
+    "scale": 0.307115
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-south-v1.png",
+    "direction": "s",
+    "frame": 1,
+    "beforeScale": 0.341239,
+    "scale": 0.307115
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-south-v1.png",
+    "direction": "s",
+    "frame": 2,
+    "beforeScale": 0.341239,
+    "scale": 0.307115
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-south-v1.png",
+    "direction": "s",
+    "frame": 3,
+    "beforeScale": 0.341239,
+    "scale": 0.307115
+  },
+  {
+    "name": "artisan-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-idle-v1.png",
+    "direction": "sw",
+    "frame": 0,
+    "beforeScale": 0.372622,
+    "scale": 0.313002
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-south-v2.png",
+    "direction": "sw",
+    "frame": 0,
+    "beforeScale": 0.612593,
+    "scale": 0.514578
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-south-v2.png",
+    "direction": "sw",
+    "frame": 1,
+    "beforeScale": 0.612593,
+    "scale": 0.514578
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-south-v2.png",
+    "direction": "sw",
+    "frame": 2,
+    "beforeScale": 0.612593,
+    "scale": 0.514578
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-south-v2.png",
+    "direction": "sw",
+    "frame": 3,
+    "beforeScale": 0.612593,
+    "scale": 0.514578
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-south-v1.png",
+    "direction": "sw",
+    "frame": 0,
+    "beforeScale": 0.485124,
+    "scale": 0.407504
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-south-v1.png",
+    "direction": "sw",
+    "frame": 1,
+    "beforeScale": 0.485124,
+    "scale": 0.407504
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-south-v1.png",
+    "direction": "sw",
+    "frame": 2,
+    "beforeScale": 0.485124,
+    "scale": 0.407504
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-south-v1.png",
+    "direction": "sw",
+    "frame": 3,
+    "beforeScale": 0.485124,
+    "scale": 0.407504
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-south-v1.png",
+    "direction": "sw",
+    "frame": 0,
+    "beforeScale": 0.467776,
+    "scale": 0.392932
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-south-v1.png",
+    "direction": "sw",
+    "frame": 1,
+    "beforeScale": 0.467776,
+    "scale": 0.392932
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-south-v1.png",
+    "direction": "sw",
+    "frame": 2,
+    "beforeScale": 0.467776,
+    "scale": 0.392932
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-south-v1.png",
+    "direction": "sw",
+    "frame": 3,
+    "beforeScale": 0.467776,
+    "scale": 0.392932
+  },
+  {
+    "name": "artisan-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-idle-v1.png",
+    "direction": "w",
+    "frame": 0,
+    "beforeScale": 0.387953,
+    "scale": 0.302603
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-south-v2.png",
+    "direction": "w",
+    "frame": 0,
+    "beforeScale": 0.688119,
+    "scale": 0.536733
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-south-v2.png",
+    "direction": "w",
+    "frame": 1,
+    "beforeScale": 0.688119,
+    "scale": 0.536733
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-south-v2.png",
+    "direction": "w",
+    "frame": 2,
+    "beforeScale": 0.688119,
+    "scale": 0.536733
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-south-v2.png",
+    "direction": "w",
+    "frame": 3,
+    "beforeScale": 0.688119,
+    "scale": 0.536733
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-south-v1.png",
+    "direction": "w",
+    "frame": 0,
+    "beforeScale": 0.607453,
+    "scale": 0.473813
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-south-v1.png",
+    "direction": "w",
+    "frame": 1,
+    "beforeScale": 0.607453,
+    "scale": 0.473813
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-south-v1.png",
+    "direction": "w",
+    "frame": 2,
+    "beforeScale": 0.607453,
+    "scale": 0.473813
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-south-v1.png",
+    "direction": "w",
+    "frame": 3,
+    "beforeScale": 0.607453,
+    "scale": 0.473813
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-south-v1.png",
+    "direction": "w",
+    "frame": 0,
+    "beforeScale": 0.524618,
+    "scale": 0.409202
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-south-v1.png",
+    "direction": "w",
+    "frame": 1,
+    "beforeScale": 0.524618,
+    "scale": 0.409202
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-south-v1.png",
+    "direction": "w",
+    "frame": 2,
+    "beforeScale": 0.524618,
+    "scale": 0.409202
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-south-v1.png",
+    "direction": "w",
+    "frame": 3,
+    "beforeScale": 0.524618,
+    "scale": 0.409202
+  },
+  {
+    "name": "artisan-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-idle-v1.png",
+    "direction": "nw",
+    "frame": 0,
+    "beforeScale": 0.354073,
+    "scale": 0.311584
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-south-v2.png",
+    "direction": "nw",
+    "frame": 0,
+    "beforeScale": 0.652981,
+    "scale": 0.574623
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-south-v2.png",
+    "direction": "nw",
+    "frame": 1,
+    "beforeScale": 0.652981,
+    "scale": 0.574623
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-south-v2.png",
+    "direction": "nw",
+    "frame": 2,
+    "beforeScale": 0.652981,
+    "scale": 0.574623
+  },
+  {
+    "name": "artisan-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-south-v2.png",
+    "direction": "nw",
+    "frame": 3,
+    "beforeScale": 0.652981,
+    "scale": 0.574623
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-south-v1.png",
+    "direction": "nw",
+    "frame": 0,
+    "beforeScale": 0.528304,
+    "scale": 0.464908
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-south-v1.png",
+    "direction": "nw",
+    "frame": 1,
+    "beforeScale": 0.528304,
+    "scale": 0.464908
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-south-v1.png",
+    "direction": "nw",
+    "frame": 2,
+    "beforeScale": 0.528304,
+    "scale": 0.464908
+  },
+  {
+    "name": "artisan-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-south-v1.png",
+    "direction": "nw",
+    "frame": 3,
+    "beforeScale": 0.528304,
+    "scale": 0.464908
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-south-v1.png",
+    "direction": "nw",
+    "frame": 0,
+    "beforeScale": 0.429557,
+    "scale": 0.37801
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-south-v1.png",
+    "direction": "nw",
+    "frame": 1,
+    "beforeScale": 0.429557,
+    "scale": 0.37801
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-south-v1.png",
+    "direction": "nw",
+    "frame": 2,
+    "beforeScale": 0.429557,
+    "scale": 0.37801
+  },
+  {
+    "name": "artisan-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-south-v1.png",
+    "direction": "nw",
+    "frame": 3,
+    "beforeScale": 0.429557,
+    "scale": 0.37801
+  },
+  {
+    "name": "artisan-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-idle-v1.png",
+    "direction": "n",
+    "frame": 0,
+    "beforeScale": 0.423704,
+    "scale": 0.37286
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-north-v1.png",
+    "direction": "n",
+    "frame": 0,
+    "beforeScale": 0.533476,
+    "scale": 0.469459
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-north-v1.png",
+    "direction": "n",
+    "frame": 1,
+    "beforeScale": 0.533476,
+    "scale": 0.469459
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-north-v1.png",
+    "direction": "n",
+    "frame": 2,
+    "beforeScale": 0.533476,
+    "scale": 0.469459
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-north-v1.png",
+    "direction": "n",
+    "frame": 3,
+    "beforeScale": 0.533476,
+    "scale": 0.469459
+  },
+  {
+    "name": "artisan-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-idle-v1.png",
+    "direction": "ne",
+    "frame": 0,
+    "beforeScale": 0.424125,
+    "scale": 0.390195
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-north-v1.png",
+    "direction": "ne",
+    "frame": 0,
+    "beforeScale": 0.543447,
+    "scale": 0.499971
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-north-v1.png",
+    "direction": "ne",
+    "frame": 1,
+    "beforeScale": 0.543447,
+    "scale": 0.499971
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-north-v1.png",
+    "direction": "ne",
+    "frame": 2,
+    "beforeScale": 0.543447,
+    "scale": 0.499971
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-north-v1.png",
+    "direction": "ne",
+    "frame": 3,
+    "beforeScale": 0.543447,
+    "scale": 0.499971
+  },
+  {
+    "name": "artisan-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-idle-v1.png",
+    "direction": "e",
+    "frame": 0,
+    "beforeScale": 0.36931,
+    "scale": 0.332379
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-north-v1.png",
+    "direction": "e",
+    "frame": 0,
+    "beforeScale": 0.526237,
+    "scale": 0.473613
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-north-v1.png",
+    "direction": "e",
+    "frame": 1,
+    "beforeScale": 0.526237,
+    "scale": 0.473613
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-north-v1.png",
+    "direction": "e",
+    "frame": 2,
+    "beforeScale": 0.526237,
+    "scale": 0.473613
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-north-v1.png",
+    "direction": "e",
+    "frame": 3,
+    "beforeScale": 0.526237,
+    "scale": 0.473613
+  },
+  {
+    "name": "artisan-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-idle-v1.png",
+    "direction": "se",
+    "frame": 0,
+    "beforeScale": 0.413682,
+    "scale": 0.372314
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-north-v1.png",
+    "direction": "se",
+    "frame": 0,
+    "beforeScale": 0.637379,
+    "scale": 0.573641
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-north-v1.png",
+    "direction": "se",
+    "frame": 1,
+    "beforeScale": 0.637379,
+    "scale": 0.573641
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-north-v1.png",
+    "direction": "se",
+    "frame": 2,
+    "beforeScale": 0.637379,
+    "scale": 0.573641
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-north-v1.png",
+    "direction": "se",
+    "frame": 3,
+    "beforeScale": 0.637379,
+    "scale": 0.573641
+  },
+  {
+    "name": "artisan-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-idle-v1.png",
+    "direction": "s",
+    "frame": 0,
+    "beforeScale": 0.390434,
+    "scale": 0.367008
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-south-v1.png",
+    "direction": "s",
+    "frame": 0,
+    "beforeScale": 0.501949,
+    "scale": 0.471832
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-south-v1.png",
+    "direction": "s",
+    "frame": 1,
+    "beforeScale": 0.501949,
+    "scale": 0.471832
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-south-v1.png",
+    "direction": "s",
+    "frame": 2,
+    "beforeScale": 0.501949,
+    "scale": 0.471832
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-south-v1.png",
+    "direction": "s",
+    "frame": 3,
+    "beforeScale": 0.501949,
+    "scale": 0.471832
+  },
+  {
+    "name": "artisan-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-idle-v1.png",
+    "direction": "sw",
+    "frame": 0,
+    "beforeScale": 0.346736,
+    "scale": 0.312062
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-south-v1.png",
+    "direction": "sw",
+    "frame": 0,
+    "beforeScale": 0.548132,
+    "scale": 0.493319
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-south-v1.png",
+    "direction": "sw",
+    "frame": 1,
+    "beforeScale": 0.548132,
+    "scale": 0.493319
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-south-v1.png",
+    "direction": "sw",
+    "frame": 2,
+    "beforeScale": 0.548132,
+    "scale": 0.493319
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-south-v1.png",
+    "direction": "sw",
+    "frame": 3,
+    "beforeScale": 0.548132,
+    "scale": 0.493319
+  },
+  {
+    "name": "artisan-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-idle-v1.png",
+    "direction": "w",
+    "frame": 0,
+    "beforeScale": 0.360745,
+    "scale": 0.32467
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-south-v1.png",
+    "direction": "w",
+    "frame": 0,
+    "beforeScale": 0.471671,
+    "scale": 0.424504
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-south-v1.png",
+    "direction": "w",
+    "frame": 1,
+    "beforeScale": 0.471671,
+    "scale": 0.424504
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-south-v1.png",
+    "direction": "w",
+    "frame": 2,
+    "beforeScale": 0.471671,
+    "scale": 0.424504
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-south-v1.png",
+    "direction": "w",
+    "frame": 3,
+    "beforeScale": 0.471671,
+    "scale": 0.424504
+  },
+  {
+    "name": "artisan-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-idle-v1.png",
+    "direction": "nw",
+    "frame": 0,
+    "beforeScale": 0.3918,
+    "scale": 0.360456
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-south-v1.png",
+    "direction": "nw",
+    "frame": 0,
+    "beforeScale": 0.495038,
+    "scale": 0.455435
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-south-v1.png",
+    "direction": "nw",
+    "frame": 1,
+    "beforeScale": 0.495038,
+    "scale": 0.455435
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-south-v1.png",
+    "direction": "nw",
+    "frame": 2,
+    "beforeScale": 0.495038,
+    "scale": 0.455435
+  },
+  {
+    "name": "artisan-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-south-v1.png",
+    "direction": "nw",
+    "frame": 3,
+    "beforeScale": 0.495038,
+    "scale": 0.455435
+  },
+  {
+    "name": "worker-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-idle-v1.png",
+    "direction": "n",
+    "frame": 0,
+    "beforeScale": 0.519413,
+    "scale": 0.493442
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-north-v1.png",
+    "direction": "n",
+    "frame": 0,
+    "beforeScale": 0.66735,
+    "scale": 0.633983
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-north-v1.png",
+    "direction": "n",
+    "frame": 1,
+    "beforeScale": 0.66735,
+    "scale": 0.633983
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-north-v1.png",
+    "direction": "n",
+    "frame": 2,
+    "beforeScale": 0.66735,
+    "scale": 0.633983
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-north-v1.png",
+    "direction": "n",
+    "frame": 3,
+    "beforeScale": 0.66735,
+    "scale": 0.633983
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-north-v1.png",
+    "direction": "n",
+    "frame": 0,
+    "beforeScale": 0.723932,
+    "scale": 0.687735
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-north-v1.png",
+    "direction": "n",
+    "frame": 1,
+    "beforeScale": 0.723932,
+    "scale": 0.687735
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-north-v1.png",
+    "direction": "n",
+    "frame": 2,
+    "beforeScale": 0.723932,
+    "scale": 0.687735
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-north-v1.png",
+    "direction": "n",
+    "frame": 3,
+    "beforeScale": 0.723932,
+    "scale": 0.687735
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-north-v1.png",
+    "direction": "n",
+    "frame": 0,
+    "beforeScale": 0.554481,
+    "scale": 0.510123
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-north-v1.png",
+    "direction": "n",
+    "frame": 1,
+    "beforeScale": 0.554481,
+    "scale": 0.510123
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-north-v1.png",
+    "direction": "n",
+    "frame": 2,
+    "beforeScale": 0.554481,
+    "scale": 0.510123
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-north-v1.png",
+    "direction": "n",
+    "frame": 3,
+    "beforeScale": 0.554481,
+    "scale": 0.510123
+  },
+  {
+    "name": "worker-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-idle-v1.png",
+    "direction": "ne",
+    "frame": 0,
+    "beforeScale": 0.522844,
+    "scale": 0.439189
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-north-v1.png",
+    "direction": "ne",
+    "frame": 0,
+    "beforeScale": 0.734099,
+    "scale": 0.616643
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-north-v1.png",
+    "direction": "ne",
+    "frame": 1,
+    "beforeScale": 0.734099,
+    "scale": 0.616643
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-north-v1.png",
+    "direction": "ne",
+    "frame": 2,
+    "beforeScale": 0.734099,
+    "scale": 0.616643
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-north-v1.png",
+    "direction": "ne",
+    "frame": 3,
+    "beforeScale": 0.734099,
+    "scale": 0.616643
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-north-v1.png",
+    "direction": "ne",
+    "frame": 0,
+    "beforeScale": 0.779569,
+    "scale": 0.654838
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-north-v1.png",
+    "direction": "ne",
+    "frame": 1,
+    "beforeScale": 0.779569,
+    "scale": 0.654838
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-north-v1.png",
+    "direction": "ne",
+    "frame": 2,
+    "beforeScale": 0.779569,
+    "scale": 0.654838
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-north-v1.png",
+    "direction": "ne",
+    "frame": 3,
+    "beforeScale": 0.779569,
+    "scale": 0.654838
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-north-v1.png",
+    "direction": "ne",
+    "frame": 0,
+    "beforeScale": 0.720638,
+    "scale": 0.605336
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-north-v1.png",
+    "direction": "ne",
+    "frame": 1,
+    "beforeScale": 0.720638,
+    "scale": 0.605336
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-north-v1.png",
+    "direction": "ne",
+    "frame": 2,
+    "beforeScale": 0.720638,
+    "scale": 0.605336
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-north-v1.png",
+    "direction": "ne",
+    "frame": 3,
+    "beforeScale": 0.720638,
+    "scale": 0.605336
+  },
+  {
+    "name": "worker-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-idle-v1.png",
+    "direction": "e",
+    "frame": 0,
+    "beforeScale": 0.593898,
+    "scale": 0.46324
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-north-v1.png",
+    "direction": "e",
+    "frame": 0,
+    "beforeScale": 0.84013,
+    "scale": 0.655301
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-north-v1.png",
+    "direction": "e",
+    "frame": 1,
+    "beforeScale": 0.84013,
+    "scale": 0.655301
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-north-v1.png",
+    "direction": "e",
+    "frame": 2,
+    "beforeScale": 0.84013,
+    "scale": 0.655301
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-north-v1.png",
+    "direction": "e",
+    "frame": 3,
+    "beforeScale": 0.84013,
+    "scale": 0.655301
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-north-v1.png",
+    "direction": "e",
+    "frame": 0,
+    "beforeScale": 0.862352,
+    "scale": 0.672635
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-north-v1.png",
+    "direction": "e",
+    "frame": 1,
+    "beforeScale": 0.862352,
+    "scale": 0.672635
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-north-v1.png",
+    "direction": "e",
+    "frame": 2,
+    "beforeScale": 0.862352,
+    "scale": 0.672635
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-north-v1.png",
+    "direction": "e",
+    "frame": 3,
+    "beforeScale": 0.862352,
+    "scale": 0.672635
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-north-v1.png",
+    "direction": "e",
+    "frame": 0,
+    "beforeScale": 0.797912,
+    "scale": 0.622371
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-north-v1.png",
+    "direction": "e",
+    "frame": 1,
+    "beforeScale": 0.797912,
+    "scale": 0.622371
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-north-v1.png",
+    "direction": "e",
+    "frame": 2,
+    "beforeScale": 0.797912,
+    "scale": 0.622371
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-north-v1.png",
+    "direction": "e",
+    "frame": 3,
+    "beforeScale": 0.797912,
+    "scale": 0.622371
+  },
+  {
+    "name": "worker-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-idle-v1.png",
+    "direction": "se",
+    "frame": 0,
+    "beforeScale": 0.621698,
+    "scale": 0.509792
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-north-v1.png",
+    "direction": "se",
+    "frame": 0,
+    "beforeScale": 0.888317,
+    "scale": 0.72842
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-north-v1.png",
+    "direction": "se",
+    "frame": 1,
+    "beforeScale": 0.888317,
+    "scale": 0.72842
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-north-v1.png",
+    "direction": "se",
+    "frame": 2,
+    "beforeScale": 0.888317,
+    "scale": 0.72842
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-north-v1.png",
+    "direction": "se",
+    "frame": 3,
+    "beforeScale": 0.888317,
+    "scale": 0.72842
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-north-v1.png",
+    "direction": "se",
+    "frame": 0,
+    "beforeScale": 1.010191,
+    "scale": 0.828357
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-north-v1.png",
+    "direction": "se",
+    "frame": 1,
+    "beforeScale": 1.010191,
+    "scale": 0.828357
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-north-v1.png",
+    "direction": "se",
+    "frame": 2,
+    "beforeScale": 1.010191,
+    "scale": 0.828357
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-north-v1.png",
+    "direction": "se",
+    "frame": 3,
+    "beforeScale": 1.010191,
+    "scale": 0.828357
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-north-v1.png",
+    "direction": "se",
+    "frame": 0,
+    "beforeScale": 0.799646,
+    "scale": 0.65571
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-north-v1.png",
+    "direction": "se",
+    "frame": 1,
+    "beforeScale": 0.799646,
+    "scale": 0.65571
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-north-v1.png",
+    "direction": "se",
+    "frame": 2,
+    "beforeScale": 0.799646,
+    "scale": 0.65571
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-north-v1.png",
+    "direction": "se",
+    "frame": 3,
+    "beforeScale": 0.799646,
+    "scale": 0.65571
+  },
+  {
+    "name": "worker-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-idle-v1.png",
+    "direction": "s",
+    "frame": 0,
+    "beforeScale": 0.569916,
+    "scale": 0.524323
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-south-v1.png",
+    "direction": "s",
+    "frame": 0,
+    "beforeScale": 0.579937,
+    "scale": 0.533542
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-south-v1.png",
+    "direction": "s",
+    "frame": 1,
+    "beforeScale": 0.579937,
+    "scale": 0.533542
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-south-v1.png",
+    "direction": "s",
+    "frame": 2,
+    "beforeScale": 0.579937,
+    "scale": 0.533542
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-south-v1.png",
+    "direction": "s",
+    "frame": 3,
+    "beforeScale": 0.579937,
+    "scale": 0.533542
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-south-v1.png",
+    "direction": "s",
+    "frame": 0,
+    "beforeScale": 0.576952,
+    "scale": 0.530796
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-south-v1.png",
+    "direction": "s",
+    "frame": 1,
+    "beforeScale": 0.576952,
+    "scale": 0.530796
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-south-v1.png",
+    "direction": "s",
+    "frame": 2,
+    "beforeScale": 0.576952,
+    "scale": 0.530796
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-south-v1.png",
+    "direction": "s",
+    "frame": 3,
+    "beforeScale": 0.576952,
+    "scale": 0.530796
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-s-fix-v2.png",
+    "direction": "s",
+    "frame": 0,
+    "beforeScale": 0.204508,
+    "scale": 0.188147
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-s-fix-v2.png",
+    "direction": "s",
+    "frame": 1,
+    "beforeScale": 0.21067,
+    "scale": 0.193816
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-s-fix-v2.png",
+    "direction": "s",
+    "frame": 2,
+    "beforeScale": 0.197979,
+    "scale": 0.182141
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-s-fix-v2.png",
+    "direction": "s",
+    "frame": 3,
+    "beforeScale": 0.201983,
+    "scale": 0.185824
+  },
+  {
+    "name": "worker-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-idle-v1.png",
+    "direction": "sw",
+    "frame": 0,
+    "beforeScale": 0.50248,
+    "scale": 0.412034
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-south-v1.png",
+    "direction": "sw",
+    "frame": 0,
+    "beforeScale": 0.692723,
+    "scale": 0.568033
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-south-v1.png",
+    "direction": "sw",
+    "frame": 1,
+    "beforeScale": 0.692723,
+    "scale": 0.568033
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-south-v1.png",
+    "direction": "sw",
+    "frame": 2,
+    "beforeScale": 0.692723,
+    "scale": 0.568033
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-south-v1.png",
+    "direction": "sw",
+    "frame": 3,
+    "beforeScale": 0.692723,
+    "scale": 0.568033
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-south-v1.png",
+    "direction": "sw",
+    "frame": 0,
+    "beforeScale": 0.64373,
+    "scale": 0.527859
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-south-v1.png",
+    "direction": "sw",
+    "frame": 1,
+    "beforeScale": 0.64373,
+    "scale": 0.527859
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-south-v1.png",
+    "direction": "sw",
+    "frame": 2,
+    "beforeScale": 0.64373,
+    "scale": 0.527859
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-south-v1.png",
+    "direction": "sw",
+    "frame": 3,
+    "beforeScale": 0.64373,
+    "scale": 0.527859
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-south-v1.png",
+    "direction": "sw",
+    "frame": 0,
+    "beforeScale": 0.708352,
+    "scale": 0.580849
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-south-v1.png",
+    "direction": "sw",
+    "frame": 1,
+    "beforeScale": 0.708352,
+    "scale": 0.580849
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-south-v1.png",
+    "direction": "sw",
+    "frame": 2,
+    "beforeScale": 0.708352,
+    "scale": 0.580849
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-south-v1.png",
+    "direction": "sw",
+    "frame": 3,
+    "beforeScale": 0.708352,
+    "scale": 0.580849
+  },
+  {
+    "name": "worker-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-idle-v1.png",
+    "direction": "w",
+    "frame": 0,
+    "beforeScale": 0.565342,
+    "scale": 0.440967
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-south-v1.png",
+    "direction": "w",
+    "frame": 0,
+    "beforeScale": 0.694432,
+    "scale": 0.541657
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-south-v1.png",
+    "direction": "w",
+    "frame": 1,
+    "beforeScale": 0.694432,
+    "scale": 0.541657
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-south-v1.png",
+    "direction": "w",
+    "frame": 2,
+    "beforeScale": 0.694432,
+    "scale": 0.541657
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-south-v1.png",
+    "direction": "w",
+    "frame": 3,
+    "beforeScale": 0.694432,
+    "scale": 0.541657
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-south-v1.png",
+    "direction": "w",
+    "frame": 0,
+    "beforeScale": 0.778864,
+    "scale": 0.607514
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-south-v1.png",
+    "direction": "w",
+    "frame": 1,
+    "beforeScale": 0.778864,
+    "scale": 0.607514
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-south-v1.png",
+    "direction": "w",
+    "frame": 2,
+    "beforeScale": 0.778864,
+    "scale": 0.607514
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-south-v1.png",
+    "direction": "w",
+    "frame": 3,
+    "beforeScale": 0.778864,
+    "scale": 0.607514
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-south-v1.png",
+    "direction": "w",
+    "frame": 0,
+    "beforeScale": 0.701189,
+    "scale": 0.546927
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-south-v1.png",
+    "direction": "w",
+    "frame": 1,
+    "beforeScale": 0.701189,
+    "scale": 0.546927
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-south-v1.png",
+    "direction": "w",
+    "frame": 2,
+    "beforeScale": 0.701189,
+    "scale": 0.546927
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-south-v1.png",
+    "direction": "w",
+    "frame": 3,
+    "beforeScale": 0.701189,
+    "scale": 0.546927
+  },
+  {
+    "name": "worker-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-idle-v1.png",
+    "direction": "nw",
+    "frame": 0,
+    "beforeScale": 0.509822,
+    "scale": 0.438447
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-south-v1.png",
+    "direction": "nw",
+    "frame": 0,
+    "beforeScale": 0.636207,
+    "scale": 0.547138
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-south-v1.png",
+    "direction": "nw",
+    "frame": 1,
+    "beforeScale": 0.636207,
+    "scale": 0.547138
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-south-v1.png",
+    "direction": "nw",
+    "frame": 2,
+    "beforeScale": 0.636207,
+    "scale": 0.547138
+  },
+  {
+    "name": "worker-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-walk-south-v1.png",
+    "direction": "nw",
+    "frame": 3,
+    "beforeScale": 0.636207,
+    "scale": 0.547138
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-south-v1.png",
+    "direction": "nw",
+    "frame": 0,
+    "beforeScale": 0.684992,
+    "scale": 0.589093
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-south-v1.png",
+    "direction": "nw",
+    "frame": 1,
+    "beforeScale": 0.684992,
+    "scale": 0.589093
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-south-v1.png",
+    "direction": "nw",
+    "frame": 2,
+    "beforeScale": 0.684992,
+    "scale": 0.589093
+  },
+  {
+    "name": "worker-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-south-v1.png",
+    "direction": "nw",
+    "frame": 3,
+    "beforeScale": 0.684992,
+    "scale": 0.589093
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-south-v1.png",
+    "direction": "nw",
+    "frame": 0,
+    "beforeScale": 0.60635,
+    "scale": 0.521461
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-south-v1.png",
+    "direction": "nw",
+    "frame": 1,
+    "beforeScale": 0.60635,
+    "scale": 0.521461
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-south-v1.png",
+    "direction": "nw",
+    "frame": 2,
+    "beforeScale": 0.60635,
+    "scale": 0.521461
+  },
+  {
+    "name": "worker-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/worker-prone-armed-reload-south-v1.png",
+    "direction": "nw",
+    "frame": 3,
+    "beforeScale": 0.60635,
+    "scale": 0.521461
+  },
+  {
+    "name": "worker-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-idle-v1.png",
+    "direction": "n",
+    "frame": 0,
+    "beforeScale": 0.506198,
+    "scale": 0.445454
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-north-v2.png",
+    "direction": "n",
+    "frame": 0,
+    "beforeScale": 0.586325,
+    "scale": 0.515966
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-north-v2.png",
+    "direction": "n",
+    "frame": 1,
+    "beforeScale": 0.586325,
+    "scale": 0.515966
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-north-v2.png",
+    "direction": "n",
+    "frame": 2,
+    "beforeScale": 0.586325,
+    "scale": 0.515966
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-north-v2.png",
+    "direction": "n",
+    "frame": 3,
+    "beforeScale": 0.586325,
+    "scale": 0.515966
+  },
+  {
+    "name": "worker-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-idle-v1.png",
+    "direction": "ne",
+    "frame": 0,
+    "beforeScale": 0.449799,
+    "scale": 0.404819
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-north-v2.png",
+    "direction": "ne",
+    "frame": 0,
+    "beforeScale": 0.62045,
+    "scale": 0.558405
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-north-v2.png",
+    "direction": "ne",
+    "frame": 1,
+    "beforeScale": 0.62045,
+    "scale": 0.558405
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-north-v2.png",
+    "direction": "ne",
+    "frame": 2,
+    "beforeScale": 0.62045,
+    "scale": 0.558405
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-north-v2.png",
+    "direction": "ne",
+    "frame": 3,
+    "beforeScale": 0.62045,
+    "scale": 0.558405
+  },
+  {
+    "name": "worker-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-idle-v1.png",
+    "direction": "e",
+    "frame": 0,
+    "beforeScale": 0.415493,
+    "scale": 0.373944
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-north-v2.png",
+    "direction": "e",
+    "frame": 0,
+    "beforeScale": 0.678417,
+    "scale": 0.610575
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-north-v2.png",
+    "direction": "e",
+    "frame": 1,
+    "beforeScale": 0.678417,
+    "scale": 0.610575
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-north-v2.png",
+    "direction": "e",
+    "frame": 2,
+    "beforeScale": 0.678417,
+    "scale": 0.610575
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-north-v2.png",
+    "direction": "e",
+    "frame": 3,
+    "beforeScale": 0.678417,
+    "scale": 0.610575
+  },
+  {
+    "name": "worker-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-idle-v1.png",
+    "direction": "se",
+    "frame": 0,
+    "beforeScale": 0.461442,
+    "scale": 0.406069
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-north-v2.png",
+    "direction": "se",
+    "frame": 0,
+    "beforeScale": 0.718601,
+    "scale": 0.632369
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-north-v2.png",
+    "direction": "se",
+    "frame": 1,
+    "beforeScale": 0.718601,
+    "scale": 0.632369
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-north-v2.png",
+    "direction": "se",
+    "frame": 2,
+    "beforeScale": 0.718601,
+    "scale": 0.632369
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-north-v2.png",
+    "direction": "se",
+    "frame": 3,
+    "beforeScale": 0.718601,
+    "scale": 0.632369
+  },
+  {
+    "name": "worker-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-idle-v1.png",
+    "direction": "s",
+    "frame": 0,
+    "beforeScale": 0.460728,
+    "scale": 0.433084
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-s-fix-v3.png",
+    "direction": "s",
+    "frame": 0,
+    "beforeScale": 0.145768,
+    "scale": 0.137022
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-s-fix-v3.png",
+    "direction": "s",
+    "frame": 1,
+    "beforeScale": 0.159104,
+    "scale": 0.149558
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-s-fix-v3.png",
+    "direction": "s",
+    "frame": 2,
+    "beforeScale": 0.164577,
+    "scale": 0.154702
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-s-fix-v3.png",
+    "direction": "s",
+    "frame": 3,
+    "beforeScale": 0.150369,
+    "scale": 0.141347
+  },
+  {
+    "name": "worker-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-idle-v1.png",
+    "direction": "sw",
+    "frame": 0,
+    "beforeScale": 0.416042,
+    "scale": 0.366117
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-south-v2.png",
+    "direction": "sw",
+    "frame": 0,
+    "beforeScale": 0.651221,
+    "scale": 0.573074
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-south-v2.png",
+    "direction": "sw",
+    "frame": 1,
+    "beforeScale": 0.651221,
+    "scale": 0.573074
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-south-v2.png",
+    "direction": "sw",
+    "frame": 2,
+    "beforeScale": 0.651221,
+    "scale": 0.573074
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-south-v2.png",
+    "direction": "sw",
+    "frame": 3,
+    "beforeScale": 0.651221,
+    "scale": 0.573074
+  },
+  {
+    "name": "worker-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-idle-v1.png",
+    "direction": "w",
+    "frame": 0,
+    "beforeScale": 0.423157,
+    "scale": 0.380841
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-south-v2.png",
+    "direction": "w",
+    "frame": 0,
+    "beforeScale": 0.590734,
+    "scale": 0.531661
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-south-v2.png",
+    "direction": "w",
+    "frame": 1,
+    "beforeScale": 0.590734,
+    "scale": 0.531661
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-south-v2.png",
+    "direction": "w",
+    "frame": 2,
+    "beforeScale": 0.590734,
+    "scale": 0.531661
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-south-v2.png",
+    "direction": "w",
+    "frame": 3,
+    "beforeScale": 0.590734,
+    "scale": 0.531661
+  },
+  {
+    "name": "worker-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-idle-v1.png",
+    "direction": "nw",
+    "frame": 0,
+    "beforeScale": 0.468522,
+    "scale": 0.42167
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-south-v2.png",
+    "direction": "nw",
+    "frame": 0,
+    "beforeScale": 0.615148,
+    "scale": 0.553633
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-south-v2.png",
+    "direction": "nw",
+    "frame": 1,
+    "beforeScale": 0.615148,
+    "scale": 0.553633
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-south-v2.png",
+    "direction": "nw",
+    "frame": 2,
+    "beforeScale": 0.615148,
+    "scale": 0.553633
+  },
+  {
+    "name": "worker-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/worker-prone-unarmed-walk-south-v2.png",
+    "direction": "nw",
+    "frame": 3,
+    "beforeScale": 0.615148,
+    "scale": 0.553633
+  },
+  {
+    "name": "surgeon-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-idle-v1.png",
+    "direction": "n",
+    "frame": 0,
+    "beforeScale": 0.573411,
+    "scale": 0.51607
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-n-fix-v2.png",
+    "direction": "n",
+    "frame": 0,
+    "beforeScale": 0.228098,
+    "scale": 0.205288
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-n-fix-v2.png",
+    "direction": "n",
+    "frame": 1,
+    "beforeScale": 0.228098,
+    "scale": 0.205288
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-n-fix-v2.png",
+    "direction": "n",
+    "frame": 2,
+    "beforeScale": 0.226126,
+    "scale": 0.203513
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-n-fix-v2.png",
+    "direction": "n",
+    "frame": 3,
+    "beforeScale": 0.229443,
+    "scale": 0.206499
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-n-fix-v2.png",
+    "direction": "n",
+    "frame": 0,
+    "beforeScale": 0.24066390041493776,
+    "scale": 0.216598
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-n-fix-v2.png",
+    "direction": "n",
+    "frame": 1,
+    "beforeScale": 0.24066390041493776,
+    "scale": 0.216598
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-n-fix-v2.png",
+    "direction": "n",
+    "frame": 2,
+    "beforeScale": 0.24066390041493776,
+    "scale": 0.216598
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-n-fix-v2.png",
+    "direction": "n",
+    "frame": 3,
+    "beforeScale": 0.24066390041493776,
+    "scale": 0.216598
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-n-fix-v2.png",
+    "direction": "n",
+    "frame": 0,
+    "beforeScale": 0.241595,
+    "scale": 0.241595
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-n-fix-v2.png",
+    "direction": "n",
+    "frame": 1,
+    "beforeScale": 0.241595,
+    "scale": 0.241595
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-n-fix-v2.png",
+    "direction": "n",
+    "frame": 2,
+    "beforeScale": 0.241595,
+    "scale": 0.241595
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-n-fix-v2.png",
+    "direction": "n",
+    "frame": 3,
+    "beforeScale": 0.241595,
+    "scale": 0.241595
+  },
+  {
+    "name": "surgeon-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-idle-v1.png",
+    "direction": "ne",
+    "frame": 0,
+    "beforeScale": 0.441869,
+    "scale": 0.380007
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-north-v1.png",
+    "direction": "ne",
+    "frame": 0,
+    "beforeScale": 0.57091,
+    "scale": 0.490983
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-north-v1.png",
+    "direction": "ne",
+    "frame": 1,
+    "beforeScale": 0.57091,
+    "scale": 0.490983
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-north-v1.png",
+    "direction": "ne",
+    "frame": 2,
+    "beforeScale": 0.57091,
+    "scale": 0.490983
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-north-v1.png",
+    "direction": "ne",
+    "frame": 3,
+    "beforeScale": 0.57091,
+    "scale": 0.490983
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-north-v1.png",
+    "direction": "ne",
+    "frame": 0,
+    "beforeScale": 0.541506,
+    "scale": 0.465695
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-north-v1.png",
+    "direction": "ne",
+    "frame": 1,
+    "beforeScale": 0.541506,
+    "scale": 0.465695
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-north-v1.png",
+    "direction": "ne",
+    "frame": 2,
+    "beforeScale": 0.541506,
+    "scale": 0.465695
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-north-v1.png",
+    "direction": "ne",
+    "frame": 3,
+    "beforeScale": 0.541506,
+    "scale": 0.465695
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-north-v1.png",
+    "direction": "ne",
+    "frame": 0,
+    "beforeScale": 0.531917,
+    "scale": 0.457449
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-north-v1.png",
+    "direction": "ne",
+    "frame": 1,
+    "beforeScale": 0.531917,
+    "scale": 0.457449
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-north-v1.png",
+    "direction": "ne",
+    "frame": 2,
+    "beforeScale": 0.531917,
+    "scale": 0.457449
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-north-v1.png",
+    "direction": "ne",
+    "frame": 3,
+    "beforeScale": 0.531917,
+    "scale": 0.457449
+  },
+  {
+    "name": "surgeon-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-idle-v1.png",
+    "direction": "e",
+    "frame": 0,
+    "beforeScale": 0.476994,
+    "scale": 0.372055
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-north-v1.png",
+    "direction": "e",
+    "frame": 0,
+    "beforeScale": 0.678148,
+    "scale": 0.508611
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-north-v1.png",
+    "direction": "e",
+    "frame": 1,
+    "beforeScale": 0.678148,
+    "scale": 0.508611
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-north-v1.png",
+    "direction": "e",
+    "frame": 2,
+    "beforeScale": 0.678148,
+    "scale": 0.508611
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-north-v1.png",
+    "direction": "e",
+    "frame": 3,
+    "beforeScale": 0.678148,
+    "scale": 0.508611
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-north-v1.png",
+    "direction": "e",
+    "frame": 0,
+    "beforeScale": 0.62507,
+    "scale": 0.462552
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-north-v1.png",
+    "direction": "e",
+    "frame": 1,
+    "beforeScale": 0.62507,
+    "scale": 0.462552
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-north-v1.png",
+    "direction": "e",
+    "frame": 2,
+    "beforeScale": 0.62507,
+    "scale": 0.462552
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-north-v1.png",
+    "direction": "e",
+    "frame": 3,
+    "beforeScale": 0.62507,
+    "scale": 0.462552
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-north-v1.png",
+    "direction": "e",
+    "frame": 0,
+    "beforeScale": 0.539703,
+    "scale": 0.404777
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-north-v1.png",
+    "direction": "e",
+    "frame": 1,
+    "beforeScale": 0.539703,
+    "scale": 0.404777
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-north-v1.png",
+    "direction": "e",
+    "frame": 2,
+    "beforeScale": 0.539703,
+    "scale": 0.404777
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-north-v1.png",
+    "direction": "e",
+    "frame": 3,
+    "beforeScale": 0.539703,
+    "scale": 0.404777
+  },
+  {
+    "name": "surgeon-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-idle-v1.png",
+    "direction": "se",
+    "frame": 0,
+    "beforeScale": 0.50598,
+    "scale": 0.394664
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-north-v1.png",
+    "direction": "se",
+    "frame": 0,
+    "beforeScale": 0.549155,
+    "scale": 0.428341
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-north-v1.png",
+    "direction": "se",
+    "frame": 1,
+    "beforeScale": 0.549155,
+    "scale": 0.428341
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-north-v1.png",
+    "direction": "se",
+    "frame": 2,
+    "beforeScale": 0.549155,
+    "scale": 0.428341
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-north-v1.png",
+    "direction": "se",
+    "frame": 3,
+    "beforeScale": 0.549155,
+    "scale": 0.428341
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-north-v1.png",
+    "direction": "se",
+    "frame": 0,
+    "beforeScale": 0.732389,
+    "scale": 0.541968
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-north-v1.png",
+    "direction": "se",
+    "frame": 1,
+    "beforeScale": 0.732389,
+    "scale": 0.541968
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-north-v1.png",
+    "direction": "se",
+    "frame": 2,
+    "beforeScale": 0.732389,
+    "scale": 0.541968
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-north-v1.png",
+    "direction": "se",
+    "frame": 3,
+    "beforeScale": 0.732389,
+    "scale": 0.541968
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-north-v1.png",
+    "direction": "se",
+    "frame": 0,
+    "beforeScale": 0.749668,
+    "scale": 0.524768
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-north-v1.png",
+    "direction": "se",
+    "frame": 1,
+    "beforeScale": 0.749668,
+    "scale": 0.524768
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-north-v1.png",
+    "direction": "se",
+    "frame": 2,
+    "beforeScale": 0.749668,
+    "scale": 0.524768
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-north-v1.png",
+    "direction": "se",
+    "frame": 3,
+    "beforeScale": 0.749668,
+    "scale": 0.524768
+  },
+  {
+    "name": "surgeon-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-idle-v1.png",
+    "direction": "s",
+    "frame": 0,
+    "beforeScale": 0.422035,
+    "scale": 0.379831
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-north-v1.png",
+    "direction": "s",
+    "frame": 0,
+    "beforeScale": 0.4782608695652174,
+    "scale": 0.430435
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-north-v1.png",
+    "direction": "s",
+    "frame": 1,
+    "beforeScale": 0.4782608695652174,
+    "scale": 0.430435
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-north-v1.png",
+    "direction": "s",
+    "frame": 2,
+    "beforeScale": 0.4782608695652174,
+    "scale": 0.430435
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-north-v1.png",
+    "direction": "s",
+    "frame": 3,
+    "beforeScale": 0.4782608695652174,
+    "scale": 0.430435
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-south-v1.png",
+    "direction": "s",
+    "frame": 0,
+    "beforeScale": 0.376521,
+    "scale": 0.338869
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-south-v1.png",
+    "direction": "s",
+    "frame": 1,
+    "beforeScale": 0.376521,
+    "scale": 0.338869
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-south-v1.png",
+    "direction": "s",
+    "frame": 2,
+    "beforeScale": 0.376521,
+    "scale": 0.338869
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-south-v1.png",
+    "direction": "s",
+    "frame": 3,
+    "beforeScale": 0.376521,
+    "scale": 0.338869
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-s-fix-v2.png",
+    "direction": "s",
+    "frame": 0,
+    "beforeScale": 0.229191,
+    "scale": 0.206272
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-s-fix-v2.png",
+    "direction": "s",
+    "frame": 1,
+    "beforeScale": 0.203809,
+    "scale": 0.183428
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-s-fix-v2.png",
+    "direction": "s",
+    "frame": 2,
+    "beforeScale": 0.24638,
+    "scale": 0.221742
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-s-fix-v2.png",
+    "direction": "s",
+    "frame": 3,
+    "beforeScale": 0.202185,
+    "scale": 0.181967
+  },
+  {
+    "name": "surgeon-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-idle-v1.png",
+    "direction": "sw",
+    "frame": 0,
+    "beforeScale": 0.415257,
+    "scale": 0.348816
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-south-v1.png",
+    "direction": "sw",
+    "frame": 0,
+    "beforeScale": 0.513118,
+    "scale": 0.431019
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-south-v1.png",
+    "direction": "sw",
+    "frame": 1,
+    "beforeScale": 0.513118,
+    "scale": 0.431019
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-south-v1.png",
+    "direction": "sw",
+    "frame": 2,
+    "beforeScale": 0.513118,
+    "scale": 0.431019
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-south-v1.png",
+    "direction": "sw",
+    "frame": 3,
+    "beforeScale": 0.513118,
+    "scale": 0.431019
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-south-v1.png",
+    "direction": "sw",
+    "frame": 0,
+    "beforeScale": 0.508621,
+    "scale": 0.427242
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-south-v1.png",
+    "direction": "sw",
+    "frame": 1,
+    "beforeScale": 0.508621,
+    "scale": 0.427242
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-south-v1.png",
+    "direction": "sw",
+    "frame": 2,
+    "beforeScale": 0.508621,
+    "scale": 0.427242
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-south-v1.png",
+    "direction": "sw",
+    "frame": 3,
+    "beforeScale": 0.508621,
+    "scale": 0.427242
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-south-v1.png",
+    "direction": "sw",
+    "frame": 0,
+    "beforeScale": 0.500395,
+    "scale": 0.420332
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-south-v1.png",
+    "direction": "sw",
+    "frame": 1,
+    "beforeScale": 0.500395,
+    "scale": 0.420332
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-south-v1.png",
+    "direction": "sw",
+    "frame": 2,
+    "beforeScale": 0.500395,
+    "scale": 0.420332
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-south-v1.png",
+    "direction": "sw",
+    "frame": 3,
+    "beforeScale": 0.500395,
+    "scale": 0.420332
+  },
+  {
+    "name": "surgeon-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-idle-v1.png",
+    "direction": "w",
+    "frame": 0,
+    "beforeScale": 0.517306,
+    "scale": 0.403499
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-south-v1.png",
+    "direction": "w",
+    "frame": 0,
+    "beforeScale": 0.658286,
+    "scale": 0.513463
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-south-v1.png",
+    "direction": "w",
+    "frame": 1,
+    "beforeScale": 0.658286,
+    "scale": 0.513463
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-south-v1.png",
+    "direction": "w",
+    "frame": 2,
+    "beforeScale": 0.658286,
+    "scale": 0.513463
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-south-v1.png",
+    "direction": "w",
+    "frame": 3,
+    "beforeScale": 0.658286,
+    "scale": 0.513463
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-south-v1.png",
+    "direction": "w",
+    "frame": 0,
+    "beforeScale": 0.611433,
+    "scale": 0.476918
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-south-v1.png",
+    "direction": "w",
+    "frame": 1,
+    "beforeScale": 0.611433,
+    "scale": 0.476918
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-south-v1.png",
+    "direction": "w",
+    "frame": 2,
+    "beforeScale": 0.611433,
+    "scale": 0.476918
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-south-v1.png",
+    "direction": "w",
+    "frame": 3,
+    "beforeScale": 0.611433,
+    "scale": 0.476918
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-south-v1.png",
+    "direction": "w",
+    "frame": 0,
+    "beforeScale": 0.564495,
+    "scale": 0.440306
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-south-v1.png",
+    "direction": "w",
+    "frame": 1,
+    "beforeScale": 0.564495,
+    "scale": 0.440306
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-south-v1.png",
+    "direction": "w",
+    "frame": 2,
+    "beforeScale": 0.564495,
+    "scale": 0.440306
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-south-v1.png",
+    "direction": "w",
+    "frame": 3,
+    "beforeScale": 0.564495,
+    "scale": 0.440306
+  },
+  {
+    "name": "surgeon-prone-armed-idle",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-idle-v1.png",
+    "direction": "nw",
+    "frame": 0,
+    "beforeScale": 0.444273,
+    "scale": 0.39096
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-south-v1.png",
+    "direction": "nw",
+    "frame": 0,
+    "beforeScale": 0.557126,
+    "scale": 0.490271
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-south-v1.png",
+    "direction": "nw",
+    "frame": 1,
+    "beforeScale": 0.557126,
+    "scale": 0.490271
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-south-v1.png",
+    "direction": "nw",
+    "frame": 2,
+    "beforeScale": 0.557126,
+    "scale": 0.490271
+  },
+  {
+    "name": "surgeon-prone-armed-fire",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-south-v1.png",
+    "direction": "nw",
+    "frame": 3,
+    "beforeScale": 0.557126,
+    "scale": 0.490271
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-south-v1.png",
+    "direction": "nw",
+    "frame": 0,
+    "beforeScale": 0.509516,
+    "scale": 0.448374
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-south-v1.png",
+    "direction": "nw",
+    "frame": 1,
+    "beforeScale": 0.509516,
+    "scale": 0.448374
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-south-v1.png",
+    "direction": "nw",
+    "frame": 2,
+    "beforeScale": 0.509516,
+    "scale": 0.448374
+  },
+  {
+    "name": "surgeon-prone-armed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-south-v1.png",
+    "direction": "nw",
+    "frame": 3,
+    "beforeScale": 0.509516,
+    "scale": 0.448374
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-south-v1.png",
+    "direction": "nw",
+    "frame": 0,
+    "beforeScale": 0.445392,
+    "scale": 0.391945
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-south-v1.png",
+    "direction": "nw",
+    "frame": 1,
+    "beforeScale": 0.445392,
+    "scale": 0.391945
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-south-v1.png",
+    "direction": "nw",
+    "frame": 2,
+    "beforeScale": 0.445392,
+    "scale": 0.391945
+  },
+  {
+    "name": "surgeon-prone-armed-reload",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-south-v1.png",
+    "direction": "nw",
+    "frame": 3,
+    "beforeScale": 0.445392,
+    "scale": 0.391945
+  },
+  {
+    "name": "surgeon-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-idle-v1.png",
+    "direction": "n",
+    "frame": 0,
+    "beforeScale": 0.493284,
+    "scale": 0.424224
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-north-v1.png",
+    "direction": "n",
+    "frame": 0,
+    "beforeScale": 0.601359,
+    "scale": 0.517169
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-north-v1.png",
+    "direction": "n",
+    "frame": 1,
+    "beforeScale": 0.601359,
+    "scale": 0.517169
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-north-v1.png",
+    "direction": "n",
+    "frame": 2,
+    "beforeScale": 0.601359,
+    "scale": 0.517169
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-north-v1.png",
+    "direction": "n",
+    "frame": 3,
+    "beforeScale": 0.601359,
+    "scale": 0.517169
+  },
+  {
+    "name": "surgeon-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-idle-v1.png",
+    "direction": "ne",
+    "frame": 0,
+    "beforeScale": 0.440476,
+    "scale": 0.396428
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-north-v1.png",
+    "direction": "ne",
+    "frame": 0,
+    "beforeScale": 0.541388,
+    "scale": 0.487249
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-north-v1.png",
+    "direction": "ne",
+    "frame": 1,
+    "beforeScale": 0.541388,
+    "scale": 0.487249
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-north-v1.png",
+    "direction": "ne",
+    "frame": 2,
+    "beforeScale": 0.541388,
+    "scale": 0.487249
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-north-v1.png",
+    "direction": "ne",
+    "frame": 3,
+    "beforeScale": 0.541388,
+    "scale": 0.487249
+  },
+  {
+    "name": "surgeon-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-idle-v1.png",
+    "direction": "e",
+    "frame": 0,
+    "beforeScale": 0.389968,
+    "scale": 0.343172
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-north-v1.png",
+    "direction": "e",
+    "frame": 0,
+    "beforeScale": 0.601919,
+    "scale": 0.529689
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-north-v1.png",
+    "direction": "e",
+    "frame": 1,
+    "beforeScale": 0.601919,
+    "scale": 0.529689
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-north-v1.png",
+    "direction": "e",
+    "frame": 2,
+    "beforeScale": 0.601919,
+    "scale": 0.529689
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-north-v1.png",
+    "direction": "e",
+    "frame": 3,
+    "beforeScale": 0.601919,
+    "scale": 0.529689
+  },
+  {
+    "name": "surgeon-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-idle-v1.png",
+    "direction": "se",
+    "frame": 0,
+    "beforeScale": 0.440227,
+    "scale": 0.378595
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-north-v1.png",
+    "direction": "se",
+    "frame": 0,
+    "beforeScale": 0.633053,
+    "scale": 0.544426
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-north-v1.png",
+    "direction": "se",
+    "frame": 1,
+    "beforeScale": 0.633053,
+    "scale": 0.544426
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-north-v1.png",
+    "direction": "se",
+    "frame": 2,
+    "beforeScale": 0.633053,
+    "scale": 0.544426
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-north-v1.png",
+    "direction": "se",
+    "frame": 3,
+    "beforeScale": 0.633053,
+    "scale": 0.544426
+  },
+  {
+    "name": "surgeon-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-idle-v1.png",
+    "direction": "s",
+    "frame": 0,
+    "beforeScale": 0.422178,
+    "scale": 0.388404
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-south-v1.png",
+    "direction": "s",
+    "frame": 0,
+    "beforeScale": 0.40547,
+    "scale": 0.373032
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-south-v1.png",
+    "direction": "s",
+    "frame": 1,
+    "beforeScale": 0.40547,
+    "scale": 0.373032
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-south-v1.png",
+    "direction": "s",
+    "frame": 2,
+    "beforeScale": 0.40547,
+    "scale": 0.373032
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-south-v1.png",
+    "direction": "s",
+    "frame": 3,
+    "beforeScale": 0.40547,
+    "scale": 0.373032
+  },
+  {
+    "name": "surgeon-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-idle-v1.png",
+    "direction": "sw",
+    "frame": 0,
+    "beforeScale": 0.366627,
+    "scale": 0.322632
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-south-v1.png",
+    "direction": "sw",
+    "frame": 0,
+    "beforeScale": 0.47602,
+    "scale": 0.418898
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-south-v1.png",
+    "direction": "sw",
+    "frame": 1,
+    "beforeScale": 0.47602,
+    "scale": 0.418898
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-south-v1.png",
+    "direction": "sw",
+    "frame": 2,
+    "beforeScale": 0.47602,
+    "scale": 0.418898
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-south-v1.png",
+    "direction": "sw",
+    "frame": 3,
+    "beforeScale": 0.47602,
+    "scale": 0.418898
+  },
+  {
+    "name": "surgeon-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-idle-v1.png",
+    "direction": "w",
+    "frame": 0,
+    "beforeScale": 0.420113,
+    "scale": 0.369699
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-south-v1.png",
+    "direction": "w",
+    "frame": 0,
+    "beforeScale": 0.478338,
+    "scale": 0.420937
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-south-v1.png",
+    "direction": "w",
+    "frame": 1,
+    "beforeScale": 0.478338,
+    "scale": 0.420937
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-south-v1.png",
+    "direction": "w",
+    "frame": 2,
+    "beforeScale": 0.478338,
+    "scale": 0.420937
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-south-v1.png",
+    "direction": "w",
+    "frame": 3,
+    "beforeScale": 0.478338,
+    "scale": 0.420937
+  },
+  {
+    "name": "surgeon-prone-unarmed-idle",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-idle-v1.png",
+    "direction": "nw",
+    "frame": 0,
+    "beforeScale": 0.424488,
+    "scale": 0.382039
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-south-v1.png",
+    "direction": "nw",
+    "frame": 0,
+    "beforeScale": 0.52727,
+    "scale": 0.474543
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-south-v1.png",
+    "direction": "nw",
+    "frame": 1,
+    "beforeScale": 0.52727,
+    "scale": 0.474543
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-south-v1.png",
+    "direction": "nw",
+    "frame": 2,
+    "beforeScale": 0.52727,
+    "scale": 0.474543
+  },
+  {
+    "name": "surgeon-prone-unarmed-walk",
+    "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-south-v1.png",
+    "direction": "nw",
+    "frame": 3,
+    "beforeScale": 0.52727,
+    "scale": 0.474543
+  }
+]

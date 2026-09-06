@@ -1,0 +1,126 @@
+{
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-crouch-walk-north-v1.png",
+      "name": "woman-headscarf-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "north"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-crouch-walk-south-v1.png",
+      "name": "woman-headscarf-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "south"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-fire-north-v1.png",
+      "name": "woman-headscarf-fire",
+      "reference": "granadero-fire",
+      "half": "north"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-fire-south-v1.png",
+      "name": "woman-headscarf-fire",
+      "reference": "granadero-fire",
+      "half": "south"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-reload-north-v1.png",
+      "name": "woman-headscarf-reload",
+      "reference": "granadero-reload",
+      "half": "north"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-reload-south-v1.png",
+      "name": "woman-headscarf-reload",
+      "reference": "granadero-reload",
+      "half": "south"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-strike-north-v1.png",
+      "name": "woman-headscarf-strike",
+      "reference": "granadero-strike",
+      "half": "north"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-strike-south-v1.png",
+      "name": "woman-headscarf-strike",
+      "reference": "granadero-strike",
+      "half": "south"
+    }
+  ],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-fire-n-fix-v1.png",
+      "name": "woman-headscarf-fire",
+      "reference": "granadero-fire",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "n",
+            "frame": 0,
+            "row": 0,
+            "col": 0
+          },
+          {
+            "direction": "n",
+            "frame": 1,
+            "row": 0,
+            "col": 1
+          },
+          {
+            "direction": "n",
+            "frame": 2,
+            "row": 0,
+            "col": 2
+          },
+          {
+            "direction": "n",
+            "frame": 3,
+            "row": 0,
+            "col": 3
+          }
+        ]
+      }
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-strike-n-fix-v1.png",
+      "name": "woman-headscarf-strike",
+      "reference": "granadero-strike",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "n",
+            "frame": 0,
+            "row": 0,
+            "col": 0
+          },
+          {
+            "direction": "n",
+            "frame": 1,
+            "row": 0,
+            "col": 1
+          },
+          {
+            "direction": "n",
+            "frame": 2,
+            "row": 0,
+            "col": 2
+          },
+          {
+            "direction": "n",
+            "frame": 3,
+            "row": 0,
+            "col": 3
+          }
+        ]
+      }
+    }
+  ]
+}

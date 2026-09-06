@@ -1,0 +1,187 @@
+{
+  "version": 1,
+  "appearance": "blue-officer",
+  "states": [
+    "mounted-idle",
+    "mounted-walk"
+  ],
+  "instructions": "Register the three variants, keeping only includeDirections; then apply the N/S single-row corrections. N v5 is a new appearance edit of reviewed Granadero walking poses, with all rear heads and distinct lifted hooves. S v3 has frontal heads and alternate lifted hooves. Exclude mounted walk north/south v2 and N v3/v4. They have pose/direction faults. Full mounted south v1 needs supplied clear-gutter regions because NW heads start above the nominal last-row fraction. Keep source-specific exportKey. Complete slung musket and narrow brown sling are retained; no backpack/bedroll added.",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-mounted-idle-v1.png",
+      "name": "blue-officer-mounted-idle",
+      "reference": "granadero-mounted-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "white"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-mounted-walk-north-v1.png",
+      "name": "blue-officer-mounted-walk",
+      "reference": "granadero-mounted-walk",
+      "half": "north",
+      "includeDirections": [
+        "NE",
+        "E",
+        "SE"
+      ],
+      "exportKey": "white"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-mounted-walk-south-v1.png",
+      "name": "blue-officer-mounted-walk",
+      "reference": "granadero-mounted-walk",
+      "half": "south",
+      "includeDirections": [
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "white",
+      "regionFile": "assets/source/illustrated-sprites/blue-officer-mounted-walk-south-v1.regions.json"
+    }
+  ],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-mounted-walk-n-v5.png",
+      "name": "blue-officer-mounted-walk",
+      "reference": "granadero-mounted-walk",
+      "half": "north",
+      "includeDirections": [
+        "N"
+      ],
+      "exportKey": "magenta",
+      "regionFile": "assets/source/illustrated-sprites/blue-officer-mounted-walk-n-v5.regions.json",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "N",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              183,
+              134,
+              192,
+              517
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              721,
+              134,
+              194,
+              517
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              1260,
+              134,
+              193,
+              517
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1793,
+              134,
+              196,
+              517
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-mounted-walk-s-v3.png",
+      "name": "blue-officer-mounted-walk",
+      "reference": "granadero-mounted-walk",
+      "half": "south",
+      "includeDirections": [
+        "S"
+      ],
+      "exportKey": "white",
+      "regionFile": "assets/source/illustrated-sprites/blue-officer-mounted-walk-s-v3.regions.json",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "S",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              170,
+              123,
+              193,
+              484
+            ]
+          },
+          {
+            "direction": "S",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              717,
+              123,
+              193,
+              484
+            ]
+          },
+          {
+            "direction": "S",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              1267,
+              123,
+              191,
+              484
+            ]
+          },
+          {
+            "direction": "S",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1807,
+              123,
+              193,
+              484
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

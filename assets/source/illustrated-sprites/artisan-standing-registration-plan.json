@@ -1,0 +1,218 @@
+{
+  "version": 1,
+  "appearance": "artisan",
+  "states": [
+    "run",
+    "fire",
+    "reload",
+    "strike",
+    "crouch-idle",
+    "crouch-walk"
+  ],
+  "instructions": "Register variants sequentially, keep only includeDirections, then register exact-N strike correction. Action adapted to short pistol; preserve apron straps rather than military equipment. Small head glances and shallow crouch-step phases remain. Do not register N from the strike-north-v2 base. Fire north uses explicit regular cell regions because detached NE smoke forms an extra gutter group; all effects are inside their own cells.",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/artisan-run-north-v2.png",
+      "name": "artisan-run",
+      "reference": "granadero-run",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-run-south-v1.png",
+      "name": "artisan-run",
+      "reference": "granadero-run",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-fire-north-v4.png",
+      "name": "artisan-fire",
+      "reference": "granadero-fire",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ],
+      "regionFile": "assets/source/illustrated-sprites/artisan-fire-north-v4.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-fire-south-v1.png",
+      "name": "artisan-fire",
+      "reference": "granadero-fire",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-reload-north-v1.png",
+      "name": "artisan-reload",
+      "reference": "granadero-reload",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-reload-south-v1.png",
+      "name": "artisan-reload",
+      "reference": "granadero-reload",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-crouch-idle-v1.png",
+      "name": "artisan-crouch-idle",
+      "reference": "granadero-crouch-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-crouch-walk-north-v2.png",
+      "name": "artisan-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-crouch-walk-south-v2.png",
+      "name": "artisan-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-strike-north-v2.png",
+      "name": "artisan-strike",
+      "reference": "granadero-strike",
+      "half": "north",
+      "includeDirections": [
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-strike-south-v2.png",
+      "name": "artisan-strike",
+      "reference": "granadero-strike",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    }
+  ],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/artisan-strike-n-fix-v1.png",
+      "name": "artisan-strike",
+      "reference": "granadero-strike",
+      "half": "north",
+      "includeDirections": [
+        "N"
+      ],
+      "regionFile": "assets/source/illustrated-sprites/artisan-strike-n-fix-v1.regions.json",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "N",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              174,
+              115,
+              246,
+              575
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              655,
+              115,
+              269,
+              575
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              1155,
+              115,
+              211,
+              575
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1630,
+              115,
+              246,
+              575
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

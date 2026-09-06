@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "appearance": "scarlet-officer",
+  "states": [
+    "prone-armed-reload",
+    "mounted-idle",
+    "mounted-walk"
+  ],
+  "instructions": "Register these whole selected sheets sequentially. Prone reload south v2 restores visible cartridge and ramrod hand actions; v1 repeated aim too closely. Complete guns and both legs remain visible, with lowered/crosswise musket during loading. Mounted sources preserve horse, reins and slung musket. Small direct-S horse hoof changes remain as in reviewed source. No isolated correction cells.",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-prone-armed-reload-north-v1.png",
+      "name": "scarlet-officer-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-prone-armed-reload-south-v2.png",
+      "name": "scarlet-officer-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-mounted-idle-v1.png",
+      "name": "scarlet-officer-mounted-idle",
+      "reference": "granadero-mounted-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-mounted-walk-north-v1.png",
+      "name": "scarlet-officer-mounted-walk",
+      "reference": "granadero-mounted-walk",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-mounted-walk-south-v1.png",
+      "name": "scarlet-officer-mounted-walk",
+      "reference": "granadero-mounted-walk",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    }
+  ],
+  "corrections": []
+}

@@ -1,0 +1,12 @@
+{
+  "source": "assets/previews/illustrated-sprites/packed/granadero-prone-armed-fire.png",
+  "sha256": "badd981bfa2164386d06667d22c79b8f2486e15bb7dbe66821e7b9693d6103e3",
+  "directions": [
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "frames": 4,
+  "command": "node tools/illustrated-action-reference.mjs granadero-prone-armed-fire"
+}

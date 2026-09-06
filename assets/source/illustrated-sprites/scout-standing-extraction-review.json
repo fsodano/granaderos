@@ -1,0 +1,264 @@
+[
+  {
+    "source": "assets/source/illustrated-sprites/scout-run-north-v2.png",
+    "width": 1254,
+    "height": 1254,
+    "rows": 4,
+    "detectedSlots": 16,
+    "minFixedCellGutter": 31
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-run-south-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "rows": 4,
+    "detectedSlots": 16,
+    "minFixedCellGutter": 33
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-fire-north-v2.png",
+    "width": 1254,
+    "height": 1254,
+    "rows": 4,
+    "detectedSlots": 16,
+    "minFixedCellGutter": 21
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-fire-south-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "rows": 4,
+    "detectedSlots": "Expected 4 columns in row 2, found 5",
+    "minFixedCellGutter": 12
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-reload-north-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "rows": 4,
+    "detectedSlots": 16,
+    "minFixedCellGutter": 28
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-reload-south-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "rows": 4,
+    "detectedSlots": 16,
+    "minFixedCellGutter": 0
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-strike-north-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "rows": 4,
+    "detectedSlots": 16,
+    "minFixedCellGutter": 19
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-strike-south-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "rows": 4,
+    "detectedSlots": 16,
+    "minFixedCellGutter": 12
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-crouch-idle-v1.png",
+    "width": 1774,
+    "height": 887,
+    "rows": 2,
+    "detectedSlots": 8,
+    "minFixedCellGutter": 38
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-crouch-walk-north-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "rows": 4,
+    "detectedSlots": 16,
+    "minFixedCellGutter": 33
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-crouch-walk-south-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "rows": 4,
+    "detectedSlots": 16,
+    "minFixedCellGutter": 17
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-crouch-walk-n-v2.png",
+    "width": 2120,
+    "height": 742,
+    "rows": 1,
+    "detectedSlots": 4,
+    "minFixedCellGutter": 93,
+    "slots": [
+      {
+        "direction": "N",
+        "frame": 0,
+        "row": 0,
+        "col": 0,
+        "rect": [
+          91,
+          215,
+          304,
+          431
+        ]
+      },
+      {
+        "direction": "N",
+        "frame": 1,
+        "row": 0,
+        "col": 1,
+        "rect": [
+          631,
+          215,
+          301,
+          431
+        ]
+      },
+      {
+        "direction": "N",
+        "frame": 2,
+        "row": 0,
+        "col": 2,
+        "rect": [
+          1169,
+          215,
+          306,
+          431
+        ]
+      },
+      {
+        "direction": "N",
+        "frame": 3,
+        "row": 0,
+        "col": 3,
+        "rect": [
+          1713,
+          215,
+          306,
+          431
+        ]
+      }
+    ]
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-reload-n-v2.png",
+    "width": 1908,
+    "height": 824,
+    "rows": 1,
+    "detectedSlots": 4,
+    "minFixedCellGutter": 50,
+    "slots": [
+      {
+        "direction": "N",
+        "frame": 0,
+        "row": 0,
+        "col": 0,
+        "rect": [
+          68,
+          82,
+          309,
+          666
+        ]
+      },
+      {
+        "direction": "N",
+        "frame": 1,
+        "row": 0,
+        "col": 1,
+        "rect": [
+          562,
+          82,
+          262,
+          666
+        ]
+      },
+      {
+        "direction": "N",
+        "frame": 2,
+        "row": 0,
+        "col": 2,
+        "rect": [
+          1040,
+          82,
+          262,
+          666
+        ]
+      },
+      {
+        "direction": "N",
+        "frame": 3,
+        "row": 0,
+        "col": 3,
+        "rect": [
+          1479,
+          82,
+          308,
+          666
+        ]
+      }
+    ]
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-strike-w-v2.png",
+    "width": 2172,
+    "height": 724,
+    "rows": 1,
+    "detectedSlots": 4,
+    "minFixedCellGutter": 0,
+    "slots": [
+      {
+        "direction": "W",
+        "frame": 0,
+        "row": 0,
+        "col": 0,
+        "rect": [
+          150,
+          162,
+          162,
+          447
+        ]
+      },
+      {
+        "direction": "W",
+        "frame": 1,
+        "row": 0,
+        "col": 1,
+        "rect": [
+          521,
+          162,
+          344,
+          447
+        ]
+      },
+      {
+        "direction": "W",
+        "frame": 2,
+        "row": 0,
+        "col": 2,
+        "rect": [
+          1092,
+          162,
+          426,
+          447
+        ]
+      },
+      {
+        "direction": "W",
+        "frame": 3,
+        "row": 0,
+        "col": 3,
+        "rect": [
+          1840,
+          162,
+          162,
+          447
+        ]
+      }
+    ]
+  }
+]

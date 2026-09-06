@@ -12,7 +12,8 @@ const {default:TacticalMinimap}=await import('../web/app/TacticalMinimap.tsx');
 import {buildSectorMap,MAP_IDS} from '../game/maps.js';
 import {createBattle} from '../game/tactical.js';
 import {enterSector} from '../game/world.js';
-import {spriteLayout} from '../game/sprite-layouts.js';
+import {spriteRender,spriteViewport,spriteMovementFrame} from '../game/sprite-render.js';
+import {ILLUSTRATED_SPRITE_ATLASES} from '../game/illustrated-sprite-atlases.js';
 import {tacticalCamera} from '../game/tactical-camera.js';
 const project=(x,y)=>({x:200+(x-y)*26,y:65+(x+y)*14});
 const state={tiles:[{x:2,y:2,roomId:'a'},{x:4,y:2,roomId:'b'}],buildings:[{id:'house',x:1,y:1,width:5,height:4,rooms:[{id:'a',cells:[{x:2,y:2}]},{id:'b',cells:[{x:4,y:2}]}]}],props:[{id:'a-table',type:'table',x:2,y:2,buildingId:'house'},{id:'b-bed',type:'bed',x:4,y:2,buildingId:'house'},{id:'untagged',type:'chest',x:4,y:2},{id:'outside',type:'barrels',x:0,y:0},{id:'invalid',type:'chest',x:9,y:9,buildingId:'missing'}]};
@@ -22,20 +23,35 @@ test('scene preserves distinct dead/unconscious states even with pending motion 
  Object.assign(s.units[0],{hp:0,unconscious:true,mounted:true});Object.assign(s.units[1],{hp:50,unconscious:true});
  const markup=render(h('svg',null,h(TacticalScene,{state:s,players:s.units,units:s.units,positions:{dead:{x:1,y:1,direction:2,frame:5,moving:true}},poses:{dead:'fire'},directions:{dead:7},reachable:[],sight:new Set(),revealed:new Set(),project})));
  assert.match(markup,/data-posture="dead"/);assert.match(markup,/data-posture="unconscious"/);
- assert.match(markup,/granadero-dead-idle-atlas/);assert.match(markup,/granadero-unconscious-breathe-atlas/);
+ assert.match(markup,/data-sprite="granadero-dead-idle"/);assert.match(markup,/data-sprite="granadero-unconscious-breathe"/);
  assert.ok(!markup.includes('cavalry-'));assert.ok(!markup.includes('prone-'));assert.ok(!markup.includes('data-moving="true"'));
 });
-test('native sprites preserve body scale and fixed ground anchors across every layout',()=>{
+test('rendered sprites preserve body scale and fixed ground anchors across every layout',()=>{
  for(const [unit,pose,name] of [
   [{},'idle','granadero-idle'],[{side:'enemy'},'fire','royalist-fire'],
   [{stance:'prone'},'idle','granadero-prone-unarmed-idle'],[{movementMode:'crouch'},'idle','granadero-crouch-idle'],
   [{mounted:true},'idle','cavalry-idle'],
  ]){
-  const {cell,anchor}=spriteLayout(name);
+  const selected=spriteRender(unit,{direction:3,moving:false,frame:0},pose);
+  const viewport=spriteViewport(selected,{x:100.2,y:100.4},3,0);
   const markup=render(h(SpriteFigure,{unit,pose,position:{x:100.2,y:100.4},motion:{direction:3,moving:false,frame:0}}));
-  assert.ok(markup.includes(`/art/pixel/${name}-atlas.png`));
-  assert.ok(markup.includes(`x="${Math.round(100.2-anchor[0])}" y="${Math.round(100.4-anchor[1])}" width="${cell}" height="${cell}"`));
+  assert.ok(markup.includes(selected.href),name);
+  assert.ok(markup.includes(`x="${viewport.x}" y="${viewport.y}" width="${viewport.width}" height="${viewport.height}"`));
   assert.match(markup,/image-rendering:pixelated/);
+ }
+});
+test('published illustrated art reaches the SVG with its actual raster grid and no legacy URL',()=>{
+ for(const [name,moving] of [['granadero-idle',false],['granadero-walk',true]]){
+  const entry=ILLUSTRATED_SPRITE_ATLASES[name];assert.ok(entry,`${name} must be published`);
+  for(let direction=0;direction<8;direction++){
+   const markup=render(h(SpriteFigure,{unit:{},position:{x:100,y:100},motion:{direction,moving,frame:5,elapsedMs:600}}));
+   assert.match(markup,/data-sprite-style="illustrated-pixel-art"/);
+   assert.ok(!markup.includes('data-sprite-fallback='));assert.ok(!markup.includes('/art/pixel/'));
+   assert.ok(markup.includes(`/art/illustrated/${entry.file}`));
+   assert.ok(markup.includes('width="52" height="52"'));
+   assert.ok(markup.includes(`viewBox="${(moving?3:direction)*156} ${moving?direction*156:0} 156 156"`));
+   assert.ok(markup.includes(`width="${entry.size[0]}" height="${entry.size[1]}"`));
+  }
  }
 });
 test('responsive tactical camera keeps integer pixel magnification and bounded panning',()=>{
@@ -51,12 +67,15 @@ test('responsive tactical camera keeps integer pixel magnification and bounded p
 });
 test('civilian selection uses idle columns and walk rows in all eight directions',()=>{
  for(let direction=0;direction<8;direction++)for(const moving of [false,true]){
-  const markup=render(h(SpriteFigure,{appearance:'civilian',unit:{side:'enemy',mounted:true,stance:'prone'},pose:'fire',position:{x:100,y:100},motion:{direction,moving,frame:5}}));
-  assert.ok(markup.includes(`/art/pixel/civilian-${moving?'walk':'idle'}-atlas.png`));
-  assert.ok(markup.includes(`viewBox="${(moving?5:direction)*52} ${moving?direction*52:0} 52 52"`));
+  const unit={side:'enemy',mounted:true,stance:'prone'},motion={direction,moving,frame:5};
+  const selected=spriteRender(unit,motion,'fire','civilian');
+  const viewport=spriteViewport(selected,{x:100,y:100},direction,moving?spriteMovementFrame(motion,selected.frames,selected.fps):0);
+  const markup=render(h(SpriteFigure,{appearance:'civilian',unit,pose:'fire',position:{x:100,y:100},motion}));
+  assert.ok(markup.includes(selected.href));
+  assert.ok(markup.includes(`viewBox="${viewport.viewBox}"`));
   assert.ok(!/royalist|granadero|cavalry/.test(markup));
  }
- assert.match(render(h(SpriteFigure,{unit:{side:'enemy'},position:{x:0,y:0},motion:{direction:2,moving:false,frame:0}})),/royalist-idle-atlas/);
+ assert.match(render(h(SpriteFigure,{unit:{side:'enemy'},position:{x:0,y:0},motion:{direction:2,moving:false,frame:0}})),/data-sprite="royalist-idle"/);
 });
 test('props require their own room, including untagged and invalid membership',()=>{
  assert.deepEqual(props([]).map(p=>p.key),['prop-outside']);
@@ -82,7 +101,7 @@ test('authored furnishings reach battle state and survive sector re-entry',()=>{
 test('scene selects civilians and sorts NPCs at their animated ground position',()=>{
  const s=createBattle([{id:1,x:0,y:0},{id:2,x:1,y:2}],{width:8,height:8,exploration:true,enemies:[],npcs:[{id:'civilian',name:'Vecino',x:2,y:2}]});
  const node=h(TacticalScene,{state:s,players:s.units,units:s.units,positions:{civilian:{x:1,y:1,direction:2,frame:4,moving:true}},poses:{},directions:{},reachable:[],sight:new Set(),revealed:new Set(),project});
- const markup=render(h('svg',null,node));assert.match(markup,/civilian-walk-atlas/);assert.match(markup,/data-unit-id="civilian"/);assert.ok(markup.indexOf('data-unit-id="civilian"')<markup.indexOf('data-unit-id="2"'),'animated ground position sets draw order');assert.match(markup,/data-person-hit-target="true"/);
+ const markup=render(h('svg',null,node));assert.match(markup,/data-sprite="civilian-walk"/);assert.match(markup,/data-unit-id="civilian"/);assert.ok(markup.indexOf('data-unit-id="civilian"')<markup.indexOf('data-unit-id="2"'),'animated ground position sets draw order');assert.match(markup,/data-person-hit-target="true"/);
 });
 test('radar hides unknown room floors and unseen enemy dots',()=>{
  const s=createBattle([{id:1,x:0,y:0}],{width:8,height:8,night:true,enemies:[{id:'enemy',x:7,y:7}],buildings:state.buildings});

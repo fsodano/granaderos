@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { getReachable } from '../../game/tactical.js';
 
 type Point = {x:number;y:number};
-type Motion = Point & {direction:number;frame:number;moving:boolean};
+type Motion = Point & {direction:number;frame:number;moving:boolean;elapsedMs?:number};
 type Track = {points:Point[];start:number;step:number;direction:number};
 // Screen compass after the map's isometric projection, clockwise from north.
 function facing(a:Point,b:Point){const dx=(b.x-a.x)-(b.y-a.y),dy=(b.x-a.x)+(b.y-a.y);return (Math.round(Math.atan2(dx,-dy)/ (Math.PI/4))+8)%8;}
@@ -36,7 +36,7 @@ export function useUnitMotion(battle:any){
     const tick=(time:number)=>{for(const [id,track] of tracks.current){const elapsed=Math.max(0,time-track.start),progress=elapsed/track.step,index=Math.floor(progress),last=track.points.length-1;
       if(index>=last){positions.current[id]={...track.points[last],direction:track.direction,frame:0,moving:false};tracks.current.delete(id);continue;}
       const a=track.points[index],b=track.points[index+1],fraction=progress-index;track.direction=facing(a,b);
-      positions.current[id]={x:a.x+(b.x-a.x)*fraction,y:a.y+(b.y-a.y)*fraction,direction:track.direction,frame:Math.floor(elapsed/100)%8,moving:true};
+      positions.current[id]={x:a.x+(b.x-a.x)*fraction,y:a.y+(b.y-a.y)*fraction,direction:track.direction,frame:Math.floor(elapsed/100)%8,elapsedMs:elapsed,moving:true};
     }setSnapshot({...positions.current});if(tracks.current.size)request=requestAnimationFrame(tick);};
     tick(now);return()=>cancelAnimationFrame(request);
   },[battle]);
