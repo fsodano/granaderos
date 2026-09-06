@@ -1,4 +1,5 @@
 import {sectorCash} from './economy.js';
+import {propBlocksAt} from './props.js';
 import {buildSectorMap} from './maps.js';
 import {createBattle} from './tactical.js';
 
@@ -6,6 +7,7 @@ import {createBattle} from './tactical.js';
 export function enterSector(request,previous=null){
  const map=buildSectorMap(request);
  if(previous){
+   for(const key of ['sourceMapId','sourceMapRevision']){if(previous[key]!==undefined)map[key]=previous[key];else delete map[key];}
    map.props=structuredClone(previous.props??map.props);map.tiles=structuredClone(previous.tiles);map.decor=structuredClone(previous.decor??map.decor);map.buildings=structuredClone(previous.buildings??map.buildings);
    // A new occupation creates a garrison. An unfinished engagement retains its survivors.
    if(!request.exploration&&!previous.sectorCleared)map.enemies=structuredClone(previous.units.filter(u=>u.side==='enemy'));
@@ -23,7 +25,7 @@ export function enterSector(request,previous=null){
  if(previous)state.units.push(...structuredClone(previous.units.filter(u=>u.militia&&u.hp<=0&&!state.units.some(v=>v.id===u.id))));
  const occupied=new Set(state.units.filter(u=>u.side==='enemy'&&u.hp>0&&!u.routed).map(u=>`${u.x},${u.y}`));
  const reserve=(preferred)=>{
-   const candidates=state.tiles.filter(t=>!t.blocked&&!occupied.has(`${t.x},${t.y}`));
+   const candidates=state.tiles.filter(t=>!t.blocked&&!propBlocksAt(state,t.x,t.y)&&!occupied.has(`${t.x},${t.y}`));
    candidates.sort((a,b)=>Math.abs(a.x-preferred.x)+Math.abs(a.y-preferred.y)-Math.abs(b.x-preferred.x)-Math.abs(b.y-preferred.y)||a.y-b.y||a.x-b.x);
    if(!candidates[0])throw Error('No queda espacio libre para entrar en el sector.');
    const {x,y}=candidates[0];occupied.add(`${x},${y}`);return{x,y};
@@ -34,7 +36,7 @@ export function enterSector(request,previous=null){
  }
  state.npcs=(request.npcs??[]).map(npc=>({...structuredClone(npc),...reserve(npc)}));
  if(!previous&&!request.sceneId&&sectorCash(request.sector)){
-  const leader=state.units.find(u=>u.side==='player'),spot=leader&&state.tiles.find(t=>!t.blocked&&!occupied.has(`${t.x},${t.y}`)&&Math.abs(t.x-leader.x)+Math.abs(t.y-leader.y)===1);
+  const leader=state.units.find(u=>u.side==='player'),spot=leader&&state.tiles.find(t=>!t.blocked&&!propBlocksAt(state,t.x,t.y)&&!occupied.has(`${t.x},${t.y}`)&&Math.abs(t.x-leader.x)+Math.abs(t.y-leader.y)===1);
   if(spot)state.groundItems.push({id:`cash:${request.sector}`,type:'money',x:spot.x,y:spot.y,count:sectorCash(request.sector)});
  }
  state.sceneId=request.sceneId??null;state.missionId=request.missionId??request.sceneId??null;

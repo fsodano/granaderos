@@ -1,0 +1,834 @@
+{
+  "version": 1,
+  "name": "Ayuntamiento",
+  "building": {
+    "id": "ayuntamiento",
+    "name": "Ayuntamiento",
+    "x": 0,
+    "y": 0,
+    "width": 12,
+    "height": 9,
+    "roof": "tile",
+    "material": "adobe",
+    "rooms": [
+      {
+        "id": "ayuntamiento:secretaria",
+        "cells": [
+          {
+            "x": 1,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 1
+          },
+          {
+            "x": 1,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 2
+          },
+          {
+            "x": 1,
+            "y": 3
+          },
+          {
+            "x": 3,
+            "y": 2
+          },
+          {
+            "x": 2,
+            "y": 3
+          },
+          {
+            "x": 3,
+            "y": 3
+          }
+        ],
+        "name": "Secretaría municipal"
+      },
+      {
+        "id": "ayuntamiento:archivo",
+        "cells": [
+          {
+            "x": 5,
+            "y": 1
+          },
+          {
+            "x": 6,
+            "y": 1
+          },
+          {
+            "x": 5,
+            "y": 2
+          },
+          {
+            "x": 7,
+            "y": 1
+          },
+          {
+            "x": 6,
+            "y": 2
+          },
+          {
+            "x": 5,
+            "y": 3
+          },
+          {
+            "x": 8,
+            "y": 1
+          },
+          {
+            "x": 7,
+            "y": 2
+          },
+          {
+            "x": 6,
+            "y": 3
+          },
+          {
+            "x": 9,
+            "y": 1
+          },
+          {
+            "x": 8,
+            "y": 2
+          },
+          {
+            "x": 7,
+            "y": 3
+          },
+          {
+            "x": 10,
+            "y": 1
+          },
+          {
+            "x": 9,
+            "y": 2
+          },
+          {
+            "x": 8,
+            "y": 3
+          },
+          {
+            "x": 10,
+            "y": 2
+          },
+          {
+            "x": 9,
+            "y": 3
+          },
+          {
+            "x": 10,
+            "y": 3
+          }
+        ],
+        "name": "Archivo municipal"
+      },
+      {
+        "id": "ayuntamiento:concejo",
+        "cells": [
+          {
+            "x": 1,
+            "y": 5
+          },
+          {
+            "x": 2,
+            "y": 5
+          },
+          {
+            "x": 1,
+            "y": 6
+          },
+          {
+            "x": 3,
+            "y": 5
+          },
+          {
+            "x": 2,
+            "y": 6
+          },
+          {
+            "x": 1,
+            "y": 7
+          },
+          {
+            "x": 4,
+            "y": 5
+          },
+          {
+            "x": 3,
+            "y": 6
+          },
+          {
+            "x": 2,
+            "y": 7
+          },
+          {
+            "x": 5,
+            "y": 5
+          },
+          {
+            "x": 4,
+            "y": 6
+          },
+          {
+            "x": 3,
+            "y": 7
+          },
+          {
+            "x": 6,
+            "y": 5
+          },
+          {
+            "x": 5,
+            "y": 6
+          },
+          {
+            "x": 4,
+            "y": 7
+          },
+          {
+            "x": 7,
+            "y": 5
+          },
+          {
+            "x": 6,
+            "y": 6
+          },
+          {
+            "x": 5,
+            "y": 7
+          },
+          {
+            "x": 8,
+            "y": 5
+          },
+          {
+            "x": 7,
+            "y": 6
+          },
+          {
+            "x": 6,
+            "y": 7
+          },
+          {
+            "x": 9,
+            "y": 5
+          },
+          {
+            "x": 8,
+            "y": 6
+          },
+          {
+            "x": 7,
+            "y": 7
+          },
+          {
+            "x": 10,
+            "y": 5
+          },
+          {
+            "x": 9,
+            "y": 6
+          },
+          {
+            "x": 8,
+            "y": 7
+          },
+          {
+            "x": 10,
+            "y": 6
+          },
+          {
+            "x": 9,
+            "y": 7
+          },
+          {
+            "x": 10,
+            "y": 7
+          }
+        ],
+        "name": "Sala del concejo"
+      }
+    ],
+    "kind": "townhall",
+    "wallFinish": "limewash",
+    "roofFinish": "aged",
+    "doorStyle": "double",
+    "windowStyle": "barred",
+    "walls": [
+      {
+        "x": 0,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 1,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 3,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 4,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 5,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 6,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 8,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 9,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 11,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 1,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 11,
+        "y": 1,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 3,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 11,
+        "y": 3,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 4,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 11,
+        "y": 4,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 11,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 7,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 11,
+        "y": 7,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 8,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 1,
+        "y": 8,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 3,
+        "y": 8,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 4,
+        "y": 8,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 5,
+        "y": 8,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 6,
+        "y": 8,
+        "type": "door",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 0,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null,
+        "doorId": "ayuntamiento:door:6:8",
+        "open": false,
+        "locked": false
+      },
+      {
+        "x": 7,
+        "y": 8,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 8,
+        "y": 8,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 10,
+        "y": 8,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 11,
+        "y": 8,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "ayuntamiento",
+        "roomId": null
+      },
+      {
+        "x": 1,
+        "y": 4,
+        "type": "wall"
+      },
+      {
+        "x": 3,
+        "y": 4,
+        "type": "wall"
+      },
+      {
+        "x": 4,
+        "y": 4,
+        "type": "wall"
+      },
+      {
+        "x": 5,
+        "y": 4,
+        "type": "wall"
+      },
+      {
+        "x": 6,
+        "y": 4,
+        "type": "wall"
+      },
+      {
+        "x": 8,
+        "y": 4,
+        "type": "wall"
+      },
+      {
+        "x": 9,
+        "y": 4,
+        "type": "wall"
+      },
+      {
+        "x": 10,
+        "y": 4,
+        "type": "wall"
+      },
+      {
+        "x": 4,
+        "y": 1,
+        "type": "wall"
+      },
+      {
+        "x": 4,
+        "y": 2,
+        "type": "wall"
+      },
+      {
+        "x": 4,
+        "y": 3,
+        "type": "wall"
+      },
+      {
+        "x": 2,
+        "y": 4,
+        "type": "door",
+        "doorId": "ayuntamiento:door:2:4",
+        "open": false,
+        "locked": false
+      },
+      {
+        "x": 7,
+        "y": 4,
+        "type": "door",
+        "doorId": "ayuntamiento:door:7:4",
+        "open": false,
+        "locked": false
+      },
+      {
+        "x": 2,
+        "y": 8,
+        "type": "window"
+      },
+      {
+        "x": 9,
+        "y": 8,
+        "type": "window"
+      },
+      {
+        "x": 0,
+        "y": 2,
+        "type": "window"
+      },
+      {
+        "x": 0,
+        "y": 6,
+        "type": "window"
+      },
+      {
+        "x": 11,
+        "y": 2,
+        "type": "window"
+      },
+      {
+        "x": 11,
+        "y": 6,
+        "type": "window"
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "type": "window"
+      },
+      {
+        "x": 7,
+        "y": 0,
+        "type": "window"
+      },
+      {
+        "x": 10,
+        "y": 0,
+        "type": "window"
+      }
+    ]
+  },
+  "features": [],
+  "props": [
+    {
+      "id": "ayuntamiento-prop-0",
+      "type": "table",
+      "x": 1,
+      "y": 1,
+      "name": "Mesa del secretario",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "ayuntamiento-prop-1",
+      "type": "chest",
+      "x": 3,
+      "y": 1,
+      "name": "Actas municipales",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "ayuntamiento-prop-2",
+      "type": "chest",
+      "x": 5,
+      "y": 1,
+      "name": "Archivo de padrones",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "ayuntamiento-prop-3",
+      "type": "chest",
+      "x": 8,
+      "y": 1,
+      "name": "Archivo de acuerdos",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "ayuntamiento-prop-4",
+      "type": "table",
+      "x": 10,
+      "y": 3,
+      "name": "Mesa del archivero",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "ayuntamiento-prop-5",
+      "type": "table",
+      "x": 4,
+      "y": 6,
+      "name": "Mesa del concejo",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "ayuntamiento-prop-6",
+      "type": "table",
+      "x": 5,
+      "y": 6,
+      "name": "Mesa del concejo",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "ayuntamiento-prop-7",
+      "type": "bench",
+      "x": 3,
+      "y": 6,
+      "name": "Banco de los regidores",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "ayuntamiento-prop-8",
+      "type": "bench",
+      "x": 7,
+      "y": 6,
+      "name": "Banco de los regidores",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "ayuntamiento-prop-9",
+      "type": "bench",
+      "x": 9,
+      "y": 6,
+      "name": "Banco público",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    }
+  ],
+  "items": [],
+  "spawns": [],
+  "exits": [],
+  "lights": []
+}

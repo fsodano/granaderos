@@ -1,60 +1,87 @@
+import {getBuildingProfile,getBuildingRenderProfile} from '../../game/building-profile.js';
+import {buildingRoof} from './TacticalRoof';
+import {buildingAppearance} from '../../game/building-appearance.js';
+import {WallSurface,Opening,WALL_COLOURS} from './TacticalArchitectureMaterials';
+import {buildingDetails} from './TacticalBuildingDetails';
 import type {ReactNode} from 'react';
 type Point={x:number;y:number};
 type Args={state:any;revealed:Set<string>;project:(x:number,y:number)=>Point;light:(x:number,y:number)=>number};
 type SceneObject={key:string;depth:number;node:ReactNode};
+
 /** Render architectural segments on authored collision cells, never a facade image. */
 export function buildBuildingObjects({state:s,revealed,project,light}:Args):SceneObject[]{
  const objects:SceneObject[]=[];
+ for(const b of s.buildings??[]){
+  const h=getBuildingProfile(b).wallHeight,points=[[b.x,b.y],[b.x+b.width-1,b.y],[b.x+b.width-1,b.y+b.height-1],[b.x,b.y+b.height-1]].map(([x,y])=>project(x,y));
+  objects.push({key:`architecture-shadow-${b.id}`,depth:-1100,node:<g pointerEvents="none"><polygon points={points.map(p=>`${p.x+h*.35},${p.y+h*.19}`).join(' ')} fill="#231f12" opacity=".24"/><polygon points={points.map(p=>`${p.x+6},${p.y+4}`).join(' ')} fill="#211e13" opacity=".24"/></g>});
+ }
  const wallTiles=s.tiles.filter((t:any)=>['wall','door','window'].includes(t.type));
  const occupied=new Set(wallTiles.map((t:any)=>`${t.x},${t.y}`));
  for(const t of wallTiles){
-  const b=s.buildings?.find((v:any)=>v.id===t.buildingId),roomOpen=b?.rooms.some((r:any)=>revealed.has(r.id)&&r.cells.some((c:any)=>Math.abs(c.x-t.x)+Math.abs(c.y-t.y)===1));
+  const b=s.buildings?.find((v:any)=>v.id===t.buildingId);
+  const corner=b&&(t.x===b.x||t.x===b.x+b.width-1)&&(t.y===b.y||t.y===b.y+b.height-1);
+  // At a wall junction, the joining segments can occupy both cardinal neighbours.
+  // Its room then touches the junction diagonally and must still lower the cap.
+  const junction=(occupied.has(`${t.x-1},${t.y}`)||occupied.has(`${t.x+1},${t.y}`))&&(occupied.has(`${t.x},${t.y-1}`)||occupied.has(`${t.x},${t.y+1}`));
+  // Complete revelation also lowers solid reserved corners without a floor neighbour.
+  const roomOpen=(b?.rooms.length>0&&b.rooms.every((r:any)=>revealed.has(r.id)))||b?.rooms.some((r:any)=>revealed.has(r.id)&&r.cells.some((c:any)=>corner||junction?Math.abs(c.x-t.x)<=1&&Math.abs(c.y-t.y)<=1:Math.abs(c.x-t.x)+Math.abs(c.y-t.y)===1));
   const onX=b&&(t.x===b.x||t.x===b.x+b.width-1),onY=b&&(t.y===b.y||t.y===b.y+b.height-1);
   const axes:WallAxis[]=b?[...(onX?['y' as const]:[]),...(onY?['x' as const]:[])]:[occupied.has(`${t.x+1},${t.y}`)||occupied.has(`${t.x-1},${t.y}`)?'x':'y'];
-  if(!axes.length)axes.push('x');
+  if(!axes.length){if(occupied.has(`${t.x-1},${t.y}`)||occupied.has(`${t.x+1},${t.y}`))axes.push('x');if(occupied.has(`${t.x},${t.y-1}`)||occupied.has(`${t.x},${t.y+1}`))axes.push('y');if(!axes.length)axes.push('x');}
   axes.forEach((axis,index)=>{
-   const isFront=b&&(axis==='x'?t.y===b.y+b.height-1:t.x===b.x+b.width-1),cut=roomOpen&&isFront&&t.type==='wall',height=cut?11:39;
-   const start=project(t.x-(axis==='x'?.5:0),t.y-(axis==='y'?.5:0)),end=project(t.x+(axis==='x'?.5:0),t.y+(axis==='y'?.5:0));
-   const width=40,dx=(end.x-start.x)/width,dy=(end.y-start.y)/width,seed=(t.x*17+t.y*31)%11;
+   // Revealed partitions lower from either room; the back exterior walls stay full height.
+   const canCutAway=b&&((!onX&&!onY)||(axis==='x'?t.y===b.y+b.height-1:t.x===b.x+b.width-1)),cut=roomOpen&&canCutAway,profile=getBuildingRenderProfile(b,revealed),height=cut?9:onX||onY?profile.wallHeight:profile.groundFloorHeight;
+   // Corner cells terminate at the wall intersection; extending both axes
+   // by half a tile produced four projecting wings outside every building.
+   const start=project(t.x-(axis==='x'&&(!b||t.x>b.x)?.5:0),t.y-(axis==='y'&&(!b||t.y>b.y)?.5:0)),end=project(t.x+(axis==='x'&&(!b||t.x<b.x+b.width-1)?.5:0),t.y+(axis==='y'&&(!b||t.y<b.y+b.height-1)?.5:0));
+   const width=40,dx=(end.x-start.x)/width,dy=(end.y-start.y)/width;
    const isOpening=t.type!=='wall'&&index===0;
+   const appearance=buildingAppearance(b);
+   const palette=WALL_COLOURS[appearance.wallFinish];
    const top=(p:Point,z:number)=>`${p.x},${p.y-z}`;
-   objects.push({key:`architecture-${t.x}-${t.y}-${axis}`,depth:t.x+t.y+.015,node:<g data-wall-tile={`${t.x},${t.y}`} data-cutaway={Boolean(cut)} pointerEvents="none" style={{filter:`brightness(${light(t.x,t.y)})`}}>
+   objects.push({key:`architecture-${t.x}-${t.y}-${axis}`,depth:t.x+t.y+.015,node:<g data-wall-tile={`${t.x},${t.y}`} data-cutaway={Boolean(cut)} data-wall-height={height} data-visible-storeys={!cut&&(onX||onY)?profile.floors:1} pointerEvents="none" style={{filter:`brightness(${light(t.x,t.y)})`}}>
     {/* A shallow wall cap makes thickness readable without a full-tile cube. */}
-    <polygon points={`${top(start,height)} ${top(end,height)} ${end.x+4},${end.y-height-2} ${start.x+4},${start.y-height-2}`} fill={cut?'#bda980':'#d2c49e'} stroke="#807459" strokeWidth=".55"/>
-    <path d={`M${end.x},${end.y}v-${height}l4,-2v${height}Z`} fill="#8b8163"/>
+    <polygon points={`${top(start,height)} ${top(end,height)} ${end.x+4},${end.y-height-2} ${start.x+4},${start.y-height-2}`} fill={palette.trim} stroke={palette.shadow} strokeWidth=".55"/>
+    {corner&&<path d={`M${end.x},${end.y}v-${height}l4,-2v${height}Z`} fill={palette.shadow}/>}
     <g transform={`matrix(${dx} ${dy} 0 1 ${start.x} ${start.y})`}>
-     {!isOpening?<rect x="0" y={-height} width={width} height={height} fill="url(#terrain-plaster)"/>:<>
-      <path d={`M0,0V-${height}H40V0H29V-${t.type==='door'?30:29}H11V0Z`} fill="url(#terrain-plaster)"/>
-      {t.type==='window'&&<rect x="10" y="-12" width="20" height="12" fill="url(#terrain-plaster)"/>}
-      <rect x="11" y={t.type==='door'?-30:-29} width="18" height={t.type==='door'?30:17} fill="#20251b"/>
-      <path d={`M10,0V-31H30V0M10,-31Q20,-36 30,-31`} fill="none" stroke="#d6c8a4" strokeWidth="2"/>
-      {t.type==='door'?<g transform={t.open?'translate(11 0) skewY(-25) scale(.22 1) translate(-11 0)':undefined}><rect x="12" y="-30" width="16" height="30" fill="url(#terrain-wood)" stroke="#5c4931" strokeWidth=".8"/><path d="M15,-29V-1M20,-29V-1M25,-29V-1M12,-24H28M12,-7H28" stroke="#413725" strokeWidth=".7"/><circle cx="25" cy="-14" r="1" fill="#c1a16a"/></g>:<><path d="M16,-28V-13M23,-28V-13M12,-21H28" stroke="#897c5b" strokeWidth="1.2"/><path d="M9,-12H31" stroke="#e3d2a5" strokeWidth="3"/></>}
-     </>}
-     {/* Broken plaster and jointed stone footing, deterministic per tile. */}
-     {!isOpening&&<><path d={`M${3+seed},-${Math.min(height-2,12)}l3,2 2,-1 2,4 -2,3 -6,-1Z`} fill="#a69570" opacity=".6"/>{height>15&&<path d={`M${27-seed},-34l-2,5 3,3 -1,5`} fill="none" stroke="#867d61" strokeWidth=".55" opacity=".75"/>}</>}
-     <path d={isOpening&&t.type==='door'?'M0,-5H10V0H0ZM30,-5H40V0H30Z':'M0,-5H40V0H0Z'} fill="#827b62"/>
-     <path d={isOpening?'M5,-5V0M35,-5V0':'M8,-5V0M21,-5V0M34,-5V0'} stroke="#595d4d" strokeWidth=".7"/>
+     <WallSurface finish={appearance.wallFinish} height={height} x={t.x} y={t.y}/>
+     <g><path d={`M0,-${Math.min(height,profile.plinthHeight)}H40V0H0Z`} fill="url(#architecture-stone)"/><path d={`M0,-${Math.min(height,profile.plinthHeight)}H40`} stroke={palette.trim} strokeWidth="1" opacity=".6"/></g>
+     {isOpening&&(cut?<><path d="M10,0H30" stroke={palette.trim} strokeWidth="3"/>{t.type==='door'&&!t.open&&<path d="M12,-3H28" stroke="#62452c" strokeWidth="4"/>}</>:<g transform={`scale(1 ${Math.min(1.35,profile.groundFloorHeight/46)})`}><Opening type={t.type} style={t.style??(t.type==='door'?appearance.doorStyle:appearance.windowStyle)} open={t.open} trim={palette.trim}/></g>)}
+     {!cut&&<><path d={`M0,-${height-2}H40`} stroke={palette.trim} strokeWidth="2"/><path d={`M0,-${height-5}H40`} stroke={palette.shadow} strokeWidth="1" opacity=".25"/></>}
      {!isOpening&&<path d={`M0,-${height}H40`} stroke={cut?'#f0dcb0':'#ded0ac'} strokeWidth={cut?2:1}/>}
-     {axis==='y'&&<path d={isOpening?'M0,0V-39H10V0ZM30,0V-39H40V0Z':`M0,0V-${height}H40V0Z`} fill="#292c22" opacity=".14"/>}
+     {axis==='y'&&<path d={isOpening?`M0,0V-${height}H10V0ZM30,0V-${height}H40V0Z`:`M0,0V-${height}H40V0Z`} fill="#292c22" opacity=".14"/>}
     </g>
    </g>});
   });
  }
  for(const b of s.buildings??[])for(const room of b.rooms??[]){
-  if(revealed.has(room.id)||!room.cells?.length)continue;
-  const xs=room.cells.map((p:any)=>p.x),ys=room.cells.map((p:any)=>p.y),left=Math.max(b.x-.5,Math.min(...xs)-1),right=Math.min(b.x+b.width-.5,Math.max(...xs)+1),top=Math.max(b.y-.5,Math.min(...ys)-1),bottom=Math.min(b.y+b.height-.5,Math.max(...ys)+1),middle=(left+right)/2;
-  const roof=(x:number,y:number,ridge=false)=>{const p=project(x,y);return `${p.x},${p.y-40-(ridge?17:0)}`;};
-  const half=(a:number,z:boolean,c:number,z2:boolean)=>[roof(a,top,z),roof(c,top,z2),roof(c,bottom,z2),roof(a,bottom,z)].join(' ');
-  objects.push({key:`architecture-roof-${room.id}`,depth:right+bottom+.12,node:<g data-roof-room={room.id} pointerEvents="none" style={{filter:`brightness(${light(b.x,b.y)})`}}>
-   <polygon points={half(left,false,middle,true)} fill="url(#terrain-roof)" stroke="#685037" strokeWidth=".8"/>
-   <polygon points={half(middle,true,right,false)} fill="url(#terrain-roof)" stroke="#685037" strokeWidth=".8"/>
-   <polygon points={half(middle,true,right,false)} fill="#26271b" opacity=".22"/>
-   {Array.from({length:Math.ceil((bottom-top)*4)},(_,i)=>top+(i+1)/4).filter(y=>y<bottom).map(y=><polyline key={y} points={`${roof(left,y)} ${roof(middle,y,true)} ${roof(right,y)}`} fill="none" stroke="#bd9266" strokeWidth=".55" opacity=".55"/>)}
-   <path d={`M${roof(left,bottom)}L${roof(middle,bottom,true)}L${roof(right,bottom)}`} fill="none" stroke="#543f29" strokeWidth="4"/>
-   <path d={`M${roof(left,top)}L${roof(left,bottom)}M${roof(right,top)}L${roof(right,bottom)}`} stroke="#a58054" strokeWidth="3"/>
-   <path d={`M${roof(middle,top,true)}L${roof(middle,bottom,true)}`} stroke="#d2aa77" strokeWidth="3"/>
-  </g>});
+  if(!room.cells?.length)continue;
+  if(revealed.has(room.id)){
+   // Floor joints follow world coordinates, with perimeter wear and wall shadows.
+   // Draw below actors and walls; all decoration remains click-through.
+   const cells=new Set(room.cells.map((c:any)=>`${c.x},${c.y}`));
+   for(const c of room.cells){
+    const point=(x:number,y:number)=>{const p=project(x,y);return `${p.x},${p.y}`;};
+    const joints:ReactNode[]=[];
+    for(let row=0;row<4;row++){
+     const y=c.y-.5+row/4;
+     joints.push(<path key={`row-${row}`} d={`M${point(c.x-.5,y)}L${point(c.x+.5,y)}`} />);
+     for(let col=0;col<2;col++){
+      const x=c.x-.5+(col+(row%2?.5:0))/2;
+      joints.push(<path key={`${row}-${col}`} d={`M${point(x,y)}L${point(x,y+.25)}`} />);
+     }
+    }
+    objects.push({key:`architecture-floor-${room.id}-${c.x}-${c.y}`,depth:-1000,node:<g data-building-floor={room.id} pointerEvents="none" style={{filter:`brightness(${light(c.x,c.y)})`}}>
+     <g stroke="#514332" strokeWidth=".65" opacity=".36">{joints}</g>
+     {!cells.has(`${c.x-1},${c.y}`)&&<polygon points={[point(c.x-.5,c.y-.5),point(c.x-.28,c.y-.5),point(c.x-.28,c.y+.5),point(c.x-.5,c.y+.5)].join(' ')} fill="#332d20" opacity=".2"/>}
+     {!cells.has(`${c.x},${c.y-1}`)&&<polygon points={[point(c.x-.5,c.y-.5),point(c.x+.5,c.y-.5),point(c.x+.5,c.y-.3),point(c.x-.5,c.y-.3)].join(' ')} fill="#332d20" opacity=".2"/>}
+    </g>});
+   }
+   continue;
+  }
  }
+ for(const b of s.buildings??[])objects.push(...buildingRoof(b,revealed,project,light(b.x,b.y)));
+ for(const b of s.buildings??[])objects.push(...buildingDetails(b,revealed,project).map(o=>({...o,node:<g style={{filter:`brightness(${light(b.x,b.y)})`}}>{o.node}</g>})));
  return objects;
 }
 type WallAxis='x'|'y';

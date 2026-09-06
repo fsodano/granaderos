@@ -19,3 +19,10 @@ test('a newly occupied cleared sector receives fresh defenders while unfinished 
  assert.equal(enterSector(request,first).units.find(u=>u.side==='enemy').hp,40);
  first.sectorCleared=true;assert.equal(enterSector(request,first).units.find(u=>u.side==='enemy').hp,80);
 });
+test('re-entry keeps the source revision of the retained snapshot',()=>{
+ const request={sector:'retiro',exploration:true,squad:[OPERATIVES.find(o=>o.id===3)]};
+ const previous=enterSector(request);previous.sourceMapId='old-map';previous.sourceMapRevision=7;
+ const returned=enterSector(request,previous);assert.equal(returned.sourceMapId,'old-map');assert.equal(returned.sourceMapRevision,7);
+ delete previous.sourceMapId;delete previous.sourceMapRevision;
+ assert.equal(enterSector(request,previous).sourceMapId,undefined);
+});

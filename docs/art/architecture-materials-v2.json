@@ -1,0 +1,36 @@
+{
+  "mode": "built-in image_gen",
+  "optimization": "Generated 1254x1254 RGB originals were resized to 512x512 PNG with Sharp Lanczos3, lossless PNG compression level 9.",
+  "assets": [
+    {
+      "name": "plaster",
+      "prompt": "Use case: historical-scene. Asset type: square, seamless, tileable PBR-style base-color/albedo material texture for an isometric game set in early-1800s colonial Río de la Plata. Primary request: Warm ivory worn limewash with fine hand-troweled stucco, cream and subdued pale ochre tones, minute sandy grains, mild age mottling and a very few small hairline cracks. A beautiful restrained natural surface like the walls of a colonial parish, broadly light ivory, no major dirty patches. Full-frame straight-on orthographic close-up of only the material. No objects, joints, masonry, board lines, buildings, perspective, cast shadows, baked directional lighting, text, labels, frames, vignette or watermark. Neutral even diffuse flat illumination. Low restrained contrast with rich fine detail. Perfectly edge-to-edge material with left/right and top/bottom edges visually continuous, no distinctive isolated feature. 1024x1024 square.",
+      "path": "web/public/art/architecture-plaster-v2.png"
+    },
+    {
+      "name": "stone",
+      "prompt": "Use case: historical-scene. Asset type: square, seamless, tileable PBR-style base-color/albedo material texture for an isometric game set in early-1800s colonial Río de la Plata. Primary request: Rough coursed local sandstone masonry used for colonial foundations, warm gray-beige sandstone blocks with gently uneven hand-hewn faces, modest irregular horizontal courses, thin dusty pale lime mortar, restrained warm taupe and ochre variation. Approximately five horizontal masonry courses over the image. Full-frame straight-on orthographic elevation of only the masonry surface. No objects, buildings, perspective, cast shadows, baked directional lighting, text, labels, frames, vignette or watermark. Neutral even diffuse flat illumination. Rich fine granular detail but restrained contrast. Perfectly edge-to-edge material with left/right and top/bottom edges visually continuous, no distinctive isolated feature. 1024x1024 square.",
+      "path": "web/public/art/architecture-stone-v2.png"
+    },
+    {
+      "name": "brick",
+      "prompt": "Use case: historical-scene. Asset type: square, seamless, tileable PBR-style base-color/albedo material texture for an isometric game set in early-1800s colonial Río de la Plata. Primary request: Handmade colonial red brick masonry, aged muted clay red, russet and soft terracotta bricks in irregular but plausible running bond with thin dusty beige lime mortar, lightly worn corners and small natural handmaking variations. Approximately ten horizontal brick courses over the image. Full-frame straight-on orthographic elevation of only the masonry surface. No objects, buildings, perspective, cast shadows, baked directional lighting, text, labels, frames, vignette or watermark. Neutral even diffuse flat illumination. Rich small-scale clay detail but restrained contrast, warm earthy red-brown not saturated orange. Perfectly edge-to-edge material with left/right and top/bottom edges visually continuous, no distinctive isolated feature. 1024x1024 square.",
+      "path": "web/public/art/architecture-brick-v2.png"
+    },
+    {
+      "name": "wood",
+      "prompt": "Use case: historical-scene. Asset type: square, seamless, tileable PBR-style base-color/albedo material texture for an isometric game set in early-1800s colonial Río de la Plata. Primary request: Aged dark hardwood boards used for colonial shutters, doors, beams and stable walls: deep warm umber and tobacco brown, subtle long natural vertical wood grain, narrow lightly irregular vertical plank seams. About eight planks across. Refined worn dense hardwood surface, a few fine scratches, no decorative panels. Full-frame straight-on orthographic view of only the wood surface. No objects, nails, handles, buildings, perspective, cast shadows, baked directional lighting, text, labels, frames, vignette or watermark. Neutral even diffuse flat illumination. Restrained contrast, rich fine grain detail, no dramatic knots or holes. Perfectly edge-to-edge material with left/right and top/bottom edges visually continuous. 1024x1024 square.",
+      "path": "web/public/art/architecture-wood-v2.png"
+    },
+    {
+      "name": "roof-clay",
+      "prompt": "Use case: historical-scene. Asset type: seamless square orthographic roofing albedo/material texture for an early-1800s colonial Río de la Plata isometric game. Primary request: handmade colonial terracotta barrel roof tiles, visibly rounded half-cylinder cap-and-pan tiles with alternating raised convex curved caps and narrow recessed vertical water channels, overlapping in about eight horizontal courses. Each rounded clay tile has natural weathered rough terracotta pores, subtle warm ochre fired-clay highlights and deep but soft natural crevices at its edges. Like the roof of a richly detailed colonial parish. Moderately muted russet, warm tan clay, earth brown; varied worn shades, no saturated orange. Straight-down orthographic view perpendicular to a large roof plane; material continues edge to edge, tile columns remain parallel, no perspective or vanishing point. Restrained diffuse ambient illumination reveals the curved tile shape without any broad cast shadow or global lighting gradient. Seamless/tileable edges with uniform course spacing. No ridge, eave, gutters, building, walls, surroundings, modern shingles, flat rectangular tiles, metal roofing, text, labels, frame, vignette, watermark. 1024x1024 square.",
+      "path": "web/public/art/architecture-roof-clay-v2.png"
+    },
+    {
+      "name": "roof-thatch",
+      "prompt": "Use case: historical-scene. Asset type: seamless square orthographic roofing albedo/material texture for an early-1800s colonial Río de la Plata isometric game. Primary request: traditional dense tied straw roofing in fibrous weathered golden reed bundles, assembled in overlapping horizontal courses, with many fine irregular longitudinal straw strands and short uneven strand ends at each course overlap. Rich natural fine fibrous detail, believable compact hand-laid thatch, warm subdued straw, dusty ochre and dark golden brown, slight varied age. About eight horizontal courses; strands run vertically downslope. Straight-down orthographic view perpendicular to a large roof plane; material continues edge to edge, lines remain parallel, no perspective or vanishing point. Restrained diffuse ambient illumination with soft small crevices, no broad cast shadow or global lighting gradient. Seamless/tileable edges, natural repeated material without a focal feature. No ridge, eave, building, walls, ground, objects, modern corrugated metal, clay tiles, text, labels, frame, vignette, watermark. 1024x1024 square.",
+      "path": "web/public/art/architecture-roof-thatch-v2.png"
+    }
+  ]
+}

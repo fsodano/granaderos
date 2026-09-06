@@ -1,0 +1,16 @@
+import san_nicolas from './maps/san_nicolas.json' with {type:'json'};
+import yatasto from './maps/yatasto.json' with {type:'json'};
+import los_patos from './maps/los_patos.json' with {type:'json'};
+import salta from './maps/salta.json' with {type:'json'};
+import santa_fe from './maps/santa_fe.json' with {type:'json'};
+import san_lorenzo from './maps/san_lorenzo.json' with {type:'json'};
+import jujuy from './maps/jujuy.json' with {type:'json'};
+import tucuman from './maps/tucuman.json' with {type:'json'};
+import humahuaca from './maps/humahuaca.json' with {type:'json'};
+import retiro from './maps/retiro.json' with {type:'json'};
+import ensenada from './maps/ensenada.json' with {type:'json'};
+import mendoza from './maps/mendoza.json' with {type:'json'};
+import cordoba from './maps/cordoba.json' with {type:'json'};
+import uspallata from './maps/uspallata.json' with {type:'json'};
+import buenos_aires from './maps/buenos_aires.json' with {type:'json'};
+export const MAP_LIBRARY={san_nicolas,yatasto,los_patos,salta,santa_fe,san_lorenzo,jujuy,tucuman,humahuaca,retiro,ensenada,mendoza,cordoba,uspallata,buenos_aires};
