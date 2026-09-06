@@ -1,7 +1,9 @@
 """Original civilian period clothing variant; shares infantry gait and ground anchor."""
-import bpy,math
+import bpy,math,sys
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/'rig'))
+from field_art import cloth_material
 bpy.ops.wm.open_mainfile(filepath=str(ROOT/'rig/infantry-granadero.blend'))
 scene=bpy.context.scene;root=bpy.data.objects['ROOT_world_reference'];root.rotation_euler=(0,0,0)
 # Remove military equipment completely instead of tinting its silhouette.
@@ -20,6 +22,7 @@ for o in bpy.data.objects:
  elif 'waist_belt' in o.name:m=leather
  elif 'shako' in o.name:m=felt
  if m:o.data.materials.clear();o.data.materials.append(m)
+for fabric in [coat,trousers,shirt,felt]:cloth_material(fabric)
 # Re-form hat crown and brim as a low civilian felt hat.
 hat=bpy.data.objects['shako'];hat.scale.z=.40;hat.location.z=.185
 brim=bpy.data.objects['shako_brim'];brim.scale.x*=1.5;brim.scale.y*=1.8;brim.location.y=0

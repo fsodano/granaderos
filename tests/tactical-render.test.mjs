@@ -12,14 +12,48 @@ const {default:TacticalMinimap}=await import('../web/app/TacticalMinimap.tsx');
 import {buildSectorMap,MAP_IDS} from '../game/maps.js';
 import {createBattle} from '../game/tactical.js';
 import {enterSector} from '../game/world.js';
+import {spriteLayout} from '../game/sprite-layouts.js';
+import {tacticalCamera} from '../game/tactical-camera.js';
 const project=(x,y)=>({x:200+(x-y)*26,y:65+(x+y)*14});
 const state={tiles:[{x:2,y:2,roomId:'a'},{x:4,y:2,roomId:'b'}],buildings:[{id:'house',x:1,y:1,width:5,height:4,rooms:[{id:'a',cells:[{x:2,y:2}]},{id:'b',cells:[{x:4,y:2}]}]}],props:[{id:'a-table',type:'table',x:2,y:2,buildingId:'house'},{id:'b-bed',type:'bed',x:4,y:2,buildingId:'house'},{id:'untagged',type:'chest',x:4,y:2},{id:'outside',type:'barrels',x:0,y:0},{id:'invalid',type:'chest',x:9,y:9,buildingId:'missing'}]};
 const props=revealed=>buildPropObjects({state,project,light:()=>.4,revealed:new Set(revealed)});
+test('scene preserves distinct dead/unconscious states even with pending motion and firing',()=>{
+ const s=createBattle([{id:'dead',x:1,y:1},{id:'faint',x:2,y:1}],{width:8,height:8,exploration:true,enemies:[]});
+ Object.assign(s.units[0],{hp:0,unconscious:true,mounted:true});Object.assign(s.units[1],{hp:50,unconscious:true});
+ const markup=render(h('svg',null,h(TacticalScene,{state:s,players:s.units,units:s.units,positions:{dead:{x:1,y:1,direction:2,frame:5,moving:true}},poses:{dead:'fire'},directions:{dead:7},reachable:[],sight:new Set(),revealed:new Set(),project})));
+ assert.match(markup,/data-posture="dead"/);assert.match(markup,/data-posture="unconscious"/);
+ assert.match(markup,/granadero-dead-idle-atlas/);assert.match(markup,/granadero-unconscious-breathe-atlas/);
+ assert.ok(!markup.includes('cavalry-'));assert.ok(!markup.includes('prone-'));assert.ok(!markup.includes('data-moving="true"'));
+});
+test('native sprites preserve body scale and fixed ground anchors across every layout',()=>{
+ for(const [unit,pose,name] of [
+  [{},'idle','granadero-idle'],[{side:'enemy'},'fire','royalist-fire'],
+  [{stance:'prone'},'idle','granadero-prone-unarmed-idle'],[{movementMode:'crouch'},'idle','granadero-crouch-idle'],
+  [{mounted:true},'idle','cavalry-idle'],
+ ]){
+  const {cell,anchor}=spriteLayout(name);
+  const markup=render(h(SpriteFigure,{unit,pose,position:{x:100.2,y:100.4},motion:{direction:3,moving:false,frame:0}}));
+  assert.ok(markup.includes(`/art/pixel/${name}-atlas.png`));
+  assert.ok(markup.includes(`x="${Math.round(100.2-anchor[0])}" y="${Math.round(100.4-anchor[1])}" width="${cell}" height="${cell}"`));
+  assert.match(markup,/image-rendering:pixelated/);
+ }
+});
+test('responsive tactical camera keeps integer pixel magnification and bounded panning',()=>{
+ const world={width:996,height:659},focus={x:498,y:330};
+ for(const viewport of [{width:375,height:430},{width:768,height:420},{width:1280,height:560}])for(const zoom of [1,2,3]){
+  const camera=tacticalCamera(world,viewport,focus,{x:.3,y:.7},zoom);
+  assert.equal(viewport.width/camera.width,zoom);assert.equal(viewport.height/camera.height,zoom);
+  assert.ok(Number.isInteger(camera.x)&&Number.isInteger(camera.y));
+  const min=tacticalCamera(world,viewport,focus,{x:-9999,y:-9999},zoom);assert.equal(min.x,0);assert.equal(min.y,0);
+  const max=tacticalCamera(world,viewport,focus,{x:9999,y:9999},zoom);
+  assert.equal(max.x,Math.round(Math.max(0,world.width-max.width)));assert.equal(max.y,Math.round(Math.max(0,world.height-max.height)));
+ }
+});
 test('civilian selection uses idle columns and walk rows in all eight directions',()=>{
  for(let direction=0;direction<8;direction++)for(const moving of [false,true]){
   const markup=render(h(SpriteFigure,{appearance:'civilian',unit:{side:'enemy',mounted:true,stance:'prone'},pose:'fire',position:{x:100,y:100},motion:{direction,moving,frame:5}}));
-  assert.ok(markup.includes(`/art/civilian-${moving?'walk':'idle'}-atlas.png`));
-  assert.ok(markup.includes(`viewBox="${(moving?5:direction)*192} ${moving?direction*192:0} 192 192"`));
+  assert.ok(markup.includes(`/art/pixel/civilian-${moving?'walk':'idle'}-atlas.png`));
+  assert.ok(markup.includes(`viewBox="${(moving?5:direction)*52} ${moving?direction*52:0} 52 52"`));
   assert.ok(!/royalist|granadero|cavalry/.test(markup));
  }
  assert.match(render(h(SpriteFigure,{unit:{side:'enemy'},position:{x:0,y:0},motion:{direction:2,moving:false,frame:0}})),/royalist-idle-atlas/);

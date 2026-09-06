@@ -1,5 +1,6 @@
 'use client';
 import SpriteFigure from './SpriteFigure';
+import {spriteCondition} from '../../game/sprite-state.js';
 import {buildBuildingObjects} from './TacticalBuildings';
 import {isInteriorVisible} from '../../game/tactical-visibility.js';
 import {buildPropObjects} from './TacticalProps';
@@ -33,20 +34,21 @@ export default function TacticalScene({state:s,selected,unit:u,players,units,pos
  objects.push(...buildPropObjects({state:s,revealed,project,light}));
  const drawPerson=(v:any,npc=false)=>{
   const moving=positions[v.id]??{...v,direction:v.side==='enemy'?7:3,frame:0,moving:false};const p=project(moving.x,moving.y);
-  const posture=v.hp<=0||v.unconscious||v.stance==='prone'||v.movementMode==='prone'?'prone':v.movementMode==='crouch'?'crouch':'standing';
-  const selectedUnit=v.id===selected,top=p.y-(v.mounted?72:posture==='prone'?24:49);
-  return <g data-unit-id={v.id} data-moving={moving.moving} data-direction={moving.direction} data-posture={posture} role="button" tabIndex={0} aria-label={npc?`Hablar con ${v.name}`:`${v.name} · ${v.hp<=0?'caído':Math.ceil(v.hp)+' salud'}`} onClick={()=>npc?onTalk(v):onTile(v)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();npc?onTalk(v):onTile(v);}}} opacity={v.hp<=0?.7:1}>
-   <ellipse data-person-hit-target="true" cx={p.x} cy={p.y-18} rx={v.mounted?24:14} ry="25" fill="transparent"/>
-   <ellipse cx={p.x+5} cy={p.y+2} rx={v.mounted?21:11} ry="4" fill="#13150f" opacity=".5" pointerEvents="none"/>
+  const posture=spriteCondition(v),collapsed=posture==='dead'||posture==='unconscious';
+  const mounted=v.mounted&&!collapsed;
+  const selectedUnit=v.id===selected,top=p.y-(collapsed||posture==='prone'?24:mounted?72:49);
+  return <g data-unit-id={v.id} data-moving={!collapsed&&moving.moving} data-direction={moving.direction} data-posture={posture} role="button" tabIndex={0} aria-label={npc?`Hablar con ${v.name}`:`${v.name} · ${v.hp<=0?'muerto':v.unconscious?'inconsciente':Math.ceil(v.hp)+' salud'}`} onClick={()=>npc?onTalk(v):onTile(v)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();npc?onTalk(v):onTile(v);}}} opacity={v.hp<=0?.7:1}>
+   <ellipse data-person-hit-target="true" cx={p.x} cy={p.y-18} rx={mounted?24:14} ry="25" fill="transparent"/>
+   <ellipse cx={p.x+5} cy={p.y+2} rx={mounted?21:11} ry="4" fill="#13150f" opacity=".5" pointerEvents="none"/>
    {selectedUnit&&<ellipse cx={p.x} cy={p.y} rx="15" ry="6" fill="none" stroke="#dacb86" strokeWidth="1" pointerEvents="none"/>}
-   <g style={{filter:`brightness(${light(moving.x,moving.y)})`}}><SpriteFigure unit={{...v,...(posture==='prone'?{stance:'prone'}:{})}} position={p} motion={{...moving,direction:!moving.moving&&poses[v.id]&&poses[v.id]!=='idle'?(directions[v.id]??moving.direction):moving.direction}} pose={poses[v.id]??'idle'} drawSize={52} appearance={npc?'civilian':'soldier'}/></g>
+   <g style={{filter:`brightness(${light(moving.x,moving.y)})`}}><SpriteFigure unit={v} position={p} motion={{...moving,direction:!collapsed&&!moving.moving&&poses[v.id]&&poses[v.id]!=='idle'?(directions[v.id]??moving.direction):moving.direction}} pose={poses[v.id]??'idle'} drawSize={52} appearance={npc?'civilian':'soldier'}/></g>
    {!npc&&v.hp>0&&(selectedUnit||hover?.x===v.x&&hover?.y===v.y)&&<><rect x={p.x-14} y={top} width="28" height="2" fill="#191d14"/><rect x={p.x-14} y={top} width={28*v.hp/v.maxHp} height="2" fill={v.side==='player'?'#81a866':'#bf644b'}/></>}
    {(selectedUnit||npc&&hover?.x===v.x&&hover?.y===v.y)&&<text x={p.x} y={top-4} textAnchor="middle" fill="#ede6c3" fontSize="8" stroke="#11180f" strokeWidth="2" paintOrder="stroke">{v.nickname||v.name}</text>}
    {hover?.x===v.x&&hover?.y===v.y&&v.side==='enemy'&&u&&<text x={p.x} y={top-5} textAnchor="middle" fill="#f2d5a0" fontSize="10" stroke="#11180f" strokeWidth="2" paintOrder="stroke">{shotChance(s,u,v,aim)}%</text>}
   </g>;
  };
  for(const v of units.filter(v=>!v.fled&&isInteriorVisible(s,v,revealed))){const at=positions[v.id]??v;add(`unit-${v.id}`,at.x,at.y,drawPerson(v),.05);}
- for(const npc of s.npcs??[])if(isInteriorVisible(s,npc,revealed)&&players.some(p=>canSee(s,p,npc))){const at=positions[npc.id]??npc;add(`npc-${npc.id}`,at.x,at.y,drawPerson({...npc,hp:100,maxHp:100,side:'player'},true),.05);}
+ for(const npc of s.npcs??[])if(isInteriorVisible(s,npc,revealed)&&players.some(p=>canSee(s,p,npc))){const at=positions[npc.id]??npc;add(`npc-${npc.id}`,at.x,at.y,drawPerson({...npc,hp:npc.hp??100,maxHp:npc.maxHp??100,side:'player'},true),.05);}
  for(const a of s.artillery??[]){const p=project(a.x,a.y);add(`gun-${a.id}`,a.x,a.y,<g role="button" tabIndex={0} aria-label={`Seleccionar ${(ARTILLERY as any)[a.type].name}`} onClick={()=>onCannon(a.id)} onKeyDown={e=>{if(e.key==='Enter')onCannon(a.id);}}>{a.id===cannonId&&<ellipse cx={p.x} cy={p.y} rx="24" ry="10" fill="none" stroke="#d8bf7e"/>}<image href="/art/cannon.png" x={p.x-38} y={p.y-58} width="76" height="76" pointerEvents="none" style={{filter:`brightness(${light(a.x,a.y)})`}}/></g>);}
  for(const [i,d] of (s.droppedWeapons??[]).entries())if(!d.taken&&isInteriorVisible(s,d,revealed)){const p=project(d.x,d.y);add(`drop-${i}`,d.x,d.y,<path d={`M${p.x-8},${p.y+3}l16,-6`} stroke="#b3a781" strokeWidth="2" pointerEvents="none" style={{filter:`brightness(${light(d.x,d.y)})`}}/>,.01);}
  for(const [i,l] of (s.lights??[]).entries())if(isInteriorVisible(s,l,revealed)){const p=project(l.x,l.y);add(`light-${i}`,l.x,l.y,<g pointerEvents="none"><ellipse cx={p.x} cy={p.y-4} rx="3" ry="7" fill="#efa242"/><ellipse cx={p.x} cy={p.y-5} rx="1.5" ry="4" fill="#ffe3a0"/></g>,.03);}

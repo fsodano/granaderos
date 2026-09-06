@@ -4,6 +4,8 @@ from pathlib import Path
 from mathutils import Vector
 from bpy_extras.object_utils import world_to_camera_view
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/'rig'))
+from field_art import native_pixels
 DIRECTIONS=[('n',225),('ne',180),('e',135),('se',90),('s',45),('sw',0),('w',315),('nw',270)]
 output=ROOT/'rig/stance-frames';output.mkdir(exist_ok=True)
 meta={'frame_size':[192,192],'frames_per_direction':8,'fps':10,'directions':dict(DIRECTIONS),'stances':{}}
@@ -18,6 +20,7 @@ for stance in ['crouch','prone']:
   if stance=='prone':
    target=.50;camera.location=(6,-6,target+math.sqrt(72)*math.tan(math.radians(30)));camera.rotation_euler=(Vector((0,0,target))-camera.location).to_track_quat('-Z','Y').to_euler()
    camera.data.ortho_scale=3.1
+  native_pixels(scene,62 if stance=='prone' else 52)
   bpy.context.view_layer.update();origin=world_to_camera_view(scene,camera,Vector((0,0,0)));info['anchor']=[origin.x,1-origin.y];info['orthographic_scale']=camera.data.ortho_scale
   def animate(frame,walking=True):
    phase=frame/8;wave=math.sin(phase*math.tau) if walking else 0;cross=math.cos(phase*math.tau) if walking else 0

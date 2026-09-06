@@ -3,6 +3,8 @@ import bpy,math,json,sys
 from pathlib import Path
 from mathutils import Vector
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/'rig'))
+from field_art import native_pixels
 DIRECTIONS=[('n',225),('ne',180),('e',135),('se',90),('s',45),('sw',0),('w',315),('nw',270)]
 OUT=ROOT/'rig/combat-frames';OUT.mkdir(exist_ok=True)
 for faction in ['granadero','royalist']:
@@ -11,6 +13,7 @@ for faction in ['granadero','royalist']:
   for o in bpy.data.objects:o.animation_data_clear()
   if action!='run':
    camera=bpy.context.scene.camera;target=1.15*3.5/2.6;camera.data.ortho_scale=3.5;camera.location=(6,-6,target+math.sqrt(72)*math.tan(math.radians(30)));camera.rotation_euler=(Vector((0,0,target))-camera.location).to_track_quat('-Z','Y').to_euler()
+  native_pixels(bpy.context.scene,52 if action=='run' else 70)
   root=bpy.data.objects['ROOT_world_reference'];body=bpy.data.objects['torso_pivot'];musket=bpy.data.objects['flintlock_musket']
   if action in ['fire','strike']:musket.location.z=.12
   def pose(frame):

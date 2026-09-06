@@ -1,6 +1,7 @@
 import {readFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {createHash} from 'node:crypto';
+import {spriteLayout,SPRITE_DIRECTIONS,SPRITE_FRAMES,SPRITE_FPS} from '../game/sprite-layouts.js';
 export const TERRAIN_MATERIALS=['dry-grass','dirt','cobble','green-grass','mud','floor','plaster','roof','wood'];
 export const SCENERY_OBJECTS=['tree','poplar','shrub','rocks','barrels','hay'];
 export async function verifyTacticalAssets(directory,requireAsset=()=>{}){
@@ -10,6 +11,36 @@ export async function verifyTacticalAssets(directory,requireAsset=()=>{}){
   if(bytes.length<32||bytes.subarray(0,8).toString('hex')!=='89504e470d0a1a0a'||bytes.readUInt32BE(16)!==width||bytes.readUInt32BE(20)!==height)throw Error(`Invalid tactical atlas dimensions: ${name}`);
   if(sha&&createHash('sha256').update(bytes).digest('hex')!==sha)throw Error(`Tactical atlas checksum mismatch: ${name}`);
  };
+ // The browser selects only these native pixel atlases. Validate the full set,
+ // including idle frames, rather than accepting an old smooth atlas fallback.
+ const pixelPath='pixel/manifest.json';requireAsset(`/art/${pixelPath}`,'native pixel sprites');
+ const pixels=JSON.parse(await readFile(resolve(directory,'art',pixelPath),'utf8'));
+ if(pixels.version!==1||pixels.style!=='native-resolution-isometric-pixel-art'||pixels.directions?.join()!==SPRITE_DIRECTIONS.join()||pixels.fps!==SPRITE_FPS||pixels.frames_per_direction!==SPRITE_FRAMES)throw Error('Invalid native pixel sprite manifest.');
+ const expected=[];
+ for(const faction of ['granadero','royalist']){
+  for(const action of ['idle','walk','run','fire','reload','strike'])expected.push(`${faction}-${action}`);
+  for(const stance of ['crouch'])for(const action of ['idle','walk'])expected.push(`${faction}-${stance}-${action}`);
+ }
+ for(const family of ['granadero','royalist','civilian']){
+  expected.push(`${family}-dead-idle`,`${family}-unconscious-breathe`);
+  if(family!=='civilian'){
+   for(const action of ['idle','walk','fire','reload'])expected.push(`${family}-prone-armed-${action}`);
+   for(const action of ['idle','walk'])expected.push(`${family}-prone-unarmed-${action}`);
+  }
+ }
+ for(const family of ['civilian','cavalry'])for(const action of ['idle','walk'])expected.push(`${family}-${action}`);
+ if(Object.keys(pixels.atlases??{}).sort().join()!==expected.sort().join())throw Error('Incomplete native pixel sprite families.');
+ for(const name of expected){
+  const entry=pixels.atlases[name],{cell,anchor}=spriteLayout(name),idle=name.endsWith('-idle'),rows=idle?1:8;
+  if(entry.fps!==(name.includes('-unconscious-')?2:10)||entry.cell!==cell||entry.anchor?.join()!==anchor.join()||entry.size?.join()!==[cell*8,cell*rows].join()||entry.file!==`${name}-atlas.png`||!/^[a-f0-9]{64}$/.test(entry.sha256??'')||entry.frames?.length!==(idle?8:64))throw Error(`Invalid native pixel sprite layout: ${name}`);
+  const seen=new Set();
+  for(const frame of entry.frames){
+   const dir=SPRITE_DIRECTIONS.indexOf(frame.direction),key=`${dir}:${frame.frame}`,phase=frame.frame,b=frame.bounds;
+   if(dir<0||!Number.isInteger(phase)||phase<0||phase>=(idle?1:8)||seen.has(key)||frame.rect?.join()!==[(idle?dir:phase)*cell,idle?0:dir*cell,cell,cell].join()||b?.length!==4||!b.every(Number.isInteger)||b[0]<=0||b[1]<=0||b[2]>=cell||b[3]>=cell||b[0]>=b[2]||b[1]>=b[3]||!/^[a-f0-9]{64}$/.test(frame.source_sha256??''))throw Error(`Invalid native pixel sprite frame: ${name} ${key}`);
+   seen.add(key);
+  }
+  await png(`pixel/${entry.file}`,cell*8,cell*rows,entry.sha256);
+ }
  for(const faction of ['granadero','royalist']){
   await png(`${faction}-idle-atlas.png`,1536,192);await png(`${faction}-walk-atlas.png`,1536,1536);
   for(const stance of ['crouch','prone'])for(const action of ['idle','walk'])await png(`${faction}-${stance}-${action}-atlas.png`,1536,action==='idle'?192:1536);

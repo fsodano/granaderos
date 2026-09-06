@@ -29,7 +29,7 @@ export function useUnitMotion(battle:any){
     const before=previous.current,now=performance.now();
     const actors=[...battle.units,...(battle.npcs??[])],oldActors=[...before.units,...(before.npcs??[])];
     const ids=new Set(actors.map((v:any)=>v.id));for(const id of Object.keys(positions.current))if(!ids.has(id)){delete positions.current[id];tracks.current.delete(id);}
-    for(const unit of actors){const old=oldActors.find((v:any)=>v.id===unit.id);if(old&&(old.x!==unit.x||old.y!==unit.y)){
+    for(const unit of actors){const old=oldActors.find((v:any)=>v.id===unit.id);if(unit.hp<=0||unit.unconscious){tracks.current.delete(unit.id);positions.current[unit.id]={x:unit.x,y:unit.y,direction:positions.current[unit.id]?.direction??(unit.side==='enemy'?7:3),frame:0,moving:false};continue;}if(old&&(old.x!==unit.x||old.y!==unit.y)){
       const points=route(before,old,unit,battle.log?.slice(before.log.length).some((text:string)=>text.startsWith(`${unit.name} ejecuta una carga`)));tracks.current.set(unit.id,{points,start:now,step:unit.mounted?150:unit.stance==='prone'||unit.movementMode==='prone'?420:unit.movementMode==='crouch'?320:unit.movementMode==='run'?150:240,direction:positions.current[unit.id]?.direction??3});
     }else if(!tracks.current.has(unit.id))positions.current[unit.id]={x:unit.x,y:unit.y,direction:positions.current[unit.id]?.direction??(unit.side==='player'?3:7),frame:0,moving:false};}
     previous.current=battle;let request=0;

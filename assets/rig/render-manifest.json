@@ -3,9 +3,10 @@
     192,
     192
   ],
+  "logical_pixel_size": 52,
   "anchor": [
-    0.5000002384185791,
-    0.8830497935414314
+    0.5000003576278687,
+    0.8846153989434242
   ],
   "frames_per_direction": 8,
   "fps": 10,
@@ -20,7 +21,7 @@
     "nw": 270
   },
   "camera": {
-    "elevation": 30,
+    "elevation": 32.57897039280412,
     "azimuth": 45,
     "orthographic_scale": 2.6
   },

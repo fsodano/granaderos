@@ -12,11 +12,11 @@ for stance,info in meta['stances'].items():
   for row,direction in enumerate(directions):
    sequence=[];hashes=set()
    for phase in range(8):
-    path=ROOT/f'rig/stance-frames/{faction}-{stance}-walk-{direction}-{phase}.png';im=Image.open(path).convert('RGBA');a=im.getchannel('A');b=a.getbbox();assert a.getextrema()==(0,255) and b[0]>0 and b[1]>0 and b[2]<192 and b[3]<192,(path,b)
+    path=ROOT/f'rig/stance-frames/{faction}-{stance}-walk-{direction}-{phase}.png';im=Image.open(path).convert('RGBA').resize((size,size),Image.Resampling.NEAREST);a=im.getchannel('A');b=a.getbbox();assert a.getextrema()==(0,255) and b[0]>0 and b[1]>0 and b[2]<192 and b[3]<192,(path,b)
     digest=hashlib.sha256(path.read_bytes()).hexdigest();hashes.add(digest);sequence.append(im);walk.alpha_composite(im,(phase*192,row*192));frames.append({'direction':direction,'phase':phase,'rect':[phase*192,row*192,192,192],'sha256':digest})
    assert len(hashes)==8,(stance,faction,direction,len(hashes))
    sequence[0].save(out/f'{faction}-{stance}-{direction}-preview.webp',save_all=True,append_images=sequence[1:],duration=100,loop=0,lossless=True)
-   im=Image.open(ROOT/f'rig/stance-frames/{faction}-{stance}-idle-{direction}.png').convert('RGBA');a=im.getchannel('A');b=a.getbbox();assert a.getextrema()==(0,255) and b[0]>0 and b[1]>0 and b[2]<192 and b[3]<192;idle.alpha_composite(im,(row*192,0))
+   im=Image.open(ROOT/f'rig/stance-frames/{faction}-{stance}-idle-{direction}.png').convert('RGBA').resize((size,size),Image.Resampling.NEAREST);a=im.getchannel('A');b=a.getbbox();assert a.getextrema()==(0,255) and b[0]>0 and b[1]>0 and b[2]<192 and b[3]<192;idle.alpha_composite(im,(row*192,0))
   w=f'{faction}-{stance}-walk-atlas.png';i=f'{faction}-{stance}-idle-atlas.png';walk.save(out/w,optimize=True);idle.save(out/i,optimize=True);entry['factions'][faction]={'walk':w,'idle':i,'frames':frames}
   for path in out.glob(f'{faction}-{stance}-*'):shutil.copy2(path,public/path.name)
 (out/'stance-animation.json').write_text(json.dumps(manifest,indent=2)+'\n');shutil.copy2(out/'stance-animation.json',public/'stance-animation.json')
