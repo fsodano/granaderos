@@ -33,7 +33,7 @@ function requireAsset(reference,from='index.html'){
   const name=decodeURIComponent(url.pathname).replace(/^\//,'');
   if(!name)return;
   // Internal page links resolve to their static HTML; asset URLs must be exact.
-  const match=known.has(name)?name:known.has(`${name}/index.html`)?`${name}/index.html`:null;
+  const match=known.has(name)?name:known.has(`${name}/index.html`)?`${name}/index.html`:!extname(name)&&known.has(`${name}.html`)?`${name}.html`:null;
   if(!match)throw Error(`Missing exported asset: ${reference} (referenced by ${from})`);
   checked.add(match);
 }

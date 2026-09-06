@@ -1,0 +1,376 @@
+{
+  "version": 1,
+  "name": "Capilla rural",
+  "building": {
+    "id": "capilla",
+    "name": "Capilla rural",
+    "x": 0,
+    "y": 0,
+    "width": 5,
+    "height": 8,
+    "roof": "tile",
+    "material": "adobe",
+    "rooms": [
+      {
+        "id": "capilla:interior",
+        "cells": [
+          {
+            "x": 1,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 1
+          },
+          {
+            "x": 1,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 2
+          },
+          {
+            "x": 1,
+            "y": 3
+          },
+          {
+            "x": 3,
+            "y": 2
+          },
+          {
+            "x": 2,
+            "y": 3
+          },
+          {
+            "x": 1,
+            "y": 4
+          },
+          {
+            "x": 3,
+            "y": 3
+          },
+          {
+            "x": 2,
+            "y": 4
+          },
+          {
+            "x": 1,
+            "y": 5
+          },
+          {
+            "x": 3,
+            "y": 4
+          },
+          {
+            "x": 2,
+            "y": 5
+          },
+          {
+            "x": 1,
+            "y": 6
+          },
+          {
+            "x": 3,
+            "y": 5
+          },
+          {
+            "x": 2,
+            "y": 6
+          },
+          {
+            "x": 3,
+            "y": 6
+          }
+        ]
+      }
+    ],
+    "walls": [
+      {
+        "x": 0,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "capilla",
+        "roomId": null
+      },
+      {
+        "x": 1,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "capilla",
+        "roomId": null
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "capilla",
+        "roomId": null
+      },
+      {
+        "x": 3,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "capilla",
+        "roomId": null
+      },
+      {
+        "x": 4,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "capilla",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 1,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "capilla",
+        "roomId": null
+      },
+      {
+        "x": 4,
+        "y": 1,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "capilla",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 2,
+        "type": "window",
+        "blocked": true,
+        "blocksSight": false,
+        "cover": 25,
+        "material": "adobe",
+        "buildingId": "capilla",
+        "roomId": null
+      },
+      {
+        "x": 4,
+        "y": 2,
+        "type": "window",
+        "blocked": true,
+        "blocksSight": false,
+        "cover": 25,
+        "material": "adobe",
+        "buildingId": "capilla",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 3,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "capilla",
+        "roomId": null
+      },
+      {
+        "x": 4,
+        "y": 3,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "capilla",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 4,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "capilla",
+        "roomId": null
+      },
+      {
+        "x": 4,
+        "y": 4,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "capilla",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 5,
+        "type": "window",
+        "blocked": true,
+        "blocksSight": false,
+        "cover": 25,
+        "material": "adobe",
+        "buildingId": "capilla",
+        "roomId": null
+      },
+      {
+        "x": 4,
+        "y": 5,
+        "type": "window",
+        "blocked": true,
+        "blocksSight": false,
+        "cover": 25,
+        "material": "adobe",
+        "buildingId": "capilla",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 6,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "capilla",
+        "roomId": null
+      },
+      {
+        "x": 4,
+        "y": 6,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "capilla",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 7,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "capilla",
+        "roomId": null
+      },
+      {
+        "x": 2,
+        "y": 7,
+        "type": "door",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 0,
+        "material": "adobe",
+        "buildingId": "capilla",
+        "roomId": null,
+        "doorId": "capilla:door:2:7",
+        "open": false,
+        "locked": false
+      },
+      {
+        "x": 4,
+        "y": 7,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "capilla",
+        "roomId": null
+      },
+      {
+        "x": 1,
+        "y": 7,
+        "type": "window"
+      },
+      {
+        "x": 3,
+        "y": 7,
+        "type": "window"
+      }
+    ],
+    "kind": "chapel",
+    "wallFinish": "ochre",
+    "roofFinish": "aged",
+    "doorStyle": "arched",
+    "windowStyle": "small"
+  },
+  "features": [],
+  "props": [
+    {
+      "id": "capilla-prop-0",
+      "type": "table",
+      "x": 2,
+      "y": 1,
+      "name": "Altar",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "capilla-prop-1",
+      "type": "bench",
+      "x": 1,
+      "y": 4,
+      "name": "Banco",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "capilla-prop-2",
+      "type": "bench",
+      "x": 3,
+      "y": 4,
+      "name": "Banco",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    }
+  ],
+  "items": [],
+  "spawns": [],
+  "exits": [],
+  "lights": []
+}

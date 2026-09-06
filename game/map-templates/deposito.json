@@ -1,0 +1,1010 @@
+{
+  "version": 1,
+  "name": "Depósito mercantil",
+  "building": {
+    "id": "deposito",
+    "name": "Depósito mercantil",
+    "x": 0,
+    "y": 0,
+    "width": 13,
+    "height": 10,
+    "roof": "tile",
+    "material": "adobe",
+    "rooms": [
+      {
+        "id": "deposito:mercaderias",
+        "cells": [
+          {
+            "x": 1,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 1
+          },
+          {
+            "x": 1,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 1
+          },
+          {
+            "x": 2,
+            "y": 2
+          },
+          {
+            "x": 1,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 1
+          },
+          {
+            "x": 3,
+            "y": 2
+          },
+          {
+            "x": 2,
+            "y": 3
+          },
+          {
+            "x": 1,
+            "y": 4
+          },
+          {
+            "x": 5,
+            "y": 1
+          },
+          {
+            "x": 4,
+            "y": 2
+          },
+          {
+            "x": 3,
+            "y": 3
+          },
+          {
+            "x": 2,
+            "y": 4
+          },
+          {
+            "x": 1,
+            "y": 5
+          },
+          {
+            "x": 6,
+            "y": 1
+          },
+          {
+            "x": 5,
+            "y": 2
+          },
+          {
+            "x": 4,
+            "y": 3
+          },
+          {
+            "x": 3,
+            "y": 4
+          },
+          {
+            "x": 2,
+            "y": 5
+          },
+          {
+            "x": 1,
+            "y": 6
+          },
+          {
+            "x": 7,
+            "y": 1
+          },
+          {
+            "x": 6,
+            "y": 2
+          },
+          {
+            "x": 5,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 4
+          },
+          {
+            "x": 3,
+            "y": 5
+          },
+          {
+            "x": 2,
+            "y": 6
+          },
+          {
+            "x": 1,
+            "y": 7
+          },
+          {
+            "x": 8,
+            "y": 1
+          },
+          {
+            "x": 7,
+            "y": 2
+          },
+          {
+            "x": 6,
+            "y": 3
+          },
+          {
+            "x": 5,
+            "y": 4
+          },
+          {
+            "x": 4,
+            "y": 5
+          },
+          {
+            "x": 3,
+            "y": 6
+          },
+          {
+            "x": 2,
+            "y": 7
+          },
+          {
+            "x": 1,
+            "y": 8
+          },
+          {
+            "x": 8,
+            "y": 2
+          },
+          {
+            "x": 7,
+            "y": 3
+          },
+          {
+            "x": 6,
+            "y": 4
+          },
+          {
+            "x": 5,
+            "y": 5
+          },
+          {
+            "x": 4,
+            "y": 6
+          },
+          {
+            "x": 3,
+            "y": 7
+          },
+          {
+            "x": 2,
+            "y": 8
+          },
+          {
+            "x": 8,
+            "y": 3
+          },
+          {
+            "x": 7,
+            "y": 4
+          },
+          {
+            "x": 6,
+            "y": 5
+          },
+          {
+            "x": 5,
+            "y": 6
+          },
+          {
+            "x": 4,
+            "y": 7
+          },
+          {
+            "x": 3,
+            "y": 8
+          },
+          {
+            "x": 8,
+            "y": 4
+          },
+          {
+            "x": 7,
+            "y": 5
+          },
+          {
+            "x": 6,
+            "y": 6
+          },
+          {
+            "x": 5,
+            "y": 7
+          },
+          {
+            "x": 4,
+            "y": 8
+          },
+          {
+            "x": 8,
+            "y": 5
+          },
+          {
+            "x": 7,
+            "y": 6
+          },
+          {
+            "x": 6,
+            "y": 7
+          },
+          {
+            "x": 5,
+            "y": 8
+          },
+          {
+            "x": 8,
+            "y": 6
+          },
+          {
+            "x": 7,
+            "y": 7
+          },
+          {
+            "x": 6,
+            "y": 8
+          },
+          {
+            "x": 8,
+            "y": 7
+          },
+          {
+            "x": 7,
+            "y": 8
+          },
+          {
+            "x": 8,
+            "y": 8
+          }
+        ],
+        "name": "Sala de mercaderías"
+      },
+      {
+        "id": "deposito:contaduria",
+        "cells": [
+          {
+            "x": 10,
+            "y": 1
+          },
+          {
+            "x": 11,
+            "y": 1
+          },
+          {
+            "x": 10,
+            "y": 2
+          },
+          {
+            "x": 11,
+            "y": 2
+          },
+          {
+            "x": 10,
+            "y": 3
+          },
+          {
+            "x": 11,
+            "y": 3
+          }
+        ],
+        "name": "Contaduría"
+      },
+      {
+        "id": "deposito:deposito-seguro",
+        "cells": [
+          {
+            "x": 10,
+            "y": 5
+          },
+          {
+            "x": 11,
+            "y": 5
+          },
+          {
+            "x": 10,
+            "y": 6
+          },
+          {
+            "x": 11,
+            "y": 6
+          },
+          {
+            "x": 10,
+            "y": 7
+          },
+          {
+            "x": 11,
+            "y": 7
+          },
+          {
+            "x": 10,
+            "y": 8
+          },
+          {
+            "x": 11,
+            "y": 8
+          }
+        ],
+        "name": "Depósito seguro"
+      }
+    ],
+    "kind": "depot",
+    "wallFinish": "brick",
+    "roofFinish": "aged",
+    "doorStyle": "barn",
+    "windowStyle": "small",
+    "walls": [
+      {
+        "x": 0,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 1,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 2,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 4,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 5,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 7,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 8,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 9,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 11,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 12,
+        "y": 0,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 1,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 12,
+        "y": 1,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 3,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 12,
+        "y": 3,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 4,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 12,
+        "y": 4,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 12,
+        "y": 5,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 6,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 12,
+        "y": 7,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 8,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 12,
+        "y": 8,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 0,
+        "y": 9,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 1,
+        "y": 9,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 2,
+        "y": 9,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 3,
+        "y": 9,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 5,
+        "y": 9,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 7,
+        "y": 9,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 9,
+        "y": 9,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 10,
+        "y": 9,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 11,
+        "y": 9,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 12,
+        "y": 9,
+        "type": "wall",
+        "blocked": true,
+        "blocksSight": true,
+        "cover": 40,
+        "material": "adobe",
+        "buildingId": "deposito",
+        "roomId": null
+      },
+      {
+        "x": 9,
+        "y": 1,
+        "type": "wall"
+      },
+      {
+        "x": 9,
+        "y": 3,
+        "type": "wall"
+      },
+      {
+        "x": 9,
+        "y": 4,
+        "type": "wall"
+      },
+      {
+        "x": 9,
+        "y": 5,
+        "type": "wall"
+      },
+      {
+        "x": 9,
+        "y": 7,
+        "type": "wall"
+      },
+      {
+        "x": 9,
+        "y": 8,
+        "type": "wall"
+      },
+      {
+        "x": 10,
+        "y": 4,
+        "type": "wall"
+      },
+      {
+        "x": 11,
+        "y": 4,
+        "type": "wall"
+      },
+      {
+        "x": 6,
+        "y": 9,
+        "type": "wall"
+      },
+      {
+        "x": 4,
+        "y": 9,
+        "type": "door",
+        "doorId": "deposito:door:4:9",
+        "open": false,
+        "locked": false
+      },
+      {
+        "x": 8,
+        "y": 9,
+        "type": "door",
+        "doorId": "deposito:door:8:9",
+        "open": false,
+        "locked": false
+      },
+      {
+        "x": 9,
+        "y": 2,
+        "type": "door",
+        "doorId": "deposito:door:9:2",
+        "open": false,
+        "locked": false
+      },
+      {
+        "x": 9,
+        "y": 6,
+        "type": "door",
+        "doorId": "deposito:door:9:6",
+        "open": false,
+        "locked": false
+      },
+      {
+        "x": 0,
+        "y": 2,
+        "type": "window"
+      },
+      {
+        "x": 0,
+        "y": 5,
+        "type": "window"
+      },
+      {
+        "x": 0,
+        "y": 7,
+        "type": "window"
+      },
+      {
+        "x": 12,
+        "y": 2,
+        "type": "window"
+      },
+      {
+        "x": 12,
+        "y": 6,
+        "type": "window"
+      },
+      {
+        "x": 3,
+        "y": 0,
+        "type": "window"
+      },
+      {
+        "x": 6,
+        "y": 0,
+        "type": "window"
+      },
+      {
+        "x": 10,
+        "y": 0,
+        "type": "window"
+      }
+    ]
+  },
+  "features": [],
+  "props": [
+    {
+      "id": "deposito-prop-0",
+      "type": "barrels",
+      "x": 1,
+      "y": 1,
+      "name": "Toneles de mercancías",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "deposito-prop-1",
+      "type": "barrels",
+      "x": 3,
+      "y": 1,
+      "name": "Toneles de mercancías",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "deposito-prop-2",
+      "type": "barrels",
+      "x": 5,
+      "y": 1,
+      "name": "Toneles de mercancías",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "deposito-prop-3",
+      "type": "chest",
+      "x": 7,
+      "y": 1,
+      "name": "Cajón de mercancías",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "deposito-prop-4",
+      "type": "hay",
+      "x": 1,
+      "y": 3,
+      "name": "Fardos de forraje",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "deposito-prop-5",
+      "type": "hay",
+      "x": 3,
+      "y": 3,
+      "name": "Fardos de forraje",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "deposito-prop-6",
+      "type": "hay",
+      "x": 5,
+      "y": 3,
+      "name": "Fardos de forraje",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "deposito-prop-7",
+      "type": "chest",
+      "x": 7,
+      "y": 4,
+      "name": "Cajón de herramientas",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "deposito-prop-8",
+      "type": "chest",
+      "x": 7,
+      "y": 6,
+      "name": "Cajón de suministros",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "deposito-prop-9",
+      "type": "barrels",
+      "x": 1,
+      "y": 6,
+      "name": "Toneles de reserva",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "deposito-prop-10",
+      "type": "chest",
+      "x": 3,
+      "y": 6,
+      "name": "Cajón de reserva",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "deposito-prop-11",
+      "type": "table",
+      "x": 10,
+      "y": 1,
+      "name": "Mesa del contador",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "deposito-prop-12",
+      "type": "chest",
+      "x": 11,
+      "y": 3,
+      "name": "Libros de cuentas",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "deposito-prop-13",
+      "type": "chest",
+      "x": 10,
+      "y": 5,
+      "name": "Arca de valores",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "deposito-prop-14",
+      "type": "chest",
+      "x": 10,
+      "y": 8,
+      "name": "Mercancías custodiadas",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    },
+    {
+      "id": "deposito-prop-15",
+      "type": "barrels",
+      "x": 11,
+      "y": 8,
+      "name": "Tonel custodiado",
+      "footprint": {
+        "width": 1,
+        "height": 1
+      },
+      "blocksMovement": true
+    }
+  ],
+  "items": [],
+  "spawns": [],
+  "exits": [],
+  "lights": []
+}
