@@ -13,3 +13,6 @@ output/
 *.tsbuildinfo
 
 /artifacts/
+
+# Blender creates numbered backup copies beside the source rig.
+/assets/rig/*.blend[0-9]*
