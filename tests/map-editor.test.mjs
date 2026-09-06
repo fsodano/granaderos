@@ -276,7 +276,7 @@ test("bundled building templates compile with walkable furnished interiors", asy
 test("all building types keep room floors reachable from an exterior start", async () => {
   const { BUILDING_TEMPLATES } = await import("../game/map-templates.js");
   const { reachableMap } = await import("../game/compile-map.js");
-  assert.equal(Object.keys(BUILDING_TEMPLATES).length, 12);
+  assert.equal(Object.keys(BUILDING_TEMPLATES).length, 14);
   for (const [id, template] of Object.entries(BUILDING_TEMPLATES)) {
     const d = execute(blankMap({ width: 32, height: 32 }), [
       { type: "stampTemplate", id, template, x: 3, y: 3 },

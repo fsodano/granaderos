@@ -138,12 +138,23 @@ export function ProjectedRoofSurface({
   });
   const foot = midpoint(a, c),
     top = midpoint(f, d);
-  const across = Math.hypot(c.x - a.x, c.y - a.y),
-    slope = Math.hypot(top.x - foot.x, top.y - foot.y);
+  const across = Math.hypot(c.x - a.x, c.y - a.y);
+  if (across < 0.001) return null;
+  // A mitred canopy is a trapezoid with an offset high edge. Remove that
+  // sideways offset so tile courses follow the actual downhill direction.
+  const alongX = (c.x - a.x) / across,
+    alongY = (c.y - a.y) / across,
+    sideways = (foot.x - top.x) * alongX + (foot.y - top.y) * alongY;
+  const ridge = {
+    ...top,
+    x: top.x + sideways * alongX,
+    y: top.y + sideways * alongY,
+  };
+  const slope = Math.hypot(ridge.x - foot.x, ridge.y - foot.y);
   if (across < 0.001 || slope < 0.001) return null;
   const pa = screenPoint(a, project),
     pc = screenPoint(c, project),
-    pt = screenPoint(top, project),
+    pt = screenPoint(ridge, project),
     pf = screenPoint(foot, project);
   const matrix = `${(pc.x - pa.x) / across} ${(pc.y - pa.y) / across} ${(pf.x - pt.x) / slope} ${(pf.y - pt.y) / slope} ${pa.x} ${pa.y}`;
   const pattern = `architecture-detail-roof-${Array.from(id)

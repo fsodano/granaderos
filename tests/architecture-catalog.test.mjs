@@ -19,6 +19,8 @@ const names = [
   "caballeriza",
   "ayuntamiento",
   "palacio",
+  "deposito",
+  "estancia",
 ];
 const key = ({ x, y }) => `${x},${y}`;
 function apply(document, commands) {
@@ -49,7 +51,7 @@ function identities(document) {
   ].sort();
 }
 
-test("the twelve architecture templates have distinct footprints and usable furnished layouts", () => {
+test("the fourteen architecture templates have distinct footprints and usable furnished layouts", () => {
   assert.deepEqual(Object.keys(BUILDING_TEMPLATES).sort(), [...names].sort());
   const footprints = new Set(),
     layouts = new Set(),
@@ -72,6 +74,79 @@ test("the twelve architecture templates have distinct footprints and usable furn
   assert.equal(footprints.size, names.length, "each footprint is distinct");
   assert.equal(layouts.size, names.length, "layouts do not differ only by names or materials");
   assert.equal(kinds.size, names.length, "each building has an architectural role");
+});
+
+test("depot and farmhouse add distinct work and domestic rooms with clear facade supports", () => {
+  const requirements = {
+    deposito: {
+      previous: "almacen",
+      rooms: [
+        ["Sala de mercaderías", ["barrels", "chest", "hay"]],
+        ["Contaduría", ["table", "chest"]],
+        ["Depósito seguro", ["chest", "barrels"]],
+      ],
+      doors: [
+        [4, 9],
+        [8, 9],
+      ],
+      supports: [
+        [0, 9],
+        [2, 9],
+        [6, 9],
+        [10, 9],
+        [12, 9],
+      ],
+    },
+    estancia: {
+      previous: "casa",
+      rooms: [
+        ["Dormitorio familiar", ["bed", "chest"]],
+        ["Despensa", ["barrels", "chest", "table"]],
+        ["Sala familiar", ["table", "bench", "chest", "barrels"]],
+      ],
+      doors: [[5, 7]],
+      supports: [
+        [0, 7],
+        [3, 7],
+        [7, 7],
+        [10, 7],
+        [10, 0],
+        [10, 3],
+        [0, 1],
+        [10, 1],
+      ],
+    },
+  };
+  for (const [name, requirement] of Object.entries(requirements)) {
+    const map = compileMap(fixture(name)),
+      b = map.buildings[0];
+    assert.equal(b.rooms.length, requirement.rooms.length, `${name}: separate functional rooms`);
+    assert.ok(
+      b.rooms.length > BUILDING_TEMPLATES[requirement.previous].building.rooms.length,
+      `${name}: adds a different plan without replacing the smaller template`,
+    );
+    for (const [roomName, types] of requirement.rooms) {
+      const room = b.rooms.find((r) => r.name === roomName);
+      assert.ok(room, `${name}: ${roomName}`);
+      const furnished = new Set(map.props.filter((p) => p.roomId === room.id).map((p) => p.type));
+      for (const type of types) assert.ok(furnished.has(type), `${roomName}: ${type}`);
+    }
+    const template = BUILDING_TEMPLATES[name].building;
+    const entrances = template.walls.filter(
+      (w) => w.type === "door" && w.y === template.height - 1,
+    );
+    assert.deepEqual(entrances.map(({ x, y }) => [x, y]).sort(), requirement.doors);
+    assert.ok(
+      entrances.every((w) => !w.open && !w.locked),
+      "loading and household doors start closed and unlocked",
+    );
+    for (const [x, y] of requirement.supports)
+      assert.equal(
+        template.walls.find((w) => w.x === x && w.y === y)?.type,
+        "wall",
+        `${name}: structural detail stays on solid cell ${x},${y}`,
+      );
+  }
 });
 
 test("town hall and palace have separate functional rooms and a clear perimeter entrance", () => {
@@ -181,6 +256,131 @@ test("formal civic details stay finite on tiny shells and leave edited openings 
               `data-architectural-volume="${kind === "townhall" ? "townhall-clock-pediment" : "palace-portico-pediment"}"`,
             ),
             "unsupported pediment is omitted",
+          );
+        }
+        document = apply(document, [{ type: "rotateObject", id: name }]);
+      }
+    }
+  }
+});
+
+test("depot and farmhouse details stay on solid wall cells after rotation and opening edits", async () => {
+  const { register } = await import("node:module");
+  register("./tactical-render-loader.mjs", import.meta.url);
+  const { createElement: h } = await import("../web/node_modules/react/index.js");
+  const { renderToStaticMarkup: render } =
+    await import("../web/node_modules/react-dom/server.node.js");
+  const { buildingDetails } = await import("../web/app/TacticalBuildingDetails.tsx");
+  const { ArchitectureVolume } = await import("../web/app/TacticalBuildingVolumes.tsx");
+  const project = (x, y) => ({ x: (x - y) * 26, y: (x + y) * 14 });
+  function volumes(node, result = []) {
+    if (Array.isArray(node)) node.forEach((child) => volumes(child, result));
+    else if (node && typeof node === "object") {
+      if (node.type === ArchitectureVolume) result.push(node.props);
+      volumes(node.props?.children, result);
+    }
+    return result;
+  }
+  for (const [name, kind] of [
+    ["deposito", "depot"],
+    ["estancia", "farmhouse"],
+  ]) {
+    const original = fixture(name),
+      b = original.buildings[0];
+    const perimeter = b.walls.filter(
+      (w) =>
+        w.type === "wall" &&
+        (w.x === b.x || w.x === b.x + b.width - 1 || w.y === b.y || w.y === b.y + b.height - 1),
+    );
+    const cases = [
+      ["authored", original],
+      [
+        "minimum",
+        apply(blankMap({ width: 12, height: 12 }), [
+          { type: "addBuilding", building: { id: name, kind, x: 3, y: 3, width: 3, height: 3 } },
+        ]),
+      ],
+      ...["door", "window"].map((wallType) => [
+        wallType,
+        apply(original, [
+          ...original.props.map((p) => ({ type: "deleteObject", id: p.id })),
+          ...perimeter.map(({ x, y }) => ({ type: "setWall", buildingId: name, x, y, wallType })),
+        ]),
+      ]),
+    ];
+    for (const [caseName, first] of cases) {
+      let document = first;
+      for (let turn = 0; turn < 4; turn++) {
+        const building = compileMap(document).buildings[0];
+        const objects = buildingDetails(building, new Set(), project);
+        const nodes = objects.map((o) => o.node),
+          solids = volumes(nodes);
+        const markup = render(h("svg", null, ...nodes));
+        assert.ok(
+          !/NaN|Infinity/.test(markup),
+          `${name} ${caseName} ${turn * 90}°: finite geometry`,
+        );
+        for (const volume of solids.filter((v) => (v.bottom ?? 0) === 0)) {
+          const cells = new Set(
+            volume.points.map((p) => key({ x: Math.round(p.x), y: Math.round(p.y) })),
+          );
+          assert.equal(
+            cells.size,
+            1,
+            `${volume.label}: footprint stays inside one structural tile`,
+          );
+          const cell = [...cells][0];
+          assert.equal(
+            building.walls.find((w) => key(w) === cell)?.type,
+            "wall",
+            `${name} ${caseName} ${turn * 90}°: ${volume.label} must not cover a door, window or floor`,
+          );
+        }
+        if (["door", "window"].includes(caseName)) {
+          assert.equal(
+            solids.length,
+            0,
+            "unsupported piers, posts and chimneys disappear after opening edits",
+          );
+          assert.ok(
+            !markup.includes('-canopy"'),
+            "canopy disappears when no solid supports remain",
+          );
+        }
+        if (caseName === "authored") {
+          if (kind === "farmhouse") {
+            const chimneys = solids.filter((v) => /^farmhouse-chimney-\d+$/.test(v.label ?? ""));
+            assert.equal(
+              chimneys.length,
+              2,
+              `${turn * 90}°: paired domestic chimneys remain present`,
+            );
+            for (const chimney of chimneys) {
+              const p = chimney.points[0],
+                cell = { x: Math.round(p.x), y: Math.round(p.y) };
+              assert.equal(
+                building.walls.find((w) => key(w) === key(cell))?.type,
+                "wall",
+                "chimney bears on a wall",
+              );
+            }
+          }
+          if (turn === 0) {
+            assert.ok(
+              markup.includes(
+                kind === "depot" ? "depot-loading-canopy" : "farmhouse-gallery-canopy",
+              ),
+              "authored facade includes its canopy",
+            );
+            assert.ok(
+              markup.includes(kind === "depot" ? "depot-loft-hoist" : "farmhouse-return-canopy"),
+              "authored facade retains its distinctive detail",
+            );
+          }
+          assert.deepEqual(
+            buildingDetails(building, new Set(building.rooms.map((r) => r.id)), project),
+            [],
+            "details cut away with the interior",
           );
         }
         document = apply(document, [{ type: "rotateObject", id: name }]);

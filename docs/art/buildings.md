@@ -72,7 +72,7 @@ the material treatment. The town church must keep its own square bell tower and
 shaped facade. Other buildings share this material treatment, with their own
 proportions, roof shapes, entrances and functional details.
 
-The catalog contains twelve distinct tile footprints and furnished layouts:
+The catalog contains fourteen distinct tile footprints and furnished layouts:
 
 | Template | Footprint | Exterior form | Interior use |
 | --- | --- | --- | --- |
@@ -88,6 +88,8 @@ The catalog contains twelve distinct tile footprints and furnished layouts:
 | Caballeriza | 10 × 6 | Gable, timber facade frame and loft louvres | Four fodder stations and water |
 | Ayuntamiento | 12 × 9 | Formal entrance columns, clock pediment and civic finials | Separate secretary, archive and council rooms |
 | Palacio del gobernador | 14 × 11 | Broad tiled portico, formal pediment and masonry pilasters | Reception, private office, governor's chamber and guest chamber |
+| Depósito mercantil | 13 × 10 | Brick loading facade, masonry piers, broad timber canopy and timber hoist | Stock hall, counting office and secure store |
+| Casa de estancia | 11 × 8 | Low hip roof, timber front and return galleries, and paired domestic chimneys | Family room, separate bedroom and pantry |
 
 The ayuntamiento is the larger municipal template. Its three-room plan differs
 from the smaller two-room cabildo. The palace is a compact governor's residence
@@ -96,6 +98,14 @@ colonial construction, with one playable floor. Their plans do not reproduce
 the multi-level layouts or patios of the historical references. Their entrances
 remain on perimeter tiles. Columns stand on solid facade cells; the portico
 stays shallow enough to keep the entrance and surrounding walking tiles clear.
+
+The depósito adds a larger warehouse alongside the existing almacén. Two loading
+doors lead into a stock hall with clear aisles. A side section holds a counting
+office and a separate secure store. The estancia adds a larger rural house
+alongside the existing casa. Its family room connects to a bedroom and pantry;
+its front gallery returns along the right side. Both use one playable floor.
+Their piers, gallery posts and chimneys stand on solid perimeter cells, leaving
+the entrance routes clear. The older templates keep their existing plans.
 
 The parish tower has a reserved 2 × 2 solid corner in the template. It occupies
 structural cells, including the one former interior tile at `(1, 10)`. The two
@@ -109,22 +119,24 @@ Generate all review material with the same React renderer used by the game:
 node tools/preview-architecture-catalog.mjs
 # Optional output directory:
 node tools/preview-architecture-catalog.mjs /tmp/granaderos-architecture-catalog
-# Fast iteration: twelve front exterior views only
+# Fast iteration: fourteen front exterior views only
 node tools/preview-architecture-catalog.mjs /tmp/granaderos-architecture-quick --overview-only
-# Refresh all 48 interiors; keep existing exterior images and manifest records
+# Refresh all 56 interiors; keep existing exterior images and manifest records
 node tools/preview-architecture-catalog.mjs /tmp/granaderos-architecture-catalog --interior-only
 # Refresh the church and cabildo exteriors in every rotation
 node tools/preview-architecture-catalog.mjs /tmp/granaderos-architecture-catalog --buildings=iglesia,cabildo --mode=exterior
 # Review the two larger civic buildings, including interiors
 node tools/preview-architecture-catalog.mjs /tmp/granaderos-civic-review --buildings=ayuntamiento,palacio
+# Review the larger warehouse and farmhouse
+node tools/preview-architecture-catalog.mjs /tmp/granaderos-depot-farmhouse-review --buildings=deposito,estancia
 node --test tests/architecture-catalog.test.mjs
 ```
 
 The default output is `artifacts/architecture-catalog/`, which is excluded from
 Git. Open `index.html` to select a building. Each building page has close views
 for exterior and interior at 0°, 90°, 180° and 270°. Each view has an independent
-SVG with embedded textures and a PNG. The script also writes 48 importable map
-documents, `catalog.json` with all twelve buildings, an overview PNG, and a manifest.
+SVG with embedded textures and a PNG. The script also writes 56 importable map
+documents, `catalog.json` with all fourteen buildings, an overview PNG, and a manifest.
 All generated map documents include a player spawn for a disposable playtest.
 `--interior-only` can also write to a new directory. Its pages then offer only
 the four interior rotations. A focused refresh does not prove that retained
@@ -158,10 +170,15 @@ cannot prove that the geometry or material treatment is correct.
 The original ten template exteriors and interiors were reviewed across all four
 rotations (80 rendered views). The town hall and palace also passed exterior and
 interior review in all four rotations (16 additional views), including the final
-clock proportions and palace pediment paint order. The catalog route checks and renderer regressions cover
-walking space, object identity, partial roof revelation, partition junctions and
-the solid tower corner. Added civic checks also cover named room functions,
-minimum-size shells and supports edited into doors or windows. The original
+clock proportions and palace pediment paint order. The depósito and estancia
+also passed exterior and interior review in all four rotations (16 more views,
+112 views in total), including the final farmhouse gallery texture. Their
+interiors have continuous floor joins, visible furniture and clear door
+approaches. The catalog route checks and renderer regressions cover walking
+space, object identity, partial roof revelation, partition junctions and the
+solid tower corner. Added civic, warehouse and farmhouse checks cover named
+room functions, minimum-size shells and supports edited into doors or windows.
+Every new ground-level support is checked against a solid wall tile. The original
 review did not repeat live pointer interaction because the Mac was locked.
 No new browser interaction pass is claimed by this renderer review.
 

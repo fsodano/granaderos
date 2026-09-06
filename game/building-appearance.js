@@ -67,6 +67,8 @@ export const BUILDING_APPEARANCES = {
     windowStyle: "lattice",
   },
   warehouse: { wallFinish: "stone", roofFinish: "aged", doorStyle: "barn", windowStyle: "small" },
+  depot: { wallFinish: "brick", roofFinish: "aged", doorStyle: "barn", windowStyle: "small" },
+  farmhouse: { wallFinish: "limewash", roofFinish: "clay", doorStyle: "plank", windowStyle: "shutters" },
   smithy: { wallFinish: "brick", roofFinish: "aged", doorStyle: "barn", windowStyle: "barred" },
   stable: { wallFinish: "adobe", roofFinish: "thatch", doorStyle: "barn", windowStyle: "lattice" },
 };

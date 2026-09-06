@@ -12,6 +12,8 @@ const PROFILES = {
   palace: { wallHeight: 70, roofRise: 31, roofShape: "hip", eave: 0.24, plinthHeight: 16 },
   pulperia: { wallHeight: 45, roofRise: 24, roofShape: "hip", eave: 0.24, plinthHeight: 8 },
   warehouse: { wallHeight: 53, roofRise: 29, roofShape: "gable", eave: 0.2, plinthHeight: 14 },
+  depot: { wallHeight: 58, roofRise: 32, roofShape: "gable", eave: 0.23, plinthHeight: 14 },
+  farmhouse: { wallHeight: 45, roofRise: 26, roofShape: "hip", eave: 0.28, plinthHeight: 8 },
   smithy: { wallHeight: 47, roofRise: 21, roofShape: "shed", eave: 0.17, plinthHeight: 12 },
   stable: { wallHeight: 42, roofRise: 30, roofShape: "gable", eave: 0.27, plinthHeight: 7 },
 };

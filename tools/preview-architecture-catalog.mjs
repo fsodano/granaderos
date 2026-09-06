@@ -220,20 +220,42 @@ let catalog = blankMap({
   height: 64,
 });
 catalog.terrain = catalog.terrain.map((t) => ({ ...t, type: "road" }));
+// Pack from the authored footprints so new templates cannot overflow a fixed grid.
+const stamps = [];
+let shelfX = 3,
+  shelfY = 3,
+  shelfHeight = 0;
+for (const [id, template] of allEntries) {
+  const { width, height } = template.building;
+  if (shelfX + width > catalog.width - 3) {
+    shelfX = 3;
+    shelfY += shelfHeight + 3;
+    shelfHeight = 0;
+  }
+  if (width > catalog.width - 6 || shelfY + height > catalog.height - 3)
+    throw Error(`The architecture catalog has no room for ${id}.`);
+  stamps.push({ type: "stampTemplate", id, template, x: shelfX, y: shelfY });
+  shelfX += width + 3;
+  shelfHeight = Math.max(shelfHeight, height);
+}
 catalog = apply(catalog, [
-  ...allEntries.map(([id, template], i) => ({
-    type: "stampTemplate",
-    id,
-    template,
-    x: 3 + (i % 3) * 19,
-    y: 3 + Math.floor(i / 3) * 15,
-  })),
+  ...stamps,
   {
     type: "addObject",
     layer: "spawns",
     object: { id: "review-player", side: "player", x: 1, y: 1 },
   },
 ]);
+const catalogErrors = validateMap(catalog, { playable: true }).errors,
+  catalogMap = compileMap(catalog),
+  catalogReachable = reachableMap(catalogMap, { x: 1, y: 1 });
+if (catalogErrors.length) throw Error(catalogErrors.join("\n"));
+for (const b of catalogMap.buildings) {
+  const isolated = b.rooms.flatMap((r) => r.cells).find(
+    (c) => !propBlocksAt(catalogMap, c.x, c.y) && !catalogReachable.has(`${c.x},${c.y}`),
+  );
+  if (isolated) throw Error(`${b.id} has an unreachable floor in the complete catalog.`);
+}
 await writeFile(resolve(output, "catalog.json"), serializeMap(catalog));
 for (const entry of review)
   entry.previewMode ??= entry.variants.find((v) => v.rotation === 0)?.mode ?? "interior";

@@ -50,6 +50,8 @@ export const BUILDING_KINDS = {
   palace: "Palacio",
   pulperia: "Pulpería",
   warehouse: "Almacén",
+  depot: "Depósito mercantil",
+  farmhouse: "Casa de estancia",
   smithy: "Herrería",
   stable: "Caballeriza",
 };

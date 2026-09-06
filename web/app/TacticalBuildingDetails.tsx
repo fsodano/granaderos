@@ -580,6 +580,402 @@ export function buildingDetails(
     ].filter((u) => wallAt(u, 0)?.type === 'wall');
   }
 
+  function depotLoadingFront() {
+    if (!frontVisible) return;
+    const supports = [
+      ...new Set([1 / 6, 1 / 2, 5 / 6].map((r) => Math.round(f.width * r))),
+    ].filter((u) => wallAt(u, 0)?.type === 'wall');
+    const low = h - 3,
+      high = h + 6;
+    if (supports.length >= 2) {
+      const u0 = Math.min(...supports),
+        u1 = Math.max(...supports);
+      for (const u of supports) {
+        nodes.push(
+          solid(
+            `depot-loading-post-${u}`,
+            u - 0.11,
+            -0.38,
+            u + 0.11,
+            -0.16,
+            0,
+            low,
+            timber,
+            'wood',
+          ),
+        );
+        nodes.push(
+          solid(
+            `depot-loading-post-foot-${u}`,
+            u - 0.19,
+            -0.44,
+            u + 0.19,
+            -0.1,
+            0,
+            profile.plinthHeight,
+            stone,
+            'stone',
+            false,
+          ),
+        );
+        nodes.push(
+          <path
+            key={`depot-loading-brace-${u}`}
+            d={`${line(point(u, -0.29, low - 13), point(Math.min(u1, u + 0.4), -0.29, low - 2))}${line(point(u, -0.29, low - 13), point(Math.max(u0, u - 0.4), -0.29, low - 2))}`}
+            fill="none"
+            stroke={timber.base}
+            strokeWidth="2.8"
+          />,
+        );
+      }
+      nodes.push(
+        solid(
+          'depot-loading-beam',
+          u0 - 0.13,
+          -0.42,
+          u1 + 0.13,
+          -0.14,
+          low - 4,
+          low,
+          timber,
+          'wood',
+        ),
+      );
+      nodes.push(
+        <g
+          key="depot-loading-canopy"
+          data-architectural-volume="depot-loading-canopy"
+        >
+          <ProjectedRoofSurface
+            id={`${b.id}-depot-loading`}
+            points={[
+              point(u0 - 0.16, -0.46, low),
+              point(u1 + 0.16, -0.46, low),
+              point(u1 + 0.16, 0.42, high),
+              point(u0 - 0.16, 0.42, high),
+            ]}
+            project={project}
+            finish={buildingAppearance(b).roofFinish}
+          />
+        </g>,
+      );
+    }
+    // A small storage hatch sits in the gable. It is a roof-space detail, not
+    // a second playable floor. Its hoist bears on the central solid wall cell.
+    const u = Math.round(f.width / 2);
+    if (wallAt(u, 0)?.type !== 'wall' || f.width < 4) return;
+    const hatchBase = h + 7,
+      hatchTop = h + profile.roofRise - 7;
+    nodes.push(
+      solid(
+        'depot-loft-hatch',
+        u - 0.46,
+        -0.075,
+        u + 0.46,
+        0.02,
+        hatchBase,
+        hatchTop,
+        timber,
+        'wood',
+      ),
+    );
+    nodes.push(
+      <g
+        key="depot-loft-hatch-straps"
+        transform={faceMatrix(
+          at(u - 0.46, -0.08),
+          at(u + 0.46, -0.08),
+          project,
+          hatchBase,
+        )}
+      >
+        <path
+          d={`M0,-3H40M0,-${hatchTop - hatchBase - 3}H40M20,0V-${hatchTop - hatchBase}`}
+          stroke="#423d32"
+          strokeWidth="1.1"
+          fill="none"
+        />
+        <path
+          d={`M3,-3L37,-${hatchTop - hatchBase - 3}`}
+          stroke={timber.trim}
+          strokeWidth="1.5"
+        />
+      </g>,
+    );
+    const boom = hatchTop + 3;
+    nodes.push(
+      solid(
+        'depot-hoist-timber',
+        u - 0.055,
+        -0.47,
+        u + 0.055,
+        0.15,
+        boom - 2,
+        boom + 1,
+        timber,
+        'wood',
+      ),
+    );
+    nodes.push(
+      <g key="depot-loft-hoist" data-architectural-volume="depot-loft-hoist">
+        <path
+          d={line(point(u, -0.04, boom - 9), point(u, -0.43, boom - 1))}
+          stroke={timber.base}
+          strokeWidth="2.4"
+        />
+        <path
+          d={line(point(u, -0.43, boom - 1), point(u, -0.43, hatchBase - 1))}
+          stroke="#8f7951"
+          strokeWidth=".9"
+        />
+        <ellipse
+          cx={screenPoint(point(u, -0.43, boom - 1), project).x}
+          cy={screenPoint(point(u, -0.43, boom - 1), project).y}
+          rx="2"
+          ry="2.8"
+          fill="#5c4c32"
+          stroke="#ad9670"
+          strokeWidth=".6"
+        />
+      </g>,
+    );
+  }
+
+  function depotPiers() {
+    for (const wall of b.walls ?? []) {
+      if (wall.type !== 'wall') continue;
+      const u = (wall.x - f.origin.x) * f.u.x + (wall.y - f.origin.y) * f.u.y;
+      const v = (wall.x - f.origin.x) * f.v.x + (wall.y - f.origin.y) * f.v.y;
+      const end = u === 0 || u === f.width;
+      const sideVisible = u === 0 ? -f.u.x - f.u.y > 0 : f.u.x + f.u.y > 0;
+      if (!end || !sideVisible || (v !== 0 && v !== f.depth && v % 3 !== 0))
+        continue;
+      const u0 = u - 0.29,
+        u1 = u + 0.29,
+        v0 = v - 0.19,
+        v1 = v + 0.19;
+      nodes.push(
+        solid(
+          `depot-masonry-pier-${u}-${v}`,
+          u0,
+          v0,
+          u1,
+          v1,
+          0,
+          h - 3,
+          stone,
+          'stone',
+        ),
+      );
+      nodes.push(
+        solid(
+          `depot-masonry-foot-${u}-${v}`,
+          u0 - 0.07,
+          v0 - 0.07,
+          u1 + 0.07,
+          v1 + 0.07,
+          0,
+          profile.plinthHeight + 2,
+          stone,
+          'stone',
+          false,
+        ),
+      );
+      nodes.push(
+        solid(
+          `depot-masonry-cap-${u}-${v}`,
+          u0 - 0.04,
+          v0 - 0.04,
+          u1 + 0.04,
+          v1 + 0.04,
+          h - 7,
+          h - 2,
+          stone,
+          'stone',
+        ),
+      );
+    }
+  }
+
+  function farmhouseGalleries() {
+    const frontSupports = [
+      ...new Set([0, 0.3, 0.7, 1].map((r) => Math.round(f.width * r))),
+    ].filter((u) => wallAt(u, 0)?.type === 'wall');
+    const returnLength = Math.max(1, Math.round(f.depth * 0.57));
+    const sideSupports = [0, returnLength].filter(
+      (v) => wallAt(0, v)?.type === 'wall',
+    );
+    const hasFront = frontSupports.length >= 2,
+      hasSide = sideSupports.length >= 2;
+    const joint = hasFront && hasSide && frontSupports[0] === 0;
+    const low = h - 4,
+      high = h + 3;
+    const roof = (label: string, points: ElevatedPoint[]) => (
+      <g key={`${label}-roof`} data-architectural-volume={`${label}-canopy`}>
+        <ProjectedRoofSurface
+          id={`${b.id}-${label}`}
+          points={points}
+          project={project}
+          finish={buildingAppearance(b).roofFinish}
+        />
+      </g>
+    );
+    const post = (u: number, v: number, label: string) => {
+      nodes.push(
+        solid(
+          `${label}-post`,
+          u - 0.075,
+          v - 0.075,
+          u + 0.075,
+          v + 0.075,
+          0,
+          low,
+          timber,
+          'wood',
+        ),
+      );
+      nodes.push(
+        solid(
+          `${label}-foot`,
+          u - 0.13,
+          v - 0.13,
+          u + 0.13,
+          v + 0.13,
+          0,
+          4,
+          stone,
+          'stone',
+          false,
+        ),
+      );
+    };
+    if (hasSide && -f.u.x - f.u.y > 0) {
+      // Both roof planes meet at a mitred corner. The gallery is shallow;
+      // posts remain in solid wall cells instead of occupying the yard.
+      for (const v of sideSupports) {
+        if (v === 0 && frontVisible && joint) continue;
+        post(-0.3, v === 0 && joint ? -0.3 : v, `farmhouse-return-${v}`);
+      }
+      nodes.push(
+        solid(
+          'farmhouse-return-beam',
+          -0.41,
+          joint ? -0.3 : 0,
+          -0.18,
+          returnLength,
+          low - 3,
+          low,
+          timber,
+          'wood',
+        ),
+      );
+      nodes.push(
+        roof('farmhouse-return', [
+          point(-0.45, returnLength + 0.15, low),
+          point(-0.45, joint ? -0.45 : 0, low),
+          point(0.42, joint ? 0.42 : 0, high),
+          point(0.42, returnLength + 0.15, high),
+        ]),
+      );
+    }
+    if (hasFront && frontVisible) {
+      const u0 = Math.min(...frontSupports),
+        u1 = Math.max(...frontSupports);
+      for (const u of frontSupports) {
+        post(u === 0 && joint ? -0.3 : u, -0.3, `farmhouse-gallery-${u}`);
+        nodes.push(
+          <path
+            key={`farmhouse-gallery-brace-${u}`}
+            d={`${line(point(u, -0.3, low - 9), point(Math.min(u1, u + 0.35), -0.3, low - 1))}${line(point(u, -0.3, low - 9), point(Math.max(u0, u - 0.35), -0.3, low - 1))}`}
+            stroke={timber.base}
+            strokeWidth="1.8"
+            fill="none"
+          />,
+        );
+      }
+      nodes.push(
+        solid(
+          'farmhouse-gallery-beam',
+          joint ? -0.3 : u0,
+          -0.41,
+          u1 + 0.1,
+          -0.18,
+          low - 3,
+          low,
+          timber,
+          'wood',
+        ),
+      );
+      nodes.push(
+        roof('farmhouse-gallery', [
+          point(joint ? -0.45 : u0 - 0.15, -0.45, low),
+          point(u1 + 0.15, -0.45, low),
+          point(u1 + 0.15, 0.42, high),
+          point(joint ? 0.42 : u0 - 0.15, 0.42, high),
+        ]),
+      );
+    }
+  }
+
+  function farmhouseChimneys() {
+    for (const u of [0, f.width]) {
+      const v = Array.from(
+        { length: Math.max(0, Math.floor(f.depth) - 1) },
+        (_, i) => i + 1,
+      )
+        .filter((candidate) => wallAt(u, candidate)?.type === 'wall')
+        .sort(
+          (a, c) => Math.abs(a - (f.depth - 1)) - Math.abs(c - (f.depth - 1)),
+        )[0];
+      if (v === undefined) continue;
+      const target =
+        (u === 0 ? -f.u.x - f.u.y : f.u.x + f.u.y) > 0 ? nodes : backNodes;
+      const top = h + profile.roofRise + 17;
+      target.push(
+        solid(
+          `farmhouse-chimney-${u}`,
+          u - 0.2,
+          v - 0.2,
+          u + 0.2,
+          v + 0.2,
+          h - 1,
+          top,
+          palette,
+          buildingAppearance(b).wallFinish === 'brick'
+            ? 'brick'
+            : buildingAppearance(b).wallFinish === 'stone'
+              ? 'stone'
+              : 'plaster',
+        ),
+      );
+      target.push(
+        solid(
+          `farmhouse-chimney-cap-${u}`,
+          u - 0.27,
+          v - 0.27,
+          u + 0.27,
+          v + 0.27,
+          top - 2,
+          top + 2,
+          stone,
+          'stone',
+        ),
+      );
+      target.push(
+        <polygon
+          key={`farmhouse-chimney-flue-${u}`}
+          points={polygon(
+            quad(u - 0.13, v - 0.13, u + 0.13, v + 0.13).map((p) => ({
+              ...p,
+              z: top + 2.2,
+            })),
+          )}
+          fill="#40382b"
+        />,
+      );
+    }
+  }
+
   function stoneColumn(u: number, height: number, label: string) {
     if (wallAt(u, 0)?.type !== 'wall') return;
     nodes.push(
@@ -1189,6 +1585,12 @@ export function buildingDetails(
       Math.max(0.15, f.doorU - 1.35),
       Math.min(f.width - 0.15, f.doorU + 1.35),
     );
+  } else if (b.kind === 'depot') {
+    depotPiers();
+    depotLoadingFront();
+  } else if (b.kind === 'farmhouse') {
+    farmhouseGalleries();
+    farmhouseChimneys();
   } else if (b.kind === 'smithy') {
     chimney(true);
     porch(

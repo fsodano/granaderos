@@ -190,7 +190,7 @@ test('a maximum-size partially revealed roof has bounded SVG complexity and pres
 });
 
 test('minimum-width and minimum-depth shells keep finite nonzero roof texture axes',()=>{
- for(const kind of ['house','posta','barracks','church','chapel','cabildo','townhall','palace','pulperia','warehouse','smithy','stable']){
+ for(const kind of ['house','posta','barracks','church','chapel','cabildo','townhall','palace','pulperia','warehouse','depot','farmhouse','smithy','stable']){
   for(const [width,height] of [[3,3],[3,64],[64,3]]){
    const built=buildBuilding({id:`narrow-${kind}`,x:0,y:0,width,height,doors:[{x:Math.floor(width/2),y:height-1}]});
    let building={...built.building,kind,walls:built.tiles.filter(t=>t.type!=='floor')};
@@ -222,6 +222,24 @@ function intersectConvex(subject,boundary) {
  }
  return output;
 }
+
+test('mitring a canopy changes its boundary without skewing the roof tile courses',async()=>{
+ const {ProjectedRoofSurface}=await import('../web/app/TacticalBuildingVolumes.tsx');
+ let rectangle=[{x:0,y:0,z:20},{x:10,y:0,z:20},{x:10,y:2,z:30},{x:0,y:2,z:30}];
+ let mitred=[...rectangle.slice(0,3),{x:1,y:2,z:30}];
+ const matrix=points=>{
+  const node=ProjectedRoofSurface({id:'canopy',points,project});
+  const pattern=nodes(node).find(n=>n.type==='pattern');
+  assert.ok(pattern,'a nonzero canopy has a roof texture');
+  return pattern.props.patternTransform.match(/matrix\(([^)]+)\)/)[1].split(/\s+/).map(Number);
+ };
+ for(let turn=0;turn<4;turn++){
+  const expected=matrix(rectangle),actual=matrix(mitred);
+  actual.forEach((value,i)=>assert.ok(Math.abs(value-expected[i])<1e-9,`rotation ${turn}: clipping the high edge must preserve texture axis ${i}`));
+  const rotate=p=>({...p,x:-p.y,y:p.x});
+  rectangle=rectangle.map(rotate);mitred=mitred.map(rotate);
+ }
+});
 
 test('a steep narrow hip culls its rear face without opening a hole in the roof',()=>{
  let building=splitRoofFixture('house',64,3);

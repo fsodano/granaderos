@@ -38,10 +38,11 @@ Use Alt+drag, the middle mouse button, or **Desplazar** to pan. Zoom controls an
 A building owns the objects inside its bounds during group transforms. Moving,
 rotating, duplicating or deleting it includes those objects. Locked child layers
 prevent a transform. Templates expand into independent objects with new IDs.
-Select a building to export it as a template. Twelve furnished templates are bundled: posta, barracks, rural house, rural chapel,
-parish church, cabildo, town hall, palace, pulpería, storehouse, smithy and stable.
+Select a building to export it as a template. Fourteen furnished templates are bundled: posta, barracks, rural house, rural chapel,
+parish church, cabildo, town hall, palace, pulpería, storehouse, large warehouse, farmhouse, smithy and stable.
 The town hall is listed as **Ayuntamiento** and the palace as **Palacio del
-gobernador** under **Edificios → Plantilla**. The church has a
+gobernador** under **Edificios → Plantilla**. The larger warehouse is **Depósito
+mercantil** and the farmhouse is **Casa de estancia** in the same list. The church has a
 central aisle and a separate sacristy. Building kinds supply distinct facade
 details, tied to the entrance so they follow rotation. The inspector can change
 the kind independently of the layout. Bell structures and other tall facade
