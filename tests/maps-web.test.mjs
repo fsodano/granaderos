@@ -1,7 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {buildSectorMap,MAP_IDS} from '../game/maps.js';
+import {buildSectorMap as buildMap,MAP_IDS} from '../game/maps.js';
 import {OPERATIVES} from '../game/data.js';
+// Authored compact layouts are also the compatibility fixtures for existing saves.
+const buildSectorMap=(request={})=>buildMap({...request,compactLayout:true});
 const key=t=>`${t.x},${t.y}`;
 function path(map,a,b,forbidden=new Set()){
  const queue=[[a]],seen=new Set([key(a)]);

@@ -315,7 +315,7 @@ export function dispatchCampaign(previous,action){
 }
 export function serializeCampaign(s){return JSON.stringify(s);}
 export function restoreCampaign(text){
-  requireThat(typeof text==='string'&&text.length<=2_000_000,'El archivo de campaña no es compatible.');
+  requireThat(typeof text==='string'&&text.length<=5_000_000,'El archivo de campaña no es compatible.');
   const s=JSON.parse(text),base=initialCampaign();
   const integer=(v,min,max)=>Number.isInteger(v)&&v>=min&&v<=max;
   const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);

@@ -46,7 +46,8 @@ state.units.push(...enemies.map((u,i)=>makeUnit(u,'enemy',i,width-2-Math.floor(i
 if(!state.artillery.length&&sector.cannons>0)state.artillery=Array.from({length:Math.min(sector.cannons,3)},(_,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',x:2,y:2+i*3,loaded:true,ammo:6}));
 for(const u of state.units){if(u.side==='enemy'&&u.patrol!==false)u.patrolOrigin??={x:u.x,y:u.y};u.maxAP=maxActionPoints(state,u);u.ap=u.maxAP;}
 say(state,`Combate en ${state.sectorName}. Cada soldado dispone de 100 puntos de acción.`);checkEnd(state);detectContact(state);revealRooms(state);if(sector.firstSide==='enemy'&&state.mode==='combat'&&state.status==='active')state.contactInitiative='enemy';return resolveFirstContact(state);}
-function tile(s,x,y){return s.tiles.find(t=>t.x===x&&t.y===y);}
+function tile(s,x,y){const at=s.tiles[y*s.width+x];return at?.x===x&&at?.y===y?at:s.tiles.find(t=>t.x===x&&t.y===y);}
+
 function occupied(s,x,y,except){return propBlocksAt(s,x,y)||(s.npcs||[]).some(n=>n.x===x&&n.y===y)||s.units.some(u=>alive(u)&&u.id!==except&&u.x===x&&u.y===y);}
 export function carryCapacity(u){return Math.max(10,(u.strength||50)*.5);}
 export function carriedWeight(u){const inventory=Object.values(u.inventory||{}).reduce((sum,item)=>sum+(typeof item==='object'?(item.count||0)*(item.weight||0):0),0);return Number(u.weight??u.carryWeight??0)+inventory+((u.loaded||0)+(u.ammo||0))*.04+(u.weaponDropped?0:(hasFirearm(u)?4:1.3));}

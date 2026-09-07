@@ -5,14 +5,15 @@ import {createBattle} from './tactical.js';
 
 // Re-enter a persistent sector with the current squad, retaining terrain and ground gear.
 export function enterSector(request,previous=null){
- const map=buildSectorMap(request);
+ const map=buildSectorMap({...request,compactLayout:previous?previous.width===20&&previous.height===16:request.compactLayout});
  if(previous){
+   map.width=previous.width;map.height=previous.height;
    for(const key of ['sourceMapId','sourceMapRevision']){if(previous[key]!==undefined)map[key]=previous[key];else delete map[key];}
    map.props=structuredClone(previous.props??map.props);map.tiles=structuredClone(previous.tiles);map.decor=structuredClone(previous.decor??map.decor);map.buildings=structuredClone(previous.buildings??map.buildings);
    // A new occupation creates a garrison. An unfinished engagement retains its survivors.
    if(!request.exploration&&!previous.sectorCleared)map.enemies=structuredClone(previous.units.filter(u=>u.side==='enemy'));
  }
- const state=createBattle([...map.squad,...(request.garrison??[]),...(request.missionAllies??[])],map);
+ const state=createBattle([...map.squad,...(map.garrison??[]),...(map.missionAllies??[])],map);
  if(previous){
    for(const unit of state.units.filter(u=>u.side==='player'&&u.hp>0)){const old=previous.units.find(u=>u.id===unit.id&&u.side==='player');for(const key of ['practiceTiles','ridingPracticeTiles'])if(old?.[key])unit[key]=structuredClone(old[key]);}
    for(const key of ['groundItems','droppedWeapons','revealedRooms'])state[key]=structuredClone(previous[key]??[]);
@@ -34,12 +35,13 @@ export function enterSector(request,previous=null){
    const prior=previous?.units.find(v=>v.side==='player'&&v.id===unit.id);
    Object.assign(unit,reserve(prior??unit));
  }
- state.npcs=(request.npcs??[]).map(npc=>{
+ state.npcs=(map.npcs??[]).map(npc=>{
    const old=previous?.npcs?.find(n=>n.id===npc.id),resident=structuredClone({...npc,...old});
    if(resident.ai){delete resident.ai.threat;delete resident.ai.safeAfter;resident.ai.activity='roaming';}
    delete resident.lastMovePath;resident.stance='standing';resident.movementMode='walk';
    return {...resident,...reserve(resident)};
  });
+
  if(!previous&&!request.sceneId&&sectorCash(request.sector)){
   const leader=state.units.find(u=>u.side==='player'),spot=leader&&state.tiles.find(t=>!t.blocked&&!propBlocksAt(state,t.x,t.y)&&!occupied.has(`${t.x},${t.y}`)&&Math.abs(t.x-leader.x)+Math.abs(t.y-leader.y)===1);
   if(spot)state.groundItems.push({id:`cash:${request.sector}`,type:'money',x:spot.x,y:spot.y,count:sectorCash(request.sector)});
