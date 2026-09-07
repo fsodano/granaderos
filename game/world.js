@@ -35,7 +35,13 @@ export function enterSector(request,previous=null){
    const prior=previous?.units.find(v=>v.side==='player'&&v.id===unit.id);
    Object.assign(unit,reserve(prior??unit));
  }
- state.npcs=(map.npcs??[]).map(npc=>({...structuredClone(npc),...reserve(npc)}));
+ state.npcs=(map.npcs??[]).map(npc=>{
+   const old=previous?.npcs?.find(n=>n.id===npc.id),resident=structuredClone({...npc,...old});
+   if(resident.ai){delete resident.ai.threat;delete resident.ai.safeAfter;resident.ai.activity='roaming';}
+   delete resident.lastMovePath;resident.stance='standing';resident.movementMode='walk';
+   return {...resident,...reserve(resident)};
+ });
+
  if(!previous&&!request.sceneId&&sectorCash(request.sector)){
   const leader=state.units.find(u=>u.side==='player'),spot=leader&&state.tiles.find(t=>!t.blocked&&!propBlocksAt(state,t.x,t.y)&&!occupied.has(`${t.x},${t.y}`)&&Math.abs(t.x-leader.x)+Math.abs(t.y-leader.y)===1);
   if(spot)state.groundItems.push({id:`cash:${request.sector}`,type:'money',x:spot.x,y:spot.y,count:sectorCash(request.sector)});

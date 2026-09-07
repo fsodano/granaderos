@@ -15,14 +15,14 @@ export function marchToFront(state,action){
 
 import {encounterForOperative} from '../game/encounters.js';
 import {buildSectorMap} from '../game/maps.js';
-import {createBattle,actBattle} from '../game/tactical.js';
+import {createBattle,actBattle,getReachable} from '../game/tactical.js';
 export function meetLocalRecruit(state,action){
  if(action.type!=='recruit')return null;
  const npc=encounterForOperative(action.id);if(!npc)return null;
  let s=state;if(s.location!==npc.sector){s=dispatchCampaign(s,{type:'travel',sector:npc.sector});if(s.lastError)throw Error(s.lastError);}
  s=dispatchCampaign(s,{type:'visitSector'});if(s.lastError)throw Error(s.lastError);
  const map=buildSectorMap(s.pendingBattle);let battle=createBattle(map.squad,map);const actor=battle.units.filter(u=>u.side==='player').sort((a,b)=>b.leadership-a.leadership)[0];
- battle=actBattle(battle,{type:'move',unitId:actor.id,x:map.npcs.find(n=>n.id===npc.id).x-1,y:map.npcs.find(n=>n.id===npc.id).y});if(battle.lastError)throw Error(battle.lastError);
+ const local=battle.npcs.find(n=>n.id===npc.id),target=getReachable(battle,actor).filter(p=>Math.abs(p.x-local.x)+Math.abs(p.y-local.y)===1).sort((a,b)=>a.cost-b.cost)[0];if(!target)throw Error('Local recruit is unreachable');if(target.cost)battle=actBattle(battle,{type:'move',unitId:actor.id,x:target.x,y:target.y});if(battle.lastError)throw Error(battle.lastError);
  s=dispatchCampaign(s,{type:'talkNPC',npcId:npc.id,approach:'recruit',unitId:Number(actor.id),sectorState:battle});if(s.lastError)return s;
  return dispatchCampaign(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:battle,survivors:battle.units.filter(u=>u.side==='player').map(u=>({...u,id:Number(u.id)}))});
 }

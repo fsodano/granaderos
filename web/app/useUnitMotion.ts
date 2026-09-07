@@ -8,6 +8,8 @@ type Track = {points:Point[];start:number;step:number;direction:number};
 // Screen compass after the map's isometric projection, clockwise from north.
 function facing(a:Point,b:Point){const dx=(b.x-a.x)-(b.y-a.y),dy=(b.x-a.x)+(b.y-a.y);return (Math.round(Math.atan2(dx,-dy)/ (Math.PI/4))+8)%8;}
 function route(previous:any,unit:any,target:Point,charge=false):Point[]{
+  const recorded=(target as any).lastMovePath;
+  if(Array.isArray(recorded)&&recorded.length&&Math.abs(recorded[0].x-unit.x)+Math.abs(recorded[0].y-unit.y)===1&&recorded.at(-1).x===target.x&&recorded.at(-1).y===target.y)return [unit,...recorded];
   const dx=target.x-unit.x,dy=target.y-unit.y;
   if(charge&&(dx===0||dy===0||Math.abs(dx)===Math.abs(dy))){
     const points=[unit];for(let i=1;i<=Math.max(Math.abs(dx),Math.abs(dy));i++)points.push({x:unit.x+Math.sign(dx)*i,y:unit.y+Math.sign(dy)*i});

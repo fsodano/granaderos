@@ -19,6 +19,8 @@ function connected(tiles,start,props=[]){
 }
 function buildCompactSectorMap(request={}){
  const id=request.sceneId??request.sector??request.id??'san_lorenzo';const authored=plan(id),tiles=authored.tiles;
+ // Assign civilian destinations without changing editor documents or geometry.
+ for(const b of authored.buildings){if(/pulper[ií]a|taberna/i.test(b.name)||id!=='retiro'&&b.id===`${id}:house-0`){b.purpose='bar';b.name='Pulpería del poblado';}else b.purpose='home';}
  const open=tiles.filter(t=>!t.blocked&&!propBlocksAt(authored,t.x,t.y));const component=connected(tiles,open.find(t=>t.x<=2&&t.y>=5)??open[0],authored.props);
  const reserved=new Set(),choose=(preferred,side)=>{
    const candidates=open.filter(t=>component.has(key(t))&&!reserved.has(key(t)));
