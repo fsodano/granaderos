@@ -1,3 +1,4 @@
+import {NPC_ACTIVITIES} from './npc-ai.js';
 import {propCells,propSize} from './props.js';
 import {validateTraining} from './skill-training.js';
 import {WEAPONS,BLADES,ARTILLERY} from './tactical.js';
@@ -30,7 +31,25 @@ for(const key of ['smoke','artillery','log','decor','props','npcs','groundItems'
 for(const k of ['night','sectorCleared'])if(s[k]!==undefined)need(typeof s[k]==='boolean','situación táctica');need(s.log.every(text),'diario');need(s.smoke.every(v=>coord(v)&&number(v.radius,0,20)&&integer(v.turns,1,100)),'humo');
 for(const g of s.artillery)need(coord(g)&&text(g.id)&&ARTILLERY[g.type]&&['player','enemy'].includes(g.side)&&typeof g.loaded==='boolean'&&integer(g.ammo,0,1000000)&&(g.facing===undefined||number(g.facing,-Math.PI*2,Math.PI*2)),'artillería');
 for(const l of s.lights)need(coord(l)&&number(l.radius,0,100)&&(l.intensity===undefined||number(l.intensity,0,1))&&(l.turns===undefined||integer(l.turns,0,1000000)),'luces');
-for(const n of s.npcs)need(coord(n)&&text(n.id)&&text(n.name),'personajes');
+for(const u of s.units){if(u.patrolOrigin!==undefined)need(coord(u.patrolOrigin),'puesto de patrulla');if(u.patrol!==undefined)need(typeof u.patrol==='boolean','patrulla');if(u.patrolTurn!==undefined)need(integer(u.patrolTurn,0,1e9),'turno de patrulla');}
+if(s.explorationWoundSeconds!==undefined)need(number(s.explorationWoundSeconds,0,6)&&s.explorationWoundSeconds<6,'reloj de heridas');
+if(s.roundFirstSide!==undefined)need(['player','enemy'].includes(s.roundFirstSide),'primera facción');
+if(s.enemyFirstAwaitingPlayer!==undefined)need(typeof s.enemyFirstAwaitingPlayer==='boolean'&&s.roundFirstSide==='enemy'&&s.mode==='combat','orden de facciones');
+if(s.civilianTurns!==undefined)need(integer(s.civilianTurns,0,1e9),'turnos civiles');
+if(s.civilianSeconds!==undefined)need(number(s.civilianSeconds,0,6)&&s.civilianSeconds<6,'reloj civil');
+const npcIds=new Set();
+for(const n of s.npcs){
+ need(coord(n)&&text(n.id)&&text(n.name)&&!ids.has(n.id)&&!npcIds.has(n.id),'personajes');npcIds.add(n.id);
+ if(n.stance!==undefined)need(['standing','crouched','prone'].includes(n.stance),'postura civil');
+ if(n.movementMode!==undefined)need(['walk','run','crouch','prone'].includes(n.movementMode),'movimiento civil');
+ if(n.facing!==undefined)need(integer(n.facing,0,7),'dirección civil');
+ if(n.lastMovePath!==undefined)need(Array.isArray(n.lastMovePath)&&n.lastMovePath.length<=128&&n.lastMovePath.every(coord),'ruta civil');
+ if(n.ai!==undefined){const a=n.ai;need(object(a)&&integer(a.cycle,0,1e9)&&integer(a.wait,0,100)&&NPC_ACTIVITIES.includes(a.activity)&&(a.homeId===null||text(a.homeId)),'rutina civil');
+  if(a.destination!==undefined)need(coord(a.destination),'destino civil');
+  if(a.safeAfter!==undefined)need(Number.isSafeInteger(a.safeAfter)&&a.safeAfter>=0,'calma civil');
+  if(a.threat!==undefined)need(coord(a.threat)&&integer(a.threat.turn,1,s.turn)&&['fire','explosion','alarm'].includes(a.threat.kind)&&number(a.threat.uncertainty,0,20)&&Object.keys(a.threat).every(k=>['x','y','turn','kind','uncertainty'].includes(k))&&a.safeAfter!==undefined,'alarma civil');
+ }
+}
 for(const g of s.groundItems)need(coord(g)&&text(g.id)&&text(g.type)&&integer(g.count,0,1000000)&&(g.heldBy==null||text(g.heldBy)),'objetos del suelo');
 for(const d of s.droppedWeapons)need(coord(d)&&integer(d.weapon,0,65535)&&number(d.condition,0,100)&&integer(d.loaded,0,100)&&(d.taken===undefined||typeof d.taken==='boolean'),'equipo abandonado');
 const propIds=new Set();for(const p of s.props){need(coord(p)&&text(p.id)&&p.id.length>0&&!propIds.has(p.id)&&['table','bench','bed','chest','barrels','hay'].includes(p.type),'mobiliario');if(p.footprint!==undefined)need(object(p.footprint),'huella del mobiliario');const size=propSize(p);need(object(size)&&integer(size.width,1,8)&&integer(size.height,1,8),'dimensiones del mobiliario');need(propCells(p).every(coord),'huella del mobiliario');if(p.blocksMovement!==undefined)need(typeof p.blocksMovement==='boolean','colisión del mobiliario');propIds.add(p.id);for(const key of ['buildingId','roomId'])if(p[key]!=null)need(text(p[key]),'habitación del mobiliario');}
