@@ -1,3 +1,4 @@
+import {scriptedBattleReport} from './scripted-battle-report.mjs';
 import {marchToFront,meetLocalRecruit} from './campaign-test-helpers.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -18,7 +19,7 @@ test('civic bulletin offers prepaid recruits without regional ownership gates',(
 });
 test('civic combat experience actually improves battle statistics and persists',()=>{
  let s=order(initialCampaign(),{type:'recruitCivic',id:100,term:'month'});s=order(s,{type:'squad',ids:[3,100]});const original=rosterFor(s).find(o=>o.id===100).marksmanship;
- for(const sector of ['san_nicolas','cordoba']){s=order(s,{type:'attack',sector});assert.ok(s.pendingBattle.squad.find(o=>o.id===100));s=order(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'victory',survivors:s.pendingBattle.squad.map(o=>({id:o.id,hp:o.hp,loaded:o.loaded,ammo:o.ammo,priming:20,flints:2,rations:1,condition:80,fatigue:10}))});}
+ for(const sector of ['san_nicolas','cordoba']){s=order(s,{type:'attack',sector});assert.ok(s.pendingBattle.squad.find(o=>o.id===100));s=order(s,scriptedBattleReport(s,{units:s.pendingBattle.squad.map(o=>({id:o.id,priming:20,flints:2,rations:1,condition:80,fatigue:10}))}));}
  const trained=rosterFor(s).find(o=>o.id===100);assert.equal(trained.xp,120);assert.equal(trained.level,2);assert.equal(trained.marksmanship,original+4);assert.equal(rosterFor(s).find(o=>o.id===3).marksmanship,68);
  s=restoreCampaign(serializeCampaign(s));s=order(s,{type:'attack',sector:'santa_fe'});const soldier=s.pendingBattle.squad.find(o=>o.id===100);assert.equal(soldier.marksmanship,original+4);assert.equal(soldier.priming,20);assert.equal(soldier.flints,2);assert.equal(soldier.rations,1);assert.equal(soldier.condition,80);
 });
@@ -29,5 +30,5 @@ test('legacy version1 saves migrate without losing historical stats',()=>{
 
 test('fictional foreign volunteers have finite contracts and persist in legacy-compatible saves',()=>{
  let s=initialCampaign();
- for(const o of CIVIC_RECRUITS.filter(o=>o.foreign)){const before=s.resources.treasury;s=dispatch(s,{type:'recruitCivic',id:o.id});assert.equal(s.lastError,null);assert.ok(s.recruited.includes(o.id));assert.equal(s.resources.treasury,before-Math.ceil(o.monthlyPay/30));s=restoreCampaign(serializeCampaign(s));assert.ok(s.recruited.includes(o.id));const paid=s.resources.treasury;s=dispatch(s,{type:'recruitCivic',id:o.id});assert.ok(s.lastError);assert.equal(s.resources.treasury,paid);}
+ for(const o of CIVIC_RECRUITS.filter(o=>o.foreign)){s.resources.treasury=1000000;const daily=Math.ceil(o.monthlyPay/30);s=dispatch(s,{type:'recruitCivic',id:o.id});assert.equal(s.lastError,null);assert.ok(s.recruited.includes(o.id));assert.equal(s.resources.treasury,1000000-daily);s=restoreCampaign(serializeCampaign(s));assert.ok(s.recruited.includes(o.id));const paid=s.resources.treasury;s=dispatch(s,{type:'recruitCivic',id:o.id});assert.ok(s.lastError);assert.equal(s.resources.treasury,paid);}
 });

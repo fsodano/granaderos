@@ -15,6 +15,15 @@ test('prepaid month never triggers a second monthly payroll debit',()=>{
 test('trainer contract expiry releases reserved promotions without duplicating militia',()=>{
  let s=start();s=step(s,{type:'militia',trainerId:1000,rank:0});s=waitTo(s,s.militiaTraining[0].remaining);assert.equal(s.sectors.retiro.militia[0],3);s=step(s,{type:'recruitCivic',id:100,term:'day'});s=step(s,{type:'militia',trainerId:100,rank:1});assert.equal(s.sectors.retiro.militia[0],0);s=waitTo(s,s.contracts[100].expiresAt);assert.equal(s.militiaTraining.length,0);assert.deepEqual(s.sectors.retiro.militia,[3,0,0]);assert.ok(!s.recruited.includes(100));assert.deepEqual(decodeSave(encodeSave(s)).campaign.sectors.retiro.militia,[3,0,0]);
 });
-test('elite renewals cannot bank additional days even after save reload',()=>{
- let s=start();const elite=rosterFor(s).find(o=>o.tier==='elite');s=step(s,{type:'recruitCivic',id:elite.id,term:'day'});const cash=s.resources.treasury;assert.ok(reduce(s,{type:'renewContract',id:elite.id,term:'day'}).lastError);assert.equal(s.resources.treasury,cash);s=waitTo(s,12);s=decodeSave(encodeSave(s)).campaign;const quote=contractQuote(s,elite,'day');s=step(s,{type:'renewContract',id:elite.id,term:'day'});assert.equal(s.contracts[elite.id].expiresAt,36);assert.equal(s.resources.treasury,cash-quote.price);assert.ok(reduce(s,{type:'renewContract',id:elite.id,term:'week'}).lastError);s=waitTo(s,36);assert.ok(!s.recruited.includes(elite.id));
+test('elite renewals bank days while funds last and week terms need real money',()=>{
+ let s=start();const elite=rosterFor(s).find(o=>o.tier==='elite');
+ const weekPrice=contractQuote(s,elite,'week').price;
+ assert.ok(weekPrice>s.resources.treasury);
+ assert.ok(reduce(s,{type:'recruitCivic',id:elite.id,term:'week'}).lastError);
+ s=step(s,{type:'recruitCivic',id:elite.id,term:'day'});
+ s.resources.treasury=weekPrice;
+ const quote=contractQuote(s,elite,'day');s=step(s,{type:'renewContract',id:elite.id,term:'day'});
+ assert.equal(s.contracts[elite.id].expiresAt,48);assert.equal(s.resources.treasury,weekPrice-quote.price);
+ s=decodeSave(encodeSave(s)).campaign;assert.equal(s.contracts[elite.id].expiresAt,48);
+ s=waitTo(s,48);assert.ok(!s.recruited.includes(elite.id));
 });
