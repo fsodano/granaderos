@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.0-dev.1
+
+- Removed the artificial day-only cap on elite specialists: day, weekly and monthly
+  contracts are open to every volunteer, and the treasury alone limits the terms.
+- Elite specialists now charge premium daily rates (1100-1600 pesos at level 1), so
+  the 3200-peso starting treasury cannot retain one for more than a day or two.
+- Contract renewals extend the remaining service instead of resetting it to 24 hours.
+
 ## 0.1.0-dev.2
 
 - Added the Cabildo custom officer examination, civic volunteer recruitment and combat experience growth.
