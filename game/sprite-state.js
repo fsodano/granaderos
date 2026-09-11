@@ -3,7 +3,7 @@ import {hasFirearm} from './tactical.js';
 export function spriteCondition(unit){
  if(unit.hp<=0)return 'dead';
  if(unit.unconscious)return 'unconscious';
- return unit.stance==='prone'||unit.movementMode==='prone'?'prone':unit.movementMode==='crouch'?'crouch':'standing';
+ return unit.stance==='prone'||unit.movementMode==='prone'?'prone':unit.stance==='crouched'||unit.movementMode==='crouch'?'crouch':'standing';
 }
 
 // Life state wins over stance, movement, equipment, and a pending action.
@@ -11,6 +11,7 @@ export function selectSprite(unit,motion,pose='idle',appearance='soldier'){
  const condition=spriteCondition(unit),family=appearance==='civilian'?'civilian':unit.side==='enemy'?'royalist':'granadero';
  if(condition==='dead')return {name:`${family}-dead-idle`,playback:'still'};
  if(condition==='unconscious')return {name:`${family}-unconscious-breathe`,playback:'breathing'};
+ if(appearance==='civilian'&&condition==='prone')return {name:'civilian-unconscious-breathe',playback:motion.moving?'movement':'breathing'};
  if(appearance==='civilian')return {name:`civilian-${motion.moving?'walk':'idle'}`,playback:motion.moving?'movement':'still'};
  if(unit.mounted)return {name:`cavalry-${motion.moving?'walk':'idle'}`,playback:motion.moving?'movement':'still'};
  if(condition==='prone'){

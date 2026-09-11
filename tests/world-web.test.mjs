@@ -7,7 +7,7 @@ test('re-entering a sector retains breaches and dropped gear without duplicating
  const first=enterSector(request);const wall=first.tiles.find(t=>t.type==='wall');wall.blocked=false;wall.type='stone';
  first.groundItems=[{id:'bolas-1',x:3,y:3,count:1,type:'boleadoras'}];
  first.units[0].x=2;first.units[0].y=4;
- const returned=enterSector(request,first);
+ const returned=enterSector({...request,squad:request.squad.map(u=>({...u,entryReason:'resident'}))},first);
  assert.equal(returned.tiles.find(t=>t.x===wall.x&&t.y===wall.y).blocked,false);
  assert.deepEqual(returned.groundItems,first.groundItems);assert.equal(returned.units.length,2);
  assert.equal(returned.units[0].x,2);assert.equal(returned.mode,'exploration');assert.equal(returned.status,'active');

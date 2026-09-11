@@ -1,27 +1,30 @@
 'use client';
 // JA2 bottom-strip disposition (DESIGN.md MODE A / MODE B). Root switches content on inventoryId.
 // Pure read model (game/ja2-hud.js orderDescriptors/orderAction); all mutations are caller-provided callbacks.
+import {MILITIA_NAMES} from '../../game/militia.js';
 import {useState} from 'react';
 import JA2Roster from './JA2Roster';
 import JA2Inventory, {RadarCluster} from './JA2Inventory';
-import {orderDescriptors, orderAction} from '../../game/ja2-hud.js';
-import {canSee, visibleEnemies, ARTILLERY} from '../../game/tactical.js';
-import {Footprints, Crosshair, Swords, Flag, Heart, RotateCcw, Shield, Eye, CircleArrowUp, Package} from 'lucide-react';
+import {orderDescriptors, orderAction, aimOptions, stanceLabel, targetingHelp, equipmentSlots, shotLocationOptions, turnModel, unitCanAct, facingLabel, heardNoiseModel, equippedItemHelp} from '../../game/ja2-hud.js';
+import {canSee, actionPointBudget, AP_CARRY_LIMIT, ARTILLERY} from '../../game/tactical.js';
+import {Footprints, RotateCcw, Shield, Package, Eye} from 'lucide-react';
 
 type Props = {
+  groupIds?: string[]; target?: any;
   battle: any; selected: any; unit: any; players: any[]; missionAllies: any[]; localMilitia: any[];
-  mode: any; showSight: boolean; aim: number; costs: any; weapon: any; firearm: boolean;
+  mode: any; showSight: boolean; aim: number; hitLocation: string; costs: any; weapon: any; firearm: boolean;
   cannonId: any; shotType: any; gunCosts: any; artillery: any[]; busy: boolean; inventoryId: any;
   vw: number; vh: number; cameraRect: any; project: (x: number, y: number) => { x: number; y: number };
   cameraX: number; cameraY: number; zoom: number;
-  onSelect: (id: any) => void; onOrder: (a: any) => void; onMode: (id: any) => void; onToggleSight: () => void;
+  onSelect: (id: any, additive?: boolean) => void; onOrder: (a: any) => void; onMode: (id: any) => void; onToggleSight: () => void;
+  onAutoBandage?: () => void; bandageReport?: any;
   onEndTurn: () => void; onRetreat: () => void; onOpenInventory: (id: any) => void; onCloseInventory: () => void;
   onCameraCenter: () => void; onCameraPan: (dx: number, dy: number) => void; onZoom: (delta: number) => void;
-  onCannonChange: (id: any) => void; onShotTypeChange: (t: any) => void; onSetAim: (n: number) => void;
+  onCannonChange: (id: any) => void; onShotTypeChange: (t: any) => void; onSetAim: (n: number) => void; onHitLocationChange: (location: string) => void;
 };
 
-const GRID_EXCLUDE = new Set(['torch', 'bolas', 'free', 'brace', 'repair', 'ration', 'sight', 'endTurn', 'artillery', 'artilleryMove', 'artilleryPivot', 'artilleryReload']);
-const GRID_ICONS: Record<string, any> = {move: Footprints, fire: Crosshair, melee: Swords, charge: Flag, heal: Heart, loot: Package, reload: RotateCcw, weapon: Swords, stance: Shield, overwatch: Eye, mount: CircleArrowUp};
+const GRID_EXCLUDE = new Set(['useItem', 'fire', 'melee', 'charge', 'heal', 'weapon', 'overwatch', 'mount', 'torch', 'bolas', 'free', 'brace', 'repair', 'ration', 'sight', 'endTurn', 'artillery', 'artilleryMove', 'artilleryPivot', 'artilleryReload']);
+const GRID_ICONS: Record<string, any> = {move: Footprints, look: Eye, loot: Package, reload: RotateCcw, reprime: RotateCcw, stance: Shield};
 
 function LogOverlay({log}: { log: string[] }) {
   const [open, setOpen] = useState(false);
@@ -34,52 +37,76 @@ function LogOverlay({log}: { log: string[] }) {
   );
 }
 
-export default function JA2Strip({battle, selected, unit, players, missionAllies, localMilitia, mode, showSight, aim, costs, weapon, firearm, cannonId, shotType, gunCosts, artillery, busy, inventoryId, vw, vh, cameraRect, project, cameraX, cameraY, zoom, onSelect, onOrder, onMode, onToggleSight, onEndTurn, onRetreat, onOpenInventory, onCloseInventory, onCameraCenter, onCameraPan, onZoom, onCannonChange, onShotTypeChange, onSetAim}: Props) {
-  const units = battle.units.filter((v: any) => v.side === 'player' || players.some((p: any) => canSee(battle, p, v)));
-  const gridDefs = unit ? orderDescriptors(battle, unit, {busy}).filter((d: any) => !GRID_EXCLUDE.has(d.id)) : [];
+export default function JA2Strip({battle, selected, unit, players, missionAllies, localMilitia, mode, showSight, aim, hitLocation, costs, weapon, firearm, cannonId, shotType, gunCosts, artillery, busy, inventoryId, vw, vh, cameraRect, project, cameraX, cameraY, zoom, onSelect, onOrder, onMode, onToggleSight, onEndTurn, onRetreat, onOpenInventory, onCloseInventory, onCameraCenter, onCameraPan, onZoom, onCannonChange, onShotTypeChange, onSetAim, onHitLocationChange, onAutoBandage, bandageReport, groupIds, target}: Props) {
+  const units = battle.units.filter((v: any) => !v.departure && !v.fled && (v.side === 'player' || players.some((p: any) => canSee(battle, p, v))));
+  const descriptors = unit ? orderDescriptors(battle, unit, {busy, aim, cannonId, target}) : [];
+  const gridDefs = descriptors.filter((d: any) => !GRID_EXCLUDE.has(d.id) && (d.id !== 'reprime' || unit?.jammed) && (d.id !== 'reload' || !unit?.jammed) && (!['reload', 'reprime', 'overwatch'].includes(d.id) || firearm));
+  const budget = unit ? actionPointBudget(battle, unit) : null;
+  const aimLevels = aimOptions(battle, unit, {busy});
+  const shotLocations = shotLocationOptions(battle, unit, {busy, hitLocation});
+  const turn = turnModel(battle);
+  const heardNoise = heardNoiseModel(battle, unit);
   if (inventoryId) {
     return (
+      <div className="ja2-hud">
       <section className="ja2-strip inventory-open">
-        {unit ? <JA2Inventory unit={unit} battle={battle} mode={mode} showSight={showSight} busy={busy} units={units} selected={selected} missionAllies={missionAllies} localMilitia={localMilitia} vw={vw} vh={vh} cameraRect={cameraRect} project={project} zoom={zoom} onOrder={onOrder} onMode={onMode} onToggleSight={onToggleSight} onSelect={onSelect} onRetreat={onRetreat} onCameraCenter={onCameraCenter} onCameraPan={onCameraPan} onZoom={onZoom} onCloseInventory={onCloseInventory} /> : <button className="gold-button" onClick={onCloseInventory}>Listo</button>}
-        <LogOverlay log={battle.log || []} />
+        {unit ? <JA2Inventory unit={unit} battle={battle} mode={mode} showSight={showSight} busy={busy} units={units} selected={selected} missionAllies={missionAllies} localMilitia={localMilitia} vw={vw} vh={vh} cameraRect={cameraRect} project={project} zoom={zoom} onOrder={onOrder} onMode={onMode} onToggleSight={onToggleSight} onSelect={onSelect} onRetreat={onRetreat} onCameraCenter={onCameraCenter} onCameraPan={onCameraPan} onZoom={onZoom} onCloseInventory={onCloseInventory} onAutoBandage={onAutoBandage} bandageReport={bandageReport} /> : <button className="gold-button" onClick={onCloseInventory}>Listo</button>}
       </section>
+      <LogOverlay log={battle.log || []} />
+      </div>
     );
   }
   return (
+    <div className="ja2-hud">
     <section className="ja2-strip">
-      <JA2Roster players={players} selected={selected} onSelect={onSelect} onOpenInventory={onOpenInventory} />
+      <JA2Roster groupIds={groupIds} battle={battle} players={players.filter((p: any) => !p.militia && !p.missionAlly)} selected={selected} medicalTargeting={unit?.activeSlot === 'medical' && unitCanAct(battle, unit)} onSelect={onSelect} onOpenInventory={onOpenInventory} />
       <div className="ja2-context">
+        {unit && <div className="ja2-action-readout" aria-label="Estado del combatiente">
+          <strong>{unit.nickname || unit.name} · {unit.ap} PA</strong>
+          {unit.militia&&<small>{MILITIA_NAMES[unit.militiaRank]??"Milicia"} · {unit.militiaExperience??0} puntos de combate</small>}
+          <span>{stanceLabel(unit.stance)} · {facingLabel(unit)} · {Math.ceil(unit.hp)}/{unit.maxHp} salud · {Math.round(unit.energy ?? 100)} energía{unit.bleeding > 0 ? ` · Hemorragia ${unit.bleeding}` : ''}{unit.stealthMode ? ' · Sigilo' : ''}</span>
+          {heardNoise && <span className="ja2-noise-readout">{heardNoise.label}</span>}
+          <small>{turn.interrupted ? 'Interrupción: usá los PA restantes. Esta pausa no recupera PA.' : battle.mode === 'exploration' ? 'Exploración: las órdenes consumen tiempo.' : `Dejá PA para interrumpir al enemigo. Se conservan hasta ${budget?.carryover} PA al próximo turno (límite ${AP_CARRY_LIMIT}).`}</small>
+        </div>}
+        {unit && <div className="ja2-equipped-slots" aria-label="Objeto equipado">
+          {equipmentSlots(battle, unit, {busy}).map((slot: any) => <button key={slot.slot} aria-pressed={slot.active} disabled={slot.active || slot.disabled} title={`Equipar ${slot.label} · ${slot.pa} PA`} onClick={() => { onOrder(slot.action); onMode('move'); }}>{slot.label}</button>)}
+        </div>}
+        <p className="ja2-equipped-help">{equippedItemHelp(battle, unit, {target, mode, aim})}</p>
+        {firearm && unit && <div className="ja2-shot-controls">
+          <span aria-label="Puntería"><small>Apuntar</small>{aimLevels.map((option: any) => <button key={option.level} aria-label={`${option.level === 0 ? 'Sin apuntar' : `Puntería ${option.level}`}: ${option.pa} PA en total`} title={`${option.pa} PA en total`} disabled={option.disabled} aria-pressed={aim === option.level} onClick={() => onSetAim(option.level)}>{option.level}</button>)}</span>
+          <span className="ja2-shot-locations" role="group" aria-label="Zona de tiro"><small>Zona</small>{shotLocations.map((location: any) => <button key={location.id} disabled={location.disabled} aria-label={`Apuntar a ${location.label.toLowerCase()}`} aria-pressed={location.active} onClick={() => onHitLocationChange(location.id)}>{location.label}</button>)}</span>
+        </div>}
         <div className="ja2-order-grid">
           {gridDefs.map((d: any) => {
             const Icon = GRID_ICONS[d.id];
-            const label = d.id === 'stance' ? (unit?.stance === 'prone' ? 'De pie' : 'Cuerpo a tierra') : d.id === 'mount' ? (unit?.mounted ? 'Desmontar' : 'Montar') : d.label;
+            const label = d.id === 'mount' ? (unit?.mounted ? 'Desmontar' : 'Montar') : d.label;
             return (
-              <button key={d.id} className={d.kind === 'mode' && mode === d.id ? 'selected' : ''} disabled={d.disabled} aria-label={label} onClick={() => { if (d.kind === 'mode') onMode(d.id); else if (d.id === 'sight') onToggleSight(); else onOrder(orderAction(battle, unit, {}, d.id)); }}>
-                {Icon && <Icon size={16} />}<span>{label}{d.kind === 'order' && d.pa !== undefined ? ` · ${d.pa} PA` : ''}</span>
+              <button key={d.id} className={(d.kind === 'mode' && mode === d.id) || d.active ? 'selected' : ''} disabled={d.disabled} aria-label={label} aria-pressed={d.id === 'stealth' ? Boolean(d.active) : undefined} title={d.id === 'stealth' ? 'Reduce el ruido al moverse. Consume más PA de movimiento y no cambia la postura. Atajo: Z.' : d.reserve ? `Conservá ${d.pa} PA para un disparo de reacción. Se pagan cuando dispara.` : d.kind === 'mode' ? targetingHelp(d.id, unit) : undefined} onClick={() => { if (d.kind === 'mode') onMode(d.id); else if (d.id === 'sight') onToggleSight(); else onOrder(orderAction(battle, unit, {}, d.id)); }}>
+                {Icon && <Icon size={16} />}<span>{label}{d.pa !== undefined ? ` · ${d.reserve ? 'reservar ' : ''}${d.pa} PA` : ''}</span>
               </button>
             );
           })}
-          {firearm && unit && <span aria-label="Puntería">{['Sin apuntar', 'Apuntería 1', 'Apuntería 2', 'Apuntería 3', 'Apuntería 4'].map((a, n) => <button key={n} aria-label={a} aria-pressed={aim === n} onClick={() => onSetAim(n)}>{n}</button>)}</span>}
         </div>
         {(artillery || []).length > 0 && <div className="ja2-artillery">
           <p className="eyebrow">ARTILLERÍA DE CAMPAÑA</p>
           <select aria-label="Seleccionar pieza de artillería" value={cannonId} onChange={e => onCannonChange(e.target.value)}><option value="">Elegir cañón</option>{artillery.map((a: any) => <option key={a.id} value={a.id}>{(ARTILLERY as any)[a.type]?.name ?? a.type} · {a.loaded ? 'cargado' : 'descargado'}</option>)}</select>
           <select aria-label="Munición de artillería" value={shotType} onChange={e => onShotTypeChange(e.target.value)}><option value="solid">Bala rasa</option><option value="canister">Metralla</option></select>
           <div>
-            <button className="line-button" disabled={!cannonId} onClick={() => onMode('artillery')}>Disparar · {gunCosts?.fire ?? '—'} PA</button>
-            <button className="line-button" disabled={!cannonId} onClick={() => onMode('artilleryMove')}>Desplazar · {gunCosts?.move ?? '—'} PA</button>
-            <button className="line-button" disabled={!cannonId} onClick={() => onMode('artilleryPivot')}>Girar · {gunCosts?.pivot ?? '—'} PA</button>
-            <button className="line-button" disabled={!cannonId} onClick={() => onOrder({ type: 'artilleryReload', artilleryId: cannonId })}>Recargar pieza · {gunCosts?.reload ?? '—'} PA</button>
+            {['artillery', 'artilleryMove', 'artilleryPivot', 'artilleryReload'].map(id => { const d = descriptors.find((entry: any) => entry.id === id); return <button key={id} className="line-button" disabled={!d || d.disabled} onClick={() => id === 'artilleryReload' ? onOrder(orderAction(battle, unit, {artilleryId: cannonId}, id)) : onMode(id)}>{d?.label || id} · {d?.pa ?? '—'} PA</button>; })}
           </div>
           <small>La pieza debe apuntar al objetivo. Cada artillero paga el coste de la orden.</small>
         </div>}
-        <button className="line-button" disabled={!unit} onClick={() => unit && onOpenInventory(unit.id)}>Equipo y órdenes</button>
-        <button className="gold-button end-turn" disabled={busy || battle.status !== 'active'} onClick={onEndTurn}>{busy ? 'Procesando…' : battle.mode === 'exploration' ? 'Descansar' : 'Fin del turno'}</button>
+        <div className="ja2-context-footer">
+          <button className="line-button" disabled={!unit} onClick={() => unit && onOpenInventory(unit.id)}>Equipo y órdenes</button>
+          {turn.canExplore && <button className="line-button" disabled={busy} onClick={() => { onOrder({type: 'explore'}); onMode('move'); }}>Volver a explorar</button>}
+          <button className="gold-button end-turn" disabled={busy || battle.status !== 'active'} onClick={onEndTurn}>{busy ? 'Procesando…' : turn.endLabel}</button>
+        </div>
       </div>
       <div className="ja2-right">
         <RadarCluster battle={battle} units={units} selected={selected} project={project} vw={vw} vh={vh} cameraRect={cameraRect} zoom={zoom} mode={mode} missionAllies={missionAllies} localMilitia={localMilitia} onSelect={onSelect} onRetreat={onRetreat} onCameraCenter={onCameraCenter} onCameraPan={onCameraPan} onZoom={onZoom} />
       </div>
-      <LogOverlay log={battle.log || []} />
     </section>
+    <LogOverlay log={battle.log || []} />
+    </div>
   );
 }

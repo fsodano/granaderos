@@ -1,3 +1,5 @@
+import {expandSectorMap} from './sector-expansion.js';
+import {propPlacementError,propBlocksAt} from './props.js';
 import {CAMPAIGN_SECTORS} from './data.js';
 import {placeBuilding} from './buildings.js';
 
@@ -89,11 +91,19 @@ function plan(id){
  for(const [index,box]of (extras[id]??[]).entries()){
    const [x,y,width,height]=box,doorY=y+height>=HEIGHT?y:y+height-1,doorX=x+Math.floor(width/2);
    const result=placeBuilding(c.tiles,{id:`${id}:house-${index}`,name:id==='retiro'?'Barraca del cuartel':`Casa ${index+2} del poblado`,x,y,width,height,doors:[{x:doorX,y:doorY}],windows:[{x,y:y+1}],material:'adobe',roof:'tile'});
+   result.building.purpose=index===0&&id!=='retiro'?'bar':'home';
+   if(result.building.purpose==='bar')result.building.name='Pulpería del poblado';
    c.tiles.splice(0,c.tiles.length,...result.tiles);buildings.push(result.building);
  }
- // Small, authored furnishings. They decorate walkable cells and do not alter rules.
+ // Tile-sized furnishings preserve connected aisles and every door approach.
  const props=[];
- const furnish=(building,type,x,y)=>{const room=building.rooms.find(r=>r.cells.some(c=>c.x===x&&c.y===y));if(room)props.push({id:`${building.id}:${type}:${x}:${y}`,type,x,y,buildingId:building.id,roomId:room.id});};
+ const furnish=(building,type,x,y)=>{
+   const room=building.rooms.find(r=>r.cells.some(c=>c.x===x&&c.y===y));if(!room)return;
+   const prop={id:`${building.id}:${type}:${x}:${y}`,type,x,y,buildingId:building.id,roomId:room.id,footprint:{width:1,height:type==='bed'?2:1},blocksMovement:true};
+   // Try the preferred location, then nearest cells. Keep beds full size.
+   const candidates=[...room.cells].sort((a,b)=>Math.abs(a.x-x)+Math.abs(a.y-y)-Math.abs(b.x-x)-Math.abs(b.y-y)||a.y-b.y||a.x-b.x);
+   for(const at of candidates){const candidate={...prop,...at};if(!propPlacementError({tiles:c.tiles,buildings,props},candidate)){props.push(candidate);break;}}
+ };
  for(const b of buildings){
    furnish(b,id==='retiro'?'bed':id==='ensenada'?'barrels':'table',b.x+1,b.y+1);
    if(b.width>=5)furnish(b,id==='mendoza'||id==='cordoba'?'chest':'bench',b.x+b.width-2,b.y+1);
@@ -102,12 +112,12 @@ function plan(id){
  return {...c,decor,buildings,lights,props};
 }
 const key=p=>`${p.x},${p.y}`;
-function connected(tiles,start){
- const reached=new Set([key(start)]),queue=[start];while(queue.length){const p=queue.shift();for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const x=p.x+dx,y=p.y+dy,t=tiles[y*WIDTH+x];if(x>=0&&x<WIDTH&&y>=0&&y<HEIGHT&&t&&!t.blocked&&!reached.has(key(t))){reached.add(key(t));queue.push(t);}}}return reached;
+function connected(tiles,start,props=[]){
+ const reached=new Set([key(start)]),queue=[start];while(queue.length){const p=queue.shift();for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const x=p.x+dx,y=p.y+dy,t=tiles[y*WIDTH+x];if(x>=0&&x<WIDTH&&y>=0&&y<HEIGHT&&t&&!t.blocked&&!propBlocksAt({props},x,y)&&!reached.has(key(t))){reached.add(key(t));queue.push(t);}}}return reached;
 }
-export function buildSectorMap(request={}){
+function buildCompactSectorMap(request={}){
  const id=request.sceneId??request.sector??request.id??'san_lorenzo';const authored=plan(id),tiles=authored.tiles;
- const open=tiles.filter(t=>!t.blocked);const component=connected(tiles,open.find(t=>t.x<=2&&t.y>=5)??open[0]);
+ const open=tiles.filter(t=>!t.blocked&&!propBlocksAt(authored,t.x,t.y));const component=connected(tiles,open.find(t=>t.x<=2&&t.y>=5)??open[0],authored.props);
  const reserved=new Set(),choose=(preferred,side)=>{
    const candidates=open.filter(t=>component.has(key(t))&&!reserved.has(key(t)));
    candidates.sort((a,b)=>{
@@ -122,4 +132,9 @@ export function buildSectorMap(request={}){
  const enemies=Array.from({length:enemyCount},(_,i)=>({id:`enemy-${i}`,name:`Soldado realista ${i+1}`,weapon:i%3===0?1801:1800,marksmanship:50+(request.difficulty??1)*5,morale:60+(request.difficulty??1)*5,...clone(request.enemies?.[i]??{}),...choose({x:id==='santa_fe'?15:id==='san_lorenzo'?15:17,y:3+i%10},'enemy')}));
  const artillery=(request.artillery??Array.from({length:Math.min(request.cannons??0,3)},()=>({type:'bronze4',side:'player',loaded:true,ammo:6}))).map((gun,i)=>({...clone(gun),...choose({x:3,y:4+i*3},'player')}));
  return {...clone(request),sector:request.sceneId?request.sector:id,name:request.name??names[id],width:WIDTH,height:HEIGHT,tiles,decor:authored.decor,props:authored.props,buildings:authored.buildings,lights:authored.lights,squad,enemies,artillery,mapTitle:names[id]};
+}
+
+export function buildSectorMap(request={}){
+ const core=buildCompactSectorMap(request);
+ return request.compactLayout===true?core:expandSectorMap(core);
 }

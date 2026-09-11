@@ -11,7 +11,7 @@ export function characterEventLines(before,after){
   const event=old.hp>0&&unit.hp<=0?'death':!old.unconscious&&unit.unconscious?'exhausted':unit.hp<old.hp?'wounded':null;
   if(event)events.push({unit,event});
  }
- const speaker=after.units.find(u=>u.side==='player'&&u.hp>0&&!u.unconscious&&!u.routed);
+ const speaker=after.units.find(u=>u.side==='player'&&u.hp>0&&!u.departure&&!u.surrendered&&!u.unconscious&&!u.routed);
  if(speaker){if(!before.sectorCleared&&after.sectorCleared)events.push({unit:speaker,event:'cleared'});
  else if(!visibleEnemies(before).length&&visibleEnemies(after).length)events.push({unit:speaker,event:'contact'});}
  return events.slice(0,3).map(({unit,event})=>`${unit.nickname||unit.name}: «${speechFor(unit,event)}»`);

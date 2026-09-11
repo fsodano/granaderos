@@ -51,7 +51,7 @@ test('responsive tactical camera keeps integer pixel magnification and bounded p
 });
 test('civilian selection uses idle columns and walk rows in all eight directions',()=>{
  for(let direction=0;direction<8;direction++)for(const moving of [false,true]){
-  const markup=render(h(SpriteFigure,{appearance:'civilian',unit:{side:'enemy',mounted:true,stance:'prone'},pose:'fire',position:{x:100,y:100},motion:{direction,moving,frame:5}}));
+  const markup=render(h(SpriteFigure,{appearance:'civilian',unit:{side:'enemy',mounted:true,stance:'standing'},pose:'fire',position:{x:100,y:100},motion:{direction,moving,frame:5}}));
   assert.ok(markup.includes(`/art/pixel/civilian-${moving?'walk':'idle'}-atlas.png`));
   assert.ok(markup.includes(`viewBox="${(moving?5:direction)*52} ${moving?direction*52:0} 52 52"`));
   assert.ok(!/royalist|granadero|cavalry/.test(markup));
@@ -76,7 +76,7 @@ test('revealing one room retains the other roof and only cuts adjacent front wal
 });
 test('authored furnishings reach battle state and survive sector re-entry',()=>{
  for(const sector of MAP_IDS){const map=buildSectorMap({sector,squad:[],enemies:[]});for(const prop of map.props){assert.ok(map.tiles.some(t=>t.x===prop.x&&t.y===prop.y&&!t.blocked&&t.roomId===prop.roomId));}
- const battle=enterSector({sector,squad:[],enemies:[],exploration:true});assert.deepEqual(battle.props,map.props);
+ const battle=enterSector({sector,squad:[],enemies:[],exploration:true});for(const prop of map.props){const placed=battle.props.find(p=>p.id===prop.id);assert.ok(placed);for(const [key,value]of Object.entries(prop))assert.deepEqual(placed[key],value);}
  if(battle.props.length){battle.props.pop();assert.deepEqual(enterSector({sector,squad:[],enemies:[],exploration:true},battle).props,battle.props);}}
 });
 test('scene selects civilians and sorts NPCs at their animated ground position',()=>{

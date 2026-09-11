@@ -1,3 +1,5 @@
+import {WEAPONS} from './data.js';
+
 export function returnAmmunition(request,reports,snapshot){
  let looted=0;
  if(snapshot){
@@ -13,4 +15,22 @@ export function returnAmmunition(request,reports,snapshot){
   returned+=Math.min(count,(issued.loaded??0)+(issued.ammo??0)+looted);
  }
  return Math.min((request.issuedCartridges??0)+looted,returned);
+}
+
+// One shared ceiling applies to every destination. Captive ammunition remains
+// with its owner and must not enter the campaign cartridge reserve on this return.
+export function planReturnAmmunition(request,snapshot,entries){
+ let loot=0;const seen=new Set();
+ for(const source of [...(request.garrison??[]),...(request.garrisonLootSources??[]),...(request.missionAllies??[]),...(request.casualtyLootSources??[])]){
+  const key=`player:${source.id}`;if(seen.has(key))continue;seen.add(key);
+  const u=snapshot.units.find(u=>u.side==='player'&&String(u.id)===String(source.id));if(u)loot+=Math.max(0,(source.ammo??0)+(source.loaded??0)-(u.ammo??0)-(u.loaded??0));
+ }
+ for(const source of request.ammunitionSources??request.enemies??[]){const key=`enemy:${source.id}`;if(seen.has(key))continue;seen.add(key);const u=snapshot.units.find(u=>u.side==='enemy'&&String(u.id)===String(source.id));if(u&&(u.hp<=0||u.unconscious||u.routed||u.surrendered)){const loaded=source.loaded??WEAPONS[source.weapon??source.primary??1800]?.capacity??0;loot+=Math.max(0,(source.ammo??12)+loaded-(u.ammo??0)-(u.loaded??0));}}
+ const custody={},returned=entries.reduce((sum,e)=>{
+  const u=snapshot.units.find(u=>u.side==='player'&&String(u.id)===e.unitId),rounds=(u.loaded??0)+(u.ammo??0);
+  if(!Number.isSafeInteger(rounds)||rounds<0||rounds>100000)throw Error('La munición del parte es inválida.');
+  if(e.kind==='captured')custody[e.unitId]={loaded:u.loaded,ammo:u.ammo};
+  return sum+(['resident','departed'].includes(e.kind)?rounds:0);
+ },0);
+ return {creditedCartridges:Math.min((request.issuedCartridges??0)+loot,returned),custody};
 }

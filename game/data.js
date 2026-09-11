@@ -455,10 +455,10 @@ export const WEAPONS = {
   "1811": {
     "id": 1811,
     "name": "Bayoneta de Cubo",
-    "damage": 50,
+    "damage": 24,
     "fireAP": 16,
     "attackAP": 16,
-    "range": 2,
+    "range": 1,
     "type": "melee",
     "weight": 0.5
   },
