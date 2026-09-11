@@ -274,7 +274,7 @@ export function levelFor(unit) {
 }
 
 export function rosterCells(players, selectedId, state) {
-  const cells = fieldUnits({units: players}).slice(0, 6).map((unit, index) => {
+  const cells = fieldUnits({units: players}).map((unit, index) => {
     const fallen = unit.hp <= 0 || unit.routed || unit.unconscious;
     return {
       unit,

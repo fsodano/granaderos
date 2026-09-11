@@ -229,3 +229,5 @@
 .ja2-loot-dialog .ja2-loot-choice input{width:17px;height:17px;flex-shrink:0;margin:3px 0;accent-color:#cfbc7e}
 .ja2-loot-choice span{min-width:0}.ja2-loot-choice strong,.ja2-loot-choice small{display:block;line-height:1.5;overflow-wrap:anywhere}.ja2-loot-choice small{color:#d1d8bf}
 .ja2-loot-row p{margin:5px 0 0 25px;font-size:12px}.ja2-loot-dialog .ja2-loot-quantity{margin:0;align-content:start}.ja2-loot-dialog footer{padding-top:8px}
+
+.battle-layout .ja2-roster.multiple-squads{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(78px,calc((100% - 25px)/6));overflow-x:auto;overscroll-behavior-x:contain}

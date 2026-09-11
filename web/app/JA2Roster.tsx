@@ -1,6 +1,7 @@
 'use client';
+import {useEffect,useRef} from 'react';
 import {maximumEnergy} from '../../game/fatigue.js';
-// MODE A left zone: squad portrait strip (up to 6 cells + empty placeholders).
+// Every deployed squad remains accessible in the portrait strip.
 // Pure read model (game/ja2-hud.js rosterCells); all mutations are caller-provided callbacks.
 import {rosterCells} from '../../game/ja2-hud.js';
 import {weaponFor, hasFirearm} from '../../game/tactical.js';
@@ -12,9 +13,11 @@ const loadState = (u: any, firearm: boolean) =>
   u.activeSlot === 'medical' ? `${u.medkits ?? 0} vendas` : u.activeSlot === 'supply' ? `${u[u.activeSupply] ?? 0} disponibles` : u.activeSlot === 'tool' ? 'Herramienta preparada' : u.activeSlot === 'unarmed' ? 'Manos libres' : !firearm ? 'Arma blanca' : u.jammed ? 'Cazoleta sin cebar' : u.loaded ? `${u.loaded} carga preparada` : 'Arma descargada';
 
 export default function JA2Roster({battle, players, selected, groupIds = [], medicalTargeting = false, onSelect, onOpenInventory}: Props) {
+  const selectedCell=useRef<HTMLButtonElement>(null);
+  useEffect(()=>{selectedCell.current?.scrollIntoView({block:'nearest',inline:'nearest'});},[selected]);
   const cells = rosterCells(players, selected, battle);
   return (
-    <div className="ja2-roster" role="list" aria-label="Escuadra táctica">
+    <div className={`ja2-roster ${cells.length>6?'multiple-squads':''}`} role="list" aria-label="Escuadra táctica">
       {cells.map((cell: any, i: number) => {
         if (cell.empty) return <div className="empty-portrait-slot" key={`empty-${i}`} aria-hidden="true"><span>—</span></div>;
         const u = cell.unit;
@@ -24,6 +27,7 @@ export default function JA2Roster({battle, players, selected, groupIds = [], med
         return (
           <button
             key={u.id}
+            ref={cell.active?selectedCell:undefined}
             role="listitem"
             className={`ja2-portrait-cell ${cell.active ? 'active' : ''} ${cell.fallen ? 'fallen' : ''} ${cell.interruptReady ? 'interrupt-ready' : ''} ${groupIds.includes(u.id) ? 'group-selected' : ''}`}
             disabled={medicalTargeting ? u.hp <= 0 || u.routed : cell.disabled}

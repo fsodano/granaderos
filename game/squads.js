@@ -8,8 +8,8 @@ export function migrateSquads(s){
 }
 export function activeSquad(s){return (s.squads??[]).find(q=>q.id===s.activeSquadId)??{id:'squad-1',name:'Primera escuadra',members:s.squad,location:s.location};}
 export function operativeLocation(s,id){return s.squads?.find(q=>q.members.includes(id))?.location??s.operativeState[id]?.location??s.location;}
-export function operativeInTransit(s,id){return Boolean(s.squads?.some(q=>q.members.includes(id)&&q.journey?.status==='moving'));}
-export function travelingOperatives(s){return (s.squads??[]).filter(q=>q.journey?.status==='moving').flatMap(q=>q.members);}
+export function operativeInTransit(s,id){return Boolean(s.squads?.some(q=>q.members.includes(id)&&['moving','ready'].includes(q.journey?.status)));}
+export function travelingOperatives(s){return (s.squads??[]).filter(q=>['moving','ready'].includes(q.journey?.status)).flatMap(q=>q.members);}
 export function synchronizeSquad(s){const squad=s.squads.find(q=>q.id===s.activeSquadId);if(squad){squad.members=[...s.squad];squad.location=s.location;}return s;}
 export function validateSectorSnapshot(snapshot){return validateBattleSnapshot(snapshot);}
 export function validatePersonalInventory(inventory){

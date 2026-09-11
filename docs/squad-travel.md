@@ -18,7 +18,7 @@ The JA2 manual (printed pages 43–44) describes map routes, waypoints, travel t
 
 Marching fatigue and mount stamina are charged per actual moving hour. Reversing has the same hourly cost. Postas consume one remount when a stage starts, not on queue creation or save reload. Expired contracts and hired mounts remain attached until a real arrival; a departed contract cannot continue into the next stage. Enemy control gained during a stage causes a timed return. A same-hour arriving squad can defend its reached sector, including an intermediate waypoint.
 
-The existing `travel` action without `queue: true` retains its blocking behavior for campaign scripts. All player map move controls use queued travel. Hostile `attack` approaches still block and are not full queued hostile travel. Coordinated attacks, encounters between sectors, chosen arrival edges, and mid-stage fatigue stops remain unimplemented.
+The existing `travel` action without `queue: true` retains its blocking behavior for campaign scripts. All player map move controls use queued travel. The map now also queues adjacent hostile approaches and stages coordinated attacks at the sector boundary; see [coordinated attacks](coordinated-assault.md). Encounters between sectors, chosen arrival positions, and mid-stage fatigue stops remain unimplemented.
 
 ## Verification
 
