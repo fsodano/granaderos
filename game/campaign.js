@@ -1,5 +1,5 @@
 import {queueSquadTravel,cancelSquadTravel,resumeSquadTravel,advanceSquadTravel,validateSquadTravel,readyAssaultSquads,arriveForAssault,validateAssaultDeployment} from './squad-travel.js';
-import {gainFatigue} from './fatigue.js';
+import {gainFatigue,needsCollapseRecovery} from './fatigue.js';
 import {advanceMarchFatigue,tooTiredToMarch} from './march-fatigue.js';
 import {assertSaveSize} from './save-limits.js';
 import {MISSION_SCENES,YATASTO_NPCS,missionStatus,talkMission,sanLorenzoAlly,validateMissions} from './missions.js';
@@ -48,7 +48,7 @@ export function rosterFor(s){return baseRosterFor(s).map(o=>{const record=s.oper
 function returnTraining(s,id,report){validateTraining(report);for(const field of ['trainedStats','skillPractice'])if(report[field]!==undefined)s.operativeState[id][field]=clone(report[field]);}
 function returnMount(s,id,report){if(!report.mount)return;const horse=s.horseState?.horses.find(h=>h.id===report.mount.id&&h.assignedTo===id&&!h.returned);requireThat(horse,'La montura no pertenece al combatiente.');for(const field of ['stamina','condition']){requireThat(Number.isFinite(report.mount[field])&&report.mount[field]>=0&&report.mount[field]<=100,'El estado de la montura es inválido.');horse[field]=report.mount[field];}}
 function removeFromService(s,id){
-  s.operativeState[id].assignment='active';s.operativeState[id].asleep=false;s.operativeState[id].recoveryHours=0;
+  s.operativeState[id].assignment='active';s.operativeState[id].asleep=false;s.operativeState[id].sleepCollapsed=false;s.operativeState[id].recoveryHours=0;
   const location=operativeLocation(s,id);s.operativeState[id].location=location;s.recruited=s.recruited.filter(x=>x!==id);s.squad=s.squad.filter(x=>x!==id);for(const squad of s.squads){squad.members=squad.members.filter(x=>x!==id);if(!squad.members.length)delete squad.journey;}
   for(const horse of s.horseState.horses)if(horse.assignedTo===id)horse.assignedTo=null;
   for(const course of s.militiaTraining.filter(t=>t.trainerId===id)){returnMilitiaTrainees(s,course);}s.militiaTraining=s.militiaTraining.filter(t=>t.trainerId!==id);delete s.contracts[id];
@@ -214,6 +214,7 @@ function completeDeploymentReport(s,request,action){
 function applyReturnedOperative(s,request,report){
   const id=Number(report.id),op=rosterFor(s).find(o=>o.id===id);returnMount(s,id,report);returnTraining(s,id,report);returnEquipment(s,id,report);returnMedicalCare(s,id,report,op);returnMorale(s,id,report,request.squad.find(u=>Number(u.id)===id));
   for(const [field,max]of Object.entries({energy:100,weight:1000,strength:100,strengthTraining:10000,priming:100000,flints:100000,rations:100000,torches:100000,condition:100,fatigue:100,boleadoras:100000}))if(report[field]!==undefined){requireThat(Number.isFinite(report[field])&&report[field]>=0&&report[field]<=max,'El estado del combatiente es inválido.');s.operativeState[id][field]=report[field];}
+  if(s.operativeState[id].sleepCollapsed&&!needsCollapseRecovery(s.operativeState[id]))s.operativeState[id].sleepCollapsed=false;
   s.operativeState[id].inventory=clone(validatePersonalInventory(report.inventory));
 }
 function commitDeploymentReturn(s,request,snapshot,plan){
@@ -312,6 +313,7 @@ function tick(s,hours,options={}){
     advanceEnemyGroups(s);
     for(const q of s.squads)if(q.journey?.status==='moving'&&q.journey.elapsed===0&&s.enemyGroups.some(g=>g.target===q.location&&['waiting','engaged','stationed'].includes(g.status))){q.journey.status='paused';q.journey.reason='contact';}
     settleEnemyEncounters(s,options);progress(s);
+    assignmentEvents.push(...recordSleepEvents(s,prepareSleep(s,rosterFor(s),assignmentContext(s,options))));
     // Finish every hourly subsystem before stopping an explicit wait. Travel
     // and tactical synchronization must process their complete durations.
     const assignmentPause=options.pauseOnAssignments&&pauseForAssignments(s,hours,i+1,assignmentEvents);
@@ -343,7 +345,10 @@ export function dispatchCampaign(previous,action){
     requireThat(!s.pendingBattle||['battleResult','leaveSector','talkNPC','finishMission','syncTacticalTime'].includes(action.type),'Hay una batalla pendiente. Resuélvela antes de dar nuevas órdenes.');
     if(['travel','attack','visitSector'].includes(action.type))requireThat(!s.squad.some(id=>militiaAssignment(s,id)),'Un instructor de la escuadra está asignado a las milicias. Cancelá su curso o dejalo en una escuadra de guarnición.');
     if(['travel','attack','visitSector'].includes(action.type))requireThat(s.squad.every(id=>s.operativeState[id].assignment==='active'),'Hay combatientes en atención o descanso. Devolvelos al servicio o dejalos en otra escuadra antes de marchar.');
-    if(['travel','attack','visitSector'].includes(action.type))requireThat(s.squad.every(id=>!s.operativeState[id].asleep),'Hay combatientes durmiendo. Despertalos o dejalos en otra escuadra antes de marchar.');
+    if(['travel','attack','visitSector'].includes(action.type)){
+      requireThat(!s.squad.some(id=>s.operativeState[id].asleep&&needsCollapseRecovery(s.operativeState[id])),'La escuadra necesita descansar: hay combatientes que todavía no pueden despertar.');
+      requireThat(s.squad.every(id=>!s.operativeState[id].asleep),'Hay combatientes durmiendo. Despertalos o dejalos en otra escuadra antes de marchar.');
+    }
     if(['travel','attack','visitSector','visitMission'].includes(action.type))requireThat(!activeSquad(s).journey,'Terminá o cancelá la ruta antes de entrar en un sector.');
     const targetId=Number(action.operativeId??action.trainerId??(action.type==='dismiss'?action.id:NaN));
     if(Number.isFinite(targetId))requireThat(!operativeInTransit(s,targetId),'El combatiente está en camino. Esperá su llegada.');
@@ -507,7 +512,7 @@ export function dispatchCampaign(previous,action){
         if(mode==='flotilla')requireThat(!s.blockade&&path.every(id=>sector(id).theater==='coast'),'La flotilla requiere una ruta costera sin bloqueo.');
         const mountain=path.some(id=>sector(id).biome==='mountain');requireThat(!(path.some(id=>['uspallata','los_patos'].includes(id))&&campaignDate(s).month>=6&&campaignDate(s).month<=8),'La nieve invernal ha cerrado los pasos.');
         for(let leg=1;leg<path.length;leg++){
-          if(s.squad.some(id=>tooTiredToMarch(s.operativeState[id]))){note(s,'La escuadra detiene la ruta por agotamiento. Descansá antes de continuar.');break;}
+          if(s.squad.some(id=>tooTiredToMarch(s.operativeState[id]))){recordSleepEvents(s,prepareSleep(s,rosterFor(s),{...assignmentContext(s),stoppedTravel:[...s.squad]}));note(s,'La escuadra detiene la ruta por agotamiento. Descansá antes de continuar.');break;}
           if(mode==='posta')pay(s,{horses:1});const hours=Math.ceil((mode==='posta'?4:mode==='flotilla'?5:mode==='carts'?18:12)*([path[leg-1],path[leg]].some(id=>sector(id).biome==='mountain')?1.5:1));
           tick(s,hours,{traveling:[...s.squad],travelLeg:{from:path[leg-1],to:path[leg],arrivalAt:s.hour+hours},mode,mountain:[path[leg-1],path[leg]].some(id=>sector(id).biome==='mountain')});if(!s.squad.length){note(s,'La marcha se cancela al terminar el último contrato.');break;}
           if(s.sectors[path[leg]].owner!=='patriot'||occupyingGroups(s,path[leg]).length){note(s,'El avance se detiene: una incursión cortó la ruta durante la marcha.');break;}

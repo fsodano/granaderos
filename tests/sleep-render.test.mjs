@@ -15,3 +15,8 @@ test('personnel offers independent sleep and wake controls with the preserved as
 test('pending contact disables sleep controls until the encounter is resolved',()=>{
  const s=initialCampaign();s.operativeState[3].energy=40;s.pendingEncounter={groupId:'contact'};assert.match(draw(s),/aria-label="Dormir: Cabral" disabled=""/);
 });
+
+test('collapsed personnel show the recovery requirement and cannot use the wake button',()=>{
+ const s=initialCampaign();Object.assign(s.operativeState[3],{fatigue:80,energy:20,asleep:true,sleepCollapsed:true});let html=draw(s);assert.match(html,/aria-label="Despertar: Cabral" disabled="" title="El agotamiento impide despertar/);assert.match(html,/no puede despertar hasta recuperar 60/);
+ Object.assign(s.operativeState[3],{fatigue:40,energy:60,sleepCollapsed:false});html=draw(s);assert.match(html,/aria-label="Despertar: Cabral" title=/);assert.doesNotMatch(html,/no puede despertar hasta recuperar 60/);
+});

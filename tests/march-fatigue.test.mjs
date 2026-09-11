@@ -17,7 +17,7 @@ test('terrain, excess carried weight and transport change the hourly effort',()=
 test('a long route stops at a real sector when the squad needs rest',()=>{
  let s=open();s=order(s,{type:'travel',sector:'humahuaca'});assert.notEqual(s.location,'humahuaca');assert.equal(s.hour,48);assert.equal(r(s).fatigue,96);assert.equal(r(s).energy,10);assert.equal(s.squads[0].location,s.location);assert.ok(s.log.some(e=>e.text.includes('detiene la ruta por agotamiento')));
  const before=serializeCampaign(s);assert.match(dispatchCampaign(s,{type:'travel',sector:'humahuaca'}).lastError,/descansar/);assert.equal(serializeCampaign(s),before);
- s=order(s,{type:'wait',hours:24});assert.equal(s.hour,48);s=order(s,{type:'wait',hours:24});assert.ok(!r(s).asleep);s=order(s,{type:'travel',sector:'humahuaca'});assert.equal(s.location,'humahuaca');
+ assert.ok(r(s).asleep);assert.ok(r(s).sleepCollapsed);s=order(s,{type:'wait',hours:24});assert.equal(s.hour,60);assert.ok(!r(s).asleep);assert.equal(r(s).sleepCollapsed,false);s=order(s,{type:'travel',sector:'humahuaca'});assert.equal(s.location,'humahuaca');
 });
 test('travel charges only traveling staff and leaves another squad to recover',()=>{
  let s=initialCampaign();Object.assign(r(s,10),{energy:40,fatigue:40});s=order(s,{type:'createSquad',name:'Marcha',ids:[3]});s=order(s,{type:'travel',sector:'buenos_aires'});assert.equal(r(s).fatigue,24);assert.equal(r(s,10).fatigue,28);assert.equal(s.squads[0].location,'retiro');

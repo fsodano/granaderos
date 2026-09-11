@@ -26,6 +26,7 @@ export function migrateMedicalCare(s,roster){
     if(record.bandaged===undefined)record.bandaged=record.bleeding?0:Math.max(0,record.maxHp-record.hp);
     if(record.energy===undefined)record.energy=100;
     if(record.asleep===undefined)record.asleep=false;
+    if(record.sleepCollapsed===undefined)record.sleepCollapsed=false;
     if(record.medkits===undefined)record.medkits=2;
     if(record.assignment===undefined)record.assignment='active';
     if(record.recoveryHours===undefined)record.recoveryHours=0;
@@ -126,7 +127,7 @@ export function advanceMedicalCare(s,roster,{traveling=[]}={}){
     const record=s.operativeState[op.id];if(!s.recruited.includes(op.id)||!record?.alive||deployed(s,op.id))continue;
     // An unbandaged wound keeps bleeding during strategic time, including travel.
     if(record.bleeding>0){record.hp=Math.max(0,record.hp-Math.max(1,Math.ceil(record.bleeding/4)));record.recoveryHours=0;}
-    if(record.hp===0){record.alive=false;record.asleep=false;record.assignment='active';record.recoveryHours=0;deaths.push(op.id);continue;}
+    if(record.hp===0){record.alive=false;record.asleep=false;record.sleepCollapsed=false;record.assignment='active';record.recoveryHours=0;deaths.push(op.id);continue;}
     if(!present(op)){record.recoveryHours=0;continue;}
     if(record.assignment==='patient'||record.assignment==='rest'||record.asleep){
       if(!record.asleep||['patient','rest'].includes(record.assignment)){recoverFatigue(record,8,12);}
@@ -151,13 +152,14 @@ export function returnMedicalCare(s,id,report,op){
   if(report.medkits!==undefined)requireThat(Number.isInteger(report.medkits)&&report.medkits>=0&&report.medkits<=100000,'Los botiquines del parte son inválidos.');
   Object.assign(record,{maxHp,hp:report.hp,bleeding,bandaged,alive:report.hp>0,recoveryHours:0});
   if(report.medkits!==undefined)record.medkits=report.medkits;
-  if(!record.alive){record.assignment='active';record.asleep=false;}
+  if(!record.alive){record.assignment='active';record.asleep=false;record.sleepCollapsed=false;}
 }
 
 export function validateMedicalCare(s,roster){
   migrateMedicalCare(s,roster);
   for(const op of roster){
     const r=s.operativeState[op.id];requireThat(r,'Falta una hoja de servicio.');
+    requireThat(typeof r.sleepCollapsed==='boolean'&&(!r.sleepCollapsed||s.recruited.includes(op.id)&&r.alive&&!r.captured&&!operativeInTransit(s,op.id)),'El agotamiento guardado es inválido.');
     requireThat(typeof r.asleep==='boolean'&&(!r.asleep||s.recruited.includes(op.id)&&r.alive&&!r.captured&&!deployed(s,op.id)),'El estado de sueño guardado es inválido.');
     requireThat(Number.isInteger(r.maxHp)&&r.maxHp>0&&r.maxHp<=op.maxHp&&r.hp<=r.maxHp,'La salud máxima guardada es inválida.');
     requireThat(Number.isFinite(r.bleeding)&&r.bleeding>=0&&r.bleeding<=100&&Number.isFinite(r.bandaged)&&r.bandaged>=0&&r.bandaged<=r.maxHp-r.hp,'Las heridas guardadas son inválidas.');
