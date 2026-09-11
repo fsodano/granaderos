@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "granadero-mounted-fire": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sha256": "4fedb9c7953ef31e06b414ef02ff469cef2384d1cedce78b9ecc916b8d4bffdf",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-n-v4.png",
+          "sha256": "328dd63f79fe9ef6931f87a8aa1db97e7b925e9d441805df0423adba7030df5c",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1619718309859155,
+          "sourceAnchor": [
+            55,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            117,
+            144
+          ],
+          "bounds": [
+            82,
+            60,
+            216,
+            225
+          ],
+          "sha256": "3178ba2ea735fd4afce5d8dc3514523dae6dea6444b0a45b762ff357d3edbe8c"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1619718309859155,
+          "sourceAnchor": [
+            54.5,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            123,
+            144
+          ],
+          "bounds": [
+            83,
+            60,
+            224,
+            225
+          ],
+          "sha256": "8b05f302e22facfcb41913fac6824cc07bf5632cc8e8ebc9b6b31d40f943eed3"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1619718309859155,
+          "sourceAnchor": [
+            56,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            126,
+            144
+          ],
+          "bounds": [
+            81,
+            60,
+            225,
+            225
+          ],
+          "sha256": "d1adad8a07c269b71eb0f25c3a499dec1494e529ff651b79a477866ce17dbe39"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1619718309859155,
+          "sourceAnchor": [
+            56,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            122,
+            144
+          ],
+          "bounds": [
+            81,
+            60,
+            220,
+            225
+          ],
+          "sha256": "337fe0f3ce3901fbb35c2b9285d33a252426b740938b035e3b85f2a87d35f65d"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1631205673758864,
+          "sourceAnchor": [
+            70.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            153,
+            143
+          ],
+          "bounds": [
+            64,
+            61,
+            240,
+            225
+          ],
+          "sha256": "72643571a7f03286da0dd8ec7a99d8787556222ef193d134338378a456e82ab9"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1631205673758864,
+          "sourceAnchor": [
+            70.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            169,
+            143
+          ],
+          "bounds": [
+            64,
+            61,
+            258,
+            225
+          ],
+          "sha256": "721be4ff8d87556fe8835b997f2a06d2726b44740d07fc41da2938f09dd2c633"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1631205673758864,
+          "sourceAnchor": [
+            72,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            158,
+            143
+          ],
+          "bounds": [
+            63,
+            61,
+            244,
+            225
+          ],
+          "sha256": "fe5c640aaf36c6efa453f38425e0252a4bde1f18feaccce0879019b3db3a3da0"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1631205673758864,
+          "sourceAnchor": [
+            68.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            152,
+            143
+          ],
+          "bounds": [
+            67,
+            61,
+            241,
+            225
+          ],
+          "sha256": "f665ca4efe78fee48d77b0368b929ec523d1223810726b58a4cb687a49117904"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1360544217687074,
+          "sourceAnchor": [
+            60,
+            149
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            121,
+            149
+          ],
+          "bounds": [
+            78,
+            58,
+            213,
+            225
+          ],
+          "sha256": "965dcc9904b21a051ec3e9ccb5880b0c844b29d08c15b431825ba292f3db8521"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1360544217687074,
+          "sourceAnchor": [
+            61.5,
+            149
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            149
+          ],
+          "bounds": [
+            76,
+            58,
+            234,
+            225
+          ],
+          "sha256": "674fe3c137db5451694480721cbcafb3f614c5832522c96aaeab3854b36a30cd"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1360544217687074,
+          "sourceAnchor": [
+            60,
+            149
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            119,
+            149
+          ],
+          "bounds": [
+            78,
+            58,
+            211,
+            225
+          ],
+          "sha256": "dea1dc796a5d8efa84ce6b6f28df65cdef9dd00435c7e2b29c3026fa7da76a38"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1360544217687074,
+          "sourceAnchor": [
+            64.5,
+            149
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            134,
+            149
+          ],
+          "bounds": [
+            73,
+            58,
+            223,
+            225
+          ],
+          "sha256": "8fd29ebaed1f1dbbfecfbe929398146eec6ed36e6535374931faa7076866b5c9"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1216216216216217,
+          "sourceAnchor": [
+            35.5,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            69,
+            150
+          ],
+          "bounds": [
+            106,
+            59,
+            181,
+            225
+          ],
+          "sha256": "5f3f26173989d17e654fbed3ec0325966d021a2936f6cb9a1d378ec12655ddfc"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1216216216216217,
+          "sourceAnchor": [
+            35.5,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            69,
+            150
+          ],
+          "bounds": [
+            106,
+            59,
+            181,
+            225
+          ],
+          "sha256": "606eb0d2468f5a9152a700792766f1d4c55e9750e270a8d339940eb77a46701a"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1216216216216217,
+          "sourceAnchor": [
+            34.5,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            68,
+            150
+          ],
+          "bounds": [
+            108,
+            59,
+            182,
+            225
+          ],
+          "sha256": "c65bdf7344bf939ac1d3d37e004cea9ade3816231e1711faca998c5538267adb"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1216216216216217,
+          "sourceAnchor": [
+            35,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            68,
+            150
+          ],
+          "bounds": [
+            107,
+            59,
+            181,
+            225
+          ],
+          "sha256": "e2dab4d6f1cc56ad6a77880ef0169ba93de1ce8a99c679fcde3f5bbb0a1a6d23"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.177304964539007,
+          "sourceAnchor": [
+            78,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            140,
+            143
+          ],
+          "bounds": [
+            55,
+            59,
+            217,
+            225
+          ],
+          "sha256": "f468910c4ae9cb4f01fef6aa7e19a643ee17c95eb0178d946a8361156b2c1c81"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.177304964539007,
+          "sourceAnchor": [
+            79,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            143
+          ],
+          "bounds": [
+            53,
+            59,
+            217,
+            225
+          ],
+          "sha256": "0f3ee403bfc454021c64bfb1889c1c807fb01125f86148b2a448ae1e9b4c2d68"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.177304964539007,
+          "sourceAnchor": [
+            76.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            140,
+            143
+          ],
+          "bounds": [
+            56,
+            59,
+            218,
+            225
+          ],
+          "sha256": "968929abf9c7c8d702529edaa7275f5b6be88798e9c17d5730dfdff0c958d4c3"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.177304964539007,
+          "sourceAnchor": [
+            72.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            134,
+            143
+          ],
+          "bounds": [
+            61,
+            59,
+            216,
+            225
+          ],
+          "sha256": "42980e45c52f68e9e8696fca39ac9a1c552015d1003937dab4131ff19289c89c"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1549295774647887,
+          "sourceAnchor": [
+            89,
+            145
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            156,
+            145
+          ],
+          "bounds": [
+            44,
+            61,
+            222,
+            225
+          ],
+          "sha256": "d04eacdddffe6c47ce159555b468478d05baa576c198deb828d5c6d22f920df8"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1549295774647887,
+          "sourceAnchor": [
+            96.5,
+            145
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            163,
+            145
+          ],
+          "bounds": [
+            35,
+            60,
+            221,
+            225
+          ],
+          "sha256": "a64937639fc7d37677dbae73cbf178daf12093fb69b4ff43f30385cacfc91451"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1549295774647887,
+          "sourceAnchor": [
+            84,
+            145
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            151,
+            145
+          ],
+          "bounds": [
+            49,
+            60,
+            221,
+            225
+          ],
+          "sha256": "fc3d41802a6f1d583ba91c06f937e231f09a0174b9cb4d62183a5fa961ff8cca"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1549295774647887,
+          "sourceAnchor": [
+            88,
+            145
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            154,
+            145
+          ],
+          "bounds": [
+            45,
+            61,
+            221,
+            225
+          ],
+          "sha256": "f6c5ffcc4d03f442899cbb7c243589280707630136b48d87ca58c5259b74b556"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1224489795918366,
+          "sourceAnchor": [
+            72.5,
+            149
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            149
+          ],
+          "bounds": [
+            65,
+            60,
+            212,
+            225
+          ],
+          "sha256": "60f5ca0136feccc95c5204f461dc5a824145207e708fcd3f01ec6141c0ca0a48"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1224489795918366,
+          "sourceAnchor": [
+            68.5,
+            149
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            128,
+            149
+          ],
+          "bounds": [
+            69,
+            60,
+            210,
+            225
+          ],
+          "sha256": "48c85cf30e86692b6111fded1e3c535012b6be342bfa1eb88a3aa74dc3b7ead4"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1224489795918366,
+          "sourceAnchor": [
+            70,
+            149
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            130,
+            149
+          ],
+          "bounds": [
+            68,
+            60,
+            212,
+            225
+          ],
+          "sha256": "a9587a7eaa7e230301d747cd471a1e61fb5a80ae1846c979a3a78deaa2c36fd3"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-v2.png",
+          "sourceScale": 1.1224489795918366,
+          "sourceAnchor": [
+            69,
+            149
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            128,
+            149
+          ],
+          "bounds": [
+            69,
+            60,
+            210,
+            225
+          ],
+          "sha256": "41a7ab0ceeaace92d4831153e707a9483e99edae1a784473f7faf5592bd9207e"
+        },
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-n-v4.png",
+          "sourceScale": 0.28109028960817717,
+          "sourceAnchor": [
+            105,
+            589
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            210,
+            589
+          ],
+          "bounds": [
+            115,
+            60,
+            173,
+            225
+          ],
+          "sha256": "21b59324a288736fa5b289c615b8d5ef7cc538d2a8a658bbb24a4a57c4d3b20f"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-n-v4.png",
+          "sourceScale": 0.28109028960817717,
+          "sourceAnchor": [
+            106,
+            589
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            210,
+            589
+          ],
+          "bounds": [
+            115,
+            60,
+            173,
+            225
+          ],
+          "sha256": "a86afc2a4ba75a12011b445bc4c74b1febbdb7d91bd6f3dcf1da0b66d519119f"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-n-v4.png",
+          "sourceScale": 0.28109028960817717,
+          "sourceAnchor": [
+            105,
+            589
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            209,
+            589
+          ],
+          "bounds": [
+            115,
+            60,
+            173,
+            225
+          ],
+          "sha256": "875e1c8392083bf1b62ab90f7fdbcf6addd05ca2f96311ca44494c323cf58958"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-fire-n-v4.png",
+          "sourceScale": 0.28109028960817717,
+          "sourceAnchor": [
+            105.5,
+            589
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            210,
+            589
+          ],
+          "bounds": [
+            115,
+            60,
+            173,
+            225
+          ],
+          "sha256": "384ba6fe7fa190706bf7038962299dc3d03a2066b5c070d489ea017be840d0d3"
+        }
+      ],
+      "file": "granadero-mounted-fire.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "57ed1d9308140cc5cd75ea3cecaf9a380ee2733fe182c28e36df96563689661c"
+    }
+  }
+}

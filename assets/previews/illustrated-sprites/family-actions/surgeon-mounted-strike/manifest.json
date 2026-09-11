@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "surgeon-mounted-strike": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-north-v1.png",
+          "sha256": "a874bb7a9fe18660812872aa44f095f7fd7c9e93e44f94d4549aac1364f09d15",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-south-v1.png",
+          "sha256": "edc6ed1b2f3b99923c7748ebb28cf965b4904cda048bca091e90803d094a9419",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-north-v1.png",
+          "sourceScale": 0.673469387755102,
+          "sourceAnchor": [
+            55,
+            247
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            109,
+            247
+          ],
+          "bounds": [
+            108,
+            60,
+            180,
+            225
+          ],
+          "sha256": "3b346ff3fda1190e057dea23d262f849e6ee26adb631f62fcc5a629e7c99357e"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-north-v1.png",
+          "sourceScale": 0.673469387755102,
+          "sourceAnchor": [
+            54,
+            247
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            108,
+            247
+          ],
+          "bounds": [
+            109,
+            61,
+            180,
+            225
+          ],
+          "sha256": "556a2ce34d265952b3bac6083938d70bf5203c500471e412435692f67efc4e63"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-north-v1.png",
+          "sourceScale": 0.673469387755102,
+          "sourceAnchor": [
+            54,
+            247
+          ],
+          "sourceBounds": [
+            2,
+            5,
+            126,
+            247
+          ],
+          "bounds": [
+            109,
+            62,
+            193,
+            225
+          ],
+          "sha256": "82d5dd51208f558ad6347327ff53e5991e83bc1e38206d2aff7e49534f2e0bc4"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-north-v1.png",
+          "sourceScale": 0.673469387755102,
+          "sourceAnchor": [
+            54,
+            247
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            107,
+            247
+          ],
+          "bounds": [
+            109,
+            61,
+            180,
+            225
+          ],
+          "sha256": "e643ce3e2b8ee7c53341d3e7bcc4176ec3bbf3a75913b0db6b35b59706f35986"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-north-v1.png",
+          "sourceScale": 0.7300884955752213,
+          "sourceAnchor": [
+            77.5,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            192,
+            228
+          ],
+          "bounds": [
+            89,
+            60,
+            228,
+            225
+          ],
+          "sha256": "f54bfe12d5ac756efedafb56fbac969cc1b4f8481692758bdb9dc090fc098657"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-north-v1.png",
+          "sourceScale": 0.7300884955752213,
+          "sourceAnchor": [
+            78,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            192,
+            228
+          ],
+          "bounds": [
+            89,
+            60,
+            228,
+            225
+          ],
+          "sha256": "e862512b15101015362aab7a49a2a09b06b065e3838ef04a3b8864bf54d81ada"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-north-v1.png",
+          "sourceScale": 0.7300884955752213,
+          "sourceAnchor": [
+            77,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            192,
+            228
+          ],
+          "bounds": [
+            89,
+            61,
+            228,
+            225
+          ],
+          "sha256": "a2c0e95fb4a438a993685603ef9f59499bff8e460e4f093aecfed62ccbaf6695"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-north-v1.png",
+          "sourceScale": 0.7300884955752213,
+          "sourceAnchor": [
+            77.5,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            191,
+            228
+          ],
+          "bounds": [
+            89,
+            60,
+            227,
+            225
+          ],
+          "sha256": "4d9ca2948e76a06541225154ab21af5e3182fd7eb1db3d0fc149dec6d2bed301"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-north-v1.png",
+          "sourceScale": 0.784688995215311,
+          "sourceAnchor": [
+            86.5,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            206,
+            212
+          ],
+          "bounds": [
+            78,
+            61,
+            238,
+            225
+          ],
+          "sha256": "6a75694fd5f9bb9df7a729ab78be726b4a8a1f6ed08408fa0991e11b16766032"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-north-v1.png",
+          "sourceScale": 0.784688995215311,
+          "sourceAnchor": [
+            86,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            205,
+            212
+          ],
+          "bounds": [
+            78,
+            60,
+            237,
+            225
+          ],
+          "sha256": "4342f078cb461121aa036e6d13c6b2903d1c01edf1f6a1d3be643b699bf655e1"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-north-v1.png",
+          "sourceScale": 0.784688995215311,
+          "sourceAnchor": [
+            87,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            206,
+            212
+          ],
+          "bounds": [
+            77,
+            61,
+            237,
+            225
+          ],
+          "sha256": "1e0b6559ebda4f3950759ec2fe0bb58f80c1208921ca0fe1985f83ae9ca0a537"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-north-v1.png",
+          "sourceScale": 0.784688995215311,
+          "sourceAnchor": [
+            86.5,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            206,
+            212
+          ],
+          "bounds": [
+            78,
+            60,
+            238,
+            225
+          ],
+          "sha256": "aa9b56f7c7f1efadf2cbf433197a1b592b186723f0d5563a31fcb9a1c55d4c2b"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-north-v1.png",
+          "sourceScale": 0.73568281938326,
+          "sourceAnchor": [
+            73,
+            230
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            170,
+            230
+          ],
+          "bounds": [
+            92,
+            58,
+            216,
+            225
+          ],
+          "sha256": "d24bddf73d8b17276514019d782451281a5fa9fa3bcd36623f70437e2266e891"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-north-v1.png",
+          "sourceScale": 0.73568281938326,
+          "sourceAnchor": [
+            71.5,
+            230
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            171,
+            230
+          ],
+          "bounds": [
+            93,
+            57,
+            217,
+            225
+          ],
+          "sha256": "8d07a2e5a520fa3ea700da9662bbb018c826725e9b04463c18107f15f1385fbc"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-north-v1.png",
+          "sourceScale": 0.73568281938326,
+          "sourceAnchor": [
+            73.5,
+            230
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            173,
+            230
+          ],
+          "bounds": [
+            91,
+            58,
+            217,
+            225
+          ],
+          "sha256": "4177fbb757dfc47cc9d23bb0293605c9e1cd1444a983eb6f048ac94ea637bd23"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-north-v1.png",
+          "sourceScale": 0.73568281938326,
+          "sourceAnchor": [
+            72,
+            230
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            169,
+            230
+          ],
+          "bounds": [
+            93,
+            57,
+            216,
+            225
+          ],
+          "sha256": "bc1c1ca44918b560a173798794d222e85e0285b4162a2e965ad4b012a77981b8"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-south-v1.png",
+          "sourceScale": 0.7063829787234043,
+          "sourceAnchor": [
+            56.5,
+            238
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            109,
+            238
+          ],
+          "bounds": [
+            106,
+            59,
+            182,
+            225
+          ],
+          "sha256": "3d3a35c67d4e4d164a394f5f13a6f814775dc33d0a9881e124aff684cd80a04e"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-south-v1.png",
+          "sourceScale": 0.7063829787234043,
+          "sourceAnchor": [
+            60.5,
+            238
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            114,
+            238
+          ],
+          "bounds": [
+            103,
+            58,
+            182,
+            225
+          ],
+          "sha256": "170e5256524ac31c5b4157452d9f9b6ab7fc04407d2d7203beccf37bca27f382"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-south-v1.png",
+          "sourceScale": 0.7063829787234043,
+          "sourceAnchor": [
+            55.5,
+            238
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            109,
+            238
+          ],
+          "bounds": [
+            106,
+            58,
+            182,
+            225
+          ],
+          "sha256": "a1c74c4768ee779bbec3f97a5c91ee99726fb858d995a5d838a2d865894cb7b1"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-south-v1.png",
+          "sourceScale": 0.7063829787234043,
+          "sourceAnchor": [
+            55.5,
+            238
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            110,
+            238
+          ],
+          "bounds": [
+            106,
+            59,
+            182,
+            225
+          ],
+          "sha256": "b30d2a9bcd27ad9d44daa40aee1e01802bd049bc10a8859cf5e55e9f29db0506"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-south-v1.png",
+          "sourceScale": 0.7217391304347827,
+          "sourceAnchor": [
+            114.5,
+            232
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            199,
+            232
+          ],
+          "bounds": [
+            63,
+            59,
+            205,
+            225
+          ],
+          "sha256": "4fa71e6436d5af47238355fc2fef7e99ddd1a8a3c50cfc51df03494b78ea6f7f"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-south-v1.png",
+          "sourceScale": 0.7217391304347827,
+          "sourceAnchor": [
+            114,
+            232
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            199,
+            232
+          ],
+          "bounds": [
+            63,
+            59,
+            205,
+            225
+          ],
+          "sha256": "c09c9ea31adf070b1f3c66b513c7633267ce6551163795da21d9e93d3cccee11"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-south-v1.png",
+          "sourceScale": 0.7217391304347827,
+          "sourceAnchor": [
+            117.5,
+            232
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            203,
+            232
+          ],
+          "bounds": [
+            61,
+            60,
+            206,
+            225
+          ],
+          "sha256": "aa2251abe4112ffbe439f645c45ebe513b0b36edac82c12a2e461871e7cab55a"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-south-v1.png",
+          "sourceScale": 0.7217391304347827,
+          "sourceAnchor": [
+            113,
+            232
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            198,
+            232
+          ],
+          "bounds": [
+            64,
+            60,
+            205,
+            225
+          ],
+          "sha256": "d78f626393d3c9c5d2a1f35ccf01b413e3e34395ed51eed8adf807f4cac5c398"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-south-v1.png",
+          "sourceScale": 0.7420814479638009,
+          "sourceAnchor": [
+            119.5,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            204,
+            223
+          ],
+          "bounds": [
+            57,
+            61,
+            207,
+            225
+          ],
+          "sha256": "99ef6db2fc4e5518257f23940074b87ce8141acc8fcbab91cf50f0cd7e95cc6c"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-south-v1.png",
+          "sourceScale": 0.7420814479638009,
+          "sourceAnchor": [
+            117,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            199,
+            223
+          ],
+          "bounds": [
+            59,
+            62,
+            205,
+            225
+          ],
+          "sha256": "3e22ebfc0bb79817aec04eaef1a575eb48cd904157e1512dfd40754c8910f8b6"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-south-v1.png",
+          "sourceScale": 0.7420814479638009,
+          "sourceAnchor": [
+            124,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            7,
+            209,
+            223
+          ],
+          "bounds": [
+            53,
+            65,
+            207,
+            225
+          ],
+          "sha256": "aedc2d622e4bf23d765d127e185eb6005a70cf8bd232f20432966782315bffe0"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-south-v1.png",
+          "sourceScale": 0.7420814479638009,
+          "sourceAnchor": [
+            117.5,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            203,
+            223
+          ],
+          "bounds": [
+            58,
+            62,
+            207,
+            225
+          ],
+          "sha256": "7d92ea96a7eff5432abaa317a2577fda8426f927d4e72c0d20f8527d558a3d83"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-south-v1.png",
+          "sourceScale": 0.7205240174672489,
+          "sourceAnchor": [
+            100.5,
+            233
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            170,
+            233
+          ],
+          "bounds": [
+            73,
+            60,
+            194,
+            225
+          ],
+          "sha256": "7191aed46717edbc94e006ad695dea37d7ef1f4ee6e8478b75d73a0518609d19"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-south-v1.png",
+          "sourceScale": 0.7205240174672489,
+          "sourceAnchor": [
+            104,
+            233
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            175,
+            233
+          ],
+          "bounds": [
+            71,
+            59,
+            196,
+            225
+          ],
+          "sha256": "2818f6e9e8c52873ba9fdb8d77f0f619722ad0280ade36136bd5c2bc19ffc78a"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-south-v1.png",
+          "sourceScale": 0.7205240174672489,
+          "sourceAnchor": [
+            104,
+            233
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            176,
+            233
+          ],
+          "bounds": [
+            71,
+            60,
+            196,
+            225
+          ],
+          "sha256": "460f0b8dd7bdb5402f32e817cc230e4bc03ee3b2025bb22854c0886aa9ab125c"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-strike-south-v1.png",
+          "sourceScale": 0.7205240174672489,
+          "sourceAnchor": [
+            100,
+            233
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            170,
+            233
+          ],
+          "bounds": [
+            73,
+            59,
+            194,
+            225
+          ],
+          "sha256": "f6ea8a4b27ff8547f6ab2b90991e74eaabd44a3f81f6a3ff7b7fc9944d63d8d4"
+        }
+      ],
+      "file": "surgeon-mounted-strike.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "310af240aab5a590414962ac4d59489c65e6a70eaf15c4024068a41c8c85c5c0"
+    }
+  }
+}

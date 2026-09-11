@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "surgeon-crouch-aim-idle": {
+      "cell": 210,
+      "anchor": [
+        105,
+        186
+      ],
+      "logicalCell": 70,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-north-v2.png",
+          "sha256": "03cda87a249eed61b9aed919b8b669af6c466ac2b3679eb632bb24623648237a",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-south-v2.png",
+          "sha256": "73e160561818ec94be082df1bd28c4f3ac7204a5cf1b87bd618bd92e2cae78e9",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-north-v2.png",
+          "sourceScale": 0.34313725,
+          "sourceAnchor": [
+            150.12857,
+            287
+          ],
+          "sourceBounds": [
+            82,
+            57,
+            230,
+            287
+          ],
+          "bounds": [
+            82,
+            107,
+            133,
+            186
+          ],
+          "sha256": "cca33d99fa07c3e8b86576d321d5c7e8f88cbea4e43d84ff40a10dffa05f80bd"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-north-v2.png",
+          "sourceScale": 0.34579439,
+          "sourceAnchor": [
+            154.01351,
+            256
+          ],
+          "sourceBounds": [
+            65,
+            42,
+            250,
+            256
+          ],
+          "bounds": [
+            74,
+            112,
+            138,
+            186
+          ],
+          "sha256": "3ede15f77b6d550129b554652b5bc19a31339e432a66916ae9e2a85cde5d4162"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-north-v2.png",
+          "sourceScale": 0.34703196,
+          "sourceAnchor": [
+            94.80263,
+            240
+          ],
+          "sourceBounds": [
+            46,
+            21,
+            286,
+            240
+          ],
+          "bounds": [
+            88,
+            110,
+            171,
+            186
+          ],
+          "sha256": "004fdb213568bbeeadb18f0a2b8e057dac020bc599b3effc2aa8d59c0dee079d"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-north-v2.png",
+          "sourceScale": 0.3164557,
+          "sourceAnchor": [
+            151.42,
+            264
+          ],
+          "sourceBounds": [
+            81,
+            27,
+            231,
+            264
+          ],
+          "bounds": [
+            83,
+            111,
+            130,
+            186
+          ],
+          "sha256": "91604921a27d20756c5824e04c8e878a21d57a66e6987887506a2c2d6c0af84c"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-south-v2.png",
+          "sourceScale": 0.32110092,
+          "sourceAnchor": [
+            165.78571,
+            293
+          ],
+          "sourceBounds": [
+            83,
+            75,
+            249,
+            293
+          ],
+          "bounds": [
+            78,
+            116,
+            131,
+            186
+          ],
+          "sha256": "6e85877d8465dc4be0fb8116eff3caa16ed770d69cde2039dbed80054be7076f"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-south-v2.png",
+          "sourceScale": 0.34703196,
+          "sourceAnchor": [
+            161,
+            267
+          ],
+          "sourceBounds": [
+            81,
+            48,
+            259,
+            267
+          ],
+          "bounds": [
+            77,
+            110,
+            139,
+            186
+          ],
+          "sha256": "3275b4933b697651e95b53f4b99ad0d7eca2f5ce2bb177cbfc582da3aa428665"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-south-v2.png",
+          "sourceScale": 0.32327586,
+          "sourceAnchor": [
+            176.68667,
+            254
+          ],
+          "sourceBounds": [
+            48,
+            22,
+            268,
+            254
+          ],
+          "bounds": [
+            63,
+            111,
+            134,
+            186
+          ],
+          "sha256": "fee2af684343bc70d65c291efa2be14953980d2835ff05584477bb1b8e0f53b2"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-south-v2.png",
+          "sourceScale": 0.31779661,
+          "sourceAnchor": [
+            219.34667,
+            259
+          ],
+          "sourceBounds": [
+            47,
+            23,
+            256,
+            259
+          ],
+          "bounds": [
+            50,
+            111,
+            116,
+            186
+          ],
+          "sha256": "09d227894e6aef777e4a2fa6b0aa33053c62b5697e65b19ecf832e0e3776ed32"
+        }
+      ],
+      "file": "surgeon-crouch-aim-idle.png",
+      "size": [
+        1680,
+        210
+      ],
+      "sha256": "3934aa90c743e190169a9c949b5fe764715278cb8a274a159051d526d1ca37b4",
+      "derivedFrom": {
+        "atlas": "surgeon-crouch-fire",
+        "frame": 0,
+        "reason": "hold authored pre-shot aim"
+      }
+    }
+  }
+}

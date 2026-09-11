@@ -1,4 +1,5 @@
 'use client';
+import {spriteOrderPose} from '../../game/sprite-order-pose.js';
 import {tacticalGridLabel} from '../../game/tactical-grid.js';
 
 import TacticalScene from './TacticalScene';
@@ -28,6 +29,8 @@ export default function Battlefield({battle:s,onChange,onFinish,onRetreat,conver
   const talking=talkingSelection?(s.npcs??[]).find((n:any)=>n.id===talkingSelection.id)??null:null;
   const [showSight,setShowSight]=useState(false);
   const [selected,setSelected]=useState(s.units.find((u:any)=>u.side==='player')?.id);
+  const poseTimers=useRef<Record<string,ReturnType<typeof setTimeout>>>({});
+  useEffect(()=>()=>Object.values(poseTimers.current).forEach(clearTimeout),[]);
   const [poses,setPoses]=useState<Record<string,string>>({});const [directions,setDirections]=useState<Record<string,number>>({});const [zoom,setZoom]=useState(2);const [cameraOffset,setCameraOffset]=useState({x:0,y:0});const [cameraFollowsSelection,setCameraFollowsSelection]=useState(false);const cameraSelection=useRef(selected);const [inventoryId,setInventoryId]=useState<string|null>(null);const [mode,setMode]=useState('move');const [aim,setAim]=useState(0);const [hover,setHover]=useState<any>(null);const [turnBusy,setBusy]=useState(false);const busy=turnBusy||motion.moving;
   const u=s.units.find((u:any)=>u.id===selected);const players=s.units.filter((u:any)=>u.side==='player');const enemies=visibleEnemies(s);const renderedUnits=s.units.filter((v:any)=>v.side==='player'||players.some((p:any)=>canSee(s,p,v)));const sight=new Set<string>(u?visibleTiles(s,u).map((t:any)=>`${t.x},${t.y}`):[]);
   const revealedBuildingRooms=useMemo(()=>new Set<string>([...(s.revealedRooms||[]),...visibleRooms(s)]),[s]);
@@ -39,7 +42,7 @@ export default function Battlefield({battle:s,onChange,onFinish,onRetreat,conver
     const timer=setInterval(()=>{if(!document.hidden)onChange(actBattle(s,{type:'ambient'}));},6000);
     return()=>clearInterval(timer);
   },[s,busy,talking,inventoryId,ambientPaused,onChange]);
-  const order=(a:any)=>{if(!u||busy)return;const next=actBattle(s,{unitId:selected,aim,...a});if(!next.lastError){const target=s.units.find((t:any)=>t.id===a.targetId)||a;if(Number.isFinite(target.x)&&Number.isFinite(target.y))setDirections(d=>({...d,[selected]:(Math.round(Math.atan2((target.x-u.x)-(target.y-u.y),-((target.x-u.x)+(target.y-u.y)))/(Math.PI/4))+8)%8}));const pose=a.type==='fire'?'fire':['reload','reprime','repair'].includes(a.type)?'reload':['melee','charge'].includes(a.type)?'strike':'idle';setPoses(p=>({...p,[selected]:pose}));setTimeout(()=>setPoses(p=>({...p,[selected]:'idle'})),1000);}onChange(next);};
+  const order=(a:any)=>{if(!u||busy)return;const next=actBattle(s,{unitId:selected,aim,...a});if(!next.lastError){const target=s.units.find((t:any)=>t.id===a.targetId)||a;if(Number.isFinite(target.x)&&Number.isFinite(target.y))setDirections(d=>({...d,[selected]:(Math.round(Math.atan2((target.x-u.x)-(target.y-u.y),-((target.x-u.x)+(target.y-u.y)))/(Math.PI/4))+8)%8}));const pose=spriteOrderPose(a.type);clearTimeout(poseTimers.current[selected]);setPoses(p=>({...p,[selected]:pose}));poseTimers.current[selected]=setTimeout(()=>setPoses(p=>({...p,[selected]:'idle'})),1000);}onChange(next);};
   function nextTurn(){if(busy||s.status!=='active')return;setBusy(true);setTimeout(()=>{onChange(endTurn(s));setBusy(false);},450);}
   useEffect(()=>{if(!u||!isAlive(u))setSelected(players.find(isAlive)?.id);},[s]);
   useEffect(()=>{const key=(e:KeyboardEvent)=>{

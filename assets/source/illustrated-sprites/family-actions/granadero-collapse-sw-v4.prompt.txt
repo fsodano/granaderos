@@ -1,0 +1,1 @@
+Use case: precise-object-edit. Correct ONLY FIRST sprite (leftmost column1). Turn him to FRONT-LEFT three-quarter view: face and nose toward LEFT, chest visible, shoulders facing toward viewer-left. It must match the facing direction of columns2,3,4. Keep standing upright, navy coat and shako. All other sprites unchanged. Preserve four-column strip and magenta background.

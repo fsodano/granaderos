@@ -1,0 +1,10 @@
+{
+  "source": "assets/source/illustrated-sprites/blue-officer-mounted-walk-south-v1.png",
+  "rect": [
+    0,
+    0,
+    1254,
+    314
+  ],
+  "method": "reference crop only"
+}

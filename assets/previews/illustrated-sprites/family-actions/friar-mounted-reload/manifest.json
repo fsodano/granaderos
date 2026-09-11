@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "friar-mounted-reload": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-north-v1.png",
+          "sha256": "0a1e8a495c7d422fa6cc24c66db951206d68c12a3ac2819c6cf854b07031b395",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-south-v1.png",
+          "sha256": "beb7fd768a27cb86b5c24d14cbc8d57f8683b28b166d4e6f3917569fbd661214",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-north-v1.png",
+          "sourceScale": 0.637065637065637,
+          "sourceAnchor": [
+            56,
+            272
+          ],
+          "sourceBounds": [
+            2,
+            13,
+            117,
+            272
+          ],
+          "bounds": [
+            110,
+            60,
+            183,
+            225
+          ],
+          "sha256": "deb2867ab3f5c47f11a42408b4c4bbc368764d883861ee4db51a7e2d2e368ed3"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-north-v1.png",
+          "sourceScale": 0.637065637065637,
+          "sourceAnchor": [
+            56,
+            272
+          ],
+          "sourceBounds": [
+            2,
+            8,
+            113,
+            272
+          ],
+          "bounds": [
+            110,
+            57,
+            181,
+            225
+          ],
+          "sha256": "f41f6edc0b172401d82554d1fc93172ccdf783f963976c2011f7fec3a329892a"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-north-v1.png",
+          "sourceScale": 0.637065637065637,
+          "sourceAnchor": [
+            57.5,
+            272
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            113,
+            272
+          ],
+          "bounds": [
+            109,
+            53,
+            180,
+            225
+          ],
+          "sha256": "e55c6b76b1c9b1ec233815b263c52bbba14c26becb56822a982269cbb652fbc9"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-north-v1.png",
+          "sourceScale": 0.637065637065637,
+          "sourceAnchor": [
+            55,
+            272
+          ],
+          "sourceBounds": [
+            2,
+            11,
+            114,
+            272
+          ],
+          "bounds": [
+            110,
+            59,
+            181,
+            225
+          ],
+          "sha256": "c870ba26cf8cc91417f80aede1e212ee23f192ae2412f786bc1502d34ba1b8db"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-north-v1.png",
+          "sourceScale": 0.632183908045977,
+          "sourceAnchor": [
+            79.5,
+            273
+          ],
+          "sourceBounds": [
+            2,
+            12,
+            192,
+            273
+          ],
+          "bounds": [
+            95,
+            60,
+            215,
+            225
+          ],
+          "sha256": "e0ed90e1154566557e224803fbad4354c78c4c62ad85a546b5cf430fbcba761f"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-north-v1.png",
+          "sourceScale": 0.632183908045977,
+          "sourceAnchor": [
+            79,
+            273
+          ],
+          "sourceBounds": [
+            2,
+            11,
+            193,
+            273
+          ],
+          "bounds": [
+            95,
+            59,
+            216,
+            225
+          ],
+          "sha256": "7eeca65e5458fae5d5abbf69868b3954efc832a2149b9f8ead982fd005bd4ffc"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-north-v1.png",
+          "sourceScale": 0.632183908045977,
+          "sourceAnchor": [
+            78.5,
+            273
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            193,
+            273
+          ],
+          "bounds": [
+            96,
+            54,
+            217,
+            225
+          ],
+          "sha256": "bb197ded8546323d542363d6cb655d85128a5398d1f39e72b1ca46b3f16ce740"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-north-v1.png",
+          "sourceScale": 0.632183908045977,
+          "sourceAnchor": [
+            78,
+            273
+          ],
+          "sourceBounds": [
+            2,
+            12,
+            190,
+            273
+          ],
+          "bounds": [
+            96,
+            60,
+            215,
+            225
+          ],
+          "sha256": "c0db1a665d9048eb6eb088ca976e76e195117887770ec3484eb3ede31486e290"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-north-v1.png",
+          "sourceScale": 0.6165413533834586,
+          "sourceAnchor": [
+            106.5,
+            280
+          ],
+          "sourceBounds": [
+            2,
+            14,
+            272,
+            280
+          ],
+          "bounds": [
+            80,
+            61,
+            246,
+            225
+          ],
+          "sha256": "8e773155120f73c6d3bfa7f320620ab22d26103a2609724e015d5ae4cfd48f48"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-north-v1.png",
+          "sourceScale": 0.6165413533834586,
+          "sourceAnchor": [
+            106,
+            280
+          ],
+          "sourceBounds": [
+            2,
+            14,
+            271,
+            280
+          ],
+          "bounds": [
+            80,
+            61,
+            246,
+            225
+          ],
+          "sha256": "c649f8ea4b6b0b25e680dac46941bae3c7b86ae012ac6dd760e51a79ccc08cf2"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-north-v1.png",
+          "sourceScale": 0.6165413533834586,
+          "sourceAnchor": [
+            106,
+            280
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            271,
+            280
+          ],
+          "bounds": [
+            80,
+            54,
+            246,
+            225
+          ],
+          "sha256": "b88a7591763a91a28fe9ab6c767d282282cdd515d5b49a594af377c2c8a3bfe3"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-north-v1.png",
+          "sourceScale": 0.6165413533834586,
+          "sourceAnchor": [
+            105.5,
+            280
+          ],
+          "sourceBounds": [
+            2,
+            13,
+            271,
+            280
+          ],
+          "bounds": [
+            80,
+            60,
+            246,
+            225
+          ],
+          "sha256": "26c5764fc38da8d221195c481ad5ae272c126b414cde697c3add18229dfb389e"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-north-v1.png",
+          "sourceScale": 0.6094890510948905,
+          "sourceAnchor": [
+            103.5,
+            290
+          ],
+          "sourceBounds": [
+            2,
+            16,
+            239,
+            290
+          ],
+          "bounds": [
+            82,
+            58,
+            226,
+            225
+          ],
+          "sha256": "7642d799cafff9b12bde90e603b9a5c420bf0e24cd60ca31db6a25f8ffddf3f0"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-north-v1.png",
+          "sourceScale": 0.6094890510948905,
+          "sourceAnchor": [
+            104.5,
+            290
+          ],
+          "sourceBounds": [
+            2,
+            16,
+            240,
+            290
+          ],
+          "bounds": [
+            82,
+            58,
+            227,
+            225
+          ],
+          "sha256": "9b187dbae3883632d983833811aab25e75a8bdb4a8aedba56d14533d7f9ec4da"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-north-v1.png",
+          "sourceScale": 0.6094890510948905,
+          "sourceAnchor": [
+            104.5,
+            290
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            246,
+            290
+          ],
+          "bounds": [
+            82,
+            49,
+            231,
+            225
+          ],
+          "sha256": "0211c46741757e19d82d59146af0b4a9f4bc86dfae9c9e99fea98ac146cd4f28"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-north-v1.png",
+          "sourceScale": 0.6094890510948905,
+          "sourceAnchor": [
+            102.5,
+            290
+          ],
+          "sourceBounds": [
+            2,
+            15,
+            237,
+            290
+          ],
+          "bounds": [
+            83,
+            57,
+            226,
+            225
+          ],
+          "sha256": "0658442c773ab902cccebf917e413ef82b80c6591df3ffc51bb308c4bf1ce081"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-south-v1.png",
+          "sourceScale": 0.6171003717472119,
+          "sourceAnchor": [
+            59.5,
+            272
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            118,
+            272
+          ],
+          "bounds": [
+            109,
+            59,
+            181,
+            225
+          ],
+          "sha256": "f0213e1a28a3676f55931abfa29106c32689a6803f46153409f0d0491b58d7cc"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-south-v1.png",
+          "sourceScale": 0.6171003717472119,
+          "sourceAnchor": [
+            57,
+            272
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            116,
+            272
+          ],
+          "bounds": [
+            110,
+            58,
+            180,
+            225
+          ],
+          "sha256": "3005fd0a8c2962dbd241f4b1e7901a0c1ad324324c8ce40888ff2a9a05ae5fc3"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-south-v1.png",
+          "sourceScale": 0.6171003717472119,
+          "sourceAnchor": [
+            57.5,
+            272
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            116,
+            272
+          ],
+          "bounds": [
+            110,
+            59,
+            180,
+            225
+          ],
+          "sha256": "bdd48b2a73944822dbe5208086dd6441b1784303c9004e146b8429b449e1d01a"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-south-v1.png",
+          "sourceScale": 0.6171003717472119,
+          "sourceAnchor": [
+            57.5,
+            272
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            116,
+            272
+          ],
+          "bounds": [
+            110,
+            59,
+            180,
+            225
+          ],
+          "sha256": "3560867a3d40edd686d3a32f1fd6dc46eeec5e36d56592ead2bb65b28cd08007"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-south-v1.png",
+          "sourceScale": 0.6102941176470589,
+          "sourceAnchor": [
+            98.5,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            178,
+            274
+          ],
+          "bounds": [
+            85,
+            59,
+            192,
+            225
+          ],
+          "sha256": "ff93309fa0d625c50dc731e635b9283a952ae0565745ba4d66f40c80b7e1d536"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-south-v1.png",
+          "sourceScale": 0.6102941176470589,
+          "sourceAnchor": [
+            98.5,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            179,
+            274
+          ],
+          "bounds": [
+            85,
+            59,
+            193,
+            225
+          ],
+          "sha256": "73d52752bae4a04f5698fe3f2f828e65c565091217ef92f4916c2636cf7a9d76"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-south-v1.png",
+          "sourceScale": 0.6102941176470589,
+          "sourceAnchor": [
+            98.5,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            178,
+            274
+          ],
+          "bounds": [
+            85,
+            59,
+            192,
+            225
+          ],
+          "sha256": "7347e6617baf43242e209169e35a9af1112aae498ea632273f020a15277467c4"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-south-v1.png",
+          "sourceScale": 0.6102941176470589,
+          "sourceAnchor": [
+            98.5,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            179,
+            274
+          ],
+          "bounds": [
+            85,
+            59,
+            193,
+            225
+          ],
+          "sha256": "0e27dcac9ef068a6610cd0bfce0fb2f675314ad403f6e35e0c2994aa92be3441"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-south-v1.png",
+          "sourceScale": 0.6007326007326007,
+          "sourceAnchor": [
+            163.5,
+            275
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            275,
+            275
+          ],
+          "bounds": [
+            47,
+            61,
+            211,
+            225
+          ],
+          "sha256": "00c2a7745d5aed8759787e4d8f7dfb61473841d58535293d00fb1e5092536e09"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-south-v1.png",
+          "sourceScale": 0.6007326007326007,
+          "sourceAnchor": [
+            164.5,
+            275
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            275,
+            275
+          ],
+          "bounds": [
+            46,
+            61,
+            210,
+            225
+          ],
+          "sha256": "3b1b6ff57533faf772d85669fb51523586cdd51dd7fade55883df538d46ad2cf"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-south-v1.png",
+          "sourceScale": 0.6007326007326007,
+          "sourceAnchor": [
+            164,
+            275
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            275,
+            275
+          ],
+          "bounds": [
+            47,
+            61,
+            211,
+            225
+          ],
+          "sha256": "b8cae0ff73c194193de6d7ebac63994c1ef47b8d279c532e459221aa8eb6a0fc"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-south-v1.png",
+          "sourceScale": 0.6007326007326007,
+          "sourceAnchor": [
+            163.5,
+            275
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            274,
+            275
+          ],
+          "bounds": [
+            47,
+            61,
+            210,
+            225
+          ],
+          "sha256": "bbd2387edd7a2ff7d37411d52d3ccaad22d0dede1ed0795bfbc4f118f2ca12f8"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-south-v1.png",
+          "sourceScale": 0.5871886120996441,
+          "sourceAnchor": [
+            127,
+            283
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            217,
+            283
+          ],
+          "bounds": [
+            71,
+            60,
+            197,
+            225
+          ],
+          "sha256": "b7b1e321ce73964349fd6cbb7a8d2b18b23077e9e218caec0dbc15d25ca40325"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-south-v1.png",
+          "sourceScale": 0.5871886120996441,
+          "sourceAnchor": [
+            126.5,
+            283
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            217,
+            282
+          ],
+          "bounds": [
+            71,
+            60,
+            197,
+            224
+          ],
+          "sha256": "9056a3abe4f4022ebe7cdee9fbd12100d594f757a2959704eec38d4afc3896c8"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-south-v1.png",
+          "sourceScale": 0.5871886120996441,
+          "sourceAnchor": [
+            126.5,
+            283
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            217,
+            282
+          ],
+          "bounds": [
+            71,
+            60,
+            197,
+            224
+          ],
+          "sha256": "755c6743fda533a66f9ad9251e8dbabb97d98aaafaf47a59ddcc4323fb7fb4ad"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-reload-south-v1.png",
+          "sourceScale": 0.5871886120996441,
+          "sourceAnchor": [
+            127,
+            283
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            217,
+            282
+          ],
+          "bounds": [
+            71,
+            60,
+            197,
+            224
+          ],
+          "sha256": "c06ea3edbe056e49dae825a0c7216d68f53d4f87d582c9384d31bc7e91d2ccd1"
+        }
+      ],
+      "file": "friar-mounted-reload.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "6d68e18c018ac4ec99869ab72aff2213b0562edecea726910aece0619e2d9cb0"
+    }
+  }
+}

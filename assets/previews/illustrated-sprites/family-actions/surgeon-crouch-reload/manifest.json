@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "surgeon-crouch-reload": {
+      "cell": 240,
+      "anchor": [
+        120,
+        210
+      ],
+      "logicalCell": 80,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-north-v1.png",
+          "sha256": "7de16419364f11d010a8ea7be6c507e8cc4ca2f98c85c9ab3de0b715867f294f",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-south-v1.png",
+          "sha256": "4a97a747cfd23c0770bf2a5ba2a87b5f187a6fef03421bff3c87c5f0ab691fd6",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-north-v1.png",
+          "sourceScale": 0.3825136612021858,
+          "sourceAnchor": [
+            65.5,
+            231
+          ],
+          "sourceBounds": [
+            2,
+            48,
+            165,
+            231
+          ],
+          "bounds": [
+            96,
+            140,
+            158,
+            210
+          ],
+          "sha256": "93d5d0afe83047c67abf7b46b4e02a6f14a18a6fd44d17542c0c80a518df6bea"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-north-v1.png",
+          "sourceScale": 0.3825136612021858,
+          "sourceAnchor": [
+            88,
+            231
+          ],
+          "sourceBounds": [
+            2,
+            48,
+            155,
+            231
+          ],
+          "bounds": [
+            87,
+            140,
+            146,
+            210
+          ],
+          "sha256": "8e35d9b24348319de0275fd763a0096684f943f6b2a36728045fa2fa20f3ff87"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-north-v1.png",
+          "sourceScale": 0.3825136612021858,
+          "sourceAnchor": [
+            84.5,
+            231
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            149,
+            231
+          ],
+          "bounds": [
+            88,
+            122,
+            144,
+            210
+          ],
+          "sha256": "1a906e4a256e48fb005189e0d903f5bec385cea792f5ae7c17efc7e48eac5689"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-north-v1.png",
+          "sourceScale": 0.3825136612021858,
+          "sourceAnchor": [
+            66.5,
+            231
+          ],
+          "sourceBounds": [
+            2,
+            48,
+            165,
+            231
+          ],
+          "bounds": [
+            95,
+            140,
+            157,
+            210
+          ],
+          "sha256": "7fe6fa8c1da22714121b91b747bcfe504c430920df02be282209e4b5db252e87"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-north-v1.png",
+          "sourceScale": 0.3978494623655914,
+          "sourceAnchor": [
+            67.5,
+            234
+          ],
+          "sourceBounds": [
+            2,
+            48,
+            177,
+            234
+          ],
+          "bounds": [
+            94,
+            136,
+            164,
+            210
+          ],
+          "sha256": "ba51211130c963ad26f590bf7c688a3d1d8c950a264a81f664ebf741ef7c52f7"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-north-v1.png",
+          "sourceScale": 0.3978494623655914,
+          "sourceAnchor": [
+            96.5,
+            234
+          ],
+          "sourceBounds": [
+            2,
+            46,
+            170,
+            234
+          ],
+          "bounds": [
+            82,
+            135,
+            149,
+            210
+          ],
+          "sha256": "ea63fa01808edc92b9f03b6f20743ad3cee1d03a8619c98794e3d395edada403"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-north-v1.png",
+          "sourceScale": 0.3978494623655914,
+          "sourceAnchor": [
+            92,
+            234
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            162,
+            234
+          ],
+          "bounds": [
+            84,
+            118,
+            148,
+            210
+          ],
+          "sha256": "eb8e73b72af6e04fd6a4ac7d8f0349ed03391ef22f3f8d570764bf7d38301219"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-north-v1.png",
+          "sourceScale": 0.3978494623655914,
+          "sourceAnchor": [
+            67.5,
+            234
+          ],
+          "sourceBounds": [
+            2,
+            48,
+            177,
+            234
+          ],
+          "bounds": [
+            94,
+            136,
+            164,
+            210
+          ],
+          "sha256": "fb3a9dc30f16fc0850637e30323d16caf12de40d3eef298bd8d7b24d625bc9f4"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-north-v1.png",
+          "sourceScale": 0.40425531914893614,
+          "sourceAnchor": [
+            65,
+            236
+          ],
+          "sourceBounds": [
+            2,
+            48,
+            182,
+            236
+          ],
+          "bounds": [
+            95,
+            134,
+            168,
+            210
+          ],
+          "sha256": "14b4004fa8f043fdcd60d745670fdd0b61cbc821ae864754bb0fd02e35ce6c4f"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-north-v1.png",
+          "sourceScale": 0.40425531914893614,
+          "sourceAnchor": [
+            99.5,
+            236
+          ],
+          "sourceBounds": [
+            2,
+            47,
+            165,
+            236
+          ],
+          "bounds": [
+            81,
+            134,
+            147,
+            210
+          ],
+          "sha256": "963578bd0324680e5f712d27ceabc3f2843885f0a38db098f0fd0ca24b59f1f0"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-north-v1.png",
+          "sourceScale": 0.40425531914893614,
+          "sourceAnchor": [
+            97,
+            236
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            161,
+            236
+          ],
+          "bounds": [
+            82,
+            115,
+            146,
+            210
+          ],
+          "sha256": "790af4e73887ccaca33e1d0383aa67732b9f3e833631c77ae1433a79aecbfa6e"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-north-v1.png",
+          "sourceScale": 0.40425531914893614,
+          "sourceAnchor": [
+            65.5,
+            236
+          ],
+          "sourceBounds": [
+            2,
+            47,
+            182,
+            236
+          ],
+          "bounds": [
+            94,
+            134,
+            167,
+            210
+          ],
+          "sha256": "3c153e20fd1ef730e2aa22615bc8f445f5494742e931a6b8a84d4c54b5b39230"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-north-v1.png",
+          "sourceScale": 0.3865979381443299,
+          "sourceAnchor": [
+            64.5,
+            236
+          ],
+          "sourceBounds": [
+            2,
+            42,
+            167,
+            236
+          ],
+          "bounds": [
+            96,
+            135,
+            160,
+            210
+          ],
+          "sha256": "80caa3eb7864008d43749d327d63bc2ebbe99f09bd7ded73d55eb3291e27caab"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-north-v1.png",
+          "sourceScale": 0.3865979381443299,
+          "sourceAnchor": [
+            79.5,
+            236
+          ],
+          "sourceBounds": [
+            2,
+            42,
+            145,
+            236
+          ],
+          "bounds": [
+            90,
+            135,
+            145,
+            210
+          ],
+          "sha256": "a76c647d79f64418276a7e69d67991d45982e42806a9b9c38f484111b856f4df"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-north-v1.png",
+          "sourceScale": 0.3865979381443299,
+          "sourceAnchor": [
+            78.5,
+            236
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            138,
+            236
+          ],
+          "bounds": [
+            90,
+            120,
+            143,
+            210
+          ],
+          "sha256": "321757e56e8b5a75549ba9794327bbbef2b94708f5b49eed60781506264e78f0"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-north-v1.png",
+          "sourceScale": 0.3865979381443299,
+          "sourceAnchor": [
+            64.5,
+            236
+          ],
+          "sourceBounds": [
+            2,
+            42,
+            168,
+            236
+          ],
+          "bounds": [
+            96,
+            135,
+            160,
+            210
+          ],
+          "sha256": "aa5f55969355f28dcdedf738b496271df1eda9a805e3b07b902b821bcd43aa6c"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-south-v1.png",
+          "sourceScale": 0.33653846153846156,
+          "sourceAnchor": [
+            75,
+            250
+          ],
+          "sourceBounds": [
+            2,
+            42,
+            201,
+            250
+          ],
+          "bounds": [
+            95,
+            140,
+            162,
+            210
+          ],
+          "sha256": "45aa1869aab1a62e008e055ac88a913243c97a914d698f08ddaeab0cb452bb87"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-south-v1.png",
+          "sourceScale": 0.33653846153846156,
+          "sourceAnchor": [
+            85.5,
+            250
+          ],
+          "sourceBounds": [
+            2,
+            34,
+            149,
+            250
+          ],
+          "bounds": [
+            92,
+            137,
+            141,
+            210
+          ],
+          "sha256": "d33471de9145ae6808d540f321f1c60c6e62dda49abcf5d21b2ed4a3cafb5642"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-south-v1.png",
+          "sourceScale": 0.33653846153846156,
+          "sourceAnchor": [
+            70.5,
+            250
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            135,
+            250
+          ],
+          "bounds": [
+            97,
+            127,
+            142,
+            210
+          ],
+          "sha256": "ee9483ecab88df4fad8a41ce52fbe526f66ca11f3e68ad4e455a4b5bfcecbcdf"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-south-v1.png",
+          "sourceScale": 0.33653846153846156,
+          "sourceAnchor": [
+            76,
+            250
+          ],
+          "sourceBounds": [
+            2,
+            42,
+            202,
+            250
+          ],
+          "bounds": [
+            95,
+            140,
+            162,
+            210
+          ],
+          "sha256": "32ede099a5632bf4c1b18acbf1f6a485e402b9f1d3eea5c64973853a10e19dba"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-south-v1.png",
+          "sourceScale": 0.3584905660377358,
+          "sourceAnchor": [
+            76.5,
+            250
+          ],
+          "sourceBounds": [
+            2,
+            37,
+            155,
+            249
+          ],
+          "bounds": [
+            93,
+            134,
+            148,
+            210
+          ],
+          "sha256": "bfcddd0f78c2c650a155c5bed6e1151ef2046baa2e733b020eff6d2e761cef2c"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-south-v1.png",
+          "sourceScale": 0.3584905660377358,
+          "sourceAnchor": [
+            83,
+            250
+          ],
+          "sourceBounds": [
+            2,
+            32,
+            158,
+            249
+          ],
+          "bounds": [
+            91,
+            132,
+            147,
+            210
+          ],
+          "sha256": "4d2de22714dd8eef64af7d2d8ea891dbfc5ab8d4751c5ca02ee51627a1b11178"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-south-v1.png",
+          "sourceScale": 0.3584905660377358,
+          "sourceAnchor": [
+            74,
+            250
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            151,
+            249
+          ],
+          "bounds": [
+            94,
+            121,
+            147,
+            210
+          ],
+          "sha256": "d14e9ae54c2449f61e763dfe44afe29a611342b25c4c45a8696cf884bfd75c7f"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-south-v1.png",
+          "sourceScale": 0.3584905660377358,
+          "sourceAnchor": [
+            76,
+            250
+          ],
+          "sourceBounds": [
+            2,
+            37,
+            155,
+            250
+          ],
+          "bounds": [
+            93,
+            134,
+            148,
+            210
+          ],
+          "sha256": "53970d8bfa8bc34fe85d3231a4248952e37e2a01272bde6573403f1ed4b5d134"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-south-v1.png",
+          "sourceScale": 0.33783783783783783,
+          "sourceAnchor": [
+            118.5,
+            256
+          ],
+          "sourceBounds": [
+            2,
+            34,
+            198,
+            256
+          ],
+          "bounds": [
+            81,
+            135,
+            147,
+            210
+          ],
+          "sha256": "88a26f2a94d5c491615ed351dd52eb130f40566ab6e427215641ee968ced246b"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-south-v1.png",
+          "sourceScale": 0.33783783783783783,
+          "sourceAnchor": [
+            72.5,
+            256
+          ],
+          "sourceBounds": [
+            2,
+            34,
+            163,
+            256
+          ],
+          "bounds": [
+            96,
+            135,
+            150,
+            210
+          ],
+          "sha256": "3eaaa4864e700ea264e858fca607c5f0cc9b1e94fe6935f6d7f8c73633c4f8da"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-south-v1.png",
+          "sourceScale": 0.33783783783783783,
+          "sourceAnchor": [
+            66.5,
+            256
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            160,
+            255
+          ],
+          "bounds": [
+            98,
+            124,
+            151,
+            209
+          ],
+          "sha256": "e607295185c2d74830a5baaeb9d1c3ed6e92eccea00f6629e51c70b5121f6d7d"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-south-v1.png",
+          "sourceScale": 0.33783783783783783,
+          "sourceAnchor": [
+            119,
+            256
+          ],
+          "sourceBounds": [
+            2,
+            34,
+            199,
+            256
+          ],
+          "bounds": [
+            80,
+            135,
+            147,
+            210
+          ],
+          "sha256": "c9387838f33097bc9aa8ea6539e0d14acfdd47f1b18defeeba5ec1704ebea66e"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-south-v1.png",
+          "sourceScale": 0.3424657534246575,
+          "sourceAnchor": [
+            123,
+            253
+          ],
+          "sourceBounds": [
+            2,
+            34,
+            197,
+            253
+          ],
+          "bounds": [
+            79,
+            135,
+            146,
+            210
+          ],
+          "sha256": "69279679bed739a7e71742c335a5478463c7da8d5204f2d22869cd605a1c9b59"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-south-v1.png",
+          "sourceScale": 0.3424657534246575,
+          "sourceAnchor": [
+            65.5,
+            253
+          ],
+          "sourceBounds": [
+            2,
+            34,
+            163,
+            252
+          ],
+          "bounds": [
+            98,
+            135,
+            153,
+            210
+          ],
+          "sha256": "5bed95cdb08a2f85bfcfb39158ac5b0fe4d3ceae86a33fac0d2a8fa9ef1b89c0"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-south-v1.png",
+          "sourceScale": 0.3424657534246575,
+          "sourceAnchor": [
+            61.5,
+            253
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            154,
+            252
+          ],
+          "bounds": [
+            100,
+            124,
+            152,
+            210
+          ],
+          "sha256": "d367201ba47e8ec9a617f8625b4ab2f5f8d954c7e86b2f28028529c5a192bb94"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-reload-south-v1.png",
+          "sourceScale": 0.3424657534246575,
+          "sourceAnchor": [
+            122.5,
+            253
+          ],
+          "sourceBounds": [
+            2,
+            34,
+            196,
+            253
+          ],
+          "bounds": [
+            79,
+            135,
+            145,
+            210
+          ],
+          "sha256": "d364374f1f3fdbf00bf4444004f2780483ef6575bd30065d5ecc899c81dab5ff"
+        }
+      ],
+      "file": "surgeon-crouch-reload.png",
+      "size": [
+        960,
+        1920
+      ],
+      "sha256": "742350dc178a76afe38c620c96e9e89f4291b36115e070d68d597208cd53df53"
+    }
+  }
+}

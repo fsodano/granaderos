@@ -1,0 +1,788 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "granadero-crouch-interact": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-north-v2.png",
+          "sha256": "969a0bd8eb867b4dea4fc12ceef516b874f1d3a44a6a820f456cc08666bbfe92",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-south-v2.png",
+          "sha256": "88bd93f84b56e16c5b727f9c4617cba6bee612c7fed32e1804551f8136bae1e9",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-sw-v4.png",
+          "sha256": "41f1d0cd4d3bca3f94c1a7583d084f59915b5ca408830d8f05f071cb443bf96c",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-north-v2.png",
+          "sourceScale": 0.36683417085427134,
+          "sourceAnchor": [
+            63.5,
+            201
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            128,
+            201
+          ],
+          "bounds": [
+            121,
+            152,
+            167,
+            225
+          ],
+          "sha256": "ac11f9c68e0ac2c3f64367fb2ea3c67930dbabc1371db0063903fcb883a87812"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-north-v2.png",
+          "sourceScale": 0.36683417085427134,
+          "sourceAnchor": [
+            65,
+            201
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            130,
+            201
+          ],
+          "bounds": [
+            121,
+            152,
+            168,
+            225
+          ],
+          "sha256": "078f587dcbf02763655c29e05013d77a52151fb1da6d50e2f3d2408f1749926d"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-north-v2.png",
+          "sourceScale": 0.36683417085427134,
+          "sourceAnchor": [
+            65,
+            201
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            130,
+            201
+          ],
+          "bounds": [
+            121,
+            152,
+            168,
+            225
+          ],
+          "sha256": "e05251dad065fc5d1ee570e655563eaf6bbd87696b3d380b55ed95ae781238a9"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-north-v2.png",
+          "sourceScale": 0.36683417085427134,
+          "sourceAnchor": [
+            65,
+            201
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            129,
+            201
+          ],
+          "bounds": [
+            121,
+            152,
+            168,
+            225
+          ],
+          "sha256": "0cae280b4c0643c2260ce74146b37d2e0741ba6132d7d28c099f00a07fff1bfc"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-north-v2.png",
+          "sourceScale": 0.3644859813084112,
+          "sourceAnchor": [
+            66,
+            218
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            141,
+            217
+          ],
+          "bounds": [
+            121,
+            147,
+            172,
+            225
+          ],
+          "sha256": "ca47dc20557854ea746a8da31429e7b48101af54ec8d4d651db20f36f6dbf169"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-north-v2.png",
+          "sourceScale": 0.3644859813084112,
+          "sourceAnchor": [
+            79.5,
+            218
+          ],
+          "sourceBounds": [
+            2,
+            6,
+            189,
+            218
+          ],
+          "bounds": [
+            116,
+            148,
+            184,
+            225
+          ],
+          "sha256": "0913f1be22d5bbdbcf84915d4bebe9edaf5a4e33a045dd1e9b4e9c63512cbf64"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-north-v2.png",
+          "sourceScale": 0.3644859813084112,
+          "sourceAnchor": [
+            68.5,
+            218
+          ],
+          "sourceBounds": [
+            2,
+            5,
+            158,
+            218
+          ],
+          "bounds": [
+            120,
+            147,
+            177,
+            225
+          ],
+          "sha256": "bbccc492b8140626792ffa0b50360757c93273a0403d6190cbed37747f6c0dc4"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-north-v2.png",
+          "sourceScale": 0.3644859813084112,
+          "sourceAnchor": [
+            67,
+            218
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            217
+          ],
+          "bounds": [
+            120,
+            146,
+            171,
+            224
+          ],
+          "sha256": "45c9d29158f803741b76a38e82ed90e7fcab0fe264fd2bf81c7a03a42d924a46"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-north-v2.png",
+          "sourceScale": 0.35585585585585583,
+          "sourceAnchor": [
+            76,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            132,
+            224
+          ],
+          "bounds": [
+            118,
+            146,
+            164,
+            225
+          ],
+          "sha256": "dea9dd564fe7e0119694fbc526060156ba4444c9e2de57634a7ee4ab4aabc38a"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-north-v2.png",
+          "sourceScale": 0.35585585585585583,
+          "sourceAnchor": [
+            80,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            13,
+            195,
+            224
+          ],
+          "bounds": [
+            116,
+            150,
+            185,
+            225
+          ],
+          "sha256": "ff96d5c2198e90e9acb315953528a9411cf5816ce42c4bbf5f925ffb0c6db4cf"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-north-v2.png",
+          "sourceScale": 0.35585585585585583,
+          "sourceAnchor": [
+            78,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            13,
+            169,
+            225
+          ],
+          "bounds": [
+            117,
+            150,
+            176,
+            225
+          ],
+          "sha256": "44a595a7989120bc205c2b1eaf9bf15d17100e9dbba8f461a3ffef76777f5733"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-north-v2.png",
+          "sourceScale": 0.35585585585585583,
+          "sourceAnchor": [
+            76.5,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            224
+          ],
+          "bounds": [
+            117,
+            146,
+            164,
+            225
+          ],
+          "sha256": "c2ea791907ab46ce193bfe7ac148a88344171c7afe15650bdfd4a87fe4dc8929"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-north-v2.png",
+          "sourceScale": 0.35909090909090907,
+          "sourceAnchor": [
+            71.5,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            145,
+            223
+          ],
+          "bounds": [
+            119,
+            146,
+            170,
+            225
+          ],
+          "sha256": "de31218faae230338777733e9127441c2f9f53d16f756110c40fd23ac759f7c4"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-north-v2.png",
+          "sourceScale": 0.35909090909090907,
+          "sourceAnchor": [
+            85.5,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            14,
+            179,
+            223
+          ],
+          "bounds": [
+            114,
+            150,
+            178,
+            225
+          ],
+          "sha256": "9f636108b19d99f075a39ee8ba29c03697dbf09047886464b115fa837542615e"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-north-v2.png",
+          "sourceScale": 0.35909090909090907,
+          "sourceAnchor": [
+            66,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            14,
+            154,
+            223
+          ],
+          "bounds": [
+            121,
+            150,
+            176,
+            225
+          ],
+          "sha256": "b5a00af697653771d6018bd67ddd88c05b95c612a551939d7a2acba4e65ce42f"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-north-v2.png",
+          "sourceScale": 0.35909090909090907,
+          "sourceAnchor": [
+            70.5,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            144,
+            223
+          ],
+          "bounds": [
+            119,
+            146,
+            170,
+            225
+          ],
+          "sha256": "a372ca003c52276870d71c425e489af5033c6bd72633db72c093a5bf705fbf6b"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-south-v2.png",
+          "sourceScale": 0.357487922705314,
+          "sourceAnchor": [
+            73.5,
+            213
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            143,
+            209
+          ],
+          "bounds": [
+            118,
+            150,
+            168,
+            224
+          ],
+          "sha256": "03bfaff712c7e18e384192a95c75b8ac77526e6312987905e79a4f24325fcc55"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-south-v2.png",
+          "sourceScale": 0.357487922705314,
+          "sourceAnchor": [
+            79.5,
+            213
+          ],
+          "sourceBounds": [
+            2,
+            20,
+            140,
+            213
+          ],
+          "bounds": [
+            116,
+            156,
+            165,
+            225
+          ],
+          "sha256": "9a8f6a23fffd0c424c45b3f806652584a364e62f82fa4736ce9773d5e5c05ed6"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-south-v2.png",
+          "sourceScale": 0.357487922705314,
+          "sourceAnchor": [
+            76.5,
+            213
+          ],
+          "sourceBounds": [
+            2,
+            20,
+            144,
+            210
+          ],
+          "bounds": [
+            117,
+            156,
+            168,
+            224
+          ],
+          "sha256": "71fe470d59d9a6c40c4068a737e95149ea7c5563040ebfb5ce85997cac0a1581"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-south-v2.png",
+          "sourceScale": 0.357487922705314,
+          "sourceAnchor": [
+            74,
+            213
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            144,
+            209
+          ],
+          "bounds": [
+            118,
+            150,
+            169,
+            224
+          ],
+          "sha256": "61012983fed0af424931601e48d7354df6904a43eb6a2bad4cda3f2bb92306a2"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-south-v2.png",
+          "sourceScale": 0.36619718309859156,
+          "sourceAnchor": [
+            74,
+            215
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            150,
+            215
+          ],
+          "bounds": [
+            118,
+            147,
+            172,
+            225
+          ],
+          "sha256": "707d19ef0c41bbdeffc393a292db4587f7654b0168a076ebdf976214438d6f35"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-south-v2.png",
+          "sourceScale": 0.36619718309859156,
+          "sourceAnchor": [
+            84.5,
+            215
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            192,
+            215
+          ],
+          "bounds": [
+            114,
+            147,
+            184,
+            225
+          ],
+          "sha256": "1e5475d432ba08d15ab97870d0aef3eb34e5a0d91ab3382ab0cb3f0a54c2f836"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-south-v2.png",
+          "sourceScale": 0.36619718309859156,
+          "sourceAnchor": [
+            93.5,
+            215
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            174,
+            215
+          ],
+          "bounds": [
+            110,
+            147,
+            173,
+            225
+          ],
+          "sha256": "78d108d3f407f26308d76e5504cfdc18f2147767d93b37ef671a38de0e7295bc"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-south-v2.png",
+          "sourceScale": 0.36619718309859156,
+          "sourceAnchor": [
+            62,
+            215
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            146,
+            215
+          ],
+          "bounds": [
+            122,
+            147,
+            175,
+            225
+          ],
+          "sha256": "824f953045f682284e09dc7fcb05950211cb0b6df54020ac8caabfd572d56d2c"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-south-v2.png",
+          "sourceScale": 0.3611111111111111,
+          "sourceAnchor": [
+            69,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            151,
+            218
+          ],
+          "bounds": [
+            120,
+            146,
+            174,
+            224
+          ],
+          "sha256": "356729ba2dba35ea84c8cde056dbc8b83035555004992796d67f73ab8f6b99e7"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-south-v2.png",
+          "sourceScale": 0.3611111111111111,
+          "sourceAnchor": [
+            107.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            18,
+            184,
+            220
+          ],
+          "bounds": [
+            106,
+            152,
+            172,
+            225
+          ],
+          "sha256": "ef6ebecf0641bddff8603492be122a970151a8cab231a613b32e166c3494e6b1"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-south-v2.png",
+          "sourceScale": 0.3611111111111111,
+          "sourceAnchor": [
+            89.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            19,
+            167,
+            219
+          ],
+          "bounds": [
+            112,
+            152,
+            172,
+            224
+          ],
+          "sha256": "0d4a05aebe4143257bb636f4071fbd62578e96e42eeae3d7b20aef13081f61ee"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-south-v2.png",
+          "sourceScale": 0.3611111111111111,
+          "sourceAnchor": [
+            69.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            152,
+            218
+          ],
+          "bounds": [
+            120,
+            146,
+            174,
+            224
+          ],
+          "sha256": "d30c882dfc2bfa0de43bcfe7ab4ebb99e0cf59f52a974e6617967d2cee17f18a"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-sw-v4.png",
+          "sourceScale": 0.1922141119221411,
+          "sourceAnchor": [
+            153.5,
+            413
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            288,
+            413
+          ],
+          "bounds": [
+            115,
+            146,
+            170,
+            225
+          ],
+          "sha256": "92c53778bc24586ad137d04cb4ae89d7b56128d9985eaaf3b97efd3ce7318452"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-sw-v4.png",
+          "sourceScale": 0.1922141119221411,
+          "sourceAnchor": [
+            226.5,
+            413
+          ],
+          "sourceBounds": [
+            2,
+            22,
+            361,
+            413
+          ],
+          "bounds": [
+            101,
+            150,
+            170,
+            225
+          ],
+          "sha256": "e9078f770dbc89c71be915d5a2670e1762d11c0c9c9dd1569ea168edb9a368e2"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-sw-v4.png",
+          "sourceScale": 0.1922141119221411,
+          "sourceAnchor": [
+            174,
+            413
+          ],
+          "sourceBounds": [
+            2,
+            15,
+            309,
+            413
+          ],
+          "bounds": [
+            111,
+            148,
+            170,
+            225
+          ],
+          "sha256": "621279c1cfa7bf1ff814d7ed4c4bdb147ed79bb41670b4859e9f18b83066f817"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-sw-v4.png",
+          "sourceScale": 0.1922141119221411,
+          "sourceAnchor": [
+            153.5,
+            413
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            288,
+            413
+          ],
+          "bounds": [
+            115,
+            146,
+            170,
+            225
+          ],
+          "sha256": "a70f328faa7953c1f27e3c7a11982fec144a637d30fbd9a8494494d8ce415dd6"
+        }
+      ],
+      "file": "granadero-crouch-interact.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "0db2315746e643bdaa012b7e3b423f0b242d93b096670a2a60d36fe3877bce21"
+    }
+  }
+}

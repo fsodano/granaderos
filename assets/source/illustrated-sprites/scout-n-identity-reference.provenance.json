@@ -1,0 +1,10 @@
+{
+  "source": "assets/source/illustrated-sprites/scout-idle-v1.png",
+  "rect": [
+    0,
+    0,
+    444,
+    444
+  ],
+  "method": "reference crop only"
+}

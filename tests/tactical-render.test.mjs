@@ -101,11 +101,23 @@ test('authored furnishings reach battle state and survive sector re-entry',()=>{
 test('scene selects civilians and sorts NPCs at their animated ground position',()=>{
  const s=createBattle([{id:1,x:0,y:0},{id:2,x:1,y:2}],{width:8,height:8,exploration:true,enemies:[],npcs:[{id:'civilian',name:'Vecino',x:2,y:2}]});
  const node=h(TacticalScene,{state:s,players:s.units,units:s.units,positions:{civilian:{x:1,y:1,direction:2,frame:4,moving:true}},poses:{},directions:{},reachable:[],sight:new Set(),revealed:new Set(),project});
- const markup=render(h('svg',null,node));assert.match(markup,/data-sprite="civilian-walk"/);assert.match(markup,/data-unit-id="civilian"/);assert.ok(markup.indexOf('data-unit-id="civilian"')<markup.indexOf('data-unit-id="2"'),'animated ground position sets draw order');assert.match(markup,/data-person-hit-target="true"/);
+ const markup=render(h('svg',null,node));assert.match(markup,/data-sprite="surgeon-walk"/);assert.match(markup,/data-unit-id="civilian"/);assert.ok(markup.indexOf('data-unit-id="civilian"')<markup.indexOf('data-unit-id="2"'),'animated ground position sets draw order');assert.match(markup,/data-person-hit-target="true"/);
 });
 test('radar hides unknown room floors and unseen enemy dots',()=>{
  const s=createBattle([{id:1,x:0,y:0}],{width:8,height:8,night:true,enemies:[{id:'enemy',x:7,y:7}],buildings:state.buildings});
  s.tiles.find(t=>t.x===4&&t.y===2).roomId='b';
  const markup=render(h(TacticalMinimap,{state:s,units:s.units,selected:'1',project,width:500,height:300,camera:{x:50,y:40,width:200,height:100},onCenter:()=>{}}));
  assert.ok(!markup.includes('#d7755a'));assert.match(markup,/#685037/);assert.match(markup,/x="50" y="40" width="200" height="100"/);
+});
+
+test('visible hostile units retain an enemy marker independently of selection',()=>{
+ const s=createBattle([{id:'ally',x:1,y:1}],{width:8,height:8,exploration:true,enemies:[]});
+ const enemy={...s.units[0],id:'enemy',side:'enemy',x:2,y:1,hp:100,spriteAppearance:'blue-officer'};
+ const draw=units=>render(h('svg',null,h(TacticalScene,{state:s,players:s.units,units,positions:{},poses:{},directions:{},reachable:[],sight:new Set(),revealed:new Set(),project})));
+ assert.match(draw([enemy]),/aria-label="Enemigo"/);
+ assert.match(draw([enemy]),/royalist-idle/);
+ assert.doesNotMatch(draw(s.units),/aria-label="Enemigo"/);
+ assert.doesNotMatch(draw([{...enemy,hp:0}]),/aria-label="Enemigo"/);
+ assert.doesNotMatch(draw([{...enemy,surrendered:true}]),/aria-label="Enemigo"/);
+ assert.doesNotMatch(draw([]),/aria-label="Enemigo"/);
 });

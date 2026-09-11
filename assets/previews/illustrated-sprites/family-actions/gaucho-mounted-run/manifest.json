@@ -1,0 +1,778 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "gaucho-mounted-run": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 7,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sha256": "3cb385d2e68b17e8627e6fc306b66c1724717a1a78d179f793778cff34dfe88d",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2692307692307692,
+          "sourceAnchor": [
+            31,
+            132
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            60,
+            132
+          ],
+          "bounds": [
+            107,
+            60,
+            181,
+            225
+          ],
+          "sha256": "05ef8121867825112bd2ef9c47e97774f3766eb5529a1d2627e0611fdec2e062"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2692307692307692,
+          "sourceAnchor": [
+            30.5,
+            132
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            59,
+            130
+          ],
+          "bounds": [
+            108,
+            60,
+            180,
+            222
+          ],
+          "sha256": "465beeb3e0b026d54e3246b6c5a2c8c30522014a0695bbae3670da483a6f043e"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2692307692307692,
+          "sourceAnchor": [
+            31,
+            132
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            60,
+            132
+          ],
+          "bounds": [
+            107,
+            60,
+            181,
+            225
+          ],
+          "sha256": "3c332e6b7c12d51008403791453e257f879f2bca2359d2b840361d00752d211b"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2692307692307692,
+          "sourceAnchor": [
+            30.5,
+            132
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            59,
+            132
+          ],
+          "bounds": [
+            108,
+            60,
+            180,
+            225
+          ],
+          "sha256": "c0c7d9d5beede9f5a00b18c0bcf1c77941b33b3284e67490553b311ba9b8f653"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2406015037593985,
+          "sourceAnchor": [
+            61.5,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            121,
+            131
+          ],
+          "bounds": [
+            70,
+            60,
+            218,
+            220
+          ],
+          "sha256": "a98fb1b4ed1aa9b6ddc471cb5ef23bd216d82112f4b468ac2f93ecd41d753f2c"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2406015037593985,
+          "sourceAnchor": [
+            58,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            114,
+            130
+          ],
+          "bounds": [
+            75,
+            60,
+            214,
+            219
+          ],
+          "sha256": "41e85227f6d423c8b6f89c8dde7b5d39230ad597dd0468503d2836787f082de5"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2406015037593985,
+          "sourceAnchor": [
+            66.5,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            131,
+            135
+          ],
+          "bounds": [
+            64,
+            60,
+            224,
+            225
+          ],
+          "sha256": "aa5faf81bf7cce60f8f6732f6da7fee3ab3382cc842b395afcc87354192feebe"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2406015037593985,
+          "sourceAnchor": [
+            55.5,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            109,
+            132
+          ],
+          "bounds": [
+            78,
+            60,
+            211,
+            221
+          ],
+          "sha256": "f96a19d1ec642301b5d713b9e3742d276917844797d7d62e7c5d46d655e9d951"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2615384615384615,
+          "sourceAnchor": [
+            80,
+            133
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            158,
+            132
+          ],
+          "bounds": [
+            46,
+            60,
+            243,
+            224
+          ],
+          "sha256": "2bd1f2e40ce8da7e3c843d8833b07bed95d1cb71e52dbd0460eb054d8b59c60d"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2615384615384615,
+          "sourceAnchor": [
+            80,
+            133
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            158,
+            126
+          ],
+          "bounds": [
+            46,
+            60,
+            243,
+            216
+          ],
+          "sha256": "d5e80df8d491a669c8c8a94bf30375e96e26855f0c232039189b34bb91d912ec"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2615384615384615,
+          "sourceAnchor": [
+            86,
+            133
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            170,
+            133
+          ],
+          "bounds": [
+            38,
+            61,
+            250,
+            225
+          ],
+          "sha256": "7a3d171b14ac9f38f071ea2cdf1126b594261078b7b609c4f305bee81c85d036"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2615384615384615,
+          "sourceAnchor": [
+            79.5,
+            133
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            157,
+            130
+          ],
+          "bounds": [
+            46,
+            61,
+            242,
+            221
+          ],
+          "sha256": "534812166277f915a40b40c2ef8e7a16d573c01ab0bd09393384112f8e72c418"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2279411764705883,
+          "sourceAnchor": [
+            67,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            132,
+            135
+          ],
+          "bounds": [
+            64,
+            58,
+            224,
+            221
+          ],
+          "sha256": "4b8ceb4508b9c1816b50edb93e4bf18507f83a9b7b3fdad909e958181072e907"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2279411764705883,
+          "sourceAnchor": [
+            67.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            138
+          ],
+          "bounds": [
+            64,
+            58,
+            225,
+            225
+          ],
+          "sha256": "c5e5e15d6d832acf6e8ad8a61e164c3d4e5492d764fdc535c440bf53306d8d56"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2279411764705883,
+          "sourceAnchor": [
+            73,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            144,
+            138
+          ],
+          "bounds": [
+            57,
+            59,
+            231,
+            225
+          ],
+          "sha256": "90f2925fd3ddb01c38986dcd8d248548309423d668c49e6c4dd3861c6392eef9"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2279411764705883,
+          "sourceAnchor": [
+            70,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            138,
+            137
+          ],
+          "bounds": [
+            61,
+            59,
+            228,
+            224
+          ],
+          "sha256": "3f48b3bc4e57a7b12d177029c000c7ce816023fe68b0ad5b54beaf1b3b83569e"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.1448275862068966,
+          "sourceAnchor": [
+            35.5,
+            147
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            69,
+            147
+          ],
+          "bounds": [
+            106,
+            59,
+            183,
+            225
+          ],
+          "sha256": "8706c559ee0fbc3fea4ad8d4a3f74bbeb59208d7d6bf90433b46a68ee7194bde"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.1448275862068966,
+          "sourceAnchor": [
+            35,
+            147
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            68,
+            140
+          ],
+          "bounds": [
+            106,
+            61,
+            182,
+            217
+          ],
+          "sha256": "b16b7423e54feb74d457d8741de58a6aeaa7b8dddda54eb76132543364b25b62"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.1448275862068966,
+          "sourceAnchor": [
+            34.5,
+            147
+          ],
+          "sourceBounds": [
+            2,
+            5,
+            67,
+            142
+          ],
+          "bounds": [
+            107,
+            62,
+            181,
+            219
+          ],
+          "sha256": "1a5a554ea8f1303559cce28159ac17ecb3a1a442919f4c1522f127e2edf2762e"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.1448275862068966,
+          "sourceAnchor": [
+            34.5,
+            147
+          ],
+          "sourceBounds": [
+            2,
+            5,
+            67,
+            142
+          ],
+          "bounds": [
+            107,
+            62,
+            181,
+            219
+          ],
+          "sha256": "f61bc2036f329a012a586b6f3a5e48125deea3491c6b9eaa892d9097e5deac6e"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2028985507246377,
+          "sourceAnchor": [
+            68,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            134,
+            139
+          ],
+          "bounds": [
+            65,
+            59,
+            224,
+            223
+          ],
+          "sha256": "60af02ecbe3047b9f9718d7d0a14f99ab27c411566bb6bb92aa157bb51c6e8ce"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2028985507246377,
+          "sourceAnchor": [
+            71.5,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            136
+          ],
+          "bounds": [
+            60,
+            58,
+            227,
+            219
+          ],
+          "sha256": "64ef9422366a31f902bb915d47151f4b7d4c41193d80479b8bc0cf9a0dbfb73b"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2028985507246377,
+          "sourceAnchor": [
+            82,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            162,
+            135
+          ],
+          "bounds": [
+            48,
+            59,
+            240,
+            218
+          ],
+          "sha256": "56fbb2440f975d7fb0a8c81be03f02ec5a720414edee758040efca1029bdeb3c"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2028985507246377,
+          "sourceAnchor": [
+            70.5,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            139,
+            141
+          ],
+          "bounds": [
+            62,
+            59,
+            227,
+            225
+          ],
+          "sha256": "f858828644bdeef4d8c73ed14d91890fea6a9a43a7bc7352373807b7b70c1423"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2238805970149254,
+          "sourceAnchor": [
+            79.5,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            157,
+            136
+          ],
+          "bounds": [
+            49,
+            61,
+            239,
+            225
+          ],
+          "sha256": "8fef267055c03e40bb48191018be6b905d3ee4794bb54c7116a435246af5078e"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2238805970149254,
+          "sourceAnchor": [
+            79.5,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            157,
+            132
+          ],
+          "bounds": [
+            49,
+            61,
+            239,
+            220
+          ],
+          "sha256": "89ff34995ed819773214df6baeb5eee4ca37315b6a201a6c8684addd67e4bbc0"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2238805970149254,
+          "sourceAnchor": [
+            83,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            164,
+            135
+          ],
+          "bounds": [
+            45,
+            61,
+            243,
+            224
+          ],
+          "sha256": "d20cc7a4d154f56676d8e71f4a4f41c80512a269e4bbc024de65127d79f00aa4"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.2238805970149254,
+          "sourceAnchor": [
+            77.5,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            153,
+            136
+          ],
+          "bounds": [
+            52,
+            61,
+            237,
+            225
+          ],
+          "sha256": "39c5a13744d9982ec0b6b40547859b4be198b2028ee830e03bb5540941ec8a25"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.1702127659574468,
+          "sourceAnchor": [
+            67.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            140
+          ],
+          "bounds": [
+            67,
+            60,
+            220,
+            221
+          ],
+          "sha256": "656646b04fb8a4123163eb303ba3e7c72c8414c3759f3774522ddb6afc4aa038"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.1702127659574468,
+          "sourceAnchor": [
+            68,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            134,
+            143
+          ],
+          "bounds": [
+            67,
+            60,
+            221,
+            225
+          ],
+          "sha256": "8e7b9ebdb65859f6fba58020bea264fbc1cf0ca356a3f22bc0d6d224f2d17540"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.1702127659574468,
+          "sourceAnchor": [
+            72,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            135
+          ],
+          "bounds": [
+            62,
+            60,
+            226,
+            216
+          ],
+          "sha256": "6168b44b54ad05f2c422888c233a3aeab5a39c7f25abd2894b9315d250ee4010"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+          "sourceScale": 1.1702127659574468,
+          "sourceAnchor": [
+            64.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            127,
+            139
+          ],
+          "bounds": [
+            71,
+            60,
+            217,
+            220
+          ],
+          "sha256": "c69ca21f5e797989255f2d4e49ebd7b2fefb831ba5cff708b28c65a4493eaaf7"
+        }
+      ],
+      "file": "gaucho-mounted-run.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "21dd757f28abed541c53bba7cb526fa5cefa79fc48a674fff1f303674cebcad6"
+    }
+  }
+}

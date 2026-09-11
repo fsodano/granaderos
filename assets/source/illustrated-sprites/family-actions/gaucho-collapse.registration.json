@@ -1,0 +1,721 @@
+{
+  "version": 1,
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "sheets": [
+    {
+      "name": "gaucho-collapse",
+      "source": "assets/source/illustrated-sprites/family-actions/gaucho-collapse-north-v1.png",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "fps": 5,
+      "cell": 288,
+      "logicalCell": 96,
+      "anchor": [
+        144,
+        225
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            107,
+            50,
+            98,
+            224
+          ],
+          "scale": 0.4931506849315068,
+          "anchor": [
+            49.5,
+            222
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            396,
+            50,
+            146,
+            224
+          ],
+          "scale": 0.4931506849315068,
+          "anchor": [
+            74,
+            222
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            701,
+            50,
+            160,
+            224
+          ],
+          "scale": 0.4931506849315068,
+          "anchor": [
+            80.5,
+            222
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1019,
+            50,
+            155,
+            224
+          ],
+          "scale": 0.4931506849315068,
+          "anchor": [
+            78.5,
+            222
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "row": 1,
+          "col": 0,
+          "rect": [
+            108,
+            361,
+            88,
+            227
+          ],
+          "scale": 0.48868778280542985,
+          "anchor": [
+            48,
+            225
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "row": 1,
+          "col": 1,
+          "rect": [
+            407,
+            361,
+            141,
+            227
+          ],
+          "scale": 0.48868778280542985,
+          "anchor": [
+            82,
+            225
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "row": 1,
+          "col": 2,
+          "rect": [
+            680,
+            361,
+            206,
+            227
+          ],
+          "scale": 0.48868778280542985,
+          "anchor": [
+            100.5,
+            225
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "row": 1,
+          "col": 3,
+          "rect": [
+            991,
+            361,
+            218,
+            227
+          ],
+          "scale": 0.48868778280542985,
+          "anchor": [
+            67.5,
+            225
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "row": 2,
+          "col": 0,
+          "rect": [
+            117,
+            668,
+            74,
+            236
+          ],
+          "scale": 0.4759825327510917,
+          "anchor": [
+            40,
+            234
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "row": 2,
+          "col": 1,
+          "rect": [
+            402,
+            668,
+            131,
+            236
+          ],
+          "scale": 0.4759825327510917,
+          "anchor": [
+            94.5,
+            234
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "row": 2,
+          "col": 2,
+          "rect": [
+            676,
+            668,
+            214,
+            236
+          ],
+          "scale": 0.4759825327510917,
+          "anchor": [
+            121.5,
+            234
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "row": 2,
+          "col": 3,
+          "rect": [
+            971,
+            668,
+            251,
+            236
+          ],
+          "scale": 0.4759825327510917,
+          "anchor": [
+            89,
+            234
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "row": 3,
+          "col": 0,
+          "rect": [
+            106,
+            982,
+            95,
+            231
+          ],
+          "scale": 0.4713656387665198,
+          "anchor": [
+            49.5,
+            229
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "row": 3,
+          "col": 1,
+          "rect": [
+            402,
+            982,
+            138,
+            231
+          ],
+          "scale": 0.4713656387665198,
+          "anchor": [
+            88,
+            229
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "row": 3,
+          "col": 2,
+          "rect": [
+            679,
+            982,
+            209,
+            231
+          ],
+          "scale": 0.4713656387665198,
+          "anchor": [
+            107,
+            229
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "row": 3,
+          "col": 3,
+          "rect": [
+            989,
+            982,
+            221,
+            231
+          ],
+          "scale": 0.4713656387665198,
+          "anchor": [
+            153.5,
+            229
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        }
+      ]
+    },
+    {
+      "name": "gaucho-collapse",
+      "source": "assets/source/illustrated-sprites/family-actions/gaucho-collapse-south-v1.png",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "fps": 5,
+      "cell": 288,
+      "logicalCell": 96,
+      "anchor": [
+        144,
+        225
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "s",
+          "frame": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            104,
+            48,
+            96,
+            225
+          ],
+          "scale": 0.48868778280542985,
+          "anchor": [
+            48.5,
+            223
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            405,
+            48,
+            125,
+            225
+          ],
+          "scale": 0.48868778280542985,
+          "anchor": [
+            60.5,
+            223
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            707,
+            48,
+            139,
+            225
+          ],
+          "scale": 0.48868778280542985,
+          "anchor": [
+            68.5,
+            223
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1026,
+            48,
+            140,
+            225
+          ],
+          "scale": 0.48868778280542985,
+          "anchor": [
+            69,
+            223
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "row": 1,
+          "col": 0,
+          "rect": [
+            106,
+            354,
+            96,
+            233
+          ],
+          "scale": 0.4759825327510917,
+          "anchor": [
+            39,
+            231
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "row": 1,
+          "col": 1,
+          "rect": [
+            401,
+            354,
+            136,
+            233
+          ],
+          "scale": 0.4759825327510917,
+          "anchor": [
+            47,
+            231
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "row": 1,
+          "col": 2,
+          "rect": [
+            682,
+            354,
+            190,
+            233
+          ],
+          "scale": 0.4759825327510917,
+          "anchor": [
+            35,
+            231
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "row": 1,
+          "col": 3,
+          "rect": [
+            975,
+            354,
+            218,
+            233
+          ],
+          "scale": 0.4759825327510917,
+          "anchor": [
+            34.5,
+            231
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "row": 2,
+          "col": 0,
+          "rect": [
+            111,
+            667,
+            76,
+            234
+          ],
+          "scale": 0.47391304347826085,
+          "anchor": [
+            27.5,
+            232
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "row": 2,
+          "col": 1,
+          "rect": [
+            405,
+            667,
+            125,
+            234
+          ],
+          "scale": 0.47391304347826085,
+          "anchor": [
+            42.5,
+            232
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "row": 2,
+          "col": 2,
+          "rect": [
+            675,
+            667,
+            205,
+            234
+          ],
+          "scale": 0.47391304347826085,
+          "anchor": [
+            107,
+            232
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "row": 2,
+          "col": 3,
+          "rect": [
+            965,
+            667,
+            243,
+            234
+          ],
+          "scale": 0.47391304347826085,
+          "anchor": [
+            108,
+            232
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "row": 3,
+          "col": 0,
+          "rect": [
+            100,
+            983,
+            97,
+            231
+          ],
+          "scale": 0.4823008849557522,
+          "anchor": [
+            42.5,
+            229
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "row": 3,
+          "col": 1,
+          "rect": [
+            408,
+            983,
+            117,
+            231
+          ],
+          "scale": 0.4823008849557522,
+          "anchor": [
+            66.5,
+            229
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "row": 3,
+          "col": 2,
+          "rect": [
+            683,
+            983,
+            185,
+            231
+          ],
+          "scale": 0.4823008849557522,
+          "anchor": [
+            107.5,
+            229
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "row": 3,
+          "col": 3,
+          "rect": [
+            981,
+            983,
+            215,
+            231
+          ],
+          "scale": 0.4823008849557522,
+          "anchor": [
+            191,
+            229
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        }
+      ]
+    }
+  ]
+}

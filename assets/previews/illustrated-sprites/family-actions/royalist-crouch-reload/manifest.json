@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "royalist-crouch-reload": {
+      "cell": 240,
+      "anchor": [
+        120,
+        210
+      ],
+      "logicalCell": 80,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-north-v1.png",
+          "sha256": "9fe78f6aabfcfeef5e27d3e8ebc14ed208b8f8309719da8828759e9a1e04ae2f",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-south-v2.png",
+          "sha256": "efc2d6aca09a5ae5f0e458aa513fd6d4d6694aede9e5b39a8656a2fc7931940d",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-north-v1.png",
+          "sourceScale": 0.36180904522613067,
+          "sourceAnchor": [
+            111,
+            245
+          ],
+          "sourceBounds": [
+            2,
+            46,
+            181,
+            245
+          ],
+          "bounds": [
+            81,
+            138,
+            146,
+            210
+          ],
+          "sha256": "7dc94523211b5befc91f34c395c52b1b078acbd3361019f34ec7065641d1e6b7"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-north-v1.png",
+          "sourceScale": 0.36180904522613067,
+          "sourceAnchor": [
+            57,
+            245
+          ],
+          "sourceBounds": [
+            2,
+            45,
+            123,
+            245
+          ],
+          "bounds": [
+            100,
+            138,
+            144,
+            210
+          ],
+          "sha256": "3fbaa16d4cda0d169a2a70632327dfc30a3b59133fa6cb68e84fb1a58a77507f"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-north-v1.png",
+          "sourceScale": 0.36180904522613067,
+          "sourceAnchor": [
+            56,
+            245
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            121,
+            245
+          ],
+          "bounds": [
+            100,
+            122,
+            143,
+            210
+          ],
+          "sha256": "e44d5f71eb919747846129ae2eff7f4aec665b70eff3e7aeba421bd1c6ae37bd"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-north-v1.png",
+          "sourceScale": 0.36180904522613067,
+          "sourceAnchor": [
+            63.5,
+            245
+          ],
+          "sourceBounds": [
+            2,
+            46,
+            186,
+            245
+          ],
+          "bounds": [
+            98,
+            138,
+            165,
+            210
+          ],
+          "sha256": "357c0d07ff88e9c1c19dbcdac8aca87038e7f56b5ea167b78446bb75d0ad22e6"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-north-v1.png",
+          "sourceScale": 0.3880597014925373,
+          "sourceAnchor": [
+            91,
+            237
+          ],
+          "sourceBounds": [
+            2,
+            36,
+            171,
+            237
+          ],
+          "bounds": [
+            85,
+            132,
+            151,
+            210
+          ],
+          "sha256": "4627bf4f04e7e7ffd552f7a60577ea16cb480fe64c4516b499ecb8f82202f2c1"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-north-v1.png",
+          "sourceScale": 0.3880597014925373,
+          "sourceAnchor": [
+            76,
+            237
+          ],
+          "sourceBounds": [
+            2,
+            34,
+            147,
+            237
+          ],
+          "bounds": [
+            91,
+            131,
+            147,
+            210
+          ],
+          "sha256": "b1b7379c3de474cff67b4ce36f8a49edf4ee025f84410d435e424fb4b6fe2eb3"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-north-v1.png",
+          "sourceScale": 0.3880597014925373,
+          "sourceAnchor": [
+            77.5,
+            237
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            237
+          ],
+          "bounds": [
+            91,
+            119,
+            145,
+            210
+          ],
+          "sha256": "669f0b2a2d8a6aace95a1b91356f67a0f7268f8747c13b02c104aa9035ba0842"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-north-v1.png",
+          "sourceScale": 0.3880597014925373,
+          "sourceAnchor": [
+            61,
+            237
+          ],
+          "sourceBounds": [
+            2,
+            38,
+            196,
+            237
+          ],
+          "bounds": [
+            97,
+            133,
+            172,
+            210
+          ],
+          "sha256": "072ea5337f959e317715b888453e38c596e4094173ea9a56f6ff02007db126dc"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-north-v1.png",
+          "sourceScale": 0.3939393939393939,
+          "sourceAnchor": [
+            66,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            30,
+            188,
+            228
+          ],
+          "bounds": [
+            95,
+            132,
+            168,
+            210
+          ],
+          "sha256": "0e99d2830182e702e6bfacc5d38e77755975714bf5140fb3a18878b44197ea56"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-north-v1.png",
+          "sourceScale": 0.3939393939393939,
+          "sourceAnchor": [
+            87,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            29,
+            152,
+            228
+          ],
+          "bounds": [
+            87,
+            132,
+            146,
+            210
+          ],
+          "sha256": "3c193a55fc669e6ef8a60b8996305f395dd5393eb943e48e11c3e2e6168b2082"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-north-v1.png",
+          "sourceScale": 0.3939393939393939,
+          "sourceAnchor": [
+            86.5,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            152,
+            228
+          ],
+          "bounds": [
+            87,
+            121,
+            146,
+            210
+          ],
+          "sha256": "62a675b998f475ff6ff260cc2607c2e2aef7cfbea663b836552720e132428903"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-north-v1.png",
+          "sourceScale": 0.3939393939393939,
+          "sourceAnchor": [
+            66,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            31,
+            212,
+            228
+          ],
+          "bounds": [
+            95,
+            132,
+            178,
+            210
+          ],
+          "sha256": "4ddb03d64dc4d2f0063bf9b58b9c9f79ed6f8af3701d1cf1e2b20e70046c45fa"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-north-v1.png",
+          "sourceScale": 0.3939393939393939,
+          "sourceAnchor": [
+            76,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            27,
+            180,
+            225
+          ],
+          "bounds": [
+            91,
+            132,
+            161,
+            210
+          ],
+          "sha256": "0e2fb11ffa0ce0e8d6238c901c137bae683c71c4d8da0f09b7f2c3e2a5de2a16"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-north-v1.png",
+          "sourceScale": 0.3939393939393939,
+          "sourceAnchor": [
+            81.5,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            27,
+            141,
+            225
+          ],
+          "bounds": [
+            89,
+            132,
+            144,
+            210
+          ],
+          "sha256": "556ea1a5904502ed92adf296b16b1f07ca9097f0c9ac5c852b396a55f85db241"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-north-v1.png",
+          "sourceScale": 0.3939393939393939,
+          "sourceAnchor": [
+            81.5,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            225
+          ],
+          "bounds": [
+            89,
+            122,
+            144,
+            210
+          ],
+          "sha256": "661a3dac0a64d3b75b80854c4fbfee7eb0b3916f67e30eaa23b299580f28b920"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-north-v1.png",
+          "sourceScale": 0.3939393939393939,
+          "sourceAnchor": [
+            75,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            27,
+            181,
+            225
+          ],
+          "bounds": [
+            91,
+            132,
+            162,
+            210
+          ],
+          "sha256": "ce2459490a00f1a057cfb1addb349aae59b3e2a3f4e96dc0754a15deb2dbbe5f"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-south-v2.png",
+          "sourceScale": 0.33183856502242154,
+          "sourceAnchor": [
+            70.5,
+            258
+          ],
+          "sourceBounds": [
+            2,
+            30,
+            176,
+            253
+          ],
+          "bounds": [
+            97,
+            134,
+            155,
+            208
+          ],
+          "sha256": "935250e137fb52405c76b981feda95f82408eba4da1c0f9d7db67fe825090f81"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-south-v2.png",
+          "sourceScale": 0.33183856502242154,
+          "sourceAnchor": [
+            84,
+            258
+          ],
+          "sourceBounds": [
+            2,
+            30,
+            152,
+            256
+          ],
+          "bounds": [
+            93,
+            134,
+            143,
+            209
+          ],
+          "sha256": "44698adf861c92d4fb0cf092b16df9ea65bfedb14f266b3168f93c864d55701e"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-south-v2.png",
+          "sourceScale": 0.33183856502242154,
+          "sourceAnchor": [
+            64.5,
+            258
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            126,
+            258
+          ],
+          "bounds": [
+            99,
+            125,
+            140,
+            210
+          ],
+          "sha256": "bc6b1c867f39fafb358a6e90903ebeb4383cdbe63fa9942642a5d447ebbca320"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-south-v2.png",
+          "sourceScale": 0.33183856502242154,
+          "sourceAnchor": [
+            70.5,
+            258
+          ],
+          "sourceBounds": [
+            2,
+            30,
+            177,
+            251
+          ],
+          "bounds": [
+            97,
+            134,
+            155,
+            207
+          ],
+          "sha256": "0d5bd6292c4de58c00f2058ea9cbb1b7b43b53dac0c5ab71fbc80de57d6355c3"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-south-v2.png",
+          "sourceScale": 0.34801762114537443,
+          "sourceAnchor": [
+            64.5,
+            257
+          ],
+          "sourceBounds": [
+            2,
+            27,
+            155,
+            254
+          ],
+          "bounds": [
+            98,
+            130,
+            151,
+            209
+          ],
+          "sha256": "9e3c3291436e4dfdc2a40af24b245a01b0e722437ab93909a4653e34eed84e25"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-south-v2.png",
+          "sourceScale": 0.34801762114537443,
+          "sourceAnchor": [
+            71,
+            257
+          ],
+          "sourceBounds": [
+            2,
+            27,
+            162,
+            255
+          ],
+          "bounds": [
+            96,
+            130,
+            152,
+            209
+          ],
+          "sha256": "b7a9d6c70d24d7fa122989c8ad871487109a7ec96fbd4398dc4670f48a80083e"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-south-v2.png",
+          "sourceScale": 0.34801762114537443,
+          "sourceAnchor": [
+            56,
+            257
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            145,
+            257
+          ],
+          "bounds": [
+            101,
+            121,
+            151,
+            210
+          ],
+          "sha256": "fbd95a0c61090cad241d404b79636e99c3d7c186e3ff7df0badd2de0a6ef74a5"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-south-v2.png",
+          "sourceScale": 0.34801762114537443,
+          "sourceAnchor": [
+            65.5,
+            257
+          ],
+          "sourceBounds": [
+            2,
+            27,
+            166,
+            253
+          ],
+          "bounds": [
+            98,
+            130,
+            155,
+            209
+          ],
+          "sha256": "e95c2178176b99beaad1a3ee6c2f81c31c8f97cd14d6b668b6facdba2d9ebf6e"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-south-v2.png",
+          "sourceScale": 0.35135135135135137,
+          "sourceAnchor": [
+            98,
+            252
+          ],
+          "sourceBounds": [
+            2,
+            26,
+            178,
+            248
+          ],
+          "bounds": [
+            86,
+            131,
+            148,
+            209
+          ],
+          "sha256": "ea282f45ccea456ee65c795c6197d34537e607b65ced19655940e93e4caa9032"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-south-v2.png",
+          "sourceScale": 0.35135135135135137,
+          "sourceAnchor": [
+            76,
+            252
+          ],
+          "sourceBounds": [
+            2,
+            26,
+            173,
+            252
+          ],
+          "bounds": [
+            94,
+            131,
+            154,
+            210
+          ],
+          "sha256": "efa268084f81d25d91b69688660a644a8e5ab784b3f74504eb709fbde16d9939"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-south-v2.png",
+          "sourceScale": 0.35135135135135137,
+          "sourceAnchor": [
+            66,
+            252
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            151,
+            252
+          ],
+          "bounds": [
+            98,
+            122,
+            150,
+            210
+          ],
+          "sha256": "1e1f28ea090442a88e41b171a721dbfc0545af749ee522ce15b9c7d7dc1411c0"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-south-v2.png",
+          "sourceScale": 0.35135135135135137,
+          "sourceAnchor": [
+            91.5,
+            252
+          ],
+          "sourceBounds": [
+            2,
+            26,
+            170,
+            248
+          ],
+          "bounds": [
+            89,
+            131,
+            148,
+            209
+          ],
+          "sha256": "db95e30e0e7b26cca9c391f1f0b58e182410cf8016b5560063af6c3533dec873"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-south-v2.png",
+          "sourceScale": 0.3561643835616438,
+          "sourceAnchor": [
+            107,
+            231
+          ],
+          "sourceBounds": [
+            2,
+            10,
+            178,
+            229
+          ],
+          "bounds": [
+            83,
+            131,
+            146,
+            209
+          ],
+          "sha256": "c492e3505e9551634da7d7eefaac59cc91253d838a6f7e2aa84752f12b76ee02"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-south-v2.png",
+          "sourceScale": 0.3561643835616438,
+          "sourceAnchor": [
+            79.5,
+            231
+          ],
+          "sourceBounds": [
+            2,
+            8,
+            167,
+            231
+          ],
+          "bounds": [
+            92,
+            131,
+            151,
+            210
+          ],
+          "sha256": "4150684bb6ebf3d0d2e0b77a0615b9b923a12bd14303248b1f56a7a784c5cb45"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-south-v2.png",
+          "sourceScale": 0.3561643835616438,
+          "sourceAnchor": [
+            69,
+            231
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            229
+          ],
+          "bounds": [
+            96,
+            128,
+            146,
+            209
+          ],
+          "sha256": "1695de72cddb36a3af0503272d09e057f4db9b3f5aa35ee0490ed3f35618552b"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-reload-south-v2.png",
+          "sourceScale": 0.3561643835616438,
+          "sourceAnchor": [
+            108.5,
+            231
+          ],
+          "sourceBounds": [
+            2,
+            10,
+            180,
+            229
+          ],
+          "bounds": [
+            82,
+            131,
+            145,
+            209
+          ],
+          "sha256": "2df8218a32b15bd212c7e309058f58d6cc950dcd1bdb69dd5afc47adf515706c"
+        }
+      ],
+      "file": "royalist-crouch-reload.png",
+      "size": [
+        960,
+        1920
+      ],
+      "sha256": "279e338daf611b84f79c02cc1f22d10dafdcc01f1191de091ad1b8c098febf8d"
+    }
+  }
+}

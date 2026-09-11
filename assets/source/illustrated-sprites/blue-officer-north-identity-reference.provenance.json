@@ -1,0 +1,12 @@
+{
+  "source": "blue-officer-idle-v1.png",
+  "rect": [
+    0,
+    0,
+    444,
+    444
+  ],
+  "resize": 2,
+  "kernel": "nearest",
+  "role": "Input preprocessing: crop north rear identity only to avoid idle directional grid leaking into animation columns"
+}

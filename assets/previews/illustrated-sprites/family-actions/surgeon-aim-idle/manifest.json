@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "surgeon-aim-idle": {
+      "cell": 210,
+      "anchor": [
+        105,
+        186
+      ],
+      "logicalCell": 70,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/surgeon-fire-north-v1.png",
+          "sha256": "a236a5e2527cb4774f1e2d0e6eee829a8255cf8eee47b30619d06c9472609a5c",
+          "scale": 0.6698564593301436
+        },
+        {
+          "file": "assets/source/illustrated-sprites/surgeon-fire-south-v1.png",
+          "sha256": "28e1b3f1e7acbbc293905bcf1d9e5efd8e042b8db4311df0bff5c652f799ad0f",
+          "scale": 0.6698564593301436
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/surgeon-fire-north-v1.png",
+          "sourceScale": 0.508282,
+          "sourceAnchor": [
+            37.783,
+            233.65
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            84,
+            228
+          ],
+          "bounds": [
+            87,
+            68,
+            129,
+            183
+          ],
+          "sha256": "c11554b6ca149af0a54d0aeeedac2e85a028e59869ef38f4b30150429383a04f"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/surgeon-fire-north-v1.png",
+          "sourceScale": 0.504274,
+          "sourceAnchor": [
+            45.271,
+            227.763
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            114,
+            224
+          ],
+          "bounds": [
+            83,
+            72,
+            139,
+            184
+          ],
+          "sha256": "753e271aafc3c7fc66b6de1082e53b283d1f80616a98887a161b4b6f04956264"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/surgeon-fire-north-v1.png",
+          "sourceScale": 0.521167,
+          "sourceAnchor": [
+            47.902,
+            229.672
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            121,
+            226
+          ],
+          "bounds": [
+            81,
+            67,
+            143,
+            184
+          ],
+          "sha256": "b2e0a876004229fabc6b52feef2e9474a69032d6889c1e6c64cb5acbf16c5c47"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/surgeon-fire-north-v1.png",
+          "sourceScale": 0.491747,
+          "sourceAnchor": [
+            40.621,
+            229.862
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            110,
+            226
+          ],
+          "bounds": [
+            86,
+            74,
+            139,
+            184
+          ],
+          "sha256": "5914f654d79151fc0e52d119816db23c6a1af29980b69376006a0763ecfdf3f4"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/surgeon-fire-south-v1.png",
+          "sourceScale": 0.47819,
+          "sourceAnchor": [
+            47.61,
+            236
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            90,
+            236
+          ],
+          "bounds": [
+            83,
+            74,
+            125,
+            186
+          ],
+          "sha256": "7edaa93565abf6bccdd4a388214a4d4b7b9d6e1167420158a8427b996dc53387"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/surgeon-fire-south-v1.png",
+          "sourceScale": 0.529711,
+          "sourceAnchor": [
+            83.29,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            116,
+            226
+          ],
+          "bounds": [
+            62,
+            67,
+            122,
+            186
+          ],
+          "sha256": "4fddd0ca75818bb808c8a2fedfaf3292272d268aa95b8e66e2293153a5529b72"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/surgeon-fire-south-v1.png",
+          "sourceScale": 0.532835,
+          "sourceAnchor": [
+            143.295,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            124,
+            223
+          ],
+          "bounds": [
+            30,
+            68,
+            95,
+            186
+          ],
+          "sha256": "bbfdc8597abb048205c434cf2583535499882e8f2132574a54a9e4bda3332dca"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/surgeon-fire-south-v1.png",
+          "sourceScale": 0.526732,
+          "sourceAnchor": [
+            114.633,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            113,
+            220
+          ],
+          "bounds": [
+            46,
+            71,
+            104,
+            186
+          ],
+          "sha256": "9e03b02e300929894b39a9452e329541a0a8976ce1d1c74b27fe5bb9cf6f791e"
+        }
+      ],
+      "file": "surgeon-aim-idle.png",
+      "size": [
+        1680,
+        210
+      ],
+      "sha256": "7d0330109f78f52374c5f3dd3f02e3b460189a873bb96ae2d0de43faac14e2e7",
+      "derivedFrom": {
+        "atlas": "surgeon-fire",
+        "frame": 0,
+        "reason": "hold authored pre-shot aim"
+      }
+    }
+  }
+}

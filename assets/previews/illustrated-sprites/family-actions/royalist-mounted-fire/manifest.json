@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "royalist-mounted-fire": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sha256": "2f423400e48beefebcfaacd9f873ba30f2205b5aa6f0f89ebc291978683ee958",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-n-v2.png",
+          "sha256": "616858da528bea37765d65daaa127dafe7d411f3f3ae2a49ebfe21619a0875f3",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.1619718309859155,
+          "sourceAnchor": [
+            56,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            118,
+            144
+          ],
+          "bounds": [
+            81,
+            60,
+            216,
+            225
+          ],
+          "sha256": "9b7baa703dd00e3db0df7b3cc0f469218a7554119a1c043abf078dee9c50285a"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.1619718309859155,
+          "sourceAnchor": [
+            54.5,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            124,
+            144
+          ],
+          "bounds": [
+            83,
+            60,
+            225,
+            225
+          ],
+          "sha256": "d30b66e41520837a72809b12e8f0677a6689b3f4ef9e9ff6498e5c4906130f98"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.1619718309859155,
+          "sourceAnchor": [
+            57,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            127,
+            144
+          ],
+          "bounds": [
+            80,
+            60,
+            225,
+            225
+          ],
+          "sha256": "da27e9aafa3d8872490b0b300e156081f811433af57710f8c1151422c81eb6fc"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.1619718309859155,
+          "sourceAnchor": [
+            56.5,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            122,
+            144
+          ],
+          "bounds": [
+            81,
+            60,
+            220,
+            225
+          ],
+          "sha256": "dcdcb8a0ca40e59fb3419d75768cf8296d84db7e8cd718c60b9a6a82bfda93c2"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.1549295774647887,
+          "sourceAnchor": [
+            70.5,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            154,
+            144
+          ],
+          "bounds": [
+            65,
+            61,
+            241,
+            225
+          ],
+          "sha256": "b5b5a2916d7a50a4d679512912947dc99c4d3b28318ca6aad74a720040ce999d"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.1549295774647887,
+          "sourceAnchor": [
+            69.5,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            168,
+            144
+          ],
+          "bounds": [
+            66,
+            62,
+            258,
+            225
+          ],
+          "sha256": "f42e242db76f13a27743abdb9efbbb1163a1b1b1b74e40399ffcb7a02961aa04"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.1549295774647887,
+          "sourceAnchor": [
+            70.5,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            157,
+            144
+          ],
+          "bounds": [
+            65,
+            62,
+            244,
+            225
+          ],
+          "sha256": "54499da5e5cd0e97e8c5f67fabd7843542a95f7cdecd608465c4fa052a4394ae"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.1549295774647887,
+          "sourceAnchor": [
+            68,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            152,
+            144
+          ],
+          "bounds": [
+            68,
+            62,
+            241,
+            225
+          ],
+          "sha256": "fdcaea6f35e91d18c75d5d11bd8ee8bceb88ac7a0c79b17020eaf6d031bcc6ff"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.1360544217687074,
+          "sourceAnchor": [
+            59,
+            149
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            120,
+            149
+          ],
+          "bounds": [
+            79,
+            58,
+            213,
+            225
+          ],
+          "sha256": "1af9f00f80e35ce63091fd5abebd59b391772b372e8739f983351995ed82525a"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.1360544217687074,
+          "sourceAnchor": [
+            61,
+            149
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            149
+          ],
+          "bounds": [
+            77,
+            58,
+            235,
+            225
+          ],
+          "sha256": "99c8e564f1a447f003562f571a77678e6042cc1c98b3e0fc81d5b8b885fd695a"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.1360544217687074,
+          "sourceAnchor": [
+            60,
+            149
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            119,
+            149
+          ],
+          "bounds": [
+            78,
+            58,
+            211,
+            225
+          ],
+          "sha256": "e9c7581cdadcd03a5ed2a87a63183d364e707b55dbdc6ba7ca517ebfb3f4ee22"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.1360544217687074,
+          "sourceAnchor": [
+            64.5,
+            149
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            134,
+            149
+          ],
+          "bounds": [
+            73,
+            58,
+            223,
+            225
+          ],
+          "sha256": "0076558e0d8b70e336e4f6fcd3c2dd6218a12e23961dc04df3c6a51b068d5379"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.1216216216216217,
+          "sourceAnchor": [
+            35.5,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            69,
+            150
+          ],
+          "bounds": [
+            106,
+            59,
+            181,
+            225
+          ],
+          "sha256": "e484e4546d04922e53ca68a77894b1801dad47fbef06c6bcc25dacf1423b076f"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.1216216216216217,
+          "sourceAnchor": [
+            34.5,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            68,
+            150
+          ],
+          "bounds": [
+            108,
+            59,
+            182,
+            225
+          ],
+          "sha256": "3fa06af3ac204fee654f583b1c66bbca841aef9b864f6217cee52ffdef6b93bc"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.1216216216216217,
+          "sourceAnchor": [
+            34,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            68,
+            150
+          ],
+          "bounds": [
+            108,
+            59,
+            182,
+            225
+          ],
+          "sha256": "3eab39ad0dab1acd504337653757b96e8d29160448f768074668467ab45ad4fe"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.1216216216216217,
+          "sourceAnchor": [
+            35.5,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            68,
+            150
+          ],
+          "bounds": [
+            106,
+            59,
+            180,
+            225
+          ],
+          "sha256": "96378bd7220f61e1c2da754e623e4a51c8991f89fd7f7bea7c3369a2a45a738f"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.177304964539007,
+          "sourceAnchor": [
+            79,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            143
+          ],
+          "bounds": [
+            53,
+            59,
+            217,
+            225
+          ],
+          "sha256": "6442576a49175bba90e7b709450528843d5766cb078f826925fa4e2b2d1da35f"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.177304964539007,
+          "sourceAnchor": [
+            79,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            143
+          ],
+          "bounds": [
+            53,
+            59,
+            218,
+            225
+          ],
+          "sha256": "34794451f144f65ef340c6903e854d2688bae0f1dd3c0e714e6c6dffdacc7b83"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.177304964539007,
+          "sourceAnchor": [
+            76.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            140,
+            143
+          ],
+          "bounds": [
+            56,
+            59,
+            218,
+            225
+          ],
+          "sha256": "0e7dac230055b2acfe4f9039c9642b093d4a03b2ea8ca0d04a37f6358bd424f5"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.177304964539007,
+          "sourceAnchor": [
+            71.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            143
+          ],
+          "bounds": [
+            62,
+            59,
+            216,
+            225
+          ],
+          "sha256": "15339aaea1c08362be55a94d232f8963cfcd239e1176710f15901f4de1e375e0"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.1549295774647887,
+          "sourceAnchor": [
+            87.5,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            155,
+            144
+          ],
+          "bounds": [
+            45,
+            61,
+            222,
+            225
+          ],
+          "sha256": "e484e409fe7b3371a905aa2c2f9305e350b666d1ba241547262d1b25bbea5262"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.1549295774647887,
+          "sourceAnchor": [
+            96.5,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            163,
+            144
+          ],
+          "bounds": [
+            35,
+            61,
+            221,
+            225
+          ],
+          "sha256": "27ef27c158983b8c18ee7056a5413938830a49633f0e14f799fa8290afd1e96d"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.1549295774647887,
+          "sourceAnchor": [
+            84,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            151,
+            144
+          ],
+          "bounds": [
+            49,
+            61,
+            221,
+            225
+          ],
+          "sha256": "e49c1d6b2a26648d12f0c7fab7cac5ecc26499e2235157d0a9e958733f68b78c"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.1549295774647887,
+          "sourceAnchor": [
+            88,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            153,
+            144
+          ],
+          "bounds": [
+            45,
+            61,
+            219,
+            225
+          ],
+          "sha256": "4aab4506cd36ea6d339a7e7558a22bb4c03af792789951fec06d043940313541"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.13013698630137,
+          "sourceAnchor": [
+            72,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            132,
+            150
+          ],
+          "bounds": [
+            65,
+            60,
+            212,
+            225
+          ],
+          "sha256": "362dfa3c181e1c53b430fb8af5e95320a853700b75ca8c3e7970e17b4374a479"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.13013698630137,
+          "sourceAnchor": [
+            68,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            127,
+            150
+          ],
+          "bounds": [
+            69,
+            58,
+            210,
+            225
+          ],
+          "sha256": "1f13a0c9634e589f4640a593956825e8e2c849a0375a0103bea7ad5a39668eb5"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.13013698630137,
+          "sourceAnchor": [
+            70,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            129,
+            150
+          ],
+          "bounds": [
+            67,
+            60,
+            211,
+            225
+          ],
+          "sha256": "a136d4a6a03a84cccdd10d3aeeaf68ec2fbdceba3027418081532d4cd9a7eb9c"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-v1.png",
+          "sourceScale": 1.13013698630137,
+          "sourceAnchor": [
+            69,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            127,
+            150
+          ],
+          "bounds": [
+            68,
+            60,
+            209,
+            225
+          ],
+          "sha256": "8ae8bf064b6b892f611d5536011854424055879a20cb7ef15391ee88ec4dc377"
+        },
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-n-v2.png",
+          "sourceScale": 0.2815699658703072,
+          "sourceAnchor": [
+            106,
+            588
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            212,
+            588
+          ],
+          "bounds": [
+            115,
+            60,
+            174,
+            225
+          ],
+          "sha256": "2071c0f857afb737f1f124459ad7e70d494982b64484cde8198c8e2e00a151c8"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-n-v2.png",
+          "sourceScale": 0.2815699658703072,
+          "sourceAnchor": [
+            106,
+            588
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            212,
+            588
+          ],
+          "bounds": [
+            115,
+            60,
+            174,
+            225
+          ],
+          "sha256": "a072314927d16ecc6d51baca916bf488e1c0c89687f5147bc981b062b34d41d8"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-n-v2.png",
+          "sourceScale": 0.2815699658703072,
+          "sourceAnchor": [
+            105,
+            588
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            210,
+            588
+          ],
+          "bounds": [
+            115,
+            60,
+            174,
+            225
+          ],
+          "sha256": "eaef4f9edb502314b02a239a379c5fc1d2c24e1ddfa2faadec128fd5261500ea"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-fire-n-v2.png",
+          "sourceScale": 0.2815699658703072,
+          "sourceAnchor": [
+            106,
+            588
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            211,
+            588
+          ],
+          "bounds": [
+            115,
+            60,
+            174,
+            225
+          ],
+          "sha256": "997faba3afaa7dd437b796a99981b7522e9b582346537aa315f04aab6cf1c4ce"
+        }
+      ],
+      "file": "royalist-mounted-fire.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "b846b85663fcf3e82976e1230eaecabeff4cd2cb26812ed4b0407943731a95ea"
+    }
+  }
+}

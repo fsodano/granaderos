@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-shawl-dead-idle": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-north-v1.png",
+          "sha256": "2903bd41315efecd669c0ffe946c724f54abf3d65e2b9adbf135fec20d1aa721",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-south-v1.png",
+          "sha256": "e7d4303130a2745e9b18606fb601db0e15ad054af6afcf7697524da39fa5ac79",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-north-v1.png",
+          "sourceScale": 0.5,
+          "sourceAnchor": [
+            73.5,
+            217
+          ],
+          "sourceBounds": [
+            2,
+            112,
+            145,
+            215
+          ],
+          "bounds": [
+            108,
+            173,
+            180,
+            225
+          ],
+          "sha256": "5463a1ecfb56afa6169fa3dc4455244a52346a325e2c6825913c9084d041f547"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-north-v1.png",
+          "sourceScale": 0.4909090909090909,
+          "sourceAnchor": [
+            58.5,
+            222
+          ],
+          "sourceBounds": [
+            2,
+            130,
+            204,
+            220
+          ],
+          "bounds": [
+            116,
+            180,
+            215,
+            224
+          ],
+          "sha256": "fd21818a3ca01f30d5acfd0cb93ddc1224c20e4cce08a02d4722701e18e175c6"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-north-v1.png",
+          "sourceScale": 0.4798206278026906,
+          "sourceAnchor": [
+            109,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            179,
+            244,
+            228
+          ],
+          "bounds": [
+            93,
+            201,
+            209,
+            225
+          ],
+          "sha256": "3d0796efa48906b9e3aaeec5633572168c18b45f085f58fd48e01d01352f2574"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-north-v1.png",
+          "sourceScale": 0.47767857142857145,
+          "sourceAnchor": [
+            173,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            139,
+            225,
+            218
+          ],
+          "bounds": [
+            62,
+            183,
+            169,
+            221
+          ],
+          "sha256": "daad2b130b3552bafa1d85b8717aca7a215de610f97135c87d1499d224f8d057"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-south-v1.png",
+          "sourceScale": 0.5,
+          "sourceAnchor": [
+            62.5,
+            217
+          ],
+          "sourceBounds": [
+            2,
+            108,
+            125,
+            217
+          ],
+          "bounds": [
+            114,
+            171,
+            176,
+            226
+          ],
+          "sha256": "8a1f837fac684ee0967040c898356e43b4b4e3a584d1b4b612326047d019447b"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-south-v1.png",
+          "sourceScale": 0.49537037037037035,
+          "sourceAnchor": [
+            56,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            133,
+            215,
+            220
+          ],
+          "bounds": [
+            117,
+            182,
+            223,
+            225
+          ],
+          "sha256": "dc29dcf7726f6a12b866077b0a28d62b10b04df12fd0dfd6aa07c9eed0f42e42"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-south-v1.png",
+          "sourceScale": 0.48623853211009177,
+          "sourceAnchor": [
+            97.5,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            172,
+            237,
+            220
+          ],
+          "bounds": [
+            98,
+            200,
+            212,
+            223
+          ],
+          "sha256": "373c4b5b5b87d5e6a00d6efe19537345c096c89ec2ed70b92b21dca8ef2f2193"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-south-v1.png",
+          "sourceScale": 0.4796380090497738,
+          "sourceAnchor": [
+            159.5,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            133,
+            195,
+            221
+          ],
+          "bounds": [
+            68,
+            182,
+            161,
+            224
+          ],
+          "sha256": "c56f438db9b1f884052edc5759df9b2b0805e84dee622498fa8a4459fc5ee62c"
+        }
+      ],
+      "file": "woman-shawl-dead-idle.png",
+      "size": [
+        2304,
+        288
+      ],
+      "sha256": "544c7212273a7fa12b9b00ce7646655c7442f10063b98175b8a57ddf25f6b7a8",
+      "derivedFrom": {
+        "atlas": "woman-shawl-collapse",
+        "frame": 3,
+        "reason": "hold final collapse frame without breathing"
+      }
+    }
+  }
+}

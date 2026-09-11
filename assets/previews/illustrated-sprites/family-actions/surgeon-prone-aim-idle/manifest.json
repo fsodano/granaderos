@@ -1,0 +1,241 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "surgeon-prone-aim-idle": {
+      "cell": 288,
+      "anchor": [
+        144,
+        165
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-north-v1.png",
+          "sha256": "dec88087c13afb127cfbb24ac4bb562fe3158b01decd7931a69329238db2e8e4",
+          "scale": 0.9186602870813397
+        },
+        {
+          "file": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-south-v1.png",
+          "sha256": "be1fbf74c6a727161ba6eb5da6b8ef425bc5260af31a86fdc14677090a254995",
+          "scale": 0.9186602870813397
+        },
+        {
+          "file": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-n-fix-v2.png",
+          "sha256": "a9603164be07f1d75849104343579a4a4e8d2b743f0d8a06f94efd77a1482bd6",
+          "scale": 0.240309
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-n-fix-v2.png",
+          "sourceScale": 0.216598,
+          "sourceAnchor": [
+            80.94827586206897,
+            301.1724137931035
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            182,
+            484
+          ],
+          "bounds": [
+            127,
+            100,
+            166,
+            204
+          ],
+          "sha256": "073c7f4cd38adb78bac7310226aea1d7df27ccf70feefb7eebe09f63b20b2cb0"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.490983,
+          "sourceAnchor": [
+            91.735,
+            70.132
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            228,
+            142
+          ],
+          "bounds": [
+            100,
+            132,
+            211,
+            201
+          ],
+          "sha256": "344f42be558eda049944764fcef2f0cd8c95dc373c2fe29c5bbb4b46eae27e8c"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.462552,
+          "sourceAnchor": [
+            86.198,
+            61.704
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            250,
+            98
+          ],
+          "bounds": [
+            105,
+            137,
+            220,
+            181
+          ],
+          "sha256": "81b6611f8739c328c2c159816af1f7edaf8df8c546a0eed3a7ebba2d96b89f57"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.524768,
+          "sourceAnchor": [
+            69.133,
+            36.2
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            192,
+            109
+          ],
+          "bounds": [
+            109,
+            147,
+            209,
+            203
+          ],
+          "sha256": "80a6ef708beb8460e17d81cb7f3e095502777ff5f2a90abbc3ddaaba6ffe3974"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.430435,
+          "sourceAnchor": [
+            62.63636363636363,
+            43.81818181818183
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            101,
+            163
+          ],
+          "bounds": [
+            118,
+            147,
+            161,
+            216
+          ],
+          "sha256": "fdb354ae536277104c91a45f7b9a443776436aec9a1ebef277ed46743b73cb75"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.431019,
+          "sourceAnchor": [
+            113.892,
+            31.838
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            209,
+            92
+          ],
+          "bounds": [
+            96,
+            152,
+            185,
+            191
+          ],
+          "sha256": "1ab1f795d8dec8edec9db6f5fd5ec006c0d0ccbcc69a88e58e18cf56326faf1d"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.513463,
+          "sourceAnchor": [
+            151.558,
+            70.914
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            241,
+            94
+          ],
+          "bounds": [
+            67,
+            130,
+            190,
+            177
+          ],
+          "sha256": "645d1b8e82737155b3811185b705c0bd35aded76ffa41395914e16a533a1c737"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.490271,
+          "sourceAnchor": [
+            134.252,
+            91.313
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            227,
+            149
+          ],
+          "bounds": [
+            79,
+            121,
+            189,
+            193
+          ],
+          "sha256": "3f6c4b5901f8e4cd014792454cacc873401a91661d82e7fbd21173cba386fc9b"
+        }
+      ],
+      "file": "surgeon-prone-aim-idle.png",
+      "size": [
+        2304,
+        288
+      ],
+      "sha256": "c98cfd47de1e8ffcff930366ad7a153c08e124b21f54c76e246e9417147de1ae",
+      "derivedFrom": {
+        "atlas": "surgeon-prone-armed-fire",
+        "frame": 0,
+        "reason": "hold authored pre-shot aim"
+      }
+    }
+  }
+}

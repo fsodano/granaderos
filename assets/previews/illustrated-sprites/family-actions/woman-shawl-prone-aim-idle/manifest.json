@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-shawl-prone-aim-idle": {
+      "cell": 288,
+      "anchor": [
+        144,
+        165
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/woman-shawl-prone-armed-fire-north-v2.png",
+          "sha256": "dedfc925f7b6434c468c7c492ff490dec8ec1a5105bb6b36e710993fea9f0fab",
+          "scale": 0.9186602870813397
+        },
+        {
+          "file": "assets/source/illustrated-sprites/woman-shawl-prone-armed-fire-south-v1.png",
+          "sha256": "ac0ec114296cca4fcf79ca17ffda9182b697456713c38260908878e4a920a7b3",
+          "scale": 0.9186602870813397
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-fire-north-v2.png",
+          "sourceScale": 0.450644,
+          "sourceAnchor": [
+            38.529,
+            138.983
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            108,
+            223
+          ],
+          "bounds": [
+            128,
+            103,
+            176,
+            203
+          ],
+          "sha256": "da60abbd5da953e6977f99edaf70b95dfb5ccd288f5a2f5a0377a2a568da7835"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-fire-north-v2.png",
+          "sourceScale": 0.470769,
+          "sourceAnchor": [
+            84.588,
+            64.706
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            210,
+            140
+          ],
+          "bounds": [
+            105,
+            135,
+            203,
+            200
+          ],
+          "sha256": "dbf5641343921c74b3b5d004f33bc2308116d18da2ad1f203e9a87970f6c882b"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-fire-north-v2.png",
+          "sourceScale": 0.450763,
+          "sourceAnchor": [
+            84.16,
+            60.259
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            244,
+            92
+          ],
+          "bounds": [
+            107,
+            139,
+            216,
+            180
+          ],
+          "sha256": "3fb823c09b4abae1676847d950603d41b7d51edafec9ba169fd28ea215dc23ff"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-fire-north-v2.png",
+          "sourceScale": 0.437429,
+          "sourceAnchor": [
+            67.367,
+            69.59127927046447
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            187,
+            152
+          ],
+          "bounds": [
+            115,
+            135,
+            196,
+            201
+          ],
+          "sha256": "f623ac0d8ceb8989825b5d4317070d1883847f7f10c57ba1e4bc28375e8a8765"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.354151,
+          "sourceAnchor": [
+            68.183,
+            53.476
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            123,
+            203
+          ],
+          "bounds": [
+            121,
+            147,
+            164,
+            218
+          ],
+          "sha256": "4d8d68059068cd8dedc2d0883bcc609c44c780d5f4dd47147e607e13e9c4c9ca"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.39179,
+          "sourceAnchor": [
+            107.946,
+            45.566326552489855
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            198,
+            152
+          ],
+          "bounds": [
+            102,
+            148,
+            179,
+            207
+          ],
+          "sha256": "6601766262cba6b401ea0f36d1d79aec6ff1d5c9582ec0d027225c4a74bdc57d"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.412322,
+          "sourceAnchor": [
+            168.454,
+            78.699
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            268,
+            101
+          ],
+          "bounds": [
+            75,
+            133,
+            185,
+            174
+          ],
+          "sha256": "95ee0694cb846f1d6eae82e5bcea6d73009091e7b4ea739f76538a2ee9eb4724"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.43173,
+          "sourceAnchor": [
+            145.42,
+            98.855
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            246,
+            171
+          ],
+          "bounds": [
+            82,
+            123,
+            187,
+            196
+          ],
+          "sha256": "564ee63719d514f34b5fb6e4c2d7e3e1df532599b58d5bf122f7d387e96bbcb6"
+        }
+      ],
+      "file": "woman-shawl-prone-aim-idle.png",
+      "size": [
+        2304,
+        288
+      ],
+      "sha256": "225a0b5ddbec3d7ad1b6a2ff71ae871919bb12a187cc3aa80c3d5cffeee849bd",
+      "derivedFrom": {
+        "atlas": "woman-shawl-prone-armed-fire",
+        "frame": 0,
+        "reason": "hold authored pre-shot aim"
+      }
+    }
+  }
+}

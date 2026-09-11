@@ -1,0 +1,778 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "surgeon-mounted-run": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 7,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sha256": "2a45a3581a09466567995411b85e0af579f6b54203efb153f6b2f7e480b36cd9",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.25,
+          "sourceAnchor": [
+            30.5,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            59,
+            135
+          ],
+          "bounds": [
+            108,
+            60,
+            179,
+            225
+          ],
+          "sha256": "f59c21f297c8a590999bd0135f74d2fd5592c5e84b544c0a6aa4adb1f0df15f0"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.25,
+          "sourceAnchor": [
+            31,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            60,
+            132
+          ],
+          "bounds": [
+            108,
+            60,
+            181,
+            221
+          ],
+          "sha256": "27939073f897974a1afb172438cf33441a33b4b3592b0bd69af39226e7f76a3c"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.25,
+          "sourceAnchor": [
+            30.5,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            59,
+            134
+          ],
+          "bounds": [
+            108,
+            60,
+            179,
+            224
+          ],
+          "sha256": "9e37e3a81d94ec66d79528ddbd17bebb28fcb491a0c248e61b267bdc9f0df308"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.25,
+          "sourceAnchor": [
+            30,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            58,
+            134
+          ],
+          "bounds": [
+            109,
+            59,
+            179,
+            224
+          ],
+          "sha256": "4306bab96c89104d137315c8384d46b2bc8989136c4798a0b4d6d54c458b9176"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.2222222222222223,
+          "sourceAnchor": [
+            61.5,
+            137
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            121,
+            134
+          ],
+          "bounds": [
+            71,
+            60,
+            216,
+            221
+          ],
+          "sha256": "4c9b870952d3e06bec7389ca30b8c6dff65379e1990d977c52b5f6a68fc58cbf"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.2222222222222223,
+          "sourceAnchor": [
+            58,
+            137
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            114,
+            132
+          ],
+          "bounds": [
+            76,
+            60,
+            213,
+            219
+          ],
+          "sha256": "3e71179d4e43aafa5c6e753bb07672cadf0d4032482974d84fc245f1428346b4"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.2222222222222223,
+          "sourceAnchor": [
+            66.5,
+            137
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            131,
+            137
+          ],
+          "bounds": [
+            65,
+            60,
+            223,
+            225
+          ],
+          "sha256": "e61f7320339618079d8ac50c2fe6b73edc4ba6abaa5c87036431ec742abde3e8"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.2222222222222223,
+          "sourceAnchor": [
+            55,
+            137
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            108,
+            134
+          ],
+          "bounds": [
+            79,
+            60,
+            209,
+            221
+          ],
+          "sha256": "9bab97fb4ca0278434c19129ed1327b4610394224d7a4061655cf6b47f805f9d"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.2615384615384615,
+          "sourceAnchor": [
+            80,
+            132
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            158,
+            132
+          ],
+          "bounds": [
+            46,
+            61,
+            243,
+            225
+          ],
+          "sha256": "8be84b087dd72cd96ea9875ddd80dbd4bdcab5d75d28790ed7c23327fdf27132"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.2615384615384615,
+          "sourceAnchor": [
+            80,
+            132
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            158,
+            126
+          ],
+          "bounds": [
+            46,
+            61,
+            243,
+            217
+          ],
+          "sha256": "58f4fdae2d96764e9eac6a7a908d8b2f7d2c0632aed379264e284af20ad491db"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.2615384615384615,
+          "sourceAnchor": [
+            86,
+            132
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            170,
+            132
+          ],
+          "bounds": [
+            38,
+            61,
+            250,
+            225
+          ],
+          "sha256": "84624ba84df91ccfa079440dc8aac2001ac3d8e29e7f355f4bc86f125d471e1a"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.2615384615384615,
+          "sourceAnchor": [
+            79.5,
+            132
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            157,
+            131
+          ],
+          "bounds": [
+            46,
+            61,
+            242,
+            224
+          ],
+          "sha256": "cdc2fce9e09529861004c5a8867de0433be6407561d918736d33aced84c5b0b2"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.2462686567164178,
+          "sourceAnchor": [
+            66.5,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            131,
+            133
+          ],
+          "bounds": [
+            64,
+            58,
+            225,
+            221
+          ],
+          "sha256": "c7a3a4d630a3c77944578a09649700780b18390b50358d95d44599c184e376dd"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.2462686567164178,
+          "sourceAnchor": [
+            67.5,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            136
+          ],
+          "bounds": [
+            62,
+            58,
+            225,
+            225
+          ],
+          "sha256": "77c644f8dd7952c15938927d451fd14e3f9c960e6491a1d99e457e80c1969d96"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.2462686567164178,
+          "sourceAnchor": [
+            72.5,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            143,
+            136
+          ],
+          "bounds": [
+            56,
+            58,
+            232,
+            225
+          ],
+          "sha256": "507db0a0eb9796919175fd6acc2b6e0b15ebd4ccbe27ca2e8fe4ac74976e44f9"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.2462686567164178,
+          "sourceAnchor": [
+            69.5,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            137,
+            135
+          ],
+          "bounds": [
+            60,
+            59,
+            228,
+            224
+          ],
+          "sha256": "8ed32b7bf54fb500f70e4f66e045f5f306e08edec8f6d04f316ba7033d730bf9"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.1857142857142857,
+          "sourceAnchor": [
+            35,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            68,
+            142
+          ],
+          "bounds": [
+            105,
+            59,
+            183,
+            225
+          ],
+          "sha256": "8cf1d4333e3dcc24e88c435d56d070a3dc837c43510dbb298abf9dc0380db3e8"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.1857142857142857,
+          "sourceAnchor": [
+            35,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            68,
+            134
+          ],
+          "bounds": [
+            105,
+            59,
+            183,
+            216
+          ],
+          "sha256": "f02ad7e99a59fb6dcb4167854bbd9fe40d9dbe12e1a987bc433edfeb643d98f7"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.1857142857142857,
+          "sourceAnchor": [
+            34.5,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            67,
+            137
+          ],
+          "bounds": [
+            105,
+            59,
+            182,
+            219
+          ],
+          "sha256": "f2651d6f4e03d2695a05be93f85e94e62fc3af164b641005fbebfe240680dc49"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.1857142857142857,
+          "sourceAnchor": [
+            34.5,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            67,
+            137
+          ],
+          "bounds": [
+            105,
+            59,
+            182,
+            219
+          ],
+          "sha256": "333fd2f3cecb3e090e683e4f3d286a227e7ea9fa6047c5a0cef474a60689dbc1"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.2028985507246377,
+          "sourceAnchor": [
+            68,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            134,
+            139
+          ],
+          "bounds": [
+            65,
+            58,
+            224,
+            223
+          ],
+          "sha256": "629cd672ff08fd623094607f08e0dabcb462e6a285a8eea32ac5c48236dc79af"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.2028985507246377,
+          "sourceAnchor": [
+            72,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            142,
+            136
+          ],
+          "bounds": [
+            60,
+            59,
+            228,
+            219
+          ],
+          "sha256": "4891670a1dda385e846bc8bd9f449ad190f0ab7619edda09ed6c693c28a1a423"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.2028985507246377,
+          "sourceAnchor": [
+            82,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            162,
+            135
+          ],
+          "bounds": [
+            48,
+            59,
+            240,
+            218
+          ],
+          "sha256": "456e82e34f3095b040ef39dcbce75bc66d6f020bb90929db83eb864d427b2b16"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.2028985507246377,
+          "sourceAnchor": [
+            70,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            138,
+            141
+          ],
+          "bounds": [
+            62,
+            59,
+            226,
+            225
+          ],
+          "sha256": "2132885abae4dc6ab7812e464a04c4aa4b25ac9ddd4050358fa27867340fbc8c"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.2330827067669172,
+          "sourceAnchor": [
+            79,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            156,
+            136
+          ],
+          "bounds": [
+            49,
+            61,
+            239,
+            225
+          ],
+          "sha256": "39bc469813e0d9765e819686f20ee2d1c906c09a90a6397fb5f9bf1eabfb5b3c"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.2330827067669172,
+          "sourceAnchor": [
+            79.5,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            157,
+            132
+          ],
+          "bounds": [
+            48,
+            60,
+            239,
+            220
+          ],
+          "sha256": "dfe2c33df0bc7dbf151bc81e3f9982d4d6f21479b216e296a477f6201f347732"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.2330827067669172,
+          "sourceAnchor": [
+            83,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            164,
+            135
+          ],
+          "bounds": [
+            44,
+            61,
+            244,
+            224
+          ],
+          "sha256": "a0043e4958b4e8490543613560d58c97b2684749a2a7e0c1a8c26b869a05ab98"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.2330827067669172,
+          "sourceAnchor": [
+            77,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            152,
+            136
+          ],
+          "bounds": [
+            52,
+            61,
+            237,
+            225
+          ],
+          "sha256": "c01bb7879389f724266eb11bba73580120ce0dd461d6651195e5cf635eacd8a6"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.1619718309859155,
+          "sourceAnchor": [
+            67.5,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            141
+          ],
+          "bounds": [
+            68,
+            60,
+            220,
+            222
+          ],
+          "sha256": "4092564cc67269ff66d4842048090a15fa3909a470dad6fb19f58037de7f35f3"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.1619718309859155,
+          "sourceAnchor": [
+            68,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            134,
+            144
+          ],
+          "bounds": [
+            67,
+            60,
+            220,
+            225
+          ],
+          "sha256": "0e958cd7775f18658af6775d8accd530093b1f2891746f376187fd907008686c"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.1619718309859155,
+          "sourceAnchor": [
+            72,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            137
+          ],
+          "bounds": [
+            63,
+            60,
+            226,
+            217
+          ],
+          "sha256": "11ba9408537191487262700f1c7fbe6ef5d66d3ef51dd8dafdabb90d3e963132"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-run-v1.png",
+          "sourceScale": 1.1619718309859155,
+          "sourceAnchor": [
+            64.5,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            127,
+            140
+          ],
+          "bounds": [
+            71,
+            60,
+            216,
+            220
+          ],
+          "sha256": "969c12fb5369c0cced6d90992b81a75a066d6da8f7961e456d16e2ba71e344f5"
+        }
+      ],
+      "file": "surgeon-mounted-run.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "308b3924a66f5928856179874026acfbcda1f4fcc27341ef9e35995235a409b0"
+    }
+  }
+}

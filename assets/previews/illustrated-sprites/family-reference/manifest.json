@@ -1,0 +1,813 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "granadero-collapse": {
+      "cell": 320,
+      "anchor": [
+        160,
+        275
+      ],
+      "logicalCell": 320,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/granadero-collapse-n-v3.png",
+          "sha256": "8e3b1dd194fc970436c2b69057a411004e0a45b651e4d81f6c7cd4f8f7cbede6",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/granadero-collapse-ne-v3.png",
+          "sha256": "fe58c6c241658c602a06636bb8f8b93f17a5413943cd2eb6c8f2a240443e6dfd",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/granadero-collapse-e-v3.png",
+          "sha256": "407e6e2addd6c53e9d49bd918483e7a8270fa0e44717b6bb9a595f7690a7b7b5",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/granadero-collapse-se-v3.png",
+          "sha256": "dc6fd0f4ccd92ea1c13355a69128f82f1abb831db61a0d16fcfe6a350d152e32",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/granadero-collapse-s-v3.png",
+          "sha256": "ec54eb1ca031c388eb9a201c4a5d78beb7748da544de4ec484328624b3af08cd",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/granadero-collapse-sw-v4.png",
+          "sha256": "2f1893a06ec24cef2aeba103802b0a0f305f18bf4a1fc2bfa28f08a47f08b299",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/granadero-collapse-nw-v3.png",
+          "sha256": "8eaf58f01823ea95e3f7bc5bfc98f36ce4e4d8b40d5c0020598b81be47c56ae2",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/granadero-collapse-w-v4.png",
+          "sha256": "44124bdc27258c915ca5099e6137110e0bb0ae07e1e7e311bad80ee7a5c882a6",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-n-v3.png",
+          "sourceScale": 0.41763962222056966,
+          "sourceAnchor": [
+            106,
+            567
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            210,
+            567
+          ],
+          "bounds": [
+            117,
+            39,
+            204,
+            275
+          ],
+          "sha256": "21fc7cd701850c07724d29deb9197be3ef7d2197280497997d1e34be5bb27834"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-n-v3.png",
+          "sourceScale": 0.41763962222056966,
+          "sourceAnchor": [
+            166.5,
+            556
+          ],
+          "sourceBounds": [
+            2,
+            107,
+            331,
+            556
+          ],
+          "bounds": [
+            91,
+            87,
+            228,
+            275
+          ],
+          "sha256": "4e775559e47cf5546498a5bf7c3ec2fd0aafb6815baf4dd80b25ba50654a8dc0"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-n-v3.png",
+          "sourceScale": 0.41763962222056966,
+          "sourceAnchor": [
+            181,
+            548
+          ],
+          "sourceBounds": [
+            2,
+            267,
+            360,
+            548
+          ],
+          "bounds": [
+            85,
+            158,
+            235,
+            275
+          ],
+          "sha256": "77b23a3b26236939de10b7433ab0b05f1f0c41e470054b7f5c65bedc3f4fa637"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-n-v3.png",
+          "sourceScale": 0.41763962222056966,
+          "sourceAnchor": [
+            173.5,
+            569
+          ],
+          "sourceBounds": [
+            2,
+            316,
+            345,
+            569
+          ],
+          "bounds": [
+            88,
+            169,
+            231,
+            275
+          ],
+          "sha256": "59aa42ad9a02336168b9cc884231394d100bb4372e16e35b8de10cf411f04991"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-ne-v3.png",
+          "sourceScale": 0.428251155271546,
+          "sourceAnchor": [
+            84.5,
+            553
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            167,
+            553
+          ],
+          "bounds": [
+            125,
+            39,
+            196,
+            275
+          ],
+          "sha256": "acf448d546028b393498443649e81fc76c05d58f628e474a3169562aee971cff"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-ne-v3.png",
+          "sourceScale": 0.428251155271546,
+          "sourceAnchor": [
+            149.5,
+            551
+          ],
+          "sourceBounds": [
+            2,
+            97,
+            297,
+            551
+          ],
+          "bounds": [
+            97,
+            81,
+            223,
+            275
+          ],
+          "sha256": "9c89bbbd9244deba2a488839d7f29bad4bfe3386dee6ffbd21af196b9791a1d9"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-ne-v3.png",
+          "sourceScale": 0.428251155271546,
+          "sourceAnchor": [
+            226.5,
+            541
+          ],
+          "sourceBounds": [
+            2,
+            246,
+            451,
+            541
+          ],
+          "bounds": [
+            64,
+            149,
+            256,
+            275
+          ],
+          "sha256": "cee0b53153aa780f263ed15122d1451973cf6b3a54e89d68edbff691479c5691"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-ne-v3.png",
+          "sourceScale": 0.428251155271546,
+          "sourceAnchor": [
+            253,
+            534
+          ],
+          "sourceBounds": [
+            2,
+            310,
+            504,
+            534
+          ],
+          "bounds": [
+            53,
+            179,
+            268,
+            275
+          ],
+          "sha256": "2e5f0c4b79b6af12e4594c20cd6f3f0c49768d9f72aa2fee262002dee670fe6b"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-e-v3.png",
+          "sourceScale": 0.41926447998554256,
+          "sourceAnchor": [
+            61.5,
+            560
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            121,
+            560
+          ],
+          "bounds": [
+            135,
+            41,
+            185,
+            275
+          ],
+          "sha256": "15f3ad0be30ab541e03eca9c2aafcde0aa896640dd860976cce815a0c7278321"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-e-v3.png",
+          "sourceScale": 0.41926447998554256,
+          "sourceAnchor": [
+            143.5,
+            560
+          ],
+          "sourceBounds": [
+            2,
+            107,
+            285,
+            560
+          ],
+          "bounds": [
+            101,
+            85,
+            220,
+            275
+          ],
+          "sha256": "d17b5dd45eec44deb1919dde9ef9ff368f3685c7cbd0bf055c8359be4e4024d9"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-e-v3.png",
+          "sourceScale": 0.41926447998554256,
+          "sourceAnchor": [
+            247,
+            560
+          ],
+          "sourceBounds": [
+            2,
+            278,
+            492,
+            560
+          ],
+          "bounds": [
+            57,
+            157,
+            262,
+            275
+          ],
+          "sha256": "774eeed2709d668223c7d48f1d71cb46cec392ebd1329d7721a91de9c602d2a2"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-e-v3.png",
+          "sourceScale": 0.41926447998554256,
+          "sourceAnchor": [
+            300.5,
+            560
+          ],
+          "sourceBounds": [
+            2,
+            459,
+            599,
+            560
+          ],
+          "bounds": [
+            35,
+            233,
+            285,
+            275
+          ],
+          "sha256": "44dd9d99877035dbc0a76d62396ebeedcfcc749b6f6f8cd44e446f3031ddb4cb"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-se-v3.png",
+          "sourceScale": 0.42780748663101603,
+          "sourceAnchor": [
+            91,
+            563
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            180,
+            563
+          ],
+          "bounds": [
+            122,
+            35,
+            198,
+            275
+          ],
+          "sha256": "149482987d4e156f292da864cbd7b62c4f53f52a5b8dab39d5efd06fd04dc551"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-se-v3.png",
+          "sourceScale": 0.42780748663101603,
+          "sourceAnchor": [
+            149,
+            560
+          ],
+          "sourceBounds": [
+            2,
+            87,
+            296,
+            560
+          ],
+          "bounds": [
+            97,
+            73,
+            223,
+            275
+          ],
+          "sha256": "cd34046154adbcb9918d1aaf07ff26eed21ba149c6701cd779ba3c70f6c45f90"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-se-v3.png",
+          "sourceScale": 0.42780748663101603,
+          "sourceAnchor": [
+            230.5,
+            574
+          ],
+          "sourceBounds": [
+            2,
+            234,
+            459,
+            574
+          ],
+          "bounds": [
+            62,
+            130,
+            258,
+            275
+          ],
+          "sha256": "f95b8b42627bf07c9f804cce87b3c44fbfdd3161cf4e3123e3a5f7143e90b082"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-se-v3.png",
+          "sourceScale": 0.42780748663101603,
+          "sourceAnchor": [
+            252,
+            574
+          ],
+          "sourceBounds": [
+            2,
+            368,
+            502,
+            574
+          ],
+          "bounds": [
+            53,
+            187,
+            267,
+            275
+          ],
+          "sha256": "78d209ccedac06f81d2930b72eb3e6037802d7b02dfc1f8984f0a2c09552ae81"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-s-v3.png",
+          "sourceScale": 0.390566911238619,
+          "sourceAnchor": [
+            104,
+            601
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            206,
+            601
+          ],
+          "bounds": [
+            120,
+            41,
+            200,
+            275
+          ],
+          "sha256": "eac3381b67b9a3d0a2a07e8301f1d60429e3502c8ebf9d08f5e02d4f3083ba66"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-s-v3.png",
+          "sourceScale": 0.390566911238619,
+          "sourceAnchor": [
+            140,
+            595
+          ],
+          "sourceBounds": [
+            2,
+            82,
+            278,
+            595
+          ],
+          "bounds": [
+            106,
+            75,
+            214,
+            275
+          ],
+          "sha256": "1f57445c213e1267834a48d2f2cac4e004a7e81aabbcd07564a86904abc2815c"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-s-v3.png",
+          "sourceScale": 0.390566911238619,
+          "sourceAnchor": [
+            165,
+            602
+          ],
+          "sourceBounds": [
+            2,
+            229,
+            328,
+            602
+          ],
+          "bounds": [
+            96,
+            129,
+            223,
+            275
+          ],
+          "sha256": "d2561ea70bcd4d5626c6d53b3c9e8b7389624e4adb69911c24655d55d32af3ab"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-s-v3.png",
+          "sourceScale": 0.390566911238619,
+          "sourceAnchor": [
+            153.5,
+            602
+          ],
+          "sourceBounds": [
+            2,
+            301,
+            305,
+            602
+          ],
+          "bounds": [
+            101,
+            157,
+            219,
+            275
+          ],
+          "sha256": "784ce41f2b00a7391cd62be6c2bb65e0b43b3d562a75854c486048f13da16dfd"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-sw-v4.png",
+          "sourceScale": 0.40900276194393836,
+          "sourceAnchor": [
+            98,
+            574
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            194,
+            574
+          ],
+          "bounds": [
+            121,
+            41,
+            200,
+            275
+          ],
+          "sha256": "719938535502761d60b478b56cc2fe90c0e25e45b1f432cdba45300b2c26670b"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-sw-v4.png",
+          "sourceScale": 0.40900276194393836,
+          "sourceAnchor": [
+            148,
+            560
+          ],
+          "sourceBounds": [
+            2,
+            94,
+            294,
+            560
+          ],
+          "bounds": [
+            100,
+            84,
+            219,
+            275
+          ],
+          "sha256": "81b29e7697c0ec0f8ed3020b0bf0993d0d9d1dff043c4373416bb20f76c1c8a3"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-sw-v4.png",
+          "sourceScale": 0.40900276194393836,
+          "sourceAnchor": [
+            210,
+            575
+          ],
+          "sourceBounds": [
+            2,
+            248,
+            418,
+            575
+          ],
+          "bounds": [
+            75,
+            141,
+            245,
+            275
+          ],
+          "sha256": "c70b36ae12ccd201864182529a6cb493e8a5dc62b21485cf3503250c895ca468"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-sw-v4.png",
+          "sourceScale": 0.40900276194393836,
+          "sourceAnchor": [
+            266,
+            576
+          ],
+          "sourceBounds": [
+            2,
+            378,
+            530,
+            576
+          ],
+          "bounds": [
+            52,
+            194,
+            268,
+            275
+          ],
+          "sha256": "af36f507f9a6b417abcaad8e43228f7725fbd330e77cfcd890e183d57be4704d"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-nw-v3.png",
+          "sourceScale": 0.4332399626517274,
+          "sourceAnchor": [
+            87,
+            542
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            172,
+            542
+          ],
+          "bounds": [
+            123,
+            41,
+            197,
+            275
+          ],
+          "sha256": "92f0318479e6ad43811d75677b27a471e5d351d96945445b7d5ae053a6bd1aab"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-nw-v3.png",
+          "sourceScale": 0.4332399626517274,
+          "sourceAnchor": [
+            118.5,
+            536
+          ],
+          "sourceBounds": [
+            2,
+            94,
+            235,
+            536
+          ],
+          "bounds": [
+            110,
+            84,
+            211,
+            275
+          ],
+          "sha256": "53bee4f9cf5ed16e83b71475e8e00587b220fd68579bf68638cc7946699b92c3"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-nw-v3.png",
+          "sourceScale": 0.4332399626517274,
+          "sourceAnchor": [
+            202,
+            542
+          ],
+          "sourceBounds": [
+            2,
+            279,
+            402,
+            542
+          ],
+          "bounds": [
+            73,
+            161,
+            246,
+            275
+          ],
+          "sha256": "8ed789519c0405e935b746ea2b9cf642950c08f58d3091b699ae6a68a8b0f871"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-nw-v3.png",
+          "sourceScale": 0.4332399626517274,
+          "sourceAnchor": [
+            237,
+            559
+          ],
+          "sourceBounds": [
+            2,
+            335,
+            472,
+            559
+          ],
+          "bounds": [
+            58,
+            178,
+            262,
+            275
+          ],
+          "sha256": "0c52d0cb89b6551e12efe452fabc8fa71600f0178342ccf7fc81303f4cf8fba0"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-w-v4.png",
+          "sourceScale": 0.42792024558901054,
+          "sourceAnchor": [
+            65,
+            544
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            128,
+            544
+          ],
+          "bounds": [
+            133,
+            43,
+            187,
+            275
+          ],
+          "sha256": "04be2a594e787435424f89a204828ef3d10362345abb4cc44ecad51815b1e38e"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-w-v4.png",
+          "sourceScale": 0.42792024558901054,
+          "sourceAnchor": [
+            126,
+            545
+          ],
+          "sourceBounds": [
+            2,
+            87,
+            250,
+            545
+          ],
+          "bounds": [
+            107,
+            79,
+            213,
+            275
+          ],
+          "sha256": "eaed93b8b8ed2044d4ce9e5e19dad0557d9e38383263f143cab50f2701a295fc"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-w-v4.png",
+          "sourceScale": 0.42792024558901054,
+          "sourceAnchor": [
+            216,
+            548
+          ],
+          "sourceBounds": [
+            2,
+            262,
+            430,
+            548
+          ],
+          "bounds": [
+            68,
+            153,
+            251,
+            275
+          ],
+          "sha256": "d344c1407a3bc6b8a758662b5ac2cc50df264026e2e2b1340ebfc739261c9de3"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-w-v4.png",
+          "sourceScale": 0.42792024558901054,
+          "sourceAnchor": [
+            281.5,
+            545
+          ],
+          "sourceBounds": [
+            2,
+            444,
+            561,
+            545
+          ],
+          "bounds": [
+            40,
+            232,
+            279,
+            275
+          ],
+          "sha256": "f77c5cb9ae55938d0ae387da06d9fe6a88aec1e91b64ba7323853fc1a096f98b"
+        }
+      ],
+      "file": "granadero-collapse.png",
+      "size": [
+        1280,
+        2560
+      ],
+      "sha256": "73bd651ed7e0c6c3bc43ed6433a4ebdbbb5959206b9cd7d7b1148ec6213409e3"
+    }
+  }
+}

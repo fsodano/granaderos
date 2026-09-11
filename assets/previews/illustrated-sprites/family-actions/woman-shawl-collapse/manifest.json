@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-shawl-collapse": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-north-v1.png",
+          "sha256": "2903bd41315efecd669c0ffe946c724f54abf3d65e2b9adbf135fec20d1aa721",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-south-v1.png",
+          "sha256": "e7d4303130a2745e9b18606fb601db0e15ad054af6afcf7697524da39fa5ac79",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-north-v1.png",
+          "sourceScale": 0.5,
+          "sourceAnchor": [
+            44.5,
+            217
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            86,
+            216
+          ],
+          "bounds": [
+            123,
+            118,
+            165,
+            225
+          ],
+          "sha256": "7407c130d3891128681794140a93a8d11cd29fac7fa7e68f2988ae33196bf398"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-north-v1.png",
+          "sourceScale": 0.5,
+          "sourceAnchor": [
+            67.5,
+            217
+          ],
+          "sourceBounds": [
+            2,
+            40,
+            131,
+            215
+          ],
+          "bounds": [
+            111,
+            137,
+            176,
+            225
+          ],
+          "sha256": "869cfdfd24365c6c0e2b995cb088f9b7e8944de54e6b3abe97981d4209765fd9"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-north-v1.png",
+          "sourceScale": 0.5,
+          "sourceAnchor": [
+            75,
+            217
+          ],
+          "sourceBounds": [
+            2,
+            107,
+            150,
+            217
+          ],
+          "bounds": [
+            108,
+            170,
+            182,
+            225
+          ],
+          "sha256": "03f59858f7ae7656e3f1be457b847e080f97ab4d132655e589c33b56b37e794c"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-north-v1.png",
+          "sourceScale": 0.5,
+          "sourceAnchor": [
+            73.5,
+            217
+          ],
+          "sourceBounds": [
+            2,
+            112,
+            145,
+            215
+          ],
+          "bounds": [
+            108,
+            173,
+            180,
+            225
+          ],
+          "sha256": "5463a1ecfb56afa6169fa3dc4455244a52346a325e2c6825913c9084d041f547"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-north-v1.png",
+          "sourceScale": 0.4909090909090909,
+          "sourceAnchor": [
+            49,
+            222
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            82,
+            222
+          ],
+          "bounds": [
+            121,
+            117,
+            160,
+            225
+          ],
+          "sha256": "4e0c9c625dda9e71e7928adf977f7445019b043271bd47b0aabbffee38289bba"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-north-v1.png",
+          "sourceScale": 0.4909090909090909,
+          "sourceAnchor": [
+            79,
+            222
+          ],
+          "sourceBounds": [
+            2,
+            41,
+            129,
+            222
+          ],
+          "bounds": [
+            106,
+            136,
+            168,
+            225
+          ],
+          "sha256": "ee31f19cc42c570b5a290951b6ec4c8559ded0b31d952737d3cb348bc39f7b98"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-north-v1.png",
+          "sourceScale": 0.4909090909090909,
+          "sourceAnchor": [
+            87,
+            222
+          ],
+          "sourceBounds": [
+            2,
+            114,
+            191,
+            222
+          ],
+          "bounds": [
+            102,
+            172,
+            195,
+            225
+          ],
+          "sha256": "84428d551f4e3d5370d14dfe933a89d091f10896facc45c20c04482c552ab060"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-north-v1.png",
+          "sourceScale": 0.4909090909090909,
+          "sourceAnchor": [
+            58.5,
+            222
+          ],
+          "sourceBounds": [
+            2,
+            130,
+            204,
+            220
+          ],
+          "bounds": [
+            116,
+            180,
+            215,
+            224
+          ],
+          "sha256": "fd21818a3ca01f30d5acfd0cb93ddc1224c20e4cce08a02d4722701e18e175c6"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-north-v1.png",
+          "sourceScale": 0.4798206278026906,
+          "sourceAnchor": [
+            42,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            70,
+            225
+          ],
+          "bounds": [
+            125,
+            116,
+            158,
+            223
+          ],
+          "sha256": "286cd156a27869dee29098cdb9386a09562c581a45b8dd60e1107d3d1a3f6baf"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-north-v1.png",
+          "sourceScale": 0.4798206278026906,
+          "sourceAnchor": [
+            88,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            43,
+            124,
+            225
+          ],
+          "bounds": [
+            103,
+            136,
+            162,
+            223
+          ],
+          "sha256": "4e45e89775748d1705ab678dd6c3ff9459285a780f55abb4cea9760a116e29e3"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-north-v1.png",
+          "sourceScale": 0.4798206278026906,
+          "sourceAnchor": [
+            121.5,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            122,
+            205,
+            229
+          ],
+          "bounds": [
+            87,
+            174,
+            184,
+            225
+          ],
+          "sha256": "b745109f9cbdd530f4962dd9029a9cfc4f429c8d9c56eb68f7d406c0bb9cf3f7"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-north-v1.png",
+          "sourceScale": 0.4798206278026906,
+          "sourceAnchor": [
+            109,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            179,
+            244,
+            228
+          ],
+          "bounds": [
+            93,
+            201,
+            209,
+            225
+          ],
+          "sha256": "3d0796efa48906b9e3aaeec5633572168c18b45f085f58fd48e01d01352f2574"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-north-v1.png",
+          "sourceScale": 0.47767857142857145,
+          "sourceAnchor": [
+            46.5,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            85,
+            226
+          ],
+          "bounds": [
+            123,
+            118,
+            163,
+            225
+          ],
+          "sha256": "10296f48baa80cb82bc39073997ef3d95386bdb38dedf1cf594e6f16c12edc6f"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-north-v1.png",
+          "sourceScale": 0.47767857142857145,
+          "sourceAnchor": [
+            86,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            32,
+            130,
+            222
+          ],
+          "bounds": [
+            104,
+            132,
+            165,
+            223
+          ],
+          "sha256": "c703f14296480d96584d84a612b70af3378c35c5d2b19a329ae37548d6b5790d"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-north-v1.png",
+          "sourceScale": 0.47767857142857145,
+          "sourceAnchor": [
+            139.5,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            93,
+            201,
+            220
+          ],
+          "bounds": [
+            78,
+            161,
+            173,
+            222
+          ],
+          "sha256": "2adfe1140c07b0fc098a207cd733e18db9d9af161de761df453fe2b4b96e88c7"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-north-v1.png",
+          "sourceScale": 0.47767857142857145,
+          "sourceAnchor": [
+            173,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            139,
+            225,
+            218
+          ],
+          "bounds": [
+            62,
+            183,
+            169,
+            221
+          ],
+          "sha256": "daad2b130b3552bafa1d85b8717aca7a215de610f97135c87d1499d224f8d057"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-south-v1.png",
+          "sourceScale": 0.5,
+          "sourceAnchor": [
+            42.5,
+            217
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            84,
+            214
+          ],
+          "bounds": [
+            124,
+            118,
+            165,
+            224
+          ],
+          "sha256": "7120c678df2307a5d649e9ecea0e784a97137fc8ae2f3797619e457da9663327"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-south-v1.png",
+          "sourceScale": 0.5,
+          "sourceAnchor": [
+            54,
+            217
+          ],
+          "sourceBounds": [
+            2,
+            28,
+            111,
+            215
+          ],
+          "bounds": [
+            118,
+            131,
+            173,
+            225
+          ],
+          "sha256": "e64f7e914ff994610ca2385bed2a06041ef4e523c7e7c4e2c062734586f40a7c"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-south-v1.png",
+          "sourceScale": 0.5,
+          "sourceAnchor": [
+            62.5,
+            217
+          ],
+          "sourceBounds": [
+            2,
+            78,
+            125,
+            217
+          ],
+          "bounds": [
+            114,
+            156,
+            176,
+            226
+          ],
+          "sha256": "8f788bd976c8758ae8092cd67194b591d799ba65598005de1576d085149b6c4f"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-south-v1.png",
+          "sourceScale": 0.5,
+          "sourceAnchor": [
+            62.5,
+            217
+          ],
+          "sourceBounds": [
+            2,
+            108,
+            125,
+            217
+          ],
+          "bounds": [
+            114,
+            171,
+            176,
+            226
+          ],
+          "sha256": "190221060939516fdafe9fa65ff8cbc3be1a5340427c9ee5cabdadf4d482405b"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-south-v1.png",
+          "sourceScale": 0.49537037037037035,
+          "sourceAnchor": [
+            35,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            83,
+            218
+          ],
+          "bounds": [
+            128,
+            117,
+            168,
+            224
+          ],
+          "sha256": "48b8656e221260872a922b0178779dcac6588ac2c8669b7e384ccf6ca6700c19"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-south-v1.png",
+          "sourceScale": 0.49537037037037035,
+          "sourceAnchor": [
+            44.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            37,
+            125,
+            218
+          ],
+          "bounds": [
+            123,
+            134,
+            184,
+            224
+          ],
+          "sha256": "b2efc7a4ed562fd4d23daaa65ac3b96f8b004632d5fb183c842a5a9456e23043"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-south-v1.png",
+          "sourceScale": 0.49537037037037035,
+          "sourceAnchor": [
+            54.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            92,
+            173,
+            220
+          ],
+          "bounds": [
+            118,
+            162,
+            203,
+            225
+          ],
+          "sha256": "9c850f8af9af5d430848312657ff11d60afbb688f03f059105983c6b56ef101d"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-south-v1.png",
+          "sourceScale": 0.49537037037037035,
+          "sourceAnchor": [
+            56,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            133,
+            215,
+            220
+          ],
+          "bounds": [
+            117,
+            182,
+            223,
+            225
+          ],
+          "sha256": "dc29dcf7726f6a12b866077b0a28d62b10b04df12fd0dfd6aa07c9eed0f42e42"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-south-v1.png",
+          "sourceScale": 0.48623853211009177,
+          "sourceAnchor": [
+            28,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            67,
+            220
+          ],
+          "bounds": [
+            131,
+            118,
+            163,
+            224
+          ],
+          "sha256": "4fa9c00c9ec0c964ff21f605b46819c85c3be598d6cb3b785890c5f76a54d008"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-south-v1.png",
+          "sourceScale": 0.48623853211009177,
+          "sourceAnchor": [
+            41.5,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            37,
+            121,
+            220
+          ],
+          "bounds": [
+            125,
+            135,
+            183,
+            224
+          ],
+          "sha256": "40a8235ef308c70b1b3bc0152999a6570a48bdb156c4e30b6745fc906fec708d"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-south-v1.png",
+          "sourceScale": 0.48623853211009177,
+          "sourceAnchor": [
+            96,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            110,
+            192,
+            223
+          ],
+          "bounds": [
+            98,
+            170,
+            190,
+            225
+          ],
+          "sha256": "52b1e253d6daedf1351c9c2b70751e85e1ffda1ecf2e85aedbd7c89da925c10e"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-south-v1.png",
+          "sourceScale": 0.48623853211009177,
+          "sourceAnchor": [
+            97.5,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            172,
+            237,
+            220
+          ],
+          "bounds": [
+            98,
+            200,
+            212,
+            223
+          ],
+          "sha256": "373c4b5b5b87d5e6a00d6efe19537345c096c89ec2ed70b92b21dca8ef2f2193"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-south-v1.png",
+          "sourceScale": 0.4796380090497738,
+          "sourceAnchor": [
+            38.5,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            80,
+            223
+          ],
+          "bounds": [
+            126,
+            119,
+            163,
+            225
+          ],
+          "sha256": "816b5dc33e6c915c0433b1ce113410e8528b12f81cd05d45d92ded3c07ae870b"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-south-v1.png",
+          "sourceScale": 0.4796380090497738,
+          "sourceAnchor": [
+            59,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            37,
+            99,
+            222
+          ],
+          "bounds": [
+            117,
+            136,
+            164,
+            225
+          ],
+          "sha256": "8346572218445d34dea383cde3cf919b9e82ed4aadbe5a76e618ea8a31ba4622"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-south-v1.png",
+          "sourceScale": 0.4796380090497738,
+          "sourceAnchor": [
+            95,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            109,
+            178,
+            221
+          ],
+          "bounds": [
+            99,
+            170,
+            183,
+            224
+          ],
+          "sha256": "7554f471f6ad02d57e6de02e98c2fbc1387c84d9726a325cfdc64607884eee1d"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-collapse-south-v1.png",
+          "sourceScale": 0.4796380090497738,
+          "sourceAnchor": [
+            159.5,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            133,
+            195,
+            221
+          ],
+          "bounds": [
+            68,
+            182,
+            161,
+            224
+          ],
+          "sha256": "d8c4c98d007bf3a3d1d67585fc36b8adbf99f783ed534304f6126db194e68d4d"
+        }
+      ],
+      "file": "woman-shawl-collapse.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "72b08ce5b31da584e199fdaa2fab277b08ca1607fc73fbbc96fa5615dec23f49"
+    }
+  }
+}

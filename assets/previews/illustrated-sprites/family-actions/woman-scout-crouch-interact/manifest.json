@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-scout-crouch-interact": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-north-v1.png",
+          "sha256": "dd401033a443f9852a057856e8b529185aee40fd02a6095e151e704070998c61",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-south-v1.png",
+          "sha256": "d8f8cbc5cbf80667518294f110cae593247d58741abe6c6badbee26c243f63e7",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-north-v1.png",
+          "sourceScale": 0.3399014778325123,
+          "sourceAnchor": [
+            67.5,
+            206
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            134,
+            205
+          ],
+          "bounds": [
+            122,
+            156,
+            167,
+            225
+          ],
+          "sha256": "a88eb21ab9e80925d7aa5d658928e1e6e52f9de0f6d663a6c5f90797c702d8a1"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-north-v1.png",
+          "sourceScale": 0.3399014778325123,
+          "sourceAnchor": [
+            67.5,
+            206
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            161,
+            205
+          ],
+          "bounds": [
+            122,
+            156,
+            176,
+            225
+          ],
+          "sha256": "70bcc38106f1ffa5fc70dbb5994945bb222474709a3376039916444ab8b88c48"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-north-v1.png",
+          "sourceScale": 0.3399014778325123,
+          "sourceAnchor": [
+            68.5,
+            206
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            137,
+            206
+          ],
+          "bounds": [
+            121,
+            156,
+            167,
+            225
+          ],
+          "sha256": "2ff08ce1ba5549ed87761f88f06ba5e5fa1f94a76303a2dfa3044f8ea91c2caf"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-north-v1.png",
+          "sourceScale": 0.3399014778325123,
+          "sourceAnchor": [
+            67.5,
+            206
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            135,
+            205
+          ],
+          "bounds": [
+            122,
+            156,
+            167,
+            225
+          ],
+          "sha256": "4ae92cf84eb83160c33d421caf3f9ba70c715385f4ec85d1d7a7aa3ffef6598b"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-north-v1.png",
+          "sourceScale": 0.35436893203883496,
+          "sourceAnchor": [
+            70,
+            208
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            146,
+            208
+          ],
+          "bounds": [
+            120,
+            152,
+            171,
+            225
+          ],
+          "sha256": "93f0754a76b5616cd2d5ccf40b20e5a76d9c064b7e341e3ba7a2e17b85c5b8be"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-north-v1.png",
+          "sourceScale": 0.35436893203883496,
+          "sourceAnchor": [
+            67.5,
+            208
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            195,
+            208
+          ],
+          "bounds": [
+            121,
+            152,
+            189,
+            225
+          ],
+          "sha256": "1fff69572e6be4e34babebc34f51280dae44d9a08391dfaa6a81087b3ac144ef"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-north-v1.png",
+          "sourceScale": 0.35436893203883496,
+          "sourceAnchor": [
+            72,
+            208
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            166,
+            208
+          ],
+          "bounds": [
+            119,
+            152,
+            177,
+            225
+          ],
+          "sha256": "4694dfbe67be8d71b893f61ec7e3b955d9239a0a42e97cef9e148feece3d5fca"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-north-v1.png",
+          "sourceScale": 0.35436893203883496,
+          "sourceAnchor": [
+            70,
+            208
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            148,
+            208
+          ],
+          "bounds": [
+            120,
+            152,
+            172,
+            225
+          ],
+          "sha256": "e82b027e113060bba1edb0bf350df0dbf7a5e90a280bf1da22990899d797bc6d"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-north-v1.png",
+          "sourceScale": 0.35714285714285715,
+          "sourceAnchor": [
+            85.5,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            212
+          ],
+          "bounds": [
+            114,
+            150,
+            164,
+            225
+          ],
+          "sha256": "c7cfeb4800b7414795647ac8fd81822431b509461eb2e605f50fa1f5bc0a97f2"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-north-v1.png",
+          "sourceScale": 0.35714285714285715,
+          "sourceAnchor": [
+            82.5,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            5,
+            196,
+            212
+          ],
+          "bounds": [
+            115,
+            151,
+            184,
+            225
+          ],
+          "sha256": "7bece2ba29986f949a71415d61cea124c4bfcfab583ab4e2e17d87fae6c84ff5"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-north-v1.png",
+          "sourceScale": 0.35714285714285715,
+          "sourceAnchor": [
+            86.5,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            7,
+            177,
+            212
+          ],
+          "bounds": [
+            114,
+            152,
+            177,
+            225
+          ],
+          "sha256": "4502f437883167fc1616be50de81cbc2fd8aa736033ae8f96ab01f5b7f4a954d"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-north-v1.png",
+          "sourceScale": 0.35714285714285715,
+          "sourceAnchor": [
+            84.5,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            212
+          ],
+          "bounds": [
+            115,
+            150,
+            165,
+            225
+          ],
+          "sha256": "16cd5fb5b000a72f49fccda582e1baa4d6ddd84d474935df0b58cbf0a865ff5f"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-north-v1.png",
+          "sourceScale": 0.3427230046948357,
+          "sourceAnchor": [
+            75.5,
+            215
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            152,
+            215
+          ],
+          "bounds": [
+            119,
+            152,
+            170,
+            225
+          ],
+          "sha256": "c5d4013683fa726e0df7eeaaf6da184f91bd95d1c183461b4501248cc6d6d68d"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-north-v1.png",
+          "sourceScale": 0.3427230046948357,
+          "sourceAnchor": [
+            48,
+            215
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            186,
+            215
+          ],
+          "bounds": [
+            128,
+            152,
+            191,
+            225
+          ],
+          "sha256": "7ea5ce6aa013d2dc5529a8c2a0e740140f0f41433f3a258ba900d401020e7a37"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-north-v1.png",
+          "sourceScale": 0.3427230046948357,
+          "sourceAnchor": [
+            74.5,
+            215
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            166,
+            215
+          ],
+          "bounds": [
+            119,
+            152,
+            175,
+            225
+          ],
+          "sha256": "e0e4f3b5d81e1115797bc92c563171171fcf219363689537e907e2135fc4e9f6"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-north-v1.png",
+          "sourceScale": 0.3427230046948357,
+          "sourceAnchor": [
+            76,
+            215
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            152,
+            215
+          ],
+          "bounds": [
+            119,
+            152,
+            170,
+            225
+          ],
+          "sha256": "bddfd8f306577d7caae1b397c603b227f860aa9f61b90f324d36bd892b1cc987"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-south-v1.png",
+          "sourceScale": 0.3333333333333333,
+          "sourceAnchor": [
+            76,
+            213
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            146,
+            209
+          ],
+          "bounds": [
+            119,
+            155,
+            167,
+            224
+          ],
+          "sha256": "30723b5f77c1d1e715c076bc2ff47de605e777d01c593180200a4c20859dadcf"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-south-v1.png",
+          "sourceScale": 0.3333333333333333,
+          "sourceAnchor": [
+            83,
+            213
+          ],
+          "sourceBounds": [
+            2,
+            11,
+            149,
+            213
+          ],
+          "bounds": [
+            117,
+            158,
+            166,
+            225
+          ],
+          "sha256": "2e05a329ace19f32b73384b1bffe3af01843e40b417b979e00f6bb2b48256442"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-south-v1.png",
+          "sourceScale": 0.3333333333333333,
+          "sourceAnchor": [
+            79,
+            213
+          ],
+          "sourceBounds": [
+            2,
+            11,
+            151,
+            209
+          ],
+          "bounds": [
+            118,
+            158,
+            168,
+            224
+          ],
+          "sha256": "737ceefbed050017eb87a13f6e5e8eeed2e57791700cc8ad0bca6c6cf053320f"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-south-v1.png",
+          "sourceScale": 0.3333333333333333,
+          "sourceAnchor": [
+            76.5,
+            213
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            147,
+            209
+          ],
+          "bounds": [
+            119,
+            155,
+            167,
+            224
+          ],
+          "sha256": "af0d88d506001bf0b5d48de1ce76494fca91a5cf3a437a8653671feb422d15e4"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-south-v1.png",
+          "sourceScale": 0.3394495412844037,
+          "sourceAnchor": [
+            87,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            167,
+            220
+          ],
+          "bounds": [
+            115,
+            151,
+            171,
+            225
+          ],
+          "sha256": "68e36566be22aaceeb57b67f88fead7c2551dedce54d3cfd6f228deabb879bc4"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-south-v1.png",
+          "sourceScale": 0.3394495412844037,
+          "sourceAnchor": [
+            128.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            10,
+            206,
+            220
+          ],
+          "bounds": [
+            101,
+            154,
+            170,
+            225
+          ],
+          "sha256": "e071c6eb6fd826119d56d68da23dbff77a8174033edce456c1187db1e0baca58"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-south-v1.png",
+          "sourceScale": 0.3394495412844037,
+          "sourceAnchor": [
+            99,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            9,
+            178,
+            220
+          ],
+          "bounds": [
+            111,
+            153,
+            171,
+            225
+          ],
+          "sha256": "a8b309c87efa0776601c0b211f1841626ce4bd8de132c581076b3dcaca374f39"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-south-v1.png",
+          "sourceScale": 0.3394495412844037,
+          "sourceAnchor": [
+            87.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            167,
+            220
+          ],
+          "bounds": [
+            115,
+            151,
+            171,
+            225
+          ],
+          "sha256": "3a781acf5a2790a94142d292de22cf217c0dbd9edc4c604c81410003d528dc65"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-south-v1.png",
+          "sourceScale": 0.3348623853211009,
+          "sourceAnchor": [
+            79.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            161,
+            220
+          ],
+          "bounds": [
+            118,
+            152,
+            171,
+            225
+          ],
+          "sha256": "a17350194ea4847bb8ffb7a2d6c11bcfd4d0ccfb84e17800370297014f490b99"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-south-v1.png",
+          "sourceScale": 0.3348623853211009,
+          "sourceAnchor": [
+            118,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            5,
+            204,
+            220
+          ],
+          "bounds": [
+            105,
+            153,
+            173,
+            225
+          ],
+          "sha256": "7cfd7e60b58575842c399ca57a40a91b394f651e5fdd73d98337868fb4419871"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-south-v1.png",
+          "sourceScale": 0.3348623853211009,
+          "sourceAnchor": [
+            101,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            5,
+            188,
+            220
+          ],
+          "bounds": [
+            111,
+            153,
+            173,
+            225
+          ],
+          "sha256": "6abfb3c2514d84928eedb4e299fc193aa606349bfe2b1f55eb17672b8609fc24"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-south-v1.png",
+          "sourceScale": 0.3348623853211009,
+          "sourceAnchor": [
+            66,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            156,
+            220
+          ],
+          "bounds": [
+            123,
+            152,
+            175,
+            225
+          ],
+          "sha256": "4f9adec84f2c0053c0cea884b56f9bd29e4c8dabe577187ae2eaf382a2324b0e"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-south-v1.png",
+          "sourceScale": 0.32882882882882886,
+          "sourceAnchor": [
+            73.5,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            162,
+            224
+          ],
+          "bounds": [
+            120,
+            151,
+            173,
+            224
+          ],
+          "sha256": "64ad2753157ac1b0a7f5c215f607fd4c25238de5c3408c0de6459137cbc5a5c4"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-south-v1.png",
+          "sourceScale": 0.32882882882882886,
+          "sourceAnchor": [
+            113,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            11,
+            195,
+            226
+          ],
+          "bounds": [
+            108,
+            154,
+            171,
+            225
+          ],
+          "sha256": "49b95ab8c6f69b553ab436cb6deafb5ede1d8f9a1b31ffa46e01e16e1af502e0"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-south-v1.png",
+          "sourceScale": 0.32882882882882886,
+          "sourceAnchor": [
+            93.5,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            13,
+            176,
+            226
+          ],
+          "bounds": [
+            114,
+            155,
+            171,
+            225
+          ],
+          "sha256": "a3518b8d0a0ac4e99a42945d8e220ba69b05c1c27abd81be627c4c4481d8ef95"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-crouch-interact-south-v1.png",
+          "sourceScale": 0.32882882882882886,
+          "sourceAnchor": [
+            73.5,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            162,
+            224
+          ],
+          "bounds": [
+            120,
+            151,
+            173,
+            224
+          ],
+          "sha256": "4af25f3ac020627e375e1d29be9c616d780be8f476add6474107de4a8f8a09f9"
+        }
+      ],
+      "file": "woman-scout-crouch-interact.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "34c6af10fc7474228b69367ac9b7664fbf4d809d4b1f70393758cfc6f0e75c92"
+    }
+  }
+}

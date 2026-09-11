@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "surgeon-mounted-fire": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sha256": "7f47348fa48dfeabd25b53a73b1d471de39046a1c5ec48205e5e47d3d97d637b",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-n-v2.png",
+          "sha256": "a38f5f7fb2c963bcc5a16b674b7c0bd9d3b5d6d3d2de62172b7d1c9feac02250",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.213235294117647,
+          "sourceAnchor": [
+            56,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            7,
+            118,
+            143
+          ],
+          "bounds": [
+            78,
+            60,
+            219,
+            225
+          ],
+          "sha256": "e2397bbbc2e69f3b6d80392fd70376208fc8ee7affbd8ef6ae2f5f25d71f7018"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.213235294117647,
+          "sourceAnchor": [
+            54.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            124,
+            143
+          ],
+          "bounds": [
+            80,
+            54,
+            228,
+            225
+          ],
+          "sha256": "598a0c653ed7698e9c2d162b12ddd69ffa42c79150ac771175a507286e36ffd2"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.213235294117647,
+          "sourceAnchor": [
+            56.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            7,
+            126,
+            143
+          ],
+          "bounds": [
+            78,
+            60,
+            228,
+            225
+          ],
+          "sha256": "55001c65dbc7a9ec0a44544ee028ae84274055e7513aec31d33f1e57e71d3540"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.213235294117647,
+          "sourceAnchor": [
+            57,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            6,
+            122,
+            143
+          ],
+          "bounds": [
+            77,
+            59,
+            223,
+            225
+          ],
+          "sha256": "061a2d186e67f9fe2a08af6533393ac9e674ca7a11edb026cf7aa72ec1ef7b5b"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.2238805970149254,
+          "sourceAnchor": [
+            70.5,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            154,
+            136
+          ],
+          "bounds": [
+            60,
+            61,
+            246,
+            225
+          ],
+          "sha256": "1220a1f8ca8810c3ca998bb06acf029c362c4ed30755f5241f3463ac7a033c91"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.2238805970149254,
+          "sourceAnchor": [
+            69.5,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            171,
+            136
+          ],
+          "bounds": [
+            61,
+            61,
+            268,
+            225
+          ],
+          "sha256": "d76a4ccba092822adc12556e417305364055e4b2cb2b692579ac8df5dd3bf2a0"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.2238805970149254,
+          "sourceAnchor": [
+            70.5,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            156,
+            136
+          ],
+          "bounds": [
+            60,
+            61,
+            248,
+            225
+          ],
+          "sha256": "4eee38849e5a248d31661cb4764331b3a5c9982d48ac9081ca265c095c228ff0"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.2238805970149254,
+          "sourceAnchor": [
+            68,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            152,
+            136
+          ],
+          "bounds": [
+            63,
+            61,
+            247,
+            225
+          ],
+          "sha256": "44a614d1feb75fc31bf2b2a0a0b059d263ea4c550be00e420ac2080019be6b22"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.1928571428571428,
+          "sourceAnchor": [
+            59,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            120,
+            142
+          ],
+          "bounds": [
+            76,
+            58,
+            217,
+            225
+          ],
+          "sha256": "c81fb4e3bd7637f1394e9315dc57ed50a45ff89af4484b8b052a56fa1e243995"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.1928571428571428,
+          "sourceAnchor": [
+            60.5,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            142
+          ],
+          "bounds": [
+            74,
+            58,
+            240,
+            225
+          ],
+          "sha256": "b7a2cf2e2db4a4ecd6517d5d0634f922fa256517f83c8cd7f98dcc2a39bc9005"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.1928571428571428,
+          "sourceAnchor": [
+            60.5,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            119,
+            142
+          ],
+          "bounds": [
+            74,
+            58,
+            214,
+            225
+          ],
+          "sha256": "b1ebba1070ccec884b1cd80e91744f5401c7f0c1e54644d5ca1ac3b235d77c47"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.1928571428571428,
+          "sourceAnchor": [
+            63.5,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            134,
+            142
+          ],
+          "bounds": [
+            71,
+            58,
+            228,
+            225
+          ],
+          "sha256": "2c90f715231a30a269d6316ad18ad98d68a98f0b86548d8bc55ef0c512758862"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.1527777777777777,
+          "sourceAnchor": [
+            35,
+            146
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            68,
+            146
+          ],
+          "bounds": [
+            106,
+            59,
+            182,
+            225
+          ],
+          "sha256": "7019e9f2919a8ca3be7b9470af42e9f3a1b97e7e7144407c72181e4913be7135"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.1527777777777777,
+          "sourceAnchor": [
+            34.5,
+            146
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            68,
+            146
+          ],
+          "bounds": [
+            107,
+            59,
+            183,
+            225
+          ],
+          "sha256": "c91c465e0e6c186903f3739c578405ed641b64830c4a7798e26b5f91f2884522"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.1527777777777777,
+          "sourceAnchor": [
+            34.5,
+            146
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            68,
+            146
+          ],
+          "bounds": [
+            107,
+            60,
+            183,
+            225
+          ],
+          "sha256": "f7f89a48efb6e6d66eb1ed6e88afab4f1d4d30dd03082da16b4f9bf1c3f334a5"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.1527777777777777,
+          "sourceAnchor": [
+            35,
+            146
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            68,
+            146
+          ],
+          "bounds": [
+            106,
+            59,
+            182,
+            225
+          ],
+          "sha256": "a54467f1ea8a438eb1a71a5d838778daa9e65de59e1649e178f8e51d7fc667f6"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.2205882352941178,
+          "sourceAnchor": [
+            79,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            138
+          ],
+          "bounds": [
+            50,
+            59,
+            220,
+            225
+          ],
+          "sha256": "08a46cd588b77c75b2923f2f1bba18607e840fdf4b079681b411d4d3da37ad2e"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.2205882352941178,
+          "sourceAnchor": [
+            79,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            137
+          ],
+          "bounds": [
+            50,
+            59,
+            220,
+            224
+          ],
+          "sha256": "ae99b11517ff7ebf78998426ef2f4f66c8ff182549ec18c57eff2105a58db2a9"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.2205882352941178,
+          "sourceAnchor": [
+            76.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            140,
+            137
+          ],
+          "bounds": [
+            53,
+            59,
+            221,
+            224
+          ],
+          "sha256": "03f52463a699580779327af62764a8e06ef6404f6abf28a4d5bf56a73a0af88d"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.2205882352941178,
+          "sourceAnchor": [
+            71.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            137
+          ],
+          "bounds": [
+            59,
+            59,
+            219,
+            224
+          ],
+          "sha256": "70435e727450bc8fa83c74d87840946bde37273502d1ba9b3c6c30e9144d8832"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.2058823529411764,
+          "sourceAnchor": [
+            88,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            155,
+            138
+          ],
+          "bounds": [
+            40,
+            61,
+            225,
+            225
+          ],
+          "sha256": "b098a0b219969ba9b38593c0c433557d13c101a35571bef1e5416f417f275281"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.2058823529411764,
+          "sourceAnchor": [
+            96.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            163,
+            138
+          ],
+          "bounds": [
+            30,
+            61,
+            224,
+            225
+          ],
+          "sha256": "3a29ad578cc0178b1c03afa1c8d53eb06b853d78a5ec7ee16c604af7b4e87a19"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.2058823529411764,
+          "sourceAnchor": [
+            84,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            152,
+            138
+          ],
+          "bounds": [
+            45,
+            61,
+            226,
+            225
+          ],
+          "sha256": "fffdd4c7364d3e268eeacc2c7fdfb7d151a2be9266f90a43e489483da2ce9966"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.2058823529411764,
+          "sourceAnchor": [
+            88,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            153,
+            138
+          ],
+          "bounds": [
+            40,
+            61,
+            222,
+            225
+          ],
+          "sha256": "0b970224ba98a9ad270c1c57767bab7ce7a145bda99fdfa2c5ad218bbc201941"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.1785714285714286,
+          "sourceAnchor": [
+            72.5,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            10,
+            132,
+            150
+          ],
+          "bounds": [
+            61,
+            60,
+            214,
+            225
+          ],
+          "sha256": "b1edd5e12d2b99ede26af30346ec5425bbd7595aab8ef639f629c26e5f3f28b7"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.1785714285714286,
+          "sourceAnchor": [
+            68,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            127,
+            150
+          ],
+          "bounds": [
+            66,
+            51,
+            213,
+            225
+          ],
+          "sha256": "bef3d6fa36d0a4719115c3f9037dbfd2a00494755dc2383cf2a557b24dd343b1"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.1785714285714286,
+          "sourceAnchor": [
+            70,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            10,
+            129,
+            150
+          ],
+          "bounds": [
+            64,
+            60,
+            214,
+            225
+          ],
+          "sha256": "8da8e24cf415829b7017027d36d5d24b4bb851ee81cdc9bb6385c2c14225066f"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-v1.png",
+          "sourceScale": 1.1785714285714286,
+          "sourceAnchor": [
+            69,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            9,
+            127,
+            150
+          ],
+          "bounds": [
+            65,
+            59,
+            212,
+            225
+          ],
+          "sha256": "fff9149dcc8add1230580f6c9aec4a9ba24eeb2ffcf9997e034b8c27f493ffc1"
+        },
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-n-v2.png",
+          "sourceScale": 0.2925531914893617,
+          "sourceAnchor": [
+            106.5,
+            573
+          ],
+          "sourceBounds": [
+            2,
+            9,
+            212,
+            573
+          ],
+          "bounds": [
+            113,
+            60,
+            174,
+            225
+          ],
+          "sha256": "59b2c8478bf25acaffbf0fe34f60b912be0b408d915885f0d52bf241693b7dd2"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-n-v2.png",
+          "sourceScale": 0.2925531914893617,
+          "sourceAnchor": [
+            107.5,
+            573
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            214,
+            573
+          ],
+          "bounds": [
+            113,
+            58,
+            175,
+            225
+          ],
+          "sha256": "59a8733f6dc5eb39cc15a1f41c615a887b2a09ef083cf340473ab11e1b555035"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-n-v2.png",
+          "sourceScale": 0.2925531914893617,
+          "sourceAnchor": [
+            105.5,
+            573
+          ],
+          "sourceBounds": [
+            2,
+            9,
+            211,
+            573
+          ],
+          "bounds": [
+            114,
+            60,
+            175,
+            225
+          ],
+          "sha256": "97e14546079b1e0ce625a4a17068e3b26eb5b8d6d95646e5f5531ad323677b67"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-fire-n-v2.png",
+          "sourceScale": 0.2925531914893617,
+          "sourceAnchor": [
+            107,
+            573
+          ],
+          "sourceBounds": [
+            2,
+            9,
+            213,
+            573
+          ],
+          "bounds": [
+            113,
+            60,
+            175,
+            225
+          ],
+          "sha256": "3d4ef11673b31dc00b9b104bbaabaa8cca787e090330ef05369501b23433106a"
+        }
+      ],
+      "file": "surgeon-mounted-fire.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "15e13a9d4f17939b4f87776fe0f2cd85867fe67ade84b92c33aca29373af2de6"
+    }
+  }
+}

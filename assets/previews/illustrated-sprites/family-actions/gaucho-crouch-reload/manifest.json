@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "gaucho-crouch-reload": {
+      "cell": 240,
+      "anchor": [
+        120,
+        210
+      ],
+      "logicalCell": 80,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-north-v3.png",
+          "sha256": "15b9e63a00c360d3bfaa4cf4baa9ced527bfad42e84dc326c8518869f92fb96a",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-south-v1.png",
+          "sha256": "3578863bdf490fc7e486e57f7822cd79402523da2cc4c22201c922eddbfce82b",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-north-v3.png",
+          "sourceScale": 0.3806818181818182,
+          "sourceAnchor": [
+            65.5,
+            256
+          ],
+          "sourceBounds": [
+            2,
+            80,
+            196,
+            256
+          ],
+          "bounds": [
+            96,
+            143,
+            170,
+            210
+          ],
+          "sha256": "185241cc0417a3fa3fd25b126dee0be26e1c9c73212b2847a368ca6f230ba1db"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-north-v3.png",
+          "sourceScale": 0.3806818181818182,
+          "sourceAnchor": [
+            90.5,
+            256
+          ],
+          "sourceBounds": [
+            2,
+            70,
+            161,
+            256
+          ],
+          "bounds": [
+            86,
+            139,
+            147,
+            210
+          ],
+          "sha256": "aad0b37cc62d5e757576f237824b544ec713159bd3de0f64fee2e3606059a503"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-north-v3.png",
+          "sourceScale": 0.3806818181818182,
+          "sourceAnchor": [
+            66,
+            256
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            139,
+            256
+          ],
+          "bounds": [
+            96,
+            113,
+            148,
+            210
+          ],
+          "sha256": "a5b143da29d39a42ae1aeb1fd8a748ccb582579416a113f1eb6162ee6a5b5de7"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-north-v3.png",
+          "sourceScale": 0.3806818181818182,
+          "sourceAnchor": [
+            65.5,
+            256
+          ],
+          "sourceBounds": [
+            2,
+            80,
+            197,
+            256
+          ],
+          "bounds": [
+            96,
+            143,
+            170,
+            210
+          ],
+          "sha256": "79e9f382eb00f709e06c756508d172073948a4e1f57e2058080a9d19b89995d8"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-north-v3.png",
+          "sourceScale": 0.391304347826087,
+          "sourceAnchor": [
+            64.5,
+            259
+          ],
+          "sourceBounds": [
+            2,
+            75,
+            208,
+            259
+          ],
+          "bounds": [
+            96,
+            138,
+            177,
+            210
+          ],
+          "sha256": "4cfca2346b4ab08371ee9ecfedfcdc606677e2c8ca01d18a91cd932a7eaaa563"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-north-v3.png",
+          "sourceScale": 0.391304347826087,
+          "sourceAnchor": [
+            88.5,
+            259
+          ],
+          "sourceBounds": [
+            2,
+            53,
+            159,
+            259
+          ],
+          "bounds": [
+            86,
+            129,
+            147,
+            210
+          ],
+          "sha256": "acf5246b85aa205cf6db76d45e603516599237d47d060b93c272359db00c14e8"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-north-v3.png",
+          "sourceScale": 0.391304347826087,
+          "sourceAnchor": [
+            81.5,
+            259
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            151,
+            259
+          ],
+          "bounds": [
+            89,
+            109,
+            147,
+            210
+          ],
+          "sha256": "45e43035c5409beb127c9bebb2a12426d5af0d9b0f3c693abb16b93b2f586525"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-north-v3.png",
+          "sourceScale": 0.391304347826087,
+          "sourceAnchor": [
+            64,
+            259
+          ],
+          "sourceBounds": [
+            2,
+            75,
+            208,
+            259
+          ],
+          "bounds": [
+            96,
+            138,
+            177,
+            210
+          ],
+          "sha256": "7777279180edf070d6abab6bc24bac2a6f71b443d1c260fca0048fecfeba283f"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-north-v3.png",
+          "sourceScale": 0.4157303370786517,
+          "sourceAnchor": [
+            81.5,
+            247
+          ],
+          "sourceBounds": [
+            2,
+            69,
+            220,
+            247
+          ],
+          "bounds": [
+            87,
+            136,
+            178,
+            210
+          ],
+          "sha256": "5c6a90e34491a5e7a1d0508b004a1477bbae322af99c16006171b834744dea94"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-north-v3.png",
+          "sourceScale": 0.4157303370786517,
+          "sourceAnchor": [
+            97,
+            247
+          ],
+          "sourceBounds": [
+            2,
+            52,
+            166,
+            247
+          ],
+          "bounds": [
+            81,
+            129,
+            149,
+            210
+          ],
+          "sha256": "cd8d7e0e9f928cc42235eb4f32273fb549efc06e6248ec944bd7c3ea02b61825"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-north-v3.png",
+          "sourceScale": 0.4157303370786517,
+          "sourceAnchor": [
+            81,
+            247
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            147,
+            247
+          ],
+          "bounds": [
+            87,
+            108,
+            147,
+            210
+          ],
+          "sha256": "d41480b65130892904a1476e00324ceee097b664e8169e592e483d60d2c91957"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-north-v3.png",
+          "sourceScale": 0.4157303370786517,
+          "sourceAnchor": [
+            79.5,
+            247
+          ],
+          "sourceBounds": [
+            2,
+            69,
+            220,
+            247
+          ],
+          "bounds": [
+            88,
+            136,
+            179,
+            210
+          ],
+          "sha256": "fb938a7b927d71bf5dbea4980f8c35e1a088445d15b65be13482db917028cd3c"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-north-v3.png",
+          "sourceScale": 0.3837837837837838,
+          "sourceAnchor": [
+            79.5,
+            247
+          ],
+          "sourceBounds": [
+            2,
+            59,
+            205,
+            244
+          ],
+          "bounds": [
+            90,
+            138,
+            168,
+            209
+          ],
+          "sha256": "255ce7d39ca3bb26a441bc8dcaabefd30aa5107e8a5f89ae4959a19962b65d4d"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-north-v3.png",
+          "sourceScale": 0.3837837837837838,
+          "sourceAnchor": [
+            99.5,
+            247
+          ],
+          "sourceBounds": [
+            2,
+            57,
+            169,
+            247
+          ],
+          "bounds": [
+            83,
+            137,
+            147,
+            210
+          ],
+          "sha256": "88a1048d65627eb22317a376ba7e26144796a22e982b0584f14b9c2f3bd4a389"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-north-v3.png",
+          "sourceScale": 0.3837837837837838,
+          "sourceAnchor": [
+            87,
+            247
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            155,
+            244
+          ],
+          "bounds": [
+            87,
+            116,
+            146,
+            209
+          ],
+          "sha256": "55aa07f6735538619922db892757e1069b03835b553cc3365f4fd8d2412a97d4"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-north-v3.png",
+          "sourceScale": 0.3837837837837838,
+          "sourceAnchor": [
+            78,
+            247
+          ],
+          "sourceBounds": [
+            2,
+            59,
+            204,
+            244
+          ],
+          "bounds": [
+            91,
+            138,
+            169,
+            209
+          ],
+          "sha256": "c4b6ab1d4da57996f3b4152712fdb25d83ff93b59b7c943a002b63dcc0da31b0"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-south-v1.png",
+          "sourceScale": 0.36507936507936506,
+          "sourceAnchor": [
+            85,
+            241
+          ],
+          "sourceBounds": [
+            2,
+            49,
+            169,
+            238
+          ],
+          "bounds": [
+            90,
+            140,
+            151,
+            209
+          ],
+          "sha256": "42dcd6d5d2944d840e856ad70079c81ac416c02ef455f0a6992371f7e53584a1"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-south-v1.png",
+          "sourceScale": 0.36507936507936506,
+          "sourceAnchor": [
+            78,
+            241
+          ],
+          "sourceBounds": [
+            2,
+            41,
+            145,
+            240
+          ],
+          "bounds": [
+            92,
+            137,
+            144,
+            210
+          ],
+          "sha256": "26d48f8a7927ed36615305b95a3421f19fcb9216ae2c2fa148d7802c172d5315"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-south-v1.png",
+          "sourceScale": 0.36507936507936506,
+          "sourceAnchor": [
+            74.5,
+            241
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            241
+          ],
+          "bounds": [
+            94,
+            123,
+            145,
+            210
+          ],
+          "sha256": "a56620e577a22d0304fc45b766a4ea444961651b02d34e42314f128a64c4248d"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-south-v1.png",
+          "sourceScale": 0.36507936507936506,
+          "sourceAnchor": [
+            89,
+            241
+          ],
+          "sourceBounds": [
+            2,
+            58,
+            177,
+            241
+          ],
+          "bounds": [
+            88,
+            143,
+            152,
+            210
+          ],
+          "sha256": "808fd36a01ae1ef518cdf613d8f387a230ad8bdfe461d803d00a753c052ed311"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-south-v1.png",
+          "sourceScale": 0.38341968911917096,
+          "sourceAnchor": [
+            110,
+            240
+          ],
+          "sourceBounds": [
+            2,
+            44,
+            184,
+            237
+          ],
+          "bounds": [
+            79,
+            135,
+            149,
+            209
+          ],
+          "sha256": "3d135ba7376a67aead185f3d888e0a5ecf06d52a7bf990a6c2eb59344cc2b357"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-south-v1.png",
+          "sourceScale": 0.38341968911917096,
+          "sourceAnchor": [
+            81.5,
+            240
+          ],
+          "sourceBounds": [
+            2,
+            36,
+            159,
+            238
+          ],
+          "bounds": [
+            90,
+            132,
+            150,
+            209
+          ],
+          "sha256": "192f0a757804627dcccf1c20d24efa3fa7df8b76638ab07e861fe9c3fe045c6f"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-south-v1.png",
+          "sourceScale": 0.38341968911917096,
+          "sourceAnchor": [
+            83,
+            240
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            155,
+            238
+          ],
+          "bounds": [
+            89,
+            119,
+            148,
+            209
+          ],
+          "sha256": "f1e6c3f3d7b6d7b25db2361f385d5f4a56437ca1c3fbd58b04a25f2e95f9a531"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-south-v1.png",
+          "sourceScale": 0.38341968911917096,
+          "sourceAnchor": [
+            85,
+            240
+          ],
+          "sourceBounds": [
+            2,
+            51,
+            152,
+            240
+          ],
+          "bounds": [
+            88,
+            138,
+            146,
+            210
+          ],
+          "sha256": "92d9832b351ae813892f28a5fa37618db21296b573db2c1851a418621f56c562"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-south-v1.png",
+          "sourceScale": 0.38144329896907214,
+          "sourceAnchor": [
+            122,
+            238
+          ],
+          "sourceBounds": [
+            2,
+            40,
+            188,
+            234
+          ],
+          "bounds": [
+            74,
+            134,
+            145,
+            208
+          ],
+          "sha256": "241c62dd5b0d78408efd01fa3d9e6151e93f0885ac6435035b0e91f59d2279ae"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-south-v1.png",
+          "sourceScale": 0.38144329896907214,
+          "sourceAnchor": [
+            70.5,
+            238
+          ],
+          "sourceBounds": [
+            2,
+            37,
+            167,
+            234
+          ],
+          "bounds": [
+            94,
+            133,
+            157,
+            208
+          ],
+          "sha256": "2bc968db49dfbddc45b0300639cb795f15d8df97ecb271949572cce2e246d73b"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-south-v1.png",
+          "sourceScale": 0.38144329896907214,
+          "sourceAnchor": [
+            66.5,
+            238
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            146,
+            236
+          ],
+          "bounds": [
+            95,
+            120,
+            150,
+            209
+          ],
+          "sha256": "8321dbb6038a1e4d0eec4c96be7e8a8052224fc3db260063b558d6b783019fb9"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-south-v1.png",
+          "sourceScale": 0.38144329896907214,
+          "sourceAnchor": [
+            123,
+            238
+          ],
+          "sourceBounds": [
+            2,
+            51,
+            190,
+            238
+          ],
+          "bounds": [
+            74,
+            139,
+            146,
+            210
+          ],
+          "sha256": "16d824cc3831323f7da17cd5d4b6be7d6c27b464b7a0ded0ed62cc89cce6342c"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-south-v1.png",
+          "sourceScale": 0.37823834196891193,
+          "sourceAnchor": [
+            117,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            28,
+            192,
+            221
+          ],
+          "bounds": [
+            77,
+            134,
+            149,
+            207
+          ],
+          "sha256": "9bf37708cbbad649fcea50ef3f1cabbf447403c690a37632c8e7a1e1e1e7f606"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-south-v1.png",
+          "sourceScale": 0.37823834196891193,
+          "sourceAnchor": [
+            70,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            26,
+            155,
+            222
+          ],
+          "bounds": [
+            94,
+            133,
+            152,
+            207
+          ],
+          "sha256": "e1b13de7afe9fb13329a15606b96cef64b01bcd6b43ef0d9e3da59871d260752"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-south-v1.png",
+          "sourceScale": 0.37823834196891193,
+          "sourceAnchor": [
+            69,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            153,
+            227
+          ],
+          "bounds": [
+            95,
+            124,
+            152,
+            209
+          ],
+          "sha256": "ca89df195aa22e638a6403ac09c0a2baf7259a3f4403537a783c018a8b320c65"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-reload-south-v1.png",
+          "sourceScale": 0.37823834196891193,
+          "sourceAnchor": [
+            112.5,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            42,
+            178,
+            229
+          ],
+          "bounds": [
+            78,
+            139,
+            145,
+            210
+          ],
+          "sha256": "b36a7daac293930b48482acd8c29e88d80ff01a2e226e93e2854e81f9ccdcf04"
+        }
+      ],
+      "file": "gaucho-crouch-reload.png",
+      "size": [
+        960,
+        1920
+      ],
+      "sha256": "d9f6ef0dee04be630a5b5ffdfe98e89564f38a49e8569236a2e91e7da66f1ffb"
+    }
+  }
+}

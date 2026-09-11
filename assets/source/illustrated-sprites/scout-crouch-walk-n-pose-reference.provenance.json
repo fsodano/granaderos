@@ -1,0 +1,10 @@
+{
+  "source": "assets/source/illustrated-sprites/granadero-crouch-walk-north-reviewed-reference.png",
+  "rect": [
+    0,
+    0,
+    1536,
+    384
+  ],
+  "method": "reference crop only"
+}

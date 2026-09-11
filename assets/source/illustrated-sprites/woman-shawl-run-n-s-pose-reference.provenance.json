@@ -1,0 +1,13 @@
+{
+  "sources": [
+    "granadero-run-north-reviewed-reference.png",
+    "granadero-run-south-reviewed-reference.png"
+  ],
+  "cropEach": [
+    0,
+    0,
+    1536,
+    384
+  ],
+  "layout": "N top row, S bottom row; image preprocessing only"
+}

@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "friar-aim-idle": {
+      "cell": 210,
+      "anchor": [
+        105,
+        186
+      ],
+      "logicalCell": 70,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/friar-fire-north-v1.png",
+          "sha256": "d7ffa964c8cd896731d010bd4a89d63e231222d56c866c3bacc96f342b3af543",
+          "scale": 0.6698564593301436
+        },
+        {
+          "file": "assets/source/illustrated-sprites/friar-fire-south-v1.png",
+          "sha256": "7d15c0a1280dc728a3e6cf8a6167d733086132347ea8c26c9362714e82af2409",
+          "scale": 0.6698564593301436
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/friar-fire-north-v1.png",
+          "sourceScale": 0.47923,
+          "sourceAnchor": [
+            38.258,
+            236.725
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            93,
+            231
+          ],
+          "bounds": [
+            88,
+            74,
+            132,
+            184
+          ],
+          "sha256": "d273be1e1fa86cda5dcea568362b3bdc4787e2f983640203353eeb79e9ac2af9"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/friar-fire-north-v1.png",
+          "sourceScale": 0.477733,
+          "sourceAnchor": [
+            46.441,
+            233.864
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            131,
+            230
+          ],
+          "bounds": [
+            84,
+            75,
+            146,
+            184
+          ],
+          "sha256": "20aea607d4d0591065d43fd48079b4197acb02aac60bb339a82295bb274b7d16"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/friar-fire-north-v1.png",
+          "sourceScale": 0.502594,
+          "sourceAnchor": [
+            48.311,
+            231.705
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            129,
+            228
+          ],
+          "bounds": [
+            82,
+            71,
+            146,
+            185
+          ],
+          "sha256": "cd257250eb7db70483bc9ddc0cb218f13300e0625bd50ac008ffdcbfd528b27c"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/friar-fire-north-v1.png",
+          "sourceScale": 0.463777,
+          "sourceAnchor": [
+            41.138,
+            232.914
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            120,
+            229
+          ],
+          "bounds": [
+            87,
+            79,
+            142,
+            184
+          ],
+          "sha256": "fc2d0f2cc6c32f909bf02471b40be2f36d4703a152ec7e0fe18e996bb8d0b76c"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/friar-fire-south-v1.png",
+          "sourceScale": 0.47053,
+          "sourceAnchor": [
+            46.246,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            106,
+            229
+          ],
+          "bounds": [
+            84,
+            79,
+            133,
+            186
+          ],
+          "sha256": "970044ba539154d28bf977704d46532dad2f9a7646fc7735b7edd89e2d84d519"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/friar-fire-south-v1.png",
+          "sourceScale": 0.499473,
+          "sourceAnchor": [
+            85.105,
+            231
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            231
+          ],
+          "bounds": [
+            63,
+            72,
+            128,
+            186
+          ],
+          "sha256": "1dbe820aa9016a8e23aa6a0f3196876ae8ab4d3d9283b34005e1992f0731f872"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/friar-fire-south-v1.png",
+          "sourceScale": 0.51348,
+          "sourceAnchor": [
+            142.016,
+            221
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            144,
+            221
+          ],
+          "bounds": [
+            33,
+            74,
+            106,
+            186
+          ],
+          "sha256": "64142a2f1ff28e688b96e47af30dfc5b2cff0f8be1aa0fe43457d2ad79e27bf6"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/friar-fire-south-v1.png",
+          "sourceScale": 0.48762,
+          "sourceAnchor": [
+            119.283,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            127,
+            229
+          ],
+          "bounds": [
+            48,
+            75,
+            109,
+            186
+          ],
+          "sha256": "a9583bd64d12309c449e8331f5d73b05c26887748da9da2ecaa014795b86e0af"
+        }
+      ],
+      "file": "friar-aim-idle.png",
+      "size": [
+        1680,
+        210
+      ],
+      "sha256": "2c8602ca6b92ef001c9496433643e712699e651e6d536ed3704c00b1fe486a60",
+      "derivedFrom": {
+        "atlas": "friar-fire",
+        "frame": 0,
+        "reason": "hold authored pre-shot aim"
+      }
+    }
+  }
+}

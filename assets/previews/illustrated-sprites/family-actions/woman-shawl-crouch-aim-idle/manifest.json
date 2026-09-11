@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-shawl-crouch-aim-idle": {
+      "cell": 210,
+      "anchor": [
+        105,
+        186
+      ],
+      "logicalCell": 70,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-north-v2.png",
+          "sha256": "f33f6cdf9340b57d1dd437260acc0bee543ef541c5ee7760898ec9f29c7304cc",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-south-v2.png",
+          "sha256": "d27e37639fa812eb78cc4bc606be5b26ca3afb0d28cc09855d4ff44f5dd12737",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-north-v2.png",
+          "sourceScale": 0.36813187,
+          "sourceAnchor": [
+            139.20896,
+            292
+          ],
+          "sourceBounds": [
+            77,
+            90,
+            214,
+            292
+          ],
+          "bounds": [
+            82,
+            112,
+            132,
+            186
+          ],
+          "sha256": "bb7dfa5284efe5c33ad849bf49b832a8f6d4f23fc97714cf1642d1c9e9fd4642"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-north-v2.png",
+          "sourceScale": 0.36923077,
+          "sourceAnchor": [
+            139.27083,
+            270
+          ],
+          "sourceBounds": [
+            61,
+            75,
+            226,
+            270
+          ],
+          "bounds": [
+            76,
+            114,
+            137,
+            186
+          ],
+          "sha256": "276a095a3e8edcf18336daeda3a5ac3ea26f528b4d6be067fc0308f65e8134e0"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-north-v2.png",
+          "sourceScale": 0.38829787,
+          "sourceAnchor": [
+            98.68493,
+            242
+          ],
+          "sourceBounds": [
+            48,
+            54,
+            258,
+            242
+          ],
+          "bounds": [
+            85,
+            113,
+            167,
+            186
+          ],
+          "sha256": "75f2aba15ac685fa6224e916fb58bcacd6d27f4058dfc2fa75fea39f74e7f562"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-north-v2.png",
+          "sourceScale": 0.36597938,
+          "sourceAnchor": [
+            121.27465,
+            255
+          ],
+          "sourceBounds": [
+            58,
+            61,
+            240,
+            255
+          ],
+          "bounds": [
+            82,
+            115,
+            149,
+            186
+          ],
+          "sha256": "bb066137521e016d5b64dcaf75db6de9854243958e37e4023307381cace2c620"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-south-v2.png",
+          "sourceScale": 0.33497537,
+          "sourceAnchor": [
+            171.49265,
+            277
+          ],
+          "sourceBounds": [
+            99,
+            74,
+            242,
+            277
+          ],
+          "bounds": [
+            81,
+            118,
+            129,
+            186
+          ],
+          "sha256": "8e2408d7a27c2f81a569b4aa9b4484599c6454413c9d69766e5a7f5644714a00"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-south-v2.png",
+          "sourceScale": 0.35960591,
+          "sourceAnchor": [
+            147.64384,
+            251
+          ],
+          "sourceBounds": [
+            60,
+            48,
+            255,
+            251
+          ],
+          "bounds": [
+            73,
+            113,
+            143,
+            186
+          ],
+          "sha256": "03ec1c12e750e0f554597b9ddefa5be9ed2c1d976ec081bf2cf473689f1a3535"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-south-v2.png",
+          "sourceScale": 0.36,
+          "sourceAnchor": [
+            198.38889,
+            220
+          ],
+          "sourceBounds": [
+            32,
+            20,
+            268,
+            220
+          ],
+          "bounds": [
+            45,
+            114,
+            130,
+            186
+          ],
+          "sha256": "5c34a420c9029929d7aa47769bdb8d044ef56f6b5f2df732e80258172472bffe"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-south-v2.png",
+          "sourceScale": 0.34466019,
+          "sourceAnchor": [
+            218.97183,
+            230
+          ],
+          "sourceBounds": [
+            53,
+            24,
+            258,
+            230
+          ],
+          "bounds": [
+            48,
+            115,
+            119,
+            186
+          ],
+          "sha256": "3f4aa5482fc91a103cc10f1adb4adccc7854d585a09444978f2ad6bec4439e69"
+        }
+      ],
+      "file": "woman-shawl-crouch-aim-idle.png",
+      "size": [
+        1680,
+        210
+      ],
+      "sha256": "1d6ccc1383d5556e9587523882b0487551911ba74511cc7a75cc2a32d81069bf",
+      "derivedFrom": {
+        "atlas": "woman-shawl-crouch-fire",
+        "frame": 0,
+        "reason": "hold authored pre-shot aim"
+      }
+    }
+  }
+}

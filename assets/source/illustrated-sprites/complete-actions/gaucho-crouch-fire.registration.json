@@ -1,0 +1,997 @@
+{
+  "version": 1,
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "sheets": [
+    {
+      "name": "gaucho-crouch-fire",
+      "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-fire-north-v1.png",
+      "prompt": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-fire-north-v1.prompt.txt",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "fps": 5,
+      "cell": 210,
+      "logicalCell": 70,
+      "anchor": [
+        105,
+        186
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "col": 0,
+          "row": 0,
+          "rect": [
+            0,
+            0,
+            314,
+            350
+          ],
+          "scale": 0.34183673,
+          "anchor": [
+            153.5,
+            290
+          ],
+          "sourceBounds": [
+            79,
+            94,
+            228,
+            290
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 67,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "col": 1,
+          "row": 0,
+          "rect": [
+            314,
+            0,
+            313,
+            350
+          ],
+          "scale": 0.34183673,
+          "anchor": [
+            146,
+            290
+          ],
+          "sourceBounds": [
+            72,
+            88,
+            221,
+            290
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 67,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "col": 2,
+          "row": 0,
+          "rect": [
+            627,
+            0,
+            314,
+            350
+          ],
+          "scale": 0.34183673,
+          "anchor": [
+            153.5,
+            290
+          ],
+          "sourceBounds": [
+            78,
+            70,
+            228,
+            290
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 67,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "col": 3,
+          "row": 0,
+          "rect": [
+            941,
+            0,
+            313,
+            350
+          ],
+          "scale": 0.34183673,
+          "anchor": [
+            145.5,
+            290
+          ],
+          "sourceBounds": [
+            71,
+            94,
+            221,
+            290
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 67,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "col": 0,
+          "row": 1,
+          "rect": [
+            0,
+            350,
+            314,
+            277
+          ],
+          "scale": 0.36363636,
+          "anchor": [
+            158.75,
+            249
+          ],
+          "sourceBounds": [
+            71,
+            51,
+            246,
+            249
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 72,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "col": 1,
+          "row": 1,
+          "rect": [
+            314,
+            350,
+            313,
+            277
+          ],
+          "scale": 0.36363636,
+          "anchor": [
+            148.75,
+            249
+          ],
+          "sourceBounds": [
+            62,
+            51,
+            258,
+            249
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 72,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "col": 2,
+          "row": 1,
+          "rect": [
+            627,
+            350,
+            314,
+            277
+          ],
+          "scale": 0.36363636,
+          "anchor": [
+            158.25,
+            249
+          ],
+          "sourceBounds": [
+            71,
+            43,
+            253,
+            249
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 72,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "col": 3,
+          "row": 1,
+          "rect": [
+            941,
+            350,
+            313,
+            277
+          ],
+          "scale": 0.36363636,
+          "anchor": [
+            148.25,
+            249
+          ],
+          "sourceBounds": [
+            62,
+            51,
+            237,
+            249
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 72,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "col": 0,
+          "row": 2,
+          "rect": [
+            0,
+            627,
+            314,
+            314
+          ],
+          "scale": 0.38947368,
+          "anchor": [
+            127.82432,
+            268
+          ],
+          "sourceBounds": [
+            63,
+            78,
+            284,
+            268
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 74,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "col": 1,
+          "row": 2,
+          "rect": [
+            314,
+            627,
+            313,
+            314
+          ],
+          "scale": 0.38947368,
+          "anchor": [
+            118.32432,
+            269
+          ],
+          "sourceBounds": [
+            54,
+            80,
+            302,
+            269
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 74,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "col": 2,
+          "row": 2,
+          "rect": [
+            627,
+            627,
+            314,
+            314
+          ],
+          "scale": 0.38947368,
+          "anchor": [
+            125.32432,
+            269
+          ],
+          "sourceBounds": [
+            61,
+            77,
+            281,
+            269
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 74,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "col": 3,
+          "row": 2,
+          "rect": [
+            941,
+            627,
+            313,
+            314
+          ],
+          "scale": 0.38947368,
+          "anchor": [
+            112.32432,
+            270
+          ],
+          "sourceBounds": [
+            48,
+            81,
+            268,
+            270
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 74,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "col": 0,
+          "row": 3,
+          "rect": [
+            0,
+            941,
+            314,
+            313
+          ],
+          "scale": 0.38378378,
+          "anchor": [
+            138.57746,
+            244
+          ],
+          "sourceBounds": [
+            66,
+            59,
+            249,
+            244
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 71,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "col": 1,
+          "row": 3,
+          "rect": [
+            314,
+            941,
+            313,
+            313
+          ],
+          "scale": 0.38378378,
+          "anchor": [
+            128.57746,
+            246
+          ],
+          "sourceBounds": [
+            56,
+            61,
+            259,
+            246
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 71,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "col": 2,
+          "row": 3,
+          "rect": [
+            627,
+            941,
+            314,
+            313
+          ],
+          "scale": 0.38378378,
+          "anchor": [
+            138.57746,
+            246
+          ],
+          "sourceBounds": [
+            66,
+            61,
+            250,
+            246
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 71,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "col": 3,
+          "row": 3,
+          "rect": [
+            941,
+            941,
+            313,
+            313
+          ],
+          "scale": 0.38378378,
+          "anchor": [
+            128.57746,
+            246
+          ],
+          "sourceBounds": [
+            56,
+            61,
+            239,
+            246
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 71,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        }
+      ]
+    },
+    {
+      "name": "gaucho-crouch-fire",
+      "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-fire-south-v1.png",
+      "prompt": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-fire-south-v1.prompt.txt",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "fps": 5,
+      "cell": 210,
+      "logicalCell": 70,
+      "anchor": [
+        105,
+        186
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "sw",
+          "frame": 0,
+          "col": 0,
+          "row": 1,
+          "rect": [
+            0,
+            350,
+            314,
+            277
+          ],
+          "scale": 0.38541667,
+          "anchor": [
+            150.77027,
+            237
+          ],
+          "sourceBounds": [
+            69,
+            45,
+            257,
+            237
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 74,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "col": 1,
+          "row": 1,
+          "rect": [
+            314,
+            350,
+            313,
+            277
+          ],
+          "scale": 0.38541667,
+          "anchor": [
+            142.27027,
+            237
+          ],
+          "sourceBounds": [
+            48,
+            45,
+            248,
+            237
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 74,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "col": 2,
+          "row": 1,
+          "rect": [
+            627,
+            350,
+            314,
+            277
+          ],
+          "scale": 0.38541667,
+          "anchor": [
+            127.77027,
+            237
+          ],
+          "sourceBounds": [
+            50,
+            45,
+            234,
+            237
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 74,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "col": 3,
+          "row": 1,
+          "rect": [
+            941,
+            350,
+            313,
+            277
+          ],
+          "scale": 0.38541667,
+          "anchor": [
+            119.77027,
+            237
+          ],
+          "sourceBounds": [
+            40,
+            45,
+            225,
+            237
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 74,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "col": 0,
+          "row": 2,
+          "rect": [
+            0,
+            627,
+            314,
+            314
+          ],
+          "scale": 0.38947368,
+          "anchor": [
+            175.60811,
+            252
+          ],
+          "sourceBounds": [
+            57,
+            62,
+            269,
+            252
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 74,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "col": 1,
+          "row": 2,
+          "rect": [
+            314,
+            627,
+            313,
+            314
+          ],
+          "scale": 0.38947368,
+          "anchor": [
+            168.10811,
+            252
+          ],
+          "sourceBounds": [
+            39,
+            62,
+            261,
+            252
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 74,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "col": 2,
+          "row": 2,
+          "rect": [
+            627,
+            627,
+            314,
+            314
+          ],
+          "scale": 0.38947368,
+          "anchor": [
+            154.10811,
+            252
+          ],
+          "sourceBounds": [
+            42,
+            62,
+            247,
+            252
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 74,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "col": 3,
+          "row": 2,
+          "rect": [
+            941,
+            627,
+            313,
+            314
+          ],
+          "scale": 0.38947368,
+          "anchor": [
+            145.10811,
+            252
+          ],
+          "sourceBounds": [
+            30,
+            62,
+            238,
+            252
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 74,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "col": 0,
+          "row": 3,
+          "rect": [
+            0,
+            941,
+            314,
+            313
+          ],
+          "scale": 0.38219895,
+          "anchor": [
+            186.19178,
+            225
+          ],
+          "sourceBounds": [
+            74,
+            34,
+            256,
+            225
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 73,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "col": 1,
+          "row": 3,
+          "rect": [
+            314,
+            941,
+            313,
+            313
+          ],
+          "scale": 0.38219895,
+          "anchor": [
+            182.69178,
+            224
+          ],
+          "sourceBounds": [
+            50,
+            32,
+            253,
+            224
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 73,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "col": 2,
+          "row": 3,
+          "rect": [
+            627,
+            941,
+            314,
+            313
+          ],
+          "scale": 0.38219895,
+          "anchor": [
+            171.69178,
+            224
+          ],
+          "sourceBounds": [
+            60,
+            33,
+            242,
+            224
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 73,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "col": 3,
+          "row": 3,
+          "rect": [
+            941,
+            941,
+            313,
+            313
+          ],
+          "scale": 0.38219895,
+          "anchor": [
+            162.19178,
+            224
+          ],
+          "sourceBounds": [
+            53,
+            33,
+            236,
+            224
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 73,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        }
+      ]
+    },
+    {
+      "name": "gaucho-crouch-fire",
+      "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-fire-south-v2.png",
+      "prompt": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-fire-south-v2.prompt.txt",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "fps": 5,
+      "cell": 210,
+      "logicalCell": 70,
+      "anchor": [
+        105,
+        186
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "s",
+          "frame": 0,
+          "col": 0,
+          "row": 0,
+          "rect": [
+            0,
+            0,
+            314,
+            350
+          ],
+          "scale": 0.31651376,
+          "anchor": [
+            169,
+            317
+          ],
+          "sourceBounds": [
+            89,
+            99,
+            247,
+            317
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 69,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "col": 1,
+          "row": 0,
+          "rect": [
+            314,
+            0,
+            313,
+            350
+          ],
+          "scale": 0.31651376,
+          "anchor": [
+            157,
+            317
+          ],
+          "sourceBounds": [
+            77,
+            99,
+            235,
+            317
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 69,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "col": 2,
+          "row": 0,
+          "rect": [
+            627,
+            0,
+            314,
+            350
+          ],
+          "scale": 0.31651376,
+          "anchor": [
+            142,
+            317
+          ],
+          "sourceBounds": [
+            62,
+            99,
+            220,
+            317
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 69,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "col": 3,
+          "row": 0,
+          "rect": [
+            941,
+            0,
+            313,
+            350
+          ],
+          "scale": 0.31651376,
+          "anchor": [
+            133,
+            317
+          ],
+          "sourceBounds": [
+            53,
+            99,
+            211,
+            317
+          ],
+          "anchorMethod": "boot alignment to approved crouch idle; per-direction scale from no-effect frame zero",
+          "calibration": {
+            "targetBodyHeight": 69,
+            "bodyScaleSourceFrame": 0,
+            "review": "pending packed visual check"
+          }
+        }
+      ]
+    }
+  ]
+}
