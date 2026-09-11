@@ -25,7 +25,7 @@ import {CARE_ASSIGNMENTS,MEDICAL_KIT_PRICE,migrateMedicalCare,assignMedicalCare,
 import {WORK_ASSIGNMENTS,TOOLKIT_PRICE,TOOLKIT_POINTS,migrateAssignments,assignWork,advanceAssignments,validateAssignments,militiaAssignmentIssue} from './assignments.js';
 import {assignmentStates,migrateAssignmentAttention,validateAssignmentAttention,collectAssignmentAttention,reconcileAssignmentAttention,militiaCompletionAttention,militiaCancellationAttention,sleepAttention} from './assignment-attention.js';
 import {migrateMorale,deploymentMorale,returnMorale,recordPayMorale,recordCasualtyMorale,recordBattleMorale,advanceMorale,validateMorale} from './morale.js';
-import {migrateEnemyGroups,launchEnemyGroup,advanceEnemyGroups,queueEnemyEncounter,localDefenderIds,localDefenderCount,retreatDestinations,occupyingGroups,recordEnemyGroupResult,validateEnemyGroups} from './enemy-groups.js';
+import {migrateEnemyGroups,launchEnemyGroup,advanceEnemyGroups,delayCrossingEnemyGroups,haltEnemyGroupsAt,queueEnemyEncounter,localDefenderIds,localDefenderCount,retreatDestinations,occupyingGroups,recordEnemyGroupResult,validateEnemyGroups} from './enemy-groups.js';
 import {setSleep,prepareSleep,finishSleepHour,SLEEP_ISSUE_TEXT} from './sleep.js';
 import {autoResolve} from './auto-resolve.js';
 import {ENCOUNTERS,encounterForOperative,encountersFor,encounterRequirements} from './encounters.js';
@@ -131,10 +131,16 @@ function addDefenseHistory(s,group,outcome,casualties,text,extra={}){s.encounter
 function settleEnemyEncounters(s,options={}){
   if(s.pendingBattle||s.pendingEncounter)return;
   for(const group of s.enemyGroups.filter(g=>g.status==='waiting').sort((a,b)=>a.arrivalAt-b.arrivalAt)){
-    if(s.sectors[group.target].owner!=='patriot'){group.status='stationed';group.resolvedAt=s.hour;continue;}
+    if(s.sectors[group.target].owner!=='patriot'&&!localDefenderCount(s,group.target,{exclude:options.traveling??[]})){group.status='stationed';group.resolvedAt=s.hour;continue;}
     if(!localDefenderCount(s,group.target,{exclude:options.traveling??[]})){loseSectorToGroup(s,group);addDefenseHistory(s,group,'defeat',[],`${sector(group.target).name} no tenía defensores presentes.`);continue;}
     queueEnemyEncounter(s);note(s,`¡Contacto en ${sector(group.target).name}! Elegí defensa táctica, resolución automática o retirada.`);break;
   }
+}
+function meetEnemyGroups(s,at){
+  // A battle already in progress owns its enemy roster until its report returns.
+  if(s.pendingBattle?.sector===at)return;
+  haltEnemyGroupsAt(s,at);
+  for(const group of occupyingGroups(s,at)){group.status='waiting';group.resolvedAt=null;}
 }
 function relocateDefenders(s,ids,destination,moralePenalty=5){
   for(const id of ids){recordStrategicArrival(s,[id],operativeLocation(s,id),destination);const r=s.operativeState[id];r.location=destination;r.assignment='active';r.asleep=false;r.recoveryHours=0;r.energy=Math.max(0,r.energy-10);gainFatigue(r,8);r.morale=Math.max(0,r.morale-moralePenalty);}
@@ -162,12 +168,12 @@ function prepareDefense(s,group,{excludeMercs=false}={}){
   for(const q of s.squads)if(q.members.some(id=>ids.includes(id)))delete q.journey;
   for(const id of ids){s.operativeState[id].assignment='active';s.operativeState[id].asleep=false;s.operativeState[id].recoveryHours=0;allocated[id]=allocateEquipmentAmmo(s,rosterFor(s).find(o=>o.id===id),stock);stock-=allocated[id].loaded+allocated[id].ammo;}
   const issued=s.resources.cartridges+localAmmo-stock,fromDepot=Math.min(localAmmo,issued);s.resources.cartridges-=issued-fromDepot;if(fromDepot)s.depots[at].cartridges-=fromDepot;
-  const request={id:`defense-${group.id}`,sector:at,origin:s.location,name:`Defensa de ${def.name}`,biome:def.biome,theater:def.theater,seed:group.seed,hour:s.hour,secondOfHour:s.secondOfHour??0,defenseGroupId:group.id,defenseFort:s.sectors[at].fort,issuedCartridges:issued,wasRoyalist:false,difficulty:1,squad:ids.map(id=>({...clone(rosterFor(s).find(o=>o.id===id)),...clone(s.operativeState[id]),...deploymentMorale(s,id),...allocated[id],...(mountForOperative(s.horseState,id)??{horse:false,canMount:false})})),enemies:clone(group.units),garrison:prepareGarrison(s,at),artillery:[],weather:{rain:false,humidity:def.theater==='coast'?.8:.3},enemyCommand:group.command,enemyCommander:ROYALIST_COMMANDS.find(c=>c.id===group.command).commander};
+  const request={id:`defense-${group.id}-${s.hour}`,sector:at,origin:s.location,name:`Defensa de ${def.name}`,biome:def.biome,theater:def.theater,seed:group.seed,hour:s.hour,secondOfHour:s.secondOfHour??0,defenseGroupId:group.id,defenseFort:s.sectors[at].owner==='patriot'?s.sectors[at].fort:0,issuedCartridges:issued,wasRoyalist:s.sectors[at].owner==='royalist',difficulty:1,squad:ids.map(id=>({...clone(rosterFor(s).find(o=>o.id===id)),...clone(s.operativeState[id]),...deploymentMorale(s,id),...allocated[id],...(mountForOperative(s.horseState,id)??{horse:false,canMount:false})})),enemies:clone(group.units),garrison:prepareGarrison(s,at),artillery:[],weather:{rain:false,humidity:def.theater==='coast'?.8:.3},enemyCommand:group.command,enemyCommander:ROYALIST_COMMANDS.find(c=>c.id===group.command).commander};
   group.status='engaged';s.pendingEncounter=null;s.pendingBattle=prepareDeploymentExits(s,request);return request;
 }
 function finishDefense(s,request,outcome,snapshot,plan){
   const group=recordEnemyGroupResult(s,request.defenseGroupId,snapshot,outcome),ids=request.squad.map(u=>Number(u.id)),casualties=ids.filter(id=>!s.operativeState[id].alive);const captured=plan.entries.filter(e=>e.kind==='captured').map(e=>Number(e.unitId));
-  if(outcome==='victory'){recordCityLoyalty(s,{sectorId:group.target,kind:'defense',eventId:group.id});if(group.theater==='coast'&&!s.enemyGroups.some(g=>g.theater==='coast'&&g.status==='stationed'))s.blockade=false;note(s,`La defensa de ${sector(group.target).name} rechaza a ${group.initialStrength} realistas.`);}
+  if(outcome==='victory'){if(request.wasRoyalist&&!s.enemyGroups.some(g=>g.target===group.target&&['waiting','engaged','stationed'].includes(g.status))){s.sectors[group.target].owner='patriot';releaseCaptives(s,group.target);}recordCityLoyalty(s,{sectorId:group.target,kind:'defense',eventId:group.id});if(group.theater==='coast'&&!s.enemyGroups.some(g=>g.theater==='coast'&&g.status==='stationed'))s.blockade=false;note(s,`La defensa de ${sector(group.target).name} rechaza a ${group.initialStrength} realistas.`);}
   else loseSectorToGroup(s,group);
   for(const squad of s.squads)squad.members=squad.members.filter(id=>s.operativeState[id].alive&&!s.operativeState[id].captured);s.squad=s.squad.filter(id=>s.operativeState[id].alive&&!s.operativeState[id].captured);
   const militiaCasualties=(request.garrison??[]).filter(u=>snapshot.units.find(v=>String(v.id)===String(u.id))?.hp<=0).map(u=>u.id),militiaDispersed=outcome==='victory'?0:(request.garrison?.length??0)-militiaCasualties.length;const text=`${sector(group.target).name}: ${outcome==='victory'?'defensa victoriosa':outcome==='retreat'?'retirada':'defensa derrotada'}. ${casualties.length} granaderos y ${militiaCasualties.length} milicianos caídos; ${captured.length} prisioneros${militiaDispersed?`; ${militiaDispersed} milicianos dispersos`:''}.`;addDefenseHistory(s,group,outcome,casualties,text,{captured,militiaCasualties,militiaDispersed,dispositions:clone(plan.entries)});note(s,text);s.sectorStates[group.target]=clone(snapshot);s.pendingBattle=null;
@@ -301,7 +307,8 @@ function tick(s,hours,options={}){
     if(!s.completed&&s.hour%168===0&&coastalRevenue(s)>=500)raid(s,'coast');
     if(!s.completed&&s.hour%144===0)raid(s,'interior');
     assignmentEvents.push(...recordSleepEvents(s,finishSleepHour(s,rosterFor(s),{...assignmentContext(s,options),working:militiaWorked})));
-    const travelAttention=advanceSquadTravel(s,rosterFor(s),{note,releaseAtArrival:q=>{for(const id of [...q.members])if(s.contracts[id]?.departurePending){removeFromService(s,id);note(s,'Un voluntario cumple su contrato y deja la escuadra al llegar.');}}});
+    delayCrossingEnemyGroups(s,{elapsedHour:1,travelLeg:options.traveling?.length?options.travelLeg:null});
+    const travelAttention=advanceSquadTravel(s,rosterFor(s),{note,onArrival:q=>meetEnemyGroups(s,q.location),releaseAtArrival:q=>{for(const id of [...q.members])if(s.contracts[id]?.departurePending){removeFromService(s,id);note(s,'Un voluntario cumple su contrato y deja la escuadra al llegar.');}}});
     advanceEnemyGroups(s);
     for(const q of s.squads)if(q.journey?.status==='moving'&&q.journey.elapsed===0&&s.enemyGroups.some(g=>g.target===q.location&&['waiting','engaged','stationed'].includes(g.status))){q.journey.status='paused';q.journey.reason='contact';}
     settleEnemyEncounters(s,options);progress(s);
@@ -315,6 +322,7 @@ function travelPath(s,from,to){
   const queue=[[from]],seen=new Set([from]);while(queue.length){const path=queue.shift(),last=path.at(-1);if(last===to)return path;for(const id of sector(last).neighbors)if(!seen.has(id)&&s.sectors[id].owner==='patriot'){seen.add(id);queue.push([...path,id]);}}return null;
 }
 function prepareAttack(s,at,origin,ids,assaultSquads=null){
+ if(at!=='san_lorenzo')haltEnemyGroupsAt(s,at,'stationed');
  const san=at==='san_lorenzo',def=san?{id:at,name:'Combate de San Lorenzo',biome:'river',theater:'coast'}:sector(at);
   const allocated={},sources=assaultSquads??[{origin,members:ids}];let issued=0;
   for(const group of sources){const localAmmo=s.depots?.[group.origin]?.cartridges??0;let stock=s.resources.cartridges+localAmmo;
@@ -501,9 +509,9 @@ export function dispatchCampaign(previous,action){
         for(let leg=1;leg<path.length;leg++){
           if(s.squad.some(id=>tooTiredToMarch(s.operativeState[id]))){note(s,'La escuadra detiene la ruta por agotamiento. Descansá antes de continuar.');break;}
           if(mode==='posta')pay(s,{horses:1});const hours=Math.ceil((mode==='posta'?4:mode==='flotilla'?5:mode==='carts'?18:12)*([path[leg-1],path[leg]].some(id=>sector(id).biome==='mountain')?1.5:1));
-          tick(s,hours,{traveling:[...s.squad],mode,mountain:[path[leg-1],path[leg]].some(id=>sector(id).biome==='mountain')});if(!s.squad.length){note(s,'La marcha se cancela al terminar el último contrato.');break;}
+          tick(s,hours,{traveling:[...s.squad],travelLeg:{from:path[leg-1],to:path[leg],arrivalAt:s.hour+hours},mode,mountain:[path[leg-1],path[leg]].some(id=>sector(id).biome==='mountain')});if(!s.squad.length){note(s,'La marcha se cancela al terminar el último contrato.');break;}
           if(s.sectors[path[leg]].owner!=='patriot'||occupyingGroups(s,path[leg]).length){note(s,'El avance se detiene: una incursión cortó la ruta durante la marcha.');break;}
-          recordStrategicArrival(s,s.squad,path[leg-1],path[leg]);s.location=path[leg];moveMounts(s,s.location,hours);for(const id of s.squad)s.operativeState[id].location=s.location;synchronizeSquad(s);
+          recordStrategicArrival(s,s.squad,path[leg-1],path[leg]);s.location=path[leg];moveMounts(s,s.location,hours);for(const id of s.squad)s.operativeState[id].location=s.location;synchronizeSquad(s);meetEnemyGroups(s,s.location);settleEnemyEncounters(s);
           if(s.pendingEncounter){note(s,'La escuadra completa esta etapa y detiene la marcha ante el contacto enemigo.');break;}
         }
         note(s,`El destacamento llega a ${sector(s.location).name}.`);break;
@@ -553,7 +561,7 @@ export function dispatchCampaign(previous,action){
       }
       case 'fortify':{const at=action.sector??s.location;requireThat(s.sectors[at]?.owner==='patriot','Solo puedes fortificar sectores propios.');requireThat(s.sectors[at].fort<3,'El sector ya tiene la máxima fortificación.');pay(s,{treasury:150,sabres:5});s.sectors[at].fort++;note(s,`Se refuerzan las defensas de ${sector(at).name}.`);break;}
       case 'beginAssault':{
-        const at=action.sector,groups=readyAssaultSquads(s,at),origin=groups[0].location,manifest=arriveForAssault(s,groups,at),ids=manifest.flatMap(q=>q.members);
+        const at=action.sector,groups=readyAssaultSquads(s,at),origin=groups[0].location,manifest=arriveForAssault(s,groups,at),ids=manifest.flatMap(q=>q.members);haltEnemyGroupsAt(s,at,'stationed');
         if(s.sectors[at].owner==='patriot'&&!occupyingGroups(s,at).length&&!(s.blockade&&sector(at).theater==='coast')){for(const id of ids)if(s.contracts[id]?.departurePending)removeFromService(s,id);note(s,`Las escuadras entran en ${sector(at).name}; el sector ya está libre.`);break;}
         prepareAttack(s,at,origin,ids,manifest);break;
       }
@@ -564,7 +572,7 @@ export function dispatchCampaign(previous,action){
         if(san)requireThat(s.phase>=1&&!s.flags.sanLorenzo&&s.sectors.san_nicolas.owner==='patriot','Organiza Retiro y libera San Nicolás antes de combatir en San Lorenzo.');
         else {requireThat(s.sectors[at].owner==='royalist'||(s.blockade&&def.theater==='coast'),'El sector ya está bajo control patriota.');requireThat(def.neighbors.some(id=>s.sectors[id].owner==='patriot'&&isSupplied(s,id)),'Debes abrir una ruta hasta el frente.');}
         if(action.queue===true&&!san&&s.location!==at){queueSquadTravel(s,activeSquad(s),{...action,intent:'attack'});note(s,`La escuadra prepara su avance al límite de ${def.name}.`);break;}
-        const origin=s.location;if(!san&&s.location!==at){tick(s,12,{traveling:[...s.squad],mode:'march',mountain:sector(origin)?.biome==='mountain'||def.biome==='mountain'});if(!s.squad.length){note(s,'El despliegue se cancela: no quedan contratos vigentes en la escuadra.');break;}recordStrategicArrival(s,s.squad,origin,at);s.location=at;moveMounts(s,at,12);synchronizeSquad(s);if(s.pendingEncounter){note(s,'El avance se detiene al llegar: hay una defensa pendiente.');break;}}
+        const origin=s.location;if(!san&&s.location!==at){tick(s,12,{traveling:[...s.squad],travelLeg:{from:origin,to:at,arrivalAt:s.hour+12},mode:'march',mountain:sector(origin)?.biome==='mountain'||def.biome==='mountain'});if(!s.squad.length){note(s,'El despliegue se cancela: no quedan contratos vigentes en la escuadra.');break;}recordStrategicArrival(s,s.squad,origin,at);s.location=at;moveMounts(s,at,12);synchronizeSquad(s);haltEnemyGroupsAt(s,at,'stationed');if(s.pendingEncounter){note(s,'El avance se detiene al llegar: hay una defensa pendiente.');break;}}
         prepareAttack(s,at,origin,s.squad);break;
       }
       case 'battleResult':{
@@ -588,6 +596,7 @@ export function dispatchCampaign(previous,action){
       default:throw Error('Orden desconocida.');
     }
     for(const [flag,at] of Object.entries({academy:'retiro',foundry:'mendoza',northPact:'salta',partisanSupply:'tucuman',parliament:'mendoza',emancipation:'buenos_aires',commission:'buenos_aires'}))if(s.flags[flag]&&!previous.flags[flag])recordCityLoyalty(s,{sectorId:at,kind:'quest',eventId:`quest-${flag}`});
+    delayCrossingEnemyGroups(s);
     if(s.pendingBattle&&!s.pendingBattle.exits)prepareDeploymentExits(s,s.pendingBattle);releaseDeferred(s);synchronizeSquad(s);migrateMedicalCare(s,rosterFor(s));migrateAssignments(s,rosterFor(s));migrateMorale(s,rosterFor(s));migrateEquipment(s);migrateEnemyGroups(s);validateDeploymentReturnState(s);validateEquipmentOwnership(s,rosterFor(s));progress(s);if(Object.keys(s.assignmentAttention.reported).length)reconcileAssignmentAttention(s,assignmentStates(s,rosterFor(s),assignmentContext(s)));return s;
   }catch(error){const rejected=clone(previous);rejected.lastError=error.message;return rejected;}
 }

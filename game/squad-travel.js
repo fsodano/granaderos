@@ -55,7 +55,7 @@ export function squadTravelStatus(q){
 }
 // One hour for every squad, independent of which squad the player selected.
 // Call after work/recovery, before enemy contacts. Arrivals stop explicit waits.
-export function advanceSquadTravel(s,roster,{note,releaseAtArrival}){
+export function advanceSquadTravel(s,roster,{note,releaseAtArrival,onArrival=()=>{}}){
  const events=[];
  const announce=(q,text)=>{note(s,`${q.name}: ${text}`);events.push({squadId:q.id,name:q.name,sector:q.location,text});};
  for(const q of s.squads){
@@ -78,6 +78,7 @@ export function advanceSquadTravel(s,roster,{note,releaseAtArrival}){
   for(const horse of s.horseState.horses)if(!horse.returned&&q.members.includes(horse.assignedTo))horse.location=to;
   if(q.id===s.activeSquadId)s.location=to;
   j.status='paused';j.elapsed=0;
+  onArrival(q);
   for(const horse of s.horseState.horses)if(!horse.returned&&horse.hired&&horse.hireUntil<=s.hour&&q.members.includes(horse.assignedTo)){horse.returned=true;horse.assignedTo=null;}
   releaseAtArrival(q);
   if(j.returning||j.path.length===2||!q.members.length){delete q.journey;announce(q,`llega a ${sector(to).name}.`);continue;}

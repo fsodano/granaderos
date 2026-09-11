@@ -54,3 +54,13 @@ test('personnel buys the last finite medicine stock with matching price, capacit
   state.merchants.retiro.supplies.medkits=5;markup=draw();assert.ok(purchaseButtons(markup).some(button=>!button.includes('disabled')));
   state.pendingBattle={id:'pending'};for(const button of purchaseButtons(draw()))assert.match(button,/disabled=""/);
 });
+
+
+test('front reports identify a crossing sector without promising an arrival that a ready squad holds',async()=>{
+  const {default:EnemyEncounters}=await import('../web/app/EnemyEncounters.tsx');
+  const {launchEnemyGroup,delayCrossingEnemyGroups}=await import('../game/enemy-groups.js');
+  const s=initialCampaign(),g=launchEnemyGroup(s,'north','tucuman');s.hour=40;g.routeIndex=3;
+  s.squads[0].location='tucuman';s.squads[0].journey={path:['tucuman','salta'],status:'ready',intent:'attack',returning:false,elapsed:12,legHours:12};delayCrossingEnemyGroups(s);
+  const html=render(h(EnemyEncounters,{state:s,dispatch:noop}));assert.match(html,/Rutas opuestas: el contacto será en Salta/);assert.doesNotMatch(html,/Llegada prevista/);
+  s.squads[0].journey.returning=true;const returning=render(h(EnemyEncounters,{state:s,dispatch:noop}));assert.match(returning,/Llegada prevista/);assert.doesNotMatch(returning,/Rutas opuestas/);
+});

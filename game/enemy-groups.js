@@ -30,6 +30,34 @@ export function launchEnemyGroup(s,theater,target,{immediate=false}={}){
  return group;
 }
 
+// JA2 keeps moving enemies in their departure sector until arrival. Opposing
+// player routes delay that arrival so both groups cannot pass through each other.
+// Off-map incursions have no surface departure sector to intercept.
+const departureSector=group=>group.status==='marching'&&group.routeIndex>0?group.route[group.routeIndex-1]:null;
+function crossingSquads(s,group){
+ const from=departureSector(group),to=group.route[group.routeIndex];
+ return from?(s.squads??[]).filter(q=>q.members.length&&['moving','ready'].includes(q.journey?.status)&&!q.journey.returning&&q.journey.path[0]===to&&q.journey.path[1]===from):[];
+}
+export function delayCrossingEnemyGroups(s,{elapsedHour=0,travelLeg=null}={}){
+ for(const group of s.enemyGroups){
+  const arrivals=crossingSquads(s,group).map(q=>s.hour+Math.max(0,q.journey.legHours-q.journey.elapsed-elapsedHour));
+  if(travelLeg&&departureSector(group)===travelLeg.to&&group.route[group.routeIndex]===travelLeg.from)arrivals.push(travelLeg.arrivalAt);
+  if(!arrivals.length)continue;
+  // One campaign hour replaces JA2's short minute-scale delay. A ready assault
+  // column continues to hold the crossing until it enters or turns back.
+  const delayedUntil=Math.max(s.hour,Math.min(...arrivals))+1,delay=Math.max(0,delayedUntil-group.nextArrivalAt);
+  group.nextArrivalAt+=delay;group.arrivalAt+=delay;
+ }
+}
+export function haltEnemyGroupsAt(s,at,status='waiting'){
+ const groups=s.enemyGroups.filter(group=>departureSector(group)===at);
+ for(const group of groups){
+  group.route=group.route.slice(0,group.routeIndex);group.target=at;
+  group.nextArrivalAt=s.hour;group.arrivalAt=s.hour;group.status=status;group.resolvedAt=status==='stationed'?s.hour:null;
+ }
+ return groups;
+}
+
 export function advanceEnemyGroups(s){
  const arrivals=[];
  for(const group of s.enemyGroups.filter(g=>g.status==='marching'))while(group.nextArrivalAt<=s.hour){
@@ -51,7 +79,7 @@ export function queueEnemyEncounter(s){
 
 export function enemyGroupStatus(s,group){
  const command=ROYALIST_COMMANDS.find(c=>c.id===group.command),at=group.routeIndex>0?group.route[Math.min(group.routeIndex-1,group.route.length-1)]:null;
- return {...group,commander:command?.commander??'Mando realista',name:command?.name??'Grupo realista',strength:group.units.filter(active).length,location:at?sector(at).name:group.origin==='alto_peru'?'Alto Perú':group.origin==='montevideo'?'Montevideo':'Interior',destination:sector(group.target).name,remaining:Math.max(0,group.arrivalAt-s.hour)};
+ return {...group,commander:command?.commander??'Mando realista',name:command?.name??'Grupo realista',strength:group.units.filter(active).length,location:at?sector(at).name:group.origin==='alto_peru'?'Alto Perú':group.origin==='montevideo'?'Montevideo':'Interior',destination:sector(group.target).name,remaining:Math.max(0,group.arrivalAt-s.hour),crossingAt:crossingSquads(s,group).length?at:null};
 }
 
 export function recordEnemyGroupResult(s,groupId,battle,outcome){
@@ -73,7 +101,7 @@ export function validateEnemyGroups(s,roster){
  }
  for(const op of roster){const r=s.operativeState[op.id];need(typeof r.captured==='boolean','El cautiverio guardado es inválido.');if(r.captured){const c=r.capturedContract;need(r.alive&&r.hp>0&&!s.recruited.includes(op.id)&&!s.squads.some(q=>q.members.includes(op.id))&&sector(r.capturedSector)&&integer(r.capturedAt,0,s.hour)&&object(c)&&['paid','patriot','legacy'].includes(c.kind)&&['day','week','month'].includes(c.term)&&integer(c.started,0,r.capturedAt)&&(c.expiresAt===null?c.kind!=='paid':integer(c.expiresAt,0,1e9))&&integer(c.paid,0,1e9),'El prisionero guardado es inválido.');}else need(r.capturedSector===null&&r.capturedAt===null&&r.capturedContract===null,'El cautiverio guardado es inválido.');}
  const b=s.pendingBattle;
- if(b?.defenseGroupId){const g=s.enemyGroups.find(g=>g.id===b.defenseGroupId);need(g?.status==='engaged'&&g.target===b.sector&&integer(b.defenseFort,0,3)&&Array.isArray(b.enemies)&&JSON.stringify(b.enemies)===JSON.stringify(g.units)&&!b.exploration&&!b.occupationGroupIds,'La defensa guardada es inválida.');}
+ if(b?.defenseGroupId){const g=s.enemyGroups.find(g=>g.id===b.defenseGroupId);need(g?.status==='engaged'&&g.target===b.sector&&b.wasRoyalist===(s.sectors[b.sector].owner==='royalist')&&b.defenseFort===(b.wasRoyalist?0:s.sectors[b.sector].fort)&&integer(b.defenseFort,0,3)&&Array.isArray(b.enemies)&&JSON.stringify(b.enemies)===JSON.stringify(g.units)&&!b.exploration&&!b.occupationGroupIds,'La defensa guardada es inválida.');}
  if(b?.occupationGroupIds){need(Array.isArray(b.occupationGroupIds)&&b.occupationGroupIds.length>0&&new Set(b.occupationGroupIds).size===b.occupationGroupIds.length,'La ocupación guardada es inválida.');const groups=b.occupationGroupIds.map(id=>s.enemyGroups.find(g=>g.id===id));need(groups.every(g=>g?.status==='stationed'&&g.target===b.sector)&&Array.isArray(b.enemies)&&JSON.stringify(b.enemies)===JSON.stringify(groups.flatMap(g=>g.units)),'El contraataque guardado es inválido.');}
  need(s.enemyGroups.filter(g=>g.status==='engaged').every(g=>b?.defenseGroupId===g.id),'Un grupo en combate necesita un despliegue pendiente.');
  need(s.pendingEncounter===null||!s.pendingBattle&&object(s.pendingEncounter)&&s.enemyGroups.some(g=>g.id===s.pendingEncounter.groupId&&g.status==='waiting'&&g.target===s.pendingEncounter.sector&&g.arrivalAt===s.pendingEncounter.arrivedAt),'El encuentro pendiente es inválido.');
