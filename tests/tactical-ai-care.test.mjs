@@ -21,14 +21,14 @@ test('a real enemy turn equips dressings, treats a critical ally and restores it
   assert.equal(n.lastError,null);assert.equal(n.turn,2);assert.equal(n.elapsedSeconds,6);
   assert.equal(medic(n).ap,0);assert.equal(medic(n).medkits,1);assert.equal(medic(n).activeSlot,'primary');
   assert.equal(medic(n).loaded,1);assert.equal(medic(n).ammo,3);assert.equal(patient(n).bleeding,0);assert.equal(patient(n).hp,10);assert.equal(patient(n).bandaged,90);assert.equal(patient(n).unconscious,true);
-  assert.ok(n.log.some(line=>line.includes('medic')&&line.includes('patient')&&line.includes('venda')));
+  assert.ok(!n.log.some(line=>/medic|patient|venda/.test(line)),'unseen treatment stays out of the player journal');
   assert.deepEqual(s,before);assert.deepEqual(n,endTurn(validateBattleSnapshot(JSON.parse(JSON.stringify(s)))));
   assert.doesNotThrow(()=>validateBattleSnapshot(n));
 });
 
 test('aid spends only the available dressing and does not repeat on a stable patient',()=>{
   const s=field({medkits:1,ap:100}),n=endTurn(s);
-  assert.equal(medic(n).medkits,0);assert.equal(n.log.filter(line=>line.includes('venda a')).length,1);
+  assert.equal(medic(n).medkits,0);assert.equal(patient(n).bleeding,0);assert.equal(patient(n).bandaged,90);assert.ok(!n.log.some(line=>line.includes('venda a')));
   assert.equal(patient(n).hp,10);assert.equal(patient(endTurn(n)).hp,10);
   assert.equal(medic(endTurn(n)).medkits,0);
 });

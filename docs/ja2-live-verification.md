@@ -264,4 +264,17 @@ Fifteen location-fire simulation cases cover the wider geometry, scatter, readin
 
 The first full run found one changed hotkey-text expectation and two existing civilian sprite assertions that still expected the retired `civilian` family. The help text retains the deliberate-fire wording, and the two assertions now expect the current `surgeon` family. No sprite art or mapping was changed in this increment.
 
-Live scattered misses, blunderbuss direction fire and interrupt firing remain outside this browser check; they have simulation coverage. Broader hidden-AI action journal filtering is also still open. See [location fire](location-fire.md) for explicit tuning and limits. Gameplay changes remain local and uncommitted; this is not full JA2 parity.
+Live scattered misses, blunderbuss direction fire and interrupt firing remain outside this browser check; they have simulation coverage. The subsequent journal checkpoint below addresses hidden AI action messages. See [location fire](location-fire.md) for explicit tuning and limits. This checkpoint is not full JA2 parity.
+
+
+## Gameplay commit and journal checkpoint — 2026-09-11
+
+The accumulated gameplay changes were committed as `86b6ac8`, after an isolated snapshot passed **1003/1003 tests**, type checking, production build and whitespace checks. That snapshot uses the previously committed art, so its static export has 278 files and 189 asset references. Newer art and recruitment changes remain outside the gameplay commit.
+
+The journal follow-up adds observation checks to named enemy events. In `http://127.0.0.1:3000/?qa=1`, the existing blind-fire fixture was imported through **Importar partida**. Cabral fired at (7,3), with four aim increments, through the public tactical order tool. The response showed 64 AP, no loaded round, condition 99 and only the three patriotic soldiers. Ending the turn advanced to turn 2 and still showed no enemy.
+
+The expanded **DIARIO DE COMBATE** contained only the location-fire message and **Turno 2: ¡órdenes, comandante!**. No enemy name, equipment selection or treatment appeared. A separate simulation replay confirmed the hidden opponent went from three bleeding points and two dressings to zero bleeding and one dressing, with HP unchanged at 64. This private evidence is distinct from the browser's public read.
+
+Reload and **Continuar campaña →** restored the exact journal text. Browser warnings and errors were empty. See [journal contract](tactical-journal.md) for coverage and remaining limits.
+
+The final isolated journal checkpoint passed **1012/1012 tests**, type checking, production build and whitespace validation. Build output again verified 278 files and 189 asset references. The live browser used the shared development checkout; the isolated checks establish that gameplay does not depend on its uncommitted art changes.

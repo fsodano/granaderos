@@ -18,7 +18,7 @@ For a single projectile, the aim roll uses the existing accuracy inputs against 
 
 The blunderbuss retains a six-tile directional cone. Each affected soldier receives an independent accuracy/cover check. Unlike the single-projectile trace, its existing cone abstraction does not model one body shielding another.
 
-Point-fire damage and rout messages are omitted for an unseen enemy. Later bleeding messages also require player ownership or squad sight. The public state continues to omit hidden actors. This is not a complete audit of all existing enemy-action journal messages: for example, ordinary AI equipment/treatment messages can still disclose an actor before its later movement reveals it. That broader journal boundary remains open.
+Point-fire damage and rout messages are omitted for an unseen enemy. Later bleeding messages also require player ownership or squad sight. The public state continues to omit hidden actors. The subsequent [journal observation change](tactical-journal.md) also filters ordinary enemy actions, including equipment and treatment, at event time. A live blind-fire/self-treatment check and save restoration passed.
 
 ## Explicit tuning and limits
 
