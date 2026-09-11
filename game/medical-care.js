@@ -1,5 +1,5 @@
 import {gainFatigue,recoverFatigue} from './fatigue.js';
-import {operativeLocation} from './squads.js';
+import {operativeInTransit,operativeLocation} from './squads.js';
 import {WORK_ASSIGNMENTS} from './assignments.js';
 import {sleepStatus} from './sleep.js';
 import {baseMorale} from './morale.js';
@@ -13,7 +13,7 @@ const deployed=(s,id)=>Boolean(s.pendingBattle?.squad?.some(u=>Number(u.id)===Nu
 const training=(s,id)=>Boolean(s.militiaTraining?.some(t=>t.trainerId===id));
 const safe=(s,id)=>s.sectors[operativeLocation(s,id)]?.owner==='patriot'&&s.pendingBattle?.sector!==operativeLocation(s,id);
 export const doctorRate=op=>2+Math.floor((op.medical??0)/20);
-export const CARE_ISSUE_TEXT={invalid_assignment:'La asignación no existe.',unavailable:'El combatiente no está disponible.',deployed:'El combatiente está desplegado en el sector táctico.',militia_busy:'Suspendé primero su instrucción de milicias.',unsafe:'La atención y el descanso necesitan un sector seguro.',no_medical_skill:'Necesita al menos 20 de medicina.',unstable:'El médico necesita estar estable y tener más de 10 de energía.',no_medkits:'El médico no tiene botiquines.',healing_complete:'Recuperado. Puede volver al servicio.',no_patients:'Sin pacientes heridos asignados en este sector.',no_doctor:'Sin médico disponible en este sector. Solo recupera energía.',bleeding:'El descanso no detiene la hemorragia. Necesita un médico.',critical:'Estado crítico: necesita un médico para recuperar salud.',sleeping:'Está durmiendo; retomará su tarea al despertar.',rest_complete:'El descanso terminó: salud y energía recuperadas, sin fatiga.'};
+export const CARE_ISSUE_TEXT={invalid_assignment:'La asignación no existe.',unavailable:'El combatiente no está disponible.',traveling:'El combatiente está en camino.',deployed:'El combatiente está desplegado en el sector táctico.',militia_busy:'Suspendé primero su instrucción de milicias.',unsafe:'La atención y el descanso necesitan un sector seguro.',no_medical_skill:'Necesita al menos 20 de medicina.',unstable:'El médico necesita estar estable y tener más de 10 de energía.',no_medkits:'El médico no tiene botiquines.',healing_complete:'Recuperado. Puede volver al servicio.',no_patients:'Sin pacientes heridos asignados en este sector.',no_doctor:'Sin médico disponible en este sector. Solo recupera energía.',bleeding:'El descanso no detiene la hemorragia. Necesita un médico.',critical:'Estado crítico: necesita un médico para recuperar salud.',sleeping:'Está durmiendo; retomará su tarea al despertar.',rest_complete:'El descanso terminó: salud y energía recuperadas, sin fatiga.'};
 const issue=code=>({code,reason:CARE_ISSUE_TEXT[code]});
 
 // Old campaigns already restored health outside combat. Keep their existing wounds
@@ -37,6 +37,7 @@ export function careAssignmentIssue(s,op,assignment){
   const record=s.operativeState[op.id];
   if(!Object.hasOwn(CARE_ASSIGNMENTS,assignment))return issue('invalid_assignment');
   if(!s.recruited.includes(op.id)||!record?.alive||record.hp<=0)return issue('unavailable');
+  if(operativeInTransit(s,op.id))return issue('traveling');
   if(deployed(s,op.id))return issue('deployed');
   if(training(s,op.id))return issue('militia_busy');
   if(assignment==='active')return null;
@@ -51,7 +52,7 @@ export function careAssignmentIssue(s,op,assignment){
 }
 export function careAssignmentReason(s,op,assignment){return careAssignmentIssue(s,op,assignment)?.reason??'';}
 
-function carePresent(s,op,context={}){return s.recruited.includes(op.id)&&s.operativeState[op.id]?.alive&&!deployed(s,op.id)&&!(context.traveling??[]).includes(op.id)&&!(context.unsafe??[]).includes(op.id)&&(!training(s,op.id)||s.operativeState[op.id].asleep)&&safe(s,op.id);}
+function carePresent(s,op,context={}){return s.recruited.includes(op.id)&&s.operativeState[op.id]?.alive&&!deployed(s,op.id)&&!operativeInTransit(s,op.id)&&!(context.traveling??[]).includes(op.id)&&!(context.unsafe??[]).includes(op.id)&&(!training(s,op.id)||s.operativeState[op.id].asleep)&&safe(s,op.id);}
 const needsCare=r=>r.bleeding>0||r.hp<r.maxHp;
 export function careAssignmentProgress(s,op,roster,context={}){
   const r=s.operativeState[op.id],status=(state,code=null)=>({state,code});
@@ -87,6 +88,7 @@ export function assignMedicalCare(s,op,assignment){
 export function careStatus(s,op,roster){
   const record=s.operativeState[op.id],assignment=record.assignment??'active';
   if(!record.alive)return 'Caído en servicio.';
+  if(operativeInTransit(s,op.id))return CARE_ISSUE_TEXT.traveling;
   if(deployed(s,op.id))return 'Desplegado en el sector táctico.';
   if(record.asleep)return sleepStatus(record);
   if(training(s,op.id))return 'Instruyendo milicias.';
@@ -161,7 +163,7 @@ export function validateMedicalCare(s,roster){
     requireThat(Number.isFinite(r.bleeding)&&r.bleeding>=0&&r.bleeding<=100&&Number.isFinite(r.bandaged)&&r.bandaged>=0&&r.bandaged<=r.maxHp-r.hp,'Las heridas guardadas son inválidas.');
     requireThat(Number.isInteger(r.medkits)&&r.medkits>=0&&r.medkits<=100000,'Los botiquines guardados son inválidos.');
     requireThat(Object.hasOwn(ALL_ASSIGNMENTS,r.assignment)&&Number.isInteger(r.recoveryHours)&&r.recoveryHours>=0&&r.recoveryHours<REST_HEALING_HOURS,'Las asignaciones guardadas son inválidas.');
-    requireThat(r.assignment==='active'||(s.recruited.includes(op.id)&&r.alive&&!deployed(s,op.id)&&!training(s,op.id)),'El combatiente tiene asignaciones incompatibles.');
+    requireThat(r.assignment==='active'||(s.recruited.includes(op.id)&&r.alive&&!deployed(s,op.id)&&!operativeInTransit(s,op.id)&&!training(s,op.id)),'El combatiente tiene asignaciones incompatibles.');
     requireThat(r.assignment!=='doctor'||(op.medical??0)>=20,'La asignación médica guardada es inválida.');
   }
 }

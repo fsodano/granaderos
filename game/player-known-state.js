@@ -1,3 +1,5 @@
+import {squadTravelStatus} from './squad-travel.js';
+import {operativeInTransit} from './squads.js';
 import {maximumEnergy} from './fatigue.js';
 import {canSee,visibleRooms,actionCosts,interruptAvailable,stealPreview} from './tactical.js';
 import {isInteriorVisible} from './tactical-visibility.js';
@@ -94,10 +96,11 @@ export function playerKnownCampaign(state){
   const roster=rosterFor(state).filter(unit=>knownIds.has(unit.id));
   return {...pick(state,['hour','secondOfHour','phase','location','activeSquadId','blockade','completed','defeated']),
     assignmentNotice:publicAssignmentNotice(state),
+    travelNotice:state.travelNotice?{hour:state.travelNotice.hour,events:state.travelNotice.events.map(e=>pick(e,['squadId','name','sector','text']))}:null,
     resources:pick(state.resources,Object.keys(RESOURCE_NAMES)),reputation:pick(state.reputation,['directory','gauchos','pardos','foreign','indigenous','royalists']),
     sectors:CAMPAIGN_SECTORS.map(sector=>({...pick(sector,['id','name','grid','biome','theater']),...pick(state.sectors[sector.id],['owner','loyalty','fort','damageUntil']),militia:[...(state.sectors[sector.id]?.militia??[])]})),
-    squads:(state.squads??[]).map(squad=>({...pick(squad,['id','name','location']),members:squad.members.filter(id=>knownIds.has(id))})),
-    operatives:roster.map(unit=>{const record=state.operativeState[unit.id];return {maximumEnergy:maximumEnergy(record),...pick(unit,['id','name','nickname','weapon','blade',...OWN]),...pick(record,['hp','maxHp','alive','location','assignment','asleep','captured','capturedSector','energy','fatigue','bleeding','bandaged','morale','condition','medkits','priming','flints','rations','torches','boleadoras']),weaponFittings:fittings(record.weaponFittings),...pick(record,['weaponFittingPattern','bladeFittingPattern','bladeCondition','toolkitPoints','repairTargetId','repairWeaponId','repairScope']),inventory:inventory(record),contract:pick(state.contracts?.[unit.id],['kind','term','started','expiresAt','paid'])};}),
+    squads:(state.squads??[]).map(squad=>({...pick(squad,['id','name','location']),members:squad.members.filter(id=>knownIds.has(id)),journey:squadTravelStatus(squad)})),
+    operatives:roster.map(unit=>{const record=state.operativeState[unit.id];return {inTransit:operativeInTransit(state,unit.id),maximumEnergy:maximumEnergy(record),...pick(unit,['id','name','nickname','weapon','blade',...OWN]),...pick(record,['hp','maxHp','alive','location','assignment','asleep','captured','capturedSector','energy','fatigue','bleeding','bandaged','morale','condition','medkits','priming','flints','rations','torches','boleadoras']),weaponFittings:fittings(record.weaponFittings),...pick(record,['weaponFittingPattern','bladeFittingPattern','bladeCondition','toolkitPoints','repairTargetId','repairWeaponId','repairScope']),inventory:inventory(record),contract:pick(state.contracts?.[unit.id],['kind','term','started','expiresAt','paid'])};}),
     flags:pick(state.flags,['academy','sanLorenzo','northPact','partisanSupply','foundry','parliament','emancipation','commission','mentoring']),
     horses:(state.horseState?.horses??[]).map(horse=>({...pick(horse,['id','name','location','assignedTo','stamina','condition','feed','hired','hireUntil','returned','pregnantUntil']),...(horse.custody?{custody:pick(horse.custody,['kind','sector','operativeId'])}:{})})),
     enemyReports:(state.enemyGroups??[]).filter(group=>['marching','waiting','engaged','stationed'].includes(group.status)).map(group=>pick(enemyGroupStatus(state,group),['id','name','commander','strength','location','destination','remaining','status'])),

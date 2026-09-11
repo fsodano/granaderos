@@ -1,12 +1,12 @@
 import {recoverFatigue} from './fatigue.js';
-import {operativeLocation} from './squads.js';
+import {operativeInTransit,operativeLocation} from './squads.js';
 
 // Period-game rates on the existing 0–100 fatigue/energy scale.
 export const SLEEP_FATIGUE=80;
 export const SLEEP_ENERGY=10;
 export const SLEEP_ISSUE_TEXT={sleep_started:'Se durmió por agotamiento. Su asignación queda suspendida.',sleep_complete:'Terminó de dormir y puede retomar su asignación.',sleep_disturbed:'Se despertó porque el sector ya no permite descansar.'};
 const deployed=(s,id)=>s.pendingBattle?.squad?.some(u=>Number(u.id)===id);
-const available=(s,id)=>s.recruited.includes(id)&&s.operativeState[id]?.alive&&!s.operativeState[id].captured&&!deployed(s,id);
+const available=(s,id)=>s.recruited.includes(id)&&s.operativeState[id]?.alive&&!s.operativeState[id].captured&&!deployed(s,id)&&!operativeInTransit(s,id);
 const safe=(s,id,context={})=>available(s,id)&&!(context.traveling??[]).includes(id)&&!(context.unsafe??[]).includes(id)&&s.sectors[operativeLocation(s,id)]?.owner==='patriot'&&s.pendingBattle?.sector!==operativeLocation(s,id)&&!s.enemyGroups?.some(g=>['waiting','engaged','stationed'].includes(g.status)&&g.target===operativeLocation(s,id));
 export function sleepOrderReason(s,id,asleep){
  const r=s.operativeState[id];

@@ -1,0 +1,10 @@
+'use client';
+import {CAMPAIGN_SECTORS} from '../../game/data.js';
+import {squadTravelStatus} from '../../game/squad-travel.js';
+import './travel-status.css';
+const place=(id:string)=>CAMPAIGN_SECTORS.find(s=>s.id===id)?.name??id;
+export default function TravelStatus({state:s,dispatch}:{state:any;dispatch:(a:any)=>void}){
+ const squads=s.squads.filter((q:any)=>q.journey),blocked=Boolean(s.pendingBattle||s.pendingEncounter||s.defeated);
+ if(!squads.length&&!s.travelNotice)return null;
+ return <section className="travel-status" aria-label="Rutas de las escuadras"><h2>Marchas y llegadas</h2>{s.travelNotice&&<div role="status" aria-live="polite"><p>Día {Math.floor(s.travelNotice.hour/24)+1} · {String(s.travelNotice.hour%24).padStart(2,'0')}:00</p><ul>{s.travelNotice.events.map((e:any,i:number)=><li key={i}><strong>{e.name}</strong>: {e.text}</li>)}</ul></div>}<p>Avanzá el reloj para mover todas las escuadras. El reloj se detiene al llegar al destino o si hay novedades.</p><div>{squads.map((q:any)=>{const j=squadTravelStatus(q)!;return <article key={q.id} aria-label={`Ruta de ${q.name}`}><h3>{q.name}</h3><p>{j.status==='paused'?'Detenida en':j.returning?'Regresa a':'En camino hacia'} <strong>{place(j.status==='paused'?q.location:j.to)}</strong></p><p>{j.status==='paused'?j.reason:`${j.legRemaining} h hasta ${place(j.to)}`}</p><small>{j.path.map(place).join(' → ')}{!j.returning&&` · ${j.remaining} h de viaje restante, sin contar descansos`}</small><div className="travel-actions">{j.status==='paused'&&<button className="gold-button" disabled={blocked} onClick={()=>dispatch({type:'resumeTravel',squadId:q.id})}>Retomar marcha</button>}<button className="line-button" disabled={blocked||j.returning} onClick={()=>dispatch({type:'cancelTravel',squadId:q.id,choice:'stop'})}>{j.elapsed===0?'Cancelar ruta':'Detenerse en el próximo sector'}</button>{j.elapsed>0&&!j.returning&&<button className="line-button" disabled={blocked} onClick={()=>dispatch({type:'cancelTravel',squadId:q.id,choice:'return'})}>Regresar · {j.elapsed} h</button>}</div></article>;})}</div></section>;
+}

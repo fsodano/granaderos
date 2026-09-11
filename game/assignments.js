@@ -1,6 +1,6 @@
 import {gainFatigue} from './fatigue.js';
 import {sleepStatus} from './sleep.js';
-import {operativeLocation} from './squads.js';
+import {operativeInTransit,operativeLocation} from './squads.js';
 import {TRAINABLE_SKILLS,practice} from './skill-training.js';
 import {WEAPONS} from './data.js';
 import {militiaEligibility} from './militia.js';
@@ -25,12 +25,13 @@ export function migrateAssignments(s,roster){
 }
 
 export const WORK_ISSUE_TEXT={
-  sleeping:'Está durmiendo; retomará su tarea al despertar.',invalid_assignment:'La asignación no existe.',unavailable:'El combatiente no está disponible.',deployed:'El combatiente está desplegado.',militia_busy:'Suspendé primero la instrucción de milicias.',unsafe:'La asignación necesita un sector seguro.',unstable:'Necesita estar estable y tener más de 10 de energía.',invalid_skill:'Elegí una habilidad para practicar.',zero_skill:'Una habilidad en cero no se puede aprender mediante práctica.',training_complete:'Ya alcanzó el límite de práctica de esa habilidad.',missing_instructor:'Elegí un instructor distinto del alumno.',instructor_unavailable:'El instructor debe estar disponible en el mismo sector.',instructor_assignment:'El instructor debe enseñar esta misma habilidad.',instructor_skill:'El instructor debe superar la habilidad del alumno.',instructor_busy:'El instructor ya tiene un alumno asignado.',no_mechanical_skill:'Necesita conocimientos de mecánica.',no_tools:'No quedan puntos de herramientas.',target_unavailable:'El equipo debe estar con un combatiente presente en este sector.',target_not_firearm:'El combatiente no lleva un arma de fuego reparable.',target_changed:'El arma asignada ya no está equipada.',repair_complete:'El equipo asignado ya está en perfecto estado.',invalid_repair_scope:'Elegí el equipo llevado o el arma principal.',repair_pack_full:'Retirá una entrada de la mochila para separar el equipo apilado.',no_students:'No hay un alumno disponible para esta habilidad en el mismo sector.',militia_trainer_unavailable:'El instructor de milicias debe estar vivo y presente en este sector.',militia_supply:'La instrucción de milicias necesita abastecimiento.',militia_rural:'Las milicias se instruyen en ciudades, no en pasos rurales.',militia_control:'La ciudad debe estar bajo control patriota.',militia_loyalty:'La ciudad no tiene suficiente lealtad para instruir milicias.',militia_cancelled:'La ocupación enemiga dispersó el curso de milicias.',militia_complete:'El curso de milicias terminó.',
+  traveling:'El combatiente está en camino.',sleeping:'Está durmiendo; retomará su tarea al despertar.',invalid_assignment:'La asignación no existe.',unavailable:'El combatiente no está disponible.',deployed:'El combatiente está desplegado.',militia_busy:'Suspendé primero la instrucción de milicias.',unsafe:'La asignación necesita un sector seguro.',unstable:'Necesita estar estable y tener más de 10 de energía.',invalid_skill:'Elegí una habilidad para practicar.',zero_skill:'Una habilidad en cero no se puede aprender mediante práctica.',training_complete:'Ya alcanzó el límite de práctica de esa habilidad.',missing_instructor:'Elegí un instructor distinto del alumno.',instructor_unavailable:'El instructor debe estar disponible en el mismo sector.',instructor_assignment:'El instructor debe enseñar esta misma habilidad.',instructor_skill:'El instructor debe superar la habilidad del alumno.',instructor_busy:'El instructor ya tiene un alumno asignado.',no_mechanical_skill:'Necesita conocimientos de mecánica.',no_tools:'No quedan puntos de herramientas.',target_unavailable:'El equipo debe estar con un combatiente presente en este sector.',target_not_firearm:'El combatiente no lleva un arma de fuego reparable.',target_changed:'El arma asignada ya no está equipada.',repair_complete:'El equipo asignado ya está en perfecto estado.',invalid_repair_scope:'Elegí el equipo llevado o el arma principal.',repair_pack_full:'Retirá una entrada de la mochila para separar el equipo apilado.',no_students:'No hay un alumno disponible para esta habilidad en el mismo sector.',militia_trainer_unavailable:'El instructor de milicias debe estar vivo y presente en este sector.',militia_supply:'La instrucción de milicias necesita abastecimiento.',militia_rural:'Las milicias se instruyen en ciudades, no en pasos rurales.',militia_control:'La ciudad debe estar bajo control patriota.',militia_loyalty:'La ciudad no tiene suficiente lealtad para instruir milicias.',militia_cancelled:'La ocupación enemiga dispersó el curso de milicias.',militia_complete:'El curso de milicias terminó.',
 };
 const issue=code=>({code,reason:WORK_ISSUE_TEXT[code]});
 function availabilityIssue(s,op){
   const r=s.operativeState[op.id],location=operativeLocation(s,op.id);
   if(!s.recruited.includes(op.id)||!r?.alive||r.hp<=0||r.captured)return issue('unavailable');
+  if(operativeInTransit(s,op.id))return issue('traveling');
   if(deployed(s,op.id))return issue('deployed');
   if(r.asleep)return issue('sleeping');
   if(s.militiaTraining?.some(t=>t.trainerId===op.id))return issue('militia_busy');
@@ -56,7 +57,7 @@ const repairComplete=(s,target,scope)=>scope==='equipment'?repairEquipmentQueue(
 const trainingComplete=(r,op,skill)=>(r.trainedStats?.[skill]??0)>=10||(op[skill]??0)>=100;
 function repairTargetIssue(s,op,options,roster){
   const r=s.operativeState[op.id],target=roster.find(o=>o.id===Number(options.targetId??r.repairTargetId??op.id));
-  if(!target||!s.recruited.includes(target.id)||!s.operativeState[target.id]?.alive||s.operativeState[target.id]?.captured||deployed(s,target.id)||operativeLocation(s,target.id)!==operativeLocation(s,op.id))return issue('target_unavailable');
+  if(!target||!s.recruited.includes(target.id)||!s.operativeState[target.id]?.alive||s.operativeState[target.id]?.captured||deployed(s,target.id)||operativeInTransit(s,target.id)||operativeLocation(s,target.id)!==operativeLocation(s,op.id))return issue('target_unavailable');
   if(!['primary','equipment'].includes(repairScope(r,options)))return issue('invalid_repair_scope');
   if(repairScope(r,options)==='equipment')return null;
   if(!firearm(target)||s.operativeState[target.id].weaponDropped)return issue('target_not_firearm');
@@ -122,7 +123,7 @@ export function militiaAssignmentIssue(s,course,{isSupplied}={}){
   if(s.operativeState[course.trainerId]?.asleep)return issue('sleeping');
   if((s.operativeState[course.trainerId]?.energy??100)<=10)return issue('unstable');
   if(s.sectors[course.sector]?.owner!=='patriot')return issue('militia_cancelled');
-  if(deployed(s,course.trainerId)||!s.operativeState[course.trainerId]?.alive||operativeLocation(s,course.trainerId)!==course.sector)return issue('militia_trainer_unavailable');
+  if(operativeInTransit(s,course.trainerId)||deployed(s,course.trainerId)||!s.operativeState[course.trainerId]?.alive||operativeLocation(s,course.trainerId)!==course.sector)return issue('militia_trainer_unavailable');
   need(typeof isSupplied==='function','Falta la regla de abastecimiento para la instrucción.');
   if(!isSupplied(s,course.sector))return issue('militia_supply');
   const eligible=militiaEligibility(s,course.sector);

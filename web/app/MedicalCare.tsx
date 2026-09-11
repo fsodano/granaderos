@@ -1,4 +1,5 @@
 'use client';
+import {operativeInTransit} from '../../game/squads.js';
 import {maximumEnergy} from '../../game/fatigue.js';
 import {useState} from 'react';
 import {CAMPAIGN_SECTORS,isSupplied,operativeLocation,rosterFor,WEAPONS} from '../../game/campaign.js';
@@ -20,9 +21,9 @@ export function MedicalSupplyPurchase({s,op,blocked,pharmacy,dispatch}:{s:any;op
 function PersonnelCard({s,op,roster,blocked,pharmacy,dispatch}:{s:any;op:any;roster:any[];blocked:boolean;pharmacy:boolean;dispatch:(action:any)=>void}){
   const record=s.operativeState[op.id],maxHp=record.maxHp??op.maxHp;
   const [skill,setSkill]=useState(record.trainingSkill??'marksmanship'),[teacherId,setTeacherId]=useState(String(record.instructorId??'')),[targetId,setTargetId]=useState(String(record.repairTargetId??op.id)),[repairScope,setRepairScope]=useState(record.repairScope??(record.assignment==='repair'?'primary':'equipment'));
-  const instructors=roster.filter(o=>o.id!==op.id&&s.recruited.includes(o.id)&&s.operativeState[o.id]?.alive&&operativeLocation(s,o.id)===operativeLocation(s,op.id)&&s.operativeState[o.id].assignment==='instructor'&&s.operativeState[o.id].trainingSkill===skill&&o[skill]>op[skill]);
+  const instructors=roster.filter(o=>o.id!==op.id&&s.recruited.includes(o.id)&&s.operativeState[o.id]?.alive&&!operativeInTransit(s,o.id)&&operativeLocation(s,o.id)===operativeLocation(s,op.id)&&s.operativeState[o.id].assignment==='instructor'&&s.operativeState[o.id].trainingSkill===skill&&o[skill]>op[skill]);
   const teacher=instructors.find(o=>String(o.id)===teacherId)??instructors[0];
-  const targets=roster.filter(o=>s.recruited.includes(o.id)&&s.operativeState[o.id]?.alive&&operativeLocation(s,o.id)===operativeLocation(s,op.id)&&(repairScope==='equipment'||(equipment[o.weapon]?.capacity??0)>0));
+  const targets=roster.filter(o=>s.recruited.includes(o.id)&&s.operativeState[o.id]?.alive&&!operativeInTransit(s,o.id)&&operativeLocation(s,o.id)===operativeLocation(s,op.id)&&(repairScope==='equipment'||(equipment[o.weapon]?.capacity??0)>0));
   const target=targets.find(o=>String(o.id)===targetId)??targets[0];
   const work=Object.hasOwn(WORK_ASSIGNMENTS,record.assignment??'active');
   const usage=equipmentInventoryUsage(s,op),sleepReason=sleepOrderReason(s,op.id,!record.asleep);
@@ -55,7 +56,7 @@ function PersonnelCard({s,op,roster,blocked,pharmacy,dispatch}:{s:any;op:any;ros
 }
 
 export default function MedicalCare({state:s,sectorId,dispatch}:{state:any;sectorId:string;dispatch:(action:any)=>void}){
-  const roster=rosterFor(s),personnel=roster.filter(o=>s.recruited.includes(o.id)&&operativeLocation(s,o.id)===sectorId);
+  const roster=rosterFor(s),personnel=roster.filter(o=>s.recruited.includes(o.id)&&!operativeInTransit(s,o.id)&&operativeLocation(s,o.id)===sectorId);
   const blocked=Boolean(s.pendingBattle||s.pendingEncounter)||s.defeated;
   const pharmacy=sectorId===s.location&&['retiro','cordoba','mendoza'].includes(sectorId)&&isSupplied(s,sectorId);
   const place=CAMPAIGN_SECTORS.find(o=>o.id===sectorId);

@@ -1,6 +1,6 @@
 import {CAMPAIGN_SECTORS} from './data.js';
 import {ROYALIST_COMMANDS,NORTHERN_AXIS,oppositionFor} from './narrative.js';
-import {operativeLocation,validatePersonalInventory} from './squads.js';
+import {operativeInTransit,operativeLocation,validatePersonalInventory} from './squads.js';
 
 // Manual p.44: threatened sectors offer tactical combat, auto-resolve, or a
 // possible withdrawal. Route duration and group strength are period game tuning.
@@ -10,7 +10,7 @@ const need=(ok,message)=>{if(!ok)throw Error(message);};
 const copy=value=>structuredClone(value);
 const active=unit=>unit.hp>0&&!unit.routed&&!unit.departure&&!unit.surrendered;
 export function migrateEnemyGroups(s){s.enemyGroups??=[];s.nextEnemyGroupId??=1;s.pendingEncounter??=null;s.encounterHistory??=[];for(const r of Object.values(s.operativeState??{})){r.captured??=false;r.capturedSector??=null;r.capturedAt??=null;r.capturedContract??=null;}return s;}
-export function localDefenderIds(s,at,{exclude=[]}={}){return s.recruited.filter(id=>s.operativeState[id]?.alive&&operativeLocation(s,id)===at&&!exclude.includes(id));}
+export function localDefenderIds(s,at,{exclude=[]}={}){return s.recruited.filter(id=>s.operativeState[id]?.alive&&!operativeInTransit(s,id)&&operativeLocation(s,id)===at&&!exclude.includes(id));}
 export function localDefenderCount(s,at,options){return localDefenderIds(s,at,options).length+s.sectors[at].militia.reduce((sum,n)=>sum+n,0);}
 export function occupyingGroups(s,at){return s.enemyGroups.filter(g=>g.target===at&&g.status==='stationed');}
 export function retreatDestinations(s,at){return sector(at).neighbors.filter(id=>s.sectors[id].owner==='patriot'&&!s.enemyGroups.some(g=>g.target===id&&['waiting','engaged','stationed'].includes(g.status))&&s.pendingBattle?.sector!==id);}

@@ -1,4 +1,5 @@
 'use client';
+import {activeSquad,operativeInTransit} from '../../game/squads.js';
 import {useState} from 'react';
 import {Landmark,Pickaxe,Users,Shield,Package} from 'lucide-react';
 import geography from '../../game/strategic-geography.json';
@@ -24,7 +25,7 @@ export default function StrategicMap({state:s,selected,onSelect,dispatch}:{state
  const total=CAMPAIGN_SECTORS.reduce((n,d)=>n+sectorIncome(s,d,isSupplied),0);
  const def=CAMPAIGN_SECTORS.find(d=>d.id===selected)!;
  const city=getCityStatus(s,selected);
- const marks=(id:string)=>mode==='resources'?`${sectorIncome(s,CAMPAIGN_SECTORS.find(d=>d.id===id),isSupplied)} $/día`:mode==='squads'?`${s.squads.filter((q:any)=>q.location===id).reduce((n:number,q:any)=>n+q.members.length,0)} soldados`:mode==='militia'?`${s.sectors[id].militia.reduce((a:number,b:number)=>a+b,0)} milicianos`:mode==='horses'?`${(s.horseState?.horses??[]).filter((h:any)=>!h.returned&&h.location===id).length} monturas`:mode==='items'?`${stockCount(s,id)} en depósito`:null;
+ const marks=(id:string)=>mode==='resources'?`${sectorIncome(s,CAMPAIGN_SECTORS.find(d=>d.id===id),isSupplied)} $/día`:mode==='squads'?`${s.squads.filter((q:any)=>q.location===id&&q.journey?.status!=='moving').reduce((n:number,q:any)=>n+q.members.length,0)} soldados`:mode==='militia'?`${s.sectors[id].militia.reduce((a:number,b:number)=>a+b,0)} milicianos`:mode==='horses'?`${(s.horseState?.horses??[]).filter((h:any)=>!h.returned&&!operativeInTransit(s,h.assignedTo)&&h.location===id).length} monturas`:mode==='items'?`${stockCount(s,id)} en depósito`:null;
  return <div className="strategy-chart argentina-chart">
  <div className="atlas-heading"><span>PROVINCIAS UNIDAS · 1812–1817</span><span>TEATRO DE OPERACIONES</span></div>
  <svg className="argentina-atlas" viewBox="0 0 720 690" role="group" aria-label="Mapa geográfico de la campaña en las Provincias Unidas">
@@ -47,7 +48,7 @@ export default function StrategicMap({state:s,selected,onSelect,dispatch}:{state
  <title>{`${tile.name} · ${d.name} · Sector ${d.grid}`}</title>
  <rect className="atlas-district" data-district={tile.id} x={tile.x} y={tile.y} width={MAP_TILE_SIZE} height={MAP_TILE_SIZE} fill={ours?'#7f9e61':'#876448'} fillOpacity={tile.urban?'.85':'.5'} stroke="#1c291b" strokeWidth=".8"/>
  {active&&<rect className="atlas-district-selected" x={tile.x+2} y={tile.y+2} width={MAP_TILE_SIZE-4} height={MAP_TILE_SIZE-4} fill="none" stroke="#fff3ad" strokeWidth="2"/>}
- {s.location===d.id&&tile.id===mapTilesForSector(d.id)[0].id&&<circle cx={tile.x+MAP_TILE_SIZE/2} cy={tile.y+MAP_TILE_SIZE/2} r="2.5" fill="#fff"/>}
+ {activeSquad(s).journey?.status!=='moving'&&s.location===d.id&&tile.id===mapTilesForSector(d.id)[0].id&&<circle cx={tile.x+MAP_TILE_SIZE/2} cy={tile.y+MAP_TILE_SIZE/2} r="2.5" fill="#fff"/>}
  </g>;})}</g>;})}
  <g className="atlas-city-boundaries" pointerEvents="none">{CITIES.map(area=><path key={area.id} data-city-boundary={area.id} d={mapTileOutline(area.sectors.flatMap(id=>mapTilesForSector(id)))} fill="none" stroke="#dacb93" strokeWidth="1.8"/>)}</g>
  <g pointerEvents="none">{CAMPAIGN_SECTORS.map(d=>{
