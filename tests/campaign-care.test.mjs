@@ -36,9 +36,9 @@ test('doctors cannot treat remotely, without energy, or during militia work',()=
  s=initialCampaign();s.militiaTraining=[{trainerId:10,sector:'retiro',rank:0,count:3,duration:8,remaining:8,started:0}];assert.ok(dispatch(s,{type:'assignCare',operativeId:10,assignment:'doctor'}).lastError);
 });
 
-test('only assigned safe rest gives slow natural recovery and restores energy',()=>{
- let s=initialCampaign();wound(s,3);s=order(s,{type:'wait',hours:24});assert.equal(s.operativeState[3].hp,30);assert.equal(s.operativeState[3].energy,20);assert.equal(s.operativeState[3].fatigue,60);
- s=assign(s,3,'rest');s=order(s,{type:'wait',hours:5});assert.equal(s.operativeState[3].hp,30);assert.equal(s.operativeState[3].energy,80);s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[3].hp,31);assert.equal(s.operativeState[3].bandaged,s.operativeState[3].maxHp-31);
+test('idle soldiers recover energy slowly while assigned safe rest also heals wounds',()=>{
+ let s=initialCampaign();wound(s,3);s=order(s,{type:'wait',hours:24});assert.equal(s.operativeState[3].hp,30);assert.equal(s.operativeState[3].energy,92);assert.equal(s.operativeState[3].fatigue,36);
+ wound(s,3);s=assign(s,3,'rest');s=order(s,{type:'wait',hours:5});assert.equal(s.operativeState[3].hp,30);assert.equal(s.operativeState[3].energy,80);s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[3].hp,31);assert.equal(s.operativeState[3].bandaged,s.operativeState[3].maxHp-31);
  s.sectors.retiro.owner='royalist';s=order(s,{type:'wait',hours:6});assert.equal(s.operativeState[3].hp,31);
 });
 

@@ -3,6 +3,7 @@ import {useState} from 'react';
 import {CAMPAIGN_SECTORS,isSupplied,operativeLocation,rosterFor,WEAPONS} from '../../game/campaign.js';
 import {CARE_ASSIGNMENTS,ALL_ASSIGNMENTS,MEDICAL_KIT_PRICE,careAssignmentReason,careStatus} from '../../game/medical-care.js';
 import {WORK_ASSIGNMENTS,STUDY_SKILLS,TOOLKIT_PRICE,TOOLKIT_POINTS,workAssignmentReason,workStatus,repairEquipmentQueue} from '../../game/assignments.js';
+import {sleepOrderReason} from '../../game/sleep.js';
 import {moraleStatus} from '../../game/morale.js';
 import {equipmentInventoryUsage,medicalSupplyStock,MEDICAL_STOCK_CAP,MEDICAL_DAILY_RESTOCK} from '../../game/equipment.js';
 import './medical-care.css';
@@ -23,7 +24,7 @@ function PersonnelCard({s,op,roster,blocked,pharmacy,dispatch}:{s:any;op:any;ros
   const targets=roster.filter(o=>s.recruited.includes(o.id)&&s.operativeState[o.id]?.alive&&operativeLocation(s,o.id)===operativeLocation(s,op.id)&&(repairScope==='equipment'||(equipment[o.weapon]?.capacity??0)>0));
   const target=targets.find(o=>String(o.id)===targetId)??targets[0];
   const work=Object.hasOwn(WORK_ASSIGNMENTS,record.assignment??'active');
-  const usage=equipmentInventoryUsage(s,op);
+  const usage=equipmentInventoryUsage(s,op),sleepReason=sleepOrderReason(s,op.id,!record.asleep);
   const options={skill,instructorId:teacher?.id,targetId:target?.id,repairScope};
   const repairQueue=target&&repairScope==='equipment'?repairEquipmentQueue(s.operativeState[target.id],target):[];
   const reason=(assignment:string)=>Object.hasOwn(CARE_ASSIGNMENTS,assignment)?careAssignmentReason(s,op,assignment):workAssignmentReason(s,op,assignment,options,roster);
@@ -34,6 +35,7 @@ function PersonnelCard({s,op,roster,blocked,pharmacy,dispatch}:{s:any;op:any;ros
     <p className="care-condition">{!record.alive?'Caído':record.bleeding>0?`Hemorragia ${record.bleeding} · necesita atención`:record.hp<15?'Estado crítico · necesita un médico':record.bandaged>0?`${record.bandaged} puntos de herida vendada`:'Sin hemorragia'} · Fatiga {record.fatigue}</p>
     <p className="care-condition">{moraleStatus(s,op.id)}</p>
     <label className="care-order">Asignación<select aria-label={`Asignación de ${op.nickname}`} value={record.assignment??'active'} disabled={blocked||!record.alive} onChange={event=>assign(event.target.value)}>{Object.entries(ALL_ASSIGNMENTS).map(([value,label])=>{const why=reason(value);return <option key={value} value={value} disabled={Boolean(why)} title={why}>{label}</option>;})}</select></label>
+    <button className="line-button" aria-label={`${record.asleep?'Despertar':'Dormir'}: ${op.nickname}`} disabled={blocked||Boolean(sleepReason)} title={sleepReason||'Conserva su asignación mientras duerme.'} onClick={()=>dispatch({type:'setSleep',operativeId:op.id,asleep:!record.asleep})}>{record.asleep?'Despertar':'Dormir'}</button>
     <p className="care-status" aria-live="polite">{work?workStatus(s,op,roster):careStatus(s,op,roster)}</p>
     <details className="care-work" open={work||undefined}><summary>Preparar práctica o reparación</summary><div>
       <label>Habilidad<select aria-label={`Habilidad de ${op.nickname}`} value={skill} disabled={blocked||!record.alive} onChange={event=>setSkill(event.target.value)}>{Object.entries(STUDY_SKILLS).map(([value,label])=><option key={value} value={value} disabled={(op[value]??0)<=0}>{label} · {op[value]??0}</option>)}</select></label>
@@ -53,13 +55,13 @@ function PersonnelCard({s,op,roster,blocked,pharmacy,dispatch}:{s:any;op:any;ros
 
 export default function MedicalCare({state:s,sectorId,dispatch}:{state:any;sectorId:string;dispatch:(action:any)=>void}){
   const roster=rosterFor(s),personnel=roster.filter(o=>s.recruited.includes(o.id)&&operativeLocation(s,o.id)===sectorId);
-  const blocked=Boolean(s.pendingBattle)||s.defeated;
+  const blocked=Boolean(s.pendingBattle||s.pendingEncounter)||s.defeated;
   const pharmacy=sectorId===s.location&&['retiro','cordoba','mendoza'].includes(sectorId)&&isSupplied(s,sectorId);
   const place=CAMPAIGN_SECTORS.find(o=>o.id===sectorId);
   return <section className="medical-care" aria-labelledby="medical-care-title">
     <header><div><p className="eyebrow">PERSONAL EN {place?.grid}</p><h2 id="medical-care-title">Asignaciones del personal</h2></div><p>Organizá la atención, el descanso, la práctica y las reparaciones. Cada trabajo necesita tiempo y personal presente en un sector seguro.</p></header>
     {['retiro','cordoba','mendoza'].includes(sectorId)&&<p className="care-condition" role="status">Maestranza: {medicalSupplyStock(s,sectorId)}/{MEDICAL_STOCK_CAP} botiquines disponibles. Repone {MEDICAL_DAILY_RESTOCK} cada 24 horas de abastecimiento; próxima reposición en {24-(s.merchants?.[sectorId]?.restockHours??0)} horas abastecidas.</p>}
     {!personnel.length?<p className="care-empty">No hay combatientes contratados en {place?.name}.</p>:<div className="care-personnel">{personnel.map(op=><PersonnelCard key={op.id} s={s} op={op} roster={roster} blocked={blocked} pharmacy={pharmacy} dispatch={dispatch}/>)}</div>}
-    <p className="care-help">Las vendas detienen la hemorragia; el médico recupera salud con botiquines. El descanso recupera energía y 1 de salud cada 6 horas sin hemorragia, salvo heridas críticas. La práctica mejora habilidades de forma gradual; un instructor con más habilidad acelera el aprendizaje. Reparar consume herramientas para mantener armas, bayonetas y herramientas llevadas. Desatascar un arma también consume un punto; no repone munición. Para marchar, elegí «En servicio» o dejá al personal en otra escuadra.</p>
+    <p className="care-help">Las vendas detienen la hemorragia; el médico recupera salud con botiquines. El descanso recupera energía y 1 de salud cada 6 horas sin hemorragia, salvo heridas críticas. La práctica mejora habilidades de forma gradual; un instructor con más habilidad acelera el aprendizaje. Reparar consume herramientas para mantener armas, bayonetas y herramientas llevadas. Desatascar un arma también consume un punto; no repone munición. El personal agotado duerme automáticamente y retoma su tarea al recuperarse. Dormir conserva la asignación y recupera energía más rápido que estar en servicio sin actividad. Para marchar, despertá al personal y elegí «En servicio» o dejá al personal en otra escuadra.</p>
   </section>;
 }

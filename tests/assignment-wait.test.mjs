@@ -149,7 +149,7 @@ test('a paid militia course stops on its actual completion and never recruits th
  s=wait(s,duration+6);stopped(s,duration+6,duration);assert.equal(s.militiaTraining.length,0);assert.deepEqual(s.sectors.retiro.militia,[3,0,0]);assert.equal(s.resources.muskets,muskets);
  const done=event(s,4,'militia_complete');assert.equal(done?.subject,'militia:retiro');assert.equal(done?.sector,'retiro');assert.equal(done?.state,'complete');
  s=wait(s,3);assert.equal(s.hour,duration+3);assert.equal(s.assignmentAttention.notice,null);assert.deepEqual(s.sectors.retiro.militia,[3,0,0]);
- s=order(s,{type:'militia',rank:0,trainerId:4});const start=s.hour;s=wait(s,duration+4);stopped(s,duration+4,duration,start);assert.deepEqual(s.sectors.retiro.militia,[6,0,0]);assert.ok(event(s,4,'militia_complete'));
+ s=order(s,{type:'setSleep',operativeId:4,asleep:true});s=wait(s,24);assert.ok(event(s,4,'sleep_complete'));s=order(s,{type:'militia',rank:0,trainerId:4});const start=s.hour;s=wait(s,duration+4);stopped(s,duration+4,duration,start);assert.deepEqual(s.sectors.retiro.militia,[6,0,0]);assert.ok(event(s,4,'militia_complete'));
 });
 
 test('attention notices and reported markers replay exactly across saves before and after a stop',()=>{

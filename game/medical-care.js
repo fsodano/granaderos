@@ -1,5 +1,6 @@
 import {operativeLocation} from './squads.js';
 import {WORK_ASSIGNMENTS} from './assignments.js';
+import {sleepStatus} from './sleep.js';
 import {baseMorale} from './morale.js';
 
 export const CARE_ASSIGNMENTS={active:'En servicio',doctor:'Médico',patient:'Paciente',rest:'Descanso'};
@@ -11,7 +12,7 @@ const deployed=(s,id)=>Boolean(s.pendingBattle?.squad?.some(u=>Number(u.id)===Nu
 const training=(s,id)=>Boolean(s.militiaTraining?.some(t=>t.trainerId===id));
 const safe=(s,id)=>s.sectors[operativeLocation(s,id)]?.owner==='patriot'&&s.pendingBattle?.sector!==operativeLocation(s,id);
 export const doctorRate=op=>2+Math.floor((op.medical??0)/20);
-export const CARE_ISSUE_TEXT={invalid_assignment:'La asignación no existe.',unavailable:'El combatiente no está disponible.',deployed:'El combatiente está desplegado en el sector táctico.',militia_busy:'Suspendé primero su instrucción de milicias.',unsafe:'La atención y el descanso necesitan un sector seguro.',no_medical_skill:'Necesita al menos 20 de medicina.',unstable:'El médico necesita estar estable y tener más de 10 de energía.',no_medkits:'El médico no tiene botiquines.',healing_complete:'Recuperado. Puede volver al servicio.',no_patients:'Sin pacientes heridos asignados en este sector.',no_doctor:'Sin médico disponible en este sector. Solo recupera energía.',bleeding:'El descanso no detiene la hemorragia. Necesita un médico.',critical:'Estado crítico: necesita un médico para recuperar salud.',rest_complete:'El descanso terminó: salud y energía recuperadas, sin fatiga.'};
+export const CARE_ISSUE_TEXT={invalid_assignment:'La asignación no existe.',unavailable:'El combatiente no está disponible.',deployed:'El combatiente está desplegado en el sector táctico.',militia_busy:'Suspendé primero su instrucción de milicias.',unsafe:'La atención y el descanso necesitan un sector seguro.',no_medical_skill:'Necesita al menos 20 de medicina.',unstable:'El médico necesita estar estable y tener más de 10 de energía.',no_medkits:'El médico no tiene botiquines.',healing_complete:'Recuperado. Puede volver al servicio.',no_patients:'Sin pacientes heridos asignados en este sector.',no_doctor:'Sin médico disponible en este sector. Solo recupera energía.',bleeding:'El descanso no detiene la hemorragia. Necesita un médico.',critical:'Estado crítico: necesita un médico para recuperar salud.',sleeping:'Está durmiendo; retomará su tarea al despertar.',rest_complete:'El descanso terminó: salud y energía recuperadas, sin fatiga.'};
 const issue=code=>({code,reason:CARE_ISSUE_TEXT[code]});
 
 // Old campaigns already restored health outside combat. Keep their existing wounds
@@ -23,6 +24,7 @@ export function migrateMedicalCare(s,roster){
     if(record.bleeding===undefined)record.bleeding=0;
     if(record.bandaged===undefined)record.bandaged=record.bleeding?0:Math.max(0,record.maxHp-record.hp);
     if(record.energy===undefined)record.energy=100;
+    if(record.asleep===undefined)record.asleep=false;
     if(record.medkits===undefined)record.medkits=2;
     if(record.assignment===undefined)record.assignment='active';
     if(record.recoveryHours===undefined)record.recoveryHours=0;
@@ -39,6 +41,7 @@ export function careAssignmentIssue(s,op,assignment){
   if(assignment==='active')return null;
   if(!safe(s,op.id))return issue('unsafe');
   if(assignment==='doctor'){
+    if(record.asleep)return issue('sleeping');
     if((op.medical??0)<20)return issue('no_medical_skill');
     if(record.hp<15||record.bleeding>0||record.energy<=10)return issue('unstable');
     if(record.medkits<1)return issue('no_medkits');
@@ -47,12 +50,12 @@ export function careAssignmentIssue(s,op,assignment){
 }
 export function careAssignmentReason(s,op,assignment){return careAssignmentIssue(s,op,assignment)?.reason??'';}
 
-function carePresent(s,op,context={}){return s.recruited.includes(op.id)&&s.operativeState[op.id]?.alive&&!deployed(s,op.id)&&!(context.traveling??[]).includes(op.id)&&!(context.unsafe??[]).includes(op.id)&&!training(s,op.id)&&safe(s,op.id);}
+function carePresent(s,op,context={}){return s.recruited.includes(op.id)&&s.operativeState[op.id]?.alive&&!deployed(s,op.id)&&!(context.traveling??[]).includes(op.id)&&!(context.unsafe??[]).includes(op.id)&&(!training(s,op.id)||s.operativeState[op.id].asleep)&&safe(s,op.id);}
 const needsCare=r=>r.bleeding>0||r.hp<r.maxHp;
 export function careAssignmentProgress(s,op,roster,context={}){
   const r=s.operativeState[op.id],status=(state,code=null)=>({state,code});
   if((context.unsafe??[]).includes(op.id))return status('blocked','unsafe');
-  if((context.traveling??[]).includes(op.id))return status('waiting');
+  if((context.traveling??[]).includes(op.id)||r.asleep)return status('waiting');
   if(r.assignment==='patient'&&!needsCare(r))return status('complete','healing_complete');
   if(r.assignment==='rest'&&!needsCare(r)&&r.energy>=100&&(r.fatigue??0)<=0&&(r.morale??baseMorale(op))>=baseMorale(op))return status('complete','rest_complete');
   const problem=careAssignmentIssue(s,op,r.assignment);
@@ -84,6 +87,7 @@ export function careStatus(s,op,roster){
   const record=s.operativeState[op.id],assignment=record.assignment??'active';
   if(!record.alive)return 'Caído en servicio.';
   if(deployed(s,op.id))return 'Desplegado en el sector táctico.';
+  if(record.asleep)return sleepStatus(record);
   if(training(s,op.id))return 'Instruyendo milicias.';
   if(assignment==='active')return record.bleeding?'Hemorragia sin atender: necesita un médico.':'Disponible para marchar y combatir.';
   if(!safe(s,op.id))return 'Asignación detenida: el sector no es seguro.';
@@ -119,11 +123,11 @@ export function advanceMedicalCare(s,roster,{traveling=[]}={}){
     const record=s.operativeState[op.id];if(!s.recruited.includes(op.id)||!record?.alive||deployed(s,op.id))continue;
     // An unbandaged wound keeps bleeding during strategic time, including travel.
     if(record.bleeding>0){record.hp=Math.max(0,record.hp-Math.max(1,Math.ceil(record.bleeding/4)));record.recoveryHours=0;}
-    if(record.hp===0){record.alive=false;record.assignment='active';record.recoveryHours=0;deaths.push(op.id);continue;}
+    if(record.hp===0){record.alive=false;record.asleep=false;record.assignment='active';record.recoveryHours=0;deaths.push(op.id);continue;}
     if(!present(op)){record.recoveryHours=0;continue;}
-    if(record.assignment==='patient'||record.assignment==='rest'){
-      record.energy=Math.min(100,record.energy+12);record.fatigue=Math.max(0,record.fatigue-8);
-      if(record.assignment==='rest'&&!record.bleeding&&record.hp>=15&&record.hp<record.maxHp){
+    if(record.assignment==='patient'||record.assignment==='rest'||record.asleep){
+      if(!record.asleep||['patient','rest'].includes(record.assignment)){record.energy=Math.min(100,record.energy+12);record.fatigue=Math.max(0,record.fatigue-8);}
+      if((record.assignment==='rest'||record.asleep&&record.assignment!=='patient')&&!record.bleeding&&record.hp>=15&&record.hp<record.maxHp){
         record.recoveryHours++;
         if(record.recoveryHours>=REST_HEALING_HOURS){record.hp=Math.min(record.maxHp,record.hp+1);record.bandaged=Math.min(record.bandaged,record.maxHp-record.hp);record.recoveryHours=0;}
       }else record.recoveryHours=0;
@@ -144,13 +148,14 @@ export function returnMedicalCare(s,id,report,op){
   if(report.medkits!==undefined)requireThat(Number.isInteger(report.medkits)&&report.medkits>=0&&report.medkits<=100000,'Los botiquines del parte son inválidos.');
   Object.assign(record,{maxHp,hp:report.hp,bleeding,bandaged,alive:report.hp>0,recoveryHours:0});
   if(report.medkits!==undefined)record.medkits=report.medkits;
-  if(!record.alive)record.assignment='active';
+  if(!record.alive){record.assignment='active';record.asleep=false;}
 }
 
 export function validateMedicalCare(s,roster){
   migrateMedicalCare(s,roster);
   for(const op of roster){
     const r=s.operativeState[op.id];requireThat(r,'Falta una hoja de servicio.');
+    requireThat(typeof r.asleep==='boolean'&&(!r.asleep||s.recruited.includes(op.id)&&r.alive&&!r.captured&&!deployed(s,op.id)),'El estado de sueño guardado es inválido.');
     requireThat(Number.isInteger(r.maxHp)&&r.maxHp>0&&r.maxHp<=op.maxHp&&r.hp<=r.maxHp,'La salud máxima guardada es inválida.');
     requireThat(Number.isFinite(r.bleeding)&&r.bleeding>=0&&r.bleeding<=100&&Number.isFinite(r.bandaged)&&r.bandaged>=0&&r.bandaged<=r.maxHp-r.hp,'Las heridas guardadas son inválidas.');
     requireThat(Number.isInteger(r.medkits)&&r.medkits>=0&&r.medkits<=100000,'Los botiquines guardados son inválidos.');

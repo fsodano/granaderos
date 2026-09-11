@@ -20,9 +20,10 @@ import {prepareDeploymentExits,planDeploymentReturn,recordStrategicArrival,migra
 import {validateSectorExits} from './tactical-exits.js';
 import {CARE_ASSIGNMENTS,MEDICAL_KIT_PRICE,migrateMedicalCare,assignMedicalCare,advanceMedicalCare,returnMedicalCare,validateMedicalCare} from './medical-care.js';
 import {WORK_ASSIGNMENTS,TOOLKIT_PRICE,TOOLKIT_POINTS,migrateAssignments,assignWork,advanceAssignments,validateAssignments,militiaAssignmentIssue} from './assignments.js';
-import {assignmentStates,migrateAssignmentAttention,validateAssignmentAttention,collectAssignmentAttention,reconcileAssignmentAttention,militiaCompletionAttention,militiaCancellationAttention} from './assignment-attention.js';
+import {assignmentStates,migrateAssignmentAttention,validateAssignmentAttention,collectAssignmentAttention,reconcileAssignmentAttention,militiaCompletionAttention,militiaCancellationAttention,sleepAttention} from './assignment-attention.js';
 import {migrateMorale,deploymentMorale,returnMorale,recordPayMorale,recordCasualtyMorale,recordBattleMorale,advanceMorale,validateMorale} from './morale.js';
 import {migrateEnemyGroups,launchEnemyGroup,advanceEnemyGroups,queueEnemyEncounter,localDefenderIds,localDefenderCount,retreatDestinations,occupyingGroups,recordEnemyGroupResult,validateEnemyGroups} from './enemy-groups.js';
+import {setSleep,prepareSleep,finishSleepHour,SLEEP_ISSUE_TEXT} from './sleep.js';
 import {autoResolve} from './auto-resolve.js';
 import {ENCOUNTERS,encounterForOperative,encountersFor,encounterRequirements} from './encounters.js';
 export {ENCOUNTERS,encountersFor} from './encounters.js';
@@ -44,7 +45,7 @@ export function rosterFor(s){return baseRosterFor(s).map(o=>{const record=s.oper
 function returnTraining(s,id,report){validateTraining(report);for(const field of ['trainedStats','skillPractice'])if(report[field]!==undefined)s.operativeState[id][field]=clone(report[field]);}
 function returnMount(s,id,report){if(!report.mount)return;const horse=s.horseState?.horses.find(h=>h.id===report.mount.id&&h.assignedTo===id&&!h.returned);requireThat(horse,'La montura no pertenece al combatiente.');for(const field of ['stamina','condition']){requireThat(Number.isFinite(report.mount[field])&&report.mount[field]>=0&&report.mount[field]<=100,'El estado de la montura es inválido.');horse[field]=report.mount[field];}}
 function removeFromService(s,id){
-  s.operativeState[id].assignment='active';s.operativeState[id].recoveryHours=0;
+  s.operativeState[id].assignment='active';s.operativeState[id].asleep=false;s.operativeState[id].recoveryHours=0;
   const location=operativeLocation(s,id);s.operativeState[id].location=location;s.recruited=s.recruited.filter(x=>x!==id);s.squad=s.squad.filter(x=>x!==id);for(const squad of s.squads)squad.members=squad.members.filter(x=>x!==id);
   for(const horse of s.horseState.horses)if(horse.assignedTo===id)horse.assignedTo=null;
   for(const course of s.militiaTraining.filter(t=>t.trainerId===id)){returnMilitiaTrainees(s,course);}s.militiaTraining=s.militiaTraining.filter(t=>t.trainerId!==id);delete s.contracts[id];
@@ -133,7 +134,7 @@ function settleEnemyEncounters(s,options={}){
   }
 }
 function relocateDefenders(s,ids,destination,moralePenalty=5){
-  for(const id of ids){recordStrategicArrival(s,[id],operativeLocation(s,id),destination);const r=s.operativeState[id];r.location=destination;r.assignment='active';r.recoveryHours=0;r.energy=Math.max(0,r.energy-10);r.fatigue=Math.min(100,r.fatigue+8);r.morale=Math.max(0,r.morale-moralePenalty);}
+  for(const id of ids){recordStrategicArrival(s,[id],operativeLocation(s,id),destination);const r=s.operativeState[id];r.location=destination;r.assignment='active';r.asleep=false;r.recoveryHours=0;r.energy=Math.max(0,r.energy-10);r.fatigue=Math.min(100,r.fatigue+8);r.morale=Math.max(0,r.morale-moralePenalty);}
   for(const squad of s.squads)if(squad.members.some(id=>ids.includes(id))){squad.location=destination;if(squad.id===s.activeSquadId)s.location=destination;}
   for(const horse of s.horseState.horses)if(ids.includes(horse.assignedTo))horse.location=destination;
 }
@@ -148,14 +149,14 @@ function releaseCaptives(s,at){
     s.resources.cartridges+=(r.capturedAmmunition?.loaded??0)+(r.capturedAmmunition?.ammo??0);r.capturedAmmunition={loaded:0,ammo:0};
     for(const h of s.horseState.horses)if(h.custody?.kind==='captured'&&h.custody.operativeId===op.id){h.custody=null;h.assignedTo=null;}
     const contract=clone(r.capturedContract),remaining=contract.expiresAt===null?null:Math.max(0,contract.expiresAt-r.capturedAt);delete contract.departurePending;
-    Object.assign(r,{captured:false,capturedSector:null,capturedAt:null,capturedContract:null,location:at,arrival:null,residentSector:at,residentScene:null,assignment:r.hp<r.maxHp||r.bleeding?'patient':'rest'});
+    Object.assign(r,{asleep:false,captured:false,capturedSector:null,capturedAt:null,capturedContract:null,location:at,arrival:null,residentSector:at,residentScene:null,assignment:r.hp<r.maxHp||r.bleeding?'patient':'rest'});
     if(remaining===0){r.assignment='active';note(s,`${op.name} queda libre en ${sector(at).name}. Su contrato había terminado y puede volver a contratarse.`);continue;}
     if(remaining!==null)contract.expiresAt=s.hour+remaining;s.contracts[op.id]=contract;s.recruited.push(op.id);if(s.location===at&&s.squad.length<6)s.squad.push(op.id);note(s,`${op.name} vuelve al servicio tras la liberación de ${sector(at).name}. Conserva sus heridas y equipo.`);
   }
 }
 function prepareDefense(s,group,{excludeMercs=false}={}){
   const at=group.target,def=sector(at),ids=excludeMercs?[]:localDefenderIds(s,at),allocated={},localAmmo=s.depots?.[at]?.cartridges??0;let stock=s.resources.cartridges+localAmmo;
-  for(const id of ids){s.operativeState[id].assignment='active';s.operativeState[id].recoveryHours=0;allocated[id]=allocateEquipmentAmmo(s,rosterFor(s).find(o=>o.id===id),stock);stock-=allocated[id].loaded+allocated[id].ammo;}
+  for(const id of ids){s.operativeState[id].assignment='active';s.operativeState[id].asleep=false;s.operativeState[id].recoveryHours=0;allocated[id]=allocateEquipmentAmmo(s,rosterFor(s).find(o=>o.id===id),stock);stock-=allocated[id].loaded+allocated[id].ammo;}
   const issued=s.resources.cartridges+localAmmo-stock,fromDepot=Math.min(localAmmo,issued);s.resources.cartridges-=issued-fromDepot;if(fromDepot)s.depots[at].cartridges-=fromDepot;
   const request={id:`defense-${group.id}`,sector:at,origin:s.location,name:`Defensa de ${def.name}`,biome:def.biome,theater:def.theater,seed:group.seed,hour:s.hour,secondOfHour:s.secondOfHour??0,defenseGroupId:group.id,defenseFort:s.sectors[at].fort,issuedCartridges:issued,wasRoyalist:false,difficulty:1,squad:ids.map(id=>({...clone(rosterFor(s).find(o=>o.id===id)),...clone(s.operativeState[id]),...deploymentMorale(s,id),...allocated[id],...(mountForOperative(s.horseState,id)??{horse:false,canMount:false})})),enemies:clone(group.units),garrison:prepareGarrison(s,at),artillery:[],weather:{rain:false,humidity:def.theater==='coast'?.8:.3},enemyCommand:group.command,enemyCommander:ROYALIST_COMMANDS.find(c=>c.id===group.command).commander};
   group.status='engaged';s.pendingEncounter=null;s.pendingBattle=prepareDeploymentExits(s,request);return request;
@@ -238,20 +239,25 @@ function pauseForAssignments(s,hours,advancedHours,extraEvents=[]){
   note(s,`El avance se detuvo tras ${advancedHours} de ${hours} horas: hay novedades en las asignaciones.`);
   return true;
 }
+function recordSleepEvents(s,events){
+  return events.map(event=>{note(s,`${rosterFor(s).find(op=>op.id===event.id).nickname}: ${SLEEP_ISSUE_TEXT[event.code]}`);return sleepAttention(s,event);});
+}
 function tick(s,hours,options={}){
   requireThat(Number.isInteger(hours)&&hours>=1&&hours<=240,'El avance debe ser de 1 a 240 horas.');
+  const sleepEvents=recordSleepEvents(s,prepareSleep(s,rosterFor(s),assignmentContext(s,options)));
   if(options.pauseOnAssignments){
     // A second explicit wait acknowledges the notice. The reported task markers
     // prevent an unchanged shortage from trapping the clock at the same hour.
     s.assignmentAttention.notice=null;
-    if(pauseForAssignments(s,hours,0))return;
+    if(pauseForAssignments(s,hours,0,sleepEvents))return;
   }
   for(let i=0;i<hours;i++){
-    const assignmentEvents=[];
+    const assignmentEvents=[],militiaWorked=[];
     s.hour++;for(const id of [...s.recruited]){const contract=s.contracts?.[id];if(contract?.expiresAt!==null&&contract?.expiresAt!==undefined&&contract.expiresAt<=s.hour){if(deployed(s,id)){contract.departurePending=true;continue;}const name=rosterFor(s).find(o=>o.id===id)?.name??'Un combatiente';removeFromService(s,id);note(s,`${name} concluye su contrato y deja el destacamento. Su hoja de servicio queda disponible.`);}}const heldHorses=s.horseState.horses.filter(h=>deployed(s,h.assignedTo));s.horseState=applyHorseAction(s.horseState,{type:'advance',hour:s.hour});for(const h of heldHorses){const index=s.horseState.horses.findIndex(v=>v.id===h.id);s.horseState.horses[index]={...s.horseState.horses[index],stamina:h.stamina,condition:Math.min(h.condition,s.horseState.horses[index].condition),assignedTo:h.assignedTo,returned:Boolean(h.returned)};}
     for(const course of [...(s.militiaTraining??[])]){
       if(s.sectors[course.sector].owner!=='patriot'){s.militiaTraining=s.militiaTraining.filter(t=>t!==course);assignmentEvents.push(militiaCancellationAttention(course));note(s,'La ocupación enemiga dispersa un curso de milicias.');continue;}
       if(militiaAssignmentIssue(s,course,{isSupplied}))continue;
+      const trainer=s.operativeState[course.trainerId];if(trainer){trainer.energy=Math.max(0,trainer.energy-3);trainer.fatigue=Math.min(100,trainer.fatigue+2);militiaWorked.push(course.trainerId);}
       course.remaining--;if(course.remaining<=0){if(course.rank>0)returnMilitiaTrainees(s,course,true);else s.sectors[course.sector].militia[0]+=course.count;s.militiaTraining=s.militiaTraining.filter(t=>t!==course);assignmentEvents.push(militiaCompletionAttention(course));note(s,`Tres milicianos completan su instrucción en ${sector(course.sector).name}.`);}
     }
     for(const convoy of [...(s.convoys??[])])if(convoyStatus(s,convoy).ready){
@@ -285,6 +291,7 @@ function tick(s,hours,options={}){
     if(!s.completed&&s.hour%168===0&&coastalRevenue(s)>=500)raid(s,'coast');
     if(!s.completed&&s.hour%144===0)raid(s,'interior');
     advanceEnemyGroups(s);settleEnemyEncounters(s,options);progress(s);
+    assignmentEvents.push(...recordSleepEvents(s,finishSleepHour(s,rosterFor(s),{...assignmentContext(s,options),working:militiaWorked})));
     // Finish every hourly subsystem before stopping an explicit wait. Travel
     // and tactical synchronization must process their complete durations.
     const assignmentPause=options.pauseOnAssignments&&pauseForAssignments(s,hours,i+1,assignmentEvents);
@@ -299,11 +306,12 @@ export function dispatchCampaign(previous,action){
   try{
     requireThat(action&&typeof action.type==='string','La orden no es válida.');
     requireThat(!s.defeated,'La campaña ha terminado. Inicia otra campaña para continuar.');
-    requireThat(!s.completed||['syncTacticalTime','wait','assignCare','assignWork','purchaseToolkits','purchaseMedicalSupplies','horseAction','travel','visitSector','leaveSector','talkNPC','createSquad','selectSquad','squad','equip','resupply','repairWeapon','purchaseEquipment','sellEquipment','supplyTransfer','transport','militia','cancelMilitia','renewContract','dismiss'].includes(action.type),'La campaña está ganada. Puedes recorrer las provincias y atender a tus escuadras y estancias.');
+    requireThat(!s.completed||['syncTacticalTime','wait','setSleep','assignCare','assignWork','purchaseToolkits','purchaseMedicalSupplies','horseAction','travel','visitSector','leaveSector','talkNPC','createSquad','selectSquad','squad','equip','resupply','repairWeapon','purchaseEquipment','sellEquipment','supplyTransfer','transport','militia','cancelMilitia','renewContract','dismiss'].includes(action.type),'La campaña está ganada. Puedes recorrer las provincias y atender a tus escuadras y estancias.');
     requireThat(!s.pendingEncounter||['respondToEncounter','selectSquad'].includes(action.type),'Hay un encuentro pendiente. Elegí cómo responder antes de continuar.');
     requireThat(!s.pendingBattle||['battleResult','leaveSector','talkNPC','finishMission','syncTacticalTime'].includes(action.type),'Hay una batalla pendiente. Resuélvela antes de dar nuevas órdenes.');
     if(['travel','attack','visitSector'].includes(action.type))requireThat(!s.squad.some(id=>militiaAssignment(s,id)),'Un instructor de la escuadra está asignado a las milicias. Cancelá su curso o dejalo en una escuadra de guarnición.');
     if(['travel','attack','visitSector'].includes(action.type))requireThat(s.squad.every(id=>s.operativeState[id].assignment==='active'),'Hay combatientes en atención o descanso. Devolvelos al servicio o dejalos en otra escuadra antes de marchar.');
+    if(['travel','attack','visitSector'].includes(action.type))requireThat(s.squad.every(id=>!s.operativeState[id].asleep),'Hay combatientes durmiendo. Despertalos o dejalos en otra escuadra antes de marchar.');
     switch(action.type){
       case 'syncTacticalTime':{requireThat(s.pendingBattle&&s.pendingBattle.id===action.battleId,'El reloj no corresponde al despliegue.');applyTacticalTime(s,s.pendingBattle,action.elapsedSeconds);delete s.pendingBattle.resumeSnapshot;break;}
       case 'respondToEncounter':{
@@ -315,6 +323,9 @@ export function dispatchCampaign(previous,action){
         }else {const request=prepareDefense(s,group);if(action.choice==='auto')resolveDefenseAutomatically(s,request);else note(s,`La defensa de ${sector(group.target).name} espera órdenes en el sector táctico.`);}break;
       }
       case 'wait':tick(s,action.hours??24,{pauseOnAssignments:true});break;
+      case 'setSleep':{
+        const op=rosterFor(s).find(o=>o.id===Number(action.operativeId));requireThat(op,'El combatiente no existe.');setSleep(s,op.id,action.asleep);note(s,`${op.name}: ${action.asleep?'se acuesta; conserva su asignación':'se despierta'}.`);break;
+      }
       case 'assignCare':{
         const op=rosterFor(s).find(o=>o.id===Number(action.operativeId));requireThat(op,'El combatiente no existe.');assignMedicalCare(s,op,action.assignment);note(s,`${op.name}: ${CARE_ASSIGNMENTS[action.assignment].toLowerCase()}.`);break;
       }
