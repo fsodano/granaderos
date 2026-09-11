@@ -278,3 +278,16 @@ The expanded **DIARIO DE COMBATE** contained only the location-fire message and 
 Reload and **Continuar campaña →** restored the exact journal text. Browser warnings and errors were empty. See [journal contract](tactical-journal.md) for coverage and remaining limits.
 
 The final isolated journal checkpoint passed **1012/1012 tests**, type checking, production build and whitespace validation. Build output again verified 278 files and 189 asset references. The live browser used the shared development checkout; the isolated checks establish that gameplay does not depend on its uncommitted art changes.
+
+
+## Named-target projectile checkpoint — 2026-09-11
+
+The QA browser imported controlled three-soldier saves through the existing Import command. These are test fixtures, not a claim that the initial campaign grants the supplied AP, skill or equipment.
+
+With Cabral at (1,3), Dorrego at (4,3), and the observed enemy at (7,3), four aim increments and F on **D8, Centinela oculto** showed **Torso · 0% de impacto · 36 PA · 64 PA restantes** and the warning **Un combatiente está en la trayectoria. Disparar puede herirlo y consume la carga.** Enter fired one ordinary named-target shot. Dorrego took 61 damage (84→23 HP; five bleeding points); the enemy remained at 100 HP. Cabral retained 64 AP, zero load and condition 99. Reload and Continue restored identical public unit records and a six-second clock.
+
+The second fixture moved Dorrego to (8,4), set the shooter's marksmanship to zero and used seed 3. An ordinary `fire` order at the named enemy, without added aim, missed the selected point and wounded Dorrego for 55 damage (84→29 HP; four bleeding points). Cabral had 88 AP, zero load and condition 99; the enemy remained at 100 HP. The visible journal recorded both the unintended injury and failure to hit the chosen point. Browser warning/error logs were empty.
+
+See [named-target projectile rules](directed-projectiles.md) for simulation coverage, explicit tuning and remaining limits.
+
+Final isolated validation passed **1027/1027 tests**, type checking, production build and whitespace checks. Static export verified 278 files and 189 asset references using the committed art baseline. The shared checkout browser checks above included its concurrent visual work; the isolated run confirms no dependency on those uncommitted assets.

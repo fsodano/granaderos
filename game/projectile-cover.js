@@ -2,7 +2,7 @@
 const resistance={wood:24,adobe:80,stone:120,hay:3};
 const furniture={table:{height:.8,material:'wood'},bench:{height:.45,material:'wood'},bed:{height:.55,material:'wood'},chest:{height:.8,material:'wood'},barrels:{height:1.2,material:'wood'},hay:{height:1.3,material:'hay'}};
 const heights={standing:{muzzle:1.4,head:1.6,torso:1.1,legs:.45},crouched:{muzzle:.9,head:1,torso:.7,legs:.3},prone:{muzzle:.25,head:.3,torso:.2,legs:.15},mounted:{muzzle:2,head:2.2,torso:1.8,legs:1.1}};
-const height=(unit,part)=>heights[unit.mounted?'mounted':unit.stance??'standing']?.[part]??heights.standing[part];
+const height=(unit,part)=>heights[unit.unconscious||unit.knockedDown?'prone':unit.mounted?'mounted':unit.stance??'standing']?.[part]??heights.standing[part];
 const cellKey=(x,y)=>`${x},${y}`;
 
 // Traverse every crossed cell, including the two cells touching a diagonal
@@ -72,25 +72,30 @@ export function projectilePath(state,attacker,target,weapon,hitLocation='torso',
   return {blocked:remaining===0,damageFactor:remaining/power,obstacles};
 }
 
-// A location shot has a fixed standing-torso destination height. It does not
-// bend toward the posture or identity of an unseen soldier. Living bodies in
+// A shot retains its original destination height. Living bodies in
 // crossed cells can intercept it, including allies and unconscious soldiers.
 // Cell-wide silhouettes and the lack of body penetration are game tuning.
-export function pointProjectileFlight(state,attacker,destination,weapon){
-  const target={...destination,stance:'standing',mounted:false},muzzle=height(attacker,'muzzle'),end=height(target,'torso');
+export function projectileFlight(state,attacker,target,weapon,hitLocation='torso'){
+  const muzzle=height(attacker,'muzzle'),end=height(target,hitLocation);
   for(const cell of projectileCells(attacker,target)){
     if(cell.entry===cell.exit)continue; // A corner touch can strike cover, not a cell-wide body.
-    const z=muzzle+(end-muzzle)*(cell.entry+cell.exit)/2;
+    const entryHeight=muzzle+(end-muzzle)*cell.entry,exitHeight=muzzle+(end-muzzle)*cell.exit;
     const victims=state.units.filter(unit=>unit.id!==attacker.id&&unit.hp>0&&!unit.departure&&!unit.fled&&unit.x===cell.x&&unit.y===cell.y).sort((a,b)=>String(a.id).localeCompare(String(b.id)));
     for(const victim of victims){
       const posture=victim.knockedDown||victim.unconscious?{...victim,stance:'prone',mounted:false}:victim;
-      if(z>height(posture,'head')+.15)continue;
-      const location=z>height(posture,'torso')+.2?'head':z<height(posture,'legs')+.15?'legs':'torso';
-      const path=projectilePath(state,attacker,target,weapon,'torso',{stopFraction:cell.entry});
+      const top=height(posture,'head')+.15;
+      if(Math.min(entryHeight,exitHeight)>top)continue;
+      const z=Math.min(entryHeight,top);
+      const location=victim.id===target.id?hitLocation:z>height(posture,'torso')+.2?'head':z<height(posture,'legs')+.15?'legs':'torso';
+      const path=projectilePath(state,attacker,target,weapon,hitLocation,{stopFraction:cell.entry});
       return {...path,victimId:path.blocked?null:victim.id,hitLocation:location};
     }
   }
-  return {...projectilePath(state,attacker,target,weapon),victimId:null,hitLocation:'torso'};
+  return {...projectilePath(state,attacker,target,weapon,hitLocation),victimId:null,hitLocation};
+}
+
+export function pointProjectileFlight(state,attacker,destination,weapon){
+  return projectileFlight(state,attacker,{x:destination.x,y:destination.y,stance:'standing',mounted:false},weapon);
 }
 
 export function validateCoverMetadata(value){

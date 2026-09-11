@@ -1,5 +1,5 @@
 import {recordMilitiaHit} from './militia-experience.js';
-import {projectilePath,pointProjectileFlight,concealmentAt,concealmentSightPenalty} from './projectile-cover.js';
+import {projectilePath,projectileFlight,pointProjectileFlight,concealmentAt,concealmentSightPenalty} from './projectile-cover.js';
 import {boundaryMatches} from './tactical-exits.js';
 import {HELD_SUPPLIES,heldSupply,clearEmptySupply} from './held-supplies.js';
 import {heldTool,environmentActionProfile,resolveEnvironmentInteraction,extractContainerItem} from './environment-interactions.js';
@@ -181,9 +181,17 @@ export function getReachable(s,unitOrId,options={}){
 function line(a,b){const points=[];let x=a.x,y=a.y;const dx=Math.abs(b.x-x),dy=Math.abs(b.y-y),sx=x<b.x?1:-1,sy=y<b.y?1:-1;let err=dx-dy;while(x!==b.x||y!==b.y){const e=2*err;if(e>-dy){err-=dy;x+=sx;}if(e<dx){err+=dx;y+=sy;}points.push({x,y});}return points;}
 export function hasLineOfSight(s,a,b){return !line(a,b).slice(0,-1).some(p=>(tile(s,p.x,p.y)?.blocksSight??(tile(s,p.x,p.y)?.type==='window'?false:tile(s,p.x,p.y)?.blocked)));}
 export function firearmProjectilePath(s,attacker,target,hitLocation='torso'){return projectilePath(s,attacker,target,weaponFor(attacker),hitLocation);}
+// Forecast only known bodies; actual flight below checks every body. Hypothetical
+// target positions used by AI exposure replace that actor's old position.
+export function firearmFlightPreview(s,attacker,target,hitLocation='torso'){
+  const units=s.units.filter(u=>u.id!==target.id&&(u.side===attacker.side||(attacker.side==='player'?teamCanSee(s,'player',u):canSee(s,attacker,u))));
+  if(target.id!==undefined)units.push(target);
+  return projectileFlight({...s,units},attacker,target,weaponFor(attacker),hitLocation);
+}
 export function shotChance(s,attacker,target,aim=0,hitLocation='torso'){
   const accuracy=shotAccuracy(s,attacker,target,aim,hitLocation);
-  return accuracy&&!firearmProjectilePath(s,attacker,target,hitLocation).blocked?accuracy:0;
+  const path=firearmFlightPreview(s,attacker,target,hitLocation);
+  return accuracy&&!path.blocked&&(!path.victimId||path.victimId===target.id)?accuracy:0;
 }
 // One geometry trace per body region serves all affordable aim increments.
 // This is a fresh read, not a cache that can outlive movement or a breached wall.
@@ -191,8 +199,8 @@ export function firearmShotOptions(s,attacker,target,maxAim=4){
   if(!hasFirearm(attacker)||!hasLineOfSight(s,attacker,target))return [];
   const options=[],limit=clamp(Number.isFinite(maxAim)?Math.floor(maxAim):0,0,4);
   for(const hitLocation of HIT_LOCATIONS){
-    const path=firearmProjectilePath(s,attacker,target,hitLocation);
-    for(let aim=0;aim<=limit;aim++)options.push({hitLocation,aim,chance:path.blocked?0:shotAccuracy(s,attacker,target,aim,hitLocation),damageFactor:path.damageFactor});
+    const path=firearmFlightPreview(s,attacker,target,hitLocation);
+    for(let aim=0;aim<=limit;aim++)options.push({hitLocation,aim,chance:path.blocked||path.victimId&&path.victimId!==target.id?0:shotAccuracy(s,attacker,target,aim,hitLocation),damageFactor:path.damageFactor});
   }
   return options;
 }
@@ -219,6 +227,24 @@ function firearmImpact(s,attacker,target,amount,hitLocation='torso'){
   if(path.blocked){if(observed)say(s,'La cobertura detiene el disparo.');return;}
   if(path.damageFactor<1&&observed)say(s,'El disparo atraviesa la cobertura y pierde fuerza.');
   damage(s,target,amount*path.damageFactor,attacker,true,hitLocation);
+}
+function scatteredShotDestination(s,u,target){
+  const radius=Math.min(4,Math.max(1,Math.ceil(dist(u,target)/8))),dx=Math.floor(random(s)*(radius*2+1))-radius,dy=Math.floor(random(s)*(radius*2+1))-radius;
+  return {x:target.x+(dx||dy?dx:1),y:target.y+dy,stance:target.unconscious||target.knockedDown?'prone':target.stance??'standing',mounted:!target.unconscious&&!target.knockedDown&&Boolean(target.mounted)};
+}
+function directedFireImpact(s,u,target,hitLocation,hit){
+  const w=weaponFor(u),end=hit?target:scatteredShotDestination(s,u,target);
+  // A failed accuracy roll must remain a miss of the selected soldier. The
+  // cell-wide approximation still checks every other body along that miss.
+  const flightState=hit?s:{...s,units:s.units.filter(v=>v.id!==target.id)};
+  const flight=projectileFlight(flightState,u,end,w,hitLocation),victim=s.units.find(v=>v.id===flight.victimId);
+  // Keep the established damage draw for aimed hits, including blocked ones.
+  const amount=hit||victim?w.damage*(.8+random(s)*.4):0;
+  if(flight.blocked){if(journalVisible(s,target))say(s,'La cobertura detiene el disparo.');return;}
+  if(victim){
+    if(flight.damageFactor<1&&journalVisible(s,victim))say(s,'El disparo atraviesa la cobertura y pierde fuerza.');
+    damage(s,victim,amount*flight.damageFactor,u,true,flight.hitLocation);
+  }
 }
 function checkEnd(s){
   const able=side=>s.units.some(u=>u.side===side&&fieldCapable(u));
@@ -339,9 +365,7 @@ function pointFireImpact(s,u,point,aim){
   }
   let end={x:point.x,y:point.y};
   if(random(s)*100>=accuracy){
-    const radius=Math.min(4,Math.max(1,Math.ceil(dist(u,point)/8))),dx=Math.floor(random(s)*(radius*2+1))-radius,dy=Math.floor(random(s)*(radius*2+1))-radius;
-    end={x:point.x+dx,y:point.y+dy};
-    if(!dx&&!dy)end.x+=1;
+    end=scatteredShotDestination(s,u,point);
   }
   const flight=pointProjectileFlight(s,u,end,w),victim=s.units.find(v=>v.id===flight.victimId);
   if(victim)impact(victim,w.damage*(.8+random(s)*.4)*flight.damageFactor,flight.hitLocation);
@@ -689,7 +713,7 @@ else if(a.type==='firePoint'){
     sayObserved(s,[u],`${u.name} dispara hacia ${a.x+1}, ${a.y+1}. El disparo puede alcanzar a cualquiera en su trayectoria.`);
   }
 }
-else if(a.type==='fire'){const hitLocation=a.hitLocation??'torso';if(!HIT_LOCATIONS.includes(hitLocation))return fail('Selecciona torso, cabeza o piernas.');if(!target||target.side===u.side||!targetable(target))return fail('Selecciona un enemigo activo.');if(!hasFirearm(u))return fail('Este soldado lleva un arma blanca: acércate para atacar.');if(!teamCanSee(s,u.side,target))return fail('Ningún compañero puede ver ese objetivo.');if(u.jammed)return fail('La cazoleta falló: vuelve a cebar el arma.');if(u.loaded<1)return fail('El arma está descargada.');if(!hasLineOfSight(s,u,target))return fail('No hay línea de tiro.');const aim=clamp(Math.floor(Number.isFinite(a.aim)?a.aim:0),0,4),w=weaponFor(u),chance=shotAccuracy(s,u,target,aim,hitLocation);if(!pay(actionCosts(s,u).fire+aim*actionCosts(s,u).aim))return fail('Faltan puntos de acción para disparar.');u.momentum=0;u.facing=directionTo(u,target);u.lastTargetId=target.id;u.lastShotPosition={x:u.x,y:u.y};const risk=ignitionRisk(s,u);if(random(s)*100<risk){u.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa. La carga se conserva; cebar cuesta ${actionCosts(s,u).reprime} PA.`);}else{u.loaded--;emitNoise(s,u,'fire');practice(u,'marksmanship',2);u.condition=Math.max(0,u.condition-1);s.smoke.push({x:u.x,y:u.y,radius:1,turns:3});if(w.id===1807){const length=dist(u,target),dx=(target.x-u.x)/length,dy=(target.y-u.y)/length;for(const victim of s.units.filter(v=>onField(v)&&v.id!==u.id)){const vx=victim.x-u.x,vy=victim.y-u.y,forward=vx*dx+vy*dy,across=Math.abs(vx*dy-vy*dx);if(forward<=0||forward>6||across>Math.max(.5,forward*.25)||!hasLineOfSight(s,u,victim))continue;victim.morale=Math.max(0,victim.morale-18);if(random(s)*100<Math.min(95,shotAccuracy(s,u,victim,aim,victim.id===target.id?hitLocation:'torso')+20))firearmImpact(s,u,victim,w.damage*(1-forward/12),victim.id===target.id?hitLocation:'torso');else if(victim.morale<15)rout(s,victim);}sayObserved(s,[u],`${u.name} descarga el trabuco: una nube de metralla barre tres casillas de ancho.`);}else if(random(s)*100<chance)firearmImpact(s,u,target,w.damage*(.8+random(s)*.4),hitLocation);else{target.morale=Math.max(0,target.morale-4);sayObserved(s,[u],`${u.name} dispara y falla (${chance}%).`);} }}
+else if(a.type==='fire'){const hitLocation=a.hitLocation??'torso';if(!HIT_LOCATIONS.includes(hitLocation))return fail('Selecciona torso, cabeza o piernas.');if(!target||target.side===u.side||!targetable(target))return fail('Selecciona un enemigo activo.');if(!hasFirearm(u))return fail('Este soldado lleva un arma blanca: acércate para atacar.');if(!teamCanSee(s,u.side,target))return fail('Ningún compañero puede ver ese objetivo.');if(u.jammed)return fail('La cazoleta falló: vuelve a cebar el arma.');if(u.loaded<1)return fail('El arma está descargada.');if(!hasLineOfSight(s,u,target))return fail('No hay línea de tiro.');const aim=clamp(Math.floor(Number.isFinite(a.aim)?a.aim:0),0,4),w=weaponFor(u),chance=shotAccuracy(s,u,target,aim,hitLocation);if(!pay(actionCosts(s,u).fire+aim*actionCosts(s,u).aim))return fail('Faltan puntos de acción para disparar.');u.momentum=0;u.facing=directionTo(u,target);u.lastTargetId=target.id;u.lastShotPosition={x:u.x,y:u.y};const risk=ignitionRisk(s,u);if(random(s)*100<risk){u.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa. La carga se conserva; cebar cuesta ${actionCosts(s,u).reprime} PA.`);}else{u.loaded--;emitNoise(s,u,'fire');practice(u,'marksmanship',2);u.condition=Math.max(0,u.condition-1);s.smoke.push({x:u.x,y:u.y,radius:1,turns:3});if(w.id===1807){const length=dist(u,target),dx=(target.x-u.x)/length,dy=(target.y-u.y)/length;for(const victim of s.units.filter(v=>onField(v)&&v.id!==u.id)){const vx=victim.x-u.x,vy=victim.y-u.y,forward=vx*dx+vy*dy,across=Math.abs(vx*dy-vy*dx);if(forward<=0||forward>6||across>Math.max(.5,forward*.25)||!hasLineOfSight(s,u,victim))continue;victim.morale=Math.max(0,victim.morale-18);if(random(s)*100<Math.min(95,shotAccuracy(s,u,victim,aim,victim.id===target.id?hitLocation:'torso')+20))firearmImpact(s,u,victim,w.damage*(1-forward/12),victim.id===target.id?hitLocation:'torso');else if(victim.morale<15)rout(s,victim);}sayObserved(s,[u],`${u.name} descarga el trabuco: una nube de metralla barre tres casillas de ancho.`);}else{const hit=random(s)*100<chance;directedFireImpact(s,u,target,hitLocation,hit);if(!hit){target.morale=Math.max(0,target.morale-4);sayObserved(s,[u],`${u.name} dispara sin acertar al punto elegido (${chance}%).`);}} }}
 else if(a.type==='reload'){if(!hasFirearm(u))return fail('Las armas blancas no necesitan recarga.');if(u.jammed)return fail('Primero debes volver a cebar el arma.');const cost=reloadCost(u,s);if(!cost)return fail('No falta carga o no quedan cartuchos.');if(!pay(cost))return fail('Faltan puntos de acción para recargar.');const n=Math.min(weaponFor(u).capacity-u.loaded,u.ammo);u.loaded+=n;u.ammo-=n;emitNoise(s,u,'reload');u.priming=Math.max(0,u.priming-n);u.momentum=0;sayObserved(s,[u],`${u.name} recarga (${cost} PA).`);}
 else if(a.type==='reprime'){if(!u.jammed)return fail('El arma no necesita cebado.');if(u.priming<1)return fail('El frasco de pólvora de cebar está vacío.');const cost=actionCosts(s,u).reprime;if(!pay(cost))return fail(`Cebar requiere ${cost} PA.`);u.priming--;practice(u,'mechanical');u.jammed=false;sayObserved(s,[u],`${u.name} vuelve a cebar la cazoleta.`);}
 else if(a.type==='melee'){

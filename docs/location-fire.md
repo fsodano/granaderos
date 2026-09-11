@@ -24,7 +24,7 @@ Point-fire damage and rout messages are omitted for an unseen enemy. Later bleed
 
 These are Granaderos adaptations, not claimed classic JA2 formulas: the 100-point AP scale, existing firearm accuracy/ignition rules, fixed 1.1-unit endpoint height, cell-wide body silhouettes, region thresholds, cover resistance and miss offsets. The miss radius is `min(4, max(1, ceil(distance / 8)))` cells, with a nonzero offset. The shot terminates at that destination or its first body/cover stop. It does not model travel beyond the endpoint, penetration through bodies, gravity, ricochet or muzzle velocity.
 
-This change does not add free aiming height, NPC civilian damage, destructible furniture or missed-shot collisions to ordinary identified-enemy fire. AI still chooses identified-target shots through its existing policy; speculative location-fire decisions are not added. These remain parts of the wider parity audit.
+This change does not add free aiming height, NPC civilian damage or destructible furniture. The subsequent [named-target shot change](directed-projectiles.md) adds missed-shot collisions to ordinary identified-enemy fire. AI still chooses identified-target shots through its existing policy; speculative location-fire decisions are not added. These remain parts of the wider parity audit.
 
 `firePoint` is also available through the existing tactical WebMCP tool, with `unitId`, integer `x`/`y` and optional `aim`. Omit `targetId` and body-region selection. The UI explicitly sends `hitLocation: 'torso'` for compatibility with its shared order wrapper. No persistent state fields or save migration are required.
 
