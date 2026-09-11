@@ -1,0 +1,778 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "friar-interact": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sha256": "1465e301c2c35ef24fb874265343faf73d413d6f2c418c73b17e1a3b0498bda5",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6903225806451613,
+          "sourceAnchor": [
+            37,
+            157
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            72,
+            157
+          ],
+          "bounds": [
+            120,
+            118,
+            168,
+            225
+          ],
+          "sha256": "75824beacd6ffacddfaab5480b96259cc4977e2b71230edc65008b27523b5c7c"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6903225806451613,
+          "sourceAnchor": [
+            36,
+            157
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            105,
+            157
+          ],
+          "bounds": [
+            121,
+            118,
+            192,
+            225
+          ],
+          "sha256": "db8d32e8a2647aa7d7056b111449dd2a990d6d2bd3598104522dcdbf83bde2a0"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6903225806451613,
+          "sourceAnchor": [
+            36,
+            157
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            82,
+            157
+          ],
+          "bounds": [
+            121,
+            118,
+            176,
+            225
+          ],
+          "sha256": "3d445a0abd7d9ed9a86ca65fa4f6b1b4bbf3c9a7e34948de40940c5ceb5dbf67"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6903225806451613,
+          "sourceAnchor": [
+            36,
+            157
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            71,
+            157
+          ],
+          "bounds": [
+            121,
+            118,
+            169,
+            225
+          ],
+          "sha256": "9a2c57fe4b255d140f95c2ca8c40bd88b14891cbcc7858bf5f2d2ae2b2e7cf51"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.675,
+          "sourceAnchor": [
+            38.5,
+            162
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            72,
+            162
+          ],
+          "bounds": [
+            119,
+            117,
+            166,
+            225
+          ],
+          "sha256": "aa6e8876156fa03509110adcc0255fa7c10801ec4295603062a110b7e2c95c88"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.675,
+          "sourceAnchor": [
+            39,
+            162
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            112,
+            162
+          ],
+          "bounds": [
+            119,
+            117,
+            193,
+            225
+          ],
+          "sha256": "449f55bc2a551153acd207ce7c42817cc036a6515c383aa80da882f1d002ec51"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.675,
+          "sourceAnchor": [
+            36,
+            162
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            98,
+            162
+          ],
+          "bounds": [
+            121,
+            117,
+            186,
+            225
+          ],
+          "sha256": "5b9bac10323c6ae933c3c71ea39d3b5218b2ac8f663e5d32954028bcdf42e5de"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.675,
+          "sourceAnchor": [
+            39,
+            162
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            72,
+            162
+          ],
+          "bounds": [
+            119,
+            117,
+            166,
+            225
+          ],
+          "sha256": "91687e8b21944d812316c2a626914630cdb476e52388b0fa0a72da101395f4b7"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6625766871165644,
+          "sourceAnchor": [
+            32,
+            165
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            62,
+            165
+          ],
+          "bounds": [
+            124,
+            117,
+            164,
+            225
+          ],
+          "sha256": "7bf27f6e0ef45da0c4ea534540a1723f93e65d8a09a5dabfec4dd3c153e568e8"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6625766871165644,
+          "sourceAnchor": [
+            32,
+            165
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            101,
+            165
+          ],
+          "bounds": [
+            124,
+            117,
+            190,
+            225
+          ],
+          "sha256": "3fedbe11d855f31311c15d93a217c3c4b35ca92a6b49c3381aba3dcd75a0d403"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6625766871165644,
+          "sourceAnchor": [
+            32,
+            165
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            89,
+            165
+          ],
+          "bounds": [
+            124,
+            117,
+            182,
+            225
+          ],
+          "sha256": "815b8cfdaef479506805b5bed8d9490f98f5d09932a943606566e4be552605d4"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6625766871165644,
+          "sourceAnchor": [
+            32,
+            165
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            62,
+            165
+          ],
+          "bounds": [
+            124,
+            117,
+            164,
+            225
+          ],
+          "sha256": "53dd014a9109e6788c9e4eb95dd743eb610d5b29a575ecf33bd4063c080e61da"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6545454545454545,
+          "sourceAnchor": [
+            39.5,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            75,
+            167
+          ],
+          "bounds": [
+            119,
+            117,
+            167,
+            225
+          ],
+          "sha256": "956c72c64316743a3396ccd823e0d718972f50d9447e4a40b6b124a89db8c3cb"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6545454545454545,
+          "sourceAnchor": [
+            37.5,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            105,
+            167
+          ],
+          "bounds": [
+            121,
+            117,
+            188,
+            225
+          ],
+          "sha256": "93b6eb4e1160c7b0df072b1a2ae9d0376e01108e57261cc6dff6d86d3ea873d3"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6545454545454545,
+          "sourceAnchor": [
+            37.5,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            73,
+            167
+          ],
+          "bounds": [
+            121,
+            117,
+            167,
+            225
+          ],
+          "sha256": "46feb5a466386005d9e670d2f43d900b7de4a120c792a65393f79def6e0bb317"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6545454545454545,
+          "sourceAnchor": [
+            40,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            76,
+            167
+          ],
+          "bounds": [
+            119,
+            117,
+            167,
+            225
+          ],
+          "sha256": "2c8dcda172e368efb8a3f0cfd873379ed7536b5eacc8d0eb7a6a7b2cf8a3cbc0"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6363636363636364,
+          "sourceAnchor": [
+            38.5,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            76,
+            167
+          ],
+          "bounds": [
+            121,
+            120,
+            168,
+            225
+          ],
+          "sha256": "cd25510991719ec63dcacd12e522350d84f0f69bade5faf8652a181bd9017e63"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6363636363636364,
+          "sourceAnchor": [
+            39,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            107,
+            167
+          ],
+          "bounds": [
+            120,
+            120,
+            187,
+            225
+          ],
+          "sha256": "75c83c86f00abfb82b320e8f37c124e079064419f5136ba3f2bc80d9545b62e6"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6363636363636364,
+          "sourceAnchor": [
+            38,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            74,
+            167
+          ],
+          "bounds": [
+            121,
+            120,
+            167,
+            225
+          ],
+          "sha256": "f8f64986f74793b55e6a0f2bf01530783a3dc0acd810ed487f54b48ea2f7c3b2"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6363636363636364,
+          "sourceAnchor": [
+            39,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            75,
+            167
+          ],
+          "bounds": [
+            120,
+            120,
+            166,
+            225
+          ],
+          "sha256": "fc87ba97ece1ea50412f42401472e20d3d36985f19bd008e22d35e00ece50e20"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6524390243902439,
+          "sourceAnchor": [
+            34,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            66,
+            167
+          ],
+          "bounds": [
+            123,
+            118,
+            165,
+            225
+          ],
+          "sha256": "b6cbcb3c8b4b0a23c92d0e37f9329aef6a69cde4df29ec2ef03b423e19e8c8b3"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6524390243902439,
+          "sourceAnchor": [
+            66.5,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            104,
+            167
+          ],
+          "bounds": [
+            102,
+            117,
+            169,
+            225
+          ],
+          "sha256": "7e78fcd16ca4a045302673d1eba0a5f95a8c349bf5a2ae66728f9abe64ac295a"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6524390243902439,
+          "sourceAnchor": [
+            42,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            75,
+            167
+          ],
+          "bounds": [
+            118,
+            118,
+            166,
+            225
+          ],
+          "sha256": "332fda185d3a6efeee0a83f26542cdfe180a5eb69a0294d2e38e8117c1b100f6"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6524390243902439,
+          "sourceAnchor": [
+            36,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            70,
+            167
+          ],
+          "bounds": [
+            122,
+            117,
+            166,
+            225
+          ],
+          "sha256": "9d828d135829e86d68a5a91021279a381b58078f3b2f8e09921ea9200955d0dc"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6503067484662577,
+          "sourceAnchor": [
+            36,
+            166
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            70,
+            165
+          ],
+          "bounds": [
+            122,
+            118,
+            166,
+            224
+          ],
+          "sha256": "0ec97d964b5245bf8122186328181055119ccaf877a79eab6bd19141d2833634"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6503067484662577,
+          "sourceAnchor": [
+            69.5,
+            166
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            103,
+            166
+          ],
+          "bounds": [
+            100,
+            118,
+            166,
+            225
+          ],
+          "sha256": "30e5fdf2c3f58a623c1a40b6afe694000f8343ccf1ff979d4926bfec7892056b"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6503067484662577,
+          "sourceAnchor": [
+            47.5,
+            166
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            82,
+            166
+          ],
+          "bounds": [
+            114,
+            118,
+            166,
+            225
+          ],
+          "sha256": "22cb4cf75600cf0b408bebb245c7d5318d18525fd19fafb5a0a5e58f222fcf30"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.6503067484662577,
+          "sourceAnchor": [
+            35.5,
+            166
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            69,
+            165
+          ],
+          "bounds": [
+            122,
+            118,
+            166,
+            224
+          ],
+          "sha256": "cb97a988d448f2c55aa63a8d621dfd4d7bcc198277364e1455e444721055102f"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.656441717791411,
+          "sourceAnchor": [
+            36.5,
+            165
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            71,
+            165
+          ],
+          "bounds": [
+            121,
+            118,
+            166,
+            225
+          ],
+          "sha256": "9b7f349a546d9c5b60e2593b210f4e735ef428cb9a13cb560d593d22cbf26f99"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.656441717791411,
+          "sourceAnchor": [
+            66,
+            165
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            104,
+            165
+          ],
+          "bounds": [
+            102,
+            118,
+            169,
+            225
+          ],
+          "sha256": "a26cdc331bda70e0bd779aacc7bd308229e57c6cf7de6d60f3ef89ac271f5110"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.656441717791411,
+          "sourceAnchor": [
+            50,
+            165
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            87,
+            165
+          ],
+          "bounds": [
+            112,
+            118,
+            168,
+            225
+          ],
+          "sha256": "1716776c825c9a0a7ee3b984f5065f6b57f3d3c36a0e142d625a190d7bf69241"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-interact-v1.png",
+          "sourceScale": 0.656441717791411,
+          "sourceAnchor": [
+            37.5,
+            165
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            74,
+            165
+          ],
+          "bounds": [
+            121,
+            118,
+            168,
+            225
+          ],
+          "sha256": "a59728e4c61a74f092dd54d7ab6185448f9a6397fb2b60218cd38d16ad564ef7"
+        }
+      ],
+      "file": "friar-interact.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "85a4c7a126aea8a4a7d667a3beef3997fb89fc9d97f4b3540607260dda8191a6"
+    }
+  }
+}

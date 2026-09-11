@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "gaucho-dead-idle": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/gaucho-collapse-north-v1.png",
+          "sha256": "617a2315d60aa71076041a854b715cfe2d7ad6b2634a54402f3d7cd5e1c71cfe",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/gaucho-collapse-south-v1.png",
+          "sha256": "87d04b6b4e580fc8b2c90ebeb34cc9384cc3cbf74aafbdb317c0b77b1ca827cd",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-collapse-north-v1.png",
+          "sourceScale": 0.4931506849315068,
+          "sourceAnchor": [
+            78.5,
+            222
+          ],
+          "sourceBounds": [
+            2,
+            115,
+            153,
+            220
+          ],
+          "bounds": [
+            106,
+            172,
+            180,
+            224
+          ],
+          "sha256": "2e79766c64e480616c1ab43b3701b11d2aa3bc131b2f8d9a50290938334b77b6"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-collapse-north-v1.png",
+          "sourceScale": 0.48868778280542985,
+          "sourceAnchor": [
+            67.5,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            125,
+            216,
+            225
+          ],
+          "bounds": [
+            112,
+            176,
+            217,
+            225
+          ],
+          "sha256": "53304f2bee81e3eb6a944a73051ce265a0016cd26bc924a4c765ec0d6e58f412"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-collapse-north-v1.png",
+          "sourceScale": 0.4759825327510917,
+          "sourceAnchor": [
+            89,
+            234
+          ],
+          "sourceBounds": [
+            2,
+            175,
+            249,
+            234
+          ],
+          "bounds": [
+            103,
+            197,
+            221,
+            225
+          ],
+          "sha256": "692787137afe56f601479d30278d689d051bebe3e2084342900ad166dfb30422"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-collapse-north-v1.png",
+          "sourceScale": 0.4713656387665198,
+          "sourceAnchor": [
+            153.5,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            130,
+            219,
+            229
+          ],
+          "bounds": [
+            73,
+            178,
+            175,
+            225
+          ],
+          "sha256": "1cc92d742d4bb0844b07200e39408cf27b6002795ea014539f8c8e39e5cf05f8"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-collapse-south-v1.png",
+          "sourceScale": 0.48868778280542985,
+          "sourceAnchor": [
+            69,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            109,
+            138,
+            223
+          ],
+          "bounds": [
+            111,
+            169,
+            177,
+            225
+          ],
+          "sha256": "996a122b4fbaa47af53beaf9247a48a82a43cfa9b64c462741d0c0f88baf7003"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-collapse-south-v1.png",
+          "sourceScale": 0.4759825327510917,
+          "sourceAnchor": [
+            34.5,
+            231
+          ],
+          "sourceBounds": [
+            2,
+            139,
+            216,
+            231
+          ],
+          "bounds": [
+            129,
+            181,
+            231,
+            225
+          ],
+          "sha256": "2ca3a2d0f155f513b8ab99441177cd4af62af1fd3e984afcef0e22241816ee5a"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-collapse-south-v1.png",
+          "sourceScale": 0.47391304347826085,
+          "sourceAnchor": [
+            108,
+            232
+          ],
+          "sourceBounds": [
+            2,
+            172,
+            241,
+            229
+          ],
+          "bounds": [
+            94,
+            197,
+            207,
+            224
+          ],
+          "sha256": "f521b934a8f564d3044a2d90c8f158152bc14033ed67137b08775e9f21d2edf8"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-collapse-south-v1.png",
+          "sourceScale": 0.4823008849557522,
+          "sourceAnchor": [
+            191,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            138,
+            213,
+            228
+          ],
+          "bounds": [
+            53,
+            181,
+            155,
+            224
+          ],
+          "sha256": "f1486ed35c6ec714e3a8ba90091470abbc621ab791bff432e26f8bb6f2d69d58"
+        }
+      ],
+      "file": "gaucho-dead-idle.png",
+      "size": [
+        2304,
+        288
+      ],
+      "sha256": "a3b538615f318ae9eeb4434f03e013faa8a6a8bcd5f5cfb190a87d5da369c68f",
+      "derivedFrom": {
+        "atlas": "gaucho-collapse",
+        "frame": 3,
+        "reason": "hold final collapse frame without breathing"
+      }
+    }
+  }
+}

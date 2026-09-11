@@ -117,3 +117,10 @@ All 332 tests pass in that worktree, with no skipped or failed tests.
 The browser report and battlefield previews were regenerated there. The PR
 contains only sprite art, runtime selection and timing, related tools, tests,
 and documentation. Other gameplay changes remain outside this PR.
+
+## Expanded family animations
+
+The subsequent 216-set base collection, current counts, and equipment limitations
+are documented in [sprite-families.md](sprite-families.md). The 328-atlas figures
+above describe the earlier delivery. Sources outside the registration manifests
+can be rejected candidates or references and do not establish coverage.

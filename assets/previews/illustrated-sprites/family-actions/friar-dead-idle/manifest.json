@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "friar-dead-idle": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/friar-collapse-north-v1.png",
+          "sha256": "13a041cdbe55a1ebdbf405f3dc7b00b8e33375b7aa5bdc2dabdd320e31c72b1b",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/friar-collapse-south-v1.png",
+          "sha256": "02f5e15f7ed3b3a379788d86c91ad58ff06135466533b0183f3d729e2e33e928",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-collapse-north-v1.png",
+          "sourceScale": 0.49767441860465117,
+          "sourceAnchor": [
+            75.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            110,
+            150,
+            219
+          ],
+          "bounds": [
+            107,
+            170,
+            181,
+            224
+          ],
+          "sha256": "a8034179494141144c31b07405732276c13723e6023c33237e7138b25168306e"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-collapse-north-v1.png",
+          "sourceScale": 0.4909090909090909,
+          "sourceAnchor": [
+            71.5,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            124,
+            216,
+            225
+          ],
+          "bounds": [
+            110,
+            175,
+            215,
+            225
+          ],
+          "sha256": "59a200375f5a37acacf7ad0e7dfd65b95bc6986cfcca34bdee90c4998c56a727"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-collapse-north-v1.png",
+          "sourceScale": 0.47161572052401746,
+          "sourceAnchor": [
+            120.5,
+            237
+          ],
+          "sourceBounds": [
+            2,
+            171,
+            251,
+            237
+          ],
+          "bounds": [
+            88,
+            194,
+            205,
+            225
+          ],
+          "sha256": "e20d028f997dfba5950270a29e6e63e2b65d0e7c19deac36fbe02d7797168751"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-collapse-north-v1.png",
+          "sourceScale": 0.4675324675324675,
+          "sourceAnchor": [
+            159.5,
+            234
+          ],
+          "sourceBounds": [
+            2,
+            146,
+            234,
+            234
+          ],
+          "bounds": [
+            70,
+            184,
+            178,
+            225
+          ],
+          "sha256": "9681c80472c9cec7c60023d867d175b2ff6135659e4533d41d1c727a66ae4680"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-collapse-south-v1.png",
+          "sourceScale": 0.5121951219512195,
+          "sourceAnchor": [
+            63,
+            207
+          ],
+          "sourceBounds": [
+            2,
+            96,
+            128,
+            207
+          ],
+          "bounds": [
+            113,
+            168,
+            178,
+            225
+          ],
+          "sha256": "5391b82654ffe787358018cda09fa0f5c5a0894b34f1ff9c1129b896bd82090d"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-collapse-south-v1.png",
+          "sourceScale": 0.5023474178403756,
+          "sourceAnchor": [
+            43.5,
+            219
+          ],
+          "sourceBounds": [
+            2,
+            129,
+            215,
+            218
+          ],
+          "bounds": [
+            123,
+            180,
+            230,
+            225
+          ],
+          "sha256": "99e0bde489e4cb6308b2e637c9ea0ae35918d2f843b86e08c5f041eddc0795dd"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-collapse-south-v1.png",
+          "sourceScale": 0.4669603524229075,
+          "sourceAnchor": [
+            122.5,
+            231
+          ],
+          "sourceBounds": [
+            2,
+            175,
+            241,
+            230
+          ],
+          "bounds": [
+            88,
+            199,
+            200,
+            225
+          ],
+          "sha256": "bc6a6697b7233361e65a930577c2ad726ad97a707d458ec049e13b170688bd23"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-collapse-south-v1.png",
+          "sourceScale": 0.4863636363636364,
+          "sourceAnchor": [
+            141,
+            222
+          ],
+          "sourceBounds": [
+            2,
+            123,
+            205,
+            218
+          ],
+          "bounds": [
+            76,
+            177,
+            175,
+            223
+          ],
+          "sha256": "b61970d90f57583f220603497284b0ba0e1f1a3bd68610fa3a58c40037a45da1"
+        }
+      ],
+      "file": "friar-dead-idle.png",
+      "size": [
+        2304,
+        288
+      ],
+      "sha256": "8ff2d6f0de9837e025dd9db617aaad19e7d91a0dc630347818b45f2313ad060c",
+      "derivedFrom": {
+        "atlas": "friar-collapse",
+        "frame": 3,
+        "reason": "hold final collapse frame without breathing"
+      }
+    }
+  }
+}

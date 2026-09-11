@@ -1,0 +1,1 @@
+Correct ONLY top row columns 2 and 3. The crouched soldier must remain facing straight AWAY from viewer just like columns1 and4, with symmetrical back and backpack visible. Arms reach forward away from camera, mostly hidden by torso, no turn to right. Keep other rows unchanged. Preserve 4x4 square grid, pixel illustration and empty magenta gutters.

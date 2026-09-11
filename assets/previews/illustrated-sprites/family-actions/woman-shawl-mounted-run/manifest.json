@@ -1,0 +1,778 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-shawl-mounted-run": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 7,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sha256": "2a6b3232a585008de335c437992438e16da5c16c61d71bbc856a23544393dcb9",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.2043795620437956,
+          "sourceAnchor": [
+            31.5,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            61,
+            139
+          ],
+          "bounds": [
+            108,
+            60,
+            179,
+            225
+          ],
+          "sha256": "0c403c698dccf0daa0a445bd9c162efedb21ff9af146bad3c4a01c284cabd727"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.2043795620437956,
+          "sourceAnchor": [
+            31,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            60,
+            136
+          ],
+          "bounds": [
+            109,
+            60,
+            179,
+            221
+          ],
+          "sha256": "746995c7be8b962063beb8f301d68a76016fddad5b16d63868de05b9725d4ad5"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.2043795620437956,
+          "sourceAnchor": [
+            32,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            62,
+            138
+          ],
+          "bounds": [
+            108,
+            60,
+            180,
+            224
+          ],
+          "sha256": "0cfa5d3074fe5b0b5c1efc1200081b10c2a9356b244d4a0848626b0f260f3a61"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.2043795620437956,
+          "sourceAnchor": [
+            31,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            60,
+            138
+          ],
+          "bounds": [
+            109,
+            60,
+            179,
+            224
+          ],
+          "sha256": "17aa21b182e231704307bd37f9175059b10c8f4939aacd9e8c68ef7a54db3d6c"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.213235294117647,
+          "sourceAnchor": [
+            63.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            125,
+            135
+          ],
+          "bounds": [
+            69,
+            60,
+            218,
+            221
+          ],
+          "sha256": "6bc9ea0e7307038c1b69b127155b7d72ec5b12fd5b334b8e2579f66c167dd17e"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.213235294117647,
+          "sourceAnchor": [
+            58,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            114,
+            134
+          ],
+          "bounds": [
+            76,
+            60,
+            212,
+            220
+          ],
+          "sha256": "425e182f5ce71c1eef6661864d433c2d267cd2fa0625954837a576a3fe1b124e"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.213235294117647,
+          "sourceAnchor": [
+            67,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            132,
+            138
+          ],
+          "bounds": [
+            65,
+            60,
+            223,
+            225
+          ],
+          "sha256": "cb886ff40d68e58b6b1ef2a4badd0662ab3c7baea56a0aae77893c46b1e4d984"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.213235294117647,
+          "sourceAnchor": [
+            55.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            109,
+            136
+          ],
+          "bounds": [
+            79,
+            60,
+            209,
+            223
+          ],
+          "sha256": "94d6ebf13defa6bd84d3720bf34a17ec69984fd30f37b2a59d311969e225788b"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.2424242424242424,
+          "sourceAnchor": [
+            79.5,
+            134
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            157,
+            133
+          ],
+          "bounds": [
+            48,
+            61,
+            241,
+            224
+          ],
+          "sha256": "dd5f3d61968dfd7ce6896e202bd86443a939fac67fee9b791b56515b6f2065c0"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.2424242424242424,
+          "sourceAnchor": [
+            81,
+            134
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            160,
+            128
+          ],
+          "bounds": [
+            46,
+            61,
+            242,
+            218
+          ],
+          "sha256": "ee2e7a2add263add17c9aff1f2dac7ae1657661ec47de4a9c2af223c1f5da641"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.2424242424242424,
+          "sourceAnchor": [
+            85.5,
+            134
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            169,
+            134
+          ],
+          "bounds": [
+            40,
+            61,
+            247,
+            225
+          ],
+          "sha256": "656dc2e118602ebb0c8fde08fc00e0321a123e357b7cb5dfe35cf43ee0c3c4b0"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.2424242424242424,
+          "sourceAnchor": [
+            79,
+            134
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            156,
+            132
+          ],
+          "bounds": [
+            48,
+            61,
+            239,
+            223
+          ],
+          "sha256": "06d80fd0b3a4a0e0294d82a5adc177d93a29709d0228ed2ad63bd5ad25652f09"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.2014388489208634,
+          "sourceAnchor": [
+            67,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            132,
+            139
+          ],
+          "bounds": [
+            66,
+            58,
+            222,
+            223
+          ],
+          "sha256": "16e6ced1835f74a20ddaee639bbba949b8f986d86ba0749a419b708b9aec1644"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.2014388489208634,
+          "sourceAnchor": [
+            68.5,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            135,
+            141
+          ],
+          "bounds": [
+            64,
+            58,
+            224,
+            225
+          ],
+          "sha256": "b11f1c08747328486ce835b825bf2ae5cd846a1130989e1f171e7e35314a66af"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.2014388489208634,
+          "sourceAnchor": [
+            73.5,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            145,
+            141
+          ],
+          "bounds": [
+            58,
+            58,
+            230,
+            225
+          ],
+          "sha256": "cf4943c82f67fee7e0befc388e7a1aa2d803d7373a4bfcb66fa0f3ddd282ee73"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.2014388489208634,
+          "sourceAnchor": [
+            70,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            138,
+            140
+          ],
+          "bounds": [
+            62,
+            59,
+            225,
+            224
+          ],
+          "sha256": "875ef52f16ee2cda00ae52db0f9464d70916cfb0de71a02f72004fde21e48b24"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.1527777777777777,
+          "sourceAnchor": [
+            35.5,
+            146
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            69,
+            146
+          ],
+          "bounds": [
+            105,
+            59,
+            182,
+            225
+          ],
+          "sha256": "5aa8250be412a708c25b87b4ca5d6e17db796b503543dae65369ce85bd8b0a79"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.1527777777777777,
+          "sourceAnchor": [
+            35.5,
+            146
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            69,
+            138
+          ],
+          "bounds": [
+            105,
+            59,
+            182,
+            216
+          ],
+          "sha256": "7d8fcf7c35e2248dab5b5c28102023ac21181201c29ce70d952ab5c6ad36ece8"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.1527777777777777,
+          "sourceAnchor": [
+            35,
+            146
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            68,
+            141
+          ],
+          "bounds": [
+            106,
+            59,
+            182,
+            219
+          ],
+          "sha256": "719d0b61b6e56914fb82593224e18355e903a2ab3cb28da921d35225cede3b90"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.1527777777777777,
+          "sourceAnchor": [
+            34,
+            146
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            66,
+            141
+          ],
+          "bounds": [
+            107,
+            60,
+            181,
+            219
+          ],
+          "sha256": "b6454d239700471c4135a61d72fbaca9ee9387051df07bf81092267ef089494d"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.2028985507246377,
+          "sourceAnchor": [
+            68,
+            140
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            134,
+            138
+          ],
+          "bounds": [
+            65,
+            59,
+            224,
+            223
+          ],
+          "sha256": "155672a71475ac1701de4c02b52f5dbbd5872363f07d037b80c65386b4ef4f6a"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.2028985507246377,
+          "sourceAnchor": [
+            72,
+            140
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            136
+          ],
+          "bounds": [
+            60,
+            59,
+            228,
+            220
+          ],
+          "sha256": "293ed11acb16cb5be400881fd7b85b7256f3c085c091e04096345785004c548c"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.2028985507246377,
+          "sourceAnchor": [
+            82,
+            140
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            162,
+            135
+          ],
+          "bounds": [
+            48,
+            59,
+            240,
+            219
+          ],
+          "sha256": "94394f9baa119f96c2e32050189deaccc4b6e2972ce497ee319b73fddded8ee8"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.2028985507246377,
+          "sourceAnchor": [
+            70,
+            140
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            138,
+            140
+          ],
+          "bounds": [
+            62,
+            59,
+            226,
+            225
+          ],
+          "sha256": "d0afeb703c4acbd2e2841eaded6c70fa7368004e70e1a0316ed693417d13bc3f"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.2148148148148148,
+          "sourceAnchor": [
+            79,
+            137
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            156,
+            137
+          ],
+          "bounds": [
+            50,
+            62,
+            237,
+            225
+          ],
+          "sha256": "378ec532b7891ddc8b51826ea9d3d8881942b23c2758179b38446440cf0ee3be"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.2148148148148148,
+          "sourceAnchor": [
+            79.5,
+            137
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            157,
+            133
+          ],
+          "bounds": [
+            50,
+            61,
+            238,
+            220
+          ],
+          "sha256": "b9992900fd2cfbd8eec8ab3ce227e430ba5c41d1a4e269e361e9897b63a4d1b2"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.2148148148148148,
+          "sourceAnchor": [
+            83,
+            137
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            164,
+            136
+          ],
+          "bounds": [
+            46,
+            61,
+            243,
+            224
+          ],
+          "sha256": "b221a40860800ce3a90184b4f3e27f7ec278f58d560d3e7cf6dfa5766d743be9"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.2148148148148148,
+          "sourceAnchor": [
+            77,
+            137
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            152,
+            137
+          ],
+          "bounds": [
+            53,
+            61,
+            235,
+            225
+          ],
+          "sha256": "ea6f8cc036edb2f89d5aa573a9a368a924dd0929d900466c023cd7b13a39490b"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.1702127659574468,
+          "sourceAnchor": [
+            67.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            140
+          ],
+          "bounds": [
+            67,
+            60,
+            220,
+            221
+          ],
+          "sha256": "eb9439ce4ef51a291bf34f1d6a6e143c93d327520f7bd0e6baec06ea3f730a4d"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.1702127659574468,
+          "sourceAnchor": [
+            68,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            134,
+            143
+          ],
+          "bounds": [
+            67,
+            60,
+            221,
+            225
+          ],
+          "sha256": "c2e527ad20d5b4387545322c2218961570f112d6b9e24dbbffe2b481a8aca0cb"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.1702127659574468,
+          "sourceAnchor": [
+            72,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            136
+          ],
+          "bounds": [
+            62,
+            60,
+            226,
+            217
+          ],
+          "sha256": "ec48e76f287294431d5a02e00be2f1587b450789ae1bedbc80a1ada412f45fa9"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-run-v1.png",
+          "sourceScale": 1.1702127659574468,
+          "sourceAnchor": [
+            64.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            127,
+            139
+          ],
+          "bounds": [
+            71,
+            60,
+            217,
+            220
+          ],
+          "sha256": "cc4b9f13b6712cd546f3fdacf65fbf22e662cbb1af32254337ca628881a2ba84"
+        }
+      ],
+      "file": "woman-shawl-mounted-run.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "15442a15b565923c35fabcb5001529592f530b16a8e33410d54d71d65b136ad5"
+    }
+  }
+}

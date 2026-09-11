@@ -22,11 +22,35 @@ const rows = [
  ['woman-headscarf','woman','sturdy','dark','black','covered','linen-wrap','indigo-shawl','Woman field medic; cream linen headwrap, indigo shawl and practical long skirt'],
  ['woman-elder','woman','regular','copper','gray','braid','none','charcoal-shawl','Older woman practitioner; gray-streaked braid, charcoal shawl, plain long skirt'],
 ];
-export const SPRITE_APPEARANCES = Object.freeze(Object.fromEntries(rows.map(([id,gender,body,skin,hairColor,hair,headwear,clothing,description])=>[id,Object.freeze({id,gender,body,skin,hairColor,hair,headwear,clothing,description})])));
+const ORIGINAL_SPRITE_APPEARANCES = Object.freeze(Object.fromEntries(rows.map(([id,gender,body,skin,hairColor,hair,headwear,clothing,description])=>[id,Object.freeze({id,gender,body,skin,hairColor,hair,headwear,clothing,description})])));
+
+// Seven authoring families. Military keeps both existing faction variants.
+export const SPRITE_FAMILIES = Object.freeze({
+ military:Object.freeze({label:'Military',base:'granadero',variants:Object.freeze(['granadero','royalist'])}),
+ worker:Object.freeze({label:'Worker',base:'worker',variants:Object.freeze(['worker'])}),
+ 'civilian-man':Object.freeze({label:'Civilian man',base:'surgeon',variants:Object.freeze(['surgeon'])}),
+ 'poncho-wearer':Object.freeze({label:'Poncho wearer',base:'gaucho',variants:Object.freeze(['gaucho'])}),
+ friar:Object.freeze({label:'Friar',base:'friar',variants:Object.freeze(['friar'])}),
+ 'woman-combatant':Object.freeze({label:'Woman combatant',base:'woman-scout',variants:Object.freeze(['woman-scout'])}),
+ 'civilian-woman':Object.freeze({label:'Civilian woman',base:'woman-shawl',variants:Object.freeze(['woman-shawl'])}),
+});
+export const SPRITE_APPEARANCE_ALIASES = Object.freeze({
+ militia:'granadero','blue-officer':'granadero','scarlet-officer':'granadero',rifleman:'granadero',naval:'worker',artisan:'worker',
+ civilian:'surgeon',scout:'gaucho','woman-officer':'woman-scout',
+ 'woman-headscarf':'woman-shawl','woman-elder':'woman-shawl',
+});
+export const SPRITE_APPEARANCES = Object.freeze(Object.fromEntries(
+ Object.values(SPRITE_FAMILIES).flatMap(family=>family.variants.map(id=>[id,ORIGINAL_SPRITE_APPEARANCES[id]]))
+));
+export function canonicalSpriteAppearance(id){
+ const canonical=Object.hasOwn(SPRITE_APPEARANCE_ALIASES,id)?SPRITE_APPEARANCE_ALIASES[id]:id;
+ return Object.hasOwn(SPRITE_APPEARANCES,canonical)?canonical:undefined;
+}
+const canonicalMappings=entries=>Object.freeze(Object.fromEntries(Object.entries(entries).map(([id,appearance])=>[id,canonicalSpriteAppearance(appearance)])));
 
 // The portrait roster was visually reviewed. A named character selects a
 // reusable combination; no unique animation or atlas is required for that ID.
-export const ROSTER_SPRITE_APPEARANCES = Object.freeze({
+export const ROSTER_SPRITE_APPEARANCES = canonicalMappings({
  0:'scout',1:'woman-officer',2:'friar',3:'militia',4:'blue-officer',
  5:'blue-officer',6:'naval',7:'militia',8:'woman-shawl',9:'gaucho',
  10:'naval',11:'blue-officer',57:'blue-officer',
@@ -42,7 +66,7 @@ export const ROSTER_SPRITE_APPEARANCES = Object.freeze({
  145:'gaucho',146:'surgeon',147:'scout',
 });
 
-export const CUSTOM_SPRITE_APPEARANCES = Object.freeze({
+export const CUSTOM_SPRITE_APPEARANCES = canonicalMappings({
  'avatar-woman-scout':'woman-scout',
  'avatar-woman-civilian':'woman-shawl',
  'avatar-man-gaucho':'gaucho',
@@ -53,8 +77,11 @@ export const CUSTOM_SPRITE_APPEARANCES = Object.freeze({
 export function spriteAppearance(unit, kind='soldier') {
  // An explicit saved appearance is stable across roster changes and can also
  // be used by authored NPCs. Ignore unknown values in older or edited saves.
- if(Object.hasOwn(SPRITE_APPEARANCES,unit.spriteAppearance))return unit.spriteAppearance;
- if(kind==='civilian')return 'civilian';
+ // Enemy military always retains its distinct faction uniform.
+ if(unit.side==='enemy'&&kind!=='civilian')return 'royalist';
+ const explicit=canonicalSpriteAppearance(unit.spriteAppearance);
+ if(explicit)return explicit;
+ if(kind==='civilian')return 'surgeon';
  if(unit.side==='enemy')return 'royalist';
  if(Number(unit.id)===1000)return CUSTOM_SPRITE_APPEARANCES[unit.portraitId]??'granadero';
  return ROSTER_SPRITE_APPEARANCES[unit.id]??'granadero';

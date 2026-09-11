@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "worker-prone-aim-idle": {
+      "cell": 288,
+      "anchor": [
+        144,
+        165
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/worker-prone-armed-fire-north-v1.png",
+          "sha256": "8c33d53be02e42c8bdfc1c64a20d40ed7418ef301a4bf52984efeea597ad2f1f",
+          "scale": 0.9186602870813397
+        },
+        {
+          "file": "assets/source/illustrated-sprites/worker-prone-armed-fire-south-v1.png",
+          "sha256": "1748d3f567a29beb781fe7a5c3620a5ac2cb23f88ef7c6a80cd7938ea470f83d",
+          "scale": 0.9186602870813397
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.687735,
+          "sourceAnchor": [
+            28.446,
+            101.174
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            66,
+            162
+          ],
+          "bounds": [
+            126,
+            97,
+            170,
+            207
+          ],
+          "sha256": "9aa43cec182bc9f97a6222290d519aad3a35cf582743985266b072d689439fa2"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.654838,
+          "sourceAnchor": [
+            68.309,
+            52.346
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            169,
+            110
+          ],
+          "bounds": [
+            101,
+            132,
+            210,
+            203
+          ],
+          "sha256": "6346b7cecfa71852d3269b615d3d7b16b415eb9ad670f9d5a68f5e2136bc31a0"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.672635,
+          "sourceAnchor": [
+            64.13,
+            46.056
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            185,
+            65
+          ],
+          "bounds": [
+            102,
+            135,
+            225,
+            177
+          ],
+          "sha256": "cecb9d085d20eac780c46e9130e81041dc18e1153d976ceda31a0841003cf4f1"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.828357,
+          "sourceAnchor": [
+            51.82,
+            27.38
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            143,
+            72
+          ],
+          "bounds": [
+            103,
+            144,
+            220,
+            202
+          ],
+          "sha256": "c692cd582bc1f28c6e103cbca6212645c5e69a69326bd9dcc308e868a5a421eb"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.530796,
+          "sourceAnchor": [
+            46.78,
+            36.829
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            82,
+            138
+          ],
+          "bounds": [
+            120,
+            147,
+            162,
+            219
+          ],
+          "sha256": "0d06a56df048f396a07e74cde33bfc34751bf040516bf4467eb0afa0cb125f84"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.527859,
+          "sourceAnchor": [
+            91.189,
+            25.784
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            167,
+            69
+          ],
+          "bounds": [
+            97,
+            152,
+            184,
+            187
+          ],
+          "sha256": "beadec1b5632e3b3fa9f0c01345f7d3b665c59ee683c0b5c317c7ab3205d1d66"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.607514,
+          "sourceAnchor": [
+            128.405,
+            60.245
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            204,
+            77
+          ],
+          "bounds": [
+            67,
+            130,
+            190,
+            176
+          ],
+          "sha256": "2fb35e517fa0110e8cd5fb311a3d6e219c71d5dc7cde3bb432ac30de7f0d5de0"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/worker-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.589093,
+          "sourceAnchor": [
+            109.565,
+            74.641
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            185,
+            121
+          ],
+          "bounds": [
+            81,
+            122,
+            189,
+            192
+          ],
+          "sha256": "5ef2a2f9235050a0f2adc6a0eb30a6bbceb808cec4393dbefaa4e7952efe98e7"
+        }
+      ],
+      "file": "worker-prone-aim-idle.png",
+      "size": [
+        2304,
+        288
+      ],
+      "sha256": "33d964eb5201007f58df836210bd640a1a77ec96834447849e2018441b03b105",
+      "derivedFrom": {
+        "atlas": "worker-prone-armed-fire",
+        "frame": 0,
+        "reason": "hold authored pre-shot aim"
+      }
+    }
+  }
+}

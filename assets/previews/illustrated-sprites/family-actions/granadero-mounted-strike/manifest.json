@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "granadero-mounted-strike": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-north-v3.png",
+          "sha256": "3f5d5c48af95cec8cd30e4bf34c53986ecb0fff2798c5bd46343c97022f6331c",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-south-v2.png",
+          "sha256": "9b2c4ed9f4e8671fa3eb8f9ba62d35518f02638264494d68391d8e18212c5217",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-north-v3.png",
+          "sourceScale": 0.6521739130434783,
+          "sourceAnchor": [
+            54,
+            255
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            107,
+            255
+          ],
+          "bounds": [
+            110,
+            60,
+            178,
+            225
+          ],
+          "sha256": "e8a9183b4aefb3d7beb26a0c092c041680546d48e8e71b2003e6524e4eea4513"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-north-v3.png",
+          "sourceScale": 0.6521739130434783,
+          "sourceAnchor": [
+            53.5,
+            255
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            108,
+            255
+          ],
+          "bounds": [
+            110,
+            61,
+            179,
+            225
+          ],
+          "sha256": "bf56dd4a5ea41ec804edf4a4ae7baff52dc25ec05f7261b109b4b64366ef980a"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-north-v3.png",
+          "sourceScale": 0.6521739130434783,
+          "sourceAnchor": [
+            53.5,
+            255
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            129,
+            255
+          ],
+          "bounds": [
+            110,
+            60,
+            193,
+            225
+          ],
+          "sha256": "b74e6776f642fd7c65a5b98ab17fab274fd7fc1e5707c098eda40839f7d8c1f1"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-north-v3.png",
+          "sourceScale": 0.6521739130434783,
+          "sourceAnchor": [
+            53,
+            255
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            107,
+            255
+          ],
+          "bounds": [
+            111,
+            60,
+            179,
+            225
+          ],
+          "sha256": "18a07861400574a1a45f05ffa43c4bf5900ea7830522bfd1f9cf0175f878cb71"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-north-v3.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            78,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            191,
+            235
+          ],
+          "bounds": [
+            90,
+            60,
+            224,
+            225
+          ],
+          "sha256": "bd7476b562e3659ed2d43dede0d1254d922828c4110d9bfaa497815c18e139e3"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-north-v3.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            78,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            191,
+            235
+          ],
+          "bounds": [
+            90,
+            60,
+            224,
+            225
+          ],
+          "sha256": "1e81e33509cf673926b550274f5e6aa472fdcc546871a71349ed7f1bbe4df594"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-north-v3.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            78.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            192,
+            235
+          ],
+          "bounds": [
+            90,
+            60,
+            225,
+            225
+          ],
+          "sha256": "37ed842d72e049a34413cb99881a2d25fafd0f971c2b63f2ffbc534e71127657"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-north-v3.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            77.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            191,
+            235
+          ],
+          "bounds": [
+            91,
+            60,
+            225,
+            225
+          ],
+          "sha256": "0793e1192bfed62d05ea3de5203854e6d5e434e2a8086568b9d329eeb95e6e75"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-north-v3.png",
+          "sourceScale": 0.7454545454545455,
+          "sourceAnchor": [
+            86.5,
+            222
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            205,
+            222
+          ],
+          "bounds": [
+            81,
+            61,
+            232,
+            225
+          ],
+          "sha256": "81d342b9d331ace75b843d36111f5c3c8a0b94244c14c04b6b8b46d9ba0846fa"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-north-v3.png",
+          "sourceScale": 0.7454545454545455,
+          "sourceAnchor": [
+            86.5,
+            222
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            204,
+            222
+          ],
+          "bounds": [
+            81,
+            61,
+            232,
+            225
+          ],
+          "sha256": "95b5e0cad2158d73db5f7559e791185edc5e5d9b3b1cb4bdc36dd638b1da0a21"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-north-v3.png",
+          "sourceScale": 0.7454545454545455,
+          "sourceAnchor": [
+            87.5,
+            222
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            205,
+            222
+          ],
+          "bounds": [
+            80,
+            61,
+            231,
+            225
+          ],
+          "sha256": "3b5c1e97485f767816ac5a962d8a500fe92eac9f741c2e498b6327722d109a3f"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-north-v3.png",
+          "sourceScale": 0.7454545454545455,
+          "sourceAnchor": [
+            87,
+            222
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            206,
+            222
+          ],
+          "bounds": [
+            81,
+            61,
+            233,
+            225
+          ],
+          "sha256": "33388d6a0f746ba5df50ac8054a1cbaee5e7d9700d707ef77cfc5a96804c8bfc"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-north-v3.png",
+          "sourceScale": 0.7292576419213974,
+          "sourceAnchor": [
+            73,
+            232
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            169,
+            231
+          ],
+          "bounds": [
+            92,
+            57,
+            214,
+            224
+          ],
+          "sha256": "fb5aa461bdf29eca5b72b5cfce6c9d4112e620d95cf614544496e63262f75e09"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-north-v3.png",
+          "sourceScale": 0.7292576419213974,
+          "sourceAnchor": [
+            71.5,
+            232
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            171,
+            231
+          ],
+          "bounds": [
+            93,
+            57,
+            216,
+            224
+          ],
+          "sha256": "08c153278608000a447b3144703e06666be2f069b363de86d7182fb02cbed693"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-north-v3.png",
+          "sourceScale": 0.7292576419213974,
+          "sourceAnchor": [
+            73.5,
+            232
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            173,
+            231
+          ],
+          "bounds": [
+            92,
+            57,
+            217,
+            224
+          ],
+          "sha256": "baec9a65135ec01296f96a1c4413fd634f70ac61f9c2037b3efcd88f8e775167"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-north-v3.png",
+          "sourceScale": 0.7292576419213974,
+          "sourceAnchor": [
+            72,
+            232
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            169,
+            232
+          ],
+          "bounds": [
+            93,
+            57,
+            215,
+            225
+          ],
+          "sha256": "9f49476b2b46b2b8b9bbb1f915c93e123658d3711eeb0f784ffb4e1374638519"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-south-v2.png",
+          "sourceScale": 0.6693548387096774,
+          "sourceAnchor": [
+            55,
+            250
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            107,
+            250
+          ],
+          "bounds": [
+            109,
+            59,
+            179,
+            225
+          ],
+          "sha256": "bd3e567e28aa6d930e0cd20f28238be48b3197e454643b51232cd09c48d2263b"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-south-v2.png",
+          "sourceScale": 0.6693548387096774,
+          "sourceAnchor": [
+            59,
+            250
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            112,
+            250
+          ],
+          "bounds": [
+            106,
+            59,
+            180,
+            225
+          ],
+          "sha256": "805a40062ef3e66206490e516857c6ebe5ef227698d9d314fee57dcb953749ae"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-south-v2.png",
+          "sourceScale": 0.6693548387096774,
+          "sourceAnchor": [
+            54,
+            250
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            107,
+            250
+          ],
+          "bounds": [
+            109,
+            59,
+            179,
+            225
+          ],
+          "sha256": "fad862684198257390e7cd2c351b6b6d65c8f26c5e27d1209ca241c8f13bc48d"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-south-v2.png",
+          "sourceScale": 0.6693548387096774,
+          "sourceAnchor": [
+            54,
+            250
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            108,
+            250
+          ],
+          "bounds": [
+            109,
+            59,
+            180,
+            225
+          ],
+          "sha256": "379ea580624d7546287a7dadac5a50f1ff2c6b623b5f26a332483c9dcfb5df45"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-south-v2.png",
+          "sourceScale": 0.6974789915966386,
+          "sourceAnchor": [
+            113,
+            240
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            197,
+            240
+          ],
+          "bounds": [
+            67,
+            59,
+            203,
+            225
+          ],
+          "sha256": "d2027efd022480527939ce11c29b3bb7732e1151008e59f075739b766641354b"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-south-v2.png",
+          "sourceScale": 0.6974789915966386,
+          "sourceAnchor": [
+            113.5,
+            240
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            198,
+            240
+          ],
+          "bounds": [
+            66,
+            59,
+            203,
+            225
+          ],
+          "sha256": "b49b17df8307e5d61fd2831d9ef8e9bed6b137df2d511843356c34b9bda0bdc4"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-south-v2.png",
+          "sourceScale": 0.6974789915966386,
+          "sourceAnchor": [
+            116,
+            240
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            201,
+            240
+          ],
+          "bounds": [
+            64,
+            59,
+            203,
+            225
+          ],
+          "sha256": "c77184a1105172b5374d51e7257191ffd51c6a5059b6b354b08be60d6ad8d5e5"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-south-v2.png",
+          "sourceScale": 0.6974789915966386,
+          "sourceAnchor": [
+            113,
+            240
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            198,
+            240
+          ],
+          "bounds": [
+            67,
+            59,
+            204,
+            225
+          ],
+          "sha256": "f4cd2774f553b1c85cfafd8151770ecef9a835569ed596c6ab3c30ddb04d607d"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-south-v2.png",
+          "sourceScale": 0.7256637168141593,
+          "sourceAnchor": [
+            118,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            201,
+            228
+          ],
+          "bounds": [
+            60,
+            61,
+            204,
+            225
+          ],
+          "sha256": "b9a254f22fabb3c6fea1931b96f967a40c8aa55099cca2c0856420612bd59851"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-south-v2.png",
+          "sourceScale": 0.7256637168141593,
+          "sourceAnchor": [
+            116.5,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            198,
+            228
+          ],
+          "bounds": [
+            61,
+            61,
+            203,
+            225
+          ],
+          "sha256": "2cd868b26ad04fb40a07b8fa78f88feacb56853e76edd327545f82bbcef16c87"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-south-v2.png",
+          "sourceScale": 0.7256637168141593,
+          "sourceAnchor": [
+            124,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            208,
+            228
+          ],
+          "bounds": [
+            55,
+            61,
+            204,
+            225
+          ],
+          "sha256": "34eed5d002df5bfe54d3d3c5bb718a5615c3aeaf3127b969b7ba278d78eee93b"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-south-v2.png",
+          "sourceScale": 0.7256637168141593,
+          "sourceAnchor": [
+            117.5,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            201,
+            228
+          ],
+          "bounds": [
+            60,
+            61,
+            204,
+            225
+          ],
+          "sha256": "53a2d4b9b215cb95defd8cb0abee169d18d35283eec3b916699ed19e3d5ba2a7"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-south-v2.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            96.5,
+            236
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            165,
+            236
+          ],
+          "bounds": [
+            77,
+            60,
+            192,
+            225
+          ],
+          "sha256": "a56bb7d78e069259c2801d645e7254fc980457520bd0022422ee73be0466d23a"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-south-v2.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            99,
+            236
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            169,
+            236
+          ],
+          "bounds": [
+            75,
+            60,
+            193,
+            225
+          ],
+          "sha256": "f2d1537984e910785f29b05371d0f01bbbd4498768479dc80f85674b189195c6"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-south-v2.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            103.5,
+            236
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            174,
+            236
+          ],
+          "bounds": [
+            72,
+            59,
+            194,
+            225
+          ],
+          "sha256": "3d2e62bc81bf909f4126c892ae0d459cc902b12f95fdb089ac2605eff2123b5d"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-strike-south-v2.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            100,
+            236
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            170,
+            236
+          ],
+          "bounds": [
+            75,
+            60,
+            194,
+            225
+          ],
+          "sha256": "72646fef482ff8b25895cd5520d7e534523441bed457332226d0ec8ed9e930b6"
+        }
+      ],
+      "file": "granadero-mounted-strike.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "6aea9b00e8cd10ab1d9cce7c18c6df325b8c1e3e76fcc1717e435330f722427d"
+    }
+  }
+}

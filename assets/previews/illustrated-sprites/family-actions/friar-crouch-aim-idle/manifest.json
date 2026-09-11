@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "friar-crouch-aim-idle": {
+      "cell": 240,
+      "anchor": [
+        120,
+        210
+      ],
+      "logicalCell": 80,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-north-v2.png",
+          "sha256": "d5722267c307a826f313606e61f38129afe7f7ed2041c188026bb814079e0479",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-south-v1.png",
+          "sha256": "401d7f71bf81cdfa6bc9b524c72ac1e8587a0d6e050bc25ec696c913dfb37950",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-north-v2.png",
+          "sourceScale": 0.3073394495412844,
+          "sourceAnchor": [
+            73.5,
+            232
+          ],
+          "sourceBounds": [
+            2,
+            13,
+            139,
+            231
+          ],
+          "bounds": [
+            98,
+            143,
+            140,
+            210
+          ],
+          "sha256": "46322e6bd172a76f0526e458b9adebc049e8d89b55519e218ae96005d76cf034"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-north-v2.png",
+          "sourceScale": 0.34285714285714286,
+          "sourceAnchor": [
+            78,
+            227
+          ],
+          "sourceBounds": [
+            2,
+            14,
+            169,
+            224
+          ],
+          "bounds": [
+            94,
+            137,
+            151,
+            209
+          ],
+          "sha256": "12a6bd2cac73ecc2c089693300ef874f6a8b39b059c008b97017fe7a8c22dfe8"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-north-v2.png",
+          "sourceScale": 0.37373737373737376,
+          "sourceAnchor": [
+            85.5,
+            207
+          ],
+          "sourceBounds": [
+            2,
+            7,
+            232,
+            205
+          ],
+          "bounds": [
+            89,
+            135,
+            175,
+            209
+          ],
+          "sha256": "5c8ff0213274154c9ab04820fd940ac09c5fe8d3882fc4fbf384178de84541d2"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-north-v2.png",
+          "sourceScale": 0.35467980295566504,
+          "sourceAnchor": [
+            85,
+            207
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            154,
+            207
+          ],
+          "bounds": [
+            91,
+            138,
+            145,
+            210
+          ],
+          "sha256": "190ebf78f6faa96ecee76e2629b07de9ee32e0afa43e0e6ac9088954dce68cc6"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-south-v1.png",
+          "sourceScale": 0.33668341708542715,
+          "sourceAnchor": [
+            76.5,
+            202
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            137,
+            202
+          ],
+          "bounds": [
+            95,
+            143,
+            140,
+            210
+          ],
+          "sha256": "c7f98e97c6271fcf126093848ec9be8b15068c101853a61dff5b0edbb7842679"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-south-v1.png",
+          "sourceScale": 0.36683417085427134,
+          "sourceAnchor": [
+            101.5,
+            201
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            180,
+            201
+          ],
+          "bounds": [
+            84,
+            137,
+            149,
+            210
+          ],
+          "sha256": "a74c6f7b96873df5e4c7398d4698958667ec699df5653be99df6d1c4475e71fd"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-south-v1.png",
+          "sourceScale": 0.36363636363636365,
+          "sourceAnchor": [
+            127.5,
+            200
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            197,
+            200
+          ],
+          "bounds": [
+            74,
+            138,
+            145,
+            210
+          ],
+          "sha256": "37557c6a68a5dbb60e285e75d27d2c9d829b676e566c1d6a20a1902dcd1cf7bc"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-south-v1.png",
+          "sourceScale": 0.36923076923076925,
+          "sourceAnchor": [
+            108.5,
+            197
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            174,
+            197
+          ],
+          "bounds": [
+            81,
+            138,
+            145,
+            210
+          ],
+          "sha256": "e51c00d1c6f7aad860898a6ea21fdc6a617e53cc2a332a1b58809b6865a8bf87"
+        }
+      ],
+      "file": "friar-crouch-aim-idle.png",
+      "size": [
+        1920,
+        240
+      ],
+      "sha256": "2c2d06c5a429d3fc9cbe4dc52f1bb0e756dd4dcd3918e8b2f3663aee172dd469",
+      "derivedFrom": {
+        "atlas": "friar-crouch-fire",
+        "frame": 0,
+        "reason": "hold authored pre-shot aim"
+      }
+    }
+  }
+}

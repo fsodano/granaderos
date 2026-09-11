@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "royalist-crouch-fire": {
+      "cell": 240,
+      "anchor": [
+        120,
+        210
+      ],
+      "logicalCell": 80,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-north-v1.png",
+          "sha256": "31b3b36e0a9c4eb50fb160ca8015e5b92a113984714402073fce0fdb684bac52",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-south-v2.png",
+          "sha256": "4c4f1b64e027631594add8bbe25f950f941269d901f9fa7518189f90594659ea",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-north-v1.png",
+          "sourceScale": 0.46153846153846156,
+          "sourceAnchor": [
+            46,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            14,
+            88,
+            170
+          ],
+          "bounds": [
+            100,
+            138,
+            140,
+            210
+          ],
+          "sha256": "99f1e953fa9c919a3d8ae99e33b6a6b1f455ab6a0ee9de8066948ef94aa916c0"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-north-v1.png",
+          "sourceScale": 0.46153846153846156,
+          "sourceAnchor": [
+            46,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            89,
+            170
+          ],
+          "bounds": [
+            100,
+            132,
+            140,
+            210
+          ],
+          "sha256": "ea17e6ef23e62aa267182ad5d976b177feb806023f051cd888770775c61accb6"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-north-v1.png",
+          "sourceScale": 0.46153846153846156,
+          "sourceAnchor": [
+            45.5,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            7,
+            89,
+            170
+          ],
+          "bounds": [
+            100,
+            135,
+            140,
+            210
+          ],
+          "sha256": "ab7253ba9c9573fc2315ffc199d62ee59946739ba34d69b951889249d7f28a15"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-north-v1.png",
+          "sourceScale": 0.46153846153846156,
+          "sourceAnchor": [
+            45.5,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            14,
+            89,
+            170
+          ],
+          "bounds": [
+            100,
+            138,
+            140,
+            210
+          ],
+          "sha256": "7ccbd4380cb20bb09b47ec4180c5f6155b8bb4e8dbd25565c67da3961cddca08"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-north-v1.png",
+          "sourceScale": 0.5064935064935064,
+          "sourceAnchor": [
+            51,
+            156
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            143,
+            156
+          ],
+          "bounds": [
+            95,
+            132,
+            166,
+            210
+          ],
+          "sha256": "4a2f515f5f4ba4df32a2e91846e013ca579fcebc7c15685a694503d662fff3ab"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-north-v1.png",
+          "sourceScale": 0.5064935064935064,
+          "sourceAnchor": [
+            50,
+            156
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            148,
+            156
+          ],
+          "bounds": [
+            96,
+            132,
+            170,
+            210
+          ],
+          "sha256": "66660eabd607c1f56834b6cf4bafe5c6b77eed6e3bed669bb7e1d155cae1f5a3"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-north-v1.png",
+          "sourceScale": 0.5064935064935064,
+          "sourceAnchor": [
+            50,
+            156
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            129,
+            155
+          ],
+          "bounds": [
+            96,
+            132,
+            160,
+            209
+          ],
+          "sha256": "049c87f1dd9e1752f4be5e75ad17f4049cc61a79aa7f92c2bb9804163c60b90b"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-north-v1.png",
+          "sourceScale": 0.5064935064935064,
+          "sourceAnchor": [
+            51,
+            156
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            156
+          ],
+          "bounds": [
+            95,
+            132,
+            166,
+            210
+          ],
+          "sha256": "1d7368defbf4cf8b02d89586f46e629143b560a4d1e834407f746ae22d7298ff"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-north-v1.png",
+          "sourceScale": 0.5165562913907285,
+          "sourceAnchor": [
+            53,
+            153
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            166,
+            153
+          ],
+          "bounds": [
+            94,
+            132,
+            179,
+            210
+          ],
+          "sha256": "c9959fd55678c0591549ccad9634edf7c468d1f5e97187825db6b2ba64a15ef0"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-north-v1.png",
+          "sourceScale": 0.5165562913907285,
+          "sourceAnchor": [
+            52.5,
+            153
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            180,
+            153
+          ],
+          "bounds": [
+            94,
+            132,
+            186,
+            210
+          ],
+          "sha256": "e2b0cf31a0704a1f282a1e9cc8adab7be75ad2e5002b06ff00dd1921af8f66b3"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-north-v1.png",
+          "sourceScale": 0.5165562913907285,
+          "sourceAnchor": [
+            52,
+            153
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            154,
+            153
+          ],
+          "bounds": [
+            94,
+            132,
+            173,
+            210
+          ],
+          "sha256": "c4794e33d6e55f060b335326ea0f8d5959402649ff5b2b94bc9838968fc0ca55"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-north-v1.png",
+          "sourceScale": 0.5165562913907285,
+          "sourceAnchor": [
+            52.5,
+            153
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            166,
+            153
+          ],
+          "bounds": [
+            94,
+            132,
+            179,
+            210
+          ],
+          "sha256": "6dc155ed9ff6b011630df4c6970550ea40b614796989b247d0dc3853b1c7eb4e"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-north-v1.png",
+          "sourceScale": 0.5234899328859061,
+          "sourceAnchor": [
+            52.5,
+            153
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            146,
+            152
+          ],
+          "bounds": [
+            94,
+            131,
+            169,
+            209
+          ],
+          "sha256": "9d984587f7f27c4f03fdba860341b34fb4e6e6d1ed723163830a6da895db70ab"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-north-v1.png",
+          "sourceScale": 0.5234899328859061,
+          "sourceAnchor": [
+            52,
+            153
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            151,
+            153
+          ],
+          "bounds": [
+            94,
+            131,
+            172,
+            210
+          ],
+          "sha256": "e18f33d941623a9fe2ea35c69cf6784687f56b40def9129b409d2e927e13de7f"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-north-v1.png",
+          "sourceScale": 0.5234899328859061,
+          "sourceAnchor": [
+            53,
+            153
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            134,
+            153
+          ],
+          "bounds": [
+            93,
+            131,
+            162,
+            210
+          ],
+          "sha256": "c2e4e4851a4500e3bb9b36961fb92e1686ac701240c684a2288e7e182d589cb9"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-north-v1.png",
+          "sourceScale": 0.5234899328859061,
+          "sourceAnchor": [
+            51,
+            153
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            144,
+            152
+          ],
+          "bounds": [
+            94,
+            131,
+            168,
+            210
+          ],
+          "sha256": "a94515b788fd1f8bda8a22b9498af8bf9630e6d40542670b42a9baf75fe7e9c9"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-south-v2.png",
+          "sourceScale": 0.4228571428571429,
+          "sourceAnchor": [
+            45,
+            177
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            106,
+            177
+          ],
+          "bounds": [
+            102,
+            136,
+            146,
+            210
+          ],
+          "sha256": "503eebb513e3759bf88ae379a74028a1dc322b1c1788ef12b2d3e317a100f7f7"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-south-v2.png",
+          "sourceScale": 0.4228571428571429,
+          "sourceAnchor": [
+            49.5,
+            177
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            111,
+            176
+          ],
+          "bounds": [
+            100,
+            136,
+            146,
+            210
+          ],
+          "sha256": "7abc17bb261a76633c36b25eb2753f32fd9940ebcac4053f6a42333cff93de81"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-south-v2.png",
+          "sourceScale": 0.4228571428571429,
+          "sourceAnchor": [
+            44.5,
+            177
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            106,
+            177
+          ],
+          "bounds": [
+            102,
+            136,
+            146,
+            210
+          ],
+          "sha256": "067d4e65a542b00cf3542dbf5697a6d906a4edd5834a11ecfeb6d25590a11ad1"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-south-v2.png",
+          "sourceScale": 0.4228571428571429,
+          "sourceAnchor": [
+            45.5,
+            177
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            107,
+            177
+          ],
+          "bounds": [
+            102,
+            136,
+            146,
+            210
+          ],
+          "sha256": "265c0e7425070f89bba24f65c1c16e9cebe1001d88416816f59cce7c72db2040"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-south-v2.png",
+          "sourceScale": 0.49375,
+          "sourceAnchor": [
+            74,
+            163
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            144,
+            162
+          ],
+          "bounds": [
+            84,
+            131,
+            154,
+            210
+          ],
+          "sha256": "33924eef139c110acc2aa75fb53c81ced318b5273730eb1f55d14eb6f026ff81"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-south-v2.png",
+          "sourceScale": 0.49375,
+          "sourceAnchor": [
+            79.5,
+            163
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            150,
+            163
+          ],
+          "bounds": [
+            82,
+            131,
+            155,
+            210
+          ],
+          "sha256": "8cd27b74b8b71c6f78d66a6e853f107b9d59e5bad05c51a36204e81ce75f689e"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-south-v2.png",
+          "sourceScale": 0.49375,
+          "sourceAnchor": [
+            62.5,
+            163
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            132,
+            163
+          ],
+          "bounds": [
+            90,
+            131,
+            154,
+            210
+          ],
+          "sha256": "69009e6094c177b8252a72954bf9cb0815292c935eac93e150997193ccde5382"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-south-v2.png",
+          "sourceScale": 0.49375,
+          "sourceAnchor": [
+            74.5,
+            163
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            144,
+            163
+          ],
+          "bounds": [
+            84,
+            131,
+            154,
+            210
+          ],
+          "sha256": "748fa6fba107b49c24872df27c886a90a1081098fbd321d9e876f5c3f7229eb5"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-south-v2.png",
+          "sourceScale": 0.5098039215686274,
+          "sourceAnchor": [
+            107,
+            155
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            164,
+            155
+          ],
+          "bounds": [
+            66,
+            132,
+            149,
+            210
+          ],
+          "sha256": "3bb0c3ff237f336e58eff6b8780caae4ad6eb74fdb427f0705b61dd21c2e289f"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-south-v2.png",
+          "sourceScale": 0.5098039215686274,
+          "sourceAnchor": [
+            115,
+            155
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            172,
+            155
+          ],
+          "bounds": [
+            62,
+            132,
+            149,
+            210
+          ],
+          "sha256": "b0b45fbc0025ba5ce6eab78ba1feebd6ab6a3938d89011c5cd63cc6b4d3857a6"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-south-v2.png",
+          "sourceScale": 0.5098039215686274,
+          "sourceAnchor": [
+            97.5,
+            155
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            154,
+            155
+          ],
+          "bounds": [
+            71,
+            132,
+            148,
+            210
+          ],
+          "sha256": "5f1384059cd3811b6023ead94fdf4495da51e9d4e3fa3988beec3db1790b465e"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-south-v2.png",
+          "sourceScale": 0.5098039215686274,
+          "sourceAnchor": [
+            108.5,
+            155
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            165,
+            155
+          ],
+          "bounds": [
+            66,
+            132,
+            149,
+            210
+          ],
+          "sha256": "4e0dd660da9a6e8202408b714ebe8b09637abcb29a86e5ecd92fa19367990e0b"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-south-v2.png",
+          "sourceScale": 0.5032258064516129,
+          "sourceAnchor": [
+            88.5,
+            157
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            157
+          ],
+          "bounds": [
+            76,
+            132,
+            146,
+            210
+          ],
+          "sha256": "94fa56bac9b72c437c942112b11e0b8382cf734494a6400857cb71e4cd1221a2"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-south-v2.png",
+          "sourceScale": 0.5032258064516129,
+          "sourceAnchor": [
+            101.5,
+            157
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            155,
+            157
+          ],
+          "bounds": [
+            70,
+            132,
+            147,
+            210
+          ],
+          "sha256": "f3793362d6ddf5018a4090b14478777378a458f28c9be912589eea6fa564490d"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-south-v2.png",
+          "sourceScale": 0.5032258064516129,
+          "sourceAnchor": [
+            87.5,
+            157
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            157
+          ],
+          "bounds": [
+            77,
+            132,
+            147,
+            210
+          ],
+          "sha256": "1e1f35c60e0754309d9c51dfa43aa5856d474e892d254a980b32e35c7a1aec53"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-south-v2.png",
+          "sourceScale": 0.5032258064516129,
+          "sourceAnchor": [
+            89,
+            157
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            157
+          ],
+          "bounds": [
+            76,
+            132,
+            146,
+            210
+          ],
+          "sha256": "2a48b2b89e294ffe2af955566afd178487e339f47534b7798fde9dab092fe42d"
+        }
+      ],
+      "file": "royalist-crouch-fire.png",
+      "size": [
+        960,
+        1920
+      ],
+      "sha256": "eca7e6cb4183f8d6022abee60f967d5b6c2c37482aaa870a4d978cb384e705fc"
+    }
+  }
+}

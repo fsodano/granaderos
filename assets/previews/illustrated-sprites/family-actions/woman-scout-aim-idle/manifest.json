@@ -1,0 +1,241 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-scout-aim-idle": {
+      "cell": 210,
+      "anchor": [
+        105,
+        186
+      ],
+      "logicalCell": 70,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/woman-scout-fire-north-v1.png",
+          "sha256": "66f24cc81707f78c01c89b92a4e19d556134d8c27c104b2ce6f25f7c3d23276c",
+          "scale": 0.6698564593301436
+        },
+        {
+          "file": "assets/source/illustrated-sprites/woman-scout-fire-south-v1.png",
+          "sha256": "270b28ae13dae0be63e0e5a9a2e50eca054a0eb26d9ce68eb45ecb47d506ae9e",
+          "scale": 0.6698564593301436
+        },
+        {
+          "file": "assets/source/illustrated-sprites/woman-scout-fire-n-fix-v1.png",
+          "sha256": "9b0f7998089ed62ab60518b3ae74e4a5d6cbc4e58e9586360668f81d1b0241ab",
+          "scale": 0.23
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-scout-fire-n-fix-v1.png",
+          "sourceScale": 0.23,
+          "sourceAnchor": [
+            98.5,
+            526
+          ],
+          "sourceBounds": [
+            4,
+            4,
+            193,
+            528
+          ],
+          "bounds": [
+            83,
+            66,
+            126,
+            187
+          ],
+          "sha256": "dfbd8d3d13f2b52ac2343f357db1c354bf6a55da6021869c05a2c63530b5d0b6"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-scout-fire-north-v1.png",
+          "sourceScale": 0.493067,
+          "sourceAnchor": [
+            45.856,
+            230.814
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            137,
+            227
+          ],
+          "bounds": [
+            83,
+            73,
+            150,
+            184
+          ],
+          "sha256": "8c971c17b1f0b50108a0b3b427a94133d4389b27d1368b87d1df1d5c92b7a3f4"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-scout-fire-north-v1.png",
+          "sourceScale": 0.528263,
+          "sourceAnchor": [
+            46.877,
+            224.59
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            171,
+            221
+          ],
+          "bounds": [
+            81,
+            68,
+            170,
+            184
+          ],
+          "sha256": "f7fdd5ba46d1f6a093a2d7ed6b722db074b0d2148aec043827d00df9ff1d77d6"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-scout-fire-north-v1.png",
+          "sourceScale": 0.50106,
+          "sourceAnchor": [
+            38.897,
+            219.69
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            153,
+            216
+          ],
+          "bounds": [
+            87,
+            77,
+            163,
+            184
+          ],
+          "sha256": "e2c4c9185ee0c5866db0550920751f33f451f781b58d61c9ddac955b22fcf6fa"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-scout-fire-south-v1.png",
+          "sourceScale": 0.523153,
+          "sourceAnchor": [
+            42.932,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            83,
+            212
+          ],
+          "bounds": [
+            84,
+            76,
+            126,
+            186
+          ],
+          "sha256": "868fb1fbfc8210cf242c080883625d1c08457120a547aa8322e2e0bdac6d83fc"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-scout-fire-south-v1.png",
+          "sourceScale": 0.54961,
+          "sourceAnchor": [
+            78.935,
+            214
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            214
+          ],
+          "bounds": [
+            63,
+            69,
+            135,
+            186
+          ],
+          "sha256": "8f6d0517bcd2acf5731594fad4ee0e94a363ddb50dcbae5ef2d08870c8784515"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-scout-fire-south-v1.png",
+          "sourceScale": 0.530435,
+          "sourceAnchor": [
+            140.098,
+            218
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            179,
+            218
+          ],
+          "bounds": [
+            32,
+            71,
+            126,
+            186
+          ],
+          "sha256": "96b173e301594500ed1dd05fd3d841d6184d34d8b9ca6562e53185f7f906106e"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-scout-fire-south-v1.png",
+          "sourceScale": 0.519647,
+          "sourceAnchor": [
+            113.083,
+            217
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            150,
+            217
+          ],
+          "bounds": [
+            47,
+            74,
+            124,
+            186
+          ],
+          "sha256": "044bd2f07dc5f1cb437dbb1a61b28f9b17c580dd9c79b3df0a5989efa785d588"
+        }
+      ],
+      "file": "woman-scout-aim-idle.png",
+      "size": [
+        1680,
+        210
+      ],
+      "sha256": "e3be98bafd8ebed5c72b5d8e85918c486baa9e9eea60f9e17b7cbd1ebcdcbbd7",
+      "derivedFrom": {
+        "atlas": "woman-scout-fire",
+        "frame": 0,
+        "reason": "hold authored pre-shot aim"
+      }
+    }
+  }
+}

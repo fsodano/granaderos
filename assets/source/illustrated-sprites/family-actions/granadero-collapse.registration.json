@@ -1,0 +1,823 @@
+{
+  "version": 1,
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "sheets": [
+    {
+      "name": "granadero-collapse",
+      "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-n-v3.png",
+      "columns": 4,
+      "rows": 1,
+      "frames": 4,
+      "fps": 5,
+      "cell": 288,
+      "logicalCell": 96,
+      "anchor": [
+        144,
+        225
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            179,
+            88,
+            212,
+            571
+          ],
+          "scale": 0.20707964601769913,
+          "anchor": [
+            106,
+            567
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            657,
+            88,
+            333,
+            571
+          ],
+          "scale": 0.20707964601769913,
+          "anchor": [
+            167.5,
+            556
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            1164,
+            88,
+            362,
+            571
+          ],
+          "scale": 0.20707964601769913,
+          "anchor": [
+            181.5,
+            548
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1707,
+            88,
+            347,
+            571
+          ],
+          "scale": 0.20707964601769913,
+          "anchor": [
+            173.5,
+            569
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        }
+      ]
+    },
+    {
+      "name": "granadero-collapse",
+      "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-ne-v3.png",
+      "columns": 4,
+      "rows": 1,
+      "frames": 4,
+      "fps": 5,
+      "cell": 288,
+      "logicalCell": 96,
+      "anchor": [
+        144,
+        225
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "ne",
+          "frame": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            137,
+            83,
+            169,
+            555
+          ],
+          "scale": 0.21234119782214156,
+          "anchor": [
+            91,
+            553
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            571,
+            83,
+            299,
+            555
+          ],
+          "scale": 0.21234119782214156,
+          "anchor": [
+            184,
+            551
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            1065,
+            83,
+            453,
+            555
+          ],
+          "scale": 0.21234119782214156,
+          "anchor": [
+            215,
+            541
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1596,
+            83,
+            506,
+            555
+          ],
+          "scale": 0.21234119782214156,
+          "anchor": [
+            156,
+            534
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        }
+      ]
+    },
+    {
+      "name": "granadero-collapse",
+      "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-e-v3.png",
+      "columns": 4,
+      "rows": 1,
+      "frames": 4,
+      "fps": 5,
+      "cell": 288,
+      "logicalCell": 96,
+      "anchor": [
+        144,
+        225
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "e",
+          "frame": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            142,
+            81,
+            123,
+            562
+          ],
+          "scale": 0.2078853046594982,
+          "anchor": [
+            70.5,
+            560
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            468,
+            81,
+            287,
+            562
+          ],
+          "scale": 0.2078853046594982,
+          "anchor": [
+            220,
+            560
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            924,
+            81,
+            494,
+            562
+          ],
+          "scale": 0.2078853046594982,
+          "anchor": [
+            271.5,
+            560
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1494,
+            81,
+            601,
+            562
+          ],
+          "scale": 0.2078853046594982,
+          "anchor": [
+            319,
+            560
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        }
+      ]
+    },
+    {
+      "name": "granadero-collapse",
+      "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-se-v3.png",
+      "columns": 4,
+      "rows": 1,
+      "frames": 4,
+      "fps": 5,
+      "cell": 288,
+      "logicalCell": 96,
+      "anchor": [
+        144,
+        225
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "se",
+          "frame": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            141,
+            83,
+            182,
+            576
+          ],
+          "scale": 0.21212121212121213,
+          "anchor": [
+            92,
+            563
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            526,
+            83,
+            298,
+            576
+          ],
+          "scale": 0.21212121212121213,
+          "anchor": [
+            199.5,
+            560
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            1037,
+            83,
+            461,
+            576
+          ],
+          "scale": 0.21212121212121213,
+          "anchor": [
+            361,
+            574
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1607,
+            83,
+            504,
+            576
+          ],
+          "scale": 0.21212121212121213,
+          "anchor": [
+            433.5,
+            574
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        }
+      ]
+    },
+    {
+      "name": "granadero-collapse",
+      "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-s-v3.png",
+      "columns": 4,
+      "rows": 1,
+      "frames": 4,
+      "fps": 5,
+      "cell": 288,
+      "logicalCell": 96,
+      "anchor": [
+        144,
+        225
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "s",
+          "frame": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            192,
+            70,
+            208,
+            604
+          ],
+          "scale": 0.19365609348914858,
+          "anchor": [
+            104,
+            601
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            666,
+            70,
+            280,
+            604
+          ],
+          "scale": 0.19365609348914858,
+          "anchor": [
+            136,
+            595
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            1180,
+            70,
+            330,
+            604
+          ],
+          "scale": 0.19365609348914858,
+          "anchor": [
+            157,
+            602
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1730,
+            70,
+            307,
+            604
+          ],
+          "scale": 0.19365609348914858,
+          "anchor": [
+            151.5,
+            602
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        }
+      ]
+    },
+    {
+      "name": "granadero-collapse",
+      "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-sw-v4.png",
+      "columns": 4,
+      "rows": 1,
+      "frames": 4,
+      "fps": 5,
+      "cell": 288,
+      "logicalCell": 96,
+      "anchor": [
+        144,
+        225
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "sw",
+          "frame": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            134,
+            78,
+            196,
+            578
+          ],
+          "scale": 0.20279720279720279,
+          "anchor": [
+            82.5,
+            574
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            564,
+            78,
+            296,
+            578
+          ],
+          "scale": 0.20279720279720279,
+          "anchor": [
+            105.5,
+            560
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            1004,
+            78,
+            420,
+            578
+          ],
+          "scale": 0.20279720279720279,
+          "anchor": [
+            70.5,
+            575
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1580,
+            78,
+            532,
+            578
+          ],
+          "scale": 0.20279720279720279,
+          "anchor": [
+            70,
+            576
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        }
+      ]
+    },
+    {
+      "name": "granadero-collapse",
+      "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-nw-v3.png",
+      "columns": 4,
+      "rows": 1,
+      "frames": 4,
+      "fps": 5,
+      "cell": 288,
+      "logicalCell": 96,
+      "anchor": [
+        144,
+        225
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "nw",
+          "frame": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            137,
+            84,
+            174,
+            561
+          ],
+          "scale": 0.21481481481481482,
+          "anchor": [
+            91.5,
+            542
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            610,
+            84,
+            237,
+            561
+          ],
+          "scale": 0.21481481481481482,
+          "anchor": [
+            140,
+            536
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            1041,
+            84,
+            404,
+            561
+          ],
+          "scale": 0.21481481481481482,
+          "anchor": [
+            222.5,
+            542
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1644,
+            84,
+            474,
+            561
+          ],
+          "scale": 0.21481481481481482,
+          "anchor": [
+            398,
+            559
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        }
+      ]
+    },
+    {
+      "name": "granadero-collapse",
+      "source": "assets/source/illustrated-sprites/family-actions/granadero-collapse-w-v4.png",
+      "columns": 4,
+      "rows": 1,
+      "frames": 4,
+      "fps": 5,
+      "cell": 288,
+      "logicalCell": 96,
+      "anchor": [
+        144,
+        225
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "w",
+          "frame": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            89,
+            152,
+            130,
+            550
+          ],
+          "scale": 0.21217712177121772,
+          "anchor": [
+            48.5,
+            544
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            408,
+            152,
+            252,
+            550
+          ],
+          "scale": 0.21217712177121772,
+          "anchor": [
+            90.5,
+            545
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            703,
+            152,
+            432,
+            550
+          ],
+          "scale": 0.21217712177121772,
+          "anchor": [
+            221.5,
+            548
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1177,
+            152,
+            563,
+            550
+          ],
+          "scale": 0.21217712177121772,
+          "anchor": [
+            231,
+            545
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        }
+      ]
+    }
+  ]
+}

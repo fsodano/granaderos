@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "friar-mounted-fire": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sha256": "4a174488fbaccd9f6974b15efbb6750ad6761fe4141eefbb69b78ce91492f124",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-n-v2.png",
+          "sha256": "afc4de5a5e8e38d389266cc799e70f12376d9859a310bb22bd944866c2e77d14",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.2043795620437956,
+          "sourceAnchor": [
+            55.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            6,
+            117,
+            143
+          ],
+          "bounds": [
+            80,
+            60,
+            219,
+            225
+          ],
+          "sha256": "c10d8a2440e72e220d893fe43e1546384f2528e528b1f050f3bb16609146e9a1"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.2043795620437956,
+          "sourceAnchor": [
+            53.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            122,
+            143
+          ],
+          "bounds": [
+            82,
+            55,
+            227,
+            225
+          ],
+          "sha256": "c566fe0da82e168059f50c6ec2081e31b74b646ca5fa3f4ae0d4e341956bfbc7"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.2043795620437956,
+          "sourceAnchor": [
+            56.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            6,
+            125,
+            143
+          ],
+          "bounds": [
+            78,
+            60,
+            226,
+            225
+          ],
+          "sha256": "f7657e0dcbbf1daa88fc01b150c6c81a962179529099b36d4ca259c8c71d998f"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.2043795620437956,
+          "sourceAnchor": [
+            56.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            6,
+            121,
+            143
+          ],
+          "bounds": [
+            78,
+            60,
+            221,
+            225
+          ],
+          "sha256": "1fa06cd2cf9ca3d3da9de9afd94b6defc0579721aa3041d258690e2ef33e888d"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.2424242424242424,
+          "sourceAnchor": [
+            69,
+            134
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            152,
+            134
+          ],
+          "bounds": [
+            61,
+            61,
+            247,
+            225
+          ],
+          "sha256": "a947d475dba261dbc031797a1cac4d080bbeba291419db14abfe632ec9902ded"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.2424242424242424,
+          "sourceAnchor": [
+            69.5,
+            134
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            169,
+            134
+          ],
+          "bounds": [
+            60,
+            61,
+            267,
+            225
+          ],
+          "sha256": "86df2427660111c283aa5daa5387aea2bf1f244dc73ac7e9b6cce79ef169b267"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.2424242424242424,
+          "sourceAnchor": [
+            70.5,
+            134
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            156,
+            134
+          ],
+          "bounds": [
+            59,
+            61,
+            250,
+            225
+          ],
+          "sha256": "ca20488170ff6aa607b674230a594fb54e096c99f7b3038a219ae5ac8770a06b"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.2424242424242424,
+          "sourceAnchor": [
+            67,
+            134
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            151,
+            134
+          ],
+          "bounds": [
+            63,
+            61,
+            248,
+            225
+          ],
+          "sha256": "0c153b1724e705bc6865b4fa90ff74b138fa3d67c77736ec3e892bf42a7508cc"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.1928571428571428,
+          "sourceAnchor": [
+            58.5,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            119,
+            142
+          ],
+          "bounds": [
+            77,
+            58,
+            217,
+            225
+          ],
+          "sha256": "1166e94edaa6de6be6879c911b97f8640caaa1aff0ebeeb23ca72ba49d578aa1"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.1928571428571428,
+          "sourceAnchor": [
+            61,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            140,
+            142
+          ],
+          "bounds": [
+            74,
+            58,
+            239,
+            225
+          ],
+          "sha256": "bdaa8e2b9e37df25ed04f10295c5c3ff3365f75033c77ea874803975450ef1bf"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.1928571428571428,
+          "sourceAnchor": [
+            59,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            117,
+            142
+          ],
+          "bounds": [
+            76,
+            58,
+            213,
+            225
+          ],
+          "sha256": "4ad99ed03f2c56cb7f5cc69e1f45294fb22c044d4ec732f1d125d7027974eeed"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.1928571428571428,
+          "sourceAnchor": [
+            63.5,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            132,
+            142
+          ],
+          "bounds": [
+            71,
+            58,
+            226,
+            225
+          ],
+          "sha256": "6938d27ea1901ee2945f510dc624c305619cb2513076342a6e52481348b3a439"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.177304964539007,
+          "sourceAnchor": [
+            35,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            68,
+            143
+          ],
+          "bounds": [
+            105,
+            59,
+            183,
+            225
+          ],
+          "sha256": "6468ff81ced328b314b598a3deabbf5cb10c2ae9bed521adbb0e566171eec71a"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.177304964539007,
+          "sourceAnchor": [
+            34.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            67,
+            143
+          ],
+          "bounds": [
+            106,
+            59,
+            183,
+            225
+          ],
+          "sha256": "a7cef68b02a4a13fab262bd4388c1fe29228e50ea366003012523482c6e3b6ff"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.177304964539007,
+          "sourceAnchor": [
+            34,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            67,
+            143
+          ],
+          "bounds": [
+            106,
+            59,
+            183,
+            225
+          ],
+          "sha256": "aa180ef837fcd9547253b42854bf9a0bb5b902a1c37fcbaf1a4deed5e4d5d1cd"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.177304964539007,
+          "sourceAnchor": [
+            35,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            67,
+            143
+          ],
+          "bounds": [
+            105,
+            59,
+            182,
+            225
+          ],
+          "sha256": "9ca85f99c4fd80c9cc3195fd769f593b2d44595a086635b52a7fcd52d72ddee7"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.2205882352941178,
+          "sourceAnchor": [
+            77.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            138,
+            138
+          ],
+          "bounds": [
+            52,
+            59,
+            218,
+            225
+          ],
+          "sha256": "f944ed7e5ce23f7ea00a8a1bf6a5e9ee387cde0f19418210aea9b8793008314a"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.2205882352941178,
+          "sourceAnchor": [
+            79.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            140,
+            138
+          ],
+          "bounds": [
+            49,
+            59,
+            217,
+            225
+          ],
+          "sha256": "db2cf42f152af85b2b5e088348be2e6d233f56a7e3d42cb2b0c96af9cf2f6dc8"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.2205882352941178,
+          "sourceAnchor": [
+            75,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            138,
+            138
+          ],
+          "bounds": [
+            55,
+            59,
+            221,
+            225
+          ],
+          "sha256": "0f37aaf265a4bada686721b99dcb34e118cfbf7f757ad3db0df11635b5f91310"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.2205882352941178,
+          "sourceAnchor": [
+            71.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            131,
+            138
+          ],
+          "bounds": [
+            59,
+            59,
+            216,
+            225
+          ],
+          "sha256": "91c78a0c24b111e2393d738433d7acbb58af63d039a3f9a72266186c45f06b6b"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.197080291970803,
+          "sourceAnchor": [
+            87.5,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            155,
+            139
+          ],
+          "bounds": [
+            42,
+            61,
+            225,
+            225
+          ],
+          "sha256": "151bb0e3973428396499239f3daa41850149b314273c89eb36c96d9d486c4d5e"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.197080291970803,
+          "sourceAnchor": [
+            96.5,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            162,
+            139
+          ],
+          "bounds": [
+            31,
+            61,
+            223,
+            225
+          ],
+          "sha256": "b7fea2a55351021a8d95d0ca3b8c86c57daacfd038669af7b042105c421f79e7"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.197080291970803,
+          "sourceAnchor": [
+            82.5,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            149,
+            139
+          ],
+          "bounds": [
+            48,
+            61,
+            224,
+            225
+          ],
+          "sha256": "58eb09d7f2f0cf90ccf625113489d457a599b74a5505690ed05cfe2e0c4531f1"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.197080291970803,
+          "sourceAnchor": [
+            87.5,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            152,
+            139
+          ],
+          "bounds": [
+            42,
+            61,
+            222,
+            225
+          ],
+          "sha256": "224347954394e67776ec6a74efa21d739e67caad21556cd0f0e768a2f572b56f"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.1702127659574468,
+          "sourceAnchor": [
+            71,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            9,
+            132,
+            150
+          ],
+          "bounds": [
+            63,
+            60,
+            215,
+            225
+          ],
+          "sha256": "db908520825b2691d778df1d1af81d2d1b36f0bb6e8dbfdafb66ec0f47a09d58"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.1702127659574468,
+          "sourceAnchor": [
+            68,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            127,
+            150
+          ],
+          "bounds": [
+            67,
+            52,
+            213,
+            225
+          ],
+          "sha256": "7769a3594f3fba379cdbdfb5e728a20eed696f507c963e2798ca0896ccad4ac4"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.1702127659574468,
+          "sourceAnchor": [
+            69.5,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            9,
+            129,
+            150
+          ],
+          "bounds": [
+            65,
+            60,
+            214,
+            225
+          ],
+          "sha256": "57f6b88edde0feeffea3e4e6ad89ed11d98b148691f52ddb866db4946b9c32f9"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-v1.png",
+          "sourceScale": 1.1702127659574468,
+          "sourceAnchor": [
+            68.5,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            9,
+            126,
+            150
+          ],
+          "bounds": [
+            66,
+            60,
+            211,
+            225
+          ],
+          "sha256": "2bc9203024b0bc86f69908354e039bfbcaf15a5f1809e7bc313e9c217ddc1360"
+        },
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-n-v2.png",
+          "sourceScale": 0.3,
+          "sourceAnchor": [
+            106.5,
+            569
+          ],
+          "sourceBounds": [
+            2,
+            19,
+            211,
+            569
+          ],
+          "bounds": [
+            113,
+            60,
+            176,
+            225
+          ],
+          "sha256": "ab380ebb6eab2dbc8a209ebb2dd460e4ac718566b8ffbb02e97775ae7aec0960"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-n-v2.png",
+          "sourceScale": 0.3,
+          "sourceAnchor": [
+            106.5,
+            569
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            212,
+            569
+          ],
+          "bounds": [
+            113,
+            55,
+            176,
+            225
+          ],
+          "sha256": "cfe69c2553ca9b245dc88c151be43f6ec2e56d7ddb53a8ebf8e98d23a67cc0f2"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-n-v2.png",
+          "sourceScale": 0.3,
+          "sourceAnchor": [
+            106,
+            569
+          ],
+          "sourceBounds": [
+            2,
+            19,
+            211,
+            569
+          ],
+          "bounds": [
+            113,
+            60,
+            176,
+            225
+          ],
+          "sha256": "547efd4f83e339552b1acb7e5142061b780abb0e6866902922e1c9be7588ca68"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-fire-n-v2.png",
+          "sourceScale": 0.3,
+          "sourceAnchor": [
+            106,
+            569
+          ],
+          "sourceBounds": [
+            2,
+            19,
+            211,
+            569
+          ],
+          "bounds": [
+            113,
+            60,
+            176,
+            225
+          ],
+          "sha256": "d141ecd86c34aa033cdb955924f8318eb291244c8a70da54b4d341c63556bf90"
+        }
+      ],
+      "file": "friar-mounted-fire.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "d2ca23de566836eb37c507535b41eeb4bfed0d3d5c272270950ad41a31d59bbe"
+    }
+  }
+}

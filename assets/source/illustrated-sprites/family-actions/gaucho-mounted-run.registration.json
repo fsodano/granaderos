@@ -1,0 +1,897 @@
+{
+  "version": 1,
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "sheets": [
+    {
+      "name": "gaucho-mounted-run",
+      "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.png",
+      "prompt": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-run-v1.prompt.txt",
+      "columns": 4,
+      "rows": 8,
+      "frames": 4,
+      "fps": 7,
+      "cell": 288,
+      "logicalCell": 96,
+      "anchor": [
+        144,
+        225
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            127,
+            44,
+            62,
+            134
+          ],
+          "scale": 1.2692307692307692,
+          "anchor": [
+            31,
+            132
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            60,
+            132
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            358,
+            44,
+            61,
+            134
+          ],
+          "scale": 1.2692307692307692,
+          "anchor": [
+            30.5,
+            132
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            59,
+            130
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            604,
+            44,
+            62,
+            134
+          ],
+          "scale": 1.2692307692307692,
+          "anchor": [
+            31,
+            132
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            60,
+            132
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            847,
+            44,
+            61,
+            134
+          ],
+          "scale": 1.2692307692307692,
+          "anchor": [
+            30.5,
+            132
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            59,
+            132
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "row": 1,
+          "col": 0,
+          "rect": [
+            88,
+            219,
+            123,
+            137
+          ],
+          "scale": 1.2406015037593985,
+          "anchor": [
+            61.5,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            121,
+            131
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "row": 1,
+          "col": 1,
+          "rect": [
+            330,
+            219,
+            116,
+            137
+          ],
+          "scale": 1.2406015037593985,
+          "anchor": [
+            58,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            114,
+            130
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "row": 1,
+          "col": 2,
+          "rect": [
+            568,
+            219,
+            133,
+            137
+          ],
+          "scale": 1.2406015037593985,
+          "anchor": [
+            66.5,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            131,
+            135
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "row": 1,
+          "col": 3,
+          "rect": [
+            825,
+            219,
+            111,
+            137
+          ],
+          "scale": 1.2406015037593985,
+          "anchor": [
+            55.5,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            109,
+            132
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "row": 2,
+          "col": 0,
+          "rect": [
+            62,
+            401,
+            160,
+            135
+          ],
+          "scale": 1.2615384615384615,
+          "anchor": [
+            80,
+            133
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            158,
+            132
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "row": 2,
+          "col": 1,
+          "rect": [
+            299,
+            401,
+            160,
+            135
+          ],
+          "scale": 1.2615384615384615,
+          "anchor": [
+            80,
+            133
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            158,
+            126
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "row": 2,
+          "col": 2,
+          "rect": [
+            542,
+            401,
+            172,
+            135
+          ],
+          "scale": 1.2615384615384615,
+          "anchor": [
+            86,
+            133
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            170,
+            133
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "row": 2,
+          "col": 3,
+          "rect": [
+            797,
+            401,
+            159,
+            135
+          ],
+          "scale": 1.2615384615384615,
+          "anchor": [
+            79.5,
+            133
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            157,
+            130
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "row": 3,
+          "col": 0,
+          "rect": [
+            74,
+            590,
+            134,
+            140
+          ],
+          "scale": 1.2279411764705883,
+          "anchor": [
+            67,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            132,
+            135
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "row": 3,
+          "col": 1,
+          "rect": [
+            312,
+            590,
+            135,
+            140
+          ],
+          "scale": 1.2279411764705883,
+          "anchor": [
+            67.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            138
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "row": 3,
+          "col": 2,
+          "rect": [
+            553,
+            590,
+            146,
+            140
+          ],
+          "scale": 1.2279411764705883,
+          "anchor": [
+            73,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            144,
+            138
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "row": 3,
+          "col": 3,
+          "rect": [
+            800,
+            590,
+            140,
+            140
+          ],
+          "scale": 1.2279411764705883,
+          "anchor": [
+            70,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            138,
+            137
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "row": 4,
+          "col": 0,
+          "rect": [
+            115,
+            770,
+            71,
+            149
+          ],
+          "scale": 1.1448275862068966,
+          "anchor": [
+            35.5,
+            147
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            69,
+            147
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "row": 4,
+          "col": 1,
+          "rect": [
+            352,
+            770,
+            70,
+            149
+          ],
+          "scale": 1.1448275862068966,
+          "anchor": [
+            35,
+            147
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            68,
+            140
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "row": 4,
+          "col": 2,
+          "rect": [
+            600,
+            770,
+            69,
+            149
+          ],
+          "scale": 1.1448275862068966,
+          "anchor": [
+            34.5,
+            147
+          ],
+          "sourceBounds": [
+            2,
+            5,
+            67,
+            142
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "row": 4,
+          "col": 3,
+          "rect": [
+            845,
+            770,
+            69,
+            149
+          ],
+          "scale": 1.1448275862068966,
+          "anchor": [
+            34.5,
+            147
+          ],
+          "sourceBounds": [
+            2,
+            5,
+            67,
+            142
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "row": 5,
+          "col": 0,
+          "rect": [
+            86,
+            950,
+            136,
+            143
+          ],
+          "scale": 1.2028985507246377,
+          "anchor": [
+            68,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            134,
+            139
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "row": 5,
+          "col": 1,
+          "rect": [
+            315,
+            950,
+            143,
+            143
+          ],
+          "scale": 1.2028985507246377,
+          "anchor": [
+            71.5,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            136
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "row": 5,
+          "col": 2,
+          "rect": [
+            554,
+            950,
+            164,
+            143
+          ],
+          "scale": 1.2028985507246377,
+          "anchor": [
+            82,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            162,
+            135
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "row": 5,
+          "col": 3,
+          "rect": [
+            805,
+            950,
+            141,
+            143
+          ],
+          "scale": 1.2028985507246377,
+          "anchor": [
+            70.5,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            139,
+            141
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "row": 6,
+          "col": 0,
+          "rect": [
+            69,
+            1132,
+            159,
+            138
+          ],
+          "scale": 1.2238805970149254,
+          "anchor": [
+            79.5,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            157,
+            136
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "row": 6,
+          "col": 1,
+          "rect": [
+            306,
+            1132,
+            159,
+            138
+          ],
+          "scale": 1.2238805970149254,
+          "anchor": [
+            79.5,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            157,
+            132
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "row": 6,
+          "col": 2,
+          "rect": [
+            550,
+            1132,
+            166,
+            138
+          ],
+          "scale": 1.2238805970149254,
+          "anchor": [
+            83,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            164,
+            135
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "row": 6,
+          "col": 3,
+          "rect": [
+            801,
+            1132,
+            155,
+            138
+          ],
+          "scale": 1.2238805970149254,
+          "anchor": [
+            77.5,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            153,
+            136
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "row": 7,
+          "col": 0,
+          "rect": [
+            83,
+            1322,
+            135,
+            145
+          ],
+          "scale": 1.1702127659574468,
+          "anchor": [
+            67.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            140
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "row": 7,
+          "col": 1,
+          "rect": [
+            320,
+            1322,
+            136,
+            145
+          ],
+          "scale": 1.1702127659574468,
+          "anchor": [
+            68,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            134,
+            143
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "row": 7,
+          "col": 2,
+          "rect": [
+            566,
+            1322,
+            144,
+            145
+          ],
+          "scale": 1.1702127659574468,
+          "anchor": [
+            72,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            135
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "row": 7,
+          "col": 3,
+          "rect": [
+            817,
+            1322,
+            129,
+            145
+          ],
+          "scale": 1.1702127659574468,
+          "anchor": [
+            64.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            127,
+            139
+          ],
+          "anchorMethod": "shared row ground; silhouette centre; scale matched to approved idle",
+          "calibration": {
+            "review": "pending"
+          }
+        }
+      ]
+    }
+  ]
+}

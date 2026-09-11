@@ -393,17 +393,17 @@ export const ILLUSTRATED_SPRITE_ATLASES = {
   },
   "granadero-dead-idle": {
     "file": "granadero-dead-idle.png",
-    "cell": 240,
+    "cell": 288,
     "anchor": [
-      120,
-      141
+      144,
+      225
     ],
-    "logicalCell": 80,
+    "logicalCell": 96,
     "framesPerDirection": 1,
     "fps": 0,
     "size": [
-      1920,
-      240
+      2304,
+      288
     ]
   },
   "granadero-prone-armed-idle": {
@@ -723,17 +723,17 @@ export const ILLUSTRATED_SPRITE_ATLASES = {
   },
   "royalist-dead-idle": {
     "file": "royalist-dead-idle.png",
-    "cell": 240,
+    "cell": 288,
     "anchor": [
-      120,
-      141
+      144,
+      225
     ],
-    "logicalCell": 80,
+    "logicalCell": 96,
     "framesPerDirection": 1,
     "fps": 0,
     "size": [
-      1920,
-      240
+      2304,
+      288
     ]
   },
   "royalist-prone-armed-walk": {
@@ -1278,17 +1278,17 @@ export const ILLUSTRATED_SPRITE_ATLASES = {
   },
   "woman-scout-dead-idle": {
     "file": "woman-scout-dead-idle.png",
-    "cell": 240,
+    "cell": 288,
     "anchor": [
-      120,
-      141
+      144,
+      225
     ],
-    "logicalCell": 80,
+    "logicalCell": 96,
     "framesPerDirection": 1,
     "fps": 0,
     "size": [
-      1920,
-      240
+      2304,
+      288
     ]
   },
   "woman-scout-prone-armed-walk": {
@@ -2553,17 +2553,17 @@ export const ILLUSTRATED_SPRITE_ATLASES = {
   },
   "gaucho-dead-idle": {
     "file": "gaucho-dead-idle.png",
-    "cell": 240,
+    "cell": 288,
     "anchor": [
-      120,
-      141
+      144,
+      225
     ],
-    "logicalCell": 80,
+    "logicalCell": 96,
     "framesPerDirection": 1,
     "fps": 0,
     "size": [
-      1920,
-      240
+      2304,
+      288
     ]
   },
   "gaucho-mounted-idle": {
@@ -2958,17 +2958,17 @@ export const ILLUSTRATED_SPRITE_ATLASES = {
   },
   "worker-dead-idle": {
     "file": "worker-dead-idle.png",
-    "cell": 240,
+    "cell": 288,
     "anchor": [
-      120,
-      141
+      144,
+      225
     ],
-    "logicalCell": 80,
+    "logicalCell": 96,
     "framesPerDirection": 1,
     "fps": 0,
     "size": [
-      1920,
-      240
+      2304,
+      288
     ]
   },
   "worker-mounted-idle": {
@@ -3603,17 +3603,17 @@ export const ILLUSTRATED_SPRITE_ATLASES = {
   },
   "surgeon-dead-idle": {
     "file": "surgeon-dead-idle.png",
-    "cell": 240,
+    "cell": 288,
     "anchor": [
-      120,
-      141
+      144,
+      225
     ],
-    "logicalCell": 80,
+    "logicalCell": 96,
     "framesPerDirection": 1,
     "fps": 0,
     "size": [
-      1920,
-      240
+      2304,
+      288
     ]
   },
   "surgeon-mounted-idle": {
@@ -3813,17 +3813,17 @@ export const ILLUSTRATED_SPRITE_ATLASES = {
   },
   "woman-shawl-dead-idle": {
     "file": "woman-shawl-dead-idle.png",
-    "cell": 240,
+    "cell": 288,
     "anchor": [
-      120,
-      141
+      144,
+      225
     ],
-    "logicalCell": 80,
+    "logicalCell": 96,
     "framesPerDirection": 1,
     "fps": 0,
     "size": [
-      1920,
-      240
+      2304,
+      288
     ]
   },
   "woman-elder-crouch-idle": {
@@ -4473,17 +4473,17 @@ export const ILLUSTRATED_SPRITE_ATLASES = {
   },
   "friar-dead-idle": {
     "file": "friar-dead-idle.png",
-    "cell": 240,
+    "cell": 288,
     "anchor": [
-      120,
-      141
+      144,
+      225
     ],
-    "logicalCell": 80,
+    "logicalCell": 96,
     "framesPerDirection": 1,
     "fps": 0,
     "size": [
-      1920,
-      240
+      2304,
+      288
     ]
   },
   "woman-headscarf-mounted-walk": {
@@ -4919,6 +4919,1446 @@ export const ILLUSTRATED_SPRITE_ATLASES = {
     "size": [
       960,
       1920
+    ]
+  },
+  "granadero-mounted-run": {
+    "file": "granadero-mounted-run.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 7,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "granadero-aim-idle": {
+    "file": "granadero-aim-idle.png",
+    "cell": 210,
+    "anchor": [
+      105,
+      186
+    ],
+    "logicalCell": 70,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      1680,
+      210
+    ]
+  },
+  "granadero-crouch-aim-idle": {
+    "file": "granadero-crouch-aim-idle.png",
+    "cell": 210,
+    "anchor": [
+      105,
+      186
+    ],
+    "logicalCell": 70,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      1680,
+      210
+    ]
+  },
+  "granadero-prone-aim-idle": {
+    "file": "granadero-prone-aim-idle.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      165
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      2304,
+      288
+    ]
+  },
+  "granadero-crouch-fire": {
+    "file": "granadero-crouch-fire.png",
+    "cell": 210,
+    "anchor": [
+      105,
+      186
+    ],
+    "logicalCell": 70,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      840,
+      1680
+    ]
+  },
+  "granadero-crouch-reload": {
+    "file": "granadero-crouch-reload.png",
+    "cell": 240,
+    "anchor": [
+      120,
+      210
+    ],
+    "logicalCell": 80,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      960,
+      1920
+    ]
+  },
+  "granadero-mounted-strike": {
+    "file": "granadero-mounted-strike.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "granadero-interact": {
+    "file": "granadero-interact.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "granadero-crouch-interact": {
+    "file": "granadero-crouch-interact.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "granadero-collapse": {
+    "file": "granadero-collapse.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "granadero-mounted-fire": {
+    "file": "granadero-mounted-fire.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "granadero-mounted-reload": {
+    "file": "granadero-mounted-reload.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "royalist-mounted-run": {
+    "file": "royalist-mounted-run.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 7,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "royalist-aim-idle": {
+    "file": "royalist-aim-idle.png",
+    "cell": 210,
+    "anchor": [
+      105,
+      186
+    ],
+    "logicalCell": 70,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      1680,
+      210
+    ]
+  },
+  "royalist-crouch-aim-idle": {
+    "file": "royalist-crouch-aim-idle.png",
+    "cell": 240,
+    "anchor": [
+      120,
+      210
+    ],
+    "logicalCell": 80,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      1920,
+      240
+    ]
+  },
+  "royalist-prone-aim-idle": {
+    "file": "royalist-prone-aim-idle.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      165
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      2304,
+      288
+    ]
+  },
+  "royalist-crouch-fire": {
+    "file": "royalist-crouch-fire.png",
+    "cell": 240,
+    "anchor": [
+      120,
+      210
+    ],
+    "logicalCell": 80,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      960,
+      1920
+    ]
+  },
+  "royalist-crouch-reload": {
+    "file": "royalist-crouch-reload.png",
+    "cell": 240,
+    "anchor": [
+      120,
+      210
+    ],
+    "logicalCell": 80,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      960,
+      1920
+    ]
+  },
+  "royalist-mounted-strike": {
+    "file": "royalist-mounted-strike.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "royalist-interact": {
+    "file": "royalist-interact.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "royalist-crouch-interact": {
+    "file": "royalist-crouch-interact.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "royalist-collapse": {
+    "file": "royalist-collapse.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "royalist-mounted-fire": {
+    "file": "royalist-mounted-fire.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "royalist-mounted-reload": {
+    "file": "royalist-mounted-reload.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "worker-mounted-run": {
+    "file": "worker-mounted-run.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 7,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "worker-aim-idle": {
+    "file": "worker-aim-idle.png",
+    "cell": 210,
+    "anchor": [
+      105,
+      186
+    ],
+    "logicalCell": 70,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      1680,
+      210
+    ]
+  },
+  "worker-crouch-aim-idle": {
+    "file": "worker-crouch-aim-idle.png",
+    "cell": 210,
+    "anchor": [
+      105,
+      186
+    ],
+    "logicalCell": 70,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      1680,
+      210
+    ]
+  },
+  "worker-prone-aim-idle": {
+    "file": "worker-prone-aim-idle.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      165
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      2304,
+      288
+    ]
+  },
+  "worker-crouch-fire": {
+    "file": "worker-crouch-fire.png",
+    "cell": 210,
+    "anchor": [
+      105,
+      186
+    ],
+    "logicalCell": 70,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      840,
+      1680
+    ]
+  },
+  "worker-crouch-reload": {
+    "file": "worker-crouch-reload.png",
+    "cell": 240,
+    "anchor": [
+      120,
+      210
+    ],
+    "logicalCell": 80,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      960,
+      1920
+    ]
+  },
+  "worker-mounted-strike": {
+    "file": "worker-mounted-strike.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "worker-interact": {
+    "file": "worker-interact.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "worker-crouch-interact": {
+    "file": "worker-crouch-interact.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "worker-collapse": {
+    "file": "worker-collapse.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "worker-mounted-fire": {
+    "file": "worker-mounted-fire.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "worker-mounted-reload": {
+    "file": "worker-mounted-reload.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "surgeon-mounted-run": {
+    "file": "surgeon-mounted-run.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 7,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "surgeon-aim-idle": {
+    "file": "surgeon-aim-idle.png",
+    "cell": 210,
+    "anchor": [
+      105,
+      186
+    ],
+    "logicalCell": 70,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      1680,
+      210
+    ]
+  },
+  "surgeon-crouch-aim-idle": {
+    "file": "surgeon-crouch-aim-idle.png",
+    "cell": 210,
+    "anchor": [
+      105,
+      186
+    ],
+    "logicalCell": 70,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      1680,
+      210
+    ]
+  },
+  "surgeon-prone-aim-idle": {
+    "file": "surgeon-prone-aim-idle.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      165
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      2304,
+      288
+    ]
+  },
+  "surgeon-crouch-fire": {
+    "file": "surgeon-crouch-fire.png",
+    "cell": 210,
+    "anchor": [
+      105,
+      186
+    ],
+    "logicalCell": 70,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      840,
+      1680
+    ]
+  },
+  "surgeon-crouch-reload": {
+    "file": "surgeon-crouch-reload.png",
+    "cell": 240,
+    "anchor": [
+      120,
+      210
+    ],
+    "logicalCell": 80,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      960,
+      1920
+    ]
+  },
+  "surgeon-mounted-strike": {
+    "file": "surgeon-mounted-strike.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "surgeon-interact": {
+    "file": "surgeon-interact.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "surgeon-crouch-interact": {
+    "file": "surgeon-crouch-interact.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "surgeon-collapse": {
+    "file": "surgeon-collapse.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "surgeon-mounted-fire": {
+    "file": "surgeon-mounted-fire.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "surgeon-mounted-reload": {
+    "file": "surgeon-mounted-reload.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "gaucho-mounted-run": {
+    "file": "gaucho-mounted-run.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 7,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "gaucho-aim-idle": {
+    "file": "gaucho-aim-idle.png",
+    "cell": 210,
+    "anchor": [
+      105,
+      186
+    ],
+    "logicalCell": 70,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      1680,
+      210
+    ]
+  },
+  "gaucho-crouch-aim-idle": {
+    "file": "gaucho-crouch-aim-idle.png",
+    "cell": 210,
+    "anchor": [
+      105,
+      186
+    ],
+    "logicalCell": 70,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      1680,
+      210
+    ]
+  },
+  "gaucho-prone-aim-idle": {
+    "file": "gaucho-prone-aim-idle.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      165
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      2304,
+      288
+    ]
+  },
+  "gaucho-crouch-fire": {
+    "file": "gaucho-crouch-fire.png",
+    "cell": 210,
+    "anchor": [
+      105,
+      186
+    ],
+    "logicalCell": 70,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      840,
+      1680
+    ]
+  },
+  "gaucho-crouch-reload": {
+    "file": "gaucho-crouch-reload.png",
+    "cell": 240,
+    "anchor": [
+      120,
+      210
+    ],
+    "logicalCell": 80,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      960,
+      1920
+    ]
+  },
+  "gaucho-mounted-strike": {
+    "file": "gaucho-mounted-strike.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "gaucho-interact": {
+    "file": "gaucho-interact.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "gaucho-crouch-interact": {
+    "file": "gaucho-crouch-interact.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "gaucho-collapse": {
+    "file": "gaucho-collapse.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "gaucho-mounted-fire": {
+    "file": "gaucho-mounted-fire.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "gaucho-mounted-reload": {
+    "file": "gaucho-mounted-reload.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "friar-mounted-run": {
+    "file": "friar-mounted-run.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 7,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "friar-aim-idle": {
+    "file": "friar-aim-idle.png",
+    "cell": 210,
+    "anchor": [
+      105,
+      186
+    ],
+    "logicalCell": 70,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      1680,
+      210
+    ]
+  },
+  "friar-crouch-aim-idle": {
+    "file": "friar-crouch-aim-idle.png",
+    "cell": 240,
+    "anchor": [
+      120,
+      210
+    ],
+    "logicalCell": 80,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      1920,
+      240
+    ]
+  },
+  "friar-prone-aim-idle": {
+    "file": "friar-prone-aim-idle.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      165
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      2304,
+      288
+    ]
+  },
+  "friar-crouch-fire": {
+    "file": "friar-crouch-fire.png",
+    "cell": 240,
+    "anchor": [
+      120,
+      210
+    ],
+    "logicalCell": 80,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      960,
+      1920
+    ]
+  },
+  "friar-crouch-reload": {
+    "file": "friar-crouch-reload.png",
+    "cell": 240,
+    "anchor": [
+      120,
+      210
+    ],
+    "logicalCell": 80,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      960,
+      1920
+    ]
+  },
+  "friar-mounted-strike": {
+    "file": "friar-mounted-strike.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "friar-interact": {
+    "file": "friar-interact.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "friar-crouch-interact": {
+    "file": "friar-crouch-interact.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "friar-collapse": {
+    "file": "friar-collapse.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "friar-mounted-fire": {
+    "file": "friar-mounted-fire.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "friar-mounted-reload": {
+    "file": "friar-mounted-reload.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "woman-scout-mounted-run": {
+    "file": "woman-scout-mounted-run.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 7,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "woman-scout-aim-idle": {
+    "file": "woman-scout-aim-idle.png",
+    "cell": 210,
+    "anchor": [
+      105,
+      186
+    ],
+    "logicalCell": 70,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      1680,
+      210
+    ]
+  },
+  "woman-scout-crouch-aim-idle": {
+    "file": "woman-scout-crouch-aim-idle.png",
+    "cell": 240,
+    "anchor": [
+      120,
+      210
+    ],
+    "logicalCell": 80,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      1920,
+      240
+    ]
+  },
+  "woman-scout-prone-aim-idle": {
+    "file": "woman-scout-prone-aim-idle.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      165
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      2304,
+      288
+    ]
+  },
+  "woman-scout-crouch-fire": {
+    "file": "woman-scout-crouch-fire.png",
+    "cell": 240,
+    "anchor": [
+      120,
+      210
+    ],
+    "logicalCell": 80,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      960,
+      1920
+    ]
+  },
+  "woman-scout-crouch-reload": {
+    "file": "woman-scout-crouch-reload.png",
+    "cell": 240,
+    "anchor": [
+      120,
+      210
+    ],
+    "logicalCell": 80,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      960,
+      1920
+    ]
+  },
+  "woman-scout-mounted-strike": {
+    "file": "woman-scout-mounted-strike.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "woman-scout-interact": {
+    "file": "woman-scout-interact.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "woman-scout-crouch-interact": {
+    "file": "woman-scout-crouch-interact.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "woman-scout-collapse": {
+    "file": "woman-scout-collapse.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "woman-scout-mounted-fire": {
+    "file": "woman-scout-mounted-fire.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "woman-scout-mounted-reload": {
+    "file": "woman-scout-mounted-reload.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "woman-shawl-mounted-run": {
+    "file": "woman-shawl-mounted-run.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 7,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "woman-shawl-aim-idle": {
+    "file": "woman-shawl-aim-idle.png",
+    "cell": 210,
+    "anchor": [
+      105,
+      186
+    ],
+    "logicalCell": 70,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      1680,
+      210
+    ]
+  },
+  "woman-shawl-crouch-aim-idle": {
+    "file": "woman-shawl-crouch-aim-idle.png",
+    "cell": 210,
+    "anchor": [
+      105,
+      186
+    ],
+    "logicalCell": 70,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      1680,
+      210
+    ]
+  },
+  "woman-shawl-prone-aim-idle": {
+    "file": "woman-shawl-prone-aim-idle.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      165
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 1,
+    "fps": 0,
+    "size": [
+      2304,
+      288
+    ]
+  },
+  "woman-shawl-crouch-fire": {
+    "file": "woman-shawl-crouch-fire.png",
+    "cell": 210,
+    "anchor": [
+      105,
+      186
+    ],
+    "logicalCell": 70,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      840,
+      1680
+    ]
+  },
+  "woman-shawl-crouch-reload": {
+    "file": "woman-shawl-crouch-reload.png",
+    "cell": 240,
+    "anchor": [
+      120,
+      210
+    ],
+    "logicalCell": 80,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      960,
+      1920
+    ]
+  },
+  "woman-shawl-mounted-strike": {
+    "file": "woman-shawl-mounted-strike.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "woman-shawl-interact": {
+    "file": "woman-shawl-interact.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "woman-shawl-crouch-interact": {
+    "file": "woman-shawl-crouch-interact.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "woman-shawl-collapse": {
+    "file": "woman-shawl-collapse.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "woman-shawl-mounted-fire": {
+    "file": "woman-shawl-mounted-fire.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
+    ]
+  },
+  "woman-shawl-mounted-reload": {
+    "file": "woman-shawl-mounted-reload.png",
+    "cell": 288,
+    "anchor": [
+      144,
+      225
+    ],
+    "logicalCell": 96,
+    "framesPerDirection": 4,
+    "fps": 5,
+    "size": [
+      1152,
+      2304
     ]
   }
 };

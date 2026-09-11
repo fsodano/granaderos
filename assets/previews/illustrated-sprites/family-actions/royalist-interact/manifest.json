@@ -1,0 +1,778 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "royalist-interact": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sha256": "37f04bba688a80543b4d57c6998b22cad5df8cbd13c666bd642655500eb64a23",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6781609195402298,
+          "sourceAnchor": [
+            33,
+            176
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            63,
+            176
+          ],
+          "bounds": [
+            123,
+            107,
+            164,
+            225
+          ],
+          "sha256": "6e5e7d5e8a26c7c851bf71a36c0f9c02b601d6f68e30650459b2fb7a433033d8"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6781609195402298,
+          "sourceAnchor": [
+            34,
+            176
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            97,
+            176
+          ],
+          "bounds": [
+            122,
+            107,
+            186,
+            225
+          ],
+          "sha256": "772cddf20c031561282e7d9e57ff290fbaf6046821619d2a958e4b8d8a83eba8"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6781609195402298,
+          "sourceAnchor": [
+            33.5,
+            176
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            80,
+            176
+          ],
+          "bounds": [
+            123,
+            107,
+            176,
+            225
+          ],
+          "sha256": "8ebb0612d23303916bd7e64415126c1cbb1cab5a272806ea51a563fcfa22c9cc"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6781609195402298,
+          "sourceAnchor": [
+            33,
+            176
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            64,
+            176
+          ],
+          "bounds": [
+            123,
+            107,
+            165,
+            225
+          ],
+          "sha256": "36bc3d2e8fe39b10f759cff8ba0a16af630db7284fcac5548ccd85275cae0d40"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.664804469273743,
+          "sourceAnchor": [
+            35,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            64,
+            181
+          ],
+          "bounds": [
+            122,
+            106,
+            163,
+            225
+          ],
+          "sha256": "d769158e143250c6a96aae2bf9ec04b993cbfe41fec12c3bc91a0a610620db93"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.664804469273743,
+          "sourceAnchor": [
+            34.5,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            101,
+            181
+          ],
+          "bounds": [
+            122,
+            106,
+            188,
+            225
+          ],
+          "sha256": "e10fc5bad9db13c3a0daa2da20fb9ce2530afac582670a6ed90aa82519ce8c4c"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.664804469273743,
+          "sourceAnchor": [
+            36.5,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            96,
+            181
+          ],
+          "bounds": [
+            121,
+            106,
+            183,
+            225
+          ],
+          "sha256": "7d2f98a6f5b0b60754a9965769f8c9f560d6f180f91dd7d3fc1c0fd904fed2e7"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.664804469273743,
+          "sourceAnchor": [
+            35.5,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            65,
+            181
+          ],
+          "bounds": [
+            122,
+            106,
+            164,
+            225
+          ],
+          "sha256": "f1a5fe240dd262ef4e045b234be61aa6185b3e9565ebd63647629c2d9d60df7f"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.659217877094972,
+          "sourceAnchor": [
+            28,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            51,
+            181
+          ],
+          "bounds": [
+            127,
+            107,
+            159,
+            225
+          ],
+          "sha256": "4c7cd93ea2bc9663e8fb6274e953e83b38c5c8ca1c7d654ed92e387e2dfff550"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.659217877094972,
+          "sourceAnchor": [
+            27,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            87,
+            181
+          ],
+          "bounds": [
+            128,
+            107,
+            184,
+            225
+          ],
+          "sha256": "fcace4bcffd14ee2548149001a1f5bc9a4cac1c3eb52957448f115fcc8e8eb9b"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.659217877094972,
+          "sourceAnchor": [
+            27,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            77,
+            181
+          ],
+          "bounds": [
+            128,
+            107,
+            177,
+            225
+          ],
+          "sha256": "ba9ae70a6aa86946c70ed7b5f8d5b3e34fa79603dc24e460f8945ffdd764e434"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.659217877094972,
+          "sourceAnchor": [
+            28.5,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            52,
+            181
+          ],
+          "bounds": [
+            127,
+            107,
+            160,
+            225
+          ],
+          "sha256": "07cd04bf7fcb24a8d9643b68b5c43eb1de719d40bc318daf6c487d88d933968e"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6555555555555556,
+          "sourceAnchor": [
+            36.5,
+            182
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            66,
+            182
+          ],
+          "bounds": [
+            121,
+            107,
+            163,
+            225
+          ],
+          "sha256": "c1e84f88667e143d1e016edbe4084f6a5a8fa906b3b226cb9c7e7c906938c277"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6555555555555556,
+          "sourceAnchor": [
+            35.5,
+            182
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            94,
+            182
+          ],
+          "bounds": [
+            122,
+            107,
+            182,
+            225
+          ],
+          "sha256": "6c481270ff6d67bfeb8697f7a154396377715bbd3a1a7281505bf394f27a221f"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6555555555555556,
+          "sourceAnchor": [
+            31.5,
+            182
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            61,
+            182
+          ],
+          "bounds": [
+            125,
+            107,
+            164,
+            225
+          ],
+          "sha256": "3629e4a913af809685418bb80f9d786648840ce1021d20630f9f89efd096833f"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6555555555555556,
+          "sourceAnchor": [
+            36.5,
+            182
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            66,
+            182
+          ],
+          "bounds": [
+            121,
+            107,
+            163,
+            225
+          ],
+          "sha256": "2ea923d34d9f3587f57a67832c339544bed01ff08db5583ed442f9bdd4fd9e06"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6573033707865169,
+          "sourceAnchor": [
+            35,
+            180
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            69,
+            180
+          ],
+          "bounds": [
+            122,
+            108,
+            166,
+            225
+          ],
+          "sha256": "3fce749b5a12e0a3461410f6fc6809bd6aea2a7bee2afa9b67c63004db9837be"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6573033707865169,
+          "sourceAnchor": [
+            34,
+            180
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            96,
+            180
+          ],
+          "bounds": [
+            123,
+            108,
+            185,
+            225
+          ],
+          "sha256": "402a669e5bd349228ed0cdcd4fd450d8585f67cfffc5a8bb8d07af9585bdc7ce"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6573033707865169,
+          "sourceAnchor": [
+            34,
+            180
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            69,
+            180
+          ],
+          "bounds": [
+            123,
+            108,
+            167,
+            225
+          ],
+          "sha256": "bb15f0509039a9418befd067b6fbae834cc5edbef9f1939a8f9bfa8135af6b22"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6573033707865169,
+          "sourceAnchor": [
+            35,
+            180
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            69,
+            180
+          ],
+          "bounds": [
+            122,
+            108,
+            166,
+            225
+          ],
+          "sha256": "fc310a23fbbe00fb376527266ceff9a13c23863de8b132330837772ee9c073a0"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6519337016574586,
+          "sourceAnchor": [
+            31,
+            183
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            61,
+            183
+          ],
+          "bounds": [
+            125,
+            107,
+            163,
+            225
+          ],
+          "sha256": "51de5d50dd28bfeae1757bddced2f2a72a05a1e0b0147f7753bef1d92ab6aafa"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6519337016574586,
+          "sourceAnchor": [
+            63,
+            183
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            94,
+            183
+          ],
+          "bounds": [
+            104,
+            107,
+            164,
+            225
+          ],
+          "sha256": "f9d2525990ec4c002981e7ef72b2b1fa3bca70127552c3a38c2281dce8a1c4f1"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6519337016574586,
+          "sourceAnchor": [
+            54.5,
+            183
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            84,
+            183
+          ],
+          "bounds": [
+            110,
+            107,
+            163,
+            225
+          ],
+          "sha256": "3f848e014d688943ecc2ce796257389d9b1157eaa745f4188c92e92e564ebf34"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6519337016574586,
+          "sourceAnchor": [
+            31,
+            183
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            61,
+            183
+          ],
+          "bounds": [
+            125,
+            107,
+            163,
+            225
+          ],
+          "sha256": "619d5ffc03af61ab1d9f7d9db1f916b1dc001a4a3f154a9ae266bfdeb283e606"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6424581005586593,
+          "sourceAnchor": [
+            29,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            61,
+            181
+          ],
+          "bounds": [
+            127,
+            110,
+            165,
+            225
+          ],
+          "sha256": "03624f48d0e9a4f9f34c597de720c8c90f43c12439a9e7d25f7133df99788ce2"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6424581005586593,
+          "sourceAnchor": [
+            65,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            97,
+            181
+          ],
+          "bounds": [
+            104,
+            110,
+            165,
+            225
+          ],
+          "sha256": "91a984b7f53c68858cfc5ebc7b9578cecfaff32c8d8381a8b5630c0a0a2c23bf"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6424581005586593,
+          "sourceAnchor": [
+            47.5,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            78,
+            181
+          ],
+          "bounds": [
+            115,
+            110,
+            164,
+            225
+          ],
+          "sha256": "89fca5af56eec302e9d711e787edd50e3b9acef7aa466f098840489e7bd2e8e7"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6424581005586593,
+          "sourceAnchor": [
+            28.5,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            61,
+            181
+          ],
+          "bounds": [
+            127,
+            110,
+            165,
+            225
+          ],
+          "sha256": "5d44cc334329b5e279650436a6d1418236fc1853bff1070185b5d306b7ca6b92"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6480446927374302,
+          "sourceAnchor": [
+            31.5,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            65,
+            181
+          ],
+          "bounds": [
+            125,
+            109,
+            166,
+            225
+          ],
+          "sha256": "f734db4d81a0c8d75d99330b73e8d4fe70593a1d0e88be7d8377c8599e9c7c66"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6480446927374302,
+          "sourceAnchor": [
+            63.5,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            97,
+            181
+          ],
+          "bounds": [
+            104,
+            109,
+            166,
+            225
+          ],
+          "sha256": "ffe6357b4c0e3e39b49f3b3a0461bb70c483a20d495148ea227a09e381c6afd3"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6480446927374302,
+          "sourceAnchor": [
+            54,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            88,
+            181
+          ],
+          "bounds": [
+            110,
+            109,
+            166,
+            225
+          ],
+          "sha256": "ffa79a9342be438d891876571e26fecb6d03fc7e0d29f29f3d726447834e48da"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-interact-v1.png",
+          "sourceScale": 0.6480446927374302,
+          "sourceAnchor": [
+            32,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            66,
+            181
+          ],
+          "bounds": [
+            125,
+            109,
+            166,
+            225
+          ],
+          "sha256": "b16c91b0da2905144e9cdc3ab6db66f4590a858d3f62f2cd4b6be43990e53ffb"
+        }
+      ],
+      "file": "royalist-interact.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "9e11e5bbdd366165fa12f00a2cc15f46d3a188a69eee09f57a344209ef64018f"
+    }
+  }
+}

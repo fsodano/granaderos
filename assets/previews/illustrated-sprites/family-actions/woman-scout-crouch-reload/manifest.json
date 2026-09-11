@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-scout-crouch-reload": {
+      "cell": 240,
+      "anchor": [
+        120,
+        210
+      ],
+      "logicalCell": 80,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-north-v1.png",
+          "sha256": "e32993c6f3f3645259906fba05954b64b279eba56485578a02bf2618dcdcad6d",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-south-v1.png",
+          "sha256": "ed4b97febcc8dc5bd9b27608291272bc6a62d6fc37abb05c1b9a1fea8680ba6a",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-north-v1.png",
+          "sourceScale": 0.3399014778325123,
+          "sourceAnchor": [
+            128,
+            282
+          ],
+          "sourceBounds": [
+            2,
+            79,
+            198,
+            282
+          ],
+          "bounds": [
+            77,
+            141,
+            144,
+            210
+          ],
+          "sha256": "cf9c8c9a2688ef17073dc795ac46caad73450d4339ca57d36051331081c05bc7"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-north-v1.png",
+          "sourceScale": 0.3399014778325123,
+          "sourceAnchor": [
+            74,
+            282
+          ],
+          "sourceBounds": [
+            2,
+            58,
+            152,
+            282
+          ],
+          "bounds": [
+            96,
+            134,
+            147,
+            210
+          ],
+          "sha256": "7b8473fdbef84cfd45122461a51357344e6c535756897728cb4b53d481cedcc0"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-north-v1.png",
+          "sourceScale": 0.3399014778325123,
+          "sourceAnchor": [
+            74,
+            282
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            139,
+            282
+          ],
+          "bounds": [
+            96,
+            115,
+            143,
+            210
+          ],
+          "sha256": "bec01222abf4249ff29ac45b9f70c9bd4db60e31419b1b6135ef83d88bbee39f"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-north-v1.png",
+          "sourceScale": 0.3399014778325123,
+          "sourceAnchor": [
+            129,
+            282
+          ],
+          "sourceBounds": [
+            2,
+            79,
+            199,
+            282
+          ],
+          "bounds": [
+            77,
+            141,
+            144,
+            210
+          ],
+          "sha256": "cada7f0e1b9f5bb383785f6cb96208a7902f35b0adb4a9e3b02c8c843da4e99a"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-north-v1.png",
+          "sourceScale": 0.35784313725490197,
+          "sourceAnchor": [
+            76,
+            270
+          ],
+          "sourceBounds": [
+            2,
+            66,
+            192,
+            270
+          ],
+          "bounds": [
+            94,
+            137,
+            162,
+            210
+          ],
+          "sha256": "dcff962bae7bf0cdcb5ac2356cc4601b731057c8fa8d02e3246db05e4278d8bb"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-north-v1.png",
+          "sourceScale": 0.35784313725490197,
+          "sourceAnchor": [
+            89,
+            270
+          ],
+          "sourceBounds": [
+            2,
+            50,
+            162,
+            270
+          ],
+          "bounds": [
+            89,
+            131,
+            146,
+            210
+          ],
+          "sha256": "925bcf5005301a6efb81c21907a738bd055d3d82dac1dcd3c5a3254ed9efdb1e"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-north-v1.png",
+          "sourceScale": 0.35784313725490197,
+          "sourceAnchor": [
+            80,
+            270
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            270
+          ],
+          "bounds": [
+            92,
+            114,
+            142,
+            210
+          ],
+          "sha256": "0d47ca436bb60585045af3bcfa5765fa8e95557f31d9734ee354be6bc3ceaf15"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-north-v1.png",
+          "sourceScale": 0.35784313725490197,
+          "sourceAnchor": [
+            76,
+            270
+          ],
+          "sourceBounds": [
+            2,
+            66,
+            193,
+            270
+          ],
+          "bounds": [
+            94,
+            137,
+            162,
+            210
+          ],
+          "sha256": "828129b8473c7c44d6f8140f59e394c10a2180404a457155e9fcdf20b6c7861e"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-north-v1.png",
+          "sourceScale": 0.3694581280788177,
+          "sourceAnchor": [
+            76.5,
+            262
+          ],
+          "sourceBounds": [
+            2,
+            58,
+            203,
+            261
+          ],
+          "bounds": [
+            92,
+            135,
+            166,
+            210
+          ],
+          "sha256": "a995228141e79a557c9af74e28c3dda24841fa7095f7af41e2178ea396adc98d"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-north-v1.png",
+          "sourceScale": 0.3694581280788177,
+          "sourceAnchor": [
+            94.5,
+            262
+          ],
+          "sourceBounds": [
+            2,
+            52,
+            153,
+            261
+          ],
+          "bounds": [
+            86,
+            132,
+            142,
+            209
+          ],
+          "sha256": "28dc2bd95df0fb481abc3b4f70086757bc62ef0187dd29f19d8d4fc8ea3df70e"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-north-v1.png",
+          "sourceScale": 0.3694581280788177,
+          "sourceAnchor": [
+            84,
+            262
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            144,
+            262
+          ],
+          "bounds": [
+            90,
+            114,
+            142,
+            210
+          ],
+          "sha256": "f1e4022e3c6b670e1cf21ea9ade54a53403bd76b103c0817c0084925a948e953"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-north-v1.png",
+          "sourceScale": 0.3694581280788177,
+          "sourceAnchor": [
+            75.5,
+            262
+          ],
+          "sourceBounds": [
+            2,
+            58,
+            203,
+            260
+          ],
+          "bounds": [
+            93,
+            135,
+            167,
+            210
+          ],
+          "sha256": "022784de311fc0b058d23da6f93797cc48227d7f04aaa99b6e0fa6bc7bf6a7d4"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-north-v1.png",
+          "sourceScale": 0.35784313725490197,
+          "sourceAnchor": [
+            84.5,
+            258
+          ],
+          "sourceBounds": [
+            2,
+            54,
+            205,
+            258
+          ],
+          "bounds": [
+            90,
+            137,
+            163,
+            210
+          ],
+          "sha256": "0f8f811612f3d796d47b738d6770170453ef0f2175edf6a49d6cd7888a026c83"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-north-v1.png",
+          "sourceScale": 0.35784313725490197,
+          "sourceAnchor": [
+            99,
+            258
+          ],
+          "sourceBounds": [
+            2,
+            54,
+            152,
+            258
+          ],
+          "bounds": [
+            85,
+            137,
+            139,
+            210
+          ],
+          "sha256": "b060399895fa9a5f48230b00dfb8cef7d1d516cb72cca574c58c3aeb58183c47"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-north-v1.png",
+          "sourceScale": 0.35784313725490197,
+          "sourceAnchor": [
+            92.5,
+            258
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            148,
+            258
+          ],
+          "bounds": [
+            88,
+            118,
+            140,
+            210
+          ],
+          "sha256": "27fdbb0aeda358084d37aa6a697bfc40fd97a1cf5b55a682c72429936c3a890b"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-north-v1.png",
+          "sourceScale": 0.35784313725490197,
+          "sourceAnchor": [
+            84,
+            258
+          ],
+          "sourceBounds": [
+            2,
+            54,
+            205,
+            258
+          ],
+          "bounds": [
+            91,
+            137,
+            164,
+            210
+          ],
+          "sha256": "371cab32f610382d0e8f30fda9a1d09de877bd2fd2e909a0ecaaf03f19469fd3"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-south-v1.png",
+          "sourceScale": 0.32701421800947866,
+          "sourceAnchor": [
+            88.5,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            63,
+            174,
+            274
+          ],
+          "bounds": [
+            92,
+            141,
+            148,
+            210
+          ],
+          "sha256": "4890ee2312dd1d9836eb87788390dcb056999a8c343e8211ebab48033747b50a"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-south-v1.png",
+          "sourceScale": 0.32701421800947866,
+          "sourceAnchor": [
+            82,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            56,
+            147,
+            274
+          ],
+          "bounds": [
+            94,
+            139,
+            141,
+            210
+          ],
+          "sha256": "72d114e777047e647368378b23b85827c6d6acbd6b5a57de5d4a2cc6eaab3651"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-south-v1.png",
+          "sourceScale": 0.32701421800947866,
+          "sourceAnchor": [
+            75.5,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            140,
+            274
+          ],
+          "bounds": [
+            96,
+            121,
+            141,
+            210
+          ],
+          "sha256": "9091c7045e37485a3b390491f0fc1a23844a078c96331274c7f396dc689352c9"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-south-v1.png",
+          "sourceScale": 0.32701421800947866,
+          "sourceAnchor": [
+            88,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            63,
+            176,
+            274
+          ],
+          "bounds": [
+            92,
+            141,
+            149,
+            210
+          ],
+          "sha256": "2ab36da635e309889478f2c6986769c694601fa649e8d5aa883b94e4cbb72d1f"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-south-v1.png",
+          "sourceScale": 0.35406698564593303,
+          "sourceAnchor": [
+            82,
+            273
+          ],
+          "sourceBounds": [
+            2,
+            64,
+            153,
+            273
+          ],
+          "bounds": [
+            92,
+            136,
+            145,
+            210
+          ],
+          "sha256": "d5eecbac0a3db4d47fefeea2b9ac288860d640ec19071358597021050c179a3f"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-south-v1.png",
+          "sourceScale": 0.35406698564593303,
+          "sourceAnchor": [
+            83,
+            273
+          ],
+          "sourceBounds": [
+            2,
+            57,
+            162,
+            273
+          ],
+          "bounds": [
+            91,
+            134,
+            148,
+            210
+          ],
+          "sha256": "0c48fb0e21bec357de15fa825fa047956b52d9e476791f20ef0a3b35c23fef4d"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-south-v1.png",
+          "sourceScale": 0.35406698564593303,
+          "sourceAnchor": [
+            77,
+            273
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            155,
+            273
+          ],
+          "bounds": [
+            93,
+            114,
+            147,
+            210
+          ],
+          "sha256": "099d1ef1616ebf0b50c78f868608e99b9819e33c8a714ba3db5e3dd3eb95ace7"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-south-v1.png",
+          "sourceScale": 0.35406698564593303,
+          "sourceAnchor": [
+            82,
+            273
+          ],
+          "sourceBounds": [
+            2,
+            64,
+            154,
+            273
+          ],
+          "bounds": [
+            92,
+            136,
+            146,
+            210
+          ],
+          "sha256": "78c2f0e2ac17d58ad32b7420a98058378e0d0e7c598686bb92752b9201dbbd47"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-south-v1.png",
+          "sourceScale": 0.3492822966507177,
+          "sourceAnchor": [
+            88,
+            271
+          ],
+          "sourceBounds": [
+            2,
+            62,
+            165,
+            271
+          ],
+          "bounds": [
+            90,
+            137,
+            147,
+            210
+          ],
+          "sha256": "d8749caabadb0fdb571f5812367ea41a552bc6b55b5d60867038f481ca138406"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-south-v1.png",
+          "sourceScale": 0.3492822966507177,
+          "sourceAnchor": [
+            57,
+            271
+          ],
+          "sourceBounds": [
+            2,
+            56,
+            149,
+            271
+          ],
+          "bounds": [
+            101,
+            135,
+            152,
+            210
+          ],
+          "sha256": "84a87d7788fe932d617a155b47e71669a308626a3fc49c3cc010334fabaa9b85"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-south-v1.png",
+          "sourceScale": 0.3492822966507177,
+          "sourceAnchor": [
+            59,
+            271
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            148,
+            271
+          ],
+          "bounds": [
+            100,
+            116,
+            151,
+            210
+          ],
+          "sha256": "dab2a021f50065f959d542d665f31a3914932cd8aea16c143441f53a82671a60"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-south-v1.png",
+          "sourceScale": 0.3492822966507177,
+          "sourceAnchor": [
+            88,
+            271
+          ],
+          "sourceBounds": [
+            2,
+            63,
+            166,
+            271
+          ],
+          "bounds": [
+            90,
+            137,
+            147,
+            210
+          ],
+          "sha256": "e5b44c17b132cebc4f6d1a58ad0beb5bf29f8944a966f7bf628909dd0f9c4efa"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-south-v1.png",
+          "sourceScale": 0.35096153846153844,
+          "sourceAnchor": [
+            112.5,
+            270
+          ],
+          "sourceBounds": [
+            2,
+            62,
+            196,
+            270
+          ],
+          "bounds": [
+            81,
+            137,
+            149,
+            210
+          ],
+          "sha256": "c5bb9e4bcd2c92a9f0856c65dd406cf5396080c817e0becb2c6e80b163fe498f"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-south-v1.png",
+          "sourceScale": 0.35096153846153844,
+          "sourceAnchor": [
+            60.5,
+            270
+          ],
+          "sourceBounds": [
+            2,
+            58,
+            155,
+            270
+          ],
+          "bounds": [
+            99,
+            136,
+            153,
+            210
+          ],
+          "sha256": "56430c6d60404eed79c9c982be91754d5de14c42aa8fe8243d3b3d5af6f15792"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-south-v1.png",
+          "sourceScale": 0.35096153846153844,
+          "sourceAnchor": [
+            61.5,
+            270
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            149,
+            270
+          ],
+          "bounds": [
+            99,
+            116,
+            151,
+            210
+          ],
+          "sha256": "8082f167b1db4312a6f4b99a0f09fa8ed0a486c1f78f400521ffd3dd114e6a3e"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-reload-south-v1.png",
+          "sourceScale": 0.35096153846153844,
+          "sourceAnchor": [
+            113.5,
+            270
+          ],
+          "sourceBounds": [
+            2,
+            62,
+            197,
+            270
+          ],
+          "bounds": [
+            81,
+            137,
+            149,
+            210
+          ],
+          "sha256": "2fc40e66d2afa9f6b7419a946740f31dde035464d3120c43f276a6137b8571d7"
+        }
+      ],
+      "file": "woman-scout-crouch-reload.png",
+      "size": [
+        960,
+        1920
+      ],
+      "sha256": "020706b5a30443017edb142886a92df141210eb056112f864a1b05b43e4d78e2"
+    }
+  }
+}

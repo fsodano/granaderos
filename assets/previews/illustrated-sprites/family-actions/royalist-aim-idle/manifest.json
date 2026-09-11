@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "royalist-aim-idle": {
+      "cell": 210,
+      "anchor": [
+        105,
+        186
+      ],
+      "logicalCell": 70,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/royalist-fire-north-v1.png",
+          "sha256": "a4dc59a57269ec254a4577ae0db2b45e45ec3e012c0c14edfcc205b2d3851a35",
+          "scale": 0.655
+        },
+        {
+          "file": "assets/source/illustrated-sprites/royalist-fire-south-v1.png",
+          "sha256": "bd558436d6a630ad143eef8cebd948a7841ff42049411479b37f7a731853feef",
+          "scale": 0.61
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/royalist-fire-north-v1.png",
+          "sourceScale": 0.655,
+          "sourceAnchor": [
+            31,
+            187
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            65,
+            180
+          ],
+          "bounds": [
+            86,
+            65,
+            127,
+            182
+          ],
+          "sha256": "678c51fea886175cf9b790eec2b4458ca552b3cfd7b405ff93b19a9e20debc97"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/royalist-fire-north-v1.png",
+          "sourceScale": 0.655,
+          "sourceAnchor": [
+            37,
+            184
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            113,
+            179
+          ],
+          "bounds": [
+            82,
+            67,
+            155,
+            183
+          ],
+          "sha256": "7a321e84949e1d4059f07832e8c862ad7e1d1fd554ef0091f27d2037eba4221f"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/royalist-fire-north-v1.png",
+          "sourceScale": 0.655,
+          "sourceAnchor": [
+            41,
+            190
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            143,
+            184
+          ],
+          "bounds": [
+            79,
+            63,
+            171,
+            182
+          ],
+          "sha256": "758b649295fd3152de572e792b09010bc7492c7b4debe71ee2797556cadc5ab8"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/royalist-fire-north-v1.png",
+          "sourceScale": 0.655,
+          "sourceAnchor": [
+            31,
+            182
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            105,
+            176
+          ],
+          "bounds": [
+            86,
+            68,
+            153,
+            182
+          ],
+          "sha256": "e065001e3c871ab68518df21731c60e79dc121b54aaa1066bad5f2605d2299ce"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/royalist-fire-south-v1.png",
+          "sourceScale": 0.61,
+          "sourceAnchor": [
+            37,
+            195
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            72,
+            193
+          ],
+          "bounds": [
+            84,
+            68,
+            127,
+            185
+          ],
+          "sha256": "60aea03b3cabc7f4fa9edee6da9db0072bb66f807cf0f8d4faf199627defadc8"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/royalist-fire-south-v1.png",
+          "sourceScale": 0.61,
+          "sourceAnchor": [
+            65,
+            193
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            107,
+            192
+          ],
+          "bounds": [
+            67,
+            69,
+            131,
+            185
+          ],
+          "sha256": "62c6a0e668bc5b33109e44acc6224171673fedd337a80a2ea93f061b438e264c"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/royalist-fire-south-v1.png",
+          "sourceScale": 0.61,
+          "sourceAnchor": [
+            119,
+            193
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            156,
+            190
+          ],
+          "bounds": [
+            34,
+            69,
+            128,
+            184
+          ],
+          "sha256": "d6d0afa420db5db19a831975ba531da1499b04ba4e9a305480e5cf2d4372c59b"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/royalist-fire-south-v1.png",
+          "sourceScale": 0.61,
+          "sourceAnchor": [
+            95,
+            187
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            128,
+            184
+          ],
+          "bounds": [
+            48,
+            73,
+            125,
+            184
+          ],
+          "sha256": "d70bb72f7428fdd6ebb7ccafac066ad365ee008a87e79b45ca984f4dee09e334"
+        }
+      ],
+      "file": "royalist-aim-idle.png",
+      "size": [
+        1680,
+        210
+      ],
+      "sha256": "10e5bf33aa25a8172de5ff3f73ff74d72cbd1a7772104cb9527d06997dd81ff7",
+      "derivedFrom": {
+        "atlas": "royalist-fire",
+        "frame": 0,
+        "reason": "hold authored pre-shot aim"
+      }
+    }
+  }
+}

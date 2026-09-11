@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "worker-crouch-interact": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-north-v1.png",
+          "sha256": "f341b451e12ba1c26f362a4a9e5ccb4d961de092e44fa92fbb5a81e9462ff6fe",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-south-v1.png",
+          "sha256": "b497c0eb0ecc10d7462f6708a8eaf84bcc377a6d9ea1d4094725a7e0690f9d5a",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-north-v1.png",
+          "sourceScale": 0.35,
+          "sourceAnchor": [
+            66,
+            202
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            130,
+            202
+          ],
+          "bounds": [
+            122,
+            155,
+            167,
+            225
+          ],
+          "sha256": "3be883a409fd6d25182a608fc85dbdfeb96f9852fdea67b2dc4ba803200bf8df"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-north-v1.png",
+          "sourceScale": 0.35,
+          "sourceAnchor": [
+            66,
+            202
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            147,
+            202
+          ],
+          "bounds": [
+            122,
+            155,
+            173,
+            225
+          ],
+          "sha256": "87c741cda5a8c1d6ed96eac9410d5359d2ccf13fb4e8dbb77f126b2b5a7db419"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-north-v1.png",
+          "sourceScale": 0.35,
+          "sourceAnchor": [
+            66,
+            202
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            150,
+            202
+          ],
+          "bounds": [
+            122,
+            155,
+            174,
+            225
+          ],
+          "sha256": "60d590e3b6231d62b866e7ff649833ab4340bfc90b69dc866609e572d2790ed5"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-north-v1.png",
+          "sourceScale": 0.35,
+          "sourceAnchor": [
+            66,
+            202
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            131,
+            202
+          ],
+          "bounds": [
+            122,
+            155,
+            167,
+            225
+          ],
+          "sha256": "bfe07f89d396576ab5c2fd079250e6dfe08d1edb93033d93681de28350fe9dba"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-north-v1.png",
+          "sourceScale": 0.36764705882352944,
+          "sourceAnchor": [
+            67.5,
+            206
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            140,
+            206
+          ],
+          "bounds": [
+            120,
+            150,
+            171,
+            225
+          ],
+          "sha256": "b59d6f859df297a2c2d479e0910a871cdf46b3bbfc1b8d17b37cd4d5a33b35a9"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-north-v1.png",
+          "sourceScale": 0.36764705882352944,
+          "sourceAnchor": [
+            68,
+            206
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            179,
+            206
+          ],
+          "bounds": [
+            120,
+            150,
+            185,
+            225
+          ],
+          "sha256": "1cf57463427ef7e335fb1feda8e37c0b318e898867923fb3e91424cb69af1ca6"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-north-v1.png",
+          "sourceScale": 0.36764705882352944,
+          "sourceAnchor": [
+            68.5,
+            206
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            170,
+            206
+          ],
+          "bounds": [
+            120,
+            150,
+            182,
+            225
+          ],
+          "sha256": "a16fd709b80eabf1112c4cfb98d4161d72c6900686e0ad0dbfd041aa45cbcb6d"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-north-v1.png",
+          "sourceScale": 0.36764705882352944,
+          "sourceAnchor": [
+            67.5,
+            206
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            206
+          ],
+          "bounds": [
+            120,
+            150,
+            171,
+            225
+          ],
+          "sha256": "4d8da3ade51265f2073fd5a78a72420d1d1c013b565b8b1578ac9650f85b3ed3"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-north-v1.png",
+          "sourceScale": 0.38308457711442784,
+          "sourceAnchor": [
+            67,
+            203
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            131,
+            203
+          ],
+          "bounds": [
+            119,
+            148,
+            168,
+            225
+          ],
+          "sha256": "be5317ec3b1e6840b6044e090d03419103dad87330ca825f3c1e3ab52babea26"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-north-v1.png",
+          "sourceScale": 0.38308457711442784,
+          "sourceAnchor": [
+            80.5,
+            203
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            186,
+            203
+          ],
+          "bounds": [
+            114,
+            148,
+            184,
+            225
+          ],
+          "sha256": "bb1a9dcae671800ac817bfe48f10b2b391e2341dfd564236b23f51e2d80c5a67"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-north-v1.png",
+          "sourceScale": 0.38308457711442784,
+          "sourceAnchor": [
+            79.5,
+            203
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            167,
+            203
+          ],
+          "bounds": [
+            114,
+            148,
+            177,
+            225
+          ],
+          "sha256": "4e9d78fc0a996d52188a58b1391cdd04023bd52612228df508583fd2669e8024"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-north-v1.png",
+          "sourceScale": 0.38308457711442784,
+          "sourceAnchor": [
+            67.5,
+            203
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            131,
+            203
+          ],
+          "bounds": [
+            119,
+            148,
+            168,
+            225
+          ],
+          "sha256": "6e778f72a648e9ef0e72987d8d4e409bcc2272767242ec3a0b3959cf08e86a96"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-north-v1.png",
+          "sourceScale": 0.373134328358209,
+          "sourceAnchor": [
+            73,
+            203
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            150,
+            203
+          ],
+          "bounds": [
+            118,
+            150,
+            173,
+            225
+          ],
+          "sha256": "c8d3de4f8969746afb291117f273f26750a9e3646d085929415b8203057ab607"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-north-v1.png",
+          "sourceScale": 0.373134328358209,
+          "sourceAnchor": [
+            43.5,
+            203
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            172,
+            203
+          ],
+          "bounds": [
+            129,
+            150,
+            192,
+            225
+          ],
+          "sha256": "4c0c4c0b693177e73bd31c7afa9b00df4aa0eb8abbbf149a65fdded5640ba7f0"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-north-v1.png",
+          "sourceScale": 0.373134328358209,
+          "sourceAnchor": [
+            35,
+            203
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            155,
+            203
+          ],
+          "bounds": [
+            132,
+            151,
+            189,
+            225
+          ],
+          "sha256": "4e80b57ebb0919701f8a7d957df78590ad325b9aada573f9b91ddf8e6eda5675"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-north-v1.png",
+          "sourceScale": 0.373134328358209,
+          "sourceAnchor": [
+            73,
+            203
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            151,
+            203
+          ],
+          "bounds": [
+            118,
+            150,
+            174,
+            225
+          ],
+          "sha256": "0ff721ea0299490ead8ba28beee6701b9e6a31e1ce1d573b22e094c88406c794"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-south-v1.png",
+          "sourceScale": 0.355,
+          "sourceAnchor": [
+            74,
+            208
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            202
+          ],
+          "bounds": [
+            118,
+            152,
+            168,
+            223
+          ],
+          "sha256": "1a4336343a37e681100fabb186a30b2784a4c254ec3521653eddcde143ca1ab0"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-south-v1.png",
+          "sourceScale": 0.355,
+          "sourceAnchor": [
+            81.5,
+            208
+          ],
+          "sourceBounds": [
+            2,
+            21,
+            149,
+            208
+          ],
+          "bounds": [
+            116,
+            159,
+            168,
+            225
+          ],
+          "sha256": "23d55d54c49631b37be2474c9f54938ef7053f2c1dd965ba9c06a3754d5dc633"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-south-v1.png",
+          "sourceScale": 0.355,
+          "sourceAnchor": [
+            79.5,
+            208
+          ],
+          "sourceBounds": [
+            2,
+            18,
+            154,
+            202
+          ],
+          "bounds": [
+            116,
+            158,
+            170,
+            223
+          ],
+          "sha256": "f7550f6d077daae329a1445b50ed1d11840f12f44033a7bc92743b118759e9cd"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-south-v1.png",
+          "sourceScale": 0.355,
+          "sourceAnchor": [
+            73.5,
+            208
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            143,
+            202
+          ],
+          "bounds": [
+            119,
+            152,
+            169,
+            223
+          ],
+          "sha256": "8319740907aff55dea5669702e92d6507b07e492a5493e580b2cbe52af253806"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-south-v1.png",
+          "sourceScale": 0.35514018691588783,
+          "sourceAnchor": [
+            84.5,
+            216
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            165,
+            216
+          ],
+          "bounds": [
+            115,
+            149,
+            173,
+            225
+          ],
+          "sha256": "b1f94a47472874b1fdb6cdd68c4ab250fe9fa9a5cb79166d6c8177d75ae2003a"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-south-v1.png",
+          "sourceScale": 0.35514018691588783,
+          "sourceAnchor": [
+            128.5,
+            216
+          ],
+          "sourceBounds": [
+            2,
+            10,
+            211,
+            216
+          ],
+          "bounds": [
+            99,
+            152,
+            173,
+            225
+          ],
+          "sha256": "c862d15f96e90a2826efa71d846aef10766aa0022ab0e863b7c4e7fc7df26eae"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-south-v1.png",
+          "sourceScale": 0.35514018691588783,
+          "sourceAnchor": [
+            94.5,
+            216
+          ],
+          "sourceBounds": [
+            2,
+            10,
+            173,
+            216
+          ],
+          "bounds": [
+            111,
+            152,
+            172,
+            225
+          ],
+          "sha256": "5816bf0d90dd3386ce9b56c589342a933946417f89da966bdc5269c0509729fc"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-south-v1.png",
+          "sourceScale": 0.35514018691588783,
+          "sourceAnchor": [
+            84.5,
+            216
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            165,
+            216
+          ],
+          "bounds": [
+            115,
+            149,
+            173,
+            225
+          ],
+          "sha256": "23befde573b749eb8a23ba5c558cf79ad7da92910bae4987377c1ce3108fc845"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-south-v1.png",
+          "sourceScale": 0.35545023696682465,
+          "sourceAnchor": [
+            75.5,
+            213
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            156,
+            213
+          ],
+          "bounds": [
+            118,
+            150,
+            173,
+            225
+          ],
+          "sha256": "7c135864315bc08ad49a11c54cc8192681d6194f56497ef97eb9a7633c49dadb"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-south-v1.png",
+          "sourceScale": 0.35545023696682465,
+          "sourceAnchor": [
+            79.5,
+            213
+          ],
+          "sourceBounds": [
+            2,
+            9,
+            195,
+            213
+          ],
+          "bounds": [
+            116,
+            152,
+            185,
+            225
+          ],
+          "sha256": "88a2abbb7af2ec06b4072438b313ca97cb4da3fe9bec6486e8fbdef3a6ad1029"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-south-v1.png",
+          "sourceScale": 0.35545023696682465,
+          "sourceAnchor": [
+            99,
+            213
+          ],
+          "sourceBounds": [
+            2,
+            9,
+            181,
+            213
+          ],
+          "bounds": [
+            110,
+            152,
+            174,
+            225
+          ],
+          "sha256": "4ac84e89581c2c7933497428533aff03f8c0958cefa2774677e93e881657b471"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-south-v1.png",
+          "sourceScale": 0.35545023696682465,
+          "sourceAnchor": [
+            66,
+            213
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            156,
+            213
+          ],
+          "bounds": [
+            121,
+            150,
+            176,
+            225
+          ],
+          "sha256": "2b388453c68220e2b91e5990f5b2594e76140ff3e1a9690527c3356f45c152ac"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-south-v1.png",
+          "sourceScale": 0.35545023696682465,
+          "sourceAnchor": [
+            77.5,
+            215
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            161,
+            213
+          ],
+          "bounds": [
+            117,
+            149,
+            174,
+            224
+          ],
+          "sha256": "ad5ab2fbe9e66b466536b1596093ef604a11d5972e6da5a7d79b0bca364cd8e7"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-south-v1.png",
+          "sourceScale": 0.35545023696682465,
+          "sourceAnchor": [
+            114.5,
+            215
+          ],
+          "sourceBounds": [
+            2,
+            8,
+            192,
+            215
+          ],
+          "bounds": [
+            104,
+            151,
+            172,
+            225
+          ],
+          "sha256": "a79654e2d089c40e61e965ccea6eeac26cc2c759939eb77e5f3be632d96ea902"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-south-v1.png",
+          "sourceScale": 0.35545023696682465,
+          "sourceAnchor": [
+            92.5,
+            215
+          ],
+          "sourceBounds": [
+            2,
+            8,
+            172,
+            215
+          ],
+          "bounds": [
+            112,
+            151,
+            172,
+            225
+          ],
+          "sha256": "8ccb60ff7f794d639ed5ff3f5667d770e2ef9296198de217cc2fb18975bc500b"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-crouch-interact-south-v1.png",
+          "sourceScale": 0.35545023696682465,
+          "sourceAnchor": [
+            77,
+            215
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            160,
+            213
+          ],
+          "bounds": [
+            117,
+            149,
+            173,
+            224
+          ],
+          "sha256": "dec99b5b03ec8fb931671d9b6afedfc9a602b56aeec61d985553cbbfc4750981"
+        }
+      ],
+      "file": "worker-crouch-interact.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "c9fa09de853da2c919b97410ea220b96a45b5d8af6d62748e8495ccd53fbbb07"
+    }
+  }
+}

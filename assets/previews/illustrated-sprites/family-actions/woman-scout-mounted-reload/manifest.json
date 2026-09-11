@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-scout-mounted-reload": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-north-v1.png",
+          "sha256": "977ba939ae733905ae0bd093131aff77c19223173961fece5ad85abfcae967ca",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-south-v1.png",
+          "sha256": "0f01b23cd4e604ce700d128b6268afb3420ddae5f0bdf068cab240bdbc9aa464",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-north-v1.png",
+          "sourceScale": 0.6133828996282528,
+          "sourceAnchor": [
+            57.5,
+            272
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            116,
+            272
+          ],
+          "bounds": [
+            110,
+            60,
+            180,
+            225
+          ],
+          "sha256": "1b961471f349db2a10830524b60d49ac0b67367006b198e7ac3d09fa1b2d872e"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-north-v1.png",
+          "sourceScale": 0.6133828996282528,
+          "sourceAnchor": [
+            57,
+            272
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            115,
+            272
+          ],
+          "bounds": [
+            110,
+            59,
+            179,
+            225
+          ],
+          "sha256": "2a08fc359d35eca40c1dc814a9740c0759230f79ce05949a39e2094e3db8ad4f"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-north-v1.png",
+          "sourceScale": 0.6133828996282528,
+          "sourceAnchor": [
+            57.5,
+            272
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            116,
+            272
+          ],
+          "bounds": [
+            110,
+            59,
+            180,
+            225
+          ],
+          "sha256": "8c92bf43b76d52db01c72db3f4453a2761bde9bb27991050dc61bad31d2699bb"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-north-v1.png",
+          "sourceScale": 0.6133828996282528,
+          "sourceAnchor": [
+            58,
+            272
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            115,
+            272
+          ],
+          "bounds": [
+            110,
+            60,
+            179,
+            225
+          ],
+          "sha256": "25d454cc7d8847c402b39ae161f3a423b182bbe2e9a6086e6f901d6071d1cf44"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-north-v1.png",
+          "sourceScale": 0.6156716417910447,
+          "sourceAnchor": [
+            80.5,
+            270
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            192,
+            270
+          ],
+          "bounds": [
+            96,
+            60,
+            213,
+            225
+          ],
+          "sha256": "b142470796d8e4849a5713d179429fed441ed24e8d973c4a0a8834e7eb077fc0"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-north-v1.png",
+          "sourceScale": 0.6156716417910447,
+          "sourceAnchor": [
+            80,
+            270
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            191,
+            270
+          ],
+          "bounds": [
+            96,
+            61,
+            212,
+            225
+          ],
+          "sha256": "6d57f38b406607e02d783789d9ce8902ae491b41dab4f0ecf4fc94dc397b5838"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-north-v1.png",
+          "sourceScale": 0.6156716417910447,
+          "sourceAnchor": [
+            80,
+            270
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            192,
+            270
+          ],
+          "bounds": [
+            96,
+            60,
+            213,
+            225
+          ],
+          "sha256": "522548aa6632607788b7adc537fafe75adc570ebc8b1ae99f22042073e1979ce"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-north-v1.png",
+          "sourceScale": 0.6156716417910447,
+          "sourceAnchor": [
+            79.5,
+            270
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            192,
+            270
+          ],
+          "bounds": [
+            96,
+            60,
+            213,
+            225
+          ],
+          "sha256": "51db27179d510f453248a4a43131e260eff01e6eee37a932c18614b5ea4dfaa1"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-north-v1.png",
+          "sourceScale": 0.6188679245283019,
+          "sourceAnchor": [
+            107,
+            268
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            273,
+            268
+          ],
+          "bounds": [
+            79,
+            61,
+            247,
+            225
+          ],
+          "sha256": "cb06cf362769071c5692ca55c581ceb776db6d53453017a0b72b3277b26c11ab"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-north-v1.png",
+          "sourceScale": 0.6188679245283019,
+          "sourceAnchor": [
+            106.5,
+            268
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            273,
+            268
+          ],
+          "bounds": [
+            79,
+            61,
+            247,
+            225
+          ],
+          "sha256": "58c68488a8757a93b69d7dded69b54018a90388f0baacd2f51f02fc936a556dd"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-north-v1.png",
+          "sourceScale": 0.6188679245283019,
+          "sourceAnchor": [
+            106.5,
+            268
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            272,
+            268
+          ],
+          "bounds": [
+            79,
+            60,
+            246,
+            225
+          ],
+          "sha256": "25f0f545818f42d0d2bb4d3f58eaf1131f2acfb47e4130828e49ee5fc50d26ca"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-north-v1.png",
+          "sourceScale": 0.6188679245283019,
+          "sourceAnchor": [
+            107,
+            268
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            272,
+            268
+          ],
+          "bounds": [
+            79,
+            61,
+            246,
+            225
+          ],
+          "sha256": "b0807f4a0bd510d067550fe9a57c03b88871994616cfd2b857da62e9e14aa120"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-north-v1.png",
+          "sourceScale": 0.6072727272727273,
+          "sourceAnchor": [
+            104,
+            277
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            239,
+            277
+          ],
+          "bounds": [
+            82,
+            58,
+            226,
+            225
+          ],
+          "sha256": "44356467ff6c41dec2b694d15b0dc2ec416387fd56b94bf4a7d33b9a704de47e"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-north-v1.png",
+          "sourceScale": 0.6072727272727273,
+          "sourceAnchor": [
+            103,
+            277
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            239,
+            277
+          ],
+          "bounds": [
+            83,
+            58,
+            227,
+            225
+          ],
+          "sha256": "d154b20606e38b42ee680630e56ecb140ce79a18b6d6074a728e5fd34b8a03f6"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-north-v1.png",
+          "sourceScale": 0.6072727272727273,
+          "sourceAnchor": [
+            103.5,
+            277
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            244,
+            277
+          ],
+          "bounds": [
+            82,
+            58,
+            229,
+            225
+          ],
+          "sha256": "ca9f951d932f2d99f6004e42ef32c04c42435641eab023a67218130233d27d92"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-north-v1.png",
+          "sourceScale": 0.6072727272727273,
+          "sourceAnchor": [
+            102,
+            277
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            238,
+            277
+          ],
+          "bounds": [
+            83,
+            58,
+            226,
+            225
+          ],
+          "sha256": "e15fb02b2ff3d85185801fa06693037b9b367dd67fda8f7a363976190ab7e46e"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-south-v1.png",
+          "sourceScale": 0.6148148148148148,
+          "sourceAnchor": [
+            58,
+            272
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            115,
+            272
+          ],
+          "bounds": [
+            110,
+            59,
+            179,
+            225
+          ],
+          "sha256": "2fdf5c58bf3e577908ebeca3ebd7e08d275482d2a978c3f9875aa112cb65e635"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-south-v1.png",
+          "sourceScale": 0.6148148148148148,
+          "sourceAnchor": [
+            58,
+            272
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            116,
+            272
+          ],
+          "bounds": [
+            110,
+            59,
+            180,
+            225
+          ],
+          "sha256": "2ec859ce98fee13b50a7980ec2690ccb74d859218ffca44536ad7c11d04225ab"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-south-v1.png",
+          "sourceScale": 0.6148148148148148,
+          "sourceAnchor": [
+            58.5,
+            272
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            116,
+            272
+          ],
+          "bounds": [
+            109,
+            59,
+            179,
+            225
+          ],
+          "sha256": "5910124057a88b2a94ae125f6bde5d1881fc53cfe6ee492e9f3f5cf95f0da151"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-south-v1.png",
+          "sourceScale": 0.6148148148148148,
+          "sourceAnchor": [
+            58,
+            272
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            115,
+            272
+          ],
+          "bounds": [
+            110,
+            59,
+            179,
+            225
+          ],
+          "sha256": "cbf956ed5c1932a07cbf5fc201212fdbb9e381605fa37f96af96570a13aa0bd6"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-south-v1.png",
+          "sourceScale": 0.6058394160583942,
+          "sourceAnchor": [
+            98.5,
+            277
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            177,
+            276
+          ],
+          "bounds": [
+            86,
+            58,
+            192,
+            224
+          ],
+          "sha256": "6248d6825df74ceb57f5575c76351e853e09e5d8abede5787e4553ac8cf5da60"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-south-v1.png",
+          "sourceScale": 0.6058394160583942,
+          "sourceAnchor": [
+            100,
+            277
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            179,
+            276
+          ],
+          "bounds": [
+            85,
+            59,
+            192,
+            224
+          ],
+          "sha256": "f86eb23d274f9d35bcda4ff9bb52b48dd7cf25aecbd07194378ff7c890ab06fb"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-south-v1.png",
+          "sourceScale": 0.6058394160583942,
+          "sourceAnchor": [
+            101,
+            277
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            180,
+            276
+          ],
+          "bounds": [
+            84,
+            58,
+            192,
+            224
+          ],
+          "sha256": "a30019f5d71b4ecdaa21319c8043ada7cde5a2300eb83380110545c692a6cdc9"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-south-v1.png",
+          "sourceScale": 0.6058394160583942,
+          "sourceAnchor": [
+            101,
+            277
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            180,
+            277
+          ],
+          "bounds": [
+            84,
+            59,
+            192,
+            225
+          ],
+          "sha256": "5f09b38e4c29e64a9d78af552864d1cd72b95005472890c282eb3812e33f91ef"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-south-v1.png",
+          "sourceScale": 0.6051660516605166,
+          "sourceAnchor": [
+            164.5,
+            273
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            275,
+            273
+          ],
+          "bounds": [
+            46,
+            61,
+            211,
+            225
+          ],
+          "sha256": "d42398ddfdbd9eb1847cd1a1f8c28afbdab727395337585c5836305d45e40f90"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-south-v1.png",
+          "sourceScale": 0.6051660516605166,
+          "sourceAnchor": [
+            165,
+            273
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            276,
+            273
+          ],
+          "bounds": [
+            45,
+            61,
+            211,
+            225
+          ],
+          "sha256": "750924815253b35a48595417aacabf7ff9424bab671ad4d4ad71e5f3b4acc68d"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-south-v1.png",
+          "sourceScale": 0.6051660516605166,
+          "sourceAnchor": [
+            165.5,
+            273
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            276,
+            273
+          ],
+          "bounds": [
+            45,
+            61,
+            211,
+            225
+          ],
+          "sha256": "8c021c416e011437a4c713091c8d852e8853b53177395b6c1af39ed8a4be4f50"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-south-v1.png",
+          "sourceScale": 0.6051660516605166,
+          "sourceAnchor": [
+            165,
+            273
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            276,
+            273
+          ],
+          "bounds": [
+            45,
+            61,
+            211,
+            225
+          ],
+          "sha256": "5acb4223cf3b75dce173f2e8a6ed87a864cb2b09194350a3392901d07b96b5a9"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-south-v1.png",
+          "sourceScale": 0.5956678700361011,
+          "sourceAnchor": [
+            126,
+            279
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            218,
+            279
+          ],
+          "bounds": [
+            70,
+            60,
+            199,
+            225
+          ],
+          "sha256": "c8358d24e7eb041c2d9e9f4a7bfc3ceaccad834b5ab30fb3db22c4bd5913a153"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-south-v1.png",
+          "sourceScale": 0.5956678700361011,
+          "sourceAnchor": [
+            127,
+            279
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            219,
+            279
+          ],
+          "bounds": [
+            70,
+            60,
+            199,
+            225
+          ],
+          "sha256": "abc5f3c7f32f7bcdcee0106f29679f669d8cf5daf5fb96e3da62327d56ddc518"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-south-v1.png",
+          "sourceScale": 0.5956678700361011,
+          "sourceAnchor": [
+            127,
+            279
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            219,
+            279
+          ],
+          "bounds": [
+            70,
+            60,
+            199,
+            225
+          ],
+          "sha256": "cd102cd31163321a4f12ae88cffcff54d76540176315838bbf6d7d2810760311"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-reload-south-v1.png",
+          "sourceScale": 0.5956678700361011,
+          "sourceAnchor": [
+            127,
+            279
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            218,
+            279
+          ],
+          "bounds": [
+            70,
+            60,
+            199,
+            225
+          ],
+          "sha256": "82779ceb35216fa1d2f1b5be9e37133a2284fb3c6bb3ea1a75a90baf495942bc"
+        }
+      ],
+      "file": "woman-scout-mounted-reload.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "f551c8d7ef22fbe89a1e33095781167de0630dd1da5c24d82fc069c8bc681f13"
+    }
+  }
+}

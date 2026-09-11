@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "royalist-prone-aim-idle": {
+      "cell": 288,
+      "anchor": [
+        144,
+        165
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/royalist-prone-armed-fire-north-v1.png",
+          "sha256": "8f75636566fcd608aab8d8d7d240f8d5c4d1d87ed8086b0304eb84ec2aaedc49",
+          "scale": 0.9186602870813397
+        },
+        {
+          "file": "assets/source/illustrated-sprites/royalist-prone-armed-fire-south-v1.png",
+          "sha256": "9fc94071537d34b294511ca8f38a31cb37cdf109e6d0ea2d080121fcc976539d",
+          "scale": 0.9186602870813397
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/royalist-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.924501,
+          "sourceAnchor": [
+            23.818,
+            83.818
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            46,
+            134
+          ],
+          "bounds": [
+            124,
+            89,
+            165,
+            211
+          ],
+          "sha256": "409b1e2a07ca5789c56127257b0c14aa5158c1ece5162eea01a76b4168f9e736"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/royalist-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.934627,
+          "sourceAnchor": [
+            60.765,
+            46.618
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            150,
+            85
+          ],
+          "bounds": [
+            89,
+            123,
+            227,
+            201
+          ],
+          "sha256": "37953a7865ea9f366564abc160f21b8285916921436db07c50714ea2b7eab711"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/royalist-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.941675,
+          "sourceAnchor": [
+            61.414,
+            44.13
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            177,
+            68
+          ],
+          "bounds": [
+            88,
+            125,
+            253,
+            187
+          ],
+          "sha256": "841af2f29a94123959ba8e345518c736188fdca255c627bd792834058b87162a"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/royalist-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.929622,
+          "sourceAnchor": [
+            58.533,
+            30.8
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            162,
+            70
+          ],
+          "bounds": [
+            91,
+            138,
+            240,
+            201
+          ],
+          "sha256": "7b84e8d6f6480590c532b81db9a90ab8bc363db0aff84692ef612a8274518f55"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/royalist-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.929291,
+          "sourceAnchor": [
+            31.305,
+            24.793
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            59,
+            91
+          ],
+          "bounds": [
+            117,
+            144,
+            170,
+            227
+          ],
+          "sha256": "4883bfb3fcf709242525ab16b1bd2512a25208498cda5925f5020c17cb540471"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/royalist-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.940948,
+          "sourceAnchor": [
+            66.865,
+            19.297
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            122,
+            59
+          ],
+          "bounds": [
+            83,
+            149,
+            196,
+            203
+          ],
+          "sha256": "9a595297f835524728b72462c89979045dcce87c13acce7a54af1a201bbc7f8c"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/royalist-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.920904,
+          "sourceAnchor": [
+            112.761,
+            53.037
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            179,
+            68
+          ],
+          "bounds": [
+            42,
+            118,
+            205,
+            179
+          ],
+          "sha256": "1f1c9cc957ea51d6a259265198e7dc57e02c7b8b868f343f9617b6d95db511e2"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/royalist-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.922535,
+          "sourceAnchor": [
+            85.466,
+            58.366
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            144,
+            92
+          ],
+          "bounds": [
+            67,
+            113,
+            198,
+            196
+          ],
+          "sha256": "361a9522b89c5874ca00f9fd4b67d624a61ba41b97f5894e28e960fc1908c75c"
+        }
+      ],
+      "file": "royalist-prone-aim-idle.png",
+      "size": [
+        2304,
+        288
+      ],
+      "sha256": "0493f65fce239d23a85e8e843e2f2635d2a459a9cea9a2a9fc6234f30c5d76a0",
+      "derivedFrom": {
+        "atlas": "royalist-prone-armed-fire",
+        "frame": 0,
+        "reason": "hold authored pre-shot aim"
+      }
+    }
+  }
+}

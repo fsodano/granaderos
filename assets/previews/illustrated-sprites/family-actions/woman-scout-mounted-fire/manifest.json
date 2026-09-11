@@ -1,0 +1,788 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-scout-mounted-fire": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sha256": "e93ad685b91a718fba5f81144d15cb2a1a0739840c8b1c65d0bf666f95c90f5a",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-n-v2.png",
+          "sha256": "43ef783cf2cee636a113c6fe7c4f8d70684ac47448fd9738795bf09f7e1fe8b6",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-s-v2.png",
+          "sha256": "7843102e50afa583b80a01cb08ff6efb1a6c91897c6a078b1c1af15f2b157580",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.2043795620437956,
+          "sourceAnchor": [
+            56.5,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            119,
+            141
+          ],
+          "bounds": [
+            78,
+            60,
+            219,
+            225
+          ],
+          "sha256": "dd93217c411ef9679f59e20539e6aabb7d611b5ef61fa077d5c50ca53fe408a3"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.2043795620437956,
+          "sourceAnchor": [
+            54.5,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            126,
+            141
+          ],
+          "bounds": [
+            81,
+            58,
+            230,
+            225
+          ],
+          "sha256": "b4258801eab046185cd612933b8cfef0b87be87f143e882fb36f68c51a4c540f"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.2043795620437956,
+          "sourceAnchor": [
+            57.5,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            127,
+            141
+          ],
+          "bounds": [
+            77,
+            60,
+            228,
+            225
+          ],
+          "sha256": "879b6254c2d541e19fd13bfc760098a3306eaf3df346659132485b27dc3e305b"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.2043795620437956,
+          "sourceAnchor": [
+            56.5,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            119,
+            141
+          ],
+          "bounds": [
+            78,
+            60,
+            219,
+            225
+          ],
+          "sha256": "bc950cc1129024fcb99f9ca6382c089c6149fa4a8a693c4b3833dcfb803e0749"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.2148148148148148,
+          "sourceAnchor": [
+            70.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            150,
+            138
+          ],
+          "bounds": [
+            61,
+            61,
+            241,
+            225
+          ],
+          "sha256": "66a8d84ee6fb5df2a38282f30b9185e5bd155c558770ffd5a8a75bd9170deebe"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.2148148148148148,
+          "sourceAnchor": [
+            70,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            170,
+            138
+          ],
+          "bounds": [
+            61,
+            61,
+            265,
+            225
+          ],
+          "sha256": "e0901edb6f140d91d4afe2f84803db04e53317655da1b6d4a4966247453c56f4"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.2148148148148148,
+          "sourceAnchor": [
+            71.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            157,
+            138
+          ],
+          "bounds": [
+            60,
+            60,
+            248,
+            225
+          ],
+          "sha256": "2eb5d2de944d4c3ed610629259df43525b1a7dde3e6b4a0a4ce733187bba346d"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.2148148148148148,
+          "sourceAnchor": [
+            69,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            149,
+            138
+          ],
+          "bounds": [
+            63,
+            60,
+            242,
+            225
+          ],
+          "sha256": "c22bd4470533ebd8e98816b327302d2a6d10d076d2d01cca26a219da951e483a"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.1928571428571428,
+          "sourceAnchor": [
+            59.5,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            115,
+            144
+          ],
+          "bounds": [
+            75,
+            58,
+            210,
+            225
+          ],
+          "sha256": "a04ebc46b77fc07fbcdf94c2ae0ee3a3c465ac6f1ba6fe6be758461946d2e2b3"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.1928571428571428,
+          "sourceAnchor": [
+            60.5,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            137,
+            144
+          ],
+          "bounds": [
+            74,
+            56,
+            235,
+            225
+          ],
+          "sha256": "5c2bc9bab9ae810160d9ae9a6a7478a6309ebaf7e5a3f206e2a71352c54f7741"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.1928571428571428,
+          "sourceAnchor": [
+            60,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            119,
+            144
+          ],
+          "bounds": [
+            75,
+            57,
+            215,
+            225
+          ],
+          "sha256": "ea5cdce5129dd44ab78f267bb002e0355d641b17bbdd8e32600438c809e46bcf"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.1928571428571428,
+          "sourceAnchor": [
+            65,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            130,
+            144
+          ],
+          "bounds": [
+            69,
+            56,
+            222,
+            225
+          ],
+          "sha256": "35a10df46d3ec42adb3a0748b9c46732c8918c86f4e682e9af738bdaa5062892"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.2296296296296296,
+          "sourceAnchor": [
+            68,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            130,
+            138
+          ],
+          "bounds": [
+            63,
+            59,
+            220,
+            225
+          ],
+          "sha256": "48734792d4949a6e584dfcb4df77b7d351921a9092af6e5dd40c62e35723cc5b"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.2296296296296296,
+          "sourceAnchor": [
+            78.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            138
+          ],
+          "bounds": [
+            50,
+            58,
+            221,
+            225
+          ],
+          "sha256": "08d9c870d5457c2b447628c6c8641edd6952323ad857b5265ce238c4b78a475c"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.2296296296296296,
+          "sourceAnchor": [
+            75.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            140,
+            138
+          ],
+          "bounds": [
+            54,
+            59,
+            224,
+            225
+          ],
+          "sha256": "e550a6f0b5c68c8a5dc4841a1cbb6230eb13219a684bc29798b3ca1f6a4e9a6d"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.2296296296296296,
+          "sourceAnchor": [
+            71.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            133,
+            138
+          ],
+          "bounds": [
+            59,
+            59,
+            220,
+            225
+          ],
+          "sha256": "97a678dd00940e3be938811409f4cf39f3e930ae966812821ad3db24b672b22f"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.197080291970803,
+          "sourceAnchor": [
+            85.5,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            152,
+            139
+          ],
+          "bounds": [
+            44,
+            61,
+            224,
+            225
+          ],
+          "sha256": "e4cb88b73f70d1aa9906321325342127e2ecc72e1255222c6d170b50baccd776"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.197080291970803,
+          "sourceAnchor": [
+            93.5,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            160,
+            139
+          ],
+          "bounds": [
+            34,
+            62,
+            223,
+            225
+          ],
+          "sha256": "36ab56a5a04c720ee231b1559b6ae02253d9cf46be5de26c6c9b2ac9748e89a3"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.197080291970803,
+          "sourceAnchor": [
+            84,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            151,
+            139
+          ],
+          "bounds": [
+            46,
+            62,
+            224,
+            225
+          ],
+          "sha256": "4fed0c2aef6e6790c33631e544bdaa4b97d87ce44d0ee6ce20702450e37c9c20"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.197080291970803,
+          "sourceAnchor": [
+            82.5,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            148,
+            139
+          ],
+          "bounds": [
+            48,
+            62,
+            223,
+            225
+          ],
+          "sha256": "144ced4803614d8ab9087cfdc5e28f4275c07d16365589330cdf46f945a66e3c"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.1619718309859155,
+          "sourceAnchor": [
+            71.5,
+            156
+          ],
+          "sourceBounds": [
+            2,
+            14,
+            132,
+            156
+          ],
+          "bounds": [
+            63,
+            60,
+            214,
+            225
+          ],
+          "sha256": "fa5b06eb6b1aee7fd19f729186693b53e079618582a61bbc4bec3ded744360c8"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.1619718309859155,
+          "sourceAnchor": [
+            70,
+            156
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            129,
+            156
+          ],
+          "bounds": [
+            65,
+            46,
+            213,
+            225
+          ],
+          "sha256": "a6a40f035e4178ac0a946e0cfe4ecdb06555e9abf4061098d0f5bbd033828c20"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.1619718309859155,
+          "sourceAnchor": [
+            70.5,
+            156
+          ],
+          "sourceBounds": [
+            2,
+            14,
+            130,
+            156
+          ],
+          "bounds": [
+            64,
+            60,
+            213,
+            225
+          ],
+          "sha256": "dfe26ee88763432bf0c22f6746a415ec2f86da67fa87cf4397aa6704cfcd8536"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-v1.png",
+          "sourceScale": 1.1619718309859155,
+          "sourceAnchor": [
+            69,
+            156
+          ],
+          "sourceBounds": [
+            2,
+            14,
+            127,
+            156
+          ],
+          "bounds": [
+            66,
+            60,
+            211,
+            225
+          ],
+          "sha256": "2a690a87a4e2ec0fcfcce5223aeed943ae3ca88c3dd179e5c999ba079cf90a64"
+        },
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-n-v2.png",
+          "sourceScale": 0.29411764705882354,
+          "sourceAnchor": [
+            105.5,
+            571
+          ],
+          "sourceBounds": [
+            2,
+            10,
+            211,
+            571
+          ],
+          "bounds": [
+            114,
+            60,
+            175,
+            225
+          ],
+          "sha256": "2f960bfc16a59c58dffd7376c87ff3b1fc30a24896e4ed283147015c9981a412"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-n-v2.png",
+          "sourceScale": 0.29411764705882354,
+          "sourceAnchor": [
+            106,
+            571
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            211,
+            571
+          ],
+          "bounds": [
+            113,
+            58,
+            174,
+            225
+          ],
+          "sha256": "f08e83fa9e28d8077a1768a65906c846ae7d1df685305486e0b90a37153cc722"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-n-v2.png",
+          "sourceScale": 0.29411764705882354,
+          "sourceAnchor": [
+            106,
+            571
+          ],
+          "sourceBounds": [
+            2,
+            10,
+            210,
+            571
+          ],
+          "bounds": [
+            113,
+            60,
+            174,
+            225
+          ],
+          "sha256": "0bdafa8e367f97f3041d5d7ebb93f264e09935d94b7746face71ea6ec4c1e42e"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-n-v2.png",
+          "sourceScale": 0.29411764705882354,
+          "sourceAnchor": [
+            105,
+            571
+          ],
+          "sourceBounds": [
+            2,
+            10,
+            210,
+            571
+          ],
+          "bounds": [
+            114,
+            60,
+            175,
+            225
+          ],
+          "sha256": "ad2aae5c64cc0c871c5597d5065dce5d2fc15be162e8e88bc5ead4d6e632c2c4"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-s-v2.png",
+          "sourceScale": 0.29695885509839,
+          "sourceAnchor": [
+            111.5,
+            563
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            222,
+            563
+          ],
+          "bounds": [
+            111,
+            59,
+            176,
+            225
+          ],
+          "sha256": "8402ca3ea587049d97826ef15c69229538caffc358a5652bb25897420c052a22"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-s-v2.png",
+          "sourceScale": 0.29695885509839,
+          "sourceAnchor": [
+            111,
+            562
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            222,
+            562
+          ],
+          "bounds": [
+            112,
+            59,
+            177,
+            225
+          ],
+          "sha256": "507036268b3dfc75da6268ece1edaecd4e41cfcc39e7b6ec2fd31d2d191cd51f"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-s-v2.png",
+          "sourceScale": 0.29695885509839,
+          "sourceAnchor": [
+            112.5,
+            562
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            224,
+            562
+          ],
+          "bounds": [
+            111,
+            59,
+            177,
+            225
+          ],
+          "sha256": "c432c3f8d357104efabf1b3d0959e14375482f8aa91c47ea577d6afab373fe0e"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-fire-s-v2.png",
+          "sourceScale": 0.29695885509839,
+          "sourceAnchor": [
+            111.5,
+            563
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            223,
+            563
+          ],
+          "bounds": [
+            111,
+            59,
+            177,
+            225
+          ],
+          "sha256": "f3cbd4bcd72504630f8ce9d4f79ab8fd879c0c84799266e96c1a9e1910fc49c4"
+        }
+      ],
+      "file": "woman-scout-mounted-fire.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "e6518e24aa5b06cf53348048de643fd5683132223d0d9b3d9006afa2d7cd85f1"
+    }
+  }
+}

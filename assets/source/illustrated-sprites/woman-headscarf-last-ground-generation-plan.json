@@ -1,0 +1,22 @@
+[
+  {
+    "stem": "woman-headscarf-prone-armed-fire-north-v1",
+    "action": "prone-armed-fire",
+    "half": "north",
+    "refs": [
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-headscarf-prone-armed-fire-north-pose-reference.png",
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-headscarf-prone-armed-idle-v1.png"
+    ],
+    "prompt": "Edit FIRST exact4x4 ground animation in place preserving every original limb, complete torso, hips, trailing full legs/boots, direction and action phase. Change ONLY male identity/clothes to SECOND image adult dark-brown-skinned woman with cream wrapped headscarf knotted behind, blue fringed shawl, cream blouse sleeves to wrists, long blue skirt with pale hem, brown belt/pouch and dark boots. Remove old male gray hair, brown coat and trousers. Skirt follows knee shapes and covers legs while boots remain visible. One short flintlock pistol per figure, four prone firing phases: aim, muzzle flash ONLY column2, smoke column3, ready column4. Four rows N strict head TOP feet BOTTOM back-view face hidden, NE head UPPERRIGHT feet LOWERLEFT, E head RIGHT feet LEFT, SE head LOWERRIGHT feet UPPERLEFT. Four phases per row, exactly16 full adult figures. Keep camera, fixed hips/body scale and every compass row. No standing/corpse poses or missing legs. Crisp original illustrated pixel art, pure flat magenta #FF00FF, no cast shadows/floor/grid/labels/border/extra figures."
+  },
+  {
+    "stem": "woman-headscarf-prone-unarmed-walk-south-v1",
+    "action": "prone-unarmed-walk",
+    "half": "south",
+    "refs": [
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-headscarf-prone-unarmed-walk-south-pose-reference.png",
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-headscarf-prone-unarmed-idle-v1.png"
+    ],
+    "prompt": "Edit FIRST exact4x4 ground animation in place preserving every original limb, complete torso, hips, trailing full legs/boots, direction and action phase. Change ONLY male identity/clothes to SECOND image adult dark-brown-skinned woman with cream wrapped headscarf knotted behind, blue fringed shawl, cream blouse sleeves to wrists, long blue skirt with pale hem, brown belt/pouch and dark boots. Remove old male gray hair, brown coat and trousers. Skirt follows knee shapes and covers legs while boots remain visible. All16 EMPTY-HANDED unarmed crawling figures, no gun or blade anywhere. Preserve left/right elbow pulls, extension and opposite knee movement. Four rows S strict head BOTTOM feet TOP front face, SW head LOWERLEFT feet UPPERRIGHT, W head LEFT feet RIGHT, NW head UPPERLEFT feet LOWERRIGHT. Four phases per row, exactly16 full adult figures. Keep camera, fixed hips/body scale and every compass row. No standing/corpse poses or missing legs. Crisp original illustrated pixel art, pure flat magenta #FF00FF, no cast shadows/floor/grid/labels/border/extra figures."
+  }
+]

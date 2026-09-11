@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "friar-mounted-strike": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-north-v1.png",
+          "sha256": "238ce45a9e0f4c1627707deb69d7390c8adc5c2898eb77599569b36f71d2a043",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-south-v1.png",
+          "sha256": "16f87b5f9d46533e161a32e2f2bbf0ab302c9368a6a842cd25826707748c3c3e",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-north-v1.png",
+          "sourceScale": 0.7112068965517241,
+          "sourceAnchor": [
+            55.5,
+            234
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            109,
+            234
+          ],
+          "bounds": [
+            106,
+            60,
+            182,
+            225
+          ],
+          "sha256": "7fbef292786e4a14b9324fca838a127685de9f5b3049ee9c7dde6dc3b8f6f125"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-north-v1.png",
+          "sourceScale": 0.7112068965517241,
+          "sourceAnchor": [
+            54.5,
+            234
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            110,
+            234
+          ],
+          "bounds": [
+            107,
+            61,
+            184,
+            225
+          ],
+          "sha256": "ec7b6dc43dc7713e52de7ba441e277de7cbac4885120fbb2d8bc0eee01ca2164"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-north-v1.png",
+          "sourceScale": 0.7112068965517241,
+          "sourceAnchor": [
+            54,
+            234
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            234
+          ],
+          "bounds": [
+            107,
+            60,
+            200,
+            225
+          ],
+          "sha256": "867abc4b04c0f98bf73a6c0d7c26793f59d01c234d1506bcda6dc955be990cac"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-north-v1.png",
+          "sourceScale": 0.7112068965517241,
+          "sourceAnchor": [
+            55,
+            234
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            109,
+            234
+          ],
+          "bounds": [
+            106,
+            60,
+            182,
+            225
+          ],
+          "sha256": "a2cb93c32ff21f70ad6e1fa2bd4b32d2831b4271fa9fc1c41fee1400744e7978"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-north-v1.png",
+          "sourceScale": 0.7366071428571429,
+          "sourceAnchor": [
+            78.5,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            192,
+            228
+          ],
+          "bounds": [
+            88,
+            60,
+            228,
+            225
+          ],
+          "sha256": "74344f164dde3d7f15a8e624a30e0751e5481cf61d4124008bb665f3f3488008"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-north-v1.png",
+          "sourceScale": 0.7366071428571429,
+          "sourceAnchor": [
+            79.5,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            192,
+            228
+          ],
+          "bounds": [
+            87,
+            60,
+            227,
+            225
+          ],
+          "sha256": "49f95bba6d9f6e7e15238d438607a9867e8f5a2e8706c92717f481cd25bde152"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-north-v1.png",
+          "sourceScale": 0.7366071428571429,
+          "sourceAnchor": [
+            78.5,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            192,
+            228
+          ],
+          "bounds": [
+            88,
+            59,
+            228,
+            225
+          ],
+          "sha256": "41711ce70ab63078b9657c5540cdad59c1d5f460770aaae87ac2d1a9a5c64190"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-north-v1.png",
+          "sourceScale": 0.7366071428571429,
+          "sourceAnchor": [
+            78.5,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            191,
+            228
+          ],
+          "bounds": [
+            88,
+            59,
+            227,
+            225
+          ],
+          "sha256": "51ea54dcbabf780d7a3caa9e318d2e00a17516cefc653bc38b83d2c03dd49238"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-north-v1.png",
+          "sourceScale": 0.7522935779816514,
+          "sourceAnchor": [
+            87.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            210,
+            220
+          ],
+          "bounds": [
+            80,
+            61,
+            236,
+            225
+          ],
+          "sha256": "57783661629e8b0ddf0d7d0f8656aa49d7a8671642efa635b0353c34867fb607"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-north-v1.png",
+          "sourceScale": 0.7522935779816514,
+          "sourceAnchor": [
+            86,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            207,
+            220
+          ],
+          "bounds": [
+            81,
+            62,
+            235,
+            225
+          ],
+          "sha256": "aa8d5c5c990c6b5fed343596353da544893904c718ab1c0dfcf9654e33ce970b"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-north-v1.png",
+          "sourceScale": 0.7522935779816514,
+          "sourceAnchor": [
+            88,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            208,
+            220
+          ],
+          "bounds": [
+            79,
+            61,
+            234,
+            225
+          ],
+          "sha256": "07ead5a1ff71b1a25510eb0804dd008eac50972e7910650d4f73492b11aaa944"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-north-v1.png",
+          "sourceScale": 0.7522935779816514,
+          "sourceAnchor": [
+            88.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            209,
+            220
+          ],
+          "bounds": [
+            79,
+            61,
+            235,
+            225
+          ],
+          "sha256": "632c4fa93070b3b06fe4a8568883058edc0d7fed6acf298cf0569996e2249dc3"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-north-v1.png",
+          "sourceScale": 0.7260869565217392,
+          "sourceAnchor": [
+            75.5,
+            233
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            174,
+            233
+          ],
+          "bounds": [
+            91,
+            58,
+            216,
+            225
+          ],
+          "sha256": "21b79555ffe29768ae34aba78b65142821d93701482d1552f60f00ea78dd66ee"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-north-v1.png",
+          "sourceScale": 0.7260869565217392,
+          "sourceAnchor": [
+            74.5,
+            233
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            174,
+            233
+          ],
+          "bounds": [
+            91,
+            58,
+            216,
+            225
+          ],
+          "sha256": "8deb144dbea8872c31a429f87abd1c88b1bfec41264de8c456ab0d0bb0461980"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-north-v1.png",
+          "sourceScale": 0.7260869565217392,
+          "sourceAnchor": [
+            76.5,
+            233
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            178,
+            233
+          ],
+          "bounds": [
+            90,
+            57,
+            218,
+            225
+          ],
+          "sha256": "dd85185e4d4f8389c24c7e27f4daffd701bad95100c7e3ca4064e4b262587f11"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-north-v1.png",
+          "sourceScale": 0.7260869565217392,
+          "sourceAnchor": [
+            75,
+            233
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            172,
+            233
+          ],
+          "bounds": [
+            91,
+            58,
+            214,
+            225
+          ],
+          "sha256": "dba86c1ae02a1cce7051dcd79c087fd2aad1f9ffc094d440a8bf889c67ed5323"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-south-v1.png",
+          "sourceScale": 0.7094017094017094,
+          "sourceAnchor": [
+            58.5,
+            236
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            112,
+            236
+          ],
+          "bounds": [
+            104,
+            59,
+            182,
+            225
+          ],
+          "sha256": "661dd77f2496e5959fa40028454b72afdf5d3c57179061abf63043804861d909"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-south-v1.png",
+          "sourceScale": 0.7094017094017094,
+          "sourceAnchor": [
+            59,
+            236
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            113,
+            236
+          ],
+          "bounds": [
+            104,
+            60,
+            183,
+            225
+          ],
+          "sha256": "a0b6fc568b66c470ce6cfab3fe1dff85997b62f0062155a76cce0a3cfbb1e262"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-south-v1.png",
+          "sourceScale": 0.7094017094017094,
+          "sourceAnchor": [
+            61.5,
+            236
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            117,
+            236
+          ],
+          "bounds": [
+            102,
+            60,
+            184,
+            225
+          ],
+          "sha256": "f096606d9afa2a8d2c7292785cedb874c551b4f908b41cbcf5272723eb296f77"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-south-v1.png",
+          "sourceScale": 0.7094017094017094,
+          "sourceAnchor": [
+            56.5,
+            236
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            113,
+            236
+          ],
+          "bounds": [
+            105,
+            59,
+            184,
+            225
+          ],
+          "sha256": "94476a4b90558da9ef2384d4607ece1a612ff63edeedaf5fbeb22d0d2250dbba"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-south-v1.png",
+          "sourceScale": 0.7377777777777778,
+          "sourceAnchor": [
+            114,
+            227
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            200,
+            227
+          ],
+          "bounds": [
+            61,
+            59,
+            207,
+            225
+          ],
+          "sha256": "dbf0025c3185450fed344ed5357bb4ebfe17ffb47d5be772337638f94f8dc183"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-south-v1.png",
+          "sourceScale": 0.7377777777777778,
+          "sourceAnchor": [
+            113,
+            227
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            199,
+            227
+          ],
+          "bounds": [
+            62,
+            59,
+            207,
+            225
+          ],
+          "sha256": "4dc29d37f0cdd2a819fb7e1e2aa31af040f2979fb0295d41dc8d45f988bfcb66"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-south-v1.png",
+          "sourceScale": 0.7377777777777778,
+          "sourceAnchor": [
+            115.5,
+            227
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            202,
+            227
+          ],
+          "bounds": [
+            60,
+            59,
+            208,
+            225
+          ],
+          "sha256": "2be7c62d46f4e48dcf04d24f769b75a8fa6cd427e6c2c4fabd47e1cf554cb64e"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-south-v1.png",
+          "sourceScale": 0.7377777777777778,
+          "sourceAnchor": [
+            114.5,
+            227
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            201,
+            227
+          ],
+          "bounds": [
+            61,
+            59,
+            208,
+            225
+          ],
+          "sha256": "c4310ad58f387c11f001cc37233b2bc3c43ee1dd21cbeda0310bd48f9db401bb"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-south-v1.png",
+          "sourceScale": 0.7663551401869159,
+          "sourceAnchor": [
+            119,
+            216
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            205,
+            216
+          ],
+          "bounds": [
+            54,
+            61,
+            210,
+            225
+          ],
+          "sha256": "69a273ba0535185a19af925bcc0e2aece4b115e1495591f09d6d7079d1f6cc33"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-south-v1.png",
+          "sourceScale": 0.7663551401869159,
+          "sourceAnchor": [
+            118,
+            216
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            203,
+            216
+          ],
+          "bounds": [
+            55,
+            61,
+            209,
+            225
+          ],
+          "sha256": "f4b89662c5f200df1d5ffa7c71eaff78ca10e2f56a5bff86af9eff01ec606dff"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-south-v1.png",
+          "sourceScale": 0.7663551401869159,
+          "sourceAnchor": [
+            124.5,
+            216
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            211,
+            216
+          ],
+          "bounds": [
+            50,
+            61,
+            210,
+            225
+          ],
+          "sha256": "34764ad8a69f41f818d68ed98bd10d9c9eec973cdaee6abd7d868e0b8efed175"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-south-v1.png",
+          "sourceScale": 0.7663551401869159,
+          "sourceAnchor": [
+            119,
+            216
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            205,
+            216
+          ],
+          "bounds": [
+            54,
+            61,
+            210,
+            225
+          ],
+          "sha256": "7431e9af94ec093ebba4f4a27697b60124415c51f5871ff9408ae314e0e7ec29"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-south-v1.png",
+          "sourceScale": 0.7268722466960352,
+          "sourceAnchor": [
+            100.5,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            171,
+            229
+          ],
+          "bounds": [
+            72,
+            60,
+            195,
+            225
+          ],
+          "sha256": "9e3401edd2ab186995b2e5a2a7d34ad3b536264788430843d55318de393a4f95"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-south-v1.png",
+          "sourceScale": 0.7268722466960352,
+          "sourceAnchor": [
+            102,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            174,
+            229
+          ],
+          "bounds": [
+            71,
+            60,
+            196,
+            225
+          ],
+          "sha256": "aeaef0a401a504423e93879be0054223b18c596cf54b38c2ca2228340c9ad4be"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-south-v1.png",
+          "sourceScale": 0.7268722466960352,
+          "sourceAnchor": [
+            107,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            180,
+            229
+          ],
+          "bounds": [
+            68,
+            60,
+            197,
+            225
+          ],
+          "sha256": "41bb16d0149def3822832095945f110d7cbf0e70b4da9a1ef72715abf8a9c7ba"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-strike-south-v1.png",
+          "sourceScale": 0.7268722466960352,
+          "sourceAnchor": [
+            102,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            175,
+            229
+          ],
+          "bounds": [
+            71,
+            60,
+            197,
+            225
+          ],
+          "sha256": "98559610cf61de9d8d6a56a2ef43fde352f0a8db90540cbe9ea0ba646eda3fdf"
+        }
+      ],
+      "file": "friar-mounted-strike.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "82b1639c3f2e528c0f1c3bb91da6f654afdb0fc05c66f232353f9e0da3d4fca5"
+    }
+  }
+}

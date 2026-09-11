@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "appearance": "woman-elder",
+  "stage": "unconscious-breathe",
+  "pathBase": "repository-root",
+  "registrationOrder": [
+    "variants",
+    "corrections"
+  ],
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-unconscious-breathe-north-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-unconscious-breathe-north-v1.prompt.txt",
+      "name": "woman-elder-unconscious-breathe",
+      "reference": "granadero-unconscious-breathe",
+      "poseReference": "assets/source/illustrated-sprites/woman-headscarf-unconscious-breathe-north-selected-reference.png",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-unconscious-breathe-south-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-unconscious-breathe-south-v1.prompt.txt",
+      "name": "woman-elder-unconscious-breathe",
+      "reference": "granadero-unconscious-breathe",
+      "poseReference": "assets/source/illustrated-sprites/woman-headscarf-unconscious-breathe-south-v1.png",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    }
+  ],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-unconscious-breathe-n-fix-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-unconscious-breathe-n-fix-v1.prompt.txt",
+      "name": "woman-elder-unconscious-breathe",
+      "reference": "granadero-unconscious-breathe",
+      "half": "north",
+      "sourceSize": [
+        2172,
+        724
+      ],
+      "calibration": {
+        "method": "Use one anatomical scale for whole four-pose strip, match curled head-to-boots body size and ground/pelvis anchor to other sleeping directions."
+      },
+      "correctionSpec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "longest",
+        "slots": [
+          {
+            "direction": "n",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              218,
+              169,
+              187,
+              388
+            ]
+          },
+          {
+            "direction": "n",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              704,
+              169,
+              187,
+              388
+            ]
+          },
+          {
+            "direction": "n",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              1191,
+              169,
+              186,
+              388
+            ]
+          },
+          {
+            "direction": "n",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1678,
+              169,
+              186,
+              388
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "qa": {
+    "notes": [
+      "Replace full north row with overhead sleeping N correction. Back of head, face tucked into forearms, curled boots, empty hands; no standing pose.",
+      "Other seven directions retain approved Headscarf sleeping poses and subtle breathing; no weapons or flash.",
+      "All main and correction source count/crop checks pass. One anatomical scale per correction strip."
+    ]
+  }
+}

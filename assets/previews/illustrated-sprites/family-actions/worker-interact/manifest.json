@@ -1,0 +1,778 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "worker-interact": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sha256": "9448695fe2e7b6641778c31ac578c4429daf49699ca78c4aaabb9c869c7bf00b",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.7133757961783439,
+          "sourceAnchor": [
+            34,
+            159
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            66,
+            159
+          ],
+          "bounds": [
+            121,
+            113,
+            167,
+            225
+          ],
+          "sha256": "ec24f5dd2ed9ed238ab2248bedcbbfb9f8e602c722edbe64a5a37319755aa924"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.7133757961783439,
+          "sourceAnchor": [
+            34,
+            159
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            101,
+            159
+          ],
+          "bounds": [
+            121,
+            113,
+            192,
+            225
+          ],
+          "sha256": "0a681040ff6ceebbd5b99eb00c0cf117920a505bf2bfabdc861a54b45bfcb71a"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.7133757961783439,
+          "sourceAnchor": [
+            34.5,
+            159
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            79,
+            159
+          ],
+          "bounds": [
+            121,
+            113,
+            176,
+            225
+          ],
+          "sha256": "4c97d2cb12f112cdd52a929723f7e2f33c77b2d254171a5ac9fc2cfba2cb1a6c"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.7133757961783439,
+          "sourceAnchor": [
+            33,
+            159
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            65,
+            159
+          ],
+          "bounds": [
+            122,
+            113,
+            167,
+            225
+          ],
+          "sha256": "698606f5c439dee2523b0c0f01e96ff2a0e4a6b1559d7141f1b0c537d1f3b2ba"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6871165644171779,
+          "sourceAnchor": [
+            34.5,
+            165
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            66,
+            165
+          ],
+          "bounds": [
+            122,
+            113,
+            166,
+            225
+          ],
+          "sha256": "7a04fa0b81651a1c20838f903656e9c63f36d5db610c71d6fa80807e859ab600"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6871165644171779,
+          "sourceAnchor": [
+            34.5,
+            165
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            105,
+            165
+          ],
+          "bounds": [
+            122,
+            113,
+            193,
+            225
+          ],
+          "sha256": "ac2dba6718a0fbc71ae0b3bc8e5b254d1652977fd15e3668170ae7f02ab18053"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6871165644171779,
+          "sourceAnchor": [
+            34.5,
+            165
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            95,
+            165
+          ],
+          "bounds": [
+            122,
+            113,
+            186,
+            225
+          ],
+          "sha256": "33af558c6fa8274908707fc24dbf2010ab09c1ba667d89a8ac2303a70a0a88f6"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6871165644171779,
+          "sourceAnchor": [
+            34.5,
+            165
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            66,
+            165
+          ],
+          "bounds": [
+            122,
+            113,
+            166,
+            225
+          ],
+          "sha256": "818e4847513c337e3c40e1f48938d6ad38ba7ac9f037c82480ea1ca2ef9a702d"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6726190476190477,
+          "sourceAnchor": [
+            24,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            46,
+            170
+          ],
+          "bounds": [
+            129,
+            112,
+            159,
+            225
+          ],
+          "sha256": "a0d8a4c298b46ea91db5281607d9197aa6398f0da7df880285fe770e0ab9d73b"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6726190476190477,
+          "sourceAnchor": [
+            24,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            89,
+            170
+          ],
+          "bounds": [
+            129,
+            112,
+            188,
+            225
+          ],
+          "sha256": "1f2969ef1bf3c9299c230f15e5f6ec292bb72b543907634fb161bb08ed644fe5"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6726190476190477,
+          "sourceAnchor": [
+            23.5,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            72,
+            170
+          ],
+          "bounds": [
+            130,
+            112,
+            177,
+            225
+          ],
+          "sha256": "73c0a94a7888f1a256e72ad9a5a0424b1d9626108e744361ad999ee82bb5bc7c"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6726190476190477,
+          "sourceAnchor": [
+            23.5,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            45,
+            170
+          ],
+          "bounds": [
+            130,
+            112,
+            159,
+            225
+          ],
+          "sha256": "5d002e887cc87e5fde66fa8d153d2fc6adbe0a91172bd005a927e7cf0ce8af4b"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6686390532544378,
+          "sourceAnchor": [
+            36.5,
+            171
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            68,
+            171
+          ],
+          "bounds": [
+            121,
+            112,
+            165,
+            225
+          ],
+          "sha256": "b48814f198dd4dc533a8edcd51a268f5ddf6961a984dcef1c519a77f7feae9e0"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6686390532544378,
+          "sourceAnchor": [
+            37,
+            171
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            103,
+            171
+          ],
+          "bounds": [
+            121,
+            112,
+            189,
+            225
+          ],
+          "sha256": "9450dfd9e82a0838f9d5c1efe14221db135fc3bbae5dbdfc0a7819643a648b3a"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6686390532544378,
+          "sourceAnchor": [
+            33.5,
+            171
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            66,
+            171
+          ],
+          "bounds": [
+            123,
+            112,
+            166,
+            225
+          ],
+          "sha256": "a53f7cd7783bb4dfba4860fc03adeb456b4e91b95a6df3a601b54a2fd319b5df"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6686390532544378,
+          "sourceAnchor": [
+            35.5,
+            171
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            67,
+            171
+          ],
+          "bounds": [
+            122,
+            112,
+            165,
+            225
+          ],
+          "sha256": "e31dd6936654aef5b9e42021e0463da1ee1293e1598da147a36b2a872d4ecddd"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6727272727272727,
+          "sourceAnchor": [
+            37,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            71,
+            167
+          ],
+          "bounds": [
+            120,
+            114,
+            166,
+            225
+          ],
+          "sha256": "fe33c1358d4f04a95e51772b37831abeaec63c74c2ee323290b7a9b32dd228be"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6727272727272727,
+          "sourceAnchor": [
+            37,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            99,
+            167
+          ],
+          "bounds": [
+            120,
+            114,
+            185,
+            225
+          ],
+          "sha256": "ca250a59ada11f39c0acd0edd448f75a791b01ce922be70cf8b0dc261491a553"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6727272727272727,
+          "sourceAnchor": [
+            37,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            71,
+            167
+          ],
+          "bounds": [
+            120,
+            114,
+            166,
+            225
+          ],
+          "sha256": "352de20137c55ecea8b746ac4e6bac25f25f7c3535459c65b9dd866de1900be3"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6727272727272727,
+          "sourceAnchor": [
+            36,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            70,
+            167
+          ],
+          "bounds": [
+            121,
+            114,
+            167,
+            225
+          ],
+          "sha256": "b18072d32afc02adf778afed97c7db01035be657f87a7c5e37949410474560fe"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6727272727272727,
+          "sourceAnchor": [
+            33,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            64,
+            167
+          ],
+          "bounds": [
+            123,
+            114,
+            165,
+            225
+          ],
+          "sha256": "724a2eba2bf69e679f45c9cefb104bee6d981cd5f9a7fd12a354a8d1c9259c38"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6727272727272727,
+          "sourceAnchor": [
+            65,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            96,
+            167
+          ],
+          "bounds": [
+            102,
+            114,
+            165,
+            225
+          ],
+          "sha256": "68f9c468d27a36199bf59f0b70f3a66e4df8a93f8a026a859f7fd2aec12bc0f1"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6727272727272727,
+          "sourceAnchor": [
+            42,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            73,
+            167
+          ],
+          "bounds": [
+            117,
+            114,
+            165,
+            225
+          ],
+          "sha256": "2f97229a3086f431019bf27f29986f31f653d44371147d8109b6697c18693c48"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6727272727272727,
+          "sourceAnchor": [
+            32,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            62,
+            167
+          ],
+          "bounds": [
+            124,
+            114,
+            164,
+            225
+          ],
+          "sha256": "d992d7fa71bf175493217bdde7a7bab199859df8b6b1b92107008652a69e68db"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6727272727272727,
+          "sourceAnchor": [
+            29,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            63,
+            167
+          ],
+          "bounds": [
+            126,
+            114,
+            167,
+            225
+          ],
+          "sha256": "f330075e85814472d5bb0e0adfef19f685928f814bf5269e97a71cb178a9b42d"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6727272727272727,
+          "sourceAnchor": [
+            63,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            97,
+            167
+          ],
+          "bounds": [
+            103,
+            114,
+            167,
+            225
+          ],
+          "sha256": "a6977d2b7e9e051165bb80a356a7bcd72aa77432e6fe60c4a34253110158a82a"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6727272727272727,
+          "sourceAnchor": [
+            47,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            80,
+            167
+          ],
+          "bounds": [
+            114,
+            114,
+            166,
+            225
+          ],
+          "sha256": "ecc1a9c82f66c310d427877b6bc1cae7170c5cdce14cdc9d250a16cc6d87aad5"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6727272727272727,
+          "sourceAnchor": [
+            30,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            63,
+            167
+          ],
+          "bounds": [
+            125,
+            114,
+            166,
+            225
+          ],
+          "sha256": "59e46fe4342f2594b0a649337861c3c5ab08c26725f519e71def4a31c9693480"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6646706586826348,
+          "sourceAnchor": [
+            32.5,
+            169
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            65,
+            169
+          ],
+          "bounds": [
+            124,
+            114,
+            166,
+            225
+          ],
+          "sha256": "72090e11896d927f56e530ec676329ec8809144762c6be55e6ececb6cbe18de6"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6646706586826348,
+          "sourceAnchor": [
+            61.5,
+            169
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            95,
+            169
+          ],
+          "bounds": [
+            104,
+            114,
+            166,
+            225
+          ],
+          "sha256": "7d6c65f3cf8badafeaf66bb6b10e62fd623b9dc1d7b9cb6cb484ac0357d84e51"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6646706586826348,
+          "sourceAnchor": [
+            54,
+            169
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            86,
+            169
+          ],
+          "bounds": [
+            109,
+            114,
+            165,
+            225
+          ],
+          "sha256": "f3e9cc060acf517000d27d2427fdf7ed7c2282b41567107c4ae20905d13f280f"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-interact-v1.png",
+          "sourceScale": 0.6646706586826348,
+          "sourceAnchor": [
+            32.5,
+            169
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            65,
+            169
+          ],
+          "bounds": [
+            124,
+            114,
+            166,
+            225
+          ],
+          "sha256": "ad842346c23014ba8ce9a0b303358f5fe00f5dfcaa5a4de48d3e319efd8603dd"
+        }
+      ],
+      "file": "worker-interact.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "9311a3b9a7d107777a979dff7ef332ef5c6d308354656f7af4e08e668f9c0250"
+    }
+  }
+}

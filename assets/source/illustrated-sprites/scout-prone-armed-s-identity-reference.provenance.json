@@ -1,0 +1,10 @@
+{
+  "source": "assets/source/illustrated-sprites/scout-prone-armed-idle-v1.png",
+  "rect": [
+    0,
+    444,
+    444,
+    443
+  ],
+  "method": "reference crop only"
+}

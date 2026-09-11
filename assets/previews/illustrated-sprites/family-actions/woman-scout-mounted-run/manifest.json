@@ -1,0 +1,778 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-scout-mounted-run": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 7,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sha256": "373011a2d1e428987c358f295d52746540baceccf7977b16762c227b503e4d74",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.2313432835820894,
+          "sourceAnchor": [
+            30.5,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            59,
+            136
+          ],
+          "bounds": [
+            109,
+            60,
+            179,
+            225
+          ],
+          "sha256": "11e18439df2808a7351f0ee9d642ad8a5e92441da02d06a0ca12c56233a0d603"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.2313432835820894,
+          "sourceAnchor": [
+            31,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            60,
+            133
+          ],
+          "bounds": [
+            108,
+            60,
+            179,
+            221
+          ],
+          "sha256": "c8158ff9d5347b9fa5d737126c7f572a607430a71a388bdd792e384b12911557"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.2313432835820894,
+          "sourceAnchor": [
+            31,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            60,
+            135
+          ],
+          "bounds": [
+            108,
+            60,
+            179,
+            224
+          ],
+          "sha256": "bea75409f35065aba9bb4730146219e54b2c94da9b48f961b938346a14b73968"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.2313432835820894,
+          "sourceAnchor": [
+            30.5,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            59,
+            135
+          ],
+          "bounds": [
+            109,
+            60,
+            179,
+            224
+          ],
+          "sha256": "3890dc38984ff1a4fb5bea342fd9b29dc2cb58fa16f4c17a347251af477f0bca"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.1956521739130435,
+          "sourceAnchor": [
+            62.5,
+            140
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            123,
+            137
+          ],
+          "bounds": [
+            72,
+            60,
+            217,
+            221
+          ],
+          "sha256": "bc26177176c41cec32a835cb89b8cf70ee7236d668c88cab51478d3b3d6bc828"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.1956521739130435,
+          "sourceAnchor": [
+            58,
+            140
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            114,
+            135
+          ],
+          "bounds": [
+            77,
+            60,
+            211,
+            219
+          ],
+          "sha256": "538089069726b40cd4dd1fde6200642f645b7f14235dc693624aae79628ccd93"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.1956521739130435,
+          "sourceAnchor": [
+            67,
+            140
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            132,
+            140
+          ],
+          "bounds": [
+            66,
+            60,
+            221,
+            225
+          ],
+          "sha256": "89ff23c5a495ab632f0a86b2a91ef456e2be203e583a2a3adc9b27c5ceb2430e"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.1956521739130435,
+          "sourceAnchor": [
+            55.5,
+            140
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            109,
+            137
+          ],
+          "bounds": [
+            80,
+            60,
+            208,
+            221
+          ],
+          "sha256": "8bc010e56c65ca8cf0fda46c24018cc6b512ac0f6cb77bc3504651053c271ac9"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.2424242424242424,
+          "sourceAnchor": [
+            80,
+            134
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            158,
+            134
+          ],
+          "bounds": [
+            47,
+            61,
+            241,
+            225
+          ],
+          "sha256": "71068b76947a7347c2be1811c168f3d9f40f9b05ea4a4eedbbf3b1e50749ec92"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.2424242424242424,
+          "sourceAnchor": [
+            80,
+            134
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            158,
+            128
+          ],
+          "bounds": [
+            47,
+            61,
+            241,
+            218
+          ],
+          "sha256": "0e8f2984bf5d5a5415217952ec0a04c1ad4d26a275dbbf175c6628c23116ce7e"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.2424242424242424,
+          "sourceAnchor": [
+            86,
+            134
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            170,
+            134
+          ],
+          "bounds": [
+            40,
+            62,
+            249,
+            225
+          ],
+          "sha256": "31952d6dc8432ce08b8691d53b6871f5ff9fe18ac8ad0774ab05191ae34cce13"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.2424242424242424,
+          "sourceAnchor": [
+            79.5,
+            134
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            157,
+            133
+          ],
+          "bounds": [
+            48,
+            62,
+            241,
+            224
+          ],
+          "sha256": "73271979cb43b40ffbc74ccb91d3a494001e855cc987cb99a7616ab4d2a6097e"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.2279411764705883,
+          "sourceAnchor": [
+            67,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            132,
+            135
+          ],
+          "bounds": [
+            64,
+            58,
+            224,
+            221
+          ],
+          "sha256": "a97f317ef9d091164fd1f49f787ddfaa888dddd59f283de156a531429d9ea944"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.2279411764705883,
+          "sourceAnchor": [
+            67.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            138
+          ],
+          "bounds": [
+            64,
+            58,
+            225,
+            225
+          ],
+          "sha256": "dcac7d58ad070f88b458db6ae09b94205d1ff3d5ee2552781577e09848c03451"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.2279411764705883,
+          "sourceAnchor": [
+            73.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            145,
+            138
+          ],
+          "bounds": [
+            56,
+            58,
+            232,
+            225
+          ],
+          "sha256": "03cc6ab2d1bfc90548668fbad8c3fdf38f0d072d6b394deb3702c1dc610fe742"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.2279411764705883,
+          "sourceAnchor": [
+            70,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            138,
+            137
+          ],
+          "bounds": [
+            61,
+            58,
+            228,
+            224
+          ],
+          "sha256": "b8704c3e5055dab5291c87f7307325929f169f41802dd9708a5d50082e8ef023"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.177304964539007,
+          "sourceAnchor": [
+            36,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            70,
+            143
+          ],
+          "bounds": [
+            104,
+            59,
+            184,
+            225
+          ],
+          "sha256": "22e4e86b49485f767443168dbb9d54469681aee01921d8a71d6ac7952b86e90a"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.177304964539007,
+          "sourceAnchor": [
+            35,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            68,
+            135
+          ],
+          "bounds": [
+            105,
+            59,
+            183,
+            216
+          ],
+          "sha256": "e7a8411a2a2e7a678d7bb6bf3cae11be5e2a1089975338211e1e95c15bbef66b"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.177304964539007,
+          "sourceAnchor": [
+            34.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            67,
+            138
+          ],
+          "bounds": [
+            106,
+            60,
+            183,
+            219
+          ],
+          "sha256": "37ed9b99e1e5329e91f90c240d2df44594b138a6b6cd7a7a734fe2373d360659"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.177304964539007,
+          "sourceAnchor": [
+            34.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            67,
+            138
+          ],
+          "bounds": [
+            106,
+            60,
+            183,
+            219
+          ],
+          "sha256": "b9c0d2d5bc651a4bd6647730c276af5a54c0a03de96d7d50ad11967cb358d772"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.2116788321167884,
+          "sourceAnchor": [
+            68.5,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            135,
+            137
+          ],
+          "bounds": [
+            63,
+            59,
+            224,
+            223
+          ],
+          "sha256": "dc4d081bca4b4c961a0fd62d0a876334cb8f4c9336332cc105adb7585702f1a7"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.2116788321167884,
+          "sourceAnchor": [
+            71.5,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            134
+          ],
+          "bounds": [
+            60,
+            59,
+            228,
+            219
+          ],
+          "sha256": "1d037270cbcff3a02c74a4e97cea0fd77b98c0ed1d9361dc1fd5aff21272f73e"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.2116788321167884,
+          "sourceAnchor": [
+            82,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            162,
+            133
+          ],
+          "bounds": [
+            47,
+            59,
+            241,
+            218
+          ],
+          "sha256": "cf4f92d8e28a6baf8b1d04668e59f22f4a3b7bd2cf8d4c4b1b51387449f90ec0"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.2116788321167884,
+          "sourceAnchor": [
+            70.5,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            139,
+            139
+          ],
+          "bounds": [
+            61,
+            59,
+            227,
+            225
+          ],
+          "sha256": "91ae4e690d6458d023622da48382c553a825d74e1b574e1beb7daba41bd01325"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.2238805970149254,
+          "sourceAnchor": [
+            79,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            156,
+            136
+          ],
+          "bounds": [
+            50,
+            61,
+            238,
+            225
+          ],
+          "sha256": "0db5fbb00613ce69a456272aee49958c0890d80f38cc7c6ae924e9d5f82857de"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.2238805970149254,
+          "sourceAnchor": [
+            79.5,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            157,
+            132
+          ],
+          "bounds": [
+            49,
+            62,
+            239,
+            220
+          ],
+          "sha256": "9c1c368657c47b447c35fe73fb1c2c749638d8dfef7cd57490fb9c0186ab5f6f"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.2238805970149254,
+          "sourceAnchor": [
+            83,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            164,
+            135
+          ],
+          "bounds": [
+            45,
+            62,
+            243,
+            224
+          ],
+          "sha256": "699ddbea6d7941d6d4400ca8e4f3c0a776ebbfbef301425057b4bd11c0ee6074"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.2238805970149254,
+          "sourceAnchor": [
+            77.5,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            153,
+            136
+          ],
+          "bounds": [
+            52,
+            62,
+            237,
+            225
+          ],
+          "sha256": "07a2eb09f91f031a177c0267257d50ed3f1bd5b4ff2329a54764b5a00d26033b"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.1702127659574468,
+          "sourceAnchor": [
+            67.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            133,
+            140
+          ],
+          "bounds": [
+            67,
+            61,
+            220,
+            221
+          ],
+          "sha256": "d285e04514056cdfd43be74b515a603f5546e5db0e321acb28d72e14452add8e"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.1702127659574468,
+          "sourceAnchor": [
+            68,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            134,
+            143
+          ],
+          "bounds": [
+            67,
+            60,
+            221,
+            225
+          ],
+          "sha256": "457380ac00fc97347d8d544aa80bdc337f5137a38cf88b5208ae32f36c0c21c2"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.1702127659574468,
+          "sourceAnchor": [
+            72,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            135
+          ],
+          "bounds": [
+            62,
+            60,
+            226,
+            216
+          ],
+          "sha256": "ffc4517c83fdd6e70ce1b18d8dbbe050b1ba2f35eddc2180f2c9059311ed3f05"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-run-v1.png",
+          "sourceScale": 1.1702127659574468,
+          "sourceAnchor": [
+            64.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            127,
+            139
+          ],
+          "bounds": [
+            71,
+            61,
+            217,
+            220
+          ],
+          "sha256": "bd24980bdbed6dd2ce70d501acbfd2b010b2d5707e5a35980167079f767f7500"
+        }
+      ],
+      "file": "woman-scout-mounted-run.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "dc4922858d5b33231aaf5f73c7197d20c0c4165a50c6205cd159adee23a4e083"
+    }
+  }
+}

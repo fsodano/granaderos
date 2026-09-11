@@ -1,0 +1,246 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "granadero-prone-aim-idle": {
+      "cell": 288,
+      "anchor": [
+        144,
+        165
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/granadero-prone-armed-fire-north-v1.png",
+          "sha256": "a182dbb588f623695c089696cd47c77b7ac87c85e889892664ca5e669c9a6bb5",
+          "scale": 0.55
+        },
+        {
+          "file": "assets/source/illustrated-sprites/granadero-prone-armed-fire-south-v1.png",
+          "sha256": "c047a50b33d4d34e90fd8198d1a23d34cc39b7fdb771f5cb33b3201870d0064a",
+          "scale": 0.55
+        },
+        {
+          "file": "assets/source/illustrated-sprites/granadero-prone-armed-fire-n-fix-v1.png",
+          "sha256": "f6eee7555c6dc4566097c22d96f95741b540878fe458e3156851e60fa87fc127",
+          "scale": 0.25
+        },
+        {
+          "file": "assets/source/illustrated-sprites/granadero-prone-armed-fire-s-fix-v1.png",
+          "sha256": "d5766de3cd7805d805b646adc1518a60920e525aa0d09214ee07d4454f0bc84e",
+          "scale": 0.23
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/granadero-prone-armed-fire-n-fix-v1.png",
+          "sourceScale": 0.25,
+          "sourceAnchor": [
+            83.5,
+            397.6198347107438
+          ],
+          "sourceBounds": [
+            2,
+            97,
+            165,
+            582
+          ],
+          "bounds": [
+            124,
+            90,
+            165,
+            211
+          ],
+          "sha256": "3122a34a9aa55c5e5ac95314ae0d595aa79fdc126de8de8892a4b827b845f590"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/granadero-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.53,
+          "sourceAnchor": [
+            104.04411764705881,
+            78.8
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            259,
+            146
+          ],
+          "bounds": [
+            90,
+            124,
+            226,
+            200
+          ],
+          "sha256": "c8a0899444b7e1767dc623606ffd6827af5f3641d438cf59928342f6bd795224"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/granadero-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.61,
+          "sourceAnchor": [
+            92.48780487804879,
+            66.0625
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            267,
+            102
+          ],
+          "bounds": [
+            89,
+            126,
+            251,
+            187
+          ],
+          "sha256": "f91c21792cd514bb3050ab714814e04c6a2b4cceb0657684826a08a9db2084b7"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/granadero-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.565,
+          "sourceAnchor": [
+            96.3835616438356,
+            50.184615384615384
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            267,
+            110
+          ],
+          "bounds": [
+            91,
+            138,
+            241,
+            199
+          ],
+          "sha256": "2530d17ba88659b9e60b04d10e55c61f441db823bc9acab839e6fc1ad24eecbd"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/granadero-prone-armed-fire-s-fix-v1.png",
+          "sourceScale": 0.23,
+          "sourceAnchor": [
+            118,
+            94.29629629629629
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            234,
+            358
+          ],
+          "bounds": [
+            117,
+            144,
+            170,
+            226
+          ],
+          "sha256": "7fb3c53c59780e3ec7281c4c97cc8e3442cc3b86d0a036c9774e4fd1391db1fc"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/granadero-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.49,
+          "sourceAnchor": [
+            123.84347826086956,
+            33.96825396825396
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            228,
+            108
+          ],
+          "bounds": [
+            84,
+            149,
+            195,
+            201
+          ],
+          "sha256": "42c8f880c0794411e25ef818e88fcea4134c715a20631a42e4f39ab6fb0468eb"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/granadero-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.6,
+          "sourceAnchor": [
+            172.8292682926829,
+            82.59016393442623
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            274,
+            106
+          ],
+          "bounds": [
+            42,
+            118,
+            205,
+            179
+          ],
+          "sha256": "3ccfa445693c4e7ef318b3c9c9c5013bf62ffd668cb0e2e5cec17192a078fc63"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/granadero-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.53,
+          "sourceAnchor": [
+            146.4,
+            100.42857142857143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            249,
+            158
+          ],
+          "bounds": [
+            67,
+            113,
+            198,
+            196
+          ],
+          "sha256": "8cc9d1e9d8a7050e98f843ba74676a109d53d5716bcb2736b5522acf74cdd237"
+        }
+      ],
+      "file": "granadero-prone-aim-idle.png",
+      "size": [
+        2304,
+        288
+      ],
+      "sha256": "b7d8c19e7920d6da4ccb9afcc9ee61f47e6409ccebebc82452319a77ff498982",
+      "derivedFrom": {
+        "atlas": "granadero-prone-armed-fire",
+        "frame": 0,
+        "reason": "hold authored pre-shot aim"
+      }
+    }
+  }
+}

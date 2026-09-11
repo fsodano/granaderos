@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "surgeon-crouch-interact": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-north-v1.png",
+          "sha256": "67d78dac2c658e747f0e2cf79e70c3ff11f79f9648c8e08a66b1325e29597080",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-south-v1.png",
+          "sha256": "6600161b6dd48d2ccf29c72ce0859915347a6958570baaa532ee086e75c3162a",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-north-v1.png",
+          "sourceScale": 0.33980582524271846,
+          "sourceAnchor": [
+            68,
+            209
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            141,
+            209
+          ],
+          "bounds": [
+            122,
+            155,
+            169,
+            225
+          ],
+          "sha256": "3f4eefa866de3bb24b9fb6ebacbc63e5753f5036a9f4bc69709950272ac3ef05"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-north-v1.png",
+          "sourceScale": 0.33980582524271846,
+          "sourceAnchor": [
+            68.5,
+            209
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            209
+          ],
+          "bounds": [
+            121,
+            155,
+            169,
+            225
+          ],
+          "sha256": "4f465465f58769c02f9f07a864cc81e4b561b0e82748cb425a97652524698b65"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-north-v1.png",
+          "sourceScale": 0.33980582524271846,
+          "sourceAnchor": [
+            69,
+            209
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            142,
+            209
+          ],
+          "bounds": [
+            121,
+            155,
+            169,
+            225
+          ],
+          "sha256": "3a0bccbe76942188e3f7d77e22c12ea12671047a0196157f391ce4f7e2646eda"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-north-v1.png",
+          "sourceScale": 0.33980582524271846,
+          "sourceAnchor": [
+            68,
+            209
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            209
+          ],
+          "bounds": [
+            122,
+            155,
+            170,
+            225
+          ],
+          "sha256": "b961c9ca1c5df7a8cf697513475f6506b25edb934540884dcf7cf3dde7307800"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-north-v1.png",
+          "sourceScale": 0.3592233009708738,
+          "sourceAnchor": [
+            97.5,
+            208
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            154,
+            208
+          ],
+          "bounds": [
+            110,
+            151,
+            165,
+            225
+          ],
+          "sha256": "25988c00e0e3eb997b2be796f97c2421b65c01b691dfd8ca87c9e4990da27701"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-north-v1.png",
+          "sourceScale": 0.3592233009708738,
+          "sourceAnchor": [
+            87.5,
+            208
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            194,
+            208
+          ],
+          "bounds": [
+            113,
+            151,
+            182,
+            225
+          ],
+          "sha256": "cf6799360b9a69faea0f3bcb5b097bd5cd740ebd2debdd1237f86c83f30678ae"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-north-v1.png",
+          "sourceScale": 0.3592233009708738,
+          "sourceAnchor": [
+            92,
+            208
+          ],
+          "sourceBounds": [
+            2,
+            5,
+            173,
+            208
+          ],
+          "bounds": [
+            112,
+            152,
+            173,
+            225
+          ],
+          "sha256": "6162ba89bf1ef983e6bafdbbc1a8363387c07cfd6d903b09499cb0de5fa69c70"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-north-v1.png",
+          "sourceScale": 0.3592233009708738,
+          "sourceAnchor": [
+            94.5,
+            208
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            152,
+            208
+          ],
+          "bounds": [
+            111,
+            151,
+            165,
+            225
+          ],
+          "sha256": "39f908c1de99ec6e1ad7e0782dd06837d9c42dcf3d0bba42a3e013b2e24b160d"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-north-v1.png",
+          "sourceScale": 0.36018957345971564,
+          "sourceAnchor": [
+            78,
+            213
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            145,
+            213
+          ],
+          "bounds": [
+            117,
+            149,
+            169,
+            225
+          ],
+          "sha256": "68b1b46be64511cf76dbde60d61bdcdc471b863edaac31a45fd7acaafab20160"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-north-v1.png",
+          "sourceScale": 0.36018957345971564,
+          "sourceAnchor": [
+            80.5,
+            213
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            203,
+            213
+          ],
+          "bounds": [
+            116,
+            150,
+            188,
+            225
+          ],
+          "sha256": "501be1441d90ed4ddd85b491ca86d06e3777160503724fd9bcb9ebde960e2e7b"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-north-v1.png",
+          "sourceScale": 0.36018957345971564,
+          "sourceAnchor": [
+            78,
+            213
+          ],
+          "sourceBounds": [
+            2,
+            6,
+            177,
+            213
+          ],
+          "bounds": [
+            117,
+            150,
+            180,
+            225
+          ],
+          "sha256": "d4dc1a4954b6b28bcbd92770f43b7b4217f25818e88348e4e800a8da4261e992"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-north-v1.png",
+          "sourceScale": 0.36018957345971564,
+          "sourceAnchor": [
+            77.5,
+            213
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            145,
+            213
+          ],
+          "bounds": [
+            117,
+            149,
+            169,
+            225
+          ],
+          "sha256": "df3ebf25bdbe8d47b3cde36c1a0f725c332c3f24a4920ddb4a5f788a4571b213"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-north-v1.png",
+          "sourceScale": 0.352112676056338,
+          "sourceAnchor": [
+            82.5,
+            215
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            169,
+            215
+          ],
+          "bounds": [
+            116,
+            150,
+            175,
+            225
+          ],
+          "sha256": "bcb8c892fae61c8c23308de9f9c67a97baeef7ded9bc6dbbf514ddc2d582b7d1"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-north-v1.png",
+          "sourceScale": 0.352112676056338,
+          "sourceAnchor": [
+            51.5,
+            215
+          ],
+          "sourceBounds": [
+            2,
+            7,
+            200,
+            215
+          ],
+          "bounds": [
+            127,
+            152,
+            197,
+            225
+          ],
+          "sha256": "e74b42d4f29e79d3f903d562a256b43c6e2d9f25b177d4547a9d211d82ce4a21"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-north-v1.png",
+          "sourceScale": 0.352112676056338,
+          "sourceAnchor": [
+            50.5,
+            215
+          ],
+          "sourceBounds": [
+            2,
+            8,
+            183,
+            215
+          ],
+          "bounds": [
+            127,
+            152,
+            191,
+            225
+          ],
+          "sha256": "4c9d6ec2570990da76425b677a7aaf7088077b2b74e37b10c4bc8a8896951b63"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-north-v1.png",
+          "sourceScale": 0.352112676056338,
+          "sourceAnchor": [
+            82.5,
+            215
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            169,
+            215
+          ],
+          "bounds": [
+            116,
+            150,
+            175,
+            225
+          ],
+          "sha256": "2300a7845f5ba41a5c1f5749c02bebcf9edc035ddbefdf9e1e1fc145c4c904f0"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-south-v1.png",
+          "sourceScale": 0.3553299492385787,
+          "sourceAnchor": [
+            75.5,
+            203
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            145,
+            199
+          ],
+          "bounds": [
+            118,
+            154,
+            169,
+            224
+          ],
+          "sha256": "b5a4194c44638dd5da06dab1e7cdad49655d1029c9cc1eddf9593620118dbb8d"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-south-v1.png",
+          "sourceScale": 0.3553299492385787,
+          "sourceAnchor": [
+            82.5,
+            203
+          ],
+          "sourceBounds": [
+            2,
+            6,
+            147,
+            203
+          ],
+          "bounds": [
+            115,
+            155,
+            167,
+            225
+          ],
+          "sha256": "9c3b2801bd8398f375075e32ab3ef42bef6c785053921c968d4805d9b6d905fd"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-south-v1.png",
+          "sourceScale": 0.3553299492385787,
+          "sourceAnchor": [
+            80,
+            203
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            152,
+            199
+          ],
+          "bounds": [
+            116,
+            154,
+            169,
+            224
+          ],
+          "sha256": "4481c8eb60887f20123c1d45376ed9d7205b4a56d3c42b5d4236e0efedfb4a44"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-south-v1.png",
+          "sourceScale": 0.3553299492385787,
+          "sourceAnchor": [
+            75,
+            203
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            145,
+            199
+          ],
+          "bounds": [
+            118,
+            154,
+            169,
+            224
+          ],
+          "sha256": "a106d26a74f6280d3ebdbf0f3eadd3f67ce375f6f5f3a519c983fe8d479185f8"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-south-v1.png",
+          "sourceScale": 0.3619047619047619,
+          "sourceAnchor": [
+            86.5,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            159,
+            212
+          ],
+          "bounds": [
+            113,
+            149,
+            170,
+            225
+          ],
+          "sha256": "e0afa89f66bf0dd612bb33f5cefda3305bfdc17d3e697f6bdffdcbc50695269b"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-south-v1.png",
+          "sourceScale": 0.3619047619047619,
+          "sourceAnchor": [
+            126.5,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            6,
+            203,
+            212
+          ],
+          "bounds": [
+            99,
+            150,
+            172,
+            225
+          ],
+          "sha256": "1b875887249fa47c14f341075cc7c8a18835eccfbc5b2e7f6c379acf5ce7cd41"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-south-v1.png",
+          "sourceScale": 0.3619047619047619,
+          "sourceAnchor": [
+            96,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            172,
+            212
+          ],
+          "bounds": [
+            110,
+            149,
+            172,
+            225
+          ],
+          "sha256": "d144c80e953e20fb24e70eeec01a00d6c169f0513c9c9c01a1485161bfe1a65c"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-south-v1.png",
+          "sourceScale": 0.3619047619047619,
+          "sourceAnchor": [
+            86.5,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            160,
+            212
+          ],
+          "bounds": [
+            113,
+            149,
+            170,
+            225
+          ],
+          "sha256": "39ae4ca2b5f5f90ecc10b3041953b17fbbd44c0e5aad045fed1cebdcc751a5bf"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-south-v1.png",
+          "sourceScale": 0.35545023696682465,
+          "sourceAnchor": [
+            75,
+            213
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            157,
+            213
+          ],
+          "bounds": [
+            118,
+            150,
+            173,
+            225
+          ],
+          "sha256": "0688e60bea45f3919c437e5579780c30663a5e5462b201d426e1cb6796f62ed6"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-south-v1.png",
+          "sourceScale": 0.35545023696682465,
+          "sourceAnchor": [
+            90.5,
+            213
+          ],
+          "sourceBounds": [
+            2,
+            6,
+            190,
+            213
+          ],
+          "bounds": [
+            113,
+            151,
+            180,
+            225
+          ],
+          "sha256": "2d6c8aca74b1c8f03bf9daf1d0c73468592f5ecd9463fb2aeedf9772ab19613a"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-south-v1.png",
+          "sourceScale": 0.35545023696682465,
+          "sourceAnchor": [
+            96,
+            213
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            178,
+            213
+          ],
+          "bounds": [
+            111,
+            150,
+            174,
+            225
+          ],
+          "sha256": "a377d7bf4040bfee7a7b6c4a3365c7026d14952daa7851ff0462212904811e87"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-south-v1.png",
+          "sourceScale": 0.35545023696682465,
+          "sourceAnchor": [
+            69,
+            213
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            152,
+            213
+          ],
+          "bounds": [
+            120,
+            150,
+            173,
+            225
+          ],
+          "sha256": "afe6368154df7b5eab4985eceacb6407b7f6c00e78e543136e72abeac7502230"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-south-v1.png",
+          "sourceScale": 0.3440366972477064,
+          "sourceAnchor": [
+            75,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            153,
+            220
+          ],
+          "bounds": [
+            119,
+            150,
+            171,
+            225
+          ],
+          "sha256": "98870a5131dfa3f3dc6ddfb8242ed1b9d0e6937a9086567decfa3b35b8756088"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-south-v1.png",
+          "sourceScale": 0.3440366972477064,
+          "sourceAnchor": [
+            117.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            9,
+            192,
+            220
+          ],
+          "bounds": [
+            104,
+            152,
+            169,
+            225
+          ],
+          "sha256": "5ecbcd6fe73e162b66d3533dafddadb21a0ec5ffce2b2e1e156aa3f44d3adbba"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-south-v1.png",
+          "sourceScale": 0.3440366972477064,
+          "sourceAnchor": [
+            94.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            8,
+            170,
+            220
+          ],
+          "bounds": [
+            112,
+            152,
+            170,
+            225
+          ],
+          "sha256": "93ef11b60a30f5cdce087875cb328ee9c0ab100646186e34ee2168c2bff914bc"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-crouch-interact-south-v1.png",
+          "sourceScale": 0.3440366972477064,
+          "sourceAnchor": [
+            75.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            154,
+            220
+          ],
+          "bounds": [
+            119,
+            150,
+            171,
+            225
+          ],
+          "sha256": "6ba6f3ae05c2ab3b9e28e11b3a5daeb9c0e610c9ec88094960fe98317a73689a"
+        }
+      ],
+      "file": "surgeon-crouch-interact.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "439ff73f0e8bd4f26496c174e4e9605d7b0bd7c833298a9a9d1d237a82e6fc7e"
+    }
+  }
+}

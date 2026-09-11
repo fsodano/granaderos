@@ -11,13 +11,18 @@ const atlas=(name,frames=1,fps=frames>1?5:0,logicalCell=52)=>({file:`${name}.png
 test('all shared appearances persist through movement, combat, collapse and mounts',()=>{
  const states=[
   [{},false,'idle','idle'],[{},true,'idle','walk'],[{movementMode:'run'},true,'idle','run'],
+  [{stance:'crouched'},false,'fire','crouch-fire'],[{stance:'crouched'},false,'reload','crouch-reload'],
+  [{},false,'interact','interact'],[{stance:'crouched'},false,'interact','crouch-interact'],
+  [{},false,'aim','aim-idle'],[{stance:'crouched'},false,'aim','crouch-aim-idle'],[{stance:'prone'},false,'aim','prone-aim-idle'],
+  [{mounted:true},false,'reload','mounted-reload'],[{mounted:true},false,'strike','mounted-strike'],[{mounted:true,movementMode:'run'},true,'idle','mounted-run'],
+  [{hp:0},false,'collapse','collapse'],
   [{},false,'fire','fire'],[{},false,'reload','reload'],[{},false,'strike','strike'],
   [{stance:'crouched'},false,'idle','crouch-idle'],[{movementMode:'crouch'},false,'idle','crouch-idle'],[{movementMode:'crouch'},true,'fire','crouch-walk'],
   [{stance:'prone'},false,'idle','prone-armed-idle'],[{stance:'prone'},true,'fire','prone-armed-walk'],
   [{stance:'prone'},false,'fire','prone-armed-fire'],[{stance:'prone'},false,'reload','prone-armed-reload'],
   [{stance:'prone',weaponDropped:true},false,'fire','prone-unarmed-idle'],[{stance:'prone',activeSlot:'blade'},true,'reload','prone-unarmed-walk'],
   [{hp:0,unconscious:true,mounted:true},true,'fire','dead-idle'],[{unconscious:true,mounted:true},true,'reload','unconscious-breathe'],
-  [{mounted:true,stance:'prone'},false,'fire','mounted-idle'],[{mounted:true},true,'reload','mounted-walk'],
+  [{mounted:true,stance:'prone'},false,'fire','mounted-fire'],[{mounted:true},true,'reload','mounted-walk'],
  ];
  for(const appearance of Object.keys(SPRITE_APPEARANCES))for(const [change,moving,pose,sequence] of states){
   const selected=selectSprite({spriteAppearance:appearance,hp:100,weapon:1800,activeSlot:'primary',...change},{...motion,moving},pose);
@@ -35,8 +40,8 @@ test('roster and custom portraits use their shared bodies while NPCs accept expl
   assert.ok(selected.name.endsWith('-idle'));
   if(portrait.id.startsWith('avatar-woman'))assert.ok(selected.name.startsWith('woman-'));
  }
- assert.equal(selectSprite({id:'npc',spriteAppearance:'woman-elder',hp:0,mounted:true},motion,'fire','civilian').name,'woman-elder-dead-idle');
- assert.equal(selectSprite({id:'npc',spriteAppearance:'woman-headscarf'},{...motion,moving:true},'idle','civilian').name,'woman-headscarf-walk');
+ assert.equal(selectSprite({id:'npc',spriteAppearance:'woman-elder',hp:0,mounted:true},motion,'fire','civilian').name,'woman-shawl-dead-idle');
+ assert.equal(selectSprite({id:'npc',spriteAppearance:'woman-headscarf'},{...motion,moving:true},'idle','civilian').name,'woman-shawl-walk');
  assert.equal(selectSprite({id:1,side:'enemy'},motion).name,'royalist-idle');
 });
 

@@ -1,0 +1,10 @@
+{
+  "source": "granadero-crouch-walk-north-reviewed-reference.png",
+  "rect": [
+    0,
+    0,
+    1536,
+    384
+  ],
+  "role": "Input preprocessing: exact N action row for compass-locked identity edit"
+}

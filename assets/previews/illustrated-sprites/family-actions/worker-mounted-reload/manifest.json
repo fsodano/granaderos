@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "worker-mounted-reload": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-north-v1.png",
+          "sha256": "7c65faf26cdf78cf976f2e95df57bb8c1e09e5d948ff783a0e2f14489f53d814",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-south-v1.png",
+          "sha256": "e509aff0236b005bec61e9cfd9b8271e186a7e1967776ea834a8c0b98393d1c4",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-north-v1.png",
+          "sourceScale": 0.6088560885608856,
+          "sourceAnchor": [
+            55.5,
+            276
+          ],
+          "sourceBounds": [
+            2,
+            5,
+            114,
+            276
+          ],
+          "bounds": [
+            111,
+            60,
+            179,
+            225
+          ],
+          "sha256": "735d0c29aaaa679333a0aebcd74842353d3dbbbd8fc0814b0c99447cd6b5c7e4"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-north-v1.png",
+          "sourceScale": 0.6088560885608856,
+          "sourceAnchor": [
+            58,
+            276
+          ],
+          "sourceBounds": [
+            2,
+            5,
+            116,
+            275
+          ],
+          "bounds": [
+            110,
+            60,
+            179,
+            224
+          ],
+          "sha256": "2010b504dd136d8c10f71c86fd57c8bf6b8f4eb32ead8e640897d4d8b251bf36"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-north-v1.png",
+          "sourceScale": 0.6088560885608856,
+          "sourceAnchor": [
+            57.5,
+            276
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            116,
+            275
+          ],
+          "bounds": [
+            110,
+            58,
+            179,
+            224
+          ],
+          "sha256": "62d52c52ab85fccd5038051ab89705d8504a048dd0bb02188a1cddf68300389c"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-north-v1.png",
+          "sourceScale": 0.6088560885608856,
+          "sourceAnchor": [
+            57.5,
+            276
+          ],
+          "sourceBounds": [
+            2,
+            5,
+            115,
+            276
+          ],
+          "bounds": [
+            110,
+            60,
+            179,
+            225
+          ],
+          "sha256": "da1895de0898a7936c201b905c33657e152e3706ca2829012510e0a8f92ad4b9"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-north-v1.png",
+          "sourceScale": 0.6066176470588235,
+          "sourceAnchor": [
+            82.5,
+            276
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            192,
+            275
+          ],
+          "bounds": [
+            95,
+            59,
+            210,
+            224
+          ],
+          "sha256": "d039f5c61317bcef4f08f73dc9c15621955b6839ef3e288dda66f1c599bb621c"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-north-v1.png",
+          "sourceScale": 0.6066176470588235,
+          "sourceAnchor": [
+            81,
+            276
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            193,
+            275
+          ],
+          "bounds": [
+            96,
+            59,
+            212,
+            224
+          ],
+          "sha256": "0e498ef542321040a00a37c8d601f0aab71a70462648f4341bfa97a6c8d1941b"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-north-v1.png",
+          "sourceScale": 0.6066176470588235,
+          "sourceAnchor": [
+            80.5,
+            276
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            193,
+            276
+          ],
+          "bounds": [
+            96,
+            59,
+            212,
+            225
+          ],
+          "sha256": "8b62b1d56df5afd6490cc84c044837247d0b96abc27ab614be5252b51d65ed3c"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-north-v1.png",
+          "sourceScale": 0.6066176470588235,
+          "sourceAnchor": [
+            80,
+            276
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            193,
+            275
+          ],
+          "bounds": [
+            97,
+            60,
+            213,
+            224
+          ],
+          "sha256": "13eb4ca93d5a37ab8f9abd9976c8c68fc2a317834afbb62c8d6b61d271b4a26e"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-north-v1.png",
+          "sourceScale": 0.6007326007326007,
+          "sourceAnchor": [
+            106,
+            276
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            271,
+            276
+          ],
+          "bounds": [
+            82,
+            61,
+            244,
+            225
+          ],
+          "sha256": "b3d2046d13c021f7276253118e2551b79d050cbf5b80350aeb3304e12410588e"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-north-v1.png",
+          "sourceScale": 0.6007326007326007,
+          "sourceAnchor": [
+            107,
+            276
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            271,
+            276
+          ],
+          "bounds": [
+            81,
+            61,
+            243,
+            225
+          ],
+          "sha256": "9b2e89719e62c6efcdb26083a9ad2d0253ca63c137287440c5df51695cc6cada"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-north-v1.png",
+          "sourceScale": 0.6007326007326007,
+          "sourceAnchor": [
+            106.5,
+            276
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            270,
+            275
+          ],
+          "bounds": [
+            81,
+            60,
+            242,
+            224
+          ],
+          "sha256": "9f28848272c6cf6ae119ab0af5dcb918ed63bcbfce20f83b36bb9751f5d321dd"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-north-v1.png",
+          "sourceScale": 0.6007326007326007,
+          "sourceAnchor": [
+            105.5,
+            276
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            270,
+            276
+          ],
+          "bounds": [
+            82,
+            61,
+            243,
+            225
+          ],
+          "sha256": "6e400a7e95741d217ae563ded49fa8c9ff3d81434f87b9e67d7ecc75c2cff062"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-north-v1.png",
+          "sourceScale": 0.5964285714285714,
+          "sourceAnchor": [
+            103.5,
+            283
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            238,
+            283
+          ],
+          "bounds": [
+            83,
+            58,
+            224,
+            225
+          ],
+          "sha256": "2fdc8eb7d9bb8d4c81077828486e01bde8668ed1670e747a3e026fc4fb0352ef"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-north-v1.png",
+          "sourceScale": 0.5964285714285714,
+          "sourceAnchor": [
+            103.5,
+            283
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            239,
+            283
+          ],
+          "bounds": [
+            83,
+            58,
+            224,
+            225
+          ],
+          "sha256": "bcdb8984278e0967aade3863938521d1b848c5799e5f789fac4996df921b223e"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-north-v1.png",
+          "sourceScale": 0.5964285714285714,
+          "sourceAnchor": [
+            105.5,
+            283
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            243,
+            282
+          ],
+          "bounds": [
+            82,
+            57,
+            226,
+            224
+          ],
+          "sha256": "c90c4a46a8cfa26458e20b21fc10d1d34ec09f207a9f876a09ea1cb3b3b554e2"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-north-v1.png",
+          "sourceScale": 0.5964285714285714,
+          "sourceAnchor": [
+            103,
+            283
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            238,
+            283
+          ],
+          "bounds": [
+            84,
+            58,
+            225,
+            225
+          ],
+          "sha256": "c4c027380c5adec515cf152d56e6496da82d0ba328a1b96393c2848052b8b5fe"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-south-v1.png",
+          "sourceScale": 0.6014492753623188,
+          "sourceAnchor": [
+            57,
+            282
+          ],
+          "sourceBounds": [
+            2,
+            6,
+            115,
+            282
+          ],
+          "bounds": [
+            111,
+            59,
+            179,
+            225
+          ],
+          "sha256": "6d3ad3dfd04f3754578ba3ec3e3998b65de0a0f007cf99f24929660e7d54db45"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-south-v1.png",
+          "sourceScale": 0.6014492753623188,
+          "sourceAnchor": [
+            56,
+            282
+          ],
+          "sourceBounds": [
+            2,
+            6,
+            115,
+            282
+          ],
+          "bounds": [
+            112,
+            59,
+            180,
+            225
+          ],
+          "sha256": "985ea9522bba918e5a07d5f047ac5f826b7cef6f50bcaa9bed8f9d786ea8dded"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-south-v1.png",
+          "sourceScale": 0.6014492753623188,
+          "sourceAnchor": [
+            57,
+            282
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            115,
+            282
+          ],
+          "bounds": [
+            111,
+            57,
+            179,
+            225
+          ],
+          "sha256": "0315ea44ca052fb39e91b9b3c79d688b83fcd1b4f9e08710387ba8fbd63335eb"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-south-v1.png",
+          "sourceScale": 0.6014492753623188,
+          "sourceAnchor": [
+            57,
+            282
+          ],
+          "sourceBounds": [
+            2,
+            6,
+            115,
+            282
+          ],
+          "bounds": [
+            111,
+            59,
+            179,
+            225
+          ],
+          "sha256": "b4e52a84931b2fa983314963395de57b5c8e74bc52806eba8fec0cbe31bfbf0a"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-south-v1.png",
+          "sourceScale": 0.5992779783393501,
+          "sourceAnchor": [
+            96.5,
+            280
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            176,
+            280
+          ],
+          "bounds": [
+            87,
+            59,
+            191,
+            225
+          ],
+          "sha256": "2e022eed7784124197c7fbb20eb2e23e9e9757d518fa6a1aeab6888db977e0d0"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-south-v1.png",
+          "sourceScale": 0.5992779783393501,
+          "sourceAnchor": [
+            97.5,
+            280
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            177,
+            280
+          ],
+          "bounds": [
+            87,
+            59,
+            192,
+            225
+          ],
+          "sha256": "b4dcc25548b85ed2a15213bbbde169e66f08dfd2be82b6b6bd9b6b4167d82d01"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-south-v1.png",
+          "sourceScale": 0.5992779783393501,
+          "sourceAnchor": [
+            97.5,
+            280
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            177,
+            280
+          ],
+          "bounds": [
+            87,
+            58,
+            192,
+            225
+          ],
+          "sha256": "f198ac39e8c3c08fab2dc2ba8bf590e85902c0247aec4546771f04ecb76720f2"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-south-v1.png",
+          "sourceScale": 0.5992779783393501,
+          "sourceAnchor": [
+            98.5,
+            280
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            178,
+            280
+          ],
+          "bounds": [
+            86,
+            59,
+            191,
+            225
+          ],
+          "sha256": "d94ef41047e858aaf9378329cc6984f5c2c89595d01153f5ce0597e9573c56d4"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-south-v1.png",
+          "sourceScale": 0.592057761732852,
+          "sourceAnchor": [
+            161.5,
+            280
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            274,
+            280
+          ],
+          "bounds": [
+            50,
+            61,
+            211,
+            225
+          ],
+          "sha256": "58e79c7b1edfbf802256647d7f3a791eceaa05b63e69dd0ae5a6154f5f4179e4"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-south-v1.png",
+          "sourceScale": 0.592057761732852,
+          "sourceAnchor": [
+            162.5,
+            280
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            275,
+            280
+          ],
+          "bounds": [
+            49,
+            60,
+            211,
+            225
+          ],
+          "sha256": "ef3db9d9b3371670b99d94393cdd2aca0974a491ce006591529b9f4974d0b827"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-south-v1.png",
+          "sourceScale": 0.592057761732852,
+          "sourceAnchor": [
+            162,
+            280
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            275,
+            280
+          ],
+          "bounds": [
+            49,
+            60,
+            211,
+            225
+          ],
+          "sha256": "b104f415c991175f272d392716859230a89526e25621de622b0a5fa03bf03dbb"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-south-v1.png",
+          "sourceScale": 0.592057761732852,
+          "sourceAnchor": [
+            162.5,
+            280
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            275,
+            280
+          ],
+          "bounds": [
+            49,
+            61,
+            211,
+            225
+          ],
+          "sha256": "4ae1f921818b21ad8c97de0ae4f370045503cab2889865743e2e7bbc09e355de"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-south-v1.png",
+          "sourceScale": 0.5913978494623656,
+          "sourceAnchor": [
+            127.5,
+            282
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            219,
+            282
+          ],
+          "bounds": [
+            70,
+            60,
+            198,
+            225
+          ],
+          "sha256": "0d6dacbd9468787eb1c0600f770fd64b7be52c75dd317094e8e5c4423b8115ec"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-south-v1.png",
+          "sourceScale": 0.5913978494623656,
+          "sourceAnchor": [
+            126.5,
+            282
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            218,
+            282
+          ],
+          "bounds": [
+            70,
+            60,
+            198,
+            225
+          ],
+          "sha256": "250173e0e77e466d78e10e8644b40138e6a5c171da0e035f6b8eb7752dd917d1"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-south-v1.png",
+          "sourceScale": 0.5913978494623656,
+          "sourceAnchor": [
+            126.5,
+            282
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            218,
+            282
+          ],
+          "bounds": [
+            70,
+            59,
+            198,
+            225
+          ],
+          "sha256": "e40df9c94b461a4ce9a0547834a705b4e1e4f26c4525859d55331f8ba0736367"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-reload-south-v1.png",
+          "sourceScale": 0.5913978494623656,
+          "sourceAnchor": [
+            127,
+            282
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            218,
+            282
+          ],
+          "bounds": [
+            70,
+            61,
+            198,
+            225
+          ],
+          "sha256": "65ae715da3c52cc7c1fd31ec312a6863c140e241c8da89f84d1d04af41e087b9"
+        }
+      ],
+      "file": "worker-mounted-reload.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "8709f8ad9214c8d617a234b5cba94ca55a1a146fc24aa9baaf42a5b626f5e74d"
+    }
+  }
+}

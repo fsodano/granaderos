@@ -1,0 +1,788 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-shawl-mounted-fire": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sha256": "c56876958ca691777550c17095da745308b936e242e47dec557179f4d9da7934",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-n-v2.png",
+          "sha256": "af2b550de26ba58d23c022ddd2361819fbf970d869663c03b4e11e914a40e2d5",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-s-v2.png",
+          "sha256": "dd0142de3e6282a8c93bd91d43a5e0df3257cfa3c531225bb63386f663fac080",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.2313432835820894,
+          "sourceAnchor": [
+            56.5,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            8,
+            118,
+            142
+          ],
+          "bounds": [
+            77,
+            60,
+            220,
+            225
+          ],
+          "sha256": "80fcae23af1cae6d685a739c6b787452e116550326e5d590e4c88bf02056fcda"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.2313432835820894,
+          "sourceAnchor": [
+            53,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            125,
+            142
+          ],
+          "bounds": [
+            81,
+            53,
+            232,
+            225
+          ],
+          "sha256": "d81285af4a19e4d8cdd2b32eea6044919b41f34bca693656fdf03a927f5ce89a"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.2313432835820894,
+          "sourceAnchor": [
+            57.5,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            8,
+            126,
+            142
+          ],
+          "bounds": [
+            76,
+            60,
+            229,
+            225
+          ],
+          "sha256": "a5a15ea45fc8ec15d174bdb856cfc96f3f08b14695fe70f8088d483776a2d682"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.2313432835820894,
+          "sourceAnchor": [
+            56,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            8,
+            121,
+            142
+          ],
+          "bounds": [
+            78,
+            60,
+            225,
+            225
+          ],
+          "sha256": "b335dc046c5987f8d9d55c68850df2bc5dec08e77db90a3954d5349f4a1a1ba5"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.2330827067669172,
+          "sourceAnchor": [
+            69,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            150,
+            135
+          ],
+          "bounds": [
+            61,
+            61,
+            243,
+            225
+          ],
+          "sha256": "3a41b0cff198af55d512ef724949a3b467e0a4a591651308214c7c348f193c4b"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.2330827067669172,
+          "sourceAnchor": [
+            69,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            170,
+            135
+          ],
+          "bounds": [
+            61,
+            61,
+            268,
+            225
+          ],
+          "sha256": "967f5a458c1dfe1573772ec378885233d9c9e29700eb7a494de4cc1f8cadd849"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.2330827067669172,
+          "sourceAnchor": [
+            70.5,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            155,
+            135
+          ],
+          "bounds": [
+            60,
+            61,
+            249,
+            225
+          ],
+          "sha256": "9125345830a0ad28441023ce0333a2dc7e7d9f1265d1ec7fa1f32abe9e3b5bff"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.2330827067669172,
+          "sourceAnchor": [
+            67,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            150,
+            135
+          ],
+          "bounds": [
+            64,
+            61,
+            246,
+            225
+          ],
+          "sha256": "a34b80539f72c7e097c539994da380702058139ce0fb708f2dc530c1b6e87f88"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.176056338028169,
+          "sourceAnchor": [
+            58.5,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            119,
+            144
+          ],
+          "bounds": [
+            78,
+            58,
+            216,
+            225
+          ],
+          "sha256": "55b3d74c7b2cc8afe9c5272071d32542afd83b8bf69dbad6b29d59efd2c7a8e7"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.176056338028169,
+          "sourceAnchor": [
+            61,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            144
+          ],
+          "bounds": [
+            75,
+            58,
+            238,
+            225
+          ],
+          "sha256": "9d523fb9e15e46db36da6e8574ac91e8e3abfdd31b75ba56728ff960cb3b9453"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.176056338028169,
+          "sourceAnchor": [
+            59.5,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            118,
+            144
+          ],
+          "bounds": [
+            76,
+            58,
+            212,
+            225
+          ],
+          "sha256": "504e92cf15b4c3bfdae7e5baeaf5d00542c13199cf3292dc28b8fc5ac8f0973f"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.176056338028169,
+          "sourceAnchor": [
+            63.5,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            132,
+            144
+          ],
+          "bounds": [
+            72,
+            58,
+            225,
+            225
+          ],
+          "sha256": "96f4c5635bfdfd501ea9198d69c0705a8c8b90501aceb9d436c5972e3bb318cd"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.2296296296296296,
+          "sourceAnchor": [
+            78,
+            137
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            140,
+            137
+          ],
+          "bounds": [
+            51,
+            59,
+            221,
+            225
+          ],
+          "sha256": "83535d25f1050a5793ed407df66300d78ba929d54713b757be2a6e9317492e00"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.2296296296296296,
+          "sourceAnchor": [
+            78.5,
+            137
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            137
+          ],
+          "bounds": [
+            50,
+            59,
+            221,
+            225
+          ],
+          "sha256": "05dada2de8e4c0b41f571aeb991c8924b5d3a29541f979d6ae21b8cd7f4c416c"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.2296296296296296,
+          "sourceAnchor": [
+            76,
+            137
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            139,
+            137
+          ],
+          "bounds": [
+            53,
+            59,
+            221,
+            225
+          ],
+          "sha256": "c81e0d0f69c67ea0243b202402e9a931dcfc9a178ca9298d9074084edbf3a66f"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.2296296296296296,
+          "sourceAnchor": [
+            71.5,
+            137
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            132,
+            137
+          ],
+          "bounds": [
+            59,
+            59,
+            219,
+            225
+          ],
+          "sha256": "c3645b333a6b7d537b2b6fdb5bfb54d60bd1d89fc28d3b1407572b29d2f5b035"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.2058823529411764,
+          "sourceAnchor": [
+            86.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            154,
+            138
+          ],
+          "bounds": [
+            42,
+            61,
+            225,
+            225
+          ],
+          "sha256": "87b039a7786835cac22ec6691e51fd94d7692281595a6af9fed7853962ad52c9"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.2058823529411764,
+          "sourceAnchor": [
+            95,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            160,
+            138
+          ],
+          "bounds": [
+            32,
+            62,
+            223,
+            225
+          ],
+          "sha256": "264d541ffac6d95ac98122398e8fad8114c35e4e060cdbaa1873449cc3a532b1"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.2058823529411764,
+          "sourceAnchor": [
+            82.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            150,
+            138
+          ],
+          "bounds": [
+            47,
+            62,
+            225,
+            225
+          ],
+          "sha256": "5236e3f8b85492144b7d3a7192d3467c822553fdc67c1868c9a8bd4eedde1d67"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.2058823529411764,
+          "sourceAnchor": [
+            86.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            150,
+            138
+          ],
+          "bounds": [
+            42,
+            62,
+            220,
+            225
+          ],
+          "sha256": "d58e0948b8331ec2db42f5bdd136ec0828c7333403c745f604bab561abccec1b"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.1785714285714286,
+          "sourceAnchor": [
+            71,
+            151
+          ],
+          "sourceBounds": [
+            2,
+            11,
+            131,
+            151
+          ],
+          "bounds": [
+            63,
+            60,
+            215,
+            225
+          ],
+          "sha256": "81f3c8840bd6c55f251d0b354b86d8109328adbe67dcda385d27b1914efd69d1"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.1785714285714286,
+          "sourceAnchor": [
+            68,
+            151
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            126,
+            151
+          ],
+          "bounds": [
+            66,
+            49,
+            212,
+            225
+          ],
+          "sha256": "6243410a50348717659bb4ddff7c3371611dff0ed0300a68be1c7f74d3943b50"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.1785714285714286,
+          "sourceAnchor": [
+            69.5,
+            151
+          ],
+          "sourceBounds": [
+            2,
+            11,
+            129,
+            151
+          ],
+          "bounds": [
+            64,
+            60,
+            214,
+            225
+          ],
+          "sha256": "bed749101cc5641a0a0d11e314f10212f3ec56e0b944144a354c6cf9e1fb8815"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-v1.png",
+          "sourceScale": 1.1785714285714286,
+          "sourceAnchor": [
+            68.5,
+            151
+          ],
+          "sourceBounds": [
+            2,
+            10,
+            125,
+            151
+          ],
+          "bounds": [
+            66,
+            59,
+            211,
+            225
+          ],
+          "sha256": "2001065b9714778595471557eb9c7e8075d6e203bf255f5a4544e32be714acda"
+        },
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-n-v2.png",
+          "sourceScale": 0.29783393501805056,
+          "sourceAnchor": [
+            104,
+            570
+          ],
+          "sourceBounds": [
+            2,
+            16,
+            207,
+            570
+          ],
+          "bounds": [
+            114,
+            60,
+            175,
+            225
+          ],
+          "sha256": "0dce36864e062380cb194cef760659454b0d6a39320d8dec3b6b0f8238fc3d9a"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-n-v2.png",
+          "sourceScale": 0.29783393501805056,
+          "sourceAnchor": [
+            104.5,
+            570
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            207,
+            570
+          ],
+          "bounds": [
+            113,
+            56,
+            174,
+            225
+          ],
+          "sha256": "4dfce2aa96b77010f357bdf3efa142bca8e0a5ac67af004abca406bb40853548"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-n-v2.png",
+          "sourceScale": 0.29783393501805056,
+          "sourceAnchor": [
+            103,
+            570
+          ],
+          "sourceBounds": [
+            2,
+            10,
+            205,
+            570
+          ],
+          "bounds": [
+            114,
+            58,
+            174,
+            225
+          ],
+          "sha256": "0e6f3d770c4177cbe71f3a27d627075d633c5ac3620e3980dbf08a9f79ca12a1"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-n-v2.png",
+          "sourceScale": 0.29783393501805056,
+          "sourceAnchor": [
+            104,
+            570
+          ],
+          "sourceBounds": [
+            2,
+            16,
+            207,
+            570
+          ],
+          "bounds": [
+            114,
+            60,
+            175,
+            225
+          ],
+          "sha256": "87dcc352d80e863b2704aa7b6c66b16c6fd3898cc4bab45752e50dc4498bb809"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-s-v2.png",
+          "sourceScale": 0.3204633204633205,
+          "sourceAnchor": [
+            106,
+            520
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            210,
+            520
+          ],
+          "bounds": [
+            111,
+            59,
+            178,
+            225
+          ],
+          "sha256": "e2daab86124f07032a7f370143fae290418f3c87b4b52abd5e8d5993562ba1ad"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-s-v2.png",
+          "sourceScale": 0.3204633204633205,
+          "sourceAnchor": [
+            106,
+            520
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            210,
+            520
+          ],
+          "bounds": [
+            111,
+            59,
+            178,
+            225
+          ],
+          "sha256": "94465c31d8ce821f90af8e6d7af8ce631fec52ee651d02e81c108a63d933f08c"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-s-v2.png",
+          "sourceScale": 0.3204633204633205,
+          "sourceAnchor": [
+            106.5,
+            520
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            211,
+            520
+          ],
+          "bounds": [
+            111,
+            59,
+            178,
+            225
+          ],
+          "sha256": "530be7d87be33ab671226b1c42ab32216bd7e3b502524104b45f7506e59a7a44"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-fire-s-v2.png",
+          "sourceScale": 0.3204633204633205,
+          "sourceAnchor": [
+            106,
+            520
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            210,
+            520
+          ],
+          "bounds": [
+            111,
+            59,
+            178,
+            225
+          ],
+          "sha256": "b87bc7cf28b42022ef9e10fd94d2f8177a475553b21ac74662b74edcf95de9cd"
+        }
+      ],
+      "file": "woman-shawl-mounted-fire.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "3feec9be3a8dfae62b3757b93e8ead101901298363c18e500cd7ae104e519d88"
+    }
+  }
+}

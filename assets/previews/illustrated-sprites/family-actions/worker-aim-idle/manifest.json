@@ -1,0 +1,241 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "worker-aim-idle": {
+      "cell": 210,
+      "anchor": [
+        105,
+        186
+      ],
+      "logicalCell": 70,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/worker-fire-north-v1.png",
+          "sha256": "cdf1318d2461d8c1aab2a430e468f2a13288160f1ac189f59854f21ff049b2ab",
+          "scale": 0.6698564593301436
+        },
+        {
+          "file": "assets/source/illustrated-sprites/worker-fire-south-v1.png",
+          "sha256": "9c37f0ac06e5a70f233d52f2de173948920ac6cafd2a4d636a54f504e396f439",
+          "scale": 0.6698564593301436
+        },
+        {
+          "file": "assets/source/illustrated-sprites/worker-fire-north-v3.png",
+          "sha256": "3d4742b01a3f3425504ad4ca6762f5b4fcef32fc32ba42af62194ab469bc74cd",
+          "scale": 0.6698564593301436
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/worker-fire-north-v3.png",
+          "sourceScale": 0.508282,
+          "sourceAnchor": [
+            37.783,
+            233.65
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            79,
+            228
+          ],
+          "bounds": [
+            87,
+            68,
+            126,
+            183
+          ],
+          "sha256": "66ebd696875379c66749ef06265647af23d57b6712f7b10b92f1d64bcc949a3f"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/worker-fire-north-v1.png",
+          "sourceScale": 0.585271,
+          "sourceAnchor": [
+            39.619,
+            198.271
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            93,
+            195
+          ],
+          "bounds": [
+            83,
+            71,
+            136,
+            184
+          ],
+          "sha256": "4c7f428ba590f845736600c0da981574318b641b6cdd1d00a450fe2db94fbb94"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/worker-fire-north-v1.png",
+          "sourceScale": 0.615776,
+          "sourceAnchor": [
+            41.549,
+            198.164
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            104,
+            195
+          ],
+          "bounds": [
+            81,
+            65,
+            144,
+            184
+          ],
+          "sha256": "b81af65c6b529b201400c0df3dec308be5c31de1b06deb2d6954bc0ff1bb86fe"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/worker-fire-north-v1.png",
+          "sourceScale": 0.564878,
+          "sourceAnchor": [
+            35.621,
+            200.362
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            105,
+            197
+          ],
+          "bounds": [
+            86,
+            74,
+            144,
+            184
+          ],
+          "sha256": "7f947655201c5e56ecb70a9b98a13be903ecff2daa7ecf272a5f09addfd44963"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/worker-fire-south-v1.png",
+          "sourceScale": 0.499619,
+          "sourceAnchor": [
+            46.051,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            80,
+            228
+          ],
+          "bounds": [
+            83,
+            73,
+            122,
+            186
+          ],
+          "sha256": "022483e7ea86e3814ca413d801b97d328593c8e7feabe83f865634d90372690a"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/worker-fire-south-v1.png",
+          "sourceScale": 0.551885,
+          "sourceAnchor": [
+            80.024,
+            217
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            119,
+            217
+          ],
+          "bounds": [
+            62,
+            67,
+            127,
+            186
+          ],
+          "sha256": "fb54bd29d2e530c04be0aeda07d14b184178ce3c3867a03414136b40902df3e7"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/worker-fire-south-v1.png",
+          "sourceScale": 0.563428,
+          "sourceAnchor": [
+            135.623,
+            211
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            119,
+            211
+          ],
+          "bounds": [
+            30,
+            68,
+            96,
+            186
+          ],
+          "sha256": "6c497512c6714a5c599a4d8fe48be340796bcce662c47a8c72130f1fc208b74c"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/worker-fire-south-v1.png",
+          "sourceScale": 0.539097,
+          "sourceAnchor": [
+            112.05,
+            215
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            104,
+            215
+          ],
+          "bounds": [
+            46,
+            71,
+            101,
+            186
+          ],
+          "sha256": "8469a9475d18e3c9df5d26155bc889c439faa784c50b1376bc9d3338917aad0f"
+        }
+      ],
+      "file": "worker-aim-idle.png",
+      "size": [
+        1680,
+        210
+      ],
+      "sha256": "12e94ff9acafe5b6f056016b2cf9e3e11ffd80b984c9375204d13679e6ac44fd",
+      "derivedFrom": {
+        "atlas": "worker-fire",
+        "frame": 0,
+        "reason": "hold authored pre-shot aim"
+      }
+    }
+  }
+}
