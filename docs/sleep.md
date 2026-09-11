@@ -21,7 +21,7 @@ These numbers adapt the existing 0–100 energy and fatigue scales; they are not
 
 `tests/sleep.test.mjs` covers campaign orders, work interruption/resumption, recovery rates, militia progress, forced defense, travel, unsafe sectors, lifecycle cleanup and save continuation. `tests/sleep-render.test.mjs` checks independent controls and preserved assignment display. Existing assignment-wait and medical-care tests cover the affected timing rules.
 
-Audit A02 remains partial. Individual sleep requirements, maximum-energy loss from sustained fatigue and exhaustion during long marches are not implemented here. Existing strategic Rest/Patient roles remain available. This increment does not claim full JA2 parity.
+Audit A02 remains partial. The follow-on `fatigue.md` implementation adds fatigue-limited energy capacity and hourly marching costs. Individual sleep requirements and a fuller collapse/recovery model remain open. Existing strategic Rest/Patient roles remain available. This increment does not claim full JA2 parity.
 
 ### Browser check — 2026-09-11
 

@@ -5,7 +5,7 @@ import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {chooseEnemyAction} from '../game/tactical-ai.js';
 import {createBattle,actBattle,endTurn} from '../game/tactical.js';
 function fight(seed=1812){
-let c=dispatch(dispatch(initialCampaign(seed),{type:'travel',sector:'buenos_aires'}),{type:'attack',sector:'san_nicolas'});if(c.lastError)throw Error(c.lastError);let b=createBattle(c.pendingBattle.squad,c.pendingBattle);let actions=1;b=actBattle(b,{type:'fire',unitId:4,targetId:'enemy-0',aim:2});b=endTurn(b);
+let c=dispatch(initialCampaign(seed),{type:'travel',sector:'buenos_aires'});for(const operativeId of c.squad)c=dispatch(c,{type:'setSleep',operativeId,asleep:true});c=dispatch(c,{type:'wait',hours:12});c=dispatch(c,{type:'attack',sector:'san_nicolas'});if(c.lastError)throw Error(c.lastError);let b=createBattle(c.pendingBattle.squad,c.pendingBattle);let actions=1;b=actBattle(b,{type:'fire',unitId:4,targetId:'enemy-0',aim:2});b=endTurn(b);
 for(let round=0;round<30&&b.status==='active';round++){
 for(const id of b.units.filter(u=>u.side==='player').map(u=>u.id)){
 for(let attempt=0;attempt<20&&b.status==='active';attempt++){

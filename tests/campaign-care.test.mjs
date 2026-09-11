@@ -37,7 +37,7 @@ test('doctors cannot treat remotely, without energy, or during militia work',()=
 });
 
 test('idle soldiers recover energy slowly while assigned safe rest also heals wounds',()=>{
- let s=initialCampaign();wound(s,3);s=order(s,{type:'wait',hours:24});assert.equal(s.operativeState[3].hp,30);assert.equal(s.operativeState[3].energy,92);assert.equal(s.operativeState[3].fatigue,36);
+ let s=initialCampaign();wound(s,3);s=order(s,{type:'wait',hours:24});assert.equal(s.operativeState[3].hp,30);assert.equal(s.operativeState[3].energy,64);assert.equal(s.operativeState[3].fatigue,36);
  wound(s,3);s=assign(s,3,'rest');s=order(s,{type:'wait',hours:5});assert.equal(s.operativeState[3].hp,30);assert.equal(s.operativeState[3].energy,80);s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[3].hp,31);assert.equal(s.operativeState[3].bandaged,s.operativeState[3].maxHp-31);
  s.sectors.retiro.owner='royalist';s=order(s,{type:'wait',hours:6});assert.equal(s.operativeState[3].hp,31);
 });
@@ -49,8 +49,8 @@ test('a critical stable patient needs a doctor and cannot heal through sleep',()
 
 test('travel and deployment require active assignments and cannot grant recovery',()=>{
  let s=medicalTeam();assert.ok(dispatch(s,{type:'travel',sector:'ensenada'}).lastError);assert.ok(dispatch(s,{type:'visitSector'}).lastError);assert.ok(dispatch(s,{type:'attack',sector:'san_nicolas'}).lastError);
- s=assign(s,3,'active');s=assign(s,10,'active');s=order(s,{type:'travel',sector:'ensenada'});assert.equal(s.operativeState[3].hp,30);assert.equal(s.operativeState[3].energy,20);
- s=order(s,{type:'visitSector'});assert.ok(dispatch(s,{type:'assignCare',operativeId:3,assignment:'rest'}).lastError);s=order(s,{type:'syncTacticalTime',battleId:s.pendingBattle.id,elapsedSeconds:86400});assert.equal(s.operativeState[3].hp,30);assert.equal(s.operativeState[3].energy,20);
+ s=assign(s,3,'active');s=assign(s,10,'active');s=order(s,{type:'travel',sector:'ensenada'});assert.equal(s.operativeState[3].hp,30);assert.equal(s.operativeState[3].energy,16);assert.equal(s.operativeState[3].fatigue,84);
+ s=order(s,{type:'visitSector'});assert.ok(dispatch(s,{type:'assignCare',operativeId:3,assignment:'rest'}).lastError);s=order(s,{type:'syncTacticalTime',battleId:s.pendingBattle.id,elapsedSeconds:86400});assert.equal(s.operativeState[3].hp,30);assert.equal(s.operativeState[3].energy,16);
 });
 
 test('recovery excludes traveling staff even when advancing the hourly subsystem directly',()=>{

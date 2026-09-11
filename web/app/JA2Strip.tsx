@@ -1,4 +1,5 @@
 'use client';
+import {maximumEnergy} from '../../game/fatigue.js';
 // JA2 bottom-strip disposition (DESIGN.md MODE A / MODE B). Root switches content on inventoryId.
 // Pure read model (game/ja2-hud.js orderDescriptors/orderAction); all mutations are caller-provided callbacks.
 import {MILITIA_NAMES} from '../../game/militia.js';
@@ -64,7 +65,7 @@ export default function JA2Strip({battle, selected, unit, players, missionAllies
         {unit && <div className="ja2-action-readout" aria-label="Estado del combatiente">
           <strong>{unit.nickname || unit.name} · {unit.ap} PA</strong>
           {unit.militia&&<small>{MILITIA_NAMES[unit.militiaRank]??"Milicia"} · {unit.militiaExperience??0} puntos de combate</small>}
-          <span>{stanceLabel(unit.stance)} · {facingLabel(unit)} · {Math.ceil(unit.hp)}/{unit.maxHp} salud · {Math.round(unit.energy ?? 100)} energía{unit.bleeding > 0 ? ` · Hemorragia ${unit.bleeding}` : ''}{unit.stealthMode ? ' · Sigilo' : ''}</span>
+          <span>{stanceLabel(unit.stance)} · {facingLabel(unit)} · {Math.ceil(unit.hp)}/{unit.maxHp} salud · {Math.round(unit.energy ?? 100)}/{maximumEnergy(unit)} energía{unit.bleeding > 0 ? ` · Hemorragia ${unit.bleeding}` : ''}{unit.stealthMode ? ' · Sigilo' : ''}</span>
           {heardNoise && <span className="ja2-noise-readout">{heardNoise.label}</span>}
           <small>{turn.interrupted ? 'Interrupción: usá los PA restantes. Esta pausa no recupera PA.' : battle.mode === 'exploration' ? 'Exploración: las órdenes consumen tiempo.' : `Dejá PA para interrumpir al enemigo. Se conservan hasta ${budget?.carryover} PA al próximo turno (límite ${AP_CARRY_LIMIT}).`}</small>
         </div>}

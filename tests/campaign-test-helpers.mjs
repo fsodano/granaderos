@@ -1,17 +1,31 @@
 import {approachNPC} from './approach-npc.mjs';
+import {tooTiredToMarch} from '../game/march-fatigue.js';
 import {dispatchCampaign} from '../game/campaign.js';
 import {CAMPAIGN_SECTORS} from '../game/data.js';
 import {transportPath} from '../game/logistics.js';
-// Integration tests explicitly march through controlled sectors before a frontier attack.
+// Follow real recovery and movement orders when test journeys cross exhaustion.
+export function restForMarch(state){
+ if(state.pendingEncounter||state.sectors[state.location].owner!=='patriot')return state;
+ if(!state.squad.some(id=>tooTiredToMarch(state.operativeState[id])||state.operativeState[id].asleep))return state;
+ let s=state;
+ for(const id of s.squad){const r=s.operativeState[id];if(!r.asleep&&(r.fatigue>0||r.energy<100)){s=dispatchCampaign(s,{type:'setSleep',operativeId:id,asleep:true});if(s.lastError)throw Error(s.lastError);}}
+ for(let i=0;s.squad.some(id=>s.operativeState[id].asleep)&&i<20;i++){s=dispatchCampaign(s,{type:'wait',hours:12});if(s.lastError)throw Error(s.lastError);if(s.pendingEncounter)return s;}
+ if(s.squad.some(id=>s.operativeState[id].asleep))throw Error('The test squad did not finish its actual sleep.');
+ return s;
+}
 export function marchToFront(state,action){
  if(action.type!=='attack')return state;
- const target=action.sector??'san_lorenzo';const destinations=target==='san_lorenzo'?['san_nicolas']:CAMPAIGN_SECTORS.find(d=>d.id===target)?.neighbors??[];
- if(state.location===target||destinations.includes(state.location))return state;
- const destination=destinations.find(id=>state.sectors[id].owner==='patriot'&&transportPath(state,state.location,id));
- if(!destination)return state;
- const next=dispatchCampaign(state,{type:'travel',sector:destination});
- if(next.lastError)throw Error(`Integration-test march failed: ${next.lastError}`);
- return next;
+ const target=action.sector??'san_lorenzo',destinations=target==='san_lorenzo'?['san_nicolas']:CAMPAIGN_SECTORS.find(d=>d.id===target)?.neighbors??[];
+ let s=restForMarch(state);
+ if(s.location===target||destinations.includes(s.location))return s;
+ const destination=destinations.find(id=>s.sectors[id].owner==='patriot'&&transportPath(s,s.location,id));
+ if(!destination)return s;
+ for(let i=0;s.location!==destination&&i<12;i++){
+  s=dispatchCampaign(restForMarch(s),{type:'travel',sector:destination});
+  if(s.lastError)throw Error(`Integration-test march failed: ${s.lastError}`);
+  if(s.pendingEncounter)break;
+ }
+ return restForMarch(s);
 }
 
 import {encounterForOperative} from '../game/encounters.js';

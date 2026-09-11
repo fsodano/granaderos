@@ -76,6 +76,10 @@ test('legal authored-map opening campaign wins San Nicolás then San Lorenzo',()
  for(const id of [110,114,115,123,107])order({type:'recruitCivic',id,term:'week'});
  assert.equal(c.squad.length,6);order({type:'purchaseMedicalSupplies',operativeId:107,quantity:20});
  order({type:'academy'});order({type:'travel',sector:'buenos_aires'});
+ // Rest at the staging sector before the approach to the first battle.
+ for(const operativeId of c.squad)order({type:'setSleep',operativeId,asleep:true});
+ waitFor(3);
+ let dressingBearer=115;
  for(const sector of ['san_nicolas','san_lorenzo']){
   if(sector==='san_lorenzo'){
    let doctor=c.recruited.find(id=>c.operativeState[id].alive&&rosterFor(c).find(o=>o.id===id).medical>=70);
@@ -90,14 +94,14 @@ test('legal authored-map opening campaign wins San Nicolás then San Lorenzo',()
     // relief medic the remaining dressings recovered during immediate aid.
     order({type:'visitSector'});
     let visit=enterSector(c.pendingBattle,c.sectorStates[c.location]);
-    const helper=visit.units.find(u=>u.id===String(relief)),donor=visit.units.find(u=>u.id==='115');
+    const helper=visit.units.find(u=>u.id===String(relief)),donor=visit.units.find(u=>u.id===String(dressingBearer));
     const place=getReachable(visit,helper).filter(p=>distance(p,donor)<=1.5&&hasLineOfSight(visit,p,donor)).sort((a,b)=>a.cost-b.cost)[0];
     assert.ok(place,'the relief medic can reach the soldier carrying the dressings');
     if(place.cost)visit=tacticalOrder(visit,{type:'move',unitId:helper.id,x:place.x,y:place.y});
     const quantity=donor.medkits;assert.ok(quantity>=6,'field supplies are sufficient for critical care');
     visit=tacticalOrder(visit,{type:'transfer',unitId:donor.id,targetId:helper.id,item:'medkits',count:quantity});
     order({type:'leaveSector',battleId:c.pendingBattle.id,survivors:visit.units.filter(u=>u.side==='player'),sectorState:visit});
-    assert.equal(c.operativeState[115].medkits,0);
+    assert.equal(c.operativeState[dressingBearer].medkits,0);
     assert.equal(c.operativeState[relief].medkits,helper.medkits+quantity);
     order({type:'assignCare',operativeId:relief,assignment:'doctor'});
     for(const id of c.squad)if(id!==relief)order({type:'assignCare',operativeId:id,assignment:c.operativeState[id].hp<c.operativeState[id].maxHp?'patient':'rest'});
@@ -145,12 +149,14 @@ test('legal authored-map opening campaign wins San Nicolás then San Lorenzo',()
    // Recover finite dressings from the fallen doctor after an actual approach.
    // Aid treats surviving casualties; it cannot revive someone already dead.
    b=tacticalOrder(b,{type:'explore'});
-   const bearer=b.units.find(u=>u.id==='115'),doctor=b.units.find(u=>u.id==='107');
+   b=autoBandageBattle(b).battle;
+   const doctor=b.units.find(u=>u.id==='107');
    if(doctor.hp<=0||doctor.unconscious){
-    const approach=getReachable(b,bearer).filter(p=>distance(p,doctor)<=1.5&&hasLineOfSight(b,p,doctor)).sort((a,b)=>a.cost-b.cost)[0];
+    const candidates=b.units.filter(u=>u.side==='player'&&u.id!==doctor.id&&u.hp>=15&&!u.unconscious&&!u.routed).flatMap(bearer=>getReachable(b,bearer).filter(p=>distance(p,doctor)<=1.5&&hasLineOfSight(b,p,doctor)).map(approach=>({bearer,approach}))).sort((a,b)=>a.approach.cost-b.approach.cost);
+    const {bearer,approach}=candidates[0]??{};if(bearer)dressingBearer=Number(bearer.id);
     assert.ok(approach,'the surviving rifleman can reach the fallen doctor');
     if(approach.cost)b=tacticalOrder(b,{type:'move',unitId:bearer.id,x:approach.x,y:approach.y});
-    b=tacticalOrder(b,{type:'loot',unitId:'115',targetId:'107',item:'medkits',count:10});
+    b=tacticalOrder(b,{type:'loot',unitId:String(dressingBearer),targetId:'107',item:'medkits',count:10});
    } // A conscious surviving doctor keeps his supplies for actual patient care.
    const aid=autoBandageBattle(b);
    assert.deepEqual(aid.untreated,[],'immediate aid stops every surviving field hemorrhage');

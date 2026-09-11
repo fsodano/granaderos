@@ -1,3 +1,4 @@
+import {gainFatigue} from './fatigue.js';
 import {sleepStatus} from './sleep.js';
 import {operativeLocation} from './squads.js';
 import {TRAINABLE_SKILLS,practice} from './skill-training.js';
@@ -149,7 +150,7 @@ function learn(r,op,skill,amount){
   const unit={...op,side:'player',trainedStats:{...r.trainedStats},skillPractice:{...r.skillPractice}};
   practice(unit,skill,amount);r.trainedStats=unit.trainedStats;r.skillPractice=unit.skillPractice;
 }
-const workCost=r=>{r.energy=Math.max(0,r.energy-3);r.fatigue=Math.min(100,r.fatigue+2);};
+const workCost=r=>{r.energy=Math.max(0,r.energy-3);gainFatigue(r,2);};
 
 export function advanceAssignments(s,roster,{traveling=[]}={}){
   const moving=new Set(traveling),taught=new Set();

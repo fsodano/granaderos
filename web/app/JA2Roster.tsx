@@ -1,4 +1,5 @@
 'use client';
+import {maximumEnergy} from '../../game/fatigue.js';
 // MODE A left zone: squad portrait strip (up to 6 cells + empty placeholders).
 // Pure read model (game/ja2-hud.js rosterCells); all mutations are caller-provided callbacks.
 import {rosterCells} from '../../game/ja2-hud.js';
@@ -37,7 +38,7 @@ export default function JA2Roster({battle, players, selected, groupIds = [], med
             <span className="ja2-vitals">
               <span title={`Salud: ${Math.ceil(u.hp)}/${u.maxHp}. Heridas vendadas: ${cell.bandaged}. Hemorragia: ${cell.bleeding}.`}><i className="bandaged" style={{height: `${Math.min(100, cell.hpPct + cell.bandaged / u.maxHp * 100)}%`}} /><i className="health" style={{height: `${cell.hpPct}%`}} /></span>
               <span title="Puntos de acción"><i className="action" style={{height: `${cell.apPct}%`}} /></span>
-              <span title="Energía"><i className="energy" style={{height: `${Math.max(0, Math.min(100, u.energy ?? 100))}%`}} /></span>
+              <span title={`Energía ${Math.round(u.energy??100)}/${maximumEnergy(u)} · la fatiga limita la recuperación`}><i className="energy" style={{height: `${Math.max(0, Math.min(100, u.energy ?? 100))}%`}} /></span>
             </span>
             <span className="ja2-weapon-line">{weapon.name} · {loadState(u, firearm)}{firearm ? ` · ${u.ammo} cartuchos` : ''}</span>
             <span className="portrait-numbers">{u.unconscious ? 'Inconsciente' : cell.fallen ? 'Fuera de combate' : `${Math.ceil(u.hp)} SAL · ${u.ap} PA · ${Math.round(u.energy ?? 100)} EN`}</span>

@@ -1,4 +1,5 @@
 'use client';
+import {maximumEnergy} from '../../game/fatigue.js';
 // MODE B: single-merc inventory panel (header / stats / stance grid / paper-doll / slot-grid / pertrechos / far-right cluster).
 // Pure read model (game/ja2-hud.js inventoryModel/orderDescriptors); all mutations are caller-provided callbacks.
 import {useEffect, useState} from 'react';
@@ -118,7 +119,7 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
         <div><span>{battle.mode === 'exploration' ? 'Movimiento sin coste de PA' : 'Puntos de acción'}</span><b>{unit.ap} / {inv.currentAPLimit}</b></div>
         <div><span>Postura</span><b>{stanceLabel(unit.stance)}</b></div>
         <div><span>Orientación</span><b>{facingLabel(unit)}</b></div>
-        <div><span>Energía</span><b>{Math.round(unit.energy ?? 100)} / 100</b></div>
+        <div><span>Energía</span><b>{Math.round(unit.energy ?? 100)} / {maximumEnergy(unit)}</b></div>
         <div><span>Carga / capacidad</span><b>{inv.weight.toFixed(1)} / {inv.capacity.toFixed(1)} kg</b></div>
         <div><span>Espacio del equipo</span><b>{inv.pockets.used ?? '—'} / {inv.pockets.capacity}</b></div>
         {inv.pockets.overloaded && <p className="danger-text">Falta espacio en el equipo. Soltá o entregá objetos antes de recibir más.</p>}

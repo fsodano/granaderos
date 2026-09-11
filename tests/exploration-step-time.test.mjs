@@ -158,7 +158,8 @@ test('dawn during paid posture setup grants contact before any movement', () => 
   assert.equal(n.mode, 'combat');
   assert.equal(person(n).stance, 'prone');
   assert.deepEqual({x: person(n).x, y: person(n).y}, {x: 1, y: 1});
-  assert.equal(person(n).energy, person(s).energy);
+  assert.equal(person(n).energy, person(s).energy-2);
+  assert.equal(person(n).fatigue,2); // The paid setup crosses the hourly fatigue tick.
   clockMatches(n, s, setupSeconds);
 });
 

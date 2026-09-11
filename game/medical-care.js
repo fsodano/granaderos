@@ -1,3 +1,4 @@
+import {gainFatigue,recoverFatigue} from './fatigue.js';
 import {operativeLocation} from './squads.js';
 import {WORK_ASSIGNMENTS} from './assignments.js';
 import {sleepStatus} from './sleep.js';
@@ -115,7 +116,7 @@ export function advanceMedicalCare(s,roster,{traveling=[]}={}){
     const patient=patients.find(op=>op.id!==doctor.id&&!treated.has(op.id)&&operativeLocation(s,op.id)===operativeLocation(s,doctor.id)&&(s.operativeState[op.id].bleeding>0||s.operativeState[op.id].hp<s.operativeState[op.id].maxHp));
     if(!patient)continue;
     const medic=s.operativeState[doctor.id],record=s.operativeState[patient.id];
-    medic.medkits--;medic.energy=Math.max(0,medic.energy-3);medic.fatigue=Math.min(100,medic.fatigue+2);treated.add(patient.id);
+    medic.medkits--;medic.energy=Math.max(0,medic.energy-3);gainFatigue(medic,2);treated.add(patient.id);
     if(record.bleeding>0){record.bleeding=0;record.bandaged=record.maxHp-record.hp;}
     else {record.hp=Math.min(record.maxHp,record.hp+doctorRate(doctor));record.bandaged=Math.min(record.bandaged,record.maxHp-record.hp);}
   }
@@ -126,7 +127,7 @@ export function advanceMedicalCare(s,roster,{traveling=[]}={}){
     if(record.hp===0){record.alive=false;record.asleep=false;record.assignment='active';record.recoveryHours=0;deaths.push(op.id);continue;}
     if(!present(op)){record.recoveryHours=0;continue;}
     if(record.assignment==='patient'||record.assignment==='rest'||record.asleep){
-      if(!record.asleep||['patient','rest'].includes(record.assignment)){record.energy=Math.min(100,record.energy+12);record.fatigue=Math.max(0,record.fatigue-8);}
+      if(!record.asleep||['patient','rest'].includes(record.assignment)){recoverFatigue(record,8,12);}
       if((record.assignment==='rest'||record.asleep&&record.assignment!=='patient')&&!record.bleeding&&record.hp>=15&&record.hp<record.maxHp){
         record.recoveryHours++;
         if(record.recoveryHours>=REST_HEALING_HOURS){record.hp=Math.min(record.maxHp,record.hp+1);record.bandaged=Math.min(record.bandaged,record.maxHp-record.hp);record.recoveryHours=0;}

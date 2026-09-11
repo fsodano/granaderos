@@ -1,7 +1,8 @@
+import {encounterForOperative} from '../game/encounters.js';
 import {scriptedBattleReport} from './scripted-battle-report.mjs';
 import {attendYatasto} from './mission-helpers.mjs';
 import {enterSector} from '../game/world.js';
-import {marchToFront,meetLocalRecruit} from './campaign-test-helpers.mjs';
+import {marchToFront,restForMarch,meetLocalRecruit} from './campaign-test-helpers.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {dispatchCampaign as dispatch,isSupplied,recruitmentStatus,restoreCampaign,serializeCampaign,OPERATIVES,CAMPAIGN_SECTORS,PHASES,RECIPES} from '../game/campaign.js';
@@ -10,10 +11,14 @@ function resolveFixtureContacts(s){for(let i=0;s.pendingEncounter&&i<30;i++){s=d
 let scriptedGuards=false;
 const order=(s,action)=>{
  if(scriptedGuards)s=resolveFixtureContacts(s);
+ if(['travel','attack'].includes(action.type))s=restForMarch(s);
+ if(scriptedGuards)s=resolveFixtureContacts(s);
  if(scriptedGuards&&action.type==='attack')for(let i=0;i<12;i++){const at=s.location;s=resolveFixtureContacts(marchToFront(s,action));if(s.location===at)break;}
+ if(action.type==='recruit'){const encounter=encounterForOperative(action.id);if(encounter&&s.location!==encounter.sector)s=order(s,{type:'travel',sector:encounter.sector});}
  const end=action.type==='wait'?s.hour+(action.hours??24):0;
  let next=meetLocalRecruit(s,action)??dispatch(marchToFront(s,action),action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);
- if(scriptedGuards){next=resolveFixtureContacts(next);for(let i=0;i<120&&((action.type==='travel'&&next.location!==action.sector)||(action.type==='wait'&&next.hour<end));i++){next=dispatch(next,action.type==='wait'?{...action,hours:Math.min(240,end-next.hour)}:action);assert.equal(next.lastError,null);next=resolveFixtureContacts(next);}}
+ if(scriptedGuards){next=resolveFixtureContacts(next);for(let i=0;i<120&&((action.type==='travel'&&next.location!==action.sector)||(action.type==='wait'&&next.hour<end));i++){next=dispatch(action.type==='travel'?restForMarch(next):next,action.type==='wait'?{...action,hours:Math.min(240,end-next.hour)}:action);assert.equal(next.lastError,null);next=resolveFixtureContacts(next);}}
+ if(scriptedGuards&&action.type==='attack')for(let attempt=0;!next.pendingBattle&&attempt<12;attempt++){next=resolveFixtureContacts(next);next=dispatch(marchToFront(next,action),action);assert.equal(next.lastError,null);next=resolveFixtureContacts(next);}
  const result=action.type==='diplomacy'&&action.kind==='northPact'&&next.phase===2?attendYatasto(next):next;return scriptedGuards?resolveFixtureContacts(result):result;
 };
 const capture=(s,id)=>{if(s.resources.powder<3){s=order(s,{type:'produce',recipe:'powder',sector:'retiro'});s=order(s,{type:'wait',hours:12});}s=order(s,{type:'attack',sector:id});const snapshot=enterSector(s.pendingBattle,s.sectorStates[s.pendingBattle.sector]);snapshot.status='victory';snapshot.sectorCleared=true;for(const enemy of snapshot.units.filter(u=>u.side==='enemy'))enemy.hp=0;return order(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'victory',sectorState:snapshot,survivors:snapshot.units.filter(u=>u.side==='player').map(o=>({...o,id:Number(o.id)}))});};

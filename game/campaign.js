@@ -1,3 +1,5 @@
+import {gainFatigue} from './fatigue.js';
+import {advanceMarchFatigue,tooTiredToMarch} from './march-fatigue.js';
 import {assertSaveSize} from './save-limits.js';
 import {MISSION_SCENES,YATASTO_NPCS,missionStatus,talkMission,sanLorenzoAlly,validateMissions} from './missions.js';
 export {MISSION_SCENES,missionStatus} from './missions.js';
@@ -134,7 +136,7 @@ function settleEnemyEncounters(s,options={}){
   }
 }
 function relocateDefenders(s,ids,destination,moralePenalty=5){
-  for(const id of ids){recordStrategicArrival(s,[id],operativeLocation(s,id),destination);const r=s.operativeState[id];r.location=destination;r.assignment='active';r.asleep=false;r.recoveryHours=0;r.energy=Math.max(0,r.energy-10);r.fatigue=Math.min(100,r.fatigue+8);r.morale=Math.max(0,r.morale-moralePenalty);}
+  for(const id of ids){recordStrategicArrival(s,[id],operativeLocation(s,id),destination);const r=s.operativeState[id];r.location=destination;r.assignment='active';r.asleep=false;r.recoveryHours=0;r.energy=Math.max(0,r.energy-10);gainFatigue(r,8);r.morale=Math.max(0,r.morale-moralePenalty);}
   for(const squad of s.squads)if(squad.members.some(id=>ids.includes(id))){squad.location=destination;if(squad.id===s.activeSquadId)s.location=destination;}
   for(const horse of s.horseState.horses)if(ids.includes(horse.assignedTo))horse.location=destination;
 }
@@ -257,7 +259,7 @@ function tick(s,hours,options={}){
     for(const course of [...(s.militiaTraining??[])]){
       if(s.sectors[course.sector].owner!=='patriot'){s.militiaTraining=s.militiaTraining.filter(t=>t!==course);assignmentEvents.push(militiaCancellationAttention(course));note(s,'La ocupación enemiga dispersa un curso de milicias.');continue;}
       if(militiaAssignmentIssue(s,course,{isSupplied}))continue;
-      const trainer=s.operativeState[course.trainerId];if(trainer){trainer.energy=Math.max(0,trainer.energy-3);trainer.fatigue=Math.min(100,trainer.fatigue+2);militiaWorked.push(course.trainerId);}
+      const trainer=s.operativeState[course.trainerId];if(trainer){trainer.energy=Math.max(0,trainer.energy-3);gainFatigue(trainer,2);militiaWorked.push(course.trainerId);}
       course.remaining--;if(course.remaining<=0){if(course.rank>0)returnMilitiaTrainees(s,course,true);else s.sectors[course.sector].militia[0]+=course.count;s.militiaTraining=s.militiaTraining.filter(t=>t!==course);assignmentEvents.push(militiaCompletionAttention(course));note(s,`Tres milicianos completan su instrucción en ${sector(course.sector).name}.`);}
     }
     for(const convoy of [...(s.convoys??[])])if(convoyStatus(s,convoy).ready){
@@ -268,6 +270,7 @@ function tick(s,hours,options={}){
     deliverEquipmentShipments(s);advanceMerchants(s,isSupplied);
     for(const task of [...s.production])if(task.due<=s.hour&&s.sectors[task.sector].owner==='patriot'&&isSupplied(s,task.sector)){add(s,task.yield);s.production.splice(s.production.indexOf(task),1);note(s,`La maestranza completó: ${task.name}.`);}
     for(const shipment of [...s.shipments])if(shipment.due<=s.hour&&!s.blockade&&s.sectors.ensenada.owner==='patriot'){add(s,shipment.goods);s.shipments.splice(s.shipments.indexOf(shipment),1);note(s,'Arribó un cargamento de contrabando a Ensenada.');}
+    advanceMarchFatigue(s,rosterFor(s).map(op=>({...op,...(mountForOperative(s.horseState,op.id)??{})})),options);
     const careOptions=assignmentContext(s,options);const deaths=advanceMedicalCare(s,rosterFor(s),careOptions);advanceAssignments(s,rosterFor(s),careOptions);recordCasualtyMorale(s,deaths);advanceMorale(s,rosterFor(s),careOptions);
     for(const id of deaths){
       s.operativeState[id].location=operativeLocation(s,id);
@@ -457,6 +460,7 @@ export function dispatchCampaign(previous,action){
         if(!s.completed&&!s.recruited.some(id=>s.operativeState[id].alive))s.defeated=true;s.pendingBattle=null;note(s,'La escuadra vuelve a la carta de operaciones.');break;
       }
       case 'travel':{
+        requireThat(!s.squad.some(id=>tooTiredToMarch(s.operativeState[id])),'La escuadra necesita descansar antes de marchar.');
         requireThat(s.squad.length>0,'No hay combatientes en esta escuadra.');
         requireThat(s.squad.length>0,'La escuadra no tiene combatientes para marchar.');
         requireThat(sector(action.sector),'El destino no existe.');requireThat(s.sectors[action.sector].owner==='patriot','Primero debes liberar el destino.');const path=travelPath(s,s.location,action.sector);requireThat(path,'Los realistas cortan la ruta de tránsito.');
@@ -465,13 +469,14 @@ export function dispatchCampaign(previous,action){
         if(mode==='flotilla')requireThat(!s.blockade&&path.every(id=>sector(id).theater==='coast'),'La flotilla requiere una ruta costera sin bloqueo.');
         const mountain=path.some(id=>sector(id).biome==='mountain');requireThat(!(path.some(id=>['uspallata','los_patos'].includes(id))&&campaignDate(s).month>=6&&campaignDate(s).month<=8),'La nieve invernal ha cerrado los pasos.');
         for(let leg=1;leg<path.length;leg++){
+          if(s.squad.some(id=>tooTiredToMarch(s.operativeState[id]))){note(s,'La escuadra detiene la ruta por agotamiento. Descansá antes de continuar.');break;}
           if(mode==='posta')pay(s,{horses:1});const hours=Math.ceil((mode==='posta'?4:mode==='flotilla'?5:mode==='carts'?18:12)*([path[leg-1],path[leg]].some(id=>sector(id).biome==='mountain')?1.5:1));
-          tick(s,hours,{traveling:[...s.squad]});if(!s.squad.length){note(s,'La marcha se cancela al terminar el último contrato.');break;}
+          tick(s,hours,{traveling:[...s.squad],mode,mountain:[path[leg-1],path[leg]].some(id=>sector(id).biome==='mountain')});if(!s.squad.length){note(s,'La marcha se cancela al terminar el último contrato.');break;}
           if(s.sectors[path[leg]].owner!=='patriot'||occupyingGroups(s,path[leg]).length){note(s,'El avance se detiene: una incursión cortó la ruta durante la marcha.');break;}
           recordStrategicArrival(s,s.squad,path[leg-1],path[leg]);s.location=path[leg];moveMounts(s,s.location,hours);for(const id of s.squad)s.operativeState[id].location=s.location;synchronizeSquad(s);
           if(s.pendingEncounter){note(s,'La escuadra completa esta etapa y detiene la marcha ante el contacto enemigo.');break;}
         }
-        for(const id of s.squad)s.operativeState[id].fatigue=Math.min(100,s.operativeState[id].fatigue+(s.recruited.includes(57)?0:mountain?20:8));note(s,`El destacamento llega a ${sector(s.location).name}.`);break;
+        note(s,`El destacamento llega a ${sector(s.location).name}.`);break;
       }
       case 'supplyTransfer':{
         const plan=planTransfer(s,action);pay(s,{horses:plan.remounts});s.depots??={};s.convoys??=[];
@@ -519,10 +524,11 @@ export function dispatchCampaign(previous,action){
       case 'fortify':{const at=action.sector??s.location;requireThat(s.sectors[at]?.owner==='patriot','Solo puedes fortificar sectores propios.');requireThat(s.sectors[at].fort<3,'El sector ya tiene la máxima fortificación.');pay(s,{treasury:150,sabres:5});s.sectors[at].fort++;note(s,`Se refuerzan las defensas de ${sector(at).name}.`);break;}
       case 'attack':{
         const at=action.sector??'san_lorenzo',san=at==='san_lorenzo',def=san?{id:at,name:'Combate de San Lorenzo',biome:'river',theater:'coast'}:sector(at);
+        requireThat(at===s.location||!s.squad.some(id=>tooTiredToMarch(s.operativeState[id])),'La escuadra necesita descansar antes de atacar.');
         requireThat(def,'No existe ese campo de batalla.');requireThat(san?s.location==='san_nicolas':(s.location===at||def.neighbors.includes(s.location)),'La escuadra debe marchar a un sector vecino antes de atacar.');requireThat(!(['uspallata','los_patos'].includes(at)&&campaignDate(s).month>=6&&campaignDate(s).month<=8),'La nieve invernal ha cerrado los pasos.');requireThat(s.squad.some(id=>s.operativeState[id].alive&&s.operativeState[id].hp>0),'No hay combatientes disponibles.');
         if(san)requireThat(s.phase>=1&&!s.flags.sanLorenzo&&s.sectors.san_nicolas.owner==='patriot','Organiza Retiro y libera San Nicolás antes de combatir en San Lorenzo.');
         else {requireThat(s.sectors[at].owner==='royalist'||(s.blockade&&def.theater==='coast'),'El sector ya está bajo control patriota.');requireThat(def.neighbors.some(id=>s.sectors[id].owner==='patriot'&&isSupplied(s,id)),'Debes abrir una ruta hasta el frente.');}
-        const origin=s.location;if(!san&&s.location!==at){tick(s,12,{traveling:[...s.squad]});if(!s.squad.length){note(s,'El despliegue se cancela: no quedan contratos vigentes en la escuadra.');break;}recordStrategicArrival(s,s.squad,origin,at);s.location=at;moveMounts(s,at,12);synchronizeSquad(s);if(s.pendingEncounter){note(s,'El avance se detiene al llegar: hay una defensa pendiente.');break;}}
+        const origin=s.location;if(!san&&s.location!==at){tick(s,12,{traveling:[...s.squad],mode:'march',mountain:sector(origin)?.biome==='mountain'||def.biome==='mountain'});if(!s.squad.length){note(s,'El despliegue se cancela: no quedan contratos vigentes en la escuadra.');break;}recordStrategicArrival(s,s.squad,origin,at);s.location=at;moveMounts(s,at,12);synchronizeSquad(s);if(s.pendingEncounter){note(s,'El avance se detiene al llegar: hay una defensa pendiente.');break;}}
         const allocated={};const localAmmo=s.depots?.[origin]?.cartridges??0;let stock=s.resources.cartridges+localAmmo;
         for(const id of s.squad){allocated[id]=allocateEquipmentAmmo(s,rosterFor(s).find(o=>o.id===id),stock);stock-=allocated[id].loaded+allocated[id].ammo;}
         const issued=s.resources.cartridges+localAmmo-stock,fromDepot=Math.min(localAmmo,issued);pay(s,{cartridges:issued-fromDepot,powder:3});if(fromDepot)s.depots[origin].cartridges-=fromDepot;

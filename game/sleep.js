@@ -1,3 +1,4 @@
+import {recoverFatigue} from './fatigue.js';
 import {operativeLocation} from './squads.js';
 
 // Period-game rates on the existing 0–100 fatigue/energy scale.
@@ -39,10 +40,10 @@ export function finishSleepHour(s,roster,context={}){
   const r=s.operativeState[op.id];if(!r||!safe(s,op.id,context))continue;
   if(r.asleep){
    // Medical care already applies this hour's rest recovery to these roles.
-   if(!['rest','patient'].includes(r.assignment)){r.energy=Math.min(100,r.energy+12);r.fatigue=Math.max(0,r.fatigue-8);}
+   if(!['rest','patient'].includes(r.assignment)){recoverFatigue(r,8,12);}
    if(r.energy>=100&&r.fatigue===0){r.asleep=false;events.push({id:op.id,code:'sleep_complete'});}
   }else if(r.assignment==='active'&&!(context.working??[]).includes(op.id)&&!s.militiaTraining?.some(t=>t.trainerId===op.id)&&r.hp>=15&&!r.bleeding){
-   r.energy=Math.min(100,r.energy+3);r.fatigue=Math.max(0,r.fatigue-1);
+   recoverFatigue(r,1,3);
   }
  }
  return [...events,...prepareSleep(s,roster,context)];
