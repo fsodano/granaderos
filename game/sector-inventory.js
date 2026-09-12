@@ -101,6 +101,11 @@ export function sectorInventoryModel(s,sectorId,roster,operativeId){
    row.expected=JSON.stringify(record);row.inventoryKey=key;row.loaded=record.weapon?record.loaded??0:undefined;row.condition=record.condition;row.jammed=record.jammed;row.reloadProgress=record.reloadProgress;
    row.equip=(record.kind==='outfit'?['outfit']:BLADES[record.weapon]?['primary','blade']:handsRequired(record.weapon)===1?['primary','offhand']:['primary']).map(slot=>{let reason=carriedReason;if(!reason)try{planEquipLoot(personal,key,slot);}catch(error){reason=error.message;}return {slot,valid:!reason,reason};});
   }
+  if(item!=='outfit'&&!['primary','blade','offhand'].includes(item)&&!(record?.weapon)){
+   const held=personal.leftHandItem===item,reference=held?null:item;
+   let reason=carriedReason;if(!reason)try{planEquipLoot(personal,reference,'offhandItem');}catch(error){reason=error.message;}
+   row.offhand={label:held?'Guardar objeto de segunda mano':'Poner en segunda mano',valid:!reason,reason,action:{slot:'offhandItem',inventoryKey:reference,expected:JSON.stringify(extractItemQuantity(personal,item,1).stack)}};
+  }
   return row;
  }):[];
  const outfitStock=(s.depots?.[location]?.ponchos??0)+(location==='retiro'?(s.resources.ponchos??0):0);
@@ -122,10 +127,16 @@ export function moveSectorItem(s,action,roster){
   stack={item:'outfit',...makeOutfit()};next=applyItemQuantity(actor,stack);
   const at=inventorySite(s,sectorId).sectorId;if((s.depots?.[at]?.ponchos??0)>0)s.depots[at].ponchos--;else s.resources.ponchos--;
  }else if(direction==='equip'){
-  need(count===1&&['primary','blade','offhand','outfit'].includes(action.slot),'Elegí una ranura de equipo.');
+  need(count===1&&['primary','blade','offhand','outfit','offhandItem'].includes(action.slot),'Elegí una ranura de equipo.');
   const stow=action.slot==='outfit'&&action.inventoryKey===null;
+  if(action.slot==='offhandItem'){
+   const reference=action.inventoryKey===null?actor.leftHandItem:action.inventoryKey;
+   stack=extractItemQuantity(actor,reference,1).stack;need(action.expected===JSON.stringify(stack),'El objeto cambió. Revisá el equipo.');
+   next=planEquipLoot(actor,action.inventoryKey,action.slot);
+  }else{
   need(action.expected===JSON.stringify(stow?wornOutfit(actor):actor.inventory?.[action.inventoryKey])&&typeof action.expected==='string','El equipo cambió. Revisá la mochila antes de equiparlo.');
   stack=extractItemQuantity(actor,stow?'outfit':`inventory:${action.inventoryKey}`,1).stack;next=planEquipLoot(actor,action.inventoryKey,action.slot);
+  }
  }else if(direction==='take'){
   const row=poolSources(snapshot).find(row=>row.key===action.sourceKey),entry=model.entries.find(row=>row.key===action.sourceKey);
   need(row&&entry?.reachable,entry?.reason??'El equipo ya no está disponible.');need(action.expected===JSON.stringify(row.stack),'El equipo cambió. Revisá la lista antes de recogerlo.');need(count<=row.stack.count,'No queda esa cantidad del objeto.');

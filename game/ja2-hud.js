@@ -1,5 +1,5 @@
 import {OUTFITS,wornOutfit,hasPoncho} from './outfits.js';
-import {handLayout} from './hand-layout.js';
+import {handLayout,selectMainHand} from './hand-layout.js';
 import {reloadPlan,lookPreview} from './tactical.js';
 import {shotRangeText} from './shot-range.js';
 import {canChooseShotLocation} from './targeted-combat.js';
@@ -359,8 +359,8 @@ export function slotAction(unit) {
 export function equipmentSlots(state, unit, ctx = {}) {
   const pa = state.mode === 'exploration' ? 0 : actionCosts(state, unit).weapon;
   const tools = toolItems(unit), activeTool = tools.find(tool => tool.item === unit.activeTool) || tools[0], supplies = supplyItems(unit), activeSupply = supplies.find(supply => supply.key === unit.activeSupply) || supplies[0];
-  return [['primary', 'Arma'], ['blade', 'Arma blanca'], ['medical', `Vendas · ${unit.medkits ?? 0}`], ...(tools.length ? [['tool', 'Herramienta']] : []), ...(supplies.length ? [['supply', `${activeSupply.label} · ${activeSupply.count}`]] : []), ['unarmed', 'Manos libres']].map(([slot, label]) => ({slot, label, pa, action: {type: 'weapon', slot, ...(slot === 'tool' ? {toolKey: activeTool.item} : slot === 'supply' ? {supplyKey: activeSupply.key} : {})}, active: (unit.activeSlot || 'primary') === slot, disabled: !unitCanAct(state, unit) || Boolean(ctx.busy) || Boolean(unit.knockedDown) || !affordable(state, unit, pa) || (slot === 'medical' ? !(unit.medkits > 0) : slot === 'blade' ? !BLADES[unit.blade] : slot === 'primary' ? !hasPrimary(unit) : false)})).map(option=>{
-    const held={...unit,activeSlot:option.slot,activeTool:option.action.toolKey,activeSupply:option.action.supplyKey};
+  return [['primary', 'Arma'], ['blade', 'Arma blanca'], ['medical', `Vendas · ${unit.medkits ?? 0}`], ...(tools.length ? [['tool', 'Herramienta']] : []), ...(supplies.length ? [['supply', `${activeSupply.label} · ${activeSupply.count}`]] : []), ['unarmed', 'Manos libres']].map(([slot, label]) => ({slot, label, pa, action: {type: 'weapon', slot, ...(slot === 'tool' ? {toolKey: activeTool.item} : slot === 'supply' ? {supplyKey: activeSupply.key} : {})}, active: (unit.activeSlot || 'primary') === slot && !(slot==='unarmed'&&handLayout(unit).left), disabled: !unitCanAct(state, unit) || Boolean(ctx.busy) || Boolean(unit.knockedDown) || !affordable(state, unit, pa) || (slot === 'medical' ? !(unit.medkits > 0) : slot === 'blade' ? !BLADES[unit.blade] : slot === 'primary' ? !hasPrimary(unit) : false)})).map(option=>{
+    const held=selectMainHand(unit,{activeSlot:option.slot,activeTool:option.action.toolKey,activeSupply:option.action.supplyKey});
     let reason=null;try{if(inventoryUsage(held).overloaded)reason='No queda espacio para guardar el objeto en mano.';}catch(error){reason=error.message;}
     return {...option,reason,disabled:option.disabled||Boolean(reason)};
   });
@@ -371,7 +371,11 @@ export function handSlots(state,unit){
  return ['right','left'].map(side=>{
   const reference=layout[side],blocked=side==='left'&&layout.twoHanded;
   const descriptor=reference?itemDescriptor(unit,reference):null;
-  const option=reference==='offhand'?{...swapHandsPreview(state,unit),action:{type:'swapHands'}}:options.find(o=>o.slot===reference);
+  let option=options.find(o=>o.slot===reference);
+  if(reference==='offhand')option={...swapHandsPreview(state,unit),action:{type:'swapHands'}};
+  else if(reference==='medkits')option=options.find(o=>o.slot==='medical');
+  else if(Object.hasOwn(HELD_SUPPLIES,reference))option=equipmentSlots(state,{...unit,activeSupply:reference}).find(o=>o.slot==='supply');
+  else if(reference?.startsWith('inventory:')&&heldTool({...unit,activeSlot:'tool',activeTool:reference}))option=equipmentSlots(state,{...unit,activeTool:reference}).find(o=>o.slot==='tool');
   return {side,item:reference,blocked,label:descriptor?.label??(blocked?'Ocupada por el arma':'Vacía'),weapon:descriptor?.weapon,loaded:descriptor?.loaded,condition:descriptor?.condition,action:side==='left'?option?.action:null,pa:option?.pa,reason:option?.reason,disabled:blocked||side==='left'&&(option?.disabled||option?.valid===false)};
  });
 }

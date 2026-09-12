@@ -139,6 +139,7 @@ export function resaleQuote(instance){return resaleBreakdown(instance).total;}
 export function returnEquipment(s,id,report){
  if(report.outfit!==undefined||report.poncho!==undefined){s.operativeState[id].outfit=structuredClone(wornOutfit(report));delete s.operativeState[id].poncho;}
  validateHands(report);validateUnitFittings(report);
+ if(report.leftHandItem!==undefined)s.operativeState[id].leftHandItem=report.leftHandItem;else delete s.operativeState[id].leftHandItem;
  if(report.offHand)s.operativeState[id].offHand=structuredClone(report.offHand);else if(report.weapon!==undefined)delete s.operativeState[id].offHand;
  s.loadouts[id]??={};
  if(report.weapon!==undefined){need(report.weapon===0||handheld(report.weapon)&&typeof report.weapon==='number','El arma del parte es inválida.');s.loadouts[id].weapon=report.weapon;}

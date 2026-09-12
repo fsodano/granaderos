@@ -1,5 +1,5 @@
 import {OUTFIT_CHANGE_AP,normalizeOutfit,wornOutfit,hasPoncho} from './outfits.js';
-import {handsRequired} from './hand-layout.js';
+import {handsRequired,selectMainHand,handLayout} from './hand-layout.js';
 import {firearmPreparation,lowerWeapon,lowersWeapon,turnLowersWeapon} from './weapon-readiness.js';
 import {planReload} from './weapon-reload.js';
 import {discoverInventory} from './inventory-discovery.js';
@@ -11,7 +11,7 @@ import {projectilePath,projectileFlight,pointProjectileFlight,concealmentAt,conc
 import {boundaryMatches} from './tactical-exits.js';
 import {HELD_SUPPLIES,heldSupply,clearEmptySupply} from './held-supplies.js';
 import {heldTool,environmentActionProfile,resolveEnvironmentInteraction,extractContainerItem} from './environment-interactions.js';
-import {SUPPLY_ITEMS,inventoryUsage,itemDescriptor,itemQuantity,extractItemQuantity,applyItemQuantity,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove,planEquipOutfit,planStowOutfit} from './tactical-inventory.js';
+import {SUPPLY_ITEMS,inventoryUsage,itemDescriptor,itemQuantity,extractItemQuantity,applyItemQuantity,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove,planEquipOutfit,planStowOutfit,planHoldOffhand} from './tactical-inventory.js';
 import {FITTING_RULES_VERSION,FIT_BAYONET_AP,REMOVE_BAYONET_AP,LOOSE_BAYONET,fixedBayonetFor,fixedBayonetProfile,fittingWeight,weaponItemWeight,normalizeUnitFittings} from './weapon-fittings.js';
 import {FISTS,BUTTSTOCK,unarmedChance,unarmedImpact,weaponStealChance,STEAL_MIN_AP} from './unarmed-combat.js';
 import {directionTo,facingAllowsSight,turnAPCost,stealthAPMultiplier,noiseRadius,approximateHeardPosition} from './tactical-awareness.js';
@@ -552,6 +552,7 @@ export function lootBatchPreview(s,u,items){
   return {pa,valid:!reason,reason};
 }
 export function planEquipLoot(u,key,slot='primary'){
+  if(slot==='offhandItem')return planHoldOffhand(u,key);
   if(slot==='outfit')return key===null?planStowOutfit(u):planEquipOutfit(u,key);
   const record=u.inventory?.[key];
   if(!record||typeof record!=='object'||record.count<1||!['primary','blade','offhand'].includes(slot))throw Error('Selecciona un arma recuperada disponible.');
@@ -562,6 +563,7 @@ export function planEquipLoot(u,key,slot='primary'){
 function equipIncomingHand(unit,incoming,slot){
   let next=structuredClone(unit);
   if(slot==='offhand'){
+    delete next.leftHandItem;
     if(handsRequired(incoming.weapon)>1)throw Error('La mano secundaria necesita un arma de una mano.');
     if(!next.weaponDropped&&handsRequired(next.weapon)>1&&(next.activeSlot??'primary')==='primary')throw Error('El arma principal ocupa las dos manos.');
     for(const item of ['blade','offhand'])if(itemQuantity(next,item)){const stored=extractItemQuantity(next,item,1,{keepOtherHand:false});next=applyItemQuantity(stored.unit,stored.stack,{deferCapacity:true});}
@@ -576,7 +578,7 @@ function equipIncomingHand(unit,incoming,slot){
   }
   if(slot==='primary'){next.weapon=incoming.weapon;next.loaded=incoming.loaded??0;delete next.reloadProgress;if(incoming.reloadProgress)next.reloadProgress=incoming.reloadProgress;next.condition=incoming.condition??100;next.jammed=Boolean(incoming.jammed);next.weaponDropped=false;next.weaponFittings=structuredClone(incoming.fittings??{});next.weaponFittingPattern=incoming.fittingPattern??null;delete next.weaponInstanceId;if(incoming.instanceId)next.weaponInstanceId=incoming.instanceId;}
   else {next.blade=incoming.weapon;next.bladeCondition=incoming.condition??100;next.bladeFittingPattern=incoming.fittingPattern??null;delete next.bladeInstanceId;if(incoming.instanceId)next.bladeInstanceId=incoming.instanceId;}
-  lowerWeapon(next);next.activeSlot=slot;delete next.activeTool;delete next.activeSupply;next.braced=false;next.momentum=0;delete next.lastTargetId;delete next.lastShotPosition;
+  lowerWeapon(next);next=selectMainHand(next,{activeSlot:slot});delete next.activeTool;delete next.activeSupply;next.braced=false;next.momentum=0;delete next.lastTargetId;delete next.lastShotPosition;
   if(inventoryUsage(next).overloaded)throw Error('No queda espacio para guardar el equipo desplazado.');
   return next;
 }
@@ -595,7 +597,7 @@ function planStealWeapon(u,target){
 export function stealPreview(s,u,target){
   const pa=s.mode==='exploration'?STEAL_MIN_AP:Math.max(STEAL_MIN_AP,u?.ap??0);
   let reason=!u||!alive(u)||s.status!=='active'||(u.side==='player'?!interruptAvailable(s,u):s.phase!=='enemy')?'El soldado no puede actuar ahora.':null;
-  if(!reason&&u.activeSlot!=='unarmed')reason='Prepará las manos libres antes de quitar un arma.';
+  if(!reason&&(u.activeSlot!=='unarmed'||handLayout(u).held.length))reason='Prepará las manos libres antes de quitar un arma.';
   if(!reason&&(u.mounted||u.knockedDown||u.entangled||u.stance==='prone'))reason='Debés estar de pie o agachado, desmontado y libre para quitar un arma.';
   if(!reason&&(!target||target.side===u.side||!alive(target)||target.routed||target.surrendered))reason='Seleccioná un enemigo consciente; los cuerpos se registran con Recoger equipo.';
   if(!reason&&(!teamCanSee(s,u.side,target)||dist(u,target)>1.5||!hasLineOfSight(s,u,target)||!Number.isFinite(movementStepCost(s,u,u,target))))reason='Acercate al enemigo visible para quitarle el arma.';
@@ -610,7 +612,7 @@ export function swapHandsPreview(s,u){
  return {pa,reason,valid:!reason};
 }
 export function equipLootPreview(s,u,inventoryKey,slot='primary'){
-  const pa=slot==='outfit'?OUTFIT_CHANGE_AP:6;let reason=inventoryOrderReason(s,u,pa);
+  const pa=slot==='outfit'?OUTFIT_CHANGE_AP:slot==='offhandItem'?4:6;let reason=inventoryOrderReason(s,u,pa);
   if(!reason)try{planEquipLoot(u,inventoryKey,slot);}catch(error){reason=error.message;}
   return {pa,reason,valid:!reason};
 }
@@ -969,7 +971,7 @@ else if(a.type==='steal'){
 else if(a.type==='equipLoot'){
   const preview=equipLootPreview(s,u,a.inventoryKey,a.slot??'primary');if(!preview.valid)return fail(preview.reason);
   const next=planEquipLoot(u,a.inventoryKey,a.slot??'primary');pay(preview.pa);next.ap=u.ap;
-  replaceUnit(u,next);sayObserved(s,[u],a.slot==='outfit'?`${u.name} ${a.inventoryKey===null?'guarda su vestimenta en un bolsillo grande':'se pone '+itemDescriptor(u,'outfit').label}.`:`${u.name} equipa ${weaponFor(u).name} y guarda el arma desplazada.`);
+  replaceUnit(u,next);sayObserved(s,[u],a.slot==='offhandItem'?`${u.name} ${a.inventoryKey===null?'guarda el objeto de la segunda mano':'sostiene '+itemDescriptor(u,a.inventoryKey).label+' en la segunda mano'}.`:a.slot==='outfit'?`${u.name} ${a.inventoryKey===null?'guarda su vestimenta en un bolsillo grande':'se pone '+itemDescriptor(u,'outfit').label}.`:`${u.name} equipa ${weaponFor(u).name} y guarda el arma desplazada.`);
 }
 else if(a.type==='movePocket'){
   const reason=inventoryOrderReason(s,u,0);if(reason)return fail(reason);
@@ -1024,10 +1026,10 @@ else if(a.type==='weapon'){
   if(a.slot==='blade'&&!BLADES[u.blade])return fail('No hay un arma blanca secundaria equipada.');
   if(a.slot==='tool'&&!heldTool({...u,activeSlot:'tool',activeTool:a.toolKey}))return fail('No lleva esa herramienta en el inventario.');
   if(a.slot==='supply'&&!heldSupply({...u,activeSlot:'supply',activeSupply:a.supplyKey}))return fail('No lleva ese pertrecho en el inventario.');
-  if((u.activeSlot||'primary')===a.slot&&(a.slot!=='tool'||u.activeTool===a.toolKey)&&(a.slot!=='supply'||u.activeSupply===a.supplyKey))return fail('Ese objeto ya está en la mano.');
-  const held={...u,activeSlot:a.slot,...(a.slot==='tool'?{activeTool:a.toolKey}:a.slot==='supply'?{activeSupply:a.supplyKey}:{})};
+  if(!(a.slot==='unarmed'&&handLayout(u).left)&&(u.activeSlot||'primary')===a.slot&&(a.slot!=='tool'||u.activeTool===a.toolKey)&&(a.slot!=='supply'||u.activeSupply===a.supplyKey))return fail('Ese objeto ya está en la mano.');
+  const held=selectMainHand(u,{activeSlot:a.slot,...(a.slot==='tool'?{activeTool:a.toolKey}:a.slot==='supply'?{activeSupply:a.supplyKey}:{})});
   if(inventoryUsage(held).overloaded)return fail('No queda espacio para guardar el objeto que tenés en la mano.');
-  if(!pay(4))return fail('Cambiar de objeto requiere 4 PA.');u.activeSlot=a.slot;
+  if(!pay(4))return fail('Cambiar de objeto requiere 4 PA.');u.activeSlot=a.slot;if(held.leftHandItem!==undefined)u.leftHandItem=held.leftHandItem;
   if(a.slot==='tool')u.activeTool=a.toolKey;else delete u.activeTool;
   if(a.slot==='supply')u.activeSupply=a.supplyKey;else delete u.activeSupply;
   u.momentum=0;u.braced=false;delete u.lastTargetId;delete u.lastShotPosition;sayObserved(s,[u],`${u.name} prepara ${weaponFor(u).name}.`);

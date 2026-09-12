@@ -116,7 +116,7 @@ function recordDescriptor(item, value) {
   const compactWeapon = handheld && [1805, 1806, 1808, 1811, 1813].includes(spec.id);
   const slotSize = value.kind==='outfit'?2:handheld ? compactWeapon ? 1 : 2 : value.weight > 2 ? 2 : 1;
   const label = value.kind==='outfit'?OUTFITS[value.outfit].name:value.fittingPattern != null ? fittingLabel(value.fittingPattern) : spec?.name ?? (isTool(value) ? TOOL_LABELS[value.toolKey] : item.replace(/^inventory:/, ''));
-  return {item, label, name: label, ...(spec?{weapon:spec.id,loaded:value.loaded,condition:value.condition}:value.kind==='outfit'?{condition:value.condition}:{}), stackLimit: spec || isTool(value) || value.instanceId ? 1 : slotSize === 2 ? 1 : 4, slotSize, weight: value.weight+fittingWeight(value), kind: value.kind==='outfit'?'outfit':spec ? 'weapon' : isTool(value) ? 'tool' : 'inventory'};
+  return {item, label, name: label, ...(spec?{weapon:spec.id,loaded:value.loaded,condition:value.condition}:value.condition!==undefined?{condition:value.condition}:{}), stackLimit: spec || isTool(value) || value.instanceId ? 1 : slotSize === 2 ? 1 : 4, slotSize, weight: value.weight+fittingWeight(value), kind: value.kind==='outfit'?'outfit':spec ? 'weapon' : isTool(value) ? 'tool' : 'inventory'};
 }
 
 export function itemQuantity(unit, item) {
@@ -136,6 +136,10 @@ export function itemDescriptor(unit, item) {
 }
 export function validateHands(unit) {
   wornOutfit(unit);
+  if(unit.leftHandItem!=null){
+    const entry=resolve(unit,unit.leftHandItem);
+    if(entry.item!==unit.leftHandItem||!['inventory','supply'].includes(entry.kind)||entry.kind==='inventory'&&entry.record.weapon!==undefined)fail('El objeto de la segunda mano no es válido.');
+  }
   if(unit.offHand!==undefined){
     const value=handRecord(unit,'offhand');
     if(value.count!==1||value.weapon<1800||value.weapon>1813||!WEAPONS[value.weapon]||handsRequired(value.weapon)!==1)fail('El arma de la segunda mano no es válida.');
@@ -186,6 +190,7 @@ export function extractItemQuantity(unit, item, count = 1, {keepOtherHand=true}=
       if (next.activeSlot === 'tool') next.activeSlot = 'unarmed';
     }
   }
+  if(next.leftHandItem===entry.item&&(entry.kind==='inventory'?!next.inventory?.[entry.key]||!(typeof next.inventory[entry.key]==='number'?next.inventory[entry.key]:next.inventory[entry.key].count):itemQuantity(next,entry.item)===0))next.leftHandItem=null;
   return {unit: keepOtherHand?retainOtherHand(unit,next):next, stack};
 }
 // Removing the selected item does not put the other held weapon into a full pack.
@@ -323,3 +328,19 @@ export function planEquipOutfit(unit,key){
  if(inventoryUsage(next).overloaded)fail('No queda un bolsillo grande para la vestimenta retirada.');return next;
 }
 export function planStowOutfit(unit){const taken=extractItemQuantity(unit,'outfit',1);return applyItemQuantity(taken.unit,taken.stack);}
+
+export function planHoldOffhand(unit,item){
+ const next=structuredClone(unit);
+ if(item===null){if(unit.leftHandItem==null)fail('La segunda mano no tiene un objeto seleccionado.');next.leftHandItem=null;}
+ else {
+  const entry=resolve(unit,item);
+  if(!['inventory','supply'].includes(entry.kind)||entry.kind==='inventory'&&entry.record.weapon!==undefined)fail('Elegí un pertrecho o un objeto guardado; las armas se equipan en su ranura.');
+  if(itemQuantity(unit,entry.item)<1)fail('No queda ese objeto.');
+  const hands=handLayout(unit);if(hands.twoHanded)fail('El arma principal ocupa las dos manos.');
+  if(hands.right===entry.item)fail('Ese objeto ya está en la mano principal.');
+  if(hands.left===entry.item)fail('Ese objeto ya está en la segunda mano.');
+  next.leftHandItem=entry.item;
+ }
+ if(inventoryUsage(next).overloaded)fail('No queda espacio para guardar el objeto desplazado.');
+ return next;
+}
