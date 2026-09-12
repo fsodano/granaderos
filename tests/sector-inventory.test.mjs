@@ -9,6 +9,7 @@ import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {enterSector} from '../game/world.js';
 import {playerKnownCampaign} from '../game/player-known-state.js';
+import {planReturnAmmunition} from '../game/ammunition.js';
 import {launchEnemyGroup} from '../game/enemy-groups.js';
 const order=(s,a)=>{const n=dispatch(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const act=(s,a)=>{const n=actBattle(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
@@ -127,4 +128,35 @@ test('a previously dropped compact firearm keeps its catalog weight and finite l
  const row=model(s).entries.find(row=>row.kind==='drop');s=take(s,row);const stored=Object.values(s.operativeState[4].inventory).find(item=>item.weapon===1805);
  assert.equal(stored.weight,1.3);assert.equal(stored.loaded,1);assert.equal(stored.condition,59);assert.equal(stored.jammed,true);assert.equal(stored.knownToPlayer,undefined);assert.equal(s.sectorStates.retiro.droppedWeapons[0].taken,true);
  s=restoreCampaign(serializeCampaign(s));assert.equal(model(s).entries.length,0);
+});
+
+
+test('a loaded gun carried into a visit can be equipped and returned without losing its charge',()=>{
+ for(const id of [4,10]){
+  let {s,b}=entered();const u=b.units.find(u=>u.id===String(id)),loaded=u.loaded;assert.ok(loaded>0);
+  b=act(b,{type:'drop',unitId:String(id),item:'primary'});s=leave(s,b);assert.equal(s.resources.cartridges,300-loaded);
+  s=take(s,model(s,id).entries.find(row=>row.loaded===loaded),1,id);s=order(restoreCampaign(serializeCampaign(s)),{type:'visitSector'});
+  b=enterSector(s.pendingBattle,s.sectorStates.retiro);const key=Object.keys(b.units.find(u=>u.id===String(id)).inventory).find(key=>key.startsWith('weapon:'));
+  b=act(b,{type:'equipLoot',unitId:String(id),inventoryKey:key,slot:'primary'});assert.equal(b.units.find(u=>u.id===String(id)).loaded,loaded);
+  s=leave(s,b);assert.equal(s.resources.cartridges,300);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
+ }
+});
+
+test('a packed loaded gun that remains stored does not add its round to shared stock',()=>{
+ let {s,b}=entered();const u=b.units.find(u=>u.id==='10'),loaded=u.loaded;
+ b=act(b,{type:'drop',unitId:'10',item:'primary'});s=leave(s,b);s=take(s,model(s,10).entries.find(row=>row.loaded===loaded),1,10);
+ const reserve=s.resources.cartridges;s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);s=leave(s,b);
+ assert.equal(s.resources.cartridges,reserve);assert.ok(Object.values(s.operativeState[10].inventory).some(item=>item.loaded===loaded));
+ const bad=order(s,{type:'visitSector'});for(const value of [-1,1.5,Infinity]){const damaged=structuredClone(bad);damaged.pendingBattle.storedCartridges=value;assert.throws(()=>restoreCampaign(serializeCampaign(damaged)));}
+});
+
+
+test('moving a loaded gun between packs and ground never credits it twice, and capture retains custody',()=>{
+ const request={squad:[{id:'p'},{id:'q'}],issuedCartridges:0,storedCartridges:1,fieldCartridges:0};
+ const entries=[{unitId:'p',kind:'resident'},{unitId:'q',kind:'resident'}];
+ const snapshot={units:[{id:'p',side:'player',loaded:0,ammo:0,inventory:{}},{id:'q',side:'player',loaded:0,ammo:0,inventory:{gun:{weapon:1800,loaded:1,count:1}}}],groundItems:[],droppedWeapons:[],props:[],tiles:[]};
+ assert.equal(planReturnAmmunition(request,snapshot,entries).creditedCartridges,0);
+ snapshot.units[1].inventory={};snapshot.groundItems=[{type:'item',item:'weapon',weapon:1800,loaded:1,count:1}];assert.equal(planReturnAmmunition(request,snapshot,entries).creditedCartridges,0);
+ snapshot.groundItems=[];snapshot.units[1].loaded=1;assert.equal(planReturnAmmunition(request,snapshot,entries).creditedCartridges,1);
+ entries[1].kind='captured';const captive=planReturnAmmunition(request,snapshot,entries);assert.equal(captive.creditedCartridges,0);assert.deepEqual(captive.custody.q,{loaded:1,ammo:0});
 });

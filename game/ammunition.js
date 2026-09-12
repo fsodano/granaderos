@@ -8,10 +8,18 @@ export function fieldAmmunition(snapshot){
   +(snapshot?.droppedWeapons??[]).reduce((sum,g)=>sum+(g.taken?0:g.loaded??0),0)
   +[...(snapshot?.props??[]),...(snapshot?.tiles??[])].reduce((sum,c)=>sum+(c.contents??[]).reduce((n,item)=>n+rounds(item),0),0);
 }
-const recoveredFieldAmmunition=(request,snapshot)=>Math.max(0,(request.fieldCartridges??0)-fieldAmmunition(snapshot));
+export function storedWeaponAmmunition(units){
+ return units.reduce((total,u)=>total+Object.values(u.inventory??{}).reduce((sum,item)=>sum+(item?.weapon!==undefined?(item.loaded??0)*(item.count??1):0),0),0);
+}
+const recoveredEquipmentAmmunition=(request,snapshot)=>{
+ const ids=new Set((request.squad??[]).map(u=>String(u.id))),carriers=(snapshot?.units??[]).filter(u=>u.side==='player'&&ids.has(String(u.id)));
+ // Net the field and the squad's pack charges together: moving a loaded gun
+ // between them cannot produce another cartridge allowance.
+ return Math.max(0,(request.fieldCartridges??0)+(request.storedCartridges??0)-fieldAmmunition(snapshot)-storedWeaponAmmunition(carriers));
+};
 
 export function returnAmmunition(request,reports,snapshot){
- let looted=snapshot?recoveredFieldAmmunition(request,snapshot):0;
+ let looted=snapshot?recoveredEquipmentAmmunition(request,snapshot):0;
  if(snapshot){
   for(const source of [...(request.garrison??[]),...(request.garrisonLootSources??[]),...(request.missionAllies??[])]){const current=snapshot.units.find(u=>(u.militia||u.missionAlly)&&String(u.id)===String(source.id));if(current&&(current.hp<=0||current.unconscious||current.routed))looted+=Math.max(0,(source.ammo??0)+(source.loaded??0)-(current.ammo??0)-(current.loaded??0));}
   for(const source of request.ammunitionSources??request.enemies??[]){const current=snapshot.units.find(u=>u.side==='enemy'&&String(u.id)===String(source.id));if(current&&(current.hp<=0||current.unconscious||current.routed))looted+=Math.max(0,(source.ammo??12)-(current.ammo??0));}
@@ -30,7 +38,7 @@ export function returnAmmunition(request,reports,snapshot){
 // One shared ceiling applies to every destination. Captive ammunition remains
 // with its owner and must not enter the campaign cartridge reserve on this return.
 export function planReturnAmmunition(request,snapshot,entries){
- let loot=recoveredFieldAmmunition(request,snapshot);const seen=new Set();
+ let loot=recoveredEquipmentAmmunition(request,snapshot);const seen=new Set();
  for(const source of [...(request.garrison??[]),...(request.garrisonLootSources??[]),...(request.missionAllies??[]),...(request.casualtyLootSources??[])]){
   const key=`player:${source.id}`;if(seen.has(key))continue;seen.add(key);
   const u=snapshot.units.find(u=>u.side==='player'&&String(u.id)===String(source.id));if(u)loot+=Math.max(0,(source.ammo??0)+(source.loaded??0)-(u.ammo??0)-(u.loaded??0));

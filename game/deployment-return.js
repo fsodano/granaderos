@@ -1,6 +1,6 @@
 import {CAMPAIGN_SECTORS} from './data.js';
 import {sectorExits,validateSectorExits,boundaryMatches,entryFromSector,validEntry} from './tactical-exits.js';
-import {planReturnAmmunition,fieldAmmunition} from './ammunition.js';
+import {planReturnAmmunition,fieldAmmunition,storedWeaponAmmunition} from './ammunition.js';
 import {fieldCapable} from './tactical.js';
 import {validateBattleSnapshot} from './validate-battle.js';
 import {FITTING_RULES_VERSION,normalizeUnitFittings} from './weapon-fittings.js';
@@ -24,6 +24,7 @@ export function prepareDeploymentExits(s,request){
   request.remains=clone(s.sectorRemains?.[strategicSector(request)]??[]);
   const previous=request.sceneId?s.sceneStates?.[request.sceneId]:s.sectorStates?.[request.sector];
   request.fieldCartridges=fieldAmmunition(previous);
+  request.storedCartridges=storedWeaponAmmunition(request.squad);
   const bodies=(previous?.units??[]).filter(u=>u.side==='player'&&u.hp<=0&&!u.departure&&(!previous.returnLedger?.entries?.some(e=>e.unitId===u.id)||previous.returnLedger.entries.some(e=>e.unitId===u.id&&e.kind==='dead'&&e.sector===strategicSector(request))));
   request.casualtyLootSources=[...new Map([...bodies,...request.remains.map(r=>r.unit)].map(u=>[String(u.id),{id:String(u.id),side:'player',loaded:u.loaded??0,ammo:u.ammo??0}])).values()];
   for(const u of request.squad){
@@ -122,7 +123,7 @@ function validateReturnLedger(snapshot){
 }
 export function validateDeploymentReturnState(s){
   const object=v=>v&&typeof v==='object'&&!Array.isArray(v),integer=(v,max)=>Number.isSafeInteger(v)&&v>=0&&v<=max;
-  need(s.pendingBattle?.fieldCartridges===undefined||integer(s.pendingBattle.fieldCartridges,1000000000000),'La munición previa del sector es inválida.');
+  for(const field of ['fieldCartridges','storedCartridges'])need(s.pendingBattle?.[field]===undefined||integer(s.pendingBattle[field],1000000000000),'La munición previa del despliegue es inválida.');
   migrateDeploymentReturns(s);need(object(s.sectorRemains),'Los restos del campo son inválidos.');
   const seen=new Set();
   for(const [at,records]of Object.entries(s.sectorRemains)){

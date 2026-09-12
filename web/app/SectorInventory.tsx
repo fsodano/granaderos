@@ -15,10 +15,10 @@ export default function SectorInventory({state,sectorId,dispatch}:{state:any;sec
   </header>
   {model.reason&&<p role="status">{model.reason}</p>}
   {model.usage&&<p>Mochila: {model.usage.used}/{model.usage.capacity} espacios. Los cartuchos recogidos quedan con este combatiente hasta el próximo despliegue.</p>}
-  <div className="sector-inventory-columns"><section aria-label="Equipo descubierto"><h4>En el terreno</h4>{model.entries.length?model.entries.map((row:any,index:number)=><ItemRow key={row.key} label={row.label} count={row.count} number={index+1} disabled={!row.reachable} verb="Recoger" onConfirm={(count:number)=>order({direction:'take',sourceKey:row.key,expected:row.expected,count})}>
+  <div className="sector-inventory-columns"><section aria-label="Equipo descubierto"><h4>En el terreno</h4>{model.entries.length?model.entries.map((row:any,index:number)=><ItemRow key={`${row.key}:${row.expected}`} label={row.label} count={row.count} number={index+1} disabled={!row.reachable} verb="Recoger" onConfirm={(count:number)=>order({direction:'take',sourceKey:row.key,expected:row.expected,count})}>
    <p>{tacticalGridLabel(row.x,row.y)} · {row.condition!==undefined&&`Estado ${row.condition}%. `}{row.loaded!==undefined&&`${row.loaded} carga(s). `}{row.jammed&&'Necesita cebado. '}{row.reason}</p>
   </ItemRow>):<p>No hay equipo descubierto en este sector.</p>}</section>
-  <section aria-label="Equipo llevado"><h4>Con el combatiente</h4>{model.carried.length?model.carried.map((row:any,index:number)=><ItemRow key={row.item} label={row.label} count={row.count} number={index+1} disabled={Boolean(model.reason)} verb="Dejar" onConfirm={(count:number)=>order({direction:'drop',item:row.item,count})}/>):<p>No hay equipo disponible.</p>}</section></div>
+  <section aria-label="Equipo llevado"><h4>Con el combatiente</h4>{model.carried.length?model.carried.map((row:any,index:number)=><ItemRow key={`${row.item}:${row.count}`} label={row.label} count={row.count} number={index+1} disabled={Boolean(model.reason)} verb="Dejar" onConfirm={(count:number)=>order({direction:'drop',item:row.item,count})}/>):<p>No hay equipo disponible.</p>}</section></div>
  </section>;
 }
 function ItemRow({label,count,number,disabled,verb,onConfirm,children}:{label:string;count:number;number:number;disabled:boolean;verb:string;onConfirm:(count:number)=>void;children?:React.ReactNode}){
