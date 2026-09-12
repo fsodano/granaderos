@@ -1,3 +1,4 @@
+import {chooseSupplySharingAction} from './tactical-ai-sharing.js';
 import {chooseScavengingAction} from './tactical-ai-scavenging.js';
 import {directionTo,facingAllowsSight,turnAPCost} from './tactical-awareness.js';
 import {getReachable, canSee, hasLineOfSight, shotChance, firearmShotOptions, actionCosts, stanceCost, weaponFor, bladeFor, planEquipLoot, maxActionPoints, AP_CARRY_LIMIT} from './tactical.js';
@@ -200,6 +201,8 @@ export function chooseEnemyAction(state, unit) {
 
   if (!targets.length) {
     if (upkeep) return upkeep;
+    const sharing = chooseSupplySharingAction(state, unit, targets, paths);
+    if (sharing) return sharing;
     const scavenge = chooseScavengingAction(state, unit, targets, paths);
     if (scavenge) return scavenge;
     const known = unit.lastKnownEnemy || unit.lastHeardNoise;
@@ -227,6 +230,8 @@ export function chooseEnemyAction(state, unit) {
   const outgunned = threats.length > support;
   if (shot?.effectiveness >= 45 && !outgunned) return {type: 'fire', unitId: unit.id, targetId: shot.target.id, aim: shot.aim,hitLocation:shot.hitLocation};
   if (upkeep) return upkeep;
+  const sharing = chooseSupplySharingAction(state, unit, targets, paths);
+  if (sharing) return sharing;
   const scavenge = chooseScavengingAction(state, unit, targets, paths);
   if (scavenge) return scavenge;
 

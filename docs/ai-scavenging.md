@@ -18,4 +18,4 @@ No future pickup is reserved. After a step, an interruption, another soldier's p
 
 `tests/tactical-ai-scavenging.test.mjs` covers actual enemy turns, cartridge pickup followed by paid reload/fire, a recovered pistol followed by paid equip/fire, exact fitted-gun recovery, paid approach, hidden information, nearby corpse quantities, capacity and affordability, invalid/depleted sources, exposure limits, competing soldiers, the player-command boundary, and a saved nested interruption after recovery and firing.
 
-These are simulation and save-continuation checks. Live visual verification, broader equipment selection, requests to other soldiers, conscious weapon theft, hidden-container searches, and typed period ammunition remain open. This change does not complete the full AI or JA2 parity requirements.
+These are simulation and save-continuation checks. Live visual verification, broader equipment selection, coordinated requests beyond [local supply handovers](ai-supply-sharing.md), conscious weapon theft, hidden-container searches, and typed period ammunition remain open. This change does not complete the full AI or JA2 parity requirements.
