@@ -6,11 +6,11 @@ Each gun fires one charge. A double-barrel pistol retains its other charge. The 
 
 Both shots commit to the same point and aim before the first shot adds smoke, changes target posture or kills the target. Each gun uses its own condition, ignition roll, projectile power, cover penetration and wear. Successful discharge removes one actual charge and one condition point. Failed ignition preserves that gun's charge and condition, while the other gun still resolves. Experience and militia credit belong to the real actor. Both shots complete within one action before reactions, end-of-combat checks and the action clock advance.
 
-A stored gun never joins the shot. An empty, jammed or broken second pistol leaves ordinary main-hand fire available, without the paired accuracy deduction. An empty main pistol retains the requested reload-click behavior, even if its other hand is loaded. R reloads the selected main gun; change hands to load or reprime the other pistol. Combined automatic reloading of both pistols remains a separate gap. Placing a pistol in a pocket lets the player fire the remaining gun alone.
+A stored gun never joins the shot. An empty, jammed or broken second pistol leaves ordinary main-hand fire available, without the paired accuracy deduction. An empty main pistol retains the requested reload-click behavior, even if its other hand is loaded. R now follows the [automatic two-pistol reload plan](paired-pistol-reload.md): main hand first, then the second if its complete load fits. With a full main gun, R can continue the second directly. Change hands to reprime a failed second pistol; automatic paired reprime remains separate. Placing a pistol in a pocket lets the player fire the remaining gun alone.
 
 Exploration consumes the shot's normal time and ammunition without spending AP. Testing also found an old empty-gun preview error: it treated displayed zero AP as unavailable reload work in exploration. The preview now checks the actual reload plan. A click loads from finite reserve ammunition without firing in the same action. With no reserve, the cross and refusal remain.
 
-Enemy shot selection now evaluates both known projectile paths and their expected effects. It can choose the second gun's useful shot when the main gun cannot penetrate cover. It does not inspect hidden opponents or their private supplies. Automatic equipment selection and combined reload planning remain partial.
+Enemy shot selection now evaluates both known projectile paths and their expected effects. It can choose the second gun's useful shot when the main gun cannot penetrate cover. It does not inspect hidden opponents or their private supplies. The shared [automatic reload plan](paired-pistol-reload.md) is now used by enemy maintenance too. Broader automatic equipment selection remains partial.
 
 ## Reference and adaptations
 
@@ -24,7 +24,7 @@ All 2,172 tests pass with no skips. Typecheck, production build, static export v
 
 Twenty-five new tests cover shared costs and atomic rejection, each gun's load and condition, partial reload preservation, first-shot death/knockdown, firearm cover, primary/secondary chance, custom profile persistence, a genuine saved interruption, enemy actions, knowledge boundaries, render controls and exploration reload. A fresh custom recruit buys an actual finite pistol, arranges the guns through the real pockets, loads both from reserve, fires, and returns through full saves and sector reentry without refilling either load.
 
-Live checks use a disposable practice scene with the production Battlefield, inventory and reducer. It does not access the user's campaign storage:
+The initial paired-fire checks below preceded the [automatic reload update](paired-pistol-reload.md). Those live checks used a disposable practice scene with the production Battlefield, inventory and reducer. It does not access the user's campaign storage:
 
 - The ordinary right-click cursor showed 8 AP and 78%/66%; one added aim step showed 11 AP and 86%/74%.
 - Confirmation spent 100 → 89 AP. Each double-barrel pistol changed from two charges to one, conditions 81% → 80% and 57% → 56%, and reserve stayed eight.

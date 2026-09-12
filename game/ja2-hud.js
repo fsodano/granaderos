@@ -78,6 +78,16 @@ export function firearmCostText(state,unit,point){
   if(c.turn)return c.ready?`Preparar y girar: ${c.setup} PA · disparar: ${c.discharge} PA.`:`Girar: ${c.turn} PA · disparar: ${c.discharge} PA.`;
   return c.ready?`Preparar: ${c.ready} PA · disparar: ${c.discharge} PA.`:`Arma en posición de tiro · disparar: ${c.discharge} PA.`;
 }
+function reloadLabel(plan){
+  if(plan.partial)return plan.hands?.[0]?.hand==='offhand'?'Recarga parcial: segunda mano':'Recarga parcial';
+  return plan.hands?.length===2?'Recargar ambas pistolas':plan.hands?.[0]?.hand==='offhand'?'Recargar segunda mano':'Recargar';
+}
+function reloadNote(state,unit,plan){
+  if(!plan.available)return undefined;
+  if(!plan.hands)return plan.partial?`Carga ${plan.rounds} cartuchos ahora. Faltan ${plan.remainingPA} PA para completar la recarga. Continuá con R o un clic de disparo con el arma vacía.`:`Carga ${plan.rounds} cartucho${plan.rounds===1?'':'s'}. Quedan ${unit.ammo-plan.rounds} de reserva. Hacé otro clic para disparar.`;
+  const hands=plan.hands.map(hand=>`${hand.hand==='primary'?'Mano principal':'Segunda mano'}: ${hand.partial?'recarga parcial, ':''}carga ${hand.rounds} cartucho${hand.rounds===1?'':'s'}${state.mode==='exploration'?'':` (${hand.pa} PA)`}.`);
+  return [...hands,plan.partial?`Faltan ${plan.remainingPA} PA para completar la recarga. Continuá con R.`:null,plan.offhandPending?'La segunda mano queda pendiente. Conservás los PA sobrantes.':null,`Quedan ${unit.ammo-plan.rounds} cartuchos de reserva.`,plan.partial?null:'Hacé otro clic para disparar.'].filter(Boolean).join(' ');
+}
 export function emptyGunPreview(state, unit) {
   if (!unit || !hasFirearm(unit) || unit.loaded > 0) return null;
   const plan = reloadPlan(unit, state), rounds = plan.available, pa = state.mode === 'exploration' ? 0 : plan.pa;
@@ -86,12 +96,12 @@ export function emptyGunPreview(state, unit) {
     : unit.knockedDown ? 'Primero debés levantarte.'
     : !unitCanAct(state, unit) ? 'El combatiente no puede actuar.'
     : !plan.pa || !affordable(state, unit, plan.pa) ? 'PA insuficientes para recargar.' : null;
-  return {name: weaponFor(unit).name, actionLabel: rounds ? plan.partial ? 'Recarga parcial' : 'Recargar' : 'Sin munición',
+  return {name: weaponFor(unit).name, actionLabel: rounds ? reloadLabel(plan) : 'Sin munición',
     attackType: 'reload', cursor: rounds ? 'reload' : 'empty', pa,
     chance: undefined, chanceLabel: undefined, hitLocation: undefined, attackLabel: undefined,
     remaining: Math.max(0, unit.ap - (state.mode === 'exploration' || reason ? 0 : pa)),
     rounds: plan.rounds, partial: plan.partial, remainingReloadPA: plan.remainingPA, reloadProgress: plan.progress, reason, valid: !reason,
-    coverNote: rounds ? plan.partial ? `Carga ${plan.rounds} cartuchos ahora. Faltan ${plan.remainingPA} PA para completar la recarga. Continuá con R o un clic de disparo con el arma vacía.` : `Carga ${plan.rounds} cartucho${plan.rounds === 1 ? '' : 's'}. Quedan ${unit.ammo - plan.rounds} de reserva. Hacé otro clic para disparar.` : undefined};
+    coverNote: reloadNote(state,unit,plan)};
 }
 export const STANCES = [['standing', 'De pie'], ['crouched', 'Agachado'], ['prone', 'Cuerpo a tierra']];
 export const stanceLabel = stance => STANCES.find(([id]) => id === stance)?.[1] || 'De pie';
@@ -654,7 +664,8 @@ export function orderDescriptors(state, unit, ctx = {}) {
   const blade = bladeFor(u);
   const gun = (state.artillery || []).find(g => g.id === ctx.cannonId && g.side === u.side);
   const costs = unit ? actionCosts(state, unit) : {};
-  const pa = {...costs, reload: unit ? reloadPlan(unit, state).pa : 0, fire: costs.fire + Math.max(0, Math.min(4, Math.floor(ctx.aim || 0))) * costs.aim, stance: unit ? stanceCost(u, nextStance(u)) : 0};
+  const loading = unit ? reloadPlan(unit, state) : null;
+  const pa = {...costs, reload: loading?.pa??0, fire: costs.fire + Math.max(0, Math.min(4, Math.floor(ctx.aim || 0))) * costs.aim, stance: unit ? stanceCost(u, nextStance(u)) : 0};
   const attack = unit && !['medical', 'tool', 'supply','item'].includes(u.activeSlot) ? contextualAttack(state, u, ctx.target, {aim: ctx.aim || 0}) : null;
   const medicalPreview = medicalUsePreview(state, unit, ctx.target ?? unit);
   const itemPreview=ctx.target?itemUsePreview(state,unit,ctx.target):null;
@@ -686,7 +697,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
     charge: ['medical','tool','supply','item'].includes(u.activeSlot)||u.stance==='prone',
     heal: !medicalPreview.allowed,
     loot: false,
-    reload: !firearm || !pa.reload || !(u.ammo > 0) || u.loaded >= weaponFor(u).capacity,
+    reload: !firearm || !loading?.pa || !(u.ammo > 0) || Boolean(u.jammed),
     reprime: !firearm || !u.jammed || !(u.priming > 0),
     weapon: false,
     stance: Boolean(u.mounted),
@@ -719,7 +730,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
       const crew = def.id==='artilleryReload'?artilleryReloadPreview(state,unit,gun):artilleryCrewPlan(state,unit,gun,pa[def.id]);
       unavailable ||= Boolean(crew.reason);
     }
-    const label = def.id === 'useItem' ? u.activeSlot === 'item' ? 'Objeto sin uso' : u.activeSlot === 'supply' ? 'Usar pertrecho' : u.activeSlot === 'tool' ? 'Usar herramienta' : u.activeSlot === 'medical' ? 'Usar vendas' : firearm ? 'Usar arma' : u.activeSlot === 'unarmed' ? 'Usar puños' : 'Usar arma blanca' : def.id === 'stance' ? stanceLabel(nextStance(u)) : def.id === 'overwatch' && u.overwatch ? 'Cancelar cobertura' : def.label;
+    const label = def.id === 'useItem' ? u.activeSlot === 'item' ? 'Objeto sin uso' : u.activeSlot === 'supply' ? 'Usar pertrecho' : u.activeSlot === 'tool' ? 'Usar herramienta' : u.activeSlot === 'medical' ? 'Usar vendas' : firearm ? 'Usar arma' : u.activeSlot === 'unarmed' ? 'Usar puños' : 'Usar arma blanca' : def.id === 'reload'&&loading?.hands ? reloadLabel(loading) : def.id === 'stance' ? stanceLabel(nextStance(u)) : def.id === 'overwatch' && u.overwatch ? 'Cancelar cobertura' : def.label;
     /** @type {{id:string,label:string,kind:string,disabled:boolean,pa?:number,reserve?:boolean,active?:boolean}} */
     const d = {id: def.id, label, kind: def.kind, disabled: baseDisabled || unavailable || (!reserveOff && def.id in pa && !affordable(state, u, pa[def.id]))};
     if (def.id === 'overwatch') d.reserve = !reserveOff;

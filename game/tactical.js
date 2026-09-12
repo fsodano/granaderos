@@ -1,4 +1,4 @@
-import {pairedPistol,pistolPairPenalty,secondaryPistolView} from './paired-fire.js';
+import {pairedPistol,secondHeldPistol,pistolPairPenalty,secondaryPistolView} from './paired-fire.js';
 import {pocketOrderFromSlots} from './inventory-pockets.js';
 import {planEquipmentAttachment,planEquipmentPickup,planEquipmentCursorPlacement,planEquipmentCursorReturn} from './equipment-cursor.js';
 import {regionalWeatherAt} from './regional-weather.js';
@@ -134,9 +134,29 @@ export function lookPreview(s,u,point){
   if(!reason&&s.mode!=='exploration'&&u.ap<pa)reason='PA insuficientes.';
   return {valid:!reason,reason,pa,facing,prepare,actionLabel:prepare?'Preparar el arma':'Mirar'};
 }
-export function reloadPlan(unit,state){
+function singleReloadPlan(unit,state){
   const w=weaponFor(unit),rate=w.reloadAP/w.capacity*(unit.stance==='prone'?1.5:1)*(state&&nearby(state,unit,2,2)?.8:1)*(hasTrait(unit,'gunsmith_artillerist')?.85:1);
   return planReload(unit,rate,w.capacity,state?.mode==='exploration');
+}
+export function reloadPlan(unit,state){
+  const first=singleReloadPlan(unit,state),other=secondHeldPistol(unit);
+  if(!other||other.jammed||(other.condition??100)<=0)return first;
+  const second=secondaryPistolView(unit,other),hands=[];
+  const step=(hand,view,plan)=>({hand,weapon:view.weapon,name:weaponFor(view).name,...plan});
+  if(first.available)hands.push(step('primary',unit,first));
+  // Reserve ammunition for the first gun before considering the second.
+  second.ammo=Math.max(0,unit.ammo-first.available);
+  second.ap=Math.max(0,unit.ap-first.totalPA);
+  const last=singleReloadPlan(second,state);
+  // Do not spend the AP left after a completed primary load on incomplete
+  // secondary work. When only the secondary needs work, it may span turns.
+  const include=last.available&&(!first.available||!first.partial&&!last.partial);
+  if(include)hands.push(step('offhand',second,last));
+  if(!hands.length)return first;
+  return {...hands[0],hands,offhandPending:Boolean(last.available&&!include),
+    pa:hands.reduce((n,h)=>n+h.pa,0),totalPA:hands.reduce((n,h)=>n+h.totalPA,0),
+    rounds:hands.reduce((n,h)=>n+h.rounds,0),available:hands.reduce((n,h)=>n+h.available,0),
+    partial:hands.some(h=>h.partial),remainingPA:hands.reduce((n,h)=>n+h.remainingPA,0)};
 }
 export function reloadCost(unit,state){return reloadPlan(unit,state).totalPA;}
 function makeUnit(raw,side,index,x,y){const stats=raw.stats||{};const weapon=raw.weapon??raw.primary??1800;const w=typeof weapon==='object'?weapon:WEAPONS[weapon]||WEAPONS[1800];return {...raw,id:String(raw.id??`${side}-${index}`),name:raw.name||raw.nickname||(side==='player'?'Granadero':'Realista'),side,facing:raw.facing??(side==='enemy'?6:2),stealthMode:Boolean(raw.stealthMode),x:raw.x??x,y:raw.y??y,maxHp:raw.maxHp??raw.health??stats.health??100,hp:raw.hp??raw.health??stats.health??100,ap:100,morale:raw.morale??Math.min(100,(raw.personality==='optimistic'?90:raw.personality==='pessimistic'?70:80)+((raw.traits||[]).includes('steadfast')?10:0)),marksmanship:raw.marksmanship??stats.marksmanship??70,agility:raw.agility??stats.agility??75,strength:raw.strength??stats.strength??75,medical:raw.medical??stats.medical??30,mechanical:raw.mechanical??stats.mechanical??0,stealth:raw.stealth??stats.stealth??0,weapon,loaded:raw.loaded??(WEAPONS[weapon]||typeof weapon==='object'?w.capacity:0),ammo:raw.ammo??12,condition:raw.condition??100,stance:raw.stance??movementStance(raw.movementMode??'walk'),mounted:Boolean(raw.mounted),horse:Boolean(raw.horse||raw.canMount||raw.mounted),jammed:raw.jammed??false,bleeding:raw.bleeding??0,bandaged:raw.bandaged??((raw.bleeding??0)>0?0:Math.max(0,(raw.maxHp??raw.health??stats.health??100)-(raw.hp??raw.health??stats.health??100))),shock:raw.shock??0,experienceLevel:raw.experienceLevel??stats.experienceLevel??Math.min(10,4+Math.floor((raw.xp??0)/100)),dexterity:raw.dexterity??stats.dexterity??75,wisdom:raw.wisdom??stats.wisdom??50,carriedAP:0,routed:raw.routed??false,medkits:raw.medkits??2,momentum:0,lastDirection:null,weaponMode:raw.weaponMode??'fire',activeSlot:raw.activeSlot||'primary',fatigue:raw.fatigue||0,priming:raw.priming??50,flints:raw.flints??4,rations:raw.rations??2,energy:raw.energy??100,unconscious:isUnconscious({hp:raw.hp??raw.health??stats.health??100,energy:raw.energy??100}),movementMode:raw.movementMode||'walk',inventory:{...raw.inventory},boleadoras:raw.boleadoras??1,torches:raw.torches??2,strengthTraining:raw.strengthTraining??0,interceptTurn:0,parryTurn:0,counterTurn:0,braceTurn:0,braced:false,knockedDown:Boolean(raw.knockedDown),overwatch:raw.overwatch??(side==='enemy'),reactionTurn:0,reactionSpent:0};}
@@ -1321,10 +1341,15 @@ else if(a.type==='reload'){
   const plan=reloadPlan(u,s);
   if(!plan.totalPA)return fail('No falta carga o no quedan cartuchos.');
   if(!plan.pa||!pay(plan.pa))return fail('Faltan puntos de acción para recargar.');
-  u.loaded+=plan.rounds;u.ammo-=plan.rounds;
-  if(plan.progress>0)u.reloadProgress=plan.progress;else delete u.reloadProgress;
+  for(const hand of plan.hands??[{hand:'primary',...plan}]){
+    const gun=hand.hand==='offhand'?u.offHand:u;
+    gun.loaded+=hand.rounds;
+    if(hand.progress>0)gun.reloadProgress=hand.progress;else delete gun.reloadProgress;
+  }
+  u.ammo-=plan.rounds;
   emitNoise(s,u,'reload');u.priming=Math.max(0,u.priming-plan.rounds);u.momentum=0;
-  sayObserved(s,[u],plan.partial?`${u.name} avanza la recarga (${plan.pa} PA). Carga ${plan.rounds} cartuchos; faltan ${plan.remainingPA} PA para completar la recarga.`:`${u.name} recarga${s.mode==='exploration'?'':` (${plan.pa} PA)`}.`);
+  const subject=plan.hands?.length===2?' ambas pistolas':plan.hands?.[0]?.hand==='offhand'?' la pistola de la segunda mano':'';
+  sayObserved(s,[u],plan.partial?`${u.name} avanza la recarga${subject?' de'+subject:''} (${plan.pa} PA). Carga ${plan.rounds} cartuchos; faltan ${plan.remainingPA} PA para completar la recarga.`:`${u.name} recarga${subject}${s.mode==='exploration'?'':` (${plan.pa} PA)`}.${plan.offhandPending?' La segunda pistola espera: faltan PA para completar su recarga.':''}`);
 }
 else if(a.type==='reprime'){if(!u.jammed)return fail('El arma no necesita cebado.');if(u.priming<1)return fail('El frasco de pólvora de cebar está vacío.');const cost=actionCosts(s,u).reprime;if(!pay(cost))return fail(`Cebar requiere ${cost} PA.`);u.priming--;practice(u,'mechanical');u.jammed=false;sayObserved(s,[u],`${u.name} vuelve a cebar la cazoleta.`);}
 else if(a.type==='melee'){
