@@ -6,7 +6,9 @@ Audit date: 6 September 2026. This is a requirements baseline for the complete g
 
 The regional terrain/weather update and the illustrated-art integration are
 integrated. Focused weather, terrain, defense, artillery, equipment, reentry and
-Retiro-opening checks pass. The established southern route again reaches a real
+Retiro-opening checks pass. The integrated run passes 1,674 of 1,680 checks;
+all failures are in one dependent northern campaign scenario. The established
+southern route again reaches a real
 Córdoba victory; its later defeat/rescue/Salta/Yatasto continuation is under
 repair because older test plans assume soldiers and supplies that did not
 survive the current battles. Earlier whole-suite counts and northern route

@@ -63,6 +63,14 @@ campaign information panel. A four-cell exploration walk reduced energy from
 The first broad integration run passed 1,649 of 1,657 tests. The cache binding was
 a production defect and is corrected. Several combat and crew fixtures assumed
 stale geometry or fixed casualties; their corrected focused checks now pass.
-The longer northern campaign and hired-only Retiro acceptance routes remain
-under review. These focused results do not establish full-suite or full-campaign
-completion.
+The hired-only Retiro assault and real Córdoba recovery route subsequently
+pass their focused checks. The longer northern continuation remains under
+review. These focused results do not establish full-campaign completion.
+
+The latest integrated full run (including the exploration input fix and bounded
+building cache) passed **1,674 of 1,680 checks** in about 186 seconds. The six
+failures belong to one established southern-to-northern campaign scenario: its
+Tucumán preparation assertion fails, four later steps lack that prerequisite,
+and the enclosing test fails. No other test file failed. The production build
+and typecheck pass. The scenario is still being repaired in an isolated branch;
+this result does not claim a passing full campaign.
