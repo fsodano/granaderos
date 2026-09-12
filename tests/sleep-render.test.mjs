@@ -20,3 +20,8 @@ test('collapsed personnel show the recovery requirement and cannot use the wake 
  const s=initialCampaign();Object.assign(s.operativeState[3],{fatigue:80,energy:20,asleep:true,sleepCollapsed:true});let html=draw(s);assert.match(html,/aria-label="Despertar: Cabral" disabled="" title="El agotamiento impide despertar/);assert.match(html,/no puede despertar hasta recuperar 60/);
  Object.assign(s.operativeState[3],{fatigue:40,energy:60,sleepCollapsed:false});html=draw(s);assert.match(html,/aria-label="Despertar: Cabral" title=/);assert.doesNotMatch(html,/no puede despertar hasta recuperar 60/);
 });
+
+test('personnel shows the individual wound-adjusted rate and its source before ordering sleep',()=>{
+ const s=initialCampaign();Object.assign(s.operativeState[3],{hp:23,bandaged:73,energy:40,fatigue:40,asleep:true});const html=draw(s);
+ assert.match(html,/Necesidad de sueño: 12 h de referencia · base 8 \+ 4 por heridas/);assert.match(html,/Descanso: \+8 energía\/h · −5 fatiga\/h/);assert.match(html,/Durmiendo · \+8 energía\/h · −5 fatiga\/h/);
+});

@@ -5,6 +5,7 @@ import {useState} from 'react';
 import {CAMPAIGN_SECTORS,isSupplied,operativeLocation,rosterFor,WEAPONS} from '../../game/campaign.js';
 import {CARE_ASSIGNMENTS,ALL_ASSIGNMENTS,MEDICAL_KIT_PRICE,careAssignmentReason,careStatus} from '../../game/medical-care.js';
 import {WORK_ASSIGNMENTS,STUDY_SKILLS,TOOLKIT_PRICE,TOOLKIT_POINTS,workAssignmentReason,workStatus,repairEquipmentQueue} from '../../game/assignments.js';
+import {sleepNeedStatus} from '../../game/sleep-needs.js';
 import {sleepOrderReason} from '../../game/sleep.js';
 import {moraleStatus} from '../../game/morale.js';
 import {equipmentInventoryUsage,medicalSupplyStock,MEDICAL_STOCK_CAP,MEDICAL_DAILY_RESTOCK} from '../../game/equipment.js';
@@ -35,6 +36,7 @@ function PersonnelCard({s,op,roster,blocked,pharmacy,dispatch}:{s:any;op:any;ros
     <div className="care-name"><h3>{op.nickname}</h3><span>Medicina {op.medical} · Mecánica {op.mechanical}</span></div>
     <div className="care-vitals"><label>Salud <strong>{record.hp}/{maxHp}</strong><meter aria-label={`Salud de ${op.nickname}`} min={0} max={maxHp} value={record.hp}/></label><label>Energía <strong>{Math.round(record.energy??100)}/{maximumEnergy(record)}</strong><meter aria-label={`Energía de ${op.nickname}`} min={0} max={maximumEnergy(record)} value={record.energy??100}/></label></div>
     <p className="care-condition">{!record.alive?'Caído':record.bleeding>0?`Hemorragia ${record.bleeding} · necesita atención`:record.hp<15?'Estado crítico · necesita un médico':record.bandaged>0?`${record.bandaged} puntos de herida vendada`:'Sin hemorragia'} · Fatiga {record.fatigue}</p>
+    <p className="care-condition">{sleepNeedStatus({...op,...record})}</p>
     <p className="care-condition">{moraleStatus(s,op.id)}</p>
     <label className="care-order">Asignación<select aria-label={`Asignación de ${op.nickname}`} value={record.assignment??'active'} disabled={blocked||!record.alive} onChange={event=>assign(event.target.value)}>{Object.entries(ALL_ASSIGNMENTS).map(([value,label])=>{const why=reason(value);return <option key={value} value={value} disabled={Boolean(why)} title={why}>{label}</option>;})}</select></label>
     <button className="line-button" aria-label={`${record.asleep?'Despertar':'Dormir'}: ${op.nickname}`} disabled={blocked||Boolean(sleepReason)} title={sleepReason||'Conserva su asignación mientras duerme.'} onClick={()=>dispatch({type:'setSleep',operativeId:op.id,asleep:!record.asleep})}>{record.asleep?'Despertar':'Dormir'}</button>

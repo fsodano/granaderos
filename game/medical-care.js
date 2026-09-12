@@ -1,3 +1,4 @@
+import {sleepRecovery} from './sleep-needs.js';
 import {gainFatigue,recoverFatigue} from './fatigue.js';
 import {operativeInTransit,operativeLocation} from './squads.js';
 import {WORK_ASSIGNMENTS} from './assignments.js';
@@ -91,7 +92,7 @@ export function careStatus(s,op,roster){
   if(!record.alive)return 'Caído en servicio.';
   if(operativeInTransit(s,op.id))return CARE_ISSUE_TEXT.traveling;
   if(deployed(s,op.id))return 'Desplegado en el sector táctico.';
-  if(record.asleep)return sleepStatus(record);
+  if(record.asleep)return sleepStatus({...op,...record});
   if(training(s,op.id))return 'Instruyendo milicias.';
   if(assignment==='active')return record.bleeding?'Hemorragia sin atender: necesita un médico.':'Disponible para marchar y combatir.';
   if(!safe(s,op.id))return 'Asignación detenida: el sector no es seguro.';
@@ -105,7 +106,7 @@ export function careStatus(s,op,roster){
     const doctor=roster.find(o=>o.id!==op.id&&s.operativeState[o.id]?.assignment==='doctor'&&!careAssignmentReason(s,o,'doctor')&&operativeLocation(s,o.id)===operativeLocation(s,op.id));
     return doctor?`En atención con ${doctor.nickname??doctor.name}. Las hemorragias tienen prioridad.`:'Sin médico disponible en este sector. Solo recupera energía.';
   }
-  return record.bleeding?'El descanso no detiene la hemorragia. Necesita un médico.':record.hp<15?'Estado crítico: necesita un médico para recuperar salud.':`+12 energía/h · +1 salud cada ${REST_HEALING_HOURS} h de descanso.`;
+  return record.bleeding?'El descanso no detiene la hemorragia. Necesita un médico.':record.hp<15?'Estado crítico: necesita un médico para recuperar salud.':`+${sleepRecovery({...op,...record}).energy} energía/h · +1 salud cada ${REST_HEALING_HOURS} h de descanso.`;
 }
 
 export function advanceMedicalCare(s,roster,{traveling=[]}={}){
@@ -130,7 +131,7 @@ export function advanceMedicalCare(s,roster,{traveling=[]}={}){
     if(record.hp===0){record.alive=false;record.asleep=false;record.sleepCollapsed=false;record.assignment='active';record.recoveryHours=0;deaths.push(op.id);continue;}
     if(!present(op)){record.recoveryHours=0;continue;}
     if(record.assignment==='patient'||record.assignment==='rest'||record.asleep){
-      if(!record.asleep||['patient','rest'].includes(record.assignment)){recoverFatigue(record,8,12);}
+      if(!record.asleep||['patient','rest'].includes(record.assignment)){const rate=sleepRecovery({...op,...record});recoverFatigue(record,rate.fatigue,rate.energy);}
       if((record.assignment==='rest'||record.asleep&&record.assignment!=='patient')&&!record.bleeding&&record.hp>=15&&record.hp<record.maxHp){
         record.recoveryHours++;
         if(record.recoveryHours>=REST_HEALING_HOURS){record.hp=Math.min(record.maxHp,record.hp+1);record.bandaged=Math.min(record.bandaged,record.maxHp-record.hp);record.recoveryHours=0;}

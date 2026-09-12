@@ -115,7 +115,7 @@ test('unattended patients and critical rest stop before recovery, while a delibe
  for(const [assignment,code] of [['patient','no_doctor'],['rest','critical']]){
   let s=initialCampaign();wound(s,3,assignment==='rest'?88:20,{energy:20,fatigue:60});s=care(s,3,assignment);
   const before=structuredClone(record(s,3));s=wait(s,4);stopped(s,4,0);assert.ok(event(s,3,code));assert.deepEqual(record(s,3),before);
-  s=wait(s,2);assert.equal(s.hour,2);assert.equal(s.assignmentAttention.notice,null);assert.equal(record(s,3).hp,before.hp);assert.equal(record(s,3).energy,44);assert.equal(record(s,3).assignment,assignment);
+  s=wait(s,2);assert.equal(s.hour,2);assert.equal(s.assignmentAttention.notice,null);assert.equal(record(s,3).hp,before.hp);assert.equal(record(s,3).energy,assignment==='rest'?36:44);assert.equal(record(s,3).assignment,assignment);
  }
 });
 

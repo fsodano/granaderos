@@ -27,7 +27,7 @@ test('the productive hour that exhausts a worker does not also give sleep recove
 });
 test('idle recovery is slower than sleep and does not heal wounds',()=>{
  let s=initialCampaign();Object.assign(r(s),{hp:30,bandaged:r(s).maxHp-30,energy:40,fatigue:40});let asleep=sleep(s,3);
- s=wait(s,4);asleep=wait(asleep,4);assert.equal(r(s).energy,52);assert.equal(r(asleep).energy,88);assert.equal(r(s).fatigue,36);assert.equal(r(asleep).fatigue,8);assert.equal(r(s).hp,30);
+ s=wait(s,4);asleep=wait(asleep,4);assert.equal(r(s).energy,52);assert.equal(r(asleep).energy,76);assert.equal(r(s).fatigue,36);assert.equal(r(asleep).fatigue,16);assert.equal(r(s).hp,30);
 });
 test('manual waking permits travel while sleeping squad members block voluntary deployment',()=>{
  let s=initialCampaign();r(s).energy=40;s=sleep(s,3);const saved=serializeCampaign(s);
@@ -39,7 +39,7 @@ test('sleep rejects fully rested, critical, unavailable and invalid requests wit
  r(s).hp=8;r(s).energy=0;assert.match(dispatchCampaign(s,{type:'setSleep',operativeId:3,asleep:true}).lastError,/crítico/);
 });
 test('sleeping patients and rest assignments receive only one hour of recovery',()=>{
- for(const assignment of ['patient','rest']){let s=initialCampaign();Object.assign(r(s),{energy:30,fatigue:40,hp:30,bandaged:r(s).maxHp-30});s=order(s,{type:'assignCare',operativeId:3,assignment});s=sleep(s,3);s=wait(s,1);assert.equal(r(s).energy,42);assert.equal(r(s).fatigue,32);assert.equal(r(s).hp,30);}
+ for(const assignment of ['patient','rest']){let s=initialCampaign();Object.assign(r(s),{energy:30,fatigue:40,hp:30,bandaged:r(s).maxHp-30});s=order(s,{type:'assignCare',operativeId:3,assignment});s=sleep(s,3);s=wait(s,1);assert.equal(r(s).energy,39);assert.equal(r(s).fatigue,34);assert.equal(r(s).hp,30);}
 });
 test('a sleeping doctor consumes no kits and resumes the same patient assignment after waking',()=>{
  let s=initialCampaign();Object.assign(r(s),{hp:30,bandaged:r(s).maxHp-30});s=order(s,{type:'assignCare',operativeId:3,assignment:'patient'});s=order(s,{type:'assignCare',operativeId:10,assignment:'doctor'});r(s,10).energy=88;s=sleep(s,10);
@@ -77,5 +77,5 @@ test('sleeping contract expiration clears the state before any further recovery'
 });
 test('sleep natural healing cannot heal critical injuries or stop bleeding',()=>{
  let s=initialCampaign();Object.assign(r(s),{hp:30,bandaged:r(s).maxHp-30,energy:10,fatigue:80});s=sleep(s,3);s=wait(s,6);assert.equal(r(s).hp,31);assert.equal(r(s).recoveryHours,0);
- s=initialCampaign();Object.assign(r(s),{hp:15,bandaged:0,bleeding:4,energy:40});s=sleep(s,3);s=wait(s,6);assert.equal(s.hour,5);assert.ok(event(s,'sleep_complete'));s=wait(s,1);assert.equal(r(s).hp,9);assert.equal(r(s).bleeding,4);
+ s=initialCampaign();Object.assign(r(s),{hp:15,bandaged:0,bleeding:4,energy:40});s=sleep(s,3);s=wait(s,6);assert.equal(s.hour,6);assert.equal(r(s).asleep,true);s=wait(s,3);assert.equal(s.hour,8);assert.ok(event(s,'sleep_complete'));s=wait(s,1);assert.equal(r(s).hp,6);assert.equal(r(s).bleeding,4);
 });

@@ -177,7 +177,7 @@ export function advanceAssignments(s,roster,{traveling=[]}={}){
 }
 
 export function workStatus(s,op,roster){
-  if(s.operativeState[op.id].asleep)return sleepStatus(s.operativeState[op.id]);
+  if(s.operativeState[op.id].asleep)return sleepStatus({...op,...s.operativeState[op.id]});
   const r=s.operativeState[op.id],reason=workAssignmentReason(s,op,r.assignment,savedOptions(r),roster);
   if(reason)return `Asignación detenida: ${reason}`;
   if(r.assignment==='repair'){const target=roster.find(o=>o.id===r.repairTargetId);const queue=repairScope(r)==='equipment'?repairEquipmentQueue(s.operativeState[target.id],target):null;return `${target.nickname}: ${queue?`${queue[0].label} · ${queue.reduce((sum,item)=>sum+item.count,0)} objetos pendientes. `:''}Hasta ${repairRate(op)} puntos/h. Cada punto consume 1 de herramientas.`;}

@@ -1,3 +1,4 @@
+import {sleepRecovery} from './sleep-needs.js';
 import {recoverFatigue,maximumEnergy,needsCollapseRecovery} from './fatigue.js';
 import {operativeInTransit,operativeLocation} from './squads.js';
 
@@ -47,7 +48,7 @@ export function finishSleepHour(s,roster,context={}){
   const r=s.operativeState[op.id];if(!r||!safe(s,op.id,context))continue;
   if(r.asleep){
    // Medical care already applies this hour's rest recovery to these roles.
-   if(!['rest','patient'].includes(r.assignment)){recoverFatigue(r,8,12);}
+   if(!['rest','patient'].includes(r.assignment)){const rate=sleepRecovery({...op,...r});recoverFatigue(r,rate.fatigue,rate.energy);}
    if(r.energy>=100&&r.fatigue===0){r.asleep=false;events.push({id:op.id,code:'sleep_complete'});}
   }else if(r.assignment==='active'&&!(context.working??[]).includes(op.id)&&!s.militiaTraining?.some(t=>t.trainerId===op.id)&&r.hp>=15&&!r.bleeding){
    recoverFatigue(r,1,3);
@@ -55,4 +56,4 @@ export function finishSleepHour(s,roster,context={}){
  }
  return [...events,...prepareSleep(s,roster,context)];
 }
-export function sleepStatus(r){return r.asleep?(needsCollapseRecovery(r)?'Durmiendo por agotamiento · no puede despertar hasta recuperar 60 de capacidad de energía. ':'Durmiendo · ')+ '+12 energía/h · −8 fatiga/h. Retoma su asignación al recuperarse.':'Despierto';}
+export function sleepStatus(r){const rate=sleepRecovery(r);return r.asleep?(needsCollapseRecovery(r)?'Durmiendo por agotamiento · no puede despertar hasta recuperar 60 de capacidad de energía. ':'Durmiendo · ')+ `+${rate.energy} energía/h · −${rate.fatigue} fatiga/h. Retoma su asignación al recuperarse.`:'Despierto';}
