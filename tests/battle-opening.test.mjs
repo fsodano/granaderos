@@ -5,7 +5,7 @@ test('the first published campaign battle synchronizes immediate enemy initiativ
  const step=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};let c=step(initialCampaign(8),{type:'createOfficer',name:'Vigía del Norte',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});c=step(c,{type:'wait',hours:12});c=step(c,{type:'attack',sector:'buenos_aires'});
  const r=c.pendingBattle;for(const enemy of r.enemies)Object.assign(enemy,{facing:6,marksmanship:0,patrol:false,overwatch:false});
  const source=enterSector(r),enemy=source.units.find(u=>u.side==='enemy');
- source.tiles=source.tiles.map(t=>({x:t.x,y:t.y,type:'grass',blocked:false,cover:0}));source.props=[];source.buildings=[];source.npcs=[];
+ source.tiles=source.tiles.map(t=>({x:t.x,y:t.y,type:'grass',blocked:false,cover:0}));source.props=[];source.buildings=[];source.npcs=[];delete source.upperSurfaces;delete source.climbLinks;
  Object.assign(source.units[0],{x:enemy.x-6,y:enemy.y,facing:6});source.savedHour=c.hour;source.savedSecond=c.secondOfHour;c.sectorStates[r.sector]=source;
  // An exploration deployment can still meet an observing hostile on arrival.
  r.exploration=true;

@@ -8,7 +8,7 @@ import {BuildingRoof} from './BuildingRoof';
 import {tacticalLevel} from '../../game/tactical-space.js';
 import type {ReactNode} from 'react';
 type Point={x:number;y:number};
-type Args={viewport?:any;cursorLevel?:number;state:any;revealed:Set<string>;project:(x:number,y:number)=>Point;light:(x:number,y:number)=>number};
+type Args={viewport?:any;cursorLevel?:number;state:any;revealed:Set<string>;project:(x:number,y:number)=>Point;light:(x:number,y:number,level?:number)=>number};
 type SceneObject={key:string;depth:number;node:ReactNode};
 // Restrained earth pigments, limewash and hand-fired clay; no modern siding.
 const wallInset=.4; // Tile edges are half a cell from the center.
@@ -23,6 +23,10 @@ export function buildBuildingObjects(args:Args):SceneObject[]{
 // Camera changes reuse retained nodes; discarded viewport objects are evicted.
 export function createBuildingRenderer({state:s,revealed:knownRooms,project,light,cursorLevel=0}:Omit<Args,'viewport'>){
  const buildings=s.buildings??[],byId=new Map<any,any>(),doorsByBuilding=new Map<any,any[]>();
+ const roofSurfaces=new Map<string,any[]>();
+ for(const surface of s.upperSurfaces??[])if(surface.kind==='roof'&&surface.buildingId){
+  const surfaces=roofSurfaces.get(surface.buildingId)??[];surfaces.push(surface);roofSurfaces.set(surface.buildingId,surfaces);
+ }
  const terraceBuildings=new Set((s.upperSurfaces??[]).filter((surface:any)=>surface.kind==='roof'&&tacticalLevel(surface)===cursorLevel).map((surface:any)=>surface.buildingId));
  // Looking at a playable terrace restores its detailed roof. Discovery of the
  // room below remains stored and its cutaway returns with the ground cursor.
@@ -134,7 +138,10 @@ export function createBuildingRenderer({state:s,revealed:knownRooms,project,ligh
   add(`architecture-roof-${room.id}`,()=>{
   const xs=room.cells.map((p:any)=>p.x),ys=room.cells.map((p:any)=>p.y);
   const left=Math.max(b.x-.18,Math.min(...xs)-1.18),right=Math.min(b.x+b.width-.82,Math.max(...xs)+1.18),top=Math.max(b.y-.18,Math.min(...ys)-1.18),bottom=Math.min(b.y+b.height-.82,Math.max(...ys)+1.18);
-  return {depth:right+bottom+.12,node:<g data-roof-room={room.id} data-roof-material={b.roof} data-building-type={b.architecture??'house'} pointerEvents="none" style={{filter:`brightness(${light(b.x,b.y)})`}}>
+  // The detailed roof is one mesh. Sample its supported upper cells rather
+  // than borrowing downstairs light, which must stop at the floor slab.
+  const surfaces=roofSurfaces.get(b.id),brightness=surfaces?.length?surfaces.reduce((sum,p)=>sum+light(p.x,p.y,tacticalLevel(p)),0)/surfaces.length:light(b.x,b.y);
+  return {depth:right+bottom+.12,node:<g data-roof-room={room.id} data-roof-material={b.roof} data-building-type={b.architecture??'house'} pointerEvents="none" style={{filter:`brightness(${brightness})`}}>
    <BuildingRoof building={b} left={left} right={right} top={top} bottom={bottom} doors={doorsByBuilding.get(b.id)??[]} project={project}/>
   </g>};
   });
