@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import {createElement as h} from '../web/node_modules/react/index.js';
 import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
 import {createBattle,actBattle,artilleryCosts,weaponFor,actionCosts} from '../game/tactical.js';
-const {default:Strip}=await import('../web/app/JA2Strip.tsx');
+const {JA2OrdersPanel:Strip}=await import('../web/app/JA2OrdersMenu.tsx');
 const field=()=>{const s=createBattle([{id:20,x:1,y:2},{id:21,x:2,y:2},{id:22,x:1,y:3}],{width:20,height:8,tiles:Array.from({length:160},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0})),enemies:[{id:'e',x:18,y:6}],artillery:[{id:'gun',type:'field8',side:'player',x:2,y:3,loaded:false,ammo:3}]});s.units[0].ap=25;return s;};
 const noop=()=>{};
 function props(battle,onOrder=noop){const unit=battle.units[0],players=battle.units.filter(u=>u.side==='player');return {battle,unit,selected:unit.id,players,missionAllies:[],localMilitia:[],mode:'move',showSight:false,aim:0,hitLocation:'torso',costs:actionCosts(battle,unit),weapon:weaponFor(unit),firearm:true,cannonId:'gun',shotType:'solid',gunCosts:artilleryCosts(battle,unit,battle.artillery[0]),artillery:battle.artillery,busy:false,inventoryId:null,vw:1000,vh:600,cameraRect:{x:0,y:0,width:1000,height:600},project:(x,y)=>({x:x*20,y:y*15}),cameraX:0,cameraY:0,zoom:1,onSelect:noop,onOrder,onMode:noop,onToggleSight:noop,onEndTurn:noop,onRetreat:noop,onOpenInventory:noop,onCloseInventory:noop,onCameraCenter:noop,onCameraPan:noop,onZoom:noop,onCannonChange:noop,onShotTypeChange:noop,onSetAim:noop,onHitLocationChange:noop};}
