@@ -32,7 +32,7 @@ test('income readout applies control, damage, blockade and cut supply without mu
  const s=initialCampaign(),d=CAMPAIGN_SECTORS.find(d=>d.id==='ensenada');
  s.sectors[d.id].damageUntil=10;s.blockade=true;
  const before=JSON.stringify(s);
- assert.equal(sectorIncome(s,d,()=>false),5);
+ assert.equal(sectorIncome(s,d,()=>false),3);
  assert.equal(JSON.stringify(s),before);
  s.sectors[d.id].owner='royalist';assert.equal(sectorIncome(s,d,()=>true),0);
 });

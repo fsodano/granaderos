@@ -1,4 +1,5 @@
 'use client';
+import {SectorIncomeTable} from './SectorIncome';
 import {activeSquad,operativeInTransit} from '../../game/squads.js';
 import {useState} from 'react';
 import {Landmark,Pickaxe,Users,Shield,Package} from 'lucide-react';
@@ -66,7 +67,7 @@ export default function StrategicMap({state:s,selected,onSelect,dispatch}:{state
  </svg>
  <div className="atlas-bottom"><div className="atlas-toolbar" role="group" aria-label="Vistas del mapa">{MAP_MODES.map((m,i)=>{const Icon=icons[i];return <button type="button" key={m.id} title={m.label} aria-label={m.label} aria-pressed={mode===m.id} onClick={()=>setMode(m.id)}>{Icon?<Icon size={23} aria-hidden="true"/>:<span className="horse-icon" aria-hidden="true">♞</span>}<span>{m.label}</span></button>;})}</div><div className="atlas-depth" role="group" aria-label="Nivel del mapa"><button type="button" aria-pressed="true" title="Superficie">0</button>{[1,2,3].map(n=><button type="button" disabled key={n} title="Subsuelo no disponible">−{n}</button>)}</div></div>
  <div className="atlas-readout" aria-live="polite"><strong>{MAP_PLACES[selected as keyof typeof MAP_PLACES].label} · {district.name}</strong>{mode==='cities'?<span>{city?`${city.loyalty}% lealtad · ${city.sectors.flatMap(id=>mapTilesForSector(id)).length} casillas urbanas · ${city.sectors.length-city.uncontrolled.length}/${city.sectors.length} sectores controlados`:'Paso rural · Sin núcleo urbano'}</span>:mode==='resources'?<span>{def.asset} · {sectorIncome(s,def,isSupplied)} pesos/día · Total: {total} pesos/día</span>:<span>{marks(selected)}</span>}</div>
- {mode==='resources'&&<div className="atlas-table"><table><caption>Ingresos diarios actuales · pesos</caption><thead><tr><th>Localidad</th><th>Base</th><th>Aporte</th></tr></thead><tbody>{CAMPAIGN_SECTORS.map(d=><tr key={d.id}><td><button onClick={()=>onSelect(d.id)}>{MAP_PLACES[d.id as keyof typeof MAP_PLACES].label}</button></td><td>{d.income}</td><td>{sectorIncome(s,d,isSupplied)}</td></tr>)}</tbody></table><p>El aporte incluye ocupación, daños, bloqueo y abastecimiento. No incluye gastos.</p></div>}
+ {mode==='resources'&&<SectorIncomeTable state={s} onSelect={onSelect}/>}
  {mode==='militia'&&<p className="atlas-help">Seleccioná una localidad. Usá «Milicias» en las órdenes del sector para elegir instructor y entrenar defensores.</p>}
  {mode==='items'&&<div className="atlas-stock"><h3>Depósito de {MAP_PLACES[selected as keyof typeof MAP_PLACES].label}</h3>{Object.entries(s.depots?.[selected]??{}).filter(([,n])=>Number(n)>0).map(([id,n])=><p key={id}>{(RESOURCE_NAMES as Record<string,string>)[id]??id}: {Number(n)}</p>)}{!stockCount(s,selected)&&<p>Sin pertrechos almacenados.</p>}</div>}
  <MapManagement mode={mode} state={s} dispatch={dispatch}/>

@@ -17,10 +17,7 @@ export const MAP_PLACES = Object.freeze({
 // Equirectangular projection, with longitude scaled at 30 degrees south.
 export function project(lon,lat){return {x:36+(lon+72)*36.37,y:36+(-22-lat)*42};}
 export function sectorPosition(id){const p=MAP_PLACES[id];return p?project(p.lon,p.lat):null;}
-export function sectorIncome(state,def,isSupplied){
- const r=state.sectors[def.id];
- return r?.owner==='patriot'?Math.floor(def.income*(r.damageUntil>state.hour?0.25:1)*(def.theater==='coast'&&state.blockade?0.25:1)*(isSupplied(state,def.id)?1:0.5)):0;
-}
+export {sectorIncome} from './sector-income.js';
 export const MAP_MODES=Object.freeze([
  {id:'cities',label:'Ciudades'}, {id:'resources',label:'Recursos'},
  {id:'squads',label:'Escuadras'}, {id:'militia',label:'Milicias'},

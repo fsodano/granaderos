@@ -1,3 +1,4 @@
+import {totalSectorIncome} from './sector-income.js';
 import {queueSquadTravel,cancelSquadTravel,resumeSquadTravel,advanceSquadTravel,validateSquadTravel,readyAssaultSquads,arriveForAssault,validateAssaultDeployment} from './squad-travel.js';
 import {gainFatigue,needsCollapseRecovery} from './fatigue.js';
 import {advanceMarchFatigue,tooTiredToMarch} from './march-fatigue.js';
@@ -298,8 +299,9 @@ function tick(s,hours,options={}){
     if(deaths.length&&!s.recruited.some(id=>s.operativeState[id].alive))s.defeated=true;
     if(s.hour%24===0){
       dailyPolitics(s);
-      let income=0;
-      for(const def of CAMPAIGN_SECTORS){const region=s.sectors[def.id];if(region.owner==='patriot'){income+=Math.floor(def.income*(region.damageUntil>s.hour?0.25:1)*(def.theater==='coast'&&s.blockade?0.25:1)*(isSupplied(s,def.id)?1:0.5));if(isSupplied(s,def.id))region.loyalty=Math.min(100,region.loyalty+1);}}
+      const income=totalSectorIncome(s,isSupplied);
+      // Pay using the current loyalty, then improve next day's cooperation.
+      for(const def of CAMPAIGN_SECTORS){const region=s.sectors[def.id];if(region.owner==='patriot'&&isSupplied(s,def.id))region.loyalty=Math.min(100,region.loyalty+1);}
       add(s,{treasury:income,textiles:s.sectors.cordoba.owner==='patriot'?50:20,copper:1,horses:2,...materialYield(s,isSupplied)});
       note(s,`Las estancias y aduanas aportaron ${income} pesos a la tesorería.`);
     }
