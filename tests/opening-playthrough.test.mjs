@@ -88,7 +88,10 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   assert.equal(result.recovery.boughtDressings,12);assert.equal(result.recovery.cost,360);
   assert.ok(result.recovery.recoveredDressings>=0);assert.ok(result.recovery.donatedDressings>=0);preserveDeaths(rescued,result.campaign);
   for(const id of captiveIds)assert.equal(result.campaign.operativeState[id].energy,100);
-  assert.equal(result.campaign.blockade,true);assert.equal(result.campaign.sectors.buenos_aires.owner,'patriot');
+  const coast=result.campaign.enemyGroups.filter(group=>group.theater==='coast');assert.ok(coast.length>0,'the actual coastal threat remains in the campaign');
+  assert.equal(result.campaign.blockade,coast.some(group=>group.status==='stationed'));
+  for(const group of coast.filter(group=>group.status==='marching'))assert.ok(group.arrivalAt>result.campaign.hour,'a flotilla still in transit cannot impose its blockade early');
+  assert.equal(result.campaign.sectors.buenos_aires.owner,'patriot');
   recovered=result.campaign;
  });
  await t.test('two paid squads arrive together and capture Salta with actual losses',subtest=>{

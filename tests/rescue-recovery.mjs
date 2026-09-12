@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {decodeSave,encodeSave} from '../game/save.js';
+import {applyItemQuantity} from '../game/tactical-inventory.js';
 
 export function recoverRescueForce(start,{patients,report=()=>{}}={}){
  let campaign=decodeSave(encodeSave(start)).campaign;const events=[],startHour=campaign.hour;
@@ -18,8 +19,12 @@ export function recoverRescueForce(start,{patients,report=()=>{}}={}){
  const gather=(id,limit=1000000)=>{
   let taken=0;
   for(const row of model(id).entries.filter(r=>r.reachable&&JSON.parse(r.expected).item==='medkits')){
-   const count=Math.min(row.count,limit-taken);if(!count)break;
+   let count=Math.min(row.count,limit-taken);if(!count)break;
+   const stack=JSON.parse(row.expected),actor=model(id).personal;
+   while(count){try{applyItemQuantity(actor,{...stack,count});break;}catch(error){assert.match(error.message,/espacio en el inventario/);count--;}}
+   if(!count)continue;
    order({type:'sectorInventory',sector:'tucuman',operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count});taken+=count;
+   assert.equal(model(id).entries.find(entry=>entry.key===row.key)?.count??0,row.count-count);
   }
   return taken;
  };

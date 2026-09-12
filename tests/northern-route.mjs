@@ -181,7 +181,7 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
  for(const id of [141,127,119,103,104,111])order({type:'recruitCivic',id,term:'week'});
  assert.equal(cash-campaign.resources.treasury,553);
  for(const operativeId of [112,122])order({type:'purchaseMedicalSupplies',operativeId,quantity:12});
- const fieldIds=[139,141,127,119,103,104],supportIds=[...reserveIds,111];
+ const fieldIds=[141,127,119,103,104,139],supportIds=[111,...reserveIds];
  const model=id=>sectorInventoryModel(campaign,'cordoba',rosterFor(campaign),id);
  for(const id of [...fieldIds,...supportIds]){
   if(![1800,1801,1802].includes(rosterFor(campaign).find(op=>op.id===id).weapon)){
@@ -196,7 +196,7 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
  order({type:'createSquad',name:'Rescate del norte',ids:fieldIds});const field=campaign.activeSquadId;
  for(const operativeId of fieldIds)order({type:'assignCare',operativeId,assignment:'active'});
  campaign=finishReloadsBeforeMarch(campaign,{report});
- order({type:'attack',sector:'tucuman',queue:true});order({type:'selectSquad',id:support});order({type:'attack',sector:'tucuman',queue:true});
+ order({type:'selectSquad',id:support});order({type:'attack',sector:'tucuman',queue:true});order({type:'selectSquad',id:field});order({type:'attack',sector:'tucuman',queue:true});
  for(let i=0;i<24&&![field,support].every(id=>campaign.squads.find(q=>q.id===id).journey?.status==='ready');i++){assert.equal(campaign.pendingEncounter,null);order({type:'wait',hours:1});}
  order({type:'beginAssault',sector:'tucuman'});
  for(const {id,record} of captives)assert.deepEqual(campaign.operativeState[id],record);

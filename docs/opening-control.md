@@ -14,7 +14,7 @@ Northern preparation now takes the four carried dressings from the actual living
 
 Paid Córdoba care now explicitly returns the newly hired doctor to reserve after normal hiring fills a vacant squad slot. It heals the surviving patient with fourteen dressings and ends at hour 104. Four paid relief soldiers make an exposed advance into Tucumán's citadel court, kneel and hold fire, while using real first aid on nearby bleeding allies. This deliberately poor tactic tests defeat and captivity. Enemy actions kill 131, 121 and 126; 124 is captured alive at one HP. The result replays deterministically and preserves actual equipment and deaths.
 
-Rescue preparation hires and equips real reserves and brings two squads to Tucumán at hour 140. The current rescue strategy does not yet win: it reaches the turn limit with surviving opponents. The rescue, courier, paid recovery, Salta and Yatasto requirements remain unchanged and are not claimed complete. Dependent checks explain which earlier result is missing instead of reporting unrelated state errors.
+Rescue preparation hires and equips real reserves and brings two squads to Tucumán at hour 140. A veteran leads the support squad, field soldiers precede their medic, and normal preparation loads the veteran's recovered rifle. This force wins, releases 124 with his property and wound intact, and loses 122. A living courier buys twelve real dressings for 360 pesos; finite field supplies and paid care restore 124 by hour 173. Salta still needs a plan for the actual wounded, fallen doctor and equipment sources. Salta and Yatasto remain required and are not claimed complete. Dependent checks explain which earlier result is missing instead of reporting unrelated state errors.
 
 ## What failed and what changed
 
