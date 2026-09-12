@@ -1,5 +1,7 @@
 'use client';
 import AimCursor from './AimCursor';
+import JA2Conversation,{JA2Speech} from './JA2Conversation';
+import {hasAuthoredDialogue,dialogueReason,ambientReply} from '../../game/npc-dialogue.js';
 import {rightClickAim} from '../../game/aim-cursor.js';
 import {canChooseShotLocation} from '../../game/targeted-combat.js';
 import {tacticalGridLabel} from '../../game/tactical-grid.js';
@@ -44,6 +46,9 @@ export default function Battlefield({battle:s,onChange,onFinish,peacefulVisit=fa
   const [itemIntent,setItemIntent]=useState('use'),clickItemIntent=useRef('use');
   const [ambientPaused,setAmbientPaused]=useState(false);
   const [talkingSelection,setTalking]=useState<any>(null);
+  const [speech,setSpeech]=useState<any>(null);const replyCounts=useRef<Record<string,number>>({});
+  useEffect(()=>{if(!speech)return;const timer=setTimeout(()=>setSpeech(null),10000);return()=>clearTimeout(timer);},[speech]);
+  useEffect(()=>{setSpeech(null);setTalking(null);},[s.battleId,s.sectorId]);
   const talking=talkingSelection?(s.npcs??[]).find((n:any)=>n.id===talkingSelection.id)??null:null;
   useEffect(()=>{
     const modifier=(event:KeyboardEvent)=>{setMovementIntent(pointerMovementIntent(event));setItemIntent(pointerItemIntent(event));};
@@ -66,13 +71,14 @@ export default function Battlefield({battle:s,onChange,onFinish,peacefulVisit=fa
   const costs=u?actionCosts(s,u):null;const weapon=u?weaponFor(u):null;const firearm=u&&hasFirearm(u);const [cannonId,setCannonId]=useState('');const [shotType,setShotType]=useState('solid');const gun=s.artillery?.find((g:any)=>g.id===cannonId);const gunCosts=u&&gun?artilleryCosts(s,u,gun):null;
   const maxAim=aimOptions(s,u,{target:hover}).filter((option:any)=>!option.disabled).at(-1)?.level??0;
   useEffect(()=>setAim(value=>Math.min(value,maxAim)),[maxAim]);
+  useEffect(()=>{setTalking(null);setSpeech(null);},[selected]);
   useEffect(()=>{setAim(0);setHitLocation('torso');aimTarget.current='';},[selected]);
   useEffect(()=>setAim(0),[u?.activeSlot,u?.weapon,u?.x,u?.y,s.phase,s.turn]);
   useEffect(()=>{if(hover?.id&&!canChooseShotLocation(hover))setHitLocation('torso');},[hover?.id,hover?.stance,hover?.knockedDown,hover?.unconscious,hover?.hp,hover?.energy]);
   useEffect(()=>{if(mode==='fire'&&!firearm)setMode('move');},[mode,firearm]);
   const groupTarget=mode==='move'&&movementIntent!=='preserveFacing'&&isGroupGround(s,u,hover)?hover:null;
   const movementGroup=useMemo(()=>movementGroupModel(s,groupIds,selected,groupTarget),[s,groupIds,selected,groupTarget?.x,groupTarget?.y]);
-  const preview=movementGroup.request?null:targetPreview(s,u,hover,{mode,aim,hitLocation,reachable,movementIntent,itemIntent});
+  const preview=mode==='talk'||movementGroup.request?null:targetPreview(s,u,hover,{mode,aim,hitLocation,reachable,movementIntent,itemIntent});
   useEffect(()=>{
     if(s.mode!=='exploration'||s.status!=='active'||s.phase!=='player'||busy||talking||inventoryId||lootPoint||exitOpen||ambientPaused)return;
     const timer=setInterval(()=>{
@@ -85,6 +91,17 @@ export default function Battlefield({battle:s,onChange,onFinish,peacefulVisit=fa
     if(busy||!unitCanAct(s,u))return;
     const plan=lootSearchPreview(s,u,point),next=order({type:'approachLoot',x:point.x,y:point.y});
     if(next&&approachCompleted(s,next,selected,plan))setLootPoint({x:point.x,y:point.y});
+  }
+  function openTalk(target:any){
+    if(busy||!u)return;
+    const actual=(s.npcs??[]).find((n:any)=>n.id===target.id)??renderedUnits.find((n:any)=>n.id===target.id&&n.side==='enemy');
+    if(!actual||!canSee(s,u,actual))return;
+    setSpeech(null);clearGroup();setMode('move');
+    if(hasAuthoredDialogue(actual)){setTalking(actual);return;}
+    const reason=dialogueReason(s,u,actual,{visible:true,busy});
+    const count=replyCounts.current[actual.id]??0;
+    if(!reason)replyCounts.current[actual.id]=count+1;
+    setTalking(null);setSpeech({id:actual.id,name:reason?'Aviso':actual.name,text:reason??ambientReply(actual,count),x:actual.x,y:actual.y});
   }
   function openExit(){clearGroup();setExitUnitIds(u?[u.id]:[]);setExitOpen(true);}
   function leaveSector(){if(busy||!withdrawal.preview.available)return;clearGroup();setBandageReport(null);facingOverride.current=null;const next=actBattle(s,withdrawal.action);onChange(next);if(!next.lastError){setExitUnitIds(ids=>ids.filter(id=>!next.units.find((unit:any)=>unit.id===id)?.departure));if(next.status!=='active')setExitOpen(false);}}
@@ -134,7 +151,7 @@ export default function Battlefield({battle:s,onChange,onFinish,peacefulVisit=fa
     const shortcut=tacticalShortcut(e,{editing,nativeControl,dialog:talking!==null||Boolean(document.querySelector('[role="dialog"],dialog[open]'))});
     if(!shortcut)return;e.preventDefault();
     if(shortcut==='help'){setKeyHelp(v=>!v);return;}if(keyHelp)return;
-    if(shortcut==='cancel'){clearGroup();setExitOpen(false);setMode('move');return;}
+    if(shortcut==='cancel'){setSpeech(null);clearGroup();setExitOpen(false);setMode('move');return;}
     if(shortcut==='sight'){setShowSight(v=>!v);return;}
     if(shortcut==='zoom-in'||shortcut==='zoom-out'){setZoom(v=>Math.max(1,Math.min(3,v+(shortcut==='zoom-in'?1:-1))));return;}
     if(busy||s.status!=='active')return;
@@ -142,7 +159,7 @@ export default function Battlefield({battle:s,onChange,onFinish,peacefulVisit=fa
     if(shortcut.startsWith('select:')){clearGroup();const p=hiredPlayers[Number(shortcut.split(':')[1])];if(p&&unitCanAct(s,p))setSelected(p.id);return;}
     if(shortcut==='turn'){nextTurn();return;}if(shortcut==='map'){onMap?.();return;}
     if(!unitCanAct(s,u))return;
-    if(['move','loot','look'].includes(shortcut)){setMode(shortcut);return;}
+    if(['move','loot','look','talk'].includes(shortcut)){setMode(shortcut);return;}
     if(shortcut==='fire'){setMode(attackCursorMode(u));return;}
     if(shortcut==='melee'||shortcut==='heal'){const slot=shortcut==='heal'?'medical':'blade';if(u.activeSlot!==slot)order({type:'weapon',slot});setMode('move');return;}
     if(['run','walk','crouch','prone'].includes(shortcut)){order({type:'movement',movement:shortcut});return;}
@@ -183,6 +200,7 @@ export default function Battlefield({battle:s,onChange,onFinish,peacefulVisit=fa
     const itemAction=clickItemIntent.current;clickItemIntent.current='use';
     const occupants=renderedUnits.filter((p:any)=>p.x===t.x&&p.y===t.y&&!p.fled);
     const occupant=occupants.find((p:any)=>p.id===t.id)||occupants.find((p:any)=>p.hp>0)||occupants[0];
+    if(mode==='talk'){const target=occupant??(s.npcs??[]).find((n:any)=>n.x===t.x&&n.y===t.y);if(target)openTalk(target);return;}
     if(additive&&occupant?.side==='player'&&groupSelectionMode(s)){selectUnit(occupant.id,true);return;}
     if(mode==='look'){order({type:'look',x:t.x,y:t.y});return;}
     if(mode==='torch'){order({type:'throwTorch',x:t.x,y:t.y});return;}
@@ -228,9 +246,11 @@ export default function Battlefield({battle:s,onChange,onFinish,peacefulVisit=fa
     <JA2GroupMovePanel members={movementGroup.members} anchorId={movementGroup.anchorId} preview={movementGroup.preview} report={groupReport} busy={busy} onRemove={id=>{setGroupIds(ids=>ids.filter(member=>member!==id));setGroupReport(null);}} onClear={clearGroup}/>
     <div className="battle-middle"><div className="field-wrap"><div className="map-caption"><span>↑ NORTE</span><span>{targetingHelp(mode,u,{movementIntent,itemIntent})}{hover&&` · ${tacticalGridLabel(hover.x,hover.y)}`}</span><span className="map-zoom"><button aria-label="Desplazar cámara a la izquierda" onClick={()=>panCamera(-90,0)}>←</button><button aria-label="Desplazar cámara hacia arriba" onClick={()=>panCamera(0,-65)}>↑</button><button aria-label="Centrar cámara en el combatiente seleccionado" onClick={()=>{setCameraFollowsSelection(true);setCameraOffset({x:0,y:0});}}>◎</button><button aria-label="Desplazar cámara hacia abajo" onClick={()=>panCamera(0,65)}>↓</button><button aria-label="Desplazar cámara a la derecha" onClick={()=>panCamera(90,0)}>→</button><button aria-label="Alejar campo" disabled={zoom<=1} onClick={()=>setZoom(Math.max(1,zoom-1))}>−</button><span>{Math.round(zoom*100)}%</span><button aria-label="Acercar campo" disabled={zoom>=3} onClick={()=>setZoom(Math.min(3,zoom+1))}>+</button></span></div>
       <svg ref={fieldRef} onMouseMoveCapture={event=>{setCursorPoint(svgPoint(event));setMovementIntent(pointerMovementIntent(event));setItemIntent(pointerItemIntent(event));}} onClickCapture={event=>{additiveClick.current=event.shiftKey;clickMovementIntent.current=pointerMovementIntent(event);setMovementIntent(clickMovementIntent.current);clickItemIntent.current=pointerItemIntent(event);setItemIntent(clickItemIntent.current);}} onKeyDownCapture={event=>{if(['Enter',' '].includes(event.key)){if(event.shiftKey&&event.repeat){event.preventDefault();event.stopPropagation();return;}additiveClick.current=event.shiftKey;clickMovementIntent.current=pointerMovementIntent(event);setMovementIntent(clickMovementIntent.current);clickItemIntent.current=pointerItemIntent(event);setItemIntent(clickItemIntent.current);}}} onContextMenu={aimAtPointer} onMouseLeave={()=>setCursorPoint(null)} className={`tactical-field ${mode==='fire'&&cursorPoint&&!busy?'aiming':''}`} viewBox={`${cameraX} ${cameraY} ${viewWidth} ${viewHeight}`} role="group" aria-label="Campo táctico. Seleccioná un soldado y una casilla.">
-        <TacticalScene state={field} selected={selected} unit={u} players={players} units={renderedUnits} positions={motion.positions} poses={poses} directions={directions} hover={hover} mode={mode} aim={aim} hitLocation={hitLocation} reachable={reachable} showSight={showSight} sight={sight} revealed={revealedBuildingRooms} project={project} onTile={tileClick} onHover={hoverTarget} onTalk={setTalking} onCannon={(id)=>{setCannonId(id);setMode('artillery')}} cannonId={cannonId}/>
+        <TacticalScene state={field} selected={selected} unit={u} players={players} units={renderedUnits} positions={motion.positions} poses={poses} directions={directions} hover={hover} mode={mode} aim={aim} hitLocation={hitLocation} reachable={reachable} showSight={showSight} sight={sight} revealed={revealedBuildingRooms} project={project} onTile={tileClick} onHover={hoverTarget} onTalk={openTalk} onCannon={(id)=>{setCannonId(id);setMode('artillery')}} cannonId={cannonId}/>
         {mode==='fire'&&cursorPoint&&!busy&&unitCanAct(s,u)&&<AimCursor point={cursorPoint} aim={aim} preview={preview} target={hover} scale={1/zoom} bounds={{x:cameraX,y:cameraY,width:viewWidth,height:viewHeight}}/>}
       </svg>
+      {talking&&<JA2Conversation npc={talking} conversation={conversation} quest={quests?.[talking.id]} reason={!onTalk?'Esta conversación necesita una campaña activa.':dialogueReason(s,u,talking,{visible:Boolean(u&&canSee(s,u,talking)),busy})} canApproach={Boolean(!busy&&u&&unitCanAct(s,u)&&canSee(s,u,talking)&&(s.mode==='exploration'||s.sectorCleared)&&reachable.some((r:any)=>Math.abs(r.x-talking.x)+Math.abs(r.y-talking.y)===1))} onApproach={()=>{const target=reachable.filter((r:any)=>Math.abs(r.x-talking.x)+Math.abs(r.y-talking.y)===1).sort((a:any,b:any)=>(a.cost??0)-(b.cost??0))[0];if(target)order({type:'move',x:target.x,y:target.y});}} onTalk={approach=>onTalk?.(talking.id,approach,selected)} onClose={()=>setTalking(null)}/>}
+      {speech&&<JA2Speech name={speech.name} text={speech.text} position={{left:Math.max(15,Math.min(85,(project(speech.x,speech.y).x-cameraX)/viewWidth*100)),top:Math.max(38,Math.min(85,(project(speech.x,speech.y).y-cameraY-42)/viewHeight*100))}} onClose={()=>setSpeech(null)}/>}
       {preview&&<aside className={`ja2-target-preview ${preview.valid?'':'unavailable'}`} aria-label="Vista previa de la orden"><strong>{preview.name}</strong><span>{preview.chance!==undefined?`${preview.hitLocation||preview.attackLabel||'Ataque'} · ${preview.chance}% de ${preview.chanceLabel||'impacto'} · `:preview.actionLabel?`${preview.actionLabel} · `:''}{preview.pa!==undefined?`${preview.pa} PA · ${preview.remaining} PA restantes`:''}</span>{preview.coverNote&&<span>{preview.coverNote}</span>}{preview.reason&&<span>{preview.reason}</span>}</aside>}
       {s.lastError&&<p className="battle-error" role="alert">{s.lastError}</p>}{s.status!=='active'&&<div className="battle-result"><p className="eyebrow">PARTE DE GUERRA</p><h2>{s.status==='victory'?'¡Victoria patriota!':s.status==='retreat'?'Retirada completada':'La escuadra ha caído'}</h2><p>{s.status==='victory'?'El enemigo abandona el campo. La patria avanza.':s.status==='retreat'?'La salida quedó registrada. Los combatientes conservan sus heridas y su equipo.':'Reorganizá las tropas y prepará una nueva ofensiva.'}</p><>{s.status==='victory'&&<button className="line-button" onClick={()=>onChange(actBattle(s,{type:'explore'}))}>Explorar el sector y recoger equipo</button>}<button className="gold-button" onClick={onFinish}>Volver a la campaña <ChevronRight size={16}/></button></></div>}
     </div>
@@ -284,7 +304,7 @@ export default function Battlefield({battle:s,onChange,onFinish,peacefulVisit=fa
       onHitLocationChange={setHitLocation}
     />
     {bandageReport?.untreated.length>0&&!inventoryId&&<aside className="battle-error" role="status"><span>{bandageReport.stoppedReason} {bandageReport.untreated.length} heridos pendientes.</span><button className="line-button" onClick={()=>setBandageReport(null)}>Cerrar aviso</button></aside>}
-    {talking&&<section className="notice" aria-label="Conversación"><div><h3>{talking.name} · {tacticalGridLabel(talking.x,talking.y)}</h3>{u&&Math.abs(u.x-talking.x)+Math.abs(u.y-talking.y)>1&&<button className="line-button" disabled={busy} onClick={()=>{const target=reachable.filter((r:any)=>Math.abs(r.x-talking.x)+Math.abs(r.y-talking.y)===1).sort((a:any,b:any)=>(a.cost??0)-(b.cost??0))[0];if(target)order({type:'move',x:target.x,y:target.y});}}>Acercarse para conversar</button>}<p>{conversation?.npcId===talking.id?conversation.text:'Acercá al combatiente seleccionado a una casilla contigua para conversar.'}</p>{[...(talking.mission?[['mission','Conversar sobre la misión']]:[['friendly','Saludar'],['direct','Preguntar por sus condiciones']]),...(quests?.[talking.id]&&quests[talking.id].status!=='completed'?[['quest',quests[talking.id].status==='offered'?'Entregar pertrechos':'Consultar encargo']]:[]),...(talking.operativeId!==undefined?[['recruit','Proponer incorporación']]:[])].map(([approach,label])=><button className="line-button" key={approach} disabled={busy||!onTalk||!u||Math.abs(u.x-talking.x)+Math.abs(u.y-talking.y)>1} onClick={()=>onTalk?.(talking.id,approach,selected)}>{label}</button>)}<button className="line-button" onClick={()=>setTalking(null)}>Cerrar conversación</button></div></section>}
+
     {missionAllies.length>0&&<details className="local-garrison" aria-label="Aliados de la misión"><summary>Oficiales aliados · {missionAllies.length} temporales</summary><div className="squad-strip">{missionAllies.map((p:any)=><button key={p.id} className={`squad-card ${p.id===selected?'active':''} ${!isAlive(p)?'fallen':''}`} onClick={event=>selectUnit(p.id,event.shiftKey)} disabled={!unitCanAct(s,p)} aria-label={`Seleccionar aliado ${p.name}`}><div><strong>{p.name}</strong><span>{isAlive(p)?`${Math.ceil(p.hp)} SALUD · ${p.ap} PA`:'Fuera de combate'}</span></div></button>)}</div><small>Estos aliados participan en esta misión; no ocupan un contrato ni una plaza permanente en tu escuadra.</small></details>}
     {localMilitia.length>0&&<details className="local-garrison"><summary>Guarnición local · {localMilitia.length} milicianos</summary><p>La milicia combate por su cuenta después del enemigo y responde a las interrupciones con sus PA restantes. Podés darle equipo y vendar a sus heridos.</p><div className="squad-strip">{localMilitia.map((p:any,index:number)=><div aria-label={`Miliciano ${index+1}: ${p.name}`} key={p.id} className={`squad-card ${!isAlive(p)?'fallen':''}`}><div><strong>{index+1}. {p.name}</strong><span>{p.unconscious?'Inconsciente':!isAlive(p)?'Fuera de combate':`${Math.ceil(p.hp)} SALUD · ${p.ap} PA`}</span></div></div>)}</div></details>}
 

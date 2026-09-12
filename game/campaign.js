@@ -1,3 +1,4 @@
+import {hasAuthoredDialogue,dialogueOptions,dialogueReason,ambientReply} from './npc-dialogue.js';
 import {validatePocketOrder} from './inventory-pockets.js';
 import {prepareSectorArtillery,validateArtilleryDeployment,validateArtilleryReport,settleSectorArtillery,ownedArtilleryCount,supplyStationedArtillery} from './campaign-artillery.js';
 import {recordLogisticsNotice,validateLogisticsNotice} from './logistics-attention.js';
@@ -24,7 +25,7 @@ import {validateTraining,TRAINABLE_SKILLS} from './skill-training.js';
 import {militiaCourse,militiaAssignment,MILITIA_COHORT,MILITIA_LIMIT,militiaEligibility} from './militia.js';
 export {militiaCourse,militiaAssignment} from './militia.js';
 import {initialHorseState,migrateHorseState,applyHorseAction,mountForOperative} from './horses.js';
-import {fieldCapable} from './tactical.js';
+import {fieldCapable,canSee} from './tactical.js';
 import {prepareDeploymentExits,planDeploymentReturn,recordStrategicArrival,migrateDeploymentReturns,validateDeploymentReturnState} from './deployment-return.js';
 import {validateSectorExits} from './tactical-exits.js';
 import {CARE_ASSIGNMENTS,MEDICAL_KIT_PRICE,migrateMedicalCare,assignMedicalCare,advanceMedicalCare,returnMedicalCare,validateMedicalCare} from './medical-care.js';
@@ -509,7 +510,10 @@ export function dispatchCampaign(previous,action){
         requireThat(s.pendingBattle,'Primero entrá al sector.');const snapshot=validateSectorSnapshot(action.sectorState),npc=(s.pendingBattle.sceneId==='yatasto'?YATASTO_NPCS:ENCOUNTERS).find(n=>n.id===action.npcId&&n.sector===s.pendingBattle.sector),id=Number(action.unitId),actor=rosterFor(s).find(o=>o.id===id),unit=snapshot.units.find(u=>u.side==='player'&&Number(u.id)===id),local=snapshot.npcs?.find(n=>n.id===action.npcId);
         requireThat(npc&&actor&&unit&&local&&s.squad.includes(id)&&unit.hp>0&&!unit.departure,'El interlocutor no está disponible en este sector.');requireThat(snapshot.mode==='exploration'||snapshot.status==='victory'||snapshot.sectorCleared,'Terminá el combate antes de conversar.');requireThat(Number.isInteger(local.x)&&Number.isInteger(local.y)&&Math.abs(unit.x-local.x)+Math.abs(unit.y-local.y)<=1,'Acercá al combatiente al interlocutor para hablar.');
         requireThat(['friendly','direct','recruit','quest','mission'].includes(action.approach),'La forma de dirigirse al interlocutor es inválida.');
-        const quest=questForNPC(s,npc.id);let text=npc.greeting+(quest&&quest.status!=='completed'?` ${quest.offer}`:''),outcome='conversation';
+        const unavailable=dialogueReason(snapshot,unit,{...npc,...local},{visible:canSee(snapshot,unit,local)});requireThat(!unavailable,unavailable);
+        const quest=questForNPC(s,npc.id),authored=hasAuthoredDialogue(npc);
+        requireThat(authored?dialogueOptions(npc,quest).some(([id])=>id===action.approach):action.approach==='friendly','Este interlocutor no ofrece esa conversación.');
+        let text=(authored?npc.greeting:ambientReply(npc,s.conversations?.[npc.id]?1:0))+(quest&&quest.status!=='completed'?` ${quest.offer}`:''),outcome='conversation';
         if(action.approach==='direct')text=npc.operativeId!==undefined?`Para incorporarme necesito un mando con ${npc.requiredLeadership} de liderazgo, ${npc.requiredLiberated} localidades seguras y que se cumplan mis compromisos regionales.`:npc.greeting;
         if(action.approach==='mission'){requireThat(s.pendingBattle.sceneId==='yatasto','No hay una conferencia pendiente.');text=talkMission(s,npc.id,isSupplied(s,'salta'));outcome='mission';}
         if(action.approach==='quest'){
@@ -521,7 +525,7 @@ export function dispatchCampaign(previous,action){
           requireThat(npc.operativeId!==undefined,'Este habitante no es un recluta.');requireThat(!s.recruited.includes(npc.operativeId),'Este combatiente ya se incorporó.');const reason=encounterRequirements(s,npc,actor);requireThat(!reason,reason);
           const gate=npc.operativeId>=100?civicStatus(s,npc.operativeId,true):recruitmentStatus(s,npc.operativeId,true);requireThat(gate.available,gate.reason);const op=rosterFor(s).find(o=>o.id===npc.operativeId);signContract(s,op,action.term);s.recruited.push(op.id);s.operativeState[op.id].location=s.location;if(s.squad.length<6){s.squad.push(op.id);s.pendingBattle.squad.push({...clone(op),...clone(s.operativeState[op.id]),...deploymentMorale(s,op.id),loaded:0,ammo:0});}text=`Acepto servir junto a ustedes. ${op.name} se incorpora a la fuerza patriota.`;outcome='recruited';note(s,text);
         }
-        s.conversations??={};s.conversations[npc.id]={met:true,lastApproach:action.approach,hour:s.hour};s.lastConversation={npcId:npc.id,speaker:npc.name,text,outcome,operativeId:npc.operativeId??null,options:[...(npc.operativeId!==undefined&&!s.recruited.includes(npc.operativeId)?['friendly','direct','recruit']:['friendly','direct']),...(s.pendingBattle.sceneId==='yatasto'?['mission']:[]),...(questForNPC(s,npc.id)&&questForNPC(s,npc.id).status!=='completed'?['quest']:[])]};break;
+        s.conversations??={};s.conversations[npc.id]={met:true,lastApproach:action.approach,hour:s.hour};s.lastConversation={npcId:npc.id,speaker:npc.name,text,outcome,operativeId:npc.operativeId??null,options:dialogueOptions(npc,questForNPC(s,npc.id)).map(([id])=>id).filter(id=>id!=='recruit'||!s.recruited.includes(npc.operativeId))};break;
       }
       case 'visitMission':{
         requireThat(action.mission==='yatasto','La escena solicitada no existe.');requireThat(s.location==='tucuman'&&s.phase>=2,'Viajá a Tucumán después de San Lorenzo para acudir a Yatasto.');requireThat(!s.missions.yatasto?.completed,'La conferencia de Yatasto ya concluyó.');

@@ -173,6 +173,7 @@ export function interruptHover(state, selectedId) {
 }
 
 export function targetingHelp(mode, unit, ctx = {}) {
+  if(mode==='talk')return 'Hablar: seleccioná una persona visible y contigua. Esc vuelve al cursor de movimiento.';
   if ((ctx.itemIntent==='steal'&&['move','useItem'].includes(mode))||mode==='loot'&&unit?.activeSlot==='unarmed') return 'Manos libres: seleccioná un enemigo contiguo para quitarle el arma. Requiere 28 PA como mínimo y consume todos los restantes. Los cuerpos se registran.';
   if (unit?.activeSlot==='unarmed'&&['move','useItem'].includes(mode)) return 'Seleccioná un enemigo para acercarte y golpear. Ctrl+clic o Recoger equipo: intentar quitar el arma a un enemigo contiguo.';
   if (mode === 'fire') return 'Disparo deliberado: seleccioná un enemigo o una casilla. Una casilla no confirma un objetivo; el tiro puede herir aliados. G o Esc vuelve al uso contextual.';

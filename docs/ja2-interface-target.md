@@ -1,6 +1,6 @@
 # User interface and equipment target
 
-These are user acceptance requirements added on 2026-09-12. They are pending work, not a list of implemented features. Keep them alongside the broader JA2 parity audit.
+These are user acceptance requirements added on 2026-09-12. They define the target, not a list of completed features. Physical pockets and the two dialogue presentation styles are implemented; see inventory-pockets.md and npc-dialogue.md for their verified scope. Keep them alongside the broader JA2 parity audit.
 
 ## Shared equipment layout
 
