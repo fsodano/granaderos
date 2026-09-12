@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {dispatchCampaign,isSupplied} from '../game/campaign.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {enterSector} from '../game/world.js';
@@ -6,7 +7,7 @@ import {attendYatasto} from './mission-helpers.mjs';
 
 function orders(start){
  let campaign=decodeSave(encodeSave(start)).campaign;const events=[];
- return {get campaign(){return campaign;},events,order(action){
+ return {get campaign(){return campaign;},events,prepareWeapons(report){campaign=finishReloadsBeforeMarch(campaign,{report});},order(action){
   const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);
   campaign=next;events.push({action,hour:campaign.hour,second:campaign.secondOfHour??0});
  }};
@@ -25,9 +26,9 @@ export function prepareSaltaAssault(start,{report=()=>{}}={}){
  // Preserve the chosen ordering of the real contract transactions and squads.
  renew(route,[...field,...support],13);
  order({type:'squad',ids:field});const fieldSquad=route.campaign.activeSquadId;
- for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'active'});
+ for(const operativeId of field)order({type:'assignCare',operativeId,assignment:'active'});route.prepareWeapons(report);
  order({type:'createSquad',name:'Apoyo del norte',ids:support});const supportSquad=route.campaign.activeSquadId;
- for(const operativeId of support)order({type:'assignCare',operativeId,assignment:'active'});
+ for(const operativeId of support)order({type:'assignCare',operativeId,assignment:'active'});route.prepareWeapons(report);
  order({type:'attack',sector:'salta',queue:true});order({type:'selectSquad',id:fieldSquad});order({type:'attack',sector:'salta',queue:true});
  const deploying=[fieldSquad,supportSquad];
  for(let i=0;i<24&&!deploying.every(id=>route.campaign.squads.find(s=>s.id===id)?.journey?.status==='ready');i++){

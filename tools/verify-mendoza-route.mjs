@@ -25,7 +25,7 @@ for(const id of [136,134])assert.equal(liberated.campaign.operativeState[id].ali
 const prisoner=retreat.campaign.operativeState[122],released=liberated.campaign.operativeState[122];assert.equal(released.captured,false);assert.equal(released.hp,prisoner.hp);assert.equal(released.bleeding,prisoner.bleeding);assert.deepEqual(released.inventory,prisoner.inventory);
 assert.equal(liberated.campaign.contracts[122].expiresAt,liberated.campaign.hour+prisoner.capturedContract.expiresAt-prisoner.capturedAt);
 const foundry=openMendozaFoundry(liberated.campaign);checkpoint('foundry',foundry.campaign);
-assert.equal(foundry.campaign.hour,313);assert.equal(foundry.campaign.secondOfHour,723);assert.equal(foundry.campaign.resources.treasury,573);
+assert.equal(foundry.campaign.hour,313);assert.equal((foundry.campaign.hour-initial.hour)*3600+foundry.campaign.secondOfHour-initial.secondOfHour,39*3600+227);assert.equal(foundry.campaign.resources.treasury,573);
 for(const [id,r] of Object.entries(retreat.campaign.operativeState))if(!r.alive)assert.equal(foundry.campaign.operativeState[id].alive,false);
 const summary={input,checkpoints,preparation:prepared.events,retreat:retreat.summary,reliefPreparation:relief.events,liberation:liberated.summary,foundryOrders:foundry.events,final:{hour:foundry.campaign.hour,second:foundry.campaign.secondOfHour,phase:foundry.campaign.phase,treasury:foundry.campaign.resources.treasury},scope:'Actual Mendoza retreat, capture, relief victory, and local foundry recruitment. Phase 3 remains active; production, mountain passes, lost territory and the ending are still unverified.'};
 writeFileSync(join(directory,'report.json'),JSON.stringify(summary,null,2));report({event:'verified',directory,...summary.final});

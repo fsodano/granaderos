@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {decodeSave,encodeSave} from '../game/save.js';
@@ -50,7 +51,7 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
 }
 
 export function fightNorthernSector(start,sector,{report=()=>{},expectedOutcome='victory',controller}={}){
- const before=structuredClone(start),campaign=start.pendingBattle?structuredClone(start):dispatchCampaign(start,{type:'attack',sector});assert.equal(campaign.lastError,null,campaign.lastError);
+ const before=structuredClone(start),campaign=start.pendingBattle?structuredClone(start):dispatchCampaign(finishReloadsBeforeMarch(start,{report}),{type:'attack',sector});assert.equal(campaign.lastError,null,campaign.lastError);
  assert.deepEqual(start,before);assert.ok(campaign.pendingBattle,'the real march produces a tactical deployment');
  const request=campaign.pendingBattle;assert.equal(request.sector,sector);
  report({event:'battleStarted',sector,hour:campaign.hour,units:request.squad.map(u=>u.id)});

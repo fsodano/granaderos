@@ -17,9 +17,9 @@ Every battle uses the ordinary tactical reducer and repeats with an identical re
 
 The opening leaves eight permanent operative deaths, a nine-HP field medic, and three earlier survivors in reserve. The continuation hires doctor 112 for a prepaid week and collects twelve discovered, reachable dressings from the actual San Nicolás equipment pool. The source loses exactly twelve dressings, and treatment consumes all twelve. Patients 110 and 116 recover to full health over twelve hours. Six further hours of rest restore the doctor's energy. Morale remains low: 17.4 and 3 for the two patients.
 
-At hour 78, the route buys day contracts for operatives 128, 142 and 105. The six-person field squad is 1000, 115, 112, 128, 142 and 105. The recovered patients stay behind. The real twelve-hour march reaches Córdoba at hour 90, second 263.
+At hour 78, the route buys day contracts for operatives 128, 142 and 105. The six-person field squad is 1000, 115, 112, 128, 142 and 105. The recovered patients stay behind. The real twelve-hour march reaches Córdoba at hour 90, second 267.
 
-Córdoba falls at hour 90, second 311. All six field operatives survive, but doctor 112 has only 13 HP. Treasury is 1,992 pesos after ordinary costs, income and rewards. The three day contracts expire at hour 102. The continuation resolves these constraints through actual care and contract actions; the verifier does not restore health, morale, supplies or contracts by direct state changes. All eight opening deaths remain permanent.
+Córdoba falls at hour 90, second 315. All six field operatives survive, but doctor 112 has only 13 HP. Treasury is 1,992 pesos after ordinary costs, income and rewards. The three day contracts expire at hour 102. The continuation resolves these constraints through actual care and contract actions; the verifier does not restore health, morale, supplies or contracts by direct state changes. All eight opening deaths remain permanent.
 
 ## Córdoba recovery and the first Tucumán attack
 
@@ -27,7 +27,7 @@ Doctor 122 is hired for a prepaid week in Córdoba. Seven dressings are purchase
 
 At hour 100, the reference renews contracts 128, 142 and 105 using the current expiration as a stale-order guard and pays the actual quotes. Each contract now runs to hour 124, covering the march and battle. The original health, supplies, treasury and contract records are never overwritten to prepare the test.
 
-The squad reaches Tucumán at hour 117, second 311. Its current urban control strategy loses at hour 117, second 341: officer 1000 and operative 128 die; 115, 112, 142 and 105 are captured with 12, 4, 2 and 14 HP respectively. This loss is replayed exactly. The campaign accepts the actual defeat report, removes the captives from active service and squads, and holds their contracts and ammunition in captivity. Córdoba remains patriot, the field squad is empty, and the reserve remains available. The campaign is still in phase 2.
+The squad reaches Tucumán at hour 117, second 318. Its current urban control strategy loses at hour 117, second 348: officer 1000 and operative 128 die; 115, 112, 142 and 105 are captured with 12, 4, 2 and 14 HP respectively. This loss is replayed exactly. The campaign accepts the actual defeat report, removes the captives from active service and squads, and holds their contracts and ammunition in captivity. Córdoba remains patriot, the field squad is empty, and the reserve remains available. The campaign is still in phase 2.
 
 A diagnostic order trace showed the force approaching the urban center, making contact at short range and entering close combat. No combat rules, enemy health, source seed or driver decisions were changed to produce a passing victory. This is evidence of one losing strategy, not proof that Tucumán is unwinnable or balanced.
 
@@ -35,7 +35,7 @@ A diagnostic order trace showed the force approaching the urban center, making c
 
 The reference selects the existing reserve squad in San Nicolás. Operative 110 marches to Córdoba, arriving at hour 129. Doctor 122 is still there. Four new volunteers, 106, 145, 109 and 147, receive paid day contracts; these six operatives form the rescue force. Captive health, equipment and contract records remain unchanged throughout this preparation.
 
-The rescue force reaches Tucumán at hour 141. The battle loads the saved, uncleared sector and its surviving garrison rather than replacing it with a fresh enemy force. Four turns and 86 real orders produce victory at hour 141, second 365. All six rescuers survive. The four captives are released with their existing wounds and equipment; their frozen ammunition balance is released once. Their contracts resume with the hours remaining at capture: expiration is 192 for 115, 252 for 112, and 148 for 142 and 105. The ten operative deaths accumulated on the route remain permanent.
+The rescue force reaches Tucumán at hour 141. The battle loads the saved, uncleared sector and its surviving garrison rather than replacing it with a fresh enemy force. Four turns and 86 real orders produce victory at hour 141, second 372. All six rescuers survive. The four captives are released with their existing wounds and equipment; their frozen ammunition balance is released once. Their contracts resume with the hours remaining at capture: expiration is 192 for 115, 252 for 112, and 148 for 142 and 105. The ten operative deaths accumulated on the route remain permanent.
 
 Three freed soldiers are still bleeding. The reference immediately assigns all four freed soldiers as patients and assigns healthy soldiers 106, 109 and 145 as doctors. One real hour of care consumes exactly three carried dressings and stops all three hemorrhages. At hour 142, the freed patients remain at 12, 4, 2 and 14 HP. Stopping bleeding does not restore their missing health. Supplies, recovery and another renewal are still required before a further advance.
 
@@ -55,9 +55,9 @@ The test controller uses the game's existing shot, cover and medical evaluation 
 
 The assault wins in seven turns and 128 orders, with an identical replay. Operatives 110, 106, 145, 147 and 112 die. There are now fifteen permanent operative deaths. Earlier trials with the original controller lost with both six and ten soldiers; those trials are not applied to this continuing campaign. The successful route proves one legal outcome, not general balance or a low-casualty strategy.
 
-At hour 202, second 407, doctor 122 has one dressing left and operative 142 is bleeding. One hour of treatment consumes that dressing and stops the bleeding without restoring missing HP. The northern pact then consumes twenty muskets, ten horses and ten powder. Actual contract renewals cover the next journey. Doctor 122 returns to Tucumán while the other four survivors remain in Salta with their wounds.
+At hour 202, second 417, doctor 122 has one dressing left and operative 142 is bleeding. One hour of treatment consumes that dressing and stops the bleeding without restoring missing HP. The northern pact then consumes twenty muskets, ten horses and ten powder. Actual contract renewals cover the next journey. Doctor 122 returns to Tucumán while the other four survivors remain in Salta with their wounds.
 
-The doctor enters the Yatasto scene, walks to Belgrano and San Martín, completes the three required conversations, and leaves through the ordinary mission report. At hour 215, second 496, Yatasto is complete, Salta is supplied, and the campaign advances to phase 3. Treasury is 2,007 pesos. The four survivors in Salta retain their actual wounds; none is bleeding, and no dead operative returns. This is the next starting point for Cuyo, defense and ending verification.
+The doctor enters the Yatasto scene, walks to Belgrano and San Martín, completes the three required conversations, and leaves through the ordinary mission report. At hour 215, second 506, Yatasto is complete, Salta is supplied, and the campaign advances to phase 3. Treasury is 2,007 pesos. The four survivors in Salta retain their actual wounds; none is bleeding, and no dead operative returns. This is the next starting point for Cuyo, defense and ending verification.
 
 ## Reproduce and inspect
 
@@ -69,11 +69,11 @@ node tools/verify-northern-route.mjs --output /tmp/granaderos-northern-route-che
 
 The tool starts a fresh campaign and writes twelve validated saves: `opening.save.json`, `prepared.save.json`, `cordoba.save.json`, `tucuman-prepared.save.json`, `tucuman-defeat.save.json`, `rescue-prepared.save.json`, `tucuman-rescued.save.json`, `rescued-stable.save.json`, `rescued-recovered.save.json`, `salta-deployment.save.json`, `salta.save.json`, and `yatasto.save.json`, plus `report.json`. Each save is read back and validated against the actual campaign and, for the pending Salta deployment, tactical state. The report records recovery orders, timing, battle results and remaining personnel. Without `--output`, the tool creates a new temporary directory. It does not access browser storage or change the player's campaign.
 
-The complete isolated suite passed **1,322/1,322 tests**. A separate fresh command-line run completed all six actual battles and their deterministic replays, completed Yatasto, and wrote and reloaded all twelve saves. Whitespace checks passed. This checkpoint changes verification tools and documentation only; runtime code is unchanged.
+The reload-continuation update passed **1,345/1,345 tests** in the complete isolated suite. A separate fresh command-line run completed all six actual battles and their deterministic replays, completed Yatasto, and wrote and reloaded all twelve saves. Whitespace checks passed. The current replay includes the [reload-work return fix](campaign-reload-work.md). Three actual reload continuations before marches add ten seconds; battle outcomes and turn/order counts remain unchanged.
 
 ## Remaining evidence gaps
 
-Cuyo progression, defenses and the ending remain unverified through this real-outcome route. Sector-recapture rescue now has real campaign evidence; a dedicated prison escape scene remains absent. Older late-campaign tests that inject victory reports do not supply that evidence.
+This verifier stops at Yatasto. Later [Cuyo recovery](remote-squad-formation.md) and [Mendoza retreat and rescue](mendoza-route.md) checks extend the real-outcome route. The ending remains unverified. Sector-recapture rescue now has real campaign evidence; a dedicated prison escape scene remains absent. Older late-campaign tests that inject victory reports do not supply that evidence.
 
 The earlier Córdoba checkpoint exposed an equipment access gap. San Lorenzo has a saved mission snapshot and discovered equipment, but no campaign sector of its own. The strategic inventory requires a controlled campaign sector and rejects that mission snapshot; selecting San Nicolás shows only its separate equipment pool. The opening leaves 29 known rows at San Lorenzo, including two dressings, without a strategic pickup path. That checkpoint recorded the gap without claiming to fix it.
 

@@ -10,7 +10,7 @@ An explicitly map-equipped firearm records its actual load, including zero. Visi
 
 `carriedAmmo` includes the gun's `carriedLoaded` cartridges. A prepared gun's load remains with its owner after tactical return; only its reserve rounds return to shared stock. The shared return ceiling includes retained charges, so the same cartridge cannot be both retained and credited. Capture puts the prepared load and reload work in custody. Rescue restores the held load and returns the captive reserve exactly once. Swaps into the armory, sale, buyback, and re-equipping preserve the exact stored load and work.
 
-Existing automatically issued weapons without an explicit prepared-load record keep their previous deployment/return behavior. This change does not convert the whole army to persistent personal ammunition or claim that all legacy tactical reload work survives a campaign return. That broader ammunition-policy change requires separate campaign balance and route verification.
+Unfinished reload work now also survives the return of ordinary issued guns. Once a gun has unfinished work, its actual load and work use the same persistent record as a map-equipped gun. Already completed ordinary issue/return loading still uses the existing campaign supply policy; this does not convert all soldiers to persistent personal ammunition. See [campaign reload work](campaign-reload-work.md) for the paid continuation and current route evidence.
 
 Map transfers retire equipment identities from returned living soldiers' snapshots before placing that equipment on the ground. That snapshot is a historical receipt; the current campaign soldier is the owner. The receipt's health, ammunition totals, and return ledger remain intact. Dead bodies remain finite field owners.
 

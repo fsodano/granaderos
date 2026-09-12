@@ -22,7 +22,7 @@ The four Salta survivors queue their return to Córdoba. Petrona forms a squad i
 
 The workshop sells twenty dressings to Isabel and two to Petrona, costing 660 pesos and reducing its actual finite stock. Petrona had no dressings left before this purchase. Petrona and Nicolás drop their two and six dressings locally, and Isabel collects them. Normal care consumes all twenty-eight dressings to heal the three wounded patients; six further hours of rest follow. Including the initial Salta treatment, twenty-nine dressings are consumed: seven recovered and twenty-two purchased.
 
-At hour 274, second 496, all six survivors are in Córdoba with full health and no bleeding. Five have 100 energy; Isabel has 88 and still needs further rest for full energy. Treasury is 1,557 pesos. All fifteen prior operative deaths remain permanent. No Cuyo battle or ending has been verified by this extension.
+At hour 274, second 506, all six survivors are in Córdoba with full health and no bleeding. Five have 100 energy; Isabel has 88 and still needs further rest for full energy. Treasury is 1,557 pesos. All fifteen prior operative deaths remain permanent. This recovery extension stops before the Cuyo battle. The following [Mendoza verification](mendoza-route.md) covers the retreat, rescue and foundry; the ending remains unverified. The [reload-work update](campaign-reload-work.md) adds ten seconds before this checkpoint and preserves these health and treasury results.
 
 Reproduce with the Yatasto save from the [northern route verifier](northern-route.md):
 
