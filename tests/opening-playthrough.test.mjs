@@ -51,6 +51,9 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   assert.ok(cordoba);const before=structuredClone(cordoba),prepared=prepareTucumanSquad(cordoba);
   assert.deepEqual(cordoba,before);assert.equal(prepared.recovery.startHour,cordoba.hour);assert.ok(prepared.recovery.endHour>cordoba.hour);
   for(const id of prepared.recovery.patients)assert.equal(prepared.campaign.operativeState[id].hp,prepared.campaign.operativeState[id].maxHp);
+  assert.equal(prepared.recovery.boughtDressings,prepared.events.filter(event=>event.action.type==='purchaseMedicalSupplies').reduce((sum,event)=>sum+event.action.quantity,0));
+  assert.ok(prepared.recovery.usedDressings>0);
+  for(const id of prepared.recovery.replacements){assert.equal(before.operativeState[id].alive,true);assert.ok(!before.recruited.includes(id));assert.ok(prepared.campaign.contracts[id]);}
   const result=fightNorthernSector(prepared.campaign,'tucuman',{expectedOutcome:'defeat',controller:advanceOnCitadelOrder}),returned=result.campaign;
   assertBattleClock(result);
   assert.equal(returned.hour,prepared.campaign.hour+12);preserveDeaths(cordoba,returned);
