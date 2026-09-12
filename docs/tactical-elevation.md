@@ -1,9 +1,15 @@
 # Tactical elevation
 
-The elevation branch adds a first playable terrace model. Production sector maps
-still need authored surfaces and access points. Decorative roofs alone do not
-activate this feature. This is partial JA2 parity, not complete support for all
-terrain heights or building floors.
+Fresh campaign maps now include accessible terraces on 36 existing single-storey
+houses in nine sectors. The full-size maps contain 1,085 upper cells, of which
+688 are walkable, joined to the ground by 71 access links. Existing saved maps keep
+their stored topology. This remains partial JA2 parity: tall roofs, arbitrary
+terrain heights and multi-storey interiors need further work.
+
+Eligible sectors are Buenos Aires, Ensenada, San Nicolás, Santa Fe, Córdoba,
+Mendoza, Tucumán, Salta and Jujuy. Retiro, the mountain passes, San Lorenzo and
+Yatasto retain their existing pitched roofs. Mansions keep their tall roof art;
+they do not receive an artificial 3 m playable floor.
 
 ## Physical space
 
@@ -75,23 +81,59 @@ Live checks confirmed:
   a five-cell roof crossing and the north descent. Dorrego returned to ground with
   73 energy after the complete exploration route; its journal reported no AP cost.
 
-The final integrated source passed 1,780 tests, typecheck and the production build
-(960 exported files, 856 verified asset references). See the separate
+The elevation foundation at `fc04e4d`, before campaign activation, passed 1,780
+tests, typecheck and the production build (960 exported files, 856 verified asset
+references). See the separate
 [performance measurements](tactical-elevation-performance.md) for route and sight
 query timing and its browser limitations.
 
-## Remaining work
+## Campaign activation
 
-Production maps still need authored roof surfaces, legal access points and blocked
-roof decor, passed through the normal sector-plan construction path. A legal
-campaign visit/attack, climb, save/resume, return and reentry cycle must also be
-verified with the real roof actors and gear; direct fixture placement is not proof
-of that complete cycle. Each occupied roof must have a usable descent to a real
-ground exit; link validation alone does not prove whole-map reachability. Each
-sector needs live checks for floor selection, depth ordering, climb routes and
-combat, followed by browser performance checks on the full map.
-The standalone fixture does not enable campaign rooftops. Climbing currently uses
-the available movement poses; dedicated climb animation remains an art task.
+Campaign authoring runs through normal sector construction and final neighbourhood
+expansion. Chimneys and the east/south parapets block walking but retain the solid
+ceiling beneath them. Each house has west access; all but the Jujuy landmark also
+have north access. Its northern cliff stays blocked. The topology tests verify
+every walkable roof cell can reach a real ground sector exit through legal,
+bidirectional movement.
+
+Live checks on the full Buenos Aires map confirmed the west approach and climb
+in daylight and at night. The complete four-cell roof crossing and north descent
+were checked at night. During that route, the 17-cell approach used 22 energy, climbing used 12, the crossing
+used 5 and descent used 8. Dorrego ended at 53 energy, with no exploration AP
+charge. Equipping and using a torch reduced the real supply from two to one.
+The torch lit the roof; the floor slab kept upstairs and downstairs light separate.
+
+Campaign lifecycle tests use Buenos Aires ownership as their only strategic setup
+precondition. They then pay for a civic recruit at Retiro, march to Buenos Aires,
+enter at the boundary, approach and climb normally, use a held torch, drop and
+collect ammunition, save/resume and return/reenter. No tactical geometry, position,
+HP or equipment is injected. Carried ammunition, the roof pile and campaign stock
+are checked together so legitimate resupply is not mistaken for duplication.
+
+Roof props, lights, smoke and interactive upper controls now require shared sight;
+a person below the ceiling cannot reveal them just by changing the cursor floor.
+Static roof art remains visible. Browser verification is limited to the Buenos
+Aires house and the earlier isolated fixture. Other sectors have complete topology
+checks but still need visual and combat acceptance. Climbing currently uses the
+available movement poses; dedicated climb animation remains an art task.
+
+## Patrol recovery
+
+Campaign acceptance found that long exploration waits let enemy patrols exhaust
+nearly all their energy before contact. Patrols now use the existing six-second
+recovery tick before a step would leave less than half their fatigue-limited
+capacity. A costly climb can use a smaller reserve when full capacity cannot
+retain half; it must still leave at least one energy point. Movement and climbing
+retain their normal costs. Contact takes priority over recovery, and combat does
+not accept free ambient recovery.
+
+The real Buenos Aires six-recruit, 600-second wait regression leaves unseen
+patrols at 55–58 energy instead of 1–11. Equivalent ambient ticks give the same
+result. Ground and roof recovery, fatigue limits, costly and impossible climbs,
+hidden-player independence and save replay have focused coverage. The reserve
+threshold is Granaderos tuning.
+
+## Remaining work
 
 Cross-floor thrown items, artillery, mounted travel, manual breach and charge
 remain unsupported in this slice. All floor slabs stop firearm projectiles.
