@@ -30,49 +30,49 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
  });
  await t.test('survivors recover with finite supplies and paid replacements capture Córdoba',()=>{
   const before=structuredClone(opening.campaign),prepared=prepareNorthernSquad(opening.campaign);
-  assert.deepEqual(opening.campaign,before);assert.equal(prepared.recovery.usedDressings,18);
+  assert.deepEqual(opening.campaign,before);assert.equal(prepared.recovery.usedDressings,27);
   const result=fightNorthernSector(prepared.campaign,'cordoba');
   for(const id of opening.casualties)assert.equal(result.campaign.operativeState[id].alive,false);
   assert.equal(result.campaign.phase,2);assert.equal(result.campaign.completed,false);cordoba=result.campaign;
  });
  await t.test('paid recovery and renewals reach Tucumán; the actual defeat preserves deaths and captivity',()=>{
   assert.ok(cordoba);const before=structuredClone(cordoba),prepared=prepareTucumanSquad(cordoba);
-  assert.deepEqual(cordoba,before);assert.equal(prepared.recovery.startHour,84);assert.equal(prepared.recovery.endHour,90);
+  assert.deepEqual(cordoba,before);assert.equal(prepared.recovery.startHour,108);assert.equal(prepared.recovery.endHour,124);
   const result=fightNorthernSector(prepared.campaign,'tucuman',{expectedOutcome:'defeat'}),returned=result.campaign;
   assertBattleClock(result);
-  assert.equal(returned.hour,102);
-  for(const id of [...opening.casualties,1000,112,128,142])assert.equal(returned.operativeState[id].alive,false);
-  for(const id of [115,105]){
+  assert.equal(returned.hour,136);
+  for(const id of [...opening.casualties,114,134,136])assert.equal(returned.operativeState[id].alive,false);
+  for(const id of [1000,123,120]){
    const record=returned.operativeState[id];assert.equal(record.alive,true);assert.equal(record.captured,true);assert.equal(record.capturedSector,'tucuman');
    assert.ok(!returned.recruited.includes(id));assert.ok(!returned.squads.some(squad=>squad.members.includes(id)));
    assert.ok(record.capturedContract);assert.equal(returned.contracts[id],undefined);
   }
-  assert.equal(returned.operativeState[122].location,'cordoba');assert.equal(returned.operativeState[122].captured,false);
+  assert.equal(returned.operativeState[139].location,'cordoba');assert.equal(returned.operativeState[139].captured,false);
   assert.equal(returned.sectors.cordoba.owner,'patriot');assert.deepEqual(returned.squad,[]);
   assert.equal(returned.phase,2);assert.equal(returned.completed,false);assert.equal(returned.defeated,false);tucumanLoss=returned;
  });
  await t.test('reserves recapture the persistent garrison and stabilize the released captives with finite supplies',()=>{
   assert.ok(tucumanLoss);const before=structuredClone(tucumanLoss),prepared=prepareRescueSquad(tucumanLoss);
-  assert.deepEqual(tucumanLoss,before);assert.equal(prepared.campaign.hour,114);
-  const result=fightNorthernSector(prepared.campaign,'tucuman'),returned=result.campaign;
+  assert.deepEqual(tucumanLoss,before);assert.equal(prepared.campaign.hour,160);
+  const result=fightNorthernSector(prepared.campaign,'tucuman',{controller:cautiousCombatOrder}),returned=result.campaign;
   assertBattleClock(result);preserveDeaths(tucumanLoss,returned);
-  assert.equal(returned.hour,126);
+  assert.equal(returned.hour,160);
   for(const {id,record} of prepared.captives){
    const released=returned.operativeState[id];assert.equal(released.captured,false);assert.equal(released.hp,record.hp);assert.equal(released.bleeding,record.bleeding);
    assert.deepEqual(released.outfit,record.outfit);assert.deepEqual(released.inventory,record.inventory);assert.equal(released.condition,record.condition);
    assert.deepEqual(released.capturedAmmunition,{loaded:0,ammo:0});assert.equal(released.capturedContract,null);
-   assert.equal(returned.contracts[id].expiresAt,returned.hour+record.capturedContract.expiresAt-record.capturedAt);
+   assert.equal(returned.contracts[id].expiresAt,record.capturedContract.expiresAt===null?null:returned.hour+record.capturedContract.expiresAt-record.capturedAt);
   }
-  const stable=stabilizeRescued(returned);assert.equal(stable.campaign.hour,127);
-  for(const id of [...opening.casualties,1000,112,128,142])assert.equal(stable.campaign.operativeState[id].alive,false);
+  const stable=stabilizeRescued(returned);assert.equal(stable.campaign.hour,161);
+  for(const id of [...opening.casualties,114,134,136])assert.equal(stable.campaign.operativeState[id].alive,false);
   assert.equal(stable.campaign.phase,2);assert.equal(stable.campaign.completed,false);rescued=stable.campaign;
  });
  await t.test('a real medical courier buys finite supplies while paid care restores the freed squad',()=>{
   assert.ok(rescued);const before=structuredClone(rescued),result=recoverRescueForce(rescued);
   assert.deepEqual(rescued,before);assert.equal(result.recovery.endHour,result.campaign.hour);assert.ok(result.recovery.endHour>=rescued.hour+24+6,'the courier makes both real marches and the squad rests');
-  assert.equal(result.recovery.boughtDressings,30);assert.equal(result.recovery.cost,900);
+  assert.equal(result.recovery.boughtDressings,12);assert.equal(result.recovery.cost,360);
   assert.ok(result.recovery.recoveredDressings>=0);assert.ok(result.recovery.donatedDressings>=0);preserveDeaths(rescued,result.campaign);
-  for(const id of [115,105,147])assert.equal(result.campaign.operativeState[id].energy,100);
+  for(const id of [1000,123,120])assert.equal(result.campaign.operativeState[id].energy,100);
   assert.equal(result.campaign.blockade,true);assert.equal(result.campaign.sectors.buenos_aires.owner,'patriot');
   recovered=result.campaign;
  });
@@ -81,7 +81,7 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   assert.deepEqual(recovered,before);
   const result=fightNorthernSector(prepared.campaign,'salta',{controller:cautiousCombatOrder});
   assertBattleClock(result);
-  assert.equal(result.campaign.hour,204);
+  assert.equal(result.campaign.hour,228);
   preserveDeaths(recovered,result.campaign);
   for(const unit of result.summary.units.filter(u=>u.side==='player'))assert.equal(result.campaign.operativeState[unit.id].alive,unit.hp>0);
   assert.ok(result.summary.units.some(u=>u.side==='player'&&u.hp>0&&u.hp<15),'the actual battle leaves critical patients');salta=result.campaign;

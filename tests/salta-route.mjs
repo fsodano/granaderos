@@ -3,6 +3,7 @@ import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {dispatchCampaign,isSupplied,rosterFor} from '../game/campaign.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {enterSector} from '../game/world.js';
+import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {attendYatasto} from './mission-helpers.mjs';
 
 function orders(start){
@@ -21,14 +22,26 @@ function renew(route,ids,buffer){
  }
 }
 export function prepareSaltaAssault(start,{report=()=>{}}={}){
- const route=orders(start),{order}=route,field=[123,122,106,143,109,147],support=[105,115,132,135];
+ const route=orders(start),{order}=route,field=[128,125,140,141,127,119],support=[122,144,111,139,103,104];
  assert.equal(start.location,'tucuman');assert.equal(start.pendingBattle,null);
  // Keep service paid while staging a daylight arrival. Replacements are hired
  // locally after the rest, with their normal equipment and real contracts.
  const departure=start.hour+(24-start.hour%24)%24;
  for(let i=0;route.campaign.hour<departure&&i<48;i++){renew(route,route.campaign.recruited,2);order({type:'wait',hours:1});}assert.equal(route.campaign.hour,departure);
- // Hire a fresh officer for the assault; preserve every actual rescue survivor and casualty.
- for(const id of [143,132,135])order({type:'recruitCivic',id,term:'day'});
+ // Low-morale survivors remain in recovery. Pay for one specialist and three
+ // ordinary replacements at the current prices, immediately before the march.
+ for(const id of [128,125,140,144])order({type:'recruitCivic',id,term:id===128?'day':'week'});
+ for(const [donor,receiver] of [[1000,125],[123,140],[120,144]]){
+  order({type:'assignCare',operativeId:donor,assignment:'rest'});
+  const model=id=>sectorInventoryModel(route.campaign,'tucuman',rosterFor(route.campaign),id);
+  const old=model(receiver).entries.map(row=>row.key);
+  if(!route.campaign.operativeState[donor].weaponDropped)order({type:'sectorInventory',sector:'tucuman',operativeId:donor,direction:'drop',item:'primary',count:1});
+  const gun=model(receiver).entries.find(row=>!old.includes(row.key))??model(receiver).entries.find(row=>row.reachable&&[1800,1801,1802].includes(JSON.parse(row.expected).weapon));assert.ok(gun&&gun.reachable);const incoming=JSON.parse(gun.expected);
+  order({type:'sectorInventory',sector:'tucuman',operativeId:receiver,direction:'take',sourceKey:gun.key,expected:gun.expected,count:1});
+  const carried=model(receiver).carried.find(row=>row.equip?.some(e=>e.slot==='primary')&&JSON.parse(row.expected).weapon===incoming.weapon);assert.ok(carried);
+  order({type:'sectorInventory',sector:'tucuman',operativeId:receiver,direction:'equip',inventoryKey:carried.inventoryKey,expected:carried.expected,slot:'primary'});
+ }
+ order({type:'assignCare',operativeId:117,assignment:'rest'});
  // Preserve the chosen ordering of the real contract transactions and squads.
  renew(route,[...field,...support],13);
  order({type:'squad',ids:field});const fieldSquad=route.campaign.activeSquadId;
@@ -67,7 +80,9 @@ export function completeNorthernMission(start,{report=()=>{}}={}){
  const treated=route.campaign;
  const supplies=route.campaign.resources;order({type:'diplomacy',kind:'northPact'});
  for(const [key,cost] of Object.entries({muskets:20,horses:10,powder:10}))assert.equal(route.campaign.resources[key],supplies[key]-cost);
- renew(route,[...route.campaign.recruited],20);
+ // Keep the medical staff paid for this journey. The one-day specialist
+ // can finish his existing contract locally; no automatic second hire is assumed.
+ renew(route,doctors,20);
  const messenger=doctors[0];order({type:'squad',ids:[messenger]});order({type:'assignCare',operativeId:messenger,assignment:'active'});order({type:'travel',sector:'tucuman'});
  assert.equal(route.campaign.hour,start.hour+13);
  const campaign=attendYatasto(route.campaign);

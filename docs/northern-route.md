@@ -1,38 +1,40 @@
-# Established southern campaign through Yatasto
+# Verified northern campaign route
 
-Checkpoint verified against `fede464` on 12 September 2026. The subsequent `d90e52b` building-footprint update changes the earlier battles: the first recovery step now lacks its expected field dressings, and this full northern route is not yet reverified on those maps. Concurrent elite-contract price changes also invalidate the old route budget. This scenario starts with Buenos Aires and Ensenada already secured through the explicit `secureArea` test fixture. It is **not** a full playthrough from the new Retiro-only start. That start and the first earned Buenos Aires capture have separate tests; see [Retiro opening](retiro-start.md).
+Checkpoint: 12 September 2026, on the building maps introduced at `d90e52b` and the gameplay engine at `4c10749`. The route uses the actual opening casualties, finite field supplies, and paid contracts. It also runs against the working checkout's higher elite prices. This is an **established southern campaign**, with Buenos Aires and Ensenada explicitly secured before the scenario begins. It does not prove the full Retiro-only campaign or the ending. See [Retiro opening](retiro-start.md) for the separately verified fresh start.
 
-| Battle | Turns | Orders | Result |
+| Battle | Turns | Orders | Actual result |
 | --- | ---: | ---: | --- |
-| San Nicolás | 14 | 149 | Victory |
-| San Lorenzo | 7 | 107 | Victory |
-| Córdoba | 11 | 83 | Victory |
-| Tucumán, first attack | 6 | 78 | Defeat: four deaths and two captives |
-| Tucumán, rescue | 1 | 19 | Victory and release |
-| Salta, joint assault | 6 | 147 | Victory; operative 135 dies |
+| San Nicolás | 17 | 160 | Victory |
+| San Lorenzo | 10 | 99 | Victory |
+| Córdoba | 17 | 114 | Victory; all six attackers survive |
+| Tucumán, first assault | 5 | 58 | Defeat; three deaths and three captives |
+| Tucumán, rescue | 3 | 59 | Victory; Villalba dies and all three captives are released |
+| Salta, joint assault | 9 | 119 | Victory; five deaths and a critical survivor |
 
-These are observations from this run, not required combat balance. Each battle repeats deterministically from the same request and saved sector. The verifier checks its actual result, elapsed clock, permanent deaths, custody, finite equipment and save/load behavior. It does not require a previously wounded person to be wounded again or a previous casualty to die again.
+Each battle repeats deterministically from its request and saved sector. The route reports the actual outcome, synchronizes tactical time, saves and restores the full campaign/battle pair, and retains permanent deaths. These counts describe this scenario; they are not balance targets or a general winning strategy.
 
 ## Recovery and captivity
 
-The opening ends at hour 42, second 419. Paid medical care consumes 18 dressings before the northern squad departs. Córdoba falls at hour 84, second 589. Paid contracts, seven purchased dressings and six hours of rest prepare the next march.
+The opening leaves eight dead and four living hired soldiers at hour 60. The old verifier expected a dead doctor to work and twelve dressings on one body. The revised route hires Villalba and Molina for 294 pesos, collects twenty dressings from the two real battlefields, and receives four donated dressings. The doctors use 27 dressings to heal Ledesma, Soria and Ojeda. Recovery and staging end at hour 96. Affordable replacements recover actual rifles and clothing before the next march.
 
-The first Tucumán battle ends at hour 102, second 736. Operatives 1000, 112, 128 and 142 die. Funes (115) is captured at 5 HP without bleeding; Arnaud (105) is captured at 13 HP with 4 bleeding. The campaign removes them from active squads and pauses their contracts while retaining their wounds and equipment.
+Córdoba falls at hour 108. Soria needs further treatment. A paid replacement doctor buys twelve dressings from the local shop and uses ten during recovery. The squad rests and departs at hour 124.
 
-The paid rescue force reaches the persistent garrison at hour 126. Enemy injuries and elapsed time remain in effect. It wins in one turn, at second 742, and releases both captives. Farías (145) survives this version of the rescue. The script does not manufacture his death or the dressings that an older run left on the ground. One hour of actual care stabilizes the freed patients.
+The first Tucumán assault loses at hour 136. Ledesma, Véliz and Silva die. The custom officer, Soria and Quiroga are captured at 10, 13 and 1 HP. They leave the active squads; their wounds, equipment records and unused contract time enter custody. The surviving medical staff remain at their real locations.
+
+The rescue brings reserves from San Nicolás to Córdoba, hires six ordinary replacements for 553 pesos, buys 24 dressings and recovers available long guns. Two squads make a coordinated assault at hour 160. Villalba dies, and the victory frees all three prisoners with their existing wounds and property. Three actual treatments stop their bleeding at hour 161. Captive contract pause and release on sector recapture are current Granaderos adaptations, not full JA2 prison parity.
 
 ## Finite supplies and Salta
 
-There are no recovered dressings in the current rescue field. The doctor starts with carried supplies. A separate medical courier travels to Córdoba, buys 30 dressings for 900 pesos, and brings them back. Other present soldiers donate four real dressings as treatment exhausts supplies. Patients recover and rest through hour 176. Contracts are renewed through ordinary paid actions.
+Ojeda makes a real round trip to Córdoba while Molina treats the first patient. Earlier purchases have reduced shop stock, so the courier buys twelve available dressings for 360 pesos. Sixteen field dressings and three donated dressings supplement the medical supplies. Treatment and rest finish at hour 203. The scenario checks stock deductions, source counts, contract payments, actual travel time, recovery and saves.
 
-Two paid squads stage a daylight arrival and attack Salta together at hour 204. They win at second 1122. Operative 135 dies; 105, 106, 109 and 147 survive with critical wounds. The final care step selects the actual healthy, supplied doctors: 122, 132 and 143. Three dressings stop the bleeding and begin recovery. It does not assign the critically wounded Harcourt (109) as a doctor.
+Health recovery does not restore morale immediately. The three freed prisoners and Ojeda still have very low morale; Soria has also lost his rifle. Sending that group straight into Salta fails. The final route leaves them in recovery, hires Blackwood for one day and three ordinary replacements for a week, and transfers real firearms from the reserves or the recovered sector inventory. The new force remains within the available funds at the working checkout's elite prices.
 
-Doctor 122 then travels to the Yatasto meeting after the paid northern pact. Other survivors remain in Salta, where available medical care continues. Phase 3 is reached at hour 217, second 1211, with 2,008 pesos and nine permanent deaths: 107, 110, 112, 114, 128, 135, 137, 142 and 1000.
+The two squads reach Salta at hour 228. Their victory costs Ferreira, Peralta, Delatour, Bridget and Morel. Doyle survives at 3 HP. Available healthy doctors stabilize the wounded. The specialist can finish his existing contract locally; the route does not assume a second specialist payment. A doctor then travels to the Yatasto meeting after the ordinary northern-pact payment. Dialogue and movement complete the mission and reach phase 3 at hour 241, second 1163. All seventeen deaths remain permanent, while the custom officer survives in reserve.
 
 ## Verification boundary
 
-`tests/opening-playthrough.test.mjs` runs this complete scenario. Its route helpers issue ordinary campaign and tactical orders, preserve source states, repeat battles, and encode/decode checkpoints. Captives retain their exact property and unused contract time on release. Revisiting field equipment removes finite quantities and rejects stale requests. Dead soldiers remain dead.
+`tests/opening-playthrough.test.mjs` runs all eight checks, including the enclosing route. The route helpers issue ordinary orders; they do not set health, refill inventories, edit clocks, fabricate victories or revive old casualties. Each selected combat request replays before its result is accepted. The original source campaign is checked for mutation, and full saves preserve the resulting state.
 
-The previous test stopped at a stale five-turn expectation for Tucumán. Replaying the unchanged committed version confirmed that failure before the campaign inventory changes. Continuing the actual result exposed stale assumptions about a dead supply donor and the identities of wounded people and doctors. The updated verifier retains the gameplay requirements while using the current outcomes.
+The earlier `fede464` route used different casualties, supply quantities and cheap elite contracts. It is historical evidence only. The current route restores the original combat, loss, rescue, courier, coordinated-assault and mission requirements on the current maps. It still needs integration with a full Retiro-only start and continuation through Cuyo, the mountain passes, counterattacks and the ending. A passing route is not a claim of complete JA2 parity or broad campaign balance.
 
-This establishes the route from the stated southern scenario through Yatasto. General balance, a complete Retiro-only campaign, and later routes through the mountain passes and ending remain open. Earlier Mendoza/Cuyo reports are historical checkpoints and are not reverified by this run.
+Verification: all 1,579 tests pass in the isolated checkout. The working checkout, including its concurrent elite-price changes, separately passes all eight northern-route checks. No product source files change in this checkpoint.
