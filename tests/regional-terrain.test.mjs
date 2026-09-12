@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {applyRegionalTerrain,terrainMaterial} from '../game/regional-terrain.js';
+import {applyRegionalTerrain,regionalLandscape,terrainMaterial} from '../game/regional-terrain.js';
 import {buildSectorMap,MAP_IDS} from '../game/maps.js';
 import {expandSectorMap} from '../game/sector-expansion.js';
 import {enterSector} from '../game/world.js';
@@ -12,6 +12,16 @@ import {validateBattleSnapshot} from '../game/validate-battle.js';
 const key=point=>`${point.x},${point.y}`;
 const counts=map=>map.tiles.reduce((result,tile)=>({...result,[tile.type]:(result[tile.type]??0)+1}),{});
 const request=sector=>({sector,squad:[{id:'scout',hp:100,weapon:1800,ammo:0}],enemies:[],exploration:true,hour:12});
+
+test('unknown regions cannot select inherited object properties as landscapes',()=>{
+ for(const sector of ['not-a-sector','constructor','toString','__proto__',undefined,null]){
+  assert.equal(regionalLandscape(sector),'settlement');
+  const map={sector,width:8,height:8,tiles:[{x:3,y:3,type:'grass',cover:0,blocked:false}]},before=structuredClone(map);
+  assert.equal(applyRegionalTerrain(map,{x:0,y:0,width:1,height:1}),map);
+  assert.deepEqual(map,before);
+  assert.equal(terrainMaterial(map.tiles[0],sector),'dry-grass');
+ }
+});
 
 test('new exterior terrain distinguishes wetland, woodland, scrub and dry foothills',()=>{
  const maps=Object.fromEntries(['ensenada','santa_fe','tucuman','cordoba','mendoza'].map(sector=>[sector,buildSectorMap(request(sector))]));

@@ -14,7 +14,7 @@ const hash=(x,y,seed)=>{
  value=Math.imul(value^(value>>>13),1274126177);
  return ((value^(value>>>16))>>>0)%100;
 };
-export const regionalLandscape=sectorId=>landscapes[sectorId]??'settlement';
+export const regionalLandscape=sectorId=>Object.hasOwn(landscapes,sectorId)?landscapes[sectorId]:'settlement';
 
 function terrainAt(landscape,x,y,seed,shoreDistance){
  // Broad patches with irregular edges avoid both checkerboards and a single
