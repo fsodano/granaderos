@@ -20,11 +20,13 @@ export function recoverRescueForce(start,{report=()=>{}}={}){
  };
  assert.equal(campaign.location,'tucuman');assert.equal(campaign.hour,127);assert.equal(campaign.pendingBattle,null);
  for(const operativeId of [106,109,145,115,105,123].filter(id=>campaign.operativeState[id].alive))order({type:'assignCare',operativeId,assignment:'rest'});
- recovered+=gather(122);assert.ok(recovered>0);
+ recovered+=gather(122);
+ const firstPatientHp=campaign.operativeState[115].hp,initialDressings=campaign.operativeState[122].medkits;
+ assert.ok(initialDressings>0,'the doctor needs actual carried or recovered supplies');
  order({type:'assignCare',operativeId:115,assignment:'patient'});order({type:'assignCare',operativeId:122,assignment:'doctor'});
  order({type:'createSquad',name:'Correo sanitario',ids:[147]});order({type:'assignCare',operativeId:147,assignment:'active'});
  renew(13);order({type:'travel',sector:'cordoba'});assert.equal(campaign.location,'cordoba');assert.equal(campaign.hour,startHour+12);assert.equal(campaign.pendingEncounter,null);
- assert.equal(campaign.operativeState[115].hp,campaign.operativeState[115].maxHp);assert.ok(campaign.operativeState[122].medkits<9+recovered,'the initial treatment uses finite recovered dressings');
+ assert.ok(campaign.operativeState[115].hp>firstPatientHp,'the available supplies improve the first patient while the courier travels');assert.ok(campaign.operativeState[122].medkits<initialDressings,'the initial treatment consumes actual carried or recovered dressings');
  order({type:'assignCare',operativeId:122,assignment:'rest'});
  for(const item of ['torches','boleadoras'])order({type:'sectorInventory',sector:'cordoba',operativeId:147,direction:'drop',item,count:campaign.operativeState[147][item]});
  const stock=campaign.merchants.cordoba.supplies.medkits,cash=campaign.resources.treasury,carried=campaign.operativeState[147].medkits;

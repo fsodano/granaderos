@@ -12,10 +12,9 @@ test('a hired-only squad earns its first expansion from Retiro and retains casua
  let c=initialCampaign(8);
  const order=action=>{c=dispatchCampaign(c,action);assert.equal(c.lastError,null,JSON.stringify(action)+': '+c.lastError);};
  assert.deepEqual(owned(c),['retiro']);assert.deepEqual(c.recruited,[]);
- // Ordinary weekly contracts and purchased dressings; no free areas, custom
+ // Ordinary day contracts and issued finite equipment; no free areas, custom
  // super-soldier, edited enemy stats, clock changes or post-hoc casualty removal.
- for(const id of [110,114,115,123,136,139])order({type:'recruitCivic',id,term:'week'});
- order({type:'purchaseMedicalSupplies',operativeId:139,quantity:12});
+ for(const id of [128,142,123,115,131,110])order({type:'recruitCivic',id,term:'day'});
  const stagingTreasury=c.resources.treasury;
  order({type:'attack',sector:'buenos_aires'});
  const request=structuredClone(c.pendingBattle);
