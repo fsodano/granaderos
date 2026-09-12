@@ -81,7 +81,7 @@ export function playerKnownBattle(state){
     tiles:tiles.map(tile=>pick(tile,['x','y','type','blocked','cover','open','buildingId','roomId'])),
     props:(state.props??[]).filter(seen).map(prop=>({...pick(prop,['id','type','x','y','blocksMovement']),...(prop.footprint?{footprint:pick(prop.footprint,['width','height'])}:{})})),
     environment,contacts,orders,
-    artillery:(state.artillery??[]).filter(gun=>gun.side==='player'||seen(gun)).map(gun=>pick(gun,gun.side==='player'?['id','side','type','x','y','loaded','ammo','facing']:['id','side','type','x','y','facing'])),
+    artillery:(state.artillery??[]).filter(gun=>gun.side==='player'||seen(gun)).map(gun=>pick(gun,gun.side==='player'?['id','side','type','x','y','loaded','ammo','facing','reloadProgress']:['id','side','type','x','y','facing'])),
     groundItems:(state.groundItems??[]).filter(ground=>!ground.heldBy&&ground.count>0&&seen(ground)).map(ground=>({...pick(ground,['id','x','y','type']),...item(ground.stack??ground)})),
     droppedWeapons:(state.droppedWeapons??[]).flatMap((ground,dropIndex)=>!ground.taken&&seen(ground)?[{dropIndex,...pick(ground,['x','y']),...item(ground)}]:[]),
     lights:(state.lights??[]).filter(light=>knownCells.has(pointKey(light))).map(light=>pick(light,['x','y','type','radius','intensity','remainingSeconds'])),

@@ -4,7 +4,7 @@ import {canChooseShotLocation} from './targeted-combat.js';
 import {tacticalGridLabel} from './tactical-grid.js';
 // Pure HUD model for the tactical battle inspector and squad strip.
 // Read-only descriptors plus action-object constructors; no game rules.
-import {weaponFor, bladeFor, hasFirearm, carriedWeight, carryCapacity, actionCosts, actionPointBudget, stanceCost, shotChance, firearmRangeProfile, firearmProjectilePath, firearmFlightPreview, canSee, hasLineOfSight, artilleryCosts, interruptAvailable, canEndCombat, fieldCapable, transferPreview, dropPreview, environmentTargetAt, environmentPreview, containerLootPreview, supplyUsePreview, getReachable, movementIntentReason, exitPreview, ARTILLERY, WEAPONS, BLADES} from './tactical.js';
+import {weaponFor, bladeFor, hasFirearm, carriedWeight, carryCapacity, actionCosts, actionPointBudget, stanceCost, shotChance, firearmRangeProfile, firearmProjectilePath, firearmFlightPreview, canSee, hasLineOfSight, artilleryCosts, artilleryCrewPlan, artilleryReloadPreview, interruptAvailable, canEndCombat, fieldCapable, transferPreview, dropPreview, environmentTargetAt, environmentPreview, containerLootPreview, supplyUsePreview, getReachable, movementIntentReason, exitPreview, ARTILLERY, WEAPONS, BLADES} from './tactical.js';
 import {directionTo} from './tactical-awareness.js';
 import {unarmedChance} from './unarmed-combat.js';
 import {inventoryUsage, INVENTORY_CAPACITY, SUPPLY_ITEMS} from './tactical-inventory.js';
@@ -573,7 +573,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
   if (u.activeSlot === 'tool') delete pa.useItem;
   if (gun && unit) {
     const gunCosts = artilleryCosts(state, unit, gun);
-    for (const [id, costId] of [['artillery', 'fire'], ['artilleryMove', 'move'], ['artilleryPivot', 'pivot'], ['artilleryReload', 'reload']]) pa[id] = gunCosts[costId];
+    for (const [id, costId] of [['artillery', 'fire'], ['artilleryMove', 'move'], ['artilleryPivot', 'pivot'], ['artilleryReload', 'reload']]) pa[id] = id==='artilleryReload'?artilleryReloadPreview(state,unit,gun).pa:gunCosts[costId];
   }
 
   const disabled = {
@@ -616,8 +616,8 @@ export function orderDescriptors(state, unit, ctx = {}) {
     const reserveOff = def.id === 'overwatch' && u.overwatch;
     let unavailable = Boolean(disabled[def.id]) || (Boolean(u.knockedDown) && !['stance', 'heal', 'ration', 'sight', 'endTurn', ...(u.activeSlot === 'medical' || u.activeSlot === 'supply' && u.activeSupply === 'rations' ? ['useItem'] : [])].includes(def.id));
     if (gun && def.id.startsWith('artillery')) {
-      const crew = state.units.filter(v => v.side === u.side && alive(v) && !v.mounted && !v.knockedDown && distance(v, gun) <= 1.5 && v.ap >= pa[def.id]);
-      unavailable ||= crew.length < ARTILLERY[gun.type].crew || !crew.includes(unit);
+      const crew = def.id==='artilleryReload'?artilleryReloadPreview(state,unit,gun):artilleryCrewPlan(state,unit,gun,pa[def.id]);
+      unavailable ||= Boolean(crew.reason);
     }
     const label = def.id === 'useItem' ? u.activeSlot === 'supply' ? 'Usar pertrecho' : u.activeSlot === 'tool' ? 'Usar herramienta' : u.activeSlot === 'medical' ? 'Usar vendas' : firearm ? 'Usar arma' : u.activeSlot === 'unarmed' ? 'Usar puños' : 'Usar arma blanca' : def.id === 'stance' ? stanceLabel(nextStance(u)) : def.id === 'overwatch' && u.overwatch ? 'Cancelar cobertura' : def.label;
     /** @type {{id:string,label:string,kind:string,disabled:boolean,pa?:number,reserve?:boolean,active?:boolean}} */

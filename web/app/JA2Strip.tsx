@@ -7,7 +7,7 @@ import {useState} from 'react';
 import JA2Roster from './JA2Roster';
 import JA2Inventory, {RadarCluster} from './JA2Inventory';
 import {orderDescriptors, orderAction, stanceLabel, targetingHelp, equipmentSlots, turnModel, unitCanAct, facingLabel, heardNoiseModel, equippedItemHelp} from '../../game/ja2-hud.js';
-import {canSee, actionPointBudget, AP_CARRY_LIMIT, ARTILLERY} from '../../game/tactical.js';
+import {canSee, actionPointBudget, AP_CARRY_LIMIT, ARTILLERY, artilleryReloadPreview} from '../../game/tactical.js';
 import {Footprints, RotateCcw, Shield, Package, Eye} from 'lucide-react';
 
 type Props = {
@@ -85,10 +85,11 @@ export default function JA2Strip({battle, selected, unit, players, missionAllies
         </div>
         {(artillery || []).length > 0 && <div className="ja2-artillery">
           <p className="eyebrow">ARTILLERÍA DE CAMPAÑA</p>
-          <select aria-label="Seleccionar pieza de artillería" value={cannonId} onChange={e => onCannonChange(e.target.value)}><option value="">Elegir cañón</option>{artillery.map((a: any) => <option key={a.id} value={a.id}>{(ARTILLERY as any)[a.type]?.name ?? a.type} · {a.loaded ? 'cargado' : 'descargado'}</option>)}</select>
+          <select aria-label="Seleccionar pieza de artillería" value={cannonId} onChange={e => onCannonChange(e.target.value)}><option value="">Elegir cañón</option>{artillery.map((a: any) => <option key={a.id} value={a.id}>{(ARTILLERY as any)[a.type]?.name ?? a.type} · {a.loaded ? 'cargado' : a.reloadProgress ? `recarga ${Math.floor(a.reloadProgress*100)}%` : 'descargado'}</option>)}</select>
+          {cannonId && (() => { const gun=artillery.find((a:any)=>a.id===cannonId); const reload=artilleryReloadPreview(battle,unit,gun); return <p aria-live="polite">{reload.reason || `Recarga: ${reload.pa} PA por artillero${reload.partial ? ` ahora; faltan ${reload.remainingPA} PA por artillero` : ''}. La munición se descuenta al completar la carga.`}</p>; })()}
           <select aria-label="Munición de artillería" value={shotType} onChange={e => onShotTypeChange(e.target.value)}><option value="solid">Bala rasa</option><option value="canister">Metralla</option></select>
           <div>
-            {['artillery', 'artilleryMove', 'artilleryPivot', 'artilleryReload'].map(id => { const d = descriptors.find((entry: any) => entry.id === id); return <button key={id} className="line-button" disabled={!d || d.disabled} onClick={() => id === 'artilleryReload' ? onOrder(orderAction(battle, unit, {artilleryId: cannonId}, id)) : onMode(id)}>{d?.label || id} · {d?.pa ?? '—'} PA</button>; })}
+            {['artillery', 'artilleryMove', 'artilleryPivot', 'artilleryReload'].map(id => { const d = descriptors.find((entry: any) => entry.id === id); return <button key={id} className="line-button" disabled={!d || d.disabled} onClick={() => id === 'artilleryReload' ? onOrder(orderAction(battle, unit, {artilleryId: cannonId}, id)) : onMode(id)}>{d?.label || id} · {d?.pa ?? '—'} PA por artillero</button>; })}
           </div>
           <small>La pieza debe apuntar al objetivo. Cada artillero paga el coste de la orden.</small>
         </div>}
