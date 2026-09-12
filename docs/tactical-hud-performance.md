@@ -53,3 +53,24 @@ typecheck and production build also pass in the shared workspace, including the
 concurrent sprite work. The unchanged automatic-defense fixture now fails its
 reaction-participation assertion on that updated map; this was reproduced in an
 archive of 3182bb1 without the HUD/gameplay patch. It remains a separate test gap.
+
+## Preview artwork correction
+
+The equipment demo initially imported the isolated HUD checkout and served its
+public assets. That checkout contained the old 52-pixel sprite cells; it did not
+include the sprite agent's ongoing illustrated artwork. This caused the coarse
+Dorrego sprite reported after the HUD review. It was a preview source error.
+
+The demo now imports the shared workspace and serves its matching public assets.
+The Vite alias, allowed directories and Tailwind source use the same workspace.
+After restarting the server, Dorrego was checked in the live tactical scene at
+200% and 300% camera zoom. His illustrated source cell is 156 pixels at the same
+52-pixel logical scale. Current idle and action selectors resolve to illustrated
+assets without fallback. No sprite files, display scales or campaign saves were
+changed for this correction.
+
+Before showing a gameplay demo, verify that its components and public artwork
+come from the same integrated workspace, and inspect a character in the browser.
+An isolated test checkout can omit concurrent, uncommitted art. The rendering
+measurements above describe the isolated HUD comparison with legacy sprites;
+they are not measurements of the complete illustrated-sprite integration.
