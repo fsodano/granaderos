@@ -6,6 +6,7 @@ import {decodeSave,encodeSave} from '../game/save.js';
 import {syncBattleTime} from '../game/time.js';
 import {fight} from './opening-driver.mjs';
 import {enterSector} from '../game/world.js';
+import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
 import {getReachable,teamCanSee,stanceCost,actionCosts,hasLineOfSight} from '../game/tactical.js';
 
 // Deliberately poor tactics for the captivity scenario: march into the open
@@ -14,30 +15,49 @@ import {getReachable,teamCanSee,stanceCost,actionCosts,hasLineOfSight} from '../
 // wounds; the route never assigns deaths or captures to chosen actors.
 export function advanceOnCitadelOrder(battle,unit){
  if(battle.phase==='interrupt')return null;
- const patient=battle.units.filter(other=>other.side===unit.side&&other.hp>0&&!other.departure&&other.bleeding>0&&Math.hypot(other.x-unit.x,other.y-unit.y)<=1.5&&hasLineOfSight(battle,unit,other)).sort((a,b)=>a.hp-b.hp)[0];
+ const patient=battle.units.filter(other=>other.side===unit.side&&other.hp>0&&!other.departure&&other.bleeding>0&&sameSurface(unit,other)&&Math.hypot(other.x-unit.x,other.y-unit.y)<=1.5&&hasLineOfSight(battle,unit,other)).sort((a,b)=>a.hp-b.hp)[0];
  const costs=actionCosts(battle,unit);
  if(patient&&unit.medkits>0&&unit.medical>0){
   if(unit.activeSlot==='medical'&&unit.ap>=costs.heal)return {type:'useItem',unitId:unit.id,targetId:patient.id};
   if(unit.activeSlot!=='medical'&&unit.ap>=costs.weapon+costs.heal)return {type:'weapon',unitId:unit.id,slot:'medical'};
  }
  const citadel=battle.buildings.find(building=>building.id==='tucuman:building');assert.ok(citadel);
- const target={x:citadel.x+citadel.width+1,y:citadel.y+citadel.height-1};
+ const target={x:citadel.x+citadel.width+1,y:citadel.y+citadel.height-1,tacticalLevel:0};
  const distance=point=>Math.hypot(point.x-target.x,point.y-target.y);
- const inCourt=point=>point.x>=target.x&&distance(point)<=3;
+ const inCourt=point=>sameSurface(point,target)&&point.x>=target.x&&distance(point)<=3;
  if(inCourt(unit))return unit.stance!=='crouched'&&unit.ap>=stanceCost(unit,'crouched')?{type:'stance',unitId:unit.id,stance:'crouched'}:null;
  const view={...battle,units:battle.units.filter(other=>other.side===unit.side||teamCanSee(battle,unit.side,other))};
  const route=getReachable({...view,mode:'exploration'},unit).filter(inCourt).sort((a,b)=>a.cost-b.cost)[0];
  if(!route)return null;
- const reachable=getReachable(view,unit),step=[...route.path].reverse().map(point=>reachable.find(candidate=>candidate.x===point.x&&candidate.y===point.y)).find(point=>point?.path.length&&point.cost<=32);
- return step?{type:'move',unitId:unit.id,x:step.x,y:step.y}:null;
+ const reachable=getReachable(view,unit),step=[...route.path].reverse().map(point=>reachable.find(candidate=>sameCell(candidate,point))).find(point=>point?.path.length&&point.cost<=32);
+ return step?{type:'move',unitId:unit.id,...spacePoint(step)}:null;
+}
+
+// A mission ally can win after the hired field squad dies. Rebuild that empty
+// command through paid contracts and an ordinary march; the fallen stay dead.
+export function stageNorthernCare(start){
+ let campaign=decodeSave(encodeSave(start)).campaign;const events=[],doctors=[112,122];
+ assert.equal(campaign.flags.sanLorenzo,true);assert.equal(campaign.phase,2);
+ const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;events.push({action,hour:campaign.hour,second:campaign.secondOfHour??0});};
+ const cash=campaign.resources.treasury;
+ for(const id of doctors)order({type:'recruitCivic',id,term:'week'});
+ const hiringCost=cash-campaign.resources.treasury;assert.equal(hiringCost,294);
+ if(campaign.location!=='san_nicolas'){
+  order({type:'squad',ids:doctors});
+  order({type:'travel',sector:'san_nicolas'});
+  assert.equal(campaign.pendingEncounter,null,'the relief march must resolve real encounters before field recovery');
+ }
+ assert.equal(campaign.location,'san_nicolas');
+ for(const id of doctors)assert.equal(campaign.operativeState[id].location,'san_nicolas');
+ for(const [id,record]of Object.entries(start.operativeState))if(!record.alive)assert.equal(campaign.operativeState[id].alive,false);
+ return {campaign,events,doctors,staging:{startHour:start.hour,arrivalHour:campaign.hour,startSector:start.location,hiringCost}};
 }
 
 // Continue the real opening result through ordinary recovery, contracts,
 // finite sector equipment, and a new authored battle. Never synthesize victory.
 export function prepareNorthernSquad(start,{report=()=>{}}={}){
- let campaign=decodeSave(encodeSave(start)).campaign;
- assert.equal(campaign.flags.sanLorenzo,true);assert.equal(campaign.phase,2);assert.equal(campaign.location,'san_nicolas');
- const events=[],dead=campaign.recruited.filter(id=>!campaign.operativeState[id].alive),doctors=[112,122];
+ const staged=stageNorthernCare(start);let campaign=staged.campaign;
+ const {events,doctors,staging}=staged,dead=Object.entries(start.operativeState).filter(([,record])=>!record.alive).map(([id])=>Number(id));
  const patients=campaign.recruited.filter(id=>{const r=campaign.operativeState[id];return r.alive&&!r.captured&&r.location==='san_nicolas'&&r.hp<r.maxHp;});
  const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;events.push({action,hour:campaign.hour,second:campaign.secondOfHour??0});};
  const model=(id,sector='san_nicolas')=>sectorInventoryModel(campaign,sector,rosterFor(campaign),id);
@@ -51,9 +71,7 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
   }
   return count;
  };
- const recoveryStart=campaign.hour,cash=campaign.resources.treasury;
- for(const id of doctors)order({type:'recruitCivic',id,term:'week'});
- assert.equal(cash-campaign.resources.treasury,294);
+ const recoveryStart=start.hour;
  const recoveredDressings=gather(112)+gather(122,1000,'san_lorenzo');assert.ok(recoveredDressings>0);
  let donatedDressings=0;const donors=[];
  for(const id of campaign.recruited){
@@ -74,7 +92,8 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
   order({type:'wait',hours:1});
  }
  for(const id of patients)assert.equal(campaign.operativeState[id].hp,campaign.operativeState[id].maxHp);
- const usedDressings=medicalStart-doctors.reduce((sum,id)=>sum+campaign.operativeState[id].medkits,0);assert.ok(usedDressings>0);
+ const usedDressings=medicalStart-doctors.reduce((sum,id)=>sum+campaign.operativeState[id].medkits,0);
+ assert.ok(patients.length?usedDressings>0:usedDressings===0,'only actual surviving patients consume recovery supplies');
  for(const operativeId of [...doctors,...patients])order({type:'assignCare',operativeId,assignment:'rest'});
  // Rest and stage for a daylight arrival without editing health or clocks.
  const departure=campaign.hour+6+(24-(campaign.hour+6)%24)%24;
@@ -102,7 +121,7 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
  for(const id of dead)assert.equal(campaign.operativeState[id].alive,false);
  for(const id of ids){assert.ok(campaign.operativeState[id].hp>=15);assert.equal(campaign.operativeState[id].bleeding,0);}
  assert.ok(campaign.resources.treasury>=0);assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
- const recovery={startHour:recoveryStart,endHour:campaign.hour,doctors,patients,usedDressings,recoveredDressings,donatedDressings,donors,replacements,fieldIds:ids,gathered};report({event:'recovered',...recovery,cash:campaign.resources.treasury});
+ const recovery={startHour:recoveryStart,endHour:campaign.hour,staging,doctors,patients,usedDressings,recoveredDressings,donatedDressings,donors,replacements,fieldIds:ids,gathered};report({event:'recovered',...recovery,cash:campaign.resources.treasury});
  return {campaign,events,dead,recovery};
 }
 
