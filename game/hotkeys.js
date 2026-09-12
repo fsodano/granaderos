@@ -5,7 +5,7 @@ export const TACTICAL_KEYS=[
  ['Ctrl+clic / Ctrl+Enter sobre un enemigo','Con manos libres: intentar quitar el arma; consume los PA restantes'],
  ['Alt+clic en suelo libre','Mover solo al seleccionado sin girar; caminar, agachado o cuerpo a tierra'],
  ['G / F / A','Uso contextual / disparo deliberado a enemigo o casilla, o usar objeto / equipar arma blanca'],['Mayús+R / S / C / P','Correr / caminar / agacharse / cuerpo a tierra'],
- ['RePág / AvPág','Subir / bajar postura'],['Z','Activar o desactivar sigilo sin cambiar de postura'],['L','Mirar hacia una casilla'],['Botón derecho / clic izquierdo','Entrar en puntería; sobre personaje, aumentarla; sobre suelo, cancelar / disparar'],['↑ / ↓ sobre un objetivo con foco','Elegir cabeza, torso o piernas; cuerpo a tierra usa una sola zona'],
+ ['RePág / AvPág','Subir / bajar postura'],['Z','Activar o desactivar sigilo sin cambiar de postura'],['L','Mirar hacia una casilla; en la misma dirección, preparar el arma sin disparar'],['Botón derecho / clic izquierdo','Entrar en puntería; sobre personaje, aumentarla; sobre suelo, cancelar / disparar'],['↑ / ↓ sobre un objetivo con foco','Elegir cabeza, torso o piernas; cuerpo a tierra usa una sola zona'],
  ['R','Recargar o cebar el arma'],['W','Cambiar entre arma, arma blanca, vendas, herramientas, cada pertrecho y manos libres'],
  ['B','Guardia con bayoneta ya fijada'],['T','Montar o desmontar'],
  ['V','Mostrar u ocultar campo de visión'],['I / Q','Cursor para recoger equipo / equipar vendas'],

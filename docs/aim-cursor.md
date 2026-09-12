@@ -10,7 +10,7 @@ Implemented 11 September 2026 from the user request and supplied JA2 cursor scre
 - The cursor displays the region, total AP, remaining AP and four aim marks. Shared target help separates weapon preparation from discharge; keeping the weapon ready avoids paying preparation again. See [weapon readiness](weapon-readiness.md). Invalid shots use the warning color. Shot warnings remain in the shared target preview.
 - Changing target or region resets extra aim. Changing the shooter, held weapon, position or turn also resets it. A completed shot resets extra aim.
 - R reloads the equipped firearm or primes it after a misfire. Shift+R selects running. Alt+R remains a reload alias.
-- Escape returns to contextual use. L selects paid facing. F and the bracket keys provide keyboard aiming; a focused target uses arrow keys for regions and Enter to confirm. Prone targets ignore region changes.
+- Escape returns to contextual use. L selects paid facing. Confirm the same direction again to prepare a held firearm without firing; the preview shows its AP cost. F and the bracket keys provide keyboard aiming; a focused target uses arrow keys for regions and Enter to confirm. Prone targets ignore region changes.
 - Right-click with other equipment enters ordinary item use. Equipped dressings still treat the selected person or the acting soldier. The lower panel no longer has aim-level or body-region buttons.
 
 Ground shots use the existing fixed-height projectile rules and display Casilla. They can hit allies. A clicked hostile's body region comes from that click's position, not a prior panel choice. The simulation also rejects head/leg requests against prone or fallen targets, and enemy shot selection only considers torso for those targets.

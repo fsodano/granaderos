@@ -1,11 +1,11 @@
-import {reloadPlan} from './tactical.js';
+import {reloadPlan,lookPreview} from './tactical.js';
 import {shotRangeText} from './shot-range.js';
 import {canChooseShotLocation} from './targeted-combat.js';
 import {tacticalGridLabel} from './tactical-grid.js';
 // Pure HUD model for the tactical battle inspector and squad strip.
 // Read-only descriptors plus action-object constructors; no game rules.
 import {weaponFor, bladeFor, hasFirearm, carriedWeight, carryCapacity, actionCosts, actionPointBudget, stanceCost, shotChance, firearmRangeProfile, firearmProjectilePath, firearmFlightPreview, canSee, hasLineOfSight, artilleryCosts, interruptAvailable, canEndCombat, fieldCapable, transferPreview, dropPreview, environmentTargetAt, environmentPreview, containerLootPreview, supplyUsePreview, getReachable, movementIntentReason, exitPreview, ARTILLERY, WEAPONS, BLADES} from './tactical.js';
-import {directionTo, turnAPCost} from './tactical-awareness.js';
+import {directionTo} from './tactical-awareness.js';
 import {unarmedChance} from './unarmed-combat.js';
 import {inventoryUsage, INVENTORY_CAPACITY, SUPPLY_ITEMS} from './tactical-inventory.js';
 import {TOOL_TYPES, heldTool, ENVIRONMENT_VERBS, environmentTargetSummary, visibleContainerContents} from './environment-interactions.js';
@@ -171,7 +171,7 @@ export function targetingHelp(mode, unit, ctx = {}) {
   if ((ctx.itemIntent==='steal'&&['move','useItem'].includes(mode))||mode==='loot'&&unit?.activeSlot==='unarmed') return 'Manos libres: seleccioná un enemigo contiguo para quitarle el arma. Requiere 28 PA como mínimo y consume todos los restantes. Los cuerpos se registran.';
   if (unit?.activeSlot==='unarmed'&&['move','useItem'].includes(mode)) return 'Seleccioná un enemigo para acercarte y golpear. Ctrl+clic o Recoger equipo: intentar quitar el arma a un enemigo contiguo.';
   if (mode === 'fire') return 'Disparo deliberado: seleccioná un enemigo o una casilla. Una casilla no confirma un objetivo; el tiro puede herir aliados. G o Esc vuelve al uso contextual.';
-  if (mode === 'look') return 'Seleccioná hacia dónde mirar. El giro consume PA. L: mirar. Botón derecho: apuntar con el equipo en mano.';
+  if (mode === 'look') return 'Seleccioná hacia dónde mirar. El giro consume PA. Con un arma de fuego, mirá otra vez en la misma dirección para prepararla sin disparar. La vista previa muestra el costo. F: disparar; Esc: cancelar.';
   if (mode === 'move' && ctx.movementIntent === 'preserveFacing') return 'Alt: mové solo al seleccionado sin girar. Cancela el grupo. Caminar, agachado o cuerpo a tierra; no correr ni montar.';
   if (unit?.activeSlot === 'supply' && ['move', 'useItem'].includes(mode)) return ({torches: 'Seleccioná una casilla para arrojar la antorcha. Para avanzar, cambiá el objeto en mano.', boleadoras: 'Seleccioná un enemigo visible para lanzar las boleadoras.', rations: 'Seleccionate a vos para comer la ración. Recupera fuerzas; no detiene hemorragias.'})[unit.activeSupply] || 'Equipá un pertrecho disponible.';
   if (unit?.activeSlot === 'tool' && ['move', 'useItem'].includes(mode)) return 'Seleccioná una puerta o un cofre para usar la herramienta. Las casillas libres permiten avanzar.';
@@ -237,12 +237,9 @@ export function targetPreview(state, unit, point, ctx = {}) {
   }
   let pa, chance, reason, actionLabel, attackType, attackLabel, coverNote;
   if (mode === 'look') {
-    const facing = directionTo(unit, point);
-    pa = turnAPCost(unit, facing);
-    actionLabel = `Mirar al ${COMPASS_LABELS[facing]}`;
-    if (!state.tiles.some(t => t.x === point.x && t.y === point.y)) reason = 'Seleccioná una casilla del mapa.';
-    else if (unit.knockedDown) reason = 'Primero debés levantarte.';
-    else if (!pa) reason = 'El combatiente ya mira en esa dirección.';
+    const preview=lookPreview(state,unit,point);
+    pa=preview.pa;reason=preview.reason;actionLabel=preview.prepare?preview.actionLabel:`Mirar al ${COMPASS_LABELS[preview.facing]}`;
+    coverNote=preview.prepare?'Prepara el arma sin disparar. Conserva los cartuchos; el próximo disparo no vuelve a pagar la preparación.':hasFirearm(unit)?'Una vez orientado, mirá otra vez en esa dirección para preparar el arma.':undefined;
   } else if (target && target.side !== unit.side && ['move', 'useItem', 'fire', 'melee'].includes(mode)) {
     if (target.hp <= 0 || target.surrendered) return null;
     if (unit.activeSlot === 'tool') return {name: target.name, reason: 'La herramienta se usa sobre una puerta o un cofre.', valid: false};

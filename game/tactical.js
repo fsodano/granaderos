@@ -79,6 +79,18 @@ export function ignitionRisk(s,u){const w=weaponFor(u);return clamp(misfireChanc
 function nearby(s,u,id,radius=4){return s?.units.some(v=>Number(v.id)===id&&v.side===u.side&&alive(v)&&dist(u,v)<=radius);}
 
 function holdMorale(s,u){if(nearby(s,u,57,6)||(u.militia&&nearby(s,u,1,4))||(u.mounted&&nearbyTrait(s,u,'cavalry_commander',4))||(!u.mounted&&nearby(s,u,7,4))){u.morale=Math.max(20,u.morale);u.routed=false;return true;}return false;}
+// The v1.13 look cursor turns first; a second look along the same facing
+// raises the held firearm. This never fires, identifies a target, or loads it.
+export function lookPreview(s,u,point){
+  let reason=!u||!alive(u)?'El combatiente no puede actuar.':u.knockedDown?'Primero debés levantarte.':
+    !Number.isInteger(point?.x)||!Number.isInteger(point?.y)||!tile(s,point.x,point.y)||point.x===u.x&&point.y===u.y?'Seleccioná otra casilla del mapa.':null;
+  const facing=reason?u?.facing??2:directionTo(u,point),turn=reason?0:turnAPCost(u,facing);
+  const prepare=!reason&&!turn&&hasFirearm(u)&&!u.weaponReady;
+  const pa=reason?0:prepare?actionCosts(s,u).ready:turn;
+  if(!reason&&!pa)reason=hasFirearm(u)?'El arma ya está en posición de tiro.':'El combatiente ya mira en esa dirección.';
+  if(!reason&&s.mode!=='exploration'&&u.ap<pa)reason='PA insuficientes.';
+  return {valid:!reason,reason,pa,facing,prepare,actionLabel:prepare?'Preparar el arma':'Mirar'};
+}
 export function reloadPlan(unit,state){
   const w=weaponFor(unit),rate=w.reloadAP/w.capacity*(unit.stance==='prone'?1.5:1)*(state&&nearby(state,unit,2,2)?.8:1)*(hasTrait(unit,'gunsmith_artillerist')?.85:1);
   return planReload(unit,rate,w.capacity,state?.mode==='exploration');
@@ -822,11 +834,12 @@ else if(a.type==='containerLoot'){
 }
 else if(a.type==='throwTorch'){const point=target??{x:a.x,y:a.y},preview=supplyUsePreview(s,u,point,'torches');if(!preview.allowed)return fail(preview.reason);pay(preview.cost);u.torches--;clearEmptySupply(u);s.lights.push({id:`torch-${u.id}-${s.turn}-${s.lights.length}`,type:'torch',x:point.x,y:point.y,radius:4,intensity:1,turns:s.weather.rain>50?4:8,age:0});if(dist(u,point)>0)u.facing=directionTo(u,point);sayObserved(s,[u],`${u.name} lanza una antorcha encendida.`);}
 else if(a.type==='look'){
-  const point={x:a.x,y:a.y};if(!Number.isInteger(a.x)||!Number.isInteger(a.y)||!tile(s,a.x,a.y)||dist(u,point)===0)return fail('Elige una casilla hacia la cual mirar.');
-  const facing=directionTo(u,point),cost=turnAPCost(u,facing);
-  if(!cost)return fail('El soldado ya mira en esa dirección.');if(!pay(cost))return fail(`Mirar requiere ${cost} PA.`);
-  u.facing=facing;investigateNoise(s,u);u.momentum=0;delete u.lastTargetId;delete u.lastShotPosition;
-  sayObserved(s,[u],`${u.name} gira para observar (${s.mode==='exploration'?0:cost} PA).`);
+  const preview=lookPreview(s,u,a);if(!preview.valid)return fail(preview.reason);
+  if(!pay(preview.pa))return fail('PA insuficientes.');
+  u.momentum=0;
+  if(preview.prepare){u.weaponReady=true;sayObserved(s,[u],`${u.name} pone ${weaponFor(u).name} en posición de tiro (${preview.pa} PA).`);}
+  else {u.facing=preview.facing;investigateNoise(s,u);delete u.lastTargetId;delete u.lastShotPosition;
+    sayObserved(s,[u],`${u.name} gira para observar (${s.mode==='exploration'?0:preview.pa} PA).`);}
 }
 else if(a.type==='stealth'){
   if(typeof a.enabled!=='boolean')return fail('Indica si quieres activar el sigilo.');

@@ -378,14 +378,15 @@ test('interrupt previews use the current AP and Continue resumes the same enemy 
   assert.equal(turnModel(continued).interrupted,false);assert.equal(turnModel(continued).endLabel,'Fin del turno');
 });
 
-test('look previews charge the shared shortest turn cost and reject no-op turns',()=>{
+test('look previews charge a turn, then offer weapon preparation in the same direction',()=>{
   const s=battle(),u=players(s)[0],point={x:u.x,y:0};
   u.facing=2;u.ap=10;
   const preview=targetPreview(s,u,point,{mode:'look'}),cost=turnAPCost(u,directionTo(u,point));
   assert.equal(preview.pa,cost);assert.equal(preview.remaining,u.ap-cost);assert.equal(preview.valid,true);
   const next=actBattle(s,{unitId:u.id,...orderAction(s,u,point,'look')});
   assert.equal(next.lastError,null);assert.equal(next.units[0].ap,u.ap-cost);assert.equal(facingLabel(next.units[0]),'N');
-  assert.equal(targetPreview(next,next.units[0],point,{mode:'look'}).valid,false);
+  const ready=targetPreview(next,next.units[0],point,{mode:'look'});assert.equal(ready.valid,true);assert.equal(ready.pa,actionCosts(next,next.units[0]).ready);
+  const prepared=actBattle(next,{unitId:u.id,type:'look',...point});assert.equal(prepared.lastError,null);assert.equal(prepared.units[0].weaponReady,true);assert.equal(targetPreview(prepared,prepared.units[0],point,{mode:'look'}).valid,false);
   u.ap=cost-1;assert.match(targetPreview(s,u,point,{mode:'look'}).reason,/PA insuficientes/);
   u.stance='prone';u.ap=100;assert.equal(targetPreview(s,u,point,{mode:'look'}).pa,cost*2);
 });
