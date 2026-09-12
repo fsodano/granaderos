@@ -1,0 +1,63 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {initialCampaign} from './legacy-campaign-fixture.mjs';
+import {dispatchCampaign,isSupplied,restoreCampaign,serializeCampaign} from '../game/campaign.js';
+import {deployedArtillery} from '../game/equipment.js';
+import {prepareSectorArtillery,validateArtilleryDeployment,validateArtilleryReport,settleSectorArtillery,ownedArtilleryCount,artillerySupplyPreview} from '../game/campaign-artillery.js';
+import {createBattle,actBattle,getReachable,artilleryReloadPreview} from '../game/tactical.js';
+import {enterSector} from '../game/world.js';import {autoResolve} from '../game/auto-resolve.js';
+import {encodeSave,decodeSave} from '../game/save.js';import {syncBattleTime} from '../game/time.js';
+const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
+const act=(s,a)=>{const n=actBattle(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
+function issued(){let c=order(initialCampaign(45),{type:'purchaseEquipment',item:'swivel'});c=order(c,{type:'travel',sector:'buenos_aires'});return order(c,{type:'attack',sector:'san_nicolas'});}
+function won(){let c=issued();const r=autoResolve(c.pendingBattle);assert.equal(r.outcome,'victory');assert.ok(r.actions>0);c=order(c,{type:'battleResult',battleId:c.pendingBattle.id,outcome:r.outcome,sectorState:r.battle,survivors:r.battle.units.filter(u=>u.side==='player')});return c;}
+function returnVisit(c,b){const pair=syncBattleTime(c,b);assert.equal(pair.error,null);return order(pair.campaign,{type:'leaveSector',battleId:c.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});}
+const save=c=>restoreCampaign(serializeCampaign(c));
+const flat=()=>Array.from({length:240},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false,cover:0}));
+
+test('paid artillery is issued once, leaves stock and survives a real victory without duplicate guns',()=>{
+ const c=issued();assert.equal(c.resources.cannons,0);assert.equal(c.armory.swivel,0);assert.equal(c.pendingBattle.artillery.length,1);assert.match(c.pendingBattle.artillery[0].id,/:piece-0$/);assert.deepEqual(deployedArtillery(c),[]);validateArtilleryDeployment(c.pendingBattle);
+ const after=won(),guns=after.sectorStates.san_nicolas.artillery;assert.equal(guns.length,1);assert.equal(guns[0].type,'swivel');assert.equal(ownedArtilleryCount(after),1);assert.equal(after.resources.cannons,0);assert.deepEqual(save(after).sectorStates.san_nicolas.artillery,guns);
+});
+test('firing in a safe sector leaves the same empty gun at the same full-size map position across repeated real reports',()=>{
+ let c=won();c=order(c,{type:'visitSector'});let b=enterSector(c.pendingBattle,c.sectorStates.san_nicolas);const gun=b.artillery[0],id=gun.id,u=b.units.find(u=>u.side==='player'&&!u.militia);
+ const step=getReachable(b,u).filter(p=>Math.hypot(p.x-gun.x,p.y-gun.y)<=1.5).sort((a,b)=>a.cost-b.cost)[0];assert.ok(step);b=act(b,{type:'move',unitId:u.id,x:step.x,y:step.y});
+ b=act(b,{type:'artillery',unitId:u.id,artilleryId:id,x:gun.x+2,y:gun.y,mode:'solid'});assert.equal(b.artillery[0].loaded,false);assert.equal(b.artillery[0].ammo,6);c=returnVisit(c,b);
+ for(let i=0;i<3;i++){
+  c=order(save(c),{type:'visitSector'});b=enterSector(c.pendingBattle,c.sectorStates.san_nicolas);assert.equal(b.artillery.length,1);assert.equal(b.artillery[0].id,id);assert.equal(b.artillery[0].loaded,false);assert.equal(b.artillery[0].ammo,6);assert.equal(b.artillery[0].x,gun.x);assert.equal(b.artillery[0].y,gun.y);c=returnVisit(c,b);assert.equal(c.resources.cannons,0);
+ }
+});
+test('paid partial work survives a stationed request and resumes at its remaining cost',()=>{
+ const c=order(initialCampaign(45),{type:'purchaseEquipment',item:'swivel'});const request={id:'controlled',sector:'retiro',origin:'retiro',artillery:deployedArtillery(c)};prepareSectorArtillery(c,request);
+ let b=createBattle([{id:20,x:1,y:2,hp:20,maxHp:100,bandaged:80,energy:30,fatigue:90}],{...request,width:24,height:10,tiles:flat(),artillery:request.artillery.map(g=>({...g,x:2,y:2})),enemies:[{id:'guard',x:22,y:8,patrol:false,overwatch:false}]});
+ b=act(b,{type:'artillery',unitId:'20',artilleryId:b.artillery[0].id,x:6,y:2});b=act(b,{type:'artilleryReload',unitId:'20',artilleryId:b.artillery[0].id});assert.ok(b.artillery[0].reloadProgress>0);assert.equal(b.artillery[0].ammo,6);validateArtilleryReport(request,b);
+ c.sectorStates.retiro=structuredClone(b);const revisit={id:'revisit',sector:'retiro',exploration:true,squad:[{id:20,x:1,y:2}],enemies:[],artillery:[]};prepareSectorArtillery(c,revisit);const next=enterSector(revisit,b);assert.equal(next.artillery[0].reloadProgress,b.artillery[0].reloadProgress);assert.equal(next.artillery[0].id,b.artillery[0].id);
+ const leader={...next.units[0],x:next.artillery[0].x-1,y:next.artillery[0].y};next.units[0]=leader;const p=artilleryReloadPreview(next,leader,next.artillery[0]);assert.equal(p.totalPA,33);const done=act(next,{type:'artilleryReload',unitId:'20',artilleryId:next.artillery[0].id});assert.equal(done.artillery[0].ammo,5);assert.equal(done.artillery[0].loaded,true);
+});
+test('reports reject disappearing, duplicated, swapped or refilled cannons',()=>{
+ const c=issued(),request=c.pendingBattle,b=enterSector(request);for(const change of [s=>s.artillery=[],s=>s.artillery.push(structuredClone(s.artillery[0])),s=>s.artillery[0].id='forged',s=>s.artillery[0].type='field8',s=>s.artillery[0].side='enemy',s=>s.artillery[0].ammo++]){const next=structuredClone(b);change(next);assert.throws(()=>validateArtilleryReport(request,next));}
+});
+test('retreat leaves guns to the occupying enemy and victory recaptures their exact load',()=>{
+ const b={artillery:[{id:'g',type:'swivel',side:'player',x:2,y:2,loaded:false,ammo:2,reloadProgress:.4}],units:[{side:'enemy',hp:30}]};settleSectorArtillery(b,'retreat');assert.equal(b.artillery[0].side,'enemy');assert.equal(b.artillery[0].reloadProgress,.4);settleSectorArtillery(b,'victory');assert.equal(b.artillery[0].side,'player');assert.equal(b.artillery[0].ammo,2);assert.equal(b.artillery[0].loaded,false);
+ const c=initialCampaign();c.sectorStates.retiro=structuredClone(b);c.sectors.retiro.owner='royalist';const r={id:'retake',sector:'retiro',origin:'buenos_aires',artillery:[]};prepareSectorArtillery(c,r);assert.equal(r.artillery[0].side,'enemy');assert.equal(ownedArtilleryCount(c),0);
+});
+test('reentering with another purchased cannon retains the original without overlapping or replacing it',()=>{
+ let c=won();c=order(c,{type:'travel',sector:'retiro'});c=order(c,{type:'purchaseEquipment',item:'bronze4'});const r={id:'reinforce',sector:'san_nicolas',origin:'retiro',artillery:deployedArtillery(c),squad:[],enemies:[],exploration:true};prepareSectorArtillery(c,r);const old=c.sectorStates.san_nicolas.artillery[0],next=enterSector(r,c.sectorStates.san_nicolas);assert.equal(next.artillery.length,2);assert.equal(new Set(next.artillery.map(g=>g.id)).size,2);assert.equal(next.artillery.find(g=>g.id===old.id).x,old.x);assert.equal(new Set(next.artillery.map(g=>`${g.x},${g.y}`)).size,2);assert.equal(c.resources.cannons,0);
+});
+test('typed stock cannot turn a stale battery selection into another free model',()=>{
+ const c=initialCampaign();c.resources.cannons=1;c.armory={bronze4:1};c.artillerySelection=['field8'];assert.deepEqual(deployedArtillery(c),[]);c.artillerySelection=[];assert.equal(deployedArtillery(c)[0].type,'bronze4');
+ c.resources.cannons=1;c.armory={field8:1};c.depots.retiro={cannons:1};c.artillerySelection=['bronze4','field8'];const r={id:'mixed',sector:'san_nicolas',origin:'retiro',artillery:deployedArtillery(c)};prepareSectorArtillery(c,r);assert.equal(r.artillery.length,2);assert.equal(c.resources.cannons,0);assert.equal(c.depots.retiro.cannons,0);assert.equal(c.armory.field8,0);
+});
+test('resupply consumes finite powder and iron without loading or erasing existing work',()=>{
+ let c=won();const g=c.sectorStates.san_nicolas.artillery[0];g.loaded=false;g.reloadProgress=.3;g.ammo=0;const before={powder:c.resources.powder,iron:c.resources.scrapIron};const p=artillerySupplyPreview(c,'san_nicolas',g.id,2,isSupplied);assert.equal(p.valid,true);
+ c=order(c,p.action);const gun=c.sectorStates.san_nicolas.artillery[0];assert.equal(gun.ammo,2);assert.equal(gun.loaded,false);assert.equal(gun.reloadProgress,.3);assert.equal(c.resources.powder,before.powder-2);assert.equal(c.resources.scrapIron,before.iron-2);assert.equal(save(c).sectorStates.san_nicolas.artillery[0].ammo,2);
+});
+test('remote, occupied, empty-stock and invalid resupply orders fail without changing stock or guns',()=>{
+ const base=won(),id=base.sectorStates.san_nicolas.artillery[0].id;for(const patch of [s=>s.location='retiro',s=>s.sectors.san_nicolas.owner='royalist',s=>s.resources.powder=0,s=>s.resources.scrapIron=0,s=>s.squad=[]]){const c=structuredClone(base);patch(c);const n=dispatchCampaign(c,{type:'supplyArtillery',sector:'san_nicolas',gunId:id,count:1});assert.ok(n.lastError);assert.deepEqual(n.resources,c.resources);assert.deepEqual(n.sectorStates,c.sectorStates);}
+ for(const count of [0,-1,1.5,1001,'2',NaN]){const n=dispatchCampaign(base,{type:'supplyArtillery',sector:'san_nicolas',gunId:id,count});assert.ok(n.lastError);assert.deepEqual(n.resources,base.resources);}
+});
+test('full active campaign saves keep stationed identifiers, coordinates and ammunition',()=>{
+ let c=won();c=order(c,{type:'visitSector'});const b=enterSector(c.pendingBattle,c.sectorStates.san_nicolas),pair=syncBattleTime(c,b);assert.equal(pair.error,null);const saved=decodeSave(encodeSave(pair.campaign,pair.battle));assert.deepEqual(saved.battle.artillery,b.artillery);assert.deepEqual(saved.campaign.pendingBattle.artillery,c.pendingBattle.artillery);
+});
+test('saved deployment registries reject duplicate identities and corrupted loading fractions',()=>{
+ const c=issued();for(const change of [r=>r.artillery.push({...r.artillery[0]}),r=>r.artillery[0].reloadProgress=1,r=>r.artilleryDeployment.issued=['missing'],r=>r.artilleryDeployment.site='elsewhere']){const next=structuredClone(c);change(next.pendingBattle);assert.throws(()=>save(next));}
+});

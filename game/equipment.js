@@ -37,11 +37,11 @@ export function setCarriedLoading(record,unit){
  else clearCarriedLoading(record);
 }
 export function deployedArtillery(s){
- if(s.artillerySelection?.length)return s.artillerySelection.slice(0,Math.min(3,s.resources.cannons+(s.depots?.[s.location]?.cannons??0))).map((type,i)=>({id:`gun-${i}`,type,side:'player',loaded:true,ammo:6}));
- const available=s.resources.cannons+(s.depots?.[s.location]?.cannons??0),types=[];
- // Foundry products and pre-armory saves remain the bronze4 baseline.
- for(const type of ['field8','swivel','bronze4'])for(let i=0;i<(s.armory?.[type]??0)&&types.length<available&&types.length<3;i++)types.push(type);
- while(types.length<Math.min(available,3))types.push('bronze4');
+ let remaining=s.resources.cannons;const available={field8:0,swivel:0,bronze4:0};
+ for(const type of ['field8','swivel','bronze4']){available[type]=Math.min(remaining,s.armory?.[type]??0);remaining-=available[type];}
+ available.bronze4+=remaining+(s.depots?.[s.location]?.cannons??0);
+ const types=[],selection=s.artillerySelection?.length?s.artillerySelection:['field8','swivel','bronze4'].flatMap(type=>Array(Math.min(available[type],3)).fill(type));
+ for(const type of selection)if(types.length<3&&available[type]>0){types.push(type);available[type]--;}
  return types.map((type,i)=>({id:`gun-${i}`,type,side:'player',loaded:true,ammo:6}));
 }
 

@@ -18,7 +18,7 @@ During exploration, artillery work advances time once for the simultaneous crew 
 
 `reloadProgress` is an optional fraction strictly between zero and one on an unloaded cannon. Battle validation rejects nonfinite, nonnumeric, out-of-range, or loaded-cannon work. Active full campaign saves retain it. The public projection exposes friendly cannon work but keeps enemy loading and ammunition private, even for an observed piece.
 
-This change covers the active encounter, saved continuation, dragging, turning and replacement crews. The wider strategic artillery ownership and ammunition model still needs work: reentry currently creates artillery from deployment requests rather than restoring the previous sector's cannon records. It does not yet prove persistent artillery ownership, reserve ammunition, or unfinished loading across strategic returns and new deployments. Autonomous AI artillery selection also remains outside this completed step.
+This change covers the active encounter, saved continuation, dragging, turning and replacement crews. [Stationed artillery](stationed-artillery.md) now also retains each issued cannon, its ammunition and unfinished loading across strategic returns and reentry. Recovery and strategic transport of these stationed pieces, and autonomous AI artillery selection, remain incomplete.
 
 ## Verification, 2026-09-12
 

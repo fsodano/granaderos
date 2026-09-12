@@ -50,6 +50,14 @@ export function enterSector(request,previous=null){
    // A new occupation creates a garrison. An unfinished engagement retains its survivors.
    if(!request.defenseGroupId&&!request.occupationGroupIds?.length&&!request.exploration&&!previous.sectorCleared)map.enemies=structuredClone(previous.units.filter(u=>u.side==='enemy'&&!u.departure)).map(clearEncounter);
  }
+ // Stationed artillery keeps coordinates from the saved full-size map. Apply
+ // them after map expansion; otherwise each reentry scales its position again.
+ const stationed=(request.artillery??[]).filter(g=>g.stationed),occupiedGuns=new Set(stationed.map(key));
+ map.artillery=map.artillery.map(gun=>{
+   const old=stationed.find(g=>g.id===gun.id);if(old)return structuredClone(old);
+   if(occupiedGuns.has(key(gun))){const open=map.tiles.filter(t=>!t.blocked&&!propBlocksAt(map,t.x,t.y)&&!occupiedGuns.has(key(t)));open.sort((a,b)=>Math.abs(a.x-gun.x)+Math.abs(a.y-gun.y)-Math.abs(b.x-gun.x)-Math.abs(b.y-gun.y)||a.y-b.y||a.x-b.x);if(!open.length)throw Error('No queda espacio para desplegar la pieza.');gun={...gun,x:open[0].x,y:open[0].y};}
+   occupiedGuns.add(key(gun));return gun;
+ });
  const state=createBattle([...map.squad,...(map.garrison??[]),...(map.missionAllies??[])],{...map,deferContact:true});
  if(previous){
    for(const unit of state.units.filter(u=>u.side==='player'&&u.hp>0)){const old=previous.units.find(u=>u.id===unit.id&&u.side==='player');for(const key of ['practiceTiles','ridingPracticeTiles'])if(old?.[key])unit[key]=structuredClone(old[key]);}
