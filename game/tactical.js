@@ -9,7 +9,7 @@ import {projectilePath,projectileFlight,pointProjectileFlight,concealmentAt,conc
 import {boundaryMatches} from './tactical-exits.js';
 import {HELD_SUPPLIES,heldSupply,clearEmptySupply} from './held-supplies.js';
 import {heldTool,environmentActionProfile,resolveEnvironmentInteraction,extractContainerItem} from './environment-interactions.js';
-import {SUPPLY_ITEMS,itemQuantity,extractItemQuantity,applyItemQuantity,transferItemQuantity,planFitBayonet,planRemoveBayonet} from './tactical-inventory.js';
+import {SUPPLY_ITEMS,itemQuantity,extractItemQuantity,applyItemQuantity,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove} from './tactical-inventory.js';
 import {FITTING_RULES_VERSION,FIT_BAYONET_AP,REMOVE_BAYONET_AP,LOOSE_BAYONET,fixedBayonetFor,fixedBayonetProfile,fittingWeight,weaponItemWeight,normalizeUnitFittings} from './weapon-fittings.js';
 import {FISTS,BUTTSTOCK,unarmedChance,unarmedImpact,weaponStealChance,STEAL_MIN_AP} from './unarmed-combat.js';
 import {directionTo,facingAllowsSight,turnAPCost,stealthAPMultiplier,noiseRadius,approximateHeardPosition} from './tactical-awareness.js';
@@ -935,6 +935,11 @@ else if(a.type==='equipLoot'){
   const preview=equipLootPreview(s,u,a.inventoryKey,a.slot??'primary');if(!preview.valid)return fail(preview.reason);
   const next=planEquipLoot(u,a.inventoryKey,a.slot??'primary');pay(preview.pa);next.ap=u.ap;
   replaceUnit(u,next);sayObserved(s,[u],`${u.name} equipa ${weaponFor(u).name} y guarda el arma desplazada.`);
+}
+else if(a.type==='movePocket'){
+  const reason=inventoryOrderReason(s,u,0);if(reason)return fail(reason);
+  let next;try{next=planPocketMove(u,a.sourceId,a.destinationId,a.expectedSource,a.expectedDestination);}catch(error){return fail(error.message);}
+  pay(0);replaceUnit(u,next);sayObserved(s,[u],`${u.name} ordena sus bolsillos.`);
 }
 else if(a.type==='drop'){
   const preview=dropPreview(s,u,a.item,a.count??1);if(!preview.valid)return fail(preview.reason);

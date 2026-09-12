@@ -28,7 +28,7 @@ test('a disarmed soldier unpacks its own reserve instead of fabricating or steal
 });
 
 test('the planner rejects a capacity-breaking swap and does not turn other stored equipment into weapons',()=>{
-  const s=field({ammo:140,inventory:{pistol}});assert.equal(inventoryUsage(enemy(s)).used,12);
+  const s=field({ammo:60,inventory:{pistol,...Object.fromEntries(Array.from({length:4},(_,i)=>[`long-${i}`,{weapon:1800,count:1,weight:4,loaded:0}]))}});assert.equal(inventoryUsage(enemy(s)).used,12);
   assert.throws(()=>planEquipLoot(enemy(s),'pistol'));assert.notEqual(chooseEnemyAction(s,enemy(s))?.type,'equipLoot');
   const unsupported=field({inventory:{old:{count:1,weight:1,weapon:1700,loaded:0,condition:100}}});assert.notEqual(chooseEnemyAction(unsupported,enemy(unsupported))?.type,'equipLoot');
 });

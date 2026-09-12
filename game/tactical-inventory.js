@@ -1,3 +1,4 @@
+import {allocatePockets,rearrangePockets} from './inventory-pockets.js';
 import {lowerWeapon} from './weapon-readiness.js';
 import {validateReloadProgress} from './weapon-reload.js';
 import {WEAPONS} from './data.js';
@@ -6,8 +7,8 @@ import {FITTING_PATTERNS,validateFitting,validateFittingPattern,validateWeaponFi
 
 // JA2 manual pp. 21–25: separate hands and pack, finite inventory slots,
 // selectable quantities, passing, dropping, and retained weapon contents.
-// Twelve abstract capacity units and these period supply stacks are Granaderos
-// tuning; they do not reproduce the original small/large pocket geometry.
+// Four large and eight small pockets share the same layout for every soldier.
+// Supply stack limits and bulk classifications are period-game tuning.
 export const INVENTORY_CAPACITY = 12;
 export const SUPPLY_ITEMS = Object.freeze(Object.fromEntries([
   ['ammo', 'Cartuchos', 20, .04], ['priming', 'Pólvora de cebar', 50, .01],
@@ -110,7 +111,7 @@ function recordDescriptor(item, value) {
   const compactWeapon = handheld && [1805, 1806, 1808, 1811, 1813].includes(spec.id);
   const slotSize = handheld ? compactWeapon ? 1 : 2 : value.weight > 2 ? 2 : 1;
   const label = value.fittingPattern != null ? fittingLabel(value.fittingPattern) : spec?.name ?? (isTool(value) ? TOOL_LABELS[value.toolKey] : item.replace(/^inventory:/, ''));
-  return {item, label, name: label, stackLimit: spec || isTool(value) || value.instanceId ? 1 : slotSize === 2 ? 1 : 4, slotSize, weight: value.weight+fittingWeight(value), kind: spec ? 'weapon' : isTool(value) ? 'tool' : 'inventory'};
+  return {item, label, name: label, ...(spec?{weapon:spec.id,loaded:value.loaded,condition:value.condition}:{}), stackLimit: spec || isTool(value) || value.instanceId ? 1 : slotSize === 2 ? 1 : 4, slotSize, weight: value.weight+fittingWeight(value), kind: spec ? 'weapon' : isTool(value) ? 'tool' : 'inventory'};
 }
 
 export function itemQuantity(unit, item) {
@@ -132,10 +133,11 @@ export function inventoryUsage(unit) {
     const count = itemQuantity(unit, item);
     if (!count) continue;
     const descriptor = itemDescriptor(unit, item), stacks = Math.ceil(count / descriptor.stackLimit);
-    items.push({...descriptor, count, stacks, slots: stacks * descriptor.slotSize});
+    items.push({...descriptor, count, stacks, slots: stacks});
   }
   const used = items.reduce((total, entry) => total + entry.slots, 0);
-  return {used, capacity: INVENTORY_CAPACITY, free: Math.max(0, INVENTORY_CAPACITY - used), overloaded: used > INVENTORY_CAPACITY, items};
+  const layout=allocatePockets(items,unit.pocketOrder);
+  return {used, capacity: INVENTORY_CAPACITY, free: layout.slots.filter(slot=>!slot.entry).length, overloaded: layout.overflow.length>0, items,...layout};
 }
 
 export function extractItemQuantity(unit, item, count = 1) {
@@ -209,7 +211,7 @@ export function applyItemQuantity(unit, stack) {
     if (value.weapon !== undefined || isTool(value)) {
       // Legacy stacked weapons all retain their contents; split only when moved.
       // Bound allocation before generating individual destination records.
-      if (value.count * recordDescriptor(entry.key, value).slotSize > INVENTORY_CAPACITY - usage.used) fail('No queda espacio para esa cantidad de objetos.');
+      if (value.count > INVENTORY_CAPACITY - usage.used) fail('No queda espacio para esa cantidad de objetos.');
       for (let i = 0; i < value.count; i++) next.inventory[uniqueKey(next.inventory, entry.key)] = {...structuredClone(value), count: 1};
     } else {
       const previous = own(next.inventory, entry.key) ? record(next.inventory[entry.key]) : null;
@@ -266,3 +268,12 @@ export function planRemoveBayonet(unit,destination='inventory') {
   }
   return {unit:clearFittingGuard(next),fitting:structuredClone(fitting),destination,host:unit.weapon};
 }
+
+export function planPocketMove(unit,sourceId,destinationId,expectedSource,expectedDestination){
+ const layout=inventoryUsage(unit),next=structuredClone(unit);
+ for(const [id,expected]of [[sourceId,expectedSource],[destinationId,expectedDestination]])if(expected!==undefined&&expected!==pocketFingerprint(layout.slots.find(slot=>slot.id===id)))throw Error('Cambió el contenido del bolsillo. Seleccioná el objeto de nuevo.');
+ next.pocketOrder=rearrangePockets(layout,sourceId,destinationId);
+ return next;
+}
+
+export const pocketFingerprint=slot=>JSON.stringify(slot?.entry?{item:slot.entry.item,index:slot.entry.index,count:slot.entry.count}:null);

@@ -26,12 +26,12 @@ test('supplies cross explicit stack boundaries rather than using one unlimited s
   assert.equal(itemDescriptor(soldier(), 'ammo').name, 'Cartuchos');
 });
 
-test('stored long arms cost two units while compact weapons cost one and do not stack', () => {
+test('stored long arms require large pockets while compact weapons fit small pockets and do not stack', () => {
   const unit = empty({inventory: {
     musket: {count: 1, weight: 4, weapon: 1800, loaded: 1},
     pistols: {count: 2, weight: 1.2, weapon: 1808, loaded: 2},
   }});
-  assert.equal(inventoryUsage(unit).used, 4);
+  assert.equal(inventoryUsage(unit).used, 3);
   assert.equal(itemDescriptor(unit, 'musket').slotSize, 2);
   assert.equal(itemDescriptor(unit, 'pistols').stackLimit, 1);
   assert.equal(itemQuantity(unit, 'inventory:pistols'), 2);

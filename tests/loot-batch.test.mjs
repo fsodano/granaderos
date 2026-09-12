@@ -30,7 +30,7 @@ test('one batch takes exact body and ground quantities for one pickup cost witho
 test('a late capacity failure rolls back earlier otherwise valid selections',()=>{
   const s=field({ammo:220});
   const first=[{groundId:'rounds',count:1}],last=[{targetId:'body',item:'weapon',count:1}];
-  assert.equal(lootBatchPreview(s,s.units[0],first).valid,true);assert.equal(lootBatchPreview(s,s.units[0],last).valid,false);
+  assert.equal(lootBatchPreview(s,s.units[0],first).valid,true);assert.equal(lootBatchPreview(s,s.units[0],last).valid,true);
   unchanged(s,[...first,...last]);assert.equal(Boolean(s.units[1].weaponDropped),false);assert.equal(s.groundItems[0].count,12);
 });
 

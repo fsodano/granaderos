@@ -407,7 +407,7 @@ export function inventoryModel(state, unit) {
   ];
   let pockets;
   try { pockets = inventoryUsage(unit); }
-  catch { pockets = {used: null, capacity: INVENTORY_CAPACITY, free: 0, overloaded: true, items: []}; }
+  catch { pockets = {used: null, capacity: INVENTORY_CAPACITY, free: 0, overloaded: true, items: [], slots: [], overflow: []}; }
   return {
     stats,
     slots: {primary: weaponFor({...unit, activeSlot: 'primary'}), blade: BLADES[unit.blade] ? bladeFor({...unit, activeSlot: 'blade'}) : null, medical: {name: 'Vendas de campaña', count: unit.medkits ?? 0}},

@@ -74,7 +74,7 @@ test('a fitting wears through its last committed thrust and then permits only st
 test('hand extraction and pack transfer retain the complete assembly and loaded charge weight once',()=>{
   const unit=planFitBayonet(battle().units[0],'blade').unit,weight=carriedWeight(unit),stack=handRecord(unit,'primary');
   const extracted=extractItemQuantity(unit,'primary');assert.deepEqual(extracted.stack.fittings,unit.weaponFittings);assert.deepEqual(extracted.unit.weaponFittings,{});
-  const stored=applyItemQuantity(extracted.unit,extracted.stack);assert.equal(carriedWeight(stored),weight);assert.equal(inventoryUsage(stored).used,2);assert.equal(stack.weight,4);assert.equal(stack.fittings.bayonet.condition,73);
+  const stored=applyItemQuantity(extracted.unit,extracted.stack);assert.equal(carriedWeight(stored),weight);assert.equal(inventoryUsage(stored).used,1);assert.equal(stack.weight,4);assert.equal(stack.fittings.bayonet.condition,73);
   assert.throws(()=>applyItemQuantity(unit,extracted.stack),/identificado/);
   assert.throws(()=>applyItemQuantity(unit,{item:'weapon',...loose()}),/identificado/);
 });

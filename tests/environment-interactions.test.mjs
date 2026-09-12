@@ -177,7 +177,7 @@ test('finite tools occupy individual slots and transfer condition without stacki
   assert.equal(Object.keys(received.inventory).length, 2);
   for (const record of Object.values(received.inventory)) {assert.equal(record.count, 1); assert.equal(record.condition, 63); assert.equal(record.toolKey, 'lockpick');}
   assert.equal(inventoryUsage(received).used, 2);
-  assert.equal(inventoryUsage(soldier('crowbar')).used, 2);
+  assert.equal(inventoryUsage(soldier('crowbar')).used, 1);
 });
 
 test('wear of a legacy tool stack affects only one tool and retains its equipped identity', () => {
@@ -206,7 +206,7 @@ test('authored caches reuse existing map IDs and give tools before any required 
   assert.ok(map.props.some(prop => prop.id === authored.containers[0].id));
   let unit = soldier();
   for (const item of authored.containers[0].contents) unit = applyItemQuantity(unit, item);
-  assert.equal(inventoryUsage(unit).used, 5);
+  assert.equal(inventoryUsage(unit).used, 4);
   const key = Object.entries(unit.inventory).find(([, record]) => record.toolKey === 'key');
   unit.activeSlot = 'tool'; unit.activeTool = `inventory:${key[0]}`;
   assert.equal(environmentActionProfile(unit, authored.doors[0], 'unlock').valid, true);

@@ -4,6 +4,7 @@ import {maximumEnergy} from '../../game/fatigue.js';
 // Pure read model (game/ja2-hud.js inventoryModel/orderDescriptors); all mutations are caller-provided callbacks.
 import {useEffect, useState} from 'react';
 import TacticalMinimap from './TacticalMinimap';
+import JA2Pockets from './JA2Pockets';
 import TrainingProgress from './TrainingProgress';
 import JA2EnvironmentPanel from './JA2EnvironmentPanel';
 import {LooseBayonetControl, AttachedBayonetControl, FittingReadout} from './JA2Bayonet';
@@ -182,8 +183,8 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
         </div>
       </div>
       <div className="slot-grid">
-        <p className="ja2-pocket-count">Mochila · {inv.pockets.free} espacios libres</p>
-        {inv.backpack.map((item: any) => {
+        <JA2Pockets key={unit.id} unit={unit} layout={inv.pockets} disabled={busyDisabled} onPick={chooseItem} onOrder={onOrder}/>
+        {inv.backpack.filter((record:any)=>`inventory:${record.key}`===managedItem).map((item: any) => {
           const gun = (WEAPONS as any)[item.weapon];
           const blade = (BLADES as any)[item.weapon];
           const primaryEquip = equipLootPreview(battle, unit, item.key, 'primary');
@@ -203,10 +204,10 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
             </div>
           );
         })}
-        {Array.from({length: inv.pockets.free}, (_, i) => <div className="slot-cell" aria-hidden="true" key={`empty-${i}`} />)}
+
       </div>
       <div className="pertrechos">
-        <div className="ja2-supply-items" aria-label="Pertrechos disponibles">{inv.supplies.map((supply: any) => <button key={supply.id} className="line-button" disabled={busyDisabled || supply.count < 1} aria-pressed={item?.item === supply.id} onClick={() => chooseItem(supply.id)}>{supply.count} {supply.label}</button>)}</div>
+
         <div className="ja2-item-handling" aria-label="Dar o soltar equipo">
           <label>Objeto<select aria-label="Objeto para dar o soltar" disabled={busyDisabled || !inv.items.length} value={item?.item || ''} onChange={event => chooseItem(event.target.value)}>{!inv.items.length && <option value="">Sin objetos</option>}{inv.items.map((entry: any) => <option key={entry.item} value={entry.item}>{entry.label} · {entry.count}</option>)}</select></label>
           <label>Cantidad<input aria-label="Cantidad de objetos" type="number" min="1" step="1" max={item?.count || 1} disabled={busyDisabled || !item} value={count} onChange={event => setQuantity(Number(event.target.value))} /></label>

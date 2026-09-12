@@ -108,20 +108,18 @@ test('equipment panel keeps quantity, give/drop and selective pickup controls ou
   const markup=strip(s,true);
   for(const label of ['Objeto para dar o soltar','Cantidad de objetos','Aliado que recibe el equipo','Objeto cercano para recoger','Cantidad para recoger'])assert.ok(markup.includes(`aria-label="${label}"`),label);
   assert.match(markup,/Manos libres/);assert.match(markup,/Soltar aquí · 4 PA/);assert.match(markup,/Recoger · 8 PA/);
-  assert.match(markup,/value="inventory:found"/);assert.match(markup,/estado 63%/);assert.match(markup,/Mochila · 3 espacios libres/);
+  assert.match(markup,/value="inventory:found"/);assert.match(markup,/estado 63%/);assert.match(markup,/4 grandes \/ 8 pequeños/);
   assert.match(markup,/En el suelo · Cartuchos · 7/);
   assert.ok(!strip(s).includes('Cantidad de objetos'));assert.ok(!strip(s).includes('Soltar aquí'));
 });
 
 test('equipping a small weapon cannot hide the space needed to store the current gun',()=>{
   const s=fixture(),u=s.units[0];u.inventory.pistol={weapon:1805,count:1,weight:1.3,loaded:1,condition:100};
-  for(let i=0;i<4;i++)u.inventory[`pack${i}`]={count:1,weight:1};
+  for(let i=0;i<4;i++)u.inventory[`pack${i}`]={count:1,weight:4,weapon:1800,loaded:0};
   const preview=equipLootPreview(s,u,'pistol','primary');assert.equal(preview.valid,false);
   assert.equal(actBattle(s,{type:'equipLoot',unitId:u.id,inventoryKey:'pistol',slot:'primary'}).lastError,preview.reason);
-  const button=strip(s,true).match(/<button[^>]*>Equipar principal · 6 PA<\/button>/)?.[0];
-  assert.ok(button);assert.match(button,/disabled=""/);assert.ok(button.includes(`title="${preview.reason}"`));
+  assert.match(strip(s,true),/Bolsillo grande 4/);
   delete u.inventory.pack3;assert.equal(equipLootPreview(s,u,'pistol','primary').valid,true);
-  const ready=strip(s,true).match(/<button[^>]*>Equipar principal · 6 PA<\/button>/)?.[0];assert.ok(ready);assert.ok(!ready.includes('disabled'));
 });
 
 test('the environment panel never renders closed contents or an unknown trap',()=>{
