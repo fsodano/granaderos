@@ -31,8 +31,13 @@ test('paid artillery is issued once, leaves stock and survives a real victory wi
  const after=won(),guns=after.sectorStates.san_nicolas.artillery;assert.equal(guns.length,1);assert.equal(guns[0].type,'swivel');assert.equal(ownedArtilleryCount(after),1);assert.equal(after.resources.cannons,0);assert.deepEqual(save(after).sectorStates.san_nicolas.artillery,guns);
 });
 test('firing in a safe sector leaves the same empty gun at the same full-size map position across repeated real reports',()=>{
- let c=won();c=order(c,{type:'visitSector'});let b=enterSector(c.pendingBattle,c.sectorStates.san_nicolas);const gun=b.artillery[0],id=gun.id,u=b.units.find(u=>u.side==='player'&&!u.militia);
- const step=getReachable(b,u).filter(p=>{const actor={...u,x:p.x,y:p.y,tacticalLevel:tacticalLevel(p)};return sameSurface(p,gun)&&!artilleryCrewPlan(b,actor,gun,artilleryCosts(b,actor,gun).fire).reason;}).sort((a,b)=>a.cost-b.cost)[0];assert.ok(step);b=act(b,{type:'move',unitId:u.id,x:step.x,y:step.y,tacticalLevel:tacticalLevel(step)});
+ let c=won();c=order(c,{type:'visitSector'});let b=enterSector(c.pendingBattle,c.sectorStates.san_nicolas);const gun=b.artillery[0],id=gun.id;
+ // Battle casualties determine the available crew. The first roster entry
+ // can be unconscious; choose an actual survivor with a legal approach.
+ const approach=b.units.filter(u=>u.side==='player'&&!u.militia).flatMap(u=>getReachable(b,u).filter(p=>{const actor={...u,x:p.x,y:p.y,tacticalLevel:tacticalLevel(p)};return sameSurface(p,gun)&&!artilleryCrewPlan(b,actor,gun,artilleryCosts(b,actor,gun).fire).reason;}).map(step=>({u,step}))).sort((a,b)=>a.step.cost-b.step.cost||a.u.id.localeCompare(b.u.id))[0];
+ assert.ok(approach,'a surviving soldier must reach a valid gun crew position');const {u,step}=approach,elapsed=b.elapsedSeconds;assert.ok(step.path.length);assert.equal(b.mode,'exploration');
+ b=act(b,{type:'move',unitId:u.id,x:step.x,y:step.y,tacticalLevel:tacticalLevel(step)});
+ const crew=b.units.find(v=>v.id===u.id);assert.equal(crew.ap,u.ap);assert.ok(crew.energy<u.energy);assert.ok(b.elapsedSeconds>elapsed);assert.equal(artilleryCrewPlan(b,crew,b.artillery[0],artilleryCosts(b,crew,b.artillery[0]).fire).reason,null);
  b=act(b,{type:'artillery',unitId:u.id,artilleryId:id,x:gun.x+2,y:gun.y,mode:'solid'});assert.equal(b.artillery[0].loaded,false);assert.equal(b.artillery[0].ammo,6);c=returnVisit(c,b);
  for(let i=0;i<3;i++){
   c=order(save(c),{type:'visitSector'});b=enterSector(c.pendingBattle,c.sectorStates.san_nicolas);assert.equal(b.artillery.length,1);assert.equal(b.artillery[0].id,id);assert.equal(b.artillery[0].loaded,false);assert.equal(b.artillery[0].ammo,6);assert.equal(b.artillery[0].x,gun.x);assert.equal(b.artillery[0].y,gun.y);c=returnVisit(c,b);assert.equal(c.resources.cannons,0);
