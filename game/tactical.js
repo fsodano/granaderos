@@ -1,4 +1,6 @@
 import {regionalWeatherAt} from './regional-weather.js';
+import {heldThrowingKnife,knifeThrowCosts,knifeThrowRange,knifeThrowChance,knifeThrowDamage} from './thrown-knife.js';
+import {knifeFlight} from './knife-flight.js';
 import {usesElevationGeometry,elevationSightClear,absoluteBodyHeight,geometryCells,rayHeightIntersection} from './sight-geometry.js';
 import {tacticalLevel,spaceKey,sameSurface,sameCell,surfaceAt,surfaceHeight,accessStepsFrom} from './tactical-space.js';
 import {questGiftPlan} from './quests.js';
@@ -432,6 +434,7 @@ function damage(s,target,amount,source,projectile=false,hitLocation='torso',extr
   if(report)say(s,`${sourceKnown?source.name+' hiere a': 'Un ataque alcanza a'} ${target.name}${projectile&&hitLocation!=='torso'?` (${getHitLocationProfile(hitLocation).label.toLowerCase()})`:''}: ${impact.damage} de daño.`);
   if(target.hp===0){if(report)say(s,`${target.name} cayó en combate.`);for(const u of s.units.filter(u=>u.side===target.side&&alive(u)))u.morale=Math.max(0,u.morale-18);}
   holdMorale(s,target);if(alive(target)&&target.morale<15)rout(s,target,report);
+  return target;
 }
 // An interrupt grants control, not a new AP budget. Normal orders remain usable.
 export function interruptAvailable(s,u){
@@ -477,6 +480,46 @@ function inventoryOrderReason(s,u,pa){
   if(!window||u.knockedDown)return 'El soldado no puede manejar equipo ahora.';
   if(s.mode!=='exploration'&&u.ap<pa)return `Faltan ${pa} PA para manejar el equipo.`;
   return null;
+}
+// The attack cursor can inspect only bodies already known to this side. Actual
+// flight checks the complete roster after confirmation. Ground throws never
+// acquire an occupant or a selectable body region from private state.
+function knownKnifeFlight(s,u,point,hitLocation,options={}){
+  const units=s.units.filter(v=>v.side===u.side||(u.side==='player'?teamCanSee(s,u.side,v):canSee(s,u,v)));
+  return knifeFlight({...s,units},u,point,hitLocation,options);
+}
+export function knifeThrowPreview(s,u,target,options={}){
+  const costs=u?knifeThrowCosts(u,target,options.aim):{total:0,aimLevel:0,stance:0,turn:0,attack:0,aim:0,energy:6};
+  const knife=heldThrowingKnife(u),range=u?knifeThrowRange(u,knife):{nominal:0,maximum:0};
+  const hitLocation=options.hitLocation??'torso',pointShot=target?.id===undefined;
+  let reason=inventoryOrderReason(s,u,costs.total),flight=null;
+  if(!reason&&!knife)reason='Prepará el facón que querés lanzar en la mano.';
+  if(!reason&&u.mounted)reason='Desmontá antes de lanzar el facón.';
+  if(!reason&&(!Number.isInteger(target?.x)||!Number.isInteger(target?.y)||!surfaceAt(s,target)))reason='Seleccioná una superficie del mapa.';
+  if(!reason&&sameCell(u,target))reason='Seleccioná otra casilla para lanzar el facón.';
+  if(!reason&&!HIT_LOCATIONS.includes(hitLocation))reason='Seleccioná torso, cabeza o piernas.';
+  if(!reason&&pointShot&&hitLocation!=='torso')reason='El lanzamiento a una casilla apunta a una altura fija.';
+  if(!reason&&!pointShot){
+    const actual=s.units.find(v=>v.id===target.id);
+    if(!actual||!sameCell(actual,target)||actual.side===u.side||!targetable(actual))reason='Seleccioná un enemigo activo.';
+    else if(!(u.side==='player'?teamCanSee(s,u.side,actual):canSee(s,u,actual)))reason='El objetivo no está a la vista.';
+    else if(!shotLocationsFor(actual).includes(hitLocation))reason='Un objetivo cuerpo a tierra tiene una sola zona de tiro.';
+  }
+  if(!reason&&(u.energy??100)<costs.energy)reason='Falta energía para lanzar el facón.';
+  const distance=target&&u&&surfaceAt(s,target)?spaceDistance(s,u,target):Infinity;
+  if(!reason&&distance>range.maximum)reason='Fuera del alcance del facón.';
+  const prepared=u?{...u,stance:'standing',facing:costs.facing}:u;
+  const point=pointShot&&target?{...positionOf(target),stance:'standing',mounted:false}:target;
+  if(!reason){flight=knownKnifeFlight(s,prepared,point,hitLocation);if(!flight.landing||flight.impact.kind==='invalid')reason='No hay una trayectoria válida para el facón.';}
+  const chance=reason?0:knifeThrowChance(u,distance,costs.aimLevel,knife);
+  return {valid:!reason,reason,pa:costs.total,aim:costs.aimLevel,chance:flight?.blocked||flight?.victimId&&flight.victimId!==target?.id?0:chance,hitLocation,range,flight,costs,pointShot};
+}
+// One transient visual per returned state; it never enters a save or public
+// state payload. Unseen actors are excluded from the displayed trajectory.
+const knifeThrowVisuals=new WeakMap();
+export function getKnifeThrowVisual(before,after){
+  const visual=knifeThrowVisuals.get(after);
+  return visual&&before!==after?structuredClone(visual):null;
 }
 export function pointFirePreview(s,u,point,aim=0){
   const level=clamp(Number.isFinite(aim)?Math.floor(aim):0,0,4),costs=u?actionCosts(s,u,point):{fire:0,aim:0},pa=costs.fire+level*costs.aim;
@@ -994,6 +1037,32 @@ if(a.type==='move'||a.type==='climb'){
 
   sayObserved(s,[u],u.side==='player'?`${u.name} ${movementIntent==='preserveFacing'?'se desplaza sin girar':'avanza'} ${steps} casillas${exploring?'':` (${spent} PA)`}.`:`${u.name} avanza.`);
 }
+else if(a.type==='throwKnife'){
+  const point=target??{...positionOf(a),stance:'standing',mounted:false},preview=knifeThrowPreview(s,u,point,a);
+  if(!preview.valid)return fail(preview.reason);
+  if(u.stance!=='standing'||preview.costs.turn)return fail('Ponete de pie y mirá hacia el objetivo antes de lanzar.');
+  const knife=heldThrowingKnife(u),source={...positionOf(u),height:absoluteBodyHeight(s,u,'muzzle')},height=absoluteBodyHeight(s,point,preview.hitLocation);
+  const accuracy=knifeThrowChance(u,spaceDistance(s,u,point),preview.aim,knife),hit=random(s)*100<accuracy;
+  const end=hit?point:scatteredShotDestination(s,u,point),flightState=!hit&&target?{...s,units:s.units.filter(v=>v.id!==target.id)}:s;
+  const flight=knifeFlight(flightState,u,end,preview.hitLocation,{destinationHeight:height});
+  if(!flight.landing||flight.impact.kind==='invalid')return fail('No hay una trayectoria válida para el facón.');
+  const shown=knownKnifeFlight(flightState,u,end,preview.hitLocation,{destinationHeight:height}),visible=journalVisible(s,u);
+  const amount=knifeThrowDamage(u,knife),extracted=extractItemQuantity(u,knife.slot,1);
+  replaceUnit(u,extracted.unit);
+  if(!pay(preview.pa))return fail('PA insuficientes.');
+  u.momentum=0;u.overwatch=false;u.braced=false;delete u.lastTargetId;delete u.lastShotPosition;
+  emitNoise(s,u,'knife');
+  let victim=s.units.find(v=>v.id===flight.victimId),stored=false;
+  if(victim){
+    victim=damage(s,victim,amount,u,true,flight.hitLocation);
+    if(victim.side!==u.side){practice(u,'marksmanship');practice(u,'agility');}
+    try{replaceUnit(victim,applyItemQuantity(victim,extracted.stack));stored=true;}catch{/* A full pack leaves the exact knife at the supported impact cell. */}
+  }
+  if(!stored)addGroundStack(s,extracted.stack,flight.landing);
+  exhaust(s,u,preview.costs.energy);
+  sayObserved(s,[u],`${u.name} lanza el facón que llevaba en la mano.`);
+  if(visible)knifeThrowVisuals.set(s,{source,impact:shown.impact,landing:shown.landing,weapon:knife.record.weapon,visible:true});
+}
 else if(a.type==='firePoint'){
   const preview=pointFirePreview(s,u,a,a.aim);if(!preview.valid)return fail(preview.reason);
   if(a.targetId!==undefined)return fail('El disparo a una casilla usa coordenadas, no una persona.');
@@ -1379,6 +1448,25 @@ export function actBattle(state,action){
   return next.lastError?next:cleanActionTime(settleAutonomous(next));
 }
 function actBattleInput(state,action){
+  if(action.type==='throwKnife'){
+    const unit=state.units.find(u=>u.id===String(action.unitId)),target=action.targetId===undefined?action:state.units.find(u=>u.id===String(action.targetId));
+    const plan=knifeThrowPreview(state,unit,target,action);
+    if(!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason;say(rejected,plan.reason);return rejected;}
+    let prepared=state;
+    for(const type of ['stance','look']){
+      const current=prepared.units.find(u=>u.id===String(action.unitId)),costs=knifeThrowCosts(current,target,action.aim);
+      if(!(type==='stance'?costs.stance:costs.turn))continue;
+      const order=type==='stance'?{type,unitId:current.id,stance:'standing'}:{type,unitId:current.id,...positionOf(target)};
+      const next=actBattleOrder(prepared,order);
+      const ready=next.units.find(u=>u.id===current.id);
+      if(!approachCompleted(prepared,next,current.id,{destination:positionOf(current)})||!knifeThrowPreview(next,ready,action.targetId===undefined?action:next.units.find(v=>v.id===String(action.targetId)),action).valid){
+        if(!next.lastError)say(next,'La preparación se detuvo antes del lanzamiento. Revisá la situación y apuntá de nuevo.');
+        return next;
+      }
+      prepared=next;
+    }
+    return actBattleOrder(prepared,action);
+  }
   if(action.type==='approachLoot'){
     const unit=state.units.find(u=>u.id===String(action.unitId)),plan=lootSearchPreview(state,unit,action);
     if(unit?.side!=='player'||!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason??'No puedes dar órdenes a ese soldado.';say(rejected,rejected.lastError);return rejected;}

@@ -3,9 +3,10 @@ import {atHand,moveOrder,planningPoint} from './tactical-planning-space.js';
 import {chooseSupplySharingAction} from './tactical-ai-sharing.js';
 import {chooseScavengingAction} from './tactical-ai-scavenging.js';
 import {directionTo,facingAllowsSight,turnAPCost} from './tactical-awareness.js';
-import {getReachable, canSee, hasLineOfSight, shotChance, firearmShotOptions, actionCosts, stanceCost, weaponFor, bladeFor, planEquipLoot, maxActionPoints, AP_CARRY_LIMIT, movementStepCost, climbPreview} from './tactical.js';
+import {getReachable, canSee, hasLineOfSight, shotChance, firearmShotOptions, actionCosts, stanceCost, weaponFor, bladeFor, planEquipLoot, maxActionPoints, AP_CARRY_LIMIT, movementStepCost, climbPreview,knifeThrowPreview} from './tactical.js';
+import {heldThrowingKnife,knifeThrowDamage} from './thrown-knife.js';
 import {planFitBayonet} from './tactical-inventory.js';
-import {shotLocationEffects} from './targeted-combat.js';
+import {shotLocationEffects,shotLocationsFor} from './targeted-combat.js';
 
 // Decisions use only this soldier's sight and the last place an opponent was seen.
 // No randomness or state changes occur here; tactical.js applies the returned order.
@@ -51,6 +52,28 @@ function bestShot(state, unit, targets, budget = unit.ap) {
     }
   }
   return best;
+}
+
+export function chooseKnifeThrow(state,unit,targets){
+  const knife=heldThrowingKnife(unit);if(!knife)return null;
+  let best=null;
+  for(const target of targets){
+    if(target.side===unit.side||!active(target)||!canSee(state,unit,target))continue;
+    for(const hitLocation of shotLocationsFor(target))for(let aim=0;aim<=4;aim++){
+      const plan=knifeThrowPreview(state,unit,target,{aim,hitLocation});
+      // Spend a finite knife only inside its useful range, with a good clear
+      // chance. Known friendly bodies and cover cancel the attempt. Unknown
+      // bodies remain a real risk, as they do for the player's cursor.
+      if(!plan.valid||plan.chance<65||distance(unit,target)>plan.range.nominal||plan.flight.victimId!==target.id)continue;
+      const effect=shotLocationEffects(hitLocation,knifeThrowDamage(unit,knife),target);
+      const score=(Math.min(target.hp,effect.damage)+effect.breathLoss*.15)*plan.chance/100-plan.pa*.35;
+      if(!best||score>best.score)best={target,aim,hitLocation,plan,score};
+    }
+  }
+  if(!best)return null;
+  if(best.plan.costs.stance)return {type:'stance',unitId:unit.id,stance:'standing'};
+  if(best.plan.costs.turn)return {type:'look',unitId:unit.id,x:best.target.x,y:best.target.y,tacticalLevel:tacticalLevel(best.target)};
+  return {type:'throwKnife',unitId:unit.id,targetId:best.target.id,aim:best.aim,hitLocation:best.hitLocation};
 }
 
 function maintenance(state, unit, costs) {
@@ -250,6 +273,9 @@ export function chooseEnemyAction(state, unit) {
   const adjacent = targets.filter(target => atHand(unit,target,blade.reach) && hasLineOfSight(state, unit, target));
   adjacent.sort((a, b) => a.hp - b.hp || distance(unit, a) - distance(unit, b) || compareId(a, b));
   if (adjacent.length && unit.ap >= costs.melee) return {type: 'melee', unitId: unit.id, targetId: adjacent[0].id};
+
+  const knifeThrow=chooseKnifeThrow(state,unit,targets);
+  if(knifeThrow)return knifeThrow;
 
   const shot = bestShot(state, unit, targets);
   const support = state.units.filter(other => other.side === unit.side && active(other) && distance(unit, other) <= 8).length;

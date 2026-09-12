@@ -6,7 +6,7 @@ import {SUPPLY_ITEMS} from './tactical-inventory.js';
 // The cone, AP costs, sound radii, and uncertainty below are Granaderos tuning.
 // These helpers neither inspect a battle nor use RNG or change their inputs.
 export const FACING_LABELS = Object.freeze(['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW']);
-export const NOISE_KINDS = Object.freeze(['move', 'fire', 'reload', 'door', 'melee', 'explosion', 'alarm']);
+export const NOISE_KINDS = Object.freeze(['move', 'fire', 'reload', 'door', 'melee', 'knife', 'explosion', 'alarm']);
 
 const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
 function finite(value, label, minimum = -Infinity) {
@@ -77,7 +77,7 @@ export function noiseRadius(kind, unit = {}, tile = {}) {
   noiseKind(kind);
   const heldFacon = unit.activeSlot === 'blade' ? unit.blade === 1813 : (unit.activeSlot ?? 'primary') === 'primary' && !unit.weaponDropped && unit.weapon === 1813;
   if (kind === 'melee' && heldFacon) return 3;
-  if (kind !== 'move') return {fire: 18, reload: 3, door: 5, melee: 7, explosion: 28, alarm: 20}[kind];
+  if (kind !== 'move') return {fire: 18, reload: 3, door: 5, melee: 7, knife: 2, explosion: 28, alarm: 20}[kind];
   const mode = unit.movementMode ?? 'walk';
   if (!['walk', 'run', 'crouch', 'prone'].includes(mode)) throw new RangeError('Unknown movement mode.');
   const surface = {stone: 2, rubble: 2, forest: 1, scrub: 1, mud: 1, water: 3}[tile.type] ?? 0;

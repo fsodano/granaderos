@@ -1,3 +1,4 @@
+import {NOISE_KINDS} from './tactical-awareness.js';
 import {validateTacticalSpace} from './tactical-space.js';
 import {validateRegionalWeather} from './regional-weather.js';
 import {validateQuestGifts} from './quests.js';
@@ -51,7 +52,7 @@ validateWeaponReadiness(u,Boolean(WEAPONS[u.weapon]));
 validateReloadProgress(u.reloadProgress,WEAPONS[u.weapon]?.capacity??0,u.loaded,u.weaponDropped);
 for(const k of ['ammo','priming','flints','rations','torches','boleadoras','medkits','strengthTraining'])if(u[k]!==undefined)need(integer(u[k],0,1000000),'suministros');
 if(u.facing===undefined)u.facing=u.side==='enemy'?6:2;need(integer(u.facing,0,7),'dirección de observación');if(u.stealthMode===undefined)u.stealthMode=false;need(typeof u.stealthMode==='boolean','sigilo');
-if(u.lastHeardNoise!==undefined){const n=u.lastHeardNoise;need(coord(n)&&integer(n.turn,1,s.turn)&&['move','fire','reload','door','melee','explosion','alarm'].includes(n.kind)&&number(n.uncertainty,0,20),'ruido percibido');need(Object.keys(n).every(k=>['x','y','turn','kind','uncertainty'].includes(k)),'información del ruido');}
+if(u.lastHeardNoise!==undefined){const n=u.lastHeardNoise;need(coord(n)&&integer(n.turn,1,s.turn)&&NOISE_KINDS.includes(n.kind)&&number(n.uncertainty,0,20),'ruido percibido');need(Object.keys(n).every(k=>['x','y','turn','kind','uncertainty'].includes(k)),'información del ruido');}
 if(u.patrolOrigin!==undefined)need(coord(u.patrolOrigin),'puesto de patrulla');if(u.patrol!==undefined)need(typeof u.patrol==='boolean','patrulla');for(const k of ['patrolTurn','lastInvestigatedTurn'])if(u[k]!==undefined)need(integer(u[k],0,1e9),'reloj de patrulla');
 for(const k of ['unconscious','knockedDown','weaponDropped','fled','braced','mounted','horse','canMount','jammed','routed','surrendered','entangled','poncho','overwatch'])if(u[k]!==undefined)need(typeof u[k]==='boolean','estados del soldado');
 need(u.weaponMode===undefined||['fire','melee'].includes(u.weaponMode),'modo del arma');

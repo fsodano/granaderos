@@ -108,7 +108,8 @@ test('later bleeding ticks do not identify a casualty hidden behind a wall',()=>
 });
 
 test('a real interrupt accepts a location shot and survives save and deterministic continuation',()=>{
-  const s=field({enemies:[{id:'e',x:7,y:3,weapon:1813,experienceLevel:1,agility:30,patrol:false}]});Object.assign(s.units[0],{agility:100,experienceLevel:10,ap:40});s.units[1].ap=24;
+  // A sabre user must approach; a held facon can now throw from this position.
+  const s=field({enemies:[{id:'e',x:7,y:3,weapon:1809,experienceLevel:1,agility:30,patrol:false}]});Object.assign(s.units[0],{agility:100,experienceLevel:10,ap:40});s.units[1].ap=24;
   const paused=endTurn(s);assert.equal(paused.phase,'interrupt');const n=fire(paused,{x:12,y:6,aim:0});assert.equal(n.lastError,null);assert.equal(n.phase,'interrupt');assert.equal(n.units[0].ap,paused.units[0].ap-actionCosts(paused,paused.units[0]).fire);assert.equal(n.elapsedSeconds,paused.elapsedSeconds);
   assert.deepEqual(fire(validateBattleSnapshot(JSON.parse(JSON.stringify(paused))),{x:12,y:6,aim:0}),n);assert.deepEqual(endTurn(validateBattleSnapshot(JSON.parse(JSON.stringify(n)))),endTurn(n));
 });
