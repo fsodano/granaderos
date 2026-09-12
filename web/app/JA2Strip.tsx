@@ -1,4 +1,5 @@
 'use client';
+import JA2Hands from './JA2Hands';
 import JA2WeaponMode from './JA2WeaponMode';
 import {maximumEnergy} from '../../game/fatigue.js';
 // JA2 bottom-strip disposition (DESIGN.md MODE A / MODE B). Root switches content on inventoryId.
@@ -69,8 +70,9 @@ export default function JA2Strip({battle, selected, unit, players, missionAllies
           <small>{turn.interrupted ? 'Interrupción: usá los PA restantes. Esta pausa no recupera PA.' : battle.mode === 'exploration' ? 'Exploración: moverse consume energía y tiempo, sin gastar PA.' : `Dejá PA para interrumpir al enemigo. Se conservan hasta ${budget?.carryover} PA al próximo turno (límite ${AP_CARRY_LIMIT}).`}</small>
         </div>}
         {unit && <div className="ja2-equipped-slots" aria-label="Objeto equipado">
-          {equipmentSlots(battle, unit, {busy}).map((slot: any) => <button key={slot.slot} aria-pressed={slot.active} disabled={slot.active || slot.disabled} title={`Equipar ${slot.label} · ${slot.pa} PA`} onClick={() => { onOrder(slot.action); onMode('move'); }}>{slot.label}</button>)}
+          {equipmentSlots(battle, unit, {busy}).map((slot: any) => <button key={slot.slot} aria-pressed={slot.active} disabled={slot.active || slot.disabled} title={slot.reason||`Equipar ${slot.label} · ${slot.pa} PA`} onClick={() => { onOrder(slot.action); onMode('move'); }}>{slot.label}</button>)}
         </div>}
+        {unit&&<JA2Hands battle={battle} unit={unit} busy={busy} compact onOrder={a=>{onOrder(a);onMode('move');}} onPick={()=>onOpenInventory(unit.id)}/>}
         <JA2WeaponMode battle={battle} unit={unit} busy={busy} onOrder={onOrder} onMode={onMode}/>
         <p className="ja2-equipped-help">{equippedItemHelp(battle, unit, {target, mode, aim})}</p>
         {firearm && unit && <p className="ja2-equipped-help">Botón derecho: apuntar; sobre un personaje, aumentar puntería; sobre el suelo, volver a movimiento. Con la mira activa, clic izquierdo: disparar. La mira muestra la zona y los PA. Esc: cancelar.</p>}

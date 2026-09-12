@@ -1,13 +1,14 @@
+import {handLayout} from './hand-layout.js';
 import {reloadPlan,lookPreview} from './tactical.js';
 import {shotRangeText} from './shot-range.js';
 import {canChooseShotLocation} from './targeted-combat.js';
 import {tacticalGridLabel} from './tactical-grid.js';
 // Pure HUD model for the tactical battle inspector and squad strip.
 // Read-only descriptors plus action-object constructors; no game rules.
-import {weaponFor, bladeFor, hasFirearm, carriedWeight, carryCapacity, actionCosts, actionPointBudget, stanceCost, shotChance, firearmRangeProfile, firearmProjectilePath, firearmFlightPreview, canSee, hasLineOfSight, artilleryCosts, artilleryCrewPlan, artilleryReloadPreview, interruptAvailable, canEndCombat, fieldCapable, transferPreview, dropPreview, environmentTargetAt, environmentPreview, containerLootPreview, supplyUsePreview, getReachable, movementIntentReason, exitPreview, ARTILLERY, WEAPONS, BLADES} from './tactical.js';
+import {swapHandsPreview, weaponFor, bladeFor, hasFirearm, carriedWeight, carryCapacity, actionCosts, actionPointBudget, stanceCost, shotChance, firearmRangeProfile, firearmProjectilePath, firearmFlightPreview, canSee, hasLineOfSight, artilleryCosts, artilleryCrewPlan, artilleryReloadPreview, interruptAvailable, canEndCombat, fieldCapable, transferPreview, dropPreview, environmentTargetAt, environmentPreview, containerLootPreview, supplyUsePreview, getReachable, movementIntentReason, exitPreview, ARTILLERY, WEAPONS, BLADES} from './tactical.js';
 import {directionTo} from './tactical-awareness.js';
 import {unarmedChance} from './unarmed-combat.js';
-import {inventoryUsage, INVENTORY_CAPACITY, SUPPLY_ITEMS} from './tactical-inventory.js';
+import {inventoryUsage, itemDescriptor, INVENTORY_CAPACITY, SUPPLY_ITEMS} from './tactical-inventory.js';
 import {TOOL_TYPES, heldTool, ENVIRONMENT_VERBS, environmentTargetSummary, visibleContainerContents} from './environment-interactions.js';
 import {HELD_SUPPLIES, heldSupply} from './held-supplies.js';
 import {planGroupMove} from './group-movement.js';
@@ -357,7 +358,21 @@ export function slotAction(unit) {
 export function equipmentSlots(state, unit, ctx = {}) {
   const pa = state.mode === 'exploration' ? 0 : actionCosts(state, unit).weapon;
   const tools = toolItems(unit), activeTool = tools.find(tool => tool.item === unit.activeTool) || tools[0], supplies = supplyItems(unit), activeSupply = supplies.find(supply => supply.key === unit.activeSupply) || supplies[0];
-  return [['primary', 'Arma'], ['blade', 'Arma blanca'], ['medical', `Vendas · ${unit.medkits ?? 0}`], ...(tools.length ? [['tool', 'Herramienta']] : []), ...(supplies.length ? [['supply', `${activeSupply.label} · ${activeSupply.count}`]] : []), ['unarmed', 'Manos libres']].map(([slot, label]) => ({slot, label, pa, action: {type: 'weapon', slot, ...(slot === 'tool' ? {toolKey: activeTool.item} : slot === 'supply' ? {supplyKey: activeSupply.key} : {})}, active: (unit.activeSlot || 'primary') === slot, disabled: !unitCanAct(state, unit) || Boolean(ctx.busy) || Boolean(unit.knockedDown) || !affordable(state, unit, pa) || (slot === 'medical' ? !(unit.medkits > 0) : slot === 'blade' ? !BLADES[unit.blade] : slot === 'primary' ? !hasPrimary(unit) : false)}));
+  return [['primary', 'Arma'], ['blade', 'Arma blanca'], ['medical', `Vendas · ${unit.medkits ?? 0}`], ...(tools.length ? [['tool', 'Herramienta']] : []), ...(supplies.length ? [['supply', `${activeSupply.label} · ${activeSupply.count}`]] : []), ['unarmed', 'Manos libres']].map(([slot, label]) => ({slot, label, pa, action: {type: 'weapon', slot, ...(slot === 'tool' ? {toolKey: activeTool.item} : slot === 'supply' ? {supplyKey: activeSupply.key} : {})}, active: (unit.activeSlot || 'primary') === slot, disabled: !unitCanAct(state, unit) || Boolean(ctx.busy) || Boolean(unit.knockedDown) || !affordable(state, unit, pa) || (slot === 'medical' ? !(unit.medkits > 0) : slot === 'blade' ? !BLADES[unit.blade] : slot === 'primary' ? !hasPrimary(unit) : false)})).map(option=>{
+    const held={...unit,activeSlot:option.slot,activeTool:option.action.toolKey,activeSupply:option.action.supplyKey};
+    let reason=null;try{if(inventoryUsage(held).overloaded)reason='No queda espacio para guardar el objeto en mano.';}catch(error){reason=error.message;}
+    return {...option,reason,disabled:option.disabled||Boolean(reason)};
+  });
+}
+
+export function handSlots(state,unit){
+ const layout=handLayout(unit),options=equipmentSlots(state,unit);
+ return ['right','left'].map(side=>{
+  const reference=layout[side],blocked=side==='left'&&layout.twoHanded;
+  const descriptor=reference?itemDescriptor(unit,reference):null;
+  const option=reference==='offhand'?{...swapHandsPreview(state,unit),action:{type:'swapHands'}}:options.find(o=>o.slot===reference);
+  return {side,item:reference,blocked,label:descriptor?.label??(blocked?'Ocupada por el arma':'Vacía'),weapon:descriptor?.weapon,loaded:descriptor?.loaded,condition:descriptor?.condition,action:side==='left'?option?.action:null,pa:option?.pa,reason:option?.reason,disabled:blocked||side==='left'&&(option?.disabled||option?.valid===false)};
+ });
 }
 
 export function backpackEquipAction(key, slot) {
@@ -403,6 +418,7 @@ export function inventoryModel(state, unit) {
   const items = [
     ...(hasPrimary(unit) ? [{item: 'primary', label: weaponFor({...unit, activeSlot: 'primary'}).name, count: 1, loaded: unit.loaded, condition: unit.condition, jammed: Boolean(unit.jammed)}] : []),
     ...(BLADES[unit.blade] ? [{item: 'blade', label: BLADES[unit.blade].name, count: 1}] : []),
+    ...(unit.offHand ? [{...itemDescriptor(unit,'offhand'),...unit.offHand,item:'offhand',count:1}] : []),
     ...supplies.filter(supply => supply.count > 0).map(supply => ({item: supply.id, label: supply.label, count: supply.count})),
     ...backpack.filter(record => record.count > 0).map(record => ({...record, item: `inventory:${record.key}`, label: record.name || 'Pertrechos'})),
   ];
@@ -411,6 +427,7 @@ export function inventoryModel(state, unit) {
   catch { pockets = {used: null, capacity: INVENTORY_CAPACITY, free: 0, overloaded: true, items: [], slots: [], overflow: []}; }
   return {
     stats,
+    hands: handSlots(state,unit),
     slots: {primary: weaponFor({...unit, activeSlot: 'primary'}), blade: BLADES[unit.blade] ? bladeFor({...unit, activeSlot: 'blade'}) : null, medical: {name: 'Vendas de campaña', count: unit.medkits ?? 0}},
     activeSlot: unit.activeSlot,
     weight: carriedWeight(unit),

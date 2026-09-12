@@ -152,7 +152,7 @@ test('a full campaign save preserves a dropped weapon and permits exactly one la
   rejectUnchanged(next, {type: 'loot', unitId: receiverId, groundId});
 });
 
-test('campaign reports and reentry retain legacy equipment, finite dropped guns, and empty hands', () => {
+test('campaign reports and reentry retain dropped guns and the blade left in the other hand', () => {
   let campaign = dispatchCampaign(initialCampaign(), {type: 'visitSector'});
   assert.equal(campaign.lastError, null);
   let battle = enterSector(campaign.pendingBattle);
@@ -166,13 +166,13 @@ test('campaign reports and reentry retain legacy equipment, finite dropped guns,
   campaign = dispatchCampaign(pair.campaign, {type: 'leaveSector', battleId: pair.campaign.pendingBattle.id, sectorState: pair.battle, survivors: pair.battle.units.filter(u => u.side === 'player')});
   assert.equal(campaign.lastError, null);
   assert.equal(campaign.operativeState[4].weaponDropped, true);
-  assert.equal(campaign.operativeState[4].activeSlot, 'unarmed');
+  assert.equal(campaign.operativeState[4].activeSlot, 'blade');
   assert.equal(campaign.operativeState[4].inventory.legacy.count, 3);
   campaign = decodeSave(encodeSave(campaign)).campaign;
   campaign = dispatchCampaign(campaign, {type: 'visitSector'}); assert.equal(campaign.lastError, null);
   const revisited = enterSector(campaign.pendingBattle, campaign.sectorStates[campaign.location]);
   const returned = troop(revisited, '4');
-  assert.equal(returned.weaponDropped, true); assert.equal(returned.loaded, 0); assert.equal(returned.activeSlot, 'unarmed');
+  assert.equal(returned.weaponDropped, true); assert.equal(returned.loaded, 0); assert.equal(returned.activeSlot, 'blade');
   assert.deepEqual(returned.inventory.legacy, {weapon: 1820, count: 3, weight: .7, loaded: 0, condition: 80});
   assert.equal(returned.inventory.letters, 10001);
   assert.deepEqual(revisited.groundItems[0], originalGround);

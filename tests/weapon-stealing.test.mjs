@@ -46,9 +46,9 @@ test('distance, blocked sight and hidden targets cannot reveal or transfer equip
   const s=field();change(s);if(s.units[1].x===2) {s.units[1].x=3;}rejected(s);
  }
 });
-test('full pack rejects the swap before rolling; a missing primary needs no temporary pack slot',()=>{
- const s=field();Object.assign(s.units[0],{ammo:0,priming:0,flints:0,rations:0,medkits:0,boleadoras:0,torches:0,inventory:{cargo:{count:48,weight:1}}});assert.equal(inventoryUsage(s.units[0]).used,12);rejected(s);
- s.units[0].weaponDropped=true;s.units[0].loaded=0;const n=take(s);assert.equal(n.lastError,null);assert.equal(inventoryUsage(n.units[0]).used,12);assert.equal(n.units[0].weapon,1800);
+test('taking a gun uses the free hands while the old stowed pistol keeps its existing pocket',()=>{
+ const s=field();Object.assign(s.units[0],{ammo:0,priming:0,flints:0,rations:0,medkits:0,boleadoras:0,torches:0,inventory:{cargo:{count:44,weight:1}}});assert.equal(inventoryUsage(s.units[0]).used,12);const armed=take(s);assert.equal(armed.lastError,null);assert.equal(inventoryUsage(armed.units[0]).used,12);
+ s.units[0].weaponDropped=true;s.units[0].loaded=0;s.units[0].inventory.cargo.count=48;const n=take(s);assert.equal(n.lastError,null);assert.equal(inventoryUsage(n.units[0]).used,12);assert.equal(n.units[0].weapon,1800);
 });
 test('ordinary use still punches; pickup and control intent select a contested grab explicitly',()=>{
  const s=field(),u=s.units[0],target=s.units[1];assert.equal(pickupTargetAction(target,u).type,'steal');assert.equal(pickupTargetAction({...target,unconscious:true},u).type,'loot');

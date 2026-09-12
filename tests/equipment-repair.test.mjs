@@ -123,3 +123,6 @@ test('malformed repair scope and mixed legacy bindings reject without silently c
   }
   const s=equipmentTeam();s.operativeState[10].repairWeaponId=1800;assert.throws(()=>restoreCampaign(serializeCampaign(s)));
 });
+test('equipment repair includes the second gun without changing either gun load',()=>{
+ const record={condition:100,inventory:{},offHand:{count:1,weapon:1808,condition:97,jammed:true,loaded:2,instanceId:'repair-second'}},op={weapon:1805};assert.equal(repairEquipmentQueue(record,op)[0].key,'offhand');assert.equal(repairEquipment(record,op,3),3);assert.equal(record.offHand.condition,99);assert.equal(record.offHand.jammed,false);assert.equal(record.offHand.loaded,2);assert.equal(record.offHand.instanceId,'repair-second');assert.equal(record.condition,100);
+});

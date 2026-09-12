@@ -32,12 +32,13 @@ test('compatibility and source failures preserve AP, clocks, RNG and ownership',
   const low=battle();low.units[0].ap=11;reject(low,{type:'fitBayonet',item:'blade'});
 });
 
-test('pack source and full-pack removal are atomic; empty secondary can receive a removed fitting',()=>{
+test('removing a fitting needs a real pocket even when no spare blade is carried',()=>{
   let s=battle({blade:undefined,bladeInstanceId:undefined,bladeFittingPattern:null,inventory:{socket:loose()}});
   s=order(s,{type:'fitBayonet',item:'inventory:socket'});assert.deepEqual(s.units[0].inventory,{});
   s.units[0].inventory={bulk:{count:48,weight:1}};
   assert.equal(inventoryUsage(s.units[0]).used,12);assert.equal(removeBayonetPreview(s,s.units[0],'inventory').valid,false);
-  reject(s,{type:'removeBayonet',destination:'inventory'});s=order(s,{type:'removeBayonet',destination:'blade'});assert.equal(s.units[0].bladeInstanceId,'socket-1');
+  reject(s,{type:'removeBayonet',destination:'inventory'});reject(s,{type:'removeBayonet',destination:'blade'});
+  s.units[0].inventory.bulk.count=44;s=order(s,{type:'removeBayonet',destination:'blade'});assert.equal(s.units[0].bladeInstanceId,'socket-1');
 });
 
 test('repeat fitting and occupied secondary removal cannot overwrite or duplicate an item',()=>{

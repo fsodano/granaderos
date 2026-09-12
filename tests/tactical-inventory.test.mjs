@@ -5,13 +5,14 @@ import {INVENTORY_CAPACITY, SUPPLY_ITEMS, inventoryUsage, itemDescriptor, itemQu
 const soldier = (extra = {}) => ({id: 'p', weapon: 1800, blade: 1813, activeSlot: 'primary', loaded: 1, ammo: 12, priming: 50, flints: 4, rations: 2, medkits: 2, boleadoras: 1, torches: 2, condition: 100, jammed: false, inventory: {}, ...extra});
 const empty = (extra = {}) => ({id: 'q', inventory: {}, ...extra});
 
-test('normal supplies fit seven of twelve capacity units while equipped weapons stay outside the pack', () => {
+test('a two-handed gun stays outside the pack while its spare blade occupies a pocket', () => {
   const usage = inventoryUsage(soldier());
   assert.equal(INVENTORY_CAPACITY, 12);
-  assert.deepEqual({used: usage.used, capacity: usage.capacity, free: usage.free, overloaded: usage.overloaded}, {used: 7, capacity: 12, free: 5, overloaded: false});
-  assert.equal(usage.items.length, 7);
-  assert.equal(usage.items.some(item => item.item === 'primary' || item.item === 'blade'), false);
-  assert.equal(inventoryUsage(soldier({medkits: 20})).used, 10);
+  assert.deepEqual({used: usage.used, capacity: usage.capacity, free: usage.free, overloaded: usage.overloaded}, {used: 8, capacity: 12, free: 4, overloaded: false});
+  assert.equal(usage.items.length, 8);
+  assert.equal(usage.items.some(item => item.item === 'primary'), false);
+  assert.equal(usage.items.some(item => item.item === 'blade'), true);
+  assert.equal(inventoryUsage(soldier({medkits: 20})).used, 11);
   assert.equal(Object.isFrozen(SUPPLY_ITEMS), true);
   for (const descriptor of Object.values(SUPPLY_ITEMS)) assert.equal(Object.isFrozen(descriptor), true);
 });
@@ -100,7 +101,7 @@ test('legacy stacked weapons split into individual keys and conserve every loade
   assert.equal(recovered.length, 2);
   assert.ok(recovered.every(item => item.count === 1 && item.loaded === 2 && item.condition === 33 && item.jammed));
   assert.equal(recovered.reduce((sum, item) => sum + item.loaded, 0) + result.source.inventory.captured.loaded, 6);
-  assert.equal(inventoryUsage(result.target).used, 9);
+  assert.equal(inventoryUsage(result.target).used, 10);
 });
 
 test('inventory key collisions preserve distinct metadata and merge only equivalent generic items', () => {

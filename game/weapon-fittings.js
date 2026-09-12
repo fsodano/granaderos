@@ -67,6 +67,7 @@ export function heldItemIds(unit) {
   return [
     ...(!unit.weaponDropped ? [unit.weaponInstanceId,unit.weaponFittings?.bayonet?.instanceId] : []),
     ...(unit.blade ? [unit.bladeInstanceId] : []),
+    ...(unit.offHand?fittingItemIds(unit.offHand):[]),
   ].filter(id => id !== undefined);
 }
 export function normalizeUnitFittings(unit) {

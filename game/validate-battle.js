@@ -7,7 +7,7 @@ import {boundaryMatches,EXIT_EDGES,validEntry} from './tactical-exits.js';
 import {NPC_ACTIVITIES} from './npc-ai.js';
 import {heldSupply} from './held-supplies.js';
 import {heldTool,validateEnvironment} from './environment-interactions.js';
-import {validateItemStack} from './tactical-inventory.js';
+import {validateItemStack,validateHands} from './tactical-inventory.js';
 import {FITTING_RULES_VERSION,validateUnitFittings,normalizeUnitFittings,validateWeaponFittings,validateFittingPattern,fittingItemIds,heldItemIds,validItemIdentity,weaponItemWeight} from './weapon-fittings.js';
 import {HIT_LOCATIONS} from './targeted-combat.js';
 import {AP_CARRY_LIMIT,isUnconscious} from './tactical-condition.js';
@@ -42,7 +42,7 @@ for(const u of s.units){need(validMilitiaExperience(u),'experiencia de milicia')
 const defaults={maxHp:100,ap:100,morale:80,condition:100,marksmanship:50,agility:50,strength:50,medical:30,bleeding:0,loaded:0,ammo:0,weapon:1800,stance:'standing',activeSlot:'primary',energy:100,unconscious:isUnconscious(u),movementMode:'walk',fatigue:0,bandaged:u.bleeding?0:Math.max(0,(u.maxHp??100)-u.hp),shock:0,experienceLevel:4,carriedAP:0,priming:50,flints:4,rations:2,torches:2,boleadoras:1,strengthTraining:0,inventory:{}};for(const[k,v]of Object.entries(defaults))if(u[k]===undefined)u[k]=v;
 need(number(u.maxHp,1,1000)&&number(u.hp,0,u.maxHp)&&number(u.ap,0,100+AP_CARRY_LIMIT),'salud o acción');for(const key of ['morale','condition','marksmanship','agility','strength','medical','bleeding','energy','fatigue'])need(number(u[key],0,100),'atributos');
 if(!legacyFittings)need(object(u.weaponFittings)&&Object.hasOwn(u,'weaponFittingPattern')&&u.weaponFittingPattern!==undefined&&Object.hasOwn(u,'bladeFittingPattern')&&u.bladeFittingPattern!==undefined,'datos de encastre');
-validateUnitFittings(u);normalizeUnitFittings(u);for(const id of heldItemIds(u))claimInstance(id);if(u.bladeCondition!==undefined)need(number(u.bladeCondition,0,100),'condición de la hoja');
+validateHands(u);validateUnitFittings(u);normalizeUnitFittings(u);for(const id of heldItemIds(u))claimInstance(id);if(u.bladeCondition!==undefined)need(number(u.bladeCondition,0,100),'condición de la hoja');
 need(integer(u.weapon,0,65535),'armas');if(u.blade!==undefined)need(integer(u.blade,0,65535),'armas blancas');need(integer(u.loaded,0,WEAPONS[u.weapon]?.capacity??(BLADES[u.weapon]?0:100)),'cargas');
 validateWeaponReadiness(u,Boolean(WEAPONS[u.weapon]));
 validateReloadProgress(u.reloadProgress,WEAPONS[u.weapon]?.capacity??0,u.loaded,u.weaponDropped);

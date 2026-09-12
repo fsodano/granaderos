@@ -9,7 +9,7 @@ export function fieldAmmunition(snapshot){
   +[...(snapshot?.props??[]),...(snapshot?.tiles??[])].reduce((sum,c)=>sum+(c.contents??[]).reduce((n,item)=>n+rounds(item),0),0);
 }
 export function storedWeaponAmmunition(units){
- return units.reduce((total,u)=>total+Object.values(u.inventory??{}).reduce((sum,item)=>sum+(item?.weapon!==undefined?(item.loaded??0)*(item.count??1):0),0),0);
+ return units.reduce((total,u)=>total+(u.offHand?.loaded??0)+Object.values(u.inventory??{}).reduce((sum,item)=>sum+(item?.weapon!==undefined?(item.loaded??0)*(item.count??1):0),0),0);
 }
 const recoveredEquipmentAmmunition=(request,snapshot)=>{
  const ids=new Set((request.squad??[]).map(u=>String(u.id))),carriers=(snapshot?.units??[]).filter(u=>u.side==='player'&&ids.has(String(u.id)));

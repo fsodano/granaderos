@@ -171,13 +171,13 @@ test('validation rejects malformed trap/lock/container state and bad rolls witho
 
 test('finite tools occupy individual slots and transfer condition without stacking or duplication', () => {
   const source = soldier('lockpick', {inventory: {lockpick: toolRecord('lockpick', {count: 2, condition: 63})}});
-  assert.equal(inventoryUsage(source).used, 2); assert.equal(itemDescriptor(source, 'inventory:lockpick').label, 'Ganzúas');
+  assert.equal(inventoryUsage(source).used, 1); assert.equal(itemDescriptor(source, 'inventory:lockpick').label, 'Ganzúas');
   const extracted = extractItemQuantity(source, 'inventory:lockpick', 2), received = applyItemQuantity(soldier(), extracted.stack);
   assert.equal(extracted.unit.activeSlot, 'unarmed'); assert.equal(extracted.unit.activeTool, undefined);
   assert.equal(Object.keys(received.inventory).length, 2);
   for (const record of Object.values(received.inventory)) {assert.equal(record.count, 1); assert.equal(record.condition, 63); assert.equal(record.toolKey, 'lockpick');}
   assert.equal(inventoryUsage(received).used, 2);
-  assert.equal(inventoryUsage(soldier('crowbar')).used, 1);
+  assert.equal(inventoryUsage(soldier('crowbar')).used, 0);
 });
 
 test('wear of a legacy tool stack affects only one tool and retains its equipped identity', () => {
@@ -186,7 +186,7 @@ test('wear of a legacy tool stack affects only one tool and retains its equipped
   assert.equal(result.unit.inventory.lockpick.count, 2); assert.equal(result.unit.inventory.lockpick.condition, 100);
   assert.equal(result.unit.inventory['lockpick:1'].count, 1); assert.equal(result.unit.inventory['lockpick:1'].condition, 98);
   assert.equal(result.unit.activeTool, 'inventory:lockpick:1'); assert.equal(heldTool(result.unit).condition, 98);
-  assert.equal(inventoryUsage(result.unit).used, 3); assert.equal(u.inventory.lockpick.count, 3);
+  assert.equal(inventoryUsage(result.unit).used, 2); assert.equal(u.inventory.lockpick.count, 3);
 });
 
 test('invalid tool metadata is rejected at the shared item persistence boundary', () => {

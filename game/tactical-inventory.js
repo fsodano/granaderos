@@ -1,3 +1,4 @@
+import {handLayout,handsRequired} from './hand-layout.js';
 import {allocatePockets,rearrangePockets} from './inventory-pockets.js';
 import {lowerWeapon} from './weapon-readiness.js';
 import {validateReloadProgress} from './weapon-reload.js';
@@ -88,12 +89,13 @@ function resolve(unit, item) {
     return {kind: 'inventory', key, item: `inventory:${key}`, record: record(inventory[key])};
   }
   if (own(SUPPLY_ITEMS, item)) return {kind: 'supply', key: item, item, count: quantity(unit[item] ?? 0)};
-  if (item === 'primary' || item === 'blade') return {kind: 'hand', key: item, item};
+  if (item === 'primary' || item === 'blade' || item === 'offhand') return {kind: 'hand', key: item, item};
   const key = safeKey(item), inventory = pack(unit);
   if (!own(inventory, key)) fail('Ese objeto ya no está en el inventario.');
   return {kind: 'inventory', key, item: `inventory:${key}`, record: record(inventory[key])};
 }
 export function handRecord(unit, slot) {
+  if(slot==='offhand'){if(!unit.offHand)fail('La mano secundaria está vacía.');return record(unit.offHand);}
   const raw = slot === 'primary' ? unit.weapon : unit.blade;
   const id = typeof raw === 'object' ? raw?.id : raw;
   const spec = weapon(id, true), primary = slot === 'primary';
@@ -118,7 +120,7 @@ export function itemQuantity(unit, item) {
   const entry = resolve(unit, item);
   if (entry.kind === 'supply') return entry.count;
   if (entry.kind === 'inventory') return entry.record.count;
-  return entry.key === 'primary' ? unit.weapon && !unit.weaponDropped ? 1 : 0 : unit.blade ? 1 : 0;
+  return entry.key==='offhand'?unit.offHand?1:0:entry.key === 'primary' ? unit.weapon && !unit.weaponDropped ? 1 : 0 : unit.blade ? 1 : 0;
 }
 export function itemDescriptor(unit, item) {
   const entry = resolve(unit, item);
@@ -127,10 +129,18 @@ export function itemDescriptor(unit, item) {
   if (!itemQuantity(unit, item)) return {item, label: 'Mano vacía', name: 'Mano vacía', stackLimit: 1, slotSize: 0, weight: 0, kind: 'weapon'};
   return recordDescriptor(item, handRecord(unit, item));
 }
+export function validateHands(unit) {
+  if(unit.offHand!==undefined){
+    const value=handRecord(unit,'offhand');
+    if(value.count!==1||value.weapon<1800||value.weapon>1813||!WEAPONS[value.weapon]||handsRequired(value.weapon)!==1)fail('El arma de la segunda mano no es válida.');
+  }
+  return true;
+}
 export function inventoryUsage(unit) {
-  const items = [];
-  for (const item of [...Object.keys(SUPPLY_ITEMS), ...Object.keys(pack(unit)).sort().map(key => `inventory:${key}`)]) {
-    const count = itemQuantity(unit, item);
+  validateHands(unit);
+  const items = [],hands=handLayout(unit);
+  for (const item of [...Object.keys(SUPPLY_ITEMS), ...Object.keys(pack(unit)).sort().map(key => `inventory:${key}`),...hands.stowed]) {
+    const count = itemQuantity(unit, item)-(hands.held.includes(item)?1:0);
     if (!count) continue;
     const descriptor = itemDescriptor(unit, item), stacks = Math.ceil(count / descriptor.stackLimit);
     items.push({...descriptor, count, stacks, slots: stacks});
@@ -140,7 +150,7 @@ export function inventoryUsage(unit) {
   return {used, capacity: INVENTORY_CAPACITY, free: layout.slots.filter(slot=>!slot.entry).length, overloaded: layout.overflow.length>0, items,...layout};
 }
 
-export function extractItemQuantity(unit, item, count = 1) {
+export function extractItemQuantity(unit, item, count = 1, {keepOtherHand=true}={}) {
   quantity(count, 1);
   const entry = resolve(unit, item);
   if (itemQuantity(unit, item) < count) fail('No queda esa cantidad del objeto.');
@@ -153,6 +163,7 @@ export function extractItemQuantity(unit, item, count = 1) {
   } else if (entry.kind === 'hand') {
     stack = {item: 'weapon', ...handRecord(unit, entry.key)};
     if (entry.key === 'primary') {lowerWeapon(next); next.weaponDropped = true; next.loaded = 0; delete next.reloadProgress; next.jammed = false; delete next.weaponInstanceId; next.weaponFittings={}; next.weaponFittingPattern=null;}
+    else if(entry.key==='offhand')delete next.offHand;
     else {delete next.blade; delete next.bladeInstanceId; delete next.bladeCondition; next.bladeFittingPattern=null;}
     if ((next.activeSlot ?? 'primary') === entry.key) next.activeSlot = 'unarmed';
     next.braced = false; next.overwatch = false; next.momentum = 0;
@@ -168,7 +179,24 @@ export function extractItemQuantity(unit, item, count = 1) {
       if (next.activeSlot === 'tool') next.activeSlot = 'unarmed';
     }
   }
-  return {unit: next, stack};
+  return {unit: keepOtherHand?retainOtherHand(unit,next):next, stack};
+}
+// Removing the selected item does not put the other held weapon into a full pack.
+// Corpse searches and atomic equipment swaps retain their explicit ownership order.
+function retainOtherHand(before,next){
+  if(!(before.hp>0)||before.unconscious||before.surrendered||before.activeSlot==='unarmed'||next.activeSlot!=='unarmed')return next;
+  const other=handLayout(before).left;
+  if(other==='blade'&&next.blade)next.activeSlot='blade';
+  else if(other==='primary'&&!next.weaponDropped)next.activeSlot='primary';
+  else if(other==='offhand'&&next.offHand){
+    const held=next.offHand;delete next.offHand;
+    if(next.weapon&&!next.weaponDropped){const stored=extractItemQuantity(next,'primary',1,{keepOtherHand:false});next=applyItemQuantity(stored.unit,stored.stack,{deferCapacity:true});}
+    next.weapon=held.weapon;next.loaded=held.loaded??0;next.condition=held.condition??100;next.jammed=held.jammed??false;next.weaponDropped=false;
+    delete next.reloadProgress;if(held.reloadProgress)next.reloadProgress=held.reloadProgress;
+    next.weaponFittings=structuredClone(held.fittings??{});next.weaponFittingPattern=held.fittingPattern??null;delete next.weaponInstanceId;if(held.instanceId)next.weaponInstanceId=held.instanceId;
+    next.activeSlot='primary';lowerWeapon(next);
+  }
+  return next;
 }
 function incoming(stack) {
   if (!object(stack) || typeof stack.item !== 'string') fail('El objeto transferido no es válido.');
@@ -199,9 +227,10 @@ function sameMetadata(left, right) {
   const a = Object.keys(left).filter(key => key !== 'count').sort(), b = Object.keys(right).filter(key => key !== 'count').sort();
   return a.length === b.length && a.every((key, index) => key === b[index] && JSON.stringify(left[key]) === JSON.stringify(right[key]));
 }
-export function applyItemQuantity(unit, stack) {
+// Deferred checks are only for atomic equipment planners, which validate the final layout.
+export function applyItemQuantity(unit, stack, {deferCapacity=false}={}) {
   const entry = incoming(stack), usage = inventoryUsage(unit);
-  if (usage.overloaded) fail('El inventario está sobrecargado. Retirá objetos antes de recibir más.');
+  if (!deferCapacity && usage.overloaded) fail('El inventario está sobrecargado. Retirá objetos antes de recibir más.');
   const next = structuredClone(unit); next.inventory ??= {};
   if (entry.kind === 'supply') next[entry.key] = quantity((next[entry.key] ?? 0) + entry.value.count);
   else {
@@ -211,7 +240,7 @@ export function applyItemQuantity(unit, stack) {
     if (value.weapon !== undefined || isTool(value)) {
       // Legacy stacked weapons all retain their contents; split only when moved.
       // Bound allocation before generating individual destination records.
-      if (value.count > INVENTORY_CAPACITY - usage.used) fail('No queda espacio para esa cantidad de objetos.');
+      if (value.count > (deferCapacity ? INVENTORY_CAPACITY : INVENTORY_CAPACITY - usage.used)) fail('No queda espacio para esa cantidad de objetos.');
       for (let i = 0; i < value.count; i++) next.inventory[uniqueKey(next.inventory, entry.key)] = {...structuredClone(value), count: 1};
     } else {
       const previous = own(next.inventory, entry.key) ? record(next.inventory[entry.key]) : null;
@@ -219,7 +248,7 @@ export function applyItemQuantity(unit, stack) {
       else next.inventory[uniqueKey(next.inventory, entry.key)] = structuredClone(value);
     }
   }
-  if (inventoryUsage(next).overloaded) fail('No queda espacio en el inventario.');
+  if (!deferCapacity && inventoryUsage(next).overloaded) fail('No queda espacio en el inventario.');
   return next;
 }
 export function canCarryTransfer(unit, stack) {
@@ -263,9 +292,10 @@ export function planRemoveBayonet(unit,destination='inventory') {
   const stack={item:'weapon',count:1,weight:FITTING_PATTERNS[fitting.fittingPattern].weight,weapon:fitting.weapon,loaded:0,jammed:false,condition:fitting.condition,instanceId:fitting.instanceId,fittingPattern:fitting.fittingPattern};
   if (destination==='inventory') next=applyItemQuantity(next,stack);
   else {
-    if (next.blade) fail('La mano secundaria está ocupada.');
+    if (next.blade || next.offHand) fail('La mano secundaria está ocupada.');
     next.blade=fitting.weapon;next.bladeCondition=fitting.condition;next.bladeInstanceId=fitting.instanceId;next.bladeFittingPattern=fitting.fittingPattern;
   }
+  if(inventoryUsage(next).overloaded)fail('No queda espacio para guardar la bayoneta retirada.');
   return {unit:clearFittingGuard(next),fitting:structuredClone(fitting),destination,host:unit.weapon};
 }
 

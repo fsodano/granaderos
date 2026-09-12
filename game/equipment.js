@@ -2,7 +2,7 @@ import {validateReloadProgress} from './weapon-reload.js';
 import {heldSupply} from './held-supplies.js';
 import {heldTool} from './environment-interactions.js';
 import {WEAPONS} from './data.js';
-import {inventoryUsage} from './tactical-inventory.js';
+import {inventoryUsage,validateHands} from './tactical-inventory.js';
 import {FITTING_RULES_VERSION,validateFittingPattern,validateWeaponFittings,validateUnitFittings,normalizeUnitFittings,validItemIdentity,fittingItemIds,heldItemIds,fittingLabel} from './weapon-fittings.js';
 export const EQUIPMENT_CATALOG=[
  ...Object.values(WEAPONS).filter(w=>w.id>=1800&&w.id<=1813).map(w=>({...w,item:w.id,stockKey:String(w.id),category:w.id<1809?'firearm':'blade',price:({1800:240,1801:230,1802:420,1803:180,1804:100,1805:130,1806:180,1807:160,1808:220,1809:160,1810:110,1811:50,1812:70,1813:40})[w.id]})),
@@ -136,7 +136,8 @@ export function usedEquipmentOffers(s,isSupplied){
 export function resaleQuote(instance){return resaleBreakdown(instance).total;}
 
 export function returnEquipment(s,id,report){
- validateUnitFittings(report);
+ validateHands(report);validateUnitFittings(report);
+ if(report.offHand)s.operativeState[id].offHand=structuredClone(report.offHand);else if(report.weapon!==undefined)delete s.operativeState[id].offHand;
  s.loadouts[id]??={};
  if(report.weapon!==undefined){need(report.weapon===0||handheld(report.weapon)&&typeof report.weapon==='number','El arma del parte es inválida.');s.loadouts[id].weapon=report.weapon;}
  if(report.blade!==undefined){need(report.blade===0||Number.isInteger(report.blade)&&report.blade>=1809&&report.blade<=1813,'El arma blanca del parte es inválida.');s.loadouts[id].blade=report.blade;}
@@ -180,7 +181,7 @@ export function validateEquipment(s,roster=[]){
   need(r.carriedAmmo===undefined||integer(r.carriedAmmo,0,100000),'La reserva personal de cartuchos es inválida.');
   need(r.carriedLoaded===undefined||!r.weaponDropped&&(WEAPONS[op?.weapon]?.capacity??0)>0&&integer(r.carriedLoaded,0,Math.min(WEAPONS[op.weapon].capacity,r.carriedAmmo??0)),'La carga personal del arma es inválida.');
   need(r.carriedReloadProgress===undefined||r.carriedLoaded!==undefined,'Falta la carga del arma en recarga.');validateReloadProgress(r.carriedReloadProgress,WEAPONS[op?.weapon]?.capacity??0,r.carriedLoaded??0,r.weaponDropped);
-  validateUnitFittings({...op,...r});
+  validateHands(r);validateUnitFittings({...op,...r});
   for(const [slot,key] of [['weapon','weaponInstanceId'],['blade','bladeInstanceId']])if(r[key]!==undefined)need(validInstanceId(r[key])&&op?.[slot]>0&&(slot!=='weapon'||!r.weaponDropped),'La identidad del arma guardada es inválida.');
   for(const key of ['jammed','weaponDropped'])need(r[key]===undefined||typeof r[key]==='boolean','El estado del arma guardada es inválido.');
   need(r.weaponMode===undefined||['fire','melee'].includes(r.weaponMode),'El modo del arma guardado es inválido.');
@@ -200,7 +201,7 @@ export function validateEquipmentOwnership(s,roster=[],battle=null){
  const retainedOnField=(snapshot,u)=>{const disposition=snapshot.returnLedger?.entries?.find(e=>e.unitId===u.id),owner=snapshot.sectorId==='san_lorenzo'?'san_nicolas':snapshot.sectorId;return !u.departure&&(!disposition||['resident','dead'].includes(disposition.kind)&&disposition.sector===owner);};
  const claim=id=>{need(validItemIdentity(id)&&!identities.has(id),'La identidad del equipo está duplicada o es inválida.');const number=generatedIdentityNumber(id);if(number!==null)need(number<s.nextEquipmentInstanceId,'La secuencia del equipo reutiliza una identidad existente.');identities.add(id);};
  const record=r=>{if(r&&typeof r==='object'&&(r.count??1)>0)for(const id of fittingItemIds(r))claim(id);};
- const unit=u=>{validateUnitFittings(u);for(const id of heldItemIds(u))claim(id);for(const r of Object.values(u.inventory??{}))record(r);};
+ const unit=u=>{validateHands(u);validateUnitFittings(u);for(const id of heldItemIds(u))claim(id);for(const r of Object.values(u.inventory??{}))record(r);};
  const livingPlayers=new Set();
  for(const op of roster){const r=s.operativeState[op.id];if(r?.alive&&r.hp>0){livingPlayers.add(String(op.id));if(!activePlayers.has(String(op.id)))unit({...op,...r});}}
  for(const group of [...Object.values(s.garrisons??{}),...(s.militiaTraining??[]).map(course=>course.trainees??[])])for(const u of group){livingPlayers.add(String(u.id));if(!activePlayers.has(String(u.id)))unit(u);}

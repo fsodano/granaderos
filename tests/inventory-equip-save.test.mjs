@@ -6,7 +6,7 @@ import {validateBattleSnapshot} from '../game/validate-battle.js';
 const field=()=>createBattle([{id:'p',x:1,y:1,weapon:1800,blade:1810}],{width:20,height:8,tiles:Array.from({length:160},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0})),enemies:[{id:'e',x:18,y:6}],seed:45});
 
 test('a swap cannot overfill the backpack with the displaced long gun',()=>{
- const s=field();Object.assign(s.units[0],{ammo:20,inventory:{...Object.fromEntries(Array.from({length:4},(_,i)=>[`long-${i}`,{weapon:1800,count:1,weight:4,loaded:0}])),pistol:{count:1,weight:1.3,weapon:1805,loaded:1,condition:58}}});
+ const s=field();Object.assign(s.units[0],{ammo:20,blade:0,inventory:{...Object.fromEntries(Array.from({length:4},(_,i)=>[`long-${i}`,{weapon:1800,count:1,weight:4,loaded:0}])),pistol:{count:1,weight:1.3,weapon:1805,loaded:1,condition:58}}});
  assert.equal(inventoryUsage(s.units[0]).used,12);
  const n=actBattle(s,{type:'equipLoot',unitId:'p',inventoryKey:'pistol'});assert.ok(n.lastError);assert.deepEqual(n.units,s.units);assert.equal(n.elapsedSeconds,s.elapsedSeconds);
 });

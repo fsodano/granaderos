@@ -18,6 +18,7 @@ function entries(record,op){
     add('primary',WEAPONS[op.weapon].name,record,'condition',1,gun(op.weapon));
     fitting('primary',record.weaponFittings);
   }
+  if(record.offHand){add('offhand',WEAPONS[record.offHand.weapon]?.name??'Arma secundaria',record.offHand,'condition',1,gun(record.offHand.weapon));fitting('offhand',record.offHand.fittings);}
   // Finish individual pack items before opening another legacy bulk stack.
   const inventory=Object.entries(record.inventory??{}).filter(([,value])=>value&&typeof value==='object'&&value.count>0)
     .sort(([a,left],[b,right])=>(left.count>1)-(right.count>1)||a.localeCompare(b));

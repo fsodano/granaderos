@@ -30,7 +30,7 @@ test('inventory alone offers paid bayonet fitting and both removal destinations 
   assert.ok(!strip(s).includes('Fijar al Brown Bess'));
   const fitted=actBattle(s,{type:'fitBayonet',unitId:u.id,item:'blade'});assert.equal(fitted.lastError,null);
   markup=strip(fitted,true);assert.match(markup,/fijada · estado 73%/);assert.match(markup,/Fusil: estado 61%/);
-  assert.match(markup,/aria-label="Ranura secundaria vacía"/);assert.match(markup,/Sin arma secundaria/);
+  assert.match(markup,/aria-label="Segunda mano: Ocupada por el arma"/);assert.match(markup,/class="blocked" disabled/);
   assert.ok(!markup.includes('aria-label="Equipar Bayoneta para Brown Bess India'));
   assert.match(markup,/Retirar a mochila · 8 PA/);assert.match(markup,/Retirar a secundaria · 8 PA/);
   assert.ok(!markup.includes('Calar bayoneta'));assert.match(markup,/Guardia de bayoneta/);

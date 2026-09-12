@@ -1,3 +1,4 @@
+import {handsRequired} from './hand-layout.js';
 import {firearmPreparation,lowerWeapon,lowersWeapon,turnLowersWeapon} from './weapon-readiness.js';
 import {planReload} from './weapon-reload.js';
 import {discoverInventory} from './inventory-discovery.js';
@@ -9,7 +10,7 @@ import {projectilePath,projectileFlight,pointProjectileFlight,concealmentAt,conc
 import {boundaryMatches} from './tactical-exits.js';
 import {HELD_SUPPLIES,heldSupply,clearEmptySupply} from './held-supplies.js';
 import {heldTool,environmentActionProfile,resolveEnvironmentInteraction,extractContainerItem} from './environment-interactions.js';
-import {SUPPLY_ITEMS,itemQuantity,extractItemQuantity,applyItemQuantity,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove} from './tactical-inventory.js';
+import {SUPPLY_ITEMS,inventoryUsage,itemQuantity,extractItemQuantity,applyItemQuantity,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove} from './tactical-inventory.js';
 import {FITTING_RULES_VERSION,FIT_BAYONET_AP,REMOVE_BAYONET_AP,LOOSE_BAYONET,fixedBayonetFor,fixedBayonetProfile,fittingWeight,weaponItemWeight,normalizeUnitFittings} from './weapon-fittings.js';
 import {FISTS,BUTTSTOCK,unarmedChance,unarmedImpact,weaponStealChance,STEAL_MIN_AP} from './unarmed-combat.js';
 import {directionTo,facingAllowsSight,turnAPCost,stealthAPMultiplier,noiseRadius,approximateHeardPosition} from './tactical-awareness.js';
@@ -135,7 +136,7 @@ export function initializeBattlePerception(state){checkEnd(state);detectContact(
 function tile(s,x,y){const at=s.tiles[y*s.width+x];return at?.x===x&&at?.y===y?at:s.tiles.find(t=>t.x===x&&t.y===y);}
 function occupied(s,x,y,except){return propBlocksAt(s,x,y)||(s.npcs||[]).some(n=>n.x===x&&n.y===y)||s.units.some(u=>onField(u)&&!u.unconscious&&u.id!==except&&u.x===x&&u.y===y);}
 export function carryCapacity(u){return Math.max(10,(u.strength||50)*.5);}
-export function carriedWeight(u){const inventory=Object.values(u.inventory||{}).reduce((sum,item)=>sum+(item&&typeof item==='object'?(item.count||0)*((item.weight||0)+fittingWeight(item))+(item.count||0)*(item.loaded||0)*.04:0),0);return Number(u.weight??u.carryWeight??0)+inventory+(u.loaded||0)*.04+Object.entries(SUPPLY_ITEMS).reduce((sum,[key,item])=>sum+(u[key]??0)*item.weight,0)+(u.weaponDropped?0:weaponItemWeight(u.weapon)+fittingWeight(u))+weaponItemWeight(u.blade);}
+export function carriedWeight(u){const inventory=Object.values(u.inventory||{}).reduce((sum,item)=>sum+(item&&typeof item==='object'?(item.count||0)*((item.weight||0)+fittingWeight(item))+(item.count||0)*(item.loaded||0)*.04:0),0);return Number(u.weight??u.carryWeight??0)+inventory+(u.loaded||0)*.04+Object.entries(SUPPLY_ITEMS).reduce((sum,[key,item])=>sum+(u[key]??0)*item.weight,0)+(u.weaponDropped?0:weaponItemWeight(u.weapon)+fittingWeight(u))+weaponItemWeight(u.blade)+(u.offHand?weaponItemWeight(u.offHand.weapon)+fittingWeight(u.offHand)+(u.offHand.loaded??0)*.04:0);}
 function weightPenalty(u){return Math.max(1,carriedWeight(u)/carryCapacity(u));}
 export function movementEnergy(u,t){const style=u.movementMode||'walk',base={walk:1,run:3,crouch:2,prone:3}[style]||1;return Math.max(1,Math.ceil(base*weightPenalty(u)*(u.mounted?1-Math.min(100,u.ridingSkill||0)*.005:1)*(t?.type==='mud'?1.5:1)*(hasTrait(u,'guerrilla_tactician')?.75:1)));}
 function exhaust(s,u,cost){limitEnergy(u);if(u.mounted&&u.mount){u.mount.stamina=Math.max(0,u.mount.stamina-Math.max(1,Math.ceil(cost*(1-Math.min(100,u.ridingSkill||0)*.005))));if(u.mount.stamina===0){u.mounted=false;sayObserved(s,[u],`${u.name} desmonta: su caballo está agotado.`);}}u.energy=Math.max(0,(u.energy??100)-cost);if(u.energy===0){lowerWeapon(u);u.unconscious=true;u.ap=0;u.mounted=false;sayObserved(s,[u],`${u.name} cae inconsciente por agotamiento.`);}}
@@ -505,7 +506,7 @@ export function planLoot(s,u,a){
   let receiver=u,donor=source;
   if(source){
     const wanted=a.item??'all';
-    const items=wanted==='all'?[...Object.keys(SUPPLY_ITEMS).filter(k=>(source[k]??0)>0),...(!source.weaponDropped&&(WEAPONS[source.weapon]||BLADES[source.weapon])?['primary']:[]),...(BLADES[source.blade]?['blade']:[]),...Object.entries(source.inventory??{}).filter(([,r])=>(typeof r==='number'?r:r?.count)>0).map(([key])=>`inventory:${key}`)]:[wanted==='weapon'?'primary':wanted];
+    const items=wanted==='all'?[...Object.keys(SUPPLY_ITEMS).filter(k=>(source[k]??0)>0),...(!source.weaponDropped&&(WEAPONS[source.weapon]||BLADES[source.weapon])?['primary']:[]),...(BLADES[source.blade]?['blade']:[]),...(source.offHand?['offhand']:[]),...Object.entries(source.inventory??{}).filter(([,r])=>(typeof r==='number'?r:r?.count)>0).map(([key])=>`inventory:${key}`)]:[wanted==='weapon'?'primary':wanted];
     if(!items.length)throw Error('No queda equipo que recoger.');
     for(const item of items){const count=wanted==='all'?itemQuantity(donor,item):a.count??itemQuantity(donor,item);const transfer=transferItemQuantity(donor,receiver,item,count);donor=transfer.source;receiver=transfer.target;}
   }else{
@@ -551,21 +552,37 @@ export function lootBatchPreview(s,u,items){
 }
 export function planEquipLoot(u,key,slot='primary'){
   const record=u.inventory?.[key];
-  if(!record||typeof record!=='object'||record.count<1||!['primary','blade'].includes(slot))throw Error('Selecciona un arma recuperada disponible.');
+  if(!record||typeof record!=='object'||record.count<1||!['primary','blade','offhand'].includes(slot))throw Error('Selecciona un arma recuperada disponible.');
   if(!(WEAPONS[record.weapon]||BLADES[record.weapon])||(slot==='blade'&&!BLADES[record.weapon]))throw Error('Ese objeto no puede equiparse en esa mano.');
   const extracted=extractItemQuantity(u,`inventory:${key}`,1);
   return equipIncomingHand(extracted.unit,extracted.stack,slot);
 }
 function equipIncomingHand(unit,incoming,slot){
   let next=structuredClone(unit);
+  if(slot==='offhand'){
+    if(handsRequired(incoming.weapon)>1)throw Error('La mano secundaria necesita un arma de una mano.');
+    if(!next.weaponDropped&&handsRequired(next.weapon)>1&&(next.activeSlot??'primary')==='primary')throw Error('El arma principal ocupa las dos manos.');
+    for(const item of ['blade','offhand'])if(itemQuantity(next,item)){const stored=extractItemQuantity(next,item,1,{keepOtherHand:false});next=applyItemQuantity(stored.unit,stored.stack,{deferCapacity:true});}
+    const {item,...record}=incoming;next.offHand=structuredClone(record);next.offHand.count=1;
+    if(inventoryUsage(next).overloaded)throw Error('No queda espacio para guardar el equipo desplazado.');
+    return next;
+  }
+  if(slot==='blade'&&next.offHand){const stored=extractItemQuantity(next,'offhand',1,{keepOtherHand:false});next=applyItemQuantity(stored.unit,stored.stack,{deferCapacity:true});}
   const previous=slot==='primary'?next.weapon:next.blade;
   if(previous&&!(slot==='primary'&&next.weaponDropped)){
-    const stored=extractItemQuantity(next,slot,1);next=applyItemQuantity(stored.unit,stored.stack);
+    const stored=extractItemQuantity(next,slot,1,{keepOtherHand:false});next=applyItemQuantity(stored.unit,stored.stack,{deferCapacity:true});
   }
   if(slot==='primary'){next.weapon=incoming.weapon;next.loaded=incoming.loaded??0;delete next.reloadProgress;if(incoming.reloadProgress)next.reloadProgress=incoming.reloadProgress;next.condition=incoming.condition??100;next.jammed=Boolean(incoming.jammed);next.weaponDropped=false;next.weaponFittings=structuredClone(incoming.fittings??{});next.weaponFittingPattern=incoming.fittingPattern??null;delete next.weaponInstanceId;if(incoming.instanceId)next.weaponInstanceId=incoming.instanceId;}
   else {next.blade=incoming.weapon;next.bladeCondition=incoming.condition??100;next.bladeFittingPattern=incoming.fittingPattern??null;delete next.bladeInstanceId;if(incoming.instanceId)next.bladeInstanceId=incoming.instanceId;}
   lowerWeapon(next);next.activeSlot=slot;delete next.activeTool;delete next.activeSupply;next.braced=false;next.momentum=0;delete next.lastTargetId;delete next.lastShotPosition;
+  if(inventoryUsage(next).overloaded)throw Error('No queda espacio para guardar el equipo desplazado.');
   return next;
+}
+export function planSwapHands(unit){
+  if(!unit.offHand)throw Error('La mano secundaria está vacía.');
+  let next=structuredClone(unit);const incoming=next.offHand;delete next.offHand;
+  if(!next.weaponDropped&&next.weapon){const taken=extractItemQuantity(next,'primary',1,{keepOtherHand:false});next=taken.unit;if(handsRequired(taken.stack.weapon)===1){const {item,...record}=taken.stack;next.offHand=record;}else next=applyItemQuantity(next,taken.stack,{deferCapacity:true});}
+  return equipIncomingHand(next,{item:'weapon',...incoming},'primary');
 }
 function planStealWeapon(u,target){
   const slot=target.activeSlot??'primary';
@@ -584,6 +601,11 @@ export function stealPreview(s,u,target){
   if(!reason&&s.mode!=='exploration'&&u.ap<STEAL_MIN_AP)reason=`Quitar el arma requiere al menos ${STEAL_MIN_AP} PA y consume todos los restantes.`;
   if(!reason)try{planStealWeapon(u,target);}catch(error){reason=error.message;}
   return {pa,valid:!reason,reason};
+}
+export function swapHandsPreview(s,u){
+ const pa=s.mode==='exploration'?0:4;let reason=inventoryOrderReason(s,u,pa);
+ if(!reason)try{planSwapHands(u);}catch(error){reason=error.message;}
+ return {pa,reason,valid:!reason};
 }
 export function equipLootPreview(s,u,inventoryKey,slot='primary'){
   const pa=6;let reason=inventoryOrderReason(s,u,pa);
@@ -807,6 +829,10 @@ else if(a.type==='firePoint'){
   }
 }
 else if(a.type==='fire'){const hitLocation=a.hitLocation??'torso';if(!HIT_LOCATIONS.includes(hitLocation))return fail('Selecciona torso, cabeza o piernas.');if(!target||target.side===u.side||!targetable(target))return fail('Selecciona un enemigo activo.');if(!hasFirearm(u))return fail('Este soldado lleva un arma blanca: acércate para atacar.');if(!teamCanSee(s,u.side,target))return fail('Ningún compañero puede ver ese objetivo.');if(!shotLocationsFor(target).includes(hitLocation))return fail('Un objetivo cuerpo a tierra tiene una sola zona de tiro.');if(u.jammed)return fail('La cazoleta falló: vuelve a cebar el arma.');if(u.loaded<1)return fail('El arma está descargada.');if(!hasLineOfSight(s,u,target))return fail('No hay línea de tiro.');const aim=clamp(Math.floor(Number.isFinite(a.aim)?a.aim:0),0,4),w=weaponFor(u),chance=shotAccuracy(s,u,target,aim,hitLocation);if(!pay(actionCosts(s,u,target).fire+aim*actionCosts(s,u,target).aim))return fail('Faltan puntos de acción para disparar.');u.weaponReady=true;u.momentum=0;u.facing=directionTo(u,target);u.lastTargetId=target.id;u.lastShotPosition={x:u.x,y:u.y};const risk=ignitionRisk(s,u);if(random(s)*100<risk){u.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa. La carga se conserva; cebar cuesta ${actionCosts(s,u).reprime} PA.`);}else{u.loaded--;emitNoise(s,u,'fire');practice(u,'marksmanship',2);u.condition=Math.max(0,u.condition-1);s.smoke.push({x:u.x,y:u.y,radius:1,turns:3});if(w.id===1807){const length=dist(u,target),dx=(target.x-u.x)/length,dy=(target.y-u.y)/length;for(const victim of s.units.filter(v=>onField(v)&&v.id!==u.id)){const vx=victim.x-u.x,vy=victim.y-u.y,forward=vx*dx+vy*dy,across=Math.abs(vx*dy-vy*dx);if(forward<=0||forward>6||across>Math.max(.5,forward*.25)||!hasLineOfSight(s,u,victim))continue;victim.morale=Math.max(0,victim.morale-18);if(random(s)*100<Math.min(95,shotAccuracy(s,u,victim,aim,victim.id===target.id?hitLocation:'torso')+20))firearmImpact(s,u,victim,w.damage*(1-forward/12),victim.id===target.id?hitLocation:'torso');else if(victim.morale<15)rout(s,victim);}sayObserved(s,[u],`${u.name} descarga el trabuco: una nube de metralla barre tres casillas de ancho.`);}else{const hit=random(s)*100<chance;directedFireImpact(s,u,target,hitLocation,hit);if(!hit){target.morale=Math.max(0,target.morale-4);sayObserved(s,[u],`${u.name} dispara sin acertar al punto elegido (${chance}%).`);}} }}
+else if(a.type==='swapHands'){
+  let next;try{next=planSwapHands(u);}catch(error){return fail(error.message);}
+  if(!pay(4))return fail('Cambiar de mano requiere 4 PA.');next.ap=u.ap;replaceUnit(u,next);sayObserved(s,[u],`${u.name} prepara el arma de la otra mano.`);
+}
 else if(a.type==='weaponMode'){
   if(!hasFirearm(u))return fail('Prepará un arma de fuego en la mano.');
   if(!['fire','melee'].includes(a.mode))return fail('Elegí disparo o combate cercano.');
@@ -997,6 +1023,8 @@ else if(a.type==='weapon'){
   if(a.slot==='tool'&&!heldTool({...u,activeSlot:'tool',activeTool:a.toolKey}))return fail('No lleva esa herramienta en el inventario.');
   if(a.slot==='supply'&&!heldSupply({...u,activeSlot:'supply',activeSupply:a.supplyKey}))return fail('No lleva ese pertrecho en el inventario.');
   if((u.activeSlot||'primary')===a.slot&&(a.slot!=='tool'||u.activeTool===a.toolKey)&&(a.slot!=='supply'||u.activeSupply===a.supplyKey))return fail('Ese objeto ya está en la mano.');
+  const held={...u,activeSlot:a.slot,...(a.slot==='tool'?{activeTool:a.toolKey}:a.slot==='supply'?{activeSupply:a.supplyKey}:{})};
+  if(inventoryUsage(held).overloaded)return fail('No queda espacio para guardar el objeto que tenés en la mano.');
   if(!pay(4))return fail('Cambiar de objeto requiere 4 PA.');u.activeSlot=a.slot;
   if(a.slot==='tool')u.activeTool=a.toolKey;else delete u.activeTool;
   if(a.slot==='supply')u.activeSupply=a.supplyKey;else delete u.activeSupply;

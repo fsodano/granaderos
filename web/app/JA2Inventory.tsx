@@ -1,5 +1,7 @@
 'use client';
+import JA2Hands from './JA2Hands';
 import JA2WeaponMode from './JA2WeaponMode';
+import {handsRequired} from '../../game/hand-layout.js';
 import {maximumEnergy} from '../../game/fatigue.js';
 // MODE B: single-merc inventory panel (header / stats / stance grid / paper-doll / slot-grid / pertrechos / far-right cluster).
 // Pure read model (game/ja2-hud.js inventoryModel/orderDescriptors); all mutations are caller-provided callbacks.
@@ -10,7 +12,7 @@ import TrainingProgress from './TrainingProgress';
 import JA2EnvironmentPanel from './JA2EnvironmentPanel';
 import {LooseBayonetControl, AttachedBayonetControl, FittingReadout} from './JA2Bayonet';
 import {inventoryModel, inventoryHandlingModel, nearbyLootOptions, nearbyEnvironmentModel, orderDescriptors, orderAction, backpackEquipAction, levelFor, targetingHelp, stanceLabel, equipmentSlots, turnModel, unitCanAct, facingLabel} from '../../game/ja2-hud.js';
-import {WEAPONS, BLADES, hasFirearm, ignitionRisk, visibleEnemies, stanceCost, lootPreview, equipLootPreview, containerLootPreview, AP_CARRY_LIMIT} from '../../game/tactical.js';
+import {swapHandsPreview, WEAPONS, BLADES, hasFirearm, ignitionRisk, visibleEnemies, stanceCost, lootPreview, equipLootPreview, containerLootPreview, AP_CARRY_LIMIT} from '../../game/tactical.js';
 import {portraitFor} from '../lib/portraits';
 import {autoBandageStatus} from '../../game/auto-bandage.js';
 
@@ -113,7 +115,7 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
     return () => window.removeEventListener('keydown', key);
   }, [onCloseInventory]);
   const movementActive = (id: string) => unit.movementMode === id;
-  const slots: any = inv.slots;
+  const otherHand=swapHandsPreview(battle,unit);
   return (
     <div className="ja2-inventory" role="dialog" aria-modal="true" aria-label="Equipo y órdenes del combatiente">
       <div className="ja2-inv-header">
@@ -158,22 +160,10 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
         </div>
       </div>
       <div className="paper-doll">
-        <button className={`hand-slot primary ${inv.activeSlot === 'primary' ? 'active' : ''}`} disabled={slotDisabled('primary') || inv.activeSlot === 'primary'} aria-pressed={inv.activeSlot === 'primary'} aria-label={`Equipar ${slots.primary?.name ?? 'arma principal'}: ${def('weapon')?.pa} PA`} onClick={() => onOrder({type: 'weapon', slot: 'primary'})}>
-          {slots.primary?.id >= 1800 && slots.primary?.id <= 1813 && <img src={`/art/weapon-${slots.primary.id}.png`} alt="" />}
-          <span>{slots.primary?.name ?? '—'}</span>
-        </button>
-        <button className={`hand-slot blade ${inv.activeSlot === 'blade' ? 'active' : ''}`} disabled={slotDisabled('blade') || inv.activeSlot === 'blade'} aria-pressed={inv.activeSlot === 'blade'} aria-label={slots.blade ? `Equipar ${slots.blade.name}: ${def('weapon')?.pa} PA` : 'Ranura secundaria vacía'} onClick={() => onOrder({type: 'weapon', slot: 'blade'})}>
-          {slots.blade?.id >= 1800 && slots.blade?.id <= 1813 && <img src={`/art/weapon-${slots.blade.id}.png`} alt="" />}
-          <span>{slots.blade?.name ?? 'Sin arma secundaria'}</span>
-        </button>
-        <button className={`hand-slot medical ${inv.activeSlot === 'medical' ? 'active' : ''}`} disabled={slotDisabled('medical') || inv.activeSlot === 'medical'} aria-pressed={inv.activeSlot === 'medical'} aria-label={`Equipar vendas: ${def('weapon')?.pa} PA. Quedan ${slots.medical.count}`} onClick={() => { onOrder({type: 'weapon', slot: 'medical'}); onMode('move'); onCloseInventory(); }}>
-          <b aria-hidden="true">✚</b><span>{slots.medical.name} · {slots.medical.count}</span><small>Equipar · {def('weapon')?.pa} PA</small>
-        </button>
-        <button className={`hand-slot unarmed ${inv.activeSlot === 'unarmed' ? 'active' : ''}`} disabled={slotDisabled('unarmed') || inv.activeSlot === 'unarmed'} aria-pressed={inv.activeSlot === 'unarmed'} aria-label={`Dejar las manos libres: ${def('weapon')?.pa} PA`} onClick={() => onOrder({type: 'weapon', slot: 'unarmed'})}>
-          <span>Manos libres</span><small>Atacar con los puños</small>
-        </button>
+        <JA2Hands battle={battle} unit={unit} busy={busy} onOrder={onOrder} onPick={chooseItem}/>
+        <label className="ja2-tool-selector">Objeto en mano<select aria-label="Elegir objeto en mano" value={inv.activeSlot||'primary'} disabled={busyDisabled} onChange={event=>{const option=equipped.find((entry:any)=>entry.slot===event.target.value);if(option){onOrder(option.action);onMode('move');}}}>{equipped.map((option:any)=><option key={option.slot} value={option.slot} disabled={option.disabled}>{option.label}{option.reason?` · ${option.reason}`:''}</option>)}</select></label>
         <JA2WeaponMode battle={battle} unit={unit} busy={busy} onOrder={onOrder} onMode={onMode}/>
-        <div className="ja2-hand-management">{inv.items.filter((entry: any) => ['primary', 'blade'].includes(entry.item)).map((entry: any) => <button key={entry.item} className="line-button" disabled={busyDisabled} aria-pressed={item?.item === entry.item} onClick={() => chooseItem(entry.item)}>Dar o soltar {entry.label}</button>)}</div>
+        <div className="ja2-hand-management">{inv.items.filter((entry: any) => ['primary', 'blade', 'offhand'].includes(entry.item)).map((entry: any) => <button key={entry.item} className="line-button" disabled={busyDisabled} aria-pressed={item?.item === entry.item} onClick={() => chooseItem(entry.item)}>Dar o soltar {entry.label}</button>)}</div>
         <AttachedBayonetControl attached={inv.fittings.attached} busy={busyDisabled} onOrder={onOrder}/>
         <LooseBayonetControl source={inv.fittings.sources.find((source: any) => source.item === 'blade')} busy={busyDisabled} onOrder={onOrder}/>
         {inv.tools.length > 0 && <label className="ja2-tool-selector">Herramienta<select aria-label="Equipar herramienta" value={unit.activeSlot === 'tool' ? unit.activeTool || '' : ''} disabled={slotDisabled('tool')} onChange={event => { if (event.target.value) { onOrder({type: 'weapon', slot: 'tool', toolKey: event.target.value}); onMode('move'); } }}><option value="">Elegir herramienta</option>{inv.tools.map((tool: any) => <option key={tool.item} value={tool.item}>{tool.name} · {tool.count} · estado {tool.condition ?? 100}%</option>)}</select></label>}
@@ -186,11 +176,14 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
       </div>
       <div className="slot-grid">
         <JA2Pockets key={unit.id} unit={unit} layout={inv.pockets} disabled={busyDisabled} onPick={chooseItem} onOrder={onOrder}/>
+        {managedItem==='offhand'&&<button disabled={busyDisabled||!otherHand.valid} title={otherHand.reason||undefined} onClick={()=>{onOrder({type:'swapHands'});onMode('move');}}>Poner {item?.label} en mano · {otherHand.pa} PA</button>}
+        {['primary','blade'].includes(managedItem)&&equipped.filter((option:any)=>option.slot===managedItem).map((option:any)=><button key={option.slot} disabled={option.disabled||option.active} title={option.reason||undefined} onClick={()=>{onOrder(option.action);onMode('move');}}>Poner {item?.label} en mano · {option.pa} PA</button>)}
         {inv.backpack.filter((record:any)=>`inventory:${record.key}`===managedItem).map((item: any) => {
           const gun = (WEAPONS as any)[item.weapon];
           const blade = (BLADES as any)[item.weapon];
           const primaryEquip = equipLootPreview(battle, unit, item.key, 'primary');
           const bladeEquip = blade ? equipLootPreview(battle, unit, item.key, 'blade') : null;
+          const offHandEquip = gun && !blade && handsRequired(item.weapon)===1 ? equipLootPreview(battle,unit,item.key,'offhand') : null;
           const tool = inv.tools.find((entry: any) => entry.key === item.key);
           return (
             <div key={item.key} className={`slot-cell ${item.equippable ? 'equippable' : ''}`}>
@@ -199,6 +192,7 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
               <LooseBayonetControl source={inv.fittings.sources.find((source: any) => source.item === `inventory:${item.key}`)} busy={busyDisabled} onOrder={onOrder}/>
               {item.equippable && <>
                 <button className="line-button" disabled={busyDisabled || !primaryEquip.valid} title={primaryEquip.reason || undefined} onClick={() => onOrder(backpackEquipAction(item.key, 'primary'))}>Equipar principal · {primaryEquip.pa} PA</button>
+                {offHandEquip && <button className="line-button" disabled={busyDisabled || !offHandEquip.valid} title={offHandEquip.reason||undefined} onClick={()=>onOrder(backpackEquipAction(item.key,'offhand'))}>Equipar segunda mano · {offHandEquip.pa} PA</button>}
                 {bladeEquip && <button className="line-button" disabled={busyDisabled || !bladeEquip.valid} title={bladeEquip.reason || undefined} onClick={() => onOrder(backpackEquipAction(item.key, 'blade'))}>Equipar secundaria · {bladeEquip.pa} PA</button>}
               </>}
               {tool && <button className="line-button" disabled={slotDisabled('tool') || tool.active} aria-pressed={tool.active} onClick={() => { onOrder({type: 'weapon', slot: 'tool', toolKey: tool.item}); onMode('move'); }}>Equipar herramienta · {def('weapon')?.pa} PA</button>}
