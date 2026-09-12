@@ -65,7 +65,7 @@ test('knife cursor shows body aim, AP and energy and never displays firearm relo
 test('finite knife overlay uses the observed physical flight and does not resolve hidden actors',()=>{
  const s=field(),next=actBattle(s,{type:'throwKnife',unitId:'p',targetId:'e',aim:2});const visual=getKnifeThrowVisual(s,next);assert.ok(visual);
  const project=(x,y)=>({x:x*26,y:y*14}),draw=value=>render(h('svg',null,h(KnifeThrowEffect,{state:s,visual:value,project})));
- const html=draw(visual);assert.match(html,/data-knife-flight/);assert.match(html,/animateMotion/);assert.match(html,/dur="0.35s"/);assert.match(html,/dur="0.55s"/);assert.match(html,/aria-hidden="true"/);assert.ok(KNIFE_EFFECT_DURATION>=550&&KNIFE_EFFECT_DURATION<1000);assert.doesNotMatch(html,/Guardia|Lanzador|Infinity|NaN/);
+ const html=draw(visual);assert.match(html,/data-knife-flight/);assert.match(html,/data-knife-shadow/);assert.match(html,/animateMotion/);assert.match(html,/dur="0.35s"/);assert.match(html,/dur="0.55s"/);assert.match(html,/aria-hidden="true"/);assert.ok(KNIFE_EFFECT_DURATION>=550&&KNIFE_EFFECT_DURATION<1000);assert.doesNotMatch(html,/Guardia|Lanzador|Infinity|NaN/);
  s.units.push({id:'hidden',x:2,y:1,tacticalLevel:1,hp:100});assert.equal(draw(visual),html);
  assert.doesNotMatch(draw({...visual,visible:false}),/data-knife-flight/);assert.doesNotMatch(draw(null),/data-knife-flight/);
  const upstairs={...visual,source:{...visual.source,tacticalLevel:1,height:4.4},impact:{...visual.impact,height:4.1}};

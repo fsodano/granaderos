@@ -100,7 +100,8 @@ test('a known unconscious occupant cannot become the chosen contact cell',()=>{
 
 
 test('an environment approach within a real player interrupt restores and resumes exactly',()=>{
-  const s=field({x:1,y:1,agility:100,experienceLevel:10},{enemies:[{id:'e',x:7,y:1,weapon:1813,agility:30,experienceLevel:1,patrol:false}]});s.units[1].ap=24;
+  // A sabre preserves the approaching-enemy trigger; a facon can now throw.
+  const s=field({x:1,y:1,agility:100,experienceLevel:10},{enemies:[{id:'e',x:7,y:1,weapon:1809,agility:30,experienceLevel:1,patrol:false}]});s.units[1].ap=24;
   const oldDoor=door(s),data={...oldDoor};Object.assign(oldDoor,{type:'grass',blocked:false,blocksSight:false});delete oldDoor.doorId;
   Object.assign(s.tiles.find(p=>p.x===4&&p.y===4),data,{x:4,y:4});
   const paused=endTurn(s);assert.equal(paused.phase,'interrupt');assert.ok(paused.interrupt.unitIds.includes('p'));

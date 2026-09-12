@@ -150,7 +150,8 @@ test('exploration selection advances bleeding before treatment and cannot rescue
 });
 
 test('a real interrupt pays medical selection and use once and resumes from a saved remaining budget', () => {
-  const s = field({x: 1, y: 1, agility: 95}, {enemies: [{id: 'e', x: 7, y: 1, weapon: 1813, overwatch: false}]});
+  // A sabre preserves the approaching-enemy trigger; a facon can now throw.
+  const s = field({x: 1, y: 1, agility: 95}, {enemies: [{id: 'e', x: 7, y: 1, weapon: 1809, overwatch: false}]});
   person(s).ap = 32;
   person(s, 'ally').ap = 0;
   person(s, 'e').ap = 24;

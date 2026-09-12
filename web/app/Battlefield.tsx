@@ -144,16 +144,18 @@ export default function Battlefield({battle:s,onChange,onFinish,peacefulVisit=fa
     a=tacticalInputAction(s,u,a);
     setBandageReport(null);clearGroup();facingOverride.current=null;
     const next=actBattle(s,{unitId:selected,aim,hitLocation,...a}),preserveFacing=a.type==='move'&&a.movementIntent==='preserveFacing';
+    const knifeVisual=getKnifeThrowVisual(s,next),actionType=resolvedOrderType(s,u,a);
+    const preparationOnly=actionType==='throwKnife'&&!knifeVisual;
     if(!next.lastError){
       const target=s.units.find((t:any)=>t.id===a.targetId)||a;
-      if(!preserveFacing&&Number.isFinite(target.x)&&Number.isFinite(target.y))setDirections(d=>({...d,[selected]:(Math.round(Math.atan2((target.x-u.x)-(target.y-u.y),-((target.x-u.x)+(target.y-u.y)))/(Math.PI/4))+8)%8}));
-      const actionType=resolvedOrderType(s,u,a);
+      if(preparationOnly)setDirections(d=>({...d,[selected]:((next.units.find((actor:any)=>actor.id===selected)?.facing??u.facing??2)+1)%8}));
+      else if(!preserveFacing&&Number.isFinite(target.x)&&Number.isFinite(target.y))setDirections(d=>({...d,[selected]:(Math.round(Math.atan2((target.x-u.x)-(target.y-u.y),-((target.x-u.x)+(target.y-u.y)))/(Math.PI/4))+8)%8}));
       if(['fire','firePoint','throwKnife'].includes(actionType))setAim(0);
-      const pose=spriteOrderPose(actionType);
+      // Contact can stop paid preparation before the knife leaves the hand.
+      const pose=spriteOrderPose(preparationOnly?'look':actionType);
       clearTimeout(poseTimers.current[selected]);
       setPoses(p=>({...p,[selected]:pose}));poseTimers.current[selected]=setTimeout(()=>setPoses(p=>({...p,[selected]:'idle'})),1000);
     }
-    const knifeVisual=getKnifeThrowVisual(s,next);
     const accepted=onChange(next);
     if(knifeVisual&&accepted!==null)setKnifeEffect({id:++knifeEffectId.current,visual:knifeVisual});
     if(!next.lastError&&preserveFacing&&accepted!==null)facingOverride.current={battle:accepted??next,unitId:selected,direction:((u.facing??2)+1)%8};

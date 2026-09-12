@@ -13,7 +13,12 @@ export default function KnifeThrowEffect({state,visual,project}:{state:any;visua
  if(![visual.source.x,visual.source.y,visual.impact.x,visual.impact.y,visual.impact.height,height].every(Number.isFinite))return null;
  const from=projectSurface(state,project,{...visual.source,renderedHeight:height!});
  const to=projectSurface(state,project,{...visual.impact,tacticalLevel:visual.impact.tacticalLevel??tacticalLevel(visual.landing),renderedHeight:visual.impact.height});
+ const shadowFrom=projectSurface(state,project,visual.source),shadowTo=projectSurface(state,project,visual.landing);
  return <g data-knife-flight="true" pointerEvents="none" aria-hidden="true">
+  <ellipse data-knife-shadow="true" rx="3.5" ry="1.5" fill="#090d09" opacity=".35">
+   <animateMotion path={`M${shadowFrom.x},${shadowFrom.y} L${shadowTo.x},${shadowTo.y}`} dur="0.35s" fill="freeze"/>
+   <animate attributeName="opacity" values=".35;.35;0" keyTimes="0;.65;1" dur="0.55s" fill="freeze"/>
+  </ellipse>
   <g>
    <animateMotion path={`M${from.x},${from.y} L${to.x},${to.y}`} dur="0.35s" rotate="auto" fill="freeze"/>
    <path d="M-6 0H0L7-1L3 1H0" fill="#d9dfd0" stroke="#303b36" strokeWidth=".8"/>
