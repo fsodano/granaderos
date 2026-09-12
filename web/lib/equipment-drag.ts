@@ -50,7 +50,7 @@ export function useEquipmentDrag(battle:any,unit:any,disabled:boolean,onOrder:(a
   const destinationId=element?.dataset.equipmentScope===store.scope&&element.dataset.equipmentUnit===String(unit.id)?element.dataset.equipmentSlot??null:null;
   store.drag(battle,unit,owner.current,event.clientX,event.clientY,destinationId,fresh);
  };
- const handlers=(slotId:string,{onInspect,selectOnClick=true}:{onInspect?:(item:string)=>void;selectOnClick?:boolean}={})=>({
+ const handlers=(slotId:string,{onInspect,selectOnClick=true}:{onInspect?:(item:string,slotId?:string)=>void;selectOnClick?:boolean}={})=>({
   'data-equipment-slot':slotId,'data-equipment-unit':String(unit.id),'data-equipment-scope':store.scope,
   'aria-pressed':Boolean(current?.selection?.unitId===String(unit.id)&&current.selection.sourceId===slotId),
   onPointerDown:(event:PointerEvent<HTMLElement>)=>{
@@ -78,7 +78,7 @@ export function useEquipmentDrag(battle:any,unit:any,disabled:boolean,onOrder:(a
   onContextMenu:(event:MouseEvent)=>{
    event.preventDefault();event.stopPropagation();
    if(store.getSnapshot().gesture){store.cancel();return;}
-   const item=equipmentEndpoint(unit,slotId).item;if(!disabled&&item)onInspect?.(item);
+   const item=equipmentEndpoint(unit,slotId).item;if(!disabled&&item)onInspect?.(item,slotId);
   },
   onDragStart:(event:MouseEvent)=>event.preventDefault(),
  });

@@ -1,3 +1,4 @@
+import {planEquipmentAttachment} from './equipment-cursor.js';
 import {droppedWeaponStack} from './tactical-inventory.js';
 import {atHand,planningPoint} from './tactical-planning-space.js';
 import {makeOutfit,wornOutfit} from './outfits.js';
@@ -124,10 +125,10 @@ export function sectorInventoryModel(s,sectorId,roster,operativeId){
 // updating either custodian; the source key is resolved again on confirmation.
 export function moveSectorItem(s,action,roster){
  const {sector:sectorId,operativeId,direction,count=1}=action;
- need(['take','drop','equip','issueOutfit','arrange'].includes(direction)&&Number.isSafeInteger(count)&&count>0&&count<=1000000,'La orden de inventario no es válida.');
+ need(['take','drop','equip','issueOutfit','arrange','attachment'].includes(direction)&&Number.isSafeInteger(count)&&count>0&&count<=1000000,'La orden de inventario no es válida.');
  const model=sectorInventoryModel(s,sectorId,roster,operativeId);
- const reason=['equip','issueOutfit','arrange'].includes(direction)?model.carriedReason:model.reason;need(!reason,reason);need(model.operativeId===Number(operativeId),'Elegí un combatiente presente.');
- const op=roster.find(op=>op.id===Number(operativeId)),snapshot=inventorySite(s,sectorId).snapshot,actor=['equip','issueOutfit','arrange'].includes(direction)?carriedActor(s,op):actorAt(s,sectorId,op);
+ const reason=['equip','issueOutfit','arrange','attachment'].includes(direction)?model.carriedReason:model.reason;need(!reason,reason);need(model.operativeId===Number(operativeId),'Elegí un combatiente presente.');
+ const op=roster.find(op=>op.id===Number(operativeId)),snapshot=inventorySite(s,sectorId).snapshot,actor=['equip','issueOutfit','arrange','attachment'].includes(direction)?carriedActor(s,op):actorAt(s,sectorId,op);
  let next,stack,changedGround=false;
  if(direction==='issueOutfit'){
   need(count===1&&!model.outfitIssueReason,model.outfitIssueReason??'Retirá un poncho por vez.');
@@ -150,6 +151,10 @@ export function moveSectorItem(s,action,roster){
    need(typeof action.expectedSource==='string'&&typeof action.expectedDestination==='string','Volvé a seleccionar el equipo.');
    next=action.kind==='pocket'?planPocketMove(actor,action.sourceId,action.destinationId,action.expectedSource,action.expectedDestination,action.count):planEquipmentPlacement(actor,action).unit;
   }
+ }else if(direction==='attachment'){
+  need(count===1,'Cambiá un accesorio por vez.');
+  if(action.operation==='detach')need(!roster.some(other=>other.id!==op.id&&s.recruited.includes(other.id)&&s.operativeState[other.id]?.alive&&s.operativeState[other.id]?.equipmentCursor&&!s.operativeState[other.id]?.captured),'Colocá primero el objeto del otro combatiente.');
+  next=planEquipmentAttachment(actor,action).unit;
  }else if(direction==='equip'){
   need(count===1&&['primary','blade','offhand','outfit','offhandItem','mainhand'].includes(action.slot),'Elegí una ranura de equipo.');
   const stow=action.slot==='outfit'&&action.inventoryKey===null;
@@ -191,7 +196,7 @@ export function moveSectorItem(s,action,roster){
  else if(next.weaponDropped)clearCarriedLoading(record);
  // Returned living soldiers and their cartridge receipt are historical.
  // Their next deployment uses the current campaign equipment record.
- if(changedGround||!['equip','issueOutfit','arrange'].includes(direction)){
+ if(changedGround||!['equip','issueOutfit','arrange','attachment'].includes(direction)){
   // A returned living unit is a historical receipt, not another item owner.
   // Retire its identities before a map transfer puts that same item on the field.
   for(const old of snapshot.units.filter(u=>u.side==='player'&&u.hp>0&&snapshot.returnLedger?.entries.some(e=>e.unitId===u.id&&['resident','departed'].includes(e.kind)))){
@@ -201,6 +206,7 @@ export function moveSectorItem(s,action,roster){
   }
   validateBattleSnapshot(snapshot);
  }
+ if(direction==='attachment')return `${op.nickname??op.name} ${action.operation==='detach'?'retira la bayoneta al cursor':'coloca la bayoneta en el arma'}.`;
  if(direction==='arrange')return `${op.nickname??op.name} ordena su equipo.`;
  return `${op.nickname??op.name} ${direction==='take'?'recoge':direction==='equip'?(action.inventoryKey===null?'guarda':'equipa'):direction==='issueOutfit'?'retira del depósito':'deja'} ${count} × ${stackLabel(stack)} en el sector.`;
 }

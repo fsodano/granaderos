@@ -2,7 +2,7 @@
 import {handSlots,unitCanAct} from '../../game/ja2-hud.js';
 import {useEquipmentDrag} from '../lib/equipment-drag';
 import './ja2-hands.css';
-type Props={battle:any;unit:any;busy:boolean;compact?:boolean;onOrder:(action:any)=>void;onPick:(item:string)=>void};
+type Props={battle:any;unit:any;busy:boolean;compact?:boolean;onOrder:(action:any)=>void;onPick:(item:string,slotId?:string)=>void};
 export default function JA2Hands({battle,unit,busy,compact=false,onOrder,onPick}:Props){
  const unavailable=busy||!unitCanAct(battle,unit);
  const drag=useEquipmentDrag(battle,unit,unavailable,onOrder);

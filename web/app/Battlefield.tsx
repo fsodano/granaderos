@@ -180,7 +180,7 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
   }
   const order=(a:any)=>{
     if(!unitCanAct(s,u)||busy)return;
-    if(u.equipmentCursor&&!['pickupEquipment','placeEquipment','returnEquipmentCursor','dragEquipment','inventoryMap'].includes(a.type)){equipmentStore.report('Colocá o devolvé el objeto antes de dar otra orden.');return null;}
+    if(u.equipmentCursor&&!['pickupEquipment','placeEquipment','returnEquipmentCursor','dragEquipment','inventoryMap','attachment'].includes(a.type)){equipmentStore.report('Colocá o devolvé el objeto antes de dar otra orden.');return null;}
     a=tacticalInputAction(s,u,a);
     setBandageReport(null);clearGroup();facingOverride.current=null;
     const next=actBattle(s,{unitId:selected,aim,hitLocation,...a}),preserveFacing=a.type==='move'&&a.movementIntent==='preserveFacing';

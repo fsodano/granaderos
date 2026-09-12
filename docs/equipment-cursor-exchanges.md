@@ -35,7 +35,7 @@ The [publisher manual, pages 21–25](https://cdn.akamai.steamstatic.com/steam/a
 - [Return and cursor serialization](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/a06f4896c43c76396529e415a29a8ca26b00f9f1/src/game/Tactical/Interface_Items.cc#L5086-L5159).
 - [Placement AP and cursor owner](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/a06f4896c43c76396529e415a29a8ca26b00f9f1/src/game/Tactical/Interface_Panels.cc#L1548-L1585).
 
-Individual stack-member inspection, direct slot-to-map dragging, further attachment types and classic transfer/AP formulas remain separate gaps. Attaching and removing a customized loose bayonet still loses noncanonical extensions such as its custom name; identity, pattern and condition remain intact. This milestone does not establish full JA2 inventory or gameplay parity.
+Individual stack-member inspection, direct slot-to-map dragging, further attachment types and classic transfer/AP formulas remain separate gaps. A subsequent [physical attachment slot update](attachment-slots.md) preserves custom bayonet data and supports cursor fitting, exchange and removal from held or stored rifles. This milestone does not establish full JA2 inventory or gameplay parity.
 
 ## Verification
 

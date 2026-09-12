@@ -1,4 +1,5 @@
 import {WEAPONS} from './data.js';
+import {FITTING_PATTERNS,FIT_BAYONET_AP,REMOVE_BAYONET_AP,fittingFromItem,fittingToItem} from './weapon-fittings.js';
 import {handsRequired,handLayout} from './hand-layout.js';
 import {HELD_SUPPLIES} from './held-supplies.js';
 import {POCKETS,pocketOrderFromSlots} from './inventory-pockets.js';
@@ -132,4 +133,41 @@ export function planEquipmentCursorReturn(unit){
  if(m.cursor){const remaining=autoplace(m,m.cursor.stack);m.cursor=remaining?{sourceId:origin,stack:remaining}:null;}
  const dropped=m.cursor?copy(m.cursor.stack):null;m.cursor=null;
  return {unit:materialize(unit,m),dropped};
+}
+
+// A weapon detail names the physical host slot. The cursor remains a separate
+// custodian, including when a full pack cannot accept the removed attachment.
+export function equipmentAttachmentHost(unit,hostId){
+ need(physical(hostId)&&hostId!=='outfit','Elegí la ranura del arma.');
+ const endpoint=equipmentEndpoint(unit,hostId);
+ need(!endpoint.blocked&&endpoint.item&&endpoint.count===1,'El arma ya no está en esa ranura.');
+ const stack=readItemStack(unit,endpoint.item,1);
+ need(WEAPONS[stack.weapon]?.type==='firearm','Ese objeto no admite accesorios.');
+ return {hostId,stack,supported:Object.values(FITTING_PATTERNS).some(pattern=>pattern.host===stack.weapon),fitting:copy(stack.fittings?.bayonet??null)};
+}
+export function planEquipmentAttachment(unit,action){
+ const {hostId,operation}=action;
+ need(['attach','detach'].includes(operation),'Elegí colocar o retirar el accesorio.');
+ for(const [id,expected]of [[hostId,action.expectedHost],['cursor',action.expectedCursor]])need(typeof expected==='string'&&expected===equipmentFingerprint(unit,id),'Cambió el arma o el objeto del cursor. Revisá el equipo.');
+ const info=equipmentAttachmentHost(unit,hostId);
+ need(info.supported,'Este modelo de arma no admite la bayoneta disponible.');
+ const m=model(unit),host=cell(m,hostId),previous=host.stack.fittings?.bayonet;
+ let pa;
+ if(operation==='attach'){
+  need(m.cursor,'Tomá una bayoneta antes de colocarla.');
+  const fitting=fittingFromItem(m.cursor.stack,host.stack.weapon);
+  need(fitting.condition>0,'La bayoneta está rota.');
+  const returned=previous?fittingToItem(previous):null;
+  host.stack.fittings={bayonet:fitting};
+  m.cursor=returned?{sourceId:m.cursor.sourceId,stack:returned}:null;
+  pa=FIT_BAYONET_AP+(previous?REMOVE_BAYONET_AP:0);
+ }else{
+  need(!m.cursor,'Colocá primero el objeto del cursor.');
+  need(previous,'El arma no tiene una bayoneta fijada.');
+  m.cursor={sourceId:`attachment:${hostId}`,stack:fittingToItem(previous)};
+  host.stack.fittings={};pa=REMOVE_BAYONET_AP;
+ }
+ const next=materialize(unit,m);
+ lowerWeapon(next);next.braced=false;next.overwatch=false;next.momentum=0;delete next.lastTargetId;delete next.lastShotPosition;
+ return {unit:next,pa,operation,swapped:Boolean(operation==='attach'&&previous),host:host.stack.weapon};
 }

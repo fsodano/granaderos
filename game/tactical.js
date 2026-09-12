@@ -1,5 +1,5 @@
 import {pocketOrderFromSlots} from './inventory-pockets.js';
-import {planEquipmentPickup,planEquipmentCursorPlacement,planEquipmentCursorReturn} from './equipment-cursor.js';
+import {planEquipmentAttachment,planEquipmentPickup,planEquipmentCursorPlacement,planEquipmentCursorReturn} from './equipment-cursor.js';
 import {regionalWeatherAt} from './regional-weather.js';
 import {heldThrowingKnife,knifeThrowCosts,knifeThrowRange,knifeThrowChance,knifeThrowDamage} from './thrown-knife.js';
 import {knifeFlight} from './knife-flight.js';
@@ -569,6 +569,13 @@ export function dropPreview(s,u,item,count=1){
   const pa=4;let reason=inventoryOrderReason(s,u,pa);
   if(!reason)try{extractItemQuantity(u,item,count);}catch(error){reason=error.message;}
   return {pa,kind:'drop',chance:100,reason,valid:!reason};
+}
+export function equipmentAttachmentPreview(s,u,action){
+ let reason=inventoryOrderReason(s,u,0),plan;
+ if(!reason&&(u.side!=='player'||u.militia||u.departure))reason='Elegí un combatiente de tu escuadra.';
+ if(!reason&&action.operation==='detach'&&s.units?.some(other=>other.id!==u.id&&alive(other)&&other.equipmentCursor))reason='Colocá primero el objeto del otro combatiente.';
+ if(!reason)try{plan=planEquipmentAttachment(u,action);reason=inventoryOrderReason(s,u,plan.pa);}catch(error){reason=error.message;}
+ return {valid:!reason,reason,pa:s.mode==='exploration'?0:plan?.pa??(action.operation==='detach'?REMOVE_BAYONET_AP:FIT_BAYONET_AP),swapped:plan?.swapped??false};
 }
 export function fitBayonetPreview(s,u,item){
   const pa=FIT_BAYONET_AP;let reason=inventoryOrderReason(s,u,pa),plan;
@@ -1376,6 +1383,12 @@ else if(a.type==='movement'){
   const stance=movementStance(a.movement);if(u.mounted&&stance!=='standing')return fail('Debes desmontar antes de agacharte.');
   const cost=stanceCost(u,stance);if(!pay(cost))return fail(`Cambiar de postura requiere ${cost} PA.`);
   u.movementMode=a.movement;u.stance=stance;u.momentum=0;sayObserved(s,[u],`${u.name} cambia su forma de desplazarse.`);
+}
+else if(a.type==='attachment'){
+  const preview=equipmentAttachmentPreview(s,u,a);if(!preview.valid)return fail(preview.reason);
+  const plan=planEquipmentAttachment(u,a);if(!pay(plan.pa))return fail(`Cambiar el accesorio requiere ${plan.pa} PA.`);
+  plan.unit.ap=u.ap;replaceUnit(u,plan.unit);emitNoise(s,u,'reload');
+  sayObserved(s,[u],`${u.name} ${plan.operation==='detach'?'retira la bayoneta al cursor':plan.swapped?'cambia la bayoneta del arma':'fija la bayoneta al arma'}${s.mode==='exploration'?'':` (${plan.pa} PA)`}.`);
 }
 else if(a.type==='fitBayonet'||a.type==='removeBayonet'){
   const fitting=a.type==='fitBayonet',pa=fitting?FIT_BAYONET_AP:REMOVE_BAYONET_AP;let plan;

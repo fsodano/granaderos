@@ -1,6 +1,8 @@
 'use client';
 import './ja2-outfit.css';
 import JA2Hands from './JA2Hands';
+import JA2AttachmentSlot from './JA2AttachmentSlot';
+import {equipmentEndpoint} from '../../game/tactical-inventory.js';
 import JA2OutfitSlot from './JA2OutfitSlot';
 import {EquipmentInteractionProvider,useEquipmentInteraction} from '../lib/equipment-drag';
 import JA2WeaponMode from './JA2WeaponMode';
@@ -102,7 +104,9 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
   const equipped = equipmentSlots(battle, unit, {busy});
   const slotDisabled = (id: string) => equipped.find((slot: any) => slot.slot === id)?.disabled;
   const busyDisabled = busy || !inv.unitReady;
-  const [managedItem, setManagedItem] = useState('ammo');
+  const [managedReference, setManagedItem] = useState('ammo');
+  const [inspectedSlot,setInspectedSlot]=useState('');
+  const managedItem=inspectedSlot?equipmentEndpoint(unit,inspectedSlot).item??managedReference:managedReference;
   const [quantity, setQuantity] = useState(1);
   const [recipient, setRecipient] = useState('');
   const [lootId, setLootId] = useState('');
@@ -124,8 +128,8 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
   const contentCount = Math.min(contentQuantity, content?.count ?? 1);
   const containerLoot = environment.target?.kind === 'container' ? containerLootPreview(battle, unit, environment.target, content?.index ?? 0, contentCount) : null;
   const [itemOpen,setItemOpen]=useState(false);
-  const chooseItem = (id: string) => { setManagedItem(id); setQuantity(1); setItemOpen(true); };
-  useEffect(() => { setManagedItem('ammo'); setQuantity(1); setRecipient(''); setLootId(''); setLootQuantity(1); setEnvironmentKey(''); setEnvironmentVerb(''); setContentIndex(0); setContentQuantity(1); }, [unit.id]);
+  const chooseItem = (id: string,slotId='') => { setManagedItem(id); setInspectedSlot(slotId); setQuantity(1); setItemOpen(true); };
+  useEffect(() => { setManagedItem('ammo'); setInspectedSlot(''); setQuantity(1); setRecipient(''); setLootId(''); setLootQuantity(1); setEnvironmentKey(''); setEnvironmentVerb(''); setContentIndex(0); setContentQuantity(1); }, [unit.id]);
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
       const editing = Boolean((e.target as HTMLElement)?.closest('input,select,textarea,[contenteditable]:not([contenteditable="false"]),[role="textbox"]'));
@@ -210,7 +214,7 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
         <JA2Pockets key={unit.id} battle={battle} unit={unit} layout={inv.pockets} disabled={busyDisabled} onPick={chooseItem} onOrder={onOrder}/>
 
       </div>
-      <details className="pertrechos ja2-inventory-extra" open={itemOpen} onToggle={event=>setItemOpen(event.currentTarget.open)}><summary>{item?.label || 'Objeto'} · detalles</summary><div className="ja2-inventory-popup"><button className="line-button" onClick={()=>setItemOpen(false)}>Cerrar objeto</button>        {managedItem==='offhand'&&<button disabled={busyDisabled||!otherHand.valid} title={otherHand.reason||undefined} onClick={()=>{onOrder({type:'swapHands'});onMode('move');}}>Poner {item?.label} en mano · {cost(otherHand.pa)}</button>}
+      <details className="pertrechos ja2-inventory-extra" open={itemOpen} onToggle={event=>setItemOpen(event.currentTarget.open)}><summary>{item?.label || 'Objeto'} · detalles</summary><div className="ja2-inventory-popup"><button className="line-button" onClick={()=>setItemOpen(false)}>Cerrar objeto</button>{itemOpen&&inspectedSlot&&<JA2AttachmentSlot battle={battle} unit={unit} hostId={inspectedSlot} disabled={busyDisabled} onOrder={onOrder}/>}        {managedItem==='offhand'&&<button disabled={busyDisabled||!otherHand.valid} title={otherHand.reason||undefined} onClick={()=>{onOrder({type:'swapHands'});onMode('move');}}>Poner {item?.label} en mano · {cost(otherHand.pa)}</button>}
         {['primary','blade'].includes(managedItem)&&equipped.filter((option:any)=>option.slot===managedItem).map((option:any)=><button key={option.slot} disabled={option.disabled||option.active} title={option.reason||undefined} onClick={()=>{onOrder(option.action);onMode('move');}}>Poner {item?.label} en mano · {cost(option.pa)}</button>)}
         {inv.backpack.filter((record:any)=>`inventory:${record.key}`===managedItem).map((item: any) => {
           const gun = (WEAPONS as any)[item.weapon];

@@ -5,7 +5,7 @@ import {lowerWeapon} from './weapon-readiness.js';
 import {validateReloadProgress} from './weapon-reload.js';
 import {WEAPONS} from './data.js';
 import {clearEmptySupply} from './held-supplies.js';
-import {FITTING_PATTERNS,validateFitting,validateFittingPattern,validateWeaponFittings,validateUnitFittings,fittingItemIds,heldItemIds,fittingWeight,weaponItemWeight,fittingLabel} from './weapon-fittings.js';
+import {validateFitting,validateFittingPattern,validateWeaponFittings,validateUnitFittings,fittingItemIds,heldItemIds,fittingWeight,weaponItemWeight,fittingLabel,fittingFromItem,fittingToItem} from './weapon-fittings.js';
 
 // JA2 manual pp. 21–25: separate hands and pack, finite inventory slots,
 // selectable quantities, passing, dropping, and retained weapon contents.
@@ -309,9 +309,10 @@ export function equipmentStacksMerge(left,right){
  return sameMetadata(a.value,b.value);
 }
 const physicalEquipmentSlot=id=>id==='outfit'||id==='hand:right'||id==='hand:left'||/^large-[1-4]$/.test(id)||/^small-[1-8]$/.test(id);
+const equipmentCursorSource=id=>physicalEquipmentSlot(id)||id.startsWith('attachment:')&&id.slice(11)!=='outfit'&&physicalEquipmentSlot(id.slice(11));
 export function validateEquipmentCursor(unit){
  const cursor=unit.equipmentCursor;if(cursor===undefined)return true;
- if(!object(cursor)||Object.keys(cursor).some(key=>!['sourceId','stack'].includes(key))||typeof cursor.sourceId!=='string'||!physicalEquipmentSlot(cursor.sourceId)||!object(cursor.stack)||cursor.stack.item==='cursor')fail('El objeto del cursor no es válido.');
+ if(!object(cursor)||Object.keys(cursor).some(key=>!['sourceId','stack'].includes(key))||typeof cursor.sourceId!=='string'||!equipmentCursorSource(cursor.sourceId)||!object(cursor.stack)||cursor.stack.item==='cursor')fail('El objeto del cursor no es válido.');
  const descriptor=itemStackDescriptor(cursor.stack);if(cursor.stack.count>descriptor.stackLimit)fail('La cantidad del cursor supera el límite de la pila.');
  const existing=[...heldItemIds(unit),...Object.values(pack(unit)).filter(value=>object(value)&&value.count>0).flatMap(fittingItemIds)],ids=fittingItemIds(cursor.stack);
  if(new Set(ids).size!==ids.length||ids.some(id=>existing.includes(id)))fail('La identidad del objeto del cursor está duplicada.');
@@ -376,6 +377,7 @@ function fittingHost(unit) {
   if (unit.weaponDropped || (unit.activeSlot??'primary')!=='primary' || WEAPONS[unit.weapon]?.type!=='firearm') fail('Prepará el fusil antes de cambiar su bayoneta.');
 }
 function clearFittingGuard(unit) {
+  lowerWeapon(unit);
   unit.braced=false;unit.overwatch=false;unit.momentum=0;
   delete unit.lastTargetId;delete unit.lastShotPosition;
   return unit;
@@ -387,8 +389,7 @@ export function planFitBayonet(unit,item) {
   if (unit.weaponFittings?.bayonet) fail('El fusil ya tiene una bayoneta fijada.');
   if (item!=='blade' && !(typeof item==='string'&&item.startsWith('inventory:'))) fail('Seleccioná una bayoneta de la secundaria o de la mochila.');
   const extracted=extractItemQuantity(unit,item,1),stack=extracted.stack;
-  const fitting={weapon:stack.weapon,fittingPattern:stack.fittingPattern,instanceId:stack.instanceId,condition:stack.condition};
-  validateFitting(fitting,unit.weapon);
+  const fitting=fittingFromItem(stack,unit.weapon);
   if (fitting.condition<=0) fail('La bayoneta está rota.');
   if (heldItemIds(extracted.unit).includes(fitting.instanceId) || Object.values(extracted.unit.inventory??{}).some(r=>r?.count>0&&fittingItemIds(r).includes(fitting.instanceId))) fail('La identidad del equipo está duplicada.');
   const next=extracted.unit;next.weaponFittings={bayonet:structuredClone(fitting)};
@@ -400,11 +401,12 @@ export function planRemoveBayonet(unit,destination='inventory') {
   validateFitting(fitting,unit.weapon);
   if (!['inventory','blade'].includes(destination)) fail('Seleccioná mochila o mano secundaria.');
   let next=structuredClone(unit);next.weaponFittings={};
-  const stack={item:'weapon',count:1,weight:FITTING_PATTERNS[fitting.fittingPattern].weight,weapon:fitting.weapon,loaded:0,jammed:false,condition:fitting.condition,instanceId:fitting.instanceId,fittingPattern:fitting.fittingPattern};
+  const stack=fittingToItem(fitting);
   if (destination==='inventory') next=applyItemQuantity(next,stack);
   else {
     if (next.blade || next.offHand) fail('La mano secundaria está ocupada.');
     next.blade=fitting.weapon;next.bladeCondition=fitting.condition;next.bladeInstanceId=fitting.instanceId;next.bladeFittingPattern=fitting.fittingPattern;
+    const metadata=handMetadata(stack);delete next.bladeMetadata;if(Object.keys(metadata).length)next.bladeMetadata=metadata;
   }
   if(inventoryUsage(next).overloaded)fail('No queda espacio para guardar la bayoneta retirada.');
   return {unit:clearFittingGuard(next),fitting:structuredClone(fitting),destination,host:unit.weapon};

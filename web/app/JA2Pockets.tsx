@@ -10,7 +10,7 @@ export function EquipmentQuantityControls({scope,quantity,setCount,disabled=fals
   <span>de {quantity.maxCount}</span><button type="button" disabled={disabled} onClick={()=>setCount(quantity.maxCount)}>Todo</button>
  </div>;
 }
-type Props={battle?:any;unit:any;layout:any;disabled:boolean;onPick:(item:string)=>void;onOrder:(action:any)=>void};
+type Props={battle?:any;unit:any;layout:any;disabled:boolean;onPick:(item:string,slotId?:string)=>void;onOrder:(action:any)=>void};
 export default function JA2Pockets({battle,unit,layout,disabled,onPick,onOrder}:Props){
  const drag=useEquipmentDrag(battle,unit,disabled,onOrder);
  return <section className="ja2-pockets" aria-label="Bolsillos del combatiente">

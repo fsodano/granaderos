@@ -11,6 +11,27 @@ export const REMOVE_BAYONET_AP = 8;
 export const LOOSE_BAYONET = Object.freeze({id:1811,name:'Bayoneta suelta',ap:16,damage:24,reach:1});
 const object = value => value !== null && typeof value === 'object' && !Array.isArray(value);
 const fail = message => {throw Error(message);};
+const FITTING_FIELDS = new Set(['weapon','fittingPattern','instanceId','condition']);
+const ITEM_FIELDS = new Set(['item','count','weapon','loaded','condition','jammed','fittings','fittingPattern','instanceId','reloadProgress']);
+const IDENTITY_FIELDS = new Set(['instanceId','weaponInstanceId','bladeInstanceId','fittings','weaponFittings','fittingPattern','weaponFittingPattern','bladeFittingPattern','equipmentCursor','inventory','offHand','weaponMetadata','bladeMetadata']);
+function validateFittingMetadata(metadata, pattern) {
+  if (!object(metadata) || Object.keys(metadata).some(key => ITEM_FIELDS.has(key))) fail('Los metadatos de la bayoneta no son válidos.');
+  if (Object.hasOwn(metadata,'weight') && metadata.weight !== FITTING_PATTERNS[pattern]?.weight) fail('El peso de la bayoneta no es válido.');
+  const seen = new Set();
+  let remaining = 10000;
+  const visit = (value, depth) => {
+    if (--remaining < 0 || depth > 20) fail('Los metadatos de la bayoneta son demasiado extensos.');
+    if (value === null || typeof value === 'string' || typeof value === 'boolean' || typeof value === 'number' && Number.isFinite(value)) return;
+    if (typeof value !== 'object' || seen.has(value) || !Array.isArray(value) && ![Object.prototype,null].includes(Object.getPrototypeOf(value))) fail('Los metadatos de la bayoneta no son válidos.');
+    seen.add(value);
+    for (const key of Object.keys(value)) {
+      if (['__proto__','constructor','prototype'].includes(key) || IDENTITY_FIELDS.has(key)) fail('Los metadatos de la bayoneta no pueden contener otro equipo.');
+      visit(value[key],depth+1);
+    }
+    seen.delete(value);
+  };
+  visit(metadata,0);
+}
 export function validItemIdentity(id) {
   return typeof id === 'string' && id.length > 0 && id.length <= 100 &&
     !/[<>\x00-\x1f]/.test(id) && !['__proto__','constructor','prototype'].includes(id);
@@ -27,13 +48,33 @@ export function validateFittingPattern(pattern, weapon, instanceId) {
   return true;
 }
 export function validateFitting(fitting, hostWeaponId) {
-  if (!object(fitting) || Object.keys(fitting).length !== 4 ||
-      !['weapon','fittingPattern','instanceId','condition'].every(key => Object.hasOwn(fitting,key))) fail('Los datos de la bayoneta fijada no son válidos.');
+  if (!object(fitting) || Object.keys(fitting).some(key => !FITTING_FIELDS.has(key) && key !== 'metadata') ||
+      ![...FITTING_FIELDS].every(key => Object.hasOwn(fitting,key))) fail('Los datos de la bayoneta fijada no son válidos.');
   validateFittingPattern(fitting.fittingPattern,fitting.weapon,fitting.instanceId);
   const spec = FITTING_PATTERNS[fitting.fittingPattern];
   if (!spec || spec.host !== hostWeaponId) fail('La bayoneta no corresponde a este fusil.');
   if (!Number.isFinite(fitting.condition) || fitting.condition < 0 || fitting.condition > 100) fail('La condición de la bayoneta no es válida.');
+  if (Object.hasOwn(fitting,'metadata')) validateFittingMetadata(fitting.metadata,fitting.fittingPattern);
   return true;
+}
+// A fitting remains the same finite item while the host owns it. The four
+// original fields stay canonical; optional metadata cannot hide another item
+// or restore stale condition after a thrust or a repair.
+export function fittingFromItem(stack, hostWeaponId) {
+  if (!object(stack) || stack.count !== 1 || stack.weight !== weaponItemWeight(stack.weapon) ||
+      (stack.loaded ?? 0) !== 0 || (stack.jammed ?? false) !== false || stack.reloadProgress !== undefined) fail('El objeto de la bayoneta no es válido.');
+  validateWeaponFittings(stack.fittings,stack.weapon);
+  const fitting = Object.fromEntries([...FITTING_FIELDS].map(key => [key,stack[key]]));
+  const metadata = Object.fromEntries(Object.entries(stack).filter(([key]) => !ITEM_FIELDS.has(key) && key !== 'weight'));
+  if (Object.keys(metadata).length) fitting.metadata = metadata;
+  validateFitting(fitting,hostWeaponId);
+  return structuredClone(fitting);
+}
+export function fittingToItem(fitting) {
+  const spec = FITTING_PATTERNS[fitting?.fittingPattern];
+  validateFitting(fitting,spec?.host);
+  return {...structuredClone(fitting.metadata ?? {}),item:'weapon',count:1,weight:spec.weight,weapon:fitting.weapon,
+    loaded:0,jammed:false,condition:fitting.condition,instanceId:fitting.instanceId,fittingPattern:fitting.fittingPattern};
 }
 export function validateWeaponFittings(fittings, hostWeaponId) {
   if (fittings === undefined) return true;
