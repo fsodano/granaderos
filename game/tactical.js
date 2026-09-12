@@ -2,7 +2,7 @@ import {handsRequired} from './hand-layout.js';
 import {firearmPreparation,lowerWeapon,lowersWeapon,turnLowersWeapon} from './weapon-readiness.js';
 import {planReload} from './weapon-reload.js';
 import {discoverInventory} from './inventory-discovery.js';
-import {automaticOrder} from './autonomous-orders.js';
+import {automaticOrder,searchOrder} from './autonomous-orders.js';
 import {shotRangeModifiers} from './shot-range.js';
 import {limitEnergy,recoverEnergy,recoverFatigue} from './fatigue.js';
 import {recordMilitiaHit} from './militia-experience.js';
@@ -1073,15 +1073,15 @@ function advanceAmbientTime(s,seconds){
   if(s.mode!=='exploration'||s.status!=='active')return;
   advanceCivilianTime(s,seconds,()=>{
     if(detectContact(s))return false;
-    for(const u of s.units.filter(u=>u.side==='enemy'&&alive(u)&&!u.routed)){
+    for(const u of s.units.filter(u=>(u.side==='enemy'||u.militia)&&alive(u)&&!u.routed)){
       const patrolState={...s,turn:(s.civilianTurns??0)+1,mode:'combat'};
-      const order=choosePatrolAction(patrolState,{...u,patrolTurn:undefined,ap:24});
+      const order=u.militia?searchOrder(patrolState,{...u,ap:100},{changeStance:false}):choosePatrolAction(patrolState,{...u,patrolTurn:undefined,ap:24});
       if(!order)continue;
-      const step=getReachable({...s,mode:'exploration'},u).find(p=>p.x===order.x&&p.y===order.y)?.path[0];
+      const step=getReachable(patrolState,{...u,ap:u.militia?100:24}).find(p=>p.x===order.x&&p.y===order.y)?.path[0];
       if(!step)continue;
       const cost=movementEnergy(u,tile(s,step.x,step.y));
       if(u.energy<=cost){recoverEnergy(u,10);continue;}
-      u.facing=directionTo(u,step);Object.assign(u,step);exhaust(s,u,cost);
+      lowerWeapon(u);u.facing=directionTo(u,step);Object.assign(u,step);exhaust(s,u,cost);
       if(detectContact(s))return false;
     }
     return true;
