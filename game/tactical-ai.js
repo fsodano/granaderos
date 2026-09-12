@@ -172,11 +172,11 @@ function investigate(state, unit, known, costs, paths) {
   return choices.length ? moveOrder(state,unit,choices[0].cell) : null;
 }
 
-// A remembered or observed floor can justify a route through public access
+// A remembered or observed position can justify a route through public access
 // links. The unlimited search is read-only geometry planning; the next order
 // remains bounded by this turn's AP and is revalidated by the reducer.
 function verticalPursuit(state,unit,target,costs){
- if(sameSurface(unit,target)||!state.climbLinks?.length||unit.mounted||state.phase==='interrupt'||state.reactionStack?.length)return null;
+ if(!state.climbLinks?.length||unit.mounted||state.phase==='interrupt'||state.reactionStack?.length)return null;
  const stand=unit.stance!=='standing',standCost=stand?stanceCost(unit,'standing'):0;
  const reserve=readyGun(unit)?costs.fire:costs.melee,budget=Math.min(24,unit.ap-standCost-reserve);
  if(budget<=0)return null;
@@ -235,7 +235,7 @@ export function chooseEnemyAction(state, unit) {
     const age = state.turn - (known?.turn ?? -Infinity);
     if (!known || !Number.isInteger(known.x) || !Number.isInteger(known.y) || known.x < 0 || known.y < 0 || known.x >= state.width || known.y >= state.height || age < 0 || age > 3) return choosePatrolAction(state,unit);
     if(!sameSurface(unit,known))return verticalPursuit(state,unit,known,costs);
-    return investigate(state, unit, known, costs, paths);
+    return investigate(state, unit, known, costs, paths)||verticalPursuit(state,unit,known,costs);
   }
 
   const blade = bladeFor(unit);
@@ -281,7 +281,9 @@ export function chooseEnemyAction(state, unit) {
     const approach = paths().filter(cell => cell.cost > 0 && cell.cost <= Math.min(reacting ? 16 : 32, unit.ap - costs.melee) && (!reacting || cell.path.length <= 1) && nearest(cell) < currentDistance)
       .map(cell => ({cell, score: (currentDistance - nearest(cell)) * 8 + (coverAt(cell) - currentCover) * .6 - Math.max(0, exposure(cell) - currentExposure) * .3}))
       .filter(choice => choice.score > 0).sort((a, b) => b.score - a.score || a.cell.cost - b.cell.cost || a.cell.y - b.cell.y || a.cell.x - b.cell.x);
-    return approach.length ? move(approach[0].cell) : null;
+    if(approach.length)return move(approach[0].cell);
+    for(const target of targets){const pursuit=verticalPursuit(state,unit,target,costs);if(pursuit)return pursuit;}
+    return null;
   }
 
   const cover = cell => surfaceAt(state,cell)?.cover || 0;
@@ -310,6 +312,6 @@ export function chooseEnemyAction(state, unit) {
   }
   if (best) return move(best.cell);
   if (shot?.effectiveness >= 25) return {type: 'fire', unitId: unit.id, targetId: shot.target.id, aim: shot.aim,hitLocation:shot.hitLocation};
-  for(const target of targets)if(!sameSurface(unit,target)){const pursuit=verticalPursuit(state,unit,target,costs);if(pursuit)return pursuit;}
+  for(const target of targets){const pursuit=verticalPursuit(state,unit,target,costs);if(pursuit)return pursuit;}
   return null;
 }

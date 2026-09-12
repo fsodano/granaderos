@@ -100,3 +100,26 @@ test('medical rescue can stand for a roof bridge even when both endpoints are on
  assert.ok(report.steps.some(order=>order.type==='move'&&order.tacticalLevel===0));assert.deepEqual(report.battle,replay(s,report.steps));
  assert.equal(tacticalLevel(report.battle.units[0]),0);assert.ok(report.battle.units[0].energy<=80);assert.equal(report.battle.units[0].medkits,1);
 });
+
+test('an unseen prone rooftop blocker cannot change the AI climb choice before the attempted action',()=>{
+ const s=field([{id:'p',x:3,y:4,weapon:1809,medkits:0,facing:2}],{exploration:false,enemies:[{id:'hidden',x:7,y:6,tacticalLevel:1,stance:'prone',patrol:false,overwatch:false}]});
+ s.units[0].lastKnownEnemy={x:6,y:5,tacticalLevel:1,turn:1};
+ const blocked=structuredClone(s),occupant={...structuredClone(s.units[1]),id:'blocker',x:4,y:4,tacticalLevel:1,stance:'prone'};blocked.units.push(occupant);
+ assert.equal(canSee(blocked,blocked.units[0],occupant),false);
+ const planned=chooseEnemyAction(s,s.units[0]);assert.deepEqual(planned,{type:'climb',unitId:'p',linkId:'access'});assert.deepEqual(chooseEnemyAction(blocked,blocked.units[0]),planned);
+ const attempted=actBattle(blocked,planned);assert.ok(attempted.lastError);assert.equal(spaceKey(attempted.units[0]),spaceKey(blocked.units[0]));assert.equal(attempted.units[0].ap,blocked.units[0].ap);assert.equal(attempted.units[0].energy,blocked.units[0].energy);
+});
+
+test('a crouched AI search can stand and use a roof bridge to reach a remembered ground position',()=>{
+ let s=field([{id:'p',x:3,y:4,weapon:1809,stance:'crouched',medkits:0,facing:2}],{exploration:false,enemies:[{id:'e',x:9,y:4,patrol:false,overwatch:false}]});
+ for(const tile of s.tiles.filter(t=>t.x===5))Object.assign(tile,{type:'wall',blocked:true,blocksSight:true,obstacleHeight:2});
+ s.climbLinks.push({id:'far-access',kind:'climb',from:{x:8,y:4,tacticalLevel:0},to:{x:7,y:4,tacticalLevel:1}});
+ s.units[0].lastKnownEnemy={x:9,y:4,tacticalLevel:0,turn:1};s.units[0].ap=100;
+ assert.equal(canSee(s,s.units[0],s.units[1]),false);
+ const before=structuredClone(s),orders=[];
+ for(let count=0;count<6&&tacticalLevel(s.units[0])===0;count++){
+  const order=chooseEnemyAction(s,s.units[0]);assert.ok(order,'search must not stall at the wall while a roof route is open');orders.push(order);s=act(s,order);
+ }
+ assert.ok(orders.some(order=>order.type==='stance'&&order.stance==='standing'));assert.equal(s.units[0].tacticalLevel,1);assert.ok(s.units[0].ap<=100-20-stanceCost(before.units[0],'standing'));
+ assert.ok(s.units[0].energy<=88);assert.deepEqual(s,replay(before,orders));
+});
