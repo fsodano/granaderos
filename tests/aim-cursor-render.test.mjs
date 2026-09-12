@@ -38,3 +38,10 @@ test('a point shot over an ally reports a tile, not a selectable body part',()=>
 test('cursor AP labels stay inside the right edge and above the lower combat log',()=>{
  const s=field(),preview=targetPreview(s,s.units[0],s.units[1],{mode:'fire',aim:1});const html=render(h('svg',null,h(AimCursor,{point:{x:490,y:280},aim:1,preview,target:s.units[1],scale:.5,bounds:{x:0,y:0,width:500,height:300}})));assert.match(html,/<text x="-68" y="-50"/);assert.match(html,/<text x="-68" y="-36"/);
 });
+
+test('empty firearm cursor shows a reload arrow and cost, then an X when no cartridges remain',()=>{
+ const s=field(),u=s.units[0];Object.assign(u,{loaded:0,ammo:2});
+ const draw=()=>render(h('svg',null,h(AimCursor,{point:{x:80,y:90},aim:4,preview:targetPreview(s,u,s.units[1],{mode:'fire',aim:4}),target:s.units[1]})));
+ let html=draw();assert.match(html,/aim-reload/);assert.match(html,/Recargar · \d+ PA/);assert.doesNotMatch(html,/aim-step|Cabeza|Torso|Puntería/);
+ u.ammo=0;html=draw();assert.match(html,/class="aim-empty"/);assert.match(html,/Sin munición/);assert.match(html,/aim-cursor invalid/);assert.doesNotMatch(html,/aim-reload|aim-step/);
+});

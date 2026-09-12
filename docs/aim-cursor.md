@@ -20,3 +20,9 @@ Ground shots use the existing fixed-height projectile rules and display Casilla.
 `aim-cursor.test.mjs` checks free cursor changes, affordable aim limits, exact AP/ammunition use, frame fractions at different zooms, prone restrictions, hidden target admission, invalid-shot rollback and medical item use. `aim-cursor-render.test.mjs` checks SVG labels and aim marks, actual scene pointer/focus/key handlers and confirmed shots. The existing combat-strip render checks verify removal of panel aim/body buttons and the fixed person hit frame.
 
 A user-requested live demonstration in the local San Lorenzo skirmish confirmed right-click entry and an extra aim step: Barcala’s torso shot changed from 11 AP / 70% to 16 AP / 78%, while his current AP stayed at 100. The demonstration exposed a native mouse-focus outline and AP labels beneath the combat log; both were corrected. Prone restrictions and confirmed shot costs are covered by automated checks; live verification of prone targeting remains pending. The frame proportions and aim reset behavior are explicit Granaderos interface choices.
+
+## Empty firearm clicks
+
+A firing click with an empty held firearm performs one reload. The same rule applies to a character target, a ground shot, and contextual firearm use. The cursor shows a reload arrow and the reload AP cost. Reloading fills only the available capacity, removes those cartridges from reserve ammunition, and charges the existing reload cost. Extra aim and body-part selection do not add to this cost. A second click is required to fire.
+
+When the empty firearm has no reserve ammunition, the cursor shows an X and **Sin munición**. The rejected attempt consumes no AP, ammunition, or tactical time. A loaded last round can still fire with zero reserve ammunition. Jammed weapons still require re-priming with R. Contextual close-range bayonet attacks and other equipped items keep their existing behavior.

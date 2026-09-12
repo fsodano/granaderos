@@ -43,6 +43,30 @@ export function resolvedOrderType(state, unit, action) {
   if (unit.activeSlot === 'medical') return 'heal';
   return contextualAttack(state, unit, state.units.find(target => target.id === action.targetId), action).type;
 }
+// A firing click on an empty held gun performs one reload, never a reload and shot.
+// Keep strict shot commands in the combat engine for AI and reaction validation.
+export function tacticalInputAction(state, unit, action) {
+  if (!unit || !hasFirearm(unit) || unit.loaded > 0) return action;
+  const type = resolvedOrderType(state, unit, action);
+  if (!['fire', 'firePoint'].includes(type)) return action;
+  return {type: 'reload', ...(action.unitId ? {unitId: action.unitId} : {}), aim: 0};
+}
+export function emptyGunPreview(state, unit) {
+  if (!unit || !hasFirearm(unit) || unit.loaded > 0) return null;
+  const rounds = Math.max(0, Math.min(weaponFor(unit).capacity - unit.loaded, unit.ammo));
+  const pa = actionCosts(state, unit).reload;
+  const reason = !rounds ? 'Sin munición. No quedan cartuchos.'
+    : unit.jammed ? 'Cebá el arma antes de recargar (R).'
+    : unit.knockedDown ? 'Primero debés levantarte.'
+    : !unitCanAct(state, unit) ? 'El combatiente no puede actuar.'
+    : !affordable(state, unit, pa) ? 'PA insuficientes para recargar.' : null;
+  return {name: weaponFor(unit).name, actionLabel: rounds ? 'Recargar' : 'Sin munición',
+    attackType: 'reload', cursor: rounds ? 'reload' : 'empty', pa,
+    chance: undefined, chanceLabel: undefined, hitLocation: undefined, attackLabel: undefined,
+    remaining: Math.max(0, unit.ap - (state.mode === 'exploration' || reason ? 0 : pa)),
+    rounds, reason, valid: !reason,
+    coverNote: rounds ? `Carga ${rounds} cartucho${rounds === 1 ? '' : 's'}. Quedan ${unit.ammo - rounds} de reserva. Hacé otro clic para disparar.` : undefined};
+}
 export const STANCES = [['standing', 'De pie'], ['crouched', 'Agachado'], ['prone', 'Cuerpo a tierra']];
 export const stanceLabel = stance => STANCES.find(([id]) => id === stance)?.[1] || 'De pie';
 export const nextStance = unit => unit.knockedDown ? 'standing' : STANCES[(STANCES.findIndex(([id]) => id === unit.stance) + 1) % STANCES.length][0];
@@ -165,8 +189,11 @@ export function aimOptions(state, unit, ctx = {}) {
 
 // A read-only preview of the selected action. Enemy data must already be visible.
 export function targetPreview(state, unit, point, ctx = {}) {
-  if (!unit || !point) return null;
+  if (!unit) return null;
   const mode = ctx.mode || 'move';
+  const reload = mode === 'fire' ? emptyGunPreview(state, unit) : null;
+  if (reload) return reload;
+  if (!point) return null;
   const occupants = state.units.filter(v => v.x === point.x && v.y === point.y && !v.fled && !v.departure && (v.side === unit.side || state.units.some(p => p.side === unit.side && canSee(state, p, v))));
   const target = occupants.find(v => v.id === point.id) || occupants.find(v => v.hp > 0) || occupants[0];
   if(mode==='fire'&&(!target||target.side===unit.side||target.hp<=0||target.surrendered)){
@@ -227,6 +254,8 @@ export function targetPreview(state, unit, point, ctx = {}) {
       else if (distance(unit, target) > attack.profile.reach || !hasLineOfSight(state, unit, target)) reason = unit.activeSlot === 'unarmed' ? 'Acercate para golpear con los puños.' : 'Fuera del alcance del arma blanca.';
       else if (unit.activeSlot === 'unarmed') chance = unarmedChance(unit, target, {aware: canSee(state, target, unit)});
     } else {
+      const reload = emptyGunPreview(state, unit);
+      if (reload) return reload;
       chance = shotChance(state, unit, target, ctx.aim || 0, hitLocationFor(ctx.hitLocation));
       const path=firearmProjectilePath(state,unit,target,hitLocationFor(ctx.hitLocation));
       coverNote=path.blocked?'La cobertura detiene este tiro. Disparar consume la carga.':path.damageFactor<1?`La cobertura reduce el daño un ${Math.round((1-path.damageFactor)*100)}%.`:undefined;
@@ -264,6 +293,8 @@ export function equippedItemHelp(state, unit, ctx = {}) {
   if (unit.activeSlot === 'tool') return `${weapon.name}. Seleccioná una puerta o un cofre para usarla.`;
   if (unit.activeSlot === 'medical') return `Vendas: ${costs.heal} PA, más el desplazamiento. Seleccionate a vos o a un aliado herido. Se acerca y venda si hay PA suficientes. Detiene la hemorragia; no recupera salud.`;
   const attack = contextualAttack(state, unit, ctx.target, {type: ctx.mode, aim: ctx.aim || 0});
+  const reload = attack.type === 'fire' ? emptyGunPreview(state, unit) : null;
+  if (reload) return `${weapon.name} · ${reload.actionLabel}${reload.valid ? `: ${reload.pa} PA. ${reload.coverNote}` : `. ${reload.reason}`}`;
   const approach=ctx.target&&['move','useItem',undefined].includes(ctx.mode)?itemUsePreview(state,unit,ctx.target):null;
   if(approach?.movePa)return `${weapon.name} · ${approach.pa} PA (${approach.movePa} para acercarse y ${approach.actionPa} para usarlo). El contacto puede detener la acción.`;
   const label = attack.type === 'melee' && hasFirearm(unit) ? fixedBayonetFor(unit) ? 'Estocada de bayoneta' : 'Culatazo' : weapon.name;
