@@ -48,9 +48,18 @@ test('contraband delay is 72–120 hours and blockade holds delivery',()=>{
 test('captured crossroads cut the Camino Real; traversal respects control',()=>{
  const s=initialCampaign();for(const id of ['cordoba','tucuman','salta'])s.sectors[id].owner='patriot';assert.equal(isSupplied(s,'salta'),true);s.sectors.cordoba.owner='royalist';assert.equal(isSupplied(s,'salta'),false);assert.ok(dispatch(s,{type:'travel',sector:'salta'}).lastError);
 });
-test('militia holds raids and vulnerable northern provinces fall',()=>{
+test('an unguarded province falls while a reinforced militia garrison can hold the raid',()=>{
  let s=initialCampaign();s.sectors.jujuy.owner='patriot';s=order(s,{type:'wait',hours:144});assert.equal(s.sectors.jujuy.owner,'royalist');
- s=initialCampaign();s.sectors.jujuy.owner='patriot';s.sectors.jujuy.militia=[0,0,5];s=order(s,{type:'wait',hours:144});assert.equal(s.pendingEncounter.sector,'jujuy');s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'auto'});assert.equal(s.enemyGroups[0].status,'defeated');assert.equal(s.sectors.jujuy.owner,'patriot');assert.equal(s.sectors.jujuy.militia[2],s.sectorStates.jujuy.units.filter(u=>u.militia&&u.hp>0).length);assert.ok(s.sectorStates.jujuy.units.filter(u=>u.militia).reduce((n,u)=>n+u.loaded+u.ammo,0)<30);
+ // Five veterans now lose this real fight on the scaled town map. Their losses
+ // and dispersal are covered in enemy-groups; use a reinforced force here to
+ // retain coverage of a successful defense without inventing a victory report.
+ const defenders=12;
+ s=initialCampaign();s.sectors.jujuy.owner='patriot';s.sectors.jujuy.militia=[0,0,defenders];s=order(s,{type:'wait',hours:144});
+ assert.equal(s.pendingEncounter.sector,'jujuy');s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'auto'});
+ assert.equal(s.enemyGroups[0].status,'defeated');assert.equal(s.sectors.jujuy.owner,'patriot');
+ const militia=s.sectorStates.jujuy.units.filter(u=>u.militia);
+ assert.equal(militia.length,defenders);assert.equal(s.sectors.jujuy.militia[2],militia.filter(u=>u.hp>0).length);
+ assert.ok(militia.some(u=>u.hp<=0));assert.ok(militia.reduce((n,u)=>n+u.loaded+u.ammo,0)<defenders*6);
 });
 test('battle result IDs prevent stale victories and preserve casualties',()=>{
  let s=order(initialCampaign(),{type:'attack',sector:'san_nicolas'});assert.ok(dispatch(s,{type:'battleResult',battleId:'wrong',outcome:'victory',survivors:[]}).lastError);
