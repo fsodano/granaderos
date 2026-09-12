@@ -204,13 +204,16 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
  for(const operativeId of campaign.squad)order({type:'assignCare',operativeId,assignment:'active'});
  order({type:'travel',sector:'cordoba'});assert.equal(campaign.location,'cordoba');assert.equal(campaign.pendingEncounter,null);
  const cash=campaign.resources.treasury,hired=[];
- const hire=id=>{
+ const hire=(id,term='week')=>{
   if(campaign.recruited.includes(id)||!campaign.operativeState[id].alive||campaign.operativeState[id].captured)return;
-  order({type:'recruitCivic',id,term:'week'});hired.push(id);
+  order({type:'recruitCivic',id,term});hired.push(id);
  };
  for(const id of [141,127,119,103,104,111])hire(id);
+ // Fill the three empty support seats with paid rifle specialists. Their
+ // one-day contracts cover the ordinary twelve-hour approach and this assault.
+ for(const id of [105,128,142])hire(id,'day');
  const present=id=>campaign.recruited.includes(id)&&campaign.operativeState[id].alive&&!campaign.operativeState[id].captured&&campaign.operativeState[id].location==='cordoba';
- const supportIds=[...new Set([111,...reserveIds])].filter(present);
+ const supportIds=[...new Set([111,...reserveIds,105,128,142])].filter(present).slice(0,6);
  const fieldCandidates=()=>[...new Set([141,127,119,103,104,139,...campaign.recruited])].filter(id=>present(id)&&!supportIds.includes(id));
  for(const id of [140,133,129,130]){if(fieldCandidates().length>=6)break;hire(id);}
  const fieldIds=fieldCandidates().slice(0,6),hiringCost=cash-campaign.resources.treasury;
