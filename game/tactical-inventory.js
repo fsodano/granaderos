@@ -1,3 +1,4 @@
+import {validateReloadProgress} from './weapon-reload.js';
 import {WEAPONS} from './data.js';
 import {clearEmptySupply} from './held-supplies.js';
 import {FITTING_PATTERNS,validateFitting,validateFittingPattern,validateWeaponFittings,validateUnitFittings,fittingItemIds,heldItemIds,fittingWeight,weaponItemWeight,fittingLabel} from './weapon-fittings.js';
@@ -55,6 +56,7 @@ function record(value) {
     if (result.jammed !== undefined && typeof result.jammed !== 'boolean') fail('El estado de la cazoleta no es válido.');
     result.jammed ??= false;
   }
+  validateReloadProgress(result.reloadProgress, result.weapon === undefined ? 0 : weapon(result.weapon).capacity ?? 0, result.loaded);
   if (result.weapon === undefined && result.loaded !== undefined && quantity(result.loaded) !== 0) fail('Un objeto sin arma no puede contener una carga.');
   if (result.condition !== undefined) finite(result.condition, 0, 100, 'La condición del objeto no es válida.');
   if (result.jammed !== undefined && typeof result.jammed !== 'boolean') fail('El estado de la cazoleta no es válido.');
@@ -95,6 +97,7 @@ export function handRecord(unit, slot) {
   const spec = weapon(id, true), primary = slot === 'primary';
   const instanceId = primary ? unit.weaponInstanceId : unit.bladeInstanceId;
   return record({count: 1, weight: spec.weight ?? (spec.type === 'firearm' ? 4 : 1.3), weapon: id,
+    ...(primary && unit.reloadProgress ? {reloadProgress:unit.reloadProgress} : {}),
     loaded: primary ? unit.loaded ?? 0 : 0, condition: primary ? unit.condition ?? 100 : unit.bladeCondition ?? 100,
     jammed: primary ? unit.jammed ?? false : false, ...(instanceId === undefined ? {} : {instanceId}),
     ...(primary && unit.weaponFittings?.bayonet ? {fittings:structuredClone(unit.weaponFittings)} : {}),
@@ -146,7 +149,7 @@ export function extractItemQuantity(unit, item, count = 1) {
     stack = {item, count, weight: SUPPLY_ITEMS[item].weight};
   } else if (entry.kind === 'hand') {
     stack = {item: 'weapon', ...handRecord(unit, entry.key)};
-    if (entry.key === 'primary') {next.weaponDropped = true; next.loaded = 0; next.jammed = false; delete next.weaponInstanceId; next.weaponFittings={}; next.weaponFittingPattern=null;}
+    if (entry.key === 'primary') {next.weaponDropped = true; next.loaded = 0; delete next.reloadProgress; next.jammed = false; delete next.weaponInstanceId; next.weaponFittings={}; next.weaponFittingPattern=null;}
     else {delete next.blade; delete next.bladeInstanceId; delete next.bladeCondition; next.bladeFittingPattern=null;}
     if ((next.activeSlot ?? 'primary') === entry.key) next.activeSlot = 'unarmed';
     next.braced = false; next.overwatch = false; next.momentum = 0;
@@ -168,7 +171,7 @@ function incoming(stack) {
   if (!object(stack) || typeof stack.item !== 'string') fail('El objeto transferido no es válido.');
   quantity(stack.count, 1);
   if (own(SUPPLY_ITEMS, stack.item)) {
-    if (['weapon', 'loaded', 'condition', 'jammed', 'instanceId','fittings','fittingPattern'].some(key => stack[key] !== undefined)) fail('Los suministros no pueden contener datos de un arma.');
+    if (['weapon', 'loaded', 'reloadProgress', 'condition', 'jammed', 'instanceId','fittings','fittingPattern'].some(key => stack[key] !== undefined)) fail('Los suministros no pueden contener datos de un arma.');
     return {kind: 'supply', key: stack.item, value: {count: stack.count, weight: SUPPLY_ITEMS[stack.item].weight}};
   }
   const value = record(stack); delete value.item;

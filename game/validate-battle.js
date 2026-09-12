@@ -1,3 +1,4 @@
+import {validateReloadProgress} from './weapon-reload.js';
 import {validMilitiaExperience} from './militia-experience.js';
 import {validateCoverMetadata} from './projectile-cover.js';
 import {boundaryMatches,EXIT_EDGES,validEntry} from './tactical-exits.js';
@@ -41,6 +42,7 @@ need(number(u.maxHp,1,1000)&&number(u.hp,0,u.maxHp)&&number(u.ap,0,100+AP_CARRY_
 if(!legacyFittings)need(object(u.weaponFittings)&&Object.hasOwn(u,'weaponFittingPattern')&&u.weaponFittingPattern!==undefined&&Object.hasOwn(u,'bladeFittingPattern')&&u.bladeFittingPattern!==undefined,'datos de encastre');
 validateUnitFittings(u);normalizeUnitFittings(u);for(const id of heldItemIds(u))claimInstance(id);if(u.bladeCondition!==undefined)need(number(u.bladeCondition,0,100),'condición de la hoja');
 need(integer(u.weapon,0,65535),'armas');if(u.blade!==undefined)need(integer(u.blade,0,65535),'armas blancas');need(integer(u.loaded,0,WEAPONS[u.weapon]?.capacity??(BLADES[u.weapon]?0:100)),'cargas');
+validateReloadProgress(u.reloadProgress,WEAPONS[u.weapon]?.capacity??0,u.loaded,u.weaponDropped);
 for(const k of ['ammo','priming','flints','rations','torches','boleadoras','medkits','strengthTraining'])if(u[k]!==undefined)need(integer(u[k],0,1000000),'suministros');
 if(u.facing===undefined)u.facing=u.side==='enemy'?6:2;need(integer(u.facing,0,7),'dirección de observación');if(u.stealthMode===undefined)u.stealthMode=false;need(typeof u.stealthMode==='boolean','sigilo');
 if(u.lastHeardNoise!==undefined){const n=u.lastHeardNoise;need(coord(n)&&integer(n.turn,1,s.turn)&&['move','fire','reload','door','melee','explosion','alarm'].includes(n.kind)&&number(n.uncertainty,0,20),'ruido percibido');need(Object.keys(n).every(k=>['x','y','turn','kind','uncertainty'].includes(k)),'información del ruido');}

@@ -1,6 +1,6 @@
 import {chooseScavengingAction} from './tactical-ai-scavenging.js';
 import {directionTo,facingAllowsSight,turnAPCost} from './tactical-awareness.js';
-import {getReachable, canSee, hasLineOfSight, shotChance, firearmShotOptions, actionCosts, stanceCost, weaponFor, bladeFor, planEquipLoot} from './tactical.js';
+import {getReachable, canSee, hasLineOfSight, shotChance, firearmShotOptions, actionCosts, stanceCost, weaponFor, bladeFor, planEquipLoot, maxActionPoints, AP_CARRY_LIMIT} from './tactical.js';
 import {planFitBayonet} from './tactical-inventory.js';
 import {shotLocationEffects} from './targeted-combat.js';
 
@@ -62,6 +62,10 @@ function maintenance(state, unit, costs) {
       if (unit.ap >= stanceCost(unit, 'crouched') + actionCosts(state, kneeling).reload)
         return {type: 'stance', unitId: unit.id, stance: 'crouched'};
     }
+    // Keep remaining AP for reactions when next turn can finish the job.
+    // Begin multi-turn work when injury prevents that, or resume work already paid.
+    if (unit.ap > 0 && (unit.reloadProgress > 0 || costs.reload > maxActionPoints(state, unit) + AP_CARRY_LIMIT))
+      return {type: 'reload', unitId: unit.id};
   }
   return null;
 }

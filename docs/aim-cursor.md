@@ -23,7 +23,7 @@ A user-requested live demonstration in the local San Lorenzo skirmish confirmed 
 
 ## Empty firearm clicks
 
-A firing click with an empty held firearm performs one reload. The same rule applies to a character target, a ground shot, and contextual firearm use. The cursor shows a reload arrow and the reload AP cost. Reloading fills only the available capacity, removes those cartridges from reserve ammunition, and charges the existing reload cost. Extra aim and body-part selection do not add to this cost. A second click is required to fire.
+A firing click with an empty held firearm performs one reload. The same rule applies to a character target, a ground shot, and contextual firearm use. The cursor shows a reload arrow and the reload AP cost. Reloading works within the available AP and capacity. Completed charges remove their cartridges from reserve. Unfinished work continues on a later order; the reticle shows the immediate cost and the AP still required. See [loading across turns](reload-progress.md). Extra aim and body-part selection do not add to this cost. A second click is required to fire.
 
 When the empty firearm has no reserve ammunition, the cursor shows an X and **Sin munición**. The rejected attempt consumes no AP, ammunition, or tactical time. A loaded last round can still fire with zero reserve ammunition. Jammed weapons still require re-priming with R. Contextual close-range bayonet attacks and other equipped items keep their existing behavior.
 

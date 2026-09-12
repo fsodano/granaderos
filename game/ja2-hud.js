@@ -1,3 +1,4 @@
+import {reloadPlan} from './tactical.js';
 import {shotRangeText} from './shot-range.js';
 import {canChooseShotLocation} from './targeted-combat.js';
 import {tacticalGridLabel} from './tactical-grid.js';
@@ -54,19 +55,18 @@ export function tacticalInputAction(state, unit, action) {
 }
 export function emptyGunPreview(state, unit) {
   if (!unit || !hasFirearm(unit) || unit.loaded > 0) return null;
-  const rounds = Math.max(0, Math.min(weaponFor(unit).capacity - unit.loaded, unit.ammo));
-  const pa = actionCosts(state, unit).reload;
+  const plan = reloadPlan(unit, state), rounds = plan.available, pa = plan.pa;
   const reason = !rounds ? 'Sin munición. No quedan cartuchos.'
     : unit.jammed ? 'Cebá el arma antes de recargar (R).'
     : unit.knockedDown ? 'Primero debés levantarte.'
     : !unitCanAct(state, unit) ? 'El combatiente no puede actuar.'
-    : !affordable(state, unit, pa) ? 'PA insuficientes para recargar.' : null;
-  return {name: weaponFor(unit).name, actionLabel: rounds ? 'Recargar' : 'Sin munición',
+    : !pa || !affordable(state, unit, pa) ? 'PA insuficientes para recargar.' : null;
+  return {name: weaponFor(unit).name, actionLabel: rounds ? plan.partial ? 'Recarga parcial' : 'Recargar' : 'Sin munición',
     attackType: 'reload', cursor: rounds ? 'reload' : 'empty', pa,
     chance: undefined, chanceLabel: undefined, hitLocation: undefined, attackLabel: undefined,
     remaining: Math.max(0, unit.ap - (state.mode === 'exploration' || reason ? 0 : pa)),
-    rounds, reason, valid: !reason,
-    coverNote: rounds ? `Carga ${rounds} cartucho${rounds === 1 ? '' : 's'}. Quedan ${unit.ammo - rounds} de reserva. Hacé otro clic para disparar.` : undefined};
+    rounds: plan.rounds, partial: plan.partial, remainingReloadPA: plan.remainingPA, reloadProgress: plan.progress, reason, valid: !reason,
+    coverNote: rounds ? plan.partial ? `Carga ${plan.rounds} cartuchos ahora. Faltan ${plan.remainingPA} PA para completar la recarga. Continuá con R o un clic de disparo con el arma vacía.` : `Carga ${plan.rounds} cartucho${plan.rounds === 1 ? '' : 's'}. Quedan ${unit.ammo - plan.rounds} de reserva. Hacé otro clic para disparar.` : undefined};
 }
 export const STANCES = [['standing', 'De pie'], ['crouched', 'Agachado'], ['prone', 'Cuerpo a tierra']];
 export const stanceLabel = stance => STANCES.find(([id]) => id === stance)?.[1] || 'De pie';
@@ -546,7 +546,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
   const blade = bladeFor(u);
   const gun = (state.artillery || []).find(g => g.id === ctx.cannonId && g.side === u.side);
   const costs = unit ? actionCosts(state, unit) : {};
-  const pa = {...costs, fire: costs.fire + Math.max(0, Math.min(4, Math.floor(ctx.aim || 0))) * costs.aim, stance: unit ? stanceCost(u, nextStance(u)) : 0};
+  const pa = {...costs, reload: unit ? reloadPlan(unit, state).pa : 0, fire: costs.fire + Math.max(0, Math.min(4, Math.floor(ctx.aim || 0))) * costs.aim, stance: unit ? stanceCost(u, nextStance(u)) : 0};
   const attack = unit && !['medical', 'tool', 'supply'].includes(u.activeSlot) ? contextualAttack(state, u, ctx.target, {aim: ctx.aim || 0}) : null;
   const medicalPreview = medicalUsePreview(state, unit, ctx.target ?? unit);
   const itemPreview=ctx.target?itemUsePreview(state,unit,ctx.target):null;
@@ -577,7 +577,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
     charge: false,
     heal: !medicalPreview.allowed,
     loot: false,
-    reload: !firearm || !(u.ammo > 0) || u.loaded >= weaponFor(u).capacity,
+    reload: !firearm || !pa.reload || !(u.ammo > 0) || u.loaded >= weaponFor(u).capacity,
     reprime: !firearm || !u.jammed || !(u.priming > 0),
     weapon: false,
     stance: Boolean(u.mounted),

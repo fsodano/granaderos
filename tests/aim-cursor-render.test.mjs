@@ -45,3 +45,10 @@ test('empty firearm cursor shows a reload arrow and cost, then an X when no cart
  let html=draw();assert.match(html,/aim-reload/);assert.match(html,/Recargar · \d+ PA/);assert.doesNotMatch(html,/aim-step|Cabeza|Torso|Puntería/);
  u.ammo=0;html=draw();assert.match(html,/class="aim-empty"/);assert.match(html,/Sin munición/);assert.match(html,/aim-cursor invalid/);assert.doesNotMatch(html,/aim-reload|aim-step/);
 });
+
+test('partial reload reticle shows the immediate cost and the remaining work',()=>{
+ const s=field(),u=s.units[0];Object.assign(u,{weapon:1802,loaded:0,ammo:2,ap:20});
+ const preview=targetPreview(s,u,null,{mode:'fire'});
+ const html=render(h('svg',null,h(AimCursor,{point:{x:80,y:90},aim:4,preview,target:null})));
+ assert.match(html,/Recarga parcial · 20 PA/);assert.match(html,/Faltan 50 PA de recarga/);assert.match(html,/aim-cursor valid/);assert.doesNotMatch(html,/aim-step|Puntería/);
+});

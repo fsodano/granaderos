@@ -12,6 +12,6 @@ export default function AimCursor({point,aim,preview,target,scale=1,bounds}:{poi
   <circle r="21" className="aim-outer"/>
   {preview?.cursor==='empty'?<path className="aim-empty" d="M-13-13L13 13M13-13L-13 13"/>:reloading?<path className="aim-reload" d="M12-6A14 14 0 1 0 12 7M12-16V-6H2"/>:<><circle r="8"/><path d="M-13 0h9M4 0h9M0-13v9M0 4v9"/></>}
   {!reloading&&[0,1,2,3].map(i=><path key={i} className={i<aim?'aim-step filled':'aim-step'} transform={`rotate(${i*90})`} d="M-11-26Q0-31 11-26"/>)}
-  <text x={labelX} y={labelY} textAnchor="middle">{text}</text><text x={labelX} y={labelY+14} textAnchor="middle" className="aim-detail">{preview?.cursor==='empty'?'No quedan cartuchos':cost!==undefined?`${preview.remaining} PA restantes`:preview?.reason??'Elegí un objetivo'}</text>
+  <text x={labelX} y={labelY} textAnchor="middle">{text}</text><text x={labelX} y={labelY+14} textAnchor="middle" className="aim-detail">{preview?.cursor==='empty'?'No quedan cartuchos':cost!==undefined?preview?.partial?`Faltan ${preview.remainingReloadPA} PA de recarga`:`${preview.remaining} PA restantes`:preview?.reason??'Elegí un objetivo'}</text>
  </g>;
 }

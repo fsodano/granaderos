@@ -147,8 +147,14 @@ test('legal authored-map opening campaign wins San Nicolás then San Lorenzo',()
    // infantry's finite rifles, keeping each replaced gun in its owner's pack.
    order({type:'visitSector'});
    let salvage=enterSector(c.pendingBattle,c.sectorStates[c.location]);
-   for(const [receiverId,sourceId] of [[131,123],[137,110],[113,114]]){
-    let receiver=salvage.units.find(u=>u.id===String(receiverId)),source=salvage.units.find(u=>u.id===String(sourceId));
+   // Tactical changes can leave former casualties alive. Salvage actual fallen
+   // riflemen for the actual replacements, without inventing deaths or guns.
+   const sources=salvage.units.filter(u=>u.side==='player'&&u.hp===0&&!u.weaponDropped&&[1800,1801,1802].includes(u.weapon));
+   const receivers=salvage.units.filter(u=>u.side==='player'&&u.hp>0&&[131,137,113,124,116,117].includes(Number(u.id)));
+   assert.ok(sources.length&&receivers.length,'a real casualty and a paid replacement support the salvage check');
+   for(const [index,source] of sources.slice(0,receivers.length).entries()){
+    const receiverId=receivers[index].id;
+    let receiver=salvage.units.find(u=>u.id===String(receiverId));
     assert.ok(receiver&&source?.hp===0,'the replacement and fallen rifleman are present');
     const incoming=handRecord(source,'primary'),outgoing=handRecord(receiver,'primary');
     const approach=getReachable(salvage,receiver).filter(p=>distance(p,source)<=1.5&&hasLineOfSight(salvage,p,source)).sort((a,b)=>a.cost-b.cost)[0];
