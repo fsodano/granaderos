@@ -1,3 +1,4 @@
+import {BuildingMaterials} from './BuildingMaterials';
 import {buildingStyle} from '../../game/building-types.js';
 import {WallDetails} from './BuildingDetails';
 import {BuildingRoof} from './BuildingRoof';
@@ -11,7 +12,13 @@ const noise=(x:number,y:number)=>((Math.imul(x+71,374761393)^Math.imul(y+97,6682
 
 /** Render architectural segments on authored collision cells, never a facade image. */
 export function buildBuildingObjects({state:s,revealed,project,light}:Args):SceneObject[]{
- const objects:SceneObject[]=[];
+ const objects:SceneObject[]=[{key:'architecture-materials',depth:-10001,node:<BuildingMaterials/>}];
+ for(const b of s.buildings??[]){
+  const open=b.rooms?.some((r:any)=>revealed.has(r.id));if(open)continue;
+  const corners=[[b.x,b.y],[b.x+b.width-.5,b.y],[b.x+b.width-.5,b.y+b.height-.5],[b.x,b.y+b.height-.5]].map(([x,y])=>project(x,y));
+  const offset=buildingStyle(b).height*.22,points=[corners[0],corners[1],{x:corners[1].x+offset,y:corners[1].y+offset*.45},{x:corners[2].x+offset,y:corners[2].y+offset*.45},{x:corners[3].x+offset,y:corners[3].y+offset*.45},corners[3]];
+  objects.push({key:`architecture-shadow-${b.id}`,depth:-1002,node:<polygon data-building-shadow={b.id} points={points.map(p=>`${p.x},${p.y}`).join(' ')} fill="#131b10" opacity=".23" pointerEvents="none"/>});
+ }
  const wallTiles=s.tiles.filter((t:any)=>['wall','door','window'].includes(t.type));
  const occupied=new Set(wallTiles.map((t:any)=>`${t.x},${t.y}`));
  for(const t of wallTiles){
@@ -33,14 +40,16 @@ export function buildBuildingObjects({state:s,revealed,project,light}:Args):Scen
    const end=axis==='x'?project(last,t.y+wallInset):project(t.x+wallInset,last);
    const width=40,dx=(end.x-start.x)/width,dy=(end.y-start.y)/width,seed=(t.x*17+t.y*31)%11;
    const isOpening=t.type!=='wall'&&index===0;
-   const plaster=b?.material==='stone'?'#b3ac96':style.wall;
+   const textureId=`building-wall-${t.x}-${t.y}-${axis}`,plaster=`url(#${textureId})`;
+   const materialName=b?.architecture==='warehouse'?'brick':b?.architecture==='barracks'?'timber':`plaster-${b?.architecture??'house'}`;
    const top=(p:Point,z:number)=>`${p.x},${p.y-z}`;
    objects.push({key:`architecture-${t.x}-${t.y}-${axis}`,depth:t.x+t.y+wallInset+.015,node:<g data-wall-tile={`${t.x},${t.y}`} data-cutaway={Boolean(cut)} pointerEvents="none" style={{filter:`brightness(${light(t.x,t.y)})`}}>
+    <defs><pattern id={textureId} patternUnits="userSpaceOnUse" width="128" height="128" x={-(t.x*37+t.y*23)%128} y={-(t.y*41+t.x*17)%128}><image href={`/art/buildings/${materialName}-v1.webp`} width="128" height="128" style={{imageRendering:'pixelated'}}/></pattern></defs>
     {/* A shallow wall cap makes thickness readable without a full-tile cube. */}
     <polygon points={`${top(start,height)} ${top(end,height)} ${end.x+4},${end.y-height-2} ${start.x+4},${start.y-height-2}`} fill={cut?'#bda980':'#d2c49e'} stroke="#807459" strokeWidth=".55"/>
     <path d={`M${end.x},${end.y}v-${height}l4,-2v${height}Z`} fill="#8b8163"/>
     <g transform={`matrix(${dx} ${dy} 0 1 ${start.x} ${start.y})`}>
-     {!isOpening?<><rect x="0" y={-height} width={width} height={height} fill="url(#terrain-plaster)"/><rect y={-height} width="40" height={height} fill={plaster} opacity=".86"/></>:cut?<>
+     {!isOpening?<><rect x="0" y={-height} width={width} height={height} fill={plaster}/></>:cut?<>
       {/* Openings stay legible as thresholds and low jambs in the cutaway. */}
       <path d="M0,0V-9H10V0ZM30,0V-9H40V0Z" fill={plaster}/>
       <path d="M10,0H30" stroke="#b9a580" strokeWidth="3"/>
@@ -49,16 +58,17 @@ export function buildBuildingObjects({state:s,revealed,project,light}:Args):Scen
      </>:<>
       <path d={`M0,0V-${height}H40V0H29V-${t.type==='door'?30:29}H11V0Z`} fill={plaster}/>
       {t.type==='window'&&<rect x="10" y="-12" width="20" height="12" fill={plaster}/>}
-      <rect x="11" y={t.type==='door'?-30:-29} width="18" height={t.type==='door'?30:17} fill="#20251b"/>
-      <path d={`M10,0V-32H30V0M8,-33H32`} fill="none" stroke="#e3d5b5" strokeWidth="2.5"/>
-      {t.type==='door'?<g transform={t.open?'translate(11 0) skewY(-25) scale(.22 1) translate(-11 0)':undefined}><rect x="12" y="-30" width="16" height="30" fill="url(#terrain-wood)" stroke="#5c4931" strokeWidth=".8"/><path d="M15,-29V-1M20,-29V-1M25,-29V-1M12,-24H28M12,-7H28" stroke="#413725" strokeWidth=".7"/><circle cx="25" cy="-14" r="1" fill="#c1a16a"/></g>:<><path d="M14,-28V-13M18,-28V-13M22,-28V-13M26,-28V-13M12,-24H28M12,-17H28" stroke="#383b30" strokeWidth="1"/><path d="M9,-12H31" stroke="#e3d2a5" strokeWidth="3"/></>}
+      <rect x="11" y={t.type==='door'?-30:-29} width="18" height={t.type==='door'?30:17} fill="url(#building-recess)"/>
+      <path d={`M10,0V-32H30V0M8,-33H32`} fill="none" stroke="#e3d5b5" strokeWidth="1.4"/>
+      {t.type==='door'?<g transform={t.open?'translate(11 0) skewY(-25) scale(.22 1) translate(-11 0)':undefined}><rect x="12" y="-30" width="16" height="30" fill="url(#building-timber)" stroke="#5c4931" strokeWidth=".8"/><path d="M15,-29V-1M20,-29V-1M25,-29V-1M12,-24H28M12,-7H28" stroke="#413725" strokeWidth=".7"/><circle cx="25" cy="-14" r="1" fill="#c1a16a"/></g>:<><path d="M14,-28V-13M18,-28V-13M22,-28V-13M26,-28V-13M12,-24H28M12,-17H28" stroke="#383b30" strokeWidth="1"/><path d="M9,-12H31" stroke="#e3d2a5" strokeWidth="1.5"/></>}
      </>}
      <WallDetails building={b} front={Boolean(isFront&&axis==='x')} cut={Boolean(cut)} opening={isOpening}/>
+     <rect y={-height} width="40" height={height} fill="url(#building-wall-age)"/>
      {/* Limewash wear is irregular but stable across renders. */}
      {Array.from({length:cut?4:19},(_,i)=>{const n=noise(t.x*43+i,t.y*29+index),x=n%38+1,y=-(n%Math.max(1,height-3)+2);return <path key={i} d={`M${x},${y}h${1+n%3}`} stroke={i%3?'#796d50':'#fff1ce'} opacity={i%3?'.16':'.23'} strokeWidth=".6"/>;})}
      {!cut&&<><path d={`M0,-${height-2}H40`} stroke={style.trim} strokeWidth="2"/><path d={`M0,-${height-5}H40`} stroke="#66553e" strokeWidth="2" opacity=".4"/></>}
      {/* Broken plaster and jointed stone footing, deterministic per tile. */}
-     {!isOpening&&<><path d={`M${3+seed},-${Math.min(height-2,12)}l3,2 2,-1 2,4 -2,3 -6,-1Z`} fill="#a69570" opacity=".6"/>{height>15&&<path d={`M${27-seed},-34l-2,5 3,3 -1,5`} fill="none" stroke="#867d61" strokeWidth=".55" opacity=".75"/>}</>}
+     {!isOpening&&<><path d={`M${3+seed},-${Math.min(height-2,12)}l3,2 2,-1 2,4 -2,3 -6,-1Z`} fill="#a69570" opacity=".6"/>{height>15&&b?.architecture==='farmhouse'&&<path d={`M${27-seed},-34l-2,5 3,3 -1,5`} fill="none" stroke="#867d61" strokeWidth=".55" opacity=".75"/>}</>}
      <path d={isOpening&&t.type==='door'?'M0,-5H10V0H0ZM30,-5H40V0H30Z':'M0,-5H40V0H0Z'} fill="#827b62"/>
      <path d={isOpening?'M5,-5V0M35,-5V0':'M8,-5V0M21,-5V0M34,-5V0'} stroke="#595d4d" strokeWidth=".7"/>
      {!isOpening&&<path d={`M0,-${height}H40`} stroke={cut?'#f0dcb0':'#ded0ac'} strokeWidth={cut?2:1}/>}

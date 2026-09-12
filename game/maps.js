@@ -1,6 +1,6 @@
 import {BUILDING_TYPES,sectorBuildingType} from './building-types.js';
 import {expandSectorMap} from './sector-expansion.js';
-import {propPlacementError,propBlocksAt} from './props.js';
+import {propPlacementError,propBlocksAt,placePulperiaCart} from './props.js';
 import {CAMPAIGN_SECTORS} from './data.js';
 import {placeBuilding} from './buildings.js';
 
@@ -111,6 +111,7 @@ function plan(id){
    if(b.width>=5)furnish(b,id==='mendoza'||id==='cordoba'?'chest':'bench',b.x+b.width-2,b.y+1);
    if(b.height>=5){furnish(b,'bed',b.x+1,b.y+b.height-2);furnish(b,'chest',b.x+b.width-2,b.y+b.height-2);}
  }
+ for(const b of buildings)placePulperiaCart({tiles:c.tiles,buildings,props},b);
  return {...c,decor,buildings,lights,props};
 }
 const key=p=>`${p.x},${p.y}`;

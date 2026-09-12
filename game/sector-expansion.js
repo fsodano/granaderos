@@ -1,6 +1,6 @@
 import {BUILDING_TYPES,BUILDING_FOOTPRINTS,sectorBuildingType} from './building-types.js';
 import {placeBuilding} from './buildings.js';
-import {propPlacementError} from './props.js';
+import {propPlacementError,placePulperiaCart} from './props.js';
 
 export const TACTICAL_SIZE=Object.freeze({width:64,height:48});
 export const LEGACY_SIZE=Object.freeze({width:20,height:16});
@@ -70,6 +70,7 @@ export function expandSectorMap(core){
   const prop={id:`${buildingId}:chest`,type:'chest',x:lot.x+1,y:lot.y+1,buildingId,roomId:result.building.rooms[0].id,footprint:{width:1,height:1},blocksMovement:true};
   if(!propPlacementError(map,prop))map.props.push(prop);
  }
+ for(const b of map.buildings)placePulperiaCart(map,b);
  if(id==='buenos_aires'){
   // Continuous streets between the lots, with stone pavements beside the houses.
   for(let y=1;y<height-1;y++)for(let x=1;x<width-1;x++){

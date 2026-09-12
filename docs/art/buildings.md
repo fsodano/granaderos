@@ -91,3 +91,29 @@ buildings can lose one bay on constrained coastal lots. The catalogue uses
 larger landmark examples where appropriate. All tower faces use the same
 isometric projection as the walls. The Cabildo's façade renders its actual door
 states, and the complete roof composition disappears when its room is revealed.
+
+### Realistic material pass and Pulpería cart
+
+The approved generated originals and generation specifications are in
+`assets/source/building-materials/`. `tools/prepare-building-materials.mjs`
+packages five material families (plaster, clay, brick, timber, thatch), nine
+plaster colour variants, a weathered flat-roof surface, and a transparent cart
+into `web/public/art/buildings/`. Source art stays unchanged.
+
+`BuildingMaterials.tsx` declares the textures. Roofs map them through continuous
+UV triangles on each actual slope, instead of drawing a coloured checkerboard.
+This reduces roof geometry to a few faces. Wall cells use different texture
+phases so damage does not repeat at every bay. Recess shading, eave/footing
+shading, and ground shadows give the surfaces depth. Warehouses use brick;
+barracks use weathered timber; farm roofs use the generated thatch.
+
+`placePulperiaCart` adds a two-cell blocking exterior prop beside a Pulpería when
+there is a valid location. Placement excludes doors, adjacent door approaches,
+other buildings, furniture and deployed characters. Carts remain visible outside
+revealed rooms, use the shared prop collision rules and round-trip through saves.
+The renderer sorts entrance carts in front of their owner's broad roof object.
+
+Validation: building/material/render tests, map connectivity and deployment,
+large-sector save round trips, snapshot validation, type checks, production
+build, and exterior/interior catalogue renders. The catalogue is a static render
+of the game scene; it does not claim live browser interaction coverage.

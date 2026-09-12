@@ -1,5 +1,5 @@
 // Serializable tile footprints. Legacy props retain their original one-cell size.
-export const PROP_TYPES=['table','bench','bed','chest','barrels','hay'];
+export const PROP_TYPES=['table','bench','bed','chest','barrels','hay','cart'];
 export function propSize(prop){return prop.footprint??{width:1,height:1};}
 export function propCells(prop){
  const {width,height}=propSize(prop),cells=[];
@@ -39,4 +39,20 @@ export function propPlacementError(state,prop){
  const roomProps=proposed.props.filter(p=>p.roomId===room.id);
  if(roomProps.some(p=>!propCells(p).some(c=>free.some(f=>adjacent(c,f)))))return 'Furniture has no accessible side.';
  return null;
+}
+
+// Park a cart beside a pulpería, never on a door approach or an occupied square.
+export function placePulperiaCart(state,building){
+ if(building.architecture!=='pulperia'||state.props.some(p=>p.id===`${building.id}:cart`))return false;
+ const doors=state.tiles.filter(t=>t.type==='door');
+ const people=[...(state.squad??[]),...(state.enemies??[]),...(state.artillery??[]),...(state.npcs??[])];
+ const candidates=[{x:building.x,y:building.y+building.height+1},{x:building.x-2,y:building.y+building.height-2},{x:building.x+building.width,y:building.y+1}];
+ for(const at of candidates){
+  const prop={id:`${building.id}:cart`,type:'cart',...at,footprint:{width:2,height:1},blocksMovement:true};
+  const cells=propCells(prop);
+  if(cells.some(c=>doors.some(d=>Math.abs(c.x-d.x)+Math.abs(c.y-d.y)<=1)||people.some(p=>p.x===c.x&&p.y===c.y)||state.tiles.some(t=>t.x===c.x&&t.y===c.y&&t.buildingId)))continue;
+  if(propPlacementError(state,prop))continue;
+  state.props.push(prop);return true;
+ }
+ return false;
 }

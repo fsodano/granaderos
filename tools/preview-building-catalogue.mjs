@@ -7,6 +7,7 @@ import {createElement as h} from '../web/node_modules/react/index.js';
 import {renderToStaticMarkup} from '../web/node_modules/react-dom/server.node.js';
 import sharp from '../web/node_modules/sharp/lib/index.js';
 import {BUILDING_TYPES} from '../game/building-types.js';
+import {placePulperiaCart} from '../game/props.js';
 import {placeBuilding} from '../game/buildings.js';
 const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
 const output=resolve(process.argv[2]??'assets/previews/buildings');
@@ -19,6 +20,7 @@ const x=1,y=1,doorX=x+Math.floor((width-1)/2);
 const {tiles,building}=placeBuilding(ground,{id:'posta',architecture,x,y,width,height,doors:[{x:doorX,y:y+height-1},{x:doorX+1,y:y+height-1,open:true}],windows:[{x:x+width-1,y:y+1}]});
 const roomId=building.rooms[0].id;
 const state={tiles,buildings:[building],units:[],npcs:[],props:[],artillery:[],lights:[],smoke:[]};
+placePulperiaCart(state,building);
 for(const inside of [false,true]){
  const project=(x,y)=>({x:270+(x-y)*26,y:160+(x+y)*14});
  let svg=renderToStaticMarkup(h('svg',{xmlns:'http://www.w3.org/2000/svg',width:1080,height:880,viewBox:'0 0 540 440'},h('rect',{width:540,height:440,fill:'#77704a'}),h('text',{x:20,y:28,fill:'#eee0bb',fontSize:16,fontFamily:'sans-serif'},style.name+(inside?' · interior':'')),h(TacticalScene,{state,players:[],units:[],positions:{},poses:{},directions:{},reachable:[],sight:new Set(),revealed:new Set(inside?[roomId]:[]),project})));
