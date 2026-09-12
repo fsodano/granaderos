@@ -14,8 +14,11 @@ function stage(seed){
  assert.equal(c.hour,24);
  return order(c,{type:'attack',sector:'san_nicolas'});
 }
+// This small authored combat fixture verifies settlement, not campaign weather
+// or the full-size opening route. Keep its original wet conditions explicit;
+// regional-weather and the playthrough suites exercise real deployment weather.
 function fight(seed=1812){
-let c=stage(seed);let b=createBattle(c.pendingBattle.squad,c.pendingBattle);let actions=1;b=actBattle(b,{type:'fire',unitId:4,targetId:'enemy-0',aim:2});b=endTurn(b);
+let c=stage(seed);let b=createBattle(c.pendingBattle.squad,{...c.pendingBattle,regionalWeather:false,weather:{rain:40,humidity:8}});let actions=1;b=actBattle(b,{type:'fire',unitId:4,targetId:'enemy-0',aim:2});assert.equal(b.lastError,null);b=endTurn(b);
 for(let round=0;round<30&&b.status==='active';round++){
 for(const id of b.units.filter(u=>u.side==='player').map(u=>u.id)){
 for(let attempt=0;attempt<20&&b.status==='active';attempt++){
@@ -30,7 +33,7 @@ if(b.status==='active')b=endTurn(b);
 return {campaign:c,battle:b,actions};
 }
 
-test('actual opening battle connects campaign resources, deterministic tactics and survivors',()=>{
+test('a controlled wet-weather battle connects campaign resources, deterministic tactics and survivors',()=>{
   const {campaign,battle,actions}=fight();
   assert.equal(battle.status,'victory');
   assert.ok(battle.turn>=2,'the enemy must have acted');
