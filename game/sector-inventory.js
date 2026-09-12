@@ -1,7 +1,7 @@
 import {makeOutfit,wornOutfit} from './outfits.js';
 import {handsRequired,handLayout} from './hand-layout.js';
-import {SUPPLY_ITEMS,itemQuantity,itemDescriptor,extractItemQuantity,applyItemQuantity,inventoryUsage} from './tactical-inventory.js';
-import {getReachable,hasLineOfSight,planEquipLoot,planReadyMainHand,WEAPONS,BLADES} from './tactical.js';
+import {SUPPLY_ITEMS,itemQuantity,itemDescriptor,extractItemQuantity,applyItemQuantity,inventoryUsage,planPocketMove,equipmentEndpoint} from './tactical-inventory.js';
+import {getReachable,hasLineOfSight,planEquipLoot,planReadyMainHand,planEquipmentPlacement,WEAPONS,BLADES} from './tactical.js';
 import {propBlocksAt,propCells} from './props.js';
 import {boundaryMatches} from './tactical-exits.js';
 import {operativeLocation,operativeInTransit} from './squads.js';
@@ -12,7 +12,7 @@ import {MISSION_SCENES} from './missions.js';
 
 const copy=value=>structuredClone(value);
 const need=(ok,message)=>{if(!ok)throw Error(message);};
-const fields=['inventory','condition','priming','flints','rations','medkits','boleadoras','torches'];
+const fields=['inventory','condition','priming','flints','rations','medkits','boleadoras','torches','pocketOrder'];
 function stackLabel(stack){
  if(SUPPLY_ITEMS[stack.item])return SUPPLY_ITEMS[stack.item].label;
  const key=stack.item==='weapon'?'weapon':stack.item.replace(/^inventory:/,'');
@@ -115,22 +115,26 @@ export function sectorInventoryModel(s,sectorId,roster,operativeId){
  }):[];
  const outfitStock=(s.depots?.[location]?.ponchos??0)+(location==='retiro'?(s.resources.ponchos??0):0);
  let outfitIssueReason=carriedReason;if(!outfitIssueReason&&!outfitStock)outfitIssueReason='No quedan ponchos en este depósito.';if(!outfitIssueReason)try{applyItemQuantity(personal,{item:'outfit',...makeOutfit()});}catch(error){outfitIssueReason=error.message;}
- return {outfitStock,outfitIssueReason,sectorId,operativeId:op?.id??null,candidates:candidates.map(op=>({id:op.id,name:op.nickname??op.name})),reason,carriedReason,entries,carried,usage:personal?inventoryUsage(personal):null};
+ return {personal,outfitStock,outfitIssueReason,sectorId,operativeId:op?.id??null,candidates:candidates.map(op=>({id:op.id,name:op.nickname??op.name})),reason,carriedReason,entries,carried,usage:personal?inventoryUsage(personal):null};
 }
 
 // The campaign dispatcher provides a private copy. Plan every transfer before
 // updating either custodian; the source key is resolved again on confirmation.
 export function moveSectorItem(s,action,roster){
  const {sector:sectorId,operativeId,direction,count=1}=action;
- need(['take','drop','equip','issueOutfit'].includes(direction)&&Number.isSafeInteger(count)&&count>0&&count<=1000000,'La orden de inventario no es válida.');
+ need(['take','drop','equip','issueOutfit','arrange'].includes(direction)&&Number.isSafeInteger(count)&&count>0&&count<=1000000,'La orden de inventario no es válida.');
  const model=sectorInventoryModel(s,sectorId,roster,operativeId);
- const reason=['equip','issueOutfit'].includes(direction)?model.carriedReason:model.reason;need(!reason,reason);need(model.operativeId===Number(operativeId),'Elegí un combatiente presente.');
- const op=roster.find(op=>op.id===Number(operativeId)),snapshot=inventorySite(s,sectorId).snapshot,actor=['equip','issueOutfit'].includes(direction)?carriedActor(s,op):actorAt(s,sectorId,op);
+ const reason=['equip','issueOutfit','arrange'].includes(direction)?model.carriedReason:model.reason;need(!reason,reason);need(model.operativeId===Number(operativeId),'Elegí un combatiente presente.');
+ const op=roster.find(op=>op.id===Number(operativeId)),snapshot=inventorySite(s,sectorId).snapshot,actor=['equip','issueOutfit','arrange'].includes(direction)?carriedActor(s,op):actorAt(s,sectorId,op);
  let next,stack;
  if(direction==='issueOutfit'){
   need(count===1&&!model.outfitIssueReason,model.outfitIssueReason??'Retirá un poncho por vez.');
   stack={item:'outfit',...makeOutfit()};next=applyItemQuantity(actor,stack);
   const at=inventorySite(s,sectorId).sectorId;if((s.depots?.[at]?.ponchos??0)>0)s.depots[at].ponchos--;else s.resources.ponchos--;
+ }else if(direction==='arrange'){
+  need(count===1&&['pocket','equipment'].includes(action.kind),'Elegí las ranuras que querés ordenar.');
+  need(typeof action.expectedSource==='string'&&typeof action.expectedDestination==='string','Volvé a seleccionar el equipo.');
+  next=action.kind==='pocket'?planPocketMove(actor,action.sourceId,action.destinationId,action.expectedSource,action.expectedDestination):planEquipmentPlacement(actor,action).unit;
  }else if(direction==='equip'){
   need(count===1&&['primary','blade','offhand','outfit','offhandItem','mainhand'].includes(action.slot),'Elegí una ranura de equipo.');
   const stow=action.slot==='outfit'&&action.inventoryKey===null;
@@ -162,12 +166,17 @@ export function moveSectorItem(s,action,roster){
  const record=s.operativeState[op.id];returnEquipment(s,op.id,next);
  for(const key of fields)if(next[key]!==undefined)record[key]=copy(next[key]);
  record.carriedAmmo=next.ammo+(next.loaded??0);
- const equipsMainWeapon=direction==='equip'&&(action.slot==='primary'||action.slot==='mainhand'&&(action.inventoryKey==='offhand'||action.inventoryKey.startsWith('inventory:')&&stack.weapon));
+ const source=direction==='arrange'&&action.kind==='equipment'?equipmentEndpoint(actor,action.sourceId):null;
+ const destination=source?equipmentEndpoint(actor,action.destinationId):null;
+ const incoming=destination?.id==='hand:right'?source?.item:source?.id==='hand:right'?destination?.item:null;
+ const replacesPrimary=incoming==='offhand'||incoming?.startsWith('inventory:')&&Boolean(actor.inventory?.[incoming.slice(10)]?.weapon);
+ const changesMainWeapon=direction==='arrange'&&(replacesPrimary||next.weapon!==actor.weapon||next.weaponInstanceId!==actor.weaponInstanceId||next.weaponDropped!==actor.weaponDropped);
+ const equipsMainWeapon=changesMainWeapon||direction==='equip'&&(action.slot==='primary'||action.slot==='mainhand'&&(action.inventoryKey==='offhand'||action.inventoryKey.startsWith('inventory:')&&stack.weapon));
  if(equipsMainWeapon||record.carriedLoaded!==undefined)setCarriedLoading(record,next);
  else if(next.weaponDropped)clearCarriedLoading(record);
  // Returned living soldiers and their cartridge receipt are historical.
  // Their next deployment uses the current campaign equipment record.
- if(!['equip','issueOutfit'].includes(direction)){
+ if(!['equip','issueOutfit','arrange'].includes(direction)){
   // A returned living unit is a historical receipt, not another item owner.
   // Retire its identities before a map transfer puts that same item on the field.
   for(const old of snapshot.units.filter(u=>u.side==='player'&&u.hp>0&&snapshot.returnLedger?.entries.some(e=>e.unitId===u.id&&['resident','departed'].includes(e.kind)))){
@@ -176,5 +185,6 @@ export function moveSectorItem(s,action,roster){
   }
   validateBattleSnapshot(snapshot);
  }
+ if(direction==='arrange')return `${op.nickname??op.name} ordena su equipo.`;
  return `${op.nickname??op.name} ${direction==='take'?'recoge':direction==='equip'?(action.inventoryKey===null?'guarda':'equipa'):direction==='issueOutfit'?'retira del depósito':'deja'} ${count} × ${stackLabel(stack)} en el sector.`;
 }

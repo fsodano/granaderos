@@ -1,5 +1,6 @@
 'use client';
 import {useState} from 'react';
+import CampaignPockets from './CampaignPockets';
 import {rosterFor} from '../../game/campaign.js';
 import {sectorInventoryModel,sectorInventorySites} from '../../game/sector-inventory.js';
 import {tacticalGridLabel} from '../../game/tactical-grid.js';
@@ -18,6 +19,7 @@ export default function SectorInventory({state,sectorId,dispatch}:{state:any;sec
   {sites.length>1&&<label>Lugar<select aria-label="Lugar del equipo" value={siteId} onChange={event=>setSelectedSite(event.target.value)}>{sites.map(site=><option key={site.id} value={site.id}>{site.name} · {site.count} objetos</option>)}</select></label>}
   {model.usage&&<p>Mochila: {model.usage.used}/{model.usage.capacity} espacios. Las cargas permanecen en el arma; los cartuchos sueltos se usan en el próximo despliegue.</p>}
   <section aria-label="Vestimenta del depósito"><p>Ponchos disponibles aquí: {model.outfitStock}</p><button className="line-button" disabled={Boolean(model.outfitIssueReason)} title={model.outfitIssueReason || undefined} onClick={()=>order({direction:'issueOutfit'})}>Retirar poncho del depósito</button><small>Se guarda en un bolsillo grande. La reserva general se retira en Retiro.</small></section>
+  {model.personal&&<CampaignPockets key={`${siteId}:${model.operativeId}`} unit={model.personal} disabled={Boolean(model.carriedReason)} onOrder={action=>order(action)}/>}
   <div className="sector-inventory-columns"><section aria-label="Equipo descubierto"><h4>En el terreno</h4>{model.reason&&<p role="status">{model.reason}</p>}{model.entries.length?model.entries.map((row:any,index:number)=><ItemRow key={`${siteId}:${row.key}:${row.expected}`} label={row.label} count={row.count} number={index+1} disabled={!row.reachable} verb="Recoger" onConfirm={(count:number)=>order({direction:'take',sourceKey:row.key,expected:row.expected,count})}>
    <p>{tacticalGridLabel(row.x,row.y)} · {row.condition!==undefined&&`Estado ${row.condition}%. `}{row.loaded!==undefined&&`${row.loaded} carga(s). `}{row.jammed&&'Necesita cebado. '}{row.reason}</p>
   </ItemRow>):<p>No hay equipo descubierto en este sector.</p>}</section>
