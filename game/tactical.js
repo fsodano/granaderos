@@ -1,3 +1,4 @@
+import {shotRangeModifiers} from './shot-range.js';
 import {limitEnergy,recoverEnergy,recoverFatigue} from './fatigue.js';
 import {recordMilitiaHit} from './militia-experience.js';
 import {projectilePath,projectileFlight,pointProjectileFlight,concealmentAt,concealmentSightPenalty} from './projectile-cover.js';
@@ -94,7 +95,13 @@ function weightPenalty(u){return Math.max(1,carriedWeight(u)/carryCapacity(u));}
 export function movementEnergy(u,t){const style=u.movementMode||'walk',base={walk:1,run:3,crouch:2,prone:3}[style]||1;return Math.max(1,Math.ceil(base*weightPenalty(u)*(u.mounted?1-Math.min(100,u.ridingSkill||0)*.005:1)*(t?.type==='mud'?1.5:1)*(hasTrait(u,'guerrilla_tactician')?.75:1)));}
 function exhaust(s,u,cost){limitEnergy(u);if(u.mounted&&u.mount){u.mount.stamina=Math.max(0,u.mount.stamina-Math.max(1,Math.ceil(cost*(1-Math.min(100,u.ridingSkill||0)*.005))));if(u.mount.stamina===0){u.mounted=false;sayObserved(s,[u],`${u.name} desmonta: su caballo está agotado.`);}}u.energy=Math.max(0,(u.energy??100)-cost);if(u.energy===0){u.unconscious=true;u.ap=0;u.mounted=false;sayObserved(s,[u],`${u.name} cae inconsciente por agotamiento.`);}}
 export function tileIllumination(s,x,y){if(!s.night)return 1;let light=.08;for(const lamp of s.lights||[]){if(lamp.turns===0||lamp.extinguished)continue;const distance=dist(lamp,{x,y});if(distance>lamp.radius||!hasLineOfSight(s,lamp,{x,y}))continue;light=Math.max(light,(lamp.intensity??1)*(1-distance/(lamp.radius+1)));}return clamp(light,0,1);}
-export function canSee(s,u,target){if(!alive(u)||target.departure||!facingAllowsSight(u,target)||!hasLineOfSight(s,u,target))return false;const bonus=hasTrait(u,'night_vision')||Number(u.id)===6?2:hasTrait(u,'night_vision_basic')?1:0;const concealment=['crouch','prone'].includes(target.movementMode)&&!target.mounted?Math.min(1,(target.trainedStats?.stealth||0)*.1):0;const range=(s.night?6+bonus:12)-concealment-concealmentSightPenalty(s,target);const distance=dist(u,target);if(distance>range&&!(distance<=16-concealmentSightPenalty(s,target)&&tileIllumination(s,target.x,target.y)>=.25))return false;const smoke=line(u,target).filter(p=>s.smoke.some(v=>dist(p,v)<=v.radius)).length;return smoke<5;}
+const nightSightBonus=u=>hasTrait(u,'night_vision')||Number(u.id)===6?2:hasTrait(u,'night_vision_basic')?1:0;
+export function visibleDistance(s,u,target){
+  const concealment=['crouch','prone'].includes(target.movementMode)&&!target.mounted?Math.min(1,(target.trainedStats?.stealth||0)*.1):0;
+  const cover=concealmentSightPenalty(s,target),normal=(s.night?6+nightSightBonus(u):12)-concealment-cover;
+  return Math.max(0,normal,tileIllumination(s,target.x,target.y)>=.25?16-cover:0);
+}
+export function canSee(s,u,target){if(!alive(u)||target.departure||!facingAllowsSight(u,target)||!hasLineOfSight(s,u,target)||dist(u,target)>visibleDistance(s,u,target))return false;const smoke=line(u,target).filter(p=>s.smoke.some(v=>dist(p,v)<=v.radius)).length;return smoke<5;}
 export function teamCanSee(s,side,target){return s.units.some(u=>u.side===side&&alive(u)&&canSee(s,u,target));}
 export function visibleRooms(s){const ids=new Set();for(const t of s.tiles){if(t.roomId&&s.units.some(u=>u.side==='player'&&alive(u)&&canSee(s,u,t)))ids.add(t.roomId);}return [...ids];}
 function revealRooms(s){s.revealedRooms=[...new Set([...(s.revealedRooms||[]),...visibleRooms(s)])];}
@@ -205,23 +212,30 @@ export function firearmShotOptions(s,attacker,target,maxAim=4){
   }
   return options;
 }
+export function firearmRangeProfile(s,attacker,target){
+  const distance=dist(attacker,target),w=weaponFor(attacker);
+  const smoke=line(attacker,target).filter(p=>s.smoke.some(v=>dist(p,v)<=v.radius)).length;
+  // Preserve period-game obscuration weights, expressed as apparent distance.
+  // Night training improves both detection reach and aiming in poor light.
+  const concealment=concealmentAt(s,target)*(Number(attacker.id)===6&&w.id===1807?.5:1);
+  const darkness=s.night?(20-nightSightBonus(attacker)*7.5)*(1-tileIllumination(s,target.x,target.y)):0;
+  const apparentRange=distance+(concealment+darkness+smoke*(hasTrait(attacker,'line_marksman')?6:12))/3;
+  return shotRangeModifiers({distance,weaponRange:w.range,apparentRange,visibleRange:visibleDistance(s,attacker,target)});
+}
 function shotAccuracy(s,attacker,target,aim=0,hitLocation='torso',pointShot=false){
   if(attacker.departure||target.departure||!hasFirearm(attacker)||!pointShot&&!hasLineOfSight(s,attacker,target))return 0;
   const w=weaponFor(attacker),range=dist(attacker,target);
-  const cap=w.id===1802?(range<=45?95:Math.max(1,85-(range-50)*5)):(range<=15?85:range<=25?85-(range-15)*5:range<=35?35-(range-25)*3:Math.max(1,5-(range-35)));
+  const rangeProfile=firearmRangeProfile(s,attacker,target);
   const skill=attacker.marksmanship??70,condition=attacker.condition??100;
   const effectiveSkill=condition<skill?(skill+condition)/2:skill;
   const targetPosture=target.mounted?0:Math.min(Math.max(0,range-5)*3,target.stance==='prone'?40:target.stance==='crouched'?20:0);
   const support=attacker.mounted?0:attacker.stance==='prone'?10:attacker.stance==='crouched'?5:0;
-  const obscured=line(attacker,target).filter(p=>s.smoke.some(v=>dist(p,v)<=v.radius)).length;
   const repeat=!pointShot&&attacker.lastTargetId===target.id&&attacker.lastShotPosition?.x===attacker.x&&attacker.lastShotPosition?.y===attacker.y?10:0;
-  const chance=effectiveSkill+support+repeat+(nearby(s,attacker,57,6)?12:0)+(nearby(s,attacker,11,4)?8:0)+clamp(Number.isFinite(aim)?Math.floor(aim):0,0,4)*8-range*1.1-effectiveWounds(attacker)*.3-(100-(attacker.energy??100))*.15-(attacker.shock??0)*5+((attacker.morale??80)-80)*.1-targetPosture
-    -concealmentAt(s,target)*(Number(attacker.id)===6&&w.id===1807?.5:1)
-    -(s.night?(Number(attacker.id)===6?5:20)*(1-tileIllumination(s,target.x,target.y)):0)-Math.max(0,range-w.range)*4
-    -(attacker.mounted&&![1803,1805,1806,1808].includes(w.id)?15:0)-obscured*(hasTrait(attacker,'line_marksman')?6:12)
+  const chance=effectiveSkill+support+repeat+(nearby(s,attacker,57,6)?12:0)+(nearby(s,attacker,11,4)?8:0)+clamp(Number.isFinite(aim)?Math.floor(aim):0,0,4)*8+rangeProfile.sightAdjustment-rangeProfile.weaponPenalty-effectiveWounds(attacker)*.3-(100-(attacker.energy??100))*.15-(attacker.shock??0)*5+((attacker.morale??80)-80)*.1-targetPosture
+    -(attacker.mounted&&![1803,1805,1806,1808].includes(w.id)?15:0)
     +(hasTrait(attacker,'guerrilla_tactician')&&!attacker.momentum&&((tile(s,attacker.x,attacker.y)?.cover||0)>=20||['forest','scrub'].includes(tile(s,attacker.x,attacker.y)?.type))?10:0)
     -(hasTrait(target,'guerrilla_tactician')&&!target.mounted&&((tile(s,target.x,target.y)?.cover||0)>=20||['forest','scrub'].includes(tile(s,target.x,target.y)?.type))?12:0);
-  return Math.round(clamp(Math.min(cap,chance-shotLocationPenalty(hitLocation,range)),1,95));
+  return Math.round(clamp((chance-shotLocationPenalty(hitLocation,rangeProfile.effectiveSightRange))*rangeProfile.chanceFactor,1,95));
 }
 function firearmImpact(s,attacker,target,amount,hitLocation='torso'){
   const path=firearmProjectilePath(s,attacker,target,hitLocation),observed=journalVisible(s,target);

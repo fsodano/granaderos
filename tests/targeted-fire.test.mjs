@@ -12,8 +12,10 @@ const shoot=(s,hitLocation)=>actBattle(s,{type:'useItem',unitId:'p',targetId:'e'
 test('location preview and fire use the same range penalty and leave torso unchanged',()=>{
  const s=field(),[a,t]=s.units;
  assert.equal(shotChance(s,a,t),shotChance(s,a,t,0,'torso'));
- assert.equal(shotChance(s,a,t,0,'head'),shotChance(s,a,t)-12);
- assert.equal(shotChance(s,a,t,0,'legs'),shotChance(s,a,t)-4);
+ // Use an unsaturated shooter to isolate body-region deductions from the 95% cap.
+ const steady={...a,marksmanship:60};
+ assert.equal(shotChance(s,steady,t,0,'head'),shotChance(s,steady,t)-12);
+ assert.equal(shotChance(s,steady,t,0,'legs'),shotChance(s,steady,t)-4);
  const torso=shoot(s,'torso'),head=shoot(s,'head');
  assert.equal(torso.lastError,null);assert.equal(head.lastError,null);
  assert.ok(head.units[1].hp<torso.units[1].hp);assert.equal(head.units[1].lastHitLocation,'head');

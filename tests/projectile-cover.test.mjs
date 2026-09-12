@@ -80,7 +80,7 @@ test('HUD reports obstruction as a paid shot warning and retains independent bod
   const s=field(),[a,b]=s.units;lowWall(s);const before=structuredClone(s);
   const legs=targetPreview(s,a,b,{mode:'fire',hitLocation:'legs'});
   assert.equal(legs.valid,true);assert.equal(legs.chance,0);assert.match(legs.coverNote,/detiene.*consume la carga/);
-  assert.equal(targetPreview(s,a,b,{mode:'fire',hitLocation:'head'}).coverNote,undefined);assert.deepEqual(s,before);
+  assert.match(targetPreview(s,a,b,{mode:'fire',hitLocation:'head'}).coverNote,/^Distancia: 6 casillas · alcance del arma: 18\.$/);assert.deepEqual(s,before);
 });
 
 test('blocked shots and cover metadata replay across tactical saves while malformed overrides reject',()=>{

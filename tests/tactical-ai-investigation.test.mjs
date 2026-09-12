@@ -49,15 +49,20 @@ test('investigation prefers useful nearby cover to an exposed direct route', () 
   assert.ok(pathFor(s, action).cost <= 24);
 });
 
-test('the next decision can fire after a short search acquires actual visual contact', () => {
+test('a short search acquires visual contact and a paid approach reaches a worthwhile shot', () => {
   let s = remember(field({actor: {marksmanship: 80}, enemy: {x: 20, y: 3}}));
   assert.equal(canSee(s, actor(s), s.units[1]), false);
   const search = chooseEnemyAction(s, actor(s));
   assert.equal(search.type, 'move');
   s = actBattle(s, search); assert.equal(s.lastError, null);
   assert.equal(canSee(s, actor(s), s.units[1]), true);
-  const fire = chooseEnemyAction(s, actor(s)), cost = actionCosts(s, actor(s));
-  assert.equal(fire.type, 'fire');
+  let fire = chooseEnemyAction(s, actor(s));
+  for(let step=0;fire?.type==='move'&&step<3;step++){
+    const before=actor(s).ap;s=actBattle(s,fire);assert.equal(s.lastError,null);assert.ok(actor(s).ap<before);
+    assert.equal(canSee(s,actor(s),s.units[1]),true);fire=chooseEnemyAction(s,actor(s));
+  }
+  const cost = actionCosts(s, actor(s));
+  assert.equal(fire?.type, 'fire');
   assert.ok(cost.fire + cost.aim * fire.aim <= actor(s).ap);
   const next = actBattle(s, fire); assert.equal(next.lastError, null);
   assert.equal(actor(next).loaded, 0);

@@ -68,8 +68,9 @@ test('a weapon swap and shot during an enemy reaction survive a nested saved pla
   s.units.push({...structuredClone(s.units[0]),id:'observer',x:12,y:5,ap:20,agility:100,experienceLevel:10});
   const paused=actBattle(s,{type:'move',unitId:'p',x:11,y:3});
   assert.equal(paused.lastError,null);assert.equal(paused.phase,'interrupt');assert.equal(paused.interrupt.returnTo,'reaction');
-  assert.ok(paused.interrupt.unitIds.includes('observer'));assert.equal(enemy(paused).weaponInstanceId,'reserve-pistol');assert.equal(enemy(paused).loaded,0);assert.equal(enemy(paused).ap,0);assert.equal(enemy(paused).ammo,0);
+  // The close-range bonus caps the unaimed shot, so the AI retains two aim AP.
+  assert.ok(paused.interrupt.unitIds.includes('observer'));assert.equal(enemy(paused).weaponInstanceId,'reserve-pistol');assert.equal(enemy(paused).loaded,0);assert.equal(enemy(paused).ap,2);assert.equal(enemy(paused).ammo,0);
   const restored=validateBattleSnapshot(JSON.parse(JSON.stringify(paused))),n=endTurn(restored);
-  assert.deepEqual(n,endTurn(paused));assert.equal(n.elapsedSeconds,6);assert.equal(n.turn,1);assert.equal(n.phase,'player');assert.equal(enemy(n).ap,0);assert.equal(enemy(n).weaponInstanceId,'reserve-pistol');assert.equal(enemy(n).loaded,0);
+  assert.deepEqual(n,endTurn(paused));assert.equal(n.elapsedSeconds,6);assert.equal(n.turn,1);assert.equal(n.phase,'player');assert.equal(enemy(n).ap,2);assert.equal(enemy(n).weaponInstanceId,'reserve-pistol');assert.equal(enemy(n).loaded,0);
   assert.equal(n.log.filter(line=>line.includes('equipa Pistola')).length,1);assert.doesNotThrow(()=>validateBattleSnapshot(n));
 });

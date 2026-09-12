@@ -12,6 +12,7 @@ const alive=u=>u.hp>0&&!u.departure&&!u.surrendered&&!u.unconscious&&!u.routed;
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 function combatOrder(b,u){
  const cost=actionCosts(b,u),players=b.units.filter(v=>v.side===u.side&&alive(v));
+ if(u.knockedDown||u.entangled)return chooseEnemyAction(b,u);
  // Keep the mission commander in the firing line with the infantry.
  if(u.missionAlly&&u.mounted&&u.ap>=cost.mount)return {type:'mount',unitId:u.id};
  if(u.missionAlly&&u.stance!=='prone'&&u.ap>=stanceCost(u,'prone'))return {type:'stance',unitId:u.id,stance:'prone'};
@@ -29,11 +30,14 @@ function combatOrder(b,u){
    const aim=Math.min(4,Math.floor((u.ap-cost.fire)/cost.aim));
    if(shotChance(b,u,target,aim)>=25)return {type:'fire',unitId:u.id,targetId:target.id,aim};
  }
+ // Kneel when prone muzzle-loading is unaffordable but a complete
+ // crouched reload fits. Do not leave an empty Baker waiting indefinitely.
+ if(!u.loaded&&!u.jammed&&u.ammo&&u.stance==='prone'&&cost.reload>u.ap&&u.ap>=stanceCost(u,'crouched')+actionCosts(b,{...u,stance:'crouched'}).reload)return {type:'stance',unitId:u.id,stance:'crouched'};
  if(!u.loaded&&!u.jammed&&u.ammo&&cost.reload>0&&u.ap>=cost.reload)return {type:'reload',unitId:u.id};
  const automatic=chooseEnemyAction(b,u);
- if(u.missionAlly&&automatic?.type==='move')return null;
+ if(u.missionAlly&&players.length>1&&automatic?.type==='move')return null;
  if(automatic&&automatic.type!=='charge')return automatic;
- if(u.missionAlly)return null; // Protect the commander; infantry scouts ahead.
+ if(u.missionAlly&&players.length>1)return null; // Infantry scouts first; a lone commander must still act.
  if(visible.length)return null;
  // Reconnaissance advances toward the known sector center in short bounds.
  const destination={x:Math.floor(b.width*.65),y:Math.floor(b.height*.5)};
