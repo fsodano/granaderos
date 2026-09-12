@@ -422,14 +422,38 @@ export function removeBayonetPreview(s,u,destination='inventory'){
   if(!reason)try{plan=planRemoveBayonet(u,destination);}catch(error){reason=error.message;}
   return {pa,source:'primary',destination,host:u?.weapon,fitting:plan?.fitting??u?.weaponFittings?.bayonet??null,reason,valid:!reason};
 }
+// A relay is one inventory transaction. Intermediate soldiers must be able to
+// handle this exact stack, without swapping their own equipment into the chain.
+function itemRelayRoute(s,u,target,stack){
+  const adjacent=(a,b)=>dist(a,b)<=1.5&&hasLineOfSight(s,a,b)&&Number.isFinite(movementStepCost(s,a,a,b));
+  if(adjacent(u,target))return [u,target];
+  const helpers=s.units.filter(v=>v.id!==u.id&&v.id!==target.id&&v.side===u.side&&
+    !v.fled&&Boolean(v.militia)===Boolean(u.militia)&&!inventoryOrderReason(s,v,4)).filter(v=>{
+      try{applyItemQuantity(v,stack);return true;}catch{return false;}
+    }).sort((a,b)=>String(a.id).localeCompare(String(b.id)));
+  const queue=[[u]],seen=new Set([u.id]);
+  for(let i=0;i<queue.length;i++){
+    const path=queue[i],last=path[path.length-1];
+    if(adjacent(last,target))return [...path,target];
+    for(const v of helpers)if(!seen.has(v.id)&&adjacent(last,v)){seen.add(v.id);queue.push([...path,v]);}
+  }
+  return null;
+}
 export function transferPreview(s,u,target,item,count=1){
-  const distance=u&&target?dist(u,target):Infinity,kind=distance<=1.5?'give':'throw',pa=kind==='give'?4:8;
-  let reason=inventoryOrderReason(s,u,pa),chance=kind==='give'?100:0;
+  const distance=u&&target?dist(u,target):Infinity;
+  let kind=distance<=1.5?'give':'throw',pa=kind==='give'?4:8,route=null;
+  let reason=inventoryOrderReason(s,u,4),chance=kind==='give'?100:0;
   if(!reason&&(!target||target.id===u.id||target.side!==u.side||!alive(target)))reason='Elige otro compañero consciente.';
-  if(!reason&&(distance>6||!hasLineOfSight(s,u,target)))reason='El compañero debe estar al alcance y sin obstáculos.';
-  if(!reason)try{transferItemQuantity(u,target,item,count);}catch(error){reason=error.message;}
+  if(!reason)try{
+    const transfer=transferItemQuantity(u,target,item,count);
+    route=itemRelayRoute(s,u,target,transfer.stack);
+  }catch(error){reason=error.message;}
+  if(route){kind=route.length>2?'relay':'give';pa=4;chance=100;}
+  else if(!reason){kind='throw';pa=8;reason=inventoryOrderReason(s,u,pa);}
+  if(!reason&&!route&&(distance>6||!hasLineOfSight(s,u,target)))reason='El compañero debe estar al alcance y sin obstáculos, o conectado por aliados contiguos.';
   if(kind==='throw'&&target)chance=target.knockedDown||(s.mode!=='exploration'&&target.ap<2)?0:Math.round(clamp(((u?.dexterity??50)+(target.dexterity??50))/2+20-distance*5-(100-(target.energy??100))*.2,5,95));
-  return {pa,kind,chance,reason,valid:!reason};
+  const participants=route?.map((v,i)=>({id:v.id,name:v.nickname||v.name,pa:i<route.length-1?4:0}))??[];
+  return {pa,kind,chance,route:participants,totalPA:route?(route.length-1)*4:pa,reason,valid:!reason};
 }
 function groundStack(ground){
   if(ground.type==='boleadoras')return {item:'boleadoras',count:ground.count,weight:SUPPLY_ITEMS.boleadoras.weight};
@@ -883,8 +907,16 @@ else if(a.type==='drop'){
 }
 else if(a.type==='transfer'){
   const preview=transferPreview(s,u,target,a.item,a.count??1);if(!preview.valid)return fail(preview.reason);
+  if(a.transferKind!==undefined&&(a.transferKind!==preview.kind||JSON.stringify(a.transferRoute)!==JSON.stringify(preview.route.map(v=>v.id))))return fail('Cambió la entrega. Revisa el destinatario y los PA antes de confirmar.');
   const transfer=transferItemQuantity(u,target,a.item,a.count??1);replaceUnit(u,transfer.source);pay(preview.pa);
-  if(preview.kind==='give'||random(s)*100<preview.chance){replaceUnit(target,transfer.target);lowerWeapon(target);if(preview.kind==='throw'&&s.mode!=='exploration')target.ap-=2;sayObserved(s,[u,target],`${u.name} entrega el objeto a ${target.name}.`);}
+  if(preview.kind==='relay'){
+    for(const step of preview.route.slice(1,-1)){
+      const helper=s.units.find(v=>v.id===step.id);lowerWeapon(helper);
+      if(s.mode!=='exploration')helper.ap-=step.pa;
+    }
+    if(s.mode==='exploration')s.actionDurationSeconds=preview.route.length-1;
+  }
+  if(preview.kind!=='throw'||random(s)*100<preview.chance){replaceUnit(target,transfer.target);lowerWeapon(target);if(preview.kind==='throw'&&s.mode!=='exploration')target.ap-=2;sayObserved(s,[u,target],`${u.name} entrega el objeto a ${target.name}${preview.kind==='relay'?' a través de '+preview.route.slice(1,-1).map(v=>v.name).join(', '):''}.`);}
   else {addGroundStack(s,transfer.stack,target);sayObserved(s,[target],`${target.name} no atrapa el objeto. Queda en el suelo a sus pies.`);}
 }
 else if(a.type==='loot'){

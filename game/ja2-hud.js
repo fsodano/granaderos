@@ -430,7 +430,13 @@ export function inventoryHandlingModel(state, unit, ctx = {}) {
   const drop = dropPreview(state, unit, ctx.item, ctx.count ?? 1);
   return {
     recipients,
-    transfer: {...transfer, label: !target ? 'Dar o arrojar' : transfer.kind === 'throw' ? 'Arrojar al aliado' : 'Dar al aliado', disabled: Boolean(ctx.busy) || !transfer.valid},
+    transfer: {...transfer,
+      action: {type:'transfer',targetId:target?.id,item:ctx.item,count:ctx.count??1,transferKind:transfer.kind,transferRoute:transfer.route.map(v=>v.id)},
+      label: !target ? 'Dar o arrojar' : transfer.kind === 'relay' ? 'Pasar por aliados' : transfer.kind === 'throw' ? 'Arrojar al aliado' : 'Dar al aliado',
+      detail: transfer.kind === 'relay'
+        ? `${transfer.route.map(v=>`${v.name} (${v.pa} PA)`).join(' → ')}. ${transfer.totalPA} PA en total. Entrega segura.`
+        : transfer.kind === 'throw' ? `${transfer.chance}% de recepción. El aliado necesita 2 PA; si falla, el objeto cae al suelo.` : 'Entrega directa al aliado contiguo.',
+      disabled: Boolean(ctx.busy) || !transfer.valid},
     drop: {...drop, disabled: Boolean(ctx.busy) || !drop.valid},
   };
 }
