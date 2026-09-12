@@ -1,6 +1,27 @@
 # Northern campaign route verification
 
-## Current regional terrain and weather checkpoint
+## Campaign terrace checkpoint: 12 September 2026
+
+Checked with active house terraces from `e597eea`, the physical-floor controller corrections, and both ambient patrol recovery fixes (`e4890c3`, `30461dc`). The route keeps seed 8 and uses ordinary orders, actual casualties, finite supplies, paid contracts, deterministic battle replays and complete save checks. Buenos Aires and Ensenada are already secured in this fixture; it is not a full Retiro-only campaign.
+
+| Battle | Arrival hour | Turns | Orders | Actual result |
+| --- | ---: | ---: | ---: | --- |
+| San Nicolás | 36 | 18 | 159 | Victory; two hired deaths |
+| San Lorenzo | 60 | 24 | 124 | Victory; five hired deaths |
+| Córdoba | 108 | 10 | 85 | Victory; three immediate deaths; the wounded officer dies during later recovery |
+| Tucumán, exposed relief patrol | 141 | 5 | 39 | Defeat; 121, 124 and 125 die; 126 is captured at 3 HP |
+| Tucumán, paid rescue | 165 | 18 | 158 | Victory; 128 and 142 die; 103 survives at 4 HP |
+| Salta, joint assault | 228 | 6 | 147 | Victory; 141, 127, 111 and 104 die |
+
+The rescue fills three empty support seats through actual one-day rifle contracts costing 131 pesos. The prisoner keeps the recorded wound and equipment on release. Courier 105 makes both twelve-hour trips and buys twelve dressings for 360 pesos; real treatment and rest restore 126 by hour 196. Eleven dressings then restore critical survivor 103 before Salta. Available replacements 109, 140 and 144 cost 298 pesos; the two squads each contain six actual living actors.
+
+After Salta, surviving doctors 109 and 144 use four dressings over two hours: bleeding control comes before wound healing. Ordinary pact payment, travel and dialogue reach Yatasto at hour 242, second 2934, with 2,473 pesos. All twenty deaths remain permanent. Phase 3 is reached; the campaign is not complete.
+
+The earlier nine-person rescue stalled: visible low-chance shots remained below the AI's deliberate firing threshold, and neither side chose a better position. That is a remaining combat-tuning issue, not an illegal-order or floor-admission defect. Paid rifle support completes this reference route without changing AI or forcing outcomes; this does not prove general combat balance or full JA2 parity.
+
+Validation: `node --test tests/opening-playthrough.test.mjs tests/opening-driver.test.mjs tests/opening-equipment.test.mjs` passed all **17/17 checks**, with no skips, in 57.5 seconds. This includes all eight named route checks and nine focused driver/equipment checks. No full-suite result is claimed by this scoped route checkpoint.
+
+## Historical regional terrain and weather checkpoint
 
 Checked on 12 September 2026 from `be30998`, with the opening equipment repair at `1706034` and the subsequent survivor, medical supply and rescue repairs. The established southern route reaches Yatasto and phase 3 through ordinary campaign orders. This still starts with Buenos Aires and Ensenada secured; it does not establish a complete Retiro-only campaign or the ending.
 
@@ -20,7 +41,7 @@ During staging for Salta, twelve real dressings restore the critically wounded 1
 
 Doctor 112 makes the real journey to Yatasto after the normal northern-pact payment. Movement and dialogue finish the mission at hour 216, second 1995, with 2,328 pesos remaining. All fourteen deaths remain permanent. The campaign has reached phase 3 and is not complete. The earlier results below are historical evidence only.
 
-Current verification: all eight named playthrough checks pass from the opening state, with no skips. Every accepted battle repeats deterministically and restores through a full save. Twelve focused reload, equipment and driver checks also pass. These checks verify this reference route; they do not establish overall campaign balance or complete JA2 parity.
+Verification at that checkpoint: all eight named playthrough checks passed from the opening state, with no skips. Every accepted battle repeated deterministically and restored through a full save. Twelve focused reload, equipment and driver checks also passed. These checks verified that reference route; they did not establish overall campaign balance or complete JA2 parity.
 
 ## Earlier building-map checkpoint
 

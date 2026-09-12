@@ -109,6 +109,8 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   if(!recovered)return subtest.skip('The courier and paid recovery must pass first');
   assert.ok(recovered);const before=structuredClone(recovered),prepared=prepareSaltaAssault(recovered);
   assert.deepEqual(recovered,before);
+  assert.equal(prepared.field.length,6);assert.equal(prepared.support.length,6);assert.ok(prepared.hiringCost>0);
+  for(const id of prepared.hired){assert.equal(before.operativeState[id].alive,true);assert.ok(!before.recruited.includes(id));assert.ok(prepared.campaign.contracts[id].paid>0);}
   assert.ok(prepared.care.patients.some(id=>before.operativeState[id].hp<15),'the actual rescue left a critical patient to restore before this march');assert.ok(prepared.care.usedDressings>0);
   for(const id of prepared.care.patients)assert.equal(prepared.campaign.operativeState[id].hp,prepared.campaign.operativeState[id].maxHp);
   const result=fightNorthernSector(prepared.campaign,'salta',{controller:cautiousCombatOrder});
@@ -121,7 +123,7 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
  await t.test('surviving doctors provide any needed care and complete Yatasto after the paid northern pact',subtest=>{
   if(!salta)return subtest.skip('The joint Salta assault must pass first');
   assert.ok(salta);const before=structuredClone(salta),result=completeNorthernMission(salta);
-  assert.deepEqual(salta,before);assert.equal(result.campaign.hour,salta.hour+12+(result.care.patients.length?1:0));
+  assert.deepEqual(salta,before);assert.equal(result.campaign.hour,salta.hour+12+result.care.hours);
   assert.equal(result.campaign.phase,3);assert.ok(result.campaign.resources.treasury>=0);assert.ok(result.care.patients.length?result.care.usedDressings>0:result.care.usedDressings===0);preserveDeaths(salta,result.campaign);assert.equal(result.campaign.missions.yatasto.completed,true);
  });
 });

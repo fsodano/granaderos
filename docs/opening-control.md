@@ -1,8 +1,12 @@
 # Opening campaign with turning AP
 
-Verified 12 September 2026 against regional terrain and weather checkpoint `be30998`. The legal seed-8 route completes San Nicolás and San Lorenzo through ordinary combat and equipment orders. The established southern route now continues through actual defeat, rescue, finite recovery and Salta to Yatasto and phase 3; the full campaign remains incomplete.
+The latest campaign-terrace evidence is in [Northern campaign route verification](northern-route.md#campaign-terrace-checkpoint-12-september-2026). Physical corner sight and rested enemy patrols change the actual casualties. The earlier counts below describe their stated checkpoints; they are not current balance targets.
 
-## Current equipment preparation
+## Historical regional terrain and weather checkpoint
+
+Verified 12 September 2026 against `be30998`. The legal seed-8 route completed San Nicolás and San Lorenzo through ordinary combat and equipment orders. That established southern route continued through actual defeat, rescue, finite recovery and Salta to Yatasto and phase 3; the full campaign remained incomplete.
+
+### Equipment preparation at that checkpoint
 
 The old salvage plan required both a dead friendly rifleman and a paid replacement. All six original soldiers now survive San Nicolás, so that assumption stopped the route before San Lorenzo. Keeping their short guns then lost the second battle.
 
