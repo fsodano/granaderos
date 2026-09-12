@@ -18,7 +18,9 @@ Walking requires support at the same physical height and rejects diagonal corner
 cuts. Occupancy includes the floor, so a person upstairs does not block the same
 coordinates downstairs. Paths retain each climb link and destination level.
 Sector expansion translates coordinates, and save/reentry keeps physical levels
-separate from earned grade.
+separate from earned grade. Fresh enemy posts retain their authored floor and
+coordinates. Admission rejects unsupported upper positions, overlapping conscious
+occupants, blocking roof furniture and mounted upper occupants before relocation.
 
 ## Costs and interactions
 
@@ -53,7 +55,10 @@ Heights, smoke depth, climb costs and resistance are explicit game tuning.
 On an authored elevation map, Tab over the battlefield changes the cursor floor.
 Tab in an ordinary control or inventory keeps native keyboard navigation.
 Right-click inventory shows adjacent access controls. Movement, target regions,
-selection rings, item markers and actor positions use the selected floor.
+selection rings, item markers and actor positions use the selected floor. Actor
+feet, rings, hit targets and movement endpoints align with the existing roof mesh,
+including its horizontal inset. Tests compare the actual house, mansion and flat
+warehouse roof vertices with these rendered positions.
 
 An isolated house fixture provides day/night and combat/exploration variants,
 six existing operatives, blocked roof decor, two climb routes, and stacked actors.
@@ -66,13 +71,27 @@ Live checks confirmed:
 - R reloaded one cartridge, changed reserve ammunition from 12 to 11, and spent
   26 combat AP. Tab selected the ground guard, and the cursor correctly reported
   that the ceiling blocked the firing line.
+- A fresh browser session confirmed the corrected roof alignment, the west climb,
+  a five-cell roof crossing and the north descent. Dorrego returned to ground with
+  73 energy after the complete exploration route; its journal reported no AP cost.
+
+The final integrated source passed 1,780 tests, typecheck and the production build
+(960 exported files, 856 verified asset references). See the separate
+[performance measurements](tactical-elevation-performance.md) for route and sight
+query timing and its browser limitations.
 
 ## Remaining work
 
-The first live pass found a roof-plane drawing offset; visual acceptance requires
-that correction and another climb check. Production map activation also requires
-strict authored-post admission, blocked roof decor and measured performance on
-large sectors. Do not claim the standalone fixture enables campaign rooftops.
+Production maps still need authored roof surfaces, legal access points and blocked
+roof decor, passed through the normal sector-plan construction path. A legal
+campaign visit/attack, climb, save/resume, return and reentry cycle must also be
+verified with the real roof actors and gear; direct fixture placement is not proof
+of that complete cycle. Each occupied roof must have a usable descent to a real
+ground exit; link validation alone does not prove whole-map reachability. Each
+sector needs live checks for floor selection, depth ordering, climb routes and
+combat, followed by browser performance checks on the full map.
+The standalone fixture does not enable campaign rooftops. Climbing currently uses
+the available movement poses; dedicated climb animation remains an art task.
 
 Cross-floor thrown items, artillery, mounted travel, manual breach and charge
 remain unsupported in this slice. All floor slabs stop firearm projectiles.
