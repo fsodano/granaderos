@@ -37,7 +37,8 @@ test('rendered sprites preserve body scale and fixed ground anchors across every
   const markup=render(h(SpriteFigure,{unit,pose,position:{x:100.2,y:100.4},motion:{direction:3,moving:false,frame:0}}));
   assert.ok(markup.includes(selected.href),name);
   assert.ok(markup.includes(`x="${viewport.x}" y="${viewport.y}" width="${viewport.width}" height="${viewport.height}"`));
-  assert.match(markup,/image-rendering:pixelated/);
+  const layers=[...markup.matchAll(/<image\b[^>]*>/g)];assert.ok(layers.length>0);
+  for(const [image] of layers)assert.match(image,/image-rendering:auto/,'illustrated body and skin retain the same smooth sampling');
  }
 });
 test('published illustrated art reaches the SVG with its actual raster grid and no legacy URL',()=>{
