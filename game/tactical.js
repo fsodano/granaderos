@@ -1,4 +1,5 @@
 import {regionalWeatherAt} from './regional-weather.js';
+import {tacticalLevel,spaceKey,sameSurface,sameCell,surfaceAt,surfaceHeight,accessStepsFrom,canWalkBetween} from './tactical-space.js';
 import {questGiftPlan} from './quests.js';
 import {OUTFIT_CHANGE_AP,normalizeOutfit,wornOutfit,hasPoncho} from './outfits.js';
 import {handsRequired,selectMainHand,handLayout} from './hand-layout.js';
@@ -126,6 +127,8 @@ export function reloadPlan(unit,state){
 export function reloadCost(unit,state){return reloadPlan(unit,state).totalPA;}
 function makeUnit(raw,side,index,x,y){const stats=raw.stats||{};const weapon=raw.weapon??raw.primary??1800;const w=typeof weapon==='object'?weapon:WEAPONS[weapon]||WEAPONS[1800];return {...raw,id:String(raw.id??`${side}-${index}`),name:raw.name||raw.nickname||(side==='player'?'Granadero':'Realista'),side,facing:raw.facing??(side==='enemy'?6:2),stealthMode:Boolean(raw.stealthMode),x:raw.x??x,y:raw.y??y,maxHp:raw.maxHp??raw.health??stats.health??100,hp:raw.hp??raw.health??stats.health??100,ap:100,morale:raw.morale??Math.min(100,(raw.personality==='optimistic'?90:raw.personality==='pessimistic'?70:80)+((raw.traits||[]).includes('steadfast')?10:0)),marksmanship:raw.marksmanship??stats.marksmanship??70,agility:raw.agility??stats.agility??75,strength:raw.strength??stats.strength??75,medical:raw.medical??stats.medical??30,mechanical:raw.mechanical??stats.mechanical??0,stealth:raw.stealth??stats.stealth??0,weapon,loaded:raw.loaded??(WEAPONS[weapon]||typeof weapon==='object'?w.capacity:0),ammo:raw.ammo??12,condition:raw.condition??100,stance:raw.stance??movementStance(raw.movementMode??'walk'),mounted:Boolean(raw.mounted),horse:Boolean(raw.horse||raw.canMount||raw.mounted),jammed:raw.jammed??false,bleeding:raw.bleeding??0,bandaged:raw.bandaged??((raw.bleeding??0)>0?0:Math.max(0,(raw.maxHp??raw.health??stats.health??100)-(raw.hp??raw.health??stats.health??100))),shock:raw.shock??0,experienceLevel:raw.experienceLevel??stats.experienceLevel??Math.min(10,4+Math.floor((raw.xp??0)/100)),dexterity:raw.dexterity??stats.dexterity??75,wisdom:raw.wisdom??stats.wisdom??50,carriedAP:0,routed:raw.routed??false,medkits:raw.medkits??2,momentum:0,lastDirection:null,weaponMode:raw.weaponMode??'fire',activeSlot:raw.activeSlot||'primary',fatigue:raw.fatigue||0,priming:raw.priming??50,flints:raw.flints??4,rations:raw.rations??2,energy:raw.energy??100,unconscious:isUnconscious({hp:raw.hp??raw.health??stats.health??100,energy:raw.energy??100}),movementMode:raw.movementMode||'walk',inventory:{...raw.inventory},boleadoras:raw.boleadoras??1,torches:raw.torches??2,strengthTraining:raw.strengthTraining??0,interceptTurn:0,parryTurn:0,counterTurn:0,braceTurn:0,braced:false,knockedDown:Boolean(raw.knockedDown),overwatch:raw.overwatch??(side==='enemy'),reactionTurn:0,reactionSpent:0};}
 export function createBattle(squad=[],sector={}){const width=sector.width||16,height=sector.height||12;const state={version:1,fittingRulesVersion:FITTING_RULES_VERSION,exits:structuredClone(sector.exits??[]),exitRulesVersion:sector.exitRulesVersion??1,enemyExits:['N','E','S','W'].map(edge=>({id:`enemy:${edge}`,edge,destination:'__offmap_enemy__'})),battleId:sector.id??null,startSeconds:(sector.hour??(sector.night||sector.weather?.night?0:12))*3600+(sector.secondOfHour??0),elapsedSeconds:0,syncedSeconds:0,roundTimeCharged:false,quietCombatTurns:sector.exploration?2:0,contactThisRound:false,sectorId:sector.sector||sector.id||'san-lorenzo',sectorName:sector.name||'San Lorenzo',width,height,biome:sector.biome||'grassland',altitude:sector.altitude||0,night:Boolean(sector.night||sector.weather?.night||(sector.hour!==undefined&&(sector.hour%24>=20||sector.hour%24<6))),enemyCommand:sector.enemyCommand||null,objective:sector.objective||null,npcs:structuredClone(sector.npcs||[]),props:structuredClone(sector.props??[]),buildings:sector.buildings||[],revealedRooms:[],decor:sector.decor||[],turn:1,enemyTurns:0,phase:'player',mode:sector.exploration?'exploration':'combat',sectorCleared:false,status:'active',seed:(sector.seed??18130203)>>>0,weather:{rain:0,humidity:0,...sector.weather},tiles:[],units:[],droppedWeapons:[],groundItems:[],lights:(sector.lights||[]).map((l,i)=>({id:`light-${i}`,type:'campfire',radius:4,intensity:1,...l})),artillery:(sector.artillery||[]).map((g,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',loaded:true,ammo:6,...g})),smoke:[],log:[],lastError:null};
+if(sector.upperSurfaces!==undefined)state.upperSurfaces=structuredClone(sector.upperSurfaces);
+if(sector.climbLinks!==undefined)state.climbLinks=structuredClone(sector.climbLinks);
 if(sector.regionalWeather){state.regionalWeather=true;state.weather=regionalWeatherAt(state.sectorId,state.startSeconds/3600);}
 state.weather.rain=typeof state.weather.rain==='boolean'?(state.weather.rain?40:0):state.weather.rain;state.weather.humidity=state.weather.humidity>0&&state.weather.humidity<=1?state.weather.humidity*10:state.weather.humidity;
 for(let y=0;y<height;y++)for(let x=0;x<width;x++){const edge=x===Math.floor(width*.56)&&y>1&&y<height-2&&y!==Math.floor(height/2);state.tiles.push({x,y,type:edge?'wall':sector.biome==='wetland'&&x>3&&x<width-3&&y%3===0?'mud':sector.biome==='mountain'||sector.biome==='foothills'?'stone':'grass',blocked:edge,cover:edge?40:sector.biome==='forest'&&x>3&&x<width-3&&y%3===0?20:0});}
@@ -137,25 +140,25 @@ if(!state.artillery.length&&sector.cannons>0)state.artillery=Array.from({length:
 for(const u of state.units){normalizeOutfit(u);lowerWeapon(u);limitEnergy(u);if(u.side==='enemy'&&u.patrol!==false)u.patrolOrigin??={x:u.x,y:u.y};normalizeUnitFittings(u);u.weaponFittings=structuredClone(u.weaponFittings);u.maxAP=maxActionPoints(state,u.routed?{...u,routed:false}:u);u.ap=u.maxAP;}
 const entered=sector.deferContact?state:initializeBattlePerception(state);say(entered,entered.mode==='exploration'?`Exploración de ${entered.sectorName}.`:`Combate en ${entered.sectorName}. Puedes conservar hasta 20 PA entre turnos.`);return entered;}
 export function initializeBattlePerception(state){checkEnd(state);detectContact(state);rememberContacts(state);revealRooms(state);return resolveFirstContact(state);}
-function tile(s,x,y){const at=s.tiles[y*s.width+x];return at?.x===x&&at?.y===y?at:s.tiles.find(t=>t.x===x&&t.y===y);}
-function occupied(s,x,y,except){return propBlocksAt(s,x,y)||(s.npcs||[]).some(n=>n.x===x&&n.y===y)||s.units.some(u=>onField(u)&&!u.unconscious&&u.id!==except&&u.x===x&&u.y===y);}
+function tile(s,x,y,level=0){if(level)return surfaceAt(s,{x,y,tacticalLevel:level});const at=s.tiles[y*s.width+x];return at?.x===x&&at?.y===y?at:s.tiles.find(t=>t.x===x&&t.y===y);}
+function occupied(s,x,y,except,level=0){const point={x,y,tacticalLevel:level};return propBlocksAt(s,x,y,level)||(s.npcs||[]).some(n=>sameCell(n,point))||s.units.some(u=>onField(u)&&!u.unconscious&&u.id!==except&&sameCell(u,point));}
 export function carryCapacity(u){return Math.max(10,(u.strength||50)*.5);}
 export function carriedWeight(u){const inventory=Object.values(u.inventory||{}).reduce((sum,item)=>sum+(item&&typeof item==='object'?(item.count||0)*((item.weight||0)+fittingWeight(item))+(item.count||0)*(item.loaded||0)*.04:0),0);return Number(u.weight??u.carryWeight??0)+(wornOutfit(u)?.weight??0)+inventory+(u.loaded||0)*.04+Object.entries(SUPPLY_ITEMS).reduce((sum,[key,item])=>sum+(u[key]??0)*item.weight,0)+(u.weaponDropped?0:weaponItemWeight(u.weapon)+fittingWeight(u))+weaponItemWeight(u.blade)+(u.offHand?weaponItemWeight(u.offHand.weapon)+fittingWeight(u.offHand)+(u.offHand.loaded??0)*.04:0);}
 function weightPenalty(u){return Math.max(1,carriedWeight(u)/carryCapacity(u));}
 export function movementEnergy(u,t){const style=u.movementMode||'walk',base={walk:1,run:3,crouch:2,prone:3}[style]||1;return Math.max(1,Math.ceil(base*weightPenalty(u)*(u.mounted?1-Math.min(100,u.ridingSkill||0)*.005:1)*(t?.type==='mud'?1.5:1)*(hasTrait(u,'guerrilla_tactician')?.75:1)));}
 function exhaust(s,u,cost){limitEnergy(u);if(u.mounted&&u.mount){u.mount.stamina=Math.max(0,u.mount.stamina-Math.max(1,Math.ceil(cost*(1-Math.min(100,u.ridingSkill||0)*.005))));if(u.mount.stamina===0){u.mounted=false;sayObserved(s,[u],`${u.name} desmonta: su caballo está agotado.`);}}u.energy=Math.max(0,(u.energy??100)-cost);if(u.energy===0){lowerWeapon(u);u.unconscious=true;u.ap=0;u.mounted=false;sayObserved(s,[u],`${u.name} cae inconsciente por agotamiento.`);}}
-export function tileIllumination(s,x,y){if(!s.night)return 1;let light=.08;for(const lamp of s.lights||[]){if(lamp.turns===0||lamp.extinguished)continue;const distance=dist(lamp,{x,y});if(distance>lamp.radius||!hasLineOfSight(s,lamp,{x,y}))continue;light=Math.max(light,(lamp.intensity??1)*(1-distance/(lamp.radius+1)));}return clamp(light,0,1);}
+export function tileIllumination(s,x,y,level=0){if(!s.night)return 1;let light=.08;for(const lamp of s.lights||[]){if(lamp.turns===0||lamp.extinguished)continue;const point={x,y,tacticalLevel:level},distance=Math.hypot(lamp.x-x,lamp.y-y,(surfaceHeight(s,lamp)??0)-(surfaceHeight(s,point)??0));if(distance>lamp.radius||!hasLineOfSight(s,lamp,point))continue;light=Math.max(light,(lamp.intensity??1)*(1-distance/(lamp.radius+1)));}return clamp(light,0,1);}
 const nightSightBonus=u=>hasTrait(u,'night_vision')||Number(u.id)===6?2:hasTrait(u,'night_vision_basic')?1:0;
 export function visibleDistance(s,u,target){
   const concealment=['crouch','prone'].includes(target.movementMode)&&!target.mounted?Math.min(1,(target.trainedStats?.stealth||0)*.1):0;
   const cover=concealmentSightPenalty(s,target),normal=(s.night?6+nightSightBonus(u):12)-concealment-cover;
-  return Math.max(0,normal,tileIllumination(s,target.x,target.y)>=.25?16-cover:0);
+  return Math.max(0,normal,tileIllumination(s,target.x,target.y,tacticalLevel(target))>=.25?16-cover:0);
 }
 export function canSee(s,u,target){if(!alive(u)||target.departure||!facingAllowsSight(u,target)||!hasLineOfSight(s,u,target)||dist(u,target)>visibleDistance(s,u,target))return false;const smoke=line(u,target).filter(p=>s.smoke.some(v=>dist(p,v)<=v.radius)).length;return smoke<5;}
 export function teamCanSee(s,side,target){return s.units.some(u=>u.side===side&&alive(u)&&canSee(s,u,target));}
-export function visibleRooms(s){const ids=new Set();for(const t of s.tiles){if(t.roomId&&s.units.some(u=>u.side==='player'&&alive(u)&&canSee(s,u,t)))ids.add(t.roomId);}return [...ids];}
+export function visibleRooms(s){const ids=new Set();for(const t of [...s.tiles,...(s.upperSurfaces??[])]){if(t.roomId&&s.units.some(u=>u.side==='player'&&alive(u)&&canSee(s,u,t)))ids.add(t.roomId);}return [...ids];}
 function revealRooms(s){s.revealedRooms=[...new Set([...(s.revealedRooms||[]),...visibleRooms(s)])];discoverInventory(s);}
-export function visibleTiles(s,u){return s.tiles.filter(t=>canSee(s,u,t)).map(t=>({x:t.x,y:t.y,illumination:tileIllumination(s,t.x,t.y)}));}
+export function visibleTiles(s,u){return [...s.tiles,...(s.upperSurfaces??[])].filter(t=>canSee(s,u,t)).map(t=>({x:t.x,y:t.y,...(t.tacticalLevel!==undefined?{tacticalLevel:t.tacticalLevel}:{}),illumination:tileIllumination(s,t.x,t.y,tacticalLevel(t))}));}
 export function visibleHostiles(s,u){return s.units.filter(v=>v.side!==u.side&&onField(v)&&canSee(s,u,v));}
 export function visibleEnemies(s){return s.units.filter(v=>v.side==='enemy'&&s.units.some(u=>u.side==='player'&&alive(u)&&visibleHostiles(s,u).some(t=>t.id===v.id)));}
 function emitNoise(s,source,kind,position=source){
@@ -217,6 +220,7 @@ export function movementIntentReason(u,intent='forward'){
 }
 const intentFactor=intent=>intent==='preserveFacing'?1.25:1;
 function stepCostWithGeometry(s,u,from,to,lookup,propBlocked,intent='forward'){
+  if(!sameSurface(from,to)||s.upperSurfaces?.length&&!canWalkBetween(s,from,to))return Infinity;
   const dx=Math.abs(to.x-from.x),dy=Math.abs(to.y-from.y),ground=lookup(to.x,to.y);
   if(!Number.isInteger(from.x)||!Number.isInteger(from.y)||!lookup(from.x,from.y)||!Number.isInteger(dx)||!Number.isInteger(dy)||Math.max(dx,dy)!==1||!ground||ground.blocked||propBlocked(to.x,to.y))return Infinity;
   if(dx&&dy&&(!lookup(to.x,from.y)||!lookup(from.x,to.y)||lookup(to.x,from.y).blocked||lookup(from.x,to.y).blocked||propBlocked(to.x,from.y)||propBlocked(from.x,to.y)))return Infinity;
@@ -225,10 +229,47 @@ function stepCostWithGeometry(s,u,from,to,lookup,propBlocked,intent='forward'){
 export function movementStepCost(s,u,from,to,options={}){
   const intent=options?.movementIntent===undefined?'forward':options.movementIntent;
   if(movementIntentReason(u,intent))return Infinity;
-  return stepCostWithGeometry(s,u,from,to,(x,y)=>tile(s,x,y),(x,y)=>propBlocksAt(s,x,y),intent);
+  if(!sameSurface(from,to))return climbStep(s,u,from,to).pa;
+  const level=tacticalLevel(from);
+  return stepCostWithGeometry(s,u,from,to,(x,y)=>tile(s,x,y,level),(x,y)=>propBlocksAt(s,x,y,level),intent);
+}
+// Climbing uses authored access points. Standing first is an explicit action;
+// path previews cannot grant a free posture change or a second AP budget.
+function climbStep(s,u,from,to){
+  const access=accessStepsFrom(s,from).find(step=>sameCell(step,to)&&(!to.linkId||step.linkId===to.linkId));
+  const up=surfaceHeight(s,to)>surfaceHeight(s,from),pa=up?20:15;
+  const reason=!access?'No hay un acceso entre esas alturas.':u.mounted?'Debes desmontar antes de trepar.':u.entangled?'Primero debés liberarte de las boleadoras.':u.knockedDown||u.stance!=='standing'?'Ponete de pie antes de trepar.':
+    !surfaceAt(s,to)||surfaceAt(s,to).blocked||occupied(s,to.x,to.y,u.id,tacticalLevel(to))?'El acceso está bloqueado.':null;
+  return {valid:!reason,reason,pa:reason?Infinity:pa,energy:Math.ceil((up?12:8)*weightPenalty(u)),seconds:up?6:4,destination:access??null};
+}
+export function climbPreview(s,u,action={}){
+  const destination=u&&accessStepsFrom(s,u).find(step=>step.linkId===action.linkId),step=destination?climbStep(s,u,u,destination):null;
+  const reason=!u||!alive(u)||s.status!=='active'||(u.side==='player'?!interruptAvailable(s,u):s.phase!=='enemy')?'El combatiente no puede actuar ahora.':!step?'Acercate a un acceso para trepar.':step.reason||
+    ((u.energy??100)<step.energy?'Falta energía para trepar.':s.mode!=='exploration'&&u.ap<step.pa?'PA insuficientes para trepar.':null);
+  return {...step,valid:!reason,reason,pa:step&&Number.isFinite(step.pa)?step.pa:0,destination:step?.destination??null};
+}
+function elevatedReachable(s,u,options,intent){
+  const cells=new Map([...s.tiles,...(s.upperSurfaces??[])].map(cell=>[spaceKey(cell),cell]));
+  const props=new Set((s.props??[]).filter(p=>p.blocksMovement!==false).flatMap(propCells).map(spaceKey));
+  const occupants=new Set([...(s.npcs??[]),...s.units.filter(v=>onField(v)&&!v.unconscious&&v.id!==u.id)].map(spaceKey));
+  const origin={x:u.x,y:u.y,tacticalLevel:tacticalLevel(u)},start=spaceKey(origin),costs=new Map([[start,0]]),paths=new Map([[start,[]]]),queue=[{...origin,cost:0}];
+  while(queue.length){
+    queue.sort((a,b)=>a.cost-b.cost);const from=queue.shift(),fromKey=spaceKey(from);if(from.cost!==costs.get(fromKey))continue;
+    if(options.stopAt?.(from))return [{...from,path:paths.get(fromKey)}];
+    const level=tacticalLevel(from),lookup=(x,y)=>cells.get(spaceKey({x,y,tacticalLevel:level})),blocked=(x,y)=>props.has(spaceKey({x,y,tacticalLevel:level}));
+    const adjacent=[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]].map(([dx,dy])=>({x:from.x+dx,y:from.y+dy,tacticalLevel:level,kind:'move'}));
+    for(const to of [...adjacent,...accessStepsFrom(s,from)]){
+      const key=spaceKey(to);if(occupants.has(key))continue;
+      const step=to.kind==='climb'?climbStep(s,u,from,to).pa:stepCostWithGeometry(s,u,from,to,lookup,blocked,intent),cost=from.cost+step;
+      if(!Number.isFinite(cost)||cost>(s.mode==='exploration'?Infinity:u.ap)||cost>=(costs.get(key)??Infinity))continue;
+      costs.set(key,cost);paths.set(key,[...paths.get(fromKey),to]);queue.push({...to,cost});
+    }
+  }
+  return options.stopAt?[]:[...costs].map(([key,cost])=>({...cells.get(key),cost,path:paths.get(key)}));
 }
 export function getReachable(s,unitOrId,options={}){
   const u=typeof unitOrId==='object'?unitOrId:s.units.find(u=>u.id===String(unitOrId)),intent=options?.movementIntent===undefined?'forward':options.movementIntent;if(!u||!alive(u)||s.status!=='active'||movementIntentReason(u,intent))return [];
+  if(s.upperSurfaces?.length)return elevatedReachable(s,u,options,intent);
   const tiles=new Map(s.tiles.map(t=>[`${t.x},${t.y}`,t])),props=new Set((s.props??[]).filter(p=>p.blocksMovement!==false).flatMap(propCells).map(p=>`${p.x},${p.y}`));
   const lookup=(x,y)=>tiles.get(`${x},${y}`),propBlocked=(x,y)=>props.has(`${x},${y}`);
   const occupants=new Set([...(s.npcs??[]),...s.units.filter(v=>onField(v)&&!v.unconscious&&v.id!==u.id)].map(v=>`${v.x},${v.y}`));
@@ -279,7 +320,7 @@ export function firearmRangeProfile(s,attacker,target){
   // Preserve period-game obscuration weights, expressed as apparent distance.
   // Night training improves both detection reach and aiming in poor light.
   const concealment=concealmentAt(s,target)*(Number(attacker.id)===6&&w.id===1807?.5:1);
-  const darkness=s.night?(20-nightSightBonus(attacker)*7.5)*(1-tileIllumination(s,target.x,target.y)):0;
+  const darkness=s.night?(20-nightSightBonus(attacker)*7.5)*(1-tileIllumination(s,target.x,target.y,tacticalLevel(target))):0;
   const apparentRange=distance+(concealment+darkness+smoke*(hasTrait(attacker,'line_marksman')?6:12))/3;
   return shotRangeModifiers({distance,weaponRange:w.range,apparentRange,visibleRange:visibleDistance(s,attacker,target)});
 }
@@ -377,11 +418,11 @@ export function interruptAvailable(s,u){
 // Capture only what each opponent knew before this action. The snapshot is
 // transient: save files retain anonymous noise reports, never sound source IDs.
 function reactionObservation(s,actor){
-  return {x:actor.x,y:actor.y,listeners:new Map(s.units.filter(u=>u.side!==actor.side&&alive(u)).map(u=>[u.id,{seen:canSee(s,u,actor),noise:u.lastHeardNoise}]))};
+  return {x:actor.x,y:actor.y,tacticalLevel:tacticalLevel(actor),listeners:new Map(s.units.filter(u=>u.side!==actor.side&&alive(u)).map(u=>[u.id,{seen:canSee(s,u,actor),noise:u.lastHeardNoise}]))};
 }
 function reactionFire(s,actor,before){
   if(s.mode!=='combat'||s.status!=='active'||!alive(actor)||!before)return false;
-  const moved=before.crossing===true||before.x!==actor.x||before.y!==actor.y;
+  const moved=before.crossing===true||before.x!==actor.x||before.y!==actor.y||!sameSurface(before,actor);
   const qualified=s.units.filter(u=>u.side!==actor.side&&alive(u)&&!u.knockedDown&&u.reactionTurn!==s.turn&&u.ap>=3&&
     (u.side==='player'||u.overwatch!==false)).filter(u=>{
       if(interruptInitiative(s,u)<interruptInitiative(s,actor))return false;
@@ -879,8 +920,8 @@ export function supplyUsePreview(s,u,target,key=u?.activeSupply){
   return {allowed:!reason,reason,cost};
 }
 
-function apply(s,a,enemy=false,movementPath=null){if(a.type==='useItem'){const user=s.units.find(v=>v.id===String(a.unitId));if(user?.activeSlot==='item'&&s.npcs?.some(n=>n.id===String(a.targetId)))a={...a,type:'giveItem'};else if(user?.activeSlot==='supply'){const point=s.units.find(v=>v.id===String(a.targetId));a={...a,type:heldSupply(user)?.action??'invalidSupply',...(point?{x:point.x,y:point.y}:{}),targetId:a.targetId??(user.activeSupply==='rations'?'':undefined)};}else if(a.environment)a={...a,...a.environment,type:'environment'};else a={...a,type:user?.activeSlot==='medical'?'heal':user?contextualAttack(s,user,s.units.find(v=>v.id===String(a.targetId)),a).type:'melee'};}const fail=text=>{if(!enemy||u&&journalVisible(s,u)){s.lastError=text;say(s,text);}return false;};const u=s.units.find(u=>u.id===String(a.unitId));if(s.status!=='active')return fail('El combate ya terminó.');if(!u||!alive(u))return fail('El soldado no puede actuar.');if(u.side!==(enemy?'enemy':'player'))return fail('No puedes dar órdenes a ese soldado.');if(!enemy&&!interruptAvailable(s,u))return fail('Ese soldado no puede actuar en esta interrupción.');if(u.knockedDown&&!['stance','heal','ration'].includes(a.type))return fail('El soldado está derribado: debe ponerse de pie.');const observation=reactionObservation(s,u);const target=a.type==='giveItem'?s.npcs?.find(n=>n.id===String(a.targetId)):s.units.find(u=>u.id===String(a.targetId)&&!u.departure);if(a.targetId!==undefined&&!target)return fail('El objetivo no está disponible en este sector.');const pay=n=>{if(!Number.isFinite(n)||n<0||s.mode!=='exploration'&&u.ap<n)return false;if(n>0&&(lowersWeapon(a.type)||a.type==='look'&&u.stance==='prone'))lowerWeapon(u);if(s.mode==='exploration'){if(a.type!=='move')s.actionDurationSeconds=Math.max(1,Math.ceil(n*.06));return true;}u.ap-=n;return true;};
-if(a.type==='move'){
+function apply(s,a,enemy=false,movementPath=null){if(a.type==='useItem'){const user=s.units.find(v=>v.id===String(a.unitId));if(user?.activeSlot==='item'&&s.npcs?.some(n=>n.id===String(a.targetId)))a={...a,type:'giveItem'};else if(user?.activeSlot==='supply'){const point=s.units.find(v=>v.id===String(a.targetId));a={...a,type:heldSupply(user)?.action??'invalidSupply',...(point?{x:point.x,y:point.y}:{}),targetId:a.targetId??(user.activeSupply==='rations'?'':undefined)};}else if(a.environment)a={...a,...a.environment,type:'environment'};else a={...a,type:user?.activeSlot==='medical'?'heal':user?contextualAttack(s,user,s.units.find(v=>v.id===String(a.targetId)),a).type:'melee'};}const fail=text=>{if(!enemy||u&&journalVisible(s,u)){s.lastError=text;say(s,text);}return false;};const u=s.units.find(u=>u.id===String(a.unitId));if(s.status!=='active')return fail('El combate ya terminó.');if(!u||!alive(u))return fail('El soldado no puede actuar.');if(u.side!==(enemy?'enemy':'player'))return fail('No puedes dar órdenes a ese soldado.');if(!enemy&&!interruptAvailable(s,u))return fail('Ese soldado no puede actuar en esta interrupción.');if(u.knockedDown&&!['stance','heal','ration'].includes(a.type))return fail('El soldado está derribado: debe ponerse de pie.');const observation=reactionObservation(s,u);const target=a.type==='giveItem'?s.npcs?.find(n=>n.id===String(a.targetId)):s.units.find(u=>u.id===String(a.targetId)&&!u.departure);if(a.targetId!==undefined&&!target)return fail('El objetivo no está disponible en este sector.');const pay=n=>{if(!Number.isFinite(n)||n<0||s.mode!=='exploration'&&u.ap<n)return false;if(n>0&&(lowersWeapon(a.type)||a.type==='look'&&u.stance==='prone'))lowerWeapon(u);if(s.mode==='exploration'){if(a.type!=='move'&&a.type!=='climb')s.actionDurationSeconds=Math.max(1,Math.ceil(n*.06));return true;}u.ap-=n;return true;};
+if(a.type==='move'||a.type==='climb'){
   if(u.entangled)return fail('Las boleadoras inmovilizan al soldado: debe liberarse.');
   let postureCost=0;
   if(a.movement!==undefined){
@@ -892,7 +933,10 @@ if(a.type==='move'){
   }
   const movementIntent=a.movementIntent===undefined?'forward':a.movementIntent,intentReason=movementIntentReason(u,movementIntent);
   if(intentReason)return fail(intentReason);
-  const path=movementPath??getReachable(s,u,{movementIntent}).find(p=>p.x===a.x&&p.y===a.y);
+  const climbing=a.type==='climb'?climbPreview(s,u,a):null;
+  if(climbing&&!climbing.valid)return fail(climbing.reason);
+  const destination={x:a.x,y:a.y,tacticalLevel:a.tacticalLevel??tacticalLevel(u)};
+  const path=climbing?{cost:climbing.pa,path:[climbing.destination]}:movementPath??getReachable(s,u,{movementIntent}).find(p=>sameCell(p,destination));
   if(!path||path.cost===0)return fail('Destino inaccesible o puntos de acción insuficientes.');
   const exploring=s.mode==='exploration',setupSeconds=postureCost>0?Math.max(1,Math.ceil(postureCost*.06)):0;
   u.braced=false;u.overwatch=false;s.actionDurationSeconds=setupSeconds;let spent=postureCost,steps=0;
@@ -901,17 +945,19 @@ if(a.type==='move'){
     if(!alive(u)||exploring&&s.mode!=='exploration')break;
     // A planned item approach uses known occupancy. An unseen obstruction can
     // stop that route, but cannot secretly select a different path around it.
-    if(occupied(s,p.x,p.y,u.id)||!Number.isFinite(movementStepCost(s,u,u,p,{movementIntent}))){
+    if(occupied(s,p.x,p.y,u.id,tacticalLevel(p))||!Number.isFinite(movementStepCost(s,u,u,p,{movementIntent}))){
       if(!steps)return fail('La ruta está bloqueada.');
       sayObserved(s,[u],`${u.name} se detiene: la ruta está bloqueada.`);break;
     }
+    const vertical=!sameSurface(u,p)?climbStep(s,u,u,p):null;
+    if(vertical&&(u.energy??100)<vertical.energy){if(!steps)return fail('Falta energía para trepar.');sayObserved(s,[u],`${u.name} se detiene: falta energía para trepar.`);break;}
     const stepObservation=reactionObservation(s,u);
-    const factor=movementFactor(u,p),step=movementStepCost(s,u,u,p,{movementIntent});if(!pay(step))break;spent+=step;steps++;
-    const seconds=Math.ceil((u.movementMode==='run'?1:u.movementMode==='prone'?5:3)*stealthAPMultiplier(u)*factor*intentFactor(movementIntent));s.actionDurationSeconds+=seconds;
-    const dir=`${p.x-u.x},${p.y-u.y}`;u.momentum=movementIntent==='preserveFacing'?0:dir===u.lastDirection?u.momentum+1:1;u.lastDirection=dir;if(movementIntent!=='preserveFacing')u.facing=directionTo(u,p);u.x=p.x;u.y=p.y;investigateNoise(s,u);
+    const factor=vertical?1:movementFactor(u,p),step=movementStepCost(s,u,u,p,{movementIntent});if(!pay(step))break;spent+=step;steps++;
+    const seconds=vertical?vertical.seconds:Math.ceil((u.movementMode==='run'?1:u.movementMode==='prone'?5:3)*stealthAPMultiplier(u)*factor*intentFactor(movementIntent));s.actionDurationSeconds+=seconds;
+    const dir=`${p.x-u.x},${p.y-u.y}`;u.momentum=movementIntent==='preserveFacing'?0:dir===u.lastDirection?u.momentum+1:1;u.lastDirection=dir;if(movementIntent!=='preserveFacing'&&(u.x!==p.x||u.y!==p.y))u.facing=directionTo(u,p);u.x=p.x;u.y=p.y;if(p.tacticalLevel!==undefined||u.tacticalLevel!==undefined)u.tacticalLevel=tacticalLevel(p);if(vertical){u.momentum=0;lowerWeapon(u);}investigateNoise(s,u);
     delete u.lastTargetId;delete u.lastShotPosition;
     if(u.mounted&&u.mount&&u.mount.stamina>0){u.ridingPracticeTiles??=[];const key=`${u.x},${u.y}`;if(!u.ridingPracticeTiles.includes(key)){u.ridingPracticeTiles.push(key);practice(u,'ridingSkill');}}
-    exhaust(s,u,Math.ceil(movementEnergy(u,tile(s,p.x,p.y))*factor));
+    exhaust(s,u,vertical?vertical.energy:Math.ceil(movementEnergy(u,tile(s,p.x,p.y,tacticalLevel(p)))*factor));
     if(exploring)advanceExplorationAction(s,seconds);
     emitNoise(s,u,'move');rememberContacts(s);
     if(u.stealthMode&&!u.mounted&&s.units.some(v=>v.side!==u.side&&alive(v)&&dist(v,u)<=12)&&!s.units.some(v=>v.side!==u.side&&alive(v)&&canSee(s,v,u))){u.practiceTiles??=[];const key=`${u.x},${u.y}`;if(!u.practiceTiles.includes(key)){u.practiceTiles.push(key);practice(u,'agility');practice(u,'stealth');}}
@@ -1159,7 +1205,7 @@ else if(a.type==='stance'){
   if(a.stance==='standing')u.knockedDown=false;u.momentum=0;
   sayObserved(s,[u],`${u.name} ${a.stance==='prone'?'se tiende cuerpo a tierra':a.stance==='crouched'?'se agacha':'se pone de pie'}.`);
 }
-else return fail('Orden desconocida.');if(lowersWeapon(a.type)&&a.type!=='movement')lowerWeapon(u);checkEnd(s);if(!['move','charge'].includes(a.type))reactionFire(s,u,observation);return true;}
+else return fail('Orden desconocida.');if(lowersWeapon(a.type)&&a.type!=='movement')lowerWeapon(u);checkEnd(s);if(!['move','climb','charge'].includes(a.type))reactionFire(s,u,observation);return true;}
 function advanceWounds(s,seconds){
   s.bleedSeconds=(s.bleedSeconds??0)+seconds;
   const ticks=Math.floor(s.bleedSeconds/COMBAT_ROUND_SECONDS);s.bleedSeconds%=COMBAT_ROUND_SECONDS;
