@@ -10,7 +10,7 @@ import {turnModel, unitCanAct} from '../../game/ja2-hud.js';
 import {canSee} from '../../game/tactical.js';
 
 type Props = {
-  groupIds?: string[]; target?: any;
+  groupIds?: string[]; target?: any; cursorLevel?:number; onCursorLevelChange?:(level:number)=>void;
   battle: any; selected: any; unit: any; players: any[]; missionAllies: any[]; localMilitia: any[];
   mode: any; showSight: boolean; aim: number; hitLocation: string; costs: any; weapon: any; firearm: boolean;
   cannonId: any; shotType: any; gunCosts: any; artillery: any[]; busy: boolean; inventoryId: any;
@@ -34,14 +34,14 @@ function LogOverlay({log}: { log: string[] }) {
   );
 }
 
-export default function JA2Strip({battle, selected, unit, players, missionAllies, localMilitia, mode, showSight, aim, hitLocation, costs, weapon, firearm, cannonId, shotType, gunCosts, artillery, busy, inventoryId, vw, vh, cameraRect, project, cameraX, cameraY, zoom, onSelect, onOrder, onMode, onToggleSight, onEndTurn, onRetreat, onOpenInventory, onCloseInventory, onCameraCenter, onCameraPan, onZoom, onCannonChange, onShotTypeChange, onSetAim, onHitLocationChange, onAutoBandage, bandageReport, groupIds, target}: Props) {
+export default function JA2Strip({battle, selected, unit, players, missionAllies, localMilitia, mode, showSight, aim, hitLocation, costs, weapon, firearm, cannonId, shotType, gunCosts, artillery, busy, inventoryId, vw, vh, cameraRect, project, cameraX, cameraY, zoom, onSelect, onOrder, onMode, onToggleSight, onEndTurn, onRetreat, onOpenInventory, onCloseInventory, onCameraCenter, onCameraPan, onZoom, onCannonChange, onShotTypeChange, onSetAim, onHitLocationChange, onAutoBandage, bandageReport, groupIds, target, cursorLevel, onCursorLevelChange}: Props) {
   const units = useMemo(()=>battle.units.filter((v: any) => !v.departure && !v.fled && (v.side === 'player' || players.some((p: any) => canSee(battle, p, v)))),[battle,players]);
   const turn = turnModel(battle);
   if (inventoryId) {
     return (
       <div className="ja2-hud">
       <section className="ja2-strip inventory-open">
-        {unit ? <JA2Inventory unit={unit} battle={battle} mode={mode} showSight={showSight} busy={busy} units={units} selected={selected} missionAllies={missionAllies} localMilitia={localMilitia} vw={vw} vh={vh} cameraRect={cameraRect} project={project} zoom={zoom} onOrder={onOrder} onMode={onMode} onToggleSight={onToggleSight} onSelect={onSelect} onRetreat={onRetreat} onCameraCenter={onCameraCenter} onCameraPan={onCameraPan} onZoom={onZoom} onCloseInventory={onCloseInventory} onAutoBandage={onAutoBandage} bandageReport={bandageReport} /> : <button className="gold-button" onClick={onCloseInventory}>Listo</button>}
+        {unit ? <JA2Inventory cursorLevel={cursorLevel} onCursorLevelChange={onCursorLevelChange} unit={unit} battle={battle} mode={mode} showSight={showSight} busy={busy} units={units} selected={selected} missionAllies={missionAllies} localMilitia={localMilitia} vw={vw} vh={vh} cameraRect={cameraRect} project={project} zoom={zoom} onOrder={onOrder} onMode={onMode} onToggleSight={onToggleSight} onSelect={onSelect} onRetreat={onRetreat} onCameraCenter={onCameraCenter} onCameraPan={onCameraPan} onZoom={onZoom} onCloseInventory={onCloseInventory} onAutoBandage={onAutoBandage} bandageReport={bandageReport} /> : <button className="gold-button" onClick={onCloseInventory}>Listo</button>}
       </section>
       <LogOverlay log={battle.log || []} />
       </div>

@@ -12,6 +12,7 @@ export const TACTICAL_KEYS=[
  ['V','Mostrar u ocultar campo de visión'],['I / Q','Cursor para recoger equipo / equipar vendas'],
  ['[ / ]','Reducir / aumentar puntería adicional'],['+ / −','Acercar / alejar'],['H / ?','Abrir o cerrar esta ayuda'],
  ['Esc','Volver al cursor de movimiento o cerrar ayuda'],
+ ['Tab sobre el campo','Cambiar el cursor entre suelo y nivel superior'],
 ];
 export function pointerItemIntent(event){return event.ctrlKey&&!event.altKey&&!event.metaKey&&!event.shiftKey?'steal':'use';}
 export function pointerMovementIntent(event){
@@ -20,10 +21,11 @@ export function pointerMovementIntent(event){
 export function tacticalShortcut(event,{editing=false,dialog=false,nativeControl=false}={}){
  if(editing||dialog||event.repeat||event.isComposing||event.ctrlKey||event.metaKey)return null;
  const key=event.key.toLowerCase();
- if(nativeControl&&[' ','enter'].includes(key))return null;
+ if(nativeControl&&[' ','enter','tab'].includes(key))return null;
  if(event.altKey)return key==='r'&&!event.shiftKey?'reload':null;
  if(event.shiftKey&&key==='r')return 'run';
  if(event.shiftKey&&!['?','+','{','}'].includes(key))return null;
+ if(key==='tab')return 'cursor-level';
  if(/^[1-6]$/.test(key))return `select:${Number(key)-1}`;
  return ({' ':'next',m:'map',d:'turn',g:'move',f:'fire',a:'melee',r:'reload',s:'walk',c:'crouch',p:'prone',z:'stealth',l:'look',pageup:'stance-up',pagedown:'stance-down',w:'weapon',b:'brace',o:'overwatch',t:'mount',j:'talk',v:'sight',i:'loot',q:'heal','[':'aim-down',']':'aim-up','{':'aim-down','}':'aim-up','+':'zoom-in','=':'zoom-in','-':'zoom-out',h:'help','?':'help',escape:'cancel'})[key]??null;
 }

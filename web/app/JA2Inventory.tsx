@@ -3,6 +3,8 @@ import './ja2-outfit.css';
 import JA2Hands from './JA2Hands';
 import JA2WeaponMode from './JA2WeaponMode';
 import {handsRequired} from '../../game/hand-layout.js';
+import {accessStepsFrom,tacticalLevel} from '../../game/tactical-space.js';
+import {climbPreview} from '../../game/tactical.js';
 import {maximumEnergy} from '../../game/fatigue.js';
 // MODE B: single-merc inventory panel (header / stats / stance grid / paper-doll / slot-grid / pertrechos / far-right cluster).
 // Pure read model (game/ja2-hud.js inventoryModel/orderDescriptors); all mutations are caller-provided callbacks.
@@ -69,6 +71,7 @@ export function RadarCluster({battle, units, selected, project, vw, vh, cameraRe
 }
 
 type Props = {
+  cursorLevel?:number; onCursorLevelChange?:(level:number)=>void;
   unit: any; battle: any; mode: any; showSight: boolean; busy: boolean; units: any[]; selected: any;
   missionAllies: any[]; localMilitia: any[];
   vw: number; vh: number; cameraRect: any; project: (x: number, y: number) => { x: number; y: number }; zoom: number;
@@ -76,7 +79,7 @@ type Props = {
   onRetreat: () => void; onCameraCenter: () => void; onCameraPan: (dx: number, dy: number) => void; onZoom: (delta: number) => void; onCloseInventory: () => void;
   onAutoBandage?: () => void; bandageReport?: any;
 };
-export default function JA2Inventory({unit, battle, mode, showSight, busy, units, selected, missionAllies, localMilitia, vw, vh, cameraRect, project, zoom, onOrder, onMode, onToggleSight, onSelect, onRetreat, onCameraCenter, onCameraPan, onZoom, onCloseInventory, onAutoBandage, bandageReport}: Props) {
+export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, battle, mode, showSight, busy, units, selected, missionAllies, localMilitia, vw, vh, cameraRect, project, zoom, onOrder, onMode, onToggleSight, onSelect, onRetreat, onCameraCenter, onCameraPan, onZoom, onCloseInventory, onAutoBandage, bandageReport}: Props) {
   const cost=(n:number|undefined)=>battle.mode==='exploration'?'sin PA':`${n ?? 0} PA`;
   const inv: any = inventoryModel(battle, unit);
   const bandaging = autoBandageStatus(battle);
@@ -139,6 +142,11 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
         </div>
       </div>
 </div></details>      </div>
+      {battle.upperSurfaces?.length>0&&<div className="ja2-elevation-controls" role="group" aria-label="Altura y accesos">
+        {onCursorLevelChange&&<button className="line-button" aria-label="Cambiar altura del cursor" onClick={()=>onCursorLevelChange(cursorLevel===0?1:0)}>Cursor: {cursorLevel===0?'Suelo':'Nivel superior'}</button>}
+        <span>Combatiente: {tacticalLevel(unit)===0?'Suelo':'Nivel superior'}</span>
+        {accessStepsFrom(battle,unit).map((step:any)=>{const preview=climbPreview(battle,unit,{linkId:step.linkId});return <span key={step.linkId}><button className="line-button" disabled={busy||!preview.valid} title={preview.reason||undefined} onClick={()=>onOrder({type:'climb',linkId:step.linkId})}>{tacticalLevel(step)>tacticalLevel(unit)?'Subir':'Bajar'}{preview.pa>0?` · ${cost(preview.pa)}`:''}</button>{preview.reason&&<small>{preview.reason}</small>}</span>;})}
+      </div>}
       <div className="ja2-stats">
         {inv.stats.map((st: any) => <div key={st.id}><span>{st.label}</span><b>{st.value}</b></div>)}
         <div><span>Salud</span><b>{Math.ceil(unit.hp)} / {unit.maxHp}</b></div>

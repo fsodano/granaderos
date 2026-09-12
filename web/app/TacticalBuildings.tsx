@@ -5,9 +5,10 @@ import {BuildingMaterials} from './BuildingMaterials';
 import {buildingStyle} from '../../game/building-types.js';
 import {WallDetails} from './BuildingDetails';
 import {BuildingRoof} from './BuildingRoof';
+import {tacticalLevel} from '../../game/tactical-space.js';
 import type {ReactNode} from 'react';
 type Point={x:number;y:number};
-type Args={viewport?:any;state:any;revealed:Set<string>;project:(x:number,y:number)=>Point;light:(x:number,y:number)=>number};
+type Args={viewport?:any;cursorLevel?:number;state:any;revealed:Set<string>;project:(x:number,y:number)=>Point;light:(x:number,y:number)=>number};
 type SceneObject={key:string;depth:number;node:ReactNode};
 // Restrained earth pigments, limewash and hand-fired clay; no modern siding.
 const wallInset=.4; // Tile edges are half a cell from the center.
@@ -20,8 +21,13 @@ export function buildBuildingObjects(args:Args):SceneObject[]{
 
 // Each renderer belongs to one immutable simulation/visibility/light snapshot.
 // Camera changes reuse retained nodes; discarded viewport objects are evicted.
-export function createBuildingRenderer({state:s,revealed,project,light}:Omit<Args,'viewport'>){
+export function createBuildingRenderer({state:s,revealed:knownRooms,project,light,cursorLevel=0}:Omit<Args,'viewport'>){
  const buildings=s.buildings??[],byId=new Map<any,any>(),doorsByBuilding=new Map<any,any[]>();
+ const terraceBuildings=new Set((s.upperSurfaces??[]).filter((surface:any)=>surface.kind==='roof'&&tacticalLevel(surface)===cursorLevel).map((surface:any)=>surface.buildingId));
+ // Looking at a playable terrace restores its detailed roof. Discovery of the
+ // room below remains stored and its cutaway returns with the ground cursor.
+ const coveredRooms=new Set(buildings.filter((b:any)=>terraceBuildings.has(b.id)).flatMap((b:any)=>(b.rooms??[]).filter((room:any)=>!tacticalLevel(room)).map((room:any)=>room.id)));
+ const revealed=cursorLevel?new Set([...knownRooms].filter(id=>!coveredRooms.has(id))):knownRooms;
  for(const b of buildings)if(!byId.has(b.id))byId.set(b.id,b);
  for(const t of s.tiles)if(t.type==='door'){const doors=doorsByBuilding.get(t.buildingId)??[];doors.push(t);doorsByBuilding.set(t.buildingId,doors);}
  const wallTiles=s.tiles.filter((t:any)=>['wall','door','window'].includes(t.type));

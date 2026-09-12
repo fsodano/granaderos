@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {hasAuthoredDialogue,dialogueOptions,dialogueReason,ambientReply} from '../game/npc-dialogue.js';
+import {hasAuthoredDialogue,dialogueOptions,dialogueReason,dialogueApproach,ambientReply} from '../game/npc-dialogue.js';
 import {ENCOUNTERS} from '../game/encounters.js';import {YATASTO_NPCS} from '../game/missions.js';
 import {createBattle} from '../game/tactical.js';import {targetingHelp} from '../game/ja2-hud.js';import {tacticalShortcut} from '../game/hotkeys.js';
 const actor={id:'p',side:'player',hp:100,energy:100,x:2,y:2};const civilian={id:'c',name:'Vecino',x:3,y:2};const state={phase:'player',mode:'exploration',status:'active'};
@@ -22,3 +22,14 @@ test('ambient replies vary without changing battle RNG, inventory or conversatio
  const b=createBattle([],{enemies:[],exploration:true}),before=structuredClone(b);const npc={...civilian,greeting:'El paso está abierto.'};assert.equal(new Set(Array.from({length:4},(_,i)=>ambientReply(npc,i))).size,4);assert.match(ambientReply({...civilian,side:'enemy',surrendered:true}),/arma|resistirme|vida/);assert.match(ambientReply({...civilian,ai:{activity:'hiding'}}),/refugio|fuego|salvo/);assert.deepEqual(b,before);
 });
 test('J selects talk without changing reload, mount or native input shortcuts',()=>{assert.equal(tacticalShortcut({key:'j'}),'talk');assert.equal(tacticalShortcut({key:'r'}),'reload');assert.equal(tacticalShortcut({key:'t'}),'mount');assert.equal(tacticalShortcut({key:'j'},{editing:true}),null);assert.match(targetingHelp('talk',actor),/Hablar/);});
+
+
+test('conversation and approach routes distinguish stacked ground and roof speakers',()=>{
+ const state={mode:'exploration',phase:'player',status:'active'},actor={side:'player',hp:100,energy:100,x:3,y:3},speaker={id:'roof-speaker',hp:100,x:3,y:3,tacticalLevel:1};
+ assert.match(dialogueReason(state,actor,speaker),/mismo nivel/);
+ assert.equal(dialogueReason(state,{...actor,tacticalLevel:1},speaker),null);
+ const lower={x:2,y:3,cost:1},upper={x:2,y:3,tacticalLevel:1,cost:20,path:[{x:2,y:3,tacticalLevel:1,kind:'climb',linkId:'roof'}]};
+ assert.equal(dialogueApproach([lower,upper],speaker),upper);
+ assert.equal(dialogueApproach([lower],speaker),undefined);
+ assert.equal(dialogueApproach([upper,lower],{...speaker,tacticalLevel:0}),lower);
+});

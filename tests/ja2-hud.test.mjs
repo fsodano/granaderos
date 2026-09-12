@@ -666,10 +666,10 @@ test('Alt movement previews and executes the same paid route in standing, crouch
     const normal=getReachable(s,u).find(tile=>tile.x===point.x&&tile.y===point.y),reachable=getReachable(s,u,{movementIntent:'preserveFacing'});
     const destination=reachable.find(tile=>tile.x===point.x&&tile.y===point.y),preview=targetPreview(s,u,point,{mode:'move',movementIntent:'preserveFacing',reachable});
     assert.equal(preview.valid,true);assert.equal(preview.pa,destination.cost);assert.ok(preview.pa>normal.cost);assert.equal(preview.actionLabel,'Mover sin girar');
-    const action=movementAction(point,'preserveFacing');assert.deepEqual(action,{type:'move',x:1,y:3,movementIntent:'preserveFacing'});
+    const action=movementAction(point,'preserveFacing');assert.deepEqual(action,{type:'move',x:1,y:3,tacticalLevel:0,movementIntent:'preserveFacing'});
     const next=actBattle(s,{...action,unitId:u.id});assert.equal(next.lastError,null);assert.equal(next.units[0].facing,u.facing);assert.equal(next.units[0].ap,u.ap-preview.pa);
     assert.equal(next.units[0].stance,stance);assert.equal(next.units[0].movementMode,movementMode);
-    assert.deepEqual(movementAction(point),{type:'move',x:1,y:3});
+    assert.deepEqual(movementAction(point),{type:'move',x:1,y:3,tacticalLevel:0});
     assert.notEqual(actBattle(s,{...movementAction(point),unitId:u.id}).units[0].facing,u.facing);
   }
 });

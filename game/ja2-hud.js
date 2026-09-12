@@ -1,3 +1,4 @@
+import {tacticalLevel, sameCell, sameSurface, spaceKey} from './tactical-space.js';
 import {OUTFITS,wornOutfit,hasPoncho} from './outfits.js';
 import {handLayout,selectMainHand} from './hand-layout.js';
 import {reloadPlan,lookPreview} from './tactical.js';
@@ -34,7 +35,7 @@ export function supplyItems(unit) {
   });
 }
 export function heldSupplyAction(unit, target) {
-  return {type: 'useItem', ...(unit.activeSupply === 'torches' ? {x: target.x, y: target.y} : {targetId: target?.id})};
+  return {type: 'useItem', ...(unit.activeSupply === 'torches' ? {x: target.x, y: target.y, ...(target.tacticalLevel===undefined?{}:{tacticalLevel:target.tacticalLevel})} : {targetId: target?.id})};
 }
 
 export const attackCursorMode = unit => hasFirearm(unit || {}) ? 'fire' : 'useItem';
@@ -100,23 +101,30 @@ export function campaignReturnModel(state, peacefulVisit = false) {
   return {available, label: 'Volver a la campaña', note: state.units.some(unit => unit.side === 'player' && unit.departure) ? 'Quienes siguen aquí permanecen en este sector.' : 'La escuadra permanece en este sector.'};
 }
 
+export function cellOccupant(units, point) {
+  if (!point) return undefined;
+  const occupants=units.filter(unit=>!unit.fled&&!unit.departure&&sameCell(unit,point));
+  return occupants.find(unit=>unit.id===point.id)||occupants.find(unit=>unit.hp>0)||occupants[0];
+}
+
 export function isMovementGround(state, unit, point) {
   if (!point) return false;
-  const occupied = state.units.some(target => !target.fled && !target.departure && target.x === point.x && target.y === point.y && (target.side === 'player' || state.units.some(observer => observer.side === 'player' && canSee(state, observer, target))));
+  const occupied = state.units.some(target => !target.fled && !target.departure && sameCell(target, point) && (target.side === 'player' || state.units.some(observer => observer.side === 'player' && canSee(state, observer, target))));
   return !occupied && !(unit && canSee(state, unit, point) && environmentTargetAt(state, point));
 }
-export function isGroupGround(state, unit, point) { return groupSelectionMode(state) && isMovementGround(state, unit, point); }
+export function isGroupGround(state, unit, point) { return !tacticalLevel(unit) && !tacticalLevel(point) && groupSelectionMode(state) && isMovementGround(state, unit, point); }
 
 export function movementAction(point, movementIntent = 'forward') {
-  return {type: 'move', x: point.x, y: point.y, ...(movementIntent === 'preserveFacing' ? {movementIntent} : {})};
+  return {type: 'move', x: point.x, y: point.y, tacticalLevel:tacticalLevel(point), ...(movementIntent === 'preserveFacing' ? {movementIntent} : {})};
 }
 
 export function toggleMovementGroup(state, ids, targetId, selectedId) {
   const target = state.units.find(unit => unit.id === targetId);
-  if (!groupSelectionMode(state) || !target || target.side !== 'player' || !unitCanAct(state, target)) return ids;
+  if (!groupSelectionMode(state) || !target || tacticalLevel(target) || target.side !== 'player' || !unitCanAct(state, target)) return ids;
   const current = ids.filter(id => state.units.some(unit => unit.id === id && unit.side === 'player' && !unit.departure));
   if (current.includes(targetId)) return current.filter(id => id !== targetId);
   const selected = state.units.find(unit => unit.id === selectedId);
+  if (tacticalLevel(selected)) return ids;
   if (!current.length && selected?.side === 'player' && unitCanAct(state, selected)) current.push(selectedId);
   return [...new Set([...current, targetId])];
 }
@@ -127,8 +135,9 @@ export function movementGroupModel(state, ids, selectedId, point) {
     return unit ? [{id, name: unit.nickname || unit.name}] : [];
   }) : [];
   const anchorId = members.some(unit => unit.id === selectedId) ? selectedId : members[0]?.id;
-  const request = members.length && point ? {unitIds: members.map(unit => unit.id), anchorId, x: point.x, y: point.y} : null;
-  return {members, anchorId, request, preview: request ? planGroupMove(state, request) : null};
+  const unsupportedHeight=Boolean(members.length&&point&&(tacticalLevel(point)||members.some(member=>tacticalLevel(state.units.find(unit=>unit.id===member.id)))));
+  const request = members.length && point && !unsupportedHeight ? {unitIds: members.map(unit => unit.id), anchorId, x: point.x, y: point.y} : null;
+  return {members, anchorId, request, preview: unsupportedHeight?{ok:false,reason:'Las alturas requieren órdenes individuales. Volvé a órdenes individuales para trepar o mover por la terraza.'}:request ? planGroupMove(state, request) : null};
 }
 
 export function turnModel(state) {
@@ -151,12 +160,12 @@ export function heardNoiseModel(state, unit) {
   const noise = unit?.lastHeardNoise;
   if (!unit || !alive(unit) || !noise || noise.investigated || !Number.isInteger(noise.turn) || state.turn - noise.turn > 3 || state.turn < noise.turn) return null;
   if (!Number.isFinite(noise.x) || !Number.isFinite(noise.y) || !Number.isFinite(noise.uncertainty) || noise.uncertainty < 0) return null;
-  return {x: noise.x, y: noise.y, radius: noise.uncertainty, label: 'Ruido: zona aproximada'};
+  return {x: noise.x, y: noise.y, ...(noise.tacticalLevel===undefined?{}:{tacticalLevel:noise.tacticalLevel}), radius: noise.uncertainty, label: 'Ruido: zona aproximada'};
 }
 
 export function visibleHover(state, point) {
   if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.y)) return null;
-  if (point.anonymous) return {x: point.x, y: point.y, anonymous: true};
+  if (point.anonymous) return {x: point.x, y: point.y, ...(point.tacticalLevel===undefined?{}:{tacticalLevel:point.tacticalLevel}), anonymous: true};
   const unit = point.id ? state.units.find(unit => unit.id === point.id) : null;
   const npc = !unit && point.id ? (state.npcs || []).find(npc => npc.id === point.id) : null;
   const target = unit || npc;
@@ -172,7 +181,7 @@ export function interruptHover(state, selectedId) {
   const eligible = state.units.filter(unit => unitCanAct(state, unit));
   const observer = eligible.find(unit => unit.id === selectedId) || eligible[0];
   const noise = heardNoiseModel(state, observer);
-  return noise ? {x: noise.x, y: noise.y, anonymous: true} : null;
+  return noise ? {x:noise.x,y:noise.y,...(noise.tacticalLevel===undefined?{}:{tacticalLevel:noise.tacticalLevel}),anonymous:true} : null;
 }
 
 export function targetingHelp(mode, unit, ctx = {}) {
@@ -210,9 +219,9 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   const reload = mode === 'fire' ? emptyGunPreview(state, unit) : null;
   if (reload) return reload;
   if (!point) return null;
-  const recipient=state.npcs?.find(n=>n.id===point.id||n.x===point.x&&n.y===point.y);
+  const recipient=state.npcs?.find(n=>sameCell(n,point));
   if(recipient&&unit.activeSlot==='item'&&['move','useItem'].includes(mode)){const gift=npcGiftPreview(state,unit,recipient);return {name:recipient.name,actionLabel:gift.label,pa:gift.pa,remaining:unit.ap,valid:gift.valid,reason:gift.reason,coverNote:'Se entrega el objeto que está en la mano. No se usa la reserva del cuartel.'};}
-  const occupants = state.units.filter(v => v.x === point.x && v.y === point.y && !v.fled && !v.departure && (v.side === unit.side || state.units.some(p => p.side === unit.side && canSee(state, p, v))));
+  const occupants = state.units.filter(v => sameCell(v, point) && !v.fled && !v.departure && (v.side === unit.side || state.units.some(p => p.side === unit.side && canSee(state, p, v))));
   const target = occupants.find(v => v.id === point.id) || occupants.find(v => v.hp > 0) || occupants[0];
   if(mode==='fire'&&(!target||target.side===unit.side||target.hp<=0||target.surrendered)){
     const preview=pointFirePreview(state,unit,point,ctx.aim??0);
@@ -224,7 +233,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   }
   const preserveFacing = mode === 'move' && ctx.movementIntent === 'preserveFacing' && isMovementGround(state, unit, point);
   if (preserveFacing) {
-    const destination = (ctx.reachable || getReachable(state, unit, {movementIntent: 'preserveFacing'})).find(tile => tile.x === point.x && tile.y === point.y);
+    const destination = (ctx.reachable || getReachable(state, unit, {movementIntent: 'preserveFacing'})).find(tile => sameCell(tile, point));
     const reason = movementIntentReason(unit, 'preserveFacing') || (!unitCanAct(state, unit) ? 'El combatiente no puede actuar.' : unit.knockedDown ? 'Primero debés levantarte.' : unit.entangled ? 'Primero debés liberarte de las boleadoras.' : !destination || !destination.path.length ? 'Destino inaccesible o PA insuficientes.' : null);
     const pa = destination ? state.mode === 'exploration' ? 0 : destination.cost : undefined;
     return {name: `${tacticalGridLabel(point.x,point.y)}`, actionLabel: 'Mover sin girar', pa, remaining: pa === undefined ? undefined : Math.max(0, unit.ap - pa), reason, valid: !reason};
@@ -234,7 +243,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   const aliasSupply = ({torch: 'torches', bolas: 'boleadoras', ration: 'rations'})[mode];
   if (aliasSupply || unit.activeSlot === 'supply' && ['move', 'useItem'].includes(mode) && (unit.activeSupply === 'torches' || target || mode === 'useItem')) {
     const key = aliasSupply || unit.activeSupply;
-    const preview = supplyUsePreview(state, unit, key === 'torches' ? {x: point.x, y: point.y} : target, key);
+    const preview = supplyUsePreview(state, unit, key === 'torches' ? point : target, key);
     const label = ({torches: 'Arrojar antorcha', boleadoras: 'Lanzar boleadoras', rations: 'Comer ración'})[key] || 'Usar pertrecho';
     return {name: target?.name || `${tacticalGridLabel(point.x,point.y)}`, actionLabel: label, attackLabel: label, pa: preview.cost, chance: preview.chance, remaining: Math.max(0, unit.ap - (state.mode === 'exploration' ? 0 : preview.cost)), reason: preview.reason, valid: preview.allowed};
   }
@@ -284,7 +293,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
       else if (!hasLineOfSight(state,unit,target)) reason = 'No hay línea de tiro.';
     }
   } else if (mode === 'move' && !target) {
-    const destination = (ctx.reachable || []).find(p => p.x === point.x && p.y === point.y);
+    const destination = (ctx.reachable || []).find(p => sameCell(p, point));
     if (!destination) reason = 'Destino inaccesible o PA insuficientes.';
     else pa = state.mode === 'exploration' ? 0 : destination.cost;
   } else return null;
@@ -483,7 +492,7 @@ export function inventoryHandlingModel(state, unit, ctx = {}) {
 
 export function nearbyLootOptions(state, unit, point=/** @type {{x:number,y:number}|null} */ (null)) {
   if (!unit) return [];
-  const options = [], visible = source => (point?source.x===point.x&&source.y===point.y:distance(unit, source)<=1.5) && canSee(state, unit, source);
+  const options = [], visible = source => sameSurface(unit,source) && (point?sameCell(source,point):distance(unit, source)<=1.5) && canSee(state, unit, source);
   for (const source of state.units) {
     if (source.id === unit.id || source.fled || source.departure || !(source.hp <= 0 || source.unconscious || source.surrendered) || distance(unit,source)>1.5 || !visible(source)) continue;
     for (const item of inventoryModel(state, source).items) {
@@ -506,7 +515,7 @@ export function pickupSelection(state,unit,point,ctx={}){
   const mode=ctx.mode??'move';
   if(mode!=='loot'){
     if(!['move','useItem'].includes(mode)||ctx.movementIntent==='preserveFacing'||ctx.itemIntent!=='steal'&&unit.activeSlot==='supply'&&unit.activeSupply==='torches')return [];
-    const occupant=state.units.find(other=>!other.departure&&other.x===point.x&&other.y===point.y&&(other.side===unit.side||canSee(state,unit,other)));
+    const occupant=state.units.find(other=>!other.departure&&sameCell(other,point)&&(other.side===unit.side||canSee(state,unit,other)));
     if(occupant&&!point.loot&&ctx.itemIntent!=='steal'&&(occupant.hp>0||unit.activeSlot==='medical'))return [];
   }
   const preview=lootSearchPreview(state,unit,point);
@@ -530,7 +539,7 @@ export function groundLootPiles(state,actors){
   const piles=new Map();
   for(const source of [...(state.droppedWeapons??[]).filter(item=>!item.taken),...(state.groundItems??[]).filter(item=>item.count>0&&!item.heldBy)]){
     if(!actors.some(actor=>canSee(state,actor,source)))continue;
-    const key=`${source.x},${source.y}`,pile=piles.get(key)??{x:source.x,y:source.y,count:0};pile.count++;piles.set(key,pile);
+    const key=spaceKey(source),pile=piles.get(key)??{x:source.x,y:source.y,...(source.tacticalLevel===undefined?{}:{tacticalLevel:source.tacticalLevel}),count:0};pile.count++;piles.set(key,pile);
   }
   return [...piles.values()];
 }
@@ -601,7 +610,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
   const itemPreview=ctx.target?itemUsePreview(state,unit,ctx.target):null;
   const supplyAliases = {
     ration: supplyUsePreview(state, unit, ctx.target ?? unit, 'rations'),
-    torch: supplyUsePreview(state, unit, ctx.target ?? {x: ctx.x, y: ctx.y}, 'torches'),
+    torch: supplyUsePreview(state, unit, ctx.target ?? {x: ctx.x, y: ctx.y,...(ctx.tacticalLevel===undefined?{}:{tacticalLevel:ctx.tacticalLevel})}, 'torches'),
     bolas: supplyUsePreview(state, unit, ctx.target, 'boleadoras'),
   };
   pa.heal = medicalPreview.cost;
@@ -677,8 +686,10 @@ export function orderAction(state, unit, ctx = {}, id) {
   switch (id) {
     case 'movement':
       return {type: 'movement', movement: ctx.movement};
+    case 'climb':
+      return {type:'climb',linkId:ctx.linkId};
     case 'look':
-      return {type: 'look', x: ctx.x, y: ctx.y};
+      return {type: 'look', x: ctx.x, y: ctx.y,...(ctx.tacticalLevel===undefined?{}:{tacticalLevel:ctx.tacticalLevel})};
     case 'stealth':
       return {type: 'stealth', enabled: ctx.enabled ?? !unit.stealthMode};
     case 'reload':
@@ -697,20 +708,20 @@ export function orderAction(state, unit, ctx = {}, id) {
     case 'equipLoot':
       return {type: 'equipLoot', inventoryKey: ctx.inventoryKey, slot: ctx.slot};
     case 'torch':
-      return {type: 'throwTorch', x: ctx.x, y: ctx.y};
+      return {type: 'throwTorch', x: ctx.x, y: ctx.y,...(ctx.tacticalLevel===undefined?{}:{tacticalLevel:ctx.tacticalLevel})};
     case 'bolas':
       return {type: 'boleadoras', targetId: ctx.targetId};
     case 'artillery':
-      return {type: 'artillery', artilleryId: ctx.artilleryId, x: ctx.x, y: ctx.y, targetId: ctx.targetId, mode: ctx.mode};
+      return {type: 'artillery', artilleryId: ctx.artilleryId, x: ctx.x, y: ctx.y,...(ctx.tacticalLevel===undefined?{}:{tacticalLevel:ctx.tacticalLevel}), targetId: ctx.targetId, mode: ctx.mode};
     case 'artilleryMove':
     case 'artilleryPivot':
-      return {type: id, artilleryId: ctx.artilleryId, x: ctx.x, y: ctx.y};
+      return {type: id, artilleryId: ctx.artilleryId, x: ctx.x, y: ctx.y,...(ctx.tacticalLevel===undefined?{}:{tacticalLevel:ctx.tacticalLevel})};
     case 'artilleryReload':
       return {type: 'artilleryReload', artilleryId: ctx.artilleryId};
     case 'endTurn':
       return {type: 'rest'};
     case 'move':
-      return {type: 'move', x: ctx.x, y: ctx.y};
+      return {type: 'move', x: ctx.x, y: ctx.y,tacticalLevel:tacticalLevel(ctx)};
     case 'fire':
       return {type: 'fire', targetId: ctx.targetId};
     case 'melee':

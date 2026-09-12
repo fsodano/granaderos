@@ -1,3 +1,4 @@
+import {sameSurface} from './tactical-space.js';
 import {NPC_QUESTS} from './quests.js';
 // Authored conversation is a capability, independent of recruitment.
 export function hasAuthoredDialogue(npc){
@@ -9,10 +10,14 @@ export function dialogueOptions(npc,quest=null){
  ...(quest&&quest.status!=='completed'?[['quest',quest.status==='offered'?(quest.carried?'Confirmar entrega':'Entregar pertrechos'):'Consultar encargo']]:[]),
  ...(npc.operativeId!==undefined?[['recruit','Proponer incorporación']]:[])];
 }
+export function dialogueApproach(reachable,target){
+ return target?reachable.filter(point=>sameSurface(point,target)&&Math.abs(point.x-target.x)+Math.abs(point.y-target.y)===1).sort((a,b)=>(a.cost??0)-(b.cost??0))[0]:undefined;
+}
 export function dialogueReason(state,actor,target,{visible=true,busy=false}={}){
  if(busy||!actor||actor.side!=='player'||actor.hp<=0||actor.unconscious||actor.routed||actor.departure||actor.knockedDown||actor.energy<=0||state.phase!=='player'||!['active','victory'].includes(state.status))return 'El combatiente no puede conversar ahora.';
  if(!target||!visible||target.departure||target.fled||target.routed||(target.hp??100)<=0||target.unconscious)return 'El interlocutor no está disponible.';
  if(hasAuthoredDialogue(target)&&state.mode!=='exploration'&&state.status!=='victory'&&!state.sectorCleared)return 'Terminá el combate antes de conversar.';
+ if(!sameSurface(actor,target))return 'Acercate al mismo nivel para hablar.';
  if(Math.abs(actor.x-target.x)+Math.abs(actor.y-target.y)>1)return 'Acercate a una casilla contigua para hablar.';
  return null;
 }
