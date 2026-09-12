@@ -1,0 +1,10 @@
+{
+  "source": "assets/source/illustrated-sprites/granadero-strike-south-reviewed-reference.png",
+  "rect": [
+    0,
+    768,
+    1536,
+    384
+  ],
+  "method": "reference crop only"
+}

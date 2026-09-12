@@ -1,0 +1,236 @@
+[
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-run-north-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "method": "fixed cells",
+    "fixedCellMinimumMargin": 22,
+    "regionMinimumMargin": 22,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-run-south-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "method": "fixed cells",
+    "fixedCellMinimumMargin": 14,
+    "regionMinimumMargin": 14,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-run-n-s-v3.png",
+    "width": 1774,
+    "height": 887,
+    "method": "clear gutters",
+    "fixedCellMinimumMargin": 27,
+    "regionMinimumMargin": 2,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-run-n-3-v4.png",
+    "width": 1254,
+    "height": 1254,
+    "method": "clear gutters",
+    "fixedCellMinimumMargin": 145,
+    "regionMinimumMargin": 2,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-run-s-3-v4.png",
+    "width": 1254,
+    "height": 1254,
+    "method": "clear gutters",
+    "fixedCellMinimumMargin": 124,
+    "regionMinimumMargin": 2,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-run-s-3-v6.png",
+    "width": 1254,
+    "height": 1254,
+    "method": "clear gutters",
+    "fixedCellMinimumMargin": 121,
+    "regionMinimumMargin": 2,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-walk-north-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "method": "fixed cells",
+    "fixedCellMinimumMargin": 21,
+    "regionMinimumMargin": 21,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-walk-north-v2.png",
+    "width": 1254,
+    "height": 1254,
+    "method": "clear gutters",
+    "fixedCellMinimumMargin": 0,
+    "regionMinimumMargin": 2,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-walk-south-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "method": "fixed cells",
+    "fixedCellMinimumMargin": 4,
+    "regionMinimumMargin": 4,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-prone-unarmed-walk-north-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "method": "clear gutters",
+    "fixedCellMinimumMargin": 0,
+    "regionMinimumMargin": 2,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-prone-unarmed-walk-south-v3.png",
+    "width": 1254,
+    "height": 1254,
+    "method": "fixed cells",
+    "fixedCellMinimumMargin": 11,
+    "regionMinimumMargin": 11,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-fire-north-v2.png",
+    "width": 1254,
+    "height": 1254,
+    "method": "clear gutters",
+    "fixedCellMinimumMargin": 0,
+    "regionMinimumMargin": 2,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-fire-south-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "method": "clear gutters",
+    "fixedCellMinimumMargin": 0,
+    "regionMinimumMargin": 2,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-north-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "method": "fixed cells",
+    "fixedCellMinimumMargin": 7,
+    "regionMinimumMargin": 7,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-south-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "method": "clear gutters",
+    "fixedCellMinimumMargin": 0,
+    "regionMinimumMargin": 2,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-unconscious-breathe-north-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "method": "fixed cells",
+    "fixedCellMinimumMargin": 29,
+    "regionMinimumMargin": 29,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-unconscious-breathe-south-v1.png",
+    "width": 1254,
+    "height": 1254,
+    "method": "clear gutters",
+    "fixedCellMinimumMargin": 0,
+    "regionMinimumMargin": 2,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-walk-n-v3.png",
+    "width": 1871,
+    "height": 840,
+    "method": "clear gutters",
+    "fixedCellMinimumMargin": 115,
+    "regionMinimumMargin": 2,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-prone-unarmed-walk-n-v2.png",
+    "width": 1926,
+    "height": 817,
+    "method": "clear gutters",
+    "fixedCellMinimumMargin": 131,
+    "regionMinimumMargin": 2,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-n-v4.png",
+    "width": 2172,
+    "height": 724,
+    "method": "clear gutters",
+    "fixedCellMinimumMargin": 86,
+    "regionMinimumMargin": 2,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-n-1-v5.png",
+    "width": 1085,
+    "height": 1450,
+    "method": "clear gutters",
+    "fixedCellMinimumMargin": 173,
+    "regionMinimumMargin": 2,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-ne-v4.png",
+    "width": 2172,
+    "height": 724,
+    "method": "clear gutters",
+    "fixedCellMinimumMargin": 13,
+    "regionMinimumMargin": 2,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-ne-2-v5.png",
+    "width": 1085,
+    "height": 1450,
+    "method": "clear gutters",
+    "fixedCellMinimumMargin": 36,
+    "regionMinimumMargin": 2,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-se-v4.png",
+    "width": 2172,
+    "height": 724,
+    "method": "clear gutters",
+    "fixedCellMinimumMargin": 48,
+    "regionMinimumMargin": 2,
+    "whiteExportBarsExcluded": false
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-unconscious-breathe-n-v3.png",
+    "width": 2172,
+    "height": 724,
+    "method": "clear gutters",
+    "fixedCellMinimumMargin": 75,
+    "regionMinimumMargin": 2,
+    "whiteExportBarsExcluded": true
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-unconscious-breathe-n-se-v2.png",
+    "width": 1774,
+    "height": 887,
+    "method": "clear gutters",
+    "fixedCellMinimumMargin": 20,
+    "regionMinimumMargin": 2,
+    "whiteExportBarsExcluded": false
+  }
+]

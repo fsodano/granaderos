@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "appearance": "woman-elder",
+  "stage": "mounted-walk",
+  "pathBase": "repository-root",
+  "registrationOrder": [
+    "variants"
+  ],
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-mounted-walk-north-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-mounted-walk-north-v1.prompt.txt",
+      "name": "woman-elder-mounted-walk",
+      "reference": "granadero-mounted-walk",
+      "poseReference": "assets/source/illustrated-sprites/woman-headscarf-mounted-walk-north-v1.png",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-mounted-walk-south-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-mounted-walk-south-v1.prompt.txt",
+      "name": "woman-elder-mounted-walk",
+      "reference": "granadero-mounted-walk",
+      "poseReference": "assets/source/illustrated-sprites/woman-headscarf-mounted-walk-south-v1.png",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    }
+  ],
+  "corrections": [],
+  "qa": {
+    "notes": [
+      "All eight horse directions retained, adult bay horse with four legs and alternating walking phases. Rider hands retain reins, pistol secured.",
+      "Natural adult rider scale and practical brown skirt, gray braid, charcoal shawl. Rider glances sideways in some north phases as in target; horse stays north.",
+      "Both sheets pass16figure count and crop bounds. Match rider/horse body scale to mounted idle and fixed hoof ground anchor."
+    ]
+  }
+}

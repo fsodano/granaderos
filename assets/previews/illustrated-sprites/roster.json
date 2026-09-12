@@ -1,0 +1,1105 @@
+{
+  "atlasCount": 328,
+  "direction": "se",
+  "logicalScale": 3,
+  "rows": [
+    {
+      "id": 0,
+      "name": "Martín Miguel de Güemes",
+      "appearance": "scout",
+      "portrait": "web/public/art/portrait-0.webp",
+      "appearanceTraits": {
+        "id": "scout",
+        "gender": "man",
+        "body": "lean",
+        "skin": "copper",
+        "hairColor": "black",
+        "hair": "tied-back",
+        "headwear": "none",
+        "clothing": "charcoal-poncho",
+        "description": "Lean scout; dark woven poncho, tied-back hair, practical gaiters"
+      },
+      "authoredPortraitDescription": null
+    },
+    {
+      "id": 1,
+      "name": "Juana Azurduy",
+      "appearance": "woman-officer",
+      "portrait": "web/public/art/portrait-1.webp",
+      "appearanceTraits": {
+        "id": "woman-officer",
+        "gender": "woman",
+        "body": "athletic",
+        "skin": "copper",
+        "hairColor": "black",
+        "hair": "braid",
+        "headwear": "none",
+        "clothing": "blue-officer",
+        "description": "Woman partisan officer; navy coat, red collar, dark braid and riding trousers"
+      },
+      "authoredPortraitDescription": null
+    },
+    {
+      "id": 2,
+      "name": "Fray Luis Beltrán",
+      "appearance": "friar",
+      "portrait": "web/public/art/portrait-2.webp",
+      "appearanceTraits": {
+        "id": "friar",
+        "gender": "man",
+        "body": "broad",
+        "skin": "olive",
+        "hairColor": "black",
+        "hair": "tonsure",
+        "headwear": "none",
+        "clothing": "brown-habit",
+        "description": "Workshop friar; practical brown wool habit, rope belt and worn shoes"
+      },
+      "authoredPortraitDescription": null
+    },
+    {
+      "id": 3,
+      "name": "Juan Bautista Cabral",
+      "appearance": "militia",
+      "portrait": "web/public/art/portrait-3.webp",
+      "appearanceTraits": {
+        "id": "militia",
+        "gender": "man",
+        "body": "broad",
+        "skin": "dark",
+        "hairColor": "black",
+        "hair": "cropped",
+        "headwear": "none",
+        "clothing": "navy-uniform",
+        "description": "Broad militia infantryman; plain navy coat, red collar, ivory straps"
+      },
+      "authoredPortraitDescription": null
+    },
+    {
+      "id": 4,
+      "name": "Manuel Dorrego",
+      "appearance": "blue-officer",
+      "portrait": "web/public/art/portrait-4.webp",
+      "appearanceTraits": {
+        "id": "blue-officer",
+        "gender": "man",
+        "body": "regular",
+        "skin": "olive",
+        "hairColor": "black",
+        "hair": "sideburns",
+        "headwear": "none",
+        "clothing": "blue-officer",
+        "description": "Navy officer coat; modest brass shoulder trim, red collar, dark trousers"
+      },
+      "authoredPortraitDescription": null
+    },
+    {
+      "id": 5,
+      "name": "Guillermo Brown",
+      "appearance": "blue-officer",
+      "portrait": "web/public/art/portrait-5.webp",
+      "appearanceTraits": {
+        "id": "blue-officer",
+        "gender": "man",
+        "body": "regular",
+        "skin": "olive",
+        "hairColor": "black",
+        "hair": "sideburns",
+        "headwear": "none",
+        "clothing": "blue-officer",
+        "description": "Navy officer coat; modest brass shoulder trim, red collar, dark trousers"
+      },
+      "authoredPortraitDescription": null
+    },
+    {
+      "id": 6,
+      "name": "Hipólito Bouchard",
+      "appearance": "naval",
+      "portrait": "web/public/art/portrait-6.webp",
+      "appearanceTraits": {
+        "id": "naval",
+        "gender": "man",
+        "body": "regular",
+        "skin": "fair",
+        "hairColor": "auburn",
+        "hair": "wavy",
+        "headwear": "none",
+        "clothing": "naval-jacket",
+        "description": "Worn navy sailor jacket, loose linen collar, neckcloth and plain trousers"
+      },
+      "authoredPortraitDescription": null
+    },
+    {
+      "id": 7,
+      "name": "Lorenzo Barcala",
+      "appearance": "militia",
+      "portrait": "web/public/art/portrait-7.webp",
+      "appearanceTraits": {
+        "id": "militia",
+        "gender": "man",
+        "body": "broad",
+        "skin": "dark",
+        "hairColor": "black",
+        "hair": "cropped",
+        "headwear": "none",
+        "clothing": "navy-uniform",
+        "description": "Broad militia infantryman; plain navy coat, red collar, ivory straps"
+      },
+      "authoredPortraitDescription": null
+    },
+    {
+      "id": 8,
+      "name": "Macacha Güemes",
+      "appearance": "woman-shawl",
+      "portrait": "web/public/art/portrait-8.webp",
+      "appearanceTraits": {
+        "id": "woman-shawl",
+        "gender": "woman",
+        "body": "regular",
+        "skin": "olive",
+        "hairColor": "brown",
+        "hair": "bun",
+        "headwear": "none",
+        "clothing": "burgundy-shawl",
+        "description": "Woman civilian specialist; burgundy shawl, cream blouse, practical long skirt"
+      },
+      "authoredPortraitDescription": null
+    },
+    {
+      "id": 9,
+      "name": "Facundo Quiroga",
+      "appearance": "gaucho",
+      "portrait": "web/public/art/portrait-9.webp",
+      "appearanceTraits": {
+        "id": "gaucho",
+        "gender": "man",
+        "body": "regular",
+        "skin": "tan",
+        "hairColor": "black",
+        "hair": "mustache",
+        "headwear": "felt-hat",
+        "clothing": "ochre-poncho",
+        "description": "Weathered gaucho; ochre wool poncho, red scarf, felt hat, riding boots"
+      },
+      "authoredPortraitDescription": null
+    },
+    {
+      "id": 10,
+      "name": "James Paroissien",
+      "appearance": "naval",
+      "portrait": "web/public/art/portrait-10.webp",
+      "appearanceTraits": {
+        "id": "naval",
+        "gender": "man",
+        "body": "regular",
+        "skin": "fair",
+        "hairColor": "auburn",
+        "hair": "wavy",
+        "headwear": "none",
+        "clothing": "naval-jacket",
+        "description": "Worn navy sailor jacket, loose linen collar, neckcloth and plain trousers"
+      },
+      "authoredPortraitDescription": null
+    },
+    {
+      "id": 11,
+      "name": "José María Paz",
+      "appearance": "blue-officer",
+      "portrait": "web/public/art/portrait-11.webp",
+      "appearanceTraits": {
+        "id": "blue-officer",
+        "gender": "man",
+        "body": "regular",
+        "skin": "olive",
+        "hairColor": "black",
+        "hair": "sideburns",
+        "headwear": "none",
+        "clothing": "blue-officer",
+        "description": "Navy officer coat; modest brass shoulder trim, red collar, dark trousers"
+      },
+      "authoredPortraitDescription": null
+    },
+    {
+      "id": 57,
+      "name": "José de San Martín",
+      "appearance": "blue-officer",
+      "portrait": "web/public/art/portrait-57.webp",
+      "appearanceTraits": {
+        "id": "blue-officer",
+        "gender": "man",
+        "body": "regular",
+        "skin": "olive",
+        "hairColor": "black",
+        "hair": "sideburns",
+        "headwear": "none",
+        "clothing": "blue-officer",
+        "description": "Navy officer coat; modest brass shoulder trim, red collar, dark trousers"
+      },
+      "authoredPortraitDescription": null
+    },
+    {
+      "id": 100,
+      "name": "Rafael Sosa",
+      "appearance": "gaucho",
+      "portrait": "web/public/art/portrait-100.webp",
+      "appearanceTraits": {
+        "id": "gaucho",
+        "gender": "man",
+        "body": "regular",
+        "skin": "tan",
+        "hairColor": "black",
+        "hair": "mustache",
+        "headwear": "felt-hat",
+        "clothing": "ochre-poncho",
+        "description": "Weathered gaucho; ochre wool poncho, red scarf, felt hat, riding boots"
+      },
+      "authoredPortraitDescription": null
+    },
+    {
+      "id": 101,
+      "name": "Tomasa Ríos",
+      "appearance": "woman-scout",
+      "portrait": "web/public/art/portrait-101.webp",
+      "appearanceTraits": {
+        "id": "woman-scout",
+        "gender": "woman",
+        "body": "athletic",
+        "skin": "copper",
+        "hairColor": "black",
+        "hair": "braid",
+        "headwear": "none",
+        "clothing": "olive-jacket",
+        "description": "Woman scout; tied dark braid, olive travel jacket, linen shirt, practical trousers"
+      },
+      "authoredPortraitDescription": null
+    },
+    {
+      "id": 102,
+      "name": "Mateo Ferreyra",
+      "appearance": "worker",
+      "portrait": "web/public/art/portrait-102.webp",
+      "appearanceTraits": {
+        "id": "worker",
+        "gender": "man",
+        "body": "lean",
+        "skin": "olive",
+        "hairColor": "brown",
+        "hair": "short",
+        "headwear": "none",
+        "clothing": "linen-shirt",
+        "description": "Young adult worker; plain linen shirt, brown waistcoat, leather apron straps, dark trousers"
+      },
+      "authoredPortraitDescription": null
+    },
+    {
+      "id": 103,
+      "name": "Étienne Morel",
+      "appearance": "naval",
+      "portrait": "web/public/art/portrait-103.png",
+      "appearanceTraits": {
+        "id": "naval",
+        "gender": "man",
+        "body": "regular",
+        "skin": "fair",
+        "hairColor": "auburn",
+        "hair": "wavy",
+        "headwear": "none",
+        "clothing": "naval-jacket",
+        "description": "Worn navy sailor jacket, loose linen collar, neckcloth and plain trousers"
+      },
+      "authoredPortraitDescription": null
+    },
+    {
+      "id": 104,
+      "name": "Patrick Doyle",
+      "appearance": "naval",
+      "portrait": "web/public/art/portrait-104.png",
+      "appearanceTraits": {
+        "id": "naval",
+        "gender": "man",
+        "body": "regular",
+        "skin": "fair",
+        "hairColor": "auburn",
+        "hair": "wavy",
+        "headwear": "none",
+        "clothing": "naval-jacket",
+        "description": "Worn navy sailor jacket, loose linen collar, neckcloth and plain trousers"
+      },
+      "authoredPortraitDescription": null
+    },
+    {
+      "id": 105,
+      "name": "Lucien Arnaud",
+      "appearance": "rifleman",
+      "portrait": "web/public/art/portrait-105.webp",
+      "appearanceTraits": {
+        "id": "rifleman",
+        "gender": "man",
+        "body": "lean",
+        "skin": "fair",
+        "hairColor": "gray",
+        "hair": "sideburns",
+        "headwear": "none",
+        "clothing": "green-uniform",
+        "description": "Lean veteran; dark green rifle coat with black braid, gray hair at temples"
+      },
+      "authoredPortraitDescription": null
+    },
+    {
+      "id": 106,
+      "name": "Manuel Leiva",
+      "appearance": "gaucho",
+      "portrait": "web/public/art/portrait-106.webp",
+      "appearanceTraits": {
+        "id": "gaucho",
+        "gender": "man",
+        "body": "regular",
+        "skin": "tan",
+        "hairColor": "black",
+        "hair": "mustache",
+        "headwear": "felt-hat",
+        "clothing": "ochre-poncho",
+        "description": "Weathered gaucho; ochre wool poncho, red scarf, felt hat, riding boots"
+      },
+      "authoredPortraitDescription": null
+    },
+    {
+      "id": 107,
+      "name": "Inés Aguirre",
+      "appearance": "woman-headscarf",
+      "portrait": "web/public/art/portrait-107.webp",
+      "appearanceTraits": {
+        "id": "woman-headscarf",
+        "gender": "woman",
+        "body": "sturdy",
+        "skin": "dark",
+        "hairColor": "black",
+        "hair": "covered",
+        "headwear": "linen-wrap",
+        "clothing": "indigo-shawl",
+        "description": "Woman field medic; cream linen headwrap, indigo shawl and practical long skirt"
+      },
+      "authoredPortraitDescription": "38-year-old Afro-Argentine woman, dark brown skin, round face, white linen head wrap, faded indigo shawl, steady thoughtful eyes"
+    },
+    {
+      "id": 108,
+      "name": "Julián Pereyra",
+      "appearance": "gaucho",
+      "portrait": "web/public/art/portrait-108.webp",
+      "appearanceTraits": {
+        "id": "gaucho",
+        "gender": "man",
+        "body": "regular",
+        "skin": "tan",
+        "hairColor": "black",
+        "hair": "mustache",
+        "headwear": "felt-hat",
+        "clothing": "ochre-poncho",
+        "description": "Weathered gaucho; ochre wool poncho, red scarf, felt hat, riding boots"
+      },
+      "authoredPortraitDescription": "29-year-old tan Argentine man, broad jaw, unruly black curls, thin mustache, worn brown gaucho hat, red neckerchief"
+    },
+    {
+      "id": 109,
+      "name": "Edward Harcourt",
+      "appearance": "scarlet-officer",
+      "portrait": "web/public/art/portrait-109.webp",
+      "appearanceTraits": {
+        "id": "scarlet-officer",
+        "gender": "man",
+        "body": "regular",
+        "skin": "fair",
+        "hairColor": "gray",
+        "hair": "sideburns",
+        "headwear": "none",
+        "clothing": "scarlet-officer",
+        "description": "Weathered scarlet officer coat, dark facings, cream stock, gray trousers"
+      },
+      "authoredPortraitDescription": "54-year-old British former lieutenant colonel, pale weathered skin, long aristocratic face, gray sideburns, clean shaven chin, faded scarlet high-collared infantry officer coat with dark facings and worn gold shoulder epaulette, white neck stock, no hat"
+    },
+    {
+      "id": 110,
+      "name": "Baltasar Acosta",
+      "appearance": "militia",
+      "portrait": "web/public/art/portrait-110.webp",
+      "appearanceTraits": {
+        "id": "militia",
+        "gender": "man",
+        "body": "broad",
+        "skin": "dark",
+        "hairColor": "black",
+        "hair": "cropped",
+        "headwear": "none",
+        "clothing": "navy-uniform",
+        "description": "Broad militia infantryman; plain navy coat, red collar, ivory straps"
+      },
+      "authoredPortraitDescription": "42-year-old Black Argentine man, powerful build, close cropped hair, broad nose, dark blue plain militia coat with red collar"
+    },
+    {
+      "id": 111,
+      "name": "Armand Delatour",
+      "appearance": "blue-officer",
+      "portrait": "web/public/art/portrait-111.webp",
+      "appearanceTraits": {
+        "id": "blue-officer",
+        "gender": "man",
+        "body": "regular",
+        "skin": "olive",
+        "hairColor": "black",
+        "hair": "sideburns",
+        "headwear": "none",
+        "clothing": "blue-officer",
+        "description": "Navy officer coat; modest brass shoulder trim, red collar, dark trousers"
+      },
+      "authoredPortraitDescription": "43-year-old French former engineer major, olive skin, compact square face, black curly hair graying at temples, short neat mustache, dark blue high-collared engineer officer coat with black velvet facings, restrained brass buttons, worn gold shoulder trim"
+    },
+    {
+      "id": 112,
+      "name": "Gaspar Villalba",
+      "appearance": "surgeon",
+      "portrait": "web/public/art/portrait-112.webp",
+      "appearanceTraits": {
+        "id": "surgeon",
+        "gender": "man",
+        "body": "lean",
+        "skin": "fair",
+        "hairColor": "gray",
+        "hair": "receding",
+        "headwear": "none",
+        "clothing": "brown-coat",
+        "description": "Older surgeon; brown long coat, cream cravat, spectacles, small leather satchel"
+      },
+      "authoredPortraitDescription": "51-year-old light olive skinned man, receding gray hair, small round period spectacles, clean shaven, brown waistcoat and white cravat"
+    },
+    {
+      "id": 113,
+      "name": "Alistair Kerr",
+      "appearance": "rifleman",
+      "portrait": "web/public/art/portrait-113.webp",
+      "appearanceTraits": {
+        "id": "rifleman",
+        "gender": "man",
+        "body": "lean",
+        "skin": "fair",
+        "hairColor": "gray",
+        "hair": "sideburns",
+        "headwear": "none",
+        "clothing": "green-uniform",
+        "description": "Lean veteran; dark green rifle coat with black braid, gray hair at temples"
+      },
+      "authoredPortraitDescription": "46-year-old Scottish British former light infantry major, fair windburned skin, lean face, auburn graying sideburns, hazel eyes, clean shaven, worn dark green high-collared officer coat with black braiding and white neck stock"
+    },
+    {
+      "id": 114,
+      "name": "Eusebio Ledesma",
+      "appearance": "militia",
+      "portrait": "web/public/art/portrait-114.webp",
+      "appearanceTraits": {
+        "id": "militia",
+        "gender": "man",
+        "body": "broad",
+        "skin": "dark",
+        "hairColor": "black",
+        "hair": "cropped",
+        "headwear": "none",
+        "clothing": "navy-uniform",
+        "description": "Broad militia infantryman; plain navy coat, red collar, ivory straps"
+      },
+      "authoredPortraitDescription": "56-year-old brown-skinned man, gray horseshoe mustache, stern lined face, faded navy military coat, cropped gray hair"
+    },
+    {
+      "id": 115,
+      "name": "Nicolás Funes",
+      "appearance": "scout",
+      "portrait": "web/public/art/portrait-115.webp",
+      "appearanceTraits": {
+        "id": "scout",
+        "gender": "man",
+        "body": "lean",
+        "skin": "copper",
+        "hairColor": "black",
+        "hair": "tied-back",
+        "headwear": "none",
+        "clothing": "charcoal-poncho",
+        "description": "Lean scout; dark woven poncho, tied-back hair, practical gaiters"
+      },
+      "authoredPortraitDescription": "35-year-old olive-skinned man, lean angular face, dark sideburns, stubble, faded charcoal poncho, narrow focused eyes"
+    },
+    {
+      "id": 116,
+      "name": "Petrona Lagos",
+      "appearance": "woman-headscarf",
+      "portrait": "web/public/art/portrait-116.webp",
+      "appearanceTraits": {
+        "id": "woman-headscarf",
+        "gender": "woman",
+        "body": "sturdy",
+        "skin": "dark",
+        "hairColor": "black",
+        "hair": "covered",
+        "headwear": "linen-wrap",
+        "clothing": "indigo-shawl",
+        "description": "Woman field medic; cream linen headwrap, indigo shawl and practical long skirt"
+      },
+      "authoredPortraitDescription": "45-year-old Afro-Argentine woman, strong square face, deep brown skin, cream headscarf tied behind head, weathered blue shawl"
+    },
+    {
+      "id": 117,
+      "name": "Jacinto Ojeda",
+      "appearance": "gaucho",
+      "portrait": "web/public/art/portrait-117.webp",
+      "appearanceTraits": {
+        "id": "gaucho",
+        "gender": "man",
+        "body": "regular",
+        "skin": "tan",
+        "hairColor": "black",
+        "hair": "mustache",
+        "headwear": "felt-hat",
+        "clothing": "ochre-poncho",
+        "description": "Weathered gaucho; ochre wool poncho, red scarf, felt hat, riding boots"
+      },
+      "authoredPortraitDescription": "40-year-old tan man, heavy black mustache, broad weather-beaten face, dark flat brim gaucho hat, ochre poncho"
+    },
+    {
+      "id": 118,
+      "name": "Étienne Valcourt",
+      "appearance": "scarlet-officer",
+      "portrait": "web/public/art/portrait-118.webp",
+      "appearanceTraits": {
+        "id": "scarlet-officer",
+        "gender": "man",
+        "body": "regular",
+        "skin": "fair",
+        "hairColor": "gray",
+        "hair": "sideburns",
+        "headwear": "none",
+        "clothing": "scarlet-officer",
+        "description": "Weathered scarlet officer coat, dark facings, cream stock, gray trousers"
+      },
+      "authoredPortraitDescription": "58-year-old French former artillery colonel, pale lined face, bald crown with swept back silver hair, thick gray eyebrows, clean shaven, worn dark navy artillery officer coat with red collar, modest tarnished gold epaulettes, white cravat"
+    },
+    {
+      "id": 119,
+      "name": "Benjamín Duarte",
+      "appearance": "militia",
+      "portrait": "web/public/art/portrait-119.webp",
+      "appearanceTraits": {
+        "id": "militia",
+        "gender": "man",
+        "body": "broad",
+        "skin": "dark",
+        "hairColor": "black",
+        "hair": "cropped",
+        "headwear": "none",
+        "clothing": "navy-uniform",
+        "description": "Broad militia infantryman; plain navy coat, red collar, ivory straps"
+      },
+      "authoredPortraitDescription": "20-year-old Black man, round youthful face, very short curly hair, plain patched brown jacket and open white linen collar"
+    },
+    {
+      "id": 120,
+      "name": "Mercedes Quiroga",
+      "appearance": "woman-shawl",
+      "portrait": "web/public/art/portrait-120.webp",
+      "appearanceTraits": {
+        "id": "woman-shawl",
+        "gender": "woman",
+        "body": "regular",
+        "skin": "olive",
+        "hairColor": "brown",
+        "hair": "bun",
+        "headwear": "none",
+        "clothing": "burgundy-shawl",
+        "description": "Woman civilian specialist; burgundy shawl, cream blouse, practical long skirt"
+      },
+      "authoredPortraitDescription": "43-year-old Andean woman, russet brown skin, prominent cheekbones, black hair with silver streak, burgundy woven shawl"
+    },
+    {
+      "id": 121,
+      "name": "Ramón Cáceres",
+      "appearance": "artisan",
+      "portrait": "web/public/art/portrait-121.webp",
+      "appearanceTraits": {
+        "id": "artisan",
+        "gender": "man",
+        "body": "broad",
+        "skin": "tan",
+        "hairColor": "gray",
+        "hair": "beard",
+        "headwear": "none",
+        "clothing": "leather-apron",
+        "description": "Broad artisan; brown leather apron over cream linen, beard, sturdy boots"
+      },
+      "authoredPortraitDescription": "46-year-old tan man, thick eyebrows, salt and pepper short beard, brown leather apron, sturdy neck, kindly eyes"
+    },
+    {
+      "id": 122,
+      "name": "Isabel Molina",
+      "appearance": "woman-shawl",
+      "portrait": "web/public/art/portrait-122.webp",
+      "appearanceTraits": {
+        "id": "woman-shawl",
+        "gender": "woman",
+        "body": "regular",
+        "skin": "olive",
+        "hairColor": "brown",
+        "hair": "bun",
+        "headwear": "none",
+        "clothing": "burgundy-shawl",
+        "description": "Woman civilian specialist; burgundy shawl, cream blouse, practical long skirt"
+      },
+      "authoredPortraitDescription": "31-year-old light brown skinned woman, oval face, dark brown eyes, center parted black hair pinned back, muted green shawl"
+    },
+    {
+      "id": 123,
+      "name": "Santiago Soria",
+      "appearance": "blue-officer",
+      "portrait": "web/public/art/portrait-123.webp",
+      "appearanceTraits": {
+        "id": "blue-officer",
+        "gender": "man",
+        "body": "regular",
+        "skin": "olive",
+        "hairColor": "black",
+        "hair": "sideburns",
+        "headwear": "none",
+        "clothing": "blue-officer",
+        "description": "Navy officer coat; modest brass shoulder trim, red collar, dark trousers"
+      },
+      "authoredPortraitDescription": "49-year-old olive-skinned man, long thin face, short gray sideburns, neat mustache, weathered dark blue infantry coat"
+    },
+    {
+      "id": 124,
+      "name": "Thomas Ashford",
+      "appearance": "scarlet-officer",
+      "portrait": "web/public/art/portrait-124.webp",
+      "appearanceTraits": {
+        "id": "scarlet-officer",
+        "gender": "man",
+        "body": "regular",
+        "skin": "fair",
+        "hairColor": "gray",
+        "hair": "sideburns",
+        "headwear": "none",
+        "clothing": "scarlet-officer",
+        "description": "Weathered scarlet officer coat, dark facings, cream stock, gray trousers"
+      },
+      "authoredPortraitDescription": "41-year-old British former dragoon major, fair ruddy skin, broad face, sandy blond hair, heavy sideburns and clean shaven chin, faded red cavalry officer jacket with dark blue collar and worn gold braid, white neck stock"
+    },
+    {
+      "id": 125,
+      "name": "Diego Barrera",
+      "appearance": "artisan",
+      "portrait": "web/public/art/portrait-125.webp",
+      "appearanceTraits": {
+        "id": "artisan",
+        "gender": "man",
+        "body": "broad",
+        "skin": "tan",
+        "hairColor": "gray",
+        "hair": "beard",
+        "headwear": "none",
+        "clothing": "leather-apron",
+        "description": "Broad artisan; brown leather apron over cream linen, beard, sturdy boots"
+      },
+      "authoredPortraitDescription": "34-year-old brown-skinned man, stocky neck, broken nose, short black beard, plain russet work jacket"
+    },
+    {
+      "id": 126,
+      "name": "Teresa Godoy",
+      "appearance": "woman-scout",
+      "portrait": "web/public/art/portrait-126.webp",
+      "appearanceTraits": {
+        "id": "woman-scout",
+        "gender": "woman",
+        "body": "athletic",
+        "skin": "copper",
+        "hairColor": "black",
+        "hair": "braid",
+        "headwear": "none",
+        "clothing": "olive-jacket",
+        "description": "Woman scout; tied dark braid, olive travel jacket, linen shirt, practical trousers"
+      },
+      "authoredPortraitDescription": "21-year-old tan woman, youthful narrow face, straight dark hair in single braid, plain undyed wool shawl"
+    },
+    {
+      "id": 127,
+      "name": "Esteban Peralta",
+      "appearance": "militia",
+      "portrait": "web/public/art/portrait-127.webp",
+      "appearanceTraits": {
+        "id": "militia",
+        "gender": "man",
+        "body": "broad",
+        "skin": "dark",
+        "hairColor": "black",
+        "hair": "cropped",
+        "headwear": "none",
+        "clothing": "navy-uniform",
+        "description": "Broad militia infantryman; plain navy coat, red collar, ivory straps"
+      },
+      "authoredPortraitDescription": "30-year-old Afro-Argentine man, medium dark skin, clean shaven, expressive eyes, curly hair, faded blue militia tunic"
+    },
+    {
+      "id": 128,
+      "name": "William Blackwood",
+      "appearance": "rifleman",
+      "portrait": "web/public/art/portrait-128.webp",
+      "appearanceTraits": {
+        "id": "rifleman",
+        "gender": "man",
+        "body": "lean",
+        "skin": "fair",
+        "hairColor": "gray",
+        "hair": "sideburns",
+        "headwear": "none",
+        "clothing": "green-uniform",
+        "description": "Lean veteran; dark green rifle coat with black braid, gray hair at temples"
+      },
+      "authoredPortraitDescription": "50-year-old British former rifle lieutenant colonel, pale skin, narrow angular face, dark hair with silver temples, small old scar beside eyebrow, clean shaven, dark green rifle officer coat with worn black braid and high collar"
+    },
+    {
+      "id": 129,
+      "name": "Francisco Tapia",
+      "appearance": "gaucho",
+      "portrait": "web/public/art/portrait-129.webp",
+      "appearanceTraits": {
+        "id": "gaucho",
+        "gender": "man",
+        "body": "regular",
+        "skin": "tan",
+        "hairColor": "black",
+        "hair": "mustache",
+        "headwear": "felt-hat",
+        "clothing": "ochre-poncho",
+        "description": "Weathered gaucho; ochre wool poncho, red scarf, felt hat, riding boots"
+      },
+      "authoredPortraitDescription": "53-year-old tan man, full graying beard, deeply lined cheeks, soft brown felt hat, striped muted ochre poncho"
+    },
+    {
+      "id": 130,
+      "name": "Ángela Cejas",
+      "appearance": "woman-shawl",
+      "portrait": "web/public/art/portrait-130.webp",
+      "appearanceTraits": {
+        "id": "woman-shawl",
+        "gender": "woman",
+        "body": "regular",
+        "skin": "olive",
+        "hairColor": "brown",
+        "hair": "bun",
+        "headwear": "none",
+        "clothing": "burgundy-shawl",
+        "description": "Woman civilian specialist; burgundy shawl, cream blouse, practical long skirt"
+      },
+      "authoredPortraitDescription": "23-year-old brown-skinned woman, round dark eyes, soft cheeks, black hair under simple cream kerchief, faded gray blue shawl"
+    },
+    {
+      "id": 131,
+      "name": "Vicente Arce",
+      "appearance": "blue-officer",
+      "portrait": "web/public/art/portrait-131.webp",
+      "appearanceTraits": {
+        "id": "blue-officer",
+        "gender": "man",
+        "body": "regular",
+        "skin": "olive",
+        "hairColor": "black",
+        "hair": "sideburns",
+        "headwear": "none",
+        "clothing": "blue-officer",
+        "description": "Navy officer coat; modest brass shoulder trim, red collar, dark trousers"
+      },
+      "authoredPortraitDescription": "39-year-old mestizo man, sharp cheekbones, black mustache, short hair, navy cavalry jacket with worn red trim"
+    },
+    {
+      "id": 132,
+      "name": "Charles Pembroke",
+      "appearance": "scarlet-officer",
+      "portrait": "web/public/art/portrait-132.webp",
+      "appearanceTraits": {
+        "id": "scarlet-officer",
+        "gender": "man",
+        "body": "regular",
+        "skin": "fair",
+        "hairColor": "gray",
+        "hair": "sideburns",
+        "headwear": "none",
+        "clothing": "scarlet-officer",
+        "description": "Weathered scarlet officer coat, dark facings, cream stock, gray trousers"
+      },
+      "authoredPortraitDescription": "61-year-old British former infantry colonel, fair skin, full dignified face, thinning silver hair, long white sideburns, clean shaven, worn scarlet officer coat with buff collar, faded gold epaulettes and white stock"
+    },
+    {
+      "id": 133,
+      "name": "Pedro Albornoz",
+      "appearance": "militia",
+      "portrait": "web/public/art/portrait-133.webp",
+      "appearanceTraits": {
+        "id": "militia",
+        "gender": "man",
+        "body": "broad",
+        "skin": "dark",
+        "hairColor": "black",
+        "hair": "cropped",
+        "headwear": "none",
+        "clothing": "navy-uniform",
+        "description": "Broad militia infantryman; plain navy coat, red collar, ivory straps"
+      },
+      "authoredPortraitDescription": "48-year-old dark brown skinned man, massive shoulders, shaved head, short gray beard, worn leather blacksmith apron"
+    },
+    {
+      "id": 134,
+      "name": "Mariano Véliz",
+      "appearance": "scout",
+      "portrait": "web/public/art/portrait-134.webp",
+      "appearanceTraits": {
+        "id": "scout",
+        "gender": "man",
+        "body": "lean",
+        "skin": "copper",
+        "hairColor": "black",
+        "hair": "tied-back",
+        "headwear": "none",
+        "clothing": "charcoal-poncho",
+        "description": "Lean scout; dark woven poncho, tied-back hair, practical gaiters"
+      },
+      "authoredPortraitDescription": "33-year-old pale olive skinned man, deep set dark eyes, long nose, black shoulder length hair, charcoal wool scarf"
+    },
+    {
+      "id": 135,
+      "name": "Josefa Roldán",
+      "appearance": "woman-elder",
+      "portrait": "web/public/art/portrait-135.webp",
+      "appearanceTraits": {
+        "id": "woman-elder",
+        "gender": "woman",
+        "body": "regular",
+        "skin": "copper",
+        "hairColor": "gray",
+        "hair": "braid",
+        "headwear": "none",
+        "clothing": "charcoal-shawl",
+        "description": "Older woman practitioner; gray-streaked braid, charcoal shawl, plain long skirt"
+      },
+      "authoredPortraitDescription": "58-year-old Andean woman, weathered copper skin, gray braided hair, deep smile lines, muted blue wool shawl over linen"
+    },
+    {
+      "id": 136,
+      "name": "Lorenzo Silva",
+      "appearance": "militia",
+      "portrait": "web/public/art/portrait-136.webp",
+      "appearanceTraits": {
+        "id": "militia",
+        "gender": "man",
+        "body": "broad",
+        "skin": "dark",
+        "hairColor": "black",
+        "hair": "cropped",
+        "headwear": "none",
+        "clothing": "navy-uniform",
+        "description": "Broad militia infantryman; plain navy coat, red collar, ivory straps"
+      },
+      "authoredPortraitDescription": "41-year-old Afro-Argentine man, broad square jaw, short beard, dark skin, brown traveling coat and ochre neckcloth"
+    },
+    {
+      "id": 137,
+      "name": "Louis Desforges",
+      "appearance": "blue-officer",
+      "portrait": "web/public/art/portrait-137.webp",
+      "appearanceTraits": {
+        "id": "blue-officer",
+        "gender": "man",
+        "body": "regular",
+        "skin": "olive",
+        "hairColor": "black",
+        "hair": "sideburns",
+        "headwear": "none",
+        "clothing": "blue-officer",
+        "description": "Navy officer coat; modest brass shoulder trim, red collar, dark trousers"
+      },
+      "authoredPortraitDescription": "45-year-old French former cavalry lieutenant colonel, olive skin, handsome weathered face, black wavy hair, thick curled mustache, faded blue hussar officer dolman with restrained worn gold cords and red collar"
+    },
+    {
+      "id": 138,
+      "name": "Henri Beaumont",
+      "appearance": "blue-officer",
+      "portrait": "web/public/art/portrait-138.webp",
+      "appearanceTraits": {
+        "id": "blue-officer",
+        "gender": "man",
+        "body": "regular",
+        "skin": "olive",
+        "hairColor": "black",
+        "hair": "sideburns",
+        "headwear": "none",
+        "clothing": "blue-officer",
+        "description": "Navy officer coat; modest brass shoulder trim, red collar, dark trousers"
+      },
+      "authoredPortraitDescription": "47-year-old French man, pale weathered face, receding brown hair, bushy sideburns, dark naval artillery coat"
+    },
+    {
+      "id": 139,
+      "name": "Bridget O’Connell",
+      "appearance": "woman-shawl",
+      "portrait": "web/public/art/portrait-139.webp",
+      "appearanceTraits": {
+        "id": "woman-shawl",
+        "gender": "woman",
+        "body": "regular",
+        "skin": "olive",
+        "hairColor": "brown",
+        "hair": "bun",
+        "headwear": "none",
+        "clothing": "burgundy-shawl",
+        "description": "Woman civilian specialist; burgundy shawl, cream blouse, practical long skirt"
+      },
+      "authoredPortraitDescription": "34-year-old Irish woman, fair freckled skin, red hair pinned back, green gray eyes, plain blue shawl and white linen blouse"
+    },
+    {
+      "id": 140,
+      "name": "Matteo Ricci",
+      "appearance": "worker",
+      "portrait": "web/public/art/portrait-140.webp",
+      "appearanceTraits": {
+        "id": "worker",
+        "gender": "man",
+        "body": "lean",
+        "skin": "olive",
+        "hairColor": "brown",
+        "hair": "short",
+        "headwear": "none",
+        "clothing": "linen-shirt",
+        "description": "Young adult worker; plain linen shirt, brown waistcoat, leather apron straps, dark trousers"
+      },
+      "authoredPortraitDescription": "28-year-old Italian man, olive complexion, slender face, wavy chestnut hair, fine mustache, leather vest over cream shirt"
+    },
+    {
+      "id": 141,
+      "name": "Joaquim Ferreira",
+      "appearance": "blue-officer",
+      "portrait": "web/public/art/portrait-141.webp",
+      "appearanceTraits": {
+        "id": "blue-officer",
+        "gender": "man",
+        "body": "regular",
+        "skin": "olive",
+        "hairColor": "black",
+        "hair": "sideburns",
+        "headwear": "none",
+        "clothing": "blue-officer",
+        "description": "Navy officer coat; modest brass shoulder trim, red collar, dark trousers"
+      },
+      "authoredPortraitDescription": "39-year-old Portuguese man, sun darkened olive skin, curly black beard, short hair, navy wool sailor jacket and red scarf"
+    },
+    {
+      "id": 142,
+      "name": "Samuel Reed",
+      "appearance": "rifleman",
+      "portrait": "web/public/art/portrait-142.webp",
+      "appearanceTraits": {
+        "id": "rifleman",
+        "gender": "man",
+        "body": "lean",
+        "skin": "fair",
+        "hairColor": "gray",
+        "hair": "sideburns",
+        "headwear": "none",
+        "clothing": "green-uniform",
+        "description": "Lean veteran; dark green rifle coat with black braid, gray hair at temples"
+      },
+      "authoredPortraitDescription": "44-year-old British man, fair ruddy skin, sandy graying hair, clean shaven angular face, dark green rifleman coat without insignia"
+    },
+    {
+      "id": 143,
+      "name": "Philippe Montreuil",
+      "appearance": "rifleman",
+      "portrait": "web/public/art/portrait-143.webp",
+      "appearanceTraits": {
+        "id": "rifleman",
+        "gender": "man",
+        "body": "lean",
+        "skin": "fair",
+        "hairColor": "gray",
+        "hair": "sideburns",
+        "headwear": "none",
+        "clothing": "green-uniform",
+        "description": "Lean veteran; dark green rifle coat with black braid, gray hair at temples"
+      },
+      "authoredPortraitDescription": "55-year-old French former staff colonel, pale olive skin, long thoughtful face, straight graying dark hair brushed back, clean shaven, dark blue high-collared officer coat, red facings, restrained gold shoulder trim, neatly tied white cravat"
+    },
+    {
+      "id": 144,
+      "name": "Karl Weiss",
+      "appearance": "artisan",
+      "portrait": "web/public/art/portrait-144.webp",
+      "appearanceTraits": {
+        "id": "artisan",
+        "gender": "man",
+        "body": "broad",
+        "skin": "tan",
+        "hairColor": "gray",
+        "hair": "beard",
+        "headwear": "none",
+        "clothing": "leather-apron",
+        "description": "Broad artisan; brown leather apron over cream linen, beard, sturdy boots"
+      },
+      "authoredPortraitDescription": "52-year-old German man, pale skin, broad forehead, swept back graying blond hair, square beard, brown artisan waistcoat"
+    },
+    {
+      "id": 145,
+      "name": "Domingo Farías",
+      "appearance": "gaucho",
+      "portrait": "web/public/art/portrait-145.webp",
+      "appearanceTraits": {
+        "id": "gaucho",
+        "gender": "man",
+        "body": "regular",
+        "skin": "tan",
+        "hairColor": "black",
+        "hair": "mustache",
+        "headwear": "felt-hat",
+        "clothing": "ochre-poncho",
+        "description": "Weathered gaucho; ochre wool poncho, red scarf, felt hat, riding boots"
+      },
+      "authoredPortraitDescription": "55-year-old tan Argentine man, weather-beaten face, thick silver mustache, black gaucho hat, deep red poncho"
+    },
+    {
+      "id": 146,
+      "name": "Auguste Bellanger",
+      "appearance": "surgeon",
+      "portrait": "web/public/art/portrait-146.webp",
+      "appearanceTraits": {
+        "id": "surgeon",
+        "gender": "man",
+        "body": "lean",
+        "skin": "fair",
+        "hairColor": "gray",
+        "hair": "receding",
+        "headwear": "none",
+        "clothing": "brown-coat",
+        "description": "Older surgeon; brown long coat, cream cravat, spectacles, small leather satchel"
+      },
+      "authoredPortraitDescription": "49-year-old French former senior army surgeon, light olive skin, tired kind eyes, receding dark hair with gray temples, small round period wire spectacles, clean shaven, plain dark blue medical officer coat with burgundy collar and white cravat"
+    },
+    {
+      "id": 147,
+      "name": "Andrés Montiel",
+      "appearance": "scout",
+      "portrait": "web/public/art/portrait-147.webp",
+      "appearanceTraits": {
+        "id": "scout",
+        "gender": "man",
+        "body": "lean",
+        "skin": "copper",
+        "hairColor": "black",
+        "hair": "tied-back",
+        "headwear": "none",
+        "clothing": "charcoal-poncho",
+        "description": "Lean scout; dark woven poncho, tied-back hair, practical gaiters"
+      },
+      "authoredPortraitDescription": "46-year-old Andean man, deep copper skin, high cheekbones, black hair streaked gray, dark woven poncho, watchful eyes"
+    }
+  ]
+}

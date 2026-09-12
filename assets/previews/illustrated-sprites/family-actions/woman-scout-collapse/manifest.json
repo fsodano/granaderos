@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-scout-collapse": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-north-v1.png",
+          "sha256": "2dbd94f5ff8073a2d2d24c1954344e15e71bd88149a73561a7db55edf6d27c14",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-south-v1.png",
+          "sha256": "8857cf9e40f04faf4fec2618627aeee892d4032abdeedba707f09cba1a70ea16",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-north-v1.png",
+          "sourceScale": 0.5092592592592593,
+          "sourceAnchor": [
+            45,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            87,
+            218
+          ],
+          "bounds": [
+            122,
+            114,
+            165,
+            224
+          ],
+          "sha256": "5f4af958a0d4b7f5fb2d1ca1d6d1f8f092f8fcbb909de81f29a36d77d0563183"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-north-v1.png",
+          "sourceScale": 0.5092592592592593,
+          "sourceAnchor": [
+            69.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            45,
+            137,
+            218
+          ],
+          "bounds": [
+            110,
+            136,
+            179,
+            224
+          ],
+          "sha256": "93d2d26861d058939f12ab1a2fe0944a1cb79f47a7707d36b9e4de6cd7f25eb1"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-north-v1.png",
+          "sourceScale": 0.5092592592592593,
+          "sourceAnchor": [
+            75.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            115,
+            149,
+            220
+          ],
+          "bounds": [
+            107,
+            172,
+            182,
+            225
+          ],
+          "sha256": "f6c4e4be5e032ad8dac4715f0121154cc25ad6c05d4da57f8b818b9d781022e7"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-north-v1.png",
+          "sourceScale": 0.5092592592592593,
+          "sourceAnchor": [
+            72.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            113,
+            143,
+            217
+          ],
+          "bounds": [
+            108,
+            171,
+            180,
+            224
+          ],
+          "sha256": "18a11ba5e16090b04f3bbec7b1f58b148bfafb2da36b4bbb3dd094e4e508e152"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-north-v1.png",
+          "sourceScale": 0.5069124423963134,
+          "sourceAnchor": [
+            41,
+            219
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            76,
+            219
+          ],
+          "bounds": [
+            124,
+            115,
+            162,
+            225
+          ],
+          "sha256": "e10c181cc0ca3066c695a3a1d37dcf30e2e3a750bce435336d3f4743184efb2f"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-north-v1.png",
+          "sourceScale": 0.5069124423963134,
+          "sourceAnchor": [
+            78,
+            219
+          ],
+          "sourceBounds": [
+            2,
+            43,
+            126,
+            219
+          ],
+          "bounds": [
+            105,
+            136,
+            168,
+            225
+          ],
+          "sha256": "b6a08b9fb37d6c0f4c06fcdd2581e385c5c2a6148e8977823de44feaeba3fcd4"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-north-v1.png",
+          "sourceScale": 0.5069124423963134,
+          "sourceAnchor": [
+            95.5,
+            219
+          ],
+          "sourceBounds": [
+            2,
+            108,
+            195,
+            219
+          ],
+          "bounds": [
+            97,
+            169,
+            195,
+            225
+          ],
+          "sha256": "3c9aa79113c0152168eeeeb8e98f6b91aa3277a44a3c2686b5397c0a3a2c85f8"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-north-v1.png",
+          "sourceScale": 0.5069124423963134,
+          "sourceAnchor": [
+            59,
+            219
+          ],
+          "sourceBounds": [
+            2,
+            123,
+            202,
+            219
+          ],
+          "bounds": [
+            115,
+            176,
+            216,
+            225
+          ],
+          "sha256": "c79dcc7d654ba1387a78f0bd2535978ac2c6d25a93d0547d954945d8e6e650f4"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-north-v1.png",
+          "sourceScale": 0.5069124423963134,
+          "sourceAnchor": [
+            39,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            61,
+            219
+          ],
+          "bounds": [
+            125,
+            114,
+            155,
+            224
+          ],
+          "sha256": "63ee8285774234da839397a09936bcf4c5c4e7dd2fb7d1fe45173c48355badc2"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-north-v1.png",
+          "sourceScale": 0.5069124423963134,
+          "sourceAnchor": [
+            94.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            40,
+            123,
+            220
+          ],
+          "bounds": [
+            97,
+            134,
+            158,
+            225
+          ],
+          "sha256": "bf460daaefa8748497a903e4809634b62f3a53dc13fbaebf1fcd6bc690f0f269"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-north-v1.png",
+          "sourceScale": 0.5069124423963134,
+          "sourceAnchor": [
+            108.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            116,
+            201,
+            220
+          ],
+          "bounds": [
+            90,
+            172,
+            191,
+            225
+          ],
+          "sha256": "4336be6f5d85ef46261ed941917c0cf6619897c87dc55e5333530796dc9c45e9"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-north-v1.png",
+          "sourceScale": 0.5069124423963134,
+          "sourceAnchor": [
+            124.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            172,
+            244,
+            220
+          ],
+          "bounds": [
+            82,
+            201,
+            205,
+            225
+          ],
+          "sha256": "02840a61b698f14149c5d770a9f3b796a35c19ecc0b3132b1833ad36162c1242"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-north-v1.png",
+          "sourceScale": 0.49107142857142855,
+          "sourceAnchor": [
+            45.5,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            84,
+            226
+          ],
+          "bounds": [
+            123,
+            115,
+            163,
+            225
+          ],
+          "sha256": "b13db77d88243c2e2c875176b3f590ab62e3a96eac710376ee9f07c1ec6dc651"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-north-v1.png",
+          "sourceScale": 0.49107142857142855,
+          "sourceAnchor": [
+            82,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            38,
+            124,
+            226
+          ],
+          "bounds": [
+            105,
+            133,
+            165,
+            225
+          ],
+          "sha256": "d40c824930a7714c037f0205047c7c797068e980445fc81434500fb2d86a5f2d"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-north-v1.png",
+          "sourceScale": 0.49107142857142855,
+          "sourceAnchor": [
+            150.5,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            98,
+            198,
+            226
+          ],
+          "bounds": [
+            71,
+            162,
+            167,
+            225
+          ],
+          "sha256": "2f2b9fbc76c2febc78dc5ed30771e5b3e7d65a77f2a468cf39146b696a55c4d8"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-north-v1.png",
+          "sourceScale": 0.49107142857142855,
+          "sourceAnchor": [
+            188.5,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            136,
+            219,
+            226
+          ],
+          "bounds": [
+            52,
+            181,
+            159,
+            225
+          ],
+          "sha256": "9c9e615790324719c9ae47210b004c86a3453225c0d856dab68596419935b64f"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-south-v1.png",
+          "sourceScale": 0.5023255813953489,
+          "sourceAnchor": [
+            43.5,
+            217
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            85,
+            217
+          ],
+          "bounds": [
+            123,
+            117,
+            165,
+            225
+          ],
+          "sha256": "c881ea8211a8f7f6636d378b46a1f563f60bf26e2aba733056185f8ae9491d9f"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-south-v1.png",
+          "sourceScale": 0.5023255813953489,
+          "sourceAnchor": [
+            54,
+            217
+          ],
+          "sourceBounds": [
+            2,
+            30,
+            111,
+            216
+          ],
+          "bounds": [
+            118,
+            131,
+            173,
+            224
+          ],
+          "sha256": "e00a5a8b12291a52633f5a17bbe4b5909595cdcdbff51ab2bfd2e4373760f440"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-south-v1.png",
+          "sourceScale": 0.5023255813953489,
+          "sourceAnchor": [
+            65,
+            217
+          ],
+          "sourceBounds": [
+            2,
+            82,
+            131,
+            216
+          ],
+          "bounds": [
+            112,
+            157,
+            177,
+            224
+          ],
+          "sha256": "476d574e908c8ba9000e5ebf38d02697bf795489f47055da6c9ef1c5e914d4aa"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-south-v1.png",
+          "sourceScale": 0.5023255813953489,
+          "sourceAnchor": [
+            63,
+            217
+          ],
+          "sourceBounds": [
+            2,
+            107,
+            124,
+            216
+          ],
+          "bounds": [
+            113,
+            170,
+            174,
+            225
+          ],
+          "sha256": "fa3382e0b881b75eb4479dec9c90d5466f312a8b63be6950659f0f5990548bb1"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-south-v1.png",
+          "sourceScale": 0.48660714285714285,
+          "sourceAnchor": [
+            37.5,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            82,
+            226
+          ],
+          "bounds": [
+            127,
+            116,
+            166,
+            225
+          ],
+          "sha256": "6f37f38b1c68787bd175aeb9cb1c578feca73a5b7b589a85e16b357ddf5ac77a"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-south-v1.png",
+          "sourceScale": 0.48660714285714285,
+          "sourceAnchor": [
+            42.5,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            44,
+            120,
+            226
+          ],
+          "bounds": [
+            124,
+            136,
+            181,
+            225
+          ],
+          "sha256": "dd9d35c4ffccd26b8fdaf62349ac58b91aad9bf04a4520aeaed66efdb5344396"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-south-v1.png",
+          "sourceScale": 0.48660714285714285,
+          "sourceAnchor": [
+            28.5,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            99,
+            169,
+            225
+          ],
+          "bounds": [
+            131,
+            163,
+            212,
+            224
+          ],
+          "sha256": "3477a2a932e8fa834c7888a87770cc6e13a1a7118d084400d3884b11f361e86b"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-south-v1.png",
+          "sourceScale": 0.48660714285714285,
+          "sourceAnchor": [
+            30.5,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            140,
+            208,
+            225
+          ],
+          "bounds": [
+            130,
+            183,
+            230,
+            224
+          ],
+          "sha256": "4cbf1ab79f7333846a8b9b13291251143cbd845b3200a1b60b32fede5f88846b"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-south-v1.png",
+          "sourceScale": 0.4864864864864865,
+          "sourceAnchor": [
+            29,
+            224
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            66,
+            224
+          ],
+          "bounds": [
+            131,
+            117,
+            162,
+            225
+          ],
+          "sha256": "f877042c246b041bbeed436f708b41db015d0d081b8d827d50053d8e6936dfef"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-south-v1.png",
+          "sourceScale": 0.4864864864864865,
+          "sourceAnchor": [
+            41.5,
+            224
+          ],
+          "sourceBounds": [
+            2,
+            43,
+            115,
+            224
+          ],
+          "bounds": [
+            125,
+            137,
+            180,
+            225
+          ],
+          "sha256": "e6402599395c845cef89b547059600d8d8711133455ea90f715daed06ec38342"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-south-v1.png",
+          "sourceScale": 0.4864864864864865,
+          "sourceAnchor": [
+            98,
+            224
+          ],
+          "sourceBounds": [
+            2,
+            114,
+            188,
+            223
+          ],
+          "bounds": [
+            97,
+            171,
+            187,
+            224
+          ],
+          "sha256": "8dfa2d021b577f8740e8f330d3a3e32235b02329cc56ea9789cceb7b0dfeb449"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-south-v1.png",
+          "sourceScale": 0.4864864864864865,
+          "sourceAnchor": [
+            115.5,
+            224
+          ],
+          "sourceBounds": [
+            2,
+            178,
+            230,
+            224
+          ],
+          "bounds": [
+            89,
+            203,
+            200,
+            225
+          ],
+          "sha256": "407dd20e9b46ed3c966e2d09f2a086b81c5bd8205499de58f35fdbfe67d2c7ed"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-south-v1.png",
+          "sourceScale": 0.47577092511013214,
+          "sourceAnchor": [
+            47.5,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            86,
+            229
+          ],
+          "bounds": [
+            122,
+            117,
+            162,
+            225
+          ],
+          "sha256": "597063d906f43023f4535494d923d0ad676c6efd436569b748c329604645e53c"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-south-v1.png",
+          "sourceScale": 0.47577092511013214,
+          "sourceAnchor": [
+            57.5,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            40,
+            102,
+            228
+          ],
+          "bounds": [
+            118,
+            135,
+            166,
+            224
+          ],
+          "sha256": "363db3ad6eeba95d3fbafd5e9049375c5cef5d0936a40540eb60eb659130d9fd"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-south-v1.png",
+          "sourceScale": 0.47577092511013214,
+          "sourceAnchor": [
+            103,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            121,
+            181,
+            229
+          ],
+          "bounds": [
+            96,
+            174,
+            181,
+            225
+          ],
+          "sha256": "c2dd92acb7f7481bfec061b8abcd470fc4dc52643b56efd3794fbcaf8cbffd3b"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-south-v1.png",
+          "sourceScale": 0.47577092511013214,
+          "sourceAnchor": [
+            157.5,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            128,
+            199,
+            226
+          ],
+          "bounds": [
+            70,
+            177,
+            164,
+            224
+          ],
+          "sha256": "909bf4e7d4baa65ff1f092531ab25b5bfae2222c5e438b7ddcdb84b6ff1b62d9"
+        }
+      ],
+      "file": "woman-scout-collapse.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "2d7284307d10299339c089a93a39a407cde1082a7efe0a12579cf469e88e3522"
+    }
+  }
+}

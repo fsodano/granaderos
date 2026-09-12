@@ -1,0 +1,241 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "friar-prone-aim-idle": {
+      "cell": 288,
+      "anchor": [
+        144,
+        165
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/friar-prone-armed-fire-north-v1.png",
+          "sha256": "1631db7337669c9ce567f1b42ccecb6e6782d99b54123b9b449ccd84458658d7",
+          "scale": 0.9186602870813397
+        },
+        {
+          "file": "assets/source/illustrated-sprites/friar-prone-armed-fire-south-v1.png",
+          "sha256": "2f625997a43f83ccfd27b55541e6a6b615d591652357dc793f435f23af39ad71",
+          "scale": 0.9186602870813397
+        },
+        {
+          "file": "assets/source/illustrated-sprites/friar-prone-armed-fire-s-fix-v1.png",
+          "sha256": "3f3de1fc79ac95ece49083ac6e51d20f9bb1e85b90de496c5839c2f99add1da4",
+          "scale": 0.18556
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/friar-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.472898,
+          "sourceAnchor": [
+            40.678,
+            147.041
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            121,
+            236
+          ],
+          "bounds": [
+            126,
+            96,
+            182,
+            207
+          ],
+          "sha256": "40eac948f299ec0c1f865849fd335156afbf6bfb1abc516579e2df14b63bcb81"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/friar-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.492543,
+          "sourceAnchor": [
+            84.985,
+            95.46119384703468
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            211,
+            188
+          ],
+          "bounds": [
+            103,
+            119,
+            206,
+            211
+          ],
+          "sha256": "243183f9417dc26a5145ba0c6211a323562ca17adaa88904b8382294fcd44019"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/friar-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.464085,
+          "sourceAnchor": [
+            85.858,
+            61.463
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            249,
+            100
+          ],
+          "bounds": [
+            105,
+            137,
+            220,
+            182
+          ],
+          "sha256": "9c7581d0c2cc996c47410d25184219dde77e8c5431c7df961811477eaa63450b"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/friar-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.499159,
+          "sourceAnchor": [
+            76.2,
+            39.8
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            212,
+            118
+          ],
+          "bounds": [
+            107,
+            146,
+            212,
+            204
+          ],
+          "sha256": "ad66188e73c4889492a1ce5a2284a9dc9370f824efbb25a7a98310b92e38b82d"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/friar-prone-armed-fire-s-fix-v1.png",
+          "sourceScale": 0.176282,
+          "sourceAnchor": [
+            133.70731707317074,
+            104.43902439024392
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            258,
+            402
+          ],
+          "bounds": [
+            121,
+            147,
+            166,
+            218
+          ],
+          "sha256": "d7a5fe602e6c61249ed3916580372caca2a5382907c73f1b0a7f5c979925ecb7"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/friar-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.449956,
+          "sourceAnchor": [
+            122.541,
+            34.144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            225,
+            112
+          ],
+          "bounds": [
+            90,
+            151,
+            190,
+            200
+          ],
+          "sha256": "bbb5ea0cd7813b0bef15e7fd46a0c95105d35deb7e658edeaa053e113ac60136"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/friar-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.437491,
+          "sourceAnchor": [
+            165.325,
+            77.258
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            263,
+            102
+          ],
+          "bounds": [
+            73,
+            132,
+            187,
+            176
+          ],
+          "sha256": "23fdee79e0fbe3355658dcf40a0a56e103a93bbba451ae539be58778704a4b03"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/friar-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.401156,
+          "sourceAnchor": [
+            147.183,
+            100.046
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            249,
+            172
+          ],
+          "bounds": [
+            86,
+            126,
+            185,
+            194
+          ],
+          "sha256": "d05050904be3786f41db2417d6afbcc41854fedf087db00b797d1c9a0e150ba0"
+        }
+      ],
+      "file": "friar-prone-aim-idle.png",
+      "size": [
+        2304,
+        288
+      ],
+      "sha256": "2461877f16d3dd3513c8a4cc66eee8f46f789f16d82425131bf10907f64fc3e1",
+      "derivedFrom": {
+        "atlas": "friar-prone-armed-fire",
+        "frame": 0,
+        "reason": "hold authored pre-shot aim"
+      }
+    }
+  }
+}

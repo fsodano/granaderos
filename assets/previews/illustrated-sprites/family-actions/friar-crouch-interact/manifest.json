@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "friar-crouch-interact": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-north-v1.png",
+          "sha256": "30cc8a23c2e160013cc43af4ee4e2eeb21ec6aaf1e735990031edde3d9c8f07f",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-south-v1.png",
+          "sha256": "445ecfab8519793288675e3d774c3aa3b93d72902ab26396208cd2091ca2c431",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-north-v1.png",
+          "sourceScale": 0.33004926108374383,
+          "sourceAnchor": [
+            70.5,
+            205
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            205
+          ],
+          "bounds": [
+            121,
+            158,
+            167,
+            225
+          ],
+          "sha256": "c04606ebc21773ad4c7b52a514952c14350dc11eef41c65844b6756bc2d9fb3e"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-north-v1.png",
+          "sourceScale": 0.33004926108374383,
+          "sourceAnchor": [
+            70.5,
+            205
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            168,
+            205
+          ],
+          "bounds": [
+            121,
+            158,
+            176,
+            225
+          ],
+          "sha256": "d9eb950e1f4d11ec269ddd27446efc62c2424e14e16461b67f755ae1d782d335"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-north-v1.png",
+          "sourceScale": 0.33004926108374383,
+          "sourceAnchor": [
+            71.5,
+            205
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            205
+          ],
+          "bounds": [
+            121,
+            158,
+            167,
+            225
+          ],
+          "sha256": "41c932a0912639871e36e1c22b214c3d9c2a16232beb6f9bba51c2201c5da97c"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-north-v1.png",
+          "sourceScale": 0.33004926108374383,
+          "sourceAnchor": [
+            70.5,
+            205
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            205
+          ],
+          "bounds": [
+            121,
+            158,
+            167,
+            225
+          ],
+          "sha256": "3fd018890445d999cec1d6b876bde4b1cdd84c50ab613b36b0f80e764d8405b1"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-north-v1.png",
+          "sourceScale": 0.3582089552238806,
+          "sourceAnchor": [
+            72.5,
+            204
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            152,
+            203
+          ],
+          "bounds": [
+            119,
+            153,
+            173,
+            225
+          ],
+          "sha256": "fc60891c235598e05d21fdd9d404f98682b227bc6bfac143f09f11535cb234d9"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-north-v1.png",
+          "sourceScale": 0.3582089552238806,
+          "sourceAnchor": [
+            72.5,
+            204
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            196,
+            204
+          ],
+          "bounds": [
+            119,
+            153,
+            188,
+            225
+          ],
+          "sha256": "bd0581b56ad3a51b78daad0bcb0442f7878b1bf52f870cbfe1c1114af2b59238"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-north-v1.png",
+          "sourceScale": 0.3582089552238806,
+          "sourceAnchor": [
+            71,
+            204
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            169,
+            203
+          ],
+          "bounds": [
+            119,
+            153,
+            179,
+            225
+          ],
+          "sha256": "9671b93ebcd884ea326b087b34e632797aa68337b68903af8035905163f1cc8d"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-north-v1.png",
+          "sourceScale": 0.3582089552238806,
+          "sourceAnchor": [
+            72.5,
+            204
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            153,
+            203
+          ],
+          "bounds": [
+            119,
+            153,
+            173,
+            225
+          ],
+          "sha256": "230e5f0683c8be5468122b8d12808048c0564c931cb7c32107c583a6cfdfb9d6"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-north-v1.png",
+          "sourceScale": 0.37,
+          "sourceAnchor": [
+            69.5,
+            204
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            144,
+            202
+          ],
+          "bounds": [
+            119,
+            150,
+            172,
+            224
+          ],
+          "sha256": "d285275063a3eb3326785345a48ccc8ada3ea07dcb6384e811fcc5d154d7d139"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-north-v1.png",
+          "sourceScale": 0.37,
+          "sourceAnchor": [
+            71,
+            204
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            204,
+            204
+          ],
+          "bounds": [
+            118,
+            150,
+            193,
+            225
+          ],
+          "sha256": "c547c165ed6123d0e51c832927f45d52dc749498c9812cc4ccd41ae82864c4d4"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-north-v1.png",
+          "sourceScale": 0.37,
+          "sourceAnchor": [
+            67,
+            204
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            177,
+            202
+          ],
+          "bounds": [
+            120,
+            150,
+            185,
+            224
+          ],
+          "sha256": "a5f42fdcbfbd678127430d7836df20cc25a5e3f5fc8f82284806d67b6b69e938"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-north-v1.png",
+          "sourceScale": 0.37,
+          "sourceAnchor": [
+            69.5,
+            204
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            144,
+            202
+          ],
+          "bounds": [
+            119,
+            150,
+            172,
+            224
+          ],
+          "sha256": "a3923d6ed7479eeb39bb6b241962d4e579b140eeb6fa4ac557a005b3f8bd49df"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-north-v1.png",
+          "sourceScale": 0.3564356435643564,
+          "sourceAnchor": [
+            80,
+            204
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            160,
+            204
+          ],
+          "bounds": [
+            116,
+            153,
+            172,
+            225
+          ],
+          "sha256": "d5c738ead3ade7ac7c9fb3028aefe856d6728fc3c1fd8f10baaf0a7d91733908"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-north-v1.png",
+          "sourceScale": 0.3564356435643564,
+          "sourceAnchor": [
+            47.5,
+            204
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            193,
+            204
+          ],
+          "bounds": [
+            128,
+            153,
+            196,
+            225
+          ],
+          "sha256": "f813c585891c8dea1d44a952ff301f8909ca51d74d8c2b77048fa6e979234cca"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-north-v1.png",
+          "sourceScale": 0.3564356435643564,
+          "sourceAnchor": [
+            43,
+            204
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            166,
+            204
+          ],
+          "bounds": [
+            129,
+            153,
+            187,
+            225
+          ],
+          "sha256": "55aec0fa56fde07df0c019fae533aaefc6f4dbe0f62adbc620a1a6d4742e2253"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-north-v1.png",
+          "sourceScale": 0.3564356435643564,
+          "sourceAnchor": [
+            80.5,
+            204
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            160,
+            204
+          ],
+          "bounds": [
+            116,
+            153,
+            172,
+            225
+          ],
+          "sha256": "d50780f26981ca7a5de7eb160f26d29858f41e21a9afd4e0d9aa022df307baf4"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-south-v1.png",
+          "sourceScale": 0.3401015228426396,
+          "sourceAnchor": [
+            77.5,
+            205
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            151,
+            199
+          ],
+          "bounds": [
+            118,
+            156,
+            169,
+            223
+          ],
+          "sha256": "7ab3429f1b1482248d93d80ce7965e8046ab0f3654d15507ddf8bfae2f5efc4e"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-south-v1.png",
+          "sourceScale": 0.3401015228426396,
+          "sourceAnchor": [
+            84.5,
+            205
+          ],
+          "sourceBounds": [
+            2,
+            23,
+            149,
+            205
+          ],
+          "bounds": [
+            116,
+            163,
+            166,
+            225
+          ],
+          "sha256": "f1af27be685f78a61d3302a5de232594a2bb85eeeca3151e8174bea8e19d064d"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-south-v1.png",
+          "sourceScale": 0.3401015228426396,
+          "sourceAnchor": [
+            80.5,
+            205
+          ],
+          "sourceBounds": [
+            2,
+            13,
+            151,
+            199
+          ],
+          "bounds": [
+            117,
+            160,
+            168,
+            223
+          ],
+          "sha256": "492792a6babaf00f55f317166a25afb66f9fea18bcc2253a117c133b80bf7ad1"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-south-v1.png",
+          "sourceScale": 0.3401015228426396,
+          "sourceAnchor": [
+            77,
+            205
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            150,
+            199
+          ],
+          "bounds": [
+            118,
+            156,
+            168,
+            223
+          ],
+          "sha256": "28f83abe021c1e5b21f9089c3b4aea6d331887f7a2925780bc8536be2e2d8c2f"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-south-v1.png",
+          "sourceScale": 0.35096153846153844,
+          "sourceAnchor": [
+            87,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            161,
+            211
+          ],
+          "bounds": [
+            114,
+            152,
+            170,
+            225
+          ],
+          "sha256": "2b093fef856384ba77c1bc1c6322a6d2c6bf4dbafa1e9ca13ffe70a886b2fea3"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-south-v1.png",
+          "sourceScale": 0.35096153846153844,
+          "sourceAnchor": [
+            129.5,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            14,
+            203,
+            212
+          ],
+          "bounds": [
+            99,
+            156,
+            170,
+            225
+          ],
+          "sha256": "a39031be14c50e04edf9499a39402256f7d93ddc3f7b39fc04c6c4da92fad5c8"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-south-v1.png",
+          "sourceScale": 0.35096153846153844,
+          "sourceAnchor": [
+            95,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            6,
+            172,
+            212
+          ],
+          "bounds": [
+            111,
+            153,
+            171,
+            225
+          ],
+          "sha256": "b3425c361d8e26e238a127d2ed43272add37cec818e4063d44423ce478843faa"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-south-v1.png",
+          "sourceScale": 0.35096153846153844,
+          "sourceAnchor": [
+            86,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            161,
+            212
+          ],
+          "bounds": [
+            115,
+            151,
+            171,
+            225
+          ],
+          "sha256": "f528711f438d8db8103d10baf3af32fa01c42254bc1f000a797888d27a1fd076"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-south-v1.png",
+          "sourceScale": 0.35294117647058826,
+          "sourceAnchor": [
+            83.5,
+            208
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            159,
+            206
+          ],
+          "bounds": [
+            115,
+            152,
+            170,
+            224
+          ],
+          "sha256": "ea1414547e742283357aaa642c6879263eb36b962ebfcda18c1dcbc7381c98c5"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-south-v1.png",
+          "sourceScale": 0.35294117647058826,
+          "sourceAnchor": [
+            98.5,
+            208
+          ],
+          "sourceBounds": [
+            2,
+            9,
+            199,
+            208
+          ],
+          "bounds": [
+            110,
+            155,
+            180,
+            225
+          ],
+          "sha256": "c1c04d4ca1047577f302a06e10485e687734f1aab55e721d57cbbce6844bcc15"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-south-v1.png",
+          "sourceScale": 0.35294117647058826,
+          "sourceAnchor": [
+            105,
+            208
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            181,
+            206
+          ],
+          "bounds": [
+            108,
+            153,
+            171,
+            225
+          ],
+          "sha256": "bdf66c4b7ec9eaee10a8fcb025bfc1afbf8fcddc34f962290f2d76859b568969"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-south-v1.png",
+          "sourceScale": 0.35294117647058826,
+          "sourceAnchor": [
+            73,
+            208
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            152,
+            206
+          ],
+          "bounds": [
+            119,
+            152,
+            172,
+            224
+          ],
+          "sha256": "5cee84079f230a3adfe10c5652554facded0d29fd7957e406bd4b338c91daf11"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-south-v1.png",
+          "sourceScale": 0.35121951219512193,
+          "sourceAnchor": [
+            79,
+            207
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            166,
+            207
+          ],
+          "bounds": [
+            117,
+            153,
+            175,
+            225
+          ],
+          "sha256": "e1f929221a1649d7dac038064d48349b3f13a8bb0236cd53a3f46fd435d6181b"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-south-v1.png",
+          "sourceScale": 0.35121951219512193,
+          "sourceAnchor": [
+            116,
+            207
+          ],
+          "sourceBounds": [
+            2,
+            17,
+            192,
+            207
+          ],
+          "bounds": [
+            104,
+            158,
+            171,
+            225
+          ],
+          "sha256": "9f5e2d7d48d06e7623af5e3531d50398dc7109c4663ff5da35b9a36465db6e2b"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-south-v1.png",
+          "sourceScale": 0.35121951219512193,
+          "sourceAnchor": [
+            92,
+            207
+          ],
+          "sourceBounds": [
+            2,
+            13,
+            171,
+            207
+          ],
+          "bounds": [
+            112,
+            157,
+            171,
+            225
+          ],
+          "sha256": "fec1ed077a2bbb4f6362112678172e2b6308b32c51a7928e5dc6821e9f11f9e2"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-crouch-interact-south-v1.png",
+          "sourceScale": 0.35121951219512193,
+          "sourceAnchor": [
+            78.5,
+            207
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            165,
+            207
+          ],
+          "bounds": [
+            117,
+            154,
+            174,
+            225
+          ],
+          "sha256": "72828b04e416dc385b716c3331fb4f80112222156603cd3e638341945c5a434b"
+        }
+      ],
+      "file": "friar-crouch-interact.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "5561f08e3aceccd07a6a264ad6cb958fdb86be9f8a40ee918fabcc6b8ef6940d"
+    }
+  }
+}

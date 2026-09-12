@@ -1,0 +1,13 @@
+{
+  "columns": 1,
+  "rows": 1,
+  "scaleMode": "height",
+  "slots": [
+    {
+      "direction": "nw",
+      "frame": 1,
+      "row": 0,
+      "col": 0
+    }
+  ]
+}

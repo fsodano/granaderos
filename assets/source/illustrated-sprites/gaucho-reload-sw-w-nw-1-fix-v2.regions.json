@@ -1,0 +1,19 @@
+{
+  "columns": 3,
+  "rows": 1,
+  "scaleMode": "height",
+  "slots": [
+    {
+      "direction": "sw",
+      "frame": 1,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "direction": "w",
+      "frame": 1,
+      "row": 0,
+      "col": 1
+    }
+  ]
+}

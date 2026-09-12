@@ -1,0 +1,442 @@
+{
+  "schemaVersion": 1,
+  "appearance": "woman-officer",
+  "purpose": "Standalone actionable registration data; does not modify sources.json.",
+  "pathBase": "repository-root",
+  "sourceMeasurements": {
+    "mainAnimation": [
+      1254,
+      1254
+    ],
+    "mountedIdle": [
+      1774,
+      887
+    ],
+    "strikeCorrection": [
+      1536,
+      1024
+    ],
+    "southReloadCorrection": [
+      1774,
+      887
+    ],
+    "southwestReloadCorrection": [
+      2172,
+      724
+    ],
+    "southeastReloadCorrection": [
+      1254,
+      1254
+    ]
+  },
+  "mainSheets": [
+    {
+      "name": "woman-officer-strike-north-v1",
+      "source": "assets/source/illustrated-sprites/woman-officer-strike-north-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-officer-strike-north-v1.prompt.txt",
+      "reference": "assets/source/illustrated-sprites/granadero-strike-north-reviewed-reference.png",
+      "identityReference": "assets/source/illustrated-sprites/woman-officer-idle-v1.png",
+      "state": "strike",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "directions": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ],
+      "phases": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "name": "woman-officer-strike-south-v1",
+      "source": "assets/source/illustrated-sprites/woman-officer-strike-south-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-officer-strike-south-v1.prompt.txt",
+      "reference": "assets/source/illustrated-sprites/granadero-strike-south-reviewed-reference.png",
+      "identityReference": "assets/source/illustrated-sprites/woman-officer-idle-v1.png",
+      "state": "strike",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "directions": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "phases": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "name": "woman-officer-prone-armed-reload-north-v1",
+      "source": "assets/source/illustrated-sprites/woman-officer-prone-armed-reload-north-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-officer-prone-armed-reload-north-v1.prompt.txt",
+      "reference": "assets/source/illustrated-sprites/granadero-prone-armed-reload-north-reviewed-reference.png",
+      "identityReference": "assets/source/illustrated-sprites/woman-officer-prone-armed-idle-v1.png",
+      "state": "prone-armed-reload",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "directions": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ],
+      "phases": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "name": "woman-officer-prone-armed-reload-south-v1",
+      "source": "assets/source/illustrated-sprites/woman-officer-prone-armed-reload-south-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-officer-prone-armed-reload-south-v1.prompt.txt",
+      "reference": "assets/source/illustrated-sprites/granadero-prone-armed-reload-south-reviewed-reference.png",
+      "identityReference": "assets/source/illustrated-sprites/woman-officer-prone-armed-idle-v1.png",
+      "state": "prone-armed-reload",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "directions": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "phases": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "name": "woman-officer-mounted-idle-v1",
+      "source": "assets/source/illustrated-sprites/woman-officer-mounted-idle-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-officer-mounted-idle-v1.prompt.txt",
+      "reference": "assets/source/illustrated-sprites/granadero-mounted-idle-reviewed-reference.png",
+      "identityReference": "assets/source/illustrated-sprites/woman-officer-idle-v1.png",
+      "state": "mounted-idle",
+      "half": "all",
+      "columns": 4,
+      "rows": 2,
+      "directions": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "phases": [
+        0
+      ]
+    },
+    {
+      "name": "woman-officer-mounted-walk-north-v1",
+      "source": "assets/source/illustrated-sprites/woman-officer-mounted-walk-north-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-officer-mounted-walk-north-v1.prompt.txt",
+      "reference": "assets/source/illustrated-sprites/granadero-mounted-walk-north-reviewed-reference.png",
+      "identityReference": "assets/source/illustrated-sprites/woman-officer-idle-v1.png",
+      "state": "mounted-walk",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "directions": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ],
+      "phases": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "name": "woman-officer-mounted-walk-south-v1",
+      "source": "assets/source/illustrated-sprites/woman-officer-mounted-walk-south-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-officer-mounted-walk-south-v1.prompt.txt",
+      "reference": "assets/source/illustrated-sprites/granadero-mounted-walk-south-reviewed-reference.png",
+      "identityReference": "assets/source/illustrated-sprites/woman-officer-idle-v1.png",
+      "state": "mounted-walk",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "directions": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "phases": [
+        0,
+        1,
+        2,
+        3
+      ]
+    }
+  ],
+  "corrections": [
+    {
+      "name": "woman-officer-strike-s-w-fix-v1",
+      "source": "assets/source/illustrated-sprites/woman-officer-strike-s-w-fix-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-officer-strike-s-w-fix-v1.prompt.txt",
+      "reference": "assets/source/illustrated-sprites/granadero-strike-south-reviewed-reference.png",
+      "state": "strike",
+      "half": "south",
+      "columns": 4,
+      "rows": 2,
+      "regions": [
+        {
+          "direction": "S",
+          "phase": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            122,
+            79,
+            117,
+            322
+          ]
+        },
+        {
+          "direction": "S",
+          "phase": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            505,
+            79,
+            118,
+            322
+          ]
+        },
+        {
+          "direction": "S",
+          "phase": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            889,
+            79,
+            118,
+            322
+          ]
+        },
+        {
+          "direction": "S",
+          "phase": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1273,
+            79,
+            118,
+            322
+          ]
+        },
+        {
+          "direction": "W",
+          "phase": 0,
+          "row": 1,
+          "col": 0,
+          "rect": [
+            96,
+            582,
+            138,
+            316
+          ]
+        },
+        {
+          "direction": "W",
+          "phase": 3,
+          "row": 1,
+          "col": 3,
+          "rect": [
+            1248,
+            582,
+            138,
+            316
+          ]
+        }
+      ],
+      "note": "Replace S row and W guard/recovery only. W phases1/2 remain main source. Align correction body height, not full weapon bounds."
+    },
+    {
+      "name": "woman-officer-prone-armed-reload-s-sw-fix-v1",
+      "source": "assets/source/illustrated-sprites/woman-officer-prone-armed-reload-s-sw-fix-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-officer-prone-armed-reload-s-sw-fix-v1.prompt.txt",
+      "reference": "assets/source/illustrated-sprites/woman-officer-prone-armed-reload-south-v1.png",
+      "state": "prone-armed-reload",
+      "half": "south",
+      "columns": 4,
+      "rows": 2,
+      "regions": [
+        {
+          "direction": "S",
+          "phase": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            162,
+            109,
+            139,
+            298
+          ]
+        },
+        {
+          "direction": "S",
+          "phase": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            575,
+            109,
+            145,
+            298
+          ]
+        },
+        {
+          "direction": "S",
+          "phase": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            1010,
+            109,
+            139,
+            298
+          ]
+        },
+        {
+          "direction": "S",
+          "phase": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1432,
+            109,
+            140,
+            298
+          ]
+        }
+      ],
+      "note": "Use top row only. Bottom row is W and is rejected for SW."
+    },
+    {
+      "name": "woman-officer-prone-armed-reload-sw-fix-v1",
+      "source": "assets/source/illustrated-sprites/woman-officer-prone-armed-reload-sw-fix-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-officer-prone-armed-reload-sw-fix-v1.prompt.txt",
+      "reference": "assets/source/illustrated-sprites/woman-officer-prone-armed-reload-south-v1.png",
+      "state": "prone-armed-reload",
+      "half": "south",
+      "columns": 4,
+      "rows": 1,
+      "regions": [
+        {
+          "direction": "SW",
+          "phase": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            70,
+            285,
+            452,
+            235
+          ]
+        },
+        {
+          "direction": "SW",
+          "phase": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            578,
+            285,
+            467,
+            235
+          ]
+        },
+        {
+          "direction": "SW",
+          "phase": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            1094,
+            285,
+            487,
+            235
+          ]
+        },
+        {
+          "direction": "SW",
+          "phase": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1630,
+            285,
+            481,
+            235
+          ]
+        }
+      ],
+      "note": "Valid lower-left head/upper-right feet. Rod phase is legible; rod touches near lock region."
+    },
+    {
+      "name": "woman-officer-prone-armed-reload-se-0-fix-v2",
+      "source": "assets/source/illustrated-sprites/woman-officer-prone-armed-reload-se-0-fix-v2.png",
+      "prompt": "assets/source/illustrated-sprites/woman-officer-prone-armed-reload-se-0-fix-v2.prompt.txt",
+      "reference": "assets/source/illustrated-sprites/woman-officer-prone-armed-idle-v1.png",
+      "state": "prone-armed-reload",
+      "half": "north",
+      "columns": 1,
+      "rows": 1,
+      "regions": [
+        {
+          "direction": "SE",
+          "phase": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            75,
+            313,
+            1114,
+            647
+          ]
+        }
+      ],
+      "note": "Parent to inspect. Head/gun lower-right and boots upper-left. Dedicated source; do not duplicate phase3. Head/torso scale is more reliable than bounds height."
+    }
+  ],
+  "rejectedSources": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-officer-prone-armed-reload-se-0-fix-v1.png",
+      "reason": "Incorrect E orientation; use v2."
+    }
+  ],
+  "reviewNotes": [
+    "All main sheets and corrections pass frame count and gutter/bounds detection.",
+    "Some pale diagonal strap fragments persist in extended strike poses.",
+    "Mounted horse directions and hoof phases are preserved; some rider heads turn slightly.",
+    "All correction scale and pivot registration requires body/head alignment against accepted infantry."
+  ]
+}

@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-shawl-mounted-reload": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-north-v1.png",
+          "sha256": "02fd67b257180ccfe44328f5181288099734128e012689407a21870612195145",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-south-v1.png",
+          "sha256": "6c2d95422517f7941afd0e0fe20f19cb0cf70e1ed401d221b7f52058c16f3ad5",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-north-v1.png",
+          "sourceScale": 0.6226415094339622,
+          "sourceAnchor": [
+            56.5,
+            267
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            113,
+            267
+          ],
+          "bounds": [
+            110,
+            60,
+            179,
+            225
+          ],
+          "sha256": "5b117beb149cfa4dae12ccf7f618d807435f8456473813afe81e353e014eac7d"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-north-v1.png",
+          "sourceScale": 0.6226415094339622,
+          "sourceAnchor": [
+            56.5,
+            267
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            113,
+            267
+          ],
+          "bounds": [
+            110,
+            60,
+            179,
+            225
+          ],
+          "sha256": "741a711e87841fabb3fb76708c067e953dad68146a5e09c5bbe356285891e4f7"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-north-v1.png",
+          "sourceScale": 0.6226415094339622,
+          "sourceAnchor": [
+            58,
+            267
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            114,
+            267
+          ],
+          "bounds": [
+            109,
+            60,
+            179,
+            225
+          ],
+          "sha256": "e1c566501fac09fc064f5204af16beb8f597aa308793cbda27bdeba0cd0560bc"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-north-v1.png",
+          "sourceScale": 0.6226415094339622,
+          "sourceAnchor": [
+            56.5,
+            267
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            114,
+            267
+          ],
+          "bounds": [
+            110,
+            60,
+            180,
+            225
+          ],
+          "sha256": "2040784f5fed432a740c9c72ed40fc5b9285ecdb319bddd0dc96753d0c95cb48"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-north-v1.png",
+          "sourceScale": 0.6111111111111112,
+          "sourceAnchor": [
+            81,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            194,
+            274
+          ],
+          "bounds": [
+            96,
+            60,
+            213,
+            225
+          ],
+          "sha256": "c0ebef1e306bff62dbcb0e05dda3e77ca70c169b2ab9e2a8c91e3028834eb540"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-north-v1.png",
+          "sourceScale": 0.6111111111111112,
+          "sourceAnchor": [
+            81,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            197,
+            274
+          ],
+          "bounds": [
+            96,
+            59,
+            215,
+            225
+          ],
+          "sha256": "4a4dc1063d5dc809d671e9e7313936f09c5874d0fa69e60b4d628a197dae3edc"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-north-v1.png",
+          "sourceScale": 0.6111111111111112,
+          "sourceAnchor": [
+            80.5,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            194,
+            274
+          ],
+          "bounds": [
+            96,
+            59,
+            213,
+            225
+          ],
+          "sha256": "1883b5231eb464f0e0017f354e29d4c0e6e9dd7211121276a5b512aa4a2b2a44"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-north-v1.png",
+          "sourceScale": 0.6111111111111112,
+          "sourceAnchor": [
+            80.5,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            192,
+            274
+          ],
+          "bounds": [
+            96,
+            59,
+            212,
+            225
+          ],
+          "sha256": "2fc778e3bf462dbf540fd2aec84f420ce05f28687269fbc3d10047a079cf9d76"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-north-v1.png",
+          "sourceScale": 0.6074074074074074,
+          "sourceAnchor": [
+            107,
+            277
+          ],
+          "sourceBounds": [
+            2,
+            6,
+            272,
+            276
+          ],
+          "bounds": [
+            80,
+            60,
+            244,
+            224
+          ],
+          "sha256": "a2f83e051bd78267d5c9f7c51f9c1ee358217b195782ca272832e01e65db3d40"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-north-v1.png",
+          "sourceScale": 0.6074074074074074,
+          "sourceAnchor": [
+            106.5,
+            277
+          ],
+          "sourceBounds": [
+            2,
+            6,
+            271,
+            276
+          ],
+          "bounds": [
+            81,
+            60,
+            244,
+            224
+          ],
+          "sha256": "755a68bae628df6456a1be55700555d3b2c221c0e8d8cdce4c9fa7839413a639"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-north-v1.png",
+          "sourceScale": 0.6074074074074074,
+          "sourceAnchor": [
+            106,
+            277
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            269,
+            277
+          ],
+          "bounds": [
+            81,
+            58,
+            243,
+            225
+          ],
+          "sha256": "9229bc530df54f8a7f77c5ea03a0c5efea9990854372be5b65992dad91305dcc"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-north-v1.png",
+          "sourceScale": 0.6074074074074074,
+          "sourceAnchor": [
+            107,
+            277
+          ],
+          "sourceBounds": [
+            2,
+            6,
+            270,
+            276
+          ],
+          "bounds": [
+            80,
+            60,
+            243,
+            224
+          ],
+          "sha256": "4baa4c60a8752bbe6d2ae9efed20d307831576ab0efbe6df2ce2092885ca3ec5"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-north-v1.png",
+          "sourceScale": 0.630188679245283,
+          "sourceAnchor": [
+            103.5,
+            270
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            238,
+            269
+          ],
+          "bounds": [
+            80,
+            57,
+            229,
+            224
+          ],
+          "sha256": "eabf4d5cb81ed5b4b5b927dd7aa2fa7482669dbb23177834e02f9fb08296288b"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-north-v1.png",
+          "sourceScale": 0.630188679245283,
+          "sourceAnchor": [
+            103,
+            270
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            240,
+            269
+          ],
+          "bounds": [
+            80,
+            57,
+            230,
+            224
+          ],
+          "sha256": "7c64763e3fda5f5c3b13d8230ec7112869bc85fce1fd425edef5027eef1914b9"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-north-v1.png",
+          "sourceScale": 0.630188679245283,
+          "sourceAnchor": [
+            103.5,
+            270
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            244,
+            270
+          ],
+          "bounds": [
+            80,
+            56,
+            233,
+            225
+          ],
+          "sha256": "f9d25216343898c645a7ce4261db8816d08a9e40ec9e30341a80f4d922b1feef"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-north-v1.png",
+          "sourceScale": 0.630188679245283,
+          "sourceAnchor": [
+            103.5,
+            270
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            239,
+            269
+          ],
+          "bounds": [
+            80,
+            57,
+            229,
+            224
+          ],
+          "sha256": "303d871ba6962bfe5d4a68574d9930fd07b350c73d69b4a1a4ca16759e6548fd"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-south-v1.png",
+          "sourceScale": 0.6194029850746269,
+          "sourceAnchor": [
+            56,
+            271
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            113,
+            271
+          ],
+          "bounds": [
+            111,
+            59,
+            180,
+            225
+          ],
+          "sha256": "beeb61de97d59f679b86136049d9575c57edab62d3ea19a830a3ff8763b4b1ed"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-south-v1.png",
+          "sourceScale": 0.6194029850746269,
+          "sourceAnchor": [
+            55,
+            271
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            112,
+            271
+          ],
+          "bounds": [
+            111,
+            58,
+            179,
+            225
+          ],
+          "sha256": "84d8ae96c2287d6a84c64eddaecd566925e09b5a5b517356a17ae4b91804ec6a"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-south-v1.png",
+          "sourceScale": 0.6194029850746269,
+          "sourceAnchor": [
+            56,
+            271
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            113,
+            271
+          ],
+          "bounds": [
+            111,
+            58,
+            180,
+            225
+          ],
+          "sha256": "5c60765943753ce4435fecd876c161d8262e3840328678505d2a8a5fcc3f4b1b"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-south-v1.png",
+          "sourceScale": 0.6194029850746269,
+          "sourceAnchor": [
+            56,
+            271
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            113,
+            271
+          ],
+          "bounds": [
+            111,
+            59,
+            180,
+            225
+          ],
+          "sha256": "e1406999d6329a6a157653b913e21308c197b6abcaf8dd9cfdad7c446008325e"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-south-v1.png",
+          "sourceScale": 0.6058394160583942,
+          "sourceAnchor": [
+            97.5,
+            278
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            176,
+            278
+          ],
+          "bounds": [
+            86,
+            59,
+            191,
+            225
+          ],
+          "sha256": "bcdd0b6c7173f38f6739ee3730396c2aac4d25c0413939a7de0cf2820c880ca4"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-south-v1.png",
+          "sourceScale": 0.6058394160583942,
+          "sourceAnchor": [
+            97.5,
+            278
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            176,
+            278
+          ],
+          "bounds": [
+            86,
+            58,
+            191,
+            225
+          ],
+          "sha256": "9935b392937088002c185bc5f69b570c069070170c27c451d8bd914b03017fe2"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-south-v1.png",
+          "sourceScale": 0.6058394160583942,
+          "sourceAnchor": [
+            97.5,
+            278
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            175,
+            278
+          ],
+          "bounds": [
+            86,
+            58,
+            191,
+            225
+          ],
+          "sha256": "78e763edadb06b9cd08ef649f0bc26c6a507fff56395807364b34fea228306f3"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-south-v1.png",
+          "sourceScale": 0.6058394160583942,
+          "sourceAnchor": [
+            98.5,
+            278
+          ],
+          "sourceBounds": [
+            2,
+            6,
+            176,
+            278
+          ],
+          "bounds": [
+            86,
+            60,
+            191,
+            225
+          ],
+          "sha256": "2fd020878f9388322dbcde500f7f5992e441efa272ecfbb5cda59c86c4e0fd8c"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-south-v1.png",
+          "sourceScale": 0.6029411764705882,
+          "sourceAnchor": [
+            162.5,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            273,
+            274
+          ],
+          "bounds": [
+            47,
+            61,
+            210,
+            225
+          ],
+          "sha256": "7006375f9c6d204a4ea901b6b58dde1d920c6635b395ca65522013198c10a44f"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-south-v1.png",
+          "sourceScale": 0.6029411764705882,
+          "sourceAnchor": [
+            164,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            274,
+            274
+          ],
+          "bounds": [
+            46,
+            62,
+            210,
+            225
+          ],
+          "sha256": "c6d54630c434f72c5917df8aac38561e392269a7b700ddc022b8d9d86d257fbe"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-south-v1.png",
+          "sourceScale": 0.6029411764705882,
+          "sourceAnchor": [
+            163.5,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            274,
+            274
+          ],
+          "bounds": [
+            47,
+            61,
+            211,
+            225
+          ],
+          "sha256": "e22a247199fdaf0cc0b97c8d4d9faff9856dac4e224c2574d9405977a23d779b"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-south-v1.png",
+          "sourceScale": 0.6029411764705882,
+          "sourceAnchor": [
+            164.5,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            274,
+            274
+          ],
+          "bounds": [
+            46,
+            62,
+            210,
+            225
+          ],
+          "sha256": "907e66dc8026f8eb385160256f1e18261d2a388360badcb5be3a417d33d1efec"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-south-v1.png",
+          "sourceScale": 0.5956678700361011,
+          "sourceAnchor": [
+            127.5,
+            281
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            217,
+            281
+          ],
+          "bounds": [
+            69,
+            60,
+            197,
+            225
+          ],
+          "sha256": "b573784aecc5bc9d20fcd358d57f2d78167e9863d7119f2824817347f182f909"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-south-v1.png",
+          "sourceScale": 0.5956678700361011,
+          "sourceAnchor": [
+            127.5,
+            281
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            218,
+            281
+          ],
+          "bounds": [
+            69,
+            59,
+            198,
+            225
+          ],
+          "sha256": "fc1bdc21effe76faea409d1272f0892ed5fa1bba17797cdc2467a67fbf14584b"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-south-v1.png",
+          "sourceScale": 0.5956678700361011,
+          "sourceAnchor": [
+            128,
+            281
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            218,
+            281
+          ],
+          "bounds": [
+            69,
+            59,
+            198,
+            225
+          ],
+          "sha256": "7dc0581092b59b98f850d9e7602e8fab14fe076de5343c71cc9ea3bd2a7ee452"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-reload-south-v1.png",
+          "sourceScale": 0.5956678700361011,
+          "sourceAnchor": [
+            127.5,
+            281
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            217,
+            281
+          ],
+          "bounds": [
+            69,
+            60,
+            197,
+            225
+          ],
+          "sha256": "4dcfd07717b3b0b474e7a7686ec47212c560c456b9fbeb78f6fddb749ed89f34"
+        }
+      ],
+      "file": "woman-shawl-mounted-reload.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "d77a9b84b36266d09763e3c6160970becde1d9aedcfa74f4f55fbd650c208457"
+    }
+  }
+}

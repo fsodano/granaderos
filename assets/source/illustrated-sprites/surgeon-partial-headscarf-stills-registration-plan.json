@@ -1,0 +1,120 @@
+{
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-crouch-idle-v1.png",
+      "name": "woman-headscarf-crouch-idle",
+      "reference": "granadero-crouch-idle",
+      "half": "all"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-prone-armed-idle-v1.png",
+      "name": "woman-headscarf-prone-armed-idle",
+      "reference": "granadero-prone-armed-idle",
+      "half": "all"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-prone-unarmed-idle-v1.png",
+      "name": "woman-headscarf-prone-unarmed-idle",
+      "reference": "granadero-prone-unarmed-idle",
+      "half": "all"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-dead-idle-v1.png",
+      "name": "woman-headscarf-dead-idle",
+      "reference": "granadero-dead-idle",
+      "half": "all"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-mounted-idle-v1.png",
+      "name": "woman-headscarf-mounted-idle",
+      "reference": "granadero-mounted-idle",
+      "half": "all"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-north-v1.png",
+      "name": "surgeon-prone-armed-fire",
+      "reference": "granadero-prone-armed-fire",
+      "half": "north"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/surgeon-prone-armed-fire-south-v1.png",
+      "name": "surgeon-prone-armed-fire",
+      "reference": "granadero-prone-armed-fire",
+      "half": "south"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-north-v1.png",
+      "name": "surgeon-prone-unarmed-walk",
+      "reference": "granadero-prone-unarmed-walk",
+      "half": "north"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/surgeon-prone-unarmed-walk-south-v1.png",
+      "name": "surgeon-prone-unarmed-walk",
+      "reference": "granadero-prone-unarmed-walk",
+      "half": "south"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/surgeon-fire-north-v1.png",
+      "name": "surgeon-fire",
+      "reference": "granadero-fire",
+      "half": "north"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/surgeon-fire-south-v1.png",
+      "name": "surgeon-fire",
+      "reference": "granadero-fire",
+      "half": "south"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/surgeon-strike-north-v1.png",
+      "name": "surgeon-strike",
+      "reference": "granadero-strike",
+      "half": "north"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/surgeon-strike-south-v1.png",
+      "name": "surgeon-strike",
+      "reference": "granadero-strike",
+      "half": "south"
+    }
+  ],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/surgeon-strike-n-fix-v1.png",
+      "name": "surgeon-strike",
+      "reference": "granadero-strike",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "n",
+            "frame": 0,
+            "row": 0,
+            "col": 0
+          },
+          {
+            "direction": "n",
+            "frame": 1,
+            "row": 0,
+            "col": 1
+          },
+          {
+            "direction": "n",
+            "frame": 2,
+            "row": 0,
+            "col": 2
+          },
+          {
+            "direction": "n",
+            "frame": 3,
+            "row": 0,
+            "col": 3
+          }
+        ]
+      }
+    }
+  ]
+}

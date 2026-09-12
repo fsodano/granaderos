@@ -1,0 +1,2407 @@
+{
+  "version": 1,
+  "model": "mattmdjaga/segformer_b2_clothes",
+  "revision": "584abc1e1d260e23c0fc627c5217a09b2b461046",
+  "masks": {
+    "granadero-idle": {
+      "file": "granadero-idle.png",
+      "sha256": "4445911cc0c7866b50c582787e374e53258666dfeea677af11001ef3c53fd44a",
+      "sourceSha256": "d341af70d7540d50bd1e9e8d76a2e2f45bc099b8bea66142c08321e8b4dec8c6",
+      "size": [
+        1248,
+        156
+      ],
+      "pixels": 423
+    },
+    "granadero-walk": {
+      "file": "granadero-walk.png",
+      "sha256": "dbae0f1aec14144f98819e5975b81fc0058f7fd4786a03485d5c69e420312c81",
+      "sourceSha256": "f4563ae1afe14b4ffb514a42f94fc95e4dd768a54bb6b53336083b5201174382",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 1265
+    },
+    "granadero-run": {
+      "file": "granadero-run.png",
+      "sha256": "ff8c49878d357a0f942769986d1e3951b12ed5acdbcef2025aa0574778348049",
+      "sourceSha256": "1e88a8d0718fe9b518d70cc8c8defbff428b14a5dcb2bb06e391ce53fb27975c",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 1219
+    },
+    "granadero-crouch-idle": {
+      "file": "granadero-crouch-idle.png",
+      "sha256": "7b54fb2818828c3eb84196dc6d0b3c5bfa28bdb41dd9118c473dab14609c6c58",
+      "sourceSha256": "81fbeebcbc051d0f9693f7881769375c7f1d69dfec4aa869cc191df965542fcf",
+      "size": [
+        1248,
+        156
+      ],
+      "pixels": 122
+    },
+    "granadero-crouch-walk": {
+      "file": "granadero-crouch-walk.png",
+      "sha256": "ffcfb2788778cc1ee76ae38028bb4137c2081e2d2b1d6bf8bbc208851ee6f951",
+      "sourceSha256": "7230d19e84c79fd2a133037e437d5c1892f042f5b9bba9541b22ef174d1be27c",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 419
+    },
+    "granadero-prone-armed-idle": {
+      "file": "granadero-prone-armed-idle.png",
+      "sha256": "0d42b1a63f6617939160c2840420c8b42d51976cc2363f8774e52898bae2447a",
+      "sourceSha256": "2c762329e0f4694b81ec9de80d061c1e7449f3c53d0acdcb011adf6b3728d3c9",
+      "size": [
+        1920,
+        240
+      ],
+      "pixels": 313
+    },
+    "granadero-prone-armed-walk": {
+      "file": "granadero-prone-armed-walk.png",
+      "sha256": "87c690b08d36c618b50c6c584408cf45c1d4b326d5433f61ab67e71941627ba3",
+      "sourceSha256": "585847fecfe4758f1b9c92ce21258c1feca6e0d246efca58600dff06419935a6",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1134
+    },
+    "granadero-mounted-idle": {
+      "file": "granadero-mounted-idle.png",
+      "sha256": "444d327dd75451e599887d3213af46b8ebe7049ea8ae1f89c55c461fc92aaa21",
+      "sourceSha256": "9407a032f48dbd8392785fe67d785380d3702a5e38e974bc266617343727a4e1",
+      "size": [
+        1824,
+        228
+      ],
+      "pixels": 136
+    },
+    "granadero-mounted-walk": {
+      "file": "granadero-mounted-walk.png",
+      "sha256": "b69156975ed9395f833c9d9726984972952a09e94c56097604a74d189686ea6e",
+      "sourceSha256": "5a8210a14ffeb3d75138908b6d1952081f0cb280153286f2e1360f55c8f5cd16",
+      "size": [
+        912,
+        1824
+      ],
+      "pixels": 429
+    },
+    "granadero-mounted-run": {
+      "file": "granadero-mounted-run.png",
+      "sha256": "c941f33405c2f9dbb76e07d2bac397c6335bed86669b9396a3e36ca417ef1826",
+      "sourceSha256": "d2129d390157d0904675e76aaabeb53b93dd99833e8553d07df253aaac154161",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 412
+    },
+    "granadero-aim-idle": {
+      "file": "granadero-aim-idle.png",
+      "sha256": "3afba355860abc67cf754bed50b414522efe2b9f64c25c5b8316d7825875de2b",
+      "sourceSha256": "0e3404b86ecb71f4333b161542611b06e74bb9eac995ce143fe94fa006400793",
+      "size": [
+        1680,
+        210
+      ],
+      "pixels": 386
+    },
+    "granadero-crouch-aim-idle": {
+      "file": "granadero-crouch-aim-idle.png",
+      "sha256": "0126d983ebde976c30e42dcbd73b9be131e33e445b0a3ae7cb9709c565800f0d",
+      "sourceSha256": "f0258ae3a2f9de7b0acae52086ff00db7a854fe413b0b5a6b133f22128766764",
+      "size": [
+        1680,
+        210
+      ],
+      "pixels": 85
+    },
+    "granadero-prone-aim-idle": {
+      "file": "granadero-prone-aim-idle.png",
+      "sha256": "5575dbbe6099f341818150f98f4af53f1a70d81ba3294434cd4afbda4baf1395",
+      "sourceSha256": "b7d8c19e7920d6da4ccb9afcc9ee61f47e6409ccebebc82452319a77ff498982",
+      "size": [
+        2304,
+        288
+      ],
+      "pixels": 212
+    },
+    "granadero-fire": {
+      "file": "granadero-fire.png",
+      "sha256": "87540612d427f9649b3fa4c90f1bcf9d4000ded90c89180261504585c6190a4e",
+      "sourceSha256": "4f89dc99fcb43be39b7e53144222b15171b9dff08b0cb2b78388ff43e3e93c13",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 1665
+    },
+    "granadero-crouch-fire": {
+      "file": "granadero-crouch-fire.png",
+      "sha256": "d4d0a4dbcdbf5e46f0ec8789b72d7c5f9733d45dd83c4a98723f9b32df8fb792",
+      "sourceSha256": "fa97a429dac2cf21712e2d2ece721509d9f31e64279d5c57f2aa706c6bdb1db7",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 632
+    },
+    "granadero-prone-armed-fire": {
+      "file": "granadero-prone-armed-fire.png",
+      "sha256": "7dc9f23452de56a3c651ec37d634d4668c722441f1d1bc6467d99858fb9e9050",
+      "sourceSha256": "5cddb0773402e2a9f259cc93a0d2d3619aac22de826051b9550ec2481a4aac4b",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1353
+    },
+    "granadero-reload": {
+      "file": "granadero-reload.png",
+      "sha256": "73a0b829a80efa4265ffa9d8091c8fbd6db7bc56785de293ff83fcdef9c38052",
+      "sourceSha256": "4999b51640d9dce9f06a89b3eeeb80769c0fcd197b085307df918140a44e8563",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 1391
+    },
+    "granadero-crouch-reload": {
+      "file": "granadero-crouch-reload.png",
+      "sha256": "16c9509facf6a9f952681770e6e53a4bb8bb79b9d9d034464e2da4fb4e8b86d7",
+      "sourceSha256": "fe9dbaa95c784d7e90b5a56837d302293da4d3d9eca761707d781899e61f3f01",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 646
+    },
+    "granadero-prone-armed-reload": {
+      "file": "granadero-prone-armed-reload.png",
+      "sha256": "0f9bf0aabf5247cf5c725de613a30ae599a8abd0e9ca927b4b6626382abb446f",
+      "sourceSha256": "e4a9c1e99c2edb1332c5e5567c4e02208332559999ad20632a3da82830d57929",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1167
+    },
+    "granadero-strike": {
+      "file": "granadero-strike.png",
+      "sha256": "ffa5d89f91f88a82ab30d2649b5b75d2feb667f1dc53acdb02fb9ee7feab6713",
+      "sourceSha256": "0e6e52c1a700abf6cbd9bff71afd7c0c1574e37debc7a1a487ce580828d2a476",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 1247
+    },
+    "granadero-mounted-strike": {
+      "file": "granadero-mounted-strike.png",
+      "sha256": "fdff760e19a3a8b53726ab2395d4245d080208a4eff321d6bf473e1387afd01d",
+      "sourceSha256": "6aea9b00e8cd10ab1d9cce7c18c6df325b8c1e3e76fcc1717e435330f722427d",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 643
+    },
+    "granadero-interact": {
+      "file": "granadero-interact.png",
+      "sha256": "26ea9bf658f15e03ddeb80919a2f7965ad44a6e0ac0854667f13f6256c1b7f79",
+      "sourceSha256": "9af1bc57ceb800961052558f0b8d31cae8a0f25a5865609b481311e973cfe08b",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1230
+    },
+    "granadero-crouch-interact": {
+      "file": "granadero-crouch-interact.png",
+      "sha256": "f5844cfc9284b21060b24d7f6705af9d82a6b561cf9662862d306ce6c69a41a9",
+      "sourceSha256": "0db2315746e643bdaa012b7e3b423f0b242d93b096670a2a60d36fe3877bce21",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 746
+    },
+    "granadero-collapse": {
+      "file": "granadero-collapse.png",
+      "sha256": "71683b7175e09396186eea66eb848674094d1afb8d10bfa240fd77cc843c5cf1",
+      "sourceSha256": "8e0e3974cb3e05fc2628da7359e542ff881e2ea77e221772388e39176c468b0f",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 2065
+    },
+    "granadero-unconscious-breathe": {
+      "file": "granadero-unconscious-breathe.png",
+      "sha256": "b7497db5d9ac3cd2397d815d3de34b107f38e44fbb571e6e1019688168ee9d14",
+      "sourceSha256": "8b82b9e4ffedb0982a373689eb152b656666af1003ac0ce78b9c61f7be3d5271",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 2199
+    },
+    "granadero-mounted-fire": {
+      "file": "granadero-mounted-fire.png",
+      "sha256": "2fcd470f9d3883b63527560d161a11fa4b8de1794c5b5f0bafbfafc6d3511ba0",
+      "sourceSha256": "57ed1d9308140cc5cd75ea3cecaf9a380ee2733fe182c28e36df96563689661c",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 390
+    },
+    "granadero-mounted-reload": {
+      "file": "granadero-mounted-reload.png",
+      "sha256": "cf602d620e3e317d7819c656f14ef7bdee3f8611522bc8931ae16932f4db627e",
+      "sourceSha256": "419a7edbfd5ee34b753eadf2625c73f022c544069f2d188f64a1aea9c53cf362",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 528
+    },
+    "granadero-prone-unarmed-idle": {
+      "file": "granadero-prone-unarmed-idle.png",
+      "sha256": "e4c9f5442761c4731c1a58ca5a5f8910574d310cb27c9d33613a4b614b81d8c0",
+      "sourceSha256": "a446cf7dbdfdc9b80cb452699dc2730d925f8e3d87d90166dec63a3a8b20db85",
+      "size": [
+        1920,
+        240
+      ],
+      "pixels": 322
+    },
+    "granadero-prone-unarmed-walk": {
+      "file": "granadero-prone-unarmed-walk.png",
+      "sha256": "97da8539fc5a6a264ea87d905151639f1482111844f1a62c0832c8795dc764a6",
+      "sourceSha256": "58e483b05c2a62463465424613f5febeaa893b25f7bfde33a81ac74d25a1ec06",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 1244
+    },
+    "granadero-dead-idle": {
+      "file": "granadero-dead-idle.png",
+      "sha256": "c220f86efcb2cdd766b8d19c35fc92193edb2283ac759bb561f500eac632fef8",
+      "sourceSha256": "eacca68645267d1c0cb44ca556118db40e93c54d86ec7e8e597e98619f5ee3c9",
+      "size": [
+        2304,
+        288
+      ],
+      "pixels": 616
+    },
+    "royalist-idle": {
+      "file": "royalist-idle.png",
+      "sha256": "f4480f47c2f1a2be13c6aa7cc90ee659b870e4dd9610c0c836e344723c073fbc",
+      "sourceSha256": "21bb57db740b46fbab803bf62e7bb9a95192feb84890880c8c7025b68b31aa73",
+      "size": [
+        1248,
+        156
+      ],
+      "pixels": 265
+    },
+    "royalist-walk": {
+      "file": "royalist-walk.png",
+      "sha256": "f213200c3f7ff8c9af99d10582ed65549e58d06b61d8e9bb5c678d9fc199f678",
+      "sourceSha256": "bc7379f08df93dda56e94ea543f15c44ed7a2c3e65db63a4b8e558b55117e14b",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 1019
+    },
+    "royalist-run": {
+      "file": "royalist-run.png",
+      "sha256": "23a38d8b605d94ed7d9355a65d628ff9c2b9d7d10c258b96f3c6cea4e9599abd",
+      "sourceSha256": "3ac710f7558db57979e382a0388c24f7649c70243c30e3ad2ee7bf289e58cb50",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 922
+    },
+    "royalist-crouch-idle": {
+      "file": "royalist-crouch-idle.png",
+      "sha256": "c90335d28cb1e721fd7e22f20600ef80c61f0f652439a6382d254cddf836f08c",
+      "sourceSha256": "0a4bd56275064fbeca60246cf0460ce7253d26c95e3ca81d0c5367702f0bd624",
+      "size": [
+        1248,
+        156
+      ],
+      "pixels": 65
+    },
+    "royalist-crouch-walk": {
+      "file": "royalist-crouch-walk.png",
+      "sha256": "7421a61dea1b6d97812c8237106a8503c1865ca3045fc036a43339a356bd4174",
+      "sourceSha256": "e03377e06bc4c5f057b98778d9ce250778e02fdaae119125bb55c57d507d545b",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 600
+    },
+    "royalist-prone-armed-idle": {
+      "file": "royalist-prone-armed-idle.png",
+      "sha256": "50fe58d3f4de19592d293ffe178fd4912f93db0570caa749eeb50b1ed7f68956",
+      "sourceSha256": "da3e8f0f7186df9166d63b52470cb960fdab9c8c0ef4186054d6dd7603c74bde",
+      "size": [
+        1920,
+        240
+      ],
+      "pixels": 532
+    },
+    "royalist-prone-armed-walk": {
+      "file": "royalist-prone-armed-walk.png",
+      "sha256": "123c9085b5f2087017028484b18166f92ac01a6dd020fd5b20cd94fa8da59c6e",
+      "sourceSha256": "260d2ce615c077297d89df0d14987b55bc2211655a2ff2ff5fb5905f93e2baea",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 2819
+    },
+    "royalist-mounted-idle": {
+      "file": "royalist-mounted-idle.png",
+      "sha256": "eb45188bc38964efbbfb1d42af20d89962d268cf390be602f72fea0386cf759f",
+      "sourceSha256": "8f7805f7dfc91d5b1b830ed33b98797cbc98e7984dc907332e3a61dd05db43c9",
+      "size": [
+        1824,
+        228
+      ],
+      "pixels": 502
+    },
+    "royalist-mounted-walk": {
+      "file": "royalist-mounted-walk.png",
+      "sha256": "2802985d70801349ccdf13e7a1a419de520308712d6ef49a4d5b36be6bc7ae09",
+      "sourceSha256": "88b6701eec91e448ab2bfc4747583257297261bf89fc974387b69b056b77acab",
+      "size": [
+        912,
+        1824
+      ],
+      "pixels": 1464
+    },
+    "royalist-mounted-run": {
+      "file": "royalist-mounted-run.png",
+      "sha256": "6589213b73364f01799ff00657dd9ce18737162eb38b48f1617cd1389d6b142f",
+      "sourceSha256": "ec52373ded975435713504093bb1bf85cea963a0efd290af536167278dd33951",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 855
+    },
+    "royalist-aim-idle": {
+      "file": "royalist-aim-idle.png",
+      "sha256": "4283dc70e1c23d9e72084729d62b697db4b01f2dff11ece3477f2bd687bc7f90",
+      "sourceSha256": "10e5bf33aa25a8172de5ff3f73ff74d72cbd1a7772104cb9527d06997dd81ff7",
+      "size": [
+        1680,
+        210
+      ],
+      "pixels": 246
+    },
+    "royalist-crouch-aim-idle": {
+      "file": "royalist-crouch-aim-idle.png",
+      "sha256": "6f9970a915b97066c60b1860c659a736474e59a5609c86bd3d1e4b41dfc85189",
+      "sourceSha256": "7ceddc7eb8928594832bd6f3f1e4adfebceb1b192b0bd55b932060b4f7c96f45",
+      "size": [
+        1920,
+        240
+      ],
+      "pixels": 103
+    },
+    "royalist-prone-aim-idle": {
+      "file": "royalist-prone-aim-idle.png",
+      "sha256": "960ce71d75346316274d70fa5404a4b0fe234b5eed1f5ccf5df14d54362b49e7",
+      "sourceSha256": "0493f65fce239d23a85e8e843e2f2635d2a459a9cea9a2a9fc6234f30c5d76a0",
+      "size": [
+        2304,
+        288
+      ],
+      "pixels": 283
+    },
+    "royalist-fire": {
+      "file": "royalist-fire.png",
+      "sha256": "af7d559e59c19e87d46ecf27848ccc340cfdb20e2cbf7996a9551218d2e0ef85",
+      "sourceSha256": "c486ac1ff09ab171ce642b867a97549d2ace116ba3224c76d38c6bacd6e3a3ab",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 688
+    },
+    "royalist-crouch-fire": {
+      "file": "royalist-crouch-fire.png",
+      "sha256": "4a9386c80a13700af7ed181cc32a728c92e729d1a2af4d01c277572c3219b435",
+      "sourceSha256": "eca7e6cb4183f8d6022abee60f967d5b6c2c37482aaa870a4d978cb384e705fc",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 420
+    },
+    "royalist-prone-armed-fire": {
+      "file": "royalist-prone-armed-fire.png",
+      "sha256": "6eabbfd1d97352543bf7ac9873a0c8c81ffc3cf8f539ebdbc8dd5af1f9f6ce59",
+      "sourceSha256": "747d5ae7546ab65fb57c6262f7c24958ea832719a92c71fc980a6f10a032b5f5",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1181
+    },
+    "royalist-reload": {
+      "file": "royalist-reload.png",
+      "sha256": "8a7b9c8ccddbf203bfa7edf77e611fc1419ccb9f38c4e9b611d5fd57bf35139f",
+      "sourceSha256": "5bdf7dc15056b06568f00d2e6f6ed19cedd1e788a6e154fdf22c95ca58e1114f",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 471
+    },
+    "royalist-crouch-reload": {
+      "file": "royalist-crouch-reload.png",
+      "sha256": "fbabce25e21163689ac8236de205ea713d9fa99d1ff974fc0cccc9f6bc1d9dc0",
+      "sourceSha256": "279e338daf611b84f79c02cc1f22d10dafdcc01f1191de091ad1b8c098febf8d",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 394
+    },
+    "royalist-prone-armed-reload": {
+      "file": "royalist-prone-armed-reload.png",
+      "sha256": "213d9ffa7059e8d22acfc679b923103bf03117180d802ebba41914cbf9a41ee6",
+      "sourceSha256": "816fc7a2136b9d4438c552536b4028fd9f46d57c9444dd7fc82db9536cc1a675",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1905
+    },
+    "royalist-strike": {
+      "file": "royalist-strike.png",
+      "sha256": "30bd0135753edff151fee8d25784cb4a2ac691ce76c5eb11f4c5e1704b91cff4",
+      "sourceSha256": "bb84897ba235b16523410056ebe3c833faf47ced6ab035511e3908647f1b40b0",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 535
+    },
+    "royalist-mounted-strike": {
+      "file": "royalist-mounted-strike.png",
+      "sha256": "27b8e3830ef085a22861a59ea024ae4ba3d5fea329d96fd520708143d9d0e474",
+      "sourceSha256": "dd2b28e35dcd37266d7cca9a520682c282bd9f14f719ad41f1bbd7262dcc4b56",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 3466
+    },
+    "royalist-interact": {
+      "file": "royalist-interact.png",
+      "sha256": "c89169ace5c0dacb9710360dbc801915091180febdd04912f34e077badf6e77d",
+      "sourceSha256": "9e11e5bbdd366165fa12f00a2cc15f46d3a188a69eee09f57a344209ef64018f",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1670
+    },
+    "royalist-crouch-interact": {
+      "file": "royalist-crouch-interact.png",
+      "sha256": "5dbd4e71e693ffb6ed62aab91be9b7cbd49b43212ff9439f6f5361ff8a27e242",
+      "sourceSha256": "337d23cfe060a8d49649becbb6c0867998033794e4a8113a6be27565aaaf301f",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 362
+    },
+    "royalist-collapse": {
+      "file": "royalist-collapse.png",
+      "sha256": "a0e3da5adcd04f36f3e9cab32bc3d2b3c56b1e62ee4492b54114a73b1aafa482",
+      "sourceSha256": "a6eb57aeddd11557a6fd66e4ddb76200a6dda76c12bf9ecbbba1bac69305e415",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1760
+    },
+    "royalist-unconscious-breathe": {
+      "file": "royalist-unconscious-breathe.png",
+      "sha256": "dbce39ca4f0ef24087fc33bdf338b1ecd71c2749cbc888811ec5f93520040a65",
+      "sourceSha256": "e01e28ec7ccf24fa80b1fe50aff6303c9c986b5deff8972edc2511967e6f9bd8",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 3436
+    },
+    "royalist-mounted-fire": {
+      "file": "royalist-mounted-fire.png",
+      "sha256": "f505172e8cd5f5f7e8622b68dd11c189566ff591247c4d978861390243f124b8",
+      "sourceSha256": "b846b85663fcf3e82976e1230eaecabeff4cd2cb26812ed4b0407943731a95ea",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1125
+    },
+    "royalist-mounted-reload": {
+      "file": "royalist-mounted-reload.png",
+      "sha256": "d221488873d4b92fdf4d0a67160b4c729c5aaae04d1ed7e5f6202960270a9644",
+      "sourceSha256": "0106200b3d0a31b421a00d5bcf9e5b49ba43134fc7ace6d4ba7d06ca079ab098",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 2896
+    },
+    "royalist-prone-unarmed-idle": {
+      "file": "royalist-prone-unarmed-idle.png",
+      "sha256": "d0febffe955253f8d1d66d578f79aae18632f49ce41c304bbe1a375485eedd46",
+      "sourceSha256": "b7470433aaaa41d8403abb13eda7e6482d1c78088b914d0469aff5add88d7efc",
+      "size": [
+        1920,
+        240
+      ],
+      "pixels": 329
+    },
+    "royalist-prone-unarmed-walk": {
+      "file": "royalist-prone-unarmed-walk.png",
+      "sha256": "8b7a576f2d833635823999e9e69f2f6d9d0b76af2ed32595c8eec996c9354c1a",
+      "sourceSha256": "0b576c0c303ba7d43b1584ca2535f734053545f02883808eb0d3376113fb3dde",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 2171
+    },
+    "royalist-dead-idle": {
+      "file": "royalist-dead-idle.png",
+      "sha256": "a37310474f14f96ee4dd96b08e08080305fc63a0eb0635ba7be4f2dd685b5406",
+      "sourceSha256": "599ffb90039b323675130f76b6b9bda30acfd615fafd3f1f5afb5953062e03ad",
+      "size": [
+        2304,
+        288
+      ],
+      "pixels": 457
+    },
+    "worker-idle": {
+      "file": "worker-idle.png",
+      "sha256": "817472298ecb69d7443ddc656250322892dc7c03a5818636c3229ece7eda2a76",
+      "sourceSha256": "f9fb93eacb60b1df8dc25a3e36492c0eee131820d678def531fbfb436cd5c0b9",
+      "size": [
+        1248,
+        156
+      ],
+      "pixels": 1046
+    },
+    "worker-walk": {
+      "file": "worker-walk.png",
+      "sha256": "ecea3918d692c591a9b8f8c78bd3369d6456debb868a1c0f9d5d3696356f48ff",
+      "sourceSha256": "0634ee5cfe10e56a0183fe02661e318457ea3780450602071835f4db9befc0f4",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 5864
+    },
+    "worker-run": {
+      "file": "worker-run.png",
+      "sha256": "e849839788263b4b8f0474da6b9bc73257b73573119b01a87a1ade5bcc991802",
+      "sourceSha256": "a7168616a59014e7d889e1178bb9d783eff2f223efe4818f5172476d1b058497",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 5223
+    },
+    "worker-crouch-idle": {
+      "file": "worker-crouch-idle.png",
+      "sha256": "04413c3b26fd01ae58f88834e8227912e80e7366f64114da67b03288a2bf7517",
+      "sourceSha256": "9d94023adb2e69027b60d21dc7539b34248b8f0fe790237429f9e4954c04a29e",
+      "size": [
+        1248,
+        156
+      ],
+      "pixels": 724
+    },
+    "worker-crouch-walk": {
+      "file": "worker-crouch-walk.png",
+      "sha256": "8a5133803920182f733836e9f14e4beb81f124a93c12b6f112f1bb95e8d3772c",
+      "sourceSha256": "b123b1cff9c0856e183a6de0a46dc7c78151c3d140b80053ea6f7b997ebca3ee",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 2186
+    },
+    "worker-prone-armed-idle": {
+      "file": "worker-prone-armed-idle.png",
+      "sha256": "cea07c0accf39f2bfdd23cdf357473df97a4291987c030d76acc53417fdaa858",
+      "sourceSha256": "31015426262d48f086623255aa769b0ced766653ab8ec6865c4d856c4f8a4faf",
+      "size": [
+        1920,
+        240
+      ],
+      "pixels": 1036
+    },
+    "worker-prone-armed-walk": {
+      "file": "worker-prone-armed-walk.png",
+      "sha256": "0b4feea1a7b6180586423d19f692dc98bd6abfe965e17d1e9bdea8c43eb31b89",
+      "sourceSha256": "59df1690d6b33593918bc8845e9b0aa0d1b26eb3f036e72ecb74bed758714f09",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 2650
+    },
+    "worker-mounted-idle": {
+      "file": "worker-mounted-idle.png",
+      "sha256": "1da4ee32fe1c09af0e887d741183347689e1e953740261cb556801cb73bfc087",
+      "sourceSha256": "4feda5ea50e415ca40c1c6a951ef88f9807e84c1ccaad3e8e34ba42ea9c8cbc6",
+      "size": [
+        1824,
+        228
+      ],
+      "pixels": 1062
+    },
+    "worker-mounted-walk": {
+      "file": "worker-mounted-walk.png",
+      "sha256": "9ab58101cd353454ad275edc026f3a69220b018556b68bb8d924cb0f2f9a8c69",
+      "sourceSha256": "a417200f28b10d57537d76ef7a0d935c81de3460981d47456e23956fccc604d6",
+      "size": [
+        912,
+        1824
+      ],
+      "pixels": 3214
+    },
+    "worker-mounted-run": {
+      "file": "worker-mounted-run.png",
+      "sha256": "7e88019b62505d5734896ef18ece61959ac865e91e65de816ddacef1ea25a853",
+      "sourceSha256": "ffd9f435062528c992007bfab78fc7e12fc88af86614ed4f5556bc30e09cb9d0",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1085
+    },
+    "worker-aim-idle": {
+      "file": "worker-aim-idle.png",
+      "sha256": "4232579ba9392f2d2d999f40d33d527f50828be594513892d4c67b210bf41545",
+      "sourceSha256": "12e94ff9acafe5b6f056016b2cf9e3e11ffd80b984c9375204d13679e6ac44fd",
+      "size": [
+        1680,
+        210
+      ],
+      "pixels": 937
+    },
+    "worker-crouch-aim-idle": {
+      "file": "worker-crouch-aim-idle.png",
+      "sha256": "fd97373926fc4bf36a77ea2e217ba727cd88ac53a19b21247a28063ef7f91fbe",
+      "sourceSha256": "838419447773e179f8f16528048d6e1fc3674b4a8b91b5a89cca93845a22f6ae",
+      "size": [
+        1680,
+        210
+      ],
+      "pixels": 521
+    },
+    "worker-prone-aim-idle": {
+      "file": "worker-prone-aim-idle.png",
+      "sha256": "0adfbcdf054ceaa93d3f5e55f30543a046b36e3a001842b377577e717ad1dee5",
+      "sourceSha256": "33d964eb5201007f58df836210bd640a1a77ec96834447849e2018441b03b105",
+      "size": [
+        2304,
+        288
+      ],
+      "pixels": 377
+    },
+    "worker-fire": {
+      "file": "worker-fire.png",
+      "sha256": "7c8985aeafe79efe56b95e9e77517ee1466830cc93047e9089665d3ade548f63",
+      "sourceSha256": "f5699d82848f69dfc0442e4c6fc2cd01b0a93ec1be2ff7cc42c0eeff56e6d40b",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 3873
+    },
+    "worker-crouch-fire": {
+      "file": "worker-crouch-fire.png",
+      "sha256": "164526a1da34a3a0b9f8989af65ce734ba54f61bddf645e5df7ed554b720dabd",
+      "sourceSha256": "2d0368b54701c863e04c464a55a91a123ec663edefb2be60a1af7028c51bdc2d",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 2493
+    },
+    "worker-prone-armed-fire": {
+      "file": "worker-prone-armed-fire.png",
+      "sha256": "339d3919d9163c2c76f84f6d2def98b2162993d747633e66e781589b3d23f4b7",
+      "sourceSha256": "fe6d660a5017cbf71c123c7e9c8fd2a87625f613970949e35366c48f8315d099",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1754
+    },
+    "worker-reload": {
+      "file": "worker-reload.png",
+      "sha256": "d54da90be26d75ce4b76d070bbbbe9e09185cfb3ab1ca8fdb8a763aacbc56bfa",
+      "sourceSha256": "92b31760d88119e15ac9650742df7bc9a2d22b4ba59cd12c79f53c0991d9726a",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 4847
+    },
+    "worker-crouch-reload": {
+      "file": "worker-crouch-reload.png",
+      "sha256": "46f22fb4e0bb90cac471f1b5b0fc4ac3c666be734582fb021d76e015661ebabf",
+      "sourceSha256": "83f1f5243901131e04fc952fbe55bd80f986acfc9d7eedcf3fe2e3ce1c16b8fe",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 3917
+    },
+    "worker-prone-armed-reload": {
+      "file": "worker-prone-armed-reload.png",
+      "sha256": "0b136c3d0c5eb4b2a2bc1aacad3c4315a58aadc69a6b7591aa1bb6877f997f1c",
+      "sourceSha256": "a956fb83da575305701cb6454e978d174cf5390f2f3816c36156377666efc9ea",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1825
+    },
+    "worker-strike": {
+      "file": "worker-strike.png",
+      "sha256": "c65761d79231c545432e69308a7bf30c5a8bd1fc11b035a326863cee094be45e",
+      "sourceSha256": "e97330295d879ffde7e8a8c1c8ec2330a15588ce0feb865763837d4883d8fb1f",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 6464
+    },
+    "worker-mounted-strike": {
+      "file": "worker-mounted-strike.png",
+      "sha256": "00cc83ae4e90553087801ef417a4d43a1344ea87ff0423e28dfd069f1acd3c8a",
+      "sourceSha256": "c305782c3011787e2948f49d99c1ca1ebfd581a7f3096bf4d4b2132f88b6119e",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 3045
+    },
+    "worker-interact": {
+      "file": "worker-interact.png",
+      "sha256": "bd09ab3b4c061b1715cd309f78753bb8d6fbc7f043f5c3b8696ae819e7cc3fc5",
+      "sourceSha256": "9311a3b9a7d107777a979dff7ef332ef5c6d308354656f7af4e08e668f9c0250",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 4684
+    },
+    "worker-crouch-interact": {
+      "file": "worker-crouch-interact.png",
+      "sha256": "4f7f95b0b8ee45bc39531af3b4b91b5c2cacddea64648207a249afb6bd087048",
+      "sourceSha256": "c9fa09de853da2c919b97410ea220b96a45b5d8af6d62748e8495ccd53fbbb07",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 2770
+    },
+    "worker-collapse": {
+      "file": "worker-collapse.png",
+      "sha256": "76070c6be13a2e45e0d5dc87daf6fd1feb0f27143c8606698c7f560fe60f2c78",
+      "sourceSha256": "ccaeb81e6e78ca51d6c979eb1b4898bf1a83b710a8d9606ed2579b40110467a2",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 4217
+    },
+    "worker-unconscious-breathe": {
+      "file": "worker-unconscious-breathe.png",
+      "sha256": "57e2a3e66735330eee168dc4280e8b710c223d5bff9df6fc803a7c8635b3d0d2",
+      "sourceSha256": "961890ce71770bd7e13e12876b7180e5e9301aa633aff912a2a2e6fefcfbde44",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 5380
+    },
+    "worker-mounted-fire": {
+      "file": "worker-mounted-fire.png",
+      "sha256": "33fe1cc9040e70e854658407637aeaf9f5a3b6316fb41bff5a04f1ae0a78cf40",
+      "sourceSha256": "4a1cccf2c2c7f140a2a1978f7c8ab451fd246c79cd7de44f7b6bf1f4e9e79a29",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 2892
+    },
+    "worker-mounted-reload": {
+      "file": "worker-mounted-reload.png",
+      "sha256": "b448f35131ead9f416c9e19207a0662093dd83cc3b7bfc9ba7a2bce332f5e191",
+      "sourceSha256": "8709f8ad9214c8d617a234b5cba94ca55a1a146fc24aa9baaf42a5b626f5e74d",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 3015
+    },
+    "worker-prone-unarmed-idle": {
+      "file": "worker-prone-unarmed-idle.png",
+      "sha256": "d629fda12aad4804485fea8db9faa0ec02147842cdc11c659ea08a44691fdec3",
+      "sourceSha256": "fed7b5de96418d420a3048a0f01ded5cc68cad8fd610ee99e8a740468b7d645d",
+      "size": [
+        1920,
+        240
+      ],
+      "pixels": 608
+    },
+    "worker-prone-unarmed-walk": {
+      "file": "worker-prone-unarmed-walk.png",
+      "sha256": "0fbe4c16d721bc6575efbf6aca2b16f185babde456a13a16905f7a681701fd51",
+      "sourceSha256": "826fc3d84acb2ff67acfc8269c1a16fba0d2b6d9d1ca266c354302236243dcec",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 2394
+    },
+    "worker-dead-idle": {
+      "file": "worker-dead-idle.png",
+      "sha256": "69c7729ba3e3d9710406da75fff30ba63333550df2808ce5ce0d23add9d74aa3",
+      "sourceSha256": "87b0f57e704c44e342f08136123eb94933379be58cac75e662f09db70d1b1e27",
+      "size": [
+        2304,
+        288
+      ],
+      "pixels": 1030
+    },
+    "surgeon-idle": {
+      "file": "surgeon-idle.png",
+      "sha256": "6411fa4c6e6432e1c73f47be03cda3237935eb7401768adfff1e433efabecded",
+      "sourceSha256": "fddafcf62be062831e64bee611ec0f05c3dfde18b6730621103be2266c2bfa53",
+      "size": [
+        1248,
+        156
+      ],
+      "pixels": 720
+    },
+    "surgeon-walk": {
+      "file": "surgeon-walk.png",
+      "sha256": "1ee7260c50844b33e1f55b3187b2e7c6b16439f63a7747f1a4d4b187d9865cd0",
+      "sourceSha256": "014b584000a504bc1bf19660d5dac37b791caca75ac9b1c589bb439bdd868cd6",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 3257
+    },
+    "surgeon-run": {
+      "file": "surgeon-run.png",
+      "sha256": "7312a2a74e22485cf6013938b443c5672cac58e2416c676b669362eb18ffbe21",
+      "sourceSha256": "2d6a1f79dec036e71c4662ff1a417a699103b2bd07765e4a80b9a2c62d7dd935",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 4107
+    },
+    "surgeon-crouch-idle": {
+      "file": "surgeon-crouch-idle.png",
+      "sha256": "e2c694e03421bfa253ce4861652ed4f82bd8268e3bd4aafe0201136c64bcd7c2",
+      "sourceSha256": "6053a59bf843e9f659eedf917e818b0401597574fb277b1518b940d679bac289",
+      "size": [
+        1248,
+        156
+      ],
+      "pixels": 556
+    },
+    "surgeon-crouch-walk": {
+      "file": "surgeon-crouch-walk.png",
+      "sha256": "8a8221728b6beed6071771448d38c1af448f29a0358c4a92399084cf2d4fb524",
+      "sourceSha256": "b8539dd6826219155379b7ec608811d1c9985fc2135ad350007c35d726599242",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 1972
+    },
+    "surgeon-prone-armed-idle": {
+      "file": "surgeon-prone-armed-idle.png",
+      "sha256": "d91af6189b653a912a6c6c46bb440bde4dc1445df08a5c7cbcd52557d282c0fe",
+      "sourceSha256": "3300a17333d699f27a76cd752989ec5b29cad839849ec4629a47fd6fc0e2ba55",
+      "size": [
+        1920,
+        240
+      ],
+      "pixels": 502
+    },
+    "surgeon-prone-armed-walk": {
+      "file": "surgeon-prone-armed-walk.png",
+      "sha256": "9dbebc0068d8b3b69cc6db93b99c696b7ed437358cd307ffc6a6d74707d1bd8d",
+      "sourceSha256": "e443b548503eade0dbd6da7616eb6b18cdb09fd9d21c07461a4e50a01d66c20b",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1789
+    },
+    "surgeon-mounted-idle": {
+      "file": "surgeon-mounted-idle.png",
+      "sha256": "c2cfe10216f975d36490dee57f183171e7b71924dfc7356962aa7c1d2eaa4570",
+      "sourceSha256": "5cf48f43039fb1a51f5eeb7955b88537183ea8dea8cb575dd037878ddf7a52cf",
+      "size": [
+        1824,
+        228
+      ],
+      "pixels": 792
+    },
+    "surgeon-mounted-walk": {
+      "file": "surgeon-mounted-walk.png",
+      "sha256": "9a15b21640e0c5ad9659eb6839b0100ef0392c55395d1d8f736a8992b4ced54c",
+      "sourceSha256": "2c9bedeeba591e26b9928cd6472fd4dcde94588840376164b14f5da431180e2e",
+      "size": [
+        912,
+        1824
+      ],
+      "pixels": 1425
+    },
+    "surgeon-mounted-run": {
+      "file": "surgeon-mounted-run.png",
+      "sha256": "02f199243b334aa1d8cfbbc9c1b1b2396cd4d9d483bad636be6b3ec9eada773a",
+      "sourceSha256": "308b3924a66f5928856179874026acfbcda1f4fcc27341ef9e35995235a409b0",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 544
+    },
+    "surgeon-aim-idle": {
+      "file": "surgeon-aim-idle.png",
+      "sha256": "b3eeed1ffdf764c775d8c1609174a9f3f43bf21f9a6eec253e7e772d2d0bb062",
+      "sourceSha256": "7d0330109f78f52374c5f3dd3f02e3b460189a873bb96ae2d0de43faac14e2e7",
+      "size": [
+        1680,
+        210
+      ],
+      "pixels": 993
+    },
+    "surgeon-crouch-aim-idle": {
+      "file": "surgeon-crouch-aim-idle.png",
+      "sha256": "e66283dca59a2bcf981d574f07551dc6bf144de8e28d24d549e88cb871e5dfc8",
+      "sourceSha256": "3934aa90c743e190169a9c949b5fe764715278cb8a274a159051d526d1ca37b4",
+      "size": [
+        1680,
+        210
+      ],
+      "pixels": 250
+    },
+    "surgeon-prone-aim-idle": {
+      "file": "surgeon-prone-aim-idle.png",
+      "sha256": "86fe2594dabbbaacc0d40b5b659d0ebb4e66e00a82964643dc3940f8fe57b7f7",
+      "sourceSha256": "c98cfd47de1e8ffcff930366ad7a153c08e124b21f54c76e246e9417147de1ae",
+      "size": [
+        2304,
+        288
+      ],
+      "pixels": 533
+    },
+    "surgeon-fire": {
+      "file": "surgeon-fire.png",
+      "sha256": "bb4ad251b959bc88882f0802315ecc35d57dcc21742226067aafe0b3bbd8f844",
+      "sourceSha256": "148685a735bc55d912fa570aaddce7b656767e03cfb2da6eaf8c63cb72b96e64",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 4122
+    },
+    "surgeon-crouch-fire": {
+      "file": "surgeon-crouch-fire.png",
+      "sha256": "117d22f6359a8f74091993467d8e5b65cd2ed16b11a6ffd042c5e383f169b758",
+      "sourceSha256": "c6b8a359c29c96164fe510c50d1efa05e4de487e32e62b365f7df40a8995474b",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 1347
+    },
+    "surgeon-prone-armed-fire": {
+      "file": "surgeon-prone-armed-fire.png",
+      "sha256": "5b3a99eac1f75a5aa7ebe305c28185d58e03e2d006249fa88223886d435da0cd",
+      "sourceSha256": "95636087cf87ed28a10ad3d0b478a766915ffd5e0f18443bf16fc8980bfacd06",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 2386
+    },
+    "surgeon-reload": {
+      "file": "surgeon-reload.png",
+      "sha256": "ec5d924ede2956eec49511f3e3ee9448481c3b97168fc694fc2d612935c84eca",
+      "sourceSha256": "68c39f223f134d90fbcd76e89fd6ae0364c90ad8e25d9fa06f5fb7836f40d0a5",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 3794
+    },
+    "surgeon-crouch-reload": {
+      "file": "surgeon-crouch-reload.png",
+      "sha256": "8ca5aa2ccb05621decb044a36e077b7950937bdeeda7cc49678b5126d92742dc",
+      "sourceSha256": "742350dc178a76afe38c620c96e9e89f4291b36115e070d68d597208cd53df53",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 2084
+    },
+    "surgeon-prone-armed-reload": {
+      "file": "surgeon-prone-armed-reload.png",
+      "sha256": "7ae7d8e72b45d8f99ae725de5ba568c02a83d2c2df551320fb7d1f7f72201517",
+      "sourceSha256": "222948016d9f624aae543e34b8fb6b9b614c2fbb35d5184225c55a83c83e23d1",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1793
+    },
+    "surgeon-strike": {
+      "file": "surgeon-strike.png",
+      "sha256": "9f2b85e9325b1bddd141bf7a565f59cde04f213d932de39b3ec3b5eb3cd57dff",
+      "sourceSha256": "e4378ad2acccb3f066651f8180b0aa002844d4768db621ac91228e4c94305477",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 4922
+    },
+    "surgeon-mounted-strike": {
+      "file": "surgeon-mounted-strike.png",
+      "sha256": "7a599d39ec4397200e7e9e92516eda5924d2a54f2f4516ab60d0e3559835302e",
+      "sourceSha256": "310af240aab5a590414962ac4d59489c65e6a70eaf15c4024068a41c8c85c5c0",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 3776
+    },
+    "surgeon-interact": {
+      "file": "surgeon-interact.png",
+      "sha256": "8e83724df8dbd7aa86d0182aed88eac776165b624b2726578eb1b6133c8a438c",
+      "sourceSha256": "5811917af3e99304070280c300930eff63fac5457c95abba5b02d17730732051",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 4669
+    },
+    "surgeon-crouch-interact": {
+      "file": "surgeon-crouch-interact.png",
+      "sha256": "02dedc6e0f53f7b58e4e218a7ae0763dbb775d85369db389f36a9b156ff13b46",
+      "sourceSha256": "439ff73f0e8bd4f26496c174e4e9605d7b0bd7c833298a9a9d1d237a82e6fc7e",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1907
+    },
+    "surgeon-collapse": {
+      "file": "surgeon-collapse.png",
+      "sha256": "57d05bf0a8acd5afbb45159aec25e5b639903fa11d4062a918e3fafce0158e16",
+      "sourceSha256": "eca3c46bbf1a72abcc8c9975d2f2b6efb044a829f8d7c11a7a1ca63c38b8bd3c",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 3666
+    },
+    "surgeon-unconscious-breathe": {
+      "file": "surgeon-unconscious-breathe.png",
+      "sha256": "15b6cb46cbda2f491013bad479973c4937a53ecb801583a88c9e998f8593d19d",
+      "sourceSha256": "b96162bd4dfdfaab9189b2db787c214270a899ad85917c7db4dd2706f2868d6e",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 3809
+    },
+    "surgeon-mounted-fire": {
+      "file": "surgeon-mounted-fire.png",
+      "sha256": "f05be65d1cc80f23d5a80fb69ff393a84d34f258142b1355006d240c35243d60",
+      "sourceSha256": "15e13a9d4f17939b4f87776fe0f2cd85867fe67ade84b92c33aca29373af2de6",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1227
+    },
+    "surgeon-mounted-reload": {
+      "file": "surgeon-mounted-reload.png",
+      "sha256": "6374b376a7eb7659f19c79617f04f8914665017591b09c1a82763478225fd293",
+      "sourceSha256": "57b01f25cae9d2b6dec624eaac519b68b894021bcd5524fde1710fa87704170f",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1794
+    },
+    "surgeon-prone-unarmed-idle": {
+      "file": "surgeon-prone-unarmed-idle.png",
+      "sha256": "43650c1e01c6de4b79f141496704c8d1df3b52877c0be873c49887dd327ce351",
+      "sourceSha256": "0b454d133feaacbb9cd80e53d61ba19e1d0ed39d9f257402d897621d5aa09862",
+      "size": [
+        1920,
+        240
+      ],
+      "pixels": 649
+    },
+    "surgeon-prone-unarmed-walk": {
+      "file": "surgeon-prone-unarmed-walk.png",
+      "sha256": "6e90ea7841be663bfb45ff0d824de22c9d848874806db8beecf44e163ee85812",
+      "sourceSha256": "a88fe39e73e6bd46fc859ba23927e434a9dbd3647580208cc65617380f3c6d87",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 1447
+    },
+    "surgeon-dead-idle": {
+      "file": "surgeon-dead-idle.png",
+      "sha256": "3b661d428729dc71a31c35197554d1d2adcc0370a99673c815f0ecdd2babe7a2",
+      "sourceSha256": "1396becb04d079c4c6c192ee57bb8240853a1d530766d9ebfec246957e8ca49a",
+      "size": [
+        2304,
+        288
+      ],
+      "pixels": 1029
+    },
+    "gaucho-idle": {
+      "file": "gaucho-idle.png",
+      "sha256": "61388e60bb8a497c376e93a96ffc69960d76440d75a945592f4ba07f73d9e746",
+      "sourceSha256": "ad93dda72b1c498d587ec90a8a673dbcfcbc4c56538a384f0e02bb8cc79d1767",
+      "size": [
+        1248,
+        156
+      ],
+      "pixels": 259
+    },
+    "gaucho-walk": {
+      "file": "gaucho-walk.png",
+      "sha256": "cdaa0e3ee7d58d0c4a8b42dbc438fe39ac9abfaa3a66f913ab458c46016c114f",
+      "sourceSha256": "14d2ccae50a671ebc6f1cbf291780aeb2bd2c47c5ac78f11cc06e5f614aaaa61",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 1092
+    },
+    "gaucho-run": {
+      "file": "gaucho-run.png",
+      "sha256": "4790ffd550cbf0d72f5596674e50238b83ba700382d5859bbef52ae6532e2b09",
+      "sourceSha256": "4222b82306f16f303fd470c3b1b7aaf6f9a1a74e461045c85adc31d6faf6b2e1",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 1107
+    },
+    "gaucho-crouch-idle": {
+      "file": "gaucho-crouch-idle.png",
+      "sha256": "e5dc78a3e458b5b85a7496b8d707dfede86626604134083462887fc7a25e4f5c",
+      "sourceSha256": "b3e39ee5ca8db7d308447fa3fd63eea9911df2637c17e0d0f4cf3391fdf2bc45",
+      "size": [
+        1248,
+        156
+      ],
+      "pixels": 24
+    },
+    "gaucho-crouch-walk": {
+      "file": "gaucho-crouch-walk.png",
+      "sha256": "d89e6809be175846f329df4554245c90f7d3e16b3be72433f71c6c0cd2ba933d",
+      "sourceSha256": "fffc761fb5119ead6ce8a5e0f63e908e47a9143247d7ed0b123d765de2c0258a",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 490
+    },
+    "gaucho-prone-armed-idle": {
+      "file": "gaucho-prone-armed-idle.png",
+      "sha256": "963863ed4823e77e024edf585215bbfd120fac4dcceee55681eae1eda27e39b9",
+      "sourceSha256": "03e5325ce9b99ca2bd310af4c4723ba78602344e7d19c8952aa2b2e7986dad49",
+      "size": [
+        1920,
+        240
+      ],
+      "pixels": 514
+    },
+    "gaucho-prone-armed-walk": {
+      "file": "gaucho-prone-armed-walk.png",
+      "sha256": "3fc285673113dedb21a56d4052e6190b8dee9fdbbffe4ee70fbff65a83b2b04b",
+      "sourceSha256": "4f3b93e389186806648ef14f613b5c863d7c2035f0a69a4dfdd211ef3e0e542b",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 2969
+    },
+    "gaucho-mounted-idle": {
+      "file": "gaucho-mounted-idle.png",
+      "sha256": "0846ee94c450feb982bdcdb30234da628d64d92d6fecffe3c94b875003e935dc",
+      "sourceSha256": "ed44cdbb5d91b647c72c914d67383956ceb87986d69670abf11d50df69b8550d",
+      "size": [
+        1824,
+        228
+      ],
+      "pixels": 375
+    },
+    "gaucho-mounted-walk": {
+      "file": "gaucho-mounted-walk.png",
+      "sha256": "bb5e1a4767b21ad0dc262a20eec14a142d9e602ccede2536271f10d78419cd7a",
+      "sourceSha256": "e85156ea6db46cef34a9acdce88893c91c9998a1f5810d8f85f5bd4ae505afe1",
+      "size": [
+        912,
+        1824
+      ],
+      "pixels": 877
+    },
+    "gaucho-mounted-run": {
+      "file": "gaucho-mounted-run.png",
+      "sha256": "d10ff6b20f908ca2461c6bff58042a1744d2fa3177219146bdffefeefb344f77",
+      "sourceSha256": "21dd757f28abed541c53bba7cb526fa5cefa79fc48a674fff1f303674cebcad6",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 163
+    },
+    "gaucho-aim-idle": {
+      "file": "gaucho-aim-idle.png",
+      "sha256": "4c29f61ea5da90145bfcee596600c66096e8476b452336e501833eb1d4137698",
+      "sourceSha256": "a94ee4532106007980c7dd4b77eb7ab49057073fc6a6481cee77bdb691723d87",
+      "size": [
+        1680,
+        210
+      ],
+      "pixels": 200
+    },
+    "gaucho-crouch-aim-idle": {
+      "file": "gaucho-crouch-aim-idle.png",
+      "sha256": "8dd5c26b484e302b14f4c5d56e434af6f48a6b3508444b2450142087e61455b0",
+      "sourceSha256": "c965455967a9831a782b50dccfb20d976c95c671f918d4717c64f371c37216d1",
+      "size": [
+        1680,
+        210
+      ],
+      "pixels": 283
+    },
+    "gaucho-prone-aim-idle": {
+      "file": "gaucho-prone-aim-idle.png",
+      "sha256": "5055a5ec72477940af7f016da71f58bbb98b20c2c7a37d8ffff81db49c2e5932",
+      "sourceSha256": "3bb4fedf0613d5ed568ba4cc618f1fa8485aa8752350abec7e02913df09152e0",
+      "size": [
+        2304,
+        288
+      ],
+      "pixels": 725
+    },
+    "gaucho-fire": {
+      "file": "gaucho-fire.png",
+      "sha256": "0674746c6fcc26625d949f2f0110ef56e3999982feb9ee70dac94c9d84062b3c",
+      "sourceSha256": "a8c9727a14db0b206f7e4aaec5dc35528aab1ebfb610bcd9ab639c52a1cc6e02",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 1004
+    },
+    "gaucho-crouch-fire": {
+      "file": "gaucho-crouch-fire.png",
+      "sha256": "ddab6c8da2c80060f3f8da5d5b667bb67181a72ab8a4d385534aad0cbd2c9d99",
+      "sourceSha256": "8ed1cc2edcc9535c45fab7410bdf260ddcf10f6f7648cc59595d45ee2c0b6094",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 1002
+    },
+    "gaucho-prone-armed-fire": {
+      "file": "gaucho-prone-armed-fire.png",
+      "sha256": "548aeb0bf678dd1beeb85713f120559be9aa5ccf9e33b9fe0fff41eb238b0fd3",
+      "sourceSha256": "6711671e2b8b08ca8eba6e4d376c2c8b75fc4e79c48643be2ee79e1edae0cb7b",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 2889
+    },
+    "gaucho-reload": {
+      "file": "gaucho-reload.png",
+      "sha256": "81683a4b377b5e96d2c6537c90876818b50b35b593bc57ea8db1903f5afb42b1",
+      "sourceSha256": "58a8b99a2d9dd137bf52451285b82b6e8b904fc651e45d7bc8f1ef23c4634ebd",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 1242
+    },
+    "gaucho-crouch-reload": {
+      "file": "gaucho-crouch-reload.png",
+      "sha256": "c66b212cea2abfcaa5709cd7b14fe793ddce4ef9ef0f3123cc7a35017ec6552a",
+      "sourceSha256": "d9f6ef0dee04be630a5b5ffdfe98e89564f38a49e8569236a2e91e7da66f1ffb",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 833
+    },
+    "gaucho-prone-armed-reload": {
+      "file": "gaucho-prone-armed-reload.png",
+      "sha256": "105de52f5ac60d8ad886e112f59d08054f7632c4d0ea987b58466e5a302e77ae",
+      "sourceSha256": "a2dd1b6f048f0e15e73b32d898d4550f7a7488ac210511661a322421c58d215a",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 2149
+    },
+    "gaucho-strike": {
+      "file": "gaucho-strike.png",
+      "sha256": "0e8d50c02037624b9ca27535f02f51d4da60f387cad9efca36945efa9d564ab7",
+      "sourceSha256": "551ce191a2156bce562bcf0458a77f344a027cf4110310030b9c8bd822e52f06",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 784
+    },
+    "gaucho-mounted-strike": {
+      "file": "gaucho-mounted-strike.png",
+      "sha256": "bb70ea3a34b458e550b62c2e1f384fa07ded38e66309ff41f998823e8c75702e",
+      "sourceSha256": "9072f8da2c0a3cc6b28bfe12e2fecc69974ae74867f1ba9d55d28589843fbf3c",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 2266
+    },
+    "gaucho-interact": {
+      "file": "gaucho-interact.png",
+      "sha256": "a06f55a95809259bc176b9dd282317d993d712b7e9d7a8b4bb78739d13f702bb",
+      "sourceSha256": "06f2eccb554d3971e7183505ec97aeea529b72626344080cf4927ae530355be9",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1626
+    },
+    "gaucho-crouch-interact": {
+      "file": "gaucho-crouch-interact.png",
+      "sha256": "7603559fc09056544f26cdad359d499e2a796bbe043dc81a24909c9eb35f256a",
+      "sourceSha256": "cf3b64f532f05b126d01363a27a088d772988c6befa64385bdd565afd5b031f7",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1669
+    },
+    "gaucho-collapse": {
+      "file": "gaucho-collapse.png",
+      "sha256": "22adafcdc392ab04fc2374bd8af945d19c57dea35eb572a998aaddc6e35ba42a",
+      "sourceSha256": "1f8149804131508f6c44a6c6ee5c6385bc0a62b611e221e327c381b0c2a7987e",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 2940
+    },
+    "gaucho-unconscious-breathe": {
+      "file": "gaucho-unconscious-breathe.png",
+      "sha256": "659f24299345cc1a7770995e4505a24ab5cf3c635172d4a4eb0fb4662f3e5f2a",
+      "sourceSha256": "522bdd7ea7da600de9da17543b7a7b7f3d29b943c9022f8c56258ac9150753d8",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 2939
+    },
+    "gaucho-mounted-fire": {
+      "file": "gaucho-mounted-fire.png",
+      "sha256": "5ea9bc792ffcc86ad5a06a3cdf74a31fab3478229fb0a7a11f5b812aa488209a",
+      "sourceSha256": "5dc91fa46ae66b85eddeb79745dd2c519b066f66b8293d91708da4f7687138ed",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 503
+    },
+    "gaucho-mounted-reload": {
+      "file": "gaucho-mounted-reload.png",
+      "sha256": "cec086ce8426ee37921e7a4e51668e347347f8c3946f816de69cfb06a0b00dd4",
+      "sourceSha256": "4575c5aeaeae8522477932d9e18e29b7fcd1bb9b27e69005761acf908b1811ac",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1567
+    },
+    "gaucho-prone-unarmed-idle": {
+      "file": "gaucho-prone-unarmed-idle.png",
+      "sha256": "636004862ef90e4da996aba1d09beb084c6d9b57b60e27d8550685b847de901c",
+      "sourceSha256": "af5b765e2ad5a4400a7b954db755bf73b8aa6ad29168461c79903073a9063dc0",
+      "size": [
+        1920,
+        240
+      ],
+      "pixels": 557
+    },
+    "gaucho-prone-unarmed-walk": {
+      "file": "gaucho-prone-unarmed-walk.png",
+      "sha256": "b1a857fd1ea8e4fad7d9d67d4543b38fb7d9a283a735815b0a6d6fa2884e394a",
+      "sourceSha256": "57771f92d1a482e8e96001969f70f8c30905d88d768d145c7c34c6f2e8fbc9ee",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 2355
+    },
+    "gaucho-dead-idle": {
+      "file": "gaucho-dead-idle.png",
+      "sha256": "9ce907eaac86c17ba2fd0beaef70345569b95ed76ccb179c68ffdcb0194b12d9",
+      "sourceSha256": "a3b538615f318ae9eeb4434f03e013faa8a6a8bcd5f5cfb190a87d5da369c68f",
+      "size": [
+        2304,
+        288
+      ],
+      "pixels": 934
+    },
+    "friar-idle": {
+      "file": "friar-idle.png",
+      "sha256": "0f069771a5298bd00a11324516192b3ac7419e67446cbafba7858394745d67b6",
+      "sourceSha256": "90495ddbf9fc0f12954916a9b96e3a43d00ba156c0cf15b0d84a672c9c6896bf",
+      "size": [
+        1248,
+        156
+      ],
+      "pixels": 1491
+    },
+    "friar-walk": {
+      "file": "friar-walk.png",
+      "sha256": "75d706ca876813504ae474a1b87e1ff73f7c63780b91ca6dae3f94aebe9fd0f2",
+      "sourceSha256": "3df51cbf5feece67b5d51795b8a6ce8690debd6e5442927a24047c38e538ae88",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 6000
+    },
+    "friar-run": {
+      "file": "friar-run.png",
+      "sha256": "bd9fc1fd7c7485c72b5d6edba29a26627b8e79b790bff1e651d437c45ff8e297",
+      "sourceSha256": "fb60c8108bc30ef542d6f4ed2ef6a2166e166d5cfaba5b5b1e7409916d54adab",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 6384
+    },
+    "friar-crouch-idle": {
+      "file": "friar-crouch-idle.png",
+      "sha256": "6de1f4e37a1ea37bfc9105c2b73e96fc1af55c2a3192a6b23145f905d43eae0d",
+      "sourceSha256": "db7ee3a84a0f9334cd5580107995fd42b296b2fdb45cf4035c2eb9d8ba54a9ea",
+      "size": [
+        1248,
+        156
+      ],
+      "pixels": 1284
+    },
+    "friar-crouch-walk": {
+      "file": "friar-crouch-walk.png",
+      "sha256": "d99bce3aeac1e81357decc3e9bc4d0acbdc939b7ff9b006f4b30e4d5f269cc77",
+      "sourceSha256": "dbd638328927210334fbfb1279c00fe7aa1f040a65b9fc5eb2b00d55227e1088",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 5901
+    },
+    "friar-prone-armed-idle": {
+      "file": "friar-prone-armed-idle.png",
+      "sha256": "f9406d5e51921528e1888a7866c2c8ef52dfb5a3d2807a27b1981e68cc47beea",
+      "sourceSha256": "54d0c5e1c2cf5b2639e2e10fc9974bdb212878c08d34c067b4a0d7548ce06b56",
+      "size": [
+        1920,
+        240
+      ],
+      "pixels": 1591
+    },
+    "friar-prone-armed-walk": {
+      "file": "friar-prone-armed-walk.png",
+      "sha256": "3069ba8959765f0e0fb6670c54abf9cbeb3203bc57e3f0d844fbe665c555443c",
+      "sourceSha256": "5bb7ce0d8aefa7085f69a360f2527e8eae426a5d99f65d9ea37c40c01b627015",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 6281
+    },
+    "friar-mounted-idle": {
+      "file": "friar-mounted-idle.png",
+      "sha256": "520defa36dcf741e4587572355d3fbbf89633ae487bd6b50bfe88cb35bbf2e8f",
+      "sourceSha256": "f011ed91cf037ec4ba4d4c34ba7bef1c4f8e52ac913c6a90accb20c4c5d9af9b",
+      "size": [
+        1824,
+        228
+      ],
+      "pixels": 1917
+    },
+    "friar-mounted-walk": {
+      "file": "friar-mounted-walk.png",
+      "sha256": "6998c9ac82a2f684baad65922f2bc6feab299207e37aa0b21570997b38817c64",
+      "sourceSha256": "392e8560d1abeba121dab7c1f0f55ed9fe6ca8bc94276f6bec71820462c532a9",
+      "size": [
+        912,
+        1824
+      ],
+      "pixels": 6066
+    },
+    "friar-mounted-run": {
+      "file": "friar-mounted-run.png",
+      "sha256": "aba97081cbabc79d9933b762465a17ab7fd11a83e5d084e784f87328d2a3e15d",
+      "sourceSha256": "e329599b98b6914deb3619bf0e52a11d7e6f9dcbbc6b31d3dfc9745368d776b2",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 4654
+    },
+    "friar-aim-idle": {
+      "file": "friar-aim-idle.png",
+      "sha256": "1417b861de7ea1677f0bad1224ff93b4c9c1758667fec3b72ba118acc7bd6ea1",
+      "sourceSha256": "2c8602ca6b92ef001c9496433643e712699e651e6d536ed3704c00b1fe486a60",
+      "size": [
+        1680,
+        210
+      ],
+      "pixels": 1670
+    },
+    "friar-crouch-aim-idle": {
+      "file": "friar-crouch-aim-idle.png",
+      "sha256": "59e9c6aed9d7bd05f757af1f654c329b7706b0342dcb56b22334f68819d66233",
+      "sourceSha256": "2c2d06c5a429d3fc9cbe4dc52f1bb0e756dd4dcd3918e8b2f3663aee172dd469",
+      "size": [
+        1920,
+        240
+      ],
+      "pixels": 1236
+    },
+    "friar-prone-aim-idle": {
+      "file": "friar-prone-aim-idle.png",
+      "sha256": "06ac840f1acda1bb4441829d09ce6a5a431ee150260641a5d71e025cb0f72daf",
+      "sourceSha256": "2461877f16d3dd3513c8a4cc66eee8f46f789f16d82425131bf10907f64fc3e1",
+      "size": [
+        2304,
+        288
+      ],
+      "pixels": 1562
+    },
+    "friar-fire": {
+      "file": "friar-fire.png",
+      "sha256": "b7c71663b4e603d371a81c59841affa8bc68a4d9dc3847f23d01048c59f54afc",
+      "sourceSha256": "713f775c248faf665a831ad710ec64b9fe11a89feb1637480e0911f2012f3869",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 6720
+    },
+    "friar-crouch-fire": {
+      "file": "friar-crouch-fire.png",
+      "sha256": "024f6ced0fff67be9017ca49e9f0c2195127198ef61d9a8e994497fb5b82bcf1",
+      "sourceSha256": "6896046db453b17fc7614bf1bfe201d533fed0dca8e713ccfc14d9732c99bff4",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 4575
+    },
+    "friar-prone-armed-fire": {
+      "file": "friar-prone-armed-fire.png",
+      "sha256": "23a2eec51ae67357c2ddb3c5fdcfa5bd01a8dcec5fcd78a1674726184ee8621d",
+      "sourceSha256": "a0079a1c222bbf13ed35ee9676b907cec7e9cc271fc3b5311b3ef3a9b2269d7e",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 6370
+    },
+    "friar-reload": {
+      "file": "friar-reload.png",
+      "sha256": "9993f8135abf773dbee5e81a2ec35b0c16c0203a4dfb24cc395caa9d77b41f6e",
+      "sourceSha256": "64b9427053a6d530bca57d29c6f0711573a27830e77d60ef2b3822588f3c8776",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 6563
+    },
+    "friar-crouch-reload": {
+      "file": "friar-crouch-reload.png",
+      "sha256": "7be92c2bca6495ae22fbac9e5c90e3b13b2098a212197bd697fb33faa1adb2d8",
+      "sourceSha256": "13b4ef18056573fcafbe11ab10922613edd2338e7b42675dc95e8851baf22a30",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 5202
+    },
+    "friar-prone-armed-reload": {
+      "file": "friar-prone-armed-reload.png",
+      "sha256": "6dad9d6d09c4905a8af7359c5712bc6c775054ff5b0b307130f558fe0fc95ce5",
+      "sourceSha256": "50a34f8ad0dee7fe340f57734d8c44f57695b1372d80d86c9c8e65996dca0bc0",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 6698
+    },
+    "friar-strike": {
+      "file": "friar-strike.png",
+      "sha256": "c7b861171a6f6b0e54e87b978dc75c7c513ba04cf556f088e5b14871a14e8475",
+      "sourceSha256": "59a30514004deb16378fd05358e5e0f80e0ac11292bfb328fcf79a088846af7c",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 7511
+    },
+    "friar-mounted-strike": {
+      "file": "friar-mounted-strike.png",
+      "sha256": "f52d25702781087a01e6ddbfca8eea82dd6c4151c58496363b40bc68a4f2c9ea",
+      "sourceSha256": "82b1639c3f2e528c0f1c3bb91da6f654afdb0fc05c66f232353f9e0da3d4fca5",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 9948
+    },
+    "friar-interact": {
+      "file": "friar-interact.png",
+      "sha256": "58c3d65ff9095c8e7882f8accd99c44c65df9b08ffe7ffec5d033c15c4d79b13",
+      "sourceSha256": "85a4c7a126aea8a4a7d667a3beef3997fb89fc9d97f4b3540607260dda8191a6",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 5380
+    },
+    "friar-crouch-interact": {
+      "file": "friar-crouch-interact.png",
+      "sha256": "1fee8881f3b44ef77dc044077e47492e9e5249b2d2425b8f91ae23c32baa73d0",
+      "sourceSha256": "5561f08e3aceccd07a6a264ad6cb958fdb86be9f8a40ee918fabcc6b8ef6940d",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 5034
+    },
+    "friar-collapse": {
+      "file": "friar-collapse.png",
+      "sha256": "2b2816a3ae6bb22de1f77eb5cff16b77975dd5de689ac5b7111041c343c3d485",
+      "sourceSha256": "30e2bfb8104fa1531b358d6e951905ccb7ab77cd500cff9eeebd894768a0bc50",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 5639
+    },
+    "friar-unconscious-breathe": {
+      "file": "friar-unconscious-breathe.png",
+      "sha256": "f74a1590489b83b931da0d484b83380132b89215f98c91dc375b61b4b4d67785",
+      "sourceSha256": "69815e5bb46cb2f9540521075faacbb742327bfc76c7453d6ed31703011c6f93",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 7396
+    },
+    "friar-mounted-fire": {
+      "file": "friar-mounted-fire.png",
+      "sha256": "e634153274a04998c4c9c688b82b4f7d07d5c068b0a5b9f4c33d0520e006d0ab",
+      "sourceSha256": "d2ca23de566836eb37c507535b41eeb4bfed0d3d5c272270950ad41a31d59bbe",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 7121
+    },
+    "friar-mounted-reload": {
+      "file": "friar-mounted-reload.png",
+      "sha256": "69b4984ca603bc29405aa55c37ec687478445b33ebec0de9fc00d370f4dd2591",
+      "sourceSha256": "6d68e18c018ac4ec99869ab72aff2213b0562edecea726910aece0619e2d9cb0",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 7872
+    },
+    "friar-prone-unarmed-idle": {
+      "file": "friar-prone-unarmed-idle.png",
+      "sha256": "7879e7a3ac7dc3e78b3906c39b12036443951b98872aee531c5cd964a36f7439",
+      "sourceSha256": "3bccb485552dfa0665426c27b1c269eda006d36526fc22ef1b7276f7b0f2c62c",
+      "size": [
+        1920,
+        240
+      ],
+      "pixels": 1421
+    },
+    "friar-prone-unarmed-walk": {
+      "file": "friar-prone-unarmed-walk.png",
+      "sha256": "98a3bca012f4ba57d96d02c6a531dcf6fc781f3413515c61966cefc6e204f5cf",
+      "sourceSha256": "8a4b2b72c555a94692a95df3a6c4a0539928b2635d90b8dffe0980bf24df6f01",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 5892
+    },
+    "friar-dead-idle": {
+      "file": "friar-dead-idle.png",
+      "sha256": "834436152add562640c34e31a5a71adb100d1b5d269db512ef6cbe59e88a8961",
+      "sourceSha256": "8ff2d6f0de9837e025dd9db617aaad19e7d91a0dc630347818b45f2313ad060c",
+      "size": [
+        2304,
+        288
+      ],
+      "pixels": 1640
+    },
+    "woman-scout-idle": {
+      "file": "woman-scout-idle.png",
+      "sha256": "99649a95310fde0e7af65bb3d1ca96685f0a55c1fdd5cc5e1119e23dfd2d0084",
+      "sourceSha256": "2def2f3cff4da8c87e7c91ae6b5ea083731fe11ff69ff462b5300a50df12f161",
+      "size": [
+        1248,
+        156
+      ],
+      "pixels": 733
+    },
+    "woman-scout-walk": {
+      "file": "woman-scout-walk.png",
+      "sha256": "2b1a67efea946bbc0fda3a3bd4d3ea49962e0d136b50e1b190cacb8a7e6cd9b1",
+      "sourceSha256": "8d5846a648073c58776fff2afe020d6dc2b20d9324b0063c1369ec279bd542e8",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 2195
+    },
+    "woman-scout-run": {
+      "file": "woman-scout-run.png",
+      "sha256": "572b73c4a6d8044a311613fcd6aeb3c584ee94cc99154df691d0c63190281f56",
+      "sourceSha256": "ca053e0ed6272d01d45d9f4e7a35b06669f9e58c62e7698e72378d84e395b1fa",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 3564
+    },
+    "woman-scout-crouch-idle": {
+      "file": "woman-scout-crouch-idle.png",
+      "sha256": "205382ec163d5541fe68307b708c6d672860dc9a597fb904dc1e1f467f70e69b",
+      "sourceSha256": "52cf9a0dc2f42d08fcc48dda3282cc4ea82a4af819798109426754d563855650",
+      "size": [
+        1248,
+        156
+      ],
+      "pixels": 325
+    },
+    "woman-scout-crouch-walk": {
+      "file": "woman-scout-crouch-walk.png",
+      "sha256": "4aeaae8b2d5438d1c047ae27c83b65d829916d29967fb5a3cdaef32b61d13e2d",
+      "sourceSha256": "7d8abad568fc08efec63a3f656285ea9343f1a6ab87be72ee90f185573a5504c",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 1515
+    },
+    "woman-scout-prone-armed-idle": {
+      "file": "woman-scout-prone-armed-idle.png",
+      "sha256": "8b5aadf0004a9a888ce5c3fbcd32265cc49070a92658ebae1c7feb57580011a7",
+      "sourceSha256": "9d2b0b23438eaf39ed224ba89a172791ff8f7d35151ea53f141f3b1822628f10",
+      "size": [
+        1920,
+        240
+      ],
+      "pixels": 593
+    },
+    "woman-scout-prone-armed-walk": {
+      "file": "woman-scout-prone-armed-walk.png",
+      "sha256": "f99863aa0e311da2cb4005878bb5c10602eadca4f97d754781c28288d203e545",
+      "sourceSha256": "d34058ce07f4fb998c83c5e7992f39d40e40e69b9878e0fb06ec921ce4bd25f3",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1237
+    },
+    "woman-scout-mounted-idle": {
+      "file": "woman-scout-mounted-idle.png",
+      "sha256": "03b54e5632c33277d3a6c9fc7f4e567ce4415cecd80d8f80fc75dae3026e7fa2",
+      "sourceSha256": "5c3fc54e3889761c96eb33078b04ab1d50d8d8c6dd58aa48262674b92a519e5d",
+      "size": [
+        1824,
+        228
+      ],
+      "pixels": 608
+    },
+    "woman-scout-mounted-walk": {
+      "file": "woman-scout-mounted-walk.png",
+      "sha256": "2d424ac2b52d446b7b83cab1f249c2bb676e353c838b8ed91e863793cff358de",
+      "sourceSha256": "ac374b948c95e8395d32dc492a198f50e6efc32a574af407480f218708aacd8b",
+      "size": [
+        912,
+        1824
+      ],
+      "pixels": 2015
+    },
+    "woman-scout-mounted-run": {
+      "file": "woman-scout-mounted-run.png",
+      "sha256": "2650bdde6dc3417bcf803dd491cf1ad209d4980a55b999e426b0ec08167f58e4",
+      "sourceSha256": "dc4922858d5b33231aaf5f73c7197d20c0c4165a50c6205cd159adee23a4e083",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1084
+    },
+    "woman-scout-aim-idle": {
+      "file": "woman-scout-aim-idle.png",
+      "sha256": "a909597a7a398acc42da2f60fdbe08c44a87226009ff0ca3774578fbf7a7c749",
+      "sourceSha256": "e3be98bafd8ebed5c72b5d8e85918c486baa9e9eea60f9e17b7cbd1ebcdcbbd7",
+      "size": [
+        1680,
+        210
+      ],
+      "pixels": 590
+    },
+    "woman-scout-crouch-aim-idle": {
+      "file": "woman-scout-crouch-aim-idle.png",
+      "sha256": "bbf7597b3b16f2bfe12968e9d67a64ce132b625ba102dc6cf3467efbbff74032",
+      "sourceSha256": "668ad475b785d6d3f91e970772a5678ef67beb4b5fe370d48e65138e99db8fce",
+      "size": [
+        1920,
+        240
+      ],
+      "pixels": 337
+    },
+    "woman-scout-prone-aim-idle": {
+      "file": "woman-scout-prone-aim-idle.png",
+      "sha256": "da5732521b4ff1ec689878130ce6112f52a8153da07a292487c09ed20b893597",
+      "sourceSha256": "87c5707efc2259f0d3f2bba880022918615a1ea707fbef466492bd4e40258137",
+      "size": [
+        2304,
+        288
+      ],
+      "pixels": 308
+    },
+    "woman-scout-fire": {
+      "file": "woman-scout-fire.png",
+      "sha256": "8941b04c6529536c64489169c65a2dc480fafacad78ec2681bc89c01f70d5834",
+      "sourceSha256": "6a9de8c7d20d1c6efb4ea770137171172f0e34c0efaf7a4c1ffc2ab614a4d341",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 2824
+    },
+    "woman-scout-crouch-fire": {
+      "file": "woman-scout-crouch-fire.png",
+      "sha256": "eec87f66bb6099880920f496fa4fe2bf0292a2993f8b60e59449b875fbeb1dae",
+      "sourceSha256": "c87b37d7b6da7b693366c46d946ab2036d4a097aa478c95fcdc14f253ed548b4",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 1301
+    },
+    "woman-scout-prone-armed-fire": {
+      "file": "woman-scout-prone-armed-fire.png",
+      "sha256": "55c4fa13b3968ff56b4aba350fc0059ec0a10f430c4b4fb75991af2ee1a7dbc5",
+      "sourceSha256": "41f4c7f519e882d240dc887bc9d465fdd3c2c3ff71c99402f787986e5de0fba0",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 978
+    },
+    "woman-scout-reload": {
+      "file": "woman-scout-reload.png",
+      "sha256": "57906af9c1666ece5df027bfbfb20520637f9796594604a4cfd41ac656209760",
+      "sourceSha256": "0bdcb547c1eb1f567ac7f7f4774d7f477d94bad41ca52a1dec36d36c68196903",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 3109
+    },
+    "woman-scout-crouch-reload": {
+      "file": "woman-scout-crouch-reload.png",
+      "sha256": "0b03ea949cf5e783841bf1208eeaa3daf1f455df057a52edc13760a269875eeb",
+      "sourceSha256": "020706b5a30443017edb142886a92df141210eb056112f864a1b05b43e4d78e2",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 1264
+    },
+    "woman-scout-prone-armed-reload": {
+      "file": "woman-scout-prone-armed-reload.png",
+      "sha256": "8dd43a5ce0e034d7a8c11e279e71955a925ad33270beab17b31534b7f7ef3754",
+      "sourceSha256": "a7bdeb0849d5ad62d1052f651be3510c6e9fd897b39393180728219f2a2967f4",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1498
+    },
+    "woman-scout-strike": {
+      "file": "woman-scout-strike.png",
+      "sha256": "3c1eeafd465b4f9aa1b73ea85a62d33cb5155e69ed0933041bfe820f5b4225d9",
+      "sourceSha256": "884e999be3e2ccfe09b04f66f9bb1127400f5365b81c642e1af269f49cd49dd4",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 2778
+    },
+    "woman-scout-mounted-strike": {
+      "file": "woman-scout-mounted-strike.png",
+      "sha256": "ece791d82a619af1aa9a143ae574858291bdeed916d937033728d390653c8fd1",
+      "sourceSha256": "43aa8709ce8f6dce0e0b5cd9b8870b4d6857b460b4da602ca8cf847e0e785c7d",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 3723
+    },
+    "woman-scout-interact": {
+      "file": "woman-scout-interact.png",
+      "sha256": "7ab6710d7568fd1cb7a22f2af5394e03a3e75e16f8a6e95a04e24b999274bcdd",
+      "sourceSha256": "4e2871556468a3c061ec3bfc4150c0662a8465190eba9d91df44a8cf597078c8",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 2368
+    },
+    "woman-scout-crouch-interact": {
+      "file": "woman-scout-crouch-interact.png",
+      "sha256": "f5d6b5b5c1055c11b50a1aec2a6a2abaac0914da8e022d78223b394ba04cd072",
+      "sourceSha256": "34c6af10fc7474228b69367ac9b7664fbf4d809d4b1f70393758cfc6f0e75c92",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1584
+    },
+    "woman-scout-collapse": {
+      "file": "woman-scout-collapse.png",
+      "sha256": "a94b243439d28ec7f88cfc58520b37ef0ebbabd90f800d339a31f3c7b8bdb984",
+      "sourceSha256": "2d7284307d10299339c089a93a39a407cde1082a7efe0a12579cf469e88e3522",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 2614
+    },
+    "woman-scout-unconscious-breathe": {
+      "file": "woman-scout-unconscious-breathe.png",
+      "sha256": "da8ad7514cdd3e24817b1670d10cd44110fab089412bd60fd6bbad03eec8a50f",
+      "sourceSha256": "0fc4c9f760d987761c43c89cd29887e92eba24849eb2b03d1e6e3f3db3a26f3b",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 3056
+    },
+    "woman-scout-mounted-fire": {
+      "file": "woman-scout-mounted-fire.png",
+      "sha256": "874d197b8985ac2e59d2d7941ee31e639d660d7c4e6884000b0169934b6a9050",
+      "sourceSha256": "e6518e24aa5b06cf53348048de643fd5683132223d0d9b3d9006afa2d7cd85f1",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 2948
+    },
+    "woman-scout-mounted-reload": {
+      "file": "woman-scout-mounted-reload.png",
+      "sha256": "4c68c6d108708351ea723617535aa4ffcc8331f63a51a1af67042d7782492f94",
+      "sourceSha256": "f551c8d7ef22fbe89a1e33095781167de0630dd1da5c24d82fc069c8bc681f13",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 2492
+    },
+    "woman-scout-prone-unarmed-idle": {
+      "file": "woman-scout-prone-unarmed-idle.png",
+      "sha256": "8909eba1907698037e3fafe473705e40ede2407035006e71eeb2c1f32bc65bb3",
+      "sourceSha256": "f902015d17137deeb260df893b497e452f5c36e444cec669eace3f2c7b80e33e",
+      "size": [
+        1920,
+        240
+      ],
+      "pixels": 417
+    },
+    "woman-scout-prone-unarmed-walk": {
+      "file": "woman-scout-prone-unarmed-walk.png",
+      "sha256": "6cc2d6835cd1ef87f896dd9606d946306488b9afc4d4b09313ac7bf0adcb79e3",
+      "sourceSha256": "39a471dfc56967ee76b2c45eb82d7d16fe86f86208659855217c1c54b7e2339d",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 1228
+    },
+    "woman-scout-dead-idle": {
+      "file": "woman-scout-dead-idle.png",
+      "sha256": "8e68e038e07c470bd14fcc4d7e7f71cd8330e99389bcfd9848f1747598852ff3",
+      "sourceSha256": "078dad7b762c850a0f99baeb9d86f0122307c93fba5a147cece93402279c851e",
+      "size": [
+        2304,
+        288
+      ],
+      "pixels": 669
+    },
+    "woman-shawl-idle": {
+      "file": "woman-shawl-idle.png",
+      "sha256": "7a0e09c7a20afa3dbba8d9b9a8ee74e43371f043e04d4ec43fdeb1fe307867d3",
+      "sourceSha256": "51b55aee6edc5e5bc6e2d3ab6a7842f729b5c7fa5b68a5a2b4067604d81f9f2c",
+      "size": [
+        1248,
+        156
+      ],
+      "pixels": 665
+    },
+    "woman-shawl-walk": {
+      "file": "woman-shawl-walk.png",
+      "sha256": "06cbe32f8585ea68ba6f964858f86dec0043a2ee710953553e4e0accf07d911a",
+      "sourceSha256": "cf6df151e05b86b93470806dccc7f7e39f0d5ed53dab091e62409ace7151631e",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 2786
+    },
+    "woman-shawl-run": {
+      "file": "woman-shawl-run.png",
+      "sha256": "60df622836689b008ffcc673d5d369a6e925a3a10d18a9daae1930ca750a8a55",
+      "sourceSha256": "9a749ded3b0bea2e4066ff07fe829c4f7783d4514bff978580e3088ea3862209",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 2371
+    },
+    "woman-shawl-crouch-idle": {
+      "file": "woman-shawl-crouch-idle.png",
+      "sha256": "1e9b4ef75dbd93c0f8b08fe0e352ffa35549083aee1e9896443e212083f1e0e1",
+      "sourceSha256": "d77e4cb22f658cabf7ca1123cb94a67e12bde669ea233f303d7f4fd74417c413",
+      "size": [
+        1248,
+        156
+      ],
+      "pixels": 470
+    },
+    "woman-shawl-crouch-walk": {
+      "file": "woman-shawl-crouch-walk.png",
+      "sha256": "c1ce109ac5453aa8425276f7815bfe852777ba92039c1e7927e45ab915bc8a71",
+      "sourceSha256": "f48f5ebf7cdedc6e60453df6d5f4d51f766d834f8757e2becd5d5e3fe7267712",
+      "size": [
+        624,
+        1248
+      ],
+      "pixels": 1484
+    },
+    "woman-shawl-prone-armed-idle": {
+      "file": "woman-shawl-prone-armed-idle.png",
+      "sha256": "a4eafb1dd301884b262f44509f2d8c091b7e2eb6551efdaa4e4bf5e8f1a9f04d",
+      "sourceSha256": "71025ade35522627686791ea2b5abc2a1c077a1eea38b41359803c6b260cb986",
+      "size": [
+        1920,
+        240
+      ],
+      "pixels": 440
+    },
+    "woman-shawl-prone-armed-walk": {
+      "file": "woman-shawl-prone-armed-walk.png",
+      "sha256": "55bbb7bade4a30684a120a814d4f7fb8629978695c4a50bd8b35aff7306222fa",
+      "sourceSha256": "f4794971cf0d8d0fbf7a50e5ebeadd1e4a7111ed195c70968eb38544ed4a0c8a",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1174
+    },
+    "woman-shawl-mounted-idle": {
+      "file": "woman-shawl-mounted-idle.png",
+      "sha256": "7a8cbc541a8a3f848bd4db72f94c4d957ad028723d18ea99927309724681cf0a",
+      "sourceSha256": "fa419f5d87fdf550497825b8d8946769b881f29e95ee0e0c727921e6cc510c54",
+      "size": [
+        1824,
+        228
+      ],
+      "pixels": 747
+    },
+    "woman-shawl-mounted-walk": {
+      "file": "woman-shawl-mounted-walk.png",
+      "sha256": "4e5e6181ed6bc7c6d3dc593c88bb5f59a140ebfd1a2bc8f505109c18e29d640a",
+      "sourceSha256": "5e3eb59adac4e603f342fe8c9b7097902af9291dcd6f8cc61d48cf1dc73e9c65",
+      "size": [
+        912,
+        1824
+      ],
+      "pixels": 3121
+    },
+    "woman-shawl-mounted-run": {
+      "file": "woman-shawl-mounted-run.png",
+      "sha256": "9366444757fdfaba8ce4a6eb07c5412ae4f82e89303deb4d75e510cb645a4804",
+      "sourceSha256": "15442a15b565923c35fabcb5001529592f530b16a8e33410d54d71d65b136ad5",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 2595
+    },
+    "woman-shawl-aim-idle": {
+      "file": "woman-shawl-aim-idle.png",
+      "sha256": "2c052d08237c3b689669032df2e2295147ad78823a11654985087f9ab507413f",
+      "sourceSha256": "b2fed2040c344f0d305afe0596d0e3c02b3e59677d511eec5b454eb211a4cfa8",
+      "size": [
+        1680,
+        210
+      ],
+      "pixels": 566
+    },
+    "woman-shawl-crouch-aim-idle": {
+      "file": "woman-shawl-crouch-aim-idle.png",
+      "sha256": "19fc1794bc5f7a98650480212e0f494b14530d281d50c588d504121992153b6d",
+      "sourceSha256": "1d6ccc1383d5556e9587523882b0487551911ba74511cc7a75cc2a32d81069bf",
+      "size": [
+        1680,
+        210
+      ],
+      "pixels": 406
+    },
+    "woman-shawl-prone-aim-idle": {
+      "file": "woman-shawl-prone-aim-idle.png",
+      "sha256": "f0421f04615ece3435ace45cd6955217e97ab75afbc2c6302a87a190673191db",
+      "sourceSha256": "225a0b5ddbec3d7ad1b6a2ff71ae871919bb12a187cc3aa80c3d5cffeee849bd",
+      "size": [
+        2304,
+        288
+      ],
+      "pixels": 180
+    },
+    "woman-shawl-fire": {
+      "file": "woman-shawl-fire.png",
+      "sha256": "2c2a9560a1d1e824ccc0da2ec9a8e3af4346c7d9681ca8585ebfb6d6b58a9821",
+      "sourceSha256": "1828a35c0b3210815f8701fa174768493cff33c3b988da49cb9876590cc4a1c0",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 2318
+    },
+    "woman-shawl-crouch-fire": {
+      "file": "woman-shawl-crouch-fire.png",
+      "sha256": "fdc838dcc54a604bb23d32c433515c98ffc0007690504403af6855f01c7fe622",
+      "sourceSha256": "e998c1c34c93e5f64e9043a7824475f2be62ed18ddff713fcd80bf4185c1ae8a",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 1460
+    },
+    "woman-shawl-prone-armed-fire": {
+      "file": "woman-shawl-prone-armed-fire.png",
+      "sha256": "7e647636b71235b1ef6b285bc7c15d88af88ac715334134d34e0df5d136dc005",
+      "sourceSha256": "b01e315df39e52faea72d66e156400455a7c092918654fcfa54954adbd3cc7dd",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 981
+    },
+    "woman-shawl-reload": {
+      "file": "woman-shawl-reload.png",
+      "sha256": "062c69ecd070c1ae99572cdb7d500674b4f92843344fb8de0f4177c13bba65e6",
+      "sourceSha256": "b670c48dab152869df27b8a5c6d8a254b8e3ba98ac943dcc3bd309fe0ddc05f1",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 2603
+    },
+    "woman-shawl-crouch-reload": {
+      "file": "woman-shawl-crouch-reload.png",
+      "sha256": "88726fffefbd6c0f0c856c677628fae5c13b5d00d552e9669ed2e1397a6f6b0d",
+      "sourceSha256": "5ea5a181643c831459af2b1224f10eb02c8bedbf5c3ca9f7a8a415d96166bee3",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 2493
+    },
+    "woman-shawl-prone-armed-reload": {
+      "file": "woman-shawl-prone-armed-reload.png",
+      "sha256": "dcc0dc6c3b831a4ae3664ff8945754fcf9b9329d29ccd5aec938a14f9d19f497",
+      "sourceSha256": "c9e26a43e034dd47f1cde579101186f4f6c3e6713c7ec1e42ca7f0102db08b64",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1136
+    },
+    "woman-shawl-strike": {
+      "file": "woman-shawl-strike.png",
+      "sha256": "befd894cece984ee809ceaaa40f4cea407c64c34268db887e2fbf0f0b857c02d",
+      "sourceSha256": "3af8ee5eda1c017f92ebb573c62139a0d0bde4f387b07fb8885c2379ebc21e39",
+      "size": [
+        840,
+        1680
+      ],
+      "pixels": 3026
+    },
+    "woman-shawl-mounted-strike": {
+      "file": "woman-shawl-mounted-strike.png",
+      "sha256": "f79e45f7e7f2700ef259f72de715fa4e80a87370b8edd84a6b2255f92226b825",
+      "sourceSha256": "2d64c85eb77bf611438315c1aaf2050a9c7351b21f8b84bd05bf9e1ef217e2dc",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 3448
+    },
+    "woman-shawl-interact": {
+      "file": "woman-shawl-interact.png",
+      "sha256": "2ed554c94db40dbbbff365901ec85254903466ecf6d984d8740f801e1afc2ac2",
+      "sourceSha256": "66f55c29f1edd47b033f2a7703508e71fa443e6dd60e3454661c4259a357f928",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 4095
+    },
+    "woman-shawl-crouch-interact": {
+      "file": "woman-shawl-crouch-interact.png",
+      "sha256": "a0ee99bf40a06abacdac3e7f51ec4c37d0e56497eca0948615eba351d44d65e4",
+      "sourceSha256": "24cc83f00f707967c19c271e236908686ec09f1f44da36c976b9f8bced48cf1c",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 1778
+    },
+    "woman-shawl-collapse": {
+      "file": "woman-shawl-collapse.png",
+      "sha256": "29a0fe92c6330d1dcf2c1c80212dd02f17b2311d8aaf5685cb8b1758ef6f9c29",
+      "sourceSha256": "72b08ce5b31da584e199fdaa2fab277b08ca1607fc73fbbc96fa5615dec23f49",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 2602
+    },
+    "woman-shawl-unconscious-breathe": {
+      "file": "woman-shawl-unconscious-breathe.png",
+      "sha256": "65d59d38ac712ed89677f4b516a174388c6bc36fdd3197bf39c1c2ee4e4cfa58",
+      "sourceSha256": "e5cb0303bd3eb333146b8a08f858706627523b1f46038a394913ead8d8d68cb0",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 3009
+    },
+    "woman-shawl-mounted-fire": {
+      "file": "woman-shawl-mounted-fire.png",
+      "sha256": "b3bdab69a98d821b1457a610489500c151ca12396c658a5d0a710a468328031e",
+      "sourceSha256": "3feec9be3a8dfae62b3757b93e8ead101901298363c18e500cd7ae104e519d88",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 3681
+    },
+    "woman-shawl-mounted-reload": {
+      "file": "woman-shawl-mounted-reload.png",
+      "sha256": "40b3328dcb38d6ec1e547a2165d0918ade43be79f830470ce33046d6ca877fab",
+      "sourceSha256": "d77a9b84b36266d09763e3c6160970becde1d9aedcfa74f4f55fbd650c208457",
+      "size": [
+        1152,
+        2304
+      ],
+      "pixels": 2464
+    },
+    "woman-shawl-prone-unarmed-idle": {
+      "file": "woman-shawl-prone-unarmed-idle.png",
+      "sha256": "2c48e1a13cea28b5492b50bf80a2ed04cad4ff6874462ba26719f7053daba0f4",
+      "sourceSha256": "63d9c5dfffb270b9b2505723d6b72e081f7eb6a05928fb68d50a7fe7739f37d0",
+      "size": [
+        1920,
+        240
+      ],
+      "pixels": 915
+    },
+    "woman-shawl-prone-unarmed-walk": {
+      "file": "woman-shawl-prone-unarmed-walk.png",
+      "sha256": "657634d972a7c9d6a6afa0769b84480bc7cd4725eb3d2acb28bc79a217323408",
+      "sourceSha256": "84facd33d8a5d079d784efc7f3c587e4c40e0dfc44a4ec93c87754e27c7596fd",
+      "size": [
+        960,
+        1920
+      ],
+      "pixels": 1948
+    },
+    "woman-shawl-dead-idle": {
+      "file": "woman-shawl-dead-idle.png",
+      "sha256": "fa543bab32c9f516fc2807aa83a524c7f9c8454a0b088eb0b75ddfb1fd3d7f6f",
+      "sourceSha256": "544c7212273a7fa12b9b00ce7646655c7442f10063b98175b8a57ddf25f6b7a8",
+      "size": [
+        2304,
+        288
+      ],
+      "pixels": 679
+    }
+  }
+}

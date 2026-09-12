@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "surgeon-collapse": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-north-v1.png",
+          "sha256": "fb0ef0d1b6d453e79b16036bc9ba62c9a240e623a9c15861af293b461fb6ccce",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-south-v1.png",
+          "sha256": "be32e2e2b2cad2cd9bcd69e73b827dd580dfc120b121e199d87e078f74667cda",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-north-v1.png",
+          "sourceScale": 0.5114155251141552,
+          "sourceAnchor": [
+            47.5,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            91,
+            221
+          ],
+          "bounds": [
+            121,
+            112,
+            167,
+            224
+          ],
+          "sha256": "e4d77085b987be7bd108b75711a750bc9815a0982abe83389dd91aa7d97d67ee"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-north-v1.png",
+          "sourceScale": 0.5114155251141552,
+          "sourceAnchor": [
+            72.5,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            46,
+            140,
+            219
+          ],
+          "bounds": [
+            108,
+            134,
+            179,
+            222
+          ],
+          "sha256": "25c831ab451fb0205bf336b06714f3a3ff11812ed358d53d03efaea7579bd1f5"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-north-v1.png",
+          "sourceScale": 0.5114155251141552,
+          "sourceAnchor": [
+            79.5,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            110,
+            157,
+            223
+          ],
+          "bounds": [
+            104,
+            167,
+            183,
+            225
+          ],
+          "sha256": "ce926054da275db933cd7facaedc76b9924db342cff6c3480918f2d9f2975385"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-north-v1.png",
+          "sourceScale": 0.5114155251141552,
+          "sourceAnchor": [
+            77,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            115,
+            151,
+            215
+          ],
+          "bounds": [
+            106,
+            170,
+            182,
+            221
+          ],
+          "sha256": "59486dd60057ed59496181db750e582057de3401307e6dba612806de2a7449b2"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-north-v1.png",
+          "sourceScale": 0.5045454545454545,
+          "sourceAnchor": [
+            45,
+            222
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            81,
+            222
+          ],
+          "bounds": [
+            122,
+            114,
+            162,
+            225
+          ],
+          "sha256": "db1c501381a8238e69f5e4cf86523fb48f1b83b47bf0328fd47c535efa02ea73"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-north-v1.png",
+          "sourceScale": 0.5045454545454545,
+          "sourceAnchor": [
+            77,
+            222
+          ],
+          "sourceBounds": [
+            2,
+            40,
+            129,
+            221
+          ],
+          "bounds": [
+            106,
+            133,
+            170,
+            224
+          ],
+          "sha256": "85dff7720163ed8549987d546d6d1e6bd71539503701b2c737c2ba01e0f5f58f"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-north-v1.png",
+          "sourceScale": 0.5045454545454545,
+          "sourceAnchor": [
+            91.5,
+            222
+          ],
+          "sourceBounds": [
+            2,
+            108,
+            203,
+            222
+          ],
+          "bounds": [
+            99,
+            167,
+            200,
+            225
+          ],
+          "sha256": "78b07a27d6db45fc68c0648e2b914e84fabf59a554e289cf34f8c2b5c77f6075"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-north-v1.png",
+          "sourceScale": 0.5045454545454545,
+          "sourceAnchor": [
+            65,
+            222
+          ],
+          "sourceBounds": [
+            2,
+            124,
+            208,
+            219
+          ],
+          "bounds": [
+            112,
+            176,
+            216,
+            224
+          ],
+          "sha256": "708fb6b2ba1eca05014cea582045bb18adb47866cbd776690c6e08cb2e453183"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-north-v1.png",
+          "sourceScale": 0.502262443438914,
+          "sourceAnchor": [
+            39.5,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            64,
+            223
+          ],
+          "bounds": [
+            125,
+            113,
+            156,
+            224
+          ],
+          "sha256": "55daa759da73f3b53852fc663ded9032c4eaa09ab17f6be0aea78234fde9f445"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-north-v1.png",
+          "sourceScale": 0.502262443438914,
+          "sourceAnchor": [
+            89.5,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            43,
+            118,
+            223
+          ],
+          "bounds": [
+            100,
+            134,
+            158,
+            224
+          ],
+          "sha256": "363b3d02646043021cbe761c3bdecf3cb22991fbe8a6ebf13f9b92ee72ff5d2c"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-north-v1.png",
+          "sourceScale": 0.502262443438914,
+          "sourceAnchor": [
+            110.5,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            109,
+            206,
+            224
+          ],
+          "bounds": [
+            90,
+            167,
+            192,
+            225
+          ],
+          "sha256": "0f239747e813ca87a2d807f1dc6f62b2a9c6ac021a92215ec185b9a34bb9dd66"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-north-v1.png",
+          "sourceScale": 0.502262443438914,
+          "sourceAnchor": [
+            122.5,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            176,
+            244,
+            225
+          ],
+          "bounds": [
+            83,
+            200,
+            205,
+            225
+          ],
+          "sha256": "a41981957eeb8a2821cb2c6918eaac04a49045c6fd66f01b73959df8cdf44838"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-north-v1.png",
+          "sourceScale": 0.4956140350877193,
+          "sourceAnchor": [
+            48,
+            231
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            86,
+            230
+          ],
+          "bounds": [
+            121,
+            112,
+            163,
+            225
+          ],
+          "sha256": "e14e6dae3af75ac19ff70b851176ee5b40b452673f53b10d297acfb35f45196d"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-north-v1.png",
+          "sourceScale": 0.4956140350877193,
+          "sourceAnchor": [
+            83.5,
+            231
+          ],
+          "sourceBounds": [
+            2,
+            36,
+            127,
+            230
+          ],
+          "bounds": [
+            104,
+            128,
+            166,
+            224
+          ],
+          "sha256": "475d21a8a668545472ddd3002182c22410c1d9f456e192a0cff7a3d0c4f64d95"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-north-v1.png",
+          "sourceScale": 0.4956140350877193,
+          "sourceAnchor": [
+            163,
+            231
+          ],
+          "sourceBounds": [
+            2,
+            95,
+            207,
+            230
+          ],
+          "bounds": [
+            64,
+            158,
+            166,
+            225
+          ],
+          "sha256": "11ee683c285fc03db5b5ff8800a61594ffa3342f268bd6825dc96c9a03307065"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-north-v1.png",
+          "sourceScale": 0.4956140350877193,
+          "sourceAnchor": [
+            183.5,
+            231
+          ],
+          "sourceBounds": [
+            2,
+            148,
+            218,
+            231
+          ],
+          "bounds": [
+            54,
+            184,
+            161,
+            225
+          ],
+          "sha256": "386ae79abd14f83784ffeb693ea7e7bcb951a0646313f0e365bb2c7eeac8b33b"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-south-v1.png",
+          "sourceScale": 0.5092592592592593,
+          "sourceAnchor": [
+            43.5,
+            218
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            81,
+            218
+          ],
+          "bounds": [
+            123,
+            115,
+            163,
+            225
+          ],
+          "sha256": "81ae362821ffc90c0a314c8f6c2571bc3a4494508bdde842305cee33d58e1b90"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-south-v1.png",
+          "sourceScale": 0.5092592592592593,
+          "sourceAnchor": [
+            57.5,
+            218
+          ],
+          "sourceBounds": [
+            2,
+            33,
+            115,
+            218
+          ],
+          "bounds": [
+            116,
+            131,
+            174,
+            225
+          ],
+          "sha256": "149263af1256a9bca5e1d28708f825543a291bfe784ddaf9be07b3150a6724fd"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-south-v1.png",
+          "sourceScale": 0.5092592592592593,
+          "sourceAnchor": [
+            68.5,
+            218
+          ],
+          "sourceBounds": [
+            2,
+            82,
+            135,
+            218
+          ],
+          "bounds": [
+            110,
+            156,
+            178,
+            225
+          ],
+          "sha256": "0c624733cdcc9aafc9cb30925482db91906c6adb9a1f39a492c9036c3821f3e4"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-south-v1.png",
+          "sourceScale": 0.5092592592592593,
+          "sourceAnchor": [
+            64.5,
+            218
+          ],
+          "sourceBounds": [
+            2,
+            105,
+            128,
+            218
+          ],
+          "bounds": [
+            112,
+            167,
+            176,
+            225
+          ],
+          "sha256": "1f4e84f31a388bdf1d024a2a0ba99816e1e384bc55e7be90f86ad13df125cbc5"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-south-v1.png",
+          "sourceScale": 0.4977578475336323,
+          "sourceAnchor": [
+            37,
+            227
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            81,
+            225
+          ],
+          "bounds": [
+            127,
+            113,
+            166,
+            224
+          ],
+          "sha256": "ee8abfaab27296dc09c8fd6e05525b24b897ebe7c450017d7177375ef9fbf04b"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-south-v1.png",
+          "sourceScale": 0.4977578475336323,
+          "sourceAnchor": [
+            46.5,
+            227
+          ],
+          "sourceBounds": [
+            2,
+            40,
+            124,
+            225
+          ],
+          "bounds": [
+            122,
+            132,
+            183,
+            224
+          ],
+          "sha256": "da0748dbb2e9eefe22d81fac3a6850963f2440eb3e413abe606fc843b50c58e8"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-south-v1.png",
+          "sourceScale": 0.4977578475336323,
+          "sourceAnchor": [
+            33,
+            227
+          ],
+          "sourceBounds": [
+            2,
+            86,
+            169,
+            227
+          ],
+          "bounds": [
+            129,
+            155,
+            212,
+            225
+          ],
+          "sha256": "75ba73f262efc2347b674155567170b123b00bfe46eaa893eba7ad01a9c2590d"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-south-v1.png",
+          "sourceScale": 0.4977578475336323,
+          "sourceAnchor": [
+            31,
+            227
+          ],
+          "sourceBounds": [
+            2,
+            140,
+            210,
+            227
+          ],
+          "bounds": [
+            130,
+            182,
+            234,
+            225
+          ],
+          "sha256": "c7ff5df65bd930e2619fe3de83a63d5ed752bd5e1b23592bf9791da2e26b90f4"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-south-v1.png",
+          "sourceScale": 0.4911504424778761,
+          "sourceAnchor": [
+            24.5,
+            230
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            65,
+            228
+          ],
+          "bounds": [
+            133,
+            113,
+            164,
+            224
+          ],
+          "sha256": "9f1b127d2b98e00c21bd65b14b0a4ceb241733e6cd0aed1c01419ab3dff90141"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-south-v1.png",
+          "sourceScale": 0.4911504424778761,
+          "sourceAnchor": [
+            41,
+            230
+          ],
+          "sourceBounds": [
+            2,
+            43,
+            112,
+            230
+          ],
+          "bounds": [
+            125,
+            133,
+            179,
+            225
+          ],
+          "sha256": "4a42bc9d149cdd4c631cc5f992853c1c6216167a3d560956d2bbabd592341710"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-south-v1.png",
+          "sourceScale": 0.4911504424778761,
+          "sourceAnchor": [
+            98,
+            230
+          ],
+          "sourceBounds": [
+            2,
+            112,
+            188,
+            230
+          ],
+          "bounds": [
+            97,
+            167,
+            188,
+            225
+          ],
+          "sha256": "1a1f204765c633e21d9648b001e2d10aa26fef55f5c761c48935fb78c56bd43d"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-south-v1.png",
+          "sourceScale": 0.4911504424778761,
+          "sourceAnchor": [
+            93.5,
+            230
+          ],
+          "sourceBounds": [
+            2,
+            181,
+            225,
+            228
+          ],
+          "bounds": [
+            99,
+            201,
+            209,
+            224
+          ],
+          "sha256": "cdb288a08109143f96f00737245692f8ccee2d914d463dc93982374f4741532f"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-south-v1.png",
+          "sourceScale": 0.5,
+          "sourceAnchor": [
+            41.5,
+            224
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            82,
+            224
+          ],
+          "bounds": [
+            124,
+            114,
+            164,
+            225
+          ],
+          "sha256": "62d34a1189924baf4677b042254634ab49c0a3fb0af6e43a2f1b4dce6949ae10"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-south-v1.png",
+          "sourceScale": 0.5,
+          "sourceAnchor": [
+            65,
+            224
+          ],
+          "sourceBounds": [
+            2,
+            27,
+            107,
+            221
+          ],
+          "bounds": [
+            113,
+            127,
+            166,
+            224
+          ],
+          "sha256": "ec46921aaecb74e2c061ce4451064e9f69ee335c0c013d3dd95f91fed79b0534"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-south-v1.png",
+          "sourceScale": 0.5,
+          "sourceAnchor": [
+            94.5,
+            224
+          ],
+          "sourceBounds": [
+            2,
+            111,
+            179,
+            221
+          ],
+          "bounds": [
+            98,
+            169,
+            187,
+            224
+          ],
+          "sha256": "2f0e718b8833dfcb24a5e881c4a6e61cf014e539586973ef57b46ba15a9874c4"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-collapse-south-v1.png",
+          "sourceScale": 0.5,
+          "sourceAnchor": [
+            137.5,
+            224
+          ],
+          "sourceBounds": [
+            2,
+            129,
+            191,
+            217
+          ],
+          "bounds": [
+            76,
+            178,
+            171,
+            222
+          ],
+          "sha256": "0d57861ae62785aa8cefee4318f510d4a4dda0b1a86cab01e24a8eab82b414ed"
+        }
+      ],
+      "file": "surgeon-collapse.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "eca3c46bbf1a72abcc8c9975d2f2b6efb044a829f8d7c11a7a1ca63c38b8bd3c"
+    }
+  }
+}

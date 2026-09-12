@@ -1,0 +1,31 @@
+[
+  {
+    "stem": "surgeon-prone-armed-walk-n-fix-v2",
+    "refs": [
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/surgeon-prone-armed-idle-v1.png"
+    ],
+    "prompt": "Use the FIRST sprite (upper-left) of attached sheet as exact NORTH identity and orientation. Produce four frames of ARMED PRONE CRAWL for the SAME lean older fair-skinned man with receding gray hair, small round spectacles, brown knee-length civilian coat and waistcoat, cream cravat, gray trousers, black shoes and brown medical satchel on ONE diagonal strap. All four in ONE HORIZONTAL ROW. Strict head toward TOP, both complete legs and boots trailing toward BOTTOM, back of head visible, face hidden. Keep entire body on ground with bent elbows. One short flintlock pistol aims up screen. Frame1 left elbow pulls/right knee bent; frame2 long extension both legs; frame3 right elbow pulls/left knee bent; frame4 opposite extension. Preserve back-view anatomy in all four frames. NO diagonal or sideways pose. Keep scale and hips aligned. Original crisp illustrated pixel art. Flat magenta #FF00FF, no floor/shadow/text/border, four complete figures."
+  },
+  {
+    "stem": "surgeon-prone-armed-walk-s-fix-v2",
+    "refs": [
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/surgeon-prone-armed-idle-v1.png"
+    ],
+    "prompt": "Use the FIFTH sprite (bottom-left) of attached sheet as exact SOUTH identity and orientation. Produce four frames of ARMED PRONE CRAWL for the SAME lean older fair-skinned man with receding gray hair, small round spectacles, brown knee-length civilian coat and waistcoat, cream cravat, gray trousers, black shoes and brown medical satchel on ONE diagonal strap. All four in ONE HORIZONTAL ROW. Strict head toward BOTTOM, both complete legs and boots trailing toward TOP, full front face visible. Keep entire body on ground with bent elbows. One short flintlock pistol aims down screen. Frame1 left elbow pulls/right knee bent; frame2 long extension both legs; frame3 right elbow pulls/left knee bent; frame4 opposite extension. Preserve front-facing anatomy in all four frames. NO diagonal or sideways pose. Keep scale and hips aligned. Original crisp illustrated pixel art. Flat magenta #FF00FF, no floor/shadow/text/border, four complete figures."
+  },
+  {
+    "stem": "surgeon-prone-armed-reload-n-fix-v2",
+    "refs": [
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/surgeon-prone-armed-idle-v1.png"
+    ],
+    "prompt": "Use FIRST sprite upper-left as exact NORTH prone skeleton and identity. Create four frames in ONE HORIZONTAL ROW of the SAME lean older fair-skinned man with receding gray hair, small round spectacles, brown knee-length civilian coat and waistcoat, cream cravat, gray trousers, black shoes and brown medical satchel on ONE diagonal strap reloading ONE short flintlock pistol while prone. Strict head TOP, both full legs and boots trailing BOTTOM, back of head seen and face hidden in ALL four. Keep shoulders, pelvis and boots aligned and body grounded. Frame1 reaches for cartridge with left hand; frame2 left hand pours powder into pistol held by right hand angled up screen; frame3 slim ramrod beside pistol muzzle, left elbow lifted enough to ram; frame4 pistol ready aimed up screen. Arms work ahead of shoulders, never turn body to camera or sideways. Preserve complete body and both boots each frame. Flat solid magenta, no floor, text, shadows or extra figures. Crisp original period pixel art."
+  },
+  {
+    "stem": "surgeon-unconscious-breathe-n-fix-v2",
+    "refs": [
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/worker-unconscious-breathe-north-v1.png",
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/surgeon-prone-unarmed-idle-v1.png"
+    ],
+    "prompt": "Take ONLY FIRST ROW of FIRST image as pose guide: four NORTH unconscious side-lying body poses, head toward TOP and complete legs and boots toward BOTTOM. Edit identity only to SECOND image the SAME lean older fair-skinned man with receding gray hair, small round spectacles, brown knee-length civilian coat and waistcoat, cream cravat, gray trousers, black shoes and brown medical satchel on ONE diagonal strap. Remove worker short hair, apron and crossed straps. Four complete figures in ONE HORIZONTAL ROW. All hands EMPTY and no weapon anywhere. Eyes shut, head relaxed on side, shoulders and chest subtly rise then fall over four phases. Same grounded body and fixed hips each phase. Do not stand or crawl, do not turn to E or NE. Preserve first-row body axis almost vertical and whole legs. Crisp original period pixel art, flat magenta #FF00FF, no shadows/floor/text/border."
+  }
+]

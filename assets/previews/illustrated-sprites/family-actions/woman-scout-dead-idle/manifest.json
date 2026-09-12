@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-scout-dead-idle": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-north-v1.png",
+          "sha256": "2dbd94f5ff8073a2d2d24c1954344e15e71bd88149a73561a7db55edf6d27c14",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-south-v1.png",
+          "sha256": "8857cf9e40f04faf4fec2618627aeee892d4032abdeedba707f09cba1a70ea16",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-north-v1.png",
+          "sourceScale": 0.5092592592592593,
+          "sourceAnchor": [
+            72.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            113,
+            143,
+            217
+          ],
+          "bounds": [
+            108,
+            171,
+            180,
+            224
+          ],
+          "sha256": "18a11ba5e16090b04f3bbec7b1f58b148bfafb2da36b4bbb3dd094e4e508e152"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-north-v1.png",
+          "sourceScale": 0.5069124423963134,
+          "sourceAnchor": [
+            59,
+            219
+          ],
+          "sourceBounds": [
+            2,
+            123,
+            202,
+            219
+          ],
+          "bounds": [
+            115,
+            176,
+            216,
+            225
+          ],
+          "sha256": "5519846db0e54397fa28bbdb17a37d648eee1921adfc68ac515309e231887cfe"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-north-v1.png",
+          "sourceScale": 0.5069124423963134,
+          "sourceAnchor": [
+            124.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            172,
+            244,
+            220
+          ],
+          "bounds": [
+            82,
+            201,
+            205,
+            225
+          ],
+          "sha256": "02840a61b698f14149c5d770a9f3b796a35c19ecc0b3132b1833ad36162c1242"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-north-v1.png",
+          "sourceScale": 0.49107142857142855,
+          "sourceAnchor": [
+            188.5,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            136,
+            219,
+            226
+          ],
+          "bounds": [
+            52,
+            181,
+            159,
+            225
+          ],
+          "sha256": "43c044d261fe9f8d4004a45da7f6e9b91bfa640451463d92fd7067479821064b"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-south-v1.png",
+          "sourceScale": 0.5023255813953489,
+          "sourceAnchor": [
+            63,
+            217
+          ],
+          "sourceBounds": [
+            2,
+            107,
+            124,
+            216
+          ],
+          "bounds": [
+            113,
+            170,
+            174,
+            225
+          ],
+          "sha256": "fa3382e0b881b75eb4479dec9c90d5466f312a8b63be6950659f0f5990548bb1"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-south-v1.png",
+          "sourceScale": 0.48660714285714285,
+          "sourceAnchor": [
+            30.5,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            140,
+            208,
+            225
+          ],
+          "bounds": [
+            130,
+            183,
+            230,
+            224
+          ],
+          "sha256": "4cbf1ab79f7333846a8b9b13291251143cbd845b3200a1b60b32fede5f88846b"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-south-v1.png",
+          "sourceScale": 0.4864864864864865,
+          "sourceAnchor": [
+            115.5,
+            224
+          ],
+          "sourceBounds": [
+            2,
+            178,
+            230,
+            224
+          ],
+          "bounds": [
+            89,
+            203,
+            200,
+            225
+          ],
+          "sha256": "45cc9eed79747609a4a145142c466c7ea5e84f6cb4df89fc189ba442900d602c"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-collapse-south-v1.png",
+          "sourceScale": 0.47577092511013214,
+          "sourceAnchor": [
+            157.5,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            128,
+            199,
+            226
+          ],
+          "bounds": [
+            70,
+            177,
+            164,
+            224
+          ],
+          "sha256": "909bf4e7d4baa65ff1f092531ab25b5bfae2222c5e438b7ddcdb84b6ff1b62d9"
+        }
+      ],
+      "file": "woman-scout-dead-idle.png",
+      "size": [
+        2304,
+        288
+      ],
+      "sha256": "078dad7b762c850a0f99baeb9d86f0122307c93fba5a147cece93402279c851e",
+      "derivedFrom": {
+        "atlas": "woman-scout-collapse",
+        "frame": 3,
+        "reason": "hold final collapse frame without breathing"
+      }
+    }
+  }
+}

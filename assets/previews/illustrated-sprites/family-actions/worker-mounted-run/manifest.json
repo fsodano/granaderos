@@ -1,0 +1,778 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "worker-mounted-run": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 7,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sha256": "64741c8d1436ae8cbeff57f09b8dbe05213a895d07537cd7dfee9e39a611783a",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.2406015037593985,
+          "sourceAnchor": [
+            31,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            60,
+            135
+          ],
+          "bounds": [
+            108,
+            60,
+            180,
+            225
+          ],
+          "sha256": "c18c49f30b5f889d4f8a58021c07e4178477b220f01ff8ec9718894011a44fc5"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.2406015037593985,
+          "sourceAnchor": [
+            30.5,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            59,
+            132
+          ],
+          "bounds": [
+            109,
+            61,
+            180,
+            221
+          ],
+          "sha256": "98016cae500905c0627be41aeea31050ede1647746d55ac0b17450488e126298"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.2406015037593985,
+          "sourceAnchor": [
+            30.5,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            59,
+            134
+          ],
+          "bounds": [
+            109,
+            61,
+            180,
+            224
+          ],
+          "sha256": "1a820d37a7ba2b3d53309e6fbfde9ef15e396d23e2f403d73fefef7969533df1"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.2406015037593985,
+          "sourceAnchor": [
+            30,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            58,
+            134
+          ],
+          "bounds": [
+            109,
+            61,
+            178,
+            224
+          ],
+          "sha256": "d85c9dec099e708cd0d3606caf8018d0087188843ba3deab101254102c355c3f"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.2406015037593985,
+          "sourceAnchor": [
+            62,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            122,
+            131
+          ],
+          "bounds": [
+            70,
+            60,
+            219,
+            220
+          ],
+          "sha256": "86d616e84884e7b9383b7e34ba76e943ab3c7885dbc0aad9e4e78c171e63a479"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.2406015037593985,
+          "sourceAnchor": [
+            58,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            114,
+            130
+          ],
+          "bounds": [
+            75,
+            60,
+            214,
+            219
+          ],
+          "sha256": "9c9669f09f7e13cff0bbcd7720b9f8466feb314fdb344fd2f94bbccc8d561679"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.2406015037593985,
+          "sourceAnchor": [
+            66.5,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            131,
+            135
+          ],
+          "bounds": [
+            64,
+            60,
+            224,
+            225
+          ],
+          "sha256": "96bac91adc0959604692993b3c8f085bec8d7dadc452dae3f6be35fa2ee4ce7c"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.2406015037593985,
+          "sourceAnchor": [
+            55,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            108,
+            132
+          ],
+          "bounds": [
+            78,
+            60,
+            210,
+            221
+          ],
+          "sha256": "568d52b1e42aa8046f2750bd3bd1682905c79060c85e130fa3eb840445ccb663"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.2615384615384615,
+          "sourceAnchor": [
+            80,
+            132
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            158,
+            132
+          ],
+          "bounds": [
+            46,
+            61,
+            243,
+            225
+          ],
+          "sha256": "3523c5ac96416a4744316a11520a01070aed43c0394b17276b6ec0d376c93085"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.2615384615384615,
+          "sourceAnchor": [
+            80.5,
+            132
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            159,
+            126
+          ],
+          "bounds": [
+            45,
+            61,
+            243,
+            217
+          ],
+          "sha256": "c376db557af4b097b5849e3a03c4e023c64d2388d92a91f0ca1b36b33549e4f6"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.2615384615384615,
+          "sourceAnchor": [
+            86,
+            132
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            170,
+            132
+          ],
+          "bounds": [
+            38,
+            61,
+            250,
+            225
+          ],
+          "sha256": "6a38e187ead450a1eec8fe25fb31c72a4c329dbd7d5b91e7d046196f3a04c5b9"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.2615384615384615,
+          "sourceAnchor": [
+            79.5,
+            132
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            157,
+            130
+          ],
+          "bounds": [
+            46,
+            61,
+            242,
+            222
+          ],
+          "sha256": "1e6b26d16cba3239b21ec885d05230ddc9939d9158a1db418dbebf4c58cce265"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.237037037037037,
+          "sourceAnchor": [
+            66.5,
+            137
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            131,
+            134
+          ],
+          "bounds": [
+            64,
+            58,
+            224,
+            221
+          ],
+          "sha256": "a5399068af74539ff35b7fb8a23b84a6a6a4d4c2f8e1a264ca450c918f5590b1"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.237037037037037,
+          "sourceAnchor": [
+            67.5,
+            137
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            136
+          ],
+          "bounds": [
+            63,
+            58,
+            225,
+            224
+          ],
+          "sha256": "adf0a6bf87326845c7512fa8039e2b1053b529fa9986fe615d58aaa17eb5eb6c"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.237037037037037,
+          "sourceAnchor": [
+            73,
+            137
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            144,
+            137
+          ],
+          "bounds": [
+            56,
+            58,
+            232,
+            225
+          ],
+          "sha256": "6007b17d638565613ea2eee3653822de60b1a08132f4d5cd148850a0d8bdac3b"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.237037037037037,
+          "sourceAnchor": [
+            70,
+            137
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            138,
+            136
+          ],
+          "bounds": [
+            60,
+            58,
+            228,
+            224
+          ],
+          "sha256": "2aed9035b0e63d8222bd23e8569066fd5a16ad9b36427d61262e4ac4ac10995c"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.1857142857142857,
+          "sourceAnchor": [
+            35.5,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            69,
+            142
+          ],
+          "bounds": [
+            104,
+            59,
+            183,
+            225
+          ],
+          "sha256": "e280b4a0b1173939e5c87b55d0d4792ab3df6ece5fc960783c1998e944f8f363"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.1857142857142857,
+          "sourceAnchor": [
+            35,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            68,
+            134
+          ],
+          "bounds": [
+            105,
+            59,
+            183,
+            216
+          ],
+          "sha256": "a39d657d315b35cb7894db9378a2a6407c3c8e3e8cca1cb56c1bd33cd2b2d3df"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.1857142857142857,
+          "sourceAnchor": [
+            34.5,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            67,
+            137
+          ],
+          "bounds": [
+            105,
+            59,
+            182,
+            219
+          ],
+          "sha256": "b8e5adeadd3abb2b830a6d5ab0353848181c42d12807be815f74329846b83f41"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.1857142857142857,
+          "sourceAnchor": [
+            34.5,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            67,
+            137
+          ],
+          "bounds": [
+            105,
+            59,
+            182,
+            219
+          ],
+          "sha256": "860483bacf1d7e40771ef16e57ae8098db99a10c21ee6013fc7ed3c35983464b"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.2205882352941178,
+          "sourceAnchor": [
+            68,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            134,
+            137
+          ],
+          "bounds": [
+            63,
+            58,
+            224,
+            223
+          ],
+          "sha256": "ea371acf4546a87f6aaebd82f8205cdfd06aa135abbff1a04c67f1cf9aead5b5"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.2205882352941178,
+          "sourceAnchor": [
+            71.5,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            134
+          ],
+          "bounds": [
+            59,
+            58,
+            229,
+            219
+          ],
+          "sha256": "51dc409b9c9db5f593aee0b50f4740a16a61681dbb079f3877c70b9b6f7bcb3f"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.2205882352941178,
+          "sourceAnchor": [
+            82,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            162,
+            133
+          ],
+          "bounds": [
+            46,
+            58,
+            241,
+            218
+          ],
+          "sha256": "bb4f9a2ca6cfabd8581480b247317a333eacf7693b2c40353f44534331cbda6d"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.2205882352941178,
+          "sourceAnchor": [
+            70.5,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            139,
+            139
+          ],
+          "bounds": [
+            60,
+            59,
+            227,
+            225
+          ],
+          "sha256": "68d2fdbd189be17e41955239caf36ea9ba6fe7c90fbfe014d4bb3d1e5283f687"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.2424242424242424,
+          "sourceAnchor": [
+            79,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            156,
+            135
+          ],
+          "bounds": [
+            48,
+            61,
+            239,
+            225
+          ],
+          "sha256": "aa31cca0f7ce3b2b8b3d35b6300a01fa99adcf4adc8913d437b7f5fcb3e9fc8f"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.2424242424242424,
+          "sourceAnchor": [
+            79.5,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            157,
+            131
+          ],
+          "bounds": [
+            48,
+            60,
+            241,
+            220
+          ],
+          "sha256": "7fcdaea63be6b15c3913eeaa2cf76a3aa4c1febc389ad24506aa5e1e867eacad"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.2424242424242424,
+          "sourceAnchor": [
+            83,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            164,
+            134
+          ],
+          "bounds": [
+            43,
+            61,
+            244,
+            224
+          ],
+          "sha256": "0b15d07945d3a509096c7ef5ec2744f8c7d35f5d662dec7418d823d1510d0736"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.2424242424242424,
+          "sourceAnchor": [
+            77.5,
+            135
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            153,
+            135
+          ],
+          "bounds": [
+            50,
+            61,
+            238,
+            225
+          ],
+          "sha256": "68d4bd54407b3d0eb2453b3192a2108218cdbc2ee36c1fa6f1a72eeb33bfe5e8"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.1870503597122302,
+          "sourceAnchor": [
+            67.5,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            138
+          ],
+          "bounds": [
+            66,
+            60,
+            222,
+            221
+          ],
+          "sha256": "0043f9bdf0385b1a9d42c10dd77bcdb33939f0f5937f8aca187c8d4b64a56a1d"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.1870503597122302,
+          "sourceAnchor": [
+            68,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            134,
+            141
+          ],
+          "bounds": [
+            66,
+            60,
+            223,
+            225
+          ],
+          "sha256": "81993b4301922b211ceddfa3db4f10a509087220f1b414d2777d34b783857498"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.1870503597122302,
+          "sourceAnchor": [
+            72,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            133
+          ],
+          "bounds": [
+            61,
+            60,
+            227,
+            216
+          ],
+          "sha256": "43d5206a60b5afe41a6b0adcbf99cc9078cd3fef20035a254854c64ad8c0c59f"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-run-v1.png",
+          "sourceScale": 1.1870503597122302,
+          "sourceAnchor": [
+            64.5,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            127,
+            137
+          ],
+          "bounds": [
+            70,
+            61,
+            218,
+            220
+          ],
+          "sha256": "1d0d5eb58b21a04a4bbba15f00c3a74fec408e69f4dea3693e770bbd964ac051"
+        }
+      ],
+      "file": "worker-mounted-run.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "ffd9f435062528c992007bfab78fc7e12fc88af86614ed4f5556bc30e09cb9d0"
+    }
+  }
+}

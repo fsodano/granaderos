@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "gaucho-mounted-strike": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-north-v1.png",
+          "sha256": "39ac5a36edd666f354b7bc6fabbb709a1b8fa475a677177b5ad081d731415b09",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-south-v1.png",
+          "sha256": "92f31c180f39f25e74dd783eb0e621369b245abda3fdd62fb55136ff9f3d545f",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-north-v1.png",
+          "sourceScale": 0.6932773109243697,
+          "sourceAnchor": [
+            55.5,
+            240
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            110,
+            240
+          ],
+          "bounds": [
+            107,
+            60,
+            182,
+            225
+          ],
+          "sha256": "421b2aee6d7e9b176b1499fe3d472308a50a6e1412faa45394cb9c3a21cae31e"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-north-v1.png",
+          "sourceScale": 0.6932773109243697,
+          "sourceAnchor": [
+            55,
+            240
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            109,
+            239
+          ],
+          "bounds": [
+            107,
+            60,
+            181,
+            224
+          ],
+          "sha256": "e8f6d933b78163ed07c9d4e0391126820d35633376926e32fd8130b0ec69c955"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-north-v1.png",
+          "sourceScale": 0.6932773109243697,
+          "sourceAnchor": [
+            54,
+            240
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            129,
+            239
+          ],
+          "bounds": [
+            108,
+            60,
+            196,
+            224
+          ],
+          "sha256": "6665c25b64edbfacc4b57f91358a68a8a6d6fe25ee780ebf9cd2e3dce517a38e"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-north-v1.png",
+          "sourceScale": 0.6932773109243697,
+          "sourceAnchor": [
+            55,
+            240
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            109,
+            239
+          ],
+          "bounds": [
+            107,
+            60,
+            181,
+            224
+          ],
+          "sha256": "cd4726d1f7df31d0792e12de4656dc6bb37bf6afd3603fb8119fa593bbf9cace"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-north-v1.png",
+          "sourceScale": 0.7236842105263158,
+          "sourceAnchor": [
+            79,
+            230
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            193,
+            230
+          ],
+          "bounds": [
+            88,
+            60,
+            226,
+            225
+          ],
+          "sha256": "a4cabcee93750a141787e800181c09e1ef77e639629ca4d37b9445edfc66700d"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-north-v1.png",
+          "sourceScale": 0.7236842105263158,
+          "sourceAnchor": [
+            78,
+            230
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            192,
+            230
+          ],
+          "bounds": [
+            89,
+            61,
+            227,
+            225
+          ],
+          "sha256": "392b24c0da36ee954a2ebb56ba0fbc06d8e6498c4f603c9c1d48b945cea84684"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-north-v1.png",
+          "sourceScale": 0.7236842105263158,
+          "sourceAnchor": [
+            77.5,
+            230
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            192,
+            230
+          ],
+          "bounds": [
+            89,
+            61,
+            227,
+            225
+          ],
+          "sha256": "74d7b6d7b46f150fbe429a76cae1006376f528d3b683948a194a43b4099529d1"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-north-v1.png",
+          "sourceScale": 0.7236842105263158,
+          "sourceAnchor": [
+            77.5,
+            230
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            190,
+            230
+          ],
+          "bounds": [
+            89,
+            60,
+            225,
+            225
+          ],
+          "sha256": "82639c9c9d449c6ece0802467a615670f96fea3ff2e63b1dba55f0fc2a960bb1"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-north-v1.png",
+          "sourceScale": 0.7699530516431925,
+          "sourceAnchor": [
+            85.5,
+            216
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            206,
+            216
+          ],
+          "bounds": [
+            80,
+            61,
+            237,
+            225
+          ],
+          "sha256": "c166de7bdd9f2c89175334f6b9f2d42cb43d1c921a20820d3434f40d885fca51"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-north-v1.png",
+          "sourceScale": 0.7699530516431925,
+          "sourceAnchor": [
+            85.5,
+            216
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            204,
+            216
+          ],
+          "bounds": [
+            80,
+            61,
+            236,
+            225
+          ],
+          "sha256": "3ce37ba9d433380957a40f5db10dbc2805cb4ffbcfce398d75bba6988646d2bb"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-north-v1.png",
+          "sourceScale": 0.7699530516431925,
+          "sourceAnchor": [
+            87,
+            216
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            206,
+            216
+          ],
+          "bounds": [
+            79,
+            61,
+            236,
+            225
+          ],
+          "sha256": "98c4942279680a12fd2de8988036c5e016fac58ea3ec5432372f26738f643364"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-north-v1.png",
+          "sourceScale": 0.7699530516431925,
+          "sourceAnchor": [
+            87,
+            216
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            207,
+            216
+          ],
+          "bounds": [
+            79,
+            60,
+            237,
+            225
+          ],
+          "sha256": "f1a20fd80b8d5bc4ec8e4059a38f425e844f50d22c3289d3067e6e288d22108f"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-north-v1.png",
+          "sourceScale": 0.7389380530973452,
+          "sourceAnchor": [
+            74,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            176,
+            229
+          ],
+          "bounds": [
+            91,
+            58,
+            220,
+            225
+          ],
+          "sha256": "be14ab604a9820123954ab12b9a38809ae3b6d5da393ea7c8354a9e70fb34812"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-north-v1.png",
+          "sourceScale": 0.7389380530973452,
+          "sourceAnchor": [
+            74,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            177,
+            229
+          ],
+          "bounds": [
+            91,
+            57,
+            220,
+            225
+          ],
+          "sha256": "9c2ba427ecaaaff37f1c2ba9b85fdcb64cca58cff21569eced5c117c1cc611d8"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-north-v1.png",
+          "sourceScale": 0.7389380530973452,
+          "sourceAnchor": [
+            74,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            177,
+            229
+          ],
+          "bounds": [
+            91,
+            58,
+            220,
+            225
+          ],
+          "sha256": "138d3dbe023fa4c28a2c71910d8e4a8118456b52ffa865c17c165725d85f04a5"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-north-v1.png",
+          "sourceScale": 0.7389380530973452,
+          "sourceAnchor": [
+            74,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            174,
+            229
+          ],
+          "bounds": [
+            91,
+            58,
+            218,
+            225
+          ],
+          "sha256": "0e21e30b9201db343df6bcf5a7e9412ddd243fcf5db95bd2bc2c889a34690864"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-south-v1.png",
+          "sourceScale": 0.6720647773279352,
+          "sourceAnchor": [
+            56,
+            250
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            111,
+            250
+          ],
+          "bounds": [
+            108,
+            59,
+            181,
+            225
+          ],
+          "sha256": "be5fbba6b719d2bc2a1c78f4c188b88cb1df5f1e18d51cb56e8f14662a0b1486"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-south-v1.png",
+          "sourceScale": 0.6720647773279352,
+          "sourceAnchor": [
+            61,
+            250
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            116,
+            250
+          ],
+          "bounds": [
+            104,
+            59,
+            181,
+            225
+          ],
+          "sha256": "97f0b1f62b2a1b0dd56ad9c7e17c5d21a5db1f6f26eca22e634594cb27ce621f"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-south-v1.png",
+          "sourceScale": 0.6720647773279352,
+          "sourceAnchor": [
+            56,
+            250
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            111,
+            250
+          ],
+          "bounds": [
+            108,
+            60,
+            181,
+            225
+          ],
+          "sha256": "d86b27f318dfcc28ccb57f4e268b4e5fa5efd3f11147b8572f444a8334e23cc6"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-south-v1.png",
+          "sourceScale": 0.6720647773279352,
+          "sourceAnchor": [
+            57,
+            250
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            112,
+            250
+          ],
+          "bounds": [
+            107,
+            58,
+            181,
+            225
+          ],
+          "sha256": "5a4359f8084036d9fb3c71ea11473f195e90f65f8d2d1cbe0699e834d07a1013"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-south-v1.png",
+          "sourceScale": 0.7063829787234043,
+          "sourceAnchor": [
+            116.5,
+            237
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            204,
+            237
+          ],
+          "bounds": [
+            63,
+            59,
+            206,
+            225
+          ],
+          "sha256": "2e2734ca3c4b06cd321f528f4a27d182e1bb91ad0599c77291fae9cba3b6cf9b"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-south-v1.png",
+          "sourceScale": 0.7063829787234043,
+          "sourceAnchor": [
+            116.5,
+            237
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            203,
+            237
+          ],
+          "bounds": [
+            63,
+            59,
+            205,
+            225
+          ],
+          "sha256": "ed504310f01127c3b20bb3a723e06c9cbb592a1ed10dbb4c5ad43747cacffc3f"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-south-v1.png",
+          "sourceScale": 0.7063829787234043,
+          "sourceAnchor": [
+            119.5,
+            237
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            207,
+            237
+          ],
+          "bounds": [
+            61,
+            60,
+            206,
+            225
+          ],
+          "sha256": "6f56a31282405e7341feb7fcdb6fa3a71229269b4ec4888c2dabcc36e82f8ea3"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-south-v1.png",
+          "sourceScale": 0.7063829787234043,
+          "sourceAnchor": [
+            115.5,
+            237
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            202,
+            237
+          ],
+          "bounds": [
+            64,
+            59,
+            205,
+            225
+          ],
+          "sha256": "b5ddd41cbb7999399d589273865471ceaef296b619fe74ccd4a0ad069600476f"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-south-v1.png",
+          "sourceScale": 0.7224669603524229,
+          "sourceAnchor": [
+            123,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            210,
+            229
+          ],
+          "bounds": [
+            57,
+            61,
+            207,
+            225
+          ],
+          "sha256": "bfa3f51f7aa078c2bf73dc26cd8249efffd8c9bb4f0475ceea218f8236d03017"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-south-v1.png",
+          "sourceScale": 0.7224669603524229,
+          "sourceAnchor": [
+            120,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            205,
+            229
+          ],
+          "bounds": [
+            59,
+            61,
+            206,
+            225
+          ],
+          "sha256": "0a7b40d4dad907271dbd1ca6fbfb52ee5cb52da389f96461817e1bcdd6f286bb"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-south-v1.png",
+          "sourceScale": 0.7224669603524229,
+          "sourceAnchor": [
+            128.5,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            217,
+            229
+          ],
+          "bounds": [
+            53,
+            62,
+            208,
+            225
+          ],
+          "sha256": "e05cc296aa99df4233f387255f3684f8b602590aadfd8558c892606c71927939"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-south-v1.png",
+          "sourceScale": 0.7224669603524229,
+          "sourceAnchor": [
+            122.5,
+            229
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            209,
+            229
+          ],
+          "bounds": [
+            57,
+            61,
+            207,
+            225
+          ],
+          "sha256": "3ef25c53d8ca3b174c405ae781e5f3c52af267f36e0abe96bcfbf721e41fd998"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-south-v1.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            104,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            177,
+            235
+          ],
+          "bounds": [
+            72,
+            60,
+            196,
+            225
+          ],
+          "sha256": "68a356fb54f39ab9d9cd56a3a20735d8dd7b505f773b10cc56e561e4b4a1238a"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-south-v1.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            104.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            178,
+            235
+          ],
+          "bounds": [
+            71,
+            60,
+            196,
+            225
+          ],
+          "sha256": "f81d53eaa72be400706fd6932b9c14d3d919eb7989ef061e4be564d59db74e4c"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-south-v1.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            109.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            184,
+            235
+          ],
+          "bounds": [
+            68,
+            60,
+            197,
+            225
+          ],
+          "sha256": "af8d4c5374553b5f43ccd0415f9455f6056f04aa1db602cac57d0c075c68e6ca"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-strike-south-v1.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            102.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            175,
+            235
+          ],
+          "bounds": [
+            73,
+            60,
+            196,
+            225
+          ],
+          "sha256": "13c7a8c994534cccc0559e5483340d9d80b6cd2067bf5ab947dc51738d9a99c4"
+        }
+      ],
+      "file": "gaucho-mounted-strike.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "9072f8da2c0a3cc6b28bfe12e2fecc69974ae74867f1ba9d55d28589843fbf3c"
+    }
+  }
+}

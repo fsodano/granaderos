@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "granadero-mounted-reload": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-north-v3.png",
+          "sha256": "cad10b322230594a2253965359fa7eafab31df481496238b4dee09a15e723c77",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-south-v3.png",
+          "sha256": "07be57c61215cf9cf56c79043a2041e28be7eb29fc83efdad0389c40978450f3",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-north-v3.png",
+          "sourceScale": 0.5729166666666666,
+          "sourceAnchor": [
+            55.5,
+            290
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            112,
+            290
+          ],
+          "bounds": [
+            113,
+            60,
+            176,
+            225
+          ],
+          "sha256": "b39c0a24177c92db5630128275797817772e4080d4c7c581abe936275eafa784"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-north-v3.png",
+          "sourceScale": 0.5729166666666666,
+          "sourceAnchor": [
+            55,
+            290
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            112,
+            290
+          ],
+          "bounds": [
+            114,
+            60,
+            177,
+            225
+          ],
+          "sha256": "9b1122acc719e75d369090751e030f38e7979ea9a3f934520ca2edfe1ad22aa0"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-north-v3.png",
+          "sourceScale": 0.5729166666666666,
+          "sourceAnchor": [
+            55.5,
+            290
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            112,
+            290
+          ],
+          "bounds": [
+            113,
+            60,
+            176,
+            225
+          ],
+          "sha256": "067b2d091aeb8bec27b57c90190dda9cb03b41f35ee8ec27c2f6e7ea49694ee9"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-north-v3.png",
+          "sourceScale": 0.5729166666666666,
+          "sourceAnchor": [
+            54.5,
+            290
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            112,
+            290
+          ],
+          "bounds": [
+            114,
+            60,
+            177,
+            225
+          ],
+          "sha256": "b94df311a09607ceb8237649a3da6f77c7b31c3d63889ba32e1f7a34fc4b5666"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-north-v3.png",
+          "sourceScale": 0.5729166666666666,
+          "sourceAnchor": [
+            80,
+            290
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            190,
+            290
+          ],
+          "bounds": [
+            99,
+            60,
+            207,
+            225
+          ],
+          "sha256": "e7edc892419eaef2a4b578a537a813fe325928215766902317bff2d0de86cd58"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-north-v3.png",
+          "sourceScale": 0.5729166666666666,
+          "sourceAnchor": [
+            79,
+            290
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            193,
+            290
+          ],
+          "bounds": [
+            100,
+            60,
+            209,
+            225
+          ],
+          "sha256": "c82e357bcb68f22c886342429ab4317f84b9d15377d03a22793f0a0d70d56439"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-north-v3.png",
+          "sourceScale": 0.5729166666666666,
+          "sourceAnchor": [
+            79,
+            290
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            192,
+            290
+          ],
+          "bounds": [
+            100,
+            60,
+            209,
+            225
+          ],
+          "sha256": "820ed1122db4222215d7aecee85e16ea0e5fa82e79e9f4d2e773d67f3323452a"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-north-v3.png",
+          "sourceScale": 0.5729166666666666,
+          "sourceAnchor": [
+            79.5,
+            290
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            191,
+            290
+          ],
+          "bounds": [
+            100,
+            60,
+            208,
+            225
+          ],
+          "sha256": "c01a9db987ef755a2b75670f554c6162729fe67955db35fce071d2397f23ad1d"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-north-v3.png",
+          "sourceScale": 0.563573883161512,
+          "sourceAnchor": [
+            106.5,
+            294
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            271,
+            294
+          ],
+          "bounds": [
+            85,
+            61,
+            237,
+            225
+          ],
+          "sha256": "4ce6e8ccfa5cb4c7a271fd0ac95f3dc5fc79a6950ac702d0b3d60a8faef9fe2d"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-north-v3.png",
+          "sourceScale": 0.563573883161512,
+          "sourceAnchor": [
+            106.5,
+            294
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            271,
+            294
+          ],
+          "bounds": [
+            85,
+            61,
+            237,
+            225
+          ],
+          "sha256": "9126c0d6ed0d7b80c343e59f2c4d0614b6b64fa76349866ed6f04de3d07da5bc"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-north-v3.png",
+          "sourceScale": 0.563573883161512,
+          "sourceAnchor": [
+            106,
+            294
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            270,
+            294
+          ],
+          "bounds": [
+            85,
+            60,
+            236,
+            225
+          ],
+          "sha256": "e0902aa660e50ee98babca94b1dfd94763a3a702f8bffb0dedb982412675d9f9"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-north-v3.png",
+          "sourceScale": 0.563573883161512,
+          "sourceAnchor": [
+            106,
+            294
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            270,
+            294
+          ],
+          "bounds": [
+            85,
+            61,
+            236,
+            225
+          ],
+          "sha256": "98ff763d386b57d093f36a35a374c4aefded3371feed3dd8c11d23169405f5b2"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-north-v3.png",
+          "sourceScale": 0.5699658703071673,
+          "sourceAnchor": [
+            103.5,
+            296
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            239,
+            296
+          ],
+          "bounds": [
+            86,
+            58,
+            221,
+            225
+          ],
+          "sha256": "ef27a0ac0a81749119768e77bfaca1707af556c9fce96077fab1d3bee340865c"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-north-v3.png",
+          "sourceScale": 0.5699658703071673,
+          "sourceAnchor": [
+            103.5,
+            296
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            240,
+            296
+          ],
+          "bounds": [
+            86,
+            57,
+            222,
+            225
+          ],
+          "sha256": "2af99949b0e5945c155e587cd8d14352cdbc56a1ff59b3659275cab4e082c327"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-north-v3.png",
+          "sourceScale": 0.5699658703071673,
+          "sourceAnchor": [
+            104.5,
+            296
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            247,
+            296
+          ],
+          "bounds": [
+            86,
+            58,
+            226,
+            225
+          ],
+          "sha256": "572da7f379850556157ed5e48e58f01c2847e0615cfd65505a8715a60411ca27"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-north-v3.png",
+          "sourceScale": 0.5699658703071673,
+          "sourceAnchor": [
+            102,
+            296
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            237,
+            296
+          ],
+          "bounds": [
+            87,
+            57,
+            221,
+            225
+          ],
+          "sha256": "6cbb0323e296183c2d55264670988b9d0f00de2405bc6dc5cc5c84e071be74ae"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-south-v3.png",
+          "sourceScale": 0.578397212543554,
+          "sourceAnchor": [
+            56,
+            289
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            113,
+            289
+          ],
+          "bounds": [
+            113,
+            59,
+            177,
+            225
+          ],
+          "sha256": "59926a39f6e6ced2f96f1e923243fc917fe00970d3d9cb615c7890eb5f2829c1"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-south-v3.png",
+          "sourceScale": 0.578397212543554,
+          "sourceAnchor": [
+            55.5,
+            289
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            113,
+            289
+          ],
+          "bounds": [
+            113,
+            59,
+            177,
+            225
+          ],
+          "sha256": "4d236c0164135373410cd1c7e044d01184400c49fea00e949ba0a3c89d51b39b"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-south-v3.png",
+          "sourceScale": 0.578397212543554,
+          "sourceAnchor": [
+            56,
+            289
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            113,
+            289
+          ],
+          "bounds": [
+            113,
+            59,
+            177,
+            225
+          ],
+          "sha256": "8c0dd2e28acc56000579b79bf8e8d20091b7ce0467e17b54ce5e8bade163aabc"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-south-v3.png",
+          "sourceScale": 0.578397212543554,
+          "sourceAnchor": [
+            56,
+            289
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            113,
+            289
+          ],
+          "bounds": [
+            113,
+            59,
+            177,
+            225
+          ],
+          "sha256": "c22ffafe426dbb12a4e23d6e78067e45e59e87251e31fd9761a4e71c21bba3e0"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-south-v3.png",
+          "sourceScale": 0.5724137931034483,
+          "sourceAnchor": [
+            98,
+            292
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            175,
+            292
+          ],
+          "bounds": [
+            89,
+            59,
+            188,
+            225
+          ],
+          "sha256": "65df073bcb802eb950fd05a7ca16e325e929f4bb470796bf1d32052b92d0e541"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-south-v3.png",
+          "sourceScale": 0.5724137931034483,
+          "sourceAnchor": [
+            97.5,
+            292
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            175,
+            292
+          ],
+          "bounds": [
+            89,
+            59,
+            188,
+            225
+          ],
+          "sha256": "6c7f6e4a7f73c7d5f9561ffa6a1d5238a3715dc31b33d229f3cd9b687755a17a"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-south-v3.png",
+          "sourceScale": 0.5724137931034483,
+          "sourceAnchor": [
+            98,
+            292
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            175,
+            292
+          ],
+          "bounds": [
+            89,
+            59,
+            188,
+            225
+          ],
+          "sha256": "fc28e8a86a3a1a2e02f9f8343ab7c3c4e5b150962a348940b6409e732f3be356"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-south-v3.png",
+          "sourceScale": 0.5724137931034483,
+          "sourceAnchor": [
+            97.5,
+            292
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            175,
+            292
+          ],
+          "bounds": [
+            89,
+            59,
+            188,
+            225
+          ],
+          "sha256": "99d368a705294f6ddc70bf2f1911f96057fab6921dd5a84a607906448a6d73f6"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-south-v3.png",
+          "sourceScale": 0.5694444444444444,
+          "sourceAnchor": [
+            162.5,
+            290
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            273,
+            290
+          ],
+          "bounds": [
+            53,
+            61,
+            207,
+            225
+          ],
+          "sha256": "6d6cb1fbf843aab2150e091f98514afea5da7806a3d0863f8bfc7c92ce0f07e9"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-south-v3.png",
+          "sourceScale": 0.5694444444444444,
+          "sourceAnchor": [
+            164.5,
+            290
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            274,
+            290
+          ],
+          "bounds": [
+            51,
+            61,
+            206,
+            225
+          ],
+          "sha256": "19cf43b36d88a2dde44f4d72c7e1c523767ec4fc5c140766453c66924ca6bd4f"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-south-v3.png",
+          "sourceScale": 0.5694444444444444,
+          "sourceAnchor": [
+            163.5,
+            290
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            274,
+            290
+          ],
+          "bounds": [
+            52,
+            61,
+            207,
+            225
+          ],
+          "sha256": "290f311370a57a7b90df36932051875329b0bc862585438161049202014fd7a0"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-south-v3.png",
+          "sourceScale": 0.5694444444444444,
+          "sourceAnchor": [
+            164.5,
+            290
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            274,
+            290
+          ],
+          "bounds": [
+            51,
+            61,
+            206,
+            225
+          ],
+          "sha256": "0c76ac9d68a020c2b90347b7de36bfe971a6ffd3c4c6013ca87c48a81448faa3"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-south-v3.png",
+          "sourceScale": 0.565068493150685,
+          "sourceAnchor": [
+            127.5,
+            294
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            217,
+            294
+          ],
+          "bounds": [
+            73,
+            60,
+            194,
+            225
+          ],
+          "sha256": "31e4c4e669ecbe04177b753782f9709f4557218c1b4ea4f120669d1f76a5665f"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-south-v3.png",
+          "sourceScale": 0.565068493150685,
+          "sourceAnchor": [
+            127.5,
+            294
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            218,
+            294
+          ],
+          "bounds": [
+            73,
+            60,
+            195,
+            225
+          ],
+          "sha256": "4938eb995864fa6f9caaad43de70320f1adeaa970ba2a9fb4d96739c3b4c6ee4"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-south-v3.png",
+          "sourceScale": 0.565068493150685,
+          "sourceAnchor": [
+            126.5,
+            294
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            217,
+            294
+          ],
+          "bounds": [
+            74,
+            60,
+            195,
+            225
+          ],
+          "sha256": "e0d61a67326f9334a1c7b956dc38361c0caa451ae119c184d0b9e3001f38f135"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-mounted-reload-south-v3.png",
+          "sourceScale": 0.565068493150685,
+          "sourceAnchor": [
+            127.5,
+            294
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            218,
+            294
+          ],
+          "bounds": [
+            73,
+            60,
+            195,
+            225
+          ],
+          "sha256": "2cc5c5eea1128c1814dd88802abd966f1088b3ff37295eb8770c95b924bb1835"
+        }
+      ],
+      "file": "granadero-mounted-reload.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "419a7edbfd5ee34b753eadf2625c73f022c544069f2d188f64a1aea9c53cf362"
+    }
+  }
+}

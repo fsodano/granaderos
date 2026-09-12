@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "royalist-dead-idle": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/royalist-collapse-north-v1.png",
+          "sha256": "04636f696159f22af4e01dc40e0c4fa31fd2bd206e9b6aae2f33d69661b8aa46",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/royalist-collapse-south-v1.png",
+          "sha256": "9b4494263ce9f6ab4875e058f46018d80c39dda6ba1c7fed6ea1857a2120220a",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-collapse-north-v1.png",
+          "sourceScale": 0.5086206896551724,
+          "sourceAnchor": [
+            72.5,
+            234
+          ],
+          "sourceBounds": [
+            2,
+            129,
+            142,
+            233
+          ],
+          "bounds": [
+            108,
+            172,
+            179,
+            225
+          ],
+          "sha256": "06b3ef601c60ec4b80eccd8ab1a76434986ce0cc8b76b263c932a3dd04686991"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-collapse-north-v1.png",
+          "sourceScale": 0.5107296137339056,
+          "sourceAnchor": [
+            66.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            140,
+            212,
+            235
+          ],
+          "bounds": [
+            111,
+            176,
+            218,
+            225
+          ],
+          "sha256": "bcc9ae1b577d76f12327f59eb45897d19ef53f825d46f15e1ca246ec5e00839c"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-collapse-north-v1.png",
+          "sourceScale": 0.5130434782608696,
+          "sourceAnchor": [
+            131,
+            233
+          ],
+          "sourceBounds": [
+            2,
+            189,
+            246,
+            233
+          ],
+          "bounds": [
+            78,
+            202,
+            203,
+            225
+          ],
+          "sha256": "51c655897d03033dcb045d4040651389d2e7e0d250df51241970273eca416d61"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-collapse-north-v1.png",
+          "sourceScale": 0.4957983193277311,
+          "sourceAnchor": [
+            182,
+            240
+          ],
+          "sourceBounds": [
+            2,
+            154,
+            211,
+            240
+          ],
+          "bounds": [
+            55,
+            182,
+            159,
+            225
+          ],
+          "sha256": "3f143c2fff92cc6e456bd01644ad506a3d4f92bbec95781cca2892c90f3713be"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-collapse-south-v1.png",
+          "sourceScale": 0.5064935064935064,
+          "sourceAnchor": [
+            61,
+            233
+          ],
+          "sourceBounds": [
+            2,
+            116,
+            123,
+            233
+          ],
+          "bounds": [
+            114,
+            166,
+            175,
+            225
+          ],
+          "sha256": "9b8fd7b82f88ac02e45d88d8d3d390e71e96ad661cd63bf3d1e441ef892363ce"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-collapse-south-v1.png",
+          "sourceScale": 0.5108225108225108,
+          "sourceAnchor": [
+            29.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            153,
+            215,
+            235
+          ],
+          "bounds": [
+            130,
+            183,
+            239,
+            225
+          ],
+          "sha256": "5c3fbe38a5bcc93d76d64b9d3bdebdf1c4fe0c4188217d0d26b6cca8f1be3002"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-collapse-south-v1.png",
+          "sourceScale": 0.5,
+          "sourceAnchor": [
+            102,
+            233
+          ],
+          "sourceBounds": [
+            2,
+            187,
+            239,
+            232
+          ],
+          "bounds": [
+            94,
+            202,
+            213,
+            225
+          ],
+          "sha256": "d3c3afbf45e63110c6b036f537a1d3be7683308b911d55bff7a92caef657b580"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-collapse-south-v1.png",
+          "sourceScale": 0.5,
+          "sourceAnchor": [
+            155.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            140,
+            202,
+            234
+          ],
+          "bounds": [
+            67,
+            178,
+            167,
+            225
+          ],
+          "sha256": "59bf26af8023828be89a45594c0e9c856604ed2fb7fcbd34c3842d654608e35f"
+        }
+      ],
+      "file": "royalist-dead-idle.png",
+      "size": [
+        2304,
+        288
+      ],
+      "sha256": "599ffb90039b323675130f76b6b9bda30acfd615fafd3f1f5afb5953062e03ad",
+      "derivedFrom": {
+        "atlas": "royalist-collapse",
+        "frame": 3,
+        "reason": "hold final collapse frame without breathing"
+      }
+    }
+  }
+}

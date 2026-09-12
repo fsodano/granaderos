@@ -1,0 +1,205 @@
+{
+  "version": 1,
+  "appearance": "woman-shawl",
+  "states": [
+    "run"
+  ],
+  "instructions": "Use original diagonal/profile rows, then apply selected cardinal correction phases. Both opposing leg contacts are present. Single S source named frame3-v4 is intentionally assigned to phase2; frame3-v6 carries the same support leg with arm counter-swing.",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-run-north-v1.png",
+      "name": "woman-shawl-run",
+      "reference": "granadero-run",
+      "half": "north",
+      "includeDirections": [
+        "NE",
+        "E",
+        "SE"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-run-south-v1.png",
+      "name": "woman-shawl-run",
+      "reference": "granadero-run",
+      "half": "south",
+      "includeDirections": [
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta"
+    }
+  ],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-run-n-s-v3.png",
+      "name": "woman-shawl-run",
+      "reference": "granadero-run",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "S"
+      ],
+      "exportKey": "magenta",
+      "spec": {
+        "columns": 4,
+        "rows": 2,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "N",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              127,
+              50,
+              192,
+              352
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              562,
+              50,
+              184,
+              352
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              1019,
+              50,
+              189,
+              352
+            ]
+          },
+          {
+            "direction": "S",
+            "frame": 0,
+            "row": 1,
+            "col": 0,
+            "rect": [
+              112,
+              469,
+              186,
+              350
+            ]
+          },
+          {
+            "direction": "S",
+            "frame": 1,
+            "row": 1,
+            "col": 1,
+            "rect": [
+              535,
+              469,
+              183,
+              350
+            ]
+          }
+        ]
+      },
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-run-n-s-v3.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-run-n-3-v4.png",
+      "name": "woman-shawl-run",
+      "reference": "granadero-run",
+      "half": "north",
+      "includeDirections": [
+        "N"
+      ],
+      "exportKey": "magenta",
+      "spec": {
+        "columns": 1,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "N",
+            "frame": 3,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              454,
+              143,
+              430,
+              946
+            ]
+          }
+        ]
+      },
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-run-n-3-v4.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-run-s-3-v4.png",
+      "name": "woman-shawl-run",
+      "reference": "granadero-run",
+      "half": "south",
+      "includeDirections": [
+        "S"
+      ],
+      "exportKey": "magenta",
+      "spec": {
+        "columns": 1,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "S",
+            "frame": 2,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              359,
+              122,
+              527,
+              994
+            ]
+          }
+        ]
+      },
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-run-s-3-v4.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-run-s-3-v6.png",
+      "name": "woman-shawl-run",
+      "reference": "granadero-run",
+      "half": "south",
+      "includeDirections": [
+        "S"
+      ],
+      "exportKey": "magenta",
+      "spec": {
+        "columns": 1,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "S",
+            "frame": 3,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              356,
+              119,
+              470,
+              996
+            ]
+          }
+        ]
+      },
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-run-s-3-v6.regions.json"
+    }
+  ]
+}

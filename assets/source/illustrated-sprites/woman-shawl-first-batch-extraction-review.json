@@ -1,0 +1,135 @@
+[
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-crouch-idle-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "fixedMinimumMargin": 72,
+    "detected": 8
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-crouch-walk-north-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "fixedMinimumMargin": 15,
+    "detected": 16
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-crouch-walk-south-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "fixedMinimumMargin": 28,
+    "detected": 16
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-fire-north-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "fixedMinimumMargin": 0,
+    "detected": 16,
+    "detectorError": "Expected 4 columns in row 0, found 5",
+    "regionFile": "assets/source/illustrated-sprites/woman-shawl-fire-north-v1.regions.json"
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-fire-south-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "fixedMinimumMargin": 10,
+    "detected": 16
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-reload-north-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "fixedMinimumMargin": 0,
+    "detected": 16,
+    "regionFile": "assets/source/illustrated-sprites/woman-shawl-reload-north-v1.regions.json"
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-reload-south-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "fixedMinimumMargin": 0,
+    "detected": 16,
+    "regionFile": "assets/source/illustrated-sprites/woman-shawl-reload-south-v1.regions.json"
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-strike-north-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "fixedMinimumMargin": 0,
+    "detected": 16,
+    "regionFile": "assets/source/illustrated-sprites/woman-shawl-strike-north-v1.regions.json"
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-strike-south-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "fixedMinimumMargin": 0,
+    "detected": 16,
+    "regionFile": "assets/source/illustrated-sprites/woman-shawl-strike-south-v1.regions.json"
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-fire-n-v2.png",
+    "size": [
+      2172,
+      724
+    ],
+    "detected": 4,
+    "regionFile": "assets/source/illustrated-sprites/woman-shawl-fire-n-v2.regions.json"
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-strike-n-v2.png",
+    "size": [
+      1774,
+      887
+    ],
+    "detected": 4,
+    "regionFile": "assets/source/illustrated-sprites/woman-shawl-strike-n-v2.regions.json"
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-idle-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "fixedMinimumMargin": 0,
+    "detected": 8,
+    "regionFile": "assets/source/illustrated-sprites/woman-shawl-prone-armed-idle-v1.regions.json"
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-prone-unarmed-idle-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "fixedMinimumMargin": 32,
+    "detected": 8
+  },
+  {
+    "source": "assets/source/illustrated-sprites/woman-shawl-dead-idle-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "fixedMinimumMargin": 47,
+    "detected": 8
+  }
+]

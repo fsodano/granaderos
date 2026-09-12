@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "gaucho-prone-aim-idle": {
+      "cell": 288,
+      "anchor": [
+        144,
+        165
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/gaucho-prone-armed-fire-north-v1.png",
+          "sha256": "9c8830bc0b8ec5acb8c5b4348bc931ac0bfe97819805689760543c01e0ce64c9",
+          "scale": 0.9186602870813397
+        },
+        {
+          "file": "assets/source/illustrated-sprites/gaucho-prone-armed-fire-south-v1.png",
+          "sha256": "c7f613d8fa0fbb55d80ca181902509934d857f5115e336623e7dfe9d79ba3883",
+          "scale": 0.9186602870813397
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/gaucho-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.754678,
+          "sourceAnchor": [
+            26.463,
+            93.736
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            71,
+            150
+          ],
+          "bounds": [
+            126,
+            96,
+            178,
+            208
+          ],
+          "sha256": "cdee2d9bbf446860e60828db6559f75c97d056c16c341b3ccce27b127575c705"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/gaucho-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.804734,
+          "sourceAnchor": [
+            63.941,
+            49.029
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            158,
+            83
+          ],
+          "bounds": [
+            94,
+            127,
+            220,
+            192
+          ],
+          "sha256": "4e93e9b23132202c87e64959a73f94323522825fc09ed7551cab02adb650cbce"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/gaucho-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.805419,
+          "sourceAnchor": [
+            66.167,
+            47.5
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            191,
+            63
+          ],
+          "bounds": [
+            92,
+            128,
+            244,
+            177
+          ],
+          "sha256": "5de5db714a696f2255adb346ed2d8940f27555d6d680e1386ac6588c7962d79f"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/gaucho-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.807628,
+          "sourceAnchor": [
+            61.007,
+            32.06
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            169,
+            62
+          ],
+          "bounds": [
+            96,
+            141,
+            231,
+            189
+          ],
+          "sha256": "70ba99e8352b621047330a4f4e2049dbc0862b3c0d60b12017ef63c2be4f0b5d"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/gaucho-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.486273,
+          "sourceAnchor": [
+            53.695,
+            42.207
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            85,
+            159
+          ],
+          "bounds": [
+            119,
+            145,
+            159,
+            221
+          ],
+          "sha256": "7f4ebab59f92dd417559a99227a8a1b0d28177390d5dd6d62067c043bdf175b5"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/gaucho-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.546082,
+          "sourceAnchor": [
+            105.243,
+            29.532
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            193,
+            88
+          ],
+          "bounds": [
+            88,
+            150,
+            192,
+            197
+          ],
+          "sha256": "5acfcf1114e8e01297616b4d948a028befc70445e6d92274cb4a50ed646a6e9f"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/gaucho-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.663071,
+          "sourceAnchor": [
+            147.804,
+            69.184
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            235,
+            85
+          ],
+          "bounds": [
+            47,
+            120,
+            201,
+            175
+          ],
+          "sha256": "d6b157275793ea29fabe01fa29cbd20781bdfa75e5a7ef422b5cf7cba6f4b530"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/gaucho-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.60938,
+          "sourceAnchor": [
+            120.733,
+            82.183
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            204,
+            130
+          ],
+          "bounds": [
+            72,
+            116,
+            195,
+            194
+          ],
+          "sha256": "46062714b1a09cca82315d559df1fefbf68d8100365625167fb8b7210bd68f90"
+        }
+      ],
+      "file": "gaucho-prone-aim-idle.png",
+      "size": [
+        2304,
+        288
+      ],
+      "sha256": "3bb4fedf0613d5ed568ba4cc618f1fa8485aa8752350abec7e02913df09152e0",
+      "derivedFrom": {
+        "atlas": "gaucho-prone-armed-fire",
+        "frame": 0,
+        "reason": "hold authored pre-shot aim"
+      }
+    }
+  }
+}

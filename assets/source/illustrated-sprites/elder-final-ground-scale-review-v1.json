@@ -1,0 +1,558 @@
+{
+  "version": 1,
+  "baseline": {
+    "sourceManifest": "assets/source/illustrated-sprites/sources.json",
+    "temporaryPackedReview": "/tmp/elder-final-scale-packed",
+    "idleReferencePackedAtlasCount": 323
+  },
+  "application": "These four new Elder states were not in the earlier action plan. Apply each multiplier once to the uncalibrated source slot scale, retain source-space and atlas anchors, then translate by offsetLogical in logical/game pixels (positive right/down). No additional idle scaling. One multiplier and offset for all four phases per direction. Apply explicit source frame normalizations before the group multipliers. This file does not repeat prior armed-crawl, dead, or idle groups.",
+  "method": "Source-based targeted pack at3x logical size. Compare head and anatomical torso against proposed corrected own idle. Exclude weapon, flash, ramrod. Retain1.0 where only small shape or pose differences remain. Body-envelope center translation ignores barrel tips; shifts below2 logical pixels suppressed.",
+  "normalizations": [
+    {
+      "appearance": "woman-elder",
+      "state": "unconscious-breathe",
+      "direction": "N",
+      "source": "assets/source/illustrated-sprites/woman-elder-unconscious-breathe-n-fix-v1.png",
+      "frames": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "setScaleBeforeMultiplier": 0.222556,
+      "setSourceAnchorBeforeMultiplier": [
+        95.0909090909091,
+        195.93939393939394
+      ],
+      "reason": "Use one authored body scale and fixed source anchor across four phases. Current per-frame bounds calibration varies scale by1.3% and shifts X despite the same body and feet. Preserve the painted chest motion."
+    },
+    {
+      "appearance": "woman-elder",
+      "state": "prone-armed-fire",
+      "direction": "N",
+      "source": "assets/source/illustrated-sprites/woman-elder-prone-armed-fire-north-v1.png",
+      "frames": [
+        1
+      ],
+      "setScaleBeforeMultiplier": 0.483579,
+      "setSourceAnchorBeforeMultiplier": [
+        37.702,
+        156.884
+      ],
+      "reason": "Flash phase crop starts21 source pixels above phase0, while fixed boots end at the same authored Y. Increase base source anchorY135.884 by21, not42.843. This removes about3.5 logical pixels of whole-body upward displacement caused by flash bounds."
+    },
+    {
+      "appearance": "woman-elder",
+      "state": "prone-armed-fire",
+      "direction": "N",
+      "source": "assets/source/illustrated-sprites/woman-elder-prone-armed-fire-north-v1.png",
+      "frames": [
+        2
+      ],
+      "setScaleBeforeMultiplier": 0.483579,
+      "setSourceAnchorBeforeMultiplier": [
+        37.702,
+        143.884
+      ],
+      "reason": "Smoke phase crop starts8 source pixels above phase0 while fixed body remains at the same authored Y. Use base anchorY+8 to keep the same body position."
+    }
+  ],
+  "groups": [
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.88,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.8,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.76,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.78,
+      "offsetLogical": [
+        0,
+        -4
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.78,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-fire"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.85,
+      "offsetLogical": [
+        3,
+        6
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.8,
+      "offsetLogical": [
+        4,
+        -3
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.8,
+      "offsetLogical": [
+        3,
+        4
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        -2,
+        4
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.72,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.8,
+      "offsetLogical": [
+        -4,
+        -2
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-armed-reload"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        -3,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        3
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "prone-unarmed-walk"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "NE"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "E"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "SE"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "S"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "SW"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "W"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-elder",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "NW"
+      ],
+      "frames": "all",
+      "multiplier": 0.9,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    }
+  ],
+  "findings": [
+    "Animated broadside armed bodies are materially larger than own corrected idle, especially SW reload.",
+    "Exact N/S anatomy already fits own idle and keeps1.0.",
+    "Unarmed crawl needs only10% reductions in E/SE/SW/W; other directions retain1.0.",
+    "No material per-phase scale defect found in the reload source; use one direction multiplier and preserve authored hand/head motion.",
+    "Breathing N corrected strip body size fits the corrected idle; retain1.0 and use one scale/pivot for all phases.",
+    "Breathing NE/SW/W/NW have larger heads/torso and need only10% reductions. Other breathing directions retain1.0."
+  ],
+  "evidence": [
+    "/tmp/elder-final-scale-proposed-north.png",
+    "/tmp/elder-final-scale-proposed-south.png",
+    "/tmp/elder-final-phases-prone-armed-reload-north.png",
+    "/tmp/elder-final-phases-prone-armed-reload-south.png",
+    "/tmp/elder-final-breathe-north.png",
+    "/tmp/elder-final-breathe-south.png"
+  ]
+}

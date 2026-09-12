@@ -1,0 +1,721 @@
+{
+  "version": 1,
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "sheets": [
+    {
+      "name": "royalist-crouch-fire",
+      "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-north-v1.png",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "fps": 5,
+      "cell": 240,
+      "logicalCell": 80,
+      "anchor": [
+        120,
+        210
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            124,
+            110,
+            90,
+            172
+          ],
+          "scale": 0.46153846153846156,
+          "anchor": [
+            46,
+            170
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            424,
+            110,
+            91,
+            172
+          ],
+          "scale": 0.46153846153846156,
+          "anchor": [
+            46,
+            170
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            734,
+            110,
+            91,
+            172
+          ],
+          "scale": 0.46153846153846156,
+          "anchor": [
+            45.5,
+            170
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1035,
+            110,
+            91,
+            172
+          ],
+          "scale": 0.46153846153846156,
+          "anchor": [
+            45.5,
+            170
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "row": 1,
+          "col": 0,
+          "rect": [
+            113,
+            432,
+            145,
+            158
+          ],
+          "scale": 0.5064935064935064,
+          "anchor": [
+            51,
+            156
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "row": 1,
+          "col": 1,
+          "rect": [
+            423,
+            432,
+            150,
+            158
+          ],
+          "scale": 0.5064935064935064,
+          "anchor": [
+            50,
+            156
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "row": 1,
+          "col": 2,
+          "rect": [
+            734,
+            432,
+            131,
+            158
+          ],
+          "scale": 0.5064935064935064,
+          "anchor": [
+            50,
+            156
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "row": 1,
+          "col": 3,
+          "rect": [
+            1029,
+            432,
+            144,
+            158
+          ],
+          "scale": 0.5064935064935064,
+          "anchor": [
+            51,
+            156
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "row": 2,
+          "col": 0,
+          "rect": [
+            122,
+            732,
+            168,
+            155
+          ],
+          "scale": 0.5165562913907285,
+          "anchor": [
+            53,
+            153
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "row": 2,
+          "col": 1,
+          "rect": [
+            431,
+            732,
+            182,
+            155
+          ],
+          "scale": 0.5165562913907285,
+          "anchor": [
+            52.5,
+            153
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "row": 2,
+          "col": 2,
+          "rect": [
+            742,
+            732,
+            156,
+            155
+          ],
+          "scale": 0.5165562913907285,
+          "anchor": [
+            52,
+            153
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "row": 2,
+          "col": 3,
+          "rect": [
+            1033,
+            732,
+            168,
+            155
+          ],
+          "scale": 0.5165562913907285,
+          "anchor": [
+            52.5,
+            153
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "row": 3,
+          "col": 0,
+          "rect": [
+            115,
+            1018,
+            148,
+            155
+          ],
+          "scale": 0.5234899328859061,
+          "anchor": [
+            52.5,
+            153
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "row": 3,
+          "col": 1,
+          "rect": [
+            419,
+            1018,
+            153,
+            155
+          ],
+          "scale": 0.5234899328859061,
+          "anchor": [
+            52,
+            153
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "row": 3,
+          "col": 2,
+          "rect": [
+            726,
+            1018,
+            136,
+            155
+          ],
+          "scale": 0.5234899328859061,
+          "anchor": [
+            53,
+            153
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "row": 3,
+          "col": 3,
+          "rect": [
+            1030,
+            1018,
+            146,
+            155
+          ],
+          "scale": 0.5234899328859061,
+          "anchor": [
+            51,
+            153
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        }
+      ]
+    },
+    {
+      "name": "royalist-crouch-fire",
+      "source": "assets/source/illustrated-sprites/complete-actions/royalist-crouch-fire-south-v2.png",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "fps": 5,
+      "cell": 240,
+      "logicalCell": 80,
+      "anchor": [
+        120,
+        210
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "s",
+          "frame": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            109,
+            104,
+            108,
+            179
+          ],
+          "scale": 0.4228571428571429,
+          "anchor": [
+            45,
+            177
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            422,
+            104,
+            113,
+            179
+          ],
+          "scale": 0.4228571428571429,
+          "anchor": [
+            49.5,
+            177
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            736,
+            104,
+            108,
+            179
+          ],
+          "scale": 0.4228571428571429,
+          "anchor": [
+            44.5,
+            177
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1049,
+            104,
+            109,
+            179
+          ],
+          "scale": 0.4228571428571429,
+          "anchor": [
+            45.5,
+            177
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "row": 1,
+          "col": 0,
+          "rect": [
+            82,
+            430,
+            146,
+            165
+          ],
+          "scale": 0.49375,
+          "anchor": [
+            74,
+            163
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "row": 1,
+          "col": 1,
+          "rect": [
+            389,
+            430,
+            152,
+            165
+          ],
+          "scale": 0.49375,
+          "anchor": [
+            79.5,
+            163
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "row": 1,
+          "col": 2,
+          "rect": [
+            720,
+            430,
+            134,
+            165
+          ],
+          "scale": 0.49375,
+          "anchor": [
+            62.5,
+            163
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "row": 1,
+          "col": 3,
+          "rect": [
+            1022,
+            430,
+            146,
+            165
+          ],
+          "scale": 0.49375,
+          "anchor": [
+            74.5,
+            163
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "row": 2,
+          "col": 0,
+          "rect": [
+            63,
+            736,
+            166,
+            157
+          ],
+          "scale": 0.5098039215686274,
+          "anchor": [
+            107,
+            155
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "row": 2,
+          "col": 1,
+          "rect": [
+            368,
+            736,
+            174,
+            157
+          ],
+          "scale": 0.5098039215686274,
+          "anchor": [
+            115,
+            155
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "row": 2,
+          "col": 2,
+          "rect": [
+            699,
+            736,
+            156,
+            157
+          ],
+          "scale": 0.5098039215686274,
+          "anchor": [
+            97.5,
+            155
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "row": 2,
+          "col": 3,
+          "rect": [
+            1002,
+            736,
+            167,
+            157
+          ],
+          "scale": 0.5098039215686274,
+          "anchor": [
+            108.5,
+            155
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "row": 3,
+          "col": 0,
+          "rect": [
+            79,
+            1032,
+            144,
+            159
+          ],
+          "scale": 0.5032258064516129,
+          "anchor": [
+            88.5,
+            157
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "row": 3,
+          "col": 1,
+          "rect": [
+            379,
+            1032,
+            157,
+            159
+          ],
+          "scale": 0.5032258064516129,
+          "anchor": [
+            101.5,
+            157
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "row": 3,
+          "col": 2,
+          "rect": [
+            707,
+            1032,
+            143,
+            159
+          ],
+          "scale": 0.5032258064516129,
+          "anchor": [
+            87.5,
+            157
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "row": 3,
+          "col": 3,
+          "rect": [
+            1019,
+            1032,
+            144,
+            159
+          ],
+          "scale": 0.5032258064516129,
+          "anchor": [
+            89,
+            157
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "source": "assets/source/illustrated-sprites/blue-officer-mounted-idle-v1.png",
+  "rect": [
+    145,
+    30,
+    145,
+    160
+  ],
+  "resize": 3,
+  "method": "reference crop and nearest-neighbor enlargement only"
+}

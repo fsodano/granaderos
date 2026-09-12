@@ -1,0 +1,12 @@
+{
+  "source": "assets/previews/illustrated-sprites/packed/granadero-strike.png",
+  "sha256": "0e6e52c1a700abf6cbd9bff71afd7c0c1574e37debc7a1a487ce580828d2a476",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se"
+  ],
+  "frames": 4,
+  "command": "node tools/illustrated-action-reference.mjs granadero-strike"
+}

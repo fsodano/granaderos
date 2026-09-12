@@ -1,0 +1,43 @@
+{
+  "columns": 4,
+  "rows": 1,
+  "scaleMode": "longest",
+  "slots": [
+    {
+      "direction": "n",
+      "frame": 0,
+      "row": 0,
+      "col": 0,
+      "rect": [
+        155,
+        84,
+        253,
+        560
+      ]
+    },
+    {
+      "direction": "n",
+      "frame": 2,
+      "row": 0,
+      "col": 2,
+      "rect": [
+        1220,
+        84,
+        252,
+        560
+      ]
+    },
+    {
+      "direction": "n",
+      "frame": 3,
+      "row": 0,
+      "col": 3,
+      "rect": [
+        1768,
+        84,
+        254,
+        560
+      ]
+    }
+  ]
+}

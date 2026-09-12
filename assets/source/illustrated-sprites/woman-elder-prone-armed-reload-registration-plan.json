@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "appearance": "woman-elder",
+  "stage": "prone-armed-reload",
+  "pathBase": "repository-root",
+  "registrationOrder": [
+    "variants"
+  ],
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-prone-armed-reload-north-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-prone-armed-reload-north-v1.prompt.txt",
+      "name": "woman-elder-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "poseReference": "assets/source/illustrated-sprites/woman-headscarf-prone-armed-reload-north-v1.png",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-prone-armed-reload-south-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-prone-armed-reload-south-v1.prompt.txt",
+      "name": "woman-elder-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "poseReference": "assets/source/illustrated-sprites/woman-headscarf-prone-armed-reload-south-v1.png",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    }
+  ],
+  "corrections": [],
+  "qa": {
+    "notes": [
+      "Exact pose edits from accepted Headscarf reload targets; no new body turns, extra limbs or weapon count faults.",
+      "N0 pistol is largely occluded by head/arms, matching target. NE projection is shallow and close to E in target; retained as requested.",
+      "Frame1 cartridge handling and frame2 short ramrod distinct; ramrod contact remains simplified as in target. No flash or smoke.",
+      "Both sheets pass16figure count and crop bounds. Scale anatomical body, not raised ramrod extent."
+    ]
+  }
+}

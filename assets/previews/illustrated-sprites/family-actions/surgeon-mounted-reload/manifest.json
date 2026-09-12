@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "surgeon-mounted-reload": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-north-v1.png",
+          "sha256": "b47a30ea7efa11e6fe86017ca5ef467d0baa624d9d517d96a9225a5ead5ac220",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-south-v1.png",
+          "sha256": "beb53b25cfb30362d7000b15536b52b2510e0e1981ca4b23816852a54544b8a9",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-north-v1.png",
+          "sourceScale": 0.6226415094339622,
+          "sourceAnchor": [
+            55.5,
+            267
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            112,
+            267
+          ],
+          "bounds": [
+            111,
+            60,
+            179,
+            225
+          ],
+          "sha256": "c0de90861060ab32e09b5f8ec4827c052dc6dfb13acad8865c043faf0b5b6fe3"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-north-v1.png",
+          "sourceScale": 0.6226415094339622,
+          "sourceAnchor": [
+            54.5,
+            267
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            111,
+            267
+          ],
+          "bounds": [
+            111,
+            60,
+            179,
+            225
+          ],
+          "sha256": "b4c3ad4572de626c7f3306c81fc7782402469dae8717fcb5025460b14b85f7b3"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-north-v1.png",
+          "sourceScale": 0.6226415094339622,
+          "sourceAnchor": [
+            55.5,
+            267
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            112,
+            267
+          ],
+          "bounds": [
+            111,
+            60,
+            179,
+            225
+          ],
+          "sha256": "976278a21ee53c6e316e1eb159ff6d71c5639aab26d65942417cace7507369cc"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-north-v1.png",
+          "sourceScale": 0.6226415094339622,
+          "sourceAnchor": [
+            55,
+            267
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            112,
+            267
+          ],
+          "bounds": [
+            111,
+            60,
+            179,
+            225
+          ],
+          "sha256": "b31bc1f2f4f904d2c1d1a2365c5a42f946c730aacf55f9e7ea076e0ea71c1280"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-north-v1.png",
+          "sourceScale": 0.6043956043956044,
+          "sourceAnchor": [
+            81,
+            275
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            192,
+            275
+          ],
+          "bounds": [
+            96,
+            60,
+            211,
+            225
+          ],
+          "sha256": "3cec86a07bc7bd17d94862da4aff67d017db24680871bc056bc4db7357acd24b"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-north-v1.png",
+          "sourceScale": 0.6043956043956044,
+          "sourceAnchor": [
+            79.5,
+            275
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            193,
+            275
+          ],
+          "bounds": [
+            97,
+            61,
+            212,
+            225
+          ],
+          "sha256": "f361ba1ebcc0cee81b50afb5f8b11a283f5f6f6e834ec42a2fcff5de76695228"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-north-v1.png",
+          "sourceScale": 0.6043956043956044,
+          "sourceAnchor": [
+            80,
+            275
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            193,
+            275
+          ],
+          "bounds": [
+            97,
+            60,
+            212,
+            225
+          ],
+          "sha256": "e6c7d3cce61f96e6c78b5ab68c9215b1d7a9f6891db8169231080e633b694bb5"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-north-v1.png",
+          "sourceScale": 0.6043956043956044,
+          "sourceAnchor": [
+            80,
+            275
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            192,
+            275
+          ],
+          "bounds": [
+            97,
+            60,
+            212,
+            225
+          ],
+          "sha256": "cde1e41499a4b2e89d602fbf4a7f471ed928935893bfa7ecd376c6333d0e36ac"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-north-v1.png",
+          "sourceScale": 0.6007326007326007,
+          "sourceAnchor": [
+            107,
+            275
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            272,
+            275
+          ],
+          "bounds": [
+            81,
+            61,
+            243,
+            225
+          ],
+          "sha256": "ee5e042d30422392e7cec5486b4ce17ef3fa6e2b997827654de21b63be388b7a"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-north-v1.png",
+          "sourceScale": 0.6007326007326007,
+          "sourceAnchor": [
+            106,
+            275
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            271,
+            275
+          ],
+          "bounds": [
+            82,
+            61,
+            244,
+            225
+          ],
+          "sha256": "f62531656f2ca3695f52a45a240f1a628e4b1e72475778c9160a03758443827b"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-north-v1.png",
+          "sourceScale": 0.6007326007326007,
+          "sourceAnchor": [
+            107,
+            275
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            271,
+            275
+          ],
+          "bounds": [
+            81,
+            61,
+            243,
+            225
+          ],
+          "sha256": "aaab37da579b568ce706b7f6b1b7e237eaa763ef2a2bf44748318ef801de4b3c"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-north-v1.png",
+          "sourceScale": 0.6007326007326007,
+          "sourceAnchor": [
+            106,
+            275
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            269,
+            275
+          ],
+          "bounds": [
+            82,
+            61,
+            242,
+            225
+          ],
+          "sha256": "c0464c8596f71977b867adee2c332acc563a16818eb8d04cb26215cc971fe9f4"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-north-v1.png",
+          "sourceScale": 0.5985663082437276,
+          "sourceAnchor": [
+            105,
+            281
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            240,
+            281
+          ],
+          "bounds": [
+            82,
+            58,
+            224,
+            225
+          ],
+          "sha256": "d45a94a8236c41dc75c3e2b8e1a22fe0f9c7e589051a6b9cd886d35a3d4083b4"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-north-v1.png",
+          "sourceScale": 0.5985663082437276,
+          "sourceAnchor": [
+            104,
+            281
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            241,
+            281
+          ],
+          "bounds": [
+            83,
+            58,
+            226,
+            225
+          ],
+          "sha256": "fa624e336f1293131a5baf84201288c0839213e6762fb1b65b8fce48536a7493"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-north-v1.png",
+          "sourceScale": 0.5985663082437276,
+          "sourceAnchor": [
+            105.5,
+            281
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            247,
+            281
+          ],
+          "bounds": [
+            82,
+            58,
+            229,
+            225
+          ],
+          "sha256": "99839c7eb6f2a76870339a5104422518593948aeeac7438ccc1e874946554211"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-north-v1.png",
+          "sourceScale": 0.5985663082437276,
+          "sourceAnchor": [
+            103.5,
+            281
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            239,
+            281
+          ],
+          "bounds": [
+            83,
+            58,
+            225,
+            225
+          ],
+          "sha256": "27bb0343b5dd4d0fbeebc2b030621801794e36afc10db9041c50da54728decba"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-south-v1.png",
+          "sourceScale": 0.6125461254612546,
+          "sourceAnchor": [
+            58,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            117,
+            274
+          ],
+          "bounds": [
+            110,
+            59,
+            180,
+            225
+          ],
+          "sha256": "bf274c60d14818aecb8dc8bfff8c6ae53c4fd994fadc7779e7a28aad07809294"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-south-v1.png",
+          "sourceScale": 0.6125461254612546,
+          "sourceAnchor": [
+            57.5,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            116,
+            274
+          ],
+          "bounds": [
+            110,
+            58,
+            180,
+            225
+          ],
+          "sha256": "5851b983567ce903e39c78659e97adfc9df4d13b619cbf6c401bae9e04401bad"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-south-v1.png",
+          "sourceScale": 0.6125461254612546,
+          "sourceAnchor": [
+            58,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            116,
+            274
+          ],
+          "bounds": [
+            110,
+            59,
+            180,
+            225
+          ],
+          "sha256": "e306b28191ba67cd20fdf5908dfb0880fc2449cc08701cfebf27c7675d49717a"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-south-v1.png",
+          "sourceScale": 0.6125461254612546,
+          "sourceAnchor": [
+            58,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            116,
+            274
+          ],
+          "bounds": [
+            110,
+            59,
+            180,
+            225
+          ],
+          "sha256": "0cc7ace22e0cdef96ee187b13e9d63671985062a7a2f6fd587a7854dc41c83e7"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-south-v1.png",
+          "sourceScale": 0.6014492753623188,
+          "sourceAnchor": [
+            97.5,
+            278
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            176,
+            278
+          ],
+          "bounds": [
+            87,
+            59,
+            192,
+            225
+          ],
+          "sha256": "324a22663d5aabe0a3bc650d1858884ae7cfde7c712c0648c9b46cf5bb7c2fec"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-south-v1.png",
+          "sourceScale": 0.6014492753623188,
+          "sourceAnchor": [
+            97.5,
+            278
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            176,
+            278
+          ],
+          "bounds": [
+            87,
+            59,
+            192,
+            225
+          ],
+          "sha256": "edf6335bc775114128c8fbb19b8342662ab06b659ba71457f255525a41fec285"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-south-v1.png",
+          "sourceScale": 0.6014492753623188,
+          "sourceAnchor": [
+            97.5,
+            278
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            176,
+            278
+          ],
+          "bounds": [
+            87,
+            59,
+            192,
+            225
+          ],
+          "sha256": "5638ab7c3d03ae408dc925c9a146bf2cffb32116892ca148cad2f6d907cabf96"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-south-v1.png",
+          "sourceScale": 0.6014492753623188,
+          "sourceAnchor": [
+            98.5,
+            278
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            176,
+            278
+          ],
+          "bounds": [
+            86,
+            59,
+            191,
+            225
+          ],
+          "sha256": "b82fac32e60ffa0eb610078bcd2b12b3f0d427b08f274329a1606674df241d34"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-south-v1.png",
+          "sourceScale": 0.6051660516605166,
+          "sourceAnchor": [
+            162.5,
+            273
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            273,
+            273
+          ],
+          "bounds": [
+            47,
+            61,
+            211,
+            225
+          ],
+          "sha256": "ee45878f5c02d53abac35c36b9d8ca21b619eae71517086808f8d640c41a7f35"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-south-v1.png",
+          "sourceScale": 0.6051660516605166,
+          "sourceAnchor": [
+            164,
+            273
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            274,
+            273
+          ],
+          "bounds": [
+            46,
+            61,
+            211,
+            225
+          ],
+          "sha256": "6bbdce37f2107ac71cc6b7805022154d10dbeaa74313016d4d997dc64ea2be91"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-south-v1.png",
+          "sourceScale": 0.6051660516605166,
+          "sourceAnchor": [
+            163.5,
+            273
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            274,
+            273
+          ],
+          "bounds": [
+            46,
+            61,
+            211,
+            225
+          ],
+          "sha256": "e519dd6053a7287296a85a4396bf4c9bdd2e3a77c6e62ec8562c7de26a4929a7"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-south-v1.png",
+          "sourceScale": 0.6051660516605166,
+          "sourceAnchor": [
+            164.5,
+            273
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            274,
+            273
+          ],
+          "bounds": [
+            46,
+            61,
+            211,
+            225
+          ],
+          "sha256": "1ca19bb5d68a04c73725e3676b006cd9962639d34519de30e5a2147ca7710351"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-south-v1.png",
+          "sourceScale": 0.5892857142857143,
+          "sourceAnchor": [
+            127.5,
+            282
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            217,
+            282
+          ],
+          "bounds": [
+            70,
+            60,
+            197,
+            225
+          ],
+          "sha256": "5866498f9b690e14116595aef980628931b09dcae01de160a9545a08042a575d"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-south-v1.png",
+          "sourceScale": 0.5892857142857143,
+          "sourceAnchor": [
+            127.5,
+            282
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            218,
+            282
+          ],
+          "bounds": [
+            70,
+            60,
+            197,
+            225
+          ],
+          "sha256": "8953ada0c36e0c8f10762bc7defa94ca69b978630ee78496210499fc5f0d3916"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-south-v1.png",
+          "sourceScale": 0.5892857142857143,
+          "sourceAnchor": [
+            126.5,
+            282
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            217,
+            282
+          ],
+          "bounds": [
+            71,
+            60,
+            198,
+            225
+          ],
+          "sha256": "f2e84ee36b912596b04ca725e85159b5f2388935779c89162c3bb666699cfa5f"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-mounted-reload-south-v1.png",
+          "sourceScale": 0.5892857142857143,
+          "sourceAnchor": [
+            127,
+            282
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            217,
+            282
+          ],
+          "bounds": [
+            70,
+            60,
+            197,
+            225
+          ],
+          "sha256": "446d5431e60bafa67e2f815cc4fac6f80167609545d7cb7d951007be49981649"
+        }
+      ],
+      "file": "surgeon-mounted-reload.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "57b01f25cae9d2b6dec624eaac519b68b894021bcd5524fde1710fa87704170f"
+    }
+  }
+}

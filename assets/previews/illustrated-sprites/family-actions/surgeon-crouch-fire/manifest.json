@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "surgeon-crouch-fire": {
+      "cell": 210,
+      "anchor": [
+        105,
+        186
+      ],
+      "logicalCell": 70,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-north-v2.png",
+          "sha256": "03cda87a249eed61b9aed919b8b669af6c466ac2b3679eb632bb24623648237a",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-south-v2.png",
+          "sha256": "73e160561818ec94be082df1bd28c4f3ac7204a5cf1b87bd618bd92e2cae78e9",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-north-v2.png",
+          "sourceScale": 0.34313725,
+          "sourceAnchor": [
+            150.12857,
+            287
+          ],
+          "sourceBounds": [
+            82,
+            57,
+            230,
+            287
+          ],
+          "bounds": [
+            82,
+            107,
+            133,
+            186
+          ],
+          "sha256": "cca33d99fa07c3e8b86576d321d5c7e8f88cbea4e43d84ff40a10dffa05f80bd"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-north-v2.png",
+          "sourceScale": 0.34313725,
+          "sourceAnchor": [
+            137.62857,
+            287
+          ],
+          "sourceBounds": [
+            71,
+            29,
+            220,
+            287
+          ],
+          "bounds": [
+            82,
+            97,
+            133,
+            186
+          ],
+          "sha256": "09e8ec53e9d3de22379875ec4cebcaa968f675dbbde82584c908ebfcea8390b8"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-north-v2.png",
+          "sourceScale": 0.34313725,
+          "sourceAnchor": [
+            137.62857,
+            287
+          ],
+          "sourceBounds": [
+            70,
+            48,
+            220,
+            287
+          ],
+          "bounds": [
+            82,
+            104,
+            133,
+            186
+          ],
+          "sha256": "e251faf8c1c29e9cbf8b6d50406328fcd608bb983b29bb3184b949857bc48454"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-north-v2.png",
+          "sourceScale": 0.34313725,
+          "sourceAnchor": [
+            135.62857,
+            287
+          ],
+          "sourceBounds": [
+            69,
+            57,
+            218,
+            287
+          ],
+          "bounds": [
+            82,
+            107,
+            133,
+            186
+          ],
+          "sha256": "68ad642e825c28443eeaeb4fd34fa581efa56c32c6af1c1f88ef9517e771c0f5"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-north-v2.png",
+          "sourceScale": 0.34579439,
+          "sourceAnchor": [
+            154.01351,
+            256
+          ],
+          "sourceBounds": [
+            65,
+            42,
+            250,
+            256
+          ],
+          "bounds": [
+            74,
+            112,
+            138,
+            186
+          ],
+          "sha256": "349a81c1556b87cccf8d684bf9ebc66b68bc6c76c725ffd2127e271114864005"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-north-v2.png",
+          "sourceScale": 0.34579439,
+          "sourceAnchor": [
+            153.51351,
+            257
+          ],
+          "sourceBounds": [
+            60,
+            28,
+            270,
+            257
+          ],
+          "bounds": [
+            73,
+            107,
+            146,
+            186
+          ],
+          "sha256": "84c945a0febe8b6ddf2e9aec7690dbe38a02b9975b50b96b041b707e7c0d39eb"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-north-v2.png",
+          "sourceScale": 0.34579439,
+          "sourceAnchor": [
+            152.01351,
+            256
+          ],
+          "sourceBounds": [
+            59,
+            42,
+            246,
+            256
+          ],
+          "bounds": [
+            73,
+            112,
+            138,
+            186
+          ],
+          "sha256": "2f793eda50dc814729378c0438d8209ea8d5e7e68b186ff04d26716b571710c3"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-north-v2.png",
+          "sourceScale": 0.34579439,
+          "sourceAnchor": [
+            153.01351,
+            256
+          ],
+          "sourceBounds": [
+            61,
+            42,
+            250,
+            256
+          ],
+          "bounds": [
+            73,
+            112,
+            138,
+            186
+          ],
+          "sha256": "890e8c2b9ab8d12b7ae1fe897aabc3420dfadea159bf7505e1cc802480a738d9"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-north-v2.png",
+          "sourceScale": 0.34703196,
+          "sourceAnchor": [
+            94.80263,
+            240
+          ],
+          "sourceBounds": [
+            46,
+            21,
+            286,
+            240
+          ],
+          "bounds": [
+            88,
+            110,
+            171,
+            186
+          ],
+          "sha256": "004fdb213568bbeeadb18f0a2b8e057dac020bc599b3effc2aa8d59c0dee079d"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-north-v2.png",
+          "sourceScale": 0.34703196,
+          "sourceAnchor": [
+            87.80263,
+            240
+          ],
+          "sourceBounds": [
+            39,
+            17,
+            296,
+            240
+          ],
+          "bounds": [
+            88,
+            109,
+            177,
+            186
+          ],
+          "sha256": "7a1585b1fcfa8b3ac5081d84ba956a645456a8ec6cf1bf23460fbcd32756f845"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-north-v2.png",
+          "sourceScale": 0.34703196,
+          "sourceAnchor": [
+            85.30263,
+            240
+          ],
+          "sourceBounds": [
+            38,
+            17,
+            262,
+            240
+          ],
+          "bounds": [
+            89,
+            109,
+            167,
+            186
+          ],
+          "sha256": "057aa011f0f3b7532fc4b5a864dbeb7e77bc23e63dd92ab860001fc7318fb790"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-north-v2.png",
+          "sourceScale": 0.34703196,
+          "sourceAnchor": [
+            87.80263,
+            240
+          ],
+          "sourceBounds": [
+            39,
+            17,
+            280,
+            240
+          ],
+          "bounds": [
+            88,
+            109,
+            172,
+            186
+          ],
+          "sha256": "53135794e172d84cbcaffd3264ce09b47d86c702bb1c0c42e025c682e2f604b9"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-north-v2.png",
+          "sourceScale": 0.3164557,
+          "sourceAnchor": [
+            151.42,
+            264
+          ],
+          "sourceBounds": [
+            81,
+            27,
+            231,
+            264
+          ],
+          "bounds": [
+            83,
+            111,
+            130,
+            186
+          ],
+          "sha256": "91604921a27d20756c5824e04c8e878a21d57a66e6987887506a2c2d6c0af84c"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-north-v2.png",
+          "sourceScale": 0.3164557,
+          "sourceAnchor": [
+            148.42,
+            264
+          ],
+          "sourceBounds": [
+            77,
+            26,
+            229,
+            264
+          ],
+          "bounds": [
+            82,
+            111,
+            130,
+            186
+          ],
+          "sha256": "f9a820805a0a4584cac924e486ce99dd2100017a7d204c17de8d5a451f214523"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-north-v2.png",
+          "sourceScale": 0.3164557,
+          "sourceAnchor": [
+            145.42,
+            264
+          ],
+          "sourceBounds": [
+            74,
+            27,
+            227,
+            264
+          ],
+          "bounds": [
+            82,
+            111,
+            130,
+            186
+          ],
+          "sha256": "22ca0f57aa2381e69a6fe2d58a2e4c79f051ea896f26ad285c66fc4853b6298a"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-north-v2.png",
+          "sourceScale": 0.3164557,
+          "sourceAnchor": [
+            147.42,
+            267
+          ],
+          "sourceBounds": [
+            74,
+            29,
+            228,
+            267
+          ],
+          "bounds": [
+            82,
+            111,
+            131,
+            186
+          ],
+          "sha256": "a6261d6d4280f3246bf1a92c0fc30e389dbc27929aad58c486423ff890108203"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-south-v2.png",
+          "sourceScale": 0.32110092,
+          "sourceAnchor": [
+            165.78571,
+            293
+          ],
+          "sourceBounds": [
+            83,
+            75,
+            249,
+            293
+          ],
+          "bounds": [
+            78,
+            116,
+            131,
+            186
+          ],
+          "sha256": "6e85877d8465dc4be0fb8116eff3caa16ed770d69cde2039dbed80054be7076f"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-south-v2.png",
+          "sourceScale": 0.32110092,
+          "sourceAnchor": [
+            162.78571,
+            293
+          ],
+          "sourceBounds": [
+            79,
+            76,
+            245,
+            293
+          ],
+          "bounds": [
+            78,
+            116,
+            131,
+            186
+          ],
+          "sha256": "9b8261c6285fad9aea4bb17c8c26a65a7a8cee437864900712c2878251185d36"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-south-v2.png",
+          "sourceScale": 0.32110092,
+          "sourceAnchor": [
+            162.28571,
+            293
+          ],
+          "sourceBounds": [
+            80,
+            76,
+            243,
+            293
+          ],
+          "bounds": [
+            79,
+            116,
+            131,
+            186
+          ],
+          "sha256": "b96b9506b2e88fb60dac921bc143ec9eb39b8184045db282236624345ebd9a26"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-south-v2.png",
+          "sourceScale": 0.32110092,
+          "sourceAnchor": [
+            156.78571,
+            293
+          ],
+          "sourceBounds": [
+            73,
+            76,
+            238,
+            293
+          ],
+          "bounds": [
+            78,
+            116,
+            131,
+            186
+          ],
+          "sha256": "cbb6008c0b779bbb59e3612a53c8203bec565cd2e76322b1cab2c54a44e56a19"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-south-v2.png",
+          "sourceScale": 0.34703196,
+          "sourceAnchor": [
+            161,
+            267
+          ],
+          "sourceBounds": [
+            81,
+            48,
+            259,
+            267
+          ],
+          "bounds": [
+            77,
+            110,
+            139,
+            186
+          ],
+          "sha256": "3275b4933b697651e95b53f4b99ad0d7eca2f5ce2bb177cbfc582da3aa428665"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-south-v2.png",
+          "sourceScale": 0.34703196,
+          "sourceAnchor": [
+            154,
+            267
+          ],
+          "sourceBounds": [
+            58,
+            48,
+            254,
+            267
+          ],
+          "bounds": [
+            72,
+            110,
+            140,
+            186
+          ],
+          "sha256": "18c93a75a19800e490ca52685dffba772d383850c475c5f94b3d520bad87c179"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-south-v2.png",
+          "sourceScale": 0.34703196,
+          "sourceAnchor": [
+            157.5,
+            268
+          ],
+          "sourceBounds": [
+            61,
+            49,
+            262,
+            268
+          ],
+          "bounds": [
+            72,
+            110,
+            142,
+            186
+          ],
+          "sha256": "0be6ed77f423968e8498b98fb56395336caf771608f9598ba04ebed914dc1ab3"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-south-v2.png",
+          "sourceScale": 0.34703196,
+          "sourceAnchor": [
+            153.5,
+            268
+          ],
+          "sourceBounds": [
+            73,
+            48,
+            253,
+            268
+          ],
+          "bounds": [
+            77,
+            110,
+            139,
+            186
+          ],
+          "sha256": "ddc78082f2c823ff77a8e4988ea768db7d10945d4dcdf0863dae9d13b3775750"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-south-v2.png",
+          "sourceScale": 0.32327586,
+          "sourceAnchor": [
+            176.68667,
+            254
+          ],
+          "sourceBounds": [
+            48,
+            22,
+            268,
+            254
+          ],
+          "bounds": [
+            63,
+            111,
+            134,
+            186
+          ],
+          "sha256": "fee2af684343bc70d65c291efa2be14953980d2835ff05584477bb1b8e0f53b2"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-south-v2.png",
+          "sourceScale": 0.32327586,
+          "sourceAnchor": [
+            168.68667,
+            254
+          ],
+          "sourceBounds": [
+            21,
+            22,
+            260,
+            254
+          ],
+          "bounds": [
+            57,
+            111,
+            134,
+            186
+          ],
+          "sha256": "45fa9e767e98436d58ec3e9d55fdea8e81bfa49d1436b6da50b82dbc554b9f5f"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-south-v2.png",
+          "sourceScale": 0.32327586,
+          "sourceAnchor": [
+            171.68667,
+            254
+          ],
+          "sourceBounds": [
+            71,
+            22,
+            263,
+            254
+          ],
+          "bounds": [
+            72,
+            111,
+            134,
+            186
+          ],
+          "sha256": "94916637fd4d04e08cd9a88ac88522a051bab00f2013ccf6145bcd1ff789578d"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-south-v2.png",
+          "sourceScale": 0.32327586,
+          "sourceAnchor": [
+            163.68667,
+            254
+          ],
+          "sourceBounds": [
+            44,
+            21,
+            254,
+            254
+          ],
+          "bounds": [
+            66,
+            111,
+            134,
+            186
+          ],
+          "sha256": "76e6ea84c857d18646cefe6b05c10a82970b3a61670b30ad226b90cb483f7d04"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-south-v2.png",
+          "sourceScale": 0.31779661,
+          "sourceAnchor": [
+            219.34667,
+            259
+          ],
+          "sourceBounds": [
+            47,
+            23,
+            256,
+            259
+          ],
+          "bounds": [
+            50,
+            111,
+            116,
+            186
+          ],
+          "sha256": "09d227894e6aef777e4a2fa6b0aa33053c62b5697e65b19ecf832e0e3776ed32"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-south-v2.png",
+          "sourceScale": 0.31779661,
+          "sourceAnchor": [
+            215.34667,
+            259
+          ],
+          "sourceBounds": [
+            35,
+            27,
+            254,
+            259
+          ],
+          "bounds": [
+            48,
+            112,
+            118,
+            186
+          ],
+          "sha256": "796d21a234a38a85b4a8fc600d4762b6000513a1bc7c64bd9f5388d539a6c23e"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-south-v2.png",
+          "sourceScale": 0.31779661,
+          "sourceAnchor": [
+            222.34667,
+            259
+          ],
+          "sourceBounds": [
+            57,
+            23,
+            263,
+            259
+          ],
+          "bounds": [
+            52,
+            111,
+            117,
+            186
+          ],
+          "sha256": "4cf71352af7e0f12be0937b65ce74a3c3139df21a860f6b770b404bf61f99beb"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/surgeon-crouch-fire-south-v2.png",
+          "sourceScale": 0.31779661,
+          "sourceAnchor": [
+            208.84667,
+            262
+          ],
+          "sourceBounds": [
+            55,
+            26,
+            246,
+            262
+          ],
+          "bounds": [
+            56,
+            111,
+            117,
+            186
+          ],
+          "sha256": "162f81b457e7d3e137142836d24620b5a89fd362c11dc3e560c45e29d9ab138c"
+        }
+      ],
+      "file": "surgeon-crouch-fire.png",
+      "size": [
+        840,
+        1680
+      ],
+      "sha256": "c6b8a359c29c96164fe510c50d1efa05e4de487e32e62b365f7df40a8995474b"
+    }
+  }
+}

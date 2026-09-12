@@ -9,6 +9,7 @@ import {renderToStaticMarkup} from '../web/node_modules/react-dom/server.node.js
 import sharp from '../web/node_modules/sharp/lib/index.js';
 import {createBattle} from '../game/tactical.js';
 import {buildSectorMap} from '../game/maps.js';
+import {spriteRender} from '../game/sprite-render.js';
 const {default:SpriteFigure}=await import('../web/app/SpriteFigure.tsx');
 const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
 const destination=resolve(process.argv[2]??'assets/previews/tactical-pixel-art');
@@ -38,10 +39,17 @@ for(const [row,[label,unit,appearance,pose]] of families.entries()){
  for(let direction=0;direction<8;direction++)sheet.push(h(SpriteFigure,{key:`${row}-${direction}`,unit:{side:'player',...unit},appearance,pose,position:{x:155+direction*80,y:row*96+78},motion:{direction,frame:0,moving:false}}));
 }
 await save('directions',sheet,760,families.length*96);
-// Integer-enlarged previews preserve the actual atlas sequence and its timing.
-for(const name of ['granadero-unconscious-breathe-se','granadero-prone-armed-fire-se']){
- await sharp(resolve('assets/web/pixel',`${name}-preview.webp`),{animated:true})
-  .resize({width:320,kernel:'nearest'}).webp({lossless:true})
+// Preview the same published source and frame timing as the runtime renderer.
+for(const [name,unit,pose] of [
+ ['granadero-unconscious-breathe-se',{hp:80,unconscious:true},'idle'],
+ ['granadero-prone-armed-fire-se',{stance:'prone',weapon:1800},'fire'],
+]){
+ const sprite=spriteRender({side:'player',...unit},{direction:3,frame:0,moving:false},pose);
+ const frames=[];
+ for(let frame=0;frame<sprite.frames;frame++)frames.push(await sharp(resolve('web/public',`.${sprite.href}`))
+  .extract({left:frame*sprite.cell,top:3*sprite.cell,width:sprite.cell,height:sprite.cell})
+  .resize(320,320,{kernel:'nearest'}).png().toBuffer());
+ await sharp(frames,{join:{animated:true}}).webp({lossless:true,loop:0,delay:frames.map(()=>Math.round(1000/sprite.fps))})
   .toFile(resolve(destination,`${name}.webp`));
 }
 for(const sector of ['san_lorenzo','yatasto']){

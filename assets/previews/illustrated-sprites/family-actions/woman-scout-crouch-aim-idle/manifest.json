@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-scout-crouch-aim-idle": {
+      "cell": 240,
+      "anchor": [
+        120,
+        210
+      ],
+      "logicalCell": 80,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-north-v1.png",
+          "sha256": "2c463188f54918b0efc2cbdef1ef3a2ff5ffc9c53b18c7ac77153e0daeb3a3ba",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-south-v2.png",
+          "sha256": "d2ec470a4df1d3b1c1615e29e5a527ecc23e69bb6289d1a4c8849bb2a527fdd2",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-north-v1.png",
+          "sourceScale": 0.33658536585365856,
+          "sourceAnchor": [
+            73,
+            243
+          ],
+          "sourceBounds": [
+            2,
+            36,
+            140,
+            241
+          ],
+          "bounds": [
+            96,
+            140,
+            142,
+            209
+          ],
+          "sha256": "0851943b983fd570eff9326794a9039d15f5beb3c4b97ad9da04a168618377e2"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-north-v1.png",
+          "sourceScale": 0.35784313725490197,
+          "sourceAnchor": [
+            75.5,
+            206
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            179,
+            206
+          ],
+          "bounds": [
+            94,
+            137,
+            157,
+            210
+          ],
+          "sha256": "4345f856163eda7426144737ac333fe5e4bea29743d83359c635133948b4c3cb"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-north-v1.png",
+          "sourceScale": 0.375,
+          "sourceAnchor": [
+            89,
+            202
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            212,
+            202
+          ],
+          "bounds": [
+            87,
+            135,
+            166,
+            210
+          ],
+          "sha256": "d8efd261f0a7f0109d1ed9dd34543529af8711426eb68ee8ed783d99b8f8bde1"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-north-v1.png",
+          "sourceScale": 0.37055837563451777,
+          "sourceAnchor": [
+            79.5,
+            201
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            139,
+            201
+          ],
+          "bounds": [
+            91,
+            137,
+            142,
+            210
+          ],
+          "sha256": "9edda9ca268045a0c892755017ba36c0c73f39cb4fc8febaf8a8c484990377f7"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-south-v2.png",
+          "sourceScale": 0.33658536585365856,
+          "sourceAnchor": [
+            66,
+            210
+          ],
+          "sourceBounds": [
+            2,
+            5,
+            160,
+            210
+          ],
+          "bounds": [
+            98,
+            141,
+            151,
+            210
+          ],
+          "sha256": "9f1e1cc3df42de1f7ea498529ed6440eb764329aad9380272cddbc790b7acdf8"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-south-v2.png",
+          "sourceScale": 0.3557692307692308,
+          "sourceAnchor": [
+            102,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            209,
+            212
+          ],
+          "bounds": [
+            84,
+            136,
+            158,
+            210
+          ],
+          "sha256": "2189b0d3d6286dba22d54af13c40844fb94f4a27c147005fddfa922939a754e5"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-south-v2.png",
+          "sourceScale": 0.365,
+          "sourceAnchor": [
+            144,
+            210
+          ],
+          "sourceBounds": [
+            2,
+            10,
+            239,
+            210
+          ],
+          "bounds": [
+            68,
+            137,
+            155,
+            210
+          ],
+          "sha256": "82f84e59bbb11eb430fba557d7ed94fc4ed9b349e977b562508668227851e864"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-south-v2.png",
+          "sourceScale": 0.3492822966507177,
+          "sourceAnchor": [
+            122,
+            215
+          ],
+          "sourceBounds": [
+            2,
+            6,
+            205,
+            215
+          ],
+          "bounds": [
+            78,
+            137,
+            149,
+            210
+          ],
+          "sha256": "466ccd054bd38ebde92a703b5370de684483d0cb98c8da584148d60afb732a49"
+        }
+      ],
+      "file": "woman-scout-crouch-aim-idle.png",
+      "size": [
+        1920,
+        240
+      ],
+      "sha256": "668ad475b785d6d3f91e970772a5678ef67beb4b5fe370d48e65138e99db8fce",
+      "derivedFrom": {
+        "atlas": "woman-scout-crouch-fire",
+        "frame": 0,
+        "reason": "hold authored pre-shot aim"
+      }
+    }
+  }
+}

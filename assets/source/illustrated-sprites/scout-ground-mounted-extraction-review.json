@@ -1,0 +1,174 @@
+[
+  {
+    "source": "assets/source/illustrated-sprites/scout-prone-armed-idle-v1.png",
+    "dimensions": [
+      1774,
+      887
+    ],
+    "exportKey": "magenta",
+    "fixedCellMinimumMargin": 0,
+    "detectedRegions": 8,
+    "regionFile": "assets/source/illustrated-sprites/scout-prone-armed-idle-v1.regions.json"
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-prone-unarmed-idle-v1.png",
+    "dimensions": [
+      1774,
+      887
+    ],
+    "exportKey": "magenta",
+    "fixedCellMinimumMargin": 71,
+    "detectedRegions": 8
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-dead-idle-v1.png",
+    "dimensions": [
+      1774,
+      887
+    ],
+    "exportKey": "magenta",
+    "fixedCellMinimumMargin": 60,
+    "detectedRegions": 8
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-prone-armed-walk-north-v1.png",
+    "dimensions": [
+      1254,
+      1254
+    ],
+    "exportKey": "magenta",
+    "fixedCellMinimumMargin": 16,
+    "detectedRegions": 16
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-prone-armed-walk-south-v1.png",
+    "dimensions": [
+      1254,
+      1254
+    ],
+    "exportKey": "magenta",
+    "fixedCellMinimumMargin": 29,
+    "detectedRegions": 16
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-prone-unarmed-walk-north-v1.png",
+    "dimensions": [
+      1254,
+      1254
+    ],
+    "exportKey": "magenta",
+    "fixedCellMinimumMargin": 55,
+    "detectedRegions": 16
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-prone-unarmed-walk-south-v1.png",
+    "dimensions": [
+      1254,
+      1254
+    ],
+    "exportKey": "magenta",
+    "fixedCellMinimumMargin": 65,
+    "detectedRegions": 16
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-prone-armed-fire-north-v1.png",
+    "dimensions": [
+      1254,
+      1254
+    ],
+    "exportKey": "magenta",
+    "fixedCellMinimumMargin": 25,
+    "detectorError": "Expected 4 rows, found 6"
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-prone-armed-fire-south-v1.png",
+    "dimensions": [
+      1254,
+      1254
+    ],
+    "exportKey": "magenta",
+    "fixedCellMinimumMargin": 22,
+    "detectorError": "Expected 4 columns in row 2, found 5"
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-prone-armed-reload-north-v1.png",
+    "dimensions": [
+      1254,
+      1254
+    ],
+    "exportKey": "magenta",
+    "fixedCellMinimumMargin": 38,
+    "detectedRegions": 16
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-prone-armed-reload-south-v1.png",
+    "dimensions": [
+      1254,
+      1254
+    ],
+    "exportKey": "magenta",
+    "fixedCellMinimumMargin": 15,
+    "detectedRegions": 16
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-unconscious-breathe-north-v1.png",
+    "dimensions": [
+      1254,
+      1254
+    ],
+    "exportKey": "magenta",
+    "fixedCellMinimumMargin": 65,
+    "detectedRegions": 16
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-unconscious-breathe-south-v1.png",
+    "dimensions": [
+      1254,
+      1254
+    ],
+    "exportKey": "magenta",
+    "fixedCellMinimumMargin": 39,
+    "detectedRegions": 16
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-mounted-idle-v1.png",
+    "dimensions": [
+      1774,
+      887
+    ],
+    "exportKey": "magenta",
+    "fixedCellMinimumMargin": 37,
+    "detectedRegions": 8
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-mounted-walk-north-v1.png",
+    "dimensions": [
+      1254,
+      1254
+    ],
+    "exportKey": "magenta",
+    "fixedCellMinimumMargin": 27,
+    "detectedRegions": 16
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-mounted-walk-south-v1.png",
+    "dimensions": [
+      1254,
+      1254
+    ],
+    "exportKey": "magenta",
+    "fixedCellMinimumMargin": 8,
+    "detectedRegions": 16
+  },
+  {
+    "source": "assets/source/illustrated-sprites/scout-prone-armed-reload-s-v2.png",
+    "dimensions": [
+      2172,
+      724
+    ],
+    "exportKey": "magenta",
+    "detectedRegions": 4,
+    "regionFile": "assets/source/illustrated-sprites/scout-prone-armed-reload-s-v2.regions.json",
+    "review": "All four S poses have head down, boots up; compact carbine complete, cartridge and rod phases visible."
+  }
+]

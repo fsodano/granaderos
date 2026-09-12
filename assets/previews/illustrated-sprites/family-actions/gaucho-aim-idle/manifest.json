@@ -1,0 +1,241 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "gaucho-aim-idle": {
+      "cell": 210,
+      "anchor": [
+        105,
+        186
+      ],
+      "logicalCell": 70,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/gaucho-fire-north-v1.png",
+          "sha256": "83791d40fea2bfdcb065ef16422e4949ebfe4f22f2c5d737808ccbb0fc683feb",
+          "scale": 0.6698564593301436
+        },
+        {
+          "file": "assets/source/illustrated-sprites/gaucho-fire-south-v1.png",
+          "sha256": "7e234830de76b757957370cd45938a0c750f0ad14f98ea0322dd065e1c178c48",
+          "scale": 0.6698564593301436
+        },
+        {
+          "file": "assets/source/illustrated-sprites/gaucho-fire-n-fix-v2.png",
+          "sha256": "fba3969df51bd8c97990008a39af1a5a787a0f4cfbbe3e6852a6d500010e8d0a",
+          "scale": 0.267559
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/gaucho-fire-n-fix-v2.png",
+          "sourceScale": 0.267559,
+          "sourceAnchor": [
+            67.55,
+            426.34999999999997
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            148,
+            416
+          ],
+          "bounds": [
+            87,
+            72,
+            126,
+            183
+          ],
+          "sha256": "d00ef8ac076d3521bb3ee8f69e36c80f62477703902440567fe1e1e4105e2a23"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/gaucho-fire-north-v1.png",
+          "sourceScale": 0.591973,
+          "sourceAnchor": [
+            37.864,
+            189.119
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            129,
+            186
+          ],
+          "bounds": [
+            84,
+            75,
+            159,
+            184
+          ],
+          "sha256": "faa48db88c2040e32dcc238dbf52e8f93b77c12bb4833f2c7dce1abbd5466293"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/gaucho-fire-north-v1.png",
+          "sourceScale": 0.655074,
+          "sourceAnchor": [
+            37.861,
+            179.869
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            139,
+            177
+          ],
+          "bounds": [
+            82,
+            69,
+            172,
+            184
+          ],
+          "sha256": "ad51fc8aaa8ddeb09bc73d81a343d8146c17fee51a350e8169004ce72174d4b3"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/gaucho-fire-north-v1.png",
+          "sourceScale": 0.58928,
+          "sourceAnchor": [
+            32.517,
+            182.052
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            123,
+            179
+          ],
+          "bounds": [
+            87,
+            80,
+            158,
+            184
+          ],
+          "sha256": "4c7a2044a2dbb9d854e4db5a4928626eb8ed4e3dc963274979f85dd57ea5c326"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/gaucho-fire-south-v1.png",
+          "sourceScale": 0.477661,
+          "sourceAnchor": [
+            46.831,
+            232
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            93,
+            232
+          ],
+          "bounds": [
+            84,
+            76,
+            127,
+            186
+          ],
+          "sha256": "b9ebf5ebd040deef1e0c2507bfcd9a965ce6729b5fcff034e6fcc22c8bed7738"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/gaucho-fire-south-v1.png",
+          "sourceScale": 0.515563,
+          "sourceAnchor": [
+            84.016,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            132,
+            228
+          ],
+          "bounds": [
+            63,
+            69,
+            130,
+            186
+          ],
+          "sha256": "d62ff7cc3adf53dddc674b292f26645d140fbafb72e1cc22d9771c7e1b0a6912"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/gaucho-fire-south-v1.png",
+          "sourceScale": 0.545447,
+          "sourceAnchor": [
+            137.541,
+            214
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            171,
+            214
+          ],
+          "bounds": [
+            31,
+            70,
+            123,
+            186
+          ],
+          "sha256": "f0fd81450cbf205e6d48c9c369e28b419ddc10916a301590eeaec1d432de5605"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/gaucho-fire-south-v1.png",
+          "sourceScale": 0.526909,
+          "sourceAnchor": [
+            112.567,
+            216
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            151,
+            216
+          ],
+          "bounds": [
+            47,
+            73,
+            126,
+            186
+          ],
+          "sha256": "0f5c3aad24d12c206ae0fb1d0494b3b3528c94b1aed9c3f23e5e5285008e3215"
+        }
+      ],
+      "file": "gaucho-aim-idle.png",
+      "size": [
+        1680,
+        210
+      ],
+      "sha256": "a94ee4532106007980c7dd4b77eb7ab49057073fc6a6481cee77bdb691723d87",
+      "derivedFrom": {
+        "atlas": "gaucho-fire",
+        "frame": 0,
+        "reason": "hold authored pre-shot aim"
+      }
+    }
+  }
+}

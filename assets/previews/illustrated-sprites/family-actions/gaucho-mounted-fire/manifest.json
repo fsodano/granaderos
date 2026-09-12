@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "gaucho-mounted-fire": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sha256": "7650dba59e181901830783e3b23c239c0adde54aac1387958554d640365fa919",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-n-v2.png",
+          "sha256": "9df641ac8cf78ccc545c576e435a504f7cc83bf1515341f96fc411eee3173b8e",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.1956521739130435,
+          "sourceAnchor": [
+            55,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            5,
+            117,
+            143
+          ],
+          "bounds": [
+            81,
+            60,
+            219,
+            225
+          ],
+          "sha256": "d87fcc09a631aaab397dff023bc27a442970ec2ffff6281e08ee78df2ec8ea0e"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.1956521739130435,
+          "sourceAnchor": [
+            53.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            122,
+            143
+          ],
+          "bounds": [
+            82,
+            56,
+            225,
+            225
+          ],
+          "sha256": "f48e7dc89d2937ef7de4272485cd0e583ddab0bc5a18a3e93d43da7fc8416961"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.1956521739130435,
+          "sourceAnchor": [
+            56,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            5,
+            125,
+            143
+          ],
+          "bounds": [
+            79,
+            60,
+            226,
+            225
+          ],
+          "sha256": "458834743e82cfc51a02f9562e84ca7260b6bc89dbec9dc422701e495a7514da"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.1956521739130435,
+          "sourceAnchor": [
+            56,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            5,
+            121,
+            143
+          ],
+          "bounds": [
+            79,
+            60,
+            221,
+            225
+          ],
+          "sha256": "842f0fdcb79c3a9b62b6bf0a7e1b617053db09d6c3c8219395ce2cbb6747d0b5"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.2058823529411764,
+          "sourceAnchor": [
+            69.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            152,
+            138
+          ],
+          "bounds": [
+            63,
+            61,
+            244,
+            225
+          ],
+          "sha256": "f05d40c404f723bc3d64c9cf350e35c1c6319467225cc1a58b6194e91a8ebbef"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.2058823529411764,
+          "sourceAnchor": [
+            69.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            168,
+            138
+          ],
+          "bounds": [
+            63,
+            61,
+            263,
+            225
+          ],
+          "sha256": "b7a48396beee5c081f6d18be7ac8d12a5286246a4fcc5ca5e582137050fe4d3e"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.2058823529411764,
+          "sourceAnchor": [
+            70.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            156,
+            138
+          ],
+          "bounds": [
+            61,
+            61,
+            247,
+            225
+          ],
+          "sha256": "ca2f6a6de7071eab2f055e35c1182dd9259f1a9cd488bc7b8fff2f34be39a3b8"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.2058823529411764,
+          "sourceAnchor": [
+            68,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            151,
+            138
+          ],
+          "bounds": [
+            64,
+            61,
+            244,
+            225
+          ],
+          "sha256": "15e830bf7dfa4d9dbd57185c979d88fce4d9e967e1bcbf9691659d2f4b356ad9"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.176056338028169,
+          "sourceAnchor": [
+            58.5,
+            145
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            120,
+            144
+          ],
+          "bounds": [
+            78,
+            57,
+            217,
+            224
+          ],
+          "sha256": "897b6a15331370f4ddea8fc34858b89a8454cdef6590d240b6c3f4ccf018cace"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.176056338028169,
+          "sourceAnchor": [
+            61,
+            145
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            140,
+            144
+          ],
+          "bounds": [
+            75,
+            57,
+            237,
+            224
+          ],
+          "sha256": "e87a21911109ce400812a5e6de6f13317a86d8c45ba163feaaa272924f95ab8f"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.176056338028169,
+          "sourceAnchor": [
+            59.5,
+            145
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            118,
+            145
+          ],
+          "bounds": [
+            76,
+            57,
+            212,
+            225
+          ],
+          "sha256": "609b34d6a14c3c4fe388b808ee8825b9f779dc6513c10267a0e1b25214e0bece"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.176056338028169,
+          "sourceAnchor": [
+            64.5,
+            145
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            145
+          ],
+          "bounds": [
+            70,
+            57,
+            224,
+            225
+          ],
+          "sha256": "c98cf08b5e009077edeb0b9794b4ea40204d2c3590c4a01775167e12f9afcbc1"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.1527777777777777,
+          "sourceAnchor": [
+            35,
+            146
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            68,
+            146
+          ],
+          "bounds": [
+            106,
+            59,
+            182,
+            225
+          ],
+          "sha256": "2a0bc4247971d6dc5e46e97ee27a6f6f95d5a07528502c0f24522a4d2da0b137"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.1527777777777777,
+          "sourceAnchor": [
+            34.5,
+            146
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            67,
+            146
+          ],
+          "bounds": [
+            107,
+            59,
+            182,
+            225
+          ],
+          "sha256": "bac79b4fa07bd6106f2199324377c082d51caa199051bd2b18b1bd8fa3fdecff"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.1527777777777777,
+          "sourceAnchor": [
+            34,
+            146
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            67,
+            146
+          ],
+          "bounds": [
+            107,
+            59,
+            182,
+            225
+          ],
+          "sha256": "ca3dd44c11f363d6faf1766051b282de9b273f2c173095aae03178186da826a2"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.1527777777777777,
+          "sourceAnchor": [
+            35,
+            146
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            67,
+            146
+          ],
+          "bounds": [
+            106,
+            59,
+            181,
+            225
+          ],
+          "sha256": "5ff2e4d5debef92b487571e88296a58fe6d593c52042053cd6360b96f2022fac"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.2116788321167884,
+          "sourceAnchor": [
+            78,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            140,
+            139
+          ],
+          "bounds": [
+            52,
+            59,
+            219,
+            225
+          ],
+          "sha256": "73ef84792b50643b1f65c831f7697ffa6d1983918325d9670fdc3784dc33b0d5"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.2116788321167884,
+          "sourceAnchor": [
+            79,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            140,
+            139
+          ],
+          "bounds": [
+            51,
+            59,
+            218,
+            225
+          ],
+          "sha256": "56657d9eab81911ff2b9fab21c56f4a2a7d20983d88f3749c33b3979401ffca9"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.2116788321167884,
+          "sourceAnchor": [
+            76,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            139,
+            139
+          ],
+          "bounds": [
+            54,
+            59,
+            220,
+            225
+          ],
+          "sha256": "3db0d0ffba5e3fc06720c5965e5e29ecff2f6c7daf6421dcb3788bd4613170b0"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.2116788321167884,
+          "sourceAnchor": [
+            70.5,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            132,
+            139
+          ],
+          "bounds": [
+            61,
+            59,
+            219,
+            225
+          ],
+          "sha256": "2d7d296c871cbb70abe040c07a860066686cead45d327de82eb95e6d54412302"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.1798561151079137,
+          "sourceAnchor": [
+            87.5,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            155,
+            141
+          ],
+          "bounds": [
+            43,
+            61,
+            224,
+            225
+          ],
+          "sha256": "b94a2cca9affe750298d60a87882ee4837bc2ddea6fb9132e4bee58d28789821"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.1798561151079137,
+          "sourceAnchor": [
+            95.5,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            161,
+            141
+          ],
+          "bounds": [
+            34,
+            61,
+            222,
+            225
+          ],
+          "sha256": "37a767277d466024d7f99edfbc1ba8ec63de87e8ebe94e07c9e1cb8bb0b58d5d"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.1798561151079137,
+          "sourceAnchor": [
+            83,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            150,
+            141
+          ],
+          "bounds": [
+            48,
+            61,
+            223,
+            225
+          ],
+          "sha256": "d4be4917e5a123135affdd484944bcbab64d6d42924de32f26e1739f7a31180b"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.1798561151079137,
+          "sourceAnchor": [
+            87,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            152,
+            141
+          ],
+          "bounds": [
+            44,
+            61,
+            221,
+            225
+          ],
+          "sha256": "57ab1ad60c1dd12097d265131f30d5df9d20b9b628a19cac725b7b131f599b46"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.1702127659574468,
+          "sourceAnchor": [
+            71.5,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            8,
+            131,
+            149
+          ],
+          "bounds": [
+            63,
+            59,
+            214,
+            224
+          ],
+          "sha256": "bc1a16a36267a86a47f16b1e4dc4172c41eb0033b232c912ff0ce438017528b3"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.1702127659574468,
+          "sourceAnchor": [
+            68,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            126,
+            149
+          ],
+          "bounds": [
+            67,
+            52,
+            212,
+            224
+          ],
+          "sha256": "936a46dfe68a2a9d494c9c74046e9957f5831d2d6fa4e6f1465944a0d6aafcc3"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.1702127659574468,
+          "sourceAnchor": [
+            69.5,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            8,
+            128,
+            150
+          ],
+          "bounds": [
+            65,
+            59,
+            212,
+            225
+          ],
+          "sha256": "71b82fdd1d60c252a372034d452963a49f4669d361176cf2de5dccb4e23e7edf"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-v1.png",
+          "sourceScale": 1.1702127659574468,
+          "sourceAnchor": [
+            68,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            8,
+            126,
+            149
+          ],
+          "bounds": [
+            67,
+            59,
+            212,
+            224
+          ],
+          "sha256": "f05d98fc8f61be2f62077abe077a47f31619533732e628b2ef9b09d4a7967091"
+        },
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-n-v2.png",
+          "sourceScale": 0.29411764705882354,
+          "sourceAnchor": [
+            107,
+            573
+          ],
+          "sourceBounds": [
+            2,
+            12,
+            213,
+            573
+          ],
+          "bounds": [
+            113,
+            60,
+            175,
+            225
+          ],
+          "sha256": "2d191ec0cf26639ec1d3781d2033164f73a7f48d0970ed54d9dee5c7398e4b19"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-n-v2.png",
+          "sourceScale": 0.29411764705882354,
+          "sourceAnchor": [
+            107,
+            573
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            213,
+            573
+          ],
+          "bounds": [
+            113,
+            57,
+            175,
+            225
+          ],
+          "sha256": "6ac90aec75698630091edc88a3c1286bff0b1db68b1a7d592a387e191c7f2943"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-n-v2.png",
+          "sourceScale": 0.29411764705882354,
+          "sourceAnchor": [
+            106.5,
+            573
+          ],
+          "sourceBounds": [
+            2,
+            11,
+            213,
+            573
+          ],
+          "bounds": [
+            113,
+            60,
+            175,
+            225
+          ],
+          "sha256": "dc2d6c03877a84af87e0af74c608ae2ec964b2eb2c1a40164a6b94dd014fad36"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/gaucho-mounted-fire-n-v2.png",
+          "sourceScale": 0.29411764705882354,
+          "sourceAnchor": [
+            107,
+            573
+          ],
+          "sourceBounds": [
+            2,
+            12,
+            213,
+            573
+          ],
+          "bounds": [
+            113,
+            60,
+            175,
+            225
+          ],
+          "sha256": "157da53173f94b9e99af969908c36c33885dad748fee34caa623555c681d3bae"
+        }
+      ],
+      "file": "gaucho-mounted-fire.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "5dc91fa46ae66b85eddeb79745dd2c519b066f66b8293d91708da4f7687138ed"
+    }
+  }
+}

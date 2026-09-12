@@ -1,0 +1,186 @@
+{
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-north-v1.png",
+      "name": "surgeon-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "half": "north"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-south-v1.png",
+      "name": "surgeon-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "half": "south"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-north-v1.png",
+      "name": "surgeon-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "north"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-south-v1.png",
+      "name": "surgeon-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "south"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/surgeon-unconscious-breathe-north-v1.png",
+      "name": "surgeon-unconscious-breathe",
+      "reference": "granadero-unconscious-breathe",
+      "half": "north"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/surgeon-unconscious-breathe-south-v1.png",
+      "name": "surgeon-unconscious-breathe",
+      "reference": "granadero-unconscious-breathe",
+      "half": "south"
+    }
+  ],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-n-fix-v2.png",
+      "name": "surgeon-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "longest",
+        "slots": [
+          {
+            "direction": "n",
+            "frame": 0,
+            "row": 0,
+            "col": 0
+          },
+          {
+            "direction": "n",
+            "frame": 1,
+            "row": 0,
+            "col": 1
+          },
+          {
+            "direction": "n",
+            "frame": 2,
+            "row": 0,
+            "col": 2
+          },
+          {
+            "direction": "n",
+            "frame": 3,
+            "row": 0,
+            "col": 3
+          }
+        ]
+      }
+    },
+    {
+      "source": "assets/source/illustrated-sprites/surgeon-prone-armed-walk-s-fix-v2.png",
+      "name": "surgeon-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "longest",
+        "slots": [
+          {
+            "direction": "s",
+            "frame": 0,
+            "row": 0,
+            "col": 0
+          },
+          {
+            "direction": "s",
+            "frame": 1,
+            "row": 0,
+            "col": 1
+          },
+          {
+            "direction": "s",
+            "frame": 2,
+            "row": 0,
+            "col": 2
+          },
+          {
+            "direction": "s",
+            "frame": 3,
+            "row": 0,
+            "col": 3
+          }
+        ]
+      }
+    },
+    {
+      "source": "assets/source/illustrated-sprites/surgeon-prone-armed-reload-n-fix-v2.png",
+      "name": "surgeon-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "longest",
+        "slots": [
+          {
+            "direction": "n",
+            "frame": 0,
+            "row": 0,
+            "col": 0
+          },
+          {
+            "direction": "n",
+            "frame": 1,
+            "row": 0,
+            "col": 1
+          },
+          {
+            "direction": "n",
+            "frame": 2,
+            "row": 0,
+            "col": 2
+          },
+          {
+            "direction": "n",
+            "frame": 3,
+            "row": 0,
+            "col": 3
+          }
+        ]
+      }
+    },
+    {
+      "source": "assets/source/illustrated-sprites/surgeon-unconscious-breathe-n-fix-v2.png",
+      "name": "surgeon-unconscious-breathe",
+      "reference": "granadero-unconscious-breathe",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "longest",
+        "slots": [
+          {
+            "direction": "n",
+            "frame": 0,
+            "row": 0,
+            "col": 0
+          },
+          {
+            "direction": "n",
+            "frame": 1,
+            "row": 0,
+            "col": 1
+          },
+          {
+            "direction": "n",
+            "frame": 2,
+            "row": 0,
+            "col": 2
+          },
+          {
+            "direction": "n",
+            "frame": 3,
+            "row": 0,
+            "col": 3
+          }
+        ]
+      }
+    }
+  ]
+}

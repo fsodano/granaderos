@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "appearance": "woman-elder",
+  "stage": "prone-armed-walk",
+  "pathBase": "repository-root",
+  "registrationOrder": [
+    "variants"
+  ],
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-prone-armed-walk-north-v2.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-prone-armed-walk-north-v2.prompt.txt",
+      "name": "woman-elder-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "poseReference": "assets/source/illustrated-sprites/woman-headscarf-prone-armed-walk-north-v1.png",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-prone-armed-walk-south-v2.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-prone-armed-walk-south-v2.prompt.txt",
+      "name": "woman-elder-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "poseReference": "assets/source/illustrated-sprites/woman-headscarf-prone-armed-walk-south-v1.png",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    }
+  ],
+  "corrections": [],
+  "qa": {
+    "notes": [
+      "v2 north and south selected, edited from approved Headscarf poses. All eight body headings retained, alternate knee/boot phases match target.",
+      "v1 north/south candidates and pending direction correction prompts are unselected.",
+      "No clipping or extra figures, count16per sheet. Preserve anatomical body scale rather than pistol-to-boot extent."
+    ]
+  }
+}

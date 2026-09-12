@@ -1,0 +1,12 @@
+{
+  "source": "assets/previews/illustrated-sprites/packed/granadero-prone-armed-reload.png",
+  "sha256": "e4a9c1e99c2edb1332c5e5567c4e02208332559999ad20632a3da82830d57929",
+  "directions": [
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "frames": 4,
+  "command": "node tools/illustrated-action-reference.mjs granadero-prone-armed-reload"
+}

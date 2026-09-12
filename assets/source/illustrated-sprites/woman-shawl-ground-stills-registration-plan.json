@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "appearance": "woman-shawl",
+  "states": [
+    "prone-armed-idle",
+    "prone-unarmed-idle",
+    "dead-idle"
+  ],
+  "instructions": "Three accepted ground still states, actual head/boot compass vectors. Short pistol in armed; empty hands in unarmed and dead. All magenta.",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-idle-v1.png",
+      "name": "woman-shawl-prone-armed-idle",
+      "reference": "granadero-prone-armed-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta",
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-prone-armed-idle-v1.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-prone-unarmed-idle-v1.png",
+      "name": "woman-shawl-prone-unarmed-idle",
+      "reference": "granadero-prone-unarmed-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-dead-idle-v1.png",
+      "name": "woman-shawl-dead-idle",
+      "reference": "granadero-dead-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta"
+    }
+  ],
+  "corrections": []
+}

@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "friar-crouch-reload": {
+      "cell": 240,
+      "anchor": [
+        120,
+        210
+      ],
+      "logicalCell": 80,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-north-v1.png",
+          "sha256": "ad264fbc869e2770b30e842ce54d12cf41497e567b4ade64ef67166728932b1b",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-south-v1.png",
+          "sha256": "72c9ddebf1083900aa6c1ecba399732fb08e6ab44eba85631e352c91c83524f0",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-north-v1.png",
+          "sourceScale": 0.36813186813186816,
+          "sourceAnchor": [
+            106,
+            247
+          ],
+          "sourceBounds": [
+            2,
+            65,
+            169,
+            247
+          ],
+          "bounds": [
+            82,
+            143,
+            143,
+            210
+          ],
+          "sha256": "5ecaf6fc2e292246a5fa508dd0a42fd8d93355a744ae455aadb3e3e5984e06df"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-north-v1.png",
+          "sourceScale": 0.36813186813186816,
+          "sourceAnchor": [
+            67,
+            247
+          ],
+          "sourceBounds": [
+            2,
+            42,
+            143,
+            247
+          ],
+          "bounds": [
+            96,
+            135,
+            148,
+            210
+          ],
+          "sha256": "7eb484364298827a28280345f98dbb5a21972f001e3153660746d959df5f027a"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-north-v1.png",
+          "sourceScale": 0.36813186813186816,
+          "sourceAnchor": [
+            65.5,
+            247
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            247
+          ],
+          "bounds": [
+            97,
+            120,
+            148,
+            210
+          ],
+          "sha256": "a52a87237da3ef4b4167b791aa45dee705231a0fb4acc03e64d186210603d845"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-north-v1.png",
+          "sourceScale": 0.36813186813186816,
+          "sourceAnchor": [
+            106.5,
+            247
+          ],
+          "sourceBounds": [
+            2,
+            65,
+            170,
+            247
+          ],
+          "bounds": [
+            82,
+            143,
+            144,
+            210
+          ],
+          "sha256": "6331a0408046f15945a7de1fff0f12ceaed171d22ad1e73c2a041901d8733ea2"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-north-v1.png",
+          "sourceScale": 0.3870967741935484,
+          "sourceAnchor": [
+            67.5,
+            248
+          ],
+          "sourceBounds": [
+            2,
+            62,
+            167,
+            248
+          ],
+          "bounds": [
+            95,
+            138,
+            159,
+            210
+          ],
+          "sha256": "4d55a7ac2ce750297f0ac8e8bf2f3d8b2c6e30056df97233a7cabdd0270d500e"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-north-v1.png",
+          "sourceScale": 0.3870967741935484,
+          "sourceAnchor": [
+            78.5,
+            248
+          ],
+          "sourceBounds": [
+            2,
+            35,
+            145,
+            248
+          ],
+          "bounds": [
+            90,
+            128,
+            145,
+            210
+          ],
+          "sha256": "a466d0d1e0455268ca186a77b1bf22c284ad42b75427ea65af2acdab77d3b301"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-north-v1.png",
+          "sourceScale": 0.3870967741935484,
+          "sourceAnchor": [
+            77.5,
+            248
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            149,
+            248
+          ],
+          "bounds": [
+            91,
+            115,
+            148,
+            210
+          ],
+          "sha256": "158006c62dcc34ce7ba90281ef404f48fd92181cf2aad24a88ac86f6fa45e134"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-north-v1.png",
+          "sourceScale": 0.3870967741935484,
+          "sourceAnchor": [
+            67.5,
+            248
+          ],
+          "sourceBounds": [
+            2,
+            62,
+            167,
+            248
+          ],
+          "bounds": [
+            95,
+            138,
+            159,
+            210
+          ],
+          "sha256": "2bf443ddcdb7260011dd215c6037c3cdccefa99f79e4d4efe64a8004fc09352a"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-north-v1.png",
+          "sourceScale": 0.3978494623655914,
+          "sourceAnchor": [
+            67,
+            240
+          ],
+          "sourceBounds": [
+            2,
+            54,
+            158,
+            240
+          ],
+          "bounds": [
+            94,
+            136,
+            156,
+            210
+          ],
+          "sha256": "5839e6dba5a8a5c8793f96d7d53f04061dfd74be5c9cf53421d2d667021655b3"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-north-v1.png",
+          "sourceScale": 0.3978494623655914,
+          "sourceAnchor": [
+            84.5,
+            240
+          ],
+          "sourceBounds": [
+            2,
+            35,
+            150,
+            240
+          ],
+          "bounds": [
+            87,
+            128,
+            146,
+            210
+          ],
+          "sha256": "9234510716b555adb4b78c5c8155a35b3a0e01c3f6c4ab9ffa7b53aa11fbd4c7"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-north-v1.png",
+          "sourceScale": 0.3978494623655914,
+          "sourceAnchor": [
+            83.5,
+            240
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            149,
+            240
+          ],
+          "bounds": [
+            88,
+            115,
+            146,
+            210
+          ],
+          "sha256": "437da785c730f52f6935c00f3d7ffbd1d592fc9b7596fd4b11c4abffd39a6c0e"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-north-v1.png",
+          "sourceScale": 0.3978494623655914,
+          "sourceAnchor": [
+            66,
+            240
+          ],
+          "sourceBounds": [
+            2,
+            54,
+            157,
+            240
+          ],
+          "bounds": [
+            95,
+            136,
+            157,
+            210
+          ],
+          "sha256": "09b9f37fc1725d3e0f65ee75234b4f2dcc255f14131663a83df8891d4ba77752"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-north-v1.png",
+          "sourceScale": 0.3769633507853403,
+          "sourceAnchor": [
+            78.5,
+            239
+          ],
+          "sourceBounds": [
+            2,
+            48,
+            156,
+            239
+          ],
+          "bounds": [
+            91,
+            138,
+            149,
+            210
+          ],
+          "sha256": "029893b200df8c5ce2b535ba30752ddcd43b1c4374ea50a960a228207b492178"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-north-v1.png",
+          "sourceScale": 0.3769633507853403,
+          "sourceAnchor": [
+            76.5,
+            239
+          ],
+          "sourceBounds": [
+            2,
+            35,
+            138,
+            239
+          ],
+          "bounds": [
+            92,
+            133,
+            143,
+            210
+          ],
+          "sha256": "180cc7223ca7ebb17461587fa8bd383136d448fac2454b95e5e8fcdad5420b3c"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-north-v1.png",
+          "sourceScale": 0.3769633507853403,
+          "sourceAnchor": [
+            82.5,
+            239
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            147,
+            239
+          ],
+          "bounds": [
+            90,
+            121,
+            145,
+            210
+          ],
+          "sha256": "50230b746bf8d571b0cdf08a09387c8b66e478d4334ddfa03f55bef0aa9df868"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-north-v1.png",
+          "sourceScale": 0.3769633507853403,
+          "sourceAnchor": [
+            78,
+            239
+          ],
+          "sourceBounds": [
+            2,
+            48,
+            154,
+            239
+          ],
+          "bounds": [
+            91,
+            138,
+            148,
+            210
+          ],
+          "sha256": "5544f2cb9c5c065403abc90c9de2435e31e1dcd2ca9c067a8fb7f7e87efaa5b1"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-south-v1.png",
+          "sourceScale": 0.3582887700534759,
+          "sourceAnchor": [
+            75.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            48,
+            143,
+            235
+          ],
+          "bounds": [
+            94,
+            143,
+            145,
+            210
+          ],
+          "sha256": "3ecc4ac80282953f2400f614f9e4e4f81d9b298bfbe38139ae8817fc1fd9e254"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-south-v1.png",
+          "sourceScale": 0.3582887700534759,
+          "sourceAnchor": [
+            75.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            46,
+            144,
+            235
+          ],
+          "bounds": [
+            94,
+            142,
+            145,
+            210
+          ],
+          "sha256": "ce7b8ec078074a7e35de884541fa0213085144400d9a0b0bae080a795453203c"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-south-v1.png",
+          "sourceScale": 0.3582887700534759,
+          "sourceAnchor": [
+            72.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            144,
+            235
+          ],
+          "bounds": [
+            95,
+            127,
+            146,
+            210
+          ],
+          "sha256": "bc3f55d914a16d0ba15b1b0ffad43241d6d63caf94bb0834fee4b2c0193dce18"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-south-v1.png",
+          "sourceScale": 0.3582887700534759,
+          "sourceAnchor": [
+            75,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            49,
+            143,
+            235
+          ],
+          "bounds": [
+            94,
+            143,
+            145,
+            210
+          ],
+          "sha256": "a2e8bde28f6076d54f6d83a59c96cb28fa4306d4a76307b38f2e15155aa64748"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-south-v1.png",
+          "sourceScale": 0.3862433862433862,
+          "sourceAnchor": [
+            96.5,
+            236
+          ],
+          "sourceBounds": [
+            2,
+            47,
+            175,
+            236
+          ],
+          "bounds": [
+            84,
+            137,
+            151,
+            210
+          ],
+          "sha256": "d05dd7ae71e906b7842c1269dfbd781ff6544ae51a67182a02b379b13486f573"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-south-v1.png",
+          "sourceScale": 0.3862433862433862,
+          "sourceAnchor": [
+            84,
+            236
+          ],
+          "sourceBounds": [
+            2,
+            45,
+            162,
+            236
+          ],
+          "bounds": [
+            88,
+            136,
+            150,
+            210
+          ],
+          "sha256": "018e3cedfc6f3b80e1be02aba1b75a7c674220765f5787301fe7f87b1cd1150d"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-south-v1.png",
+          "sourceScale": 0.3862433862433862,
+          "sourceAnchor": [
+            78.5,
+            236
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            155,
+            236
+          ],
+          "bounds": [
+            90,
+            120,
+            149,
+            210
+          ],
+          "sha256": "8823f75e28cf840728628b6970f4b0564a4122830cb07e9e849a20e4b31e3556"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-south-v1.png",
+          "sourceScale": 0.3862433862433862,
+          "sourceAnchor": [
+            95,
+            236
+          ],
+          "sourceBounds": [
+            2,
+            47,
+            173,
+            236
+          ],
+          "bounds": [
+            84,
+            137,
+            150,
+            210
+          ],
+          "sha256": "53c60675e5fabd0d5d857020dfd4fa96b4d557082ed396f1e2bc26e610b2d943"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-south-v1.png",
+          "sourceScale": 0.37894736842105264,
+          "sourceAnchor": [
+            123,
+            238
+          ],
+          "sourceBounds": [
+            2,
+            48,
+            189,
+            238
+          ],
+          "bounds": [
+            74,
+            138,
+            145,
+            210
+          ],
+          "sha256": "d3bbe04bc1cf05863c4d6d4ea8ed66abfb052ce5233fed97b0b57966a25d3378"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-south-v1.png",
+          "sourceScale": 0.37894736842105264,
+          "sourceAnchor": [
+            78,
+            238
+          ],
+          "sourceBounds": [
+            2,
+            43,
+            153,
+            238
+          ],
+          "bounds": [
+            91,
+            136,
+            148,
+            210
+          ],
+          "sha256": "f04b5a5e436b2cbcd7756c5d8d24323f10fcdef8651ac094bdad90a06858766e"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-south-v1.png",
+          "sourceScale": 0.37894736842105264,
+          "sourceAnchor": [
+            68,
+            238
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            238
+          ],
+          "bounds": [
+            95,
+            121,
+            148,
+            210
+          ],
+          "sha256": "e02ebc5ac070f013b177c42fcd6320927f559b9e7ec7a91cba487d7f7c23aa81"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-south-v1.png",
+          "sourceScale": 0.37894736842105264,
+          "sourceAnchor": [
+            122.5,
+            238
+          ],
+          "sourceBounds": [
+            2,
+            48,
+            188,
+            238
+          ],
+          "bounds": [
+            74,
+            138,
+            144,
+            210
+          ],
+          "sha256": "9a2d77d8ced87e731823e859fb2b2a6ee9d7a3b245e9ea7b511ff365a3de5e4d"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-south-v1.png",
+          "sourceScale": 0.3769633507853403,
+          "sourceAnchor": [
+            112.5,
+            238
+          ],
+          "sourceBounds": [
+            2,
+            47,
+            180,
+            238
+          ],
+          "bounds": [
+            78,
+            138,
+            145,
+            210
+          ],
+          "sha256": "d53fa17d9fc38598cb9ad2f831b0e556eecd99061a7894616a526272a81767de"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-south-v1.png",
+          "sourceScale": 0.3769633507853403,
+          "sourceAnchor": [
+            71.5,
+            238
+          ],
+          "sourceBounds": [
+            2,
+            42,
+            143,
+            238
+          ],
+          "bounds": [
+            94,
+            136,
+            147,
+            210
+          ],
+          "sha256": "2fd2d8ca50d28648cf4cbb9bd927f9817dc0dffd118f246a1595e00f67187390"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-south-v1.png",
+          "sourceScale": 0.3769633507853403,
+          "sourceAnchor": [
+            68.5,
+            238
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            136,
+            238
+          ],
+          "bounds": [
+            95,
+            121,
+            146,
+            210
+          ],
+          "sha256": "f2e3ce31e6cd4d7d175b410196d9ba28dcb5497ecf7f927053a3f4428ed4c52e"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-reload-south-v1.png",
+          "sourceScale": 0.3769633507853403,
+          "sourceAnchor": [
+            111.5,
+            238
+          ],
+          "sourceBounds": [
+            2,
+            47,
+            180,
+            238
+          ],
+          "bounds": [
+            79,
+            138,
+            146,
+            210
+          ],
+          "sha256": "5c0b7454b4e812d4c116c1cbec6ba74bf9c25b489dc9903c54559fce31fc1902"
+        }
+      ],
+      "file": "friar-crouch-reload.png",
+      "size": [
+        960,
+        1920
+      ],
+      "sha256": "13b4ef18056573fcafbe11ab10922613edd2338e7b42675dc95e8851baf22a30"
+    }
+  }
+}

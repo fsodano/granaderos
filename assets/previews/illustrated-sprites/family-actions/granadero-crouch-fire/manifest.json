@@ -1,0 +1,793 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "granadero-crouch-fire": {
+      "cell": 210,
+      "anchor": [
+        105,
+        186
+      ],
+      "logicalCell": 70,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-north-v1.png",
+          "sha256": "eec2d3ad385681820377eb5e9c2129c4ed00933a772dc888951d6d1c931705b1",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-south-v1.png",
+          "sha256": "6909c4f5f6422267372e6d9060868979c40b71383629ca29b616af0c45e0e2fb",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-n-fix-v1.png",
+          "sha256": "9459abfb8b571f17125c6a3333b9c9fe46a7f63d5d8e9f8a6303a49a79ba4bcc",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-s-fix-v1.png",
+          "sha256": "da98f518738fb49f3a440751712e76f31c88c4463fa28c913978389a0dd9931f",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-north-v1.png",
+          "sourceScale": 0.39393939,
+          "sourceAnchor": [
+            155,
+            277
+          ],
+          "sourceBounds": [
+            94,
+            79,
+            277,
+            277
+          ],
+          "bounds": [
+            81,
+            108,
+            153,
+            186
+          ],
+          "sha256": "8a605674fd72e86dfa0ceba4d7159ba816a0aa7f50d49dd661c594393bacf0cd"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-north-v1.png",
+          "sourceScale": 0.39393939,
+          "sourceAnchor": [
+            139,
+            277
+          ],
+          "sourceBounds": [
+            79,
+            79,
+            267,
+            277
+          ],
+          "bounds": [
+            81,
+            108,
+            155,
+            186
+          ],
+          "sha256": "8cfd07457b10a1566a50c98ea5d665194a6ffd4584d27cb3cc2d97f6b549b0dc"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-north-v1.png",
+          "sourceScale": 0.39393939,
+          "sourceAnchor": [
+            127.5,
+            277
+          ],
+          "sourceBounds": [
+            68,
+            81,
+            241,
+            277
+          ],
+          "bounds": [
+            82,
+            109,
+            150,
+            186
+          ],
+          "sha256": "52e3a0ced0493ac34673411ffc8826456722f4650312d23657e2ab5e148ddee6"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-north-v1.png",
+          "sourceScale": 0.39393939,
+          "sourceAnchor": [
+            109.5,
+            277
+          ],
+          "sourceBounds": [
+            49,
+            79,
+            231,
+            277
+          ],
+          "bounds": [
+            81,
+            108,
+            153,
+            186
+          ],
+          "sha256": "860787ac34ec955e99d61023fec1ccf9fa8465da05c78a72101f2af867da7afe"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-north-v1.png",
+          "sourceScale": 0.40932642,
+          "sourceAnchor": [
+            138.06329,
+            247
+          ],
+          "sourceBounds": [
+            88,
+            54,
+            292,
+            247
+          ],
+          "bounds": [
+            85,
+            107,
+            169,
+            186
+          ],
+          "sha256": "799734b209865d9cba3fa96bd60077f6c78bc41f65fd054710d5266e51a6a9bc"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-north-v1.png",
+          "sourceScale": 0.40932642,
+          "sourceAnchor": [
+            121.56329,
+            248
+          ],
+          "sourceBounds": [
+            73,
+            55,
+            301,
+            248
+          ],
+          "bounds": [
+            85,
+            107,
+            178,
+            186
+          ],
+          "sha256": "2722022d5902eaf3b6cc3bdd6e7a363b33f7daa02f3181368ccaae3e486ced6e"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-north-v1.png",
+          "sourceScale": 0.40932642,
+          "sourceAnchor": [
+            106.06329,
+            248
+          ],
+          "sourceBounds": [
+            59,
+            55,
+            270,
+            248
+          ],
+          "bounds": [
+            86,
+            107,
+            172,
+            186
+          ],
+          "sha256": "b6893eb3f80a299d719dc49d0c312469ea2a8768d38a1e97b7d0aee36560c561"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-north-v1.png",
+          "sourceScale": 0.40932642,
+          "sourceAnchor": [
+            87.06329,
+            247
+          ],
+          "sourceBounds": [
+            37,
+            54,
+            241,
+            247
+          ],
+          "bounds": [
+            85,
+            107,
+            169,
+            186
+          ],
+          "sha256": "cd812393daf93233bf3957ef8b88b3b18cd2ea07e86ab49b0a8070e6425cb2e1"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-north-v1.png",
+          "sourceScale": 0.43169399,
+          "sourceAnchor": [
+            155.47468,
+            215
+          ],
+          "sourceBounds": [
+            92,
+            32,
+            267,
+            215
+          ],
+          "bounds": [
+            78,
+            107,
+            154,
+            186
+          ],
+          "sha256": "a89f5eddd460b3e69625d0efad3b41e2907bf0d8756a24ccc6581c2a65262a22"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-north-v1.png",
+          "sourceScale": 0.43169399,
+          "sourceAnchor": [
+            148.97468,
+            217
+          ],
+          "sourceBounds": [
+            85,
+            34,
+            261,
+            217
+          ],
+          "bounds": [
+            77,
+            107,
+            153,
+            186
+          ],
+          "sha256": "1c797c99917c7f81a6b34c3b3850d2c108674f08fcf81ad16322a7d75c85692d"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-north-v1.png",
+          "sourceScale": 0.43169399,
+          "sourceAnchor": [
+            136.47468,
+            217
+          ],
+          "sourceBounds": [
+            72,
+            34,
+            241,
+            217
+          ],
+          "bounds": [
+            77,
+            107,
+            150,
+            186
+          ],
+          "sha256": "1f8e3aa04c96c317d63a00154bd00a73d77524e7d290ebcf1b0ca2c28dd2c565"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-north-v1.png",
+          "sourceScale": 0.43169399,
+          "sourceAnchor": [
+            120.47468,
+            216
+          ],
+          "sourceBounds": [
+            57,
+            32,
+            227,
+            216
+          ],
+          "bounds": [
+            78,
+            107,
+            151,
+            186
+          ],
+          "sha256": "3b25c40596666e9927003d6f0940be37d10ef6434a4ec874289d4832b14e8b89"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-south-v1.png",
+          "sourceScale": 0.40932642,
+          "sourceAnchor": [
+            152,
+            269
+          ],
+          "sourceBounds": [
+            66,
+            76,
+            241,
+            269
+          ],
+          "bounds": [
+            70,
+            107,
+            142,
+            186
+          ],
+          "sha256": "5f4a65eb1488a2a0f138f67a4ea0afd7edf0f16f685016ad408b832d63db1cce"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-south-v1.png",
+          "sourceScale": 0.40932642,
+          "sourceAnchor": [
+            142,
+            269
+          ],
+          "sourceBounds": [
+            52,
+            76,
+            231,
+            269
+          ],
+          "bounds": [
+            68,
+            107,
+            141,
+            186
+          ],
+          "sha256": "6077130e642efcc1a96fa536bb096fed4c1fa96a7b10f19addf8418681f0e9df"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-south-v1.png",
+          "sourceScale": 0.40932642,
+          "sourceAnchor": [
+            144,
+            269
+          ],
+          "sourceBounds": [
+            55,
+            76,
+            232,
+            269
+          ],
+          "bounds": [
+            69,
+            107,
+            141,
+            186
+          ],
+          "sha256": "a734173c6d55500e372b6a4ecf87c2bcf73b49dbd16577b96965bd118abdfcb0"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-south-v1.png",
+          "sourceScale": 0.40932642,
+          "sourceAnchor": [
+            130.5,
+            269
+          ],
+          "sourceBounds": [
+            45,
+            76,
+            219,
+            269
+          ],
+          "bounds": [
+            70,
+            107,
+            141,
+            186
+          ],
+          "sha256": "b087b561fc1c812bda447b28aeba9a697d726a48c76e989effbf94dc15844776"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-south-v1.png",
+          "sourceScale": 0.40414508,
+          "sourceAnchor": [
+            167.02564,
+            253
+          ],
+          "sourceBounds": [
+            55,
+            60,
+            250,
+            253
+          ],
+          "bounds": [
+            60,
+            108,
+            139,
+            186
+          ],
+          "sha256": "ca4c9f7ffffc35181607feb0667b42574e911ccde515c13d907c7893ec8fe85b"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-south-v1.png",
+          "sourceScale": 0.40414508,
+          "sourceAnchor": [
+            162.02564,
+            253
+          ],
+          "sourceBounds": [
+            29,
+            60,
+            246,
+            253
+          ],
+          "bounds": [
+            51,
+            108,
+            139,
+            186
+          ],
+          "sha256": "73e5ba28bdcb9f3ccaab008344edee7acc208d653a6130e46b50e8ca8614aee9"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-south-v1.png",
+          "sourceScale": 0.40414508,
+          "sourceAnchor": [
+            160.52564,
+            253
+          ],
+          "sourceBounds": [
+            32,
+            60,
+            244,
+            253
+          ],
+          "bounds": [
+            53,
+            108,
+            139,
+            186
+          ],
+          "sha256": "5d6dae5f6bb133d74d5a30882879cf23753c7df40038f3cf1be96c81f59e92cb"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-south-v1.png",
+          "sourceScale": 0.40414508,
+          "sourceAnchor": [
+            145.02564,
+            253
+          ],
+          "sourceBounds": [
+            33,
+            60,
+            229,
+            253
+          ],
+          "bounds": [
+            60,
+            108,
+            139,
+            186
+          ],
+          "sha256": "82dc669c3d7676128a74a5deee0ec27d71be0b271e3e35892017da6ff62e4b09"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-south-v1.png",
+          "sourceScale": 0.39,
+          "sourceAnchor": [
+            173.71795,
+            232
+          ],
+          "sourceBounds": [
+            61,
+            32,
+            244,
+            232
+          ],
+          "bounds": [
+            61,
+            108,
+            132,
+            186
+          ],
+          "sha256": "a53857e6b82d0506db521da0708ed772cbdda3bde11a6e7bc330e117fbd4e973"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-south-v1.png",
+          "sourceScale": 0.39,
+          "sourceAnchor": [
+            169.71795,
+            233
+          ],
+          "sourceBounds": [
+            46,
+            34,
+            240,
+            233
+          ],
+          "bounds": [
+            57,
+            108,
+            133,
+            186
+          ],
+          "sha256": "1f88cad3aa63f3f7f56fb6b848bb4370a5ca04f8312abd82d097c787a9c48fdd"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-south-v1.png",
+          "sourceScale": 0.39,
+          "sourceAnchor": [
+            170.71795,
+            233
+          ],
+          "sourceBounds": [
+            49,
+            34,
+            241,
+            233
+          ],
+          "bounds": [
+            58,
+            108,
+            133,
+            186
+          ],
+          "sha256": "fc067a365a4e50aa3ca0264b240ed2362e23bf05044440d0d8d7ce8d42fb9ead"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-south-v1.png",
+          "sourceScale": 0.39,
+          "sourceAnchor": [
+            152.71795,
+            233
+          ],
+          "sourceBounds": [
+            42,
+            34,
+            224,
+            233
+          ],
+          "bounds": [
+            62,
+            108,
+            133,
+            186
+          ],
+          "sha256": "d90bfd4569c483a37e5b3cb05a095b30bcbaf221e32fe7e8347c872879e2a554"
+        },
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-n-fix-v1.png",
+          "sourceScale": 0.19010417,
+          "sourceAnchor": [
+            266.76027,
+            595
+          ],
+          "sourceBounds": [
+            152,
+            211,
+            368,
+            595
+          ],
+          "bounds": [
+            83,
+            113,
+            124,
+            186
+          ],
+          "sha256": "42907db06daf0da4e72499be806fc03816a3828c0d2fbb61b61951e4d7440419"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-n-fix-v1.png",
+          "sourceScale": 0.19010417,
+          "sourceAnchor": [
+            257.26027,
+            595
+          ],
+          "sourceBounds": [
+            143,
+            182,
+            359,
+            595
+          ],
+          "bounds": [
+            83,
+            107,
+            124,
+            186
+          ],
+          "sha256": "25a4ba7e506b4e3edec8166dfdb94e484429612dedaa3fc52fb8dc432d6bfd0f"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-n-fix-v1.png",
+          "sourceScale": 0.19010417,
+          "sourceAnchor": [
+            248.76027,
+            595
+          ],
+          "sourceBounds": [
+            135,
+            165,
+            351,
+            595
+          ],
+          "bounds": [
+            83,
+            104,
+            124,
+            186
+          ],
+          "sha256": "d5cd1fb68003f69ec7879171a336087d5d5ff41202f0c19ac22782f085e5a79d"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-n-fix-v1.png",
+          "sourceScale": 0.19010417,
+          "sourceAnchor": [
+            241.76027,
+            595
+          ],
+          "sourceBounds": [
+            128,
+            211,
+            344,
+            595
+          ],
+          "bounds": [
+            83,
+            113,
+            124,
+            186
+          ],
+          "sha256": "6818c0d454c2bccf16615e43cf5f05d084ff05f745ac6f2f9f335c7df2966294"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-s-fix-v1.png",
+          "sourceScale": 0.17090069,
+          "sourceAnchor": [
+            270.5,
+            619
+          ],
+          "sourceBounds": [
+            162,
+            186,
+            435,
+            619
+          ],
+          "bounds": [
+            86,
+            112,
+            133,
+            186
+          ],
+          "sha256": "ed7cb6cf9a261e8067e6ad9bceeff08cb939224137e531458013a482fd7d3fa4"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-s-fix-v1.png",
+          "sourceScale": 0.17090069,
+          "sourceAnchor": [
+            228,
+            619
+          ],
+          "sourceBounds": [
+            120,
+            186,
+            393,
+            619
+          ],
+          "bounds": [
+            87,
+            112,
+            134,
+            186
+          ],
+          "sha256": "19ea79da7e89ca95fa96b5a7b8eac7d141ae4ced561d19cd8f0bb2e5e61852a1"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-s-fix-v1.png",
+          "sourceScale": 0.17090069,
+          "sourceAnchor": [
+            205,
+            619
+          ],
+          "sourceBounds": [
+            97,
+            186,
+            371,
+            619
+          ],
+          "bounds": [
+            87,
+            112,
+            134,
+            186
+          ],
+          "sha256": "66b6db84c08ad5d8f1c2d8f04a06dfc7e18cfa5e5095756fa49623be3faf03b2"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/granadero-crouch-fire-s-fix-v1.png",
+          "sourceScale": 0.17090069,
+          "sourceAnchor": [
+            201,
+            619
+          ],
+          "sourceBounds": [
+            93,
+            186,
+            366,
+            619
+          ],
+          "bounds": [
+            87,
+            112,
+            134,
+            186
+          ],
+          "sha256": "ea82b2b85003d26a52d64dcbca7d3224aef81f1b07fb11a9aaea59b6dfe15a4e"
+        }
+      ],
+      "file": "granadero-crouch-fire.png",
+      "size": [
+        840,
+        1680
+      ],
+      "sha256": "fa97a429dac2cf21712e2d2ece721509d9f31e64279d5c57f2aa706c6bdb1db7"
+    }
+  }
+}

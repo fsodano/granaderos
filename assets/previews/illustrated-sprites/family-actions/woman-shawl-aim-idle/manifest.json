@@ -1,0 +1,241 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-shawl-aim-idle": {
+      "cell": 210,
+      "anchor": [
+        105,
+        186
+      ],
+      "logicalCell": 70,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/woman-shawl-fire-north-v1.png",
+          "sha256": "b9976aa7e88a4985c0517cabeea136ee0df277bbfdd691a3f1b5164b6fc8a76e",
+          "scale": 0.6698564593301436
+        },
+        {
+          "file": "assets/source/illustrated-sprites/woman-shawl-fire-south-v1.png",
+          "sha256": "e994ca8c7772debdea9f9904c8e0002a36dfad54bd931cf61727c92e180292a0",
+          "scale": 0.6698564593301436
+        },
+        {
+          "file": "assets/source/illustrated-sprites/woman-shawl-fire-n-v2.png",
+          "sha256": "bcd3750c499004451e2603067c5b39723b29cec75df0eb5016722b909912c453",
+          "scale": 0.213094
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-shawl-fire-n-v2.png",
+          "sourceScale": 0.213094,
+          "sourceAnchor": [
+            83.54166666666666,
+            529.875
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            196,
+            517
+          ],
+          "bounds": [
+            88,
+            74,
+            129,
+            184
+          ],
+          "sha256": "fed5d9205346835bdcc4ca352cc8c9b7d978daa5e37a06ac3c199502ae955dab"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-shawl-fire-north-v1.png",
+          "sourceScale": 0.437442,
+          "sourceAnchor": [
+            50.534,
+            255.22
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            251
+          ],
+          "bounds": [
+            84,
+            75,
+            141,
+            184
+          ],
+          "sha256": "5ed1ad44963f10c9e29bac7c44876aee4be1145e4812fc1cd7478094977e8f14"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-shawl-fire-north-v1.png",
+          "sourceScale": 0.463105,
+          "sourceAnchor": [
+            51.795,
+            248.984
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            143,
+            245
+          ],
+          "bounds": [
+            82,
+            72,
+            147,
+            185
+          ],
+          "sha256": "0f2c4c4859acd4ec462c907a0a3284d9a4f9eba2ca1cf7d74500e788ab86e4e8"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-shawl-fire-north-v1.png",
+          "sourceScale": 0.427469,
+          "sourceAnchor": [
+            44.069,
+            250.207
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            134,
+            246
+          ],
+          "bounds": [
+            87,
+            80,
+            143,
+            184
+          ],
+          "sha256": "d1c8ff778edf1902a7e2b89523c9ae9cb45f4e03c7991acc5bda236171c9a03d"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-shawl-fire-south-v1.png",
+          "sourceScale": 0.427887,
+          "sourceAnchor": [
+            51.119,
+            254
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            102,
+            254
+          ],
+          "bounds": [
+            84,
+            78,
+            127,
+            186
+          ],
+          "sha256": "a16ee4cd5230de4508f8f12385b6b8b25915ffabc7d4a2b9fd2115477e610202"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-shawl-fire-south-v1.png",
+          "sourceScale": 0.453886,
+          "sourceAnchor": [
+            93.452,
+            254
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            254
+          ],
+          "bounds": [
+            63,
+            72,
+            122,
+            186
+          ],
+          "sha256": "054417491a25e5623f532e521d08ae54d04334164009282f0e8a4402889191a1"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-shawl-fire-south-v1.png",
+          "sourceScale": 0.46087,
+          "sourceAnchor": [
+            158,
+            246
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            150,
+            246
+          ],
+          "bounds": [
+            33,
+            74,
+            101,
+            186
+          ],
+          "sha256": "881d5c58df6ba6d8745c287c5cd142173c0e43568e74f73b8fc10e4547df113f"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-shawl-fire-south-v1.png",
+          "sourceScale": 0.460736,
+          "sourceAnchor": [
+            124.967,
+            240
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            123,
+            240
+          ],
+          "bounds": [
+            48,
+            76,
+            104,
+            186
+          ],
+          "sha256": "c7174b37d5cb79751febe8b5630cebb011e8fc849bb76c41c5d73e96e946baf5"
+        }
+      ],
+      "file": "woman-shawl-aim-idle.png",
+      "size": [
+        1680,
+        210
+      ],
+      "sha256": "b2fed2040c344f0d305afe0596d0e3c02b3e59677d511eec5b454eb211a4cfa8",
+      "derivedFrom": {
+        "atlas": "woman-shawl-fire",
+        "frame": 0,
+        "reason": "hold authored pre-shot aim"
+      }
+    }
+  }
+}

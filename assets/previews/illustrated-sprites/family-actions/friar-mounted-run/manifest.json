@@ -1,0 +1,778 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "friar-mounted-run": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 7,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sha256": "66eb4826eceb7b0fdcf4b90f5ee3290b8f67c300e7fddea7b731e36264796acd",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.213235294117647,
+          "sourceAnchor": [
+            31.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            61,
+            138
+          ],
+          "bounds": [
+            108,
+            60,
+            180,
+            225
+          ],
+          "sha256": "0226dbcb831a80a88df6baa9d7e8263a9ad0196f4a7a7c977cdf144fba9f2b3a"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.213235294117647,
+          "sourceAnchor": [
+            31.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            61,
+            135
+          ],
+          "bounds": [
+            108,
+            61,
+            180,
+            221
+          ],
+          "sha256": "e9896dadf14e69bf65ba34c8d307c722c8e689e0cdf76e7087aee3e6f7e76eb7"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.213235294117647,
+          "sourceAnchor": [
+            31.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            61,
+            137
+          ],
+          "bounds": [
+            108,
+            61,
+            180,
+            224
+          ],
+          "sha256": "635244c3095b5f4a96507612352ccf7b5b483f7ff3a0eeac7426abdcd04ca172"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.213235294117647,
+          "sourceAnchor": [
+            31,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            60,
+            137
+          ],
+          "bounds": [
+            109,
+            60,
+            179,
+            224
+          ],
+          "sha256": "a34db8e9234eb0e0a36528c041e8e815e3c443e41a1e6613059719ef6beeb847"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.2313432835820894,
+          "sourceAnchor": [
+            62.5,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            123,
+            132
+          ],
+          "bounds": [
+            70,
+            60,
+            219,
+            220
+          ],
+          "sha256": "212167ffc7b440f324ad117607f29157c61e91abe4cfdc9d3ba126505ae805cc"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.2313432835820894,
+          "sourceAnchor": [
+            59,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            116,
+            131
+          ],
+          "bounds": [
+            74,
+            60,
+            214,
+            219
+          ],
+          "sha256": "fb262b71ed3d3668469c76f76853978f06fcfdc3b4127c7789c95345ee6e7d0e"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.2313432835820894,
+          "sourceAnchor": [
+            66.5,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            131,
+            136
+          ],
+          "bounds": [
+            65,
+            60,
+            224,
+            225
+          ],
+          "sha256": "0b2bcb8c7a87b0dfc03328a776a6766fa4b76ee6d05be9dfbc7da35a0c328fbf"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.2313432835820894,
+          "sourceAnchor": [
+            56,
+            136
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            110,
+            133
+          ],
+          "bounds": [
+            78,
+            60,
+            211,
+            221
+          ],
+          "sha256": "fba63092c46c9e6130d30e3317ca2711d4ce62fa3ef92b9209b4a65509a23ffd"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.251908396946565,
+          "sourceAnchor": [
+            79.5,
+            133
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            157,
+            133
+          ],
+          "bounds": [
+            47,
+            61,
+            241,
+            225
+          ],
+          "sha256": "41bfe61358b65e89ad11411bff1c3faaa0dfde15735ec4b1113283e09b272594"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.251908396946565,
+          "sourceAnchor": [
+            80,
+            133
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            158,
+            127
+          ],
+          "bounds": [
+            46,
+            62,
+            241,
+            217
+          ],
+          "sha256": "c2db1239907600d6a51805155367967a773563a68b54e3e7c49ce5a92923ccca"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.251908396946565,
+          "sourceAnchor": [
+            85.5,
+            133
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            169,
+            133
+          ],
+          "bounds": [
+            39,
+            62,
+            248,
+            225
+          ],
+          "sha256": "a3a36ab7cf62ee96616273fc0e1379fe6c0e5e7567c93e9f4b442e3d0290c14e"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.251908396946565,
+          "sourceAnchor": [
+            78.5,
+            133
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            155,
+            131
+          ],
+          "bounds": [
+            48,
+            62,
+            240,
+            222
+          ],
+          "sha256": "526deaba816c600da0bb15396f60ebb2a7ef1be1758a7e8643fc3f922f84eccd"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.2279411764705883,
+          "sourceAnchor": [
+            66.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            131,
+            135
+          ],
+          "bounds": [
+            65,
+            58,
+            223,
+            221
+          ],
+          "sha256": "a5842d1110ee5fd64d4586020db10c6d40eb63732f7f7522fe27ce8420cbc7a4"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.2279411764705883,
+          "sourceAnchor": [
+            67.5,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            137
+          ],
+          "bounds": [
+            64,
+            58,
+            225,
+            224
+          ],
+          "sha256": "7abdd88b299b6c6efc9753ba0ef003fd7fd0f81381511ad5c030187c901c0ad9"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.2279411764705883,
+          "sourceAnchor": [
+            73,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            144,
+            138
+          ],
+          "bounds": [
+            57,
+            58,
+            231,
+            225
+          ],
+          "sha256": "53aa73fe095f10f16a5bbee221e825345806ee65ca9e18f0151d321f9e5750ee"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.2279411764705883,
+          "sourceAnchor": [
+            70,
+            138
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            138,
+            137
+          ],
+          "bounds": [
+            61,
+            59,
+            228,
+            224
+          ],
+          "sha256": "c2215f67f1311165a19ced7f25f99c3ded7a07f5d3cb1ced133585461d97f8c7"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.1369863013698631,
+          "sourceAnchor": [
+            35.5,
+            148
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            69,
+            148
+          ],
+          "bounds": [
+            106,
+            59,
+            182,
+            225
+          ],
+          "sha256": "f7f0ed211c83a109456c618392605d300bbf5b7038a31db9ad0367adf999280f"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.1369863013698631,
+          "sourceAnchor": [
+            35.5,
+            148
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            69,
+            140
+          ],
+          "bounds": [
+            106,
+            60,
+            182,
+            216
+          ],
+          "sha256": "e3d6b6e9313d61a56facd1ce91db26b7416c43179d343037563db0d9ed6fc7af"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.1369863013698631,
+          "sourceAnchor": [
+            36,
+            148
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            70,
+            143
+          ],
+          "bounds": [
+            105,
+            60,
+            182,
+            219
+          ],
+          "sha256": "1e9d1d5d2d0c80efd4015a8649754d0d52741e8414efa32174c751bc37b3e0b9"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.1369863013698631,
+          "sourceAnchor": [
+            35.5,
+            148
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            69,
+            142
+          ],
+          "bounds": [
+            106,
+            60,
+            182,
+            218
+          ],
+          "sha256": "8fe4020a0cf383cc34b32a46cd63ab0e4cadfd1f6e800e38169361ed50ab6e86"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.2028985507246377,
+          "sourceAnchor": [
+            68.5,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            135,
+            139
+          ],
+          "bounds": [
+            64,
+            59,
+            224,
+            223
+          ],
+          "sha256": "733bf13a400238da300e589665edf1b9de7aa6becfa428fb6c3f4790d68c5650"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.2028985507246377,
+          "sourceAnchor": [
+            72,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            137
+          ],
+          "bounds": [
+            60,
+            58,
+            228,
+            220
+          ],
+          "sha256": "c92fe0d03758733052cb3c26237acbc1666f2b59ff966288183bb88f9679dd99"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.2028985507246377,
+          "sourceAnchor": [
+            82,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            162,
+            135
+          ],
+          "bounds": [
+            48,
+            58,
+            240,
+            218
+          ],
+          "sha256": "de167e9bab8c887989f94378079d66eb64b2cf93781f7d1327f89426b757dde5"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.2028985507246377,
+          "sourceAnchor": [
+            70.5,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            139,
+            141
+          ],
+          "bounds": [
+            62,
+            59,
+            227,
+            225
+          ],
+          "sha256": "2209da25a207aa2688fc6b3628d7ad83961e9f5cdd139f5675f99c9d63015010"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.2148148148148148,
+          "sourceAnchor": [
+            78.5,
+            137
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            155,
+            137
+          ],
+          "bounds": [
+            51,
+            61,
+            237,
+            225
+          ],
+          "sha256": "4e21c54649747bc3a7866082b1d099a3c6aace4253b6e9b4bce4730e3df8af2e"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.2148148148148148,
+          "sourceAnchor": [
+            80,
+            137
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            158,
+            133
+          ],
+          "bounds": [
+            49,
+            61,
+            239,
+            220
+          ],
+          "sha256": "82c2c47ea741de37b5c0db0f300edcabab9d5e5fe0218bf490c5d5cea2512cb0"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.2148148148148148,
+          "sourceAnchor": [
+            83,
+            137
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            164,
+            136
+          ],
+          "bounds": [
+            46,
+            62,
+            243,
+            224
+          ],
+          "sha256": "0acf8d3f0afac2eb3b556503562ff076f7594ff67bf128a8b11309ea9b84f8f7"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.2148148148148148,
+          "sourceAnchor": [
+            76.5,
+            137
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            151,
+            137
+          ],
+          "bounds": [
+            53,
+            62,
+            234,
+            225
+          ],
+          "sha256": "0290408a674a2e50c7278a38bdbe9d3260a82436012e0b691653b50e0ade07d8"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.1538461538461537,
+          "sourceAnchor": [
+            67.5,
+            145
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            133,
+            142
+          ],
+          "bounds": [
+            68,
+            61,
+            219,
+            221
+          ],
+          "sha256": "b750cdf2183005e90f7580678a5abb9103797522bdc499333cecea5af01e952f"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.1538461538461537,
+          "sourceAnchor": [
+            68,
+            145
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            134,
+            145
+          ],
+          "bounds": [
+            68,
+            60,
+            220,
+            225
+          ],
+          "sha256": "95e0f9717b7fed8d9b39e634532c1c388351076d66c29eadb6a1aa882cc8fe56"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.1538461538461537,
+          "sourceAnchor": [
+            72,
+            145
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            137
+          ],
+          "bounds": [
+            63,
+            60,
+            225,
+            216
+          ],
+          "sha256": "4cb784954f535f1212a922a5ffa148160f44d84608245968f1566e9f93cc7e8c"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/friar-mounted-run-v1.png",
+          "sourceScale": 1.1538461538461537,
+          "sourceAnchor": [
+            64.5,
+            145
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            127,
+            141
+          ],
+          "bounds": [
+            72,
+            61,
+            216,
+            220
+          ],
+          "sha256": "7ecbad2ac9ead1724093752a18f2a170816a9a72bd92974a109f281b5547b824"
+        }
+      ],
+      "file": "friar-mounted-run.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "e329599b98b6914deb3619bf0e52a11d7e6f9dcbbc6b31d3dfc9745368d776b2"
+    }
+  }
+}

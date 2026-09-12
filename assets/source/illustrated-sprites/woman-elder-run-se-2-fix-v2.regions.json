@@ -1,0 +1,19 @@
+{
+  "columns": 4,
+  "rows": 4,
+  "scaleMode": "height",
+  "slots": [
+    {
+      "direction": "se",
+      "frame": 2,
+      "row": 3,
+      "col": 2,
+      "rect": [
+        717,
+        1028,
+        134,
+        208
+      ]
+    }
+  ]
+}

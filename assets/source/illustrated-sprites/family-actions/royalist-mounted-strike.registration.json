@@ -1,0 +1,721 @@
+{
+  "version": 1,
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "sheets": [
+    {
+      "name": "royalist-mounted-strike",
+      "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-north-v1.png",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "fps": 5,
+      "cell": 288,
+      "logicalCell": 96,
+      "anchor": [
+        144,
+        225
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            113,
+            69,
+            108,
+            257
+          ],
+          "scale": 0.6547619047619048,
+          "anchor": [
+            53,
+            255
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            413,
+            69,
+            109,
+            257
+          ],
+          "scale": 0.6547619047619048,
+          "anchor": [
+            53,
+            255
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            720,
+            69,
+            130,
+            257
+          ],
+          "scale": 0.6547619047619048,
+          "anchor": [
+            52.5,
+            255
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1039,
+            69,
+            108,
+            257
+          ],
+          "scale": 0.6547619047619048,
+          "anchor": [
+            54,
+            255
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "row": 1,
+          "col": 0,
+          "rect": [
+            73,
+            369,
+            195,
+            237
+          ],
+          "scale": 0.7081545064377682,
+          "anchor": [
+            78.5,
+            235
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "row": 1,
+          "col": 1,
+          "rect": [
+            376,
+            369,
+            194,
+            237
+          ],
+          "scale": 0.7081545064377682,
+          "anchor": [
+            78,
+            235
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "row": 1,
+          "col": 2,
+          "rect": [
+            682,
+            369,
+            194,
+            237
+          ],
+          "scale": 0.7081545064377682,
+          "anchor": [
+            78,
+            235
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "row": 1,
+          "col": 3,
+          "rect": [
+            1004,
+            369,
+            193,
+            237
+          ],
+          "scale": 0.7081545064377682,
+          "anchor": [
+            77.5,
+            235
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "row": 2,
+          "col": 0,
+          "rect": [
+            62,
+            659,
+            208,
+            223
+          ],
+          "scale": 0.7488584474885844,
+          "anchor": [
+            86.5,
+            221
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "row": 2,
+          "col": 1,
+          "rect": [
+            370,
+            659,
+            207,
+            223
+          ],
+          "scale": 0.7488584474885844,
+          "anchor": [
+            86.5,
+            221
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "row": 2,
+          "col": 2,
+          "rect": [
+            676,
+            659,
+            207,
+            223
+          ],
+          "scale": 0.7488584474885844,
+          "anchor": [
+            87.5,
+            221
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "row": 2,
+          "col": 3,
+          "rect": [
+            991,
+            659,
+            207,
+            223
+          ],
+          "scale": 0.7488584474885844,
+          "anchor": [
+            86.5,
+            221
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "row": 3,
+          "col": 0,
+          "rect": [
+            78,
+            938,
+            171,
+            235
+          ],
+          "scale": 0.7260869565217392,
+          "anchor": [
+            72.5,
+            233
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "row": 3,
+          "col": 1,
+          "rect": [
+            382,
+            938,
+            173,
+            235
+          ],
+          "scale": 0.7260869565217392,
+          "anchor": [
+            72,
+            233
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "row": 3,
+          "col": 2,
+          "rect": [
+            685,
+            938,
+            175,
+            235
+          ],
+          "scale": 0.7260869565217392,
+          "anchor": [
+            73.5,
+            233
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "row": 3,
+          "col": 3,
+          "rect": [
+            1007,
+            938,
+            170,
+            235
+          ],
+          "scale": 0.7260869565217392,
+          "anchor": [
+            72,
+            233
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        }
+      ]
+    },
+    {
+      "name": "royalist-mounted-strike",
+      "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-south-v1.png",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "fps": 5,
+      "cell": 288,
+      "logicalCell": 96,
+      "anchor": [
+        144,
+        225
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "s",
+          "frame": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            111,
+            54,
+            109,
+            252
+          ],
+          "scale": 0.6693548387096774,
+          "anchor": [
+            54,
+            250
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            421,
+            54,
+            114,
+            252
+          ],
+          "scale": 0.6693548387096774,
+          "anchor": [
+            58.5,
+            250
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            732,
+            54,
+            109,
+            252
+          ],
+          "scale": 0.6693548387096774,
+          "anchor": [
+            54.5,
+            250
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1038,
+            54,
+            110,
+            252
+          ],
+          "scale": 0.6693548387096774,
+          "anchor": [
+            54.5,
+            250
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "row": 1,
+          "col": 0,
+          "rect": [
+            57,
+            350,
+            198,
+            242
+          ],
+          "scale": 0.70042194092827,
+          "anchor": [
+            112.5,
+            240
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "row": 1,
+          "col": 1,
+          "rect": [
+            374,
+            350,
+            201,
+            242
+          ],
+          "scale": 0.70042194092827,
+          "anchor": [
+            114,
+            240
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "row": 1,
+          "col": 2,
+          "rect": [
+            679,
+            350,
+            202,
+            242
+          ],
+          "scale": 0.70042194092827,
+          "anchor": [
+            116,
+            240
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "row": 1,
+          "col": 3,
+          "rect": [
+            991,
+            350,
+            198,
+            242
+          ],
+          "scale": 0.70042194092827,
+          "anchor": [
+            112,
+            240
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "row": 2,
+          "col": 0,
+          "rect": [
+            52,
+            650,
+            203,
+            230
+          ],
+          "scale": 0.7288888888888889,
+          "anchor": [
+            117,
+            228
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "row": 2,
+          "col": 1,
+          "rect": [
+            372,
+            650,
+            199,
+            230
+          ],
+          "scale": 0.7288888888888889,
+          "anchor": [
+            115.5,
+            228
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "row": 2,
+          "col": 2,
+          "rect": [
+            664,
+            650,
+            209,
+            230
+          ],
+          "scale": 0.7288888888888889,
+          "anchor": [
+            123,
+            228
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "row": 2,
+          "col": 3,
+          "rect": [
+            987,
+            650,
+            202,
+            230
+          ],
+          "scale": 0.7288888888888889,
+          "anchor": [
+            116.5,
+            228
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "row": 3,
+          "col": 0,
+          "rect": [
+            82,
+            937,
+            168,
+            237
+          ],
+          "scale": 0.7081545064377682,
+          "anchor": [
+            97.5,
+            235
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "row": 3,
+          "col": 1,
+          "rect": [
+            394,
+            937,
+            172,
+            237
+          ],
+          "scale": 0.7081545064377682,
+          "anchor": [
+            99.5,
+            235
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "row": 3,
+          "col": 2,
+          "rect": [
+            692,
+            937,
+            177,
+            237
+          ],
+          "scale": 0.7081545064377682,
+          "anchor": [
+            103.5,
+            235
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "row": 3,
+          "col": 3,
+          "rect": [
+            1008,
+            937,
+            172,
+            237
+          ],
+          "scale": 0.7081545064377682,
+          "anchor": [
+            99.5,
+            235
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        }
+      ]
+    }
+  ]
+}

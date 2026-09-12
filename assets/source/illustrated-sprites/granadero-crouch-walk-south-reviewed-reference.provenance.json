@@ -1,0 +1,12 @@
+{
+  "source": "assets/previews/illustrated-sprites/packed/granadero-crouch-walk.png",
+  "sha256": "7b99ac3a4219d94226009266334f14a6aa53681bd7d3f0a0a37fd3456830a5c1",
+  "directions": [
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "frames": 4,
+  "command": "node tools/illustrated-action-reference.mjs granadero-crouch-walk"
+}

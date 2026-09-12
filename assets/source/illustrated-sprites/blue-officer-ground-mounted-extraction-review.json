@@ -1,0 +1,251 @@
+{
+  "method": "Current packer removeExportKey, connected-background key, fixed-cell margin and gutter slot detection. No source pixel edits.",
+  "results": [
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-prone-armed-idle-v1.png",
+      "exportKey": "magenta",
+      "rows": 2,
+      "width": 1774,
+      "height": 887,
+      "detectedSlots": 8,
+      "minGutter": 15
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-prone-unarmed-idle-v1.png",
+      "exportKey": "magenta",
+      "rows": 2,
+      "width": 1774,
+      "height": 887,
+      "detectedSlots": 8,
+      "minGutter": 81
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-dead-idle-v1.png",
+      "exportKey": "magenta",
+      "rows": 2,
+      "width": 1774,
+      "height": 887,
+      "detectedSlots": 8,
+      "minGutter": 64
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-prone-armed-walk-north-v1.png",
+      "exportKey": "white",
+      "rows": 4,
+      "width": 1254,
+      "height": 1254,
+      "detectedSlots": 16,
+      "minGutter": 57
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-prone-armed-walk-south-v1.png",
+      "exportKey": "white",
+      "rows": 4,
+      "width": 1254,
+      "height": 1254,
+      "detectedSlots": 16,
+      "minGutter": 35
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-prone-unarmed-walk-north-v1.png",
+      "exportKey": "white",
+      "rows": 4,
+      "width": 1254,
+      "height": 1254,
+      "detectedSlots": 16,
+      "minGutter": 49
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-prone-unarmed-walk-south-v1.png",
+      "exportKey": "white",
+      "rows": 4,
+      "width": 1254,
+      "height": 1254,
+      "detectedSlots": 16,
+      "minGutter": 69
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-prone-armed-fire-north-v1.png",
+      "exportKey": "white",
+      "rows": 4,
+      "width": 1254,
+      "height": 1254,
+      "detectedSlots": 16,
+      "minGutter": 26
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-prone-armed-fire-south-v1.png",
+      "exportKey": "white",
+      "rows": 4,
+      "width": 1254,
+      "height": 1254,
+      "detectedSlots": 16,
+      "minGutter": 0
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-prone-armed-reload-north-v1.png",
+      "exportKey": "white",
+      "rows": 4,
+      "width": 1254,
+      "height": 1254,
+      "detectedSlots": 16,
+      "minGutter": 57
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-prone-armed-reload-south-v1.png",
+      "exportKey": "white",
+      "rows": 4,
+      "width": 1254,
+      "height": 1254,
+      "detectedSlots": 16,
+      "minGutter": 58
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-unconscious-breathe-north-v1.png",
+      "exportKey": "white",
+      "rows": 4,
+      "width": 1254,
+      "height": 1254,
+      "detectedSlots": 16,
+      "minGutter": 59
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-unconscious-breathe-south-v2.png",
+      "exportKey": "white",
+      "rows": 4,
+      "width": 1254,
+      "height": 1254,
+      "detectedSlots": 16,
+      "minGutter": 27
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-mounted-idle-v1.png",
+      "exportKey": "white",
+      "rows": 2,
+      "width": 1774,
+      "height": 887,
+      "detectedSlots": 8,
+      "minGutter": 25
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-mounted-walk-north-v1.png",
+      "exportKey": "white",
+      "rows": 4,
+      "width": 1254,
+      "height": 1254,
+      "detectedSlots": 16,
+      "minGutter": 18
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-mounted-walk-south-v1.png",
+      "exportKey": "white",
+      "rows": 4,
+      "width": 1254,
+      "height": 1254,
+      "detectedSlots": 16,
+      "minGutter": 0
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-mounted-walk-s-v3.png",
+      "exportKey": "white",
+      "rows": 1,
+      "width": 2173,
+      "height": 724,
+      "detectedSlots": 4,
+      "minGutter": 119,
+      "slots": [
+        {
+          "row": 0,
+          "col": 0,
+          "rect": [
+            170,
+            123,
+            193,
+            484
+          ]
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "rect": [
+            717,
+            123,
+            193,
+            484
+          ]
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "rect": [
+            1267,
+            123,
+            191,
+            484
+          ]
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1807,
+            123,
+            193,
+            484
+          ]
+        }
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-mounted-walk-n-v5.png",
+      "exportKey": "magenta",
+      "rows": 1,
+      "width": 2172,
+      "height": 724,
+      "detectedSlots": 4,
+      "minGutter": 75,
+      "slots": [
+        {
+          "row": 0,
+          "col": 0,
+          "rect": [
+            183,
+            134,
+            192,
+            517
+          ]
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "rect": [
+            721,
+            134,
+            194,
+            517
+          ]
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "rect": [
+            1260,
+            134,
+            193,
+            517
+          ]
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1793,
+            134,
+            196,
+            517
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,305 @@
+{
+  "version": 1,
+  "appearance": "blue-officer",
+  "states": [
+    "run",
+    "fire",
+    "reload",
+    "strike",
+    "crouch-idle",
+    "crouch-walk"
+  ],
+  "instructions": "Register variants sequentially and keep only includeDirections from each source. Then register corrections using their region files. N-strip corrections replace all four north phases. All sources and exact prompts were inspected. Do not register excluded directions from variant sheets.",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-run-north-v1.png",
+      "name": "blue-officer-run",
+      "reference": "granadero-run",
+      "half": "north",
+      "includeDirections": [
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-run-north-v2.png",
+      "name": "blue-officer-run",
+      "reference": "granadero-run",
+      "half": "north",
+      "includeDirections": [
+        "N"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-run-south-v1.png",
+      "name": "blue-officer-run",
+      "reference": "granadero-run",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-fire-north-v1.png",
+      "name": "blue-officer-fire",
+      "reference": "granadero-fire",
+      "half": "north",
+      "includeDirections": [
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-fire-north-v2.png",
+      "name": "blue-officer-fire",
+      "reference": "granadero-fire",
+      "half": "north",
+      "includeDirections": [
+        "N"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-fire-south-v1.png",
+      "name": "blue-officer-fire",
+      "reference": "granadero-fire",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-reload-north-v1.png",
+      "name": "blue-officer-reload",
+      "reference": "granadero-reload",
+      "half": "north",
+      "includeDirections": [
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-reload-north-v2.png",
+      "name": "blue-officer-reload",
+      "reference": "granadero-reload",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-reload-south-v1.png",
+      "name": "blue-officer-reload",
+      "reference": "granadero-reload",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-strike-north-v1.png",
+      "name": "blue-officer-strike",
+      "reference": "granadero-strike",
+      "half": "north",
+      "includeDirections": [
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-strike-south-v1.png",
+      "name": "blue-officer-strike",
+      "reference": "granadero-strike",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-crouch-idle-v1.png",
+      "name": "blue-officer-crouch-idle",
+      "reference": "granadero-crouch-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-crouch-walk-north-v2.png",
+      "name": "blue-officer-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "north",
+      "includeDirections": [
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-crouch-walk-south-v1.png",
+      "name": "blue-officer-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    }
+  ],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-strike-n-v2.png",
+      "name": "blue-officer-strike",
+      "reference": "granadero-strike",
+      "half": "north",
+      "includeDirections": [
+        "N"
+      ],
+      "regionFile": "assets/source/illustrated-sprites/blue-officer-strike-n-v2.regions.json",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "N",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              172,
+              132,
+              169,
+              446
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              708,
+              132,
+              195,
+              446
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              1269,
+              132,
+              193,
+              446
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1816,
+              132,
+              169,
+              446
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "assets/source/illustrated-sprites/blue-officer-crouch-walk-n-v2.png",
+      "name": "blue-officer-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "north",
+      "includeDirections": [
+        "N"
+      ],
+      "regionFile": "assets/source/illustrated-sprites/blue-officer-crouch-walk-n-v2.regions.json",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "N",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              149,
+              271,
+              240,
+              343
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              692,
+              271,
+              234,
+              343
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              1236,
+              271,
+              232,
+              343
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1794,
+              271,
+              228,
+              343
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

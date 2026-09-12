@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "royalist-mounted-strike": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-north-v1.png",
+          "sha256": "0798a8ecf6d218bfd4255590166faf250bc7fedc641abce6261cb3df5d1444da",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-south-v1.png",
+          "sha256": "4ca5e1c5d6c44b0a02174a73c0bbf4babd23f27ca9764267e8de3946eb020a15",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-north-v1.png",
+          "sourceScale": 0.6547619047619048,
+          "sourceAnchor": [
+            53,
+            255
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            106,
+            255
+          ],
+          "bounds": [
+            111,
+            60,
+            179,
+            225
+          ],
+          "sha256": "c7471ca1ede348f863e8a9083dd926a27a83ef759f27830fb9ce1adbabadf3e7"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-north-v1.png",
+          "sourceScale": 0.6547619047619048,
+          "sourceAnchor": [
+            53,
+            255
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            107,
+            255
+          ],
+          "bounds": [
+            111,
+            60,
+            180,
+            225
+          ],
+          "sha256": "33fc83d50fd0017147693908feab00f799240edb9d8245065063b3b9dddfb6b8"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-north-v1.png",
+          "sourceScale": 0.6547619047619048,
+          "sourceAnchor": [
+            52.5,
+            255
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            128,
+            255
+          ],
+          "bounds": [
+            111,
+            59,
+            194,
+            225
+          ],
+          "sha256": "7cbf2d2fbcf8f865115cee5cb48c19a34d0c27b69d8fecf8d6a355153aaaaebb"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-north-v1.png",
+          "sourceScale": 0.6547619047619048,
+          "sourceAnchor": [
+            54,
+            255
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            106,
+            255
+          ],
+          "bounds": [
+            110,
+            60,
+            178,
+            225
+          ],
+          "sha256": "3cc588d85fd3ce7f74c97772459e8261ff94b6955f840d825cd7ff9faa352dfc"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-north-v1.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            78.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            193,
+            235
+          ],
+          "bounds": [
+            90,
+            60,
+            225,
+            225
+          ],
+          "sha256": "01c73146de67449b7bc542c0d830967e23f43c291c0cdd945ad5f7371e643637"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-north-v1.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            78,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            192,
+            235
+          ],
+          "bounds": [
+            90,
+            60,
+            225,
+            225
+          ],
+          "sha256": "3011e006420b8dc91356a21b327c61c1370f15e98983519c63452c661cf01cdf"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-north-v1.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            78,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            192,
+            235
+          ],
+          "bounds": [
+            90,
+            60,
+            225,
+            225
+          ],
+          "sha256": "1ffe955cbd119b7fc51d691ee757589a8b83e216fefdcff67a0707fde6641126"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-north-v1.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            77.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            191,
+            235
+          ],
+          "bounds": [
+            91,
+            60,
+            225,
+            225
+          ],
+          "sha256": "a4ae273f49dd3532e613aa6c4300e996fe058a16f9a2d2935ae2791f6ec3d1eb"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-north-v1.png",
+          "sourceScale": 0.7488584474885844,
+          "sourceAnchor": [
+            86.5,
+            221
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            206,
+            221
+          ],
+          "bounds": [
+            81,
+            61,
+            234,
+            225
+          ],
+          "sha256": "f0babd41d15b8f01fc1e798f0dc34b0d772abd0fa6cddc50a729c90ce1704003"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-north-v1.png",
+          "sourceScale": 0.7488584474885844,
+          "sourceAnchor": [
+            86.5,
+            221
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            205,
+            221
+          ],
+          "bounds": [
+            81,
+            61,
+            233,
+            225
+          ],
+          "sha256": "b133009bde1a6d774e483304000801eac16eff16c69bca43a21ba43dd60ad2b3"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-north-v1.png",
+          "sourceScale": 0.7488584474885844,
+          "sourceAnchor": [
+            87.5,
+            221
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            205,
+            221
+          ],
+          "bounds": [
+            80,
+            61,
+            232,
+            225
+          ],
+          "sha256": "a1e8cd08a71534e1dd6227adfa3e2c3eff5f8492a27d31780a37ea9e1f876ce1"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-north-v1.png",
+          "sourceScale": 0.7488584474885844,
+          "sourceAnchor": [
+            86.5,
+            221
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            205,
+            221
+          ],
+          "bounds": [
+            81,
+            61,
+            233,
+            225
+          ],
+          "sha256": "a2be8783a166c964e4f573834b2ebf090e145dbe0330b070d2f0130a2e695af6"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-north-v1.png",
+          "sourceScale": 0.7260869565217392,
+          "sourceAnchor": [
+            72.5,
+            233
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            169,
+            232
+          ],
+          "bounds": [
+            93,
+            57,
+            214,
+            224
+          ],
+          "sha256": "36c57e9f8565bb8e38f5fa716c6794997eda626daa9bb67a082a0457c6dee2e6"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-north-v1.png",
+          "sourceScale": 0.7260869565217392,
+          "sourceAnchor": [
+            72,
+            233
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            171,
+            233
+          ],
+          "bounds": [
+            93,
+            57,
+            216,
+            225
+          ],
+          "sha256": "7301b73a9111036d0616103af6f842be085c438ad08508cf83c9e76d6ef54b30"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-north-v1.png",
+          "sourceScale": 0.7260869565217392,
+          "sourceAnchor": [
+            73.5,
+            233
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            173,
+            233
+          ],
+          "bounds": [
+            92,
+            57,
+            216,
+            225
+          ],
+          "sha256": "bb4d2f8a37c0427ac37a27ea63c4de8f530dfabe40baa636223354c41b488071"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-north-v1.png",
+          "sourceScale": 0.7260869565217392,
+          "sourceAnchor": [
+            72,
+            233
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            168,
+            233
+          ],
+          "bounds": [
+            93,
+            57,
+            214,
+            225
+          ],
+          "sha256": "f680751d47e0f97fd7be798ebb6223d9ea6411b1096123064d3ea6899fccda0e"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-south-v1.png",
+          "sourceScale": 0.6693548387096774,
+          "sourceAnchor": [
+            54,
+            250
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            107,
+            250
+          ],
+          "bounds": [
+            109,
+            59,
+            179,
+            225
+          ],
+          "sha256": "d736aa7b59b55419698b2bdd61a7288de8790a59d1673564a5a78883d9afe33b"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-south-v1.png",
+          "sourceScale": 0.6693548387096774,
+          "sourceAnchor": [
+            58.5,
+            250
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            112,
+            250
+          ],
+          "bounds": [
+            106,
+            59,
+            180,
+            225
+          ],
+          "sha256": "ba86e2de86b53ae7e3faf288b92d7c5d4267c18092673f04403a6199f457ade0"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-south-v1.png",
+          "sourceScale": 0.6693548387096774,
+          "sourceAnchor": [
+            54.5,
+            250
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            107,
+            250
+          ],
+          "bounds": [
+            109,
+            59,
+            179,
+            225
+          ],
+          "sha256": "cd8bfdf79813c6540f3291459c2900b392126f0fa13747b8860eb6acb9b69bbe"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-south-v1.png",
+          "sourceScale": 0.6693548387096774,
+          "sourceAnchor": [
+            54.5,
+            250
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            108,
+            250
+          ],
+          "bounds": [
+            109,
+            59,
+            180,
+            225
+          ],
+          "sha256": "23c20b62077d9612a8dde6967c8fc7b64e754cdddac108f1f8d12b5124104f88"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-south-v1.png",
+          "sourceScale": 0.70042194092827,
+          "sourceAnchor": [
+            112.5,
+            240
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            196,
+            239
+          ],
+          "bounds": [
+            67,
+            58,
+            203,
+            224
+          ],
+          "sha256": "721817ea05016db5cf79c9c86d25937201ca97899156421199b2827c7a9a0e5b"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-south-v1.png",
+          "sourceScale": 0.70042194092827,
+          "sourceAnchor": [
+            114,
+            240
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            199,
+            240
+          ],
+          "bounds": [
+            66,
+            58,
+            204,
+            225
+          ],
+          "sha256": "090d81155b29553febf92cfe8a312116637b22719602d66c3c9da46c7802a003"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-south-v1.png",
+          "sourceScale": 0.70042194092827,
+          "sourceAnchor": [
+            116,
+            240
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            200,
+            240
+          ],
+          "bounds": [
+            64,
+            58,
+            203,
+            225
+          ],
+          "sha256": "b2beff678aab875c038596cf6dc49d561e664906b4b5322134a983c40aee61c9"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-south-v1.png",
+          "sourceScale": 0.70042194092827,
+          "sourceAnchor": [
+            112,
+            240
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            196,
+            240
+          ],
+          "bounds": [
+            67,
+            58,
+            203,
+            225
+          ],
+          "sha256": "b44d86bc70634c325794e3f37c8ac1abb7eefb901809d2213d089a3097106799"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-south-v1.png",
+          "sourceScale": 0.7288888888888889,
+          "sourceAnchor": [
+            117,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            201,
+            227
+          ],
+          "bounds": [
+            60,
+            60,
+            205,
+            224
+          ],
+          "sha256": "bdcfc221ac787e7ac706011a6281c141e884fdec079e416efee531ceb9ed8c2d"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-south-v1.png",
+          "sourceScale": 0.7288888888888889,
+          "sourceAnchor": [
+            115.5,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            197,
+            228
+          ],
+          "bounds": [
+            61,
+            60,
+            203,
+            225
+          ],
+          "sha256": "49e37db63092a7d123e6bc5f6ea9a7771639f1e3d282068e857936dff44a0a71"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-south-v1.png",
+          "sourceScale": 0.7288888888888889,
+          "sourceAnchor": [
+            123,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            207,
+            228
+          ],
+          "bounds": [
+            56,
+            60,
+            205,
+            225
+          ],
+          "sha256": "c801f46a1686f66958562118910557913a7c053ae13ea14bcfdf592e4ebe99fb"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-south-v1.png",
+          "sourceScale": 0.7288888888888889,
+          "sourceAnchor": [
+            116.5,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            200,
+            228
+          ],
+          "bounds": [
+            61,
+            60,
+            205,
+            225
+          ],
+          "sha256": "5a43e1cc0b115971e765a18e9f2a307059b8eb9bf7439d55e2d831cdce0f56ca"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-south-v1.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            97.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            166,
+            235
+          ],
+          "bounds": [
+            76,
+            60,
+            192,
+            225
+          ],
+          "sha256": "8719166ed9283272e5f4cf6cba271c3dc0dd16ddaea889232a59b16d2d80c2f6"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-south-v1.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            99.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            170,
+            235
+          ],
+          "bounds": [
+            75,
+            60,
+            194,
+            225
+          ],
+          "sha256": "c250f410297a93f1ec9db668da8b547db044ed4c813e845adb1ee46d7c2f9e76"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-south-v1.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            103.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            175,
+            235
+          ],
+          "bounds": [
+            72,
+            60,
+            195,
+            225
+          ],
+          "sha256": "605c421dc95b2460099bf783167ffaf58a04da263edc5db9b01f2eaa54c8ae2b"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-strike-south-v1.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            99.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            170,
+            235
+          ],
+          "bounds": [
+            75,
+            60,
+            194,
+            225
+          ],
+          "sha256": "005d6c7eedda4b39175ddf7bee2e266d4a9e54838ae906821062f6a5f0d018ac"
+        }
+      ],
+      "file": "royalist-mounted-strike.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "dd2b28e35dcd37266d7cca9a520682c282bd9f14f719ad41f1bbd7262dcc4b56"
+    }
+  }
+}

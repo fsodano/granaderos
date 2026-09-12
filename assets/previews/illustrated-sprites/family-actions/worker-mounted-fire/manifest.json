@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "worker-mounted-fire": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sha256": "d8a9f127c38daa50e17b15c88fe7a03cf25764af71ffe78f149e0cd74eabd77b",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-n-v2.png",
+          "sha256": "bf6ba45d3d1f4e88f05cd4105e5a3fda17f5335fc8646ffa7cbd1eb8eee494b1",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.2043795620437956,
+          "sourceAnchor": [
+            56,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            7,
+            118,
+            144
+          ],
+          "bounds": [
+            79,
+            60,
+            219,
+            225
+          ],
+          "sha256": "9117e3e04a98fb4fc13cf75e5ded8024fe7ac6496ccfdadb88b7355cb76cfa09"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.2043795620437956,
+          "sourceAnchor": [
+            54.5,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            123,
+            144
+          ],
+          "bounds": [
+            81,
+            54,
+            227,
+            225
+          ],
+          "sha256": "844da29d4ce3872625b7ce6ce3bf84829b25feafbb959db16e7dd397e4c7bf71"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.2043795620437956,
+          "sourceAnchor": [
+            57.5,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            7,
+            127,
+            144
+          ],
+          "bounds": [
+            77,
+            60,
+            228,
+            225
+          ],
+          "sha256": "d960f4929488efa1dd0e8a11535c004a66cd36660ed571be7221b4af88169c33"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.2043795620437956,
+          "sourceAnchor": [
+            56,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            6,
+            121,
+            144
+          ],
+          "bounds": [
+            79,
+            59,
+            222,
+            225
+          ],
+          "sha256": "9848062b53df5795dafbcf846d2f02520557da41079f6e95675e179822858d2f"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.2058823529411764,
+          "sourceAnchor": [
+            70.5,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            153,
+            139
+          ],
+          "bounds": [
+            61,
+            61,
+            243,
+            225
+          ],
+          "sha256": "d0fdc377cf2d8eb1e02106c9cd479f7da10fba54475d39a59f2aa83d100876b2"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.2058823529411764,
+          "sourceAnchor": [
+            69.5,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            171,
+            139
+          ],
+          "bounds": [
+            63,
+            62,
+            267,
+            225
+          ],
+          "sha256": "b73fb98f0ca3af36fc2fbcb63aa134c693cf0d2281d147f079cf3164c067a853"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.2058823529411764,
+          "sourceAnchor": [
+            70.5,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            157,
+            139
+          ],
+          "bounds": [
+            61,
+            61,
+            248,
+            225
+          ],
+          "sha256": "4292d7e28b8046c0f7c2432daa099afaf6bbc621b90b0e1d78ae6527995a7e01"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.2058823529411764,
+          "sourceAnchor": [
+            67.5,
+            139
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            152,
+            139
+          ],
+          "bounds": [
+            65,
+            60,
+            246,
+            225
+          ],
+          "sha256": "a2739945321ac3cc454bcd974e806e963d0c26416d4656d598d1b4d84e880ac9"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.210144927536232,
+          "sourceAnchor": [
+            59.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            120,
+            142
+          ],
+          "bounds": [
+            74,
+            57,
+            217,
+            224
+          ],
+          "sha256": "611cb757b10f38a5890925895883781be7dae61725902b48475819116a919270"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.210144927536232,
+          "sourceAnchor": [
+            61,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            140,
+            142
+          ],
+          "bounds": [
+            73,
+            56,
+            240,
+            224
+          ],
+          "sha256": "03ae3135468009ec897e9cb8f6b7481a46f620a511f9baedddf534dbceb51ec1"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.210144927536232,
+          "sourceAnchor": [
+            60,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            119,
+            143
+          ],
+          "bounds": [
+            74,
+            57,
+            216,
+            225
+          ],
+          "sha256": "594a2fad2cd5b164560f6001e4e4f9200d12c0cd1f6acc3652d98a111748d608"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.210144927536232,
+          "sourceAnchor": [
+            63.5,
+            143
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            142
+          ],
+          "bounds": [
+            70,
+            54,
+            229,
+            223
+          ],
+          "sha256": "ae38c970c1e3815e9fecbf4b6ab523686fddb2bebf4b97f07895c73aa45717cb"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.1527777777777777,
+          "sourceAnchor": [
+            35.5,
+            147
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            69,
+            147
+          ],
+          "bounds": [
+            105,
+            59,
+            182,
+            225
+          ],
+          "sha256": "0ae559a862aed506ba4558248fcc360532830b3d83f2f1046404a4101da07fa9"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.1527777777777777,
+          "sourceAnchor": [
+            34.5,
+            147
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            68,
+            147
+          ],
+          "bounds": [
+            107,
+            58,
+            183,
+            225
+          ],
+          "sha256": "6f6804be38549be03f45aa8940794f4dd4a05f2cb4841ffc91e737f14db568cb"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.1527777777777777,
+          "sourceAnchor": [
+            34.5,
+            147
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            68,
+            147
+          ],
+          "bounds": [
+            107,
+            59,
+            183,
+            225
+          ],
+          "sha256": "77c9ea0143c3c068f21bfb7201399ddfcac7c5356c54097a8460569d7eaf208d"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.1527777777777777,
+          "sourceAnchor": [
+            35,
+            147
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            68,
+            147
+          ],
+          "bounds": [
+            106,
+            58,
+            182,
+            225
+          ],
+          "sha256": "3bf7c69b568498b1442d13ff0df2dff52b6d57b2ce4837ebd309b4e4b3b3b395"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.2028985507246377,
+          "sourceAnchor": [
+            79,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            141,
+            141
+          ],
+          "bounds": [
+            51,
+            59,
+            218,
+            225
+          ],
+          "sha256": "842eb965e2932c4859285cc319a13b60d56b12fa602bb007fe0c63adc125a749"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.2028985507246377,
+          "sourceAnchor": [
+            79,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            141,
+            140
+          ],
+          "bounds": [
+            51,
+            59,
+            218,
+            224
+          ],
+          "sha256": "0a7a5bff9c172240edb1e22510d6046058e3d61239beb2cd24569eba045233d3"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.2028985507246377,
+          "sourceAnchor": [
+            76.5,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            140,
+            141
+          ],
+          "bounds": [
+            54,
+            58,
+            220,
+            225
+          ],
+          "sha256": "dbbfb48b89b448fd5ad6539f3a30b99ebea41e64c9a16f4641ac24384feee494"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.2028985507246377,
+          "sourceAnchor": [
+            71.5,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            141
+          ],
+          "bounds": [
+            60,
+            58,
+            218,
+            225
+          ],
+          "sha256": "20d5586a95629851cdb1b571cccb89a46475e31e240bb6cf24a28bb09b179696"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.1798561151079137,
+          "sourceAnchor": [
+            89,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            156,
+            141
+          ],
+          "bounds": [
+            41,
+            61,
+            223,
+            225
+          ],
+          "sha256": "e54bb4dd778fd3b849ad767073f4350b56467f30e2ae163dc1d890dc13328b9e"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.1798561151079137,
+          "sourceAnchor": [
+            100.5,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            167,
+            141
+          ],
+          "bounds": [
+            28,
+            61,
+            223,
+            225
+          ],
+          "sha256": "2ed85ca5bf9f8e781cc13238bc8cc619741011cf1739a6fedffd7aed0caac243"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.1798561151079137,
+          "sourceAnchor": [
+            84,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            151,
+            141
+          ],
+          "bounds": [
+            47,
+            61,
+            223,
+            225
+          ],
+          "sha256": "da2c2d5ec8de253e187c65a58c617f4275e437dbfb7e03849031a5db5139c6e4"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.1798561151079137,
+          "sourceAnchor": [
+            88,
+            141
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            153,
+            141
+          ],
+          "bounds": [
+            43,
+            61,
+            221,
+            225
+          ],
+          "sha256": "cea8143d169026e104b5dba807f5a79e0c57f0f526c0e23435f3d6f01a3618c9"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.1538461538461537,
+          "sourceAnchor": [
+            72.5,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            7,
+            132,
+            150
+          ],
+          "bounds": [
+            63,
+            60,
+            213,
+            225
+          ],
+          "sha256": "e8d885fe89a47a383e0152b8159f5e22700a986f8e139f7350a284dd447806d6"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.1538461538461537,
+          "sourceAnchor": [
+            68.5,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            127,
+            150
+          ],
+          "bounds": [
+            67,
+            54,
+            211,
+            225
+          ],
+          "sha256": "e4b3c7ab8ada638fbe92cb7e7e36956248ac27e0c8e09d11e3c49e4dfbd6385c"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.1538461538461537,
+          "sourceAnchor": [
+            70,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            7,
+            129,
+            150
+          ],
+          "bounds": [
+            66,
+            60,
+            213,
+            225
+          ],
+          "sha256": "0b9f42f1d57631f29874c58ee09313d97e1addfea7a2086fae29da4b3cda90a2"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-v1.png",
+          "sourceScale": 1.1538461538461537,
+          "sourceAnchor": [
+            69,
+            150
+          ],
+          "sourceBounds": [
+            2,
+            7,
+            127,
+            150
+          ],
+          "bounds": [
+            67,
+            60,
+            211,
+            225
+          ],
+          "sha256": "36d7b9e6f1dff4968e1de8b459db94ace4b58dace3c5a4554e34ab62653d7b22"
+        },
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-n-v2.png",
+          "sourceScale": 0.296229802513465,
+          "sourceAnchor": [
+            104.5,
+            568
+          ],
+          "sourceBounds": [
+            2,
+            11,
+            209,
+            568
+          ],
+          "bounds": [
+            114,
+            60,
+            175,
+            225
+          ],
+          "sha256": "0922cf11acf698595066e77182956eb47c1e143af0430d524b22732339ec5aca"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-n-v2.png",
+          "sourceScale": 0.296229802513465,
+          "sourceAnchor": [
+            105,
+            568
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            209,
+            568
+          ],
+          "bounds": [
+            113,
+            57,
+            174,
+            225
+          ],
+          "sha256": "aa2bfa03a178372e732602060e3844fce0b8cdc1a44614f48d9900127c66b7c6"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-n-v2.png",
+          "sourceScale": 0.296229802513465,
+          "sourceAnchor": [
+            104.5,
+            568
+          ],
+          "sourceBounds": [
+            2,
+            10,
+            208,
+            568
+          ],
+          "bounds": [
+            114,
+            60,
+            175,
+            225
+          ],
+          "sha256": "3b8687e4ff8194e8c5570493300808206027d6755e63e6483afaeeeeee1c669c"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-fire-n-v2.png",
+          "sourceScale": 0.296229802513465,
+          "sourceAnchor": [
+            105.5,
+            567
+          ],
+          "sourceBounds": [
+            2,
+            11,
+            209,
+            567
+          ],
+          "bounds": [
+            113,
+            60,
+            174,
+            225
+          ],
+          "sha256": "e50a66f69e9c47ac2acdb42b26df93ab65209a6e53ea3393575ec4f55a7bf580"
+        }
+      ],
+      "file": "worker-mounted-fire.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "4a1cccf2c2c7f140a2a1978f7c8ab451fd246c79cd7de44f7b6bf1f4e9e79a29"
+    }
+  }
+}

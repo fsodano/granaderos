@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-shawl-crouch-fire": {
+      "cell": 210,
+      "anchor": [
+        105,
+        186
+      ],
+      "logicalCell": 70,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-north-v2.png",
+          "sha256": "f33f6cdf9340b57d1dd437260acc0bee543ef541c5ee7760898ec9f29c7304cc",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-south-v2.png",
+          "sha256": "d27e37639fa812eb78cc4bc606be5b26ca3afb0d28cc09855d4ff44f5dd12737",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-north-v2.png",
+          "sourceScale": 0.36813187,
+          "sourceAnchor": [
+            139.20896,
+            292
+          ],
+          "sourceBounds": [
+            77,
+            90,
+            214,
+            292
+          ],
+          "bounds": [
+            82,
+            112,
+            132,
+            186
+          ],
+          "sha256": "0b9228245f1de04edbf7803ec79ad4b1bd62661fa1c96d2049bef082304f324a"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-north-v2.png",
+          "sourceScale": 0.36813187,
+          "sourceAnchor": [
+            138.20896,
+            292
+          ],
+          "sourceBounds": [
+            75,
+            80,
+            214,
+            292
+          ],
+          "bounds": [
+            82,
+            108,
+            133,
+            186
+          ],
+          "sha256": "7223ea8ce253020d3d35046eec108b4149389b6df228680104bc30e970fca1a2"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-north-v2.png",
+          "sourceScale": 0.36813187,
+          "sourceAnchor": [
+            133.20896,
+            292
+          ],
+          "sourceBounds": [
+            71,
+            84,
+            207,
+            292
+          ],
+          "bounds": [
+            82,
+            109,
+            132,
+            186
+          ],
+          "sha256": "ad80c86d54484505696b676c7b6851d0c41f04d4a7c54dd3894b23d45b46416a"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-north-v2.png",
+          "sourceScale": 0.36813187,
+          "sourceAnchor": [
+            137.70896,
+            292
+          ],
+          "sourceBounds": [
+            76,
+            89,
+            215,
+            292
+          ],
+          "bounds": [
+            82,
+            111,
+            133,
+            186
+          ],
+          "sha256": "fad1569cc88cc45fd761299018bf63af53176dcf9bf8da68aae44cbb3a3e350c"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-north-v2.png",
+          "sourceScale": 0.36923077,
+          "sourceAnchor": [
+            139.27083,
+            270
+          ],
+          "sourceBounds": [
+            61,
+            75,
+            226,
+            270
+          ],
+          "bounds": [
+            76,
+            114,
+            137,
+            186
+          ],
+          "sha256": "276a095a3e8edcf18336daeda3a5ac3ea26f528b4d6be067fc0308f65e8134e0"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-north-v2.png",
+          "sourceScale": 0.36923077,
+          "sourceAnchor": [
+            135.27083,
+            270
+          ],
+          "sourceBounds": [
+            59,
+            64,
+            242,
+            270
+          ],
+          "bounds": [
+            77,
+            110,
+            145,
+            186
+          ],
+          "sha256": "23d1ac304b6f0ce4940cf7479b960ca4549454e1af3f2265ff97792db2c5d9db"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-north-v2.png",
+          "sourceScale": 0.36923077,
+          "sourceAnchor": [
+            132.77083,
+            269
+          ],
+          "sourceBounds": [
+            57,
+            67,
+            231,
+            269
+          ],
+          "bounds": [
+            77,
+            111,
+            141,
+            186
+          ],
+          "sha256": "b9409f1ff8717c64a29ba37ec9cb0dcd9eb0f166b50ba12445508a7f1869de52"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-north-v2.png",
+          "sourceScale": 0.36923077,
+          "sourceAnchor": [
+            140.77083,
+            269
+          ],
+          "sourceBounds": [
+            64,
+            71,
+            242,
+            269
+          ],
+          "bounds": [
+            77,
+            113,
+            143,
+            186
+          ],
+          "sha256": "0053a3a258e50fc0898ead55d55489e1f15a87142f2e3d26c29d4d5e0a5edf9f"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-north-v2.png",
+          "sourceScale": 0.38829787,
+          "sourceAnchor": [
+            98.68493,
+            242
+          ],
+          "sourceBounds": [
+            48,
+            54,
+            258,
+            242
+          ],
+          "bounds": [
+            85,
+            113,
+            167,
+            186
+          ],
+          "sha256": "75f2aba15ac685fa6224e916fb58bcacd6d27f4058dfc2fa75fea39f74e7f562"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-north-v2.png",
+          "sourceScale": 0.38829787,
+          "sourceAnchor": [
+            95.68493,
+            242
+          ],
+          "sourceBounds": [
+            44,
+            54,
+            267,
+            242
+          ],
+          "bounds": [
+            85,
+            113,
+            172,
+            186
+          ],
+          "sha256": "047e06b0781fb8fdb5b49e2e8983521c0bddfcb0e1d509a7f7ffa4b9626021f2"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-north-v2.png",
+          "sourceScale": 0.38829787,
+          "sourceAnchor": [
+            93.68493,
+            244
+          ],
+          "sourceBounds": [
+            44,
+            54,
+            267,
+            244
+          ],
+          "bounds": [
+            86,
+            112,
+            173,
+            186
+          ],
+          "sha256": "0a44cbcbec849b04a00f10a9d13dea2e7aec9ba50796aca5134152629f40b2eb"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-north-v2.png",
+          "sourceScale": 0.38829787,
+          "sourceAnchor": [
+            97.18493,
+            244
+          ],
+          "sourceBounds": [
+            47,
+            54,
+            260,
+            244
+          ],
+          "bounds": [
+            86,
+            112,
+            169,
+            186
+          ],
+          "sha256": "817ee2c278b622d17209ed55edf547a9b3533e3766eed20cfac1c00b51f86cd6"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-north-v2.png",
+          "sourceScale": 0.36597938,
+          "sourceAnchor": [
+            121.27465,
+            255
+          ],
+          "sourceBounds": [
+            58,
+            61,
+            240,
+            255
+          ],
+          "bounds": [
+            82,
+            115,
+            149,
+            186
+          ],
+          "sha256": "bb066137521e016d5b64dcaf75db6de9854243958e37e4023307381cace2c620"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-north-v2.png",
+          "sourceScale": 0.36597938,
+          "sourceAnchor": [
+            113.77465,
+            258
+          ],
+          "sourceBounds": [
+            55,
+            57,
+            251,
+            258
+          ],
+          "bounds": [
+            83,
+            112,
+            155,
+            186
+          ],
+          "sha256": "61d4c93373592b3b07857183acaf985fc313da9387f97aa2ad2f9aabacfffb58"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-north-v2.png",
+          "sourceScale": 0.36597938,
+          "sourceAnchor": [
+            112.77465,
+            258
+          ],
+          "sourceBounds": [
+            56,
+            57,
+            262,
+            258
+          ],
+          "bounds": [
+            84,
+            112,
+            159,
+            186
+          ],
+          "sha256": "f00647bca38c8f36898a4abdfc7c0512692645308d4faad4d05648f2a21dbc67"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-north-v2.png",
+          "sourceScale": 0.36597938,
+          "sourceAnchor": [
+            117.27465,
+            255
+          ],
+          "sourceBounds": [
+            56,
+            61,
+            237,
+            255
+          ],
+          "bounds": [
+            83,
+            115,
+            149,
+            186
+          ],
+          "sha256": "0e40d8affb79ddd7c12f8777c3e09cc18fd817179d1ea02c7217467f35c764b1"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-south-v2.png",
+          "sourceScale": 0.33497537,
+          "sourceAnchor": [
+            171.49265,
+            277
+          ],
+          "sourceBounds": [
+            99,
+            74,
+            242,
+            277
+          ],
+          "bounds": [
+            81,
+            118,
+            129,
+            186
+          ],
+          "sha256": "8be022cb91852cfa53dff977921d63e6fb48259450750a399f68921cc27fbf71"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-south-v2.png",
+          "sourceScale": 0.33497537,
+          "sourceAnchor": [
+            164.49265,
+            277
+          ],
+          "sourceBounds": [
+            92,
+            74,
+            235,
+            277
+          ],
+          "bounds": [
+            81,
+            118,
+            129,
+            186
+          ],
+          "sha256": "dfe84200c3eaaa41c6bcc3530ce291898f2d32efd9c18e5d284e3504f89835f8"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-south-v2.png",
+          "sourceScale": 0.33497537,
+          "sourceAnchor": [
+            196.99265,
+            277
+          ],
+          "sourceBounds": [
+            123,
+            74,
+            270,
+            277
+          ],
+          "bounds": [
+            80,
+            118,
+            129,
+            186
+          ],
+          "sha256": "dbfd42117c5ebd8df0c11bfb6ce47d19be7455096984da32f22856f35cb52b17"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-south-v2.png",
+          "sourceScale": 0.33497537,
+          "sourceAnchor": [
+            146.49265,
+            277
+          ],
+          "sourceBounds": [
+            75,
+            74,
+            219,
+            277
+          ],
+          "bounds": [
+            81,
+            118,
+            129,
+            186
+          ],
+          "sha256": "7fdfc8f628b95b3646b0b4f2a98c0d6884669d310d957098fe82b503d3c820c7"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-south-v2.png",
+          "sourceScale": 0.35960591,
+          "sourceAnchor": [
+            147.64384,
+            251
+          ],
+          "sourceBounds": [
+            60,
+            48,
+            255,
+            251
+          ],
+          "bounds": [
+            73,
+            113,
+            143,
+            186
+          ],
+          "sha256": "03ec1c12e750e0f554597b9ddefa5be9ed2c1d976ec081bf2cf473689f1a3535"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-south-v2.png",
+          "sourceScale": 0.35960591,
+          "sourceAnchor": [
+            144.14384,
+            251
+          ],
+          "sourceBounds": [
+            54,
+            48,
+            256,
+            251
+          ],
+          "bounds": [
+            73,
+            113,
+            146,
+            186
+          ],
+          "sha256": "ff3c43b8b025b2f9a315b24afd5716551f0e8841468fe30a1cab10d86062ae51"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-south-v2.png",
+          "sourceScale": 0.35960591,
+          "sourceAnchor": [
+            184.14384,
+            251
+          ],
+          "sourceBounds": [
+            67,
+            49,
+            287,
+            251
+          ],
+          "bounds": [
+            63,
+            113,
+            142,
+            186
+          ],
+          "sha256": "cb6122d53b86e6fadd7393dc8c5968b6743ee4116e54fc6377c6dd7d3c24d449"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-south-v2.png",
+          "sourceScale": 0.35960591,
+          "sourceAnchor": [
+            122.14384,
+            251
+          ],
+          "sourceBounds": [
+            39,
+            49,
+            237,
+            251
+          ],
+          "bounds": [
+            75,
+            113,
+            146,
+            186
+          ],
+          "sha256": "20d349958bad54a21eb28aa57eb3f9ac06543c4deead0a635c3ee247d2320cb5"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-south-v2.png",
+          "sourceScale": 0.36,
+          "sourceAnchor": [
+            198.38889,
+            220
+          ],
+          "sourceBounds": [
+            32,
+            20,
+            268,
+            220
+          ],
+          "bounds": [
+            45,
+            114,
+            130,
+            186
+          ],
+          "sha256": "5c34a420c9029929d7aa47769bdb8d044ef56f6b5f2df732e80258172472bffe"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-south-v2.png",
+          "sourceScale": 0.36,
+          "sourceAnchor": [
+            194.88889,
+            220
+          ],
+          "sourceBounds": [
+            36,
+            20,
+            268,
+            220
+          ],
+          "bounds": [
+            48,
+            114,
+            132,
+            186
+          ],
+          "sha256": "5cb58dfbf9600a18ad759a8f3d815ad86e1d0b5eec36b28caed916686249c7e1"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-south-v2.png",
+          "sourceScale": 0.36,
+          "sourceAnchor": [
+            229.88889,
+            222
+          ],
+          "sourceBounds": [
+            25,
+            20,
+            301,
+            222
+          ],
+          "bounds": [
+            31,
+            113,
+            130,
+            186
+          ],
+          "sha256": "869e02965710aff1ee51cfdec1e0c36670f2fd6fbefd2da693f6d79a4ad54b21"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-south-v2.png",
+          "sourceScale": 0.36,
+          "sourceAnchor": [
+            177.38889,
+            220
+          ],
+          "sourceBounds": [
+            13,
+            20,
+            245,
+            220
+          ],
+          "bounds": [
+            46,
+            114,
+            130,
+            186
+          ],
+          "sha256": "1705590dbaacea5aa74e4742eba0f73b549d2271a16e66af684aec777bb235dc"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-south-v2.png",
+          "sourceScale": 0.34466019,
+          "sourceAnchor": [
+            218.97183,
+            230
+          ],
+          "sourceBounds": [
+            53,
+            24,
+            258,
+            230
+          ],
+          "bounds": [
+            48,
+            115,
+            119,
+            186
+          ],
+          "sha256": "3f4aa5482fc91a103cc10f1adb4adccc7854d585a09444978f2ad6bec4439e69"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-south-v2.png",
+          "sourceScale": 0.34466019,
+          "sourceAnchor": [
+            226.47183,
+            234
+          ],
+          "sourceBounds": [
+            52,
+            22,
+            255,
+            234
+          ],
+          "bounds": [
+            45,
+            113,
+            115,
+            186
+          ],
+          "sha256": "b7a49d93e456652ec0e68a9d45660326994a78607b330cd00ddf74b0523128a7"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-south-v2.png",
+          "sourceScale": 0.34466019,
+          "sourceAnchor": [
+            309.97183,
+            243
+          ],
+          "sourceBounds": [
+            48,
+            22,
+            292,
+            243
+          ],
+          "bounds": [
+            15,
+            110,
+            99,
+            186
+          ],
+          "sha256": "4736c8af20db206ce845e7d3f51d8a5b5598732f785423a4a9f1bc8234c9e499"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-fire-south-v2.png",
+          "sourceScale": 0.34466019,
+          "sourceAnchor": [
+            201.97183,
+            234
+          ],
+          "sourceBounds": [
+            26,
+            24,
+            233,
+            234
+          ],
+          "bounds": [
+            44,
+            114,
+            115,
+            186
+          ],
+          "sha256": "fd22397c3385963a3b637b9d0e77081eb7629902d33114912f77e73e0d8e3dcf"
+        }
+      ],
+      "file": "woman-shawl-crouch-fire.png",
+      "size": [
+        840,
+        1680
+      ],
+      "sha256": "e998c1c34c93e5f64e9043a7824475f2be62ed18ddff713fcd80bf4185c1ae8a"
+    }
+  }
+}

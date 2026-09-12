@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-scout-crouch-fire": {
+      "cell": 240,
+      "anchor": [
+        120,
+        210
+      ],
+      "logicalCell": 80,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-north-v1.png",
+          "sha256": "2c463188f54918b0efc2cbdef1ef3a2ff5ffc9c53b18c7ac77153e0daeb3a3ba",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-south-v2.png",
+          "sha256": "d2ec470a4df1d3b1c1615e29e5a527ecc23e69bb6289d1a4c8849bb2a527fdd2",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-north-v1.png",
+          "sourceScale": 0.33658536585365856,
+          "sourceAnchor": [
+            73,
+            243
+          ],
+          "sourceBounds": [
+            2,
+            36,
+            140,
+            241
+          ],
+          "bounds": [
+            96,
+            140,
+            142,
+            209
+          ],
+          "sha256": "0851943b983fd570eff9326794a9039d15f5beb3c4b97ad9da04a168618377e2"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-north-v1.png",
+          "sourceScale": 0.33658536585365856,
+          "sourceAnchor": [
+            71,
+            243
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            139,
+            243
+          ],
+          "bounds": [
+            97,
+            129,
+            143,
+            210
+          ],
+          "sha256": "550fc8bd86e6993515f4a41a546a28901b3ea2ab1bd2fc7395c9744bbeff15aa"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-north-v1.png",
+          "sourceScale": 0.33658536585365856,
+          "sourceAnchor": [
+            72,
+            243
+          ],
+          "sourceBounds": [
+            2,
+            36,
+            139,
+            243
+          ],
+          "bounds": [
+            96,
+            140,
+            142,
+            210
+          ],
+          "sha256": "10c33d0944ab433d2de690cabd5724fe52fbd6cd79fa21fc7a68548729729a97"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-north-v1.png",
+          "sourceScale": 0.33658536585365856,
+          "sourceAnchor": [
+            72,
+            243
+          ],
+          "sourceBounds": [
+            2,
+            36,
+            140,
+            243
+          ],
+          "bounds": [
+            96,
+            140,
+            142,
+            210
+          ],
+          "sha256": "6a50f3befda0d0c5ea470ec2c265df48e89122ea6160b2960f3a83ee3de95784"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-north-v1.png",
+          "sourceScale": 0.35784313725490197,
+          "sourceAnchor": [
+            75.5,
+            206
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            179,
+            206
+          ],
+          "bounds": [
+            94,
+            137,
+            157,
+            210
+          ],
+          "sha256": "4345f856163eda7426144737ac333fe5e4bea29743d83359c635133948b4c3cb"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-north-v1.png",
+          "sourceScale": 0.35784313725490197,
+          "sourceAnchor": [
+            76.5,
+            206
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            214,
+            206
+          ],
+          "bounds": [
+            93,
+            137,
+            169,
+            210
+          ],
+          "sha256": "375a83b860768f2098de81554faa7e925d5a3b4ac8c2752225e5d3a0a7da1077"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-north-v1.png",
+          "sourceScale": 0.35784313725490197,
+          "sourceAnchor": [
+            76,
+            206
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            182,
+            206
+          ],
+          "bounds": [
+            94,
+            137,
+            158,
+            210
+          ],
+          "sha256": "0e5ba200258ef41442733d84d1cabfbfeb84b2c17ce18cb3b4dfe191520e08e1"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-north-v1.png",
+          "sourceScale": 0.35784313725490197,
+          "sourceAnchor": [
+            77.5,
+            206
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            184,
+            206
+          ],
+          "bounds": [
+            93,
+            137,
+            158,
+            210
+          ],
+          "sha256": "91470d35d4ad8fb36bcfafe130881b8b6019e8fffb64121df4ddf033a287b47a"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-north-v1.png",
+          "sourceScale": 0.375,
+          "sourceAnchor": [
+            89,
+            202
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            212,
+            202
+          ],
+          "bounds": [
+            87,
+            135,
+            166,
+            210
+          ],
+          "sha256": "d8efd261f0a7f0109d1ed9dd34543529af8711426eb68ee8ed783d99b8f8bde1"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-north-v1.png",
+          "sourceScale": 0.375,
+          "sourceAnchor": [
+            88.5,
+            202
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            240,
+            202
+          ],
+          "bounds": [
+            88,
+            135,
+            177,
+            210
+          ],
+          "sha256": "1583188b4c2a7dd2d624fee8a9a5a312200a6f82027ce1c1658d90ee9266612a"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-north-v1.png",
+          "sourceScale": 0.375,
+          "sourceAnchor": [
+            87,
+            202
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            209,
+            202
+          ],
+          "bounds": [
+            88,
+            135,
+            166,
+            210
+          ],
+          "sha256": "9fcc92a56f03c4115c181a97e1b88fbd19b4cfdcb630302ddbf8a6a9dd49f92b"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-north-v1.png",
+          "sourceScale": 0.375,
+          "sourceAnchor": [
+            86.5,
+            202
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            211,
+            202
+          ],
+          "bounds": [
+            88,
+            135,
+            166,
+            210
+          ],
+          "sha256": "66bb6d77ca513f5485328156aaaadf9e0ade62d853b8a8b6cc7a5a3369116610"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-north-v1.png",
+          "sourceScale": 0.37055837563451777,
+          "sourceAnchor": [
+            79.5,
+            201
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            139,
+            201
+          ],
+          "bounds": [
+            91,
+            137,
+            142,
+            210
+          ],
+          "sha256": "9edda9ca268045a0c892755017ba36c0c73f39cb4fc8febaf8a8c484990377f7"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-north-v1.png",
+          "sourceScale": 0.37055837563451777,
+          "sourceAnchor": [
+            78.5,
+            201
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            156,
+            201
+          ],
+          "bounds": [
+            92,
+            137,
+            149,
+            210
+          ],
+          "sha256": "fd17c6611a87d79ffafc00747b8577ddf9f3fa3a523d58acbc0f32a6f52ebc18"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-north-v1.png",
+          "sourceScale": 0.37055837563451777,
+          "sourceAnchor": [
+            78.5,
+            201
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            143,
+            201
+          ],
+          "bounds": [
+            92,
+            136,
+            144,
+            210
+          ],
+          "sha256": "18dfabeb421b325ff0f5e5ae76a264eb2d74b5e56c20f26d71b38ea8d84c0cc4"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-north-v1.png",
+          "sourceScale": 0.37055837563451777,
+          "sourceAnchor": [
+            77.5,
+            201
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            139,
+            201
+          ],
+          "bounds": [
+            92,
+            137,
+            143,
+            210
+          ],
+          "sha256": "b05624b8c61e47de98268a2874af78d3958464c43ee5962e23e8a32719b01d50"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-south-v2.png",
+          "sourceScale": 0.33658536585365856,
+          "sourceAnchor": [
+            66,
+            210
+          ],
+          "sourceBounds": [
+            2,
+            5,
+            160,
+            210
+          ],
+          "bounds": [
+            98,
+            141,
+            151,
+            210
+          ],
+          "sha256": "9f1e1cc3df42de1f7ea498529ed6440eb764329aad9380272cddbc790b7acdf8"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-south-v2.png",
+          "sourceScale": 0.33658536585365856,
+          "sourceAnchor": [
+            70.5,
+            210
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            165,
+            209
+          ],
+          "bounds": [
+            97,
+            141,
+            152,
+            210
+          ],
+          "sha256": "0ddd36b4e88f9b72c63265b3b156229b94a66467e133390558d94faa5995d845"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-south-v2.png",
+          "sourceScale": 0.33658536585365856,
+          "sourceAnchor": [
+            83,
+            210
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            176,
+            210
+          ],
+          "bounds": [
+            93,
+            140,
+            152,
+            210
+          ],
+          "sha256": "e8f6ce087627fad11f54043185912689c5fe532928df3ca48f0de1220222b1e1"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-south-v2.png",
+          "sourceScale": 0.33658536585365856,
+          "sourceAnchor": [
+            69.5,
+            210
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            166,
+            210
+          ],
+          "bounds": [
+            97,
+            141,
+            152,
+            210
+          ],
+          "sha256": "5dee51031693dfad5523a591f4e3eee80821aa22861519c7b6af8037dd191987"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-south-v2.png",
+          "sourceScale": 0.3557692307692308,
+          "sourceAnchor": [
+            102,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            209,
+            212
+          ],
+          "bounds": [
+            84,
+            136,
+            158,
+            210
+          ],
+          "sha256": "2189b0d3d6286dba22d54af13c40844fb94f4a27c147005fddfa922939a754e5"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-south-v2.png",
+          "sourceScale": 0.3557692307692308,
+          "sourceAnchor": [
+            101.5,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            210,
+            211
+          ],
+          "bounds": [
+            85,
+            135,
+            159,
+            209
+          ],
+          "sha256": "89d0aace72332085a6a9f7279c5364b4ddcf170b0564d4278a0ee6dbd528a0c9"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-south-v2.png",
+          "sourceScale": 0.3557692307692308,
+          "sourceAnchor": [
+            90,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            193,
+            212
+          ],
+          "bounds": [
+            89,
+            136,
+            157,
+            210
+          ],
+          "sha256": "04b7a3e4ef67c837403882cdab30f404ed25e8d483cf633556c25fdd0a51c7a8"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-south-v2.png",
+          "sourceScale": 0.3557692307692308,
+          "sourceAnchor": [
+            90.5,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            197,
+            211
+          ],
+          "bounds": [
+            89,
+            136,
+            158,
+            210
+          ],
+          "sha256": "982e851a649a28f0fea996bd82cb0157eea8807483856061c58ee38b55f7cb78"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-south-v2.png",
+          "sourceScale": 0.365,
+          "sourceAnchor": [
+            144,
+            210
+          ],
+          "sourceBounds": [
+            2,
+            10,
+            239,
+            210
+          ],
+          "bounds": [
+            68,
+            137,
+            155,
+            210
+          ],
+          "sha256": "82f84e59bbb11eb430fba557d7ed94fc4ed9b349e977b562508668227851e864"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-south-v2.png",
+          "sourceScale": 0.365,
+          "sourceAnchor": [
+            151,
+            210
+          ],
+          "sourceBounds": [
+            2,
+            10,
+            249,
+            210
+          ],
+          "bounds": [
+            66,
+            137,
+            156,
+            210
+          ],
+          "sha256": "36a512e73c8ae43be34f476cff42aa658328b6630288802668fd608acf949ee4"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-south-v2.png",
+          "sourceScale": 0.365,
+          "sourceAnchor": [
+            113,
+            210
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            215,
+            210
+          ],
+          "bounds": [
+            79,
+            134,
+            157,
+            210
+          ],
+          "sha256": "90882fcf5f6c18457a45ae9b02d552df0e325840c7a0803d77bf95ba594e6dd9"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-south-v2.png",
+          "sourceScale": 0.365,
+          "sourceAnchor": [
+            133.5,
+            210
+          ],
+          "sourceBounds": [
+            2,
+            7,
+            229,
+            209
+          ],
+          "bounds": [
+            72,
+            136,
+            155,
+            210
+          ],
+          "sha256": "4e3dbc4617a47773788530f1925238033680ffd8b6e34ea97619624c6beec7c7"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-south-v2.png",
+          "sourceScale": 0.3492822966507177,
+          "sourceAnchor": [
+            122,
+            215
+          ],
+          "sourceBounds": [
+            2,
+            6,
+            205,
+            215
+          ],
+          "bounds": [
+            78,
+            137,
+            149,
+            210
+          ],
+          "sha256": "466ccd054bd38ebde92a703b5370de684483d0cb98c8da584148d60afb732a49"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-south-v2.png",
+          "sourceScale": 0.3492822966507177,
+          "sourceAnchor": [
+            145.5,
+            215
+          ],
+          "sourceBounds": [
+            2,
+            5,
+            230,
+            215
+          ],
+          "bounds": [
+            70,
+            137,
+            150,
+            210
+          ],
+          "sha256": "1e7f4461f098ec7ba5ddcd7abb3a932352fa288df8d21d44e90b39d663fa6ac3"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-south-v2.png",
+          "sourceScale": 0.3492822966507177,
+          "sourceAnchor": [
+            115.5,
+            215
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            203,
+            215
+          ],
+          "bounds": [
+            80,
+            136,
+            150,
+            210
+          ],
+          "sha256": "2a89bc2a6a4af7feec7fa1495627d1d300978b3a2f4e61e7bc6d76bb576abce6"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-scout-crouch-fire-south-v2.png",
+          "sourceScale": 0.3492822966507177,
+          "sourceAnchor": [
+            129,
+            215
+          ],
+          "sourceBounds": [
+            2,
+            5,
+            213,
+            215
+          ],
+          "bounds": [
+            76,
+            137,
+            150,
+            210
+          ],
+          "sha256": "a9c285ee1b360e6211f52a46a3ea241c393c2c55f414b25abfaece26d21e1db5"
+        }
+      ],
+      "file": "woman-scout-crouch-fire.png",
+      "size": [
+        960,
+        1920
+      ],
+      "sha256": "c87b37d7b6da7b693366c46d946ab2036d4a097aa478c95fcdc14f253ed548b4"
+    }
+  }
+}

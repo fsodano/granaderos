@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "worker-collapse": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/worker-collapse-north-v1.png",
+          "sha256": "3329cef65469df1d06fc5600ccec76c728b73496dc0e83de5cbcbc6b264765af",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/worker-collapse-south-v1.png",
+          "sha256": "56632d686971db0b75d4aec7bb695c76e4da9ddda2698623df7b1b648fba8158",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-north-v1.png",
+          "sourceScale": 0.5161290322580645,
+          "sourceAnchor": [
+            45.5,
+            221
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            87,
+            219
+          ],
+          "bounds": [
+            122,
+            112,
+            166,
+            224
+          ],
+          "sha256": "a303a47bafee9cdac2daf678625502003b063c693cdcb9f5753c580ecaef0400"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-north-v1.png",
+          "sourceScale": 0.5161290322580645,
+          "sourceAnchor": [
+            69,
+            221
+          ],
+          "sourceBounds": [
+            2,
+            47,
+            137,
+            219
+          ],
+          "bounds": [
+            109,
+            135,
+            179,
+            224
+          ],
+          "sha256": "2364291138aee76b665d880446dc650a4a41a4ed00fa9395ba3b8f6d29d877b0"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-north-v1.png",
+          "sourceScale": 0.5161290322580645,
+          "sourceAnchor": [
+            76,
+            221
+          ],
+          "sourceBounds": [
+            2,
+            113,
+            149,
+            221
+          ],
+          "bounds": [
+            106,
+            169,
+            182,
+            225
+          ],
+          "sha256": "526159688ab781ce63c1d61fc4574cb61adbbadeae979e15c2efe1c60c20e1c9"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-north-v1.png",
+          "sourceScale": 0.5161290322580645,
+          "sourceAnchor": [
+            72.5,
+            221
+          ],
+          "sourceBounds": [
+            2,
+            115,
+            143,
+            219
+          ],
+          "bounds": [
+            108,
+            170,
+            181,
+            224
+          ],
+          "sha256": "8bd28b7bd0765125eb9d6e86771f22aff8d190a3634c569ed7bd21ed7ee27670"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-north-v1.png",
+          "sourceScale": 0.5114155251141552,
+          "sourceAnchor": [
+            42.5,
+            221
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            77,
+            221
+          ],
+          "bounds": [
+            123,
+            113,
+            161,
+            225
+          ],
+          "sha256": "6bd90fad6b085200dc755a6c549a44ec144f9ded51cab4ff89178d511ffcfe70"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-north-v1.png",
+          "sourceScale": 0.5114155251141552,
+          "sourceAnchor": [
+            77.5,
+            221
+          ],
+          "sourceBounds": [
+            2,
+            42,
+            127,
+            221
+          ],
+          "bounds": [
+            105,
+            133,
+            169,
+            225
+          ],
+          "sha256": "2e9f449566d244d4b5ea0f3032c5acf9ff4ab8ffbc7d19e7412f1cc5c2331e1f"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-north-v1.png",
+          "sourceScale": 0.5114155251141552,
+          "sourceAnchor": [
+            91,
+            221
+          ],
+          "sourceBounds": [
+            2,
+            109,
+            194,
+            220
+          ],
+          "bounds": [
+            98,
+            168,
+            196,
+            225
+          ],
+          "sha256": "f40387a1262d9beeda4aa137e05b83d0c376b57204695e2feb79dd4c03a000a0"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-north-v1.png",
+          "sourceScale": 0.5114155251141552,
+          "sourceAnchor": [
+            57.5,
+            221
+          ],
+          "sourceBounds": [
+            2,
+            126,
+            200,
+            220
+          ],
+          "bounds": [
+            116,
+            176,
+            217,
+            224
+          ],
+          "sha256": "a5be595fb0b2f4bc7a31bc309a767274520d4afdb60783ad7e0388fc77abe1ea"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-north-v1.png",
+          "sourceScale": 0.5159817351598174,
+          "sourceAnchor": [
+            35.5,
+            222
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            56,
+            221
+          ],
+          "bounds": [
+            127,
+            111,
+            155,
+            224
+          ],
+          "sha256": "0e4c85066cb08876b4a4106a53be041d7a3d498bc56ffc756e9d16e395e4fca4"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-north-v1.png",
+          "sourceScale": 0.5159817351598174,
+          "sourceAnchor": [
+            92.5,
+            222
+          ],
+          "sourceBounds": [
+            2,
+            41,
+            122,
+            221
+          ],
+          "bounds": [
+            97,
+            132,
+            159,
+            225
+          ],
+          "sha256": "14b2102b76d9cddaed7f4b52e2a3aac1789b6f205b15bcea97d95b386bfb8dbc"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-north-v1.png",
+          "sourceScale": 0.5159817351598174,
+          "sourceAnchor": [
+            111.5,
+            222
+          ],
+          "sourceBounds": [
+            2,
+            111,
+            203,
+            222
+          ],
+          "bounds": [
+            88,
+            168,
+            192,
+            225
+          ],
+          "sha256": "559e0cbe8913af10af9b80c30cee28c61d66d6583f97d47d86c62373c056d437"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-north-v1.png",
+          "sourceScale": 0.5159817351598174,
+          "sourceAnchor": [
+            122,
+            222
+          ],
+          "sourceBounds": [
+            2,
+            177,
+            235,
+            222
+          ],
+          "bounds": [
+            82,
+            202,
+            202,
+            225
+          ],
+          "sha256": "636eab0a04d92a988fc2737ce15ab96b8a6eb615f6118eea55e807fa9bb31294"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-north-v1.png",
+          "sourceScale": 0.5113122171945701,
+          "sourceAnchor": [
+            39,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            79,
+            223
+          ],
+          "bounds": [
+            125,
+            112,
+            164,
+            225
+          ],
+          "sha256": "e388eb88b4736b9ef46d4bd3d1415cdc4ea2681ea0280eadfb3a0fdce6cc2cb1"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-north-v1.png",
+          "sourceScale": 0.5113122171945701,
+          "sourceAnchor": [
+            84.5,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            32,
+            122,
+            223
+          ],
+          "bounds": [
+            102,
+            127,
+            163,
+            225
+          ],
+          "sha256": "f64b3174ddd849b3a39632b478d23b7b211ef64bf1b9334dafa9a7c67d25e866"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-north-v1.png",
+          "sourceScale": 0.5113122171945701,
+          "sourceAnchor": [
+            149,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            91,
+            197,
+            223
+          ],
+          "bounds": [
+            69,
+            158,
+            169,
+            225
+          ],
+          "sha256": "dd1fae320ad5058ac26dac9742e8e9921ce4df79be4cd3de3b505213bec48051"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-north-v1.png",
+          "sourceScale": 0.5113122171945701,
+          "sourceAnchor": [
+            177.5,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            140,
+            210,
+            223
+          ],
+          "bounds": [
+            54,
+            183,
+            160,
+            225
+          ],
+          "sha256": "b1c77a4d062dae8ada17a504aae3d39cf003d9a0bbe8c3580607a5f972661b0a"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-south-v1.png",
+          "sourceScale": 0.5091743119266054,
+          "sourceAnchor": [
+            42,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            83,
+            220
+          ],
+          "bounds": [
+            124,
+            114,
+            165,
+            225
+          ],
+          "sha256": "0ad98164280f31c79039bac10dde39ecb9d19a8a185f34f5396f494658513a88"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-south-v1.png",
+          "sourceScale": 0.5091743119266054,
+          "sourceAnchor": [
+            54.5,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            36,
+            111,
+            219
+          ],
+          "bounds": [
+            117,
+            131,
+            172,
+            224
+          ],
+          "sha256": "119283089be109541082d7965011a0b040e88b224714c5bc3144bb630225b89d"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-south-v1.png",
+          "sourceScale": 0.5091743119266054,
+          "sourceAnchor": [
+            61,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            89,
+            125,
+            220
+          ],
+          "bounds": [
+            114,
+            158,
+            177,
+            225
+          ],
+          "sha256": "891b3974362f33864f8649f619a69b9efd05bf09a1c4b789526a91146ba0189a"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-south-v1.png",
+          "sourceScale": 0.5091743119266054,
+          "sourceAnchor": [
+            60,
+            220
+          ],
+          "sourceBounds": [
+            2,
+            119,
+            121,
+            220
+          ],
+          "bounds": [
+            114,
+            174,
+            175,
+            225
+          ],
+          "sha256": "5e7af3593b61d8479856f7be721979e4cdb153b24dc2531c72597bd54826d1fc"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-south-v1.png",
+          "sourceScale": 0.502262443438914,
+          "sourceAnchor": [
+            36.5,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            83,
+            223
+          ],
+          "bounds": [
+            127,
+            114,
+            168,
+            225
+          ],
+          "sha256": "254086bf37869a7f8cbd0fdf2f560214f83f5c6dbb9d65192f40c90087c7b84b"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-south-v1.png",
+          "sourceScale": 0.502262443438914,
+          "sourceAnchor": [
+            45,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            44,
+            118,
+            223
+          ],
+          "bounds": [
+            122,
+            135,
+            180,
+            225
+          ],
+          "sha256": "91b8e61d48b6356c03481b6d31288a183f5d28b85f9794b33ce1bc481b7d21d9"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-south-v1.png",
+          "sourceScale": 0.502262443438914,
+          "sourceAnchor": [
+            31.5,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            101,
+            164,
+            223
+          ],
+          "bounds": [
+            129,
+            164,
+            210,
+            225
+          ],
+          "sha256": "15edccd60af23b63424b1ce9c528a98f4b6a5595a748d89828feced2334a61b4"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-south-v1.png",
+          "sourceScale": 0.502262443438914,
+          "sourceAnchor": [
+            31.5,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            141,
+            206,
+            223
+          ],
+          "bounds": [
+            129,
+            184,
+            231,
+            225
+          ],
+          "sha256": "3c0e5cd08b5dd855df591ac90cd8a36f5a05a916234ed739a38ac67787893133"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-south-v1.png",
+          "sourceScale": 0.5045454545454545,
+          "sourceAnchor": [
+            24.5,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            55,
+            222
+          ],
+          "bounds": [
+            133,
+            113,
+            160,
+            224
+          ],
+          "sha256": "8c546e0d6577a081b5f106fb6c2007ac18683dc3a492a4b25dd4bba2bea08fa2"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-south-v1.png",
+          "sourceScale": 0.5045454545454545,
+          "sourceAnchor": [
+            40.5,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            34,
+            112,
+            222
+          ],
+          "bounds": [
+            125,
+            130,
+            181,
+            225
+          ],
+          "sha256": "aadd117538b2064c4f421f5a83166337fb0775723ed775be17c4adcdbaf449c6"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-south-v1.png",
+          "sourceScale": 0.5045454545454545,
+          "sourceAnchor": [
+            97,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            114,
+            185,
+            223
+          ],
+          "bounds": [
+            96,
+            170,
+            188,
+            225
+          ],
+          "sha256": "f4de87724591595e60622265383ca6296dabdb99e7a5bf03282cb3229ddc9e66"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-south-v1.png",
+          "sourceScale": 0.5045454545454545,
+          "sourceAnchor": [
+            132,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            176,
+            224,
+            223
+          ],
+          "bounds": [
+            78,
+            201,
+            190,
+            225
+          ],
+          "sha256": "79f85bf8134bc4ab7082219c6e5d214897b3a081fcce7c2889ea938df8a5e35c"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-south-v1.png",
+          "sourceScale": 0.5,
+          "sourceAnchor": [
+            41.5,
+            224
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            78,
+            224
+          ],
+          "bounds": [
+            124,
+            114,
+            162,
+            225
+          ],
+          "sha256": "eca441d0f0a1018de8843ea8208912deb072f0ee2a0f306e4f8f0fc76f0f9c2c"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-south-v1.png",
+          "sourceScale": 0.5,
+          "sourceAnchor": [
+            56,
+            224
+          ],
+          "sourceBounds": [
+            2,
+            37,
+            101,
+            223
+          ],
+          "bounds": [
+            117,
+            132,
+            167,
+            225
+          ],
+          "sha256": "980614ffb5c1e9dd01a0eeef85543d12bc796cdf37d0b7a90ab0adb1d024bcb4"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-south-v1.png",
+          "sourceScale": 0.5,
+          "sourceAnchor": [
+            94,
+            224
+          ],
+          "sourceBounds": [
+            2,
+            117,
+            174,
+            224
+          ],
+          "bounds": [
+            98,
+            172,
+            184,
+            226
+          ],
+          "sha256": "d0e6d1d6604001e4e74d0a7598c3d7f814722d3785356eacf12e0c347da9b50b"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-collapse-south-v1.png",
+          "sourceScale": 0.5,
+          "sourceAnchor": [
+            141.5,
+            224
+          ],
+          "sourceBounds": [
+            2,
+            131,
+            197,
+            218
+          ],
+          "bounds": [
+            74,
+            179,
+            172,
+            223
+          ],
+          "sha256": "82f4e47108a6947aab35707bd1dba64519d2c97d8d7557135a8c8bfd68b2d0fe"
+        }
+      ],
+      "file": "worker-collapse.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "ccaeb81e6e78ca51d6c979eb1b4898bf1a83b710a8d9606ed2579b40110467a2"
+    }
+  }
+}

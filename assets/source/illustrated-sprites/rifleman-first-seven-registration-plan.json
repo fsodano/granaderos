@@ -1,0 +1,364 @@
+{
+  "schemaVersion": 1,
+  "appearance": "rifleman",
+  "stage": "first-seven-states",
+  "pathBase": "repository-root",
+  "registrationOrder": [
+    "variants",
+    "corrections"
+  ],
+  "variantTool": "tools/register-illustrated-variant.mjs SOURCE NAME REFERENCE HALF",
+  "correctionTool": "tools/register-illustrated-correction.mjs SOURCE NAME REFERENCE CORRECTION_SPEC_JSON",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-run-north-v1.png",
+      "name": "rifleman-run",
+      "reference": "granadero-run",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/rifleman-run-north-v1.prompt.txt"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-run-south-v1.png",
+      "name": "rifleman-run",
+      "reference": "granadero-run",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/rifleman-run-south-v1.prompt.txt"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-fire-north-v1.png",
+      "name": "rifleman-fire",
+      "reference": "granadero-fire",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/rifleman-fire-north-v1.prompt.txt"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-fire-south-v2.png",
+      "name": "rifleman-fire",
+      "reference": "granadero-fire",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/rifleman-fire-south-v2.prompt.txt"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-reload-north-v1.png",
+      "name": "rifleman-reload",
+      "reference": "granadero-reload",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/rifleman-reload-north-v1.prompt.txt"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-reload-south-v1.png",
+      "name": "rifleman-reload",
+      "reference": "granadero-reload",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/rifleman-reload-south-v1.prompt.txt"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-strike-north-v2.png",
+      "name": "rifleman-strike",
+      "reference": "granadero-strike",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/rifleman-strike-north-v2.prompt.txt"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-strike-south-v2.png",
+      "name": "rifleman-strike",
+      "reference": "granadero-strike",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/rifleman-strike-south-v2.prompt.txt"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-crouch-idle-v1.png",
+      "name": "rifleman-crouch-idle",
+      "reference": "granadero-crouch-idle",
+      "half": "all",
+      "columns": 4,
+      "rows": 2,
+      "frames": 1,
+      "prompt": "assets/source/illustrated-sprites/rifleman-crouch-idle-v1.prompt.txt"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-crouch-walk-north-v1.png",
+      "name": "rifleman-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/rifleman-crouch-walk-north-v1.prompt.txt"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-crouch-walk-south-v1.png",
+      "name": "rifleman-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/rifleman-crouch-walk-south-v1.prompt.txt"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-prone-armed-idle-v1.png",
+      "name": "rifleman-prone-armed-idle",
+      "reference": "granadero-prone-armed-idle",
+      "half": "all",
+      "columns": 4,
+      "rows": 2,
+      "frames": 1,
+      "prompt": "assets/source/illustrated-sprites/rifleman-prone-armed-idle-v1.prompt.txt"
+    }
+  ],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-run-s-3-fix-v1.png",
+      "name": "rifleman-run",
+      "reference": "granadero-run",
+      "half": "south",
+      "prompt": "assets/source/illustrated-sprites/rifleman-run-s-3-fix-v1.prompt.txt",
+      "sourceSize": [
+        1122,
+        1402
+      ],
+      "correctionSpec": {
+        "columns": 1,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "s",
+            "frame": 3,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              297,
+              105,
+              568,
+              1096
+            ]
+          }
+        ]
+      },
+      "note": "Correct screen-left lifted knee and right support foot."
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-fire-n-fix-v1.png",
+      "name": "rifleman-fire",
+      "reference": "granadero-fire",
+      "half": "north",
+      "prompt": "assets/source/illustrated-sprites/rifleman-fire-n-fix-v1.prompt.txt",
+      "sourceSize": [
+        2023,
+        777
+      ],
+      "correctionSpec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "n",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              128,
+              87,
+              169,
+              550
+            ]
+          },
+          {
+            "direction": "n",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              626,
+              87,
+              169,
+              550
+            ]
+          },
+          {
+            "direction": "n",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              1154,
+              87,
+              168,
+              550
+            ]
+          },
+          {
+            "direction": "n",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1697,
+              87,
+              168,
+              550
+            ]
+          }
+        ]
+      },
+      "note": "All four strict back-facing north shots. Flash only frame1. Belt/pouch omitted in this focused strip; identity colors/hair remain correct."
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-crouch-walk-n-fix-v1.png",
+      "name": "rifleman-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "north",
+      "prompt": "assets/source/illustrated-sprites/rifleman-crouch-walk-n-fix-v1.prompt.txt",
+      "sourceSize": [
+        1774,
+        887
+      ],
+      "correctionSpec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "n",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              97,
+              271,
+              273,
+              366
+            ]
+          },
+          {
+            "direction": "n",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              527,
+              271,
+              271,
+              366
+            ]
+          }
+        ]
+      },
+      "note": "Use first two phases only. Last two repeated the wrong leg and are overridden by a dedicated pair."
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-crouch-walk-n-2-3-fix-v1.png",
+      "name": "rifleman-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "north",
+      "prompt": "assets/source/illustrated-sprites/rifleman-crouch-walk-n-2-3-fix-v1.prompt.txt",
+      "sourceSize": [
+        1774,
+        887
+      ],
+      "correctionSpec": {
+        "columns": 2,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "n",
+            "frame": 2,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              247,
+              212,
+              467,
+              488
+            ]
+          },
+          {
+            "direction": "n",
+            "frame": 3,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              1080,
+              212,
+              358,
+              488
+            ]
+          }
+        ]
+      },
+      "note": "Correct left knee/open contact and left passing sole. Align upper-body scale/pelvis with previous strip; widths intentionally differ."
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-crouch-walk-s-2-fix-v1.png",
+      "name": "rifleman-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "south",
+      "prompt": "assets/source/illustrated-sprites/rifleman-crouch-walk-s-2-fix-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "correctionSpec": {
+        "columns": 1,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "s",
+            "frame": 2,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              378,
+              301,
+              444,
+              647
+            ]
+          }
+        ]
+      },
+      "note": "Correct screen-left forward/planted foot and tucked right leg."
+    }
+  ],
+  "excludedSources": [
+    "assets/source/illustrated-sprites/rifleman-fire-south-v1.png",
+    "assets/source/illustrated-sprites/rifleman-strike-north-v1.png"
+  ],
+  "qa": {
+    "countsAndBounds": "All selected17 sources pass sheetRectangles and contain complete isolated figures.",
+    "notes": [
+      "North reload middle phases turn head slightly toward raised hand while torso remains rear-facing.",
+      "Crouch NE phases2/3 lean toward E camera angle.",
+      "Some remaining crouch passing-phase changes are subtle and inherited from the approved pose reference.",
+      "Inspect correction body/boot alignment at packed scale; source corrections differ in resolution."
+    ]
+  }
+}

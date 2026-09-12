@@ -1,0 +1,9 @@
+{
+  "scope": "27 sequences x 8 variants; staging presence only, visual acceptance and runtime integration checked separately",
+  "required": 216,
+  "existing": 120,
+  "staged": 96,
+  "missingCount": 0,
+  "invalid": [],
+  "missing": []
+}

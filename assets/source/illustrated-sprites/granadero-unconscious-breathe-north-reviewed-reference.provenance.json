@@ -1,0 +1,12 @@
+{
+  "source": "assets/previews/illustrated-sprites/packed/granadero-unconscious-breathe.png",
+  "sha256": "611987247af8dc606d99b5977d4e9a3dcf5866c6c7226d8251a6fc365ddff7b8",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se"
+  ],
+  "frames": 4,
+  "command": "node tools/illustrated-action-reference.mjs granadero-unconscious-breathe"
+}

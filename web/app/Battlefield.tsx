@@ -1,4 +1,5 @@
 'use client';
+import {spriteOrderPose} from '../../game/sprite-order-pose.js';
 import {tacticalViewport} from '../../game/tactical-viewport.js';
 import AimCursor from './AimCursor';
 import JA2Conversation,{JA2Speech} from './JA2Conversation';
@@ -59,6 +60,8 @@ export default function Battlefield({battle:s,onChange,onFinish,peacefulVisit=fa
   },[]);
   const [showSight,setShowSight]=useState(false);
   const [selected,setSelected]=useState(s.units.find((u:any)=>unitCanAct(s,u))?.id);
+  const poseTimers=useRef<Record<string,ReturnType<typeof setTimeout>>>({});
+  useEffect(()=>()=>Object.values(poseTimers.current).forEach(clearTimeout),[]);
   const [poses,setPoses]=useState<Record<string,string>>({});const [directions,setDirections]=useState<Record<string,number>>({});const [zoom,setZoom]=useState(2);const [cameraOffset,setCameraOffset]=useState({x:0,y:0});const [cameraFollowsSelection,setCameraFollowsSelection]=useState(false);const cameraSelection=useRef(selected);const [inventoryId,setInventoryId]=useState<string|null>(null);const [lootPoint,setLootPoint]=useState<{x:number;y:number}|null>(null);const [mode,setMode]=useState('move');const [aim,setAim]=useState(0);const [hitLocation,setHitLocation]=useState('torso');const [pointer,setHover]=useState<any>(null);const [cursorPoint,setCursorPoint]=useState<{x:number;y:number}|null>(null);const aimTarget=useRef('');const [turnBusy,setBusy]=useState(false);const busy=turnBusy||motion.moving;
   const hover=visibleHover(s,pointer);
   const field=useMemo(()=>fieldState(s),[s]);
@@ -136,8 +139,9 @@ export default function Battlefield({battle:s,onChange,onFinish,peacefulVisit=fa
       if(!preserveFacing&&Number.isFinite(target.x)&&Number.isFinite(target.y))setDirections(d=>({...d,[selected]:(Math.round(Math.atan2((target.x-u.x)-(target.y-u.y),-((target.x-u.x)+(target.y-u.y)))/(Math.PI/4))+8)%8}));
       const actionType=resolvedOrderType(s,u,a);
       if(['fire','firePoint'].includes(actionType))setAim(0);
-      const pose=['fire','firePoint'].includes(actionType)?'fire':['reload','reprime','repair'].includes(actionType)?'reload':['melee','charge'].includes(actionType)?'strike':'idle';
-      setPoses(p=>({...p,[selected]:pose}));setTimeout(()=>setPoses(p=>({...p,[selected]:'idle'})),1000);
+      const pose=spriteOrderPose(actionType);
+      clearTimeout(poseTimers.current[selected]);
+      setPoses(p=>({...p,[selected]:pose}));poseTimers.current[selected]=setTimeout(()=>setPoses(p=>({...p,[selected]:'idle'})),1000);
     }
     const accepted=onChange(next);
     if(!next.lastError&&preserveFacing&&accepted!==null)facingOverride.current={battle:accepted??next,unitId:selected,direction:((u.facing??2)+1)%8};

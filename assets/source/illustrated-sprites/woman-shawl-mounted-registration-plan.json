@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "appearance": "woman-shawl",
+  "states": [
+    "mounted-idle",
+    "mounted-walk"
+  ],
+  "instructions": "Accepted full adult woman and bay horse; correct eight directions and four distinct horse gait phases. Use reference pivots; no musket extent scaling on the rider.",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-mounted-idle-v1.png",
+      "name": "woman-shawl-mounted-idle",
+      "reference": "granadero-mounted-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-mounted-walk-north-v1.png",
+      "name": "woman-shawl-mounted-walk",
+      "reference": "granadero-mounted-walk",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-mounted-walk-south-v1.png",
+      "name": "woman-shawl-mounted-walk",
+      "reference": "granadero-mounted-walk",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta"
+    }
+  ],
+  "corrections": []
+}

@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "appearance": "woman-elder",
+  "stage": "first-five-still-states",
+  "pathBase": "repository-root",
+  "registrationOrder": [
+    "variants"
+  ],
+  "variantTool": "tools/register-illustrated-variant.mjs SOURCE NAME REFERENCE HALF",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-crouch-idle-v1.png",
+      "name": "woman-elder-crouch-idle",
+      "reference": "granadero-crouch-idle",
+      "half": "all",
+      "columns": 4,
+      "rows": 2,
+      "frames": 1,
+      "prompt": "assets/source/illustrated-sprites/woman-elder-crouch-idle-v1.prompt.txt",
+      "sourceSize": [
+        1774,
+        887
+      ],
+      "detectedFigures": 8
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-prone-armed-idle-v1.png",
+      "name": "woman-elder-prone-armed-idle",
+      "reference": "granadero-prone-armed-idle",
+      "half": "all",
+      "columns": 4,
+      "rows": 2,
+      "frames": 1,
+      "prompt": "assets/source/illustrated-sprites/woman-elder-prone-armed-idle-v1.prompt.txt",
+      "sourceSize": [
+        1774,
+        887
+      ],
+      "detectedFigures": 8
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-prone-unarmed-idle-v1.png",
+      "name": "woman-elder-prone-unarmed-idle",
+      "reference": "granadero-prone-unarmed-idle",
+      "half": "all",
+      "columns": 4,
+      "rows": 2,
+      "frames": 1,
+      "prompt": "assets/source/illustrated-sprites/woman-elder-prone-unarmed-idle-v1.prompt.txt",
+      "sourceSize": [
+        1774,
+        887
+      ],
+      "detectedFigures": 8
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-dead-idle-v1.png",
+      "name": "woman-elder-dead-idle",
+      "reference": "granadero-dead-idle",
+      "half": "all",
+      "columns": 4,
+      "rows": 2,
+      "frames": 1,
+      "prompt": "assets/source/illustrated-sprites/woman-elder-dead-idle-v1.prompt.txt",
+      "sourceSize": [
+        1774,
+        887
+      ],
+      "detectedFigures": 8
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-mounted-idle-v1.png",
+      "name": "woman-elder-mounted-idle",
+      "reference": "granadero-mounted-idle",
+      "half": "all",
+      "columns": 4,
+      "rows": 2,
+      "frames": 1,
+      "prompt": "assets/source/illustrated-sprites/woman-elder-mounted-idle-v1.prompt.txt",
+      "sourceSize": [
+        1774,
+        887
+      ],
+      "detectedFigures": 8
+    }
+  ],
+  "corrections": [],
+  "qa": {
+    "countsAndBounds": "All5 selected sheets pass8-figure count and crop bounds checks.",
+    "notes": [
+      "All8 compass views visually inspected in each sheet. Ground head vectors preserved.",
+      "Pistol identity retained in armed crouch/prone states; no long rifle, no weapon in unarmed/dead sheets.",
+      "Charcoal shawl, cream blouse and brown skirt remain; folds cover bent legs with two boots visible.",
+      "Mounted rider on full adult bay horse with pistol secured and hands on reins."
+    ]
+  }
+}

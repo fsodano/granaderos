@@ -1,0 +1,778 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "royalist-mounted-run": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 7,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sha256": "02d9a44168755dc7855311788392061ee710d6a96c098da809f28a581caa486f",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.1956521739130435,
+          "sourceAnchor": [
+            31,
+            140
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            60,
+            140
+          ],
+          "bounds": [
+            109,
+            60,
+            178,
+            225
+          ],
+          "sha256": "828b7493a14e811e592fbb2fdb4f3d98ff148dd3491d7134acdbd5ddfa96fd08"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.1956521739130435,
+          "sourceAnchor": [
+            30,
+            140
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            58,
+            138
+          ],
+          "bounds": [
+            111,
+            61,
+            178,
+            222
+          ],
+          "sha256": "81ba8f7d948e85bcf3834fa6f8357138bf719ae529047c51167ecf93bc69ce5e"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.1956521739130435,
+          "sourceAnchor": [
+            30.5,
+            140
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            59,
+            140
+          ],
+          "bounds": [
+            110,
+            61,
+            178,
+            225
+          ],
+          "sha256": "d5b5cd7721307e84a441d986527bf6afc48a296261b8e6d7af0fcb04f600f245"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.1956521739130435,
+          "sourceAnchor": [
+            30,
+            140
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            58,
+            140
+          ],
+          "bounds": [
+            111,
+            61,
+            178,
+            225
+          ],
+          "sha256": "0020e44b2c6be1e09ef1a5838ee27124354bd69c6b9e044bf0081b2bfa43b412"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.1870503597122302,
+          "sourceAnchor": [
+            61.5,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            121,
+            138
+          ],
+          "bounds": [
+            73,
+            59,
+            214,
+            220
+          ],
+          "sha256": "48cb07c13f85356a3a964afc7a53688bcdf0e8d12cec1ea420c5c404359f9232"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.1870503597122302,
+          "sourceAnchor": [
+            58,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            114,
+            137
+          ],
+          "bounds": [
+            78,
+            59,
+            211,
+            219
+          ],
+          "sha256": "1d18936959b442ea84a85994d36c70ae0dc357546a4d56340852b3735ee0ad62"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.1870503597122302,
+          "sourceAnchor": [
+            66.5,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            131,
+            142
+          ],
+          "bounds": [
+            67,
+            60,
+            220,
+            225
+          ],
+          "sha256": "b8ed948af1f19b2bdeee82f96abe3e4d1a132e124ea3325f9daf6a569df0c239"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.1870503597122302,
+          "sourceAnchor": [
+            55,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            108,
+            139
+          ],
+          "bounds": [
+            81,
+            60,
+            207,
+            221
+          ],
+          "sha256": "55b415a1dab2ac91dc8bc191e06f183f5c722036c8a6f65976d6ada11ee4bed3"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.197080291970803,
+          "sourceAnchor": [
+            80,
+            140
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            158,
+            139
+          ],
+          "bounds": [
+            51,
+            60,
+            238,
+            224
+          ],
+          "sha256": "868aeb000f2f93e67f6f1dffe9b67f4d992212a010b2ca53abd51845e10380ac"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.197080291970803,
+          "sourceAnchor": [
+            80,
+            140
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            158,
+            133
+          ],
+          "bounds": [
+            51,
+            61,
+            238,
+            217
+          ],
+          "sha256": "9385ebbfa2b9cf667efd6fdd1e2845c5dd72ad311ed79013c08c882339734a38"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.197080291970803,
+          "sourceAnchor": [
+            86,
+            140
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            170,
+            140
+          ],
+          "bounds": [
+            43,
+            61,
+            244,
+            225
+          ],
+          "sha256": "0ed322c50eee68fa9914aaee92f9b0f39a9818ccafbf33bd49636145cc78ff34"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.197080291970803,
+          "sourceAnchor": [
+            79.5,
+            140
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            157,
+            137
+          ],
+          "bounds": [
+            51,
+            61,
+            237,
+            221
+          ],
+          "sha256": "36dbbd4d6be3ac657d999951fee88ff0a71382531fd1528a4f8e228b75306a6c"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.176056338028169,
+          "sourceAnchor": [
+            66.5,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            131,
+            142
+          ],
+          "bounds": [
+            68,
+            58,
+            220,
+            223
+          ],
+          "sha256": "a6024d971fd70258cbb54651922bb94cc9ac57b953e03c9d9319fb7ee0228fba"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.176056338028169,
+          "sourceAnchor": [
+            67.5,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            144
+          ],
+          "bounds": [
+            67,
+            58,
+            221,
+            225
+          ],
+          "sha256": "d9bc46f4081b9a09f579c68881aa33644ed1859bedbc6b803e1fbadc75766fff"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.176056338028169,
+          "sourceAnchor": [
+            73,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            144,
+            144
+          ],
+          "bounds": [
+            61,
+            59,
+            228,
+            225
+          ],
+          "sha256": "3270e6b1d18ad0807ac89a539230fdc73ba7b6c36f8218f3d68334bd7473168d"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.176056338028169,
+          "sourceAnchor": [
+            70,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            138,
+            143
+          ],
+          "bounds": [
+            64,
+            59,
+            224,
+            224
+          ],
+          "sha256": "409727deb7aedc8547745e1b5bb8d0ec97987374445974807f741184f2dd09df"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.129251700680272,
+          "sourceAnchor": [
+            35.5,
+            149
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            69,
+            149
+          ],
+          "bounds": [
+            106,
+            59,
+            182,
+            225
+          ],
+          "sha256": "ea6a1def98e04b5ca30e3f647a7164f97110f1c6469a9755de7d8409e974351d"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.129251700680272,
+          "sourceAnchor": [
+            35,
+            149
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            68,
+            141
+          ],
+          "bounds": [
+            107,
+            60,
+            182,
+            216
+          ],
+          "sha256": "2583d9598b5cff7360aa41f8c39014379509ec25ff09e90f3ea1bef2e06cf195"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.129251700680272,
+          "sourceAnchor": [
+            34.5,
+            149
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            67,
+            144
+          ],
+          "bounds": [
+            107,
+            61,
+            180,
+            219
+          ],
+          "sha256": "fb84d6a5638cf68e40e85e3b521275f5a571e176dfc9aa5d7c14f32fda440cb5"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.129251700680272,
+          "sourceAnchor": [
+            33.5,
+            149
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            65,
+            144
+          ],
+          "bounds": [
+            108,
+            60,
+            179,
+            219
+          ],
+          "sha256": "5ace483627f1c9d93c98d1ea5ef8f445b9c2d24ed9b7a059b33561402d61e0df"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.177304964539007,
+          "sourceAnchor": [
+            68,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            134,
+            142
+          ],
+          "bounds": [
+            66,
+            59,
+            221,
+            223
+          ],
+          "sha256": "80cdddc3a0650a409727217d338e04799dc064c6bc7d69079f959ca63e8ceacf"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.177304964539007,
+          "sourceAnchor": [
+            72,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            139
+          ],
+          "bounds": [
+            62,
+            58,
+            227,
+            219
+          ],
+          "sha256": "750ade1cff6b6b9b060dddb8df08be3bc3a63e1501c49818f59f7a1f1bd23721"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.177304964539007,
+          "sourceAnchor": [
+            82,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            162,
+            138
+          ],
+          "bounds": [
+            50,
+            59,
+            238,
+            218
+          ],
+          "sha256": "771baa53ffef4a70eb4bdcfb404aad09eee58d90b477ca7132060f0738c88ef8"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.177304964539007,
+          "sourceAnchor": [
+            70.5,
+            144
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            139,
+            144
+          ],
+          "bounds": [
+            63,
+            59,
+            224,
+            225
+          ],
+          "sha256": "157890720247281bee6077897ba71e70fc81eda0283b72a69ddf4cc08b88ea7a"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.1884057971014492,
+          "sourceAnchor": [
+            79,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            156,
+            142
+          ],
+          "bounds": [
+            52,
+            61,
+            235,
+            225
+          ],
+          "sha256": "b82d2add76d2caf6ce4c3e1b0d2eaa0604808f9c84a76425eca2c6f49d51b31e"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.1884057971014492,
+          "sourceAnchor": [
+            79.5,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            157,
+            138
+          ],
+          "bounds": [
+            52,
+            59,
+            236,
+            221
+          ],
+          "sha256": "35700b1d4acdffd66e2c12f6f46b08c1edda319e98b522f4d99ee51c93310485"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.1884057971014492,
+          "sourceAnchor": [
+            83,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            164,
+            141
+          ],
+          "bounds": [
+            48,
+            61,
+            241,
+            224
+          ],
+          "sha256": "a69416bfa769eebf5047ac150a2429042cd83491c77affbf74c1306536fcd0db"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.1884057971014492,
+          "sourceAnchor": [
+            77.5,
+            142
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            153,
+            142
+          ],
+          "bounds": [
+            54,
+            61,
+            233,
+            225
+          ],
+          "sha256": "cdafdfab52c0e16b83477913720abfa395db99a711f9d84e2c8b31deb6c1674c"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.13013698630137,
+          "sourceAnchor": [
+            67.5,
+            148
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            133,
+            145
+          ],
+          "bounds": [
+            70,
+            60,
+            218,
+            222
+          ],
+          "sha256": "e49423be9fbb4279bd134146ebf9138976d184ca2668d1bb7b43b59fda58f3d0"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.13013698630137,
+          "sourceAnchor": [
+            68,
+            148
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            134,
+            148
+          ],
+          "bounds": [
+            69,
+            60,
+            218,
+            225
+          ],
+          "sha256": "4fd767a6c6c11d92cedab53dea2968c87d9e5ff8cd581b2da780a09ef1d4e53d"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.13013698630137,
+          "sourceAnchor": [
+            72,
+            148
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            142,
+            141
+          ],
+          "bounds": [
+            65,
+            60,
+            223,
+            217
+          ],
+          "sha256": "d63f45d73df1af861b5b1e100fd9ae935982630e8af5b5d5d81adceb4f4fa2a8"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/royalist-mounted-run-v1.png",
+          "sourceScale": 1.13013698630137,
+          "sourceAnchor": [
+            64.5,
+            148
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            127,
+            144
+          ],
+          "bounds": [
+            73,
+            62,
+            214,
+            220
+          ],
+          "sha256": "4b685eb37b1a8705cc6d3e2d538e1c340d8ae7d0fd12f4259a4a8246c7ee0cf3"
+        }
+      ],
+      "file": "royalist-mounted-run.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "ec52373ded975435713504093bb1bf85cea963a0efd290af536167278dd33951"
+    }
+  }
+}

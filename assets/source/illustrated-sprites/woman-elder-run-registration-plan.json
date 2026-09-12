@@ -1,0 +1,175 @@
+{
+  "schemaVersion": 1,
+  "appearance": "woman-elder",
+  "stage": "run-state",
+  "pathBase": "repository-root",
+  "registrationOrder": [
+    "variants",
+    "corrections"
+  ],
+  "variantTool": "tools/register-illustrated-variant.mjs SOURCE NAME REFERENCE HALF",
+  "correctionTool": "tools/register-illustrated-correction.mjs SOURCE NAME REFERENCE CORRECTION_SPEC_JSON",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-run-north-v1.png",
+      "name": "woman-elder-run",
+      "reference": "granadero-run",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/woman-elder-run-north-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-run-south-v2.png",
+      "name": "woman-elder-run",
+      "reference": "granadero-run",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/woman-elder-run-south-v2.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    }
+  ],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-run-n-fix-v1.png",
+      "name": "woman-elder-run",
+      "reference": "granadero-run",
+      "half": "north",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-run-n-fix-v1.prompt.txt",
+      "sourceSize": [
+        2172,
+        724
+      ],
+      "calibration": {
+        "method": "one anatomical body scale per source strip; root calibrates across sources",
+        "anchor": "align hips and support-boot baseline, ignore pistol extent"
+      },
+      "correctionSpec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "n",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              209,
+              109,
+              219,
+              495
+            ]
+          },
+          {
+            "direction": "n",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1740,
+              109,
+              217,
+              495
+            ]
+          }
+        ]
+      },
+      "note": "Onlycol0 phase0 andcol3 phase3 accepted. These have opposing low right heel and high left sole. Use one calibrated body scale for both slots."
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-run-n-1-2-fix-v1.png",
+      "name": "woman-elder-run",
+      "reference": "granadero-run",
+      "half": "north",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-run-n-1-2-fix-v1.prompt.txt",
+      "sourceSize": [
+        2172,
+        724
+      ],
+      "calibration": {
+        "method": "one anatomical body scale per source strip; root calibrates across sources",
+        "anchor": "align hips and support-boot baseline, ignore pistol extent"
+      },
+      "correctionSpec": {
+        "columns": 2,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "n",
+            "frame": 2,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              1228,
+              109,
+              221,
+              524
+            ]
+          }
+        ]
+      },
+      "note": "Onlycol1 phase2 accepted: low right support and left trailing heel. Col0 repeats wrong high left sole and is unselected."
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-run-n-1-fix-v1.png",
+      "name": "woman-elder-run",
+      "reference": "granadero-run",
+      "half": "north",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-run-n-1-fix-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "calibration": {
+        "method": "one anatomical body scale per source strip; root calibrates across sources",
+        "anchor": "align hips and support-boot baseline, ignore pistol extent"
+      },
+      "correctionSpec": {
+        "columns": 1,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "n",
+            "frame": 1,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              436,
+              105,
+              481,
+              1006
+            ]
+          }
+        ]
+      },
+      "note": "Single correct high RIGHT raised boot and LOW LEFT support boot. Strict rear body, pistol points down as in identity."
+    }
+  ],
+  "excludedSources": [
+    "assets/source/illustrated-sprites/woman-elder-run-south-v1.png"
+  ],
+  "qa": {
+    "countsAndBounds": "All2main+3correction sources pass count and crop checks.",
+    "notes": [
+      "North main row is replaced in full by selected correction slots.",
+      "Use one body scale per consistent strip, not individual firearm-bounds scaling. Root calibrates cross-source torso size and hip/foot anchor.",
+      "Southv2 visibly alternates support legs. Skirt hides some near/far knee articulation, especially W/SW passing transitions; verify visual rhythm at packed game scale.",
+      "All remaining row headings inspected; N corrections strictrear, S frontal, E/W profiles."
+    ]
+  }
+}

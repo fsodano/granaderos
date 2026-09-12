@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-shawl-mounted-strike": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-north-v1.png",
+          "sha256": "dc2c67885b662ed80db9d15b7799b244b7cb13f102c24692ce66b7359e0444e9",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-south-v1.png",
+          "sha256": "7317c64c52840a674fa4270af1ab35aca3fa3f54edaadc31834e55e6bed514a1",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-north-v1.png",
+          "sourceScale": 0.6932773109243697,
+          "sourceAnchor": [
+            53,
+            241
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            107,
+            241
+          ],
+          "bounds": [
+            109,
+            60,
+            182,
+            225
+          ],
+          "sha256": "05cb02d930d5ba9e9b61b61e194f48f7b0db3ac8594a1818e66096ec8e216933"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-north-v1.png",
+          "sourceScale": 0.6932773109243697,
+          "sourceAnchor": [
+            54,
+            241
+          ],
+          "sourceBounds": [
+            2,
+            7,
+            108,
+            241
+          ],
+          "bounds": [
+            108,
+            63,
+            181,
+            225
+          ],
+          "sha256": "34e49daf824821f5c5495734f7ccb817f025cd5fa827968598d7bb708f3cf161"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-north-v1.png",
+          "sourceScale": 0.6932773109243697,
+          "sourceAnchor": [
+            55.5,
+            241
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            132,
+            241
+          ],
+          "bounds": [
+            107,
+            61,
+            197,
+            225
+          ],
+          "sha256": "14459ffd5619ce227e08d9ae3b441e1194eac5e431ccd2f32d5f9cc0e9d0bd11"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-north-v1.png",
+          "sourceScale": 0.6932773109243697,
+          "sourceAnchor": [
+            56.5,
+            241
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            109,
+            241
+          ],
+          "bounds": [
+            106,
+            59,
+            180,
+            225
+          ],
+          "sha256": "3610ab66b3abc2b21212b2fe9668674afedfd89069700e80fe62787e0b4cc396"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-north-v1.png",
+          "sourceScale": 0.7399103139013453,
+          "sourceAnchor": [
+            79.5,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            193,
+            225
+          ],
+          "bounds": [
+            87,
+            59,
+            228,
+            224
+          ],
+          "sha256": "b39b7a8515e0f7d609019f77d0fb312483684d0eff44a4a258fb535246003982"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-north-v1.png",
+          "sourceScale": 0.7399103139013453,
+          "sourceAnchor": [
+            78,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            192,
+            226
+          ],
+          "bounds": [
+            88,
+            60,
+            229,
+            225
+          ],
+          "sha256": "29005852624ecddb07ed2618ecdc4cb9ca5b972501d60f24d85dce39982bdc59"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-north-v1.png",
+          "sourceScale": 0.7399103139013453,
+          "sourceAnchor": [
+            79,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            193,
+            225
+          ],
+          "bounds": [
+            87,
+            59,
+            228,
+            224
+          ],
+          "sha256": "c9b091303cbaad5d69fd6fa43b2dd1f366ca7e4f7077ab262a5b3c37fc1662e6"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-north-v1.png",
+          "sourceScale": 0.7399103139013453,
+          "sourceAnchor": [
+            77.5,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            190,
+            225
+          ],
+          "bounds": [
+            88,
+            59,
+            227,
+            224
+          ],
+          "sha256": "32be6704e188f4f13f4f83bc499e6e943cc5d27739992291358a07c4047053e2"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-north-v1.png",
+          "sourceScale": 0.780952380952381,
+          "sourceAnchor": [
+            86.5,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            207,
+            212
+          ],
+          "bounds": [
+            78,
+            61,
+            238,
+            225
+          ],
+          "sha256": "1568b87950094424fab928c476c70ea156895c50e2412af05aa0a239a105a099"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-north-v1.png",
+          "sourceScale": 0.780952380952381,
+          "sourceAnchor": [
+            85.5,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            204,
+            212
+          ],
+          "bounds": [
+            79,
+            61,
+            237,
+            225
+          ],
+          "sha256": "2c53d006b557c70d6a018230c9411eaebe57e6d23bc15428ae70438877c453f5"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-north-v1.png",
+          "sourceScale": 0.780952380952381,
+          "sourceAnchor": [
+            87,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            206,
+            212
+          ],
+          "bounds": [
+            78,
+            62,
+            237,
+            225
+          ],
+          "sha256": "3dd3d5125ca73ab7b3139ed7daf8ebcea5d25b761ec15acce33537175ddbf839"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-north-v1.png",
+          "sourceScale": 0.780952380952381,
+          "sourceAnchor": [
+            87.5,
+            212
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            206,
+            212
+          ],
+          "bounds": [
+            77,
+            62,
+            236,
+            225
+          ],
+          "sha256": "e933d5830f8d529b0af364ae7e5ff38926b0ece85f8a625956d2f8bb8759deff"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-north-v1.png",
+          "sourceScale": 0.7488789237668162,
+          "sourceAnchor": [
+            73.5,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            170,
+            225
+          ],
+          "bounds": [
+            90,
+            58,
+            216,
+            225
+          ],
+          "sha256": "dfb510466a5deca2524feb9623adf55ffaa52f2152d0e92d4489c9a8ee4cd449"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-north-v1.png",
+          "sourceScale": 0.7488789237668162,
+          "sourceAnchor": [
+            73,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            173,
+            225
+          ],
+          "bounds": [
+            91,
+            58,
+            219,
+            225
+          ],
+          "sha256": "e27053da1d0c42376a9155a1d888b53bedcc9a1efdf3388b4e3dbd9074cc15c7"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-north-v1.png",
+          "sourceScale": 0.7488789237668162,
+          "sourceAnchor": [
+            73,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            173,
+            225
+          ],
+          "bounds": [
+            91,
+            58,
+            219,
+            225
+          ],
+          "sha256": "10c2d3375b9bfafc352bcccfbff8ee9468ab3f7326d80e5f3ae2328a93918ea5"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-north-v1.png",
+          "sourceScale": 0.7488789237668162,
+          "sourceAnchor": [
+            72,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            168,
+            225
+          ],
+          "bounds": [
+            92,
+            58,
+            216,
+            225
+          ],
+          "sha256": "2b8c8e54bea3ce09f2494360d8a36a380d8d13edbfae975d1319c4b32d8c66d9"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-south-v1.png",
+          "sourceScale": 0.7124463519313304,
+          "sourceAnchor": [
+            55,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            108,
+            235
+          ],
+          "bounds": [
+            106,
+            59,
+            182,
+            225
+          ],
+          "sha256": "4f0be70b1e578e32883c1a57e028c83156a4368591c43d61442e223511fe460f"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-south-v1.png",
+          "sourceScale": 0.7124463519313304,
+          "sourceAnchor": [
+            60.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            113,
+            235
+          ],
+          "bounds": [
+            102,
+            60,
+            181,
+            225
+          ],
+          "sha256": "2d50647ffe884f1d5dd57383857ef9266f05288ce6be24ee0cfc826faaa73742"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-south-v1.png",
+          "sourceScale": 0.7124463519313304,
+          "sourceAnchor": [
+            54.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            108,
+            235
+          ],
+          "bounds": [
+            107,
+            60,
+            183,
+            225
+          ],
+          "sha256": "cf5333819009140a9276f12cf718af8d9cda8f9388bb197395703b3a94a60cb6"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-south-v1.png",
+          "sourceScale": 0.7124463519313304,
+          "sourceAnchor": [
+            54.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            108,
+            235
+          ],
+          "bounds": [
+            107,
+            59,
+            183,
+            225
+          ],
+          "sha256": "6284f6a279ade55fb7f602ac928e5da27a6608d7ebacd544eab48f462594956d"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-south-v1.png",
+          "sourceScale": 0.7410714285714286,
+          "sourceAnchor": [
+            113.5,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            197,
+            226
+          ],
+          "bounds": [
+            61,
+            59,
+            206,
+            225
+          ],
+          "sha256": "652e49692d7f90976233d09a40791df1ffc20d5c2c14faacea013ac1c259ef46"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-south-v1.png",
+          "sourceScale": 0.7410714285714286,
+          "sourceAnchor": [
+            114.5,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            199,
+            226
+          ],
+          "bounds": [
+            61,
+            60,
+            207,
+            225
+          ],
+          "sha256": "c58c82b30ab115c019238a76a8dfc8e145bc33bf832a2aec19f76f1b7fd7a5ec"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-south-v1.png",
+          "sourceScale": 0.7410714285714286,
+          "sourceAnchor": [
+            116,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            201,
+            226
+          ],
+          "bounds": [
+            60,
+            60,
+            207,
+            225
+          ],
+          "sha256": "948586bff8183309b03e7e877d4d89d2894efeb482c13c3a71dbf233680600a1"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-south-v1.png",
+          "sourceScale": 0.7410714285714286,
+          "sourceAnchor": [
+            113.5,
+            226
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            198,
+            226
+          ],
+          "bounds": [
+            61,
+            60,
+            206,
+            225
+          ],
+          "sha256": "d67a795146ce6c0e54a67e6e5e8c5c21c8a38400312e0305bb53f7903be524a7"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-south-v1.png",
+          "sourceScale": 0.7772511848341233,
+          "sourceAnchor": [
+            117,
+            214
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            200,
+            213
+          ],
+          "bounds": [
+            55,
+            60,
+            209,
+            224
+          ],
+          "sha256": "91491a31f9b55d6cb0f99aaddcdd1eaa1042d0b6f2febf0905252c0001195ca7"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-south-v1.png",
+          "sourceScale": 0.7772511848341233,
+          "sourceAnchor": [
+            115.5,
+            214
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            197,
+            214
+          ],
+          "bounds": [
+            56,
+            61,
+            208,
+            225
+          ],
+          "sha256": "60f07da5bb9b5505024e5c4855ab8de59f94c70435baed1a57f02ddb135f1441"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-south-v1.png",
+          "sourceScale": 0.7772511848341233,
+          "sourceAnchor": [
+            123,
+            214
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            207,
+            214
+          ],
+          "bounds": [
+            50,
+            61,
+            209,
+            225
+          ],
+          "sha256": "f3681c1329a0de426c7bc87d0ee086aaef1c90ea8e28646fdb96fff7adef03db"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-south-v1.png",
+          "sourceScale": 0.7772511848341233,
+          "sourceAnchor": [
+            117.5,
+            214
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            201,
+            213
+          ],
+          "bounds": [
+            54,
+            60,
+            209,
+            224
+          ],
+          "sha256": "d4fbe282d9c2dccac50da8b96f8a50922138158f1d582f2d111c030ebe1fb26f"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-south-v1.png",
+          "sourceScale": 0.7534246575342466,
+          "sourceAnchor": [
+            97.5,
+            221
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            165,
+            221
+          ],
+          "bounds": [
+            72,
+            60,
+            195,
+            225
+          ],
+          "sha256": "54cc0405a049846bd7f08e5cf5abb61e93f75b49436ebc14f8f96e71f5713265"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-south-v1.png",
+          "sourceScale": 0.7534246575342466,
+          "sourceAnchor": [
+            99.5,
+            221
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            170,
+            221
+          ],
+          "bounds": [
+            71,
+            61,
+            198,
+            225
+          ],
+          "sha256": "d27aa0de9748e44c2dcd87f3861b32d3ad3787daa0b1386c939e44658d94402b"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-south-v1.png",
+          "sourceScale": 0.7534246575342466,
+          "sourceAnchor": [
+            105,
+            221
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            175,
+            221
+          ],
+          "bounds": [
+            66,
+            61,
+            196,
+            225
+          ],
+          "sha256": "6b4badc9ddb9bcd5437f6c20d6b26b9a9c710dccfe88aad0db714c31a233a9f3"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-mounted-strike-south-v1.png",
+          "sourceScale": 0.7534246575342466,
+          "sourceAnchor": [
+            100,
+            221
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            170,
+            221
+          ],
+          "bounds": [
+            70,
+            60,
+            197,
+            225
+          ],
+          "sha256": "1faeb57f4bd904c2e90ea1b0f5841a30f25a4bed0f6c939f2e483ad15a3b510e"
+        }
+      ],
+      "file": "woman-shawl-mounted-strike.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "2d64c85eb77bf611438315c1aaf2050a9c7351b21f8b84bd05bf9e1ef217e2dc"
+    }
+  }
+}

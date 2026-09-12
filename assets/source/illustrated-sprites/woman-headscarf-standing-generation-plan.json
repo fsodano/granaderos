@@ -1,0 +1,112 @@
+[
+  {
+    "stem": "woman-headscarf-crouch-walk-north-v1",
+    "action": "crouch-walk",
+    "half": "north",
+    "kind": "variant",
+    "prompt": "Edit FIRST image in place, preserving every full-body female limb skeleton, cell direction, foot contact and chronological action. Change ONLY identity into SECOND image adult woman with dark brown skin, cream wrapped headscarf tied at back, blue wool fringed shawl, cream long-sleeve blouse, ankle-length blue skirt with restrained pale hem stitching, brown belt and small belt pouch, dark leather boots. Remove chestnut bun, burgundy shawl and charcoal skirt. Preserve one short flintlock pistol in right hand, left hand only as first-image action requires. Keep hips low and alternate small foot steps under skirt, no upright phases. Exactly4columns4rows, compass rows N/NE/E/SE. First row strict rear, all directions fixed within their row. Natural adult body and cloth folds over legs, complete two boots, crisp illustrated pixel art and dark outlines. Preserve original body scale and canvas layout, generous cell margins. Background entirely flat magenta #ff00ff, no bars, borders, labels, text, shadow or floor. The second image is identity only and must not replace action with idle.",
+    "refs": [
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-shawl-crouch-walk-north-v1.png",
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-headscarf-idle-v1.png"
+    ]
+  },
+  {
+    "stem": "woman-headscarf-crouch-walk-south-v1",
+    "action": "crouch-walk",
+    "half": "south",
+    "kind": "variant",
+    "prompt": "Edit FIRST image in place, preserving every full-body female limb skeleton, cell direction, foot contact and chronological action. Change ONLY identity into SECOND image adult woman with dark brown skin, cream wrapped headscarf tied at back, blue wool fringed shawl, cream long-sleeve blouse, ankle-length blue skirt with restrained pale hem stitching, brown belt and small belt pouch, dark leather boots. Remove chestnut bun, burgundy shawl and charcoal skirt. Preserve one short flintlock pistol in right hand, left hand only as first-image action requires. Keep hips low and alternate small foot steps under skirt, no upright phases. Exactly4columns4rows, compass rows S/SW/W/NW. First row strict front facing viewer, all directions fixed within their row. Natural adult body and cloth folds over legs, complete two boots, crisp illustrated pixel art and dark outlines. Preserve original body scale and canvas layout, generous cell margins. Background entirely flat magenta #ff00ff, no bars, borders, labels, text, shadow or floor. The second image is identity only and must not replace action with idle.",
+    "refs": [
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-shawl-crouch-walk-south-v1.png",
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-headscarf-idle-v1.png"
+    ]
+  },
+  {
+    "stem": "woman-headscarf-fire-north-v1",
+    "action": "fire",
+    "half": "north",
+    "kind": "variant",
+    "prompt": "Edit FIRST image in place, preserving every full-body female limb skeleton, cell direction, foot contact and chronological action. Change ONLY identity into SECOND image adult woman with dark brown skin, cream wrapped headscarf tied at back, blue wool fringed shawl, cream long-sleeve blouse, ankle-length blue skirt with restrained pale hem stitching, brown belt and small belt pouch, dark leather boots. Remove chestnut bun, burgundy shawl and charcoal skirt. Preserve one short flintlock pistol in right hand, left hand only as first-image action requires. Keep shoulder-height pistol aim, phase1 small muzzle flash, phase2 smoke and recoil. No overhead raised arm. Exactly4columns4rows, compass rows N/NE/E/SE. First row strict rear, all directions fixed within their row. Natural adult body and cloth folds over legs, complete two boots, crisp illustrated pixel art and dark outlines. Preserve original body scale and canvas layout, generous cell margins. Background entirely flat magenta #ff00ff, no bars, borders, labels, text, shadow or floor. The second image is identity only and must not replace action with idle.",
+    "refs": [
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-shawl-fire-north-v1.png",
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-headscarf-idle-v1.png"
+    ]
+  },
+  {
+    "stem": "woman-headscarf-fire-south-v1",
+    "action": "fire",
+    "half": "south",
+    "kind": "variant",
+    "prompt": "Edit FIRST image in place, preserving every full-body female limb skeleton, cell direction, foot contact and chronological action. Change ONLY identity into SECOND image adult woman with dark brown skin, cream wrapped headscarf tied at back, blue wool fringed shawl, cream long-sleeve blouse, ankle-length blue skirt with restrained pale hem stitching, brown belt and small belt pouch, dark leather boots. Remove chestnut bun, burgundy shawl and charcoal skirt. Preserve one short flintlock pistol in right hand, left hand only as first-image action requires. Keep shoulder-height pistol aim, phase1 small muzzle flash, phase2 smoke and recoil. No overhead raised arm. Exactly4columns4rows, compass rows S/SW/W/NW. First row strict front facing viewer, all directions fixed within their row. Natural adult body and cloth folds over legs, complete two boots, crisp illustrated pixel art and dark outlines. Preserve original body scale and canvas layout, generous cell margins. Background entirely flat magenta #ff00ff, no bars, borders, labels, text, shadow or floor. The second image is identity only and must not replace action with idle.",
+    "refs": [
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-shawl-fire-south-v1.png",
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-headscarf-idle-v1.png"
+    ]
+  },
+  {
+    "stem": "woman-headscarf-reload-north-v1",
+    "action": "reload",
+    "half": "north",
+    "kind": "variant",
+    "prompt": "Edit FIRST image in place, preserving every full-body female limb skeleton, cell direction, foot contact and chronological action. Change ONLY identity into SECOND image adult woman with dark brown skin, cream wrapped headscarf tied at back, blue wool fringed shawl, cream long-sleeve blouse, ankle-length blue skirt with restrained pale hem stitching, brown belt and small belt pouch, dark leather boots. Remove chestnut bun, burgundy shawl and charcoal skirt. Preserve one short flintlock pistol in right hand, left hand only as first-image action requires. Keep ready, cartridge handling, visible thin ramrod, ready. One pistol, no magazines. Exactly4columns4rows, compass rows N/NE/E/SE. First row strict rear, all directions fixed within their row. Natural adult body and cloth folds over legs, complete two boots, crisp illustrated pixel art and dark outlines. Preserve original body scale and canvas layout, generous cell margins. Background entirely flat magenta #ff00ff, no bars, borders, labels, text, shadow or floor. The second image is identity only and must not replace action with idle.",
+    "refs": [
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-shawl-reload-north-v1.png",
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-headscarf-idle-v1.png"
+    ]
+  },
+  {
+    "stem": "woman-headscarf-reload-south-v1",
+    "action": "reload",
+    "half": "south",
+    "kind": "variant",
+    "prompt": "Edit FIRST image in place, preserving every full-body female limb skeleton, cell direction, foot contact and chronological action. Change ONLY identity into SECOND image adult woman with dark brown skin, cream wrapped headscarf tied at back, blue wool fringed shawl, cream long-sleeve blouse, ankle-length blue skirt with restrained pale hem stitching, brown belt and small belt pouch, dark leather boots. Remove chestnut bun, burgundy shawl and charcoal skirt. Preserve one short flintlock pistol in right hand, left hand only as first-image action requires. Keep ready, cartridge handling, visible thin ramrod, ready. One pistol, no magazines. Exactly4columns4rows, compass rows S/SW/W/NW. First row strict front facing viewer, all directions fixed within their row. Natural adult body and cloth folds over legs, complete two boots, crisp illustrated pixel art and dark outlines. Preserve original body scale and canvas layout, generous cell margins. Background entirely flat magenta #ff00ff, no bars, borders, labels, text, shadow or floor. The second image is identity only and must not replace action with idle.",
+    "refs": [
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-shawl-reload-south-v1.png",
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-headscarf-idle-v1.png"
+    ]
+  },
+  {
+    "stem": "woman-headscarf-strike-north-v1",
+    "action": "strike",
+    "half": "north",
+    "kind": "variant",
+    "prompt": "Edit FIRST image in place, preserving every full-body female limb skeleton, cell direction, foot contact and chronological action. Change ONLY identity into SECOND image adult woman with dark brown skin, cream wrapped headscarf tied at back, blue wool fringed shawl, cream long-sleeve blouse, ankle-length blue skirt with restrained pale hem stitching, brown belt and small belt pouch, dark leather boots. Remove chestnut bun, burgundy shawl and charcoal skirt. Preserve one short flintlock pistol in right hand, left hand only as first-image action requires. Keep braced guard, bent-elbow raised pistol, downward pistol-whip with leaning torso, recovery. This is a melee blow, no firing or straight aiming on impact. Exactly4columns4rows, compass rows N/NE/E/SE. First row strict rear, all directions fixed within their row. Natural adult body and cloth folds over legs, complete two boots, crisp illustrated pixel art and dark outlines. Preserve original body scale and canvas layout, generous cell margins. Background entirely flat magenta #ff00ff, no bars, borders, labels, text, shadow or floor. The second image is identity only and must not replace action with idle.",
+    "refs": [
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-shawl-strike-north-v1.png",
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-headscarf-idle-v1.png"
+    ]
+  },
+  {
+    "stem": "woman-headscarf-strike-south-v1",
+    "action": "strike",
+    "half": "south",
+    "kind": "variant",
+    "prompt": "Edit FIRST image in place, preserving every full-body female limb skeleton, cell direction, foot contact and chronological action. Change ONLY identity into SECOND image adult woman with dark brown skin, cream wrapped headscarf tied at back, blue wool fringed shawl, cream long-sleeve blouse, ankle-length blue skirt with restrained pale hem stitching, brown belt and small belt pouch, dark leather boots. Remove chestnut bun, burgundy shawl and charcoal skirt. Preserve one short flintlock pistol in right hand, left hand only as first-image action requires. Keep braced guard, bent-elbow raised pistol, downward pistol-whip with leaning torso, recovery. This is a melee blow, no firing or straight aiming on impact. Exactly4columns4rows, compass rows S/SW/W/NW. First row strict front facing viewer, all directions fixed within their row. Natural adult body and cloth folds over legs, complete two boots, crisp illustrated pixel art and dark outlines. Preserve original body scale and canvas layout, generous cell margins. Background entirely flat magenta #ff00ff, no bars, borders, labels, text, shadow or floor. The second image is identity only and must not replace action with idle.",
+    "refs": [
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-shawl-strike-south-v1.png",
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-headscarf-idle-v1.png"
+    ]
+  },
+  {
+    "stem": "woman-headscarf-fire-n-fix-v1",
+    "action": "fire",
+    "half": "north",
+    "kind": "correction",
+    "prompt": "Edit FIRST image in place, preserving every full-body female limb skeleton, cell direction, foot contact and chronological action. Change ONLY identity into SECOND image adult woman with dark brown skin, cream wrapped headscarf tied at back, blue wool fringed shawl, cream long-sleeve blouse, ankle-length blue skirt with restrained pale hem stitching, brown belt and small belt pouch, dark leather boots. Remove chestnut bun, burgundy shawl and charcoal skirt. Preserve one short flintlock pistol in right hand, left hand only as first-image action requires. Keep shoulder-height pistol aim, phase1 small muzzle flash, phase2 smoke and recoil. No overhead raised arm. Exactly4 full figures in ONE horizontal row, all strict NORTH from rear, face hidden, headscarf knot and back shawl visible. Natural adult body and cloth folds over legs, complete two boots, crisp illustrated pixel art and dark outlines. Preserve original body scale and canvas layout, generous cell margins. Background entirely flat magenta #ff00ff, no bars, borders, labels, text, shadow or floor. The second image is identity only and must not replace action with idle.",
+    "refs": [
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-shawl-fire-n-v2.png",
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-headscarf-idle-v1.png"
+    ]
+  },
+  {
+    "stem": "woman-headscarf-strike-n-fix-v1",
+    "action": "strike",
+    "half": "north",
+    "kind": "correction",
+    "prompt": "Edit FIRST image in place, preserving every full-body female limb skeleton, cell direction, foot contact and chronological action. Change ONLY identity into SECOND image adult woman with dark brown skin, cream wrapped headscarf tied at back, blue wool fringed shawl, cream long-sleeve blouse, ankle-length blue skirt with restrained pale hem stitching, brown belt and small belt pouch, dark leather boots. Remove chestnut bun, burgundy shawl and charcoal skirt. Preserve one short flintlock pistol in right hand, left hand only as first-image action requires. Keep braced guard, bent-elbow raised pistol, downward pistol-whip with leaning torso, recovery. This is a melee blow, no firing or straight aiming on impact. Exactly4 full figures in ONE horizontal row, all strict NORTH from rear, face hidden, headscarf knot and back shawl visible. Natural adult body and cloth folds over legs, complete two boots, crisp illustrated pixel art and dark outlines. Preserve original body scale and canvas layout, generous cell margins. Background entirely flat magenta #ff00ff, no bars, borders, labels, text, shadow or floor. The second image is identity only and must not replace action with idle.",
+    "refs": [
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-shawl-strike-n-v2.png",
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-headscarf-idle-v1.png"
+    ]
+  }
+]

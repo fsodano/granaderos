@@ -1,0 +1,432 @@
+{
+  "schemaVersion": 1,
+  "appearance": "rifleman",
+  "stage": "remaining-nine-states",
+  "pathBase": "repository-root",
+  "registrationOrder": [
+    "variants",
+    "corrections",
+    "reuses"
+  ],
+  "variantTool": "tools/register-illustrated-variant.mjs SOURCE NAME REFERENCE HALF",
+  "correctionTool": "tools/register-illustrated-correction.mjs SOURCE NAME REFERENCE CORRECTION_SPEC_JSON",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-prone-unarmed-idle-v1.png",
+      "name": "rifleman-prone-unarmed-idle",
+      "reference": "granadero-prone-unarmed-idle",
+      "half": "all",
+      "columns": 4,
+      "rows": 2,
+      "frames": 1,
+      "prompt": "assets/source/illustrated-sprites/rifleman-prone-unarmed-idle-v1.prompt.txt",
+      "sourceSize": [
+        1774,
+        887
+      ],
+      "detectedFigures": 8
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-dead-idle-v2.png",
+      "name": "rifleman-dead-idle",
+      "reference": "granadero-dead-idle",
+      "half": "all",
+      "columns": 4,
+      "rows": 2,
+      "frames": 1,
+      "prompt": "assets/source/illustrated-sprites/rifleman-dead-idle-v2.prompt.txt",
+      "sourceSize": [
+        1774,
+        887
+      ],
+      "detectedFigures": 8
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-mounted-idle-v1.png",
+      "name": "rifleman-mounted-idle",
+      "reference": "granadero-mounted-idle",
+      "half": "all",
+      "columns": 4,
+      "rows": 2,
+      "frames": 1,
+      "prompt": "assets/source/illustrated-sprites/rifleman-mounted-idle-v1.prompt.txt",
+      "sourceSize": [
+        1774,
+        887
+      ],
+      "detectedFigures": 8
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-prone-armed-walk-north-v1.png",
+      "name": "rifleman-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/rifleman-prone-armed-walk-north-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-prone-armed-walk-south-v1.png",
+      "name": "rifleman-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/rifleman-prone-armed-walk-south-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-prone-unarmed-walk-north-v1.png",
+      "name": "rifleman-prone-unarmed-walk",
+      "reference": "granadero-prone-unarmed-walk",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/rifleman-prone-unarmed-walk-north-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-prone-unarmed-walk-south-v1.png",
+      "name": "rifleman-prone-unarmed-walk",
+      "reference": "granadero-prone-unarmed-walk",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/rifleman-prone-unarmed-walk-south-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-prone-armed-fire-north-v1.png",
+      "name": "rifleman-prone-armed-fire",
+      "reference": "granadero-prone-armed-fire",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/rifleman-prone-armed-fire-north-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-prone-armed-fire-south-v1.png",
+      "name": "rifleman-prone-armed-fire",
+      "reference": "granadero-prone-armed-fire",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/rifleman-prone-armed-fire-south-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-prone-armed-reload-north-v1.png",
+      "name": "rifleman-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/rifleman-prone-armed-reload-north-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-prone-armed-reload-south-v1.png",
+      "name": "rifleman-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/rifleman-prone-armed-reload-south-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-unconscious-breathe-north-v1.png",
+      "name": "rifleman-unconscious-breathe",
+      "reference": "granadero-unconscious-breathe",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/rifleman-unconscious-breathe-north-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-unconscious-breathe-south-v1.png",
+      "name": "rifleman-unconscious-breathe",
+      "reference": "granadero-unconscious-breathe",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/rifleman-unconscious-breathe-south-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-mounted-walk-north-v1.png",
+      "name": "rifleman-mounted-walk",
+      "reference": "granadero-mounted-walk",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/rifleman-mounted-walk-north-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-mounted-walk-south-v1.png",
+      "name": "rifleman-mounted-walk",
+      "reference": "granadero-mounted-walk",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "prompt": "assets/source/illustrated-sprites/rifleman-mounted-walk-south-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "detectedFigures": 16
+    }
+  ],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-prone-armed-walk-s-2-fix-v1.png",
+      "name": "rifleman-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "half": "south",
+      "prompt": "assets/source/illustrated-sprites/rifleman-prone-armed-walk-s-2-fix-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "correctionSpec": {
+        "columns": 1,
+        "rows": 1,
+        "scaleMode": "longest",
+        "slots": [
+          {
+            "direction": "s",
+            "frame": 2,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              373,
+              312,
+              498,
+              628
+            ]
+          }
+        ]
+      },
+      "note": "Correct two-leg anatomy: screen-left knee bent, screen-right leg extended. Align pelvis and torso against neighboring S phases; leg projection is longer than the rejected three-leg source."
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-prone-armed-reload-ne-2-fix-v2.png",
+      "name": "rifleman-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "north",
+      "prompt": "assets/source/illustrated-sprites/rifleman-prone-armed-reload-ne-2-fix-v2.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "correctionSpec": {
+        "columns": 1,
+        "rows": 1,
+        "scaleMode": "longest",
+        "slots": [
+          {
+            "direction": "ne",
+            "frame": 2,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              120,
+              295,
+              1029,
+              691
+            ]
+          }
+        ]
+      },
+      "note": "Rear northeast body vector and hand at muzzle with ramrod. Use v2; v1 drifted into E view."
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-prone-armed-reload-s-1-2-fix-v1.png",
+      "name": "rifleman-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "south",
+      "prompt": "assets/source/illustrated-sprites/rifleman-prone-armed-reload-s-1-2-fix-v1.prompt.txt",
+      "sourceSize": [
+        1774,
+        887
+      ],
+      "correctionSpec": {
+        "columns": 2,
+        "rows": 1,
+        "scaleMode": "longest",
+        "slots": [
+          {
+            "direction": "s",
+            "frame": 1,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              318,
+              208,
+              348,
+              506
+            ]
+          },
+          {
+            "direction": "s",
+            "frame": 2,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              1129,
+              208,
+              343,
+              506
+            ]
+          }
+        ]
+      },
+      "note": "Distinct cartridge and ramrod phases, same south body anchor and two complete legs."
+    },
+    {
+      "source": "assets/source/illustrated-sprites/rifleman-prone-armed-reload-nw-2-fix-v1.png",
+      "name": "rifleman-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "south",
+      "prompt": "assets/source/illustrated-sprites/rifleman-prone-armed-reload-nw-2-fix-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "correctionSpec": {
+        "columns": 1,
+        "rows": 1,
+        "scaleMode": "longest",
+        "slots": [
+          {
+            "direction": "nw",
+            "frame": 2,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              71,
+              379,
+              1110,
+              561
+            ]
+          }
+        ]
+      },
+      "note": "Northwest body vector and forward-reaching ramrod hand. Rod is held above muzzle before insertion; weapon contact is simplified."
+    }
+  ],
+  "reuses": [
+    {
+      "name": "rifleman-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "north",
+      "targetSlot": {
+        "direction": "n",
+        "frame": 0
+      },
+      "sourceAtlas": "rifleman-prone-armed-idle",
+      "sourceSlot": {
+        "direction": "n",
+        "frame": 0
+      },
+      "source": "assets/source/illustrated-sprites/rifleman-prone-armed-idle-v1.png",
+      "sourceSize": [
+        1774,
+        887
+      ],
+      "columns": 4,
+      "rows": 2,
+      "sourceRegion": {
+        "row": 0,
+        "col": 0,
+        "rect": [
+          123,
+          126,
+          115,
+          235
+        ]
+      },
+      "prompt": "assets/source/illustrated-sprites/rifleman-prone-armed-idle-v1.prompt.txt",
+      "method": "Copy the accepted idle slot metadata into reload N frame0 while preserving the original idle registration. Align body/boots to reload N frame3; preserve visible rifle and natural anatomical scale.",
+      "warning": "Do not call register-illustrated-correction.mjs directly with this already-registered source path: that helper removes existing sheets with the same source. Root should copy slot metadata or use a distinct source alias.",
+      "note": "Reload source N0 omitted the rifle. Accepted armed idle N is a valid ready phase and differs from the generated reload N3."
+    }
+  ],
+  "excludedSources": [
+    "assets/source/illustrated-sprites/rifleman-dead-idle-v1.png",
+    "assets/source/illustrated-sprites/rifleman-prone-armed-reload-ne-2-fix-v1.png"
+  ],
+  "qa": {
+    "countsAndBounds": "All15 selected main sources and4 selected correction sources pass sheetRectangles with8/16/1/2 isolated whole figures as specified.",
+    "notes": [
+      "All eight ground head vectors and horse directions were visually inspected.",
+      "Mounted sources use an adult bay horse; N rider occasionally turns head slightly while horse/torso remain north.",
+      "Crawl opposite bent knees and hand pulls are preserved; passing phases can be subtle as in the approved references.",
+      "Tiny red cuff/seam or plume-tip color remnants remain in a few ground cells; no full headwear remains.",
+      "Prone firing has one muzzle flash per row at frame1; S frame2 retains a faint smoke remnant.",
+      "Some reload rod contacts retain the reviewed pose guide simplification, especially E/SE; corrected NE/NW hands reach toward muzzle.",
+      "Breathing preserves side-lying head vectors and small chest/shoulder changes.",
+      "Inspect correction torso/pelvis and boot alignment after packing; corrections have different raster sizes. Use anatomical body scale, not weapon extent alone."
+    ]
+  }
+}

@@ -1,0 +1,161 @@
+{
+  "version": 1,
+  "appearance": "scarlet-officer",
+  "states": [
+    "prone-armed-idle",
+    "prone-unarmed-idle",
+    "dead-idle",
+    "prone-armed-walk",
+    "prone-unarmed-walk",
+    "prone-armed-fire",
+    "unconscious-breathe"
+  ],
+  "instructions": "All 11 selected sheets are v1 and visually inspected. Register variants sequentially, all listed directions. Gutter counts pass, including firing effects. S active prone poses retain two legs and boots. Breathing figures are relaxed with closed eyes; S/SW cheeks rest on forearms. No correction cells or explicit regions needed.",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-prone-armed-idle-v1.png",
+      "name": "scarlet-officer-prone-armed-idle",
+      "reference": "granadero-prone-armed-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-prone-unarmed-idle-v1.png",
+      "name": "scarlet-officer-prone-unarmed-idle",
+      "reference": "granadero-prone-unarmed-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-dead-idle-v1.png",
+      "name": "scarlet-officer-dead-idle",
+      "reference": "granadero-dead-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-prone-armed-walk-north-v1.png",
+      "name": "scarlet-officer-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-prone-armed-walk-south-v1.png",
+      "name": "scarlet-officer-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-prone-unarmed-walk-north-v1.png",
+      "name": "scarlet-officer-prone-unarmed-walk",
+      "reference": "granadero-prone-unarmed-walk",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-prone-unarmed-walk-south-v1.png",
+      "name": "scarlet-officer-prone-unarmed-walk",
+      "reference": "granadero-prone-unarmed-walk",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-prone-armed-fire-north-v1.png",
+      "name": "scarlet-officer-prone-armed-fire",
+      "reference": "granadero-prone-armed-fire",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-prone-armed-fire-south-v1.png",
+      "name": "scarlet-officer-prone-armed-fire",
+      "reference": "granadero-prone-armed-fire",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-unconscious-breathe-north-v1.png",
+      "name": "scarlet-officer-unconscious-breathe",
+      "reference": "granadero-unconscious-breathe",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-unconscious-breathe-south-v1.png",
+      "name": "scarlet-officer-unconscious-breathe",
+      "reference": "granadero-unconscious-breathe",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    }
+  ],
+  "corrections": []
+}

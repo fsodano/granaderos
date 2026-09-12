@@ -1,0 +1,778 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "surgeon-interact": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sha256": "aa54c98f5d7cce5db5c4d45763c6a66d067096fb1660717b3834e747484f4cb9",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.7044025157232704,
+          "sourceAnchor": [
+            39.5,
+            162
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            72,
+            162
+          ],
+          "bounds": [
+            118,
+            113,
+            167,
+            225
+          ],
+          "sha256": "c1cda12abbb7e9a6f26cfa64ea6f06326ffb77ee1140b725ff209756c4ecab9f"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.7044025157232704,
+          "sourceAnchor": [
+            36.5,
+            162
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            100,
+            162
+          ],
+          "bounds": [
+            120,
+            112,
+            189,
+            225
+          ],
+          "sha256": "573af59b0934e59aa1d31cfbaa252b14c60970303589b111596558574b588837"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.7044025157232704,
+          "sourceAnchor": [
+            36,
+            162
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            83,
+            162
+          ],
+          "bounds": [
+            120,
+            113,
+            177,
+            225
+          ],
+          "sha256": "bd1d545e68f3d34a0bb939568d73184369010e324dce18bcb72225794b08282a"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.7044025157232704,
+          "sourceAnchor": [
+            38.5,
+            162
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            72,
+            162
+          ],
+          "bounds": [
+            118,
+            113,
+            167,
+            225
+          ],
+          "sha256": "39d44850bf9486adeafc95923bdd573083228b93cadffd0cf1e66b9d6e4bf840"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6686746987951807,
+          "sourceAnchor": [
+            38,
+            168
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            69,
+            168
+          ],
+          "bounds": [
+            120,
+            114,
+            165,
+            225
+          ],
+          "sha256": "d919c606032c6dac1dd9405de0df4427de040c0da7b3909896479fcd335640e3"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6686746987951807,
+          "sourceAnchor": [
+            38,
+            168
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            108,
+            168
+          ],
+          "bounds": [
+            120,
+            115,
+            191,
+            225
+          ],
+          "sha256": "571e04b341bb455adbe22039c80c6257c7252e6e758f51e8743d2707ca038e67"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6686746987951807,
+          "sourceAnchor": [
+            36.5,
+            168
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            96,
+            168
+          ],
+          "bounds": [
+            121,
+            115,
+            184,
+            225
+          ],
+          "sha256": "703ca9f510312988b6ef386a3642271c3906b5a8db5aa337056214e47338d0c6"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6686746987951807,
+          "sourceAnchor": [
+            39,
+            168
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            69,
+            168
+          ],
+          "bounds": [
+            119,
+            114,
+            164,
+            225
+          ],
+          "sha256": "c0f485bfe23a7c9deae4a995384ca0da95d89ca0d0c837df44743260b0e4fd26"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6529411764705882,
+          "sourceAnchor": [
+            32.5,
+            172
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            56,
+            172
+          ],
+          "bounds": [
+            124,
+            114,
+            159,
+            225
+          ],
+          "sha256": "4e68dbc4ebb554d2bcfb2080a181b0b49c3e7edbc65c3d9106bfe88b6ab2a9e9"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6529411764705882,
+          "sourceAnchor": [
+            31,
+            172
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            97,
+            172
+          ],
+          "bounds": [
+            125,
+            114,
+            187,
+            225
+          ],
+          "sha256": "3bbc4a26a49b7fa1d4281d916a0eb1d4f1cc665d486962682f903e208116348c"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6529411764705882,
+          "sourceAnchor": [
+            31,
+            172
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            72,
+            172
+          ],
+          "bounds": [
+            125,
+            115,
+            171,
+            225
+          ],
+          "sha256": "20402c52dd5fe5bf3822735518cdcfb6fc2699ea51de30c54a45ec4680cbe803"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6529411764705882,
+          "sourceAnchor": [
+            33,
+            172
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            57,
+            172
+          ],
+          "bounds": [
+            124,
+            114,
+            160,
+            225
+          ],
+          "sha256": "72e379924198f52a234145fed1afe862e65d3e92511adfeee565699c109260f2"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6726190476190477,
+          "sourceAnchor": [
+            40,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            73,
+            170
+          ],
+          "bounds": [
+            118,
+            112,
+            166,
+            225
+          ],
+          "sha256": "fb53391a16a1906de4ff4166a3c44d46399e18e5e4138fe8f9fe0bb1beb855ff"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6726190476190477,
+          "sourceAnchor": [
+            38,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            102,
+            170
+          ],
+          "bounds": [
+            120,
+            112,
+            187,
+            225
+          ],
+          "sha256": "59ca4e4551f67d0c8363c16b322bf7d444019ab6c4cc15caa57586fde8299862"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6726190476190477,
+          "sourceAnchor": [
+            37.5,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            69,
+            170
+          ],
+          "bounds": [
+            120,
+            112,
+            165,
+            225
+          ],
+          "sha256": "a1f5b16f9844613e56b78749e4a1626880d83bdf02454fc4569ed6b2c8f4a6cb"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6726190476190477,
+          "sourceAnchor": [
+            40.5,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            73,
+            170
+          ],
+          "bounds": [
+            118,
+            112,
+            166,
+            225
+          ],
+          "sha256": "648d51313b885c71c5ec2e34dc24ec0bdad48cbeacbf04f984d278b21efff7e8"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6626506024096386,
+          "sourceAnchor": [
+            40.5,
+            168
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            78,
+            168
+          ],
+          "bounds": [
+            118,
+            115,
+            168,
+            225
+          ],
+          "sha256": "cf1de3a2bf1548bb2bfa13f6186846c66ebb473a64f64bdeb214d05532c64d29"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6626506024096386,
+          "sourceAnchor": [
+            36,
+            168
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            96,
+            168
+          ],
+          "bounds": [
+            121,
+            115,
+            183,
+            225
+          ],
+          "sha256": "eaa2e11a001816d7dc3a37977f45735008607ec39789be25e4b622743559fd6b"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6626506024096386,
+          "sourceAnchor": [
+            35.5,
+            168
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            72,
+            168
+          ],
+          "bounds": [
+            122,
+            115,
+            168,
+            225
+          ],
+          "sha256": "4a3910421b8f983cfacf22370b6617abd405b53ca19733b00199452919a769cb"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6626506024096386,
+          "sourceAnchor": [
+            39.5,
+            168
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            77,
+            168
+          ],
+          "bounds": [
+            119,
+            115,
+            169,
+            225
+          ],
+          "sha256": "4ac8e42882347ad3dc616682593267f78829809c1e177e8050c2f42ac6fca901"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6607142857142857,
+          "sourceAnchor": [
+            28.5,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            64,
+            170
+          ],
+          "bounds": [
+            126,
+            114,
+            167,
+            225
+          ],
+          "sha256": "2e15e7b1e2e11422a0e42c44a67e8cd83df48b937abee6948914045d4e928109"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6607142857142857,
+          "sourceAnchor": [
+            66.5,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            100,
+            170
+          ],
+          "bounds": [
+            101,
+            114,
+            166,
+            225
+          ],
+          "sha256": "76d32dacf0772c9150592113fe452b6d38ae6452597b9f39313009ab682eb7a4"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6607142857142857,
+          "sourceAnchor": [
+            55,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            89,
+            170
+          ],
+          "bounds": [
+            109,
+            114,
+            166,
+            225
+          ],
+          "sha256": "35e5678a87f6c14d66404793ac21ff0942e171fe5ad52c6b909c876bb116f095"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6607142857142857,
+          "sourceAnchor": [
+            28.5,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            63,
+            170
+          ],
+          "bounds": [
+            126,
+            114,
+            166,
+            225
+          ],
+          "sha256": "729e2e68e67b7959d3b5e07b9a19db7a21d1d6c2155f1cbadec17af32f51bec9"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6453488372093024,
+          "sourceAnchor": [
+            33,
+            175
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            67,
+            174
+          ],
+          "bounds": [
+            124,
+            113,
+            166,
+            224
+          ],
+          "sha256": "b66da5ed7156eac27a517d784ef4e1ae0c37d5399fa89c1229babb7bb283bd29"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6453488372093024,
+          "sourceAnchor": [
+            66.5,
+            175
+          ],
+          "sourceBounds": [
+            2,
+            6,
+            101,
+            175
+          ],
+          "bounds": [
+            102,
+            116,
+            166,
+            225
+          ],
+          "sha256": "e6b9dc4995ed768e1c47fbc1d407219efd43815a2b28da4f3872298f959aaa81"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6453488372093024,
+          "sourceAnchor": [
+            51.5,
+            175
+          ],
+          "sourceBounds": [
+            2,
+            6,
+            87,
+            175
+          ],
+          "bounds": [
+            112,
+            116,
+            167,
+            225
+          ],
+          "sha256": "5ced4c7f3f0ee36ff5c1f9c0649fefbbfc07e6ccd0fa3ed6d530b0083abc334c"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6453488372093024,
+          "sourceAnchor": [
+            33,
+            175
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            67,
+            174
+          ],
+          "bounds": [
+            124,
+            113,
+            166,
+            224
+          ],
+          "sha256": "f4484d4eb47d8afcad68f984c4a56f48eb9673fc93e313127fb2d5e02587bebb"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6453488372093024,
+          "sourceAnchor": [
+            36.5,
+            175
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            73,
+            175
+          ],
+          "bounds": [
+            122,
+            114,
+            168,
+            225
+          ],
+          "sha256": "80c86496019c9ea9e7e4a89b6b6b48c437207648e326144b843b0b1022b6fda8"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6453488372093024,
+          "sourceAnchor": [
+            61.5,
+            175
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            98,
+            175
+          ],
+          "bounds": [
+            106,
+            115,
+            168,
+            225
+          ],
+          "sha256": "01858ed3e66caaff0ec136e4d271d7fef653b17796aab3d4f9a164faca3b0c71"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6453488372093024,
+          "sourceAnchor": [
+            55.5,
+            175
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            91,
+            175
+          ],
+          "bounds": [
+            109,
+            114,
+            166,
+            225
+          ],
+          "sha256": "13722849e4673364016d7404a29ba1205e4d80516781fef755c042d1d549f032"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/surgeon-interact-v1.png",
+          "sourceScale": 0.6453488372093024,
+          "sourceAnchor": [
+            35.5,
+            175
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            72,
+            175
+          ],
+          "bounds": [
+            122,
+            113,
+            167,
+            225
+          ],
+          "sha256": "44140c338b58ddd44df1ed6cd55a8330b6b10e68f31b108ee59e0b9b09d0d5a9"
+        }
+      ],
+      "file": "surgeon-interact.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "5811917af3e99304070280c300930eff63fac5457c95abba5b02d17730732051"
+    }
+  }
+}

@@ -1,0 +1,778 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-scout-interact": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sha256": "95e2da8f0106e58c77769309a73dfdc5c7ea80426712ad123bcc34f859c9411f",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6666666666666666,
+          "sourceAnchor": [
+            34,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            70,
+            167
+          ],
+          "bounds": [
+            123,
+            115,
+            168,
+            225
+          ],
+          "sha256": "8863317415e65861f3707c199f38d08552302f9f036fa22f2320913f8b143d5d"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6666666666666666,
+          "sourceAnchor": [
+            36.5,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            106,
+            167
+          ],
+          "bounds": [
+            121,
+            115,
+            190,
+            225
+          ],
+          "sha256": "db1709ccd76b09aeb6e397a03babb1db010a041a7bd8e5d7dd154c34c736a17e"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6666666666666666,
+          "sourceAnchor": [
+            35.5,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            85,
+            167
+          ],
+          "bounds": [
+            122,
+            115,
+            177,
+            225
+          ],
+          "sha256": "35c68b064a5901762c2bc024d127e3928a5823eeb6c472e233a793a926b83394"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6666666666666666,
+          "sourceAnchor": [
+            36.5,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            71,
+            167
+          ],
+          "bounds": [
+            121,
+            115,
+            167,
+            225
+          ],
+          "sha256": "a831cf0ed8adf2ac4ab52941bdaf7745ed9e143811634422a9af5dd45acbf79b"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6547619047619048,
+          "sourceAnchor": [
+            35,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            67,
+            170
+          ],
+          "bounds": [
+            122,
+            115,
+            165,
+            225
+          ],
+          "sha256": "d0396efbd9ff84a3874c30c81d157d569c78adfb24cfaf38dac0e3eaba919fd4"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6547619047619048,
+          "sourceAnchor": [
+            38,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            109,
+            170
+          ],
+          "bounds": [
+            120,
+            116,
+            190,
+            225
+          ],
+          "sha256": "67cc09614cd7f0b6ca3871b42092e838c923418e646f9a6bca7cae42b8ad2032"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6547619047619048,
+          "sourceAnchor": [
+            36,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            100,
+            170
+          ],
+          "bounds": [
+            122,
+            116,
+            186,
+            225
+          ],
+          "sha256": "bb73b6d0e7780a079eab910733cf0534316f57d7400c41dc99bcc5e6d494114c"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6547619047619048,
+          "sourceAnchor": [
+            35.5,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            68,
+            170
+          ],
+          "bounds": [
+            122,
+            116,
+            165,
+            225
+          ],
+          "sha256": "3969cab5dddbd8b3b879f4dd2ebdb561eac179e7bf596aed6497b9ecffb0019b"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6547619047619048,
+          "sourceAnchor": [
+            40,
+            171
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            65,
+            170
+          ],
+          "bounds": [
+            119,
+            114,
+            160,
+            224
+          ],
+          "sha256": "f377d8ecabddc9809c5ff586e3b4d928711d0ef104d5e222956e849c8c0a79c3"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6547619047619048,
+          "sourceAnchor": [
+            37.5,
+            171
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            101,
+            170
+          ],
+          "bounds": [
+            121,
+            114,
+            186,
+            224
+          ],
+          "sha256": "55e0c772d9ffc696d12658fc7f619fce775cf054e5dc33a81f5bb30609dd454b"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6547619047619048,
+          "sourceAnchor": [
+            37.5,
+            171
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            89,
+            171
+          ],
+          "bounds": [
+            121,
+            115,
+            178,
+            225
+          ],
+          "sha256": "c375c07fe15ecb6d1a7d9968e0fba5674c2ac1de70c88e2d534b5324ad6006ad"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6547619047619048,
+          "sourceAnchor": [
+            38,
+            171
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            64,
+            170
+          ],
+          "bounds": [
+            120,
+            114,
+            161,
+            224
+          ],
+          "sha256": "0caf76ef7b95b2fdb030eb290f3a07f9f08db0909db8f5fdae4d8501e7555967"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6586826347305389,
+          "sourceAnchor": [
+            42,
+            169
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            73,
+            169
+          ],
+          "bounds": [
+            118,
+            115,
+            165,
+            225
+          ],
+          "sha256": "37fb8bfe96359a00f921a97ed9056d96f750f0d06458257362950c27a4deb3d7"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6586826347305389,
+          "sourceAnchor": [
+            46.5,
+            169
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            108,
+            169
+          ],
+          "bounds": [
+            115,
+            115,
+            185,
+            225
+          ],
+          "sha256": "c51f78b20d06dc4b500e3649b5f5bbb2fd801d9eddc0a55ea2adc2aae9fe99bc"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6586826347305389,
+          "sourceAnchor": [
+            45,
+            169
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            78,
+            169
+          ],
+          "bounds": [
+            116,
+            116,
+            166,
+            225
+          ],
+          "sha256": "e93338a6cc535879b560bd073a3fa7d4e2d92050dd962156652e5b5750d7cd7b"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6586826347305389,
+          "sourceAnchor": [
+            43,
+            169
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            74,
+            169
+          ],
+          "bounds": [
+            117,
+            116,
+            164,
+            225
+          ],
+          "sha256": "01609cc6c641906ab1c89dd8eec5064577405ca4c0b584c3f19edb1f004bdf85"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6585365853658537,
+          "sourceAnchor": [
+            37.5,
+            169
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            75,
+            168
+          ],
+          "bounds": [
+            121,
+            116,
+            169,
+            224
+          ],
+          "sha256": "82ce26cb276575c1ffdfd69ccba20c70f6f0d7afb084ef4995d2dbf8f202cdb8"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6585365853658537,
+          "sourceAnchor": [
+            35.5,
+            169
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            95,
+            168
+          ],
+          "bounds": [
+            122,
+            116,
+            183,
+            225
+          ],
+          "sha256": "c6abe6be550f72175a54e9a0632076f8cfba9cc957f39f79b71ca410eae3e31e"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6585365853658537,
+          "sourceAnchor": [
+            35.5,
+            169
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            73,
+            168
+          ],
+          "bounds": [
+            122,
+            115,
+            169,
+            224
+          ],
+          "sha256": "fd244724ec1bbec1bea1879b72b7258857aa70e6e4828a37ffbf6e589d163e42"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6585365853658537,
+          "sourceAnchor": [
+            37.5,
+            169
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            76,
+            169
+          ],
+          "bounds": [
+            121,
+            116,
+            170,
+            225
+          ],
+          "sha256": "91981ab22b06dfa7fe9bf941ea7f65ce114691acbf0fd7f1c293e38c465e9832"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6526946107784432,
+          "sourceAnchor": [
+            32.5,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            71,
+            170
+          ],
+          "bounds": [
+            124,
+            116,
+            169,
+            225
+          ],
+          "sha256": "f0e4b061e3c30a27d0a2fc61dc0e273971808d3eb7337248e7808d17c1cf71e6"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6526946107784432,
+          "sourceAnchor": [
+            63,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            101,
+            170
+          ],
+          "bounds": [
+            104,
+            115,
+            169,
+            225
+          ],
+          "sha256": "227ce6626d8022c3c587b10fa9fa9ab20595407f6703ce7537feaf461ae295fe"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6526946107784432,
+          "sourceAnchor": [
+            56.5,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            95,
+            170
+          ],
+          "bounds": [
+            108,
+            115,
+            169,
+            225
+          ],
+          "sha256": "cab46c0f31866b7dcba9192a69089fb256a0f1415dfba025faa78cdb4f9b226f"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6526946107784432,
+          "sourceAnchor": [
+            30.5,
+            170
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            69,
+            170
+          ],
+          "bounds": [
+            125,
+            116,
+            169,
+            225
+          ],
+          "sha256": "d1f78426ada5ebae2f813b5502d0511e6101291306e6abbbe8320c0e97d49f7d"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6428571428571429,
+          "sourceAnchor": [
+            30.5,
+            171
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            74,
+            171
+          ],
+          "bounds": [
+            126,
+            117,
+            172,
+            225
+          ],
+          "sha256": "9cfc8d12f8e1b3a3aa4c774017dbc08d90f761efb4f9358d7c18778f70a6a9c6"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6428571428571429,
+          "sourceAnchor": [
+            64,
+            171
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            104,
+            171
+          ],
+          "bounds": [
+            104,
+            118,
+            170,
+            225
+          ],
+          "sha256": "845aa2d8606ad13839ec188e396e30029b6c3057cd06ea05598b3b8fd2e52732"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6428571428571429,
+          "sourceAnchor": [
+            45.5,
+            171
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            83,
+            171
+          ],
+          "bounds": [
+            116,
+            117,
+            168,
+            225
+          ],
+          "sha256": "f0468b499769c60380636dfd280bdd2c5075997a064058e70d148f33ca384dcc"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.6428571428571429,
+          "sourceAnchor": [
+            30.5,
+            171
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            75,
+            170
+          ],
+          "bounds": [
+            126,
+            116,
+            173,
+            224
+          ],
+          "sha256": "d2ed80915a1436056e49943c2cdd58521387421511368a624c66d8a6d260a063"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.631578947368421,
+          "sourceAnchor": [
+            35,
+            173
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            69,
+            173
+          ],
+          "bounds": [
+            123,
+            117,
+            165,
+            225
+          ],
+          "sha256": "7f48c8ed8eefb129206f8a13146737229fcd65b8b78d02bbed6df5274bcbc9b8"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.631578947368421,
+          "sourceAnchor": [
+            63.5,
+            173
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            101,
+            173
+          ],
+          "bounds": [
+            105,
+            118,
+            168,
+            225
+          ],
+          "sha256": "ae0900269ef98bc1eb4c6eadf55743d402de9b798964e3322ebead820d2408fe"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.631578947368421,
+          "sourceAnchor": [
+            57.5,
+            173
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            94,
+            173
+          ],
+          "bounds": [
+            109,
+            118,
+            167,
+            225
+          ],
+          "sha256": "2994508a67bdca1183fec5180349e8e6c8c21d4bd300b5ec0017814b4b601bb7"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-interact-v1.png",
+          "sourceScale": 0.631578947368421,
+          "sourceAnchor": [
+            35.5,
+            173
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            72,
+            173
+          ],
+          "bounds": [
+            123,
+            117,
+            167,
+            225
+          ],
+          "sha256": "5871d8446826a5ba60cc9f3d434b329e1b7f47ffbe072a5f3406994ab38f45c2"
+        }
+      ],
+      "file": "woman-scout-interact.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "4e2871556468a3c061ec3bfc4150c0662a8465190eba9d91df44a8cf597078c8"
+    }
+  }
+}

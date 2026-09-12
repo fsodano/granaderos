@@ -1,0 +1,35 @@
+{
+  "appearance": "woman-elder",
+  "scope": "remaining16states; idle and walk were already accepted",
+  "states": 16,
+  "plans": [
+    "assets/source/illustrated-sprites/woman-elder-crouch-walk-registration-plan.json",
+    "assets/source/illustrated-sprites/woman-elder-fire-registration-plan.json",
+    "assets/source/illustrated-sprites/woman-elder-first-five-registration-plan.json",
+    "assets/source/illustrated-sprites/woman-elder-mounted-walk-registration-plan.json",
+    "assets/source/illustrated-sprites/woman-elder-prone-armed-fire-registration-plan.json",
+    "assets/source/illustrated-sprites/woman-elder-prone-armed-reload-registration-plan.json",
+    "assets/source/illustrated-sprites/woman-elder-prone-armed-walk-registration-plan.json",
+    "assets/source/illustrated-sprites/woman-elder-prone-unarmed-walk-registration-plan.json",
+    "assets/source/illustrated-sprites/woman-elder-reload-registration-plan.json",
+    "assets/source/illustrated-sprites/woman-elder-run-registration-plan.json",
+    "assets/source/illustrated-sprites/woman-elder-strike-registration-plan.json",
+    "assets/source/illustrated-sprites/woman-elder-unconscious-breathe-registration-plan.json"
+  ],
+  "additionalCorrection": {
+    "source": "assets/source/illustrated-sprites/woman-elder-run-se-2-fix-v2.png",
+    "name": "woman-elder-run",
+    "direction": "se",
+    "frame": 2,
+    "row": 3,
+    "col": 2,
+    "rect": [
+      721,
+      1032,
+      126,
+      200
+    ],
+    "note": "Already sent to parent separately; preserves compact run pose while removing duplicate upright barrel."
+  },
+  "rootAdjustments": "Root calibrates anchors/scales and already corrected north strike body size/boot baseline. Preserve root calibration."
+}

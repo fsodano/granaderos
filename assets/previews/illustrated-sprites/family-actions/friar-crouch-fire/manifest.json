@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "friar-crouch-fire": {
+      "cell": 240,
+      "anchor": [
+        120,
+        210
+      ],
+      "logicalCell": 80,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-north-v2.png",
+          "sha256": "d5722267c307a826f313606e61f38129afe7f7ed2041c188026bb814079e0479",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-south-v1.png",
+          "sha256": "401d7f71bf81cdfa6bc9b524c72ac1e8587a0d6e050bc25ec696c913dfb37950",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-north-v2.png",
+          "sourceScale": 0.3073394495412844,
+          "sourceAnchor": [
+            73.5,
+            232
+          ],
+          "sourceBounds": [
+            2,
+            13,
+            139,
+            231
+          ],
+          "bounds": [
+            98,
+            143,
+            140,
+            210
+          ],
+          "sha256": "46322e6bd172a76f0526e458b9adebc049e8d89b55519e218ae96005d76cf034"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-north-v2.png",
+          "sourceScale": 0.3073394495412844,
+          "sourceAnchor": [
+            73,
+            232
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            136,
+            232
+          ],
+          "bounds": [
+            98,
+            139,
+            139,
+            210
+          ],
+          "sha256": "6dc56dbb7961707f8c9ea68c589f7333555fc073714783addeb3033e3605d519"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-north-v2.png",
+          "sourceScale": 0.3073394495412844,
+          "sourceAnchor": [
+            73.5,
+            232
+          ],
+          "sourceBounds": [
+            2,
+            26,
+            137,
+            231
+          ],
+          "bounds": [
+            98,
+            147,
+            139,
+            210
+          ],
+          "sha256": "113389534f593550edb68cbfab035de9d0bcefc99213711eebc693c8e78663d4"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-north-v2.png",
+          "sourceScale": 0.3073394495412844,
+          "sourceAnchor": [
+            73.5,
+            232
+          ],
+          "sourceBounds": [
+            2,
+            13,
+            135,
+            231
+          ],
+          "bounds": [
+            98,
+            143,
+            139,
+            210
+          ],
+          "sha256": "124db7f865b8517cb6daf92a2d82f0a7dc827d699d2292ac0e655f5bb878e3c8"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-north-v2.png",
+          "sourceScale": 0.34285714285714286,
+          "sourceAnchor": [
+            78,
+            227
+          ],
+          "sourceBounds": [
+            2,
+            14,
+            169,
+            224
+          ],
+          "bounds": [
+            94,
+            137,
+            151,
+            209
+          ],
+          "sha256": "12a6bd2cac73ecc2c089693300ef874f6a8b39b059c008b97017fe7a8c22dfe8"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-north-v2.png",
+          "sourceScale": 0.34285714285714286,
+          "sourceAnchor": [
+            77,
+            227
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            178,
+            227
+          ],
+          "bounds": [
+            94,
+            133,
+            154,
+            210
+          ],
+          "sha256": "6228447f282a10898a9bdaf5e35c4634ee7f6a99e2c7e3f10bb431cf1773703c"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-north-v2.png",
+          "sourceScale": 0.34285714285714286,
+          "sourceAnchor": [
+            76,
+            227
+          ],
+          "sourceBounds": [
+            2,
+            23,
+            167,
+            226
+          ],
+          "bounds": [
+            95,
+            140,
+            152,
+            210
+          ],
+          "sha256": "83d3ab67511f02b5ae713c27c440fd7e8a66a792501fe43035b110daf6d7f09f"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-north-v2.png",
+          "sourceScale": 0.34285714285714286,
+          "sourceAnchor": [
+            76.5,
+            227
+          ],
+          "sourceBounds": [
+            2,
+            15,
+            175,
+            222
+          ],
+          "bounds": [
+            94,
+            137,
+            153,
+            208
+          ],
+          "sha256": "24fb1387da2fee6fb9f23fc4213ca1293e1b62e4d2b92ac354cf55d694de1af4"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-north-v2.png",
+          "sourceScale": 0.37373737373737376,
+          "sourceAnchor": [
+            85.5,
+            207
+          ],
+          "sourceBounds": [
+            2,
+            7,
+            232,
+            205
+          ],
+          "bounds": [
+            89,
+            135,
+            175,
+            209
+          ],
+          "sha256": "608605a2d83ba938b718981be232fa67c67a8b32080ec022cd28e8c6250c6c12"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-north-v2.png",
+          "sourceScale": 0.37373737373737376,
+          "sourceAnchor": [
+            80,
+            207
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            239,
+            203
+          ],
+          "bounds": [
+            91,
+            133,
+            180,
+            208
+          ],
+          "sha256": "c6da6490f4a35d6f8c9e3f300fe8cd636c8856e7dc0009db9d596f4ae64e3506"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-north-v2.png",
+          "sourceScale": 0.37373737373737376,
+          "sourceAnchor": [
+            85,
+            207
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            199,
+            207
+          ],
+          "bounds": [
+            89,
+            134,
+            163,
+            210
+          ],
+          "sha256": "a7322249852278d1e349b77c72aafa7cc2ee79938409e479a13cf5413a1c3208"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-north-v2.png",
+          "sourceScale": 0.37373737373737376,
+          "sourceAnchor": [
+            80.5,
+            207
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            220,
+            202
+          ],
+          "bounds": [
+            91,
+            133,
+            172,
+            208
+          ],
+          "sha256": "118ed1182b2af8e5fc1e81fe91da527d1ecff3694b65b4cbb1326af30b67ff42"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-north-v2.png",
+          "sourceScale": 0.35467980295566504,
+          "sourceAnchor": [
+            85,
+            207
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            154,
+            207
+          ],
+          "bounds": [
+            91,
+            138,
+            145,
+            210
+          ],
+          "sha256": "190ebf78f6faa96ecee76e2629b07de9ee32e0afa43e0e6ac9088954dce68cc6"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-north-v2.png",
+          "sourceScale": 0.35467980295566504,
+          "sourceAnchor": [
+            85,
+            207
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            168,
+            207
+          ],
+          "bounds": [
+            91,
+            138,
+            150,
+            210
+          ],
+          "sha256": "27851d265eb6b0d2800e2564d63da980471dbcd096802e21c89b51baba165797"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-north-v2.png",
+          "sourceScale": 0.35467980295566504,
+          "sourceAnchor": [
+            88.5,
+            207
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            162,
+            207
+          ],
+          "bounds": [
+            89,
+            137,
+            146,
+            210
+          ],
+          "sha256": "a3c144f642992e37dca6af8991d566a50a3f882f3a5aa69ee2fd48d39db0773d"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-north-v2.png",
+          "sourceScale": 0.35467980295566504,
+          "sourceAnchor": [
+            87,
+            207
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            159,
+            207
+          ],
+          "bounds": [
+            90,
+            137,
+            146,
+            210
+          ],
+          "sha256": "5d8ba953471d4077f269a0000b5451c937fc3c642fa8d9137e57b0c5819787b9"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-south-v1.png",
+          "sourceScale": 0.33668341708542715,
+          "sourceAnchor": [
+            76.5,
+            202
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            137,
+            202
+          ],
+          "bounds": [
+            95,
+            143,
+            140,
+            210
+          ],
+          "sha256": "c7f98e97c6271fcf126093848ec9be8b15068c101853a61dff5b0edbb7842679"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-south-v1.png",
+          "sourceScale": 0.33668341708542715,
+          "sourceAnchor": [
+            70.5,
+            202
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            137,
+            201
+          ],
+          "bounds": [
+            97,
+            143,
+            142,
+            210
+          ],
+          "sha256": "e10b3568734bf2c69eabca910bc66ebd735ff6549f9afb5aeaf1ce570fec328f"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-south-v1.png",
+          "sourceScale": 0.33668341708542715,
+          "sourceAnchor": [
+            70.5,
+            202
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            137,
+            201
+          ],
+          "bounds": [
+            97,
+            143,
+            142,
+            210
+          ],
+          "sha256": "81218f0008bb02dfa7f0c0fd0cb1f2659370b14d25792d1e0f5c44f35b977c19"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-south-v1.png",
+          "sourceScale": 0.33668341708542715,
+          "sourceAnchor": [
+            70.5,
+            202
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            137,
+            201
+          ],
+          "bounds": [
+            97,
+            143,
+            142,
+            210
+          ],
+          "sha256": "b918d6169a1d5cbbfa5c2d4954dfd6de33d520c167fb611b22f24e217ec38520"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-south-v1.png",
+          "sourceScale": 0.36683417085427134,
+          "sourceAnchor": [
+            101.5,
+            201
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            180,
+            201
+          ],
+          "bounds": [
+            84,
+            137,
+            149,
+            210
+          ],
+          "sha256": "a74c6f7b96873df5e4c7398d4698958667ec699df5653be99df6d1c4475e71fd"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-south-v1.png",
+          "sourceScale": 0.36683417085427134,
+          "sourceAnchor": [
+            116,
+            201
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            195,
+            201
+          ],
+          "bounds": [
+            78,
+            137,
+            149,
+            210
+          ],
+          "sha256": "450cea3ac5c66589c7a80458e92938180c51b400c77c4aeaa49c183a588cf7ac"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-south-v1.png",
+          "sourceScale": 0.36683417085427134,
+          "sourceAnchor": [
+            96.5,
+            201
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            175,
+            201
+          ],
+          "bounds": [
+            85,
+            137,
+            148,
+            210
+          ],
+          "sha256": "4a4aee3ec816f8b463d4fa6d6697b6f2cf630d74557e13570a2f1808200838af"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-south-v1.png",
+          "sourceScale": 0.36683417085427134,
+          "sourceAnchor": [
+            101.5,
+            201
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            180,
+            201
+          ],
+          "bounds": [
+            84,
+            137,
+            149,
+            210
+          ],
+          "sha256": "099d2a0f1bbffdf43bf7bb54b91021c53f44aee7b6ec267b1980ae5f804d62ac"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-south-v1.png",
+          "sourceScale": 0.36363636363636365,
+          "sourceAnchor": [
+            127.5,
+            200
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            197,
+            200
+          ],
+          "bounds": [
+            74,
+            138,
+            145,
+            210
+          ],
+          "sha256": "37557c6a68a5dbb60e285e75d27d2c9d829b676e566c1d6a20a1902dcd1cf7bc"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-south-v1.png",
+          "sourceScale": 0.36363636363636365,
+          "sourceAnchor": [
+            139,
+            200
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            209,
+            200
+          ],
+          "bounds": [
+            70,
+            138,
+            145,
+            210
+          ],
+          "sha256": "9c8b24f33ed712dec60e90afa78a2a37de4b0d742de9dc84aa72ba335b2365e1"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-south-v1.png",
+          "sourceScale": 0.36363636363636365,
+          "sourceAnchor": [
+            111.5,
+            200
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            181,
+            200
+          ],
+          "bounds": [
+            80,
+            138,
+            145,
+            210
+          ],
+          "sha256": "d4a7a7179184ad51db2df57cc3b1baf5e75e8f86ec40dd96e940e3af65becbbc"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-south-v1.png",
+          "sourceScale": 0.36363636363636365,
+          "sourceAnchor": [
+            126.5,
+            200
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            196,
+            200
+          ],
+          "bounds": [
+            75,
+            138,
+            146,
+            210
+          ],
+          "sha256": "b5d8cea778ef945d5376a786b1e8f53cfd31aed80e0015f7a6e96e3b6dd4aa25"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-south-v1.png",
+          "sourceScale": 0.36923076923076925,
+          "sourceAnchor": [
+            108.5,
+            197
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            174,
+            197
+          ],
+          "bounds": [
+            81,
+            138,
+            145,
+            210
+          ],
+          "sha256": "45e3f2695841fcddb867e15483c2b196a56b43b53580032accd515ab40fe2f60"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-south-v1.png",
+          "sourceScale": 0.36923076923076925,
+          "sourceAnchor": [
+            130,
+            197
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            197,
+            197
+          ],
+          "bounds": [
+            73,
+            138,
+            145,
+            210
+          ],
+          "sha256": "4ae77ebed4effdcb55eecce6793289e02906030b80355e24286e30bdae5e0cc5"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-south-v1.png",
+          "sourceScale": 0.36923076923076925,
+          "sourceAnchor": [
+            98,
+            197
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            164,
+            197
+          ],
+          "bounds": [
+            85,
+            138,
+            145,
+            210
+          ],
+          "sha256": "487c508f7c38f7bb6b8db67cd2be38ae098b3dcb4840e7a76e54e269b3342787"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/friar-crouch-fire-south-v1.png",
+          "sourceScale": 0.36923076923076925,
+          "sourceAnchor": [
+            107,
+            197
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            173,
+            197
+          ],
+          "bounds": [
+            81,
+            138,
+            144,
+            210
+          ],
+          "sha256": "ac46fa6d96fa326d0dee98749bd424fdbefb5bd3ef1e6af0e2ea2915323ad23b"
+        }
+      ],
+      "file": "friar-crouch-fire.png",
+      "size": [
+        960,
+        1920
+      ],
+      "sha256": "6896046db453b17fc7614bf1bfe201d533fed0dca8e713ccfc14d9732c99bff4"
+    }
+  }
+}

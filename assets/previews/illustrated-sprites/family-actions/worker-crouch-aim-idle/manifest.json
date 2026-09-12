@@ -1,0 +1,246 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "worker-crouch-aim-idle": {
+      "cell": 210,
+      "anchor": [
+        105,
+        186
+      ],
+      "logicalCell": 70,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/worker-crouch-fire-n-fix-v1.png",
+          "sha256": "213379647ee04b6e94b84b584058416ff5ea292af13fe5a7c1ca456ff5664210",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/worker-crouch-fire-north-v1.png",
+          "sha256": "0c6cfad9cb2fc331f26b4b5f93a3261bfa3ccda4287886490022d95afb121825",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/worker-crouch-fire-north-v3.png",
+          "sha256": "a302cbe41cfeb256debbcce73601aecff4e6e3c778211333eaaa799629ae3ea3",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/worker-crouch-fire-south-v2.png",
+          "sha256": "1880c553d9b4d7580c9769dea52ef6e13ec2db233836dd73b5999b077e50e0bf",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-fire-n-fix-v1.png",
+          "sourceScale": 0.21806854,
+          "sourceAnchor": [
+            259.87857,
+            655
+          ],
+          "sourceBounds": [
+            150,
+            283,
+            384,
+            655
+          ],
+          "bounds": [
+            81,
+            105,
+            132,
+            186
+          ],
+          "sha256": "8f1210e6bee8d4bd34e7bc2f0cd15e5d688f1be9bc3aaa62c9375b678400c54e"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-fire-north-v1.png",
+          "sourceScale": 0.38659794,
+          "sourceAnchor": [
+            159.81333,
+            281
+          ],
+          "sourceBounds": [
+            82,
+            87,
+            224,
+            281
+          ],
+          "bounds": [
+            75,
+            111,
+            130,
+            186
+          ],
+          "sha256": "48bc7f8d72b8105b362699f4834312f15b7c46836ed652028c5e0b5e9aac9dbe"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-fire-north-v3.png",
+          "sourceScale": 0.40957447,
+          "sourceAnchor": [
+            109.40909,
+            252
+          ],
+          "sourceBounds": [
+            70,
+            64,
+            247,
+            252
+          ],
+          "bounds": [
+            89,
+            109,
+            161,
+            186
+          ],
+          "sha256": "1b8da516ccde708cbce6e574de191f15eaa3f62a47ad9fdd7c139bc73330f7a4"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-fire-north-v3.png",
+          "sourceScale": 0.38265306,
+          "sourceAnchor": [
+            138.08,
+            232
+          ],
+          "sourceBounds": [
+            80,
+            36,
+            221,
+            232
+          ],
+          "bounds": [
+            83,
+            111,
+            137,
+            186
+          ],
+          "sha256": "104d4008ef75f249a306f7c7871c85ad34b466d40ec1ac589ba4ed9a23bffd59"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-fire-south-v2.png",
+          "sourceScale": 0.32126697,
+          "sourceAnchor": [
+            167.16901,
+            287
+          ],
+          "sourceBounds": [
+            94,
+            66,
+            229,
+            287
+          ],
+          "bounds": [
+            81,
+            115,
+            124,
+            186
+          ],
+          "sha256": "f35090cfac720a553b8dfef936f484c539cadc2304d90f7a084ed1a1501b558f"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-fire-south-v2.png",
+          "sourceScale": 0.36363636,
+          "sourceAnchor": [
+            178.25,
+            260
+          ],
+          "sourceBounds": [
+            66,
+            51,
+            254,
+            260
+          ],
+          "bounds": [
+            64,
+            110,
+            132,
+            186
+          ],
+          "sha256": "e6c088153f05b337cef465d1720ff10791fec8264d2923b52d23b2851e770a17"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-fire-south-v2.png",
+          "sourceScale": 0.35545024,
+          "sourceAnchor": [
+            196.34667,
+            242
+          ],
+          "sourceBounds": [
+            50,
+            31,
+            260,
+            242
+          ],
+          "bounds": [
+            53,
+            111,
+            128,
+            186
+          ],
+          "sha256": "6c9baafc5162f1fa4457109d08599f19e7fdc08ae13ddeeb509c5cf3eb5cb936"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-fire-south-v2.png",
+          "sourceScale": 0.34883721,
+          "sourceAnchor": [
+            230.5,
+            229
+          ],
+          "sourceBounds": [
+            61,
+            14,
+            257,
+            229
+          ],
+          "bounds": [
+            46,
+            111,
+            114,
+            186
+          ],
+          "sha256": "12158875020b5bd3512e6108cec1a7e2731954cc194071d2b5dbe6ba5a8a3a6c"
+        }
+      ],
+      "file": "worker-crouch-aim-idle.png",
+      "size": [
+        1680,
+        210
+      ],
+      "sha256": "838419447773e179f8f16528048d6e1fc3674b4a8b91b5a89cca93845a22f6ae",
+      "derivedFrom": {
+        "atlas": "worker-crouch-fire",
+        "frame": 0,
+        "reason": "hold authored pre-shot aim"
+      }
+    }
+  }
+}

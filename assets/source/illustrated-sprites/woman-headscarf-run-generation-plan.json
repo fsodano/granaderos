@@ -1,0 +1,22 @@
+[
+  {
+    "stem": "woman-headscarf-run-north-v1",
+    "action": "run",
+    "half": "north",
+    "refs": [
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-headscarf-run-north-pose-reference.png",
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-headscarf-idle-v1.png"
+    ],
+    "prompt": "Edit FIRST exact4x4 run sequence, preserve every chronological distinct foot, knee, hip, hand and full body pose and its compass direction. Replace ONLY woman identity/clothes by SECOND image: adult dark brown skin, cream wrapped headscarf knotted behind head, blue fringed shawl, cream blouse, long blue skirt with thin pale hem, brown belt and small belt pouch, dark boots. Remove gray braid, charcoal shawl and brown skirt. Show all sleeves in cream. Keep only ONE SHORT flintlock pistol in right hand, left hand empty. Remove any extra upright gun near hand (especially lastrowthirdfigure of north guide); no second pistol. Maintain exact alternate lifted knees and opposite boot contacts under practical skirt from FIRST image. Same body size each phase. Four rows N strict back, NE rear-right, E right profile, SE front-right, four run phases per row. Never substitute repeated static stance. All16 complete adult figures, clear magenta margins. Crisp original pixel art, perfectly flat magenta #FF00FF, no shadow/floor/text/grid/extra figures."
+  },
+  {
+    "stem": "woman-headscarf-run-south-v1",
+    "action": "run",
+    "half": "south",
+    "refs": [
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-headscarf-run-south-pose-reference.png",
+      "/Users/fsodano/fibradev/games/granaderos/assets/source/illustrated-sprites/woman-headscarf-idle-v1.png"
+    ],
+    "prompt": "Edit FIRST exact4x4 run sequence, preserve every chronological distinct foot, knee, hip, hand and full body pose and its compass direction. Replace ONLY woman identity/clothes by SECOND image: adult dark brown skin, cream wrapped headscarf knotted behind head, blue fringed shawl, cream blouse, long blue skirt with thin pale hem, brown belt and small belt pouch, dark boots. Remove gray braid, charcoal shawl and brown skirt. Show all sleeves in cream. Keep only ONE SHORT flintlock pistol in right hand, left hand empty. Remove any extra upright gun near hand (especially lastrowthirdfigure of north guide); no second pistol. Maintain exact alternate lifted knees and opposite boot contacts under practical skirt from FIRST image. Same body size each phase. Four rows S strict front, SW front-left, W left profile, NW rear-left, four run phases per row. Never substitute repeated static stance. All16 complete adult figures, clear magenta margins. Crisp original pixel art, perfectly flat magenta #FF00FF, no shadow/floor/text/grid/extra figures."
+  }
+]

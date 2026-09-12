@@ -22,7 +22,7 @@ test('prone fire/reload use their own action frames and no-gun variants cannot d
 test('death overrides unconsciousness, a mount, movement and pending fire; recovery restores equipment-aware posture',()=>{
  const moving={...motion,moving:true};
  for(const appearance of ['soldier','civilian']){
-  const family=appearance==='civilian'?'civilian':'granadero';
+  const family=appearance==='civilian'?'surgeon':'granadero';
   assert.deepEqual(selectSprite({...soldier,hp:0,unconscious:true,mounted:true},moving,'fire',appearance),{name:`${family}-dead-idle`,playback:'still'});
   assert.deepEqual(selectSprite({...soldier,unconscious:true,mounted:true},moving,'fire',appearance),{name:`${family}-unconscious-breathe`,playback:'breathing'});
  }
@@ -43,4 +43,11 @@ test('a live prone soldier can fire and stays prone after spending ammunition an
  assert.equal(fired.lastError,null);assert.equal(after.stance,'prone');assert.ok(after.ap<before.ap);
  assert.equal(after.loaded,before.loaded-1);
  assert.equal(selectSprite(after,motion,'fire').name,'granadero-prone-armed-fire');
+});
+
+test('explicit collapse ends once and never enables breathing on a corpse',()=>{
+ const dead={...soldier,hp:0};
+ assert.deepEqual(selectSprite(dead,motion,'collapse'),{name:'granadero-collapse',playback:'action'});
+ assert.deepEqual(selectSprite(dead,motion,'idle'),{name:'granadero-dead-idle',playback:'still'});
+ assert.equal(spriteAnimationFrame('action',10000,4,5),3);
 });

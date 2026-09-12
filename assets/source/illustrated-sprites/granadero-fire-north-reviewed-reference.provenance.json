@@ -1,0 +1,12 @@
+{
+  "source": "assets/previews/illustrated-sprites/packed/granadero-fire.png",
+  "sha256": "5b7e17204eb4397f15dd4c000ba131832a5a2214e164bfeca2f4ef1dce8004d1",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se"
+  ],
+  "frames": 4,
+  "command": "node tools/illustrated-action-reference.mjs granadero-fire"
+}

@@ -1,0 +1,12 @@
+{
+  "source": "assets/previews/illustrated-sprites/packed/granadero-prone-armed-walk.png",
+  "sha256": "dc4bc26bf819bc2f622f04d6047713fd594214c6790e778f9d55cb17965c4d78",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se"
+  ],
+  "frames": 4,
+  "command": "node tools/illustrated-action-reference.mjs granadero-prone-armed-walk"
+}

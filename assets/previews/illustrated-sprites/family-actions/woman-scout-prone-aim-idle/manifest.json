@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-scout-prone-aim-idle": {
+      "cell": 288,
+      "anchor": [
+        144,
+        165
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/woman-scout-prone-armed-fire-north-v1.png",
+          "sha256": "758e1ff06e4d2385742bf15088445702914810e3f22a20c71e9d6885d7829b9a",
+          "scale": 0.9186602870813397
+        },
+        {
+          "file": "assets/source/illustrated-sprites/woman-scout-prone-armed-fire-south-v1.png",
+          "sha256": "a3ddbaee16df5241c28407117a88ccb49c776056480c71230c9726dce0d28dd3",
+          "scale": 0.9186602870813397
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-scout-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.50786,
+          "sourceAnchor": [
+            39.025,
+            140.843
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            84,
+            226
+          ],
+          "bounds": [
+            125,
+            94,
+            167,
+            208
+          ],
+          "sha256": "956a9fcee84435defed0cbbbc73b9f524339335d8ec11d9b8bec7405225139ba"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-scout-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.623723,
+          "sourceAnchor": [
+            83.397,
+            63.801
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            207,
+            132
+          ],
+          "bounds": [
+            93,
+            126,
+            221,
+            207
+          ],
+          "sha256": "ff8130d8ca10aed5d1ea26e38231e77baa641f865ecab929e4008b7d083a75ad"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-scout-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.670833,
+          "sourceAnchor": [
+            79.747,
+            57.13
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            231,
+            77
+          ],
+          "bounds": [
+            92,
+            128,
+            246,
+            178
+          ],
+          "sha256": "216e89d7b21d2d1630fb2b7bdcdfedd417c05cebeca31f0123ad6300bfee8cf3"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-scout-prone-armed-fire-north-v1.png",
+          "sourceScale": 0.696761,
+          "sourceAnchor": [
+            72.313,
+            37.82
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            201,
+            88
+          ],
+          "bounds": [
+            95,
+            140,
+            234,
+            200
+          ],
+          "sha256": "02887cbcb69ee6c480907a1373d04506423df715d652a438ec4959f0325dfd36"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-scout-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.365286,
+          "sourceAnchor": [
+            70.817,
+            55.524
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            87,
+            211
+          ],
+          "bounds": [
+            119,
+            145,
+            150,
+            221
+          ],
+          "sha256": "c65789ef61c31d9333f9be0ee1963a681766378db8bdc9d3036b4912aa1b122b"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-scout-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.487391,
+          "sourceAnchor": [
+            117.676,
+            32.847
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            216,
+            130
+          ],
+          "bounds": [
+            88,
+            150,
+            192,
+            212
+          ],
+          "sha256": "b19fd6c9e905f3036d1c832395da49235d085cc23764013a973c5e66580fd1ea"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-scout-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.588763,
+          "sourceAnchor": [
+            164.699,
+            76.969
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            262,
+            83
+          ],
+          "bounds": [
+            48,
+            121,
+            201,
+            169
+          ],
+          "sha256": "56228beb591a6de739964fdc122fd84089087ede7bb8ac0074192e38a878d4e7"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/woman-scout-prone-armed-fire-south-v1.png",
+          "sourceScale": 0.52122,
+          "sourceAnchor": [
+            139.542,
+            94.885
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            236,
+            142
+          ],
+          "bounds": [
+            72,
+            117,
+            194,
+            190
+          ],
+          "sha256": "fc5c2f4dd11cd661578e6e3241120ae50a386bb7308610df75b8a428343c227c"
+        }
+      ],
+      "file": "woman-scout-prone-aim-idle.png",
+      "size": [
+        2304,
+        288
+      ],
+      "sha256": "87c5707efc2259f0d3f2bba880022918615a1ea707fbef466492bd4e40258137",
+      "derivedFrom": {
+        "atlas": "woman-scout-prone-armed-fire",
+        "frame": 0,
+        "reason": "hold authored pre-shot aim"
+      }
+    }
+  }
+}

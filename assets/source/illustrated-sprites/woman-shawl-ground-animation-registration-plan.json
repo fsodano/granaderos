@@ -1,0 +1,652 @@
+{
+  "version": 1,
+  "appearance": "woman-shawl",
+  "states": [
+    "prone-armed-walk",
+    "prone-unarmed-walk",
+    "prone-armed-fire",
+    "prone-armed-reload",
+    "unconscious-breathe"
+  ],
+  "instructions": "Actual prone/side-lying head and boot vectors reviewed in all eight directions. Short complete pistol in armed states; empty hands in unarmed/breathing. Correction strips retain complete limbs and skirt. Reload includes visible cartridge and rod; N briefly transfers pistol to left hand for loading. Breathing N source has white export bars outside explicit crop rectangles; use magenta extraction on those rectangles.",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-walk-north-v1.png",
+      "name": "woman-shawl-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "half": "north",
+      "includeDirections": [
+        "E",
+        "SE"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-walk-north-v2.png",
+      "name": "woman-shawl-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "half": "north",
+      "includeDirections": [
+        "NE"
+      ],
+      "exportKey": "magenta",
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-prone-armed-walk-north-v2.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-walk-south-v1.png",
+      "name": "woman-shawl-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-prone-unarmed-walk-north-v1.png",
+      "name": "woman-shawl-prone-unarmed-walk",
+      "reference": "granadero-prone-unarmed-walk",
+      "half": "north",
+      "includeDirections": [
+        "NE",
+        "E",
+        "SE"
+      ],
+      "exportKey": "magenta",
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-prone-unarmed-walk-north-v1.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-prone-unarmed-walk-south-v3.png",
+      "name": "woman-shawl-prone-unarmed-walk",
+      "reference": "granadero-prone-unarmed-walk",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-fire-north-v2.png",
+      "name": "woman-shawl-prone-armed-fire",
+      "reference": "granadero-prone-armed-fire",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ],
+      "exportKey": "magenta",
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-prone-armed-fire-north-v2.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-fire-south-v1.png",
+      "name": "woman-shawl-prone-armed-fire",
+      "reference": "granadero-prone-armed-fire",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta",
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-prone-armed-fire-south-v1.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-north-v1.png",
+      "name": "woman-shawl-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "north",
+      "includeDirections": [
+        "E"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-south-v1.png",
+      "name": "woman-shawl-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta",
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-south-v1.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-unconscious-breathe-north-v1.png",
+      "name": "woman-shawl-unconscious-breathe",
+      "reference": "granadero-unconscious-breathe",
+      "half": "north",
+      "includeDirections": [
+        "NE",
+        "E"
+      ],
+      "exportKey": "magenta"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-unconscious-breathe-south-v1.png",
+      "name": "woman-shawl-unconscious-breathe",
+      "reference": "granadero-unconscious-breathe",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "exportKey": "magenta",
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-unconscious-breathe-south-v1.regions.json"
+    }
+  ],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-walk-n-v3.png",
+      "name": "woman-shawl-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "half": "north",
+      "includeDirections": [
+        "N"
+      ],
+      "exportKey": "magenta",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "longest",
+        "slots": [
+          {
+            "direction": "N",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              128,
+              165,
+              180,
+              529
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              581,
+              165,
+              187,
+              529
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              1051,
+              165,
+              184,
+              529
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1527,
+              165,
+              189,
+              529
+            ]
+          }
+        ]
+      },
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-prone-armed-walk-n-v3.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-prone-unarmed-walk-n-v2.png",
+      "name": "woman-shawl-prone-unarmed-walk",
+      "reference": "granadero-prone-unarmed-walk",
+      "half": "north",
+      "includeDirections": [
+        "N"
+      ],
+      "exportKey": "magenta",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "longest",
+        "slots": [
+          {
+            "direction": "N",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              134,
+              188,
+              186,
+              494
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              611,
+              188,
+              197,
+              494
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              1102,
+              188,
+              187,
+              494
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1581,
+              188,
+              199,
+              494
+            ]
+          }
+        ]
+      },
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-prone-unarmed-walk-n-v2.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-n-v4.png",
+      "name": "woman-shawl-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "north",
+      "includeDirections": [
+        "N"
+      ],
+      "exportKey": "magenta",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "longest",
+        "slots": [
+          {
+            "direction": "N",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              159,
+              88,
+              245,
+              552
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              1224,
+              88,
+              244,
+              552
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1772,
+              88,
+              246,
+              552
+            ]
+          }
+        ]
+      },
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-n-v4.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-n-1-v5.png",
+      "name": "woman-shawl-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "north",
+      "includeDirections": [
+        "N"
+      ],
+      "exportKey": "magenta",
+      "spec": {
+        "columns": 1,
+        "rows": 1,
+        "scaleMode": "longest",
+        "slots": [
+          {
+            "direction": "N",
+            "frame": 1,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              279,
+              247,
+              481,
+              1032
+            ]
+          }
+        ]
+      },
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-n-1-v5.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-ne-v4.png",
+      "name": "woman-shawl-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "north",
+      "includeDirections": [
+        "NE"
+      ],
+      "exportKey": "magenta",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "longest",
+        "slots": [
+          {
+            "direction": "NE",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              57,
+              262,
+              436,
+              291
+            ]
+          },
+          {
+            "direction": "NE",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              589,
+              262,
+              460,
+              291
+            ]
+          },
+          {
+            "direction": "NE",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1640,
+              262,
+              436,
+              291
+            ]
+          }
+        ]
+      },
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-ne-v4.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-ne-2-v5.png",
+      "name": "woman-shawl-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "north",
+      "includeDirections": [
+        "NE"
+      ],
+      "exportKey": "magenta",
+      "spec": {
+        "columns": 1,
+        "rows": 1,
+        "scaleMode": "longest",
+        "slots": [
+          {
+            "direction": "NE",
+            "frame": 2,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              34,
+              513,
+              925,
+              579
+            ]
+          }
+        ]
+      },
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-ne-2-v5.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-se-v4.png",
+      "name": "woman-shawl-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "north",
+      "includeDirections": [
+        "SE"
+      ],
+      "exportKey": "magenta",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "longest",
+        "slots": [
+          {
+            "direction": "SE",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              84,
+              321,
+              413,
+              214
+            ]
+          },
+          {
+            "direction": "SE",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              616,
+              321,
+              413,
+              214
+            ]
+          },
+          {
+            "direction": "SE",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              1133,
+              321,
+              413,
+              214
+            ]
+          },
+          {
+            "direction": "SE",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1676,
+              321,
+              423,
+              214
+            ]
+          }
+        ]
+      },
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-prone-armed-reload-se-v4.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-unconscious-breathe-n-v3.png",
+      "name": "woman-shawl-unconscious-breathe",
+      "reference": "granadero-unconscious-breathe",
+      "half": "north",
+      "includeDirections": [
+        "N"
+      ],
+      "exportKey": "magenta",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "longest",
+        "slots": [
+          {
+            "direction": "N",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              214,
+              135,
+              149,
+              435
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              726,
+              135,
+              148,
+              435
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              1246,
+              135,
+              150,
+              435
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1765,
+              135,
+              151,
+              435
+            ]
+          }
+        ]
+      },
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-unconscious-breathe-n-v3.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-shawl-unconscious-breathe-n-se-v2.png",
+      "name": "woman-shawl-unconscious-breathe",
+      "reference": "granadero-unconscious-breathe",
+      "half": "north",
+      "includeDirections": [
+        "SE"
+      ],
+      "exportKey": "magenta",
+      "spec": {
+        "columns": 4,
+        "rows": 2,
+        "scaleMode": "longest",
+        "slots": [
+          {
+            "direction": "SE",
+            "frame": 0,
+            "row": 1,
+            "col": 0,
+            "rect": [
+              79,
+              670,
+              276,
+              146
+            ]
+          },
+          {
+            "direction": "SE",
+            "frame": 1,
+            "row": 1,
+            "col": 1,
+            "rect": [
+              522,
+              670,
+              276,
+              146
+            ]
+          },
+          {
+            "direction": "SE",
+            "frame": 2,
+            "row": 1,
+            "col": 2,
+            "rect": [
+              964,
+              670,
+              277,
+              146
+            ]
+          },
+          {
+            "direction": "SE",
+            "frame": 3,
+            "row": 1,
+            "col": 3,
+            "rect": [
+              1407,
+              670,
+              276,
+              146
+            ]
+          }
+        ]
+      },
+      "regionFile": "assets/source/illustrated-sprites/woman-shawl-unconscious-breathe-n-se-v2.regions.json"
+    }
+  ]
+}

@@ -1,0 +1,241 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "gaucho-crouch-aim-idle": {
+      "cell": 210,
+      "anchor": [
+        105,
+        186
+      ],
+      "logicalCell": 70,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-fire-north-v1.png",
+          "sha256": "159ef678cbcfa8e8042685c732a86824943a476bd243ab9776d64a8b27e50fcf",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-fire-south-v1.png",
+          "sha256": "edcedf9fbada29e181fcddeb0f5c19cabf118b5faa7c3a0bd0e53b1d577dde9f",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-fire-south-v2.png",
+          "sha256": "b1189d751d7b3c1cd356d9e4626133ba6257b642e2d5eec9d9dfe78a535a4c1d",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-fire-north-v1.png",
+          "sourceScale": 0.34183673,
+          "sourceAnchor": [
+            153.5,
+            290
+          ],
+          "sourceBounds": [
+            79,
+            94,
+            228,
+            290
+          ],
+          "bounds": [
+            80,
+            119,
+            131,
+            186
+          ],
+          "sha256": "5506aa89342ffce3d91af5dcc6daff65ca4da4079225bc6866e121c3acdcbcf7"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-fire-north-v1.png",
+          "sourceScale": 0.36363636,
+          "sourceAnchor": [
+            158.75,
+            249
+          ],
+          "sourceBounds": [
+            71,
+            51,
+            246,
+            249
+          ],
+          "bounds": [
+            73,
+            114,
+            137,
+            186
+          ],
+          "sha256": "f9d7ccd807b95b9ec0df77fa39f3f7ee8fe952d12b62a935949578925459e847"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-fire-north-v1.png",
+          "sourceScale": 0.38947368,
+          "sourceAnchor": [
+            127.82432,
+            268
+          ],
+          "sourceBounds": [
+            63,
+            78,
+            284,
+            268
+          ],
+          "bounds": [
+            80,
+            112,
+            166,
+            186
+          ],
+          "sha256": "79439b702080e5644908e7679f3b3dbaef3d5a289992e326ebac5a5595b6cd43"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-fire-north-v1.png",
+          "sourceScale": 0.38378378,
+          "sourceAnchor": [
+            138.57746,
+            244
+          ],
+          "sourceBounds": [
+            66,
+            59,
+            249,
+            244
+          ],
+          "bounds": [
+            77,
+            115,
+            147,
+            186
+          ],
+          "sha256": "012a3befc2adf6d8a7dceb03881cacad2703b3bca93eaad80eb06fd09415137a"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-fire-south-v2.png",
+          "sourceScale": 0.31651376,
+          "sourceAnchor": [
+            169,
+            317
+          ],
+          "sourceBounds": [
+            89,
+            99,
+            247,
+            317
+          ],
+          "bounds": [
+            80,
+            117,
+            130,
+            186
+          ],
+          "sha256": "ad07e943ee0a5e0807b8ee6a7eeb1825ca6700ccd47759dcc5a8f1b0f70c9b1d"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-fire-south-v1.png",
+          "sourceScale": 0.38541667,
+          "sourceAnchor": [
+            150.77027,
+            237
+          ],
+          "sourceBounds": [
+            69,
+            45,
+            257,
+            237
+          ],
+          "bounds": [
+            73,
+            112,
+            145,
+            186
+          ],
+          "sha256": "0f2a63d5d7483fa0da64c6571be6e5d8f4e17f9e213b0b1916fbd59294ffadf1"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-fire-south-v1.png",
+          "sourceScale": 0.38947368,
+          "sourceAnchor": [
+            175.60811,
+            252
+          ],
+          "sourceBounds": [
+            57,
+            62,
+            269,
+            252
+          ],
+          "bounds": [
+            59,
+            112,
+            142,
+            186
+          ],
+          "sha256": "a002b2590e0ef139cff0dc862c7437a044b25cb326a65ce6d33ad281ed73dcad"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/gaucho-crouch-fire-south-v1.png",
+          "sourceScale": 0.38219895,
+          "sourceAnchor": [
+            186.19178,
+            225
+          ],
+          "sourceBounds": [
+            74,
+            34,
+            256,
+            225
+          ],
+          "bounds": [
+            62,
+            113,
+            132,
+            186
+          ],
+          "sha256": "ca4f85b9774212a7fa11538d85c850c94a504884c02c45127beea158a2ce975c"
+        }
+      ],
+      "file": "gaucho-crouch-aim-idle.png",
+      "size": [
+        1680,
+        210
+      ],
+      "sha256": "c965455967a9831a782b50dccfb20d976c95c671f918d4717c64f371c37216d1",
+      "derivedFrom": {
+        "atlas": "gaucho-crouch-fire",
+        "frame": 0,
+        "reason": "hold authored pre-shot aim"
+      }
+    }
+  }
+}

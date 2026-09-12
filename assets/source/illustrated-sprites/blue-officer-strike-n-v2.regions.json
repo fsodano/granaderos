@@ -1,0 +1,55 @@
+{
+  "columns": 4,
+  "rows": 1,
+  "scaleMode": "height",
+  "slots": [
+    {
+      "direction": "n",
+      "frame": 0,
+      "row": 0,
+      "col": 0,
+      "rect": [
+        168,
+        128,
+        177,
+        454
+      ]
+    },
+    {
+      "direction": "n",
+      "frame": 1,
+      "row": 0,
+      "col": 1,
+      "rect": [
+        704,
+        128,
+        203,
+        454
+      ]
+    },
+    {
+      "direction": "n",
+      "frame": 2,
+      "row": 0,
+      "col": 2,
+      "rect": [
+        1265,
+        128,
+        201,
+        454
+      ]
+    },
+    {
+      "direction": "n",
+      "frame": 3,
+      "row": 0,
+      "col": 3,
+      "rect": [
+        1812,
+        128,
+        177,
+        454
+      ]
+    }
+  ]
+}

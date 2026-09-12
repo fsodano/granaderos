@@ -1,0 +1,241 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "granadero-aim-idle": {
+      "cell": 210,
+      "anchor": [
+        105,
+        186
+      ],
+      "logicalCell": 70,
+      "framesPerDirection": 1,
+      "fps": 0,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/granadero-fire-north-v2.png",
+          "sha256": "cd58008d2d08a496ce06e7a121cfaa7563cf06ebbf846264d0163648c226dcb2",
+          "scale": 0.435
+        },
+        {
+          "file": "assets/source/illustrated-sprites/granadero-fire-south-v2.png",
+          "sha256": "f9f58547c73939aaa21bde647f6e32ccfd4ea505711d193d4bd464a5e6337d8b",
+          "scale": 0.407
+        },
+        {
+          "file": "assets/source/illustrated-sprites/granadero-fire-s-recover-v2.png",
+          "sha256": "5131e6bf847e32f4f1c48b36941cfd50b628685e1b6f44cd002e07a0a40bd478",
+          "scale": 0.136
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/granadero-fire-north-v2.png",
+          "sourceScale": 0.43,
+          "sourceAnchor": [
+            46.5,
+            300
+          ],
+          "sourceBounds": [
+            2,
+            14,
+            100,
+            292
+          ],
+          "bounds": [
+            86,
+            63,
+            128,
+            183
+          ],
+          "sha256": "a8ec16dd80ccd1bb355237b623cfdcf201a8cd262072f386f32b77d006efdfd2"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/granadero-fire-north-v2.png",
+          "sourceScale": 0.42,
+          "sourceAnchor": [
+            57.5,
+            287
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            180,
+            282
+          ],
+          "bounds": [
+            82,
+            66,
+            157,
+            184
+          ],
+          "sha256": "a38f759953eb2abd2a1cd0b4e92f8a95245a35cf31ff190b7217f9c3bee583ce"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/granadero-fire-north-v2.png",
+          "sourceScale": 0.46,
+          "sourceAnchor": [
+            56,
+            271
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            206,
+            267
+          ],
+          "bounds": [
+            80,
+            62,
+            174,
+            184
+          ],
+          "sha256": "46001470bab879b62ecfaacd042b0a9521583d487d00210b072b9d14334f4187"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/granadero-fire-north-v2.png",
+          "sourceScale": 0.45,
+          "sourceAnchor": [
+            47,
+            264
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            155,
+            259
+          ],
+          "bounds": [
+            85,
+            68,
+            154,
+            184
+          ],
+          "sha256": "49335d4f2b0770190b59b37cbe616505febc5ca0655b426c56f37749e4d382c7"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/granadero-fire-south-v2.png",
+          "sourceScale": 0.407,
+          "sourceAnchor": [
+            58.5,
+            293
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            109,
+            293
+          ],
+          "bounds": [
+            82,
+            68,
+            126,
+            186
+          ],
+          "sha256": "60364e2f8be3867ed3160cbe9e2e47863cb6d4f26ff95e08ebe52ee4d7ab03f0"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/granadero-fire-south-v2.png",
+          "sourceScale": 0.438,
+          "sourceAnchor": [
+            104,
+            286
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            160,
+            285
+          ],
+          "bounds": [
+            60,
+            62,
+            129,
+            186
+          ],
+          "sha256": "201d4f189fab3c3106f2383946e3b15846e2d157d954d4c8c2570dfeaeb4c16b"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/granadero-fire-south-v2.png",
+          "sourceScale": 0.43,
+          "sourceAnchor": [
+            184.5,
+            286
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            241,
+            285
+          ],
+          "bounds": [
+            27,
+            64,
+            130,
+            186
+          ],
+          "sha256": "7f6d015ec44bcaf1518347190551fa4c33476c0e53ce5f708c9aaccb7ed0eced"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/granadero-fire-south-v2.png",
+          "sourceScale": 0.468,
+          "sourceAnchor": [
+            133.5,
+            259
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            182,
+            259
+          ],
+          "bounds": [
+            43,
+            66,
+            127,
+            186
+          ],
+          "sha256": "532cc442eeefe1d90083ab5e6d698c60d086982f5f20f003bf316e140e41f530"
+        }
+      ],
+      "file": "granadero-aim-idle.png",
+      "size": [
+        1680,
+        210
+      ],
+      "sha256": "0e3404b86ecb71f4333b161542611b06e74bb9eac995ce143fe94fa006400793",
+      "derivedFrom": {
+        "atlas": "granadero-fire",
+        "frame": 0,
+        "reason": "hold authored pre-shot aim"
+      }
+    }
+  }
+}

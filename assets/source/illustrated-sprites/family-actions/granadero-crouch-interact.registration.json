@@ -1,0 +1,738 @@
+{
+  "version": 1,
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "sheets": [
+    {
+      "name": "granadero-crouch-interact",
+      "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-north-v2.png",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "fps": 5,
+      "cell": 288,
+      "logicalCell": 96,
+      "anchor": [
+        144,
+        225
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            92,
+            79,
+            130,
+            203
+          ],
+          "scale": 0.36683417085427134,
+          "anchor": [
+            63.5,
+            201
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            401,
+            79,
+            132,
+            203
+          ],
+          "scale": 0.36683417085427134,
+          "anchor": [
+            65,
+            201
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            711,
+            79,
+            132,
+            203
+          ],
+          "scale": 0.36683417085427134,
+          "anchor": [
+            65,
+            201
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1021,
+            79,
+            131,
+            203
+          ],
+          "scale": 0.36683417085427134,
+          "anchor": [
+            65,
+            201
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "row": 1,
+          "col": 0,
+          "rect": [
+            79,
+            371,
+            143,
+            220
+          ],
+          "scale": 0.3644859813084112,
+          "anchor": [
+            66,
+            218
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "row": 1,
+          "col": 1,
+          "rect": [
+            381,
+            371,
+            191,
+            220
+          ],
+          "scale": 0.3644859813084112,
+          "anchor": [
+            79.5,
+            218
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "row": 1,
+          "col": 2,
+          "rect": [
+            696,
+            371,
+            160,
+            220
+          ],
+          "scale": 0.3644859813084112,
+          "anchor": [
+            68.5,
+            218
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "row": 1,
+          "col": 3,
+          "rect": [
+            1009,
+            371,
+            144,
+            220
+          ],
+          "scale": 0.3644859813084112,
+          "anchor": [
+            67,
+            218
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "row": 2,
+          "col": 0,
+          "rect": [
+            84,
+            662,
+            134,
+            227
+          ],
+          "scale": 0.35585585585585583,
+          "anchor": [
+            76,
+            225
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "row": 2,
+          "col": 1,
+          "rect": [
+            381,
+            662,
+            197,
+            227
+          ],
+          "scale": 0.35585585585585583,
+          "anchor": [
+            80,
+            225
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "row": 2,
+          "col": 2,
+          "rect": [
+            696,
+            662,
+            171,
+            227
+          ],
+          "scale": 0.35585585585585583,
+          "anchor": [
+            78,
+            225
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "row": 2,
+          "col": 3,
+          "rect": [
+            1015,
+            662,
+            135,
+            227
+          ],
+          "scale": 0.35585585585585583,
+          "anchor": [
+            76.5,
+            225
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "row": 3,
+          "col": 0,
+          "rect": [
+            84,
+            963,
+            147,
+            225
+          ],
+          "scale": 0.35909090909090907,
+          "anchor": [
+            71.5,
+            223
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "row": 3,
+          "col": 1,
+          "rect": [
+            386,
+            963,
+            181,
+            225
+          ],
+          "scale": 0.35909090909090907,
+          "anchor": [
+            85.5,
+            223
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "row": 3,
+          "col": 2,
+          "rect": [
+            702,
+            963,
+            156,
+            225
+          ],
+          "scale": 0.35909090909090907,
+          "anchor": [
+            66,
+            223
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "row": 3,
+          "col": 3,
+          "rect": [
+            1016,
+            963,
+            146,
+            225
+          ],
+          "scale": 0.35909090909090907,
+          "anchor": [
+            70.5,
+            223
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        }
+      ]
+    },
+    {
+      "name": "granadero-crouch-interact",
+      "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-south-v2.png",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "fps": 5,
+      "cell": 288,
+      "logicalCell": 96,
+      "anchor": [
+        144,
+        225
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "s",
+          "frame": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            88,
+            100,
+            145,
+            215
+          ],
+          "scale": 0.357487922705314,
+          "anchor": [
+            73.5,
+            213
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            403,
+            100,
+            142,
+            215
+          ],
+          "scale": 0.357487922705314,
+          "anchor": [
+            79.5,
+            213
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            713,
+            100,
+            146,
+            215
+          ],
+          "scale": 0.357487922705314,
+          "anchor": [
+            76.5,
+            213
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1030,
+            100,
+            146,
+            215
+          ],
+          "scale": 0.357487922705314,
+          "anchor": [
+            74,
+            213
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "row": 2,
+          "col": 0,
+          "rect": [
+            100,
+            673,
+            152,
+            217
+          ],
+          "scale": 0.36619718309859156,
+          "anchor": [
+            74,
+            215
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "row": 2,
+          "col": 1,
+          "rect": [
+            385,
+            673,
+            194,
+            217
+          ],
+          "scale": 0.36619718309859156,
+          "anchor": [
+            84.5,
+            215
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "row": 2,
+          "col": 2,
+          "rect": [
+            713,
+            673,
+            176,
+            217
+          ],
+          "scale": 0.36619718309859156,
+          "anchor": [
+            93.5,
+            215
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "row": 2,
+          "col": 3,
+          "rect": [
+            1043,
+            673,
+            148,
+            217
+          ],
+          "scale": 0.36619718309859156,
+          "anchor": [
+            62,
+            215
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "row": 3,
+          "col": 0,
+          "rect": [
+            91,
+            949,
+            153,
+            222
+          ],
+          "scale": 0.3611111111111111,
+          "anchor": [
+            69,
+            220
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "row": 3,
+          "col": 1,
+          "rect": [
+            382,
+            949,
+            186,
+            222
+          ],
+          "scale": 0.3611111111111111,
+          "anchor": [
+            107.5,
+            220
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "row": 3,
+          "col": 2,
+          "rect": [
+            712,
+            949,
+            169,
+            222
+          ],
+          "scale": 0.3611111111111111,
+          "anchor": [
+            89.5,
+            220
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "row": 3,
+          "col": 3,
+          "rect": [
+            1036,
+            949,
+            154,
+            222
+          ],
+          "scale": 0.3611111111111111,
+          "anchor": [
+            69.5,
+            220
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        }
+      ]
+    },
+    {
+      "name": "granadero-crouch-interact",
+      "source": "assets/source/illustrated-sprites/family-actions/granadero-crouch-interact-sw-v4.png",
+      "columns": 4,
+      "rows": 1,
+      "frames": 4,
+      "fps": 5,
+      "cell": 288,
+      "logicalCell": 96,
+      "anchor": [
+        144,
+        225
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "sw",
+          "frame": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            128,
+            175,
+            290,
+            415
+          ],
+          "scale": 0.1922141119221411,
+          "anchor": [
+            153.5,
+            413
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            601,
+            175,
+            363,
+            415
+          ],
+          "scale": 0.1922141119221411,
+          "anchor": [
+            226.5,
+            413
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            1189,
+            175,
+            311,
+            415
+          ],
+          "scale": 0.1922141119221411,
+          "anchor": [
+            174,
+            413
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1757,
+            175,
+            290,
+            415
+          ],
+          "scale": 0.1922141119221411,
+          "anchor": [
+            153.5,
+            413
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "authored directional strip"
+          }
+        }
+      ]
+    }
+  ]
+}

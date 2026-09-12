@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-scout-mounted-strike": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-north-v1.png",
+          "sha256": "fcf0074fb69c6047641fb96e359d081cbe6883082787f44b295632de3872710f",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-south-v1.png",
+          "sha256": "54a4fab7508fc60c806fa96205da9a92574e5fbc5b51f4ce8e3afaec0f6bcee9",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-north-v1.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            54,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            107,
+            235
+          ],
+          "bounds": [
+            107,
+            60,
+            181,
+            225
+          ],
+          "sha256": "c2877ea6edd0411bb63e5f763560ee473d32a0b1d7299279dfbfe60e47440e8a"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-north-v1.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            53.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            106,
+            235
+          ],
+          "bounds": [
+            108,
+            60,
+            182,
+            225
+          ],
+          "sha256": "77af345d8a4ce751c1c4f5c07855aa4ab6e1612a2cedc595920f91b96f852edd"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-north-v1.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            53.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            127,
+            235
+          ],
+          "bounds": [
+            108,
+            60,
+            197,
+            225
+          ],
+          "sha256": "7cab8a84c0913e479e0ff0bf4d543a0e37e7c07f9003b0526704c558cde1f8f9"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-north-v1.png",
+          "sourceScale": 0.7081545064377682,
+          "sourceAnchor": [
+            53.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            106,
+            235
+          ],
+          "bounds": [
+            108,
+            60,
+            182,
+            225
+          ],
+          "sha256": "2d2679838cfb054790c7a69ada9f684ab39fcee57b1d43d11158eb6c63e29a2a"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-north-v1.png",
+          "sourceScale": 0.746606334841629,
+          "sourceAnchor": [
+            78,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            191,
+            223
+          ],
+          "bounds": [
+            87,
+            60,
+            228,
+            225
+          ],
+          "sha256": "fe0ecfc1c57212e8f078560fe250f4a951936f89509370986f8bfef620ce5256"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-north-v1.png",
+          "sourceScale": 0.746606334841629,
+          "sourceAnchor": [
+            77,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            190,
+            223
+          ],
+          "bounds": [
+            88,
+            60,
+            228,
+            225
+          ],
+          "sha256": "e1c0b69335651af78d9484a9195d5e5b9b40f7ba027bbe4c30b1b40be7727765"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-north-v1.png",
+          "sourceScale": 0.746606334841629,
+          "sourceAnchor": [
+            78,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            192,
+            223
+          ],
+          "bounds": [
+            87,
+            60,
+            229,
+            225
+          ],
+          "sha256": "16d1c5212fffde93f17d39d1afe24a1ec29c4414fff8780a4e76f5718937f103"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-north-v1.png",
+          "sourceScale": 0.746606334841629,
+          "sourceAnchor": [
+            77,
+            223
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            190,
+            223
+          ],
+          "bounds": [
+            88,
+            60,
+            228,
+            225
+          ],
+          "sha256": "3b1931b8b0ca49706170b3f12e64b5d3d10a40884e672273d215008e7dd791ca"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-north-v1.png",
+          "sourceScale": 0.7922705314009661,
+          "sourceAnchor": [
+            85.5,
+            210
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            205,
+            210
+          ],
+          "bounds": [
+            78,
+            61,
+            239,
+            225
+          ],
+          "sha256": "46b744ddad87d362af7c3dba6c9bcbd86d5e212bf33e41a8b3124046660ce633"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-north-v1.png",
+          "sourceScale": 0.7922705314009661,
+          "sourceAnchor": [
+            85,
+            210
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            203,
+            210
+          ],
+          "bounds": [
+            78,
+            61,
+            237,
+            225
+          ],
+          "sha256": "62a38dad3d32fbd0a31e79d208b281d3a3cb4cf480258a99a87799b1014aa576"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-north-v1.png",
+          "sourceScale": 0.7922705314009661,
+          "sourceAnchor": [
+            86,
+            210
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            204,
+            210
+          ],
+          "bounds": [
+            77,
+            61,
+            237,
+            225
+          ],
+          "sha256": "03b8abde28cc799059c1a32e8c099ac1174ef60d60388b4171448c671964cc1e"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-north-v1.png",
+          "sourceScale": 0.7922705314009661,
+          "sourceAnchor": [
+            87.5,
+            210
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            206,
+            210
+          ],
+          "bounds": [
+            76,
+            60,
+            238,
+            225
+          ],
+          "sha256": "5a54114fad3a9c76f593353c15916d137c1a54328ec725cd1223bc1ab0f79569"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-north-v1.png",
+          "sourceScale": 0.7522522522522522,
+          "sourceAnchor": [
+            73,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            170,
+            225
+          ],
+          "bounds": [
+            91,
+            58,
+            217,
+            225
+          ],
+          "sha256": "b0e0ca61893d9bffd8c8728e802ac81c13734050a64bd461d39a61a2b43e47e3"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-north-v1.png",
+          "sourceScale": 0.7522522522522522,
+          "sourceAnchor": [
+            70.5,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            171,
+            225
+          ],
+          "bounds": [
+            92,
+            58,
+            219,
+            225
+          ],
+          "sha256": "08975c07faea1c60029e51dfcb3497db743648be25a90d6d161ef53fe7fcb27b"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-north-v1.png",
+          "sourceScale": 0.7522522522522522,
+          "sourceAnchor": [
+            73.5,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            173,
+            225
+          ],
+          "bounds": [
+            90,
+            57,
+            219,
+            225
+          ],
+          "sha256": "095429cf94581aa5984a69d549bff53190bf13b0546e073df5860d28ebd8eb82"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-north-v1.png",
+          "sourceScale": 0.7522522522522522,
+          "sourceAnchor": [
+            71,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            168,
+            225
+          ],
+          "bounds": [
+            92,
+            58,
+            217,
+            225
+          ],
+          "sha256": "7667bd7bbd1f1e3ed24c68300a1b306ae4be42229cc2ac7c0e3e5da27be2495a"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-south-v1.png",
+          "sourceScale": 0.7094017094017094,
+          "sourceAnchor": [
+            55.5,
+            237
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            108,
+            237
+          ],
+          "bounds": [
+            106,
+            59,
+            181,
+            225
+          ],
+          "sha256": "a3c57aba6b241173380670f4ed64f4b056f4678ad5ca7b30fa4ae2fe7a153a76"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-south-v1.png",
+          "sourceScale": 0.7094017094017094,
+          "sourceAnchor": [
+            61.5,
+            237
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            115,
+            237
+          ],
+          "bounds": [
+            102,
+            59,
+            182,
+            225
+          ],
+          "sha256": "524fcd3a817682e6ad40c672fdc4ea141ef8bc2c87b5ac55b2b6c99a9f8e2f7d"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-south-v1.png",
+          "sourceScale": 0.7094017094017094,
+          "sourceAnchor": [
+            54.5,
+            237
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            108,
+            237
+          ],
+          "bounds": [
+            107,
+            58,
+            182,
+            225
+          ],
+          "sha256": "3cfb0bbd98cbb829080ba650d9290d34cad747fc8ddb5f0ad6f3d0c36452edbd"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-south-v1.png",
+          "sourceScale": 0.7094017094017094,
+          "sourceAnchor": [
+            55,
+            237
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            109,
+            237
+          ],
+          "bounds": [
+            106,
+            58,
+            182,
+            225
+          ],
+          "sha256": "dcb92bfbbaaa190838977ab00b3ca63cac3d07dda0a74890f540c31314286444"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-south-v1.png",
+          "sourceScale": 0.7280701754385965,
+          "sourceAnchor": [
+            113.5,
+            230
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            198,
+            230
+          ],
+          "bounds": [
+            63,
+            59,
+            206,
+            225
+          ],
+          "sha256": "f779f0f7a76b7d1181fc3985db1c5f183d1bd2048a7f3dd920f1cbb120918f3e"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-south-v1.png",
+          "sourceScale": 0.7280701754385965,
+          "sourceAnchor": [
+            114.5,
+            230
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            199,
+            230
+          ],
+          "bounds": [
+            62,
+            60,
+            205,
+            225
+          ],
+          "sha256": "f941a47bc5aab08b6be39614e83a7987c7146100eb6eae0ddcff070d795712f8"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-south-v1.png",
+          "sourceScale": 0.7280701754385965,
+          "sourceAnchor": [
+            116,
+            230
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            201,
+            230
+          ],
+          "bounds": [
+            61,
+            59,
+            206,
+            225
+          ],
+          "sha256": "77e6e84adf0e32fbdd4a7ad0a2e027600ff24964a112caaf80c79fea31bc56cf"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-south-v1.png",
+          "sourceScale": 0.7280701754385965,
+          "sourceAnchor": [
+            114,
+            230
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            199,
+            230
+          ],
+          "bounds": [
+            62,
+            59,
+            205,
+            225
+          ],
+          "sha256": "1d3f257353a2364a95d87af29eeed2ab2f0eb0d3e2afedc0df668ea4e6fd3966"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-south-v1.png",
+          "sourceScale": 0.7592592592592593,
+          "sourceAnchor": [
+            118,
+            218
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            202,
+            218
+          ],
+          "bounds": [
+            56,
+            61,
+            208,
+            225
+          ],
+          "sha256": "ed6a0d156683bbc9d092c4ac6e5aae4c4d265ed59ca3f9dea4317ee244f2d38f"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-south-v1.png",
+          "sourceScale": 0.7592592592592593,
+          "sourceAnchor": [
+            115.5,
+            218
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            198,
+            218
+          ],
+          "bounds": [
+            58,
+            62,
+            207,
+            225
+          ],
+          "sha256": "3cb0f1dd6a36c638038150aab900ed8fe17b2545967e45954cd811c464f7fe07"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-south-v1.png",
+          "sourceScale": 0.7592592592592593,
+          "sourceAnchor": [
+            123,
+            218
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            208,
+            218
+          ],
+          "bounds": [
+            52,
+            62,
+            208,
+            225
+          ],
+          "sha256": "fa598f358767f331c83c3f52838dd1e0e6b9f9b9c00a3dfa05b487ccf406dc77"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-south-v1.png",
+          "sourceScale": 0.7592592592592593,
+          "sourceAnchor": [
+            116.5,
+            218
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            201,
+            218
+          ],
+          "bounds": [
+            57,
+            61,
+            208,
+            225
+          ],
+          "sha256": "8bbf1af7172bcca1f5399a5f32141c6579aa51855f567b52467971cc4f707d3c"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-south-v1.png",
+          "sourceScale": 0.7432432432432432,
+          "sourceAnchor": [
+            97.5,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            166,
+            224
+          ],
+          "bounds": [
+            73,
+            59,
+            195,
+            224
+          ],
+          "sha256": "0150fa3e41fdfe802f621d63e6caa5d6e77862aac206824118c4c251c1bf2d85"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-south-v1.png",
+          "sourceScale": 0.7432432432432432,
+          "sourceAnchor": [
+            101.5,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            5,
+            172,
+            224
+          ],
+          "bounds": [
+            70,
+            61,
+            196,
+            224
+          ],
+          "sha256": "e42715b960a509b9a6d4c3a28455bae03a31495eac125953c82d3d44e4a399aa"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-south-v1.png",
+          "sourceScale": 0.7432432432432432,
+          "sourceAnchor": [
+            105.5,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            177,
+            225
+          ],
+          "bounds": [
+            67,
+            61,
+            197,
+            225
+          ],
+          "sha256": "f1dbc1d11e0cfdde994a2878bb321c4573c4d532f1ae24f748dad88a3efd174f"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-scout-mounted-strike-south-v1.png",
+          "sourceScale": 0.7432432432432432,
+          "sourceAnchor": [
+            100,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            171,
+            225
+          ],
+          "bounds": [
+            71,
+            60,
+            197,
+            225
+          ],
+          "sha256": "83256a572d96e63e53b5396eca763e3c1e19c6429289ac45c41c6455f06d464a"
+        }
+      ],
+      "file": "woman-scout-mounted-strike.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "43aa8709ce8f6dce0e0b5cd9b8870b4d6857b460b4da602ca8cf847e0e785c7d"
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "columns": 3,
+  "rows": 1,
+  "scaleMode": "height",
+  "slots": [
+    {
+      "direction": "sw",
+      "frame": 2,
+      "row": 0,
+      "col": 0,
+      "rect": [
+        229,
+        100,
+        307,
+        580
+      ]
+    },
+    {
+      "direction": "w",
+      "frame": 2,
+      "row": 0,
+      "col": 1,
+      "rect": [
+        852,
+        100,
+        374,
+        580
+      ]
+    },
+    {
+      "direction": "nw",
+      "frame": 2,
+      "row": 0,
+      "col": 2,
+      "rect": [
+        1582,
+        100,
+        338,
+        580
+      ]
+    }
+  ]
+}

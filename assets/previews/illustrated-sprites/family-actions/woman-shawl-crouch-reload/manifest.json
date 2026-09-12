@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-shawl-crouch-reload": {
+      "cell": 240,
+      "anchor": [
+        120,
+        210
+      ],
+      "logicalCell": 80,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-north-v1.png",
+          "sha256": "b9b944ca425681ac11704a7ad73a6b8174e26c4df34d5ea003805e1fd9c4e794",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-south-v2.png",
+          "sha256": "7a7dab22abaedda345356404b256376c89b0620ccf7b7fc7efc06374c3d60acf",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-north-v1.png",
+          "sourceScale": 0.3383838383838384,
+          "sourceAnchor": [
+            70,
+            267
+          ],
+          "sourceBounds": [
+            2,
+            68,
+            203,
+            266
+          ],
+          "bounds": [
+            97,
+            143,
+            165,
+            210
+          ],
+          "sha256": "542b4faca9fe0a5d3861f039769eb4ea243727d41be84703af1fc8d3e5026bbc"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-north-v1.png",
+          "sourceScale": 0.3383838383838384,
+          "sourceAnchor": [
+            98.5,
+            267
+          ],
+          "sourceBounds": [
+            2,
+            62,
+            188,
+            266
+          ],
+          "bounds": [
+            87,
+            141,
+            150,
+            210
+          ],
+          "sha256": "37d2500e15088437436135082251ab5f77980087ec7fd2adb509c9e17f262ecc"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-north-v1.png",
+          "sourceScale": 0.3383838383838384,
+          "sourceAnchor": [
+            86.5,
+            267
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            168,
+            267
+          ],
+          "bounds": [
+            91,
+            120,
+            147,
+            210
+          ],
+          "sha256": "ddf80550d8c53d845ed4e0e4e8ab932b31fa69035dc8640f925ddb5f764975a2"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-north-v1.png",
+          "sourceScale": 0.3383838383838384,
+          "sourceAnchor": [
+            73.5,
+            267
+          ],
+          "sourceBounds": [
+            2,
+            76,
+            203,
+            267
+          ],
+          "bounds": [
+            96,
+            145,
+            164,
+            210
+          ],
+          "sha256": "4356a923de45bff91fafbab24f174e4abb9a3aeec0e8f3eff179bece4f9e71c1"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-north-v1.png",
+          "sourceScale": 0.36,
+          "sourceAnchor": [
+            71,
+            259
+          ],
+          "sourceBounds": [
+            2,
+            58,
+            202,
+            258
+          ],
+          "bounds": [
+            95,
+            138,
+            167,
+            210
+          ],
+          "sha256": "9625caf8ce1d2be37e12efdb81b3a35ce0f5dbec6c0f1a4f2a273af472a78557"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-north-v1.png",
+          "sourceScale": 0.36,
+          "sourceAnchor": [
+            97.5,
+            259
+          ],
+          "sourceBounds": [
+            2,
+            55,
+            185,
+            259
+          ],
+          "bounds": [
+            86,
+            137,
+            152,
+            210
+          ],
+          "sha256": "e8f759926b3b375135fd2e2c6e0982b36dd2100b450513871dc72a55793fd855"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-north-v1.png",
+          "sourceScale": 0.36,
+          "sourceAnchor": [
+            90.5,
+            259
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            172,
+            259
+          ],
+          "bounds": [
+            88,
+            117,
+            149,
+            210
+          ],
+          "sha256": "993c29e3a6b72a247cd24d3638cd346feb6c3e7ac1642192d30c5cedff8fdb0a"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-north-v1.png",
+          "sourceScale": 0.36,
+          "sourceAnchor": [
+            73,
+            259
+          ],
+          "sourceBounds": [
+            2,
+            58,
+            211,
+            259
+          ],
+          "bounds": [
+            94,
+            138,
+            169,
+            210
+          ],
+          "sha256": "7d75bbd1bbb75a3ab71a9cacaa08ea78db4e5cda15e3cd3d1b3ddb2f43d66d06"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-north-v1.png",
+          "sourceScale": 0.36318407960199006,
+          "sourceAnchor": [
+            67.5,
+            263
+          ],
+          "sourceBounds": [
+            2,
+            62,
+            188,
+            263
+          ],
+          "bounds": [
+            96,
+            137,
+            164,
+            210
+          ],
+          "sha256": "5c1841679e9e5bb9ae830517168d3e853d453ff531c41ed51b4032d28a1d95fe"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-north-v1.png",
+          "sourceScale": 0.36318407960199006,
+          "sourceAnchor": [
+            94.5,
+            263
+          ],
+          "sourceBounds": [
+            2,
+            57,
+            182,
+            263
+          ],
+          "bounds": [
+            86,
+            135,
+            151,
+            210
+          ],
+          "sha256": "9c45ac087bbc175986551af9a0bf4126f7890e080d585f850794e92d989b3fd3"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-north-v1.png",
+          "sourceScale": 0.36318407960199006,
+          "sourceAnchor": [
+            84.5,
+            263
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            162,
+            263
+          ],
+          "bounds": [
+            90,
+            115,
+            148,
+            210
+          ],
+          "sha256": "5ba2c67226d75c1f1dc33b3f81f0ca332d38d84c0ea17541c2172c646bf0597a"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-north-v1.png",
+          "sourceScale": 0.36318407960199006,
+          "sourceAnchor": [
+            66,
+            263
+          ],
+          "sourceBounds": [
+            2,
+            62,
+            195,
+            263
+          ],
+          "bounds": [
+            97,
+            137,
+            167,
+            210
+          ],
+          "sha256": "730d08ef7f3bdcf9b7398c244a5310a1352027d1dc41d46ea345dba64cde8c2d"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-north-v1.png",
+          "sourceScale": 0.3497536945812808,
+          "sourceAnchor": [
+            84,
+            260
+          ],
+          "sourceBounds": [
+            2,
+            55,
+            173,
+            258
+          ],
+          "bounds": [
+            91,
+            138,
+            151,
+            209
+          ],
+          "sha256": "0f42fdb6ea375da6ea529c5e30fb9c9701ada5d6504e5ca43757032ec03cfc6a"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-north-v1.png",
+          "sourceScale": 0.3497536945812808,
+          "sourceAnchor": [
+            98.5,
+            260
+          ],
+          "sourceBounds": [
+            2,
+            55,
+            159,
+            260
+          ],
+          "bounds": [
+            86,
+            138,
+            141,
+            210
+          ],
+          "sha256": "a25f352d786a3b5d94d417f9ebf331f1a11c5ba6d9979199ea0628964099c67c"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-north-v1.png",
+          "sourceScale": 0.3497536945812808,
+          "sourceAnchor": [
+            82.5,
+            260
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            150,
+            260
+          ],
+          "bounds": [
+            92,
+            120,
+            144,
+            210
+          ],
+          "sha256": "844c10e8c7d4113b245c4d4fabe10d9294c676ae8714fce8fd0f5d9ec63a1213"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-north-v1.png",
+          "sourceScale": 0.3497536945812808,
+          "sourceAnchor": [
+            85.5,
+            260
+          ],
+          "sourceBounds": [
+            2,
+            55,
+            176,
+            258
+          ],
+          "bounds": [
+            91,
+            138,
+            152,
+            209
+          ],
+          "sha256": "b35880ffd98724030ef9d6e13f544adae34ed840130af4c69e5cc3a4c93029c1"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-south-v2.png",
+          "sourceScale": 0.34,
+          "sourceAnchor": [
+            79,
+            281
+          ],
+          "sourceBounds": [
+            2,
+            79,
+            178,
+            279
+          ],
+          "bounds": [
+            94,
+            141,
+            154,
+            209
+          ],
+          "sha256": "13a57f252424a98340fc7cf2a65056943df0aaed26fadf04c3f32b96e266aad2"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-south-v2.png",
+          "sourceScale": 0.34,
+          "sourceAnchor": [
+            80,
+            281
+          ],
+          "sourceBounds": [
+            2,
+            63,
+            157,
+            278
+          ],
+          "bounds": [
+            93,
+            136,
+            146,
+            209
+          ],
+          "sha256": "ced2797682755cd9dcf5e1a56572b85af1d1e52b8e64b795b7d33e83e85a474f"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-south-v2.png",
+          "sourceScale": 0.34,
+          "sourceAnchor": [
+            77,
+            281
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            151,
+            279
+          ],
+          "bounds": [
+            95,
+            115,
+            146,
+            209
+          ],
+          "sha256": "c295878938c4a6b7240466cca41b5a4ffdf20d16233c886b5cd1078a6657dcb2"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-south-v2.png",
+          "sourceScale": 0.34,
+          "sourceAnchor": [
+            78.5,
+            281
+          ],
+          "sourceBounds": [
+            2,
+            81,
+            177,
+            281
+          ],
+          "bounds": [
+            94,
+            142,
+            154,
+            210
+          ],
+          "sha256": "5672930c23d91194d3089c584f32c3dfb37168f472aa62c0e8a753f69b56aedb"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-south-v2.png",
+          "sourceScale": 0.36683417085427134,
+          "sourceAnchor": [
+            102.5,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            75,
+            184,
+            274
+          ],
+          "bounds": [
+            83,
+            137,
+            150,
+            210
+          ],
+          "sha256": "d95b7525740ed3ae8fd0391c1edfd7f41f28769ae7a0013b5647f6276a813349"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-south-v2.png",
+          "sourceScale": 0.36683417085427134,
+          "sourceAnchor": [
+            81,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            56,
+            155,
+            274
+          ],
+          "bounds": [
+            91,
+            130,
+            147,
+            210
+          ],
+          "sha256": "2025b821163b9efc178b8d61f5cd6a12c323bb4eebf0007b1b43ab16513eb745"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-south-v2.png",
+          "sourceScale": 0.36683417085427134,
+          "sourceAnchor": [
+            72.5,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            149,
+            274
+          ],
+          "bounds": [
+            94,
+            110,
+            148,
+            210
+          ],
+          "sha256": "dad5183693145ad61ac652381b97079f644d555ff7af8506f35a8a572870d994"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-south-v2.png",
+          "sourceScale": 0.36683417085427134,
+          "sourceAnchor": [
+            102,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            75,
+            184,
+            274
+          ],
+          "bounds": [
+            83,
+            137,
+            150,
+            210
+          ],
+          "sha256": "fa1170035b86bf57fd7ccb0d7e7ec65521dbf30d36e4f78705a14664185df7e2"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-south-v2.png",
+          "sourceScale": 0.3673469387755102,
+          "sourceAnchor": [
+            109.5,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            75,
+            177,
+            271
+          ],
+          "bounds": [
+            81,
+            137,
+            145,
+            209
+          ],
+          "sha256": "f7da884291c4c7b63627005c7e608d038827de0d1d86db4f1de8d46144a59e2f"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-south-v2.png",
+          "sourceScale": 0.3673469387755102,
+          "sourceAnchor": [
+            77,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            55,
+            152,
+            274
+          ],
+          "bounds": [
+            92,
+            130,
+            147,
+            210
+          ],
+          "sha256": "04bbefcd56f9f8d2926c4a3c2a54842463d31af291d50fd5dfd42ab7751a8666"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-south-v2.png",
+          "sourceScale": 0.3673469387755102,
+          "sourceAnchor": [
+            72,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            147,
+            271
+          ],
+          "bounds": [
+            94,
+            110,
+            147,
+            209
+          ],
+          "sha256": "b2391c8f1a670f38eb56cd47e7a8ef3dfb229cc571362020fe1bd4b0059bfbda"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-south-v2.png",
+          "sourceScale": 0.3673469387755102,
+          "sourceAnchor": [
+            109,
+            274
+          ],
+          "sourceBounds": [
+            2,
+            75,
+            176,
+            271
+          ],
+          "bounds": [
+            81,
+            137,
+            145,
+            209
+          ],
+          "sha256": "5c76f88cb294260ca4e03f3a2855a611ac3098a62e92f6e73062000a64e5ecbc"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-south-v2.png",
+          "sourceScale": 0.35678391959798994,
+          "sourceAnchor": [
+            107,
+            261
+          ],
+          "sourceBounds": [
+            2,
+            59,
+            181,
+            258
+          ],
+          "bounds": [
+            83,
+            138,
+            147,
+            209
+          ],
+          "sha256": "b84031c1e61f2d3da9d3da39d6559db7a1572da898b8dd53e832fd6cdeb75f56"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-south-v2.png",
+          "sourceScale": 0.35678391959798994,
+          "sourceAnchor": [
+            75.5,
+            261
+          ],
+          "sourceBounds": [
+            2,
+            36,
+            149,
+            261
+          ],
+          "bounds": [
+            94,
+            130,
+            146,
+            210
+          ],
+          "sha256": "7356be60ce6df7c57ab439f622afcb6f35c764454426b618a9630b755814fca6"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-south-v2.png",
+          "sourceScale": 0.35678391959798994,
+          "sourceAnchor": [
+            71.5,
+            261
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            260
+          ],
+          "bounds": [
+            95,
+            118,
+            145,
+            210
+          ],
+          "sha256": "5b31f3c6e52b83d6e1e7e4207415f34ff101d11fbbddf52b31669054a65378c6"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/woman-shawl-crouch-reload-south-v2.png",
+          "sourceScale": 0.35678391959798994,
+          "sourceAnchor": [
+            107,
+            261
+          ],
+          "sourceBounds": [
+            2,
+            61,
+            180,
+            261
+          ],
+          "bounds": [
+            83,
+            139,
+            147,
+            210
+          ],
+          "sha256": "d03366973ee7600f8d2196ae60092334f60bc2dabfbcccde59e84d78b6622811"
+        }
+      ],
+      "file": "woman-shawl-crouch-reload.png",
+      "size": [
+        960,
+        1920
+      ],
+      "sha256": "5ea5a181643c831459af2b1224f10eb02c8bedbf5c3ca9f7a8a415d96166bee3"
+    }
+  }
+}

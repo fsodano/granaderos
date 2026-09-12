@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "worker-mounted-strike": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-north-v1.png",
+          "sha256": "7ca6022c6440f4818dc1750708fc4aefad1c8e22240873613bbae5c73e2c0820",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-south-v1.png",
+          "sha256": "5ad3f5917564aad8ea5868bb5bdae8de77445c8c3af0b797a8257e94cd704ec3",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-north-v1.png",
+          "sourceScale": 0.6762295081967213,
+          "sourceAnchor": [
+            55,
+            246
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            108,
+            246
+          ],
+          "bounds": [
+            108,
+            60,
+            180,
+            225
+          ],
+          "sha256": "ed99e197e304d5634463b4838220bcf50a442cc804725cb2dfb1a217d7cfa249"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-north-v1.png",
+          "sourceScale": 0.6762295081967213,
+          "sourceAnchor": [
+            54,
+            246
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            107,
+            246
+          ],
+          "bounds": [
+            109,
+            60,
+            180,
+            225
+          ],
+          "sha256": "e9140c20eb570981ef246f01d66c7928852dfe6d0b79147fb73251431af6ab5f"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-north-v1.png",
+          "sourceScale": 0.6762295081967213,
+          "sourceAnchor": [
+            54,
+            246
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            128,
+            246
+          ],
+          "bounds": [
+            109,
+            60,
+            194,
+            225
+          ],
+          "sha256": "5fb743216ae9bc53a2dc13061584559648b97138d472d3b945ada10d31ff8652"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-north-v1.png",
+          "sourceScale": 0.6762295081967213,
+          "sourceAnchor": [
+            54,
+            246
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            107,
+            246
+          ],
+          "bounds": [
+            109,
+            60,
+            180,
+            225
+          ],
+          "sha256": "8768ab39ebd8eebe4fc36c47ac6a84097d8eb137ad0143ec06ec8533fdc6d7ca"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-north-v1.png",
+          "sourceScale": 0.7333333333333333,
+          "sourceAnchor": [
+            78,
+            227
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            192,
+            227
+          ],
+          "bounds": [
+            88,
+            60,
+            227,
+            225
+          ],
+          "sha256": "c2ec54f979a0766bd789afdcf9ccd734da79ce953fd7f8e83ebf2d801a7b97c7"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-north-v1.png",
+          "sourceScale": 0.7333333333333333,
+          "sourceAnchor": [
+            77.5,
+            227
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            191,
+            227
+          ],
+          "bounds": [
+            89,
+            60,
+            228,
+            225
+          ],
+          "sha256": "5d380fcdd73121b7c624ca54a9564667a0c159e841a22edf24e6e2c252e2039d"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-north-v1.png",
+          "sourceScale": 0.7333333333333333,
+          "sourceAnchor": [
+            77.5,
+            227
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            191,
+            227
+          ],
+          "bounds": [
+            89,
+            60,
+            228,
+            225
+          ],
+          "sha256": "447077512d696ee608bc874a11d9a6d0292b669667110e9a26a0a20f357cc577"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-north-v1.png",
+          "sourceScale": 0.7333333333333333,
+          "sourceAnchor": [
+            77.5,
+            227
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            190,
+            227
+          ],
+          "bounds": [
+            89,
+            60,
+            227,
+            225
+          ],
+          "sha256": "cbbfca36a10c608c2bedde9ae5aff3d90103a9061fcf873abfca2e446edfee97"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-north-v1.png",
+          "sourceScale": 0.7627906976744186,
+          "sourceAnchor": [
+            86.5,
+            217
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            205,
+            217
+          ],
+          "bounds": [
+            80,
+            61,
+            235,
+            225
+          ],
+          "sha256": "06bef3e3c570e3babececf1a18e6b3138f63a015516dc7888db90c1d3272806f"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-north-v1.png",
+          "sourceScale": 0.7627906976744186,
+          "sourceAnchor": [
+            86,
+            217
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            204,
+            217
+          ],
+          "bounds": [
+            80,
+            61,
+            234,
+            225
+          ],
+          "sha256": "033cbea75f49b61773515f2a1be7fef4026ab79ed8f4b825eb534600cfec36b0"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-north-v1.png",
+          "sourceScale": 0.7627906976744186,
+          "sourceAnchor": [
+            87,
+            217
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            204,
+            217
+          ],
+          "bounds": [
+            79,
+            61,
+            233,
+            225
+          ],
+          "sha256": "92674517e2a4beb4c607ca8f55b6fcd059295c9fe765d0caa547ca471f173c03"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-north-v1.png",
+          "sourceScale": 0.7627906976744186,
+          "sourceAnchor": [
+            86.5,
+            217
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            205,
+            217
+          ],
+          "bounds": [
+            80,
+            61,
+            235,
+            225
+          ],
+          "sha256": "9146057798bd2c1392e4e9929c0e46daa065cb06d60ff7613039beaf9d1ebfd6"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-north-v1.png",
+          "sourceScale": 0.7488789237668162,
+          "sourceAnchor": [
+            74.5,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            176,
+            225
+          ],
+          "bounds": [
+            90,
+            58,
+            220,
+            225
+          ],
+          "sha256": "1e37d8f1532d7ea9f978c968280d304024cc856e1527d85182539c4640335b19"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-north-v1.png",
+          "sourceScale": 0.7488789237668162,
+          "sourceAnchor": [
+            74,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            174,
+            225
+          ],
+          "bounds": [
+            90,
+            58,
+            219,
+            225
+          ],
+          "sha256": "233f9da92ebf2b0d26cd69e081bb944a651c2dfa001a5cc380df93c4e91b52b2"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-north-v1.png",
+          "sourceScale": 0.7488789237668162,
+          "sourceAnchor": [
+            74.5,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            175,
+            225
+          ],
+          "bounds": [
+            90,
+            58,
+            220,
+            225
+          ],
+          "sha256": "1cb3c44749fa9cd5380ef7bf2c8b6785b3bf48def4a2f42a860fc86e1446388c"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-north-v1.png",
+          "sourceScale": 0.7488789237668162,
+          "sourceAnchor": [
+            73.5,
+            225
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            171,
+            225
+          ],
+          "bounds": [
+            90,
+            58,
+            217,
+            225
+          ],
+          "sha256": "96f0d8e528fa44163106d1e422d84cb0b892fa999dc9548ffa2f377f43147039"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-south-v1.png",
+          "sourceScale": 0.7124463519313304,
+          "sourceAnchor": [
+            54.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            108,
+            235
+          ],
+          "bounds": [
+            107,
+            59,
+            183,
+            225
+          ],
+          "sha256": "311621c52693591d7976947dce1c35a41323aee1449b64ab17d40fe61e32bfe9"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-south-v1.png",
+          "sourceScale": 0.7124463519313304,
+          "sourceAnchor": [
+            58.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            4,
+            112,
+            235
+          ],
+          "bounds": [
+            104,
+            60,
+            182,
+            225
+          ],
+          "sha256": "e3317968b6517e9010f227bd1975d93b28922bc59d74473cdcf646725afd7372"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-south-v1.png",
+          "sourceScale": 0.7124463519313304,
+          "sourceAnchor": [
+            55.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            109,
+            234
+          ],
+          "bounds": [
+            106,
+            60,
+            182,
+            225
+          ],
+          "sha256": "8413462f1cc5c3bc15f81f7156d7806dfe036a91c8a9d60436e7534c270c4197"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-south-v1.png",
+          "sourceScale": 0.7124463519313304,
+          "sourceAnchor": [
+            55.5,
+            235
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            109,
+            235
+          ],
+          "bounds": [
+            106,
+            59,
+            182,
+            225
+          ],
+          "sha256": "9941845521571dcfd23e881f9d88a1c62e6cce8bd25e2e99fc74ec0e409ddc3d"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-south-v1.png",
+          "sourceScale": 0.7377777777777778,
+          "sourceAnchor": [
+            115.5,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            200,
+            228
+          ],
+          "bounds": [
+            60,
+            59,
+            206,
+            225
+          ],
+          "sha256": "cd12fa06a932e8fc6259526617d1c4425df0a1b36614d456889639e46f86eedb"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-south-v1.png",
+          "sourceScale": 0.7377777777777778,
+          "sourceAnchor": [
+            116.5,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            201,
+            228
+          ],
+          "bounds": [
+            60,
+            58,
+            207,
+            225
+          ],
+          "sha256": "0e7064b785e0a41110a40ca4016ebaf1acdd3e57fcc95a9e3a0f3994875783a6"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-south-v1.png",
+          "sourceScale": 0.7377777777777778,
+          "sourceAnchor": [
+            117.5,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            203,
+            228
+          ],
+          "bounds": [
+            59,
+            59,
+            207,
+            225
+          ],
+          "sha256": "aac8e68184abfa371fedd040775805857cabd74015ac54bf72d4a42c231f68a2"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-south-v1.png",
+          "sourceScale": 0.7377777777777778,
+          "sourceAnchor": [
+            116,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            199,
+            228
+          ],
+          "bounds": [
+            60,
+            58,
+            205,
+            225
+          ],
+          "sha256": "bbaaf7d7a8f6c3ba9d4ed377fc7d6c1e8aa97ab7fac834f935928a8dca24b112"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-south-v1.png",
+          "sourceScale": 0.7663551401869159,
+          "sourceAnchor": [
+            120,
+            216
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            205,
+            216
+          ],
+          "bounds": [
+            54,
+            61,
+            210,
+            225
+          ],
+          "sha256": "14b5f67ef7e545cb2ae9b54bc1b7101cc6baf01a1b8c9e356901ca9bbe5dbe6c"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-south-v1.png",
+          "sourceScale": 0.7663551401869159,
+          "sourceAnchor": [
+            119.5,
+            216
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            204,
+            216
+          ],
+          "bounds": [
+            54,
+            61,
+            209,
+            225
+          ],
+          "sha256": "e72e32bde8ae10927a9b9697bbcc72fe7b59df31e4afe1ee85f1ec898f8c2e6d"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-south-v1.png",
+          "sourceScale": 0.7663551401869159,
+          "sourceAnchor": [
+            126,
+            216
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            211,
+            216
+          ],
+          "bounds": [
+            49,
+            61,
+            209,
+            225
+          ],
+          "sha256": "fbb1e33e9a2fda38b0197d242217a539c5500b430b9d3a76782ee609136a180a"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-south-v1.png",
+          "sourceScale": 0.7663551401869159,
+          "sourceAnchor": [
+            121,
+            216
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            206,
+            216
+          ],
+          "bounds": [
+            53,
+            61,
+            209,
+            225
+          ],
+          "sha256": "3de6e653c6161469c939a27c414d120c4d1e4de2e398aacd667bc0960c0607dc"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-south-v1.png",
+          "sourceScale": 0.7300884955752213,
+          "sourceAnchor": [
+            102,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            171,
+            228
+          ],
+          "bounds": [
+            71,
+            60,
+            194,
+            225
+          ],
+          "sha256": "17c270d09f772888b43907ef284c6b771f99947988a0da46d5295c239c07479a"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-south-v1.png",
+          "sourceScale": 0.7300884955752213,
+          "sourceAnchor": [
+            101,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            172,
+            227
+          ],
+          "bounds": [
+            72,
+            60,
+            196,
+            224
+          ],
+          "sha256": "402a1479227b574fdb9d678178102fdc3558385148fae8b58b9a1588afbae0a6"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-south-v1.png",
+          "sourceScale": 0.7300884955752213,
+          "sourceAnchor": [
+            105,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            176,
+            228
+          ],
+          "bounds": [
+            69,
+            60,
+            196,
+            225
+          ],
+          "sha256": "5d093bf792839b40707f4b7386c1311e2732126b518026874f045190f22aa353"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/worker-mounted-strike-south-v1.png",
+          "sourceScale": 0.7300884955752213,
+          "sourceAnchor": [
+            99.5,
+            228
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            170,
+            227
+          ],
+          "bounds": [
+            73,
+            60,
+            196,
+            224
+          ],
+          "sha256": "2982b4b97cde8ca30cef1764cfe4f13e20aa2d8307578f16b4ca5649786005eb"
+        }
+      ],
+      "file": "worker-mounted-strike.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "c305782c3011787e2948f49d99c1ca1ebfd581a7f3096bf4d4b2132f88b6119e"
+    }
+  }
+}

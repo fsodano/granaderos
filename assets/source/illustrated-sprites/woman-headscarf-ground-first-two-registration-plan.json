@@ -1,0 +1,29 @@
+{
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-prone-armed-walk-north-v1.png",
+      "name": "woman-headscarf-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "half": "north"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-prone-armed-walk-south-v1.png",
+      "name": "woman-headscarf-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "half": "south"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-prone-armed-reload-north-v1.png",
+      "name": "woman-headscarf-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "north"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-prone-armed-reload-south-v1.png",
+      "name": "woman-headscarf-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "south"
+    }
+  ],
+  "corrections": []
+}

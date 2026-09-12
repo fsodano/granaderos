@@ -1,0 +1,10 @@
+{
+  "source": "granadero-reload.png",
+  "sha256": "4999b51640d9dce9f06a89b3eeeb80769c0fcd197b085307df918140a44e8563",
+  "directions": [
+    "sw",
+    "w",
+    "nw"
+  ],
+  "frame": 1
+}

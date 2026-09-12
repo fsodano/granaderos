@@ -1,0 +1,293 @@
+{
+  "version": 1,
+  "appearance": "artisan",
+  "states": [
+    "prone-armed-idle",
+    "prone-unarmed-idle",
+    "dead-idle",
+    "mounted-idle",
+    "prone-armed-walk",
+    "prone-unarmed-walk",
+    "prone-armed-fire",
+    "prone-armed-reload",
+    "unconscious-breathe",
+    "mounted-walk"
+  ],
+  "instructions": "All selected sources visually reviewed and gutter cell counts pass. Register variants then exact N prone reload correction. North base reload excludes N because it is diagonal NE; correction is exact head-up boots-down and keeps the short pistol in all phases. Armed crawl south uses v2 to fix S phase2 and SW phase2/3 headings. All standing-like head glances are accepted if body axis is correct. Unconscious cheeks rest on hands with no bracing; breathing is restrained. Pistol arms can change visible bounding width versus musket references; apply the root body-scale calibration. Mounted guns are low and can be occluded on the far side. No firing region overrides needed: gutter checks capture all effects.",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/artisan-prone-armed-idle-v1.png",
+      "name": "artisan-prone-armed-idle",
+      "reference": "granadero-prone-armed-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-idle-v1.png",
+      "name": "artisan-prone-unarmed-idle",
+      "reference": "granadero-prone-unarmed-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-dead-idle-v1.png",
+      "name": "artisan-dead-idle",
+      "reference": "granadero-dead-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-mounted-idle-v1.png",
+      "name": "artisan-mounted-idle",
+      "reference": "granadero-mounted-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-north-v1.png",
+      "name": "artisan-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-prone-armed-walk-south-v2.png",
+      "name": "artisan-prone-armed-walk",
+      "reference": "granadero-prone-armed-walk",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-north-v1.png",
+      "name": "artisan-prone-unarmed-walk",
+      "reference": "granadero-prone-unarmed-walk",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-prone-unarmed-walk-south-v1.png",
+      "name": "artisan-prone-unarmed-walk",
+      "reference": "granadero-prone-unarmed-walk",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-north-v1.png",
+      "name": "artisan-prone-armed-fire",
+      "reference": "granadero-prone-armed-fire",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-prone-armed-fire-south-v1.png",
+      "name": "artisan-prone-armed-fire",
+      "reference": "granadero-prone-armed-fire",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-north-v1.png",
+      "name": "artisan-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "north",
+      "includeDirections": [
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-south-v1.png",
+      "name": "artisan-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-unconscious-breathe-north-v1.png",
+      "name": "artisan-unconscious-breathe",
+      "reference": "granadero-unconscious-breathe",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-unconscious-breathe-south-v1.png",
+      "name": "artisan-unconscious-breathe",
+      "reference": "granadero-unconscious-breathe",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-mounted-walk-north-v1.png",
+      "name": "artisan-mounted-walk",
+      "reference": "granadero-mounted-walk",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/artisan-mounted-walk-south-v1.png",
+      "name": "artisan-mounted-walk",
+      "reference": "granadero-mounted-walk",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    }
+  ],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/artisan-prone-armed-reload-n-fix-v1.png",
+      "name": "artisan-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "north",
+      "includeDirections": [
+        "N"
+      ],
+      "regionFile": "assets/source/illustrated-sprites/artisan-prone-armed-reload-n-fix-v1.regions.json",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "N",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              183,
+              120,
+              196,
+              602
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              639,
+              120,
+              217,
+              602
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              1116,
+              120,
+              213,
+              602
+            ]
+          },
+          {
+            "direction": "N",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1576,
+              120,
+              197,
+              602
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,721 @@
+{
+  "version": 1,
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "sheets": [
+    {
+      "name": "friar-collapse",
+      "source": "assets/source/illustrated-sprites/family-actions/friar-collapse-north-v1.png",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "fps": 5,
+      "cell": 288,
+      "logicalCell": 96,
+      "anchor": [
+        144,
+        225
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            104,
+            54,
+            106,
+            222
+          ],
+          "scale": 0.49767441860465117,
+          "anchor": [
+            53,
+            220
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            395,
+            54,
+            145,
+            222
+          ],
+          "scale": 0.49767441860465117,
+          "anchor": [
+            73,
+            220
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            703,
+            54,
+            157,
+            222
+          ],
+          "scale": 0.49767441860465117,
+          "anchor": [
+            78.5,
+            220
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1021,
+            54,
+            152,
+            222
+          ],
+          "scale": 0.49767441860465117,
+          "anchor": [
+            75.5,
+            220
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "row": 1,
+          "col": 0,
+          "rect": [
+            104,
+            361,
+            97,
+            227
+          ],
+          "scale": 0.4909090909090909,
+          "anchor": [
+            50,
+            225
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "row": 1,
+          "col": 1,
+          "rect": [
+            402,
+            361,
+            130,
+            227
+          ],
+          "scale": 0.4909090909090909,
+          "anchor": [
+            80.5,
+            225
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "row": 1,
+          "col": 2,
+          "rect": [
+            681,
+            361,
+            203,
+            227
+          ],
+          "scale": 0.4909090909090909,
+          "anchor": [
+            93.5,
+            225
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "row": 1,
+          "col": 3,
+          "rect": [
+            994,
+            361,
+            218,
+            227
+          ],
+          "scale": 0.4909090909090909,
+          "anchor": [
+            71.5,
+            225
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "row": 2,
+          "col": 0,
+          "rect": [
+            112,
+            667,
+            79,
+            239
+          ],
+          "scale": 0.47161572052401746,
+          "anchor": [
+            45,
+            237
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "row": 2,
+          "col": 1,
+          "rect": [
+            406,
+            667,
+            130,
+            239
+          ],
+          "scale": 0.47161572052401746,
+          "anchor": [
+            79,
+            237
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "row": 2,
+          "col": 2,
+          "rect": [
+            676,
+            667,
+            216,
+            239
+          ],
+          "scale": 0.47161572052401746,
+          "anchor": [
+            116,
+            237
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "row": 2,
+          "col": 3,
+          "rect": [
+            973,
+            667,
+            253,
+            239
+          ],
+          "scale": 0.47161572052401746,
+          "anchor": [
+            120.5,
+            237
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "row": 3,
+          "col": 0,
+          "rect": [
+            94,
+            976,
+            106,
+            236
+          ],
+          "scale": 0.4675324675324675,
+          "anchor": [
+            57,
+            234
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "row": 3,
+          "col": 1,
+          "rect": [
+            399,
+            976,
+            135,
+            236
+          ],
+          "scale": 0.4675324675324675,
+          "anchor": [
+            81,
+            234
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "row": 3,
+          "col": 2,
+          "rect": [
+            667,
+            976,
+            220,
+            236
+          ],
+          "scale": 0.4675324675324675,
+          "anchor": [
+            152,
+            234
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "row": 3,
+          "col": 3,
+          "rect": [
+            982,
+            976,
+            236,
+            236
+          ],
+          "scale": 0.4675324675324675,
+          "anchor": [
+            159.5,
+            234
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        }
+      ]
+    },
+    {
+      "name": "friar-collapse",
+      "source": "assets/source/illustrated-sprites/family-actions/friar-collapse-south-v1.png",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4,
+      "fps": 5,
+      "cell": 288,
+      "logicalCell": 96,
+      "anchor": [
+        144,
+        225
+      ],
+      "scale": 1,
+      "slots": [
+        {
+          "direction": "s",
+          "frame": 0,
+          "row": 0,
+          "col": 0,
+          "rect": [
+            106,
+            66,
+            97,
+            209
+          ],
+          "scale": 0.5121951219512195,
+          "anchor": [
+            49,
+            207
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "row": 0,
+          "col": 1,
+          "rect": [
+            415,
+            66,
+            113,
+            209
+          ],
+          "scale": 0.5121951219512195,
+          "anchor": [
+            54.5,
+            207
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "row": 0,
+          "col": 2,
+          "rect": [
+            717,
+            66,
+            131,
+            209
+          ],
+          "scale": 0.5121951219512195,
+          "anchor": [
+            64,
+            207
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "row": 0,
+          "col": 3,
+          "rect": [
+            1033,
+            66,
+            130,
+            209
+          ],
+          "scale": 0.5121951219512195,
+          "anchor": [
+            63,
+            207
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "row": 1,
+          "col": 0,
+          "rect": [
+            111,
+            366,
+            97,
+            221
+          ],
+          "scale": 0.5023474178403756,
+          "anchor": [
+            40.5,
+            219
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "row": 1,
+          "col": 1,
+          "rect": [
+            407,
+            366,
+            120,
+            221
+          ],
+          "scale": 0.5023474178403756,
+          "anchor": [
+            46,
+            219
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "row": 1,
+          "col": 2,
+          "rect": [
+            695,
+            366,
+            176,
+            221
+          ],
+          "scale": 0.5023474178403756,
+          "anchor": [
+            46.5,
+            219
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "row": 1,
+          "col": 3,
+          "rect": [
+            986,
+            366,
+            217,
+            221
+          ],
+          "scale": 0.5023474178403756,
+          "anchor": [
+            43.5,
+            219
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "row": 2,
+          "col": 0,
+          "rect": [
+            122,
+            670,
+            73,
+            233
+          ],
+          "scale": 0.4669603524229075,
+          "anchor": [
+            33.5,
+            231
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "row": 2,
+          "col": 1,
+          "rect": [
+            407,
+            670,
+            124,
+            233
+          ],
+          "scale": 0.4669603524229075,
+          "anchor": [
+            47.5,
+            231
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "row": 2,
+          "col": 2,
+          "rect": [
+            687,
+            670,
+            192,
+            233
+          ],
+          "scale": 0.4669603524229075,
+          "anchor": [
+            99.5,
+            231
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "row": 2,
+          "col": 3,
+          "rect": [
+            976,
+            670,
+            243,
+            233
+          ],
+          "scale": 0.4669603524229075,
+          "anchor": [
+            122.5,
+            231
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "row": 3,
+          "col": 0,
+          "rect": [
+            110,
+            986,
+            90,
+            224
+          ],
+          "scale": 0.4863636363636364,
+          "anchor": [
+            44,
+            222
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "row": 3,
+          "col": 1,
+          "rect": [
+            421,
+            986,
+            111,
+            224
+          ],
+          "scale": 0.4863636363636364,
+          "anchor": [
+            61,
+            222
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "row": 3,
+          "col": 2,
+          "rect": [
+            692,
+            986,
+            195,
+            224
+          ],
+          "scale": 0.4863636363636364,
+          "anchor": [
+            103.5,
+            222
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "row": 3,
+          "col": 3,
+          "rect": [
+            991,
+            986,
+            207,
+            224
+          ],
+          "scale": 0.4863636363636364,
+          "anchor": [
+            141,
+            222
+          ],
+          "calibration": {
+            "review": "pending",
+            "source": "recovered authored sheet"
+          }
+        }
+      ]
+    }
+  ]
+}

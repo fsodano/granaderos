@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "appearance": "woman-headscarf",
+  "stage": "north-ground-breathing-correction",
+  "pathBase": "repository-root",
+  "registrationOrder": [
+    "corrections"
+  ],
+  "variants": [],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-headscarf-unconscious-breathe-n-ground-fix-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-headscarf-unconscious-breathe-n-ground-fix-v1.prompt.txt",
+      "name": "woman-headscarf-unconscious-breathe",
+      "reference": "granadero-unconscious-breathe",
+      "poseReference": "assets/source/illustrated-sprites/woman-elder-unconscious-breathe-n-fix-v1.png",
+      "half": "north",
+      "sourceSize": [
+        2172,
+        724
+      ],
+      "calibration": {
+        "method": "One anatomical scale for all4poses; preserve ground foreshortening. Match head/shoulder size to prone-unarmed idle. Do not stretch to prior upright-looking N breathing height.",
+        "startingPackedBodyHeight": [
+          86,
+          91
+        ],
+        "logicalBodyHeight": [
+          29,
+          30
+        ],
+        "anchor": "Ground pivot near waist/body center; not boots."
+      },
+      "correctionSpec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "longest",
+        "slots": [
+          {
+            "direction": "n",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              214,
+              165,
+              185,
+              401
+            ]
+          },
+          {
+            "direction": "n",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              705,
+              165,
+              182,
+              401
+            ]
+          },
+          {
+            "direction": "n",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              1178,
+              165,
+              183,
+              401
+            ]
+          },
+          {
+            "direction": "n",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1662,
+              165,
+              184,
+              401
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "qa": {
+    "notes": [
+      "Same accepted Elder overhead sleeping pose, empty hands, head tucked into forearms, curled boots.",
+      "Only replace N0..3. Retain all other seven directions and root calibration.",
+      "All4figure count/crop QA passed. Body-height range supplied by independent sprite_runtime review as starting estimate; root final calibration."
+    ]
+  }
+}

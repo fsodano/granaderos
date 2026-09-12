@@ -1,0 +1,157 @@
+{
+  "version": 1,
+  "normalizations": [
+    {
+      "appearance": "woman-headscarf",
+      "state": "unconscious-breathe",
+      "direction": "N",
+      "source": "assets/source/illustrated-sprites/woman-headscarf-unconscious-breathe-n-ground-fix-v1.png",
+      "frames": [
+        0
+      ],
+      "setScaleBeforeMultiplier": 0.22,
+      "setSourceAnchorBeforeMultiplier": [
+        92.5,
+        200.5
+      ],
+      "reason": "Common foreshortened body size and waist pivot for grounded north breathing; source head and boots remain stable."
+    },
+    {
+      "appearance": "woman-headscarf",
+      "state": "unconscious-breathe",
+      "direction": "N",
+      "source": "assets/source/illustrated-sprites/woman-headscarf-unconscious-breathe-n-ground-fix-v1.png",
+      "frames": [
+        1
+      ],
+      "setScaleBeforeMultiplier": 0.22,
+      "setSourceAnchorBeforeMultiplier": [
+        91,
+        200.5
+      ],
+      "reason": "Common foreshortened body size and waist pivot for grounded north breathing; source head and boots remain stable."
+    },
+    {
+      "appearance": "woman-headscarf",
+      "state": "unconscious-breathe",
+      "direction": "N",
+      "source": "assets/source/illustrated-sprites/woman-headscarf-unconscious-breathe-n-ground-fix-v1.png",
+      "frames": [
+        2
+      ],
+      "setScaleBeforeMultiplier": 0.22,
+      "setSourceAnchorBeforeMultiplier": [
+        91.5,
+        200.5
+      ],
+      "reason": "Common foreshortened body size and waist pivot for grounded north breathing; source head and boots remain stable."
+    },
+    {
+      "appearance": "woman-headscarf",
+      "state": "unconscious-breathe",
+      "direction": "N",
+      "source": "assets/source/illustrated-sprites/woman-headscarf-unconscious-breathe-n-ground-fix-v1.png",
+      "frames": [
+        3
+      ],
+      "setScaleBeforeMultiplier": 0.22,
+      "setSourceAnchorBeforeMultiplier": [
+        92,
+        200.5
+      ],
+      "reason": "Common foreshortened body size and waist pivot for grounded north breathing; source head and boots remain stable."
+    },
+    {
+      "appearance": "woman-shawl",
+      "state": "unconscious-breathe",
+      "direction": "N",
+      "source": "assets/source/illustrated-sprites/woman-shawl-unconscious-breathe-n-ground-fix-v1.png",
+      "frames": [
+        0
+      ],
+      "setScaleBeforeMultiplier": 0.22,
+      "setSourceAnchorBeforeMultiplier": [
+        95.5,
+        198
+      ],
+      "reason": "Common foreshortened body size and waist pivot for grounded north breathing; source head and boots remain stable."
+    },
+    {
+      "appearance": "woman-shawl",
+      "state": "unconscious-breathe",
+      "direction": "N",
+      "source": "assets/source/illustrated-sprites/woman-shawl-unconscious-breathe-n-ground-fix-v1.png",
+      "frames": [
+        1
+      ],
+      "setScaleBeforeMultiplier": 0.22,
+      "setSourceAnchorBeforeMultiplier": [
+        95,
+        198
+      ],
+      "reason": "Common foreshortened body size and waist pivot for grounded north breathing; source head and boots remain stable."
+    },
+    {
+      "appearance": "woman-shawl",
+      "state": "unconscious-breathe",
+      "direction": "N",
+      "source": "assets/source/illustrated-sprites/woman-shawl-unconscious-breathe-n-ground-fix-v1.png",
+      "frames": [
+        2
+      ],
+      "setScaleBeforeMultiplier": 0.22,
+      "setSourceAnchorBeforeMultiplier": [
+        95,
+        198
+      ],
+      "reason": "Common foreshortened body size and waist pivot for grounded north breathing; source head and boots remain stable."
+    },
+    {
+      "appearance": "woman-shawl",
+      "state": "unconscious-breathe",
+      "direction": "N",
+      "source": "assets/source/illustrated-sprites/woman-shawl-unconscious-breathe-n-ground-fix-v1.png",
+      "frames": [
+        3
+      ],
+      "setScaleBeforeMultiplier": 0.22,
+      "setSourceAnchorBeforeMultiplier": [
+        94.5,
+        198
+      ],
+      "reason": "Common foreshortened body size and waist pivot for grounded north breathing; source head and boots remain stable."
+    }
+  ],
+  "groups": [
+    {
+      "appearance": "woman-headscarf",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    },
+    {
+      "appearance": "woman-shawl",
+      "states": [
+        "unconscious-breathe"
+      ],
+      "directions": [
+        "N"
+      ],
+      "frames": "all",
+      "multiplier": 1,
+      "offsetLogical": [
+        0,
+        0
+      ]
+    }
+  ]
+}

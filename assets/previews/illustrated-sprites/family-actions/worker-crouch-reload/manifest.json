@@ -1,0 +1,783 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "worker-crouch-reload": {
+      "cell": 240,
+      "anchor": [
+        120,
+        210
+      ],
+      "logicalCell": 80,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-north-v1.png",
+          "sha256": "8b80021b4b438bbb9eac1a9ae5292da2b9e2d2d9af3824f2ffa04dfc82d88b10",
+          "scale": 1
+        },
+        {
+          "file": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-south-v1.png",
+          "sha256": "87c8a4611301a5d64001ca0ccbb87a2d6c49cb9ab9ae233a32b521d05df3b214",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-north-v1.png",
+          "sourceScale": 0.3645833333333333,
+          "sourceAnchor": [
+            55.5,
+            255
+          ],
+          "sourceBounds": [
+            2,
+            62,
+            165,
+            254
+          ],
+          "bounds": [
+            100,
+            140,
+            159,
+            210
+          ],
+          "sha256": "ba92c385704f3292783de610b9672e2a6ce83255606b79268fd4cbf237bd4218"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-north-v1.png",
+          "sourceScale": 0.3645833333333333,
+          "sourceAnchor": [
+            78,
+            255
+          ],
+          "sourceBounds": [
+            2,
+            56,
+            142,
+            254
+          ],
+          "bounds": [
+            92,
+            137,
+            143,
+            209
+          ],
+          "sha256": "5a85d83c90dea78640bb39edb36c277f0023964fe976f121c01a5daddbef6bb3"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-north-v1.png",
+          "sourceScale": 0.3645833333333333,
+          "sourceAnchor": [
+            64.5,
+            255
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            130,
+            255
+          ],
+          "bounds": [
+            97,
+            118,
+            144,
+            210
+          ],
+          "sha256": "9f668bcd05be915b55c76d93dd3eb8fc4186de2efa2311513bc0c7073522d5b4"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-north-v1.png",
+          "sourceScale": 0.3645833333333333,
+          "sourceAnchor": [
+            55.5,
+            255
+          ],
+          "sourceBounds": [
+            2,
+            62,
+            165,
+            254
+          ],
+          "bounds": [
+            100,
+            140,
+            159,
+            210
+          ],
+          "sha256": "eea606c6cddb651ddd8e93fffbf11a69ccaed4cf9aa3dacf0520e658d23a0f6f"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-north-v1.png",
+          "sourceScale": 0.38860103626943004,
+          "sourceAnchor": [
+            59.5,
+            233
+          ],
+          "sourceBounds": [
+            2,
+            40,
+            166,
+            233
+          ],
+          "bounds": [
+            98,
+            135,
+            162,
+            210
+          ],
+          "sha256": "0b13df2ba40c77a94c2f79747e1e1b1b7e22e443116e4ed57005dd90ff83393c"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-north-v1.png",
+          "sourceScale": 0.38860103626943004,
+          "sourceAnchor": [
+            85.5,
+            233
+          ],
+          "sourceBounds": [
+            2,
+            39,
+            150,
+            233
+          ],
+          "bounds": [
+            88,
+            135,
+            146,
+            210
+          ],
+          "sha256": "ddce220eed6ce3d34b5420a50633c10fe501c29853db10a7fc585e3c08069a46"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-north-v1.png",
+          "sourceScale": 0.38860103626943004,
+          "sourceAnchor": [
+            75,
+            233
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            129,
+            233
+          ],
+          "bounds": [
+            92,
+            120,
+            141,
+            210
+          ],
+          "sha256": "97f73727a7ff01cd69c134e7c529bc1a4e11df3f40d13d0bee81771dea286afa"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-north-v1.png",
+          "sourceScale": 0.38860103626943004,
+          "sourceAnchor": [
+            59.5,
+            233
+          ],
+          "sourceBounds": [
+            2,
+            40,
+            169,
+            233
+          ],
+          "bounds": [
+            98,
+            135,
+            163,
+            210
+          ],
+          "sha256": "cc924fc2fae774de1e35f9fc4659eb4f2e4f8cf46d7f8cfe98554fbaeefc05b3"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-north-v1.png",
+          "sourceScale": 0.39896373056994816,
+          "sourceAnchor": [
+            58,
+            221
+          ],
+          "sourceBounds": [
+            2,
+            28,
+            145,
+            221
+          ],
+          "bounds": [
+            98,
+            133,
+            155,
+            210
+          ],
+          "sha256": "f8993a4f93fb5170183e8de68daa1d838e2fe814eeabc75c2d2cd2a5a75d4b9f"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-north-v1.png",
+          "sourceScale": 0.39896373056994816,
+          "sourceAnchor": [
+            89,
+            221
+          ],
+          "sourceBounds": [
+            2,
+            28,
+            155,
+            221
+          ],
+          "bounds": [
+            85,
+            133,
+            146,
+            210
+          ],
+          "sha256": "996da57a4a6e4f1de564b10b8f2a3a1b46c5913fbee636e722a340ca2f016c5c"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-north-v1.png",
+          "sourceScale": 0.39896373056994816,
+          "sourceAnchor": [
+            85,
+            221
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            148,
+            221
+          ],
+          "bounds": [
+            87,
+            123,
+            145,
+            210
+          ],
+          "sha256": "a3280e13d24997d7a4082ce5db2a669ee3848fb12b7e157094e897240d993aa9"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-north-v1.png",
+          "sourceScale": 0.39896373056994816,
+          "sourceAnchor": [
+            57.5,
+            221
+          ],
+          "sourceBounds": [
+            2,
+            28,
+            155,
+            221
+          ],
+          "bounds": [
+            98,
+            133,
+            159,
+            210
+          ],
+          "sha256": "16263dca7c292c562526aa54a452b451bf16269d1c48d9b64182b38de4e6129a"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-north-v1.png",
+          "sourceScale": 0.3865979381443299,
+          "sourceAnchor": [
+            66.5,
+            224
+          ],
+          "sourceBounds": [
+            2,
+            29,
+            164,
+            223
+          ],
+          "bounds": [
+            95,
+            135,
+            158,
+            210
+          ],
+          "sha256": "4715eaa31d7a20e3916c6cea34a2a10b48a661797ddf81368472b6bfb9182c5c"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-north-v1.png",
+          "sourceScale": 0.3865979381443299,
+          "sourceAnchor": [
+            82.5,
+            224
+          ],
+          "sourceBounds": [
+            2,
+            30,
+            147,
+            224
+          ],
+          "bounds": [
+            89,
+            135,
+            145,
+            210
+          ],
+          "sha256": "12bbc1d853e12c00e6100d09bc32a25a72faed2f4270bd0e3cf6f9854b256646"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-north-v1.png",
+          "sourceScale": 0.3865979381443299,
+          "sourceAnchor": [
+            81,
+            224
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            144,
+            224
+          ],
+          "bounds": [
+            89,
+            124,
+            144,
+            210
+          ],
+          "sha256": "7ecf012adca80dd8687268efa9ee2b293adc15033fc833797e353b0f807cada2"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-north-v1.png",
+          "sourceScale": 0.3865979381443299,
+          "sourceAnchor": [
+            66.5,
+            224
+          ],
+          "sourceBounds": [
+            2,
+            29,
+            161,
+            223
+          ],
+          "bounds": [
+            95,
+            135,
+            156,
+            210
+          ],
+          "sha256": "4a3a48e74027d2fbfcad68971dab4db2f336592381fe83bf021a5d3c6ff894f7"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-south-v1.png",
+          "sourceScale": 0.3622448979591837,
+          "sourceAnchor": [
+            80,
+            257
+          ],
+          "sourceBounds": [
+            2,
+            57,
+            140,
+            253
+          ],
+          "bounds": [
+            92,
+            138,
+            142,
+            209
+          ],
+          "sha256": "b113d599fd6bccc2009e216ba51c585d0d9a61be9697459ec21753e40527d90a"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-south-v1.png",
+          "sourceScale": 0.3622448979591837,
+          "sourceAnchor": [
+            77.5,
+            257
+          ],
+          "sourceBounds": [
+            2,
+            40,
+            143,
+            257
+          ],
+          "bounds": [
+            93,
+            131,
+            144,
+            210
+          ],
+          "sha256": "4f13a6c14929eca0260d5b805bf86d9eb9038874a6f475e2f50d3fdfeba6bef6"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-south-v1.png",
+          "sourceScale": 0.3622448979591837,
+          "sourceAnchor": [
+            77.5,
+            257
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            141,
+            257
+          ],
+          "bounds": [
+            93,
+            118,
+            143,
+            210
+          ],
+          "sha256": "85b81d094e1cd2b0bd5c6ac3ca997ae401d676ae246b574cd49a8f74c3b6ba20"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-south-v1.png",
+          "sourceScale": 0.3622448979591837,
+          "sourceAnchor": [
+            80,
+            257
+          ],
+          "sourceBounds": [
+            2,
+            57,
+            140,
+            253
+          ],
+          "bounds": [
+            92,
+            138,
+            142,
+            209
+          ],
+          "sha256": "94d4ab81a7137cc05a393c8b663b3b9c21c3337d4782ada11a14c64299570dea"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-south-v1.png",
+          "sourceScale": 0.36893203883495146,
+          "sourceAnchor": [
+            80.5,
+            257
+          ],
+          "sourceBounds": [
+            2,
+            48,
+            140,
+            254
+          ],
+          "bounds": [
+            91,
+            133,
+            142,
+            209
+          ],
+          "sha256": "f8faf360a4150563b4de1eb1abcb9b02967bdb37b9c41b08d7d495ee01c1da09"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-south-v1.png",
+          "sourceScale": 0.36893203883495146,
+          "sourceAnchor": [
+            80.5,
+            257
+          ],
+          "sourceBounds": [
+            2,
+            36,
+            144,
+            257
+          ],
+          "bounds": [
+            91,
+            128,
+            143,
+            210
+          ],
+          "sha256": "a56656f3b9e2091916d928382c443b66c100846a12ff292b634ff525dc9697ef"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-south-v1.png",
+          "sourceScale": 0.36893203883495146,
+          "sourceAnchor": [
+            81,
+            257
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            144,
+            257
+          ],
+          "bounds": [
+            91,
+            116,
+            143,
+            210
+          ],
+          "sha256": "e6107821d92f0e6a9ef4517cdc40b248572c485fed357f295876fe2d0d40d926"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-south-v1.png",
+          "sourceScale": 0.36893203883495146,
+          "sourceAnchor": [
+            80.5,
+            257
+          ],
+          "sourceBounds": [
+            2,
+            48,
+            140,
+            254
+          ],
+          "bounds": [
+            91,
+            133,
+            142,
+            209
+          ],
+          "sha256": "d135d72eeb21c7b1d91e5a053850ceeb527686cda5a321baf3a2821e9cc94358"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-south-v1.png",
+          "sourceScale": 0.35714285714285715,
+          "sourceAnchor": [
+            119.5,
+            237
+          ],
+          "sourceBounds": [
+            2,
+            26,
+            183,
+            236
+          ],
+          "bounds": [
+            78,
+            135,
+            143,
+            210
+          ],
+          "sha256": "d139ebabed993ef21ab89a8439e7c6158809aad8c4c1146b6fc1703024474e4a"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-south-v1.png",
+          "sourceScale": 0.35714285714285715,
+          "sourceAnchor": [
+            68,
+            237
+          ],
+          "sourceBounds": [
+            2,
+            17,
+            146,
+            236
+          ],
+          "bounds": [
+            96,
+            131,
+            147,
+            209
+          ],
+          "sha256": "fe978ecdb50a0f47eb6067ab03b33516b4a66316adf692f9d152b7ea899e561e"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-south-v1.png",
+          "sourceScale": 0.35714285714285715,
+          "sourceAnchor": [
+            67.5,
+            237
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            150,
+            237
+          ],
+          "bounds": [
+            97,
+            126,
+            150,
+            210
+          ],
+          "sha256": "449eaca4b4da7ec4f29d2f043ba5b265ebb9d2d3e1790b839ebbc91402b70f39"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-south-v1.png",
+          "sourceScale": 0.35714285714285715,
+          "sourceAnchor": [
+            120,
+            237
+          ],
+          "sourceBounds": [
+            2,
+            27,
+            183,
+            236
+          ],
+          "bounds": [
+            78,
+            135,
+            143,
+            210
+          ],
+          "sha256": "066f5c51e6e4eac0af32fd55088dd964fbe8e46c0e99d755e565493731bcbdbf"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-south-v1.png",
+          "sourceScale": 0.3456221198156682,
+          "sourceAnchor": [
+            128.5,
+            262
+          ],
+          "sourceBounds": [
+            2,
+            45,
+            190,
+            262
+          ],
+          "bounds": [
+            76,
+            135,
+            141,
+            210
+          ],
+          "sha256": "2c309833dc43bfba6beede520fadde10d91c6caaaef2fec464be48acdf0a4b82"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-south-v1.png",
+          "sourceScale": 0.3456221198156682,
+          "sourceAnchor": [
+            67.5,
+            262
+          ],
+          "sourceBounds": [
+            2,
+            32,
+            146,
+            262
+          ],
+          "bounds": [
+            97,
+            131,
+            147,
+            210
+          ],
+          "sha256": "e2ba817e136d11ee97a091954ce1ce46ba17257d2d0b1548a1323e6413a60600"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-south-v1.png",
+          "sourceScale": 0.3456221198156682,
+          "sourceAnchor": [
+            69.5,
+            262
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            139,
+            260
+          ],
+          "bounds": [
+            97,
+            120,
+            144,
+            209
+          ],
+          "sha256": "853af7c2ce5210f9011b7476f6cc73752d09165182f6fcd9839881243a3fbe04"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/complete-actions/worker-crouch-reload-south-v1.png",
+          "sourceScale": 0.3456221198156682,
+          "sourceAnchor": [
+            128.5,
+            262
+          ],
+          "sourceBounds": [
+            2,
+            45,
+            191,
+            262
+          ],
+          "bounds": [
+            76,
+            135,
+            141,
+            210
+          ],
+          "sha256": "b934ed8600d8fd99afa65a4c09ebb4c6dfe4a6d98b254dafa18cd50dde19b1f5"
+        }
+      ],
+      "file": "worker-crouch-reload.png",
+      "size": [
+        960,
+        1920
+      ],
+      "sha256": "83f1f5243901131e04fc952fbe55bd80f986acfc9d7eedcf3fe2e3ce1c16b8fe"
+    }
+  }
+}

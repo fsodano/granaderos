@@ -1,0 +1,778 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "woman-shawl-interact": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sha256": "bb280ffa479895f9566949ac778f91d084b8dd8874b11a5c700dd07a1174f09e",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6645962732919255,
+          "sourceAnchor": [
+            35.5,
+            164
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            69,
+            163
+          ],
+          "bounds": [
+            122,
+            117,
+            167,
+            224
+          ],
+          "sha256": "00ee10691cb209d32113aaee651aaf9eeded5c2bf102241bb051e121462c6cac"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6645962732919255,
+          "sourceAnchor": [
+            35,
+            164
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            101,
+            163
+          ],
+          "bounds": [
+            122,
+            117,
+            188,
+            224
+          ],
+          "sha256": "c2f76234f93c3879376d34de7f12c9e5600c3cafc352008f208db5db4f51e544"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6645962732919255,
+          "sourceAnchor": [
+            34.5,
+            164
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            79,
+            164
+          ],
+          "bounds": [
+            122,
+            117,
+            173,
+            225
+          ],
+          "sha256": "a64e5dc8452dceb929db1ac0b57875d8fb54b1c2700e204634e9f0dbaa8d3bc0"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6645962732919255,
+          "sourceAnchor": [
+            36,
+            164
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            69,
+            163
+          ],
+          "bounds": [
+            121,
+            117,
+            166,
+            224
+          ],
+          "sha256": "fc10e9015a87176488da3f6c6ba67d5d5cfc467202497b6deae859de487f6aa7"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6708074534161491,
+          "sourceAnchor": [
+            34.5,
+            163
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            67,
+            163
+          ],
+          "bounds": [
+            122,
+            117,
+            166,
+            225
+          ],
+          "sha256": "1f8dd1f1e89e4cd6e206301acc34bb142986030bb877ad8a6656ca3ee710d099"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6708074534161491,
+          "sourceAnchor": [
+            34.5,
+            163
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            107,
+            163
+          ],
+          "bounds": [
+            122,
+            117,
+            192,
+            225
+          ],
+          "sha256": "425b5b5a3b9b47c7646cf8bcb706f398fd3450540b47bf2b09c2d34537f8a238"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6708074534161491,
+          "sourceAnchor": [
+            34.5,
+            163
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            96,
+            163
+          ],
+          "bounds": [
+            122,
+            117,
+            185,
+            225
+          ],
+          "sha256": "341d0aa199193e6d4c3eabad2c7cc698d57053608808a5cc6182b1f74a5ff5fd"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6708074534161491,
+          "sourceAnchor": [
+            34,
+            163
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            66,
+            163
+          ],
+          "bounds": [
+            123,
+            117,
+            166,
+            225
+          ],
+          "sha256": "02e3a1f8f90ea8c954b1680d8d79c1f62bcf082769ba36c42af6371f285006fa"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6484848484848484,
+          "sourceAnchor": [
+            32,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            62,
+            167
+          ],
+          "bounds": [
+            125,
+            118,
+            164,
+            225
+          ],
+          "sha256": "45394c77573b5b5c413ef1e7b4287564e93da8770c1bb92f641d9ec5d7451fe1"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6484848484848484,
+          "sourceAnchor": [
+            31.5,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            90,
+            167
+          ],
+          "bounds": [
+            125,
+            118,
+            182,
+            225
+          ],
+          "sha256": "95b30a557543bf3bea80dffc29f2946f851d19c2999b600647b51b467c9b985a"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6484848484848484,
+          "sourceAnchor": [
+            31.5,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            75,
+            167
+          ],
+          "bounds": [
+            125,
+            118,
+            172,
+            225
+          ],
+          "sha256": "eca41b61517eb8bb3c15694c2b77f8edd3c6cedf35338e83c986482c2f259d42"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6484848484848484,
+          "sourceAnchor": [
+            32,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            62,
+            167
+          ],
+          "bounds": [
+            125,
+            118,
+            164,
+            225
+          ],
+          "sha256": "d4a7e920ce6db28eab7e07c6c2a1a2478b75507eeee39efd76281cf0e2c0ddbf"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6484848484848484,
+          "sourceAnchor": [
+            37,
+            168
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            72,
+            167
+          ],
+          "bounds": [
+            121,
+            117,
+            166,
+            224
+          ],
+          "sha256": "d85d040c0e618111432fb8dc1cf5908ffff45154931c21e9a4eec2763159cce8"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6484848484848484,
+          "sourceAnchor": [
+            37,
+            168
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            101,
+            167
+          ],
+          "bounds": [
+            121,
+            117,
+            185,
+            224
+          ],
+          "sha256": "7fe822590e4141f739b3cf2f7c98237ce73e3a35a1a46e72cd4548228187e5a2"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6484848484848484,
+          "sourceAnchor": [
+            36.5,
+            168
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            71,
+            168
+          ],
+          "bounds": [
+            122,
+            117,
+            167,
+            225
+          ],
+          "sha256": "6fd159cd76c040c38f6f7cb3aa697508ce77a05b3f97da2dc64503373ed3cb90"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6484848484848484,
+          "sourceAnchor": [
+            37.5,
+            168
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            73,
+            167
+          ],
+          "bounds": [
+            121,
+            117,
+            167,
+            224
+          ],
+          "sha256": "585ab2cfa6c04c173b4add04fa72be746c759348f167a45ea2f33f869b5a933e"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6503067484662577,
+          "sourceAnchor": [
+            37.5,
+            165
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            73,
+            165
+          ],
+          "bounds": [
+            121,
+            119,
+            167,
+            225
+          ],
+          "sha256": "d8fa687439d7d56bbb37baaa3eb0b41eabda4923b8acd1f419a498f16a1807ce"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6503067484662577,
+          "sourceAnchor": [
+            37,
+            165
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            96,
+            165
+          ],
+          "bounds": [
+            121,
+            119,
+            182,
+            225
+          ],
+          "sha256": "9baba29ead9ac8edab373b00fac2d1397a7f284aee2982b1a133ae6ca249268b"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6503067484662577,
+          "sourceAnchor": [
+            38,
+            165
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            74,
+            165
+          ],
+          "bounds": [
+            121,
+            119,
+            168,
+            225
+          ],
+          "sha256": "e3fd330bd5a28a123189fb87d4b054417752c7896e6488aada41579524940b6e"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6503067484662577,
+          "sourceAnchor": [
+            37,
+            165
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            72,
+            165
+          ],
+          "bounds": [
+            121,
+            120,
+            167,
+            225
+          ],
+          "sha256": "e9b9648d53632130f4adeda3773aa06129b2cde29818fe304b9d6a6f7b9f624d"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.656441717791411,
+          "sourceAnchor": [
+            35.5,
+            165
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            68,
+            165
+          ],
+          "bounds": [
+            122,
+            118,
+            165,
+            225
+          ],
+          "sha256": "6398ffe38636149996cff4a6fbd1ef0e82b94936bfaa8f61f34b5d04255e2b44"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.656441717791411,
+          "sourceAnchor": [
+            67,
+            165
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            99,
+            165
+          ],
+          "bounds": [
+            101,
+            118,
+            165,
+            225
+          ],
+          "sha256": "4000c36e7d135792a5fc14ec9699a2634a1b491f88c90fc8e2e318fe4ea1991b"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.656441717791411,
+          "sourceAnchor": [
+            43.5,
+            165
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            76,
+            165
+          ],
+          "bounds": [
+            117,
+            118,
+            166,
+            225
+          ],
+          "sha256": "c7b5c7c67f8024254d34cb257bd51108c66429175b32948e38d265c12c573044"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.656441717791411,
+          "sourceAnchor": [
+            34.5,
+            165
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            67,
+            165
+          ],
+          "bounds": [
+            123,
+            118,
+            166,
+            225
+          ],
+          "sha256": "288be291e5b883b874d2f16c53967a956ae7e64ad714c0514d25f3db79ec4d8f"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6463414634146342,
+          "sourceAnchor": [
+            34.5,
+            166
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            67,
+            166
+          ],
+          "bounds": [
+            123,
+            119,
+            165,
+            225
+          ],
+          "sha256": "b8ff856037465250087eee9a4cd5d9a82d4232833fce765b8844dbe071c47c73"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6463414634146342,
+          "sourceAnchor": [
+            63,
+            166
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            96,
+            166
+          ],
+          "bounds": [
+            105,
+            119,
+            166,
+            225
+          ],
+          "sha256": "afaaef22ccd6ef68d3877edec14e5d43f0030f7f604ad453c2ed70f322faa0af"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6463414634146342,
+          "sourceAnchor": [
+            43,
+            166
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            76,
+            166
+          ],
+          "bounds": [
+            118,
+            119,
+            166,
+            225
+          ],
+          "sha256": "7c791a3b01c77c894df5d3ed85d4a42a61888ad9c628b7f3c388fcdd1e662c8b"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6463414634146342,
+          "sourceAnchor": [
+            35,
+            166
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            68,
+            166
+          ],
+          "bounds": [
+            123,
+            119,
+            166,
+            225
+          ],
+          "sha256": "13ab0158bb3b96bcf1ad4637aecec61a18568e98247643d1c51594e37471e38f"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6503067484662577,
+          "sourceAnchor": [
+            36.5,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            71,
+            166
+          ],
+          "bounds": [
+            122,
+            118,
+            167,
+            224
+          ],
+          "sha256": "f659431ea307397c0983cb077110b95ea8c1675f9d9e01f610719e6fdfa07d65"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6503067484662577,
+          "sourceAnchor": [
+            69.5,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            104,
+            167
+          ],
+          "bounds": [
+            100,
+            118,
+            166,
+            225
+          ],
+          "sha256": "b07cac77587d7254a3e609f5bcc5e0bbe4835692c74d6e14c93f585acf2f6bb8"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6503067484662577,
+          "sourceAnchor": [
+            49.5,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            84,
+            167
+          ],
+          "bounds": [
+            113,
+            118,
+            166,
+            225
+          ],
+          "sha256": "14a8e2899e6ffbb22850467118b2811bcf9a2bacbe4c78d35eeb2844aefbafe5"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/woman-shawl-interact-v1.png",
+          "sourceScale": 0.6503067484662577,
+          "sourceAnchor": [
+            36.5,
+            167
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            71,
+            167
+          ],
+          "bounds": [
+            122,
+            118,
+            167,
+            225
+          ],
+          "sha256": "c33000dd123ff5f6f6e9d787c5e077b4e22d13d64486476276a3f1c4f9ae17da"
+        }
+      ],
+      "file": "woman-shawl-interact.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "66f55c29f1edd47b033f2a7703508e71fa443e6dd60e3454661c4259a357f928"
+    }
+  }
+}

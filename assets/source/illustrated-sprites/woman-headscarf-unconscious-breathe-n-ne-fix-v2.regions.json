@@ -1,0 +1,55 @@
+{
+  "columns": 4,
+  "rows": 2,
+  "scaleMode": "longest",
+  "slots": [
+    {
+      "direction": "n",
+      "frame": 0,
+      "row": 0,
+      "col": 0
+    },
+    {
+      "direction": "n",
+      "frame": 1,
+      "row": 0,
+      "col": 1
+    },
+    {
+      "direction": "n",
+      "frame": 2,
+      "row": 0,
+      "col": 2
+    },
+    {
+      "direction": "n",
+      "frame": 3,
+      "row": 0,
+      "col": 3
+    },
+    {
+      "direction": "ne",
+      "frame": 0,
+      "row": 1,
+      "col": 0
+    },
+    {
+      "direction": "ne",
+      "frame": 1,
+      "row": 1,
+      "col": 1
+    },
+    {
+      "direction": "ne",
+      "frame": 2,
+      "row": 1,
+      "col": 2
+    },
+    {
+      "direction": "ne",
+      "frame": 3,
+      "row": 1,
+      "col": 3
+    }
+  ]
+}

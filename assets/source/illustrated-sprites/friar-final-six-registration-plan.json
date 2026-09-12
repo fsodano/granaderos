@@ -1,0 +1,219 @@
+{
+  "version": 1,
+  "appearance": "friar",
+  "states": [
+    "prone-unarmed-walk",
+    "prone-armed-fire",
+    "prone-armed-reload",
+    "unconscious-breathe",
+    "mounted-walk",
+    "mounted-idle"
+  ],
+  "instructions": "Final six Friar states. All visually reviewed; all 11 main sheets pass 8/16-cell gutter checks. Prone fire south base top S row is INVALID anatomy (north body/doubled shoes) and is excluded; exact-S four-frame correction replaces all S phases with face/downward pistol below two trailing shoes. Use fixed body scale/anchor across correction phases so flash does not change body scale. Prone reload north is exact N with continuous pistol; cartridge motion is subtle at rear and ramrod distinct. All eight breathing views have closed eyes/cheek supported on resting hands and no active bracing. Horse walk has distinct planted/lifted hooves; slight head glances accepted. Explicit gutter regions for mounted-walk south and prone-reload south prevent tight regular-cell edges cutting footwear. Other sheets need no explicit regions.",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/friar-prone-unarmed-walk-north-v1.png",
+      "name": "friar-prone-unarmed-walk",
+      "reference": "granadero-prone-unarmed-walk",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-prone-unarmed-walk-south-v1.png",
+      "name": "friar-prone-unarmed-walk",
+      "reference": "granadero-prone-unarmed-walk",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-prone-armed-fire-north-v1.png",
+      "name": "friar-prone-armed-fire",
+      "reference": "granadero-prone-armed-fire",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-prone-armed-fire-south-v1.png",
+      "name": "friar-prone-armed-fire",
+      "reference": "granadero-prone-armed-fire",
+      "half": "south",
+      "includeDirections": [
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-prone-armed-reload-north-v1.png",
+      "name": "friar-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-prone-armed-reload-south-v1.png",
+      "name": "friar-prone-armed-reload",
+      "reference": "granadero-prone-armed-reload",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "regionFile": "assets/source/illustrated-sprites/friar-prone-armed-reload-south-v1.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-unconscious-breathe-north-v1.png",
+      "name": "friar-unconscious-breathe",
+      "reference": "granadero-unconscious-breathe",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-unconscious-breathe-south-v1.png",
+      "name": "friar-unconscious-breathe",
+      "reference": "granadero-unconscious-breathe",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-mounted-walk-north-v1.png",
+      "name": "friar-mounted-walk",
+      "reference": "granadero-mounted-walk",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-mounted-walk-south-v1.png",
+      "name": "friar-mounted-walk",
+      "reference": "granadero-mounted-walk",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ],
+      "regionFile": "assets/source/illustrated-sprites/friar-mounted-walk-south-v1.regions.json"
+    },
+    {
+      "source": "assets/source/illustrated-sprites/friar-mounted-idle-v1.png",
+      "name": "friar-mounted-idle",
+      "reference": "granadero-mounted-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    }
+  ],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/friar-prone-armed-fire-s-fix-v1.png",
+      "name": "friar-prone-armed-fire",
+      "reference": "granadero-prone-armed-fire",
+      "half": "south",
+      "includeDirections": [
+        "S"
+      ],
+      "regionFile": "assets/source/illustrated-sprites/friar-prone-armed-fire-s-fix-v1.regions.json",
+      "spec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "S",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              149,
+              217,
+              260,
+              450
+            ]
+          },
+          {
+            "direction": "S",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              623,
+              217,
+              260,
+              450
+            ]
+          },
+          {
+            "direction": "S",
+            "frame": 2,
+            "row": 0,
+            "col": 2,
+            "rect": [
+              1094,
+              217,
+              260,
+              450
+            ]
+          },
+          {
+            "direction": "S",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1568,
+              217,
+              261,
+              450
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

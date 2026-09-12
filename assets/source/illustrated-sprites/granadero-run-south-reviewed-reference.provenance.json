@@ -1,0 +1,12 @@
+{
+  "source": "assets/previews/illustrated-sprites/packed/granadero-run.png",
+  "sha256": "991c87ff7d16e4ee979baca378a96173f0356ef64d81f29782609b0c82df8df5",
+  "directions": [
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "frames": 4,
+  "command": "node tools/illustrated-action-reference.mjs granadero-run"
+}

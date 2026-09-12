@@ -1,0 +1,187 @@
+{
+  "schemaVersion": 1,
+  "appearance": "woman-elder",
+  "stage": "strike",
+  "pathBase": "repository-root",
+  "registrationOrder": [
+    "variants",
+    "corrections"
+  ],
+  "variantTool": "tools/register-illustrated-variant.mjs SOURCE NAME REFERENCE HALF [REGIONS_JSON]",
+  "correctionTool": "tools/register-illustrated-correction.mjs SOURCE NAME REFERENCE CORRECTION_SPEC_JSON",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-strike-north-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-strike-north-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "name": "woman-elder-strike",
+      "reference": "granadero-strike",
+      "half": "north",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-strike-south-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-strike-south-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "name": "woman-elder-strike",
+      "reference": "granadero-strike",
+      "half": "south",
+      "columns": 4,
+      "rows": 4,
+      "frames": 4
+    }
+  ],
+  "corrections": [
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-strike-n-fix-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-strike-n-fix-v1.prompt.txt",
+      "sourceSize": [
+        1774,
+        887
+      ],
+      "name": "woman-elder-strike",
+      "reference": "granadero-strike",
+      "half": "north",
+      "calibration": {
+        "method": "One anatomical body scale across strip. Match head-to-boots height and planted boot baseline; ignore raised knife in bounds."
+      },
+      "correctionSpec": {
+        "columns": 4,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "n",
+            "frame": 0,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              147,
+              122,
+              223,
+              645
+            ]
+          },
+          {
+            "direction": "n",
+            "frame": 1,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              566,
+              122,
+              209,
+              645
+            ]
+          },
+          {
+            "direction": "n",
+            "frame": 3,
+            "row": 0,
+            "col": 3,
+            "rect": [
+              1385,
+              122,
+              225,
+              645
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-strike-n-2-fix-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-strike-n-2-fix-v1.prompt.txt",
+      "sourceSize": [
+        1254,
+        1254
+      ],
+      "name": "woman-elder-strike",
+      "reference": "granadero-strike",
+      "half": "north",
+      "calibration": {
+        "method": "One anatomical body scale across strip. Match head-to-boots height and planted boot baseline; ignore raised knife in bounds."
+      },
+      "correctionSpec": {
+        "columns": 1,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "n",
+            "frame": 2,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              412,
+              260,
+              351,
+              784
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "source": "assets/source/illustrated-sprites/woman-elder-strike-s-1-2-fix-v1.png",
+      "prompt": "assets/source/illustrated-sprites/woman-elder-strike-s-1-2-fix-v1.prompt.txt",
+      "sourceSize": [
+        1774,
+        887
+      ],
+      "name": "woman-elder-strike",
+      "reference": "granadero-strike",
+      "half": "south",
+      "calibration": {
+        "method": "One body scale across pair, fixed boot baseline; exclude center separator with explicit regions."
+      },
+      "correctionSpec": {
+        "columns": 2,
+        "rows": 1,
+        "scaleMode": "height",
+        "slots": [
+          {
+            "direction": "s",
+            "frame": 1,
+            "row": 0,
+            "col": 0,
+            "rect": [
+              296,
+              64,
+              310,
+              753
+            ]
+          },
+          {
+            "direction": "s",
+            "frame": 2,
+            "row": 0,
+            "col": 1,
+            "rect": [
+              1182,
+              64,
+              310,
+              753
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "qa": {
+    "notes": [
+      "North phases0,1,3 use rear strip; phase2 uses lower forward impact single. Original north strip phase2 overhead reach is unselected.",
+      "South phases1,2 correction is strict frontal with end-on knife; explicit rects exclude generated center separator.",
+      "W middle phases turn torso partly toward viewer during thrust while blade remains west. Diagonal blade angles are shallow, body headings retained.",
+      "Keep one anatomical scale per strip, match head/hips/boots; do not scale bodies from knife reach."
+    ]
+  }
+}

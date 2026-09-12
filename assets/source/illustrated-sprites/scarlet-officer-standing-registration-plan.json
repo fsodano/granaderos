@@ -1,0 +1,152 @@
+{
+  "version": 1,
+  "appearance": "scarlet-officer",
+  "states": [
+    "run",
+    "fire",
+    "reload",
+    "strike",
+    "crouch-idle",
+    "crouch-walk"
+  ],
+  "instructions": "All selected sources were visually inspected. Register variants sequentially. Use all listed directions. No cell corrections are needed. Minor head glances retain the body and weapon axes. Crouch-walk W phase differences remain shallow like the reviewed pose source.",
+  "variants": [
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-run-north-v1.png",
+      "name": "scarlet-officer-run",
+      "reference": "granadero-run",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-run-south-v1.png",
+      "name": "scarlet-officer-run",
+      "reference": "granadero-run",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-fire-north-v2.png",
+      "name": "scarlet-officer-fire",
+      "reference": "granadero-fire",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-fire-south-v1.png",
+      "name": "scarlet-officer-fire",
+      "reference": "granadero-fire",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-reload-north-v2.png",
+      "name": "scarlet-officer-reload",
+      "reference": "granadero-reload",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-reload-south-v1.png",
+      "name": "scarlet-officer-reload",
+      "reference": "granadero-reload",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-strike-north-v2.png",
+      "name": "scarlet-officer-strike",
+      "reference": "granadero-strike",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-strike-south-v2.png",
+      "name": "scarlet-officer-strike",
+      "reference": "granadero-strike",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-crouch-idle-v1.png",
+      "name": "scarlet-officer-crouch-idle",
+      "reference": "granadero-crouch-idle",
+      "half": "all",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE",
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-crouch-walk-north-v1.png",
+      "name": "scarlet-officer-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "north",
+      "includeDirections": [
+        "N",
+        "NE",
+        "E",
+        "SE"
+      ]
+    },
+    {
+      "source": "assets/source/illustrated-sprites/scarlet-officer-crouch-walk-south-v1.png",
+      "name": "scarlet-officer-crouch-walk",
+      "reference": "granadero-crouch-walk",
+      "half": "south",
+      "includeDirections": [
+        "S",
+        "SW",
+        "W",
+        "NW"
+      ]
+    }
+  ],
+  "corrections": []
+}

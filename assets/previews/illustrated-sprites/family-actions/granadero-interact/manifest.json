@@ -1,0 +1,778 @@
+{
+  "version": 1,
+  "style": "illustrated-pixel-art",
+  "status": "staging",
+  "directions": [
+    "n",
+    "ne",
+    "e",
+    "se",
+    "s",
+    "sw",
+    "w",
+    "nw"
+  ],
+  "atlases": {
+    "granadero-interact": {
+      "cell": 288,
+      "anchor": [
+        144,
+        225
+      ],
+      "logicalCell": 96,
+      "framesPerDirection": 4,
+      "fps": 5,
+      "sources": [
+        {
+          "file": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sha256": "f4b27a9c353b011eb52974c7cbc6c2d0e1d87f74ae70e5e6b0d98fdbf587c35e",
+          "scale": 1
+        }
+      ],
+      "records": [
+        {
+          "direction": "n",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6724137931034483,
+          "sourceAnchor": [
+            37,
+            176
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            71,
+            176
+          ],
+          "bounds": [
+            120,
+            108,
+            166,
+            225
+          ],
+          "sha256": "edc4e38be9e574269da347ecfd2e486418f272c94c98864a5d74d2c381e8edcf"
+        },
+        {
+          "direction": "n",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6724137931034483,
+          "sourceAnchor": [
+            37,
+            176
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            101,
+            176
+          ],
+          "bounds": [
+            120,
+            108,
+            187,
+            225
+          ],
+          "sha256": "777da21e26780b2d1b07558508ea3f3a8f449dafa3699356f2849340bc66547b"
+        },
+        {
+          "direction": "n",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6724137931034483,
+          "sourceAnchor": [
+            38,
+            176
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            86,
+            176
+          ],
+          "bounds": [
+            120,
+            108,
+            176,
+            225
+          ],
+          "sha256": "6469238d1e798135b876f54b60955011205d4d3a363178741fad0a4b145984ef"
+        },
+        {
+          "direction": "n",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6724137931034483,
+          "sourceAnchor": [
+            37.5,
+            176
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            71,
+            176
+          ],
+          "bounds": [
+            120,
+            108,
+            166,
+            225
+          ],
+          "sha256": "b228a062edadc122aea681f1791707f73cbf83f43eef324946131785aa2c947d"
+        },
+        {
+          "direction": "ne",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.65,
+          "sourceAnchor": [
+            36.5,
+            182
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            70,
+            182
+          ],
+          "bounds": [
+            122,
+            108,
+            166,
+            225
+          ],
+          "sha256": "3eb77a9596ee5ca53362a7fbd48998ad37e28eebb395b71b8045775cd860bd67"
+        },
+        {
+          "direction": "ne",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.65,
+          "sourceAnchor": [
+            38.5,
+            182
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            108,
+            182
+          ],
+          "bounds": [
+            120,
+            108,
+            189,
+            225
+          ],
+          "sha256": "113e707835a4b980467bade957b8ac2761c2759967ea32195df0f55ce796a2c0"
+        },
+        {
+          "direction": "ne",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.65,
+          "sourceAnchor": [
+            38.5,
+            182
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            101,
+            182
+          ],
+          "bounds": [
+            120,
+            108,
+            184,
+            225
+          ],
+          "sha256": "bb03317e39f886da03363639f5a7ef41fdae94b28638dfc00f7c003153bf9193"
+        },
+        {
+          "direction": "ne",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.65,
+          "sourceAnchor": [
+            38.5,
+            182
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            70,
+            182
+          ],
+          "bounds": [
+            120,
+            108,
+            164,
+            225
+          ],
+          "sha256": "dc5a797d3cd4beff6390093c351c5fe10c7a219c0b6896f78190d7b527a2a99a"
+        },
+        {
+          "direction": "e",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6480446927374302,
+          "sourceAnchor": [
+            36,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            59,
+            181
+          ],
+          "bounds": [
+            122,
+            109,
+            159,
+            225
+          ],
+          "sha256": "d244686a1f2479fa4ccd378cf1d2d21b3624c19bec41a2154ffdd83e50440e80"
+        },
+        {
+          "direction": "e",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6480446927374302,
+          "sourceAnchor": [
+            34.5,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            96,
+            181
+          ],
+          "bounds": [
+            123,
+            109,
+            184,
+            225
+          ],
+          "sha256": "470dfa8682cfa9c4c99c054e052a347dc278556446c213b6ab6b98fddc92c690"
+        },
+        {
+          "direction": "e",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6480446927374302,
+          "sourceAnchor": [
+            34.5,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            87,
+            181
+          ],
+          "bounds": [
+            123,
+            109,
+            178,
+            225
+          ],
+          "sha256": "9e8fb7728a853e96a16e9a981ace7031fb5ac3722731593abe096cb65c518b51"
+        },
+        {
+          "direction": "e",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6480446927374302,
+          "sourceAnchor": [
+            35.5,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            59,
+            181
+          ],
+          "bounds": [
+            122,
+            109,
+            159,
+            225
+          ],
+          "sha256": "75440601b3e3887cea99351a3e9e52dc42a2c40502442c105b4c3f17bc3fccf9"
+        },
+        {
+          "direction": "se",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6611111111111111,
+          "sourceAnchor": [
+            39,
+            182
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            69,
+            182
+          ],
+          "bounds": [
+            120,
+            106,
+            164,
+            225
+          ],
+          "sha256": "9fae6cb2a13861c6f961c87a35950cb329989f6c2c8d5da3d506d86516e870d5"
+        },
+        {
+          "direction": "se",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6611111111111111,
+          "sourceAnchor": [
+            40.5,
+            182
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            102,
+            182
+          ],
+          "bounds": [
+            119,
+            106,
+            185,
+            225
+          ],
+          "sha256": "12649a55076668ae3d96e4d2d8540c8505cf6259c21e5dd8dd150928001855b8"
+        },
+        {
+          "direction": "se",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6611111111111111,
+          "sourceAnchor": [
+            40,
+            182
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            72,
+            182
+          ],
+          "bounds": [
+            119,
+            106,
+            165,
+            225
+          ],
+          "sha256": "87774e5fe9d8270bfc278d6a5b1570d8ac5e6c554aa7d524e18371ca2b0d88ff"
+        },
+        {
+          "direction": "se",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6611111111111111,
+          "sourceAnchor": [
+            38.5,
+            182
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            68,
+            182
+          ],
+          "bounds": [
+            120,
+            106,
+            164,
+            225
+          ],
+          "sha256": "503bfdadf7d02ba1006d83fe8f0e5ef029953ee4ec745e45c2b98e6531ece015"
+        },
+        {
+          "direction": "s",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6480446927374302,
+          "sourceAnchor": [
+            39,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            76,
+            181
+          ],
+          "bounds": [
+            120,
+            109,
+            168,
+            225
+          ],
+          "sha256": "cd4baf9811ca40ebf115478ecd6fa8e384788cf3969ea8ff482f63cb4c77343d"
+        },
+        {
+          "direction": "s",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6480446927374302,
+          "sourceAnchor": [
+            36,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            92,
+            181
+          ],
+          "bounds": [
+            122,
+            109,
+            180,
+            225
+          ],
+          "sha256": "448e6e0a1c690a3664f17fe32bf2123474d9d499ec40cf22a03e82af48693659"
+        },
+        {
+          "direction": "s",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6480446927374302,
+          "sourceAnchor": [
+            36,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            71,
+            181
+          ],
+          "bounds": [
+            122,
+            109,
+            167,
+            225
+          ],
+          "sha256": "9a681a415fd028fd6118e948534f2661773c1f600391280e3daee684000700bc"
+        },
+        {
+          "direction": "s",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6480446927374302,
+          "sourceAnchor": [
+            40,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            76,
+            181
+          ],
+          "bounds": [
+            119,
+            109,
+            167,
+            225
+          ],
+          "sha256": "3d9b6fca2d81582f5395ffb87444d8ed56dff503e709c3bc915210578e3244a6"
+        },
+        {
+          "direction": "sw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6408839779005525,
+          "sourceAnchor": [
+            33.5,
+            184
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            71,
+            184
+          ],
+          "bounds": [
+            124,
+            109,
+            168,
+            225
+          ],
+          "sha256": "d902008dbb517837961e86a33229a53bdb471e49bfcc855d37b0106bdb5b9213"
+        },
+        {
+          "direction": "sw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6408839779005525,
+          "sourceAnchor": [
+            65,
+            184
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            105,
+            184
+          ],
+          "bounds": [
+            104,
+            108,
+            170,
+            225
+          ],
+          "sha256": "a3cb3a3a079e82f9fed5d1d1040602a65b2d11c3d6fc8bbf20d8326288d9f374"
+        },
+        {
+          "direction": "sw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6408839779005525,
+          "sourceAnchor": [
+            56.5,
+            184
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            96,
+            184
+          ],
+          "bounds": [
+            109,
+            109,
+            169,
+            225
+          ],
+          "sha256": "2c45de523a5401711260fd402bb0bf73ef1174072e161450b774f4bad305bd9a"
+        },
+        {
+          "direction": "sw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6408839779005525,
+          "sourceAnchor": [
+            32,
+            184
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            70,
+            184
+          ],
+          "bounds": [
+            125,
+            109,
+            169,
+            225
+          ],
+          "sha256": "8867d3d1a16fb9016d19cddee3a09008195c54d07aa6d060ed349c6f3be3f1bb"
+        },
+        {
+          "direction": "w",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6424581005586593,
+          "sourceAnchor": [
+            28,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            63,
+            181
+          ],
+          "bounds": [
+            127,
+            110,
+            166,
+            225
+          ],
+          "sha256": "b02f59fc980d5fdb617e2539196048263803fb4e2d1c8a0484076c50f0bbc47c"
+        },
+        {
+          "direction": "w",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6424581005586593,
+          "sourceAnchor": [
+            63,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            99,
+            181
+          ],
+          "bounds": [
+            105,
+            110,
+            167,
+            225
+          ],
+          "sha256": "d7d379cca55d1d6b7a1d40db549baca4f601930af669f9e340ab386832910d6a"
+        },
+        {
+          "direction": "w",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6424581005586593,
+          "sourceAnchor": [
+            43.5,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            79,
+            181
+          ],
+          "bounds": [
+            117,
+            110,
+            166,
+            225
+          ],
+          "sha256": "bb82d91842e2972adbb5829c0a94031eef558e604d00ac0912a8301cb961c056"
+        },
+        {
+          "direction": "w",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6424581005586593,
+          "sourceAnchor": [
+            27.5,
+            181
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            65,
+            181
+          ],
+          "bounds": [
+            128,
+            110,
+            168,
+            225
+          ],
+          "sha256": "f62b064b4c8484339660bea1a882fff009109da2a62b8a70c6ebb3d1bb101a3e"
+        },
+        {
+          "direction": "nw",
+          "frame": 0,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6480446927374302,
+          "sourceAnchor": [
+            35.5,
+            182
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            74,
+            182
+          ],
+          "bounds": [
+            122,
+            109,
+            169,
+            225
+          ],
+          "sha256": "bae8995e3247cc2d6d53aef68c5958907173bfe03dfca3526c619515d4e8f90e"
+        },
+        {
+          "direction": "nw",
+          "frame": 1,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6480446927374302,
+          "sourceAnchor": [
+            61,
+            182
+          ],
+          "sourceBounds": [
+            2,
+            2,
+            99,
+            182
+          ],
+          "bounds": [
+            106,
+            108,
+            169,
+            225
+          ],
+          "sha256": "331b38e5b3680994954c4ffe99a283cb19b803aa4f557e28518b3a4f41047b1c"
+        },
+        {
+          "direction": "nw",
+          "frame": 2,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6480446927374302,
+          "sourceAnchor": [
+            55.5,
+            182
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            94,
+            182
+          ],
+          "bounds": [
+            109,
+            109,
+            169,
+            225
+          ],
+          "sha256": "de87707bdc7d2873888541c13a3159d94b02a8de682b5768923b1f7e64f772f5"
+        },
+        {
+          "direction": "nw",
+          "frame": 3,
+          "source": "assets/source/illustrated-sprites/family-actions/granadero-interact-v2.png",
+          "sourceScale": 0.6480446927374302,
+          "sourceAnchor": [
+            34,
+            182
+          ],
+          "sourceBounds": [
+            2,
+            3,
+            73,
+            182
+          ],
+          "bounds": [
+            123,
+            109,
+            169,
+            225
+          ],
+          "sha256": "01f1ed092664fa61b5f72512aeb4719ed9f7bceddf36f14d85ab006f17e31fce"
+        }
+      ],
+      "file": "granadero-interact.png",
+      "size": [
+        1152,
+        2304
+      ],
+      "sha256": "9af1bc57ceb800961052558f0b8d31cae8a0f25a5865609b481311e973cfe08b"
+    }
+  }
+}
