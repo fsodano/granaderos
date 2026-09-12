@@ -81,9 +81,10 @@ test('legal authored-map opening campaign wins San Nicolás then San Lorenzo',()
  for(const id of [110,114,115,123,107])order({type:'recruitCivic',id,term:'week'});
  assert.equal(c.squad.length,6);order({type:'purchaseMedicalSupplies',operativeId:107,quantity:20});
  order({type:'academy'});order({type:'travel',sector:'buenos_aires'});
- // Rest at the staging sector before the approach to the first battle.
+ // Sleep through staging until departure at midnight, then make the real
+ // twelve-hour approach for a daylight battle. Notices may pause the wait.
  for(const operativeId of c.squad)order({type:'setSleep',operativeId,asleep:true});
- waitFor(3);
+ waitFor(12);
  let dressingBearer=115;
  for(const sector of ['san_nicolas','san_lorenzo']){
   if(sector==='san_lorenzo'){
@@ -168,12 +169,17 @@ test('legal authored-map opening campaign wins San Nicolás then San Lorenzo',()
    const saved=decodeSave(encodeSave(c,null));assert.deepEqual(saved.campaign,c,'salvaged equipment and stripped bodies survive a campaign save');c=saved.campaign;
 
   }
+  // San Lorenzo is local. Wait through darkness before starting its assault.
+  if(sector==='san_lorenzo'&&(c.hour%24<6||c.hour%24>=20))waitFor((30-c.hour%24)%24);
   order({type:'attack',sector});const request=c.pendingBattle;
+  const entry=enterSector(request);
+  assert.equal(entry.startSeconds,c.hour*3600+(c.secondOfHour??0),'combat starts at the actual arrival time');
+  assert.equal(entry.night,false,'ordinary departure and wait orders schedule daylight assaults');
   let {battle:b,actions}=fight(request);
   assert.deepEqual(b,fight(request).battle,'identical seed and legal orders replay deterministically');
   assert.ok(actions>0);assert.ok(b.turn>1);
   assert.ok(b.units.filter(u=>u.side==='player').reduce((sum,u)=>sum+u.loaded+u.ammo,0)<request.issuedCartridges+(request.missionAllies??[]).reduce((sum,u)=>sum+u.loaded+u.ammo,0),'actual shots consume issued cartridges');
-  transcript.push({sector,status:b.status,turn:b.turn,actions,units:b.units.map(u=>({id:u.id,hp:u.hp,energy:u.energy,ammo:u.ammo,loaded:u.loaded,routed:u.routed}))});
+  transcript.push({sector,startSeconds:b.startSeconds,status:b.status,turn:b.turn,actions,units:b.units.map(u=>({id:u.id,hp:u.hp,energy:u.energy,ammo:u.ammo,loaded:u.loaded,routed:u.routed}))});
   assert.equal(b.status,'victory',JSON.stringify(transcript));
   if(sector==='san_nicolas'){
    // Recover finite dressings from the fallen doctor after an actual approach.
