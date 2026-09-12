@@ -15,10 +15,24 @@ import {tacticalShortcut} from '../game/hotkeys.js';
 const {default:Scene}=await import('../web/app/TacticalScene.tsx');
 const {default:Inventory}=await import('../web/app/JA2Inventory.tsx');
 const {buildBuildingObjects}=await import('../web/app/TacticalBuildings.tsx');
+const {BuildingRoof}=await import('../web/app/BuildingRoof.tsx');
 const {movementRoute,sampleMovementSegment}=await import('../web/app/useUnitMotion.ts');
-const {projectSurface,ELEVATION_PIXELS_PER_METRE}=await import('../web/lib/tactical-elevation.ts');
+const {projectSurface,ELEVATION_PIXELS_PER_METRE,surfaceMotionPoint}=await import('../web/lib/tactical-elevation.ts');
 const project=(x,y)=>({x:300+(x-y)*26,y:65+(x+y)*14}),noop=()=>{};
 const nodes=node=>!node||typeof node!=='object'?[]:[node,...(Array.isArray(node)?node:Array.isArray(node.props?.children)?node.props.children:[node.props?.children]).flatMap(nodes)];
+const close=(actual,expected)=>assert.ok(Math.abs(actual-expected)<1e-8,`${actual} != ${expected}`);
+// Recover the actual roof mesh transform and its vertices. This is independent
+// of the surface projection helper and detects changes to the approved art plane.
+function renderedRoofPlane(state){
+ const object=buildBuildingObjects({state,revealed:new Set(),cursorLevel:1,project,light:()=>1}).find(o=>o.key==='architecture-roof-terrace:interior');
+ const element=nodes(object.node).find(node=>node.type===BuildingRoof),roof=componentTree(BuildingRoof,element.props);
+ const flat=nodes(roof).find(node=>node.props?.['data-roof-form']==='flat');
+ const mesh=nodes(flat).find(node=>node.type==='g'&&node.props?.transform?.startsWith('matrix('));
+ const matrix=mesh.props.transform.slice(7,-1).split(/\s+/).map(Number);
+ const [a,b,c,d,e,f]=matrix,projectVertex=(x,y)=>({x:a*x+c*y+e,y:b*x+d*y+f});
+ const vertices=mesh.props.children[0].props.points.split(' ').map(point=>point.split(',').map(Number));
+ return {point:(x,y)=>projectVertex(x*32,y*32),vertices:vertices.map(([x,y])=>({cell:{x:x/32,y:y/32,tacticalLevel:1},screen:projectVertex(x,y)}))};
+}
 function fixture(){
  const built=buildBuilding({id:'terrace',x:2,y:2,width:5,height:5,doors:[{x:3,y:6,open:true}]}),ground=Array.from({length:100},(_,i)=>({x:i%10,y:Math.floor(i/10),type:'grass',blocked:false,blocksSight:false,cover:0}));
  const map=new Map(built.tiles.map(t=>[`${t.x},${t.y}`,t]));
@@ -36,7 +50,7 @@ test('ground and roof hit frames share map columns but retain distinct physical 
   const tree=componentTree(Scene,sceneProps(state,{cursorLevel:level,onTile:point=>clicked.push(point)})),all=nodes(tree);
   const frames=['down','up'].map(id=>nodes(all.find(n=>n.props?.['data-unit-id']===id)).find(n=>n.props?.['data-person-hit-target']));
   assert.equal(frames[0].props.x,frames[1].props.x);
-  assert.equal(frames[0].props.y-frames[1].props.y,3*ELEVATION_PIXELS_PER_METRE);
+  close(frames[0].props.y-frames[1].props.y,project(3,3).y-renderedRoofPlane(state).point(3,3).y);
   for(const [i,frame]of frames.entries()){
    assert.equal(frame.props.tabIndex,i===level?0:-1);assert.equal(frame.props.pointerEvents,i===level?'all':'none');
   }
@@ -47,6 +61,24 @@ test('ground and roof hit frames share map columns but retain distinct physical 
  assert.equal(cellOccupant(state.units,{x:3,y:3}).id,'down');
  assert.equal(cellOccupant(state.units,{x:3,y:3,tacticalLevel:1}).id,'up');
  assert.equal(visibleHover(state,state.units[2]).id,'up');
+});
+
+test('roof mesh vertices, actor feet, hit frames and tile targets use the same existing art plane',()=>{
+ for(const architecture of ['house','mansion','warehouse']){
+  const state=fixture();Object.assign(state.buildings[0],{architecture,roof:'terrace'});
+  const plane=renderedRoofPlane(state);
+  for(const vertex of plane.vertices){const p=projectSurface(state,project,vertex.cell);close(p.x,vertex.screen.x);close(p.y,vertex.screen.y);}
+  for(const cell of [{x:2,y:3},{x:3,y:3},{x:6,y:5}]){
+   Object.assign(state.units[2],cell);const expected=plane.point(cell.x,cell.y),surface=state.upperSurfaces.find(t=>t.x===cell.x&&t.y===cell.y);
+   const tree=componentTree(Scene,sceneProps(state,{cursorLevel:1,hover:surface})),actor=nodes(tree).find(node=>node.props?.['data-unit-id']==='up');
+   const ring=nodes(actor).find(node=>node.type==='ellipse'&&node.props.stroke==='#dacb86'),hit=nodes(actor).find(node=>node.props?.['data-person-hit-target']);
+   close(ring.props.cx,expected.x);close(ring.props.cy,expected.y);close(hit.props.x+hit.props.width/2,expected.x);close(hit.props.y+hit.props.height,expected.y);
+   const sprite=nodes(actor).find(node=>node.props?.drawSize===52);assert.deepEqual(sprite.props.position,{x:ring.props.cx,y:ring.props.cy});assert.equal(sprite.props.drawSize,52);
+   const target=nodes(tree).find(node=>node.props?.['data-surface-id']===surface.id),vertices=target.props.children[0].props.points.split(' ').map(point=>point.split(',').map(Number));
+   close(vertices.reduce((sum,p)=>sum+p[0],0)/4,expected.x);close(vertices.reduce((sum,p)=>sum+p[1],0)/4,expected.y);
+  }
+  assert.deepEqual(projectSurface(state,project,{x:3,y:3}),project(3,3));
+ }
 });
 
 test('upper tile actions, hover outlines and sight overlays use the roof plane and its own key',()=>{
@@ -83,15 +115,33 @@ test('same-column climbs animate physical height and preserve authoritative clim
  const state=fixture(),unit=state.units[0],link=state.climbLinks[0],next=actBattle(state,{type:'climb',unitId:unit.id,linkId:link.id});
  assert.equal(next.lastError,null);const actor=next.units[0],path=movementRoute(state,unit,actor);
  assert.ok(sameCell(path.at(-1),actor));assert.equal(path.at(-1).kind,'climb');assert.equal(path.at(-1).linkId,link.id);
- const a={x:3,y:3,renderedHeight:0},b={x:3,y:3,tacticalLevel:1,renderedHeight:3};
+ const a=surfaceMotionPoint(state,{x:3,y:3}),b=surfaceMotionPoint(state,{x:3,y:3,tacticalLevel:1});
+ const from=project(3,3),to=renderedRoofPlane(state).point(3,3);
  for(const fraction of [0,.25,.5,.75,1]){
   const point=sampleMovementSegment(a,b,fraction),p=projectSurface(state,project,point);
   assert.equal(point.x,3);assert.equal(point.y,3);assert.equal(point.renderedHeight,3*fraction);
-  assert.equal(p.y,project(3,3).y-3*fraction*ELEVATION_PIXELS_PER_METRE);
+  close(p.x,from.x+(to.x-from.x)*fraction);close(p.y,from.y+(to.y-from.y)*fraction);
  }
  const recorded={...actor,lastMovePath:[{...actor,kind:'climb',linkId:link.id}]};
  assert.equal(movementRoute(state,unit,recorded)[1].linkId,link.id);
  assert.equal(surfaceHeight(next,actor),3);
+});
+
+test('paid climb and descent interpolate the roof inset without snapping the actor foot or hit frame',()=>{
+ const state=fixture(),unit=state.units[0],next=actBattle(state,{type:'climb',unitId:unit.id,linkId:state.climbLinks[0].id});assert.equal(next.lastError,null);
+ const route=movementRoute(state,unit,next.units[0]).map(point=>surfaceMotionPoint(state,point,next)),plane=renderedRoofPlane(state);
+ for(const [a,b]of [route,[...route].reverse()]){
+  const from=tacticalLevel(a)?plane.point(a.x,a.y):project(a.x,a.y),to=tacticalLevel(b)?plane.point(b.x,b.y):project(b.x,b.y);
+  for(const fraction of [0,.25,.5,.75,1]){
+   const position=sampleMovementSegment(a,b,fraction),p=projectSurface(state,project,position),expected={x:from.x+(to.x-from.x)*fraction,y:from.y+(to.y-from.y)*fraction};
+   close(p.x,expected.x);close(p.y,expected.y);
+   const tree=componentTree(Scene,sceneProps(next,{selected:unit.id,cursorLevel:1,positions:{[unit.id]:{...position,moving:true,direction:3,frame:0}}}));
+   const actor=nodes(tree).find(node=>node.props?.['data-unit-id']===unit.id),hit=nodes(actor).find(node=>node.props?.['data-person-hit-target']);
+   close(hit.props.x+hit.props.width/2,expected.x);close(hit.props.y+hit.props.height,expected.y);
+  }
+ }
+ const independent={...state,buildings:[],upperSurfaces:state.upperSurfaces.map(surface=>({...surface,kind:'platform',buildingId:undefined}))};
+ const point={x:3,y:3,tacticalLevel:1},p=projectSurface(independent,project,point);close(p.x,project(3,3).x);close(p.y,project(3,3).y-3*ELEVATION_PIXELS_PER_METRE);
 });
 
 test('inventory climb controls use real admission, costs and callbacks while native Tab stays available',()=>{

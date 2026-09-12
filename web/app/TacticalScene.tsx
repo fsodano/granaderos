@@ -15,7 +15,7 @@ import {canSee,tileIllumination,shotChance,hasFirearm,contextualAttack,ARTILLERY
 import {heardNoiseModel,groundLootPiles} from '../../game/ja2-hud.js';
 import {useMemo,useRef,type ReactNode} from 'react';
 import {sameCell,spaceKey,tacticalLevel,surfaceHeight} from '../../game/tactical-space.js';
-import {projectSurface,surfaceDrawDepth} from '../lib/tactical-elevation';
+import {projectSurface,surfaceDrawDepth,surfaceRenderOffset} from '../lib/tactical-elevation';
 type Props={viewport?:any;cursorLevel?:number;state:any;selected:any;unit:any;players:any[];units:any[];positions:any;poses:any;directions:any;hover:any;mode:string;aim:number;hitLocation?:string;reachable:any[];showSight:boolean;sight:Set<string>;revealed:Set<string>;project:(x:number,y:number)=>{x:number;y:number};onTile:(t:any)=>void;onHover:(t:any)=>void;onTalk:(n:any)=>void;onCannon:(id:string)=>void;cannonId:string};
 const materials=['dry-grass','dirt','cobble','green-grass','mud','floor','plaster','roof','wood'];
 const diamond=(x:number,y:number)=>`${x},${y-14} ${x+26},${y} ${x},${y+14} ${x-26},${y}`;
@@ -53,7 +53,8 @@ export default function TacticalScene({viewport,cursorLevel=0,state:s,selected,u
  objects.push(...buildPropObjects({state:{...s,props:visibleProps.filter((p:any)=>!surfaceHeight(s,p))},revealed,project,light}));
  for(const prop of visibleProps.filter((p:any)=>(surfaceHeight(s,p)??0)>0)){
   const level=tacticalLevel(prop),height=surfaceHeight(s,prop)??0;
-  const raised=buildPropObjects({state:{...s,props:[prop]},revealed,project:(x,y)=>projectSurface(s,project,{x,y,tacticalLevel:level,renderedHeight:height}),light:(x,y)=>light(x,y,level)});
+  const offset=surfaceRenderOffset(s,prop);
+  const raised=buildPropObjects({state:{...s,props:[prop]},revealed,project:(x,y)=>projectSurface(s,project,{x,y,tacticalLevel:level,renderedHeight:height,renderedOffset:offset}),light:(x,y)=>light(x,y,level)});
   objects.push(...raised.map((object:any)=>({...object,depth:surfaceDrawDepth(s,prop,object.depth-prop.x-prop.y)})));
  }
  return objects;

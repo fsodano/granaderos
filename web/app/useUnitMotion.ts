@@ -1,9 +1,10 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { getReachable } from '../../game/tactical.js';
-import {sameCell,sameSurface,spaceKey,tacticalLevel,surfaceHeight,surfacesAtLevel} from '../../game/tactical-space.js';
+import {sameCell,sameSurface,spaceKey,tacticalLevel,surfacesAtLevel} from '../../game/tactical-space.js';
+import {surfaceMotionPoint,type SurfaceRenderOffset} from '../lib/tactical-elevation';
 
-type Point = {x:number;y:number;tacticalLevel?:number;kind?:string;linkId?:string;renderedHeight?:number};
+type Point = {x:number;y:number;tacticalLevel?:number;kind?:string;linkId?:string;renderedHeight?:number;renderedOffset?:SurfaceRenderOffset};
 type Motion = Point & {direction:number;frame:number;moving:boolean;elapsedMs?:number};
 type Track = {points:Point[];start:number;step:number;direction:number;preservedDirection?:number};
 export type MovementFacingOverride = {battle:any;unitId:string;direction:number};
@@ -44,7 +45,9 @@ export function movementRoute(previous:any,unit:any,target:Point,charge=false,pr
   return [unit,target];
 }
 export function sampleMovementSegment(a:Point,b:Point,fraction:number){
-  return {x:a.x+(b.x-a.x)*fraction,y:a.y+(b.y-a.y)*fraction,tacticalLevel:tacticalLevel(b),renderedHeight:(a.renderedHeight??0)+((b.renderedHeight??0)-(a.renderedHeight??0))*fraction};
+  const offsetA=a.renderedOffset??{x:0,y:0,height:0},offsetB=b.renderedOffset??{x:0,y:0,height:0};
+  return {x:a.x+(b.x-a.x)*fraction,y:a.y+(b.y-a.y)*fraction,tacticalLevel:tacticalLevel(b),renderedHeight:(a.renderedHeight??0)+((b.renderedHeight??0)-(a.renderedHeight??0))*fraction,
+    renderedOffset:{x:offsetA.x+(offsetB.x-offsetA.x)*fraction,y:offsetA.y+(offsetB.y-offsetA.y)*fraction,height:offsetA.height+(offsetB.height-offsetA.height)*fraction}};
 }
 export function useUnitMotion(battle:any,override?:OverrideHolder){
   const previous=useRef(battle),tracks=useRef(new Map<string,Track>()),positions=useRef<Record<string,Motion>>({});
@@ -53,10 +56,10 @@ export function useUnitMotion(battle:any,override?:OverrideHolder){
     const before=previous.current,now=performance.now(),command=takeMovementFacingOverride(override,battle);
     const actors=[...battle.units.filter((unit:any)=>!unit.departure&&!unit.fled),...(battle.npcs??[])],oldActors=[...before.units,...(before.npcs??[])];
     const ids=new Set(actors.map((v:any)=>v.id));for(const id of Object.keys(positions.current))if(!ids.has(id)){delete positions.current[id];tracks.current.delete(id);}
-    for(const unit of actors){const old=oldActors.find((v:any)=>v.id===unit.id);if(unit.hp<=0||unit.unconscious){tracks.current.delete(unit.id);positions.current[unit.id]={x:unit.x,y:unit.y,tacticalLevel:tacticalLevel(unit),renderedHeight:surfaceHeight(battle,unit)??0,direction:positions.current[unit.id]?.direction??(unit.side==='enemy'?7:3),frame:0,moving:false};continue;}if(old&&!sameCell(old,unit)){
+    for(const unit of actors){const old=oldActors.find((v:any)=>v.id===unit.id);if(unit.hp<=0||unit.unconscious){tracks.current.delete(unit.id);positions.current[unit.id]={...surfaceMotionPoint(battle,{x:unit.x,y:unit.y,tacticalLevel:tacticalLevel(unit)}),direction:positions.current[unit.id]?.direction??(unit.side==='enemy'?7:3),frame:0,moving:false};continue;}if(old&&!sameCell(old,unit)){
       const preservedDirection=command&&command.unitId===unit.id?command.direction:undefined;
-      const points=movementRoute(before,old,unit,battle.log?.slice(before.log.length).some((text:string)=>text.startsWith(`${unit.name} ejecuta una carga`)),preservedDirection!==undefined).map(point=>({...point,renderedHeight:surfaceHeight(before,point)??surfaceHeight(battle,point)??0}));tracks.current.set(unit.id,{points,start:now,step:(unit.mounted?150:unit.stance==='prone'||unit.movementMode==='prone'?420:unit.movementMode==='crouch'?320:unit.movementMode==='run'?150:240)*(preservedDirection!==undefined?1.25:1),direction:preservedDirection??positions.current[unit.id]?.direction??3,preservedDirection});
-    }else if(!tracks.current.has(unit.id))positions.current[unit.id]={x:unit.x,y:unit.y,tacticalLevel:tacticalLevel(unit),renderedHeight:surfaceHeight(battle,unit)??0,direction:positions.current[unit.id]?.direction??(unit.side==='player'?3:7),frame:0,moving:false};}
+      const points=movementRoute(before,old,unit,battle.log?.slice(before.log.length).some((text:string)=>text.startsWith(`${unit.name} ejecuta una carga`)),preservedDirection!==undefined).map(point=>surfaceMotionPoint(before,point,battle));tracks.current.set(unit.id,{points,start:now,step:(unit.mounted?150:unit.stance==='prone'||unit.movementMode==='prone'?420:unit.movementMode==='crouch'?320:unit.movementMode==='run'?150:240)*(preservedDirection!==undefined?1.25:1),direction:preservedDirection??positions.current[unit.id]?.direction??3,preservedDirection});
+    }else if(!tracks.current.has(unit.id))positions.current[unit.id]={...surfaceMotionPoint(battle,{x:unit.x,y:unit.y,tacticalLevel:tacticalLevel(unit)}),direction:positions.current[unit.id]?.direction??(unit.side==='player'?3:7),frame:0,moving:false};}
     previous.current=battle;let request=0;
     const tick=(time:number)=>{for(const [id,track] of tracks.current){const elapsed=Math.max(0,time-track.start),progress=elapsed/track.step,index=Math.floor(progress),last=track.points.length-1;
       if(index>=last){positions.current[id]={...track.points[last],direction:track.direction,frame:0,moving:false};tracks.current.delete(id);continue;}
