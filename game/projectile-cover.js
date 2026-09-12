@@ -1,9 +1,5 @@
-// Abstract period-game geometry and resistance, not real ballistic measurements.
-const resistance={wood:24,adobe:80,stone:120,hay:3};
-const furniture={table:{height:.8,material:'wood'},bench:{height:.45,material:'wood'},bed:{height:.55,material:'wood'},chest:{height:.8,material:'wood'},barrels:{height:1.2,material:'wood'},hay:{height:1.3,material:'hay'}};
-const heights={standing:{muzzle:1.4,head:1.6,torso:1.1,legs:.45},crouched:{muzzle:.9,head:1,torso:.7,legs:.3},prone:{muzzle:.25,head:.3,torso:.2,legs:.15},mounted:{muzzle:2,head:2.2,torso:1.8,legs:1.1}};
-const height=(unit,part)=>heights[unit.unconscious||unit.knockedDown?'prone':unit.mounted?'mounted':unit.stance??'standing']?.[part]??heights.standing[part];
-const cellKey=(x,y)=>`${x},${y}`;
+import {surfaceAt,surfaceHeight} from './tactical-space.js';
+import {absoluteBodyHeight,relativeBodyHeight as height,usesElevationGeometry,groundTileAt,terrainCoverProfile as terrainObstacle,propCoverProfile,geometryCells,rayHeightIntersection,obstacleVolumesAt} from './sight-geometry.js';
 
 // Traverse every crossed cell, including the two cells touching a diagonal
 // corner. Entry/exit fractions let a sloping shot meet a low obstacle correctly.
@@ -22,18 +18,8 @@ export function projectileCells(a,b){
   return result;
 }
 
-function terrainObstacle(tile){
-  if(!tile||tile.type==='door'&&tile.open)return null;
-  const explicit=tile.obstacleHeight;
-  const low=tile.type==='window'?.8:tile.type==='rubble'?.35:0;
-  const solid=tile.blocked&&!['window','water'].includes(tile.type);
-  const h=explicit??(low||(solid?2.5:0));if(!h)return null;
-  const material=tile.type==='door'?'wood':Object.hasOwn(resistance,tile.material)?tile.material:tile.type==='stone'||tile.type==='cliff'?'stone':'adobe';
-  return {height:h,material,resistance:tile.projectileResistance??resistance[material]};
-}
-
 export function concealmentAt(state,target){
-  const tile=state.tiles.find(tile=>tile.x===target.x&&tile.y===target.y);
+  const tile=surfaceAt(state,target);
   if(!tile)return 0;
   if(tile.concealment!==undefined)return tile.concealment;
   if(['wall','door','window','rubble'].includes(tile.type))return 0;
@@ -46,8 +32,9 @@ export function concealmentSightPenalty(state,target){
 }
 
 export function projectilePath(state,attacker,target,weapon,hitLocation='torso',flight={}){
+  if(usesElevationGeometry(state,attacker,target))return elevatedProjectilePath(state,attacker,target,weapon,hitLocation,flight);
   const power=Math.max(1,weapon.damage??1),muzzle=height(attacker,'muzzle'),destination=height(target,hitLocation);
-  let remaining=power;const obstacles=[],tiles=new Map(state.tiles.map(tile=>[cellKey(tile.x,tile.y),tile])),seen=new Set();
+  let remaining=power;const obstacles=[],seen=new Set();
   const encounter=(id,point,obstacle)=>{
     if(!obstacle||seen.has(id))return;
     const low=Math.min(muzzle+(destination-muzzle)*point.entry,muzzle+(destination-muzzle)*point.exit);
@@ -57,14 +44,12 @@ export function projectilePath(state,attacker,target,weapon,hitLocation='torso',
   };
   for(const point of projectileCells(attacker,target)){
     if(point.entry>(flight.stopFraction??1))break;
-    encounter(`tile:${point.x},${point.y}`,point,terrainObstacle(tiles.get(cellKey(point.x,point.y))));
+    encounter(`tile:${point.x},${point.y}`,point,terrainObstacle(groundTileAt(state,point)));
     if(!remaining)break;
     for(const prop of state.props??[]){
       const size=prop.footprint??{width:1,height:1};
       if(point.x<prop.x||point.y<prop.y||point.x>=prop.x+size.width||point.y>=prop.y+size.height)continue;
-      const spec=furniture[prop.type];if(!spec)continue;
-      const material=Object.hasOwn(resistance,prop.material)?prop.material:spec.material;
-      encounter(`prop:${prop.id}`,point,{height:prop.obstacleHeight??spec.height,material,resistance:prop.projectileResistance??resistance[material]});
+      encounter(`prop:${prop.id}`,point,propCoverProfile(prop));
       if(!remaining)break;
     }
     if(!remaining)break;
@@ -75,7 +60,8 @@ export function projectilePath(state,attacker,target,weapon,hitLocation='torso',
 // A shot retains its original destination height. Living bodies in
 // crossed cells can intercept it, including allies and unconscious soldiers.
 // Cell-wide silhouettes and the lack of body penetration are game tuning.
-export function projectileFlight(state,attacker,target,weapon,hitLocation='torso'){
+export function projectileFlight(state,attacker,target,weapon,hitLocation='torso',flight={}){
+  if(usesElevationGeometry(state,attacker,target))return elevatedProjectileFlight(state,attacker,target,weapon,hitLocation,flight);
   const muzzle=height(attacker,'muzzle'),end=height(target,hitLocation);
   for(const cell of projectileCells(attacker,target)){
     if(cell.entry===cell.exit)continue; // A corner touch can strike cover, not a cell-wide body.
@@ -95,7 +81,42 @@ export function projectileFlight(state,attacker,target,weapon,hitLocation='torso
 }
 
 export function pointProjectileFlight(state,attacker,destination,weapon){
-  return projectileFlight(state,attacker,{x:destination.x,y:destination.y,stance:'standing',mounted:false},weapon);
+  return projectileFlight(state,attacker,{x:destination.x,y:destination.y,...(destination.tacticalLevel!==undefined?{tacticalLevel:destination.tacticalLevel}:{}),stance:'standing',mounted:false},weapon);
+}
+
+function elevatedProjectilePath(state,attacker,target,weapon,hitLocation,flight={}){
+ const power=Math.max(1,weapon.damage??1),muzzle=absoluteBodyHeight(state,attacker,'muzzle'),destination=flight.destinationHeight??absoluteBodyHeight(state,target,hitLocation);
+ if(muzzle===null||!Number.isFinite(destination))return {blocked:true,damageFactor:0,obstacles:[]};
+ let remaining=power;const obstacles=[],seen=new Set(),stopFraction=flight.stopFraction??1;
+ for(const cell of geometryCells(attacker,target)){
+  if(cell.entry>stopFraction)break;
+  const hits=obstacleVolumesAt(state,cell).map(volume=>({volume,hit:rayHeightIntersection(muzzle,destination,cell,volume.bottom,volume.top,stopFraction)})).filter(entry=>entry.hit).sort((a,b)=>a.hit.entry-b.hit.entry||a.volume.id.localeCompare(b.volume.id));
+  for(const {volume} of hits){
+   if(seen.has(volume.id))continue;seen.add(volume.id);
+   remaining=volume.solid?0:Math.max(0,remaining-volume.resistance);
+   obstacles.push({x:cell.x,y:cell.y,tacticalLevel:volume.tacticalLevel,kind:volume.kind,material:volume.material,resistance:volume.solid?power:volume.resistance,stopped:remaining===0});
+   if(!remaining)return {blocked:true,damageFactor:0,obstacles};
+  }
+ }
+ return {blocked:false,damageFactor:remaining/power,obstacles};
+}
+
+function elevatedProjectileFlight(state,attacker,target,weapon,hitLocation,flight){
+ const muzzle=absoluteBodyHeight(state,attacker,'muzzle'),destination=flight.destinationHeight??absoluteBodyHeight(state,target,hitLocation);
+ if(muzzle===null||!Number.isFinite(destination))return {blocked:true,damageFactor:0,obstacles:[],victimId:null,hitLocation};
+ for(const cell of geometryCells(attacker,target)){
+  if(cell.entry===cell.exit)continue;
+  const victims=state.units.filter(unit=>unit.id!==attacker.id&&unit.hp>0&&!unit.departure&&!unit.fled&&unit.x===cell.x&&unit.y===cell.y).map(unit=>{
+   const base=surfaceHeight(state,unit),top=absoluteBodyHeight(state,unit,'head');
+   return {unit,base,hit:base===null||top===null?null:rayHeightIntersection(muzzle,destination,cell,base,top+.15)};
+  }).filter(victim=>victim.hit).sort((a,b)=>a.hit.entry-b.hit.entry||String(a.unit.id).localeCompare(String(b.unit.id)));
+  if(!victims.length)continue;
+  const {unit:victim,base,hit}=victims[0],relative=muzzle+(destination-muzzle)*hit.entry-base;
+  const location=victim.id===target.id?hitLocation:relative>height(victim,'torso')+.2?'head':relative<height(victim,'legs')+.15?'legs':'torso';
+  const path=elevatedProjectilePath(state,attacker,target,weapon,hitLocation,{...flight,destinationHeight:destination,stopFraction:hit.entry});
+  return {...path,victimId:path.blocked?null:victim.id,hitLocation:location};
+ }
+ return {...elevatedProjectilePath(state,attacker,target,weapon,hitLocation,{...flight,destinationHeight:destination}),victimId:null,hitLocation};
 }
 
 export function validateCoverMetadata(value){
