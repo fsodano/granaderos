@@ -36,6 +36,9 @@ test('ordinary held guns keep paid reload work and any completed barrel through 
 test('no reserve ammunition blocks loading without discarding previously paid work',()=>{
  let {c,b,worker}=partial();c=leave(c,b);c.resources.cartridges=0;c=order(save(c),{type:'visitSector'});b=enterSector(c.pendingBattle,c.sectorStates.retiro);const u=b.units.find(u=>u.id==='3');assert.equal(u.ammo,0);assert.equal(u.reloadProgress,worker.reloadProgress);
  const failed=actBattle(b,{type:'reload',unitId:'3'});assert.ok(failed.lastError);assert.deepEqual(failed.units,b.units);assert.equal(failed.elapsedSeconds,b.elapsedSeconds);c=leave(c,b);assert.equal(c.operativeState[3].carriedReloadProgress,worker.reloadProgress);save(c);
+ const before=structuredClone(c),events=[],prepared=finishReloadsBeforeMarch(c,{report:event=>events.push(event)});
+ assert.deepEqual(c,before);assert.equal(prepared.operativeState[3].carriedReloadProgress,worker.reloadProgress);assert.equal(prepared.operativeState[3].carriedLoaded,worker.loaded);
+ assert.equal(stockAndCarriedAmmo(prepared),stockAndCarriedAmmo(c));assert.ok(events.some(event=>event.id===3&&event.event==='reloadUnavailable'&&event.ammo===0));save(prepared);
 });
 test('captured ordinary partial work enters custody while departed work remains with its owner',()=>{
  const {c,b,worker}=partial(1808,30),request=c.pendingBattle;

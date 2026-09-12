@@ -8,7 +8,11 @@ All six original soldiers survive San Nicolás. San Lorenzo leaves 110 and 114 a
 
 Preparation ends at hour 72. Córdoba falls at hour 84 after 16 turns and 99 orders. Only 134 and 117 survive that assault, at 68 and 15 HP. The helper repeats the battle, saves its synchronized result, and preserves all actual deaths. No soldier or item is created to match the earlier route.
 
-The named playthrough passes its first two checks. Its next check stops when hiring doctor 139 automatically fills a vacant squad slot, while the old preparation expects the squad to stay unchanged. Later checks still contain casualty identities from the earlier checkpoint. Tucumán defeat, rescue, paid care, Salta and Yatasto remain required and unverified with current regional conditions. The results below are historical evidence only.
+Paid care in Córdoba uses fourteen dressings and ends at hour 104. The new doctor joins the squad through normal hiring, then an explicit squad order leaves him in reserve. The wounded survivors also remain in reserve after treatment. Four paid replacements form a relief patrol.
+
+The captivity check now uses an explicit poor-tactics scenario. The relief patrol advances to the east court of the authored citadel, kneels and holds fire. Nearby bleeding allies receive ordinary first aid from finite carried supplies. At hour 116, enemy actions kill 131, 121 and 126; 124 survives at one HP and enters captivity. No RNG seed, health value or casualty outcome is set by the helper. The battle repeats and the campaign records preserve its actual deaths and prisoner.
+
+The paid rescue force collects real available weapons and arrives in two squads at hour 140. Empty guns without reserve cartridges stay empty during preparation. The current rescue controller stalls before victory, so rescue, courier care, Salta and Yatasto remain required and unverified. Later checks now skip with their missing prerequisite while the route still fails at the first real blocker. The results below are historical evidence only.
 
 ## Earlier building-map checkpoint
 

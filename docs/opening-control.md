@@ -12,7 +12,9 @@ The current route wins both opening battles and repeats each battle to check det
 
 Northern preparation now takes the four carried dressings from the actual living donors, 110 and 114, and collects sixteen from the two battlefields. Three dressings heal the wounded survivor. It fills the six-person force with four real paid recruits, preserving every earlier death, and recovers available rifles and clothing. Córdoba falls through ordinary combat at hour 84; both combat runs produce the same outcome.
 
-The full named playthrough now passes the San Lorenzo inventory check and the recovery/Córdoba check. It stops in the next preparation: hiring doctor 139 fills a vacant squad slot, while the old plan expects the squad to stay unchanged. Later fixed casualty identities also refer to soldiers who have already died. The Tucumán defeat, rescue, paid recovery, Salta and Yatasto requirements remain unchanged and are not claimed complete.
+Paid Córdoba care now explicitly returns the newly hired doctor to reserve after normal hiring fills a vacant squad slot. It heals the surviving patient with fourteen dressings and ends at hour 104. Four paid relief soldiers make an exposed advance into Tucumán's citadel court, kneel and hold fire, while using real first aid on nearby bleeding allies. This deliberately poor tactic tests defeat and captivity. Enemy actions kill 131, 121 and 126; 124 is captured alive at one HP. The result replays deterministically and preserves actual equipment and deaths.
+
+Rescue preparation hires and equips real reserves and brings two squads to Tucumán at hour 140. The current rescue strategy does not yet win: it reaches the turn limit with surviving opponents. The rescue, courier, paid recovery, Salta and Yatasto requirements remain unchanged and are not claimed complete. Dependent checks explain which earlier result is missing instead of reporting unrelated state errors.
 
 ## What failed and what changed
 
