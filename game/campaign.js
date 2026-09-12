@@ -33,7 +33,7 @@ import {setSleep,prepareSleep,finishSleepHour,SLEEP_ISSUE_TEXT} from './sleep.js
 import {autoResolve} from './auto-resolve.js';
 import {ENCOUNTERS,encounterForOperative,encountersFor,encounterRequirements} from './encounters.js';
 export {ENCOUNTERS,encountersFor} from './encounters.js';
-import {migrateSquads,activeSquad,operativeLocation,operativeInTransit,travelingOperatives,synchronizeSquad,validateSectorSnapshot,validatePersonalInventory} from './squads.js';
+import {canReassignOperative,migrateSquads,activeSquad,operativeLocation,operativeInTransit,travelingOperatives,synchronizeSquad,validateSectorSnapshot,validatePersonalInventory} from './squads.js';
 export {activeSquad,operativeLocation} from './squads.js';
 import {isImportedEquipment,deliverEquipmentShipments,validEquipmentShipments,EQUIPMENT_CATALOG,refillCost,firearmRepairCost,deployedArtillery,migrateEquipment,advanceMerchants,merchantStatus,addEquipment,storeEquipment,takeEquipment,resaleQuote,returnEquipment,validateEquipment,equipmentInventoryUsage,allocateEquipmentAmmo,equipmentCatalogItem,equipmentLabel,medicalSupplyStock,validateEquipmentOwnership,USED_EQUIPMENT_LIMIT,usedEquipmentOffers} from './equipment.js';
 import {FITTING_RULES_VERSION} from './weapon-fittings.js';
@@ -365,7 +365,7 @@ export function dispatchCampaign(previous,action){
     if(['travel','attack','visitSector','visitMission'].includes(action.type))requireThat(!activeSquad(s).journey,'Terminá o cancelá la ruta antes de entrar en un sector.');
     const targetId=Number(action.operativeId??action.trainerId??(action.type==='dismiss'?action.id:NaN));
     if(Number.isFinite(targetId))requireThat(!operativeInTransit(s,targetId),'El combatiente está en camino. Esperá su llegada.');
-    if(['createSquad','squad','recruitCivic','createOfficer'].includes(action.type))requireThat(!activeSquad(s).journey,'Esperá la llegada o cancelá la ruta antes de reorganizar la escuadra.');
+    if(['squad','recruitCivic','createOfficer'].includes(action.type))requireThat(!activeSquad(s).journey,'Esperá la llegada o cancelá la ruta antes de reorganizar la escuadra.');
     switch(action.type){
       case 'sectorInventory':note(s,moveSectorItem(s,action,rosterFor(s)));break;
       case 'syncTacticalTime':{requireThat(s.pendingBattle&&s.pendingBattle.id===action.battleId,'El reloj no corresponde al despliegue.');applyTacticalTime(s,s.pendingBattle,action.elapsedSeconds);delete s.pendingBattle.resumeSnapshot;break;}
@@ -478,12 +478,16 @@ export function dispatchCampaign(previous,action){
       }
       case 'dismiss':{const id=Number(action.id);requireThat(s.recruited.includes(id),'El combatiente no está contratado.');requireThat(id!==1000,'Tu oficial dirige la campaña y no puede ser despedido.');removeFromService(s,id);note(s,'El combatiente deja el servicio sin devolución del anticipo.');break;}
       case 'createSquad':case 'squad':{
-        const ids=action.ids;requireThat(Array.isArray(ids)&&ids.length>0&&ids.length<=6&&new Set(ids).size===ids.length&&ids.every(id=>s.recruited.includes(id)&&s.operativeState[id].alive),'Seleccioná entre uno y seis combatientes disponibles.');
-        requireThat(ids.every(id=>!operativeInTransit(s,id)&&operativeLocation(s,id)===s.location),'Los combatientes deben reunirse en el mismo sector antes de cambiar de escuadra.');
-        if(action.type==='createSquad'){requireThat(s.squads.length<8,'El ejército ya tiene ocho escuadras.');requireThat(typeof action.name==='string'&&action.name.trim().length>=2&&action.name.trim().length<=30&&!/[<>]/.test(action.name),'Escribí un nombre de escuadra de entre2 y30 caracteres.');}
-        for(const squad of s.squads)if(squad.id!==s.activeSquadId||action.type==='createSquad'){squad.members=squad.members.filter(id=>!ids.includes(id));if(!squad.members.length)delete squad.journey;}
-        if(action.type==='createSquad'){const id=`squad-${Math.max(0,...s.squads.map(q=>Number(q.id.split('-')[1])))+1}`;s.squads.push({id,name:action.name.trim(),members:[...ids],location:s.location});s.activeSquadId=id;}
-        for(const id of s.squad)if(!ids.includes(id))s.operativeState[id].location=s.location;
+        const creating=action.type==='createSquad',at=creating?(action.sector??s.location):s.location,ids=action.ids;
+        requireThat(sector(at),'La localidad de formación no existe.');
+        requireThat(Array.isArray(ids)&&ids.length>0&&ids.length<=6&&new Set(ids).size===ids.length&&ids.every(id=>canReassignOperative(s,id)),'Seleccioná entre uno y seis combatientes disponibles, sin una ruta pendiente.');
+        requireThat(ids.every(id=>operativeLocation(s,id)===at),'Los combatientes deben reunirse en el mismo sector antes de cambiar de escuadra.');
+        if(creating){requireThat(s.squads.length<8,'El ejército ya tiene ocho escuadras.');requireThat(typeof action.name==='string'&&action.name.trim().length>=2&&action.name.trim().length<=30&&!/[<>]/.test(action.name),'Escribí un nombre de escuadra de entre 2 y 30 caracteres.');}
+        // Leave all other members at their actual location before selecting the
+        // newly formed squad. Other squads and their routes stay in place.
+        if(!creating)for(const id of s.squad)if(!ids.includes(id))s.operativeState[id].location=s.location;
+        for(const squad of s.squads)if(squad.id!==s.activeSquadId||creating){squad.members=squad.members.filter(id=>!ids.includes(id));if(!squad.members.length)delete squad.journey;}
+        if(creating){const id=`squad-${Math.max(0,...s.squads.map(q=>Number(q.id.split('-')[1])))+1}`;s.squads.push({id,name:action.name.trim(),members:[...ids],location:at});s.activeSquadId=id;s.location=at;}
         s.squad=[...ids];break;
       }
       case 'selectSquad':{const squad=s.squads.find(q=>q.id===action.id);requireThat(squad,'La escuadra no existe.');s.activeSquadId=squad.id;s.squad=[...squad.members];s.location=squad.location;break;}
