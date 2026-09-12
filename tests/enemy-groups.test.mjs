@@ -4,6 +4,7 @@ import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {dispatchCampaign,restoreCampaign,serializeCampaign} from '../game/campaign.js';
 import {launchEnemyGroup,localDefenderIds,retreatDestinations} from '../game/enemy-groups.js';
 import {enterSector} from '../game/world.js';
+import {completedTacticalVictory} from '../game/tactical.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const arrive=(s,theater,sector)=>{launchEnemyGroup(s,theater,sector,{immediate:true});return order(s,{type:'wait',hours:1});};
 const defend=s=>order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'tactical'});
@@ -41,8 +42,40 @@ test('malformed group, encounter and capture saves are rejected; old saves migra
  const old=initialCampaign();delete old.enemyGroups;delete old.pendingEncounter;delete old.nextEnemyGroupId;delete old.encounterHistory;for(const r of Object.values(old.operativeState)){delete r.captured;delete r.capturedAt;delete r.capturedSector;delete r.capturedContract;}const loaded=restoreCampaign(serializeCampaign(old));assert.deepEqual(loaded.enemyGroups,[]);assert.equal(loaded.operativeState[3].captured,false);
 });
 
-test('automatic defense spends real militia equipment and stores the synchronized clock',()=>{
- let s=initialCampaign();s.sectors.jujuy.owner='patriot';s.sectors.jujuy.militia=[0,0,5];s=order(s,{type:'wait',hours:144});const before=s.resources.cartridges;s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'auto'});const b=s.sectorStates.jujuy;assert.equal(s.enemyGroups[0].status,'defeated');assert.ok(s.resources.cartridges<before);const casualties=b.units.filter(u=>u.militia&&u.hp<=0).map(u=>Number(u.id));assert.equal(s.sectors.jujuy.militia[2],5-casualties.length);assert.deepEqual(s.encounterHistory[0].militiaCasualties,casualties);assert.ok(b.units.filter(u=>u.militia).reduce((n,u)=>n+u.loaded+u.ammo,0)<30);assert.ok(b.units.some(u=>u.militia&&u.condition<85));assert.equal(b.savedHour,s.hour);assert.equal(b.savedSecond,s.secondOfHour);assert.equal(b.syncedSeconds,b.elapsedSeconds);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
+test('automatic defense records actual militia losses, equipment and the synchronized clock',()=>{
+ let s=initialCampaign();s.sectors.jujuy.owner='patriot';s.sectors.jujuy.militia=[0,0,5];
+ s=order(s,{type:'wait',hours:144});
+ const before=s.resources.cartridges,startSeconds=s.hour*3600+(s.secondOfHour??0);
+ const issued=defend(structuredClone(s)).pendingBattle.garrison;
+ s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'auto'});
+ const b=s.sectorStates.jujuy,history=s.encounterHistory[0],militia=b.units.filter(u=>u.militia);
+ // Town geometry can change the winner. The strategic result must follow the
+ // actual combatants, including surviving militia dispersed after a defeat.
+ const won=completedTacticalVictory(b),outcome=won?'victory':b.status;
+ assert.ok(['victory','defeat'].includes(outcome));assert.equal(history.outcome,outcome);
+ const able=u=>u.hp>=15&&!u.unconscious&&!u.routed&&!u.surrendered&&!u.departure&&!u.fled;
+ assert.ok(b.units.filter(u=>u.side===(won?'enemy':'player')).every(u=>!able(u)));
+ assert.equal(s.enemyGroups[0].status,won?'defeated':'stationed');
+ assert.equal(s.sectors.jujuy.owner,won?'patriot':'royalist');
+ assert.deepEqual(militia.map(u=>u.id),issued.map(u=>String(u.id)));
+ const casualties=militia.filter(u=>u.hp<=0).map(u=>Number(u.id));
+ const dispersed=won?0:militia.length-casualties.length;
+ assert.deepEqual(history.militiaCasualties,casualties);assert.equal(history.militiaDispersed,dispersed);
+ assert.equal(s.sectors.jujuy.militia[2],issued.length-casualties.length-dispersed);
+ const retainedGarrison=s.garrisons.jujuy??[];
+ assert.equal(retainedGarrison.length,s.sectors.jujuy.militia[2]);
+ assert.ok(s.resources.cartridges<before);
+ assert.ok(militia.reduce((n,u)=>n+u.loaded+u.ammo,0)<issued.reduce((n,u)=>n+u.loaded+u.ammo,0));
+ assert.ok(militia.some(u=>u.condition<issued.find(v=>String(v.id)===u.id).condition));
+ for(const u of militia){
+  const start=issued.find(v=>String(v.id)===u.id);
+  assert.ok(u.hp<=start.hp);assert.ok(u.loaded+u.ammo<=start.loaded+start.ammo);
+  const retained=retainedGarrison.find(v=>String(v.id)===u.id);
+  if(retained)for(const key of ['hp','loaded','ammo','condition'])assert.equal(retained[key],u[key]);
+ }
+ assert.equal(s.hour*3600+s.secondOfHour,startSeconds+b.elapsedSeconds);
+ assert.equal(b.savedHour,s.hour);assert.equal(b.savedSecond,s.secondOfHour);assert.equal(b.syncedSeconds,b.elapsedSeconds);
+ assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
 });
 test('full defense snapshot controls wounds and gear despite conflicting supplied reports',()=>{
  let s=defend(arrive(initialCampaign(),'coast','retiro')),b=enterSector(s.pendingBattle);const fallen=b.units.find(u=>Number(u.id)===3);fallen.hp=0;fallen.bleeding=0;fallen.bandaged=0;fallen.loaded=0;fallen.ammo=0;const wounded=b.units.find(u=>Number(u.id)===4);wounded.hp=30;wounded.bandaged=wounded.maxHp-30;wounded.condition=21;wounded.loaded=0;wounded.ammo=0;const forged=b.units.filter(u=>u.side==='player').map(u=>({...u,hp:u.maxHp,condition:100,loaded:1,ammo:9}));s=order(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'victory',sectorState:victory(b),survivors:forged});assert.equal(s.operativeState[3].alive,false);assert.equal(s.operativeState[4].hp,30);assert.equal(s.operativeState[4].condition,21);assert.ok(s.encounterHistory[0].casualties.includes(3));
