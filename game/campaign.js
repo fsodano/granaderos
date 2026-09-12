@@ -26,7 +26,7 @@ import {validateTraining,TRAINABLE_SKILLS} from './skill-training.js';
 import {militiaCourse,militiaAssignment,MILITIA_COHORT,MILITIA_LIMIT,militiaEligibility} from './militia.js';
 export {militiaCourse,militiaAssignment} from './militia.js';
 import {initialHorseState,migrateHorseState,applyHorseAction,mountForOperative} from './horses.js';
-import {fieldCapable,canSee} from './tactical.js';
+import {completedTacticalVictory,fieldCapable,canSee} from './tactical.js';
 import {prepareDeploymentExits,planDeploymentReturn,recordStrategicArrival,migrateDeploymentReturns,validateDeploymentReturnState} from './deployment-return.js';
 import {validateSectorExits} from './tactical-exits.js';
 import {CARE_ASSIGNMENTS,MEDICAL_KIT_PRICE,migrateMedicalCare,assignMedicalCare,advanceMedicalCare,returnMedicalCare,validateMedicalCare} from './medical-care.js';
@@ -159,6 +159,15 @@ function relocateDefenders(s,ids,destination,moralePenalty=5){
   for(const squad of s.squads)if(squad.members.some(id=>ids.includes(id))){delete squad.journey;squad.location=destination;if(squad.id===s.activeSquadId)s.location=destination;}
   for(const horse of s.horseState.horses)if(ids.includes(horse.assignedTo))horse.location=destination;
 }
+// An empty roster is recoverable through paid recruitment, as at campaign start.
+function reorganizeAfterLoss(s,previous){
+ if(s.defeated||s.pendingBattle||s.pendingEncounter||s.sectors.retiro.owner!=='patriot'||s.recruited.some(id=>s.operativeState[id]?.alive))return;
+ const loss=previous.pendingBattle&&!s.pendingBattle||Object.entries(previous.operativeState).some(([id,r])=>r.alive&&(!s.operativeState[id]?.alive||!r.captured&&s.operativeState[id]?.captured));
+ if(!loss)return;
+ // Move the empty command only. Prisoners, casualties and property stay put.
+ s.squad=[];const command=activeSquad(s);command.members=[];delete command.journey;s.location='retiro';command.location='retiro';
+ note(s,Object.values(s.operativeState).some(r=>r.alive&&r.captured)?'Quedan combatientes prisioneros. El cuartel de Retiro puede contratar una fuerza de rescate.':'No quedan combatientes en servicio. Podés contratar otra escuadra en Retiro.');
+}
 function captureOperatives(s,ids,at,ammunition={}){
   for(const id of ids){const r=s.operativeState[id],contract=clone(s.contracts[id]);removeFromService(s,id);Object.assign(r,{captured:true,capturedSector:at,capturedAt:s.hour,capturedContract:contract,capturedAmmunition:clone(ammunition[id]??{loaded:0,ammo:0}),location:at});}
   if(ids.length)note(s,`${ids.map(id=>rosterFor(s).find(o=>o.id===id).nickname).join(', ')} quedan prisioneros en ${sector(at).name}.`);
@@ -191,7 +200,6 @@ function finishDefense(s,request,outcome,snapshot,plan){
   else loseSectorToGroup(s,group);
   for(const squad of s.squads)squad.members=squad.members.filter(id=>s.operativeState[id].alive&&!s.operativeState[id].captured);s.squad=s.squad.filter(id=>s.operativeState[id].alive&&!s.operativeState[id].captured);
   const militiaCasualties=(request.garrison??[]).filter(u=>snapshot.units.find(v=>String(v.id)===String(u.id))?.hp<=0).map(u=>u.id),militiaDispersed=outcome==='victory'?0:(request.garrison?.length??0)-militiaCasualties.length;const text=`${sector(group.target).name}: ${outcome==='victory'?'defensa victoriosa':outcome==='retreat'?'retirada':'defensa derrotada'}. ${casualties.length} granaderos y ${militiaCasualties.length} milicianos caídos; ${captured.length} prisioneros${militiaDispersed?`; ${militiaDispersed} milicianos dispersos`:''}.`;addDefenseHistory(s,group,outcome,casualties,text,{captured,militiaCasualties,militiaDispersed,dispositions:clone(plan.entries)});note(s,text);s.sectorStates[group.target]=clone(snapshot);s.pendingBattle=null;
-  if(!s.recruited.some(id=>s.operativeState[id].alive))s.defeated=true;
 }
 function applyTacticalTime(s,request,elapsed){
   const previous=request.syncedSeconds??0;requireThat(Number.isSafeInteger(elapsed)&&elapsed>=previous&&elapsed-previous<=864000,'El tiempo táctico es inválido.');const seconds=(s.secondOfHour??0)+elapsed-previous,hours=Math.floor(seconds/3600);s.secondOfHour=seconds%3600;if(hours)tick(s,hours);request.syncedSeconds=elapsed;
@@ -200,11 +208,6 @@ function resolveDefenseAutomatically(s,request){
   const result=autoResolve(request,s.sectorStates[request.sector]??null);applyTacticalTime(s,request,result.battle.elapsedSeconds??0);result.battle.syncedSeconds=request.syncedSeconds;result.battle.savedHour=s.hour;result.battle.savedSecond=s.secondOfHour;
   if(result.outcome===null){request.resumeSnapshot=clone(result.battle);note(s,'La resolución automática continúa pendiente. Retomá el combate y ayudá a quienes aún no pudieron salir.');return;}
   const next=dispatchCampaign(s,{type:'battleResult',battleId:request.id,outcome:result.outcome,survivors:result.battle.units.filter(u=>u.side==='player'),sectorState:result.battle});requireThat(!next.lastError,next.lastError);Object.assign(s,next);
-}
-function completedTacticalVictory(snapshot){
-  const playersRemain=snapshot.units.some(u=>u.side==='player'&&fieldCapable(u)),enemiesRemain=snapshot.units.some(u=>u.side==='enemy'&&fieldCapable(u));
-  const clearedExploration=snapshot.status==='active'&&snapshot.mode==='exploration'&&snapshot.phase==='player'&&snapshot.sectorCleared===true&&!snapshot.enemyTurn&&!snapshot.interrupt&&!snapshot.reactionStack;
-  return playersRemain&&!enemiesRemain&&(snapshot.status==='victory'||clearedExploration);
 }
 function completeDeploymentReport(s,request,action){
   requireThat(action.sectorState&&Array.isArray(action.survivors),'El despliegue necesita un estado táctico completo y un parte de todos los combatientes.');
@@ -322,7 +325,6 @@ function tick(s,hours,options={}){
       s.militiaTraining=s.militiaTraining.filter(t=>t.trainerId!==id);
       note(s,`${rosterFor(s).find(o=>o.id===id).name} fallece por sus heridas.`);
     }
-    if(deaths.length&&!s.recruited.some(id=>s.operativeState[id].alive))s.defeated=true;
     if(s.hour%24===0){
       dailyPolitics(s);
       const income=totalSectorIncome(s,isSupplied);
@@ -554,7 +556,7 @@ export function dispatchCampaign(previous,action){
       case 'leaveSector':{
         requireThat(s.pendingBattle?.exploration&&action.battleId===s.pendingBattle.id,'La visita no corresponde al sector abierto.');const visit=s.pendingBattle,{snapshot}=completeDeploymentReport(s,visit,action),outcome=snapshot.status==='retreat'?'retreat':snapshot.status==='defeat'?'defeat':'visit',plan=planDeploymentReturn(s,visit,snapshot,outcome);
         commitDeploymentReturn(s,visit,snapshot,plan);
-        if(!s.completed&&!s.recruited.some(id=>s.operativeState[id].alive))s.defeated=true;s.pendingBattle=null;note(s,'La escuadra vuelve a la carta de operaciones.');break;
+        s.pendingBattle=null;note(s,'La escuadra vuelve a la carta de operaciones.');break;
       }
       case 'cancelTravel':{const q=s.squads.find(q=>q.id===(action.squadId??s.activeSquadId));cancelSquadTravel(q,action.choice);note(s,`${q.name}: se modifica la ruta de marcha.`);break;}
       case 'resumeTravel':{const q=s.squads.find(q=>q.id===(action.squadId??s.activeSquadId));resumeSquadTravel(s,q);note(s,`${q.name}: retoma la marcha.`);break;}
@@ -654,11 +656,12 @@ export function dispatchCampaign(previous,action){
           if(request.theater==='coast'&&!s.enemyGroups.some(g=>g.theater==='coast'&&g.status==='stationed'))s.blockade=false;if(request.wasRoyalist||request.sector==='san_lorenzo')add(s,{treasury:250,muskets:15,cartridges:80});standing(s,'directory',5);standing(s,'gauchos',request.theater==='north'?10:2);note(s,`Victoria en ${request.name}. Se recuperan armas y fondos realistas.`);
         }else{standing(s,'directory',-5);note(s,`El destacamento se retira de ${request.name}.`);}
         s.sectorStates[request.sector]=clone(battleSnapshot);
-        s.pendingBattle=null;s.squad=s.squad.filter(id=>s.operativeState[id].alive);if(!s.squad.length){const reserve=s.recruited.filter(id=>s.operativeState[id].alive&&operativeLocation(s,id)===s.location);s.squad=reserve.slice(0,6);if(!s.recruited.some(id=>s.operativeState[id].alive)){s.defeated=true;note(s,'No quedan combatientes. La campaña ha terminado.');}}break;
+        s.pendingBattle=null;s.squad=s.squad.filter(id=>s.operativeState[id].alive);if(!s.squad.length){const reserve=s.recruited.filter(id=>s.operativeState[id].alive&&operativeLocation(s,id)===s.location);s.squad=reserve.slice(0,6);}break;
       }
       default:throw Error('Orden desconocida.');
     }
     for(const [flag,at] of Object.entries({academy:'retiro',foundry:'mendoza',northPact:'salta',partisanSupply:'tucuman',parliament:'mendoza',emancipation:'buenos_aires',commission:'buenos_aires'}))if(s.flags[flag]&&!previous.flags[flag])recordCityLoyalty(s,{sectorId:at,kind:'quest',eventId:`quest-${flag}`});
+    reorganizeAfterLoss(s,previous);
     delayCrossingEnemyGroups(s);
     if(s.pendingBattle&&!previous.pendingBattle)prepareSectorArtillery(s,s.pendingBattle);
     if(s.pendingBattle&&!s.pendingBattle.exits)prepareDeploymentExits(s,s.pendingBattle);releaseDeferred(s);synchronizeSquad(s);migrateMedicalCare(s,rosterFor(s));migrateAssignments(s,rosterFor(s));migrateMorale(s,rosterFor(s));migrateEquipment(s);migrateEnemyGroups(s);validateDeploymentReturnState(s);validateEquipmentOwnership(s,rosterFor(s));progress(s);if(Object.keys(s.assignmentAttention.reported).length)reconcileAssignmentAttention(s,assignmentStates(s,rosterFor(s),assignmentContext(s)));reconcileContractAttention(s);return s;

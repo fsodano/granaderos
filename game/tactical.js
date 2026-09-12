@@ -320,6 +320,11 @@ function directedFireImpact(s,u,target,hitLocation,hit){
     damage(s,victim,amount*flight.damageFactor,u,true,flight.hitLocation);
   }
 }
+export function completedTacticalVictory(snapshot){
+  const playersRemain=snapshot.units.some(u=>u.side==='player'&&fieldCapable(u)),enemiesRemain=snapshot.units.some(u=>u.side==='enemy'&&fieldCapable(u));
+  const clearedExploration=snapshot.status==='active'&&snapshot.mode==='exploration'&&snapshot.phase==='player'&&snapshot.sectorCleared===true&&!snapshot.enemyTurn&&!snapshot.interrupt&&!snapshot.reactionStack;
+  return playersRemain&&!enemiesRemain&&(snapshot.status==='victory'||clearedExploration);
+}
 function checkEnd(s){
   const able=side=>s.units.some(u=>u.side===side&&fieldCapable(u));
   if(!able('player')){const status=s.units.some(u=>u.side==='player'&&u.departure)?'retreat':'defeat';if(s.status!==status)say(s,status==='retreat'?'La última fuerza capaz salió del sector.':'La escuadra quedó fuera de combate.');s.status=status;s.phase='player';delete s.interrupt;delete s.enemyTurn;delete s.reactionStack;delete s.alliedTurn;}

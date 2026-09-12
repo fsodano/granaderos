@@ -10,11 +10,13 @@ import {enterSector} from '../game/world.js';import {autoResolve} from '../game/
 import {encodeSave,decodeSave} from '../game/save.js';import {syncBattleTime} from '../game/time.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const act=(s,a)=>{const n=actBattle(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
-function issued(){let c=order(initialCampaign(45),{type:'purchaseEquipment',item:'swivel'});
+function issued({reinforced=true}={}){let c=order(initialCampaign(45),{type:'purchaseEquipment',item:'swivel'});
+ // Pay for a complete squad under the current map and contract prices.
+ if(reinforced){const cash=c.resources.treasury;for(const id of [123,115,110])c=order(c,{type:'recruitCivic',id,term:'week'});assert.equal(cash-c.resources.treasury,371);assert.ok(c.resources.treasury>=0);}
  // Draw actual clothing before the march; assault no longer grants protection from pooled stock.
- for(const operativeId of c.squad){c=order(c,{type:'sectorInventory',sector:'retiro',operativeId,direction:'issueOutfit'});const row=sectorInventoryModel(c,'retiro',rosterFor(c),operativeId).carried.find(row=>row.equip?.some(e=>e.slot==='outfit'));c=order(c,{type:'sectorInventory',sector:'retiro',operativeId,direction:'equip',inventoryKey:row.inventoryKey,expected:row.expected,slot:'outfit'});}
+ for(const operativeId of c.squad.filter(id=>!c.operativeState[id].outfit)){c=order(c,{type:'sectorInventory',sector:'retiro',operativeId,direction:'issueOutfit'});const row=sectorInventoryModel(c,'retiro',rosterFor(c),operativeId).carried.find(row=>row.equip?.some(e=>e.slot==='outfit'));c=order(c,{type:'sectorInventory',sector:'retiro',operativeId,direction:'equip',inventoryKey:row.inventoryKey,expected:row.expected,slot:'outfit'});}
  c=order(c,{type:'travel',sector:'buenos_aires'});return order(c,{type:'attack',sector:'san_nicolas'});}
-function won(){let c=issued();const r=autoResolve(c.pendingBattle);assert.equal(r.outcome,'victory');assert.ok(r.actions>0);c=order(c,{type:'battleResult',battleId:c.pendingBattle.id,outcome:r.outcome,sectorState:r.battle,survivors:r.battle.units.filter(u=>u.side==='player')});return c;}
+function won(){let c=issued();const r=autoResolve(c.pendingBattle);assert.equal(r.outcome,'victory');assert.ok(r.actions>0);const pair=syncBattleTime(c,r.battle);assert.equal(pair.error,null);const saved=decodeSave(encodeSave(pair.campaign,pair.battle));c=order(saved.campaign,{type:'battleResult',battleId:c.pendingBattle.id,outcome:r.outcome,sectorState:saved.battle,survivors:saved.battle.units.filter(u=>u.side==='player')});for(const u of r.battle.units.filter(u=>u.side==='player')){assert.equal(c.operativeState[u.id].alive,u.hp>0);assert.equal(c.operativeState[u.id].hp,u.hp);}return c;}
 function returnVisit(c,b){const pair=syncBattleTime(c,b);assert.equal(pair.error,null);return order(pair.campaign,{type:'leaveSector',battleId:c.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});}
 const save=c=>restoreCampaign(serializeCampaign(c));
 const flat=()=>Array.from({length:240},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false,cover:0}));
@@ -65,4 +67,33 @@ test('full active campaign saves keep stationed identifiers, coordinates and amm
 });
 test('saved deployment registries reject duplicate identities and corrupted loading fractions',()=>{
  const c=issued();for(const change of [r=>r.artillery.push({...r.artillery[0]}),r=>r.artillery[0].reloadProgress=1,r=>r.artilleryDeployment.issued=['missing'],r=>r.artilleryDeployment.site='elsewhere']){const next=structuredClone(c);change(next.pendingBattle);assert.throws(()=>save(next));}
+});
+
+test('a defeated squad can hire a rescue force and recover its actual prisoners and stationed gun',()=>{
+ const c=issued({reinforced:false}),request=structuredClone(c.pendingBattle),issuedGun=structuredClone(request.artillery[0]);
+ const result=autoResolve(request);assert.equal(result.outcome,'defeat');assert.ok(result.actions>0);assert.ok(result.battle.units.some(u=>u.side==='enemy'&&u.hp>=15));
+ const pair=syncBattleTime(c,result.battle);assert.equal(pair.error,null);const saved=decodeSave(encodeSave(pair.campaign,pair.battle));
+ const lost=order(saved.campaign,{type:'battleResult',battleId:request.id,outcome:result.outcome,sectorState:saved.battle,survivors:saved.battle.units.filter(u=>u.side==='player')});
+ const gun=lost.sectorStates.san_nicolas.artillery.find(g=>g.id===issuedGun.id);assert.ok(gun);assert.equal(gun.side,'enemy');
+ for(const key of ['id','type','x','y','loaded','ammo'])assert.equal(gun[key],result.battle.artillery[0][key]);
+ assert.equal(ownedArtilleryCount(lost),0);assert.equal(lost.resources.cannons,0);assert.equal(lost.armory.swivel,0);
+ for(const u of result.battle.units.filter(u=>u.side==='player'))assert.equal(lost.operativeState[u.id].alive,u.hp>0);
+ let restored=decodeSave(encodeSave(lost)).campaign;assert.deepEqual(restored.sectorStates.san_nicolas.artillery,[gun]);
+ assert.equal(restored.defeated,false);assert.equal(restored.location,'retiro');assert.deepEqual(restored.squad,[]);
+ assert.equal(restored.operativeState[3].alive,false);
+ for(const id of [4,10]){assert.equal(restored.operativeState[id].captured,true);assert.equal(restored.operativeState[id].location,'san_nicolas');}
+ const captives=structuredClone(restored.operativeState),cash=restored.resources.treasury;
+ for(const id of [123,115,110])restored=order(restored,{type:'recruitCivic',id,term:'week'});
+ assert.equal(cash-restored.resources.treasury,371);
+ restored=order(restored,{type:'travel',sector:'buenos_aires'});restored=order(restored,{type:'attack',sector:'san_nicolas'});
+ assert.deepEqual(restored.pendingBattle.artillery,[{...gun,stationed:true}]);validateArtilleryDeployment(restored.pendingBattle);
+ const rescue=autoResolve(restored.pendingBattle,restored.sectorStates.san_nicolas);
+ assert.equal(rescue.outcome,'victory');assert.equal(rescue.timedOut,false);assert.equal(rescue.withdrawalRounds,0);assert.ok(rescue.actions>0&&rescue.actions<20);
+ assert.equal(rescue.battle.status,'active');assert.equal(rescue.battle.mode,'exploration');assert.equal(rescue.battle.sectorCleared,true);
+ const clock=syncBattleTime(restored,rescue.battle);assert.equal(clock.error,null);const resumed=decodeSave(encodeSave(clock.campaign,clock.battle));
+ restored=order(resumed.campaign,{type:'battleResult',battleId:resumed.campaign.pendingBattle.id,outcome:rescue.outcome,sectorState:resumed.battle,survivors:resumed.battle.units.filter(u=>u.side==='player')});
+ restored=decodeSave(encodeSave(restored)).campaign;
+ assert.equal(restored.defeated,false);assert.equal(restored.sectors.san_nicolas.owner,'patriot');assert.equal(restored.operativeState[3].alive,false);assert.equal(restored.operativeState[3].hp,0);
+ for(const id of [4,10]){const u=restored.operativeState[id];assert.equal(u.captured,false);assert.equal(u.hp,captives[id].hp);assert.equal(u.assignment,'patient');assert.equal(u.location,'san_nicolas');assert.ok(restored.recruited.includes(id));assert.deepEqual(u.outfit,captives[id].outfit);assert.ok(restored.contracts[id]);}
+ assert.deepEqual(restored.sectorStates.san_nicolas.artillery,[{...gun,side:'player'}]);assert.equal(ownedArtilleryCount(restored),1);assert.equal(restored.resources.cannons,0);assert.equal(restored.armory.swivel,0);
 });

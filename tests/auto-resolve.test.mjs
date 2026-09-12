@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {autoResolve, withdrawAutomatically} from '../game/auto-resolve.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {enterSector} from '../game/world.js';
-import {createBattle,actBattle,endTurn} from '../game/tactical.js';
+import {completedTacticalVictory,createBattle,actBattle,endTurn} from '../game/tactical.js';
 import {battleFromRequest} from '../game/battle-handoff.js';
 const request=(style='balanced')=>({id:'auto-defense',sector:'san_nicolas',seed:45,defenseGroupId:'enemy-group-1',defenseFort:1,
  squad:Array.from({length:style==='weak'?1:3},(_,i)=>({id:1000+i,name:`Defensor ${i}`,weapon:style==='blade'?1813:1800,marksmanship:style==='weak'?20:65,medical:50,agility:style==='blade'?95:70,experienceLevel:style==='blade'?9:4,hp:style==='weak'?30:90,maxHp:90,loaded:style==='blade'?0:1,ammo:style==='blade'?0:4,priming:5,flints:0,rations:0,torches:0,boleadoras:0,medkits:1,morale:100})),
@@ -74,4 +74,19 @@ test('automatic boundary crossing preserves the actual watcher reaction and inte
  const result=withdrawAutomatically(state,{maxRounds:1});assert.equal(result.orders[0].type,'exit');
  const first=actBattle(state,result.orders[0]);assert.equal(first.units[0].departure,undefined);assert.ok(first.units[0].hp<state.units[0].hp);assert.equal(first.units[2].reactionTurn,first.turn);
  assert.deepEqual(result.battle,replayWithdrawal(state,result.orders));assert.ok(result.battle.units[0].hp<=first.units[0].hp);assert.doesNotThrow(()=>validateBattleSnapshot(result.battle));assert.ok(result.rounds<=1);
+});
+
+
+test('automatic resolution ends a cleared exploration sector without spending time or attempting withdrawal',()=>{
+ const r={...request(),exploration:true,enemies:[]},before=enterSector(r),result=autoResolve(r);
+ assert.equal(result.outcome,'victory');assert.equal(result.battle.status,'active');assert.equal(result.battle.mode,'exploration');
+ assert.equal(result.actions,0);assert.equal(result.timedOut,false);assert.equal(result.withdrawalRounds,0);assert.deepEqual(result.battle,before);
+ assert.doesNotThrow(()=>validateBattleSnapshot(result.battle));
+});
+
+test('a cleared-sector flag cannot settle combat with an able enemy or an unfinished reaction',()=>{
+ const b=enterSector({...request(),exploration:true,enemies:[]});assert.equal(completedTacticalVictory(b),true);
+ for(const change of [s=>s.sectorCleared=false,s=>s.units.push({...s.units[0],id:'enemy',side:'enemy'}),s=>s.enemyTurn={},s=>s.interrupt={},s=>s.reactionStack={},s=>s.phase='enemy',s=>s.units.forEach(u=>u.hp=0)]){
+  const pending=structuredClone(b);change(pending);assert.equal(completedTacticalVictory(pending),false);
+ }
 });

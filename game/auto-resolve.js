@@ -1,5 +1,5 @@
 import {enterSector} from './world.js';
-import {actBattle,endTurn,interruptAvailable,getReachable,exitPreview} from './tactical.js';
+import {completedTacticalVictory,actBattle,endTurn,interruptAvailable,getReachable,exitPreview} from './tactical.js';
 import {automaticOrder} from './autonomous-orders.js';
 import {boundaryMatches} from './tactical-exits.js';
 const able=u=>u.hp>=15&&!u.unconscious&&!u.routed&&!u.surrendered&&!u.departure&&!u.fled;
@@ -46,17 +46,17 @@ export function withdrawAutomatically(state,{maxRounds=8}={}){
 export function autoResolve(request,previous=null,{maxRounds=80}={}){
  if(!Number.isInteger(maxRounds)||maxRounds<1||maxRounds>80)throw Error('El límite de resolución debe ser de 1 a 80 turnos.');
  let battle=enterSector(request,previous),actions=0,windows=0;
- while(battle.status==='active'&&battle.turn<=maxRounds&&windows++<600){
+ while(battle.status==='active'&&!completedTacticalVictory(battle)&&battle.turn<=maxRounds&&windows++<600){
   const ids=battle.units.filter(u=>u.side==='player'&&!u.militia).sort((a,b)=>(b.marksmanship??0)-(a.marksmanship??0)||String(a.id).localeCompare(String(b.id))).map(u=>u.id);
-  for(const id of ids)for(let attempts=0;attempts<16&&battle.status==='active';attempts++){
+  for(const id of ids)for(let attempts=0;attempts<16&&battle.status==='active'&&!completedTacticalVictory(battle);attempts++){
    const unit=battle.units.find(u=>u.id===id);if(!interruptAvailable(battle,unit)||unit.ap<3)break;
    const action=automaticOrder(battle,unit);if(!action)break;
    const next=actBattle(battle,action);if(next.lastError)break;battle=next;actions++;
   }
-  if(battle.status==='active'){const next=endTurn(battle);if(next.lastError)break;battle=next;}
+  if(battle.status==='active'&&!completedTacticalVictory(battle)){const next=endTurn(battle);if(next.lastError)break;battle=next;}
  }
- const timedOut=battle.status==='active';
+ const timedOut=battle.status==='active'&&!completedTacticalVictory(battle);
  const withdrawal=timedOut?withdrawAutomatically(battle):{battle,orders:[],rounds:0};
  battle=withdrawal.battle;actions+=withdrawal.orders.filter(order=>order.type!=='endTurn').length;
- return {battle,outcome:battle.status==='active'?null:battle.status,actions,rounds:Math.min(battle.turn,maxRounds),timedOut,withdrawalRounds:withdrawal.rounds};
+ return {battle,outcome:completedTacticalVictory(battle)?'victory':battle.status==='active'?null:battle.status,actions,rounds:Math.min(battle.turn,maxRounds),timedOut,withdrawalRounds:withdrawal.rounds};
 }
