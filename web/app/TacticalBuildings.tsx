@@ -1,3 +1,5 @@
+import {BUILDING_OPENINGS} from '../../game/building-scale.js';
+import {BuildingOpening} from './BuildingOpening';
 import {BuildingMaterials} from './BuildingMaterials';
 import {buildingStyle} from '../../game/building-types.js';
 import {WallDetails} from './BuildingDetails';
@@ -29,7 +31,7 @@ export function buildBuildingObjects({state:s,revealed,project,light}:Args):Scen
   const axes:WallAxis[]=b?[...(onX?['y' as const]:[]),...(onY?['x' as const]:[])]:[occupied.has(`${t.x+1},${t.y}`)||occupied.has(`${t.x-1},${t.y}`)?'x':'y'];
   if(!axes.length)axes.push('x');
   axes.forEach((axis,index)=>{
-   const isFront=b&&(axis==='x'?t.y===b.y+b.height-1:t.x===b.x+b.width-1),cut=roomOpen&&isFront,height=cut?9:style.height;
+   const isFront=b&&(axis==='x'?t.y===b.y+b.height-1:t.x===b.x+b.width-1),cut=roomOpen&&isFront,height=cut?BUILDING_OPENINGS.cutawayHeight:style.height;
    // Place each face near its southern tile edge. Clamp corners to the
    // shifted intersection so both wall axes remain joined.
    const along=axis==='x'?t.x:t.y;
@@ -49,30 +51,18 @@ export function buildBuildingObjects({state:s,revealed,project,light}:Args):Scen
     <polygon points={`${top(start,height)} ${top(end,height)} ${end.x+4},${end.y-height-2} ${start.x+4},${start.y-height-2}`} fill={cut?'#bda980':'#d2c49e'} stroke="#807459" strokeWidth=".55"/>
     <path d={`M${end.x},${end.y}v-${height}l4,-2v${height}Z`} fill="#8b8163"/>
     <g transform={`matrix(${dx} ${dy} 0 1 ${start.x} ${start.y})`}>
-     {!isOpening?<><rect x="0" y={-height} width={width} height={height} fill={plaster}/></>:cut?<>
-      {/* Openings stay legible as thresholds and low jambs in the cutaway. */}
-      <path d="M0,0V-9H10V0ZM30,0V-9H40V0Z" fill={plaster}/>
-      <path d="M10,0H30" stroke="#b9a580" strokeWidth="3"/>
-      {t.type==='door'&&!t.open&&<path d="M12,-3H28" stroke="#62452c" strokeWidth="4"/>}
-      {t.type==='window'&&<path d="M10,-7H30V0H10Z" fill={plaster}/>}
-     </>:<>
-      <path d={`M0,0V-${height}H40V0H29V-${t.type==='door'?30:29}H11V0Z`} fill={plaster}/>
-      {t.type==='window'&&<rect x="10" y="-12" width="20" height="12" fill={plaster}/>}
-      <rect x="11" y={t.type==='door'?-30:-29} width="18" height={t.type==='door'?30:17} fill="url(#building-recess)"/>
-      <path d={`M10,0V-32H30V0M8,-33H32`} fill="none" stroke="#e3d5b5" strokeWidth="1.4"/>
-      {t.type==='door'?<g transform={t.open?'translate(11 0) skewY(-25) scale(.22 1) translate(-11 0)':undefined}><rect x="12" y="-30" width="16" height="30" fill="url(#building-timber)" stroke="#5c4931" strokeWidth=".8"/><path d="M15,-29V-1M20,-29V-1M25,-29V-1M12,-24H28M12,-7H28" stroke="#413725" strokeWidth=".7"/><circle cx="25" cy="-14" r="1" fill="#c1a16a"/></g>:<><path d="M14,-28V-13M18,-28V-13M22,-28V-13M26,-28V-13M12,-24H28M12,-17H28" stroke="#383b30" strokeWidth="1"/><path d="M9,-12H31" stroke="#e3d2a5" strokeWidth="1.5"/></>}
-     </>}
+     {isOpening?<BuildingOpening tile={t} wallHeight={height} cut={Boolean(cut)} plaster={plaster}/>:<rect x="0" y={-height} width={width} height={height} fill={plaster}/>}
      <WallDetails building={b} front={Boolean(isFront&&axis==='x')} cut={Boolean(cut)} opening={isOpening}/>
      <rect y={-height} width="40" height={height} fill="url(#building-wall-age)"/>
      {/* Limewash wear is irregular but stable across renders. */}
-     {Array.from({length:cut?4:19},(_,i)=>{const n=noise(t.x*43+i,t.y*29+index),x=n%38+1,y=-(n%Math.max(1,height-3)+2);return <path key={i} d={`M${x},${y}h${1+n%3}`} stroke={i%3?'#796d50':'#fff1ce'} opacity={i%3?'.16':'.23'} strokeWidth=".6"/>;})}
+     {Array.from({length:cut?4:Math.round(height*.42)},(_,i)=>{const n=noise(t.x*43+i,t.y*29+index),x=n%38+1,y=-(n%Math.max(1,height-3)+2);return <path key={i} d={`M${x},${y}h${1+n%3}`} stroke={i%3?'#796d50':'#fff1ce'} opacity={i%3?'.16':'.23'} strokeWidth=".6"/>;})}
      {!cut&&<><path d={`M0,-${height-2}H40`} stroke={style.trim} strokeWidth="2"/><path d={`M0,-${height-5}H40`} stroke="#66553e" strokeWidth="2" opacity=".4"/></>}
      {/* Broken plaster and jointed stone footing, deterministic per tile. */}
      {!isOpening&&<><path d={`M${3+seed},-${Math.min(height-2,12)}l3,2 2,-1 2,4 -2,3 -6,-1Z`} fill="#a69570" opacity=".6"/>{height>15&&b?.architecture==='farmhouse'&&<path d={`M${27-seed},-34l-2,5 3,3 -1,5`} fill="none" stroke="#867d61" strokeWidth=".55" opacity=".75"/>}</>}
-     <path d={isOpening&&t.type==='door'?'M0,-5H10V0H0ZM30,-5H40V0H30Z':'M0,-5H40V0H0Z'} fill="#827b62"/>
+     <path d={isOpening&&t.type==='door'?'M0,-5H8V0H0ZM32,-5H40V0H32Z':'M0,-5H40V0H0Z'} fill="#827b62"/>
      <path d={isOpening?'M5,-5V0M35,-5V0':'M8,-5V0M21,-5V0M34,-5V0'} stroke="#595d4d" strokeWidth=".7"/>
      {!isOpening&&<path d={`M0,-${height}H40`} stroke={cut?'#f0dcb0':'#ded0ac'} strokeWidth={cut?2:1}/>}
-     {axis==='y'&&<path d={isOpening?`M0,0V-${height}H10V0ZM30,0V-${height}H40V0Z`:`M0,0V-${height}H40V0Z`} fill="#292c22" opacity=".14"/>}
+     {axis==='y'&&<path d={isOpening?`M0,0V-${height}H8V0ZM32,0V-${height}H40V0Z`:`M0,0V-${height}H40V0Z`} fill="#292c22" opacity=".14"/>}
     </g>
    </g>});
   });
@@ -85,6 +75,10 @@ export function buildBuildingObjects({state:s,revealed,project,light}:Args):Scen
    const cells=new Set(room.cells.map((c:any)=>`${c.x},${c.y}`));
    for(const c of room.cells){
     const point=(x:number,y:number)=>{const p=project(x,y);return `${p.x},${p.y}`;};
+    // Perimeter walls are drawn inside their structural cells. Extend only
+    // adjacent floor edges to that wall plane, covering the underlying grass.
+    const x0=c.x===b.x+1?b.x+wallInset:c.x-.5,x1=c.x===b.x+b.width-2?b.x+b.width-1+wallInset:c.x+.5;
+    const y0=c.y===b.y+1?b.y+wallInset:c.y-.5,y1=c.y===b.y+b.height-2?b.y+b.height-1+wallInset:c.y+.5;
     const joints:ReactNode[]=[];
     for(let row=0;row<4;row++){
      const y=c.y-.5+row/4;
@@ -95,9 +89,10 @@ export function buildBuildingObjects({state:s,revealed,project,light}:Args):Scen
      }
     }
     objects.push({key:`architecture-floor-${room.id}-${c.x}-${c.y}`,depth:-1000,node:<g data-building-floor={room.id} pointerEvents="none" style={{filter:`brightness(${light(c.x,c.y)})`}}>
+     <polygon data-floor-surface="true" points={[point(x0,y0),point(x1,y0),point(x1,y1),point(x0,y1)].join(' ')} fill="url(#terrain-floor)"/>
      <g stroke="#514332" strokeWidth=".65" opacity=".36">{joints}</g>
-     {!cells.has(`${c.x-1},${c.y}`)&&<polygon points={[point(c.x-.5,c.y-.5),point(c.x-.28,c.y-.5),point(c.x-.28,c.y+.5),point(c.x-.5,c.y+.5)].join(' ')} fill="#332d20" opacity=".2"/>}
-     {!cells.has(`${c.x},${c.y-1}`)&&<polygon points={[point(c.x-.5,c.y-.5),point(c.x+.5,c.y-.5),point(c.x+.5,c.y-.3),point(c.x-.5,c.y-.3)].join(' ')} fill="#332d20" opacity=".2"/>}
+     {!cells.has(`${c.x-1},${c.y}`)&&<polygon points={[point(x0,y0),point(x0+.22,y0),point(x0+.22,y1),point(x0,y1)].join(' ')} fill="#332d20" opacity=".2"/>}
+     {!cells.has(`${c.x},${c.y-1}`)&&<polygon points={[point(x0,y0),point(x1,y0),point(x1,y0+.2),point(x0,y0+.2)].join(' ')} fill="#332d20" opacity=".2"/>}
     </g>});
    }
    continue;

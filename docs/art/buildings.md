@@ -12,7 +12,7 @@ Historical references:
 - [Casa Natal de Sarmiento museum](https://casanatalsarmiento.cultura.gob.ar/info/museo/): adobe walls, timber openings and wrought iron window bars.
 - [Casa Natal de Sarmiento, national register](https://www.argentina.gob.ar/node/417682): the original 1801 house had an earth roof on poplar beams. Tile roofing is therefore a choice for the game's authored tiled buildings, not a claim that all regional houses had tiled roofs.
 
-`web/app/TacticalBuildings.tsx` projects each roof tile onto the roof slope.
+`web/app/BuildingRoof.tsx` maps continuous material textures onto each roof slope.
 Gables close the space above the walls. Corner segments stop at their intersection,
 and roofs overhang the walls. Texture variation is deterministic.
 
@@ -86,9 +86,9 @@ compositions in `web/app/BuildingRoof.tsx`:
 - Brick warehouses: paired gables, louvres and a loading hoist.
 - Sage barracks: a long low roof and two chimneys.
 
-`BUILDING_FOOTPRINTS` gives neighbourhood types different proportions. Long
-buildings can lose one bay on constrained coastal lots. The catalogue uses
-larger landmark examples where appropriate. All tower faces use the same
+`BUILDING_FOOTPRINTS` gives neighbourhood types different proportions. New
+sectors place complete plans, including on coastal lots. The catalogue uses
+these same dimensions and a common viewing scale. All tower faces use the same
 isometric projection as the walls. The Cabildo's façade renders its actual door
 states, and the complete roof composition disappears when its room is revealed.
 
@@ -117,3 +117,38 @@ Validation: building/material/render tests, map connectivity and deployment,
 large-sector save round trips, snapshot validation, type checks, production
 build, and exterior/interior catalogue renders. The catalogue is a static render
 of the game scene; it does not claim live browser interaction coverage.
+
+### Building scale relative to people and carts
+
+The approved cart remains 90×60 screen pixels and the soldier drawing size
+remains 52 pixels. Architectural heights use a shared 1.6 multiplier in
+`game/building-scale.js`: ordinary doors are 48 pixels high and 24 wall units
+wide, with taller walls, porches, windows, arcades and towers. Cutaway walls
+remain 9 pixels high so occupants stay visible. Surface textures retain their
+detail density across taller walls and wider façades. Shed roofs have closed
+raised ends, and revealed flooring extends to the wall planes.
+
+New sectors use larger real collision plans and interiors:
+
+| Building | Footprint | Usable interior |
+| --- | --- | --- |
+| Casa colonial | 6×5 | 4×3 |
+| Rancho de campo | 6×4 | 4×2 |
+| Estancia | 8×5 | 6×3 |
+| Iglesia | 6×7 | 4×5 |
+| Casa de altos | 7×6 | 5×4 |
+| Cabildo | 11×6 | 9×4 |
+| Pulpería | 7×5 | 5×3 |
+| Almacén | 7×6 | 5×4 |
+| Barraca | 8×4 | 6×2 |
+
+The authored Yatasto estancia retains its larger 8×6 plan. Towns still contain
+20 buildings on a 64×48 map, with two-cell clearances and reachable interiors.
+Stored sectors retain their floor plans; their buildings receive the new
+rendered heights. Fresh sectors receive the larger footprints.
+
+The catalogue includes a standing granadero beside each exterior and another
+inside each revealed room. To check selected buildings quickly, run
+`node tools/preview-building-catalogue.mjs /tmp/building-preview pulperia cabildo`.
+The scale pass also received a live browser check in San Lorenzo, at normal and
+enlarged camera zoom, with no browser console errors.

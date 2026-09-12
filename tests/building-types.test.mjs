@@ -46,6 +46,7 @@ test('roof forms include flat terraces, hipped thatch, a nave and twin warehouse
   const markup=nodes.map(o=>renderToStaticMarkup(o.node)).join('');
   for(const form of expected)assert.ok(markup.includes(`data-roof-form="${form}"`),`${architecture}: ${form}`);
   if(architecture==='warehouse')assert.equal((markup.match(/data-building-gable="true"/g)??[]).length,2);
+  if(architecture==='pulperia')assert.equal((markup.match(/data-building-gable="true"/g)??[]).length,2,'Both the shed roof and veranda have closed raised ends.');
   if(architecture==='cabildo'){assert.match(markup,/data-cabildo-dome="true"/);assert.match(markup,/data-cabildo-arcade="true"/);}
  }
 });

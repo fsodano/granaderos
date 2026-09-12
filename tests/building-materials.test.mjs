@@ -13,7 +13,7 @@ const {BuildingMaterials}=await import('../web/app/BuildingMaterials.tsx');
 const {buildPropObjects}=await import('../web/app/TacticalProps.tsx');
 test('all declared building materials are packaged, detailed and local',async()=>{
  const markup=renderToStaticMarkup(createElement('svg',null,createElement(BuildingMaterials)));
- const urls=[...markup.matchAll(/href="([^"]+)"/g)].map(m=>m[1]);
+ const urls=[...new Set([...markup.matchAll(/href="([^"]+)"/g)].map(m=>m[1]))];
  assert.equal(urls.length,6+Object.keys(BUILDING_TYPES).length);
  for(const url of urls){
   const bytes=await readFile(`web/public${url}`),meta=await sharp(bytes).metadata(),stats=await sharp(bytes).stats();
@@ -22,6 +22,11 @@ test('all declared building materials are packaged, detailed and local',async()=
  }
  const cart=await sharp('web/public/art/buildings/cart-v1.webp').ensureAlpha().stats();
  assert.equal(cart.channels[3].min,0);assert.equal(cart.channels[3].max,255);
+});
+test('taller facade ornaments retain the wall texture detail density',()=>{
+ const markup=renderToStaticMarkup(createElement('svg',null,createElement(BuildingMaterials)));
+ assert.match(markup,/id="building-facade-plaster"[^>]*patternTransform="scale\(1 0.625\)"/);
+ assert.match(markup,/id="building-plaster"[^>]*width="128" height="128"><image[^>]*width="128" height="128"/);
 });
 test('pulpería carts preserve every doorway approach and do not duplicate on placement',()=>{
  let count=0;
@@ -46,4 +51,5 @@ test('cart rendering uses the approved transparent art and its two-cell depth',(
  assert.equal(nodes[0].depth,6.02);
  const markup=renderToStaticMarkup(nodes[0].node);
  assert.match(markup,/\/art\/buildings\/cart-v1.webp/);assert.match(markup,/data-footprint="2x1"/);assert.match(markup,/brightness\(0.7\)/);
+ assert.match(markup,/<image[^>]*width="90" height="60"/,'Approved cart size stays fixed while the buildings grow.');
 });

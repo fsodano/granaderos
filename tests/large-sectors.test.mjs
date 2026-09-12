@@ -5,6 +5,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {buildSectorMap,MAP_IDS} from '../game/maps.js';
 import {TACTICAL_SIZE,physicalEntryAnchor} from '../game/sector-expansion.js';
+import {BUILDING_FOOTPRINTS} from '../game/building-types.js';
 import {CAMPAIGN_SECTORS,OPERATIVES} from '../game/data.js';
 import {enterSector} from '../game/world.js';
 import {sectorExits,boundaryMatches,inwardFromBoundary} from '../game/tactical-exits.js';
@@ -42,6 +43,30 @@ test('new neighbourhoods leave at least two clear squares between buildings and 
    for(const other of map.buildings.filter(o=>o!==b))assert.ok(b.x+b.width+2<=other.x||other.x+other.width+2<=b.x||b.y+b.height+2<=other.y||other.y+other.height+2<=b.y,`${b.id} / ${other.id}`);
    assert.ok(b.x>=2&&b.y>=2&&b.x+b.width<map.width&&b.y+b.height<map.height);
   }
+ }
+});
+test('new buildings use complete plans with room to walk around furniture',()=>{
+ for(const sector of MAP_IDS){
+  const map=buildSectorMap({sector});
+  for(const b of map.buildings){
+   const [width,height]=BUILDING_FOOTPRINTS[b.architecture];
+   assert.ok(b.width>=width&&b.height>=height,`${sector}: ${b.id} must not shrink to fit a leftover lot`);
+   for(const room of b.rooms){
+    assert.ok(new Set(room.cells.map(c=>c.x)).size>=4,`${b.id}: interior needs at least four columns`);
+    assert.ok(new Set(room.cells.map(c=>c.y)).size>=2,`${b.id}: interior cannot be a single row`);
+   }
+  }
+ }
+});
+test('larger authored landmarks apply only to new layouts and preserve the compact plans',()=>{
+ for(const [sector,oldPlan,newPlan] of [['buenos_aires',[8,4],[11,6]],['san_lorenzo',[5,6],[6,7]]]){
+  const compact=buildSectorMap({sector,compactLayout:true}),expanded=buildSectorMap({sector});
+  const old=compact.buildings[0],current=expanded.buildings[0];
+  assert.equal(current.id,old.id);
+  assert.deepEqual([old.width,old.height],oldPlan);
+  assert.deepEqual([current.width,current.height],newPlan);
+  assert.ok(current.rooms[0].cells.length>=old.rooms[0].cells.length*1.5);
+  assert.deepEqual(expanded.tiles.filter(t=>t.buildingId===current.id&&t.type==='door').map(t=>t.doorId),compact.tiles.filter(t=>t.buildingId===old.id&&t.type==='door').map(t=>t.doorId));
  }
 });
 test('all campaign routes arrive at the new physical edges with a legal inward step',()=>{

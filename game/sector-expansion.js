@@ -15,7 +15,7 @@ export function physicalEntryAnchor(edge,anchor,width,height,sectorId){
 
 // Retain the authored landmark and its stable IDs in a larger neighbourhood.
 // Saved compact sectors continue to use their original layout when revisited.
-export function expandSectorMap(core){
+export function expandSectorMap(core,boundaryRoads=core.tiles.filter(t=>t.type==='road'&&(t.x===0||t.x===19||t.y===0||t.y===15))){
  const {width,height}=TACTICAL_SIZE,id=core.sceneId??core.sector;
  const DX=coast.has(id)?32:22;
  const shift=p=>({...p,x:p.x+DX,y:p.y+DY});
@@ -31,45 +31,56 @@ export function expandSectorMap(core){
  const map={...core,width,height,tiles,buildings:core.buildings.map(b=>({...shift(b),rooms:b.rooms.map(r=>({...r,cells:r.cells.map(shift)}))})),props:core.props.map(shift),lights:core.lights.map(shift),decor:core.decor.map(shift),npcs:(core.npcs??[]).map(shift),squad:core.squad.map(shift),enemies:core.enemies.map(shift),artillery:core.artillery.map(shift),garrison:(core.garrison??[]).map((p,i)=>shiftReinforcement(p,core.squad.length+i)),missionAllies:(core.missionAllies??[]).map((p,i)=>shiftReinforcement(p,core.squad.length+(core.garrison?.length??0)+i))};
  const road=(x,y)=>{const t=tiles[y*width+x];if(t&&!t.blocked&&!t.buildingId)Object.assign(t,{type:'road',cover:0});};
  // Continue each authored road to the new boundary. Coast and cliffs win.
- for(let y=0;y<16;y++){
-  if(core.tiles[y*20].type==='road')for(let x=0;x<DX;x++)road(x,y+DY);
-  if(core.tiles[y*20+19].type==='road')for(let x=DX+20;x<width;x++)road(x,y+DY);
- }
- for(let x=0;x<20;x++){
-  if(core.tiles[x].type==='road')for(let y=0;y<DY;y++)road(x+DX,y);
-  if(core.tiles[15*20+x].type==='road')for(let y=DY+16;y<height;y++)road(x+DX,y);
+ for(const p of boundaryRoads){
+  if(p.x===0)for(let x=0;x<DX;x++)road(x,p.y+DY);
+  if(p.x===19)for(let x=DX+20;x<width;x++)road(x,p.y+DY);
+  if(p.y===0)for(let y=0;y<DY;y++)road(p.x+DX,y);
+  if(p.y===15)for(let y=DY+16;y<height;y++)road(p.x+DX,y);
  }
  // The old Jujuy south-facing house ended against the cliff. Extend its
  // doorstep through that narrow strip so the retained interior is accessible.
  if(id==='jujuy')for(let y=DY+14;y<=DY+15;y++)Object.assign(tiles[y*width+DX+10],{type:'road',blocked:false,blocksSight:false,cover:0});
- // Town blocks have 2–3 clear squares between five-square houses.
- // Missions retain their open fields; passes remain undeveloped.
+ // Place complete plans with two clear cells between façades. Large plans
+ // are packed first, so a church cannot be replaced by a narrow leftover lot.
+ // The central mission area remains reserved, including troop deployment.
  const target=rural.has(id)?0:['san_lorenzo','yatasto'].includes(id)?6:20;
- const lots=[];
- for(const y of [3,11,19,27,35,42])for(let x=3;x<=width-7;x+=8)lots.push({x,y});
- // Rotate plot priority per place, deterministically, for distinct neighbourhoods.
  const seed=[...id].reduce((n,c)=>n+c.charCodeAt(0),0);
- lots.sort((a,b)=>((a.x*17+a.y*31+seed*7)%97)-((b.x*17+b.y*31+seed*7)%97)||a.y-b.y||a.x-b.x);
- for(const lot of lots){
-  if(map.buildings.length>=target)break;
-  const architecture=sectorBuildingType(id,map.buildings.length);
-  const [preferredWidth,h]=BUILDING_FOOTPRINTS[architecture];
-  let w=preferredWidth,clear=false;
-  // A long building can lose one bay on a constrained coastal lot.
-  for(;w>=Math.min(preferredWidth,5);w--){
-   if(lot.x<DX+22&&lot.x+w>DX-2&&lot.y<DY+18&&lot.y+h>DY-2)continue;
-   clear=true;
-   for(let y=lot.y-1;y<=lot.y+h;y++)for(let x=lot.x-1;x<=lot.x+w;x++){const t=map.tiles[y*width+x];if(!t||t.blocked||t.buildingId||t.type==='road')clear=false;}
-   if(clear)break;
+ const firstIndex=map.buildings.length,needsBar=target===20&&!map.buildings.some(b=>b.purpose==='bar');
+ const plans=Array.from({length:Math.max(0,target-firstIndex)},(_,i)=>{
+  const index=firstIndex+i,bar=needsBar&&i===0;
+  const architecture=bar?'pulperia':sectorBuildingType(id,index);
+  const [w,h]=BUILDING_FOOTPRINTS[architecture];
+  return {index,architecture,w,h,bar};
+ }).sort((a,b)=>b.w*b.h-a.w*a.h||b.h-a.h||a.index-b.index);
+ const canPlace=(x,y,w,h)=>{
+  if(x<DX+22&&x+w>DX-2&&y<DY+18&&y+h>DY-2)return false;
+  if(map.buildings.some(b=>!(x+w+2<=b.x||b.x+b.width+2<=x||y+h+2<=b.y||b.y+b.height+2<=y)))return false;
+  for(let row=y;row<y+h;row++)for(let col=x;col<x+w;col++){
+   const t=map.tiles[row*width+col];
+   if(!t||t.blocked||t.buildingId||t.type==='road')return false;
   }
-  if(!clear)continue;
-  const index=map.buildings.length,buildingId=`${id}:neighbourhood-${index}`;
-  const result=placeBuilding(map.tiles,{id:buildingId,architecture,name:`${BUILDING_TYPES[architecture].name} · ${index+1}`,...lot,width:w,height:h,doors:[{x:lot.x+2,y:lot.y+h-1}],windows:[{x:lot.x,y:lot.y+Math.floor(h/2)}],material:'adobe'});
-  if(target===20&&!map.buildings.some(b=>b.purpose==='bar'))Object.assign(result.building,{purpose:'bar',architecture:'pulperia',roof:'tile',name:'Pulpería del barrio'});
+  const doorstep=map.tiles[(y+h)*width+x+Math.floor(w/2)];
+  return doorstep&&!doorstep.blocked&&!doorstep.buildingId;
+ };
+ for(const {index,architecture,w,h,bar} of plans){
+  let lot=null;
+  for(let y=2;y+h<height&&!lot;y++)for(let i=2;i+w<width-1;i++){
+   const x=seed%2?width-w-i:i;
+   if(canPlace(x,y,w,h)){lot={x,y};break;}
+  }
+  if(!lot)throw Error(`El plano de ${id} no tiene espacio para ${BUILDING_TYPES[architecture].name} (${w}×${h}).`);
+  const buildingId=`${id}:neighbourhood-${index}`;
+  const result=placeBuilding(map.tiles,{id:buildingId,architecture,name:`${BUILDING_TYPES[architecture].name} · ${index+1}`,...lot,width:w,height:h,doors:[{x:lot.x+Math.floor(w/2),y:lot.y+h-1}],windows:[{x:lot.x,y:lot.y+Math.floor(h/2)}],material:'adobe'});
+  if(bar)Object.assign(result.building,{purpose:'bar',name:'Pulpería del barrio'});
   map.tiles=result.tiles;map.buildings.push(result.building);
   const prop={id:`${buildingId}:chest`,type:'chest',x:lot.x+1,y:lot.y+1,buildingId,roomId:result.building.rooms[0].id,footprint:{width:1,height:1},blocksMovement:true};
   if(!propPlacementError(map,prop))map.props.push(prop);
  }
+ // Keep catalogue identities and save order stable after size-first placement.
+ map.buildings.sort((a,b)=>{
+  const index=b=>b.id.includes(':neighbourhood-')?Number(b.id.split(':neighbourhood-')[1]):core.buildings.findIndex(v=>v.id===b.id);
+  return index(a)-index(b);
+ });
  for(const b of map.buildings)placePulperiaCart(map,b);
  if(id==='buenos_aires'){
   // Continuous streets between the lots, with stone pavements beside the houses.

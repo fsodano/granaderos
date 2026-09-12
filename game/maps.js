@@ -22,7 +22,7 @@ function canvas(base='grass'){
  const woods=(points)=>points.forEach(([x,y,w,h])=>rect(x,y,w,h,'forest',false));
  return {tiles,paint,rect,hroad,vroad,coast,woods};
 }
-function plan(id){
+function plan(id,largeBuildings=false){
  const c=canvas(['uspallata','los_patos','humahuaca'].includes(id)?'stone':'grass'),{rect,hroad,vroad,coast,woods,paint}=c;
  const decor=[];
  switch(id){
@@ -79,7 +79,20 @@ function plan(id){
    woods([[9,5,2,2],[9,9,2,2],[2,0,2,2],[2,14,2,2]]);break;
  default:throw Error('No existe un plano para ese sector.');
  }
+ const boundaryRoads=c.tiles.filter(t=>t.type==='road'&&(t.x===0||t.x===WIDTH-1||t.y===0||t.y===HEIGHT-1)).map(({x,y})=>({x,y}));
  const footprints={yatasto:[5,4,8,6],buenos_aires:[1,1,8,4],retiro:[6,6,5,4],ensenada:[5,2,4,3],san_nicolas:[5,10,3,3],santa_fe:[12,11,3,3],cordoba:[12,2,5,3],mendoza:[5,1,5,3],tucuman:[11,5,4,4],salta:[12,11,4,3],jujuy:[6,3,4,3],san_lorenzo:[4,5,5,6]};
+ const extras={buenos_aires:[[11,1,6,3],[4,12,4,3],[12,12,5,3]],retiro:[[4,0,9,3],[5,13,8,3]],ensenada:[[7,11,5,3]],san_nicolas:[[5,2,3,3]],santa_fe:[[4,1,3,3]],cordoba:[[5,2,3,3],[5,11,3,4],[12,11,4,3]],mendoza:[[5,12,5,3],[13,2,3,3]],salta:[[12,1,4,3]],jujuy:[[8,11,4,3]]};
+ if(largeBuildings){
+   // New sectors have usable rooms at the same scale as people and carts.
+   // Keep the compact plans above intact for saved-sector reconstruction.
+   for(const box of [footprints[id],...(extras[id]??[])].filter(Boolean)){
+     const [x,y,w,h]=box;
+     for(let row=y;row<y+h;row++)for(let col=x;col<x+w;col++)if(c.tiles[row*WIDTH+col]?.type==='wall')paint(col,row,'grass',false);
+   }
+   Object.assign(footprints,{buenos_aires:[1,0,11,6],retiro:[6,6,8,4],ensenada:[4,0,7,6],san_nicolas:[5,10,6,5],santa_fe:[11,10,6,5],cordoba:[12,0,7,6],mendoza:[3,0,7,6],tucuman:[10,4,6,5],salta:[12,10,6,5],jujuy:[5,2,6,5],san_lorenzo:[3,4,6,7]});
+   Object.assign(extras,{buenos_aires:[[13,0,7,6],[1,11,7,5],[12,11,7,5]],retiro:[[4,0,8,4],[5,12,8,4]],ensenada:[[4,10,7,6]],san_nicolas:[[4,0,7,5]],santa_fe:[[2,0,7,5]],cordoba:[[2,0,7,6],[1,11,7,5],[13,11,6,5]],mendoza:[[3,11,7,5],[13,0,7,5]],salta:[[11,0,7,5]],jujuy:[[7,9,7,5]]});
+   if(id==='san_lorenzo')Object.assign(decor[0],{x:3,y:4,width:6,height:7});
+ }
  const buildings=[],lights=[];const footprint=footprints[id];
  if(footprint){const[x,y,width,height]=footprint,doorX=x+Math.floor((width-(id==='buenos_aires'?1:0))/2),doorY=y+height-1;
    const doors=[{id:`${id}:door-left`,x:doorX,y:doorY,open:id==='yatasto'}];if(width>=5)doors.push({id:`${id}:door-right`,x:doorX+1,y:doorY});
@@ -88,10 +101,9 @@ function plan(id){
    lights.push({id:`${id}:lantern`,type:'lantern',x:doorX,y:Math.min(15,doorY+1),radius:3,intensity:.8});
  }
  // Convert the other settlement footprints into enterable houses as well.
- const extras={buenos_aires:[[11,1,6,3],[4,12,4,3],[12,12,5,3]],retiro:[[4,0,9,3],[5,13,8,3]],ensenada:[[7,11,5,3]],san_nicolas:[[5,2,3,3]],santa_fe:[[4,1,3,3]],cordoba:[[5,2,3,3],[5,11,3,4],[12,11,4,3]],mendoza:[[5,12,5,3],[13,2,3,3]],salta:[[12,1,4,3]],jujuy:[[8,11,4,3]]};
  for(const [index,box]of (extras[id]??[]).entries()){
    const [x,y,width,height]=box,doorY=y+height>=HEIGHT?y:y+height-1,doorX=x+Math.floor(width/2);
-   const result=placeBuilding(c.tiles,{id:`${id}:house-${index}`,architecture:sectorBuildingType(id,index),name:id==='retiro'?'Barraca del cuartel':`Casa ${index+2} del poblado`,x,y,width,height,doors:[{x:doorX,y:doorY}],windows:[{x,y:y+1}],material:'adobe'});
+   const result=placeBuilding(c.tiles,{id:`${id}:house-${index}`,architecture:largeBuildings&&id==='retiro'?'barracks':sectorBuildingType(id,index),name:id==='retiro'?'Barraca del cuartel':`Casa ${index+2} del poblado`,x,y,width,height,doors:[{x:doorX,y:doorY}],windows:[{x,y:y+1}],material:'adobe'});
    result.building.purpose=index===0&&id!=='retiro'?'bar':'home';
    if(result.building.purpose==='bar')Object.assign(result.building,{name:'Pulpería del poblado',architecture:'pulperia',roof:'tile'});
    else result.building.name=BUILDING_TYPES[result.building.architecture].name;
@@ -112,14 +124,14 @@ function plan(id){
    if(b.height>=5){furnish(b,'bed',b.x+1,b.y+b.height-2);furnish(b,'chest',b.x+b.width-2,b.y+b.height-2);}
  }
  for(const b of buildings)placePulperiaCart({tiles:c.tiles,buildings,props},b);
- return {...c,decor,buildings,lights,props};
+ return {...c,decor,buildings,lights,props,boundaryRoads};
 }
 const key=p=>`${p.x},${p.y}`;
 function connected(tiles,start,props=[]){
  const reached=new Set([key(start)]),queue=[start];while(queue.length){const p=queue.shift();for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const x=p.x+dx,y=p.y+dy,t=tiles[y*WIDTH+x];if(x>=0&&x<WIDTH&&y>=0&&y<HEIGHT&&t&&!t.blocked&&!propBlocksAt({props},x,y)&&!reached.has(key(t))){reached.add(key(t));queue.push(t);}}}return reached;
 }
 function buildCompactSectorMap(request={}){
- const id=request.sceneId??request.sector??request.id??'san_lorenzo';const authored=plan(id),tiles=authored.tiles;
+ const id=request.sceneId??request.sector??request.id??'san_lorenzo';const authored=plan(id,request.compactLayout!==true),tiles=authored.tiles;
  const open=tiles.filter(t=>!t.blocked&&!propBlocksAt(authored,t.x,t.y));const component=connected(tiles,open.find(t=>t.x<=2&&t.y>=5)??open[0],authored.props);
  const reserved=new Set(),choose=(preferred,side)=>{
    const candidates=open.filter(t=>component.has(key(t))&&!reserved.has(key(t)));
@@ -134,10 +146,10 @@ function buildCompactSectorMap(request={}){
  const enemyCount=request.enemies?.length??Math.max(3,squad.length+(request.difficulty??1)-1);
  const enemies=Array.from({length:enemyCount},(_,i)=>({id:`enemy-${i}`,name:`Soldado realista ${i+1}`,weapon:i%3===0?1801:1800,marksmanship:50+(request.difficulty??1)*5,morale:60+(request.difficulty??1)*5,...clone(request.enemies?.[i]??{}),...choose({x:id==='santa_fe'?15:id==='san_lorenzo'?15:17,y:3+i%10},'enemy')}));
  const artillery=(request.artillery??Array.from({length:Math.min(request.cannons??0,3)},()=>({type:'bronze4',side:'player',loaded:true,ammo:6}))).map((gun,i)=>({...clone(gun),...choose({x:3,y:4+i*3},'player')}));
- return {...clone(request),sector:request.sceneId?request.sector:id,name:request.name??names[id],width:WIDTH,height:HEIGHT,tiles,decor:authored.decor,props:authored.props,buildings:authored.buildings,lights:authored.lights,squad,enemies,artillery,mapTitle:names[id]};
+ return {map:{...clone(request),sector:request.sceneId?request.sector:id,name:request.name??names[id],width:WIDTH,height:HEIGHT,tiles,decor:authored.decor,props:authored.props,buildings:authored.buildings,lights:authored.lights,squad,enemies,artillery,mapTitle:names[id]},boundaryRoads:authored.boundaryRoads};
 }
 
 export function buildSectorMap(request={}){
- const core=buildCompactSectorMap(request);
- return request.compactLayout===true?core:expandSectorMap(core);
+ const {map:core,boundaryRoads}=buildCompactSectorMap(request);
+ return request.compactLayout===true?core:expandSectorMap(core,boundaryRoads);
 }
