@@ -15,6 +15,7 @@ export default function JA2Conversation({npc,conversation,quest,reason,canApproa
    <div className="ja2-conversation-choices">{choices.map(([approach,label])=><button key={approach} disabled={Boolean(reason)} onClick={()=>onTalk(approach)}>{label}</button>)}<button ref={close} onClick={onClose}>Listo</button></div>
   </div>
   <p className="ja2-conversation-text" aria-live="polite">«{current?.text??npc.greeting??'Te escucho.'}»</p>
+  {quest?.carried&&<p className="ja2-conversation-text">Ponchos recibidos: {npc.questGifts?.length??0}/{quest.carried.count}.</p>}
   {reason&&<div className="ja2-conversation-reason"><p>{reason}</p>{canApproach&&<button onClick={onApproach}>Acercarse para conversar</button>}</div>}
  </section>;
 }

@@ -6,7 +6,7 @@ export function hasAuthoredDialogue(npc){
 export function dialogueOptions(npc,quest=null){
  if(!hasAuthoredDialogue(npc))return [];
  return [['repeat','Repetir respuesta'],...(npc.mission?[['mission','Conversar sobre la misión']]:[['friendly','Saludar'],['direct',npc.operativeId!==undefined?'Preguntar por sus condiciones':'Preguntar por la localidad']]),
- ...(quest&&quest.status!=='completed'?[['quest',quest.status==='offered'?'Entregar pertrechos':'Consultar encargo']]:[]),
+ ...(quest&&quest.status!=='completed'?[['quest',quest.status==='offered'?(quest.carried?'Confirmar entrega':'Entregar pertrechos'):'Consultar encargo']]:[]),
  ...(npc.operativeId!==undefined?[['recruit','Proponer incorporación']]:[])];
 }
 export function dialogueReason(state,actor,target,{visible=true,busy=false}={}){

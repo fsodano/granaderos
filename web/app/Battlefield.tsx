@@ -99,6 +99,7 @@ export default function Battlefield({battle:s,onChange,onFinish,peacefulVisit=fa
     if(busy||!u)return;
     const actual=(s.npcs??[]).find((n:any)=>n.id===target.id)??renderedUnits.find((n:any)=>n.id===target.id&&n.side==='enemy');
     if(!actual||!canSee(s,u,actual))return;
+    if(['move','useItem'].includes(mode)&&u.activeSlot==='item'&&(s.npcs??[]).some((n:any)=>n.id===actual.id)){order({type:'useItem',targetId:actual.id});return;}
     setSpeech(null);clearGroup();setMode('move');
     if(hasAuthoredDialogue(actual)){setTalking(actual);return;}
     const reason=dialogueReason(s,u,actual,{visible:true,busy});

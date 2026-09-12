@@ -13,3 +13,5 @@ test('replay remains in the special panel after delivery and remains subject to 
  const html=render(h(Conversation,{...base,conversation,quest:{status:'completed'}}));assert.match(html,/>Repetir respuesta</);assert.doesNotMatch(html,/Entregar pertrechos|Consultar encargo/);
  const blocked=render(h(Conversation,{...base,conversation,quest:{status:'completed'},reason:'Acercate.'}));assert.match(blocked,/<button disabled="">Repetir respuesta<\/button>/);
 });
+
+test('carried errands show actual received items and label acknowledgement separately from giving',()=>{const html=render(h(Conversation,{...base,npc:{...base.npc,questGifts:[{outfit:'poncho'}]},quest:{status:'offered',carried:{outfit:'poncho',count:2}}}));assert.match(html,/Ponchos recibidos: 1\/2/);assert.match(html,/>Confirmar entrega</);assert.doesNotMatch(html,/Entregar pertrechos/);});

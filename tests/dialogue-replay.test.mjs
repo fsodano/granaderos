@@ -1,3 +1,4 @@
+import {deliverPonchos} from './npc-gift-helpers.mjs';
 import {secureArea} from './secured-area-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,recruitmentStatus,restoreCampaign,serializeCampaign} from '../game/campaign.js';
@@ -17,9 +18,9 @@ function fullSave(s,b){const pair=syncBattleTime(s,b);assert.equal(pair.error,nu
 function repeatUnchanged(s,b,npcId,text){const n=talk(s,b,npcId,'repeat');assert.equal(n.lastConversation.text,text);assert.equal(n.lastConversation.outcome,'repeated');const omit=c=>{const{conversations,lastConversation,...rest}=c;return rest;};assert.deepEqual(omit(n),omit(s));save(n);return n;}
 
 test('replay uses the last reply from that NPC and never reoffers or repays a quest',()=>{
- let {s,b}=meet();const npc=b.npcs.find(n=>n.id==='local-retiro');s=repeatUnchanged(s,b,npc.id,npc.greeting);assert.equal(s.quests['retiro-uniformes'],undefined);
+ let supplied=officer();for(let i=0;i<2;i++)supplied=order(supplied,{type:'sectorInventory',sector:'retiro',operativeId:1000,direction:'issueOutfit'});let {s,b}=meet('local-retiro','retiro',supplied);const npc=b.npcs.find(n=>n.id==='local-retiro');s=repeatUnchanged(s,b,npc.id,npc.greeting);assert.equal(s.quests['retiro-uniformes'],undefined);
  s=talk(s,b,npc.id,'quest');const offer=s.lastConversation.text;s=repeatUnchanged(s,b,npc.id,offer);assert.equal(s.quests['retiro-uniformes'].status,'offered');
- s=talk(s,b,npc.id,'quest');const delivered=s.lastConversation.text,goods=s.resources.textiles;assert.equal(goods,230);s=repeatUnchanged(s,b,npc.id,delivered);assert.ok(!s.lastConversation.options.includes('quest'));
+ b=deliverPonchos(b);s=talk(s,b,npc.id,'quest');const delivered=s.lastConversation.text,goods=s.resources.textiles;assert.equal(goods,240);s=repeatUnchanged(s,b,npc.id,delivered);assert.ok(!s.lastConversation.options.includes('quest'));
  b=approachNPC(b,'1000','cabral');s=talk(s,b,'cabral','direct');assert.notEqual(s.lastConversation.text,delivered);save(s);({campaign:s,battle:b}=fullSave(s,b));
  b=approachNPC(b,'1000',npc.id);s=repeatUnchanged(s,b,npc.id,delivered);assert.equal(s.resources.textiles,goods);
 });

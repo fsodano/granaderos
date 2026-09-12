@@ -13,7 +13,7 @@ import {inventoryUsage, carriedObject, itemDescriptor, INVENTORY_CAPACITY, SUPPL
 import {TOOL_TYPES, heldTool, ENVIRONMENT_VERBS, environmentTargetSummary, visibleContainerContents} from './environment-interactions.js';
 import {HELD_SUPPLIES, heldSupply} from './held-supplies.js';
 import {planGroupMove} from './group-movement.js';
-import {contextualAttack, fitBayonetPreview, removeBayonetPreview, medicalUsePreview,itemUsePreview,environmentUsePreview,lootApproachPreview,lootSearchPreview,lootBatchPreview,stealPreview,pointFirePreview} from './tactical.js';
+import {npcGiftPreview,contextualAttack, fitBayonetPreview, removeBayonetPreview, medicalUsePreview,itemUsePreview,environmentUsePreview,lootApproachPreview,lootSearchPreview,lootBatchPreview,stealPreview,pointFirePreview} from './tactical.js';
 import {fixedBayonetFor, fittingLabel, weaponItemWeight} from './weapon-fittings.js';
 
 const alive = u => u.hp > 0 && !u.routed && !u.unconscious && !u.departure && !u.fled;
@@ -45,6 +45,7 @@ export function resolvedOrderType(state, unit, action) {
   if (action.environment || unit.activeSlot === 'tool') return 'environment';
   if (unit.activeSlot === 'supply') return 'supply';
   if (unit.activeSlot === 'medical') return 'heal';
+  if (unit.activeSlot === 'item' && state.npcs?.some(npc=>npc.id===action.targetId)) return 'giveItem';
   return contextualAttack(state, unit, state.units.find(target => target.id === action.targetId), action).type;
 }
 // A firing click on an empty held gun performs one reload, never a reload and shot.
@@ -209,6 +210,8 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   const reload = mode === 'fire' ? emptyGunPreview(state, unit) : null;
   if (reload) return reload;
   if (!point) return null;
+  const recipient=state.npcs?.find(n=>n.id===point.id||n.x===point.x&&n.y===point.y);
+  if(recipient&&unit.activeSlot==='item'&&['move','useItem'].includes(mode)){const gift=npcGiftPreview(state,unit,recipient);return {name:recipient.name,actionLabel:gift.label,pa:gift.pa,remaining:unit.ap,valid:gift.valid,reason:gift.reason,coverNote:'Se entrega el objeto que está en la mano. No se usa la reserva del cuartel.'};}
   const occupants = state.units.filter(v => v.x === point.x && v.y === point.y && !v.fled && !v.departure && (v.side === unit.side || state.units.some(p => p.side === unit.side && canSee(state, p, v))));
   const target = occupants.find(v => v.id === point.id) || occupants.find(v => v.hp > 0) || occupants[0];
   if(mode==='fire'&&(!target||target.side===unit.side||target.hp<=0||target.surrendered)){

@@ -1,3 +1,4 @@
+import {validateQuestGifts} from './quests.js';
 import {validatePocketOrder} from './inventory-pockets.js';
 import {validateWeaponReadiness} from './weapon-readiness.js';
 import {validateReloadProgress} from './weapon-reload.js';
@@ -115,6 +116,7 @@ if(s.civilianTurns!==undefined)need(integer(s.civilianTurns,0,1e9),'turnos civil
 if(s.civilianSeconds!==undefined)need(number(s.civilianSeconds,0,6)&&s.civilianSeconds<6,'reloj civil');
 const npcIds=new Set();
 for(const n of s.npcs){
+ for(const gift of validateQuestGifts(n))claimStack(gift);
  need(coord(n)&&text(n.id)&&text(n.name)&&!ids.has(n.id)&&!npcIds.has(n.id),'personajes');npcIds.add(n.id);
  if(n.stance!==undefined)need(['standing','crouched','prone'].includes(n.stance),'postura civil');
  if(n.movementMode!==undefined)need(['walk','run','crouch','prone'].includes(n.movementMode),'movimiento civil');

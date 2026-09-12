@@ -1,3 +1,4 @@
+import {questGiftPlan} from './quests.js';
 import {OUTFIT_CHANGE_AP,normalizeOutfit,wornOutfit,hasPoncho} from './outfits.js';
 import {handsRequired,selectMainHand,handLayout} from './hand-layout.js';
 import {firearmPreparation,lowerWeapon,lowersWeapon,turnLowersWeapon} from './weapon-readiness.js';
@@ -810,6 +811,18 @@ function knownApproachRoute(s,u,inReach){
   return getReachable({...s,units,mode:'exploration'},u,{stopAt:cell=>inReach(cell)&&
     !units.some(other=>other.id!==u.id&&!other.departure&&other.hp>0&&other.x===cell.x&&other.y===cell.y)})[0];
 }
+export function npcGiftPreview(s,u,npc){
+ const actionPa=4,result=(reason=null,route=null)=>({type:'giveItem',label:'Entregar poncho',actionPa,movePa:route?.cost??0,pa:actionPa+(route?.cost??0),destination:route?{x:route.x,y:route.y}:null,path:route?.path??[],valid:!reason,reason});
+ const unavailable=inventoryOrderReason(s,u,actionPa);if(unavailable)return result(unavailable);
+ if(s.mode!=='exploration')return result('Terminá el combate antes de entregar el objeto.');
+ if(!npc||!s.npcs.includes(npc)||npc.departure||npc.fled||npc.routed||(npc.hp??100)<=0||npc.unconscious||!canSee(s,u,npc))return result('El interlocutor debe estar disponible y a la vista.');
+ try{questGiftPlan(u,npc);}catch(error){return result(error.message);}
+ const inReach=cell=>Math.abs(cell.x-npc.x)+Math.abs(cell.y-npc.y)===1&&hasLineOfSight(s,cell,npc);
+ if(inReach(u))return result();
+ if(u.entangled)return result('Primero debés liberarte de las boleadoras.');
+ const route=knownApproachRoute(s,u,inReach);
+ return route?result(null,route):result('No hay una ruta para entregar el objeto.');
+}
 export function itemUsePreview(s,u,target){
   if(!u||!['primary','blade','unarmed','medical'].includes(u.activeSlot??'primary'))return null;
   const type=u.activeSlot==='medical'?'heal':contextualAttack(s,u,target).type;
@@ -859,7 +872,7 @@ export function supplyUsePreview(s,u,target,key=u?.activeSupply){
   return {allowed:!reason,reason,cost};
 }
 
-function apply(s,a,enemy=false,movementPath=null){if(a.type==='useItem'){const user=s.units.find(v=>v.id===String(a.unitId));if(user?.activeSlot==='supply'){const point=s.units.find(v=>v.id===String(a.targetId));a={...a,type:heldSupply(user)?.action??'invalidSupply',...(point?{x:point.x,y:point.y}:{}),targetId:a.targetId??(user.activeSupply==='rations'?'':undefined)};}else if(a.environment)a={...a,...a.environment,type:'environment'};else a={...a,type:user?.activeSlot==='medical'?'heal':user?contextualAttack(s,user,s.units.find(v=>v.id===String(a.targetId)),a).type:'melee'};}const fail=text=>{if(!enemy||u&&journalVisible(s,u)){s.lastError=text;say(s,text);}return false;};const u=s.units.find(u=>u.id===String(a.unitId));if(s.status!=='active')return fail('El combate ya terminó.');if(!u||!alive(u))return fail('El soldado no puede actuar.');if(u.side!==(enemy?'enemy':'player'))return fail('No puedes dar órdenes a ese soldado.');if(!enemy&&!interruptAvailable(s,u))return fail('Ese soldado no puede actuar en esta interrupción.');if(u.knockedDown&&!['stance','heal','ration'].includes(a.type))return fail('El soldado está derribado: debe ponerse de pie.');const observation=reactionObservation(s,u);const target=s.units.find(u=>u.id===String(a.targetId)&&!u.departure);if(a.targetId!==undefined&&!target)return fail('El objetivo no está disponible en este sector.');const pay=n=>{if(!Number.isFinite(n)||n<0||s.mode!=='exploration'&&u.ap<n)return false;if(n>0&&(lowersWeapon(a.type)||a.type==='look'&&u.stance==='prone'))lowerWeapon(u);if(s.mode==='exploration'){if(a.type!=='move')s.actionDurationSeconds=Math.max(1,Math.ceil(n*.06));return true;}u.ap-=n;return true;};
+function apply(s,a,enemy=false,movementPath=null){if(a.type==='useItem'){const user=s.units.find(v=>v.id===String(a.unitId));if(user?.activeSlot==='item'&&s.npcs?.some(n=>n.id===String(a.targetId)))a={...a,type:'giveItem'};else if(user?.activeSlot==='supply'){const point=s.units.find(v=>v.id===String(a.targetId));a={...a,type:heldSupply(user)?.action??'invalidSupply',...(point?{x:point.x,y:point.y}:{}),targetId:a.targetId??(user.activeSupply==='rations'?'':undefined)};}else if(a.environment)a={...a,...a.environment,type:'environment'};else a={...a,type:user?.activeSlot==='medical'?'heal':user?contextualAttack(s,user,s.units.find(v=>v.id===String(a.targetId)),a).type:'melee'};}const fail=text=>{if(!enemy||u&&journalVisible(s,u)){s.lastError=text;say(s,text);}return false;};const u=s.units.find(u=>u.id===String(a.unitId));if(s.status!=='active')return fail('El combate ya terminó.');if(!u||!alive(u))return fail('El soldado no puede actuar.');if(u.side!==(enemy?'enemy':'player'))return fail('No puedes dar órdenes a ese soldado.');if(!enemy&&!interruptAvailable(s,u))return fail('Ese soldado no puede actuar en esta interrupción.');if(u.knockedDown&&!['stance','heal','ration'].includes(a.type))return fail('El soldado está derribado: debe ponerse de pie.');const observation=reactionObservation(s,u);const target=a.type==='giveItem'?s.npcs?.find(n=>n.id===String(a.targetId)):s.units.find(u=>u.id===String(a.targetId)&&!u.departure);if(a.targetId!==undefined&&!target)return fail('El objetivo no está disponible en este sector.');const pay=n=>{if(!Number.isFinite(n)||n<0||s.mode!=='exploration'&&u.ap<n)return false;if(n>0&&(lowersWeapon(a.type)||a.type==='look'&&u.stance==='prone'))lowerWeapon(u);if(s.mode==='exploration'){if(a.type!=='move')s.actionDurationSeconds=Math.max(1,Math.ceil(n*.06));return true;}u.ap-=n;return true;};
 if(a.type==='move'){
   if(u.entangled)return fail('Las boleadoras inmovilizan al soldado: debe liberarse.');
   let postureCost=0;
@@ -1052,6 +1065,11 @@ else if(a.type==='steal'){
   }else sayObserved(s,[u,target],`${u.name} no logra quitar el arma a ${target.name}.`);
   u.facing=directionTo(u,target);u.momentum=0;u.braced=false;u.overwatch=false;delete u.lastTargetId;delete u.lastShotPosition;
   exhaust(s,u,8);emitNoise(s,{...u,activeSlot:'unarmed'},'melee');
+}
+else if(a.type==='giveItem'){
+ const preview=npcGiftPreview(s,u,target);if(!preview.valid||preview.path.length)return fail(preview.reason??'Acercate al interlocutor para entregar el objeto.');
+ const plan=questGiftPlan(u,target);pay(preview.actionPa);plan.unit.ap=u.ap;replaceUnit(u,plan.unit);target.questGifts=plan.gifts;lowerWeapon(u);
+ sayObserved(s,[u],`${u.name} entrega un poncho a ${target.name}. Recibidos: ${plan.gifts.length}/2.`);
 }
 else if(a.type==='equipLoot'){
   const preview=equipLootPreview(s,u,a.inventoryKey,a.slot??'primary');if(!preview.valid)return fail(preview.reason);
@@ -1288,6 +1306,8 @@ function actBattleInput(state,action){
 function contextualUsePlan(state,unit,action){
   if(action.type==='loot')return lootApproachPreview(state,unit,action);
   if(action.environment)return environmentUsePreview(state,unit,action.environment,action.environment.verb);
+  const npc=state.npcs?.find(n=>n.id===String(action.targetId));
+  if(npc&&unit.activeSlot==='item')return npcGiftPreview(state,unit,npc);
   return action.targetId!==undefined?itemUsePreview(state,unit,state.units.find(u=>u.id===String(action.targetId))):null;
 }
 export function approachCompleted(state,moved,unitId,plan){
