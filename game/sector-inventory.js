@@ -1,3 +1,4 @@
+import {atHand,planningPoint} from './tactical-planning-space.js';
 import {makeOutfit,wornOutfit} from './outfits.js';
 import {handsRequired,handLayout} from './hand-layout.js';
 import {SUPPLY_ITEMS,itemQuantity,itemDescriptor,extractItemQuantity,applyItemQuantity,inventoryUsage,planPocketMove,equipmentEndpoint} from './tactical-inventory.js';
@@ -21,13 +22,13 @@ function stackLabel(stack){
 function poolSources(snapshot){
  if(!snapshot)return [];
  const rows=[];
- const add=(key,source,stack,extra={})=>{if(stack.count>0)rows.push({key,source,stack,label:stackLabel(stack),x:source.x,y:source.y,...extra});};
+ const add=(key,source,stack,extra={})=>{if(stack.count>0)rows.push({key,source,stack,label:stackLabel(stack),...planningPoint(source),...extra});};
  for(const g of snapshot.groundItems??[])if(['item','boleadoras'].includes(g.type)&&g.knownToPlayer&&!g.heldBy&&g.count>0){
-  const {id,type,x,y,heldBy,knownToPlayer,...data}=g;
+  const {id,type,x,y,tacticalLevel,heldBy,knownToPlayer,...data}=g;
   add(`ground:${g.id}`,g,g.type==='boleadoras'?{item:'boleadoras',count:g.count,weight:.8}:data,{kind:'ground'});
  }
  for(const [index,d] of (snapshot.droppedWeapons??[]).entries())if(d.knownToPlayer&&!d.taken){
-  const {x,y,taken,knownToPlayer,...data}=d;add(`drop:${index}`,d,{...data,item:'weapon',count:1,weight:d.weight??weaponItemWeight(d.weapon)},{kind:'drop'});
+  const {x,y,tacticalLevel,taken,knownToPlayer,...data}=d;add(`drop:${index}`,d,{...data,item:'weapon',count:1,weight:d.weight??weaponItemWeight(d.weapon)},{kind:'drop'});
  }
  for(const body of snapshot.units??[])if(body.knownToPlayer&&body.hp<=0&&!body.departure&&!body.fled){
   const disposition=snapshot.returnLedger?.entries?.find(e=>e.unitId===body.id),owner=snapshot.sectorId==='san_lorenzo'?'san_nicolas':snapshot.sectorId;
@@ -42,7 +43,7 @@ function poolSources(snapshot){
 }
 // Strategic read surfaces expose discovered rows, never full sector snapshots.
 export function knownSectorEquipment(snapshot){
- return poolSources(snapshot).map(row=>({key:row.key,label:row.label,count:row.stack.count,x:row.x,y:row.y,kind:row.kind,
+ return poolSources(snapshot).map(row=>({key:row.key,label:row.label,count:row.stack.count,...planningPoint(row),kind:row.kind,
   ...(row.stack.condition!==undefined?{condition:row.stack.condition}:{}),...(row.stack.loaded!==undefined?{loaded:row.stack.loaded,jammed:row.stack.jammed??false}:{})}));
 }
 function inventorySite(s,id){
@@ -62,12 +63,12 @@ function actorAt(s,sectorId,op){
  const r=s.operativeState[op.id],snapshot=inventorySite(s,sectorId).snapshot;
  const old=snapshot?.units.find(u=>u.id===String(op.id)&&!u.departure&&u.hp>0);
  const unit=carriedActor(s,op);
- if(old&&r.residentSector===snapshot.sectorId&&(r.residentScene??null)===(snapshot.sceneId??null))return {...unit,x:old.x,y:old.y};
+ if(old&&r.residentSector===snapshot.sectorId&&(r.residentScene??null)===(snapshot.sceneId??null))return {...unit,...planningPoint(old,Boolean(snapshot.upperSurfaces?.length))};
  const edge=r.arrival?.entryEdge??'S';
  const candidates=(snapshot?.tiles??[]).filter(t=>boundaryMatches(snapshot,t,edge)&&!t.blocked&&!propBlocksAt(snapshot,t.x,t.y));
  const anchor=r.arrival?.entryAnchor??{x:.5,y:.5};
  candidates.sort((a,b)=>Math.hypot(a.x/(snapshot.width-1)-anchor.x,a.y/(snapshot.height-1)-anchor.y)-Math.hypot(b.x/(snapshot.width-1)-anchor.x,b.y/(snapshot.height-1)-anchor.y)||a.y-b.y||a.x-b.x);
- return candidates[0]?{...unit,x:candidates[0].x,y:candidates[0].y}:null;
+ return candidates[0]?{...unit,...planningPoint(candidates[0],Boolean(snapshot.upperSurfaces?.length)||unit.tacticalLevel!==undefined)}:null;
 }
 function unavailable(s,siteId,terrain=true){
  const {sectorId,snapshot}=inventorySite(s,siteId);
@@ -88,8 +89,8 @@ export function sectorInventoryModel(s,sectorId,roster,operativeId){
  const reach=!reason?getReachable(view,actor):[];
  const entries=poolSources(snapshot).map(row=>{
   const cells=row.kind==='container'?propCells(row.source):[row.source];
-  const reachable=!reason&&reach.some(p=>cells.some(c=>Math.hypot(p.x-c.x,p.y-c.y)<=1.5&&hasLineOfSight(view,p,c)));
-  return {key:row.key,label:row.label,count:row.stack.count,x:row.x,y:row.y,kind:row.kind,expected:JSON.stringify(row.stack),condition:row.stack.condition,loaded:row.stack.loaded,jammed:row.stack.jammed,fittingPattern:row.stack.fittingPattern,reachable,reason:reason??(!reachable?'No hay un camino abierto hasta este equipo.':null)};
+  const reachable=!reason&&reach.some(p=>cells.some(c=>atHand(p,c)&&hasLineOfSight(view,p,c)));
+  return {key:row.key,label:row.label,count:row.stack.count,...planningPoint(row),kind:row.kind,expected:JSON.stringify(row.stack),condition:row.stack.condition,loaded:row.stack.loaded,jammed:row.stack.jammed,fittingPattern:row.stack.fittingPattern,reachable,reason:reason??(!reachable?'No hay un camino abierto hasta este equipo.':null)};
  });
  const personal=op?carriedActor(s,op):null;
  const carried=personal?[...Object.keys(SUPPLY_ITEMS),...(!personal.weaponDropped&&personal.weapon?['primary']:[]),...(personal.blade?['blade']:[]),...(personal.offHand?['offhand']:[]),...(wornOutfit(personal)?['outfit']:[]),...Object.keys(personal.inventory??{}).map(key=>`inventory:${key}`)].filter(item=>itemQuantity(personal,item)>0).map(item=>{
@@ -161,7 +162,7 @@ export function moveSectorItem(s,action,roster){
   const extraction=extractItemQuantity(actor,action.item,count);next=extraction.unit;stack=extraction.stack;
   need(snapshot.groundItems.length<10000,'No queda espacio para más objetos en el sector.');
   let index=snapshot.groundItems.length,id;do{id=`sector-item-${index++}`;}while(snapshot.groundItems.some(item=>item.id===id));
-  snapshot.groundItems.push({...copy(stack),id,type:'item',x:actor.x,y:actor.y,knownToPlayer:true});
+  snapshot.groundItems.push({...copy(stack),id,type:'item',...planningPoint(actor),knownToPlayer:true});
  }
  const record=s.operativeState[op.id];returnEquipment(s,op.id,next);
  for(const key of fields)if(next[key]!==undefined)record[key]=copy(next[key]);

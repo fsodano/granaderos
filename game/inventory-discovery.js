@@ -1,3 +1,4 @@
+import {atHand} from './tactical-planning-space.js';
 import {canSee} from './tactical.js';
 import {isInteriorVisible} from './tactical-visibility.js';
 import {propCells} from './props.js';
@@ -7,7 +8,7 @@ import {propCells} from './props.js';
 export function discoverInventory(state){
  const observers=state.units.filter(u=>u.side==='player'&&u.hp>0&&!u.unconscious&&!u.departure&&!u.routed&&!u.surrendered);
  const rooms=new Set(state.revealedRooms??[]);
- const seen=(point,near=false)=>isInteriorVisible(state,point,rooms)&&observers.some(u=>canSee(state,u,point)&&(!near||Math.hypot(u.x-point.x,u.y-point.y)<=1.5));
+ const seen=(point,near=false)=>isInteriorVisible(state,point,rooms)&&observers.some(u=>canSee(state,u,point)&&(!near||atHand(u,point)));
  for(const item of state.groundItems??[])if(item.count>0&&!item.heldBy&&seen(item))item.knownToPlayer=true;
  for(const item of state.droppedWeapons??[])if(!item.taken&&seen(item))item.knownToPlayer=true;
  for(const unit of state.units)if(unit.hp<=0&&!unit.departure&&seen(unit,true))unit.knownToPlayer=true;

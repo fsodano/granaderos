@@ -1,9 +1,10 @@
+import {atHand,moveOrder,planningPoint} from './tactical-planning-space.js';
 import {canSee,hasLineOfSight,weaponFor,transferPreview,actionCosts} from './tactical.js';
 
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const available=u=>u.hp>0&&!u.unconscious&&!u.departure&&!u.fled&&!u.routed&&!u.surrendered;
 const present=u=>u.hp>0&&!u.departure&&!u.fled&&!u.routed&&!u.surrendered;
-const observed=(state,u,other)=>distance(u,other)<=1.5&&hasLineOfSight(state,u,other)||canSee(state,u,other);
+const observed=(state,u,other)=>atHand(u,other)&&hasLineOfSight(state,u,other)||canSee(state,u,other);
 const compareId=(a,b)=>String(a.id)<String(b.id)?-1:String(a.id)>String(b.id)?1:0;
 
 // Donors act with their own AP and finite pack. No remote requests or supply
@@ -27,7 +28,7 @@ export function chooseSupplySharingAction(state,unit,targets,paths){
       // must not consume a rescue opportunity for a medic who cannot act.
       // Do not inspect unseen casualties for demand.
       const patients=state.units.filter(p=>p.side===unit.side&&present(p)&&p.bleeding>0&&
-        distance(ally,p)<=1.5&&hasLineOfSight(state,ally,p)&&(p.id===unit.id||observed(state,unit,p)));
+        atHand(ally,p)&&hasLineOfSight(state,ally,p)&&(p.id===unit.id||observed(state,unit,p)));
       const treatment=actionCosts(state,{...ally,activeSlot:'medical',medkits:1});
       const prepare=ally.activeSlot==='medical'?0:treatment.weapon;
       if(patients.length&&ally.ap>=prepare+treatment.heal)needs.push({ally,item:'medkits',count:1,priority:0});
@@ -49,16 +50,16 @@ export function chooseSupplySharingAction(state,unit,targets,paths){
     cell.path.every(point=>!targets.some(other=>distance(point,other)<=2.5)&&exposure(point)<=currentExposure));
   const choices=[];
   for(const need of needs){
-    const local=distance(unit,need.ally)<=1.5&&hasLineOfSight(state,unit,need.ally);
+    const local=atHand(unit,need.ally)&&hasLineOfSight(state,unit,need.ally);
     if(!local&&!canApproach)continue;
-    const route=local?{x:unit.x,y:unit.y,cost:0}:safeApproaches().filter(cell=>distance(cell,need.ally)<=1.5&&hasLineOfSight(state,cell,need.ally))
+    const route=local?{...planningPoint(unit),cost:0}:safeApproaches().filter(cell=>atHand(cell,need.ally)&&hasLineOfSight(state,cell,need.ally))
       .sort((a,b)=>a.cost-b.cost||a.y-b.y||a.x-b.x)[0];
     if(!route)continue;
     for(let count=need.count;count>0;count--){
-      const preview=transferPreview(state,{...unit,x:route.x,y:route.y,ap:unit.ap-route.cost},need.ally,need.item,count);
+      const preview=transferPreview(state,{...unit,...planningPoint(route,Boolean(state.upperSurfaces?.length)),ap:unit.ap-route.cost},need.ally,need.item,count);
       if(!preview.valid||preview.kind!=='give')continue;
       choices.push({...need,count,route,action:local?{type:'transfer',unitId:unit.id,targetId:need.ally.id,item:need.item,count}:
-        {type:'move',unitId:unit.id,x:route.x,y:route.y}});
+        moveOrder(state,unit,route)});
       break;
     }
   }

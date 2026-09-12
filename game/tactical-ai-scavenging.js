@@ -1,3 +1,4 @@
+import {atHand,moveOrder,planningPoint} from './tactical-planning-space.js';
 import {canSee,hasLineOfSight,weaponFor,hasFirearm,actionCosts,planLoot,planEquipLoot} from './tactical.js';
 
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
@@ -27,7 +28,7 @@ export function chooseScavengingAction(state,unit,targets,paths){
   // Body contents are known only at search distance, just as in the player picker.
   // Do not take an injured ally's gear or infer distant/hidden pack contents.
   for(const body of state.units){
-    if(body.id===unit.id||body.departure||body.fled||body.hp>0&&(body.side===unit.side||!body.unconscious&&!body.surrendered)||distance(unit,body)>1.5||!canSee(state,unit,body))continue;
+    if(body.id===unit.id||body.departure||body.fled||body.hp>0&&(body.side===unit.side||!body.unconscious&&!body.surrendered)||!atHand(unit,body)||!canSee(state,unit,body))continue;
     if(needAmmo&&body.ammo>0)sources.push({point:body,action:{targetId:body.id,item:'ammo'},count:Math.min(12,body.ammo),ammo:true});
     if(!body.weaponDropped&&usable({...body,activeSlot:'primary'}))sources.push({point:body,action:{targetId:body.id,item:'primary'},count:1});
   }
@@ -41,14 +42,14 @@ export function chooseScavengingAction(state,unit,targets,paths){
   const safeApproaches=()=>approaches??=paths().filter(cell=>cell.cost>0&&cell.cost<=24&&cell.path.length<=3&&cell.cost+costs.loot<=unit.ap&&cell.path.every(point=>!targets.some(other=>distance(point,other)<=2.5)&&exposure(point)<=currentExposure));
   const choices=[];
   for(const source of sources){
-    const local=distance(unit,source.point)<=1.5&&hasLineOfSight(state,unit,source.point);
+    const local=atHand(unit,source.point)&&hasLineOfSight(state,unit,source.point);
     if(!local&&reacting)continue;
-    const route=local?{x:unit.x,y:unit.y,cost:0}:safeApproaches().filter(cell=>distance(cell,source.point)<=1.5&&hasLineOfSight(state,cell,source.point)).sort((a,b)=>a.cost-b.cost||a.y-b.y||a.x-b.x)[0];
+    const route=local?{...planningPoint(unit),cost:0}:safeApproaches().filter(cell=>atHand(cell,source.point)&&hasLineOfSight(state,cell,source.point)).sort((a,b)=>a.cost-b.cost||a.y-b.y||a.x-b.x)[0];
     if(!route)continue;
     for(let count=source.count;count>0;count--){
       const action={type:'loot',unitId:unit.id,...source.action,count};
       try{
-        const {receiver}=planLoot(state,{...unit,x:route.x,y:route.y},action);
+        const {receiver}=planLoot(state,{...unit,...planningPoint(route,Boolean(state.upperSurfaces?.length))},action);
         let value=30+count*2;
         if(!source.ammo){
           if(route.cost+costs.loot+costs.equipLoot>unit.ap)break;
@@ -58,7 +59,7 @@ export function chooseScavengingAction(state,unit,targets,paths){
           if(!usable(equipped))break;
           value=50+weaponFor(equipped).damage*.3;
         }
-        choices.push({action:local?action:{type:'move',unitId:unit.id,x:route.x,y:route.y},score:value-route.cost,rank:JSON.stringify(source.action)});
+        choices.push({action:local?action:moveOrder(state,unit,route),score:value-route.cost,rank:JSON.stringify(source.action)});
         break;
       }catch{/* Try a smaller legal ammunition quantity; never discard gear to fit it. */}
     }

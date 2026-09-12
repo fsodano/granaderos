@@ -1,10 +1,11 @@
+import {sameCell} from './tactical-space.js';
+import {atHand,moveOrder,planningPoint} from './tactical-planning-space.js';
 import {actBattle, canEndCombat, CRITICAL_HEALTH, getReachable, hasLineOfSight} from './tactical.js';
 
 const present = unit => unit.side === 'player' && unit.hp > 0 && !unit.routed && !unit.fled && !unit.departure && !unit.surrendered;
 const needsBandage = unit => present(unit) && (unit.bleeding > 0 || (unit.bandaged ?? 0) < unit.maxHp - unit.hp);
 const conscious = unit => present(unit) && unit.hp >= CRITICAL_HEALTH && !unit.unconscious && (unit.energy ?? 100) > 0;
 const doctorReady = unit => !unit.militia && conscious(unit) && unit.medical > 0 && (!unit.knockedDown || unit.activeSlot === 'medical');
-const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 const summary = unit => ({id: unit.id, name: unit.nickname || unit.name, hp: unit.hp, bleeding: unit.bleeding ?? 0, medkits: unit.medkits ?? 0});
 const DANGER = 'Vendaje detenido: hay contacto o señales recientes del enemigo.';
 
@@ -31,10 +32,14 @@ function plansFor(state) {
   const doctors = state.units.filter(unit => doctorReady(unit) && unit.medkits > 0);
   const plans = [];
   for (const doctor of doctors) {
-    const reachable = doctor.knockedDown || doctor.entangled ? [{x: doctor.x, y: doctor.y, cost: 0, path: []}] : getReachable(state, doctor);
+    const reachable = doctor.knockedDown || doctor.entangled ? [{...planningPoint(doctor), cost: 0, path: []}] : getReachable(state, doctor);
     for (const patient of patients) {
-      const destination = reachable.filter(point => distance(point, patient) <= 1.5 && hasLineOfSight(state, point, patient)).sort((a, b) => a.cost - b.cost || a.path.length - b.path.length)[0];
-      if (destination) plans.push({doctor, patient, destination});
+      let destination = reachable.filter(point => atHand(point,patient) && hasLineOfSight(state, point, patient)).sort((a, b) => a.cost - b.cost || a.path.length - b.path.length)[0],stand=false;
+      if(!destination&&state.climbLinks?.length&&doctor.stance!=='standing'&&!doctor.knockedDown&&!doctor.entangled&&!doctor.mounted){
+        const upright={...doctor,stance:'standing',movementMode:'walk'};
+        destination=getReachable(state,upright).filter(point=>atHand(point,patient)&&hasLineOfSight(state,point,patient)&&point.path.some(step=>step.kind==='climb')).sort((a,b)=>a.cost-b.cost||a.path.length-b.path.length)[0];stand=Boolean(destination);
+      }
+      if (destination) plans.push({doctor, patient, destination,stand});
     }
   }
   // Stabilize a bleeding medic before sending them across the sector.
@@ -57,23 +62,23 @@ export function autoBandageBattle(state) {
       battle = actBattle(battle, action); steps.push(action);
       if (battle.lastError) stoppedReason = battle.lastError;
     }
-    // Each original casualty needs at most one approach, one equip and one treatment.
-    const limit = initialPatients.length * 3 + 1;
+    // Each casualty needs at most a paid stand, one approach, one equip and one treatment.
+    const limit = initialPatients.length * 4 + 1;
     while (!stoppedReason && battle.units.some(needsBandage)) {
       const danger = admissionReason(battle);
       if (danger) { stoppedReason = danger; break; }
       if (steps.length >= limit) { stoppedReason = 'Vendaje detenido: no se pudo completar una orden.'; break; }
       const plan = plansFor(battle)[0];
       if (!plan) { stoppedReason = autoBandageStatus(battle).reason || 'No hay un camino abierto hasta los heridos pendientes.'; break; }
-      const {doctor, patient, destination} = plan;
-      const action = doctor.activeSlot !== 'medical' ? {type: 'weapon', unitId: doctor.id, slot: 'medical'} : destination.path.length ? {type: 'move', unitId: doctor.id, x: destination.x, y: destination.y} : {type: 'useItem', unitId: doctor.id, targetId: patient.id};
+      const {doctor, patient, destination,stand} = plan;
+      const action = stand ? {type:'stance',unitId:doctor.id,stance:'standing'} : doctor.activeSlot !== 'medical' ? {type: 'weapon', unitId: doctor.id, slot: 'medical'} : destination.path.length ? moveOrder(battle,doctor,destination) : {type: 'useItem', unitId: doctor.id, targetId: patient.id};
       const next = actBattle(battle, action);
       steps.push(action);
       battle = next;
       if (next.lastError) { stoppedReason = next.lastError; break; }
       const actor = next.units.find(unit => unit.id === doctor.id);
       const casualty = next.units.find(unit => unit.id === patient.id);
-      const progressed = action.type === 'weapon' ? actor.activeSlot === 'medical' : action.type === 'move' ? distance(actor, doctor) > 0 : actor.medkits < doctor.medkits && !needsBandage(casualty);
+      const progressed = action.type === 'stance' ? actor.stance==='standing' : action.type === 'weapon' ? actor.activeSlot === 'medical' : action.type === 'move' ? !sameCell(actor,doctor) : actor.medkits < doctor.medkits && !needsBandage(casualty);
       if (action.type === 'useItem' && progressed && !treatedIds.includes(patient.id)) treatedIds.push(patient.id);
       if (next.mode !== 'exploration' || next.phase !== 'player') { stoppedReason = DANGER; break; }
       if (!conscious(actor)) { stoppedReason = 'Vendaje detenido: el sanitario quedó sin fuerzas o fuera de combate.'; break; }
