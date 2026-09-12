@@ -1,6 +1,6 @@
 import {chooseScavengingAction} from './tactical-ai-scavenging.js';
 import {directionTo,facingAllowsSight,turnAPCost} from './tactical-awareness.js';
-import {getReachable, canSee, hasLineOfSight, shotChance, firearmShotOptions, actionCosts, weaponFor, bladeFor, planEquipLoot} from './tactical.js';
+import {getReachable, canSee, hasLineOfSight, shotChance, firearmShotOptions, actionCosts, stanceCost, weaponFor, bladeFor, planEquipLoot} from './tactical.js';
 import {planFitBayonet} from './tactical-inventory.js';
 import {shotLocationEffects} from './targeted-combat.js';
 
@@ -53,7 +53,16 @@ function bestShot(state, unit, targets, budget = unit.ap) {
 function maintenance(state, unit, costs) {
   if (weaponFor(unit).capacity <= 0) return null;
   if (unit.jammed) return unit.priming > 0 && unit.ap >= costs.reprime ? {type: 'reprime', unitId: unit.id} : null;
-  if (unit.loaded === 0 && unit.ammo > 0 && costs.reload > 0 && unit.ap >= costs.reload) return {type: 'reload', unitId: unit.id};
+  if (unit.loaded === 0 && unit.ammo > 0 && costs.reload > 0) {
+    if (unit.ap >= costs.reload) return {type: 'reload', unitId: unit.id};
+    // Muzzle-loading while prone can exceed a soldier's entire turn budget.
+    // Pay for kneeling only when the complete reload then fits this turn.
+    if (unit.stance === 'prone') {
+      const kneeling = {...unit, stance: 'crouched'};
+      if (unit.ap >= stanceCost(unit, 'crouched') + actionCosts(state, kneeling).reload)
+        return {type: 'stance', unitId: unit.id, stance: 'crouched'};
+    }
+  }
   return null;
 }
 

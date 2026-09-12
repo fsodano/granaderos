@@ -4,6 +4,7 @@ import {initialCampaign,dispatchCampaign as dispatch,rosterFor} from '../game/ca
 import {enterSector} from '../game/world.js';
 import {actBattle,endTurn,getReachable,hasLineOfSight,canSee,shotChance,actionCosts,interruptAvailable,stanceCost} from '../game/tactical.js';
 import {chooseEnemyAction} from '../game/tactical-ai.js';
+import {handRecord} from '../game/tactical-inventory.js';
 import {autoBandageBattle} from '../game/auto-bandage.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
@@ -141,6 +142,31 @@ test('legal authored-map opening campaign wins San Nicolás then San Lorenzo',()
     if(!c.recruited.includes(id))order({type:'recruitCivic',id,term:'week'});
    }
    assert.equal(c.squad.length,6,'paid replacements restore the combat squad');
+   // The replacement squad has short cavalry weapons. Recover the fallen
+   // infantry's finite rifles, keeping each replaced gun in its owner's pack.
+   order({type:'visitSector'});
+   let salvage=enterSector(c.pendingBattle,c.sectorStates[c.location]);
+   for(const [receiverId,sourceId] of [[131,123],[137,110],[113,114]]){
+    let receiver=salvage.units.find(u=>u.id===String(receiverId)),source=salvage.units.find(u=>u.id===String(sourceId));
+    assert.ok(receiver&&source?.hp===0,'the replacement and fallen rifleman are present');
+    const incoming=handRecord(source,'primary'),outgoing=handRecord(receiver,'primary');
+    const approach=getReachable(salvage,receiver).filter(p=>distance(p,source)<=1.5&&hasLineOfSight(salvage,p,source)).sort((a,b)=>a.cost-b.cost)[0];
+    assert.ok(approach,'the replacement can reach the fallen rifleman');
+    if(approach.cost)salvage=tacticalOrder(salvage,{type:'move',unitId:receiver.id,x:approach.x,y:approach.y});
+    salvage=tacticalOrder(salvage,{type:'loot',unitId:receiver.id,targetId:source.id,item:'primary',count:1});
+    receiver=salvage.units.find(u=>u.id===String(receiverId));
+    const entries=Object.entries(receiver.inventory).filter(([key,item])=>item.weapon===source.weapon);
+    assert.equal(entries.length,1,'the recovered firearm has one inventory record');
+    const entry=entries[0];assert.equal(entry[1].count,1,'only one firearm was recovered');
+    salvage=tacticalOrder(salvage,{type:'equipLoot',unitId:receiver.id,inventoryKey:entry[0]});
+    const equipped=salvage.units.find(u=>u.id===receiver.id),looted=salvage.units.find(u=>u.id===source.id);
+    assert.deepEqual(handRecord(equipped,'primary'),incoming,'the recovered rifle retains its load, condition and identity');
+    assert.deepEqual(Object.values(equipped.inventory).find(item=>item.weapon===outgoing.weapon),outgoing,'the original gun and loaded round remain in the pack');
+    assert.equal(looted.weaponDropped,true);assert.equal(looted.loaded,0);assert.equal(looted.ammo,source.ammo);
+   }
+   order({type:'leaveSector',battleId:c.pendingBattle.id,survivors:salvage.units.filter(u=>u.side==='player'),sectorState:salvage});
+   const saved=decodeSave(encodeSave(c,null));assert.deepEqual(saved.campaign,c,'salvaged equipment and stripped bodies survive a campaign save');c=saved.campaign;
+
   }
   order({type:'attack',sector});const request=c.pendingBattle;
   let {battle:b,actions}=fight(request);

@@ -20,11 +20,19 @@ Pack selection uses the same pure equipment-transfer plan as the player preview 
 
 Enemy equipment previews now recognize the enemy action window. This also fixes a previous mismatch where the AI could select an owned bayonet but the inventory guard refused the actual fitting order. The public tactical reducer still rejects player commands addressed to an enemy. Fitting, swapping and firing during enemy reactions use the same finite AP and saved continuation as other actions.
 
+## Reload posture
+
+An empty prone gun can require more AP to load than its owner can obtain in one turn. Maintenance now compares the ordinary prone reload with the cost of kneeling plus a crouched reload. If prone loading is affordable, the soldier stays prone. Otherwise, it pays to kneel only when the entire following reload fits the current AP budget. Each action is still submitted separately and checked again against current state. There is no free posture change, stored work credit or fabricated ammunition.
+
+Prepared spare weapons retain their existing priority. Ignition failure still requires priming, and an empty reserve cannot trigger this posture change. Three additional tests cover actual enemy-turn posture/loading costs, exact budget boundaries, retained prone posture, ammunition and priming, unavailable supplies, and saved replay. For a Baker with 73 AP, the enemy pays three AP to kneel and 70 AP to load one of its two reserve cartridges. With 105 AP, it can pay the full prone reload instead.
+
 ## Evidence and remaining work
 
+The isolated gameplay checkout passes all 1,215 tests, type checking and the production build.
+
 - Nine care tests cover real paid enemy treatment, finite dressings, critical patients, urgency, invalid patients, rescue paths, visibility, saved movement interruptions and the command boundary.
-- Nine equipment tests cover real swap/fire, disarmed recovery, full packs, unsupported equipment, deterministic choice, hand selection, failed ignition, actual bayonet fitting and a nested saved reaction after unpacking and firing.
-- The seed-8 opening campaign passes with actual orders: San Nicolás in 11 turns/131 orders and San Lorenzo in seven turns/97 orders. Dead IDs 123 and 107 in the first battle and 110 and 115 in the second remain dead. Care, replacement contracts, recovered supplies and reserves use existing campaign actions. The test driver now excludes jammed weapons from fire and reload orders; the production rules are unchanged by that correction.
+- Twelve equipment tests cover real swap/fire, disarmed recovery, full packs, unsupported equipment, deterministic choice, hand selection, failed ignition, actual bayonet fitting and a nested saved reaction after unpacking and firing.
+- The current seed-8 opening passes the separate weapon/sight-range rules: San Nicolás in 19 turns/142 orders and San Lorenzo in 16 turns/144 orders. Nine deaths remain permanent. The replacement squad returns to the cleared field, approaches three fallen riflemen, takes their finite primary weapons, and retains its old loaded guns in the pack. Saved campaign state preserves the recovered rifles and stripped bodies. No victory report is submitted until the tactical battle actually reports victory. See [range and opening verification](shot-range.md).
 - [Browser verification](ja2-live-verification.md) records a controlled enemy aid/spare-weapon encounter and a restored save. Enemy private equipment and supply counts remain model-test evidence.
 
 Exhausted soldiers can now recover visible ammunition and loaded ground weapons through paid actions; see [AI scavenging](ai-scavenging.md) for search, capacity and saved-reaction evidence. Medical transport, longer coordinated rescue, cross-soldier supply requests, wider cache searches, enemy-initiated weapon theft, general tool choice and a complete loadout optimizer remain absent. Exposure still estimates incoming torso chance. This increment does not implement autonomous tactical militia or complete the full campaign/parity audit.

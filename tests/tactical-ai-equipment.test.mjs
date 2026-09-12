@@ -74,3 +74,31 @@ test('a weapon swap and shot during an enemy reaction survive a nested saved pla
   assert.deepEqual(n,endTurn(paused));assert.equal(n.elapsedSeconds,6);assert.equal(n.turn,1);assert.equal(n.phase,'player');assert.equal(enemy(n).ap,2);assert.equal(enemy(n).weaponInstanceId,'reserve-pistol');assert.equal(enemy(n).loaded,0);
   assert.equal(n.log.filter(line=>line.includes('equipa Pistola')).length,1);assert.doesNotThrow(()=>validateBattleSnapshot(n));
 });
+
+
+test('a prone rifleman pays to kneel and reload when prone loading exceeds the turn budget',()=>{
+  const s=field({weapon:1802,loaded:0,ammo:2,priming:10,stance:'prone',movementMode:'prone',ap:73,inventory:{}}),before=structuredClone(s);
+  assert.equal(actionCosts(s,enemy(s)).reload,105);
+  assert.deepEqual(chooseEnemyAction(s,enemy(s)),{type:'stance',unitId:'e',stance:'crouched'});
+  assert.deepEqual(s,before);
+  const n=endTurn(s);assert.equal(n.lastError,null);assert.equal(enemy(n).stance,'crouched');assert.equal(enemy(n).movementMode,'crouch');
+  assert.equal(enemy(n).loaded,1);assert.equal(enemy(n).ammo,1);assert.equal(enemy(n).priming,9);assert.equal(enemy(n).ap,0);
+  assert.equal(n.elapsedSeconds,6);
+  assert.deepEqual(n,endTurn(validateBattleSnapshot(JSON.parse(JSON.stringify(before)))));assert.doesNotThrow(()=>validateBattleSnapshot(n));
+});
+
+test('rifle maintenance retains prone cover when loading already fits and never spends unavailable stance AP',()=>{
+  const ready=field({weapon:1802,loaded:0,ammo:2,priming:10,stance:'prone',movementMode:'prone',ap:105,inventory:{}});
+  assert.deepEqual(chooseEnemyAction(ready,enemy(ready)),{type:'reload',unitId:'e'});
+  const n=endTurn(ready);assert.equal(enemy(n).stance,'prone');assert.equal(enemy(n).loaded,1);assert.equal(enemy(n).ammo,1);assert.equal(enemy(n).ap,0);
+  const short=field({weapon:1802,loaded:0,ammo:2,priming:10,stance:'prone',movementMode:'prone',ap:72,inventory:{}});
+  assert.notEqual(chooseEnemyAction(short,enemy(short))?.type,'stance');
+});
+
+test('posture recovery does not bypass ignition maintenance or invent cartridges',()=>{
+  for(const patch of [{ammo:0},{jammed:true,priming:0},{jammed:true,priming:10}]){
+    const s=field({weapon:1802,loaded:0,ammo:2,priming:10,stance:'prone',movementMode:'prone',ap:73,inventory:{},...patch});
+    const order=chooseEnemyAction(s,enemy(s));assert.notEqual(order?.type,'stance');
+    if(patch.jammed&&patch.priming)assert.equal(order?.type,'reprime');
+  }
+});
