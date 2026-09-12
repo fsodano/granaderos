@@ -17,6 +17,6 @@ Campaign battle opening now publishes a synchronized campaign/battle pair. An en
 
 ## Remaining work
 
-Starting ordinary hostile assaults in exploration is not enabled by this commit. The draft passes its contact and save tests, but changes casualties, supplies and later recovery in the full northern campaign playthrough. That route must be updated through legal player orders and verified before the entry change is integrated. The current attack-request behavior still starts in combat even before sight establishes contact.
+The subsequent [hostile-sector entry change](hostile-sector-entry.md) enables exploration-first assaults and verifies the revised northern campaign route. The route follows the actual survivors and equipment; its earlier casualty and recovery counts no longer describe the current simulation.
 
 Patrol waypoints and cadence are Granaderos tuning. Tactical militia command choices and strategic militia medical assignments remain open.

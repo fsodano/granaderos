@@ -34,8 +34,8 @@ const joint=prepareSaltaAssault(recovered.campaign,{report});const jointSave=che
 const salta=fightNorthernSector(joint.campaign,'salta',{report,controller:cautiousCombatOrder});const saltaSave=checkpoint('salta',salta.campaign);
 const yatasto=completeNorthernMission(salta.campaign,{report});const finalSave=checkpoint('yatasto',yatasto.campaign);
 const summary={
- scope:'Fresh opening through Córdoba, actual Tucumán defeat and rescue, paid medical courier and recovery, joint Salta victory and Yatasto completion. Fifteen deaths remain permanent. A complete winning campaign remains unverified.',
- seed:8,opening:opening.transcript,recovery:prepared.recovery,campaignOrders:prepared.events,
+ scope:'Fresh opening through Córdoba, actual Tucumán defeat and rescue, paid medical courier and recovery, joint Salta victory and Yatasto completion. All actual casualties remain permanent. A complete winning campaign remains unverified.',
+ seed:8,deaths:Object.entries(yatasto.campaign.operativeState).filter(([,record])=>!record.alive).map(([id])=>Number(id)),opening:opening.transcript,recovery:prepared.recovery,campaignOrders:prepared.events,
  cordoba:result.summary,cordobaRecovery:recovery.recovery,recoveryOrders:recovery.events,
  tucuman:tucuman.summary,captured:rescue.captives.map(({id,record})=>({id,hp:record.hp,sector:record.capturedSector})),
  rescueOrders:rescue.events,recapture:liberated.summary,emergencyCareOrders:stable.events,

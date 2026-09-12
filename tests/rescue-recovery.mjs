@@ -5,7 +5,7 @@ import {decodeSave,encodeSave} from '../game/save.js';
 
 export function recoverRescueForce(start,{report=()=>{}}={}){
  let campaign=decodeSave(encodeSave(start)).campaign;const events=[],startHour=campaign.hour;
- const dead=campaign.recruited.filter(id=>!campaign.operativeState[id].alive),patients=[115,112,142,105,147],doctors=[122,112];
+ const dead=campaign.recruited.filter(id=>!campaign.operativeState[id].alive),patients=[115,105,147],doctors=[122,109];
  const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;events.push({action,hour:campaign.hour,second:campaign.secondOfHour??0});};
  const renew=buffer=>{for(const id of [...campaign.recruited]){const r=campaign.operativeState[id],contract=campaign.contracts[id];if(r.alive&&!r.captured&&contract?.expiresAt!==null&&contract?.expiresAt-campaign.hour<=buffer){const cash=campaign.resources.treasury;order({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});assert.ok(campaign.resources.treasury<cash);}}};
  const model=id=>sectorInventoryModel(campaign,'tucuman',rosterFor(campaign),id);
@@ -18,22 +18,22 @@ export function recoverRescueForce(start,{report=()=>{}}={}){
   }
   return taken;
  };
- assert.equal(campaign.location,'tucuman');assert.equal(campaign.hour,142);assert.equal(campaign.pendingBattle,null);
- for(const operativeId of [106,109,145,115,142,105,110])order({type:'assignCare',operativeId,assignment:'rest'});
- recovered+=gather(122);assert.equal(recovered,10);
- order({type:'assignCare',operativeId:112,assignment:'patient'});order({type:'assignCare',operativeId:122,assignment:'doctor'});
+ assert.equal(campaign.location,'tucuman');assert.equal(campaign.hour,127);assert.equal(campaign.pendingBattle,null);
+ for(const operativeId of [106,109,145,115,105,123])order({type:'assignCare',operativeId,assignment:'rest'});
+ recovered+=gather(122);assert.ok(recovered>0);
+ order({type:'assignCare',operativeId:115,assignment:'patient'});order({type:'assignCare',operativeId:122,assignment:'doctor'});
  order({type:'createSquad',name:'Correo sanitario',ids:[147]});order({type:'assignCare',operativeId:147,assignment:'active'});
- renew(13);order({type:'travel',sector:'cordoba'});assert.equal(campaign.location,'cordoba');assert.equal(campaign.hour,154);assert.equal(campaign.pendingEncounter,null);
- assert.equal(campaign.operativeState[112].hp,campaign.operativeState[112].maxHp);assert.equal(campaign.operativeState[122].medkits,0);
+ renew(13);order({type:'travel',sector:'cordoba'});assert.equal(campaign.location,'cordoba');assert.equal(campaign.hour,startHour+12);assert.equal(campaign.pendingEncounter,null);
+ assert.equal(campaign.operativeState[115].hp,campaign.operativeState[115].maxHp);assert.ok(campaign.operativeState[122].medkits<9+recovered,'the initial treatment uses finite recovered dressings');
  order({type:'assignCare',operativeId:122,assignment:'rest'});
  for(const item of ['torches','boleadoras'])order({type:'sectorInventory',sector:'cordoba',operativeId:147,direction:'drop',item,count:campaign.operativeState[147][item]});
  const stock=campaign.merchants.cordoba.supplies.medkits,cash=campaign.resources.treasury,carried=campaign.operativeState[147].medkits;
  for(const quantity of [20,10])order({type:'purchaseMedicalSupplies',operativeId:147,quantity});
  assert.equal(campaign.merchants.cordoba.supplies.medkits,stock-30);assert.equal(campaign.operativeState[147].medkits,carried+30);assert.equal(cash-campaign.resources.treasury,900);
- renew(13);order({type:'travel',sector:'tucuman'});assert.equal(campaign.location,'tucuman');assert.equal(campaign.hour,166);assert.equal(campaign.pendingEncounter,null);
+ renew(13);order({type:'travel',sector:'tucuman'});assert.equal(campaign.location,'tucuman');assert.equal(campaign.hour,startHour+24);assert.equal(campaign.pendingEncounter,null);
  order({type:'sectorInventory',sector:'tucuman',operativeId:147,direction:'drop',item:'medkits',count:30});
- assert.equal(gather(122,15),15);assert.equal(gather(112,15),15);
- for(const operativeId of patients.filter(id=>id!==112))order({type:'assignCare',operativeId,assignment:'patient'});
+ assert.equal(gather(122,15),15);assert.equal(gather(109,15),15);
+ for(const operativeId of patients.filter(id=>id!==109))order({type:'assignCare',operativeId,assignment:'patient'});
  for(const operativeId of doctors)order({type:'assignCare',operativeId,assignment:'doctor'});
  report({event:'medicalCourierReturned',hour:campaign.hour,boughtDressings:30,cost:900,recoveredDressings:recovered});
  for(let i=0;patients.some(id=>campaign.operativeState[id].hp<campaign.operativeState[id].maxHp)&&i<80;i++){

@@ -1,7 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {launchEnemyGroup} from '../game/enemy-groups.js';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
-import {dispatchCampaign} from '../game/campaign.js';import {enterSector} from '../game/world.js';import {actBattle,endTurn,getReachable} from '../game/tactical.js';import {syncBattleTime} from '../game/time.js';import {encodeSave,decodeSave} from '../game/save.js';
+import {dispatchCampaign} from '../game/campaign.js';import {enterSector} from '../game/world.js';import {createBattle,actBattle,endTurn,getReachable} from '../game/tactical.js';import {syncBattleTime} from '../game/time.js';import {encodeSave,decodeSave} from '../game/save.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const visit=s=>{s=order(s,{type:'visitSector'});return {campaign:s,battle:enterSector(s.pendingBattle)};};
 test('actual exploration actions carry fractional time, dawn and synchronized save exactly once',()=>{
@@ -16,7 +16,9 @@ test('midnight keeps deployed contracts and wounds until report while remote con
  const result=order(pair.campaign,{type:'leaveSector',battleId:pair.campaign.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});assert.ok(!result.recruited.includes(100));assert.equal(result.pendingBattle,null);
 });
 test('combat first action charges one round and end-turn does not double charge',()=>{
- let s=order(initialCampaign(),{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});let b=enterSector(s.pendingBattle);const u=b.units[0];b=actBattle(b,{type:'stance',unitId:u.id,stance:'prone'});assert.equal(b.elapsedSeconds,6);b=endTurn(b);assert.equal(b.elapsedSeconds,6);b=endTurn(b);assert.equal(b.elapsedSeconds,12);
+ // Sight establishes combat. An attack request by itself does not start a round.
+ let b=createBattle([{id:'p',x:2,y:1,hp:300,maxHp:300,agility:0,experienceLevel:1}],{width:20,height:8,exploration:true,tiles:Array.from({length:160},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0})),enemies:[{id:'e',x:8,y:1,facing:6,weapon:1813,agility:100,experienceLevel:10,overwatch:false}]});
+ assert.equal(b.mode,'combat');assert.equal(b.elapsedSeconds,0);const u=b.units[0];b=actBattle(b,{type:'stance',unitId:u.id,stance:'prone'});assert.equal(b.elapsedSeconds,6);b=endTurn(b);assert.equal(b.elapsedSeconds,6);b=endTurn(b);assert.equal(b.elapsedSeconds,12);
 });
 test('occupied-sector raid waits until the deployed report is reconciled',()=>{
  let s=initialCampaign();s.hour=143;launchEnemyGroup(s,'interior','cordoba');s.hour=148;s.secondOfHour=3590;s.location='cordoba';s.squads[0].location='cordoba';s.sectors.cordoba.owner='patriot';s.sectors.cordoba.loyalty=10;

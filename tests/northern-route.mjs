@@ -13,7 +13,8 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
  assert.equal(campaign.flags.sanLorenzo,true);assert.equal(campaign.phase,2);assert.equal(campaign.location,'san_nicolas');
  const events=[],dead=campaign.recruited.filter(id=>!campaign.operativeState[id].alive);
  const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;events.push({action,hour:campaign.hour,second:campaign.secondOfHour??0});};
- const doctor=112,patients=[110,116];
+ const doctor=112,doctors=[doctor,116],patients=campaign.recruited.filter(id=>{const r=campaign.operativeState[id];return r.alive&&!r.captured&&r.location===campaign.location&&r.hp<r.maxHp&&!doctors.includes(id);});
+ assert.ok(patients.length,'the actual opening leaves wounded survivors needing care');
  const hireCash=campaign.resources.treasury;
  order({type:'recruitCivic',id:doctor,term:'week'});
  assert.ok(campaign.resources.treasury<hireCash);
@@ -24,20 +25,23 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
  assert.equal(campaign.operativeState[doctor].medkits,beforeSupplies+12);
  const remaining=sectorInventoryModel(campaign,'san_nicolas',rosterFor(campaign),doctor).entries.find(row=>row.key===supplies.key)?.count??0;
  assert.equal(remaining,supplies.count-12);
- const recoveryStart=campaign.hour,medicalStart=campaign.operativeState[doctor].medkits;
- order({type:'assignCare',operativeId:doctor,assignment:'doctor'});
+ const recoveryStart=campaign.hour,medicalStart=doctors.reduce((sum,id)=>sum+campaign.operativeState[id].medkits,0);
+ for(const operativeId of doctors)order({type:'assignCare',operativeId,assignment:'doctor'});
  for(const operativeId of patients)order({type:'assignCare',operativeId,assignment:'patient'});
  for(let i=0;patients.some(id=>campaign.operativeState[id].hp<campaign.operativeState[id].maxHp)&&i<40;i++){
   assert.equal(campaign.pendingEncounter,null,'recovery must resolve a real encounter before continuing');
   order({type:'wait',hours:1});
  }
  for(const id of patients)assert.equal(campaign.operativeState[id].hp,campaign.operativeState[id].maxHp);
- assert.ok(campaign.hour>recoveryStart);assert.equal(medicalStart-campaign.operativeState[doctor].medkits,12);
- for(const operativeId of [doctor,...patients])order({type:'assignCare',operativeId,assignment:'rest'});
+ assert.ok(campaign.hour>recoveryStart);const usedDressings=medicalStart-doctors.reduce((sum,id)=>sum+campaign.operativeState[id].medkits,0);assert.ok(usedDressings>0);
+ for(const operativeId of [...doctors,...patients])order({type:'assignCare',operativeId,assignment:'rest'});
  const restUntil=campaign.hour+6;
  for(let i=0;campaign.hour<restUntil&&i<20;i++)order({type:'wait',hours:restUntil-campaign.hour});
  assert.equal(campaign.hour,restUntil);assert.equal(campaign.operativeState[doctor].energy,100);
- report({event:'recovered',hour:campaign.hour,doctor,usedDressings:12,patients:patients.map(id=>({id,hp:campaign.operativeState[id].hp,morale:campaign.operativeState[id].morale}))});
+ report({event:'recovered',hour:campaign.hour,doctor,usedDressings,patients:patients.map(id=>({id,hp:campaign.operativeState[id].hp,morale:campaign.operativeState[id].morale}))});
+ // Depart at midnight for a daylight approach, using real waits.
+ const departure=campaign.hour+(24-campaign.hour%24)%24;
+ for(let i=0;campaign.hour<departure&&i<48;i++)order({type:'wait',hours:departure-campaign.hour});assert.equal(campaign.hour,departure);
  // Short contracts are bought immediately before the march, at their real price.
  for(const id of [128,142,105])order({type:'recruitCivic',id,term:'day'});
  const ids=[1000,115,doctor,128,142,105];
@@ -47,7 +51,7 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
  for(const id of dead)assert.equal(campaign.operativeState[id].alive,false);
  for(const id of ids){assert.ok(campaign.operativeState[id].hp>=15);assert.equal(campaign.operativeState[id].bleeding,0);}
  const saved=decodeSave(encodeSave(campaign)).campaign;assert.deepEqual(saved,campaign);
- return {campaign:saved,events,dead,recovery:{startHour:recoveryStart,endHour:campaign.hour,doctor,usedDressings:12,sourceKey:supplies.key,sourceRemaining:remaining}};
+ return {campaign:saved,events,dead,recovery:{startHour:recoveryStart,endHour:campaign.hour,doctor,usedDressings,sourceKey:supplies.key,sourceRemaining:remaining}};
 }
 
 export function fightNorthernSector(start,sector,{report=()=>{},expectedOutcome='victory',controller}={}){
@@ -95,10 +99,11 @@ export function prepareTucumanSquad(start,{report=()=>{}}={}){
  const medicalStart=campaign.operativeState[doctor].medkits;
  for(let i=0;campaign.operativeState[patient].hp<campaign.operativeState[patient].maxHp&&i<40;i++)waitHour();
  assert.equal(campaign.operativeState[patient].hp,campaign.operativeState[patient].maxHp);
- const usedDressings=medicalStart-campaign.operativeState[doctor].medkits;assert.equal(usedDressings,9);
+ const usedDressings=medicalStart-campaign.operativeState[doctor].medkits;assert.equal(usedDressings,0,'this approach leaves the Córdoba squad uninjured');
  for(const operativeId of [doctor,patient])order({type:'assignCare',operativeId,assignment:'rest'});
  const restUntil=campaign.hour+6;for(let i=0;campaign.hour<restUntil&&i<20;i++)waitHour();assert.equal(campaign.hour,restUntil);
  for(const operativeId of originalSquad){order({type:'assignCare',operativeId,assignment:'active'});assert.equal(campaign.operativeState[operativeId].hp,campaign.operativeState[operativeId].maxHp);assert.equal(campaign.operativeState[operativeId].bleeding,0);}
+ for(const id of [128,142,105])if(campaign.contracts[id].expiresAt-campaign.hour<=12)order({type:'renewContract',id,term:'day',expectedExpiresAt:campaign.contracts[id].expiresAt});
  for(const id of [128,142,105])assert.ok(campaign.contracts[id].expiresAt>campaign.hour+12,'contracts cover the real march and battle');
  for(const id of dead)assert.equal(campaign.operativeState[id].alive,false);
  assert.deepEqual(campaign.squad,originalSquad);assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
@@ -110,13 +115,13 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
  let campaign=decodeSave(encodeSave(start)).campaign;const events=[];
  const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;events.push({action,hour:campaign.hour,second:campaign.secondOfHour??0});};
  assert.equal(campaign.sectors.tucuman.owner,'royalist');assert.deepEqual(campaign.squad,[]);
- const captives=[115,112,142,105].map(id=>({id,record:structuredClone(campaign.operativeState[id])}));
- order({type:'selectSquad',id:'squad-2'});order({type:'assignCare',operativeId:110,assignment:'active'});
+ const captives=Object.entries(campaign.operativeState).filter(([,r])=>r.captured&&r.capturedSector==='tucuman').map(([id,record])=>({id:Number(id),record:structuredClone(record)}));assert.ok(captives.length);
+ order({type:'selectSquad',id:'squad-2'});order({type:'assignCare',operativeId:123,assignment:'active'});
  order({type:'travel',sector:'cordoba'});assert.equal(campaign.location,'cordoba');assert.equal(campaign.pendingEncounter,null);
  const cash=campaign.resources.treasury;
  for(const id of [106,145,109,147])order({type:'recruitCivic',id,term:'day'});
  assert.ok(campaign.resources.treasury<cash);
- order({type:'squad',ids:[110,122,106,145,109,147]});
+ order({type:'squad',ids:[123,122,106,145,109,147]});
  for(const operativeId of campaign.squad)order({type:'assignCare',operativeId,assignment:'active'});
  for(const {id,record} of captives){assert.deepEqual(campaign.operativeState[id],record);assert.ok(!campaign.squad.includes(id));}
  assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
@@ -126,17 +131,17 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
 export function stabilizeRescued(start,{report=()=>{}}={}){
  let campaign=decodeSave(encodeSave(start)).campaign;const events=[];
  const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;events.push({action,hour:campaign.hour,second:campaign.secondOfHour??0});};
- const patients=[115,112,142,105],doctors=[106,109,145];
+ const patients=[115,105],doctors=[106,109,145];
  assert.equal(campaign.sectors.tucuman.owner,'patriot');assert.equal(campaign.pendingEncounter,null);
  for(const id of patients){assert.equal(campaign.operativeState[id].captured,false);assert.ok(campaign.recruited.includes(id));}
  for(const operativeId of patients)order({type:'assignCare',operativeId,assignment:'patient'});
  for(const operativeId of doctors)order({type:'assignCare',operativeId,assignment:'doctor'});
  const before=structuredClone(campaign),hour=campaign.hour;
  order({type:'wait',hours:1});assert.equal(campaign.hour,hour+1);
- for(const id of doctors)assert.equal(campaign.operativeState[id].medkits,before.operativeState[id].medkits-1);
- for(const id of patients){assert.equal(campaign.operativeState[id].alive,true);assert.equal(campaign.operativeState[id].bleeding,0);assert.equal(campaign.operativeState[id].hp,before.operativeState[id].hp);}
+ const usedDressings=doctors.reduce((sum,id)=>sum+before.operativeState[id].medkits-campaign.operativeState[id].medkits,0);assert.equal(usedDressings,2);
+ for(const id of patients){assert.equal(campaign.operativeState[id].alive,true);assert.equal(campaign.operativeState[id].bleeding,0);if(before.operativeState[id].bleeding)assert.equal(campaign.operativeState[id].hp,before.operativeState[id].hp);else assert.ok(campaign.operativeState[id].hp>before.operativeState[id].hp);}
  for(const id of [1000,128])assert.equal(campaign.operativeState[id].alive,false);
  assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
- report({event:'rescuedStable',hour:campaign.hour,usedDressings:3,patients:patients.map(id=>({id,hp:campaign.operativeState[id].hp,bleeding:campaign.operativeState[id].bleeding}))});
+ report({event:'rescuedStable',hour:campaign.hour,usedDressings,patients:patients.map(id=>({id,hp:campaign.operativeState[id].hp,bleeding:campaign.operativeState[id].bleeding}))});
  return {campaign,events};
 }

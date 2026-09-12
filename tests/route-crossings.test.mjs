@@ -40,7 +40,7 @@ test('reversal cancels the interception without teleporting either force or rest
 test('a return to a newly occupied origin triggers contact and preserves the actual combat outcome',()=>{
  let s=wait(attack(front()),12);s=order(s,{type:'cancelTravel',choice:'return'});s=wait(s,24);assert.equal(s.hour,64);assert.equal(s.location,'tucuman');assert.equal(s.sectors.tucuman.owner,'royalist');assert.equal(s.pendingEncounter.sector,'tucuman');roundtrip(s);
  s=order(s,{type:'respondToEncounter',groupId:'enemy-group-1',choice:'tactical'});assert.equal(s.pendingBattle.wasRoyalist,true);assert.equal(s.pendingBattle.defenseFort,0);roundtrip(s);
- const result=autoResolve(s.pendingBattle);assert.ok(result.actions>0);assert.equal(result.timedOut,false);assert.equal(result.outcome,'defeat');const b=result.battle;
+ const result=autoResolve(s.pendingBattle);assert.ok(result.actions>0);assert.equal(result.timedOut,false);assert.equal(result.outcome,'victory');const b=result.battle;assert.ok(b.units.some(u=>u.hp<u.maxHp),'the new approach still resolves actual combat wounds');
  s=order(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:b.status,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});assert.equal(s.pendingBattle,null);assert.equal(s.enemyGroups[0].status,b.status==='victory'?'defeated':'stationed');assert.equal(s.sectors.tucuman.owner,b.status==='victory'?'patriot':'royalist');roundtrip(s);
 });
 test('a remote ordinary route intercepts troops at a controlled destination and stops further stages',()=>{

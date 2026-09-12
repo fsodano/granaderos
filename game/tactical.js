@@ -813,7 +813,7 @@ if(a.type==='move'){
     if(!alive(u)||s.status!=='active')break;
   }
 
-  sayObserved(s,[u],u.side==='player'?`${u.name} ${movementIntent==='preserveFacing'?'se desplaza sin girar':'avanza'} ${steps} casillas (${s.mode==='exploration'?0:spent} PA).`:`${u.name} avanza.`);
+  sayObserved(s,[u],u.side==='player'?`${u.name} ${movementIntent==='preserveFacing'?'se desplaza sin girar':'avanza'} ${steps} casillas (${exploring?0:spent} PA).`:`${u.name} avanza.`);
 }
 else if(a.type==='firePoint'){
   const preview=pointFirePreview(s,u,a,a.aim);if(!preview.valid)return fail(preview.reason);
