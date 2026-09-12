@@ -47,3 +47,22 @@ tactical header already indicates rain and day/night.
 Limits: no snow tiles, temperature simulation or precipitation animation.
 Existing torches retain the lifetime assigned when lit. Saved geography is
 preserved; previously visited grass exteriors are not regenerated.
+
+## Integration check — 12 September 2026
+
+The combined weather, terrain, combat settlement, cache, sector reentry, NPC and
+stationed-artillery run passes 76 checks. Nine further equipment, combat-driver
+and terrain-render checks pass. Typecheck and the production build pass; the
+static export verifies 960 files and 856 asset references.
+
+The browser check used the integrated illustrated artwork in Tucumán, Córdoba,
+Mendoza and Ensenada. It checked the distinct surroundings and the collapsed
+campaign information panel. A four-cell exploration walk reduced energy from
+100 to 96 without AP use.
+
+The first broad integration run passed 1,649 of 1,657 tests. The cache binding was
+a production defect and is corrected. Several combat and crew fixtures assumed
+stale geometry or fixed casualties; their corrected focused checks now pass.
+The longer northern campaign and hired-only Retiro acceptance routes remain
+under review. These focused results do not establish full-suite or full-campaign
+completion.
