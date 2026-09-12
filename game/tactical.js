@@ -9,7 +9,7 @@ import {planReload} from './weapon-reload.js';
 import {discoverInventory} from './inventory-discovery.js';
 import {automaticOrder,searchOrder} from './autonomous-orders.js';
 import {shotRangeModifiers} from './shot-range.js';
-import {limitEnergy,recoverEnergy,recoverFatigue} from './fatigue.js';
+import {limitEnergy,maximumEnergy,recoverEnergy,recoverFatigue} from './fatigue.js';
 import {recordMilitiaHit} from './militia-experience.js';
 import {projectilePath,projectileFlight,pointProjectileFlight,concealmentAt,concealmentSightPenalty} from './projectile-cover.js';
 import {boundaryMatches} from './tactical-exits.js';
@@ -1261,7 +1261,10 @@ function advanceAmbientTime(s,seconds){
       const climbing=!sameSurface(u,step)?climbStep(s,u,u,step):null;
       if(climbing&&!climbing.valid)continue;
       const cost=climbing?.energy??movementEnergy(u,surfaceAt(s,step));
-      if(climbing?u.energy<cost:u.energy<=cost){recoverEnergy(u,10);continue;}
+      // Keep a breath reserve for contact. A tired patrol spends this whole
+      // six-second tick recovering instead of walking until near collapse.
+      // Fatigue still limits recovery, and every completed step pays its cost.
+      if(u.energy-cost<Math.ceil(maximumEnergy(u)/2)){recoverEnergy(u,10);continue;}
       lowerWeapon(u);if(u.x!==step.x||u.y!==step.y)u.facing=directionTo(u,step);
       // Route metadata belongs to the path, never to the persistent actor.
       Object.assign(u,positionOf(step));u.momentum=0;delete u.lastTargetId;delete u.lastShotPosition;exhaust(s,u,cost);
