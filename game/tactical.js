@@ -158,7 +158,7 @@ export function visibleDistance(s,u,target){
   const cover=concealmentSightPenalty(s,target),normal=(s.night?6+nightSightBonus(u):12)-concealment-cover;
   return Math.max(0,normal,tileIllumination(s,target.x,target.y,tacticalLevel(target))>=.25?16-cover:0);
 }
-export function canSee(s,u,target){if(!alive(u)||target.departure||!facingAllowsSight(u,target)||!hasLineOfSight(s,u,target)||dist(u,target)>visibleDistance(s,u,target))return false;const smoke=smokeBetween(s,u,target);return smoke<5;}
+export function canSee(s,u,target){if(!alive(u)||target.departure||!facingAllowsSight(u,target)||dist(u,target)>visibleDistance(s,u,target)||!hasLineOfSight(s,u,target))return false;const smoke=smokeBetween(s,u,target);return smoke<5;}
 export function teamCanSee(s,side,target){return s.units.some(u=>u.side===side&&alive(u)&&canSee(s,u,target));}
 export function visibleRooms(s){const ids=new Set();for(const t of [...s.tiles,...(s.upperSurfaces??[])]){if(t.roomId&&s.units.some(u=>u.side==='player'&&alive(u)&&canSee(s,u,t)))ids.add(t.roomId);}return [...ids];}
 function revealRooms(s){s.revealedRooms=[...new Set([...(s.revealedRooms||[]),...visibleRooms(s)])];discoverInventory(s);}
