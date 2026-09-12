@@ -6,7 +6,7 @@ type Props={state:any;units:any[];selected:any;project:(x:number,y:number)=>{x:n
 export default function TacticalMinimap({state,units,selected,project,width,height,camera,onCenter}:Props){
  const revealed=useMemo(()=>new Set([...(state.revealedRooms??[]),...visibleRooms(state)]),[state]);
  const players=state.units.filter((u:any)=>u.side==='player');
- const colors:Record<string,string>={grass:'#73744c',forest:'#3c5439',road:'#a08b5c',floor:'#9d8061',water:'#4b7271',wall:'#c0b592',window:'#a89e7c',door:'#786344',stone:'#777662',mud:'#74644b'};
+ const colors:Record<string,string>={grass:'#73744c',forest:'#3c5439',scrub:'#697249',road:'#a08b5c',floor:'#9d8061',water:'#4b7271',wall:'#c0b592',window:'#a89e7c',door:'#786344',stone:'#777662',mud:'#74644b'};
  // One compound path per color replaces thousands of independent mini tiles.
  const terrain=useMemo(()=>{
   const paths=new Map<string,string[]>();

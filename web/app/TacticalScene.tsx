@@ -1,5 +1,6 @@
 'use client';
 import {pointInViewport} from '../../game/tactical-viewport.js';
+import {terrainMaterial} from '../../game/regional-terrain.js';
 import {aimedBodyPart,targetHitFrame} from '../../game/aim-cursor.js';
 import {canChooseShotLocation} from '../../game/targeted-combat.js';
 import {tacticalGridLabel} from '../../game/tactical-grid.js';
@@ -31,13 +32,15 @@ export default function TacticalScene({viewport,state:s,selected,unit:u,players,
   const p=project(t.x,t.y);
   if(t.blocked&&!['wall','door','window','water'].includes(t.type)){
    add(`rock-${t.x}-${t.y}`,t.x,t.y,<image href="/art/scenery-rocks-v1.webp" x={p.x-25} y={p.y-32} width="50" height="40" pointerEvents="none" style={{filter:`brightness(${light(t.x,t.y)})`}}/>);
+  }else if(t.type==='stone'&&t.material==='stone'&&!t.buildingId){
+   add(`loose-rock-${t.x}-${t.y}`,t.x,t.y,<image href="/art/scenery-rocks-v1.webp" x={p.x-14} y={p.y-14} width="28" height="22" pointerEvents="none" style={{filter:`brightness(${light(t.x,t.y)})`}}/>);
   }
   // Natural decoration is stable per tile. Cover-bearing woods remain traversable.
   if(t.type==='forest'){
    const h=hash(t.x,t.y),tree=h%4!==0,width=tree?75+h%28:40,height=tree?90+h%30:35;
    const soften=units.some(v=>v.hp>0&&Math.abs(v.x-t.x)<1.4&&Math.abs(v.y-t.y)<1.4);
    add(`woodland-${t.x}-${t.y}`,t.x+.25,t.y+.25,<image href={`/art/scenery-${tree?(h%3?'tree':'poplar'):'shrub'}-v1.webp`} x={p.x-width*.5+6} y={p.y-height+10} width={width} height={height} opacity={soften?.48:1} pointerEvents="none" style={{filter:`brightness(${light(t.x,t.y)})`}}/>);
-  }else if(t.type==='grass'&&!t.buildingId&&hash(t.x,t.y)%11===0){
+  }else if(t.type==='scrub'||t.type==='grass'&&!t.buildingId&&hash(t.x,t.y)%11===0){
    add(`scrub-${t.x}-${t.y}`,t.x,t.y,<image href="/art/scenery-shrub-v1.webp" x={p.x-16} y={p.y-20} width="32" height="26" pointerEvents="none" opacity=".9" style={{filter:`brightness(${light(t.x,t.y)})`}}/>);
   }
  }
@@ -50,7 +53,7 @@ export default function TacticalScene({viewport,state:s,selected,unit:u,players,
  const reachableSet=useMemo(()=>new Set(reachable.map(t=>`${t.x},${t.y}`)),[reachable]);
  const illumination=useMemo(()=>new Map<string,number>(visibleTiles.map((t:any)=>[`${t.x},${t.y}`,tileIllumination(s,t.x,t.y)])),[s,visibleTiles]);
  const light=(x:number,y:number)=>s.night?.27+tileIllumination(s,x,y)*.73:1;
- const material=(t:any)=>t.type==='road'?'dirt':t.type==='stone'?'cobble':t.type==='mud'?'mud':t.type==='floor'?'floor':t.type==='forest'?'green-grass':'dry-grass';
+ const material=(t:any)=>terrainMaterial(t,s.sceneId??s.sectorId);
  const drawPerson=(v:any,npc=false)=>{
   const moving=positions[v.id]??{...v,direction:v.side==='enemy'?7:3,frame:0,moving:false};const p=project(moving.x,moving.y);
   const posture=spriteCondition(v),collapsed=posture==='dead'||posture==='unconscious';

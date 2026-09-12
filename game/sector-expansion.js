@@ -1,6 +1,7 @@
 import {BUILDING_TYPES,BUILDING_FOOTPRINTS,sectorBuildingType} from './building-types.js';
 import {placeBuilding} from './buildings.js';
 import {propPlacementError,placePulperiaCart} from './props.js';
+import {applyRegionalTerrain} from './regional-terrain.js';
 
 export const TACTICAL_SIZE=Object.freeze({width:64,height:48});
 export const LEGACY_SIZE=Object.freeze({width:20,height:16});
@@ -94,5 +95,5 @@ export function expandSectorMap(core,boundaryRoads=core.tiles.filter(t=>t.type==
  if(target===20&&map.buildings.length!==20)throw Error(`El plano de ${id} no tiene veinte solares accesibles.`);
  // Preserve the relative deployment around the authored landmark. New houses
  // cannot overlap it; arrivals are placed on the enlarged boundary by world.js.
- return map;
+ return applyRegionalTerrain(map,{x:DX,y:DY,width:20,height:16});
 }
