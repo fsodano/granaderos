@@ -8,7 +8,7 @@ import {NPC_ACTIVITY_LABELS} from '../../game/npc-ai.js';
 import {propBlocksAt} from '../../game/props.js';
 import SpriteFigure from './SpriteFigure';
 import {spriteCondition} from '../../game/sprite-state.js';
-import {buildBuildingObjects} from './TacticalBuildings';
+import {createBuildingRenderer} from './TacticalBuildings';
 import {isInteriorVisible} from '../../game/tactical-visibility.js';
 import {buildPropObjects} from './TacticalProps';
 import {canSee,tileIllumination,shotChance,hasFirearm,contextualAttack,ARTILLERY} from '../../game/tactical.js';
@@ -22,6 +22,7 @@ export default function TacticalScene({viewport,state:s,selected,unit:u,players,
  const handlers=useRef({onTile,onHover});handlers.current={onTile,onHover};
  const visibleTiles=useMemo(()=>s.tiles.filter((t:any)=>pointInViewport(viewport,project(t.x,t.y),110)),[s.tiles,viewport,project]);
  const heard=heardNoiseModel(s,u),heardPoint=heard?project(heard.x,heard.y):null;
+ const buildings=useMemo(()=>createBuildingRenderer({state:s,revealed,project,light:(x,y)=>s.night?.27+tileIllumination(s,x,y)*.73:1}),[s,revealed,project]);
  const scenery=useMemo(()=>{
  const objects:{depth:number;key:string;node:ReactNode}[]=[];
  const add=(key:string,x:number,y:number,node:ReactNode,bias=0)=>objects.push({key,depth:x+y+bias,node});
@@ -44,10 +45,10 @@ export default function TacticalScene({viewport,state:s,selected,unit:u,players,
    add(`scrub-${t.x}-${t.y}`,t.x,t.y,<image href="/art/scenery-shrub-v1.webp" x={p.x-16} y={p.y-20} width="32" height="26" pointerEvents="none" opacity=".9" style={{filter:`brightness(${light(t.x,t.y)})`}}/>);
   }
  }
- objects.push(...buildBuildingObjects({state:s,revealed,project,light,viewport}));
+ objects.push(...buildings(viewport));
  objects.push(...buildPropObjects({state:{...s,props:(s.props??[]).filter((p:any)=>pointInViewport(viewport,project(p.x,p.y),200))},revealed,project,light}));
  return objects;
- },[s,revealed,project,units,viewport,visibleTiles]);
+ },[s,revealed,project,units,viewport,visibleTiles,buildings]);
  const objects=[...scenery];
  const add=(key:string,x:number,y:number,node:ReactNode,bias=0)=>objects.push({key,depth:x+y+bias,node});
  const reachableSet=useMemo(()=>new Set(reachable.map(t=>`${t.x},${t.y}`)),[reachable]);

@@ -14,26 +14,48 @@ const wallInset=.4; // Tile edges are half a cell from the center.
 const noise=(x:number,y:number)=>((Math.imul(x+71,374761393)^Math.imul(y+97,668265263))>>>0);
 
 /** Render architectural segments on authored collision cells, never a facade image. */
-export function buildBuildingObjects({state:s,revealed,project,light,viewport}:Args):SceneObject[]{
- const objects:SceneObject[]=[{key:'architecture-materials',depth:-10001,node:<BuildingMaterials/>}];
- for(const b of s.buildings??[]){
-  if(!buildingInViewport(viewport,b,project))continue;
-  const open=b.rooms?.some((r:any)=>revealed.has(r.id));if(open)continue;
-  const corners=[[b.x,b.y],[b.x+b.width-.5,b.y],[b.x+b.width-.5,b.y+b.height-.5],[b.x,b.y+b.height-.5]].map(([x,y])=>project(x,y));
-  const offset=buildingStyle(b).height*.22,points=[corners[0],corners[1],{x:corners[1].x+offset,y:corners[1].y+offset*.45},{x:corners[2].x+offset,y:corners[2].y+offset*.45},{x:corners[3].x+offset,y:corners[3].y+offset*.45},corners[3]];
-  objects.push({key:`architecture-shadow-${b.id}`,depth:-1002,node:<polygon data-building-shadow={b.id} points={points.map(p=>`${p.x},${p.y}`).join(' ')} fill="#131b10" opacity=".23" pointerEvents="none"/>});
- }
+export function buildBuildingObjects(args:Args):SceneObject[]{
+ return createBuildingRenderer(args)(args.viewport);
+}
+
+// Each renderer belongs to one immutable simulation/visibility/light snapshot.
+// Camera changes reuse retained nodes; discarded viewport objects are evicted.
+export function createBuildingRenderer({state:s,revealed,project,light}:Omit<Args,'viewport'>){
+ const buildings=s.buildings??[],byId=new Map<any,any>(),doorsByBuilding=new Map<any,any[]>();
+ for(const b of buildings)if(!byId.has(b.id))byId.set(b.id,b);
+ for(const t of s.tiles)if(t.type==='door'){const doors=doorsByBuilding.get(t.buildingId)??[];doors.push(t);doorsByBuilding.set(t.buildingId,doors);}
  const wallTiles=s.tiles.filter((t:any)=>['wall','door','window'].includes(t.type));
  const occupied=new Set(wallTiles.map((t:any)=>`${t.x},${t.y}`));
- for(const t of wallTiles){
-  if(!pointInViewport(viewport,project(t.x,t.y),100))continue;
-  const b=s.buildings?.find((v:any)=>v.id===t.buildingId),style=buildingStyle(b);
+ const walls=wallTiles.map((t:any)=>{
+  const b=byId.get(t.buildingId),style=buildingStyle(b);
   const corner=b&&(t.x===b.x||t.x===b.x+b.width-1)&&(t.y===b.y||t.y===b.y+b.height-1);
   const roomOpen=b?.rooms.some((r:any)=>revealed.has(r.id)&&r.cells.some((c:any)=>corner?Math.abs(c.x-t.x)<=1&&Math.abs(c.y-t.y)<=1:Math.abs(c.x-t.x)+Math.abs(c.y-t.y)===1));
   const onX=b&&(t.x===b.x||t.x===b.x+b.width-1),onY=b&&(t.y===b.y||t.y===b.y+b.height-1);
   const axes:WallAxis[]=b?[...(onX?['y' as const]:[]),...(onY?['x' as const]:[])]:[occupied.has(`${t.x+1},${t.y}`)||occupied.has(`${t.x-1},${t.y}`)?'x':'y'];
   if(!axes.length)axes.push('x');
-  axes.forEach((axis,index)=>{
+  return {t,b,style,roomOpen,axes};
+ });
+ const rooms=buildings.flatMap((b:any)=>(b.rooms??[]).map((room:any)=>({b,room,cells:new Set((room.cells??[]).map((c:any)=>`${c.x},${c.y}`))})));
+ let retained=new Map<string,SceneObject>();
+ return (viewport?:Args['viewport']):SceneObject[]=>{
+ const objects:SceneObject[]=[],next=new Map<string,SceneObject>();
+ const add=(key:string,create:()=>Omit<SceneObject,'key'>)=>{
+  const object=retained.get(key)??{key,...create()};next.set(key,object);objects.push(object);
+ };
+ add('architecture-materials',()=>({depth:-10001,node:<BuildingMaterials/>}));
+ for(const b of buildings){
+  if(!buildingInViewport(viewport,b,project))continue;
+  const open=b.rooms?.some((r:any)=>revealed.has(r.id));if(open)continue;
+  add(`architecture-shadow-${b.id}`,()=>{
+  const corners=[[b.x,b.y],[b.x+b.width-.5,b.y],[b.x+b.width-.5,b.y+b.height-.5],[b.x,b.y+b.height-.5]].map(([x,y])=>project(x,y));
+  const offset=buildingStyle(b).height*.22,points=[corners[0],corners[1],{x:corners[1].x+offset,y:corners[1].y+offset*.45},{x:corners[2].x+offset,y:corners[2].y+offset*.45},{x:corners[3].x+offset,y:corners[3].y+offset*.45},corners[3]];
+  return {depth:-1002,node:<polygon data-building-shadow={b.id} points={points.map(p=>`${p.x},${p.y}`).join(' ')} fill="#131b10" opacity=".23" pointerEvents="none"/>};
+  });
+ }
+ for(const {t,b,style,roomOpen,axes} of walls){
+  if(!pointInViewport(viewport,project(t.x,t.y),100))continue;
+  axes.forEach((axis:WallAxis,index:number)=>{
+   add(`architecture-${t.x}-${t.y}-${axis}`,()=>{
    const isFront=b&&(axis==='x'?t.y===b.y+b.height-1:t.x===b.x+b.width-1),cut=roomOpen&&isFront,height=cut?BUILDING_OPENINGS.cutawayHeight:style.height;
    // Place each face near its southern tile edge. Clamp corners to the
    // shifted intersection so both wall axes remain joined.
@@ -48,7 +70,7 @@ export function buildBuildingObjects({state:s,revealed,project,light,viewport}:A
    const textureId=`building-wall-${t.x}-${t.y}-${axis}`,plaster=`url(#${textureId})`;
    const materialName=b?.architecture==='warehouse'?'brick':b?.architecture==='barracks'?'timber':`plaster-${b?.architecture??'house'}`;
    const top=(p:Point,z:number)=>`${p.x},${p.y-z}`;
-   objects.push({key:`architecture-${t.x}-${t.y}-${axis}`,depth:t.x+t.y+wallInset+.015,node:<g data-wall-tile={`${t.x},${t.y}`} data-cutaway={Boolean(cut)} pointerEvents="none" style={{filter:`brightness(${light(t.x,t.y)})`}}>
+   return {depth:t.x+t.y+wallInset+.015,node:<g data-wall-tile={`${t.x},${t.y}`} data-cutaway={Boolean(cut)} pointerEvents="none" style={{filter:`brightness(${light(t.x,t.y)})`}}>
     <defs><pattern id={textureId} patternUnits="userSpaceOnUse" width="128" height="128" x={-(t.x*37+t.y*23)%128} y={-(t.y*41+t.x*17)%128}><image href={`/art/buildings/${materialName}-v1.webp`} width="128" height="128" style={{imageRendering:'pixelated'}}/></pattern></defs>
     {/* A shallow wall cap makes thickness readable without a full-tile cube. */}
     <polygon points={`${top(start,height)} ${top(end,height)} ${end.x+4},${end.y-height-2} ${start.x+4},${start.y-height-2}`} fill={cut?'#bda980':'#d2c49e'} stroke="#807459" strokeWidth=".55"/>
@@ -67,17 +89,18 @@ export function buildBuildingObjects({state:s,revealed,project,light,viewport}:A
      {!isOpening&&<path d={`M0,-${height}H40`} stroke={cut?'#f0dcb0':'#ded0ac'} strokeWidth={cut?2:1}/>}
      {axis==='y'&&<path d={isOpening?`M0,0V-${height}H8V0ZM32,0V-${height}H40V0Z`:`M0,0V-${height}H40V0Z`} fill="#292c22" opacity=".14"/>}
     </g>
-   </g>});
+   </g>};
+   });
   });
  }
- for(const b of s.buildings??[])for(const room of b.rooms??[]){
+ for(const {b,room,cells} of rooms){
   if(!room.cells?.length||!buildingInViewport(viewport,b,project))continue;
   if(revealed.has(room.id)){
    // Floor joints follow world coordinates, with perimeter wear and wall shadows.
    // Draw below actors and walls; all decoration remains click-through.
-   const cells=new Set(room.cells.map((c:any)=>`${c.x},${c.y}`));
    for(const c of room.cells){
     if(!pointInViewport(viewport,project(c.x,c.y),40))continue;
+    add(`architecture-floor-${room.id}-${c.x}-${c.y}`,()=>{
     const point=(x:number,y:number)=>{const p=project(x,y);return `${p.x},${p.y}`;};
     // Perimeter walls are drawn inside their structural cells. Extend only
     // adjacent floor edges to that wall plane, covering the underlying grass.
@@ -92,21 +115,26 @@ export function buildBuildingObjects({state:s,revealed,project,light,viewport}:A
       joints.push(<path key={`${row}-${col}`} d={`M${point(x,y)}L${point(x,y+.25)}`} />);
      }
     }
-    objects.push({key:`architecture-floor-${room.id}-${c.x}-${c.y}`,depth:-1000,node:<g data-building-floor={room.id} pointerEvents="none" style={{filter:`brightness(${light(c.x,c.y)})`}}>
+    return {depth:-1000,node:<g data-building-floor={room.id} pointerEvents="none" style={{filter:`brightness(${light(c.x,c.y)})`}}>
      <polygon data-floor-surface="true" points={[point(x0,y0),point(x1,y0),point(x1,y1),point(x0,y1)].join(' ')} fill="url(#terrain-floor)"/>
      <g stroke="#514332" strokeWidth=".65" opacity=".36">{joints}</g>
      {!cells.has(`${c.x-1},${c.y}`)&&<polygon points={[point(x0,y0),point(x0+.22,y0),point(x0+.22,y1),point(x0,y1)].join(' ')} fill="#332d20" opacity=".2"/>}
      {!cells.has(`${c.x},${c.y-1}`)&&<polygon points={[point(x0,y0),point(x1,y0),point(x1,y0+.2),point(x0,y0+.2)].join(' ')} fill="#332d20" opacity=".2"/>}
-    </g>});
+    </g>};
+    });
    }
    continue;
   }
+  add(`architecture-roof-${room.id}`,()=>{
   const xs=room.cells.map((p:any)=>p.x),ys=room.cells.map((p:any)=>p.y);
   const left=Math.max(b.x-.18,Math.min(...xs)-1.18),right=Math.min(b.x+b.width-.82,Math.max(...xs)+1.18),top=Math.max(b.y-.18,Math.min(...ys)-1.18),bottom=Math.min(b.y+b.height-.82,Math.max(...ys)+1.18);
-  objects.push({key:`architecture-roof-${room.id}`,depth:right+bottom+.12,node:<g data-roof-room={room.id} data-roof-material={b.roof} data-building-type={b.architecture??'house'} pointerEvents="none" style={{filter:`brightness(${light(b.x,b.y)})`}}>
-   <BuildingRoof building={b} left={left} right={right} top={top} bottom={bottom} doors={s.tiles.filter((t:any)=>t.buildingId===b.id&&t.type==='door')} project={project}/>
-  </g>});
+  return {depth:right+bottom+.12,node:<g data-roof-room={room.id} data-roof-material={b.roof} data-building-type={b.architecture??'house'} pointerEvents="none" style={{filter:`brightness(${light(b.x,b.y)})`}}>
+   <BuildingRoof building={b} left={left} right={right} top={top} bottom={bottom} doors={doorsByBuilding.get(b.id)??[]} project={project}/>
+  </g>};
+  });
  }
+ retained=next;
  return objects;
+ };
 }
 type WallAxis='x'|'y';
