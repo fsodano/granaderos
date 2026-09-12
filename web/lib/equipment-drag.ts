@@ -22,10 +22,20 @@ function useCancellation(store:EquipmentInteraction,enabled=true){
   return()=>{window.removeEventListener('keydown',key,true);window.removeEventListener('pointerdown',outside,true);window.removeEventListener('blur',blur);store.cancel();};
  },[store,enabled]);
 }
-export function EquipmentInteractionProvider({children}:{children:ReactNode}){
+function EquipmentInteractionRoot({children}:{children:ReactNode}){
  const id=useId();const [store]=useState(()=>createEquipmentInteraction(id));
  useCancellation(store);
  return createElement(Context.Provider,{value:store},children,createElement(EquipmentCursor,{store}));
+}
+export function EquipmentInteractionProvider({children}:{children:ReactNode}){
+ const shared=useContext(Context);
+ return shared?children:createElement(EquipmentInteractionRoot,null,children);
+}
+export function useEquipmentInteraction(){
+ const store=useContext(Context);
+ if(!store)throw Error('El cursor necesita un ámbito de equipo.');
+ const current=useSyncExternalStore(store.subscribe,store.getSnapshot,serverSnapshot);
+ return {store,current};
 }
 
 // Mouse, touch, pen and keyboard share one reservation across all physical slots.

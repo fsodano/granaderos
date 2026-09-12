@@ -429,6 +429,34 @@ export function equipmentFingerprint(unit,slotId){
  const contents=item?extractItemQuantity(unit,item,1,{keepOtherHand:false}).stack:null;
  return JSON.stringify({unitId:String(unit.id),slotId,item,count:endpoint.count,index:endpoint.entry?.index??0,blocked:Boolean(endpoint.blocked),contents});
 }
+// A cursor reserves one physical source; it never owns another copy of it.
+// Aggregate extraction alone would consume a different partial pocket or leave
+// a selected hand occupied by an unselected copy of the same item record.
+export function extractEquipmentSelection(unit,{sourceId,expectedSource,count=1}={}){
+ const source=equipmentEndpoint(unit,sourceId);
+ if(typeof expectedSource!=='string'||equipmentFingerprint(unit,sourceId)!==expectedSource)fail('Cambió el equipo. Seleccioná el objeto de nuevo.');
+ quantity(count,1);
+ if(source.blocked||!source.item||count>source.count)fail('No queda esa cantidad en la ranura de origen.');
+ const hands=handLayout(unit),slots=structuredClone(inventoryUsage(unit).slots);
+ const extracted=extractItemQuantity(unit,source.item,count,{keepOtherHand:false});
+ let next=extracted.unit;
+ if(source.kind==='pocket'){
+  const slot=slots.find(slot=>slot.id===sourceId);slot.entry.count-=count;
+  if(!slot.entry.count)slot.entry=null;
+ }else if(source.kind==='hand'){
+  if(source.side==='right'){
+   next.activeSlot='unarmed';delete next.activeItem;delete next.activeTool;delete next.activeSupply;
+   next.leftHandItem=hands.left;
+  }else next.leftHandItem=null;
+  clearFittingGuard(next);lowerWeapon(next);
+ }
+ next.pocketOrder=pocketOrderFromSlots(slots);
+ if(source.kind==='hand'&&source.side==='right')next=retainOtherHand(unit,next);
+ // Overloaded legacy packs can still discard their contents. Validate the
+ // resulting layout without requiring a free pocket for the removed item.
+ inventoryUsage(next);
+ return {unit:next,stack:extracted.stack,source};
+}
 // Clothing exchanges use the selected physical slot, even with full pockets.
 // Keep the outgoing garment separate from equivalent packed garments so it
 // cannot merge into an item held in the other hand or claim another pocket.

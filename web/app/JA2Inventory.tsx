@@ -2,7 +2,7 @@
 import './ja2-outfit.css';
 import JA2Hands from './JA2Hands';
 import JA2OutfitSlot from './JA2OutfitSlot';
-import {EquipmentInteractionProvider} from '../lib/equipment-drag';
+import {EquipmentInteractionProvider,useEquipmentInteraction} from '../lib/equipment-drag';
 import JA2WeaponMode from './JA2WeaponMode';
 import {handsRequired} from '../../game/hand-layout.js';
 import {accessStepsFrom,tacticalLevel} from '../../game/tactical-space.js';
@@ -27,20 +27,21 @@ const MOVEMENT = [['walk', 'Caminar'], ['run', 'Correr'], ['crouch', 'Agachado']
 const STANCE_IDS = ['mount', 'free', 'brace', 'repair'];
 
 type RadarProps = {
+  equipmentScope?:string;
   battle: any; units: any[]; selected: any; project: (x: number, y: number) => { x: number; y: number };
   vw: number; vh: number; cameraRect: any; zoom: number; mode: any;
   missionAllies: any[]; localMilitia: any[];
   onSelect: (id: any, additive?: boolean) => void; onRetreat: () => void; onCameraCenter: () => void; onCameraPan: (dx: number, dy: number) => void; onZoom: (delta: number) => void;
 };
 // Shared far-right cluster (radar + locale + garrison popovers + Retirada), reused by MODE A (.ja2-right) and MODE B.
-export function RadarCluster({battle, units, selected, project, vw, vh, cameraRect, zoom, mode, missionAllies, localMilitia, onSelect, onRetreat, onCameraCenter, onCameraPan, onZoom}: RadarProps) {
+export function RadarCluster({equipmentScope,battle, units, selected, project, vw, vh, cameraRect, zoom, mode, missionAllies, localMilitia, onSelect, onRetreat, onCameraCenter, onCameraPan, onZoom}: RadarProps) {
   const enemies = visibleEnemies(battle);
   const actor = battle.units.find((u: any) => u.id === selected);
   const medicalTargeting = actor?.activeSlot === 'medical' && unitCanAct(battle, actor);
   const selectable = (p: any) => medicalTargeting ? p.hp > 0 && !p.routed : unitCanAct(battle, p);
   return (
     <>
-      <div className="ja2-radar">
+      <div className="ja2-radar" data-equipment-scope={equipmentScope}>
         <TacticalMinimap state={battle} units={units} selected={selected} project={project} width={vw} height={vh} camera={cameraRect} onCenter={(x, y) => onCameraPan(x - (cameraRect.x + cameraRect.width / 2), y - (cameraRect.y + cameraRect.height / 2))} />
         <span className="map-zoom">
           <button aria-label="Desplazar cámara a la izquierda" onClick={() => onCameraPan(-90, 0)}>←</button>
@@ -70,6 +71,17 @@ export function RadarCluster({battle, units, selected, project, vw, vh, cameraRe
       <button className="retreat-button" onClick={onRetreat}>{battle.mode === 'exploration' ? 'Salir del sector' : 'Retirada'}</button>
     </>
   );
+}
+
+// Only map navigation preserves an inventory reservation. These children read
+// the provider shared with the field without adding a wrapper to the HUD grid.
+function InventoryRadarCluster(props:RadarProps){
+  const {store}=useEquipmentInteraction();
+  return <RadarCluster {...props} equipmentScope={store.scope}/>;
+}
+function InventoryCursorLevel({level,onChange}:{level:number;onChange:(level:number)=>void}){
+  const {store}=useEquipmentInteraction();
+  return <button className="line-button" data-equipment-scope={store.scope} aria-label="Cambiar altura del cursor" onClick={()=>onChange(level===0?1:0)}>Cursor: {level===0?'Suelo':'Nivel superior'}</button>;
 }
 
 type Props = {
@@ -145,7 +157,7 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
       </div>
 </div></details>      </div>
       {battle.upperSurfaces?.length>0&&<div className="ja2-elevation-controls" role="group" aria-label="Altura y accesos">
-        {onCursorLevelChange&&<button className="line-button" aria-label="Cambiar altura del cursor" onClick={()=>onCursorLevelChange(cursorLevel===0?1:0)}>Cursor: {cursorLevel===0?'Suelo':'Nivel superior'}</button>}
+        {onCursorLevelChange&&<InventoryCursorLevel level={cursorLevel} onChange={onCursorLevelChange}/>}
         <span>Combatiente: {tacticalLevel(unit)===0?'Suelo':'Nivel superior'}</span>
         {accessStepsFrom(battle,unit).map((step:any)=>{const preview=climbPreview(battle,unit,{linkId:step.linkId});return <span key={step.linkId}><button className="line-button" disabled={busy||!preview.valid} title={preview.reason||undefined} onClick={()=>onOrder({type:'climb',linkId:step.linkId})}>{tacticalLevel(step)>tacticalLevel(unit)?'Subir':'Bajar'}{preview.pa>0?` · ${cost(preview.pa)}`:''}</button>{preview.reason&&<small>{preview.reason}</small>}</span>;})}
       </div>}
@@ -250,7 +262,7 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
           onContent={index => { setContentIndex(index); setContentQuantity(1); }} onCount={setContentQuantity} onLoot={() => containerLoot && onOrder(containerLoot.action)} />
       </div></details>
       <div className="ja2-right">
-        <RadarCluster battle={battle} units={units} selected={selected} project={project} vw={vw} vh={vh} cameraRect={cameraRect} zoom={zoom} mode={mode} missionAllies={missionAllies} localMilitia={localMilitia} onSelect={onSelect} onRetreat={onRetreat} onCameraCenter={onCameraCenter} onCameraPan={onCameraPan} onZoom={onZoom} />
+        <InventoryRadarCluster battle={battle} units={units} selected={selected} project={project} vw={vw} vh={vh} cameraRect={cameraRect} zoom={zoom} mode={mode} missionAllies={missionAllies} localMilitia={localMilitia} onSelect={onSelect} onRetreat={onRetreat} onCameraCenter={onCameraCenter} onCameraPan={onCameraPan} onZoom={onZoom} />
         <button className="ja2-done gold-button" onClick={onCloseInventory}>Listo</button>
       </div>
     </div></EquipmentInteractionProvider>

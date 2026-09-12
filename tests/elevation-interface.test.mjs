@@ -148,7 +148,10 @@ test('inventory climb controls use real admission, costs and callbacks while nat
  const state=fixture(),link=state.climbLinks[0],expected=climbPreview(state,state.units[0],{linkId:link.id});let action,cursor;
  const tree=componentTree(Inventory,{...inventoryProps(state,value=>{action=value;}),onCursorLevelChange:value=>{cursor=value;}});
  const controls=nodes(tree).find(n=>n.props?.['aria-label']==='Altura y accesos'),buttons=nodes(controls).filter(n=>n.type==='button');
- buttons[0].props.onClick();assert.equal(cursor,1);
+ const levelControl=nodes(controls).find(n=>typeof n.type==='function'&&n.props?.onChange);let levelButton;
+ function CaptureLevel(){levelButton=levelControl.type(levelControl.props);return null;}
+ render(h(tree.type,null,h(CaptureLevel)));
+ levelButton.props.onClick();assert.equal(cursor,1);
  const climb=buttons.find(n=>render(n).includes('Subir'));assert.equal(climb.props.disabled,false);assert.match(render(climb),new RegExp(`${expected.pa} PA`));climb.props.onClick();
  assert.deepEqual(action,{type:'climb',linkId:link.id});assert.equal(actBattle(state,{...action,unitId:state.units[0].id}).lastError,null);
  state.units[0].stance='crouched';const blocked=nodes(componentTree(Inventory,inventoryProps(state))).find(n=>n.type==='button'&&render(n).includes('Subir'));

@@ -41,6 +41,7 @@ export function createEquipmentInteraction(scope:string){
   getSnapshot:()=>state,
   subscribe:(update:()=>void)=>{listeners.add(update);return()=>{listeners.delete(update);};},
   cancel,
+  report(hint:string){if(state.selection)publish({...state,target:'',hint});},
   setCount(count:number){
    const picked=state.selection;
    if(!picked||state.gesture||!Number.isSafeInteger(count)||count<1||count>picked.maxCount)return false;

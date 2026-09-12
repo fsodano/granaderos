@@ -2,6 +2,7 @@ import {pocketOrderFromSlots} from './inventory-pockets.js';
 import {regionalWeatherAt} from './regional-weather.js';
 import {heldThrowingKnife,knifeThrowCosts,knifeThrowRange,knifeThrowChance,knifeThrowDamage} from './thrown-knife.js';
 import {knifeFlight} from './knife-flight.js';
+import {itemFlight} from './item-flight.js';
 import {usesElevationGeometry,elevationSightClear,absoluteBodyHeight,geometryCells,rayHeightIntersection} from './sight-geometry.js';
 import {tacticalLevel,spaceKey,sameSurface,sameCell,surfaceAt,surfaceHeight,accessStepsFrom} from './tactical-space.js';
 import {questGiftPlan} from './quests.js';
@@ -10,6 +11,7 @@ import {handsRequired,selectMainHand,handLayout} from './hand-layout.js';
 import {firearmPreparation,lowerWeapon,lowersWeapon,turnLowersWeapon} from './weapon-readiness.js';
 import {planReload} from './weapon-reload.js';
 import {discoverInventory} from './inventory-discovery.js';
+import {isInteriorVisible} from './tactical-visibility.js';
 import {automaticOrder,searchOrder} from './autonomous-orders.js';
 import {shotRangeModifiers} from './shot-range.js';
 import {limitEnergy,maximumEnergy,recoverEnergy,recoverFatigue} from './fatigue.js';
@@ -18,7 +20,7 @@ import {projectilePath,projectileFlight,pointProjectileFlight,concealmentAt,conc
 import {boundaryMatches} from './tactical-exits.js';
 import {HELD_SUPPLIES,heldSupply,clearEmptySupply} from './held-supplies.js';
 import {heldTool,environmentActionProfile,resolveEnvironmentInteraction,extractContainerItem} from './environment-interactions.js';
-import {SUPPLY_ITEMS,carriedObject,inventoryUsage,itemDescriptor,itemQuantity,extractItemQuantity,applyItemQuantity,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove,planEquipOutfit,planStowOutfit,planHoldOffhand,equipmentEndpoint,equipmentFingerprint,planOutfitPlacement,pocketMergeCount} from './tactical-inventory.js';
+import {SUPPLY_ITEMS,carriedObject,inventoryUsage,itemDescriptor,itemQuantity,extractItemQuantity,extractEquipmentSelection,applyItemQuantity,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove,planEquipOutfit,planStowOutfit,planHoldOffhand,equipmentEndpoint,equipmentFingerprint,planOutfitPlacement,pocketMergeCount} from './tactical-inventory.js';
 import {FITTING_RULES_VERSION,FIT_BAYONET_AP,REMOVE_BAYONET_AP,LOOSE_BAYONET,fixedBayonetFor,fixedBayonetProfile,fittingWeight,weaponItemWeight,normalizeUnitFittings} from './weapon-fittings.js';
 import {FISTS,BUTTSTOCK,unarmedChance,unarmedImpact,weaponStealChance,STEAL_MIN_AP} from './unarmed-combat.js';
 import {directionTo,facingAllowsSight,turnAPCost,stealthAPMultiplier,noiseRadius,approximateHeardPosition} from './tactical-awareness.js';
@@ -608,11 +610,62 @@ export function transferPreview(s,u,target,item,count=1){
   const participants=route?.map((v,i)=>({id:v.id,name:v.nickname||v.name,pa:i<route.length-1?4:0}))??[];
   return {pa,kind,chance,route:participants,totalPA:route?(route.length-1)*4:pa,reason,valid:!reason};
 }
+function planInventoryMap(s,u,action){
+ const need=(ok,message)=>{if(!ok)throw Error(message);};
+ const unavailable=inventoryOrderReason(s,u,4);need(!unavailable,unavailable);
+ need(u.side==='player'&&!u.militia&&!(s.alliedTurn&&s.phase!=='interrupt'),'Elegí un combatiente de tu escuadra.');
+ const intent=action.intent??'auto';need(['auto','ground'].includes(intent),'Elegí entregar el objeto o dejarlo en el suelo.');
+ const point={x:action.x,y:action.y,tacticalLevel:action.tacticalLevel===undefined?tacticalLevel(u):action.tacticalLevel},surface=surfaceAt(s,point);
+ need(surface&&!surface.blocked&&!propBlocksAt(s,point.x,point.y,point.tacticalLevel),'Elegí una superficie libre para dejar el objeto.');
+ const extraction=extractEquipmentSelection(u,action);
+ let target=null,received=null,route=null,flight=null,kind='drop',cost=4,chance=100;
+ if(intent==='auto'&&action.targetId!==undefined&&String(action.targetId)===u.id)need(sameCell(u,point),'El combatiente cambió de lugar. Volvé a seleccionar el destino.');
+ // A point order never resolves a private occupant into an inventory target.
+ if(intent==='auto'&&action.targetId!==undefined&&String(action.targetId)!==u.id){
+  target=s.units.find(other=>other.id===String(action.targetId));
+  if(!target){
+   const npc=s.npcs?.find(other=>other.id===String(action.targetId));
+   const visible=npc&&sameCell(npc,point)&&canSee(s,u,npc)&&isInteriorVisible(s,npc,new Set(s.revealedRooms??[]));
+   need(!visible,'La entrega de un objeto seleccionado a este personaje todavía no está disponible.');
+  }
+  need(target&&target.side===u.side&&target.id!==u.id&&!target.fled&&alive(target),'Elegí otro compañero consciente y presente.');
+  need(sameCell(target,point),'El compañero cambió de lugar. Volvé a seleccionar el destino.');
+  received=applyItemQuantity(target,extraction.stack);
+  route=itemRelayRoute(s,u,target,extraction.stack);
+  if(route){kind=route.length>2?'relay':'give';}
+  else {kind='throw';cost=8;chance=target.knockedDown||(s.mode!=='exploration'&&target.ap<2)?0:Math.round(clamp(((u.dexterity??50)+(target.dexterity??50))/2+20-spaceDistance(s,u,target)*5-(100-(target.energy??100))*.2,5,95));}
+ }else if(contactDistance(u,point)<=1.5){
+  need(sameCell(u,point)||hasLineOfSight(s,u,point)&&Number.isFinite(movementStepCost(s,u,u,point)),'No podés dejar el objeto a través de un obstáculo.');
+ }else {kind='throw';cost=8;}
+ if(kind==='throw'){
+  need(spaceDistance(s,u,point)<=6,'El destino está fuera del alcance del lanzamiento.');
+  flight=itemFlight(s,u,target?{...target,catch:true}:point);
+  need(flight.valid&&!flight.blocked&&flight.landing,flight.reason??'No hay una trayectoria libre para el objeto.');
+ }
+ const reason=inventoryOrderReason(s,u,cost);need(!reason,reason);
+ // Every toss needs room for a failed catch. Empty historical piles still
+ // count toward the same collection bound used by save admission.
+ if(!target||kind==='throw')need((s.groundItems??[]).length<2000,'No queda espacio para más objetos en el sector.');
+ const participants=route?.map((v,i)=>({id:v.id,name:v.nickname||v.name,pa:s.mode==='exploration'||i===route.length-1?0:4}))??[];
+ const routeIds=participants.map(v=>v.id),expectedRoute=JSON.stringify((route??[]).map(v=>({id:v.id,...positionOf(v),tacticalLevel:tacticalLevel(v)})));
+ if(action.transferKind!==undefined)need(action.transferKind===kind,'Cambió la entrega. Volvé a revisar el destino.');
+ if(action.transferRoute!==undefined)need(JSON.stringify(action.transferRoute)===JSON.stringify(routeIds),'Cambió la cadena de entrega. Volvé a revisar los compañeros.');
+ if(action.expectedRoute!==undefined)need(action.expectedRoute===expectedRoute,'Los compañeros cambiaron de lugar. Volvé a revisar la entrega.');
+ const confirmed={type:'inventoryMap',unitId:u.id,sourceId:action.sourceId,expectedSource:action.expectedSource,count:action.count??1,intent,...point,
+  ...(target?{targetId:target.id}:{}),transferKind:kind,transferRoute:routeIds,expectedRoute};
+ const pa=s.mode==='exploration'?0:cost,totalPA=route?participants.reduce((sum,v)=>sum+v.pa,0):pa;
+ return {extraction,target,received,cost,valid:true,reason:null,kind,pa,totalPA,chance,route:participants,landing:flight?.landing??point,flight,path:flight?.path??[],action:confirmed,
+  name:itemDescriptor(u,extraction.source.item).label,actionLabel:kind==='drop'?'Dejar en el suelo':kind==='give'?'Dar al compañero':kind==='relay'?'Pasar por aliados':target?'Arrojar al compañero':'Arrojar al suelo'};
+}
+export function inventoryMapPreview(s,u,action={}){
+ try{const {extraction,target,received,cost,...preview}=planInventoryMap(s,u,action);return preview;}
+ catch(error){return {valid:false,reason:error.message,kind:null,pa:0,totalPA:0,chance:0,route:[],landing:null,flight:null,path:[],action:null};}
+}
 function groundStack(ground){
   if(ground.type==='boleadoras')return {item:'boleadoras',count:ground.count,weight:SUPPLY_ITEMS.boleadoras.weight};
   const {id,type,x,y,tacticalLevel,heldBy,knownToPlayer,...stack}=ground;return stack;
 }
-function addGroundStack(s,stack,position){s.groundItems.push({...stack,id:`item-${s.turn}-${s.groundItems.length}`,type:'item',...positionOf(position)});}
+function addGroundStack(s,stack,position){let index=s.groundItems.length,id;do{id=`item-${s.turn}-${index++}`;}while(s.groundItems.some(item=>item.id===id));s.groundItems.push({...stack,id,type:'item',...positionOf(position)});}
 function lootSource(s,a){
   const source=a.targetId?s.units.find(v=>v.id===String(a.targetId)):null,drop=a.dropIndex!==undefined?s.droppedWeapons[a.dropIndex]:null,ground=a.groundId?s.groundItems.find(g=>g.id===a.groundId):null;
   return {source,drop,ground,position:source||drop||ground};
@@ -1014,7 +1067,7 @@ export function supplyUsePreview(s,u,target,key=u?.activeSupply){
   return {allowed:!reason,reason,cost};
 }
 
-function apply(s,a,enemy=false,movementPath=null){if(a.type==='useItem'){const user=s.units.find(v=>v.id===String(a.unitId));if(user?.activeSlot==='item'&&s.npcs?.some(n=>n.id===String(a.targetId)))a={...a,type:'giveItem'};else if(user?.activeSlot==='supply'){const point=s.units.find(v=>v.id===String(a.targetId));a={...a,type:heldSupply(user)?.action??'invalidSupply',...(point?positionOf(point):{}),targetId:a.targetId??(user.activeSupply==='rations'?'':undefined)};}else if(a.environment)a={...a,...a.environment,type:'environment'};else a={...a,type:user?.activeSlot==='medical'?'heal':user?contextualAttack(s,user,s.units.find(v=>v.id===String(a.targetId)),a).type:'melee'};}const fail=text=>{if(!enemy||u&&journalVisible(s,u)){s.lastError=text;say(s,text);}return false;};const u=s.units.find(u=>u.id===String(a.unitId));if(s.status!=='active')return fail('El combate ya terminó.');if(!u||!alive(u))return fail('El soldado no puede actuar.');if(u.side!==(enemy?'enemy':'player'))return fail('No puedes dar órdenes a ese soldado.');if(!enemy&&!interruptAvailable(s,u))return fail('Ese soldado no puede actuar en esta interrupción.');if(u.knockedDown&&!['stance','heal','ration'].includes(a.type))return fail('El soldado está derribado: debe ponerse de pie.');const observation=reactionObservation(s,u);const target=a.type==='giveItem'?s.npcs?.find(n=>n.id===String(a.targetId)):s.units.find(u=>u.id===String(a.targetId)&&!u.departure);if(a.targetId!==undefined&&!target)return fail('El objetivo no está disponible en este sector.');const pay=n=>{if(!Number.isFinite(n)||n<0||s.mode!=='exploration'&&u.ap<n)return false;if(n>0&&(lowersWeapon(a.type)||a.type==='look'&&u.stance==='prone'))lowerWeapon(u);if(s.mode==='exploration'){if(a.type!=='move'&&a.type!=='climb')s.actionDurationSeconds=Math.max(1,Math.ceil(n*.06));return true;}u.ap-=n;return true;};
+function apply(s,a,enemy=false,movementPath=null){if(a.type==='useItem'){const user=s.units.find(v=>v.id===String(a.unitId));if(user?.activeSlot==='item'&&s.npcs?.some(n=>n.id===String(a.targetId)))a={...a,type:'giveItem'};else if(user?.activeSlot==='supply'){const point=s.units.find(v=>v.id===String(a.targetId));a={...a,type:heldSupply(user)?.action??'invalidSupply',...(point?positionOf(point):{}),targetId:a.targetId??(user.activeSupply==='rations'?'':undefined)};}else if(a.environment)a={...a,...a.environment,type:'environment'};else a={...a,type:user?.activeSlot==='medical'?'heal':user?contextualAttack(s,user,s.units.find(v=>v.id===String(a.targetId)),a).type:'melee'};}const fail=text=>{if(!enemy||u&&journalVisible(s,u)){s.lastError=text;say(s,text);}return false;};const u=s.units.find(u=>u.id===String(a.unitId));if(s.status!=='active')return fail('El combate ya terminó.');if(!u||!alive(u))return fail('El soldado no puede actuar.');if(u.side!==(enemy?'enemy':'player'))return fail('No puedes dar órdenes a ese soldado.');if(!enemy&&!interruptAvailable(s,u))return fail('Ese soldado no puede actuar en esta interrupción.');if(u.knockedDown&&!['stance','heal','ration'].includes(a.type))return fail('El soldado está derribado: debe ponerse de pie.');const observation=reactionObservation(s,u);const target=a.type==='giveItem'?s.npcs?.find(n=>n.id===String(a.targetId)):s.units.find(u=>u.id===String(a.targetId)&&!u.departure);if(a.type!=='inventoryMap'&&a.targetId!==undefined&&!target)return fail('El objetivo no está disponible en este sector.');const pay=n=>{if(!Number.isFinite(n)||n<0||s.mode!=='exploration'&&u.ap<n)return false;if(n>0&&(lowersWeapon(a.type)||a.type==='look'&&u.stance==='prone'))lowerWeapon(u);if(s.mode==='exploration'){if(a.type!=='move'&&a.type!=='climb')s.actionDurationSeconds=Math.max(1,Math.ceil(n*.06));return true;}u.ap-=n;return true;};
 if(a.type==='move'||a.type==='climb'){
   if(u.entangled)return fail('Las boleadoras inmovilizan al soldado: debe liberarse.');
   let postureCost=0;
@@ -1258,6 +1311,26 @@ else if(a.type==='movePocket'){
   const reason=inventoryOrderReason(s,u,0);if(reason)return fail(reason);
   let next;try{next=planPocketMove(u,a.sourceId,a.destinationId,a.expectedSource,a.expectedDestination,a.count);}catch(error){return fail(error.message);}
   pay(0);replaceUnit(u,next);sayObserved(s,[u],`${u.name} ordena sus bolsillos.`);
+}
+else if(a.type==='inventoryMap'){
+ let plan;try{plan=planInventoryMap(s,u,a);}catch(error){return fail(error.message);}
+ replaceUnit(u,plan.extraction.unit);pay(plan.cost);
+ if(plan.kind==='relay'){
+  for(const step of plan.route.slice(1,-1)){
+   const helper=s.units.find(other=>other.id===step.id);lowerWeapon(helper);
+   if(s.mode!=='exploration')helper.ap-=step.pa;
+  }
+  if(s.mode==='exploration')s.actionDurationSeconds=plan.route.length-1;
+ }
+ const caught=plan.target&&(plan.kind!=='throw'||random(s)*100<plan.chance);
+ if(caught){
+  replaceUnit(plan.target,plan.received);lowerWeapon(plan.target);
+  if(plan.kind==='throw'&&s.mode!=='exploration')plan.target.ap-=2;
+  sayObserved(s,[u,plan.target],`${u.name} entrega ${a.count??1} × ${plan.name} a ${plan.target.name}.`);
+ }else{
+  addGroundStack(s,plan.extraction.stack,plan.landing);s.groundItems.at(-1).knownToPlayer=true;
+  sayObserved(s,plan.target?[u,plan.target]:[u],plan.target?`${plan.target.name} no atrapa el objeto. Queda en el suelo a sus pies.`:`${u.name} ${plan.kind==='throw'?'arroja':'deja'} ${a.count??1} × ${plan.name} en el suelo.`);
+ }
 }
 else if(a.type==='drop'){
   const preview=dropPreview(s,u,a.item,a.count??1);if(!preview.valid)return fail(preview.reason);

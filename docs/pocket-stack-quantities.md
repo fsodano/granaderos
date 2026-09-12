@@ -14,7 +14,7 @@ Classic JA2's `BeginItemPointer` selects one object normally and the entire slot
 
 `ItemSlotLimit` limits each hand and worn slot to one object. `PlaceObject` and stack operations retain a remainder when only part fits. See the [classic item implementation](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/a06f4896c43c76396529e415a29a8ca26b00f9f1/src/game/Tactical/Items.cc). Earlier audit notes incorrectly listed multiple-item hand stacks as required parity work; this milestone corrects that assumption. Pocket quantities and cursor quantities are distinct from hand occupancy.
 
-The numeric quantity field is a Granaderos convenience. Classic JA2 also has a popup for selecting individual stack members; Granaderos still uses its existing item details panel. Catalog stack limits remain period-game tuning, including the existing bulk distinction between large and small pockets. This work does not establish full inventory parity: individual member selection, full cursor-driven exchanges with other item types, ground placement and further fittings need separate verification or work.
+The numeric quantity field is a Granaderos convenience. Classic JA2 also has a popup for selecting individual stack members; Granaderos still uses its existing item details panel. Catalog stack limits remain period-game tuning, including the existing bulk distinction between large and small pockets. This work does not establish full inventory parity: individual member selection, full cursor-driven exchanges with other item types and further fittings need separate verification or work. Selected quantities can now be passed, dropped and tossed through the [tactical map cursor](inventory-map-cursor.md).
 
 ## Verification
 
