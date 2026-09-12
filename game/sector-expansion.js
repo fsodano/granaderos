@@ -1,4 +1,4 @@
-import {BUILDING_TYPES,sectorBuildingType} from './building-types.js';
+import {BUILDING_TYPES,BUILDING_FOOTPRINTS,sectorBuildingType} from './building-types.js';
 import {placeBuilding} from './buildings.js';
 import {propPlacementError} from './props.js';
 
@@ -53,14 +53,18 @@ export function expandSectorMap(core){
  for(const lot of lots){
   if(map.buildings.length>=target)break;
   const architecture=sectorBuildingType(id,map.buildings.length);
-  const w=['church','farmhouse'].includes(architecture)?4:5,h=['farmhouse','warehouse','barracks'].includes(architecture)?4:5;
-  // Protect the complete authored landmark, its courtyards and approaches.
-  if(lot.x<DX+22&&lot.x+w>DX-2&&lot.y<DY+18&&lot.y+h>DY-2)continue;
-  let clear=true;
-  for(let y=lot.y-1;y<=lot.y+h;y++)for(let x=lot.x-1;x<=lot.x+w;x++){const t=map.tiles[y*width+x];if(!t||t.blocked||t.buildingId||t.type==='road')clear=false;}
+  const [preferredWidth,h]=BUILDING_FOOTPRINTS[architecture];
+  let w=preferredWidth,clear=false;
+  // A long building can lose one bay on a constrained coastal lot.
+  for(;w>=Math.min(preferredWidth,5);w--){
+   if(lot.x<DX+22&&lot.x+w>DX-2&&lot.y<DY+18&&lot.y+h>DY-2)continue;
+   clear=true;
+   for(let y=lot.y-1;y<=lot.y+h;y++)for(let x=lot.x-1;x<=lot.x+w;x++){const t=map.tiles[y*width+x];if(!t||t.blocked||t.buildingId||t.type==='road')clear=false;}
+   if(clear)break;
+  }
   if(!clear)continue;
   const index=map.buildings.length,buildingId=`${id}:neighbourhood-${index}`;
-  const result=placeBuilding(map.tiles,{id:buildingId,architecture,name:`${BUILDING_TYPES[architecture].name} · ${index+1}`,...lot,width:w,height:h,doors:[{x:lot.x+2,y:lot.y+h-1}],windows:[{x:lot.x,y:lot.y+2}],material:'adobe'});
+  const result=placeBuilding(map.tiles,{id:buildingId,architecture,name:`${BUILDING_TYPES[architecture].name} · ${index+1}`,...lot,width:w,height:h,doors:[{x:lot.x+2,y:lot.y+h-1}],windows:[{x:lot.x,y:lot.y+Math.floor(h/2)}],material:'adobe'});
   if(target===20&&!map.buildings.some(b=>b.purpose==='bar'))Object.assign(result.building,{purpose:'bar',architecture:'pulperia',roof:'tile',name:'Pulpería del barrio'});
   map.tiles=result.tiles;map.buildings.push(result.building);
   const prop={id:`${buildingId}:chest`,type:'chest',x:lot.x+1,y:lot.y+1,buildingId,roomId:result.building.rooms[0].id,footprint:{width:1,height:1},blocksMovement:true};

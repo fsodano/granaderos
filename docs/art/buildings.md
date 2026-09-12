@@ -69,3 +69,25 @@ Run `node tools/preview-building-catalogue.mjs` for exterior/interior renders of
 all nine styles and `assets/previews/buildings/catalogue.png`.
 `tests/building-types.test.mjs` verifies that the styles actually occur in campaign
 maps, render distinctly, and remove their roof and tower details on entry.
+
+### Revised silhouettes and colours
+
+The second art pass replaces the shared house roof with separate structural
+compositions in `web/app/BuildingRoof.tsx`:
+
+- Cream colonial houses: a low terrace, parapet and chimney.
+- Earth-coloured farmhouses: compact walls and a thick hipped thatch roof.
+- Rose-coloured estancias: a long hipped roof and full veranda.
+- Churches: a long nave, shaped entrance pediment and projected bell tower.
+- Blue-grey mansions: a roof terrace, balconies and an offset mirador.
+- Yellow Cabildo: eleven arcade bays on two levels, continuous balcony,
+  central entrance bay and a dark dome, following the user's supplied reference.
+- Ochre pulperías: a shed roof, timber veranda and hanging sign.
+- Brick warehouses: paired gables, louvres and a loading hoist.
+- Sage barracks: a long low roof and two chimneys.
+
+`BUILDING_FOOTPRINTS` gives neighbourhood types different proportions. Long
+buildings can lose one bay on constrained coastal lots. The catalogue uses
+larger landmark examples where appropriate. All tower faces use the same
+isometric projection as the walls. The Cabildo's façade renders its actual door
+states, and the complete roof composition disappears when its room is revealed.

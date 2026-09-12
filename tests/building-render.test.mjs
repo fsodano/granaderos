@@ -12,7 +12,7 @@ const objects=(open)=>buildBuildingObjects({state,project,light:()=>.6,revealed:
 test('unknown interiors retain a complete roof and have no revealed floor details',()=>{
  const closed=objects(false),opened=objects(true);
  assert.equal(closed.filter(o=>o.key.startsWith('architecture-floor')).length,0);
- assert.match(render(closed.find(o=>o.key.startsWith('architecture-roof')).node),/data-building-gable="true"/);
+ assert.match(render(closed.find(o=>o.key.startsWith('architecture-roof')).node),/data-roof-form="flat"/);
  assert.equal(opened.filter(o=>o.key.startsWith('architecture-roof')).length,0);
  const floors=opened.filter(o=>o.key.startsWith('architecture-floor'));
  assert.equal(floors.length,built.building.rooms[0].cells.length);
