@@ -10,12 +10,13 @@ export function fieldAmmunition(snapshot){
   +[...(snapshot?.props??[]),...(snapshot?.tiles??[])].reduce((sum,c)=>sum+(c.contents??[]).reduce((n,item)=>n+rounds(item),0),0);
 }
 export function storedWeaponAmmunition(units){
- return units.reduce((total,u)=>total+(u.offHand?.loaded??0)+Object.values(u.inventory??{}).reduce((sum,item)=>sum+(item?.weapon!==undefined?(item.loaded??0)*(item.count??1):0),0),0);
+ return units.reduce((total,u)=>total+(u.offHand?.loaded??0)+cursorAmmunition(u)+Object.values(u.inventory??{}).reduce((sum,item)=>sum+(item?.weapon!==undefined?(item.loaded??0)*(item.count??1):0),0),0);
 }
+export function cursorAmmunition(unit){const stack=unit?.equipmentCursor?.stack;return stack?.item==='ammo'?stack.count??0:stack?.weapon!==undefined?(stack.loaded??0)*(stack.count??1):0;}
 const recoveredEquipmentAmmunition=(request,snapshot)=>{
  const ids=new Set((request.squad??[]).map(u=>String(u.id))),carriers=(snapshot?.units??[]).filter(u=>u.side==='player'&&ids.has(String(u.id)));
- // Net the field and the squad's pack charges together: moving a loaded gun
- // between them cannot produce another cartridge allowance.
+ // Net field gear, pack charges and cursor rounds together. Moving the same
+ // cartridges between these owners cannot produce another allowance.
  return Math.max(0,(request.fieldCartridges??0)+(request.storedCartridges??0)-fieldAmmunition(snapshot)-storedWeaponAmmunition(carriers));
 };
 
@@ -42,16 +43,16 @@ export function planReturnAmmunition(request,snapshot,entries){
  let loot=recoveredEquipmentAmmunition(request,snapshot);const seen=new Set();
  for(const source of [...(request.garrison??[]),...(request.garrisonLootSources??[]),...(request.missionAllies??[]),...(request.casualtyLootSources??[])]){
   const key=`player:${source.id}`;if(seen.has(key))continue;seen.add(key);
-  const u=snapshot.units.find(u=>u.side==='player'&&String(u.id)===String(source.id));if(u)loot+=Math.max(0,(source.ammo??0)+(source.loaded??0)-(u.ammo??0)-(u.loaded??0));
+  const u=snapshot.units.find(u=>u.side==='player'&&String(u.id)===String(source.id));if(u)loot+=Math.max(0,(source.ammo??0)+(source.loaded??0)+(source.cursorCartridges??cursorAmmunition(source))-(u.ammo??0)-(u.loaded??0)-cursorAmmunition(u));
  }
- for(const source of request.ammunitionSources??request.enemies??[]){const key=`enemy:${source.id}`;if(seen.has(key))continue;seen.add(key);const u=snapshot.units.find(u=>u.side==='enemy'&&String(u.id)===String(source.id));if(u&&(u.hp<=0||u.unconscious||u.routed||u.surrendered)){const loaded=source.loaded??WEAPONS[source.weapon??source.primary??1800]?.capacity??0;loot+=Math.max(0,(source.ammo??12)+loaded-(u.ammo??0)-(u.loaded??0));}}
+ for(const source of request.ammunitionSources??request.enemies??[]){const key=`enemy:${source.id}`;if(seen.has(key))continue;seen.add(key);const u=snapshot.units.find(u=>u.side==='enemy'&&String(u.id)===String(source.id));if(u&&(u.hp<=0||u.unconscious||u.routed||u.surrendered)){const loaded=source.loaded??WEAPONS[source.weapon??source.primary??1800]?.capacity??0;loot+=Math.max(0,(source.ammo??12)+loaded+(source.cursorCartridges??cursorAmmunition(source))-(u.ammo??0)-(u.loaded??0)-cursorAmmunition(u));}}
  const custody={},carried={},returned=entries.reduce((sum,e)=>{
   const u=snapshot.units.find(u=>u.side==='player'&&String(u.id)===e.unitId),rounds=(u.loaded??0)+(u.ammo??0);
   if(!Number.isSafeInteger(rounds)||rounds<0||rounds>100000)throw Error('La munición del parte es inválida.');
   const preserveLoading=!u.weaponDropped&&WEAPONS[u.weapon]?.capacity>0;
   const loading=preserveLoading?{loaded:u.loaded,...(u.reloadProgress?{reloadProgress:u.reloadProgress}:{})}:null;
   if(e.kind==='captured')custody[e.unitId]={loaded:u.loaded,ammo:u.ammo,...(loading?{preserveLoading:true,...(u.reloadProgress?{reloadProgress:u.reloadProgress}:{})}:{})};
-  const heldAmmo=handLayout(u).held.includes('ammo')?Math.min(1,u.ammo):0;
+  const heldAmmo=Math.min(handLayout(u).held.filter(item=>item==='ammo').length,u.ammo);
   if((loading||heldAmmo)&&['resident','departed'].includes(e.kind))carried[e.unitId]={...(loading??{loaded:0}),...(heldAmmo?{ammo:heldAmmo}:{})};
   return sum+(['resident','departed'].includes(e.kind)?rounds:0);
  },0);

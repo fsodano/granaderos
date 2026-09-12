@@ -1,19 +1,19 @@
 'use client';
-import {useState} from 'react';
+import {useMemo,useState} from 'react';
 import JA2Pockets from './JA2Pockets';
 import JA2OutfitSlot from './JA2OutfitSlot';
 import {handLayout} from '../../game/hand-layout.js';
 import {inventoryUsage,itemDescriptor} from '../../game/tactical-inventory.js';
 import {EquipmentInteractionProvider,useEquipmentDrag} from '../lib/equipment-drag';
 import './ja2-hands.css';
-type Props={unit:any;disabled:boolean;onOrder:(action:any)=>void};
+type Props={unit:any;disabled:boolean;onOrder:(action:any)=>any};
 export default function CampaignPockets(props:Props){
  return <EquipmentInteractionProvider key={props.unit.id}><CampaignPocketsBody {...props}/></EquipmentInteractionProvider>;
 }
 function CampaignPocketsBody({unit,disabled,onOrder}:Props){
  const [inspected,setInspected]=useState('');
- const context={mode:'exploration',phase:'player',status:'active',units:[unit],equipmentContext:'campaign'};
- const arrange=({type,...action}:any)=>{setInspected('');onOrder({direction:'arrange',kind:type==='movePocket'?'pocket':'equipment',...action});};
+ const context=useMemo(()=>({mode:'exploration',phase:'player',status:'active',units:[unit],equipmentContext:'campaign'}),[unit]);
+ const arrange=({type,...action}:any)=>{setInspected('');return onOrder({direction:'arrange',kind:['pickupEquipment','placeEquipment','returnEquipmentCursor','dragEquipment'].includes(type)?'cursor':type==='movePocket'?'pocket':'equipment',cursorAction:type,...action});};
  const inspectedItem=inspected&&(!inspected.startsWith('inventory:')||Object.hasOwn(unit.inventory??{},inspected.slice(10)))?itemDescriptor(unit,inspected):null;
  const drag=useEquipmentDrag(context,unit,disabled,arrange),hands=handLayout(unit);
  return <section className="campaign-pockets" aria-label="Organizar equipo llevado">

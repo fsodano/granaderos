@@ -29,7 +29,7 @@ export function placeSelectedItemOnMap(store:EquipmentInteraction,battle:any,uni
  const preview=selectedItemMapPreview(battle,unit,picked,point,intent);
  if(!preview?.valid){store.report(preview?.reason??'Elegí un destino válido.');return true;}
  const accepted=onOrder(preview.action);
- if(accepted&& !accepted.lastError){if(store.getSnapshot().selection===picked)store.cancel();}
+ if(accepted&& !accepted.lastError){store.accept(accepted,String(unit.id));}
  else store.report(accepted?.lastError??'La orden no se pudo completar. El objeto sigue en su lugar.');
  return true;
 }

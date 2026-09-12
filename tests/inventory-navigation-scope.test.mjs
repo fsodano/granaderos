@@ -16,7 +16,7 @@ function props(){
  return {battle,unit:battle.units[0],units:battle.units,selected:'p',mode:'move',showSight:false,busy:false,missionAllies:[],localMilitia:[],vw:500,vh:400,project:(x,y)=>({x:x*26,y:y*14}),cameraRect:{x:0,y:0,width:200,height:150},zoom:2,cursorLevel:0,onCursorLevelChange:noop,onOrder:noop,onMode:noop,onToggleSight:noop,onSelect:noop,onRetreat:noop,onCameraCenter:noop,onCameraPan:noop,onZoom:noop,onCloseInventory:noop};
 }
 
-test('inventory height and radar controls share the field reservation scope without exempting other controls',()=>{
+test('inventory height and radar controls share the field cursor scope',()=>{
  let store;
  function Capture(){store=useEquipmentInteraction().store;return null;}
  const html=render(h(EquipmentInteractionProvider,null,[h(Capture,{key:'scope'}),h(Inventory,{key:'inventory',...props()})]));
@@ -26,8 +26,8 @@ test('inventory height and radar controls share the field reservation scope with
  assert.ok(radar,'the existing radar div must contain the minimap and camera controls');assert.equal(radar[1],store.scope);
  for(const label of ['Desplazar cámara a la izquierda','Desplazar cámara hacia arriba','Centrar cámara en el combatiente seleccionado','Desplazar cámara hacia abajo','Desplazar cámara a la derecha','Alejar campo','Acercar campo'])assert.ok(radar[2].includes(`aria-label="${label}"`),label);
  assert.match(radar[2],/<svg\b/,'the minimap must share the navigation scope');
- // Capture-phase outside cancellation must still see unrelated actions as
- // outside. In particular, climbing is an order, not cursor navigation.
+ // Scope metadata distinguishes cursor navigation from unrelated orders.
+ // Closing or leaving these controls must not imply item deletion.
  for(const className of ['ja2-inventory','ja2-elevation-controls','ja2-right','ja2-inventory-extra']){
   const tag=html.match(new RegExp(`<[^>]+class="${className}"[^>]*>`))?.[0];assert.ok(tag,className);assert.doesNotMatch(tag,/data-equipment-scope/);
  }

@@ -1,5 +1,8 @@
 # Click placement across personal equipment
 
+Current behavior: [durable cursor exchanges](equipment-cursor-exchanges.md) supersede the source-reservation, cancellation and rearrangement-cost behavior recorded below. The checks below describe the earlier milestone.
+
+
 The tactical inventory and campaign equipment panel share one item selection across both hands, the outfit slot, four large pockets and eight small pockets. Left-click an occupied slot to select its item, then click a compatible destination to place it. The selected item follows the mouse cursor. Selection does not remove the item from its source or spend AP.
 
 Right-click an item to inspect it. If an item is selected, right-click or Escape cancels placement first. A second Escape can close the tactical inventory. Clicking outside the equipment slots, leaving the window, changing soldiers or closing the panel also cancels selection. Keyboard activation uses the same slot controls. Dragging remains available and sends one placement order on release; the following browser click cannot place or select the item again.

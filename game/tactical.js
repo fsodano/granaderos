@@ -1,4 +1,5 @@
 import {pocketOrderFromSlots} from './inventory-pockets.js';
+import {planEquipmentPickup,planEquipmentCursorPlacement,planEquipmentCursorReturn} from './equipment-cursor.js';
 import {regionalWeatherAt} from './regional-weather.js';
 import {heldThrowingKnife,knifeThrowCosts,knifeThrowRange,knifeThrowChance,knifeThrowDamage} from './thrown-knife.js';
 import {knifeFlight} from './knife-flight.js';
@@ -20,7 +21,7 @@ import {projectilePath,projectileFlight,pointProjectileFlight,concealmentAt,conc
 import {boundaryMatches} from './tactical-exits.js';
 import {HELD_SUPPLIES,heldSupply,clearEmptySupply} from './held-supplies.js';
 import {heldTool,environmentActionProfile,resolveEnvironmentInteraction,extractContainerItem} from './environment-interactions.js';
-import {SUPPLY_ITEMS,carriedObject,inventoryUsage,itemDescriptor,itemQuantity,extractItemQuantity,extractEquipmentSelection,applyItemQuantity,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove,planEquipOutfit,planStowOutfit,planHoldOffhand,equipmentEndpoint,equipmentFingerprint,planOutfitPlacement,pocketMergeCount} from './tactical-inventory.js';
+import {SUPPLY_ITEMS,handMetadata,droppedWeaponStack,carriedObject,inventoryUsage,itemDescriptor,itemQuantity,extractItemQuantity,extractEquipmentSelection,applyItemQuantity,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove,planEquipOutfit,planStowOutfit,planHoldOffhand,equipmentEndpoint,equipmentFingerprint,planOutfitPlacement,pocketMergeCount} from './tactical-inventory.js';
 import {FITTING_RULES_VERSION,FIT_BAYONET_AP,REMOVE_BAYONET_AP,LOOSE_BAYONET,fixedBayonetFor,fixedBayonetProfile,fittingWeight,weaponItemWeight,normalizeUnitFittings} from './weapon-fittings.js';
 import {FISTS,BUTTSTOCK,unarmedChance,unarmedImpact,weaponStealChance,STEAL_MIN_AP} from './unarmed-combat.js';
 import {directionTo,facingAllowsSight,turnAPCost,stealthAPMultiplier,noiseRadius,approximateHeardPosition} from './tactical-awareness.js';
@@ -152,7 +153,7 @@ export function initializeBattlePerception(state){checkEnd(state);detectContact(
 function tile(s,x,y,level=0){if(level)return surfaceAt(s,{x,y,tacticalLevel:level});const at=s.tiles[y*s.width+x];return at?.x===x&&at?.y===y?at:s.tiles.find(t=>t.x===x&&t.y===y);}
 function occupied(s,x,y,except,level=0){const point={x,y,tacticalLevel:level};return propBlocksAt(s,x,y,level)||(s.npcs||[]).some(n=>sameCell(n,point))||s.units.some(u=>onField(u)&&!u.unconscious&&u.id!==except&&sameCell(u,point));}
 export function carryCapacity(u){return Math.max(10,(u.strength||50)*.5);}
-export function carriedWeight(u){const inventory=Object.values(u.inventory||{}).reduce((sum,item)=>sum+(item&&typeof item==='object'?(item.count||0)*((item.weight||0)+fittingWeight(item))+(item.count||0)*(item.loaded||0)*.04:0),0);return Number(u.weight??u.carryWeight??0)+(wornOutfit(u)?.weight??0)+inventory+(u.loaded||0)*.04+Object.entries(SUPPLY_ITEMS).reduce((sum,[key,item])=>sum+(u[key]??0)*item.weight,0)+(u.weaponDropped?0:weaponItemWeight(u.weapon)+fittingWeight(u))+weaponItemWeight(u.blade)+(u.offHand?weaponItemWeight(u.offHand.weapon)+fittingWeight(u.offHand)+(u.offHand.loaded??0)*.04:0);}
+export function carriedWeight(u){const inventory=Object.values(u.inventory||{}).reduce((sum,item)=>sum+(item&&typeof item==='object'?(item.count||0)*((item.weight||0)+fittingWeight(item))+(item.count||0)*(item.loaded||0)*.04:0),0);const cursor=u.equipmentCursor?.stack;return (cursor?cursor.count*((cursor.weight??0)+fittingWeight(cursor)+(cursor.loaded??0)*.04):0)+Number(u.weight??u.carryWeight??0)+(wornOutfit(u)?.weight??0)+inventory+(u.loaded||0)*.04+Object.entries(SUPPLY_ITEMS).reduce((sum,[key,item])=>sum+(u[key]??0)*item.weight,0)+(u.weaponDropped?0:(u.weaponMetadata?.weight??weaponItemWeight(u.weapon))+fittingWeight(u))+(u.bladeMetadata?.weight??weaponItemWeight(u.blade))+(u.offHand?(u.offHand.weight??weaponItemWeight(u.offHand.weapon))+fittingWeight(u.offHand)+(u.offHand.loaded??0)*.04:0);}
 function weightPenalty(u){return Math.max(1,carriedWeight(u)/carryCapacity(u));}
 export function movementEnergy(u,t){const style=u.movementMode||'walk',base={walk:1,run:3,crouch:2,prone:3}[style]||1;return Math.max(1,Math.ceil(base*weightPenalty(u)*(u.mounted?1-Math.min(100,u.ridingSkill||0)*.005:1)*(t?.type==='mud'?1.5:1)*(hasTrait(u,'guerrilla_tactician')?.75:1)));}
 function exhaust(s,u,cost){limitEnergy(u);if(u.mounted&&u.mount){u.mount.stamina=Math.max(0,u.mount.stamina-Math.max(1,Math.ceil(cost*(1-Math.min(100,u.ridingSkill||0)*.005))));if(u.mount.stamina===0){u.mounted=false;sayObserved(s,[u],`${u.name} desmonta: su caballo está agotado.`);}}u.energy=Math.max(0,(u.energy??100)-cost);if(u.energy===0){lowerWeapon(u);u.unconscious=true;u.ap=0;u.mounted=false;sayObserved(s,[u],`${u.name} cae inconsciente por agotamiento.`);}}
@@ -213,6 +214,7 @@ function detectContact(s){
   if(!observers.length)return false;
   const playerAware=observers.some(u=>u.side==='player');
   s.mode='combat';s.phase='player';s.enemyTurns=0;s.roundTimeCharged=false;s.quietCombatTurns=0;s.contactThisRound=true;
+  for(const unit of s.units)returnBattleEquipmentCursor(s,unit);
   s.roundFirstSide=playerAware?'player':'enemy';delete s.enemyFirstAwaitingPlayer;
   for(const u of s.units.filter(alive)){u.maxAP=maxActionPoints(s,u);u.ap=u.maxAP;}
   if(!playerAware)s.contactInitiative='enemy';
@@ -406,7 +408,7 @@ function rout(s,u,report=true){
   lowerWeapon(u);u.routed=true;u.fled=false;u.fleePath=[];u.braced=false;u.overwatch=false;
   if(!u.weaponDropped&&(WEAPONS[u.weapon]||BLADES[u.weapon]||typeof u.weapon==='object')){
     u.weaponDropped=true;u.droppedWeapon=typeof u.weapon==='object'?u.weapon.id:u.weapon;
-    s.droppedWeapons??=[];s.droppedWeapons.push({unitId:u.id,...positionOf(u),weapon:u.droppedWeapon,weight:weaponItemWeight(u.weapon),loaded:u.loaded,...(u.reloadProgress?{reloadProgress:u.reloadProgress}:{}),condition:u.condition,...(u.jammed?{jammed:true}:{}),...(u.weaponInstanceId?{instanceId:u.weaponInstanceId}:{}),...(u.weaponFittings?.bayonet?{fittings:structuredClone(u.weaponFittings)}:{}),...(u.weaponFittingPattern!=null?{fittingPattern:u.weaponFittingPattern}:{})});u.loaded=0;delete u.reloadProgress;u.weaponFittings={};u.weaponFittingPattern=null;delete u.weaponInstanceId;
+    s.droppedWeapons??=[];s.droppedWeapons.push({unitId:u.id,...positionOf(u),weapon:u.droppedWeapon,weight:u.weaponMetadata?.weight??weaponItemWeight(u.weapon),...(u.weaponMetadata?{weaponMetadata:structuredClone(u.weaponMetadata)}:{}),loaded:u.loaded,...(u.reloadProgress?{reloadProgress:u.reloadProgress}:{}),condition:u.condition,...(u.jammed?{jammed:true}:{}),...(u.weaponInstanceId?{instanceId:u.weaponInstanceId}:{}),...(u.weaponFittings?.bayonet?{fittings:structuredClone(u.weaponFittings)}:{}),...(u.weaponFittingPattern!=null?{fittingPattern:u.weaponFittingPattern}:{})});u.loaded=0;delete u.reloadProgress;u.weaponFittings={};u.weaponFittingPattern=null;delete u.weaponInstanceId;delete u.weaponMetadata;
   }
   if(report)sayObserved(s,[u],`${u.name} pierde la disciplina y abandona su arma. Intentará alcanzar una salida en su turno.`);
 }
@@ -705,11 +707,11 @@ export function planLoot(s,u,a){
   let receiver=u,donor=source;
   if(source){
     const wanted=a.item??'all';
-    const items=wanted==='all'?[...Object.keys(SUPPLY_ITEMS).filter(k=>(source[k]??0)>0),...(!source.weaponDropped&&(WEAPONS[source.weapon]||BLADES[source.weapon])?['primary']:[]),...(BLADES[source.blade]?['blade']:[]),...(source.offHand?['offhand']:[]),...(wornOutfit(source)?['outfit']:[]),...Object.entries(source.inventory??{}).filter(([,r])=>(typeof r==='number'?r:r?.count)>0).map(([key])=>`inventory:${key}`)]:[wanted==='weapon'?'primary':wanted];
+    const items=wanted==='all'?[...Object.keys(SUPPLY_ITEMS).filter(k=>(source[k]??0)>0),...(!source.weaponDropped&&(WEAPONS[source.weapon]||BLADES[source.weapon])?['primary']:[]),...(BLADES[source.blade]?['blade']:[]),...(source.offHand?['offhand']:[]),...(wornOutfit(source)?['outfit']:[]),...(source.equipmentCursor?['cursor']:[]),...Object.entries(source.inventory??{}).filter(([,r])=>(typeof r==='number'?r:r?.count)>0).map(([key])=>`inventory:${key}`)]:[wanted==='weapon'?'primary':wanted];
     if(!items.length)throw Error('No queda equipo que recoger.');
     for(const item of items){const count=wanted==='all'?itemQuantity(donor,item):a.count??itemQuantity(donor,item);const transfer=transferItemQuantity(donor,receiver,item,count);donor=transfer.source;receiver=transfer.target;}
   }else{
-    const stack=drop?{item:'weapon',count:1,weapon:drop.weapon,loaded:drop.loaded,...(drop.reloadProgress?{reloadProgress:drop.reloadProgress}:{}),condition:drop.condition,jammed:Boolean(drop.jammed),...(drop.instanceId?{instanceId:drop.instanceId}:{}),...(drop.fittings?{fittings:structuredClone(drop.fittings)}:{}),...(drop.fittingPattern!=null?{fittingPattern:drop.fittingPattern}:{}),weight:drop.weight??weaponItemWeight(drop.weapon)}:groundStack(ground);
+    const stack=drop?droppedWeaponStack(drop):groundStack(ground);
     const count=a.count??stack.count;if(!Number.isSafeInteger(count)||count<1||count>stack.count)throw Error('No queda esa cantidad del objeto.');
     receiver=applyItemQuantity(receiver,{...stack,count});
     return {receiver,drop,ground,remaining:stack.count-count};
@@ -776,6 +778,7 @@ function equipIncomingHand(unit,incoming,slot){
   }
   if(slot==='primary'){next.weapon=incoming.weapon;next.loaded=incoming.loaded??0;delete next.reloadProgress;if(incoming.reloadProgress)next.reloadProgress=incoming.reloadProgress;next.condition=incoming.condition??100;next.jammed=Boolean(incoming.jammed);next.weaponDropped=false;next.weaponFittings=structuredClone(incoming.fittings??{});next.weaponFittingPattern=incoming.fittingPattern??null;delete next.weaponInstanceId;if(incoming.instanceId)next.weaponInstanceId=incoming.instanceId;}
   else {next.blade=incoming.weapon;next.bladeCondition=incoming.condition??100;next.bladeFittingPattern=incoming.fittingPattern??null;delete next.bladeInstanceId;if(incoming.instanceId)next.bladeInstanceId=incoming.instanceId;}
+  const metadataKey=slot==='primary'?'weaponMetadata':'bladeMetadata',metadata=handMetadata(incoming);delete next[metadataKey];if(metadata&&Object.keys(metadata).length)next[metadataKey]=metadata;
   lowerWeapon(next);next=selectMainHand(next,{activeSlot:slot});delete next.activeTool;delete next.activeSupply;delete next.activeItem;next.braced=false;next.momentum=0;delete next.lastTargetId;delete next.lastShotPosition;
   if(inventoryUsage(next).overloaded)throw Error('No queda espacio para guardar el equipo desplazado.');
   return next;
@@ -909,6 +912,41 @@ export function equipmentPlacementPreview(s,u,action){
   }
  }catch(error){reason=error.message;}
  return {pa,reason,valid:!reason,...(remainingSelection?{remainingSelection}:{})};
+}
+
+const cursorOrders=new Set(['pickupEquipment','placeEquipment','returnEquipmentCursor','dragEquipment']);
+export function planEquipmentCursorOrder(unit,action){
+ if(action.type==='pickupEquipment')return planEquipmentPickup(unit,action);
+ if(action.type==='placeEquipment')return planEquipmentCursorPlacement(unit,action);
+ if(action.type==='returnEquipmentCursor'){
+  if(action.expectedSource!==equipmentFingerprint(unit,'cursor'))throw Error('Cambió el objeto del cursor. Revisá el equipo.');
+  return planEquipmentCursorReturn(unit);
+ }
+ if(action.type==='dragEquipment'){
+  if(action.expectedDestination!==equipmentFingerprint(unit,action.destinationId))throw Error('Cambió el destino. Revisá el equipo.');
+  const picked=planEquipmentPickup(unit,action);
+  return planEquipmentCursorPlacement(picked.unit,{...action,expectedSource:equipmentFingerprint(picked.unit,'cursor'),expectedDestination:equipmentFingerprint(picked.unit,action.destinationId)});
+ }
+ throw Error('La orden del cursor no es válida.');
+}
+export function equipmentCursorPreview(s,u,action){
+ let reason=inventoryOrderReason(s,u,0);
+ if(!reason&&(u.side!=='player'||u.militia||u.departure))reason='Elegí un combatiente de tu escuadra.';
+ if(!reason&&['pickupEquipment','dragEquipment'].includes(action.type)&&s.units?.some(other=>other.id!==u.id&&alive(other)&&other.equipmentCursor))reason='Colocá primero el objeto del otro combatiente.';
+ if(!reason)try{
+  if(action.type==='dragEquipment'&&action.expectedDestination!==equipmentFingerprint(u,action.destinationId))throw Error('Cambió el destino. Revisá el equipo.');
+  const plan=planEquipmentCursorOrder(u,action);
+  if(plan.dropped&&(s.groundItems?.length??0)>=2000)throw Error('No queda espacio para dejar el objeto. Sigue en el cursor.');
+ }catch(error){reason=error.message;}
+ return {pa:0,valid:!reason,reason};
+}
+
+function returnBattleEquipmentCursor(s,unit){
+ if(!unit.equipmentCursor)return true;
+ const plan=planEquipmentCursorReturn(unit);
+ if(plan.dropped&&s.groundItems.length>=2000)return false;
+ replaceUnit(unit,plan.unit);if(plan.dropped)addGroundStack(s,plan.dropped,unit);
+ return true;
 }
 
 export function swapHandsPreview(s,u){
@@ -1579,9 +1617,17 @@ export function actBattle(state,action){
     const rejected=clone(state);rejected.lastError='La milicia actúa por su cuenta. Da órdenes a los combatientes de tu escuadra.';say(rejected,rejected.lastError);return rejected;
   }
   const next=actBattleInput(state,action);
+  if(cursorOrders.has(action.type))return next;
   return next.lastError?next:cleanActionTime(settleAutonomous(next));
 }
 function actBattleInput(state,action){
+  if(cursorOrders.has(action.type)){
+    const unit=state.units.find(u=>u.id===String(action.unitId)),preview=equipmentCursorPreview(state,unit,action),next=clone(state);
+    if(!preview.valid){next.lastError=preview.reason;say(next,preview.reason);return next;}
+    const plan=planEquipmentCursorOrder(unit,action),actor=next.units.find(u=>u.id===unit.id);
+    replaceUnit(actor,plan.unit);if(plan.dropped)addGroundStack(next,plan.dropped,actor);
+    next.lastError=null;return next;
+  }
   if(action.type==='inventoryMap'){
     const unit=state.units.find(u=>u.id===String(action.unitId)),plan=inventoryMapPreview(state,unit,action);
     if(!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason;say(rejected,plan.reason);return rejected;}
@@ -1795,8 +1841,18 @@ function runEnemyReactions(s){
   }
   checkEnd(s);rememberContacts(s);revealRooms(s);s.lastError=null;return s;
 }
-function cleanActionTime(s){delete s.actionDurationSeconds;delete s.actionTimeAppliedSeconds;return s;}
-export function endTurn(state){return cleanActionTime(settleAutonomous(endTurnState(state)));}
+function cleanActionTime(s){
+ delete s.actionDurationSeconds;delete s.actionTimeAppliedSeconds;
+ for(const unit of s.units)if(unit.equipmentCursor&&(!alive(unit)||unit.departure||unit.side==='player'&&!interruptAvailable(s,unit)))returnBattleEquipmentCursor(s,unit);
+ return s;
+}
+export function endTurn(state){
+ const ready=clone(state);
+ for(const unit of ready.units)if(!returnBattleEquipmentCursor(ready,unit)){
+  const rejected=clone(state);rejected.lastError='Colocá el objeto del cursor antes de terminar el turno.';say(rejected,rejected.lastError);return rejected;
+ }
+ return cleanActionTime(settleAutonomous(endTurnState(ready)));
+}
 function endTurnState(state){
   const s=clone(state);s.lastError=null;if(s.status!=='active')return s;
   if(s.phase==='interrupt'){

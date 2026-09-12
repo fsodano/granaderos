@@ -1,8 +1,9 @@
+import {droppedWeaponStack} from './tactical-inventory.js';
 import {atHand,planningPoint} from './tactical-planning-space.js';
 import {makeOutfit,wornOutfit} from './outfits.js';
 import {handsRequired,handLayout} from './hand-layout.js';
-import {SUPPLY_ITEMS,itemQuantity,itemDescriptor,extractItemQuantity,applyItemQuantity,inventoryUsage,planPocketMove,equipmentEndpoint} from './tactical-inventory.js';
-import {getReachable,hasLineOfSight,planEquipLoot,planReadyMainHand,planEquipmentPlacement,WEAPONS,BLADES} from './tactical.js';
+import {SUPPLY_ITEMS,itemQuantity,itemDescriptor,extractItemQuantity,applyItemQuantity,inventoryUsage,planPocketMove,equipmentEndpoint,equipmentFingerprint} from './tactical-inventory.js';
+import {getReachable,hasLineOfSight,planEquipLoot,planReadyMainHand,planEquipmentPlacement,planEquipmentCursorOrder,WEAPONS,BLADES} from './tactical.js';
 import {propBlocksAt,propCells} from './props.js';
 import {boundaryMatches} from './tactical-exits.js';
 import {operativeLocation,operativeInTransit} from './squads.js';
@@ -28,12 +29,12 @@ function poolSources(snapshot){
   add(`ground:${g.id}`,g,g.type==='boleadoras'?{item:'boleadoras',count:g.count,weight:.8}:data,{kind:'ground'});
  }
  for(const [index,d] of (snapshot.droppedWeapons??[]).entries())if(d.knownToPlayer&&!d.taken){
-  const {x,y,tacticalLevel,taken,knownToPlayer,...data}=d;add(`drop:${index}`,d,{...data,item:'weapon',count:1,weight:d.weight??weaponItemWeight(d.weapon)},{kind:'drop'});
+  add(`drop:${index}`,d,droppedWeaponStack(d),{kind:'drop'});
  }
  for(const body of snapshot.units??[])if(body.knownToPlayer&&body.hp<=0&&!body.departure&&!body.fled){
   const disposition=snapshot.returnLedger?.entries?.find(e=>e.unitId===body.id),owner=snapshot.sectorId==='san_lorenzo'?'san_nicolas':snapshot.sectorId;
   if(disposition&&(disposition.kind!=='dead'||disposition.sector!==owner))continue;
-  const items=[...Object.keys(SUPPLY_ITEMS),...(!body.weaponDropped&&body.weapon?['primary']:[]),...(body.blade?['blade']:[]),...(body.offHand?['offhand']:[]),...(wornOutfit(body)?['outfit']:[]),...Object.keys(body.inventory??{}).map(key=>`inventory:${key}`)];
+  const items=[...Object.keys(SUPPLY_ITEMS),...(!body.weaponDropped&&body.weapon?['primary']:[]),...(body.blade?['blade']:[]),...(body.offHand?['offhand']:[]),...(wornOutfit(body)?['outfit']:[]),...(body.equipmentCursor?['cursor']:[]),...Object.keys(body.inventory??{}).map(key=>`inventory:${key}`)];
   for(const item of items)if(itemQuantity(body,item)>0){const {stack}=extractItemQuantity(body,item,itemQuantity(body,item));add(JSON.stringify(['body',body.id,item]),body,stack,{kind:'body',item});}
  }
  for(const chest of snapshot.props??[])if(chest.type==='chest'&&chest.knownToPlayer&&chest.open&&!chest.locked&&!chest.trap?.armed){
@@ -127,15 +128,28 @@ export function moveSectorItem(s,action,roster){
  const model=sectorInventoryModel(s,sectorId,roster,operativeId);
  const reason=['equip','issueOutfit','arrange'].includes(direction)?model.carriedReason:model.reason;need(!reason,reason);need(model.operativeId===Number(operativeId),'Elegí un combatiente presente.');
  const op=roster.find(op=>op.id===Number(operativeId)),snapshot=inventorySite(s,sectorId).snapshot,actor=['equip','issueOutfit','arrange'].includes(direction)?carriedActor(s,op):actorAt(s,sectorId,op);
- let next,stack;
+ let next,stack,changedGround=false;
  if(direction==='issueOutfit'){
   need(count===1&&!model.outfitIssueReason,model.outfitIssueReason??'Retirá un poncho por vez.');
   stack={item:'outfit',...makeOutfit()};next=applyItemQuantity(actor,stack);
   const at=inventorySite(s,sectorId).sectorId;if((s.depots?.[at]?.ponchos??0)>0)s.depots[at].ponchos--;else s.resources.ponchos--;
  }else if(direction==='arrange'){
-  need(['pocket','equipment'].includes(action.kind),'Elegí las ranuras que querés ordenar.');
-  need(typeof action.expectedSource==='string'&&typeof action.expectedDestination==='string','Volvé a seleccionar el equipo.');
-  next=action.kind==='pocket'?planPocketMove(actor,action.sourceId,action.destinationId,action.expectedSource,action.expectedDestination,action.count):planEquipmentPlacement(actor,action).unit;
+  need(['pocket','equipment','cursor'].includes(action.kind),'Elegí las ranuras que querés ordenar.');
+  if(action.kind==='cursor'){
+   need(['pickupEquipment','placeEquipment','returnEquipmentCursor','dragEquipment'].includes(action.cursorAction),'La orden del cursor no es válida.');
+   if(['pickupEquipment','dragEquipment'].includes(action.cursorAction))need(!roster.some(other=>other.id!==op.id&&s.recruited.includes(other.id)&&s.operativeState[other.id]?.alive&&s.operativeState[other.id]?.equipmentCursor&&!s.operativeState[other.id]?.captured),'Colocá primero el objeto del otro combatiente.');
+   if(action.cursorAction==='dragEquipment')need(action.expectedDestination===equipmentFingerprint(actor,action.destinationId),'Cambió el destino. Revisá el equipo.');
+   const plan=planEquipmentCursorOrder(actor,{...action,type:action.cursorAction});next=plan.unit;
+   if(plan.dropped){
+    need(!model.reason,model.reason);const located=actorAt(s,sectorId,op);need(located,'El combatiente debe entrar al sector para dejar el objeto.');
+    need(snapshot.groundItems.length<2000,'No queda espacio para dejar el objeto. Sigue en el cursor.');
+    let index=snapshot.groundItems.length,id;do{id=`sector-item-${index++}`;}while(snapshot.groundItems.some(item=>item.id===id));
+    snapshot.groundItems.push({...copy(plan.dropped),id,type:'item',...planningPoint(located),knownToPlayer:true});changedGround=true;
+   }
+  }else{
+   need(typeof action.expectedSource==='string'&&typeof action.expectedDestination==='string','Volvé a seleccionar el equipo.');
+   next=action.kind==='pocket'?planPocketMove(actor,action.sourceId,action.destinationId,action.expectedSource,action.expectedDestination,action.count):planEquipmentPlacement(actor,action).unit;
+  }
  }else if(direction==='equip'){
   need(count===1&&['primary','blade','offhand','outfit','offhandItem','mainhand'].includes(action.slot),'Elegí una ranura de equipo.');
   const stow=action.slot==='outfit'&&action.inventoryKey===null;
@@ -177,11 +191,12 @@ export function moveSectorItem(s,action,roster){
  else if(next.weaponDropped)clearCarriedLoading(record);
  // Returned living soldiers and their cartridge receipt are historical.
  // Their next deployment uses the current campaign equipment record.
- if(!['equip','issueOutfit','arrange'].includes(direction)){
+ if(changedGround||!['equip','issueOutfit','arrange'].includes(direction)){
   // A returned living unit is a historical receipt, not another item owner.
   // Retire its identities before a map transfer puts that same item on the field.
   for(const old of snapshot.units.filter(u=>u.side==='player'&&u.hp>0&&snapshot.returnLedger?.entries.some(e=>e.unitId===u.id&&['resident','departed'].includes(e.kind)))){
    delete old.weaponInstanceId;delete old.bladeInstanceId;old.weaponFittingPattern=null;old.bladeFittingPattern=null;old.weaponFittings={};
+   delete old.equipmentCursor;
    for(const item of [...(old.offHand?[old.offHand]:[]),...(old.outfit?[old.outfit]:[]),...Object.values(old.inventory??{})]){delete item.instanceId;delete item.fittingPattern;delete item.fittings;}
   }
   validateBattleSnapshot(snapshot);

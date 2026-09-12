@@ -3,7 +3,7 @@ import {validateReloadProgress} from './weapon-reload.js';
 import {heldSupply} from './held-supplies.js';
 import {heldTool} from './environment-interactions.js';
 import {WEAPONS} from './data.js';
-import {inventoryUsage,validateHands,carriedObject} from './tactical-inventory.js';
+import {inventoryUsage,validateHands,validateEquipmentCursor,carriedObject,handMetadata,handRecord} from './tactical-inventory.js';
 import {FITTING_RULES_VERSION,validateFittingPattern,validateWeaponFittings,validateUnitFittings,normalizeUnitFittings,validItemIdentity,fittingItemIds,heldItemIds,fittingLabel} from './weapon-fittings.js';
 export const EQUIPMENT_CATALOG=[
  ...Object.values(WEAPONS).filter(w=>w.id>=1800&&w.id<=1813).map(w=>({...w,item:w.id,stockKey:String(w.id),category:w.id<1809?'firearm':'blade',price:({1800:240,1801:230,1802:420,1803:180,1804:100,1805:130,1806:180,1807:160,1808:220,1809:160,1810:110,1811:50,1812:70,1813:40})[w.id]})),
@@ -83,14 +83,28 @@ export function migrateEquipment(s){
  return s;
 }
 
-export function storeEquipment(s,item,{condition=100,jammed=false,instanceId,fittingPattern=null,fittings={},loaded,reloadProgress}={}){
+// Armory IDs identify storage rows, not the physical item's custom data.
+// Keep extensions separately so an admitted item with its own `id` survives.
+export function storedEquipmentMetadata(instance){
+ const {id,item,itemMetadata,...data}=instance;
+ need(itemMetadata===undefined||itemMetadata!==null&&typeof itemMetadata==='object'&&!Array.isArray(itemMetadata),'Los metadatos del arma guardada son inválidos.');
+ return {...handMetadata({...data,weapon:Number(item)}),...structuredClone(itemMetadata??{})};
+}
+function validateStoredMetadata(instance){
+ const metadata=storedEquipmentMetadata(instance);
+ handRecord({weapon:instance.item,weaponMetadata:metadata,loaded:instance.loaded??0,reloadProgress:instance.reloadProgress,condition:instance.condition,jammed:instance.jammed,weaponInstanceId:instance.instanceId,weaponFittingPattern:instance.fittingPattern,weaponFittings:instance.fittings},'primary');
+ return metadata;
+}
+export function storeEquipment(s,item,{condition=100,jammed=false,instanceId,fittingPattern=null,fittings={},loaded,reloadProgress,itemMetadata,...extensions}={}){
  need(loaded===undefined||Number.isSafeInteger(loaded)&&loaded>=0&&loaded<=(WEAPONS[item]?.capacity??0),'La carga del arma guardada es inválida.');
  validateReloadProgress(reloadProgress,WEAPONS[item]?.capacity??0,loaded??0);
  need(handheld(item)&&Number.isFinite(condition)&&condition>=0&&condition<=100&&typeof jammed==='boolean','El arma almacenada es inválida.');
  validateFittingPattern(fittingPattern,Number(item),instanceId);validateWeaponFittings(fittings,Number(item));need(instanceId===undefined||validItemIdentity(instanceId),'La identidad del arma almacenada es inválida.');
  const owned=fittingItemIds({instanceId,fittings});need(new Set(owned).size===owned.length,'La identidad del equipo está duplicada.');
+ const extensionMetadata=storedEquipmentMetadata({item:Number(item),itemMetadata});
+ const metadata=validateStoredMetadata({item:Number(item),condition,jammed,instanceId,fittingPattern,fittings,loaded,reloadProgress,itemMetadata:{...handMetadata({...extensions,weapon:Number(item)}),...extensionMetadata}});
  need(s.armoryItems.length<10000,'La armería está llena.');
- const instance={id:`armory-${s.nextArmoryItemId++}`,item:Number(item),condition,jammed,...(loaded===undefined?{}:{loaded}),...(reloadProgress?{reloadProgress}:{}),...(instanceId===undefined?{}:{instanceId}),...(fittingPattern===null?{}:{fittingPattern}),...(Object.keys(fittings).length?{fittings:structuredClone(fittings)}:{})};
+ const instance={...(Object.keys(metadata).length?{itemMetadata:metadata}:{}),id:`armory-${s.nextArmoryItemId++}`,item:Number(item),condition,jammed,...(loaded===undefined?{}:{loaded}),...(reloadProgress?{reloadProgress}:{}),...(instanceId===undefined?{}:{instanceId}),...(fittingPattern===null?{}:{fittingPattern}),...(Object.keys(fittings).length?{fittings:structuredClone(fittings)}:{})};
  s.armoryItems.push(instance);s.armory[item]=(s.armory[item]??0)+1;return instance;
 }
 
@@ -138,7 +152,9 @@ export function resaleQuote(instance){return resaleBreakdown(instance).total;}
 
 export function returnEquipment(s,id,report){
  if(report.outfit!==undefined||report.poncho!==undefined){s.operativeState[id].outfit=structuredClone(wornOutfit(report));delete s.operativeState[id].poncho;}
- validateHands(report);validateUnitFittings(report);
+ validateHands(report);validateUnitFittings(report);validateEquipmentCursor(report);
+ if(report.equipmentCursor)s.operativeState[id].equipmentCursor=structuredClone(report.equipmentCursor);else delete s.operativeState[id].equipmentCursor;
+ for(const key of ['weaponMetadata','bladeMetadata'])if(report[key]!==undefined)s.operativeState[id][key]=structuredClone(report[key]);else delete s.operativeState[id][key];
  if(report.leftHandItem!==undefined)s.operativeState[id].leftHandItem=report.leftHandItem;else delete s.operativeState[id].leftHandItem;
  if(report.offHand)s.operativeState[id].offHand=structuredClone(report.offHand);else if(report.weapon!==undefined)delete s.operativeState[id].offHand;
  s.loadouts[id]??={};
@@ -181,7 +197,7 @@ export function validateEquipment(s,roster=[]){
  function validateStored(item){
   need(object(item)&&typeof item.id==='string'&&/^armory-[1-9][0-9]*$/.test(item.id)&&Number(item.id.slice(7))<s.nextArmoryItemId&&!ids.has(item.id)&&typeof item.item==='number'&&handheld(item.item)&&Number.isFinite(item.condition)&&item.condition>=0&&item.condition<=100&&typeof item.jammed==='boolean','El ejemplar de arma guardado es inválido.');
   need(item.loaded===undefined||integer(item.loaded,0,WEAPONS[item.item]?.capacity??0),'La carga del arma guardada es inválida.');validateReloadProgress(item.reloadProgress,WEAPONS[item.item]?.capacity??0,item.loaded??0);
-  validateFittingPattern(item.fittingPattern,item.item,item.instanceId);validateWeaponFittings(item.fittings,item.item);ids.add(item.id);
+  validateFittingPattern(item.fittingPattern,item.item,item.instanceId);validateWeaponFittings(item.fittings,item.item);validateStoredMetadata(item);ids.add(item.id);
  }
  for(const item of s.armoryItems){validateStored(item);counts[item.item]=(counts[item.item]??0)+1;}
  need(EQUIPMENT_CATALOG.filter(w=>handheld(w.item)).every(item=>(counts[item.item]??0)===(s.armory[item.item]??0)),'Las cantidades de la armería no coinciden con sus ejemplares.');
@@ -190,7 +206,7 @@ export function validateEquipment(s,roster=[]){
   need(r.carriedAmmo===undefined||integer(r.carriedAmmo,0,100000),'La reserva personal de cartuchos es inválida.');
   need(r.carriedLoaded===undefined||!r.weaponDropped&&(WEAPONS[op?.weapon]?.capacity??0)>0&&integer(r.carriedLoaded,0,Math.min(WEAPONS[op.weapon].capacity,r.carriedAmmo??0)),'La carga personal del arma es inválida.');
   need(r.carriedReloadProgress===undefined||r.carriedLoaded!==undefined,'Falta la carga del arma en recarga.');validateReloadProgress(r.carriedReloadProgress,WEAPONS[op?.weapon]?.capacity??0,r.carriedLoaded??0,r.weaponDropped);
-  const personal=personalHandState(s,op,r);validateHands(personal);if(r.pocketOrder?.some(slot=>slot.count!==undefined))inventoryUsage(personal);validateUnitFittings({...op,...r});
+  const personal=personalHandState(s,op,r);validateHands(personal);validateEquipmentCursor(personal);if(r.pocketOrder?.some(slot=>slot.count!==undefined))inventoryUsage(personal);validateUnitFittings({...op,...r});
   for(const [slot,key] of [['weapon','weaponInstanceId'],['blade','bladeInstanceId']])if(r[key]!==undefined)need(validInstanceId(r[key])&&op?.[slot]>0&&(slot!=='weapon'||!r.weaponDropped),'La identidad del arma guardada es inválida.');
   for(const key of ['jammed','weaponDropped'])need(r[key]===undefined||typeof r[key]==='boolean','El estado del arma guardada es inválido.');
   need(r.weaponMode===undefined||['fire','melee'].includes(r.weaponMode),'El modo del arma guardado es inválido.');
@@ -210,9 +226,15 @@ export function validateEquipmentOwnership(s,roster=[],battle=null){
  const retainedOnField=(snapshot,u)=>{const disposition=snapshot.returnLedger?.entries?.find(e=>e.unitId===u.id),owner=snapshot.sectorId==='san_lorenzo'?'san_nicolas':snapshot.sectorId;return !u.departure&&(!disposition||['resident','dead'].includes(disposition.kind)&&disposition.sector===owner);};
  const claim=id=>{need(validItemIdentity(id)&&!identities.has(id),'La identidad del equipo está duplicada o es inválida.');const number=generatedIdentityNumber(id);if(number!==null)need(number<s.nextEquipmentInstanceId,'La secuencia del equipo reutiliza una identidad existente.');identities.add(id);};
  const record=r=>{if(r&&typeof r==='object'&&(r.count??1)>0)for(const id of fittingItemIds(r))claim(id);};
- const unit=u=>{validateHands(u);if(u.pocketOrder?.some(slot=>slot.count!==undefined))inventoryUsage(u);validateUnitFittings(u);for(const id of heldItemIds(u))claim(id);for(const r of Object.values(u.inventory??{}))record(r);};
+ const unit=u=>{validateHands(u);validateEquipmentCursor(u);if(u.pocketOrder?.some(slot=>slot.count!==undefined))inventoryUsage(u);validateUnitFittings(u);for(const id of heldItemIds(u))claim(id);for(const r of Object.values(u.inventory??{}))record(r);if(u.equipmentCursor)record(u.equipmentCursor.stack);};
  const livingPlayers=new Set();
  for(const op of roster){const r=s.operativeState[op.id];if(r?.alive&&r.hp>0){livingPlayers.add(String(op.id));if(!activePlayers.has(String(op.id)))unit(personalHandState(s,op,r));}}
+ // A strategic death can precede any physical corpse snapshot. Its cursor is
+ // still finite property; once a body exists, that body supersedes this record.
+ for(const op of roster){const r=s.operativeState[op.id];if(!r?.equipmentCursor||r.alive&&r.hp>0||activePlayers.has(String(op.id)))continue;
+  const body=snapshots.some(snapshot=>(snapshot.units??[]).some(u=>String(u.id)===String(op.id)&&u.side==='player'&&u.hp<=0&&retainedOnField(snapshot,u)))||Object.values(s.sectorRemains??{}).some(records=>records.some(record=>String(record.unitId)===String(op.id)));
+  if(!body){validateEquipmentCursor(personalHandState(s,op,r));record(r.equipmentCursor.stack);}
+ }
  for(const group of [...Object.values(s.garrisons??{}),...(s.militiaTraining??[]).map(course=>course.trainees??[])])for(const u of group){livingPlayers.add(String(u.id));if(!activePlayers.has(String(u.id)))unit(u);}
  const groupedEnemies=new Set();
  for(const group of s.enemyGroups??[])if(group.status!=='defeated')for(const u of group.units??[])if(u.hp>0&&!u.departure&&!u.surrendered&&!u.routed){groupedEnemies.add(String(u.id));if(!activeEnemies.has(String(u.id)))unit(u);}
@@ -236,6 +258,7 @@ export function validateEquipmentOwnership(s,roster=[],battle=null){
   for(const r of snapshot.groundItems??[])if(r.type==='item')record(r);
   for(const r of snapshot.droppedWeapons??[])if(!r.taken)record(r);
   for(const container of [...(snapshot.tiles??[]),...(snapshot.props??[])])for(const r of container.contents??[])record(r);
+  for(const npc of snapshot.npcs??[])for(const gift of npc.questGifts??[])record(gift);
  };
  for(const snapshot of snapshots)if(!active||snapshot.sectorId!==active.sectorId||(snapshot.sceneId??null)!==(active.sceneId??null))field(snapshot);
  for(const records of Object.values(s.sectorRemains??{}))for(const r of records)if(!activePlayers.has(String(r.unitId)))unit(r.unit);

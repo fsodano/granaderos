@@ -6,7 +6,7 @@ import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/serv
 import {createBattle,actBattle} from '../game/tactical.js';
 import {inventoryUsage} from '../game/tactical-inventory.js';
 import {handLayout} from '../game/hand-layout.js';
-const {EquipmentInteractionProvider,useEquipmentDrag}=await import('../web/lib/equipment-drag.ts');
+const {EquipmentInteractionProvider,useEquipmentDrag,useEquipmentInteraction}=await import('../web/lib/equipment-drag.ts');
 const {createEquipmentInteraction}=await import('../web/lib/equipment-interaction.ts');
 const field=()=>createBattle([{id:'p',x:1,y:1,weapon:1805,loaded:1,blade:0,medkits:3,torches:2}],{width:8,height:8,exploration:true,enemies:[]});
 const pocket=(unit,item)=>inventoryUsage(unit).slots.find(s=>s.entry?.item===item).id;
@@ -15,38 +15,38 @@ const pocket=(unit,item)=>inventoryUsage(unit).slots.find(s=>s.entry?.item===ite
 // represented only by hit-test results and pointer capture; ownership and
 // placement still go through the real controller, planner and reducer.
 function controls(battle=field()){
- const unit=battle.units[0],orders=[],inspections=[],apis={},captures=new Map();
- function Capture({name}){apis[name]=useEquipmentDrag(battle,unit,false,a=>orders.push(a));return null;}
- render(h(EquipmentInteractionProvider,null,[h(Capture,{key:'pockets',name:'pockets'}),h(Capture,{key:'hands',name:'hands'})]));
- const buttons=new Map();let hit=null;
+ const orders=[],inspections=[],apis={},captures=new Map(),buttons=new Map();let hit=null,store,dirty=false;
+ const reduce=action=>{orders.push(action);battle=actBattle(battle,{unitId:'p',...action});dirty=true;store.revalidate(battle.units[0],false,reduce,battle);return battle;};
+ function Capture({name}){store=useEquipmentInteraction().store;apis[name]=useEquipmentDrag(battle,battle.units[0],false,reduce);return null;}
+ const refresh=()=>{buttons.clear();render(h(EquipmentInteractionProvider,null,[h(Capture,{key:'pockets',name:'pockets'}),h(Capture,{key:'hands',name:'hands'})]));store.revalidate(battle.units[0],false,reduce,battle);dirty=false;};refresh();
  const button=slotId=>{
   if(buttons.has(slotId))return buttons.get(slotId);
   const api=apis[slotId.startsWith('hand:')?'hands':'pockets'],handlers=api.handlers(slotId,{onInspect:item=>inspections.push(item)}),captured=new Set();
-  const node={dataset:{equipmentScope:handlers['data-equipment-scope'],equipmentUnit:String(unit.id),equipmentSlot:slotId},closest(){return this;},setPointerCapture(id){captured.add(id);},hasPointerCapture:id=>captured.has(id),releasePointerCapture(id){captured.delete(id);}};
+  const node={dataset:{equipmentScope:handlers['data-equipment-scope'],equipmentUnit:String(battle.units[0].id),equipmentSlot:slotId},closest(){return this;},setPointerCapture(id){captured.add(id);},hasPointerCapture:id=>captured.has(id),releasePointerCapture(id){captured.delete(id);}};
   captures.set(slotId,captured);const value={handlers,node};buttons.set(slotId,value);return value;
  };
  const event=(slotId,{pointerId=1,isPrimary=true,pointerType='mouse',x=10,y=10,button:mouseButton=0}={})=>{
   const state={stopped:false,prevented:false};return Object.assign(state,{pointerId,isPrimary,pointerType,button:mouseButton,clientX:x,clientY:y,currentTarget:button(slotId).node,preventDefault(){state.prevented=true;},stopPropagation(){state.stopped=true;}});
  };
- const pointer=(handler,slotId,options={})=>{const e=event(slotId,options);button(slotId).handlers[handler](e);return e;};
- const click=slotId=>{const e=event(slotId);button(slotId).handlers.onClickCapture(e);const suppressed=e.stopped;if(!suppressed)button(slotId).handlers.onClick(e);return suppressed;};
+ const pointer=(handler,slotId,options={})=>{if(handler==='onPointerDown'&&dirty)refresh();const e=event(slotId,options);button(slotId).handlers[handler](e);return e;};
+ const click=slotId=>{const e=event(slotId);button(slotId).handlers.onClickCapture(e);const suppressed=e.stopped;if(!suppressed){if(dirty)refresh();button(slotId).handlers.onClick(e);}return suppressed;};
  const over=slotId=>{hit=slotId===null?null:button(slotId).node;};
  // Restore the ambient document immediately after each synchronous event run.
  const run=fn=>{const descriptor=Object.getOwnPropertyDescriptor(globalThis,'document');Object.defineProperty(globalThis,'document',{configurable:true,value:{elementFromPoint:()=>hit}});try{return fn();}finally{if(descriptor)Object.defineProperty(globalThis,'document',descriptor);else delete globalThis.document;}};
- return {battle,unit,orders,inspections,apis,captures,button,event,pointer,click,over,run};
+ return {get battle(){return battle;},get unit(){return battle.units[0];},orders,inspections,apis,captures,button,event,pointer,click,over,run};
 }
-function applied(ui){assert.equal(ui.orders.length,1);const next=actBattle(ui.battle,{unitId:'p',...ui.orders[0]});assert.equal(next.lastError,null,next.lastError);return next;}
+function applied(ui){assert.ok(ui.orders.length>0);assert.equal(ui.battle.lastError,null,ui.battle.lastError);return ui.battle;}
 
 test('normal primary-pointer drags emit one legal order and suppress the following native click',()=>{
  const ui=controls(),from=pocket(ui.unit,'medkits'),before=structuredClone(ui.battle);
  ui.run(()=>{
   ui.pointer('onPointerDown',from,{pointerId:11});ui.over('hand:left');ui.pointer('onPointerMove',from,{pointerId:11,x:40});
   assert.deepEqual(ui.orders,[]);assert.deepEqual(ui.battle,before);
-  ui.pointer('onPointerUp',from,{pointerId:11,x:40});assert.equal(ui.orders.length,1);assert.equal(ui.orders[0].sourceId,from);
+  ui.pointer('onPointerUp',from,{pointerId:11,x:40});assert.equal(ui.orders.length,1);assert.equal(ui.orders[0].sourceId,from);assert.equal(ui.orders[0].type,'dragEquipment');
   ui.pointer('onPointerUp',from,{pointerId:11,x:40});assert.equal(ui.orders.length,1,'repeated release must not issue another order');
   assert.equal(ui.click(from),true);assert.equal(ui.click('large-4'),false);assert.equal(ui.orders.length,1,'trailing click must not restart a reservation');
  });
- const next=applied(ui);assert.equal(handLayout(next.units[0]).left,'medkits');assert.equal(next.units[0].medkits,3);assert.equal(next.units[0].ap,ui.unit.ap);assert.deepEqual(ui.battle,before);
+ const next=applied(ui);assert.equal(handLayout(next.units[0]).left,'medkits');assert.equal(next.units[0].medkits,3);assert.equal(next.units[0].ap,before.units[0].ap);assert.equal(before.units[0].medkits,3);
 });
 
 test('Escape-style cancellation consumes the pending pointer click before and after the drag threshold',()=>{
@@ -59,7 +59,7 @@ test('Escape-style cancellation consumes the pending pointer click before and af
    // A later, fresh interaction is still usable after the click was consumed.
    ui.pointer('onPointerDown',from,{pointerId:13});ui.over(from);ui.pointer('onPointerUp',from,{pointerId:13});assert.equal(ui.click(from),false);ui.click('hand:left');
   });
-  assert.equal(handLayout(applied(ui).units[0]).left,'medkits');assert.deepEqual(ui.battle,before);
+  assert.equal(handLayout(applied(ui).units[0]).left,'medkits');assert.deepEqual(ui.orders.map(a=>a.type),['pickupEquipment','placeEquipment']);assert.equal(ui.unit.medkits,before.units[0].medkits);
  }
 });
 

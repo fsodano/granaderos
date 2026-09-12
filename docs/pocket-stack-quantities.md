@@ -1,5 +1,8 @@
 # Physical pocket stacks and quantity selection
 
+Current behavior: [durable cursor exchanges](equipment-cursor-exchanges.md) supersede the source-reservation, cancellation and rearrangement-cost behavior recorded below. The checks below describe the earlier milestone.
+
+
 Left-click picks one item from the selected pocket. Shift-click picks that pocket's whole stack. A compact quantity field and **Todo** button allow an exact amount without a keyboard modifier. Pointer dragging uses the same rules. The selection changes no ownership or AP until a destination accepts an order.
 
 An empty pocket receives the chosen quantity. Compatible stacks combine up to the destination's limit. If only part fits, the accepted amount moves and the remainder stays selected at its actual source. A hand receives one item and leaves the rest selected. Escape or right-click cancels only the pending remainder; it does not undo a completed placement. A changed source invalidates the pending selection.

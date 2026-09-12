@@ -525,7 +525,8 @@ export function nearbyLootOptions(state, unit, point=/** @type {{x:number,y:numb
   const options = [], visible = source => sameSurface(unit,source) && (point?sameCell(source,point):distance(unit, source)<=1.5) && canSee(state, unit, source);
   for (const source of state.units) {
     if (source.id === unit.id || source.fled || source.departure || !(source.hp <= 0 || source.unconscious || source.surrendered) || distance(unit,source)>1.5 || !visible(source)) continue;
-    for (const item of inventoryModel(state, source).items) {
+    const cursorItems=source.equipmentCursor?[{...source.equipmentCursor.stack,...itemDescriptor(source,'cursor'),item:'cursor',count:source.equipmentCursor.stack.count}]:[];
+    for (const item of [...inventoryModel(state, source).items,...cursorItems]) {
       options.push({...item, id: `unit:${source.id}:${item.item}`, source: source.name, action: {type: 'loot', targetId: source.id, item: item.item === 'primary' ? 'weapon' : item.item}});
     }
   }

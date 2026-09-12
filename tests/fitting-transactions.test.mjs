@@ -71,11 +71,11 @@ test('partial corpse loot retains the attached blade until the actual firearm is
 });
 
 test('a real rout drops the complete fixed gun and its pickup cannot duplicate the routed owner',()=>{
-  const defender={id:'defender',x:2,y:3,morale:16,weapon:1800,weaponInstanceId:'gun-main',condition:41,loaded:1,ammo:9,jammed:true,weaponFittings:{bayonet:socket()},overwatch:false};
+  const defender={weaponMetadata:{name:'Fusil del cuartel',originNote:'recuperado'},id:'defender',x:2,y:3,morale:16,weapon:1800,weaponInstanceId:'gun-main',condition:41,loaded:1,ammo:9,jammed:true,weaponFittings:{bayonet:socket()},overwatch:false};
   let s=field({...empty,weapon:1809,weaponInstanceId:undefined,bladeInstanceId:undefined,bladeFittingPattern:null,activeSlot:'primary'},{x:1,y:4},[defender,{id:'guard',x:18,y:7,weapon:0,loaded:0,ammo:0,overwatch:false}]);
   s=order(s,{type:'melee',targetId:'defender'});assert.equal(unit(s,'defender').routed,true);assert.equal(s.droppedWeapons.length,1);
-  const drop=s.droppedWeapons[0];checkAssembly(drop);assert.equal(drop.weight,4);assert.equal(unit(s,'defender').weaponInstanceId,undefined);assert.deepEqual(unit(s,'defender').weaponFittings,{});conserved(s);
-  s=order(validateBattleSnapshot(JSON.parse(JSON.stringify(s))),{type:'loot',unitId:'q',dropIndex:0});assert.equal(s.droppedWeapons[0].taken,true);checkAssembly(stored(unit(s,'q'),'gun-main')[1]);conserved(s);
+  const drop=s.droppedWeapons[0];assert.deepEqual(drop.weaponMetadata,defender.weaponMetadata);assert.equal(unit(s,'defender').weaponMetadata,undefined);checkAssembly(drop);assert.equal(drop.weight,4);assert.equal(unit(s,'defender').weaponInstanceId,undefined);assert.deepEqual(unit(s,'defender').weaponFittings,{});conserved(s);
+  s=order(validateBattleSnapshot(JSON.parse(JSON.stringify(s))),{type:'loot',unitId:'q',dropIndex:0});assert.equal(s.droppedWeapons[0].taken,true);checkAssembly(stored(unit(s,'q'),'gun-main')[1]);assert.equal(stored(unit(s,'q'),'gun-main')[1].name,defender.weaponMetadata.name);assert.equal(stored(unit(s,'q'),'gun-main')[1].originNote,'recuperado');conserved(s);
   reject(s,{type:'loot',unitId:'q',dropIndex:0});
 });
 

@@ -14,12 +14,10 @@ function useCancellation(store:EquipmentInteraction,enabled=true){
     store.cancel();event.preventDefault();event.stopImmediatePropagation();
    }
   };
-  const outside=(event:globalThis.PointerEvent)=>{
-   if(store.getSnapshot().selection&&(event.target as Element)?.closest<HTMLElement>('[data-equipment-scope]')?.dataset.equipmentScope!==store.scope)store.cancel();
-  };
-  const blur=()=>store.cancel();
-  window.addEventListener('keydown',key,true);window.addEventListener('pointerdown',outside,true);window.addEventListener('blur',blur);
-  return()=>{window.removeEventListener('keydown',key,true);window.removeEventListener('pointerdown',outside,true);window.removeEventListener('blur',blur);store.cancel();};
+  // Focus changes cannot discard a durable cursor. Esc is an explicit return
+  // action; leaving the tab or closing a component only ends its gesture.
+  window.addEventListener('keydown',key,true);
+  return()=>{window.removeEventListener('keydown',key,true);};
  },[store,enabled]);
 }
 function EquipmentInteractionRoot({children}:{children:ReactNode}){
@@ -38,20 +36,19 @@ export function useEquipmentInteraction(){
  return {store,current};
 }
 
-// Mouse, touch, pen and keyboard share one reservation across all physical slots.
-// Only a validated reducer order changes ownership; unmount and Escape cancel it.
-export function useEquipmentDrag(battle:any,unit:any,disabled:boolean,onOrder:(action:any)=>void){
+// Mouse, touch, pen and keyboard share the authoritative equipment cursor.
+export function useEquipmentDrag(battle:any,unit:any,disabled:boolean,onOrder:(action:any)=>any){
  const shared=useContext(Context),id=useId();const [local]=useState(()=>createEquipmentInteraction(id)),store=shared??local;
  const current=useSyncExternalStore(store.subscribe,store.getSnapshot,serverSnapshot);
  const owner=useRef(Symbol('equipment-source')),pointerId=useRef<number|null>(null),suppressClick=useRef(false),pickupShift=useRef<boolean|null>(null);
  useCancellation(store,!shared);
  useEffect(()=>()=>store.clearOwned(owner.current),[store,unit.id]);
- useEffect(()=>store.revalidate(unit,disabled),[store,unit,disabled]);
- const updateTarget=(event:PointerEvent)=>{
+ useEffect(()=>store.revalidate(unit,disabled,onOrder,battle),[store,unit,disabled,onOrder,battle]);
+ const updateTarget=(event:PointerEvent,fresh=false)=>{
   if(pointerId.current!==event.pointerId||store.getSnapshot().gesture?.owner!==owner.current)return;
   const element=document.elementFromPoint(event.clientX,event.clientY)?.closest<HTMLElement>('[data-equipment-slot]');
   const destinationId=element?.dataset.equipmentScope===store.scope&&element.dataset.equipmentUnit===String(unit.id)?element.dataset.equipmentSlot??null:null;
-  store.drag(battle,unit,owner.current,event.clientX,event.clientY,destinationId);
+  store.drag(battle,unit,owner.current,event.clientX,event.clientY,destinationId,fresh);
  };
  const handlers=(slotId:string,{onInspect,selectOnClick=true}:{onInspect?:(item:string)=>void;selectOnClick?:boolean}={})=>({
   'data-equipment-slot':slotId,'data-equipment-unit':String(unit.id),'data-equipment-scope':store.scope,
@@ -68,19 +65,19 @@ export function useEquipmentDrag(battle:any,unit:any,disabled:boolean,onOrder:(a
   onBlur:()=>store.leave(),
   onPointerUp:(event:PointerEvent<HTMLElement>)=>{
    if(pointerId.current!==event.pointerId)return;
-   updateTarget(event);const result=store.release(owner.current);pointerId.current=null;
+   updateTarget(event,true);const result=store.release(owner.current);pointerId.current=null;
    if(event.currentTarget.hasPointerCapture(event.pointerId))event.currentTarget.releasePointerCapture(event.pointerId);
    if(!result)return;
    suppressClick.current=result.suppressClick;if(result.suppressClick)pickupShift.current=null;
-   if(!disabled&&result.action)onOrder(result.action);
+   if(!disabled&&result.action)store.dispatch({...result.action,unitId:String(unit.id)},onOrder,owner.current);
   },
   onPointerCancel:(event:PointerEvent)=>{if(pointerId.current===event.pointerId){pointerId.current=null;suppressClick.current=true;pickupShift.current=null;store.clearOwned(owner.current);}},
   onLostPointerCapture:(event:PointerEvent)=>{if(pointerId.current===event.pointerId){pointerId.current=null;suppressClick.current=true;pickupShift.current=null;store.clearOwned(owner.current);}},
   onClickCapture:(event:MouseEvent)=>{if(suppressClick.current){event.preventDefault();event.stopPropagation();suppressClick.current=false;pickupShift.current=null;}},
-  onClick:selectOnClick?(event:MouseEvent)=>{event.stopPropagation();const all=event.detail===0?event.shiftKey:pickupShift.current??event.shiftKey;pickupShift.current=null;if(disabled)return;const action=store.click(battle,unit,slotId,owner.current,all);if(action)onOrder(action);}:undefined,
+  onClick:selectOnClick?(event:MouseEvent)=>{event.stopPropagation();const all=event.detail===0?event.shiftKey:pickupShift.current??event.shiftKey;pickupShift.current=null;if(disabled)return;const action=store.click(battle,unit,slotId,owner.current,all);if(action)store.dispatch({...action,unitId:String(unit.id)},onOrder,owner.current);}:undefined,
   onContextMenu:(event:MouseEvent)=>{
    event.preventDefault();event.stopPropagation();
-   if(store.getSnapshot().selection||store.getSnapshot().gesture){store.cancel();return;}
+   if(store.getSnapshot().gesture){store.cancel();return;}
    const item=equipmentEndpoint(unit,slotId).item;if(!disabled&&item)onInspect?.(item);
   },
   onDragStart:(event:MouseEvent)=>event.preventDefault(),

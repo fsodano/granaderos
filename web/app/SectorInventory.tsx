@@ -10,13 +10,14 @@ export default function SectorInventory({state,sectorId,dispatch}:{state:any;sec
  const [selected,setSelected]=useState('');
  const [selectedSite,setSelectedSite]=useState(sectorId);
  const sites=sectorInventorySites(state,sectorId),siteId=sites.some(site=>site.id===selectedSite)?selectedSite:sectorId;
- const model=sectorInventoryModel(state,siteId,rosterFor(state),selected);
+ const cursorOwner=Object.entries(state.operativeState??{}).find(([,record]:any)=>record.equipmentCursor)?.[0];
+ const model=sectorInventoryModel(state,siteId,rosterFor(state),selected||cursorOwner||'');
  const order=(action:any)=>dispatch({type:'sectorInventory',sector:siteId,operativeId:model.operativeId,...action});
  return <section className="sector-inventory" aria-label="Equipo del sector">
   <header><div><h3>Equipo del sector</h3><p>Elegí un combatiente presente para preparar lo que lleva en las manos y equipar su vestimenta. En un sector reconocido y seguro también puede recoger o dejar objetos.</p></div>
-   <label>Combatiente<select aria-label="Combatiente para el equipo del sector" value={model.operativeId??''} onChange={event=>setSelected(event.target.value)}>{!model.candidates.length&&<option value="">Sin combatientes presentes</option>}{model.candidates.map((op:any)=><option value={op.id} key={op.id}>{op.name}</option>)}</select></label>
+   <label>Combatiente<select aria-label="Combatiente para el equipo del sector" disabled={Boolean(model.personal?.equipmentCursor)} value={model.operativeId??''} onChange={event=>setSelected(event.target.value)}>{!model.candidates.length&&<option value="">Sin combatientes presentes</option>}{model.candidates.map((op:any)=><option value={op.id} key={op.id}>{op.name}</option>)}</select></label>
   </header>
-  {sites.length>1&&<label>Lugar<select aria-label="Lugar del equipo" value={siteId} onChange={event=>setSelectedSite(event.target.value)}>{sites.map(site=><option key={site.id} value={site.id}>{site.name} · {site.count} objetos</option>)}</select></label>}
+  {sites.length>1&&<label>Lugar<select aria-label="Lugar del equipo" disabled={Boolean(model.personal?.equipmentCursor)} value={siteId} onChange={event=>setSelectedSite(event.target.value)}>{sites.map(site=><option key={site.id} value={site.id}>{site.name} · {site.count} objetos</option>)}</select></label>}
   {model.usage&&<p>Mochila: {model.usage.used}/{model.usage.capacity} espacios. Las cargas permanecen en el arma; los cartuchos sueltos se usan en el próximo despliegue.</p>}
   <section aria-label="Vestimenta del depósito"><p>Ponchos disponibles aquí: {model.outfitStock}</p><button className="line-button" disabled={Boolean(model.outfitIssueReason)} title={model.outfitIssueReason || undefined} onClick={()=>order({direction:'issueOutfit'})}>Retirar poncho del depósito</button><small>Se guarda en un bolsillo grande. La reserva general se retira en Retiro.</small></section>
   {model.personal&&<CampaignPockets key={`${siteId}:${model.operativeId}`} unit={model.personal} disabled={Boolean(model.carriedReason)} onOrder={action=>order(action)}/>}

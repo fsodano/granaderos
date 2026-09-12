@@ -1,7 +1,7 @@
 import {validateReloadProgress} from './weapon-reload.js';
 import {CAMPAIGN_SECTORS,WEAPONS} from './data.js';
 import {sectorExits,validateSectorExits,boundaryMatches,entryFromSector,validEntry} from './tactical-exits.js';
-import {planReturnAmmunition,fieldAmmunition,storedWeaponAmmunition} from './ammunition.js';
+import {planReturnAmmunition,fieldAmmunition,storedWeaponAmmunition,cursorAmmunition} from './ammunition.js';
 import {fieldCapable} from './tactical.js';
 import {validateBattleSnapshot} from './validate-battle.js';
 import {FITTING_RULES_VERSION,normalizeUnitFittings} from './weapon-fittings.js';
@@ -27,7 +27,7 @@ export function prepareDeploymentExits(s,request){
   request.fieldCartridges=fieldAmmunition(previous);
   request.storedCartridges=storedWeaponAmmunition(request.squad);
   const bodies=(previous?.units??[]).filter(u=>u.side==='player'&&u.hp<=0&&!u.departure&&(!previous.returnLedger?.entries?.some(e=>e.unitId===u.id)||previous.returnLedger.entries.some(e=>e.unitId===u.id&&e.kind==='dead'&&e.sector===strategicSector(request))));
-  request.casualtyLootSources=[...new Map([...bodies,...request.remains.map(r=>r.unit)].map(u=>[String(u.id),{id:String(u.id),side:'player',loaded:u.loaded??0,ammo:u.ammo??0}])).values()];
+  request.casualtyLootSources=[...new Map([...bodies,...request.remains.map(r=>r.unit)].map(u=>[String(u.id),{id:String(u.id),side:'player',loaded:u.loaded??0,ammo:u.ammo??0,...(u.equipmentCursor?{cursorCartridges:cursorAmmunition(u)}:{})}])).values()];
   for(const u of request.squad){
     const r=s.operativeState[Number(u.id)],arrival=r?.arrival;
     delete u.entryEdge;delete u.entryAnchor;delete u.entryReason;
@@ -125,6 +125,7 @@ function validateReturnLedger(snapshot){
 export function validateDeploymentReturnState(s){
   const object=v=>v&&typeof v==='object'&&!Array.isArray(v),integer=(v,max)=>Number.isSafeInteger(v)&&v>=0&&v<=max;
   for(const field of ['fieldCartridges','storedCartridges'])need(s.pendingBattle?.[field]===undefined||integer(s.pendingBattle[field],1000000000000),'La munición previa del despliegue es inválida.');
+  for(const source of [...(s.pendingBattle?.ammunitionSources??[]),...(s.pendingBattle?.garrisonLootSources??[]),...(s.pendingBattle?.casualtyLootSources??[])])need(source.cursorCartridges===undefined||integer(source.cursorCartridges,1000000),'La munición del cursor previo es inválida.');
   migrateDeploymentReturns(s);need(object(s.sectorRemains),'Los restos del campo son inválidos.');
   const seen=new Set();
   for(const [at,records]of Object.entries(s.sectorRemains)){

@@ -15,7 +15,7 @@ export default function JA2Pockets({battle,unit,layout,disabled,onPick,onOrder}:
  const drag=useEquipmentDrag(battle,unit,disabled,onOrder);
  return <section className="ja2-pockets" aria-label="Bolsillos del combatiente">
   <p>Bolsillos · 4 grandes / 8 pequeños</p>
-  <small className="equipment-drag-hint" role="status">{drag.hint||(drag.active?'Elegí el destino. Origen o Esc: cancelar.':'Clic: uno. Mayús + clic: todos. Botón derecho: detalles.')}</small>
+  <small className="equipment-drag-hint" role="status">{drag.hint||(drag.active?'Elegí el destino. Esc: devolver objeto.':'Clic: uno. Mayús + clic: todos. Botón derecho: detalles.')}</small>
   {drag.quantity&&drag.quantity.maxCount>1&&<EquipmentQuantityControls scope={drag.scope} quantity={drag.quantity} setCount={drag.setCount} disabled={disabled||drag.dragging}/> }
   {['large','small'].map(size=><div className={`ja2-pocket-row ${size}`} key={size} role="group" aria-label={size==='large'?'Bolsillos grandes':'Bolsillos pequeños'}>
    {layout.slots.filter((slot:any)=>slot.size===size).map((slot:any)=>{
