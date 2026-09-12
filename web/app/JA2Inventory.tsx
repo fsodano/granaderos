@@ -1,6 +1,8 @@
 'use client';
 import './ja2-outfit.css';
 import JA2Hands from './JA2Hands';
+import JA2OutfitSlot from './JA2OutfitSlot';
+import {EquipmentInteractionProvider} from '../lib/equipment-drag';
 import JA2WeaponMode from './JA2WeaponMode';
 import {handsRequired} from '../../game/hand-layout.js';
 import {accessStepsFrom,tacticalLevel} from '../../game/tactical-space.js';
@@ -115,7 +117,7 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
       const editing = Boolean((e.target as HTMLElement)?.closest('input,select,textarea,[contenteditable]:not([contenteditable="false"]),[role="textbox"]'));
-      if (e.key === 'Escape' && !e.repeat && !e.ctrlKey && !e.metaKey && !editing) { e.preventDefault(); onCloseInventory(); }
+      if (!e.defaultPrevented && e.key === 'Escape' && !e.repeat && !e.ctrlKey && !e.metaKey && !editing) { e.preventDefault(); onCloseInventory(); }
     };
     window.addEventListener('keydown', key);
     return () => window.removeEventListener('keydown', key);
@@ -127,7 +129,7 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
   const stowSecond=equipLootPreview(battle,unit,null,'offhandItem');
   const stowOutfit=equipLootPreview(battle,unit,null,'outfit');
   return (
-    <div className="ja2-inventory" role="region" aria-label="Equipo y órdenes del combatiente">
+    <EquipmentInteractionProvider key={unit.id}><div className="ja2-inventory" role="region" aria-label="Equipo y órdenes del combatiente">
       <div className="ja2-inv-header">
         <div className="portrait">{portraitFor(unit.portraitId ?? unit.id) ? <img src={portraitFor(unit.portraitId ?? unit.id)!} alt={unit.name} /> : <span>{short(unit).slice(0, 2).toUpperCase()}</span>}</div>
         <div><h2>{short(unit)}</h2><span>{unit.mounted ? 'Granadero a caballo' : 'Ejército patriota'} · Nivel {levelFor(unit)}</span></div>
@@ -175,12 +177,9 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
         <TrainingProgress unit={unit} />
 </div></details>      </div>
       <div className="paper-doll">
-        <section className="ja2-outfit-slot" aria-label="Ranura de vestimenta">
-          <small>Vestimenta</small>
-          <button className="line-button" disabled={busyDisabled || !inv.outfit} aria-pressed={item?.item==='outfit'} onClick={()=>chooseItem('outfit')}>{inv.outfit ? `${inv.outfit.label} · ${inv.outfit.condition}%` : 'Vacía'}</button>
+        <JA2OutfitSlot battle={battle} unit={unit} disabled={busyDisabled} onPick={chooseItem} onOrder={onOrder}>
           {inv.outfit && <button className="line-button" disabled={busyDisabled || !stowOutfit.valid} title={stowOutfit.reason || undefined} onClick={()=>onOrder({type:'equipLoot',inventoryKey:null,slot:'outfit'})}>Guardar vestimenta · {battle.mode==='exploration'?'sin PA':`${stowOutfit.pa} PA`}</button>}
-
-        </section>
+        </JA2OutfitSlot>
         <JA2Hands battle={battle} unit={unit} busy={busy} onOrder={onOrder} onPick={chooseItem}/>
 <details className="ja2-inventory-extra"><summary>Equipo y accesorios</summary><div className="ja2-inventory-popup">        {unit.leftHandItem!=null&&<button className="line-button ja2-stow-hand" disabled={busyDisabled||!stowSecond.valid} title={stowSecond.reason||undefined} onClick={()=>onOrder({type:'equipLoot',slot:'offhandItem',inventoryKey:null})}>Guardar objeto de segunda mano · {battle.mode==='exploration'?'sin PA':'4 PA'}</button>}
         <label className="ja2-tool-selector">Objeto en mano<select aria-label="Elegir objeto en mano" value={inv.activeSlot||'primary'} disabled={busyDisabled} onChange={event=>{const option=equipped.find((entry:any)=>entry.slot===event.target.value);if(option){onOrder(option.action);onMode('move');}}}>{equipped.map((option:any)=><option key={option.slot} value={option.slot} disabled={option.disabled}>{option.label}{option.reason?` · ${option.reason}`:''}</option>)}</select></label>
@@ -254,6 +253,6 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
         <RadarCluster battle={battle} units={units} selected={selected} project={project} vw={vw} vh={vh} cameraRect={cameraRect} zoom={zoom} mode={mode} missionAllies={missionAllies} localMilitia={localMilitia} onSelect={onSelect} onRetreat={onRetreat} onCameraCenter={onCameraCenter} onCameraPan={onCameraPan} onZoom={onZoom} />
         <button className="ja2-done gold-button" onClick={onCloseInventory}>Listo</button>
       </div>
-    </div>
+    </div></EquipmentInteractionProvider>
   );
 }

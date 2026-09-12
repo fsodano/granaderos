@@ -383,6 +383,7 @@ export function planHoldOffhand(unit,item){
 // Read a physical endpoint. Fingerprints include contents, owner and metadata,
 // so a delayed drag cannot silently equip a changed item or overwrite a slot.
 export function equipmentEndpoint(unit,slotId){
+ if(slotId==='outfit'){const item=wornOutfit(unit)?'outfit':null;return {id:slotId,kind:'outfit',item,count:item?1:0};}
  const layout=handLayout(unit);
  if(slotId==='hand:right'||slotId==='hand:left'){
   const side=slotId.slice(5),item=layout[side];return {id:slotId,kind:'hand',side,item,count:item?1:0,blocked:side==='left'&&layout.twoHanded};
@@ -395,6 +396,44 @@ export function equipmentFingerprint(unit,slotId){
  const endpoint=equipmentEndpoint(unit,slotId),item=endpoint.item;
  const contents=item?extractItemQuantity(unit,item,1,{keepOtherHand:false}).stack:null;
  return JSON.stringify({unitId:String(unit.id),slotId,item,count:endpoint.count,index:endpoint.entry?.index??0,blocked:Boolean(endpoint.blocked),contents});
+}
+// Clothing exchanges use the selected physical slot, even with full pockets.
+// Keep the outgoing garment separate from equivalent packed garments so it
+// cannot merge into an item held in the other hand or claim another pocket.
+export function planOutfitPlacement(unit,source,destination){
+ const other=source.kind==='outfit'?destination:source;
+ if(!['pocket','hand'].includes(other.kind))fail('Elegí una mano o un bolsillo para la vestimenta.');
+ if(other.blocked)fail('El arma principal ocupa las dos manos.');
+ if(other.kind==='pocket'&&other.size!=='large')fail('La vestimenta necesita un bolsillo grande.');
+ if(other.item&&itemDescriptor(unit,other.item).kind!=='outfit')fail('Solo podés equipar una vestimenta en esa ranura.');
+ const layout=inventoryUsage(unit),hands=handLayout(unit),outgoing=wornOutfit(unit);
+ let next=structuredClone(unit),incoming=null;
+ if(other.item){const taken=extractItemQuantity(next,other.item,1,{keepOtherHand:false});next=taken.unit;incoming=taken.stack;}
+ next.outfit=null;delete next.poncho;
+ if(other.kind==='hand'){
+  if(other.side==='right'){next.activeSlot='unarmed';delete next.activeItem;delete next.activeTool;delete next.activeSupply;next.leftHandItem=hands.left;}
+  else next.leftHandItem=null;
+ }
+ if(incoming){const {item,...outfit}=incoming;validateOutfit(outfit,{worn:true});next.outfit=outfit;}
+ let stored=null;
+ if(outgoing){
+  stored=`inventory:${uniqueKey(next.inventory??{},'outfit')}`;
+  next=applyItemQuantity(next,{...outgoing,item:stored,count:1},{deferCapacity:true});
+ }
+ if(other.kind==='hand'){
+  if(stored){if(other.side==='right'){next.activeSlot='item';next.activeItem=stored;}else next.leftHandItem=stored;}
+  lowerWeapon(next);next.braced=false;next.overwatch=false;next.momentum=0;delete next.lastTargetId;delete next.lastShotPosition;
+ }
+ next.pocketOrder=layout.slots.flatMap(slot=>{
+  if(!slot.entry||other.kind==='pocket'&&slot.id===other.id)return [];
+  const {item,index}=slot.entry;
+  // One packed garment has left this stack. Later equivalent garments retain
+  // their own pockets while their record's stack indices close the gap.
+  return [{slotId:slot.id,item,index:other.kind==='pocket'&&item===other.item&&index>other.entry.index?index-1:index}];
+ });
+ if(stored&&other.kind==='pocket')next.pocketOrder.push({slotId:other.id,item:stored,index:0});
+ if(inventoryUsage(next).overloaded)fail('No queda un bolsillo grande para la vestimenta retirada.');
+ return next;
 }
 export function placeStoredItem(unit,item,destinationId){
  const layout=inventoryUsage(unit),entry=layout.slots.find(slot=>slot.entry?.item===item);

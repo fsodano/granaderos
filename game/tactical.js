@@ -17,7 +17,7 @@ import {projectilePath,projectileFlight,pointProjectileFlight,concealmentAt,conc
 import {boundaryMatches} from './tactical-exits.js';
 import {HELD_SUPPLIES,heldSupply,clearEmptySupply} from './held-supplies.js';
 import {heldTool,environmentActionProfile,resolveEnvironmentInteraction,extractContainerItem} from './environment-interactions.js';
-import {SUPPLY_ITEMS,carriedObject,inventoryUsage,itemDescriptor,itemQuantity,extractItemQuantity,applyItemQuantity,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove,planEquipOutfit,planStowOutfit,planHoldOffhand,equipmentEndpoint,equipmentFingerprint,placeStoredItem} from './tactical-inventory.js';
+import {SUPPLY_ITEMS,carriedObject,inventoryUsage,itemDescriptor,itemQuantity,extractItemQuantity,applyItemQuantity,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove,planEquipOutfit,planStowOutfit,planHoldOffhand,equipmentEndpoint,equipmentFingerprint,planOutfitPlacement,placeStoredItem} from './tactical-inventory.js';
 import {FITTING_RULES_VERSION,FIT_BAYONET_AP,REMOVE_BAYONET_AP,LOOSE_BAYONET,fixedBayonetFor,fixedBayonetProfile,fittingWeight,weaponItemWeight,normalizeUnitFittings} from './weapon-fittings.js';
 import {FISTS,BUTTSTOCK,unarmedChance,unarmedImpact,weaponStealChance,STEAL_MIN_AP} from './unarmed-combat.js';
 import {directionTo,facingAllowsSight,turnAPCost,stealthAPMultiplier,noiseRadius,approximateHeardPosition} from './tactical-awareness.js';
@@ -781,6 +781,7 @@ export function planEquipmentPlacement(unit,action){
  for(const [id,expected]of [[sourceId,expectedSource],[destinationId,expectedDestination]])if(typeof expected!=='string'||expected!==equipmentFingerprint(unit,id))throw Error('Cambió el equipo. Volvé a seleccionar el objeto.');
  const source=equipmentEndpoint(unit,sourceId),destination=equipmentEndpoint(unit,destinationId);
  if(!source.item)throw Error('La ranura de origen está vacía.');
+ if(source.kind==='outfit'||destination.kind==='outfit')return {unit:planOutfitPlacement(unit,source,destination),pa:OUTFIT_CHANGE_AP};
  if(source.kind==='pocket'&&destination.kind==='pocket')return {unit:planPocketMove(unit,sourceId,destinationId),pa:0};
  if(destination.kind==='hand'){
   if(destination.blocked)throw Error('El arma principal ocupa las dos manos.');

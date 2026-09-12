@@ -1,11 +1,14 @@
 .ja2-hands{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;grid-column:1/-1;}
-.battle-layout .ja2-hands button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;padding:7px;border:1px solid #9c8c57;background:#182219;color:#eae2c3;border-radius:0;}
+:is(.battle-layout,.campaign-pockets) .ja2-hands button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;padding:7px;border:1px solid #9c8c57;background:#182219;color:#eae2c3;border-radius:0;}
 .ja2-hands img{width:100%;height:54px;object-fit:contain;image-rendering:pixelated;}
 .ja2-hands small{font-size:10px;color:#c5bc99;}.ja2-hands span{font-size:11px;}
-.battle-layout .ja2-hands .blocked{background:repeating-linear-gradient(135deg,#20281d,#20281d 5px,#2e3527 5px,#2e3527 6px);opacity:.7;}
-.battle-layout .ja2-hands.compact button{padding:4px;gap:1px;}.ja2-hands.compact{margin:5px 0;}
-.battle-layout .ja2-hands .drop-target{outline:2px solid #f6d881;background:#35432a;}
+:is(.battle-layout,.campaign-pockets) .ja2-hands .blocked{background:repeating-linear-gradient(135deg,#20281d,#20281d 5px,#2e3527 5px,#2e3527 6px);opacity:.7;}
+:is(.battle-layout,.campaign-pockets) .ja2-hands.compact button{padding:4px;gap:1px;}.ja2-hands.compact{margin:5px 0;}
+:is(.battle-layout,.campaign-pockets) .ja2-hands .drop-target{outline:2px solid #f6d881;background:#35432a;}
 .ja2-hands .equipment-drag-hint{grid-column:1/-1;min-height:14px;}
 .ja2-hands button[data-held=true]{cursor:grab;touch-action:none;user-select:none;}
 
 .battle-layout .paper-doll .ja2-stow-hand{grid-column:1/-1;font-size:10px;padding:5px;min-height:0;}
+
+.ja2-hands button[aria-pressed="true"]{border-color:#e0c068;box-shadow:inset 0 0 0 2px #e0c068;}
+.ja2-hands button:focus-visible{outline:2px solid #f6d881;outline-offset:2px;}

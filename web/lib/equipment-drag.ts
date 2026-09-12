@@ -1,54 +1,80 @@
 'use client';
-import {useEffect,useRef,useSyncExternalStore,type PointerEvent,type MouseEvent} from 'react';
-import {equipmentEndpoint,equipmentFingerprint} from '../../game/tactical-inventory.js';
-import {equipmentPlacementPreview} from '../../game/tactical.js';
-type Gesture={unitId:string;sourceId:string;expectedSource:string;x:number;y:number;dragging:boolean;target:string;hint:string;action:any};
-let gesture:Gesture|null=null;
-const listeners=new Set<()=>void>();
-const publish=(next:Gesture|null)=>{gesture=next;for(const update of listeners)update();};
-const subscribe=(update:()=>void)=>{listeners.add(update);return()=>{listeners.delete(update);};};
-const snapshot=()=>gesture;
+import {createContext,createElement,useContext,useEffect,useId,useRef,useState,useSyncExternalStore,type ReactNode,type PointerEvent,type MouseEvent} from 'react';
+import {equipmentEndpoint} from '../../game/tactical-inventory.js';
+import {createEquipmentInteraction,type EquipmentInteraction} from './equipment-interaction';
+import EquipmentCursor from './EquipmentCursor';
+
+const Context=createContext<EquipmentInteraction|null>(null);
 const serverSnapshot=()=>null;
-// Pointer capture supports mouse, pen and touch without a browser-native drag
-// swallowing the final drop. Only the accepted reducer order changes ownership.
+function useCancellation(store:EquipmentInteraction,enabled=true){
+ useEffect(()=>{
+  if(!enabled)return;
+  const key=(event:KeyboardEvent)=>{
+   if(event.key==='Escape'&&!event.repeat&&!event.ctrlKey&&!event.metaKey&&(store.getSnapshot().selection||store.getSnapshot().gesture)){
+    store.cancel();event.preventDefault();event.stopImmediatePropagation();
+   }
+  };
+  const outside=(event:globalThis.PointerEvent)=>{
+   if(store.getSnapshot().selection&&(event.target as Element)?.closest<HTMLElement>('[data-equipment-scope]')?.dataset.equipmentScope!==store.scope)store.cancel();
+  };
+  const blur=()=>store.cancel();
+  window.addEventListener('keydown',key,true);window.addEventListener('pointerdown',outside,true);window.addEventListener('blur',blur);
+  return()=>{window.removeEventListener('keydown',key,true);window.removeEventListener('pointerdown',outside,true);window.removeEventListener('blur',blur);store.cancel();};
+ },[store,enabled]);
+}
+export function EquipmentInteractionProvider({children}:{children:ReactNode}){
+ const id=useId();const [store]=useState(()=>createEquipmentInteraction(id));
+ useCancellation(store);
+ return createElement(Context.Provider,{value:store},children,createElement(EquipmentCursor,{store}));
+}
+
+// Mouse, touch, pen and keyboard share one reservation across all physical slots.
+// Only a validated reducer order changes ownership; unmount and Escape cancel it.
 export function useEquipmentDrag(battle:any,unit:any,disabled:boolean,onOrder:(action:any)=>void){
- const current=useSyncExternalStore(subscribe,snapshot,serverSnapshot);
- const ownsGesture=useRef(false),suppressClick=useRef(false);
- useEffect(()=>()=>{if(ownsGesture.current){ownsGesture.current=false;publish(null);}},[unit.id]);
- const finish=()=>{ownsGesture.current=false;publish(null);};
+ const shared=useContext(Context),id=useId();const [local]=useState(()=>createEquipmentInteraction(id)),store=shared??local;
+ const current=useSyncExternalStore(store.subscribe,store.getSnapshot,serverSnapshot);
+ const owner=useRef(Symbol('equipment-source')),pointerId=useRef<number|null>(null),suppressClick=useRef(false);
+ useCancellation(store,!shared);
+ useEffect(()=>()=>store.clearOwned(owner.current),[store,unit.id]);
+ useEffect(()=>store.revalidate(unit,disabled),[store,unit,disabled]);
  const updateTarget=(event:PointerEvent)=>{
-  if(!gesture||!ownsGesture.current)return;
-  const dragging=gesture.dragging||Math.hypot(event.clientX-gesture.x,event.clientY-gesture.y)>5;
-  if(!dragging)return;
+  if(pointerId.current!==event.pointerId||store.getSnapshot().gesture?.owner!==owner.current)return;
   const element=document.elementFromPoint(event.clientX,event.clientY)?.closest<HTMLElement>('[data-equipment-slot]');
-  const destinationId=element?.dataset.equipmentUnit===String(unit.id)?element.dataset.equipmentSlot:null;
-  if(!destinationId){publish({...gesture,dragging,target:'',hint:'',action:null});return;}
-  const action={type:'moveEquipment',sourceId:gesture.sourceId,destinationId,expectedSource:gesture.expectedSource,expectedDestination:equipmentFingerprint(unit,destinationId)};
-  const preview=equipmentPlacementPreview(battle,unit,action);
-  publish({...gesture,dragging,target:preview.valid?destinationId:'',hint:preview.reason??`Mover equipo · ${battle.mode==='exploration'?0:preview.pa} PA`,action:preview.valid?action:null});
+  const destinationId=element?.dataset.equipmentScope===store.scope&&element.dataset.equipmentUnit===String(unit.id)?element.dataset.equipmentSlot??null:null;
+  store.drag(battle,unit,owner.current,event.clientX,event.clientY,destinationId);
  };
- const handlers=(slotId:string)=>({
-  'data-equipment-slot':slotId,'data-equipment-unit':String(unit.id),
+ const handlers=(slotId:string,{onInspect,selectOnClick=true}:{onInspect?:(item:string)=>void;selectOnClick?:boolean}={})=>({
+  'data-equipment-slot':slotId,'data-equipment-unit':String(unit.id),'data-equipment-scope':store.scope,
+  'aria-pressed':Boolean(current?.selection?.unitId===String(unit.id)&&current.selection.sourceId===slotId),
   onPointerDown:(event:PointerEvent<HTMLElement>)=>{
+   if(disabled||!battle||event.button!==0||event.isPrimary===false||pointerId.current!==null)return;
    suppressClick.current=false;
-   if(disabled||!battle||event.button!==0||!equipmentEndpoint(unit,slotId).item)return;
-   ownsGesture.current=true;
-   publish({unitId:String(unit.id),sourceId:slotId,expectedSource:equipmentFingerprint(unit,slotId),x:event.clientX,y:event.clientY,dragging:false,target:'',hint:'',action:null});
-   event.currentTarget.setPointerCapture(event.pointerId);
+   if(store.press(unit,slotId,owner.current,event.clientX,event.clientY)){pointerId.current=event.pointerId;event.currentTarget.setPointerCapture(event.pointerId);}
   },
   onPointerMove:updateTarget,
+  onPointerEnter:()=>{if(!disabled&&battle)store.hover(battle,unit,slotId);},
+  onPointerLeave:()=>store.leave(),
+  onFocus:()=>{if(!disabled&&battle)store.hover(battle,unit,slotId);},
+  onBlur:()=>store.leave(),
   onPointerUp:(event:PointerEvent<HTMLElement>)=>{
-   if(!ownsGesture.current)return;
-   // Recheck the actual release position; the source fingerprint remains the
-   // one captured at pickup, so changed contents reject atomically.
-   updateTarget(event);const action=gesture?.action;suppressClick.current=Boolean(gesture?.dragging);
+   if(pointerId.current!==event.pointerId)return;
+   updateTarget(event);const result=store.release(owner.current);pointerId.current=null;
    if(event.currentTarget.hasPointerCapture(event.pointerId))event.currentTarget.releasePointerCapture(event.pointerId);
-   finish();if(!disabled&&action)onOrder(action);
+   if(!result)return;
+   suppressClick.current=result.suppressClick;
+   if(!disabled&&result.action)onOrder(result.action);
   },
-  onPointerCancel:()=>{suppressClick.current=true;finish();},
-  onLostPointerCapture:()=>{if(ownsGesture.current)finish();},
+  onPointerCancel:(event:PointerEvent)=>{if(pointerId.current===event.pointerId){pointerId.current=null;suppressClick.current=true;store.clearOwned(owner.current);}},
+  onLostPointerCapture:(event:PointerEvent)=>{if(pointerId.current===event.pointerId){pointerId.current=null;suppressClick.current=true;store.clearOwned(owner.current);}},
   onClickCapture:(event:MouseEvent)=>{if(suppressClick.current){event.preventDefault();event.stopPropagation();suppressClick.current=false;}},
+  onClick:selectOnClick?(event:MouseEvent)=>{event.stopPropagation();if(disabled)return;const action=store.click(battle,unit,slotId,owner.current);if(action)onOrder(action);}:undefined,
+  onContextMenu:(event:MouseEvent)=>{
+   event.preventDefault();event.stopPropagation();
+   if(store.getSnapshot().selection||store.getSnapshot().gesture){store.cancel();return;}
+   const item=equipmentEndpoint(unit,slotId).item;if(!disabled&&item)onInspect?.(item);
+  },
   onDragStart:(event:MouseEvent)=>event.preventDefault(),
  });
- return {handlers,dragging:Boolean(current?.unitId===String(unit.id)&&current.dragging),target:current?.unitId===String(unit.id)?current.target:'',hint:current?.unitId===String(unit.id)?current.hint:''};
+ const picked=current?.gesture??current?.selection,belongs=picked?.unitId===String(unit.id);
+ return {handlers,selected:belongs?current?.selection?.sourceId??'':'',active:Boolean(belongs),dragging:Boolean(belongs&&current?.gesture?.dragging),target:belongs?current?.target??'':'',hint:current?.hint??'',cancel:store.cancel};
 }
