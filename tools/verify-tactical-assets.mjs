@@ -4,16 +4,24 @@ import {resolve} from 'node:path';
 import {createHash} from 'node:crypto';
 import {spriteLayout,SPRITE_DIRECTIONS,SPRITE_FRAMES,SPRITE_FPS} from '../game/sprite-layouts.js';
 import {ILLUSTRATED_SPRITE_ATLASES} from '../game/illustrated-sprite-atlases.js';
+import {SPRITE_APPEARANCES} from '../game/sprite-appearances.js';
+import {SPRITE_SEQUENCES} from '../game/sprite-state.js';
 export const TERRAIN_MATERIALS=['dry-grass','dirt','cobble','green-grass','mud','floor','plaster','roof','wood'];
 export const SCENERY_OBJECTS=['tree','poplar','shrub','rocks','barrels','hay'];
-export async function verifyIllustratedSpriteAssets(directory,requireAsset=()=>{}){
+// A staged publication may supply its own runtime index. Active coverage still
+// comes from gameplay, so two matching incomplete banks cannot pass this check.
+export async function verifyIllustratedSpriteAssets(directory,requireAsset=()=>{},{runtimeAtlases=ILLUSTRATED_SPRITE_ATLASES}={}){
  const path='illustrated/manifest.json';requireAsset(`/art/${path}`,'illustrated sprite metadata');
  const manifest=JSON.parse(await readFile(resolve(directory,'art',path),'utf8'));
  if(manifest.version!==1||manifest.style!=='illustrated-pixel-art'||manifest.directions?.join()!==SPRITE_DIRECTIONS.join())throw Error('Invalid illustrated sprite manifest.');
+ for(const appearance of Object.keys(SPRITE_APPEARANCES))for(const sequence of SPRITE_SEQUENCES){
+  const name=`${appearance}-${sequence}`;
+  if(!Object.hasOwn(manifest.atlases??{},name)||!Object.hasOwn(runtimeAtlases,name))throw Error(`Missing active illustrated sprite: ${name}`);
+ }
  const names=Object.keys(manifest.atlases??{}).sort();
- if(names.join()!==Object.keys(ILLUSTRATED_SPRITE_ATLASES).sort().join())throw Error('Illustrated sprite runtime index differs from published atlases.');
+ if(names.join()!==Object.keys(runtimeAtlases).sort().join())throw Error('Illustrated sprite runtime index differs from published atlases.');
  for(const name of names){
-  const entry=manifest.atlases[name],runtime=ILLUSTRATED_SPRITE_ATLASES[name];
+  const entry=manifest.atlases[name],runtime=runtimeAtlases[name];
   const minimum=spriteLayout(name.includes('-mounted-')?'cavalry-idle':name).cell;
   // Authored muzzle flashes may need more transparent padding than the old
   // atlas. Validate its density and origin, not the old fixed rectangle.
