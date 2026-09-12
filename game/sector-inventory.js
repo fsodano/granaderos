@@ -1,9 +1,9 @@
 import {SUPPLY_ITEMS,itemQuantity,itemDescriptor,extractItemQuantity,applyItemQuantity,inventoryUsage} from './tactical-inventory.js';
-import {getReachable,hasLineOfSight} from './tactical.js';
+import {getReachable,hasLineOfSight,planEquipLoot,WEAPONS,BLADES} from './tactical.js';
 import {propBlocksAt,propCells} from './props.js';
 import {boundaryMatches} from './tactical-exits.js';
 import {operativeLocation,operativeInTransit} from './squads.js';
-import {returnEquipment} from './equipment.js';
+import {returnEquipment,setCarriedLoading,clearCarriedLoading} from './equipment.js';
 import {weaponItemWeight} from './weapon-fittings.js';
 import {validateBattleSnapshot} from './validate-battle.js';
 import {MISSION_SCENES} from './missions.js';
@@ -55,10 +55,11 @@ export function sectorInventorySites(s,sectorId){
 export function knownCampaignSectorEquipment(s,sectorId){
  return sectorInventorySites(s,sectorId).flatMap(site=>knownSectorEquipment(inventorySite(s,site.id).snapshot).map(row=>({...row,key:JSON.stringify([site.id,row.key]),siteId:site.id,siteName:site.name})));
 }
+function carriedActor(s,op){const r=s.operativeState[op.id];return {...op,...r,id:String(op.id),side:'player',loaded:r.carriedLoaded??0,ammo:(r.carriedAmmo??0)-(r.carriedLoaded??0),...(r.carriedReloadProgress?{reloadProgress:r.carriedReloadProgress}:{}),ap:100,energy:r.energy??100,unconscious:false,movementMode:'walk',stance:'standing'};}
 function actorAt(s,sectorId,op){
  const r=s.operativeState[op.id],snapshot=inventorySite(s,sectorId).snapshot;
  const old=snapshot?.units.find(u=>u.id===String(op.id)&&!u.departure&&u.hp>0);
- const unit={...op,...r,id:String(op.id),side:'player',loaded:0,ammo:r.carriedAmmo??0,ap:100,energy:r.energy??100,unconscious:false,movementMode:'walk',stance:'standing'};
+ const unit=carriedActor(s,op);
  if(old&&r.residentSector===snapshot.sectorId&&(r.residentScene??null)===(snapshot.sceneId??null))return {...unit,x:old.x,y:old.y};
  const edge=r.arrival?.entryEdge??'S';
  const candidates=(snapshot?.tiles??[]).filter(t=>boundaryMatches(snapshot,t,edge)&&!t.blocked&&!propBlocksAt(snapshot,t.x,t.y));
@@ -66,19 +67,19 @@ function actorAt(s,sectorId,op){
  candidates.sort((a,b)=>Math.hypot(a.x/(snapshot.width-1)-anchor.x,a.y/(snapshot.height-1)-anchor.y)-Math.hypot(b.x/(snapshot.width-1)-anchor.x,b.y/(snapshot.height-1)-anchor.y)||a.y-b.y||a.x-b.x);
  return candidates[0]?{...unit,x:candidates[0].x,y:candidates[0].y}:null;
 }
-function unavailable(s,siteId){
+function unavailable(s,siteId,terrain=true){
  const {sectorId,snapshot}=inventorySite(s,siteId);
  if(s.defeated)return 'La campaña terminó.';
  if(s.pendingBattle||s.pendingEncounter)return 'Resolvé el encuentro pendiente antes de manejar el equipo desde la carta.';
  if(s.sectors[sectorId]?.owner!=='patriot'||s.enemyGroups?.some(g=>g.target===sectorId&&['waiting','engaged','stationed'].includes(g.status)))return 'El sector debe estar bajo control patriota y sin ocupación enemiga.';
- if(!snapshot?.sectorCleared)return 'Primero reconocé y asegurá el sector.';
+ if(terrain&&!snapshot?.sectorCleared)return 'Primero reconocé y asegurá el sector.';
  return null;
 }
 export function sectorInventoryModel(s,sectorId,roster,operativeId){
  const {snapshot,sectorId:location}=inventorySite(s,sectorId),candidates=roster.filter(op=>s.recruited.includes(op.id)&&s.operativeState[op.id]?.alive&&!s.operativeState[op.id]?.captured&&!operativeInTransit(s,op.id)&&operativeLocation(s,op.id)===location);
  const op=candidates.find(op=>op.id===Number(operativeId))??candidates[0],r=op&&s.operativeState[op.id];
- let reason=unavailable(s,sectorId);
- if(!reason&&(!op||r.hp<15||r.asleep||r.energy<=0||r.unconscious||r.routed||r.surrendered))reason='Elegí un combatiente consciente, despierto y presente en el sector.';
+ let reason=unavailable(s,sectorId),carriedReason=unavailable(s,sectorId,false);
+ if(!op||r.hp<15||r.asleep||r.energy<=0||r.unconscious||r.routed||r.surrendered){carriedReason??='Elegí un combatiente consciente, despierto y presente en el sector.';reason??=carriedReason;}
  const actor=op&&snapshot?actorAt(s,sectorId,op):null;
  if(!reason&&!actor)reason='El combatiente debe entrar al sector para encontrar un acceso.';
  const view=actor?{...snapshot,units:[actor],mode:'exploration',phase:'player',status:'active',artillery:[],npcs:[]}:null;
@@ -88,20 +89,34 @@ export function sectorInventoryModel(s,sectorId,roster,operativeId){
   const reachable=!reason&&reach.some(p=>cells.some(c=>Math.hypot(p.x-c.x,p.y-c.y)<=1.5&&hasLineOfSight(view,p,c)));
   return {key:row.key,label:row.label,count:row.stack.count,x:row.x,y:row.y,kind:row.kind,expected:JSON.stringify(row.stack),condition:row.stack.condition,loaded:row.stack.loaded,jammed:row.stack.jammed,fittingPattern:row.stack.fittingPattern,reachable,reason:reason??(!reachable?'No hay un camino abierto hasta este equipo.':null)};
  });
- const carried=actor?[...Object.keys(SUPPLY_ITEMS),...(!actor.weaponDropped&&actor.weapon?['primary']:[]),...(actor.blade?['blade']:[]),...Object.keys(actor.inventory??{}).map(key=>`inventory:${key}`)].filter(item=>itemQuantity(actor,item)>0).map(item=>({item,label:itemDescriptor(actor,item).label,count:itemQuantity(actor,item)})):[];
- return {sectorId,operativeId:op?.id??null,candidates:candidates.map(op=>({id:op.id,name:op.nickname??op.name})),reason,entries,carried,usage:actor?inventoryUsage(actor):null};
+ const personal=op?carriedActor(s,op):null;
+ const carried=personal?[...Object.keys(SUPPLY_ITEMS),...(!personal.weaponDropped&&personal.weapon?['primary']:[]),...(personal.blade?['blade']:[]),...Object.keys(personal.inventory??{}).map(key=>`inventory:${key}`)].filter(item=>itemQuantity(personal,item)>0).map(item=>{
+  const row={item,label:itemDescriptor(personal,item).label,count:itemQuantity(personal,item)};
+  if(item==='primary'&&WEAPONS[personal.weapon]?.capacity>0){row.loaded=personal.loaded;row.condition=personal.condition;row.jammed=personal.jammed;row.reloadProgress=personal.reloadProgress;}
+  const key=item.startsWith('inventory:')?item.slice(10):null,record=key&&personal.inventory[key];
+  if(record&&(WEAPONS[record.weapon]||BLADES[record.weapon])){
+   row.expected=JSON.stringify(record);row.inventoryKey=key;row.loaded=record.loaded??0;row.condition=record.condition;row.jammed=record.jammed;row.reloadProgress=record.reloadProgress;
+   row.equip=(BLADES[record.weapon]?['primary','blade']:['primary']).map(slot=>{let reason=carriedReason;if(!reason)try{planEquipLoot(personal,key,slot);}catch(error){reason=error.message;}return {slot,valid:!reason,reason};});
+  }
+  return row;
+ }):[];
+ return {sectorId,operativeId:op?.id??null,candidates:candidates.map(op=>({id:op.id,name:op.nickname??op.name})),reason,carriedReason,entries,carried,usage:personal?inventoryUsage(personal):null};
 }
 
 // The campaign dispatcher provides a private copy. Plan every transfer before
 // updating either custodian; the source key is resolved again on confirmation.
 export function moveSectorItem(s,action,roster){
  const {sector:sectorId,operativeId,direction,count=1}=action;
- need(['take','drop'].includes(direction)&&Number.isSafeInteger(count)&&count>0&&count<=1000000,'La orden de inventario no es válida.');
+ need(['take','drop','equip'].includes(direction)&&Number.isSafeInteger(count)&&count>0&&count<=1000000,'La orden de inventario no es válida.');
  const model=sectorInventoryModel(s,sectorId,roster,operativeId);
- need(!model.reason,model.reason);need(model.operativeId===Number(operativeId),'Elegí un combatiente presente.');
- const op=roster.find(op=>op.id===Number(operativeId)),snapshot=inventorySite(s,sectorId).snapshot,actor=actorAt(s,sectorId,op);
+ const reason=direction==='equip'?model.carriedReason:model.reason;need(!reason,reason);need(model.operativeId===Number(operativeId),'Elegí un combatiente presente.');
+ const op=roster.find(op=>op.id===Number(operativeId)),snapshot=inventorySite(s,sectorId).snapshot,actor=direction==='equip'?carriedActor(s,op):actorAt(s,sectorId,op);
  let next,stack;
- if(direction==='take'){
+ if(direction==='equip'){
+  need(count===1&&['primary','blade'].includes(action.slot),'Elegí la mano para equipar un arma.');
+  need(action.expected===JSON.stringify(actor.inventory?.[action.inventoryKey])&&typeof action.expected==='string','El equipo cambió. Revisá la mochila antes de equiparlo.');
+  stack=extractItemQuantity(actor,`inventory:${action.inventoryKey}`,1).stack;next=planEquipLoot(actor,action.inventoryKey,action.slot);
+ }else if(direction==='take'){
   const row=poolSources(snapshot).find(row=>row.key===action.sourceKey),entry=model.entries.find(row=>row.key===action.sourceKey);
   need(row&&entry?.reachable,entry?.reason??'El equipo ya no está disponible.');need(action.expected===JSON.stringify(row.stack),'El equipo cambió. Revisá la lista antes de recogerlo.');need(count<=row.stack.count,'No queda esa cantidad del objeto.');
   stack={...row.stack,count};next=applyItemQuantity(actor,stack);
@@ -117,9 +132,19 @@ export function moveSectorItem(s,action,roster){
  }
  const record=s.operativeState[op.id];returnEquipment(s,op.id,next);
  for(const key of fields)if(next[key]!==undefined)record[key]=copy(next[key]);
- record.carriedAmmo=next.ammo;
+ record.carriedAmmo=next.ammo+(next.loaded??0);
+ if(direction==='equip'&&action.slot==='primary'||record.carriedLoaded!==undefined)setCarriedLoading(record,next);
+ else if(next.weaponDropped)clearCarriedLoading(record);
  // Returned living soldiers and their cartridge receipt are historical.
  // Their next deployment uses the current campaign equipment record.
- validateBattleSnapshot(snapshot);
- return `${op.nickname??op.name} ${direction==='take'?'recoge':'deja'} ${count} × ${stackLabel(stack)} en el sector.`;
+ if(direction!=='equip'){
+  // A returned living unit is a historical receipt, not another item owner.
+  // Retire its identities before a map transfer puts that same item on the field.
+  for(const old of snapshot.units.filter(u=>u.side==='player'&&u.hp>0&&snapshot.returnLedger?.entries.some(e=>e.unitId===u.id&&['resident','departed'].includes(e.kind)))){
+   delete old.weaponInstanceId;delete old.bladeInstanceId;old.weaponFittingPattern=null;old.bladeFittingPattern=null;old.weaponFittings={};
+   for(const item of Object.values(old.inventory??{})){delete item.instanceId;delete item.fittingPattern;delete item.fittings;}
+  }
+  validateBattleSnapshot(snapshot);
+ }
+ return `${op.nickname??op.name} ${direction==='take'?'recoge':direction==='equip'?'equipa':'deja'} ${count} × ${stackLabel(stack)} en el sector.`;
 }

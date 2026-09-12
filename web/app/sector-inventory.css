@@ -11,3 +11,6 @@
 .sector-inventory button:disabled { opacity: .5; cursor: not-allowed; }
 .sector-inventory :focus-visible { outline: 2px solid #edce78; outline-offset: 3px; }
 @media(max-width: 800px) { .sector-inventory-columns { grid-template-columns: 1fr; } .sector-inventory header { flex-direction: column; } }
+
+.sector-equip { display:flex; flex-wrap:wrap; gap:.5rem; margin:.5rem 0; }
+.sector-equip small { display:block; max-width:22rem; margin-top:.3rem; color:#edc19d; }

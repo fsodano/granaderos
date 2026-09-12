@@ -1,4 +1,5 @@
-import {CAMPAIGN_SECTORS} from './data.js';
+import {validateReloadProgress} from './weapon-reload.js';
+import {CAMPAIGN_SECTORS,WEAPONS} from './data.js';
 import {sectorExits,validateSectorExits,boundaryMatches,entryFromSector,validEntry} from './tactical-exits.js';
 import {planReturnAmmunition,fieldAmmunition,storedWeaponAmmunition} from './ammunition.js';
 import {fieldCapable} from './tactical.js';
@@ -136,9 +137,12 @@ export function validateDeploymentReturnState(s){
       validateBattleSnapshot({width:20,height:16,units:[unit],tiles:Array.from({length:320},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0})),status:'defeat'});
     }
   }
-  for(const r of Object.values(s.operativeState)){
+  for(const [id,r] of Object.entries(s.operativeState)){
     r.capturedAmmunition??={loaded:0,ammo:0};
     need(object(r.capturedAmmunition)&&integer(r.capturedAmmunition.loaded,2)&&integer(r.capturedAmmunition.ammo,100000)&&(!r.captured?r.capturedAmmunition.loaded+r.capturedAmmunition.ammo===0:true),'La munición en custodia es inválida.');
+    need(r.capturedAmmunition.preserveLoading===undefined||r.captured&&r.capturedAmmunition.preserveLoading===true,'La carga en custodia es inválida.');
+    if(r.capturedAmmunition.preserveLoading){const capacity=WEAPONS[s.loadouts[id]?.weapon]?.capacity??0;need(!r.weaponDropped&&capacity>0&&r.capturedAmmunition.loaded<=capacity,'La carga en custodia no corresponde al arma.');validateReloadProgress(r.capturedAmmunition.reloadProgress,capacity,r.capturedAmmunition.loaded);}
+    else need(r.capturedAmmunition.reloadProgress===undefined,'La recarga en custodia es inválida.');
     if(r.arrival!=null){
       const a=r.arrival;need(object(a)&&typeof a.battleId==='string'&&a.battleId.length<100&&(sector(a.fromSector)||a.fromSector==='san_lorenzo')&&validEntry(a.entryEdge,a.entryAnchor),'La llegada del combatiente es inválida.');
       const entry=a.exitId?sectorExits(a.fromSector,a.fromScene??null).find(e=>e.id===a.exitId&&e.destination===r.location):entryFromSector(a.fromSector,a.toSector??r.location,a.sceneId??null);

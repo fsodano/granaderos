@@ -44,11 +44,16 @@ export function planReturnAmmunition(request,snapshot,entries){
   const u=snapshot.units.find(u=>u.side==='player'&&String(u.id)===String(source.id));if(u)loot+=Math.max(0,(source.ammo??0)+(source.loaded??0)-(u.ammo??0)-(u.loaded??0));
  }
  for(const source of request.ammunitionSources??request.enemies??[]){const key=`enemy:${source.id}`;if(seen.has(key))continue;seen.add(key);const u=snapshot.units.find(u=>u.side==='enemy'&&String(u.id)===String(source.id));if(u&&(u.hp<=0||u.unconscious||u.routed||u.surrendered)){const loaded=source.loaded??WEAPONS[source.weapon??source.primary??1800]?.capacity??0;loot+=Math.max(0,(source.ammo??12)+loaded-(u.ammo??0)-(u.loaded??0));}}
- const custody={},returned=entries.reduce((sum,e)=>{
+ const custody={},carried={},returned=entries.reduce((sum,e)=>{
   const u=snapshot.units.find(u=>u.side==='player'&&String(u.id)===e.unitId),rounds=(u.loaded??0)+(u.ammo??0);
   if(!Number.isSafeInteger(rounds)||rounds<0||rounds>100000)throw Error('La munición del parte es inválida.');
-  if(e.kind==='captured')custody[e.unitId]={loaded:u.loaded,ammo:u.ammo};
+  const preserveLoading=!u.weaponDropped&&WEAPONS[u.weapon]?.capacity>0&&request.squad.find(source=>String(source.id)===e.unitId)?.preserveLoading===true;
+  const loading=preserveLoading?{loaded:u.loaded,...(u.reloadProgress?{reloadProgress:u.reloadProgress}:{})}:null;
+  if(e.kind==='captured')custody[e.unitId]={loaded:u.loaded,ammo:u.ammo,...(loading?{preserveLoading:true,...(u.reloadProgress?{reloadProgress:u.reloadProgress}:{})}:{})};
+  if(loading&&['resident','departed'].includes(e.kind))carried[e.unitId]=loading;
   return sum+(['resident','departed'].includes(e.kind)?rounds:0);
  },0);
- return {creditedCartridges:Math.min((request.issuedCartridges??0)+loot,returned),custody};
+ const allowance=Math.min((request.issuedCartridges??0)+loot,returned),retained=Object.values(carried).reduce((sum,u)=>sum+u.loaded,0);
+ if(retained>allowance)throw Error('La carga conservada supera la munición del despliegue.');
+ return {creditedCartridges:allowance-retained,custody,carried};
 }

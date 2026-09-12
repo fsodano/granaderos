@@ -1,3 +1,4 @@
+import {validateReloadProgress} from './weapon-reload.js';
 import {heldSupply} from './held-supplies.js';
 import {heldTool} from './environment-interactions.js';
 import {WEAPONS} from './data.js';
@@ -20,15 +21,20 @@ export function equipmentInventoryUsage(s,op,changes={}){
  const record=s.operativeState[op.id],capacity=WEAPONS[op.weapon]?.capacity??0;
  // Reserve the normal cartridge stack for the next deployment. Ammunition is
  // held by campaign stock between reports; it must still fit when reissued.
- return inventoryUsage({...op,...record,ammo:Math.max(record.carriedAmmo??0,capacity&&!record.weaponDropped?10-capacity:0),boleadoras:record.boleadoras??1,...changes});
+ return inventoryUsage({...op,...record,ammo:Math.max((record.carriedAmmo??0)-(record.carriedLoaded??0),capacity&&!record.weaponDropped?10-(record.carriedLoaded??capacity):0),boleadoras:record.boleadoras??1,...changes});
 }
 export function allocateEquipmentAmmo(s,op,stock){
  const record=s.operativeState[op.id],capacity=record.weaponDropped?0:WEAPONS[op.weapon]?.capacity??0;
  const carried=record.carriedAmmo??0;
  if(!capacity)return {loaded:0,ammo:carried};
- const rounds=carried+Math.min(Math.max(0,10-carried),stock),loaded=Math.min(capacity,rounds);let ammo=rounds-loaded;
+ const rounds=carried+Math.min(Math.max(0,10-carried),stock),loaded=record.carriedLoaded??Math.min(capacity,rounds);let ammo=rounds-loaded;
  while(ammo>Math.max(0,carried-loaded)&&equipmentInventoryUsage(s,op,{ammo}).overloaded)ammo--;
- return {loaded,ammo};
+ return {loaded,ammo,...(record.carriedLoaded!==undefined?{preserveLoading:true}:{}),...(record.carriedReloadProgress?{reloadProgress:record.carriedReloadProgress}:{})};
+}
+export function clearCarriedLoading(record){delete record.carriedLoaded;delete record.carriedReloadProgress;}
+export function setCarriedLoading(record,unit){
+ if(WEAPONS[unit.weapon]?.capacity>0&&!unit.weaponDropped){record.carriedLoaded=unit.loaded??0;if(unit.reloadProgress)record.carriedReloadProgress=unit.reloadProgress;else delete record.carriedReloadProgress;}
+ else clearCarriedLoading(record);
 }
 export function deployedArtillery(s){
  if(s.artillerySelection?.length)return s.artillerySelection.slice(0,Math.min(3,s.resources.cannons+(s.depots?.[s.location]?.cannons??0))).map((type,i)=>({id:`gun-${i}`,type,side:'player',loaded:true,ammo:6}));
@@ -76,12 +82,14 @@ export function migrateEquipment(s){
  return s;
 }
 
-export function storeEquipment(s,item,{condition=100,jammed=false,instanceId,fittingPattern=null,fittings={}}={}){
+export function storeEquipment(s,item,{condition=100,jammed=false,instanceId,fittingPattern=null,fittings={},loaded,reloadProgress}={}){
+ need(loaded===undefined||Number.isSafeInteger(loaded)&&loaded>=0&&loaded<=(WEAPONS[item]?.capacity??0),'La carga del arma guardada es inválida.');
+ validateReloadProgress(reloadProgress,WEAPONS[item]?.capacity??0,loaded??0);
  need(handheld(item)&&Number.isFinite(condition)&&condition>=0&&condition<=100&&typeof jammed==='boolean','El arma almacenada es inválida.');
  validateFittingPattern(fittingPattern,Number(item),instanceId);validateWeaponFittings(fittings,Number(item));need(instanceId===undefined||validItemIdentity(instanceId),'La identidad del arma almacenada es inválida.');
  const owned=fittingItemIds({instanceId,fittings});need(new Set(owned).size===owned.length,'La identidad del equipo está duplicada.');
  need(s.armoryItems.length<10000,'La armería está llena.');
- const instance={id:`armory-${s.nextArmoryItemId++}`,item:Number(item),condition,jammed,...(instanceId===undefined?{}:{instanceId}),...(fittingPattern===null?{}:{fittingPattern}),...(Object.keys(fittings).length?{fittings:structuredClone(fittings)}:{})};
+ const instance={id:`armory-${s.nextArmoryItemId++}`,item:Number(item),condition,jammed,...(loaded===undefined?{}:{loaded}),...(reloadProgress?{reloadProgress}:{}),...(instanceId===undefined?{}:{instanceId}),...(fittingPattern===null?{}:{fittingPattern}),...(Object.keys(fittings).length?{fittings:structuredClone(fittings)}:{})};
  s.armoryItems.push(instance);s.armory[item]=(s.armory[item]??0)+1;return instance;
 }
 
@@ -153,6 +161,7 @@ export function validateEquipment(s,roster=[]){
   need(object(merchant)&&object(merchant.stock)&&Object.keys(merchant.stock).length===items.length&&items.every(item=>integer(merchant.stock[item.stockKey??item.item],0,stockCap(item)))&&object(merchant.supplies)&&Object.keys(merchant.supplies).length===1&&integer(merchant.supplies.medkits,0,sector==='ensenada'?0:MEDICAL_STOCK_CAP)&&integer(merchant.restockHours,0,23)&&integer(merchant.cash,0,1000000000),'Las existencias del comerciante son inválidas.');
  }
  need(Array.isArray(s.armoryItems)&&s.armoryItems.length<=10000&&integer(s.nextArmoryItemId,1,1000000000),'Los ejemplares de la armería son inválidos.');
+ for(const unit of s.pendingBattle?.squad??[])validateReloadProgress(unit.reloadProgress,WEAPONS[unit.weapon]?.capacity??0,unit.loaded??0,unit.weaponDropped);
  const ids=new Set(),counts={};
  for(const merchant of Object.values(s.merchants)){
   need(merchant.usedItems===undefined||Array.isArray(merchant.usedItems)&&merchant.usedItems.length<=USED_EQUIPMENT_LIMIT,'Las armas usadas del comerciante son inválidas.');
@@ -160,6 +169,7 @@ export function validateEquipment(s,roster=[]){
  }
  function validateStored(item){
   need(object(item)&&typeof item.id==='string'&&/^armory-[1-9][0-9]*$/.test(item.id)&&Number(item.id.slice(7))<s.nextArmoryItemId&&!ids.has(item.id)&&typeof item.item==='number'&&handheld(item.item)&&Number.isFinite(item.condition)&&item.condition>=0&&item.condition<=100&&typeof item.jammed==='boolean','El ejemplar de arma guardado es inválido.');
+  need(item.loaded===undefined||integer(item.loaded,0,WEAPONS[item.item]?.capacity??0),'La carga del arma guardada es inválida.');validateReloadProgress(item.reloadProgress,WEAPONS[item.item]?.capacity??0,item.loaded??0);
   validateFittingPattern(item.fittingPattern,item.item,item.instanceId);validateWeaponFittings(item.fittings,item.item);ids.add(item.id);
  }
  for(const item of s.armoryItems){validateStored(item);counts[item.item]=(counts[item.item]??0)+1;}
@@ -167,6 +177,8 @@ export function validateEquipment(s,roster=[]){
  for(const [id,r] of Object.entries(s.operativeState)){
   const op=roster.find(op=>op.id===Number(id));
   need(r.carriedAmmo===undefined||integer(r.carriedAmmo,0,100000),'La reserva personal de cartuchos es inválida.');
+  need(r.carriedLoaded===undefined||!r.weaponDropped&&(WEAPONS[op?.weapon]?.capacity??0)>0&&integer(r.carriedLoaded,0,Math.min(WEAPONS[op.weapon].capacity,r.carriedAmmo??0)),'La carga personal del arma es inválida.');
+  need(r.carriedReloadProgress===undefined||r.carriedLoaded!==undefined,'Falta la carga del arma en recarga.');validateReloadProgress(r.carriedReloadProgress,WEAPONS[op?.weapon]?.capacity??0,r.carriedLoaded??0,r.weaponDropped);
   validateUnitFittings({...op,...r});
   for(const [slot,key] of [['weapon','weaponInstanceId'],['blade','bladeInstanceId']])if(r[key]!==undefined)need(validInstanceId(r[key])&&op?.[slot]>0&&(slot!=='weapon'||!r.weaponDropped),'La identidad del arma guardada es inválida.');
   for(const key of ['jammed','weaponDropped'])need(r[key]===undefined||typeof r[key]==='boolean','El estado del arma guardada es inválido.');
