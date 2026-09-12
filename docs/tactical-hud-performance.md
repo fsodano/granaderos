@@ -93,3 +93,25 @@ The corrected live demo also exposed a separate art gap: Dorrego carries a
 small firearm in his inventory, but his standing artwork shows a long gun.
 The sprite task confirmed that standing weapon-family silhouettes remain open.
 The legacy-preview correction does not establish full sprite consistency.
+
+## Building reuse during camera movement
+
+Architecture now has a renderer scoped to the simulation, room-discovery and
+projection snapshot. Camera changes retain the exact wall, roof, floor and
+shadow elements that remain in view. Elements outside the latest viewport are
+evicted. New state, room visibility or projection creates a fresh renderer, so
+doors, breaches, cutaways and lighting cannot reuse older geometry.
+
+Five new checks cover exact markup, retained-element identity, eviction and
+fresh snapshot rendering. The 33 focused building/scene checks pass. An
+independent comparison with the prior renderer also matched all 32 original
+markup samples across Retiro/Buenos Aires, camera positions, day/night and room
+discovery. No artwork was simplified or rescaled.
+
+A live Tucumán comparison used one illustrated Dorrego, 200% camera-follow zoom
+and the same four-cell exploration walk. The baseline recorded 27 React
+updates averaging 21 ms (maximum 201 ms); building reuse recorded 25 updates
+averaging 19 ms (maximum 171 ms). Both retained 7,896 SVG elements and the
+illustrated sprite style. These small development-browser samples show a
+modest improvement, not a frame-rate guarantee. State updates and other scene
+work still produce visible delays; overall performance remains open.
