@@ -49,7 +49,7 @@ export function combatOrder(b,u){
  moves.sort((a,c)=>distance(a,destination)-distance(c,destination)||a.cost-c.cost);
  return moves[0]?{type:'move',unitId:u.id,x:moves[0].x,y:moves[0].y}:null;
 }
-export function fight(request){let b=enterSector(request),actions=0;
+export function fight(request,sectorState){let b=enterSector(request,sectorState),actions=0;
  // Enemy movement can yield several control windows within the same round.
  for(let window=0;window<600&&b.turn<=80&&b.status==='active';window++){
   const ids=b.units.filter(u=>u.side==='player').sort((a,c)=>c.marksmanship-a.marksmanship).map(u=>u.id);

@@ -28,3 +28,5 @@ San Lorenzo loses 131, 137, 113, 124 and 117. The hired field survivor is the cr
 These heavy losses leave campaign balance and the longer campaign open. Completing two opening battles does not prove later attacks, sector defense, recovery from capture, or the campaign ending.
 
 The complete isolated regression suite passed **1,310/1,310 tests**, including both deterministic battle replays and the four driver checks. Whitespace validation passed. This change contains test-driver and documentation files only; the prior production type check, build and live shot-cost verification remain applicable to the unchanged runtime code.
+
+The [northern-route checkpoint](northern-route.md) extends this same fresh opening through finite recovery and a real Córdoba victory. The full campaign remains unverified.
