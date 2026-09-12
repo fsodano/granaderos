@@ -1,6 +1,16 @@
 # Opening campaign with turning AP
 
-Verified 12 September 2026. The legal seed-8 campaign again completes San Nicolás and San Lorenzo with the target-specific turning costs introduced in `88e34f5`.
+Verified 12 September 2026 against regional terrain and weather checkpoint `be30998`. The legal seed-8 route completes San Nicolás and San Lorenzo through ordinary combat and equipment orders. The longer northern route remains incomplete.
+
+## Current equipment preparation
+
+The old salvage plan required both a dead friendly rifleman and a paid replacement. All six original soldiers now survive San Nicolás, so that assumption stopped the route before San Lorenzo. Keeping their short guns then lost the second battle.
+
+`tests/opening-equipment.mjs` now equips current short-gun holders from reachable, actual fallen combatants on either side. Surviving riflemen keep their equipment. Every recovered rifle retains its identity, fittings, condition and loaded ammunition; the replaced gun stays in its owner's pack. No missing source creates an item, forces a death or changes a battle result.
+
+The current route wins both opening battles and repeats each battle to check determinism. The San Lorenzo inventory check selects an actual local survivor instead of requiring officer 1000 to survive. Four focused tests cover surviving rifle owners, finite enemy salvage, friendly remains, repeated preparation and missing supplies.
+
+The full named playthrough now reaches northern preparation. It still fails because that later plan requires fixed donors 114 and 123 to hold medical supplies. Its Córdoba, Tucumán defeat, rescue, paid recovery, Salta and Yatasto requirements remain unchanged and are not claimed complete.
 
 ## What failed and what changed
 
@@ -14,7 +24,7 @@ This coordinated route won San Nicolás, then exposed a separate San Lorenzo dea
 
 The seed, recruits, purchased supplies, waits, casualty records, salvage transactions, save assertions and victory requirements are preserved. Production combat code is unchanged by this checkpoint. The original control strategy can still lose; the new reference establishes a legal winning route, not guaranteed victory or general balance.
 
-## Current route
+## Earlier route at the turning-AP checkpoint
 
 | Battle | Actual arrival | Turns | Orders | Outcome |
 | --- | --- | ---: | ---: | --- |
@@ -27,6 +37,6 @@ San Lorenzo loses 131, 137, 113, 124 and 117. The hired field survivor is the cr
 
 These heavy losses leave campaign balance and the longer campaign open. Completing two opening battles does not prove later attacks, sector defense, recovery from capture, or the campaign ending.
 
-The complete isolated regression suite passed **1,310/1,310 tests**, including both deterministic battle replays and the four driver checks. Whitespace validation passed. This change contains test-driver and documentation files only; the prior production type check, build and live shot-cost verification remain applicable to the unchanged runtime code.
+At that earlier checkpoint, the complete isolated regression suite passed **1,310/1,310 tests**, including both deterministic battle replays and the four driver checks. Those counts and the casualty table above are historical evidence, not the current regional-weather result.
 
 The [northern-route checkpoint](northern-route.md) extends this same fresh opening through finite recovery and a real Córdoba victory. The full campaign remains unverified.
