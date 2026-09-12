@@ -53,7 +53,11 @@ export function tacticalInputAction(state, unit, action) {
   if (!['fire', 'firePoint'].includes(type)) return action;
   return {type: 'reload', ...(action.unitId ? {unitId: action.unitId} : {}), aim: 0};
 }
-export function firearmCostText(state,unit){const c=actionCosts(state,unit);return c.ready?`Preparar: ${c.ready} PA · disparar: ${c.discharge} PA.`:`Arma en posición de tiro · disparar: ${c.discharge} PA.`;}
+export function firearmCostText(state,unit,point){
+  const c=actionCosts(state,unit,point);
+  if(c.turn)return c.ready?`Preparar y girar: ${c.setup} PA · disparar: ${c.discharge} PA.`:`Girar: ${c.turn} PA · disparar: ${c.discharge} PA.`;
+  return c.ready?`Preparar: ${c.ready} PA · disparar: ${c.discharge} PA.`:`Arma en posición de tiro · disparar: ${c.discharge} PA.`;
+}
 export function emptyGunPreview(state, unit) {
   if (!unit || !hasFirearm(unit) || unit.loaded > 0) return null;
   const plan = reloadPlan(unit, state), rounds = plan.available, pa = plan.pa;
@@ -181,7 +185,7 @@ export function targetingHelp(mode, unit, ctx = {}) {
 }
 
 export function aimOptions(state, unit, ctx = {}) {
-  const costs = unit ? actionCosts(state, unit) : {fire: 0, aim: 0};
+  const costs = unit ? actionCosts(state, unit, ctx.target) : {fire: 0, aim: 0};
   const ready = unitCanAct(state, unit) && hasFirearm(unit) && unit.loaded > 0 && !unit.jammed && !unit.knockedDown && !ctx.busy;
   return Array.from({length: 5}, (_, level) => {
     const pa = costs.fire + level * costs.aim;
@@ -200,7 +204,7 @@ export function targetPreview(state, unit, point, ctx = {}) {
   const target = occupants.find(v => v.id === point.id) || occupants.find(v => v.hp > 0) || occupants[0];
   if(mode==='fire'&&(!target||target.side===unit.side||target.hp<=0||target.surrendered)){
     const preview=pointFirePreview(state,unit,point,ctx.aim??0);
-    return {name:tacticalGridLabel(point.x,point.y),actionLabel:'Disparar a la casilla',attackType:'fire',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,coverNote:`${firearmCostText(state,unit)} Sin objetivo confirmado. Altura fija; la cobertura y los cuerpos pueden interceptar el tiro. Puede herir aliados.`};
+    return {name:tacticalGridLabel(point.x,point.y),actionLabel:'Disparar a la casilla',attackType:'fire',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,coverNote:`${firearmCostText(state,unit,point)} Sin objetivo confirmado. Altura fija; la cobertura y los cuerpos pueden interceptar el tiro. Puede herir aliados.`};
   }
   if(target&&target.side!==unit.side&&pickupTargetAction(target,unit).type==='steal'&&(ctx.itemIntent==='steal'&&['move','useItem'].includes(mode)||mode==='loot')){
     const preview=stealPreview(state,unit,target);
@@ -271,7 +275,7 @@ export function targetPreview(state, unit, point, ctx = {}) {
     if (!destination) reason = 'Destino inaccesible o PA insuficientes.';
     else pa = state.mode === 'exploration' ? 0 : destination.cost;
   } else return null;
-  if(attackType==='fire')coverNote=[firearmCostText(state,unit),coverNote].filter(Boolean).join(' ');
+  if(attackType==='fire')coverNote=[firearmCostText(state,unit,target),coverNote].filter(Boolean).join(' ');
   if (unit.knockedDown) reason = 'Primero debés levantarte.';
   if (!reason && !unitCanAct(state, unit)) reason = state.phase === 'interrupt' ? 'Este combatiente no puede actuar en la interrupción.' : 'El combatiente no puede actuar.';
   if (!reason && pa !== undefined && !affordable(state, unit, pa)) reason = 'PA insuficientes.';
@@ -299,7 +303,7 @@ export function equippedItemHelp(state, unit, ctx = {}) {
   const approach=ctx.target&&['move','useItem',undefined].includes(ctx.mode)?itemUsePreview(state,unit,ctx.target):null;
   if(approach?.movePa)return `${weapon.name} · ${approach.pa} PA (${approach.movePa} para acercarse y ${approach.actionPa} para usarlo). El contacto puede detener la acción.`;
   const label = attack.type === 'melee' && hasFirearm(unit) ? fixedBayonetFor(unit) ? 'Estocada de bayoneta' : 'Culatazo' : weapon.name;
-  return `${label} · ${attack.pa} PA. ${attack.type==='fire'?firearmCostText(state,unit)+' ':''}${fixedBayonetFor(unit) || ctx.mode === 'fire' ? targetingHelp(ctx.mode || 'move', unit) : 'Seleccioná un enemigo para usarlo.'}`;
+  return `${label} · ${attack.pa} PA. ${attack.type==='fire'?firearmCostText(state,unit,ctx.target)+' ':''}${fixedBayonetFor(unit) || ctx.mode === 'fire' ? targetingHelp(ctx.mode || 'move', unit) : 'Seleccioná un enemigo para usarlo.'}`;
 }
 
 export function levelFor(unit) {

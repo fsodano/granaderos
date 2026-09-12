@@ -28,12 +28,12 @@ export function choosePatrolAction(state,unit) {
 
 function bestShot(state, unit, targets, budget = unit.ap) {
   if (!readyGun(unit)) return null;
-  const costs = actionCosts(state, unit);
-  if (costs.fire > budget) return null;
-  const maxAim = Math.min(4, Math.floor((budget - costs.fire) / costs.aim));
   let best = null;
   for (const target of targets) {
     if (!hasLineOfSight(state, unit, target)) continue;
+    const costs = actionCosts(state, unit, target);
+    if (costs.fire > budget) continue;
+    const maxAim = Math.min(4, Math.floor((budget - costs.fire) / costs.aim));
     for (const {aim,hitLocation,chance,damageFactor} of firearmShotOptions(state,unit,target,maxAim)) {
       if(!chance)continue;
       const cost = costs.fire + aim * costs.aim;
@@ -258,7 +258,10 @@ export function chooseEnemyAction(state, unit) {
   candidates.sort((a, b) => cover(b) - cover(a) || a.cost - b.cost || a.y - b.y || a.x - b.x);
   const dangerous = [...threats].sort((a, b) => distance(unit, a) - distance(unit, b) || compareId(a, b)).slice(0, 8);
   const positionScore = (cell, budget) => {
-    const position = {...unit, x: cell.x, y: cell.y};
+    const moving=Boolean(cell.path?.length);
+    const position = {...unit, x: cell.x, y: cell.y,
+      weaponReady:moving?false:unit.weaponReady,
+      facing:moving?directionTo(cell.path.at(-2)??unit,cell):unit.facing};
     const availableTargets = targets.filter(target => canSee(state, position, target));
     const firing = bestShot(state, position, availableTargets, budget);
     const exposure = dangerous.reduce((total, enemy) => total + (canSee(state, enemy, position) ? shotChance(state, enemy, position) : 0), 0);

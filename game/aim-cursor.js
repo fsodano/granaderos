@@ -20,6 +20,6 @@ export function rightClickAim(state,unit,{mode='move',aim=0,busy=false,target=nu
  if(['fire','useItem'].includes(mode)&&!visibleHover(state,character)?.id)return {mode:'move',aim:0};
  if(!unitCanAct(state,unit))return null;
  const nextMode=attackCursorMode(unit);
- const maximum=aimOptions(state,unit).filter(option=>!option.disabled).at(-1)?.level??0;
+ const maximum=aimOptions(state,unit,{target:visibleHover(state,target)}).filter(option=>!option.disabled).at(-1)?.level??0;
  return {mode:nextMode,aim:mode==='fire'&&nextMode==='fire'?(Math.max(0,Math.min(maximum,Number.isFinite(aim)?Math.floor(aim):0))+1)%(maximum+1):0};
 }

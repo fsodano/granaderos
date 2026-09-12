@@ -1,12 +1,12 @@
 # Weapon readiness
 
-Implemented 12 September 2026. The cost of raising a firearm is now separate from the cost of discharging it. The first-shot total retains the existing Granaderos balance. Keeping a weapon in its firing position avoids paying the raising portion again.
+Implemented 12 September 2026. The cost of raising a firearm is now separate from the cost of discharging it. The same-facing first-shot total retains the existing Granaderos balance. Keeping a weapon in its firing position avoids paying the raising portion again.
 
 ## Source and adaptation
 
 Classic JA2 checks firing-ready animation state before adding the weapon's ready time. Its attack cost also coordinates turning and raising according to stance and adds a cost for changing targets. See [Points.cc: GetAPChargeForShootOrStabWRTGunRaises and MinAPsToShootOrStab](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/master/src/game/Tactical/Points.cc#L989-L1076) and [GetAPsToReadyWeapon](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/master/src/game/Tactical/Points.cc#L1516-L1546).
 
-Granaderos represents the firing posture as saved simulation state, independent of animation timing and cursor movement. This change implements the readiness portion. It does not reproduce all classic turning, target-change, rate-of-fire or skill formulas.
+Granaderos represents the firing posture as saved simulation state, independent of animation timing and cursor movement. The readiness portion is supplemented by [target-specific turning](shot-turning.md), which uses the pinned v1.13 stance combination. Target-change, rate-of-fire and skill formulas are not fully reproduced.
 
 The raising portions are explicit period tuning on the existing 100-point scale:
 
@@ -28,7 +28,7 @@ These are the ordinary costs before personal or mounted firing modifiers. Extra 
 
 A valid named or location shot pays preparation when needed, then leaves the weapon ready. This also applies to a misfire: the weapon was raised, although the charge remains. Reloading or re-priming lowers it.
 
-Paid movement, posture changes, equipment use, pickups, drops, handoffs, weapon swaps and melee end the firing posture. A successful handoff also lowers the receiver's weapon. Knockdown, unconsciousness, death, rout and departure clear readiness. A failed order does not clear it. Looking while standing or crouched can retain readiness; turning prone lowers it. Free movement-mode, stealth and overwatch settings do not grant or remove readiness.
+Paid movement, posture changes, equipment use, pickups, drops, handoffs, weapon swaps and melee end the firing posture. A successful handoff also lowers the receiver's weapon. Knockdown, unconsciousness, death, rout and departure clear readiness. A failed order does not clear it. Looking retains readiness through 135 degrees standing or 45 degrees crouched. Larger turns and every prone turn lower the weapon. Free movement-mode, stealth and overwatch settings do not grant or remove readiness.
 
 Readiness survives turn boundaries and saved reaction queues. It belongs to the actor, not the weapon item: packing, passing or stealing a gun cannot give the receiver a free prepared shot. A new deployment begins with lowered weapons. Older tactical saves without the field begin unprepared; malformed ready states are rejected.
 
@@ -40,4 +40,4 @@ Seventeen focused tests cover every firearm's baseline, two real shots, cursor c
 
 Live verification passed in the separate `?qa=1` San Lorenzo skirmish. With Dorrego's personal firing modifier, the first ground shot used 6 AP (120→114); the next used 4 AP (114→110). Two loaded charges were consumed and all 12 reserve cartridges remained. R loaded both barrels for 55 AP, leaving 55 AP and 10 reserve cartridges. The help text again showed **Preparar: 2 PA · disparar: 4 PA**. After centering the camera, a physical mouse click fired one barrel for 6 AP (55→49); the next-shot preview showed 4 AP and **Arma en posición de tiro**. The tab remains on that prepared soldier. The skirmish did not write to the campaign save.
 
-All 1,285 tests, the type check and the production build pass in the isolated gameplay checkout. Live save/reload and prone turning remain automated-test evidence. The existing L cursor now provides paid preparation; see [look readiness](look-readiness.md). Dedicated lower-weapon input, held-weapon stamina costs, automatic turning/target-switch AP, and persistent firing-posture sprite dispatch remain separate work. Artillery is unchanged.
+All 1,285 tests, the type check and the production build pass in the isolated gameplay checkout. Live save/reload and prone turning remain automated-test evidence. The existing L cursor now provides paid preparation; see [look readiness](look-readiness.md). Dedicated lower-weapon input, held-weapon stamina costs, target-switch AP, and persistent firing-posture sprite dispatch remain separate work. Artillery is unchanged.

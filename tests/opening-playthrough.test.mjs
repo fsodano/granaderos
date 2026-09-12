@@ -12,7 +12,7 @@ import {encodeSave,decodeSave} from '../game/save.js';
 const alive=u=>u.hp>0&&!u.departure&&!u.surrendered&&!u.unconscious&&!u.routed;
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 function combatOrder(b,u){
- const cost=actionCosts(b,u),players=b.units.filter(v=>v.side===u.side&&alive(v));
+ let cost=actionCosts(b,u);const players=b.units.filter(v=>v.side===u.side&&alive(v));
  if(u.knockedDown||u.entangled)return chooseEnemyAction(b,u);
  // Keep the mission commander in the firing line with the infantry.
  if(u.missionAlly&&u.mounted&&u.ap>=cost.mount)return {type:'mount',unitId:u.id};
@@ -26,6 +26,7 @@ function combatOrder(b,u){
  if(['medical','tool','supply'].includes(u.activeSlot)&&u.ap>=cost.weapon)return {type:'weapon',unitId:u.id,slot:'primary'};
  if(u.jammed&&u.priming&&u.ap>=cost.reprime)return {type:'reprime',unitId:u.id};
  const target=visible.filter(t=>hasLineOfSight(b,u,t)).sort((a,c)=>shotChance(b,u,c,4)-shotChance(b,u,a,4))[0];
+ if(target)cost=actionCosts(b,u,target);
  if(target&&u.loaded&&!u.jammed&&u.ap>=cost.fire){
    if(u.stance!=='prone'&&!u.mounted&&u.ap>=cost.fire+cost.aim*2+6)return {type:'stance',unitId:u.id,stance:'prone'};
    const aim=Math.min(4,Math.floor((u.ap-cost.fire)/cost.aim));

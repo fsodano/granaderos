@@ -64,7 +64,7 @@ export default function Battlefield({battle:s,onChange,onFinish,peacefulVisit=fa
   const readyPlayers=players.filter((p:any)=>unitCanAct(s,p));const turn=turnModel(s);
   const reachable=useMemo(()=>unitCanAct(s,u)?getReachable(s,u,{movementIntent}):[],[s,u,movementIntent]);
   const costs=u?actionCosts(s,u):null;const weapon=u?weaponFor(u):null;const firearm=u&&hasFirearm(u);const [cannonId,setCannonId]=useState('');const [shotType,setShotType]=useState('solid');const gun=s.artillery?.find((g:any)=>g.id===cannonId);const gunCosts=u&&gun?artilleryCosts(s,u,gun):null;
-  const maxAim=aimOptions(s,u).filter((option:any)=>!option.disabled).at(-1)?.level??0;
+  const maxAim=aimOptions(s,u,{target:hover}).filter((option:any)=>!option.disabled).at(-1)?.level??0;
   useEffect(()=>setAim(value=>Math.min(value,maxAim)),[maxAim]);
   useEffect(()=>{setAim(0);setHitLocation('torso');aimTarget.current='';},[selected]);
   useEffect(()=>setAim(0),[u?.activeSlot,u?.weapon,u?.x,u?.y,s.phase,s.turn]);

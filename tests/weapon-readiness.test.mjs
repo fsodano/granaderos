@@ -61,10 +61,10 @@ test('movement, loading, stance, handling supplies and changing hands lower the 
  }
 });
 
-test('standing and crouched looking retains readiness; turning prone lowers it',()=>{
+test('a quarter-turn retains readiness standing but lowers it crouched or prone',()=>{
  for(const stance of ['standing','crouched','prone']){
   let s=shoot(field({stance}));const before=s.units[0].ap;s=act(s,{type:'look',x:1,y:4});
-  assert.ok(s.units[0].ap<before);assert.equal(s.units[0].weaponReady,stance==='prone'?undefined:true);
+  assert.ok(s.units[0].ap<before);assert.equal(s.units[0].weaponReady,stance==='standing'?true:undefined);
  }
 });
 

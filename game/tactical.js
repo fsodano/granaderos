@@ -1,4 +1,4 @@
-import {firearmPreparation,lowerWeapon,lowersWeapon} from './weapon-readiness.js';
+import {firearmPreparation,lowerWeapon,lowersWeapon,turnLowersWeapon} from './weapon-readiness.js';
 import {planReload} from './weapon-reload.js';
 import {discoverInventory} from './inventory-discovery.js';
 import {automaticOrder} from './autonomous-orders.js';
@@ -51,12 +51,13 @@ export function weaponFor(unit){if(unit.activeSlot==='supply'){const supply=held
 export function misfireChance(condition=100,rain=0,humidity=0){return clamp(Math.round(2+(100-clamp(condition,0,100))*.2+clamp(rain,0,100)*.5+clamp(humidity,0,100)),0,95);}
 export function hasTrait(u,id){return Array.isArray(u.traits)&&u.traits.includes(id);}
 function nearbyTrait(s,u,id,radius=4){return s.units.some(v=>v.side===u.side&&alive(v)&&hasTrait(v,id)&&dist(u,v)<=radius);}
-export function actionCosts(s,u){
+export function actionCosts(s,u,point){
   const w=weaponFor(u),cavalry=u.mounted&&hasTrait(u,'cavalry_commander');
   const fire=Math.max(1,Math.ceil(w.fireAP*(cavalry?.8:1))-(Number(u.id)===4&&[1803,1805,1806,1808].includes(w.id)?2:0));
-  const preparation=hasFirearm(u)?firearmPreparation(u,w,fire):{raise:0,discharge:fire,total:fire};
+  const turn=hasFirearm(u)&&Number.isFinite(point?.x)&&Number.isFinite(point?.y)?turnAPCost(u,directionTo(u,point)):0;
+  const preparation=hasFirearm(u)?firearmPreparation(u,w,fire,turn):{raise:0,turn:0,setup:0,discharge:fire,total:fire};
   return {
-    fire:preparation.total,ready:preparation.raise,discharge:preparation.discharge,overwatch:preparation.total,aim:Math.max(1,Math.ceil(w.aimAP*(hasTrait(u,'line_marksman')?.65:1))),
+    fire:preparation.total,ready:preparation.raise,turn:preparation.turn,setup:preparation.setup,discharge:preparation.discharge,overwatch:preparation.total,aim:Math.max(1,Math.ceil(w.aimAP*(hasTrait(u,'line_marksman')?.65:1))),
     stance:stanceCost(u,STANCES[(STANCES.indexOf(u.stance??'standing')+1)%3]),
     weapon:4,brace:16,ration:10,torch:10,bolas:12,free:15,loot:8,equipLoot:6,fitBayonet:FIT_BAYONET_AP,removeBayonet:REMOVE_BAYONET_AP,
     heal:Number(u.id)===10?18:hasTrait(u,'field_rescuer')?20:25,
@@ -70,7 +71,7 @@ export function actionCosts(s,u){
 export function contextualAttack(s,u,target,options={}){
   const fixed=fixedBayonetFor(u),explicit=['fire','melee'].includes(options.type)?options.type:null;
   const type=explicit??(hasFirearm(u)&&!(fixed&&target&&dist(u,target)<=2)?'fire':'melee');
-  const costs=actionCosts(s,u),aim=clamp(Math.floor(Number.isFinite(options.aim)?options.aim:0),0,4);
+  const costs=actionCosts(s,u,target),aim=clamp(Math.floor(Number.isFinite(options.aim)?options.aim:0),0,4);
   return {type,pa:type==='fire'?costs.fire+aim*costs.aim:costs.melee,profile:type==='fire'?weaponFor(u):bladeFor(u)};
 }
 export function artilleryCosts(s,u,gun){const spec=ARTILLERY[gun.type],assist=(nearby(s,u,2,2)?.8:1)*(hasTrait(u,'gunsmith_artillerist')?.85:1),base={bronze4:{move:20,pivot:10},field8:{move:30,pivot:15},swivel:{move:10,pivot:5}}[gun.type];return{crew:spec.crew,fire:Math.ceil(spec.fireAP*assist*(Number(u.id)===5?.85:1)),reload:Math.ceil(spec.reloadAP*assist*(Number(u.id)===7?.8:1)),move:base.move,pivot:base.pivot};}
@@ -370,7 +371,7 @@ function inventoryOrderReason(s,u,pa){
   return null;
 }
 export function pointFirePreview(s,u,point,aim=0){
-  const level=clamp(Number.isFinite(aim)?Math.floor(aim):0,0,4),costs=u?actionCosts(s,u):{fire:0,aim:0},pa=costs.fire+level*costs.aim;
+  const level=clamp(Number.isFinite(aim)?Math.floor(aim):0,0,4),costs=u?actionCosts(s,u,point):{fire:0,aim:0},pa=costs.fire+level*costs.aim;
   let reason=!u||!(u.side==='enemy'?s.phase==='enemy'&&alive(u)&&s.status==='active':interruptAvailable(s,u))||u.knockedDown?'El soldado no puede disparar ahora.':null;
   if(!reason&&!hasFirearm(u))reason='Equipá un arma de fuego.';
   if(!reason&&(!Number.isInteger(point?.x)||!Number.isInteger(point?.y)||point.x<0||point.y<0||point.x>=s.width||point.y>=s.height))reason='Seleccioná una casilla del mapa.';
@@ -749,7 +750,7 @@ else if(a.type==='firePoint'){
     sayObserved(s,[u],`${u.name} dispara hacia ${a.x+1}, ${a.y+1}. El disparo puede alcanzar a cualquiera en su trayectoria.`);
   }
 }
-else if(a.type==='fire'){const hitLocation=a.hitLocation??'torso';if(!HIT_LOCATIONS.includes(hitLocation))return fail('Selecciona torso, cabeza o piernas.');if(!target||target.side===u.side||!targetable(target))return fail('Selecciona un enemigo activo.');if(!hasFirearm(u))return fail('Este soldado lleva un arma blanca: acércate para atacar.');if(!teamCanSee(s,u.side,target))return fail('Ningún compañero puede ver ese objetivo.');if(!shotLocationsFor(target).includes(hitLocation))return fail('Un objetivo cuerpo a tierra tiene una sola zona de tiro.');if(u.jammed)return fail('La cazoleta falló: vuelve a cebar el arma.');if(u.loaded<1)return fail('El arma está descargada.');if(!hasLineOfSight(s,u,target))return fail('No hay línea de tiro.');const aim=clamp(Math.floor(Number.isFinite(a.aim)?a.aim:0),0,4),w=weaponFor(u),chance=shotAccuracy(s,u,target,aim,hitLocation);if(!pay(actionCosts(s,u).fire+aim*actionCosts(s,u).aim))return fail('Faltan puntos de acción para disparar.');u.weaponReady=true;u.momentum=0;u.facing=directionTo(u,target);u.lastTargetId=target.id;u.lastShotPosition={x:u.x,y:u.y};const risk=ignitionRisk(s,u);if(random(s)*100<risk){u.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa. La carga se conserva; cebar cuesta ${actionCosts(s,u).reprime} PA.`);}else{u.loaded--;emitNoise(s,u,'fire');practice(u,'marksmanship',2);u.condition=Math.max(0,u.condition-1);s.smoke.push({x:u.x,y:u.y,radius:1,turns:3});if(w.id===1807){const length=dist(u,target),dx=(target.x-u.x)/length,dy=(target.y-u.y)/length;for(const victim of s.units.filter(v=>onField(v)&&v.id!==u.id)){const vx=victim.x-u.x,vy=victim.y-u.y,forward=vx*dx+vy*dy,across=Math.abs(vx*dy-vy*dx);if(forward<=0||forward>6||across>Math.max(.5,forward*.25)||!hasLineOfSight(s,u,victim))continue;victim.morale=Math.max(0,victim.morale-18);if(random(s)*100<Math.min(95,shotAccuracy(s,u,victim,aim,victim.id===target.id?hitLocation:'torso')+20))firearmImpact(s,u,victim,w.damage*(1-forward/12),victim.id===target.id?hitLocation:'torso');else if(victim.morale<15)rout(s,victim);}sayObserved(s,[u],`${u.name} descarga el trabuco: una nube de metralla barre tres casillas de ancho.`);}else{const hit=random(s)*100<chance;directedFireImpact(s,u,target,hitLocation,hit);if(!hit){target.morale=Math.max(0,target.morale-4);sayObserved(s,[u],`${u.name} dispara sin acertar al punto elegido (${chance}%).`);}} }}
+else if(a.type==='fire'){const hitLocation=a.hitLocation??'torso';if(!HIT_LOCATIONS.includes(hitLocation))return fail('Selecciona torso, cabeza o piernas.');if(!target||target.side===u.side||!targetable(target))return fail('Selecciona un enemigo activo.');if(!hasFirearm(u))return fail('Este soldado lleva un arma blanca: acércate para atacar.');if(!teamCanSee(s,u.side,target))return fail('Ningún compañero puede ver ese objetivo.');if(!shotLocationsFor(target).includes(hitLocation))return fail('Un objetivo cuerpo a tierra tiene una sola zona de tiro.');if(u.jammed)return fail('La cazoleta falló: vuelve a cebar el arma.');if(u.loaded<1)return fail('El arma está descargada.');if(!hasLineOfSight(s,u,target))return fail('No hay línea de tiro.');const aim=clamp(Math.floor(Number.isFinite(a.aim)?a.aim:0),0,4),w=weaponFor(u),chance=shotAccuracy(s,u,target,aim,hitLocation);if(!pay(actionCosts(s,u,target).fire+aim*actionCosts(s,u,target).aim))return fail('Faltan puntos de acción para disparar.');u.weaponReady=true;u.momentum=0;u.facing=directionTo(u,target);u.lastTargetId=target.id;u.lastShotPosition={x:u.x,y:u.y};const risk=ignitionRisk(s,u);if(random(s)*100<risk){u.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa. La carga se conserva; cebar cuesta ${actionCosts(s,u).reprime} PA.`);}else{u.loaded--;emitNoise(s,u,'fire');practice(u,'marksmanship',2);u.condition=Math.max(0,u.condition-1);s.smoke.push({x:u.x,y:u.y,radius:1,turns:3});if(w.id===1807){const length=dist(u,target),dx=(target.x-u.x)/length,dy=(target.y-u.y)/length;for(const victim of s.units.filter(v=>onField(v)&&v.id!==u.id)){const vx=victim.x-u.x,vy=victim.y-u.y,forward=vx*dx+vy*dy,across=Math.abs(vx*dy-vy*dx);if(forward<=0||forward>6||across>Math.max(.5,forward*.25)||!hasLineOfSight(s,u,victim))continue;victim.morale=Math.max(0,victim.morale-18);if(random(s)*100<Math.min(95,shotAccuracy(s,u,victim,aim,victim.id===target.id?hitLocation:'torso')+20))firearmImpact(s,u,victim,w.damage*(1-forward/12),victim.id===target.id?hitLocation:'torso');else if(victim.morale<15)rout(s,victim);}sayObserved(s,[u],`${u.name} descarga el trabuco: una nube de metralla barre tres casillas de ancho.`);}else{const hit=random(s)*100<chance;directedFireImpact(s,u,target,hitLocation,hit);if(!hit){target.morale=Math.max(0,target.morale-4);sayObserved(s,[u],`${u.name} dispara sin acertar al punto elegido (${chance}%).`);}} }}
 else if(a.type==='reload'){
   if(!hasFirearm(u))return fail('Las armas blancas no necesitan recarga.');
   if(u.jammed)return fail('Primero debes volver a cebar el arma.');
@@ -838,7 +839,7 @@ else if(a.type==='look'){
   if(!pay(preview.pa))return fail('PA insuficientes.');
   u.momentum=0;
   if(preview.prepare){u.weaponReady=true;sayObserved(s,[u],`${u.name} pone ${weaponFor(u).name} en posición de tiro (${preview.pa} PA).`);}
-  else {u.facing=preview.facing;investigateNoise(s,u);delete u.lastTargetId;delete u.lastShotPosition;
+  else {if(turnLowersWeapon(u,preview.pa))lowerWeapon(u);u.facing=preview.facing;investigateNoise(s,u);delete u.lastTargetId;delete u.lastShotPosition;
     sayObserved(s,[u],`${u.name} gira para observar (${s.mode==='exploration'?0:preview.pa} PA).`);}
 }
 else if(a.type==='stealth'){
