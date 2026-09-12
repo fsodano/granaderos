@@ -11,7 +11,7 @@ import {boundaryMatches,EXIT_EDGES,validEntry} from './tactical-exits.js';
 import {NPC_ACTIVITIES} from './npc-ai.js';
 import {heldSupply} from './held-supplies.js';
 import {heldTool,validateEnvironment} from './environment-interactions.js';
-import {validateItemStack,validateHands} from './tactical-inventory.js';
+import {validateItemStack,validateHands,inventoryUsage} from './tactical-inventory.js';
 import {FITTING_RULES_VERSION,validateUnitFittings,normalizeUnitFittings,validateWeaponFittings,validateFittingPattern,fittingItemIds,heldItemIds,validItemIdentity,weaponItemWeight} from './weapon-fittings.js';
 import {HIT_LOCATIONS} from './targeted-combat.js';
 import {AP_CARRY_LIMIT,isUnconscious} from './tactical-condition.js';
@@ -61,6 +61,9 @@ need(u.unconscious===isUnconscious(u),'estado de conciencia');need(number(u.band
 for(const key of ['leadership','wisdom','dexterity','mechanical','explosives','maxAP'])if(u[key]!==undefined)need(number(u[key],0,100),'atributos adicionales');for(const key of ['reactionSpent','reactionTurn','interceptTurn','parryTurn','counterTurn','braceTurn','momentum'])if(u[key]!==undefined)need(number(u[key],0,1000000000),'iniciativa');if(u.lastDirection!=null)need(text(u.lastDirection),'dirección');
 if(u.traits!==undefined)need(Array.isArray(u.traits)&&u.traits.length<=30&&u.traits.every(text),'rasgos');
 validatePocketOrder(u.pocketOrder);need(object(u.inventory)&&Object.keys(u.inventory).length<=1000,'inventario');for(const [key,record] of Object.entries(u.inventory)){if(typeof record==='number'){need(integer(record,0,1000000),'cantidades');continue;}need(object(record)&&integer(record.count,0,1000000)&&number(record.weight,0,10000),'pertrechos');validateItemStack({...record,item:`inventory:${key}`,count:Math.max(1,record.count)});if(record.count>0)claimStack(record);}
+// Reconstruct bounded partitions to validate known item limits. Existing
+// overfull packs remain valid and can still discard or redistribute equipment.
+if(u.pocketOrder?.some(slot=>slot.count!==undefined))inventoryUsage(u);
 if(u.activeSlot==='tool')need(Boolean(heldTool(u)),'herramienta equipada');else need(u.activeTool===undefined,'herramienta fuera de mano');
 if(u.activeSlot==='supply')need(Boolean(heldSupply(u)),'pertrecho equipado');else need(u.activeSupply===undefined,'pertrecho fuera de mano');
 for(const k of ['weight','carryWeight','ridingSkill'])if(u[k]!==undefined)need(number(u[k],0,k==='ridingSkill'?100:100000),'peso o equitación');if(u.mount!==undefined)need(object(u.mount)&&text(u.mount.id)&&number(u.mount.stamina,0,100)&&number(u.mount.condition,0,100),'monturas');if(u.fleePath!==undefined)need(Array.isArray(u.fleePath)&&u.fleePath.every(coord),'retirada');}

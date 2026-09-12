@@ -33,7 +33,7 @@ export function EquipmentInteractionProvider({children}:{children:ReactNode}){
 export function useEquipmentDrag(battle:any,unit:any,disabled:boolean,onOrder:(action:any)=>void){
  const shared=useContext(Context),id=useId();const [local]=useState(()=>createEquipmentInteraction(id)),store=shared??local;
  const current=useSyncExternalStore(store.subscribe,store.getSnapshot,serverSnapshot);
- const owner=useRef(Symbol('equipment-source')),pointerId=useRef<number|null>(null),suppressClick=useRef(false);
+ const owner=useRef(Symbol('equipment-source')),pointerId=useRef<number|null>(null),suppressClick=useRef(false),pickupShift=useRef<boolean|null>(null);
  useCancellation(store,!shared);
  useEffect(()=>()=>store.clearOwned(owner.current),[store,unit.id]);
  useEffect(()=>store.revalidate(unit,disabled),[store,unit,disabled]);
@@ -49,7 +49,7 @@ export function useEquipmentDrag(battle:any,unit:any,disabled:boolean,onOrder:(a
   onPointerDown:(event:PointerEvent<HTMLElement>)=>{
    if(disabled||!battle||event.button!==0||event.isPrimary===false||pointerId.current!==null)return;
    suppressClick.current=false;
-   if(store.press(unit,slotId,owner.current,event.clientX,event.clientY)){pointerId.current=event.pointerId;event.currentTarget.setPointerCapture(event.pointerId);}
+   if(store.press(unit,slotId,owner.current,event.clientX,event.clientY,event.shiftKey)){pickupShift.current=event.shiftKey;pointerId.current=event.pointerId;event.currentTarget.setPointerCapture(event.pointerId);}
   },
   onPointerMove:updateTarget,
   onPointerEnter:()=>{if(!disabled&&battle)store.hover(battle,unit,slotId);},
@@ -61,13 +61,13 @@ export function useEquipmentDrag(battle:any,unit:any,disabled:boolean,onOrder:(a
    updateTarget(event);const result=store.release(owner.current);pointerId.current=null;
    if(event.currentTarget.hasPointerCapture(event.pointerId))event.currentTarget.releasePointerCapture(event.pointerId);
    if(!result)return;
-   suppressClick.current=result.suppressClick;
+   suppressClick.current=result.suppressClick;if(result.suppressClick)pickupShift.current=null;
    if(!disabled&&result.action)onOrder(result.action);
   },
-  onPointerCancel:(event:PointerEvent)=>{if(pointerId.current===event.pointerId){pointerId.current=null;suppressClick.current=true;store.clearOwned(owner.current);}},
-  onLostPointerCapture:(event:PointerEvent)=>{if(pointerId.current===event.pointerId){pointerId.current=null;suppressClick.current=true;store.clearOwned(owner.current);}},
-  onClickCapture:(event:MouseEvent)=>{if(suppressClick.current){event.preventDefault();event.stopPropagation();suppressClick.current=false;}},
-  onClick:selectOnClick?(event:MouseEvent)=>{event.stopPropagation();if(disabled)return;const action=store.click(battle,unit,slotId,owner.current);if(action)onOrder(action);}:undefined,
+  onPointerCancel:(event:PointerEvent)=>{if(pointerId.current===event.pointerId){pointerId.current=null;suppressClick.current=true;pickupShift.current=null;store.clearOwned(owner.current);}},
+  onLostPointerCapture:(event:PointerEvent)=>{if(pointerId.current===event.pointerId){pointerId.current=null;suppressClick.current=true;pickupShift.current=null;store.clearOwned(owner.current);}},
+  onClickCapture:(event:MouseEvent)=>{if(suppressClick.current){event.preventDefault();event.stopPropagation();suppressClick.current=false;pickupShift.current=null;}},
+  onClick:selectOnClick?(event:MouseEvent)=>{event.stopPropagation();const all=event.detail===0?event.shiftKey:pickupShift.current??event.shiftKey;pickupShift.current=null;if(disabled)return;const action=store.click(battle,unit,slotId,owner.current,all);if(action)onOrder(action);}:undefined,
   onContextMenu:(event:MouseEvent)=>{
    event.preventDefault();event.stopPropagation();
    if(store.getSnapshot().selection||store.getSnapshot().gesture){store.cancel();return;}
@@ -76,5 +76,5 @@ export function useEquipmentDrag(battle:any,unit:any,disabled:boolean,onOrder:(a
   onDragStart:(event:MouseEvent)=>event.preventDefault(),
  });
  const picked=current?.gesture??current?.selection,belongs=picked?.unitId===String(unit.id);
- return {handlers,selected:belongs?current?.selection?.sourceId??'':'',active:Boolean(belongs),dragging:Boolean(belongs&&current?.gesture?.dragging),target:belongs?current?.target??'':'',hint:current?.hint??'',cancel:store.cancel};
+ return {handlers,selected:belongs?current?.selection?.sourceId??'':'',active:Boolean(belongs),dragging:Boolean(belongs&&current?.gesture?.dragging),target:belongs?current?.target??'':'',hint:current?.hint??'',scope:store.scope,quantity:belongs&&current?.selection?{count:current.selection.count,maxCount:current.selection.maxCount}:null,setCount:store.setCount,cancel:store.cancel};
 }

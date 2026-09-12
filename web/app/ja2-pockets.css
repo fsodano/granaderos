@@ -18,3 +18,10 @@
 .ja2-pocket-overflow {border:1px solid #ae694e;padding:8px;margin-top:8px}
 .ja2-pocket-overflow button {font-size:.7rem;margin:3px;padding:4px}
 .ja2-pocket.drop-target{outline:2px solid #f6d881;background:#35432a;}
+
+.equipment-quantity {display:flex;align-items:center;gap:5px;margin:0 0 5px;font-size:.65rem;color:#ded9bd}
+.equipment-quantity label {display:flex;align-items:center;gap:5px}
+.equipment-quantity input {width:4em;min-height:25px;padding:2px 4px;background:#172019;color:#f1d680;border:1px solid #8b8058;border-radius:2px;font:inherit}
+.equipment-quantity button {min-height:25px;padding:2px 7px;background:#293425;color:#eee5c5;border:1px solid #8b8058;border-radius:2px;font:inherit}
+.equipment-quantity input:focus-visible,.equipment-quantity button:focus-visible {outline:2px solid #f6d881;outline-offset:2px}
+.equipment-quantity :disabled {opacity:.45}

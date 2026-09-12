@@ -1,3 +1,4 @@
+import {pocketOrderFromSlots} from './inventory-pockets.js';
 import {regionalWeatherAt} from './regional-weather.js';
 import {heldThrowingKnife,knifeThrowCosts,knifeThrowRange,knifeThrowChance,knifeThrowDamage} from './thrown-knife.js';
 import {knifeFlight} from './knife-flight.js';
@@ -17,7 +18,7 @@ import {projectilePath,projectileFlight,pointProjectileFlight,concealmentAt,conc
 import {boundaryMatches} from './tactical-exits.js';
 import {HELD_SUPPLIES,heldSupply,clearEmptySupply} from './held-supplies.js';
 import {heldTool,environmentActionProfile,resolveEnvironmentInteraction,extractContainerItem} from './environment-interactions.js';
-import {SUPPLY_ITEMS,carriedObject,inventoryUsage,itemDescriptor,itemQuantity,extractItemQuantity,applyItemQuantity,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove,planEquipOutfit,planStowOutfit,planHoldOffhand,equipmentEndpoint,equipmentFingerprint,planOutfitPlacement,placeStoredItem} from './tactical-inventory.js';
+import {SUPPLY_ITEMS,carriedObject,inventoryUsage,itemDescriptor,itemQuantity,extractItemQuantity,applyItemQuantity,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove,planEquipOutfit,planStowOutfit,planHoldOffhand,equipmentEndpoint,equipmentFingerprint,planOutfitPlacement,pocketMergeCount} from './tactical-inventory.js';
 import {FITTING_RULES_VERSION,FIT_BAYONET_AP,REMOVE_BAYONET_AP,LOOSE_BAYONET,fixedBayonetFor,fixedBayonetProfile,fittingWeight,weaponItemWeight,normalizeUnitFittings} from './weapon-fittings.js';
 import {FISTS,BUTTSTOCK,unarmedChance,unarmedImpact,weaponStealChance,STEAL_MIN_AP} from './unarmed-combat.js';
 import {directionTo,facingAllowsSight,turnAPCost,stealthAPMultiplier,noiseRadius,approximateHeardPosition} from './tactical-awareness.js';
@@ -781,11 +782,20 @@ export function planEquipmentPlacement(unit,action){
  for(const [id,expected]of [[sourceId,expectedSource],[destinationId,expectedDestination]])if(typeof expected!=='string'||expected!==equipmentFingerprint(unit,id))throw Error('Cambió el equipo. Volvé a seleccionar el objeto.');
  const source=equipmentEndpoint(unit,sourceId),destination=equipmentEndpoint(unit,destinationId);
  if(!source.item)throw Error('La ranura de origen está vacía.');
+ if(action.count!==undefined&&(!Number.isSafeInteger(action.count)||action.count<1||action.count>source.count))throw Error('No queda esa cantidad en la ranura de origen.');
+ if(action.count>1&&source.kind!=='pocket')throw Error('Las manos y la vestimenta admiten un objeto por ranura.');
  if(source.kind==='outfit'||destination.kind==='outfit')return {unit:planOutfitPlacement(unit,source,destination),pa:OUTFIT_CHANGE_AP};
- if(source.kind==='pocket'&&destination.kind==='pocket')return {unit:planPocketMove(unit,sourceId,destinationId),pa:0};
+ if(source.kind==='pocket'&&destination.kind==='pocket')return {unit:planPocketMove(unit,sourceId,destinationId,undefined,undefined,action.count),pa:0};
  if(destination.kind==='hand'){
   if(destination.blocked)throw Error('El arma principal ocupa las dos manos.');
-  return readyReference(unit,source.item,destination.side);
+  const result=readyReference(unit,source.item,destination.side);
+  if(source.kind==='pocket'){
+   const slots=structuredClone(inventoryUsage(unit).slots),from=slots.find(slot=>slot.id===sourceId);
+   from.entry.count--;if(!from.entry.count)from.entry=null;
+   result.unit.pocketOrder=pocketOrderFromSlots(slots);
+   if(inventoryUsage(result.unit).overloaded)throw Error('No queda espacio para guardar el objeto desplazado.');
+  }
+  return result;
  }
  // A hand-to-pocket exchange first puts the held item away. If the target
  // was occupied, ready its item in that hand before fixing the pocket order.
@@ -793,8 +803,13 @@ export function planEquipmentPlacement(unit,action){
  if(destination.item&&destination.item!==stored.item){
   const ready=readyReference(next,destination.item,source.side);next=ready.unit;pa=Math.max(pa,ready.pa);
  }
+ const descriptor=itemDescriptor(next,stored.item);
+ if(descriptor.slotSize>1&&destination.size!=='large')throw Error('Ese objeto necesita un bolsillo grande.');
+ const slots=structuredClone(inventoryUsage(unit).slots),to=slots.find(slot=>slot.id===destinationId);
+ const count=destination.item===stored.item?destination.count+1:1;
+ if(count>descriptor.stackLimit)throw Error('Esa pila ya está completa.');
+ to.entry={...descriptor,count};next.pocketOrder=pocketOrderFromSlots(slots);
  if(inventoryUsage(next).overloaded)throw Error('No queda espacio para guardar el objeto desplazado.');
- next=placeStoredItem(next,stored.item,destinationId);
  return {unit:next,pa};
 }
 export function mainItemPreview(s,u,item){
@@ -803,10 +818,20 @@ export function mainItemPreview(s,u,item){
  return {pa:s.mode==='exploration'?0:4,valid:!reason,reason,action:{type:'weapon',slot:'item',item}};
 }
 export function equipmentPlacementPreview(s,u,action){
- let pa=0,reason=inventoryOrderReason(s,u,0);
- if(!reason)try{pa=planEquipmentPlacement(u,action).pa;reason=inventoryOrderReason(s,u,pa);}catch(error){reason=error.message;}
- return {pa,reason,valid:!reason};
+ let pa=0,reason=inventoryOrderReason(s,u,0),remainingSelection;
+ if(!reason)try{
+  const plan=planEquipmentPlacement(u,action);pa=plan.pa;reason=inventoryOrderReason(s,u,pa);
+  if(!reason&&action.count>1){
+   const source=equipmentEndpoint(u,action.sourceId),destination=equipmentEndpoint(u,action.destinationId);
+   if(source.kind==='pocket'){
+    const moved=destination.kind==='hand'?1:destination.kind==='pocket'?pocketMergeCount(u,action.sourceId,action.destinationId):0;
+    if(moved>0&&moved<action.count){const remaining=equipmentEndpoint(plan.unit,action.sourceId);remainingSelection={sourceId:action.sourceId,expectedSource:equipmentFingerprint(plan.unit,action.sourceId),count:action.count-moved,maxCount:remaining.count};}
+   }
+  }
+ }catch(error){reason=error.message;}
+ return {pa,reason,valid:!reason,...(remainingSelection?{remainingSelection}:{})};
 }
+
 export function swapHandsPreview(s,u){
  const pa=s.mode==='exploration'?0:4;let reason=inventoryOrderReason(s,u,pa);
  if(!reason)try{planSwapHands(u);}catch(error){reason=error.message;}
@@ -1231,7 +1256,7 @@ else if(a.type==='moveEquipment'){
 }
 else if(a.type==='movePocket'){
   const reason=inventoryOrderReason(s,u,0);if(reason)return fail(reason);
-  let next;try{next=planPocketMove(u,a.sourceId,a.destinationId,a.expectedSource,a.expectedDestination);}catch(error){return fail(error.message);}
+  let next;try{next=planPocketMove(u,a.sourceId,a.destinationId,a.expectedSource,a.expectedDestination,a.count);}catch(error){return fail(error.message);}
   pay(0);replaceUnit(u,next);sayObserved(s,[u],`${u.name} ordena sus bolsillos.`);
 }
 else if(a.type==='drop'){

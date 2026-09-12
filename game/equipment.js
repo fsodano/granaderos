@@ -190,7 +190,7 @@ export function validateEquipment(s,roster=[]){
   need(r.carriedAmmo===undefined||integer(r.carriedAmmo,0,100000),'La reserva personal de cartuchos es inválida.');
   need(r.carriedLoaded===undefined||!r.weaponDropped&&(WEAPONS[op?.weapon]?.capacity??0)>0&&integer(r.carriedLoaded,0,Math.min(WEAPONS[op.weapon].capacity,r.carriedAmmo??0)),'La carga personal del arma es inválida.');
   need(r.carriedReloadProgress===undefined||r.carriedLoaded!==undefined,'Falta la carga del arma en recarga.');validateReloadProgress(r.carriedReloadProgress,WEAPONS[op?.weapon]?.capacity??0,r.carriedLoaded??0,r.weaponDropped);
-  validateHands(personalHandState(s,op,r));validateUnitFittings({...op,...r});
+  const personal=personalHandState(s,op,r);validateHands(personal);if(r.pocketOrder?.some(slot=>slot.count!==undefined))inventoryUsage(personal);validateUnitFittings({...op,...r});
   for(const [slot,key] of [['weapon','weaponInstanceId'],['blade','bladeInstanceId']])if(r[key]!==undefined)need(validInstanceId(r[key])&&op?.[slot]>0&&(slot!=='weapon'||!r.weaponDropped),'La identidad del arma guardada es inválida.');
   for(const key of ['jammed','weaponDropped'])need(r[key]===undefined||typeof r[key]==='boolean','El estado del arma guardada es inválido.');
   need(r.weaponMode===undefined||['fire','melee'].includes(r.weaponMode),'El modo del arma guardado es inválido.');
@@ -210,7 +210,7 @@ export function validateEquipmentOwnership(s,roster=[],battle=null){
  const retainedOnField=(snapshot,u)=>{const disposition=snapshot.returnLedger?.entries?.find(e=>e.unitId===u.id),owner=snapshot.sectorId==='san_lorenzo'?'san_nicolas':snapshot.sectorId;return !u.departure&&(!disposition||['resident','dead'].includes(disposition.kind)&&disposition.sector===owner);};
  const claim=id=>{need(validItemIdentity(id)&&!identities.has(id),'La identidad del equipo está duplicada o es inválida.');const number=generatedIdentityNumber(id);if(number!==null)need(number<s.nextEquipmentInstanceId,'La secuencia del equipo reutiliza una identidad existente.');identities.add(id);};
  const record=r=>{if(r&&typeof r==='object'&&(r.count??1)>0)for(const id of fittingItemIds(r))claim(id);};
- const unit=u=>{validateHands(u);validateUnitFittings(u);for(const id of heldItemIds(u))claim(id);for(const r of Object.values(u.inventory??{}))record(r);};
+ const unit=u=>{validateHands(u);if(u.pocketOrder?.some(slot=>slot.count!==undefined))inventoryUsage(u);validateUnitFittings(u);for(const id of heldItemIds(u))claim(id);for(const r of Object.values(u.inventory??{}))record(r);};
  const livingPlayers=new Set();
  for(const op of roster){const r=s.operativeState[op.id];if(r?.alive&&r.hp>0){livingPlayers.add(String(op.id));if(!activePlayers.has(String(op.id)))unit(personalHandState(s,op,r));}}
  for(const group of [...Object.values(s.garrisons??{}),...(s.militiaTraining??[]).map(course=>course.trainees??[])])for(const u of group){livingPlayers.add(String(u.id));if(!activePlayers.has(String(u.id)))unit(u);}

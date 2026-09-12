@@ -16,4 +16,4 @@ Eight focused transaction cases cover dressings, tools, hand exchanges, exact de
 
 A separate live preview uses the production Battlefield. Dragging a dressing from small pocket 5 to the second hand changed 90 to 86 AP and freed one pocket. Dragging it to large pocket 4 changed 86 to 82 AP. Dragging the loaded pistol onto that occupied pocket changed 82 to 78 AP, put the dressing in the main hand and the pistol in the exact destination. Weight remained 5.0 kg. The actual campaign save on port 3000 was not used for this fixture.
 
-This milestone does not establish full inventory or JA2 parity. Quantity selection and simultaneous paired firing remain open. Campaign hand, pocket and outfit placement is now supported; see [campaign equipment dragging](campaign-equipment-dragging.md).
+This milestone does not establish full inventory or JA2 parity. Pocket quantity selection is now implemented; see [physical stack quantities](pocket-stack-quantities.md). Hands retain the original single-item limit. Simultaneous paired firing remains open. Campaign hand, pocket and outfit placement is now supported; see [campaign equipment dragging](campaign-equipment-dragging.md).

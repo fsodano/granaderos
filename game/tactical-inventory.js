@@ -1,6 +1,6 @@
 import {OUTFITS,validateOutfit,wornOutfit} from './outfits.js';
 import {handLayout,handsRequired,selectMainHand} from './hand-layout.js';
-import {allocatePockets,rearrangePockets} from './inventory-pockets.js';
+import {allocatePockets,rearrangePockets,pocketOrderFromSlots,validatePocketOrder} from './inventory-pockets.js';
 import {lowerWeapon} from './weapon-readiness.js';
 import {validateReloadProgress} from './weapon-reload.js';
 import {WEAPONS} from './data.js';
@@ -162,6 +162,13 @@ export function validateHands(unit) {
 }
 export function inventoryUsage(unit) {
   validateHands(unit);
+  validatePocketOrder(unit.pocketOrder);
+  for(const slot of unit.pocketOrder??[]){
+    const item=slot.item,known=own(SUPPLY_ITEMS,item)||['primary','blade','offhand','outfit'].includes(item)||item.startsWith('inventory:')&&own(pack(unit),item.slice(10));
+    // Known depleted or held items still have a limit. A stale oversized hint
+    // must not pass save admission and then prevent the next real pickup.
+    if(slot.count!==undefined&&known&&slot.count>itemDescriptor(unit,item).stackLimit)fail('La cantidad del bolsillo supera el límite de la pila.');
+  }
   const items = [],hands=handLayout(unit);
   for (const item of [...Object.keys(SUPPLY_ITEMS), ...Object.keys(pack(unit)).sort().map(key => `inventory:${key}`),...hands.stowed]) {
     const count = itemQuantity(unit, item)-(hands.held.includes(item)?1:0);
@@ -169,8 +176,10 @@ export function inventoryUsage(unit) {
     const descriptor = itemDescriptor(unit, item), stacks = Math.ceil(count / descriptor.stackLimit);
     items.push({...descriptor, count, stacks, slots: stacks});
   }
-  const used = items.reduce((total, entry) => total + entry.slots, 0);
   const layout=allocatePockets(items,unit.pocketOrder);
+  // Partial stacks occupy real pockets even when their combined quantity would fit in one.
+  const used = layout.slots.filter(slot=>slot.entry).length+layout.overflow.reduce((total,entry)=>total+Math.ceil(entry.count/entry.stackLimit),0);
+  for(const item of items){item.stacks=layout.slots.filter(slot=>slot.entry?.item===item.item).length+Math.ceil((layout.overflow.find(entry=>entry.item===item.item)?.count??0)/item.stackLimit);item.slots=item.stacks;}
   return {used, capacity: INVENTORY_CAPACITY, free: layout.slots.filter(slot=>!slot.entry).length, overloaded: layout.overflow.length>0, items,...layout};
 }
 
@@ -275,6 +284,14 @@ export function applyItemQuantity(unit, stack, {deferCapacity=false}={}) {
       else next.inventory[uniqueKey(next.inventory, entry.key)] = structuredClone(value);
     }
   }
+  if(unit.pocketOrder?.some(slot=>slot.count!==undefined)){
+    const slots=structuredClone(usage.slots);
+    for(const item of new Set(slots.flatMap(slot=>slot.entry?[slot.entry.item]:[]))){
+      let added=itemQuantity(next,item)-itemQuantity(unit,item);
+      for(const slot of slots){if(added<=0)break;if(slot.entry?.item!==item)continue;const amount=Math.min(added,slot.entry.stackLimit-slot.entry.count);slot.entry.count+=amount;added-=amount;}
+    }
+    next.pocketOrder=pocketOrderFromSlots(slots);
+  }
   if (!deferCapacity && inventoryUsage(next).overloaded) fail('No queda espacio en el inventario.');
   return next;
 }
@@ -330,26 +347,41 @@ export function planRemoveBayonet(unit,destination='inventory') {
 // identified quest objects keep their individual condition and identity.
 export function pocketMergeCount(unit,sourceId,destinationId,layout=inventoryUsage(unit)){
  const source=layout.slots.find(slot=>slot.id===sourceId)?.entry,destination=layout.slots.find(slot=>slot.id===destinationId)?.entry;
- if(!source||!destination||source.item===destination.item||!source.item.startsWith('inventory:')||!destination.item.startsWith('inventory:'))return 0;
- const a=record(unit.inventory[source.item.slice(10)]),b=record(unit.inventory[destination.item.slice(10)]);
- if(!a.name||a.weapon!==undefined||a.kind==='outfit'||a.instanceId||isTool(a)||!sameMetadata(a,b))return 0;
+ if(!source||!destination)return 0;
+ if(source.item!==destination.item){
+  if(!source.item.startsWith('inventory:')||!destination.item.startsWith('inventory:'))return 0;
+  const a=record(unit.inventory[source.item.slice(10)]),b=record(unit.inventory[destination.item.slice(10)]);
+  if(!a.name||a.weapon!==undefined||a.kind==='outfit'||a.instanceId||isTool(a)||!sameMetadata(a,b))return 0;
+ }
  return Math.max(0,Math.min(source.count,destination.stackLimit-destination.count));
 }
 
-export function planPocketMove(unit,sourceId,destinationId,expectedSource,expectedDestination){
- const layout=inventoryUsage(unit),next=structuredClone(unit);
- for(const [id,expected]of [[sourceId,expectedSource],[destinationId,expectedDestination]])if(expected!==undefined&&expected!==pocketFingerprint(layout.slots.find(slot=>slot.id===id)))throw Error('Cambió el contenido del bolsillo. Seleccioná el objeto de nuevo.');
+export function planPocketMove(unit,sourceId,destinationId,expectedSource,expectedDestination,count){
+ const layout=inventoryUsage(unit),source=layout.slots.find(slot=>slot.id===sourceId),destination=layout.slots.find(slot=>slot.id===destinationId);
+ for(const [id,expected]of [[sourceId,expectedSource],[destinationId,expectedDestination]])if(expected!==undefined&&expected!==pocketFingerprint(layout.slots.find(slot=>slot.id===id)))fail('Cambió el contenido del bolsillo. Seleccioná el objeto de nuevo.');
+ if(!source?.entry||!destination||source===destination)fail('Seleccioná un objeto y otro bolsillo.');
+ if(count!==undefined){quantity(count,1);if(count>source.entry.count)fail('No queda esa cantidad en el bolsillo de origen.');}
+ const requested=count??source.entry.count;
+ if(source.entry.slotSize>1&&destination.size!=='large')fail('Ese objeto necesita un bolsillo grande.');
  const merging=pocketMergeCount(unit,sourceId,destinationId,layout);
+ let next=structuredClone(unit),slots=structuredClone(layout.slots),from=slots.find(slot=>slot.id===sourceId),to=slots.find(slot=>slot.id===destinationId);
  if(merging){
-  const source=layout.slots.find(slot=>slot.id===sourceId).entry,destination=layout.slots.find(slot=>slot.id===destinationId).entry;
-  const combined=extractItemQuantity(unit,source.item,merging).unit;
-  const key=destination.item.slice(10),value=record(combined.inventory[key]);
-  combined.inventory[key]={...value,count:quantity(value.count+merging)};
-  combined.pocketOrder=layout.slots.flatMap(slot=>slot.entry?[{slotId:slot.id,item:slot.entry.item,index:slot.entry.index}]:[]);
-  if(inventoryUsage(combined).overloaded)fail('No queda espacio para combinar los objetos.');
-  return combined;
+  const moved=Math.min(requested,merging);
+  if(source.entry.item!==destination.entry.item){
+   next=extractItemQuantity(unit,source.entry.item,moved).unit;
+   const key=destination.entry.item.slice(10),value=record(next.inventory[key]);
+   next.inventory[key]={...value,count:quantity(value.count+moved)};
+  }
+  from.entry.count-=moved;to.entry.count+=moved;if(!from.entry.count)from.entry=null;
+ }else if(!destination.entry){
+  to.entry={...from.entry,count:requested};from.entry.count-=requested;if(!from.entry.count)from.entry=null;
+ }else{
+  if(requested!==source.entry.count)fail('Elegí un bolsillo vacío o una pila del mismo objeto para separar la cantidad.');
+  if(source.entry.item===destination.entry.item&&count!==undefined)fail('Esa pila ya está completa.');
+  next.pocketOrder=rearrangePockets(layout,sourceId,destinationId);return next;
  }
- next.pocketOrder=rearrangePockets(layout,sourceId,destinationId);
+ next.pocketOrder=pocketOrderFromSlots(slots);
+ if(inventoryUsage(next).overloaded&&!layout.overloaded)fail('No queda espacio para separar los objetos.');
  return next;
 }
 
@@ -429,7 +461,7 @@ export function planOutfitPlacement(unit,source,destination){
   const {item,index}=slot.entry;
   // One packed garment has left this stack. Later equivalent garments retain
   // their own pockets while their record's stack indices close the gap.
-  return [{slotId:slot.id,item,index:other.kind==='pocket'&&item===other.item&&index>other.entry.index?index-1:index}];
+  return [{slotId:slot.id,item,index:other.kind==='pocket'&&item===other.item&&index>other.entry.index?index-1:index,count:slot.entry.count}];
  });
  if(stored&&other.kind==='pocket')next.pocketOrder.push({slotId:other.id,item:stored,index:0});
  if(inventoryUsage(next).overloaded)fail('No queda un bolsillo grande para la vestimenta retirada.');

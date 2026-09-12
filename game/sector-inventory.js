@@ -133,9 +133,9 @@ export function moveSectorItem(s,action,roster){
   stack={item:'outfit',...makeOutfit()};next=applyItemQuantity(actor,stack);
   const at=inventorySite(s,sectorId).sectorId;if((s.depots?.[at]?.ponchos??0)>0)s.depots[at].ponchos--;else s.resources.ponchos--;
  }else if(direction==='arrange'){
-  need(count===1&&['pocket','equipment'].includes(action.kind),'Elegí las ranuras que querés ordenar.');
+  need(['pocket','equipment'].includes(action.kind),'Elegí las ranuras que querés ordenar.');
   need(typeof action.expectedSource==='string'&&typeof action.expectedDestination==='string','Volvé a seleccionar el equipo.');
-  next=action.kind==='pocket'?planPocketMove(actor,action.sourceId,action.destinationId,action.expectedSource,action.expectedDestination):planEquipmentPlacement(actor,action).unit;
+  next=action.kind==='pocket'?planPocketMove(actor,action.sourceId,action.destinationId,action.expectedSource,action.expectedDestination,action.count):planEquipmentPlacement(actor,action).unit;
  }else if(direction==='equip'){
   need(count===1&&['primary','blade','offhand','outfit','offhandItem','mainhand'].includes(action.slot),'Elegí una ranura de equipo.');
   const stow=action.slot==='outfit'&&action.inventoryKey===null;

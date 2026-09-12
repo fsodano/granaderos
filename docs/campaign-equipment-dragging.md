@@ -12,4 +12,4 @@ Live verification used a separate campaign-equipment preview: Acosta's rifle mov
 
 Later live click-placement checks moved the rifle to a chosen large pocket, moved the worn garment into a pocket and back onto the soldier, then equipped dressings in the main hand. Save/load retained all three locations. See [click placement verification](equipment-click-placement.md#verification).
 
-This completes campaign placement between hands, pockets and the outfit slot. Selected hand-stack quantities, ground-item dragging and simultaneous paired firing remain separate inventory questions; this change does not claim complete inventory or JA2 parity.
+This completes campaign placement between hands, pockets and the outfit slot. Pocket quantity selection now uses the shared [physical stack controls](pocket-stack-quantities.md); hands retain the original single-item limit. Ground-item dragging and simultaneous paired firing remain separate inventory questions; this change does not claim complete inventory or JA2 parity.
