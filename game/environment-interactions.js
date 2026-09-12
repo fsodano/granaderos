@@ -208,8 +208,9 @@ export function authoredEnvironment(sector, map) {
     if (door) doors.push({id: door.doorId, type: 'door', open: false, locked: true, keyId: 'yatasto-store', lockDifficulty: 25, lockIntegrity: 100});
   }
   if (sector === 'mendoza') {
-    const id = 'mendoza:house-0:chest:8:13';
-    if (hasChest(id)) containers.push({id, type: 'chest', open: false, locked: true, lockDifficulty: 40, lockIntegrity: 100,
+    // Room dimensions and furniture positions can change; the supply cache keeps its role.
+    const chest = (map.props ?? []).find(prop => prop.type === 'chest' && prop.buildingId === 'mendoza:house-0' && prop.purpose === 'supply-cache');
+    if (chest) containers.push({id: chest.id, type: 'chest', open: false, locked: true, lockDifficulty: 40, lockIntegrity: 100,
       trap: {type: 'alarm', difficulty: 35, armed: true, discoveredBy: []}, contents: [{item: 'ammo', count: 12, weight: .04}, {item: 'medkits', count: 3, weight: .2}]});
   }
   return {doors, containers};

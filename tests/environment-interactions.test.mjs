@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {TOOL_TYPES, heldTool, environmentActionProfile, resolveEnvironmentInteraction, environmentTargetSummary, visibleContainerContents, extractContainerItem, validateEnvironment, authoredEnvironment} from '../game/environment-interactions.js';
 import {inventoryUsage, applyItemQuantity, extractItemQuantity, itemDescriptor, validateItemStack} from '../game/tactical-inventory.js';
 import {buildSectorMap} from '../game/maps.js';
+import {enterSector} from '../game/world.js';
 
 const toolRecord = (toolKey, extra = {}) => ({count: 1, weight: TOOL_TYPES[toolKey].weight, itemType: 'tool', toolKey, condition: 100, ...extra});
 const soldier = (toolKey, extra = {}) => ({id: 'p', side: 'player', hp: 100, energy: 100, ap: 100, mechanical: 80, dexterity: 80, strength: 80, wisdom: 80, experienceLevel: 6, activeSlot: toolKey ? 'tool' : 'unarmed', ...(toolKey ? {activeTool: `inventory:${toolKey}`} : {}), inventory: toolKey ? {[toolKey]: toolRecord(toolKey)} : {}, ...extra});
@@ -215,4 +216,28 @@ test('authored caches reuse existing map IDs and give tools before any required 
   assert.equal(mendoza.containers.length, 1); assert.equal(mendoza.containers[0].locked, true); assert.equal(mendoza.containers[0].trap.type, 'alarm');
   for (const record of [...authored.containers, ...authored.doors, ...mendoza.containers]) validateEnvironment(record);
   assert.deepEqual(authoredEnvironment('retiro', buildSectorMap({sector: 'retiro'})), {doors: [], containers: []});
+});
+
+for (const compactLayout of [false, true]) test(`Mendoza supply cache binds one chest and persists depletion on ${compactLayout ? 'compact' : 'full-size'} maps`, () => {
+  const request = {sector: 'mendoza', compactLayout, exploration: true, squad: [{id: 'p'}], enemies: []};
+  const map = buildSectorMap(request), before = structuredClone(map);
+  const marked = map.props.filter(prop => prop.purpose === 'supply-cache');
+  assert.equal(marked.length, 1);
+  const chest = marked[0];
+  assert.equal(chest.type, 'chest'); assert.equal(chest.buildingId, 'mendoza:house-0');
+  const authored = authoredEnvironment('mendoza', map);
+  assert.equal(authored.containers.length, 1); assert.equal(authored.containers[0].id, chest.id);
+  assert.deepEqual(authoredEnvironment('mendoza', {...map, props: [...map.props].reverse()}), authored);
+  assert.deepEqual(map, before);
+  const first = enterSector(request), cache = first.props.find(prop => prop.id === chest.id);
+  assert.equal(cache.open, false); assert.equal(cache.locked, true);
+  assert.equal(cache.lockDifficulty, 40); assert.equal(cache.lockIntegrity, 100);
+  assert.deepEqual(cache.trap, {type: 'alarm', difficulty: 35, armed: true, discoveredBy: []});
+  assert.deepEqual(cache.contents, [{item: 'ammo', count: 12, weight: .04}, {item: 'medkits', count: 3, weight: .2}]);
+  assert.ok(first.props.filter(prop => prop.type === 'chest' && prop.id !== cache.id).every(prop => prop.locked === undefined && prop.trap === undefined && prop.contents === undefined));
+  Object.assign(cache, {open: true, locked: false, contents: [{item: 'ammo', count: 2, weight: .04}]});
+  Object.assign(cache.trap, {armed: false, discoveredBy: ['player']});
+  const saved = structuredClone(first), returned = enterSector(request, first);
+  assert.deepEqual(returned.props.find(prop => prop.id === cache.id), saved.props.find(prop => prop.id === cache.id));
+  assert.deepEqual(first, saved);
 });

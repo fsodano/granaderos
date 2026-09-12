@@ -111,16 +111,16 @@ function plan(id,largeBuildings=false){
  }
  // Tile-sized furnishings preserve connected aisles and every door approach.
  const props=[];
- const furnish=(building,type,x,y)=>{
+ const furnish=(building,type,x,y,metadata={})=>{
    const room=building.rooms.find(r=>r.cells.some(c=>c.x===x&&c.y===y));if(!room)return;
-   const prop={id:`${building.id}:${type}:${x}:${y}`,type,x,y,buildingId:building.id,roomId:room.id,footprint:{width:1,height:type==='bed'?2:1},blocksMovement:true};
+   const prop={id:`${building.id}:${type}:${x}:${y}`,type,x,y,buildingId:building.id,roomId:room.id,footprint:{width:1,height:type==='bed'?2:1},blocksMovement:true,...metadata};
    // Try the preferred location, then nearest cells. Keep beds full size.
    const candidates=[...room.cells].sort((a,b)=>Math.abs(a.x-x)+Math.abs(a.y-y)-Math.abs(b.x-x)-Math.abs(b.y-y)||a.y-b.y||a.x-b.x);
    for(const at of candidates){const candidate={...prop,...at};if(!propPlacementError({tiles:c.tiles,buildings,props},candidate)){props.push(candidate);break;}}
  };
  for(const b of buildings){
    furnish(b,id==='retiro'?'bed':id==='ensenada'?'barrels':'table',b.x+1,b.y+1);
-   if(b.width>=5)furnish(b,id==='mendoza'||id==='cordoba'?'chest':'bench',b.x+b.width-2,b.y+1);
+   if(b.width>=5)furnish(b,id==='mendoza'||id==='cordoba'?'chest':'bench',b.x+b.width-2,b.y+1,b.id==='mendoza:house-0'?{purpose:'supply-cache'}:{});
    if(b.height>=5){furnish(b,'bed',b.x+1,b.y+b.height-2);furnish(b,'chest',b.x+b.width-2,b.y+b.height-2);}
  }
  for(const b of buildings)placePulperiaCart({tiles:c.tiles,buildings,props},b);
