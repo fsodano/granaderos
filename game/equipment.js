@@ -232,8 +232,9 @@ export function validateEquipmentOwnership(s,roster=[],battle=null){
 }
 
 export function deliverEquipmentShipments(s){
- s.equipmentShipments??=[];
- if(s.blockade||s.sectors.ensenada.owner!=='patriot')return;
- for(const shipment of [...s.equipmentShipments])if(shipment.due<=s.hour&&s.armoryItems.length+shipment.quantity<=10000){addEquipment(s,shipment.item,shipment.quantity);s.equipmentShipments.splice(s.equipmentShipments.indexOf(shipment),1);s.log.unshift({hour:s.hour,text:`Arriban a Ensenada ${shipment.quantity} armas importadas para la sala de armas.`});s.log=s.log.slice(0,80);}
+ const delivered=[];s.equipmentShipments??=[];
+ if(s.blockade||s.sectors.ensenada.owner!=='patriot')return delivered;
+ for(const shipment of [...s.equipmentShipments])if(shipment.due<=s.hour&&s.armoryItems.length+shipment.quantity<=10000){addEquipment(s,shipment.item,shipment.quantity);delivered.push({kind:'equipment',sector:'ensenada',item:shipment.item,quantity:shipment.quantity});s.equipmentShipments.splice(s.equipmentShipments.indexOf(shipment),1);s.log.unshift({hour:s.hour,text:`Arriban a Ensenada ${shipment.quantity} armas importadas para la sala de armas.`});s.log=s.log.slice(0,80);}
+ return delivered;
 }
 export function validEquipmentShipments(s){return Array.isArray(s.equipmentShipments)&&s.equipmentShipments.length<=1000&&s.equipmentShipments.every(q=>q&&isImportedEquipment({item:q.item})&&Number.isInteger(q.quantity)&&q.quantity>0&&q.quantity<=100&&Number.isInteger(q.due)&&q.due>=0&&q.due<=1e9);}

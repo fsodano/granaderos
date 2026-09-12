@@ -1,3 +1,4 @@
+import {publicLogisticsNotice} from './logistics-attention.js';
 import {knownCampaignSectorEquipment} from './sector-inventory.js';
 import {publicContractNotice} from './contract-attention.js';
 import {squadTravelStatus} from './squad-travel.js';
@@ -97,6 +98,7 @@ export function playerKnownCampaign(state){
   const knownIds=new Set([...(state.recruited??[]),...Object.entries(state.operativeState??{}).filter(([,record])=>record.captured).map(([id])=>Number(id))]);
   const roster=rosterFor(state).filter(unit=>knownIds.has(unit.id));
   return {...pick(state,['hour','secondOfHour','phase','location','activeSquadId','blockade','completed','defeated']),
+    logisticsNotice:publicLogisticsNotice(state),
     assignmentNotice:publicAssignmentNotice(state),
     contractNotice:publicContractNotice(state),
     travelNotice:state.travelNotice?{hour:state.travelNotice.hour,events:state.travelNotice.events.map(e=>pick(e,['squadId','name','sector','text']))}:null,
