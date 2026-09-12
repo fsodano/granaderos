@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,getReachable,movementStepCost,climbPreview} from '../game/tactical.js';
+import {createBattle,actBattle,getReachable,movementStepCost,climbPreview,maxActionPoints} from '../game/tactical.js';
 
 function fixture(exploration=true){
  const tiles=Array.from({length:160},(_,i)=>({x:i%16,y:Math.floor(i/16),type:'grass',blocked:false,cover:0}));
@@ -41,4 +41,12 @@ test('blocked, mounted, prone, exhausted, unaffordable and remote climbs reject 
  }
  const state=fixture();state.units.push({...structuredClone(state.units[0]),id:'above',x:4,y:4,tacticalLevel:1});
  const blocked=climb(state);assert.ok(blocked.lastError);assert.deepEqual(physical(blocked),physical(state));
+});
+
+test('first contact on the terrace stops exploration and starts the normal combat budget after the climb',()=>{
+ const state=fixture(),unit=state.units[0];unit.ap=47;unit.agility=100;
+ state.units.push({...structuredClone(unit),id:'roof-defender',side:'enemy',x:6,y:4,tacticalLevel:1,agility:10,facing:6,patrol:false,overwatch:false});
+ const next=actBattle(state,{type:'move',unitId:'p',x:7,y:6,tacticalLevel:1});
+ assert.equal(next.lastError,null);assert.equal(next.mode,'combat');assert.equal(next.units[0].ap,maxActionPoints(next,next.units[0]));assert.equal(next.units[0].energy,88);assert.equal(next.elapsedSeconds,6);
+ assert.deepEqual([next.units[0].x,next.units[0].y,next.units[0].tacticalLevel],[4,4,1]);
 });

@@ -35,6 +35,7 @@ export function propCoverProfile(prop){
 // sampled in their containing cell, without an unbounded integer-step loop.
 export function geometryCells(a,b){
  if(![a.x,a.y,b.x,b.y].every(Number.isFinite))throw new RangeError('Invalid sight coordinates');
+ if(![a.x,a.y,b.x,b.y].map(Math.round).every(Number.isSafeInteger)||Math.abs(b.x-a.x)+Math.abs(b.y-a.y)>8192)throw new RangeError('Sight path exceeds tactical bounds');
  const dx=b.x-a.x,dy=b.y-a.y,sx=Math.sign(dx),sy=Math.sign(dy),tx=dx?1/Math.abs(dx):Infinity,ty=dy?1/Math.abs(dy):Infinity;
  let {x,y}=containingCell(a),entry=0;
  let nx=dx?(x+sx*.5-a.x)/dx:Infinity,ny=dy?(y+sy*.5-a.y)/dy:Infinity;
@@ -94,12 +95,34 @@ export function obstacleVolumesAt(state,point){
  return volumes;
 }
 
+function requestedSightObstacle(state,target){
+ // A selected object can expose its near face. Coordinates alone, or an actor
+ // occupying the same cell, cannot grant sight through that object's volume.
+ if(typeof target.type!=='string'||target.hp!==undefined||target.side!==undefined)return null;
+ const cell=containingCell(target),surface=surfaceAt(state,cell);
+ if(surface?.type===target.type){
+  if(target.doorId!==undefined&&target.doorId!==surface.doorId)return null;
+  if(target.id!==undefined&&surface.id!==undefined&&target.id!==surface.id)return null;
+  return `surface:${tacticalLevel(cell)}:${cell.x},${cell.y}`;
+ }
+ const prop=(state.props??[]).find(prop=>{
+  const size=prop.footprint??{width:1,height:1};
+  return prop.id===target.id&&prop.type===target.type&&tacticalLevel(prop)===tacticalLevel(target)&&
+   cell.x>=prop.x&&cell.y>=prop.y&&cell.x<prop.x+size.width&&cell.y<prop.y+size.height;
+ });
+ return prop?`prop:${prop.id}`:null;
+}
+
 // Call only when usesElevationGeometry() is true; the caller retains its exact
 // established flat-map sight rules otherwise. No actor roster is inspected here.
 export function elevationSightClear(state,a,b){
  const start=absoluteBodyHeight(state,a),end=absoluteBodyHeight(state,b);
  if(start===null||end===null)return false;
+ const requested=requestedSightObstacle(state,b);
  for(const cell of geometryCells(a,b))for(const volume of obstacleVolumesAt(state,cell)){
+  // Only the requested object's own cover is exempt. Slabs remain solid, even
+  // when the requested object is a floor or occupies the terminal column.
+  if(volume.kind!=='slab'&&volume.id===requested)continue;
   if(volume.blocksSight&&rayHeightIntersection(start,end,cell,volume.bottom,volume.top))return false;
  }
  return true;
