@@ -10,4 +10,12 @@ Eight focused model tests cover placement, counts, exact identity and condition,
 
 Live verification used the separate production Battlefield preview on port 3020. Dragging a keepsake into the main hand changed 90 to 86 AP, showed condition 44%, and retained the pistol in the other hand with one load and 81% condition. Clicking the enemy showed the refusal and retained 86 AP. Tactical save validation and reload retained both objects. Selecting the pistol then spent four AP (86 to 82) and kept its original load. The user's campaign on port 3000 was not changed.
 
-This does not add improvised attacks, object-specific conversations, selectable held stack quantities or all strategic-screen hand gestures. Full inventory and JA2 parity remain open.
+## Campaign preparation
+
+The sector equipment screen now offers **Poner en mano principal** for carried bandages, tools, usable supplies and ordinary objects. Existing main and secondary weapons can also be selected again. Selecting an already held item is disabled. These controls reuse the tactical drag planner, including exact item selection, two-hand occupancy and pocket capacity. A main-hand selection can take an item from the second hand without duplicating it.
+
+Campaign preparation requires a conscious, awake soldier present in a safe friendly sector, with no pending encounter. It does not require a prior scouting visit. It changes no time, energy, health or shared stock. The dispatcher checks the selected item again before applying the order. Initial loading eligibility, completed charges, independent pistol loads and partial reload work remain intact.
+
+Six campaign tests cover all item modes, exact metadata, full saves, deployment and return, independent hands and pistol loads, loading eligibility, stale orders, unavailable soldiers and full pockets. A component interaction test applies the displayed bandage choice through the campaign reducer and checks the disabled states. Live verification on the separate port 3019 preview prepared bandages and a second-hand torch, saved and restored the campaign, then entered the tactical map with both objects in their selected hands. After returning, a spare poncho was selected as an ordinary main-hand object and retained through another full campaign save.
+
+This does not add improvised attacks, object-specific conversations, selectable held stack quantities or campaign-screen drag gestures. Full inventory and JA2 parity remain open.

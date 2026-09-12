@@ -1,7 +1,7 @@
 import {makeOutfit,wornOutfit} from './outfits.js';
-import {handsRequired} from './hand-layout.js';
+import {handsRequired,handLayout} from './hand-layout.js';
 import {SUPPLY_ITEMS,itemQuantity,itemDescriptor,extractItemQuantity,applyItemQuantity,inventoryUsage} from './tactical-inventory.js';
-import {getReachable,hasLineOfSight,planEquipLoot,WEAPONS,BLADES} from './tactical.js';
+import {getReachable,hasLineOfSight,planEquipLoot,planReadyMainHand,WEAPONS,BLADES} from './tactical.js';
 import {propBlocksAt,propCells} from './props.js';
 import {boundaryMatches} from './tactical-exits.js';
 import {operativeLocation,operativeInTransit} from './squads.js';
@@ -106,6 +106,11 @@ export function sectorInventoryModel(s,sectorId,roster,operativeId){
    let reason=carriedReason;if(!reason)try{planEquipLoot(personal,reference,'offhandItem');}catch(error){reason=error.message;}
    row.offhand={label:held?'Guardar objeto de segunda mano':'Poner en segunda mano',valid:!reason,reason,action:{slot:'offhandItem',inventoryKey:reference,expected:JSON.stringify(extractItemQuantity(personal,item,1).stack)}};
   }
+  if(item!=='outfit'&&!record?.weapon){
+   const held=handLayout(personal).right===item;
+   let reason=carriedReason;if(!reason)try{planReadyMainHand(personal,item);}catch(error){reason=error.message;}
+   row.mainhand={label:held?'En mano principal':'Poner en mano principal',valid:!reason,reason,action:{slot:'mainhand',inventoryKey:item,expected:JSON.stringify(extractItemQuantity(personal,item,1).stack)}};
+  }
   return row;
  }):[];
  const outfitStock=(s.depots?.[location]?.ponchos??0)+(location==='retiro'?(s.resources.ponchos??0):0);
@@ -127,9 +132,12 @@ export function moveSectorItem(s,action,roster){
   stack={item:'outfit',...makeOutfit()};next=applyItemQuantity(actor,stack);
   const at=inventorySite(s,sectorId).sectorId;if((s.depots?.[at]?.ponchos??0)>0)s.depots[at].ponchos--;else s.resources.ponchos--;
  }else if(direction==='equip'){
-  need(count===1&&['primary','blade','offhand','outfit','offhandItem'].includes(action.slot),'Elegí una ranura de equipo.');
+  need(count===1&&['primary','blade','offhand','outfit','offhandItem','mainhand'].includes(action.slot),'Elegí una ranura de equipo.');
   const stow=action.slot==='outfit'&&action.inventoryKey===null;
-  if(action.slot==='offhandItem'){
+  if(action.slot==='mainhand'){
+   stack=extractItemQuantity(actor,action.inventoryKey,1).stack;need(action.expected===JSON.stringify(stack),'El objeto cambió. Revisá el equipo.');
+   next=planReadyMainHand(actor,action.inventoryKey);
+  }else if(action.slot==='offhandItem'){
    const reference=action.inventoryKey===null?actor.leftHandItem:action.inventoryKey;
    stack=extractItemQuantity(actor,reference,1).stack;need(action.expected===JSON.stringify(stack),'El objeto cambió. Revisá el equipo.');
    next=planEquipLoot(actor,action.inventoryKey,action.slot);
@@ -154,7 +162,8 @@ export function moveSectorItem(s,action,roster){
  const record=s.operativeState[op.id];returnEquipment(s,op.id,next);
  for(const key of fields)if(next[key]!==undefined)record[key]=copy(next[key]);
  record.carriedAmmo=next.ammo+(next.loaded??0);
- if(direction==='equip'&&action.slot==='primary'||record.carriedLoaded!==undefined)setCarriedLoading(record,next);
+ const equipsMainWeapon=direction==='equip'&&(action.slot==='primary'||action.slot==='mainhand'&&(action.inventoryKey==='offhand'||action.inventoryKey.startsWith('inventory:')&&stack.weapon));
+ if(equipsMainWeapon||record.carriedLoaded!==undefined)setCarriedLoading(record,next);
  else if(next.weaponDropped)clearCarriedLoading(record);
  // Returned living soldiers and their cartridge receipt are historical.
  // Their next deployment uses the current campaign equipment record.

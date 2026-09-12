@@ -643,6 +643,8 @@ function readyReference(unit,item,side){
  if(!action)throw Error('Este objeto no se puede llevar en la mano principal.');
  return {unit:planMainHandEquipment(unit,action),pa:4};
 }
+// Campaign equipment uses the same item-to-mode and pocket checks as dragging.
+export function planReadyMainHand(unit,item){return readyReference(unit,item,'right').unit;}
 function storeHandReference(unit,source){
  let next=structuredClone(unit),item=source.item;const other=handLayout(unit)[source.side==='right'?'left':'right'];
  if(['primary','blade','offhand'].includes(item)){
