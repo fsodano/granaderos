@@ -1,3 +1,4 @@
+import {secureArea} from './secured-area-fixture.mjs';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign as dispatch,rosterFor} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';
@@ -12,8 +13,10 @@ const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const tacticalOrder=(b,action)=>{const next=actBattle(b,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);return next;};
 
 export function runOpeningCampaign({report=()=>{}}={}){
+ // This southern-front regression starts after Buenos Aires and Ensenada are secured.
+ // The Retiro-only opening has separate acceptance tests; this is not a fresh-start proof.
  // Keep this seed and the actual casualties as maps and tactical rules evolve.
- let c=initialCampaign(8);const transcript=[],casualties=new Set();
+ let c=secureArea(initialCampaign(8));const transcript=[],casualties=new Set();
  const order=a=>{c=dispatch(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+': '+c.lastError);};
  const waitFor=hours=>{
   const until=c.hour+hours;

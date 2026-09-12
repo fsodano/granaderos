@@ -2,7 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {enterSector} from '../game/world.js';
 import {prepareCampaignBattle} from '../game/battle-handoff.js';import {initialCampaign,dispatchCampaign} from '../game/campaign.js';import {encodeSave,decodeSave} from '../game/save.js';
 test('the first published campaign battle synchronizes immediate enemy initiative and can be saved before any input',()=>{
- const step=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};let c=step(initialCampaign(8),{type:'createOfficer',name:'Vigía del Norte',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});c=step(c,{type:'travel',sector:'buenos_aires'});c=step(c,{type:'wait',hours:12});c=step(c,{type:'attack',sector:'san_nicolas'});
+ const step=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};let c=step(initialCampaign(8),{type:'createOfficer',name:'Vigía del Norte',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});c=step(c,{type:'wait',hours:12});c=step(c,{type:'attack',sector:'buenos_aires'});
  const r=c.pendingBattle;for(const enemy of r.enemies)Object.assign(enemy,{facing:6,marksmanship:0,patrol:false,overwatch:false});
  const source=enterSector(r),enemy=source.units.find(u=>u.side==='enemy');
  source.tiles=source.tiles.map(t=>({x:t.x,y:t.y,type:'grass',blocked:false,cover:0}));source.props=[];source.buildings=[];source.npcs=[];

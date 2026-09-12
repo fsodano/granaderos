@@ -36,7 +36,7 @@ export function validateLogisticsNotice(s){
  }
 }
 export function logisticsEventText(event){
- const place=event.sector==='reserve'?'la reserva de Buenos Aires':CAMPAIGN_SECTORS.find(s=>s.id===event.sector)?.name??event.sector;
+ const place=event.sector==='reserve'?'la reserva de Retiro':CAMPAIGN_SECTORS.find(s=>s.id===event.sector)?.name??event.sector;
  if(event.kind==='equipment')return `Ensenada: llegaron ${event.quantity} × ${equipmentCatalogItem(event.item)?.name??'arma importada'} a la sala de armas.`;
  const goods=Object.entries(event.goods).filter(([,count])=>count>0).map(([key,count])=>`${count} ${RESOURCE_NAMES[key].toLowerCase()}`).join(', ');
  if(event.kind==='production')return `${place}: se completó ${event.name}. La reserva recibe ${goods}.`;

@@ -2,6 +2,10 @@
 
 Audit date: 6 September 2026. This is a requirements baseline for the complete gameplay request. It is not a declaration that the current game has full JA2 parity. Concurrent implementation can change the status of a row; update that row only after its acceptance condition is demonstrated.
 
+## Current starting position
+
+The user clarified that a new game starts with zero recruits and **Retiro alone** controlled. Hiring and custom creation are independent options. Headquarters, supply and reserve transport now originate in Retiro. Seven focused model/UI checks and a live hired-only start/save/resume check cover this behavior; see [Retiro opening](retiro-start.md). Older southern and northern route results below begin from an explicitly established southern area. They do not prove a successful full campaign from this new starting position. That full opening and balance route remains open.
+
 ## Scope and evidence
 
 Preserve the choices that make classic Jagged Alliance 2 work: individual soldiers, scarce time and equipment, information that must be discovered, interruptions, lasting wounds, independent squads, specialist work, consequential relationships, and an enemy campaign. Keep the Granaderos setting, characters, weapons, provinces, and historical campaign. A period substitute must preserve the associated choice where possible. Missing systems do not become out of scope because the current architecture lacks them.

@@ -10,8 +10,8 @@ export default function Logistics({state:s,dispatch}:Props){
  const options=transferOptions(s,source,destination),transport=options.find(o=>o.id===mode),inventory=inventoryAt(s,source),amount=Number(quantity),weight=Number.isFinite(amount)&&amount>0?cargoWeight({[resource]:amount}):0;
  const holdings=inventory[resource]??0;
  const valid=transport?.available&&source!==destination&&Number.isInteger(amount)&&amount>0&&amount<=holdings&&weight<=transport.capacity&&!(resource==='cannons'&&!['carts','flotilla'].includes(mode));
- const places=[{id:'reserve',name:'Reserva de Buenos Aires'},...CAMPAIGN_SECTORS.filter(x=>s.sectors[x.id].owner==='patriot').map(x=>({id:x.id,name:x.name}))];
- const title=(id:string)=>id==='reserve'?'Reserva de Buenos Aires':CAMPAIGN_SECTORS.find(x=>x.id===id)?.name??'Depósito';
+ const places=[{id:'reserve',name:'Reserva de Retiro'},...CAMPAIGN_SECTORS.filter(x=>s.sectors[x.id].owner==='patriot').map(x=>({id:x.id,name:x.name}))];
+ const title=(id:string)=>id==='reserve'?'Reserva de Retiro':CAMPAIGN_SECTORS.find(x=>x.id===id)?.name??'Depósito';
  const cargoResources=Object.entries(RESOURCE_NAMES).filter(([id])=>!['horses','infantry'].includes(id));
  return <section className="logistics-section" aria-labelledby="logistics-title"><div className="section-intro"><p className="eyebrow">CONVOYES Y DEPÓSITOS</p><h2 id="logistics-title">Llevar la guerra a buen puerto</h2><p>Los pertrechos salen de un depósito y viajan hasta otro. Las rutas ocupadas y los bloqueos retienen la carga en tránsito.</p></div>
   <div className="logistics-routes">{TRANSPORT_OPTIONS.map(o=><article key={o.id}><h3>{o.name}</h3><p>{o.description}</p><div><span>{o.capacity} kg de capacidad</span><small>{costs[o.id]}</small></div><button type="button" className="line-button" disabled={s.routes[o.id]} onClick={()=>dispatch({type:'transport',mode:o.id})}>{s.routes[o.id]?'✓ Red organizada':'Organizar transporte'}</button></article>)}</div>

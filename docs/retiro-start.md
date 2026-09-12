@@ -1,0 +1,13 @@
+# Retiro-only campaign opening
+
+New campaigns start with no recruited characters, no custom officer, no active squad members, and no contracts. Retiro is the only controlled sector. Buenos Aires and Ensenada begin under enemy control, like the rest of the campaign map. Starting loyalty is 65 in Retiro and 25 elsewhere.
+
+The player can hire a paid squad, create one custom character, or combine both paths in either order. The desktop overview states these alternatives and labels custom creation as optional. Hiring does not depend on a custom character. Both resume and import select the campaign map when a roster exists, including a hired-only roster; an empty roster returns to the desk.
+
+Retiro is the headquarters and supply origin. The general reserve is physically based there for transport routes and their travel times. Custom creation requires the Retiro headquarters to remain controlled. Campaign defeat follows loss of that headquarters, rather than treating the initially occupied capital as an immediate defeat. The workshop can supply the first squad before the player liberates Buenos Aires. Enemy neighbors must be attacked; an ordinary travel order cannot grant their ownership.
+
+Five model cases cover multiple seeds, empty ownership and personnel records, finite paid hiring, custom-only and mixed choices using the current character profile, full campaign/tactical saves, peaceful entry, waiting, academy setup, headquarters loss and a real first hostile deployment. Two component cases check the opening choices and a hired-only roster. The independent browser preview on port 3021 ran the production home page: a new game showed zero recruits, Acosta was hired for 10 pesos without a custom character, the map showed only Retiro as friendly, and the saved hired-only game resumed directly to that map.
+
+Subsystem regressions that require an established southern economy, militia or later mission now state that territory explicitly through `secureArea`. The legacy saved-campaign fixture also retains its previous three controlled sectors explicitly. They are not evidence of the new opening. The San Nicolás-to-Yatasto route currently starts from an established southern-area scenario; it no longer proves a complete route from the Retiro-only start.
+
+A diagnostic hired-only squad reached the actual Buenos Aires battle with six paid soldiers and six defenders. That controller lost the battle. Opening difficulty and a successful full campaign from the new starting position remain to be verified. No combat advantage, automatic conquest or free recruited character was added to make that diagnostic pass.

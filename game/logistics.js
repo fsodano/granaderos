@@ -8,7 +8,7 @@ export const TRANSPORT_OPTIONS=[
  {id:'mules',name:'Mulas con albarda',capacity:80,baseCapacity:40,saddleBonus:40,saddleWeight:6,hoursPerLeg:12,description:'La albarda de carga añade 40 kg para el tránsito por las montañas.'},
 ];
 const sector=id=>CAMPAIGN_SECTORS.find(s=>s.id===id);
-const place=id=>id==='reserve'?'buenos_aires':id;
+const place=id=>id==='reserve'?'retiro':id;
 export function cargoWeight(goods){return Object.entries(goods).reduce((sum,[key,quantity])=>sum+(CARGO_WEIGHTS[key]??Infinity)*quantity,0);}
 export function transportPath(s,source,destination){
  const from=place(source),to=place(destination);if(!sector(from)||!sector(to)||s.sectors[from].owner!=='patriot'||s.sectors[to].owner!=='patriot')return null;

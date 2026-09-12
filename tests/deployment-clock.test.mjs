@@ -1,3 +1,4 @@
+import {secureArea} from './secured-area-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
@@ -8,7 +9,7 @@ import {actBattle,getReachable} from '../game/tactical.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
-const ready=()=>order(initialCampaign(8),{type:'createOfficer',name:'Vigía del Norte',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
+const ready=()=>order(secureArea(initialCampaign(8)),{type:'createOfficer',name:'Vigía del Norte',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
 const expectedNight=seconds=>seconds%86400<21600||seconds%86400>=72000;
 
 test('peaceful deployments retain the exact campaign hour and seconds across day boundaries',()=>{

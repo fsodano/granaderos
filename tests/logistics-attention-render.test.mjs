@@ -11,7 +11,7 @@ test('the operations map shows the delivered quantity and exact stopped duration
 });
 test('receipts distinguish a local depot, general reserve and the armory, and escape task names',()=>{
  const s=completed();s.logisticsNotice.events=[{kind:'convoy',sector:'retiro',goods:{muskets:10}},{kind:'convoy',sector:'reserve',goods:{powder:5}},{kind:'equipment',sector:'ensenada',item:1802,quantity:2},{kind:'shipment',sector:'ensenada',goods:{textiles:7}},{kind:'production',sector:'cordoba',name:'<script>unsafe</script>',goods:{cartridges:60}}];
- const html=render(h(LogisticsAttention,{state:s}));assert.match(html,/Retiro: el convoy entregó 10 mosquetes/);assert.match(html,/la reserva de Buenos Aires/);assert.match(html,/sala de armas/);assert.match(html,/7 textiles/);assert.doesNotMatch(html,/<script>/);assert.match(html,/&lt;script&gt;/);
+ const html=render(h(LogisticsAttention,{state:s}));assert.match(html,/Retiro: el convoy entregó 10 mosquetes/);assert.match(html,/la reserva de Retiro/);assert.match(html,/sala de armas/);assert.match(html,/7 textiles/);assert.doesNotMatch(html,/<script>/);assert.match(html,/&lt;script&gt;/);
 });
 test('acknowledged notices disappear on the next explicit wait without an extra delivery control',()=>{
  const s=dispatchCampaign(completed(),{type:'wait',hours:1});assert.equal(render(h(LogisticsAttention,{state:s})), '');

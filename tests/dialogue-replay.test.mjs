@@ -1,3 +1,4 @@
+import {secureArea} from './secured-area-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,recruitmentStatus,restoreCampaign,serializeCampaign} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';import {encodeSave,decodeSave} from '../game/save.js';
@@ -8,7 +9,7 @@ import {approachNPC} from './approach-npc.mjs';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const officer=()=>order(initialCampaign(8),{type:'createOfficer',name:'Testigo',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
 function meet(npcId='local-retiro',sector='retiro',campaign=officer()){
- let s=campaign;if(s.location!==sector)s=order(s,{type:'travel',sector});s=order(s,{type:'visitSector'});const b=approachNPC(enterSector(s.pendingBattle),'1000',npcId);return {s,b};
+ let s=campaign;if(sector!=='retiro')secureArea(s);if(s.location!==sector)s=order(s,{type:'travel',sector});s=order(s,{type:'visitSector'});const b=approachNPC(enterSector(s.pendingBattle),'1000',npcId);return {s,b};
 }
 const talk=(s,b,npcId,approach)=>order(s,{type:'talkNPC',unitId:1000,npcId,approach,sectorState:b});
 const save=s=>{assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);return s;};
@@ -43,7 +44,7 @@ test('direct questions report the current leadership, territorial or regional re
 });
 
 test('replaying a mission report cannot advance the conference a second time',()=>{
- let s=officer();s.phase=2;s.flags.sanLorenzo=true;s.flags.northPact=true;for(const id of ['cordoba','tucuman','salta'])s.sectors[id].owner='patriot';s=order(s,{type:'travel',sector:'tucuman'});s=order(s,{type:'visitMission',mission:'yatasto'});let b=approachNPC(enterSector(s.pendingBattle),'1000','yatasto-belgrano');
+ let s=secureArea(officer());s.phase=2;s.flags.sanLorenzo=true;s.flags.northPact=true;for(const id of ['cordoba','tucuman','salta'])s.sectors[id].owner='patriot';s=order(s,{type:'travel',sector:'tucuman'});s=order(s,{type:'visitMission',mission:'yatasto'});let b=approachNPC(enterSector(s.pendingBattle),'1000','yatasto-belgrano');
  s=talk(s,b,'yatasto-belgrano','mission');s=repeatUnchanged(s,b,'yatasto-belgrano',s.lastConversation.text);
  b=approachNPC(b,'1000','yatasto-san-martin');s=talk(s,b,'yatasto-san-martin','mission');const mission=structuredClone(s.missions);s=repeatUnchanged(s,b,'yatasto-san-martin',s.lastConversation.text);assert.deepEqual(s.missions,mission);assert.notEqual(s.missions.yatasto.stage,'completed');
 });

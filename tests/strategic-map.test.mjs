@@ -30,7 +30,7 @@ test('income readout matches actual campaign daily payout',()=>{
 });
 test('income readout applies control, damage, blockade and cut supply without mutation',()=>{
  const s=initialCampaign(),d=CAMPAIGN_SECTORS.find(d=>d.id==='ensenada');
- s.sectors[d.id].damageUntil=10;s.blockade=true;
+ Object.assign(s.sectors[d.id],{owner:'patriot',loyalty:65,damageUntil:10});s.blockade=true;
  const before=JSON.stringify(s);
  assert.equal(sectorIncome(s,d,()=>false),3);
  assert.equal(JSON.stringify(s),before);
