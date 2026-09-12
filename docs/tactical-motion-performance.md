@@ -56,3 +56,14 @@ the actual illustrated `TacticalScene`, including skin layers, current sight
 filtering and a following 200% camera crossing viewport bounds. Every complete
 SVG matches and unseen enemies remain absent. This checks rendered output; it
 does not measure browser effect scheduling, retained DOM, painting or memory.
+
+## Live smoke check
+
+After integrating `d5f23a2`, the existing six-person Buenos Aires preview at
+port 3032 completed the same 17-cell walk to ground AD34. Dorrego's energy moved
+from 100 to 78, and the journal omitted an AP debit in exploration. In one
+observed window the frame monitor recorded a worst gap of 308 ms; the rolling
+30 React renders averaged 68.5 ms and peaked at 181.4 ms. These mixed live
+samples were collected while other local checks were running. They are not a
+controlled before/after frame-rate measurement. Long frames remain; the
+controlled improvement established above is specifically route setup.
