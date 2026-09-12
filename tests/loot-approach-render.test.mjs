@@ -25,3 +25,9 @@ test('the picker labels finite quantities and blocks a full pack without committ
   const markup=render(h(JA2LootPicker,{battle:s,unit:s.units[0],point:{x:6,y:2},busy:false,onTake:()=>calls++,onClose:()=>{}}));
   assert.match(markup,/<dialog[^>]+aria-labelledby="loot-picker-title"/);assert.match(markup,/aria-label="Objetos disponibles"/);assert.match(markup,/aria-label="Cantidad 1: En el suelo · Cartuchos"[^>]*max="12"/);assert.match(markup,/Recoger selección · 8 PA/);assert.match(markup,/Seleccionar todos/);assert.match(markup,/Limpiar selección/);assert.match(markup,/<button[^>]+class="gold-button"[^>]*disabled/);assert.equal(calls,0);assert.ok(!markup.includes('99'));
 });
+
+test('exploration pickup states energy and time without advertising an AP debit',()=>{
+ const s=field({x:5});s.mode='exploration';
+ const html=render(h(JA2LootPicker,{battle:s,unit:s.units[0],point:{x:6,y:2},busy:false,onTake:()=>{},onClose:()=>{}}));
+ assert.match(html,/Recoger consume tiempo/);assert.match(html,/100 EN/);assert.match(html,/Recoger selección/);assert.doesNotMatch(html,/\bPA\b/);
+});

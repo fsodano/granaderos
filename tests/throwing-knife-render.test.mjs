@@ -71,3 +71,10 @@ test('finite knife overlay uses the observed physical flight and does not resolv
  const upstairs={...visual,source:{...visual.source,tacticalLevel:1,height:4.4},impact:{...visual.impact,height:4.1}};
  assert.notEqual(draw(upstairs),html);assert.doesNotMatch(draw({...visual,impact:{...visual.impact,height:Infinity}}),/data-knife-flight/);
 });
+
+test('exploration knife reticle keeps aim and energy while omitting AP counters',()=>{
+ const s=field();s.mode='exploration';const target={x:4,y:2};
+ const preview=targetPreview(s,s.units[0],target,{mode:'throwKnife',aim:2});
+ const html=render(h('svg',null,h(AimCursor,{point:{x:80,y:90},aim:2,preview,target,exploring:true})));
+ assert.match(html,/Facón/);assert.match(html,/6 EN/);assert.match(html,/Puntería 2 de 4/);assert.doesNotMatch(html,/\bPA\b/);
+});

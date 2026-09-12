@@ -197,7 +197,7 @@ export function interruptHover(state, selectedId) {
 }
 
 export function targetingHelp(mode, unit, ctx = {}) {
-  if(mode==='throwKnife')return 'Lanzar facón: clic izquierdo confirma. Botón derecho sobre una persona aumenta la puntería; fuera de una persona vuelve a mover. El facón sale de la mano y puede herir aliados. G o Esc cancela.';
+  if(mode==='throwKnife')return 'Facón: clic para lanzar; botón derecho sobre una persona para apuntar más, fuera de ella para mover.';
   if(mode==='talk')return 'Hablar: seleccioná una persona visible y contigua. Esc vuelve al cursor de movimiento.';
   if ((ctx.itemIntent==='steal'&&['move','useItem'].includes(mode))||mode==='loot'&&unit?.activeSlot==='unarmed') return 'Manos libres: seleccioná un enemigo contiguo para quitarle el arma. Requiere 28 PA como mínimo y consume todos los restantes. Los cuerpos se registran.';
   if (unit?.activeSlot==='unarmed'&&['move','useItem'].includes(mode)) return 'Seleccioná un enemigo para acercarte y golpear. Ctrl+clic o Recoger equipo: intentar quitar el arma a un enemigo contiguo.';
@@ -243,7 +243,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
     const reach=preview.range?.nominal?`Alcance útil ${Math.round(preview.range.nominal*10)/10} casillas.`:'';
     return {name:target?.id?target.name:point?tacticalGridLabel(point.x,point.y):'Facón',actionLabel:'Lanzar facón',attackType:'throwKnife',pa:preview.pa,energy:preview.costs?.energy??6,
       chance:target?.id?preview.chance:undefined,hitLocation:label,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,
-      coverNote:`${reach} Consume 6 EN. El facón sale de la mano y queda donde termine el lanzamiento. La cobertura y los cuerpos pueden interceptarlo; puede herir aliados.`};
+      coverNote:`6 EN · ${reach} ${preview.flight?.blocked?'La cobertura detiene el facón.':preview.flight?.victimId&&preview.flight.victimId!==target?.id?'Un combatiente se interpone: podés herirlo.':!target?.id?'Puede herir a quien esté en su trayectoria.':'El facón se puede recuperar tras el impacto.'}`};
   }
   const reload = mode === 'fire' ? emptyGunPreview(state, unit) : null;
   if (reload) return reload;
@@ -268,7 +268,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
     return {name: `${tacticalGridLabel(point.x,point.y)}`, actionLabel: 'Mover sin girar', pa, remaining: pa === undefined ? undefined : Math.max(0, unit.ap - pa), reason, valid: !reason};
   }
   const pickup=pickupSelection(state,unit,point,ctx);
-  if(pickup.length){const p=pickup[0];return {name:'Equipo',actionLabel:p.movePa?'Acercarse al equipo':'Elegir qué recoger',pa:p.movePa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:p.movePa)),valid:p.valid,reason:p.reason,coverNote:'Al llegar, elegí el objeto y la cantidad. Recoger cuesta 8 PA adicionales. El contacto puede detener el desplazamiento.'};}
+  if(pickup.length){const p=pickup[0];return {name:'Equipo',actionLabel:p.movePa?'Acercarse al equipo':'Elegir qué recoger',pa:p.movePa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:p.movePa)),valid:p.valid,reason:p.reason,coverNote:state.mode==='exploration'?'Al llegar, elegí el objeto y la cantidad. Recoger consume tiempo.':'Al llegar, elegí el objeto y la cantidad. Recoger cuesta 8 PA adicionales. El contacto puede detener el desplazamiento.'};}
   const aliasSupply = ({torch: 'torches', bolas: 'boleadoras', ration: 'rations'})[mode];
   if (aliasSupply || unit.activeSlot === 'supply' && ['move', 'useItem'].includes(mode) && (unit.activeSupply === 'torches' || target || mode === 'useItem')) {
     const key = aliasSupply || unit.activeSupply;
