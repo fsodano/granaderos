@@ -74,3 +74,22 @@ come from the same integrated workspace, and inspect a character in the browser.
 An isolated test checkout can omit concurrent, uncommitted art. The rendering
 measurements above describe the isolated HUD comparison with legacy sprites;
 they are not measurements of the complete illustrated-sprite integration.
+
+## Exploration input during civilian movement
+
+The animation hook formerly marked the whole interface busy when any actor
+moved. An ambient civilian routine could therefore block a portrait click and
+show “Procesando órdenes” without a player order. Movement and input blocking
+are now separate: civilian and enemy patrol animation can continue during
+exploration; squad movement and all combat movement still block new orders.
+Finished, absent, dead and departed actors cannot leave a stale input lock.
+
+All 39 focused motion, HUD, civilian and torch checks pass. A live controlled
+scene confirmed one civilian was moving at the instant Dorrego's portrait was
+clicked: he became selected and the header remained “Exploración libre”.
+Animation frames, paths and artwork were not changed.
+
+The corrected live demo also exposed a separate art gap: Dorrego carries a
+small firearm in his inventory, but his standing artwork shows a long gun.
+The sprite task confirmed that standing weapon-family silhouettes remain open.
+The legacy-preview correction does not establish full sprite consistency.
