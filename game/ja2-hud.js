@@ -3,6 +3,8 @@ import {OUTFITS,wornOutfit,hasPoncho} from './outfits.js';
 import {handLayout,selectMainHand} from './hand-layout.js';
 import {reloadPlan,lookPreview} from './tactical.js';
 import {shotRangeText} from './shot-range.js';
+import {heldThrowingKnife} from './thrown-knife.js';
+import {knifeThrowPreview} from './tactical.js';
 import {canChooseShotLocation} from './targeted-combat.js';
 import {tacticalGridLabel} from './tactical-grid.js';
 // Pure HUD model for the tactical battle inspector and squad strip.
@@ -38,9 +40,21 @@ export function heldSupplyAction(unit, target) {
   return {type: 'useItem', ...(unit.activeSupply === 'torches' ? {x: target.x, y: target.y, ...(target.tacticalLevel===undefined?{}:{tacticalLevel:target.tacticalLevel})} : {targetId: target?.id})};
 }
 
-export const attackCursorMode = unit => hasFirearm(unit || {}) ? 'fire' : 'useItem';
+export const attackCursorMode = unit => heldThrowingKnife(unit) ? 'throwKnife' : hasFirearm(unit || {}) ? 'fire' : 'useItem';
+export const aimedCursorMode = mode => mode === 'fire' || mode === 'throwKnife';
+export const retainedAttackCursor = (unit, mode) => (mode === 'throwKnife' && !heldThrowingKnife(unit) || mode === 'fire' && !hasFirearm(unit || {})) ? 'move' : mode;
 export const pickupTargetAction = (target,unit) => ({type:target.side!==unit?.side&&target.hp>0&&!target.unconscious&&!target.surrendered&&!target.routed?'steal':'loot',targetId:target.id});
 export const targetItemAction = (mode, targetId, unit) => ({type: mode === 'fire' && hasFirearm(unit || {}) ? 'fire' : 'useItem', targetId});
+function knifeTarget(state,unit,point){
+ const visible=visibleHover(state,point);
+ if(!visible)return null;
+ const target=cellOccupant(state.units.filter(other=>sameCell(other,visible)&&visibleHover(state,other)),visible);
+ return target&&target.side!==unit?.side&&target.hp>0&&!target.surrendered?target:{x:visible.x,y:visible.y,tacticalLevel:tacticalLevel(visible)};
+}
+export function knifeThrowInputAction(state,unit,point,{aim=0,hitLocation='torso'}={}){
+ const target=knifeTarget(state,unit,point);
+ return {type:'throwKnife',aim,...(target?.id?{targetId:target.id,hitLocation:canChooseShotLocation(target)?hitLocation:'torso'}:{x:point?.x,y:point?.y,tacticalLevel:tacticalLevel(point),hitLocation:'torso'})};
+}
 export function resolvedOrderType(state, unit, action) {
   if (action.type !== 'useItem') return action.type;
   if (action.environment || unit.activeSlot === 'tool') return 'environment';
@@ -150,7 +164,7 @@ export function turnModel(state) {
 }
 
 export function shotLocationOptions(state, unit, ctx = {}) {
-  if (!unit || !hasFirearm(unit)) return [];
+  if (!unit || !(hasFirearm(unit)||ctx.mode==='throwKnife'&&heldThrowingKnife(unit))) return [];
   return HIT_LOCATIONS.filter(([id])=>!ctx.target||canChooseShotLocation(ctx.target)||id==='torso').map(([id, label]) => ({id, label, active: id === hitLocationFor(ctx.hitLocation), disabled: !unitCanAct(state, unit) || Boolean(ctx.busy)}));
 }
 
@@ -183,6 +197,7 @@ export function interruptHover(state, selectedId) {
 }
 
 export function targetingHelp(mode, unit, ctx = {}) {
+  if(mode==='throwKnife')return 'Lanzar facón: clic izquierdo confirma. Botón derecho sobre una persona aumenta la puntería; fuera de una persona vuelve a mover. El facón sale de la mano y puede herir aliados. G o Esc cancela.';
   if(mode==='talk')return 'Hablar: seleccioná una persona visible y contigua. Esc vuelve al cursor de movimiento.';
   if ((ctx.itemIntent==='steal'&&['move','useItem'].includes(mode))||mode==='loot'&&unit?.activeSlot==='unarmed') return 'Manos libres: seleccioná un enemigo contiguo para quitarle el arma. Requiere 28 PA como mínimo y consume todos los restantes. Los cuerpos se registran.';
   if (unit?.activeSlot==='unarmed'&&['move','useItem'].includes(mode)) return 'Seleccioná un enemigo para acercarte y golpear. Ctrl+clic o Recoger equipo: intentar quitar el arma a un enemigo contiguo.';
@@ -193,11 +208,19 @@ export function targetingHelp(mode, unit, ctx = {}) {
   if (unit?.activeSlot === 'item' && ['move','useItem'].includes(mode)) return 'Objeto en mano: podés guardarlo, darlo o soltarlo. Para atacar, prepará un arma o las manos libres.';
   if (unit?.activeSlot === 'tool' && ['move', 'useItem'].includes(mode)) return 'Seleccioná una puerta o un cofre para usar la herramienta. Las casillas libres permiten avanzar.';
   if(hasFirearm(unit||{})&&unit.weaponMode==='melee'&&['move','useItem'].includes(mode))return `${fixedBayonetFor(unit)?'Estocada de bayoneta':'Culatazo'}: seleccioná un enemigo para acercarte y golpear. No dispara ni recarga. Botón derecho o F: apuntar para disparar.`;
+  if(heldThrowingKnife(unit)&&['move','useItem'].includes(mode))return 'Clic sobre un enemigo: acercarse y atacar con el facón. Botón derecho o F: apuntar para lanzarlo.';
   if (mode === 'useItem') return unit?.activeSlot === 'medical' ? 'Seleccionate a vos o a un aliado herido. Se acerca y venda si hay ruta y PA suficientes. Detiene la hemorragia, sin recuperar salud.' : hasFirearm(unit || {}) ? 'Seleccioná un enemigo. Apuntar consume PA adicionales.' : 'Seleccioná un enemigo para acercarte y usar el arma blanca.';
   return ({move: 'Seleccioná una casilla para avanzar. Sobre un combatiente se usa el objeto equipado.', loot: 'Seleccioná un cuerpo o equipo visible. Elegí qué recoger; los PA incluyen el desplazamiento.', torch: 'Seleccioná una casilla para arrojar la antorcha.', bolas: 'Seleccioná un enemigo para lanzar las boleadoras.', artillery: 'Seleccioná un objetivo dentro del arco del cañón.', artilleryMove: 'Seleccioná una casilla contigua al cañón.', artilleryPivot: 'Seleccioná hacia dónde apuntar el cañón.'})[mode] || 'Seleccioná una orden.';
 }
 
 export function aimOptions(state, unit, ctx = {}) {
+  if(ctx.mode==='throwKnife'){
+    const target=knifeTarget(state,unit,ctx.target);
+    return Array.from({length:5},(_,level)=>{
+      const preview=knifeThrowPreview(state,unit,target,{aim:level,hitLocation:target?.id?ctx.hitLocation??'torso':'torso'});
+      return {level,pa:state.mode==='exploration'?0:preview.pa,disabled:Boolean(ctx.busy)||!preview.valid};
+    });
+  }
   const costs = unit ? actionCosts(state, unit, ctx.target) : {fire: 0, aim: 0};
   const ready = unitCanAct(state, unit) && hasFirearm(unit) && unit.loaded > 0 && !unit.jammed && !unit.knockedDown && !ctx.busy;
   return Array.from({length: 5}, (_, level) => {
@@ -214,6 +237,14 @@ export function targetPreview(state, unit, point, ctx = {}) {
 function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   if (!unit) return null;
   const mode = ctx.mode || 'move';
+  if(mode==='throwKnife'){
+    const target=knifeTarget(state,unit,point),preview=knifeThrowPreview(state,unit,target,{aim:ctx.aim??0,hitLocation:target?.id?hitLocationFor(ctx.hitLocation):'torso'});
+    const label=target?.id?(HIT_LOCATIONS.find(([id])=>id===preview.hitLocation)?.[1]??'Torso'):undefined;
+    const reach=preview.range?.nominal?`Alcance útil ${Math.round(preview.range.nominal*10)/10} casillas.`:'';
+    return {name:target?.id?target.name:point?tacticalGridLabel(point.x,point.y):'Facón',actionLabel:'Lanzar facón',attackType:'throwKnife',pa:preview.pa,energy:preview.costs?.energy??6,
+      chance:target?.id?preview.chance:undefined,hitLocation:label,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,
+      coverNote:`${reach} Consume 6 EN. El facón sale de la mano y queda donde termine el lanzamiento. La cobertura y los cuerpos pueden interceptarlo; puede herir aliados.`};
+  }
   const reload = mode === 'fire' ? emptyGunPreview(state, unit) : null;
   if (reload) return reload;
   if (!point) return null;
@@ -313,6 +344,7 @@ export function fittingInventoryModel(state, unit) {
 
 export function equippedItemHelp(state, unit, ctx = {}) {
   if (!unit) return 'Seleccioná un combatiente.';
+  if(ctx.mode==='throwKnife')return targetingHelp(ctx.mode,unit);
   const weapon = weaponFor(unit), costs = actionCosts(state, unit), exploring=state.mode==='exploration';
   if (unit.activeSlot === 'supply') return `${weapon.name} · ${exploring?0:supplyUsePreview(state, unit, ctx.target).cost} PA. ${targetingHelp('useItem', unit)}`;
   if (unit.activeSlot === 'item') return `${weapon.name}. ${targetingHelp('useItem',unit)}`;
