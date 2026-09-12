@@ -1,6 +1,6 @@
 'use client';
 import SectorInventory from './SectorInventory';
-import {knownSectorEquipment} from '../../game/sector-inventory.js';
+import {knownCampaignSectorEquipment} from '../../game/sector-inventory.js';
 import {SectorIncomeTable} from './SectorIncome';
 import {activeSquad,operativeInTransit} from '../../game/squads.js';
 import {useState} from 'react';
@@ -28,7 +28,7 @@ export default function StrategicMap({state:s,selected,onSelect,dispatch}:{state
  const total=CAMPAIGN_SECTORS.reduce((n,d)=>n+sectorIncome(s,d,isSupplied),0);
  const def=CAMPAIGN_SECTORS.find(d=>d.id===selected)!;
  const city=getCityStatus(s,selected);
- const marks=(id:string)=>mode==='resources'?`${sectorIncome(s,CAMPAIGN_SECTORS.find(d=>d.id===id),isSupplied)} $/día`:mode==='squads'?`${s.squads.filter((q:any)=>q.location===id&&!['moving','ready'].includes(q.journey?.status)).reduce((n:number,q:any)=>n+q.members.length,0)} soldados`:mode==='militia'?`${s.sectors[id].militia.reduce((a:number,b:number)=>a+b,0)} milicianos`:mode==='horses'?`${(s.horseState?.horses??[]).filter((h:any)=>!h.returned&&!operativeInTransit(s,h.assignedTo)&&h.location===id).length} monturas`:mode==='items'?`${knownSectorEquipment(s.sectorStates?.[id]).reduce((n:number,row:any)=>n+row.count,0)} objetos · ${stockCount(s,id)} en depósito`:null;
+ const marks=(id:string)=>mode==='resources'?`${sectorIncome(s,CAMPAIGN_SECTORS.find(d=>d.id===id),isSupplied)} $/día`:mode==='squads'?`${s.squads.filter((q:any)=>q.location===id&&!['moving','ready'].includes(q.journey?.status)).reduce((n:number,q:any)=>n+q.members.length,0)} soldados`:mode==='militia'?`${s.sectors[id].militia.reduce((a:number,b:number)=>a+b,0)} milicianos`:mode==='horses'?`${(s.horseState?.horses??[]).filter((h:any)=>!h.returned&&!operativeInTransit(s,h.assignedTo)&&h.location===id).length} monturas`:mode==='items'?`${knownCampaignSectorEquipment(s,id).reduce((n:number,row:any)=>n+row.count,0)} objetos · ${stockCount(s,id)} en depósito`:null;
  return <div className="strategy-chart argentina-chart">
  <div className="atlas-heading"><span>PROVINCIAS UNIDAS · 1812–1817</span><span>TEATRO DE OPERACIONES</span></div>
  <svg className="argentina-atlas" viewBox="0 0 720 690" role="group" aria-label="Mapa geográfico de la campaña en las Provincias Unidas">

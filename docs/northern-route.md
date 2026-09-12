@@ -35,3 +35,5 @@ The isolated full suite passed **1,311/1,311 tests**, and a separate command-lin
 The full campaign, defenses, capture recovery and ending remain unverified through real tactical outcomes. Older late-campaign tests that inject victory reports do not supply that evidence.
 
 This run also exposed an equipment access gap. San Lorenzo has a saved mission snapshot and discovered equipment, but no campaign sector of its own. The strategic inventory requires a controlled campaign sector and rejects that mission snapshot; selecting San Nicolás shows only its separate equipment pool. The opening leaves 29 known rows at San Lorenzo, including two dressings, without a strategic pickup path. This checkpoint records the gap without claiming to fix it.
+
+The subsequent [mission inventory fix](sector-inventory.md#mission-sites-12-september-2026) resolves this access gap for San Lorenzo and Yatasto. The route above remains unchanged and does not depend on those extra supplies.

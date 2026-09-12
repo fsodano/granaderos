@@ -7,6 +7,7 @@ import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/serv
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {dispatchCampaign} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';
+import {completedConferenceStock} from './mission-inventory-fixture.mjs';
 import {actBattle} from '../game/tactical.js';
 const {default:SectorInventory}=await import('../web/app/SectorInventory.tsx');
 function ready(){let s=dispatchCampaign(initialCampaign(45),{type:'visitSector'});let b=enterSector(s.pendingBattle);b=actBattle(b,{type:'drop',unitId:'4',item:'medkits',count:2});assert.equal(b.lastError,null);s=dispatchCampaign(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});assert.equal(s.lastError,null);return s;}
@@ -17,4 +18,12 @@ test('sector equipment renders discovered quantities with labelled selection and
 test('occupied or unscouted sectors explain why pickup is unavailable',()=>{
  const s=ready();s.sectors.retiro.owner='royalist';let html=draw(s);assert.match(html,/role="status"/);assert.match(html,/bajo control patriota/);assert.match(html,/<button[^>]*disabled=""[^>]*aria-label="Recoger 1: Vendas"/);
  html=draw(initialCampaign());assert.match(html,/Primero reconocé y asegurá el sector/);assert.match(html,/No hay equipo descubierto/);
+});
+
+test('visited mission sites appear as labelled inventory choices beside their parent sector',()=>{
+ const s=completedConferenceStock();
+ const html=render(h(SectorInventory,{state:s,sectorId:'tucuman',dispatch:()=>{}}));
+ assert.match(html,/aria-label="Lugar del equipo"/);assert.match(html,/<option[^>]*value="tucuman"[^>]*selected=""/);
+ assert.match(html,/<option value="yatasto">Conferencia de Yatasto · [0-9]+ objetos<\/option>/);
+ const unseen=draw(initialCampaign());assert.doesNotMatch(unseen,/Lugar del equipo|Conferencia de Yatasto|Combate de San Lorenzo/);
 });

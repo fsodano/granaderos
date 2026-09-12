@@ -1,4 +1,4 @@
-import {knownSectorEquipment} from './sector-inventory.js';
+import {knownCampaignSectorEquipment} from './sector-inventory.js';
 import {publicContractNotice} from './contract-attention.js';
 import {squadTravelStatus} from './squad-travel.js';
 import {operativeInTransit} from './squads.js';
@@ -101,7 +101,7 @@ export function playerKnownCampaign(state){
     contractNotice:publicContractNotice(state),
     travelNotice:state.travelNotice?{hour:state.travelNotice.hour,events:state.travelNotice.events.map(e=>pick(e,['squadId','name','sector','text']))}:null,
     resources:pick(state.resources,Object.keys(RESOURCE_NAMES)),reputation:pick(state.reputation,['directory','gauchos','pardos','foreign','indigenous','royalists']),
-    sectors:CAMPAIGN_SECTORS.map(sector=>({...pick(sector,['id','name','grid','biome','theater']),...pick(state.sectors[sector.id],['owner','loyalty','fort','damageUntil']),militia:[...(state.sectors[sector.id]?.militia??[])],equipment:knownSectorEquipment(state.sectorStates?.[sector.id])})),
+    sectors:CAMPAIGN_SECTORS.map(sector=>({...pick(sector,['id','name','grid','biome','theater']),...pick(state.sectors[sector.id],['owner','loyalty','fort','damageUntil']),militia:[...(state.sectors[sector.id]?.militia??[])],equipment:knownCampaignSectorEquipment(state,sector.id)})),
     squads:(state.squads??[]).map(squad=>({...pick(squad,['id','name','location']),members:squad.members.filter(id=>knownIds.has(id)),journey:squadTravelStatus(squad)})),
     operatives:roster.map(unit=>{const record=state.operativeState[unit.id];return {inTransit:operativeInTransit(state,unit.id),maximumEnergy:maximumEnergy(record),...pick(unit,['id','name','nickname','weapon','blade',...OWN]),...pick(record,['hp','maxHp','alive','location','assignment','asleep','sleepCollapsed','captured','capturedSector','energy','fatigue','bleeding','bandaged','morale','condition','carriedAmmo','medkits','priming','flints','rations','torches','boleadoras']),weaponFittings:fittings(record.weaponFittings),...pick(record,['weaponFittingPattern','bladeFittingPattern','bladeCondition','toolkitPoints','repairTargetId','repairWeaponId','repairScope']),inventory:inventory(record),contract:pick(state.contracts?.[unit.id],['kind','term','started','expiresAt','paid'])};}),
     flags:pick(state.flags,['academy','sanLorenzo','northPact','partisanSupply','foundry','parliament','emancipation','commission','mentoring']),
