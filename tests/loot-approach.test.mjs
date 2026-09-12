@@ -21,7 +21,7 @@ test('a selected ground quantity pays the same movement and pickup as separate l
 });
 
 test('approaching a pile only pays movement and cannot grant its contents or a free equip',()=>{
-  const s=field({activeSlot:'medical'}),p=lootSearchPreview(s,soldier(s),search),after=actBattle(s,search);assert.equal(p.pa,24);assert.equal(after.units[0].ap,76);assert.equal(after.units[0].activeSlot,'medical');assert.equal(after.units[0].medkits,2);assert.equal(after.units[0].ammo,s.units[0].ammo);assert.deepEqual(after.groundItems,s.groundItems);assert.equal(approachCompleted(s,after,'p',p),true);
+  const s=field({activeSlot:'medical'}),p=lootSearchPreview(s,soldier(s),search),after=actBattle(s,search);assert.equal(p.pa,24);assert.equal(after.units[0].ap,76);assert.equal(after.units[0].activeSlot,'medical');assert.equal(after.units[0].medkits,2);assert.equal(after.units[0].ammo,s.units[0].ammo);assert.deepEqual(after.groundItems,s.groundItems.map(g=>({...g,knownToPlayer:true})));assert.equal(approachCompleted(s,after,'p',p),true);
   const again=actBattle(after,search);assert.deepEqual(again,after);assert.equal(lootSelectionModel(after,soldier(after),search).preview.pa,8);
 });
 
@@ -63,7 +63,7 @@ test('exploration counts each approach second plus pickup and stops if the soldi
 
 test('enemy reactions stop both search and combined pickup before inventory changes',()=>{
   const s=field({agility:30,experienceLevel:1},{enemies:[{id:'e',x:5,y:4,facing:0,weapon:1806,marksmanship:70,agility:100,experienceLevel:10,patrol:false}]});s.units[1].ap=6;
-  for(const action of [pick,search]){const after=actBattle(s,action);assert.equal(after.lastError,null);assert.equal(after.units[1].reactionTurn,1);assert.deepEqual(after.groundItems,s.groundItems);assert.equal(after.units[0].ammo,s.units[0].ammo);assert.equal(approachCompleted(s,after,'p',lootSearchPreview(s,soldier(s),search)),false);}
+  for(const action of [pick,search]){const after=actBattle(s,action);assert.equal(after.lastError,null);assert.equal(after.units[1].reactionTurn,1);assert.deepEqual(after.groundItems,s.groundItems.map(g=>({...g,knownToPlayer:true})));assert.equal(after.units[0].ammo,s.units[0].ammo);assert.equal(approachCompleted(s,after,'p',lootSearchPreview(s,soldier(s),search)),false);}
 });
 
 test('a real saved player interrupt permits search and exact finite pickup within its remaining AP',()=>{

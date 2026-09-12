@@ -1,4 +1,6 @@
 'use client';
+import SectorInventory from './SectorInventory';
+import {knownSectorEquipment} from '../../game/sector-inventory.js';
 import {SectorIncomeTable} from './SectorIncome';
 import {activeSquad,operativeInTransit} from '../../game/squads.js';
 import {useState} from 'react';
@@ -26,7 +28,7 @@ export default function StrategicMap({state:s,selected,onSelect,dispatch}:{state
  const total=CAMPAIGN_SECTORS.reduce((n,d)=>n+sectorIncome(s,d,isSupplied),0);
  const def=CAMPAIGN_SECTORS.find(d=>d.id===selected)!;
  const city=getCityStatus(s,selected);
- const marks=(id:string)=>mode==='resources'?`${sectorIncome(s,CAMPAIGN_SECTORS.find(d=>d.id===id),isSupplied)} $/día`:mode==='squads'?`${s.squads.filter((q:any)=>q.location===id&&!['moving','ready'].includes(q.journey?.status)).reduce((n:number,q:any)=>n+q.members.length,0)} soldados`:mode==='militia'?`${s.sectors[id].militia.reduce((a:number,b:number)=>a+b,0)} milicianos`:mode==='horses'?`${(s.horseState?.horses??[]).filter((h:any)=>!h.returned&&!operativeInTransit(s,h.assignedTo)&&h.location===id).length} monturas`:mode==='items'?`${stockCount(s,id)} en depósito`:null;
+ const marks=(id:string)=>mode==='resources'?`${sectorIncome(s,CAMPAIGN_SECTORS.find(d=>d.id===id),isSupplied)} $/día`:mode==='squads'?`${s.squads.filter((q:any)=>q.location===id&&!['moving','ready'].includes(q.journey?.status)).reduce((n:number,q:any)=>n+q.members.length,0)} soldados`:mode==='militia'?`${s.sectors[id].militia.reduce((a:number,b:number)=>a+b,0)} milicianos`:mode==='horses'?`${(s.horseState?.horses??[]).filter((h:any)=>!h.returned&&!operativeInTransit(s,h.assignedTo)&&h.location===id).length} monturas`:mode==='items'?`${knownSectorEquipment(s.sectorStates?.[id]).reduce((n:number,row:any)=>n+row.count,0)} objetos · ${stockCount(s,id)} en depósito`:null;
  return <div className="strategy-chart argentina-chart">
  <div className="atlas-heading"><span>PROVINCIAS UNIDAS · 1812–1817</span><span>TEATRO DE OPERACIONES</span></div>
  <svg className="argentina-atlas" viewBox="0 0 720 690" role="group" aria-label="Mapa geográfico de la campaña en las Provincias Unidas">
@@ -69,6 +71,7 @@ export default function StrategicMap({state:s,selected,onSelect,dispatch}:{state
  <div className="atlas-readout" aria-live="polite"><strong>{MAP_PLACES[selected as keyof typeof MAP_PLACES].label} · {district.name}</strong>{mode==='cities'?<span>{city?`${city.loyalty}% lealtad · ${city.sectors.flatMap(id=>mapTilesForSector(id)).length} casillas urbanas · ${city.sectors.length-city.uncontrolled.length}/${city.sectors.length} sectores controlados`:'Paso rural · Sin núcleo urbano'}</span>:mode==='resources'?<span>{def.asset} · {sectorIncome(s,def,isSupplied)} pesos/día · Total: {total} pesos/día</span>:<span>{marks(selected)}</span>}</div>
  {mode==='resources'&&<SectorIncomeTable state={s} onSelect={onSelect}/>}
  {mode==='militia'&&<p className="atlas-help">Seleccioná una localidad. Usá «Milicias» en las órdenes del sector para elegir instructor y entrenar defensores.</p>}
+ {mode==='items'&&<SectorInventory key={selected} state={s} sectorId={selected} dispatch={dispatch}/>}
  {mode==='items'&&<div className="atlas-stock"><h3>Depósito de {MAP_PLACES[selected as keyof typeof MAP_PLACES].label}</h3>{Object.entries(s.depots?.[selected]??{}).filter(([,n])=>Number(n)>0).map(([id,n])=><p key={id}>{(RESOURCE_NAMES as Record<string,string>)[id]??id}: {Number(n)}</p>)}{!stockCount(s,selected)&&<p>Sin pertrechos almacenados.</p>}</div>}
  <MapManagement mode={mode} state={s} dispatch={dispatch}/>
  <p className="atlas-note">Geografía aproximada. Los sectores, rutas y ocupaciones son una adaptación de campaña; no representan fronteras ni control histórico. Las ciudades se amplían en casillas de barrios; los barrios de un mismo sector comparten control, ingresos y mapa táctico. El recuadro usa el contorno continental actual como referencia.</p>

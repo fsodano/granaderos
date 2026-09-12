@@ -59,7 +59,7 @@ test('compact saved sectors keep their geometry, building IDs and ground gear on
  const prior=enterSector({...req,compactLayout:true});assert.equal(prior.width,20);
  prior.groundItems=[{id:'retained',type:'item',x:1,y:7,item:'ammo',count:3,weight:.04}];
  const before=structuredClone(prior),again=enterSector(req,prior);
- assert.equal(again.width,20);assert.equal(again.height,16);assert.deepEqual(again.tiles,prior.tiles);assert.deepEqual(again.groundItems,prior.groundItems);assert.deepEqual(prior,before);
+ assert.equal(again.width,20);assert.equal(again.height,16);assert.deepEqual(again.tiles,prior.tiles);assert.deepEqual(again.groundItems,prior.groundItems.map(g=>({...g,knownToPlayer:true})));assert.deepEqual(prior,before);
 });
 test('expanded maps are deterministic, validate and retain their geometry on revisit',()=>{
  const req={sector:'mendoza',squad:[{id:1}],enemies:[],exploration:true};

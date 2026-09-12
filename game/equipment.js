@@ -20,13 +20,14 @@ export function equipmentInventoryUsage(s,op,changes={}){
  const record=s.operativeState[op.id],capacity=WEAPONS[op.weapon]?.capacity??0;
  // Reserve the normal cartridge stack for the next deployment. Ammunition is
  // held by campaign stock between reports; it must still fit when reissued.
- return inventoryUsage({...op,...record,ammo:capacity&&!record.weaponDropped?10-capacity:0,boleadoras:record.boleadoras??1,...changes});
+ return inventoryUsage({...op,...record,ammo:Math.max(record.carriedAmmo??0,capacity&&!record.weaponDropped?10-capacity:0),boleadoras:record.boleadoras??1,...changes});
 }
 export function allocateEquipmentAmmo(s,op,stock){
  const record=s.operativeState[op.id],capacity=record.weaponDropped?0:WEAPONS[op.weapon]?.capacity??0;
- if(!capacity)return {loaded:0,ammo:0};
- const rounds=Math.min(10,stock),loaded=Math.min(capacity,rounds);let ammo=rounds-loaded;
- while(ammo>0&&equipmentInventoryUsage(s,op,{ammo}).overloaded)ammo--;
+ const carried=record.carriedAmmo??0;
+ if(!capacity)return {loaded:0,ammo:carried};
+ const rounds=carried+Math.min(Math.max(0,10-carried),stock),loaded=Math.min(capacity,rounds);let ammo=rounds-loaded;
+ while(ammo>Math.max(0,carried-loaded)&&equipmentInventoryUsage(s,op,{ammo}).overloaded)ammo--;
  return {loaded,ammo};
 }
 export function deployedArtillery(s){
@@ -165,6 +166,7 @@ export function validateEquipment(s,roster=[]){
  need(EQUIPMENT_CATALOG.filter(w=>handheld(w.item)).every(item=>(counts[item.item]??0)===(s.armory[item.item]??0)),'Las cantidades de la armería no coinciden con sus ejemplares.');
  for(const [id,r] of Object.entries(s.operativeState)){
   const op=roster.find(op=>op.id===Number(id));
+  need(r.carriedAmmo===undefined||integer(r.carriedAmmo,0,100000),'La reserva personal de cartuchos es inválida.');
   validateUnitFittings({...op,...r});
   for(const [slot,key] of [['weapon','weaponInstanceId'],['blade','bladeInstanceId']])if(r[key]!==undefined)need(validInstanceId(r[key])&&op?.[slot]>0&&(slot!=='weapon'||!r.weaponDropped),'La identidad del arma guardada es inválida.');
   for(const key of ['jammed','weaponDropped'])need(r[key]===undefined||typeof r[key]==='boolean','El estado del arma guardada es inválido.');

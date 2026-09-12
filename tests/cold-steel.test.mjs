@@ -12,7 +12,7 @@ test('routing drops its weapon in place and escapes only on its paid turn',()=>{
  let n=actBattle(b,{type:'melee',unitId:'attacker',targetId:'defender'});
  const routed=n.units[1];assert.equal(routed.routed,true);assert.equal(routed.weaponDropped,true);assert.equal(routed.weapon,1800);assert.equal(routed.loaded,0);
  assert.deepEqual([routed.x,routed.y],[2,1]);assert.equal(routed.fled,false);assert.equal(routed.departure,undefined);assert.deepEqual(routed.fleePath,[]);assert.equal(n.status,'active');
- assert.deepEqual(n.droppedWeapons[0],{unitId:'defender',x:2,y:1,weapon:1800,weight:4,loaded:1,condition:100});
+ assert.deepEqual(n.droppedWeapons[0],{unitId:'defender',x:2,y:1,weapon:1800,weight:4,loaded:1,condition:100,knownToPlayer:true});
  n=endTurn(n);while(n.phase==='interrupt')n=endTurn(n);
  const escaped=n.units[1];assert.equal(escaped.departure.edge,'N');assert.equal(escaped.y,0);assert.equal(escaped.fled,true);assert.equal(n.droppedWeapons.length,1);assert.ok(escaped.ap<routed.ap);assert.equal(n.status,'victory');
 });

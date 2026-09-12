@@ -120,9 +120,10 @@ for(const n of s.npcs){
   if(a.threat!==undefined)need(coord(a.threat)&&integer(a.threat.turn,1,s.turn)&&['fire','explosion','alarm'].includes(a.threat.kind)&&number(a.threat.uncertainty,0,20)&&Object.keys(a.threat).every(k=>['x','y','turn','kind','uncertainty'].includes(k))&&a.safeAfter!==undefined,'alarma civil');
  }
 }
+for(const value of [...s.units,...s.groundItems,...s.droppedWeapons,...s.props])if(value.knownToPlayer!==undefined)need(typeof value.knownToPlayer==='boolean','conocimiento del inventario');
 const groundIds=new Set();for(const g of s.groundItems){
  need(coord(g)&&text(g.id)&&!groundIds.has(g.id)&&text(g.type)&&integer(g.count,0,1000000)&&(g.heldBy==null||text(g.heldBy)),'objetos del suelo');groundIds.add(g.id);
- if(g.type==='item'){const {id,type,x,y,heldBy,...stack}=g;validateItemStack({...stack,count:Math.max(1,stack.count)});if(g.count>0)claimStack(g);}
+ if(g.type==='item'){const {id,type,x,y,heldBy,knownToPlayer,...stack}=g;validateItemStack({...stack,count:Math.max(1,stack.count)});if(g.count>0)claimStack(g);}
 }
 for(const d of s.droppedWeapons){need(coord(d)&&integer(d.weapon,0,65535)&&number(d.condition,0,100)&&integer(d.loaded,0,WEAPONS[d.weapon]?.capacity??0)&&(d.taken===undefined||typeof d.taken==='boolean')&&(d.jammed===undefined||typeof d.jammed==='boolean'),'equipo abandonado');need(d.count===undefined||d.count===1,'cantidad de arma abandonada');validateWeaponFittings(d.fittings,d.weapon);validateFittingPattern(d.fittingPattern,d.weapon,d.instanceId);validateItemStack({...d,item:'weapon',count:1,weight:d.weight===undefined?weaponItemWeight(d.weapon):d.weight});if(!d.taken)claimStack(d);}
 for(const t of s.tiles.filter(t=>t.type==='door')){validateEnvironment(t);if(t.open!==undefined)need(t.blocked===!t.open&&(t.blocksSight===undefined||t.blocksSight===!t.open),'paso de puerta');for(const stack of t.contents??[])claimStack(stack);}

@@ -1,7 +1,17 @@
 import {WEAPONS} from './data.js';
 
+// Ammunition already on the field is separate from newly issued cartridges.
+// Count loose rounds and charges in finite ground weapons and containers.
+export function fieldAmmunition(snapshot){
+ const rounds=stack=>stack.item==='ammo'?stack.count??0:stack.weapon!==undefined?(stack.loaded??0)*(stack.count??1):0;
+ return (snapshot?.groundItems??[]).reduce((sum,g)=>sum+(g.heldBy?0:rounds(g)),0)
+  +(snapshot?.droppedWeapons??[]).reduce((sum,g)=>sum+(g.taken?0:g.loaded??0),0)
+  +[...(snapshot?.props??[]),...(snapshot?.tiles??[])].reduce((sum,c)=>sum+(c.contents??[]).reduce((n,item)=>n+rounds(item),0),0);
+}
+const recoveredFieldAmmunition=(request,snapshot)=>Math.max(0,(request.fieldCartridges??0)-fieldAmmunition(snapshot));
+
 export function returnAmmunition(request,reports,snapshot){
- let looted=0;
+ let looted=snapshot?recoveredFieldAmmunition(request,snapshot):0;
  if(snapshot){
   for(const source of [...(request.garrison??[]),...(request.garrisonLootSources??[]),...(request.missionAllies??[])]){const current=snapshot.units.find(u=>(u.militia||u.missionAlly)&&String(u.id)===String(source.id));if(current&&(current.hp<=0||current.unconscious||current.routed))looted+=Math.max(0,(source.ammo??0)+(source.loaded??0)-(current.ammo??0)-(current.loaded??0));}
   for(const source of request.ammunitionSources??request.enemies??[]){const current=snapshot.units.find(u=>u.side==='enemy'&&String(u.id)===String(source.id));if(current&&(current.hp<=0||current.unconscious||current.routed))looted+=Math.max(0,(source.ammo??12)-(current.ammo??0));}
@@ -20,7 +30,7 @@ export function returnAmmunition(request,reports,snapshot){
 // One shared ceiling applies to every destination. Captive ammunition remains
 // with its owner and must not enter the campaign cartridge reserve on this return.
 export function planReturnAmmunition(request,snapshot,entries){
- let loot=0;const seen=new Set();
+ let loot=recoveredFieldAmmunition(request,snapshot);const seen=new Set();
  for(const source of [...(request.garrison??[]),...(request.garrisonLootSources??[]),...(request.missionAllies??[]),...(request.casualtyLootSources??[])]){
   const key=`player:${source.id}`;if(seen.has(key))continue;seen.add(key);
   const u=snapshot.units.find(u=>u.side==='player'&&String(u.id)===String(source.id));if(u)loot+=Math.max(0,(source.ammo??0)+(source.loaded??0)-(u.ammo??0)-(u.loaded??0));

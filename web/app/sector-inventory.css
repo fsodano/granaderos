@@ -1,0 +1,13 @@
+.sector-inventory { margin-top: 1rem; padding: 1rem; border: 1px solid #706446; background: #18231c; color: #ede6d1; }
+.sector-inventory header { display: flex; align-items: start; justify-content: space-between; gap: 1rem; }
+.sector-inventory h3, .sector-inventory h4 { color: #ddc58a; margin: 0 0 .5rem; }
+.sector-inventory p { line-height: 1.5; margin: .4rem 0 .8rem; }
+.sector-inventory label { display: grid; gap: .35rem; }
+.sector-inventory select, .sector-inventory input { color: #ede6d1; background: #111b15; border: 1px solid #847352; padding: .45rem; }
+.sector-inventory-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+.sector-inventory-row { display: grid; grid-template-columns: minmax(0,1fr) 5rem auto; align-items: center; gap: .7rem; padding: .75rem 0; border-top: 1px solid #445145; }
+.sector-inventory-row input { width: 100%; box-sizing: border-box; }
+.sector-inventory-row p { font-size: .85rem; color: #c8c7b7; }
+.sector-inventory button:disabled { opacity: .5; cursor: not-allowed; }
+.sector-inventory :focus-visible { outline: 2px solid #edce78; outline-offset: 3px; }
+@media(max-width: 800px) { .sector-inventory-columns { grid-template-columns: 1fr; } .sector-inventory header { flex-direction: column; } }

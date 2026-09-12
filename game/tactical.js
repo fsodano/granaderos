@@ -1,3 +1,4 @@
+import {discoverInventory} from './inventory-discovery.js';
 import {automaticOrder} from './autonomous-orders.js';
 import {shotRangeModifiers} from './shot-range.js';
 import {limitEnergy,recoverEnergy,recoverFatigue} from './fatigue.js';
@@ -105,7 +106,7 @@ export function visibleDistance(s,u,target){
 export function canSee(s,u,target){if(!alive(u)||target.departure||!facingAllowsSight(u,target)||!hasLineOfSight(s,u,target)||dist(u,target)>visibleDistance(s,u,target))return false;const smoke=line(u,target).filter(p=>s.smoke.some(v=>dist(p,v)<=v.radius)).length;return smoke<5;}
 export function teamCanSee(s,side,target){return s.units.some(u=>u.side===side&&alive(u)&&canSee(s,u,target));}
 export function visibleRooms(s){const ids=new Set();for(const t of s.tiles){if(t.roomId&&s.units.some(u=>u.side==='player'&&alive(u)&&canSee(s,u,t)))ids.add(t.roomId);}return [...ids];}
-function revealRooms(s){s.revealedRooms=[...new Set([...(s.revealedRooms||[]),...visibleRooms(s)])];}
+function revealRooms(s){s.revealedRooms=[...new Set([...(s.revealedRooms||[]),...visibleRooms(s)])];discoverInventory(s);}
 export function visibleTiles(s,u){return s.tiles.filter(t=>canSee(s,u,t)).map(t=>({x:t.x,y:t.y,illumination:tileIllumination(s,t.x,t.y)}));}
 export function visibleHostiles(s,u){return s.units.filter(v=>v.side!==u.side&&onField(v)&&canSee(s,u,v));}
 export function visibleEnemies(s){return s.units.filter(v=>v.side==='enemy'&&s.units.some(u=>u.side==='player'&&alive(u)&&visibleHostiles(s,u).some(t=>t.id===v.id)));}
@@ -412,7 +413,7 @@ export function transferPreview(s,u,target,item,count=1){
 }
 function groundStack(ground){
   if(ground.type==='boleadoras')return {item:'boleadoras',count:ground.count,weight:SUPPLY_ITEMS.boleadoras.weight};
-  const {id,type,x,y,heldBy,...stack}=ground;return stack;
+  const {id,type,x,y,heldBy,knownToPlayer,...stack}=ground;return stack;
 }
 function addGroundStack(s,stack,position){s.groundItems.push({...stack,id:`item-${s.turn}-${s.groundItems.length}`,type:'item',x:position.x,y:position.y});}
 function lootSource(s,a){
