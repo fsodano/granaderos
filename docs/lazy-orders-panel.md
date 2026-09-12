@@ -42,6 +42,19 @@ warmups, 60 renders gave these results:
 
 Inventory order/medical/supply calls dropped from 2/2/6 to 1/1/3. Inventory timings
 were noisy and do not establish a speed improvement. These are server-render
-measurements, not browser frame measurements. Live opening, closing, keyboard
-activation, selection, reopening after inventory, and reload checks remain part
-of integration verification.
+measurements, not browser frame measurements. Integrated live checks passed for native Enter opening/closing, changing the
+selected soldier while open, right-click inventory, and returning to a closed
+menu. A shot changed Dorrego's load/reserve from 2/8 to 1/8; R then restored 2/7.
+Reopening showed the current load and disabled the already-full reload button.
+A four-tile exploration walk spent four energy. The before/after browser timing
+samples were noisy (29 ms versus 53 ms average React update, with different
+update counts); they do not establish a browser speed gain. Overall scene
+performance remains open. The integrated 25 HUD/control/render checks and
+production build/typecheck pass.
+
+That live reload also exposed an old journal message quoting the theoretical
+28 AP load work during exploration. The simulation spent zero AP. Exploration
+reload, artillery reload, ready/look and batch-pickup messages now omit unspent
+AP; combat messages retain paid costs. A misfire in exploration asks for fresh
+priming without quoting a combat AP charge. The 39 reload/artillery/journal
+checks pass.

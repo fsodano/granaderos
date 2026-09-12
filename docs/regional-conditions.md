@@ -64,13 +64,15 @@ The first broad integration run passed 1,649 of 1,657 tests. The cache binding w
 a production defect and is corrected. Several combat and crew fixtures assumed
 stale geometry or fixed casualties; their corrected focused checks now pass.
 The hired-only Retiro assault and real Córdoba recovery route subsequently
-pass their focused checks. The longer northern continuation remains under
-review. These focused results do not establish full-campaign completion.
+pass their focused checks. The longer northern continuation subsequently passed all eight checks. These focused results do not establish full-campaign completion.
 
 The latest integrated full run (including the exploration input fix and bounded
 building cache) passed **1,674 of 1,680 checks** in about 186 seconds. The six
 failures belong to one established southern-to-northern campaign scenario: its
 Tucumán preparation assertion fails, four later steps lack that prerequisite,
 and the enclosing test fails. No other test file failed. The production build
-and typecheck pass. The scenario is still being repaired in an isolated branch;
-this result does not claim a passing full campaign.
+and typecheck pass. The repaired scenario subsequently passed all eight checks on the integrated
+branch, including capture, rescue, finite courier care, Salta and Yatasto, with
+no skips. Twelve preparation checks also pass. The complete suite has not been
+rerun since that repair; the route starts from the established southern fixture
+and does not claim a full campaign from Retiro alone.

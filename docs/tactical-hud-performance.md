@@ -115,3 +115,11 @@ averaging 19 ms (maximum 171 ms). Both retained 7,896 SVG elements and the
 illustrated sprite style. These small development-browser samples show a
 modest improvement, not a frame-rate guarantee. State updates and other scene
 work still produce visible delays; overall performance remains open.
+
+## Closed Orders panel
+
+The optional Orders controls and their models now mount only while the menu is
+open. Live keyboard, selection, inventory and R-reload checks pass. The server
+render median improved slightly; browser timing did not establish a speed gain.
+See [measurements and limits](lazy-orders-panel.md). The detailed Dorrego sprite
+was inspected again at 300% zoom with the compact six-slot HUD.

@@ -6,14 +6,22 @@ Audit date: 6 September 2026. This is a requirements baseline for the complete g
 
 The regional terrain/weather update and the illustrated-art integration are
 integrated. Focused weather, terrain, defense, artillery, equipment, reentry and
-Retiro-opening checks pass. The integrated run passes 1,674 of 1,680 checks;
-all failures are in one dependent northern campaign scenario. The established
-southern route again reaches a real
-Córdoba victory; its later defeat/rescue/Salta/Yatasto continuation is under
-repair because older test plans assume soldiers and supplies that did not
-survive the current battles. Earlier whole-suite counts and northern route
-results in this table describe their named checkpoints, not a fresh passing
-run of the complete current campaign.
+Retiro-opening checks pass. The last complete run passed 1,674 of 1,680
+checks; its six failures all belonged to one dependent northern campaign
+scenario. That scenario now passes all eight checks on the integrated code,
+with no skips: Córdoba, actual defeat/capture, rescue, finite medical courier,
+paid recovery, joint Salta assault and Yatasto. Twelve preparation checks also
+pass. This route starts from the established southern fixture; it does not
+prove the complete campaign from the current Retiro-only start. Earlier
+whole-suite counts and route casualty/hour tables describe their named
+checkpoints. The complete suite has not been rerun after these route repairs.
+
+The closed Orders panel now skips its optional models and controls; 25 focused
+integrated HUD/render checks pass. Live keyboard activation, selection,
+right-click inventory, return to a closed panel, and R reload passed. The
+reload retained two rounds and reduced reserve from eight to seven after one
+shot. Exploration action logs now omit AP that was not spent; 39 reload,
+artillery and journal checks pass. See [optional orders](lazy-orders-panel.md).
 
 The coarse equipment-demo sprite came from an outdated preview checkout. The
 preview now uses the integrated illustrated assets and was inspected at 300%
