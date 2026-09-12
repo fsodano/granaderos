@@ -2,10 +2,10 @@ import {publicContractNotice} from './contract-attention.js';
 import {squadTravelStatus} from './squad-travel.js';
 import {operativeInTransit} from './squads.js';
 import {maximumEnergy} from './fatigue.js';
-import {canSee,visibleRooms,actionCosts,interruptAvailable,stealPreview} from './tactical.js';
+import {canSee,visibleRooms,actionCosts,stealPreview} from './tactical.js';
 import {isInteriorVisible} from './tactical-visibility.js';
 import {environmentTargetSummary} from './environment-interactions.js';
-import {equipmentSlots,aimOptions,orderDescriptors,nearbyLootOptions,targetPreview,heardNoiseModel,fittingInventoryModel} from './ja2-hud.js';
+import {unitCanAct,equipmentSlots,aimOptions,orderDescriptors,nearbyLootOptions,targetPreview,heardNoiseModel,fittingInventoryModel} from './ja2-hud.js';
 import {CAMPAIGN_SECTORS,RESOURCE_NAMES} from './data.js';
 import {rosterFor} from './campaign.js';
 import {enemyGroupStatus} from './enemy-groups.js';
@@ -61,7 +61,7 @@ export function playerKnownBattle(state){
       ...(noise?[{observerId:unit.id,kind:'heard',...pick(noise,['x','y','radius','label']),turn:unit.lastHeardNoise.turn,anonymous:true}]:[])];
   });
   const livingTargets=[...players,...visible].filter(unit=>unit.hp>0);
-  const orders=actors.map(unit=>({unitId:unit.id,canAct:interruptAvailable(state,unit),costs:pick(actionCosts(state,unit),['fire','aim','reload','reprime','melee','heal','weapon','stance','mount','brace','repair','free','loot','drop','equipLoot']),
+  const orders=actors.filter(unit=>!unit.militia).map(unit=>({unitId:unit.id,canAct:unitCanAct(state,unit),costs:pick(actionCosts(state,unit),['fire','aim','reload','reprime','melee','heal','weapon','stance','mount','brace','repair','free','loot','drop','equipLoot']),
     equipment:equipmentSlots(state,unit).map(slot=>({...pick(slot,['slot','label','pa','active','disabled']),action:pick(slot.action,ACTION)})),
     fittings:fittingOrders(state,unit),
     aim:aimOptions(state,unit).map(option=>pick(option,['level','pa','disabled'])),
@@ -85,7 +85,7 @@ export function playerKnownBattle(state){
     lights:(state.lights??[]).filter(light=>knownCells.has(pointKey(light))).map(light=>pick(light,['x','y','type','radius','intensity','remainingSeconds'])),
     smoke:(state.smoke??[]).filter(smoke=>knownCells.has(pointKey(smoke))).map(smoke=>pick(smoke,['x','y','radius'])),
     exits:(state.exits??[]).map(exit=>pick(exit,['id','edge','destination'])),
-    interrupt:state.phase==='interrupt'&&state.interrupt?.side==='player'?{side:'player',unitIds:players.filter(unit=>interruptAvailable(state,unit)).map(unit=>unit.id),...(visibleIds.has(state.interrupt.enemyId)?{enemyId:state.interrupt.enemyId}:{})}:null,
+    interrupt:state.phase==='interrupt'&&state.interrupt?.side==='player'?{side:'player',unitIds:players.filter(unit=>unitCanAct(state,unit)).map(unit=>unit.id),...(visibleIds.has(state.interrupt.enemyId)?{enemyId:state.interrupt.enemyId}:{})}:null,
   };
   return result;
 }

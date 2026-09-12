@@ -3,7 +3,7 @@ import {actBattle, canEndCombat, CRITICAL_HEALTH, getReachable, hasLineOfSight} 
 const present = unit => unit.side === 'player' && unit.hp > 0 && !unit.routed && !unit.fled && !unit.departure && !unit.surrendered;
 const needsBandage = unit => present(unit) && (unit.bleeding > 0 || (unit.bandaged ?? 0) < unit.maxHp - unit.hp);
 const conscious = unit => present(unit) && unit.hp >= CRITICAL_HEALTH && !unit.unconscious && (unit.energy ?? 100) > 0;
-const doctorReady = unit => conscious(unit) && unit.medical > 0 && (!unit.knockedDown || unit.activeSlot === 'medical');
+const doctorReady = unit => !unit.militia && conscious(unit) && unit.medical > 0 && (!unit.knockedDown || unit.activeSlot === 'medical');
 const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 const summary = unit => ({id: unit.id, name: unit.nickname || unit.name, hp: unit.hp, bleeding: unit.bleeding ?? 0, medkits: unit.medkits ?? 0});
 const DANGER = 'Vendaje detenido: hay contacto o señales recientes del enemigo.';

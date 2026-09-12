@@ -69,10 +69,18 @@ if(s.enemyTurn!==undefined){
  need(integer(q.unitIndex,0,q.unitIds.length)&&integer(q.actionsTaken,0,12)&&typeof q.started==='boolean','avance enemigo');
  need(s.mode==='combat'&&['enemy','interrupt'].includes(s.phase)&&s.status==='active'&&s.roundTimeCharged===true,'fase de continuación');
 }
+if(s.alliedTurn!==undefined){
+ const q=s.alliedTurn;
+ need(object(q)&&Array.isArray(q.unitIds)&&q.unitIds.length>0&&q.unitIds.length<=200&&new Set(q.unitIds).size===q.unitIds.length&&q.unitIds.every(id=>s.units.some(u=>u.id===id&&u.side==='player'&&u.militia)),'continuación de milicia');
+ need(integer(q.unitIndex,0,q.unitIds.length-1)&&integer(q.actionsTaken,0,12)&&typeof q.startEnemyAfter==='boolean','avance de milicia');
+ need(s.mode==='combat'&&s.status==='active'&&s.roundTimeCharged===true&&!s.enemyTurn&&(!q.startEnemyAfter||s.roundFirstSide==='enemy'),'fase de milicia');
+ need(s.phase==='player'||s.reactionStack?.length,'retorno de milicia');
+}
 const checkInterruption=(interruption,queue,reaction=false)=>{
  need(object(queue)&&queue.unitIndex<queue.unitIds.length&&object(interruption)&&interruption.side==='player'&&interruption.enemyId===queue.unitIds[queue.unitIndex],'interrupción');
  need(reaction?interruption.returnTo==='reaction':interruption.returnTo===undefined,'retorno de interrupción');
  need(Array.isArray(interruption.unitIds)&&interruption.unitIds.length>0&&interruption.unitIds.length<=200&&new Set(interruption.unitIds).size===interruption.unitIds.length&&interruption.unitIds.every(id=>s.units.some(u=>u.id===id&&!u.departure&&u.side==='player'&&u.reactionTurn===s.turn)),'combatientes de interrupción');
+ if(interruption.militiaActions!==undefined)need(object(interruption.militiaActions)&&Object.entries(interruption.militiaActions).every(([id,count])=>interruption.unitIds.includes(id)&&s.units.some(u=>u.id===id&&u.militia)&&integer(count,1,12)),'acciones de interrupción de milicia');
 };
 if(s.reactionStack!==undefined){
  need(Array.isArray(s.reactionStack)&&s.reactionStack.length>0&&s.reactionStack.length<=s.units.length&&s.mode==='combat'&&s.status==='active'&&['enemy','interrupt'].includes(s.phase)&&s.roundTimeCharged===true,'cadena de interrupciones');

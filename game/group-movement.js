@@ -46,7 +46,7 @@ export function planGroupMove(state,request){
  if(!request.unitIds.every(id=>(typeof id==='string'&&id.length>0&&id.length<=100)||(typeof id==='number'&&Number.isSafeInteger(id))))return invalid('La selección contiene un identificador inválido.');
  if(!((typeof request.anchorId==='string'&&request.anchorId.length>0&&request.anchorId.length<=100)||(typeof request.anchorId==='number'&&Number.isSafeInteger(request.anchorId))))return invalid('Elegí un combatiente de referencia válido.');
  const ids=request.unitIds.map(String),anchorId=String(request.anchorId),units=ids.map(id=>state.units.find(u=>String(u.id)===id));
- if(new Set(ids).size!==ids.length||units.some(u=>!u||u.side!=='player')||!ids.includes(anchorId))return invalid('La selección o el combatiente de referencia no es válido.');
+ if(new Set(ids).size!==ids.length||units.some(u=>!u||u.side!=='player'||u.militia)||!ids.includes(anchorId))return invalid('La selección o el combatiente de referencia no es válido.');
  if(!Number.isInteger(request.x)||!Number.isInteger(request.y)||request.x<0||request.y<0||request.x>=state.width||request.y>=state.height||!state.tiles.some(t=>t.x===request.x&&t.y===request.y))return invalid('El destino está fuera del sector.');
  if(request.movement!==undefined&&!['walk','run','crouch','prone'].includes(request.movement))return invalid('La forma de desplazamiento no es válida.');
  if(request.movementIntent!==undefined&&request.movementIntent!=='forward')return invalid('Retroceder o avanzar de costado requiere una orden individual.');

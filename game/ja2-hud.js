@@ -77,7 +77,7 @@ export const HIT_LOCATIONS = [['torso', 'Torso'], ['head', 'Cabeza'], ['legs', '
 const hitLocationFor = value => HIT_LOCATIONS.some(([id]) => id === value) ? value : 'torso';
 
 export function unitCanAct(state, unit) {
-  return Boolean(unit) && interruptAvailable(state, unit);
+  return Boolean(unit) && !unit.militia && (!state.alliedTurn || state.phase==='interrupt') && interruptAvailable(state, unit);
 }
 
 export function groupSelectionMode(state) {

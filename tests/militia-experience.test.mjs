@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {dispatchCampaign,restoreCampaign,serializeCampaign} from '../game/campaign.js';
-import {createBattle,actBattle} from '../game/tactical.js';
+import {createBattle,endTurn} from '../game/tactical.js';
 import {prepareGarrison,returnGarrison} from '../game/garrison.js';
 import {recordMilitiaHit,earnedMilitiaRank,validMilitiaExperience} from '../game/militia-experience.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
@@ -16,13 +16,13 @@ function encounter(s){
  // The declared deployment fixture isolates militia custody. No result or
  // combat credit is inserted; ordinary fire must kill the declared opponent.
  r.enemies=[{id:'raider',name:'Asaltante',x:3,y:2,weapon:1813,hp:30,maxHp:30,morale:100,overwatch:false,patrol:false}];
- const squad=[...r.squad.map((u,i)=>({...u,x:1,y:5+i})),...r.garrison.map(u=>({...u,x:1,y:2+(u.id-20000)}))];
- let b=createBattle(squad,{...r,hour:s.hour,secondOfHour:s.secondOfHour??0,width:20,height:16,tiles:flat(),props:[],npcs:[],seed:45});b.units.find(u=>u.side==='enemy').ap=0;
+ const squad=[...r.squad.map((u,i)=>({...u,x:1,y:5+i})),...r.garrison.map(u=>({...u,x:u.id===20000?1:16,y:u.id===20000?2:10+(u.id-20000)}))];
+ let b=createBattle(squad,{...r,hour:s.hour,secondOfHour:s.secondOfHour??0,exploration:false,width:20,height:16,tiles:flat(),props:[],npcs:[],seed:45});b.units.find(u=>u.side==='enemy').ap=0;
  return {s,b};
 }
 function fightAndReturn(s){
  let b;({s,b}=encounter(s));const id=String(s.pendingBattle.garrison[0].id),old=structuredClone(s.pendingBattle.garrison[0]);
- b=actBattle(b,{type:'fire',unitId:id,targetId:'raider',aim:4,hitLocation:'head'});assert.equal(b.lastError,null);assert.equal(b.units.find(u=>u.side==='enemy').hp,0);assert.equal(b.status,'victory');
+ b=endTurn(b);assert.equal(b.lastError,null);assert.equal(b.units.find(u=>u.side==='enemy').hp,0);assert.equal(b.status,'victory');
  assert.doesNotThrow(()=>validateBattleSnapshot(b));const actual=b.units.find(u=>u.id===id),before=structuredClone(s);
  s=step(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});return {s,b,old,actual,before};
 }
@@ -33,7 +33,7 @@ test('real paid kills promote a survivor through two ranks without a new soldier
  for(const k of ['hp','maxHp','weapon','loaded','ammo','condition','inventory','bleeding','bandaged','energy','weaponFittings'])assert.deepEqual(unit[k],result.actual[k]);assert.equal(s.nextMilitiaId,20003);
  s=restoreCampaign(serializeCampaign(s));unit=s.garrisons.retiro.find(u=>u.id===first.id);
  // The next encounter still uses the earned soldier and his finite rounds.
- let pair=encounter(s);let b=actBattle(pair.b,{type:'reload',unitId:String(first.id)});assert.equal(b.lastError,null);b=actBattle(b,{type:'fire',unitId:String(first.id),targetId:'raider',aim:2,hitLocation:'head'});assert.equal(b.lastError,null);assert.equal(b.status,'victory');
+ let pair=encounter(s);let b=endTurn(pair.b);assert.equal(b.lastError,null);assert.equal(b.status,'victory');
  s=step(pair.s,{type:'leaveSector',battleId:pair.s.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});unit=s.garrisons.retiro.find(u=>u.id===first.id);assert.equal(unit.militiaRank,2);assert.equal(unit.militiaExperience,6);assert.deepEqual(s.sectors.retiro.militia,[2,0,1]);assert.equal(unit.hp,44);assert.equal(unit.maxHp,60);assert.equal(unit.weapon,1800);assert.equal(unit.ammo,4);assert.equal(s.nextMilitiaId,20003);assert.equal(unit.militiaCombatCredit.length,2);assert.notEqual(...unit.militiaCombatCredit.map(e=>e.id));
  s=restoreCampaign(serializeCampaign(s));s=step(s,{type:'visitSector'});const revisited=enterSector(s.pendingBattle,s.sectorStates.retiro);assert.equal(revisited.units.find(u=>u.id===String(first.id)).militiaRank,2);assert.equal(revisited.units.find(u=>u.id===String(first.id)).hp,44);
 });

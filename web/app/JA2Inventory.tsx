@@ -52,7 +52,12 @@ export function RadarCluster({battle, units, selected, project, vw, vh, cameraRe
         <p>{targetingHelp(mode, battle.units.find((u: any) => u.id === selected))}</p>
       </div>
       {missionAllies.length > 0 && <details className="ja2-garrison-toggle" aria-label="Aliados de la misión"><summary>Oficiales aliados · {missionAllies.length} temporales</summary><div className="squad-strip">{missionAllies.map((p: any) => <button key={p.id} className={`squad-card ${p.id === selected ? 'active' : ''} ${alive(p) ? '' : 'fallen'}`} disabled={!selectable(p)} aria-label={`Seleccionar aliado ${p.name}`} onClick={event => onSelect(p.id, event.shiftKey)}><div><strong>{p.name}</strong><span>{alive(p) ? `${Math.ceil(p.hp)} SALUD · ${p.ap} PA` : 'Fuera de combate'}</span></div></button>)}</div></details>}
-      {localMilitia.length > 0 && <details className="ja2-garrison-toggle" aria-label="Guarnición local"><summary>Guarnición local · {localMilitia.length} milicianos</summary><div className="squad-strip">{localMilitia.map((p: any, i: number) => <button key={p.id} className={`squad-card ${p.id === selected ? 'active' : ''} ${alive(p) ? '' : 'fallen'}`} disabled={!selectable(p)} aria-label={`Seleccionar miliciano ${i + 1}: ${p.name}`} onClick={event => onSelect(p.id, event.shiftKey)}><div><strong>{i + 1}. {p.name}</strong><span>{p.unconscious ? 'Inconsciente' : alive(p) ? `${Math.ceil(p.hp)} SALUD · ${p.ap} PA` : 'Fuera de combate'}</span></div></button>)}</div></details>}
+      {localMilitia.length > 0 && <details className="ja2-garrison-toggle" aria-label="Guarnición local"><summary>Guarnición local · {localMilitia.length} milicianos</summary><p>La milicia combate por su cuenta.</p><div className="squad-strip">{localMilitia.map((p: any, i: number) => {
+        const content = <div><strong>{i + 1}. {p.name}</strong><span>{p.unconscious ? 'Inconsciente' : alive(p) ? `${Math.ceil(p.hp)} SALUD · ${p.ap} PA` : 'Fuera de combate'}</span></div>;
+        return medicalTargeting
+          ? <button key={p.id} className="squad-card" disabled={!selectable(p)} aria-label={`Vendar a ${p.name}`} onClick={() => onSelect(p.id)}>{content}</button>
+          : <div key={p.id} className={`squad-card ${alive(p) ? '' : 'fallen'}`} aria-label={`Miliciano ${i + 1}: ${p.name}`}>{content}</div>;
+      })}</div></details>}
       <button className="retreat-button" onClick={onRetreat}>{battle.mode === 'exploration' ? 'Salir del sector' : 'Retirada'}</button>
     </>
   );

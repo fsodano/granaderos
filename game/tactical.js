@@ -1,3 +1,4 @@
+import {automaticOrder} from './autonomous-orders.js';
 import {shotRangeModifiers} from './shot-range.js';
 import {limitEnergy,recoverEnergy,recoverFatigue} from './fatigue.js';
 import {recordMilitiaHit} from './militia-experience.js';
@@ -129,7 +130,7 @@ function investigateNoise(s,u){
 }
 function rememberContacts(s){forgetInvestigatedNoise(s);for(const u of s.units.filter(alive)){const seen=visibleHostiles(s,u).filter(alive).sort((a,b)=>dist(u,a)-dist(u,b)||String(a.id).localeCompare(String(b.id)));if(seen.length)u.lastKnownEnemy={x:seen[0].x,y:seen[0].y,turn:s.turn};else if(u.lastKnownEnemy&&(s.turn-u.lastKnownEnemy.turn>3||dist(u,u.lastKnownEnemy)<=1))delete u.lastKnownEnemy;}}
 export function canEndCombat(s){
-  if(s.status!=='active'||s.mode!=='combat'||s.phase!=='player'||s.units.some(u=>u.routed&&fieldCapable(u)))return false;
+  if(s.status!=='active'||s.mode!=='combat'||s.phase!=='player'||s.alliedTurn||s.units.some(u=>u.routed&&fieldCapable(u)))return false;
   return !s.units.some(u=>alive(u)&&(visibleHostiles(s,u).length||[u.lastKnownEnemy,u.lastHeardNoise].some(k=>k&&s.turn-k.turn<=3)));
 }
 function resolveFirstContact(s){
@@ -263,8 +264,8 @@ function directedFireImpact(s,u,target,hitLocation,hit){
 }
 function checkEnd(s){
   const able=side=>s.units.some(u=>u.side===side&&fieldCapable(u));
-  if(!able('player')){const status=s.units.some(u=>u.side==='player'&&u.departure)?'retreat':'defeat';if(s.status!==status)say(s,status==='retreat'?'La última fuerza capaz salió del sector.':'La escuadra quedó fuera de combate.');s.status=status;s.phase='player';delete s.interrupt;delete s.enemyTurn;delete s.reactionStack;}
-  else if(!able('enemy')){s.sectorCleared=true;if(s.mode==='exploration')return;if(s.status!=='victory')say(s,'¡Victoria! El enemigo quedó fuera de combate.');s.status='victory';s.phase='player';delete s.interrupt;delete s.enemyTurn;delete s.reactionStack;}
+  if(!able('player')){const status=s.units.some(u=>u.side==='player'&&u.departure)?'retreat':'defeat';if(s.status!==status)say(s,status==='retreat'?'La última fuerza capaz salió del sector.':'La escuadra quedó fuera de combate.');s.status=status;s.phase='player';delete s.interrupt;delete s.enemyTurn;delete s.reactionStack;delete s.alliedTurn;}
+  else if(!able('enemy')){s.sectorCleared=true;if(s.mode==='exploration')return;if(s.status!=='victory')say(s,'¡Victoria! El enemigo quedó fuera de combate.');s.status='victory';s.phase='player';delete s.interrupt;delete s.enemyTurn;delete s.reactionStack;delete s.alliedTurn;}
 }
 function rout(s,u,report=true){
   if(u.routed||!onField(u)||holdMorale(s,u))return;
@@ -969,11 +970,11 @@ function exitUnitReason(s,u,exit,{routing=false}={}){
 }
 export function exitPreview(s,{unitIds,exitId}={}){
   const exit=s?.exits?.find(v=>v.id===exitId),ids=Array.isArray(unitIds)?unitIds.map(String):[];
-  let reason=!s||s.status!=='active'||s.phase!=='player'||s.interrupt||s.enemyTurn||s.reactionStack?.length?'La salida requiere el turno normal del jugador.':null;
+  let reason=!s||s.status!=='active'||s.phase!=='player'||s.interrupt||s.enemyTurn||s.alliedTurn||s.reactionStack?.length?'La salida requiere el turno normal del jugador.':null;
   if(!reason&&!exit)reason='Selecciona una salida autorizada.';
   if(!reason&&(!ids.length||new Set(ids).size!==ids.length))reason='Selecciona combatientes distintos para salir.';
   const eligibleIds=[],blocked=[],costById={};
-  for(const id of ids){const u=s?.units?.find(v=>v.id===id),why=reason??exitUnitReason(s,u,exit);if(why)blocked.push({id,reason:why});else {eligibleIds.push(id);costById[id]=stepCost(u,tile(s,u.x,u.y));}}
+  for(const id of ids){const u=s?.units?.find(v=>v.id===id),why=reason??(u?.militia?'La milicia actúa por su cuenta.':exitUnitReason(s,u,exit));if(why)blocked.push({id,reason:why});else {eligibleIds.push(id);costById[id]=stepCost(u,tile(s,u.x,u.y));}}
   return {available:!reason&&!blocked.length&&ids.length>0,reason:reason??blocked[0]?.reason??null,edge:exit?.edge??null,destination:exit?.destination??null,eligibleIds,blocked,costById};
 }
 function crossBoundary(s,u,exit){
@@ -1040,6 +1041,14 @@ function processRout(s,u){
 }
 
 export function actBattle(state,action){
+  const ids=[action.unitId,...(Array.isArray(action.unitIds)?action.unitIds:[])].filter(id=>id!==undefined).map(String);
+  if(state.units.some(u=>u.militia&&ids.includes(u.id))||state.alliedTurn&&state.phase!=='interrupt'){
+    const rejected=clone(state);rejected.lastError='La milicia actúa por su cuenta. Da órdenes a los combatientes de tu escuadra.';say(rejected,rejected.lastError);return rejected;
+  }
+  const next=actBattleInput(state,action);
+  return next.lastError?next:cleanActionTime(settleAutonomous(next));
+}
+function actBattleInput(state,action){
   if(action.type==='approachLoot'){
     const unit=state.units.find(u=>u.id===String(action.unitId)),plan=lootSearchPreview(state,unit,action);
     if(unit?.side!=='player'||!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason??'No puedes dar órdenes a ese soldado.';say(rejected,rejected.lastError);return rejected;}
@@ -1101,7 +1110,55 @@ function actBattleOrder(state,action,movementPath=null){
 function finishEnemyRound(s){
   delete s.enemyTurn;delete s.interrupt;delete s.reactionStack;s.enemyTurns++;
   if(s.roundFirstSide==='enemy'){s.enemyFirstAwaitingPlayer=true;s.phase='player';s.lastError=null;rememberContacts(s);revealRooms(s);return s;}
-  return finishCombatRound(s);
+  return beginAlliedTurn(s);
+}
+function beginAlliedTurn(s,startEnemyAfter=false){
+  s.phase='player';
+  s.alliedTurn={unitIds:s.units.filter(u=>u.side==='player'&&u.militia&&fieldCapable(u)).map(u=>u.id),unitIndex:0,actionsTaken:0,startEnemyAfter};
+  if(s.alliedTurn.unitIds.length)say(s,`Turno ${s.turn}: actúa la guarnición local.`);
+  return runAlliedTurn(s);
+}
+// Militia use their existing AP, equipment and awareness. This queue survives
+// enemy reactions and hired-soldier interrupts without starting the turn again.
+function runAlliedTurn(s){
+  const queue=s.alliedTurn;
+  while(queue.unitIndex<queue.unitIds.length&&s.status==='active'){
+    const u=s.units.find(v=>v.id===queue.unitIds[queue.unitIndex]);
+    if(u?.routed&&fieldCapable(u)&&!queue.actionsTaken){queue.actionsTaken=12;processRout(s,u);if(s.status!=='active'||s.phase!=='player')return s;}
+    while(u&&alive(u)&&u.ap>=3&&queue.actionsTaken<12&&s.status==='active'){
+      rememberContacts(s);const order=automaticOrder(s,u);if(!order)break;
+      queue.actionsTaken++;
+      const accepted=apply(s,order,false);if(order.patrol)u.patrolTurn=s.turn;
+      if(accepted===false){s.lastError=null;break;}
+      if(s.status!=='active'||s.phase!=='player')return s;
+    }
+    queue.unitIndex++;queue.actionsTaken=0;
+  }
+  if(s.status!=='active')return s;
+  delete s.alliedTurn;finishCombatRound(s);
+  return queue.startEnemyAfter&&s.status==='active'?endTurnState(s):s;
+}
+function settleAutonomous(s){
+  while(s.status==='active'){
+    if(s.phase==='enemy'&&s.reactionStack?.length){runEnemyReactions(s);continue;}
+    if(s.phase==='interrupt'){
+      const window=s.interrupt;
+      const militia=window.unitIds.map(id=>s.units.find(u=>u.id===id)).find(u=>u?.militia&&alive(u)&&u.ap>=3&&(window.militiaActions?.[u.id]??0)<12);
+      if(militia){
+        window.militiaActions??={};rememberContacts(s);const order=chooseEnemyAction(s,militia);
+        window.militiaActions[militia.id]=order?(window.militiaActions[militia.id]??0)+1:12;
+        if(order&&apply(s,order,false)===false){window.militiaActions[militia.id]=12;s.lastError=null;}
+        continue;
+      }
+      if(window.unitIds.some(id=>{const u=s.units.find(v=>v.id===id);return u&&!u.militia;}))break;
+      const reaction=window.returnTo==='reaction';delete s.interrupt;s.phase='enemy';
+      if(reaction)runEnemyReactions(s);else runEnemyPhase(s);
+      continue;
+    }
+    if(s.phase==='player'&&s.alliedTurn){s=runAlliedTurn(s);continue;}
+    break;
+  }
+  return s;
 }
 function finishCombatRound(s){
   if(s.npcs?.length)say(s,`Turno ${s.turn}: actúan los civiles.`);
@@ -1171,7 +1228,7 @@ function runEnemyReactions(s){
   checkEnd(s);rememberContacts(s);revealRooms(s);s.lastError=null;return s;
 }
 function cleanActionTime(s){delete s.actionDurationSeconds;delete s.actionTimeAppliedSeconds;return s;}
-export function endTurn(state){return cleanActionTime(endTurnState(state));}
+export function endTurn(state){return cleanActionTime(settleAutonomous(endTurnState(state)));}
 function endTurnState(state){
   const s=clone(state);s.lastError=null;if(s.status!=='active')return s;
   if(s.phase==='interrupt'){
@@ -1192,11 +1249,15 @@ function endTurnState(state){
   }
   if(s.phase==='enemy'&&s.reactionStack?.length)return runEnemyReactions(s);
   if(s.phase==='enemy'&&s.enemyTurn)return runEnemyPhase(s);
-  if(s.enemyFirstAwaitingPlayer){delete s.enemyFirstAwaitingPlayer;finishCombatRound(s);if(s.status!=='active')return s;}
+  if(s.alliedTurn)return runAlliedTurn(s);
+  if(s.enemyFirstAwaitingPlayer){delete s.enemyFirstAwaitingPlayer;return beginAlliedTurn(s,true);}
   if(!s.roundTimeCharged){advanceBattleClock(s,COMBAT_ROUND_SECONDS);s.roundTimeCharged=true;}
-  for(const u of s.units.filter(u=>u.side==='player'&&u.routed)){processRout(s,u);if(s.status!=='active'||s.phase==='interrupt')return s;if(s.reactionStack?.length)return runEnemyReactions(s);}
+  for(const u of s.units.filter(u=>u.side==='player'&&!u.militia&&u.routed)){processRout(s,u);if(s.status!=='active'||s.phase==='interrupt')return s;if(s.reactionStack?.length)return runEnemyReactions(s);}
   if(!s.roundTimeCharged)advanceBattleClock(s,COMBAT_ROUND_SECONDS);
-  s.roundTimeCharged=true;s.phase='enemy';rememberContacts(s);
+  s.roundTimeCharged=true;return startEnemyTurn(s);
+}
+function startEnemyTurn(s){
+  s.phase='enemy';rememberContacts(s);
   s.enemyTurn={unitIds:s.units.filter(u=>u.side==='enemy'&&fieldCapable(u)).map(u=>u.id),unitIndex:0,actionsTaken:0,started:false};
   return runEnemyPhase(s);
 }
