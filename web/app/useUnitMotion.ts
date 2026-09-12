@@ -7,6 +7,17 @@ type Motion = Point & {direction:number;frame:number;moving:boolean;elapsedMs?:n
 type Track = {points:Point[];start:number;step:number;direction:number;preservedDirection?:number};
 export type MovementFacingOverride = {battle:any;unitId:string;direction:number};
 type OverrideHolder = {current:MovementFacingOverride|null};
+export function motionActivity(battle:any,positions:Record<string,Motion>){
+  const present=(actor:any)=>!actor.departure&&!actor.fled&&!(actor.hp<=0)&&!actor.unconscious;
+  const moving=(actor:any)=>present(actor)&&Boolean(positions[actor.id]?.moving);
+  const combat=battle.mode!=='exploration';
+  // Patrols and civilian routines continue in the background during exploration.
+  // Orders still wait for squad movement, and for every actor during combat.
+  return {
+    moving:battle.units.some(moving)||(battle.npcs??[]).some(moving),
+    blocking:battle.units.some((actor:any)=>moving(actor)&&(combat||actor.side==='player'))||combat&&(battle.npcs??[]).some(moving),
+  };
+}
 export function takeMovementFacingOverride(holder:OverrideHolder|undefined,battle:any){
   const command=holder?.current;if(holder)holder.current=null;
   return command?.battle===battle?command:null;
@@ -49,5 +60,5 @@ export function useUnitMotion(battle:any,override?:OverrideHolder){
     }setSnapshot({...positions.current});if(tracks.current.size)request=requestAnimationFrame(tick);};
     tick(now);return()=>cancelAnimationFrame(request);
   },[battle]);
-  return {positions:snapshot,moving:Object.values(snapshot).some(p=>p.moving)};
+  return {positions:snapshot,...motionActivity(battle,snapshot)};
 }
