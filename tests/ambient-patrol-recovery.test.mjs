@@ -54,14 +54,25 @@ test('fatigue caps patrol recovery and its reserve without leaving a tired guard
 for(const [name,enemy,destination,cost] of [
  ['ascent',{x:23,y:4,energy:61,patrolOrigin:{x:24,y:4,tacticalLevel:1}},{x:24,y:4,tacticalLevel:1},12],
  ['descent',{x:24,y:4,tacticalLevel:1,energy:57,patrolOrigin:{x:23,y:4,tacticalLevel:0}},{x:23,y:4,tacticalLevel:0},8],
+ ['fatigue-capped ascent',{x:23,y:4,energy:14,fatigue:85,patrolOrigin:{x:24,y:4,tacticalLevel:1}},{x:24,y:4,tacticalLevel:1},12],
 ])test(`patrol ${name} waits for its paid climb to leave enough energy in reserve`,()=>{
  const b=field(enemy,{upperSurfaces:roof(),climbLinks:[{id:'access',kind:'climb',from:{x:23,y:4,tacticalLevel:0},to:{x:24,y:4,tacticalLevel:1}}]}),resting=tick(b);
- assert.deepEqual(physical(guard(resting)),physical(guard(b)));assert.equal(guard(resting).energy,enemy.energy+10);
+ const recovered=Math.min(maximumEnergy(guard(b)),enemy.energy+10);
+ assert.deepEqual(physical(guard(resting)),physical(guard(b)));assert.equal(guard(resting).energy,recovered);
  // The ordinary patrol waypoint keeps rotating while the guard rests. Let
  // that schedule choose its next climb instead of forcing a destination.
  let moving=resting,ticks=1;while(sameCell(guard(moving),guard(b))&&ticks<5){moving=tick(moving);ticks++;}
- assert.deepEqual(physical(guard(moving)),destination);assert.equal(guard(moving).energy,enemy.energy+10-cost);assert.equal(guard(moving).ap,guard(b).ap);assert.equal(moving.elapsedSeconds,ticks*6);
+ assert.deepEqual(physical(guard(moving)),destination);assert.equal(guard(moving).energy,recovered-cost);assert.equal(guard(moving).ap,guard(b).ap);assert.equal(moving.elapsedSeconds,ticks*6);assert.equal(guard(moving).unconscious,false);
  for(const key of ['kind','linkId','from','path'])assert.equal(guard(moving)[key],undefined);
+});
+
+test('a patrol declines climbs that meet or exceed its full energy capacity without looping or collapsing',()=>{
+ for(const fatigue of [88,90]){
+  const b=field({x:23,y:4,fatigue,energy:100,patrolOrigin:{x:24,y:4,tacticalLevel:1}},{upperSurfaces:roof(),climbLinks:[{id:'access',kind:'climb',from:{x:23,y:4,tacticalLevel:0},to:{x:24,y:4,tacticalLevel:1}}]});
+  assert.ok(maximumEnergy(guard(b))<=12);
+  const rested=actBattle(b,{type:'rest'});assert.equal(rested.lastError,null);assert.equal(rested.mode,'exploration');assert.equal(rested.elapsedSeconds,600);
+  assert.deepEqual(physical(guard(rested)),physical(guard(b)));assert.equal(guard(rested).energy,maximumEnergy(guard(b)));assert.equal(guard(rested).ap,guard(b).ap);assert.equal(guard(rested).unconscious,false);
+ }
 });
 
 test('recovery and resumed patrol ignore an unseen player position and survive a save',()=>{
