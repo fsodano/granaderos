@@ -3,6 +3,7 @@ import SectorInventory from './SectorInventory';
 import {knownCampaignSectorEquipment} from '../../game/sector-inventory.js';
 import {SectorIncomeTable} from './SectorIncome';
 import {activeSquad,operativeInTransit} from '../../game/squads.js';
+import {squadTravelStatus} from '../../game/squad-travel.js';
 import {useState} from 'react';
 import {Landmark,Pickaxe,Users,Shield,Package} from 'lucide-react';
 import geography from '../../game/strategic-geography.json';
@@ -20,9 +21,10 @@ function geometryPath(geometry:any,projection=project):string{
  return lines.map((ring:number[][])=>ring.map(([lon,lat],i)=>{const p=projection(lon,lat);return `${i?'L':'M'}${p.x.toFixed(2)},${p.y.toFixed(2)}`;}).join('')+(geometry.type.includes('Polygon')?'Z':'')).join('');
 }
 const stockCount=(s:any,id:string)=>Object.values(s.depots?.[id]??{}).reduce<number>((n,v)=>n+Number(v),0);
-export default function StrategicMap({state:s,selected,onSelect,dispatch}:{state:any;selected:string;onSelect:(id:string)=>void;dispatch:(action:any)=>void}){
+export default function StrategicMap({state:s,selected,onSelect,dispatch,plotting=false,onHover,previewPath=[],onSquad}:{state:any;selected:string;onSelect:(id:string)=>void;dispatch:(action:any)=>void;plotting?:boolean;onHover?:(id:string)=>void;previewPath?:string[];onSquad?:(id:string)=>void}){
  const [mode,setMode]=useState('cities');
  const [districtId,setDistrictId]=useState('');
+ const [management,setManagement]=useState(false);
  const selectedTiles=mapTilesForSector(selected);
  const district=selectedTiles.find(t=>t.id===districtId)??selectedTiles[0];
  const total=CAMPAIGN_SECTORS.reduce((n,d)=>n+sectorIncome(s,d,isSupplied),0);
@@ -31,7 +33,7 @@ export default function StrategicMap({state:s,selected,onSelect,dispatch}:{state
  const marks=(id:string)=>mode==='resources'?`${sectorIncome(s,CAMPAIGN_SECTORS.find(d=>d.id===id),isSupplied)} $/día`:mode==='squads'?`${s.squads.filter((q:any)=>q.location===id&&!['moving','ready'].includes(q.journey?.status)).reduce((n:number,q:any)=>n+q.members.length,0)} soldados`:mode==='militia'?`${s.sectors[id].militia.reduce((a:number,b:number)=>a+b,0)} milicianos`:mode==='horses'?`${(s.horseState?.horses??[]).filter((h:any)=>!h.returned&&!operativeInTransit(s,h.assignedTo)&&h.location===id).length} monturas`:mode==='items'?`${knownCampaignSectorEquipment(s,id).reduce((n:number,row:any)=>n+row.count,0)} objetos · ${stockCount(s,id)} en depósito`:null;
  return <div className="strategy-chart argentina-chart">
  <div className="atlas-heading"><span>PROVINCIAS UNIDAS · 1812–1817</span><span>TEATRO DE OPERACIONES</span></div>
- <svg className="argentina-atlas" viewBox="0 0 720 690" role="group" aria-label="Mapa geográfico de la campaña en las Provincias Unidas">
+ <svg className="argentina-atlas" data-plotting={plotting} onMouseLeave={()=>onHover?.('')} viewBox="0 0 720 690" role="group" aria-label="Mapa geográfico de la campaña en las Provincias Unidas">
  <defs><clipPath id="atlas-clip"><rect x="36" y="36" width="648" height="588"/></clipPath><pattern id="atlas-grid" width={MAP_TILE_SIZE} height={MAP_TILE_SIZE} x="36" y="36" patternUnits="userSpaceOnUse"><rect width={MAP_TILE_SIZE} height={MAP_TILE_SIZE} fill="none" stroke="#141e16" strokeOpacity=".35" strokeWidth=".8"/></pattern><linearGradient id="atlas-land" x2="1" y2="1"><stop stopColor="#7f7952"/><stop offset=".5" stopColor="#535c3c"/><stop offset="1" stopColor="#9b8d5a"/></linearGradient></defs>
  <rect width="720" height="690" fill="#18211e"/><rect x="36" y="36" width="648" height="588" fill="#25454d"/>
  <g clipPath="url(#atlas-clip)">
@@ -40,19 +42,21 @@ export default function StrategicMap({state:s,selected,onSelect,dispatch}:{state
  {geography.rivers.map((g,i)=><path key={i} d={geometryPath(g)} stroke="#80b1b6" strokeWidth="2.7" fill="none"/>)}
  <rect x="36" y="36" width="648" height="588" fill="url(#atlas-grid)"/>
  <g className="atlas-region-labels"><text x="90" y="350" transform="rotate(-83 90 350)">CORDILLERA DE LOS ANDES</text><text x="297" y="542">PAMPAS</text><text x="362" y="178">GRAN CHACO</text><text x="125" y="451">CUYO</text><text x="550" y="490" transform="rotate(28 550 490)">RÍO DE LA PLATA</text><text x="590" y="573">ATLÁNTICO</text><text x="50" y="550" transform="rotate(-90 50 550)">CHILE</text></g>
- {mode==='squads'&&CAMPAIGN_SECTORS.flatMap(d=>d.neighbors.filter(id=>d.id<id).map(id=>{const p=sectorPosition(d.id)!,q=sectorPosition(id)!;return <path key={`${d.id}-${id}`} d={`M${p.x},${p.y}L${q.x},${q.y}`} stroke="#dfd3a1" strokeWidth="1.4" strokeDasharray="4 5" fill="none"/>;}))}
+ {(mode==='squads'||plotting)&&CAMPAIGN_SECTORS.flatMap(d=>d.neighbors.filter(id=>d.id<id).map(id=>{const p=sectorPosition(d.id)!,q=sectorPosition(id)!;return <path key={`${d.id}-${id}`} d={`M${p.x},${p.y}L${q.x},${q.y}`} stroke="#dfd3a1" strokeWidth="1.4" strokeDasharray="4 5" fill="none"/>;}))}
  {mode==='cities'&&[{id:'san_nicolas',label:'San Lorenzo · 1813',lon:-60.73,lat:-32.75},{id:'tucuman',label:'Posta de Yatasto · 1814',lon:-64.97,lat:-25.68}].map(site=>{const p=project(site.lon,site.lat);return <g key={site.label} role="button" tabIndex={0} aria-label={`${site.label}, seleccionar sector de misión`} onClick={()=>onSelect(site.id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(site.id);}}}><rect className="atlas-hit" x={p.x-10} y={p.y-10} width="20" height="20" fill="transparent"/><circle cx={p.x} cy={p.y} r="3" fill="#e6d194"/><text className="atlas-city" x={p.x+14} y={p.y+4} fill="#e6d194">{site.label}</text></g>;})}
  {CAMPAIGN_SECTORS.map(d=>{
  const ours=s.sectors[d.id].owner==='patriot';
  return <g key={d.id} data-map-sector={d.id}>{mapTilesForSector(d.id).map(tile=>{
  const active=selected===d.id&&district.id===tile.id;
  const choose=()=>{setDistrictId(tile.id);onSelect(d.id);};
- return <g key={tile.id} role="button" tabIndex={0} aria-pressed={active} aria-label={`${MAP_PLACES[d.id as keyof typeof MAP_PLACES].label} · ${tile.name} · ${ours?'patriota':'realista'}`} onClick={choose} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();choose();}}}>
+ return <g key={tile.id} role="button" tabIndex={0} aria-pressed={active} aria-label={`${MAP_PLACES[d.id as keyof typeof MAP_PLACES].label} · ${tile.name} · ${ours?'patriota':'realista'}`} onMouseEnter={()=>onHover?.(d.id)} onFocus={()=>onHover?.(d.id)} onClick={choose} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();choose();}}}>
  <title>{`${tile.name} · ${d.name} · Sector ${d.grid}`}</title>
  <rect className="atlas-district" data-district={tile.id} x={tile.x} y={tile.y} width={MAP_TILE_SIZE} height={MAP_TILE_SIZE} fill={ours?'#7f9e61':'#876448'} fillOpacity={tile.urban?'.85':'.5'} stroke="#1c291b" strokeWidth=".8"/>
  {active&&<rect className="atlas-district-selected" x={tile.x+2} y={tile.y+2} width={MAP_TILE_SIZE-4} height={MAP_TILE_SIZE-4} fill="none" stroke="#fff3ad" strokeWidth="2"/>}
  {!['moving','ready'].includes(activeSquad(s).journey?.status)&&s.location===d.id&&tile.id===mapTilesForSector(d.id)[0].id&&<circle cx={tile.x+MAP_TILE_SIZE/2} cy={tile.y+MAP_TILE_SIZE/2} r="2.5" fill="#fff"/>}
  </g>;})}</g>;})}
+ <g className="atlas-routes" pointerEvents="none">{s.squads.filter((q:any)=>q.journey).map((q:any)=>{const j=squadTravelStatus(q)!;return <polyline key={q.id} data-squad-route={q.id} points={(j.returning?j.path.slice(0,2):j.path).map((id:string)=>{const p=sectorPosition(id)!;return `${p.x},${p.y}`;}).join(' ')} fill="none" stroke={q.id===s.activeSquadId?'#e8ce72':'#9dbbb4'} strokeWidth={q.id===s.activeSquadId?3:2} strokeDasharray="7 4"/>;})}{previewPath.length>1&&<polyline data-route-preview="true" points={previewPath.map(id=>{const p=sectorPosition(id)!;return `${p.x},${p.y}`;}).join(' ')} fill="none" stroke="#fff4a3" strokeWidth="4"/>}</g>
+ {onSquad&&s.squads.filter((q:any)=>q.members.length).map((q:any)=>{const j=squadTravelStatus(q),origin=sectorPosition(q.location)!;const next=j?sectorPosition(j.path[1])!:origin;const fraction=j?j.elapsed/j.legHours:0;const group=s.squads.filter((other:any)=>other.members.length&&other.location===q.location);const offset=group.findIndex((other:any)=>other.id===q.id)*18;const x=origin.x+(next.x-origin.x)*fraction,y=origin.y+(next.y-origin.y)*fraction-13-offset;return <g key={q.id} className="atlas-squad-marker" role="button" tabIndex={0} aria-label={`Seleccionar ${q.name}`} aria-pressed={q.id===s.activeSquadId} onClick={()=>onSquad(q.id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSquad(q.id);}}}><title>{q.name} · {q.members.length} soldados{j?` · ${j.remaining} h`:''}</title><rect x={x-12} y={y-8} width="24" height="16" rx="2" fill="#172a22" stroke={q.id===s.activeSquadId?'#fff4a3':'#aec6b6'} strokeWidth="2"/><text x={x} y={y+4} textAnchor="middle" fill="#fff3c3" fontSize="11">{s.squads.indexOf(q)+1}</text></g>;})}
  <g className="atlas-city-boundaries" pointerEvents="none">{CITIES.map(area=><path key={area.id} data-city-boundary={area.id} d={mapTileOutline(area.sectors.flatMap(id=>mapTilesForSector(id)))} fill="none" stroke="#dacb93" strokeWidth="1.8"/>)}</g>
  <g pointerEvents="none">{CAMPAIGN_SECTORS.map(d=>{
  const geo=MAP_PLACES[d.id as keyof typeof MAP_PLACES],bounds=mapTileBounds(mapTilesForSector(d.id));
@@ -73,8 +77,9 @@ export default function StrategicMap({state:s,selected,onSelect,dispatch}:{state
  {mode==='militia'&&<p className="atlas-help">Seleccioná una localidad. Usá «Milicias» en las órdenes del sector para elegir instructor y entrenar defensores.</p>}
  {mode==='items'&&<SectorInventory key={selected} state={s} sectorId={selected} dispatch={dispatch}/>}
  {mode==='items'&&<div className="atlas-stock"><h3>Depósito de {MAP_PLACES[selected as keyof typeof MAP_PLACES].label}</h3>{Object.entries(s.depots?.[selected]??{}).filter(([,n])=>Number(n)>0).map(([id,n])=><p key={id}>{(RESOURCE_NAMES as Record<string,string>)[id]??id}: {Number(n)}</p>)}{!stockCount(s,selected)&&<p>Sin pertrechos almacenados.</p>}</div>}
- <MapManagement mode={mode} state={s} dispatch={dispatch}/>
- <p className="atlas-note">Geografía aproximada. Los sectores, rutas y ocupaciones son una adaptación de campaña; no representan fronteras ni control histórico. Las ciudades se amplían en casillas de barrios; los barrios de un mismo sector comparten control, ingresos y mapa táctico. El recuadro usa el contorno continental actual como referencia.</p>
+ {['squads','horses','items'].includes(mode)&&<button className="line-button atlas-manage-toggle" aria-expanded={management} onClick={()=>setManagement(!management)}>{management?'Cerrar administración':'Administrar esta vista'}</button>}
+ {management&&<MapManagement mode={mode} state={s} dispatch={dispatch}/>}
+ <details className="atlas-note"><summary>Acerca del mapa</summary><p>Geografía aproximada. Los sectores, rutas y ocupaciones son una adaptación de campaña; no representan fronteras ni control histórico. Las ciudades se amplían en casillas de barrios; los barrios de un mismo sector comparten control, ingresos y mapa táctico. El recuadro usa el contorno continental actual como referencia.</p></details>
  </div>;
 }
 function MapManagement({mode,state,dispatch}:{mode:string;state:any;dispatch:(action:any)=>void}){return <div className="atlas-management">{mode==='squads'&&<Squads state={state} dispatch={dispatch}/ >}{mode==='horses'&&<><Horses state={state} dispatch={dispatch}/><Logistics state={state} dispatch={dispatch}/></>}{mode==='items'&&<><Armory state={state} dispatch={dispatch}/><Logistics state={state} dispatch={dispatch}/></>}</div>;}
