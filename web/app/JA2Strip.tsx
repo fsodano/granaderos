@@ -6,7 +6,7 @@ import {MILITIA_NAMES} from '../../game/militia.js';
 import {useState} from 'react';
 import JA2Roster from './JA2Roster';
 import JA2Inventory, {RadarCluster} from './JA2Inventory';
-import {orderDescriptors, orderAction, aimOptions, stanceLabel, targetingHelp, equipmentSlots, shotLocationOptions, turnModel, unitCanAct, facingLabel, heardNoiseModel, equippedItemHelp} from '../../game/ja2-hud.js';
+import {orderDescriptors, orderAction, stanceLabel, targetingHelp, equipmentSlots, turnModel, unitCanAct, facingLabel, heardNoiseModel, equippedItemHelp} from '../../game/ja2-hud.js';
 import {canSee, actionPointBudget, AP_CARRY_LIMIT, ARTILLERY} from '../../game/tactical.js';
 import {Footprints, RotateCcw, Shield, Package, Eye} from 'lucide-react';
 
@@ -43,8 +43,6 @@ export default function JA2Strip({battle, selected, unit, players, missionAllies
   const descriptors = unit ? orderDescriptors(battle, unit, {busy, aim, cannonId, target}) : [];
   const gridDefs = descriptors.filter((d: any) => !GRID_EXCLUDE.has(d.id) && (d.id !== 'reprime' || unit?.jammed) && (d.id !== 'reload' || !unit?.jammed) && (!['reload', 'reprime', 'overwatch'].includes(d.id) || firearm));
   const budget = unit ? actionPointBudget(battle, unit) : null;
-  const aimLevels = aimOptions(battle, unit, {busy});
-  const shotLocations = shotLocationOptions(battle, unit, {busy, hitLocation});
   const turn = turnModel(battle);
   const heardNoise = heardNoiseModel(battle, unit);
   if (inventoryId) {
@@ -73,10 +71,7 @@ export default function JA2Strip({battle, selected, unit, players, missionAllies
           {equipmentSlots(battle, unit, {busy}).map((slot: any) => <button key={slot.slot} aria-pressed={slot.active} disabled={slot.active || slot.disabled} title={`Equipar ${slot.label} · ${slot.pa} PA`} onClick={() => { onOrder(slot.action); onMode('move'); }}>{slot.label}</button>)}
         </div>}
         <p className="ja2-equipped-help">{equippedItemHelp(battle, unit, {target, mode, aim})}</p>
-        {firearm && unit && <div className="ja2-shot-controls">
-          <span aria-label="Puntería"><small>Apuntar</small>{aimLevels.map((option: any) => <button key={option.level} aria-label={`${option.level === 0 ? 'Sin apuntar' : `Puntería ${option.level}`}: ${option.pa} PA en total`} title={`${option.pa} PA en total`} disabled={option.disabled} aria-pressed={aim === option.level} onClick={() => onSetAim(option.level)}>{option.level}</button>)}</span>
-          <span className="ja2-shot-locations" role="group" aria-label="Zona de tiro"><small>Zona</small>{shotLocations.map((location: any) => <button key={location.id} disabled={location.disabled} aria-label={`Apuntar a ${location.label.toLowerCase()}`} aria-pressed={location.active} onClick={() => onHitLocationChange(location.id)}>{location.label}</button>)}</span>
-        </div>}
+        {firearm && unit && <p className="ja2-equipped-help">Botón derecho: apuntar y aumentar puntería. Clic izquierdo: disparar. La mira muestra la zona y los PA. Esc: cancelar.</p>}
         <div className="ja2-order-grid">
           {gridDefs.map((d: any) => {
             const Icon = GRID_ICONS[d.id];

@@ -1,4 +1,6 @@
 'use client';
+import {aimedBodyPart,targetHitFrame} from '../../game/aim-cursor.js';
+import {canChooseShotLocation} from '../../game/targeted-combat.js';
 import {tacticalGridLabel} from '../../game/tactical-grid.js';
 import {NPC_ACTIVITY_LABELS} from '../../game/npc-ai.js';
 import {propBlocksAt} from '../../game/props.js';
@@ -43,8 +45,10 @@ export default function TacticalScene({state:s,selected,unit:u,players,units,pos
   const mounted=v.mounted&&!collapsed;
   const direction=collapsed||moving.moving?moving.direction:Number.isInteger(v.facing)?(v.facing+1)%8:poses[v.id]&&poses[v.id]!=='idle'?(directions[v.id]??moving.direction):moving.direction;
   const selectedUnit=v.id===selected,top=p.y-(collapsed||posture==='prone'?24:mounted?72:49);
+  const frame=targetHitFrame(v,p);
+  const pointerTarget=(event:any)=>{const bounds=event.currentTarget.getBoundingClientRect();return {...v,aimLocation:aimedBodyPart(v,bounds.height?(event.clientY-bounds.top)/bounds.height:.5)};};
   return <g data-unit-id={v.id} data-npc-activity={npc?v.ai?.activity:undefined} data-moving={!collapsed&&moving.moving} data-direction={direction} data-posture={posture} opacity={v.hp<=0?.7:1}>
-   <ellipse data-person-hit-target="true" cx={p.x} cy={p.y-18} rx={mounted?24:14} ry="25" fill="transparent" pointerEvents="all" role="button" tabIndex={0} aria-label={npc?`Hablar con ${v.name}${v.ai?.activity?", "+(NPC_ACTIVITY_LABELS as any)[v.ai.activity]:""}`:`${v.name} · ${v.hp<=0?'muerto':v.unconscious?'inconsciente':Math.ceil(v.hp)+' salud'}`} onMouseEnter={()=>onHover(v)} onMouseLeave={()=>onHover(null)} onFocus={()=>onHover(v)} onBlur={()=>onHover(null)} onClick={()=>npc?onTalk(v):onTile(v)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();npc?onTalk(v):onTile(v);}}}/>
+   <rect data-person-hit-target="true" {...frame} fill="transparent" pointerEvents="all" role="button" tabIndex={0} aria-label={npc?`Hablar con ${v.name}${v.ai?.activity?", "+(NPC_ACTIVITY_LABELS as any)[v.ai.activity]:""}`:`${v.name} · ${v.hp<=0?'muerto':v.unconscious?'inconsciente':Math.ceil(v.hp)+' salud'}`} onMouseEnter={event=>onHover(pointerTarget(event))} onMouseMove={event=>onHover(pointerTarget(event))} onMouseLeave={()=>onHover(null)} onFocus={()=>onHover({...v,aimLocation:canChooseShotLocation(v)?hitLocation:'torso'})} onBlur={()=>onHover(null)} onClick={event=>npc?onTalk(v):onTile(pointerTarget(event))} onKeyDown={e=>{if(mode==='fire'&&['ArrowUp','ArrowDown'].includes(e.key)&&canChooseShotLocation(v)){e.preventDefault();const parts=['head','torso','legs'],index=Math.max(0,parts.indexOf(hitLocation));onHover({...v,aimLocation:parts[Math.max(0,Math.min(2,index+(e.key==='ArrowUp'?-1:1)))]});return;}if(e.key==='Enter'||e.key===' '){e.preventDefault();npc?onTalk(v):onTile({...v,aimLocation:canChooseShotLocation(v)?hitLocation:'torso'});}}}/>
    <ellipse cx={p.x+5} cy={p.y+2} rx={mounted?21:11} ry="4" fill="#13150f" opacity=".5" pointerEvents="none"/>
    {!npc&&v.side==='enemy'&&v.hp>0&&!v.surrendered&&<g aria-label="Enemigo" pointerEvents="none"><path d={`M${p.x-20},${top-4}l4,4l-4,4l-4,-4z`} fill="#bf644b" stroke="#fff0d0" strokeWidth="1.2"/></g>}
    {selectedUnit&&<ellipse cx={p.x} cy={p.y} rx="15" ry="6" fill="none" stroke="#dacb86" strokeWidth="1" pointerEvents="none"/>}

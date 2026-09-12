@@ -1,7 +1,10 @@
+import {isUnconscious} from './tactical-condition.js';
 // Classic JA2 offers torso/head/leg shots with range-sensitive accuracy costs
 // (Patusco's guide 1.3, p. 47). Damage, breath, and balance values below are
 // explicit Granaderos tuning for period weapons, not claimed JA2 formulas.
 export const HIT_LOCATIONS = Object.freeze(['torso', 'head', 'legs']);
+export const canChooseShotLocation=target=>Boolean(target&&!(target.hp<=0)&&!isUnconscious(target)&&!target.unconscious&&!target.knockedDown&&target.stance!=='prone');
+export const shotLocationsFor=target=>canChooseShotLocation(target)?HIT_LOCATIONS:['torso'];
 
 const profiles = Object.freeze({
   torso: Object.freeze({id: 'torso', label: 'Torso', chancePenaltyPerTile: 0, damageMultiplier: 1, breathMultiplier: .5, balanceMultiplier: 0}),

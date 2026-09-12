@@ -4,9 +4,9 @@ export const TACTICAL_KEYS=[
  ['Mayús+clic','Agregar o quitar un aliado del grupo durante exploración'],
  ['Ctrl+clic / Ctrl+Enter sobre un enemigo','Con manos libres: intentar quitar el arma; consume los PA restantes'],
  ['Alt+clic en suelo libre','Mover solo al seleccionado sin girar; caminar, agachado o cuerpo a tierra'],
- ['G / F / A','Uso contextual / disparo deliberado a enemigo o casilla, o usar objeto / equipar arma blanca'],['R / S / C / P','Correr / caminar / agacharse / cuerpo a tierra'],
- ['RePág / AvPág','Subir / bajar postura'],['Z','Activar o desactivar sigilo sin cambiar de postura'],['L / botón derecho','Mirar hacia una casilla'],
- ['Alt+R','Recargar o cebar el arma'],['W','Cambiar entre arma, arma blanca, vendas, herramientas, cada pertrecho y manos libres'],
+ ['G / F / A','Uso contextual / disparo deliberado a enemigo o casilla, o usar objeto / equipar arma blanca'],['Mayús+R / S / C / P','Correr / caminar / agacharse / cuerpo a tierra'],
+ ['RePág / AvPág','Subir / bajar postura'],['Z','Activar o desactivar sigilo sin cambiar de postura'],['L','Mirar hacia una casilla'],['Botón derecho / clic izquierdo','Entrar en puntería y aumentarla / disparar'],['↑ / ↓ sobre un objetivo con foco','Elegir cabeza, torso o piernas; cuerpo a tierra usa una sola zona'],
+ ['R','Recargar o cebar el arma'],['W','Cambiar entre arma, arma blanca, vendas, herramientas, cada pertrecho y manos libres'],
  ['B','Guardia con bayoneta ya fijada'],['T','Montar o desmontar'],
  ['V','Mostrar u ocultar campo de visión'],['I / Q','Cursor para recoger equipo / equipar vendas'],
  ['[ / ]','Reducir / aumentar puntería adicional'],['+ / −','Acercar / alejar'],['H / ?','Abrir o cerrar esta ayuda'],
@@ -21,7 +21,8 @@ export function tacticalShortcut(event,{editing=false,dialog=false,nativeControl
  const key=event.key.toLowerCase();
  if(nativeControl&&[' ','enter'].includes(key))return null;
  if(event.altKey)return key==='r'&&!event.shiftKey?'reload':null;
+ if(event.shiftKey&&key==='r')return 'run';
  if(event.shiftKey&&!['?','+','{','}'].includes(key))return null;
  if(/^[1-6]$/.test(key))return `select:${Number(key)-1}`;
- return ({' ':'next',m:'map',d:'turn',g:'move',f:'fire',a:'melee',r:'run',s:'walk',c:'crouch',p:'prone',z:'stealth',l:'look',pageup:'stance-up',pagedown:'stance-down',w:'weapon',b:'brace',o:'overwatch',t:'mount',v:'sight',i:'loot',q:'heal','[':'aim-down',']':'aim-up','{':'aim-down','}':'aim-up','+':'zoom-in','=':'zoom-in','-':'zoom-out',h:'help','?':'help',escape:'cancel'})[key]??null;
+ return ({' ':'next',m:'map',d:'turn',g:'move',f:'fire',a:'melee',r:'reload',s:'walk',c:'crouch',p:'prone',z:'stealth',l:'look',pageup:'stance-up',pagedown:'stance-down',w:'weapon',b:'brace',o:'overwatch',t:'mount',v:'sight',i:'loot',q:'heal','[':'aim-down',']':'aim-up','{':'aim-down','}':'aim-up','+':'zoom-in','=':'zoom-in','-':'zoom-out',h:'help','?':'help',escape:'cancel'})[key]??null;
 }

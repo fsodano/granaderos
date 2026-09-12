@@ -49,7 +49,7 @@ test('a fitted close target shows thrust cost without a shot percentage until ex
   u.weaponFittings.bayonet.condition=0;assert.match(scene(s,{},options),/>\d+%<\/text>/);
 });
 
-test('figure activation uses its fixed person ellipse instead of the clipped atlas bounding box',()=>{
+test('figure activation uses its fixed person frame instead of the clipped atlas bounding box',()=>{
   const s=fixture(),u=s.units[0],enemy=s.units[1],orders=[];
   Object.assign(u,{x:15,y:8});Object.assign(enemy,{x:17,y:8,name:'Marinero'});
   const descendants=node=>!node||typeof node!=='object'?[]:[node,...(Array.isArray(node)?node:Array.isArray(node.props?.children)?node.props.children:[node.props?.children]).flatMap(child=>descendants(child))];
@@ -59,20 +59,20 @@ test('figure activation uses its fixed person ellipse instead of the clipped atl
     const nodes=descendants(element),figure=nodes.find(node=>node.props?.['data-unit-id']===enemy.id);
     const button=descendants(figure).find(node=>node.props?.role==='button');
     assert.equal(figure.props.role,undefined);assert.equal(figure.props.onClick,undefined);
-    assert.equal(button.type,'ellipse');assert.equal(button.props['data-person-hit-target'],'true');
+    assert.equal(button.type,'rect');assert.equal(button.props['data-person-hit-target'],'true');
     assert.equal(button.props.children,undefined,'the click bounds contain no sprite atlas or animated frame');
-    assert.equal(button.props.cx,project(17,8).x);assert.equal(button.props.cy,project(17,8).y-18);
-    assert.equal(button.props.rx,14);assert.equal(button.props.ry,'25');
+    assert.equal(button.props.x,project(17,8).x-14);assert.equal(button.props.y,project(17,8).y-49);
+    assert.equal(button.props.width,28);assert.equal(button.props.height,49);
     assert.match(button.props['aria-label'],/^Marinero · \d+ salud$/);
-    button.props.onClick();let prevented=false;button.props.onKeyDown({key:'Enter',preventDefault:()=>{prevented=true;}});assert.equal(prevented,true);
+    button.props.onClick({clientY:25,currentTarget:{getBoundingClientRect:()=>({top:0,height:50})}});let prevented=false;button.props.onKeyDown({key:'Enter',preventDefault:()=>{prevented=true;}});assert.equal(prevented,true);
   }
-  assert.equal(orders.length,16);assert.ok(orders.every(target=>target===enemy));
+  assert.equal(orders.length,16);assert.ok(orders.every(target=>target.id===enemy.id&&target.aimLocation==='torso'));
 });
 
-test('main controls expose facing and independent stealth with item-based shot locations',()=>{
+test('main controls expose facing and stealth while aim and body targeting stay on the battlefield',()=>{
   const s=fixture();let markup=strip(s);
   assert.match(markup,/aria-label="Mirar"/);assert.match(markup,/aria-label="Sigilo" aria-pressed="false"/);
-  assert.match(markup,/aria-label="Zona de tiro"/);assert.match(markup,/Apuntar a cabeza/);
+  assert.doesNotMatch(markup,/aria-label="Zona de tiro"|Apuntar a cabeza|aria-label="Puntería"/);assert.match(markup,/Botón derecho: apuntar/);
   for(const label of ['Cargar','Atacar','Vendar','Cubrir'])assert.ok(!markup.includes(`aria-label="${label}"`));
   s.units[0].activeSlot='medical';s.units[0].stealthMode=true;markup=strip(s);
   assert.ok(!markup.includes('aria-label="Zona de tiro"'));assert.match(markup,/aria-label="Sigilo" aria-pressed="true"/);

@@ -3,9 +3,12 @@ import assert from 'node:assert/strict';
 import {tacticalShortcut,TACTICAL_KEYS,pointerMovementIntent} from '../game/hotkeys.js';
 const key=(key,extra={})=>({key,...extra});
 test('adapted actions distinguish reload from running and preserve browser chords',()=>{
- assert.equal(tacticalShortcut(key('r')),'run');assert.equal(tacticalShortcut(key('r',{altKey:true})),'reload');
+ assert.equal(tacticalShortcut(key('r')),'reload');assert.equal(tacticalShortcut(key('R',{shiftKey:true})),'run');assert.equal(tacticalShortcut(key('r',{altKey:true})),'reload');
  for(const extra of [{ctrlKey:true},{metaKey:true},{altKey:true,shiftKey:true}])assert.equal(tacticalShortcut(key('r',extra)),null);
  assert.equal(tacticalShortcut(key('m',{altKey:true})),null);
+ assert.match(TACTICAL_KEYS.find(([keys])=>keys==='R')[1],/Recargar/);
+ assert.equal(tacticalShortcut(key('r'),{editing:true}),null);
+ assert.equal(tacticalShortcut(key('r'),{dialog:true}),null);
 });
 test('editing, open dialogs, repeats and IME composition cannot issue tactical actions',()=>{
  for(const state of [{editing:true},{dialog:true}])assert.equal(tacticalShortcut(key('d'),state),null);

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,endTurn,shotChance,firearmFlightPreview,teamCanSee} from '../game/tactical.js';
+import {shotLocationsFor} from '../game/targeted-combat.js';
 import {projectileFlight} from '../game/projectile-cover.js';
 import {targetPreview} from '../game/ja2-hud.js';
 import {chooseEnemyAction} from '../game/tactical-ai.js';
@@ -44,7 +45,7 @@ test('an unconscious body can intercept a low shot and retains shared wound effe
 });
 
 test('selected body regions remain the actual hit region on an unobstructed target',()=>{
- for(const stance of ['standing','crouched','prone'])for(const hitLocation of ['head','torso','legs']){
+ for(const stance of ['standing','crouched','prone'])for(const hitLocation of shotLocationsFor({stance})){
   const s=field();Object.assign(s.units[1],{stance,movementMode:{standing:'walk',crouched:'crouch',prone:'prone'}[stance]});
   const n=fire(s,{hitLocation});assert.equal(n.units[1].lastHitLocation,hitLocation);assert.ok(n.units[1].hp<100);
  }
@@ -94,7 +95,7 @@ test('miss collisions survive save replay and a rejected shot has no random or p
 });
 
 test('close shots at critical or unconscious targets use their fallen body height',()=>{
- for(const patch of [{hp:10},{hp:50,unconscious:true,energy:0},{hp:50,knockedDown:true}])for(const hitLocation of ['head','torso','legs']){
+ for(const patch of [{hp:10},{hp:50,unconscious:true,energy:0},{hp:50,knockedDown:true}])for(const hitLocation of ['torso']){
   const s=field();Object.assign(s.units[1],{x:2,...patch});const n=fire(s,{hitLocation});
   assert.ok(n.units[1].hp<s.units[1].hp);assert.equal(n.units[1].lastHitLocation,hitLocation);
  }

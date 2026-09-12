@@ -1,0 +1,10 @@
+.tactical-field.aiming,.tactical-field.aiming *{cursor:none!important}
+.aim-cursor{color:#e1d692;fill:none;stroke:currentColor;stroke-width:1.5;filter:drop-shadow(0 1px 1px #10180e)}
+.aim-cursor.invalid{color:#ed9d7c}
+.aim-cursor .aim-outer{stroke-width:1;opacity:.8}
+.aim-cursor .aim-step{stroke-width:3;opacity:.22}
+.aim-cursor .aim-step.filled{opacity:1}
+.aim-cursor text{fill:currentColor;stroke:#11190f;stroke-width:3;paint-order:stroke;font:600 11px ui-monospace,monospace}
+.aim-cursor .aim-detail{font-size:10px}
+
+.tactical-field [data-person-hit-target]:focus:not(:focus-visible){outline:none}

@@ -1,3 +1,4 @@
+import {canChooseShotLocation} from './targeted-combat.js';
 import {tacticalGridLabel} from './tactical-grid.js';
 // Pure HUD model for the tactical battle inspector and squad strip.
 // Read-only descriptors plus action-object constructors; no game rules.
@@ -109,7 +110,7 @@ export function turnModel(state) {
 
 export function shotLocationOptions(state, unit, ctx = {}) {
   if (!unit || !hasFirearm(unit)) return [];
-  return HIT_LOCATIONS.map(([id, label]) => ({id, label, active: id === hitLocationFor(ctx.hitLocation), disabled: !unitCanAct(state, unit) || Boolean(ctx.busy)}));
+  return HIT_LOCATIONS.filter(([id])=>!ctx.target||canChooseShotLocation(ctx.target)||id==='torso').map(([id, label]) => ({id, label, active: id === hitLocationFor(ctx.hitLocation), disabled: !unitCanAct(state, unit) || Boolean(ctx.busy)}));
 }
 
 export function heardNoiseModel(state, unit) {
@@ -144,7 +145,7 @@ export function targetingHelp(mode, unit, ctx = {}) {
   if ((ctx.itemIntent==='steal'&&['move','useItem'].includes(mode))||mode==='loot'&&unit?.activeSlot==='unarmed') return 'Manos libres: seleccioná un enemigo contiguo para quitarle el arma. Requiere 28 PA como mínimo y consume todos los restantes. Los cuerpos se registran.';
   if (unit?.activeSlot==='unarmed'&&['move','useItem'].includes(mode)) return 'Seleccioná un enemigo para acercarte y golpear. Ctrl+clic o Recoger equipo: intentar quitar el arma a un enemigo contiguo.';
   if (mode === 'fire') return 'Disparo deliberado: seleccioná un enemigo o una casilla. Una casilla no confirma un objetivo; el tiro puede herir aliados. G o Esc vuelve al uso contextual.';
-  if (mode === 'look') return 'Seleccioná hacia dónde mirar. El giro consume PA. Botón derecho: mirar sin cambiar de cursor.';
+  if (mode === 'look') return 'Seleccioná hacia dónde mirar. El giro consume PA. L: mirar. Botón derecho: apuntar con el equipo en mano.';
   if (mode === 'move' && ctx.movementIntent === 'preserveFacing') return 'Alt: mové solo al seleccionado sin girar. Cancela el grupo. Caminar, agachado o cuerpo a tierra; no correr ni montar.';
   if (unit?.activeSlot === 'supply' && ['move', 'useItem'].includes(mode)) return ({torches: 'Seleccioná una casilla para arrojar la antorcha. Para avanzar, cambiá el objeto en mano.', boleadoras: 'Seleccioná un enemigo visible para lanzar las boleadoras.', rations: 'Seleccionate a vos para comer la ración. Recupera fuerzas; no detiene hemorragias.'})[unit.activeSupply] || 'Equipá un pertrecho disponible.';
   if (unit?.activeSlot === 'tool' && ['move', 'useItem'].includes(mode)) return 'Seleccioná una puerta o un cofre para usar la herramienta. Las casillas libres permiten avanzar.';
@@ -231,7 +232,8 @@ export function targetPreview(state, unit, point, ctx = {}) {
       coverNote=path.blocked?'La cobertura detiene este tiro. Disparar consume la carga.':path.damageFactor<1?`La cobertura reduce el daño un ${Math.round((1-path.damageFactor)*100)}%.`:undefined;
       const flight=firearmFlightPreview(state,unit,target,hitLocationFor(ctx.hitLocation));
       if(flight.victimId&&flight.victimId!==target.id)coverNote='Un combatiente está en la trayectoria. Disparar puede herirlo y consume la carga.';
-      if (unit.jammed) reason = 'Cebá el arma antes de disparar.';
+      if (!canChooseShotLocation(target)&&hitLocationFor(ctx.hitLocation)!=='torso') reason = 'Un objetivo cuerpo a tierra tiene una sola zona de tiro.';
+      else if (unit.jammed) reason = 'Cebá el arma antes de disparar.';
       else if (!(unit.loaded > 0)) reason = 'Recargá el arma.';
       else if (!hasLineOfSight(state,unit,target)) reason = 'No hay línea de tiro.';
     }
