@@ -7,6 +7,7 @@ import {createElement as h} from '../web/node_modules/react/index.js';
 import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
 import {createBattle,weaponFor,hasFirearm,actionCosts,actBattle,equipLootPreview} from '../game/tactical.js';
 const {default:JA2Strip}=await import('../web/app/JA2Strip.tsx');
+const {JA2OrdersPanel}=await import('../web/app/JA2OrdersMenu.tsx');
 const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
 const {default:JA2EnvironmentPanel}=await import('../web/app/JA2EnvironmentPanel.tsx');
 const {default:JA2GroupMovePanel}=await import('../web/app/JA2GroupMovePanel.tsx');
@@ -17,10 +18,12 @@ const {motionDirection,takeMovementFacingOverride}=await import('../web/app/useU
 const project=(x,y)=>({x:300+(x-y)*26,y:65+(x+y)*14});
 const fixture=()=>createBattle([{id:'scout',name:'Vigía',x:1,y:1}],{width:24,height:8,enemies:[{id:'far',name:'Enemigo oculto',x:22,y:6}],seed:45});
 const noop=()=>{};
-function strip(s,inventory=false,extra={}){
+function stripProps(s,inventory=false,extra={}){
   const unit=s.units[0];
-  return render(h(JA2Strip,{battle:s,selected:unit.id,unit,players:[unit],missionAllies:[],localMilitia:[],mode:'move',showSight:false,aim:0,hitLocation:'torso',costs:actionCosts(s,unit),weapon:weaponFor(unit),firearm:hasFirearm(unit),cannonId:'',shotType:'solid',gunCosts:null,artillery:[],busy:false,inventoryId:inventory?unit.id:null,vw:1000,vh:700,cameraRect:{x:0,y:0,width:500,height:300},project,cameraX:0,cameraY:0,zoom:1,onSelect:noop,onOrder:noop,onMode:noop,onToggleSight:noop,onEndTurn:noop,onRetreat:noop,onOpenInventory:noop,onCloseInventory:noop,onCameraCenter:noop,onCameraPan:noop,onZoom:noop,onCannonChange:noop,onShotTypeChange:noop,onSetAim:noop,onHitLocationChange:noop,...extra}));
+  return {battle:s,selected:unit.id,unit,players:[unit],missionAllies:[],localMilitia:[],mode:'move',showSight:false,aim:0,hitLocation:'torso',costs:actionCosts(s,unit),weapon:weaponFor(unit),firearm:hasFirearm(unit),cannonId:'',shotType:'solid',gunCosts:null,artillery:[],busy:false,inventoryId:inventory?unit.id:null,vw:1000,vh:700,cameraRect:{x:0,y:0,width:500,height:300},project,cameraX:0,cameraY:0,zoom:1,onSelect:noop,onOrder:noop,onMode:noop,onToggleSight:noop,onEndTurn:noop,onRetreat:noop,onOpenInventory:noop,onCloseInventory:noop,onCameraCenter:noop,onCameraPan:noop,onZoom:noop,onCannonChange:noop,onShotTypeChange:noop,onSetAim:noop,onHitLocationChange:noop,...extra};
 }
+const strip=(s,inventory=false,extra={})=>render(h(JA2Strip,stripProps(s,inventory,extra)));
+const orders=(s,extra={})=>render(h(JA2OrdersPanel,stripProps(s,false,extra)));
 function scene(s,positions={},extra={}){
   return render(h('svg',null,h(TacticalScene,{state:s,selected:'scout',unit:s.units[0],players:[s.units[0]],units:[s.units[0]],positions,poses:{},directions:{},hover:null,mode:'move',aim:0,reachable:[],showSight:false,sight:new Set(),revealed:new Set(),project,onTile:noop,onHover:noop,onTalk:noop,onCannon:noop,cannonId:'',...extra})));
 }
@@ -45,9 +48,9 @@ test('close-combat mode shows thrust cost without a shot percentage until explic
   const options={units:s.units,hover:enemy};
   assert.ok(!/>\d+%<\/text>/.test(scene(s,{},options)));
   assert.match(scene(s,{}, {...options,mode:'fire'}),/>\d+%<\/text>/);
-  assert.match(strip(s,false,{target:enemy}),/Estocada de bayoneta · 16 PA/);
-  assert.match(strip(s,false,{target:enemy,mode:'fire'}),/Disparo deliberado/);
-  u.weaponFittings.bayonet.condition=0;assert.ok(!/>\d+%<\/text>/.test(scene(s,{},options)));assert.match(strip(s,false,{target:enemy}),/Culatazo|acercarse/);
+  assert.match(orders(s,{target:enemy}),/Estocada de bayoneta · 16 PA/);
+  assert.match(orders(s,{target:enemy,mode:'fire'}),/Disparo deliberado/);
+  u.weaponFittings.bayonet.condition=0;assert.ok(!/>\d+%<\/text>/.test(scene(s,{},options)));assert.match(orders(s,{target:enemy}),/Culatazo|acercarse/);
 });
 
 test('figure activation uses its fixed person frame instead of the clipped atlas bounding box',()=>{
@@ -71,20 +74,20 @@ test('figure activation uses its fixed person frame instead of the clipped atlas
 });
 
 test('main controls expose facing and stealth while aim and body targeting stay on the battlefield',()=>{
-  const s=fixture();let markup=strip(s);
+  const s=fixture();let markup=orders(s);
   assert.match(markup,/aria-label="Mirar"/);assert.match(markup,/aria-label="Sigilo" aria-pressed="false"/);
   assert.doesNotMatch(markup,/aria-label="Zona de tiro"|Apuntar a cabeza|aria-label="Puntería"/);assert.match(markup,/Botón derecho: apuntar/);
   for(const label of ['Cargar','Atacar','Vendar','Cubrir'])assert.ok(!markup.includes(`aria-label="${label}"`));
-  s.units[0].activeSlot='medical';s.units[0].stealthMode=true;markup=strip(s);
+  s.units[0].activeSlot='medical';s.units[0].stealthMode=true;markup=orders(s);
   assert.ok(!markup.includes('aria-label="Zona de tiro"'));assert.match(markup,/aria-label="Sigilo" aria-pressed="true"/);
   assert.match(markup,/Detiene la hemorragia; no recupera salud/);
 });
 
 test('automatic exploration is explained without a separate return button',()=>{
-  const s=fixture();assert.doesNotMatch(strip(s),/Volver a explorar/);assert.match(strip(s),/automáticamente tras dos turnos completos/);
+  const s=fixture();assert.doesNotMatch(strip(s),/Volver a explorar/);assert.match(orders(s),/automáticamente tras dos turnos completos/);
   s.units[1].lastKnownEnemy={x:1,y:1,turn:s.turn};assert.ok(!strip(s).includes('Volver a explorar'));
   delete s.units[1].lastKnownEnemy;s.phase='interrupt';s.interrupt={side:'player',unitIds:['scout'],enemyId:'far'};
-  const markup=strip(s);assert.match(markup,/Continuar turno enemigo/);assert.match(markup,/Interrupción: usá los PA restantes/);assert.ok(!markup.includes('Volver a explorar'));
+  const markup=orders(s);assert.match(markup,/Continuar turno enemigo/);assert.match(markup,/Interrupción: usá los PA restantes/);assert.ok(!markup.includes('Volver a explorar'));
 });
 
 test('idle sprite directions follow all eight grid facings and preserve active movement',()=>{
@@ -161,10 +164,10 @@ test('supplies are equipped from inventory and expose one held-item control with
   assert.match(inventory,/aria-label="Equipar pertrecho"/);
   for(const key of ['torches','boleadoras','rations'])assert.ok(inventory.includes(`value="${key}"`));
   for(const label of ['Arrojar antorcha','Lanzar boleadoras','Comer tasajo'])assert.ok(!new RegExp(`<button[^>]*>[^<]*${label}`).test(inventory),label);
-  const main=strip(s);assert.match(main,/Antorcha · 10 PA/);assert.match(main,/Para avanzar, cambiá el objeto en mano/);assert.ok(!main.includes('aria-label="Zona de tiro"'));
+  const main=orders(s);assert.match(main,/Antorcha · 10 PA/);assert.match(main,/Para avanzar, cambiá el objeto en mano/);assert.ok(!main.includes('aria-label="Zona de tiro"'));
   assert.ok(!main.includes('aria-label="Equipar pertrecho"'));
   Object.assign(u,{activeSupply:'rations',energy:45});
-  const ration=strip(s);assert.match(ration,/Ración de tasajo · 10 PA/);assert.match(ration,/Seleccionate a vos para comer/);
+  const ration=orders(s);assert.match(ration,/Ración de tasajo · 10 PA/);assert.match(ration,/Seleccionate a vos para comer/);
   u.torches=0;u.boleadoras=0;u.rations=0;u.activeSlot='unarmed';delete u.activeSupply;
   assert.ok(!strip(s,true).includes('aria-label="Equipar pertrecho"'));
 });
