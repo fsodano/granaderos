@@ -5,7 +5,7 @@ export function hasAuthoredDialogue(npc){
 }
 export function dialogueOptions(npc,quest=null){
  if(!hasAuthoredDialogue(npc))return [];
- return [...(npc.mission?[['mission','Conversar sobre la misión']]:[['friendly','Saludar'],['direct',npc.operativeId!==undefined?'Preguntar por sus condiciones':'Preguntar por la localidad']]),
+ return [['repeat','Repetir respuesta'],...(npc.mission?[['mission','Conversar sobre la misión']]:[['friendly','Saludar'],['direct',npc.operativeId!==undefined?'Preguntar por sus condiciones':'Preguntar por la localidad']]),
  ...(quest&&quest.status!=='completed'?[['quest',quest.status==='offered'?'Entregar pertrechos':'Consultar encargo']]:[]),
  ...(npc.operativeId!==undefined?[['recruit','Proponer incorporación']]:[])];
 }
