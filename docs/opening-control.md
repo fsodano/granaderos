@@ -1,6 +1,6 @@
 # Opening campaign with turning AP
 
-Verified 12 September 2026 against regional terrain and weather checkpoint `be30998`. The legal seed-8 route completes San Nicolás and San Lorenzo through ordinary combat and equipment orders. The longer northern route remains incomplete.
+Verified 12 September 2026 against regional terrain and weather checkpoint `be30998`. The legal seed-8 route completes San Nicolás and San Lorenzo through ordinary combat and equipment orders. The established southern route now continues through actual defeat, rescue, finite recovery and Salta to Yatasto and phase 3; the full campaign remains incomplete.
 
 ## Current equipment preparation
 
@@ -14,7 +14,9 @@ Northern preparation now takes the four carried dressings from the actual living
 
 Paid Córdoba care now explicitly returns the newly hired doctor to reserve after normal hiring fills a vacant squad slot. It heals the surviving patient with fourteen dressings and ends at hour 104. Four paid relief soldiers make an exposed advance into Tucumán's citadel court, kneel and hold fire, while using real first aid on nearby bleeding allies. This deliberately poor tactic tests defeat and captivity. Enemy actions kill 131, 121 and 126; 124 is captured alive at one HP. The result replays deterministically and preserves actual equipment and deaths.
 
-Rescue preparation hires and equips real reserves and brings two squads to Tucumán at hour 140. A veteran leads the support squad, field soldiers precede their medic, and normal preparation loads the veteran's recovered rifle. This force wins, releases 124 with his property and wound intact, and loses 122. A living courier buys twelve real dressings for 360 pesos; finite field supplies and paid care restore 124 by hour 173. Salta still needs a plan for the actual wounded, fallen doctor and equipment sources. Salta and Yatasto remain required and are not claimed complete. Dependent checks explain which earlier result is missing instead of reporting unrelated state errors.
+Rescue preparation hires and equips real reserves and brings two squads to Tucumán at hour 140. A veteran leads the support squad, field soldiers precede their medic, and normal preparation loads the veteran's recovered rifle. This force wins, releases 124 with his property and wound intact, and loses 122. A living courier buys twelve real dressings for 360 pesos; finite field supplies and paid care restore 124 by hour 173.
+
+Twelve further dressings restore the actual critical survivor before the next march. Living medical support and finite recovered rifles equip the joint Salta force. Its victory at hour 204 costs 141 and 111, with all other field survivors uninjured. The final care step therefore spends no dressings. The normal pact payment, travel and dialogue reach Yatasto at hour 216, second 1995, with 2,328 pesos and all fourteen deaths preserved. This established southern scenario still needs integration with a full Retiro-only campaign and the later ending.
 
 ## What failed and what changed
 

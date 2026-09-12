@@ -2,7 +2,7 @@
 
 ## Current regional terrain and weather checkpoint
 
-Checked on 12 September 2026 from `be30998`, with the opening equipment repair at `1706034`. San Nicolás, San Lorenzo and Córdoba each reach a real victory and repeat deterministically. The complete route does not yet pass on this checkpoint.
+Checked on 12 September 2026 from `be30998`, with the opening equipment repair at `1706034` and the subsequent survivor, medical supply and rescue repairs. The established southern route reaches Yatasto and phase 3 through ordinary campaign orders. This still starts with Buenos Aires and Ensenada secured; it does not establish a complete Retiro-only campaign or the ending.
 
 All six original soldiers survive San Nicolás. San Lorenzo leaves 110 and 114 alive; 1000, 115, 123 and 107 remain dead. Northern preparation selects actual living donors instead of requiring dead soldier 123 to transfer items. It collects sixteen finite battlefield dressings and receives four carried dressings from 110 and 114. The paid doctors use three to heal 114. Four paid recruits fill the squad to six; available rifles and outfits are taken through ordinary sector inventory orders.
 
@@ -14,7 +14,13 @@ The captivity check now uses an explicit poor-tactics scenario. The relief patro
 
 The paid rescue force collects real available weapons and arrives in two squads at hour 140. Empty guns without reserve cartridges stay empty during preparation. A veteran now leads the support squad, and the field soldiers precede their medic. Normal equipment preparation loads the veteran's recovered rifle before marching. The rescue wins in five turns and 122 orders; 122 dies, and 141 remains critically wounded. Prisoner 124 is released with his existing wound and property. One real treatment raises him from one to four HP.
 
-The available doctors then select a living courier, 119. He makes both twelve-hour journeys to Córdoba and buys twelve remaining dressings for 360 pesos. Four field dressings are collected within the doctor's actual inventory capacity. Prisoner 124 reaches full health and rests by hour 173. Salta still requires an updated plan for the actual remaining wounded, fallen doctor and available equipment donors. The Salta victory and Yatasto goals remain required and unverified. Later checks skip with their missing prerequisite while the route still fails at the first real blocker. The results below are historical evidence only.
+The available doctors then select a living courier, 119. He makes both twelve-hour journeys to Córdoba and buys twelve remaining dressings for 360 pesos. Four field dressings are collected within the doctor's actual inventory capacity. Prisoner 124 reaches full health and rests by hour 173. The coastal flotilla is still marching then, so the route checks its real arrival before expecting a blockade.
+
+During staging for Salta, twelve real dressings restore the critically wounded 141. Living doctor 112 replaces the fallen 122 in support. New recruits with short guns recover actual reachable rifles; existing rifle holders keep theirs. The two paid squads arrive together at hour 204 and win in four turns and 159 orders. Soldiers 141 and 111 die; all ten survivors are uninjured. Critical-wound recovery is verified before this assault, and the final medical step treats only actual wounds.
+
+Doctor 112 makes the real journey to Yatasto after the normal northern-pact payment. Movement and dialogue finish the mission at hour 216, second 1995, with 2,328 pesos remaining. All fourteen deaths remain permanent. The campaign has reached phase 3 and is not complete. The earlier results below are historical evidence only.
+
+Current verification: all eight named playthrough checks pass from the opening state, with no skips. Every accepted battle repeats deterministically and restores through a full save. Twelve focused reload, equipment and driver checks also pass. These checks verify this reference route; they do not establish overall campaign balance or complete JA2 parity.
 
 ## Earlier building-map checkpoint
 

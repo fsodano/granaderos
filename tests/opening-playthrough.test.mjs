@@ -98,17 +98,19 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   if(!recovered)return subtest.skip('The courier and paid recovery must pass first');
   assert.ok(recovered);const before=structuredClone(recovered),prepared=prepareSaltaAssault(recovered);
   assert.deepEqual(recovered,before);
+  assert.ok(prepared.care.patients.some(id=>before.operativeState[id].hp<15),'the actual rescue left a critical patient to restore before this march');assert.ok(prepared.care.usedDressings>0);
+  for(const id of prepared.care.patients)assert.equal(prepared.campaign.operativeState[id].hp,prepared.campaign.operativeState[id].maxHp);
   const result=fightNorthernSector(prepared.campaign,'salta',{controller:cautiousCombatOrder});
   assertBattleClock(result);
-  assert.equal(result.campaign.hour,228);
+  assert.equal(result.campaign.hour,prepared.departure+12);
   preserveDeaths(recovered,result.campaign);
   for(const unit of result.summary.units.filter(u=>u.side==='player'))assert.equal(result.campaign.operativeState[unit.id].alive,unit.hp>0);
-  assert.ok(result.summary.units.some(u=>u.side==='player'&&u.hp>0&&u.hp<15),'the actual battle leaves critical patients');salta=result.campaign;
+  assert.ok(result.summary.units.some(u=>u.side==='player'&&u.hp<=0&&recovered.operativeState[u.id]?.alive),'the actual Salta assault has permanent losses');salta=result.campaign;
  });
- await t.test('the surviving doctors treat the surviving wounded and completes Yatasto after the paid northern pact',subtest=>{
+ await t.test('surviving doctors provide any needed care and complete Yatasto after the paid northern pact',subtest=>{
   if(!salta)return subtest.skip('The joint Salta assault must pass first');
   assert.ok(salta);const before=structuredClone(salta),result=completeNorthernMission(salta);
-  assert.deepEqual(salta,before);assert.equal(result.campaign.hour,salta.hour+13);
-  assert.equal(result.campaign.phase,3);assert.ok(result.campaign.resources.treasury>=0);assert.ok(result.care.usedDressings>0);preserveDeaths(salta,result.campaign);assert.equal(result.campaign.missions.yatasto.completed,true);
+  assert.deepEqual(salta,before);assert.equal(result.campaign.hour,salta.hour+12+(result.care.patients.length?1:0));
+  assert.equal(result.campaign.phase,3);assert.ok(result.campaign.resources.treasury>=0);assert.ok(result.care.patients.length?result.care.usedDressings>0:result.care.usedDressings===0);preserveDeaths(salta,result.campaign);assert.equal(result.campaign.missions.yatasto.completed,true);
  });
 });
