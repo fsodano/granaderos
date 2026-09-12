@@ -116,7 +116,7 @@ function holdMorale(s,u){if(nearby(s,u,57,6)||(u.militia&&nearby(s,u,1,4))||(u.m
 // raises the held firearm. This never fires, identifies a target, or loads it.
 export function lookPreview(s,u,point){
   let reason=!u||!alive(u)?'El combatiente no puede actuar.':u.knockedDown?'Primero debés levantarte.':
-    !Number.isInteger(point?.x)||!Number.isInteger(point?.y)||!tile(s,point.x,point.y)||point.x===u.x&&point.y===u.y?'Seleccioná otra casilla del mapa.':null;
+    !Number.isInteger(point?.x)||!Number.isInteger(point?.y)||!surfaceAt(s,point)||sameCell(point,u)?'Seleccioná otra casilla del mapa.':null;
   const facing=reason?u?.facing??2:directionTo(u,point),turn=reason?0:turnAPCost(u,facing);
   const prepare=!reason&&!turn&&hasFirearm(u)&&!u.weaponReady;
   const pa=reason?0:prepare?actionCosts(s,u).ready:turn;
@@ -184,7 +184,7 @@ function investigateNoise(s,u){
   const heard=u.lastHeardNoise;
   if(heard&&dist(u,heard)<=Math.max(1,heard.uncertainty)&&facingAllowsSight(u,heard,{peripheralRange:0})&&hasLineOfSight(s,u,heard)){delete u.lastHeardNoise;u.lastInvestigatedTurn=s.turn;}
 }
-function rememberContacts(s){if(s.mode==='combat'&&hasVisualContact(s)){s.contactThisRound=true;s.quietCombatTurns=0;}forgetInvestigatedNoise(s);for(const u of s.units.filter(alive)){const seen=visibleHostiles(s,u).filter(alive).sort((a,b)=>dist(u,a)-dist(u,b)||String(a.id).localeCompare(String(b.id)));if(seen.length)u.lastKnownEnemy={...positionOf(seen[0]),turn:s.turn};else if(u.lastKnownEnemy&&(s.turn-u.lastKnownEnemy.turn>3||dist(u,u.lastKnownEnemy)<=1))delete u.lastKnownEnemy;}}
+function rememberContacts(s){if(s.mode==='combat'&&hasVisualContact(s)){s.contactThisRound=true;s.quietCombatTurns=0;}forgetInvestigatedNoise(s);for(const u of s.units.filter(alive)){const seen=visibleHostiles(s,u).filter(alive).sort((a,b)=>dist(u,a)-dist(u,b)||String(a.id).localeCompare(String(b.id)));if(seen.length)u.lastKnownEnemy={...positionOf(seen[0]),turn:s.turn};else if(u.lastKnownEnemy&&(s.turn-u.lastKnownEnemy.turn>3||contactDistance(u,u.lastKnownEnemy)<=1))delete u.lastKnownEnemy;}}
 function hasVisualContact(s){return s.units.some(u=>alive(u)&&visibleHostiles(s,u).some(alive));}
 export function canEndCombat(s){
   if(s.status!=='active'||s.mode!=='combat'||s.phase!=='player'||s.alliedTurn||s.enemyTurn||s.interrupt||s.reactionStack?.length||s.units.some(u=>u.routed&&fieldCapable(u))||hasVisualContact(s))return false;
@@ -350,7 +350,7 @@ function shotAccuracy(s,attacker,target,aim=0,hitLocation='torso',pointShot=fals
   const repeat=!pointShot&&attacker.lastTargetId===target.id&&attacker.lastShotPosition&&sameCell(attacker.lastShotPosition,attacker)?10:0;
   const chance=effectiveSkill+support+repeat+(nearby(s,attacker,57,6)?12:0)+(nearby(s,attacker,11,4)?8:0)+clamp(Number.isFinite(aim)?Math.floor(aim):0,0,4)*8+rangeProfile.sightAdjustment-rangeProfile.weaponPenalty-effectiveWounds(attacker)*.3-(100-(attacker.energy??100))*.15-(attacker.shock??0)*5+((attacker.morale??80)-80)*.1-targetPosture
     -(attacker.mounted&&![1803,1805,1806,1808].includes(w.id)?15:0)
-    +(hasTrait(attacker,'guerrilla_tactician')&&!attacker.momentum&&((tile(s,attacker.x,attacker.y)?.cover||0)>=20||['forest','scrub'].includes(tile(s,attacker.x,attacker.y)?.type))?10:0)
+    +(hasTrait(attacker,'guerrilla_tactician')&&!attacker.momentum&&((surfaceAt(s,attacker)?.cover||0)>=20||['forest','scrub'].includes(surfaceAt(s,attacker)?.type))?10:0)
     -(hasTrait(target,'guerrilla_tactician')&&!target.mounted&&((tile(s,target.x,target.y)?.cover||0)>=20||['forest','scrub'].includes(tile(s,target.x,target.y)?.type))?12:0);
   return Math.round(clamp((chance-shotLocationPenalty(hitLocation,rangeProfile.effectiveSightRange))*rangeProfile.chanceFactor,1,95));
 }
@@ -815,7 +815,7 @@ export function environmentTargetAt(s,point){
 function environmentReachReason(s,u,object){
   if(!object)return 'El objeto ya no está en el sector.';
   if(!u||!alive(u)||!interruptAvailable(s,u)||u.knockedDown)return 'El soldado no puede manejar el objeto ahora.';
-  const cells=object.type==='chest'?propCells(object):[object];
+  const cells=object.type==='chest'?propCells(object).map(point=>({...object,...point})):[object];
   if(!cells.some(p=>contactDistance(u,p)<=1.5&&canSee(s,u,p)))return 'Acércate al objeto y mira hacia él.';
   return null;
 }
@@ -833,7 +833,7 @@ export function environmentUsePreview(s,u,ref,verb){
   const result=(reason=local.reason,route=null)=>({...local,type:'environment',actionPa:local.pa,movePa:route?.cost??0,pa:local.pa+(route?.cost??0),
     label:route?.cost?`Acercarse y ${local.label.toLowerCase()}`:local.label,destination:route?positionOf(route):null,path:route?.path??[],reason,valid:!reason});
   if(!target||!u||!alive(u)||!interruptAvailable(s,u)||u.knockedDown)return result();
-  const cells=target.type==='chest'?propCells(target):[target];
+  const cells=target.type==='chest'?propCells(target).map(point=>({...target,...point})):[target];
   const visible=cells.find(point=>canSee(s,u,point));
   if(!visible)return result('El objeto debe estar a la vista del soldado.');
   if(!environmentReachReason(s,u,target))return result();
@@ -1248,11 +1248,15 @@ function advanceAmbientTime(s,seconds){
       const patrolState={...s,turn:(s.civilianTurns??0)+1,mode:'combat'};
       const order=u.militia?searchOrder(patrolState,{...u,ap:100},{changeStance:false}):choosePatrolAction(patrolState,{...u,patrolTurn:undefined,ap:24});
       if(!order)continue;
-      const step=getReachable(patrolState,{...u,ap:u.militia?100:24}).find(p=>p.x===order.x&&p.y===order.y)?.path[0];
+      const step=getReachable(patrolState,{...u,ap:u.militia?100:24}).find(p=>sameCell(p,{...order,tacticalLevel:order.tacticalLevel??tacticalLevel(u)}))?.path[0];
       if(!step)continue;
-      const cost=movementEnergy(u,tile(s,step.x,step.y));
-      if(u.energy<=cost){recoverEnergy(u,10);continue;}
-      lowerWeapon(u);u.facing=directionTo(u,step);Object.assign(u,step);exhaust(s,u,cost);
+      const climbing=!sameSurface(u,step)?climbStep(s,u,u,step):null;
+      if(climbing&&!climbing.valid)continue;
+      const cost=climbing?.energy??movementEnergy(u,surfaceAt(s,step));
+      if(climbing?u.energy<cost:u.energy<=cost){recoverEnergy(u,10);continue;}
+      lowerWeapon(u);if(u.x!==step.x||u.y!==step.y)u.facing=directionTo(u,step);
+      // Route metadata belongs to the path, never to the persistent actor.
+      Object.assign(u,positionOf(step));u.momentum=0;delete u.lastTargetId;delete u.lastShotPosition;exhaust(s,u,cost);
       if(detectContact(s))return false;
     }
     return true;
@@ -1333,20 +1337,20 @@ function routedOrder(s,u,action){
 function processRout(s,u){
   if(!u.routed||!fieldCapable(u)||u.unconscious)return;
   const exploring=s.mode==='exploration',stopped=()=>s.status!=='active'||s.phase==='interrupt'||s.reactionStack?.length||exploring&&s.mode!=='exploration';
-  if(u.knockedDown){if(!routedOrder(s,u,{type:'stance',stance:'standing'})||stopped())return;}
+  if(u.knockedDown||s.upperSurfaces?.length&&u.stance!=='standing'){if(!routedOrder(s,u,{type:'stance',stance:'standing'})||stopped())return;}
   if(u.entangled){if(!routedOrder(s,u,{type:'free'})||stopped())return;}
   if(stopped())return;
   const exits=u.side==='player'?s.exits??[]:s.enemyExits??['N','E','S','W'].map(edge=>({id:`enemy:${edge}`,edge,destination:'__offmap_enemy__'}));
-  const proxy={...u,routed:false},routes=getReachable({...s,mode:'exploration'},proxy).flatMap(point=>exits.filter(exit=>boundaryMatches(s,point,exit.edge)).map(exit=>({...point,exit})));
+  const proxy={...u,routed:false},routes=getReachable({...s,mode:'exploration'},proxy).filter(point=>tacticalLevel(point)===0).flatMap(point=>exits.filter(exit=>boundaryMatches(s,point,exit.edge)).map(exit=>({...point,exit})));
   routes.sort((a,b)=>a.cost-b.cost||a.exit.id.localeCompare(b.exit.id)||a.y-b.y||a.x-b.x);
   if(!routes.length){lowerWeapon(u);u.surrendered=true;u.ap=0;sayObserved(s,[u],`${u.name} se rinde: no encuentra un paso de salida.`);checkEnd(s);return;}
   const route=routes[0];
   if(route.path.length){
-    const reachable=getReachable(s,proxy),step=[...route.path].reverse().map(p=>reachable.find(v=>v.x===p.x&&v.y===p.y)).find(Boolean);
+    const reachable=getReachable(s,proxy),step=[...route.path].reverse().map(p=>reachable.find(v=>sameCell(v,p))).find(Boolean);
     if(!step)return;
-    const before={x:u.x,y:u.y};if(!routedOrder(s,u,{type:'move',x:step.x,y:step.y}))return;
-    const actual=step.path.findIndex(p=>p.x===u.x&&p.y===u.y);if(actual>=0)u.fleePath=[...(u.fleePath??[]),...step.path.slice(0,actual+1)];
-    if(u.x===before.x&&u.y===before.y)return;
+    const before=positionOf(u);if(!routedOrder(s,u,{type:'move',...positionOf(step)}))return;
+    const actual=step.path.findIndex(p=>sameCell(p,u));if(actual>=0)u.fleePath=[...(u.fleePath??[]),...step.path.slice(0,actual+1)];
+    if(sameCell(u,before))return;
   }
   if(stopped()||exitUnitReason(s,u,route.exit,{routing:true}))return;
   u.routed=false;const departed=crossBoundary(s,u,route.exit);u.routed=true;if(departed)u.fled=true;checkEnd(s);
