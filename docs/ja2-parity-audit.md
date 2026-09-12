@@ -4,7 +4,7 @@ Audit date: 6 September 2026. This is a requirements baseline for the complete g
 
 ## Current starting position
 
-The user clarified that a new game starts with zero recruits and **Retiro alone** controlled. Hiring and custom creation are independent options. Headquarters, supply and reserve transport now originate in Retiro. Seven focused model/UI checks and a live hired-only start/save/resume check cover this behavior; see [Retiro opening](retiro-start.md). Older southern and northern route results below begin from an explicitly established southern area. They do not prove a successful full campaign from this new starting position. That full opening and balance route remains open.
+The user clarified that a new game starts with zero recruits and **Retiro alone** controlled. Hiring and custom creation are independent options. Headquarters, supply and reserve transport now originate in Retiro. Seven focused model/UI checks and a live hired-only start/save/resume check cover this behavior; see [Retiro opening](retiro-start.md). Older southern and northern route results below begin from an explicitly established southern area. They do not prove a successful full campaign from this new starting position. The first Buenos Aires capture now passes a fresh hired-only battle/result/save/revisit regression, including a real death and unchanged equipment. The full campaign route and broad opening balance remain open.
 
 ## Scope and evidence
 
