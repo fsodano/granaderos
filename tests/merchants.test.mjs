@@ -1,3 +1,4 @@
+import {stockAndCarriedAmmo} from './ammunition-balance.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
@@ -99,5 +100,5 @@ test('medical purchases and provision refills respect finite pockets and roll ba
 
 test('automatic cartridge issue respects a full or legacy overfull pack in both deployment paths',()=>{
  let s=initialCampaign();s.operativeState[4].inventory={cargo:{count:24,weight:1}};let stock=s.resources.cartridges;s=order(s,{type:'visitSector'});let unit=s.pendingBattle.squad.find(u=>u.id===4);assert.equal(unit.loaded,2);assert.equal(unit.ammo,0);assert.equal(s.resources.cartridges,stock-s.pendingBattle.issuedCartridges);assert.equal(s.pendingBattle.issuedCartridges,s.pendingBattle.squad.reduce((sum,u)=>sum+u.loaded+u.ammo,0));
- s=reportVisit(s,enterSector(s.pendingBattle));assert.equal(s.resources.cartridges,stock);s.operativeState[4].inventory.cargo.count=40;const cargo=structuredClone(s.operativeState[4].inventory);s=order(s,{type:'travel',sector:'buenos_aires'});stock=s.resources.cartridges;s=order(s,{type:'attack',sector:'san_nicolas'});unit=s.pendingBattle.squad.find(u=>u.id===4);assert.equal(unit.loaded,2);assert.equal(unit.ammo,0);assert.deepEqual(unit.inventory,cargo);assert.equal(s.resources.cartridges,stock-s.pendingBattle.issuedCartridges);
+ s=reportVisit(s,enterSector(s.pendingBattle));assert.equal(stockAndCarriedAmmo(s),stock);s.operativeState[4].inventory.cargo.count=40;const cargo=structuredClone(s.operativeState[4].inventory);s=order(s,{type:'travel',sector:'buenos_aires'});stock=stockAndCarriedAmmo(s);s=order(s,{type:'attack',sector:'san_nicolas'});unit=s.pendingBattle.squad.find(u=>u.id===4);assert.equal(unit.loaded,2);assert.equal(unit.ammo,0);assert.deepEqual(unit.inventory,cargo);assert.equal(s.resources.cartridges,stock-s.pendingBattle.issuedCartridges);
 });

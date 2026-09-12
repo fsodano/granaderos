@@ -1,3 +1,4 @@
+import {stockAndCarriedAmmo} from './ammunition-balance.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {dispatchCampaign as dispatch,serializeCampaign,restoreCampaign} from '../game/campaign.js';
@@ -42,7 +43,7 @@ test('actual opening battle connects campaign resources, deterministic tactics a
   assert.equal(result.lastError,null);
   assert.equal(result.sectors.san_nicolas.owner,'patriot');
   assert.equal(result.pendingBattle,null);
-  assert.equal(result.resources.cartridges,campaign.resources.cartridges+returned+80);
+  assert.equal(stockAndCarriedAmmo(result),campaign.resources.cartridges+returned+80);
   for(const u of survivors){assert.equal(result.operativeState[Number(u.id)].hp,u.hp);assert.equal(result.operativeState[Number(u.id)].alive,true);}
   assert.deepEqual(restoreCampaign(serializeCampaign(result)),result);
 });

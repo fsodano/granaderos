@@ -47,7 +47,7 @@ export function planReturnAmmunition(request,snapshot,entries){
  const custody={},carried={},returned=entries.reduce((sum,e)=>{
   const u=snapshot.units.find(u=>u.side==='player'&&String(u.id)===e.unitId),rounds=(u.loaded??0)+(u.ammo??0);
   if(!Number.isSafeInteger(rounds)||rounds<0||rounds>100000)throw Error('La munición del parte es inválida.');
-  const preserveLoading=!u.weaponDropped&&WEAPONS[u.weapon]?.capacity>0&&(request.squad.find(source=>String(source.id)===e.unitId)?.preserveLoading===true||Boolean(u.reloadProgress));
+  const preserveLoading=!u.weaponDropped&&WEAPONS[u.weapon]?.capacity>0;
   const loading=preserveLoading?{loaded:u.loaded,...(u.reloadProgress?{reloadProgress:u.reloadProgress}:{})}:null;
   if(e.kind==='captured')custody[e.unitId]={loaded:u.loaded,ammo:u.ammo,...(loading?{preserveLoading:true,...(u.reloadProgress?{reloadProgress:u.reloadProgress}:{})}:{})};
   if(loading&&['resident','departed'].includes(e.kind))carried[e.unitId]=loading;

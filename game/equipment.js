@@ -20,7 +20,7 @@ export function firearmRepairCost(record){return Math.ceil(Math.max(0,100-(recor
 export function equipmentInventoryUsage(s,op,changes={}){
  const record=s.operativeState[op.id],capacity=WEAPONS[op.weapon]?.capacity??0;
  // Reserve the normal cartridge stack for the next deployment. Ammunition is
- // held by campaign stock between reports; it must still fit when reissued.
+ // returned to stock between reports; loaded charges stay with the gun.
  return inventoryUsage({...op,...record,ammo:Math.max((record.carriedAmmo??0)-(record.carriedLoaded??0),capacity&&!record.weaponDropped?10-(record.carriedLoaded??capacity):0),boleadoras:record.boleadoras??1,...changes});
 }
 export function allocateEquipmentAmmo(s,op,stock){
@@ -29,7 +29,7 @@ export function allocateEquipmentAmmo(s,op,stock){
  if(!capacity)return {loaded:0,ammo:carried};
  const rounds=carried+Math.min(Math.max(0,10-carried),stock),loaded=record.carriedLoaded??Math.min(capacity,rounds);let ammo=rounds-loaded;
  while(ammo>Math.max(0,carried-loaded)&&equipmentInventoryUsage(s,op,{ammo}).overloaded)ammo--;
- return {loaded,ammo,...(record.carriedLoaded!==undefined?{preserveLoading:true}:{}),...(record.carriedReloadProgress?{reloadProgress:record.carriedReloadProgress}:{})};
+ return {loaded,ammo,...(record.carriedReloadProgress?{reloadProgress:record.carriedReloadProgress}:{})};
 }
 export function clearCarriedLoading(record){delete record.carriedLoaded;delete record.carriedReloadProgress;}
 export function setCarriedLoading(record,unit){

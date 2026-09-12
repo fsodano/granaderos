@@ -20,6 +20,6 @@ The browser check used a controlled combat fixture and the production reducers, 
 
 The independent local demo is `http://127.0.0.1:3005/` while its development server remains running. Its buttons exercise actual return, save/load, entry, and reload actions; it is a controlled fixture rather than a full live campaign playthrough.
 
-## Remaining ammunition policy
+## Subsequent full-load update
 
-Ordinary guns that have neither a prepared-load record nor unfinished work still use the existing campaign issue/return policy. Making all fully loaded and empty guns persist across strategic supply operations is a separate remaining part of the ammunition model. This change closes the loss of paid unfinished work; it does not establish complete inventory or JA2 parity.
+The [persistent gun-load update](campaign-gun-loads.md) removes the former exception for ordinary fully loaded and empty guns. Every held firearm now keeps its actual load on return. The earlier timings and ammunition figures above record the partial-work checkpoint; use the linked update for the current route and full accounting.

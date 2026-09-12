@@ -51,12 +51,13 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
 }
 
 export function fightNorthernSector(start,sector,{report=()=>{},expectedOutcome='victory',controller}={}){
- const before=structuredClone(start),campaign=start.pendingBattle?structuredClone(start):dispatchCampaign(finishReloadsBeforeMarch(start,{report}),{type:'attack',sector});assert.equal(campaign.lastError,null,campaign.lastError);
+ const before=structuredClone(start),prepared=start.pendingBattle?structuredClone(start):finishReloadsBeforeMarch(start,{report});
+ const preparationSeconds=(prepared.hour-start.hour)*3600+(prepared.secondOfHour??0)-(start.secondOfHour??0),campaign=start.pendingBattle?prepared:dispatchCampaign(prepared,{type:'attack',sector});assert.equal(campaign.lastError,null,campaign.lastError);
  assert.deepEqual(start,before);assert.ok(campaign.pendingBattle,'the real march produces a tactical deployment');
  const request=campaign.pendingBattle;assert.equal(request.sector,sector);
  report({event:'battleStarted',sector,hour:campaign.hour,units:request.squad.map(u=>u.id)});
  const result=fight(request,campaign.sectorStates[sector],{controller});
- const summary={sector,status:result.battle.status,turns:result.battle.turn,actions:result.actions,units:result.battle.units.map(u=>({id:u.id,side:u.side,hp:u.hp,ammo:u.ammo,loaded:u.loaded,routed:u.routed}))};
+ const summary={sector,preparationSeconds,status:result.battle.status,turns:result.battle.turn,actions:result.actions,units:result.battle.units.map(u=>({id:u.id,side:u.side,hp:u.hp,ammo:u.ammo,loaded:u.loaded,routed:u.routed}))};
  report({event:'battleFinished',...summary});
  assert.ok(['victory','defeat','retreat'].includes(expectedOutcome));
  assert.equal(result.battle.status,expectedOutcome,JSON.stringify(summary));

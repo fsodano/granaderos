@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign} from '../game/campaign.js';
+import {WEAPONS} from '../game/data.js';
+import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';
 import {actBattle,reloadCost} from '../game/tactical.js';
 import {syncBattleTime} from '../game/time.js';
@@ -8,7 +9,7 @@ import {encodeSave,decodeSave} from '../game/save.js';
 // A route controller must finish an unfinished gun through real equipment and
 // reload orders. Returning to the map cannot finish the job for the player.
 export function finishReloadsBeforeMarch(start,{report=()=>{}}={}){
- const ids=start.squad.filter(id=>start.operativeState[id].carriedReloadProgress);
+ const roster=rosterFor(start),ids=start.squad.filter(id=>{const r=start.operativeState[id],capacity=WEAPONS[roster.find(u=>u.id===id)?.weapon]?.capacity??0;return !r.weaponDropped&&r.carriedLoaded!==undefined&&r.carriedLoaded<capacity;});
  if(!ids.length)return start;
  let campaign=dispatchCampaign(start,{type:'visitSector'});assert.equal(campaign.lastError,null,campaign.lastError);
  let battle=enterSector(campaign.pendingBattle,campaign.sectorStates[campaign.location]);

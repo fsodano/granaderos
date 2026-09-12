@@ -1,3 +1,4 @@
+import {stockAndCarriedAmmo} from './ammunition-balance.mjs';
 import {approachNPC} from './approach-npc.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -23,5 +24,5 @@ test('conversation requires adjacency and a cleared tactical situation',()=>{
 });
 test('visits issue and return finite ammunition instead of erasing or generating rounds',()=>{
  let s=initialCampaign();const total=s.resources.cartridges;s=order(s,{type:'visitSector'});const issued=s.pendingBattle.issuedCartridges;assert.equal(issued,20);assert.equal(s.resources.cartridges,total-issued);const map=buildSectorMap(s.pendingBattle),battle=createBattle(map.squad,map);
- s=order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:battle,survivors:battle.units.filter(u=>u.side==='player').map(u=>({...u,id:Number(u.id)}))});assert.equal(s.resources.cartridges,total);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
+ s=order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:battle,survivors:battle.units.filter(u=>u.side==='player').map(u=>({...u,id:Number(u.id)}))});assert.equal(stockAndCarriedAmmo(s),total);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
 });

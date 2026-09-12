@@ -1,3 +1,4 @@
+import {stockAndCarriedAmmo} from './ammunition-balance.mjs';
 import {encounterForOperative} from '../game/encounters.js';
 import {scriptedBattleReport} from './scripted-battle-report.mjs';
 import {attendYatasto} from './mission-helpers.mjs';
@@ -67,8 +68,8 @@ test('save reload is deterministic and invalid version rejected',()=>{
 
 test('ammunition is finite, tactical round returns are capped and string IDs accepted',()=>{
  let s=initialCampaign();s.resources.cartridges=2;s=order(s,{type:'attack',sector:'san_nicolas'});assert.equal(s.resources.cartridges,0);assert.equal(s.pendingBattle.squad.reduce((n,o)=>n+o.loaded+o.ammo,0),2);
- const report=scriptedBattleReport(s,{outcome:'retreat'});report.survivors=report.survivors.map(u=>({...u,loaded:100,ammo:100}));s=order(s,report);assert.equal(s.resources.cartridges,2);
- s.resources.cartridges=0;s=order(s,{type:'attack',sector:'san_nicolas'});assert.ok(s.pendingBattle.squad.every(o=>o.loaded===0&&o.ammo===0));
+ const report=scriptedBattleReport(s,{outcome:'retreat'});report.survivors=report.survivors.map(u=>({...u,loaded:100,ammo:100}));s=order(s,report);assert.equal(stockAndCarriedAmmo(s),2);
+ s.resources.cartridges=0;s=order(s,{type:'attack',sector:'san_nicolas'});assert.ok(s.pendingBattle.squad.every(o=>o.ammo===0));assert.equal(s.pendingBattle.squad.reduce((n,o)=>n+o.loaded,0),2,'Empty stock cannot erase the two charges retained from the previous deployment.');
 });
 test('monthly stipend is charged at30 days, no weekly deduction',()=>{
  let s=initialCampaign();

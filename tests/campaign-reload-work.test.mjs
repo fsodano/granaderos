@@ -1,3 +1,4 @@
+import {stockAndCarriedAmmo} from './ammunition-balance.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
@@ -24,7 +25,7 @@ function partial(weapon=1802,ap=20){
 test('ordinary held guns keep paid reload work and any completed barrel through return and repeated saves',()=>{
  for(const [weapon,ap] of [[1802,20],[1808,30]]){
   let {c,b,worker}=partial(weapon,ap);const stock=c.resources.cartridges,returned=b.units.filter(u=>u.side==='player').reduce((n,u)=>n+u.ammo+u.loaded,0);
-  c=leave(c,b);assert.equal(c.resources.cartridges,stock+returned-worker.loaded);assert.equal(c.operativeState[3].carriedLoaded,worker.loaded);assert.equal(c.operativeState[3].carriedAmmo,worker.loaded);assert.equal(c.operativeState[3].carriedReloadProgress,worker.reloadProgress);
+  c=leave(c,b);assert.equal(stockAndCarriedAmmo(c),stock+returned);assert.equal(c.operativeState[3].carriedLoaded,worker.loaded);assert.equal(c.operativeState[3].carriedAmmo,worker.loaded);assert.equal(c.operativeState[3].carriedReloadProgress,worker.reloadProgress);
   for(let i=0;i<3;i++){
    const before=c.resources.cartridges;c=order(save(c),{type:'visitSector'});b=enterSector(c.pendingBattle,c.sectorStates.retiro);const u=b.units.find(u=>u.id==='3');assert.equal(u.reloadProgress,worker.reloadProgress);assert.equal(u.loaded,worker.loaded);c=leave(c,b);assert.equal(c.resources.cartridges,before);
   }
@@ -40,12 +41,12 @@ test('captured ordinary partial work enters custody while departed work remains 
  const {c,b,worker}=partial(1808,30),request=c.pendingBattle;
  for(const kind of ['captured','departed']){
   const entries=request.squad.map(u=>({unitId:String(u.id),kind:u.id===3?kind:'resident'})),plan=planReturnAmmunition(request,b,entries);
-  const other=b.units.filter(u=>u.side==='player'&&u.id!=='3').reduce((n,u)=>n+u.loaded+u.ammo,0);
+  const other=b.units.filter(u=>u.side==='player'&&u.id!=='3').reduce((n,u)=>n+u.ammo,0);
   if(kind==='captured'){assert.deepEqual(plan.custody[3],{loaded:worker.loaded,ammo:worker.ammo,preserveLoading:true,reloadProgress:worker.reloadProgress});assert.equal(plan.carried[3],undefined);assert.equal(plan.creditedCartridges,other);}
   else {assert.deepEqual(plan.carried[3],{loaded:worker.loaded,reloadProgress:worker.reloadProgress});assert.equal(plan.creditedCartridges,other+worker.ammo);}
  }
 });
 test('the route controller completes actual reload orders before marching and never erases work directly',()=>{
  const {c,b}=partial();const returned=leave(c,b),before=structuredClone(returned),events=[];const ready=finishReloadsBeforeMarch(returned,{report:e=>events.push(e)});
- assert.deepEqual(returned,before);assert.equal(ready.operativeState[3].carriedLoaded,1);assert.equal(ready.operativeState[3].carriedReloadProgress,undefined);assert.ok(ready.secondOfHour>returned.secondOfHour);assert.equal(ready.resources.cartridges,returned.resources.cartridges-1);assert.equal(events.length,1);assert.ok(events[0].paidPAEquivalent>0);assert.equal(finishReloadsBeforeMarch(ready),ready);save(ready);
+ assert.deepEqual(returned,before);assert.equal(ready.operativeState[3].carriedLoaded,1);assert.equal(ready.operativeState[3].carriedReloadProgress,undefined);assert.ok(ready.secondOfHour>returned.secondOfHour);assert.equal(stockAndCarriedAmmo(ready),stockAndCarriedAmmo(returned));assert.deepEqual(events.map(e=>e.id),[3,4]);assert.equal(ready.operativeState[4].carriedLoaded,2);assert.ok(events[0].paidPAEquivalent>0);assert.equal(finishReloadsBeforeMarch(ready),ready);save(ready);
 });

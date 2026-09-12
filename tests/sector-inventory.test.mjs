@@ -1,3 +1,4 @@
+import {stockAndCarriedAmmo} from './ammunition-balance.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
@@ -32,30 +33,30 @@ test('a discovered tactical drop is collected from the map once, with exact quan
 });
 
 test('map drops and pickups preserve a real held weapon and prevent a duplicate on reentry',()=>{
- let s=prepared();const weapon=rosterFor(s).find(u=>u.id===4).weapon;s=order(s,{type:'sectorInventory',sector:'retiro',operativeId:4,direction:'drop',item:'primary',count:1});
- assert.equal(s.operativeState[4].weaponDropped,true);const row=model(s,10).entries.find(row=>row.loaded===0);assert.ok(row);s=take(s,row,1,10);
+ let s=prepared();const weapon=rosterFor(s).find(u=>u.id===4).weapon,loaded=s.operativeState[4].carriedLoaded;s=order(s,{type:'sectorInventory',sector:'retiro',operativeId:4,direction:'drop',item:'primary',count:1});
+ assert.equal(s.operativeState[4].weaponDropped,true);const row=model(s,10).entries.find(row=>JSON.parse(row.expected).weapon===weapon);assert.ok(row);assert.equal(row.loaded,loaded);s=take(s,row,1,10);
  assert.ok(Object.values(s.operativeState[10].inventory).some(item=>item.weapon===weapon));
  s=restoreCampaign(serializeCampaign(s));s=order(s,{type:'visitSector'});const b=enterSector(s.pendingBattle,s.sectorStates.retiro);
  assert.equal(b.units.find(u=>u.id==='4').weaponDropped,true);assert.equal(b.groundItems.filter(g=>g.weapon===weapon&&g.count>0).length,0);
 });
 
 test('loose map cartridges stay with their selected carrier and enter a visit exactly once',()=>{
- let s=prepared('ammo',5);assert.equal(s.resources.cartridges,295);s=take(s,model(s).entries[0],5,10);assert.equal(s.resources.cartridges,295);assert.equal(s.operativeState[10].carriedAmmo,5);
+ let s=prepared('ammo',5);assert.equal(stockAndCarriedAmmo(s),295);const stock=s.resources.cartridges;s=take(s,model(s).entries[0],5,10);assert.equal(s.resources.cartridges,stock);assert.equal(s.operativeState[10].carriedAmmo,6);assert.equal(s.operativeState[10].carriedLoaded,1);assert.equal(model(s,10).carried.find(row=>row.item==='ammo').count,5);
  s=restoreCampaign(serializeCampaign(s));s=order(s,{type:'visitSector'});assert.equal(s.operativeState[10].carriedAmmo,0);assert.equal(s.resources.cartridges,280);assert.equal(s.pendingBattle.issuedCartridges,20);
- const b=enterSector(s.pendingBattle,s.sectorStates.retiro);s=leave(s,b);assert.equal(s.resources.cartridges,300);assert.equal(model(s).entries.length,0);
+ const b=enterSector(s.pendingBattle,s.sectorStates.retiro);s=leave(s,b);assert.equal(stockAndCarriedAmmo(s),300);assert.equal(model(s).entries.length,0);
 });
 
 test('a carrier without a firearm retains picked cartridges through deployment and campaign return',()=>{
  let s=prepared('ammo',5);s=take(s,model(s).entries[0],5,3);s=order(s,{type:'visitSector'});assert.equal(s.pendingBattle.squad.find(u=>u.id===3).ammo,5);assert.equal(s.pendingBattle.issuedCartridges,25);
- const b=enterSector(s.pendingBattle,s.sectorStates.retiro);s=leave(s,b);assert.equal(s.resources.cartridges,300);
+ const b=enterSector(s.pendingBattle,s.sectorStates.retiro);s=leave(s,b);assert.equal(stockAndCarriedAmmo(s),300);
 });
 
 test('attack and forced defense each account for personal cartridges without charging shared stock twice',()=>{
  for(const defense of [false,true]){
-  let s=prepared('ammo',5);s=take(s,model(s).entries[0],5,10);const before=s.resources.cartridges;
+  let s=prepared('ammo',5);s=take(s,model(s).entries[0],5,10);const before=stockAndCarriedAmmo(s);
   if(defense){launchEnemyGroup(s,'coast','retiro',{immediate:true});s=order(s,{type:'wait',hours:1});s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'tactical'});}
   else {s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});}
-  assert.equal(s.resources.cartridges,before-15);assert.equal(s.pendingBattle.issuedCartridges,20);assert.equal(s.operativeState[10].carriedAmmo,0);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
+  assert.equal(s.resources.cartridges,before-20);assert.equal(s.pendingBattle.issuedCartridges,20);assert.equal(s.operativeState[10].carriedAmmo,0);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
  }
 });
 
@@ -104,14 +105,14 @@ test('discovered open containers allow partial pickup, reject stale rows, and ke
 
 test('a searched corpse gives finite supplies and retains the depleted body after reentry',()=>{
  let {s,b}=entered();const body=createBattle([],{width:12,height:10,tiles:flat(),enemies:[{id:'searched-body',x:3,y:2,hp:0,ammo:7}]}).units[0];b.units.push(body);s.pendingBattle.enemies=[structuredClone(body)];discoverInventory(b);s=leave(s,b);
- const row=model(s).entries.find(row=>row.kind==='body'&&row.label==='Cartuchos');assert.ok(row);s=take(s,row,3);assert.equal(s.sectorStates.retiro.units.find(u=>u.id===body.id).ammo,4);assert.equal(s.operativeState[4].carriedAmmo,3);
+ const row=model(s).entries.find(row=>row.kind==='body'&&row.label==='Cartuchos');assert.ok(row);s=take(s,row,3);assert.equal(s.sectorStates.retiro.units.find(u=>u.id===body.id).ammo,4);assert.equal(s.operativeState[4].carriedAmmo,5);assert.equal(s.operativeState[4].carriedLoaded,2);
  s=order(restoreCampaign(serializeCampaign(s)),{type:'visitSector'});const next=enterSector(s.pendingBattle,s.sectorStates.retiro);assert.equal(next.units.find(u=>u.id===body.id).ammo,4);assert.equal(next.units.find(u=>u.id==='4').ammo+next.units.find(u=>u.id==='4').loaded,10);
 });
 
 test('personal cartridges can be dropped on the map and recovered tactically without disappearing on return',()=>{
  let s=prepared('ammo',5);s=take(s,model(s).entries[0],5,4);s=order(s,{type:'sectorInventory',sector:'retiro',operativeId:4,direction:'drop',item:'ammo',count:3});
- assert.equal(s.operativeState[4].carriedAmmo,2);s=order(s,{type:'visitSector'});let b=enterSector(s.pendingBattle,s.sectorStates.retiro);const ground=b.groundItems.find(g=>g.count===3);
- b=act(b,{type:'loot',unitId:'4',groundId:ground.id,count:3});s=leave(s,b);assert.equal(s.resources.cartridges,300);
+ assert.equal(s.operativeState[4].carriedAmmo,4);assert.equal(s.operativeState[4].carriedLoaded,2);s=order(s,{type:'visitSector'});let b=enterSector(s.pendingBattle,s.sectorStates.retiro);const ground=b.groundItems.find(g=>g.count===3);
+ b=act(b,{type:'loot',unitId:'4',groundId:ground.id,count:3});s=leave(s,b);assert.equal(stockAndCarriedAmmo(s),300);
 });
 
 
@@ -119,7 +120,7 @@ test('strategic public state reports only discovered equipment and personal cart
  const s=prepared('ammo',5),b=s.sectorStates.retiro;b.groundItems.push({id:'secret',type:'item',item:'inventory:hidden-plan',count:1,weight:0,x:11,y:9});
  const before=structuredClone(s),known=playerKnownCampaign(s),sector=known.sectors.find(row=>row.id==='retiro');
  assert.equal(sector.equipment.length,1);assert.equal(sector.equipment[0].count,5);assert.equal(sector.equipment[0].label,'Cartuchos');assert.doesNotMatch(JSON.stringify(known),/hidden-plan|secret|knownToPlayer/);assert.deepEqual(s,before);
- const next=take(s,model(s).entries[0],2);assert.equal(playerKnownCampaign(next).operatives.find(u=>u.id===4).carriedAmmo,2);
+ const next=take(s,model(s).entries[0],2);assert.equal(playerKnownCampaign(next).operatives.find(u=>u.id===4).carriedAmmo,4);assert.equal(playerKnownCampaign(next).operatives.find(u=>u.id===4).carriedLoaded,2);
 });
 
 
@@ -134,11 +135,11 @@ test('a previously dropped compact firearm keeps its catalog weight and finite l
 test('a loaded gun carried into a visit can be equipped and returned without losing its charge',()=>{
  for(const id of [4,10]){
   let {s,b}=entered();const u=b.units.find(u=>u.id===String(id)),loaded=u.loaded;assert.ok(loaded>0);
-  b=act(b,{type:'drop',unitId:String(id),item:'primary'});s=leave(s,b);assert.equal(s.resources.cartridges,300-loaded);
+  b=act(b,{type:'drop',unitId:String(id),item:'primary'});s=leave(s,b);assert.equal(stockAndCarriedAmmo(s),300-loaded);
   s=take(s,model(s,id).entries.find(row=>row.loaded===loaded),1,id);s=order(restoreCampaign(serializeCampaign(s)),{type:'visitSector'});
   b=enterSector(s.pendingBattle,s.sectorStates.retiro);const key=Object.keys(b.units.find(u=>u.id===String(id)).inventory).find(key=>key.startsWith('weapon:'));
   b=act(b,{type:'equipLoot',unitId:String(id),inventoryKey:key,slot:'primary'});assert.equal(b.units.find(u=>u.id===String(id)).loaded,loaded);
-  s=leave(s,b);assert.equal(s.resources.cartridges,300);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
+  s=leave(s,b);assert.equal(stockAndCarriedAmmo(s),300);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
  }
 });
 
@@ -154,9 +155,9 @@ test('a packed loaded gun that remains stored does not add its round to shared s
 test('moving a loaded gun between packs and ground never credits it twice, and capture retains custody',()=>{
  const request={squad:[{id:'p'},{id:'q'}],issuedCartridges:0,storedCartridges:1,fieldCartridges:0};
  const entries=[{unitId:'p',kind:'resident'},{unitId:'q',kind:'resident'}];
- const snapshot={units:[{id:'p',side:'player',loaded:0,ammo:0,inventory:{}},{id:'q',side:'player',loaded:0,ammo:0,inventory:{gun:{weapon:1800,loaded:1,count:1}}}],groundItems:[],droppedWeapons:[],props:[],tiles:[]};
+ const snapshot={units:[{id:'p',side:'player',loaded:0,ammo:0,inventory:{}},{id:'q',side:'player',weapon:1800,loaded:0,ammo:0,inventory:{gun:{weapon:1800,loaded:1,count:1}}}],groundItems:[],droppedWeapons:[],props:[],tiles:[]};
  assert.equal(planReturnAmmunition(request,snapshot,entries).creditedCartridges,0);
  snapshot.units[1].inventory={};snapshot.groundItems=[{type:'item',item:'weapon',weapon:1800,loaded:1,count:1}];assert.equal(planReturnAmmunition(request,snapshot,entries).creditedCartridges,0);
- snapshot.groundItems=[];snapshot.units[1].loaded=1;assert.equal(planReturnAmmunition(request,snapshot,entries).creditedCartridges,1);
- entries[1].kind='captured';const captive=planReturnAmmunition(request,snapshot,entries);assert.equal(captive.creditedCartridges,0);assert.deepEqual(captive.custody.q,{loaded:1,ammo:0});
+ snapshot.groundItems=[];snapshot.units[1].loaded=1;const returned=planReturnAmmunition(request,snapshot,entries);assert.equal(returned.creditedCartridges,0);assert.deepEqual(returned.carried.q,{loaded:1});
+ entries[1].kind='captured';const captive=planReturnAmmunition(request,snapshot,entries);assert.equal(captive.creditedCartridges,0);assert.deepEqual(captive.custody.q,{loaded:1,ammo:0,preserveLoading:true});
 });

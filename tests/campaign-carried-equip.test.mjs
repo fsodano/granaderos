@@ -1,3 +1,4 @@
+import {stockAndCarriedAmmo} from './ammunition-balance.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
@@ -35,7 +36,7 @@ test('empty and partially loaded map guns enter visits, attacks and defenses wit
 });
 test('loaded map charge remains with its gun after visit without entering stock twice',()=>{
  let s=equip(fixture());const stock=s.resources.cartridges;s=order(s,{type:'visitSector'});const u=s.pendingBattle.squad.find(u=>u.id===10);assert.equal(u.loaded,1);assert.equal(u.ammo,9);assert.equal(s.resources.cartridges,stock-s.pendingBattle.issuedCartridges+1);
- const b=enterSector(s.pendingBattle,s.sectorStates.retiro);s=order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});assert.equal(s.resources.cartridges,stock);assert.equal(s.operativeState[10].carriedAmmo,1);assert.equal(s.operativeState[10].carriedLoaded,1);roundtrip(s);
+ const b=enterSector(s.pendingBattle,s.sectorStates.retiro);s=order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});assert.equal(stockAndCarriedAmmo(s),stock+1);assert.equal(s.operativeState[10].carriedAmmo,1);assert.equal(s.operativeState[10].carriedLoaded,1);roundtrip(s);
 });
 test('swapping back stores exact loaded work and identity in the backpack',()=>{
  for(const [loaded,progress] of [[1,undefined],[0,.5]]){
@@ -68,9 +69,9 @@ const flatBattle=s=>createBattle(s.pendingBattle.squad.map((u,i)=>({...u,x:2+i,y
 test('prepared load and unfinished work survive repeated returns and charge only the remaining reload',()=>{
  for(const [weapon,loaded,progress] of [[1800,0,.5],[1808,1,.5],[1800,0,undefined]]){
   const f=fixture(loaded,progress);Object.assign(f.operativeState[10].inventory.musket,{weapon,fittings:{},jammed:false});let s=equip(f);const stock=s.resources.cartridges;
-  for(let i=0;i<3;i++){s=order(roundtrip(s),{type:'visitSector'});s=leave(s,flatBattle(s));assert.equal(s.operativeState[10].carriedLoaded,loaded);assert.equal(s.operativeState[10].carriedReloadProgress,progress);assert.equal(s.resources.cartridges,stock);}
+  for(let i=0;i<3;i++){s=order(roundtrip(s),{type:'visitSector'});s=leave(s,flatBattle(s));assert.equal(s.operativeState[10].carriedLoaded,loaded);assert.equal(s.operativeState[10].carriedReloadProgress,progress);assert.equal(stockAndCarriedAmmo(s),stock+loaded);}
   s=order(s,{type:'visitSector'});let b=flatBattle(s),u=b.units.find(u=>u.id==='10'),cost=reloadCost(u,b),ammo=u.ammo;
-  b=actBattle(b,{type:'reload',unitId:'10'});assert.equal(b.lastError,null);u=b.units.find(u=>u.id==='10');assert.equal(b.elapsedSeconds,Math.max(1,Math.ceil(cost*.06)));assert.equal(u.ammo,ammo-1);assert.equal(u.loaded,loaded+1);assert.equal(u.reloadProgress,undefined);s=leave(s,b);assert.equal(s.resources.cartridges,stock-1);assert.equal(s.operativeState[10].carriedLoaded,loaded+1);roundtrip(s);
+  b=actBattle(b,{type:'reload',unitId:'10'});assert.equal(b.lastError,null);u=b.units.find(u=>u.id==='10');assert.equal(b.elapsedSeconds,Math.max(1,Math.ceil(cost*.06)));assert.equal(u.ammo,ammo-1);assert.equal(u.loaded,loaded+1);assert.equal(u.reloadProgress,undefined);s=leave(s,b);assert.equal(stockAndCarriedAmmo(s),stock+loaded);assert.equal(s.operativeState[10].carriedLoaded,loaded+1);roundtrip(s);
  }
 });
 test('map drop, recovery, and secondary equip preserve prepared guns without duplicating a charge',()=>{
@@ -86,7 +87,7 @@ test('capture and rescue retain prepared loading and keep captive rounds out of 
  const f=fixture(1,.5);Object.assign(f.operativeState[10].inventory.musket,{weapon:1808,fittings:{},jammed:false});let s=equip(f);s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});
  let b=createBattle(s.pendingBattle.squad.map((u,i)=>({...u,x:2+i,y:15,...(u.id===10?{hp:10,bandaged:u.maxHp-10,unconscious:true}: {})})),{...s.pendingBattle,width:20,height:16,tiles:Array.from({length:320},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0})),enemies:s.pendingBattle.enemies.map((u,i)=>({...u,x:18,y:i,ap:0})),props:[],npcs:[]});
  b=actBattle(b,{type:'exit',unitIds:['3','4'],exitId:b.exits.find(e=>e.destination==='buenos_aires').id});assert.equal(b.lastError,null);assert.equal(b.status,'retreat');const stock=s.resources.cartridges,returned=b.units.filter(u=>['3','4'].includes(u.id)).reduce((sum,u)=>sum+u.ammo+u.loaded,0);
- s=order(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'retreat',sectorState:b,survivors:b.units.filter(u=>u.side==='player')});assert.equal(s.resources.cartridges,stock+returned);assert.deepEqual(s.operativeState[10].capturedAmmunition,{loaded:1,ammo:9,preserveLoading:true,reloadProgress:.5});assert.equal(s.operativeState[10].carriedAmmo,0);roundtrip(s);
+ s=order(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'retreat',sectorState:b,survivors:b.units.filter(u=>u.side==='player')});assert.equal(stockAndCarriedAmmo(s),stock+returned);assert.deepEqual(s.operativeState[10].capturedAmmunition,{loaded:1,ammo:9,preserveLoading:true,reloadProgress:.5});assert.equal(s.operativeState[10].carriedAmmo,0);roundtrip(s);
  const invalid=structuredClone(s);invalid.operativeState[10].capturedAmmunition.reloadProgress=1;assert.throws(()=>decodeSave(encodeSave(invalid)));
  s=order(s,{type:'attack',sector:'san_nicolas'});const legacy=structuredClone(s);delete legacy.operativeState[10].capturedAmmunition.preserveLoading;delete legacy.operativeState[10].capturedAmmunition.reloadProgress;const pooled=order(legacy,scriptedBattleReport(legacy));s=order(s,scriptedBattleReport(s));assert.equal(s.operativeState[10].captured,false);assert.equal(s.operativeState[10].carriedLoaded,1);assert.equal(s.operativeState[10].carriedReloadProgress,.5);assert.equal(s.operativeState[10].carriedAmmo,1);assert.equal(s.resources.cartridges,pooled.resources.cartridges-1);roundtrip(s);
 });
