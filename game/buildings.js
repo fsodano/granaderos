@@ -16,7 +16,7 @@ export function buildBuilding({id,x,y,width,height,name=id,doors=[],windows=[],m
 }
 export function placeBuilding(ground,options){const result=buildBuilding(options),overrides=new Map(result.tiles.map(t=>[`${t.x},${t.y}`,t]));if(result.tiles.some(t=>!ground.some(g=>g.x===t.x&&g.y===t.y)))throw Error('Building footprint is outside the sector.');return{tiles:ground.map(t=>overrides.get(`${t.x},${t.y}`)||{...t}),building:result.building};}
 
-// Opt-in geometry authoring. Existing building plans remain ground-only.
+// Explicit geometry authoring; campaign-terraces.js selects supported house roofs.
 export function buildTerrace(building,{elevation=3,tacticalLevel=1,slabThickness=DEFAULT_SLAB_THICKNESS,climbPoints=[]}={}){
  if(building.roof!=='terrace')throw Error('A walkable terrace needs a flat terrace roof.');
  if(!Number.isFinite(elevation)||elevation<=0||!Number.isInteger(tacticalLevel)||tacticalLevel<1||tacticalLevel>MAX_TACTICAL_LEVEL||!Number.isFinite(slabThickness)||slabThickness<=0||slabThickness>=elevation)throw Error('Invalid terrace height or level.');
