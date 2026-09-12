@@ -34,7 +34,9 @@ export function movementRoute(previous:any,unit:any,target:Point,charge=false,pr
     const points=[unit];for(let i=1;i<=Math.max(Math.abs(dx),Math.abs(dy));i++)points.push({x:unit.x+Math.sign(dx)*i,y:unit.y+Math.sign(dy)*i,tacticalLevel:tacticalLevel(unit)});
     if(points.every(p=>surfacesAtLevel(previous,tacticalLevel(p)).some((t:any)=>sameCell(t,p)&&!t.blocked)))return points;
   }
-  const reachable=getReachable({...previous,status:'active',mode:'exploration'},unit,preserveFacing?{movementIntent:'preserveFacing'}:{}).find((p:any)=>sameCell(p,target));
+  // Animation needs one destination, not a full-map movement overlay. Stop when
+  // the same pathfinder settles that cell, preserving its route and tie order.
+  const reachable=getReachable({...previous,status:'active',mode:'exploration'},unit,{stopAt:(point:any)=>sameCell(point,target),...(preserveFacing?{movementIntent:'preserveFacing'}:{})}).find((p:any)=>sameCell(p,target));
   if(reachable?.path)return [unit,...reachable.path];
   // A charge may be diagonal; a resolved turn can end on a previously occupied
   // cell. Traverse terrain, allowing the authoritative destination to be reached.
