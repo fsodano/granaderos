@@ -1,0 +1,49 @@
+# Regional terrain and weather
+
+Fresh sectors use regional surroundings instead of a common grass exterior.
+The authored landmark, streets, doors, deployment areas and boundary approaches
+retain their layout. Returning to a saved sector retains its terrain and damage.
+
+| Region | Terrain and climate profile |
+| --- | --- |
+| Retiro, Buenos Aires, Ensenada | Humid plain and riverbank; Ensenada has wet ground |
+| San Nicolás, San Lorenzo, Santa Fe | Paraná riverbank and wetlands |
+| Córdoba | Central scrub and rocky ground |
+| Mendoza | Dry foothills, scrub and oasis surroundings |
+| Tucumán, Yatasto, Salta, Jujuy | Northern woodland and valleys, wetter in summer |
+| Humahuaca | Dry highland valley, sparse vegetation and rock |
+| Uspallata, Los Patos | High mountain passes, rock and sparse vegetation |
+
+These are broad game regions, not maps of precise ecological boundaries. The
+geographic basis includes the Pampa's rain through the year, the wet Yungas, and
+the dry, cold high Andes. See the National Parks descriptions of the
+[Pampa](https://www.argentina.gob.ar/parquesnacionales/ecorregiones/pampa),
+[Yungas](https://www.argentina.gob.ar/node/245944), and
+[Altos Andes](https://www.argentina.gob.ar/node/245920).
+
+Weather uses the existing campaign calendar: March start, 30-day months and
+Southern Hemisphere seasons. A region has a deterministic weather state for
+each six-hour interval. Assault, defense and exploration use the same state.
+The tactical clock updates it at the interval boundary. Leaving and entering
+cannot reroll it; a resumed engagement retains its saved weather and clock.
+The regional weather function does not consume campaign or combat randomness.
+Removing the old assault-only weather roll changes later campaign RNG positions.
+
+Rain values are the existing 0–100 gameplay intensity. `humidity` is an additive
+powder-ignition penalty, not a relative-humidity percentage. Seasonal ranges,
+rain probabilities and interval length are game tuning, not recorded 1812
+weather or a claim to reproduce JA2's weather formula.
+
+Gameplay uses the existing rules: wet powder is less reliable, a serviceable
+worn poncho protects the turn AP budget from rain, heavy rain shortens newly
+lit torches, and mountain conditions reduce the combat AP budget. Mud costs
+more movement energy. Forest and scrub provide cover. Exploration spends no
+AP. Weather changes do not refill or deduct a soldier's current AP.
+
+The campaign sector panel has a collapsed **Terreno y clima** section. It shows
+the region and season, plus current weather for the squad's local sector. The
+tactical header already indicates rain and day/night.
+
+Limits: no snow tiles, temperature simulation or precipitation animation.
+Existing torches retain the lifetime assigned when lit. Saved geography is
+preserved; previously visited grass exteriors are not regenerated.
