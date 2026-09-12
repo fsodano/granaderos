@@ -22,10 +22,13 @@ const diamond=(x:number,y:number)=>`${x},${y-14} ${x+26},${y} ${x},${y+14} ${x-2
 const hash=(x:number,y:number)=>((x*374761393+y*668265263)>>>0)%1000;
 export default function TacticalScene({viewport,cursorLevel=0,state:s,selected,unit:u,players,units,positions,poses,directions,hover,mode,aim,hitLocation='torso',reachable,showSight,sight,revealed,project,onTile,onHover,onTalk,onCannon,cannonId}:Props){
  const handlers=useRef({onTile,onHover});handlers.current={onTile,onHover};
+ // Roof geography remains drawn in full. Upper-floor controls and changing
+ // contents require actual shared sight, including the room on that floor.
+ const upperPointVisible=(point:any)=>!tacticalLevel(point)||isInteriorVisible(s,point,revealed)&&players.some(player=>canSee(s,player,point));
  const visibleTiles=useMemo(()=>s.tiles.filter((t:any)=>pointInViewport(viewport,projectSurface(s,project,t),110)),[s.tiles,viewport,project]);
- const upperTiles=useMemo(()=>(s.upperSurfaces??[]).filter((t:any)=>tacticalLevel(t)===cursorLevel&&pointInViewport(viewport,projectSurface(s,project,t),110)),[s,viewport,project,cursorLevel]);
+ const upperTiles=useMemo(()=>(s.upperSurfaces??[]).filter((t:any)=>tacticalLevel(t)===cursorLevel&&pointInViewport(viewport,projectSurface(s,project,t),110)&&upperPointVisible(t)),[s,players,revealed,viewport,project,cursorLevel]);
  const heard=heardNoiseModel(s,u),heardPoint=heard?projectSurface(s,project,heard):null;
- const buildings=useMemo(()=>createBuildingRenderer({state:s,revealed,cursorLevel,project,light:(x,y)=>s.night?.27+tileIllumination(s,x,y)*.73:1}),[s,revealed,project,cursorLevel]);
+ const buildings=useMemo(()=>createBuildingRenderer({state:s,revealed,cursorLevel,project,light:(x,y,level=0)=>s.night?.27+tileIllumination(s,x,y,level)*.73:1}),[s,revealed,project,cursorLevel]);
  const scenery=useMemo(()=>{
  const objects:{depth:number;key:string;node:ReactNode}[]=[];
  const add=(key:string,x:number,y:number,node:ReactNode,bias=0)=>objects.push({key,depth:x+y+bias,node});
@@ -49,7 +52,7 @@ export default function TacticalScene({viewport,cursorLevel=0,state:s,selected,u
   }
  }
  objects.push(...buildings(viewport));
- const visibleProps=(s.props??[]).filter((p:any)=>pointInViewport(viewport,projectSurface(s,project,p),200));
+ const visibleProps=(s.props??[]).filter((p:any)=>pointInViewport(viewport,projectSurface(s,project,p),200)&&upperPointVisible(p));
  objects.push(...buildPropObjects({state:{...s,props:visibleProps.filter((p:any)=>!surfaceHeight(s,p))},revealed,project,light}));
  for(const prop of visibleProps.filter((p:any)=>(surfaceHeight(s,p)??0)>0)){
   const level=tacticalLevel(prop),height=surfaceHeight(s,prop)??0;
@@ -58,7 +61,7 @@ export default function TacticalScene({viewport,cursorLevel=0,state:s,selected,u
   objects.push(...raised.map((object:any)=>({...object,depth:surfaceDrawDepth(s,prop,object.depth-prop.x-prop.y)})));
  }
  return objects;
- },[s,revealed,project,units,viewport,visibleTiles,buildings]);
+ },[s,players,revealed,project,units,viewport,visibleTiles,buildings]);
  const objects=[...scenery];
  const add=(key:string,x:number,y:number,node:ReactNode,bias=0,level=0)=>objects.push({key,depth:surfaceDrawDepth(s,{x,y,tacticalLevel:level},bias),node});
  const reachableSet=useMemo(()=>new Set(reachable.map(spaceKey)),[reachable]);
@@ -95,7 +98,7 @@ export default function TacticalScene({viewport,cursorLevel=0,state:s,selected,u
    {pile.count>1&&<text x={p.x+11} y={p.y+9} textAnchor="middle" fill="#fff2c7" stroke="#18261d" strokeWidth="2" paintOrder="stroke" fontSize="10" pointerEvents="none">{pile.count}</text>}
   </g>,.02,tacticalLevel(pile));
  }
- for(const [i,l] of (s.lights??[]).entries())if(isInteriorVisible(s,l,revealed)){const p=projectSurface(s,project,l);add(`light-${i}`,l.x,l.y,<g pointerEvents="none"><ellipse cx={p.x} cy={p.y-4} rx="3" ry="7" fill="#efa242"/><ellipse cx={p.x} cy={p.y-5} rx="1.5" ry="4" fill="#ffe3a0"/></g>,.03,tacticalLevel(l));}
+ for(const [i,l] of (s.lights??[]).entries())if(isInteriorVisible(s,l,revealed)&&upperPointVisible(l)){const p=projectSurface(s,project,l);add(`light-${i}`,l.x,l.y,<g pointerEvents="none"><ellipse cx={p.x} cy={p.y-4} rx="3" ry="7" fill="#efa242"/><ellipse cx={p.x} cy={p.y-5} rx="1.5" ry="4" fill="#ffe3a0"/></g>,.03,tacticalLevel(l));}
  for(const t of upperTiles){
   const p=projectSurface(s,project,t),key=spaceKey(t),occupant=units.find(v=>sameCell(v,t)&&!v.fled);
   objects.push({key:`surface-${key}`,depth:surfaceDrawDepth(s,t,.01),node:<g data-surface-level={tacticalLevel(t)} data-surface-id={t.id} role="button" tabIndex={0} aria-label={`${tacticalGridLabel(t.x,t.y)}, nivel superior${occupant?', '+occupant.name:t.blocked?', obstáculo':', accesible'}`} onClick={()=>onTile(t)} onKeyDown={event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();onTile(t);}}} onMouseEnter={()=>onHover(t)} onMouseLeave={()=>onHover(null)} onFocus={()=>onHover(t)} onBlur={()=>onHover(null)}>
@@ -110,7 +113,7 @@ export default function TacticalScene({viewport,cursorLevel=0,state:s,selected,u
   {ground}
   {hover&&!tacticalLevel(hover)&&pointInViewport(viewport,projectSurface(s,project,hover))&&<polygon points={diamond(projectSurface(s,project,hover).x,projectSurface(s,project,hover).y)} fill={mode==='move'&&reachableSet.has(spaceKey(hover))?'#d8dca1':'#bd6f4d'} fillOpacity=".16" stroke="#ddd6a7" strokeWidth="1" pointerEvents="none"/>}
   {objects.sort((a,b)=>a.depth-b.depth||a.key.localeCompare(b.key)).map(o=><g key={o.key}>{o.node}</g>)}
-  {(s.smoke??[]).map((v:any,i:number)=>{const p=projectSurface(s,project,v);return <ellipse key={i} cx={p.x} cy={p.y-24} rx={32*v.radius} ry={23*v.radius} fill="url(#smokefill)" pointerEvents="none"/>})}
+  {(s.smoke??[]).filter(upperPointVisible).map((v:any,i:number)=>{const p=projectSurface(s,project,v);return <ellipse key={i} cx={p.x} cy={p.y-24} rx={32*v.radius} ry={23*v.radius} fill="url(#smokefill)" pointerEvents="none"/>})}
   {heard&&heardPoint&&<g className="ja2-noise-marker" aria-label="Ruido: zona aproximada" pointerEvents="none"><ellipse cx={heardPoint.x} cy={heardPoint.y} rx={Math.max(26,heard.radius*26)} ry={Math.max(14,heard.radius*14)} fill="#d4b35a" fillOpacity=".08" stroke="#e7ca7d" strokeWidth="1.5" strokeDasharray="4 4"/><text x={heardPoint.x} y={heardPoint.y+4} textAnchor="middle" fill="#fff0b7" fontSize="17" fontWeight="bold" stroke="#282316" strokeWidth="3" paintOrder="stroke">?</text></g>}
  </>;
 }
