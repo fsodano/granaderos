@@ -38,15 +38,15 @@ test('inventory alone offers paid bayonet fitting and both removal destinations 
   const button=strip(mismatch,true).match(/<button[^>]*>Fijar al Brown Bess · 12 PA<\/button>/)?.[0];assert.match(button,/disabled=""/);
 });
 
-test('a fitted close target shows thrust cost without a shot percentage until explicit fire mode',()=>{
+test('close-combat mode shows thrust cost without a shot percentage until explicit fire mode',()=>{
   const s=fixture(),u=s.units[0],enemy=s.units[1];
-  Object.assign(u,{weapon:1800,x:1,y:1,activeSlot:'primary',weaponFittings:{bayonet:{weapon:1811,fittingPattern:'india_socket',condition:73,instanceId:'socket-render-close'}}});Object.assign(enemy,{x:3,y:1});
+  Object.assign(u,{weapon:1800,x:1,y:1,activeSlot:'primary',weaponMode:'melee',weaponFittings:{bayonet:{weapon:1811,fittingPattern:'india_socket',condition:73,instanceId:'socket-render-close'}}});Object.assign(enemy,{x:3,y:1});
   const options={units:s.units,hover:enemy};
   assert.ok(!/>\d+%<\/text>/.test(scene(s,{},options)));
   assert.match(scene(s,{}, {...options,mode:'fire'}),/>\d+%<\/text>/);
   assert.match(strip(s,false,{target:enemy}),/Estocada de bayoneta · 16 PA/);
   assert.match(strip(s,false,{target:enemy,mode:'fire'}),/Disparo deliberado/);
-  u.weaponFittings.bayonet.condition=0;assert.match(scene(s,{},options),/>\d+%<\/text>/);
+  u.weaponFittings.bayonet.condition=0;assert.ok(!/>\d+%<\/text>/.test(scene(s,{},options)));assert.match(strip(s,false,{target:enemy}),/Culatazo|acercarse/);
 });
 
 test('figure activation uses its fixed person frame instead of the clipped atlas bounding box',()=>{

@@ -1,4 +1,5 @@
 'use client';
+import JA2WeaponMode from './JA2WeaponMode';
 import {maximumEnergy} from '../../game/fatigue.js';
 // MODE B: single-merc inventory panel (header / stats / stance grid / paper-doll / slot-grid / pertrechos / far-right cluster).
 // Pure read model (game/ja2-hud.js inventoryModel/orderDescriptors); all mutations are caller-provided callbacks.
@@ -171,6 +172,7 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
         <button className={`hand-slot unarmed ${inv.activeSlot === 'unarmed' ? 'active' : ''}`} disabled={slotDisabled('unarmed') || inv.activeSlot === 'unarmed'} aria-pressed={inv.activeSlot === 'unarmed'} aria-label={`Dejar las manos libres: ${def('weapon')?.pa} PA`} onClick={() => onOrder({type: 'weapon', slot: 'unarmed'})}>
           <span>Manos libres</span><small>Atacar con los puños</small>
         </button>
+        <JA2WeaponMode battle={battle} unit={unit} busy={busy} onOrder={onOrder} onMode={onMode}/>
         <div className="ja2-hand-management">{inv.items.filter((entry: any) => ['primary', 'blade'].includes(entry.item)).map((entry: any) => <button key={entry.item} className="line-button" disabled={busyDisabled} aria-pressed={item?.item === entry.item} onClick={() => chooseItem(entry.item)}>Dar o soltar {entry.label}</button>)}</div>
         <AttachedBayonetControl attached={inv.fittings.attached} busy={busyDisabled} onOrder={onOrder}/>
         <LooseBayonetControl source={inv.fittings.sources.find((source: any) => source.item === 'blade')} busy={busyDisabled} onOrder={onOrder}/>

@@ -1,0 +1,7 @@
+import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
+import test from 'node:test';import assert from 'node:assert/strict';import {createElement as h} from '../web/node_modules/react/index.js';import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';import {createBattle} from '../game/tactical.js';
+const {default:Control}=await import('../web/app/JA2WeaponMode.tsx');
+const b=createBattle([{id:'p',weapon:1800}],{enemies:[],exploration:true});
+const html=(unit=b.units[0],busy=false)=>render(h(Control,{battle:b,unit,busy,onOrder(){},onMode(){}}));
+test('the held gun exposes two explicit modes, with the current strike type and selection',()=>{assert.match(html(),/Modo del arma en mano/);assert.equal((html().match(/<button/g)??[]).length,2);assert.match(html(),/aria-pressed="true"[^>]*>Disparo/);assert.match(html({...b.units[0],weaponMode:'melee'}),/>Culata</);assert.match(html({...b.units[0],weaponMode:'melee',weaponFittings:{bayonet:{weapon:1811,fittingPattern:'india_socket',condition:70,instanceId:'b'}}}),/>Bayoneta</);assert.doesNotMatch(html(),/ráfaga|Charge|Recargar/);});
+test('switches respect unavailable actors and disappear for non-firearm held items',()=>{assert.equal((html(b.units[0],true).match(/disabled=""/g)??[]).length,2);assert.equal(html({...b.units[0],activeSlot:'medical'}),'');assert.equal(html({...b.units[0],weaponDropped:true}),'');});

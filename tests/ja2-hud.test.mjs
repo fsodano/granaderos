@@ -55,9 +55,9 @@ test('bayonet inventory controls share paid fit/removal admission and retain inc
   const unknown=structuredClone(s);unknown.units[0].bladeFittingPattern=null;
   assert.equal(fittingInventoryModel(unknown,unknown.units[0]).sources[0].preview.valid,false);
 });
-test('fitted hostile clicks share thrust routing, AP and pose while F permits deliberate close fire',()=>{
+test('close-combat mode shares thrust routing, AP and pose while F permits deliberate close fire',()=>{
   const s=battle([merc(0,{weapon:1800})]);const u=players(s)[0],target=s.units.find(unit=>unit.side==='enemy');
-  Object.assign(u,{weapon:1800,activeSlot:'primary',x:1,y:1,condition:61,loaded:0,jammed:true,weaponFittings:{bayonet:{weapon:1811,fittingPattern:'india_socket',instanceId:'socket-attack-hud',condition:73}}});
+  Object.assign(u,{weapon:1800,activeSlot:'primary',weaponMode:'melee',x:1,y:1,condition:61,loaded:0,jammed:true,weaponFittings:{bayonet:{weapon:1811,fittingPattern:'india_socket',instanceId:'socket-attack-hud',condition:73}}});
   Object.assign(target,{x:3,y:1});
   const attack=contextualAttack(s,u,target,{aim:4}),preview=targetPreview(s,u,target,{aim:4,hitLocation:'head'});
   assert.equal(attack.type,'melee');assert.equal(preview.pa,attack.pa);assert.equal(preview.valid,true);assert.equal(preview.attackLabel,'Estocada de bayoneta');assert.equal(preview.chance,undefined);assert.equal(preview.hitLocation,undefined);
@@ -68,7 +68,7 @@ test('fitted hostile clicks share thrust routing, AP and pose while F permits de
   assert.equal(targetPreview(s,u,target,{mode:'fire'}).valid,false);
   u.loaded=1;u.jammed=false;
   const deliberate=targetPreview(s,u,target,{mode:'fire',aim:2});assert.equal(deliberate.pa,contextualAttack(s,u,target,{type:'fire',aim:2}).pa);assert.equal(typeof deliberate.chance,'number');
-  target.x=5;assert.equal(targetPreview(s,u,target).attackType,'fire');
+  target.x=5;assert.equal(targetPreview(s,u,target).attackType,'melee');assert.ok(targetPreview(s,u,target).pa>16);
   u.activeSlot='medical';assert.equal(attackCursorMode(u),'useItem');assert.equal(targetItemAction('fire',u.id,u).type,'useItem');assert.equal(resolvedOrderType(s,u,{type:'useItem',targetId:u.id}),'heal');
   assert.deepEqual(targetItemAction('move',target.id,u),{type:'useItem',targetId:target.id});
 });

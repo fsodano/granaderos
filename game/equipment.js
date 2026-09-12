@@ -142,6 +142,7 @@ export function returnEquipment(s,id,report){
  if(report.blade!==undefined){need(report.blade===0||Number.isInteger(report.blade)&&report.blade>=1809&&report.blade<=1813,'El arma blanca del parte es inválida.');s.loadouts[id].blade=report.blade;}
  else if(report.weapon!==undefined)s.loadouts[id].blade=0;
  for(const key of ['jammed','weaponDropped'])if(report[key]!==undefined){need(typeof report[key]==='boolean','El estado del arma es inválido.');s.operativeState[id][key]=report[key];}
+ if(report.weaponMode!==undefined){need(['fire','melee'].includes(report.weaponMode),'El modo del arma es inválido.');s.operativeState[id].weaponMode=report.weaponMode;}
  if(report.activeSlot!==undefined){need(['primary','blade','medical','unarmed','tool','supply'].includes(report.activeSlot),'El equipo activo es inválido.');s.operativeState[id].activeSlot=report.activeSlot;if(report.activeSlot==='tool'){need(Boolean(heldTool(report)),'La herramienta del parte es inválida.');s.operativeState[id].activeTool=report.activeTool;}else delete s.operativeState[id].activeTool;if(report.activeSlot==='supply'){need(Boolean(heldSupply(report)),'El pertrecho del parte es inválido.');s.operativeState[id].activeSupply=report.activeSupply;}else delete s.operativeState[id].activeSupply;}
  if(report.bladeCondition!==undefined){need(Number.isFinite(report.bladeCondition)&&report.bladeCondition>=0&&report.bladeCondition<=100,'El estado del arma blanca del parte es inválido.');s.operativeState[id].bladeCondition=report.bladeCondition;}
  for(const [slot,key] of [['weapon','weaponInstanceId'],['blade','bladeInstanceId']]){
@@ -182,6 +183,7 @@ export function validateEquipment(s,roster=[]){
   validateUnitFittings({...op,...r});
   for(const [slot,key] of [['weapon','weaponInstanceId'],['blade','bladeInstanceId']])if(r[key]!==undefined)need(validInstanceId(r[key])&&op?.[slot]>0&&(slot!=='weapon'||!r.weaponDropped),'La identidad del arma guardada es inválida.');
   for(const key of ['jammed','weaponDropped'])need(r[key]===undefined||typeof r[key]==='boolean','El estado del arma guardada es inválido.');
+  need(r.weaponMode===undefined||['fire','melee'].includes(r.weaponMode),'El modo del arma guardado es inválido.');
   need(r.activeSlot===undefined||['primary','blade','medical','unarmed','tool','supply'].includes(r.activeSlot),'El equipo activo guardado es inválido.');
   need(r.activeSlot==='tool'?Boolean(heldTool(r)):r.activeTool===undefined,'La herramienta equipada es inválida.');
   need(r.activeSlot==='supply'?Boolean(heldSupply(r)):r.activeSupply===undefined,'El pertrecho equipado es inválido.');

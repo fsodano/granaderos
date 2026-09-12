@@ -46,8 +46,8 @@ test('repeat fitting and occupied secondary removal cannot overwrite or duplicat
   s=order(s,{type:'removeBayonet',destination:'inventory'});assert.equal(s.units[0].blade,1813);assert.equal(Object.values(s.units[0].inventory)[0].instanceId,'socket-1');reject(s,{type:'removeBayonet',destination:'inventory'});
 });
 
-test('ordinary use thrusts a fixed loaded jammed gun without spending its charge or changing firearm condition',()=>{
-  let s=order(battle(),{type:'fitBayonet',item:'blade'}),u=s.units[0],enemy=s.units[1];
+test('close-combat mode thrusts a fixed loaded jammed gun without spending its charge or changing firearm condition',()=>{
+  let s=order(order(battle(),{type:'fitBayonet',item:'blade'}),{type:'weaponMode',mode:'melee'}),u=s.units[0],enemy=s.units[1];
   const preview=contextualAttack(s,u,enemy);assert.equal(preview.type,'melee');assert.equal(preview.pa,16);assert.equal(preview.profile.reach,2);
   s=order(s,{type:'useItem',targetId:'e',aim:4});u=s.units[0];assert.equal(u.ap,72);assert.equal(u.loaded,1);assert.equal(u.ammo,0);assert.equal(u.jammed,true);assert.equal(u.condition,66);assert.equal(u.weaponFittings.bayonet.condition,72);assert.equal(s.units[1].hp,57);
 });
@@ -68,7 +68,7 @@ test('loose, broken and stowed bayonets cannot borrow fixed reach or brace',()=>
 });
 
 test('a fitting wears through its last committed thrust and then permits only stock melee',()=>{
-  let s=order(battle({bladeCondition:1}),{type:'fitBayonet',item:'blade'});s=order(s,{type:'useItem',targetId:'e'});assert.equal(s.units[0].weaponFittings.bayonet.condition,0);assert.equal(fixedBayonetFor(s.units[0]),null);assert.notEqual(bladeFor(s.units[0]).id,1811);reject(s,{type:'melee',targetId:'e'});
+  let s=order(order(battle({bladeCondition:1}),{type:'fitBayonet',item:'blade'}),{type:'weaponMode',mode:'melee'});s=order(s,{type:'useItem',targetId:'e'});assert.equal(s.units[0].weaponFittings.bayonet.condition,0);assert.equal(fixedBayonetFor(s.units[0]),null);assert.notEqual(bladeFor(s.units[0]).id,1811);reject(s,{type:'melee',targetId:'e'});
 });
 
 test('hand extraction and pack transfer retain the complete assembly and loaded charge weight once',()=>{

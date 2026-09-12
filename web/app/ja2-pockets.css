@@ -1,4 +1,4 @@
-.battle-layout .slot-grid:has(.ja2-pockets) {display:block;overflow-y:auto}
+.battle-layout .slot-grid:has(.ja2-pockets) {display:block;overflow-y:auto;max-height:none}
 .ja2-pockets {grid-column:1/-1;min-width:0;color:#ded9bd}
 .ja2-pockets p {margin:0 0 .35rem;font-size:.68rem}
 .ja2-pockets small {display:block;min-height:24px;font-size:.6rem;line-height:1.25;margin-bottom:4px;color:#b7baa4}

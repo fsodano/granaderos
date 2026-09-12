@@ -8,4 +8,4 @@ Ten new tests cover geometry, swaps, metadata, stale requests, bounded oversized
 
 A separate live production-component demonstration displayed all twelve pockets, rejected small destinations for a Brown Bess, moved it to the fourth large pocket, and restored its position after saving/loading. Equipping it reduced AP from 100 to 94 and retained its prepared round, 63% gun condition and 73% bayonet condition. This is a controlled fixture, not a complete campaign playthrough.
 
-The general two-hand system, outfit slot and explicit firearm/close-combat switch remain separate pending work.
+The general two-hand system and outfit slot remain pending. The explicit firearm/close-combat switch is now implemented; see weapon-modes.md. The pocket container also expands at intermediate window widths so its small pockets remain visible.
