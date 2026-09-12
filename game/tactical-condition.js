@@ -1,3 +1,4 @@
+import {lowerWeapon} from './weapon-readiness.js';
 // JA2-inspired condition rules on Granaderos' existing 100-point AP scale.
 export const AP_CARRY_LIMIT = 20;
 export const CRITICAL_HEALTH = 15;
@@ -34,6 +35,7 @@ export const movementStance = mode => mode === 'prone' ? 'prone' : mode === 'cro
 export function refreshCondition(u) {
   u.bandaged = clamp(u.bandaged ?? 0, 0, Math.max(0, u.maxHp - u.hp));
   u.unconscious = isUnconscious(u);
+  if (u.hp <= 0 || u.unconscious || u.knockedDown) lowerWeapon(u);
   if (u.hp <= 0 || u.unconscious) {
     u.ap = 0;
     u.mounted = false;

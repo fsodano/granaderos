@@ -1,3 +1,4 @@
+import {lowerWeapon} from './weapon-readiness.js';
 import {validateReloadProgress} from './weapon-reload.js';
 import {WEAPONS} from './data.js';
 import {clearEmptySupply} from './held-supplies.js';
@@ -149,7 +150,7 @@ export function extractItemQuantity(unit, item, count = 1) {
     stack = {item, count, weight: SUPPLY_ITEMS[item].weight};
   } else if (entry.kind === 'hand') {
     stack = {item: 'weapon', ...handRecord(unit, entry.key)};
-    if (entry.key === 'primary') {next.weaponDropped = true; next.loaded = 0; delete next.reloadProgress; next.jammed = false; delete next.weaponInstanceId; next.weaponFittings={}; next.weaponFittingPattern=null;}
+    if (entry.key === 'primary') {lowerWeapon(next); next.weaponDropped = true; next.loaded = 0; delete next.reloadProgress; next.jammed = false; delete next.weaponInstanceId; next.weaponFittings={}; next.weaponFittingPattern=null;}
     else {delete next.blade; delete next.bladeInstanceId; delete next.bladeCondition; next.bladeFittingPattern=null;}
     if ((next.activeSlot ?? 'primary') === entry.key) next.activeSlot = 'unarmed';
     next.braced = false; next.overwatch = false; next.momentum = 0;
