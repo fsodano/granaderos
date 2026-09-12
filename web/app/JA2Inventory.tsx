@@ -56,9 +56,9 @@ export function RadarCluster({battle, units, selected, project, vw, vh, cameraRe
         <p>{enemies.length} avistados</p>
         <p>{targetingHelp(mode, battle.units.find((u: any) => u.id === selected))}</p>
       </div>
-      {missionAllies.length > 0 && <details className="ja2-garrison-toggle" aria-label="Aliados de la misión"><summary>Oficiales aliados · {missionAllies.length} temporales</summary><div className="squad-strip">{missionAllies.map((p: any) => <button key={p.id} className={`squad-card ${p.id === selected ? 'active' : ''} ${alive(p) ? '' : 'fallen'}`} disabled={!selectable(p)} aria-label={`Seleccionar aliado ${p.name}`} onClick={event => onSelect(p.id, event.shiftKey)}><div><strong>{p.name}</strong><span>{alive(p) ? `${Math.ceil(p.hp)} SALUD · ${p.ap} PA` : 'Fuera de combate'}</span></div></button>)}</div></details>}
+      {missionAllies.length > 0 && <details className="ja2-garrison-toggle" aria-label="Aliados de la misión"><summary>Oficiales aliados · {missionAllies.length} temporales</summary><div className="squad-strip">{missionAllies.map((p: any) => <button key={p.id} className={`squad-card ${p.id === selected ? 'active' : ''} ${alive(p) ? '' : 'fallen'}`} disabled={!selectable(p)} aria-label={`Seleccionar aliado ${p.name}`} onClick={event => onSelect(p.id, event.shiftKey)}><div><strong>{p.name}</strong><span>{alive(p) ? `${Math.ceil(p.hp)} SALUD · ${battle.mode === 'exploration' ? 'Exploración' : `${p.ap} PA`}` : 'Fuera de combate'}</span></div></button>)}</div></details>}
       {localMilitia.length > 0 && <details className="ja2-garrison-toggle" aria-label="Guarnición local"><summary>Guarnición local · {localMilitia.length} milicianos</summary><p>La milicia combate por su cuenta.</p><div className="squad-strip">{localMilitia.map((p: any, i: number) => {
-        const content = <div><strong>{i + 1}. {p.name}</strong><span>{p.unconscious ? 'Inconsciente' : alive(p) ? `${Math.ceil(p.hp)} SALUD · ${p.ap} PA` : 'Fuera de combate'}</span></div>;
+        const content = <div><strong>{i + 1}. {p.name}</strong><span>{p.unconscious ? 'Inconsciente' : alive(p) ? `${Math.ceil(p.hp)} SALUD · ${battle.mode === 'exploration' ? 'Exploración' : `${p.ap} PA`}` : 'Fuera de combate'}</span></div>;
         return medicalTargeting
           ? <button key={p.id} className="squad-card" disabled={!selectable(p)} aria-label={`Vendar a ${p.name}`} onClick={() => onSelect(p.id)}>{content}</button>
           : <div key={p.id} className={`squad-card ${alive(p) ? '' : 'fallen'}`} aria-label={`Miliciano ${i + 1}: ${p.name}`}>{content}</div>;
@@ -77,6 +77,7 @@ type Props = {
   onAutoBandage?: () => void; bandageReport?: any;
 };
 export default function JA2Inventory({unit, battle, mode, showSight, busy, units, selected, missionAllies, localMilitia, vw, vh, cameraRect, project, zoom, onOrder, onMode, onToggleSight, onSelect, onRetreat, onCameraCenter, onCameraPan, onZoom, onCloseInventory, onAutoBandage, bandageReport}: Props) {
+  const cost=(n:number|undefined)=>battle.mode==='exploration'?'sin PA':`${n ?? 0} PA`;
   const inv: any = inventoryModel(battle, unit);
   const bandaging = autoBandageStatus(battle);
   const descriptors: any[] = orderDescriptors(battle, unit, {busy});
@@ -105,7 +106,8 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
   const content = environment.contents.find((entry: any) => entry.index === contentIndex) || environment.contents[0];
   const contentCount = Math.min(contentQuantity, content?.count ?? 1);
   const containerLoot = environment.target?.kind === 'container' ? containerLootPreview(battle, unit, environment.target, content?.index ?? 0, contentCount) : null;
-  const chooseItem = (id: string) => { setManagedItem(id); setQuantity(1); };
+  const [itemOpen,setItemOpen]=useState(false);
+  const chooseItem = (id: string) => { setManagedItem(id); setQuantity(1); setItemOpen(true); };
   useEffect(() => { setManagedItem('ammo'); setQuantity(1); setRecipient(''); setLootId(''); setLootQuantity(1); setEnvironmentKey(''); setEnvironmentVerb(''); setContentIndex(0); setContentQuantity(1); }, [unit.id]);
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
@@ -122,25 +124,35 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
   const stowSecond=equipLootPreview(battle,unit,null,'offhandItem');
   const stowOutfit=equipLootPreview(battle,unit,null,'outfit');
   return (
-    <div className="ja2-inventory" role="dialog" aria-modal="true" aria-label="Equipo y órdenes del combatiente">
+    <div className="ja2-inventory" role="region" aria-label="Equipo y órdenes del combatiente">
       <div className="ja2-inv-header">
         <div className="portrait">{portraitFor(unit.portraitId ?? unit.id) ? <img src={portraitFor(unit.portraitId ?? unit.id)!} alt={unit.name} /> : <span>{short(unit).slice(0, 2).toUpperCase()}</span>}</div>
         <div><h2>{short(unit)}</h2><span>{unit.mounted ? 'Granadero a caballo' : 'Ejército patriota'} · Nivel {levelFor(unit)}</span></div>
+<details className="ja2-inventory-extra"><summary>Postura y órdenes</summary><div className="ja2-inventory-popup">      <div className="ja2-stance-grid">
+        <div>
+          {MOVEMENT.map(([id, label]) => { const targetStance = id === 'prone' ? 'prone' : id === 'crouch' ? 'crouched' : 'standing'; const pa = battle.mode === 'exploration' ? 0 : stanceCost(unit, targetStance); return <button key={id} className={movementActive(id) ? 'active' : ''} aria-pressed={movementActive(id)} aria-label={`Cambiar a ${label}: ${battle.mode === 'exploration' ? 'sin PA' : `${pa} PA`}`} disabled={busyDisabled || unit.knockedDown || (unit.mounted && ['prone', 'crouch'].includes(id)) || (battle.mode !== 'exploration' && unit.ap < pa)} onClick={() => onOrder(orderAction(battle, unit, {movement: id}, 'movement'))}>{label} · {pa} PA</button>; })}
+        </div>
+        <div>
+          <button disabled={def('stealth')?.disabled} aria-pressed={Boolean(unit.stealthMode)} className={unit.stealthMode ? 'active' : ''} title="Consume más PA al moverse y reduce el ruido. No cambia la postura." onClick={() => onOrder(orderAction(battle, unit, {}, 'stealth'))}>Sigilo · {unit.stealthMode ? 'Sí' : 'No'}</button>
+          <button className={showSight ? 'active' : ''} aria-pressed={showSight} disabled={busyDisabled} onClick={onToggleSight}>{showSight ? 'Ocultar' : 'Mostrar'} campo de visión</button>
+          {STANCE_IDS.map(id => { const d = def(id); if (!d) return null; return <button key={id} disabled={d.disabled} aria-label={d.label} onClick={() => { if (d.kind === 'mode') onMode(id); else onOrder(orderAction(battle, unit, {}, id)); }}>{d.label}{d.pa !== undefined ? ` · ${cost(d.pa)}` : ''}</button>; })}
+        </div>
       </div>
+</div></details>      </div>
       <div className="ja2-stats">
         {inv.stats.map((st: any) => <div key={st.id}><span>{st.label}</span><b>{st.value}</b></div>)}
         <div><span>Salud</span><b>{Math.ceil(unit.hp)} / {unit.maxHp}</b></div>
-        <div><span>{battle.mode === 'exploration' ? 'Movimiento sin coste de PA' : 'Puntos de acción'}</span><b>{unit.ap} / {inv.currentAPLimit}</b></div>
+        {battle.mode !== 'exploration' && <div><span>Puntos de acción</span><b>{unit.ap} / {inv.currentAPLimit}</b></div>}
         <div><span>Postura</span><b>{stanceLabel(unit.stance)}</b></div>
         <div><span>Orientación</span><b>{facingLabel(unit)}</b></div>
         <div><span>Energía</span><b>{Math.round(unit.energy ?? 100)} / {maximumEnergy(unit)}</b></div>
-        <div><span>Carga / capacidad</span><b>{inv.weight.toFixed(1)} / {inv.capacity.toFixed(1)} kg</b></div>
+<details className="ja2-inventory-extra"><summary>Más detalles</summary><div className="ja2-inventory-popup">        <div><span>Carga / capacidad</span><b>{inv.weight.toFixed(1)} / {inv.capacity.toFixed(1)} kg</b></div>
         <div><span>Espacio del equipo</span><b>{inv.pockets.used ?? '—'} / {inv.pockets.capacity}</b></div>
         {inv.pockets.overloaded && <p className="danger-text">Falta espacio en el equipo. Soltá o entregá objetos antes de recibir más.</p>}
         <div><span>Moral</span><b>{Math.round(unit.morale)}%</b></div>
         <div><span>Estado del mecanismo</span><b>{unit.condition}%</b></div>
         {hasFirearm(unit) && <div><span>Riesgo de chispa fallida</span><b>{Math.round(ignitionRisk(battle, unit))}%</b></div>}
-        {unit.knockedDown && <p className="danger-text">Derribado: ponerse de pie cuesta 12 PA.</p>}
+        {unit.knockedDown && <p className="danger-text">Derribado: ponerse de pie · {cost(12)}.</p>}
         {unit.braced && <p>Bayoneta calada: espera una carga.</p>}
         {unit.bleeding > 0 && <p className="danger-text">Hemorragia: −{unit.bleeding} salud / turno</p>}
         {unit.bandaged > 0 && <p>Heridas vendadas: {Math.ceil(unit.bandaged)}. Requieren tratamiento en campaña.</p>}
@@ -153,42 +165,34 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
         </section>
         {battle.mode !== 'exploration' && <p>Se conservan hasta {AP_CARRY_LIMIT} PA. Reserva posible: {inv.apBudget.carryover}. Las heridas y el cansancio reducen los PA del turno.</p>}
         <TrainingProgress unit={unit} />
-      </div>
-      <div className="ja2-stance-grid">
-        <div>
-          {MOVEMENT.map(([id, label]) => { const targetStance = id === 'prone' ? 'prone' : id === 'crouch' ? 'crouched' : 'standing'; const pa = stanceCost(unit, targetStance); return <button key={id} className={movementActive(id) ? 'active' : ''} aria-pressed={movementActive(id)} aria-label={`Cambiar a ${label}: ${pa} PA`} disabled={busyDisabled || unit.knockedDown || (unit.mounted && ['prone', 'crouch'].includes(id)) || (battle.mode !== 'exploration' && unit.ap < pa)} onClick={() => onOrder(orderAction(battle, unit, {movement: id}, 'movement'))}>{label} · {pa} PA</button>; })}
-        </div>
-        <div>
-          <button disabled={def('stealth')?.disabled} aria-pressed={Boolean(unit.stealthMode)} className={unit.stealthMode ? 'active' : ''} title="Consume más PA al moverse y reduce el ruido. No cambia la postura." onClick={() => onOrder(orderAction(battle, unit, {}, 'stealth'))}>Sigilo · {unit.stealthMode ? 'Sí' : 'No'}</button>
-          <button className={showSight ? 'active' : ''} aria-pressed={showSight} disabled={busyDisabled} onClick={onToggleSight}>{showSight ? 'Ocultar' : 'Mostrar'} campo de visión</button>
-          {STANCE_IDS.map(id => { const d = def(id); if (!d) return null; return <button key={id} disabled={d.disabled} aria-label={d.label} onClick={() => { if (d.kind === 'mode') onMode(id); else onOrder(orderAction(battle, unit, {}, id)); }}>{d.label}{d.pa !== undefined ? ` · ${d.pa} PA` : ''}</button>; })}
-        </div>
-      </div>
+</div></details>      </div>
       <div className="paper-doll">
         <section className="ja2-outfit-slot" aria-label="Ranura de vestimenta">
           <small>Vestimenta</small>
           <button className="line-button" disabled={busyDisabled || !inv.outfit} aria-pressed={item?.item==='outfit'} onClick={()=>chooseItem('outfit')}>{inv.outfit ? `${inv.outfit.label} · ${inv.outfit.condition}%` : 'Vacía'}</button>
           {inv.outfit && <button className="line-button" disabled={busyDisabled || !stowOutfit.valid} title={stowOutfit.reason || undefined} onClick={()=>onOrder({type:'equipLoot',inventoryKey:null,slot:'outfit'})}>Guardar vestimenta · {battle.mode==='exploration'?'sin PA':`${stowOutfit.pa} PA`}</button>}
-          <small>El poncho reduce el efecto del clima. Guardarlo requiere un bolsillo grande.</small>
+
         </section>
         <JA2Hands battle={battle} unit={unit} busy={busy} onOrder={onOrder} onPick={chooseItem}/>
-        {unit.leftHandItem!=null&&<button className="line-button ja2-stow-hand" disabled={busyDisabled||!stowSecond.valid} title={stowSecond.reason||undefined} onClick={()=>onOrder({type:'equipLoot',slot:'offhandItem',inventoryKey:null})}>Guardar objeto de segunda mano · {battle.mode==='exploration'?'sin PA':'4 PA'}</button>}
+<details className="ja2-inventory-extra"><summary>Equipo y accesorios</summary><div className="ja2-inventory-popup">        {unit.leftHandItem!=null&&<button className="line-button ja2-stow-hand" disabled={busyDisabled||!stowSecond.valid} title={stowSecond.reason||undefined} onClick={()=>onOrder({type:'equipLoot',slot:'offhandItem',inventoryKey:null})}>Guardar objeto de segunda mano · {battle.mode==='exploration'?'sin PA':'4 PA'}</button>}
         <label className="ja2-tool-selector">Objeto en mano<select aria-label="Elegir objeto en mano" value={inv.activeSlot||'primary'} disabled={busyDisabled} onChange={event=>{const option=equipped.find((entry:any)=>entry.slot===event.target.value);if(option){onOrder(option.action);onMode('move');}}}>{equipped.map((option:any)=><option key={option.slot} value={option.slot} disabled={option.disabled}>{option.label}{option.reason?` · ${option.reason}`:''}</option>)}</select></label>
         <JA2WeaponMode battle={battle} unit={unit} busy={busy} onOrder={onOrder} onMode={onMode}/>
         <div className="ja2-hand-management">{inv.items.filter((entry: any) => ['primary', 'blade', 'offhand'].includes(entry.item)).map((entry: any) => <button key={entry.item} className="line-button" disabled={busyDisabled} aria-pressed={item?.item === entry.item} onClick={() => chooseItem(entry.item)}>Dar o soltar {entry.label}</button>)}</div>
-        <AttachedBayonetControl attached={inv.fittings.attached} busy={busyDisabled} onOrder={onOrder}/>
-        <LooseBayonetControl source={inv.fittings.sources.find((source: any) => source.item === 'blade')} busy={busyDisabled} onOrder={onOrder}/>
+        <AttachedBayonetControl freeActions={battle.mode==='exploration'} attached={inv.fittings.attached} busy={busyDisabled} onOrder={onOrder}/>
+        <LooseBayonetControl freeActions={battle.mode==='exploration'} source={inv.fittings.sources.find((source: any) => source.item === 'blade')} busy={busyDisabled} onOrder={onOrder}/>
         {inv.tools.length > 0 && <label className="ja2-tool-selector">Herramienta<select aria-label="Equipar herramienta" value={unit.activeSlot === 'tool' ? unit.activeTool || '' : ''} disabled={slotDisabled('tool')} onChange={event => { if (event.target.value) { onOrder({type: 'weapon', slot: 'tool', toolKey: event.target.value}); onMode('move'); } }}><option value="">Elegir herramienta</option>{inv.tools.map((tool: any) => <option key={tool.item} value={tool.item}>{tool.name} · {tool.count} · estado {tool.condition ?? 100}%</option>)}</select></label>}
-        {inv.heldSupplies.length > 0 && <label className="ja2-tool-selector">Pertrecho en mano<select aria-label="Equipar pertrecho" value={unit.activeSlot === 'supply' ? unit.activeSupply || '' : ''} disabled={slotDisabled('supply')} onChange={event => { if (event.target.value) { onOrder({type: 'weapon', slot: 'supply', supplyKey: event.target.value}); onMode('move'); } }}><option value="">Elegir pertrecho · {def('weapon')?.pa} PA</option>{inv.heldSupplies.map((supply: any) => <option key={supply.key} value={supply.key}>{supply.label} · {supply.count}</option>)}</select></label>}
-        <div className="paper-readouts">
+        {inv.heldSupplies.length > 0 && <label className="ja2-tool-selector">Pertrecho en mano<select aria-label="Equipar pertrecho" value={unit.activeSlot === 'supply' ? unit.activeSupply || '' : ''} disabled={slotDisabled('supply')} onChange={event => { if (event.target.value) { onOrder({type: 'weapon', slot: 'supply', supplyKey: event.target.value}); onMode('move'); } }}><option value="">Elegir pertrecho · {cost(def('weapon')?.pa)}</option>{inv.heldSupplies.map((supply: any) => <option key={supply.key} value={supply.key}>{supply.label} · {supply.count}</option>)}</select></label>}
+</div></details>        <div className="paper-readouts">
           <span className="weight"><small>Peso</small><b>{inv.weight.toFixed(1)} / {inv.capacity.toFixed(1)} kg</b></span>
           <span className="camo"><small>Camuflaje</small><b>—</b></span>
         </div>
       </div>
       <div className="slot-grid">
         <JA2Pockets key={unit.id} battle={battle} unit={unit} layout={inv.pockets} disabled={busyDisabled} onPick={chooseItem} onOrder={onOrder}/>
-        {managedItem==='offhand'&&<button disabled={busyDisabled||!otherHand.valid} title={otherHand.reason||undefined} onClick={()=>{onOrder({type:'swapHands'});onMode('move');}}>Poner {item?.label} en mano · {otherHand.pa} PA</button>}
-        {['primary','blade'].includes(managedItem)&&equipped.filter((option:any)=>option.slot===managedItem).map((option:any)=><button key={option.slot} disabled={option.disabled||option.active} title={option.reason||undefined} onClick={()=>{onOrder(option.action);onMode('move');}}>Poner {item?.label} en mano · {option.pa} PA</button>)}
+
+      </div>
+      <details className="pertrechos ja2-inventory-extra" open={itemOpen} onToggle={event=>setItemOpen(event.currentTarget.open)}><summary>{item?.label || 'Objeto'} · detalles</summary><div className="ja2-inventory-popup"><button className="line-button" onClick={()=>setItemOpen(false)}>Cerrar objeto</button>        {managedItem==='offhand'&&<button disabled={busyDisabled||!otherHand.valid} title={otherHand.reason||undefined} onClick={()=>{onOrder({type:'swapHands'});onMode('move');}}>Poner {item?.label} en mano · {cost(otherHand.pa)}</button>}
+        {['primary','blade'].includes(managedItem)&&equipped.filter((option:any)=>option.slot===managedItem).map((option:any)=><button key={option.slot} disabled={option.disabled||option.active} title={option.reason||undefined} onClick={()=>{onOrder(option.action);onMode('move');}}>Poner {item?.label} en mano · {cost(option.pa)}</button>)}
         {inv.backpack.filter((record:any)=>`inventory:${record.key}`===managedItem).map((item: any) => {
           const gun = (WEAPONS as any)[item.weapon];
           const blade = (BLADES as any)[item.weapon];
@@ -201,45 +205,43 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
             <div key={item.key} className={`slot-cell ${item.equippable ? 'equippable' : ''}`}>
               <span>{item.name ?? 'Pertrechos'} · {item.count}{gun ? ` · ${item.loaded || 0} carga(s)` : ''}{item.condition !== undefined ? ` · estado ${item.condition}%` : ''}</span>
               <FittingReadout fitting={item.fittings?.bayonet}/>
-              <LooseBayonetControl source={inv.fittings.sources.find((source: any) => source.item === `inventory:${item.key}`)} busy={busyDisabled} onOrder={onOrder}/>
+              <LooseBayonetControl freeActions={battle.mode==='exploration'} source={inv.fittings.sources.find((source: any) => source.item === `inventory:${item.key}`)} busy={busyDisabled} onOrder={onOrder}/>
               {outfitEquip && <button className="line-button" disabled={busyDisabled || !outfitEquip.valid} title={outfitEquip.reason || undefined} onClick={()=>onOrder(backpackEquipAction(item.key,'outfit'))}>Ponerse vestimenta · {battle.mode==='exploration'?'sin PA':`${outfitEquip.pa} PA`}</button>}
               {(gun || blade) && <>
-                <button className="line-button" disabled={busyDisabled || !primaryEquip.valid} title={primaryEquip.reason || undefined} onClick={() => onOrder(backpackEquipAction(item.key, 'primary'))}>Equipar principal · {primaryEquip.pa} PA</button>
-                {offHandEquip && <button className="line-button" disabled={busyDisabled || !offHandEquip.valid} title={offHandEquip.reason||undefined} onClick={()=>onOrder(backpackEquipAction(item.key,'offhand'))}>Equipar segunda mano · {offHandEquip.pa} PA</button>}
-                {bladeEquip && <button className="line-button" disabled={busyDisabled || !bladeEquip.valid} title={bladeEquip.reason || undefined} onClick={() => onOrder(backpackEquipAction(item.key, 'blade'))}>Equipar secundaria · {bladeEquip.pa} PA</button>}
+                <button className="line-button" disabled={busyDisabled || !primaryEquip.valid} title={primaryEquip.reason || undefined} onClick={() => onOrder(backpackEquipAction(item.key, 'primary'))}>Equipar principal · {cost(primaryEquip.pa)}</button>
+                {offHandEquip && <button className="line-button" disabled={busyDisabled || !offHandEquip.valid} title={offHandEquip.reason||undefined} onClick={()=>onOrder(backpackEquipAction(item.key,'offhand'))}>Equipar segunda mano · {cost(offHandEquip.pa)}</button>}
+                {bladeEquip && <button className="line-button" disabled={busyDisabled || !bladeEquip.valid} title={bladeEquip.reason || undefined} onClick={() => onOrder(backpackEquipAction(item.key, 'blade'))}>Equipar secundaria · {cost(bladeEquip.pa)}</button>}
               </>}
-              {tool && <button className="line-button" disabled={slotDisabled('tool') || tool.active} aria-pressed={tool.active} onClick={() => { onOrder({type: 'weapon', slot: 'tool', toolKey: tool.item}); onMode('move'); }}>Equipar herramienta · {def('weapon')?.pa} PA</button>}
+              {tool && <button className="line-button" disabled={slotDisabled('tool') || tool.active} aria-pressed={tool.active} onClick={() => { onOrder({type: 'weapon', slot: 'tool', toolKey: tool.item}); onMode('move'); }}>Equipar herramienta · {cost(def('weapon')?.pa)}</button>}
               <button className="line-button" disabled={busyDisabled || item.count < 1} aria-pressed={managedItem === `inventory:${item.key}`} onClick={() => chooseItem(`inventory:${item.key}`)}>Dar o soltar</button>
             </div>
           );
         })}
 
-      </div>
-      <div className="pertrechos">
 
         <div className="ja2-item-handling" aria-label="Dar o soltar equipo">
           <label>Objeto<select aria-label="Objeto para dar o soltar" disabled={busyDisabled || !inv.items.length} value={item?.item || ''} onChange={event => chooseItem(event.target.value)}>{!inv.items.length && <option value="">Sin objetos</option>}{inv.items.map((entry: any) => <option key={entry.item} value={entry.item}>{entry.label} · {entry.count}</option>)}</select></label>
           <label>Cantidad<input aria-label="Cantidad de objetos" type="number" min="1" step="1" max={item?.count || 1} disabled={busyDisabled || !item} value={count} onChange={event => setQuantity(Number(event.target.value))} /></label>
           <label>Destinatario<select aria-label="Aliado que recibe el equipo" disabled={busyDisabled} value={recipient} onChange={event => setRecipient(event.target.value)}><option value="">Elegir aliado</option>{handling.recipients.map((target: any) => <option key={target.id} value={target.id} disabled={target.unconscious}>{target.nickname || target.name}{target.unconscious ? ' · inconsciente' : ''}</option>)}</select></label>
-          {holdMain?.valid&&<button className="line-button" disabled={busyDisabled} onClick={()=>onOrder(holdMain.action)}>Poner en mano principal · {holdMain.pa} PA</button>}
+          {holdMain?.valid&&<button className="line-button" disabled={busyDisabled} onClick={()=>onOrder(holdMain.action)}>Poner en mano principal · {cost(holdMain.pa)}</button>}
           {item&&(!item.weapon||typeof item.weapon!=='number')&&item.item!=='outfit'&&!['primary','blade','offhand'].includes(item.item)&&<button className="line-button" disabled={busyDisabled||!holdSecond?.valid} title={holdSecond?.reason||undefined} onClick={()=>onOrder({type:'equipLoot',slot:'offhandItem',inventoryKey:item.item})}>Poner en segunda mano · {battle.mode==='exploration'?'sin PA':'4 PA'}</button>}
-          <button className="line-button" disabled={handling.transfer.disabled} title={handling.transfer.reason || undefined} onClick={() => onOrder(handling.transfer.action)}>{handling.transfer.label}{recipient ? ` · ${handling.transfer.totalPA} PA${handling.transfer.kind === 'relay' ? ' en total' : ''}` : ''}</button>
-          <button className="line-button" disabled={handling.drop.disabled} title={handling.drop.reason || undefined} onClick={() => onOrder({type: 'drop', item: item.item, count})}>Soltar aquí · {handling.drop.pa} PA</button>
-          {selectedSupply && <button className="line-button" disabled={slotDisabled('supply') || selectedSupply.active} onClick={() => { onOrder({type: 'weapon', slot: 'supply', supplyKey: selectedSupply.key}); onMode('move'); }}>Equipar {selectedSupply.label} · {def('weapon')?.pa} PA</button>}
+          <button className="line-button" disabled={handling.transfer.disabled} title={handling.transfer.reason || undefined} onClick={() => onOrder(handling.transfer.action)}>{handling.transfer.label}{recipient ? ` · ${cost(handling.transfer.totalPA)}${handling.transfer.kind === 'relay' ? ' en total' : ''}` : ''}</button>
+          <button className="line-button" disabled={handling.drop.disabled} title={handling.drop.reason || undefined} onClick={() => onOrder({type: 'drop', item: item.item, count})}>Soltar aquí · {cost(handling.drop.pa)}</button>
+          {selectedSupply && <button className="line-button" disabled={slotDisabled('supply') || selectedSupply.active} onClick={() => { onOrder({type: 'weapon', slot: 'supply', supplyKey: selectedSupply.key}); onMode('move'); }}>Equipar {selectedSupply.label} · {cost(def('weapon')?.pa)}</button>}
         </div>
         <p className="ja2-item-feedback" aria-live="polite">{item && `${item.label} · ${item.count} disponible(s). `}{item?.condition !== undefined && `Estado ${item.condition}%. `}{item?.loaded !== undefined && `${item.loaded} carga(s). `}{item?.jammed && 'Necesita cebado. '}{recipient ? handling.transfer.reason || handling.transfer.detail : 'Elegí un aliado para entregar equipo. Soltar deja el objeto en tu casilla.'}{handling.drop.reason && ` ${handling.drop.reason}`}</p>
         <details className="ja2-nearby-loot"><summary>Objetos cercanos · {nearby.length}</summary>{nearby.length ? <>
           <div className="ja2-item-handling">
             <label>Objeto cercano<select aria-label="Objeto cercano para recoger" disabled={busyDisabled} value={lootItem?.id || ''} onChange={event => { setLootId(event.target.value); setLootQuantity(1); }}>{nearby.map(entry => <option key={entry.id} value={entry.id}>{entry.source} · {entry.label} · {entry.count}</option>)}</select></label>
             <label>Cantidad<input aria-label="Cantidad para recoger" type="number" min="1" step="1" max={lootItem?.count || 1} disabled={busyDisabled} value={lootCount} onChange={event => setLootQuantity(Number(event.target.value))} /></label>
-            <button className="line-button" disabled={busyDisabled || !loot.valid} title={loot.reason || undefined} onClick={() => onOrder({...lootItem.action, count: lootCount})}>Recoger · {loot.pa} PA</button>
+            <button className="line-button" disabled={busyDisabled || !loot.valid} title={loot.reason || undefined} onClick={() => onOrder({...lootItem.action, count: lootCount})}>Recoger · {cost(loot.pa)}</button>
           </div>
           <p className="ja2-item-feedback">{lootItem?.condition !== undefined && `Estado ${lootItem.condition}%. `}{lootItem?.loaded !== undefined && `${lootItem.loaded} carga(s). `}{lootItem?.jammed && 'Necesita cebado. '}{loot.reason || 'Solo se recoge la cantidad indicada.'}</p>
         </> : <p>Acercate a un cuerpo o a un objeto visible en el suelo.</p>}</details>
         <JA2EnvironmentPanel targets={environment.targets} selected={environment.target?.key || ''} target={environment.target} preview={environment.preview} verbs={environment.verbs} verb={environmentVerb} busy={busyDisabled} contents={environment.contents} contentIndex={content?.index ?? 0} count={contentCount} loot={containerLoot}
           onTarget={key => { setEnvironmentKey(key); setEnvironmentVerb(''); setContentIndex(0); setContentQuantity(1); }} onVerb={setEnvironmentVerb} onUse={() => environment.preview && onOrder(environment.preview.action)}
           onContent={index => { setContentIndex(index); setContentQuantity(1); }} onCount={setContentQuantity} onLoot={() => containerLoot && onOrder(containerLoot.action)} />
-      </div>
+      </div></details>
       <div className="ja2-right">
         <RadarCluster battle={battle} units={units} selected={selected} project={project} vw={vw} vh={vh} cameraRect={cameraRect} zoom={zoom} mode={mode} missionAllies={missionAllies} localMilitia={localMilitia} onSelect={onSelect} onRetreat={onRetreat} onCameraCenter={onCameraCenter} onCameraPan={onCameraPan} onZoom={onZoom} />
         <button className="ja2-done gold-button" onClick={onCloseInventory}>Listo</button>

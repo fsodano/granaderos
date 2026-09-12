@@ -1,4 +1,5 @@
 'use client';
+import {pointInViewport} from '../../game/tactical-viewport.js';
 import {aimedBodyPart,targetHitFrame} from '../../game/aim-cursor.js';
 import {canChooseShotLocation} from '../../game/targeted-combat.js';
 import {tacticalGridLabel} from '../../game/tactical-grid.js';
@@ -11,12 +12,14 @@ import {isInteriorVisible} from '../../game/tactical-visibility.js';
 import {buildPropObjects} from './TacticalProps';
 import {canSee,tileIllumination,shotChance,hasFirearm,contextualAttack,ARTILLERY} from '../../game/tactical.js';
 import {heardNoiseModel,groundLootPiles} from '../../game/ja2-hud.js';
-import {useMemo,type ReactNode} from 'react';
-type Props={state:any;selected:any;unit:any;players:any[];units:any[];positions:any;poses:any;directions:any;hover:any;mode:string;aim:number;hitLocation?:string;reachable:any[];showSight:boolean;sight:Set<string>;revealed:Set<string>;project:(x:number,y:number)=>{x:number;y:number};onTile:(t:any)=>void;onHover:(t:any)=>void;onTalk:(n:any)=>void;onCannon:(id:string)=>void;cannonId:string};
+import {useMemo,useRef,type ReactNode} from 'react';
+type Props={viewport?:any;state:any;selected:any;unit:any;players:any[];units:any[];positions:any;poses:any;directions:any;hover:any;mode:string;aim:number;hitLocation?:string;reachable:any[];showSight:boolean;sight:Set<string>;revealed:Set<string>;project:(x:number,y:number)=>{x:number;y:number};onTile:(t:any)=>void;onHover:(t:any)=>void;onTalk:(n:any)=>void;onCannon:(id:string)=>void;cannonId:string};
 const materials=['dry-grass','dirt','cobble','green-grass','mud','floor','plaster','roof','wood'];
 const diamond=(x:number,y:number)=>`${x},${y-14} ${x+26},${y} ${x},${y+14} ${x-26},${y}`;
 const hash=(x:number,y:number)=>((x*374761393+y*668265263)>>>0)%1000;
-export default function TacticalScene({state:s,selected,unit:u,players,units,positions,poses,directions,hover,mode,aim,hitLocation='torso',reachable,showSight,sight,revealed,project,onTile,onHover,onTalk,onCannon,cannonId}:Props){
+export default function TacticalScene({viewport,state:s,selected,unit:u,players,units,positions,poses,directions,hover,mode,aim,hitLocation='torso',reachable,showSight,sight,revealed,project,onTile,onHover,onTalk,onCannon,cannonId}:Props){
+ const handlers=useRef({onTile,onHover});handlers.current={onTile,onHover};
+ const visibleTiles=useMemo(()=>s.tiles.filter((t:any)=>pointInViewport(viewport,project(t.x,t.y),110)),[s.tiles,viewport,project]);
  const heard=heardNoiseModel(s,u),heardPoint=heard?project(heard.x,heard.y):null;
  const scenery=useMemo(()=>{
  const objects:{depth:number;key:string;node:ReactNode}[]=[];
@@ -24,7 +27,7 @@ export default function TacticalScene({state:s,selected,unit:u,players,units,pos
 
  const light=(x:number,y:number)=>s.night?.27+tileIllumination(s,x,y)*.73:1;
 
- for(const t of s.tiles){
+ for(const t of visibleTiles){
   const p=project(t.x,t.y);
   if(t.blocked&&!['wall','door','window','water'].includes(t.type)){
    add(`rock-${t.x}-${t.y}`,t.x,t.y,<image href="/art/scenery-rocks-v1.webp" x={p.x-25} y={p.y-32} width="50" height="40" pointerEvents="none" style={{filter:`brightness(${light(t.x,t.y)})`}}/>);
@@ -38,14 +41,14 @@ export default function TacticalScene({state:s,selected,unit:u,players,units,pos
    add(`scrub-${t.x}-${t.y}`,t.x,t.y,<image href="/art/scenery-shrub-v1.webp" x={p.x-16} y={p.y-20} width="32" height="26" pointerEvents="none" opacity=".9" style={{filter:`brightness(${light(t.x,t.y)})`}}/>);
   }
  }
- objects.push(...buildBuildingObjects({state:s,revealed,project,light}));
- objects.push(...buildPropObjects({state:s,revealed,project,light}));
+ objects.push(...buildBuildingObjects({state:s,revealed,project,light,viewport}));
+ objects.push(...buildPropObjects({state:{...s,props:(s.props??[]).filter((p:any)=>pointInViewport(viewport,project(p.x,p.y),200))},revealed,project,light}));
  return objects;
- },[s,revealed,project,units]);
+ },[s,revealed,project,units,viewport,visibleTiles]);
  const objects=[...scenery];
  const add=(key:string,x:number,y:number,node:ReactNode,bias=0)=>objects.push({key,depth:x+y+bias,node});
  const reachableSet=useMemo(()=>new Set(reachable.map(t=>`${t.x},${t.y}`)),[reachable]);
- const illumination=useMemo(()=>new Map<string,number>(s.tiles.map((t:any)=>[`${t.x},${t.y}`,tileIllumination(s,t.x,t.y)])),[s]);
+ const illumination=useMemo(()=>new Map<string,number>(visibleTiles.map((t:any)=>[`${t.x},${t.y}`,tileIllumination(s,t.x,t.y)])),[s,visibleTiles]);
  const light=(x:number,y:number)=>s.night?.27+tileIllumination(s,x,y)*.73:1;
  const material=(t:any)=>t.type==='road'?'dirt':t.type==='stone'?'cobble':t.type==='mud'?'mud':t.type==='floor'?'floor':t.type==='forest'?'green-grass':'dry-grass';
  const drawPerson=(v:any,npc=false)=>{
@@ -79,9 +82,11 @@ export default function TacticalScene({state:s,selected,unit:u,players,units,pos
   </g>,.02);
  }
  for(const [i,l] of (s.lights??[]).entries())if(isInteriorVisible(s,l,revealed)){const p=project(l.x,l.y);add(`light-${i}`,l.x,l.y,<g pointerEvents="none"><ellipse cx={p.x} cy={p.y-4} rx="3" ry="7" fill="#efa242"/><ellipse cx={p.x} cy={p.y-5} rx="1.5" ry="4" fill="#ffe3a0"/></g>,.03);}
+ const ground=useMemo(()=>(<g>{visibleTiles.map((t:any)=>{const p=project(t.x,t.y),key=`${t.x},${t.y}`,occupant=units.find(v=>v.x===t.x&&v.y===t.y&&!v.fled);return <g key={key} role="button" tabIndex={0} aria-label={`${tacticalGridLabel(t.x,t.y)}${occupant?', '+occupant.name:(t.blocked||propBlocksAt(s,t.x,t.y))?', obstáculo':', accesible'}`} onClick={()=>handlers.current.onTile(t)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();handlers.current.onTile(t);}}} onMouseEnter={()=>handlers.current.onHover(t)} onMouseLeave={()=>handlers.current.onHover(null)} onFocus={()=>handlers.current.onHover(t)} onBlur={()=>handlers.current.onHover(null)}><polygon points={diamond(p.x,p.y)} fill={t.type==='water'?'#516b67':`url(#terrain-${material(t)})`} stroke="none"/>{t.type==='water'&&<path d={`M${p.x-17},${p.y}l15,-3m-5,9l20,-3`} stroke="#a8b9a6" opacity=".22" strokeWidth=".7"/>}{s.night&&<polygon points={diamond(p.x,p.y)} fill="#050914" opacity={.78*(1-(illumination.get(key)??0))} pointerEvents="none"/>}{showSight&&<polygon points={diamond(p.x,p.y)} fill={sight.has(key)?'#69ac54':'#a94536'} opacity=".32" pointerEvents="none"/>}</g>;})}</g>),[visibleTiles,units,project,s.night,s.props,showSight,sight,illumination]);
  return <>
   <defs>{materials.map(name=><pattern key={name} id={`terrain-${name}`} patternUnits="userSpaceOnUse" width="128" height="128" patternTransform={['plaster','roof','wood'].includes(name)?undefined:'matrix(1 .538 -1 .538 0 0)'}><image href={`/art/terrain-${name}-v1.webp`} width="128" height="128"/></pattern>)}<radialGradient id="smokefill"><stop offset="0" stopColor="#d4ccae" stopOpacity=".65"/><stop offset="1" stopColor="#d4ccae" stopOpacity="0"/></radialGradient></defs>
-  <g>{s.tiles.map((t:any)=>{const p=project(t.x,t.y),key=`${t.x},${t.y}`,isHover=hover?.x===t.x&&hover?.y===t.y,occupant=units.find(v=>v.x===t.x&&v.y===t.y&&!v.fled);return <g key={key} role="button" tabIndex={0} aria-label={`${tacticalGridLabel(t.x,t.y)}${occupant?', '+occupant.name:(t.blocked||propBlocksAt(s,t.x,t.y))?', obstáculo':', accesible'}`} onClick={()=>onTile(t)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onTile(t);}}} onMouseEnter={()=>onHover(t)} onMouseLeave={()=>onHover(null)} onFocus={()=>onHover(t)} onBlur={()=>onHover(null)}><polygon points={diamond(p.x,p.y)} fill={t.type==='water'?'#516b67':`url(#terrain-${material(t)})`} stroke="none"/>{t.type==='water'&&<path d={`M${p.x-17},${p.y}l15,-3m-5,9l20,-3`} stroke="#a8b9a6" opacity=".22" strokeWidth=".7"/>}{s.night&&<polygon points={diamond(p.x,p.y)} fill="#050914" opacity={.78*(1-(illumination.get(key)??0))} pointerEvents="none"/>}{showSight&&<polygon points={diamond(p.x,p.y)} fill={sight.has(key)?'#69ac54':'#a94536'} opacity=".32" pointerEvents="none"/>}{isHover&&<polygon points={diamond(p.x,p.y)} fill={mode==='move'&&reachableSet.has(key)?'#d8dca1':'#bd6f4d'} fillOpacity=".16" stroke="#ddd6a7" strokeWidth="1" pointerEvents="none"/>}</g>;})}</g>
+  {ground}
+  {hover&&pointInViewport(viewport,project(hover.x,hover.y))&&<polygon points={diamond(project(hover.x,hover.y).x,project(hover.x,hover.y).y)} fill={mode==='move'&&reachableSet.has(`${hover.x},${hover.y}`)?'#d8dca1':'#bd6f4d'} fillOpacity=".16" stroke="#ddd6a7" strokeWidth="1" pointerEvents="none"/>}
   {objects.sort((a,b)=>a.depth-b.depth||a.key.localeCompare(b.key)).map(o=><g key={o.key}>{o.node}</g>)}
   {(s.smoke??[]).map((v:any,i:number)=>{const p=project(v.x,v.y);return <ellipse key={i} cx={p.x} cy={p.y-24} rx={32*v.radius} ry={23*v.radius} fill="url(#smokefill)" pointerEvents="none"/>})}
   {heard&&heardPoint&&<g className="ja2-noise-marker" aria-label="Ruido: zona aproximada" pointerEvents="none"><ellipse cx={heardPoint.x} cy={heardPoint.y} rx={Math.max(26,heard.radius*26)} ry={Math.max(14,heard.radius*14)} fill="#d4b35a" fillOpacity=".08" stroke="#e7ca7d" strokeWidth="1.5" strokeDasharray="4 4"/><text x={heardPoint.x} y={heardPoint.y+4} textAnchor="middle" fill="#fff0b7" fontSize="17" fontWeight="bold" stroke="#282316" strokeWidth="3" paintOrder="stroke">?</text></g>}

@@ -1,11 +1,12 @@
 'use client';
+import './ja2-compact.css';
 import JA2Hands from './JA2Hands';
 import JA2WeaponMode from './JA2WeaponMode';
 import {maximumEnergy} from '../../game/fatigue.js';
 // JA2 bottom-strip disposition (DESIGN.md MODE A / MODE B). Root switches content on inventoryId.
 // Pure read model (game/ja2-hud.js orderDescriptors/orderAction); all mutations are caller-provided callbacks.
 import {MILITIA_NAMES} from '../../game/militia.js';
-import {useState} from 'react';
+import {useMemo,useState} from 'react';
 import JA2Roster from './JA2Roster';
 import JA2Inventory, {RadarCluster} from './JA2Inventory';
 import {orderDescriptors, orderAction, stanceLabel, targetingHelp, equipmentSlots, turnModel, unitCanAct, facingLabel, heardNoiseModel, equippedItemHelp} from '../../game/ja2-hud.js';
@@ -33,16 +34,16 @@ function LogOverlay({log}: { log: string[] }) {
   const [open, setOpen] = useState(false);
   const lines = log.slice(-5).reverse();
   return (
-    <section className="ja2-log-overlay" aria-label="Diario de combate">
-      <button className="line-button" aria-expanded={open} onClick={() => setOpen(v => !v)}>DIARIO DE COMBATE</button>
+    <section className={`ja2-log-overlay ${open ? 'expanded' : 'collapsed'}`} aria-label="Diario de combate">
+      <button className="line-button" aria-expanded={open} onClick={() => setOpen(v => !v)}>Diario</button>
       <div aria-live="polite">{(open ? lines : lines.slice(0, 1)).map((l, i) => <p className={i === 0 ? 'latest' : ''} key={`${log.length}-${i}`}>{l}</p>)}</div>
     </section>
   );
 }
 
 export default function JA2Strip({battle, selected, unit, players, missionAllies, localMilitia, mode, showSight, aim, hitLocation, costs, weapon, firearm, cannonId, shotType, gunCosts, artillery, busy, inventoryId, vw, vh, cameraRect, project, cameraX, cameraY, zoom, onSelect, onOrder, onMode, onToggleSight, onEndTurn, onRetreat, onOpenInventory, onCloseInventory, onCameraCenter, onCameraPan, onZoom, onCannonChange, onShotTypeChange, onSetAim, onHitLocationChange, onAutoBandage, bandageReport, groupIds, target}: Props) {
-  const units = battle.units.filter((v: any) => !v.departure && !v.fled && (v.side === 'player' || players.some((p: any) => canSee(battle, p, v))));
-  const descriptors = unit ? orderDescriptors(battle, unit, {busy, aim, cannonId, target}) : [];
+  const units = useMemo(()=>battle.units.filter((v: any) => !v.departure && !v.fled && (v.side === 'player' || players.some((p: any) => canSee(battle, p, v)))),[battle,players]);
+  const descriptors = useMemo(()=>unit ? orderDescriptors(battle, unit, {busy, aim, cannonId, target}) : [],[battle,unit,busy,aim,cannonId,target]);
   const gridDefs = descriptors.filter((d: any) => !GRID_EXCLUDE.has(d.id) && (d.id !== 'reprime' || unit?.jammed) && (d.id !== 'reload' || !unit?.jammed) && (!['reload', 'reprime', 'overwatch'].includes(d.id) || firearm));
   const budget = unit ? actionPointBudget(battle, unit) : null;
   const turn = turnModel(battle);
@@ -59,9 +60,9 @@ export default function JA2Strip({battle, selected, unit, players, missionAllies
   }
   return (
     <div className="ja2-hud">
-    <section className="ja2-strip">
+    <section className="ja2-strip squad-view">
       <JA2Roster groupIds={groupIds} battle={battle} players={players.filter((p: any) => !p.militia && !p.missionAlly)} selected={selected} medicalTargeting={unit?.activeSlot === 'medical' && unitCanAct(battle, unit)} onSelect={onSelect} onOpenInventory={onOpenInventory} />
-      <div className="ja2-context">
+      <details className="ja2-orders-menu"><summary>Órdenes</summary><div className="ja2-context">
         {unit && <div className="ja2-action-readout" aria-label="Estado del combatiente">
           <strong>{unit.nickname || unit.name} · {battle.mode === 'exploration' ? 'Sin coste de PA' : `${unit.ap} PA`}</strong>
           {unit.militia&&<small>{MILITIA_NAMES[unit.militiaRank]??"Milicia"} · {unit.militiaExperience??0} puntos de combate</small>}
@@ -82,7 +83,7 @@ export default function JA2Strip({battle, selected, unit, players, missionAllies
             const label = d.id === 'mount' ? (unit?.mounted ? 'Desmontar' : 'Montar') : d.label;
             return (
               <button key={d.id} className={(d.kind === 'mode' && mode === d.id) || d.active ? 'selected' : ''} disabled={d.disabled} aria-label={label} aria-pressed={d.id === 'stealth' ? Boolean(d.active) : undefined} title={d.id === 'stealth' ? 'Reduce el ruido al moverse. Consume más PA de movimiento y no cambia la postura. Atajo: Z.' : d.reserve ? `Conservá ${d.pa} PA para un disparo de reacción. Se pagan cuando dispara.` : d.kind === 'mode' ? targetingHelp(d.id, unit) : undefined} onClick={() => { if (d.kind === 'mode') onMode(d.id); else if (d.id === 'sight') onToggleSight(); else onOrder(orderAction(battle, unit, {}, d.id)); }}>
-                {Icon && <Icon size={16} />}<span>{label}{d.pa !== undefined ? ` · ${d.reserve ? 'reservar ' : ''}${d.pa} PA` : ''}</span>
+                {Icon && <Icon size={16} />}<span>{label}{battle.mode !== 'exploration' && d.pa !== undefined ? ` · ${d.reserve ? 'reservar ' : ''}${d.pa} PA` : ''}</span>
               </button>
             );
           })}
@@ -103,8 +104,10 @@ export default function JA2Strip({battle, selected, unit, players, missionAllies
           <button className="gold-button end-turn" disabled={busy || battle.status !== 'active'} onClick={onEndTurn}>{busy ? 'Procesando…' : turn.endLabel}</button>
         </div>
       </div>
+      </details>
       <div className="ja2-right">
         <RadarCluster battle={battle} units={units} selected={selected} project={project} vw={vw} vh={vh} cameraRect={cameraRect} zoom={zoom} mode={mode} missionAllies={missionAllies} localMilitia={localMilitia} onSelect={onSelect} onRetreat={onRetreat} onCameraCenter={onCameraCenter} onCameraPan={onCameraPan} onZoom={onZoom} />
+        <div className="ja2-essential"><button className="line-button" disabled={!unit} onClick={()=>unit && onOpenInventory(unit.id)}>Equipo</button>{battle.mode !== 'exploration' && <button className="gold-button" disabled={busy || battle.status !== 'active'} onClick={onEndTurn}>{turn.endLabel}</button>}</div>
       </div>
     </section>
     <LogOverlay log={battle.log || []} />

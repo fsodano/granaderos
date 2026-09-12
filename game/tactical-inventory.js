@@ -326,9 +326,29 @@ export function planRemoveBayonet(unit,destination='inventory') {
   return {unit:clearFittingGuard(next),fitting:structuredClone(fitting),destination,host:unit.weapon};
 }
 
+// Only interchangeable loose objects combine. Weapons, outfits, tools and
+// identified quest objects keep their individual condition and identity.
+export function pocketMergeCount(unit,sourceId,destinationId,layout=inventoryUsage(unit)){
+ const source=layout.slots.find(slot=>slot.id===sourceId)?.entry,destination=layout.slots.find(slot=>slot.id===destinationId)?.entry;
+ if(!source||!destination||source.item===destination.item||!source.item.startsWith('inventory:')||!destination.item.startsWith('inventory:'))return 0;
+ const a=record(unit.inventory[source.item.slice(10)]),b=record(unit.inventory[destination.item.slice(10)]);
+ if(!a.name||a.weapon!==undefined||a.kind==='outfit'||a.instanceId||isTool(a)||!sameMetadata(a,b))return 0;
+ return Math.max(0,Math.min(source.count,destination.stackLimit-destination.count));
+}
+
 export function planPocketMove(unit,sourceId,destinationId,expectedSource,expectedDestination){
  const layout=inventoryUsage(unit),next=structuredClone(unit);
  for(const [id,expected]of [[sourceId,expectedSource],[destinationId,expectedDestination]])if(expected!==undefined&&expected!==pocketFingerprint(layout.slots.find(slot=>slot.id===id)))throw Error('Cambió el contenido del bolsillo. Seleccioná el objeto de nuevo.');
+ const merging=pocketMergeCount(unit,sourceId,destinationId,layout);
+ if(merging){
+  const source=layout.slots.find(slot=>slot.id===sourceId).entry,destination=layout.slots.find(slot=>slot.id===destinationId).entry;
+  const combined=extractItemQuantity(unit,source.item,merging).unit;
+  const key=destination.item.slice(10),value=record(combined.inventory[key]);
+  combined.inventory[key]={...value,count:quantity(value.count+merging)};
+  combined.pocketOrder=layout.slots.flatMap(slot=>slot.entry?[{slotId:slot.id,item:slot.entry.item,index:slot.entry.index}]:[]);
+  if(inventoryUsage(combined).overloaded)fail('No queda espacio para combinar los objetos.');
+  return combined;
+ }
  next.pocketOrder=rearrangePockets(layout,sourceId,destinationId);
  return next;
 }

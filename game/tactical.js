@@ -133,7 +133,7 @@ const enemies=Array.isArray(sector.enemies)?sector.enemies:Array.from({length:se
 state.units.push(...enemies.map((u,i)=>makeUnit(u,'enemy',i,width-2-Math.floor(i/(height-2)),1+i%(height-2))));
 if(!state.artillery.length&&sector.cannons>0)state.artillery=Array.from({length:Math.min(sector.cannons,3)},(_,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',x:2,y:2+i*3,loaded:true,ammo:6}));
 for(const u of state.units){normalizeOutfit(u);lowerWeapon(u);limitEnergy(u);if(u.side==='enemy'&&u.patrol!==false)u.patrolOrigin??={x:u.x,y:u.y};normalizeUnitFittings(u);u.weaponFittings=structuredClone(u.weaponFittings);u.maxAP=maxActionPoints(state,u.routed?{...u,routed:false}:u);u.ap=u.maxAP;}
-say(state,`Combate en ${state.sectorName}. Los PA dependen de la salud y las fuerzas. Puedes conservar hasta 20 PA entre turnos.`);return sector.deferContact?state:initializeBattlePerception(state);}
+const entered=sector.deferContact?state:initializeBattlePerception(state);say(entered,entered.mode==='exploration'?`Exploración de ${entered.sectorName}.`:`Combate en ${entered.sectorName}. Puedes conservar hasta 20 PA entre turnos.`);return entered;}
 export function initializeBattlePerception(state){checkEnd(state);detectContact(state);rememberContacts(state);revealRooms(state);return resolveFirstContact(state);}
 function tile(s,x,y){const at=s.tiles[y*s.width+x];return at?.x===x&&at?.y===y?at:s.tiles.find(t=>t.x===x&&t.y===y);}
 function occupied(s,x,y,except){return propBlocksAt(s,x,y)||(s.npcs||[]).some(n=>n.x===x&&n.y===y)||s.units.some(u=>onField(u)&&!u.unconscious&&u.id!==except&&u.x===x&&u.y===y);}
@@ -919,7 +919,7 @@ if(a.type==='move'){
     if(!alive(u)||s.status!=='active')break;
   }
 
-  sayObserved(s,[u],u.side==='player'?`${u.name} ${movementIntent==='preserveFacing'?'se desplaza sin girar':'avanza'} ${steps} casillas (${exploring?0:spent} PA).`:`${u.name} avanza.`);
+  sayObserved(s,[u],u.side==='player'?`${u.name} ${movementIntent==='preserveFacing'?'se desplaza sin girar':'avanza'} ${steps} casillas${exploring?'':` (${spent} PA)`}.`:`${u.name} avanza.`);
 }
 else if(a.type==='firePoint'){
   const preview=pointFirePreview(s,u,a,a.aim);if(!preview.valid)return fail(preview.reason);
@@ -1058,7 +1058,7 @@ else if(a.type==='fitBayonet'||a.type==='removeBayonet'){
   try{plan=fitting?planFitBayonet(u,a.item):planRemoveBayonet(u,a.destination??'inventory');}catch(error){return fail(error.message);}
   if(!pay(pa))return fail(`Cambiar la bayoneta requiere ${pa} PA.`);
   plan.unit.ap=u.ap;replaceUnit(u,plan.unit);emitNoise(s,u,'reload');
-  sayObserved(s,[u],`${u.name} ${fitting?'fija la bayoneta correspondiente al fusil':'retira la bayoneta del fusil'} (${pa} PA).`);
+  sayObserved(s,[u],`${u.name} ${fitting?'fija la bayoneta correspondiente al fusil':'retira la bayoneta del fusil'}${s.mode==='exploration'?'':` (${pa} PA)`}.`);
 }
 else if(a.type==='steal'){
   const preview=stealPreview(s,u,target);if(!preview.valid)return fail(preview.reason);

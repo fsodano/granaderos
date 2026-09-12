@@ -1,21 +1,23 @@
 import {BUILDING_OPENINGS} from '../../game/building-scale.js';
 import {BuildingOpening} from './BuildingOpening';
+import {pointInViewport,buildingInViewport} from '../../game/tactical-viewport.js';
 import {BuildingMaterials} from './BuildingMaterials';
 import {buildingStyle} from '../../game/building-types.js';
 import {WallDetails} from './BuildingDetails';
 import {BuildingRoof} from './BuildingRoof';
 import type {ReactNode} from 'react';
 type Point={x:number;y:number};
-type Args={state:any;revealed:Set<string>;project:(x:number,y:number)=>Point;light:(x:number,y:number)=>number};
+type Args={viewport?:any;state:any;revealed:Set<string>;project:(x:number,y:number)=>Point;light:(x:number,y:number)=>number};
 type SceneObject={key:string;depth:number;node:ReactNode};
 // Restrained earth pigments, limewash and hand-fired clay; no modern siding.
 const wallInset=.4; // Tile edges are half a cell from the center.
 const noise=(x:number,y:number)=>((Math.imul(x+71,374761393)^Math.imul(y+97,668265263))>>>0);
 
 /** Render architectural segments on authored collision cells, never a facade image. */
-export function buildBuildingObjects({state:s,revealed,project,light}:Args):SceneObject[]{
+export function buildBuildingObjects({state:s,revealed,project,light,viewport}:Args):SceneObject[]{
  const objects:SceneObject[]=[{key:'architecture-materials',depth:-10001,node:<BuildingMaterials/>}];
  for(const b of s.buildings??[]){
+  if(!buildingInViewport(viewport,b,project))continue;
   const open=b.rooms?.some((r:any)=>revealed.has(r.id));if(open)continue;
   const corners=[[b.x,b.y],[b.x+b.width-.5,b.y],[b.x+b.width-.5,b.y+b.height-.5],[b.x,b.y+b.height-.5]].map(([x,y])=>project(x,y));
   const offset=buildingStyle(b).height*.22,points=[corners[0],corners[1],{x:corners[1].x+offset,y:corners[1].y+offset*.45},{x:corners[2].x+offset,y:corners[2].y+offset*.45},{x:corners[3].x+offset,y:corners[3].y+offset*.45},corners[3]];
@@ -24,6 +26,7 @@ export function buildBuildingObjects({state:s,revealed,project,light}:Args):Scen
  const wallTiles=s.tiles.filter((t:any)=>['wall','door','window'].includes(t.type));
  const occupied=new Set(wallTiles.map((t:any)=>`${t.x},${t.y}`));
  for(const t of wallTiles){
+  if(!pointInViewport(viewport,project(t.x,t.y),100))continue;
   const b=s.buildings?.find((v:any)=>v.id===t.buildingId),style=buildingStyle(b);
   const corner=b&&(t.x===b.x||t.x===b.x+b.width-1)&&(t.y===b.y||t.y===b.y+b.height-1);
   const roomOpen=b?.rooms.some((r:any)=>revealed.has(r.id)&&r.cells.some((c:any)=>corner?Math.abs(c.x-t.x)<=1&&Math.abs(c.y-t.y)<=1:Math.abs(c.x-t.x)+Math.abs(c.y-t.y)===1));
@@ -68,12 +71,13 @@ export function buildBuildingObjects({state:s,revealed,project,light}:Args):Scen
   });
  }
  for(const b of s.buildings??[])for(const room of b.rooms??[]){
-  if(!room.cells?.length)continue;
+  if(!room.cells?.length||!buildingInViewport(viewport,b,project))continue;
   if(revealed.has(room.id)){
    // Floor joints follow world coordinates, with perimeter wear and wall shadows.
    // Draw below actors and walls; all decoration remains click-through.
    const cells=new Set(room.cells.map((c:any)=>`${c.x},${c.y}`));
    for(const c of room.cells){
+    if(!pointInViewport(viewport,project(c.x,c.y),40))continue;
     const point=(x:number,y:number)=>{const p=project(x,y);return `${p.x},${p.y}`;};
     // Perimeter walls are drawn inside their structural cells. Extend only
     // adjacent floor edges to that wall plane, covering the underlying grass.
