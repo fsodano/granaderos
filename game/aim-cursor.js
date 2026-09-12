@@ -1,4 +1,4 @@
-import {aimOptions,unitCanAct,attackCursorMode} from './ja2-hud.js';
+import {aimOptions,unitCanAct,attackCursorMode,visibleHover} from './ja2-hud.js';
 import {canChooseShotLocation} from './targeted-combat.js';
 
 // Fractions refer to the visible person's hit frame, independent of camera zoom.
@@ -14,8 +14,11 @@ export function targetHitFrame(target,position){
 }
 // Changing the cursor is a selection, not a tactical action. AP is paid by the
 // ordinary fire reducer only when the player confirms a shot.
-export function rightClickAim(state,unit,{mode='move',aim=0,busy=false}={}){
- if(busy||!unitCanAct(state,unit))return null;
+export function rightClickAim(state,unit,{mode='move',aim=0,busy=false,target=null}={}){
+ if(busy)return null;
+ const character=target?.id&&[...state.units,...(state.npcs??[])].find(person=>person.id===target.id);
+ if(['fire','useItem'].includes(mode)&&!visibleHover(state,character)?.id)return {mode:'move',aim:0};
+ if(!unitCanAct(state,unit))return null;
  const nextMode=attackCursorMode(unit);
  const maximum=aimOptions(state,unit).filter(option=>!option.disabled).at(-1)?.level??0;
  return {mode:nextMode,aim:mode==='fire'&&nextMode==='fire'?(Math.max(0,Math.min(maximum,Number.isFinite(aim)?Math.floor(aim):0))+1)%(maximum+1):0};

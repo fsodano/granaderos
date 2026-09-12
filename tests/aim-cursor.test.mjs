@@ -8,11 +8,11 @@ const field=()=>createBattle([{id:'p',x:1,y:1,marksmanship:85,weapon:1800,blade:
 
 test('right-click enters aiming without turning, firing, spending AP or advancing time',()=>{
  const s=field(),saved=structuredClone(s),u=s.units[0];const cursor=rightClickAim(s,u,{mode:'move',aim:4});assert.deepEqual(cursor,{mode:'fire',aim:0});assert.deepEqual(s,saved);
- let next=cursor;for(let i=1;i<=4;i++){next=rightClickAim(s,u,next);assert.equal(next.aim,i);}assert.equal(rightClickAim(s,u,next).aim,0);assert.deepEqual(s,saved);
+ let next=cursor;for(let i=1;i<=4;i++){next=rightClickAim(s,u,{...next,target:s.units[1]});assert.equal(next.aim,i);}assert.equal(rightClickAim(s,u,{...next,target:s.units[1]}).aim,0);assert.deepEqual(s,saved);
 });
 test('additional right clicks respect the affordable aim limit and the confirmed shot pays the displayed AP',()=>{
  const s=field(),u=s.units[0],target=s.units[1],costs=actionCosts(s,u);u.ap=costs.fire+2*costs.aim;
- let cursor=rightClickAim(s,u,{});cursor=rightClickAim(s,u,cursor);cursor=rightClickAim(s,u,cursor);assert.equal(cursor.aim,2);assert.equal(rightClickAim(s,u,cursor).aim,0);
+ let cursor=rightClickAim(s,u,{});cursor=rightClickAim(s,u,{...cursor,target});cursor=rightClickAim(s,u,{...cursor,target});assert.equal(cursor.aim,2);assert.equal(rightClickAim(s,u,{...cursor,target}).aim,0);
  const hitLocation=aimedBodyPart(target,.1),preview=targetPreview(s,u,target,{...cursor,hitLocation});assert.equal(hitLocation,'head');assert.equal(preview.pa,u.ap);assert.equal(preview.valid,true);
  const next=actBattle(s,{type:'fire',unitId:u.id,targetId:target.id,aim:cursor.aim,hitLocation});assert.equal(next.lastError,null);assert.equal(next.units[0].ap,u.ap-preview.pa);assert.equal(next.units[0].loaded,u.loaded-1);assert.equal(next.units[1].lastHitLocation,'head');assert.doesNotThrow(()=>validateBattleSnapshot(next));
 });
@@ -40,4 +40,17 @@ test('right-click preserves equipped-item use and refuses input during another s
  const s=field(),u=s.units[0];u.activeSlot='medical';Object.assign(u,{hp:80,bleeding:2,medical:80,medkits:2});assert.deepEqual(rightClickAim(s,u,{}),{mode:'useItem',aim:0});assert.equal(rightClickAim(s,u,{busy:true}),null);
  const next=actBattle(s,{type:'useItem',unitId:u.id,targetId:u.id});assert.equal(next.lastError,null);assert.equal(next.units[0].bleeding,0);assert.equal(next.units[0].medkits,1);
  s.phase='enemy';assert.equal(rightClickAim(s,u,{}),null);
+});
+
+test('right-click off a character cancels aiming without spending AP or losing ground-fire access',()=>{
+ const s=field(),u=s.units[0],before=structuredClone(s);
+ for(const target of [null,{x:8,y:3},{id:'missing',x:8,y:3}])for(const mode of ['fire','useItem'])assert.deepEqual(rightClickAim(s,u,{mode,aim:3,target}),{mode:'move',aim:0});
+ const entered=rightClickAim(s,u,{mode:'move',target:{x:8,y:3}});assert.deepEqual(entered,{mode:'fire',aim:0});
+ assert.deepEqual(s,before);const shot=actBattle(s,{type:'firePoint',unitId:u.id,x:8,y:3,aim:entered.aim});assert.equal(shot.lastError,null);assert.equal(shot.units[0].loaded,u.loaded-1);
+ u.ap=0;assert.deepEqual(rightClickAim(s,u,{mode:'fire',aim:2}),{mode:'move',aim:0});assert.equal(rightClickAim(s,u,{mode:'fire',busy:true}),null);
+});
+test('only a present visible character keeps aim active, including prone characters',()=>{
+ const s=field(),u=s.units[0],target=s.units[1];
+ for(const stance of ['standing','crouched','prone']){target.stance=stance;assert.deepEqual(rightClickAim(s,u,{mode:'fire',aim:1,target}),{mode:'fire',aim:2});}
+ for(const patch of [{fled:true},{departure:{edge:'E'}},{x:15,y:7}]){const hidden=structuredClone(s);hidden.night=true;Object.assign(hidden.units[1],patch);assert.deepEqual(rightClickAim(hidden,hidden.units[0],{mode:'fire',aim:3,target}),{mode:'move',aim:0});}
 });

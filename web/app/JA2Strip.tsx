@@ -71,7 +71,7 @@ export default function JA2Strip({battle, selected, unit, players, missionAllies
           {equipmentSlots(battle, unit, {busy}).map((slot: any) => <button key={slot.slot} aria-pressed={slot.active} disabled={slot.active || slot.disabled} title={`Equipar ${slot.label} · ${slot.pa} PA`} onClick={() => { onOrder(slot.action); onMode('move'); }}>{slot.label}</button>)}
         </div>}
         <p className="ja2-equipped-help">{equippedItemHelp(battle, unit, {target, mode, aim})}</p>
-        {firearm && unit && <p className="ja2-equipped-help">Botón derecho: apuntar y aumentar puntería. Clic izquierdo: disparar. La mira muestra la zona y los PA. Esc: cancelar.</p>}
+        {firearm && unit && <p className="ja2-equipped-help">Botón derecho: apuntar; sobre un personaje, aumentar puntería; sobre el suelo, volver a movimiento. Clic izquierdo: disparar. La mira muestra la zona y los PA. Esc: cancelar.</p>}
         <div className="ja2-order-grid">
           {gridDefs.map((d: any) => {
             const Icon = GRID_ICONS[d.id];

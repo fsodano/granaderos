@@ -4,7 +4,7 @@ Implemented 11 September 2026 from the user request and supplied JA2 cursor scre
 
 ## Controls
 
-- With a firearm equipped, right-click the battlefield to enter aim at level zero. Further right-clicks increase aim through the affordable levels, up to four, then return to zero.
+- With a firearm equipped, right-click the battlefield to enter aim at level zero. Further right-clicks over a visible character increase aim through the affordable levels, up to four, then return to zero. A right-click away from characters returns to movement and clears extra aim. This also cancels the ordinary item-use cursor. Ground shots remain available by left-clicking before cancellation.
 - Move the crosshair over the target's frame: upper quarter selects head, middle selects torso, and lower portion selects legs. Crouched frames are shorter. Prone, knocked-down and unconscious targets have one region, shown as Cuerpo.
 - Left-click confirms the shot. Changing the cursor costs no AP and advances no time. The ordinary shot pays the displayed base cost plus extra aim. A miss still spends AP and ammunition; an ignition failure retains the charge under the existing rules.
 - The cursor displays the region, total AP, remaining AP and four aim marks. Invalid shots use the warning color. Shot warnings remain in the shared target preview.
