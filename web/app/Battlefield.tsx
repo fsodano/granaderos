@@ -230,7 +230,6 @@ export default function Battlefield({battle:s,onChange,onFinish,peacefulVisit=fa
     if(mode==='bolas'){if(occupant)order({type:'boleadoras',targetId:occupant.id});return;}
     if(mode.startsWith('artillery')){order({type:mode,artilleryId:cannonId,x:t.x,y:t.y,tacticalLevel:tacticalLevel(t),targetId:occupant?.id,mode:shotType});return;}
     if(mode==='move'&&intent==='preserveFacing'&&isMovementGround(s,u,t)){order(movementAction(t,intent));return;}
-    if(mode==='move'&&movementGroup.members.length&&tacticalLevel(t)){setGroupReport({status:'blocked',reason:'Las alturas requieren órdenes individuales.'});return;}
     if(mode==='move'&&movementGroup.members.length&&isGroupGround(s,u,t)){moveGroup(t);return;}
     if(u?.activeSlot==='supply'&&u.activeSupply==='torches'&&['move','useItem'].includes(mode)){order(heldSupplyAction(u,t));return;}
     if(pickupSelection(s,u,t,{mode,movementIntent:intent,itemIntent:itemAction}).length){openPickup(t);return;}
@@ -241,7 +240,7 @@ export default function Battlefield({battle:s,onChange,onFinish,peacefulVisit=fa
       else if(unitCanAct(s,occupant))selectUnit(occupant.id);
       return;
     }
-    const environment=tacticalLevel(t)?null:environmentTargetAt(s,t);
+    const environment=environmentTargetAt(s,t);
     if(environment&&u&&['move','useItem'].includes(mode)&&canSee(s,u,t)){order({type:'useItem',environment:{kind:environment.kind,id:environment.id}});return;}
     if(mode==='move')order(movementAction(t));
   };

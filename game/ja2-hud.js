@@ -112,7 +112,7 @@ export function isMovementGround(state, unit, point) {
   const occupied = state.units.some(target => !target.fled && !target.departure && sameCell(target, point) && (target.side === 'player' || state.units.some(observer => observer.side === 'player' && canSee(state, observer, target))));
   return !occupied && !(unit && canSee(state, unit, point) && environmentTargetAt(state, point));
 }
-export function isGroupGround(state, unit, point) { return !tacticalLevel(unit) && !tacticalLevel(point) && groupSelectionMode(state) && isMovementGround(state, unit, point); }
+export function isGroupGround(state, unit, point) { return groupSelectionMode(state) && isMovementGround(state, unit, point); }
 
 export function movementAction(point, movementIntent = 'forward') {
   return {type: 'move', x: point.x, y: point.y, tacticalLevel:tacticalLevel(point), ...(movementIntent === 'preserveFacing' ? {movementIntent} : {})};
@@ -120,11 +120,10 @@ export function movementAction(point, movementIntent = 'forward') {
 
 export function toggleMovementGroup(state, ids, targetId, selectedId) {
   const target = state.units.find(unit => unit.id === targetId);
-  if (!groupSelectionMode(state) || !target || tacticalLevel(target) || target.side !== 'player' || !unitCanAct(state, target)) return ids;
+  if (!groupSelectionMode(state) || !target || target.side !== 'player' || !unitCanAct(state, target)) return ids;
   const current = ids.filter(id => state.units.some(unit => unit.id === id && unit.side === 'player' && !unit.departure));
   if (current.includes(targetId)) return current.filter(id => id !== targetId);
   const selected = state.units.find(unit => unit.id === selectedId);
-  if (tacticalLevel(selected)) return ids;
   if (!current.length && selected?.side === 'player' && unitCanAct(state, selected)) current.push(selectedId);
   return [...new Set([...current, targetId])];
 }
@@ -135,9 +134,8 @@ export function movementGroupModel(state, ids, selectedId, point) {
     return unit ? [{id, name: unit.nickname || unit.name}] : [];
   }) : [];
   const anchorId = members.some(unit => unit.id === selectedId) ? selectedId : members[0]?.id;
-  const unsupportedHeight=Boolean(members.length&&point&&(tacticalLevel(point)||members.some(member=>tacticalLevel(state.units.find(unit=>unit.id===member.id)))));
-  const request = members.length && point && !unsupportedHeight ? {unitIds: members.map(unit => unit.id), anchorId, x: point.x, y: point.y} : null;
-  return {members, anchorId, request, preview: unsupportedHeight?{ok:false,reason:'Las alturas requieren órdenes individuales. Volvé a órdenes individuales para trepar o mover por la terraza.'}:request ? planGroupMove(state, request) : null};
+  const request = members.length && point ? {unitIds: members.map(unit => unit.id), anchorId, x: point.x, y: point.y,...(state.upperSurfaces?.length||point.tacticalLevel!==undefined?{tacticalLevel:tacticalLevel(point)}:{})} : null;
+  return {members, anchorId, request, preview: request ? planGroupMove(state, request) : null};
 }
 
 export function turnModel(state) {

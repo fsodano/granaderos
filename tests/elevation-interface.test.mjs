@@ -9,7 +9,8 @@ import {buildBuilding,buildTerrace} from '../game/buildings.js';
 import {createBattle,actBattle,getReachable,climbPreview} from '../game/tactical.js';
 import {sameCell,spaceKey,tacticalLevel,surfaceHeight} from '../game/tactical-space.js';
 import {roomAt,isInteriorVisible} from '../game/tactical-visibility.js';
-import {cellOccupant,movementAction,orderAction,heldSupplyAction,movementGroupModel,visibleHover} from '../game/ja2-hud.js';
+import {cellOccupant,movementAction,orderAction,heldSupplyAction,movementGroupModel,visibleHover,isGroupGround,toggleMovementGroup} from '../game/ja2-hud.js';
+import {executeGroupMove} from '../game/group-movement.js';
 import {tacticalShortcut} from '../game/hotkeys.js';
 const {default:Scene}=await import('../web/app/TacticalScene.tsx');
 const {default:Inventory}=await import('../web/app/JA2Inventory.tsx');
@@ -107,11 +108,16 @@ test('inventory climb controls use real admission, costs and callbacks while nat
  assert.equal(tacticalShortcut({key:'Tab',shiftKey:true}),null);
 });
 
-test('coordinate orders retain levels and upper group routes have an explicit individual-order limit',()=>{
- const state=fixture(),point={x:4,y:3,tacticalLevel:1};state.mode='exploration';
+test('coordinate orders and group controls preserve legal roof and ground destinations',()=>{
+ const state=fixture(),point={x:4,y:3,tacticalLevel:1};state.mode='exploration';state.units=state.units.filter(unit=>unit.side==='player');
  assert.deepEqual(movementAction(point),{type:'move',...point});
  for(const id of ['move','look','torch','artilleryMove','artilleryPivot'])assert.equal(orderAction(state,state.units[0],point,id).tacticalLevel,1,id);
  assert.equal(heldSupplyAction({activeSupply:'torches'},point).tacticalLevel,1);
- const group=movementGroupModel(state,['climber','down'],'climber',point);assert.equal(group.request,null);assert.equal(group.preview.ok,false);assert.match(group.preview.reason,/órdenes individuales/);
+ assert.deepEqual(toggleMovementGroup(state,[],'up','climber'),['climber','up']);
+ assert.equal(isGroupGround(state,state.units[0],point),true);
+ const group=movementGroupModel(state,['climber','up'],'climber',point);assert.equal(group.request.tacticalLevel,1);assert.equal(group.preview.ok,true);
+ const result=executeGroupMove(state,group.request);assert.equal(result.status,'completed');assert.ok(result.orders.every(order=>order.tacticalLevel===1));
+ const down=movementGroupModel(result.state,['climber','up'],'climber',{x:0,y:3});assert.equal(down.request.tacticalLevel,0);assert.equal(down.preview.ok,true);
+ const descended=executeGroupMove(result.state,down.request);assert.equal(descended.status,'completed');assert.ok(descended.orders.every(order=>order.tacticalLevel===0));
  const reachable=getReachable(state,state.units[0]);assert.ok(reachable.some(p=>tacticalLevel(p)===1&&p.path.some(step=>step.kind==='climb')));
 });

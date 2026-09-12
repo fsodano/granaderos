@@ -12,16 +12,17 @@ import {CAMPAIGN_SECTORS,RESOURCE_NAMES} from './data.js';
 import {rosterFor} from './campaign.js';
 import {enemyGroupStatus} from './enemy-groups.js';
 import {publicAssignmentNotice} from './assignment-attention.js';
+import {spaceKey} from './tactical-space.js';
 
 // Explicit allowlists: new simulation fields remain private until reviewed here.
 const scalar=value=>value===null||['string','number','boolean'].includes(typeof value);
 const pick=(value,keys)=>Object.fromEntries(keys.filter(key=>value?.[key]!==undefined&&scalar(value[key])).map(key=>[key,value[key]]));
-const ACTOR=['id','name','nickname','side','x','y','hp','maxHp','stance','movementMode','facing','mounted','unconscious','knockedDown','entangled','routed','surrendered','militia','missionAlly'];
+const POSITION=['x','y','tacticalLevel'];
+const ACTOR=['id','name','nickname','side',...POSITION,'hp','maxHp','stance','movementMode','facing','mounted','unconscious','knockedDown','entangled','routed','surrendered','militia','missionAlly'];
 const OWN=['ap','maxAP','carriedAP','energy','fatigue','bleeding','bandaged','shock','morale','weapon','blade','condition','bladeCondition','weaponDropped','weaponReady','weaponMode','loaded','reloadProgress','ammo','jammed','medkits','priming','flints','rations','torches','boleadoras','activeSlot','activeItem','leftHandItem','activeTool','activeSupply','stealthMode','agility','dexterity','strength','wisdom','leadership','marksmanship','medical','mechanical','explosives','stealth','experienceLevel','militiaRank','militiaExperience'];
 const ITEM=['item','kind','outfit','label','name','count','weight','weapon','loaded','reloadProgress','condition','jammed','itemType','toolKey','fittingPattern'];
-const ACTION=['type','unitId','targetId','item','count','slot','toolKey','supplyKey','stance','movement','enabled','x','y','aim','hitLocation','groundId','dropIndex','inventoryKey','kind','id','verb','index','destination'];
-const ORDERS=new Set(['move','look','stealth','useItem','loot','reload','reprime','weapon','stance','mount','brace','repair','free','endTurn']);
-const pointKey=point=>`${point.x},${point.y}`;
+const ACTION=['type','unitId','targetId','item','count','slot','toolKey','supplyKey','stance','movement','enabled',...POSITION,'linkId','aim','hitLocation','groundId','dropIndex','inventoryKey','kind','id','verb','index','destination'];
+const ORDERS=new Set(['move','climb','look','stealth','useItem','loot','reload','reprime','weapon','stance','mount','brace','repair','free','endTurn']);
 const onField=unit=>!unit.departure&&!unit.fled;
 const fittings=value=>value?.bayonet?{bayonet:pick(value.bayonet,['weapon','fittingPattern','condition'])}:{};
 const item=stack=>typeof stack==='number'?{count:stack}:{...pick(stack,ITEM),...(stack?.fittings?{fittings:fittings(stack.fittings)}:{})};
@@ -49,18 +50,19 @@ export function playerKnownBattle(state){
   const visible=state.units.filter(unit=>unit.side!=='player'&&seen(unit));
   const visibleIds=new Set(visible.map(unit=>unit.id));
   const tiles=state.tiles.filter(seen);
-  const knownCells=new Set(tiles.map(pointKey));
+  const surfaces=(state.upperSurfaces??[]).filter(seen);
+  const knownCells=new Set([...tiles,...surfaces].map(spaceKey));
   const environment=[];
   for(const target of [...tiles.filter(tile=>tile.type==='door'),...(state.props??[]).filter(prop=>prop.type==='chest'&&seen(prop))]){
     const summary=environmentTargetSummary({side:'player'},target),kind=target.type==='door'?'door':'container';
-    environment.push({...pick(target,['x','y']),...pick(summary,['id','type','label','open','locked','broken']),kind,
+    environment.push({...pick(target,POSITION),...pick(summary,['id','type','label','open','locked','broken']),kind,
       ...(summary.trap?{trap:pick(summary.trap,['type','armed'])}:{}),
       ...(summary.contents?{contents:summary.contents.map((stack,index)=>({...item(stack),index}))}:{})});
   }
   const contacts=players.flatMap(unit=>{
     const known=unit.lastKnownEnemy,noise=heardNoiseModel(state,unit);
-    return [...(fresh(state,known)?[{observerId:unit.id,kind:'lastSeen',...pick(known,['x','y','turn']),anonymous:true}]:[]),
-      ...(noise?[{observerId:unit.id,kind:'heard',...pick(noise,['x','y','radius','label']),turn:unit.lastHeardNoise.turn,anonymous:true}]:[])];
+    return [...(fresh(state,known)?[{observerId:unit.id,kind:'lastSeen',...pick(known,[...POSITION,'turn']),anonymous:true}]:[]),
+      ...(noise?[{observerId:unit.id,kind:'heard',...pick(noise,[...POSITION,'radius','label']),turn:unit.lastHeardNoise.turn,anonymous:true}]:[])];
   });
   const livingTargets=[...players,...visible].filter(unit=>unit.hp>0);
   const orders=actors.filter(unit=>!unit.militia).map(unit=>({unitId:unit.id,canAct:unitCanAct(state,unit),costs:pick(actionCosts(state,unit),['fire','aim','reload','reprime','melee','heal','weapon','stance','mount','brace','repair','free','loot','drop','equipLoot']),
@@ -78,15 +80,17 @@ export function playerKnownBattle(state){
   }));
   const result={...pick(state,['sectorId','sectorName','sceneId','missionId','width','height','turn','phase','mode','status','sectorCleared','night','elapsedSeconds']),weather:pick(state.weather,['rain','humidity']),
     units:[...players.map(ownActor),...visible.map(unit=>pick(unit,ACTOR))],departedPlayers:state.units.filter(unit=>unit.side==='player'&&unit.departure).map(departure),
-    npcs:(state.npcs??[]).filter(seen).map(npc=>pick(npc,['id','name','x','y','hp','mission'])),
-    tiles:tiles.map(tile=>pick(tile,['x','y','type','blocked','cover','open','buildingId','roomId'])),
-    props:(state.props??[]).filter(seen).map(prop=>({...pick(prop,['id','type','x','y','blocksMovement']),...(prop.footprint?{footprint:pick(prop.footprint,['width','height'])}:{})})),
+    npcs:(state.npcs??[]).filter(seen).map(npc=>pick(npc,['id','name',...POSITION,'hp','mission'])),
+    tiles:tiles.map(tile=>pick(tile,[...POSITION,'elevation','type','blocked','cover','open','buildingId','roomId'])),
+    ...(state.upperSurfaces?{upperSurfaces:surfaces.map(surface=>pick(surface,['id',...POSITION,'elevation','type','kind','blocked','cover','slabThickness','material','buildingId','roomId']))}:{}),
+    ...(state.climbLinks?{climbLinks:state.climbLinks.filter(link=>knownCells.has(spaceKey(link.from))&&knownCells.has(spaceKey(link.to))).map(link=>({...pick(link,['id','kind']),from:pick(link.from,POSITION),to:pick(link.to,POSITION)}))}:{}),
+    props:(state.props??[]).filter(seen).map(prop=>({...pick(prop,['id','type',...POSITION,'blocksMovement']),...(prop.footprint?{footprint:pick(prop.footprint,['width','height'])}:{})})),
     environment,contacts,orders,
-    artillery:(state.artillery??[]).filter(gun=>gun.side==='player'||seen(gun)).map(gun=>pick(gun,gun.side==='player'?['id','side','type','x','y','loaded','ammo','facing','reloadProgress']:['id','side','type','x','y','facing'])),
-    groundItems:(state.groundItems??[]).filter(ground=>!ground.heldBy&&ground.count>0&&seen(ground)).map(ground=>({...pick(ground,['id','x','y','type']),...item(ground.stack??ground)})),
-    droppedWeapons:(state.droppedWeapons??[]).flatMap((ground,dropIndex)=>!ground.taken&&seen(ground)?[{dropIndex,...pick(ground,['x','y']),...item(ground)}]:[]),
-    lights:(state.lights??[]).filter(light=>knownCells.has(pointKey(light))).map(light=>pick(light,['x','y','type','radius','intensity','remainingSeconds'])),
-    smoke:(state.smoke??[]).filter(smoke=>knownCells.has(pointKey(smoke))).map(smoke=>pick(smoke,['x','y','radius'])),
+    artillery:(state.artillery??[]).filter(gun=>gun.side==='player'||seen(gun)).map(gun=>pick(gun,gun.side==='player'?['id','side','type',...POSITION,'loaded','ammo','facing','reloadProgress']:['id','side','type',...POSITION,'facing'])),
+    groundItems:(state.groundItems??[]).filter(ground=>!ground.heldBy&&ground.count>0&&seen(ground)).map(ground=>({...pick(ground,['id',...POSITION,'type']),...item(ground.stack??ground)})),
+    droppedWeapons:(state.droppedWeapons??[]).flatMap((ground,dropIndex)=>!ground.taken&&seen(ground)?[{dropIndex,...pick(ground,POSITION),...item(ground)}]:[]),
+    lights:(state.lights??[]).filter(light=>knownCells.has(spaceKey(light))).map(light=>pick(light,[...POSITION,'type','radius','intensity','remainingSeconds'])),
+    smoke:(state.smoke??[]).filter(smoke=>knownCells.has(spaceKey(smoke))).map(smoke=>pick(smoke,[...POSITION,'radius'])),
     exits:(state.exits??[]).map(exit=>pick(exit,['id','edge','destination'])),
     interrupt:state.phase==='interrupt'&&state.interrupt?.side==='player'?{side:'player',unitIds:players.filter(unit=>unitCanAct(state,unit)).map(unit=>unit.id),...(visibleIds.has(state.interrupt.enemyId)?{enemyId:state.interrupt.enemyId}:{})}:null,
   };
