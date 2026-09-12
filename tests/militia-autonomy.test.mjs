@@ -46,14 +46,15 @@ test('automatic loading consumes finite reserve and incapacitated militia cannot
 });
 
 test('a militia-only interrupt acts automatically with the remaining budget, without a new turn',()=>{
- const b=field([hired(),militia()],[enemy()]);b.units[0].ap=0;b.units[1].ap=20;b.units[2].ap=24;
+ // The sabre carrier must approach before attacking to open this window.
+ const b=field([hired(),militia()],[enemy({weapon:1809})]);b.units[0].ap=0;b.units[1].ap=20;b.units[2].ap=24;
  const n=endTurn(b);assert.equal(n.status,'victory');assert.equal(n.phase,'player');assert.equal(n.turn,1);assert.equal(n.elapsedSeconds,6);
  assert.equal(n.units[1].reactionTurn,1);assert.equal(n.units[1].ap,8);assert.equal(n.units[1].loaded,0);assert.equal(n.units[1].ammo,12);
  assert.equal(n.interrupt,undefined);assert.equal(n.alliedTurn,undefined);assert.doesNotThrow(()=>validateBattleSnapshot(n));
 });
 
 test('a mixed interrupt retains hired control after automatic militia action and saves its spent budget',()=>{
- const b=field([hired({x:1,y:2,agility:100,experienceLevel:10}),militia()],[enemy({hp:300,maxHp:300})]);
+ const b=field([hired({x:1,y:2,agility:100,experienceLevel:10}),militia()],[enemy({weapon:1809,hp:300,maxHp:300})]);
  b.units[0].ap=40;b.units[1].ap=20;b.units[2].ap=24;
  const n=endTurn(b);assert.equal(n.phase,'interrupt');assert.equal(n.units[0].ap,40);assert.equal(n.units[0].loaded,1);
  assert.equal(n.units[1].loaded,0);assert.ok(n.units[1].ap<=8);assert.ok(n.interrupt.militiaActions.m>0);
@@ -63,7 +64,8 @@ test('a mixed interrupt retains hired control after automatic militia action and
 });
 
 function interruptedGarrison(startEnemyAfter=false){
- const b=field([militia({agility:30,weapon:1813}),{id:'c',x:1,y:5,agility:90,experienceLevel:9},{id:'57',x:12,y:7,facing:2,agility:100,experienceLevel:10}],
+ // Start the queue with one melee approach, without a preceding ranged throw.
+ const b=field([militia({agility:30,weapon:1809}),{id:'c',x:1,y:5,agility:90,experienceLevel:9},{id:'57',x:12,y:7,facing:2,agility:100,experienceLevel:10}],
   [{id:'b',x:7,y:1,agility:70,weapon:1813},{id:'d',x:9,y:7,facing:6,agility:100,experienceLevel:10}]);
  // A saved boundary immediately after the enemy phase, before militia move.
  if(startEnemyAfter)b.roundFirstSide='enemy';
