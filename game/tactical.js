@@ -1,6 +1,6 @@
 import {regionalWeatherAt} from './regional-weather.js';
 import {usesElevationGeometry,elevationSightClear,absoluteBodyHeight,geometryCells,rayHeightIntersection} from './sight-geometry.js';
-import {tacticalLevel,spaceKey,sameSurface,sameCell,surfaceAt,surfaceHeight,accessStepsFrom,canWalkBetween} from './tactical-space.js';
+import {tacticalLevel,spaceKey,sameSurface,sameCell,surfaceAt,surfaceHeight,accessStepsFrom} from './tactical-space.js';
 import {questGiftPlan} from './quests.js';
 import {OUTFIT_CHANGE_AP,normalizeOutfit,wornOutfit,hasPoncho} from './outfits.js';
 import {handsRequired,selectMainHand,handLayout} from './hand-layout.js';
@@ -224,10 +224,18 @@ export function movementIntentReason(u,intent='forward'){
 }
 const intentFactor=intent=>intent==='preserveFacing'?1.25:1;
 function stepCostWithGeometry(s,u,from,to,lookup,propBlocked,intent='forward'){
-  if(!sameSurface(from,to)||s.upperSurfaces?.length&&!canWalkBetween(s,from,to))return Infinity;
-  const dx=Math.abs(to.x-from.x),dy=Math.abs(to.y-from.y),ground=lookup(to.x,to.y);
-  if(!Number.isInteger(from.x)||!Number.isInteger(from.y)||!lookup(from.x,from.y)||!Number.isInteger(dx)||!Number.isInteger(dy)||Math.max(dx,dy)!==1||!ground||ground.blocked||propBlocked(to.x,to.y))return Infinity;
-  if(dx&&dy&&(!lookup(to.x,from.y)||!lookup(from.x,to.y)||lookup(to.x,from.y).blocked||lookup(from.x,to.y).blocked||propBlocked(to.x,from.y)||propBlocked(from.x,to.y)))return Infinity;
+  if(!sameSurface(from,to))return Infinity;
+  const dx=Math.abs(to.x-from.x),dy=Math.abs(to.y-from.y),start=lookup(from.x,from.y),ground=lookup(to.x,to.y),elevated=Boolean(s.upperSurfaces?.length);
+  if(!Number.isInteger(from.x)||!Number.isInteger(from.y)||!start||!Number.isInteger(dx)||!Number.isInteger(dy)||Math.max(dx,dy)!==1||!ground||ground.blocked||propBlocked(to.x,to.y))return Infinity;
+  // The route already has a floor-specific index. Reuse these records instead
+  // of repeating global surface lookup for every edge and diagonal corner.
+  const elevation=start.elevation??0;
+  if(elevated&&(start.blocked||(ground.elevation??0)!==elevation))return Infinity;
+  if(dx&&dy){
+    const horizontal=lookup(to.x,from.y),vertical=lookup(from.x,to.y);
+    if(!horizontal||!vertical||horizontal.blocked||vertical.blocked||propBlocked(to.x,from.y)||propBlocked(from.x,to.y))return Infinity;
+    if(elevated&&((horizontal.elevation??0)!==elevation||(vertical.elevation??0)!==elevation))return Infinity;
+  }
   return Math.ceil(Math.ceil(stepCost(u,ground)*movementFactor(from,to))*intentFactor(intent));
 }
 export function movementStepCost(s,u,from,to,options={}){
