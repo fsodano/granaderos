@@ -54,3 +54,23 @@ against the original uncached scan. No artwork or minimap geometry changes.
 record the fixture and measurement settings. React serialization, profiling,
 JIT and garbage collection affect these figures. Browser DOM, paint, animation
 updates and long-session retained memory require separate validation.
+
+## Bounded browser follow-up
+
+The same local development preview used the full Buenos Aires map, six existing
+operatives, no enemies, night lighting and 200% camera zoom before and after the
+index. This is a different fixture and measurement from the controlled server
+comparison above. Its temporary React Profiler and frame observer were reset
+before each ambient or walking sample.
+
+Ambient samples showed 10 React updates averaging 162.0 ms before the index and
+12 averaging 89.9 ms afterwards; maxima were 353.7 and 215.0 ms. The frame observer
+reported worst gaps of 384 and 233 ms. A normal 17-cell approach used 22 energy
+in both cases and no AP. Its observed worst frame gap fell from 785 to 350 ms.
+The rolling last-30-update means were 34.7 and 24.3 ms, so these mixed animation
+and simulation samples must not be treated as equal-work benchmarks.
+
+The host also ran validation jobs. These development-browser observations show
+reduced delays, but still include long frames. They are not a frame-rate promise
+or a long-session memory/leak test. Artwork, roof alignment, the six-portrait HUD
+and normal movement costs remain unchanged.

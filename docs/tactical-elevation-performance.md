@@ -82,3 +82,8 @@ Observed JS heap samples ranged from approximately 78 to 114 MB and later
 returned to 82 MB. This bounded observation is not a leak test or proof that
 the original slowdown/OOM is resolved. Action and periodic update stalls remain
 a performance concern; idle frame rate alone must not be reported as success.
+
+The later [room visibility index](tactical-room-visibility-performance.md) addresses
+a measured minimap lookup cost without changing rendered geometry or artwork.
+Its controlled server comparison and separate browser observations are recorded
+there; action stalls and long-session memory still require further work.

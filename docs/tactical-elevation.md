@@ -117,6 +117,22 @@ Aires house and the earlier isolated fixture. Other sectors have complete topolo
 checks but still need visual and combat acceptance. Climbing currently uses the
 available movement poses; dedicated climb animation remains an art task.
 
+## Integrated verification
+
+The campaign activation, patrol recovery, disclosure and room-index source at
+`1002802` passed all 1,820 tests with zero skips, typecheck and the production
+build (960 exported files, 856 verified asset references). The earned opening
+and northern route preserve actual losses, captivity, finite equipment, paid
+replacements and medical supplies through Yatasto. Those acceptance controllers
+now use legal physical-floor routes and living available soldiers; they do not
+force the earlier casualty counts. See [current route evidence](northern-route.md).
+
+The [room visibility index](tactical-room-visibility-performance.md) reduces a
+measured minimap cost while retaining exact tested render output. Browser checks
+after integration confirmed normal approach, ascent and finite torch use with
+the existing detailed artwork. Remaining long frames and long-session memory
+still need performance work.
+
 ## Patrol recovery
 
 Campaign acceptance found that long exploration waits let enemy patrols exhaust
