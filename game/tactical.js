@@ -404,7 +404,7 @@ function lootSource(s,a){
   const source=a.targetId?s.units.find(v=>v.id===String(a.targetId)):null,drop=a.dropIndex!==undefined?s.droppedWeapons[a.dropIndex]:null,ground=a.groundId?s.groundItems.find(g=>g.id===a.groundId):null;
   return {source,drop,ground,position:source||drop||ground};
 }
-function planLoot(s,u,a){
+export function planLoot(s,u,a){
   const {source,drop,ground,position}=lootSource(s,a);
   if(source?.departure||source?.fled)throw Error('Esa persona ya salió del sector.');
   if(!position||dist(u,position)>1.5||!hasLineOfSight(s,u,position))throw Error('Acércate al cuerpo o equipo que quieres registrar.');

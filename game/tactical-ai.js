@@ -1,3 +1,4 @@
+import {chooseScavengingAction} from './tactical-ai-scavenging.js';
 import {directionTo,facingAllowsSight,turnAPCost} from './tactical-awareness.js';
 import {getReachable, canSee, hasLineOfSight, shotChance, firearmShotOptions, actionCosts, weaponFor, bladeFor, planEquipLoot} from './tactical.js';
 import {planFitBayonet} from './tactical-inventory.js';
@@ -186,6 +187,8 @@ export function chooseEnemyAction(state, unit) {
 
   if (!targets.length) {
     if (upkeep) return upkeep;
+    const scavenge = chooseScavengingAction(state, unit, targets, paths);
+    if (scavenge) return scavenge;
     const known = unit.lastKnownEnemy || unit.lastHeardNoise;
     const age = state.turn - (known?.turn ?? -Infinity);
     if (!known || !Number.isInteger(known.x) || !Number.isInteger(known.y) || known.x < 0 || known.y < 0 || known.x >= state.width || known.y >= state.height || age < 0 || age > 3) return choosePatrolAction(state,unit);
@@ -211,6 +214,8 @@ export function chooseEnemyAction(state, unit) {
   const outgunned = threats.length > support;
   if (shot?.effectiveness >= 45 && !outgunned) return {type: 'fire', unitId: unit.id, targetId: shot.target.id, aim: shot.aim,hitLocation:shot.hitLocation};
   if (upkeep) return upkeep;
+  const scavenge = chooseScavengingAction(state, unit, targets, paths);
+  if (scavenge) return scavenge;
 
   if (weaponFor(unit).capacity <= 0 || (!unit.loaded && !unit.ammo) || (unit.jammed && !unit.priming)) {
     // Close for an affordable melee attack; never spend the entire turn rushing
