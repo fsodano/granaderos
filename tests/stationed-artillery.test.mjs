@@ -7,6 +7,8 @@ import {deployedArtillery} from '../game/equipment.js';
 import {prepareSectorArtillery,validateArtilleryDeployment,validateArtilleryReport,settleSectorArtillery,ownedArtilleryCount,artillerySupplyPreview} from '../game/campaign-artillery.js';
 import {createBattle,actBattle,endTurn,getReachable,artilleryReloadPreview,artilleryCrewPlan,artilleryCosts,interruptAvailable} from '../game/tactical.js';
 import {enterSector} from '../game/world.js';import {autoResolve} from '../game/auto-resolve.js';
+import {automaticOrder} from '../game/autonomous-orders.js';import {sameSurface,tacticalLevel} from '../game/tactical-space.js';
+import {fight} from './opening-driver.mjs';
 import {encodeSave,decodeSave} from '../game/save.js';import {syncBattleTime} from '../game/time.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const act=(s,a)=>{const n=actBattle(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
@@ -16,7 +18,10 @@ function issued({reinforced=true}={}){let c=order(initialCampaign(45),{type:'pur
  // Draw actual clothing before the march; assault no longer grants protection from pooled stock.
  for(const operativeId of c.squad.filter(id=>!c.operativeState[id].outfit)){c=order(c,{type:'sectorInventory',sector:'retiro',operativeId,direction:'issueOutfit'});const row=sectorInventoryModel(c,'retiro',rosterFor(c),operativeId).carried.find(row=>row.equip?.some(e=>e.slot==='outfit'));c=order(c,{type:'sectorInventory',sector:'retiro',operativeId,direction:'equip',inventoryKey:row.inventoryKey,expected:row.expected,slot:'outfit'});}
  c=order(c,{type:'travel',sector:'buenos_aires'});return order(c,{type:'attack',sector:'san_nicolas'});}
-function won(){let c=issued();const r=autoResolve(c.pendingBattle);assert.equal(r.outcome,'victory');assert.ok(r.actions>0);const pair=syncBattleTime(c,r.battle);assert.equal(pair.error,null);const saved=decodeSave(encodeSave(pair.campaign,pair.battle));c=order(saved.campaign,{type:'battleResult',battleId:c.pendingBattle.id,outcome:r.outcome,sectorState:saved.battle,survivors:saved.battle.units.filter(u=>u.side==='player')});for(const u of r.battle.units.filter(u=>u.side==='player')){assert.equal(c.operativeState[u.id].alive,u.hp>0);assert.equal(c.operativeState[u.id].hp,u.hp);}return c;}
+function won(){let c=issued();
+ // Coordinate one ordinary order per soldier per pass. Spending a scout's
+ // entire turn first separates him from fire support and medical aid.
+ const r=fight(c.pendingBattle,null,{controller:automaticOrder});assert.equal(r.battle.status,'victory');assert.ok(r.actions>0);const pair=syncBattleTime(c,r.battle);assert.equal(pair.error,null);const saved=decodeSave(encodeSave(pair.campaign,pair.battle));c=order(saved.campaign,{type:'battleResult',battleId:c.pendingBattle.id,outcome:r.battle.status,sectorState:saved.battle,survivors:saved.battle.units.filter(u=>u.side==='player')});for(const u of r.battle.units.filter(u=>u.side==='player')){assert.equal(c.operativeState[u.id].alive,u.hp>0);assert.equal(c.operativeState[u.id].hp,u.hp);}return c;}
 function returnVisit(c,b){const pair=syncBattleTime(c,b);assert.equal(pair.error,null);return order(pair.campaign,{type:'leaveSector',battleId:c.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});}
 const save=c=>restoreCampaign(serializeCampaign(c));
 const flat=()=>Array.from({length:240},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false,cover:0}));
@@ -27,7 +32,7 @@ test('paid artillery is issued once, leaves stock and survives a real victory wi
 });
 test('firing in a safe sector leaves the same empty gun at the same full-size map position across repeated real reports',()=>{
  let c=won();c=order(c,{type:'visitSector'});let b=enterSector(c.pendingBattle,c.sectorStates.san_nicolas);const gun=b.artillery[0],id=gun.id,u=b.units.find(u=>u.side==='player'&&!u.militia);
- const step=getReachable(b,u).filter(p=>{const actor={...u,x:p.x,y:p.y};return !artilleryCrewPlan(b,actor,gun,artilleryCosts(b,actor,gun).fire).reason;}).sort((a,b)=>a.cost-b.cost)[0];assert.ok(step);b=act(b,{type:'move',unitId:u.id,x:step.x,y:step.y});
+ const step=getReachable(b,u).filter(p=>{const actor={...u,x:p.x,y:p.y,tacticalLevel:tacticalLevel(p)};return sameSurface(p,gun)&&!artilleryCrewPlan(b,actor,gun,artilleryCosts(b,actor,gun).fire).reason;}).sort((a,b)=>a.cost-b.cost)[0];assert.ok(step);b=act(b,{type:'move',unitId:u.id,x:step.x,y:step.y,tacticalLevel:tacticalLevel(step)});
  b=act(b,{type:'artillery',unitId:u.id,artilleryId:id,x:gun.x+2,y:gun.y,mode:'solid'});assert.equal(b.artillery[0].loaded,false);assert.equal(b.artillery[0].ammo,6);c=returnVisit(c,b);
  for(let i=0;i<3;i++){
   c=order(save(c),{type:'visitSector'});b=enterSector(c.pendingBattle,c.sectorStates.san_nicolas);assert.equal(b.artillery.length,1);assert.equal(b.artillery[0].id,id);assert.equal(b.artillery[0].loaded,false);assert.equal(b.artillery[0].ammo,6);assert.equal(b.artillery[0].x,gun.x);assert.equal(b.artillery[0].y,gun.y);c=returnVisit(c,b);assert.equal(c.resources.cannons,0);
