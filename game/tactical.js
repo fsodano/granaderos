@@ -1,3 +1,4 @@
+import {pairedPistol,pistolPairPenalty,secondaryPistolView} from './paired-fire.js';
 import {pocketOrderFromSlots} from './inventory-pockets.js';
 import {planEquipmentAttachment,planEquipmentPickup,planEquipmentCursorPlacement,planEquipmentCursorReturn} from './equipment-cursor.js';
 import {regionalWeatherAt} from './regional-weather.js';
@@ -72,8 +73,10 @@ export function actionCosts(s,u,point){
   const fire=Math.max(1,Math.ceil(w.fireAP*(cavalry?.8:1))-(Number(u.id)===4&&[1803,1805,1806,1808].includes(w.id)?2:0));
   const turn=hasFirearm(u)&&Number.isFinite(point?.x)&&Number.isFinite(point?.y)?turnAPCost(u,directionTo(u,point)):0;
   const preparation=hasFirearm(u)?firearmPreparation(u,w,fire,turn):{raise:0,turn:0,setup:0,discharge:fire,total:fire};
+  const second=pairedPistol(u),other=second?actionCosts(s,secondaryPistolView(u,second),point):null;
+  const setup=Math.max(preparation.setup,other?.setup??0),discharge=Math.max(preparation.discharge,other?.discharge??0);
   return {
-    fire:preparation.total,ready:preparation.raise,turn:preparation.turn,setup:preparation.setup,discharge:preparation.discharge,overwatch:preparation.total,aim:Math.max(1,Math.ceil(w.aimAP*(hasTrait(u,'line_marksman')?.65:1))),
+    fire:setup+discharge,ready:Math.max(preparation.raise,other?.ready??0),turn:preparation.turn,setup,discharge,overwatch:setup+discharge,aim:Math.max(other?.aim??0,Math.max(1,Math.ceil(w.aimAP*(hasTrait(u,'line_marksman')?.65:1)))),
     stance:stanceCost(u,STANCES[(STANCES.indexOf(u.stance??'standing')+1)%3]),
     weapon:4,brace:16,ration:10,torch:10,bolas:12,free:15,loot:8,equipLoot:6,fitBayonet:FIT_BAYONET_AP,removeBayonet:REMOVE_BAYONET_AP,
     heal:Number(u.id)===10?18:hasTrait(u,'field_rescuer')?20:25,
@@ -334,6 +337,14 @@ export function shotChance(s,attacker,target,aim=0,hitLocation='torso'){
   const path=firearmFlightPreview(s,attacker,target,hitLocation);
   return accuracy&&!path.blocked&&(!path.victimId||path.victimId===target.id)?accuracy:0;
 }
+export function firearmVolleyPreview(s,unit,target,aim=0,hitLocation='torso'){
+ const second=pairedPistol(unit),penalty=second?pistolPairPenalty(unit):0;
+ const guns=[{hand:'primary',view:unit},...(second?[{hand:'offhand',view:secondaryPistolView(unit,second)}]:[])];
+ return {paired:Boolean(second),shots:guns.map(({hand,view})=>{
+  const w=weaponFor(view),path=firearmFlightPreview(s,view,target,hitLocation);
+  return {hand,weapon:w.id,name:w.name,chance:path.blocked||path.victimId&&path.victimId!==target.id?0:shotAccuracy(s,view,target,aim,hitLocation,false,penalty),damageFactor:path.damageFactor,damage:w.damage};
+ })};
+}
 // One geometry trace per body region serves all affordable aim increments.
 // This is a fresh read, not a cache that can outlive movement or a breached wall.
 export function firearmShotOptions(s,attacker,target,maxAim=4){
@@ -341,7 +352,13 @@ export function firearmShotOptions(s,attacker,target,maxAim=4){
   const options=[],limit=clamp(Number.isFinite(maxAim)?Math.floor(maxAim):0,0,4);
   for(const hitLocation of shotLocationsFor(target)){
     const path=firearmFlightPreview(s,attacker,target,hitLocation);
-    for(let aim=0;aim<=limit;aim++)options.push({hitLocation,aim,chance:path.blocked||path.victimId&&path.victimId!==target.id?0:shotAccuracy(s,attacker,target,aim,hitLocation),damageFactor:path.damageFactor});
+    const second=pairedPistol(attacker),other=second?secondaryPistolView(attacker,second):null,otherPath=other?firearmFlightPreview(s,other,target,hitLocation):null;
+    for(let aim=0;aim<=limit;aim++){
+      const chance=path.blocked||path.victimId&&path.victimId!==target.id?0:shotAccuracy(s,attacker,target,aim,hitLocation);
+      const shots=other?[{hand:'primary',weapon:weaponFor(attacker).id,name:weaponFor(attacker).name,chance,damageFactor:path.damageFactor,damage:weaponFor(attacker).damage},
+        {hand:'offhand',weapon:weaponFor(other).id,name:weaponFor(other).name,chance:otherPath.blocked||otherPath.victimId&&otherPath.victimId!==target.id?0:shotAccuracy(s,other,target,aim,hitLocation,false,pistolPairPenalty(attacker)),damageFactor:otherPath.damageFactor,damage:weaponFor(other).damage}]:undefined;
+      options.push({hitLocation,aim,chance,damageFactor:path.damageFactor,...(shots?{shots}:{})});
+    }
   }
   return options;
 }
@@ -355,7 +372,7 @@ export function firearmRangeProfile(s,attacker,target){
   const apparentRange=distance+(concealment+darkness+smoke*(hasTrait(attacker,'line_marksman')?6:12))/3;
   return shotRangeModifiers({distance,weaponRange:w.range,apparentRange,visibleRange:visibleDistance(s,attacker,target)});
 }
-function shotAccuracy(s,attacker,target,aim=0,hitLocation='torso',pointShot=false){
+function shotAccuracy(s,attacker,target,aim=0,hitLocation='torso',pointShot=false,pairPenalty=pairedPistol(attacker)?pistolPairPenalty(attacker):0){
   if(attacker.departure||target.departure||!hasFirearm(attacker)||!pointShot&&!hasLineOfSight(s,attacker,target))return 0;
   const w=weaponFor(attacker),range=spaceDistance(s,attacker,target);
   const rangeProfile=firearmRangeProfile(s,attacker,target);
@@ -368,7 +385,7 @@ function shotAccuracy(s,attacker,target,aim=0,hitLocation='torso',pointShot=fals
     -(attacker.mounted&&![1803,1805,1806,1808].includes(w.id)?15:0)
     +(hasTrait(attacker,'guerrilla_tactician')&&!attacker.momentum&&((surfaceAt(s,attacker)?.cover||0)>=20||['forest','scrub'].includes(surfaceAt(s,attacker)?.type))?10:0)
     -(hasTrait(target,'guerrilla_tactician')&&!target.mounted&&((tile(s,target.x,target.y)?.cover||0)>=20||['forest','scrub'].includes(tile(s,target.x,target.y)?.type))?12:0);
-  return Math.round(clamp((chance-shotLocationPenalty(hitLocation,rangeProfile.effectiveSightRange))*rangeProfile.chanceFactor,1,95));
+  return Math.round(clamp((chance-pairPenalty-shotLocationPenalty(hitLocation,rangeProfile.effectiveSightRange))*rangeProfile.chanceFactor,1,95));
 }
 function firearmImpact(s,attacker,target,amount,hitLocation='torso'){
   const path=firearmProjectilePath(s,attacker,target,hitLocation),observed=journalVisible(s,target);
@@ -380,7 +397,7 @@ function scatteredShotDestination(s,u,target){
   const radius=Math.min(4,Math.max(1,Math.ceil(dist(u,target)/8))),dx=Math.floor(random(s)*(radius*2+1))-radius,dy=Math.floor(random(s)*(radius*2+1))-radius;
   return {x:target.x+(dx||dy?dx:1),y:target.y+dy,stance:target.unconscious||target.knockedDown?'prone':target.stance??'standing',mounted:!target.unconscious&&!target.knockedDown&&Boolean(target.mounted)};
 }
-function directedFireImpact(s,u,target,hitLocation,hit){
+function directedFireImpact(s,u,target,hitLocation,hit,source=u){
   const w=weaponFor(u),end=hit?target:scatteredShotDestination(s,u,target);
   // A failed accuracy roll must remain a miss of the selected soldier. The
   // cell-wide approximation still checks every other body along that miss.
@@ -391,7 +408,7 @@ function directedFireImpact(s,u,target,hitLocation,hit){
   if(flight.blocked){if(journalVisible(s,target))say(s,'La cobertura detiene el disparo.');return;}
   if(victim){
     if(flight.damageFactor<1&&journalVisible(s,victim))say(s,'El disparo atraviesa la cobertura y pierde fuerza.');
-    damage(s,victim,amount*flight.damageFactor,u,true,flight.hitLocation);
+    damage(s,victim,amount*flight.damageFactor,source,true,flight.hitLocation);
   }
 }
 export function completedTacticalVictory(snapshot){
@@ -541,12 +558,12 @@ export function pointFirePreview(s,u,point,aim=0){
   // occupied coordinates have exactly the same public preflight.
   return {valid:!reason,reason,pa,aim:level};
 }
-function pointFireImpact(s,u,point,aim){
-  const w=weaponFor(u),accuracy=shotAccuracy(s,u,{...point,stance:'standing'},aim,'torso',true);
+function pointFireImpact(s,u,point,aim,source=u,preparedAccuracy){
+  const w=weaponFor(u),accuracy=preparedAccuracy??shotAccuracy(s,u,{...point,stance:'standing'},aim,'torso',true);
   const impact=(victim,amount,location)=>{
     const visible=victim.side==='player'||teamCanSee(s,'player',victim),before=victim.hp,eligible=fieldCapable(victim)&&!victim.unconscious&&!victim.routed;
-    damage(s,victim,amount,u,true,location,0,visible);
-    if(eligible&&victim.side!==u.side&&victim.hp<before)practice(u,'marksmanship',2);
+    damage(s,victim,amount,source,true,location,0,visible);
+    if(eligible&&victim.side!==source.side&&victim.hp<before)practice(source,'marksmanship',2);
   };
   if(w.id===1807){
     const length=dist(u,point),dx=(point.x-u.x)/length,dy=(point.y-u.y)/length;
@@ -1238,6 +1255,40 @@ else if(a.type==='throwKnife'){
   exhaust(s,u,preview.costs.energy);
   sayObserved(s,[u],`${u.name} lanza el facón que llevaba en la mano.`);
   if(visible)knifeThrowVisuals.set(s,{source,impact:shown.impact,landing:shown.landing,weapon:knife.record.weapon,visible:true});
+}
+else if(['fire','firePoint'].includes(a.type)&&pairedPistol(u)){
+  const pointShot=a.type==='firePoint',hitLocation=a.hitLocation??'torso';
+  if(pointShot){
+    const preview=pointFirePreview(s,u,a,a.aim);if(!preview.valid)return fail(preview.reason);
+    if(a.targetId!==undefined)return fail('El disparo a una casilla usa coordenadas, no una persona.');
+    if(hitLocation!=='torso')return fail('El disparo a una casilla apunta a una altura fija.');
+  }else{
+    if(!HIT_LOCATIONS.includes(hitLocation))return fail('Selecciona torso, cabeza o piernas.');
+    if(!target||target.side===u.side||!targetable(target))return fail('Selecciona un enemigo activo.');
+    if(!teamCanSee(s,u.side,target))return fail('Ningún compañero puede ver ese objetivo.');
+    if(!shotLocationsFor(target).includes(hitLocation))return fail('Un objetivo cuerpo a tierra tiene una sola zona de tiro.');
+    if(!hasLineOfSight(s,u,target))return fail('No hay línea de tiro.');
+  }
+  const point=pointShot?{...positionOf(a),stance:'standing',mounted:false}:{...target},aim=clamp(Math.floor(Number.isFinite(a.aim)?a.aim:0),0,4);
+  const costs=actionCosts(s,u,point),penalty=pistolPairPenalty(u),other=u.offHand;
+  // Both shots commit to this aim before smoke, damage or repeat-target memory.
+  const shots=[{record:u,view:{...u},hand:'principal'},{record:other,view:secondaryPistolView(u,other),hand:'secundaria'}].map(shot=>({...shot,
+    chance:shotAccuracy(s,shot.view,point,aim,hitLocation,pointShot,penalty),risk:ignitionRisk(s,shot.view)}));
+  if(!pay(costs.fire+aim*costs.aim))return fail('Faltan puntos de acción para disparar ambas pistolas.');
+  u.weaponReady=true;u.momentum=0;u.facing=directionTo(u,point);
+  if(pointShot){delete u.lastTargetId;delete u.lastShotPosition;}else{u.lastTargetId=target.id;u.lastShotPosition=positionOf(u);}
+  sayObserved(s,[u],`${u.name} dispara ambas pistolas.`);
+  for(const shot of shots){
+    if(random(s)*100<shot.risk){shot.record.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa en la mano ${shot.hand}. La carga se conserva.`);continue;}
+    shot.record.loaded--;shot.record.condition=Math.max(0,(shot.record.condition??100)-1);emitNoise(s,u,'fire');
+    if(pointShot)pointFireImpact(s,shot.view,point,aim,u,shot.chance);
+    else{
+      practice(u,'marksmanship',2);const hit=random(s)*100<shot.chance;
+      directedFireImpact(s,shot.view,point,hitLocation,hit,u);
+      if(!hit){target.morale=Math.max(0,target.morale-4);sayObserved(s,[u],`${u.name} falla con la mano ${shot.hand} (${shot.chance}%).`);}
+    }
+    s.smoke.push({...positionOf(u),radius:1,turns:3});
+  }
 }
 else if(a.type==='firePoint'){
   const preview=pointFirePreview(s,u,a,a.aim);if(!preview.valid)return fail(preview.reason);

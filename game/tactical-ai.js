@@ -38,15 +38,25 @@ function bestShot(state, unit, targets, budget = unit.ap) {
     const costs = actionCosts(state, unit, target);
     if (costs.fire > budget) continue;
     const maxAim = Math.min(4, Math.floor((budget - costs.fire) / costs.aim));
-    for (const {aim,hitLocation,chance,damageFactor} of firearmShotOptions(state,unit,target,maxAim)) {
-      if(!chance)continue;
+    for (const {aim,hitLocation,chance,damageFactor,shots} of firearmShotOptions(state,unit,target,maxAim)) {
+      if(!(shots?.some(shot=>shot.chance>0)??chance))continue;
       const cost = costs.fire + aim * costs.aim;
       const base=weaponFor(unit).damage,effect=shotLocationEffects(hitLocation,base*damageFactor,target);
       // Visible posture and mounted state can make balance loss useful. Do not
       // inspect a target's hidden AP, energy, supplies or future intentions.
       const secondary=target.hp-effect.damage<15?0:effect.breathLoss*.15+(effect.knockedDown?10:0)+(effect.unhorse?20:0);
       const value=Math.min(target.hp,effect.damage)+secondary;
-      const effectiveness=chance*value/Math.max(1,Math.min(target.hp,base)),score=effectiveness-cost*.2;
+      let effectiveness=chance*value/Math.max(1,Math.min(target.hp,base));
+      if(shots){
+        let expectedDamage=0,expectedSecondary=0;
+        for(const shot of shots){
+          const impact=shotLocationEffects(hitLocation,shot.damage*shot.damageFactor,target),probability=shot.chance/100;
+          expectedDamage+=impact.damage*probability;
+          expectedSecondary+=(target.hp-impact.damage<15?0:impact.breathLoss*.15+(impact.knockedDown?10:0)+(impact.unhorse?20:0))*probability;
+        }
+        effectiveness=100*(Math.min(target.hp,expectedDamage)+(expectedDamage>=target.hp?0:expectedSecondary))/Math.max(1,Math.min(target.hp,base));
+      }
+      const score=effectiveness-cost*.2;
       // Torso comes first on an exact tie; equal aim values preserve AP.
       if (!best || score > best.score) best = {target, chance, aim, hitLocation, cost, score, effectiveness};
     }

@@ -9,7 +9,8 @@ import {canChooseShotLocation} from './targeted-combat.js';
 import {tacticalGridLabel} from './tactical-grid.js';
 // Pure HUD model for the tactical battle inspector and squad strip.
 // Read-only descriptors plus action-object constructors; no game rules.
-import {mainItemPreview,swapHandsPreview, weaponFor, bladeFor, hasFirearm, carriedWeight, carryCapacity, actionCosts, actionPointBudget, stanceCost, shotChance, firearmRangeProfile, firearmProjectilePath, firearmFlightPreview, canSee, hasLineOfSight, artilleryCosts, artilleryCrewPlan, artilleryReloadPreview, interruptAvailable, canEndCombat, fieldCapable, transferPreview, dropPreview, environmentTargetAt, environmentPreview, containerLootPreview, supplyUsePreview, getReachable, movementIntentReason, exitPreview, ARTILLERY, WEAPONS, BLADES} from './tactical.js';
+import {mainItemPreview,swapHandsPreview, weaponFor, bladeFor, hasFirearm, carriedWeight, carryCapacity, actionCosts, actionPointBudget, stanceCost, shotChance, firearmVolleyPreview, firearmRangeProfile, firearmProjectilePath, firearmFlightPreview, canSee, hasLineOfSight, artilleryCosts, artilleryCrewPlan, artilleryReloadPreview, interruptAvailable, canEndCombat, fieldCapable, transferPreview, dropPreview, environmentTargetAt, environmentPreview, containerLootPreview, supplyUsePreview, getReachable, movementIntentReason, exitPreview, ARTILLERY, WEAPONS, BLADES} from './tactical.js';
+import {pairedPistol} from './paired-fire.js';
 import {directionTo} from './tactical-awareness.js';
 import {unarmedChance} from './unarmed-combat.js';
 import {inventoryUsage, carriedObject, itemDescriptor, INVENTORY_CAPACITY, SUPPLY_ITEMS} from './tactical-inventory.js';
@@ -84,7 +85,7 @@ export function emptyGunPreview(state, unit) {
     : unit.jammed ? 'Cebá el arma antes de recargar (R).'
     : unit.knockedDown ? 'Primero debés levantarte.'
     : !unitCanAct(state, unit) ? 'El combatiente no puede actuar.'
-    : !pa || !affordable(state, unit, pa) ? 'PA insuficientes para recargar.' : null;
+    : !plan.pa || !affordable(state, unit, plan.pa) ? 'PA insuficientes para recargar.' : null;
   return {name: weaponFor(unit).name, actionLabel: rounds ? plan.partial ? 'Recarga parcial' : 'Recargar' : 'Sin munición',
     attackType: 'reload', cursor: rounds ? 'reload' : 'empty', pa,
     chance: undefined, chanceLabel: undefined, hitLocation: undefined, attackLabel: undefined,
@@ -259,7 +260,8 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   const target = occupants.find(v => v.id === point.id) || occupants.find(v => v.hp > 0) || occupants[0];
   if(mode==='fire'&&(!target||target.side===unit.side||target.hp<=0||target.surrendered)){
     const preview=pointFirePreview(state,unit,point,ctx.aim??0);
-    return {name:tacticalGridLabel(point.x,point.y),actionLabel:'Disparar a la casilla',attackType:'fire',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,coverNote:`${firearmCostText(state,unit,point)} Sin objetivo confirmado. Altura fija; la cobertura y los cuerpos pueden interceptar el tiro. Puede herir aliados.`};
+    const paired=Boolean(pairedPistol(unit));
+    return {name:tacticalGridLabel(point.x,point.y),actionLabel:paired?'Disparar ambas pistolas a la casilla':'Disparar a la casilla',attackType:'fire',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,coverNote:`${firearmCostText(state,unit,point)} ${paired?'Un disparo por pistola. ':''}Sin objetivo confirmado. Altura fija; la cobertura y los cuerpos pueden interceptar el tiro. Puede herir aliados.`};
   }
   if(target&&target.side!==unit.side&&pickupTargetAction(target,unit).type==='steal'&&(ctx.itemIntent==='steal'&&['move','useItem'].includes(mode)||mode==='loot')){
     const preview=stealPreview(state,unit,target);
@@ -294,7 +296,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
     const preview = medicalUsePreview(state, unit, target ?? null);
     return {name: target?.name || tacticalGridLabel(point.x, point.y), actionLabel: 'Vendar', pa: preview.cost, remaining: Math.max(0, unit.ap - (state.mode === 'exploration' ? 0 : preview.cost)), reason: preview.reason, valid: preview.allowed};
   }
-  let pa, chance, reason, actionLabel, attackType, attackLabel, coverNote;
+  let pa, chance, chanceLabel, reason, actionLabel, attackType, attackLabel, coverNote;
   if (mode === 'look') {
     const preview=lookPreview(state,unit,point);
     pa=preview.pa;reason=preview.reason;actionLabel=preview.prepare?preview.actionLabel:`Mirar al ${COMPASS_LABELS[preview.facing]}`;
@@ -322,6 +324,12 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
       const flight=firearmFlightPreview(state,unit,target,hitLocationFor(ctx.hitLocation));
       if(flight.victimId&&flight.victimId!==target.id)coverNote='Un combatiente está en la trayectoria. Disparar puede herirlo y consume la carga.';
       coverNote=[shotRangeText(firearmRangeProfile(state,unit,target)),coverNote].filter(Boolean).join(' ');
+      if(pairedPistol(unit)){
+        const volley=firearmVolleyPreview(state,unit,target,ctx.aim||0,hitLocationFor(ctx.hitLocation));
+        attackLabel=actionLabel='Disparar ambas pistolas';chanceLabel='impacto (mano principal)';
+        const chances=volley.shots.map(shot=>`${shot.hand==='primary'?'Mano principal':'Segunda mano'}: ${shot.chance}%${shot.damageFactor===0?' (la cobertura detiene el tiro)':shot.damageFactor<1?` (daño reducido un ${Math.round((1-shot.damageFactor)*100)}%)`:''}`).join(' · ');
+        coverNote=[`${chances}. Un disparo por pistola.`,`Mano principal: ${shotRangeText(firearmRangeProfile(state,unit,target))}`,flight.victimId&&flight.victimId!==target.id?'Un combatiente está en la trayectoria. Disparar puede herirlo y consume las cargas.':undefined].filter(Boolean).join(' ');
+      }
       if (!canChooseShotLocation(target)&&hitLocationFor(ctx.hitLocation)!=='torso') reason = 'Un objetivo cuerpo a tierra tiene una sola zona de tiro.';
       else if (unit.jammed) reason = 'Cebá el arma antes de disparar.';
       else if (!(unit.loaded > 0)) reason = 'Recargá el arma.';
@@ -336,7 +344,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   if (unit.knockedDown) reason = 'Primero debés levantarte.';
   if (!reason && !unitCanAct(state, unit)) reason = state.phase === 'interrupt' ? 'Este combatiente no puede actuar en la interrupción.' : 'El combatiente no puede actuar.';
   if (!reason && pa !== undefined && !affordable(state, unit, pa)) reason = 'PA insuficientes.';
-  return {name: (attackType ? target?.name : actionLabel || target?.name) || `${tacticalGridLabel(point.x,point.y)}`, pa, chance, coverNote, hitLocation: chance === undefined || attackType !== 'fire' ? undefined : HIT_LOCATIONS.find(([id]) => id === hitLocationFor(ctx.hitLocation))[1], attackType, attackLabel, actionLabel, remaining: pa === undefined ? undefined : Math.max(0, unit.ap - (state.mode === 'exploration' ? 0 : pa)), reason, valid: !reason};
+  return {name: (attackType ? target?.name : actionLabel || target?.name) || `${tacticalGridLabel(point.x,point.y)}`, pa, chance,...(chanceLabel?{chanceLabel}:{}), coverNote, hitLocation: chance === undefined || attackType !== 'fire' ? undefined : HIT_LOCATIONS.find(([id]) => id === hitLocationFor(ctx.hitLocation))[1], attackType, attackLabel, actionLabel, remaining: pa === undefined ? undefined : Math.max(0, unit.ap - (state.mode === 'exploration' ? 0 : pa)), reason, valid: !reason};
 }
 
 export function fittingInventoryModel(state, unit) {
@@ -368,7 +376,7 @@ export function equippedItemHelp(state, unit, ctx = {}) {
   }
   if(approach?.movePa&&exploring)return `${weapon.name} · sin coste de PA. Se acerca y usa el objeto. El contacto puede detener la acción.`;
   if(approach?.movePa)return `${weapon.name} · ${approach.pa} PA (${approach.movePa} para acercarse y ${approach.actionPa} para usarlo). El contacto puede detener la acción.`;
-  const label = attack.type === 'melee' && hasFirearm(unit) ? fixedBayonetFor(unit) ? 'Estocada de bayoneta' : 'Culatazo' : weapon.name;
+  const label = attack.type === 'melee' && hasFirearm(unit) ? fixedBayonetFor(unit) ? 'Estocada de bayoneta' : 'Culatazo' : attack.type==='fire'&&pairedPistol(unit)?'Disparar ambas pistolas':weapon.name;
   return `${label} · ${exploring?0:attack.pa} PA. ${attack.type==='fire'?firearmCostText(state,unit,ctx.target)+' ':''}${fixedBayonetFor(unit) || ctx.mode === 'fire' ? targetingHelp(ctx.mode || 'move', unit) : 'Seleccioná un enemigo para usarlo.'}`;
 }
 
