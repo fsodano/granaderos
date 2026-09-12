@@ -49,17 +49,17 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
  return {campaign:saved,events,dead,recovery:{startHour:recoveryStart,endHour:campaign.hour,doctor,usedDressings:12,sourceKey:supplies.key,sourceRemaining:remaining}};
 }
 
-export function fightNorthernSector(start,sector,{report=()=>{},expectedOutcome='victory'}={}){
- const before=structuredClone(start),campaign=dispatchCampaign(start,{type:'attack',sector});assert.equal(campaign.lastError,null,campaign.lastError);
+export function fightNorthernSector(start,sector,{report=()=>{},expectedOutcome='victory',controller}={}){
+ const before=structuredClone(start),campaign=start.pendingBattle?structuredClone(start):dispatchCampaign(start,{type:'attack',sector});assert.equal(campaign.lastError,null,campaign.lastError);
  assert.deepEqual(start,before);assert.ok(campaign.pendingBattle,'the real march produces a tactical deployment');
- const request=campaign.pendingBattle;
+ const request=campaign.pendingBattle;assert.equal(request.sector,sector);
  report({event:'battleStarted',sector,hour:campaign.hour,units:request.squad.map(u=>u.id)});
- const result=fight(request,campaign.sectorStates[sector]);
+ const result=fight(request,campaign.sectorStates[sector],{controller});
  const summary={sector,status:result.battle.status,turns:result.battle.turn,actions:result.actions,units:result.battle.units.map(u=>({id:u.id,side:u.side,hp:u.hp,ammo:u.ammo,loaded:u.loaded,routed:u.routed}))};
  report({event:'battleFinished',...summary});
  assert.ok(['victory','defeat'].includes(expectedOutcome));
  assert.equal(result.battle.status,expectedOutcome,JSON.stringify(summary));
- const replay=fight(request,campaign.sectorStates[sector]);assert.deepEqual(replay.battle,result.battle);
+ const replay=fight(request,campaign.sectorStates[sector],{controller});assert.deepEqual(replay.battle,result.battle);
  const pair=syncBattleTime(campaign,result.battle);assert.equal(pair.error,null);
  const restored=decodeSave(encodeSave(pair.campaign,pair.battle));
  const returned=dispatchCampaign(restored.campaign,{type:'battleResult',battleId:request.id,outcome:restored.battle.status,survivors:restored.battle.units.filter(u=>u.side==='player'),sectorState:restored.battle});

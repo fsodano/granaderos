@@ -3,11 +3,14 @@ import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {decodeSave,encodeSave} from '../game/save.js';
+import {recoverRescueForce} from './rescue-recovery.mjs';
+import {prepareSaltaAssault,completeNorthernMission} from './salta-route.mjs';
+import {cautiousCombatOrder} from './cautious-driver.mjs';
 import {runOpeningCampaign} from './opening-campaign.mjs';
 import {prepareNorthernSquad,prepareTucumanSquad,prepareRescueSquad,stabilizeRescued,fightNorthernSector} from './northern-route.mjs';
 
-test('legal authored-map opening campaign wins San Nicolás then San Lorenzo',async t=>{
- const opening=runOpeningCampaign();let cordoba,tucumanLoss;
+test('legal campaign route reaches Yatasto through combat, defeat, rescue and paid recovery',async t=>{
+ const opening=runOpeningCampaign();let cordoba,tucumanLoss,rescued,recovered,salta;
  await t.test('real San Lorenzo remains supply a local survivor after the completed mission',()=>{
   const start=opening.campaign,before=structuredClone(start),town=structuredClone(start.sectorStates.san_nicolas);
   const model=sectorInventoryModel(start,'san_lorenzo',rosterFor(start),1000);
@@ -59,6 +62,29 @@ test('legal authored-map opening campaign wins San Nicolás then San Lorenzo',as
   }
   const stable=stabilizeRescued(returned);assert.equal(stable.campaign.hour,142);
   for(const id of [...opening.casualties,1000,128])assert.equal(stable.campaign.operativeState[id].alive,false);
-  assert.equal(stable.campaign.phase,2);assert.equal(stable.campaign.completed,false);
+  assert.equal(stable.campaign.phase,2);assert.equal(stable.campaign.completed,false);rescued=stable.campaign;
+ });
+ await t.test('a real medical courier buys finite supplies while paid care restores the freed squad',()=>{
+  assert.ok(rescued);const before=structuredClone(rescued),result=recoverRescueForce(rescued);
+  assert.deepEqual(rescued,before);assert.equal(result.recovery.endHour,190);
+  assert.equal(result.recovery.boughtDressings,30);assert.equal(result.recovery.cost,900);
+  assert.equal(result.recovery.recoveredDressings,10);assert.equal(result.recovery.donatedDressings,7);
+  for(const id of [115,112,142,105,147])assert.equal(result.campaign.operativeState[id].energy,100);
+  assert.equal(result.campaign.blockade,true);assert.equal(result.campaign.sectors.buenos_aires.owner,'patriot');
+  recovered=result.campaign;
+ });
+ await t.test('two paid squads arrive together and capture Salta with actual losses',()=>{
+  assert.ok(recovered);const before=structuredClone(recovered),prepared=prepareSaltaAssault(recovered);
+  assert.deepEqual(recovered,before);
+  const result=fightNorthernSector(prepared.campaign,'salta',{controller:cautiousCombatOrder});
+  assert.equal(result.summary.turns,7);assert.equal(result.summary.actions,128);
+  assert.equal(result.campaign.hour,202);assert.equal(result.campaign.secondOfHour,407);
+  for(const id of [...opening.casualties,1000,128,110,106,145,147,112])assert.equal(result.campaign.operativeState[id].alive,false);
+  assert.equal(result.campaign.operativeState[142].bleeding,4);salta=result.campaign;
+ });
+ await t.test('the surviving doctor stops bleeding and completes Yatasto after the paid northern pact',()=>{
+  assert.ok(salta);const before=structuredClone(salta),result=completeNorthernMission(salta);
+  assert.deepEqual(salta,before);assert.equal(result.campaign.hour,215);assert.equal(result.campaign.secondOfHour,496);
+  assert.equal(result.campaign.phase,3);assert.equal(result.campaign.resources.treasury,2007);
  });
 });
