@@ -1,3 +1,4 @@
+import {spaceKey,surfacesAtLevel,tacticalLevel} from './tactical-space.js';
 import {physicalEntryAnchor} from './sector-expansion.js';
 import {authoredEnvironment} from './environment-interactions.js';
 import {propBlocksAt} from './props.js';
@@ -6,7 +7,7 @@ import {createBattle,initializeBattlePerception,movementStepCost} from './tactic
 import {boundaryMatches,inwardFromBoundary,validEntry,validateSectorExits} from './tactical-exits.js';
 import {validateBattleSnapshot} from './validate-battle.js';
 
-const key=p=>`${p.x},${p.y}`;
+const key=spaceKey;
 const clearEncounter=unit=>{
  for(const field of ['lastKnownEnemy','lastHeardNoise','lastTargetId','lastShotPosition','patrolTurn','lastInvestigatedTurn'])delete unit[field];
  for(const field of ['reactionTurn','reactionSpent','interceptTurn','parryTurn','counterTurn','braceTurn'])unit[field]=0;
@@ -27,7 +28,7 @@ function exteriorComponent(state,unit){
   if(seen.has(key(start)))continue;
   const component=new Set([key(start)]),queue=[start];seen.add(key(start));
   for(let i=0;i<queue.length;i++)for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]){
-   const next=available.get(`${queue[i].x+dx},${queue[i].y+dy}`);
+   const next=available.get(key({x:queue[i].x+dx,y:queue[i].y+dy}));
    if(next&&!seen.has(key(next))&&Number.isFinite(movementStepCost(state,unit,queue[i],next))){seen.add(key(next));component.add(key(next));queue.push(next);}
   }
   if(component.size>largest.size)largest=component;
@@ -47,6 +48,7 @@ export function enterSector(request,previous=null){
  if(previous){
    map.width=previous.width;map.height=previous.height;
    map.props=structuredClone(previous.props??map.props);map.tiles=structuredClone(previous.tiles);map.decor=structuredClone(previous.decor??map.decor);map.buildings=structuredClone(previous.buildings??map.buildings);
+   for(const field of ['upperSurfaces','climbLinks'])if(previous[field]!==undefined)map[field]=structuredClone(previous[field]);else delete map[field];
    // A new occupation creates a garrison. An unfinished engagement retains its survivors.
    if(!request.defenseGroupId&&!request.occupationGroupIds?.length&&!request.exploration&&!previous.sectorCleared)map.enemies=structuredClone(previous.units.filter(u=>u.side==='enemy'&&!u.departure)).map(clearEncounter);
  }
@@ -60,6 +62,7 @@ export function enterSector(request,previous=null){
  });
  // Deployment intent does not establish contact. Resolve sight only after final placement.
  const state=createBattle([...map.squad,...(map.garrison??[]),...(map.missionAllies??[])],{...map,exploration:true,deferContact:true});
+ for(const field of ['upperSurfaces','climbLinks'])if(map[field]!==undefined)state[field]=structuredClone(map[field]);
  if(previous){
    for(const unit of state.units.filter(u=>u.side==='player'&&u.hp>0)){const old=previous.units.find(u=>u.id===unit.id&&u.side==='player');for(const key of ['practiceTiles','ridingPracticeTiles'])if(old?.[key])unit[key]=structuredClone(old[key]);}
    for(const key of ['groundItems','droppedWeapons','revealedRooms'])state[key]=structuredClone(previous[key]??[]);
@@ -91,10 +94,10 @@ export function enterSector(request,previous=null){
  }
  const occupied=new Set(state.units.filter(u=>u.side==='enemy'||u.hp<=0&&!queued.includes(u)).map(key));
  const reserve=(preferred)=>{
-   const candidates=state.tiles.filter(t=>!t.blocked&&!propBlocksAt(state,t.x,t.y)&&!occupied.has(`${t.x},${t.y}`));
+   const level=tacticalLevel(preferred),candidates=surfacesAtLevel(state,level).filter(t=>!t.blocked&&!propBlocksAt(state,t.x,t.y,level)&&!occupied.has(key(t)));
    candidates.sort((a,b)=>Math.abs(a.x-preferred.x)+Math.abs(a.y-preferred.y)-Math.abs(b.x-preferred.x)-Math.abs(b.y-preferred.y)||a.y-b.y||a.x-b.x);
    if(!candidates[0])throw Error('No queda espacio libre para entrar en el sector.');
-   const {x,y}=candidates[0];occupied.add(`${x},${y}`);return{x,y};
+   const {x,y}=candidates[0];occupied.add(key(candidates[0]));return{x,y,...(preferred.tacticalLevel===undefined&&level===0?{}:{tacticalLevel:level})};
  };
  // Keep residents and their routines when the squad returns. Rebase temporary
  // fear reports to the new encounter clock; recruitment still controls presence.
@@ -108,6 +111,7 @@ export function enterSector(request,previous=null){
  for(const unit of state.units.filter(u=>u.side==='player'&&(u.hp>0||queued.includes(u)))){
    if(unit.entryReason!==undefined&&!['arrival','resident'].includes(unit.entryReason))throw Error('El motivo de entrada no es válido.');
    if(unit.entryReason==='arrival'){
+     if(unit.tacticalLevel!==undefined)unit.tacticalLevel=0;
      if(!validEntry(unit.entryEdge,unit.entryAnchor))throw Error('La entrada necesita un borde y una posición válidos.');
      arriving.push(unit);continue;
    }

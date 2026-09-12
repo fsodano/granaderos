@@ -30,6 +30,8 @@ export function expandSectorMap(core,boundaryRoads=core.tiles.filter(t=>t.type==
   return {x,y,type:water?'water':cliff?'stone':'grass',blocked:water||cliff,cover:water||cliff?40:0};
  });
  const map={...core,width,height,tiles,buildings:core.buildings.map(b=>({...shift(b),rooms:b.rooms.map(r=>({...r,cells:r.cells.map(shift)}))})),props:core.props.map(shift),lights:core.lights.map(shift),decor:core.decor.map(shift),npcs:(core.npcs??[]).map(shift),squad:core.squad.map(shift),enemies:core.enemies.map(shift),artillery:core.artillery.map(shift),garrison:(core.garrison??[]).map((p,i)=>shiftReinforcement(p,core.squad.length+i)),missionAllies:(core.missionAllies??[]).map((p,i)=>shiftReinforcement(p,core.squad.length+(core.garrison?.length??0)+i))};
+ if(core.upperSurfaces!==undefined)map.upperSurfaces=core.upperSurfaces.map(shift);
+ if(core.climbLinks!==undefined)map.climbLinks=core.climbLinks.map(link=>({...link,from:shift(link.from),to:shift(link.to)}));
  const road=(x,y)=>{const t=tiles[y*width+x];if(t&&!t.blocked&&!t.buildingId)Object.assign(t,{type:'road',cover:0});};
  // Continue each authored road to the new boundary. Coast and cliffs win.
  for(const p of boundaryRoads){

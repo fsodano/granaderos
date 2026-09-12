@@ -1,3 +1,4 @@
+import {MAX_TACTICAL_LEVEL,DEFAULT_SLAB_THICKNESS} from './tactical-space.js';
 import {BUILDING_TYPES} from './building-types.js';
 // Multi-tile buildings with walkable interiors and independently operated door leaves.
 export function buildBuilding({id,x,y,width,height,name=id,doors=[],windows=[],material='adobe',architecture='house',roof=BUILDING_TYPES[architecture]?.roof??'tile'}){
@@ -14,3 +15,14 @@ export function buildBuilding({id,x,y,width,height,name=id,doors=[],windows=[],m
   return {tiles,building:{id,name,x,y,width,height,roof,material,architecture,rooms:[{id:roomId,cells}]}};
 }
 export function placeBuilding(ground,options){const result=buildBuilding(options),overrides=new Map(result.tiles.map(t=>[`${t.x},${t.y}`,t]));if(result.tiles.some(t=>!ground.some(g=>g.x===t.x&&g.y===t.y)))throw Error('Building footprint is outside the sector.');return{tiles:ground.map(t=>overrides.get(`${t.x},${t.y}`)||{...t}),building:result.building};}
+
+// Opt-in geometry authoring. Existing building plans remain ground-only.
+export function buildTerrace(building,{elevation=3,tacticalLevel=1,slabThickness=DEFAULT_SLAB_THICKNESS,climbPoints=[]}={}){
+ if(building.roof!=='terrace')throw Error('A walkable terrace needs a flat terrace roof.');
+ if(!Number.isFinite(elevation)||elevation<=0||!Number.isInteger(tacticalLevel)||tacticalLevel<1||tacticalLevel>MAX_TACTICAL_LEVEL||!Number.isFinite(slabThickness)||slabThickness<=0||slabThickness>=elevation)throw Error('Invalid terrace height or level.');
+ if(!Array.isArray(climbPoints)||climbPoints.some(point=>!point||typeof point.id!=='string'||!point.id.length||!point.from||!point.to||![point.from.x,point.from.y,point.to.x,point.to.y].every(Number.isInteger)))throw Error('A terrace access needs a stable ID and integer endpoints.');
+ const upperSurfaces=[];
+ for(let dy=0;dy<building.height;dy++)for(let dx=0;dx<building.width;dx++)upperSurfaces.push({id:`${building.id}:roof:${dx}:${dy}`,x:building.x+dx,y:building.y+dy,tacticalLevel,elevation,slabThickness,type:'floor',kind:'roof',blocked:false,cover:0,material:building.material,buildingId:building.id});
+ const climbLinks=climbPoints.map(point=>({id:`${building.id}:climb:${point.id}`,kind:'climb',from:{...point.from,tacticalLevel:point.from.tacticalLevel===undefined?tacticalLevel-1:point.from.tacticalLevel},to:{...point.to,tacticalLevel:point.to.tacticalLevel===undefined?tacticalLevel:point.to.tacticalLevel}}));
+ return {upperSurfaces,climbLinks};
+}
