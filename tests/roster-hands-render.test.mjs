@@ -1,0 +1,35 @@
+import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
+import test from 'node:test';import assert from 'node:assert/strict';
+import {createElement as h} from '../web/node_modules/react/index.js';import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
+import {componentTree} from './component-tree.mjs';import {createBattle} from '../game/tactical.js';
+const {default:Roster}=await import('../web/app/JA2Roster.tsx');
+const descendants=n=>!n||typeof n!=='object'?[]:[n,...(Array.isArray(n)?n:Array.isArray(n.props?.children)?n.props.children:[n.props?.children]).flatMap(descendants)];
+const noop=()=>{};
+const field=()=>createBattle([
+ {id:'a',name:'Fusilero',weapon:1800,blade:1813,weaponMode:'melee',weaponFittings:{bayonet:{weapon:1811,fittingPattern:'india_socket',condition:0,instanceId:'socket'}}},
+ {id:'b',name:'Tirador',weapon:1805,blade:0,offHand:{weapon:1808,count:1,weight:1.3,loaded:2,condition:61},leftHandItem:'offhand'},
+ {id:'c',name:'Médico',weapon:0,blade:0,activeSlot:'medical',medkits:2,leftHandItem:'medkits'},
+ {id:'d',name:'Explorador',weapon:0,blade:0,activeSlot:'tool',activeTool:'inventory:key',inventory:{key:{kind:'tool',toolKey:'key',keyId:'gate',count:1,weight:.1}}},
+ {id:'e',name:'Cuchillero',weapon:0,blade:1813,activeSlot:'blade'},
+ {id:'f',name:'Mensajero',weapon:0,blade:0,activeSlot:'unarmed'},
+].map((u,i)=>({...u,x:1+i,y:1})),{width:12,height:8,exploration:true,enemies:[]});
+const props=b=>({battle:b,players:b.units,selected:'a',onSelect:noop,onOpenInventory:noop});
+
+test('six occupied cards contain twelve noninteractive hand slots, real art, icons and independent status stars',()=>{
+ const b=field(),html=render(h(Roster,props(b))),tree=componentTree(Roster,props(b)),cards=descendants(tree).filter(n=>n.props?.role==='listitem');
+ assert.equal(cards.length,6);assert.equal((html.match(/data-hand-side=/g)||[]).length,12);assert.doesNotMatch(html,/ja2-weapon-line/);assert.equal((html.match(/class="close-combat"/g)||[]).length,2);assert.equal((html.match(/class="attachment"/g)||[]).length,1);
+ for(const card of cards){const children=descendants(card).slice(1);assert.ok(!children.some(n=>n.type==='button'));assert.equal(children.filter(n=>n.props?.['data-hand-side']).length,2);}
+ const first=cards[0],hands=descendants(first).filter(n=>n.props?.['data-hand-side']);assert.equal(hands[0].props['data-close-combat'],true);assert.equal(hands[0].props['data-attachment'],true);assert.equal(hands[1].props['data-hand-item'],'');
+ assert.match(first.props['aria-label'],/Combate cercano activo/);assert.match(first.props['aria-label'],/Bayoneta para Brown Bess India \(roto\)/);assert.match(first.props['aria-label'],/Segunda mano: ocupada/);
+ assert.match(html,/src="\/art\/weapon-1800.png"/);assert.match(html,/src="\/art\/weapon-1808.png"/);assert.equal((html.match(/src="\/art\/weapon-1813.png"/g)||[]).length,1,'only the active knife is rendered; the rifleman stowed knife stays hidden');assert.match(html,/lucide-cross/);assert.match(html,/lucide-key-round/);
+});
+
+test('hand display keeps card selection, additive selection, keyboard click and right-click details intact',()=>{
+ const b=field(),selected=[],opened=[];const tree=componentTree(Roster,{...props(b),onSelect:(...args)=>selected.push(args),onOpenInventory:id=>opened.push(id)}),card=descendants(tree).find(n=>n.props?.role==='listitem');
+ card.props.onClick({shiftKey:false,detail:0});card.props.onClick({shiftKey:true});card.props.onContextMenu({preventDefault(){}});card.props.onDoubleClick();assert.deepEqual(selected,[['a',false],['a',true]]);assert.deepEqual(opened,['a','a']);assert.equal(card.props.disabled,undefined);
+});
+
+test('empty roster cells and later pages stay six cells wide without phantom held items',()=>{
+ const b=field();let html=render(h(Roster,{...props(b),players:b.units.slice(0,2)}));assert.equal((html.match(/empty-portrait-slot/g)||[]).length,4);assert.equal((html.match(/data-hand-side=/g)||[]).length,4);
+ const units=[...b.units,...b.units.slice(0,2).map(u=>({...u,id:`later-${u.id}`}))];html=render(h(Roster,{...props(b),players:units,selected:'later-b'}));assert.equal((html.match(/class="ja2-portrait-cell /g)||[]).length,2);assert.equal((html.match(/empty-portrait-slot/g)||[]).length,4);assert.equal((html.match(/data-hand-side=/g)||[]).length,4);assert.match(html,/2 \/ 2/);
+});

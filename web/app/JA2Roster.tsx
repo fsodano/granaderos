@@ -4,13 +4,13 @@ import {maximumEnergy} from '../../game/fatigue.js';
 // Every deployed squad remains accessible in the portrait strip.
 // Pure read model (game/ja2-hud.js rosterCells); all mutations are caller-provided callbacks.
 import {rosterCells} from '../../game/ja2-hud.js';
-import {weaponFor, hasFirearm} from '../../game/tactical.js';
+import {rosterHands} from '../../game/roster-hands.js';
+import {Package,Flame,Utensils,Cross,Gem,CircleDot,Link,KeyRound,Wrench,Hammer,Scissors,Shirt,Hand,Ban} from 'lucide-react';
 import {portraitFor} from '../lib/portraits';
 
 type Props = {battle?: any; players: any[]; selected: any; groupIds?: string[]; medicalTargeting?: boolean; onSelect: (id: any, additive?: boolean) => void; onOpenInventory: (id: any) => void};
 const short = (u: any) => u.nickname || String(u.name || '').split(' ').slice(-1)[0] || '';
-const loadState = (u: any, firearm: boolean) =>
-  u.activeSlot === 'medical' ? `${u.medkits ?? 0} vendas` : u.activeSlot === 'supply' ? `${u[u.activeSupply] ?? 0} disponibles` : u.activeSlot === 'tool' ? 'Herramienta preparada' : u.activeSlot === 'item' ? 'Objeto en mano' : u.activeSlot === 'unarmed' ? 'Manos libres' : !firearm ? 'Arma blanca' : u.jammed ? 'Cazoleta sin cebar' : u.loaded ? `${u.loaded} carga preparada` : 'Arma descargada';
+const handIcons:Record<string,any>={ammo:Package,priming:CircleDot,flints:Gem,rations:Utensils,medical:Cross,boleadoras:Link,torch:Flame,key:KeyRound,lockpick:Wrench,crowbar:Hammer,pliers:Scissors,outfit:Shirt,item:Package,empty:Hand,blocked:Ban};
 
 export default function JA2Roster({battle, players, selected, groupIds = [], medicalTargeting = false, onSelect, onOpenInventory}: Props) {
   const all = rosterCells(players, selected, battle);
@@ -28,15 +28,14 @@ export default function JA2Roster({battle, players, selected, groupIds = [], med
         if (cell.empty) return <div className="empty-portrait-slot" key={`empty-${i}`} aria-hidden="true"><span>—</span></div>;
         const u = cell.unit;
         const portrait = cell.portrait || portraitFor(u.portraitId ?? u.id);
-        const firearm = hasFirearm(u);
-        const weapon = weaponFor(u);
+        const hands = rosterHands(u);
         return (
           <button
             key={u.id}
             role="listitem"
             className={`ja2-portrait-cell ${cell.active ? 'active' : ''} ${cell.fallen ? 'fallen' : ''} ${cell.interruptReady ? 'interrupt-ready' : ''} ${groupIds.includes(u.id) ? 'group-selected' : ''}`}
             aria-disabled={medicalTargeting ? u.hp <= 0 || u.routed : cell.disabled}
-            aria-label={`${cell.index + 1}. ${u.name}. ${u.unconscious ? 'Inconsciente' : cell.fallen ? 'Fuera de combate' : `Salud ${Math.ceil(u.hp)}, ${exploring ? '' : `${u.ap} puntos de acción, `}energía ${Math.round(u.energy ?? 100)}`}${cell.bleeding ? `. Hemorragia: ${cell.bleeding} salud por turno` : ''}${cell.interruptReady ? '. Puede actuar en la interrupción' : ''}${groupIds.includes(u.id) ? '. En el grupo de marcha' : ''}. Botón derecho: equipo del combatiente`}
+            aria-label={`${cell.index + 1}. ${u.name}. ${u.unconscious ? 'Inconsciente' : cell.fallen ? 'Fuera de combate' : `Salud ${Math.ceil(u.hp)}, ${exploring ? '' : `${u.ap} puntos de acción, `}energía ${Math.round(u.energy ?? 100)}`}${cell.bleeding ? `. Hemorragia: ${cell.bleeding} salud por turno` : ''}${cell.interruptReady ? '. Puede actuar en la interrupción' : ''}${groupIds.includes(u.id) ? '. En el grupo de marcha' : ''}. ${hands.map((hand:any)=>hand.description).join(' ')} Botón derecho: equipo del combatiente`}
             onClick={event => {if(!(medicalTargeting ? u.hp <= 0 || u.routed : cell.disabled))onSelect(u.id, event.shiftKey);}}
             onDoubleClick={() => { if (!medicalTargeting) onOpenInventory(u.id); }}
             onContextMenu={(e) => { e.preventDefault(); onOpenInventory(u.id); }}
@@ -49,7 +48,14 @@ export default function JA2Roster({battle, players, selected, groupIds = [], med
               {!exploring && <span title="Puntos de acción"><i className="action" style={{height: `${cell.apPct}%`}} /></span>}
               <span title={`Energía ${Math.round(u.energy??100)}/${maximumEnergy(u)} · la fatiga limita la recuperación`}><i className="energy" style={{height: `${Math.max(0, Math.min(100, u.energy ?? 100))}%`}} /></span>
             </span>
-            <span className="ja2-weapon-line">{weapon.name} · {loadState(u, firearm)}{firearm ? ` · ${u.ammo} cartuchos` : ''}</span>
+            <span className="ja2-roster-hands" aria-hidden="true">{hands.map((hand:any)=>{
+              const Icon=handIcons[hand.icon]??Package;
+              return <span key={hand.side} className={`ja2-roster-hand ${hand.blocked?'blocked':hand.item?'held':'empty'}`} data-hand-side={hand.side} data-hand-item={hand.item??''} data-close-combat={hand.closeCombat} data-attachment={hand.attached} title={hand.description}>
+                {hand.weapon?<img src={`/art/weapon-${hand.weapon}.png`} alt="" draggable={false}/>:<Icon size={16} strokeWidth={1.7}/>}
+                {hand.loaded!==undefined&&<small className="roster-hand-load">{hand.loaded}</small>}
+                {(hand.closeCombat||hand.attached)&&<span className="roster-hand-status">{hand.closeCombat&&<b className="close-combat">*</b>}{hand.attached&&<b className="attachment">*</b>}</span>}
+              </span>;
+            })}</span>
             <span className="portrait-numbers">{u.unconscious ? 'Inconsciente' : cell.fallen ? 'Fuera de combate' : `${Math.ceil(u.hp)} SAL · ${exploring ? '' : `${u.ap} PA · `}${Math.round(u.energy ?? 100)} EN`}</span>
           </button>
         );
