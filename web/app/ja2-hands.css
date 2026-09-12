@@ -4,3 +4,8 @@
 .ja2-hands small{font-size:10px;color:#c5bc99;}.ja2-hands span{font-size:11px;}
 .battle-layout .ja2-hands .blocked{background:repeating-linear-gradient(135deg,#20281d,#20281d 5px,#2e3527 5px,#2e3527 6px);opacity:.7;}
 .battle-layout .ja2-hands.compact button{padding:4px;gap:1px;}.ja2-hands.compact{margin:5px 0;}
+.battle-layout .ja2-hands .drop-target{outline:2px solid #f6d881;background:#35432a;}
+.ja2-hands .equipment-drag-hint{grid-column:1/-1;min-height:14px;}
+.ja2-hands button[data-held=true]{cursor:grab;touch-action:none;user-select:none;}
+
+.battle-layout .paper-doll .ja2-stow-hand{grid-column:1/-1;font-size:10px;padding:5px;min-height:0;}

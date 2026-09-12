@@ -11,7 +11,7 @@ import {projectilePath,projectileFlight,pointProjectileFlight,concealmentAt,conc
 import {boundaryMatches} from './tactical-exits.js';
 import {HELD_SUPPLIES,heldSupply,clearEmptySupply} from './held-supplies.js';
 import {heldTool,environmentActionProfile,resolveEnvironmentInteraction,extractContainerItem} from './environment-interactions.js';
-import {SUPPLY_ITEMS,inventoryUsage,itemDescriptor,itemQuantity,extractItemQuantity,applyItemQuantity,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove,planEquipOutfit,planStowOutfit,planHoldOffhand} from './tactical-inventory.js';
+import {SUPPLY_ITEMS,inventoryUsage,itemDescriptor,itemQuantity,extractItemQuantity,applyItemQuantity,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove,planEquipOutfit,planStowOutfit,planHoldOffhand,equipmentEndpoint,equipmentFingerprint,placeStoredItem} from './tactical-inventory.js';
 import {FITTING_RULES_VERSION,FIT_BAYONET_AP,REMOVE_BAYONET_AP,LOOSE_BAYONET,fixedBayonetFor,fixedBayonetProfile,fittingWeight,weaponItemWeight,normalizeUnitFittings} from './weapon-fittings.js';
 import {FISTS,BUTTSTOCK,unarmedChance,unarmedImpact,weaponStealChance,STEAL_MIN_AP} from './unarmed-combat.js';
 import {directionTo,facingAllowsSight,turnAPCost,stealthAPMultiplier,noiseRadius,approximateHeardPosition} from './tactical-awareness.js';
@@ -606,6 +606,80 @@ export function stealPreview(s,u,target){
   if(!reason)try{planStealWeapon(u,target);}catch(error){reason=error.message;}
   return {pa,valid:!reason,reason};
 }
+function planMainHandEquipment(u,a){
+ if(!['primary','blade','medical','unarmed','tool','supply'].includes(a.slot))throw Error('Selecciona el objeto que quieres llevar en la mano.');
+ if(a.slot==='primary'&&(u.weaponDropped||!(WEAPONS[u.weapon]||BLADES[u.weapon]||typeof u.weapon==='object')))throw Error('No lleva un arma principal disponible.');
+ if(a.slot==='medical'&&u.medkits<1)throw Error('No quedan vendas en el equipo de curación.');
+ if(a.slot==='blade'&&!BLADES[u.blade])throw Error('No hay un arma blanca secundaria equipada.');
+ if(a.slot==='tool'&&!heldTool({...u,activeSlot:'tool',activeTool:a.toolKey}))throw Error('No lleva esa herramienta en el inventario.');
+ if(a.slot==='supply'&&!heldSupply({...u,activeSlot:'supply',activeSupply:a.supplyKey}))throw Error('No lleva ese pertrecho en el inventario.');
+ if(!(a.slot==='unarmed'&&handLayout(u).left)&&(u.activeSlot||'primary')===a.slot&&(a.slot!=='tool'||u.activeTool===a.toolKey)&&(a.slot!=='supply'||u.activeSupply===a.supplyKey))throw Error('Ese objeto ya está en la mano.');
+ const next=selectMainHand(structuredClone(u),{activeSlot:a.slot,...(a.slot==='tool'?{activeTool:a.toolKey}:a.slot==='supply'?{activeSupply:a.supplyKey}:{})});
+ if(a.slot!=='tool')delete next.activeTool;if(a.slot!=='supply')delete next.activeSupply;
+ if(inventoryUsage(next).overloaded)throw Error('No queda espacio para guardar el objeto que tenés en la mano.');
+ lowerWeapon(next);next.momentum=0;next.braced=false;delete next.lastTargetId;delete next.lastShotPosition;return next;
+}
+function readyReference(unit,item,side){
+ const descriptor=itemDescriptor(unit,item),weapon=descriptor.weapon;
+ if(side==='left'){
+  if(weapon){
+   if(handsRequired(weapon)>1)throw Error('El arma necesita las dos manos.');
+   if(item.startsWith('inventory:'))return {unit:planEquipLoot(unit,item.slice(10),'offhand'),pa:6};
+   let next=structuredClone(unit);if(handLayout(next).right===item){next.activeSlot='unarmed';delete next.activeTool;delete next.activeSupply;}
+   next.leftHandItem=item;lowerWeapon(next);
+   if(inventoryUsage(next).overloaded)throw Error('No queda espacio para guardar el objeto desplazado.');
+   return {unit:next,pa:4};
+  }
+  let next=structuredClone(unit);if(handLayout(next).right===item){next.activeSlot='unarmed';delete next.activeTool;delete next.activeSupply;}
+  return {unit:planHoldOffhand(next,item),pa:4};
+ }
+ if(weapon){
+  if(item.startsWith('inventory:'))return {unit:planEquipLoot(unit,item.slice(10),'primary'),pa:6};
+  if(item==='offhand')return {unit:planSwapHands(unit),pa:4};
+  return {unit:planMainHandEquipment(unit,{slot:item}),pa:4};
+ }
+ const action=item==='medkits'?{slot:'medical'}:HELD_SUPPLIES[item]?{slot:'supply',supplyKey:item}:heldTool({...unit,activeSlot:'tool',activeTool:item})?{slot:'tool',toolKey:item}:null;
+ if(!action)throw Error('Este objeto se puede llevar en la segunda mano. No tiene un uso en la mano principal.');
+ return {unit:planMainHandEquipment(unit,action),pa:4};
+}
+function storeHandReference(unit,source){
+ let next=structuredClone(unit),item=source.item;const other=handLayout(unit)[source.side==='right'?'left':'right'];
+ if(['primary','blade','offhand'].includes(item)){
+  const oldKeys=new Set(Object.keys(next.inventory??{})),taken=extractItemQuantity(next,item,1,{keepOtherHand:false});next=taken.unit;
+  if(source.side==='right'){next.activeSlot='unarmed';delete next.activeTool;delete next.activeSupply;next.leftHandItem=other;}
+  else next.leftHandItem=null;
+  next=applyItemQuantity(next,taken.stack,{deferCapacity:true});item='inventory:'+Object.keys(next.inventory).find(key=>!oldKeys.has(key));
+ }else if(source.side==='right'){
+  next.activeSlot='unarmed';delete next.activeTool;delete next.activeSupply;next.leftHandItem=other;
+ }else next.leftHandItem=null;
+ lowerWeapon(next);return {unit:next,item};
+}
+export function planEquipmentPlacement(unit,action){
+ const {sourceId,destinationId,expectedSource,expectedDestination}=action;
+ if(sourceId===destinationId)throw Error('Elegí otra ranura.');
+ for(const [id,expected]of [[sourceId,expectedSource],[destinationId,expectedDestination]])if(typeof expected!=='string'||expected!==equipmentFingerprint(unit,id))throw Error('Cambió el equipo. Volvé a seleccionar el objeto.');
+ const source=equipmentEndpoint(unit,sourceId),destination=equipmentEndpoint(unit,destinationId);
+ if(!source.item)throw Error('La ranura de origen está vacía.');
+ if(source.kind==='pocket'&&destination.kind==='pocket')return {unit:planPocketMove(unit,sourceId,destinationId),pa:0};
+ if(destination.kind==='hand'){
+  if(destination.blocked)throw Error('El arma principal ocupa las dos manos.');
+  return readyReference(unit,source.item,destination.side);
+ }
+ // A hand-to-pocket exchange first puts the held item away. If the target
+ // was occupied, ready its item in that hand before fixing the pocket order.
+ const stored=storeHandReference(unit,source);let next=stored.unit,pa=4;
+ if(destination.item&&destination.item!==stored.item){
+  const ready=readyReference(next,destination.item,source.side);next=ready.unit;pa=Math.max(pa,ready.pa);
+ }
+ if(inventoryUsage(next).overloaded)throw Error('No queda espacio para guardar el objeto desplazado.');
+ next=placeStoredItem(next,stored.item,destinationId);
+ return {unit:next,pa};
+}
+export function equipmentPlacementPreview(s,u,action){
+ let pa=0,reason=inventoryOrderReason(s,u,0);
+ if(!reason)try{pa=planEquipmentPlacement(u,action).pa;reason=inventoryOrderReason(s,u,pa);}catch(error){reason=error.message;}
+ return {pa,reason,valid:!reason};
+}
 export function swapHandsPreview(s,u){
  const pa=s.mode==='exploration'?0:4;let reason=inventoryOrderReason(s,u,pa);
  if(!reason)try{planSwapHands(u);}catch(error){reason=error.message;}
@@ -973,6 +1047,10 @@ else if(a.type==='equipLoot'){
   const next=planEquipLoot(u,a.inventoryKey,a.slot??'primary');pay(preview.pa);next.ap=u.ap;
   replaceUnit(u,next);sayObserved(s,[u],a.slot==='offhandItem'?`${u.name} ${a.inventoryKey===null?'guarda el objeto de la segunda mano':'sostiene '+itemDescriptor(u,a.inventoryKey).label+' en la segunda mano'}.`:a.slot==='outfit'?`${u.name} ${a.inventoryKey===null?'guarda su vestimenta en un bolsillo grande':'se pone '+itemDescriptor(u,'outfit').label}.`:`${u.name} equipa ${weaponFor(u).name} y guarda el arma desplazada.`);
 }
+else if(a.type==='moveEquipment'){
+ const preview=equipmentPlacementPreview(s,u,a);if(!preview.valid)return fail(preview.reason);
+ const plan=planEquipmentPlacement(u,a);pay(plan.pa);plan.unit.ap=u.ap;replaceUnit(u,plan.unit);sayObserved(s,[u],`${u.name} cambia el equipo de ranura.`);
+}
 else if(a.type==='movePocket'){
   const reason=inventoryOrderReason(s,u,0);if(reason)return fail(reason);
   let next;try{next=planPocketMove(u,a.sourceId,a.destinationId,a.expectedSource,a.expectedDestination);}catch(error){return fail(error.message);}
@@ -1020,19 +1098,8 @@ else if(a.type==='ration'){
 }
 else if(a.type==='brace'){if(!fixedBayonetFor(u))return fail('Se necesita una bayoneta preparada para recibir la carga.');if(u.ap<16)return fail('Reserva al menos 16 PA para detener una carga.');u.braced=true;sayObserved(s,[u],`${u.name} mantiene la bayoneta fijada en guardia.`);}
 else if(a.type==='weapon'){
-  if(!['primary','blade','medical','unarmed','tool','supply'].includes(a.slot))return fail('Selecciona el objeto que quieres llevar en la mano.');
-  if(a.slot==='primary'&&(u.weaponDropped||!(WEAPONS[u.weapon]||BLADES[u.weapon]||typeof u.weapon==='object')))return fail('No lleva un arma principal disponible.');
-  if(a.slot==='medical'&&u.medkits<1)return fail('No quedan vendas en el equipo de curación.');
-  if(a.slot==='blade'&&!BLADES[u.blade])return fail('No hay un arma blanca secundaria equipada.');
-  if(a.slot==='tool'&&!heldTool({...u,activeSlot:'tool',activeTool:a.toolKey}))return fail('No lleva esa herramienta en el inventario.');
-  if(a.slot==='supply'&&!heldSupply({...u,activeSlot:'supply',activeSupply:a.supplyKey}))return fail('No lleva ese pertrecho en el inventario.');
-  if(!(a.slot==='unarmed'&&handLayout(u).left)&&(u.activeSlot||'primary')===a.slot&&(a.slot!=='tool'||u.activeTool===a.toolKey)&&(a.slot!=='supply'||u.activeSupply===a.supplyKey))return fail('Ese objeto ya está en la mano.');
-  const held=selectMainHand(u,{activeSlot:a.slot,...(a.slot==='tool'?{activeTool:a.toolKey}:a.slot==='supply'?{activeSupply:a.supplyKey}:{})});
-  if(inventoryUsage(held).overloaded)return fail('No queda espacio para guardar el objeto que tenés en la mano.');
-  if(!pay(4))return fail('Cambiar de objeto requiere 4 PA.');u.activeSlot=a.slot;if(held.leftHandItem!==undefined)u.leftHandItem=held.leftHandItem;
-  if(a.slot==='tool')u.activeTool=a.toolKey;else delete u.activeTool;
-  if(a.slot==='supply')u.activeSupply=a.supplyKey;else delete u.activeSupply;
-  u.momentum=0;u.braced=false;delete u.lastTargetId;delete u.lastShotPosition;sayObserved(s,[u],`${u.name} prepara ${weaponFor(u).name}.`);
+ let next;try{next=planMainHandEquipment(u,a);}catch(error){return fail(error.message);}
+ if(!pay(4))return fail('Cambiar de objeto requiere 4 PA.');next.ap=u.ap;replaceUnit(u,next);sayObserved(s,[u],`${u.name} prepara ${weaponFor(u).name}.`);
 }
 else if(a.type==='overwatch'){
   if(u.overwatch){u.overwatch=false;sayObserved(s,[u],`${u.name} deja de cubrir el frente.`);}

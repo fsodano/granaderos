@@ -171,7 +171,7 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
           <small>El poncho reduce el efecto del clima. Guardarlo requiere un bolsillo grande.</small>
         </section>
         <JA2Hands battle={battle} unit={unit} busy={busy} onOrder={onOrder} onPick={chooseItem}/>
-        {unit.leftHandItem!=null&&<button className="line-button" disabled={busyDisabled||!stowSecond.valid} title={stowSecond.reason||undefined} onClick={()=>onOrder({type:'equipLoot',slot:'offhandItem',inventoryKey:null})}>Guardar objeto de segunda mano · {battle.mode==='exploration'?'sin PA':'4 PA'}</button>}
+        {unit.leftHandItem!=null&&<button className="line-button ja2-stow-hand" disabled={busyDisabled||!stowSecond.valid} title={stowSecond.reason||undefined} onClick={()=>onOrder({type:'equipLoot',slot:'offhandItem',inventoryKey:null})}>Guardar objeto de segunda mano · {battle.mode==='exploration'?'sin PA':'4 PA'}</button>}
         <label className="ja2-tool-selector">Objeto en mano<select aria-label="Elegir objeto en mano" value={inv.activeSlot||'primary'} disabled={busyDisabled} onChange={event=>{const option=equipped.find((entry:any)=>entry.slot===event.target.value);if(option){onOrder(option.action);onMode('move');}}}>{equipped.map((option:any)=><option key={option.slot} value={option.slot} disabled={option.disabled}>{option.label}{option.reason?` · ${option.reason}`:''}</option>)}</select></label>
         <JA2WeaponMode battle={battle} unit={unit} busy={busy} onOrder={onOrder} onMode={onMode}/>
         <div className="ja2-hand-management">{inv.items.filter((entry: any) => ['primary', 'blade', 'offhand'].includes(entry.item)).map((entry: any) => <button key={entry.item} className="line-button" disabled={busyDisabled} aria-pressed={item?.item === entry.item} onClick={() => chooseItem(entry.item)}>Dar o soltar {entry.label}</button>)}</div>
@@ -185,7 +185,7 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
         </div>
       </div>
       <div className="slot-grid">
-        <JA2Pockets key={unit.id} unit={unit} layout={inv.pockets} disabled={busyDisabled} onPick={chooseItem} onOrder={onOrder}/>
+        <JA2Pockets key={unit.id} battle={battle} unit={unit} layout={inv.pockets} disabled={busyDisabled} onPick={chooseItem} onOrder={onOrder}/>
         {managedItem==='offhand'&&<button disabled={busyDisabled||!otherHand.valid} title={otherHand.reason||undefined} onClick={()=>{onOrder({type:'swapHands'});onMode('move');}}>Poner {item?.label} en mano · {otherHand.pa} PA</button>}
         {['primary','blade'].includes(managedItem)&&equipped.filter((option:any)=>option.slot===managedItem).map((option:any)=><button key={option.slot} disabled={option.disabled||option.active} title={option.reason||undefined} onClick={()=>{onOrder(option.action);onMode('move');}}>Poner {item?.label} en mano · {option.pa} PA</button>)}
         {inv.backpack.filter((record:any)=>`inventory:${record.key}`===managedItem).map((item: any) => {

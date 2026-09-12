@@ -138,7 +138,8 @@ export function validateHands(unit) {
   wornOutfit(unit);
   if(unit.leftHandItem!=null){
     const entry=resolve(unit,unit.leftHandItem);
-    if(entry.item!==unit.leftHandItem||!['inventory','supply'].includes(entry.kind)||entry.kind==='inventory'&&entry.record.weapon!==undefined)fail('El objeto de la segunda mano no es válido.');
+    const handWeapon=entry.kind==='hand'&&itemQuantity(unit,entry.item)>0?handRecord(unit,entry.item).weapon:null;
+    if(unit.leftHandItem===handLayout(unit).right||entry.item!==unit.leftHandItem||!['inventory','supply','hand'].includes(entry.kind)||entry.kind==='inventory'&&entry.record.weapon!==undefined||entry.kind==='hand'&&(!handWeapon||handsRequired(handWeapon)!==1))fail('El objeto de la segunda mano no es válido.');
   }
   if(unit.offHand!==undefined){
     const value=handRecord(unit,'offhand');
@@ -343,4 +344,27 @@ export function planHoldOffhand(unit,item){
  }
  if(inventoryUsage(next).overloaded)fail('No queda espacio para guardar el objeto desplazado.');
  return next;
+}
+
+// Read a physical endpoint. Fingerprints include contents, owner and metadata,
+// so a delayed drag cannot silently equip a changed item or overwrite a slot.
+export function equipmentEndpoint(unit,slotId){
+ const layout=handLayout(unit);
+ if(slotId==='hand:right'||slotId==='hand:left'){
+  const side=slotId.slice(5),item=layout[side];return {id:slotId,kind:'hand',side,item,count:item?1:0,blocked:side==='left'&&layout.twoHanded};
+ }
+ const pocket=inventoryUsage(unit).slots.find(slot=>slot.id===slotId);
+ if(!pocket)fail('La ranura de equipo no existe.');
+ return {...pocket,kind:'pocket',item:pocket.entry?.item??null,count:pocket.entry?.count??0};
+}
+export function equipmentFingerprint(unit,slotId){
+ const endpoint=equipmentEndpoint(unit,slotId),item=endpoint.item;
+ const contents=item?extractItemQuantity(unit,item,1,{keepOtherHand:false}).stack:null;
+ return JSON.stringify({unitId:String(unit.id),slotId,item,count:endpoint.count,index:endpoint.entry?.index??0,blocked:Boolean(endpoint.blocked),contents});
+}
+export function placeStoredItem(unit,item,destinationId){
+ const layout=inventoryUsage(unit),entry=layout.slots.find(slot=>slot.entry?.item===item);
+ if(!entry)fail('El objeto no tiene un bolsillo disponible.');
+ if(entry.id===destinationId)return unit;
+ return planPocketMove(unit,entry.id,destinationId);
 }

@@ -12,7 +12,7 @@ export function handLayout(unit){
  const right=weapons.includes(slot)?slot:slot==='medical'&&unit.medkits>0?'medkits':slot==='supply'&&unit[unit.activeSupply]>0?unit.activeSupply:slot==='tool'&&(typeof tool==='number'?tool:tool?.count)>0?unit.activeTool:null;
  const required=right&&weapons.includes(right)?handsRequired(id(right)):1;
  const chosen=unit.leftHandItem,record=typeof chosen==='string'&&chosen.startsWith('inventory:')?unit.inventory?.[chosen.slice(10)]:null;
- const chosenCount=record?(typeof record==='number'?record:record.count):unit[chosen];
+ const chosenCount=chosen==='primary'?(!unit.weaponDropped&&unit.weapon?1:0):chosen==='blade'?(unit.blade?1:0):chosen==='offhand'?(unit.offHand?1:0):record?(typeof record==='number'?record:record.count):unit[chosen];
  const left=required===2?null:chosen!==undefined?(chosen&&chosen!==right&&chosenCount>0?chosen:null):slot==='unarmed'?null:['offhand','blade','primary'].find(item=>weapons.includes(item)&&item!==right&&handsRequired(id(item))===1)??null;
  const held=[right,left].filter(Boolean);
  return {right,left,twoHanded:Boolean(right&&required===2),stowed:weapons.filter(item=>!held.includes(item)),held};
