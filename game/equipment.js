@@ -41,6 +41,7 @@ export function deployedArtillery(s){
 export function isImportedEquipment(item){return [1800,1802].includes(Number(item?.item));}
 export const WORKSHOP_SECTORS=['retiro','cordoba','mendoza'];
 export const MERCHANT_CASH=1200;
+export const USED_EQUIPMENT_LIMIT=1000;
 export const MEDICAL_STOCK_CAP=40;
 export const MEDICAL_DAILY_RESTOCK=5;
 export const medicalSupplyStock=(s,at=s.location)=>s.merchants?.[at]?.supplies?.medkits??0;
@@ -52,7 +53,7 @@ const generatedIdentityNumber=id=>typeof id==='string'&&/^equipment-[1-9][0-9]{0
 function migratedIdentitySequence(s){let maximum=0;const pending=[s];while(pending.length){const value=pending.pop();if(!value||typeof value!=='object')continue;for(const [key,child]of Object.entries(value)){if(['instanceId','weaponInstanceId','bladeInstanceId'].includes(key)){const number=generatedIdentityNumber(child);if(number!==null)maximum=Math.max(maximum,number);}else if(child&&typeof child==='object')pending.push(child);}}return maximum+1;}
 const stockCap=item=>item.category==='artillery'?1:item.category==='blade'?6:3;
 const merchantCatalog=sector=>EQUIPMENT_CATALOG.filter(item=>sector==='ensenada'?isImportedEquipment(item):!isImportedEquipment(item));
-const initialMerchant=sector=>({stock:Object.fromEntries(merchantCatalog(sector).map(item=>[item.stockKey??item.item,stockCap(item)])),supplies:{medkits:sector==='ensenada'?0:MEDICAL_STOCK_CAP},restockHours:0,cash:sector==='ensenada'?0:MERCHANT_CASH});
+const initialMerchant=sector=>({usedItems:[],stock:Object.fromEntries(merchantCatalog(sector).map(item=>[item.stockKey??item.item,stockCap(item)])),supplies:{medkits:sector==='ensenada'?0:MEDICAL_STOCK_CAP},restockHours:0,cash:sector==='ensenada'?0:MERCHANT_CASH});
 
 export function migrateEquipment(s){
  const legacy=s.fittingRulesVersion===undefined;
@@ -112,7 +113,17 @@ export function advanceMerchants(s,isSupplied){
  }
 }
 
-export function resaleBreakdown(instance){const item=exactCatalogItem(instance),items=[];if(item&&handheld(item.item))items.push({name:item.name,condition:instance.condition,price:Math.floor(item.price*.4*instance.condition/100)});const bayonet=instance?.fittings?.bayonet;if(bayonet){const spec=exactCatalogItem(bayonet);if(spec)items.push({name:spec.name,condition:bayonet.condition,price:Math.floor(spec.price*.4*bayonet.condition/100)});}return {items,total:items.reduce((sum,item)=>sum+item.price,0)};}
+function tradeBreakdown(instance,fraction){const item=exactCatalogItem(instance),items=[];if(item&&handheld(item.item))items.push({name:item.name,condition:instance.condition,price:Math.floor(item.price*fraction*instance.condition/100)});const bayonet=instance?.fittings?.bayonet;if(bayonet){const spec=exactCatalogItem(bayonet);if(spec)items.push({name:spec.name,condition:bayonet.condition,price:Math.floor(spec.price*fraction*bayonet.condition/100)});}return {items,total:items.reduce((sum,item)=>sum+item.price,0)};}
+export const resaleBreakdown=instance=>tradeBreakdown(instance,.4);
+export const usedEquipmentBreakdown=instance=>tradeBreakdown(instance,.8);
+export function usedEquipmentOffers(s,isSupplied){
+ const market=merchantStatus(s,null,isSupplied);
+ return (s.merchants?.[s.location]?.usedItems??[]).map(instance=>{
+  const quote=usedEquipmentBreakdown(instance);
+  const reason=market.reason??(quote.total<=0?'El arma no tiene valor de servicio.':s.armoryItems.length>=10000?'La armería está llena.':s.resources.treasury<quote.total?'No hay pesos suficientes.':null);
+  return {instance,quote,reason,available:!reason,action:{type:'purchaseUsedEquipment',sector:s.location,instanceId:instance.id}};
+ });
+}
 export function resaleQuote(instance){return resaleBreakdown(instance).total;}
 
 export function returnEquipment(s,id,report){
@@ -142,7 +153,15 @@ export function validateEquipment(s,roster=[]){
  }
  need(Array.isArray(s.armoryItems)&&s.armoryItems.length<=10000&&integer(s.nextArmoryItemId,1,1000000000),'Los ejemplares de la armería son inválidos.');
  const ids=new Set(),counts={};
- for(const item of s.armoryItems){need(object(item)&&typeof item.id==='string'&&/^armory-[1-9][0-9]*$/.test(item.id)&&Number(item.id.slice(7))<s.nextArmoryItemId&&!ids.has(item.id)&&typeof item.item==='number'&&handheld(item.item)&&Number.isFinite(item.condition)&&item.condition>=0&&item.condition<=100&&typeof item.jammed==='boolean','El ejemplar de arma guardado es inválido.');validateFittingPattern(item.fittingPattern,item.item,item.instanceId);validateWeaponFittings(item.fittings,item.item);ids.add(item.id);counts[item.item]=(counts[item.item]??0)+1;}
+ for(const merchant of Object.values(s.merchants)){
+  need(merchant.usedItems===undefined||Array.isArray(merchant.usedItems)&&merchant.usedItems.length<=USED_EQUIPMENT_LIMIT,'Las armas usadas del comerciante son inválidas.');
+  for(const item of merchant.usedItems??[])validateStored(item);
+ }
+ function validateStored(item){
+  need(object(item)&&typeof item.id==='string'&&/^armory-[1-9][0-9]*$/.test(item.id)&&Number(item.id.slice(7))<s.nextArmoryItemId&&!ids.has(item.id)&&typeof item.item==='number'&&handheld(item.item)&&Number.isFinite(item.condition)&&item.condition>=0&&item.condition<=100&&typeof item.jammed==='boolean','El ejemplar de arma guardado es inválido.');
+  validateFittingPattern(item.fittingPattern,item.item,item.instanceId);validateWeaponFittings(item.fittings,item.item);ids.add(item.id);
+ }
+ for(const item of s.armoryItems){validateStored(item);counts[item.item]=(counts[item.item]??0)+1;}
  need(EQUIPMENT_CATALOG.filter(w=>handheld(w.item)).every(item=>(counts[item.item]??0)===(s.armory[item.item]??0)),'Las cantidades de la armería no coinciden con sus ejemplares.');
  for(const [id,r] of Object.entries(s.operativeState)){
   const op=roster.find(op=>op.id===Number(id));
@@ -179,6 +198,7 @@ export function validateEquipmentOwnership(s,roster=[],battle=null){
   if(!activePlayers.has(id)&&!body)unit(ally);
  }
  for(const r of s.armoryItems??[])record(r);
+ for(const merchant of Object.values(s.merchants??{}))for(const r of merchant.usedItems??[])record(r);
  const field=(snapshot,current=false)=>{
   for(const u of snapshot.units??[]){
    if(current){unit(u);continue;}

@@ -33,7 +33,7 @@ import {ENCOUNTERS,encounterForOperative,encountersFor,encounterRequirements} fr
 export {ENCOUNTERS,encountersFor} from './encounters.js';
 import {migrateSquads,activeSquad,operativeLocation,operativeInTransit,travelingOperatives,synchronizeSquad,validateSectorSnapshot,validatePersonalInventory} from './squads.js';
 export {activeSquad,operativeLocation} from './squads.js';
-import {isImportedEquipment,deliverEquipmentShipments,validEquipmentShipments,EQUIPMENT_CATALOG,refillCost,firearmRepairCost,deployedArtillery,migrateEquipment,advanceMerchants,merchantStatus,addEquipment,storeEquipment,takeEquipment,resaleQuote,returnEquipment,validateEquipment,equipmentInventoryUsage,allocateEquipmentAmmo,equipmentCatalogItem,equipmentLabel,medicalSupplyStock,validateEquipmentOwnership} from './equipment.js';
+import {isImportedEquipment,deliverEquipmentShipments,validEquipmentShipments,EQUIPMENT_CATALOG,refillCost,firearmRepairCost,deployedArtillery,migrateEquipment,advanceMerchants,merchantStatus,addEquipment,storeEquipment,takeEquipment,resaleQuote,returnEquipment,validateEquipment,equipmentInventoryUsage,allocateEquipmentAmmo,equipmentCatalogItem,equipmentLabel,medicalSupplyStock,validateEquipmentOwnership,USED_EQUIPMENT_LIMIT,usedEquipmentOffers} from './equipment.js';
 import {FITTING_RULES_VERSION} from './weapon-fittings.js';
 export {EQUIPMENT_CATALOG,armoryInventory,refillCost,firearmRepairCost} from './equipment.js';
 import {planTransfer,convoyStatus} from './logistics.js';
@@ -342,7 +342,7 @@ export function dispatchCampaign(previous,action){
   try{
     requireThat(action&&typeof action.type==='string','La orden no es válida.');
     requireThat(!s.defeated,'La campaña ha terminado. Inicia otra campaña para continuar.');
-    requireThat(!s.completed||['syncTacticalTime','wait','setSleep','assignCare','assignWork','purchaseToolkits','purchaseMedicalSupplies','horseAction','travel','cancelTravel','resumeTravel','beginAssault','visitSector','leaveSector','talkNPC','createSquad','selectSquad','squad','equip','resupply','repairWeapon','purchaseEquipment','sellEquipment','supplyTransfer','transport','militia','cancelMilitia','renewContract','dismiss'].includes(action.type),'La campaña está ganada. Puedes recorrer las provincias y atender a tus escuadras y estancias.');
+    requireThat(!s.completed||['syncTacticalTime','wait','setSleep','assignCare','assignWork','purchaseToolkits','purchaseMedicalSupplies','horseAction','travel','cancelTravel','resumeTravel','beginAssault','visitSector','leaveSector','talkNPC','createSquad','selectSquad','squad','equip','resupply','repairWeapon','purchaseEquipment','purchaseUsedEquipment','sellEquipment','supplyTransfer','transport','militia','cancelMilitia','renewContract','dismiss'].includes(action.type),'La campaña está ganada. Puedes recorrer las provincias y atender a tus escuadras y estancias.');
     requireThat(!s.pendingEncounter||['respondToEncounter','selectSquad'].includes(action.type),'Hay un encuentro pendiente. Elegí cómo responder antes de continuar.');
     requireThat(!s.pendingBattle||['battleResult','leaveSector','talkNPC','finishMission','syncTacticalTime'].includes(action.type),'Hay una batalla pendiente. Resuélvela antes de dar nuevas órdenes.');
     if(['travel','attack','visitSector'].includes(action.type))requireThat(!s.squad.some(id=>militiaAssignment(s,id)),'Un instructor de la escuadra está asignado a las milicias. Cancelá su curso o dejalo en una escuadra de guarnición.');
@@ -410,7 +410,18 @@ export function dispatchCampaign(previous,action){
         const instance=s.armoryItems.find(item=>item.id===action.instanceId);requireThat(instance,'Ese ejemplar ya no está disponible en la armería.');
         const market=merchantStatus(s,null,isSupplied);requireThat(market.available,market.reason);
         const price=resaleQuote(instance);requireThat(price>0,'El comerciante no compra armas sin valor de servicio.');const merchant=s.merchants[s.location];requireThat(merchant.cash>=price,'El comerciante no tiene fondos suficientes; su caja se repone con el tiempo.');
-        takeEquipment(s,instance.item,instance.id);merchant.cash-=price;s.resources.treasury+=price;note(s,`Se vende ${equipmentLabel(instance)}, estado ${instance.condition}%, por ${price} pesos.`);break;
+        requireThat((merchant.usedItems?.length??0)<USED_EQUIPMENT_LIMIT,'El comerciante no puede guardar más armas usadas.');
+        merchant.usedItems??=[];merchant.usedItems.push(takeEquipment(s,instance.item,instance.id));merchant.cash-=price;s.resources.treasury+=price;note(s,`Se vende ${equipmentLabel(instance)}, estado ${instance.condition}%, por ${price} pesos.`);break;
+      }
+      case 'purchaseUsedEquipment':{
+        requireThat(action.sector===s.location,'Debes estar en la maestranza que ofrece ese ejemplar.');
+        const offer=usedEquipmentOffers(s,isSupplied).find(offer=>offer.instance.id===action.instanceId);
+        requireThat(offer,'Ese ejemplar ya no está disponible en el comercio.');requireThat(offer.available,offer.reason);
+        const merchant=s.merchants[s.location],index=merchant.usedItems.findIndex(item=>item.id===action.instanceId);
+        pay(s,{treasury:offer.quote.total});const [instance]=merchant.usedItems.splice(index,1);
+        s.armoryItems.push(instance);s.armory[instance.item]=(s.armory[instance.item]??0)+1;
+        merchant.cash=Math.min(1000000000,merchant.cash+offer.quote.total);
+        note(s,`Se compra ${equipmentLabel(instance)} usado, estado ${instance.condition}%, por ${offer.quote.total} pesos.`);break;
       }
       case 'configureArtillery':{
         const types=action.types;requireThat(Array.isArray(types)&&types.length<=3&&types.every(t=>['bronze4','field8','swivel'].includes(t)),'Seleccioná hasta tres piezas de artillería.');
