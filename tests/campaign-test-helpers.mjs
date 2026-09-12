@@ -36,7 +36,8 @@ export function meetLocalRecruit(state,action){
  const npc=encounterForOperative(action.id);if(!npc)return null;
  let s=state;if(s.location!==npc.sector){s=dispatchCampaign(s,{type:'travel',sector:npc.sector});if(s.lastError)throw Error(s.lastError);}
  s=dispatchCampaign(s,{type:'visitSector'});if(s.lastError)throw Error(s.lastError);
- let battle=enterSector(s.pendingBattle,s.sectorStates[s.pendingBattle.sector]);const actor=battle.units.filter(u=>u.side==='player').sort((a,b)=>b.leadership-a.leadership)[0];
+ let battle=enterSector(s.pendingBattle,s.sectorStates[s.pendingBattle.sector]);const actor=battle.units.filter(u=>s.pendingBattle.squad.some(member=>String(member.id)===u.id)&&u.side==='player'&&u.hp>=15&&!u.unconscious&&!u.departure&&!u.surrendered&&!u.routed).sort((a,b)=>b.leadership-a.leadership)[0];
+ if(!actor)throw Error('No conscious deployed speaker is available for this meeting.');
  battle=approachNPC(battle,actor.id,npc.id);
  const local=battle.npcs.find(n=>n.id===npc.id);
  s=dispatchCampaign(s,{type:'talkNPC',npcId:npc.id,approach:'recruit',unitId:Number(actor.id),sectorState:battle});if(s.lastError)return s;

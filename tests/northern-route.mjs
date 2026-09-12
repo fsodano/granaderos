@@ -57,13 +57,13 @@ export function fightNorthernSector(start,sector,{report=()=>{},expectedOutcome=
  const result=fight(request,campaign.sectorStates[sector],{controller});
  const summary={sector,status:result.battle.status,turns:result.battle.turn,actions:result.actions,units:result.battle.units.map(u=>({id:u.id,side:u.side,hp:u.hp,ammo:u.ammo,loaded:u.loaded,routed:u.routed}))};
  report({event:'battleFinished',...summary});
- assert.ok(['victory','defeat'].includes(expectedOutcome));
+ assert.ok(['victory','defeat','retreat'].includes(expectedOutcome));
  assert.equal(result.battle.status,expectedOutcome,JSON.stringify(summary));
  const replay=fight(request,campaign.sectorStates[sector],{controller});assert.deepEqual(replay.battle,result.battle);
  const pair=syncBattleTime(campaign,result.battle);assert.equal(pair.error,null);
  const restored=decodeSave(encodeSave(pair.campaign,pair.battle));
  const returned=dispatchCampaign(restored.campaign,{type:'battleResult',battleId:request.id,outcome:restored.battle.status,survivors:restored.battle.units.filter(u=>u.side==='player'),sectorState:restored.battle});
- assert.equal(returned.lastError,null,returned.lastError);assert.equal(returned.sectors[sector].owner,expectedOutcome==='victory'?'patriot':'royalist');assert.equal(returned.pendingBattle,null);
+ assert.equal(returned.lastError,null,returned.lastError);assert.equal(returned.sectors[sector].owner,expectedOutcome==='victory'?'patriot':expectedOutcome==='retreat'?campaign.sectors[sector].owner:'royalist');assert.equal(returned.pendingBattle,null);
  for(const u of result.battle.units.filter(u=>u.side==='player'&&u.hp<=0))assert.equal(returned.operativeState[Number(u.id)].alive,false);
  assert.deepEqual(decodeSave(encodeSave(returned)).campaign,returned);
  return {campaign:returned,summary};
