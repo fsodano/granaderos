@@ -74,6 +74,10 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   if(!tucumanLoss)return subtest.skip('The real Tucumán defeat and captivity must pass first');
   assert.ok(tucumanLoss);const before=structuredClone(tucumanLoss),prepared=prepareRescueSquad(tucumanLoss);
   assert.deepEqual(tucumanLoss,before);assert.equal(prepared.campaign.hour,tucumanLoss.hour+24);
+  assert.ok(prepared.hiringCost>0);
+  for(const id of prepared.hired){assert.equal(before.operativeState[id].alive,true);assert.ok(!before.recruited.includes(id));assert.ok(prepared.campaign.contracts[id]);}
+  assert.equal(prepared.fieldIds.length,6);assert.ok(prepared.supportIds.length>0&&prepared.supportIds.length<=6);
+  for(const id of [...prepared.fieldIds,...prepared.supportIds])assert.ok(prepared.campaign.pendingBattle.squad.some(unit=>Number(unit.id)===id));
   const result=fightNorthernSector(prepared.campaign,'tucuman',{controller:cautiousCombatOrder}),returned=result.campaign;
   assertBattleClock(result);preserveDeaths(tucumanLoss,returned);
   assert.equal(returned.hour,prepared.campaign.hour);

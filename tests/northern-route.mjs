@@ -203,11 +203,25 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
  order({type:'createSquad',sector:'san_nicolas',name:'Apoyo sanitario',ids:reserveIds});const support=campaign.activeSquadId;
  for(const operativeId of campaign.squad)order({type:'assignCare',operativeId,assignment:'active'});
  order({type:'travel',sector:'cordoba'});assert.equal(campaign.location,'cordoba');assert.equal(campaign.pendingEncounter,null);
- const cash=campaign.resources.treasury;
- for(const id of [141,127,119,103,104,111])order({type:'recruitCivic',id,term:'week'});
- assert.equal(cash-campaign.resources.treasury,553);
- for(const operativeId of [112,122])order({type:'purchaseMedicalSupplies',operativeId,quantity:12});
- const fieldIds=[141,127,119,103,104,139],supportIds=[111,...reserveIds];
+ const cash=campaign.resources.treasury,hired=[];
+ const hire=id=>{
+  if(campaign.recruited.includes(id)||!campaign.operativeState[id].alive||campaign.operativeState[id].captured)return;
+  order({type:'recruitCivic',id,term:'week'});hired.push(id);
+ };
+ for(const id of [141,127,119,103,104,111])hire(id);
+ const present=id=>campaign.recruited.includes(id)&&campaign.operativeState[id].alive&&!campaign.operativeState[id].captured&&campaign.operativeState[id].location==='cordoba';
+ const supportIds=[...new Set([111,...reserveIds])].filter(present);
+ const fieldCandidates=()=>[...new Set([141,127,119,103,104,139,...campaign.recruited])].filter(id=>present(id)&&!supportIds.includes(id));
+ for(const id of [140,133,129,130]){if(fieldCandidates().length>=6)break;hire(id);}
+ const fieldIds=fieldCandidates().slice(0,6),hiringCost=cash-campaign.resources.treasury;
+ assert.equal(fieldIds.length,6,'six actual living soldiers make the rescue field squad');
+ assert.ok(supportIds.includes(112)&&supportIds.includes(122)&&supportIds.length<=6);
+ assert.ok(hiringCost>0);assert.equal(hiringCost,hired.reduce((sum,id)=>sum+campaign.contracts[id].paid,0));
+ const medicalPurchases=[];
+ for(const operativeId of [112,122]){
+  const quantity=Math.max(0,12-campaign.operativeState[operativeId].medkits);
+  if(quantity){order({type:'purchaseMedicalSupplies',operativeId,quantity});medicalPurchases.push({operativeId,quantity});}
+ }
  const model=id=>sectorInventoryModel(campaign,'cordoba',rosterFor(campaign),id);
  for(const id of [...fieldIds,...supportIds]){
   if(![1800,1801,1802].includes(rosterFor(campaign).find(op=>op.id===id).weapon)){
@@ -227,7 +241,7 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
  order({type:'beginAssault',sector:'tucuman'});
  for(const {id,record} of captives)assert.deepEqual(campaign.operativeState[id],record);
  const battle=enterSector(campaign.pendingBattle,campaign.sectorStates.tucuman);assert.deepEqual(decodeSave(encodeSave(campaign,battle)),{campaign,battle});
- report({event:'rescuePrepared',hour:campaign.hour,units:campaign.pendingBattle.squad.map(u=>u.id),cash:campaign.resources.treasury});return {campaign,events,captives};
+ report({event:'rescuePrepared',hour:campaign.hour,units:campaign.pendingBattle.squad.map(u=>u.id),cash:campaign.resources.treasury,hired,hiringCost,medicalPurchases,fieldIds,supportIds});return {campaign,events,captives,hired,hiringCost,medicalPurchases,fieldIds,supportIds};
 }
 
 export function stabilizeRescued(start,{patients,report=()=>{}}={}){
