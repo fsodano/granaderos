@@ -2,6 +2,24 @@
 
 Audit date: 6 September 2026. This is a requirements baseline for the complete gameplay request. It is not a declaration that the current game has full JA2 parity. Concurrent implementation can change the status of a row; update that row only after its acceptance condition is demonstrated.
 
+## Current integration checkpoint — 12 September 2026
+
+The regional terrain/weather update and the illustrated-art integration are
+integrated. Focused weather, terrain, defense, artillery, equipment, reentry and
+Retiro-opening checks pass. The established southern route again reaches a real
+Córdoba victory; its later defeat/rescue/Salta/Yatasto continuation is under
+repair because older test plans assume soldiers and supplies that did not
+survive the current battles. Earlier whole-suite counts and northern route
+results in this table describe their named checkpoints, not a fresh passing
+run of the complete current campaign.
+
+The coarse equipment-demo sprite came from an outdated preview checkout. The
+preview now uses the integrated illustrated assets and was inspected at 300%
+zoom. Standing small-firearm/long-firearm silhouettes remain an open art item.
+Exploration portrait selection also now remains available while civilians
+animate. See [rendering and live checks](tactical-hud-performance.md) and
+[regional integration evidence](regional-conditions.md).
+
 ## Current starting position
 
 The user clarified that a new game starts with zero recruits and **Retiro alone** controlled. Hiring and custom creation are independent options. Headquarters, supply and reserve transport now originate in Retiro. Seven focused model/UI checks and a live hired-only start/save/resume check cover this behavior; see [Retiro opening](retiro-start.md). Older southern and northern route results below begin from an explicitly established southern area. They do not prove a successful full campaign from this new starting position. The first Buenos Aires capture now passes a fresh hired-only battle/result/save/revisit regression, including a real death and unchanged equipment. The full campaign route and broad opening balance remain open.
