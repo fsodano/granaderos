@@ -3,6 +3,7 @@ import {expandSectorMap} from './sector-expansion.js';
 import {propPlacementError,propBlocksAt,placePulperiaCart} from './props.js';
 import {CAMPAIGN_SECTORS} from './data.js';
 import {placeBuilding} from './buildings.js';
+import {tacticalLevel,validateTacticalSpace} from './tactical-space.js';
 
 // Authored tactical plans. Buildings are solid footprints, never walkable painted facades.
 // The strategic grid is schematic; these tactical layouts are original gameplay maps,
@@ -130,8 +131,11 @@ const key=p=>`${p.x},${p.y}`;
 function connected(tiles,start,props=[]){
  const reached=new Set([key(start)]),queue=[start];while(queue.length){const p=queue.shift();for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1]]){const x=p.x+dx,y=p.y+dy,t=tiles[y*WIDTH+x];if(x>=0&&x<WIDTH&&y>=0&&y<HEIGHT&&t&&!t.blocked&&!propBlocksAt({props},x,y)&&!reached.has(key(t))){reached.add(key(t));queue.push(t);}}}return reached;
 }
-function buildCompactSectorMap(request={}){
+function buildCompactSectorMap(request={},restorePrevious=false){
  const id=request.sceneId??request.sector??request.id??'san_lorenzo';const authored=plan(id,request.compactLayout!==true),tiles=authored.tiles;
+ // Saved actors use the saved topology, restored by world.js after this scaffold.
+ // Fresh upper posts must be admitted at their authored coordinates before cloning.
+ if(!restorePrevious)validateTacticalSpace({...authored,width:WIDTH,height:HEIGHT,upperSurfaces:request.upperSurfaces,climbLinks:request.climbLinks,units:(request.enemies??[]).filter(unit=>tacticalLevel(unit)!==0)});
  const open=tiles.filter(t=>!t.blocked&&!propBlocksAt(authored,t.x,t.y));const component=connected(tiles,open.find(t=>t.x<=2&&t.y>=5)??open[0],authored.props);
  const reserved=new Set(),choose=(preferred,side)=>{
    const candidates=open.filter(t=>component.has(key(t))&&!reserved.has(key(t)));
@@ -144,12 +148,15 @@ function buildCompactSectorMap(request={}){
  };
  const squad=(request.squad??[]).map((op,i)=>({...clone(op),...choose({x:id==='san_lorenzo'?2:1,y:id==='san_lorenzo'?(i%2===0?2:12)+Math.floor(i/2):4+i},'player')}));
  const enemyCount=request.enemies?.length??Math.max(3,squad.length+(request.difficulty??1)-1);
- const enemies=Array.from({length:enemyCount},(_,i)=>({id:`enemy-${i}`,name:`Soldado realista ${i+1}`,weapon:i%3===0?1801:1800,marksmanship:50+(request.difficulty??1)*5,morale:60+(request.difficulty??1)*5,...clone(request.enemies?.[i]??{}),...choose({x:id==='santa_fe'?15:id==='san_lorenzo'?15:17,y:3+i%10},'enemy')}));
+ const enemies=Array.from({length:enemyCount},(_,i)=>{
+  const raw=request.enemies?.[i]??{},upper=tacticalLevel(raw)!==0;
+  return {id:`enemy-${i}`,name:`Soldado realista ${i+1}`,weapon:i%3===0?1801:1800,marksmanship:50+(request.difficulty??1)*5,morale:60+(request.difficulty??1)*5,...clone(raw),...(upper?{}:choose({x:id==='santa_fe'?15:id==='san_lorenzo'?15:17,y:3+i%10},'enemy'))};
+ });
  const artillery=(request.artillery??Array.from({length:Math.min(request.cannons??0,3)},()=>({type:'bronze4',side:'player',loaded:true,ammo:6}))).map((gun,i)=>({...clone(gun),...choose({x:3,y:4+i*3},'player')}));
  return {map:{...clone(request),sector:request.sceneId?request.sector:id,name:request.name??names[id],width:WIDTH,height:HEIGHT,tiles,decor:authored.decor,props:authored.props,buildings:authored.buildings,lights:authored.lights,squad,enemies,artillery,mapTitle:names[id]},boundaryRoads:authored.boundaryRoads};
 }
 
-export function buildSectorMap(request={}){
- const {map:core,boundaryRoads}=buildCompactSectorMap(request);
+export function buildSectorMap(request={}, {restorePrevious=false}={}){
+ const {map:core,boundaryRoads}=buildCompactSectorMap(request,restorePrevious);
  return request.compactLayout===true?core:expandSectorMap(core,boundaryRoads);
 }

@@ -40,7 +40,7 @@ test('walking requires continuous equal-height surfaces and diagonal support; li
  assert.deepEqual(accessStepsFrom(s,{x:3,y:5}),[]);assert.equal(Object.hasOwn(up[0],'cost'),false);
 });
 test('a flat authored terrace supports ground and upper people, items and props in the same columns',()=>{
- const s=terraceFixture();Object.assign(s.units[0],{x:5,y:4,tacticalLevel:1});
+ const s=terraceFixture();Object.assign(s.units[0],{x:4,y:4,tacticalLevel:1});
  s.groundItems=[{id:'low',type:'ammo',x:5,y:4,count:1},{id:'high',type:'ammo',x:5,y:4,tacticalLevel:1,count:2}];
  s.props=[{id:'high-bed',type:'bed',x:5,y:4,tacticalLevel:1,footprint:{width:2,height:1},blocksMovement:true}];
  assert.deepEqual(validateBattleSnapshot(s),s);

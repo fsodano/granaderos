@@ -1,4 +1,4 @@
-import {spaceKey,surfacesAtLevel,tacticalLevel} from './tactical-space.js';
+import {spaceKey,surfacesAtLevel,tacticalLevel,validateTacticalSpace} from './tactical-space.js';
 import {physicalEntryAnchor} from './sector-expansion.js';
 import {authoredEnvironment} from './environment-interactions.js';
 import {propBlocksAt} from './props.js';
@@ -39,7 +39,8 @@ function exteriorComponent(state,unit){
 // Re-enter a persistent sector with the current squad, retaining terrain and ground gear.
 export function enterSector(request,previous=null){
  if(request.exits!==undefined&&!validateSectorExits(request.sector,request.sceneId??null,request.exits))throw Error('Las salidas no corresponden a este sector.');
- const map=buildSectorMap({...request,compactLayout:previous?previous.width===20&&previous.height===16:request.compactLayout});
+ if(previous)validateTacticalSpace(previous);
+ const map=buildSectorMap({...request,compactLayout:previous?previous.width===20&&previous.height===16:request.compactLayout},{restorePrevious:Boolean(previous)});
  if(!previous){
    const metadata=authoredEnvironment(request.sceneId??request.sector,map);
    for(const patch of metadata.doors){const door=map.tiles.find(t=>t.doorId===patch.id);if(door)Object.assign(door,patch,{blocked:!patch.open,blocksSight:!patch.open});}

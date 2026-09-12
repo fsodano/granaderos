@@ -11,6 +11,7 @@ const validLevel=level=>Number.isInteger(level)&&level>=0&&level<=MAX_TACTICAL_L
 
 export function surfaceAt(state,point){
  if(!point||!Number.isInteger(point.x)||!Number.isInteger(point.y)||!validLevel(tacticalLevel(point)))return null;
+ if(point.x<0||point.y<0||point.x>=state.width||point.y>=state.height)return null;
  if(tacticalLevel(point)===0){
   const candidate=state.tiles?.[point.y*state.width+point.x];
   return candidate&&sameCell(candidate,point)?candidate:state.tiles?.find(tile=>sameCell(tile,point))??null;
@@ -89,8 +90,15 @@ export function validateTacticalSpace(state){
   need(coord(point)&&surfaceAt(state,point),label);
   if(walkable&&tacticalLevel(point)>0)need(!surfaceAt(state,point).blocked,label);
  };
+ const upperOccupants=new Set();
  for(const actor of [...(state.units??[]),...(state.npcs??[])]){
-  supported(actor,'apoyos de personas',actor.hp>0&&!actor.departure);
+  const alive=(actor.hp??100)>0&&!actor.departure;
+  supported(actor,'apoyos de personas',alive);
+  if(tacticalLevel(actor)>0){
+   need(!actor.mounted,'monturas fuera del suelo');
+   // Bodies may share a cell; conscious people on an upper floor may not.
+   if(alive&&!actor.unconscious){need(!upperOccupants.has(spaceKey(actor)),'ocupantes superpuestos');upperOccupants.add(spaceKey(actor));}
+  }
   if(actor.departure)need(tacticalLevel(actor)===0&&tacticalLevel(actor.departure)===0,'salidas a nivel del suelo');
   for(const point of [actor.lastKnownEnemy,actor.lastShotPosition,actor.patrolOrigin,actor.ai?.destination])if(point)supported(point,'posiciones recordadas');
   for(const point of [...(actor.lastMovePath??[]),...(actor.fleePath??[])])supported(point,'rutas');
@@ -100,7 +108,10 @@ export function validateTacticalSpace(state){
   const size=prop.footprint??{width:1,height:1};
   for(let dy=0;dy<size.height;dy++)for(let dx=0;dx<size.width;dx++){
    const point={...spacePoint(prop),x:prop.x+dx,y:prop.y+dy};supported(point,'apoyos del mobiliario');
-   if(tacticalLevel(prop)>0)need(surfaceHeight(state,prop)===surfaceHeight(state,point),'altura del mobiliario');
+   if(tacticalLevel(prop)>0){
+    need(surfaceHeight(state,prop)===surfaceHeight(state,point),'altura del mobiliario');
+    if(prop.blocksMovement!==false)need(!upperOccupants.has(spaceKey(point)),'personas dentro del mobiliario');
+   }
   }
  }
  // Nothing is added to old flat saves. Their serialized form stays unchanged.
