@@ -16,7 +16,7 @@ import {inventoryUsage, carriedObject, itemDescriptor, INVENTORY_CAPACITY, SUPPL
 import {TOOL_TYPES, heldTool, ENVIRONMENT_VERBS, environmentTargetSummary, visibleContainerContents} from './environment-interactions.js';
 import {HELD_SUPPLIES, heldSupply} from './held-supplies.js';
 import {planGroupMove} from './group-movement.js';
-import {npcGiftPreview,contextualAttack, fitBayonetPreview, removeBayonetPreview, medicalUsePreview,itemUsePreview,environmentUsePreview,lootApproachPreview,lootSearchPreview,lootBatchPreview,stealPreview,pointFirePreview} from './tactical.js';
+import {npcGiftPreview,contextualAttack,meleePreview, fitBayonetPreview, removeBayonetPreview, medicalUsePreview,itemUsePreview,environmentUsePreview,lootApproachPreview,lootSearchPreview,lootBatchPreview,stealPreview,pointFirePreview} from './tactical.js';
 import {fixedBayonetFor, fittingLabel, weaponItemWeight} from './weapon-fittings.js';
 
 const alive = u => u.hp > 0 && !u.routed && !u.unconscious && !u.departure && !u.fled;
@@ -234,6 +234,11 @@ export function targetPreview(state, unit, point, ctx = {}) {
   const preview=targetPreviewWithCosts(state,unit,point,ctx);
   return state.mode==='exploration'&&preview?{...preview,...(preview.pa===undefined?{}:{pa:0,remaining:unit?.ap})}:preview;
 }
+function meleePreparationText(state,preview){
+  if(!preview.stancePa&&!preview.movePa)return undefined;
+  if(state.mode==='exploration')return `${preview.movePa?preview.stancePa?'Se acerca, se levanta y ataca':'Se acerca y ataca':'Se levanta antes de atacar'}. Sin coste de PA; consume tiempo${preview.movePa?' y energía':''}. El contacto puede detener la acción.`;
+  return [preview.movePa?`Desplazamiento: ${preview.movePa} PA`:null,preview.stancePa?`Levantarse: ${preview.stancePa} PA`:null,`ataque: ${preview.strikePa??preview.actionPa} PA`].filter(Boolean).join(' · ')+'. El contacto puede detener la acción.';
+}
 function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   if (!unit) return null;
   const mode = ctx.mode || 'move';
@@ -301,12 +306,13 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
     const attack = contextualAttack(state, unit, target, {type: mode, aim: ctx.aim || 0, hitLocation: hitLocationFor(ctx.hitLocation)});
     pa = attack.pa; attackType = attack.type;
     if (attack.type === 'melee') {
-      const approach=['move','useItem'].includes(mode)?itemUsePreview(state,unit,target):null;
+      const approach=meleePreview(state,unit,target,{approach:['move','useItem'].includes(mode)});
       attackLabel = unit.activeSlot === 'unarmed' ? 'Puños' : fixedBayonetFor(unit) ? 'Estocada de bayoneta' : hasFirearm(unit) ? 'Culatazo' : attack.profile.name;
       actionLabel = attackLabel;
-      if(approach){pa=approach.pa;reason=approach.reason;if(approach.movePa){actionLabel='Acercarse y atacar';coverNote=`Desplazamiento: ${approach.movePa} PA · ataque: ${approach.actionPa} PA. El contacto puede detener la acción.`;}else if(approach.valid&&unit.activeSlot==='unarmed')chance=unarmedChance(unit,target,{aware:canSee(state,target,unit)});}
-      else if (distance(unit, target) > attack.profile.reach || !hasLineOfSight(state, unit, target)) reason = unit.activeSlot === 'unarmed' ? 'Acercate para golpear con los puños.' : 'Fuera del alcance del arma blanca.';
-      else if (unit.activeSlot === 'unarmed') chance = unarmedChance(unit, target, {aware: canSee(state, target, unit)});
+      pa=approach.pa;reason=approach.reason;coverNote=meleePreparationText(state,approach);
+      if(approach.movePa)actionLabel='Acercarse y atacar';
+      else if(approach.stancePa)actionLabel='Levantarse y atacar';
+      if(!approach.movePa&&approach.valid&&unit.activeSlot==='unarmed')chance=unarmedChance(unit,target,{aware:canSee(state,target,approach.stancePa?{...unit,stance:'standing'}:unit)});
     } else {
       const reload = emptyGunPreview(state, unit);
       if (reload) return reload;
@@ -355,6 +361,11 @@ export function equippedItemHelp(state, unit, ctx = {}) {
   const reload = attack.type === 'fire' ? emptyGunPreview(state, unit) : null;
   if (reload) return `${weapon.name} · ${reload.actionLabel}${reload.valid ? `: ${reload.pa} PA. ${reload.coverNote}` : `. ${reload.reason}`}`;
   const approach=ctx.target&&['move','useItem',undefined].includes(ctx.mode)?itemUsePreview(state,unit,ctx.target):null;
+  if(attack.type==='melee'&&(approach?.stancePa||costs.meleeStance)){
+    const preparation=approach??{pa:attack.pa,stancePa:costs.meleeStance,strikePa:costs.meleeStrike};
+    const label=hasFirearm(unit)?fixedBayonetFor(unit)?'Estocada de bayoneta':'Culatazo':weapon.name;
+    return `${label} · ${exploring?0:preparation.pa} PA. ${meleePreparationText(state,preparation)}`;
+  }
   if(approach?.movePa&&exploring)return `${weapon.name} · sin coste de PA. Se acerca y usa el objeto. El contacto puede detener la acción.`;
   if(approach?.movePa)return `${weapon.name} · ${approach.pa} PA (${approach.movePa} para acercarse y ${approach.actionPa} para usarlo). El contacto puede detener la acción.`;
   const label = attack.type === 'melee' && hasFirearm(unit) ? fixedBayonetFor(unit) ? 'Estocada de bayoneta' : 'Culatazo' : weapon.name;
@@ -639,6 +650,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
   const attack = unit && !['medical', 'tool', 'supply','item'].includes(u.activeSlot) ? contextualAttack(state, u, ctx.target, {aim: ctx.aim || 0}) : null;
   const medicalPreview = medicalUsePreview(state, unit, ctx.target ?? unit);
   const itemPreview=ctx.target?itemUsePreview(state,unit,ctx.target):null;
+  const localMelee=unit&&ctx.target?meleePreview(state,unit,ctx.target):null;
   const supplyAliases = {
     ration: supplyUsePreview(state, unit, ctx.target ?? unit, 'rations'),
     torch: supplyUsePreview(state, unit, ctx.target ?? {x: ctx.x, y: ctx.y,...(ctx.tacticalLevel===undefined?{}:{tacticalLevel:ctx.tacticalLevel})}, 'torches'),
@@ -662,8 +674,8 @@ export function orderDescriptors(state, unit, ctx = {}) {
     stealth: Boolean(u.mounted) && !u.stealthMode,
     useItem: u.activeSlot==='item'?true:itemPreview ? !itemPreview.valid : u.activeSlot === 'supply' ? !(u[u.activeSupply] > 0) || (u.activeSupply === 'rations' || ctx.target) && !supplyPreview.allowed : u.activeSlot === 'tool' ? !heldTool(u) : u.activeSlot === 'medical' ? !medicalPreview.allowed : attack?.type === 'fire' && (!(u.loaded > 0) || Boolean(u.jammed)),
     fire: !firearm || !(u.loaded > 0) || Boolean(u.jammed),
-    melee: u.activeSlot==='item',
-    charge: u.activeSlot==='item',
+    melee: localMelee?!localMelee.valid:['medical','tool','supply','item'].includes(u.activeSlot),
+    charge: ['medical','tool','supply','item'].includes(u.activeSlot)||u.stance==='prone',
     heal: !medicalPreview.allowed,
     loot: false,
     reload: !firearm || !pa.reload || !(u.ammo > 0) || u.loaded >= weaponFor(u).capacity,
@@ -672,7 +684,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
     stance: Boolean(u.mounted),
     overwatch: !u.overwatch && (!firearm || !(u.loaded > 0) || Boolean(u.jammed)),
     mount: !u.horse,
-    brace: !fixedBayonetFor(u),
+    brace: !fixedBayonetFor(u)||u.stance==='prone',
     repair: !firearm || (u.flints ?? 4) < 1,
     ration: !supplyAliases.ration.allowed,
     torch: !supplyAliases.torch.allowed,

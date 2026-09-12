@@ -3,7 +3,7 @@ import {atHand,moveOrder,planningPoint} from './tactical-planning-space.js';
 import {chooseSupplySharingAction} from './tactical-ai-sharing.js';
 import {chooseScavengingAction} from './tactical-ai-scavenging.js';
 import {directionTo,facingAllowsSight,turnAPCost} from './tactical-awareness.js';
-import {getReachable, canSee, hasLineOfSight, shotChance, firearmShotOptions, actionCosts, stanceCost, weaponFor, bladeFor, planEquipLoot, maxActionPoints, AP_CARRY_LIMIT, movementStepCost, climbPreview,knifeThrowPreview} from './tactical.js';
+import {getReachable, canSee, hasLineOfSight, shotChance, firearmShotOptions, actionCosts, stanceCost, weaponFor, bladeFor, planEquipLoot, maxActionPoints, AP_CARRY_LIMIT, movementStepCost, climbPreview,knifeThrowPreview,meleePreview} from './tactical.js';
 import {heldThrowingKnife,knifeThrowDamage} from './thrown-knife.js';
 import {planFitBayonet} from './tactical-inventory.js';
 import {shotLocationEffects,shotLocationsFor} from './targeted-combat.js';
@@ -201,7 +201,7 @@ function investigate(state, unit, known, costs, paths) {
 function verticalPursuit(state,unit,target,costs){
  if(!state.climbLinks?.length||unit.mounted||state.phase==='interrupt'||state.reactionStack?.length)return null;
  const stand=unit.stance!=='standing',standCost=stand?stanceCost(unit,'standing'):0;
- const reserve=readyGun(unit)?costs.fire:costs.melee,budget=Math.min(24,unit.ap-standCost-reserve);
+ const reserve=readyGun(unit)?costs.fire:costs.melee-costs.meleeStance,budget=Math.min(24,unit.ap-standCost-reserve);
  if(budget<=0)return null;
  const upright=stand?{...unit,stance:'standing',movementMode:'walk'}:unit;
  const perceived={...state,mode:'exploration',units:state.units.filter(other=>other.side===unit.side||canSee(state,unit,other))};
@@ -265,19 +265,26 @@ export function chooseEnemyAction(state, unit) {
   // A useful owned fitting is a paid inventory action, followed by a fresh
   // decision. Never fabricate a bayonet or mutate equipment while scoring.
   if (!unit.weaponFittings?.bayonet && (unit.activeSlot??'primary')==='primary' &&
-      unit.ap>=costs.fitBayonet+16 && targets.some(target=>atHand(unit,target,2)&&hasLineOfSight(state,unit,target))) {
+      unit.ap>=costs.fitBayonet+16+costs.meleeStance && targets.some(target=>atHand(unit,target,2)&&hasLineOfSight(state,unit,target))) {
     for (const item of ['blade',...Object.keys(unit.inventory??{}).sort().map(key=>`inventory:${key}`)]) {
       try {planFitBayonet(unit,item);return {type:'fitBayonet',unitId:unit.id,item};} catch { /* Try the next owned item. */ }
     }
   }
-  const adjacent = targets.filter(target => atHand(unit,target,blade.reach) && hasLineOfSight(state, unit, target));
+  // The chooser also scores snapshots between turns. Actual execution retains
+  // the live phase guard; planning evaluates this actor's own action window.
+  const meleeState={...state,phase:unit.side==='enemy'?'enemy':'player'};
+  const adjacent = targets.filter(target => meleePreview(meleeState,unit,target).valid);
   adjacent.sort((a, b) => a.hp - b.hp || distance(unit, a) - distance(unit, b) || compareId(a, b));
+  // A useful shot keeps a prone rifleman behind cover. Do not force him upright
+  // just because an adjacent opponent is an affordable gun-stock target.
+  const proneShot=adjacent.length&&unit.stance==='prone'&&unit.weaponMode!=='melee'&&readyGun(unit)?bestShot(state,unit,targets):null;
+  if(proneShot?.effectiveness>=45)return {type:'fire',unitId:unit.id,targetId:proneShot.target.id,aim:proneShot.aim,hitLocation:proneShot.hitLocation};
   if (adjacent.length && unit.ap >= costs.melee) return {type: 'melee', unitId: unit.id, targetId: adjacent[0].id};
 
   const knifeThrow=chooseKnifeThrow(state,unit,targets);
   if(knifeThrow)return knifeThrow;
 
-  const shot = bestShot(state, unit, targets);
+  const shot = proneShot??bestShot(state, unit, targets);
   const support = state.units.filter(other => other.side === unit.side && active(other) && distance(unit, other) <= 8).length;
   const threats = targets.filter(readyGun);
   const outgunned = threats.length > support;

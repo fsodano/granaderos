@@ -31,7 +31,7 @@ import {isInteriorVisible} from '../../game/tactical-visibility.js';
 import {projectSurface} from '../lib/tactical-elevation';
 import {fixedBayonetFor} from '../../game/weapon-fittings.js';
 import { ChevronRight } from 'lucide-react';
-import { actBattle, getKnifeThrowVisual, getNpcGiftResult, endTurn, getReachable, weaponFor, hasFirearm, bladeFor, actionCosts, artilleryCosts, visibleEnemies, visibleTiles, visibleRooms, canSee, environmentTargetAt, lootSearchPreview, approachCompleted } from '../../game/tactical.js';
+import { actBattle, getKnifeThrowVisual, getMeleeAttackResult, getNpcGiftResult, endTurn, getReachable, weaponFor, hasFirearm, bladeFor, actionCosts, artilleryCosts, visibleEnemies, visibleTiles, visibleRooms, canSee, environmentTargetAt, lootSearchPreview, approachCompleted } from '../../game/tactical.js';
 
 type Props = {battle:any; onChange:(s:any)=>any; onFinish:()=>void; peacefulVisit?:boolean; onMap?:()=>void; onMissionFinish?:()=>void; mission?:any; conversation?:any; quests?:any; onTalk?:(npcId:string,approach:string,unitId:string)=>void};
 const isAlive=(u:any)=>u.hp>0&&!u.routed&&!u.unconscious;
@@ -185,13 +185,13 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
     setBandageReport(null);clearGroup();facingOverride.current=null;
     const next=actBattle(s,{unitId:selected,aim,hitLocation,...a}),preserveFacing=a.type==='move'&&a.movementIntent==='preserveFacing';
     const knifeVisual=getKnifeThrowVisual(s,next),giftResult=getNpcGiftResult(s,next),actionType=resolvedOrderType(s,u,a);
-    const preparationOnly=actionType==='throwKnife'&&!knifeVisual;
+    const preparationOnly=actionType==='throwKnife'&&!knifeVisual||actionType==='melee'&&!getMeleeAttackResult(s,next,selected);
     if(!next.lastError&&!['pickupEquipment','placeEquipment','returnEquipmentCursor','dragEquipment'].includes(a.type)){
       const target=s.units.find((t:any)=>t.id===a.targetId)||a;
       if(preparationOnly)setDirections(d=>({...d,[selected]:((next.units.find((actor:any)=>actor.id===selected)?.facing??u.facing??2)+1)%8}));
       else if(!preserveFacing&&Number.isFinite(target.x)&&Number.isFinite(target.y))setDirections(d=>({...d,[selected]:(Math.round(Math.atan2((target.x-u.x)-(target.y-u.y),-((target.x-u.x)+(target.y-u.y)))/(Math.PI/4))+8)%8}));
       if(['fire','firePoint','throwKnife'].includes(actionType))setAim(0);
-      // Contact can stop paid preparation before the knife leaves the hand.
+      // Contact can stop paid preparation before a throw or melee attack occurs.
       const pose=spriteOrderPose(preparationOnly?'look':actionType);
       clearTimeout(poseTimers.current[selected]);
       setPoses(p=>({...p,[selected]:pose}));poseTimers.current[selected]=setTimeout(()=>setPoses(p=>({...p,[selected]:'idle'})),1000);

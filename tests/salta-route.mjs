@@ -27,19 +27,42 @@ export function prepareSaltaAssault(start,{report=()=>{}}={}){
  assert.equal(start.location,'tucuman');assert.equal(start.pendingBattle,null);
  // Keep service paid while staging a daylight arrival. Replacements are hired
  // locally after the rest, with their normal equipment and real contracts.
- const departure=start.hour+(24-start.hour%24)%24;
+ const earliestDeparture=start.hour+(24-start.hour%24)%24;
+ let departure;
  const local=start.recruited.filter(id=>{const record=start.operativeState[id];return record.alive&&!record.captured&&record.location==='tucuman';});
  const patients=local.filter(id=>start.operativeState[id].hp<start.operativeState[id].maxHp);
  const doctors=rosterFor(start).filter(op=>local.includes(op.id)&&!patients.includes(op.id)&&op.medical>=20&&start.operativeState[op.id].medkits>0).sort((a,b)=>b.medical-a.medical).slice(0,2).map(op=>op.id);
  assert.equal(doctors.length,2,'two actual supplied doctors restore the local wounded');
  for(const operativeId of local)order({type:'assignCare',operativeId,assignment:patients.includes(operativeId)?'patient':doctors.includes(operativeId)?'doctor':'rest'});
  const medicalStart=doctors.reduce((sum,id)=>sum+start.operativeState[id].medkits,0);
- for(let i=0;route.campaign.hour<departure&&i<48;i++){
+ const careModel=id=>sectorInventoryModel(route.campaign,'tucuman',rosterFor(route.campaign),id);
+ let gatheredDressings=0,donatedDressings=0;
+ const supplyDoctor=id=>{
+  let source=careModel(id).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');
+  if(!source){
+   const donor=local.find(other=>!doctors.includes(other)&&route.campaign.operativeState[other].medkits>0&&!careModel(other).reason);
+   assert.ok(donor,'continued treatment needs a reachable finite dressing source');
+   const carried=route.campaign.operativeState[donor].medkits;
+   order({type:'sectorInventory',sector:'tucuman',operativeId:donor,direction:'drop',item:'medkits',count:1});
+   assert.equal(route.campaign.operativeState[donor].medkits,carried-1);donatedDressings++;
+   source=careModel(id).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');
+  }
+  assert.ok(source,'the doctor must reach the actual dressing');
+  const carried=route.campaign.operativeState[id].medkits;
+  order({type:'sectorInventory',sector:'tucuman',operativeId:id,direction:'take',sourceKey:source.key,expected:source.expected,count:1});
+  assert.equal(route.campaign.operativeState[id].medkits,carried+1);assert.equal(careModel(id).entries.find(row=>row.key===source.key)?.count??0,source.count-1);gatheredDressings++;
+ };
+ // Real wounds can need longer than the next midnight. Complete paid care,
+ // then choose a departure whose twelve-hour march arrives in daylight.
+ for(let i=0;i<72;i++){
+  const arrivalHour=(route.campaign.hour+12)%24;
+  if(route.campaign.hour>=earliestDeparture&&arrivalHour>=6&&arrivalHour<18&&patients.every(id=>route.campaign.operativeState[id].hp===route.campaign.operativeState[id].maxHp)){departure=route.campaign.hour;break;}
+  if(patients.some(id=>route.campaign.operativeState[id].hp<route.campaign.operativeState[id].maxHp))for(const id of doctors)if(!route.campaign.operativeState[id].medkits)supplyDoctor(id);
   renew(route,route.campaign.recruited,2);order({type:'wait',hours:1});
   if(patients.every(id=>route.campaign.operativeState[id].hp===route.campaign.operativeState[id].maxHp))for(const operativeId of [...patients,...doctors])if(route.campaign.operativeState[operativeId].assignment!=='rest')order({type:'assignCare',operativeId,assignment:'rest'});
- }assert.equal(route.campaign.hour,departure);
+ }assert.ok(Number.isInteger(departure),'supplied paid care completes before the daylight march');assert.equal(route.campaign.hour,departure);
  for(const id of patients)assert.equal(route.campaign.operativeState[id].hp,route.campaign.operativeState[id].maxHp);
- const usedDressings=medicalStart-doctors.reduce((sum,id)=>sum+route.campaign.operativeState[id].medkits,0);assert.ok(patients.length?usedDressings>0:usedDressings===0);
+ const usedDressings=medicalStart+gatheredDressings-doctors.reduce((sum,id)=>sum+route.campaign.operativeState[id].medkits,0);assert.ok(patients.length?usedDressings>0:usedDressings===0);
  // Pay for an available specialist and ordinary replacements. Fallen recruits
  // stay dead; a living contracted rifleman can serve in the next assault.
  const hired=[],cash=route.campaign.resources.treasury;
@@ -80,7 +103,7 @@ export function prepareSaltaAssault(start,{report=()=>{}}={}){
  const battle=enterSector(request,campaign.sectorStates.salta);
  assert.deepEqual(decodeSave(encodeSave(campaign,battle)),{campaign,battle});
  report({event:'jointSaltaDeployment',hour:campaign.hour,units:request.squad.map(u=>u.id),patients,usedDressings});
- return {campaign,battle,events:route.events,departure,hired,hiringCost,field,support,care:{patients,doctors,usedDressings}};
+ return {campaign,battle,events:route.events,departure,hired,hiringCost,field,support,care:{patients,doctors,usedDressings,gatheredDressings,donatedDressings}};
 }
 
 export function completeNorthernMission(start,{report=()=>{}}={}){

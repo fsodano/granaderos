@@ -38,6 +38,24 @@ Exploration portrait selection also now remains available while civilians
 animate. See [rendering and live checks](tactical-hud-performance.md) and
 [regional integration evidence](regional-conditions.md).
 
+Physical inventory cursor exchanges at `c93aa12` passed all 2,091 tests,
+with typecheck and build. Exact item custody survives exchanges, saves and map
+transfers; overflow preview work is reduced. Remaining inventory gaps are
+explicit in [the cursor record](equipment-cursor-exchanges.md).
+
+The six tactical cards at `5e3e7e9` show both physical hands and independent
+close-combat/attachment stars. All 2,103 tests, typecheck and build passed.
+Live attacks confirm separate bayonet wear and preserved gun ammunition.
+See [roster hand indicators](roster-hand-status.md).
+
+Prone close combat now includes a paid stand before the strike, including
+contextual crawl approaches, enemy and militia execution, and cancellation on
+contact or interruption. Firearms can still shoot from prone; crouched melee
+stays crouched. See [posture preparation](prone-melee-preparation.md) for the
+cost rules and validation evidence. All 2,119 tests pass without skips;
+typecheck and the production build also pass. Equipment-specific character
+artwork remains a separate task.
+
 ## Current starting position
 
 The user clarified that a new game starts with zero recruits and **Retiro alone** controlled. Hiring and custom creation are independent options. Headquarters, supply and reserve transport now originate in Retiro. Seven focused model/UI checks and a live hired-only start/save/resume check cover this behavior; see [Retiro opening](retiro-start.md). Older southern and northern route results below begin from an explicitly established southern area. They do not prove a successful full campaign from this new starting position. The first Buenos Aires capture now passes a fresh hired-only battle/result/save/revisit regression, including a real death and unchanged equipment. The full campaign route and broad opening balance remain open.
