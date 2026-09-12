@@ -1,3 +1,4 @@
+import {BUILDING_TYPES,sectorBuildingType} from './building-types.js';
 import {expandSectorMap} from './sector-expansion.js';
 import {propPlacementError,propBlocksAt} from './props.js';
 import {CAMPAIGN_SECTORS} from './data.js';
@@ -78,11 +79,11 @@ function plan(id){
    woods([[9,5,2,2],[9,9,2,2],[2,0,2,2],[2,14,2,2]]);break;
  default:throw Error('No existe un plano para ese sector.');
  }
- const footprints={yatasto:[5,4,8,6],buenos_aires:[3,1,5,3],retiro:[6,6,5,4],ensenada:[5,2,4,3],san_nicolas:[5,10,3,3],santa_fe:[12,11,3,3],cordoba:[12,2,5,3],mendoza:[5,1,5,3],tucuman:[11,5,4,4],salta:[12,11,4,3],jujuy:[6,3,4,3],san_lorenzo:[4,5,5,6]};
+ const footprints={yatasto:[5,4,8,6],buenos_aires:[1,1,8,4],retiro:[6,6,5,4],ensenada:[5,2,4,3],san_nicolas:[5,10,3,3],santa_fe:[12,11,3,3],cordoba:[12,2,5,3],mendoza:[5,1,5,3],tucuman:[11,5,4,4],salta:[12,11,4,3],jujuy:[6,3,4,3],san_lorenzo:[4,5,5,6]};
  const buildings=[],lights=[];const footprint=footprints[id];
  if(footprint){const[x,y,width,height]=footprint,doorX=x+Math.floor(width/2),doorY=y+height-1;
    const doors=[{id:`${id}:door-left`,x:doorX,y:doorY,open:id==='yatasto'}];if(width>=5)doors.push({id:`${id}:door-right`,x:doorX+1,y:doorY});
-   const result=placeBuilding(c.tiles,{id:`${id}:building`,name:id==='yatasto'?'Posta de Yatasto':id==='san_lorenzo'?'Convento de San Carlos':id==='mendoza'?'Maestranza de El Plumerillo':'Casa del sector',x,y,width,height,doors,windows:[{x,y:y+1}],material:'adobe'});
+   const result=placeBuilding(c.tiles,{id:`${id}:building`,architecture:sectorBuildingType(id,0,true),name:id==='buenos_aires'?'Cabildo de Buenos Aires':id==='yatasto'?'Posta de Yatasto':id==='san_lorenzo'?'Convento de San Carlos':id==='mendoza'?'Maestranza de El Plumerillo':'Casa del sector',x,y,width,height,doors,windows:[{x,y:y+1}],material:'adobe'});
    c.tiles.splice(0,c.tiles.length,...result.tiles);buildings.push(result.building);
    lights.push({id:`${id}:lantern`,type:'lantern',x:doorX,y:Math.min(15,doorY+1),radius:3,intensity:.8});
  }
@@ -90,9 +91,10 @@ function plan(id){
  const extras={buenos_aires:[[11,1,6,3],[4,12,4,3],[12,12,5,3]],retiro:[[4,0,9,3],[5,13,8,3]],ensenada:[[7,11,5,3]],san_nicolas:[[5,2,3,3]],santa_fe:[[4,1,3,3]],cordoba:[[5,2,3,3],[5,11,3,4],[12,11,4,3]],mendoza:[[5,12,5,3],[13,2,3,3]],salta:[[12,1,4,3]],jujuy:[[8,11,4,3]]};
  for(const [index,box]of (extras[id]??[]).entries()){
    const [x,y,width,height]=box,doorY=y+height>=HEIGHT?y:y+height-1,doorX=x+Math.floor(width/2);
-   const result=placeBuilding(c.tiles,{id:`${id}:house-${index}`,name:id==='retiro'?'Barraca del cuartel':`Casa ${index+2} del poblado`,x,y,width,height,doors:[{x:doorX,y:doorY}],windows:[{x,y:y+1}],material:'adobe',roof:'tile'});
+   const result=placeBuilding(c.tiles,{id:`${id}:house-${index}`,architecture:sectorBuildingType(id,index),name:id==='retiro'?'Barraca del cuartel':`Casa ${index+2} del poblado`,x,y,width,height,doors:[{x:doorX,y:doorY}],windows:[{x,y:y+1}],material:'adobe'});
    result.building.purpose=index===0&&id!=='retiro'?'bar':'home';
-   if(result.building.purpose==='bar')result.building.name='Pulpería del poblado';
+   if(result.building.purpose==='bar')Object.assign(result.building,{name:'Pulpería del poblado',architecture:'pulperia',roof:'tile'});
+   else result.building.name=BUILDING_TYPES[result.building.architecture].name;
    c.tiles.splice(0,c.tiles.length,...result.tiles);buildings.push(result.building);
  }
  // Tile-sized furnishings preserve connected aisles and every door approach.

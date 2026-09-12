@@ -1,3 +1,4 @@
+import {BUILDING_TYPES,sectorBuildingType} from './building-types.js';
 import {placeBuilding} from './buildings.js';
 import {propPlacementError} from './props.js';
 
@@ -51,18 +52,28 @@ export function expandSectorMap(core){
  lots.sort((a,b)=>((a.x*17+a.y*31+seed*7)%97)-((b.x*17+b.y*31+seed*7)%97)||a.y-b.y||a.x-b.x);
  for(const lot of lots){
   if(map.buildings.length>=target)break;
-  const w=5,h=5;
+  const architecture=sectorBuildingType(id,map.buildings.length);
+  const w=['church','farmhouse'].includes(architecture)?4:5,h=['farmhouse','warehouse','barracks'].includes(architecture)?4:5;
   // Protect the complete authored landmark, its courtyards and approaches.
   if(lot.x<DX+22&&lot.x+w>DX-2&&lot.y<DY+18&&lot.y+h>DY-2)continue;
   let clear=true;
   for(let y=lot.y-1;y<=lot.y+h;y++)for(let x=lot.x-1;x<=lot.x+w;x++){const t=map.tiles[y*width+x];if(!t||t.blocked||t.buildingId||t.type==='road')clear=false;}
   if(!clear)continue;
   const index=map.buildings.length,buildingId=`${id}:neighbourhood-${index}`;
-  const result=placeBuilding(map.tiles,{id:buildingId,name:`${id==='retiro'?'Barraca':id==='ensenada'?'Almacén':'Casa'} del barrio ${index+1}`,...lot,width:w,height:h,doors:[{x:lot.x+2,y:lot.y+4}],windows:[{x:lot.x,y:lot.y+2}],material:'adobe',roof:index%4===0?'thatch':'tile'});
-  if(target===20&&!map.buildings.some(b=>b.purpose==='bar'))Object.assign(result.building,{purpose:'bar',name:'Pulpería del barrio'});
+  const result=placeBuilding(map.tiles,{id:buildingId,architecture,name:`${BUILDING_TYPES[architecture].name} · ${index+1}`,...lot,width:w,height:h,doors:[{x:lot.x+2,y:lot.y+h-1}],windows:[{x:lot.x,y:lot.y+2}],material:'adobe'});
+  if(target===20&&!map.buildings.some(b=>b.purpose==='bar'))Object.assign(result.building,{purpose:'bar',architecture:'pulperia',roof:'tile',name:'Pulpería del barrio'});
   map.tiles=result.tiles;map.buildings.push(result.building);
   const prop={id:`${buildingId}:chest`,type:'chest',x:lot.x+1,y:lot.y+1,buildingId,roomId:result.building.rooms[0].id,footprint:{width:1,height:1},blocksMovement:true};
   if(!propPlacementError(map,prop))map.props.push(prop);
+ }
+ if(id==='buenos_aires'){
+  // Continuous streets between the lots, with stone pavements beside the houses.
+  for(let y=1;y<height-1;y++)for(let x=1;x<width-1;x++){
+   if(x>=DX-1&&x<=DX+20&&y>=DY-1&&y<=DY+16)continue;
+   const t=map.tiles[y*width+x];if(t.blocked||t.buildingId)continue;
+   if(x%8===1||x%8===2||[9,10,17,18,25,26,33,34,40,41].includes(y))Object.assign(t,{type:'road',cover:0});
+   else if(map.buildings.some(b=>x>=b.x-1&&x<=b.x+b.width&&y>=b.y-1&&y<=b.y+b.height))Object.assign(t,{type:'stone',cover:0});
+  }
  }
  if(target===20&&map.buildings.length!==20)throw Error(`El plano de ${id} no tiene veinte solares accesibles.`);
  // Preserve the relative deployment around the authored landmark. New houses
