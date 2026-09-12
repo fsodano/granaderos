@@ -1,6 +1,7 @@
 import {canSee,teamCanSee,getReachable} from '../game/tactical.js';
 import {chooseEnemyAction} from '../game/tactical-ai.js';
 import {combatOrder} from './opening-driver.mjs';
+import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
 
 // After contact, use the game's existing shot, cover, medical aid and memory
 // evaluation. Retain opening reconnaissance only while no current or recent
@@ -14,9 +15,9 @@ export function cautiousCombatOrder(state,unit){
  // respect occupancy reported by teammates before confirming its destination.
  const view={...state,units:state.units.filter(other=>other.side===unit.side||teamCanSee(state,unit.side,other))};
  const reachable=getReachable(view,unit);
- if(reachable.some(p=>p.x===order.x&&p.y===order.y))return order;
+ if(reachable.some(p=>sameCell(p,order)))return order;
  const distance=p=>Math.hypot(p.x-order.x,p.y-order.y);
- const options=reachable.filter(p=>p.cost>0&&p.cost<=Math.min(24,unit.ap)&&distance(p)<distance(unit));
+ const options=reachable.filter(p=>sameSurface(p,order)&&p.cost>0&&p.cost<=Math.min(24,unit.ap)&&distance(p)<distance(unit));
  options.sort((a,b)=>distance(a)-distance(b)||a.cost-b.cost||a.y-b.y||a.x-b.x);
- return options.length?{type:'move',unitId:unit.id,x:options[0].x,y:options[0].y}:null;
+ return options.length?{type:'move',unitId:unit.id,...spacePoint(options[0])}:null;
 }

@@ -1,3 +1,4 @@
+import {sameSurface,spacePoint} from '../game/tactical-space.js';
 import {secureArea} from './secured-area-fixture.mjs';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign as dispatch,rosterFor} from '../game/campaign.js';
@@ -9,7 +10,7 @@ import {autoBandageBattle} from '../game/auto-bandage.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 
-const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+const distance=(a,b)=>sameSurface(a,b)?Math.hypot(a.x-b.x,a.y-b.y):Infinity;
 const tacticalOrder=(b,action)=>{const next=actBattle(b,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);return next;};
 
 export function runOpeningCampaign({report=()=>{}}={}){
@@ -54,7 +55,7 @@ export function runOpeningCampaign({report=()=>{}}={}){
     const helper=visit.units.find(u=>u.id===String(relief)),donor=visit.units.find(u=>u.id===String(dressingBearer));
     const place=getReachable(visit,helper).filter(p=>distance(p,donor)<=1.5&&hasLineOfSight(visit,p,donor)).sort((a,b)=>a.cost-b.cost)[0];
     assert.ok(place,'the relief medic can reach the soldier carrying the dressings');
-    if(place.cost)visit=tacticalOrder(visit,{type:'move',unitId:helper.id,x:place.x,y:place.y});
+    if(place.cost)visit=tacticalOrder(visit,{type:'move',unitId:helper.id,...spacePoint(place)});
     const quantity=donor.medkits;assert.ok(quantity>=6,'field supplies are sufficient for critical care');
     visit=tacticalOrder(visit,{type:'transfer',unitId:donor.id,targetId:helper.id,item:'medkits',count:quantity});
     order({type:'leaveSector',battleId:c.pendingBattle.id,survivors:visit.units.filter(u=>u.side==='player'),sectorState:visit});
@@ -126,7 +127,7 @@ export function runOpeningCampaign({report=()=>{}}={}){
     const candidates=b.units.filter(u=>u.side==='player'&&u.id!==doctor.id&&u.hp>=15&&!u.unconscious&&!u.routed).flatMap(bearer=>getReachable(b,bearer).filter(p=>distance(p,doctor)<=1.5&&hasLineOfSight(b,p,doctor)).map(approach=>({bearer,approach}))).sort((a,b)=>a.approach.cost-b.approach.cost);
     const {bearer,approach}=candidates[0]??{};if(bearer)dressingBearer=Number(bearer.id);
     assert.ok(approach,'the surviving rifleman can reach the fallen doctor');
-    if(approach.cost)b=tacticalOrder(b,{type:'move',unitId:bearer.id,x:approach.x,y:approach.y});
+    if(approach.cost)b=tacticalOrder(b,{type:'move',unitId:bearer.id,...spacePoint(approach)});
     b=tacticalOrder(b,{type:'loot',unitId:String(dressingBearer),targetId:'107',item:'medkits',count:10});
    } // A conscious surviving doctor keeps his supplies for actual patient care.
    const aid=autoBandageBattle(b);

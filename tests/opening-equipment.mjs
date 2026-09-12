@@ -1,9 +1,10 @@
+import {sameSurface,spacePoint} from '../game/tactical-space.js';
 import assert from 'node:assert/strict';
 import {actBattle,getReachable,hasLineOfSight} from '../game/tactical.js';
 import {handRecord} from '../game/tactical-inventory.js';
 
 const rifles=new Set([1800,1801,1802]);
-const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+const distance=(a,b)=>sameSurface(a,b)?Math.hypot(a.x-b.x,a.y-b.y):Infinity;
 
 // Prepare the current field squad from equipment left by the actual battle.
 // A surviving rifleman keeps his gun; his survival must not fail a route that
@@ -24,7 +25,7 @@ export function equipOpeningRifles(battle,receiverIds){
   if(!choice){unfilled.push(receiver.id);continue;}
   const {source,approach}=choice,incoming=handRecord(source,'primary'),outgoing=receiver.weaponDropped?null:handRecord(receiver,'primary');
   const previousKeys=new Set(Object.keys(receiver.inventory));
-  if(approach.cost)order({type:'move',unitId:receiver.id,x:approach.x,y:approach.y});
+  if(approach.cost)order({type:'move',unitId:receiver.id,...spacePoint(approach)});
   order({type:'loot',unitId:receiver.id,targetId:source.id,item:'primary',count:1});
   receiver=next.units.find(unit=>unit.id===receiver.id);
   const entry=Object.entries(receiver.inventory).find(([key,item])=>!previousKeys.has(key)&&item.weapon===incoming.weapon&&item.instanceId===incoming.instanceId);
