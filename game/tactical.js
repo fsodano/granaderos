@@ -5,7 +5,7 @@ import {knifeFlight} from './knife-flight.js';
 import {itemFlight} from './item-flight.js';
 import {usesElevationGeometry,elevationSightClear,absoluteBodyHeight,geometryCells,rayHeightIntersection} from './sight-geometry.js';
 import {tacticalLevel,spaceKey,sameSurface,sameCell,surfaceAt,surfaceHeight,accessStepsFrom} from './tactical-space.js';
-import {questGiftPlan} from './quests.js';
+import {questGiftPlan,questGiftDecision} from './quests.js';
 import {OUTFIT_CHANGE_AP,normalizeOutfit,wornOutfit,hasPoncho} from './outfits.js';
 import {handsRequired,selectMainHand,handLayout} from './hand-layout.js';
 import {firearmPreparation,lowerWeapon,lowersWeapon,turnLowersWeapon} from './weapon-readiness.js';
@@ -626,7 +626,7 @@ function planInventoryMap(s,u,action){
   if(!target){
    const npc=s.npcs?.find(other=>other.id===String(action.targetId));
    const visible=npc&&sameCell(npc,point)&&canSee(s,u,npc)&&isInteriorVisible(s,npc,new Set(s.revealedRooms??[]));
-   need(!visible,'La entrega de un objeto seleccionado a este personaje todavía no está disponible.');
+   if(visible)return planSelectedNpcGift(s,u,action,npc,extraction,point);
   }
   need(target&&target.side===u.side&&target.id!==u.id&&!target.fled&&alive(target),'Elegí otro compañero consciente y presente.');
   need(sameCell(target,point),'El compañero cambió de lugar. Volvé a seleccionar el destino.');
@@ -660,6 +660,32 @@ function planInventoryMap(s,u,action){
 export function inventoryMapPreview(s,u,action={}){
  try{const {extraction,target,received,cost,...preview}=planInventoryMap(s,u,action);return preview;}
  catch(error){return {valid:false,reason:error.message,kind:null,pa:0,totalPA:0,chance:0,route:[],landing:null,flight:null,path:[],action:null};}
+}
+// Gift responses are UI events, not additional item owners or save records.
+const npcGiftResults=new WeakMap();
+export function getNpcGiftResult(before,after){
+ const result=npcGiftResults.get(after);return before!==after&&result?structuredClone(result):null;
+}
+function recordNpcGiftResult(state,action,npc,status,text){
+ npcGiftResults.set(state,{unitId:String(action.unitId),npcId:npc.id,name:npc.name,x:action.x,y:action.y,tacticalLevel:action.tacticalLevel??tacticalLevel(npc),status,text,
+  sourceId:action.sourceId,expectedSource:action.expectedSource,count:action.count??1});
+}
+function planSelectedNpcGift(s,u,action,npc,extraction,point){
+ const need=(ok,message)=>{if(!ok)throw Error(message);};
+ need(s.mode==='exploration','Terminá el combate antes de entregar el objeto.');
+ need(!npc.departure&&!npc.fled&&!npc.routed&&(npc.hp??100)>0&&!npc.unconscious,'El interlocutor debe estar disponible y a la vista.');
+ const inReach=cell=>sameSurface(cell,npc)&&Math.abs(cell.x-npc.x)+Math.abs(cell.y-npc.y)===1&&hasLineOfSight(s,cell,npc)&&Number.isFinite(movementStepCost(s,u,cell,npc));
+ let approach=null;
+ if(!inReach(u)){
+  need(!u.entangled,'Primero debés liberarte de las boleadoras.');
+  const revealed=new Set(s.revealedRooms??[]),knownNpcs=s.npcs.filter(other=>teamCanSee(s,u.side,other)&&isInteriorVisible(s,other,revealed));
+  approach=knownApproachRoute({...s,npcs:knownNpcs},u,inReach);need(approach,'No hay un camino libre para acercarse y entregar el objeto.');
+ }
+ if(action.transferKind!==undefined)need(action.transferKind==='gift','Cambió el destinatario. Volvé a seleccionar el objeto.');
+ const confirmed={type:'inventoryMap',unitId:u.id,sourceId:action.sourceId,expectedSource:action.expectedSource,count:action.count??1,intent:'auto',...point,targetId:npc.id,transferKind:'gift'};
+ return {extraction,target:npc,received:null,cost:4,valid:true,reason:null,type:'inventoryMap',kind:'gift',pa:0,totalPA:0,actionPa:4,movePa:approach?.cost??0,chance:100,route:[],
+  destination:approach?{...positionOf(approach),tacticalLevel:tacticalLevel(approach)}:{...positionOf(u),tacticalLevel:tacticalLevel(u)},landing:null,flight:null,path:approach?.path??[],action:confirmed,
+  name:itemDescriptor(u,extraction.source.item).label,actionLabel:'Entregar objeto'};
 }
 function groundStack(ground){
   if(ground.type==='boleadoras')return {item:'boleadoras',count:ground.count,weight:SUPPLY_ITEMS.boleadoras.weight};
@@ -1314,6 +1340,14 @@ else if(a.type==='movePocket'){
 }
 else if(a.type==='inventoryMap'){
  let plan;try{plan=planInventoryMap(s,u,a);}catch(error){return fail(error.message);}
+ if(plan.kind==='gift'){
+  if(plan.path.length)return fail('Acercate al interlocutor para entregar el objeto.');
+  let decision;try{decision=questGiftDecision(plan.target,plan.extraction.stack);}catch(error){return fail(error.message);}
+  pay(plan.cost);
+  if(decision.accepted){plan.extraction.unit.ap=u.ap;lowerWeapon(plan.extraction.unit);replaceUnit(u,plan.extraction.unit);plan.target.questGifts=decision.gifts;}
+  recordNpcGiftResult(s,plan.action,plan.target,decision.accepted?'accepted':'refused',decision.text);
+  sayObserved(s,[u],`${plan.target.name}: «${decision.text}»`);
+ }else{
  replaceUnit(u,plan.extraction.unit);pay(plan.cost);
  if(plan.kind==='relay'){
   for(const step of plan.route.slice(1,-1)){
@@ -1330,6 +1364,7 @@ else if(a.type==='inventoryMap'){
  }else{
   addGroundStack(s,plan.extraction.stack,plan.landing);s.groundItems.at(-1).knownToPlayer=true;
   sayObserved(s,plan.target?[u,plan.target]:[u],plan.target?`${plan.target.name} no atrapa el objeto. Queda en el suelo a sus pies.`:`${u.name} ${plan.kind==='throw'?'arroja':'deja'} ${a.count??1} × ${plan.name} en el suelo.`);
+ }
  }
 }
 else if(a.type==='drop'){
@@ -1547,6 +1582,12 @@ export function actBattle(state,action){
   return next.lastError?next:cleanActionTime(settleAutonomous(next));
 }
 function actBattleInput(state,action){
+  if(action.type==='inventoryMap'){
+    const unit=state.units.find(u=>u.id===String(action.unitId)),plan=inventoryMapPreview(state,unit,action);
+    if(!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason;say(rejected,plan.reason);return rejected;}
+    if(plan.kind==='gift'&&plan.path.length)return approachAndUse(state,plan.action,plan);
+    return actBattleOrder(state,plan.action);
+  }
   if(action.type==='throwKnife'){
     const unit=state.units.find(u=>u.id===String(action.unitId)),target=action.targetId===undefined?action:state.units.find(u=>u.id===String(action.targetId));
     const plan=knifeThrowPreview(state,unit,target,action);
@@ -1581,6 +1622,7 @@ function actBattleInput(state,action){
   return actBattleOrder(state,action);
 }
 function contextualUsePlan(state,unit,action){
+  if(action.type==='inventoryMap')return inventoryMapPreview(state,unit,action);
   if(action.type==='loot')return lootApproachPreview(state,unit,action);
   if(action.environment)return environmentUsePreview(state,unit,action.environment,action.environment.verb);
   const npc=state.npcs?.find(n=>n.id===String(action.targetId));
@@ -1594,11 +1636,15 @@ export function approachCompleted(state,moved,unitId,plan){
 }
 function approachAndUse(state,action,plan){
   const moved=actBattleOrder(state,{type:'move',unitId:action.unitId,...plan.destination},{...plan.destination,cost:plan.movePa,path:plan.path});
-  if(moved.lastError)return moved;
+  const interruptedGift=()=>{
+    if(plan.kind==='gift')recordNpcGiftResult(moved,action,state.npcs.find(npc=>npc.id===action.targetId),'interrupted','El desplazamiento se detuvo antes de entregar el objeto. Revisá la situación.');
+  };
+  if(moved.lastError){interruptedGift();return moved;}
   const unit=moved.units.find(u=>u.id===String(action.unitId));
   const pending=plan.type==='environment'?{...action,environment:{...action.environment,verb:plan.action.verb}}:action;
   const current=contextualUsePlan(moved,unit,pending);
   if(!approachCompleted(state,moved,action.unitId,plan)||!current?.valid||current.path.length){
+    interruptedGift();
     say(moved,'El desplazamiento terminó antes de usar el objeto. Revisá la situación y seleccioná el objetivo de nuevo.');return moved;
   }
   return actBattleOrder(moved,plan.type==='environment'?plan.action:{...action,type:plan.type});

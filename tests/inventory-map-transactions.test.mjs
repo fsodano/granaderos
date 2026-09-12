@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,inventoryMapPreview} from '../game/tactical.js';
+import {createBattle,actBattle,inventoryMapPreview,getNpcGiftResult} from '../game/tactical.js';
 import {equipmentEndpoint,equipmentFingerprint,extractEquipmentSelection,inventoryUsage} from '../game/tactical-inventory.js';
 import {handLayout} from '../game/hand-layout.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
@@ -151,9 +151,10 @@ test('hidden enemy bodies cannot change point previews or become named recipient
  const n=accept(hidden,a).next;assert.equal(actor(n,'guard').ammo,actor(hidden,'guard').ammo);assert.equal(n.groundItems[0].x,6);
 });
 
-test('visible NPC selection is explicitly unsupported and keeps the exact source',()=>{
- const b=field({ammo:2});b.npcs=[{id:'civilian',name:'Vecino',x:3,y:3,hp:100}];
- reject(b,order(b,source(actor(b),'ammo'),{x:3,y:3,targetId:'civilian'}),/todavía no está disponible/);
+test('a visible civilian physically refuses the selected item and keeps the exact source owned',()=>{
+ const b=field({ammo:2},[],{exploration:true,enemies:[],npcs:[{id:'civilian',name:'Vecino',x:3,y:3,hp:100}]});
+ const id=source(actor(b),'ammo'),fingerprint=equipmentFingerprint(actor(b),id),{next:n,preview:p}=accept(b,order(b,id,{x:3,y:3,targetId:'civilian'}));
+ assert.equal(p.kind,'gift');assert.equal(getNpcGiftResult(b,n).status,'refused');assert.equal(equipmentFingerprint(actor(n),id),fingerprint);assert.equal(n.elapsedSeconds-b.elapsedSeconds,1);assert.equal(actor(n).ammo,2);assert.equal(n.groundItems.length,0);
 });
 
 test('new ground records use unique IDs and refuse the save collection limit atomically',()=>{
@@ -203,10 +204,10 @@ test('partly loaded weapon progress follows its finite instance through a failed
  const {next:n}=accept(b,order(b,'hand:right',{x:6,y:3,targetId:'q'}));assert.equal(actor(n).reloadProgress,undefined);assert.equal(n.groundItems[0].reloadProgress,.4);assert.equal(n.groundItems[0].instanceId,'part-loaded');assert.equal(n.groundItems[0].count,1);
 });
 
-test('NPC-specific refusal requires the clicked visible room and exact character cell',()=>{
- const b=field({ammo:2}),point={x:3,y:4};b.npcs=[{id:'hidden-npc',name:'Vecino',...point,hp:100}];b.tiles.find(t=>t.x===point.x&&t.y===point.y).roomId='unseen-room';b.revealedRooms=[];
+test('NPC gift availability requires the clicked visible room and exact character cell',()=>{
+ const point={x:3,y:4},b=field({ammo:2},[],{exploration:true,enemies:[],npcs:[{id:'hidden-npc',name:'Vecino',...point,hp:100}]});b.tiles.find(t=>t.x===point.x&&t.y===point.y).roomId='unseen-room';b.revealedRooms=[];
  const id=source(actor(b),'ammo'),unknown=order(b,id,{...point,targetId:'absent'}),hidden=order(b,id,{...point,targetId:'hidden-npc'});
  assert.equal(reject(b,hidden).reason,reject(b,unknown).reason);
- b.revealedRooms=['unseen-room'];reject(b,hidden,/todavía no está disponible/);
+ b.revealedRooms=['unseen-room'];const result=accept(b,hidden);assert.equal(result.preview.kind,'gift');assert.equal(getNpcGiftResult(b,result.next).status,'refused');
  const elsewhere={x:1,y:3};assert.equal(reject(b,order(b,id,{...elsewhere,targetId:'hidden-npc'})).reason,reject(b,order(b,id,{...elsewhere,targetId:'absent'})).reason);
 });

@@ -98,7 +98,7 @@ test('production map and NPC callbacks give the picked cursor priority over move
   const scene=nodes(tree).find(node=>node.type===TacticalScene);assert.ok(scene);
   if(route==='npc')scene.props.onTalk(b.npcs[0]);else scene.props.onTile(route==='ally'?b.units[1]:{x:1,y:2});
   assert.deepEqual(talks,[]);
-  if(route==='npc'){assert.equal(changes.length,0);assert.ok(store.getSnapshot().selection);assert.match(store.getSnapshot().hint,/todavía no está disponible/);}
+  if(route==='npc'){assert.equal(changes.length,1);assert.equal(changes[0].lastError,null);assert.equal(changes[0].units[0].medkits,7);assert.equal(changes[0].npcs[0].hp,100);assert.equal(store.getSnapshot().selection,null);assert.ok(changes[0].log.some(line=>line.includes('Vecino:')));}
   else {assert.equal(changes.length,1);assert.equal(changes[0].lastError,null);assert.equal(changes[0].units[0].medkits,6);assert.equal(changes[0].units[0].x,b.units[0].x);assert.equal(changes[0].units[0].y,b.units[0].y);assert.equal(store.getSnapshot().selection,null);}
  }
 });

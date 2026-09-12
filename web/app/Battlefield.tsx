@@ -7,6 +7,7 @@ import InventoryMapCursor from './InventoryMapCursor';
 import {EquipmentInteractionProvider,useEquipmentInteraction} from '../lib/equipment-drag';
 import {selectedItemMapPreview,placeSelectedItemOnMap,inventoryIntentAt,toggleInventoryDestination,retainInventoryDestination,type InventoryMapOverride} from '../lib/inventory-map-controls';
 import JA2Conversation,{JA2Speech} from './JA2Conversation';
+import {npcGiftFeedback} from '../lib/npc-gift-feedback';
 import {hasAuthoredDialogue,dialogueReason,dialogueApproach,ambientReply} from '../../game/npc-dialogue.js';
 import {rightClickAim} from '../../game/aim-cursor.js';
 import {canChooseShotLocation} from '../../game/targeted-combat.js';
@@ -30,7 +31,7 @@ import {isInteriorVisible} from '../../game/tactical-visibility.js';
 import {projectSurface} from '../lib/tactical-elevation';
 import {fixedBayonetFor} from '../../game/weapon-fittings.js';
 import { ChevronRight } from 'lucide-react';
-import { actBattle, getKnifeThrowVisual, endTurn, getReachable, weaponFor, hasFirearm, bladeFor, actionCosts, artilleryCosts, visibleEnemies, visibleTiles, visibleRooms, canSee, environmentTargetAt, lootSearchPreview, approachCompleted } from '../../game/tactical.js';
+import { actBattle, getKnifeThrowVisual, getNpcGiftResult, endTurn, getReachable, weaponFor, hasFirearm, bladeFor, actionCosts, artilleryCosts, visibleEnemies, visibleTiles, visibleRooms, canSee, environmentTargetAt, lootSearchPreview, approachCompleted } from '../../game/tactical.js';
 
 type Props = {battle:any; onChange:(s:any)=>any; onFinish:()=>void; peacefulVisit?:boolean; onMap?:()=>void; onMissionFinish?:()=>void; mission?:any; conversation?:any; quests?:any; onTalk?:(npcId:string,approach:string,unitId:string)=>void};
 const isAlive=(u:any)=>u.hp>0&&!u.routed&&!u.unconscious;
@@ -64,9 +65,10 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
   const [movementIntent,setMovementIntent]=useState('forward');
   const [itemIntent,setItemIntent]=useState('use'),clickItemIntent=useRef('use');
   const [talkingSelection,setTalking]=useState<any>(null);
+  const [pendingGift,setPendingGift]=useState<any>(null),[giftReply,setGiftReply]=useState<any>(null);
   const [speech,setSpeech]=useState<any>(null);const replyCounts=useRef<Record<string,number>>({});
   useEffect(()=>{if(!speech)return;const timer=setTimeout(()=>setSpeech(null),10000);return()=>clearTimeout(timer);},[speech]);
-  useEffect(()=>{setSpeech(null);setTalking(null);},[s.battleId,s.sectorId]);
+  useEffect(()=>{setSpeech(null);setTalking(null);setPendingGift(null);setGiftReply(null);},[s.battleId,s.sectorId]);
   const talking=talkingSelection?(s.npcs??[]).find((n:any)=>n.id===talkingSelection.id)??null:null;
   useEffect(()=>{
     const modifier=(event:KeyboardEvent)=>{setMovementIntent(pointerMovementIntent(event));setItemIntent(pointerItemIntent(event));};
@@ -99,7 +101,25 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
   const costs=u?actionCosts(s,u):null;const weapon=u?weaponFor(u):null;const firearm=u&&hasFirearm(u);const [cannonId,setCannonId]=useState('');const [shotType,setShotType]=useState('solid');const gun=s.artillery?.find((g:any)=>g.id===cannonId);const gunCosts=u&&gun?artilleryCosts(s,u,gun):null;
   const maxAim=useMemo(()=>aimOptions(s,u,{mode,target:hover,hitLocation}).filter((option:any)=>!option.disabled).at(-1)?.level??0,[s,u,mode,hover,hitLocation]);
   useEffect(()=>setAim(value=>Math.min(value,maxAim)),[maxAim]);
-  useEffect(()=>{setTalking(null);setSpeech(null);},[selected]);
+  useEffect(()=>{setTalking(null);setSpeech(null);setPendingGift(null);setGiftReply(null);},[selected]);
+  useEffect(()=>{
+    if(!pendingGift||busy)return;
+    const actor=s.units.find((person:any)=>person.id===pendingGift.unitId),position=motion.positions[pendingGift.unitId];
+    // State resolves before the walking animation. The reply appears only
+    // when the courier has visibly reached the final authoritative position.
+    if(actor&&position&&!sameCell(actor,position))return;
+    setPendingGift(null);
+    if(pendingGift.status==='interrupted'){equipmentStore.report(pendingGift.text);return;}
+    const reply=npcGiftFeedback(s,pendingGift,conversation);if(!reply)return;
+    setMode('move');setSpeech(null);setGiftReply(reply);
+    if(reply.kind==='conversation')setTalking({id:reply.id});
+    else {setTalking(null);setSpeech(reply);}
+  },[pendingGift,busy,motion.positions,s,conversation,equipmentStore]);
+  useEffect(()=>{
+    if(!talking||!giftReply?.responseOnly)return;
+    const timer=setTimeout(()=>{setTalking(null);setGiftReply(null);},10000);
+    return()=>clearTimeout(timer);
+  },[talking?.id,giftReply]);
   useEffect(()=>{setAim(0);setHitLocation('torso');aimTarget.current='';},[selected]);
   useEffect(()=>setAim(0),[u?.activeSlot,u?.weapon,u?.blade,u?.bladeInstanceId,u?.offHand,u?.x,u?.y,u?.tacticalLevel,s.phase,s.turn]);
   useEffect(()=>{setCursorLevel(tacticalLevel(u));setHover(null);},[u?.id,u?.tacticalLevel]);
@@ -131,7 +151,7 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
     const actual=(s.npcs??[]).find((n:any)=>n.id===target.id)??renderedUnits.find((n:any)=>n.id===target.id&&n.side==='enemy');
     if(!actual||!canSee(s,u,actual))return;
     if(['move','useItem'].includes(mode)&&u.activeSlot==='item'&&(s.npcs??[]).some((n:any)=>n.id===actual.id)){order({type:'useItem',targetId:actual.id});return;}
-    setSpeech(null);clearGroup();setMode('move');
+    setSpeech(null);setGiftReply(null);setPendingGift(null);clearGroup();setMode('move');
     if(hasAuthoredDialogue(actual)){setTalking(actual);return;}
     const reason=dialogueReason(s,u,actual,{visible:true,busy});
     const count=replyCounts.current[actual.id]??0;
@@ -162,7 +182,7 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
     a=tacticalInputAction(s,u,a);
     setBandageReport(null);clearGroup();facingOverride.current=null;
     const next=actBattle(s,{unitId:selected,aim,hitLocation,...a}),preserveFacing=a.type==='move'&&a.movementIntent==='preserveFacing';
-    const knifeVisual=getKnifeThrowVisual(s,next),actionType=resolvedOrderType(s,u,a);
+    const knifeVisual=getKnifeThrowVisual(s,next),giftResult=getNpcGiftResult(s,next),actionType=resolvedOrderType(s,u,a);
     const preparationOnly=actionType==='throwKnife'&&!knifeVisual;
     if(!next.lastError){
       const target=s.units.find((t:any)=>t.id===a.targetId)||a;
@@ -175,6 +195,7 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
       setPoses(p=>({...p,[selected]:pose}));poseTimers.current[selected]=setTimeout(()=>setPoses(p=>({...p,[selected]:'idle'})),1000);
     }
     const accepted=onChange(next);
+    if(giftResult&&accepted!==null){setTalking(null);setSpeech(null);setGiftReply(null);setPendingGift(giftResult);}
     if(knifeVisual&&accepted!==null)setKnifeEffect({id:++knifeEffectId.current,visual:knifeVisual});
     if(!next.lastError&&preserveFacing&&accepted!==null)facingOverride.current={battle:accepted??next,unitId:selected,direction:((u.facing??2)+1)%8};
     return accepted===null?null:accepted??next;
@@ -308,7 +329,7 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
         {!pickedItem&&aimedCursorMode(mode)&&cursorPoint&&!busy&&unitCanAct(s,u)&&<AimCursor exploring={s.mode==='exploration'} point={cursorPoint} aim={aim} preview={preview} target={hover} scale={1/zoom} bounds={{x:cameraX,y:cameraY,width:viewWidth,height:viewHeight}}/>}
         {pickedItem&&<InventoryMapCursor state={field} preview={itemPreview} target={mapItemTarget} project={project}/>}
       </svg>
-      {talking&&<JA2Conversation npc={talking} conversation={conversation} quest={quests?.[talking.id]} reason={!onTalk?'Esta conversación necesita una campaña activa.':dialogueReason(s,u,talking,{visible:Boolean(u&&canSee(s,u,talking)),busy})} canApproach={Boolean(!busy&&u&&unitCanAct(s,u)&&canSee(s,u,talking)&&(s.mode==='exploration'||s.sectorCleared)&&talkingApproach)} onApproach={()=>{if(talkingApproach)order(movementAction(talkingApproach));}} onTalk={approach=>onTalk?.(talking.id,approach,selected)} onClose={()=>setTalking(null)}/>}
+      {talking&&<JA2Conversation npc={talking} conversation={giftReply?.id===talking.id?giftReply.conversation:conversation} responseOnly={giftReply?.id===talking.id&&giftReply.responseOnly} quest={quests?.[talking.id]} reason={!onTalk?'Esta conversación necesita una campaña activa.':dialogueReason(s,u,talking,{visible:Boolean(u&&canSee(s,u,talking)),busy})} canApproach={Boolean(!busy&&u&&unitCanAct(s,u)&&canSee(s,u,talking)&&(s.mode==='exploration'||s.sectorCleared)&&talkingApproach)} onApproach={()=>{if(talkingApproach)order(movementAction(talkingApproach));}} onTalk={approach=>{setGiftReply(null);onTalk?.(talking.id,approach,selected);}} onClose={()=>{setTalking(null);setGiftReply(null);}}/>}
       {speech&&<JA2Speech name={speech.name} text={speech.text} position={{left:Math.max(15,Math.min(85,(projectSurface(s,project,speech).x-cameraX)/viewWidth*100)),top:Math.max(38,Math.min(85,(projectSurface(s,project,speech).y-cameraY-42)/viewHeight*100))}} onClose={()=>setSpeech(null)}/>}
       {preview&&<aside className={`ja2-target-preview ${preview.valid?'':'unavailable'}`} aria-label="Vista previa de la orden"><strong>{preview.name}</strong><span>{!pickedItem&&preview.chance!==undefined?`${preview.hitLocation||preview.attackLabel||'Ataque'} · ${preview.chance}% de ${preview.chanceLabel||'impacto'} · `:preview.actionLabel?`${preview.actionLabel} · `:''}{preview.pa!==undefined&&(!pickedItem||preview.valid)&&s.mode!=='exploration'?`${preview.pa} PA · ${preview.remaining} PA restantes`:''}</span>{preview.coverNote&&<span>{preview.coverNote}</span>}{preview.reason&&<span>{preview.reason}</span>}</aside>}
       {s.lastError&&<p className="battle-error" role="alert">{s.lastError}</p>}{s.status!=='active'&&<div className="battle-result"><p className="eyebrow">PARTE DE GUERRA</p><h2>{s.status==='victory'?'¡Victoria patriota!':s.status==='retreat'?'Retirada completada':'La escuadra ha caído'}</h2><p>{s.status==='victory'?'El enemigo abandona el campo. La patria avanza.':s.status==='retreat'?'La salida quedó registrada. Los combatientes conservan sus heridas y su equipo.':'Reorganizá las tropas y prepará una nueva ofensiva.'}</p><>{s.status==='victory'&&<button className="line-button" onClick={()=>onChange(actBattle(s,{type:'explore'}))}>Explorar el sector y recoger equipo</button>}<button className="gold-button" onClick={onFinish}>Volver a la campaña <ChevronRight size={16}/></button></></div>}

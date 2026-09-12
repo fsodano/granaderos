@@ -1,8 +1,8 @@
 import {extractItemQuantity} from './tactical-inventory.js';
 import {validateOutfit} from './outfits.js';
-// Authored municipal errands. Completion is handled only by adjacent NPC dialogue.
+// Authored errands use physical delivery receipts or adjacent NPC dialogue.
 export const NPC_QUESTS=[
- {id:'retiro-uniformes',npcId:'local-retiro',sector:'retiro',title:'Abrigo para los nuevos reclutas',cost:{},carried:{outfit:'poncho',count:2},requiredSectors:['retiro'],offer:'Los nuevos reclutas pasan frío en el patio. Traé dos ponchos de lana en buen estado. Poné cada uno en la mano y entregámelo; después confirmamos el encargo. El Cabildo sabrá que cumpliste tu palabra.',delivery:'Recibimos los dos ponchos. Los reclutas tendrán abrigo y el vecindario recordará esta ayuda.'},
+ {id:'retiro-uniformes',npcId:'local-retiro',sector:'retiro',title:'Abrigo para los nuevos reclutas',cost:{},carried:{outfit:'poncho',count:2},requiredSectors:['retiro'],offer:'Los nuevos reclutas pasan frío en el patio. Traé dos ponchos de lana en buen estado. Seleccioná cada uno en tu inventario y entregámelo. El Cabildo sabrá que cumpliste tu palabra.',delivery:'Recibimos los dos ponchos. Los reclutas tendrán abrigo y el vecindario recordará esta ayuda.'},
  {id:'posta-polvora',npcId:'local-san_nicolas',sector:'san_nicolas',title:'Pólvora para la guardia de la posta',cost:{powder:5},requiredSectors:['san_nicolas'],offer:'La guardia de la posta necesita cinco cargas de pólvora para proteger a los correos. Volvé con esos pertrechos y podremos mantener abierto el relevo.',delivery:'La guardia recibe las cinco cargas. Los correos pueden contar con nuestra protección.'},
  {id:'salta-correos',npcId:'macacha',sector:'salta',title:'Monturas y armas para los enlaces del norte',cost:{muskets:5,horses:2},requiredSectors:['salta','jujuy'],offer:'Mis enlaces necesitan cinco mosquetes y dos caballos de remuda. Asegurá Salta y Jujuy antes de entregarlos: no mandaré a nadie por un camino ocupado.',delivery:'Las armas y las remudas ya están con los enlaces. Salta y Jujuy podrán sostener sus comunicaciones.'},
 ];
@@ -17,6 +17,18 @@ export function validateQuestGifts(npc){
  if(!quest?.carried||!Array.isArray(gifts)||gifts.length>quest.carried.count)throw Error('Las entregas del interlocutor no son válidas.');
  for(const gift of gifts){validateOutfit(gift,{worn:true});if(!gift||gift.outfit!==quest.carried.outfit||gift.condition<=0||gift.item!==undefined)throw Error('El objeto entregado no corresponde al encargo.');}
  return gifts;
+}
+// This decision is made only when a physical offer reaches the NPC. It is not
+// a hover prediction, and a refusal never takes custody of the offered stack.
+export function questGiftDecision(npc,stack){
+ const quest=NPC_QUESTS.find(q=>q.npcId===npc?.id);
+ const refuse=text=>({accepted:false,text});
+ if(!quest?.carried)return refuse('Gracias, pero no necesito ese objeto.');
+ const gifts=validateQuestGifts(npc);
+ if(gifts.length>=quest.carried.count)return refuse('Ya recibí todos los ponchos que necesitábamos. Gracias.');
+ if(stack?.kind!=='outfit'||stack.outfit!==quest.carried.outfit||!(stack.condition>0)||stack.count!==1)return refuse('Necesitamos un poncho de lana en buen estado.');
+ const {item,...gift}=structuredClone(stack);validateOutfit(gift,{worn:true});
+ return {accepted:true,gifts:[...structuredClone(gifts),gift],text:gifts.length+1===quest.carried.count?'Gracias. Ya tenemos los dos ponchos para los reclutas.':'Gracias por el poncho. Todavía necesitamos uno más.'};
 }
 export function questGiftPlan(unit,npc){
  const quest=NPC_QUESTS.find(q=>q.npcId===npc?.id);

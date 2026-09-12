@@ -6,6 +6,7 @@ import {buildSectorMap} from './maps.js';
 import {createBattle,initializeBattlePerception,movementStepCost} from './tactical.js';
 import {boundaryMatches,inwardFromBoundary,validEntry,validateSectorExits} from './tactical-exits.js';
 import {validateBattleSnapshot} from './validate-battle.js';
+import {validateQuestGifts} from './quests.js';
 
 const key=spaceKey;
 const clearEncounter=unit=>{
@@ -102,7 +103,15 @@ export function enterSector(request,previous=null){
  };
  // Keep residents and their routines when the squad returns. Rebase temporary
  // fear reports to the new encounter clock; recruitment still controls presence.
- state.npcs=(map.npcs??[]).map(npc=>{
+ const residents=[...(map.npcs??[])];
+ // Combat requests can omit a civilian roster. A delivered object still has
+ // its original local owner; saved coordinates already belong to the full map.
+ // Explicit rosters control presence, especially after named recruitment.
+ if(request.npcs===undefined)for(const npc of previous?.npcs??[]){
+   if(npc.operativeId!==undefined||!npc.questGifts?.length||residents.some(current=>current.id===npc.id))continue;
+   if(validateQuestGifts(npc).length)residents.push(structuredClone(npc));
+ }
+ state.npcs=residents.map(npc=>{
    const old=previous?.npcs?.find(n=>n.id===npc.id),authored=state.npcs.find(n=>n.id===npc.id),resident=structuredClone({...npc,...authored,...old});
    if(resident.ai){delete resident.ai.threat;delete resident.ai.safeAfter;resident.ai.activity='roaming';}
    delete resident.lastMovePath;resident.stance='standing';resident.movementMode='walk';

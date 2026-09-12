@@ -7,9 +7,10 @@ Open a soldier's inventory. Click a hand, garment or occupied pocket to select o
 - The soldier's own tile or adjacent reachable ground: leave the selected quantity there.
 - A nearby squad member: pass the selected quantity. A valid chain of nearby squad members can relay it.
 - Distant ground or a distant squad member: toss it, subject to range and a clear physical arc. A failed catch leaves the exact stack at the recipient's feet.
+- A visible NPC during exploration: approach and offer the selected object. Acceptance is decided at contact. Special characters answer through their portrait panel; ordinary civilians give a brief refusal. See [selected NPC gifts](selected-npc-gifts.md).
 - Right-click a character: switch between handing the object to that character and placing it on the ground at that location. Right-click ground or press Escape to cancel.
 
-The selected quantity stays in its original slot until the reducer accepts the action. A refused click retains the selection and cannot become a movement, treatment, shot, conversation or artillery order. Closing inventory, changing the actor or battle, losing control, or changing the selected contents cancels it. Equipped medical supplies still treat through ordinary use; selecting supplies from inventory transfers them instead.
+The selected quantity stays in its original slot until the reducer accepts the action. An invalid order retains the selection and cannot become a movement, treatment, shot, conversation or artillery order. A valid NPC offer can receive a refusal: the object stays in its slot and the cursor clears. Closing inventory, changing the actor or battle, losing control, or changing the selected contents cancels it. Equipped medical supplies still treat through ordinary use; selecting supplies from inventory transfers or offers them instead.
 
 The field displays item, quantity, destination, action and rejection reason. A toss displays its reviewed arc and a destination mark. Combat displays the AP cost and remaining AP; exploration does not spend or display AP. Map pointer movement within one unchanged body target does not repeatedly update the target state. The floating item visual already follows the pointer without rerendering the battlefield for each pixel.
 
@@ -25,7 +26,7 @@ The [publisher manual, pages 22–25](https://cdn.akamai.steamstatic.com/steam/a
 
 This milestone retains Granaderos tuning: 4 AP per pass sender, 8 AP for a toss, six-cell toss range and 2 receiver AP on a successful combat catch. The catch formula and arc are not the classic formulas. Original JA2 could inflict [one point of generic tossed-object collision damage](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/a06f4896c43c76396529e415a29a8ca26b00f9f1/src/game/TileEngine/Physics.cc#L1903-L1917); this transport action ignores bodies and does no damage.
 
-Selected-cursor gifts to authored NPCs explicitly refuse without consuming an item; existing equipped quest gifts are separate. Dragging directly from a slot to the map, walking to a distant drop instead of tossing, toss flight animation, and classic individual stack-member selection remain open. The current field preview shows the trajectory before the immediate accepted transfer. Touch and pen input have not been checked on physical devices. This does not establish full inventory or gameplay parity.
+Selected-cursor gifts now support the existing Retiro poncho errand with direct replies and automatic progress; the [gift record](selected-npc-gifts.md) states its limits. Dragging directly from a slot to the map, walking to a distant drop instead of tossing, toss flight animation, and classic individual stack-member selection remain open. The current field preview shows the trajectory before the immediate accepted transfer. Touch and pen input have not been checked on physical devices. This does not establish full inventory or gameplay parity.
 
 ## Verification
 

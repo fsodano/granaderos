@@ -14,4 +14,9 @@ test('replay remains in the special panel after delivery and remains subject to 
  const blocked=render(h(Conversation,{...base,conversation,quest:{status:'completed'},reason:'Acercate.'}));assert.match(blocked,/<button disabled="">Repetir respuesta<\/button>/);
 });
 
-test('carried errands show actual received items and label acknowledgement separately from giving',()=>{const html=render(h(Conversation,{...base,npc:{...base.npc,questGifts:[{outfit:'poncho'}]},quest:{status:'offered',carried:{outfit:'poncho',count:2}}}));assert.match(html,/Ponchos recibidos: 1\/2/);assert.match(html,/>Confirmar entrega</);assert.doesNotMatch(html,/Entregar pertrechos/);});
+test('carried errands show physical receipts without a redundant confirmation',()=>{const html=render(h(Conversation,{...base,npc:{...base.npc,questGifts:[{outfit:'poncho'}]},quest:{status:'offered',carried:{outfit:'poncho',count:2}}}));assert.match(html,/Ponchos recibidos: 1\/2/);assert.doesNotMatch(html,/Confirmar entrega|Entregar pertrechos/);});
+
+test('a special character refusing an offered item gives a portrait response with only a close control',()=>{
+ const html=render(h(Conversation,{...base,responseOnly:true,conversation:{npcId:'local-retiro',text:'No necesito ese objeto.'},reason:'La conversación necesita una campaña activa.',canApproach:true}));
+ assert.match(html,/role="dialog"/);assert.match(html,/avatar-man-soldier.webp/);assert.match(html,/No necesito ese objeto/);assert.equal((html.match(/<button/g)??[]).length,1);assert.match(html,/>Listo</);assert.doesNotMatch(html,/Repetir respuesta|Consultar encargo|Acercarse|campaña activa/);
+});

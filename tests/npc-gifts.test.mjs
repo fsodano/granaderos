@@ -36,13 +36,12 @@ test('issued ponchos leave local stock once, remain with the NPC through saves a
  const stock=c.resources.ponchos;
  for(let i=0;i<2;i++)c=step(c,{type:'sectorInventory',sector:'retiro',operativeId:1000,direction:'issueOutfit'});
  assert.equal(c.resources.ponchos,stock-2);c=step(c,{type:'visitSector'});let pair=prepareCampaignBattle(c),b=pair.battle;c=pair.campaign;
- const talk=()=>{c=step(c,{type:'talkNPC',npcId:'local-retiro',unitId:1000,approach:'quest',sectorState:b});};
  for(let i=0;i<2;i++){
   b=deliverPonchos(b,1);
   pair=syncBattleTime(c,b);assert.equal(pair.error,null);({campaign:c,battle:b}=decodeSave(encodeSave(pair.campaign,pair.battle)));
-  if(i===0){talk();assert.equal(c.quests['retiro-uniformes'].status,'offered');const denied=dispatchCampaign(c,{type:'talkNPC',npcId:'local-retiro',unitId:1000,approach:'quest',sectorState:b});assert.ok(denied.lastError);assert.equal(denied.quests['retiro-uniformes'].status,'offered');}
+  if(i===0){assert.equal(c.quests['retiro-uniformes'].status,'offered');assert.equal(c.conversations['local-retiro'].giftCount,1);const denied=dispatchCampaign(c,{type:'talkNPC',npcId:'local-retiro',unitId:1000,approach:'quest',sectorState:b});assert.ok(denied.lastError);assert.equal(denied.quests['retiro-uniformes'].status,'offered');}
  }
- const cash=c.resources.treasury,textiles=c.resources.textiles;talk();assert.equal(c.quests['retiro-uniformes'].status,'completed');assert.equal(c.resources.ponchos,stock-2);assert.equal(c.resources.textiles,textiles);assert.equal(c.resources.treasury,cash);
+ const cash=c.resources.treasury,textiles=c.resources.textiles;assert.equal(c.quests['retiro-uniformes'].status,'completed');assert.equal(c.conversations['local-retiro'].giftCount,2);assert.equal(c.resources.ponchos,stock-2);assert.equal(c.resources.textiles,textiles);assert.equal(c.resources.treasury,cash);
  c=step(c,{type:'leaveSector',battleId:c.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});
  c=decodeSave(encodeSave(c)).campaign;c=step(c,{type:'visitSector'});pair=prepareCampaignBattle(c);c=pair.campaign;b=pair.battle;
  assert.equal(npc(b).questGifts.length,2);assert.ok(!Object.values(b.units.find(u=>u.id==='1000').inventory).some(r=>r.kind==='outfit'));
