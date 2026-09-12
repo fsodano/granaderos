@@ -14,7 +14,7 @@ function admissionReason(state) {
   if (!exploring && !clearedVictory) return 'Solo se puede vendar la escuadra al explorar un sector seguro o después de la victoria.';
   // Corpses and incapacitated enemies can leave stale contact memories after victory.
   const capableEnemy = state.units.some(unit => unit.side === 'enemy' && unit.hp >= CRITICAL_HEALTH && !unit.unconscious && !unit.routed && !unit.fled && !unit.departure && !unit.surrendered && (unit.energy ?? 100) > 0);
-  if (capableEnemy && !canEndCombat({...state, status: 'active', mode: 'combat', phase: 'player'})) return DANGER;
+  if (capableEnemy && (!canEndCombat({...state, status: 'active', mode: 'combat', phase: 'player'}) || state.units.some(u => conscious(u) && [u.lastKnownEnemy, u.lastHeardNoise].some(k => k && state.turn - k.turn <= 3)))) return DANGER;
   return null;
 }
 

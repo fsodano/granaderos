@@ -413,10 +413,10 @@ test('hearing shows an anonymous approximate area until investigated or expired'
   delete u.lastHeardNoise.investigated;u.unconscious=true;assert.equal(heardNoiseModel(s,u),null);
 });
 
-test('return to exploration is available only after both sides lose recent contact',()=>{
-  const s=separatedBattle();assert.equal(turnModel(s).canExplore,true);
-  s.units[1].lastHeardNoise={x:5,y:5,turn:s.turn,uncertainty:2};assert.equal(turnModel(s).canExplore,false);
-  s.turn+=4;assert.equal(turnModel(s).canExplore,true);
+test('return to exploration requires two completed quiet turns',()=>{
+  const s=separatedBattle();assert.equal(turnModel(s).canExplore,false);
+  s.quietCombatTurns=1;assert.equal(turnModel(s).canExplore,false);
+  s.quietCombatTurns=2;s.units[1].lastHeardNoise={x:5,y:5,turn:s.turn,uncertainty:2};assert.equal(turnModel(s).canExplore,true);
   const ap=s.units[0].ap,medkits=s.units[0].medkits;
   const next=actBattle(s,{type:'explore'});
   assert.equal(next.lastError,null);assert.equal(next.mode,'exploration');assert.equal(next.sectorCleared,false);

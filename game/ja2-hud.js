@@ -54,13 +54,14 @@ export function tacticalInputAction(state, unit, action) {
   return {type: 'reload', ...(action.unitId ? {unitId: action.unitId} : {}), aim: 0};
 }
 export function firearmCostText(state,unit,point){
+  if(state.mode==='exploration')return 'Sin coste de PA; consume tiempo y la munición del disparo.';
   const c=actionCosts(state,unit,point);
   if(c.turn)return c.ready?`Preparar y girar: ${c.setup} PA · disparar: ${c.discharge} PA.`:`Girar: ${c.turn} PA · disparar: ${c.discharge} PA.`;
   return c.ready?`Preparar: ${c.ready} PA · disparar: ${c.discharge} PA.`:`Arma en posición de tiro · disparar: ${c.discharge} PA.`;
 }
 export function emptyGunPreview(state, unit) {
   if (!unit || !hasFirearm(unit) || unit.loaded > 0) return null;
-  const plan = reloadPlan(unit, state), rounds = plan.available, pa = plan.pa;
+  const plan = reloadPlan(unit, state), rounds = plan.available, pa = state.mode === 'exploration' ? 0 : plan.pa;
   const reason = !rounds ? 'Sin munición. No quedan cartuchos.'
     : unit.jammed ? 'Cebá el arma antes de recargar (R).'
     : unit.knockedDown ? 'Primero debés levantarte.'
@@ -195,6 +196,10 @@ export function aimOptions(state, unit, ctx = {}) {
 
 // A read-only preview of the selected action. Enemy data must already be visible.
 export function targetPreview(state, unit, point, ctx = {}) {
+  const preview=targetPreviewWithCosts(state,unit,point,ctx);
+  return state.mode==='exploration'&&preview?{...preview,...(preview.pa===undefined?{}:{pa:0,remaining:unit?.ap})}:preview;
+}
+function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   if (!unit) return null;
   const mode = ctx.mode || 'move';
   const reload = mode === 'fire' ? emptyGunPreview(state, unit) : null;
@@ -293,17 +298,19 @@ export function fittingInventoryModel(state, unit) {
 
 export function equippedItemHelp(state, unit, ctx = {}) {
   if (!unit) return 'Seleccioná un combatiente.';
-  const weapon = weaponFor(unit), costs = actionCosts(state, unit);
-  if (unit.activeSlot === 'supply') return `${weapon.name} · ${supplyUsePreview(state, unit, ctx.target).cost} PA. ${targetingHelp('useItem', unit)}`;
+  const weapon = weaponFor(unit), costs = actionCosts(state, unit), exploring=state.mode==='exploration';
+  if (unit.activeSlot === 'supply') return `${weapon.name} · ${exploring?0:supplyUsePreview(state, unit, ctx.target).cost} PA. ${targetingHelp('useItem', unit)}`;
   if (unit.activeSlot === 'tool') return `${weapon.name}. Seleccioná una puerta o un cofre para usarla.`;
+  if (unit.activeSlot === 'medical' && exploring) return 'Vendas: sin coste de PA. Seleccionate a vos o a un aliado herido. Consume tiempo y vendas. Detiene la hemorragia; no recupera salud.';
   if (unit.activeSlot === 'medical') return `Vendas: ${costs.heal} PA, más el desplazamiento. Seleccionate a vos o a un aliado herido. Se acerca y venda si hay PA suficientes. Detiene la hemorragia; no recupera salud.`;
   const attack = contextualAttack(state, unit, ctx.target, {type: ctx.mode, aim: ctx.aim || 0});
   const reload = attack.type === 'fire' ? emptyGunPreview(state, unit) : null;
   if (reload) return `${weapon.name} · ${reload.actionLabel}${reload.valid ? `: ${reload.pa} PA. ${reload.coverNote}` : `. ${reload.reason}`}`;
   const approach=ctx.target&&['move','useItem',undefined].includes(ctx.mode)?itemUsePreview(state,unit,ctx.target):null;
+  if(approach?.movePa&&exploring)return `${weapon.name} · sin coste de PA. Se acerca y usa el objeto. El contacto puede detener la acción.`;
   if(approach?.movePa)return `${weapon.name} · ${approach.pa} PA (${approach.movePa} para acercarse y ${approach.actionPa} para usarlo). El contacto puede detener la acción.`;
   const label = attack.type === 'melee' && hasFirearm(unit) ? fixedBayonetFor(unit) ? 'Estocada de bayoneta' : 'Culatazo' : weapon.name;
-  return `${label} · ${attack.pa} PA. ${attack.type==='fire'?firearmCostText(state,unit,ctx.target)+' ':''}${fixedBayonetFor(unit) || ctx.mode === 'fire' ? targetingHelp(ctx.mode || 'move', unit) : 'Seleccioná un enemigo para usarlo.'}`;
+  return `${label} · ${exploring?0:attack.pa} PA. ${attack.type==='fire'?firearmCostText(state,unit,ctx.target)+' ':''}${fixedBayonetFor(unit) || ctx.mode === 'fire' ? targetingHelp(ctx.mode || 'move', unit) : 'Seleccioná un enemigo para usarlo.'}`;
 }
 
 export function levelFor(unit) {
@@ -347,7 +354,7 @@ export function slotAction(unit) {
 }
 
 export function equipmentSlots(state, unit, ctx = {}) {
-  const pa = actionCosts(state, unit).weapon;
+  const pa = state.mode === 'exploration' ? 0 : actionCosts(state, unit).weapon;
   const tools = toolItems(unit), activeTool = tools.find(tool => tool.item === unit.activeTool) || tools[0], supplies = supplyItems(unit), activeSupply = supplies.find(supply => supply.key === unit.activeSupply) || supplies[0];
   return [['primary', 'Arma'], ['blade', 'Arma blanca'], ['medical', `Vendas · ${unit.medkits ?? 0}`], ...(tools.length ? [['tool', 'Herramienta']] : []), ...(supplies.length ? [['supply', `${activeSupply.label} · ${activeSupply.count}`]] : []), ['unarmed', 'Manos libres']].map(([slot, label]) => ({slot, label, pa, action: {type: 'weapon', slot, ...(slot === 'tool' ? {toolKey: activeTool.item} : slot === 'supply' ? {supplyKey: activeSupply.key} : {})}, active: (unit.activeSlot || 'primary') === slot, disabled: !unitCanAct(state, unit) || Boolean(ctx.busy) || Boolean(unit.knockedDown) || !affordable(state, unit, pa) || (slot === 'medical' ? !(unit.medkits > 0) : slot === 'blade' ? !BLADES[unit.blade] : slot === 'primary' ? !hasPrimary(unit) : false)}));
 }
@@ -623,7 +630,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
     /** @type {{id:string,label:string,kind:string,disabled:boolean,pa?:number,reserve?:boolean,active?:boolean}} */
     const d = {id: def.id, label, kind: def.kind, disabled: baseDisabled || unavailable || (!reserveOff && def.id in pa && !affordable(state, u, pa[def.id]))};
     if (def.id === 'overwatch') d.reserve = !reserveOff;
-    if (def.id in pa) d.pa = pa[def.id];
+    if (def.id in pa) d.pa = state.mode === 'exploration' ? 0 : pa[def.id];
     // Pickup can mean an 8-AP corpse search or an all-remaining-AP grab.
     // Show its actual cost on the target preview, not on the shared cursor.
     if (def.id === 'loot' && u.activeSlot === 'unarmed') delete d.pa;

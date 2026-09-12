@@ -79,8 +79,8 @@ test('main controls expose facing and stealth while aim and body targeting stay 
   assert.match(markup,/Detiene la hemorragia; no recupera salud/);
 });
 
-test('return to exploration is rendered only when the shared contact rule permits it',()=>{
-  const s=fixture();assert.match(strip(s),/Volver a explorar/);
+test('automatic exploration is explained without a separate return button',()=>{
+  const s=fixture();assert.doesNotMatch(strip(s),/Volver a explorar/);assert.match(strip(s),/automáticamente tras dos turnos completos/);
   s.units[1].lastKnownEnemy={x:1,y:1,turn:s.turn};assert.ok(!strip(s).includes('Volver a explorar'));
   delete s.units[1].lastKnownEnemy;s.phase='interrupt';s.interrupt={side:'player',unitIds:['scout'],enemyId:'far'};
   const markup=strip(s);assert.match(markup,/Continuar turno enemigo/);assert.match(markup,/Interrupción: usá los PA restantes/);assert.ok(!markup.includes('Volver a explorar'));

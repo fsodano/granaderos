@@ -21,18 +21,18 @@ test('movement stops on first observed tile even when only the enemy has sight',
  assert.ok(s.log.some(l=>l.includes('toma la iniciativa')));
 });
 test('leaving contact preserves living opponents, AP, condition, supplies and the clock',()=>{
- const s=createBattle([{id:'p',x:1,y:1}],map());s.units[0].ap=7;s.units[0].loaded=0;s.units[0].ammo=3;s.units[0].condition=42;
+ const s=createBattle([{id:'p',x:1,y:1}],map());s.units[0].ap=7;s.units[0].loaded=0;s.units[0].ammo=3;s.units[0].condition=42;s.quietCombatTurns=2;
  assert.equal(canEndCombat(s),true);const n=actBattle(s,{type:'explore'});
  assert.equal(n.mode,'exploration');assert.equal(n.status,'active');assert.equal(n.sectorCleared,false);assert.deepEqual(n.units,s.units);assert.equal(n.elapsedSeconds,s.elapsedSeconds);
  assert.doesNotThrow(()=>validateBattleSnapshot(n));
 });
-test('recent sightings and anonymous noises prevent an early end to combat',()=>{
- const s=createBattle([{id:'p',x:1,y:1}],map());s.turn=8;
- for(const record of [{key:'lastKnownEnemy',value:{x:12,y:3,turn:5}},{key:'lastHeardNoise',value:{x:13,y:3,turn:8,kind:'fire',uncertainty:2}}]){
-  const c=structuredClone(s);c.units[0][record.key]=record.value;assert.equal(canEndCombat(c),false);
-  const n=actBattle(c,{type:'explore'});assert.ok(n.lastError);assert.deepEqual(n.units,c.units);assert.equal(n.mode,'combat');
- }
- s.units[0].lastKnownEnemy={x:12,y:3,turn:4};assert.equal(canEndCombat(s),true);
+test('two complete quiet turns are required; anonymous sound does not keep combat active',()=>{
+ let s=createBattle([{id:'p',x:1,y:1}],map({enemies:[{id:'e',x:25,y:5,patrol:false,overwatch:false}]}));
+ assert.equal(canEndCombat(s),false);assert.ok(actBattle(s,{type:'explore'}).lastError);
+ s=endTurn(s);assert.equal(s.mode,'combat');assert.equal(s.quietCombatTurns,1);
+ s.units[0].lastHeardNoise={x:20,y:3,turn:s.turn,kind:'fire',uncertainty:2};
+ s=endTurn(s);assert.equal(s.mode,'exploration');assert.equal(s.quietCombatTurns,2);assert.equal(s.sectorCleared,false);
+ assert.ok(s.units.find(u=>u.id==='e').hp>0);assert.doesNotThrow(()=>validateBattleSnapshot(s));
 });
 test('enemy observation alone blocks an end-combat request',()=>{
  const s=createBattle([{id:'p',x:1,y:1,facing:6}],map({enemies:[{id:'e',x:6,y:1,facing:6}]}));

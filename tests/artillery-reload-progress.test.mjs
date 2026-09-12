@@ -16,7 +16,10 @@ const physical=s=>({...s,log:[],lastError:null});
 const rejected=(s,a)=>{const n=order(s,a);assert.ok(n.lastError);assert.deepEqual(physical(n),physical(s));};
 
 test('wounded crews complete a heavy cannon load over real turns and spend 75 AP each in total',()=>{
- let s=field('field8',true),turns=0;const spent=[0,0,0];assert.ok(s.units[0].maxAP+20<75);
+ let s=field('field8',true),turns=0;const spent=[0,0,0];
+ // Keep a visible, inaccessible observer so this remains a combat loading test.
+ s.units[3].x=12;for(const t of s.tiles)if(Math.abs(t.x-12)<=1&&Math.abs(t.y-6)<=1&&(t.x!==12||t.y!==6)){t.blocked=true;t.blocksSight=false;}
+assert.ok(s.units[0].maxAP+20<75);
  while(!s.artillery[0].loaded&&turns<12){
   const before=structuredClone(s),p=preview(s);assert.equal(p.valid,true);s=order(s);assert.equal(s.lastError,null);
   for(let i=0;i<3;i++){assert.equal(before.units[i].ap-s.units[i].ap,p.pa);spent[i]+=p.pa;}

@@ -121,7 +121,7 @@ export function reloadPlan(unit,state){
 }
 export function reloadCost(unit,state){return reloadPlan(unit,state).totalPA;}
 function makeUnit(raw,side,index,x,y){const stats=raw.stats||{};const weapon=raw.weapon??raw.primary??1800;const w=typeof weapon==='object'?weapon:WEAPONS[weapon]||WEAPONS[1800];return {...raw,id:String(raw.id??`${side}-${index}`),name:raw.name||raw.nickname||(side==='player'?'Granadero':'Realista'),side,facing:raw.facing??(side==='enemy'?6:2),stealthMode:Boolean(raw.stealthMode),x:raw.x??x,y:raw.y??y,maxHp:raw.maxHp??raw.health??stats.health??100,hp:raw.hp??raw.health??stats.health??100,ap:100,morale:raw.morale??Math.min(100,(raw.personality==='optimistic'?90:raw.personality==='pessimistic'?70:80)+((raw.traits||[]).includes('steadfast')?10:0)),marksmanship:raw.marksmanship??stats.marksmanship??70,agility:raw.agility??stats.agility??75,strength:raw.strength??stats.strength??75,medical:raw.medical??stats.medical??30,mechanical:raw.mechanical??stats.mechanical??0,stealth:raw.stealth??stats.stealth??0,weapon,loaded:raw.loaded??(WEAPONS[weapon]||typeof weapon==='object'?w.capacity:0),ammo:raw.ammo??12,condition:raw.condition??100,stance:raw.stance??movementStance(raw.movementMode??'walk'),mounted:Boolean(raw.mounted),horse:Boolean(raw.horse||raw.canMount||raw.mounted),jammed:raw.jammed??false,bleeding:raw.bleeding??0,bandaged:raw.bandaged??((raw.bleeding??0)>0?0:Math.max(0,(raw.maxHp??raw.health??stats.health??100)-(raw.hp??raw.health??stats.health??100))),shock:raw.shock??0,experienceLevel:raw.experienceLevel??stats.experienceLevel??Math.min(10,4+Math.floor((raw.xp??0)/100)),dexterity:raw.dexterity??stats.dexterity??75,wisdom:raw.wisdom??stats.wisdom??50,carriedAP:0,routed:raw.routed??false,medkits:raw.medkits??2,momentum:0,lastDirection:null,activeSlot:raw.activeSlot||'primary',fatigue:raw.fatigue||0,priming:raw.priming??50,flints:raw.flints??4,rations:raw.rations??2,energy:raw.energy??100,unconscious:isUnconscious({hp:raw.hp??raw.health??stats.health??100,energy:raw.energy??100}),movementMode:raw.movementMode||'walk',inventory:{...raw.inventory},boleadoras:raw.boleadoras??1,torches:raw.torches??2,strengthTraining:raw.strengthTraining??0,interceptTurn:0,parryTurn:0,counterTurn:0,braceTurn:0,braced:false,knockedDown:Boolean(raw.knockedDown),overwatch:raw.overwatch??(side==='enemy'),reactionTurn:0,reactionSpent:0};}
-export function createBattle(squad=[],sector={}){const width=sector.width||16,height=sector.height||12;const state={version:1,fittingRulesVersion:FITTING_RULES_VERSION,exits:structuredClone(sector.exits??[]),exitRulesVersion:sector.exitRulesVersion??1,enemyExits:['N','E','S','W'].map(edge=>({id:`enemy:${edge}`,edge,destination:'__offmap_enemy__'})),battleId:sector.id??null,startSeconds:(sector.hour??(sector.night||sector.weather?.night?0:12))*3600+(sector.secondOfHour??0),elapsedSeconds:0,syncedSeconds:0,roundTimeCharged:false,sectorId:sector.sector||sector.id||'san-lorenzo',sectorName:sector.name||'San Lorenzo',width,height,biome:sector.biome||'grassland',altitude:sector.altitude||0,night:Boolean(sector.night||sector.weather?.night||(sector.hour!==undefined&&(sector.hour%24>=20||sector.hour%24<6))),enemyCommand:sector.enemyCommand||null,objective:sector.objective||null,npcs:structuredClone(sector.npcs||[]),props:structuredClone(sector.props??[]),buildings:sector.buildings||[],revealedRooms:[],decor:sector.decor||[],turn:1,enemyTurns:0,phase:'player',mode:sector.exploration?'exploration':'combat',sectorCleared:false,status:'active',seed:(sector.seed??18130203)>>>0,weather:{rain:0,humidity:0,...sector.weather},tiles:[],units:[],droppedWeapons:[],groundItems:[],lights:(sector.lights||[]).map((l,i)=>({id:`light-${i}`,type:'campfire',radius:4,intensity:1,...l})),artillery:(sector.artillery||[]).map((g,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',loaded:true,ammo:6,...g})),smoke:[],log:[],lastError:null};
+export function createBattle(squad=[],sector={}){const width=sector.width||16,height=sector.height||12;const state={version:1,fittingRulesVersion:FITTING_RULES_VERSION,exits:structuredClone(sector.exits??[]),exitRulesVersion:sector.exitRulesVersion??1,enemyExits:['N','E','S','W'].map(edge=>({id:`enemy:${edge}`,edge,destination:'__offmap_enemy__'})),battleId:sector.id??null,startSeconds:(sector.hour??(sector.night||sector.weather?.night?0:12))*3600+(sector.secondOfHour??0),elapsedSeconds:0,syncedSeconds:0,roundTimeCharged:false,quietCombatTurns:sector.exploration?2:0,contactThisRound:false,sectorId:sector.sector||sector.id||'san-lorenzo',sectorName:sector.name||'San Lorenzo',width,height,biome:sector.biome||'grassland',altitude:sector.altitude||0,night:Boolean(sector.night||sector.weather?.night||(sector.hour!==undefined&&(sector.hour%24>=20||sector.hour%24<6))),enemyCommand:sector.enemyCommand||null,objective:sector.objective||null,npcs:structuredClone(sector.npcs||[]),props:structuredClone(sector.props??[]),buildings:sector.buildings||[],revealedRooms:[],decor:sector.decor||[],turn:1,enemyTurns:0,phase:'player',mode:sector.exploration?'exploration':'combat',sectorCleared:false,status:'active',seed:(sector.seed??18130203)>>>0,weather:{rain:0,humidity:0,...sector.weather},tiles:[],units:[],droppedWeapons:[],groundItems:[],lights:(sector.lights||[]).map((l,i)=>({id:`light-${i}`,type:'campfire',radius:4,intensity:1,...l})),artillery:(sector.artillery||[]).map((g,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',loaded:true,ammo:6,...g})),smoke:[],log:[],lastError:null};
 state.weather.rain=typeof state.weather.rain==='boolean'?(state.weather.rain?40:0):state.weather.rain;state.weather.humidity=state.weather.humidity>0&&state.weather.humidity<=1?state.weather.humidity*10:state.weather.humidity;
 for(let y=0;y<height;y++)for(let x=0;x<width;x++){const edge=x===Math.floor(width*.56)&&y>1&&y<height-2&&y!==Math.floor(height/2);state.tiles.push({x,y,type:edge?'wall':sector.biome==='wetland'&&x>3&&x<width-3&&y%3===0?'mud':sector.biome==='mountain'||sector.biome==='foothills'?'stone':'grass',blocked:edge,cover:edge?40:sector.biome==='forest'&&x>3&&x<width-3&&y%3===0?20:0});}
 if(Array.isArray(sector.tiles))state.tiles=sector.tiles.map(t=>({blocked:false,cover:0,...t}));
@@ -172,10 +172,19 @@ function investigateNoise(s,u){
   const heard=u.lastHeardNoise;
   if(heard&&dist(u,heard)<=Math.max(1,heard.uncertainty)&&facingAllowsSight(u,heard,{peripheralRange:0})&&hasLineOfSight(s,u,heard)){delete u.lastHeardNoise;u.lastInvestigatedTurn=s.turn;}
 }
-function rememberContacts(s){forgetInvestigatedNoise(s);for(const u of s.units.filter(alive)){const seen=visibleHostiles(s,u).filter(alive).sort((a,b)=>dist(u,a)-dist(u,b)||String(a.id).localeCompare(String(b.id)));if(seen.length)u.lastKnownEnemy={x:seen[0].x,y:seen[0].y,turn:s.turn};else if(u.lastKnownEnemy&&(s.turn-u.lastKnownEnemy.turn>3||dist(u,u.lastKnownEnemy)<=1))delete u.lastKnownEnemy;}}
+function rememberContacts(s){if(s.mode==='combat'&&hasVisualContact(s)){s.contactThisRound=true;s.quietCombatTurns=0;}forgetInvestigatedNoise(s);for(const u of s.units.filter(alive)){const seen=visibleHostiles(s,u).filter(alive).sort((a,b)=>dist(u,a)-dist(u,b)||String(a.id).localeCompare(String(b.id)));if(seen.length)u.lastKnownEnemy={x:seen[0].x,y:seen[0].y,turn:s.turn};else if(u.lastKnownEnemy&&(s.turn-u.lastKnownEnemy.turn>3||dist(u,u.lastKnownEnemy)<=1))delete u.lastKnownEnemy;}}
+function hasVisualContact(s){return s.units.some(u=>alive(u)&&visibleHostiles(s,u).some(alive));}
 export function canEndCombat(s){
-  if(s.status!=='active'||s.mode!=='combat'||s.phase!=='player'||s.alliedTurn||s.units.some(u=>u.routed&&fieldCapable(u)))return false;
-  return !s.units.some(u=>alive(u)&&(visibleHostiles(s,u).length||[u.lastKnownEnemy,u.lastHeardNoise].some(k=>k&&s.turn-k.turn<=3)));
+  if(s.status!=='active'||s.mode!=='combat'||s.phase!=='player'||s.alliedTurn||s.enemyTurn||s.interrupt||s.reactionStack?.length||s.units.some(u=>u.routed&&fieldCapable(u))||hasVisualContact(s))return false;
+  // Older snapshots have no counter. Use their retained sight history only;
+  // anonymous sound remains an investigation clue, not visible enemy contact.
+  return s.quietCombatTurns===undefined?!s.units.some(u=>alive(u)&&u.lastKnownEnemy&&s.turn-u.lastKnownEnemy.turn<=2):s.quietCombatTurns>=2;
+}
+function resumeExploration(s){
+  s.mode='exploration';s.status='active';s.phase='player';s.roundTimeCharged=false;s.contactThisRound=false;s.quietCombatTurns=2;
+  delete s.enemyFirstAwaitingPlayer;delete s.roundFirstSide;
+  say(s,s.sectorCleared?'El sector está despejado. Puedes explorar y recoger equipo.':'Dos turnos sin contacto visual. La escuadra vuelve a explorar.');
+  return s;
 }
 function resolveFirstContact(s){
   if(s.contactInitiative!=='enemy')return s;
@@ -186,7 +195,7 @@ function detectContact(s){
   const observers=s.units.filter(u=>alive(u)&&visibleHostiles(s,u).some(alive));
   if(!observers.length)return false;
   const playerAware=observers.some(u=>u.side==='player');
-  s.mode='combat';s.phase='player';s.enemyTurns=0;s.roundTimeCharged=false;
+  s.mode='combat';s.phase='player';s.enemyTurns=0;s.roundTimeCharged=false;s.quietCombatTurns=0;s.contactThisRound=true;
   s.roundFirstSide=playerAware?'player':'enemy';delete s.enemyFirstAwaitingPlayer;
   for(const u of s.units.filter(alive)){u.maxAP=maxActionPoints(s,u);u.ap=u.maxAP;}
   if(!playerAware)s.contactInitiative='enemy';
@@ -1185,10 +1194,9 @@ function actBattleOrder(state,action,movementPath=null){
   }
   if(action.type==='explore'){
     if(s.status==='victory'||s.status==='active'&&(s.sectorCleared||canEndCombat(s))){
-      s.mode='exploration';s.status='active';s.roundTimeCharged=false;delete s.enemyFirstAwaitingPlayer;delete s.roundFirstSide;
-      say(s,s.sectorCleared?'El sector está despejado. Puedes explorar y recoger equipo.':'No hay contacto reciente. La escuadra vuelve a explorar; aún quedan enemigos en el sector.');return s;
+      return resumeExploration(s);
     }
-    s.lastError='Aún hay contacto visual o señales recientes del enemigo.';say(s,s.lastError);return s;
+    s.lastError='Deben pasar dos turnos completos sin contacto visual con el enemigo.';say(s,s.lastError);return s;
   }
   const oldMode=s.mode;delete s.actionDurationSeconds;delete s.actionTimeAppliedSeconds;
   const success=action.type==='exit'?applyExit(s,action):apply(s,action,false,movementPath);
@@ -1227,7 +1235,7 @@ function runAlliedTurn(s){
   }
   if(s.status!=='active')return s;
   delete s.alliedTurn;finishCombatRound(s);
-  return queue.startEnemyAfter&&s.status==='active'?endTurnState(s):s;
+  return queue.startEnemyAfter&&s.status==='active'&&s.mode==='combat'?endTurnState(s):s;
 }
 function settleAutonomous(s){
   while(s.status==='active'){
@@ -1261,8 +1269,11 @@ function finishCombatRound(s){
     if(u.side==='player')beginUnitTurn(s,u);
     u.momentum=0;u.lastDirection=null;
   }
+  const contact=s.contactThisRound||hasVisualContact(s);
+  s.quietCombatTurns=contact?0:Math.min(2,(s.quietCombatTurns??0)+1);s.contactThisRound=false;
   s.turn++;s.phase='player';s.roundTimeCharged=false;checkEnd(s);rememberContacts(s);revealRooms(s);
-  if(s.status==='active')say(s,`Turno ${s.turn}: ¡órdenes, comandante!`);
+  if(canEndCombat(s))resumeExploration(s);
+  else if(s.status==='active')say(s,`Turno ${s.turn}: ¡órdenes, comandante!`);
   s.lastError=null;return s;
 }
 function runEnemyPhase(s){

@@ -15,7 +15,7 @@ test('automatic defense uses deterministic ordinary combat, actual wounds, cartr
  assert.ok(first.actions>0);assert.ok(first.battle.units.some(u=>u.side==='player'&&u.reactionTurn>0));
  assert.ok(supply(first.battle)<supply(initial));assert.ok(first.battle.units.some(u=>u.side==='enemy'&&u.hp===0));
  for(const u of first.battle.units){const start=initial.units.find(v=>v.id===u.id);assert.ok(u.hp<=start.hp);assert.ok(u.ammo+u.loaded<=start.ammo+start.loaded);assert.ok(u.medkits<=start.medkits);}
- assert.equal(first.battle.elapsedSeconds,first.battle.turn*6);assert.doesNotThrow(()=>validateBattleSnapshot(first.battle));
+ assert.equal(first.battle.elapsedSeconds,54,'quiet turns and exploration time remain part of the real clock');assert.doesNotThrow(()=>validateBattleSnapshot(first.battle));
  assert.equal(first.battle.interrupt,undefined);assert.equal(first.battle.reactionStack,undefined);assert.equal(first.battle.enemyTurn,undefined);
 });
 test('automatic defeat returns the actual wounded survivor, not invented deaths or a success',()=>{
@@ -56,7 +56,7 @@ test('a sealed remaining soldier stays in the encounter after partial withdrawal
  const state=withdrawalFixture([{id:'p',x:0,y:2},{id:'q',x:4,y:4}]);
  for(const t of state.tiles)if(Math.abs(t.x-4)<=1&&Math.abs(t.y-4)<=1&&(t.x!==4||t.y!==4))Object.assign(t,{type:'wall',blocked:true,blocksSight:true});
  const result=withdrawAutomatically(state);
- assert.equal(result.battle.status,'active');assert.equal(result.rounds,8);assert.ok(result.battle.units[0].departure);assert.equal(result.battle.units[1].departure,undefined);
+ assert.equal(result.battle.status,'active');assert.equal(result.rounds,2);assert.equal(result.battle.mode,'exploration');assert.ok(result.battle.units[0].departure);assert.equal(result.battle.units[1].departure,undefined);
  assert.deepEqual({x:result.battle.units[1].x,y:result.battle.units[1].y},{x:4,y:4});assert.deepEqual(result.battle,replayWithdrawal(state,result.orders));
  const resumed=battleFromRequest({resumeSnapshot:result.battle},{hour:999});assert.deepEqual(resumed,result.battle);assert.notEqual(resumed,result.battle);assert.notEqual(resumed.units[0],result.battle.units[0]);assert.doesNotThrow(()=>validateBattleSnapshot(resumed));
 });

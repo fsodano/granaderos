@@ -15,10 +15,11 @@ const grid=(width=32,height=8)=>Array.from({length:width*height},(_,i)=>({x:i%wi
 const field=(unit={},options={})=>createBattle([{id:'p',name:'Tirador',x:1,y:1,weapon:1802,loaded:0,ammo:3,...unit}],{width:32,height:8,tiles:grid(),enemies:[{id:'e',x:30,y:6,patrol:false,weapon:1813,loaded:0,ammo:0}],seed:45,...options});
 const act=(s,a)=>{const n=actBattle(s,{unitId:'p',...a});assert.equal(n.lastError,null,n.lastError);return n;};
 const load=s=>act(s,{type:'reload'});
+const retainContact=s=>{s.units[1].x=12;for(const t of s.tiles)if(Math.abs(t.x-12)<=1&&Math.abs(t.y-6)<=1&&(t.x!==12||t.y!==6)){t.blocked=true;t.blocksSight=false;}return s;};
 const physical=s=>({...s,log:[],lastError:null});
 
 test('a wounded soldier finishes a Baker reload over real turns without gaining AP or cartridges',()=>{
- let s=field({hp:20,maxHp:100,bandaged:80,energy:30,fatigue:90,medical:0}),spent=0,turns=0;
+ let s=retainContact(field({hp:20,maxHp:100,bandaged:80,energy:30,fatigue:90,medical:0})),spent=0,turns=0;
  assert.ok(s.units[0].maxAP+20<70);
  while(!s.units[0].loaded&&turns<10){
   const u=s.units[0],before=structuredClone(s),plan=reloadPlan(u,s),preview=targetPreview(s,u,null,{mode:'fire'});
@@ -135,7 +136,7 @@ test('exploration finishes saved work in the remaining time without spending AP 
 });
 
 test('autonomous wounded militia finish loading across their own turns',()=>{
- let s=field();s.units.push({...structuredClone(s.units[0]),id:'m',militia:true,x:1,y:4,hp:20,maxHp:100,bandaged:80,energy:30,fatigue:90,medical:0,ap:15});
+ let s=retainContact(field());s.units.push({...structuredClone(s.units[0]),id:'m',militia:true,x:1,y:4,hp:20,maxHp:100,bandaged:80,energy:30,fatigue:90,medical:0,ap:15});
  for(let i=0;i<8&&!s.units[2].loaded;i++){
   s=endTurn(s);const m=s.units.find(u=>u.id==='m');assert.equal(m.loaded+m.ammo,3);assert.doesNotThrow(()=>validateBattleSnapshot(s));
   if(i===0){assert.equal(m.loaded,0);assert.ok(m.reloadProgress>0);}
