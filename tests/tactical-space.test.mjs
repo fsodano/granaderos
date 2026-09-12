@@ -66,13 +66,20 @@ test('save validation rejects unsupported levels, malformed geometry, and invali
  ];
  for(const [index,mutate]of mutations.entries()){const s=terraceFixture();mutate(s);assert.throws(()=>validateBattleSnapshot(s),undefined,`mutation ${index}`);}
 });
-test('terrace IDs and access endpoints survive compact-map expansion without enabling existing maps',()=>{
+test('terrace IDs survive expansion and explicit empty geometry keeps authored campaign maps flat',()=>{
  const core=buildSectorMap({sector:'retiro',compactLayout:true,exploration:true,enemies:[]}),building=core.buildings[0];
  const geometry=buildTerrace({...building,roof:'terrace'},{climbPoints:[{id:'west',from:{x:building.x-1,y:building.y+1},to:{x:building.x,y:building.y+1}}]});
  Object.assign(core,geometry);const expanded=expandSectorMap(core);
  for(const surface of geometry.upperSurfaces){const moved=expanded.upperSurfaces.find(p=>p.id===surface.id);assert.deepEqual(moved,{...surface,x:surface.x+22,y:surface.y+16});}
  assert.deepEqual(expanded.climbLinks,geometry.climbLinks.map(l=>({...l,from:{...l.from,x:l.from.x+22,y:l.from.y+16},to:{...l.to,x:l.to.x+22,y:l.to.y+16}})));
  validateTacticalSpace(expanded);
- for(const sector of MAP_IDS){const map=buildSectorMap({sector});assert.equal(Object.hasOwn(map,'upperSurfaces'),false,sector);assert.equal(Object.hasOwn(map,'climbLinks'),false,sector);}
+ for(const sector of MAP_IDS){
+  const map=buildSectorMap({sector}),flat=buildSectorMap({sector,upperSurfaces:[],climbLinks:[]});
+  validateTacticalSpace(map);validateTacticalSpace(flat);
+  if(map.buildings.some(building=>building.architecture==='house'&&building.roof==='terrace')){assert.ok(map.upperSurfaces.length>0,sector);assert.ok(map.climbLinks.length>0,sector);}
+  else{assert.equal(Object.hasOwn(map,'upperSurfaces'),false,sector);assert.equal(Object.hasOwn(map,'climbLinks'),false,sector);}
+  assert.deepEqual(flat.upperSurfaces,[]);assert.deepEqual(flat.climbLinks,[]);
+  assert.deepEqual(flat.tiles,map.tiles);assert.deepEqual(flat.props,map.props);assert.deepEqual(flat.buildings,map.buildings);
+ }
  assert.throws(()=>buildTerrace({...building,roof:'tile'}));
 });
