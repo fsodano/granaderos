@@ -1,4 +1,16 @@
-# Verified northern campaign route
+# Northern campaign route verification
+
+## Current regional terrain and weather checkpoint
+
+Checked on 12 September 2026 from `be30998`, with the opening equipment repair at `1706034`. San Nicolás, San Lorenzo and Córdoba each reach a real victory and repeat deterministically. The complete route does not yet pass on this checkpoint.
+
+All six original soldiers survive San Nicolás. San Lorenzo leaves 110 and 114 alive; 1000, 115, 123 and 107 remain dead. Northern preparation selects actual living donors instead of requiring dead soldier 123 to transfer items. It collects sixteen finite battlefield dressings and receives four carried dressings from 110 and 114. The paid doctors use three to heal 114. Four paid recruits fill the squad to six; available rifles and outfits are taken through ordinary sector inventory orders.
+
+Preparation ends at hour 72. Córdoba falls at hour 84 after 16 turns and 99 orders. Only 134 and 117 survive that assault, at 68 and 15 HP. The helper repeats the battle, saves its synchronized result, and preserves all actual deaths. No soldier or item is created to match the earlier route.
+
+The named playthrough passes its first two checks. Its next check stops when hiring doctor 139 automatically fills a vacant squad slot, while the old preparation expects the squad to stay unchanged. Later checks still contain casualty identities from the earlier checkpoint. Tucumán defeat, rescue, paid care, Salta and Yatasto remain required and unverified with current regional conditions. The results below are historical evidence only.
+
+## Earlier building-map checkpoint
 
 Checkpoint: 12 September 2026, on the building maps introduced at `d90e52b` and the gameplay engine at `4c10749`. The route uses the actual opening casualties, finite field supplies, and paid contracts. It also runs against the working checkout's higher elite prices. This is an **established southern campaign**, with Buenos Aires and Ensenada explicitly secured before the scenario begins. It does not prove the full Retiro-only campaign or the ending. See [Retiro opening](retiro-start.md) for the separately verified fresh start.
 
@@ -35,6 +47,6 @@ The two squads reach Salta at hour 228. Their victory costs Ferreira, Peralta, D
 
 `tests/opening-playthrough.test.mjs` runs all eight checks, including the enclosing route. The route helpers issue ordinary orders; they do not set health, refill inventories, edit clocks, fabricate victories or revive old casualties. Each selected combat request replays before its result is accepted. The original source campaign is checked for mutation, and full saves preserve the resulting state.
 
-The earlier `fede464` route used different casualties, supply quantities and cheap elite contracts. It is historical evidence only. The current route restores the original combat, loss, rescue, courier, coordinated-assault and mission requirements on the current maps. It still needs integration with a full Retiro-only start and continuation through Cuyo, the mountain passes, counterattacks and the ending. A passing route is not a claim of complete JA2 parity or broad campaign balance.
+The earlier `fede464` route used different casualties, supply quantities and cheap elite contracts. It is historical evidence only. This building-map checkpoint restored the original combat, loss, rescue, courier, coordinated-assault and mission requirements on those maps. It still needs integration with a full Retiro-only start and continuation through Cuyo, the mountain passes, counterattacks and the ending. A passing route is not a claim of complete JA2 parity or broad campaign balance.
 
 Verification: all 1,579 tests pass in the isolated checkout. The working checkout, including its concurrent elite-price changes, separately passes all eight northern-route checks. No product source files change in this checkpoint.

@@ -32,7 +32,13 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
  });
  await t.test('survivors recover with finite supplies and paid replacements capture Córdoba',()=>{
   const before=structuredClone(opening.campaign),prepared=prepareNorthernSquad(opening.campaign);
-  assert.deepEqual(opening.campaign,before);assert.equal(prepared.recovery.usedDressings,27);
+  assert.deepEqual(opening.campaign,before);assert.ok(prepared.recovery.usedDressings>0);
+  assert.equal(prepared.recovery.donatedDressings,prepared.recovery.donors.reduce((sum,donor)=>sum+donor.count,0));
+  for(const donor of prepared.recovery.donors){assert.equal(before.operativeState[donor.id].alive,true);assert.equal(donor.count,before.operativeState[donor.id].medkits);assert.equal(prepared.campaign.operativeState[donor.id].medkits,0);}
+  for(const id of prepared.recovery.patients)assert.equal(prepared.campaign.operativeState[id].hp,prepared.campaign.operativeState[id].maxHp);
+  assert.deepEqual(prepared.campaign.squad,prepared.recovery.fieldIds);assert.equal(new Set(prepared.campaign.squad).size,6);
+  for(const id of prepared.recovery.replacements){assert.ok(!before.recruited.includes(id));assert.equal(before.operativeState[id].alive,true);assert.ok(prepared.campaign.contracts[id]);}
+  for(const id of prepared.campaign.squad)assert.equal(prepared.campaign.operativeState[id].alive,true);
   const result=fightNorthernSector(prepared.campaign,'cordoba');
   for(const id of opening.casualties)assert.equal(result.campaign.operativeState[id].alive,false);
   assert.equal(result.campaign.phase,2);assert.equal(result.campaign.completed,false);cordoba=result.campaign;

@@ -10,7 +10,9 @@ The old salvage plan required both a dead friendly rifleman and a paid replaceme
 
 The current route wins both opening battles and repeats each battle to check determinism. The San Lorenzo inventory check selects an actual local survivor instead of requiring officer 1000 to survive. Four focused tests cover surviving rifle owners, finite enemy salvage, friendly remains, repeated preparation and missing supplies.
 
-The full named playthrough now reaches northern preparation. It still fails because that later plan requires fixed donors 114 and 123 to hold medical supplies. Its Córdoba, Tucumán defeat, rescue, paid recovery, Salta and Yatasto requirements remain unchanged and are not claimed complete.
+Northern preparation now takes the four carried dressings from the actual living donors, 110 and 114, and collects sixteen from the two battlefields. Three dressings heal the wounded survivor. It fills the six-person force with four real paid recruits, preserving every earlier death, and recovers available rifles and clothing. Córdoba falls through ordinary combat at hour 84; both combat runs produce the same outcome.
+
+The full named playthrough now passes the San Lorenzo inventory check and the recovery/Córdoba check. It stops in the next preparation: hiring doctor 139 fills a vacant squad slot, while the old plan expects the squad to stay unchanged. Later fixed casualty identities also refer to soldiers who have already died. The Tucumán defeat, rescue, paid recovery, Salta and Yatasto requirements remain unchanged and are not claimed complete.
 
 ## What failed and what changed
 

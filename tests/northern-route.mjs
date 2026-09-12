@@ -30,8 +30,16 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
  for(const id of doctors)order({type:'recruitCivic',id,term:'week'});
  assert.equal(cash-campaign.resources.treasury,294);
  const recoveredDressings=gather(112)+gather(122,1000,'san_lorenzo');assert.ok(recoveredDressings>0);
- let donatedDressings=0;
- for(const id of [114,123]){const count=campaign.operativeState[id].medkits;assert.ok(count>0);order({type:'sectorInventory',sector:'san_nicolas',operativeId:id,direction:'drop',item:'medkits',count});donatedDressings+=count;}
+ let donatedDressings=0;const donors=[];
+ for(const id of campaign.recruited){
+  const record=campaign.operativeState[id];
+  if(doctors.includes(id)||!record.alive||record.captured||!record.medkits)continue;
+  const available=model(id);if(available.operativeId!==id||available.reason)continue;
+  const count=record.medkits;
+  order({type:'sectorInventory',sector:'san_nicolas',operativeId:id,direction:'drop',item:'medkits',count});
+  assert.equal(campaign.operativeState[id].medkits,0,'the donor parts with the actual carried dressings');
+  donors.push({id,count});donatedDressings+=count;
+ }
  assert.equal(gather(112),donatedDressings);
  const medicalStart=doctors.reduce((sum,id)=>sum+campaign.operativeState[id].medkits,0);
  for(const operativeId of patients)order({type:'assignCare',operativeId,assignment:'patient'});
@@ -46,11 +54,19 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
  // Rest and stage for a daylight arrival without editing health or clocks.
  const departure=campaign.hour+6+(24-(campaign.hour+6)%24)%24;
  for(let i=0;campaign.hour<departure&&i<80;i++)order({type:'wait',hours:1});assert.equal(campaign.hour,departure);
- for(const id of [120,134,136])order({type:'recruitCivic',id,term:'week'});
- const ids=[1000,114,123,120,134,136];order({type:'squad',ids});
+ const available=id=>campaign.recruited.includes(id)&&campaign.operativeState[id].alive&&!campaign.operativeState[id].captured&&campaign.operativeState[id].location==='san_nicolas';
+ const survivors=[...new Set([1000,114,123,...campaign.recruited])].filter(id=>!doctors.includes(id)&&available(id));
+ const replacements=[];
+ for(const id of [120,134,136,117,119,127]){
+  if(survivors.length+replacements.length>=6)break;
+  if(campaign.recruited.includes(id)||!campaign.operativeState[id].alive)continue;
+  const before=campaign.resources.treasury;order({type:'recruitCivic',id,term:'week'});
+  assert.ok(campaign.resources.treasury<before,'a replacement has a real paid contract');replacements.push(id);
+ }
+ const ids=[...survivors,...replacements].slice(0,6);assert.equal(ids.length,6,'the living force has six paid or surviving soldiers');order({type:'squad',ids});
  for(const operativeId of ids)order({type:'assignCare',operativeId,assignment:'active'});
  // Reuse actual fallen soldiers' long guns and clothing, keeping all identities.
- for(const id of [120,134,136]){
+ for(const id of replacements){
   const source=model(id).entries.find(row=>row.reachable&&[1800,1801,1802].includes(JSON.parse(row.expected).weapon));
   if(source){const incoming=JSON.parse(source.expected);order({type:'sectorInventory',sector:'san_nicolas',operativeId:id,direction:'take',sourceKey:source.key,expected:source.expected,count:1});
    const item=model(id).carried.find(row=>row.equip?.some(e=>e.slot==='primary')&&JSON.parse(row.expected).weapon===incoming.weapon);
@@ -61,7 +77,7 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
  for(const id of dead)assert.equal(campaign.operativeState[id].alive,false);
  for(const id of ids){assert.ok(campaign.operativeState[id].hp>=15);assert.equal(campaign.operativeState[id].bleeding,0);}
  assert.ok(campaign.resources.treasury>=0);assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
- const recovery={startHour:recoveryStart,endHour:campaign.hour,doctors,patients,usedDressings,recoveredDressings,donatedDressings,gathered};report({event:'recovered',...recovery,cash:campaign.resources.treasury});
+ const recovery={startHour:recoveryStart,endHour:campaign.hour,doctors,patients,usedDressings,recoveredDressings,donatedDressings,donors,replacements,fieldIds:ids,gathered};report({event:'recovered',...recovery,cash:campaign.resources.treasury});
  return {campaign,events,dead,recovery};
 }
 
