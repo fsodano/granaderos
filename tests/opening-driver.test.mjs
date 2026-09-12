@@ -23,7 +23,7 @@ test('the opening driver budgets turning before extra aim',()=>{
 test('a commander with only a critical ally can stand and then search instead of changing posture forever',()=>{
  let s=field([{id:'57',x:1,y:1,missionAlly:true,weapon:1808,stance:'prone'},{id:'patient',x:2,y:1,hp:9,maxHp:100,bandaged:91}],{x:31,y:11});
  const first=combatOrder(s,s.units[0]);assert.deepEqual(first,{type:'stance',unitId:'57',stance:'standing'});
- s=apply(s,first);const second=combatOrder(s,s.units[0]);assert.equal(second.type,'move');
+ s=apply(s,first);const second=combatOrder(s,s.units[0]);assert.equal(second.type,'move');assert.equal(second.tacticalLevel,0,'reconnaissance retains its intended ground floor');
  const start={x:s.units[0].x,y:s.units[0].y},next=apply(s,second);assert.notDeepEqual({x:next.units[0].x,y:next.units[0].y},start);assert.equal(next.units[1].hp,9);
 });
 
@@ -32,4 +32,13 @@ test('the commander still waits for able infantry and takes a firing posture at 
  assert.equal(combatOrder(s,s.units[0]),null);
  s=field([{id:'57',x:1,y:1,missionAlly:true,weapon:1808,stance:'standing'},{id:'patient',x:2,y:1,hp:9,maxHp:100,bandaged:91}],{x:4,y:2});
  const order=combatOrder(s,s.units[0]);assert.deepEqual(order,{type:'stance',unitId:'57',stance:'prone'});
+});
+
+
+test('the opening driver does not prescribe adjacent medical use across a visible roof edge',()=>{
+ const s=createBattle([{id:'medic',x:1,y:1,medical:70,medkits:2,activeSlot:'medical'},{id:'patient',x:2,y:1,tacticalLevel:1,hp:60,maxHp:100,bleeding:5}],{width:32,height:12,tiles,seed:45,upperSurfaces:[{id:'roof',x:2,y:1,tacticalLevel:1,elevation:3,type:'floor',kind:'platform',blocked:false,cover:0}],enemies:[{id:'e',x:31,y:11,patrol:false}]});
+ const before=structuredClone(s),order=combatOrder(s,s.units[0]);
+ assert.deepEqual(order,{type:'weapon',unitId:'medic',slot:'primary'});
+ assert.deepEqual(s,before);const next=apply(s,order);
+ assert.equal(next.units[1].bleeding,s.units[1].bleeding);assert.equal(next.units[0].medkits,2);
 });

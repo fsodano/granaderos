@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {enterSector} from '../game/world.js';
 import {actBattle,endTurn,getReachable,hasLineOfSight,canSee,shotChance,actionCosts,interruptAvailable,stanceCost} from '../game/tactical.js';
 import {chooseEnemyAction} from '../game/tactical-ai.js';
+import {sameSurface,spacePoint} from '../game/tactical-space.js';
 
 const alive=u=>u.hp>0&&!u.departure&&!u.surrendered&&!u.unconscious&&!u.routed;
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
@@ -14,7 +15,7 @@ export function combatOrder(b,u){
  // The commander takes a firing posture at contact, but must be able to
  // stand and search when only incapacitated allies remain.
  if(visible.length&&u.missionAlly&&u.stance!=='prone'&&u.ap>=stanceCost(u,'prone'))return {type:'stance',unitId:u.id,stance:'prone'};
- const patient=b.units.filter(v=>v.side===u.side&&v.hp>0&&!v.departure&&!v.surrendered&&!v.routed&&v.bleeding>0&&distance(u,v)<=1.5&&hasLineOfSight(b,u,v)).sort((a,b)=>a.hp-b.hp)[0];
+ const patient=b.units.filter(v=>v.side===u.side&&v.hp>0&&!v.departure&&!v.surrendered&&!v.routed&&v.bleeding>0&&sameSurface(u,v)&&distance(u,v)<=1.5&&hasLineOfSight(b,u,v)).sort((a,b)=>a.hp-b.hp)[0];
  if(patient&&u.medkits>0&&u.medical>0){
   if(u.activeSlot==='medical'&&u.ap>=cost.heal)return {type:'useItem',unitId:u.id,targetId:patient.id};
   if(u.activeSlot!=='medical'&&u.ap>=cost.heal+cost.weapon)return {type:'weapon',unitId:u.id,slot:'medical'};
@@ -42,12 +43,12 @@ export function combatOrder(b,u){
  if(u.missionAlly&&players.length>1)return null; // Infantry scouts first; a lone commander must still act.
  if(visible.length)return null;
  // Reconnaissance advances toward the known sector center in short bounds.
- const destination={x:Math.floor(b.width*.65),y:Math.floor(b.height*.5)};
- if(distance(u,destination)<=4)return null;
+ const destination={x:Math.floor(b.width*.65),y:Math.floor(b.height*.5),tacticalLevel:0};
+ if(sameSurface(u,destination)&&distance(u,destination)<=4)return null;
  if(u.stance!=='standing'&&u.ap>=6)return {type:'stance',unitId:u.id,stance:'standing'};
- const moves=getReachable(b,u).filter(p=>p.cost>0&&p.cost<=Math.min(40,u.ap-20)&&distance(p,destination)<distance(u,destination));
+ const moves=getReachable(b,u).filter(p=>sameSurface(p,destination)&&p.cost>0&&p.cost<=Math.min(40,u.ap-20)&&distance(p,destination)<distance(u,destination));
  moves.sort((a,c)=>distance(a,destination)-distance(c,destination)||a.cost-c.cost);
- return moves[0]?{type:'move',unitId:u.id,x:moves[0].x,y:moves[0].y}:null;
+ return moves[0]?{type:'move',unitId:u.id,...spacePoint(moves[0])}:null;
 }
 export function fight(request,sectorState,{controller=combatOrder}={}){let b=enterSector(request,sectorState),actions=0;
  // Enemy movement can yield several control windows within the same round.
