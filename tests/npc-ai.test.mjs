@@ -107,7 +107,13 @@ test('NPC routines and positions persist on sector re-entry; malformed state is 
 });
 
 test('sheltering civilian sprites keep their conscious life state',()=>{
-  const n={hp:100,stance:'prone'};assert.equal(spriteCondition(n),'prone');assert.equal(selectSprite(n,{moving:false},'idle','civilian').playback,'breathing');assert.equal(n.unconscious,undefined);
+  const n={hp:100,stance:'prone'};
+  assert.equal(spriteCondition(n),'prone');
+  assert.deepEqual(selectSprite(n,{moving:false},'idle','civilian'),{name:'surgeon-prone-unarmed-idle',playback:'still'});
+  assert.deepEqual(selectSprite(n,{moving:true},'idle','civilian'),{name:'surgeon-prone-unarmed-walk',playback:'movement'});
+  assert.deepEqual(selectSprite({...n,unconscious:true},{moving:false},'idle','civilian'),{name:'surgeon-unconscious-breathe',playback:'breathing'});
+  assert.deepEqual(selectSprite({...n,hp:0},{moving:false},'idle','civilian'),{name:'surgeon-dead-idle',playback:'still'});
+  assert.equal(n.unconscious,undefined);
 });
 
 test('ambient ticks advance wounds and lights once, preserve combat AP, and stop in combat',()=>{
