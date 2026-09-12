@@ -6,10 +6,10 @@ import {canChooseShotLocation} from './targeted-combat.js';
 import {tacticalGridLabel} from './tactical-grid.js';
 // Pure HUD model for the tactical battle inspector and squad strip.
 // Read-only descriptors plus action-object constructors; no game rules.
-import {swapHandsPreview, weaponFor, bladeFor, hasFirearm, carriedWeight, carryCapacity, actionCosts, actionPointBudget, stanceCost, shotChance, firearmRangeProfile, firearmProjectilePath, firearmFlightPreview, canSee, hasLineOfSight, artilleryCosts, artilleryCrewPlan, artilleryReloadPreview, interruptAvailable, canEndCombat, fieldCapable, transferPreview, dropPreview, environmentTargetAt, environmentPreview, containerLootPreview, supplyUsePreview, getReachable, movementIntentReason, exitPreview, ARTILLERY, WEAPONS, BLADES} from './tactical.js';
+import {mainItemPreview,swapHandsPreview, weaponFor, bladeFor, hasFirearm, carriedWeight, carryCapacity, actionCosts, actionPointBudget, stanceCost, shotChance, firearmRangeProfile, firearmProjectilePath, firearmFlightPreview, canSee, hasLineOfSight, artilleryCosts, artilleryCrewPlan, artilleryReloadPreview, interruptAvailable, canEndCombat, fieldCapable, transferPreview, dropPreview, environmentTargetAt, environmentPreview, containerLootPreview, supplyUsePreview, getReachable, movementIntentReason, exitPreview, ARTILLERY, WEAPONS, BLADES} from './tactical.js';
 import {directionTo} from './tactical-awareness.js';
 import {unarmedChance} from './unarmed-combat.js';
-import {inventoryUsage, itemDescriptor, INVENTORY_CAPACITY, SUPPLY_ITEMS} from './tactical-inventory.js';
+import {inventoryUsage, carriedObject, itemDescriptor, INVENTORY_CAPACITY, SUPPLY_ITEMS} from './tactical-inventory.js';
 import {TOOL_TYPES, heldTool, ENVIRONMENT_VERBS, environmentTargetSummary, visibleContainerContents} from './environment-interactions.js';
 import {HELD_SUPPLIES, heldSupply} from './held-supplies.js';
 import {planGroupMove} from './group-movement.js';
@@ -182,6 +182,7 @@ export function targetingHelp(mode, unit, ctx = {}) {
   if (mode === 'look') return 'Seleccioná hacia dónde mirar. El giro consume PA. Con un arma de fuego, mirá otra vez en la misma dirección para prepararla sin disparar. La vista previa muestra el costo. F: disparar; Esc: cancelar.';
   if (mode === 'move' && ctx.movementIntent === 'preserveFacing') return 'Alt: mové solo al seleccionado sin girar. Cancela el grupo. Caminar, agachado o cuerpo a tierra; no correr ni montar.';
   if (unit?.activeSlot === 'supply' && ['move', 'useItem'].includes(mode)) return ({torches: 'Seleccioná una casilla para arrojar la antorcha. Para avanzar, cambiá el objeto en mano.', boleadoras: 'Seleccioná un enemigo visible para lanzar las boleadoras.', rations: 'Seleccionate a vos para comer la ración. Recupera fuerzas; no detiene hemorragias.'})[unit.activeSupply] || 'Equipá un pertrecho disponible.';
+  if (unit?.activeSlot === 'item' && ['move','useItem'].includes(mode)) return 'Objeto en mano: podés guardarlo, darlo o soltarlo. Para atacar, prepará un arma o las manos libres.';
   if (unit?.activeSlot === 'tool' && ['move', 'useItem'].includes(mode)) return 'Seleccioná una puerta o un cofre para usar la herramienta. Las casillas libres permiten avanzar.';
   if(hasFirearm(unit||{})&&unit.weaponMode==='melee'&&['move','useItem'].includes(mode))return `${fixedBayonetFor(unit)?'Estocada de bayoneta':'Culatazo'}: seleccioná un enemigo para acercarte y golpear. No dispara ni recarga. Botón derecho o F: apuntar para disparar.`;
   if (mode === 'useItem') return unit?.activeSlot === 'medical' ? 'Seleccionate a vos o a un aliado herido. Se acerca y venda si hay ruta y PA suficientes. Detiene la hemorragia, sin recuperar salud.' : hasFirearm(unit || {}) ? 'Seleccioná un enemigo. Apuntar consume PA adicionales.' : 'Seleccioná un enemigo para acercarte y usar el arma blanca.';
@@ -254,6 +255,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
     coverNote=preview.prepare?'Prepara el arma sin disparar. Conserva los cartuchos; el próximo disparo no vuelve a pagar la preparación.':hasFirearm(unit)?'Una vez orientado, mirá otra vez en esa dirección para preparar el arma.':undefined;
   } else if (target && target.side !== unit.side && ['move', 'useItem', 'fire', 'melee'].includes(mode)) {
     if (target.hp <= 0 || target.surrendered) return null;
+    if (unit.activeSlot === 'item') return {name:target.name,reason:'Este objeto no se puede usar sobre una persona. Guardalo o elegí otro objeto.',valid:false};
     if (unit.activeSlot === 'tool') return {name: target.name, reason: 'La herramienta se usa sobre una puerta o un cofre.', valid: false};
     const attack = contextualAttack(state, unit, target, {type: mode, aim: ctx.aim || 0, hitLocation: hitLocationFor(ctx.hitLocation)});
     pa = attack.pa; attackType = attack.type;
@@ -303,6 +305,7 @@ export function equippedItemHelp(state, unit, ctx = {}) {
   if (!unit) return 'Seleccioná un combatiente.';
   const weapon = weaponFor(unit), costs = actionCosts(state, unit), exploring=state.mode==='exploration';
   if (unit.activeSlot === 'supply') return `${weapon.name} · ${exploring?0:supplyUsePreview(state, unit, ctx.target).cost} PA. ${targetingHelp('useItem', unit)}`;
+  if (unit.activeSlot === 'item') return `${weapon.name}. ${targetingHelp('useItem',unit)}`;
   if (unit.activeSlot === 'tool') return `${weapon.name}. Seleccioná una puerta o un cofre para usarla.`;
   if (unit.activeSlot === 'medical' && exploring) return 'Vendas: sin coste de PA. Seleccionate a vos o a un aliado herido. Consume tiempo y vendas. Detiene la hemorragia; no recupera salud.';
   if (unit.activeSlot === 'medical') return `Vendas: ${costs.heal} PA, más el desplazamiento. Seleccionate a vos o a un aliado herido. Se acerca y venda si hay PA suficientes. Detiene la hemorragia; no recupera salud.`;
@@ -359,8 +362,8 @@ export function slotAction(unit) {
 export function equipmentSlots(state, unit, ctx = {}) {
   const pa = state.mode === 'exploration' ? 0 : actionCosts(state, unit).weapon;
   const tools = toolItems(unit), activeTool = tools.find(tool => tool.item === unit.activeTool) || tools[0], supplies = supplyItems(unit), activeSupply = supplies.find(supply => supply.key === unit.activeSupply) || supplies[0];
-  return [['primary', 'Arma'], ['blade', 'Arma blanca'], ['medical', `Vendas · ${unit.medkits ?? 0}`], ...(tools.length ? [['tool', 'Herramienta']] : []), ...(supplies.length ? [['supply', `${activeSupply.label} · ${activeSupply.count}`]] : []), ['unarmed', 'Manos libres']].map(([slot, label]) => ({slot, label, pa, action: {type: 'weapon', slot, ...(slot === 'tool' ? {toolKey: activeTool.item} : slot === 'supply' ? {supplyKey: activeSupply.key} : {})}, active: (unit.activeSlot || 'primary') === slot && !(slot==='unarmed'&&handLayout(unit).left), disabled: !unitCanAct(state, unit) || Boolean(ctx.busy) || Boolean(unit.knockedDown) || !affordable(state, unit, pa) || (slot === 'medical' ? !(unit.medkits > 0) : slot === 'blade' ? !BLADES[unit.blade] : slot === 'primary' ? !hasPrimary(unit) : false)})).map(option=>{
-    const held=selectMainHand(unit,{activeSlot:option.slot,activeTool:option.action.toolKey,activeSupply:option.action.supplyKey});
+  return [['primary', 'Arma'], ['blade', 'Arma blanca'], ['medical', `Vendas · ${unit.medkits ?? 0}`], ...(tools.length ? [['tool', 'Herramienta']] : []), ...(supplies.length ? [['supply', `${activeSupply.label} · ${activeSupply.count}`]] : []), ...(unit.activeSlot==='item'&&carriedObject(unit)?[['item',carriedObject(unit).label]]:[]), ['unarmed', 'Manos libres']].map(([slot, label]) => ({slot, label, pa, action: {type: 'weapon', slot, ...(slot === 'tool' ? {toolKey: activeTool.item} : slot === 'supply' ? {supplyKey: activeSupply.key} : slot==='item'?{item:unit.activeItem}:{})}, active: (unit.activeSlot || 'primary') === slot && !(slot==='unarmed'&&handLayout(unit).left), disabled: !unitCanAct(state, unit) || Boolean(ctx.busy) || Boolean(unit.knockedDown) || !affordable(state, unit, pa) || (slot === 'medical' ? !(unit.medkits > 0) : slot === 'blade' ? !BLADES[unit.blade] : slot === 'primary' ? !hasPrimary(unit) : false)})).map(option=>{
+    const held=selectMainHand(unit,{activeSlot:option.slot,activeTool:option.action.toolKey,activeSupply:option.action.supplyKey,activeItem:option.action.item});
     let reason=null;try{if(inventoryUsage(held).overloaded)reason='No queda espacio para guardar el objeto en mano.';}catch(error){reason=error.message;}
     return {...option,reason,disabled:option.disabled||Boolean(reason)};
   });
@@ -376,6 +379,7 @@ export function handSlots(state,unit){
   else if(reference==='medkits')option=options.find(o=>o.slot==='medical');
   else if(Object.hasOwn(HELD_SUPPLIES,reference))option=equipmentSlots(state,{...unit,activeSupply:reference}).find(o=>o.slot==='supply');
   else if(reference?.startsWith('inventory:')&&heldTool({...unit,activeSlot:'tool',activeTool:reference}))option=equipmentSlots(state,{...unit,activeTool:reference}).find(o=>o.slot==='tool');
+  else if(reference&&carriedObject(unit,reference))option=mainItemPreview(state,unit,reference);
   return {side,item:reference,blocked,label:descriptor?.label??(blocked?'Ocupada por el arma':'Vacía'),weapon:descriptor?.weapon,loaded:descriptor?.loaded,condition:descriptor?.condition,action:side==='left'?option?.action:null,pa:option?.pa,reason:option?.reason,disabled:blocked||side==='left'&&(option?.disabled||option?.valid===false)};
  });
 }
@@ -589,7 +593,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
   const gun = (state.artillery || []).find(g => g.id === ctx.cannonId && g.side === u.side);
   const costs = unit ? actionCosts(state, unit) : {};
   const pa = {...costs, reload: unit ? reloadPlan(unit, state).pa : 0, fire: costs.fire + Math.max(0, Math.min(4, Math.floor(ctx.aim || 0))) * costs.aim, stance: unit ? stanceCost(u, nextStance(u)) : 0};
-  const attack = unit && !['medical', 'tool', 'supply'].includes(u.activeSlot) ? contextualAttack(state, u, ctx.target, {aim: ctx.aim || 0}) : null;
+  const attack = unit && !['medical', 'tool', 'supply','item'].includes(u.activeSlot) ? contextualAttack(state, u, ctx.target, {aim: ctx.aim || 0}) : null;
   const medicalPreview = medicalUsePreview(state, unit, ctx.target ?? unit);
   const itemPreview=ctx.target?itemUsePreview(state,unit,ctx.target):null;
   const supplyAliases = {
@@ -603,7 +607,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
   if(itemPreview)pa.useItem=itemPreview.pa;
   const supplyPreview = u.activeSlot === 'supply' ? supplyUsePreview(state, u, ctx.target ?? (u.activeSupply === 'rations' ? u : undefined)) : null;
   if (supplyPreview) pa.useItem = supplyPreview.cost;
-  if (u.activeSlot === 'tool') delete pa.useItem;
+  if (['tool','item'].includes(u.activeSlot)) delete pa.useItem;
   if (gun && unit) {
     const gunCosts = artilleryCosts(state, unit, gun);
     for (const [id, costId] of [['artillery', 'fire'], ['artilleryMove', 'move'], ['artilleryPivot', 'pivot'], ['artilleryReload', 'reload']]) pa[id] = id==='artilleryReload'?artilleryReloadPreview(state,unit,gun).pa:gunCosts[costId];
@@ -613,10 +617,10 @@ export function orderDescriptors(state, unit, ctx = {}) {
     move: Boolean(u.entangled),
     look: false,
     stealth: Boolean(u.mounted) && !u.stealthMode,
-    useItem: itemPreview ? !itemPreview.valid : u.activeSlot === 'supply' ? !(u[u.activeSupply] > 0) || (u.activeSupply === 'rations' || ctx.target) && !supplyPreview.allowed : u.activeSlot === 'tool' ? !heldTool(u) : u.activeSlot === 'medical' ? !medicalPreview.allowed : attack?.type === 'fire' && (!(u.loaded > 0) || Boolean(u.jammed)),
+    useItem: u.activeSlot==='item'?true:itemPreview ? !itemPreview.valid : u.activeSlot === 'supply' ? !(u[u.activeSupply] > 0) || (u.activeSupply === 'rations' || ctx.target) && !supplyPreview.allowed : u.activeSlot === 'tool' ? !heldTool(u) : u.activeSlot === 'medical' ? !medicalPreview.allowed : attack?.type === 'fire' && (!(u.loaded > 0) || Boolean(u.jammed)),
     fire: !firearm || !(u.loaded > 0) || Boolean(u.jammed),
-    melee: false,
-    charge: false,
+    melee: u.activeSlot==='item',
+    charge: u.activeSlot==='item',
     heal: !medicalPreview.allowed,
     loot: false,
     reload: !firearm || !pa.reload || !(u.ammo > 0) || u.loaded >= weaponFor(u).capacity,
@@ -652,7 +656,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
       const crew = def.id==='artilleryReload'?artilleryReloadPreview(state,unit,gun):artilleryCrewPlan(state,unit,gun,pa[def.id]);
       unavailable ||= Boolean(crew.reason);
     }
-    const label = def.id === 'useItem' ? u.activeSlot === 'supply' ? 'Usar pertrecho' : u.activeSlot === 'tool' ? 'Usar herramienta' : u.activeSlot === 'medical' ? 'Usar vendas' : firearm ? 'Usar arma' : u.activeSlot === 'unarmed' ? 'Usar puños' : 'Usar arma blanca' : def.id === 'stance' ? stanceLabel(nextStance(u)) : def.id === 'overwatch' && u.overwatch ? 'Cancelar cobertura' : def.label;
+    const label = def.id === 'useItem' ? u.activeSlot === 'item' ? 'Objeto sin uso' : u.activeSlot === 'supply' ? 'Usar pertrecho' : u.activeSlot === 'tool' ? 'Usar herramienta' : u.activeSlot === 'medical' ? 'Usar vendas' : firearm ? 'Usar arma' : u.activeSlot === 'unarmed' ? 'Usar puños' : 'Usar arma blanca' : def.id === 'stance' ? stanceLabel(nextStance(u)) : def.id === 'overwatch' && u.overwatch ? 'Cancelar cobertura' : def.label;
     /** @type {{id:string,label:string,kind:string,disabled:boolean,pa?:number,reserve?:boolean,active?:boolean}} */
     const d = {id: def.id, label, kind: def.kind, disabled: baseDisabled || unavailable || (!reserveOff && def.id in pa && !affordable(state, u, pa[def.id]))};
     if (def.id === 'overwatch') d.reserve = !reserveOff;

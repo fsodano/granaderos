@@ -1,5 +1,5 @@
 import {OUTFITS,validateOutfit,wornOutfit} from './outfits.js';
-import {handLayout,handsRequired} from './hand-layout.js';
+import {handLayout,handsRequired,selectMainHand} from './hand-layout.js';
 import {allocatePockets,rearrangePockets} from './inventory-pockets.js';
 import {lowerWeapon} from './weapon-readiness.js';
 import {validateReloadProgress} from './weapon-reload.js';
@@ -115,7 +115,7 @@ function recordDescriptor(item, value) {
   const handheld = spec && spec.id >= 1800 && spec.id <= 1813;
   const compactWeapon = handheld && [1805, 1806, 1808, 1811, 1813].includes(spec.id);
   const slotSize = value.kind==='outfit'?2:handheld ? compactWeapon ? 1 : 2 : value.weight > 2 ? 2 : 1;
-  const label = value.kind==='outfit'?OUTFITS[value.outfit].name:value.fittingPattern != null ? fittingLabel(value.fittingPattern) : spec?.name ?? (isTool(value) ? TOOL_LABELS[value.toolKey] : item.replace(/^inventory:/, ''));
+  const label = value.kind==='outfit'?OUTFITS[value.outfit].name:value.fittingPattern != null ? fittingLabel(value.fittingPattern) : spec?.name ?? (isTool(value) ? TOOL_LABELS[value.toolKey] : typeof value.name==='string'&&value.name.trim()?value.name.trim().slice(0,100):item.replace(/^inventory:/, ''));
   return {item, label, name: label, ...(spec?{weapon:spec.id,loaded:value.loaded,condition:value.condition}:value.condition!==undefined?{condition:value.condition}:{}), stackLimit: spec || isTool(value) || value.instanceId ? 1 : slotSize === 2 ? 1 : 4, slotSize, weight: value.weight+fittingWeight(value), kind: value.kind==='outfit'?'outfit':spec ? 'weapon' : isTool(value) ? 'tool' : 'inventory'};
 }
 
@@ -134,8 +134,21 @@ export function itemDescriptor(unit, item) {
   if (!itemQuantity(unit, item)) return {item, label: 'Mano vacía', name: 'Mano vacía', stackLimit: 1, slotSize: 0, weight: 0, kind: 'weapon'};
   return recordDescriptor(item, handRecord(unit, item));
 }
+// Objects without a contextual use still occupy a physical hand. Useful
+// supplies and tools retain their existing active modes instead.
+export function carriedObject(unit,item=unit.activeItem){
+ try{
+  if(typeof item!=='string')return null;
+  const entry=resolve(unit,item);
+  if(entry.item!==item||!['supply','inventory'].includes(entry.kind)||itemQuantity(unit,item)<1)return null;
+  if(entry.kind==='supply'&&!['ammo','priming','flints'].includes(item))return null;
+  if(entry.kind==='inventory'&&(entry.record.weapon!==undefined||isTool(entry.record)))return null;
+  return itemDescriptor(unit,item);
+ }catch{return null;}
+}
 export function validateHands(unit) {
   wornOutfit(unit);
+  if(unit.activeSlot==='item'?!carriedObject(unit):unit.activeItem!==undefined)fail('El objeto de la mano principal no es válido.');
   if(unit.leftHandItem!=null){
     const entry=resolve(unit,unit.leftHandItem);
     const handWeapon=entry.kind==='hand'&&itemQuantity(unit,entry.item)>0?handRecord(unit,entry.item).weapon:null;
@@ -191,6 +204,7 @@ export function extractItemQuantity(unit, item, count = 1, {keepOtherHand=true}=
       if (next.activeSlot === 'tool') next.activeSlot = 'unarmed';
     }
   }
+  if(next.activeItem===entry.item&&(entry.kind==='inventory'?!next.inventory?.[entry.key]:itemQuantity(next,entry.item)===0)){delete next.activeItem;if(next.activeSlot==='item')next.activeSlot='unarmed';}
   if(next.leftHandItem===entry.item&&(entry.kind==='inventory'?!next.inventory?.[entry.key]||!(typeof next.inventory[entry.key]==='number'?next.inventory[entry.key]:next.inventory[entry.key].count):itemQuantity(next,entry.item)===0))next.leftHandItem=null;
   return {unit: keepOtherHand?retainOtherHand(unit,next):next, stack};
 }
@@ -209,7 +223,7 @@ function retainOtherHand(before,next){
     next.weaponFittings=structuredClone(held.fittings??{});next.weaponFittingPattern=held.fittingPattern??null;delete next.weaponInstanceId;if(held.instanceId)next.weaponInstanceId=held.instanceId;
     next.activeSlot='primary';lowerWeapon(next);
   }
-  return next;
+  return next.activeSlot==='unarmed'?next:selectMainHand(next,{activeSlot:next.activeSlot});
 }
 function incoming(stack) {
   if (!object(stack) || typeof stack.item !== 'string') fail('El objeto transferido no es válido.');

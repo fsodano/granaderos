@@ -1,3 +1,4 @@
+import {handLayout} from './hand-layout.js';
 import {WEAPONS} from './data.js';
 
 // Ammunition already on the field is separate from newly issued cartridges.
@@ -50,10 +51,11 @@ export function planReturnAmmunition(request,snapshot,entries){
   const preserveLoading=!u.weaponDropped&&WEAPONS[u.weapon]?.capacity>0;
   const loading=preserveLoading?{loaded:u.loaded,...(u.reloadProgress?{reloadProgress:u.reloadProgress}:{})}:null;
   if(e.kind==='captured')custody[e.unitId]={loaded:u.loaded,ammo:u.ammo,...(loading?{preserveLoading:true,...(u.reloadProgress?{reloadProgress:u.reloadProgress}:{})}:{})};
-  if(loading&&['resident','departed'].includes(e.kind))carried[e.unitId]=loading;
+  const heldAmmo=handLayout(u).held.includes('ammo')?Math.min(1,u.ammo):0;
+  if((loading||heldAmmo)&&['resident','departed'].includes(e.kind))carried[e.unitId]={...(loading??{loaded:0}),...(heldAmmo?{ammo:heldAmmo}:{})};
   return sum+(['resident','departed'].includes(e.kind)?rounds:0);
  },0);
- const allowance=Math.min((request.issuedCartridges??0)+loot,returned),retained=Object.values(carried).reduce((sum,u)=>sum+u.loaded,0);
+ const allowance=Math.min((request.issuedCartridges??0)+loot,returned),retained=Object.values(carried).reduce((sum,u)=>sum+u.loaded+(u.ammo??0),0);
  if(retained>allowance)throw Error('La carga conservada supera la munición del despliegue.');
  return {creditedCartridges:allowance-retained,custody,carried};
 }

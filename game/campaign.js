@@ -164,7 +164,8 @@ function releaseCaptives(s,at){
   for(const op of rosterFor(s)){
     const r=s.operativeState[op.id];if(!r.captured||r.capturedSector!==at)continue;
     const held=r.capturedAmmunition??{loaded:0,ammo:0};
-    s.resources.cartridges+=held.ammo+(held.preserveLoading?0:held.loaded);if(held.preserveLoading){r.carriedAmmo=(r.carriedAmmo??0)+held.loaded;setCarriedLoading(r,{weapon:op.weapon,...held});}r.capturedAmmunition={loaded:0,ammo:0};
+    const handAmmo=(r.activeItem==='ammo'||r.leftHandItem==='ammo')?Math.min(1,held.ammo):0;r.carriedAmmo=(r.carriedAmmo??0)+handAmmo;
+    s.resources.cartridges+=held.ammo-handAmmo+(held.preserveLoading?0:held.loaded);if(held.preserveLoading){r.carriedAmmo=(r.carriedAmmo??0)+held.loaded;setCarriedLoading(r,{weapon:op.weapon,...held});}r.capturedAmmunition={loaded:0,ammo:0};
     for(const h of s.horseState.horses)if(h.custody?.kind==='captured'&&h.custody.operativeId===op.id){h.custody=null;h.assignedTo=null;}
     const contract=clone(r.capturedContract),remaining=contract.expiresAt===null?null:Math.max(0,contract.expiresAt-r.capturedAt);delete contract.departurePending;
     Object.assign(r,{asleep:false,captured:false,capturedSector:null,capturedAt:null,capturedContract:null,location:at,arrival:null,residentSector:at,residentScene:null,assignment:r.hp<r.maxHp||r.bleeding?'patient':'rest'});
@@ -231,7 +232,8 @@ function applyReturnedOperative(s,request,report){
 function commitDeploymentReturn(s,request,snapshot,plan){
   applyTacticalTime(s,request,snapshot.elapsedSeconds??0);snapshot.syncedSeconds=request.syncedSeconds;snapshot.savedHour=s.hour;snapshot.savedSecond=s.secondOfHour;
   for(const entry of plan.entries){const id=Number(entry.unitId),unit=snapshot.units.find(u=>u.side==='player'&&u.id===entry.unitId);applyReturnedOperative(s,request,unit);const r=s.operativeState[id];r.location=entry.sector;
-    clearCarriedLoading(r);const loading=plan.ammunition.carried[id];if(loading){r.carriedAmmo=(r.carriedAmmo??0)+loading.loaded;setCarriedLoading(r,{weapon:unit.weapon,...loading});}
+    clearCarriedLoading(r);const loading=plan.ammunition.carried[id];if(loading){r.carriedAmmo=(r.carriedAmmo??0)+loading.loaded+(loading.ammo??0);setCarriedLoading(r,{weapon:unit.weapon,...loading});}
+    if(['dead','dispersed'].includes(entry.kind)&&r.activeItem==='ammo'){delete r.activeItem;r.activeSlot='unarmed';}
     r.arrival=entry.kind==='departed'?{battleId:request.id,fromSector:request.sector,fromScene:request.sceneId??null,exitId:entry.departure.exitId,entryEdge:entry.departure.entryEdge,entryAnchor:clone(entry.departure.entryAnchor)}:null;
     r.residentSector=entry.kind==='resident'?request.sector:null;r.residentScene=entry.kind==='resident'?(request.sceneId??null):null;
   }
@@ -467,7 +469,7 @@ export function dispatchCampaign(previous,action){
         if(slot==='weapon'){
           if(record.carriedLoaded!==undefined||incoming.loaded!==undefined||incoming.reloadProgress!==undefined)record.carriedAmmo=(record.carriedAmmo??0)-outgoingLoaded+(incoming.loaded??0);
           if(incoming.loaded!==undefined||incoming.reloadProgress!==undefined)setCarriedLoading(record,{weapon:itemId,loaded:incoming.loaded??0,reloadProgress:incoming.reloadProgress});else clearCarriedLoading(record);
-          record.condition=incoming.condition;record.jammed=incoming.jammed;record.weaponDropped=false;record.activeSlot='primary';delete record.activeTool;delete record.activeSupply;record.weaponFittings=clone(incoming.fittings??{});record.weaponFittingPattern=incoming.fittingPattern??null;if(incoming.instanceId!==undefined)record.weaponInstanceId=incoming.instanceId;else delete record.weaponInstanceId;}
+          record.condition=incoming.condition;record.jammed=incoming.jammed;record.weaponDropped=false;record.activeSlot='primary';delete record.activeTool;delete record.activeSupply;delete record.activeItem;record.weaponFittings=clone(incoming.fittings??{});record.weaponFittingPattern=incoming.fittingPattern??null;if(incoming.instanceId!==undefined)record.weaponInstanceId=incoming.instanceId;else delete record.weaponInstanceId;}
         else {record.bladeCondition=incoming.condition;record.bladeFittingPattern=incoming.fittingPattern??null;if(incoming.instanceId!==undefined)record.bladeInstanceId=incoming.instanceId;else delete record.bladeInstanceId;}
         note(s,`${op.name} recibe ${equipmentLabel(incoming)}, estado ${incoming.condition}%.`);break;
       }

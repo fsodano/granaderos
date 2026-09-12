@@ -11,7 +11,7 @@ import {projectilePath,projectileFlight,pointProjectileFlight,concealmentAt,conc
 import {boundaryMatches} from './tactical-exits.js';
 import {HELD_SUPPLIES,heldSupply,clearEmptySupply} from './held-supplies.js';
 import {heldTool,environmentActionProfile,resolveEnvironmentInteraction,extractContainerItem} from './environment-interactions.js';
-import {SUPPLY_ITEMS,inventoryUsage,itemDescriptor,itemQuantity,extractItemQuantity,applyItemQuantity,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove,planEquipOutfit,planStowOutfit,planHoldOffhand,equipmentEndpoint,equipmentFingerprint,placeStoredItem} from './tactical-inventory.js';
+import {SUPPLY_ITEMS,carriedObject,inventoryUsage,itemDescriptor,itemQuantity,extractItemQuantity,applyItemQuantity,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove,planEquipOutfit,planStowOutfit,planHoldOffhand,equipmentEndpoint,equipmentFingerprint,placeStoredItem} from './tactical-inventory.js';
 import {FITTING_RULES_VERSION,FIT_BAYONET_AP,REMOVE_BAYONET_AP,LOOSE_BAYONET,fixedBayonetFor,fixedBayonetProfile,fittingWeight,weaponItemWeight,normalizeUnitFittings} from './weapon-fittings.js';
 import {FISTS,BUTTSTOCK,unarmedChance,unarmedImpact,weaponStealChance,STEAL_MIN_AP} from './unarmed-combat.js';
 import {directionTo,facingAllowsSight,turnAPCost,stealthAPMultiplier,noiseRadius,approximateHeardPosition} from './tactical-awareness.js';
@@ -33,7 +33,7 @@ export const WEAPONS = Object.fromEntries([
 ].map(([id,name,damage,fireAP,aimAP,reloadAP,range,capacity])=>[id,{id,name,damage,fireAP,aimAP,reloadAP,range,capacity}]));
 export const ARTILLERY={bronze4:{name:'Cañón de Bronce de 4 lb',crew:2,fireAP:30,reloadAP:60,radius:4,range:80,damage:85},field8:{name:'Cañón de Campaña de 8 lb',crew:3,fireAP:40,reloadAP:75,radius:6,range:110,damage:110},swivel:{name:'Pedrero de Regala',crew:1,fireAP:20,reloadAP:35,radius:3,range:35,damage:65}};
 export const BLADES=Object.fromEntries([[1809,'Sable Corvo Sanmartiniano',12,46,1.5],[1810,'Sable de Caroya',14,42,1.5],[1811,'Bayoneta suelta',16,24,1],[1812,'Lanza de Tacuara',18,56,2.5],[1813,'Facón Gaucho con Poncho',8,32,1.5]].map(([id,name,ap,damage,reach])=>[id,{id,name,ap,damage,reach}]));
-export function bladeFor(unit){if(['unarmed','medical','tool','supply'].includes(unit.activeSlot))return FISTS;if(unit.activeSlot==='blade')return unit.blade===1811?LOOSE_BAYONET:BLADES[unit.blade]||FISTS;if(unit.weaponDropped)return FISTS;return fixedBayonetProfile(unit)||(unit.weapon===1811?LOOSE_BAYONET:BLADES[unit.weapon])||(hasFirearm(unit)?BUTTSTOCK:FISTS);}
+export function bladeFor(unit){if(['unarmed','medical','tool','supply','item'].includes(unit.activeSlot))return FISTS;if(unit.activeSlot==='blade')return unit.blade===1811?LOOSE_BAYONET:BLADES[unit.blade]||FISTS;if(unit.weaponDropped)return FISTS;return fixedBayonetProfile(unit)||(unit.weapon===1811?LOOSE_BAYONET:BLADES[unit.weapon])||(hasFirearm(unit)?BUTTSTOCK:FISTS);}
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const onField=u=>u.hp>0&&!u.departure;
@@ -49,7 +49,7 @@ function say(s,text){s.log.push(text);s.log=s.log.slice(-80);}
 function journalVisible(s,unit){return unit.side!=='enemy'||teamCanSee(s,'player',unit);}
 function sayObserved(s,subjects,text){if(subjects.every(unit=>journalVisible(s,unit)))say(s,text);}
 export function hasFirearm(unit){if(unit.weaponDropped)return false;if(unit.activeSlot&&unit.activeSlot!=='primary')return false;return typeof unit.weapon==='object'?unit.weapon.capacity>0:Boolean(WEAPONS[unit.weapon]);}
-export function weaponFor(unit){if(unit.activeSlot==='supply'){const supply=heldSupply(unit);return {id:supply?.key??'supply',name:supply?.name??'Pertrecho',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:supply?.range??0};}if(unit.activeSlot==='tool'){const tool=heldTool(unit);return {id:tool?.toolKey??'tool',name:tool?.label??'Herramienta',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:1.5};}if(unit.activeSlot==='unarmed')return {...FISTS,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:FISTS.reach};if(unit.activeSlot==='medical')return {id:'medical',name:'Equipo de curación',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:1.5};if(unit.activeSlot==='blade')return {...bladeFor(unit),fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:bladeFor(unit).reach};if(unit.weaponDropped)return {...FISTS,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:FISTS.reach};return typeof unit.weapon==='object'?unit.weapon:WEAPONS[unit.weapon]||{...bladeFor(unit),fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:bladeFor(unit).reach};}
+export function weaponFor(unit){if(unit.activeSlot==='item')return {id:'item',name:carriedObject(unit)?.label??'Objeto',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:0};if(unit.activeSlot==='supply'){const supply=heldSupply(unit);return {id:supply?.key??'supply',name:supply?.name??'Pertrecho',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:supply?.range??0};}if(unit.activeSlot==='tool'){const tool=heldTool(unit);return {id:tool?.toolKey??'tool',name:tool?.label??'Herramienta',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:1.5};}if(unit.activeSlot==='unarmed')return {...FISTS,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:FISTS.reach};if(unit.activeSlot==='medical')return {id:'medical',name:'Equipo de curación',damage:0,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:1.5};if(unit.activeSlot==='blade')return {...bladeFor(unit),fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:bladeFor(unit).reach};if(unit.weaponDropped)return {...FISTS,fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:FISTS.reach};return typeof unit.weapon==='object'?unit.weapon:WEAPONS[unit.weapon]||{...bladeFor(unit),fireAP:0,aimAP:0,reloadAP:0,capacity:0,range:bladeFor(unit).reach};}
 export function misfireChance(condition=100,rain=0,humidity=0){return clamp(Math.round(2+(100-clamp(condition,0,100))*.2+clamp(rain,0,100)*.5+clamp(humidity,0,100)),0,95);}
 export function hasTrait(u,id){return Array.isArray(u.traits)&&u.traits.includes(id);}
 function nearbyTrait(s,u,id,radius=4){return s.units.some(v=>v.side===u.side&&alive(v)&&hasTrait(v,id)&&dist(u,v)<=radius);}
@@ -578,7 +578,7 @@ function equipIncomingHand(unit,incoming,slot){
   }
   if(slot==='primary'){next.weapon=incoming.weapon;next.loaded=incoming.loaded??0;delete next.reloadProgress;if(incoming.reloadProgress)next.reloadProgress=incoming.reloadProgress;next.condition=incoming.condition??100;next.jammed=Boolean(incoming.jammed);next.weaponDropped=false;next.weaponFittings=structuredClone(incoming.fittings??{});next.weaponFittingPattern=incoming.fittingPattern??null;delete next.weaponInstanceId;if(incoming.instanceId)next.weaponInstanceId=incoming.instanceId;}
   else {next.blade=incoming.weapon;next.bladeCondition=incoming.condition??100;next.bladeFittingPattern=incoming.fittingPattern??null;delete next.bladeInstanceId;if(incoming.instanceId)next.bladeInstanceId=incoming.instanceId;}
-  lowerWeapon(next);next=selectMainHand(next,{activeSlot:slot});delete next.activeTool;delete next.activeSupply;next.braced=false;next.momentum=0;delete next.lastTargetId;delete next.lastShotPosition;
+  lowerWeapon(next);next=selectMainHand(next,{activeSlot:slot});delete next.activeTool;delete next.activeSupply;delete next.activeItem;next.braced=false;next.momentum=0;delete next.lastTargetId;delete next.lastShotPosition;
   if(inventoryUsage(next).overloaded)throw Error('No queda espacio para guardar el equipo desplazado.');
   return next;
 }
@@ -607,15 +607,16 @@ export function stealPreview(s,u,target){
   return {pa,valid:!reason,reason};
 }
 function planMainHandEquipment(u,a){
- if(!['primary','blade','medical','unarmed','tool','supply'].includes(a.slot))throw Error('Selecciona el objeto que quieres llevar en la mano.');
+ if(!['primary','blade','medical','unarmed','tool','supply','item'].includes(a.slot))throw Error('Selecciona el objeto que quieres llevar en la mano.');
  if(a.slot==='primary'&&(u.weaponDropped||!(WEAPONS[u.weapon]||BLADES[u.weapon]||typeof u.weapon==='object')))throw Error('No lleva un arma principal disponible.');
+ if(a.slot==='item'&&!carriedObject(u,a.item))throw Error('No lleva ese objeto disponible.');
  if(a.slot==='medical'&&u.medkits<1)throw Error('No quedan vendas en el equipo de curación.');
  if(a.slot==='blade'&&!BLADES[u.blade])throw Error('No hay un arma blanca secundaria equipada.');
  if(a.slot==='tool'&&!heldTool({...u,activeSlot:'tool',activeTool:a.toolKey}))throw Error('No lleva esa herramienta en el inventario.');
  if(a.slot==='supply'&&!heldSupply({...u,activeSlot:'supply',activeSupply:a.supplyKey}))throw Error('No lleva ese pertrecho en el inventario.');
- if(!(a.slot==='unarmed'&&handLayout(u).left)&&(u.activeSlot||'primary')===a.slot&&(a.slot!=='tool'||u.activeTool===a.toolKey)&&(a.slot!=='supply'||u.activeSupply===a.supplyKey))throw Error('Ese objeto ya está en la mano.');
- const next=selectMainHand(structuredClone(u),{activeSlot:a.slot,...(a.slot==='tool'?{activeTool:a.toolKey}:a.slot==='supply'?{activeSupply:a.supplyKey}:{})});
- if(a.slot!=='tool')delete next.activeTool;if(a.slot!=='supply')delete next.activeSupply;
+ if(!(a.slot==='unarmed'&&handLayout(u).left)&&(u.activeSlot||'primary')===a.slot&&(a.slot!=='tool'||u.activeTool===a.toolKey)&&(a.slot!=='supply'||u.activeSupply===a.supplyKey)&&(a.slot!=='item'||u.activeItem===a.item))throw Error('Ese objeto ya está en la mano.');
+ const next=selectMainHand(structuredClone(u),{activeSlot:a.slot,...(a.slot==='tool'?{activeTool:a.toolKey}:a.slot==='supply'?{activeSupply:a.supplyKey}:a.slot==='item'?{activeItem:a.item}:{})});
+ if(a.slot!=='tool')delete next.activeTool;if(a.slot!=='supply')delete next.activeSupply;if(a.slot!=='item')delete next.activeItem;
  if(inventoryUsage(next).overloaded)throw Error('No queda espacio para guardar el objeto que tenés en la mano.');
  lowerWeapon(next);next.momentum=0;next.braced=false;delete next.lastTargetId;delete next.lastShotPosition;return next;
 }
@@ -625,12 +626,12 @@ function readyReference(unit,item,side){
   if(weapon){
    if(handsRequired(weapon)>1)throw Error('El arma necesita las dos manos.');
    if(item.startsWith('inventory:'))return {unit:planEquipLoot(unit,item.slice(10),'offhand'),pa:6};
-   let next=structuredClone(unit);if(handLayout(next).right===item){next.activeSlot='unarmed';delete next.activeTool;delete next.activeSupply;}
+   let next=structuredClone(unit);if(handLayout(next).right===item){next.activeSlot='unarmed';delete next.activeTool;delete next.activeSupply;delete next.activeItem;}
    next.leftHandItem=item;lowerWeapon(next);
    if(inventoryUsage(next).overloaded)throw Error('No queda espacio para guardar el objeto desplazado.');
    return {unit:next,pa:4};
   }
-  let next=structuredClone(unit);if(handLayout(next).right===item){next.activeSlot='unarmed';delete next.activeTool;delete next.activeSupply;}
+  let next=structuredClone(unit);if(handLayout(next).right===item){next.activeSlot='unarmed';delete next.activeTool;delete next.activeSupply;delete next.activeItem;}
   return {unit:planHoldOffhand(next,item),pa:4};
  }
  if(weapon){
@@ -638,19 +639,19 @@ function readyReference(unit,item,side){
   if(item==='offhand')return {unit:planSwapHands(unit),pa:4};
   return {unit:planMainHandEquipment(unit,{slot:item}),pa:4};
  }
- const action=item==='medkits'?{slot:'medical'}:HELD_SUPPLIES[item]?{slot:'supply',supplyKey:item}:heldTool({...unit,activeSlot:'tool',activeTool:item})?{slot:'tool',toolKey:item}:null;
- if(!action)throw Error('Este objeto se puede llevar en la segunda mano. No tiene un uso en la mano principal.');
+ const action=item==='medkits'?{slot:'medical'}:HELD_SUPPLIES[item]?{slot:'supply',supplyKey:item}:heldTool({...unit,activeSlot:'tool',activeTool:item})?{slot:'tool',toolKey:item}:carriedObject(unit,item)?{slot:'item',item}:null;
+ if(!action)throw Error('Este objeto no se puede llevar en la mano principal.');
  return {unit:planMainHandEquipment(unit,action),pa:4};
 }
 function storeHandReference(unit,source){
  let next=structuredClone(unit),item=source.item;const other=handLayout(unit)[source.side==='right'?'left':'right'];
  if(['primary','blade','offhand'].includes(item)){
   const oldKeys=new Set(Object.keys(next.inventory??{})),taken=extractItemQuantity(next,item,1,{keepOtherHand:false});next=taken.unit;
-  if(source.side==='right'){next.activeSlot='unarmed';delete next.activeTool;delete next.activeSupply;next.leftHandItem=other;}
+  if(source.side==='right'){next.activeSlot='unarmed';delete next.activeTool;delete next.activeSupply;delete next.activeItem;next.leftHandItem=other;}
   else next.leftHandItem=null;
   next=applyItemQuantity(next,taken.stack,{deferCapacity:true});item='inventory:'+Object.keys(next.inventory).find(key=>!oldKeys.has(key));
  }else if(source.side==='right'){
-  next.activeSlot='unarmed';delete next.activeTool;delete next.activeSupply;next.leftHandItem=other;
+  next.activeSlot='unarmed';delete next.activeTool;delete next.activeSupply;delete next.activeItem;next.leftHandItem=other;
  }else next.leftHandItem=null;
  lowerWeapon(next);return {unit:next,item};
 }
@@ -674,6 +675,11 @@ export function planEquipmentPlacement(unit,action){
  if(inventoryUsage(next).overloaded)throw Error('No queda espacio para guardar el objeto desplazado.');
  next=placeStoredItem(next,stored.item,destinationId);
  return {unit:next,pa};
+}
+export function mainItemPreview(s,u,item){
+ let reason=inventoryOrderReason(s,u,4);
+ if(!reason)try{planMainHandEquipment(u,{slot:'item',item});}catch(error){reason=error.message;}
+ return {pa:s.mode==='exploration'?0:4,valid:!reason,reason,action:{type:'weapon',slot:'item',item}};
 }
 export function equipmentPlacementPreview(s,u,action){
  let pa=0,reason=inventoryOrderReason(s,u,0);
@@ -931,6 +937,7 @@ else if(a.type==='reload'){
 }
 else if(a.type==='reprime'){if(!u.jammed)return fail('El arma no necesita cebado.');if(u.priming<1)return fail('El frasco de pólvora de cebar está vacío.');const cost=actionCosts(s,u).reprime;if(!pay(cost))return fail(`Cebar requiere ${cost} PA.`);u.priming--;practice(u,'mechanical');u.jammed=false;sayObserved(s,[u],`${u.name} vuelve a cebar la cazoleta.`);}
 else if(a.type==='melee'){
+  if(u.activeSlot==='item')return fail('Este objeto no sirve para atacar. Guardalo o elegí un arma.');
   if(u.activeSlot==='tool')return fail('La herramienta se usa sobre una puerta o un cofre.');
   if(u.activeSlot==='supply')return fail('Usa el pertrecho que llevas en la mano.');
   if(u.activeSlot==='medical')return fail('El equipo de curación se usa sobre un compañero herido.');
@@ -945,7 +952,7 @@ else if(a.type==='melee'){
   }else meleeStrike(s,u,target,blade.damage*bonus);
   u.momentum=0;
 }
-else if(a.type==='charge'){if(['medical','tool','supply'].includes(u.activeSlot))return fail('Prepara un arma antes de atacar.');const blade=bladeFor(u);if(blade.id===0)return fail('Acércate al enemigo para golpear con las manos vacías.');if(!target||!targetable(target)||target.side===u.side)return fail('Selecciona un enemigo para cargar.');const dx=target.x-u.x,dy=target.y-u.y;if(dx!==0&&dy!==0&&Math.abs(dx)!==Math.abs(dy))return fail('La carga exige una línea recta.');let path=line(u,target);const contact=path.findIndex(p=>dist(p,target)<=blade.reach);path=dist(u,target)<=blade.reach?[]:path.slice(0,contact+1);if(!path.length&&dist(u,target)>blade.reach)return fail('No hay espacio para cargar.');let previous=u,cost=actionCosts(s,u).melee;for(const p of path){const t=tile(s,p.x,p.y);if(!t||t.blocked||occupied(s,p.x,p.y,u.id))return fail('La carga está bloqueada.');const step=movementStepCost(s,u,previous,p);if(!Number.isFinite(step))return fail('La carga no puede atravesar una esquina.');cost+=step;previous=p;}if(!hasLineOfSight(s,u,target))return fail('No hay un paso libre hasta el objetivo.');if(u.ap<Math.ceil(cost))return fail('Faltan puntos de acción para completar la carga.');let stopped=false;for(const p of path){const stepObservation=reactionObservation(s,u);const factor=movementFactor(u,p),step=movementStepCost(s,u,u,p);if(u.ap<step){stopped=true;break;}u.ap-=step;lowerWeapon(u);u.facing=directionTo(u,p);u.x=p.x;u.y=p.y;investigateNoise(s,u);delete u.lastTargetId;delete u.lastShotPosition;exhaust(s,u,Math.ceil(movementEnergy({...u,movementMode:'run'},tile(s,p.x,p.y))*factor));emitNoise(s,{...u,movementMode:'run',stealthMode:false},'move');rememberContacts(s);if(!alive(u)){stopped=true;break;}const interrupted=reactionFire(s,u,stepObservation);interceptCharge(s,u,target);if(interrupted||!alive(u)||s.status!=='active'){stopped=true;break;}}if(stopped){sayObserved(s,[u],`${u.name} detiene la carga antes de alcanzar al enemigo.`);checkEnd(s);return true;}const impactObservation=reactionObservation(s,u);lowerWeapon(u);u.ap=0;if(!alive(u)){sayObserved(s,[u],`${u.name} no logra completar la carga.`);checkEnd(s);return true;}u.facing=directionTo(u,target);emitNoise(s,u,'melee');meleeStrike(s,u,target,blade.damage*(1+path.length*.1)*(u.mounted?1.25:1)*(Number(u.id)===57&&u.mounted?1.2:1));if(Number(u.id)===9&&u.mounted){for(const levy of s.units.filter(v=>v.side!==u.side&&alive(v)&&dist(v,u)<=4&&(v.militia||v.levy||v.marksmanship<60))){levy.morale=Math.max(0,levy.morale-25);if(levy.morale<15)rout(s,levy);}sayObserved(s,[u],`${u.name} aterroriza a las levas con su carga montada.`);}target.morale=Math.max(0,target.morale-15);holdMorale(s,target);if(alive(target)&&target.morale<15){rout(s,target);}u.momentum=0;sayObserved(s,[u],u.side==='player'?`${u.name} ejecuta una carga de ${path.length} casillas con ${blade.name}.`:`${u.name} ataca con ${blade.name}.`);checkEnd(s);reactionFire(s,u,impactObservation);}
+else if(a.type==='charge'){if(['medical','tool','supply','item'].includes(u.activeSlot))return fail('Prepara un arma antes de atacar.');const blade=bladeFor(u);if(blade.id===0)return fail('Acércate al enemigo para golpear con las manos vacías.');if(!target||!targetable(target)||target.side===u.side)return fail('Selecciona un enemigo para cargar.');const dx=target.x-u.x,dy=target.y-u.y;if(dx!==0&&dy!==0&&Math.abs(dx)!==Math.abs(dy))return fail('La carga exige una línea recta.');let path=line(u,target);const contact=path.findIndex(p=>dist(p,target)<=blade.reach);path=dist(u,target)<=blade.reach?[]:path.slice(0,contact+1);if(!path.length&&dist(u,target)>blade.reach)return fail('No hay espacio para cargar.');let previous=u,cost=actionCosts(s,u).melee;for(const p of path){const t=tile(s,p.x,p.y);if(!t||t.blocked||occupied(s,p.x,p.y,u.id))return fail('La carga está bloqueada.');const step=movementStepCost(s,u,previous,p);if(!Number.isFinite(step))return fail('La carga no puede atravesar una esquina.');cost+=step;previous=p;}if(!hasLineOfSight(s,u,target))return fail('No hay un paso libre hasta el objetivo.');if(u.ap<Math.ceil(cost))return fail('Faltan puntos de acción para completar la carga.');let stopped=false;for(const p of path){const stepObservation=reactionObservation(s,u);const factor=movementFactor(u,p),step=movementStepCost(s,u,u,p);if(u.ap<step){stopped=true;break;}u.ap-=step;lowerWeapon(u);u.facing=directionTo(u,p);u.x=p.x;u.y=p.y;investigateNoise(s,u);delete u.lastTargetId;delete u.lastShotPosition;exhaust(s,u,Math.ceil(movementEnergy({...u,movementMode:'run'},tile(s,p.x,p.y))*factor));emitNoise(s,{...u,movementMode:'run',stealthMode:false},'move');rememberContacts(s);if(!alive(u)){stopped=true;break;}const interrupted=reactionFire(s,u,stepObservation);interceptCharge(s,u,target);if(interrupted||!alive(u)||s.status!=='active'){stopped=true;break;}}if(stopped){sayObserved(s,[u],`${u.name} detiene la carga antes de alcanzar al enemigo.`);checkEnd(s);return true;}const impactObservation=reactionObservation(s,u);lowerWeapon(u);u.ap=0;if(!alive(u)){sayObserved(s,[u],`${u.name} no logra completar la carga.`);checkEnd(s);return true;}u.facing=directionTo(u,target);emitNoise(s,u,'melee');meleeStrike(s,u,target,blade.damage*(1+path.length*.1)*(u.mounted?1.25:1)*(Number(u.id)===57&&u.mounted?1.2:1));if(Number(u.id)===9&&u.mounted){for(const levy of s.units.filter(v=>v.side!==u.side&&alive(v)&&dist(v,u)<=4&&(v.militia||v.levy||v.marksmanship<60))){levy.morale=Math.max(0,levy.morale-25);if(levy.morale<15)rout(s,levy);}sayObserved(s,[u],`${u.name} aterroriza a las levas con su carga montada.`);}target.morale=Math.max(0,target.morale-15);holdMorale(s,target);if(alive(target)&&target.morale<15){rout(s,target);}u.momentum=0;sayObserved(s,[u],u.side==='player'?`${u.name} ejecuta una carga de ${path.length} casillas con ${blade.name}.`:`${u.name} ataca con ${blade.name}.`);checkEnd(s);reactionFire(s,u,impactObservation);}
 else if(['artillery','artilleryReload','artilleryMove','artilleryPivot'].includes(a.type)){
 const gun=s.artillery.find(g=>g.id===a.artilleryId),spec=ARTILLERY[gun?.type];
 if(!gun||!spec||gun.side!==u.side||dist(u,gun)>1.5)return fail('Debes estar junto a una pieza de artillería propia.');

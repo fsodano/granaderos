@@ -10,7 +10,7 @@ import {portraitFor} from '../lib/portraits';
 type Props = {battle?: any; players: any[]; selected: any; groupIds?: string[]; medicalTargeting?: boolean; onSelect: (id: any, additive?: boolean) => void; onOpenInventory: (id: any) => void};
 const short = (u: any) => u.nickname || String(u.name || '').split(' ').slice(-1)[0] || '';
 const loadState = (u: any, firearm: boolean) =>
-  u.activeSlot === 'medical' ? `${u.medkits ?? 0} vendas` : u.activeSlot === 'supply' ? `${u[u.activeSupply] ?? 0} disponibles` : u.activeSlot === 'tool' ? 'Herramienta preparada' : u.activeSlot === 'unarmed' ? 'Manos libres' : !firearm ? 'Arma blanca' : u.jammed ? 'Cazoleta sin cebar' : u.loaded ? `${u.loaded} carga preparada` : 'Arma descargada';
+  u.activeSlot === 'medical' ? `${u.medkits ?? 0} vendas` : u.activeSlot === 'supply' ? `${u[u.activeSupply] ?? 0} disponibles` : u.activeSlot === 'tool' ? 'Herramienta preparada' : u.activeSlot === 'item' ? 'Objeto en mano' : u.activeSlot === 'unarmed' ? 'Manos libres' : !firearm ? 'Arma blanca' : u.jammed ? 'Cazoleta sin cebar' : u.loaded ? `${u.loaded} carga preparada` : 'Arma descargada';
 
 export default function JA2Roster({battle, players, selected, groupIds = [], medicalTargeting = false, onSelect, onOpenInventory}: Props) {
   const selectedCell=useRef<HTMLButtonElement>(null);

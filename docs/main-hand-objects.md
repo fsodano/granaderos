@@ -1,0 +1,13 @@
+# Ordinary objects in the main hand
+
+Ordinary pocket objects, loose cartridges, priming powder and flints can occupy either hand. Dragging to the main hand or selecting **Poner en mano principal** spends four AP during combat. Exploration uses time without AP. One physical item leaves the pocket count; the rest of a stack stays packed. Names and condition appear in the hand display. An available compact weapon can stay in the other hand; long guns still require two hands.
+
+These objects do not become weapons. Targeting a person shows a refusal without movement, attack, AP expenditure or ammunition use. A cartridge held in either hand remains personal on campaign return; only the remaining loose cartridges enter shared stock. The held cartridge also stays personal after rescue, and the return allowance counts it once. The main strip explains that the object can be stored, passed or dropped. Dressing, tool and usable-supply placement still selects the existing contextual use instead. Weapon selection clears the ordinary-object selection and preserves the original weapon load and condition.
+
+Removing the last held item clears its reference. The other occupied hand stays available, including when it holds a supply rather than a weapon. Tactical and campaign validators reject missing, malformed, duplicate-hand and out-of-mode references. Campaign reports and the public player view retain the selected object. Hand validation uses the current loadout when checking a weapon explicitly retained in the second hand.
+
+Eight focused model tests cover placement, counts, exact identity and condition, both-hand drags, transfers, dropped items, all attack aliases, invalid references, AP/capacity rejection, a synchronized campaign save and reentry, an explicit retained blade through campaign return, and cartridge conservation across return and reentry. A capture/rescue regression also retains the held cartridge through custody. Two component checks cover the hand display and the squad label. The full suite, typecheck, production build and static export are checked before commit.
+
+Live verification used the separate production Battlefield preview on port 3020. Dragging a keepsake into the main hand changed 90 to 86 AP, showed condition 44%, and retained the pistol in the other hand with one load and 81% condition. Clicking the enemy showed the refusal and retained 86 AP. Tactical save validation and reload retained both objects. Selecting the pistol then spent four AP (86 to 82) and kept its original load. The user's campaign on port 3000 was not changed.
+
+This does not add improvised attacks, object-specific conversations, selectable held stack quantities or all strategic-screen hand gestures. Full inventory and JA2 parity remain open.

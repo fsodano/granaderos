@@ -13,7 +13,7 @@ import TrainingProgress from './TrainingProgress';
 import JA2EnvironmentPanel from './JA2EnvironmentPanel';
 import {LooseBayonetControl, AttachedBayonetControl, FittingReadout} from './JA2Bayonet';
 import {inventoryModel, inventoryHandlingModel, nearbyLootOptions, nearbyEnvironmentModel, orderDescriptors, orderAction, backpackEquipAction, levelFor, targetingHelp, stanceLabel, equipmentSlots, turnModel, unitCanAct, facingLabel} from '../../game/ja2-hud.js';
-import {swapHandsPreview, WEAPONS, BLADES, hasFirearm, ignitionRisk, visibleEnemies, stanceCost, lootPreview, equipLootPreview, containerLootPreview, AP_CARRY_LIMIT} from '../../game/tactical.js';
+import {mainItemPreview,swapHandsPreview, WEAPONS, BLADES, hasFirearm, ignitionRisk, visibleEnemies, stanceCost, lootPreview, equipLootPreview, containerLootPreview, AP_CARRY_LIMIT} from '../../game/tactical.js';
 import {portraitFor} from '../lib/portraits';
 import {autoBandageStatus} from '../../game/auto-bandage.js';
 
@@ -117,6 +117,7 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
   }, [onCloseInventory]);
   const movementActive = (id: string) => unit.movementMode === id;
   const otherHand=swapHandsPreview(battle,unit);
+  const holdMain=item?mainItemPreview(battle,unit,item.item):null;
   const holdSecond=item?equipLootPreview(battle,unit,item.item,'offhandItem'):null;
   const stowSecond=equipLootPreview(battle,unit,null,'offhandItem');
   const stowOutfit=equipLootPreview(battle,unit,null,'outfit');
@@ -220,6 +221,7 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
           <label>Objeto<select aria-label="Objeto para dar o soltar" disabled={busyDisabled || !inv.items.length} value={item?.item || ''} onChange={event => chooseItem(event.target.value)}>{!inv.items.length && <option value="">Sin objetos</option>}{inv.items.map((entry: any) => <option key={entry.item} value={entry.item}>{entry.label} · {entry.count}</option>)}</select></label>
           <label>Cantidad<input aria-label="Cantidad de objetos" type="number" min="1" step="1" max={item?.count || 1} disabled={busyDisabled || !item} value={count} onChange={event => setQuantity(Number(event.target.value))} /></label>
           <label>Destinatario<select aria-label="Aliado que recibe el equipo" disabled={busyDisabled} value={recipient} onChange={event => setRecipient(event.target.value)}><option value="">Elegir aliado</option>{handling.recipients.map((target: any) => <option key={target.id} value={target.id} disabled={target.unconscious}>{target.nickname || target.name}{target.unconscious ? ' · inconsciente' : ''}</option>)}</select></label>
+          {holdMain?.valid&&<button className="line-button" disabled={busyDisabled} onClick={()=>onOrder(holdMain.action)}>Poner en mano principal · {holdMain.pa} PA</button>}
           {item&&(!item.weapon||typeof item.weapon!=='number')&&item.item!=='outfit'&&!['primary','blade','offhand'].includes(item.item)&&<button className="line-button" disabled={busyDisabled||!holdSecond?.valid} title={holdSecond?.reason||undefined} onClick={()=>onOrder({type:'equipLoot',slot:'offhandItem',inventoryKey:item.item})}>Poner en segunda mano · {battle.mode==='exploration'?'sin PA':'4 PA'}</button>}
           <button className="line-button" disabled={handling.transfer.disabled} title={handling.transfer.reason || undefined} onClick={() => onOrder(handling.transfer.action)}>{handling.transfer.label}{recipient ? ` · ${handling.transfer.totalPA} PA${handling.transfer.kind === 'relay' ? ' en total' : ''}` : ''}</button>
           <button className="line-button" disabled={handling.drop.disabled} title={handling.drop.reason || undefined} onClick={() => onOrder({type: 'drop', item: item.item, count})}>Soltar aquí · {handling.drop.pa} PA</button>

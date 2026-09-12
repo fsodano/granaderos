@@ -3,7 +3,7 @@ import {validateReloadProgress} from './weapon-reload.js';
 import {heldSupply} from './held-supplies.js';
 import {heldTool} from './environment-interactions.js';
 import {WEAPONS} from './data.js';
-import {inventoryUsage,validateHands} from './tactical-inventory.js';
+import {inventoryUsage,validateHands,carriedObject} from './tactical-inventory.js';
 import {FITTING_RULES_VERSION,validateFittingPattern,validateWeaponFittings,validateUnitFittings,normalizeUnitFittings,validItemIdentity,fittingItemIds,heldItemIds,fittingLabel} from './weapon-fittings.js';
 export const EQUIPMENT_CATALOG=[
  ...Object.values(WEAPONS).filter(w=>w.id>=1800&&w.id<=1813).map(w=>({...w,item:w.id,stockKey:String(w.id),category:w.id<1809?'firearm':'blade',price:({1800:240,1801:230,1802:420,1803:180,1804:100,1805:130,1806:180,1807:160,1808:220,1809:160,1810:110,1811:50,1812:70,1813:40})[w.id]})),
@@ -147,7 +147,7 @@ export function returnEquipment(s,id,report){
  else if(report.weapon!==undefined)s.loadouts[id].blade=0;
  for(const key of ['jammed','weaponDropped'])if(report[key]!==undefined){need(typeof report[key]==='boolean','El estado del arma es inválido.');s.operativeState[id][key]=report[key];}
  if(report.weaponMode!==undefined){need(['fire','melee'].includes(report.weaponMode),'El modo del arma es inválido.');s.operativeState[id].weaponMode=report.weaponMode;}
- if(report.activeSlot!==undefined){need(['primary','blade','medical','unarmed','tool','supply'].includes(report.activeSlot),'El equipo activo es inválido.');s.operativeState[id].activeSlot=report.activeSlot;if(report.activeSlot==='tool'){need(Boolean(heldTool(report)),'La herramienta del parte es inválida.');s.operativeState[id].activeTool=report.activeTool;}else delete s.operativeState[id].activeTool;if(report.activeSlot==='supply'){need(Boolean(heldSupply(report)),'El pertrecho del parte es inválido.');s.operativeState[id].activeSupply=report.activeSupply;}else delete s.operativeState[id].activeSupply;}
+ if(report.activeSlot!==undefined){need(['primary','blade','medical','unarmed','tool','supply','item'].includes(report.activeSlot),'El equipo activo es inválido.');s.operativeState[id].activeSlot=report.activeSlot;if(report.activeSlot==='tool'){need(Boolean(heldTool(report)),'La herramienta del parte es inválida.');s.operativeState[id].activeTool=report.activeTool;}else delete s.operativeState[id].activeTool;if(report.activeSlot==='supply'){need(Boolean(heldSupply(report)),'El pertrecho del parte es inválido.');s.operativeState[id].activeSupply=report.activeSupply;}else delete s.operativeState[id].activeSupply;if(report.activeSlot==='item'){need(Boolean(carriedObject(report)),'El objeto del parte es inválido.');s.operativeState[id].activeItem=report.activeItem;}else delete s.operativeState[id].activeItem;}
  if(report.bladeCondition!==undefined){need(Number.isFinite(report.bladeCondition)&&report.bladeCondition>=0&&report.bladeCondition<=100,'El estado del arma blanca del parte es inválido.');s.operativeState[id].bladeCondition=report.bladeCondition;}
  for(const [slot,key] of [['weapon','weaponInstanceId'],['blade','bladeInstanceId']]){
   if(report[key]!==undefined){need(validInstanceId(report[key])&&report[slot]>0&&(slot!=='weapon'||!report.weaponDropped),'La identidad del arma del parte es inválida.');s.operativeState[id][key]=report[key];}
@@ -157,6 +157,12 @@ export function returnEquipment(s,id,report){
  need(!report.weaponDropped||!(report.loaded>0),'Un arma abandonada no puede conservar cartuchos cargados.');
 }
 
+// Strategic records store cartridges separately from the deployed unit shape.
+function personalHandState(s,op,r){
+ const deployed=s.pendingBattle?.squad?.find(u=>String(u.id)===String(op?.id));
+ const ammo=r.captured?r.capturedAmmunition?.ammo??0:deployed?deployed.ammo??0:Math.max(0,(r.carriedAmmo??0)-(r.carriedLoaded??0));
+ return {...op,...r,ammo};
+}
 export function validateEquipment(s,roster=[]){
  migrateEquipment(s);
  const object=v=>v&&typeof v==='object'&&!Array.isArray(v),integer=(v,min,max)=>Number.isInteger(v)&&v>=min&&v<=max;
@@ -184,11 +190,11 @@ export function validateEquipment(s,roster=[]){
   need(r.carriedAmmo===undefined||integer(r.carriedAmmo,0,100000),'La reserva personal de cartuchos es inválida.');
   need(r.carriedLoaded===undefined||!r.weaponDropped&&(WEAPONS[op?.weapon]?.capacity??0)>0&&integer(r.carriedLoaded,0,Math.min(WEAPONS[op.weapon].capacity,r.carriedAmmo??0)),'La carga personal del arma es inválida.');
   need(r.carriedReloadProgress===undefined||r.carriedLoaded!==undefined,'Falta la carga del arma en recarga.');validateReloadProgress(r.carriedReloadProgress,WEAPONS[op?.weapon]?.capacity??0,r.carriedLoaded??0,r.weaponDropped);
-  validateHands(r);validateUnitFittings({...op,...r});
+  validateHands(personalHandState(s,op,r));validateUnitFittings({...op,...r});
   for(const [slot,key] of [['weapon','weaponInstanceId'],['blade','bladeInstanceId']])if(r[key]!==undefined)need(validInstanceId(r[key])&&op?.[slot]>0&&(slot!=='weapon'||!r.weaponDropped),'La identidad del arma guardada es inválida.');
   for(const key of ['jammed','weaponDropped'])need(r[key]===undefined||typeof r[key]==='boolean','El estado del arma guardada es inválido.');
   need(r.weaponMode===undefined||['fire','melee'].includes(r.weaponMode),'El modo del arma guardado es inválido.');
-  need(r.activeSlot===undefined||['primary','blade','medical','unarmed','tool','supply'].includes(r.activeSlot),'El equipo activo guardado es inválido.');
+  need(r.activeSlot===undefined||['primary','blade','medical','unarmed','tool','supply','item'].includes(r.activeSlot),'El equipo activo guardado es inválido.');
   need(r.activeSlot==='tool'?Boolean(heldTool(r)):r.activeTool===undefined,'La herramienta equipada es inválida.');
   need(r.activeSlot==='supply'?Boolean(heldSupply(r)):r.activeSupply===undefined,'El pertrecho equipado es inválido.');
   need(r.bladeCondition===undefined||Number.isFinite(r.bladeCondition)&&r.bladeCondition>=0&&r.bladeCondition<=100,'El estado del arma blanca es inválido.');
@@ -206,7 +212,7 @@ export function validateEquipmentOwnership(s,roster=[],battle=null){
  const record=r=>{if(r&&typeof r==='object'&&(r.count??1)>0)for(const id of fittingItemIds(r))claim(id);};
  const unit=u=>{validateHands(u);validateUnitFittings(u);for(const id of heldItemIds(u))claim(id);for(const r of Object.values(u.inventory??{}))record(r);};
  const livingPlayers=new Set();
- for(const op of roster){const r=s.operativeState[op.id];if(r?.alive&&r.hp>0){livingPlayers.add(String(op.id));if(!activePlayers.has(String(op.id)))unit({...op,...r});}}
+ for(const op of roster){const r=s.operativeState[op.id];if(r?.alive&&r.hp>0){livingPlayers.add(String(op.id));if(!activePlayers.has(String(op.id)))unit(personalHandState(s,op,r));}}
  for(const group of [...Object.values(s.garrisons??{}),...(s.militiaTraining??[]).map(course=>course.trainees??[])])for(const u of group){livingPlayers.add(String(u.id));if(!activePlayers.has(String(u.id)))unit(u);}
  const groupedEnemies=new Set();
  for(const group of s.enemyGroups??[])if(group.status!=='defeated')for(const u of group.units??[])if(u.hp>0&&!u.departure&&!u.surrendered&&!u.routed){groupedEnemies.add(String(u.id));if(!activeEnemies.has(String(u.id)))unit(u);}
