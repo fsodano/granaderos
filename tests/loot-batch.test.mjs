@@ -73,7 +73,8 @@ test('exploration applies the pickup duration once for a multi-item transaction'
 });
 
 test('a batch fits within a real saved player interrupt and resumes deterministically',()=>{
-  const s=field({x:1,y:1,agility:100,experienceLevel:10},{enemies:[{id:'e',x:7,y:1,weapon:1813,agility:30,experienceLevel:1,patrol:false}]});s.units[1].ap=24;for(const source of s.groundItems)Object.assign(source,{x:2,y:1});
+  // The enemy must advance rather than spend this budget on a ranged throw.
+  const s=field({x:1,y:1,agility:100,experienceLevel:10},{enemies:[{id:'e',x:7,y:1,weapon:1809,agility:30,experienceLevel:1,patrol:false}]});s.units[1].ap=24;for(const source of s.groundItems)Object.assign(source,{x:2,y:1});
   const paused=endTurn(s);assert.equal(paused.phase,'interrupt');const selected=[{groundId:'rounds',count:3},{groundId:'dressings',count:2}],n=batch(paused,selected);assert.equal(n.lastError,null);assert.equal(n.units[0].ap,paused.units[0].ap-8);assert.equal(n.phase,'interrupt');
   assert.deepEqual(batch(validateBattleSnapshot(JSON.parse(JSON.stringify(paused))),selected),n);assert.deepEqual(endTurn(validateBattleSnapshot(JSON.parse(JSON.stringify(n)))),endTurn(n));
 });

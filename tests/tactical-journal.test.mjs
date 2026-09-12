@@ -63,7 +63,7 @@ test('hidden enemy reloads preserve anonymous hearing without load or AP details
 });
 
 test('visible enemy movement does not disclose the length or AP cost of its route',()=>{
- const s=createBattle([{id:'p',x:1,y:1,facing:2,ap:20}],{width:20,height:8,seed:45,tiles:tiles(),enemies:[{id:'e',name:'Avanzante',x:7,y:1,weapon:1813,patrol:false}]});
+ const s=createBattle([{id:'p',x:1,y:1,facing:2,ap:20}],{width:20,height:8,seed:45,tiles:tiles(),enemies:[{id:'e',name:'Avanzante',x:7,y:1,weapon:1809,patrol:false}]});
  s.units[0].ap=20;s.units[1].ap=24;
  const n=endTurn(s);assert.equal(n.phase,'interrupt');assert.equal(n.units[1].x,6);
  assert.ok(n.log.includes('Avanzante avanza.'));assert.ok(!n.log.some(line=>line.includes('Avanzante')&&/casillas|PA/.test(line)));

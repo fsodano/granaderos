@@ -123,7 +123,8 @@ test('stale or invalid memories do not authorize a search', () => {
 });
 
 test('ordinary blade approach and melee pay separate legal orders without a charge bonus', () => {
-  let s = field({actor: {weapon: 1813, ammo: 0, loaded: 0}, enemy: {x: 6, y: 3, weapon: 1813, ammo: 0, loaded: 0}});
+  // The actor needs a melee-only weapon to exercise movement followed by a strike.
+  let s = field({actor: {weapon: 1809, ammo: 0, loaded: 0}, enemy: {x: 6, y: 3, weapon: 1813, ammo: 0, loaded: 0}});
   const move = chooseEnemyAction(s, actor(s)), path = pathFor(s, move), startAP = actor(s).ap;
   assert.equal(move.type, 'move');
   s = actBattle(s, move); assert.equal(s.lastError, null);

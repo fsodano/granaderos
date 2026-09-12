@@ -8,7 +8,8 @@ import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 
 const tiles=()=>Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0}));
-const battle=(players=[{id:'p',x:1,y:1,marksmanship:100}],extra={})=>createBattle(players,{width:12,height:8,tiles:tiles(),enemies:[{id:'e',x:7,y:1,weapon:1813}],seed:45,...extra});
+// These windows start with a melee-only enemy advance, before any attack.
+const battle=(players=[{id:'p',x:1,y:1,marksmanship:100}],extra={})=>createBattle(players,{width:12,height:8,tiles:tiles(),enemies:[{id:'e',x:7,y:1,weapon:1809}],seed:45,...extra});
 
 test('unused AP grants a player decision window without a cover button or forced shot',()=>{
  const s=battle();s.units[0].ap=20;s.units[0].overwatch=false;

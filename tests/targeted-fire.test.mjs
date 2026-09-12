@@ -32,7 +32,8 @@ test('bad location orders are rejected before spending AP, ammunition, random dr
  const bad=structuredClone(s);bad.units[0].lastHitLocation='eyes';assert.throws(()=>validateBattleSnapshot(bad));
 });
 test('aimed body shots remain ordinary item actions inside a saved interrupt',()=>{
- let s=field({enemies:[{id:'e',x:7,y:1,weapon:1813,morale:100}]});s.units[0].ap=30;
+ // A melee-only enemy opens the movement interrupt before this aimed shot.
+ let s=field({enemies:[{id:'e',x:7,y:1,weapon:1809,morale:100}]});s.units[0].ap=30;
  s=validateBattleSnapshot(endTurn(s));assert.equal(s.phase,'interrupt');
  const n=actBattle(s,{type:'useItem',unitId:'p',targetId:'e',hitLocation:'legs',aim:1});
  assert.equal(n.lastError,null);assert.equal(n.units[0].ap,12);assert.equal(n.phase,'interrupt');assert.equal(n.elapsedSeconds,6);

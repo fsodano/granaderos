@@ -58,7 +58,7 @@ test('legacy charges stop at an interrupt and cannot strike through a wall',()=>
  const blocked=actBattle(s,{type:'charge',unitId:'p',targetId:'e'});assert.ok(blocked.lastError);assert.deepEqual(blocked.units,s.units);
 });
 test('reserved player reaction AP is paid once and only its remainder carries over',()=>{
- let s=field([{id:'p',x:1,y:1,ap:20,morale:100,overwatch:true,marksmanship:100}],{enemies:[{id:'e',x:7,y:1,weapon:1813,energy:100,overwatch:false,morale:100}]});
+ let s=field([{id:'p',x:1,y:1,ap:20,morale:100,overwatch:true,marksmanship:100}],{enemies:[{id:'e',x:7,y:1,weapon:1809,energy:100,overwatch:false,morale:100}]});
  // A partial enemy turn leaves the reacting soldier available for the carryover check.
  s.units[0].ap=20;s.units[1].ap=24;let n=endTurn(s);assert.equal(n.phase,'interrupt');
  assert.equal(n.units[0].ap,20);assert.equal(n.units[1].ap,16);

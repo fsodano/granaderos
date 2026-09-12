@@ -67,7 +67,8 @@ test('enemy reactions stop both search and combined pickup before inventory chan
 });
 
 test('a real saved player interrupt permits search and exact finite pickup within its remaining AP',()=>{
-  const s=field({x:1,y:1,agility:100,experienceLevel:10},{enemies:[{id:'e',x:7,y:1,weapon:1813,agility:30,experienceLevel:1,patrol:false}]});s.units[1].ap=24;Object.assign(s.groundItems[0],{x:4,y:4});
+  // Trigger the saved window by movement from a melee-only sabre carrier.
+  const s=field({x:1,y:1,agility:100,experienceLevel:10},{enemies:[{id:'e',x:7,y:1,weapon:1809,agility:30,experienceLevel:1,patrol:false}]});s.units[1].ap=24;Object.assign(s.groundItems[0],{x:4,y:4});
   const paused=endTurn(s);assert.equal(paused.phase,'interrupt');const after=actBattle(paused,pick);assert.equal(after.lastError,null);assert.equal(after.phase,'interrupt');assert.equal(after.groundItems[0].count,9);assert.equal(after.elapsedSeconds,6);
   assert.deepEqual(actBattle(validateBattleSnapshot(JSON.parse(JSON.stringify(paused))),pick),after);assert.deepEqual(endTurn(validateBattleSnapshot(JSON.parse(JSON.stringify(after)))),endTurn(after));
 });

@@ -81,7 +81,8 @@ test('a visible contact during exploration stops the approach before item use',(
 });
 
 test('an approach and aid fit within a saved real player interrupt and preserve its continuation',()=>{
-  const s=field({x:1,y:1,agility:100,experienceLevel:10},{x:4,y:4,hp:10},{enemies:[{id:'e',x:7,y:1,weapon:1813,agility:30,experienceLevel:1,patrol:false}]});s.units[2].ap=24;
+  // A sabre requires approach, so the patient is not struck before this window.
+  const s=field({x:1,y:1,agility:100,experienceLevel:10},{x:4,y:4,hp:10},{enemies:[{id:'e',x:7,y:1,weapon:1809,agility:30,experienceLevel:1,patrol:false}]});s.units[2].ap=24;
   const paused=endTurn(s);assert.equal(paused.phase,'interrupt');assert.ok(paused.interrupt.unitIds.includes('p'));
   const treated=use(paused);assert.equal(treated.lastError,null);assert.equal(treated.phase,'interrupt');assert.equal(treated.units[0].medkits,1);assert.equal(treated.units[1].bleeding,0);assert.equal(treated.elapsedSeconds,6);
   const restored=validateBattleSnapshot(JSON.parse(JSON.stringify(treated)));assert.deepEqual(endTurn(restored),endTurn(treated));assert.deepEqual(use(validateBattleSnapshot(JSON.parse(JSON.stringify(paused)))),treated);
