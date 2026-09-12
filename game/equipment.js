@@ -1,3 +1,4 @@
+import {wornOutfit} from './outfits.js';
 import {validateReloadProgress} from './weapon-reload.js';
 import {heldSupply} from './held-supplies.js';
 import {heldTool} from './environment-interactions.js';
@@ -136,6 +137,7 @@ export function usedEquipmentOffers(s,isSupplied){
 export function resaleQuote(instance){return resaleBreakdown(instance).total;}
 
 export function returnEquipment(s,id,report){
+ if(report.outfit!==undefined||report.poncho!==undefined){s.operativeState[id].outfit=structuredClone(wornOutfit(report));delete s.operativeState[id].poncho;}
  validateHands(report);validateUnitFittings(report);
  if(report.offHand)s.operativeState[id].offHand=structuredClone(report.offHand);else if(report.weapon!==undefined)delete s.operativeState[id].offHand;
  s.loadouts[id]??={};

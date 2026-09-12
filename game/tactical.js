@@ -1,3 +1,4 @@
+import {OUTFIT_CHANGE_AP,normalizeOutfit,wornOutfit,hasPoncho} from './outfits.js';
 import {handsRequired} from './hand-layout.js';
 import {firearmPreparation,lowerWeapon,lowersWeapon,turnLowersWeapon} from './weapon-readiness.js';
 import {planReload} from './weapon-reload.js';
@@ -10,7 +11,7 @@ import {projectilePath,projectileFlight,pointProjectileFlight,concealmentAt,conc
 import {boundaryMatches} from './tactical-exits.js';
 import {HELD_SUPPLIES,heldSupply,clearEmptySupply} from './held-supplies.js';
 import {heldTool,environmentActionProfile,resolveEnvironmentInteraction,extractContainerItem} from './environment-interactions.js';
-import {SUPPLY_ITEMS,inventoryUsage,itemQuantity,extractItemQuantity,applyItemQuantity,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove} from './tactical-inventory.js';
+import {SUPPLY_ITEMS,inventoryUsage,itemDescriptor,itemQuantity,extractItemQuantity,applyItemQuantity,transferItemQuantity,planFitBayonet,planRemoveBayonet,planPocketMove,planEquipOutfit,planStowOutfit} from './tactical-inventory.js';
 import {FITTING_RULES_VERSION,FIT_BAYONET_AP,REMOVE_BAYONET_AP,LOOSE_BAYONET,fixedBayonetFor,fixedBayonetProfile,fittingWeight,weaponItemWeight,normalizeUnitFittings} from './weapon-fittings.js';
 import {FISTS,BUTTSTOCK,unarmedChance,unarmedImpact,weaponStealChance,STEAL_MIN_AP} from './unarmed-combat.js';
 import {directionTo,facingAllowsSight,turnAPCost,stealthAPMultiplier,noiseRadius,approximateHeardPosition} from './tactical-awareness.js';
@@ -130,13 +131,13 @@ state.units=squad.map((u,i)=>makeUnit(u,'player',i,1+Math.floor(i/(height-2)),1+
 const enemies=Array.isArray(sector.enemies)?sector.enemies:Array.from({length:sector.exploration?0:sector.enemyCount||Math.max(3,squad.length+(sector.difficulty||1)-1)},(_,i)=>({id:`enemy-${i}`,name:`Realista ${i+1}`,weapon:i%3===0?1801:1800,marksmanship:50+(sector.difficulty||1)*5,morale:60+(sector.difficulty||1)*5}));
 state.units.push(...enemies.map((u,i)=>makeUnit(u,'enemy',i,width-2-Math.floor(i/(height-2)),1+i%(height-2))));
 if(!state.artillery.length&&sector.cannons>0)state.artillery=Array.from({length:Math.min(sector.cannons,3)},(_,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',x:2,y:2+i*3,loaded:true,ammo:6}));
-for(const u of state.units){lowerWeapon(u);limitEnergy(u);if(u.side==='enemy'&&u.patrol!==false)u.patrolOrigin??={x:u.x,y:u.y};normalizeUnitFittings(u);u.weaponFittings=structuredClone(u.weaponFittings);u.maxAP=maxActionPoints(state,u.routed?{...u,routed:false}:u);u.ap=u.maxAP;}
+for(const u of state.units){normalizeOutfit(u);lowerWeapon(u);limitEnergy(u);if(u.side==='enemy'&&u.patrol!==false)u.patrolOrigin??={x:u.x,y:u.y};normalizeUnitFittings(u);u.weaponFittings=structuredClone(u.weaponFittings);u.maxAP=maxActionPoints(state,u.routed?{...u,routed:false}:u);u.ap=u.maxAP;}
 say(state,`Combate en ${state.sectorName}. Los PA dependen de la salud y las fuerzas. Puedes conservar hasta 20 PA entre turnos.`);return sector.deferContact?state:initializeBattlePerception(state);}
 export function initializeBattlePerception(state){checkEnd(state);detectContact(state);rememberContacts(state);revealRooms(state);return resolveFirstContact(state);}
 function tile(s,x,y){const at=s.tiles[y*s.width+x];return at?.x===x&&at?.y===y?at:s.tiles.find(t=>t.x===x&&t.y===y);}
 function occupied(s,x,y,except){return propBlocksAt(s,x,y)||(s.npcs||[]).some(n=>n.x===x&&n.y===y)||s.units.some(u=>onField(u)&&!u.unconscious&&u.id!==except&&u.x===x&&u.y===y);}
 export function carryCapacity(u){return Math.max(10,(u.strength||50)*.5);}
-export function carriedWeight(u){const inventory=Object.values(u.inventory||{}).reduce((sum,item)=>sum+(item&&typeof item==='object'?(item.count||0)*((item.weight||0)+fittingWeight(item))+(item.count||0)*(item.loaded||0)*.04:0),0);return Number(u.weight??u.carryWeight??0)+inventory+(u.loaded||0)*.04+Object.entries(SUPPLY_ITEMS).reduce((sum,[key,item])=>sum+(u[key]??0)*item.weight,0)+(u.weaponDropped?0:weaponItemWeight(u.weapon)+fittingWeight(u))+weaponItemWeight(u.blade)+(u.offHand?weaponItemWeight(u.offHand.weapon)+fittingWeight(u.offHand)+(u.offHand.loaded??0)*.04:0);}
+export function carriedWeight(u){const inventory=Object.values(u.inventory||{}).reduce((sum,item)=>sum+(item&&typeof item==='object'?(item.count||0)*((item.weight||0)+fittingWeight(item))+(item.count||0)*(item.loaded||0)*.04:0),0);return Number(u.weight??u.carryWeight??0)+(wornOutfit(u)?.weight??0)+inventory+(u.loaded||0)*.04+Object.entries(SUPPLY_ITEMS).reduce((sum,[key,item])=>sum+(u[key]??0)*item.weight,0)+(u.weaponDropped?0:weaponItemWeight(u.weapon)+fittingWeight(u))+weaponItemWeight(u.blade)+(u.offHand?weaponItemWeight(u.offHand.weapon)+fittingWeight(u.offHand)+(u.offHand.loaded??0)*.04:0);}
 function weightPenalty(u){return Math.max(1,carriedWeight(u)/carryCapacity(u));}
 export function movementEnergy(u,t){const style=u.movementMode||'walk',base={walk:1,run:3,crouch:2,prone:3}[style]||1;return Math.max(1,Math.ceil(base*weightPenalty(u)*(u.mounted?1-Math.min(100,u.ridingSkill||0)*.005:1)*(t?.type==='mud'?1.5:1)*(hasTrait(u,'guerrilla_tactician')?.75:1)));}
 function exhaust(s,u,cost){limitEnergy(u);if(u.mounted&&u.mount){u.mount.stamina=Math.max(0,u.mount.stamina-Math.max(1,Math.ceil(cost*(1-Math.min(100,u.ridingSkill||0)*.005))));if(u.mount.stamina===0){u.mounted=false;sayObserved(s,[u],`${u.name} desmonta: su caballo está agotado.`);}}u.energy=Math.max(0,(u.energy??100)-cost);if(u.energy===0){lowerWeapon(u);u.unconscious=true;u.ap=0;u.mounted=false;sayObserved(s,[u],`${u.name} cae inconsciente por agotamiento.`);}}
@@ -331,7 +332,7 @@ function rout(s,u,report=true){
   if(report)sayObserved(s,[u],`${u.name} pierde la disciplina y abandona su arma. Intentará alcanzar una salida en su turno.`);
 }
 function wearBayonet(unit){const fitting=fixedBayonetFor(unit);if(fitting){fitting.condition=Math.max(0,fitting.condition-1);if(fitting.condition===0)unit.braced=false;}}
-function meleeStrike(s,attacker,target,amount,{counter=true}={}){const blade=bladeFor(attacker),defense=bladeFor(target);wearBayonet(attacker);if([1809,1810].includes(defense.id)&&target.ap>=6&&target.parryTurn!==s.turn){target.parryTurn=s.turn;target.ap-=6;amount*=.75;sayObserved(s,[target],`${target.name} desvía parte del golpe con su sable.`);}if(defense.id===1813||target.poncho)amount*=.8;damage(s,target,amount,attacker);if(alive(target)){if([1809,1810].includes(blade.id))target.bleeding=Math.min(10,target.bleeding+3);if(blade.id===1812){lowerWeapon(target);target.knockedDown=true;target.stance='prone';target.mounted=false;target.ap=Math.max(0,target.ap-20);sayObserved(s,[target],`${target.name} cae derribado por la lanza.`);}if(counter&&(defense.id===1813||Number(target.id)===3)&&target.counterTurn!==s.turn&&target.ap>=defense.ap&&dist(target,attacker)<=defense.reach&&alive(attacker)){lowerWeapon(target);target.counterTurn=s.turn;target.ap-=defense.ap;sayObserved(s,[target],`${target.name} responde con un contragolpe.`);wearBayonet(target);damage(s,attacker,defense.damage*.5,target);}}}
+function meleeStrike(s,attacker,target,amount,{counter=true}={}){const blade=bladeFor(attacker),defense=bladeFor(target);wearBayonet(attacker);if([1809,1810].includes(defense.id)&&target.ap>=6&&target.parryTurn!==s.turn){target.parryTurn=s.turn;target.ap-=6;amount*=.75;sayObserved(s,[target],`${target.name} desvía parte del golpe con su sable.`);}if(defense.id===1813||hasPoncho(target))amount*=.8;damage(s,target,amount,attacker);if(alive(target)){if([1809,1810].includes(blade.id))target.bleeding=Math.min(10,target.bleeding+3);if(blade.id===1812){lowerWeapon(target);target.knockedDown=true;target.stance='prone';target.mounted=false;target.ap=Math.max(0,target.ap-20);sayObserved(s,[target],`${target.name} cae derribado por la lanza.`);}if(counter&&(defense.id===1813||Number(target.id)===3)&&target.counterTurn!==s.turn&&target.ap>=defense.ap&&dist(target,attacker)<=defense.reach&&alive(attacker)){lowerWeapon(target);target.counterTurn=s.turn;target.ap-=defense.ap;sayObserved(s,[target],`${target.name} responde con un contragolpe.`);wearBayonet(target);damage(s,attacker,defense.damage*.5,target);}}}
 function interceptCharge(s,mover,target){const blade=fixedBayonetProfile(target);if(!alive(target)||!target.braced||target.braceTurn===s.turn||!blade||target.ap<16||dist(mover,target)>2||!hasLineOfSight(s,target,mover))return;target.braceTurn=s.turn;target.ap-=16;sayObserved(s,[target],`${target.name} recibe la carga con la bayoneta fijada.`);wearBayonet(target);damage(s,mover,blade.damage,target);}
 function damage(s,target,amount,source,projectile=false,hitLocation='torso',extraBreath=0,report=true){
   if(projectile&&(Number(target.id)===57||(target.leadership||0)>=90)){
@@ -506,7 +507,7 @@ export function planLoot(s,u,a){
   let receiver=u,donor=source;
   if(source){
     const wanted=a.item??'all';
-    const items=wanted==='all'?[...Object.keys(SUPPLY_ITEMS).filter(k=>(source[k]??0)>0),...(!source.weaponDropped&&(WEAPONS[source.weapon]||BLADES[source.weapon])?['primary']:[]),...(BLADES[source.blade]?['blade']:[]),...(source.offHand?['offhand']:[]),...Object.entries(source.inventory??{}).filter(([,r])=>(typeof r==='number'?r:r?.count)>0).map(([key])=>`inventory:${key}`)]:[wanted==='weapon'?'primary':wanted];
+    const items=wanted==='all'?[...Object.keys(SUPPLY_ITEMS).filter(k=>(source[k]??0)>0),...(!source.weaponDropped&&(WEAPONS[source.weapon]||BLADES[source.weapon])?['primary']:[]),...(BLADES[source.blade]?['blade']:[]),...(source.offHand?['offhand']:[]),...(wornOutfit(source)?['outfit']:[]),...Object.entries(source.inventory??{}).filter(([,r])=>(typeof r==='number'?r:r?.count)>0).map(([key])=>`inventory:${key}`)]:[wanted==='weapon'?'primary':wanted];
     if(!items.length)throw Error('No queda equipo que recoger.');
     for(const item of items){const count=wanted==='all'?itemQuantity(donor,item):a.count??itemQuantity(donor,item);const transfer=transferItemQuantity(donor,receiver,item,count);donor=transfer.source;receiver=transfer.target;}
   }else{
@@ -551,6 +552,7 @@ export function lootBatchPreview(s,u,items){
   return {pa,valid:!reason,reason};
 }
 export function planEquipLoot(u,key,slot='primary'){
+  if(slot==='outfit')return key===null?planStowOutfit(u):planEquipOutfit(u,key);
   const record=u.inventory?.[key];
   if(!record||typeof record!=='object'||record.count<1||!['primary','blade','offhand'].includes(slot))throw Error('Selecciona un arma recuperada disponible.');
   if(!(WEAPONS[record.weapon]||BLADES[record.weapon])||(slot==='blade'&&!BLADES[record.weapon]))throw Error('Ese objeto no puede equiparse en esa mano.');
@@ -608,7 +610,7 @@ export function swapHandsPreview(s,u){
  return {pa,reason,valid:!reason};
 }
 export function equipLootPreview(s,u,inventoryKey,slot='primary'){
-  const pa=6;let reason=inventoryOrderReason(s,u,pa);
+  const pa=slot==='outfit'?OUTFIT_CHANGE_AP:6;let reason=inventoryOrderReason(s,u,pa);
   if(!reason)try{planEquipLoot(u,inventoryKey,slot);}catch(error){reason=error.message;}
   return {pa,reason,valid:!reason};
 }
@@ -967,7 +969,7 @@ else if(a.type==='steal'){
 else if(a.type==='equipLoot'){
   const preview=equipLootPreview(s,u,a.inventoryKey,a.slot??'primary');if(!preview.valid)return fail(preview.reason);
   const next=planEquipLoot(u,a.inventoryKey,a.slot??'primary');pay(preview.pa);next.ap=u.ap;
-  replaceUnit(u,next);sayObserved(s,[u],`${u.name} equipa ${weaponFor(u).name} y guarda el arma desplazada.`);
+  replaceUnit(u,next);sayObserved(s,[u],a.slot==='outfit'?`${u.name} ${a.inventoryKey===null?'guarda su vestimenta en un bolsillo grande':'se pone '+itemDescriptor(u,'outfit').label}.`:`${u.name} equipa ${weaponFor(u).name} y guarda el arma desplazada.`);
 }
 else if(a.type==='movePocket'){
   const reason=inventoryOrderReason(s,u,0);if(reason)return fail(reason);

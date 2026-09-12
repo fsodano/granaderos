@@ -1,4 +1,5 @@
 'use client';
+import './ja2-outfit.css';
 import JA2Hands from './JA2Hands';
 import JA2WeaponMode from './JA2WeaponMode';
 import {handsRequired} from '../../game/hand-layout.js';
@@ -116,6 +117,7 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
   }, [onCloseInventory]);
   const movementActive = (id: string) => unit.movementMode === id;
   const otherHand=swapHandsPreview(battle,unit);
+  const stowOutfit=equipLootPreview(battle,unit,null,'outfit');
   return (
     <div className="ja2-inventory" role="dialog" aria-modal="true" aria-label="Equipo y órdenes del combatiente">
       <div className="ja2-inv-header">
@@ -160,6 +162,12 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
         </div>
       </div>
       <div className="paper-doll">
+        <section className="ja2-outfit-slot" aria-label="Ranura de vestimenta">
+          <small>Vestimenta</small>
+          <button className="line-button" disabled={busyDisabled || !inv.outfit} aria-pressed={item?.item==='outfit'} onClick={()=>chooseItem('outfit')}>{inv.outfit ? `${inv.outfit.label} · ${inv.outfit.condition}%` : 'Vacía'}</button>
+          {inv.outfit && <button className="line-button" disabled={busyDisabled || !stowOutfit.valid} title={stowOutfit.reason || undefined} onClick={()=>onOrder({type:'equipLoot',inventoryKey:null,slot:'outfit'})}>Guardar vestimenta · {battle.mode==='exploration'?'sin PA':`${stowOutfit.pa} PA`}</button>}
+          <small>El poncho reduce el efecto del clima. Guardarlo requiere un bolsillo grande.</small>
+        </section>
         <JA2Hands battle={battle} unit={unit} busy={busy} onOrder={onOrder} onPick={chooseItem}/>
         <label className="ja2-tool-selector">Objeto en mano<select aria-label="Elegir objeto en mano" value={inv.activeSlot||'primary'} disabled={busyDisabled} onChange={event=>{const option=equipped.find((entry:any)=>entry.slot===event.target.value);if(option){onOrder(option.action);onMode('move');}}}>{equipped.map((option:any)=><option key={option.slot} value={option.slot} disabled={option.disabled}>{option.label}{option.reason?` · ${option.reason}`:''}</option>)}</select></label>
         <JA2WeaponMode battle={battle} unit={unit} busy={busy} onOrder={onOrder} onMode={onMode}/>
@@ -169,7 +177,6 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
         {inv.tools.length > 0 && <label className="ja2-tool-selector">Herramienta<select aria-label="Equipar herramienta" value={unit.activeSlot === 'tool' ? unit.activeTool || '' : ''} disabled={slotDisabled('tool')} onChange={event => { if (event.target.value) { onOrder({type: 'weapon', slot: 'tool', toolKey: event.target.value}); onMode('move'); } }}><option value="">Elegir herramienta</option>{inv.tools.map((tool: any) => <option key={tool.item} value={tool.item}>{tool.name} · {tool.count} · estado {tool.condition ?? 100}%</option>)}</select></label>}
         {inv.heldSupplies.length > 0 && <label className="ja2-tool-selector">Pertrecho en mano<select aria-label="Equipar pertrecho" value={unit.activeSlot === 'supply' ? unit.activeSupply || '' : ''} disabled={slotDisabled('supply')} onChange={event => { if (event.target.value) { onOrder({type: 'weapon', slot: 'supply', supplyKey: event.target.value}); onMode('move'); } }}><option value="">Elegir pertrecho · {def('weapon')?.pa} PA</option>{inv.heldSupplies.map((supply: any) => <option key={supply.key} value={supply.key}>{supply.label} · {supply.count}</option>)}</select></label>}
         <div className="paper-readouts">
-          <span className="armor"><small>Armadura</small><b>{inv.poncho ? 'Sí' : '—'}</b></span>
           <span className="weight"><small>Peso</small><b>{inv.weight.toFixed(1)} / {inv.capacity.toFixed(1)} kg</b></span>
           <span className="camo"><small>Camuflaje</small><b>—</b></span>
         </div>
@@ -181,6 +188,7 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
         {inv.backpack.filter((record:any)=>`inventory:${record.key}`===managedItem).map((item: any) => {
           const gun = (WEAPONS as any)[item.weapon];
           const blade = (BLADES as any)[item.weapon];
+          const outfitEquip = item.kind==='outfit' ? equipLootPreview(battle,unit,item.key,'outfit') : null;
           const primaryEquip = equipLootPreview(battle, unit, item.key, 'primary');
           const bladeEquip = blade ? equipLootPreview(battle, unit, item.key, 'blade') : null;
           const offHandEquip = gun && !blade && handsRequired(item.weapon)===1 ? equipLootPreview(battle,unit,item.key,'offhand') : null;
@@ -190,7 +198,8 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
               <span>{item.name ?? 'Pertrechos'} · {item.count}{gun ? ` · ${item.loaded || 0} carga(s)` : ''}{item.condition !== undefined ? ` · estado ${item.condition}%` : ''}</span>
               <FittingReadout fitting={item.fittings?.bayonet}/>
               <LooseBayonetControl source={inv.fittings.sources.find((source: any) => source.item === `inventory:${item.key}`)} busy={busyDisabled} onOrder={onOrder}/>
-              {item.equippable && <>
+              {outfitEquip && <button className="line-button" disabled={busyDisabled || !outfitEquip.valid} title={outfitEquip.reason || undefined} onClick={()=>onOrder(backpackEquipAction(item.key,'outfit'))}>Ponerse vestimenta · {battle.mode==='exploration'?'sin PA':`${outfitEquip.pa} PA`}</button>}
+              {(gun || blade) && <>
                 <button className="line-button" disabled={busyDisabled || !primaryEquip.valid} title={primaryEquip.reason || undefined} onClick={() => onOrder(backpackEquipAction(item.key, 'primary'))}>Equipar principal · {primaryEquip.pa} PA</button>
                 {offHandEquip && <button className="line-button" disabled={busyDisabled || !offHandEquip.valid} title={offHandEquip.reason||undefined} onClick={()=>onOrder(backpackEquipAction(item.key,'offhand'))}>Equipar segunda mano · {offHandEquip.pa} PA</button>}
                 {bladeEquip && <button className="line-button" disabled={busyDisabled || !bladeEquip.valid} title={bladeEquip.reason || undefined} onClick={() => onOrder(backpackEquipAction(item.key, 'blade'))}>Equipar secundaria · {bladeEquip.pa} PA</button>}

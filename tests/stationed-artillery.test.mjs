@@ -1,4 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
+import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {rosterFor} from '../game/campaign.js';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {dispatchCampaign,isSupplied,restoreCampaign,serializeCampaign} from '../game/campaign.js';
 import {deployedArtillery} from '../game/equipment.js';
@@ -8,7 +10,10 @@ import {enterSector} from '../game/world.js';import {autoResolve} from '../game/
 import {encodeSave,decodeSave} from '../game/save.js';import {syncBattleTime} from '../game/time.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const act=(s,a)=>{const n=actBattle(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
-function issued(){let c=order(initialCampaign(45),{type:'purchaseEquipment',item:'swivel'});c=order(c,{type:'travel',sector:'buenos_aires'});return order(c,{type:'attack',sector:'san_nicolas'});}
+function issued(){let c=order(initialCampaign(45),{type:'purchaseEquipment',item:'swivel'});
+ // Draw actual clothing before the march; assault no longer grants protection from pooled stock.
+ for(const operativeId of c.squad){c=order(c,{type:'sectorInventory',sector:'retiro',operativeId,direction:'issueOutfit'});const row=sectorInventoryModel(c,'retiro',rosterFor(c),operativeId).carried.find(row=>row.equip?.some(e=>e.slot==='outfit'));c=order(c,{type:'sectorInventory',sector:'retiro',operativeId,direction:'equip',inventoryKey:row.inventoryKey,expected:row.expected,slot:'outfit'});}
+ c=order(c,{type:'travel',sector:'buenos_aires'});return order(c,{type:'attack',sector:'san_nicolas'});}
 function won(){let c=issued();const r=autoResolve(c.pendingBattle);assert.equal(r.outcome,'victory');assert.ok(r.actions>0);c=order(c,{type:'battleResult',battleId:c.pendingBattle.id,outcome:r.outcome,sectorState:r.battle,survivors:r.battle.units.filter(u=>u.side==='player')});return c;}
 function returnVisit(c,b){const pair=syncBattleTime(c,b);assert.equal(pair.error,null);return order(pair.campaign,{type:'leaveSector',battleId:c.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});}
 const save=c=>restoreCampaign(serializeCampaign(c));

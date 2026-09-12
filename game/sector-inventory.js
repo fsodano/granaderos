@@ -1,3 +1,4 @@
+import {makeOutfit,wornOutfit} from './outfits.js';
 import {handsRequired} from './hand-layout.js';
 import {SUPPLY_ITEMS,itemQuantity,itemDescriptor,extractItemQuantity,applyItemQuantity,inventoryUsage} from './tactical-inventory.js';
 import {getReachable,hasLineOfSight,planEquipLoot,WEAPONS,BLADES} from './tactical.js';
@@ -31,7 +32,7 @@ function poolSources(snapshot){
  for(const body of snapshot.units??[])if(body.knownToPlayer&&body.hp<=0&&!body.departure&&!body.fled){
   const disposition=snapshot.returnLedger?.entries?.find(e=>e.unitId===body.id),owner=snapshot.sectorId==='san_lorenzo'?'san_nicolas':snapshot.sectorId;
   if(disposition&&(disposition.kind!=='dead'||disposition.sector!==owner))continue;
-  const items=[...Object.keys(SUPPLY_ITEMS),...(!body.weaponDropped&&body.weapon?['primary']:[]),...(body.blade?['blade']:[]),...(body.offHand?['offhand']:[]),...Object.keys(body.inventory??{}).map(key=>`inventory:${key}`)];
+  const items=[...Object.keys(SUPPLY_ITEMS),...(!body.weaponDropped&&body.weapon?['primary']:[]),...(body.blade?['blade']:[]),...(body.offHand?['offhand']:[]),...(wornOutfit(body)?['outfit']:[]),...Object.keys(body.inventory??{}).map(key=>`inventory:${key}`)];
   for(const item of items)if(itemQuantity(body,item)>0){const {stack}=extractItemQuantity(body,item,itemQuantity(body,item));add(JSON.stringify(['body',body.id,item]),body,stack,{kind:'body',item});}
  }
  for(const chest of snapshot.props??[])if(chest.type==='chest'&&chest.knownToPlayer&&chest.open&&!chest.locked&&!chest.trap?.armed){
@@ -91,32 +92,40 @@ export function sectorInventoryModel(s,sectorId,roster,operativeId){
   return {key:row.key,label:row.label,count:row.stack.count,x:row.x,y:row.y,kind:row.kind,expected:JSON.stringify(row.stack),condition:row.stack.condition,loaded:row.stack.loaded,jammed:row.stack.jammed,fittingPattern:row.stack.fittingPattern,reachable,reason:reason??(!reachable?'No hay un camino abierto hasta este equipo.':null)};
  });
  const personal=op?carriedActor(s,op):null;
- const carried=personal?[...Object.keys(SUPPLY_ITEMS),...(!personal.weaponDropped&&personal.weapon?['primary']:[]),...(personal.blade?['blade']:[]),...(personal.offHand?['offhand']:[]),...Object.keys(personal.inventory??{}).map(key=>`inventory:${key}`)].filter(item=>itemQuantity(personal,item)>0).map(item=>{
+ const carried=personal?[...Object.keys(SUPPLY_ITEMS),...(!personal.weaponDropped&&personal.weapon?['primary']:[]),...(personal.blade?['blade']:[]),...(personal.offHand?['offhand']:[]),...(wornOutfit(personal)?['outfit']:[]),...Object.keys(personal.inventory??{}).map(key=>`inventory:${key}`)].filter(item=>itemQuantity(personal,item)>0).map(item=>{
   const row={item,label:itemDescriptor(personal,item).label,count:itemQuantity(personal,item)};
   if(item==='primary'&&WEAPONS[personal.weapon]?.capacity>0){row.loaded=personal.loaded;row.condition=personal.condition;row.jammed=personal.jammed;row.reloadProgress=personal.reloadProgress;}
+  if(item==='outfit'){row.condition=personal.outfit.condition;row.expected=JSON.stringify(personal.outfit);row.inventoryKey=null;let reason=carriedReason;if(!reason)try{planEquipLoot(personal,null,'outfit');}catch(error){reason=error.message;}row.equip=[{slot:'outfit',label:'Guardar vestimenta',valid:!reason,reason}];}
   const key=item.startsWith('inventory:')?item.slice(10):null,record=key&&personal.inventory[key];
-  if(record&&(WEAPONS[record.weapon]||BLADES[record.weapon])){
-   row.expected=JSON.stringify(record);row.inventoryKey=key;row.loaded=record.loaded??0;row.condition=record.condition;row.jammed=record.jammed;row.reloadProgress=record.reloadProgress;
-   row.equip=(BLADES[record.weapon]?['primary','blade']:handsRequired(record.weapon)===1?['primary','offhand']:['primary']).map(slot=>{let reason=carriedReason;if(!reason)try{planEquipLoot(personal,key,slot);}catch(error){reason=error.message;}return {slot,valid:!reason,reason};});
+  if(record&&(WEAPONS[record.weapon]||BLADES[record.weapon]||record.kind==='outfit')){
+   row.expected=JSON.stringify(record);row.inventoryKey=key;row.loaded=record.weapon?record.loaded??0:undefined;row.condition=record.condition;row.jammed=record.jammed;row.reloadProgress=record.reloadProgress;
+   row.equip=(record.kind==='outfit'?['outfit']:BLADES[record.weapon]?['primary','blade']:handsRequired(record.weapon)===1?['primary','offhand']:['primary']).map(slot=>{let reason=carriedReason;if(!reason)try{planEquipLoot(personal,key,slot);}catch(error){reason=error.message;}return {slot,valid:!reason,reason};});
   }
   return row;
  }):[];
- return {sectorId,operativeId:op?.id??null,candidates:candidates.map(op=>({id:op.id,name:op.nickname??op.name})),reason,carriedReason,entries,carried,usage:personal?inventoryUsage(personal):null};
+ const outfitStock=(s.depots?.[location]?.ponchos??0)+(location==='retiro'?(s.resources.ponchos??0):0);
+ let outfitIssueReason=carriedReason;if(!outfitIssueReason&&!outfitStock)outfitIssueReason='No quedan ponchos en este depósito.';if(!outfitIssueReason)try{applyItemQuantity(personal,{item:'outfit',...makeOutfit()});}catch(error){outfitIssueReason=error.message;}
+ return {outfitStock,outfitIssueReason,sectorId,operativeId:op?.id??null,candidates:candidates.map(op=>({id:op.id,name:op.nickname??op.name})),reason,carriedReason,entries,carried,usage:personal?inventoryUsage(personal):null};
 }
 
 // The campaign dispatcher provides a private copy. Plan every transfer before
 // updating either custodian; the source key is resolved again on confirmation.
 export function moveSectorItem(s,action,roster){
  const {sector:sectorId,operativeId,direction,count=1}=action;
- need(['take','drop','equip'].includes(direction)&&Number.isSafeInteger(count)&&count>0&&count<=1000000,'La orden de inventario no es válida.');
+ need(['take','drop','equip','issueOutfit'].includes(direction)&&Number.isSafeInteger(count)&&count>0&&count<=1000000,'La orden de inventario no es válida.');
  const model=sectorInventoryModel(s,sectorId,roster,operativeId);
- const reason=direction==='equip'?model.carriedReason:model.reason;need(!reason,reason);need(model.operativeId===Number(operativeId),'Elegí un combatiente presente.');
- const op=roster.find(op=>op.id===Number(operativeId)),snapshot=inventorySite(s,sectorId).snapshot,actor=direction==='equip'?carriedActor(s,op):actorAt(s,sectorId,op);
+ const reason=['equip','issueOutfit'].includes(direction)?model.carriedReason:model.reason;need(!reason,reason);need(model.operativeId===Number(operativeId),'Elegí un combatiente presente.');
+ const op=roster.find(op=>op.id===Number(operativeId)),snapshot=inventorySite(s,sectorId).snapshot,actor=['equip','issueOutfit'].includes(direction)?carriedActor(s,op):actorAt(s,sectorId,op);
  let next,stack;
- if(direction==='equip'){
-  need(count===1&&['primary','blade','offhand'].includes(action.slot),'Elegí la mano para equipar un arma.');
-  need(action.expected===JSON.stringify(actor.inventory?.[action.inventoryKey])&&typeof action.expected==='string','El equipo cambió. Revisá la mochila antes de equiparlo.');
-  stack=extractItemQuantity(actor,`inventory:${action.inventoryKey}`,1).stack;next=planEquipLoot(actor,action.inventoryKey,action.slot);
+ if(direction==='issueOutfit'){
+  need(count===1&&!model.outfitIssueReason,model.outfitIssueReason??'Retirá un poncho por vez.');
+  stack={item:'outfit',...makeOutfit()};next=applyItemQuantity(actor,stack);
+  const at=inventorySite(s,sectorId).sectorId;if((s.depots?.[at]?.ponchos??0)>0)s.depots[at].ponchos--;else s.resources.ponchos--;
+ }else if(direction==='equip'){
+  need(count===1&&['primary','blade','offhand','outfit'].includes(action.slot),'Elegí una ranura de equipo.');
+  const stow=action.slot==='outfit'&&action.inventoryKey===null;
+  need(action.expected===JSON.stringify(stow?wornOutfit(actor):actor.inventory?.[action.inventoryKey])&&typeof action.expected==='string','El equipo cambió. Revisá la mochila antes de equiparlo.');
+  stack=extractItemQuantity(actor,stow?'outfit':`inventory:${action.inventoryKey}`,1).stack;next=planEquipLoot(actor,action.inventoryKey,action.slot);
  }else if(direction==='take'){
   const row=poolSources(snapshot).find(row=>row.key===action.sourceKey),entry=model.entries.find(row=>row.key===action.sourceKey);
   need(row&&entry?.reachable,entry?.reason??'El equipo ya no está disponible.');need(action.expected===JSON.stringify(row.stack),'El equipo cambió. Revisá la lista antes de recogerlo.');need(count<=row.stack.count,'No queda esa cantidad del objeto.');
@@ -138,14 +147,14 @@ export function moveSectorItem(s,action,roster){
  else if(next.weaponDropped)clearCarriedLoading(record);
  // Returned living soldiers and their cartridge receipt are historical.
  // Their next deployment uses the current campaign equipment record.
- if(direction!=='equip'){
+ if(!['equip','issueOutfit'].includes(direction)){
   // A returned living unit is a historical receipt, not another item owner.
   // Retire its identities before a map transfer puts that same item on the field.
   for(const old of snapshot.units.filter(u=>u.side==='player'&&u.hp>0&&snapshot.returnLedger?.entries.some(e=>e.unitId===u.id&&['resident','departed'].includes(e.kind)))){
    delete old.weaponInstanceId;delete old.bladeInstanceId;old.weaponFittingPattern=null;old.bladeFittingPattern=null;old.weaponFittings={};
-   for(const item of [...(old.offHand?[old.offHand]:[]),...Object.values(old.inventory??{})]){delete item.instanceId;delete item.fittingPattern;delete item.fittings;}
+   for(const item of [...(old.offHand?[old.offHand]:[]),...(old.outfit?[old.outfit]:[]),...Object.values(old.inventory??{})]){delete item.instanceId;delete item.fittingPattern;delete item.fittings;}
   }
   validateBattleSnapshot(snapshot);
  }
- return `${op.nickname??op.name} ${direction==='take'?'recoge':direction==='equip'?'equipa':'deja'} ${count} × ${stackLabel(stack)} en el sector.`;
+ return `${op.nickname??op.name} ${direction==='take'?'recoge':direction==='equip'?(action.inventoryKey===null?'guarda':'equipa'):direction==='issueOutfit'?'retira del depósito':'deja'} ${count} × ${stackLabel(stack)} en el sector.`;
 }

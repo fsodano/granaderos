@@ -1,3 +1,4 @@
+import {OUTFITS,wornOutfit,hasPoncho} from './outfits.js';
 import {handLayout} from './hand-layout.js';
 import {reloadPlan,lookPreview} from './tactical.js';
 import {shotRangeText} from './shot-range.js';
@@ -411,11 +412,13 @@ export function inventoryModel(state, unit) {
       return {
         key,
         ...record,
-        equippable: Boolean(weapon || blade),
-        name: record.weapon === 1811 ? fittingLabel(record.fittingPattern) : weapon?.name ?? blade?.name ?? tools.find(tool => tool.key === key)?.name ?? null,
+        equippable: Boolean(weapon || blade || record.kind === 'outfit'),
+        name: record.weapon === 1811 ? fittingLabel(record.fittingPattern) : weapon?.name ?? blade?.name ?? OUTFITS[record.outfit]?.name ?? tools.find(tool => tool.key === key)?.name ?? null,
       };
     });
+  const outfit=wornOutfit(unit);
   const items = [
+    ...(outfit ? [{...outfit,item:'outfit',label:OUTFITS[outfit.outfit].name}] : []),
     ...(hasPrimary(unit) ? [{item: 'primary', label: weaponFor({...unit, activeSlot: 'primary'}).name, count: 1, loaded: unit.loaded, condition: unit.condition, jammed: Boolean(unit.jammed)}] : []),
     ...(BLADES[unit.blade] ? [{item: 'blade', label: BLADES[unit.blade].name, count: 1}] : []),
     ...(unit.offHand ? [{...itemDescriptor(unit,'offhand'),...unit.offHand,item:'offhand',count:1}] : []),
@@ -432,7 +435,8 @@ export function inventoryModel(state, unit) {
     activeSlot: unit.activeSlot,
     weight: carriedWeight(unit),
     capacity: carryCapacity(unit),
-    poncho: Boolean(unit.poncho),
+    outfit: outfit ? {...outfit,label:OUTFITS[outfit.outfit].name} : null,
+    poncho: hasPoncho(unit),
     supplies,
     heldSupplies: supplyItems(unit),
     backpack,
@@ -482,7 +486,7 @@ export function nearbyLootOptions(state, unit, point=/** @type {{x:number,y:numb
   for (const source of state.groundItems || []) {
     if (source.heldBy || !(source.count > 0) || !visible(source)) continue;
     const stack = source.stack || source;
-    options.push({...stack, id: `ground:${source.id}`, label: WEAPONS[stack.weapon]?.name || BLADES[stack.weapon]?.name || SUPPLY_ITEMS[stack.item || stack.type]?.label || 'Objeto', count: source.count, source: 'En el suelo', action: {type: 'loot', groundId: source.id}});
+    options.push({...stack, id: `ground:${source.id}`, label: WEAPONS[stack.weapon]?.name || BLADES[stack.weapon]?.name || OUTFITS[stack.outfit]?.name || SUPPLY_ITEMS[stack.item || stack.type]?.label || 'Objeto', count: source.count, source: 'En el suelo', action: {type: 'loot', groundId: source.id}});
   }
   return options;
 }
@@ -534,7 +538,7 @@ export function nearbyEnvironmentModel(state, unit, ctx = {}) {
   const target = targets.find(entry => entry.key === ctx.targetKey) || targets[0];
   if (!target) return {targets, target: null, preview: null, contents: [], verbs: [], loot: null};
   const raw = found.get(target.key), preview = environmentPreview(state, unit, target, ctx.verb || undefined);
-  const contents = visibleContainerContents(raw).map((stack, index) => ({...stack, index, label: WEAPONS[stack.weapon]?.name || BLADES[stack.weapon]?.name || TOOL_TYPES[stack.toolKey]?.label || SUPPLY_ITEMS[stack.item]?.label || 'Pertrechos'}));
+  const contents = visibleContainerContents(raw).map((stack, index) => ({...stack, index, label: WEAPONS[stack.weapon]?.name || BLADES[stack.weapon]?.name || OUTFITS[stack.outfit]?.name || TOOL_TYPES[stack.toolKey]?.label || SUPPLY_ITEMS[stack.item]?.label || 'Pertrechos'}));
   const verbs = ENVIRONMENT_VERBS.map(id => ({id, label: environmentPreview(state, unit, target, id).label}));
   const loot = target.kind === 'container' ? containerLootPreview(state, unit, target, ctx.index ?? 0, ctx.count ?? 1) : null;
   return {targets, target, preview, contents, verbs, loot};

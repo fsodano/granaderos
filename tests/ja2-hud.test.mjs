@@ -1,3 +1,4 @@
+import {makeOutfit} from '../game/outfits.js';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createBattle,actBattle,endTurn,weaponFor,bladeFor,carriedWeight,carryCapacity,actionCosts,actionPointBudget,stanceCost,shotChance,getReachable,movementIntentReason,canSee,transferPreview,dropPreview,lootPreview,environmentTargetAt,environmentPreview,containerLootPreview,supplyUsePreview,BLADES} from '../game/tactical.js';
 import {OPERATIVES} from '../game/data.js';
@@ -122,7 +123,7 @@ test('S2 inventory: Güemes stats, hand slots, slotAction, backpack records, sup
   for(const x of supplies){assert.ok(x.label&&x.label.length>0);assert.equal(typeof x.count,'number');}
   const m2=inventoryModel(s,u);
   assert.equal(m2.weight,carriedWeight(u));assert.equal(m2.capacity,carryCapacity(u));assert.equal(m2.poncho,false);
-  u.poncho=true;assert.equal(inventoryModel(s,u).poncho,true);
+  u.outfit=makeOutfit();assert.equal(inventoryModel(s,u).poncho,true);
 });
 test('S3 edges: empty roster pads to 6, fallen units are flagged and disabled, dead inventory and descriptors',()=>{
   const none=rosterCells([],'x');

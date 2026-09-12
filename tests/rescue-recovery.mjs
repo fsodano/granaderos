@@ -19,7 +19,7 @@ export function recoverRescueForce(start,{report=()=>{}}={}){
   return taken;
  };
  assert.equal(campaign.location,'tucuman');assert.equal(campaign.hour,127);assert.equal(campaign.pendingBattle,null);
- for(const operativeId of [106,109,145,115,105,123])order({type:'assignCare',operativeId,assignment:'rest'});
+ for(const operativeId of [106,109,145,115,105,123].filter(id=>campaign.operativeState[id].alive))order({type:'assignCare',operativeId,assignment:'rest'});
  recovered+=gather(122);assert.ok(recovered>0);
  order({type:'assignCare',operativeId:115,assignment:'patient'});order({type:'assignCare',operativeId:122,assignment:'doctor'});
  order({type:'createSquad',name:'Correo sanitario',ids:[147]});order({type:'assignCare',operativeId:147,assignment:'active'});

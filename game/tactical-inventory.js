@@ -1,3 +1,4 @@
+import {OUTFITS,validateOutfit,wornOutfit} from './outfits.js';
 import {handLayout,handsRequired} from './hand-layout.js';
 import {allocatePockets,rearrangePockets} from './inventory-pockets.js';
 import {lowerWeapon} from './weapon-readiness.js';
@@ -59,6 +60,7 @@ function record(value) {
     if (result.jammed !== undefined && typeof result.jammed !== 'boolean') fail('El estado de la cazoleta no es válido.');
     result.jammed ??= false;
   }
+  if(result.kind==='outfit'||result.outfit!==undefined)validateOutfit(result);
   validateReloadProgress(result.reloadProgress, result.weapon === undefined ? 0 : weapon(result.weapon).capacity ?? 0, result.loaded);
   if (result.weapon === undefined && result.loaded !== undefined && quantity(result.loaded) !== 0) fail('Un objeto sin arma no puede contener una carga.');
   if (result.condition !== undefined) finite(result.condition, 0, 100, 'La condición del objeto no es válida.');
@@ -89,6 +91,7 @@ function resolve(unit, item) {
     return {kind: 'inventory', key, item: `inventory:${key}`, record: record(inventory[key])};
   }
   if (own(SUPPLY_ITEMS, item)) return {kind: 'supply', key: item, item, count: quantity(unit[item] ?? 0)};
+  if(item==='outfit')return {kind:'outfit',key:item,item,record:wornOutfit(unit)};
   if (item === 'primary' || item === 'blade' || item === 'offhand') return {kind: 'hand', key: item, item};
   const key = safeKey(item), inventory = pack(unit);
   if (!own(inventory, key)) fail('Ese objeto ya no está en el inventario.');
@@ -111,25 +114,28 @@ function recordDescriptor(item, value) {
   const spec = value.weapon === undefined ? null : weapon(value.weapon);
   const handheld = spec && spec.id >= 1800 && spec.id <= 1813;
   const compactWeapon = handheld && [1805, 1806, 1808, 1811, 1813].includes(spec.id);
-  const slotSize = handheld ? compactWeapon ? 1 : 2 : value.weight > 2 ? 2 : 1;
-  const label = value.fittingPattern != null ? fittingLabel(value.fittingPattern) : spec?.name ?? (isTool(value) ? TOOL_LABELS[value.toolKey] : item.replace(/^inventory:/, ''));
-  return {item, label, name: label, ...(spec?{weapon:spec.id,loaded:value.loaded,condition:value.condition}:{}), stackLimit: spec || isTool(value) || value.instanceId ? 1 : slotSize === 2 ? 1 : 4, slotSize, weight: value.weight+fittingWeight(value), kind: spec ? 'weapon' : isTool(value) ? 'tool' : 'inventory'};
+  const slotSize = value.kind==='outfit'?2:handheld ? compactWeapon ? 1 : 2 : value.weight > 2 ? 2 : 1;
+  const label = value.kind==='outfit'?OUTFITS[value.outfit].name:value.fittingPattern != null ? fittingLabel(value.fittingPattern) : spec?.name ?? (isTool(value) ? TOOL_LABELS[value.toolKey] : item.replace(/^inventory:/, ''));
+  return {item, label, name: label, ...(spec?{weapon:spec.id,loaded:value.loaded,condition:value.condition}:value.kind==='outfit'?{condition:value.condition}:{}), stackLimit: spec || isTool(value) || value.instanceId ? 1 : slotSize === 2 ? 1 : 4, slotSize, weight: value.weight+fittingWeight(value), kind: value.kind==='outfit'?'outfit':spec ? 'weapon' : isTool(value) ? 'tool' : 'inventory'};
 }
 
 export function itemQuantity(unit, item) {
   const entry = resolve(unit, item);
+  if(entry.kind==='outfit')return entry.record?1:0;
   if (entry.kind === 'supply') return entry.count;
   if (entry.kind === 'inventory') return entry.record.count;
   return entry.key==='offhand'?unit.offHand?1:0:entry.key === 'primary' ? unit.weapon && !unit.weaponDropped ? 1 : 0 : unit.blade ? 1 : 0;
 }
 export function itemDescriptor(unit, item) {
   const entry = resolve(unit, item);
+  if(entry.kind==='outfit')return entry.record?recordDescriptor(item,entry.record):{item,label:'Sin vestimenta equipada',weight:0,stackLimit:1,slotSize:2,kind:'outfit'};
   if (entry.kind === 'supply') return SUPPLY_ITEMS[item];
   if (entry.kind === 'inventory') return recordDescriptor(entry.item, entry.record);
   if (!itemQuantity(unit, item)) return {item, label: 'Mano vacía', name: 'Mano vacía', stackLimit: 1, slotSize: 0, weight: 0, kind: 'weapon'};
   return recordDescriptor(item, handRecord(unit, item));
 }
 export function validateHands(unit) {
+  wornOutfit(unit);
   if(unit.offHand!==undefined){
     const value=handRecord(unit,'offhand');
     if(value.count!==1||value.weapon<1800||value.weapon>1813||!WEAPONS[value.weapon]||handsRequired(value.weapon)!==1)fail('El arma de la segunda mano no es válida.');
@@ -160,6 +166,7 @@ export function extractItemQuantity(unit, item, count = 1, {keepOtherHand=true}=
     next[item] = entry.count - count;
     clearEmptySupply(next);
     stack = {item, count, weight: SUPPLY_ITEMS[item].weight};
+  } else if(entry.kind==='outfit'){stack={item:'outfit',...entry.record,count:1};next.outfit=null;delete next.poncho;
   } else if (entry.kind === 'hand') {
     stack = {item: 'weapon', ...handRecord(unit, entry.key)};
     if (entry.key === 'primary') {lowerWeapon(next); next.weaponDropped = true; next.loaded = 0; delete next.reloadProgress; next.jammed = false; delete next.weaponInstanceId; next.weaponFittings={}; next.weaponFittingPattern=null;}
@@ -307,3 +314,12 @@ export function planPocketMove(unit,sourceId,destinationId,expectedSource,expect
 }
 
 export const pocketFingerprint=slot=>JSON.stringify(slot?.entry?{item:slot.entry.item,index:slot.entry.index,count:slot.entry.count}:null);
+
+export function planEquipOutfit(unit,key){
+ const value=unit.inventory?.[key];if(!value||value.kind!=='outfit')fail('Seleccioná una vestimenta guardada.');validateOutfit(value);
+ const taken=extractItemQuantity(unit,`inventory:${key}`,1);let next=taken.unit;const old=wornOutfit(next);next.outfit=null;delete next.poncho;
+ if(old)next=applyItemQuantity(next,{item:'outfit',...old},{deferCapacity:true});
+ const {item,...outfit}=taken.stack;next.outfit=outfit;validateOutfit(outfit,{worn:true});
+ if(inventoryUsage(next).overloaded)fail('No queda un bolsillo grande para la vestimenta retirada.');return next;
+}
+export function planStowOutfit(unit){const taken=extractItemQuantity(unit,'outfit',1);return applyItemQuantity(taken.unit,taken.stack);}

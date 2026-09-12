@@ -1,3 +1,4 @@
+import {hasPoncho} from './outfits.js';
 import {lowerWeapon} from './weapon-readiness.js';
 // JA2-inspired condition rules on Granaderos' existing 100-point AP scale.
 export const AP_CARRY_LIMIT = 20;
@@ -17,7 +18,7 @@ export function maxActionPoints(s, u) {
   const injury = effectiveWounds(u) / (u.maxHp ?? 100) * 50;
   const breath = (100 - (u.energy ?? 100)) * .25;
   const fatigue = (u.fatigue ?? 0) * (traits.includes('guerrilla_tactician') ? .25 : .4);
-  return Math.round(clamp(stats - injury - breath - fatigue - (high ? 15 : 0) - ((high || s.weather?.rain > 0) && !u.poncho ? 10 : 0), 15, 100));
+  return Math.round(clamp(stats - injury - breath - fatigue - (high ? 15 : 0) - ((high || s.weather?.rain > 0) && !hasPoncho(u) ? 10 : 0), 15, 100));
 }
 // A forecast for the unit's NEXT turn; carryover is taken after any reactions.
 export function actionPointBudget(s, u) {

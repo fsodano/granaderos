@@ -131,7 +131,7 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
 export function stabilizeRescued(start,{report=()=>{}}={}){
  let campaign=decodeSave(encodeSave(start)).campaign;const events=[];
  const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;events.push({action,hour:campaign.hour,second:campaign.secondOfHour??0});};
- const patients=[115,105],doctors=[106,109,145];
+ const patients=[115,105],doctors=[106,109];
  assert.equal(campaign.sectors.tucuman.owner,'patriot');assert.equal(campaign.pendingEncounter,null);
  for(const id of patients){assert.equal(campaign.operativeState[id].captured,false);assert.ok(campaign.recruited.includes(id));}
  for(const operativeId of patients)order({type:'assignCare',operativeId,assignment:'patient'});

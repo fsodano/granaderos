@@ -21,13 +21,14 @@ function renew(route,ids,buffer){
  }
 }
 export function prepareSaltaAssault(start,{report=()=>{}}={}){
- const route=orders(start),{order}=route,field=[123,122,106,145,109,147],support=[105,115,132,135];
+ const route=orders(start),{order}=route,field=[123,122,106,143,109,147],support=[105,115,132,135];
  assert.equal(start.hour,179);assert.equal(start.location,'tucuman');assert.equal(start.pendingBattle,null);
  // Keep service paid while staging a daylight arrival. Replacements are hired
  // locally after the rest, with their normal equipment and real contracts.
  const departure=start.hour+(24-start.hour%24)%24;
  for(let i=0;route.campaign.hour<departure&&i<48;i++){renew(route,route.campaign.recruited,2);order({type:'wait',hours:1});}assert.equal(route.campaign.hour,departure);
- for(const id of [132,135])order({type:'recruitCivic',id,term:'day'});
+ // Farías died during the rescue. Hire a new officer; the casualty remains permanent.
+ for(const id of [143,132,135])order({type:'recruitCivic',id,term:'day'});
  // Preserve the chosen ordering of the real contract transactions and squads.
  renew(route,[...field,...support],13);
  order({type:'squad',ids:field});const fieldSquad=route.campaign.activeSquadId;
@@ -53,12 +54,13 @@ export function prepareSaltaAssault(start,{report=()=>{}}={}){
 export function completeNorthernMission(start,{report=()=>{}}={}){
  const route=orders(start),{order}=route;
  assert.equal(start.sectors.salta.owner,'patriot');assert.equal(start.phase,2);
- const patients=[115,132],doctors=[109,122];
- for(const id of patients){assert.ok(start.operativeState[id].alive&&start.operativeState[id].bleeding>0);order({type:'assignCare',operativeId:id,assignment:'patient'});}
+ const patients=[123,105],doctors=[109,122];
+ for(const id of patients){assert.ok(start.operativeState[id].alive&&start.operativeState[id].hp<start.operativeState[id].maxHp);order({type:'assignCare',operativeId:id,assignment:'patient'});}
  for(const id of doctors){assert.ok(start.operativeState[id].medkits>0);order({type:'assignCare',operativeId:id,assignment:'doctor'});}
  order({type:'wait',hours:1});
- for(const id of patients){assert.equal(route.campaign.operativeState[id].bleeding,0);assert.equal(route.campaign.operativeState[id].hp,start.operativeState[id].hp);}
+ for(const id of patients){assert.equal(route.campaign.operativeState[id].bleeding,0);if(start.operativeState[id].bleeding)assert.equal(route.campaign.operativeState[id].hp,start.operativeState[id].hp);else assert.ok(route.campaign.operativeState[id].hp>start.operativeState[id].hp);}
  for(const id of doctors)assert.equal(route.campaign.operativeState[id].medkits,start.operativeState[id].medkits-1);
+ const treated=route.campaign;
  const supplies=route.campaign.resources;order({type:'diplomacy',kind:'northPact'});
  for(const [key,cost] of Object.entries({muskets:20,horses:10,powder:10}))assert.equal(route.campaign.resources[key],supplies[key]-cost);
  renew(route,[...route.campaign.recruited],20);
@@ -68,7 +70,7 @@ export function completeNorthernMission(start,{report=()=>{}}={}){
  assert.equal(campaign.phase,3);assert.equal(campaign.missions.yatasto.completed,true);assert.equal(campaign.flags.northPact,true);assert.equal(isSupplied(campaign,'salta'),true);
  assert.equal(campaign.pendingBattle,null);assert.equal(campaign.completed,false);
  for(const [id,record] of Object.entries(start.operativeState))if(!record.alive)assert.equal(campaign.operativeState[id].alive,false);
- for(const id of [123,106,145,109,147,105,115,132]){assert.equal(campaign.operativeState[id].location,'salta');assert.equal(campaign.operativeState[id].hp,start.operativeState[id].hp);assert.equal(campaign.operativeState[id].bleeding,0);}
+ for(const id of [123,106,143,109,147,105,115,132].filter(id=>start.operativeState[id].alive)){assert.equal(campaign.operativeState[id].location,'salta');assert.equal(campaign.operativeState[id].hp,treated.operativeState[id].hp);assert.equal(campaign.operativeState[id].bleeding,0);}
  assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
  report({event:'yatastoCompleted',hour:campaign.hour,second:campaign.secondOfHour,phase:campaign.phase});
  return {campaign,events:route.events};
