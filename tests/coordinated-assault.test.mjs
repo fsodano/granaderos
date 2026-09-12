@@ -54,7 +54,7 @@ test('an actual tactical withdrawal returns both columns through separate exits'
  assert.equal(b.status,'retreat');s=order(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'retreat',sectorState:b,survivors:b.units.filter(u=>u.side==='player')});assert.deepEqual(s.squads.map(q=>q.location),['buenos_aires','cordoba']);assert.ok(s.squads.every(q=>q.members.length===6));roundtrip(s);
 });
 test('expired contracts remain with the staged deployment and leave after physical return',()=>{
- let s=front();s.contracts[3]={kind:'paid',term:'day',started:0,expiresAt:4,paid:100};s=wait(queue(s),12);assert.equal(s.contracts[3].departurePending,true);roundtrip(s);s=begin(s);assert.ok(s.pendingBattle.squad.some(u=>u.id===3));roundtrip(s);s=order(s,scriptedBattleReport(s));assert.equal(s.contracts[3],undefined);assert.equal(s.operativeState[3].location,'san_nicolas');assert.ok(!s.recruited.includes(3));roundtrip(s);
+ let s=front();s.contracts[3]={kind:'paid',term:'day',started:0,expiresAt:4,paid:100};s=wait(queue(s),12);assert.equal(s.hour,2);s=wait(s,12);assert.equal(s.hour,4);s=wait(s,12);assert.equal(s.contracts[3].departurePending,true);roundtrip(s);s=begin(s);assert.ok(s.pendingBattle.squad.some(u=>u.id===3));roundtrip(s);s=order(s,scriptedBattleReport(s));assert.equal(s.contracts[3],undefined);assert.equal(s.operativeState[3].location,'san_nicolas');assert.ok(!s.recruited.includes(3));roundtrip(s);
 });
 test('invalid assault saves and attempts to deploy before arrival are rejected',()=>{
  const moving=queue(front());assert.ok(dispatchCampaign(moving,{type:'beginAssault',sector:'san_nicolas'}).lastError);const ready=wait(moving,12);

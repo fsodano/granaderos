@@ -1,3 +1,4 @@
+import {publicContractNotice} from './contract-attention.js';
 import {squadTravelStatus} from './squad-travel.js';
 import {operativeInTransit} from './squads.js';
 import {maximumEnergy} from './fatigue.js';
@@ -96,6 +97,7 @@ export function playerKnownCampaign(state){
   const roster=rosterFor(state).filter(unit=>knownIds.has(unit.id));
   return {...pick(state,['hour','secondOfHour','phase','location','activeSquadId','blockade','completed','defeated']),
     assignmentNotice:publicAssignmentNotice(state),
+    contractNotice:publicContractNotice(state),
     travelNotice:state.travelNotice?{hour:state.travelNotice.hour,events:state.travelNotice.events.map(e=>pick(e,['squadId','name','sector','text']))}:null,
     resources:pick(state.resources,Object.keys(RESOURCE_NAMES)),reputation:pick(state.reputation,['directory','gauchos','pardos','foreign','indigenous','royalists']),
     sectors:CAMPAIGN_SECTORS.map(sector=>({...pick(sector,['id','name','grid','biome','theater']),...pick(state.sectors[sector.id],['owner','loyalty','fort','damageUntil']),militia:[...(state.sectors[sector.id]?.militia??[])]})),

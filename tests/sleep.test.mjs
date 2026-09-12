@@ -73,7 +73,7 @@ test('paired training retains its teacher and credit while either participant sl
  s=wait(s,1);assert.ok(r(s).skillPractice.mechanical>0);assert.equal(r(s).energy,97);assert.equal(r(s,10).energy,97);
 });
 test('sleeping contract expiration clears the state before any further recovery',()=>{
- let s=initialCampaign();r(s).energy=40;s=sleep(s,3);s.contracts[3]={kind:'paid',term:'day',started:0,expiresAt:1,paid:100};s=wait(s,2);assert.ok(!s.recruited.includes(3));assert.equal(r(s).asleep,false);assert.equal(r(s).energy,40);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
+ let s=initialCampaign();r(s).energy=40;s=sleep(s,3);s.contracts[3]={kind:'paid',term:'day',started:0,expiresAt:1,paid:100};s=wait(s,2);assert.equal(s.hour,0);s=wait(s,2);assert.equal(s.hour,1);assert.ok(!s.recruited.includes(3));assert.equal(r(s).asleep,false);assert.equal(r(s).energy,40);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
 });
 test('sleep natural healing cannot heal critical injuries or stop bleeding',()=>{
  let s=initialCampaign();Object.assign(r(s),{hp:30,bandaged:r(s).maxHp-30,energy:10,fatigue:80});s=sleep(s,3);s=wait(s,6);assert.equal(r(s).hp,31);assert.equal(r(s).recoveryHours,0);

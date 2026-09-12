@@ -11,7 +11,7 @@ test('actual exploration actions carry fractional time, dawn and synchronized sa
  const invalid=actBattle(pair.battle,{type:'move',unitId:u.id,x:-1,y:-1});assert.equal(invalid.elapsedSeconds,pair.battle.elapsedSeconds);
 });
 test('midnight keeps deployed contracts and wounds until report while remote contracts expire',()=>{
- let s=initialCampaign();s=order(s,{type:'recruitCivic',id:100,term:'day'});s=order(s,{type:'recruitCivic',id:101,term:'day'});s=order(s,{type:'squad',ids:[3,4,10,100]});s=order(s,{type:'wait',hours:23});s.secondOfHour=3590;s.operativeState[100].hp=30;
+ let s=initialCampaign();s=order(s,{type:'recruitCivic',id:100,term:'day'});s=order(s,{type:'recruitCivic',id:101,term:'day'});s=order(s,{type:'squad',ids:[3,4,10,100]});s=order(s,{type:'wait',hours:23});assert.equal(s.hour,22);s=order(s,{type:'wait',hours:1});s.secondOfHour=3590;s.operativeState[100].hp=30;
  let pair=visit(s);pair=syncBattleTime(pair.campaign,endTurn(pair.battle));assert.equal(pair.error,null);assert.equal(pair.campaign.hour,24);assert.ok(pair.campaign.recruited.includes(100));assert.ok(!pair.campaign.recruited.includes(101));assert.equal(pair.campaign.operativeState[100].hp,30);assert.equal(pair.campaign.contracts[100].departurePending,true);assert.doesNotThrow(()=>decodeSave(encodeSave(pair.campaign,pair.battle)));
  const result=order(pair.campaign,{type:'leaveSector',battleId:pair.campaign.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});assert.ok(!result.recruited.includes(100));assert.equal(result.pendingBattle,null);
 });

@@ -48,7 +48,7 @@ test('travelers cannot work, heal, sleep, equip, join another squad or defend th
  const op=rosterFor(s).find(o=>o.id===10);record(s,10).toolkitPoints=100;assert.match(workAssignmentReason(s,op,'repair',{targetId:3,repairScope:'equipment'},rosterFor(s)),/presente/);
 });
 test('expired contracts remain attached while moving and depart at a real arrival',()=>{
- let s=split();s.contracts[3]={kind:'paid',term:'day',started:0,expiresAt:3,paid:100};s=queue(s,'ensenada');s=wait(s,4);assert.ok(s.recruited.includes(3));assert.equal(s.contracts[3].departurePending,true);roundtrip(s);
+ let s=split();s.contracts[3]={kind:'paid',term:'day',started:0,expiresAt:3,paid:100};s=queue(s,'ensenada');s=wait(s,4);assert.equal(s.hour,1);s=wait(s,4);assert.equal(s.hour,3);assert.ok(s.recruited.includes(3));assert.equal(s.contracts[3].departurePending,true);roundtrip(s);
  s=order(s,{type:'selectSquad',id:'squad-1'});assert.ok(s.recruited.includes(3));s=wait(s,24);assert.equal(s.hour,12);assert.ok(!s.recruited.includes(3));assert.equal(record(s).location,'buenos_aires');assert.equal(s.squads.find(q=>q.name==='Exploradores').journey,undefined);roundtrip(s);
 });
 test('route closure during transit causes a timed return, not instant relocation',()=>{
