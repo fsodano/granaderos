@@ -1,3 +1,4 @@
+import {componentTree} from './component-tree.mjs';
 import {register} from 'node:module';
 register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';
@@ -11,7 +12,7 @@ const {default:TacticalScene}=await import('../web/app/TacticalScene.tsx');
 const field=()=>createBattle([{id:'p',x:1,y:1,marksmanship:85,weapon:1800,blade:1810}],{width:8,height:8,seed:45,tiles:Array.from({length:64},(_,i)=>({x:i%8,y:Math.floor(i/8),type:'grass',cover:0,blocked:false})),enemies:[{id:'e',x:5,y:1,morale:100,overwatch:false}]});
 const descendants=node=>!node||typeof node!=='object'?[]:[node,...(Array.isArray(node)?node:Array.isArray(node.props?.children)?node.props.children:[node.props?.children]).flatMap(descendants)];
 function hitFrame(s,callbacks={},hitLocation='torso'){
- const element=TacticalScene({state:s,selected:'p',unit:s.units[0],players:[s.units[0]],units:s.units,positions:{},poses:{},directions:{},hover:s.units[1],mode:'fire',aim:2,hitLocation,reachable:[],showSight:false,sight:new Set(),revealed:new Set(),project:(x,y)=>({x:x*26,y:y*14}),onTile:()=>{},onHover:()=>{},onTalk:()=>{},onCannon:()=>{},cannonId:'',...callbacks});
+ const element=componentTree(TacticalScene,{state:s,selected:'p',unit:s.units[0],players:[s.units[0]],units:s.units,positions:{},poses:{},directions:{},hover:s.units[1],mode:'fire',aim:2,hitLocation,reachable:[],showSight:false,sight:new Set(),revealed:new Set(),project:(x,y)=>({x:x*26,y:y*14}),onTile:()=>{},onHover:()=>{},onTalk:()=>{},onCannon:()=>{},cannonId:'',...callbacks});
  const person=descendants(element).find(node=>node.props?.['data-unit-id']==='e');return descendants(person).find(node=>node.props?.['data-person-hit-target']);
 }
 test('reticle shows the body part, full AP cost, remaining AP and four bounded aim indicators',()=>{

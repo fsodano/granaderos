@@ -1,3 +1,4 @@
+import {componentTree} from './component-tree.mjs';
 import {register} from 'node:module';
 register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';
@@ -55,7 +56,7 @@ test('figure activation uses its fixed person frame instead of the clipped atlas
   const descendants=node=>!node||typeof node!=='object'?[]:[node,...(Array.isArray(node)?node:Array.isArray(node.props?.children)?node.props.children:[node.props?.children]).flatMap(child=>descendants(child))];
   for(let facing=0;facing<8;facing++){
     enemy.facing=facing;
-    const element=TacticalScene({state:s,selected:u.id,unit:u,players:[u],units:s.units,positions:{},poses:{},directions:{},hover:null,mode:'move',aim:0,reachable:[],showSight:false,sight:new Set(),revealed:new Set(),project,onTile:target=>orders.push(target),onHover:noop,onTalk:noop,onCannon:noop,cannonId:''});
+    const element=componentTree(TacticalScene,{state:s,selected:u.id,unit:u,players:[u],units:s.units,positions:{},poses:{},directions:{},hover:null,mode:'move',aim:0,reachable:[],showSight:false,sight:new Set(),revealed:new Set(),project,onTile:target=>orders.push(target),onHover:noop,onTalk:noop,onCannon:noop,cannonId:''});
     const nodes=descendants(element),figure=nodes.find(node=>node.props?.['data-unit-id']===enemy.id);
     const button=descendants(figure).find(node=>node.props?.role==='button');
     assert.equal(figure.props.role,undefined);assert.equal(figure.props.onClick,undefined);

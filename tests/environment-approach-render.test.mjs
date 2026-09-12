@@ -1,3 +1,4 @@
+import {componentTree} from './component-tree.mjs';
 import {register} from 'node:module';
 register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';
@@ -12,7 +13,7 @@ test('keyboard tile focus shows the same approach cost before Enter commits the 
   Object.assign(state.tiles.find(t=>t.x===4&&t.y===2),{type:'door',doorId:'test',open:false,locked:false,blocked:true,blocksSight:true});
   state.units[1].ap=0;
   const unit=state.units[0];let hover=null,result=null,prevented=false;
-  const tree=TacticalScene({state,selected:'p',unit,players:[unit],units:state.units,positions:{},poses:{},directions:{},hover:null,mode:'move',aim:0,reachable:[],showSight:false,sight:new Set(),revealed:new Set(),project:(x,y)=>({x:x*26,y:y*14}),onHover:point=>{hover=point;},onTile:point=>{const ref=environmentTargetAt(state,point);result=actBattle(state,{type:'useItem',unitId:'p',environment:{kind:ref.kind,id:ref.id}});}});
+  const tree=componentTree(TacticalScene,{state,selected:'p',unit,players:[unit],units:state.units,positions:{},poses:{},directions:{},hover:null,mode:'move',aim:0,reachable:[],showSight:false,sight:new Set(),revealed:new Set(),project:(x,y)=>({x:x*26,y:y*14}),onHover:point=>{hover=point;},onTile:point=>{const ref=environmentTargetAt(state,point);result=actBattle(state,{type:'useItem',unitId:'p',environment:{kind:ref.kind,id:ref.id}});}});
   const nodes=[];function visit(node){if(Array.isArray(node))return node.forEach(visit);if(!node||typeof node!=='object')return;nodes.push(node);visit(node.props?.children);}visit(tree);
   const tile=nodes.find(node=>node.props?.['aria-label']==='C5, obstáculo');assert.ok(tile);assert.equal(tile.props.tabIndex,0);
   tile.props.onFocus();const preview=targetPreview(state,unit,hover);assert.equal(preview.valid,true);assert.equal(preview.pa,12);assert.equal(preview.actionLabel,'Acercarse y abrir');assert.equal(result,null);

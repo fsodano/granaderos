@@ -17,7 +17,7 @@ import {autoBandageBattle} from '../../game/auto-bandage.js';
 import './tactical-hud.css';
 import {TACTICAL_KEYS,tacticalShortcut,pointerMovementIntent,pointerItemIntent} from '../../game/hotkeys.js';
 import {aimOptions, slotAction, targetPreview, targetingHelp, STANCES, unitCanAct, turnModel, visibleHover, interruptHover, heldSupplyAction, groupSelectionMode, isGroupGround, isMovementGround, movementAction, toggleMovementGroup, movementGroupModel, exitModel, fieldState, attackCursorMode, targetItemAction, pickupTargetAction, pickupSelection, resolvedOrderType, tacticalInputAction} from '../../game/ja2-hud.js';
-import { useEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import { useUnitMotion, type MovementFacingOverride } from './useUnitMotion';
 import {fixedBayonetFor} from '../../game/weapon-fittings.js';
 import { ChevronRight } from 'lucide-react';
@@ -44,7 +44,6 @@ export default function Battlefield({battle:s,onChange,onFinish,peacefulVisit=fa
   const clickMovementIntent=useRef('forward');
   const [movementIntent,setMovementIntent]=useState('forward');
   const [itemIntent,setItemIntent]=useState('use'),clickItemIntent=useRef('use');
-  const [ambientPaused,setAmbientPaused]=useState(false);
   const [talkingSelection,setTalking]=useState<any>(null);
   const [speech,setSpeech]=useState<any>(null);const replyCounts=useRef<Record<string,number>>({});
   useEffect(()=>{if(!speech)return;const timer=setTimeout(()=>setSpeech(null),10000);return()=>clearTimeout(timer);},[speech]);
@@ -62,10 +61,14 @@ export default function Battlefield({battle:s,onChange,onFinish,peacefulVisit=fa
   const [poses,setPoses]=useState<Record<string,string>>({});const [directions,setDirections]=useState<Record<string,number>>({});const [zoom,setZoom]=useState(2);const [cameraOffset,setCameraOffset]=useState({x:0,y:0});const [cameraFollowsSelection,setCameraFollowsSelection]=useState(false);const cameraSelection=useRef(selected);const [inventoryId,setInventoryId]=useState<string|null>(null);const [lootPoint,setLootPoint]=useState<{x:number;y:number}|null>(null);const [mode,setMode]=useState('move');const [aim,setAim]=useState(0);const [hitLocation,setHitLocation]=useState('torso');const [pointer,setHover]=useState<any>(null);const [cursorPoint,setCursorPoint]=useState<{x:number;y:number}|null>(null);const aimTarget=useRef('');const [turnBusy,setBusy]=useState(false);const busy=turnBusy||motion.moving;
   const hover=visibleHover(s,pointer);
   const field=useMemo(()=>fieldState(s),[s]);
-  const u=field.units.find((u:any)=>u.id===selected);const players=field.units.filter((u:any)=>u.side==='player');const enemies=visibleEnemies(s);const renderedUnits=field.units.filter((v:any)=>v.side==='player'||players.some((p:any)=>canSee(s,p,v)));const sight=new Set<string>(u?visibleTiles(s,u).map((t:any)=>`${t.x},${t.y}`):[]);
+  const u=field.units.find((u:any)=>u.id===selected);
+  const players=useMemo(()=>field.units.filter((u:any)=>u.side==='player'),[field]);
+  const enemies=useMemo(()=>visibleEnemies(s),[s]);
+  const renderedUnits=useMemo(()=>field.units.filter((v:any)=>v.side==='player'||players.some((p:any)=>canSee(s,p,v))),[s,field,players]);
+  const sight=useMemo(()=>new Set<string>(showSight&&u?visibleTiles(s,u).map((t:any)=>`${t.x},${t.y}`):[]),[s,u,showSight]);
   const revealedBuildingRooms=useMemo(()=>new Set<string>([...(s.revealedRooms||[]),...visibleRooms(s)]),[s]);
   const hiredPlayers=players.filter((p:any)=>!p.militia&&!p.missionAlly),missionAllies=players.filter((p:any)=>p.missionAlly),localMilitia=players.filter((p:any)=>p.militia);
-  const withdrawal=exitModel(s,{unitIds:exitUnitIds,exitId});
+  const withdrawal=useMemo(()=>exitModel(s,{unitIds:exitUnitIds,exitId}),[s,exitUnitIds,exitId]);
   const readyPlayers=players.filter((p:any)=>unitCanAct(s,p));const turn=turnModel(s);
   const reachable=useMemo(()=>unitCanAct(s,u)?getReachable(s,u,{movementIntent}):[],[s,u,movementIntent]);
   const costs=u?actionCosts(s,u):null;const weapon=u?weaponFor(u):null;const firearm=u&&hasFirearm(u);const [cannonId,setCannonId]=useState('');const [shotType,setShotType]=useState('solid');const gun=s.artillery?.find((g:any)=>g.id===cannonId);const gunCosts=u&&gun?artilleryCosts(s,u,gun):null;
@@ -80,12 +83,12 @@ export default function Battlefield({battle:s,onChange,onFinish,peacefulVisit=fa
   const movementGroup=useMemo(()=>movementGroupModel(s,groupIds,selected,groupTarget),[s,groupIds,selected,groupTarget?.x,groupTarget?.y]);
   const preview=mode==='talk'||movementGroup.request?null:targetPreview(s,u,hover,{mode,aim,hitLocation,reachable,movementIntent,itemIntent});
   useEffect(()=>{
-    if(s.mode!=='exploration'||s.status!=='active'||s.phase!=='player'||busy||talking||inventoryId||lootPoint||exitOpen||ambientPaused)return;
+    if(s.mode!=='exploration'||s.status!=='active'||s.phase!=='player'||busy||talking||inventoryId||lootPoint||exitOpen)return;
     const timer=setInterval(()=>{
       if(!document.hidden)onChange(actBattle(s,{type:'ambient'}));
     },6000);
     return()=>clearInterval(timer);
-  },[s,busy,talking,inventoryId,lootPoint,exitOpen,ambientPaused,onChange]);
+  },[s,busy,talking,inventoryId,lootPoint,exitOpen,onChange]);
   useEffect(()=>{setLootPoint(null);},[selected,s.phase,s.mode]);
   function openPickup(point:any){
     if(busy||!unitCanAct(s,u))return;
@@ -173,7 +176,7 @@ export default function Battlefield({battle:s,onChange,onFinish,peacefulVisit=fa
     else if(shortcut==='aim-up'||shortcut==='aim-down')setAim(v=>Math.max(0,Math.min(maxAim,v+(shortcut==='aim-up'?1:-1))));
   };window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);});
 
-  const hw=26,hh=14,origin=s.height*hw+28,project=(x:number,y:number)=>({x:origin+(x-y)*hw,y:65+(x+y)*hh});
+  const hw=26,hh=14,origin=s.height*hw+28,project=useCallback((x:number,y:number)=>({x:origin+(x-y)*hw,y:65+(x+y)*hh}),[origin]);
   const vw=(s.width+s.height)*hw+60,vh=(s.width+s.height)*hh+155;
   const followed=cameraFollowsSelection&&u?project(motion.positions[u.id]?.x??u.x,motion.positions[u.id]?.y??u.y):{x:vw/2,y:vh/2};
   // Match the SVG viewport to its CSS dimensions: one logical pixel occupies
@@ -235,7 +238,6 @@ export default function Battlefield({battle:s,onChange,onFinish,peacefulVisit=fa
   };
   return <section className={`battle-layout ${s.night?'night-field':''}`}>
     <header className="battle-header"><div><p className="eyebrow">OPERACIÓN TERRESTRE · {s.night?'NOCHE':'DÍA'} · {s.weather.rain?'LLUVIA':'CIELO DESPEJADO'}</p><h1>{s.sectorName}</h1></div><div className="battle-status"><span className="turn-dot"/>{busy?'Procesando órdenes':turn.label}<span className="enemy-count">{enemies.length} avistados</span></div></header>
-    {s.mode==='exploration'&&s.status==='active'&&<div className="notice" aria-label="Tiempo de exploración"><button className="line-button" onClick={()=>setAmbientPaused(paused=>!paused)}>{ambientPaused?'Reanudar exploración':'Pausar exploración'}</button><span>{ambientPaused?'Reloj detenido entre órdenes.':'El tiempo avanza: los habitantes se mueven, las heridas y las luces siguen su curso.'}</span></div>}
     <JA2CampaignReturn battle={s} peacefulVisit={peacefulVisit} busy={busy} onFinish={onFinish}/>
     {turn.interrupted&&<section className="ja2-interrupt-banner" aria-label="Interrupción de combate" role="status"><div><strong>Interrupción</strong><span>Actuá con los PA restantes. Después continúa el turno enemigo.</span></div><div className="ja2-interrupt-units" aria-label="Combatientes disponibles">{turn.units.map((p:any)=><button key={p.id} disabled={busy} aria-pressed={p.id===selected} onClick={()=>setSelected(p.id)}>{p.nickname||p.name} · {p.ap} PA</button>)}</div><button className="line-button" disabled={busy} onClick={nextTurn}>Continuar turno enemigo</button></section>}
     {mission&&<details className="hud-mission" aria-label="Objetivos de la misión"><summary>{mission.name} · Objetivos</summary><ul>{(mission.objectives||[]).map((objective:any,index:number)=><li key={index}>{typeof objective==='string'?objective:`${objective.done?'✓ ':''}${objective.text||objective.label||objective.name}`}</li>)}</ul>{s.sceneId==='yatasto'&&onMissionFinish&&<button className="line-button" disabled={busy||!(mission.objectives||[]).every((o:any)=>o.done)} onClick={onMissionFinish}>Concluir el encuentro</button>}</details>}

@@ -1,3 +1,4 @@
+import {componentTree} from './component-tree.mjs';
 import {register} from 'node:module';
 register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';
@@ -14,7 +15,7 @@ function field(actor={}){
 }
 test('the visible ground marker supports focus and keyboard selection without marking unseen piles',()=>{
   const s=field();let hover=null,selected=null,prevented=false;
-  const tree=TacticalScene({state:s,selected:'p',unit:s.units[0],players:[s.units[0]],units:s.units,positions:{},poses:{},directions:{},hover:null,mode:'move',aim:0,reachable:[],showSight:false,sight:new Set(),revealed:new Set(),project:(x,y)=>({x:x*26,y:y*14}),onHover:point=>hover=point,onTile:point=>selected=point});
+  const tree=componentTree(TacticalScene,{state:s,selected:'p',unit:s.units[0],players:[s.units[0]],units:s.units,positions:{},poses:{},directions:{},hover:null,mode:'move',aim:0,reachable:[],showSight:false,sight:new Set(),revealed:new Set(),project:(x,y)=>({x:x*26,y:y*14}),onHover:point=>hover=point,onTile:point=>selected=point});
   const nodes=[];function walk(node){if(Array.isArray(node))return node.forEach(walk);if(!node||typeof node!=='object')return;nodes.push(node);walk(node.props?.children);}walk(tree);
   const markers=nodes.filter(node=>node.props?.['data-ground-equipment']);assert.equal(markers.length,1);const marker=markers[0];assert.equal(marker.props['aria-label'],'Equipo en C7 · 1 objeto(s)');
   marker.props.onFocus();assert.deepEqual(hover,{x:6,y:2,loot:true});assert.equal(selected,null);marker.props.onKeyDown({key:'Enter',preventDefault(){prevented=true;}});assert.equal(prevented,true);assert.deepEqual(selected,hover);marker.props.onBlur();assert.equal(hover,null);
