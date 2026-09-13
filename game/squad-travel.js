@@ -108,7 +108,7 @@ export function assaultGroups(s){
 }
 export function readyAssaultSquads(s,target){const groups=s.squads.filter(q=>q.journey?.status==='ready'&&q.journey.path[1]===target);need(groups.length>0,'No hay escuadras listas en ese límite.');return groups;}
 export function arriveForAssault(s,groups,target){
- const manifest=groups.map(q=>({id:q.id,origin:q.location,members:[...q.members]}));
+ const manifest=groups.map(q=>({id:q.id,name:q.name||q.id,origin:q.location,members:[...q.members]}));
  for(const q of groups){recordStrategicArrival(s,q.members,q.location,target);q.location=target;delete q.journey;for(const horse of s.horseState.horses)if(!horse.returned&&q.members.includes(horse.assignedTo))horse.location=target;if(q.id===s.activeSquadId)s.location=target;}
  return manifest;
 }
@@ -117,6 +117,7 @@ export function validateAssaultDeployment(s){
  const manifest=b.assaultSquads;
  need(!b.defenseGroupId&&!b.exploration&&!b.missionId&&sector(b.sector)&&Array.isArray(manifest)&&manifest.length>0&&manifest.length<=8&&new Set(manifest.map(q=>q?.id)).size===manifest.length,'Las escuadras del asalto son inválidas.');
  need(manifest.every(group=>{const q=s.squads.find(q=>q.id===group?.id);return q&&q.location===b.sector&&!q.journey&&sector(group.origin)?.neighbors.includes(b.sector)&&Array.isArray(group.members)&&group.members.length>0&&group.members.length<=6&&JSON.stringify(group.members)===JSON.stringify(q.members);}), 'Los participantes del asalto no corresponden a sus escuadras.');
+ for(const group of manifest){const name=s.squads.find(q=>q.id===group.id).name||group.id;if(group.name===undefined)group.name=name;need(group.name===name,'El nombre de la escuadra de llegada no corresponde a la campaña.');}
  const ids=manifest.flatMap(q=>q.members);need(new Set(ids).size===ids.length&&ids.length===b.squad.length&&b.squad.every(u=>ids.includes(u.id)),'El destacamento del asalto está incompleto.');
  for(const group of manifest){const entry=entryFromSector(group.origin,b.sector);need(group.members.every(id=>{const unit=b.squad.find(u=>u.id===id);return s.operativeState[id]?.arrival?.fromSector===group.origin&&s.operativeState[id]?.location===b.sector&&unit.entryEdge===entry.entryEdge&&unit.entryAnchor?.x===entry.entryAnchor.x&&unit.entryAnchor?.y===entry.entryAnchor.y;}),'La entrada del asalto no corresponde al origen.');}
 }

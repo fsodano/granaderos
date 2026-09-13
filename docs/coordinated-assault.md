@@ -24,6 +24,11 @@ A target that becomes friendly while columns wait can be entered without a battl
 
 `coordinated-assault.test.mjs` exercises concurrent and staggered arrivals, waiting, timed return, attack-now behavior, source-depot accounting, invalid saves, contract expiry, peaceful arrival and the eight-squad/48-person limit. It creates the actual tactical map, checks approach-edge placement and complete save/reload, and performs actual tactical exits for a two-column withdrawal. Its victory settlement check uses an explicitly scripted report; that does not prove a complete player-led conquest.
 
-`coordinated-assault-render.test.mjs` checks the boundary decision panel and access to twelve tactical portraits. Validation on 11 September 2026 passed all 1,098 tests, type checking and the static build (278 files, 189 asset references). The preview route returned HTTP 200. Browser interaction checks remain pending under the Sites skill rule requiring an explicit browser-testing request. Encounters between sectors, selected tactical arrival positions, and mid-stage exhaustion stops remain open.
+`coordinated-assault-render.test.mjs` checks the boundary decision panel and access to twelve tactical portraits. Validation on 11 September 2026 passed all 1,098 tests, type checking and the static build (278 files, 189 asset references). The preview route returned HTTP 200. Browser interaction and selected arrival positions were still pending at that checkpoint. See the newer arrival section below and the parity audit for their current status. Mid-stage exhaustion stops remain outside this implementation.
 
 A separate engine run used the established-front twelve-person fixture and ordinary automatic tactical orders. It reached victory after 186 actions and 17 rounds, without a timeout or automatic withdrawal. Seven soldiers died. The campaign accepted the actual report, retained the two original squads (zero and five survivors), and restored the resulting save. This proves an engine-level engagement and return, not browser interaction or a complete new-game campaign.
+
+
+## Selected arrival positions — 12 September 2026
+
+The browser now opens an overhead placement screen for the actual arriving squads before a hostile encounter. Select one soldier or a whole squad on its own approach edge, or use automatic spread. Saved drafts retain the approach receipts and cost no tactical or campaign time. See [sector arrival placement](sector-arrival-placement.md) for current implementation and validation.

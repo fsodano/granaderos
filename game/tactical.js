@@ -1,3 +1,4 @@
+import {sectorDeploymentAction} from './sector-deployment.js';
 import {pairedPistol,secondHeldPistol,pistolPairPenalty,secondaryPistolView} from './paired-fire.js';
 import {pocketOrderFromSlots} from './inventory-pockets.js';
 import {planEquipmentAttachment,planEquipmentPickup,planEquipmentCursorPlacement,planEquipmentCursorReturn} from './equipment-cursor.js';
@@ -173,7 +174,7 @@ state.units.push(...enemies.map((u,i)=>makeUnit(u,'enemy',i,width-2-Math.floor(i
 if(!state.artillery.length&&sector.cannons>0)state.artillery=Array.from({length:Math.min(sector.cannons,3)},(_,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',x:2,y:2+i*3,loaded:true,ammo:6}));
 for(const u of state.units){normalizeOutfit(u);lowerWeapon(u);limitEnergy(u);if(u.side==='enemy'&&u.patrol!==false)u.patrolOrigin??=positionOf(u);normalizeUnitFittings(u);u.weaponFittings=structuredClone(u.weaponFittings);u.maxAP=maxActionPoints(state,u.routed?{...u,routed:false}:u);u.ap=u.maxAP;}
 const entered=sector.deferContact?state:initializeBattlePerception(state);say(entered,entered.mode==='exploration'?`Exploración de ${entered.sectorName}.`:`Combate en ${entered.sectorName}. Puedes conservar hasta 20 PA entre turnos.`);return entered;}
-export function initializeBattlePerception(state){checkEnd(state);detectContact(state);rememberContacts(state);revealRooms(state);return resolveFirstContact(state);}
+export function initializeBattlePerception(state){if(state.deployment)return state;checkEnd(state);detectContact(state);rememberContacts(state);revealRooms(state);return resolveFirstContact(state);}
 function tile(s,x,y,level=0){if(level)return surfaceAt(s,{x,y,tacticalLevel:level});const at=s.tiles[y*s.width+x];return at?.x===x&&at?.y===y?at:s.tiles.find(t=>t.x===x&&t.y===y);}
 function occupied(s,x,y,except,level=0){const point={x,y,tacticalLevel:level};return propBlocksAt(s,x,y,level)||(s.npcs||[]).some(n=>sameCell(n,point))||s.units.some(u=>onField(u)&&!u.unconscious&&u.id!==except&&sameCell(u,point));}
 export function carryCapacity(u){return Math.max(10,(u.strength||50)*.5);}
@@ -188,7 +189,7 @@ export function visibleDistance(s,u,target){
   const cover=concealmentSightPenalty(s,target),normal=(s.night?6+nightSightBonus(u):12)-concealment-cover;
   return Math.max(0,normal,tileIllumination(s,target.x,target.y,tacticalLevel(target))>=.25?16-cover:0);
 }
-export function canSee(s,u,target){if(!alive(u)||target.departure||!facingAllowsSight(u,target)||dist(u,target)>visibleDistance(s,u,target)||!hasLineOfSight(s,u,target))return false;const smoke=smokeBetween(s,u,target);return smoke<5;}
+export function canSee(s,u,target){if(s.deployment||!alive(u)||target.departure||!facingAllowsSight(u,target)||dist(u,target)>visibleDistance(s,u,target)||!hasLineOfSight(s,u,target))return false;const smoke=smokeBetween(s,u,target);return smoke<5;}
 export function teamCanSee(s,side,target){return s.units.some(u=>u.side===side&&alive(u)&&canSee(s,u,target));}
 export function visibleRooms(s){const ids=new Set();for(const t of [...s.tiles,...(s.upperSurfaces??[])]){if(t.roomId&&s.units.some(u=>u.side==='player'&&alive(u)&&canSee(s,u,t)))ids.add(t.roomId);}return [...ids];}
 function revealRooms(s){s.revealedRooms=[...new Set([...(s.revealedRooms||[]),...visibleRooms(s)])];discoverInventory(s);}
@@ -481,6 +482,7 @@ function damage(s,target,amount,source,projectile=false,hitLocation='torso',extr
 }
 // An interrupt grants control, not a new AP budget. Normal orders remain usable.
 export function interruptAvailable(s,u){
+ if(s.deployment)return false;
   return Boolean(u&&u.side==='player'&&alive(u)&&s.status==='active'&&
     (s.phase==='player'||s.phase==='interrupt'&&s.interrupt?.unitIds.includes(u.id)));
 }
@@ -1739,6 +1741,7 @@ function processRout(s,u){
 }
 
 export function actBattle(state,action){
+  if(state.deployment)return sectorDeploymentAction(state,action);
   const ids=[action.unitId,...(Array.isArray(action.unitIds)?action.unitIds:[])].filter(id=>id!==undefined).map(String);
   if(state.units.some(u=>u.militia&&ids.includes(u.id))||state.alliedTurn&&state.phase!=='interrupt'){
     const rejected=clone(state);rejected.lastError='La milicia actúa por su cuenta. Da órdenes a los combatientes de tu escuadra.';say(rejected,rejected.lastError);return rejected;
@@ -1974,6 +1977,7 @@ function cleanActionTime(s){
  return s;
 }
 export function endTurn(state){
+ if(state.deployment)return sectorDeploymentAction(state,{type:'endTurn'});
  const ready=clone(state);
  for(const unit of ready.units)if(!returnBattleEquipmentCursor(ready,unit)){
   const rejected=clone(state);rejected.lastError='Colocá el objeto del cursor antes de terminar el turno.';say(rejected,rejected.lastError);return rejected;

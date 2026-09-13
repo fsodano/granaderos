@@ -1,3 +1,4 @@
+import {validateSectorDeployment} from './sector-deployment.js';
 import {validateBattleSnapshot} from './validate-battle.js';
 import {restoreCampaign,rosterFor,hasPendingNpcGiftProgress} from './campaign.js';
 import {assertSaveSize} from './save-limits.js';
@@ -24,6 +25,7 @@ export function decodeSave(text){
   // participant record remains present after a partial physical exit.
   if(battle&&b.exits===undefined){battle.exits=structuredClone(campaign.pendingBattle.exits);battle.exitRulesVersion=1;}
   if(battle&&JSON.stringify(battle.exits)!==JSON.stringify(campaign.pendingBattle.exits))throw Error('Las salidas guardadas no corresponden al despliegue.');
+  if(battle)validateSectorDeployment(battle,campaign.pendingBattle);
   // A new receipt may still await its campaign reply. An acknowledged receipt
   // must remain physically present with its recipient in this deployment.
   if(battle)hasPendingNpcGiftProgress(campaign,battle);

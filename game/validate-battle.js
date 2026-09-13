@@ -1,3 +1,4 @@
+import {validateSectorDeployment} from './sector-deployment.js';
 import {NOISE_KINDS} from './tactical-awareness.js';
 import {validateTacticalSpace} from './tactical-space.js';
 import {validateRegionalWeather} from './regional-weather.js';
@@ -143,5 +144,5 @@ for(const d of s.droppedWeapons){need(coord(d)&&integer(d.weapon,0,65535)&&numbe
 for(const t of s.tiles.filter(t=>t.type==='door')){validateEnvironment(t);if(t.open!==undefined)need(t.blocked===!t.open&&(t.blocksSight===undefined||t.blocksSight===!t.open),'paso de puerta');for(const stack of t.contents??[])claimStack(stack);}
 const propIds=new Set();for(const p of s.props){validateCoverMetadata(p);need(coord(p)&&text(p.id)&&p.id.length>0&&!propIds.has(p.id)&&PROP_TYPES.includes(p.type),'mobiliario');if(p.footprint!==undefined)need(object(p.footprint),'huella del mobiliario');const size=propSize(p);need(object(size)&&integer(size.width,1,8)&&integer(size.height,1,8),'dimensiones del mobiliario');need(propCells(p).every(coord),'huella del mobiliario');if(p.blocksMovement!==undefined)need(typeof p.blocksMovement==='boolean','colisión del mobiliario');propIds.add(p.id);if(p.type==='chest'){validateEnvironment(p);for(const stack of p.contents??[])claimStack(stack);}for(const key of ['buildingId','roomId'])if(p[key]!=null)need(text(p[key]),'habitación del mobiliario');}
 for(const d of s.decor)need(coord(d)&&integer(d.width,1,s.width)&&integer(d.height,1,s.height)&&d.x+d.width<=s.width&&d.y+d.height<=s.height&&text(d.type),'decoración');
-for(const b of s.buildings){need(coord(b)&&text(b.id)&&integer(b.width,1,s.width)&&integer(b.height,1,s.height)&&b.x+b.width<=s.width&&b.y+b.height<=s.height&&Array.isArray(b.rooms),'edificios');for(const room of b.rooms)need(object(room)&&text(room.id)&&Array.isArray(room.cells)&&room.cells.every(coord),'habitaciones');}need(s.revealedRooms.every(text),'habitaciones vistas');return validateTacticalSpace(s);
+for(const b of s.buildings){need(coord(b)&&text(b.id)&&integer(b.width,1,s.width)&&integer(b.height,1,s.height)&&b.x+b.width<=s.width&&b.y+b.height<=s.height&&Array.isArray(b.rooms),'edificios');for(const room of b.rooms)need(object(room)&&text(room.id)&&Array.isArray(room.cells)&&room.cells.every(coord),'habitaciones');}need(s.revealedRooms.every(text),'habitaciones vistas');validateSectorDeployment(s);return validateTacticalSpace(s);
 }

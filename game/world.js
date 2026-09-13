@@ -1,10 +1,12 @@
+import {exteriorComponent,entryTerrainCells} from './sector-entry.js';
+import {beginSectorDeployment} from './sector-deployment.js';
 import {spaceKey,surfacesAtLevel,tacticalLevel,validateTacticalSpace} from './tactical-space.js';
 import {physicalEntryAnchor} from './sector-expansion.js';
 import {authoredEnvironment} from './environment-interactions.js';
 import {propBlocksAt} from './props.js';
 import {buildSectorMap} from './maps.js';
-import {createBattle,initializeBattlePerception,movementStepCost} from './tactical.js';
-import {boundaryMatches,inwardFromBoundary,validEntry,validateSectorExits} from './tactical-exits.js';
+import {createBattle,initializeBattlePerception} from './tactical.js';
+import {validEntry,validateSectorExits} from './tactical-exits.js';
 import {validateBattleSnapshot} from './validate-battle.js';
 import {validateQuestGifts} from './quests.js';
 
@@ -21,24 +23,8 @@ const sourceRecord=(previous,unit,sector)=>{
  return !entry||entry.sector===owner&&['resident','dead'].includes(entry.kind);
 };
 
-// Buildings cannot become an arrival fallback. The largest exterior component
-// is the authored road network on these schematic maps, including saved breaches.
-function exteriorComponent(state,unit){
- const open=state.tiles.filter(t=>!t.blocked&&!t.buildingId&&!propBlocksAt(state,t.x,t.y)),available=new Map(open.map(t=>[key(t),t])),seen=new Set();let largest=new Set();
- for(const start of open){
-  if(seen.has(key(start)))continue;
-  const component=new Set([key(start)]),queue=[start];seen.add(key(start));
-  for(let i=0;i<queue.length;i++)for(const[dx,dy]of[[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]){
-   const next=available.get(key({x:queue[i].x+dx,y:queue[i].y+dy}));
-   if(next&&!seen.has(key(next))&&Number.isFinite(movementStepCost(state,unit,queue[i],next))){seen.add(key(next));component.add(key(next));queue.push(next);}
-  }
-  if(component.size>largest.size)largest=component;
- }
- return largest;
-}
-
 // Re-enter a persistent sector with the current squad, retaining terrain and ground gear.
-export function enterSector(request,previous=null){
+export function enterSector(request,previous=null,{placement=false}={}){
  if(request.exits!==undefined&&!validateSectorExits(request.sector,request.sceneId??null,request.exits))throw Error('Las salidas no corresponden a este sector.');
  if(previous)validateTacticalSpace(previous);
  const map=buildSectorMap({...request,compactLayout:previous?previous.width===20&&previous.height===16:request.compactLayout},{restorePrevious:Boolean(previous)});
@@ -133,7 +119,7 @@ export function enterSector(request,previous=null){
    const component=exteriorComponent(state,arriving[0]);
    for(const unit of arriving){
      const anchor=physicalEntryAnchor(unit.entryEdge,unit.entryAnchor,state.width,state.height,state.sceneId??state.sectorId);
-     const candidates=state.tiles.filter(t=>boundaryMatches(state,t,unit.entryEdge)&&component.has(key(t))&&!occupied.has(key(t))&&Number.isFinite(movementStepCost(state,unit,t,inwardFromBoundary(t,unit.entryEdge))));
+     const candidates=entryTerrainCells(state,unit,unit.entryEdge,component).filter(t=>!occupied.has(key(t)));
      candidates.sort((a,b)=>Math.abs(a.x-anchor.x)+Math.abs(a.y-anchor.y)-Math.abs(b.x-anchor.x)-Math.abs(b.y-anchor.y)||(a.type==='road'?0:1)-(b.type==='road'?0:1)||a.y-b.y||a.x-b.x);
      if(!candidates.length)throw Error('No queda espacio en el borde de entrada. La llegada sigue pendiente.');
      Object.assign(unit,{x:candidates[0].x,y:candidates[0].y});
@@ -141,8 +127,12 @@ export function enterSector(request,previous=null){
      occupied.add(key(unit));
    }
  }
- if(request.defenseGroupId&&request.defenseFort>0)for(const unit of state.units.filter(u=>u.side==='player'&&u.hp>0)){const tile=state.tiles.find(t=>t.x===unit.x&&t.y===unit.y);tile.cover=Math.max(tile.cover??0,Math.min(3,request.defenseFort)*10);}
  state.sceneId=request.sceneId??null;state.missionId=request.missionId??request.sceneId??null;
  state.enteredHour=request.hour??0;
+ const selecting=placement&&!request.exploration&&beginSectorDeployment(state,request),deferred=new Set(state.deployment?.units.map(u=>u.id)??[]);
+ // Residents receive their cover now; arriving defenders receive it only at
+ // their committed cells, never at the unused automatic arrival positions.
+ if(request.defenseGroupId&&request.defenseFort>0)for(const unit of state.units.filter(u=>u.side==='player'&&u.hp>0&&!deferred.has(u.id))){const tile=state.tiles.find(t=>t.x===unit.x&&t.y===unit.y);tile.cover=Math.max(tile.cover??0,Math.min(3,request.defenseFort)*10);}
+ if(selecting)return validateBattleSnapshot(state);
  return initializeBattlePerception(validateBattleSnapshot(state));
 }

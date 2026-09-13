@@ -1,3 +1,4 @@
+import {sectorDeploymentModel} from './sector-deployment.js';
 import {publicLogisticsNotice} from './logistics-attention.js';
 import {knownCampaignSectorEquipment} from './sector-inventory.js';
 import {publicContractNotice} from './contract-attention.js';
@@ -45,6 +46,11 @@ function fittingOrders(state,unit){
 /** Current shared sight, plus anonymous remembered contact. Never a save payload. */
 export function playerKnownBattle(state){
   if(!state)return null;
+  if(state.deployment){
+    const deployment=sectorDeploymentModel(state);
+    return {...pick(state,['sectorId','sectorName','sceneId','missionId','width','height','turn','status','elapsedSeconds']),phase:'deployment',mode:'deployment',deployment,
+      units:deployment.units.map(({position,...unit})=>({...unit,side:'player',...(position??{})})),orders:[],npcs:[],contacts:[],tiles:deployment.cells,artillery:[],groundItems:[]};
+  }
   const players=state.units.filter(unit=>unit.side==='player'&&onField(unit));
   const actors=players.filter(unit=>unit.hp>0&&!unit.unconscious&&!unit.routed&&!unit.surrendered);
   const revealed=new Set([...(state.revealedRooms??[]),...visibleRooms(state)]);
