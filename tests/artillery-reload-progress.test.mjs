@@ -87,5 +87,6 @@ test('full campaign encoding resumes the remaining cost and finite gun ammunitio
  const r=c.pendingBattle;let b=createBattle(r.squad.map((u,i)=>({...u,x:1+i,y:2})),{...r,width:40,height:8,tiles:tiles(),enemies:[{id:'e',x:38,y:6,patrol:false}],artillery:[{id:'gun',type:'swivel',side:'player',x:1,y:3,loaded:false,ammo:3}]});
  const u=b.units[0];u.ap=10;b=actBattle(b,{type:'artilleryReload',artilleryId:'gun',unitId:u.id});assert.equal(b.lastError,null);const pair=syncBattleTime(c,b);assert.equal(pair.error,null);
  const saved=decodeSave(encodeSave(pair.campaign,pair.battle));assert.deepEqual(saved.battle.artillery,b.artillery);const restored=saved.battle;restored.units[0].ap=100;
- const p=artilleryReloadPreview(restored,restored.units[0],restored.artillery[0]);assert.equal(p.totalPA,25);const n=actBattle(restored,{type:'artilleryReload',artilleryId:'gun',unitId:u.id});assert.equal(n.lastError,null);assert.equal(n.artillery[0].loaded,true);assert.equal(n.artillery[0].ammo,2);
+ const p=artilleryReloadPreview(restored,restored.units[0],restored.artillery[0]);assert.equal(p.totalPA,27); // The real commander's powder skill now makes this a 37 AP load; 10 were already spent.
+const n=actBattle(restored,{type:'artilleryReload',artilleryId:'gun',unitId:u.id});assert.equal(n.lastError,null);assert.equal(n.artillery[0].loaded,true);assert.equal(n.artillery[0].ammo,2);
 });

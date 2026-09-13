@@ -94,7 +94,7 @@ export function contextualAttack(s,u,target,options={}){
   const costs=actionCosts(s,u,target),aim=clamp(Math.floor(Number.isFinite(options.aim)?options.aim:0),0,4);
   return {type,pa:type==='fire'?costs.fire+aim*costs.aim:costs.melee,profile:type==='fire'?weaponFor(u):bladeFor(u)};
 }
-export function artilleryCosts(s,u,gun){const spec=ARTILLERY[gun.type],assist=(nearby(s,u,2,2)?.8:1)*(hasTrait(u,'gunsmith_artillerist')?.85:1),base={bronze4:{move:20,pivot:10},field8:{move:30,pivot:15},swivel:{move:10,pivot:5}}[gun.type];return{crew:spec.crew,fire:Math.ceil(spec.fireAP*assist*(Number(u.id)===5?.85:1)),reload:Math.ceil(spec.reloadAP*assist*(Number(u.id)===7?.8:1)),move:base.move,pivot:base.pivot};}
+export function artilleryCosts(s,u,gun){const powderFactor=1+(50-clamp(u.explosives??50,0,100))/500,spec=ARTILLERY[gun.type],assist=(nearby(s,u,2,2)?.8:1)*(hasTrait(u,'gunsmith_artillerist')?.85:1),base={bronze4:{move:20,pivot:10},field8:{move:30,pivot:15},swivel:{move:10,pivot:5}}[gun.type];return{crew:spec.crew,fire:Math.ceil(spec.fireAP*assist*(Number(u.id)===5?.85:1)),reload:Math.ceil(spec.reloadAP*assist*(Number(u.id)===7?.8:1)*powderFactor),move:base.move,pivot:base.pivot};}
 // Crew work is simultaneous: the least available assigned member limits one
 // loading step. Prefer stronger available helpers without spending other units' AP.
 export function artilleryCrewPlan(s,u,gun,cost,partial=false){
@@ -1244,7 +1244,7 @@ if(a.type==='move'||a.type==='climb'){
     if(exploring)advanceExplorationAction(s,seconds);
     emitNoise(s,u,'move');rememberContacts(s);
     if(u.stealthMode&&!u.mounted&&s.units.some(v=>v.side!==u.side&&alive(v)&&dist(v,u)<=12)&&!s.units.some(v=>v.side!==u.side&&alive(v)&&canSee(s,v,u))){u.practiceTiles??=[];const key=`${u.x},${u.y}`;if(!u.practiceTiles.includes(key)){u.practiceTiles.push(key);practice(u,'agility');practice(u,'stealth');}}
-    if(carriedWeight(u)>carryCapacity(u)){u.strengthTraining++;if(u.strengthTraining>=30){u.strength=Math.min(100,u.strength+1);u.strengthTraining=0;}}
+    if(carriedWeight(u)>carryCapacity(u)){u.strengthTraining++;if(u.strengthTraining>=30){practice(u,'strength',40);u.strengthTraining=0;}}
     if(!alive(u)||detectContact(s))break;
     if(s.mode==='combat'&&reactionFire(s,u,stepObservation))break;
     if(!alive(u)||s.status!=='active')break;
@@ -1421,7 +1421,7 @@ if(penetration<0||energy<20)break;
 }
 sayObserved(s,[u],`${spec.name} dispara una bala rasa que atraviesa su línea de tiro.`);
 }}
-for(const v of assigned){lowerWeapon(v);if(s.mode!=='exploration')v.ap-=cost;}
+for(const v of assigned){lowerWeapon(v);if(s.mode!=='exploration')v.ap-=cost;if(a.type==='artillery'||a.type==='artilleryReload'&&loading.rounds)practice(v,'explosives',a.type==='artillery'?2:1);}
 if(s.mode==='exploration')s.actionDurationSeconds=Math.max(1,Math.ceil(cost*.06));
 }
 else if(a.type==='door'||a.type==='environment'){

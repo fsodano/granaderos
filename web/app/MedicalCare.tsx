@@ -10,6 +10,7 @@ import {sleepOrderReason} from '../../game/sleep.js';
 import {moraleStatus} from '../../game/morale.js';
 import {equipmentInventoryUsage,medicalSupplyStock,MEDICAL_STOCK_CAP,MEDICAL_DAILY_RESTOCK} from '../../game/equipment.js';
 import './medical-care.css';
+import StudyForecast from './StudyForecast';
 const equipment=WEAPONS as Record<number,{capacity?:number;name:string}>;
 
 export function MedicalSupplyPurchase({s,op,blocked,pharmacy,dispatch}:{s:any;op:any;blocked:boolean;pharmacy:boolean;dispatch:(action:any)=>void}){
@@ -43,6 +44,7 @@ function PersonnelCard({s,op,roster,blocked,pharmacy,dispatch}:{s:any;op:any;ros
     <p className="care-status" aria-live="polite">{work?workStatus(s,op,roster):careStatus(s,op,roster)}</p>
     <details className="care-work" open={work||undefined}><summary>Preparar práctica o reparación</summary><div>
       <label>Habilidad<select aria-label={`Habilidad de ${op.nickname}`} value={skill} disabled={blocked||!record.alive} onChange={event=>setSkill(event.target.value)}>{Object.entries(STUDY_SKILLS).map(([value,label])=><option key={value} value={value} disabled={(op[value]??0)<=0}>{label} · {op[value]??0}</option>)}</select></label>
+      <StudyForecast record={record} op={op} skill={skill} instructor={teacher}/>
       <label>Instructor<select aria-label={`Instructor de ${op.nickname}`} value={teacher?.id??''} disabled={blocked||!record.alive} onChange={event=>setTeacherId(event.target.value)}>{!instructors.length&&<option value="">Sin instructor de esta habilidad</option>}{instructors.map(o=><option key={o.id} value={o.id}>{o.nickname} · {o[skill]}</option>)}</select></label>
       <label>Equipo de<select aria-label={`Equipo para reparar de ${op.nickname}`} value={target?.id??''} disabled={blocked||!record.alive} onChange={event=>setTargetId(event.target.value)}>{!targets.length&&<option value="">No hay combatientes presentes</option>}{targets.map(o=><option key={o.id} value={o.id}>{o.nickname}{repairScope==='primary'?` · ${s.operativeState[o.id].condition}%`:''}</option>)}</select></label>
       <label>Reparar<select aria-label={`Alcance de reparación de ${op.nickname}`} value={repairScope} disabled={blocked||!record.alive} onChange={event=>setRepairScope(event.target.value)}><option value="equipment">Todo el equipo llevado</option><option value="primary">Solo el arma principal actual</option></select></label>

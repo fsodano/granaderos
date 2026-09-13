@@ -1,14 +1,16 @@
+import {studyRate} from './study-training.js';
+export {studyRate,studyForecast} from './study-training.js';
 import {gainFatigue} from './fatigue.js';
 import {sleepStatus} from './sleep.js';
 import {operativeInTransit,operativeLocation} from './squads.js';
-import {TRAINABLE_SKILLS,practice} from './skill-training.js';
+import {TRAINABLE_SKILLS,TRAINING_LABELS,practice} from './skill-training.js';
 import {WEAPONS} from './data.js';
 import {militiaEligibility} from './militia.js';
 import {repairEquipmentQueue,repairEquipment,repairEquipmentBlocked} from './equipment-repair.js';
 export {repairEquipmentQueue} from './equipment-repair.js';
 
 export const WORK_ASSIGNMENTS={practice:'Práctica individual',instructor:'Instructor',student:'Alumno',repair:'Reparación'};
-export const STUDY_SKILLS={agility:'Agilidad',stealth:'Sigilo',marksmanship:'Puntería',medical:'Medicina',mechanical:'Mecánica',ridingSkill:'Equitación'};
+export const STUDY_SKILLS=TRAINING_LABELS;
 export const TOOLKIT_PRICE=120;
 export const TOOLKIT_POINTS=100;
 const need=(condition,message)=>{if(!condition)throw Error(message);};
@@ -40,15 +42,6 @@ function availabilityIssue(s,op){
   return null;
 }
 
-// The guide describes progressively slower practice at high skill and faster
-// learning with a better teacher. Credit uses integers to survive save/reload.
-export function studyRate(op,skill,instructor=null){
-  const value=op[skill]??0;
-  const hours=value<=45?24:value<=60?48:value<=75?240:360;
-  const wisdom=.6+(op.wisdom??50)/125;
-  const teaching=instructor?(value<=60?1.5:2+Math.min(3,Math.max(0,((instructor[skill]??0)-value)/10)))+(instructor.traits?.includes('teacher')?.5:0):1;
-  return Math.max(1,Math.round(40000/hours*wisdom*teaching));
-}
 export const repairRate=op=>1+Math.floor((op.mechanical??0)/15);
 
 const repairScope=(r,options={})=>options.repairScope??r.repairScope??'primary';
@@ -148,8 +141,10 @@ export function assignWork(s,op,action,roster){
 }
 
 function learn(r,op,skill,amount){
-  const unit={...op,side:'player',trainedStats:{...r.trainedStats},skillPractice:{...r.skillPractice}};
-  practice(unit,skill,amount);r.trainedStats=unit.trainedStats;r.skillPractice=unit.skillPractice;
+  const unit={...op,hp:r.hp,side:'player',trainedStats:{...r.trainedStats},skillPractice:{...r.skillPractice}};
+  const gain=practice(unit,skill,amount);r.trainedStats=unit.trainedStats;r.skillPractice=unit.skillPractice;
+  if(gain&&skill==='maxHp'){r.maxHp=unit.maxHp;r.hp=unit.hp;}
+  if(gain&&skill==='strength')r.strength=unit.strength;
 }
 const workCost=r=>{r.energy=Math.max(0,r.energy-3);gainFatigue(r,2);};
 

@@ -18,7 +18,7 @@ test('finite successful healing and maintenance train relevant skills only',()=>
  s=actBattle(s,{type:'repair',unitId:1000});const before=structuredClone(s.units[0]);const n=actBattle(s,{type:'repair',unitId:1000});assert.ok(n.lastError);assert.deepEqual(n.units[0],before);
 });
 test('sneaking past unseen nearby enemies practices each tile only once',()=>{
- let s=make({stealthMode:true,skillPractice:{agility:39,stealth:39}},{night:true,enemies:[{id:'e',x:12,y:1}]});
+ let s=make({stealth:40,stealthMode:true,skillPractice:{agility:39,stealth:39}},{night:true,enemies:[{id:'e',x:12,y:1}]});
  s=actBattle(s,{type:'move',unitId:1000,x:2,y:1,movement:'crouch'});assert.equal(s.lastError,null);assert.equal(s.units[0].agility,76);assert.equal(s.units[0].trainedStats.stealth,1);
  s=actBattle(s,{type:'move',unitId:1000,x:1,y:1,movement:'crouch'});const p=s.units[0].skillPractice.agility;s=actBattle(s,{type:'move',unitId:1000,x:2,y:1,movement:'crouch'});assert.equal(s.units[0].skillPractice.agility,p);
 });
