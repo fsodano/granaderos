@@ -1,3 +1,4 @@
+import {holdsArtilleryPost} from './tactical-ai-artillery.js';
 import {sameSurface,tacticalLevel,surfacesAtLevel} from './tactical-space.js';
 import {moveOrder} from './tactical-planning-space.js';
 import {canSee,getReachable,stanceCost} from './tactical.js';
@@ -12,7 +13,7 @@ export function automaticOrder(b,u){
 
 // Map waypoints do not disclose the position of an unseen opponent.
 export function searchOrder(b,u,{changeStance=true}={}){
- if(!able(u)||u.knockedDown||u.entangled)return null;
+ if(!able(u)||u.knockedDown||u.entangled||holdsArtilleryPost(b,u))return null;
  const visible=b.units.some(v=>v.side!==u.side&&able(v)&&b.units.some(p=>p.side===u.side&&able(p)&&canSee(b,p,v)));
  if(visible||b.phase==='interrupt'||u.ap<25)return null;
  // Sweep fixed map waypoints when there is no contact. Stopping permanently at

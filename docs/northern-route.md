@@ -1,6 +1,20 @@
 # Northern campaign route verification
 
-## Campaign terrace checkpoint: 12 September 2026
+## Shared-turn budget checkpoint: 12 September 2026
+
+Enemy turn budgets now begin together, before any shared crew action. This changes real tactical outcomes, including encounters without cannon emplacements. The established southern fixture still uses seed 8, ordinary orders, finite equipment, paid contracts, deterministic battle replays and full saves. It starts with Buenos Aires and Ensenada secured; it does not establish a complete Retiro-only campaign.
+
+The player controller now takes a paid prone firing posture when a loaded gun can still fire with two aiming levels afterwards. Córdoba and the Tucumán rescue use that deliberate setup before the usual cautious decisions. Salta uses the existing coordinated-fire controller and the exact deployed force. These are player-command choices; enemy abilities and combat costs are not reduced to recover an earlier outcome.
+
+The real rescue returns a soldier who left the 64×48 field at (42,47) and then died. Commit `a329339` fixes the obsolete compact-map check that rejected this valid return. The corpse retains its actual equipment and remains available at its destination. See [the return regression](artillery-ai.md#verification).
+
+The courier buys thirteen actual dressings for 390 pesos. Before Salta, three critical patients require 37 dressings: thirty in the doctors' packs and seven donated through the sector inventory. One supplied doctor can finish the final wound when the other has no dressing left. A shortage still prevents further treatment. Actual casualties leave eight local soldiers, so the next assault hires specialist 109 and replacements 125, 140 and 144 for 424 pesos, completing two six-person squads.
+
+The force departs at hour 220 and arrives at Salta at hour 232. Coordinated fire wins in fourteen turns and 179 orders. Soldiers 109, 125, 103, 140 and 128 die; 141 leaves wounded for Tucumán and remains there. The surviving local doctor completes Yatasto at hour 244, second 1786, with 1,718 pesos. All eighteen deaths remain permanent. Phase 3 is reached; the campaign is not complete. The earlier cautious contact policy retreats on this same Salta deployment, so this route does not establish general combat balance or full JA2 parity.
+
+Validation: all eight route checks pass without skips in 59.77 seconds. The other 2,255 tests pass separately, completing the 2,263-test suite. Typecheck and the production build pass. The temporary evidence loader only records existing helper results; it does not change game modules, orders, inputs, assertions or outcomes.
+
+## Earlier campaign terrace checkpoint
 
 Checked with active house terraces from `e597eea`, the physical-floor controller corrections, and both ambient patrol recovery fixes (`e4890c3`, `30461dc`). The route keeps seed 8 and uses ordinary orders, actual casualties, finite supplies, paid contracts, deterministic battle replays and complete save checks. Buenos Aires and Ensenada are already secured in this fixture; it is not a full Retiro-only campaign.
 

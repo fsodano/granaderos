@@ -1,3 +1,4 @@
+import {chooseArtilleryAction,holdsArtilleryPost} from './tactical-ai-artillery.js';
 import {sameSurface,spaceKey,surfaceAt,tacticalLevel} from './tactical-space.js';
 import {atHand,moveOrder,planningPoint} from './tactical-planning-space.js';
 import {chooseSupplySharingAction} from './tactical-ai-sharing.js';
@@ -16,7 +17,7 @@ const compareId = (a, b) => String(a.id) < String(b.id) ? -1 : String(a.id) > St
 const readyGun = u => weaponFor(u).capacity > 0 && u.loaded > 0 && !u.jammed;
 
 export function choosePatrolAction(state,unit) {
-  if(unit.knockedDown||unit.entangled||!unit.patrolOrigin||unit.patrol===false||unit.patrolTurn===state.turn||state.turn-(unit.lastInvestigatedTurn??-10)<=1||!active(unit)||state.phase==='interrupt'||state.reactionStack?.length)return null;
+  if(unit.knockedDown||unit.entangled||!unit.patrolOrigin||unit.patrol===false||unit.patrolTurn===state.turn||state.turn-(unit.lastInvestigatedTurn??-10)<=1||!active(unit)||state.phase==='interrupt'||state.reactionStack?.length||holdsArtilleryPost(state,unit))return null;
   const anchor=unit.patrolOrigin;
   // Patrol one short bound per round, retaining most AP for contact. A fixed
   // post and a rotating waypoint prevent aimless drift across the whole map.
@@ -243,6 +244,9 @@ export function chooseEnemyAction(state, unit) {
   if (unit.bleeding > 0 && unit.medkits > 0 && unit.medical > 0 && unit.ap >= costs.heal + costs.weapon) return {type: 'weapon', unitId: unit.id, slot: 'medical'};
   const aid = fieldAid(state, unit, costs, targets, paths);
   if (aid) return aid;
+  const cannon=chooseArtilleryAction(state,unit,targets,paths);
+  if(cannon)return cannon;
+  if(!targets.length&&holdsArtilleryPost(state,unit))return null;
   const backup = backupWeapon(state, unit, costs, targets);
   if (backup) return backup;
   if (['medical','tool','supply','item'].includes(unit.activeSlot)) {

@@ -40,7 +40,7 @@ export function recoverRescueForce(start,{patients,report=()=>{}}={}){
  order({type:'assignCare',operativeId:firstDoctor,assignment:'rest'});
  for(const item of ['torches','boleadoras']){const count=campaign.operativeState[courier][item];if(count)order({type:'sectorInventory',sector:'cordoba',operativeId:courier,direction:'drop',item,count});}
  const stock=campaign.merchants.cordoba.supplies.medkits,cash=campaign.resources.treasury,carried=campaign.operativeState[courier].medkits;
- const boughtDressings=Math.min(12,stock);assert.ok(boughtDressings>0);order({type:'purchaseMedicalSupplies',operativeId:courier,quantity:boughtDressings});
+ const boughtDressings=Math.min(13,stock);assert.ok(boughtDressings>0);order({type:'purchaseMedicalSupplies',operativeId:courier,quantity:boughtDressings});
  assert.equal(campaign.merchants.cordoba.supplies.medkits,stock-boughtDressings);assert.equal(campaign.operativeState[courier].medkits,carried+boughtDressings);assert.equal(cash-campaign.resources.treasury,boughtDressings*30);
  renew(13);order({type:'travel',sector:'tucuman'});assert.equal(campaign.location,'tucuman');assert.equal(campaign.hour,startHour+24);assert.equal(campaign.pendingEncounter,null);
  order({type:'sectorInventory',sector:'tucuman',operativeId:courier,direction:'drop',item:'medkits',count:boughtDressings});

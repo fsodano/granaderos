@@ -6,7 +6,7 @@ Victory captures the pieces. Retreat or defeat leaves them with surviving enemie
 
 In the local Armory, **Piezas emplazadas en este sector** lists friendly guns. **Preparar 1 munición** spends existing powder and iron and adds one reserve round. A present squad, friendly control and a supply route are required. A field gun costs two powder and two iron per round; the other current models cost one each. This is Granaderos tuning. Supplying ammunition does not load the gun or erase loading work. Load it through the existing tactical crew order.
 
-The initial loaded shot and six reserve rounds accompany the first stock issue only. These historical artillery mechanics are a Granaderos adaptation, not a claim about JA2 artillery. Recovery and strategic transport of individually stationed guns, autonomous enemy artillery use, and distinct solid/canister supply recipes remain incomplete. Existing aggregate stock convoys do not establish transport of these identified deployed pieces.
+The initial loaded shot and six reserve rounds accompany the first stock issue only. These historical artillery mechanics are a Granaderos adaptation, not a claim about JA2 artillery. Recovery and strategic transport of individually stationed guns and distinct solid/canister supply recipes remain incomplete. Autonomous local crew use is now implemented; see [artillery AI](artillery-ai.md). Existing aggregate stock convoys do not establish transport of these identified deployed pieces.
 
 ## Earlier verification checkpoint
 

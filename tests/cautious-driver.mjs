@@ -1,4 +1,4 @@
-import {canSee,teamCanSee,getReachable} from '../game/tactical.js';
+import {canSee,teamCanSee,getReachable,actionCosts,stanceCost} from '../game/tactical.js';
 import {chooseEnemyAction} from '../game/tactical-ai.js';
 import {combatOrder} from './opening-driver.mjs';
 import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
@@ -7,6 +7,13 @@ import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
 // evaluation. Retain opening reconnaissance only while no current or recent
 // contact is available. A null combat choice means hold, not a forced advance.
 export function cautiousCombatOrder(state,unit){
+ const target=state.units.find(other=>other.side!==unit.side&&other.hp>=15&&!other.departure&&!other.surrendered&&!other.unconscious&&canSee(state,unit,other));
+ // The player squad deliberately fires from prone at contact. Pay the setup
+ // only when the lowered gun can still fire with two aiming levels this turn.
+ if(target&&unit.activeSlot==='primary'&&unit.weaponMode!=='melee'&&unit.loaded>0&&!unit.jammed&&!unit.mounted&&!unit.knockedDown&&!unit.entangled&&unit.stance!=='prone'){
+  const costs=actionCosts(state,{...unit,stance:'prone',weaponReady:false},target);
+  if(unit.ap>=stanceCost(unit,'prone')+costs.fire+2*costs.aim)return {type:'stance',unitId:unit.id,stance:'prone'};
+ }
  const contact=state.units.some(other=>other.side!==unit.side&&other.hp>0&&!other.departure&&!other.surrendered&&!other.unconscious&&canSee(state,unit,other));
  const known=unit.lastKnownEnemy??unit.lastHeardNoise,age=state.turn-(known?.turn??-Infinity);
  const order=contact||age>=0&&age<=3?chooseEnemyAction(state,unit):combatOrder(state,unit);

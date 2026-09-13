@@ -100,6 +100,7 @@ export function artilleryCosts(s,u,gun){const powderFactor=1+(50-clamp(u.explosi
 export function artilleryCrewPlan(s,u,gun,cost,partial=false){
   const spec=ARTILLERY[gun?.type];
   const eligible=v=>v.side===u?.side&&Boolean(v.militia)===Boolean(u?.militia)&&!v.fled&&!v.mounted&&
+    !(v.side==='enemy'&&s.reactionStack?.length&&!s.reactionStack.at(-1).unitIds.includes(v.id))&&
     !inventoryOrderReason(s,v,cost)&&contactDistance(v,gun)<=1.5&&hasLineOfSight(s,v,gun)&&
     (dist(v,gun)===0||Number.isFinite(movementStepCost(s,v,v,gun)));
   if(!u||!spec||gun.side!==u.side)return {crew:[],reason:'Debes estar junto a una pieza de artillería propia.'};
@@ -116,6 +117,39 @@ export function artilleryReloadPreview(s,u,gun){
   const plan=planReload({loaded:Number(gun?.loaded??false),ammo:gun?.ammo??0,reloadProgress:gun?.reloadProgress,ap},rate,1,s.mode==='exploration');
   const reason=gun?.loaded?'La pieza ya está cargada.':gun&&gun.ammo<1?'No quedan municiones para la pieza.':crew.reason||(!plan.pa?'Faltan puntos de acción para recargar.':null);
   return {...plan,crew:crew.crew,rate,reason,valid:!reason};
+}
+
+
+// Read-only geometry shared by actual cannon fire and autonomous aiming.
+// Callers may supply a perceived roster; execution always uses the full field.
+export function artilleryCanisterContains(s,gun,point,body){
+ const spec=ARTILLERY[gun.type],length=dist(gun,point);if(!length||!sameSurface(gun,body))return false;
+ const dx=(point.x-gun.x)/length,dy=(point.y-gun.y)/length,vx=body.x-gun.x,vy=body.y-gun.y,forward=vx*dx+vy*dy,across=Math.abs(vx*dy-vy*dx);
+ return forward>1&&forward<=spec.radius*2&&across<=Math.max(1,forward*.5)&&hasLineOfSight(s,gun,body);
+}
+export function artilleryShotTrace(s,u,gun,point,mode='solid'){
+ const spec=ARTILLERY[gun.type],events=[],cells=[];
+ if(mode==='canister'){
+  const length=dist(gun,point),dx=(point.x-gun.x)/length,dy=(point.y-gun.y)/length;
+  for(const body of s.units.filter(onField))if(artilleryCanisterContains(s,gun,point,body)){
+   const forward=(body.x-gun.x)*dx+(body.y-gun.y)*dy;
+   events.push({type:'impact',unitId:body.id,damage:spec.damage*Math.max(.35,1-forward/(spec.radius*3))*(Number(u.id)===5?1.15:1)});
+  }
+ }else{
+  let energy=spec.damage,penetration=({bronze4:3,field8:5,swivel:1}[gun.type])+(Number(u.id)===7?1:0);
+  for(const p of line(gun,point)){
+   cells.push(p);const ground=tile(s,p.x,p.y);
+   if(ground?.blocked){
+    if(ground.type==='water'||ground.type==='cliff')break;
+    const stone=ground.material==='stone'||ground.type==='stone',resistance=stone?3:1;
+    if(penetration<resistance){events.push({type:'stop'});break;}
+    penetration-=resistance;events.push({type:'breach',...p,stone});
+   }
+   for(const body of s.units.filter(v=>onField(v)&&sameSurface(v,gun)&&sameCell(v,p))){events.push({type:'impact',unitId:body.id,damage:energy});energy*=.75;penetration--;}
+   if(penetration<0||energy<20)break;
+  }
+ }
+ return {events,cells};
 }
 
 export function interruptInitiative(s,u){return (u.agility??75)+(u.wisdom??50)*.25+(u.experienceLevel??4)*10-(u.shock??0)*2-(u.movementMode==='run'?10:0)+(nearby(s,u,11,4)?25:0)+(nearby(s,u,57,6)?50:0);}
@@ -1408,19 +1442,17 @@ if(!gun.loaded)return fail('Primero hay que recargar la pieza.');const point=tar
 if(!Number.isInteger(point.x)||!Number.isInteger(point.y)||!tile(s,point.x,point.y)||dist(gun,point)<1||dist(gun,point)>spec.range)return fail(`Objetivo fuera del alcance de ${spec.range} casillas o no válido.`);
 const facing=Math.atan2(point.y-gun.y,point.x-gun.x);if(Number.isFinite(gun.facing)&&Math.abs(Math.atan2(Math.sin(facing-gun.facing),Math.cos(facing-gun.facing)))>Math.PI/4)return fail('Gira la pieza antes de disparar fuera de su arco frontal.');
 gun.facing=facing;gun.loaded=false;emitNoise(s,u,'explosion',gun);s.smoke.push({x:gun.x,y:gun.y,radius:2,turns:3});
-if(a.mode==='canister'){
-const len=dist(gun,point),dx=(point.x-gun.x)/len,dy=(point.y-gun.y)/len;
-for(const v of s.units.filter(v=>onField(v)&&sameSurface(v,gun))){const vx=v.x-gun.x,vy=v.y-gun.y,forward=vx*dx+vy*dy,across=Math.abs(vx*dy-vy*dx);if(forward>1&&forward<=spec.radius*2&&across<=Math.max(1,forward*.5)&&hasLineOfSight(s,gun,v)){damage(s,v,spec.damage*Math.max(.35,1-forward/(spec.radius*3))*(Number(u.id)===5?1.15:1),u);if(alive(v)){v.morale=Math.max(0,v.morale-12);if(v.morale<15)rout(s,v);}}}
-sayObserved(s,[u],`${spec.name} barre el frente con metralla.`);
-}else{
-let energy=spec.damage,penetration=({bronze4:3,field8:5,swivel:1}[gun.type])+(Number(u.id)===7?1:0);
-for(const p of line(gun,point)){
-const ground=tile(s,p.x,p.y);if(ground?.blocked){if(ground.type==='water'||ground.type==='cliff'){break;}const stone=ground.material==='stone'||ground.type==='stone';const resistance=stone?3:1;if(penetration<resistance){say(s,'La bala se detiene contra la fortificación.');break;}penetration-=resistance;ground.blocked=false;ground.blocksSight=false;ground.type='rubble';ground.cover=20;delete ground.obstacleHeight;delete ground.projectileResistance;say(s,`La bala abre una brecha en ${stone?'la piedra':'el adobe'}.`);}
-for(const victim of s.units.filter(v=>onField(v)&&sameSurface(v,gun)&&sameCell(v,p))){damage(s,victim,energy,u);energy*=.75;penetration--;}
-if(penetration<0||energy<20)break;
+for(const event of artilleryShotTrace(s,u,gun,point,a.mode).events){
+ if(event.type==='impact'){
+  const victim=s.units.find(v=>v.id===event.unitId);damage(s,victim,event.damage,u);
+  if(a.mode==='canister'&&alive(victim)){victim.morale=Math.max(0,victim.morale-12);if(victim.morale<15)rout(s,victim);}
+ }else if(event.type==='breach'){
+  const ground=tile(s,event.x,event.y);ground.blocked=false;ground.blocksSight=false;ground.type='rubble';ground.cover=20;delete ground.obstacleHeight;delete ground.projectileResistance;
+  say(s,`La bala abre una brecha en ${event.stone?'la piedra':'el adobe'}.`);
+ }else say(s,'La bala se detiene contra la fortificación.');
 }
-sayObserved(s,[u],`${spec.name} dispara una bala rasa que atraviesa su línea de tiro.`);
-}}
+sayObserved(s,[u],a.mode==='canister'?`${spec.name} barre el frente con metralla.`:`${spec.name} dispara una bala rasa que atraviesa su línea de tiro.`);
+}
 for(const v of assigned){lowerWeapon(v);if(s.mode!=='exploration')v.ap-=cost;if(a.type==='artillery'||a.type==='artilleryReload'&&loading.rounds)practice(v,'explosives',a.type==='artillery'?2:1);}
 if(s.mode==='exploration')s.actionDurationSeconds=Math.max(1,Math.ceil(cost*.06));
 }
@@ -1918,16 +1950,23 @@ function finishCombatRound(s){
   else if(s.status==='active')say(s,`Turno ${s.turn}: ¡órdenes, comandante!`);
   s.lastError=null;return s;
 }
+function issueEnemyTurnBudgets(s,queue){
+  if(queue.budgetsIssued)return;
+  // A legacy saved queue has already initialized its current started actor.
+  // Issue only the remaining budgets, once, before anyone can pay crew work.
+  for(const id of queue.unitIds.slice(queue.unitIndex+(queue.started?1:0))){
+    const u=s.units.find(v=>v.id===id);if(!u||!alive(u)&&!fieldCapable(u))continue;
+    // Contact already issued the first budget; preserve any paid reactions.
+    if(s.enemyTurns>0)beginUnitTurn(s,u);else {u.reactionSpent=0;u.shock=(u.shock??0)/2;}
+  }
+  queue.budgetsIssued=true;
+}
 function runEnemyPhase(s){
-  const queue=s.enemyTurn;
+  const queue=s.enemyTurn;issueEnemyTurnBudgets(s,queue);
   while(queue.unitIndex<queue.unitIds.length&&s.status==='active'){
     const u=s.units.find(v=>v.id===queue.unitIds[queue.unitIndex]);
     if(!u||!alive(u)&&!fieldCapable(u)){queue.unitIndex++;queue.actionsTaken=0;queue.started=false;continue;}
-    if(!queue.started){
-      // Initial AP has already been issued at contact and may have paid a reaction.
-      if(s.enemyTurns>0)beginUnitTurn(s,u);else {u.reactionSpent=0;u.shock=(u.shock??0)/2;}
-      queue.started=true;
-    }
+    if(!queue.started)queue.started=true;
     if(u.routed){processRout(s,u);if(s.status!=='active'||s.phase==='interrupt')return s;if(u.departure)queue.unitIds.splice(queue.unitIndex,1);else queue.unitIndex++;queue.actionsTaken=0;queue.started=false;continue;}
     while(queue.actionsTaken<12&&alive(u)&&u.ap>=3&&s.status==='active'){
       rememberContacts(s);const order=chooseEnemyAction(s,u);if(!order)break;

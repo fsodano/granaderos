@@ -81,6 +81,7 @@ if(s.returnLedger!==undefined){const ledger=s.returnLedger;need(object(ledger)&&
 if(s.enemyTurn!==undefined){
  const q=s.enemyTurn;need(object(q)&&Array.isArray(q.unitIds)&&q.unitIds.length<=200&&new Set(q.unitIds).size===q.unitIds.length&&q.unitIds.every(id=>s.units.some(u=>u.id===id&&!u.departure&&u.side==='enemy')),'continuación enemiga');
  need(integer(q.unitIndex,0,q.unitIds.length)&&integer(q.actionsTaken,0,12)&&typeof q.started==='boolean','avance enemigo');
+ need(q.budgetsIssued===undefined||q.budgetsIssued===true,'presupuesto enemigo');
  need(s.mode==='combat'&&['enemy','interrupt'].includes(s.phase)&&s.status==='active'&&s.roundTimeCharged===true,'fase de continuación');
 }
 if(s.alliedTurn!==undefined){

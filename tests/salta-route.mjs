@@ -41,7 +41,7 @@ export function prepareSaltaAssault(start,{report=()=>{}}={}){
   let source=careModel(id).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='medkits');
   if(!source){
    const donor=local.find(other=>!doctors.includes(other)&&route.campaign.operativeState[other].medkits>0&&!careModel(other).reason);
-   assert.ok(donor,'continued treatment needs a reachable finite dressing source');
+   if(!donor)return false;
    const carried=route.campaign.operativeState[donor].medkits;
    order({type:'sectorInventory',sector:'tucuman',operativeId:donor,direction:'drop',item:'medkits',count:1});
    assert.equal(route.campaign.operativeState[donor].medkits,carried-1);donatedDressings++;
@@ -51,13 +51,19 @@ export function prepareSaltaAssault(start,{report=()=>{}}={}){
   const carried=route.campaign.operativeState[id].medkits;
   order({type:'sectorInventory',sector:'tucuman',operativeId:id,direction:'take',sourceKey:source.key,expected:source.expected,count:1});
   assert.equal(route.campaign.operativeState[id].medkits,carried+1);assert.equal(careModel(id).entries.find(row=>row.key===source.key)?.count??0,source.count-1);gatheredDressings++;
+  return true;
  };
  // Real wounds can need longer than the next midnight. Complete paid care,
  // then choose a departure whose twelve-hour march arrives in daylight.
  for(let i=0;i<72;i++){
   const arrivalHour=(route.campaign.hour+12)%24;
   if(route.campaign.hour>=earliestDeparture&&arrivalHour>=6&&arrivalHour<18&&patients.every(id=>route.campaign.operativeState[id].hp===route.campaign.operativeState[id].maxHp)){departure=route.campaign.hour;break;}
-  if(patients.some(id=>route.campaign.operativeState[id].hp<route.campaign.operativeState[id].maxHp))for(const id of doctors)if(!route.campaign.operativeState[id].medkits)supplyDoctor(id);
+  if(patients.some(id=>route.campaign.operativeState[id].hp<route.campaign.operativeState[id].maxHp)){
+   for(const id of doctors)if(!route.campaign.operativeState[id].medkits)supplyDoctor(id);
+   // One supplied doctor can finish the remaining wound even if the other
+   // doctor has exhausted every reachable dressing.
+   assert.ok(doctors.some(id=>route.campaign.operativeState[id].medkits>0),'continued treatment needs a reachable finite dressing source');
+  }
   renew(route,route.campaign.recruited,2);order({type:'wait',hours:1});
   if(patients.every(id=>route.campaign.operativeState[id].hp===route.campaign.operativeState[id].maxHp))for(const operativeId of [...patients,...doctors])if(route.campaign.operativeState[operativeId].assignment!=='rest')order({type:'assignCare',operativeId,assignment:'rest'});
  }assert.ok(Number.isInteger(departure),'supplied paid care completes before the daylight march');assert.equal(route.campaign.hour,departure);
@@ -69,11 +75,12 @@ export function prepareSaltaAssault(start,{report=()=>{}}={}){
  const available=(id,term)=>!route.campaign.recruited.includes(id)&&route.campaign.operativeState[id].alive&&!route.campaign.operativeState[id].captured&&contractQuote(route.campaign,rosterFor(route.campaign).find(op=>op.id===id),term).available;
  const specialist=[128,109,132,143].find(id=>available(id,'day'));assert.ok(specialist);
  order({type:'recruitCivic',id:specialist,term:'day'});hired.push(specialist);
- const replacements=[125,140,144,129,130].filter(id=>available(id,'week')).slice(0,2);assert.equal(replacements.length,2);
+ const replacementCount=Math.max(2,12-local.length-1);
+ const replacements=[125,140,144,129,130].filter(id=>available(id,'week')).slice(0,replacementCount);assert.equal(replacements.length,replacementCount);
  for(const id of replacements){order({type:'recruitCivic',id,term:'week'});hired.push(id);}
  const present=id=>route.campaign.recruited.includes(id)&&route.campaign.operativeState[id].alive&&!route.campaign.operativeState[id].captured&&route.campaign.operativeState[id].location==='tucuman';
  const field=[...new Set([specialist,replacements[0],141,127,105,134,126,...local])].filter(id=>present(id)&&!doctors.includes(id)).slice(0,6);
- const support=[...new Set([...doctors,replacements[1],111,103,104,122,...local])].filter(id=>present(id)&&!field.includes(id)).slice(0,6);
+ const support=[...new Set([...doctors,...replacements.slice(1),111,103,104,122,...local])].filter(id=>present(id)&&!field.includes(id)).slice(0,6);
  assert.equal(field.length,6);assert.equal(support.length,6);
  const hiringCost=cash-route.campaign.resources.treasury;assert.equal(hiringCost,hired.reduce((sum,id)=>sum+route.campaign.contracts[id].paid,0));
  for(const receiver of replacements){
