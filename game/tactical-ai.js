@@ -6,6 +6,7 @@ import {chooseScavengingAction} from './tactical-ai-scavenging.js';
 import {directionTo,facingAllowsSight,turnAPCost} from './tactical-awareness.js';
 import {getReachable, canSee, hasLineOfSight, shotChance, firearmShotOptions, actionCosts, stanceCost, weaponFor, bladeFor, planEquipLoot, maxActionPoints, AP_CARRY_LIMIT, movementStepCost, climbPreview,knifeThrowPreview,meleePreview} from './tactical.js';
 import {heldThrowingKnife,knifeThrowDamage} from './thrown-knife.js';
+import {availableAmmunition} from './ammunition-types.js';
 import {planFitBayonet} from './tactical-inventory.js';
 import {shotLocationEffects,shotLocationsFor} from './targeted-combat.js';
 
@@ -90,7 +91,7 @@ export function chooseKnifeThrow(state,unit,targets){
 function maintenance(state, unit, costs) {
   if (weaponFor(unit).capacity <= 0) return null;
   if (unit.jammed) return unit.priming > 0 && unit.ap >= costs.reprime ? {type: 'reprime', unitId: unit.id} : null;
-  if (unit.loaded === 0 && unit.ammo > 0 && costs.reload > 0) {
+  if (unit.loaded === 0 && availableAmmunition(unit,weaponFor(unit)) > 0 && costs.reload > 0) {
     if (unit.ap >= costs.reload) return {type: 'reload', unitId: unit.id};
     // Muzzle-loading while prone can exceed a soldier's entire turn budget.
     // Pay for kneeling only when the complete reload then fits this turn.
@@ -144,7 +145,7 @@ function backupWeapon(state, unit, costs, targets) {
   const blade = bladeFor(unit);
   if (blade.id !== 0 && targets.some(target => atHand(unit,target,blade.reach) && hasLineOfSight(state, unit, target))) return null;
   const held = weaponFor(unit);
-  const serviceable = held.capacity > 0 && (unit.jammed ? unit.priming > 0 : unit.loaded > 0 || unit.ammo > 0);
+  const serviceable = held.capacity > 0 && (unit.jammed ? unit.priming > 0 : unit.loaded > 0 || availableAmmunition(unit,held) > 0);
   // Do not unpack guns just to stand idle. With contact, a prepared spare can
   // permit a shot this turn when the held weapon needs a long reload.
   if (!targets.length && (serviceable || held.capacity === 0 && blade.id !== 0)) return null;
@@ -309,7 +310,7 @@ export function chooseEnemyAction(state, unit) {
   const scavenge = chooseScavengingAction(state, unit, targets, paths);
   if (scavenge) return scavenge;
 
-  if (weaponFor(unit).capacity <= 0 || (!unit.loaded && !unit.ammo) || (unit.jammed && !unit.priming)) {
+  if (weaponFor(unit).capacity <= 0 || (!unit.loaded && !availableAmmunition(unit,weaponFor(unit))) || (unit.jammed && !unit.priming)) {
     // Close for an affordable melee attack; never spend the entire turn rushing
     // across open ground towards an armed enemy who can shoot on arrival.
     const reacting = state.phase === 'interrupt' || Boolean(state.reactionStack?.length);

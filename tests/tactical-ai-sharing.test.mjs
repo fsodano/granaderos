@@ -4,6 +4,7 @@ import {createBattle,endTurn,actBattle,getReachable,canSee,actionCosts,transferP
 import {chooseEnemyAction} from '../game/tactical-ai.js';
 import {chooseSupplySharingAction} from '../game/tactical-ai-sharing.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
+import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
 
 function field(donor={},receiver={}){
  const tiles=Array.from({length:128},(_,i)=>({x:i%16,y:Math.floor(i/16),type:i%16===8?'wall':'grass',blocked:i%16===8,blocksSight:i%16===8,cover:0}));
@@ -26,7 +27,7 @@ test('an actual enemy turn hands over finite cartridges with paid AP and exact s
  assert.ok(!n.log.some(line=>/donor|receiver/.test(line)),'Unseen transfers do not reveal enemy supplies in the journal.');
 });
 test('the recipient pays a separate reload using the transferred round',()=>{
- const s=field(),u=receiver(s);u.ap=actionCosts(s,{...u,ammo:1}).reload;
+ const s=field(),u=receiver(s);u.ap=actionCosts(s,setTestAmmunition(structuredClone(u),1)).reload;
  const n=endTurn(s);assert.equal(donor(n).ammo,2);assert.equal(receiver(n).ammo,0);assert.equal(receiver(n).loaded,1);assert.equal(receiver(n).ap,0);
  assert.deepEqual(n,endTurn(restored(s)));assert.doesNotThrow(()=>restored(n));
 });
@@ -37,17 +38,17 @@ test('a non-medic gives a dressing and the recipient equips and uses it through 
  assert.equal(receiver(n).activeSlot,'primary');assert.equal(receiver(n).ap,0);assert.equal(donor(n).ap,0);assert.deepEqual(n,endTurn(restored(s)));assert.doesNotThrow(()=>restored(n));
 });
 test('supply reserves, present need, capacity and AP prevent useless or impossible donations',()=>{
- for(const patch of [{ammo:0},{loaded:0,ammo:1},{ap:3},{routed:true},{unconscious:true},{entangled:true},{knockedDown:true}]){const s=field();Object.assign(donor(s),patch);assert.equal(choice(s),null,JSON.stringify(patch));}
- for(const patch of [{ammo:1},{loaded:1},{weaponDropped:true},{jammed:true},{rations:99},{hp:0},{unconscious:true},{routed:true},{departure:{edge:'E'}}]){const s=field();Object.assign(receiver(s),patch);assert.equal(choice(s),null,JSON.stringify(patch));}
+ for(const patch of [{ammo:0},{loaded:0,ammo:1},{ap:3},{routed:true},{unconscious:true},{entangled:true},{knockedDown:true}]){const s=field();Object.assign(donor(s),patch);if(patch.ammo!==undefined)setTestAmmunition(donor(s),patch.ammo);assert.equal(choice(s),null,JSON.stringify(patch));}
+ for(const patch of [{ammo:1},{loaded:1},{weaponDropped:true},{jammed:true},{rations:99},{hp:0},{unconscious:true},{routed:true},{departure:{edge:'E'}}]){const s=field();Object.assign(receiver(s),patch);if(patch.ammo!==undefined)setTestAmmunition(receiver(s),patch.ammo);assert.equal(choice(s),null,JSON.stringify(patch));}
  assert.equal(choice(field({ammo:0,medkits:1,medical:60},{medical:60,bleeding:2,hp:50})),null,'A medic retains the last dressing.');
  assert.equal(choice(field({ammo:0,medkits:2},{loaded:1,medical:60,bleeding:0})),null,'No casualty at hand means no medical demand.');
  const s=field({medkits:2,medical:60},{medical:60,bleeding:2,hp:50,ap:50});assert.equal(choice(s).item,'medkits');assert.equal(choice(s).count,1);
 });
 test('an empty donor retains its own complete load and gives at most one recipient load',()=>{
  const s=field({loaded:0,ammo:5,weapon:1808},{weapon:1808});const order=choice(s);
- assert.deepEqual(order,{type:'transfer',unitId:'donor',targetId:'receiver',item:'ammo',count:2});
+ assert.deepEqual(order,{type:'transfer',unitId:'donor',targetId:'receiver',item:'inventory:ammo:pistol_54',count:2});
  const preview=transferPreview({...s,phase:'enemy'},donor(s),receiver(s),order.item,order.count);assert.equal(preview.valid,true);assert.equal(preview.pa,4);assert.equal(preview.kind,'give');
- donor(s).ammo=3;assert.equal(choice(s).count,1);donor(s).ammo=2;assert.equal(choice(s),null);
+ setTestAmmunition(donor(s),3);assert.equal(choice(s).count,1);setTestAmmunition(donor(s),2);assert.equal(choice(s),null);
 });
 test('nearby supply runs move first and leave the four AP needed for the actual handover',()=>{
  const s=field({x:11,ap:20},{x:14});const before=structuredClone(s),order=choice(s);assert.deepEqual(order,{type:'move',unitId:'donor',x:13,y:3});assert.deepEqual(s,before);
@@ -61,7 +62,7 @@ test('hidden allies and hidden casualties cannot request supplies through the AI
 });
 test('hidden opposing positions and private ammunition do not change a supply approach',()=>{
  const s=field({x:11,ap:20},{x:14}),before=structuredClone(s),order=choice(s);
- Object.assign(s.units[0],{x:2,y:6,loaded:0,ammo:999,ap:100});assert.deepEqual(choice(s),order);assert.deepEqual(choice(before),order);
+ Object.assign(s.units[0],{x:2,y:6,loaded:0,ap:100});setTestAmmunition(s.units[0],999);assert.deepEqual(choice(s),order);assert.deepEqual(choice(before),order);
 });
 test('reactions permit an adjacent handover but never start a supply trip',()=>{
  const s=field({x:11,ap:20},{x:14});s.reactionStack=[{unitIds:['donor']}];assert.equal(choice(s),null);
@@ -69,7 +70,7 @@ test('reactions permit an adjacent handover but never start a supply trip',()=>{
 });
 test('ties are stable and a received supply removes the demand instead of bouncing between allies',()=>{
  const s=field();s.units.push({...structuredClone(receiver(s)),id:'a-receiver',x:12,y:4});const order=choice(s);assert.equal(order.targetId,'a-receiver');
- s.units.reverse();assert.deepEqual(choice(s),order);s.units.find(u=>u.id==='a-receiver').ammo=1;assert.equal(choice(s).targetId,'receiver');receiver(s).ammo=1;assert.equal(choice(s),null);
+ s.units.reverse();assert.deepEqual(choice(s),order);setTestAmmunition(s.units.find(u=>u.id==='a-receiver'),1);assert.equal(choice(s).targetId,'receiver');setTestAmmunition(receiver(s),1);assert.equal(choice(s),null);
 });
 test('a saved movement interruption resumes the handover without spending or duplicating supplies twice',()=>{
  const s=field({x:11,ap:20,loaded:0,ammo:2,medical:0,agility:30,experienceLevel:1},{x:14,loaded:0,ammo:0});
@@ -91,7 +92,7 @@ test('autonomous militia can supply a hired ally while hired soldiers retain man
 });
 test('an observed close opponent prevents a supply run through melee reach',()=>{
  const s=field({x:11,ap:20},{x:14});s.tiles.forEach(t=>{t.blocked=false;t.blocksSight=false;t.type='grass';});
- Object.assign(s.units[0],{x:13,y:4,weapon:1813,loaded:0,ammo:0});
+ Object.assign(s.units[0],{x:13,y:4,weapon:1813,loaded:0});setTestAmmunition(s.units[0],0);
  assert.equal(choice(s)?.type,'move');assert.equal(choice(s,[s.units[0]]),null);
 });
 test('two donors see the updated demand and cannot overfill an exhausted ally',()=>{
@@ -101,7 +102,7 @@ test('two donors see the updated demand and cannot overfill an exhausted ally',(
 });
 test('a useful shot keeps priority over supplying an adjacent ally',()=>{
  const s=field({ap:40,marksmanship:100});s.tiles.forEach(t=>{t.blocked=false;t.blocksSight=false;t.type='grass';});
- Object.assign(s.units[0],{x:15,y:3,loaded:0,ammo:0});receiver(s).y=4;
+ Object.assign(s.units[0],{x:15,y:3,loaded:0});setTestAmmunition(s.units[0],0);receiver(s).y=4;
  assert.equal(chooseEnemyAction({...s,phase:'enemy'},donor(s)).type,'fire');
 });
 
@@ -121,7 +122,7 @@ test('recent sight or sound keeps a donor at its post while adjacent handovers r
 
 test('a supplied medic treats an adjacent unconscious patient without taking the patient’s equipment',()=>{
  const s=field({ammo:0,medkits:1},{medical:60,loaded:1,ap:33});
- s.units.push({...structuredClone(receiver(s)),id:'patient',x:13,y:4,hp:10,bleeding:3,unconscious:true,ammo:7,medkits:0,ap:0,weaponInstanceId:'patient-gun'});
+ s.units.push(setTestAmmunition({...structuredClone(receiver(s)),id:'patient',x:13,y:4,hp:10,bleeding:3,unconscious:true,medkits:0,ap:0,weaponInstanceId:'patient-gun'},7));
  const n=endTurn(s),p=n.units.find(u=>u.id==='patient');assert.equal(donor(n).medkits,0);assert.equal(receiver(n).medkits,0);assert.equal(receiver(n).ap,0);
  assert.equal(p.hp,10);assert.equal(p.bleeding,0);assert.equal(p.ammo,7);assert.equal(p.weaponInstanceId,'patient-gun');assert.deepEqual(n,endTurn(restored(s)));assert.doesNotThrow(()=>restored(n));
 });

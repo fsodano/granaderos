@@ -1,3 +1,4 @@
+import {syncUnitAmmunition} from './tactical-ammunition.js';
 import {WEAPONS} from './data.js';
 import {FITTING_PATTERNS,FIT_BAYONET_AP,REMOVE_BAYONET_AP,fittingFromItem,fittingToItem} from './weapon-fittings.js';
 import {handsRequired,handLayout} from './hand-layout.js';
@@ -68,6 +69,7 @@ function materialize(before,m){
  if(m.cursor)next.equipmentCursor=copy(m.cursor);
  const old=handLayout(before),sameHands=metadata(stackAt(before,old.right,1)??{})===metadata(m.right??{})&&metadata(stackAt(before,old.left,1)??{})===metadata(m.left??{});
  if(!sameHands){lowerWeapon(next);next.braced=false;next.overwatch=false;next.momentum=0;delete next.lastTargetId;delete next.lastShotPosition;}
+ if(next.ammunitionVersion===1)syncUnitAmmunition(next);
  inventoryUsage(next);validateEquipmentCursor(next);return next;
 }
 function cell(m,id){

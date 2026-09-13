@@ -5,13 +5,15 @@ import {chooseScavengingAction} from '../game/tactical-ai-scavenging.js';
 import {chooseEnemyAction} from '../game/tactical-ai.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {inventoryUsage} from '../game/tactical-inventory.js';
+import {AMMUNITION_TYPES,availableAmmunition} from '../game/ammunition-types.js';
+import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
 
 function field(patch={}){
  const s=createBattle([{id:'p',x:12,y:3,experienceLevel:1}],{width:20,height:8,seed:45,tiles:Array.from({length:160},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0})),enemies:[{id:'e',x:6,y:3,facing:2,weapon:1800,weaponInstanceId:'old-musket',loaded:0,ammo:0,priming:20,medkits:0,patrol:false,marksmanship:100,inventory:{},...patch}]});
  s.units[0].ap=0;s.units[1].ap=patch.ap??8;return s;
 }
 const enemy=s=>s.units[1];
-const ammo=(x=7,y=3,count=5,id='cartridges')=>({id,type:'item',item:'ammo',x,y,count,weight:.04});
+const ammo=(x=7,y=3,count=5,id='cartridges')=>({id,type:'item',item:'inventory:ammo:musket_75',kind:'ammunition',ammoType:'musket_75',name:AMMUNITION_TYPES.musket_75.name,x,y,count,weight:.04});
 const gun=(x=7,y=3)=>({id:'pistol',type:'item',item:'weapon',x,y,count:1,weapon:1806,weight:1.3,loaded:1,condition:83,jammed:false,instanceId:'recovered-pistol'});
 const restored=s=>validateBattleSnapshot(JSON.parse(JSON.stringify(s)));
 
@@ -40,12 +42,12 @@ test('visible supplies can be approached with paid steps before the separate pic
 test('hidden supplies and hidden bodies do not change the selected action',()=>{
  const s=field({ap:8});s.night=true;s.groundItems=[ammo(3,3,99,'behind')];assert.equal(canSee(s,enemy(s),s.groundItems[0]),false);
  const baseline=chooseEnemyAction({...s,groundItems:[]},enemy(s));assert.deepEqual(chooseEnemyAction(s,enemy(s)),baseline);
- s.units.push({...structuredClone(s.units[0]),id:'hidden-body',x:2,y:7,hp:0,ammo:999,weaponInstanceId:'body-musket'});assert.deepEqual(chooseEnemyAction(s,enemy(s)),baseline);
+ s.units.push(setTestAmmunition({...structuredClone(s.units[0]),id:'hidden-body',x:2,y:7,hp:0,weaponInstanceId:'body-musket'},999));assert.deepEqual(chooseEnemyAction(s,enemy(s)),baseline);
 });
 test('nearby bodies have finite searchable ammunition; distant bodies and wounded allies do not expose it',()=>{
- const s=field();s.units.push({...structuredClone(s.units[0]),id:'body',x:7,y:3,hp:0,loaded:0,ammo:19,weaponInstanceId:'body-musket'});
+ const s=field();s.units.push(setTestAmmunition({...structuredClone(s.units[0]),id:'body',x:7,y:3,hp:0,loaded:0,weaponInstanceId:'body-musket'},19));
  const n=endTurn(s);assert.equal(enemy(n).ammo,12);assert.equal(n.units[2].ammo,7);assert.doesNotThrow(()=>restored(n));
- s.units[2].x=9;const hidden=structuredClone(s);hidden.units[2].ammo=0;assert.deepEqual(chooseEnemyAction(s,enemy(s)),chooseEnemyAction(hidden,enemy(hidden)));
+ s.units[2].x=9;const hidden=structuredClone(s);setTestAmmunition(hidden.units[2],0);assert.deepEqual(chooseEnemyAction(s,enemy(s)),chooseEnemyAction(hidden,enemy(hidden)));
  s.units[2].x=7;s.units[2].side='enemy';s.units[2].hp=10;s.units[2].unconscious=true;assert.notEqual(chooseEnemyAction(s,enemy(s))?.type,'loot');
 });
 test('full packs, unaffordable pickup, depleted sources and jammed recovered guns are rejected without changes',()=>{
@@ -55,7 +57,7 @@ test('full packs, unaffordable pickup, depleted sources and jammed recovered gun
 });
 test('the pickup plan uses the same finite capacity and does not mutate donor or receiver during scoring',()=>{
  const s=field({rations:14,ap:8});s.groundItems=[ammo(7,3,100)];assert.equal(inventoryUsage(enemy(s)).used,11);
- const before=structuredClone(s),choice=chooseEnemyAction(s,enemy(s));assert.equal(choice.count,12);const plan=planLoot(s,enemy(s),choice);assert.equal(plan.receiver.ammo,12);assert.equal(plan.remaining,88);assert.deepEqual(s,before);
+ const before=structuredClone(s),choice=chooseEnemyAction(s,enemy(s));assert.equal(choice.count,12);const plan=planLoot(s,enemy(s),choice);assert.equal(availableAmmunition(plan.receiver,enemy(s).weapon),12);assert.equal(plan.remaining,88);assert.deepEqual(s,before);
  const n=endTurn(s);assert.equal(enemy(n).ammo,12);assert.equal(n.groundItems[0].count,88);
 });
 test('reaction scavenging permits a local pickup but never starts a search trip',()=>{

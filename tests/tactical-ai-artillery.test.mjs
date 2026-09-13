@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,endTurn,getReachable,canSee,artilleryShotTrace,artilleryCrewPlan,artilleryReloadPreview} from '../game/tactical.js';
 import {chooseEnemyAction} from '../game/tactical-ai.js';
@@ -49,7 +50,7 @@ test('penetration scoring protects allies and downed people along the complete s
 
 test('blocked light-cannon shots, roof targets, unseen targets and private enemy state cannot generate an order',()=>{
  const s=field();Object.assign(s.tiles.find(t=>t.x===6&&t.y===3),{type:'wall',material:'stone',blocked:true,blocksSight:false});assert.equal(plan(s),null);
- const clean=field(),hidden=structuredClone(clean);hidden.units.push({...structuredClone(hidden.units[0]),id:'hidden',x:23,y:9});Object.assign(hidden.units[0],{ammo:999,energy:1,inventory:{secret:{count:1,weight:1}}});assert.equal(canSee(hidden,actor(hidden),hidden.units.at(-1)),false);assert.deepEqual(plan(clean),plan(hidden));
+ const clean=field(),hidden=structuredClone(clean);hidden.units.push({...structuredClone(hidden.units[0]),id:'hidden',x:23,y:9});Object.assign(hidden.units[0],{energy:1,inventory:{secret:{count:1,weight:1}}});setTestAmmunition(hidden.units[0],999);assert.equal(canSee(hidden,actor(hidden),hidden.units.at(-1)),false);assert.deepEqual(plan(clean),plan(hidden));
  clean.units[0].tacticalLevel=1;assert.equal(plan(clean),null);const dark=field({target:{x:23,y:9}});assert.equal(plan(dark),null);
 });
 

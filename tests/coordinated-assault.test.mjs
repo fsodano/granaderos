@@ -1,3 +1,5 @@
+import {AMMUNITION_RESOURCE_KEYS} from '../game/campaign-ammunition.js';
+import {stockAmmo,stockAndCarriedAmmo} from './ammunition-balance.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
@@ -44,7 +46,7 @@ test('attacking now uses only ready squads; later squads return without joining 
  s=order(s,{type:'syncTacticalTime',battleId:s.pendingBattle.id,elapsedSeconds:8*3600});assert.equal(s.squads[1].journey,undefined);assert.equal(s.squads[1].location,'cordoba');assert.equal(s.pendingBattle.squad.length,6);roundtrip(s);
 });
 test('combined victory keeps squad membership, wounds and finite ammunition accounting',()=>{
- let s=both();s.resources.cartridges=0;s.depots.buenos_aires={cartridges:30};s.depots.cordoba={cartridges:40};s=begin(wait(s,12));assert.equal(s.pendingBattle.issuedCartridges,70);assert.equal(s.depots.buenos_aires.cartridges,0);assert.equal(s.depots.cordoba.cartridges,0);assert.equal(s.resources.cartridges,0);
+ let s=both();for(const key of Object.values(AMMUNITION_RESOURCE_KEYS))s.resources[key]=0;s.depots.buenos_aires={ammo_pistol_54:10,ammo_pistol_50:10,ammo_shot_16:10};s.depots.cordoba={ammo_shot_16:10,ammo_rifle_62:10,ammo_pistol_69:10,ammo_carbine_65:10};s=begin(wait(s,12));assert.equal(s.pendingBattle.issuedCartridges,70);assert.ok(Object.values(s.depots.buenos_aires).every(n=>n===0));assert.ok(Object.values(s.depots.cordoba).every(n=>n===0));assert.equal(stockAmmo(s),0);
  const memberships=s.squads.map(q=>[...q.members]),report=scriptedBattleReport(s);s=order(s,report);assert.equal(s.pendingBattle,null);assert.equal(s.sectors.san_nicolas.owner,'patriot');assert.deepEqual(s.squads.map(q=>q.members),memberships);assert.ok(s.squads.every(q=>q.location==='san_nicolas'));roundtrip(s);
  assert.ok(dispatchCampaign(s,report).lastError,'the same report cannot credit equipment twice');
 });
@@ -79,4 +81,15 @@ test('travel orders cannot smuggle an assault intent past attack admission',()=>
 });
 test('a squad already in an occupied sector can fight without a second approach',()=>{
  let s=front();s.location='san_nicolas';s.squads[0].location='san_nicolas';for(const id of s.squad){s.operativeState[id].location='san_nicolas';s.operativeState[id].fatigue=96;s.operativeState[id].energy=10;}s=queue(s);assert.equal(s.hour,0);assert.ok(s.pendingBattle);roundtrip(s);
+});
+
+
+test('loss of the active column selects the existing surviving squad without duplicating its members',()=>{
+ let s=begin(wait(both(),12));const active=s.activeSquadId,fallen=[...s.squads.find(q=>q.id===active).members],surviving=structuredClone(s.squads.find(q=>q.id!==active)),report=scriptedBattleReport(s);
+ // This settlement fixture preserves every combatant and all finite equipment;
+ // it declares the active column's deaths after the coordinated victory.
+ for(const unit of report.sectorState.units.filter(u=>u.side==='player'&&fallen.includes(Number(u.id))))Object.assign(unit,{hp:0,bleeding:0,bandaged:0,unconscious:false,ap:0});
+ report.survivors=report.sectorState.units.filter(u=>u.side==='player');s=order(s,report);
+ assert.equal(s.activeSquadId,surviving.id);assert.deepEqual(s.squad,surviving.members);assert.deepEqual(s.squads.find(q=>q.id===surviving.id).members,surviving.members);assert.deepEqual(s.squads.find(q=>q.id===active).members,[]);
+ const members=s.squads.flatMap(q=>q.members);assert.equal(new Set(members).size,members.length);assert.ok(fallen.every(id=>!s.operativeState[id].alive));roundtrip(s);
 });

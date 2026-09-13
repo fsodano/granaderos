@@ -21,7 +21,7 @@ const stored=(u,id)=>Object.entries(u.inventory).find(([,r])=>r?.instanceId===id
 function inventoryRecords(s){return [...s.units.flatMap(u=>Object.values(u.inventory??{}).filter(r=>r&&typeof r==='object'&&r.count>0)),...s.groundItems.filter(r=>r.count>0),...s.droppedWeapons.filter(r=>!r.taken).map(r=>({...r,count:1}))];}
 function ledger(s) {
   const records=inventoryRecords(s),ids=[...s.units.flatMap(heldItemIds),...records.flatMap(fittingItemIds)];
-  return {ids,rounds:s.units.reduce((sum,u)=>sum+u.ammo+(u.weaponDropped?0:u.loaded),0)+records.reduce((sum,r)=>sum+(r.count??1)*(r.loaded??0)+(r.item==='ammo'?r.count:0),0)};
+  return {ids,rounds:s.units.reduce((sum,u)=>sum+(u.weaponDropped?0:u.loaded),0)+records.reduce((sum,r)=>sum+(r.count??1)*(r.loaded??0)+(r.kind==='ammunition'?r.count:0),0)};
 }
 function conserved(s,rounds=10,host='gun-main',blade='socket-main') {
   assert.doesNotThrow(()=>validateBattleSnapshot(s));const current=ledger(s);
@@ -63,7 +63,7 @@ test('a failed catch drops the exact loaded jammed assembly and permits one pick
 test('partial corpse loot retains the attached blade until the actual firearm is taken',()=>{
   const corpse={id:'corpse',x:1,y:4,hp:0,maxHp:100,weapon:1800,weaponInstanceId:'gun-main',condition:41,loaded:1,ammo:9,jammed:true,weaponFittings:{bayonet:socket()},overwatch:false};
   let s=field({...empty,weaponInstanceId:undefined,bladeInstanceId:undefined,bladeFittingPattern:null,activeSlot:'unarmed'},{},[corpse,{id:'guard',x:18,y:7,weapon:0,loaded:0,ammo:0,overwatch:false}]);
-  s=order(s,{type:'loot',targetId:'corpse',item:'ammo',count:3});assert.equal(unit(s,'corpse').ammo,6);assert.deepEqual(unit(s,'corpse').weaponFittings.bayonet,socket());conserved(s);
+  s=order(s,{type:'loot',targetId:'corpse',item:'inventory:ammo:musket_75',count:3});assert.equal(unit(s,'corpse').ammo,6);assert.deepEqual(unit(s,'corpse').weaponFittings.bayonet,socket());conserved(s);
   s=order(s,{type:'loot',targetId:'corpse',item:'weapon'});assert.deepEqual(unit(s,'corpse').weaponFittings,{});assert.equal(unit(s,'corpse').weaponDropped,true);assert.equal(unit(s,'corpse').loaded,0);checkAssembly(stored(unit(s),'gun-main')[1]);conserved(s);
   reject(s,{type:'loot',targetId:'corpse',item:'weapon'});
   s=order(s,{type:'transfer',targetId:'q',item:`inventory:${stored(unit(s),'gun-main')[0]}`});conserved(s);

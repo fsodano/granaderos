@@ -3,6 +3,9 @@ import {validateReloadProgress} from './weapon-reload.js';
 import {heldSupply} from './held-supplies.js';
 import {heldTool} from './environment-interactions.js';
 import {WEAPONS} from './data.js';
+import {AMMUNITION_TYPES,weaponAmmoType,availableAmmunition,addAmmunition} from './ammunition-types.js';
+import {initializeUnitAmmunition,syncUnitAmmunition,consumeWeaponAmmunition} from './tactical-ammunition.js';
+import {ammoResourceKey} from './campaign-ammunition.js';
 import {inventoryUsage,validateHands,validateEquipmentCursor,carriedObject,handMetadata,handRecord} from './tactical-inventory.js';
 import {FITTING_RULES_VERSION,validateFittingPattern,validateWeaponFittings,validateUnitFittings,normalizeUnitFittings,validItemIdentity,fittingItemIds,heldItemIds,fittingLabel} from './weapon-fittings.js';
 export const EQUIPMENT_CATALOG=[
@@ -19,18 +22,30 @@ export function armoryInventory(s){return EQUIPMENT_CATALOG.map(item=>({...item,
 export function refillCost(record){return Math.ceil(Math.max(0,50-(record.priming??50))*.4+Math.max(0,4-(record.flints??4))*8+Math.max(0,2-(record.rations??2))*10+Math.max(0,2-(record.torches??2))*8);}
 export function firearmRepairCost(record){return Math.ceil(Math.max(0,100-(record.condition??100))*1.5);}
 export function equipmentInventoryUsage(s,op,changes={}){
- const record=s.operativeState[op.id],capacity=WEAPONS[op.weapon]?.capacity??0;
- // Reserve the normal cartridge stack for the next deployment. Ammunition is
- // returned to stock between reports; loaded charges stay with the gun.
- return inventoryUsage({...op,...record,ammo:Math.max((record.carriedAmmo??0)-(record.carriedLoaded??0),capacity&&!record.weaponDropped?10-(record.carriedLoaded??capacity):0),boleadoras:record.boleadoras??1,...changes});
+ const record=s.operativeState[op.id];
+ return inventoryUsage({...op,...record,ammunitionVersion:1,ammo:availableAmmunition({...op,...record}),boleadoras:record.boleadoras??1,...changes});
 }
-export function allocateEquipmentAmmo(s,op,stock){
+export function allocateEquipmentAmmo(s,op,origin=s.location){
  const record=s.operativeState[op.id],capacity=record.weaponDropped?0:WEAPONS[op.weapon]?.capacity??0;
- const carried=record.carriedAmmo??0;
- if(!capacity)return {loaded:0,ammo:carried};
- const rounds=carried+Math.min(Math.max(0,10-carried),stock),loaded=record.carriedLoaded??Math.min(capacity,rounds);let ammo=rounds-loaded;
- while(ammo>Math.max(0,carried-loaded)&&equipmentInventoryUsage(s,op,{ammo}).overloaded)ammo--;
- return {loaded,ammo,...(record.carriedReloadProgress?{reloadProgress:record.carriedReloadProgress}:{})};
+ const actor={...op,...structuredClone(record),loaded:record.carriedLoaded??0,ammo:0};
+ initializeUnitAmmunition(actor,{defaultCount:0});
+ // First issue can place charges directly in the gun. A full pack does not
+ // require an extra temporary pocket for a load that the chamber can hold.
+ if(capacity&&record.carriedLoaded===undefined){
+  const owned=Math.min(capacity,availableAmmunition(actor));if(owned)consumeWeaponAmmunition(actor,op.weapon,owned);
+  const key=ammoResourceKey(weaponAmmoType(op.weapon)),depot=s.depots?.[origin],local=depot?.[key]??0,issued=Math.min(capacity-owned,local+(s.resources[key]??0)),fromDepot=Math.min(local,issued);
+  if(fromDepot)depot[key]-=fromDepot;s.resources[key]-=issued-fromDepot;actor.loaded=owned+issued;
+ }
+ const types=new Set([capacity?weaponAmmoType(op.weapon):null,weaponAmmoType(record.offHand?.weapon)].filter(Boolean));
+ for(const type of types){
+  const key=ammoResourceKey(type),depot=s.depots?.[origin],local=depot?.[key]??0;
+  const held=(weaponAmmoType(op.weapon)===type?actor.loaded:0)+(weaponAmmoType(actor.offHand?.weapon)===type?actor.offHand?.loaded??0:0);
+  let issued=Math.min(Math.max(0,10-held-availableAmmunition(actor,type)),(s.resources[key]??0)+local);
+  while(issued>0){const trial=structuredClone(actor);addAmmunition(trial,type,issued);if(!inventoryUsage(trial).overloaded){actor.inventory=trial.inventory;break;}issued--;}
+  if(issued){const fromDepot=Math.min(local,issued);if(fromDepot)depot[key]-=fromDepot;s.resources[key]-=issued-fromDepot;}
+ }
+ syncUnitAmmunition(actor);
+ return {ammunitionVersion:1,loaded:actor.loaded,ammo:actor.ammo,inventory:actor.inventory??{},...(actor.pocketOrder?{pocketOrder:actor.pocketOrder}:{}),...(record.carriedReloadProgress?{reloadProgress:record.carriedReloadProgress}:{})};
 }
 export function clearCarriedLoading(record){delete record.carriedLoaded;delete record.carriedReloadProgress;}
 export function setCarriedLoading(record,unit){
@@ -50,6 +65,10 @@ export function isImportedEquipment(item){return [1800,1802].includes(Number(ite
 export const WORKSHOP_SECTORS=['retiro','cordoba','mendoza'];
 export const MERCHANT_CASH=1200;
 export const USED_EQUIPMENT_LIMIT=1000;
+export const AMMUNITION_PRICE=3;
+export const AMMUNITION_MERCHANT_CAP=60;
+export const AMMUNITION_DAILY_RESTOCK=6;
+export const ammunitionStock=(s,type,at=s.location)=>s.merchants?.[at]?.ammunition?.[type]??0;
 export const MEDICAL_STOCK_CAP=40;
 export const MEDICAL_DAILY_RESTOCK=5;
 export const medicalSupplyStock=(s,at=s.location)=>s.merchants?.[at]?.supplies?.medkits??0;
@@ -61,7 +80,7 @@ const generatedIdentityNumber=id=>typeof id==='string'&&/^equipment-[1-9][0-9]{0
 function migratedIdentitySequence(s){let maximum=0;const pending=[s];while(pending.length){const value=pending.pop();if(!value||typeof value!=='object')continue;for(const [key,child]of Object.entries(value)){if(['instanceId','weaponInstanceId','bladeInstanceId'].includes(key)){const number=generatedIdentityNumber(child);if(number!==null)maximum=Math.max(maximum,number);}else if(child&&typeof child==='object')pending.push(child);}}return maximum+1;}
 const stockCap=item=>item.category==='artillery'?1:item.category==='blade'?6:3;
 const merchantCatalog=sector=>EQUIPMENT_CATALOG.filter(item=>sector==='ensenada'?isImportedEquipment(item):!isImportedEquipment(item));
-const initialMerchant=sector=>({usedItems:[],stock:Object.fromEntries(merchantCatalog(sector).map(item=>[item.stockKey??item.item,stockCap(item)])),supplies:{medkits:sector==='ensenada'?0:MEDICAL_STOCK_CAP},restockHours:0,cash:sector==='ensenada'?0:MERCHANT_CASH});
+const initialMerchant=sector=>({ammunition:Object.fromEntries(Object.keys(AMMUNITION_TYPES).map(type=>[type,sector==='ensenada'?0:AMMUNITION_MERCHANT_CAP])),usedItems:[],stock:Object.fromEntries(merchantCatalog(sector).map(item=>[item.stockKey??item.item,stockCap(item)])),supplies:{medkits:sector==='ensenada'?0:MEDICAL_STOCK_CAP},restockHours:0,cash:sector==='ensenada'?0:MERCHANT_CASH});
 
 export function migrateEquipment(s){
  const legacy=s.fittingRulesVersion===undefined;
@@ -132,6 +151,7 @@ export function advanceMerchants(s,isSupplied){
   merchant.restockHours++;
   if(merchant.restockHours<24)continue;merchant.restockHours=0;
   for(const item of merchantCatalog(sector)){const key=item.stockKey??item.item;merchant.stock[key]=Math.min(stockCap(item),merchant.stock[key]+1);}
+  if(sector!=='ensenada')for(const type of Object.keys(AMMUNITION_TYPES))merchant.ammunition[type]=Math.min(AMMUNITION_MERCHANT_CAP,merchant.ammunition[type]+AMMUNITION_DAILY_RESTOCK);
   if(sector!=='ensenada')merchant.supplies.medkits=Math.min(MEDICAL_STOCK_CAP,merchant.supplies.medkits+MEDICAL_DAILY_RESTOCK);
   if(sector!=='ensenada')merchant.cash+=Math.min(300,Math.max(0,MERCHANT_CASH-merchant.cash));
  }
@@ -173,11 +193,10 @@ export function returnEquipment(s,id,report){
  need(!report.weaponDropped||!(report.loaded>0),'Un arma abandonada no puede conservar cartuchos cargados.');
 }
 
-// Strategic records store cartridges separately from the deployed unit shape.
+// Strategic records keep the same loose inventory and separate primary loading.
 function personalHandState(s,op,r){
  const deployed=s.pendingBattle?.squad?.find(u=>String(u.id)===String(op?.id));
- const ammo=r.captured?r.capturedAmmunition?.ammo??0:deployed?deployed.ammo??0:Math.max(0,(r.carriedAmmo??0)-(r.carriedLoaded??0));
- return {...op,...r,ammo};
+ return syncUnitAmmunition({...op,...r,...(deployed?{inventory:deployed.inventory}:{}),ammunitionVersion:1});
 }
 export function validateEquipment(s,roster=[]){
  migrateEquipment(s);
@@ -185,7 +204,7 @@ export function validateEquipment(s,roster=[]){
  need(s.fittingRulesVersion===FITTING_RULES_VERSION&&integer(s.nextEquipmentInstanceId,1,1e9),'La versión o secuencia del equipo es inválida.');
  need(object(s.merchants)&&Object.keys(s.merchants).length===4,'Los comerciantes guardados son inválidos.');
  for(const sector of [...WORKSHOP_SECTORS,'ensenada']){const merchant=s.merchants[sector],items=merchantCatalog(sector);
-  need(object(merchant)&&object(merchant.stock)&&Object.keys(merchant.stock).length===items.length&&items.every(item=>integer(merchant.stock[item.stockKey??item.item],0,stockCap(item)))&&object(merchant.supplies)&&Object.keys(merchant.supplies).length===1&&integer(merchant.supplies.medkits,0,sector==='ensenada'?0:MEDICAL_STOCK_CAP)&&integer(merchant.restockHours,0,23)&&integer(merchant.cash,0,1000000000),'Las existencias del comerciante son inválidas.');
+  need(object(merchant)&&object(merchant.ammunition)&&Object.keys(merchant.ammunition).length===Object.keys(AMMUNITION_TYPES).length&&Object.keys(AMMUNITION_TYPES).every(type=>integer(merchant.ammunition[type],0,sector==='ensenada'?0:AMMUNITION_MERCHANT_CAP))&&object(merchant.stock)&&Object.keys(merchant.stock).length===items.length&&items.every(item=>integer(merchant.stock[item.stockKey??item.item],0,stockCap(item)))&&object(merchant.supplies)&&Object.keys(merchant.supplies).length===1&&integer(merchant.supplies.medkits,0,sector==='ensenada'?0:MEDICAL_STOCK_CAP)&&integer(merchant.restockHours,0,23)&&integer(merchant.cash,0,1000000000),'Las existencias del comerciante son inválidas.');
  }
  need(Array.isArray(s.armoryItems)&&s.armoryItems.length<=10000&&integer(s.nextArmoryItemId,1,1000000000),'Los ejemplares de la armería son inválidos.');
  for(const unit of s.pendingBattle?.squad??[])validateReloadProgress(unit.reloadProgress,WEAPONS[unit.weapon]?.capacity??0,unit.loaded??0,unit.weaponDropped);

@@ -1,3 +1,4 @@
+import {weaponAmmoType} from '../game/ammunition-types.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
@@ -24,7 +25,7 @@ function paidVisit(){
 }
 test('paid squad save retains stacked soldiers, finite dropped ammunition, roof geometry and resident reentry',()=>{
  let {campaign,battle}=paidVisit();const unit=battle.units.find(u=>u.side==='player'),reserveBefore=unit.ammo;
- battle=actBattle(battle,{type:'drop',unitId:unit.id,item:'ammo',count:1});assert.equal(battle.lastError,null);
+ battle=actBattle(battle,{type:'drop',unitId:unit.id,item:`inventory:ammo:${weaponAmmoType(unit.weapon)}`,count:1});assert.equal(battle.lastError,null);
  ({campaign,battle}=syncBattleTime(campaign,battle));
  const at=authoredTerrace(battle),players=battle.units.filter(u=>u.side==='player');
  Object.assign(players[0],at,{tacticalLevel:1});Object.assign(players[1],at,{tacticalLevel:0});

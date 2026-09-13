@@ -1,3 +1,4 @@
+import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,endTurn,actionCosts,pointFirePreview,contextualAttack,canSee} from '../game/tactical.js';
@@ -63,7 +64,7 @@ test('manual looking applies the same readiness limits without charging raising 
 });
 
 test('reloading an empty firearm never pays a target turn cost or changes its facing',()=>{
- const s=field(),u=s.units[0];u.loaded=0;u.ammo=1;
+ const s=field(),u=s.units[0];u.loaded=0;setTestAmmunition(u,1);
  const a=tacticalInputAction(s,u,{type:'firePoint',...west,aim:4}),p=targetPreview(s,u,west,{mode:'fire',aim:4});assert.equal(a.type,'reload');assert.equal(p.pa,28);
  const n=act(s,a);assert.equal(n.units[0].ap,72);assert.equal(n.units[0].facing,2);assert.equal(n.units[0].ammo,0);assert.equal(n.units[0].loaded,1);
 });

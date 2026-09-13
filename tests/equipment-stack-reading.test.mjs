@@ -7,7 +7,7 @@ const unit=extra=>createBattle([{id:'p',x:2,y:2,weapon:1805,loaded:1,blade:0,amm
 
 test('read-only stack payloads match removal payloads for every physical owner and retain nested metadata independently',()=>{
  const u=unit({offHand:{weapon:1808,count:1,weight:2.1,loaded:1,condition:61,instanceId:'pistol',name:'Pistola',mark:{owner:'a'}},outfit:{...makeOutfit('poncho',47),instanceId:'coat'},inventory:{note:{name:'Carta',count:3,weight:.1,condition:27,mark:{owner:'b'}},number:3,fitted:{weapon:1800,count:1,weight:4,loaded:0,reloadProgress:.5,condition:51,instanceId:'rifle',fittings:{bayonet:{weapon:1811,fittingPattern:'india_socket',condition:47,instanceId:'bayonet'}}}}});
- const requests=[{item:'primary'},{item:'offhand'},{item:'outfit'},{item:'ammo',count:2},{item:'medkits',count:3},{item:'inventory:note',count:2},{item:'number',count:2},{item:'inventory:fitted'}];
+ const requests=[{item:'primary'},{item:'offhand'},{item:'outfit'},{item:'inventory:ammo:pistol_69',count:2},{item:'medkits',count:3},{item:'inventory:note',count:2},{item:'number',count:2},{item:'inventory:fitted'}];
  const before=structuredClone(u),expected=requests.map(({item,count=1})=>extractItemQuantity(u,item,count,{keepOtherHand:false}).stack);
  assert.deepEqual(readItemStacks(u,requests),expected);
  requests.forEach(({item,count=1},i)=>assert.deepEqual(readItemStack(u,item,count),expected[i]));
@@ -20,7 +20,7 @@ test('stack reads do not inspect unrelated soldier state or clone the soldier, a
  assert.deepEqual(readItemStack(u,'inventory:note',2),{item:'inventory:note',name:'Carta',count:2,weight:.1});
  assert.doesNotThrow(()=>readItemStacks(u,[{item:'inventory:note'},{item:'primary'},{item:'medkits'}]));assert.doesNotThrow(()=>equipmentFingerprint(u,'hand:right'));
  for(const count of [0,-1,1.5,3,NaN,'1',null])assert.throws(()=>readItemStack(u,'inventory:note',count));
- assert.throws(()=>readItemStack(u,'missing'));assert.throws(()=>readItemStacks(u,[{item:'inventory:note',count:1},{item:'ammo',count:4}]));
+ assert.throws(()=>readItemStack(u,'missing'));assert.throws(()=>readItemStacks(u,[{item:'inventory:note',count:1},{item:'inventory:ammo:pistol_69',count:4}]));
 });
 
 test('one usage pass admits pack keys once while retaining partial pockets, shared hands and overflow counts',()=>{

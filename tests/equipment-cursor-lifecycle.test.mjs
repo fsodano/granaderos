@@ -1,3 +1,7 @@
+import {AMMUNITION_TYPES,ammunitionByType,totalReserveAmmunition,addAmmunition} from '../game/ammunition-types.js';
+import {syncCarriedAmmunition} from '../game/campaign-ammunition.js';
+import {initializeUnitAmmunition} from '../game/tactical-ammunition.js';
+import {stockAmmo} from './ammunition-balance.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor,restoreCampaign,serializeCampaign} from '../game/campaign.js';
 import {createBattle,actBattle,carriedWeight} from '../game/tactical.js';
@@ -24,7 +28,7 @@ const save=s=>decodeSave(encodeSave(s)).campaign;
 function visit(s){s=order(s,{type:'visitSector'});const r=s.pendingBattle;return {s,b:createBattle(r.squad.map((u,i)=>({...u,x:2,y:2+i})),{...r,width:12,height:10,tiles:Array.from({length:120},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',cover:0,blocked:false})),enemies:[],props:[],npcs:[]})};}
 const leave=(s,b)=>order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});
 const reject=(s,a)=>{const before=structuredClone(s),next=dispatchCampaign(s,a);assert.ok(next.lastError);assert.deepEqual(s,before);assert.deepEqual({...next,lastError:null},{...s,lastError:null});};
-const cartridges=s=>s.resources.cartridges+Object.values(s.operativeState).filter(r=>r.alive&&!r.captured).reduce((sum,r)=>sum+(r.carriedAmmo??0)+storedWeaponAmmunition([r]),0);
+const cartridges=s=>stockAmmo(s)+Object.values(s.operativeState).filter(r=>r.alive&&!r.captured).reduce((sum,r)=>sum+(r.carriedAmmo??0)+storedWeaponAmmunition([r]),0);
 
 test('a paid recruit physically picks a finite stack; free campaign save and cancellation restore it once',()=>{
  let s=fresh();const before=structuredClone(s),u=personal(s),sourceId=pocket(u,'medkits'),weight=carriedWeight(u);
@@ -37,7 +41,7 @@ test('a paid recruit physically picks a finite stack; free campaign save and can
 
 test('a loaded gun cursor survives live save, report, campaign save and reentry; placement removes the old campaign cursor',()=>{
  let {s,b}=visit(fresh());const u=actor(b),before=structuredClone(u),weight=carriedWeight(u);
- b=act(b,cursorAction(u,'pickupEquipment',{sourceId:'hand:right'}));assert.equal(actor(b).weaponDropped,true);assert.equal(actor(b).equipmentCursor.stack.loaded,before.loaded);assert.equal(carriedWeight(actor(b)),weight);
+ b=act(b,cursorAction(u,'pickupEquipment',{sourceId:'hand:right'}));assert.equal(actor(b).weaponDropped,true);assert.equal(actor(b).equipmentCursor.stack.loaded,before.loaded);assert.ok(Math.abs(carriedWeight(actor(b))-weight)<1e-9);
  const live=decodeSave(encodeSave(s,b));assert.deepEqual(actor(live.battle).equipmentCursor,actor(b).equipmentCursor);assert.equal(playerKnownBattle(b).units.find(u=>u.id==='110').equipmentCursor.stack.weapon,before.weapon);
  s=leave(live.campaign,live.battle);assert.deepEqual(s.operativeState[110].equipmentCursor,actor(b).equipmentCursor);assert.equal(s.operativeState[110].carriedLoaded,undefined);
  s=order(save(s),{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);assert.equal(actor(b).equipmentCursor.stack.loaded,before.loaded);assert.equal(actor(b).weaponDropped,true);
@@ -45,9 +49,9 @@ test('a loaded gun cursor survives live save, report, campaign save and reentry;
  assert.doesNotThrow(()=>decodeSave(encodeSave(s,b)));s=leave(s,b);assert.equal(s.operativeState[110].equipmentCursor,undefined);assert.equal(s.operativeState[110].carriedLoaded,before.loaded);save(s);
 });
 
-test('cursor cartridges remain finite through two reports and return to the reserve only after placement',()=>{
+test('cursor cartridges remain finite through two reports and return to personal inventory only after placement',()=>{
  const total=cartridges(fresh());let {s,b}=visit(fresh());const u=actor(b);
- b=act(b,cursorAction(u,'pickupEquipment',{sourceId:pocket(u,'ammo'),count:5}));s=leave(s,b);assert.equal(cartridges(s),total);assert.equal(s.operativeState[110].equipmentCursor.stack.count,5);
+ b=act(b,cursorAction(u,'pickupEquipment',{sourceId:pocket(u,'inventory:ammo:musket_75'),count:5}));s=leave(s,b);assert.equal(cartridges(s),total);assert.equal(s.operativeState[110].equipmentCursor.stack.count,5);
  s=order(save(s),{type:'visitSector'});assert.equal(s.pendingBattle.storedCartridges,5);b=enterSector(s.pendingBattle,s.sectorStates.retiro);
  b=act(b,cursorAction(actor(b),'returnEquipmentCursor'));assert.equal(actor(b).equipmentCursor,undefined);s=leave(s,b);assert.equal(cartridges(s),total);assert.equal(s.operativeState[110].equipmentCursor,undefined);save(s);
 });
@@ -91,21 +95,22 @@ test('only the current tactical cursor is exposed; hidden enemy custody and item
 });
 
 test('unavailable body cursor remains lootable and its rounds receive one finite recovery allowance',()=>{
- let {s,b}=visit(fresh());const u=actor(b),picked=planEquipmentPickup(u,{sourceId:pocket(u,'ammo'),expectedSource:equipmentFingerprint(u,pocket(u,'ammo')),count:5}).unit;
+ let {s,b}=visit(fresh());const u=actor(b),picked=planEquipmentPickup(u,{sourceId:pocket(u,'inventory:ammo:musket_75'),expectedSource:equipmentFingerprint(u,pocket(u,'inventory:ammo:musket_75')),count:5}).unit;
  const body={...picked,id:'fallen',hp:0,unconscious:true,knownToPlayer:true};b.units.push(body);const row=knownSectorEquipment(b).find(r=>r.key===JSON.stringify(['body','fallen','cursor']));assert.equal(row.count,5);
- const request=structuredClone(s.pendingBattle);request.id='next';prepareDeploymentExits({...s,sectorStates:{retiro:b}},request);assert.equal(request.casualtyLootSources.find(u=>u.id==='fallen').cursorCartridges,5);
+ const request=structuredClone(s.pendingBattle);request.id='next';prepareDeploymentExits({...s,sectorStates:{retiro:b}},request);assert.equal(request.casualtyLootSources.find(u=>u.id==='fallen').ammunitionByType.musket_75,10);
  const extraction=extractItemQuantity(body,'cursor',5);Object.assign(body,extraction.unit);delete body.equipmentCursor;
- const receiver=applyItemQuantity(u,extraction.stack);b.units[0]=receiver;const plan=planReturnAmmunition(request,b,[{unitId:'110',kind:'resident'}]);assert.equal(plan.creditedCartridges,s.pendingBattle.issuedCartridges+5-receiver.loaded);
+ const receiver=applyItemQuantity(u,extraction.stack);b.units[0]=receiver;const plan=planReturnAmmunition(request,b,[{unitId:'110',kind:'resident'}]);assert.equal(plan.creditedCartridges,0);assert.deepEqual(plan.retainedAmmunition,{musket_75:15});
 });
 
 test('two hands holding two ordinary cartridges retain both after a deployment report',()=>{
  let {s,b}=visit(fresh());const original=cartridges(fresh());
- for(const destinationId of ['hand:right','hand:left']){const u=actor(b);b=act(b,cursorAction(u,'pickupEquipment',{sourceId:pocket(u,'ammo'),count:1}));b=act(b,cursorAction(actor(b),'placeEquipment',{destinationId}));if(actor(b).equipmentCursor)b=act(b,cursorAction(actor(b),'returnEquipmentCursor'));}
- s=leave(s,b);assert.equal(s.operativeState[110].carriedAmmo,2);assert.equal(s.operativeState[110].activeItem,'ammo');assert.equal(s.operativeState[110].leftHandItem,'ammo');assert.equal(cartridges(s),original);save(s);
+ for(const destinationId of ['hand:right','hand:left']){const u=actor(b);b=act(b,cursorAction(u,'pickupEquipment',{sourceId:pocket(u,'inventory:ammo:musket_75'),count:1}));b=act(b,cursorAction(actor(b),'placeEquipment',{destinationId}));if(actor(b).equipmentCursor)b=act(b,cursorAction(actor(b),'returnEquipmentCursor'));}
+ s=leave(s,b);assert.equal(s.operativeState[110].carriedAmmo,9);assert.equal(s.operativeState[110].activeItem,'inventory:ammo:musket_75');assert.equal(s.operativeState[110].leftHandItem,'inventory:ammo:musket_75');assert.equal(cartridges(s),original);save(s);
 });
 
 test('an identified fitted rifle keeps its separate bayonet, wear and unfinished reload while cursor-owned',()=>{
  let s=fresh();Object.assign(s.operativeState[110],{carriedAmmo:3,carriedLoaded:0,carriedReloadProgress:.5,condition:61,weaponInstanceId:'cursor-rifle',weaponFittings:{bayonet:{weapon:1811,fittingPattern:'india_socket',condition:73,instanceId:'cursor-bayonet'}}});
+ addAmmunition(s.operativeState[110],'musket_75',3);syncCarriedAmmunition(s.operativeState[110],1800);
  const before=structuredClone(s.operativeState[110]),weight=carriedWeight(personal(s));s=arrange(s,'pickupEquipment',{sourceId:'hand:right'});const cursor=s.operativeState[110].equipmentCursor;
  assert.equal(cursor.stack.instanceId,'cursor-rifle');assert.equal(cursor.stack.fittings.bayonet.instanceId,'cursor-bayonet');assert.equal(cursor.stack.reloadProgress,.5);assert.equal(carriedWeight(personal(s)),weight);
  const duplicate=structuredClone(s);duplicate.operativeState[110].inventory.copy={weapon:1811,count:1,weight:.5,loaded:0,condition:73,instanceId:'cursor-bayonet',fittingPattern:'india_socket'};assert.throws(()=>decodeSave(encodeSave(duplicate)),/identidad/);

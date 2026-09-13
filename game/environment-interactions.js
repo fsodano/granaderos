@@ -1,3 +1,4 @@
+import {AMMUNITION_TYPES} from './ammunition-types.js';
 import {validateItemStack} from './tactical-inventory.js';
 
 // Classic JA2 manual, printed pp. 25–27: held tools, keys, lock picks,
@@ -211,7 +212,7 @@ export function authoredEnvironment(sector, map) {
     // Room dimensions and furniture positions can change; the supply cache keeps its role.
     const chest = (map.props ?? []).find(prop => prop.type === 'chest' && prop.buildingId === 'mendoza:house-0' && prop.purpose === 'supply-cache');
     if (chest) containers.push({id: chest.id, type: 'chest', open: false, locked: true, lockDifficulty: 40, lockIntegrity: 100,
-      trap: {type: 'alarm', difficulty: 35, armed: true, discoveredBy: []}, contents: [{item: 'ammo', count: 12, weight: .04}, {item: 'medkits', count: 3, weight: .2}]});
+      trap: {type: 'alarm', difficulty: 35, armed: true, discoveredBy: []}, contents: [{item:'inventory:ammo:musket_75',kind:'ammunition',ammoType:'musket_75',name:AMMUNITION_TYPES.musket_75.name,count:12,weight:.04}, {item: 'medkits', count: 3, weight: .2}]});
   }
   return {doors, containers};
 }

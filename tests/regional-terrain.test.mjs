@@ -100,7 +100,7 @@ test('saved regional ground, breaches and discovered equipment survive a differe
  for(const sector of ['ensenada','tucuman','cordoba','mendoza']){
   const req=request(sector),first=enterSector(req);
   const wall=first.tiles.find(t=>t.type==='wall');Object.assign(wall,{blocked:false,blocksSight:false,type:'rubble',cover:20});
-  const at=first.units[0];first.groundItems=[{id:'kept',x:at.x,y:at.y,item:'ammo',count:3,weight:.04,type:'item',knownToPlayer:true}];
+  const at=first.units[0];first.groundItems=[{id:'kept',x:at.x,y:at.y,item:'inventory:ammo:musket_75',kind:'ammunition',ammoType:'musket_75',name:'Cartucho de mosquete .75',count:3,weight:.04,type:'item',knownToPlayer:true}];
   const saved=validateBattleSnapshot(JSON.parse(JSON.stringify(first))),before=structuredClone(saved);
   const returned=enterSector({...req,hour:5000,weather:{rain:60,humidity:9}},saved);
   assert.deepEqual(returned.tiles,saved.tiles,sector);assert.deepEqual(returned.groundItems,saved.groundItems,sector);

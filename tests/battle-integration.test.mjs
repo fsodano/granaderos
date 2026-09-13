@@ -1,4 +1,5 @@
-import {stockAndCarriedAmmo} from './ammunition-balance.mjs';
+import {totalReserveAmmunition} from '../game/ammunition-types.js';
+import {stockAndCarriedAmmo,stockAmmo} from './ammunition-balance.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {dispatchCampaign as dispatch,serializeCampaign,restoreCampaign} from '../game/campaign.js';
@@ -40,13 +41,13 @@ test('a controlled wet-weather battle connects campaign resources, deterministic
   assert.ok(actions>1);
   assert.deepEqual(battle,fight().battle,'same seed and orders replay exactly');
   const survivors=battle.units.filter(u=>u.side==='player'&&u.hp>0);
-  const returned=survivors.reduce((sum,u)=>sum+u.loaded+u.ammo,0);
+  const returned=survivors.reduce((sum,u)=>sum+u.loaded+totalReserveAmmunition(u),0);
   assert.ok(returned<campaign.pendingBattle.issuedCartridges,'the battle expended real ammunition');
   const result=dispatch(campaign,{type:'battleResult',battleId:campaign.pendingBattle.id,outcome:battle.status,sectorState:battle,survivors:battle.units.filter(u=>u.side==='player')});
   assert.equal(result.lastError,null);
   assert.equal(result.sectors.san_nicolas.owner,'patriot');
   assert.equal(result.pendingBattle,null);
-  assert.equal(stockAndCarriedAmmo(result),campaign.resources.cartridges+returned+80);
+  assert.equal(stockAndCarriedAmmo(result),stockAmmo(campaign)+returned+80);
   for(const u of survivors){assert.equal(result.operativeState[Number(u.id)].hp,u.hp);assert.equal(result.operativeState[Number(u.id)].alive,true);}
   assert.deepEqual(restoreCampaign(serializeCampaign(result)),result);
 });

@@ -7,7 +7,7 @@ const {default:Campaign}=await import('../web/app/Campaign.tsx');
 const completed=()=>dispatchCampaign(dispatchCampaign(initialCampaign(),{type:'produce',recipe:'cartridges'}),{type:'wait',hours:24});
 test('the operations map shows the delivered quantity and exact stopped duration beside the clock',()=>{
  const html=render(h(Campaign,{state:completed(),dispatch:()=>{},onBattle:()=>{},onOpenDesk:()=>{}}));
- assert.match(html,/aria-label="Tiempo a avanzar"/);assert.match(html,/aria-label="Producción y entregas completadas"/);assert.match(html,/12 de 24 horas solicitadas/);assert.match(html,/60 cartuchos/);assert.match(html,/Retiro/);assert.match(html,/aria-live="polite"/);assert.match(html,/Ya se completó la producción o entrega/);
+ assert.match(html,/aria-label="Tiempo a avanzar"/);assert.match(html,/aria-label="Producción y entregas completadas"/);assert.match(html,/12 de 24 horas solicitadas/);assert.match(html,/60 cartucho de mosquete \.75/);assert.match(html,/Retiro/);assert.match(html,/aria-live="polite"/);assert.match(html,/Ya se completó la producción o entrega/);
 });
 test('receipts distinguish a local depot, general reserve and the armory, and escape task names',()=>{
  const s=completed();s.logisticsNotice.events=[{kind:'convoy',sector:'retiro',goods:{muskets:10}},{kind:'convoy',sector:'reserve',goods:{powder:5}},{kind:'equipment',sector:'ensenada',item:1802,quantity:2},{kind:'shipment',sector:'ensenada',goods:{textiles:7}},{kind:'production',sector:'cordoba',name:'<script>unsafe</script>',goods:{cartridges:60}}];

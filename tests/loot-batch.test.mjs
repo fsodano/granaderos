@@ -1,3 +1,6 @@
+import {AMMUNITION_TYPES} from '../game/ammunition-types.js';
+const AMMO='inventory:ammo:musket_75';
+const ammoStack=count=>({item:AMMO,kind:'ammunition',ammoType:'musket_75',name:AMMUNITION_TYPES.musket_75.name,count,weight:.04});
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,endTurn,lootBatchPreview} from '../game/tactical.js';
@@ -13,11 +16,11 @@ const empty={ammo:0,priming:0,flints:0,medkits:0,rations:0,torches:0,boleadoras:
 function field(actor={},extra={}){
   const s=createBattle([{id:'p',x:2,y:2,facing:2,...empty,...actor}],{width:16,height:10,seed:45,tiles:Array.from({length:160},(_,i)=>({x:i%16,y:Math.floor(i/16),type:i%16===10?'wall':'grass',blocked:i%16===10,blocksSight:i%16===10,cover:0})),enemies:[{id:'body',x:3,y:2,hp:0,...empty,ammo:19,weapon:1800,loaded:1,condition:67,jammed:true,weaponInstanceId:'body-gun',weaponFittings:{bayonet:{weapon:1811,condition:43,fittingPattern:'india_socket',instanceId:'body-fitting'}},patrol:false},{id:'guard',x:14,y:8,patrol:false,overwatch:false}],...extra});
   s.units[0].ap=actor.ap??100;for(const u of s.units.filter(u=>u.side==='enemy'))u.ap=0;
-  s.groundItems=[{id:'rounds',type:'item',item:'ammo',count:12,weight:.04,x:3,y:2},{id:'dressings',type:'item',item:'medkits',count:3,weight:.2,x:3,y:2}];
+  s.groundItems=[{id:'rounds',type:'item',...ammoStack(12),x:3,y:2},{id:'dressings',type:'item',item:'medkits',count:3,weight:.2,x:3,y:2}];
   return s;
 }
 const batch=(s,items)=>actBattle(s,{type:'lootBatch',unitId:'p',items});
-const items=[{targetId:'body',item:'ammo',count:4},{groundId:'rounds',count:3},{groundId:'dressings',count:2},{targetId:'body',item:'weapon',count:1}];
+const items=[{targetId:'body',item:AMMO,count:4},{groundId:'rounds',count:3},{groundId:'dressings',count:2},{targetId:'body',item:'weapon',count:1}];
 function unchanged(s,selections){const n=batch(s,selections);assert.ok(n.lastError);for(const key of ['units','groundItems','droppedWeapons','seed','elapsedSeconds'])assert.deepEqual(n[key],s[key],key);}
 
 test('one batch takes exact body and ground quantities for one pickup cost without equipping the recovered gun',()=>{
@@ -40,7 +43,7 @@ test('two selections that fit alone must also fit as a complete set',()=>{
 });
 
 test('duplicate sources, body aliases, missing quantities and mixed selectors cannot duplicate equipment',()=>{
-  const s=field();for(const selections of [[],null,[items[0],items[0]],[{targetId:'body',item:'weapon',count:1},{targetId:'body',item:'primary',count:1}],[{targetId:'body',item:'all',count:1}],[{groundId:'rounds',targetId:'body',item:'ammo',count:1}],[{groundId:'rounds'}],[{groundId:'rounds',count:0}],[{groundId:'rounds',count:1.5}],[{groundId:'rounds',count:13}],[{groundId:'rounds',count:1,unitId:'body'}],[{dropIndex:-1,count:1}],Array.from({length:1001},()=>items[0])])unchanged(s,selections);
+  const s=field();for(const selections of [[],null,[items[0],items[0]],[{targetId:'body',item:'weapon',count:1},{targetId:'body',item:'primary',count:1}],[{targetId:'body',item:'all',count:1}],[{groundId:'rounds',targetId:'body',item:AMMO,count:1}],[{groundId:'rounds'}],[{groundId:'rounds',count:0}],[{groundId:'rounds',count:1.5}],[{groundId:'rounds',count:13}],[{groundId:'rounds',count:1,unitId:'body'}],[{dropIndex:-1,count:1}],Array.from({length:1001},()=>items[0])])unchanged(s,selections);
 });
 
 test('stale final quantities and sources reject atomically without taking earlier selections',()=>{
@@ -81,7 +84,7 @@ test('a batch fits within a real saved player interrupt and resumes deterministi
 
 test('campaign save and reload keep all sources and receiver after one actual batch',()=>{
   const campaign=dispatchCampaign(initialCampaign(),{type:'visitSector'});assert.equal(campaign.lastError,null);let battle=enterSector(campaign.pendingBattle);const actor=battle.units.find(unit=>unit.id==='4');
-  battle=actBattle(battle,{type:'drop',unitId:actor.id,item:'ammo',count:2});assert.equal(battle.lastError,null);battle=actBattle(battle,{type:'drop',unitId:actor.id,item:'medkits',count:1});assert.equal(battle.lastError,null);
+  battle=actBattle(battle,{type:'drop',unitId:actor.id,item:'inventory:'+Object.keys(actor.inventory).find(key=>actor.inventory[key].kind==='ammunition'),count:2});assert.equal(battle.lastError,null);battle=actBattle(battle,{type:'drop',unitId:actor.id,item:'medkits',count:1});assert.equal(battle.lastError,null);
   const selected=battle.groundItems.filter(item=>item.x===actor.x&&item.y===actor.y&&item.count>0).map(item=>({groundId:item.id,count:item.count}));assert.equal(selected.length,2);
   battle=actBattle(battle,{type:'lootBatch',unitId:actor.id,items:selected});assert.equal(battle.lastError,null);const pair=syncBattleTime(campaign,battle);assert.equal(pair.error,null);const saved=decodeSave(encodeSave(pair.campaign,pair.battle));assert.deepEqual(saved.battle.units,pair.battle.units);assert.deepEqual(saved.battle.groundItems,pair.battle.groundItems);
   assert.ok(actBattle(saved.battle,{type:'lootBatch',unitId:actor.id,items:selected}).lastError);

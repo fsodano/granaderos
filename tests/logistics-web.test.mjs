@@ -1,3 +1,7 @@
+import {AMMUNITION_TYPES,ammunitionByType,totalReserveAmmunition,addAmmunition} from '../game/ammunition-types.js';
+import {syncCarriedAmmunition} from '../game/campaign-ammunition.js';
+import {initializeUnitAmmunition} from '../game/tactical-ammunition.js';
+import {stockAmmo} from './ammunition-balance.mjs';
 import {marchToFront} from './campaign-test-helpers.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -29,6 +33,6 @@ test('flotilla excludes inland routes and blocks transit during a naval blockade
  s=order(s,transfer({muskets:20},'flotilla','reserve','ensenada'));s.blockade=true;s=order(s,{type:'wait',hours:10});assert.equal(s.convoys.length,1);s.blockade=false;s=order(s,{type:'wait',hours:1});assert.equal(s.depots.ensenada.muskets,20);
 });
 test('depot ammunition enters tactical stock and survives save migration',()=>{
- let s=order(initialCampaign(),{type:'transport',mode:'carts'});s=order(s,transfer({cartridges:300},'carts','reserve','buenos_aires'));s=order(s,{type:'wait',hours:18});assert.equal(s.resources.cartridges,0);s=restoreCampaign(serializeCampaign(s));s=order(s,{type:'attack',sector:'san_nicolas'});assert.equal(s.pendingBattle.issuedCartridges,20);assert.equal(s.depots.buenos_aires.cartridges,280);
+ let s=order(initialCampaign(),{type:'transport',mode:'carts'});s=order(s,transfer({ammo_pistol_54:20,ammo_pistol_50:10},'carts','reserve','buenos_aires'));s=order(s,{type:'wait',hours:18});assert.equal(s.resources.ammo_pistol_54,0);assert.equal(s.resources.ammo_pistol_50,0);s=restoreCampaign(serializeCampaign(s));s=order(s,{type:'attack',sector:'san_nicolas'});assert.equal(s.pendingBattle.issuedCartridges,20);assert.equal(s.depots.buenos_aires.ammo_pistol_54,10);assert.equal(s.depots.buenos_aires.ammo_pistol_50,0);
  const legacy=initialCampaign();delete legacy.depots;delete legacy.convoys;delete legacy.routes.mules;const migrated=restoreCampaign(JSON.stringify(legacy));assert.deepEqual(migrated.depots,{});assert.deepEqual(migrated.convoys,[]);assert.equal(migrated.routes.mules,false);
 });

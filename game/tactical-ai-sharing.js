@@ -1,5 +1,6 @@
 import {atHand,moveOrder,planningPoint} from './tactical-planning-space.js';
 import {canSee,hasLineOfSight,weaponFor,transferPreview,actionCosts} from './tactical.js';
+import {ammunitionByType,weaponAmmoType} from './ammunition-types.js';
 
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const available=u=>u.hp>0&&!u.unconscious&&!u.departure&&!u.fled&&!u.routed&&!u.surrendered;
@@ -11,17 +12,23 @@ const compareId=(a,b)=>String(a.id)<String(b.id)?-1:String(a.id)>String(b.id)?1:
 // promises survive a move: every decision checks the current field again.
 export function chooseSupplySharingAction(state,unit,targets,paths){
   if(!available(unit)||unit.knockedDown||unit.entangled||unit.ap<4)return null;
-  const ownCapacity=unit.weaponDropped?0:weaponFor({...unit,activeSlot:'primary'}).capacity??0;
-  const spareAmmo=Math.max(0,(unit.ammo??0)-Math.max(0,ownCapacity-(unit.loaded??0)));
+  const reserve=ammunitionByType(unit),needed={};
+  // Each owned gun retains its next full load in its own caliber. A second
+  // pistol may use different cartridges; a derived display total is no stock.
+  const ownGuns=[...(!unit.weaponDropped?[{weapon:unit.weapon,loaded:unit.loaded}]:[]),...(unit.offHand?[unit.offHand]:[])];
+  for(const gun of ownGuns){const type=weaponAmmoType(gun.weapon),capacity=weaponFor({...unit,weapon:gun.weapon,activeSlot:'primary',weaponDropped:false}).capacity??0;if(type&&capacity>0)needed[type]=(needed[type]??0)+Math.max(0,capacity-(gun.loaded??0));}
+  const spare=Object.fromEntries(Object.entries(reserve).map(([type,count])=>[type,Math.max(0,count-(needed[type]??0))]));
+  const sources=Object.entries(unit.inventory??{}).sort(([a],[b])=>a<b?-1:a>b?1:0).filter(([,stack])=>stack?.kind==='ammunition'&&stack.count>0);
   const spareDressings=Math.max(0,(unit.medkits??0)-(unit.medical>0?1:0));
-  if(!spareAmmo&&!spareDressings)return null;
+  if(!Object.values(spare).some(count=>count>0)&&!spareDressings)return null;
   const allies=state.units.filter(other=>other.id!==unit.id&&other.side===unit.side&&available(other)&&
     !other.knockedDown&&!other.entangled&&distance(unit,other)<=5&&observed(state,unit,other)).sort(compareId);
   const needs=[];
   for(const ally of allies){
     const capacity=ally.weaponDropped?0:weaponFor({...ally,activeSlot:'primary'}).capacity??0;
-    if(spareAmmo&&capacity>0&&!ally.jammed&&ally.loaded===0&&ally.ammo===0)
-      needs.push({ally,item:'ammo',count:Math.min(capacity,spareAmmo),priority:1});
+    const type=weaponAmmoType(ally.weapon);
+    if(type&&spare[type]>0&&capacity>0&&!ally.jammed&&ally.loaded===0&&!(ammunitionByType(ally)[type]>0))
+      for(const [key,stack] of sources)if(stack.ammoType===type)needs.push({ally,item:`inventory:${key}`,count:Math.min(capacity,spare[type],stack.count),priority:1});
     if(spareDressings&&ally.medical>0&&ally.medkits===0){
       // A dressing has a present purpose only when the recipient can reach a
       // bleeding patient at hand and enough AP to treat this turn. A handover

@@ -1,7 +1,12 @@
+import {buildSectorMap} from './maps.js';
+import {authoredEnvironment} from './environment-interactions.js';
 import {validateReloadProgress} from './weapon-reload.js';
 import {CAMPAIGN_SECTORS,WEAPONS} from './data.js';
 import {sectorExits,validateSectorExits,boundaryMatches,entryFromSector,validEntry} from './tactical-exits.js';
-import {planReturnAmmunition,fieldAmmunition,storedWeaponAmmunition,cursorAmmunition} from './ammunition.js';
+import {planReturnAmmunition,fieldAmmunition,storedWeaponAmmunition,ammunitionSource} from './ammunition.js';
+import {fieldAmmunitionByType,totalAmmoCounts,addAmmoCounts,unitAmmunitionByType} from './campaign-ammunition.js';
+import {totalReserveAmmunition} from './ammunition-types.js';
+import {initializeUnitAmmunition} from './tactical-ammunition.js';
 import {fieldCapable} from './tactical.js';
 import {validateBattleSnapshot} from './validate-battle.js';
 import {FITTING_RULES_VERSION,normalizeUnitFittings} from './weapon-fittings.js';
@@ -18,16 +23,25 @@ export function recordStrategicArrival(s,ids,fromSector,toSector,sceneId=null){
 // Request routes are immutable authority. Later arrivals are queued while a
 // deployment is active and are resolved after the actual departures return.
 export function prepareDeploymentExits(s,request){
+  request.ammunitionVersion=1;
+  for(const enemy of request.enemies??[]){enemy.weapon??=1800;enemy.loaded??=WEAPONS[enemy.weapon]?.capacity??0;initializeUnitAmmunition(enemy,{defaultCount:12});}
   request.fittingRulesVersion=FITTING_RULES_VERSION;
   for(const unit of [...request.squad,...(request.garrison??[]),...(request.missionAllies??[])])normalizeUnitFittings(unit);
   request.exits=sectorExits(request.sector,request.sceneId??null).filter(e=>s.sectors[e.destination]?.owner==='patriot'&&!s.enemyGroups?.some(g=>g.target===e.destination&&['engaged','stationed'].includes(g.status)));
   request.exitRulesVersion=1;
   request.remains=clone(s.sectorRemains?.[strategicSector(request)]??[]);
   const previous=request.sceneId?s.sceneStates?.[request.sceneId]:s.sectorStates?.[request.sector];
-  request.fieldCartridges=fieldAmmunition(previous);
+  // Bind first-entry caches to the same authored map that tactical entry uses.
+  // A survivor cannot claim those rounds twice by also leaving them in the chest.
+  let field=previous;
+  if(!field){const map=buildSectorMap(request),metadata=authoredEnvironment(request.sceneId??request.sector,map);field={...map,props:map.props.map(prop=>({...prop,...metadata.containers.find(patch=>patch.id===prop.id)}))};}
+  request.fieldAmmunition=fieldAmmunitionByType(field);
+  request.fieldCartridges=totalAmmoCounts(request.fieldAmmunition);
+  request.issuedAmmunition={};for(const unit of request.squad)addAmmoCounts(request.issuedAmmunition,unitAmmunitionByType(unit));
+  request.issuedCartridges=totalAmmoCounts(request.issuedAmmunition);
   request.storedCartridges=storedWeaponAmmunition(request.squad);
   const bodies=(previous?.units??[]).filter(u=>u.side==='player'&&u.hp<=0&&!u.departure&&(!previous.returnLedger?.entries?.some(e=>e.unitId===u.id)||previous.returnLedger.entries.some(e=>e.unitId===u.id&&e.kind==='dead'&&e.sector===strategicSector(request))));
-  request.casualtyLootSources=[...new Map([...bodies,...request.remains.map(r=>r.unit)].map(u=>[String(u.id),{id:String(u.id),side:'player',loaded:u.loaded??0,ammo:u.ammo??0,...(u.equipmentCursor?{cursorCartridges:cursorAmmunition(u)}:{})}])).values()];
+  request.casualtyLootSources=[...new Map([...bodies,...request.remains.map(r=>r.unit)].map(u=>[String(u.id),ammunitionSource(u)])).values()];
   for(const u of request.squad){
     const r=s.operativeState[Number(u.id)],arrival=r?.arrival;
     delete u.entryEdge;delete u.entryAnchor;delete u.entryReason;
@@ -130,7 +144,7 @@ function validateReturnLedger(snapshot){
     if(u.departure){const exit=knownExit(u.departure.exitId);need(['departed','dead'].includes(e.kind)&&exit&&exit.destination===e.sector&&e.departure&&['exitId','edge','destination','x','y','elapsedSeconds','mountId'].every(k=>e.departure[k]===u.departure[k])&&sameEntry(e.departure,exit),'La salida del parte es inválida.');}
     else need(e.kind!=='departed'&&e.sector===source&&!e.departure,'La residencia del parte es inválida.');
   }
-  const loose=ledger.entries.filter(e=>['resident','departed'].includes(e.kind)).reduce((sum,e)=>{const u=snapshot.units.find(u=>u.id===e.unitId);return sum+(u.militia||u.missionAlly?0:u.loaded+u.ammo);},0);
+  const loose=ledger.entries.filter(e=>['resident','departed'].includes(e.kind)).reduce((sum,e)=>{const u=snapshot.units.find(u=>u.id===e.unitId);return sum+(u.militia||u.missionAlly?0:u.loaded+totalReserveAmmunition(u));},0);
   need(ledger.creditedCartridges<=loose,'El crédito de munición del parte es inválido.');
 }
 export function validateDeploymentReturnState(s){
@@ -147,7 +161,7 @@ export function validateDeploymentReturnState(s){
       const unit=clone(r.unit);delete unit.departure;
       const rawFields=['hp','maxHp','weapon','condition','jammed','loaded','ammo','inventory','bleeding','bandaged','energy','medkits','fatigue','priming','flints','rations','torches','boleadoras','activeSlot','weaponFittings','weaponFittingPattern','bladeFittingPattern'];need(rawFields.every(k=>Object.hasOwn(unit,k)&&unit[k]!==undefined),'El equipo del caído está incompleto.');
       const {width,height}=remainsDimensions(s,exit);
-      validateBattleSnapshot({width,height,units:[unit],tiles:Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0})),status:'defeat'});
+      validateBattleSnapshot({...(unit.ammunitionVersion===undefined?{}:{ammunitionVersion:unit.ammunitionVersion}),width,height,units:[unit],tiles:Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0})),status:'defeat'});
     }
   }
   for(const [id,r] of Object.entries(s.operativeState)){

@@ -1,4 +1,5 @@
 import test from 'node:test';
+const AMMO='inventory:ammo:musket_75';
 import assert from 'node:assert/strict';
 import {createBattle, actBattle, transferPreview, dropPreview, lootPreview} from '../game/tactical.js';
 import {inventoryUsage} from '../game/tactical-inventory.js';
@@ -32,9 +33,9 @@ function rejectUnchanged(state, action) {
 }
 
 test('nearby passing uses the preview cost, conserves supplies, and does not draw randomness', () => {
-  const state = field(), preview = transferPreview(state, troop(state), troop(state, 'q'), 'ammo', 3);
+  const state = field(), preview = transferPreview(state, troop(state), troop(state, 'q'), AMMO, 3);
   assert.deepEqual({kind: preview.kind, pa: preview.pa, chance: preview.chance, valid: preview.valid}, {kind: 'give', pa: 4, chance: 100, valid: true});
-  const next = order(state, {type: 'transfer', targetId: 'q', item: 'ammo', count: 3});
+  const next = order(state, {type: 'transfer', targetId: 'q', item: AMMO, count: 3});
   assert.equal(troop(next).ammo, 9); assert.equal(troop(next, 'q').ammo, 15);
   assert.equal(troop(next).ap, 96); assert.equal(troop(next, 'q').ap, 100);
   assert.equal(next.seed, state.seed); assert.equal(next.groundItems.length, 0);
@@ -53,12 +54,12 @@ test('a successful throw spends throw and catch AP and delivers the exact select
 
 test('a failed catch leaves supplies at the receiver’s feet for finite partial pickup', () => {
   const state = field({dexterity: 0}, {x: 5, dexterity: 0, energy: 20});
-  assert.equal(transferPreview(state, troop(state), troop(state, 'q'), 'ammo', 4).chance, 5);
-  let next = order(state, {type: 'transfer', targetId: 'q', item: 'ammo', count: 4});
+  assert.equal(transferPreview(state, troop(state), troop(state, 'q'), AMMO, 4).chance, 5);
+  let next = order(state, {type: 'transfer', targetId: 'q', item: AMMO, count: 4});
   assert.equal(troop(next).ammo, 8); assert.equal(troop(next, 'q').ammo, 12);
   assert.equal(troop(next).ap, troop(state).ap - 8); assert.equal(troop(next, 'q').ap, troop(state, 'q').ap);
   const ground = next.groundItems[0];
-  assert.equal(ground.x, 5); assert.equal(ground.y, 3); assert.equal(ground.count, 4); assert.equal(ground.item, 'ammo');
+  assert.equal(ground.x, 5); assert.equal(ground.y, 3); assert.equal(ground.count, 4); assert.equal(ground.item, AMMO);
   next = order(next, {type: 'loot', unitId: 'q', groundId: ground.id, count: 2});
   assert.equal(troop(next, 'q').ammo, 14); assert.equal(next.groundItems[0].count, 2);
   next = order(next, {type: 'loot', unitId: 'q', groundId: ground.id});
@@ -76,7 +77,7 @@ test('dropping and picking up a loaded jammed primary preserves its condition an
   assert.equal(ground.item, 'weapon'); assert.equal(ground.loaded, 1); assert.equal(ground.condition, 37); assert.equal(ground.jammed, true);
   assert.equal(ground.instanceId, 'captured-1');
   next = order(next, {type: 'loot', unitId: 'q', groundId: ground.id});
-  const received = Object.values(troop(next, 'q').inventory)[0];
+  const received = Object.values(troop(next, 'q').inventory).find(r=>r.instanceId==='captured-1');
   assert.equal(received.loaded, 1); assert.equal(received.condition, 37); assert.equal(received.jammed, true); assert.equal(received.instanceId, 'captured-1');
   assert.equal(next.groundItems[0].count, 0);
   assert.doesNotThrow(() => validateBattleSnapshot(next));
@@ -86,19 +87,19 @@ test('failed weapon throws preserve every weapon field in the resulting ground s
   const state = field({dexterity: 0, weapon: 1808, loaded: 2, condition: 28, jammed: true}, {x: 5, dexterity: 0, energy: 20});
   const next = order(state, {type: 'transfer', targetId: 'q', item: 'primary'});
   assert.equal(troop(next).activeSlot, 'unarmed'); assert.equal(troop(next).loaded, 0);
-  assert.equal(Object.keys(troop(next, 'q').inventory).length, 0);
+  assert.deepEqual(troop(next, 'q').inventory, troop(state, 'q').inventory);
   const stack = next.groundItems[0];
   assert.equal(stack.weapon, 1808); assert.equal(stack.loaded, 2); assert.equal(stack.condition, 28); assert.equal(stack.jammed, true); assert.equal(stack.count, 1);
 });
 
 test('partial corpse loot leaves unselected supplies and the loaded weapon on the body', () => {
   const state = field({}, {}, [{id: 'corpse', x: 1, y: 4, hp: 0, ammo: 9, loaded: 1, jammed: true, condition: 29}]);
-  let next = order(state, {type: 'loot', targetId: 'corpse', item: 'ammo', count: 3});
+  let next = order(state, {type: 'loot', targetId: 'corpse', item: AMMO, count: 3});
   assert.equal(troop(next).ammo, 15); assert.equal(troop(next, 'corpse').ammo, 6);
   assert.equal(troop(next, 'corpse').loaded, 1); assert.equal(troop(next, 'corpse').weaponDropped, undefined);
   next = order(next, {type: 'loot', targetId: 'corpse', item: 'weapon'});
   assert.equal(troop(next, 'corpse').weaponDropped, true); assert.equal(troop(next, 'corpse').loaded, 0);
-  const received = Object.values(troop(next).inventory)[0];
+  const received = Object.values(troop(next).inventory).find(r=>r.weapon===troop(state,'corpse').weapon);
   assert.equal(received.loaded, 1); assert.equal(received.condition, 29); assert.equal(received.jammed, true);
   assert.equal(troop(next, 'corpse').ammo, 6);
 });
@@ -107,26 +108,26 @@ test('loot-all preflight rejects capacity overflow without taking the first item
   const state = field({}, {}, [{id: 'corpse', x: 1, y: 4, hp: 0, ammo: 100, priming: 0, flints: 0, rations: 0, medkits: 0, boleadoras: 0, torches: 0}]);
   assert.equal(lootPreview(state, troop(state), {targetId: 'corpse'}).valid, false);
   rejectUnchanged(state, {type: 'loot', targetId: 'corpse', item: 'all'});
-  const partial = order(state, {type: 'loot', targetId: 'corpse', item: 'ammo', count: 8});
+  const partial = order(state, {type: 'loot', targetId: 'corpse', item: AMMO, count: 8});
   assert.equal(troop(partial).ammo, 20); assert.equal(troop(partial, 'corpse').ammo, 92);
 });
 
 test('transfer range, obstacles, capacity, quantities, and insufficient AP reject atomically', () => {
-  const far = field({}, {x: 9}); rejectUnchanged(far, {type: 'transfer', targetId: 'q', item: 'ammo'});
+  const far = field({}, {x: 9}); rejectUnchanged(far, {type: 'transfer', targetId: 'q', item: AMMO});
   const wall = field({}, {x: 3}); Object.assign(wall.tiles.find(t => t.x === 2 && t.y === 3), {type: 'wall', blocked: true});
-  rejectUnchanged(wall, {type: 'transfer', targetId: 'q', item: 'ammo'});
+  rejectUnchanged(wall, {type: 'transfer', targetId: 'q', item: AMMO});
   const full = field({}, {ammo: 240, priming: 0, flints: 0, rations: 0, medkits: 0, boleadoras: 0, torches: 0});
-  rejectUnchanged(full, {type: 'transfer', targetId: 'q', item: 'ammo'});
+  rejectUnchanged(full, {type: 'transfer', targetId: 'q', item: AMMO});
   const poor = field(); troop(poor).ap = 3;
-  rejectUnchanged(poor, {type: 'transfer', targetId: 'q', item: 'ammo'});
-  rejectUnchanged(poor, {type: 'drop', item: 'ammo'});
-  for (const count of [0, -1, 1.5, NaN, 13]) rejectUnchanged(field(), {type: 'transfer', targetId: 'q', item: 'ammo', count});
+  rejectUnchanged(poor, {type: 'transfer', targetId: 'q', item: AMMO});
+  rejectUnchanged(poor, {type: 'drop', item: AMMO});
+  for (const count of [0, -1, 1.5, NaN, 13]) rejectUnchanged(field(), {type: 'transfer', targetId: 'q', item: AMMO, count});
 });
 
 test('a valid legacy overload can be reduced by dropping a large stack and remains saveable', () => {
   const state = field({ammo: 300, priming: 0, flints: 0, rations: 0, medkits: 0, boleadoras: 0, torches: 0});
   assert.equal(inventoryUsage(troop(state)).used, 15);
-  const next = order(state, {type: 'drop', item: 'ammo', count: 60});
+  const next = order(state, {type: 'drop', item: AMMO, count: 60});
   assert.equal(troop(next).ammo, 240); assert.equal(inventoryUsage(troop(next)).used, 12);
   assert.equal(next.groundItems[0].count, 60);
   assert.doesNotThrow(() => validateBattleSnapshot(next));
@@ -146,7 +147,7 @@ test('a full campaign save preserves a dropped weapon and permits exactly one la
   assert.deepEqual(saved.battle.groundItems, pair.battle.groundItems);
   const groundId = saved.battle.groundItems[0].id;
   const next = order(saved.battle, {type: 'loot', unitId: receiverId, groundId});
-  const weapon = Object.values(troop(next, receiverId).inventory)[0];
+  const weapon = Object.values(troop(next, receiverId).inventory).find(r=>r.weapon===saved.battle.groundItems[0].weapon);
   assert.equal(weapon.condition, 31); assert.equal(weapon.jammed, true); assert.equal(weapon.loaded, 1);
   assert.equal(troop(next, giverId).weaponDropped, true);
   rejectUnchanged(next, {type: 'loot', unitId: receiverId, groundId});

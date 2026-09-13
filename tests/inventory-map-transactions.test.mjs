@@ -1,4 +1,7 @@
 import test from 'node:test';
+import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
+import {availableAmmunition,AMMUNITION_TYPES} from '../game/ammunition-types.js';
+const AMMO='inventory:ammo:pistol_69';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,inventoryMapPreview,getNpcGiftResult} from '../game/tactical.js';
 import {equipmentEndpoint,equipmentFingerprint,extractEquipmentSelection,inventoryUsage} from '../game/tactical-inventory.js';
@@ -79,10 +82,10 @@ test('outfit selection drops the exact worn item without changing packed garment
 });
 
 test('relay uses the exact selected quantity and charges each legal sender',()=>{
- const b=field({ammo:5,pocketOrder:[hint('small-1','ammo',0,3),hint('small-2','ammo',1,2)]},Array.from({length:7},(_,i)=>person(`q${i}`,3+i,3)));
+ const b=field({ammo:5,pocketOrder:[hint('small-1',AMMO,0,3),hint('small-2',AMMO,1,2)]},Array.from({length:7},(_,i)=>person(`q${i}`,3+i,3)));
  const {next:n,preview:p}=accept(b,order(b,'small-1',{x:9,y:3,targetId:'q6'},{count:2}));
  assert.equal(p.kind,'relay');assert.equal(p.pa,4);assert.equal(p.totalPA,28);assert.equal(p.route.length,8);
- assert.deepEqual(partitions(actor(n),'ammo'),{'small-1':1,'small-2':2});assert.equal(actor(n,'q6').ammo,2);assert.equal(n.seed,b.seed);
+ assert.deepEqual(partitions(actor(n),AMMO),{'small-1':1,'small-2':2});assert.equal(actor(n,'q6').ammo,2);assert.equal(n.seed,b.seed);
  for(const step of p.route)assert.equal(actor(n,step.id).ap,step.id==='q6'?100:96);
  const stale=p.action,changed=structuredClone(b);actor(changed,'q3').y++;
  reject(changed,stale,/cambi|cadena/i);
@@ -99,7 +102,7 @@ test('ally toss catch and failure conserve items and charge catch AP only on suc
   assert.deepEqual(physical(actBattle(b,p.action)),physical(n));
  }
  const b=field({ammo:1},[person('q',6,3,{ap:1})]);actor(b,'q').ap=1;
- const {next:n,preview:p}=accept(b,order(b,source(actor(b),'ammo'),{x:6,y:3,targetId:'q'}));assert.equal(p.chance,0);assert.equal(actor(n,'q').ap,1);assert.equal(n.groundItems[0].count,1);
+ const {next:n,preview:p}=accept(b,order(b,source(actor(b),AMMO),{x:6,y:3,targetId:'q'}));assert.equal(p.chance,0);assert.equal(actor(n,'q').ap,1);assert.equal(n.groundItems[0].count,1);
 });
 
 test('ground intent over an ally drops or tosses without giving, healing or spending RNG',()=>{
@@ -121,16 +124,16 @@ test('full packs, stale fingerprints, changed targets and invalid quantities rej
  reject(b,order(b,'hand:right',undefined,{count:2}));
  for(const point of [{x:2.5,y:3},{x:Infinity,y:3},{x:-1,y:3},{x:24,y:3},{x:2,y:3,tacticalLevel:1}])reject(b,order(b,'small-1',point));
  reject(b,order(b,'small-1',undefined,{intent:'attack'}));
- const available=field({ammo:2}),a=order(available,source(actor(available),'ammo'),{x:3,y:3,targetId:'q'});actor(available,'q').x=4;reject(available,a,/cambió de lugar/);
- const changed=field({ammo:2}),stale=order(changed,source(actor(changed),'ammo'));actor(changed).ammo=1;reject(changed,stale,/Cambió/);
- const poor=field({ammo:2});actor(poor).ap=3;reject(poor,order(poor,source(actor(poor),'ammo')),/PA/);
+ const available=field({ammo:2}),a=order(available,source(actor(available),AMMO),{x:3,y:3,targetId:'q'});actor(available,'q').x=4;reject(available,a,/cambió de lugar/);
+ const changed=field({ammo:2}),stale=order(changed,source(actor(changed),AMMO));setTestAmmunition(actor(changed),1);reject(changed,stale,/Cambió/);
+ const poor=field({ammo:2});actor(poor).ap=3;reject(poor,order(poor,source(actor(poor),AMMO)),/PA/);
 });
 
 test('near drops respect blocked corners and distant tosses reject range or solid walls',()=>{
  const b=field({ammo:2});Object.assign(b.tiles.find(t=>t.x===3&&t.y===3),{type:'wall',blocked:true,blocksSight:true});
- reject(b,order(b,source(actor(b),'ammo'),{x:3,y:4}),/obstáculo/);
- reject(b,order(b,source(actor(b),'ammo'),{x:4,y:3}));
- reject(b,order(b,source(actor(b),'ammo'),{x:9,y:3}),/alcance/);
+ reject(b,order(b,source(actor(b),AMMO),{x:3,y:4}),/obstáculo/);
+ reject(b,order(b,source(actor(b),AMMO),{x:4,y:3}));
+ reject(b,order(b,source(actor(b),AMMO),{x:9,y:3}),/alcance/);
 });
 
 test('exploration handovers and ground placements cost time but no AP or ammunition',()=>{
@@ -143,7 +146,7 @@ test('exploration handovers and ground placements cost time but no AP or ammunit
 
 test('hidden enemy bodies cannot change point previews or become named recipients',()=>{
  const b=field({ammo:2}),hidden=structuredClone(b);Object.assign(actor(hidden,'guard'),{x:6,y:3,energy:0,unconscious:true});
- const a=order(b,source(actor(b),'ammo'),{x:6,y:3});
+ const a=order(b,source(actor(b),AMMO),{x:6,y:3});
  assert.deepEqual(inventoryMapPreview(b,actor(b),a),inventoryMapPreview(hidden,actor(hidden),a));
  const publicState={...hidden,units:hidden.units.filter(u=>u.id!=='guard')};assert.deepEqual(inventoryMapPreview(publicState,actor(publicState),a),inventoryMapPreview(hidden,actor(hidden),a));
  const named={...a,targetId:'guard'},unknown={...a,targetId:'absent'};
@@ -153,34 +156,34 @@ test('hidden enemy bodies cannot change point previews or become named recipient
 
 test('a visible civilian physically refuses the selected item and keeps the exact source owned',()=>{
  const b=field({ammo:2},[],{exploration:true,enemies:[],npcs:[{id:'civilian',name:'Vecino',x:3,y:3,hp:100}]});
- const id=source(actor(b),'ammo'),fingerprint=equipmentFingerprint(actor(b),id),{next:n,preview:p}=accept(b,order(b,id,{x:3,y:3,targetId:'civilian'}));
+ const id=source(actor(b),AMMO),fingerprint=equipmentFingerprint(actor(b),id),{next:n,preview:p}=accept(b,order(b,id,{x:3,y:3,targetId:'civilian'}));
  assert.equal(p.kind,'gift');assert.equal(getNpcGiftResult(b,n).status,'refused');assert.equal(equipmentFingerprint(actor(n),id),fingerprint);assert.equal(n.elapsedSeconds-b.elapsedSeconds,1);assert.equal(actor(n).ammo,2);assert.equal(n.groundItems.length,0);
 });
 
 test('new ground records use unique IDs and refuse the save collection limit atomically',()=>{
- const b=field({ammo:2});b.groundItems=[{id:`item-${b.turn}-1`,type:'item',item:'ammo',count:0,weight:.04,x:1,y:1}];
- const {next:n}=accept(b,order(b,source(actor(b),'ammo')));assert.equal(new Set(n.groundItems.map(g=>g.id)).size,2);
- b.groundItems=Array.from({length:2000},(_,i)=>({id:`old-${i}`,type:'item',item:'ammo',count:0,weight:.04,x:1,y:1}));
- reject(b,order(b,source(actor(b),'ammo')),/espacio/);
+ const b=field({ammo:2});b.groundItems=[{id:`item-${b.turn}-1`,type:'item',item:AMMO,kind:'ammunition',ammoType:'pistol_69',name:AMMUNITION_TYPES.pistol_69.name,count:0,weight:.04,x:1,y:1}];
+ const {next:n}=accept(b,order(b,source(actor(b),AMMO)));assert.equal(new Set(n.groundItems.map(g=>g.id)).size,2);
+ b.groundItems=Array.from({length:2000},(_,i)=>({id:`old-${i}`,type:'item',item:AMMO,kind:'ammunition',ammoType:'pistol_69',name:AMMUNITION_TYPES.pistol_69.name,count:0,weight:.04,x:1,y:1}));
+ reject(b,order(b,source(actor(b),AMMO)),/espacio/);
 });
 
 test('pure extraction supports repeated exact drops from an old overloaded pack',()=>{
- const b=field({ammo:300}),u=actor(b),before=structuredClone(u),id=source(u,'ammo');assert.equal(inventoryUsage(u).overloaded,true);
+ const b=field({ammo:300}),u=actor(b),before=structuredClone(u),id=source(u,AMMO);assert.equal(inventoryUsage(u).overloaded,true);
  const result=extractEquipmentSelection(u,{sourceId:id,expectedSource:equipmentFingerprint(u,id),count:20});
- assert.equal(result.unit.ammo,280);assert.equal(result.stack.count,20);assert.deepEqual(u,before);assert.ok(inventoryUsage(result.unit).overloaded);
+ assert.equal(availableAmmunition(result.unit,u.weapon),280);assert.equal(result.stack.count,20);assert.deepEqual(u,before);assert.ok(inventoryUsage(result.unit).overloaded);
 });
 
 test('own-body targeting drops at the source and paid handling lowers a raised gun',()=>{
- const b=field({ammo:2,weaponReady:true}),{next:n,preview:p}=accept(b,order(b,source(actor(b),'ammo'),{x:2,y:3,targetId:'p'}));
+ const b=field({ammo:2,weaponReady:true}),{next:n,preview:p}=accept(b,order(b,source(actor(b),AMMO),{x:2,y:3,targetId:'p'}));
  assert.equal(p.kind,'drop');assert.equal(p.action.targetId,undefined);assert.equal(actor(n).weaponReady,undefined);assert.equal(actor(n).ap,actor(b).ap-4);assert.equal(n.groundItems[0].x,2);assert.equal(n.groundItems[0].y,3);
- reject(b,order(b,source(actor(b),'ammo'),{x:3,y:3,targetId:'p'}),/cambió de lugar/);
+ reject(b,order(b,source(actor(b),AMMO),{x:3,y:3,targetId:'p'}),/cambió de lugar/);
 });
 
 test('map handling respects active interrupt budgets and unavailable recipients',()=>{
  const b=field({ammo:2});b.phase='interrupt';b.roundTimeCharged=true;b.enemyTurn={unitIds:['guard'],unitIndex:0,actionsTaken:1,started:true};b.interrupt={side:'player',unitIds:['q'],enemyId:'guard'};actor(b,'q').reactionTurn=b.turn;
- reject(b,order(b,source(actor(b),'ammo')));b.interrupt.unitIds.push('p');actor(b).reactionTurn=b.turn;const {next:n}=accept(b,order(b,source(actor(b),'ammo')));assert.equal(actor(n).ap,actor(b).ap-4);
+ reject(b,order(b,source(actor(b),AMMO)));b.interrupt.unitIds.push('p');actor(b).reactionTurn=b.turn;const {next:n}=accept(b,order(b,source(actor(b),AMMO)));assert.equal(actor(n).ap,actor(b).ap-4);
  for(const extra of [{hp:0},{unconscious:true,energy:0},{routed:true},{surrendered:true},{fled:true},{departure:{exitId:'gone'}}]){
-  const unavailable=field({ammo:2});Object.assign(actor(unavailable,'q'),extra);reject(unavailable,order(unavailable,source(actor(unavailable),'ammo'),{x:3,y:3,targetId:'q'}));
+  const unavailable=field({ammo:2});Object.assign(actor(unavailable,'q'),extra);reject(unavailable,order(unavailable,source(actor(unavailable),AMMO),{x:3,y:3,targetId:'q'}));
  }
 });
 
@@ -188,15 +191,15 @@ const roof=(x,y=3)=>({id:`map-roof:${x}:${y}`,x,y,tacticalLevel:1,elevation:3,ki
 test('same-roof drops and cross-floor tosses retain the exact supported landing after save',()=>{
  const options={upperSurfaces:[roof(6),roof(7)],climbLinks:[]};
  const upstairs=field({x:6,tacticalLevel:1,ammo:2},[],options);
- const drop=order(upstairs,source(actor(upstairs),'ammo'),{x:7,y:3,tacticalLevel:1}),{next:n,preview:p}=accept(upstairs,drop);
+ const drop=order(upstairs,source(actor(upstairs),AMMO),{x:7,y:3,tacticalLevel:1}),{next:n,preview:p}=accept(upstairs,drop);
  assert.equal(p.kind,'drop');assert.equal(n.groundItems[0].tacticalLevel,1);assert.equal(n.groundItems[0].x,7);
  const saved=validateBattleSnapshot(JSON.parse(JSON.stringify(n))),looted=actBattle(saved,{type:'loot',unitId:'p',groundId:n.groundItems[0].id,count:1});assert.equal(looted.lastError,null);assert.equal(actor(looted).ammo,2);assert.equal(looted.groundItems[0].count,0);
  const downstairs=field({ammo:2},[person('q',6,3,{tacticalLevel:1,dexterity:100})],options);
- const tossed=accept(downstairs,order(downstairs,source(actor(downstairs),'ammo'),{x:6,y:3,tacticalLevel:1},{intent:'ground'}));
+ const tossed=accept(downstairs,order(downstairs,source(actor(downstairs),AMMO),{x:6,y:3,tacticalLevel:1},{intent:'ground'}));
  assert.equal(tossed.preview.kind,'throw');assert.equal(tossed.next.groundItems[0].tacticalLevel,1);assert.equal(tossed.next.groundItems[0].x,6);
- const given=accept(downstairs,order(downstairs,source(actor(downstairs),'ammo'),{x:6,y:3,tacticalLevel:1,targetId:'q'}));assert.equal(given.preview.kind,'throw');assert.equal(actor(given.next,'q').ammo,1);assert.equal(given.next.groundItems.length,0);
- reject(upstairs,order(upstairs,source(actor(upstairs),'ammo'),{x:6,y:3,tacticalLevel:0}),/bloqueada/);
- reject(upstairs,order(upstairs,source(actor(upstairs),'ammo'),{x:7,y:3,tacticalLevel:null}));
+ const given=accept(downstairs,order(downstairs,source(actor(downstairs),AMMO),{x:6,y:3,tacticalLevel:1,targetId:'q'}));assert.equal(given.preview.kind,'throw');assert.equal(actor(given.next,'q').ammo,1);assert.equal(given.next.groundItems.length,0);
+ reject(upstairs,order(upstairs,source(actor(upstairs),AMMO),{x:6,y:3,tacticalLevel:0}),/bloqueada/);
+ reject(upstairs,order(upstairs,source(actor(upstairs),AMMO),{x:7,y:3,tacticalLevel:null}));
 });
 
 test('partly loaded weapon progress follows its finite instance through a failed catch',()=>{
@@ -206,7 +209,7 @@ test('partly loaded weapon progress follows its finite instance through a failed
 
 test('NPC gift availability requires the clicked visible room and exact character cell',()=>{
  const point={x:3,y:4},b=field({ammo:2},[],{exploration:true,enemies:[],npcs:[{id:'hidden-npc',name:'Vecino',...point,hp:100}]});b.tiles.find(t=>t.x===point.x&&t.y===point.y).roomId='unseen-room';b.revealedRooms=[];
- const id=source(actor(b),'ammo'),unknown=order(b,id,{...point,targetId:'absent'}),hidden=order(b,id,{...point,targetId:'hidden-npc'});
+ const id=source(actor(b),AMMO),unknown=order(b,id,{...point,targetId:'absent'}),hidden=order(b,id,{...point,targetId:'hidden-npc'});
  assert.equal(reject(b,hidden).reason,reject(b,unknown).reason);
  b.revealedRooms=['unseen-room'];const result=accept(b,hidden);assert.equal(result.preview.kind,'gift');assert.equal(getNpcGiftResult(b,result.next).status,'refused');
  const elsewhere={x:1,y:3};assert.equal(reject(b,order(b,id,{...elsewhere,targetId:'hidden-npc'})).reason,reject(b,order(b,id,{...elsewhere,targetId:'absent'})).reason);

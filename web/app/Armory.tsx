@@ -4,6 +4,7 @@ import {useState} from 'react';
 import {rosterFor,isSupplied,operativeLocation} from '../../game/campaign.js';
 import {isImportedEquipment,EQUIPMENT_CATALOG,armoryInventory,refillCost,firearmRepairCost,merchantStatus,equipmentInventoryUsage,equipmentCatalogItem,equipmentLabel,resaleBreakdown,USED_EQUIPMENT_LIMIT} from '../../game/equipment.js';
 import UsedEquipment from './UsedEquipment';
+import AmmunitionSupplies from './AmmunitionSupplies';
 import StationedArtillery from './StationedArtillery';
 import {FittingReadout} from './JA2Bayonet';
 import './armory.css';
@@ -36,7 +37,7 @@ export default function Armory({state:s,dispatch}:Props){
    <button className="line-button" disabled={!market.available||!local||!record||record.weaponDropped||firearmRepairCost(record)===0||s.resources.treasury<firearmRepairCost(record)} onClick={()=>dispatch({type:'repairWeapon',operativeId:op.id})}>Reparar arma · {firearmRepairCost(record??{})} pesos</button><small>La reposición y la reparación requieren una maestranza abastecida en el sector actual.</small></>}
    <StationedArtillery state={s} dispatch={dispatch}/><h3>Batería de campaña</h3><p>Elegí hasta tres piezas de depósito para el próximo despliegue. Salen del depósito y permanecen en el sector al terminar la operación.</p>{[0,1,2].map(i=><label key={i} htmlFor={`battery-${i}`}>Pieza {i+1}<select id={`battery-${i}`} value={battery[i]??''} onChange={e=>{const next=[...battery];next[i]=e.target.value;setBattery(next);}}><option value="">Sin pieza</option>{EQUIPMENT_CATALOG.filter(w=>w.category==='artillery').map(w=><option key={w.item} value={w.item}>{w.name}</option>)}</select></label>)}<button className="gold-button" onClick={()=>dispatch({type:'configureArtillery',types:battery.filter(Boolean)})}>Preparar batería</button>
   </div><div className="armory-catalog">
-   <UsedEquipment state={s} dispatch={dispatch}/>
+   <AmmunitionSupplies state={s} dispatch={dispatch}/><UsedEquipment state={s} dispatch={dispatch}/>
    {['firearm','blade','artillery'].map(category=><div key={category}><h3>{category==='firearm'?'Armas de chispa':category==='blade'?'Acero y armas de asta':'Piezas de artillería'}</h3>{inventory.filter(w=>w.category===category).map((w:any)=>{
     const offer=merchantStatus(s,w,isSupplied),price=isImportedEquipment(w)?tradeQuote(s,w.price):w.price;
     return <article key={w.stockKey??w.item}><div><strong>{w.name}</strong><small>{w.quantity} en armería · {offer.stock} disponibles para {isImportedEquipment(w)?'pedir':'comprar'}{w.category==='artillery'?` · Dotación: ${w.crew} hombres`:''}</small>{offer.stock===0&&<small>Reposición en {offer.restockIn} horas de abastecimiento{isImportedEquipment(w)&&s.blockade?' · En pausa por bloqueo':''}.</small>}</div><button className="line-button" disabled={!offer.available||offer.stock<1||s.resources.treasury<price} aria-label={`${isImportedEquipment(w)?'Importar':'Comprar'} ${w.name} · ${price} pesos`} title={offer.reason??undefined} onClick={()=>dispatch({type:'purchaseEquipment',item:w.stockKey??w.item,quantity:1})}>{isImportedEquipment(w)?'Importar':'Comprar'} · {price} pesos</button></article>;

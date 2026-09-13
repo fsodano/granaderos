@@ -1,3 +1,4 @@
+import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,endTurn,canEndCombat,canSee} from '../game/tactical.js';
@@ -21,7 +22,7 @@ test('movement stops on first observed tile even when only the enemy has sight',
  assert.ok(s.log.some(l=>l.includes('toma la iniciativa')));
 });
 test('leaving contact preserves living opponents, AP, condition, supplies and the clock',()=>{
- const s=createBattle([{id:'p',x:1,y:1}],map());s.units[0].ap=7;s.units[0].loaded=0;s.units[0].ammo=3;s.units[0].condition=42;s.quietCombatTurns=2;
+ const s=createBattle([{id:'p',x:1,y:1}],map());s.units[0].ap=7;s.units[0].loaded=0;setTestAmmunition(s.units[0],3);s.units[0].condition=42;s.quietCombatTurns=2;
  assert.equal(canEndCombat(s),true);const n=actBattle(s,{type:'explore'});
  assert.equal(n.mode,'exploration');assert.equal(n.status,'active');assert.equal(n.sectorCleared,false);assert.deepEqual(n.units,s.units);assert.equal(n.elapsedSeconds,s.elapsedSeconds);
  assert.doesNotThrow(()=>validateBattleSnapshot(n));
@@ -48,7 +49,8 @@ test('sector re-entry retains enemy condition while rebasing encounter memory an
  const request={id:'reentry',sector:'san_nicolas',squad:[{id:'p',weapon:1800}],hour:12};
  const previous=enterSector(request),enemy=previous.units.find(u=>u.side==='enemy');
  previous.turn=9;enemy.lastKnownEnemy={x:1,y:1,turn:9};enemy.lastHeardNoise={x:2,y:2,turn:9,kind:'fire',uncertainty:3};enemy.lastTargetId='p';enemy.lastShotPosition={x:enemy.x,y:enemy.y};
- Object.assign(enemy,{hp:60,energy:70,loaded:0,ammo:3,condition:42,reactionTurn:9,knockedDown:true,stance:'prone',movementMode:'prone',mounted:false});
+ Object.assign(enemy,{hp:60,energy:70,loaded:0,condition:42,reactionTurn:9,knockedDown:true,stance:'prone',movementMode:'prone',mounted:false});
+ setTestAmmunition(enemy,3);
  const next=enterSector(request,previous),retained=next.units.find(u=>u.id===enemy.id);
  assert.equal(retained.hp,60);assert.equal(retained.ammo,3);assert.equal(retained.loaded,0);assert.equal(retained.condition,42);assert.equal(retained.knockedDown,true);
  assert.equal(retained.reactionTurn,0);assert.equal(retained.lastHeardNoise,undefined);assert.equal(retained.lastTargetId,undefined);assert.ok(!retained.lastKnownEnemy||retained.lastKnownEnemy.turn===next.turn);

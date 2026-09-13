@@ -1,3 +1,4 @@
+import {AMMUNITION_TYPES,availableAmmunition,totalReserveAmmunition,weaponAmmoType} from './ammunition-types.js';
 import {tacticalLevel, sameCell, sameSurface, spaceKey} from './tactical-space.js';
 import {OUTFITS,wornOutfit,hasPoncho} from './outfits.js';
 import {handLayout,selectMainHand} from './hand-layout.js';
@@ -84,14 +85,14 @@ function reloadLabel(plan){
 }
 function reloadNote(state,unit,plan){
   if(!plan.available)return undefined;
-  if(!plan.hands)return plan.partial?`Carga ${plan.rounds} cartuchos ahora. Faltan ${plan.remainingPA} PA para completar la recarga. Continuá con R o un clic de disparo con el arma vacía.`:`Carga ${plan.rounds} cartucho${plan.rounds===1?'':'s'}. Quedan ${unit.ammo-plan.rounds} de reserva. Hacé otro clic para disparar.`;
+  if(!plan.hands)return plan.partial?`Carga ${plan.rounds} cartuchos ahora. Faltan ${plan.remainingPA} PA para completar la recarga. Continuá con R o un clic de disparo con el arma vacía.`:`Carga ${plan.rounds} cartucho${plan.rounds===1?'':'s'}. Quedan ${totalReserveAmmunition(unit)-plan.rounds} de reserva. Hacé otro clic para disparar.`;
   const hands=plan.hands.map(hand=>`${hand.hand==='primary'?'Mano principal':'Segunda mano'}: ${hand.partial?'recarga parcial, ':''}carga ${hand.rounds} cartucho${hand.rounds===1?'':'s'}${state.mode==='exploration'?'':` (${hand.pa} PA)`}.`);
-  return [...hands,plan.partial?`Faltan ${plan.remainingPA} PA para completar la recarga. Continuá con R.`:null,plan.offhandPending?'La segunda mano queda pendiente. Conservás los PA sobrantes.':null,`Quedan ${unit.ammo-plan.rounds} cartuchos de reserva.`,plan.partial?null:'Hacé otro clic para disparar.'].filter(Boolean).join(' ');
+  return [...hands,plan.partial?`Faltan ${plan.remainingPA} PA para completar la recarga. Continuá con R.`:null,plan.offhandPending?'La segunda mano queda pendiente. Conservás los PA sobrantes.':null,`Quedan ${totalReserveAmmunition(unit)-plan.rounds} cartuchos de reserva.`,plan.partial?null:'Hacé otro clic para disparar.'].filter(Boolean).join(' ');
 }
 export function emptyGunPreview(state, unit) {
   if (!unit || !hasFirearm(unit) || unit.loaded > 0) return null;
   const plan = reloadPlan(unit, state), rounds = plan.available, pa = state.mode === 'exploration' ? 0 : plan.pa;
-  const reason = !rounds ? 'Sin munición. No quedan cartuchos.'
+  const reason = !rounds ? `Sin munición compatible. Requiere ${AMMUNITION_TYPES[weaponAmmoType(unit.weapon)]?.name??'la carga del arma'}.`
     : unit.jammed ? 'Cebá el arma antes de recargar (R).'
     : unit.knockedDown ? 'Primero debés levantarte.'
     : !unitCanAct(state, unit) ? 'El combatiente no puede actuar.'
@@ -474,7 +475,7 @@ export function inventoryModel(state, unit) {
     {id: 'medical', label: 'Medicina', value: unit.medical},
   ];
   const supplies = [
-    {id: 'ammo', label: 'Cartuchos', count: unit.ammo},
+    ...(unit.ammunitionVersion===1?[]:[{id:'ammo',label:'Cartuchos',count:unit.ammo}]),
     {id: 'priming', label: 'Cebado', count: unit.priming},
     {id: 'flints', label: 'Sílex', count: unit.flints},
     {id: 'rations', label: 'Raciones', count: unit.rations},
@@ -492,7 +493,7 @@ export function inventoryModel(state, unit) {
         key,
         ...record,
         equippable: Boolean(weapon || blade || record.kind === 'outfit'),
-        name: record.weapon === 1811 ? fittingLabel(record.fittingPattern) : weapon?.name ?? blade?.name ?? OUTFITS[record.outfit]?.name ?? tools.find(tool => tool.key === key)?.name ?? null,
+        name: record.weapon === 1811 ? fittingLabel(record.fittingPattern) : weapon?.name ?? blade?.name ?? OUTFITS[record.outfit]?.name ?? tools.find(tool => tool.key === key)?.name ?? record.name ?? null,
       };
     });
   const outfit=wornOutfit(unit);
@@ -566,7 +567,7 @@ export function nearbyLootOptions(state, unit, point=/** @type {{x:number,y:numb
   for (const source of state.groundItems || []) {
     if (source.heldBy || !(source.count > 0) || !visible(source)) continue;
     const stack = source.stack || source;
-    options.push({...stack, id: `ground:${source.id}`, label: WEAPONS[stack.weapon]?.name || BLADES[stack.weapon]?.name || OUTFITS[stack.outfit]?.name || SUPPLY_ITEMS[stack.item || stack.type]?.label || 'Objeto', count: source.count, source: 'En el suelo', action: {type: 'loot', groundId: source.id}});
+    options.push({...stack, id: `ground:${source.id}`, label: WEAPONS[stack.weapon]?.name || BLADES[stack.weapon]?.name || OUTFITS[stack.outfit]?.name || SUPPLY_ITEMS[stack.item || stack.type]?.label || stack.name || 'Objeto', count: source.count, source: 'En el suelo', action: {type: 'loot', groundId: source.id}});
   }
   return options;
 }
@@ -618,7 +619,7 @@ export function nearbyEnvironmentModel(state, unit, ctx = {}) {
   const target = targets.find(entry => entry.key === ctx.targetKey) || targets[0];
   if (!target) return {targets, target: null, preview: null, contents: [], verbs: [], loot: null};
   const raw = found.get(target.key), preview = environmentPreview(state, unit, target, ctx.verb || undefined);
-  const contents = visibleContainerContents(raw).map((stack, index) => ({...stack, index, label: WEAPONS[stack.weapon]?.name || BLADES[stack.weapon]?.name || OUTFITS[stack.outfit]?.name || TOOL_TYPES[stack.toolKey]?.label || SUPPLY_ITEMS[stack.item]?.label || 'Pertrechos'}));
+  const contents = visibleContainerContents(raw).map((stack, index) => ({...stack, index, label: WEAPONS[stack.weapon]?.name || BLADES[stack.weapon]?.name || OUTFITS[stack.outfit]?.name || TOOL_TYPES[stack.toolKey]?.label || SUPPLY_ITEMS[stack.item]?.label || stack.name || 'Pertrechos'}));
   const verbs = ENVIRONMENT_VERBS.map(id => ({id, label: environmentPreview(state, unit, target, id).label}));
   const loot = target.kind === 'container' ? containerLootPreview(state, unit, target, ctx.index ?? 0, ctx.count ?? 1) : null;
   return {targets, target, preview, contents, verbs, loot};
@@ -697,7 +698,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
     charge: ['medical','tool','supply','item'].includes(u.activeSlot)||u.stance==='prone',
     heal: !medicalPreview.allowed,
     loot: false,
-    reload: !firearm || !loading?.pa || !(u.ammo > 0) || Boolean(u.jammed),
+    reload: !firearm || !loading?.pa || !loading.available || Boolean(u.jammed),
     reprime: !firearm || !u.jammed || !(u.priming > 0),
     weapon: false,
     stance: Boolean(u.mounted),

@@ -9,6 +9,7 @@ import {equipOpeningRifles} from './opening-equipment.mjs';
 import {autoBandageBattle} from '../game/auto-bandage.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
+import {ammunitionByType,totalReserveAmmunition} from '../game/ammunition-types.js';
 
 const distance=(a,b)=>sameSurface(a,b)?Math.hypot(a.x-b.x,a.y-b.y):Infinity;
 const tacticalOrder=(b,action)=>{const next=actBattle(b,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);return next;};
@@ -114,8 +115,8 @@ export function runOpeningCampaign({report=()=>{}}={}){
   let {battle:b,actions}=fight(request);
   assert.deepEqual(b,fight(request).battle,'identical seed and legal orders replay deterministically');
   assert.ok(actions>0);assert.ok(b.turn>1);
-  assert.ok(b.units.filter(u=>u.side==='player').reduce((sum,u)=>sum+u.loaded+u.ammo,0)<request.issuedCartridges+(request.missionAllies??[]).reduce((sum,u)=>sum+u.loaded+u.ammo,0),'actual shots consume issued cartridges');
-  transcript.push({sector,startSeconds:b.startSeconds,status:b.status,turn:b.turn,actions,units:b.units.map(u=>({id:u.id,hp:u.hp,energy:u.energy,ammo:u.ammo,loaded:u.loaded,routed:u.routed}))});
+  assert.ok(b.units.filter(u=>u.side==='player').reduce((sum,u)=>sum+u.loaded+totalReserveAmmunition(u),0)<request.issuedCartridges+(request.missionAllies??[]).reduce((sum,u)=>sum+u.loaded+totalReserveAmmunition(u),0),'actual shots consume issued cartridges');
+  transcript.push({sector,startSeconds:b.startSeconds,status:b.status,turn:b.turn,actions,units:b.units.map(u=>({id:u.id,hp:u.hp,energy:u.energy,ammo:u.ammo,reserve:ammunitionByType(u),loaded:u.loaded,routed:u.routed}))});
   assert.equal(b.status,'victory',JSON.stringify(transcript));
   if(sector==='san_nicolas'){
    // Recover finite dressings from the fallen doctor after an actual approach.

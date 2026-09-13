@@ -9,6 +9,8 @@ import {propBlocksAt,propCells} from './props.js';
 import {boundaryMatches} from './tactical-exits.js';
 import {operativeLocation,operativeInTransit} from './squads.js';
 import {returnEquipment,setCarriedLoading,clearCarriedLoading} from './equipment.js';
+import {syncUnitAmmunition} from './tactical-ammunition.js';
+import {syncCarriedAmmunition} from './campaign-ammunition.js';
 import {weaponItemWeight} from './weapon-fittings.js';
 import {validateBattleSnapshot} from './validate-battle.js';
 import {MISSION_SCENES} from './missions.js';
@@ -35,7 +37,7 @@ function poolSources(snapshot){
  for(const body of snapshot.units??[])if(body.knownToPlayer&&body.hp<=0&&!body.departure&&!body.fled){
   const disposition=snapshot.returnLedger?.entries?.find(e=>e.unitId===body.id),owner=snapshot.sectorId==='san_lorenzo'?'san_nicolas':snapshot.sectorId;
   if(disposition&&(disposition.kind!=='dead'||disposition.sector!==owner))continue;
-  const items=[...Object.keys(SUPPLY_ITEMS),...(!body.weaponDropped&&body.weapon?['primary']:[]),...(body.blade?['blade']:[]),...(body.offHand?['offhand']:[]),...(wornOutfit(body)?['outfit']:[]),...(body.equipmentCursor?['cursor']:[]),...Object.keys(body.inventory??{}).map(key=>`inventory:${key}`)];
+  const items=[...Object.keys(SUPPLY_ITEMS).filter(key=>key!=='ammo'||body.ammunitionVersion!==1),...(!body.weaponDropped&&body.weapon?['primary']:[]),...(body.blade?['blade']:[]),...(body.offHand?['offhand']:[]),...(wornOutfit(body)?['outfit']:[]),...(body.equipmentCursor?['cursor']:[]),...Object.keys(body.inventory??{}).map(key=>`inventory:${key}`)];
   for(const item of items)if(itemQuantity(body,item)>0){const {stack}=extractItemQuantity(body,item,itemQuantity(body,item));add(JSON.stringify(['body',body.id,item]),body,stack,{kind:'body',item});}
  }
  for(const chest of snapshot.props??[])if(chest.type==='chest'&&chest.knownToPlayer&&chest.open&&!chest.locked&&!chest.trap?.armed){
@@ -60,7 +62,7 @@ export function sectorInventorySites(s,sectorId){
 export function knownCampaignSectorEquipment(s,sectorId){
  return sectorInventorySites(s,sectorId).flatMap(site=>knownSectorEquipment(inventorySite(s,site.id).snapshot).map(row=>({...row,key:JSON.stringify([site.id,row.key]),siteId:site.id,siteName:site.name})));
 }
-function carriedActor(s,op){const r=s.operativeState[op.id];return {...op,...r,id:String(op.id),side:'player',loaded:r.carriedLoaded??0,ammo:(r.carriedAmmo??0)-(r.carriedLoaded??0),...(r.carriedReloadProgress?{reloadProgress:r.carriedReloadProgress}:{}),ap:100,energy:r.energy??100,unconscious:false,movementMode:'walk',stance:'standing'};}
+function carriedActor(s,op){const r=s.operativeState[op.id];return syncUnitAmmunition({...op,...r,id:String(op.id),side:'player',loaded:r.carriedLoaded??0,...(r.carriedReloadProgress?{reloadProgress:r.carriedReloadProgress}:{}),ap:100,energy:r.energy??100,unconscious:false,movementMode:'walk',stance:'standing'});}
 function actorAt(s,sectorId,op){
  const r=s.operativeState[op.id],snapshot=inventorySite(s,sectorId).snapshot;
  const old=snapshot?.units.find(u=>u.id===String(op.id)&&!u.departure&&u.hp>0);
@@ -95,7 +97,7 @@ export function sectorInventoryModel(s,sectorId,roster,operativeId){
   return {key:row.key,label:row.label,count:row.stack.count,...planningPoint(row),kind:row.kind,expected:JSON.stringify(row.stack),condition:row.stack.condition,loaded:row.stack.loaded,jammed:row.stack.jammed,fittingPattern:row.stack.fittingPattern,reachable,reason:reason??(!reachable?'No hay un camino abierto hasta este equipo.':null)};
  });
  const personal=op?carriedActor(s,op):null;
- const carried=personal?[...Object.keys(SUPPLY_ITEMS),...(!personal.weaponDropped&&personal.weapon?['primary']:[]),...(personal.blade?['blade']:[]),...(personal.offHand?['offhand']:[]),...(wornOutfit(personal)?['outfit']:[]),...Object.keys(personal.inventory??{}).map(key=>`inventory:${key}`)].filter(item=>itemQuantity(personal,item)>0).map(item=>{
+ const carried=personal?[...Object.keys(SUPPLY_ITEMS).filter(key=>key!=='ammo'||personal.ammunitionVersion!==1),...(!personal.weaponDropped&&personal.weapon?['primary']:[]),...(personal.blade?['blade']:[]),...(personal.offHand?['offhand']:[]),...(wornOutfit(personal)?['outfit']:[]),...Object.keys(personal.inventory??{}).map(key=>`inventory:${key}`)].filter(item=>itemQuantity(personal,item)>0).map(item=>{
   const row={item,label:itemDescriptor(personal,item).label,count:itemQuantity(personal,item)};
   if(item==='primary'&&WEAPONS[personal.weapon]?.capacity>0){row.loaded=personal.loaded;row.condition=personal.condition;row.jammed=personal.jammed;row.reloadProgress=personal.reloadProgress;}
   if(item==='outfit'){row.condition=personal.outfit.condition;row.expected=JSON.stringify(personal.outfit);row.inventoryKey=null;let reason=carriedReason;if(!reason)try{planEquipLoot(personal,null,'outfit');}catch(error){reason=error.message;}row.equip=[{slot:'outfit',label:'Guardar vestimenta',valid:!reason,reason}];}
@@ -173,7 +175,7 @@ export function moveSectorItem(s,action,roster){
   const row=poolSources(snapshot).find(row=>row.key===action.sourceKey),entry=model.entries.find(row=>row.key===action.sourceKey);
   need(row&&entry?.reachable,entry?.reason??'El equipo ya no está disponible.');need(action.expected===JSON.stringify(row.stack),'El equipo cambió. Revisá la lista antes de recogerlo.');need(count<=row.stack.count,'No queda esa cantidad del objeto.');
   stack={...row.stack,count};next=applyItemQuantity(actor,stack);
-  if(row.kind==='body'){const extraction=extractItemQuantity(row.source,row.item,count);Object.keys(row.source).forEach(key=>delete row.source[key]);Object.assign(row.source,extraction.unit);}
+  if(row.kind==='body'){const extraction=extractItemQuantity(row.source,row.item,count);syncUnitAmmunition(extraction.unit);Object.keys(row.source).forEach(key=>delete row.source[key]);Object.assign(row.source,extraction.unit);}
   else if(row.kind==='drop')row.source.taken=true;
   else if(row.kind==='container'){row.source.contents[row.index].count-=count;if(!row.source.contents[row.index].count)row.source.contents.splice(row.index,1);}
   else row.source.count-=count;
@@ -185,7 +187,6 @@ export function moveSectorItem(s,action,roster){
  }
  const record=s.operativeState[op.id];returnEquipment(s,op.id,next);
  for(const key of fields)if(next[key]!==undefined)record[key]=copy(next[key]);
- record.carriedAmmo=next.ammo+(next.loaded??0);
  const source=direction==='arrange'&&action.kind==='equipment'?equipmentEndpoint(actor,action.sourceId):null;
  const destination=source?equipmentEndpoint(actor,action.destinationId):null;
  const incoming=destination?.id==='hand:right'?source?.item:source?.id==='hand:right'?destination?.item:null;
@@ -194,6 +195,7 @@ export function moveSectorItem(s,action,roster){
  const equipsMainWeapon=changesMainWeapon||direction==='equip'&&(action.slot==='primary'||action.slot==='mainhand'&&(action.inventoryKey==='offhand'||action.inventoryKey.startsWith('inventory:')&&stack.weapon));
  if(equipsMainWeapon||record.carriedLoaded!==undefined)setCarriedLoading(record,next);
  else if(next.weaponDropped)clearCarriedLoading(record);
+ syncCarriedAmmunition(record,next.weapon);
  // Returned living soldiers and their cartridge receipt are historical.
  // Their next deployment uses the current campaign equipment record.
  if(changedGround||!['equip','issueOutfit','arrange','attachment'].includes(direction)){

@@ -1,3 +1,4 @@
+import {AMMUNITION_TYPES,validateAmmunitionStack,isAmmunitionStack} from './ammunition-types.js';
 import {OUTFITS,validateOutfit,wornOutfit} from './outfits.js';
 import {handLayout,handsRequired,selectMainHand} from './hand-layout.js';
 import {allocatePockets,rearrangePockets,pocketOrderFromSlots,validatePocketOrder} from './inventory-pockets.js';
@@ -52,6 +53,8 @@ function record(value) {
   if (!object(value)) fail('El objeto guardado no es válido.');
   const result = {...value, count: quantity(value.count), weight: finite(value.weight ?? 0, 0, 10000, 'El peso del objeto no es válido.')};
   for (const key of Object.keys(result)) if (['__proto__', 'constructor', 'prototype'].includes(key)) fail('Los datos del objeto no son válidos.');
+  if(result.ammoType!==undefined&&!isAmmunitionStack(result))fail('El tipo de munición requiere una pila de cartuchos.');
+  validateAmmunitionStack(result);
   if (result.weapon !== undefined) {
     const spec = weapon(result.weapon);
     result.loaded = quantity(result.loaded ?? 0);
@@ -91,6 +94,7 @@ function resolve(unit, item, validatedPack) {
     if (!own(inventory, key)) fail('Ese objeto ya no está en el inventario.');
     return {kind: 'inventory', key, item: `inventory:${key}`, record: record(inventory[key])};
   }
+  if (item === 'ammo' && unit.ammunitionVersion === 1) fail('Seleccioná una pila de munición del calibre indicado.');
   if (own(SUPPLY_ITEMS, item)) return {kind: 'supply', key: item, item, count: quantity(unit[item] ?? 0)};
   if(item==='outfit')return {kind:'outfit',key:item,item,record:wornOutfit(unit)};
   if (item === 'primary' || item === 'blade' || item === 'offhand') return {kind: 'hand', key: item, item};
@@ -129,6 +133,7 @@ export function handRecord(unit, slot) {
     ...((primary?unit.weaponFittingPattern:unit.bladeFittingPattern)!=null ? {fittingPattern:primary?unit.weaponFittingPattern:unit.bladeFittingPattern} : {})});
 }
 function recordDescriptor(item, value) {
+  if (isAmmunitionStack(value)) {const spec=AMMUNITION_TYPES[value.ammoType];return {item,label:value.name,name:value.name,ammoType:value.ammoType,stackLimit:value.instanceId?1:spec.stackLimit,slotSize:1,weight:spec.weight,kind:'ammunition'};}
   const spec = value.weapon === undefined ? null : weapon(value.weapon);
   const handheld = spec && spec.id >= 1800 && spec.id <= 1813;
   const compactWeapon = handheld && [1805, 1806, 1808, 1811, 1813].includes(spec.id);
@@ -187,13 +192,13 @@ export function inventoryUsage(unit) {
   validatePocketOrder(unit.pocketOrder);
   const inventory=pack(unit);
   for(const slot of unit.pocketOrder??[]){
-    const item=slot.item,known=own(SUPPLY_ITEMS,item)||['primary','blade','offhand','outfit'].includes(item)||item.startsWith('inventory:')&&own(inventory,item.slice(10));
+    const item=slot.item,known=(own(SUPPLY_ITEMS,item)&&(item!=='ammo'||unit.ammunitionVersion!==1))||['primary','blade','offhand','outfit'].includes(item)||item.startsWith('inventory:')&&own(inventory,item.slice(10));
     // Known depleted or held items still have a limit. A stale oversized hint
     // must not pass save admission and then prevent the next real pickup.
     if(slot.count!==undefined&&known&&slot.count>resolvedDescriptor(unit,resolve(unit,item,inventory)).stackLimit)fail('La cantidad del bolsillo supera el límite de la pila.');
   }
   const items = [],hands=handLayout(unit);
-  for (const item of [...Object.keys(SUPPLY_ITEMS), ...Object.keys(inventory).sort().map(key => `inventory:${key}`),...hands.stowed]) {
+  for (const item of [...Object.keys(SUPPLY_ITEMS).filter(item=>item!=='ammo'||unit.ammunitionVersion!==1), ...Object.keys(inventory).sort().map(key => `inventory:${key}`),...hands.stowed]) {
     const entry=resolve(unit,item,inventory),count=resolvedQuantity(unit,entry)-hands.held.filter(held=>held===item).length;
     if (!count) continue;
     const descriptor=resolvedDescriptor(unit,entry),stacks=Math.ceil(count/descriptor.stackLimit);
@@ -287,6 +292,7 @@ function incoming(stack) {
   if (!object(stack) || typeof stack.item !== 'string') fail('El objeto transferido no es válido.');
   quantity(stack.count, 1);
   if (own(SUPPLY_ITEMS, stack.item)) {
+    if (isAmmunitionStack(stack)||stack.ammoType!==undefined) fail('La munición debe conservar su pila de inventario.');
     if (['weapon', 'loaded', 'reloadProgress', 'condition', 'jammed', 'instanceId','fittings','fittingPattern'].some(key => stack[key] !== undefined)) fail('Los suministros no pueden contener datos de un arma.');
     return {kind: 'supply', key: stack.item, value: {count: stack.count, weight: SUPPLY_ITEMS[stack.item].weight}};
   }
@@ -313,6 +319,7 @@ const equipmentCursorSource=id=>physicalEquipmentSlot(id)||id.startsWith('attach
 export function validateEquipmentCursor(unit){
  const cursor=unit.equipmentCursor;if(cursor===undefined)return true;
  if(!object(cursor)||Object.keys(cursor).some(key=>!['sourceId','stack'].includes(key))||typeof cursor.sourceId!=='string'||!equipmentCursorSource(cursor.sourceId)||!object(cursor.stack)||cursor.stack.item==='cursor')fail('El objeto del cursor no es válido.');
+ if(unit.ammunitionVersion===1&&cursor.stack.item==='ammo')fail('La munición del cursor necesita un tipo de carga definido.');
  const descriptor=itemStackDescriptor(cursor.stack);if(cursor.stack.count>descriptor.stackLimit)fail('La cantidad del cursor supera el límite de la pila.');
  const existing=[...heldItemIds(unit),...Object.values(pack(unit)).filter(value=>object(value)&&value.count>0).flatMap(fittingItemIds)],ids=fittingItemIds(cursor.stack);
  if(new Set(ids).size!==ids.length||ids.some(id=>existing.includes(id)))fail('La identidad del objeto del cursor está duplicada.');
@@ -333,6 +340,7 @@ function sameMetadata(left, right) {
 }
 // Deferred checks are only for atomic equipment planners, which validate the final layout.
 export function applyItemQuantity(unit, stack, {deferCapacity=false}={}) {
+  if (stack.item==='ammo'&&unit.ammunitionVersion===1) fail('La munición necesita un tipo de carga definido.');
   const entry = incoming(stack), usage = inventoryUsage(unit);
   if (!deferCapacity && usage.overloaded) fail('El inventario está sobrecargado. Retirá objetos antes de recibir más.');
   const next = structuredClone(unit); next.inventory ??= {};

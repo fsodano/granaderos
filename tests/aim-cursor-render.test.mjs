@@ -1,3 +1,4 @@
+import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
 import {componentTree} from './component-tree.mjs';
 import {register} from 'node:module';
 register('./tactical-render-loader.mjs',import.meta.url);
@@ -41,14 +42,14 @@ test('cursor AP labels stay inside the right edge and above the lower combat log
 });
 
 test('empty firearm cursor shows a reload arrow and cost, then an X when no cartridges remain',()=>{
- const s=field(),u=s.units[0];Object.assign(u,{loaded:0,ammo:2});
+ const s=field(),u=s.units[0];u.loaded=0;setTestAmmunition(u,2);
  const draw=()=>render(h('svg',null,h(AimCursor,{point:{x:80,y:90},aim:4,preview:targetPreview(s,u,s.units[1],{mode:'fire',aim:4}),target:s.units[1]})));
  let html=draw();assert.match(html,/aim-reload/);assert.match(html,/Recargar · \d+ PA/);assert.doesNotMatch(html,/aim-step|Cabeza|Torso|Puntería/);
- u.ammo=0;html=draw();assert.match(html,/class="aim-empty"/);assert.match(html,/Sin munición/);assert.match(html,/aim-cursor invalid/);assert.doesNotMatch(html,/aim-reload|aim-step/);
+ setTestAmmunition(u,0);html=draw();assert.match(html,/class="aim-empty"/);assert.match(html,/Sin munición/);assert.match(html,/aim-cursor invalid/);assert.doesNotMatch(html,/aim-reload|aim-step/);
 });
 
 test('partial reload reticle shows the immediate cost and the remaining work',()=>{
- const s=field(),u=s.units[0];Object.assign(u,{weapon:1802,loaded:0,ammo:2,ap:20});
+ const s=field(),u=s.units[0];Object.assign(u,{weapon:1802,loaded:0,ap:20});setTestAmmunition(u,2);
  const preview=targetPreview(s,u,null,{mode:'fire'});
  const html=render(h('svg',null,h(AimCursor,{point:{x:80,y:90},aim:4,preview,target:null})));
  assert.match(html,/Recarga parcial · 20 PA/);assert.match(html,/Faltan 50 PA de recarga/);assert.match(html,/aim-cursor valid/);assert.doesNotMatch(html,/aim-step|Puntería/);

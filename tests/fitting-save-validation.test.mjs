@@ -1,3 +1,5 @@
+import {syncUnitAmmunition} from '../game/tactical-ammunition.js';
+import {AMMUNITION_TYPES} from '../game/ammunition-types.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle} from '../game/tactical.js';
@@ -16,7 +18,7 @@ function field() {
 const placements = {
   held: (s,id) => {s.units[0].weaponFittings={bayonet:fitting(id)};},
   secondary: (s,id) => {Object.assign(s.units[1],{blade:1811,bladeInstanceId:id,bladeFittingPattern:'india_socket'});},
-  primaryLoose: (s,id) => {Object.assign(s.units[1],{weapon:1811,loaded:0,weaponInstanceId:id,weaponFittingPattern:'india_socket'});},
+  primaryLoose: (s,id) => {Object.assign(s.units[1],{weapon:1811,loaded:0,weaponInstanceId:id,weaponFittingPattern:'india_socket'});syncUnitAmmunition(s.units[1]);},
   pack: (s,id) => {s.units[0].inventory.musket=assembly(id);},
   ground: (s,id) => {s.groundItems.push({...assembly(id),id:'ground-musket',type:'item',x:3,y:3});},
   dropped: (s,id) => {const {item,count,...record}=assembly(id);s.droppedWeapons.push({...record,x:4,y:3});},
@@ -127,7 +129,7 @@ test('an abandoned primary can retain its legacy host marker but cannot retain t
 });
 
 test('supplies cannot hide fitting metadata and corrupt non-tool pack weapons fail before actions',()=>{
-  for(const extra of [{fittings:{}},{fittingPattern:'india_socket'},{fittings:{bayonet:fitting()}}])reject(s=>s.groundItems=[{id:'supply',type:'item',x:3,y:3,item:'ammo',count:1,weight:.04,...extra}]);
+  for(const extra of [{fittings:{}},{fittingPattern:'india_socket'},{fittings:{bayonet:fitting()}}])reject(s=>s.groundItems=[{id:'supply',type:'item',x:3,y:3,item:'inventory:ammo:musket_75',kind:'ammunition',ammoType:'musket_75',name:AMMUNITION_TYPES.musket_75.name,count:1,weight:.04,...extra}]);
   reject(s=>s.units[0].inventory.gun={weapon:1800,count:1,weight:4,loaded:2,condition:100});
   reject(s=>s.units[0].inventory.gun={weapon:1800,count:1,weight:4,loaded:1,condition:100,jammed:'yes'});
 });

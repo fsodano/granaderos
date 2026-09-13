@@ -1,4 +1,6 @@
 import test from 'node:test';
+import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
+const AMMO='inventory:ammo:musket_75';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,transferPreview} from '../game/tactical.js';
 import {inventoryHandlingModel} from '../game/ja2-hud.js';
@@ -11,10 +13,10 @@ const fullPack=()=>Object.fromEntries(Array.from({length:12},(_,i)=>[`slot${i}`,
 const tiles=()=>Array.from({length:240},(_,i)=>({x:i%24,y:Math.floor(i/24),type:'grass',blocked:false,cover:0}));
 const field=(length=4,exploration=false)=>{
  const s=createBattle(Array.from({length},(_,i)=>({id:`p${i}`,name:`Soldado ${i}`,x:1+i,y:2})),{width:24,height:10,tiles:tiles(),seed:45,exploration,enemies:exploration?[]:[{id:'guard',x:22,y:8,overwatch:false}]});
- for(const u of s.units.filter(u=>u.side==='player'))Object.assign(u,{ap:100,ammo:0,medkits:0,priming:0,flints:0,rations:0,boleadoras:0,torches:0});
- s.units[0].ammo=12;return s;
+ for(const u of s.units.filter(u=>u.side==='player')){Object.assign(u,{ap:100,medkits:0,priming:0,flints:0,rations:0,boleadoras:0,torches:0});setTestAmmunition(u,0);}
+ setTestAmmunition(s.units[0],12);return s;
 };
-const plan=(s,item='ammo',count=3)=>inventoryHandlingModel(s,s.units[0],{item,count,targetId:s.units.filter(u=>u.side==='player').at(-1).id}).transfer;
+const plan=(s,item=AMMO,count=3)=>inventoryHandlingModel(s,s.units[0],{item,count,targetId:s.units.filter(u=>u.side==='player').at(-1).id}).transfer;
 const execute=(s,p=plan(s))=>actBattle(s,{unitId:s.units[0].id,...p.action});
 const physical=s=>({units:s.units,ground:s.groundItems,dropped:s.droppedWeapons,seed:s.seed,time:s.elapsedSeconds});
 const reject=(s,p)=>{const n=execute(s,p);assert.ok(n.lastError);assert.deepEqual(physical(n),physical(s));};
@@ -34,8 +36,8 @@ test('direct handover wins over a chain and a disconnected ally retains the expl
 });
 test('relay route is stable across unit ordering and chooses the fewest handovers',()=>{
  const s=field(4);s.units[3].x=3;s.units[1].x=2;s.units[1].y=1;s.units[2].x=2;s.units[2].y=2;
- const route=transferPreview(s,s.units[0],s.units[3],'ammo',1).route.map(v=>v.id);assert.deepEqual(route,['p0','p1','p3']);
- s.units.reverse();assert.deepEqual(transferPreview(s,s.units.find(u=>u.id==='p0'),s.units.find(u=>u.id==='p3'),'ammo',1).route.map(v=>v.id),route);
+ const route=transferPreview(s,s.units[0],s.units[3],AMMO,1).route.map(v=>v.id);assert.deepEqual(route,['p0','p1','p3']);
+ s.units.reverse();assert.deepEqual(transferPreview(s,s.units.find(u=>u.id==='p0'),s.units.find(u=>u.id==='p3'),AMMO,1).route.map(v=>v.id),route);
 });
 test('a chain can go around a wall but cannot pass through a blocked handover',()=>{
  const s=field(4);Object.assign(s.units[0],{x:1,y:1});Object.assign(s.units[1],{x:1,y:2});Object.assign(s.units[2],{x:2,y:2});Object.assign(s.units[3],{x:3,y:2});
@@ -54,7 +56,7 @@ test('only soldiers in the active interrupt window may forward items',()=>{
  assert.equal(plan(s).kind,'throw');s.interrupt.unitIds.push('p1');assert.equal(plan(s).kind,'relay');
 });
 test('changed route, AP, recipient capacity or item quantity rejects the confirmed order atomically',()=>{
- for(const change of [s=>s.units[1].x=10,s=>s.units[1].ap=3,s=>s.units[2].inventory=fullPack(),s=>s.units[0].ammo=2]){
+ for(const change of [s=>s.units[1].x=10,s=>s.units[1].ap=3,s=>s.units[2].inventory=fullPack(),s=>setTestAmmunition(s.units[0],2)]){
   const s=field(3),p=plan(s);change(s);reject(s,p);
  }
  const s=field(3),p=plan(s);p.action.transferRoute=['p0','p2'];reject(s,p);
@@ -78,13 +80,13 @@ test('exploration spends one second per handover, keeps AP and consumes finite s
 test('inventory preview identifies each participant, total cost and guarded confirmation',()=>{
  const s=field(4),p=plan(s);assert.equal(p.label,'Pasar por aliados');assert.match(p.detail,/Soldado 0 \(4 PA\).*Soldado 3 \(0 PA\)/);assert.match(p.detail,/12 PA en total/);assert.equal(p.disabled,false);
  assert.deepEqual(p.action.transferRoute,p.route.map(v=>v.id));assert.equal(p.action.transferKind,'relay');
- assert.equal(inventoryHandlingModel(s,s.units[0],{item:'ammo',count:3,targetId:'p3',busy:true}).transfer.disabled,true);
+ assert.equal(inventoryHandlingModel(s,s.units[0],{item:AMMO,count:3,targetId:'p3',busy:true}).transfer.disabled,true);
 });
 test('a full campaign save retains the recipient ownership and all relay AP costs',()=>{
  let c=dispatchCampaign(initialCampaign(),{type:'travel',sector:'buenos_aires'});c=dispatchCampaign(c,{type:'attack',sector:'san_nicolas'});assert.equal(c.lastError,null);
  const request=c.pendingBattle;const squad=[request.squad[1],request.squad[0],...request.squad.slice(2)];let b=createBattle(squad.map((u,i)=>({...u,x:1+i,y:2})),{...request,width:24,height:10,tiles:tiles(),seed:45,enemies:[{id:'guard',x:22,y:8,overwatch:false}]});
  const allies=b.units.filter(u=>u.side==='player');assert.ok(allies.length>=3);const target=allies[2];
- const p=inventoryHandlingModel(b,allies[0],{item:'ammo',count:1,targetId:target.id}).transfer;assert.equal(p.kind,'relay');
+ const source=Object.entries(allies[0].inventory).find(([,stack])=>stack.kind==='ammunition'&&stack.count>0);assert.ok(source);const p=inventoryHandlingModel(b,allies[0],{item:`inventory:${source[0]}`,count:1,targetId:target.id}).transfer;assert.equal(p.kind,'relay');
  b=actBattle(b,{unitId:allies[0].id,...p.action});assert.equal(b.lastError,null);const synced=syncBattleTime(c,b);assert.equal(synced.error,null);
  const saved=decodeSave(encodeSave(synced.campaign,synced.battle));assert.deepEqual(saved.battle.units,b.units);assert.deepEqual(saved.battle.groundItems,b.groundItems);
 });

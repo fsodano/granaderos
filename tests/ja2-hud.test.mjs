@@ -10,10 +10,13 @@ import {campaignReturnModel} from '../game/ja2-hud.js';
 import {fittingInventoryModel,attackCursorMode,targetItemAction,resolvedOrderType,equippedItemHelp} from '../game/ja2-hud.js';
 import {contextualAttack,fitBayonetPreview,removeBayonetPreview} from '../game/tactical.js';
 import {medicalUsePreview} from '../game/tactical.js';
+import {AMMUNITION_TYPES,isAmmunitionStack,totalReserveAmmunition,weaponAmmoType} from '../game/ammunition-types.js';
+import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
 const tiles=()=>Array.from({length:80},(_,i)=>({x:i%10,y:Math.floor(i/10),type:'grass',blocked:false,cover:0}));
 const merc=(id,extra={})=>({...OPERATIVES[id],...extra});
 function battle(units=[merc(0)],extra={}){return createBattle(units,{width:10,height:8,tiles:tiles(),enemies:[{id:'enemy-0',x:5,y:1,hp:100,weapon:1800,condition:63}],seed:45,...extra});}
 const players=s=>s.units.filter(u=>u.side==='player');
+const ammoItem=u=>`inventory:${Object.entries(u.inventory).find(([,stack])=>isAmmunitionStack(stack)&&stack.ammoType===weaponAmmoType(u.weapon))[0]}`;
 const ORDER_IDS=['move','look','stealth','useItem','fire','melee','charge','heal','loot','reload','reprime','weapon','stance','overwatch','mount','brace','repair','ration','torch','bolas','free','sight','endTurn','artillery','artilleryMove','artilleryPivot','artilleryReload'];
 test('campaign return accepts settled victory care and peaceful visits without declaring hidden enemies cleared',()=>{
   const visit=battle([merc(0)],{exploration:true,enemies:[]});
@@ -116,10 +119,12 @@ test('S2 inventory: Güemes stats, hand slots, slotAction, backpack records, sup
   u.inventory.junk={count:1,weight:2,weapon:9999,loaded:0};
   assert.equal(inventoryModel(s,u).backpack.find(b=>b.key==='junk').equippable,false);
   const supplies=inventoryModel(s,u).supplies;
-  assert.equal(supplies.length,7);
+  assert.equal(supplies.length,6);
   const byId=Object.fromEntries(supplies.map(x=>[x.id,x]));
-  assert.deepEqual(Object.keys(byId).sort(),['ammo','boleadoras','flints','medkits','priming','rations','torches']);
-  assert.equal(byId.ammo.count,u.ammo);assert.equal(byId.medkits.count,u.medkits);assert.equal(byId.priming.count,u.priming);assert.equal(byId.flints.count,u.flints);assert.equal(byId.rations.count,u.rations);assert.equal(byId.boleadoras.count,u.boleadoras);assert.equal(byId.torches.count,u.torches);
+  assert.deepEqual(Object.keys(byId).sort(),['boleadoras','flints','medkits','priming','rations','torches']);
+  const ammunition=inventoryModel(s,u).items.filter(isAmmunitionStack);
+  assert.equal(ammunition.length,1);assert.equal(ammunition[0].item,ammoItem(u));assert.equal(ammunition[0].ammoType,'carbine_65');assert.equal(ammunition[0].label,AMMUNITION_TYPES.carbine_65.label);assert.equal(ammunition[0].count,totalReserveAmmunition(u));assert.equal(ammunition[0].weight,.04);
+  assert.equal(byId.medkits.count,u.medkits);assert.equal(byId.priming.count,u.priming);assert.equal(byId.flints.count,u.flints);assert.equal(byId.rations.count,u.rations);assert.equal(byId.boleadoras.count,u.boleadoras);assert.equal(byId.torches.count,u.torches);
   for(const x of supplies){assert.ok(x.label&&x.label.length>0);assert.equal(typeof x.count,'number');}
   const m2=inventoryModel(s,u);
   assert.equal(m2.weight,carriedWeight(u));assert.equal(m2.capacity,carryCapacity(u));assert.equal(m2.poncho,false);
@@ -236,7 +241,7 @@ test('aim levels stop at four and unavailable firearm actions cannot be selected
   assert.equal(orderDescriptors(s,u).find(d=>d.id==='useItem').disabled,true);
   assert.equal(orderDescriptors(s,u).find(d=>d.id==='reprime').disabled,false);
   u.priming=0;assert.equal(orderDescriptors(s,u).find(d=>d.id==='reprime').disabled,true);
-  u.jammed=false;u.loaded=0;u.ammo=0;
+  u.jammed=false;u.loaded=0;setTestAmmunition(u,0);
   for(const id of ['useItem','fire','reload','overwatch'])assert.equal(orderDescriptors(s,u).find(d=>d.id===id).disabled,true,id);
   u.activeSlot='medical';u.medkits=0;
   assert.equal(orderDescriptors(s,u).find(d=>d.id==='useItem').disabled,true);
@@ -439,20 +444,20 @@ test('empty hands stay selectable without equipment and ordinary useItem uses fi
 
 const exchangeBattle=()=>createBattle([{id:'giver',name:'Proveedor',x:1,y:1},{id:'receiver',name:'Compañero',x:2,y:1}],{width:24,height:8,enemies:[{id:'far',x:22,y:6}],seed:45});
 test('item handling shares AP, range, capacity, quantity and throw previews with the reducer',()=>{
-  const s=exchangeBattle(),u=s.units[0],target=s.units[1],ctx={item:'ammo',count:5,targetId:target.id};
-  let model=inventoryHandlingModel(s,u,ctx),shared=transferPreview(s,u,target,'ammo',5);
+  const s=exchangeBattle(),u=s.units[0],target=s.units[1],item=ammoItem(u),ctx={item,count:5,targetId:target.id};
+  let model=inventoryHandlingModel(s,u,ctx),shared=transferPreview(s,u,target,item,5);
   assert.equal(model.transfer.disabled,false);assert.equal(model.transfer.label,'Dar al aliado');assert.equal(model.transfer.pa,shared.pa);
-  assert.equal(model.drop.pa,dropPreview(s,u,'ammo',5).pa);
-  const next=actBattle(s,{type:'transfer',unitId:u.id,...ctx});assert.equal(next.lastError,null);assert.equal(next.units[0].ammo,u.ammo-5);assert.equal(next.units[1].ammo,target.ammo+5);assert.equal(next.units[0].ap,u.ap-model.transfer.pa);
-  target.x=5;model=inventoryHandlingModel(s,u,ctx);shared=transferPreview(s,u,target,'ammo',5);
+  assert.equal(model.drop.pa,dropPreview(s,u,item,5).pa);
+  const next=actBattle(s,{type:'transfer',unitId:u.id,...ctx});assert.equal(next.lastError,null);assert.equal(totalReserveAmmunition(next.units[0]),totalReserveAmmunition(u)-5);assert.equal(totalReserveAmmunition(next.units[1]),totalReserveAmmunition(target)+5);assert.equal(next.units[0].ap,u.ap-model.transfer.pa);
+  target.x=5;model=inventoryHandlingModel(s,u,ctx);shared=transferPreview(s,u,target,item,5);
   assert.equal(model.transfer.label,'Arrojar al aliado');assert.equal(model.transfer.pa,shared.pa);assert.equal(model.transfer.chance,shared.chance);
   target.ap=0;assert.equal(inventoryHandlingModel(s,u,ctx).transfer.chance,0);
   target.x=9;assert.equal(inventoryHandlingModel(s,u,ctx).transfer.disabled,true);
   target.x=2;assert.equal(inventoryHandlingModel(s,u,{...ctx,count:1.5}).transfer.disabled,true);
-  assert.equal(inventoryHandlingModel(s,u,{...ctx,count:u.ammo+1}).drop.disabled,true);
+  assert.equal(inventoryHandlingModel(s,u,{...ctx,count:totalReserveAmmunition(u)+1}).drop.disabled,true);
   assert.equal(inventoryHandlingModel(s,u,{...ctx,busy:true}).drop.disabled,true);
   for(let i=0;i<5;i++)target.inventory[`full${i}`]={count:1,weight:1};
-  u.ammo=20;assert.equal(inventoryModel(s,target).pockets.free,0);
+  setTestAmmunition(u,20);assert.equal(inventoryModel(s,target).pockets.free,0);
   assert.equal(inventoryHandlingModel(s,u,{...ctx,count:20}).transfer.disabled,true);
 });
 
@@ -470,11 +475,11 @@ test('inventory rows retain exact weapon records and use canonical keys when man
 
 test('nearby loot gives a selectable partial stack without exposing distant or fled bodies',()=>{
   const s=exchangeBattle(),u=s.units[0],source=s.units[1];source.hp=0;source.unconscious=true;
-  const options=nearbyLootOptions(s,u),ammo=options.find(item=>item.action.targetId===source.id&&item.action.item==='ammo');
+  const options=nearbyLootOptions(s,u),ammo=options.find(item=>item.action.targetId===source.id&&item.action.item===ammoItem(source));
   assert.ok(ammo);assert.ok(options.some(item=>item.action.item==='weapon'));
   assert.equal(lootPreview(s,u,{type:'loot',targetId:source.id}).valid,false);
   assert.equal(lootPreview(s,u,{...ammo.action,count:1}).valid,true);
-  const next=actBattle(s,{unitId:u.id,...ammo.action,count:1});assert.equal(next.lastError,null);assert.equal(next.units[0].ammo,u.ammo+1);assert.equal(next.units[1].ammo,source.ammo-1);
+  const next=actBattle(s,{unitId:u.id,...ammo.action,count:1});assert.equal(next.lastError,null);assert.equal(totalReserveAmmunition(next.units[0]),totalReserveAmmunition(u)+1);assert.equal(totalReserveAmmunition(next.units[1]),totalReserveAmmunition(source)-1);
   source.x=8;assert.deepEqual(nearbyLootOptions(s,u),[]);
   source.x=2;source.fled=true;assert.deepEqual(nearbyLootOptions(s,u),[]);
 });
@@ -527,13 +532,13 @@ test('ordinary environmental use follows the held key and shares unlock/open AP 
 
 test('closed container contents and unknown traps stay absent from the HUD until revealed',()=>{
   let s=exchangeBattle(),u=s.units[0];s.units[1].y=3;
-  s.props.push({id:'box',type:'chest',x:2,y:1,open:false,locked:true,trap:{type:'alarm',difficulty:73,armed:true,discoveredBy:[]},contents:[{item:'ammo',count:137,weight:.04}]});
+  s.props.push({id:'box',type:'chest',x:2,y:1,open:false,locked:true,trap:{type:'alarm',difficulty:73,armed:true,discoveredBy:[]},contents:[{item:ammoItem(u),kind:'ammunition',ammoType:weaponAmmoType(u.weapon),name:AMMUNITION_TYPES[weaponAmmoType(u.weapon)].name,count:137,weight:.04}]});
   let model=nearbyEnvironmentModel(s,u);assert.equal(model.target.trapKnown,false);assert.deepEqual(model.contents,[]);assert.equal(model.preview.chance,null);
   assert.ok(!JSON.stringify(model).includes('137'));assert.ok(!JSON.stringify(model).includes('73'));
   const ref=environmentTargetAt(s,{x:2,y:1});assert.equal(containerLootPreview(s,u,ref,0,1).valid,false);
   Object.assign(s.props[0],{open:true,locked:false});s.props[0].trap.discoveredBy=['player'];s.props[0].trap.armed=false;
   model=nearbyEnvironmentModel(s,u,{index:0,count:3});assert.equal(model.target.trapKnown,true);assert.equal(model.contents[0].count,137);assert.equal(model.loot.valid,true);
-  s=actBattle(s,model.loot.action);assert.equal(s.lastError,null);assert.equal(s.units[0].ammo,u.ammo+3);assert.equal(s.props[0].contents[0].count,134);
+  s=actBattle(s,model.loot.action);assert.equal(s.lastError,null);assert.equal(totalReserveAmmunition(s.units[0]),totalReserveAmmunition(u)+3);assert.equal(s.props[0].contents[0].count,134);
   s.units[0].x=12;assert.deepEqual(nearbyEnvironmentModel(s,s.units[0]).targets,[]);
 });
 

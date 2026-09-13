@@ -1,3 +1,5 @@
+import {availableAmmunition,weaponAmmoType} from './ammunition-types.js';
+import {initializeUnitAmmunition,syncUnitAmmunition,consumeWeaponAmmunition} from './tactical-ammunition.js';
 import {sectorDeploymentAction} from './sector-deployment.js';
 import {pairedPistol,secondHeldPistol,pistolPairPenalty,secondaryPistolView} from './paired-fire.js';
 import {pocketOrderFromSlots} from './inventory-pockets.js';
@@ -169,9 +171,9 @@ export function lookPreview(s,u,point){
   if(!reason&&s.mode!=='exploration'&&u.ap<pa)reason='PA insuficientes.';
   return {valid:!reason,reason,pa,facing,prepare,actionLabel:prepare?'Preparar el arma':'Mirar'};
 }
-function singleReloadPlan(unit,state){
+function singleReloadPlan(unit,state,reserved=0){
   const w=weaponFor(unit),rate=w.reloadAP/w.capacity*(unit.stance==='prone'?1.5:1)*(state&&nearby(state,unit,2,2)?.8:1)*(hasTrait(unit,'gunsmith_artillerist')?.85:1);
-  return planReload(unit,rate,w.capacity,state?.mode==='exploration');
+  return planReload({...unit,ammo:Math.max(0,availableAmmunition(unit,w)-reserved)},rate,w.capacity,state?.mode==='exploration');
 }
 export function reloadPlan(unit,state){
   const first=singleReloadPlan(unit,state),other=secondHeldPistol(unit);
@@ -180,9 +182,9 @@ export function reloadPlan(unit,state){
   const step=(hand,view,plan)=>({hand,weapon:view.weapon,name:weaponFor(view).name,...plan});
   if(first.available)hands.push(step('primary',unit,first));
   // Reserve ammunition for the first gun before considering the second.
-  second.ammo=Math.max(0,unit.ammo-first.available);
+  const reserved=weaponAmmoType(unit.weapon)===weaponAmmoType(second.weapon)?first.available:0;
   second.ap=Math.max(0,unit.ap-first.totalPA);
-  const last=singleReloadPlan(second,state);
+  const last=singleReloadPlan(second,state,reserved);
   // Do not spend the AP left after a completed primary load on incomplete
   // secondary work. When only the secondary needs work, it may span turns.
   const include=last.available&&(!first.available||!first.partial&&!last.partial);
@@ -194,8 +196,8 @@ export function reloadPlan(unit,state){
     partial:hands.some(h=>h.partial),remainingPA:hands.reduce((n,h)=>n+h.remainingPA,0)};
 }
 export function reloadCost(unit,state){return reloadPlan(unit,state).totalPA;}
-function makeUnit(raw,side,index,x,y){const stats=raw.stats||{};const weapon=raw.weapon??raw.primary??1800;const w=typeof weapon==='object'?weapon:WEAPONS[weapon]||WEAPONS[1800];return {...raw,id:String(raw.id??`${side}-${index}`),name:raw.name||raw.nickname||(side==='player'?'Granadero':'Realista'),side,facing:raw.facing??(side==='enemy'?6:2),stealthMode:Boolean(raw.stealthMode),x:raw.x??x,y:raw.y??y,maxHp:raw.maxHp??raw.health??stats.health??100,hp:raw.hp??raw.health??stats.health??100,ap:100,morale:raw.morale??Math.min(100,(raw.personality==='optimistic'?90:raw.personality==='pessimistic'?70:80)+((raw.traits||[]).includes('steadfast')?10:0)),marksmanship:raw.marksmanship??stats.marksmanship??70,agility:raw.agility??stats.agility??75,strength:raw.strength??stats.strength??75,medical:raw.medical??stats.medical??30,mechanical:raw.mechanical??stats.mechanical??0,stealth:raw.stealth??stats.stealth??0,weapon,loaded:raw.loaded??(WEAPONS[weapon]||typeof weapon==='object'?w.capacity:0),ammo:raw.ammo??12,condition:raw.condition??100,stance:raw.stance??movementStance(raw.movementMode??'walk'),mounted:Boolean(raw.mounted),horse:Boolean(raw.horse||raw.canMount||raw.mounted),jammed:raw.jammed??false,bleeding:raw.bleeding??0,bandaged:raw.bandaged??((raw.bleeding??0)>0?0:Math.max(0,(raw.maxHp??raw.health??stats.health??100)-(raw.hp??raw.health??stats.health??100))),shock:raw.shock??0,experienceLevel:raw.experienceLevel??stats.experienceLevel??Math.min(10,4+Math.floor((raw.xp??0)/100)),dexterity:raw.dexterity??stats.dexterity??75,wisdom:raw.wisdom??stats.wisdom??50,carriedAP:0,routed:raw.routed??false,medkits:raw.medkits??2,momentum:0,lastDirection:null,weaponMode:raw.weaponMode??'fire',activeSlot:raw.activeSlot||'primary',fatigue:raw.fatigue||0,priming:raw.priming??50,flints:raw.flints??4,rations:raw.rations??2,energy:raw.energy??100,unconscious:isUnconscious({hp:raw.hp??raw.health??stats.health??100,energy:raw.energy??100}),movementMode:raw.movementMode||'walk',inventory:{...raw.inventory},boleadoras:raw.boleadoras??1,torches:raw.torches??2,strengthTraining:raw.strengthTraining??0,interceptTurn:0,parryTurn:0,counterTurn:0,braceTurn:0,braced:false,knockedDown:Boolean(raw.knockedDown),overwatch:raw.overwatch??(side==='enemy'),reactionTurn:0,reactionSpent:0};}
-export function createBattle(squad=[],sector={}){const width=sector.width||16,height=sector.height||12;const state={version:1,fittingRulesVersion:FITTING_RULES_VERSION,exits:structuredClone(sector.exits??[]),exitRulesVersion:sector.exitRulesVersion??1,enemyExits:['N','E','S','W'].map(edge=>({id:`enemy:${edge}`,edge,destination:'__offmap_enemy__'})),battleId:sector.id??null,startSeconds:(sector.hour??(sector.night||sector.weather?.night?0:12))*3600+(sector.secondOfHour??0),elapsedSeconds:0,syncedSeconds:0,roundTimeCharged:false,quietCombatTurns:sector.exploration?2:0,contactThisRound:false,sectorId:sector.sector||sector.id||'san-lorenzo',sectorName:sector.name||'San Lorenzo',width,height,biome:sector.biome||'grassland',altitude:sector.altitude||0,night:Boolean(sector.night||sector.weather?.night||(sector.hour!==undefined&&(sector.hour%24>=20||sector.hour%24<6))),enemyCommand:sector.enemyCommand||null,objective:sector.objective||null,npcs:structuredClone(sector.npcs||[]),props:structuredClone(sector.props??[]),buildings:sector.buildings||[],revealedRooms:[],decor:sector.decor||[],turn:1,enemyTurns:0,phase:'player',mode:sector.exploration?'exploration':'combat',sectorCleared:false,status:'active',seed:(sector.seed??18130203)>>>0,weather:{rain:0,humidity:0,...sector.weather},tiles:[],units:[],droppedWeapons:[],groundItems:[],lights:(sector.lights||[]).map((l,i)=>({id:`light-${i}`,type:'campfire',radius:4,intensity:1,...l})),artillery:(sector.artillery||[]).map((g,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',loaded:true,ammo:6,...g})),smoke:[],log:[],lastError:null};
+function makeUnit(raw,side,index,x,y){const stats=raw.stats||{};const weapon=raw.weapon??raw.primary??1800;const w=typeof weapon==='object'?weapon:WEAPONS[weapon]||WEAPONS[1800];return initializeUnitAmmunition({...raw,id:String(raw.id??`${side}-${index}`),name:raw.name||raw.nickname||(side==='player'?'Granadero':'Realista'),side,facing:raw.facing??(side==='enemy'?6:2),stealthMode:Boolean(raw.stealthMode),x:raw.x??x,y:raw.y??y,maxHp:raw.maxHp??raw.health??stats.health??100,hp:raw.hp??raw.health??stats.health??100,ap:100,morale:raw.morale??Math.min(100,(raw.personality==='optimistic'?90:raw.personality==='pessimistic'?70:80)+((raw.traits||[]).includes('steadfast')?10:0)),marksmanship:raw.marksmanship??stats.marksmanship??70,agility:raw.agility??stats.agility??75,strength:raw.strength??stats.strength??75,medical:raw.medical??stats.medical??30,mechanical:raw.mechanical??stats.mechanical??0,stealth:raw.stealth??stats.stealth??0,weapon,loaded:raw.loaded??(WEAPONS[weapon]||typeof weapon==='object'?w.capacity:0),ammo:raw.ammo,condition:raw.condition??100,stance:raw.stance??movementStance(raw.movementMode??'walk'),mounted:Boolean(raw.mounted),horse:Boolean(raw.horse||raw.canMount||raw.mounted),jammed:raw.jammed??false,bleeding:raw.bleeding??0,bandaged:raw.bandaged??((raw.bleeding??0)>0?0:Math.max(0,(raw.maxHp??raw.health??stats.health??100)-(raw.hp??raw.health??stats.health??100))),shock:raw.shock??0,experienceLevel:raw.experienceLevel??stats.experienceLevel??Math.min(10,4+Math.floor((raw.xp??0)/100)),dexterity:raw.dexterity??stats.dexterity??75,wisdom:raw.wisdom??stats.wisdom??50,carriedAP:0,routed:raw.routed??false,medkits:raw.medkits??2,momentum:0,lastDirection:null,weaponMode:raw.weaponMode??'fire',activeSlot:raw.activeSlot||'primary',fatigue:raw.fatigue||0,priming:raw.priming??50,flints:raw.flints??4,rations:raw.rations??2,energy:raw.energy??100,unconscious:isUnconscious({hp:raw.hp??raw.health??stats.health??100,energy:raw.energy??100}),movementMode:raw.movementMode||'walk',inventory:{...raw.inventory},boleadoras:raw.boleadoras??1,torches:raw.torches??2,strengthTraining:raw.strengthTraining??0,interceptTurn:0,parryTurn:0,counterTurn:0,braceTurn:0,braced:false,knockedDown:Boolean(raw.knockedDown),overwatch:raw.overwatch??(side==='enemy'),reactionTurn:0,reactionSpent:0});}
+export function createBattle(squad=[],sector={}){const width=sector.width||16,height=sector.height||12;const state={version:1,ammunitionVersion:1,fittingRulesVersion:FITTING_RULES_VERSION,exits:structuredClone(sector.exits??[]),exitRulesVersion:sector.exitRulesVersion??1,enemyExits:['N','E','S','W'].map(edge=>({id:`enemy:${edge}`,edge,destination:'__offmap_enemy__'})),battleId:sector.id??null,startSeconds:(sector.hour??(sector.night||sector.weather?.night?0:12))*3600+(sector.secondOfHour??0),elapsedSeconds:0,syncedSeconds:0,roundTimeCharged:false,quietCombatTurns:sector.exploration?2:0,contactThisRound:false,sectorId:sector.sector||sector.id||'san-lorenzo',sectorName:sector.name||'San Lorenzo',width,height,biome:sector.biome||'grassland',altitude:sector.altitude||0,night:Boolean(sector.night||sector.weather?.night||(sector.hour!==undefined&&(sector.hour%24>=20||sector.hour%24<6))),enemyCommand:sector.enemyCommand||null,objective:sector.objective||null,npcs:structuredClone(sector.npcs||[]),props:structuredClone(sector.props??[]),buildings:sector.buildings||[],revealedRooms:[],decor:sector.decor||[],turn:1,enemyTurns:0,phase:'player',mode:sector.exploration?'exploration':'combat',sectorCleared:false,status:'active',seed:(sector.seed??18130203)>>>0,weather:{rain:0,humidity:0,...sector.weather},tiles:[],units:[],droppedWeapons:[],groundItems:[],lights:(sector.lights||[]).map((l,i)=>({id:`light-${i}`,type:'campfire',radius:4,intensity:1,...l})),artillery:(sector.artillery||[]).map((g,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',loaded:true,ammo:6,...g})),smoke:[],log:[],lastError:null};
 if(sector.upperSurfaces!==undefined)state.upperSurfaces=structuredClone(sector.upperSurfaces);
 if(sector.climbLinks!==undefined)state.climbLinks=structuredClone(sector.climbLinks);
 if(sector.regionalWeather){state.regionalWeather=true;state.weather=regionalWeatherAt(state.sectorId,state.startSeconds/3600);}
@@ -212,7 +214,7 @@ export function initializeBattlePerception(state){if(state.deployment)return sta
 function tile(s,x,y,level=0){if(level)return surfaceAt(s,{x,y,tacticalLevel:level});const at=s.tiles[y*s.width+x];return at?.x===x&&at?.y===y?at:s.tiles.find(t=>t.x===x&&t.y===y);}
 function occupied(s,x,y,except,level=0){const point={x,y,tacticalLevel:level};return propBlocksAt(s,x,y,level)||(s.npcs||[]).some(n=>sameCell(n,point))||s.units.some(u=>onField(u)&&!u.unconscious&&u.id!==except&&sameCell(u,point));}
 export function carryCapacity(u){return Math.max(10,(u.strength||50)*.5);}
-export function carriedWeight(u){const inventory=Object.values(u.inventory||{}).reduce((sum,item)=>sum+(item&&typeof item==='object'?(item.count||0)*((item.weight||0)+fittingWeight(item))+(item.count||0)*(item.loaded||0)*.04:0),0);const cursor=u.equipmentCursor?.stack;return (cursor?cursor.count*((cursor.weight??0)+fittingWeight(cursor)+(cursor.loaded??0)*.04):0)+Number(u.weight??u.carryWeight??0)+(wornOutfit(u)?.weight??0)+inventory+(u.loaded||0)*.04+Object.entries(SUPPLY_ITEMS).reduce((sum,[key,item])=>sum+(u[key]??0)*item.weight,0)+(u.weaponDropped?0:(u.weaponMetadata?.weight??weaponItemWeight(u.weapon))+fittingWeight(u))+(u.bladeMetadata?.weight??weaponItemWeight(u.blade))+(u.offHand?(u.offHand.weight??weaponItemWeight(u.offHand.weapon))+fittingWeight(u.offHand)+(u.offHand.loaded??0)*.04:0);}
+export function carriedWeight(u){const inventory=Object.values(u.inventory||{}).reduce((sum,item)=>sum+(item&&typeof item==='object'?(item.count||0)*((item.weight||0)+fittingWeight(item))+(item.count||0)*(item.loaded||0)*.04:0),0);const cursor=u.equipmentCursor?.stack;return (cursor?cursor.count*((cursor.weight??0)+fittingWeight(cursor)+(cursor.loaded??0)*.04):0)+Number(u.weight??u.carryWeight??0)+(wornOutfit(u)?.weight??0)+inventory+(u.loaded||0)*.04+Object.entries(SUPPLY_ITEMS).reduce((sum,[key,item])=>sum+(key==='ammo'&&u.ammunitionVersion===1?0:(u[key]??0)*item.weight),0)+(u.weaponDropped?0:(u.weaponMetadata?.weight??weaponItemWeight(u.weapon))+fittingWeight(u))+(u.bladeMetadata?.weight??weaponItemWeight(u.blade))+(u.offHand?(u.offHand.weight??weaponItemWeight(u.offHand.weapon))+fittingWeight(u.offHand)+(u.offHand.loaded??0)*.04:0);}
 function weightPenalty(u){return Math.max(1,carriedWeight(u)/carryCapacity(u));}
 export function movementEnergy(u,t){const style=u.movementMode||'walk',base={walk:1,run:3,crouch:2,prone:3}[style]||1;return Math.max(1,Math.ceil(base*weightPenalty(u)*(u.mounted?1-Math.min(100,u.ridingSkill||0)*.005:1)*(t?.type==='mud'?1.5:1)*(hasTrait(u,'guerrilla_tactician')?.75:1)));}
 function exhaust(s,u,cost){limitEnergy(u);if(u.mounted&&u.mount){u.mount.stamina=Math.max(0,u.mount.stamina-Math.max(1,Math.ceil(cost*(1-Math.min(100,u.ridingSkill||0)*.005))));if(u.mount.stamina===0){u.mounted=false;sayObserved(s,[u],`${u.name} desmonta: su caballo está agotado.`);}}u.energy=Math.max(0,(u.energy??100)-cost);if(u.energy===0){lowerWeapon(u);u.unconscious=true;u.ap=0;u.mounted=false;sayObserved(s,[u],`${u.name} cae inconsciente por agotamiento.`);}}
@@ -788,7 +790,7 @@ export function planLoot(s,u,a){
   let receiver=u,donor=source;
   if(source){
     const wanted=a.item??'all';
-    const items=wanted==='all'?[...Object.keys(SUPPLY_ITEMS).filter(k=>(source[k]??0)>0),...(!source.weaponDropped&&(WEAPONS[source.weapon]||BLADES[source.weapon])?['primary']:[]),...(BLADES[source.blade]?['blade']:[]),...(source.offHand?['offhand']:[]),...(wornOutfit(source)?['outfit']:[]),...(source.equipmentCursor?['cursor']:[]),...Object.entries(source.inventory??{}).filter(([,r])=>(typeof r==='number'?r:r?.count)>0).map(([key])=>`inventory:${key}`)]:[wanted==='weapon'?'primary':wanted];
+    const items=wanted==='all'?[...Object.keys(SUPPLY_ITEMS).filter(k=>(k!=='ammo'||source.ammunitionVersion!==1)&&(source[k]??0)>0),...(!source.weaponDropped&&(WEAPONS[source.weapon]||BLADES[source.weapon])?['primary']:[]),...(BLADES[source.blade]?['blade']:[]),...(source.offHand?['offhand']:[]),...(wornOutfit(source)?['outfit']:[]),...(source.equipmentCursor?['cursor']:[]),...Object.entries(source.inventory??{}).filter(([,r])=>(typeof r==='number'?r:r?.count)>0).map(([key])=>`inventory:${key}`)]:[wanted==='weapon'?'primary':wanted];
     if(!items.length)throw Error('No queda equipo que recoger.');
     for(const item of items){const count=wanted==='all'?itemQuantity(donor,item):a.count??itemQuantity(donor,item);const transfer=transferItemQuantity(donor,receiver,item,count);donor=transfer.source;receiver=transfer.target;}
   }else{
@@ -1375,14 +1377,15 @@ else if(a.type==='reload'){
   if(!hasFirearm(u))return fail('Las armas blancas no necesitan recarga.');
   if(u.jammed)return fail('Primero debes volver a cebar el arma.');
   const plan=reloadPlan(u,s);
-  if(!plan.totalPA)return fail('No falta carga o no quedan cartuchos.');
+  if(!plan.totalPA)return fail('No falta carga o no quedan cartuchos compatibles.');
   if(!plan.pa||!pay(plan.pa))return fail('Faltan puntos de acción para recargar.');
   for(const hand of plan.hands??[{hand:'primary',...plan}]){
     const gun=hand.hand==='offhand'?u.offHand:u;
+    if(hand.rounds)consumeWeaponAmmunition(u,gun.weapon,hand.rounds);
     gun.loaded+=hand.rounds;
     if(hand.progress>0)gun.reloadProgress=hand.progress;else delete gun.reloadProgress;
   }
-  u.ammo-=plan.rounds;
+  syncUnitAmmunition(u);
   emitNoise(s,u,'reload');u.priming=Math.max(0,u.priming-plan.rounds);u.momentum=0;
   const subject=plan.hands?.length===2?' ambas pistolas':plan.hands?.[0]?.hand==='offhand'?' la pistola de la segunda mano':'';
   sayObserved(s,[u],plan.partial?`${u.name} avanza la recarga${subject?' de'+subject:''} (${plan.pa} PA). Carga ${plan.rounds} cartuchos; faltan ${plan.remainingPA} PA para completar la recarga.`:`${u.name} recarga${subject}${s.mode==='exploration'?'':` (${plan.pa} PA)`}.${plan.offhandPending?' La segunda pistola espera: faltan PA para completar su recarga.':''}`);
@@ -1779,6 +1782,7 @@ export function actBattle(state,action){
     const rejected=clone(state);rejected.lastError='La milicia actúa por su cuenta. Da órdenes a los combatientes de tu escuadra.';say(rejected,rejected.lastError);return rejected;
   }
   const next=actBattleInput(state,action);
+  if(next!==state)for(const unit of next.units)syncUnitAmmunition(unit);
   if(cursorOrders.has(action.type))return next;
   return next.lastError?next:cleanActionTime(settleAutonomous(next));
 }
@@ -2011,6 +2015,7 @@ function runEnemyReactions(s){
   checkEnd(s);rememberContacts(s);revealRooms(s);s.lastError=null;return s;
 }
 function cleanActionTime(s){
+ for(const unit of s.units)syncUnitAmmunition(unit);
  delete s.actionDurationSeconds;delete s.actionTimeAppliedSeconds;
  for(const unit of s.units)if(unit.equipmentCursor&&(!alive(unit)||unit.departure||unit.side==='player'&&!interruptAvailable(s,unit)))returnBattleEquipmentCursor(s,unit);
  return s;

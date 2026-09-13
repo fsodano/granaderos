@@ -1,3 +1,5 @@
+import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
+import {ammunitionByType} from '../game/ammunition-types.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,endTurn,stealPreview,weaponFor} from '../game/tactical.js';
@@ -25,7 +27,7 @@ test('successful conscious theft moves the exact loaded, worn, jammed fitted gun
  assert.equal(n.lastError,null);assert.deepEqual(handRecord(n.units[0],'primary'),taken);assert.equal(n.units[0].activeSlot,'primary');
  const stored=Object.values(n.units[0].inventory).find(v=>v.weapon===old.weapon);assert.deepEqual(stored,old);
  assert.equal(n.units[0].ap,0);assert.equal(n.units[0].energy,92);assert.equal(n.units[1].hp,100);assert.equal(n.units[1].loaded,0);assert.equal(n.units[1].weaponDropped,true);assert.equal(n.units[1].activeSlot,'unarmed');assert.deepEqual(n.units[1].weaponFittings,{});assert.equal(n.units[1].weaponInstanceId,undefined);
- assert.equal(n.units[1].ammo,s.units[1].ammo);assert.equal(n.units[0].ammo,s.units[0].ammo);assert.doesNotThrow(()=>validateBattleSnapshot(n));
+ assert.deepEqual(ammunitionByType(n.units[1]),ammunitionByType(s.units[1]));assert.deepEqual(ammunitionByType(n.units[0]),ammunitionByType(s.units[0]));assert.doesNotThrow(()=>validateBattleSnapshot(n));
  assert.deepEqual(n,take(validateBattleSnapshot(JSON.parse(JSON.stringify(s)))));
  const again=structuredClone(n);again.units[0].activeSlot='unarmed';again.units[0].ap=100;rejected(again);
 });
@@ -57,7 +59,7 @@ test('ordinary use still punches; pickup and control intent select a contested g
  const n=actBattle(s,{type:'useItem',unitId:'p',targetId:'e'});assert.equal(n.units[1].weaponDropped,undefined);assert.equal(n.units[0].weapon,1806);
 });
 test('preview and public action projection conceal defender stats, supplies and hidden people',()=>{
- const s=field(),changed=structuredClone(s);Object.assign(changed.units[1],{energy:1,strength:100,dexterity:100,ammo:999,inventory:{secret:{count:1,weight:1}}});
+ const s=field(),changed=structuredClone(s);Object.assign(changed.units[1],{energy:1,strength:100,dexterity:100,inventory:{secret:{count:1,weight:1}}});setTestAmmunition(changed.units[1],999);
  assert.deepEqual(stealPreview(s,s.units[0],s.units[1]),stealPreview(changed,changed.units[0],changed.units[1]));
  changed.units.push({...structuredClone(changed.units[1]),id:'hidden',x:11,y:7});changed.tiles.find(t=>t.x===6&&t.y===4).blocked=true;const view=playerKnownBattle(changed),options=view.orders[0].stealTargets;assert.equal(options.length,1);assert.equal(options[0].action.type,'steal');assert.equal(options[0].chance,undefined);assert.ok(!JSON.stringify(view).includes('secret'));
 });
@@ -81,5 +83,5 @@ test('campaign-bound save keeps both owners and exact equipment after the real g
 
 test('grabs cannot cross a blocked diagonal corner and legacy object weapons are stored intact',()=>{
  const s=field({}, {x:2,y:2});s.tiles.find(t=>t.x===2&&t.y===1).blocked=true;rejected(s);
- const legacy=field({weapon:{id:1806,capacity:1}},{weapon:{id:1800,capacity:1}}),n=take(legacy);assert.equal(n.lastError,null);assert.equal(n.units[0].weapon,1800);assert.equal(Object.values(n.units[0].inventory)[0].weapon,1806);assert.equal(Object.values(n.units[0].inventory)[0].loaded,1);
+ const legacy=field({weapon:{id:1806,capacity:1}},{weapon:{id:1800,capacity:1}}),n=take(legacy);assert.equal(n.lastError,null);assert.equal(n.units[0].weapon,1800);assert.equal(Object.values(n.units[0].inventory).find(record=>record.weapon===1806).weapon,1806);assert.equal(Object.values(n.units[0].inventory).find(record=>record.weapon===1806).loaded,1);
 });

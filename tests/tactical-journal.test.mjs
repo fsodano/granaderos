@@ -1,3 +1,4 @@
+import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,endTurn,teamCanSee} from '../game/tactical.js';
@@ -56,7 +57,7 @@ test('an observed attacker remains named even if its shot kills the sole observe
 });
 
 test('hidden enemy reloads preserve anonymous hearing without load or AP details',()=>{
- const s=rearAttack();Object.assign(s.units[1],{x:7,loaded:0,ammo:1,ap:45});
+ const s=rearAttack();Object.assign(s.units[1],{x:7,loaded:0,ap:45});setTestAmmunition(s.units[1],1);
  const n=endTurn(s);assert.equal(n.units[1].loaded,1);assert.equal(n.units[1].ammo,0);
  assert.ok(n.log.some(line=>line.includes('oye un ruido')));
  assert.ok(!n.log.some(line=>/Atacante oculto|recarga|45 PA/.test(line)));
@@ -72,7 +73,7 @@ test('visible enemy movement does not disclose the length or AP cost of its rout
 
 test('a hidden enemy interruption has no name, while an observed interrupter can be named',()=>{
  for(const visible of [false,true]){
-  const s=rearAttack({visible});Object.assign(s.units[0],{ap:100,loaded:0,ammo:1,experienceLevel:1,agility:20});
+  const s=rearAttack({visible});Object.assign(s.units[0],{ap:100,loaded:0,experienceLevel:1,agility:20});setTestAmmunition(s.units[0],1);
   Object.assign(s.units[1],{x:7,facing:6,ap:3,experienceLevel:10,agility:100,overwatch:true});
   const n=actBattle(s,{type:'reload',unitId:'p'});
   assert.equal(n.units[1].reactionTurn,1);

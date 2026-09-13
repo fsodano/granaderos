@@ -1,3 +1,6 @@
+import {AMMUNITION_TYPES} from '../game/ammunition-types.js';
+const AMMO='inventory:ammo:musket_75';
+const ammoStack=count=>({item:AMMO,kind:'ammunition',ammoType:'musket_75',name:AMMUNITION_TYPES.musket_75.name,count,weight:.04});
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,endTurn,environmentUsePreview,environmentPreview,canSee,movementStepCost} from '../game/tactical.js';
@@ -11,7 +14,7 @@ function field(actor={},extra={}){
   const tiles=Array.from({length:160},(_,i)=>({x:i%16,y:Math.floor(i/16),type:i%16===10?'wall':'grass',blocked:i%16===10,blocksSight:i%16===10,cover:0}));
   Object.assign(tiles.find(p=>p.x===6&&p.y===2),{type:'door',doorId:'store',open:false,locked:true,keyId:'store-key',lockDifficulty:25,lockIntegrity:100,blocked:true,blocksSight:true});
   const s=createBattle([{id:'p',x:2,y:2,facing:2,mechanical:90,strength:90,dexterity:90,wisdom:90,experienceLevel:8,activeSlot:'tool',activeTool:'inventory:key',inventory:{key:tool('key',{keyId:'store-key',condition:73})},...actor}],{
-    width:16,height:10,seed:45,tiles,props:[{id:'cache',type:'chest',x:6,y:5,blocksMovement:true,open:false,locked:false,contents:[{item:'ammo',count:12,weight:.04}]}],enemies:[{id:'e',x:14,y:8,patrol:false,overwatch:false}],...extra});
+    width:16,height:10,seed:45,tiles,props:[{id:'cache',type:'chest',x:6,y:5,blocksMovement:true,open:false,locked:false,contents:[ammoStack(12)]}],enemies:[{id:'e',x:14,y:8,patrol:false,overwatch:false}],...extra});
   s.units[0].ap=actor.ap??100;for(const u of s.units.filter(u=>u.side==='enemy'))u.ap=0;return s;
 }
 const plan=(s,target=ref,verb)=>environmentUsePreview(s,s.units[0],target,verb);

@@ -104,7 +104,7 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
   const equipped = equipmentSlots(battle, unit, {busy});
   const slotDisabled = (id: string) => equipped.find((slot: any) => slot.slot === id)?.disabled;
   const busyDisabled = busy || !inv.unitReady;
-  const [managedReference, setManagedItem] = useState('ammo');
+  const [managedReference, setManagedItem] = useState('');
   const [inspectedSlot,setInspectedSlot]=useState('');
   const managedItem=inspectedSlot?equipmentEndpoint(unit,inspectedSlot).item??managedReference:managedReference;
   const [quantity, setQuantity] = useState(1);
@@ -129,7 +129,7 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
   const containerLoot = environment.target?.kind === 'container' ? containerLootPreview(battle, unit, environment.target, content?.index ?? 0, contentCount) : null;
   const [itemOpen,setItemOpen]=useState(false);
   const chooseItem = (id: string,slotId='') => { setManagedItem(id); setInspectedSlot(slotId); setQuantity(1); setItemOpen(true); };
-  useEffect(() => { setManagedItem('ammo'); setInspectedSlot(''); setQuantity(1); setRecipient(''); setLootId(''); setLootQuantity(1); setEnvironmentKey(''); setEnvironmentVerb(''); setContentIndex(0); setContentQuantity(1); }, [unit.id]);
+  useEffect(() => { setManagedItem(''); setInspectedSlot(''); setQuantity(1); setRecipient(''); setLootId(''); setLootQuantity(1); setEnvironmentKey(''); setEnvironmentVerb(''); setContentIndex(0); setContentQuantity(1); }, [unit.id]);
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
       const editing = Boolean((e.target as HTMLElement)?.closest('input,select,textarea,[contenteditable]:not([contenteditable="false"]),[role="textbox"]'));

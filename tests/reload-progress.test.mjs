@@ -1,3 +1,6 @@
+import {addAmmunition,weaponAmmoType} from '../game/ammunition-types.js';
+import {syncUnitAmmunition,initializeUnitAmmunition} from '../game/tactical-ammunition.js';
+import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,endTurn,reloadCost,reloadPlan,planEquipLoot} from '../game/tactical.js';
@@ -76,16 +79,16 @@ test('zero AP, wrong hand, knockdown, unconsciousness, jam and wrong turn reject
 });
 
 test('removing reserve cartridges blocks loading without erasing previous work',()=>{
- let s=field();s.units[0].ap=20;s=load(s);s.units[0].ap=30;s=act(s,{type:'drop',item:'ammo',count:3});
+ let s=field();s.units[0].ap=20;s=load(s);s.units[0].ap=30;s=act(s,{type:'drop',item:'inventory:ammo:rifle_62',count:3});
  const before=structuredClone(s);assert.equal(targetPreview(s,s.units[0],null,{mode:'fire'}).cursor,'empty');
  const blocked=actBattle(s,{type:'reload',unitId:'p'});assert.ok(blocked.lastError);assert.deepEqual(physical(blocked),physical(before));
- s=act(s,{type:'loot',groundId:s.groundItems[0].id,item:'ammo',count:1});s.units[0].ap=50;s=load(s);assert.equal(s.units[0].loaded,1);assert.equal(s.units[0].ammo,0);
+ s=act(s,{type:'loot',groundId:s.groundItems[0].id,item:'inventory:ammo:rifle_62',count:1});s.units[0].ap=50;s=load(s);assert.equal(s.units[0].loaded,1);assert.equal(s.units[0].ammo,0);
 });
 
 test('progress follows paid drops and recovery and cannot remain on the emptied hand',()=>{
  let s=field();s.units[0].ap=20;s=load(s);const progress=s.units[0].reloadProgress;s.units[0].ap=80;
  s=act(s,{type:'drop',item:'primary'});assert.equal(s.units[0].reloadProgress,undefined);assert.equal(s.groundItems[0].reloadProgress,progress);
- s=act(s,{type:'loot',groundId:s.groundItems[0].id,item:'weapon'});const key=Object.keys(s.units[0].inventory)[0];assert.equal(s.units[0].inventory[key].reloadProgress,progress);
+ s=act(s,{type:'loot',groundId:s.groundItems[0].id,item:'weapon'});const key=Object.keys(s.units[0].inventory).find(k=>s.units[0].inventory[k].weapon===1802);assert.equal(s.units[0].inventory[key].reloadProgress,progress);
  s=act(s,{type:'equipLoot',inventoryKey:key});assert.equal(s.units[0].reloadProgress,progress);assert.equal(reloadCost(s.units[0],s),50);
  assert.doesNotThrow(()=>validateBattleSnapshot(s));
 });
@@ -104,7 +107,7 @@ test('validators reject corrupt progress on units, empty hands, full guns and no
 });
 
 test('AI uses remaining AP for unfinished loading but can still kneel to complete a prone reload',()=>{
- const s=field();const e=s.units[1];Object.assign(e,{weapon:1802,loaded:0,ammo:2,ap:20,hp:20,bandaged:80,energy:30,fatigue:90});assert.equal(chooseEnemyAction(s,e).type,'reload');
+ const s=field();const e=s.units[1];Object.assign(e,{weapon:1802,loaded:0,ammo:2,ap:20,hp:20,bandaged:80,energy:30,fatigue:90});setTestAmmunition(e,2);assert.equal(chooseEnemyAction(s,e).type,'reload');
  Object.assign(e,{stance:'prone',ap:100,hp:100,bandaged:0,energy:100,fatigue:0});assert.deepEqual(chooseEnemyAction(s,e),{type:'stance',unitId:'e',stance:'crouched'});
 });
 
@@ -115,8 +118,8 @@ test('an enemy partial reload can trigger a saved player interrupt and does not 
 });
 
 test('full campaign save resumes partial work and pack work survives report and reentry',()=>{
- let c=initialCampaign(45);c.hour=12;c.loadouts[3]={weapon:1802,blade:1813};c=dispatchCampaign(c,{type:'visitSector'});assert.equal(c.lastError,null);const r=c.pendingBattle;r.enemies=[{id:'e',x:5,y:6,hp:15,bandaged:85,patrol:false,weapon:1813,loaded:0,ammo:0,agility:0,overwatch:false}];
- let b=createBattle(r.squad.map((u,i)=>({...u,x:1,y:1+i,...(i===0?{loaded:0,ammo:u.ammo+u.loaded}: {})})),{...r,width:32,height:8,tiles:grid(),exploration:false,enemies:r.enemies});
+ let c=initialCampaign(45);c.hour=12;c.loadouts[3]={weapon:1802,blade:1813};c.loadouts[4]={weapon:1802,blade:1813};c=dispatchCampaign(c,{type:'visitSector'});assert.equal(c.lastError,null);const r=c.pendingBattle;r.enemies=[{id:'e',x:5,y:6,hp:15,bandaged:85,patrol:false,weapon:1813,loaded:0,ammo:0,agility:0,overwatch:false}];r.enemies.forEach(u=>initializeUnitAmmunition(u));
+ let b=createBattle(r.squad.map((u,i)=>{const actor={...structuredClone(u),x:1,y:1+i};if(i===0){if(actor.loaded)addAmmunition(actor,weaponAmmoType(actor.weapon),actor.loaded);actor.loaded=0;syncUnitAmmunition(actor);}return actor;}),{...r,width:32,height:8,tiles:grid(),exploration:false,enemies:r.enemies});
  const id=b.units[0].id;b.units[0].ap=20;b=actBattle(b,{type:'reload',unitId:id});assert.equal(b.lastError,null);
  const pair=syncBattleTime(c,b);assert.equal(pair.error,null);const saved=decodeSave(encodeSave(pair.campaign,pair.battle));assert.deepEqual(saved.battle,pair.battle);
  saved.battle=actBattle(saved.battle,{type:'fire',unitId:'4',targetId:'e',aim:4});assert.equal(saved.battle.lastError,null);assert.equal(saved.battle.status,'victory');
@@ -126,7 +129,7 @@ test('full campaign save resumes partial work and pack work survives report and 
  const returned=dispatchCampaign(current.campaign,{type:'leaveSector',battleId:r.id,sectorState:current.battle,survivors:current.battle.units.filter(u=>u.side==='player')});assert.equal(returned.lastError,null,returned.lastError);
  const resumed=decodeSave(encodeSave(returned)).campaign;const visit=dispatchCampaign(resumed,{type:'visitSector'});assert.equal(visit.lastError,null);
  const entered=enterSector(visit.pendingBattle,visit.sectorStates.retiro);const unit=entered.units.find(u=>u.id===id),entry=Object.entries(unit.inventory).find(([,r])=>r.weapon===1802);assert.equal(entry[1].reloadProgress,b.units[0].reloadProgress);
- const supplied=actBattle(entered,{type:'transfer',unitId:'4',targetId:id,item:'ammo',count:1});assert.equal(supplied.lastError,null);
+ const supplied=actBattle(entered,{type:'transfer',unitId:'4',targetId:id,item:'inventory:ammo:rifle_62',count:1});assert.equal(supplied.lastError,null);
  const equipped=planEquipLoot(supplied.units.find(u=>u.id===id),entry[0]);assert.equal(reloadCost(equipped,supplied),50);
 });
 

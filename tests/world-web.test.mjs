@@ -5,9 +5,9 @@ import {OPERATIVES} from '../game/data.js';
 import {actBattle, canSee, getReachable, teamCanSee} from '../game/tactical.js';
 test('re-entering a sector retains breaches and dropped gear without duplicating the squad',()=>{
  for(const compactLayout of [false,true]){
-  const request={sector:'retiro',compactLayout,exploration:true,squad:OPERATIVES.filter(o=>[3,4].includes(o.id)),enemies:[],npcs:[{id:'guide',name:'Guía',x:1,y:4}]};
+  const request={sector:'retiro',compactLayout,exploration:true,squad:OPERATIVES.filter(o=>[4,10].includes(o.id)),enemies:[],npcs:[{id:'guide',name:'Guía',x:1,y:4}]};
   let first=enterSector(request);const resident=first.units[0],initialAmmo=resident.ammo;
-  first=actBattle(first,{type:'drop',unitId:resident.id,item:'ammo',count:1});assert.equal(first.lastError,null);
+  first=actBattle(first,{type:'drop',unitId:resident.id,item:'inventory:ammo:pistol_54',count:1});assert.equal(first.lastError,null);
   const gear=first.groundItems[0];assert.equal(gear.knownToPlayer,true);assert.equal(teamCanSee(first,'player',gear),true);
   const destination=getReachable(first,first.units[0]).find(cell=>Math.abs(cell.x-resident.x)+Math.abs(cell.y-resident.y)===1&&!first.tiles.find(t=>t.x===cell.x&&t.y===cell.y).buildingId&&canSee(first,{...first.units[0],...cell},gear));
   assert.ok(destination,'the generated deployment has an accessible adjacent position with sight of the dropped item');

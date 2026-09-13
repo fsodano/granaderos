@@ -1,3 +1,7 @@
+import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
+import {AMMUNITION_TYPES} from '../game/ammunition-types.js';
+const AMMO='inventory:ammo:musket_75';
+const ammoStack=count=>({item:AMMO,kind:'ammunition',ammoType:'musket_75',name:AMMUNITION_TYPES.musket_75.name,count,weight:.04});
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,getReachable,endTurn,stanceCost,canSee} from '../game/tactical.js';
@@ -46,13 +50,13 @@ test('stacked bodies do not reveal their packs from the other floor',()=>{
 test('AI never treats, transfers, loots or strikes through a floor, even in the same XY cell',()=>{
  const s=field([{id:'p',x:5,y:5,weapon:1800,loaded:0,ammo:0,medkits:2,medical:80,activeSlot:'medical'},{id:'ally',x:5,y:5,tacticalLevel:1,loaded:0,ammo:0,medical:0,medkits:0,hp:60,bleeding:2}],{enemies:[{id:'e',x:6,y:5,tacticalLevel:1,weapon:1809,patrol:false}]});
  s.climbLinks=[];s.units[0].ap=100;const action=chooseEnemyAction(s,s.units[0]);assert.notEqual(action?.type,'useItem');assert.notEqual(action?.type,'melee');
- s.units[0].ammo=3;s.units[0].loaded=1;const share=chooseSupplySharingAction(s,s.units[0],[],()=>getReachable(s,s.units[0]));assert.equal(share,null);
- s.units[0].ammo=0;s.units[0].loaded=0;s.units[0].activeSlot='primary';s.groundItems=[{id:'rounds',type:'item',item:'ammo',x:5,y:5,tacticalLevel:1,count:2,weight:.04}];
+ setTestAmmunition(s.units[0],3);s.units[0].loaded=1;const share=chooseSupplySharingAction(s,s.units[0],[],()=>getReachable(s,s.units[0]));assert.equal(share,null);
+ setTestAmmunition(s.units[0],0);s.units[0].loaded=0;s.units[0].activeSlot='primary';s.groundItems=[{id:'rounds',type:'item',...ammoStack(2),x:5,y:5,tacticalLevel:1}];
  assert.equal(chooseScavengingAction(s,s.units[0],[],()=>getReachable(s,s.units[0])),null);
 });
 test('a visible roof ammunition source requires a paid approach before pickup, with no item duplication',()=>{
  let s=field([{id:'p',x:3,y:4,weapon:1800,loaded:0,ammo:0,medkits:0}],{exploration:false,enemies:[{id:'e',x:15,y:9,patrol:false,overwatch:false}]});
- s.groundItems=[{id:'rounds',type:'item',item:'ammo',x:4,y:5,tacticalLevel:1,count:3,weight:.04}];s.units[0].ap=100;
+ s.groundItems=[{id:'rounds',type:'item',...ammoStack(3),x:4,y:5,tacticalLevel:1}];s.units[0].ap=100;
  const move=chooseScavengingAction(s,s.units[0],[],()=>getReachable(s,s.units[0]));assert.equal(move?.type,'move');assert.equal(move.tacticalLevel,1);
  const before=structuredClone(s);s=act(s,move);assert.equal(s.units[0].ap,80);assert.equal(s.units[0].ammo,0);assert.equal(s.groundItems[0].count,3);
  const pickup=chooseScavengingAction(s,s.units[0],[],()=>getReachable(s,s.units[0]));assert.equal(pickup?.type,'loot');s=act(s,pickup);assert.equal(s.units[0].ammo,3);assert.equal(s.groundItems[0].count,0);assert.ok(s.units[0].ap<80);assert.equal(s.units[0].ammo+s.groundItems[0].count,before.groundItems[0].count);

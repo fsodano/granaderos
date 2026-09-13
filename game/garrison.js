@@ -1,6 +1,9 @@
 import {validMilitiaExperience,earnedMilitiaRank,promoteMilitia} from './militia-experience.js';
 import {validatePersonalInventory} from './squads.js';
 import {WEAPONS} from './data.js';
+import {weaponAmmoType} from './ammunition-types.js';
+import {initializeUnitAmmunition} from './tactical-ammunition.js';
+import {ammoResourceKey,unitAmmunitionByType} from './campaign-ammunition.js';
 // Strategic militia become local tactical soldiers, never travelling mercenaries.
 export const GARRISON_RANKS=[
  {name:'Cívico',maxHp:60,marksmanship:42,morale:45,agility:55,strength:55,weapon:1804,blade:1813},
@@ -14,13 +17,13 @@ export function prepareGarrison(s,sector){
  for(let rank=0;rank<3;rank++){
   const count=Math.min(slots,s.sectors[sector].militia[rank]);slots-=count;
   const retained=old.filter(u=>u.militiaRank===rank&&u.hp>0).slice(0,count);next.push(...retained);
-  for(let i=retained.length;i<count;i++){const stats=GARRISON_RANKS[rank],rounds=Math.min(6,s.resources.cartridges);s.resources.cartridges-=rounds;next.push({...stats,id:s.nextMilitiaId++,name:`${stats.name} de la guarnición`,hp:stats.maxHp,militia:true,militiaRank:rank,leadership:30+rank*15,wisdom:55,dexterity:55,medical:15,loaded:Math.min(1,rounds),ammo:Math.max(0,rounds-1),condition:85,priming:6,flints:0,rations:0,medkits:0,torches:0,boleadoras:rank===1?1:0,inventory:{},overwatch:true});}
+  for(let i=retained.length;i<count;i++){const stats=GARRISON_RANKS[rank],key=ammoResourceKey(weaponAmmoType(stats.weapon)),rounds=Math.min(6,s.resources[key]??0);s.resources[key]-=rounds;next.push(initializeUnitAmmunition({...stats,id:s.nextMilitiaId++,name:`${stats.name} de la guarnición`,hp:stats.maxHp,militia:true,militiaRank:rank,leadership:30+rank*15,wisdom:55,dexterity:55,medical:15,loaded:Math.min(1,rounds),ammo:Math.max(0,rounds-1),condition:85,priming:6,flints:0,rations:0,medkits:0,torches:0,boleadoras:rank===1?1:0,inventory:{},overwatch:true},{defaultCount:0}));}
  }
  // Keep transferred soldiers beyond the 60-person deployment limit as finite
  // reserves. Only a real reduction in rank strength releases surplus rounds.
  const reserve=[];
  for(let rank=0;rank<3;rank++){const count=Math.max(0,s.sectors[sector].militia[rank]-next.filter(u=>u.militiaRank===rank).length);reserve.push(...old.filter(u=>u.militiaRank===rank&&u.hp>0&&!next.some(v=>v.id===u.id)).slice(0,count));}
- for(const u of old)if(!next.some(v=>v.id===u.id)&&!reserve.some(v=>v.id===u.id))s.resources.cartridges+=(u.hp>0?(u.loaded??0)+(u.ammo??0):0);
+ for(const u of old)if(u.hp>0&&!next.some(v=>v.id===u.id)&&!reserve.some(v=>v.id===u.id))for(const[type,count]of Object.entries(unitAmmunitionByType(u)))s.resources[ammoResourceKey(type)]+=count;
  s.garrisons[sector]=[...next,...reserve];return structuredClone(next);
 }
 export function returnGarrison(s,request,snapshot,dispositions=[]){

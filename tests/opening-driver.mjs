@@ -3,6 +3,7 @@ import {enterSector} from '../game/world.js';
 import {actBattle,endTurn,getReachable,hasLineOfSight,canSee,shotChance,actionCosts,interruptAvailable,stanceCost} from '../game/tactical.js';
 import {chooseEnemyAction} from '../game/tactical-ai.js';
 import {sameSurface,spacePoint} from '../game/tactical-space.js';
+import {availableAmmunition} from '../game/ammunition-types.js';
 
 const alive=u=>u.hp>0&&!u.departure&&!u.surrendered&&!u.unconscious&&!u.routed;
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
@@ -35,8 +36,8 @@ export function combatOrder(b,u){
  }
  // Kneel when prone muzzle-loading is unaffordable but a complete
  // crouched reload fits. Do not leave an empty Baker waiting indefinitely.
- if(!u.loaded&&!u.jammed&&u.ammo&&u.stance==='prone'&&cost.reload>u.ap&&u.ap>=stanceCost(u,'crouched')+actionCosts(b,{...u,stance:'crouched'}).reload)return {type:'stance',unitId:u.id,stance:'crouched'};
- if(!u.loaded&&!u.jammed&&u.ammo&&cost.reload>0&&u.ap>=cost.reload)return {type:'reload',unitId:u.id};
+ if(!u.loaded&&!u.jammed&&availableAmmunition(u)&&u.stance==='prone'&&cost.reload>u.ap&&u.ap>=stanceCost(u,'crouched')+actionCosts(b,{...u,stance:'crouched'}).reload)return {type:'stance',unitId:u.id,stance:'crouched'};
+ if(!u.loaded&&!u.jammed&&availableAmmunition(u)&&cost.reload>0&&u.ap>=cost.reload)return {type:'reload',unitId:u.id};
  const automatic=chooseEnemyAction(b,u);
  if(u.missionAlly&&players.length>1&&automatic?.type==='move')return null;
  if(automatic&&automatic.type!=='charge')return automatic;

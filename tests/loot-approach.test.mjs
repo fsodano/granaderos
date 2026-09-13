@@ -1,3 +1,6 @@
+import {AMMUNITION_TYPES} from '../game/ammunition-types.js';
+const AMMO='inventory:ammo:musket_75';
+const ammoStack=count=>({item:AMMO,kind:'ammunition',ammoType:'musket_75',name:AMMUNITION_TYPES.musket_75.name,count,weight:.04});
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,endTurn,lootApproachPreview,lootSearchPreview,approachCompleted,lootPreview} from '../game/tactical.js';
@@ -8,7 +11,7 @@ import {inventoryUsage} from '../game/tactical-inventory.js';
 function field(actor={},extra={}){
   const s=createBattle([{id:'p',x:2,y:2,facing:2,...actor}],{width:16,height:10,seed:45,tiles:Array.from({length:160},(_,i)=>({x:i%16,y:Math.floor(i/16),type:i%16===10?'wall':'grass',blocked:i%16===10,blocksSight:i%16===10,cover:0})),enemies:[{id:'guard',x:14,y:8,patrol:false,overwatch:false}],...extra});
   s.units[0].ap=actor.ap??100;for(const u of s.units.filter(u=>u.side==='enemy'))u.ap=0;
-  s.groundItems=[{id:'ammo-pile',type:'item',x:6,y:2,item:'ammo',count:12,weight:.04}];return s;
+  s.groundItems=[{id:'ammo-pile',type:'item',x:6,y:2,...ammoStack(12)}];return s;
 }
 const pick={type:'loot',unitId:'p',groundId:'ammo-pile',count:3};
 const search={type:'approachLoot',unitId:'p',x:6,y:2};
@@ -29,7 +32,7 @@ test('body contents stay hidden at distance, including the difference between em
   const s=field({}, {enemies:[{id:'body',x:6,y:2,hp:0,ammo:19,patrol:false},{id:'guard',x:14,y:8,patrol:false}]});s.groundItems=[];
   const empty=structuredClone(s);Object.assign(empty.units[1],{weapon:0,blade:0,loaded:0,ammo:0,priming:0,flints:0,medkits:0,rations:0,torches:0,boleadoras:0,inventory:{}});
   assert.deepEqual(nearbyLootOptions(s,soldier(s),search),[]);assert.deepEqual(nearbyLootOptions(empty,soldier(empty),search),[]);assert.deepEqual(pickupSelection(s,soldier(s),search),pickupSelection(empty,soldier(empty),search));
-  const after=actBattle(s,search),options=nearbyLootOptions(after,soldier(after),search);assert.ok(options.some(item=>item.action.targetId==='body'&&item.action.item==='ammo'&&item.count===19));assert.equal(after.units[1].ammo,19);
+  const after=actBattle(s,search),options=nearbyLootOptions(after,soldier(after),search);assert.ok(options.some(item=>item.action.targetId==='body'&&item.action.item===AMMO&&item.count===19));assert.equal(after.units[1].ammo,19);
   const restored=validateBattleSnapshot(JSON.parse(JSON.stringify(after)));assert.deepEqual(nearbyLootOptions(restored,soldier(restored),search),options);
 });
 
@@ -74,7 +77,7 @@ test('a real saved player interrupt permits search and exact finite pickup withi
 });
 
 test('ground pile markers merge visible stacks and exclude taken, entangled and unseen equipment',()=>{
-  const s=field();s.groundItems.push({...s.groundItems[0],id:'other',item:'medkits',count:1},{...s.groundItems[0],id:'hidden',x:14},{...s.groundItems[0],id:'empty',x:5,count:0},{...s.groundItems[0],id:'caught',x:4,heldBy:'guard'});s.droppedWeapons=[{x:6,y:2,weapon:1800,taken:false},{x:3,y:2,weapon:1800,taken:true}];
+  const s=field();s.groundItems.push({id:'other',type:'item',x:6,y:2,item:'medkits',count:1,weight:.2},{...s.groundItems[0],id:'hidden',x:14},{...s.groundItems[0],id:'empty',x:5,count:0},{...s.groundItems[0],id:'caught',x:4,heldBy:'guard'});s.droppedWeapons=[{x:6,y:2,weapon:1800,taken:false},{x:3,y:2,weapon:1800,taken:true}];
   assert.deepEqual(groundLootPiles(s,[soldier(s)]),[{x:6,y:2,count:3}]);assert.deepEqual(pickupSelection(s,soldier(s),{x:14,y:2}),[]);
   const p=targetPreview(s,soldier(s),{x:6,y:2});assert.equal(p.pa,24);assert.equal(p.actionLabel,'Acercarse al equipo');assert.match(p.coverNote,/8 PA adicionales/);
   assert.deepEqual(pickupSelection(s,soldier(s),search,{movementIntent:'preserveFacing'}),[]);

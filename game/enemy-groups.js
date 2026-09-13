@@ -1,3 +1,4 @@
+import {initializeUnitAmmunition} from './tactical-ammunition.js';
 import {CAMPAIGN_SECTORS} from './data.js';
 import {ROYALIST_COMMANDS,NORTHERN_AXIS,oppositionFor} from './narrative.js';
 import {operativeInTransit,operativeLocation,validatePersonalInventory} from './squads.js';
@@ -23,7 +24,7 @@ export function launchEnemyGroup(s,theater,target,{immediate=false}={}){
  const route=theater==='north'?NORTHERN_AXIS.slice(0,NORTHERN_AXIS.indexOf(target)+1):[target];need(route.length>0,'La ruta del norte es inválida.');
  const seed=(Math.imul((s.seed^s.hour^index)>>>0,1664525)+1013904223)>>>0;
  const enemies=oppositionFor({theater,squad:Array.from({length:strength}),difficulty:1}).enemies;
- const units=enemies.map((u,i)=>({...u,id:`${id}-${i}`,hp:100,maxHp:100,energy:100,agility:65,dexterity:65,wisdom:50,strength:70,medical:15,mechanical:15,experienceLevel:4,condition:85,bladeCondition:100,loaded:1,ammo:5,priming:6,flints:0,rations:0,medkits:0,boleadoras:0,torches:0,fatigue:0,bleeding:0,bandaged:0,jammed:false,inventory:{}}));
+ const units=enemies.map((u,i)=>initializeUnitAmmunition({...u,id:`${id}-${i}`,hp:100,maxHp:100,energy:100,agility:65,dexterity:65,wisdom:50,strength:70,medical:15,mechanical:15,experienceLevel:4,condition:85,bladeCondition:100,loaded:1,ammo:5,priming:6,flints:0,rations:0,medkits:0,boleadoras:0,torches:0,fatigue:0,bleeding:0,bandaged:0,jammed:false,inventory:{}}));
  const group={id,theater,command,origin:theater==='north'?'alto_peru':theater==='coast'?'montevideo':'partidas_del_interior',target,route,routeIndex:immediate?route.length:0,launchedAt:s.hour,nextArrivalAt:s.hour+(immediate?0:GROUP_LEG_HOURS[theater]),arrivalAt:s.hour+(immediate?0:route.length*GROUP_LEG_HOURS[theater]),seed,initialStrength:strength,units,status:immediate?'waiting':'marching',resolvedAt:null};
  s.enemyGroups.push(group);
  const resolved=s.enemyGroups.filter(g=>['defeated','withdrawn'].includes(g.status));for(const old of resolved.slice(0,Math.max(0,resolved.length-48)))s.enemyGroups.splice(s.enemyGroups.indexOf(old),1);

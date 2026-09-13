@@ -1,3 +1,6 @@
+import {AMMUNITION_TYPES} from '../game/ammunition-types.js';
+const AMMO='inventory:ammo:pistol_69';
+const ammoStack=count=>({item:AMMO,kind:'ammunition',ammoType:'pistol_69',name:AMMUNITION_TYPES.pistol_69.name,count,weight:.04});
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,hasLineOfSight,medicalUsePreview,itemUsePreview,transferPreview,lootBatchPreview,environmentTargetAt,environmentPreview,containerLootPreview,exitPreview,artilleryCrewPlan,artilleryCosts,firearmRangeProfile,tileIllumination} from '../game/tactical.js';
@@ -59,39 +62,39 @@ test('sabre attacks and weapon stealing cannot cross floors at adjacent XY coord
 
 test('a close item transfer cannot silently become a cross-floor throw',()=>{
  const b=field([person('p',3,0,{ammo:12}),person('q',4,1,{ammo:0})]);
- reject(b,{type:'transfer',targetId:'q',item:'ammo',count:3});assert.equal(transferPreview(b,b.units[0],b.units[1],'ammo',3).valid,false);
+ reject(b,{type:'transfer',targetId:'q',item:AMMO,count:3});assert.equal(transferPreview(b,b.units[0],b.units[1],AMMO,3).valid,false);
 });
 
 test('relay links stay on one floor and retain the real quantity and each sender AP',()=>{
  const b=field([person('p',4,1,{ammo:12}),person('middle',5,1,{ammo:0}),person('q',6,1,{ammo:0})],{exploration:false,enemies:[person('guard',15,0,{y:9})]});
- const preview=transferPreview(b,b.units[0],b.units[2],'ammo',3);assert.equal(preview.kind,'relay');assert.deepEqual(preview.route.map(p=>p.id),['p','middle','q']);
- const n=accept(b,{type:'transfer',targetId:'q',item:'ammo',count:3});assert.deepEqual(n.units.slice(0,3).map(u=>u.ammo),[9,0,3]);
+ const preview=transferPreview(b,b.units[0],b.units[2],AMMO,3);assert.equal(preview.kind,'relay');assert.deepEqual(preview.route.map(p=>p.id),['p','middle','q']);
+ const n=accept(b,{type:'transfer',targetId:'q',item:AMMO,count:3});assert.deepEqual(n.units.slice(0,3).map(u=>u.ammo),[9,0,3]);
  assert.deepEqual(n.units.slice(0,3).map((u,i)=>b.units[i].ap-u.ap),[4,4,0]);
  const otherFloor=field([person('p',3,0,{ammo:12}),person('middle',4,1,{ammo:0}),person('q',5,1,{ammo:0})]);
- reject(otherFloor,{type:'transfer',targetId:'q',item:'ammo',count:3});
+ reject(otherFloor,{type:'transfer',targetId:'q',item:AMMO,count:3});
 });
 
 test('body and loose-item pickup cannot take possessions from an inaccessible upper floor',()=>{
  const body=field([person('p',3),person('body',4,1,{hp:0,ammo:3})]);
- reject(body,{type:'loot',targetId:'body',item:'ammo',count:1});
- const b=field();b.groundItems.push({id:'upper-ammo',type:'item',item:'ammo',x:4,y:4,tacticalLevel:1,count:3,weight:.04});
+ reject(body,{type:'loot',targetId:'body',item:AMMO,count:1});
+ const b=field();b.groundItems.push({id:'upper-ammo',type:'item',...ammoStack(3),x:4,y:4,tacticalLevel:1});
  reject(b,{type:'loot',groundId:'upper-ammo',count:1});
 });
 
 test('one pickup batch cannot combine the upstairs and downstairs piles at the same XY',()=>{
- const b=field([person('p',4,1)]);b.groundItems.push(...[0,1].map(level=>({id:`ammo-${level}`,type:'item',item:'ammo',x:4,y:4,tacticalLevel:level,count:3,weight:.04})));
+ const b=field([person('p',4,1)]);b.groundItems.push(...[0,1].map(level=>({id:`ammo-${level}`,type:'item',...ammoStack(3),x:4,y:4,tacticalLevel:level})));
  const items=[{groundId:'ammo-1',count:1},{groundId:'ammo-0',count:1}];
  reject(b,{type:'lootBatch',items});assert.equal(lootBatchPreview(b,b.units[0],items).valid,false);
 });
 
 test('dropping and recovering an exact stack keeps it on the roof through JSON validation',()=>{
- const b=field([person('p',4,1,{ammo:12})]),dropped=accept(b,{type:'drop',item:'ammo',count:3}),stack=dropped.groundItems[0];
+ const b=field([person('p',4,1,{ammo:12})]),dropped=accept(b,{type:'drop',item:AMMO,count:3}),stack=dropped.groundItems[0];
  assert.equal(stack.count,3);assert.equal(tacticalLevel(stack),1);assert.equal(dropped.units[0].ammo,9);
  const saved=validateBattleSnapshot(JSON.parse(JSON.stringify(dropped))),n=accept(saved,{type:'loot',groundId:stack.id,count:3});
  assert.equal(n.units[0].ammo,12);assert.equal(n.groundItems[0].count,0);assert.equal(tacticalLevel(n.groundItems[0]),1);
 });
 
-const chest=(level=1)=>({id:'test-chest',type:'chest',x:4,y:4,tacticalLevel:level,blocksMovement:true,open:false,locked:false,contents:[{item:'ammo',count:3,weight:.04}]});
+const chest=(level=1)=>({id:'test-chest',type:'chest',x:4,y:4,tacticalLevel:level,blocksMovement:true,open:false,locked:false,contents:[ammoStack(3)]});
 test('environment targeting selects the actual floor and cannot open or empty a chest overhead',()=>{
  const b=field([person('p',3)],{props:[chest()]});
  assert.equal(environmentTargetAt(b,{x:4,y:4,tacticalLevel:0}),null);

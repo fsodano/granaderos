@@ -8,6 +8,9 @@ import {fight} from './opening-driver.mjs';
 import {enterSector} from '../game/world.js';
 import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
 import {getReachable,teamCanSee,stanceCost,actionCosts,hasLineOfSight} from '../game/tactical.js';
+import {availableAmmunition,weaponAmmoType} from '../game/ammunition-types.js';
+import {ammoResourceKey} from '../game/campaign-ammunition.js';
+import {RECIPES} from '../game/data.js';
 
 // Deliberately poor tactics for the captivity scenario: march into the open
 // east court of the authored citadel, kneel and hold fire. Soldiers still use
@@ -60,6 +63,16 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
  const {events,doctors,staging}=staged,dead=Object.entries(start.operativeState).filter(([,record])=>!record.alive).map(([id])=>Number(id));
  const patients=campaign.recruited.filter(id=>{const r=campaign.operativeState[id];return r.alive&&!r.captured&&r.location==='san_nicolas'&&r.hp<r.maxHp;});
  const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;events.push({action,hour:campaign.hour,second:campaign.secondOfHour??0});};
+ // Recovery also gives the controlled Retiro workshop time to prepare the
+ // actual survivors' loads. Other calibers cannot supply an exhausted Baker.
+ const ammunitionProduction=[];
+ for(const type of new Set(rosterFor(campaign).filter(op=>campaign.recruited.includes(op.id)&&!doctors.includes(op.id)&&campaign.operativeState[op.id].alive).map(op=>weaponAmmoType(op.weapon)).filter(Boolean))){
+  const key=ammoResourceKey(type),required=rosterFor(campaign).filter(op=>campaign.recruited.includes(op.id)&&!doctors.includes(op.id)&&weaponAmmoType(op.weapon)===type).reduce((sum,op)=>sum+Math.max(0,10-(campaign.operativeState[op.id].carriedLoaded??0)-availableAmmunition(campaign.operativeState[op.id],type)),0);
+  if(campaign.resources[key]>=required)continue;
+  const recipe=RECIPES[key],before=structuredClone(campaign.resources);order({type:'produce',recipe:key,sector:'retiro'});
+  for(const [resource,cost] of Object.entries(recipe.cost))assert.equal(campaign.resources[resource],before[resource]-cost);
+  const production=campaign.production.at(-1);ammunitionProduction.push({type,key,id:production.id,due:production.due,count:recipe.yield[key],cost:recipe.cost});
+ }
  const model=(id,sector='san_nicolas')=>sectorInventoryModel(campaign,sector,rosterFor(campaign),id);
  const gathered=[];
  const gather=(id,limit=1000,sector='san_nicolas')=>{
@@ -121,7 +134,8 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
  for(const id of dead)assert.equal(campaign.operativeState[id].alive,false);
  for(const id of ids){assert.ok(campaign.operativeState[id].hp>=15);assert.equal(campaign.operativeState[id].bleeding,0);}
  assert.ok(campaign.resources.treasury>=0);assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
- const recovery={startHour:recoveryStart,endHour:campaign.hour,staging,doctors,patients,usedDressings,recoveredDressings,donatedDressings,donors,replacements,fieldIds:ids,gathered};report({event:'recovered',...recovery,cash:campaign.resources.treasury});
+ for(const production of ammunitionProduction){assert.ok(campaign.hour>=production.due);assert.ok(!campaign.production.some(order=>order.id===production.id));assert.ok(campaign.resources[production.key]>=production.count);}
+ const recovery={startHour:recoveryStart,endHour:campaign.hour,staging,doctors,patients,usedDressings,recoveredDressings,donatedDressings,donors,replacements,fieldIds:ids,gathered,ammunitionProduction};report({event:'recovered',...recovery,cash:campaign.resources.treasury});
  return {campaign,events,dead,recovery};
 }
 

@@ -1,5 +1,6 @@
 import {atHand,moveOrder,planningPoint} from './tactical-planning-space.js';
 import {canSee,hasLineOfSight,weaponFor,hasFirearm,actionCosts,planLoot,planEquipLoot} from './tactical.js';
+import {availableAmmunition,weaponAmmoType} from './ammunition-types.js';
 
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const usable=unit=>weaponFor(unit).capacity>0&&unit.loaded>0&&!unit.jammed;
@@ -9,15 +10,15 @@ const usable=unit=>weaponFor(unit).capacity>0&&unit.loaded>0&&!unit.jammed;
 export function chooseScavengingAction(state,unit,targets,paths){
   const costs=actionCosts(state,unit);
   if(unit.ap<costs.loot||unit.knockedDown||unit.entangled||usable(unit))return null;
-  if(hasFirearm(unit)&&(unit.jammed?unit.priming>0:unit.ammo>0))return null;
+  if(hasFirearm(unit)&&(unit.jammed?unit.priming>0:availableAmmunition(unit,weaponFor(unit))>0))return null;
   if(!hasFirearm(unit)&&!unit.weaponDropped)return null;
   // A carried ready spare already supplies this need, even if its shot must wait.
   if(Object.keys(unit.inventory??{}).some(key=>{try{return usable(planEquipLoot(unit,key));}catch{return false;}}))return null;
-  const needAmmo=hasFirearm(unit)&&unit.ammo===0&&!unit.jammed;
+  const type=weaponAmmoType(weaponFor(unit)),needAmmo=hasFirearm(unit)&&availableAmmunition(unit,weaponFor(unit))===0&&!unit.jammed;
   const sources=[];
   for(const ground of state.groundItems??[]){
     if(!ground.count||ground.heldBy||distance(unit,ground)>5||!canSee(state,unit,ground))continue;
-    if(ground.item==='ammo'&&needAmmo)sources.push({point:ground,action:{groundId:ground.id},count:Math.min(12,ground.count),ammo:true});
+    if(ground.kind==='ammunition'&&ground.ammoType===type&&needAmmo)sources.push({point:ground,action:{groundId:ground.id},count:Math.min(12,ground.count),ammo:true});
     else if(ground.weapon&&usable({...unit,weapon:ground.weapon,activeSlot:'primary',weaponDropped:false,loaded:ground.loaded,jammed:ground.jammed}))
       sources.push({point:ground,action:{groundId:ground.id},count:1});
   }
@@ -29,7 +30,7 @@ export function chooseScavengingAction(state,unit,targets,paths){
   // Do not take an injured ally's gear or infer distant/hidden pack contents.
   for(const body of state.units){
     if(body.id===unit.id||body.departure||body.fled||body.hp>0&&(body.side===unit.side||!body.unconscious&&!body.surrendered)||!atHand(unit,body)||!canSee(state,unit,body))continue;
-    if(needAmmo&&body.ammo>0)sources.push({point:body,action:{targetId:body.id,item:'ammo'},count:Math.min(12,body.ammo),ammo:true});
+    if(needAmmo)for(const [key,stack] of Object.entries(body.inventory??{}).sort(([a],[b])=>a<b?-1:a>b?1:0))if(stack?.kind==='ammunition'&&stack.ammoType===type&&stack.count>0)sources.push({point:body,action:{targetId:body.id,item:`inventory:${key}`},count:Math.min(12,stack.count),ammo:true});
     if(!body.weaponDropped&&usable({...body,activeSlot:'primary'}))sources.push({point:body,action:{targetId:body.id,item:'primary'},count:1});
   }
   if(!sources.length)return null;

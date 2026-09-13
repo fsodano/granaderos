@@ -1,3 +1,4 @@
+import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
@@ -17,7 +18,7 @@ const attack=s=>order(s,{type:'attack',sector:'salta',queue:true});
 function front(hour=40){
  let s=initialCampaign();for(const at of ['cordoba','tucuman'])s.sectors[at].owner='patriot';
  s.location='tucuman';s.squads[0].location='tucuman';for(const id of s.squad)s.operativeState[id].location='tucuman';
- const group=launchEnemyGroup(s,'north','tucuman');group.units[0].hp=63;group.units[0].bandaged=37;group.units[0].ammo=1;group.units[0].condition=42;
+ const group=launchEnemyGroup(s,'north','tucuman');group.units[0].hp=63;group.units[0].bandaged=37;setTestAmmunition(group.units[0],1);group.units[0].condition=42;
  s=wait(s,hour);assert.equal(s.hour,hour);assert.equal(s.enemyGroups[0].routeIndex,3);return roundtrip(s);
 }
 test('opposing routes delay the actual army, save its ETA, and meet at the attack destination',()=>{

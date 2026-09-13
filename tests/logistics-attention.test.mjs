@@ -19,7 +19,7 @@ test('a real paid workshop order stops the clock on completion and credits its g
  const start=secureArea(initialCampaign()),queued=produce(start),n=wait(queued,24);
  assert.equal(queued.resources.treasury,start.resources.treasury-30);assert.equal(queued.resources.powder,start.resources.powder-5);
  assert.equal(n.hour,12);assert.equal(n.resources.cartridges,start.resources.cartridges+60);assert.equal(n.production.length,0);
- assert.deepEqual(n.logisticsNotice,{hour:12,requestedHours:24,advancedHours:12,events:[{kind:'production',sector:'retiro',name:'Cartuchos de papel',goods:{cartridges:60}}]});
+ assert.deepEqual(n.logisticsNotice,{hour:12,requestedHours:24,advancedHours:12,events:[{kind:'production',sector:'retiro',name:'Cartucho de mosquete .75',goods:{cartridges:60}}]});
  const again=wait(saved(n),6);assert.equal(again.hour,18);assert.equal(again.logisticsNotice,null);assert.equal(again.resources.cartridges,n.resources.cartridges);assert.deepEqual(n,wait(saved(queued),24));
 });
 test('all deliveries in the completion hour are grouped after their actual credit',()=>{

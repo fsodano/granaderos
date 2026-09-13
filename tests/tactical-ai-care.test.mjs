@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,endTurn,getReachable,canSee,actionCosts} from '../game/tactical.js';
 import {chooseEnemyAction} from '../game/tactical-ai.js';
@@ -63,7 +64,7 @@ test('a medic walks a real short path while reserving AP for equipment, treatmen
 test('rescue decisions do not reveal hidden patients or respond to unseen opposing coordinates',()=>{
   const s=field({x:11,ap:60},{x:7});assert.equal(canSee(s,medic(s),patient(s)),false);assert.equal(chooseEnemyAction(s,medic(s)),null);
   patient(s).x=14;const before=structuredClone(s),order=chooseEnemyAction(s,medic(s));assert.equal(order.type,'move');
-  s.units[0].x=2;s.units[0].y=6;s.units[0].ammo=500;s.units[0].inventory={secret:{count:1,weight:1}};
+  s.units[0].x=2;s.units[0].y=6;s.units[0].inventory={secret:{count:1,weight:1}};setTestAmmunition(s.units[0],500);
   assert.deepEqual(chooseEnemyAction(s,medic(s)),order);assert.deepEqual(chooseEnemyAction(before,medic(before)),order);
   assert.equal(medic(before).ap,60);assert.equal(medic(before).medkits,2);
 });

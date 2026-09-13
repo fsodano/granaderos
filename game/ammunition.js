@@ -1,18 +1,16 @@
+import {isAmmunitionStack,totalReserveAmmunition,weaponAmmoType} from './ammunition-types.js';
+import {addAmmoCounts,totalAmmoCounts,unitAmmunitionByType,stackAmmunitionByType,fieldAmmunitionByType} from './campaign-ammunition.js';
 import {handLayout} from './hand-layout.js';
 import {WEAPONS} from './data.js';
 
 // Ammunition already on the field is separate from newly issued cartridges.
 // Count loose rounds and charges in finite ground weapons and containers.
-export function fieldAmmunition(snapshot){
- const rounds=stack=>stack.item==='ammo'?stack.count??0:stack.weapon!==undefined?(stack.loaded??0)*(stack.count??1):0;
- return (snapshot?.groundItems??[]).reduce((sum,g)=>sum+(g.heldBy?0:rounds(g)),0)
-  +(snapshot?.droppedWeapons??[]).reduce((sum,g)=>sum+(g.taken?0:g.loaded??0),0)
-  +[...(snapshot?.props??[]),...(snapshot?.tiles??[])].reduce((sum,c)=>sum+(c.contents??[]).reduce((n,item)=>n+rounds(item),0),0);
-}
+export function fieldAmmunition(snapshot){return totalAmmoCounts(fieldAmmunitionByType(snapshot));}
 export function storedWeaponAmmunition(units){
- return units.reduce((total,u)=>total+(u.offHand?.loaded??0)+cursorAmmunition(u)+Object.values(u.inventory??{}).reduce((sum,item)=>sum+(item?.weapon!==undefined?(item.loaded??0)*(item.count??1):0),0),0);
+ return units.reduce((sum,u)=>sum+[u.offHand,u.equipmentCursor?.stack,...Object.values(u.inventory??{}).filter(item=>!isAmmunitionStack(item))].reduce((n,item)=>n+totalAmmoCounts(stackAmmunitionByType(item)),0),0);
 }
-export function cursorAmmunition(unit){const stack=unit?.equipmentCursor?.stack;return stack?.item==='ammo'?stack.count??0:stack?.weapon!==undefined?(stack.loaded??0)*(stack.count??1):0;}
+export function cursorAmmunition(unit){return totalAmmoCounts(stackAmmunitionByType(unit?.equipmentCursor?.stack));}
+export function ammunitionSource(unit){return {id:unit.id,side:unit.side,weapon:unit.weapon,ammo:unit.ammo??0,loaded:unit.loaded??0,ammunitionByType:unitAmmunitionByType(unit)};}
 const recoveredEquipmentAmmunition=(request,snapshot)=>{
  const ids=new Set((request.squad??[]).map(u=>String(u.id))),carriers=(snapshot?.units??[]).filter(u=>u.side==='player'&&ids.has(String(u.id)));
  // Net field gear, pack charges and cursor rounds together. Moving the same
@@ -37,26 +35,32 @@ export function returnAmmunition(request,reports,snapshot){
  return Math.min((request.issuedCartridges??0)+looted,returned);
 }
 
-// One shared ceiling applies to every destination. Captive ammunition remains
-// with its owner and must not enter the campaign cartridge reserve on this return.
+// Each prepared load has one budget across every destination and field owner.
+// Captive ammunition stays with its owner and never also credits shared stock.
 export function planReturnAmmunition(request,snapshot,entries){
- let loot=recoveredEquipmentAmmunition(request,snapshot);const seen=new Set();
- for(const source of [...(request.garrison??[]),...(request.garrisonLootSources??[]),...(request.missionAllies??[]),...(request.casualtyLootSources??[])]){
-  const key=`player:${source.id}`;if(seen.has(key))continue;seen.add(key);
-  const u=snapshot.units.find(u=>u.side==='player'&&String(u.id)===String(source.id));if(u)loot+=Math.max(0,(source.ammo??0)+(source.loaded??0)+(source.cursorCartridges??cursorAmmunition(source))-(u.ammo??0)-(u.loaded??0)-cursorAmmunition(u));
+ const allowance={};
+ for(const issued of request.squad??[])addAmmoCounts(allowance,unitAmmunitionByType(issued));
+ addAmmoCounts(allowance,request.fieldAmmunition??{});addAmmoCounts(allowance,fieldAmmunitionByType(snapshot),-1);
+ const sources=[...(request.garrison??[]),...(request.garrisonLootSources??[]),...(request.missionAllies??[]),...(request.casualtyLootSources??[]),...(request.ammunitionSources??request.enemies??[])],seen=new Set();
+ for(const source of sources){
+  const side=source.side??((request.enemies??[]).includes(source)||(request.ammunitionSources??[]).includes(source)?'enemy':'player'),key=`${side}:${source.id}`;
+  if(seen.has(key))continue;seen.add(key);
+  const actual=snapshot.units.find(u=>u.side===side&&String(u.id)===String(source.id));
+  if(actual){addAmmoCounts(allowance,source.ammunitionByType??unitAmmunitionByType(source));addAmmoCounts(allowance,unitAmmunitionByType(actual),-1);}
  }
- for(const source of request.ammunitionSources??request.enemies??[]){const key=`enemy:${source.id}`;if(seen.has(key))continue;seen.add(key);const u=snapshot.units.find(u=>u.side==='enemy'&&String(u.id)===String(source.id));if(u&&(u.hp<=0||u.unconscious||u.routed||u.surrendered)){const loaded=source.loaded??WEAPONS[source.weapon??source.primary??1800]?.capacity??0;loot+=Math.max(0,(source.ammo??12)+loaded+(source.cursorCartridges??cursorAmmunition(source))-(u.ammo??0)-(u.loaded??0)-cursorAmmunition(u));}}
- const custody={},carried={},returned=entries.reduce((sum,e)=>{
-  const u=snapshot.units.find(u=>u.side==='player'&&String(u.id)===e.unitId),rounds=(u.loaded??0)+(u.ammo??0);
-  if(!Number.isSafeInteger(rounds)||rounds<0||rounds>100000)throw Error('La munición del parte es inválida.');
-  const preserveLoading=!u.weaponDropped&&WEAPONS[u.weapon]?.capacity>0;
-  const loading=preserveLoading?{loaded:u.loaded,...(u.reloadProgress?{reloadProgress:u.reloadProgress}:{})}:null;
-  if(e.kind==='captured')custody[e.unitId]={loaded:u.loaded,ammo:u.ammo,...(loading?{preserveLoading:true,...(u.reloadProgress?{reloadProgress:u.reloadProgress}:{})}:{})};
-  const heldAmmo=Math.min(handLayout(u).held.filter(item=>item==='ammo').length,u.ammo);
-  if((loading||heldAmmo)&&['resident','departed'].includes(e.kind))carried[e.unitId]={...(loading??{loaded:0}),...(heldAmmo?{ammo:heldAmmo}:{})};
-  return sum+(['resident','departed'].includes(e.kind)?rounds:0);
- },0);
- const allowance=Math.min((request.issuedCartridges??0)+loot,returned),retained=Object.values(carried).reduce((sum,u)=>sum+u.loaded+(u.ammo??0),0);
- if(retained>allowance)throw Error('La carga conservada supera la munición del despliegue.');
- return {creditedCartridges:allowance-retained,custody,carried};
+ const custody={},carried={},retained={};
+ for(const entry of entries){
+  const unit=snapshot.units.find(u=>u.side==='player'&&String(u.id)===entry.unitId);
+  if(!unit)throw Error('Falta el combatiente en el parte de munición.');
+  // A corpse or dispersed soldier remains a physical custodian. Its rounds
+  // cannot also return in another survivor's inventory.
+  addAmmoCounts(retained,unitAmmunitionByType(unit));
+  const keepsGun=!unit.weaponDropped&&Boolean(weaponAmmoType(unit.weapon));
+  if(entry.kind==='captured')custody[entry.unitId]={loaded:unit.loaded,ammo:totalReserveAmmunition(unit),...(keepsGun?{preserveLoading:true,...(unit.reloadProgress?{reloadProgress:unit.reloadProgress}:{})}:{})};
+  if(keepsGun&&['resident','departed'].includes(entry.kind))carried[entry.unitId]={loaded:unit.loaded,...(unit.reloadProgress?{reloadProgress:unit.reloadProgress}:{})};
+ }
+ for(const type of new Set([...Object.keys(retained),...Object.keys(allowance)]))if((retained[type]??0)>(allowance[type]??0))throw Error('El parte devuelve más munición de ese tipo que la disponible en el despliegue.');
+ // Loose rounds remain in the same physical inventory. A return report is not
+ // a deposit order and cannot also credit those rounds to shared stock.
+ return {creditedCartridges:0,creditedAmmunition:{},custody,carried,retainedAmmunition:retained};
 }

@@ -55,7 +55,7 @@ test('readiness survives a real turn boundary and permits an otherwise unafforda
 
 test('movement, loading, stance, handling supplies and changing hands lower the weapon',()=>{
  const base=shoot(field({medical:80,hp:80,bandaged:20}));
- for(const a of [{type:'move',x:2,y:1},{type:'reload'},{type:'stance',stance:'crouched'},{type:'weapon',slot:'medical'},{type:'drop',item:'ammo',count:1},{type:'repair'}]){
+ for(const a of [{type:'move',x:2,y:1},{type:'reload'},{type:'stance',stance:'crouched'},{type:'weapon',slot:'medical'},{type:'drop',item:'inventory:ammo:pistol_54',count:1},{type:'repair'}]){
   const s=structuredClone(base);s.units[0].ap=100;const n=act(s,a);assert.equal(n.units[0].weaponReady,undefined,JSON.stringify(a));
   if(n.units[0].activeSlot==='primary')assert.equal(actionCosts(n,n.units[0]).ready,2);
  }
@@ -90,7 +90,7 @@ test('a misfire has raised the gun, but paid repriming lowers it',()=>{
 
 test('readiness belongs to the actor and cannot be packed, passed, or inherited with a gun',()=>{
  const s=shoot(field()),u=s.units[0],out=extractItemQuantity(u,'primary');assert.equal(out.unit.weaponReady,undefined);assert.equal(out.stack.weaponReady,undefined);
- const receiver=applyItemQuantity({...u,id:'r',weaponReady:true},out.stack),equipped=planEquipLoot(receiver,Object.keys(receiver.inventory)[0]);
+ const receiver=applyItemQuantity({...u,id:'r',weaponReady:true},out.stack),equipped=planEquipLoot(receiver,Object.keys(receiver.inventory).find(key=>receiver.inventory[key].weapon));
  assert.equal(equipped.weaponReady,undefined);assert.equal(actionCosts(s,equipped).ready,2);assert.equal(equipped.loaded,1);
 });
 
@@ -131,5 +131,5 @@ test('an enemy interrupted after its first shot keeps readiness when its saved t
 
 test('a real paid handoff lowers both the giver and receiver weapons',()=>{
  let s=field();s.units.push({...structuredClone(s.units[0]),id:'r',x:2,y:1,weaponReady:true});s.units[0].weaponReady=true;
- const n=act(s,{type:'transfer',targetId:'r',item:'ammo',count:1});assert.equal(n.units[0].weaponReady,undefined);assert.equal(n.units[2].weaponReady,undefined);assert.equal(n.units[0].ammo,2);assert.equal(n.units[2].ammo,4);
+ const n=act(s,{type:'transfer',targetId:'r',item:'inventory:ammo:pistol_54',count:1});assert.equal(n.units[0].weaponReady,undefined);assert.equal(n.units[2].weaponReady,undefined);assert.equal(n.units[0].ammo,2);assert.equal(n.units[2].ammo,4);
 });

@@ -1,3 +1,4 @@
+import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -14,6 +15,6 @@ test('the existing aiming cursor renders one paired AP total while retaining the
 });
 
 test('a loaded second pistol cannot hide the main-hand reload arrow or no-ammunition cross',()=>{
- const s=field();Object.assign(s.units[0],{loaded:0,ammo:1});let html=draw(s);assert.match(html,/aim-reload/);assert.match(html,/Recargar · \d+ PA/);assert.doesNotMatch(html,/aim-step|Cabeza/);
- s.units[0].ammo=0;html=draw(s);assert.match(html,/class="aim-empty"/);assert.match(html,/Sin munición/);assert.doesNotMatch(html,/aim-reload|aim-step/);assert.equal(s.units[0].offHand.loaded,2);
+ const s=field();s.units[0].loaded=0;setTestAmmunition(s.units[0],1);let html=draw(s);assert.match(html,/aim-reload/);assert.match(html,/Recargar · \d+ PA/);assert.doesNotMatch(html,/aim-step|Cabeza/);
+ setTestAmmunition(s.units[0],0);html=draw(s);assert.match(html,/class="aim-empty"/);assert.match(html,/Sin munición/);assert.doesNotMatch(html,/aim-reload|aim-step/);assert.equal(s.units[0].offHand.loaded,2);
 });

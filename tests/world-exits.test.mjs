@@ -1,3 +1,4 @@
+import {initializeUnitAmmunition} from '../game/tactical-ammunition.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {CAMPAIGN_SECTORS} from '../game/data.js';
@@ -20,6 +21,7 @@ test('every logical destination accepts six deterministic boundary arrivals with
   const endpoints = [...CAMPAIGN_SECTORS.flatMap(s => sectorExits(s.id)), ...sectorExits('san_lorenzo'), ...sectorExits('tucuman', 'yatasto')];
   for (const exit of endpoints) {
     const squad = Array.from({length: 6}, (_, i) => arrival(`p${i}`, exit.entryEdge, exit.entryAnchor, {hp: 61 + i, energy: 70 + i, ammo: 3, loaded: 0, condition: 47, medkits: 1, inventory: {legacy: {count: 1, weight: .2, weapon: 1820, loaded: 0, condition: 38, jammed: false}}}));
+    for(const u of squad){u.weapon=1800;initializeUnitAmmunition(u);}
     const req = request(exit.destination, {squad,compactLayout:false}), before = structuredClone(req), a = enterSector(req), b = enterSector(req);
     assert.deepEqual(a, b, exit.id);
     assert.deepEqual(req, before);

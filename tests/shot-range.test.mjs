@@ -1,3 +1,4 @@
+import {syncUnitAmmunition} from '../game/tactical-ammunition.js';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {shotRangeModifiers,shotRangeText} from '../game/shot-range.js';
 import {createBattle,actBattle,shotChance,firearmRangeProfile,firearmShotOptions,canSee,visibleDistance,actionCosts,hasLineOfSight,pointFirePreview,teamCanSee} from '../game/tactical.js';
@@ -34,14 +35,14 @@ test('smoke changes apparent distance and body-region precision without changing
  assert.ok(firearmRangeProfile(s,{...u,traits:['line_marksman']},t).apparentRange<hazy.apparentRange);
 });
 test('team spotting allows a costly distant shot but never reveals an unspotted target',()=>{
- const s=field({enemies:[{id:'e',x:21,y:2,patrol:false}]}),u=s.units[0],t=s.units[1];u.weapon=1802;
- s.units.push({...structuredClone(u),id:'spotter',x:15,y:4,weapon:1800});assert.equal(canSee(s,u,t),false);assert.equal(teamCanSee(s,'player',t),true);assert.equal(firearmRangeProfile(s,u,t).beyondSight,true);assert.equal(firearmRangeProfile(s,u,t).beyondWeapon,false);
+ const s=field({enemies:[{id:'e',x:21,y:2,patrol:false}]}),u=s.units[0],t=s.units[1];u.weapon=1802;syncUnitAmmunition(u);
+ s.units.push(syncUnitAmmunition({...structuredClone(u),id:'spotter',x:15,y:4,weapon:1800}));assert.equal(canSee(s,u,t),false);assert.equal(teamCanSee(s,'player',t),true);assert.equal(firearmRangeProfile(s,u,t).beyondSight,true);assert.equal(firearmRangeProfile(s,u,t).beyondWeapon,false);
  assert.ok(shotChance(s,u,t,4)>0);const preview=targetPreview(s,u,t,{mode:'fire'});assert.match(preview.coverNote,/Visión difícil/);
  const fired=actBattle(s,{type:'fire',unitId:u.id,targetId:t.id,aim:0});assert.equal(fired.lastError,null);assert.equal(fired.units[0].ap,u.ap-actionCosts(s,u).fire);
  s.units.pop();const rejected=actBattle(s,{type:'fire',unitId:u.id,targetId:t.id});assert.match(rejected.lastError,/compañero/);assert.deepEqual({...rejected,lastError:null,log:s.log},s);
 });
 test('HUD, AI shot options and real saved fire use the same range inputs and paid aim',()=>{
- const s=field(),[u,t]=s.units;u.weapon=1805;
+ const s=field(),[u,t]=s.units;u.weapon=1805;syncUnitAmmunition(u);
  for(const option of firearmShotOptions(s,u,t)){assert.equal(option.chance,shotChance(s,u,t,option.aim,option.hitLocation));}
  const preview=targetPreview(s,u,t,{mode:'fire',aim:2,hitLocation:'legs'});assert.equal(preview.chance,shotChance(s,u,t,2,'legs'));assert.match(preview.coverNote,/Distancia: 10 casillas · alcance del arma: 8/);assert.match(preview.coverNote,/Fuera del alcance eficaz/);
  const before=structuredClone(s),order={type:'fire',unitId:u.id,targetId:t.id,aim:2,hitLocation:'legs'};const fired=actBattle(s,order);assert.equal(fired.lastError,null);assert.equal(fired.units[0].ap,u.ap-preview.pa);assert.equal(fired.units[0].loaded,0);assert.deepEqual(actBattle(validateBattleSnapshot(JSON.parse(JSON.stringify(s))),order),fired);assert.deepEqual(s,before);

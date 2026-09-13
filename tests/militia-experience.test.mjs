@@ -1,3 +1,5 @@
+import {initializeUnitAmmunition} from '../game/tactical-ammunition.js';
+import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
@@ -15,7 +17,7 @@ function encounter(s){
  s=step(s,{type:'visitSector'});const r=s.pendingBattle;
  // The declared deployment fixture isolates militia custody. No result or
  // combat credit is inserted; ordinary fire must kill the declared opponent.
- r.enemies=[{id:'raider',name:'Asaltante',x:3,y:2,weapon:1813,hp:30,maxHp:30,morale:100,overwatch:false,patrol:false}];
+ r.enemies=[{id:'raider',name:'Asaltante',x:3,y:2,weapon:1813,hp:30,maxHp:30,morale:100,overwatch:false,patrol:false}].map(u=>initializeUnitAmmunition(u));
  const squad=[...r.squad.map((u,i)=>({...u,x:1,y:5+i})),...r.garrison.map(u=>({...u,x:u.id===20000?1:16,y:u.id===20000?2:10+(u.id-20000)}))];
  let b=createBattle(squad,{...r,hour:s.hour,secondOfHour:s.secondOfHour??0,exploration:false,width:20,height:16,tiles:flat(),props:[],npcs:[],seed:45});b.units.find(u=>u.side==='enemy').ap=0;
  return {s,b};
@@ -28,7 +30,7 @@ function fightAndReturn(s){
 }
 
 test('real paid kills promote a survivor through two ranks without a new soldier, healing or equipment',()=>{
- let s=ready();const first=s.garrisons.retiro[0];Object.assign(first,{weapon:1800,marksmanship:100,condition:100,hp:44,bandaged:16,energy:77,jammed:false});
+ let s=ready();const first=s.garrisons.retiro[0];Object.assign(first,{weapon:1800,marksmanship:100,condition:100,hp:44,bandaged:16,energy:77,jammed:false});setTestAmmunition(first,5);
  let result=fightAndReturn(s);s=result.s;let unit=s.garrisons.retiro.find(u=>u.id===first.id);assert.equal(unit.militiaRank,1);assert.equal(unit.militiaExperience,3);assert.ok(s.log.findIndex(e=>e.text.includes('asciende por experiencia'))<s.log.findIndex(e=>e.text.startsWith('Buenos Aires, 1812.')));assert.deepEqual(s.sectors.retiro.militia,[2,1,0]);
  for(const k of ['hp','maxHp','weapon','loaded','ammo','condition','inventory','bleeding','bandaged','energy','weaponFittings'])assert.deepEqual(unit[k],result.actual[k]);assert.equal(s.nextMilitiaId,20003);
  s=restoreCampaign(serializeCampaign(s));unit=s.garrisons.retiro.find(u=>u.id===first.id);
@@ -56,7 +58,7 @@ test('a withdrawing veteran counts at the destination only, with the same damage
  returnGarrison(s,{sector:'retiro',garrison:[issued]},{units:[actual]},[{unitId:actual.id,kind:'departed',sector:'buenos_aires',departure:{entryEdge:'E',entryAnchor:{x:19,y:4}}}]);assert.deepEqual(s.sectors.retiro.militia,[2,0,0]);assert.deepEqual(s.sectors.buenos_aires.militia,[0,0,1]);assert.equal(s.garrisons.buenos_aires[0].id,issued.id);assert.equal(s.garrisons.buenos_aires[0].condition,43);assert.equal(s.garrisons.buenos_aires[0].hp,37);
 });
 test('paid regular training reserves actual soldiers and preserves wounds, ammo and experience on completion',()=>{
- let s=ready();Object.assign(s.garrisons.retiro[0],{hp:37,condition:41,ammo:2,loaded:0,militiaExperience:1,militiaCombatCredit:[{id:'prior',points:1}]});const original=structuredClone(s.garrisons.retiro),rounds=s.resources.cartridges,horses=s.resources.horses;
+ let s=ready();Object.assign(s.garrisons.retiro[0],{hp:37,condition:41,ammo:2,loaded:0,militiaExperience:1,militiaCombatCredit:[{id:'prior',points:1}]});setTestAmmunition(s.garrisons.retiro[0],2);const original=structuredClone(s.garrisons.retiro),rounds=s.resources.cartridges,horses=s.resources.horses;
  s=step(s,{type:'militia',rank:1,trainerId:4});assert.equal(s.militiaTraining[0].trainees.length,3);assert.equal(s.garrisons.retiro.length,0);assert.equal(s.resources.cartridges,rounds);assert.equal(s.resources.horses,horses);s=restoreCampaign(serializeCampaign(s));for(let n=0;s.militiaTraining.length&&n<12;n++)s=step(s,{type:'wait',hours:s.militiaTraining[0].remaining+12});assert.equal(s.militiaTraining.length,0,'course must finish after sleep pauses');assert.deepEqual(s.sectors.retiro.militia,[0,3,0]);
  for(const old of original){const u=s.garrisons.retiro.find(v=>v.id===old.id);assert.equal(u.militiaRank,1);for(const k of ['hp','condition','loaded','ammo','weapon','blade','inventory','militiaExperience','militiaCombatCredit'])assert.deepEqual(u[k],old[k]);}assert.equal(s.resources.cartridges,rounds);assert.equal(s.nextMilitiaId,20003);
 });
@@ -79,7 +81,7 @@ test('public militia progress excludes opponent-credit identities',()=>{
 
 test('training cannot hide unstable soldiers or duplicate identified fittings across course custody',()=>{
  let s=ready();s.garrisons.retiro[0].bleeding=1;let blocked=dispatchCampaign(s,{type:'militia',rank:1,trainerId:4});assert.ok(blocked.lastError);assert.deepEqual(blocked.garrisons,s.garrisons);assert.deepEqual(blocked.resources,s.resources);
- s=ready();Object.assign(s.garrisons.retiro[0],{weapon:1800,weaponFittings:{bayonet:{weapon:1811,fittingPattern:'india_socket',instanceId:'training-fitting',condition:32}}});s=step(s,{type:'militia',rank:1,trainerId:4});s=restoreCampaign(serializeCampaign(s));assert.equal(s.militiaTraining[0].trainees[0].weaponFittings.bayonet.instanceId,'training-fitting');
- const duplicate=structuredClone(s);duplicate.militiaTraining[0].trainees[1].weapon=1800;duplicate.militiaTraining[0].trainees[1].weaponFittings=structuredClone(duplicate.militiaTraining[0].trainees[0].weaponFittings);assert.throws(()=>restoreCampaign(serializeCampaign(duplicate)));
+ s=ready();Object.assign(s.garrisons.retiro[0],{weapon:1800,weaponFittings:{bayonet:{weapon:1811,fittingPattern:'india_socket',instanceId:'training-fitting',condition:32}}});setTestAmmunition(s.garrisons.retiro[0],5);s=step(s,{type:'militia',rank:1,trainerId:4});s=restoreCampaign(serializeCampaign(s));assert.equal(s.militiaTraining[0].trainees[0].weaponFittings.bayonet.instanceId,'training-fitting');
+ const duplicate=structuredClone(s);duplicate.militiaTraining[0].trainees[1].weapon=1800;setTestAmmunition(duplicate.militiaTraining[0].trainees[1],5);duplicate.militiaTraining[0].trainees[1].weaponFittings=structuredClone(duplicate.militiaTraining[0].trainees[0].weaponFittings);assert.throws(()=>restoreCampaign(serializeCampaign(duplicate)));
  s=step(s,{type:'cancelMilitia',sector:'retiro'});assert.equal(s.garrisons.retiro[0].weaponFittings.bayonet.condition,32);assert.deepEqual(restoreCampaign(serializeCampaign(s)).garrisons,s.garrisons);
 });

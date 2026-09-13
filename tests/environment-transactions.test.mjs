@@ -1,3 +1,6 @@
+import {AMMUNITION_TYPES} from '../game/ammunition-types.js';
+const AMMO='inventory:ammo:musket_75';
+const ammoStack=count=>({item:AMMO,kind:'ammunition',ammoType:'musket_75',name:AMMUNITION_TYPES.musket_75.name,count,weight:.04});
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle, actBattle, getReachable, environmentTargetAt, environmentPreview, containerLootPreview} from '../game/tactical.js';
@@ -17,7 +20,7 @@ function field(extra = {}, chestExtra = {}) {
   const tiles = Array.from({length: 216}, (_, i) => ({x: i % 24, y: Math.floor(i / 24), type: 'grass', blocked: false, cover: 0}));
   Object.assign(tiles.find(t => t.x === 2 && t.y === 3), {type: 'door', doorId: 'test-door', open: false, locked: true, keyId: 'store', lockDifficulty: 25, lockIntegrity: 100, blocked: true, blocksSight: true});
   return createBattle([{id: 'p', x: 1, y: 3, mechanical: 90, dexterity: 90, wisdom: 90, experienceLevel: 8, inventory: {key: {...keyRecord}}, ...extra}], {width: 24, height: 9, tiles, seed: 45,
-    props: [{id: 'test-chest', type: 'chest', x: 1, y: 4, blocksMovement: true, open: false, locked: false, contents: [{item: 'ammo', count: 12, weight: .04}], ...chestExtra}],
+    props: [{id: 'test-chest', type: 'chest', x: 1, y: 4, blocksMovement: true, open: false, locked: false, contents: [ammoStack(12)], ...chestExtra}],
     enemies: [{id: 'guard', x: 22, y: 7, overwatch: false}]});
 }
 function order(state, action, id = 'p') {
@@ -102,7 +105,7 @@ test('partial container acquisition, capacity rejection and repeat pickup conser
   rejectUnchanged(state, {type: 'containerLoot', ...chestRef, index: 0, count: 3});
   state = order(state, {type: 'containerLoot', ...chestRef, index: 0, count: 2});
   assert.equal(soldier(state).ammo, 240); assert.equal(state.props[0].contents[0].count, 10); assert.equal(soldier(state).ap, 88);
-  state = order(state, {type: 'drop', item: 'ammo', count: 20});
+  state = order(state, {type: 'drop', item: AMMO, count: 20});
   state = order(state, {type: 'containerLoot', ...chestRef, index: 0, count: 10});
   assert.equal(soldier(state).ammo, 230); assert.equal(state.groundItems[0].count, 20); assert.deepEqual(state.props[0].contents, []);
   assert.equal(soldier(state).ammo + state.groundItems[0].count, 250);
@@ -137,7 +140,7 @@ test('Yatasto tools can be acquired through a legal open-door path and its key u
   state = order(state, {type: 'environment', ...ref, verb: 'open'});
   while (state.props.find(p => p.id === chest.id).contents.length) state = order(state, {type: 'containerLoot', ...ref, index: 0, count: 1});
   assert.equal(inventoryUsage(soldier(state)).used, 11);
-  assert.deepEqual(Object.values(soldier(state).inventory).map(item => item.toolKey).sort(), ['crowbar', 'key', 'lockpick', 'pliers']);
+  assert.deepEqual(Object.values(soldier(state).inventory).filter(item => item.toolKey).map(item => item.toolKey).sort(), ['crowbar', 'key', 'lockpick', 'pliers']);
   const right = state.tiles.find(t => t.doorId === 'yatasto:door-right');
   state = approach(state, 'p', right);
   state = order(state, {type: 'weapon', slot: 'tool', toolKey: 'inventory:key'});

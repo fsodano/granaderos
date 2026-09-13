@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,shotChance,firearmShotOptions,firearmProjectilePath,actionCosts,endTurn,canSee} from '../game/tactical.js';
 import {chooseEnemyAction} from '../game/tactical-ai.js';
@@ -50,7 +51,7 @@ test('partial penetration loss changes target selection even when nominal impact
 });
 
 test('hidden people and a visible target’s private supplies or energy do not change shot selection',()=>{
-  const s=field(),other=structuredClone(s);Object.assign(other.units[0],{energy:2,ammo:500,medical:99,inventory:{secret:{count:1,weight:1}}});
+  const s=field(),other=structuredClone(s);Object.assign(other.units[0],{energy:2,medical:99,inventory:{secret:{count:1,weight:1}}});setTestAmmunition(other.units[0],500);
   other.units.push({...structuredClone(other.units[0]),id:'hidden',x:23,y:9,hp:100});
   assert.equal(canSee(other,actor(other),other.units[2]),false);
   assert.deepEqual(chooseEnemyAction(s,actor(s)),chooseEnemyAction(other,actor(other)));

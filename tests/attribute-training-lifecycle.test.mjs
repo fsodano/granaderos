@@ -1,3 +1,4 @@
+import {ammunitionByType} from '../game/ammunition-types.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor,restoreCampaign,serializeCampaign} from '../game/campaign.js';
@@ -39,10 +40,10 @@ const grab=(battle,targetId)=>act(battle,{type:'steal',unitId:'110',targetId});
 test('a successful ordinary-skill grab earns dexterity and survives full save, paid retreat and sector reentry exactly once',()=>{
  let {campaign,battle,targetId}=grabField();const baseline=op(campaign).dexterity,treasury=campaign.resources.treasury;
  assert.ok(baseline>0&&baseline<100,'the old dexterity100 fixture skipped the practice path');
- const target=battle.units.find(u=>u.id===targetId),taken=handRecord(target,'primary'),reserve=actor(battle).ammo;
+ const target=battle.units.find(u=>u.id===targetId),taken=handRecord(target,'primary'),reserve=ammunitionByType(actor(battle));
  battle=freeHands(battle);const energy=actor(battle).energy;battle=grab(battle,targetId);
  assert.equal(actor(battle).dexterity,baseline+1);assert.equal(actor(battle).trainedStats.dexterity,1);assert.equal(actor(battle).skillPractice.dexterity,0);
- assert.deepEqual(handRecord(actor(battle),'primary'),taken);assert.equal(actor(battle).ammo,reserve);assert.equal(actor(battle).ap,0);assert.equal(actor(battle).energy,energy-8);assert.equal(battle.units.find(u=>u.id===targetId).weaponDropped,true);
+ assert.deepEqual(handRecord(actor(battle),'primary'),taken);assert.deepEqual(ammunitionByType(actor(battle)),reserve);assert.equal(actor(battle).ap,0);assert.equal(actor(battle).energy,energy-8);assert.equal(battle.units.find(u=>u.id===targetId).weaponDropped,true);
  assert.doesNotThrow(()=>validateBattleSnapshot(battle));({campaign,battle}=save(campaign,battle));assert.equal(campaign.resources.treasury,treasury);
  const beforeTurn=battle.turn;battle=endTurn(battle);assert.equal(battle.lastError,null);assert.equal(battle.phase,'player');assert.equal(battle.turn,beforeTurn+1);assert.equal(battle.elapsedSeconds,6);assert.ok(actor(battle).ap>0);
  const beforeExit=actor(battle).ap;battle=act(battle,{type:'exit',unitIds:['110'],exitId:battle.exits.find(e=>e.destination==='retiro').id});assert.equal(battle.status,'retreat');assert.ok(actor(battle).ap<beforeExit);

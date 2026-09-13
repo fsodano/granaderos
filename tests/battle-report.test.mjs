@@ -1,4 +1,5 @@
-import {stockAndCarriedAmmo} from './ammunition-balance.mjs';
+import {totalReserveAmmunition} from '../game/ammunition-types.js';
+import {stockAndCarriedAmmo,stockAmmo} from './ammunition-balance.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
@@ -25,8 +26,8 @@ test('outcome labels cannot turn an active field into victory or a capable squad
  const s=deployed(),base=receipt(s,enterSector(s.pendingBattle));rejected(s,{...base,outcome:'victory'});rejected(s,{...base,outcome:'defeat'});const forged=structuredClone(base);forged.outcome='victory';forged.sectorState.status='victory';forged.sectorState.sectorCleared=true;rejected(s,forged);forged.outcome='defeat';forged.sectorState.status='defeat';rejected(s,forged);
 });
 test('real dropped equipment and snapshot supplies defeat contradictory caller overrides',()=>{
- const s=deployed();let b=enterSector(s.pendingBattle);b=actBattle(b,{type:'drop',unitId:4,item:'primary'});assert.equal(b.lastError,null);b=scriptedWithdrawal(b);const actual=b.units.find(u=>u.id==='4'),ammo=b.units.filter(u=>u.side==='player'&&u.hp>0).reduce((sum,u)=>sum+u.loaded+u.ammo,0),a=receipt(s,b);
- a.survivors=a.survivors.map(u=>({...u,hp:100,weapon:1801,condition:100,loaded:999,ammo:999,medkits:999,inventory:{invented:{count:100,weight:0}}}));const next=order(s,a);assert.equal(next.operativeState[4].weaponDropped,true);assert.equal(next.operativeState[4].hp,actual.hp);assert.deepEqual(next.operativeState[4].inventory,actual.inventory);assert.equal(next.operativeState[4].medkits,actual.medkits);assert.equal(stockAndCarriedAmmo(next),s.resources.cartridges+ammo);assert.deepEqual(restoreCampaign(serializeCampaign(next)),next);rejected(next,a);
+ const s=deployed();let b=enterSector(s.pendingBattle);b=actBattle(b,{type:'drop',unitId:4,item:'primary'});assert.equal(b.lastError,null);b=scriptedWithdrawal(b);const actual=b.units.find(u=>u.id==='4'),ammo=b.units.filter(u=>u.side==='player'&&u.hp>0).reduce((sum,u)=>sum+u.loaded+totalReserveAmmunition(u),0),a=receipt(s,b);
+ a.survivors=a.survivors.map(u=>({...u,hp:100,weapon:1801,condition:100,loaded:999,ammo:999,medkits:999,inventory:{invented:{count:100,weight:0}}}));const next=order(s,a);assert.equal(next.operativeState[4].weaponDropped,true);assert.equal(next.operativeState[4].hp,actual.hp);assert.deepEqual(next.operativeState[4].inventory,actual.inventory);assert.equal(next.operativeState[4].medkits,actual.medkits);assert.equal(stockAndCarriedAmmo(next),stockAmmo(s)+ammo);assert.deepEqual(restoreCampaign(serializeCampaign(next)),next);rejected(next,a);
 });
 test('ordinary retreat retains authoritative injuries and cannot refill finite personal supplies',()=>{
  const s=deployed(),a=scriptedBattleReport(s,{outcome:'retreat',units:[{id:3,hp:24,bandaged:76,energy:22,medkits:0,priming:0,flints:0,rations:0,torches:0,boleadoras:0,condition:31}]});a.survivors=a.survivors.map(u=>({...u,hp:100,energy:100,medkits:20,priming:50,flints:4,rations:2,torches:2,condition:100}));const next=order(s,a),u=next.operativeState[3];assert.equal(u.hp,24);assert.equal(u.energy,a.sectorState.units.find(u=>u.id==='3').energy);assert.ok(u.energy<22,'The actual outward step spends energy.');assert.equal(u.medkits,0);assert.equal(u.priming,0);assert.equal(u.flints,0);assert.equal(u.rations,0);assert.equal(u.torches,0);assert.equal(u.condition,31);

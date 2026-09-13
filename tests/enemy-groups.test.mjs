@@ -1,3 +1,5 @@
+import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
+import {stockAmmo} from './ammunition-balance.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
@@ -29,7 +31,7 @@ test('defense includes all local hired soldiers across squads and preserves a re
  let b=enterSector(s.pendingBattle);const wounded=b.units.find(u=>Number(u.id)===100);wounded.hp-=20;wounded.bandaged=20;const before=s.resources.cartridges;s=report(s,victory(b),'victory');assert.equal(s.location,'buenos_aires');assert.equal(s.operativeState[100].hp,wounded.hp);assert.equal(s.enemyGroups[0].status,'defeated');assert.ok(s.resources.cartridges<=before+issued);assert.equal(s.squads.find(q=>q.id==='squad-1').location,'retiro');assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
 });
 test('pre-combat retreat preserves troops and gear while coastal occupation remains attackable',()=>{
- let s=arrive(initialCampaign(),'coast','retiro');const ids=[...s.squad],hp=ids.map(id=>s.operativeState[id].hp),ammo=s.resources.cartridges;assert.ok(retreatDestinations(s,'retiro').includes('buenos_aires'));s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'retreat',destination:'buenos_aires'});assert.equal(s.location,'buenos_aires');assert.equal(s.resources.cartridges,ammo);assert.deepEqual(ids.map(id=>s.operativeState[id].hp),hp);assert.equal(s.sectors.retiro.owner,'patriot');assert.equal(s.blockade,true);s.enemyGroups[0].units[0].hp=51;s.enemyGroups[0].units[0].bandaged=49;s.enemyGroups[0].units[0].ammo=1;
+ let s=arrive(initialCampaign(),'coast','retiro');const ids=[...s.squad],hp=ids.map(id=>s.operativeState[id].hp),ammo=s.resources.cartridges;assert.ok(retreatDestinations(s,'retiro').includes('buenos_aires'));s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'retreat',destination:'buenos_aires'});assert.equal(s.location,'buenos_aires');assert.equal(s.resources.cartridges,ammo);assert.deepEqual(ids.map(id=>s.operativeState[id].hp),hp);assert.equal(s.sectors.retiro.owner,'patriot');assert.equal(s.blockade,true);s.enemyGroups[0].units[0].hp=51;s.enemyGroups[0].units[0].bandaged=49;setTestAmmunition(s.enemyGroups[0].units[0],1);
  s=order(s,{type:'attack',sector:'retiro'});assert.deepEqual(s.pendingBattle.occupationGroupIds,['enemy-group-1']);const b=enterSector(s.pendingBattle);assert.equal(b.units.find(u=>u.id==='enemy-group-1-0').hp,51);assert.equal(b.units.find(u=>u.id==='enemy-group-1-0').ammo,1);s=report(s,victory(b),'victory');assert.equal(s.blockade,false);assert.equal(s.enemyGroups[0].status,'defeated');assert.ok(dispatchCampaign(s,{type:'battleResult',battleId:b.battleId,outcome:'victory',sectorState:b,survivors:[]}).lastError);
 });
 test('survivors without an exit become prisoners and recapture restores their paused service',()=>{
@@ -45,7 +47,7 @@ test('malformed group, encounter and capture saves are rejected; old saves migra
 test('automatic defense records actual militia losses, equipment and the synchronized clock',()=>{
  let s=initialCampaign();s.sectors.jujuy.owner='patriot';s.sectors.jujuy.militia=[0,0,5];
  s=order(s,{type:'wait',hours:144});
- const before=s.resources.cartridges,startSeconds=s.hour*3600+(s.secondOfHour??0);
+ const before=stockAmmo(s),startSeconds=s.hour*3600+(s.secondOfHour??0);
  const issued=defend(structuredClone(s)).pendingBattle.garrison;
  s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'auto'});
  const b=s.sectorStates.jujuy,history=s.encounterHistory[0],militia=b.units.filter(u=>u.militia);
@@ -64,7 +66,7 @@ test('automatic defense records actual militia losses, equipment and the synchro
  assert.equal(s.sectors.jujuy.militia[2],issued.length-casualties.length-dispersed);
  const retainedGarrison=s.garrisons.jujuy??[];
  assert.equal(retainedGarrison.length,s.sectors.jujuy.militia[2]);
- assert.ok(s.resources.cartridges<before);
+ assert.ok(stockAmmo(s)<before);
  assert.ok(militia.reduce((n,u)=>n+u.loaded+u.ammo,0)<issued.reduce((n,u)=>n+u.loaded+u.ammo,0));
  assert.ok(militia.some(u=>u.condition<issued.find(v=>String(v.id)===u.id).condition));
  for(const u of militia){

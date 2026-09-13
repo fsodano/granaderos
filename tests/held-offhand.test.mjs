@@ -32,7 +32,7 @@ test('a selected second-hand tool activates the exact tool rather than another t
 });
 test('rations and torches use their exact second-hand selection; empty loose ammunition does not occupy a hand',()=>{
  let b=field({rations:1,torches:1});b=hold(b,'torches');assert.equal(handSlots(b,b.units[0])[1].action.supplyKey,'torches');b=order(b,handSlots(b,b.units[0])[1].action);b=order(b,{type:'useItem',x:3,y:3});assert.equal(b.units[0].torches,0);assert.equal(b.lights.length,1);assert.equal(b.units[0].leftHandItem,null);
- b=field({ammo:1,loaded:0});b=hold(b,'ammo');b=order(b,{type:'reload'});assert.equal(b.units[0].ammo,0);assert.equal(handLayout(b.units[0]).left,null);assert.doesNotThrow(()=>validateBattleSnapshot(b));
+ b=field({ammo:1,loaded:0});b=hold(b,'inventory:ammo:pistol_69');b=order(b,{type:'reload'});assert.equal(b.units[0].ammo,0);assert.equal(handLayout(b.units[0]).left,null);assert.doesNotThrow(()=>validateBattleSnapshot(b));
 });
 test('full pockets reject stowing atomically; bare-hand theft requires the second hand to be empty',()=>{
  const b=field({activeSlot:'unarmed',ammo:240,priming:0,flints:0,rations:0,torches:0,boleadoras:0,medkits:1,weapon:0,leftHandItem:'medkits'});assert.equal(inventoryUsage(b.units[0]).overloaded,false);reject(b,{type:'equipLoot',slot:'offhandItem',inventoryKey:null});assert.equal(stealPreview(b,b.units[0],b.units[1]).valid,false);assert.match(stealPreview(b,b.units[0],b.units[1]).reason,/manos libres/);

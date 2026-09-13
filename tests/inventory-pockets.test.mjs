@@ -8,6 +8,7 @@ import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {dispatchCampaign} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';
 import {encodeSave,decodeSave} from '../game/save.js';
+import {setTestAmmunition} from './typed-ammunition-fixture.mjs';
 const pack=()=>({id:'p',inventory:{},ammo:0,priming:0,flints:0,rations:0,medkits:0,torches:0,boleadoras:0});
 const rifle=id=>({item:'weapon',weapon:1800,count:1,weight:4,loaded:0,condition:63,jammed:true,reloadProgress:.4,instanceId:id,fittings:{bayonet:{weapon:1811,instanceId:`bayonet-${id}`,fittingPattern:'india_socket',condition:72}}});
 const field=()=>createBattle([{...pack(),x:2,y:2}],{width:32,height:8,exploration:true,tiles:Array.from({length:256},(_,i)=>({x:i%32,y:Math.floor(i/32),type:'grass',blocked:false,cover:0})),enemies:[]});
@@ -28,8 +29,8 @@ test('a fifth large item is rejected even when small pockets remain empty',()=>{
  u=applyItemQuantity(u,{item:'weapon',weapon:1805,count:1,weight:1.3,loaded:1,condition:81});assert.equal(inventoryUsage(u).slots.find(p=>p.entry?.item.includes('1805')).size,'small');
 });
 test('rearranging and swapping pockets preserve exact weapon contents and consume no AP',()=>{
- let b=field();b.units[0]=applyItemQuantity(b.units[0],rifle('fitted'));b.units[0]=applyItemQuantity(b.units[0],{item:'ammo',count:25});
- const before=structuredClone(b.units[0]),layout=inventoryUsage(before),gun=layout.slots.find(p=>p.entry?.kind==='weapon'),ammo=layout.slots.find(p=>p.entry?.item==='ammo');
+ let b=field();b.units[0]=applyItemQuantity(b.units[0],rifle('fitted'));setTestAmmunition(b.units[0],25);
+ const before=structuredClone(b.units[0]),layout=inventoryUsage(before),gun=layout.slots.find(p=>p.entry?.kind==='weapon'),ammo=layout.slots.find(p=>p.entry?.item==='inventory:ammo:musket_75');
  b=move(b,gun.id,'large-4');assert.equal(b.lastError,null);assert.deepEqual(b.units[0].inventory,before.inventory);assert.equal(b.units[0].ammo,25);assert.equal(b.units[0].ap,before.ap);
  const relocated=inventoryUsage(b.units[0]).slots.find(p=>p.id==='large-4');assert.equal(relocated.entry.item,gun.entry.item);
  b=move(b,ammo.id,'large-2');assert.equal(b.lastError,null);b=move(b,'large-2','large-4');assert.equal(b.lastError,null);
@@ -39,7 +40,7 @@ test('rearranging and swapping pockets preserve exact weapon contents and consum
 test('large-to-small moves and stale contents reject atomically',()=>{
  let b=field();b.units[0]=applyItemQuantity(b.units[0],rifle('g'));const before=structuredClone(b),layout=inventoryUsage(b.units[0]),gun=layout.slots.find(p=>p.entry);
  const no=move(b,gun.id,'small-1');assert.ok(no.lastError);assert.deepEqual(no.units,before.units);assert.equal(no.elapsedSeconds,before.elapsedSeconds);
- b.units[0]=applyItemQuantity(b.units[0],{item:'ammo',count:20});const changed=actBattle(b,{type:'movePocket',unitId:'p',sourceId:gun.id,destinationId:'small-1',expectedSource:pocketFingerprint(gun),expectedDestination:'null'});
+ setTestAmmunition(b.units[0],20);const changed=actBattle(b,{type:'movePocket',unitId:'p',sourceId:gun.id,destinationId:'small-1',expectedSource:pocketFingerprint(gun),expectedDestination:'null'});
  assert.ok(changed.lastError);assert.deepEqual(changed.units,b.units);
 });
 test('stale placement hints cannot create or hide items after supplies are spent or received',()=>{

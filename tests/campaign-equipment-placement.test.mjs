@@ -4,6 +4,8 @@ import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {inventoryUsage,equipmentFingerprint,pocketFingerprint} from '../game/tactical-inventory.js';
 import {handLayout} from '../game/hand-layout.js';
 import {encodeSave,decodeSave} from '../game/save.js';import {enterSector} from '../game/world.js';
+import {addAmmunition,ammunitionByType} from '../game/ammunition-types.js';
+import {syncCarriedAmmunition} from '../game/campaign-ammunition.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const fresh=()=>order(initialCampaign(8),{type:'recruitCivic',id:110,term:'week'});
 const model=s=>sectorInventoryModel(s,'retiro',rosterFor(s),110);
@@ -15,6 +17,7 @@ const save=s=>{const restored=decodeSave(encodeSave(s));assert.deepEqual(restore
 const reject=(s,a)=>{const n=dispatchCampaign(s,a);assert.ok(n.lastError);assert.deepEqual({...n,lastError:null},{...s,lastError:null});};
 test('campaign dragging stores and restores a fitted gun with its exact unfinished reload',()=>{
  let s=fresh();Object.assign(s.operativeState[110],{carriedLoaded:0,carriedAmmo:3,carriedReloadProgress:.5,condition:61,weaponInstanceId:'drag-rifle',weaponFittings:{bayonet:{weapon:1811,fittingPattern:'india_socket',condition:73,instanceId:'drag-bayonet'}}});
+ addAmmunition(s.operativeState[110],'musket_75',3);syncCarriedAmmunition(s.operativeState[110]);
  const before=structuredClone(s);s=move(s,'hand:right','large-4');assert.equal(handLayout(actor(s)).right,null);
  const gun=model(s).usage.slots.find(p=>p.id==='large-4').entry;assert.equal(gun.weapon,1800);
  s=move(save(s),'large-4','hand:right');const r=s.operativeState[110];
@@ -33,7 +36,9 @@ test('pockets and both hands can hold supplies and ordinary objects, with layout
 });
 test('second-pistol swaps retain independent charges and conditions',()=>{
  let s=fresh();s.loadouts[110]={weapon:1805,blade:0};Object.assign(s.operativeState[110],{carriedAmmo:4,carriedLoaded:1,condition:81,weaponInstanceId:'drag-first',offHand:{weapon:1808,count:1,weight:1.3,loaded:2,condition:57,instanceId:'drag-second'}});
+ addAmmunition(s.operativeState[110],'pistol_69',3);syncCarriedAmmunition(s.operativeState[110]);
  s=move(s,'hand:left','hand:right');const r=s.operativeState[110];assert.equal(r.carriedLoaded,2);assert.equal(r.carriedAmmo,5);assert.equal(r.condition,57);assert.equal(r.offHand.loaded,1);assert.equal(r.offHand.condition,81);assert.equal(r.offHand.instanceId,'drag-first');save(s);
+ assert.deepEqual(ammunitionByType(r),{pistol_69:3},'swapping unlike pistols does not change prepared cartridge types');
 });
 test('incompatible pockets, blocked hands, stale gestures and unavailable soldiers reject without effects',()=>{
  let s=fresh();reject(s,action(s,'hand:right','small-8'));reject(s,action(s,pocket(s,'medkits'),'hand:left'));

@@ -1,3 +1,5 @@
+import {AMMUNITION_TYPES,availableAmmunition} from '../game/ammunition-types.js';
+const ammoStack=count=>({item:'inventory:ammo:pistol_69',kind:'ammunition',ammoType:'pistol_69',name:AMMUNITION_TYPES.pistol_69.name,count,weight:.04});
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,equipmentPlacementPreview,carriedWeight} from '../game/tactical.js';
@@ -35,18 +37,18 @@ test('explicit equipment quantities split supplies and ordinary objects without 
 });
 
 test('same-record merges move the exact selected count and leave source and target partitions',()=>{
- let b=field({ammo:25,pocketOrder:[hint('small-2','ammo',0,10),hint('large-4','ammo',1,15)]});
- b=move(b,'small-2','large-4',3);assert.deepEqual(partitions(actor(b),'ammo'),{'large-4':18,'small-2':7});assert.equal(actor(b).ammo,25);
- b=move(b,'small-2','large-4',2);assert.deepEqual(partitions(actor(b),'ammo'),{'large-4':20,'small-2':5});assert.equal(actor(b).ammo,25);
+ let b=field({ammo:25,pocketOrder:[hint('small-2','inventory:ammo:pistol_69',0,10),hint('large-4','inventory:ammo:pistol_69',1,15)]});
+ b=move(b,'small-2','large-4',3);assert.deepEqual(partitions(actor(b),'inventory:ammo:pistol_69'),{'large-4':18,'small-2':7});assert.equal(actor(b).ammo,25);
+ b=move(b,'small-2','large-4',2);assert.deepEqual(partitions(actor(b),'inventory:ammo:pistol_69'),{'large-4':20,'small-2':5});assert.equal(actor(b).ammo,25);
  reject(b,action(actor(b),'small-2','large-4',1));
 });
 
 test('a compatible stack fills remaining room and leaves the selected excess available at its source',()=>{
- const b=field({ammo:25,pocketOrder:[hint('small-2','ammo',0,7),hint('large-4','ammo',1,18)]});
- const a=action(actor(b),'small-2','large-4',3),preview=equipmentPlacementPreview(b,actor(b),a),n=move(b,'small-2','large-4',3);assert.deepEqual(partitions(actor(n),'ammo'),{'large-4':20,'small-2':5});assert.equal(actor(n).ammo,25);
+ const b=field({ammo:25,pocketOrder:[hint('small-2','inventory:ammo:pistol_69',0,7),hint('large-4','inventory:ammo:pistol_69',1,18)]});
+ const a=action(actor(b),'small-2','large-4',3),preview=equipmentPlacementPreview(b,actor(b),a),n=move(b,'small-2','large-4',3);assert.deepEqual(partitions(actor(n),'inventory:ammo:pistol_69'),{'large-4':20,'small-2':5});assert.equal(actor(n).ammo,25);
  assert.deepEqual(preview.remainingSelection,{sourceId:'small-2',expectedSource:equipmentFingerprint(actor(n),'small-2'),count:1,maxCount:5});
- const rest=move(n,'small-2','small-8',preview.remainingSelection.count);assert.deepEqual(partitions(actor(rest),'ammo'),{'large-4':20,'small-2':4,'small-8':1});
- const automatic=move(b,'small-2','large-4');assert.deepEqual(partitions(actor(automatic),'ammo'),{'large-4':20,'small-2':5});
+ const rest=move(n,'small-2','small-8',preview.remainingSelection.count);assert.deepEqual(partitions(actor(rest),'inventory:ammo:pistol_69'),{'large-4':20,'small-2':4,'small-8':1});
+ const automatic=move(b,'small-2','large-4');assert.deepEqual(partitions(actor(automatic),'inventory:ammo:pistol_69'),{'large-4':20,'small-2':5});
 });
 
 test('merging compatible records keeps a same-record held singleton and all metadata',()=>{
@@ -71,18 +73,18 @@ test('zero, fractional, oversized, stale and incompatible partial quantities rej
 });
 
 test('twelve partial pockets are physically full even if their combined contents could fit in one stack',()=>{
- const b=field({ammo:12,pocketOrder:POCKETS.map((p,index)=>hint(p.id,'ammo',index,1))}),unit=actor(b),before=structuredClone(unit);
+ const b=field({ammo:12,pocketOrder:POCKETS.map((p,index)=>hint(p.id,'inventory:ammo:pistol_69',index,1))}),unit=actor(b),before=structuredClone(unit);
  assert.equal(inventoryUsage(unit).used,12);assert.equal(inventoryUsage(unit).free,0);assert.equal(inventoryUsage(unit).overloaded,false);
  assert.throws(()=>applyItemQuantity(unit,{item:'inventory:cloth',...cloth(1)}),/espacio/);assert.deepEqual(unit,before);
- const exchanged=move(b,'hand:right','small-1',1);assert.equal(handLayout(actor(exchanged)).right,'ammo');assert.equal(slot(actor(exchanged),'small-1').weapon,1805);assert.equal(inventoryUsage(actor(exchanged)).used,12);assert.equal(actor(exchanged).ammo,12);
+ const exchanged=move(b,'hand:right','small-1',1);assert.equal(handLayout(actor(exchanged)).right,'inventory:ammo:pistol_69');assert.equal(slot(actor(exchanged),'small-1').weapon,1805);assert.equal(inventoryUsage(actor(exchanged)).used,12);assert.equal(actor(exchanged).ammo,12);
  const n=move(b,'large-4','small-1',1);assert.equal(inventoryUsage(actor(n)).used,11);assert.equal(slot(actor(n),'large-4'),null);assert.equal(slot(actor(n),'small-1').count,2);
- const received=applyItemQuantity(actor(n),{item:'inventory:cloth',...cloth(1)});assert.equal(inventoryUsage(received).used,12);assert.equal(packedTotal(received,'ammo'),12);assert.deepEqual(received.inventory.cloth,cloth(1));
+ const received=applyItemQuantity(actor(n),{item:'inventory:cloth',...cloth(1)});assert.equal(inventoryUsage(received).used,12);assert.equal(packedTotal(received,'inventory:ammo:pistol_69'),12);assert.deepEqual(received.inventory.cloth,cloth(1));
 });
 
 test('receiving more supplies fills current partial stacks before requiring a new pocket',()=>{
- const b=field({ammo:12,pocketOrder:POCKETS.map((p,index)=>hint(p.id,'ammo',index,1))}),unit=actor(b),before=structuredClone(unit);
- const added=applyItemQuantity(unit,{item:'ammo',count:10});assert.equal(added.ammo,22);assert.equal(slot(added,'large-1').count,11);assert.equal(inventoryUsage(added).used,12);assert.equal(inventoryUsage(added).overloaded,false);assert.ok(slots(added).filter(s=>s.id!=='large-1').every(s=>s.entry.count===1));
- const full=applyItemQuantity(unit,{item:'ammo',count:228});assert.equal(full.ammo,240);assert.ok(slots(full).every(s=>s.entry.count===20));assert.throws(()=>applyItemQuantity(unit,{item:'ammo',count:229}),/espacio/);assert.deepEqual(unit,before);
+ const b=field({ammo:12,pocketOrder:POCKETS.map((p,index)=>hint(p.id,'inventory:ammo:pistol_69',index,1))}),unit=actor(b),before=structuredClone(unit);
+ const added=applyItemQuantity(unit,ammoStack(10));assert.equal(availableAmmunition(added),22);assert.equal(slot(added,'large-1').count,11);assert.equal(inventoryUsage(added).used,12);assert.equal(inventoryUsage(added).overloaded,false);assert.ok(slots(added).filter(s=>s.id!=='large-1').every(s=>s.entry.count===1));
+ const full=applyItemQuantity(unit,ammoStack(228));assert.equal(availableAmmunition(full),240);assert.ok(slots(full).every(s=>s.entry.count===20));assert.throws(()=>applyItemQuantity(unit,ammoStack(229)),/espacio/);assert.deepEqual(unit,before);
 });
 
 test('receiving a compatible generic object fills existing partial stacks and preserves condition',()=>{
@@ -97,9 +99,9 @@ test('a vanished record leaves no partition that can bind a different later item
 });
 
 test('extraction and real dressing use reconcile partial supplies without touching unrelated partitions',()=>{
- const unit=actor(field({ammo:12,inventory:{cloth:cloth(3)},pocketOrder:[hint('small-1','ammo',0,3),hint('small-3','ammo',1,4),hint('small-5','ammo',2,5),hint('large-3','inventory:cloth',0,1),hint('large-4','inventory:cloth',1,2)]}));
- const before=structuredClone(unit),taken=extractItemQuantity(unit,'ammo',6);assert.equal(taken.stack.count,6);assert.equal(taken.unit.ammo,6);assert.equal(packedTotal(taken.unit,'ammo'),6);assert.deepEqual(partitions(taken.unit,'inventory:cloth'),partitions(unit,'inventory:cloth'));assert.deepEqual(unit,before);
- const received=applyItemQuantity(taken.unit,{item:'ammo',count:2});assert.equal(packedTotal(received,'ammo'),8);assert.equal(received.ammo,8);
+ const unit=actor(field({ammo:12,inventory:{cloth:cloth(3)},pocketOrder:[hint('small-1','inventory:ammo:pistol_69',0,3),hint('small-3','inventory:ammo:pistol_69',1,4),hint('small-5','inventory:ammo:pistol_69',2,5),hint('large-3','inventory:cloth',0,1),hint('large-4','inventory:cloth',1,2)]}));
+ const before=structuredClone(unit),taken=extractItemQuantity(unit,'inventory:ammo:pistol_69',6);assert.equal(taken.stack.count,6);assert.equal(availableAmmunition(taken.unit),6);assert.equal(packedTotal(taken.unit,'inventory:ammo:pistol_69'),6);assert.deepEqual(partitions(taken.unit,'inventory:cloth'),partitions(unit,'inventory:cloth'));assert.deepEqual(unit,before);
+ const received=applyItemQuantity(taken.unit,ammoStack(2));assert.equal(packedTotal(received,'inventory:ammo:pistol_69'),8);assert.equal(availableAmmunition(received),8);
  let b=field({weapon:0,loaded:0,activeSlot:'medical',medkits:4,hp:70,maxHp:100,bleeding:5,medical:60,inventory:{cloth:cloth(3)},pocketOrder:[hint('small-1','medkits',0,1),hint('small-2','medkits',1,2),hint('large-3','inventory:cloth',0,1),hint('large-4','inventory:cloth',1,2)]});
  const clothBefore=partitions(actor(b),'inventory:cloth');b=actBattle(b,{type:'useItem',unitId:'p',targetId:'p'});assert.equal(b.lastError,null,b.lastError);assert.equal(actor(b).medkits,3);assert.equal(actor(b).bleeding,0);assert.equal(packedTotal(actor(b),'medkits'),2);assert.equal(equipmentEndpoint(actor(b),'hand:right').count,1);assert.deepEqual(partitions(actor(b),'inventory:cloth'),clothBefore);assert.doesNotThrow(()=>validateBattleSnapshot(b));
 });
@@ -129,12 +131,12 @@ test('campaign quantity arrangement and save/reentry preserve finite partitions 
 });
 
 test('snapshot and campaign admission reject oversized known-item partitions but retain legitimate overfull inventories',()=>{
- const b=field({ammo:5});actor(b).pocketOrder=[hint('small-1','ammo',0,21)];assert.throws(()=>validateBattleSnapshot(b),/límite/);
- const emptyAmmo=field({ammo:0});actor(emptyAmmo).pocketOrder=[hint('small-1','ammo',0,21)];assert.throws(()=>validateBattleSnapshot(emptyAmmo),/límite/);
+ const b=field({ammo:5});actor(b).pocketOrder=[hint('small-1','inventory:ammo:pistol_69',0,21)];assert.throws(()=>validateBattleSnapshot(b),/límite/);
+ const emptyAmmo=field({ammo:0,inventory:{'ammo:pistol_69':{kind:'ammunition',ammoType:'pistol_69',name:AMMUNITION_TYPES.pistol_69.name,count:0,weight:.04}}});actor(emptyAmmo).pocketOrder=[hint('small-1','inventory:ammo:pistol_69',0,21)];assert.throws(()=>validateBattleSnapshot(emptyAmmo),/límite/);
  const allHeld=field({activeSlot:'medical',medkits:1});actor(allHeld).pocketOrder=[hint('small-1','medkits',0,6)];assert.throws(()=>validateBattleSnapshot(allHeld),/límite/);
  const s=dispatchCampaign(initialCampaign(8),{type:'recruitCivic',id:110,term:'week'});assert.equal(s.lastError,null);
  s.operativeState[110].pocketOrder=[hint('small-1','medkits',0,6)];assert.throws(()=>decodeSave(encodeSave(s)),/límite/);
  s.operativeState[110].medkits=0;assert.throws(()=>decodeSave(encodeSave(s)),/límite/);s.operativeState[110].medkits=1;s.operativeState[110].activeSlot='medical';assert.throws(()=>decodeSave(encodeSave(s)),/límite/);
- const overfull=field({ammo:1000000,pocketOrder:POCKETS.map((p,index)=>hint(p.id,'ammo',index,1))});const restored=validateBattleSnapshot(overfull);assert.equal(actor(restored).ammo,1000000);assert.equal(inventoryUsage(actor(restored)).overloaded,true);assert.equal(packedTotal(actor(restored),'ammo'),1000000);
+ const overfull=field({ammo:1000000,pocketOrder:POCKETS.map((p,index)=>hint(p.id,'inventory:ammo:pistol_69',index,1))});const restored=validateBattleSnapshot(overfull);assert.equal(actor(restored).ammo,1000000);assert.equal(inventoryUsage(actor(restored)).overloaded,true);assert.equal(packedTotal(actor(restored),'inventory:ammo:pistol_69'),1000000);
  const crowded=dispatchCampaign(initialCampaign(8),{type:'recruitCivic',id:110,term:'week'});crowded.operativeState[110].medkits=1000;crowded.operativeState[110].pocketOrder=POCKETS.map((p,index)=>hint(p.id,'medkits',index,1));const campaign=decodeSave(encodeSave(crowded)).campaign;assert.equal(campaign.operativeState[110].medkits,1000);assert.equal(inventoryUsage(sectorInventoryModel(campaign,'retiro',rosterFor(campaign),110).personal).overloaded,true);
 });

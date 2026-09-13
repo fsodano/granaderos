@@ -90,7 +90,7 @@ test('corrupt militia queues and reaction work cannot be resumed',()=>{
 test('hired medics and supply transfers still support militia; automatic bandaging cannot command militia doctors',()=>{
  let b=field([hired({x:1,y:2,medical:80,activeSlot:'medical'}),militia({hp:80,bleeding:2,medical:80})],[],{exploration:true});
  b=actBattle(b,{type:'useItem',unitId:'p',targetId:'m'});assert.equal(b.lastError,null);assert.equal(b.units[1].hp,80);assert.equal(b.units[1].bleeding,0);
- b=actBattle(b,{type:'transfer',unitId:'p',targetId:'m',item:'ammo',count:2});assert.equal(b.lastError,null);assert.equal(b.units[0].ammo,10);assert.equal(b.units[1].ammo,14);
+ b=actBattle(b,{type:'transfer',unitId:'p',targetId:'m',item:'inventory:ammo:musket_75',count:2});assert.equal(b.lastError,null);assert.equal(b.units[0].ammo,10);assert.equal(b.units[1].ammo,14);
  b.units[0].medical=0;b.units[0].bleeding=1;assert.equal(autoBandageStatus(b).available,false);
 });
 

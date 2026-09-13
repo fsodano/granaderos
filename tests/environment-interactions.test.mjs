@@ -1,3 +1,4 @@
+import {AMMUNITION_TYPES} from '../game/ammunition-types.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {TOOL_TYPES, heldTool, environmentActionProfile, resolveEnvironmentInteraction, environmentTargetSummary, visibleContainerContents, extractContainerItem, validateEnvironment, authoredEnvironment} from '../game/environment-interactions.js';
@@ -233,9 +234,9 @@ for (const compactLayout of [false, true]) test(`Mendoza supply cache binds one 
   assert.equal(cache.open, false); assert.equal(cache.locked, true);
   assert.equal(cache.lockDifficulty, 40); assert.equal(cache.lockIntegrity, 100);
   assert.deepEqual(cache.trap, {type: 'alarm', difficulty: 35, armed: true, discoveredBy: []});
-  assert.deepEqual(cache.contents, [{item: 'ammo', count: 12, weight: .04}, {item: 'medkits', count: 3, weight: .2}]);
+  assert.deepEqual(cache.contents, [{item:'inventory:ammo:musket_75',kind:'ammunition',ammoType:'musket_75',name:AMMUNITION_TYPES.musket_75.name,count:12,weight:.04}, {item: 'medkits', count: 3, weight: .2}]);
   assert.ok(first.props.filter(prop => prop.type === 'chest' && prop.id !== cache.id).every(prop => prop.locked === undefined && prop.trap === undefined && prop.contents === undefined));
-  Object.assign(cache, {open: true, locked: false, contents: [{item: 'ammo', count: 2, weight: .04}]});
+  Object.assign(cache, {open: true, locked: false, contents: [{...cache.contents[0],count:2}]});
   Object.assign(cache.trap, {armed: false, discoveredBy: ['player']});
   const saved = structuredClone(first), returned = enterSector(request, first);
   assert.deepEqual(returned.props.find(prop => prop.id === cache.id), saved.props.find(prop => prop.id === cache.id));

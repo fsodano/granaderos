@@ -119,7 +119,7 @@ export function completeNorthernMission(start,{report=()=>{}}={}){
  const local=rosterFor(start).filter(op=>{const r=start.operativeState[op.id];return start.recruited.includes(op.id)&&r.alive&&!r.captured&&r.location==='salta';});
  const patients=local.filter(op=>start.operativeState[op.id].hp<start.operativeState[op.id].maxHp).map(op=>op.id);
  const doctors=local.filter(op=>{const r=start.operativeState[op.id];return !patients.includes(op.id)&&op.medical>=20&&r.medkits>0&&r.energy>10;}).sort((a,b)=>b.medical-a.medical).map(op=>op.id);
- assert.ok(doctors.length,'actual surviving doctors can complete the northern mission');
+ assert.ok(!patients.length||doctors.length,'actual wounded survivors need a supplied doctor before the northern mission');
  let careHours=0;
  if(patients.length){
   for(const operativeId of patients)order({type:'assignCare',operativeId,assignment:'patient'});
@@ -138,10 +138,11 @@ export function completeNorthernMission(start,{report=()=>{}}={}){
  const treated=route.campaign;
  const supplies=route.campaign.resources;order({type:'diplomacy',kind:'northPact'});
  for(const [key,cost] of Object.entries({muskets:20,horses:10,powder:10}))assert.equal(route.campaign.resources[key],supplies[key]-cost);
- // Keep the medical staff paid for this journey. The one-day specialist
- // can finish his existing contract locally; no automatic second hire is assumed.
- renew(route,doctors,20);
- const messenger=doctors[0];order({type:'squad',ids:[messenger]});order({type:'assignCare',operativeId:messenger,assignment:'active'});order({type:'travel',sector:'tucuman'});
+ // Keep the messenger paid for the actual journey. A healthy lone survivor
+ // can carry the agreement even when the force has used its last dressing.
+ const messengers=doctors.length?doctors:local.filter(op=>{const r=route.campaign.operativeState[op.id];return r.hp>=15&&!r.bleeding&&r.energy>10;}).map(op=>op.id);
+ assert.ok(messengers.length,'an actual capable survivor carries the northern agreement');renew(route,messengers,20);
+ const messenger=messengers[0];order({type:'squad',ids:[messenger]});order({type:'assignCare',operativeId:messenger,assignment:'active'});order({type:'travel',sector:'tucuman'});
  assert.equal(route.campaign.hour,start.hour+12+careHours);
  const campaign=attendYatasto(route.campaign);
  assert.equal(campaign.phase,3);assert.equal(campaign.missions.yatasto.completed,true);assert.equal(campaign.flags.northPact,true);assert.equal(isSupplied(campaign,'salta'),true);

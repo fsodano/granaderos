@@ -1,4 +1,6 @@
-import {stockAndCarriedAmmo} from './ammunition-balance.mjs';
+import {ammunitionByType} from '../game/ammunition-types.js';
+import {inventoryUsage} from '../game/tactical-inventory.js';
+import {stockAmmo,stockAndCarriedAmmo} from './ammunition-balance.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
@@ -68,9 +70,9 @@ test('actual tactical loot equip returns its exact weapon condition and leaves t
  s=order(restoreCampaign(serializeCampaign(s)),{type:'visitSector'});b=enterSector(s.pendingBattle);const unit=b.units.find(u=>u.id==='4');assert.equal(unit.weapon,1801);assert.equal(unit.condition,33);assert.equal(unit.jammed,true);
 });
 
-test('reported dropped weapons and empty hands persist without ammunition or a replacement gun',()=>{
- let s=order(initialCampaign(),{type:'visitSector'}),b=enterSector(s.pendingBattle),unit=b.units.find(u=>u.id==='4');Object.assign(unit,{weapon:0,blade:0,bladeCondition:28,loaded:0,ammo:0,weaponDropped:true,activeSlot:'unarmed'});s=reportVisit(s,b);
- assert.equal(s.operativeState[4].weaponDropped,true);assert.equal(s.operativeState[4].bladeCondition,28);assert.equal(s.armoryItems.length,0);s=restoreCampaign(serializeCampaign(s));s=order(s,{type:'visitSector'});unit=enterSector(s.pendingBattle).units.find(u=>u.id==='4');assert.equal(unit.weapon,0);assert.equal(unit.loaded,0);assert.equal(unit.ammo,0);assert.equal(unit.activeSlot,'unarmed');assert.equal(hasFirearm(unit),false);
+test('reported absent weapons and empty hands persist while their loose ammunition stays with the owner',()=>{
+ let s=order(initialCampaign(),{type:'visitSector'}),b=enterSector(s.pendingBattle),unit=b.units.find(u=>u.id==='4');const reserve=ammunitionByType(unit);Object.assign(unit,{weapon:0,blade:0,bladeCondition:28,loaded:0,ammo:0,weaponDropped:true,activeSlot:'unarmed'});s=reportVisit(s,b);
+ assert.equal(s.operativeState[4].weaponDropped,true);assert.equal(s.operativeState[4].bladeCondition,28);assert.equal(s.armoryItems.length,0);s=restoreCampaign(serializeCampaign(s));s=order(s,{type:'visitSector'});unit=enterSector(s.pendingBattle).units.find(u=>u.id==='4');assert.equal(unit.weapon,0);assert.equal(unit.loaded,0);assert.equal(unit.ammo,0);assert.deepEqual(ammunitionByType(unit),reserve);assert.equal(unit.activeSlot,'unarmed');assert.equal(hasFirearm(unit),false);
  s=reportVisit(s,enterSector(s.pendingBattle));s=equip(buy(s,1803),4,1803);assert.equal(s.operativeState[4].weaponDropped,false);assert.equal(s.operativeState[4].activeSlot,'primary');assert.equal(s.armoryItems.length,0,'an absent outgoing gun cannot appear in storage');
 });
 
@@ -88,8 +90,8 @@ test('secondary blade condition and optional identities survive swaps, reports a
 });
 
 test('an actually dropped primary keeps its old model only as an absent gun in visit and attack requests',()=>{
- let s=order(initialCampaign(),{type:'visitSector'}),b=enterSector(s.pendingBattle);b=actBattle(b,{type:'drop',unitId:'4',item:'primary',count:1});assert.equal(b.lastError,null);s=reportVisit(s,b);assert.equal(rosterFor(s).find(o=>o.id===4).weapon,1808);assert.equal(s.operativeState[4].weaponDropped,true);
- s=order(s,{type:'visitSector'});let issued=s.pendingBattle.squad.find(u=>u.id===4);assert.equal(issued.loaded+issued.ammo,0);s=reportVisit(s,enterSector(s.pendingBattle));s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});issued=s.pendingBattle.squad.find(u=>u.id===4);assert.equal(issued.loaded+issued.ammo,0);assert.equal(hasFirearm(enterSector(s.pendingBattle).units.find(u=>u.id==='4')),false);
+ let s=order(initialCampaign(),{type:'visitSector'}),b=enterSector(s.pendingBattle);const reserve=ammunitionByType(b.units.find(u=>u.id==='4'));b=actBattle(b,{type:'drop',unitId:'4',item:'primary',count:1});assert.equal(b.lastError,null);s=reportVisit(s,b);assert.equal(rosterFor(s).find(o=>o.id===4).weapon,1808);assert.equal(s.operativeState[4].weaponDropped,true);
+ s=order(s,{type:'visitSector'});let issued=s.pendingBattle.squad.find(u=>u.id===4);assert.equal(issued.loaded,0);assert.deepEqual(ammunitionByType(issued),reserve);s=reportVisit(s,enterSector(s.pendingBattle));s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});issued=s.pendingBattle.squad.find(u=>u.id===4);assert.equal(issued.loaded,0);assert.deepEqual(ammunitionByType(issued),reserve);assert.equal(hasFirearm(enterSector(s.pendingBattle).units.find(u=>u.id==='4')),false);
 });
 
 test('medical purchases and provision refills respect finite pockets and roll back payment',()=>{
@@ -99,6 +101,6 @@ test('medical purchases and provision refills respect finite pockets and roll ba
 });
 
 test('automatic cartridge issue respects a full or legacy overfull pack in both deployment paths',()=>{
- let s=initialCampaign();s.operativeState[4].inventory={cargo:{count:24,weight:1}};let stock=s.resources.cartridges;s=order(s,{type:'visitSector'});let unit=s.pendingBattle.squad.find(u=>u.id===4);assert.equal(unit.loaded,2);assert.equal(unit.ammo,0);assert.equal(s.resources.cartridges,stock-s.pendingBattle.issuedCartridges);assert.equal(s.pendingBattle.issuedCartridges,s.pendingBattle.squad.reduce((sum,u)=>sum+u.loaded+u.ammo,0));
- s=reportVisit(s,enterSector(s.pendingBattle));assert.equal(stockAndCarriedAmmo(s),stock);s.operativeState[4].inventory.cargo.count=40;const cargo=structuredClone(s.operativeState[4].inventory);s=order(s,{type:'travel',sector:'buenos_aires'});stock=stockAndCarriedAmmo(s);s=order(s,{type:'attack',sector:'san_nicolas'});unit=s.pendingBattle.squad.find(u=>u.id===4);assert.equal(unit.loaded,2);assert.equal(unit.ammo,0);assert.deepEqual(unit.inventory,cargo);assert.equal(s.resources.cartridges,stock-s.pendingBattle.issuedCartridges);
+ let s=initialCampaign();s.operativeState[4].inventory={cargo:{count:28,weight:1}};let stock=stockAmmo(s);s=order(s,{type:'visitSector'});let unit=s.pendingBattle.squad.find(u=>u.id===4);assert.equal(unit.loaded,2);assert.equal(unit.ammo,0);assert.equal(inventoryUsage(unit).free,0);assert.equal(inventoryUsage(unit).overloaded,false);assert.equal(stockAmmo(s),stock-s.pendingBattle.issuedCartridges);assert.equal(s.pendingBattle.issuedCartridges,s.pendingBattle.squad.reduce((sum,u)=>sum+u.loaded+u.ammo,0));
+ s=reportVisit(s,enterSector(s.pendingBattle));assert.equal(stockAndCarriedAmmo(s),stock);s.operativeState[4].inventory.cargo.count=40;const cargo=structuredClone(s.operativeState[4].inventory);s=order(s,{type:'travel',sector:'buenos_aires'});stock=stockAndCarriedAmmo(s);s=order(s,{type:'attack',sector:'san_nicolas'});unit=s.pendingBattle.squad.find(u=>u.id===4);assert.equal(unit.loaded,2);assert.equal(unit.ammo,0);assert.deepEqual(unit.inventory,cargo);assert.equal(inventoryUsage(unit).overloaded,true);assert.equal(stockAmmo(s),stock-s.pendingBattle.issuedCartridges);
 });
