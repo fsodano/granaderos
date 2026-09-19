@@ -25,7 +25,7 @@ import {executeGroupMove} from '../../game/group-movement.js';
 import {autoBandageBattle} from '../../game/auto-bandage.js';
 import './tactical-hud.css';
 import {TACTICAL_KEYS,tacticalShortcut,pointerMovementIntent,pointerItemIntent} from '../../game/hotkeys.js';
-import {aimOptions, slotAction, targetPreview, targetingHelp, STANCES, unitCanAct, turnModel, visibleHover, interruptHover, heldSupplyAction, groupSelectionMode, isGroupGround, isMovementGround, movementAction, toggleMovementGroup, movementGroupModel, exitModel, fieldState, attackCursorMode, aimedCursorMode, retainedAttackCursor, pointFireInputAction, knifeThrowInputAction, grenadeThrowInputAction, grenadeTargetingMode, targetItemAction, pickupTargetAction, pickupSelection, resolvedOrderType, tacticalInputAction, cellOccupant} from '../../game/ja2-hud.js';
+import {aimOptions, slotAction, targetPreview, targetingHelp, STANCES, unitCanAct, turnModel, visibleHover, interruptHover, heldSupplyAction, groupSelectionMode, isGroupGround, isMovementGround, movementAction, toggleMovementGroup, movementGroupModel, exitModel, fieldState, attackCursorMode, aimedCursorMode, retainedAttackCursor, pointFireInputAction, civilianMedicalInputAction, knifeThrowInputAction, grenadeThrowInputAction, grenadeTargetingMode, targetItemAction, pickupTargetAction, pickupSelection, resolvedOrderType, tacticalInputAction, cellOccupant} from '../../game/ja2-hud.js';
 import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import { useUnitMotion, type MovementFacingOverride } from './useUnitMotion';
 import {tacticalLevel,sameCell,spaceKey} from '../../game/tactical-space.js';
@@ -158,6 +158,7 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
     const actual=(s.npcs??[]).find((n:any)=>n.id===target.id)??renderedUnits.find((n:any)=>n.id===target.id&&n.side==='enemy');
     if(!actual||!canSee(s,u,actual))return;
     if(mode==='fire'){order(pointFireInputAction(actual,{aim}));return;}
+    const civilianAid=civilianMedicalInputAction(s,u,actual,mode);if(civilianAid){order(civilianAid);return;}
     if(['move','useItem'].includes(mode)&&u.activeSlot==='item'&&!heldGrenade(u)&&(s.npcs??[]).some((n:any)=>n.id===actual.id)){order({type:'useItem',targetId:actual.id});return;}
     setSpeech(null);setGiftReply(null);setPendingGift(null);clearGroup();setMode('move');
     if(hasAuthoredDialogue(actual)){setTalking(actual);return;}
@@ -195,7 +196,7 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
     const knifeVisual=getKnifeThrowVisual(s,next),grenadeVisual=getGrenadeThrowVisual(s,next),giftResult=getNpcGiftResult(s,next);
     const preparationOnly=actionType==='throwKnife'&&!knifeVisual||actionType==='throwGrenade'&&!grenadeVisual||actionType==='melee'&&!getMeleeAttackResult(s,next,selected);
     if(!next.lastError&&!['pickupEquipment','placeEquipment','returnEquipmentCursor','dragEquipment'].includes(a.type)){
-      const target=s.units.find((t:any)=>t.id===a.targetId)||a;
+      const target=(a.targetKind==='npc'?s.npcs:s.units)?.find((t:any)=>t.id===a.targetId)||a;
       if(preparationOnly)setDirections(d=>({...d,[selected]:((next.units.find((actor:any)=>actor.id===selected)?.facing??u.facing??2)+1)%8}));
       else if(!preserveFacing&&Number.isFinite(target.x)&&Number.isFinite(target.y))setDirections(d=>({...d,[selected]:(Math.round(Math.atan2((target.x-u.x)-(target.y-u.y),-((target.x-u.x)+(target.y-u.y)))/(Math.PI/4))+8)%8}));
       if(['fire','firePoint','throwKnife','throwGrenade'].includes(actionType))setAim(0);
@@ -285,6 +286,7 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
     const intent=clickMovementIntent.current;clickMovementIntent.current='forward';
     const itemAction=clickItemIntent.current;clickItemIntent.current='use';
     if(placeInventoryItem(t))return;
+    const civilianAid=civilianMedicalInputAction(s,u,t,mode);if(civilianAid){order(civilianAid);return;}
     const occupant=cellOccupant(renderedUnits,t);
     if(grenadeTargetingMode(u,mode)){order(grenadeThrowInputAction(s,u,t));return;}
     if(mode==='throwKnife'){order(knifeThrowInputAction(s,u,t,{aim,hitLocation:t.aimLocation??hitLocation}));return;}

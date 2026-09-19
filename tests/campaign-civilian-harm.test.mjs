@@ -93,7 +93,7 @@ test('a paid first visit cannot discard its civilian roster before the first dam
 });
 
 test('injured named NPC health reaches the real service record and only lawful recruited survivors may leave the NPC list',()=>{
- let {s,b}=visit();const npc=b.npcs.find(npc=>npc.id==='cabral');injury(b,npc,60);acknowledgeCivilianHarm(s,b);assert.equal(s.operativeState[3].hp,40);assert.equal(s.operativeState[3].alive,true);
+ let {s,b}=visit();const npc=b.npcs.find(npc=>npc.id==='cabral');injury(b,npc,60);acknowledgeCivilianHarm(s,b);assert.equal(s.operativeState[3].hp,s.operativeState[3].maxHp-60);assert.equal(s.operativeState[3].alive,true);
  const without=structuredClone(b);without.npcs=without.npcs.filter(npc=>npc.id!=='cabral');assert.throws(()=>hasPendingCivilianHarm(s,without));
  // Recruitment ownership is isolated here; dialogue permission is tested by
  // its own subsystem. Only this exact authored operative may leave the roster.
@@ -108,15 +108,15 @@ test('a critically wounded named volunteer stays unconscious through real remote
   s=order(s,{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'visitSector'});
   let b=enterSector(s.pendingBattle);let npc=b.npcs.find(npc=>npc.id==='sosa');assert.ok(npc);
   if(damage===95){
-   injury(b,npc,20);({campaign:s,battle:b}=sync(s,b));assert.equal(s.operativeState[100].hp,Math.min(80,s.operativeState[100].maxHp));npc=b.npcs.find(npc=>npc.id==='sosa');
+   injury(b,npc,20);({campaign:s,battle:b}=sync(s,b));assert.equal(s.operativeState[100].hp,s.operativeState[100].maxHp-20);npc=b.npcs.find(npc=>npc.id==='sosa');
    injury(b,npc,75);npc.energy=12;assert.equal(civilianIncidents(npc).length,1);assert.equal(hasPendingCivilianHarm(s,b),true);
   }else injury(b,npc,damage);
-  ({campaign:s,battle:b}=sync(s,b));assert.equal(s.operativeState[100].hp,100-damage);assert.equal(s.operativeState[100].unconscious,damage===95);if(damage===95)assert.equal(s.operativeState[100].energy,12);
+  ({campaign:s,battle:b}=sync(s,b));assert.equal(s.operativeState[100].hp,damage===100?0:1);assert.equal(s.operativeState[100].unconscious,damage===95);if(damage===95)assert.equal(s.operativeState[100].energy,12);
   ({campaign:s,battle:b}=decodeSave(encodeSave(s,b)));s=finish(s,b);
   const next=dispatchCampaign(s,{type:'recruitCivic',id:100,term:'week'});
   if(damage===100){assert.ok(next.lastError);assert.equal(next.operativeState[100].alive,false);assert.equal(next.recruited.includes(100),false);assert.deepEqual(snapshot(s),s);}
   else {
-   assert.equal(next.lastError,null,next.lastError);s=snapshot(next);assert.equal(s.operativeState[100].hp,5);assert.equal(s.operativeState[100].energy,12);assert.equal(s.operativeState[100].unconscious,true);assert.ok(s.recruited.includes(100));
+   assert.equal(next.lastError,null,next.lastError);s=snapshot(next);assert.equal(s.operativeState[100].hp,1);assert.equal(s.operativeState[100].energy,12);assert.equal(s.operativeState[100].unconscious,true);assert.ok(s.recruited.includes(100));
    s=order(s,{type:'visitSector'});const request=s.pendingBattle;assert.ok(!request.npcs.some(npc=>npc.id==='sosa'));
    // A later battlefield casualty is a soldier body, not a second civilian.
    // The completed report must retain the lawful recruitment transfer.
@@ -132,7 +132,14 @@ test('dismissal and real contract expiry preserve a wounded contact transfer acr
  for(const end of ['dismiss','expire']){
   let s=initialCampaign(8);s.sectors.buenos_aires.owner='patriot';
   s=order(s,{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'visitSector'});
-  let b=enterSector(s.pendingBattle);injury(b,b.npcs.find(npc=>npc.id==='sosa'),70);({campaign:s,battle:b}=sync(s,b));s=finish(s,b);
+  // Keep the actual resident roster and issued supplies in a compact aid
+  // scene. Stabilize the real injury before a full contract day elapses.
+  const request=s.pendingBattle;
+  let b=createBattle(request.squad.map(unit=>({...unit,x:2,y:2})),{...request,width:12,height:10,tiles:flat(),enemies:[],props:[],npcs:request.npcs.map((npc,index)=>({...npc,x:npc.id==='sosa'?3:8,y:npc.id==='sosa'?2:5+index}))});
+  b=act(b,{type:'weapon',unitId:'110',slot:'medical'});injury(b,b.npcs.find(npc=>npc.id==='sosa'),70);({campaign:s,battle:b}=sync(s,b));
+  const hp=b.npcs.find(npc=>npc.id==='sosa').hp,dressings=b.units.find(unit=>unit.id==='110').medkits;
+  b=act(b,{type:'useItem',unitId:'110',targetId:'sosa',targetKind:'npc'});assert.equal(b.npcs.find(npc=>npc.id==='sosa').hp,hp);assert.equal(b.units.find(unit=>unit.id==='110').medkits,dressings-1);
+  ({campaign:s,battle:b}=sync(s,b));assert.equal(s.operativeState[100].bleeding,0);s=finish(s,b);
   s=order(s,{type:'recruitCivic',id:100,term:'day'});assert.equal(record(s,'sosa').transferredTo,100);
   s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.buenos_aires);assert.ok(!b.npcs.some(npc=>npc.id==='sosa'));s=finish(s,b);
   if(end==='dismiss')s=order(s,{type:'dismiss',id:100});

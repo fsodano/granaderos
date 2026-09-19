@@ -24,7 +24,7 @@ import {shotRangeModifiers} from './shot-range.js';
 import {limitEnergy,maximumEnergy,recoverEnergy,recoverFatigue} from './fatigue.js';
 import {recordMilitiaHit} from './militia-experience.js';
 import {projectilePath,projectileFlight,pointProjectileFlight,physicalBodies,concealmentAt,concealmentSightPenalty} from './projectile-cover.js';
-import {applyCivilianHarm,civilianWoundedByPlayer} from './civilian-harm.js';
+import {applyCivilianHarm,civilianWoundedByPlayer,civilianBandaged,advanceCivilianBleeding} from './civilian-harm.js';
 import {boundaryMatches} from './tactical-exits.js';
 import {HELD_SUPPLIES,heldSupply,clearEmptySupply} from './held-supplies.js';
 import {heldTool,environmentActionProfile,resolveEnvironmentInteraction,extractContainerItem} from './environment-interactions.js';
@@ -1207,14 +1207,17 @@ export function containerLootPreview(s,u,ref,index,count=1){
   return {pa,valid:!reason,reason,action:{type:'containerLoot',unitId:u?.id,kind:'container',id:ref?.id,index,count}};
 }
 
-export function medicalUsePreview(s,u,target=u){
+export function medicalUsePreview(s,u,target=u,{targetKind='unit'}={}){
   const cost=u?actionCosts(s,u).heal:0;
+  const civilian=targetKind==='npc';
   let reason=!u||!alive(u)||s.status!=='active'||(u.side==='player'?!interruptAvailable(s,u):s.phase!=='enemy')?'El soldado no puede usar equipo ahora.':null;
+  if(!reason&&!['unit','npc'].includes(targetKind))reason='El tipo de herido no es válido.';
   if(!reason&&u.activeSlot!=='medical')reason='Prepará las vendas en la mano antes de tratar una herida.';
-  if(!reason&&(!target||target.side!==u.side||target.hp<=0||target.departure||target.routed||contactDistance(u,target)>1.5||!hasLineOfSight(s,u,target)))reason='El herido debe estar vivo, junto a ti y al alcance de las vendas.';
+  if(!reason&&civilian&&(!target||!s.npcs?.includes(target)||target.departure||target.fled||(target.hp??100)<=0||!canSee(s,u,target)))reason='El habitante herido debe estar vivo y a la vista.';
+  if(!reason&&(!target||!civilian&&(target.side!==u.side||target.hp<=0||target.departure||target.routed)||contactDistance(u,target)>1.5||!hasLineOfSight(s,u,target)))reason='El herido debe estar vivo, junto a ti y al alcance de las vendas.';
   if(!reason&&!u.medkits)reason='No quedan vendas.';
   if(!reason&&!(u.medical>0))reason='Este soldado no tiene conocimientos de primeros auxilios.';
-  if(!reason&&!target.bleeding&&(target.bandaged??0)>=target.maxHp-target.hp)reason='Las heridas ya están vendadas. Necesita recuperación en campaña.';
+  if(!reason&&!target.bleeding&&(civilian?civilianBandaged(target):target.bandaged??0)>=(civilian?100-(target.hp??100):target.maxHp-target.hp))reason='Las heridas ya están vendadas. Necesita recuperación en campaña.';
   if(!reason&&s.mode!=='exploration'&&u.ap<cost)reason=`Vendar requiere ${cost} PA.`;
   return {allowed:!reason,reason,cost};
 }
@@ -1223,9 +1226,10 @@ export function medicalUsePreview(s,u,target=u){
 // aliases remain local actions; the composed command uses those same rules.
 function knownApproachRoute(s,u,inReach){
   const units=s.units.filter(other=>other.side===u.side||teamCanSee(s,u.side,other));
+  const npcs=(s.npcs??[]).filter(npc=>teamCanSee(s,u.side,npc));
   // Stop Dijkstra at the cheapest usable position. Ignoring the AP cap reports
   // the true combined cost even when this turn cannot afford the whole order.
-  return getReachable({...s,units,mode:'exploration'},u,{stopAt:cell=>inReach(cell)&&
+  return getReachable({...s,units,npcs,mode:'exploration'},u,{stopAt:cell=>inReach(cell)&&
     !units.some(other=>other.id!==u.id&&!other.departure&&other.hp>0&&sameCell(other,cell))})[0];
 }
 export function npcGiftPreview(s,u,npc){
@@ -1265,20 +1269,22 @@ export function meleePreview(s,u,target,{approach=false}={}){
 }
 const meleeAttackResults=new WeakMap();
 export function getMeleeAttackResult(before,after,unitId){return before!==after&&Boolean(meleeAttackResults.get(after)?.has(String(unitId)));}
-export function itemUsePreview(s,u,target){
+export function itemUsePreview(s,u,target,{targetKind='unit'}={}){
   if(!u||!['primary','blade','unarmed','medical'].includes(u.activeSlot??'primary'))return null;
-  const type=u.activeSlot==='medical'?'heal':contextualAttack(s,u,target).type;
+  const civilian=targetKind==='npc',type=u.activeSlot==='medical'||civilian?'heal':contextualAttack(s,u,target).type;
   if(!['heal','melee'].includes(type))return null;
   if(type==='melee')return meleePreview(s,u,target,{approach:true});
   const actionPa=actionCosts(s,u)[type==='heal'?'heal':'melee'],reach=type==='heal'?1.5:bladeFor(u).reach;
   const result=(reason=null,route=null)=>({type,actionPa,movePa:route?.cost??0,pa:actionPa+(route?.cost??0),destination:route?positionOf(route):null,path:route?.path??[],valid:!reason,reason});
   if(!alive(u)||s.status!=='active'||(u.side==='player'?!interruptAvailable(s,u):s.phase!=='enemy'))return result('El combatiente no puede actuar ahora.');
-  if(!target||!onField(target)||type==='heal'&&target.side!==u.side||type==='melee'&&(target.side===u.side||target.surrendered))return result('El objetivo no está disponible para este objeto.');
+  if(!['unit','npc'].includes(targetKind))return result('El tipo de herido no es válido.');
+  if(civilian&&(!target||!s.npcs?.includes(target)||target.departure||target.fled||(target.hp??100)<=0||!canSee(s,u,target)))return result('El habitante herido debe estar vivo y a la vista.');
+  if(!civilian&&(!target||!onField(target)||type==='heal'&&target.side!==u.side||type==='melee'&&(target.side===u.side||target.surrendered)))return result('El objetivo no está disponible para este objeto.');
   if(type==='melee'&&!teamCanSee(s,u.side,target))return result('Ningún compañero puede ver ese objetivo.');
   if(type==='heal'){
     // Validate the actual supplies and patient before searching. The virtual
     // position removes only the reach check; it grants no AP, kit or treatment.
-    const medical=medicalUsePreview(s,{...u,...positionOf(target),tacticalLevel:tacticalLevel(target)},target);
+    const medical=medicalUsePreview(s,{...u,...positionOf(target),tacticalLevel:tacticalLevel(target)},target,{targetKind});
     if(!medical.allowed)return result(medical.reason);
   }
   const inReach=contactDistance(u,target)<=reach&&hasLineOfSight(s,u,target);
@@ -1322,7 +1328,7 @@ function grenadeUseOrder(s,a){
   const {targetId,environment,hitLocation,...rest}=a;
   return {...rest,type:'throwGrenade',...(targetId===undefined?{}:known?positionOf(known):{x:undefined,y:undefined})};
 }
-function apply(s,a,enemy=false,movementPath=null){if(a.type==='useItem'){const user=s.units.find(v=>v.id===String(a.unitId));if(heldGrenade(user))a=grenadeUseOrder(s,a);else if(user?.activeSlot==='item'&&s.npcs?.some(n=>n.id===String(a.targetId)))a={...a,type:'giveItem'};else if(user?.activeSlot==='supply'){const point=s.units.find(v=>v.id===String(a.targetId));a={...a,type:heldSupply(user)?.action??'invalidSupply',...(point?positionOf(point):{}),targetId:a.targetId??(user.activeSupply==='rations'?'':undefined)};}else if(a.environment)a={...a,...a.environment,type:'environment'};else a={...a,type:user?.activeSlot==='medical'?'heal':user?contextualAttack(s,user,s.units.find(v=>v.id===String(a.targetId)),a).type:'melee'};}const fail=text=>{if(!enemy||u&&journalVisible(s,u)){s.lastError=text;say(s,text);}return false;};const u=s.units.find(u=>u.id===String(a.unitId));if(s.status!=='active')return fail('El combate ya terminó.');if(!u||!alive(u))return fail('El soldado no puede actuar.');if(u.side!==(enemy?'enemy':'player'))return fail('No puedes dar órdenes a ese soldado.');if(!enemy&&!interruptAvailable(s,u))return fail('Ese soldado no puede actuar en esta interrupción.');if(u.knockedDown&&!['stance','heal','ration'].includes(a.type))return fail('El soldado está derribado: debe ponerse de pie.');const observation=reactionObservation(s,u);const target=a.type==='giveItem'?s.npcs?.find(n=>n.id===String(a.targetId)):s.units.find(u=>u.id===String(a.targetId)&&!u.departure);if(a.type!=='inventoryMap'&&a.targetId!==undefined&&!target)return fail('El objetivo no está disponible en este sector.');const pay=n=>{if(!Number.isFinite(n)||n<0||s.mode!=='exploration'&&u.ap<n)return false;if(n>0&&(lowersWeapon(a.type)||a.type==='look'&&u.stance==='prone'))lowerWeapon(u);if(s.mode==='exploration'){if(a.type!=='move'&&a.type!=='climb')s.actionDurationSeconds=Math.max(1,Math.ceil(n*.06));return true;}u.ap-=n;return true;};
+function apply(s,a,enemy=false,movementPath=null){if(a.type==='useItem'){const user=s.units.find(v=>v.id===String(a.unitId));if(heldGrenade(user))a=grenadeUseOrder(s,a);else if(user?.activeSlot==='item'&&s.npcs?.some(n=>n.id===String(a.targetId)))a={...a,type:'giveItem'};else if(user?.activeSlot==='supply'){const point=s.units.find(v=>v.id===String(a.targetId));a={...a,type:heldSupply(user)?.action??'invalidSupply',...(point?positionOf(point):{}),targetId:a.targetId??(user.activeSupply==='rations'?'':undefined)};}else if(a.environment)a={...a,...a.environment,type:'environment'};else a={...a,type:user?.activeSlot==='medical'?'heal':user?contextualAttack(s,user,s.units.find(v=>v.id===String(a.targetId)),a).type:'melee'};}const fail=text=>{if(!enemy||u&&journalVisible(s,u)){s.lastError=text;say(s,text);}return false;};const u=s.units.find(u=>u.id===String(a.unitId));if(s.status!=='active')return fail('El combate ya terminó.');if(!u||!alive(u))return fail('El soldado no puede actuar.');if(u.side!==(enemy?'enemy':'player'))return fail('No puedes dar órdenes a ese soldado.');if(!enemy&&!interruptAvailable(s,u))return fail('Ese soldado no puede actuar en esta interrupción.');if(u.knockedDown&&!['stance','heal','ration'].includes(a.type))return fail('El soldado está derribado: debe ponerse de pie.');const observation=reactionObservation(s,u);if(a.targetKind==='npc'&&a.targetId!==undefined&&!['heal','giveItem'].includes(a.type))return fail('Prepará las vendas para tratar al habitante.');const target=a.type==='giveItem'||a.type==='heal'&&a.targetKind==='npc'?s.npcs?.find(n=>n.id===String(a.targetId)):s.units.find(u=>u.id===String(a.targetId)&&!u.departure);if(a.type!=='inventoryMap'&&a.targetId!==undefined&&!target)return fail('El objetivo no está disponible en este sector.');const pay=n=>{if(!Number.isFinite(n)||n<0||s.mode!=='exploration'&&u.ap<n)return false;if(n>0&&(lowersWeapon(a.type)||a.type==='look'&&u.stance==='prone'))lowerWeapon(u);if(s.mode==='exploration'){if(a.type!=='move'&&a.type!=='climb')s.actionDurationSeconds=Math.max(1,Math.ceil(n*.06));return true;}u.ap-=n;return true;};
 if(a.type==='move'||a.type==='climb'){
   if(u.entangled)return fail('Las boleadoras inmovilizan al soldado: debe liberarse.');
   let postureCost=0;
@@ -1735,8 +1741,10 @@ else if(a.type==='overwatch'){
 else if(a.type==='mount'){if(tacticalLevel(u)!==0)return fail('La montura debe permanecer en el suelo.');if(!u.horse)return fail('Este soldado no tiene una montura asignada.');if(!u.mounted&&u.mount&&(u.mount.stamina<20||u.mount.condition<30))return fail('El caballo necesita descanso y cuidados antes de la monta.');const cost=actionCosts(s,u).mount;if(!pay(cost))return fail(`Montar o desmontar requiere ${cost} PA.`);u.mounted=!u.mounted;u.stance='standing';u.momentum=0;sayObserved(s,[u],`${u.name} ${u.mounted?'monta a caballo':'desmonta'}.`);}
 else if(a.type==='heal'){
   const t=target||u;
-  const preview=medicalUsePreview(s,u,t);if(!preview.allowed)return fail(preview.reason);pay(preview.cost);
-  u.medkits--;practice(u,'medical',3);t.bleeding=0;t.bandaged=t.maxHp-t.hp;refreshCondition(t);
+  const preview=medicalUsePreview(s,u,t,{targetKind:a.targetKind});if(!preview.allowed)return fail(preview.reason);pay(preview.cost);
+  u.medkits--;practice(u,'medical',3);t.bleeding=0;
+  if(a.targetKind==='npc'){t.bandaged=100-(t.hp??100);t.civilianWoundVersion=1;delete t.bleedSource;}
+  else{t.bandaged=t.maxHp-t.hp;refreshCondition(t);}
   sayObserved(s,[u,t],`${u.name} venda a ${t.name} y detiene la hemorragia. La salud se recupera con descanso y atención médica.`);
 }
 else if(a.type==='stance'){
@@ -1756,6 +1764,11 @@ function advanceWounds(s,seconds){
   for(const u of s.units.filter(u=>u.hp>0)){
     if(u.bleeding){const loss=Math.min(u.hp,u.bleeding*ticks);u.hp-=loss;u.bandaged=Math.min(u.bandaged??0,u.maxHp-u.hp);if(u.side==='player'||teamCanSee(s,'player',u))sayObserved(s,[u],`${u.name} pierde ${loss} de salud por hemorragia.`);}
     refreshCondition(u);
+  }
+  for(const npc of s.npcs??[]){
+    const before=npc.hp??100,visible=teamCanSee(s,'player',npc);
+    advanceCivilianBleeding(s,npc,ticks);
+    if((npc.hp??100)<before&&visible){say(s,`${npc.name} pierde ${before-npc.hp} de salud por hemorragia.`);if(npc.hp===0)say(s,`${npc.name} muere por sus heridas.`);}
   }
 }
 // Apply exploration time at the end of each completed movement step. This lets
@@ -1966,7 +1979,7 @@ function contextualUsePlan(state,unit,action){
   if(action.environment)return environmentUsePreview(state,unit,action.environment,action.environment.verb);
   const npc=state.npcs?.find(n=>n.id===String(action.targetId));
   if(npc&&unit.activeSlot==='item')return npcGiftPreview(state,unit,npc);
-  return action.targetId!==undefined?itemUsePreview(state,unit,state.units.find(u=>u.id===String(action.targetId))):null;
+  return action.targetId!==undefined?itemUsePreview(state,unit,action.targetKind==='npc'?npc:state.units.find(u=>u.id===String(action.targetId)),{targetKind:action.targetKind}):null;
 }
 export function approachCompleted(state,moved,unitId,plan){
   const unit=moved.units.find(u=>u.id===String(unitId));

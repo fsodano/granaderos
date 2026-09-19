@@ -11,7 +11,7 @@ export function decodeSave(text){
   assertSaveSize(text);
   let value;try{value=JSON.parse(text);}catch{throw Error('El archivo no contiene una partida válida.');}
   if(value?.format!=='granaderos'||value.schema!==1)throw Error('Esta versión de la partida no es compatible.');
-  if(value.campaign?.civilianHarm===undefined&&value.battle?.npcs?.some(npc=>npc?.civilianHarm!==undefined))throw Error('El registro de daños civiles mezcla versiones.');
+  if(value.campaign?.civilianHarm===undefined&&value.battle?.npcs?.some(npc=>npc?.civilianHarm!==undefined||npc?.civilianWoundVersion!==undefined))throw Error('El registro de daños civiles mezcla versiones.');
   const campaign=restoreCampaign(JSON.stringify(value.campaign));const b=value.battle;
   if(Boolean(campaign.pendingBattle)!==Boolean(b))throw Error('La batalla guardada no coincide con la campaña.');
   if(b&&value.campaign.fittingRulesVersion===FITTING_RULES_VERSION&&b.fittingRulesVersion!==FITTING_RULES_VERSION)throw Error('Las reglas de accesorios no corresponden al despliegue guardado.');

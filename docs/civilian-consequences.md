@@ -27,11 +27,13 @@ The affected town uses its control at the first acknowledgment. Unknown sources 
 
 Named contacts use their actual lower health and energy when hired. A validated service transfer prevents an old civilian record from demanding that the person reappear after dismissal or a soldier casualty. A true civilian death cannot use that exception to discard the corpse.
 
+Civilian first aid is now available through equipped bandages, with persistent bleeding, dressings and delayed death attribution. See [civilian first aid](civilian-first-aid.md) for controls, validation and remaining medical differences.
+
 ## Reference and limits
 
 The implementation reference is Stracciatella commit `a06f4896c43c76396529e415a29a8ca26b00f9f1`. [Soldier_Control.cc](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/a06f4896c43c76396529e415a29a8ca26b00f9f1/src/game/Tactical/Soldier_Control.cc#L5836-L5844) records player-caused wounds to named contacts. [Strategic_Town_Loyalty.cc](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/a06f4896c43c76396529e415a29a8ca26b00f9f1/src/game/Strategic/Strategic_Town_Loyalty.cc#L351-L590) distinguishes death responsibility, territorial control and accidental attacks. [Soldier_Ani.cc](https://github.com/ja2-stracciatella/ja2-stracciatella/blob/a06f4896c43c76396529e415a29a8ca26b00f9f1/src/game/Tactical/Soldier_Ani.cc#L2840-L2911) gates death consequences so they occur once.
 
-Remaining gaps include armed civilian faction hostility, militia retaliation, witness-based false attribution, effects on other towns by distance, civilian-killing morale events, theft and medical-aid reputation, direct NPC melee/first aid, and complete failed-quest branches. The local numeric weights and fixed point controls are adaptations. This change does not establish full JA2 civilian parity.
+Remaining gaps include armed civilian faction hostility, militia retaliation, witness-based false attribution, effects on other towns by distance, civilian-killing morale events, theft and medical-aid reputation, direct NPC melee, and complete failed-quest branches. The local numeric weights and fixed point controls are adaptations. This change does not establish full JA2 civilian parity.
 
 ## Verification
 

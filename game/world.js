@@ -96,7 +96,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
  // Explicit rosters control presence, especially after named recruitment.
  if(request.npcs===undefined)for(const npc of previous?.npcs??[]){
    if(residents.some(current=>current.id===npc.id))continue;
-   const harmed=civilianIncidents(npc).length>0&&!state.units.some(unit=>unit.side==='player'&&npc.operativeId!==undefined&&Number(unit.id)===npc.operativeId);
+   const harmed=(civilianIncidents(npc).length>0||(npc.hp??100)<100||(npc.energy??100)<100||npc.bleeding>0)&&!state.units.some(unit=>unit.side==='player'&&npc.operativeId!==undefined&&Number(unit.id)===npc.operativeId);
    if(harmed||npc.operativeId===undefined&&npc.questGifts?.length&&validateQuestGifts(npc).length)residents.push(structuredClone(npc));
  }
  state.npcs=residents.map(npc=>{

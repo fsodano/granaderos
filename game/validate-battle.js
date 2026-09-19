@@ -1,5 +1,5 @@
 import {migrateBattleAmmunition} from './campaign-ammunition.js';
-import {civilianIncidents} from './civilian-harm.js';
+import {civilianIncidents,validateCivilianWounds} from './civilian-harm.js';
 import {validateSectorDeployment} from './sector-deployment.js';
 import {NOISE_KINDS} from './tactical-awareness.js';
 import {validateTacticalSpace} from './tactical-space.js';
@@ -137,6 +137,7 @@ for(const n of s.npcs){
  // boolean forms remain valid for a corpse; living health must be coherent.
  if(npcHp>0&&(n.hp!==undefined||n.energy!==undefined))need((n.unconscious??false)===npcIncapacitated,'conciencia civil incompatible con sus heridas');
  civilianIncidents(n);
+ validateCivilianWounds(n,s);
  if(n.stance!==undefined)need(['standing','crouched','prone'].includes(n.stance),'postura civil');
  if(n.movementMode!==undefined)need(['walk','run','crouch','prone'].includes(n.movementMode),'movimiento civil');
  if(n.facing!==undefined)need(integer(n.facing,0,7),'dirección civil');

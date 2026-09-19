@@ -1,7 +1,7 @@
 import {CAMPAIGN_SECTORS} from './data.js';
 import {ENCOUNTERS} from './encounters.js';
 import {YATASTO_NPCS} from './missions.js';
-import {civilianIncidents} from './civilian-harm.js';
+import {civilianIncidents,civilianBandaged,validateCivilianWounds} from './civilian-harm.js';
 import {isUnconscious} from './tactical-condition.js';
 import {CITY_LOYALTY_REWARDS,cityForSector,recordCityLoyalty} from './cities.js';
 
@@ -44,9 +44,19 @@ function serviceHealth(campaign,sectorId,sceneId,npc){
  const operative=campaign.operativeState?.[id];
  need(operative&&Number.isFinite(operative.hp)&&Number.isFinite(operative.maxHp),'Falta la hoja de servicio del habitante.');
  need([npc.hp??100,npc.energy??100].every(value=>Number.isFinite(value)&&value>=0&&value<=100),'La salud del habitante no es válida.');
- const hp=Math.min(operative.hp,Math.ceil(npc.hp??100)),energy=Math.min(operative.energy??100,npc.energy??100);
+ // NPC health uses a fixed 100-point scale. Preserve its missing HP on the
+ // recruit's own scale instead of turning a small wound into full health.
+ // An absolute target prevents repeated sync from subtracting the wound again.
+ const civilianHp=npc.hp??100,mappedHp=civilianHp>0?Math.max(1,Math.ceil(operative.maxHp-(100-civilianHp))):0;
+ const hp=Math.min(operative.hp,mappedHp),energy=Math.min(operative.energy??100,npc.energy??100);
+ // A pristine or old resident record is not proof of first aid. In
+ // particular, dismissing a wounded soldier must not clear his bleeding when
+ // the authored contact appears again. Only canonical wounds carry treatment.
+ const canonical=npc.civilianWoundVersion===1;
+ const bleeding=hp>0?(canonical?npc.bleeding??0:operative.bleeding??0):0;
+ const bandaged=Math.min(canonical?civilianBandaged(npc):operative.bandaged??0,Math.max(0,operative.maxHp-hp));
  const unconscious=isUnconscious({hp,energy});
- return hp!==operative.hp||energy!==(operative.energy??100)||npc.civilianHarm&&unconscious!==operative.unconscious?{id,hp,energy,unconscious}:null;
+ return hp!==operative.hp||energy!==(operative.energy??100)||bleeding!==(operative.bleeding??0)||bandaged!==(operative.bandaged??0)||(npc.civilianHarm||npc.hp!==undefined)&&unconscious!==operative.unconscious?{id,hp,energy,bleeding,bandaged,unconscious}:null;
 }
 
 function effectFor(sectorId,owner,event,key){
@@ -75,6 +85,7 @@ function context(campaign,battle){
  const seen=new Set(),pending=[],healthUpdates=[];
  for(const npc of battle.npcs){
   need(npcId(npc?.id)&&!seen.has(npc.id),'La identidad del habitante no es válida.');seen.add(npc.id);
+  validateCivilianWounds(npc,battle);
   const incidents=civilianIncidents(npc),key=identity(request.sector,sceneId,npc.id),acknowledged=ledger.records[key]?.incidents??[];
   validatePrefix(acknowledged,incidents);
   const previousNpc=prior?.npcs?.find(previous=>previous.id===npc.id),previousIncidents=previousNpc?civilianIncidents(previousNpc):[];
@@ -90,10 +101,14 @@ function context(campaign,battle){
    need(authored?.operativeId===undefined||!campaign.recruited?.includes(authored.operativeId)&&ledger.records[key]?.transferredTo!==authored.operativeId,'Un combatiente incorporado no puede figurar como una nueva víctima civil.');
    if(event.side!=='unknown'){
     const attacker=battle.units?.find(unit=>String(unit.id)===event.attackerId);
-    need(attacker&&attacker.side===event.side&&Boolean(attacker.militia)===event.militia,'El responsable del daño civil no pertenece al despliegue.');
+    const oldSource=previousNpc?.bleedSource;
+    const retainedBleed=event.kind==='death'&&(previousNpc?.bleeding??0)>0&&oldSource&&['attackerId','side','militia','intentional'].every(field=>oldSource[field]===event[field]);
+    need(attacker?attacker.side===event.side&&Boolean(attacker.militia)===event.militia:retainedBleed,'El responsable del daño civil no pertenece al despliegue.');
    }
   }
-  if(incidents.length>acknowledged.length)pending.push({key,npc,incidents,acknowledged});
+  // A non-player injury also needs a lasting service-transfer identity, but
+  // it must not acquire a fictional player-wound or civic consequence.
+  if(incidents.length>acknowledged.length||health&&!ledger.records[key])pending.push({key,npc,incidents,acknowledged});
  }
  for(const npc of request.npcs??[]){
   const previous=prior?.npcs?.find(previous=>previous.id===npc.id),incidents=previous?civilianIncidents(previous):civilianIncidents(npc);
@@ -140,12 +155,11 @@ export function acknowledgeCivilianHarm(campaign,battle){
   }
   record.incidents=structuredClone(entry.incidents);
  }
- for(const {id,hp,energy,unconscious}of healthUpdates){
+ for(const {id,hp,energy,bleeding,bandaged,unconscious}of healthUpdates){
   const operative=campaign.operativeState[id];
   // Service records require integral HP. Preserve a living fractional legacy
   // civilian as living; only an actual zero-HP receipt can make a corpse.
-  Object.assign(operative,{hp,energy,alive:hp>0,unconscious,recoveryHours:0});
-  operative.bandaged=Math.min(operative.bandaged??0,Math.max(0,operative.maxHp-hp));
+  Object.assign(operative,{hp,energy,bleeding,bandaged,alive:hp>0,unconscious,recoveryHours:0});
   if(!operative.alive){operative.bleeding=0;operative.assignment='active';operative.asleep=false;operative.sleepCollapsed=false;}
  }
  return messages;
@@ -154,9 +168,10 @@ export function acknowledgeCivilianHarm(campaign,battle){
 export function validateCampaignCivilianHarm(campaign){
  const snapshots=[...Object.values(campaign.sectorStates??{}),...Object.values(campaign.sceneStates??{})];
  const receiptOwners=[...snapshots,...(campaign.pendingBattle?[campaign.pendingBattle,campaign.pendingBattle.resumeSnapshot].filter(Boolean):[])];
+ for(const snapshot of receiptOwners)for(const npc of snapshot.npcs??[])validateCivilianWounds(npc,snapshot);
  const civicEvents=(campaign.cityLoyaltyEvents??[]).filter(event=>kinds.has(event?.kind));
  if(campaign.civilianHarm===undefined){
-  need(!civicEvents.length&&!receiptOwners.some(snapshot=>(snapshot.npcs??[]).some(npc=>npc.civilianHarm!==undefined)),'El registro de daños civiles mezcla versiones.');
+  need(!civicEvents.length&&!receiptOwners.some(snapshot=>(snapshot.npcs??[]).some(npc=>npc.civilianHarm!==undefined||npc.civilianWoundVersion!==undefined)),'El registro de daños civiles mezcla versiones.');
   campaign.civilianHarm=emptyLedger();
  }
  const ledger=campaign.civilianHarm;
@@ -165,7 +180,9 @@ export function validateCampaignCivilianHarm(campaign){
  for(const [key,record]of Object.entries(ledger.records)){
   need(exactFields(record,['sectorId','sceneId','npcId','incidents','effects','transferredTo'])&&validSector(record.sectorId)&&validScene(record.sectorId,record.sceneId)&&npcId(record.npcId)&&key===identity(record.sectorId,record.sceneId,record.npcId),'La identidad del recibo civil no es válida.');
   const hp=record.incidents?.at(-1)?.kind==='death'?0:100;
-  const incidents=civilianIncidents({hp,civilianHarm:{version:1,incidents:record.incidents}});
+  need(Array.isArray(record.incidents)&&record.incidents.length<=2,'La secuencia del recibo civil no es válida.');
+  const incidents=record.incidents.length?civilianIncidents({hp,civilianHarm:{version:1,incidents:record.incidents}}):[];
+  need(incidents.length||authoredNpc(record.sectorId,record.sceneId,record.npcId)?.operativeId!==undefined,'Un recibo civil sin incidentes requiere un contacto de servicio.');
   need(record.transferredTo===null||Number.isInteger(record.transferredTo)&&record.transferredTo===authoredNpc(record.sectorId,record.sceneId,record.npcId)?.operativeId&&!incidents.some(event=>event.kind==='death'),'El traslado de un habitante al servicio no es válido.');
   need(Array.isArray(record.effects)&&record.effects.length===incidents.length,'Los efectos del recibo civil están incompletos.');
   for(const [index,effect]of record.effects.entries()){
@@ -184,7 +201,12 @@ export function validateCampaignCivilianHarm(campaign){
  need(civicEvents.length===effects.size&&civicEvents.every(event=>effects.has(event.key)&&event.delta===effects.get(event.key).delta&&Number.isInteger(event.hour)&&event.hour>=0&&event.hour<=campaign.hour),'El registro de lealtad perdió o alteró un efecto civil.');
  for(const snapshot of snapshots){
   if(campaign.pendingBattle?.sector===snapshot.sectorId&&(campaign.pendingBattle.sceneId??null)===(snapshot.sceneId??null))continue;
-  for(const npc of snapshot.npcs??[]){const incidents=civilianIncidents(npc);if(!incidents.length)continue;const record=ledger.records[identity(snapshot.sectorId,snapshot.sceneId??null,npc.id)];need(record&&record.incidents.length===incidents.length,'Falta el recibo de un incidente civil.');validatePrefix(record.incidents,incidents);}
+  for(const npc of snapshot.npcs??[]){
+   const incidents=civilianIncidents(npc),sceneId=snapshot.sceneId??null;
+   const medicalContact=npc.civilianWoundVersion===1&&authoredNpc(snapshot.sectorId,sceneId,npc.id)?.operativeId!==undefined&&((npc.hp??100)<100||(npc.energy??100)<100);
+   if(!incidents.length&&!medicalContact)continue;
+   const record=ledger.records[identity(snapshot.sectorId,sceneId,npc.id)];need(record&&record.incidents.length===incidents.length,'Falta el recibo de un incidente civil.');validatePrefix(record.incidents,incidents);
+  }
  }
  return campaign;
 }

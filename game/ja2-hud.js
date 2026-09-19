@@ -49,6 +49,12 @@ export const grenadeTargetingMode = (unit,mode) => mode==='throwGrenade'||mode==
 export const retainedAttackCursor = (unit, mode) => (mode === 'throwKnife' && !heldThrowingKnife(unit) || mode === 'throwGrenade' && !heldGrenade(unit) || mode === 'fire' && !hasFirearm(unit || {})) ? 'move' : mode;
 export const pickupTargetAction = (target,unit) => ({type:target.side!==unit?.side&&target.hp>0&&!target.unconscious&&!target.surrendered&&!target.routed?'steal':'loot',targetId:target.id});
 export const targetItemAction = (mode, targetId, unit) => ({type: mode === 'fire' && hasFirearm(unit || {}) ? 'fire' : 'useItem', targetId});
+export function civilianMedicalInputAction(state,unit,point,mode='move') {
+  if(unit?.activeSlot!=='medical'||!['move','useItem','heal'].includes(mode)||!point)return null;
+  const npc=(state.npcs??[]).find(n=>sameCell(n,point)&&(point.id===undefined||n.id===point.id));
+  if(!npc||npc.departure||npc.fled||!canSee(state,unit,npc))return null;
+  return {type:mode==='heal'?'heal':'useItem',targetId:npc.id,targetKind:'npc'};
+}
 // Civilian aiming uses the existing ground-shot contract, never a body target.
 export const pointFireInputAction=(point,{aim=0}={})=>({type:'firePoint',x:point?.x,y:point?.y,tacticalLevel:tacticalLevel(point),hitLocation:'torso',aim});
 function explicitPointShot(state,point){
@@ -210,12 +216,12 @@ export function heardNoiseModel(state, unit) {
 export function visibleHover(state, point) {
   if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.y)) return null;
   if (point.anonymous) return {x: point.x, y: point.y, ...(point.tacticalLevel===undefined?{}:{tacticalLevel:point.tacticalLevel}), anonymous: true};
-  const unit = point.id ? state.units.find(unit => unit.id === point.id) : null;
+  const unit = point.id && point.targetKind!=='npc' ? state.units.find(unit => unit.id === point.id) : null;
   const npc = !unit && point.id ? (state.npcs || []).find(npc => npc.id === point.id) : null;
   const target = unit || npc;
   if (!target) return point;
   if (target.departure || target.fled || target.side !== 'player' && !state.units.some(observer => observer.side === 'player' && canSee(state, observer, target))) return null;
-  return target;
+  return npc&&point.targetKind==='npc'?{...npc,targetKind:'npc'}:target;
 }
 
 export function interruptHover(state, selectedId) {
@@ -243,7 +249,7 @@ export function targetingHelp(mode, unit, ctx = {}) {
   if (unit?.activeSlot === 'tool' && ['move', 'useItem'].includes(mode)) return 'Seleccioná una puerta o un cofre para usar la herramienta. Las casillas libres permiten avanzar.';
   if(hasFirearm(unit||{})&&unit.weaponMode==='melee'&&['move','useItem'].includes(mode))return `${fixedBayonetFor(unit)?'Estocada de bayoneta':'Culatazo'}: seleccioná un enemigo para acercarte y golpear. No dispara ni recarga. Botón derecho o F: apuntar para disparar.`;
   if(heldThrowingKnife(unit)&&['move','useItem'].includes(mode))return 'Clic sobre un enemigo: acercarse y atacar con el facón. Botón derecho o F: apuntar para lanzarlo.';
-  if (mode === 'useItem') return unit?.activeSlot === 'medical' ? 'Seleccionate a vos o a un aliado herido. Se acerca y venda si hay ruta y PA suficientes. Detiene la hemorragia, sin recuperar salud.' : hasFirearm(unit || {}) ? 'Seleccioná un enemigo. Apuntar consume PA adicionales.' : 'Seleccioná un enemigo para acercarte y usar el arma blanca.';
+  if (mode === 'useItem') return unit?.activeSlot === 'medical' ? 'Seleccionate a vos, a un aliado o a un civil herido. Se acerca y venda si hay ruta y PA suficientes. Detiene la hemorragia, sin recuperar salud.' : hasFirearm(unit || {}) ? 'Seleccioná un enemigo. Apuntar consume PA adicionales.' : 'Seleccioná un enemigo para acercarte y usar el arma blanca.';
   return ({move: 'Seleccioná una casilla para avanzar. Sobre un combatiente se usa el objeto equipado.', loot: 'Seleccioná un cuerpo o equipo visible. Elegí qué recoger; los PA incluyen el desplazamiento.', torch: 'Seleccioná una casilla para arrojar la antorcha.', bolas: 'Seleccioná un enemigo para lanzar las boleadoras.', artillery: 'Seleccioná un objetivo dentro del arco del cañón.', artilleryMove: 'Seleccioná una casilla contigua al cañón.', artilleryPivot: 'Seleccioná hacia dónde apuntar el cañón.'})[mode] || 'Seleccioná una orden.';
 }
 
@@ -300,6 +306,14 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   const reload = mode === 'fire' ? emptyGunPreview(state, unit) : null;
   if (reload) return reload;
   if (!point) return null;
+  const civilianAid=civilianMedicalInputAction(state,unit,point,mode);
+  if(civilianAid){
+    const patient=state.npcs.find(n=>n.id===civilianAid.targetId),options={targetKind:'npc'};
+    const local=mode==='heal'?medicalUsePreview(state,unit,patient,options):null;
+    const preview=local?{pa:local.cost,valid:local.allowed,reason:local.reason,movePa:0,actionPa:local.cost}:itemUsePreview(state,unit,patient,options);
+    const movement=preview.movePa?(state.mode==='exploration'?'Se acerca y usa una venda. Consume tiempo y energía.':`Desplazamiento: ${preview.movePa} PA · vendas: ${preview.actionPa} PA.`):'Usa una venda.';
+    return {name:patient.name,actionLabel:preview.movePa?'Acercarse y vendar':'Vendar',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,coverNote:`${movement} Detiene la hemorragia; no recupera salud.`};
+  }
   const recipient=state.npcs?.find(n=>sameCell(n,point));
   if(recipient&&unit.activeSlot==='item'&&!heldGrenade(unit)&&['move','useItem'].includes(mode)){const gift=npcGiftPreview(state,unit,recipient);return {name:recipient.name,actionLabel:gift.label,pa:gift.pa,remaining:unit.ap,valid:gift.valid,reason:gift.reason,coverNote:'Se entrega el objeto que está en la mano. No se usa la reserva del cuartel.'};}
   const occupants = state.units.filter(v => sameCell(v, point) && !v.fled && !v.departure && (v.side === unit.side || state.units.some(p => p.side === unit.side && canSee(state, p, v))));
@@ -410,8 +424,8 @@ export function equippedItemHelp(state, unit, ctx = {}) {
   if (unit.activeSlot === 'supply') return `${weapon.name} · ${exploring?0:supplyUsePreview(state, unit, ctx.target).cost} PA. ${targetingHelp('useItem', unit)}`;
   if (unit.activeSlot === 'item') return `${weapon.name}. ${targetingHelp('useItem',unit)}`;
   if (unit.activeSlot === 'tool') return `${weapon.name}. Seleccioná una puerta o un cofre para usarla.`;
-  if (unit.activeSlot === 'medical' && exploring) return 'Vendas: sin coste de PA. Seleccionate a vos o a un aliado herido. Consume tiempo y vendas. Detiene la hemorragia; no recupera salud.';
-  if (unit.activeSlot === 'medical') return `Vendas: ${costs.heal} PA, más el desplazamiento. Seleccionate a vos o a un aliado herido. Se acerca y venda si hay PA suficientes. Detiene la hemorragia; no recupera salud.`;
+  if (unit.activeSlot === 'medical' && exploring) return 'Vendas: sin coste de PA. Seleccionate a vos, a un aliado o a un civil herido. Consume tiempo y vendas. Detiene la hemorragia; no recupera salud.';
+  if (unit.activeSlot === 'medical') return `Vendas: ${costs.heal} PA, más el desplazamiento. Seleccionate a vos, a un aliado o a un civil herido. Se acerca y venda si hay PA suficientes. Detiene la hemorragia; no recupera salud.`;
   const attack = contextualAttack(state, unit, ctx.target, {type: ctx.mode, aim: ctx.aim || 0});
   const reload = attack.type === 'fire' ? emptyGunPreview(state, unit) : null;
   if (reload) return `${weapon.name} · ${reload.actionLabel}${reload.valid ? `: ${reload.pa} PA. ${reload.coverNote}` : `. ${reload.reason}`}`;

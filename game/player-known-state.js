@@ -8,7 +8,7 @@ import {maximumEnergy} from './fatigue.js';
 import {canSee,visibleRooms,actionCosts,stealPreview} from './tactical.js';
 import {isInteriorVisible} from './tactical-visibility.js';
 import {environmentTargetSummary} from './environment-interactions.js';
-import {unitCanAct,handSlots,equipmentSlots,aimOptions,orderDescriptors,nearbyLootOptions,targetPreview,heardNoiseModel,fittingInventoryModel} from './ja2-hud.js';
+import {unitCanAct,handSlots,equipmentSlots,aimOptions,orderDescriptors,nearbyLootOptions,civilianMedicalInputAction,targetPreview,heardNoiseModel,fittingInventoryModel} from './ja2-hud.js';
 import {CAMPAIGN_SECTORS,RESOURCE_NAMES} from './data.js';
 import {rosterFor} from './campaign.js';
 import {enemyGroupStatus} from './enemy-groups.js';
@@ -23,7 +23,7 @@ const POSITION=['x','y','tacticalLevel'];
 const ACTOR=['id','name','nickname','side',...POSITION,'hp','maxHp','stance','movementMode','facing','mounted','unconscious','knockedDown','entangled','routed','surrendered','militia','missionAlly'];
 const OWN=['ammunitionVersion','ap','maxAP','carriedAP','energy','fatigue','bleeding','bandaged','shock','morale','weapon','blade','condition','bladeCondition','weaponDropped','weaponReady','weaponMode','loaded','reloadProgress','ammo','jammed','medkits','priming','flints','rations','torches','boleadoras','activeSlot','activeItem','leftHandItem','activeTool','activeSupply','stealthMode','agility','dexterity','strength','wisdom','leadership','marksmanship','medical','mechanical','explosives','stealth','experienceLevel','militiaRank','militiaExperience'];
 const ITEM=['item','ammoType','kind','grenadeType','outfit','label','name','count','weight','weapon','loaded','reloadProgress','condition','jammed','itemType','toolKey','fittingPattern'];
-const ACTION=['type','unitId','targetId','item','count','slot','toolKey','supplyKey','stance','movement','enabled',...POSITION,'linkId','aim','hitLocation','groundId','dropIndex','inventoryKey','kind','id','verb','index','destination'];
+const ACTION=['type','unitId','targetId','targetKind','item','count','slot','toolKey','supplyKey','stance','movement','enabled',...POSITION,'linkId','aim','hitLocation','groundId','dropIndex','inventoryKey','kind','id','verb','index','destination'];
 const ORDERS=new Set(['move','climb','look','stealth','useItem','loot','reload','reprime','weapon','stance','mount','brace','repair','free','endTurn']);
 const onField=unit=>!unit.departure&&!unit.fled;
 const fittings=value=>value?.bayonet?{bayonet:pick(value.bayonet,['weapon','fittingPattern','condition'])}:{};
@@ -95,6 +95,7 @@ export function playerKnownBattle(state){
     aim:grenade?[]:aimOptions(state,unit).map(option=>pick(option,['level','pa','disabled'])),
     orders:orderDescriptors(state,unit).filter(order=>ORDERS.has(order.id)).map(order=>grenade&&order.id==='useItem'?{id:'useItem',label:'Lanzar granada',kind:'mode',pa:throwPA,disabled:!grenadeReady}:pick(order,['id','label','kind','pa','disabled'])),
     targets:grenade?grenadePointOrders(state,unit,[...livingTargets,...visibleNpcs]):livingTargets.flatMap(target=>{const preview=targetPreview(state,unit,target);return preview?[{targetId:target.id,...pick(preview,['name','pa','remaining','chance','chanceLabel','coverNote','hitLocation','attackType','attackLabel','actionLabel','valid','reason'])}]:[];}),
+    medicalTargets:visibleNpcs.flatMap(npc=>{const action=civilianMedicalInputAction(state,unit,npc);if(!action)return [];const preview=targetPreview(state,unit,npc);return [{targetId:npc.id,targetKind:'npc',...pick(preview,['name','pa','remaining','coverNote','actionLabel','valid','reason']),action}];}),
     stealTargets:visible.filter(target=>target.hp>0&&!target.unconscious&&!target.surrendered&&!target.routed).map(target=>({targetId:target.id,...pick(stealPreview(state,unit,target),['pa','valid','reason']),action:{type:'steal',targetId:target.id}})),
     loot:nearbyLootOptions(state,unit).filter(option=>{
       const target=option.action.targetId?state.units.find(target=>target.id===option.action.targetId):option.action.groundId?(state.groundItems??[]).find(target=>target.id===option.action.groundId):(state.droppedWeapons??[])[option.action.dropIndex];
@@ -103,7 +104,7 @@ export function playerKnownBattle(state){
   };});
   const result={...pick(state,['sectorId','sectorName','sceneId','missionId','width','height','turn','phase','mode','status','sectorCleared','night','elapsedSeconds']),weather:pick(state.weather,['rain','humidity']),
     units:[...players.map(ownActor),...visible.map(unit=>pick(unit,ACTOR))],departedPlayers:state.units.filter(unit=>unit.side==='player'&&unit.departure).map(departure),
-    npcs:visibleNpcs.map(npc=>pick(npc,['id','name',...POSITION,'hp','maxHp','unconscious','knockedDown','stance','mission'])),
+    npcs:visibleNpcs.map(npc=>pick(npc,['id','name',...POSITION,'hp','maxHp','bleeding','bandaged','unconscious','knockedDown','stance','mission'])),
     tiles:tiles.map(tile=>pick(tile,[...POSITION,'elevation','type','blocked','cover','open','buildingId','roomId'])),
     ...(state.upperSurfaces?{upperSurfaces:surfaces.map(surface=>pick(surface,['id',...POSITION,'elevation','type','kind','blocked','cover','slabThickness','material','buildingId','roomId']))}:{}),
     ...(state.climbLinks?{climbLinks:state.climbLinks.filter(link=>knownCells.has(spaceKey(link.from))&&knownCells.has(spaceKey(link.to))).map(link=>({...pick(link,['id','kind']),from:pick(link.from,POSITION),to:pick(link.to,POSITION)}))}:{}),
