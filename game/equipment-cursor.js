@@ -1,4 +1,6 @@
 import {syncUnitAmmunition} from './tactical-ammunition.js';
+import {isAmmunitionStack,weaponAmmoType} from './ammunition-types.js';
+import {planReload,reloadRoundCost} from './weapon-reload.js';
 import {WEAPONS} from './data.js';
 import {FITTING_PATTERNS,FIT_BAYONET_AP,REMOVE_BAYONET_AP,fittingFromItem,fittingToItem} from './weapon-fittings.js';
 import {handsRequired,handLayout} from './hand-layout.js';
@@ -121,10 +123,40 @@ export function planEquipmentPickup(unit,action){
  m.cursor={sourceId:action.sourceId,stack:{...copy(source.stack),count}};source.stack.count-=count;if(!source.stack.count)source.stack=null;
  return {unit:materialize(unit,m),pa:0};
 }
-export function planEquipmentCursorPlacement(unit,action){
+export function planEquipmentCursorPlacement(unit,action,{exploring=true,assisted=false}={}){
  need(physical(action.destinationId),'Elegí una ranura física de equipo.');
  for(const [id,expected]of [['cursor',action.expectedSource],[action.destinationId,action.expectedDestination]])need(typeof expected==='string'&&expected===equipmentFingerprint(unit,id),'Cambió el equipo. Volvé a seleccionar el objeto.');
- const m=model(unit);need(m.cursor,'El cursor está vacío.');place(m,action.destinationId,action.count===undefined?m.cursor.stack.count:action.count);
+ const m=model(unit);need(m.cursor,'El cursor está vacío.');
+ const host=cell(m,action.destinationId),gun=host.stack,ammo=m.cursor.stack,count=action.count===undefined?ammo.count:action.count;
+ // Ammunition on a firearm means load this exact gun, without equipping it or
+ // borrowing another stack. Cancellation still uses ordinary slot placement.
+ if(isAmmunitionStack(ammo)&&WEAPONS[gun?.weapon]?.type==='firearm'){
+  qty(count,ammo.count);
+  need(gun.count===1,'Elegí una sola arma para recargar.');
+  need(ammo.ammoType===weaponAmmoType(gun.weapon),'Esta munición no es compatible con el arma.');
+  const weapon=WEAPONS[gun.weapon];
+  need((gun.loaded??0)<weapon.capacity,'El arma ya está cargada.');
+  need(!gun.jammed,'Primero debes volver a cebar el arma.');
+  need((gun.condition??100)>0,'El arma está rota.');
+  const reload=planReload({...gun,loaded:gun.loaded??0,ammo:count,ap:unit.ap},reloadRoundCost(unit,weapon,assisted),weapon.capacity,exploring);
+  need(reload.pa>0,'Faltan puntos de acción para recargar.');
+  gun.loaded=(gun.loaded??0)+reload.rounds;
+  if(reload.progress>0)gun.reloadProgress=reload.progress;else delete gun.reloadProgress;
+  ammo.count-=reload.rounds;if(!ammo.count)m.cursor=null;
+  // Priming powder can itself occupy either hand. Remove spent portions
+  // before rebuilding ownership, so an empty hand cannot retain a stale item.
+  let priming=reload.rounds;
+  for(const stack of [...m.slots.map(slot=>slot.stack),...m.overflow,m.right,m.left])if(stack?.item==='priming'){
+   const spent=Math.min(priming,stack.count);stack.count-=spent;priming-=spent;
+  }
+  for(const slot of m.slots)if(slot.stack?.count===0)slot.stack=null;
+  m.overflow=m.overflow.filter(stack=>stack.count>0);
+  if(m.right?.count===0)m.right=null;if(m.left?.count===0)m.left=null;
+  const next=materialize(unit,m);
+  lowerWeapon(next);next.braced=false;next.overwatch=false;next.momentum=0;delete next.lastTargetId;delete next.lastShotPosition;
+  return {unit:next,...reload,operation:'reload',host:gun.weapon,actionLabel:`Recargar ${weapon.name}`,seconds:Math.max(1,Math.ceil(reload.pa*.06))};
+ }
+ place(m,action.destinationId,count);
  return {unit:materialize(unit,m),pa:0};
 }
 export function planEquipmentCursorReturn(unit){

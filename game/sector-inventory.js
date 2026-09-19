@@ -131,7 +131,7 @@ export function moveSectorItem(s,action,roster){
  const model=sectorInventoryModel(s,sectorId,roster,operativeId);
  const reason=['equip','issueOutfit','arrange','attachment'].includes(direction)?model.carriedReason:model.reason;need(!reason,reason);need(model.operativeId===Number(operativeId),'Elegí un combatiente presente.');
  const op=roster.find(op=>op.id===Number(operativeId)),snapshot=inventorySite(s,sectorId).snapshot,actor=['equip','issueOutfit','arrange','attachment'].includes(direction)?carriedActor(s,op):actorAt(s,sectorId,op);
- let next,stack,changedGround=false;
+ let next,stack,cursorPlan,changedGround=false;
  if(direction==='issueOutfit'){
   need(count===1&&!model.outfitIssueReason,model.outfitIssueReason??'Retirá un poncho por vez.');
   stack={item:'outfit',...makeOutfit()};next=applyItemQuantity(actor,stack);
@@ -142,7 +142,7 @@ export function moveSectorItem(s,action,roster){
    need(['pickupEquipment','placeEquipment','returnEquipmentCursor','dragEquipment'].includes(action.cursorAction),'La orden del cursor no es válida.');
    if(['pickupEquipment','dragEquipment'].includes(action.cursorAction))need(!roster.some(other=>other.id!==op.id&&s.recruited.includes(other.id)&&s.operativeState[other.id]?.alive&&s.operativeState[other.id]?.equipmentCursor&&!s.operativeState[other.id]?.captured),'Colocá primero el objeto del otro combatiente.');
    if(action.cursorAction==='dragEquipment')need(action.expectedDestination===equipmentFingerprint(actor,action.destinationId),'Cambió el destino. Revisá el equipo.');
-   const plan=planEquipmentCursorOrder(actor,{...action,type:action.cursorAction});next=plan.unit;
+   const plan=planEquipmentCursorOrder(actor,{...action,type:action.cursorAction});next=plan.unit;cursorPlan=plan;
    if(plan.dropped){
     need(!model.reason,model.reason);const located=actorAt(s,sectorId,op);need(located,'El combatiente debe entrar al sector para dejar el objeto.');
     need(snapshot.groundItems.length<2000,'No queda espacio para dejar el objeto. Sigue en el cursor.');
@@ -193,7 +193,7 @@ export function moveSectorItem(s,action,roster){
  const replacesPrimary=incoming==='offhand'||incoming?.startsWith('inventory:')&&Boolean(actor.inventory?.[incoming.slice(10)]?.weapon);
  const changesMainWeapon=direction==='arrange'&&(replacesPrimary||next.weapon!==actor.weapon||next.weaponInstanceId!==actor.weaponInstanceId||next.weaponDropped!==actor.weaponDropped);
  const equipsMainWeapon=changesMainWeapon||direction==='equip'&&(action.slot==='primary'||action.slot==='mainhand'&&(action.inventoryKey==='offhand'||action.inventoryKey.startsWith('inventory:')&&stack.weapon));
- if(equipsMainWeapon||record.carriedLoaded!==undefined)setCarriedLoading(record,next);
+ if(equipsMainWeapon||record.carriedLoaded!==undefined||next.loaded!==actor.loaded||next.reloadProgress!==actor.reloadProgress)setCarriedLoading(record,next);
  else if(next.weaponDropped)clearCarriedLoading(record);
  syncCarriedAmmunition(record,next.weapon);
  // Returned living soldiers and their cartridge receipt are historical.
@@ -209,6 +209,7 @@ export function moveSectorItem(s,action,roster){
   validateBattleSnapshot(snapshot);
  }
  if(direction==='attachment')return `${op.nickname??op.name} ${action.operation==='detach'?'retira la bayoneta al cursor':'coloca la bayoneta en el arma'}.`;
+ if(cursorPlan?.operation==='reload')return `${op.nickname??op.name} recarga ${WEAPONS[cursorPlan.host].name} con ${cursorPlan.rounds} cartucho${cursorPlan.rounds===1?'':'s'}.`;
  if(direction==='arrange')return `${op.nickname??op.name} ordena su equipo.`;
  return `${op.nickname??op.name} ${direction==='take'?'recoge':direction==='equip'?(action.inventoryKey===null?'guarda':'equipa'):direction==='issueOutfit'?'retira del depósito':'deja'} ${count} × ${stackLabel(stack)} en el sector.`;
 }

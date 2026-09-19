@@ -1,5 +1,9 @@
 // Unfinished loading is weapon work, measured as a fraction of one charge.
 // No cartridge becomes loaded or leaves reserve until that charge is complete.
+export function reloadRoundCost(unit, weapon, assisted = false) {
+  return weapon.reloadAP / weapon.capacity * (unit.stance === 'prone' ? 1.5 : 1) *
+    (assisted ? .8 : 1) * (unit.traits?.includes('gunsmith_artillerist') ? .85 : 1);
+}
 export function validateReloadProgress(value, capacity, loaded = 0, dropped = false) {
   if (value === undefined) return;
   if (typeof value !== 'number' || !Number.isFinite(value) || value <= 0 || value >= 1 ||

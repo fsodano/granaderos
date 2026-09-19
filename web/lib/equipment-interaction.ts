@@ -61,7 +61,14 @@ export function createEquipmentInteraction(scope:string){
    lastPreview={battle,unit,unitId:picked.unitId,sourceId:picked.sourceId,expectedSource:picked.expectedSource,count:picked.count,destinationId,result};return result;
   }catch(error){return {valid:false,reason:(error as Error).message,pa:0,action:null};}
  };
- const targetHint=(result:ReturnType<typeof preview>)=>result.reason??'Colocar objeto · sin PA';
+ const targetHint=(result:{reason?:string|null;pa:number;operation?:string;actionLabel?:string;rounds?:number;partial?:boolean;remainingPA?:number;seconds?:number})=>{
+  if(result.reason)return result.reason;
+  if(result.operation!=='reload')return 'Colocar objeto · sin PA';
+  const cost=result.pa>0?`${result.pa} PA`:`sin PA${result.seconds?` · ${result.seconds} s`:''}`;
+  const rounds=result.rounds??0,loaded=`${rounds} ${rounds===1?'carga lista':'cargas listas'}`;
+  const partial=result.partial?` · Recarga parcial${result.remainingPA?` · faltan ${result.remainingPA} PA`:''}`:'';
+  return `${result.actionLabel??'Recargar arma'} · ${cost} · ${loaded}${partial}`;
+ };
  return {
   scope,getSnapshot:()=>state,subscribe:(update:()=>void)=>{listeners.add(update);return()=>{listeners.delete(update);};},cancel,dispatch,accept,
   report(hint:string){publish({...state,target:'',hint});},

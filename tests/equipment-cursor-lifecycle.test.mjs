@@ -104,6 +104,10 @@ test('unavailable body cursor remains lootable and its rounds receive one finite
 
 test('two hands holding two ordinary cartridges retain both after a deployment report',()=>{
  let {s,b}=visit(fresh());const original=cartridges(fresh());
+ // Ammunition on a gun now loads it. Free both hands before holding rounds.
+ b=act(b,cursorAction(actor(b),'pickupEquipment',{sourceId:'hand:right'}));
+ const gunPocket=inventoryUsage(actor(b)).slots.find(slot=>slot.size==='large'&&!slot.entry).id;
+ b=act(b,cursorAction(actor(b),'placeEquipment',{destinationId:gunPocket}));
  for(const destinationId of ['hand:right','hand:left']){const u=actor(b);b=act(b,cursorAction(u,'pickupEquipment',{sourceId:pocket(u,'inventory:ammo:musket_75'),count:1}));b=act(b,cursorAction(actor(b),'placeEquipment',{destinationId}));if(actor(b).equipmentCursor)b=act(b,cursorAction(actor(b),'returnEquipmentCursor'));}
  s=leave(s,b);assert.equal(s.operativeState[110].carriedAmmo,9);assert.equal(s.operativeState[110].activeItem,'inventory:ammo:musket_75');assert.equal(s.operativeState[110].leftHandItem,'inventory:ammo:musket_75');assert.equal(cartridges(s),original);save(s);
 });

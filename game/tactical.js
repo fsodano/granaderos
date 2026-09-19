@@ -14,7 +14,7 @@ import {questGiftPlan,questGiftDecision} from './quests.js';
 import {OUTFIT_CHANGE_AP,normalizeOutfit,wornOutfit,hasPoncho} from './outfits.js';
 import {handsRequired,selectMainHand,handLayout} from './hand-layout.js';
 import {firearmPreparation,lowerWeapon,lowersWeapon,turnLowersWeapon} from './weapon-readiness.js';
-import {planReload} from './weapon-reload.js';
+import {planReload,reloadRoundCost} from './weapon-reload.js';
 import {discoverInventory} from './inventory-discovery.js';
 import {isInteriorVisible} from './tactical-visibility.js';
 import {automaticOrder,searchOrder} from './autonomous-orders.js';
@@ -172,7 +172,7 @@ export function lookPreview(s,u,point){
   return {valid:!reason,reason,pa,facing,prepare,actionLabel:prepare?'Preparar el arma':'Mirar'};
 }
 function singleReloadPlan(unit,state,reserved=0){
-  const w=weaponFor(unit),rate=w.reloadAP/w.capacity*(unit.stance==='prone'?1.5:1)*(state&&nearby(state,unit,2,2)?.8:1)*(hasTrait(unit,'gunsmith_artillerist')?.85:1);
+  const w=weaponFor(unit),rate=reloadRoundCost(unit,w,Boolean(state&&nearby(state,unit,2,2)));
   return planReload({...unit,ammo:Math.max(0,availableAmmunition(unit,w)-reserved)},rate,w.capacity,state?.mode==='exploration');
 }
 export function reloadPlan(unit,state){
@@ -998,9 +998,10 @@ export function equipmentPlacementPreview(s,u,action){
 }
 
 const cursorOrders=new Set(['pickupEquipment','placeEquipment','returnEquipmentCursor','dragEquipment']);
-export function planEquipmentCursorOrder(unit,action){
+export function planEquipmentCursorOrder(unit,action,state){
+ const loading={exploring:!state||state.mode==='exploration',assisted:Boolean(state&&nearby(state,unit,2,2))};
  if(action.type==='pickupEquipment')return planEquipmentPickup(unit,action);
- if(action.type==='placeEquipment')return planEquipmentCursorPlacement(unit,action);
+ if(action.type==='placeEquipment')return planEquipmentCursorPlacement(unit,action,loading);
  if(action.type==='returnEquipmentCursor'){
   if(action.expectedSource!==equipmentFingerprint(unit,'cursor'))throw Error('Cambió el objeto del cursor. Revisá el equipo.');
   return planEquipmentCursorReturn(unit);
@@ -1008,20 +1009,21 @@ export function planEquipmentCursorOrder(unit,action){
  if(action.type==='dragEquipment'){
   if(action.expectedDestination!==equipmentFingerprint(unit,action.destinationId))throw Error('Cambió el destino. Revisá el equipo.');
   const picked=planEquipmentPickup(unit,action);
-  return planEquipmentCursorPlacement(picked.unit,{...action,expectedSource:equipmentFingerprint(picked.unit,'cursor'),expectedDestination:equipmentFingerprint(picked.unit,action.destinationId)});
+  return planEquipmentCursorPlacement(picked.unit,{...action,expectedSource:equipmentFingerprint(picked.unit,'cursor'),expectedDestination:equipmentFingerprint(picked.unit,action.destinationId)},loading);
  }
  throw Error('La orden del cursor no es válida.');
 }
 export function equipmentCursorPreview(s,u,action){
- let reason=inventoryOrderReason(s,u,0);
+ let reason=inventoryOrderReason(s,u,0),plan;
  if(!reason&&(u.side!=='player'||u.militia||u.departure))reason='Elegí un combatiente de tu escuadra.';
  if(!reason&&['pickupEquipment','dragEquipment'].includes(action.type)&&s.units?.some(other=>other.id!==u.id&&alive(other)&&other.equipmentCursor))reason='Colocá primero el objeto del otro combatiente.';
  if(!reason)try{
   if(action.type==='dragEquipment'&&action.expectedDestination!==equipmentFingerprint(u,action.destinationId))throw Error('Cambió el destino. Revisá el equipo.');
-  const plan=planEquipmentCursorOrder(u,action);
+  plan=planEquipmentCursorOrder(u,action,s);
+  reason=inventoryOrderReason(s,u,plan.pa);
   if(plan.dropped&&(s.groundItems?.length??0)>=2000)throw Error('No queda espacio para dejar el objeto. Sigue en el cursor.');
  }catch(error){reason=error.message;}
- return {pa:0,valid:!reason,reason};
+ return {pa:s.mode==='exploration'?0:plan?.pa??0,valid:!reason,reason,...(plan?.operation==='reload'?{operation:plan.operation,rounds:plan.rounds,partial:plan.partial,remainingPA:plan.remainingPA,actionLabel:plan.actionLabel,seconds:s.mode==='exploration'&&s.equipmentContext!=='campaign'?plan.seconds:0}:{})};
 }
 
 function returnBattleEquipmentCursor(s,unit){
@@ -1497,6 +1499,13 @@ else if(a.type==='movement'){
   const cost=stanceCost(u,stance);if(!pay(cost))return fail(`Cambiar de postura requiere ${cost} PA.`);
   u.movementMode=a.movement;u.stance=stance;u.momentum=0;sayObserved(s,[u],`${u.name} cambia su forma de desplazarse.`);
 }
+else if(cursorOrders.has(a.type)){
+  const preview=equipmentCursorPreview(s,u,a);if(!preview.valid)return fail(preview.reason);
+  const plan=planEquipmentCursorOrder(u,a,s);
+  if(plan.operation!=='reload'||!pay(plan.pa))return fail('Faltan puntos de acción para recargar.');
+  plan.unit.ap=u.ap;replaceUnit(u,plan.unit);emitNoise(s,u,'reload');
+  sayObserved(s,[u],`${u.name} ${plan.partial?'avanza la recarga de':'recarga'} ${WEAPONS[plan.host].name}${s.mode==='exploration'?'':` (${plan.pa} PA)`}.${plan.partial?` Faltan ${plan.remainingPA} PA para completar la recarga.`:''}`);
+}
 else if(a.type==='attachment'){
   const preview=equipmentAttachmentPreview(s,u,a);if(!preview.valid)return fail(preview.reason);
   const plan=planEquipmentAttachment(u,a);if(!pay(plan.pa))return fail(`Cambiar el accesorio requiere ${plan.pa} PA.`);
@@ -1790,7 +1799,8 @@ function actBattleInput(state,action){
   if(cursorOrders.has(action.type)){
     const unit=state.units.find(u=>u.id===String(action.unitId)),preview=equipmentCursorPreview(state,unit,action),next=clone(state);
     if(!preview.valid){next.lastError=preview.reason;say(next,preview.reason);return next;}
-    const plan=planEquipmentCursorOrder(unit,action),actor=next.units.find(u=>u.id===unit.id);
+    if(preview.operation==='reload')return cleanActionTime(settleAutonomous(actBattleOrder(state,action)));
+    const plan=planEquipmentCursorOrder(unit,action,state),actor=next.units.find(u=>u.id===unit.id);
     replaceUnit(actor,plan.unit);if(plan.dropped)addGroundStack(next,plan.dropped,actor);
     next.lastError=null;return next;
   }
