@@ -35,7 +35,7 @@ function hire(){const start=initialCampaign(8);assert.deepEqual(start.recruited,
 function visit(s){
  s=order(s,{type:'visitSector'});
  const request=s.pendingBattle,b=createBattle(request.squad.map((u,i)=>({...u,x:2+i,y:2})),{...request,width:12,height:10,
-  tiles:Array.from({length:120},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[],props:[],npcs:[]});
+  tiles:Array.from({length:120},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[],props:[],npcs:request.npcs.map((npc,i)=>({...npc,x:10-i,y:8}))});
  return {s,b};
 }
 function leave(s,b){const synced=syncBattleTime(s,b);assert.equal(synced.error,null);return order(synced.campaign,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:synced.battle,survivors:synced.battle.units.filter(u=>u.side==='player')});}

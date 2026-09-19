@@ -19,7 +19,7 @@ function encounter(s){
  // combat credit is inserted; ordinary fire must kill the declared opponent.
  r.enemies=[{id:'raider',name:'Asaltante',x:3,y:2,weapon:1813,hp:30,maxHp:30,morale:100,overwatch:false,patrol:false}].map(u=>initializeUnitAmmunition(u));
  const squad=[...r.squad.map((u,i)=>({...u,x:1,y:5+i})),...r.garrison.map(u=>({...u,x:u.id===20000?1:16,y:u.id===20000?2:10+(u.id-20000)}))];
- let b=createBattle(squad,{...r,hour:s.hour,secondOfHour:s.secondOfHour??0,exploration:false,width:20,height:16,tiles:flat(),props:[],npcs:[],seed:45});b.units.find(u=>u.side==='enemy').ap=0;
+ let b=createBattle(squad,{...r,hour:s.hour,secondOfHour:s.secondOfHour??0,exploration:false,width:20,height:16,tiles:flat(),props:[],npcs:r.npcs.map((npc,i)=>({...npc,x:12-i,y:14})),seed:45});b.units.find(u=>u.side==='enemy').ap=0;
  return {s,b};
 }
 function fightAndReturn(s){

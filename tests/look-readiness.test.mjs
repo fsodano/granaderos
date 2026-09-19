@@ -77,7 +77,7 @@ test('a player can prepare during a real interrupt and resume its saved parent t
 
 test('exploration preparation uses real time and a complete campaign save retains readiness',()=>{
  let c=initialCampaign(45);c.hour=12;c=dispatchCampaign(c,{type:'visitSector'});assert.equal(c.lastError,null);const r=c.pendingBattle;
- let b=createBattle(r.squad.map((u,i)=>({...u,x:1,y:1+i})),{...r,width:16,height:8,tiles:tiles(),enemies:[],props:[],npcs:[]});
+ let b=createBattle(r.squad.map((u,i)=>({...u,x:1,y:1+i})),{...r,width:16,height:8,tiles:tiles(),enemies:[],props:[],npcs:r.npcs.map((npc,i)=>({...npc,x:14-i,y:6}))});
  const u=b.units.find(u=>u.id==='4'),point={x:5,y:u.y},cost=actionCosts(b,u).ready;
  b=actBattle(b,{type:'look',unitId:u.id,...point});assert.equal(b.lastError,null);assert.equal(b.units.find(v=>v.id===u.id).ap,u.ap);assert.equal(b.elapsedSeconds,Math.max(1,Math.ceil(cost*.06)));
  const pair=syncBattleTime(c,b);assert.equal(pair.error,null);const saved=decodeSave(encodeSave(pair.campaign,pair.battle));assert.deepEqual(saved.battle,pair.battle);assert.equal(saved.battle.units.find(v=>v.id===u.id).weaponReady,true);

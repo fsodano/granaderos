@@ -4,12 +4,14 @@ import {restoreCampaign,rosterFor,hasPendingNpcGiftProgress} from './campaign.js
 import {assertSaveSize} from './save-limits.js';
 import {validateEquipmentOwnership} from './equipment.js';
 import {FITTING_RULES_VERSION} from './weapon-fittings.js';
+import {hasPendingCivilianHarm} from './campaign-civilian-harm.js';
 export const SAVE_KEY='granaderos.campaign.v1';
 export function encodeSave(campaign,battle=null){return assertSaveSize(JSON.stringify({format:'granaderos',schema:1,savedAt:new Date().toISOString(),campaign,battle}));}
 export function decodeSave(text){
   assertSaveSize(text);
   let value;try{value=JSON.parse(text);}catch{throw Error('El archivo no contiene una partida válida.');}
   if(value?.format!=='granaderos'||value.schema!==1)throw Error('Esta versión de la partida no es compatible.');
+  if(value.campaign?.civilianHarm===undefined&&value.battle?.npcs?.some(npc=>npc?.civilianHarm!==undefined))throw Error('El registro de daños civiles mezcla versiones.');
   const campaign=restoreCampaign(JSON.stringify(value.campaign));const b=value.battle;
   if(Boolean(campaign.pendingBattle)!==Boolean(b))throw Error('La batalla guardada no coincide con la campaña.');
   if(b&&value.campaign.fittingRulesVersion===FITTING_RULES_VERSION&&b.fittingRulesVersion!==FITTING_RULES_VERSION)throw Error('Las reglas de accesorios no corresponden al despliegue guardado.');
@@ -30,6 +32,7 @@ export function decodeSave(text){
   // A new receipt may still await its campaign reply. An acknowledged receipt
   // must remain physically present with its recipient in this deployment.
   if(battle)hasPendingNpcGiftProgress(campaign,battle);
+  if(battle)hasPendingCivilianHarm(campaign,battle);
   validateEquipmentOwnership(campaign,rosterFor(campaign),battle);
   return {campaign,battle};
 }

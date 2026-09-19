@@ -1,6 +1,13 @@
 import {surfaceAt,surfaceHeight} from './tactical-space.js';
 import {absoluteBodyHeight,relativeBodyHeight as height,usesElevationGeometry,groundTileAt,terrainCoverProfile as terrainObstacle,propCoverProfile,geometryCells,rayHeightIntersection,obstacleVolumesAt} from './sight-geometry.js';
 
+// A body's storage collection does not change its physical silhouette. Keep
+// the collection tag separate from its ID: civilian and soldier IDs may match.
+export function physicalBodies(state){
+ return [...(state.units??[]).filter(body=>body.hp>0&&!body.departure&&!body.fled).map(body=>({body,kind:'unit'})),
+  ...(state.npcs??[]).filter(body=>(body.hp??100)>0&&!body.departure&&!body.fled).map(body=>({body,kind:'npc'}))];
+}
+
 // Traverse every crossed cell, including the two cells touching a diagonal
 // corner. Entry/exit fractions let a sloping shot meet a low obstacle correctly.
 export function projectileCells(a,b){
@@ -62,19 +69,19 @@ export function projectilePath(state,attacker,target,weapon,hitLocation='torso',
 // Cell-wide silhouettes and the lack of body penetration are game tuning.
 export function projectileFlight(state,attacker,target,weapon,hitLocation='torso',flight={}){
   if(usesElevationGeometry(state,attacker,target))return elevatedProjectileFlight(state,attacker,target,weapon,hitLocation,flight);
-  const muzzle=height(attacker,'muzzle'),end=height(target,hitLocation);
+  const muzzle=height(attacker,'muzzle'),end=height(target,hitLocation),bodies=physicalBodies(state);
   for(const cell of projectileCells(attacker,target)){
     if(cell.entry===cell.exit)continue; // A corner touch can strike cover, not a cell-wide body.
     const entryHeight=muzzle+(end-muzzle)*cell.entry,exitHeight=muzzle+(end-muzzle)*cell.exit;
-    const victims=state.units.filter(unit=>unit.id!==attacker.id&&unit.hp>0&&!unit.departure&&!unit.fled&&unit.x===cell.x&&unit.y===cell.y).sort((a,b)=>String(a.id).localeCompare(String(b.id)));
-    for(const victim of victims){
+    const victims=bodies.filter(({body,kind})=>(kind==='npc'||body.id!==attacker.id)&&body.x===cell.x&&body.y===cell.y).sort((a,b)=>String(a.body.id).localeCompare(String(b.body.id))||a.kind.localeCompare(b.kind));
+    for(const {body:victim,kind} of victims){
       const posture=victim.knockedDown||victim.unconscious?{...victim,stance:'prone',mounted:false}:victim;
       const top=height(posture,'head')+.15;
       if(Math.min(entryHeight,exitHeight)>top)continue;
       const z=Math.min(entryHeight,top);
-      const location=victim.id===target.id?hitLocation:z>height(posture,'torso')+.2?'head':z<height(posture,'legs')+.15?'legs':'torso';
+      const location=kind==='unit'&&victim.id===target.id?hitLocation:z>height(posture,'torso')+.2?'head':z<height(posture,'legs')+.15?'legs':'torso';
       const path=projectilePath(state,attacker,target,weapon,hitLocation,{stopFraction:cell.entry});
-      return {...path,victimId:path.blocked?null:victim.id,hitLocation:location};
+      return {...path,victimId:path.blocked?null:victim.id,...(!path.blocked&&kind==='npc'?{victimKind:'npc'}:{}),hitLocation:location};
     }
   }
   return {...projectilePath(state,attacker,target,weapon,hitLocation),victimId:null,hitLocation};
@@ -104,17 +111,18 @@ function elevatedProjectilePath(state,attacker,target,weapon,hitLocation,flight=
 function elevatedProjectileFlight(state,attacker,target,weapon,hitLocation,flight){
  const muzzle=absoluteBodyHeight(state,attacker,'muzzle'),destination=flight.destinationHeight??absoluteBodyHeight(state,target,hitLocation);
  if(muzzle===null||!Number.isFinite(destination))return {blocked:true,damageFactor:0,obstacles:[],victimId:null,hitLocation};
+ const bodies=physicalBodies(state);
  for(const cell of geometryCells(attacker,target)){
   if(cell.entry===cell.exit)continue;
-  const victims=state.units.filter(unit=>unit.id!==attacker.id&&unit.hp>0&&!unit.departure&&!unit.fled&&unit.x===cell.x&&unit.y===cell.y).map(unit=>{
+  const victims=bodies.filter(({body,kind})=>(kind==='npc'||body.id!==attacker.id)&&body.x===cell.x&&body.y===cell.y).map(({body:unit,kind})=>{
    const base=surfaceHeight(state,unit),top=absoluteBodyHeight(state,unit,'head');
-   return {unit,base,hit:base===null||top===null?null:rayHeightIntersection(muzzle,destination,cell,base,top+.15)};
-  }).filter(victim=>victim.hit).sort((a,b)=>a.hit.entry-b.hit.entry||String(a.unit.id).localeCompare(String(b.unit.id)));
+   return {unit,kind,base,hit:base===null||top===null?null:rayHeightIntersection(muzzle,destination,cell,base,top+.15)};
+  }).filter(victim=>victim.hit).sort((a,b)=>a.hit.entry-b.hit.entry||String(a.unit.id).localeCompare(String(b.unit.id))||a.kind.localeCompare(b.kind));
   if(!victims.length)continue;
-  const {unit:victim,base,hit}=victims[0],relative=muzzle+(destination-muzzle)*hit.entry-base;
-  const location=victim.id===target.id?hitLocation:relative>height(victim,'torso')+.2?'head':relative<height(victim,'legs')+.15?'legs':'torso';
+  const {unit:victim,kind,base,hit}=victims[0],relative=muzzle+(destination-muzzle)*hit.entry-base;
+  const location=kind==='unit'&&victim.id===target.id?hitLocation:relative>height(victim,'torso')+.2?'head':relative<height(victim,'legs')+.15?'legs':'torso';
   const path=elevatedProjectilePath(state,attacker,target,weapon,hitLocation,{...flight,destinationHeight:destination,stopFraction:hit.entry});
-  return {...path,victimId:path.blocked?null:victim.id,hitLocation:location};
+  return {...path,victimId:path.blocked?null:victim.id,...(!path.blocked&&kind==='npc'?{victimKind:'npc'}:{}),hitLocation:location};
  }
  return {...elevatedProjectilePath(state,attacker,target,weapon,hitLocation,{...flight,destinationHeight:destination}),victimId:null,hitLocation};
 }

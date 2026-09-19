@@ -115,7 +115,7 @@ test('a named shot and a point shot share the same ready state',()=>{
 
 test('a complete campaign save preserves the cheaper follow-up shot',()=>{
  let c=initialCampaign(45);c.hour=12;c.loadouts[3]={weapon:1808,blade:1813};c=dispatchCampaign(c,{type:'visitSector'});assert.equal(c.lastError,null);const r=c.pendingBattle;
- let b=createBattle(r.squad.map((u,i)=>({...u,x:1,y:1+i})),{...r,width:32,height:8,tiles:tiles(),enemies:[],props:[],npcs:[]});
+ let b=createBattle(r.squad.map((u,i)=>({...u,x:1,y:1+i})),{...r,width:32,height:8,tiles:tiles(),enemies:[],props:[],npcs:r.npcs.map((npc,i)=>({...npc,x:28-i,y:6}))});
  b=actBattle(b,{type:'firePoint',unitId:'3',x:6,y:1});assert.equal(b.lastError,null);const pair=syncBattleTime(c,b);assert.equal(pair.error,null);
  const saved=decodeSave(encodeSave(pair.campaign,pair.battle)),u=saved.battle.units.find(u=>u.id==='3');assert.equal(u.weaponReady,true);assert.equal(actionCosts(saved.battle,u).fire,6);
  const shot={type:'firePoint',unitId:'3',x:6,y:1};assert.deepEqual(actBattle(saved.battle,shot),actBattle(pair.battle,shot));

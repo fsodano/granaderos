@@ -9,6 +9,7 @@ import {createBattle,initializeBattlePerception} from './tactical.js';
 import {validEntry,validateSectorExits} from './tactical-exits.js';
 import {validateBattleSnapshot} from './validate-battle.js';
 import {validateQuestGifts} from './quests.js';
+import {civilianIncidents} from './civilian-harm.js';
 
 const key=spaceKey;
 const clearEncounter=unit=>{
@@ -94,8 +95,9 @@ export function enterSector(request,previous=null,{placement=false}={}){
  // its original local owner; saved coordinates already belong to the full map.
  // Explicit rosters control presence, especially after named recruitment.
  if(request.npcs===undefined)for(const npc of previous?.npcs??[]){
-   if(npc.operativeId!==undefined||!npc.questGifts?.length||residents.some(current=>current.id===npc.id))continue;
-   if(validateQuestGifts(npc).length)residents.push(structuredClone(npc));
+   if(residents.some(current=>current.id===npc.id))continue;
+   const harmed=civilianIncidents(npc).length>0&&!state.units.some(unit=>unit.side==='player'&&npc.operativeId!==undefined&&Number(unit.id)===npc.operativeId);
+   if(harmed||npc.operativeId===undefined&&npc.questGifts?.length&&validateQuestGifts(npc).length)residents.push(structuredClone(npc));
  }
  state.npcs=residents.map(npc=>{
    const old=previous?.npcs?.find(n=>n.id===npc.id),authored=state.npcs.find(n=>n.id===npc.id),resident=structuredClone({...npc,...authored,...old});

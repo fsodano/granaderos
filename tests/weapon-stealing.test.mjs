@@ -77,7 +77,7 @@ test('a saved real interruption permits a grab with the existing budget and resu
 });
 test('campaign-bound save keeps both owners and exact equipment after the real grab',()=>{
  let c=dispatchCampaign(initialCampaign(),{type:'travel',sector:'buenos_aires'});c=dispatchCampaign(c,{type:'attack',sector:'san_nicolas'});assert.equal(c.lastError,null);
- const req=c.pendingBattle;let b=createBattle(req.squad.map((u,i)=>({...u,x:1,y:1+i,activeSlot:i?'primary':'unarmed',strength:100,dexterity:100,agility:100,experienceLevel:10})),{...req,width:12,height:8,tiles:grid(),props:[],npcs:[],enemies:[{id:'e',x:2,y:1,weapon:1808,loaded:2,condition:41,jammed:true,overwatch:false,patrol:false,strength:1,dexterity:1,agility:1,experienceLevel:1}],seed:45});b.units.at(-1).ap=0;
+ const req=c.pendingBattle;let b=createBattle(req.squad.map((u,i)=>({...u,x:1,y:1+i,activeSlot:i?'primary':'unarmed',strength:100,dexterity:100,agility:100,experienceLevel:10})),{...req,width:12,height:8,tiles:grid(),props:[],npcs:req.npcs.map((npc,i)=>({...npc,x:10-i,y:6})),enemies:[{id:'e',x:2,y:1,weapon:1808,loaded:2,condition:41,jammed:true,overwatch:false,patrol:false,strength:1,dexterity:1,agility:1,experienceLevel:1}],seed:45});b.units.at(-1).ap=0;
  b=actBattle(b,{type:'steal',unitId:b.units[0].id,targetId:'e'});assert.equal(b.lastError,null);const pair=syncBattleTime(c,b);assert.equal(pair.error,null);const saved=decodeSave(encodeSave(pair.campaign,pair.battle));assert.deepEqual(saved.battle,pair.battle);assert.equal(saved.battle.units[0].weapon,1808);assert.equal(saved.battle.units[0].loaded,2);assert.equal(saved.battle.units.at(-1).weaponDropped,true);
 });
 

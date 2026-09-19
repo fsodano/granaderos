@@ -15,7 +15,7 @@ const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,
 const act=(b,a)=>{const n=actBattle(b,{unitId:'10',...a});assert.equal(n.lastError,null,n.lastError);return n;};
 const save=s=>decodeSave(encodeSave(s)).campaign;
 const leave=(s,b)=>{const pair=syncBattleTime(s,b);assert.equal(pair.error,null);return order(pair.campaign,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});};
-function field(){let s=order(initialCampaign(45),{type:'squad',ids:[10]});s.loadouts[10]={weapon:1808,blade:1813};s=order(s,{type:'visitSector'});const r=s.pendingBattle,b=createBattle(r.squad.map(u=>({...u,x:1,y:1})),{...r,width:12,height:8,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',cover:0,blocked:false})),enemies:[],props:[],npcs:[],weather:{rain:false,humidity:0}});return {s,b};}
+function field(){let s=order(initialCampaign(45),{type:'squad',ids:[10]});s.loadouts[10]={weapon:1808,blade:1813};s=order(s,{type:'visitSector'});const r=s.pendingBattle,b=createBattle(r.squad.map(u=>({...u,x:1,y:1})),{...r,width:12,height:8,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',cover:0,blocked:false})),enemies:[],props:[],npcs:r.npcs.map((npc,i)=>({...npc,x:10-i,y:6})),weather:{rain:false,humidity:0}});return {s,b};}
 const shooting={type:'firePoint',x:5,y:1};
 test('a fully loaded issued firearm remains loaded through returns without crediting its charges to stock',()=>{
  let {s,b}=field();const before=structuredClone(s.resources);assert.equal(b.units[0].loaded,2);assert.equal(s.pendingBattle.squad[0].preserveLoading,undefined);

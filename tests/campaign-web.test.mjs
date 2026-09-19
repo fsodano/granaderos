@@ -97,7 +97,9 @@ test('campaign phases and timed production reach liberation with an existing gar
  for(const id of ['santa_fe','jujuy','humahuaca','mendoza','uspallata','los_patos'])s=capture(s,id);
  s=order(s,{type:'travel',sector:'mendoza'});s=order(s,{type:'recruit',id:2});s=order(s,{type:'foundry'});
  for(const id of ['mendoza','uspallata','los_patos','san_nicolas','jujuy'])s=order(s,{type:'fortify',sector:id});
- for(const id of ['san_nicolas','jujuy','jujuy']){if(s.sectors[id].owner==='royalist')s=capture(s,id);s=order(s,{type:'travel',sector:id});s=order(s,{type:'militia',sector:id,rank:0,trainerId:4});for(let n=0;s.militiaTraining.length&&n<12;n++)s=order(s,{type:'wait',hours:s.militiaTraining[0].remaining+12});assert.equal(s.militiaTraining.length,0);for(const operativeId of s.squad.filter(id=>s.operativeState[id].asleep))s=order(s,{type:'setSleep',operativeId,asleep:false});}s=order(s,{type:'travel',sector:'mendoza'});
+ // Train where the two earned victories have already secured local support.
+ // Taking Jujuy alone no longer grants a free 50 percent loyalty floor.
+ for(const id of ['san_nicolas','san_nicolas','san_nicolas']){if(s.sectors[id].owner==='royalist')s=capture(s,id);s=order(s,{type:'travel',sector:id});s=order(s,{type:'militia',sector:id,rank:0,trainerId:4});for(let n=0;s.militiaTraining.length&&n<12;n++)s=order(s,{type:'wait',hours:s.militiaTraining[0].remaining+12});assert.equal(s.militiaTraining.length,0);for(const operativeId of s.squad.filter(id=>s.operativeState[id].asleep))s=order(s,{type:'setSleep',operativeId,asleep:false});}s=order(s,{type:'travel',sector:'mendoza'});
  s=order(s,{type:'produce',recipe:'sabres',sector:'cordoba'});s=order(s,{type:'wait',hours:24});
  s=order(s,{type:'diplomacy',kind:'parliament'});
  // Manufacture actual supplies. Daily provincial output funds the full preparation.

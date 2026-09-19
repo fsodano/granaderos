@@ -31,7 +31,7 @@ export function chooseArtilleryAction(s,u,targets,paths){
  // the next decision, spending the whole battle between the same two cells.
  if(u.side==='player'&&!u.militia&&gun.loaded&&!targets.some(v=>tacticalLevel(v)===0&&distance(gun,v)<=ARTILLERY[gun.type].range))return null;
  const reacting=s.phase==='interrupt'||Boolean(s.reactionStack?.length);
- const perceived={...s,units:s.units.filter(v=>v.side===u.side||canSee(s,u,v))};
+ const perceived={...s,units:s.units.filter(v=>v.side===u.side||canSee(s,u,v)),npcs:(s.npcs??[]).filter(n=>(n.hp??100)>0&&!n.departure&&!n.fled&&canSee(s,u,n))};
  if(!near(s,u,gun)){
   if(reacting)return null;
   const routes=paths().filter(p=>p.cost>0&&p.cost<=Math.min(24,u.ap)&&p.path.length<=3&&near(perceived,{...u,...p},gun)&&p.path.every(step=>!targets.some(v=>sameSurface(step,v)&&distance(step,v)<=2.5)));
@@ -41,7 +41,7 @@ export function chooseArtilleryAction(s,u,targets,paths){
  // Preparation is useful without contact, but never fire at an old sighting.
  if(!gun.loaded){const load=artilleryReloadPreview(s,u,gun);return load.valid?{type:'artilleryReload',unitId:u.id,artilleryId:gun.id}:null;}
  const costs=artilleryCosts(s,u,gun),choices=[];
- const civilians=(s.npcs??[]).filter(n=>(n.hp??100)>0&&!n.departure&&canSee(s,u,n));
+ const civilians=perceived.npcs;
  for(const target of [...targets].sort(compareId)){
   if(tacticalLevel(target)!==0||!canSee(s,u,target)||distance(gun,target)<1||distance(gun,target)>ARTILLERY[gun.type].range)continue;
   const angle=Math.atan2(target.y-gun.y,target.x-gun.x),pivot=Number.isFinite(gun.facing)&&Math.abs(Math.atan2(Math.sin(angle-gun.facing),Math.cos(angle-gun.facing)))>Math.PI/4;
@@ -49,7 +49,7 @@ export function chooseArtilleryAction(s,u,targets,paths){
   for(const mode of ['solid','canister']){
    const trace=artilleryShotTrace(perceived,u,gun,target,mode),impacts=trace.events.filter(e=>e.type==='impact');
    // Include the whole cone and penetrating line, not only the aimed person.
-   if(impacts.some(hit=>{const v=perceived.units.find(v=>v.id===hit.unitId);return v.side===u.side||v.surrendered||v.routed||v.unconscious;}))continue;
+   if(impacts.some(hit=>{if(hit.victimKind==='npc')return true;const v=perceived.units.find(v=>v.id===hit.unitId);return v.side===u.side||v.surrendered||v.routed||v.unconscious;}))continue;
    if(civilians.some(n=>mode==='canister'?artilleryCanisterContains(s,gun,target,n):tacticalLevel(n)===0&&trace.cells.some(p=>p.x===n.x&&p.y===n.y)))continue;
    if(!impacts.some(hit=>hit.unitId===target.id))continue;
    const damage=impacts.reduce((sum,hit)=>sum+Math.min(hit.damage,perceived.units.find(v=>v.id===hit.unitId).hp),0);

@@ -27,7 +27,7 @@ function grabField(player={},enemy={}){
  campaign.operativeState[110].skillPractice={dexterity:39};
  campaign=order(campaign,{type:'attack',sector:'buenos_aires'});const request=campaign.pendingBattle,width=64,height=48;
  const battle=createBattle(request.squad.map(u=>({...u,x:31,y:0,facing:4,...player})),{...request,width,height,
-  tiles:Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0})),props:[],npcs:[],
+  tiles:Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0})),props:[],npcs:request.npcs,
   // Open boundary encounter: preserve every issued enemy identity, weapon and
   // cartridge; give the adjacent defender a weak grip to make seed45 succeed.
   enemies:request.enemies.map((u,i)=>({...u,x:i?50:31,y:i?35+i:1,facing:4,strength:1,dexterity:1,agility:1,experienceLevel:1,overwatch:false,patrol:false,...(i?{}:enemy)})),seed:45});
@@ -104,7 +104,7 @@ test('strength study and a real XP level increase agree on visit, attack and def
  // An open arrival boundary preserves the actual issued force and ammunition
  // while permitting a paid withdrawal without fabricating a battle result.
  let battle=createBattle(request.squad.map(u=>({...u,x:31,y:0,facing:4})),{...request,width,height,
-  tiles:Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0})),props:[],npcs:[],
+  tiles:Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0})),props:[],npcs:request.npcs,
   enemies:request.enemies.map((u,i)=>({...u,x:50,y:35+i,overwatch:false,patrol:false}))});
  const ap=actor(battle).ap;battle=act(battle,{type:'exit',unitIds:['110'],exitId:battle.exits.find(e=>e.destination==='retiro').id});
  assert.ok(actor(battle).ap<ap);assert.equal(battle.status,'retreat');

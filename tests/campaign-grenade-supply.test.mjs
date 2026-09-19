@@ -32,7 +32,7 @@ function cursorAction(u,type,options={}){return {type,unitId:u.id,expectedSource
 function arrange(s,type,options={},id=110){const u=personal(s,id);return order(s,{...cursorAction(u,type,options),type:'sectorInventory',sector:s.location,operativeId:id,direction:'arrange',kind:'cursor',cursorAction:type});}
 function visit(s){
  s=order(s,{type:'visitSector'});const request=s.pendingBattle;
- const b=createBattle(request.squad.map((u,i)=>({...u,x:2+i,y:2})),{...request,width:12,height:10,tiles:Array.from({length:120},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[],props:[],npcs:[]});
+ const b=createBattle(request.squad.map((u,i)=>({...u,x:2+i,y:2})),{...request,width:12,height:10,tiles:Array.from({length:120},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[],props:[],npcs:request.npcs.map((npc,i)=>({...npc,x:10-i,y:8}))});
  return {s,b};
 }
 function leave(s,b){const synced=syncBattleTime(s,b);assert.equal(synced.error,null);return order(synced.campaign,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:synced.battle,survivors:synced.battle.units.filter(u=>u.side==='player')});}

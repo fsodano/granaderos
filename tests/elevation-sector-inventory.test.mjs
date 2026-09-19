@@ -12,7 +12,7 @@ function returned(){
  campaign=order(campaign,{type:'visitSector'});const request=campaign.pendingBattle;
  const tiles=Array.from({length:160},(_,i)=>({x:i%16,y:Math.floor(i/16),type:'grass',blocked:false,cover:0})),upperSurfaces=Array.from({length:12},(_,i)=>({id:`roof:${i}`,x:4+i%4,y:4+Math.floor(i/4),tacticalLevel:1,elevation:3,type:'floor',kind:'platform',blocked:false,cover:0}));
  const squad=request.squad.map((u,i)=>({...u,x:5,y:5,tacticalLevel:i}));
- const battle=createBattle(squad,{...request,width:16,height:10,tiles,upperSurfaces,climbLinks:[],enemies:[],props:[],npcs:[]});
+ const battle=createBattle(squad,{...request,width:16,height:10,tiles,upperSurfaces,climbLinks:[],enemies:[],props:[],npcs:request.npcs.map((npc,i)=>({...npc,x:14-i,y:8}))});
  return order(campaign,{type:'leaveSector',battleId:request.id,sectorState:battle,survivors:battle.units});
 }
 const model=(c,id)=>sectorInventoryModel(c,'retiro',rosterFor(c),id);

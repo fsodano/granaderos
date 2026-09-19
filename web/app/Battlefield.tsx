@@ -9,7 +9,7 @@ import {EquipmentInteractionProvider,useEquipmentInteraction} from '../lib/equip
 import {selectedItemMapPreview,placeSelectedItemOnMap,inventoryIntentAt,toggleInventoryDestination,retainInventoryDestination,type InventoryMapOverride} from '../lib/inventory-map-controls';
 import JA2Conversation,{JA2Speech} from './JA2Conversation';
 import {npcGiftFeedback} from '../lib/npc-gift-feedback';
-import {hasAuthoredDialogue,dialogueReason,dialogueApproach,ambientReply} from '../../game/npc-dialogue.js';
+import {hasAuthoredDialogue,dialogueReason,dialogueAvailability,dialogueApproach,ambientReply} from '../../game/npc-dialogue.js';
 import {rightClickAim} from '../../game/aim-cursor.js';
 import {canChooseShotLocation} from '../../game/targeted-combat.js';
 import {heldGrenade} from '../../game/grenade-throw.js';
@@ -25,7 +25,7 @@ import {executeGroupMove} from '../../game/group-movement.js';
 import {autoBandageBattle} from '../../game/auto-bandage.js';
 import './tactical-hud.css';
 import {TACTICAL_KEYS,tacticalShortcut,pointerMovementIntent,pointerItemIntent} from '../../game/hotkeys.js';
-import {aimOptions, slotAction, targetPreview, targetingHelp, STANCES, unitCanAct, turnModel, visibleHover, interruptHover, heldSupplyAction, groupSelectionMode, isGroupGround, isMovementGround, movementAction, toggleMovementGroup, movementGroupModel, exitModel, fieldState, attackCursorMode, aimedCursorMode, retainedAttackCursor, knifeThrowInputAction, grenadeThrowInputAction, grenadeTargetingMode, targetItemAction, pickupTargetAction, pickupSelection, resolvedOrderType, tacticalInputAction, cellOccupant} from '../../game/ja2-hud.js';
+import {aimOptions, slotAction, targetPreview, targetingHelp, STANCES, unitCanAct, turnModel, visibleHover, interruptHover, heldSupplyAction, groupSelectionMode, isGroupGround, isMovementGround, movementAction, toggleMovementGroup, movementGroupModel, exitModel, fieldState, attackCursorMode, aimedCursorMode, retainedAttackCursor, pointFireInputAction, knifeThrowInputAction, grenadeThrowInputAction, grenadeTargetingMode, targetItemAction, pickupTargetAction, pickupSelection, resolvedOrderType, tacticalInputAction, cellOccupant} from '../../game/ja2-hud.js';
 import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import { useUnitMotion, type MovementFacingOverride } from './useUnitMotion';
 import {tacticalLevel,sameCell,spaceKey} from '../../game/tactical-space.js';
@@ -103,6 +103,7 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
   const readyPlayers=players.filter((p:any)=>unitCanAct(s,p));const turn=turnModel(s);
   const reachable=useMemo(()=>unitCanAct(s,u)?getReachable(s,u,{movementIntent}):[],[s,u,movementIntent]);
   const talkingApproach=dialogueApproach(reachable,talking);
+  const talkingAvailability=dialogueAvailability(s,u,talking,{visible:Boolean(u&&talking&&canSee(s,u,talking)),busy});
   const costs=u?actionCosts(s,u):null;const weapon=u?weaponFor(u):null;const firearm=u&&hasFirearm(u);const [cannonId,setCannonId]=useState('');const [shotType,setShotType]=useState('solid');const gun=s.artillery?.find((g:any)=>g.id===cannonId);const gunCosts=u&&gun?artilleryCosts(s,u,gun):null;
   const maxAim=useMemo(()=>aimOptions(s,u,{mode,target:hover,hitLocation}).filter((option:any)=>!option.disabled).at(-1)?.level??0,[s,u,mode,hover,hitLocation]);
   useEffect(()=>setAim(value=>Math.min(value,maxAim)),[maxAim]);
@@ -156,6 +157,7 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
     if(grenadeTargetingMode(u,mode)){order(grenadeThrowInputAction(s,u,target));return;}
     const actual=(s.npcs??[]).find((n:any)=>n.id===target.id)??renderedUnits.find((n:any)=>n.id===target.id&&n.side==='enemy');
     if(!actual||!canSee(s,u,actual))return;
+    if(mode==='fire'){order(pointFireInputAction(actual,{aim}));return;}
     if(['move','useItem'].includes(mode)&&u.activeSlot==='item'&&!heldGrenade(u)&&(s.npcs??[]).some((n:any)=>n.id===actual.id)){order({type:'useItem',targetId:actual.id});return;}
     setSpeech(null);setGiftReply(null);setPendingGift(null);clearGroup();setMode('move');
     if(hasAuthoredDialogue(actual)){setTalking(actual);return;}
@@ -268,7 +270,7 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
   const hoverTarget=(point:any)=>{
     setInventoryMapOverride(value=>retainInventoryDestination(value,point));
     if(!point){setHover(null);return;}
-    const target=visibleHover(s,point),location=!pickedItem&&!grenadeTargetingMode(u,mode)&&target?.id&&canChooseShotLocation(target)?point?.aimLocation??'torso':'torso';
+    const target=visibleHover(s,point),location=!pickedItem&&!grenadeTargetingMode(u,mode)&&target?.id&&!(s.npcs??[]).some((npc:any)=>npc.id===target.id&&sameCell(npc,target)&&canSee(s,u,npc))&&canChooseShotLocation(target)?point?.aimLocation??'torso':'torso';
     const key=target?`${target.id??spaceKey(target)}:${location}`:'';
     if(aimTarget.current!==key){setAim(0);aimTarget.current=key;}
     setHitLocation(location);setHover((previous:any)=>previous&&sameCell(previous,point)&&previous.id===point.id&&previous.loot===point.loot&&previous.aimLocation===point.aimLocation?previous:point);
@@ -305,7 +307,7 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
       if(occupant){if(occupant.side==='player'&&unitCanAct(s,occupant))selectUnit(occupant.id);return;}
       order(movementAction(t));return;
     }
-    if(mode==='fire'&&(!occupant||occupant.side==='player'||occupant.hp<=0||occupant.surrendered)){order({type:'firePoint',x:t.x,y:t.y,tacticalLevel:tacticalLevel(t),hitLocation:'torso'});return;}
+    if(mode==='fire'&&(t.anonymous||(s.npcs??[]).some((npc:any)=>npc.id===t.id&&sameCell(npc,t)&&canSee(s,u,npc))||!occupant||occupant.side==='player'||occupant.hp<=0||occupant.surrendered)){order(pointFireInputAction(t,{aim}));return;}
     if(occupant){
       if(u?.activeSlot==='supply'&&u.activeSupply==='rations'&&['move','useItem'].includes(mode))order(heldSupplyAction(u,occupant));
       else if(u?.activeSlot==='medical'||occupant.side!=='player')order({...targetItemAction(mode,occupant.id,u),hitLocation:canChooseShotLocation(occupant)?t.aimLocation??hitLocation:'torso'});
@@ -350,7 +352,7 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
         {!pickedItem&&aimedCursorMode(mode)&&cursorPoint&&!busy&&unitCanAct(s,u)&&<AimCursor exploring={s.mode==='exploration'} point={cursorPoint} aim={aim} preview={preview} target={hover} scale={1/zoom} bounds={{x:cameraX,y:cameraY,width:viewWidth,height:viewHeight}}/>}
         {pickedItem&&<InventoryMapCursor state={field} preview={itemPreview} target={mapItemTarget} project={project}/>}
       </svg>
-      {talking&&<JA2Conversation npc={talking} conversation={giftReply?.id===talking.id?giftReply.conversation:conversation} responseOnly={giftReply?.id===talking.id&&giftReply.responseOnly} quest={quests?.[talking.id]} reason={!onTalk?'Esta conversación necesita una campaña activa.':dialogueReason(s,u,talking,{visible:Boolean(u&&canSee(s,u,talking)),busy})} canApproach={Boolean(!busy&&u&&unitCanAct(s,u)&&canSee(s,u,talking)&&(s.mode==='exploration'||s.sectorCleared)&&talkingApproach)} onApproach={()=>{if(talkingApproach)order(movementAction(talkingApproach));}} onTalk={approach=>{setGiftReply(null);onTalk?.(talking.id,approach,selected);}} onClose={()=>{setTalking(null);setGiftReply(null);}}/>}
+      {talking&&<JA2Conversation npc={talking} conversation={giftReply?.id===talking.id?giftReply.conversation:conversation} responseOnly={giftReply?.id===talking.id&&giftReply.responseOnly} quest={quests?.[talking.id]} reason={!onTalk?'Esta conversación necesita una campaña activa.':talkingAvailability.reason} availability={talkingAvailability} canApproach={Boolean(onTalk&&talkingAvailability.canApproach&&!busy&&u&&unitCanAct(s,u)&&canSee(s,u,talking)&&(s.mode==='exploration'||s.sectorCleared)&&talkingApproach)} onApproach={()=>{if(talkingApproach)order(movementAction(talkingApproach));}} onTalk={approach=>{setGiftReply(null);onTalk?.(talking.id,approach,selected);}} onClose={()=>{setTalking(null);setGiftReply(null);}}/>}
       {speech&&<JA2Speech name={speech.name} text={speech.text} position={{left:Math.max(15,Math.min(85,(projectSurface(s,project,speech).x-cameraX)/viewWidth*100)),top:Math.max(38,Math.min(85,(projectSurface(s,project,speech).y-cameraY-42)/viewHeight*100))}} onClose={()=>setSpeech(null)}/>}
       {preview&&<aside className={`ja2-target-preview ${preview.valid?'':'unavailable'}`} aria-label="Vista previa de la orden"><strong>{preview.name}</strong><span>{!pickedItem&&preview.chance!==undefined?`${preview.hitLocation||preview.attackLabel||'Ataque'} · ${preview.chance}% de ${preview.chanceLabel||'impacto'} · `:preview.actionLabel?`${preview.actionLabel} · `:''}{preview.pa!==undefined&&(!pickedItem||preview.valid)&&s.mode!=='exploration'?`${preview.pa} PA · ${preview.remaining} PA restantes`:''}</span>{preview.coverNote&&<span>{preview.coverNote}</span>}{preview.reason&&<span>{preview.reason}</span>}</aside>}
       {s.lastError&&<p className="battle-error" role="alert">{s.lastError}</p>}{s.status!=='active'&&<div className="battle-result"><p className="eyebrow">PARTE DE GUERRA</p><h2>{s.status==='victory'?'¡Victoria patriota!':s.status==='retreat'?'Retirada completada':'La escuadra ha caído'}</h2><p>{s.status==='victory'?'El enemigo abandona el campo. La patria avanza.':s.status==='retreat'?'La salida quedó registrada. Los combatientes conservan sus heridas y su equipo.':'Reorganizá las tropas y prepará una nueva ofensiva.'}</p><>{s.status==='victory'&&<button className="line-button" onClick={()=>onChange(actBattle(s,{type:'explore'}))}>Explorar el sector y recoger equipo</button>}<button className="gold-button" onClick={onFinish}>Volver a la campaña <ChevronRight size={16}/></button></></div>}

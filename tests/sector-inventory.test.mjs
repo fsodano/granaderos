@@ -18,7 +18,7 @@ import {launchEnemyGroup} from '../game/enemy-groups.js';
 const order=(s,a)=>{const n=dispatch(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const act=(s,a)=>{const n=actBattle(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 const flat=()=>Array.from({length:120},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',cover:0,blocked:false}));
-function entered(weapons={}){let s=initialCampaign(45);for(const[id,weapon]of Object.entries(weapons))s.loadouts[id]={weapon};s.hour=12;s=order(s,{type:'visitSector'});const r=s.pendingBattle,b=createBattle(r.squad.map((u,i)=>({...u,x:2,y:2+i})),{...r,width:12,height:10,tiles:flat(),enemies:[],props:[],npcs:[]});return {s,b};}
+function entered(weapons={}){let s=initialCampaign(45);for(const[id,weapon]of Object.entries(weapons))s.loadouts[id]={weapon};s.hour=12;s=order(s,{type:'visitSector'});const r=s.pendingBattle,b=createBattle(r.squad.map((u,i)=>({...u,x:2,y:2+i})),{...r,width:12,height:10,tiles:flat(),enemies:[],props:[],npcs:r.npcs.map((npc,i)=>({...npc,x:10-i,y:8}))});return {s,b};}
 function leave(s,b){return order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});}
 // Declare injected field gear in the fixture's initial receipt before any pickup.
 function declaredField(s,b){s.pendingBattle.fieldAmmunition=fieldAmmunitionByType(b);s.pendingBattle.fieldCartridges=totalAmmoCounts(s.pendingBattle.fieldAmmunition);}

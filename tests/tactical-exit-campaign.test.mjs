@@ -24,7 +24,7 @@ function prepared({attack=false,horses=false}={}){
 // Prepared boundary fixture isolates campaign settlement. Crossing and all
 // resulting energy/time/health changes still use the actual tactical reducer.
 function field(s,patches={}){
- const r=s.pendingBattle,b=createBattle([...r.squad,...(r.garrison??[]),...(r.missionAllies??[])].map((u,i)=>({...u,x:2+i,y:15,...patches[u.id]})),{...r,width:20,height:16,tiles:Array.from({length:320},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',cover:0,blocked:false})),enemies:r.enemies.map((u,i)=>({...u,x:18,y:i,ap:0})),npcs:[],props:[]});
+ const r=s.pendingBattle,b=createBattle([...r.squad,...(r.garrison??[]),...(r.missionAllies??[])].map((u,i)=>({...u,x:2+i,y:15,...patches[u.id]})),{...r,width:20,height:16,tiles:Array.from({length:320},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',cover:0,blocked:false})),enemies:r.enemies.map((u,i)=>({...u,x:18,y:i,ap:0})),npcs:r.npcs.map((npc,i)=>({...npc,x:12-i,y:12})),props:[]});
  for(const u of b.units){u.bandaged=Math.min(u.bandaged,u.maxHp-u.hp);if(u.side==='enemy')u.ap=0;}
  return b;
 }

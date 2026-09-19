@@ -23,7 +23,8 @@ import {automaticOrder,searchOrder} from './autonomous-orders.js';
 import {shotRangeModifiers} from './shot-range.js';
 import {limitEnergy,maximumEnergy,recoverEnergy,recoverFatigue} from './fatigue.js';
 import {recordMilitiaHit} from './militia-experience.js';
-import {projectilePath,projectileFlight,pointProjectileFlight,concealmentAt,concealmentSightPenalty} from './projectile-cover.js';
+import {projectilePath,projectileFlight,pointProjectileFlight,physicalBodies,concealmentAt,concealmentSightPenalty} from './projectile-cover.js';
+import {applyCivilianHarm,civilianWoundedByPlayer} from './civilian-harm.js';
 import {boundaryMatches} from './tactical-exits.js';
 import {HELD_SUPPLIES,heldSupply,clearEmptySupply} from './held-supplies.js';
 import {heldTool,environmentActionProfile,resolveEnvironmentInteraction,extractContainerItem} from './environment-interactions.js';
@@ -133,12 +134,12 @@ export function artilleryCanisterContains(s,gun,point,body){
  return forward>1&&forward<=spec.radius*2&&across<=Math.max(1,forward*.5)&&hasLineOfSight(s,gun,body);
 }
 export function artilleryShotTrace(s,u,gun,point,mode='solid'){
- const spec=ARTILLERY[gun.type],events=[],cells=[];
+ const spec=ARTILLERY[gun.type],events=[],cells=[],bodies=physicalBodies(s);
  if(mode==='canister'){
   const length=dist(gun,point),dx=(point.x-gun.x)/length,dy=(point.y-gun.y)/length;
-  for(const body of s.units.filter(onField))if(artilleryCanisterContains(s,gun,point,body)){
+  for(const {body,kind} of bodies)if(artilleryCanisterContains(s,gun,point,body)){
    const forward=(body.x-gun.x)*dx+(body.y-gun.y)*dy;
-   events.push({type:'impact',unitId:body.id,damage:spec.damage*Math.max(.35,1-forward/(spec.radius*3))*(Number(u.id)===5?1.15:1)});
+   events.push({type:'impact',unitId:body.id,...(kind==='npc'?{victimKind:'npc'}:{}),damage:spec.damage*Math.max(.35,1-forward/(spec.radius*3))*(Number(u.id)===5?1.15:1)});
   }
  }else{
   let energy=spec.damage,penetration=({bronze4:3,field8:5,swivel:1}[gun.type])+(Number(u.id)===7?1:0);
@@ -150,7 +151,7 @@ export function artilleryShotTrace(s,u,gun,point,mode='solid'){
     if(penetration<resistance){events.push({type:'stop'});break;}
     penetration-=resistance;events.push({type:'breach',...p,stone});
    }
-   for(const body of s.units.filter(v=>onField(v)&&sameSurface(v,gun)&&sameCell(v,p))){events.push({type:'impact',unitId:body.id,damage:energy});energy*=.75;penetration--;}
+   for(const {body,kind} of bodies.filter(({body})=>sameSurface(body,gun)&&sameCell(body,p))){events.push({type:'impact',unitId:body.id,...(kind==='npc'?{victimKind:'npc'}:{}),damage:energy});energy*=.75;penetration--;}
    if(penetration<0||energy<20)break;
   }
  }
@@ -235,9 +236,12 @@ function revealRooms(s){s.revealedRooms=[...new Set([...(s.revealedRooms||[]),..
 export function visibleTiles(s,u){return [...s.tiles,...(s.upperSurfaces??[])].filter(t=>canSee(s,u,t)).map(t=>({x:t.x,y:t.y,...(t.tacticalLevel!==undefined?{tacticalLevel:t.tacticalLevel}:{}),illumination:tileIllumination(s,t.x,t.y,tacticalLevel(t))}));}
 export function visibleHostiles(s,u){return s.units.filter(v=>v.side!==u.side&&onField(v)&&canSee(s,u,v));}
 export function visibleEnemies(s){return s.units.filter(v=>v.side==='enemy'&&s.units.some(u=>u.side==='player'&&alive(u)&&visibleHostiles(s,u).some(t=>t.id===v.id)));}
-function emitNoise(s,source,kind,position=source){
+function emitNoise(s,source,kind,position=source,{deferCivilians=false}={}){
   const radius=noiseRadius(kind,source,tile(s,position.x,position.y));
-  hearNpcNoise(s,position,kind,radius,n=>line(n,position).slice(0,-1).filter(p=>tile(s,p.x,p.y)?.blocksSight??tile(s,p.x,p.y)?.blocked).length);
+  // Soldiers hear the initiating sound before its damage can incapacitate
+  // them. Civilian posture changes can wait until this impact is resolved.
+  const notifyCivilians=()=>hearNpcNoise(s,position,kind,radius,n=>line(n,position).slice(0,-1).filter(p=>tile(s,p.x,p.y)?.blocksSight??tile(s,p.x,p.y)?.blocked).length);
+  if(!deferCivilians)notifyCivilians();
   for(const listener of s.units.filter(v=>v.side!==source.side&&alive(v))){
     if(canSee(s,listener,source))continue;
     const obstructions=line(listener,position).slice(0,-1).filter(p=>tile(s,p.x,p.y)?.blocksSight??tile(s,p.x,p.y)?.blocked).length;
@@ -246,6 +250,7 @@ function emitNoise(s,source,kind,position=source){
     const previous=listener.lastHeardNoise;listener.lastHeardNoise=heard;
     if(listener.side==='player'&&(!previous||previous.kind!==kind||previous.x!==heard.x||previous.y!==heard.y))sayObserved(s,[listener],`${listener.name} oye ${kind==='fire'?'un disparo':kind==='explosion'?'una detonación':kind==='alarm'?'una alarma':'un ruido'} cerca de ${heard.x+1}, ${heard.y+1}.`);
   }
+  return notifyCivilians;
 }
 function forgetInvestigatedNoise(s){
   for(const u of s.units)if(u.lastHeardNoise&&s.turn-u.lastHeardNoise.turn>3)delete u.lastHeardNoise;
@@ -390,19 +395,20 @@ export function firearmProjectilePath(s,attacker,target,hitLocation='torso'){ret
 export function firearmFlightPreview(s,attacker,target,hitLocation='torso'){
   const units=s.units.filter(u=>u.id!==target.id&&(u.side===attacker.side||(attacker.side==='player'?teamCanSee(s,'player',u):canSee(s,attacker,u))));
   if(target.id!==undefined)units.push(target);
-  return projectileFlight({...s,units},attacker,target,weaponFor(attacker),hitLocation);
+  const npcs=knownCivilianBodies(s,attacker);
+  return projectileFlight({...s,units,npcs},attacker,target,weaponFor(attacker),hitLocation);
 }
 export function shotChance(s,attacker,target,aim=0,hitLocation='torso'){
   const accuracy=shotAccuracy(s,attacker,target,aim,hitLocation);
   const path=firearmFlightPreview(s,attacker,target,hitLocation);
-  return accuracy&&!path.blocked&&(!path.victimId||path.victimId===target.id)?accuracy:0;
+  return accuracy&&!path.blocked&&path.victimKind!=='npc'&&(!path.victimId||path.victimId===target.id)?accuracy:0;
 }
 export function firearmVolleyPreview(s,unit,target,aim=0,hitLocation='torso'){
  const second=pairedPistol(unit),penalty=second?pistolPairPenalty(unit):0;
  const guns=[{hand:'primary',view:unit},...(second?[{hand:'offhand',view:secondaryPistolView(unit,second)}]:[])];
  return {paired:Boolean(second),shots:guns.map(({hand,view})=>{
   const w=weaponFor(view),path=firearmFlightPreview(s,view,target,hitLocation);
-  return {hand,weapon:w.id,name:w.name,chance:path.blocked||path.victimId&&path.victimId!==target.id?0:shotAccuracy(s,view,target,aim,hitLocation,false,penalty),damageFactor:path.damageFactor,damage:w.damage};
+  return {hand,weapon:w.id,name:w.name,chance:path.blocked||path.victimKind==='npc'||path.victimId&&path.victimId!==target.id?0:shotAccuracy(s,view,target,aim,hitLocation,false,penalty),damageFactor:path.damageFactor,damage:w.damage};
  })};
 }
 // One geometry trace per body region serves all affordable aim increments.
@@ -414,9 +420,9 @@ export function firearmShotOptions(s,attacker,target,maxAim=4){
     const path=firearmFlightPreview(s,attacker,target,hitLocation);
     const second=pairedPistol(attacker),other=second?secondaryPistolView(attacker,second):null,otherPath=other?firearmFlightPreview(s,other,target,hitLocation):null;
     for(let aim=0;aim<=limit;aim++){
-      const chance=path.blocked||path.victimId&&path.victimId!==target.id?0:shotAccuracy(s,attacker,target,aim,hitLocation);
+      const chance=path.blocked||path.victimKind==='npc'||path.victimId&&path.victimId!==target.id?0:shotAccuracy(s,attacker,target,aim,hitLocation);
       const shots=other?[{hand:'primary',weapon:weaponFor(attacker).id,name:weaponFor(attacker).name,chance,damageFactor:path.damageFactor,damage:weaponFor(attacker).damage},
-        {hand:'offhand',weapon:weaponFor(other).id,name:weaponFor(other).name,chance:otherPath.blocked||otherPath.victimId&&otherPath.victimId!==target.id?0:shotAccuracy(s,other,target,aim,hitLocation,false,pistolPairPenalty(attacker)),damageFactor:otherPath.damageFactor,damage:weaponFor(other).damage}]:undefined;
+        {hand:'offhand',weapon:weaponFor(other).id,name:weaponFor(other).name,chance:otherPath.blocked||otherPath.victimKind==='npc'||otherPath.victimId&&otherPath.victimId!==target.id?0:shotAccuracy(s,other,target,aim,hitLocation,false,pistolPairPenalty(attacker)),damageFactor:otherPath.damageFactor,damage:weaponFor(other).damage}]:undefined;
       options.push({hitLocation,aim,chance,damageFactor:path.damageFactor,...(shots?{shots}:{})});
     }
   }
@@ -448,10 +454,24 @@ function shotAccuracy(s,attacker,target,aim=0,hitLocation='torso',pointShot=fals
   return Math.round(clamp((chance-pairPenalty-shotLocationPenalty(hitLocation,rangeProfile.effectiveSightRange))*rangeProfile.chanceFactor,1,95));
 }
 function firearmImpact(s,attacker,target,amount,hitLocation='torso'){
-  const path=firearmProjectilePath(s,attacker,target,hitLocation),observed=journalVisible(s,target);
+  const path=firearmProjectilePath(s,attacker,target,hitLocation),observed=observedBody(s,target);
   if(path.blocked){if(observed)say(s,'La cobertura detiene el disparo.');return;}
   if(path.damageFactor<1&&observed)say(s,'El disparo atraviesa la cobertura y pierde fuerza.');
-  damage(s,target,amount*path.damageFactor,attacker,true,hitLocation);
+  physicalImpact(s,target,amount*path.damageFactor,attacker,{hitLocation});
+}
+const isCivilianBody=(s,body)=>(s.npcs??[]).includes(body);
+const observedBody=(s,body)=>isCivilianBody(s,body)?teamCanSee(s,'player',body):journalVisible(s,body);
+const knownCivilianBodies=(s,actor)=>(s.npcs??[]).filter(n=>(n.hp??100)>0&&!n.departure&&!n.fled&&(actor.side==='player'?teamCanSee(s,actor.side,n):canSee(s,actor,n)));
+const intendedCivilian=(s,actor,point)=>knownCivilianBodies(s,actor).find(n=>sameCell(n,point));
+const flightVictim=(s,flight)=>(flight.victimKind==='npc'?s.npcs??[]:s.units).find(v=>v.id===flight.victimId);
+function physicalImpact(s,target,amount,source,{kind='firearm',projectile=true,hitLocation='torso',extraBreath=0,report=true,intentional=false}={}){
+ if(!isCivilianBody(s,target))return damage(s,target,amount,source,projectile,hitLocation,extraBreath,report);
+ // Civilian harm shares body effects but cannot enter soldier rewards, guards,
+ // equipment handling or morale routs. Observe before the impact lowers them.
+ const impact=shotLocationEffects(projectile?hitLocation:'torso',Math.max(0,amount),{...target,hp:target.hp??100}),observed=report&&observedBody(s,target);
+ applyCivilianHarm(s,target,{source,damage:impact.damage,breathLoss:impact.breathLoss+extraBreath,hitLocation,kind,observed,knockedDown:impact.knockedDown,intentional});
+ if(observed)say(s,`${target.name} ${target.hp>0?'queda herido por el impacto.':'muere por el impacto.'}`);
+ return target;
 }
 function scatteredShotDestination(s,u,target){
   const radius=Math.min(4,Math.max(1,Math.ceil(dist(u,target)/8))),dx=Math.floor(random(s)*(radius*2+1))-radius,dy=Math.floor(random(s)*(radius*2+1))-radius;
@@ -462,13 +482,13 @@ function directedFireImpact(s,u,target,hitLocation,hit,source=u){
   // A failed accuracy roll must remain a miss of the selected soldier. The
   // cell-wide approximation still checks every other body along that miss.
   const flightState=hit?s:{...s,units:s.units.filter(v=>v.id!==target.id)};
-  const flight=projectileFlight(flightState,u,end,w,hitLocation,{destinationHeight:absoluteBodyHeight(s,target,hitLocation)}),victim=s.units.find(v=>v.id===flight.victimId);
+  const flight=projectileFlight(flightState,u,end,w,hitLocation,{destinationHeight:absoluteBodyHeight(s,target,hitLocation)}),victim=flightVictim(s,flight);
   // Keep the established damage draw for aimed hits, including blocked ones.
   const amount=hit||victim?w.damage*(.8+random(s)*.4):0;
   if(flight.blocked){if(journalVisible(s,target))say(s,'La cobertura detiene el disparo.');return;}
   if(victim){
-    if(flight.damageFactor<1&&journalVisible(s,victim))say(s,'El disparo atraviesa la cobertura y pierde fuerza.');
-    damage(s,victim,amount*flight.damageFactor,source,true,flight.hitLocation);
+    if(flight.damageFactor<1&&observedBody(s,victim))say(s,'El disparo atraviesa la cobertura y pierde fuerza.');
+    physicalImpact(s,victim,amount*flight.damageFactor,source,{hitLocation:flight.hitLocation});
   }
 }
 export function completedTacticalVictory(snapshot){
@@ -594,8 +614,8 @@ function grenadeScatter(s,u,point,range){
   }
   return candidates.length?candidates[Math.floor(random(s)*candidates.length)]:point;
 }
-function grenadeBlast(s,source,origin){
-  emitNoise(s,source,'explosion',origin);
+function grenadeBlast(s,source,origin,intended){
+  const notifyCivilians=emitNoise(s,source,'explosion',origin,{deferCivilians:true});
   // Routed, surrendered and unconscious bodies remain physically exposed.
   // A departed or dead body cannot take another hit or earn combat credit.
   for(const victim of s.units.filter(v=>onField(v)&&!v.fled)){
@@ -609,19 +629,18 @@ function grenadeBlast(s,source,origin){
     const {multiplier}=grenadeBlastExposure(s,origin,npc,GRENADE_THROW.radius);
     if(multiplier<=0)continue;
     const visible=teamCanSee(s,'player',npc);
-    npc.hp=Math.max(0,(npc.hp??100)-Math.round(GRENADE_THROW.damage*multiplier));
-    npc.energy=Math.max(0,(npc.energy??100)-Math.round(GRENADE_THROW.energyDamage*multiplier));
-    npc.unconscious=isUnconscious(npc);
-    if(npc.hp<=0||npc.unconscious){npc.stance='prone';npc.movementMode='prone';}
+    applyCivilianHarm(s,npc,{source,damage:Math.round(GRENADE_THROW.damage*multiplier),breathLoss:Math.round(GRENADE_THROW.energyDamage*multiplier),hitLocation:'torso',kind:'grenade',observed:visible,intentional:npc===intended});
     if(visible)say(s,`${npc.name} ${npc.hp>0?'queda herido por la explosión.':'muere por la explosión.'}`);
   }
+  // Sound can make survivors take cover only after this blast is resolved.
+  notifyCivilians();
 }
 // The attack cursor can inspect only bodies already known to this side. Actual
 // flight checks the complete roster after confirmation. Ground throws never
 // acquire an occupant or a selectable body region from private state.
 function knownKnifeFlight(s,u,point,hitLocation,options={}){
   const units=s.units.filter(v=>v.side===u.side||(u.side==='player'?teamCanSee(s,u.side,v):canSee(s,u,v)));
-  return knifeFlight({...s,units},u,point,hitLocation,options);
+  return knifeFlight({...s,units,npcs:knownCivilianBodies(s,u)},u,point,hitLocation,options);
 }
 export function knifeThrowPreview(s,u,target,options={}){
   const costs=u?knifeThrowCosts(u,target,options.aim):{total:0,aimLevel:0,stance:0,turn:0,attack:0,aim:0,energy:6};
@@ -647,7 +666,7 @@ export function knifeThrowPreview(s,u,target,options={}){
   const point=pointShot&&target?{...positionOf(target),stance:'standing',mounted:false}:target;
   if(!reason){flight=knownKnifeFlight(s,prepared,point,hitLocation);if(!flight.landing||flight.impact.kind==='invalid')reason='No hay una trayectoria válida para el facón.';}
   const chance=reason?0:knifeThrowChance(u,distance,costs.aimLevel,knife);
-  return {valid:!reason,reason,pa:costs.total,aim:costs.aimLevel,chance:flight?.blocked||flight?.victimId&&flight.victimId!==target?.id?0:chance,hitLocation,range,flight,costs,pointShot};
+  return {valid:!reason,reason,pa:costs.total,aim:costs.aimLevel,chance:flight?.blocked||flight?.victimKind==='npc'||flight?.victimId&&flight.victimId!==target?.id?0:chance,hitLocation,range,flight,costs,pointShot};
 }
 // One transient visual per returned state; it never enters a save or public
 // state payload. Unseen actors are excluded from the displayed trajectory.
@@ -671,15 +690,15 @@ export function pointFirePreview(s,u,point,aim=0){
   return {valid:!reason,reason,pa,aim:level};
 }
 function pointFireImpact(s,u,point,aim,source=u,preparedAccuracy){
-  const w=weaponFor(u),accuracy=preparedAccuracy??shotAccuracy(s,u,{...point,stance:'standing'},aim,'torso',true);
+  const w=weaponFor(u),accuracy=preparedAccuracy??shotAccuracy(s,u,{...point,stance:'standing'},aim,'torso',true),intended=intendedCivilian(s,source,point);
   const impact=(victim,amount,location)=>{
-    const visible=victim.side==='player'||teamCanSee(s,'player',victim),before=victim.hp,eligible=fieldCapable(victim)&&!victim.unconscious&&!victim.routed;
-    damage(s,victim,amount,source,true,location,0,visible);
+    const visible=observedBody(s,victim),before=victim.hp,eligible=!isCivilianBody(s,victim)&&fieldCapable(victim)&&!victim.unconscious&&!victim.routed;
+    physicalImpact(s,victim,amount,source,{hitLocation:location,report:visible,intentional:victim===intended});
     if(eligible&&victim.side!==source.side&&victim.hp<before)practice(source,'marksmanship',2);
   };
   if(w.id===1807){
     const length=dist(u,point),dx=(point.x-u.x)/length,dy=(point.y-u.y)/length;
-    for(const victim of s.units.filter(v=>onField(v)&&v.id!==u.id)){
+    for(const {body:victim} of physicalBodies(s).filter(({body,kind})=>kind==='npc'||body.id!==u.id)){
       const vx=victim.x-u.x,vy=victim.y-u.y,forward=vx*dx+vy*dy,across=Math.abs(vx*dy-vy*dx);
       if(forward<=0||forward>6||across>Math.max(.5,forward*.25))continue;
       const path=firearmProjectilePath(s,u,victim);
@@ -691,7 +710,7 @@ function pointFireImpact(s,u,point,aim,source=u,preparedAccuracy){
   if(random(s)*100>=accuracy){
     end=scatteredShotDestination(s,u,point);
   }
-  const flight=usesElevationGeometry(s,u,point)?projectileFlight(s,u,{...end,stance:'standing',mounted:false},w,'torso',{destinationHeight:absoluteBodyHeight(s,{...point,stance:'standing',mounted:false},'torso')}):pointProjectileFlight(s,u,end,w),victim=s.units.find(v=>v.id===flight.victimId);
+  const flight=usesElevationGeometry(s,u,point)?projectileFlight(s,u,{...end,stance:'standing',mounted:false},w,'torso',{destinationHeight:absoluteBodyHeight(s,{...point,stance:'standing',mounted:false},'torso')}):pointProjectileFlight(s,u,end,w),victim=flightVictim(s,flight);
   if(victim)impact(victim,w.damage*(.8+random(s)*.4)*flight.damageFactor,flight.hitLocation);
 }
 export function dropPreview(s,u,item,count=1){
@@ -813,6 +832,7 @@ function planSelectedNpcGift(s,u,action,npc,extraction,point){
  const need=(ok,message)=>{if(!ok)throw Error(message);};
  need(s.mode==='exploration','Terminá el combate antes de entregar el objeto.');
  need(!npc.departure&&!npc.fled&&!npc.routed&&(npc.hp??100)>0&&!npc.unconscious,'El interlocutor debe estar disponible y a la vista.');
+ need(!civilianWoundedByPlayer(npc),'No quiere colaborar con quienes lo hirieron.');
  const inReach=cell=>sameSurface(cell,npc)&&Math.abs(cell.x-npc.x)+Math.abs(cell.y-npc.y)===1&&hasLineOfSight(s,cell,npc)&&Number.isFinite(movementStepCost(s,u,cell,npc));
  let approach=null;
  if(!inReach(u)){
@@ -1213,6 +1233,7 @@ export function npcGiftPreview(s,u,npc){
  const unavailable=inventoryOrderReason(s,u,actionPa);if(unavailable)return result(unavailable);
  if(s.mode!=='exploration')return result('Terminá el combate antes de entregar el objeto.');
  if(!npc||!s.npcs.includes(npc)||npc.departure||npc.fled||npc.routed||(npc.hp??100)<=0||npc.unconscious||!canSee(s,u,npc))return result('El interlocutor debe estar disponible y a la vista.');
+ if(civilianWoundedByPlayer(npc))return result('No quiere colaborar con quienes lo hirieron.');
  try{questGiftPlan(u,npc);}catch(error){return result(error.message);}
  const inReach=cell=>sameSurface(cell,npc)&&Math.abs(cell.x-npc.x)+Math.abs(cell.y-npc.y)===1&&hasLineOfSight(s,cell,npc);
  if(inReach(u))return result();
@@ -1354,7 +1375,7 @@ else if(a.type==='throwGrenade'){
   const point=positionOf(a),preview=grenadeThrowPreview(s,u,point,a);
   if(!preview.valid)return fail(preview.reason);
   if(u.stance!=='standing')return fail('Ponete de pie antes de lanzar la granada.');
-  const grenade=heldGrenade(u),source={...positionOf(u),height:absoluteBodyHeight(s,u,'muzzle')};
+  const grenade=heldGrenade(u),source={...positionOf(u),height:absoluteBodyHeight(s,u,'muzzle')},intended=intendedCivilian(s,u,point);
   const hit=random(s)*100<preview.chance,end=hit?point:grenadeScatter(s,u,point,preview.range),flight=grenadeFlight(s,u,end);
   if(!flight.landing||flight.impact.kind==='invalid')return fail('No hay una trayectoria válida para la granada.');
   const visible=journalVisible(s,u),extracted=extractItemQuantity(u,grenade.slot,1);
@@ -1364,7 +1385,7 @@ else if(a.type==='throwGrenade'){
   // A failed period grenade becomes a finite, recoverable but unusable object.
   // Delayed malfunction fuses and physical bounces remain separate work.
   const detonated=grenade.record.condition>=100||random(s)*100<grenade.record.condition;
-  if(detonated){grenadeBlast(s,u,flight.landing);if(visible)say(s,`${u.name}: explosión de granada.`);}
+  if(detonated){grenadeBlast(s,u,flight.landing,intended);if(visible)say(s,`${u.name}: explosión de granada.`);}
   else{addGroundStack(s,{...extracted.stack,condition:0},flight.landing);emitNoise(s,u,'knife',flight.landing);if(visible)say(s,`${u.name}: la granada no explota y queda inutilizada.`);}
   if(visible)grenadeThrowVisuals.set(s,{source,impact:flight.impact,landing:flight.landing,points:flight.points,radius:GRENADE_THROW.radius,detonated,visible:true});
 }
@@ -1372,7 +1393,7 @@ else if(a.type==='throwKnife'){
   const point=target??{...positionOf(a),stance:'standing',mounted:false},preview=knifeThrowPreview(s,u,point,a);
   if(!preview.valid)return fail(preview.reason);
   if(u.stance!=='standing'||preview.costs.turn)return fail('Ponete de pie y mirá hacia el objetivo antes de lanzar.');
-  const knife=heldThrowingKnife(u),source={...positionOf(u),height:absoluteBodyHeight(s,u,'muzzle')},height=absoluteBodyHeight(s,point,preview.hitLocation);
+  const knife=heldThrowingKnife(u),source={...positionOf(u),height:absoluteBodyHeight(s,u,'muzzle')},height=absoluteBodyHeight(s,point,preview.hitLocation),intended=target?null:intendedCivilian(s,u,point);
   const accuracy=knifeThrowChance(u,spaceDistance(s,u,point),preview.aim,knife),hit=random(s)*100<accuracy;
   const end=hit?point:scatteredShotDestination(s,u,point),flightState=!hit&&target?{...s,units:s.units.filter(v=>v.id!==target.id)}:s;
   const flight=knifeFlight(flightState,u,end,preview.hitLocation,{destinationHeight:height});
@@ -1383,11 +1404,13 @@ else if(a.type==='throwKnife'){
   if(!pay(preview.pa))return fail('PA insuficientes.');
   u.momentum=0;u.overwatch=false;u.braced=false;delete u.lastTargetId;delete u.lastShotPosition;
   emitNoise(s,u,'knife');
-  let victim=s.units.find(v=>v.id===flight.victimId),stored=false;
+  let victim=flightVictim(s,flight),stored=false;
   if(victim){
-    victim=damage(s,victim,amount,u,true,flight.hitLocation);
-    if(victim.side!==u.side){practice(u,'marksmanship');practice(u,'agility');}
-    try{replaceUnit(victim,applyItemQuantity(victim,extracted.stack));stored=true;}catch{/* A full pack leaves the exact knife at the supported impact cell. */}
+    victim=physicalImpact(s,victim,amount,u,{kind:'knife',hitLocation:flight.hitLocation,intentional:victim===intended});
+    if(flight.victimKind!=='npc'){
+      if(victim.side!==u.side){practice(u,'marksmanship');practice(u,'agility');}
+      try{replaceUnit(victim,applyItemQuantity(victim,extracted.stack));stored=true;}catch{/* A full pack leaves the exact knife at the supported impact cell. */}
+    }
   }
   if(!stored)addGroundStack(s,extracted.stack,flight.landing);
   exhaust(s,u,preview.costs.energy);
@@ -1418,14 +1441,16 @@ else if(['fire','firePoint'].includes(a.type)&&pairedPistol(u)){
   sayObserved(s,[u],`${u.name} dispara ambas pistolas.`);
   for(const shot of shots){
     if(random(s)*100<shot.risk){shot.record.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa en la mano ${shot.hand}. La carga se conserva.`);continue;}
-    shot.record.loaded--;shot.record.condition=Math.max(0,(shot.record.condition??100)-1);emitNoise(s,u,'fire');
+    shot.record.loaded--;shot.record.condition=Math.max(0,(shot.record.condition??100)-1);
+    const notifyCivilians=emitNoise(s,u,'fire',u,{deferCivilians:true});
     if(pointShot)pointFireImpact(s,shot.view,point,aim,u,shot.chance);
     else{
       practice(u,'marksmanship',2);const hit=random(s)*100<shot.chance;
       directedFireImpact(s,shot.view,point,hitLocation,hit,u);
       if(!hit){target.morale=Math.max(0,target.morale-4);sayObserved(s,[u],`${u.name} falla con la mano ${shot.hand} (${shot.chance}%).`);}
     }
-    s.smoke.push({...positionOf(u),radius:1,turns:3});
+    // Hearing this shot cannot change the silhouette that it already struck.
+    notifyCivilians();s.smoke.push({...positionOf(u),radius:1,turns:3});
   }
 }
 else if(a.type==='firePoint'){
@@ -1436,12 +1461,11 @@ else if(a.type==='firePoint'){
   u.weaponReady=true;u.momentum=0;u.facing=directionTo(u,a);delete u.lastTargetId;delete u.lastShotPosition;
   if(random(s)*100<ignitionRisk(s,u)){u.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa. La carga se conserva${s.mode==='exploration'?'. Volvé a cebar la cazoleta.':`; cebar cuesta ${actionCosts(s,u).reprime} PA.`}`);}
   else{
-    u.loaded--;emitNoise(s,u,'fire');
-    pointFireImpact(s,u,a,preview.aim);u.condition=Math.max(0,u.condition-1);s.smoke.push({...positionOf(u),radius:1,turns:3});
+    u.loaded--;const notifyCivilians=emitNoise(s,u,'fire',u,{deferCivilians:true});pointFireImpact(s,u,a,preview.aim);notifyCivilians();u.condition=Math.max(0,u.condition-1);s.smoke.push({...positionOf(u),radius:1,turns:3});
     sayObserved(s,[u],`${u.name} dispara hacia ${a.x+1}, ${a.y+1}. El disparo puede alcanzar a cualquiera en su trayectoria.`);
   }
 }
-else if(a.type==='fire'){const hitLocation=a.hitLocation??'torso';if(!HIT_LOCATIONS.includes(hitLocation))return fail('Selecciona torso, cabeza o piernas.');if(!target||target.side===u.side||!targetable(target))return fail('Selecciona un enemigo activo.');if(!hasFirearm(u))return fail('Este soldado lleva un arma blanca: acércate para atacar.');if(!teamCanSee(s,u.side,target))return fail('Ningún compañero puede ver ese objetivo.');if(!shotLocationsFor(target).includes(hitLocation))return fail('Un objetivo cuerpo a tierra tiene una sola zona de tiro.');if(u.jammed)return fail('La cazoleta falló: vuelve a cebar el arma.');if(u.loaded<1)return fail('El arma está descargada.');if(!hasLineOfSight(s,u,target))return fail('No hay línea de tiro.');const aim=clamp(Math.floor(Number.isFinite(a.aim)?a.aim:0),0,4),w=weaponFor(u),chance=shotAccuracy(s,u,target,aim,hitLocation);if(!pay(actionCosts(s,u,target).fire+aim*actionCosts(s,u,target).aim))return fail('Faltan puntos de acción para disparar.');u.weaponReady=true;u.momentum=0;u.facing=directionTo(u,target);u.lastTargetId=target.id;u.lastShotPosition=positionOf(u);const risk=ignitionRisk(s,u);if(random(s)*100<risk){u.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa. La carga se conserva${s.mode==='exploration'?'. Volvé a cebar la cazoleta.':`; cebar cuesta ${actionCosts(s,u).reprime} PA.`}`);}else{u.loaded--;emitNoise(s,u,'fire');practice(u,'marksmanship',2);u.condition=Math.max(0,u.condition-1);s.smoke.push({...positionOf(u),radius:1,turns:3});if(w.id===1807){const length=dist(u,target),dx=(target.x-u.x)/length,dy=(target.y-u.y)/length;for(const victim of s.units.filter(v=>onField(v)&&v.id!==u.id)){const vx=victim.x-u.x,vy=victim.y-u.y,forward=vx*dx+vy*dy,across=Math.abs(vx*dy-vy*dx);if(forward<=0||forward>6||across>Math.max(.5,forward*.25)||!hasLineOfSight(s,u,victim))continue;victim.morale=Math.max(0,victim.morale-18);if(random(s)*100<Math.min(95,shotAccuracy(s,u,victim,aim,victim.id===target.id?hitLocation:'torso')+20))firearmImpact(s,u,victim,w.damage*(1-forward/12),victim.id===target.id?hitLocation:'torso');else if(victim.morale<15)rout(s,victim);}sayObserved(s,[u],`${u.name} descarga el trabuco: una nube de metralla barre tres casillas de ancho.`);}else{const hit=random(s)*100<chance;directedFireImpact(s,u,target,hitLocation,hit);if(!hit){target.morale=Math.max(0,target.morale-4);sayObserved(s,[u],`${u.name} dispara sin acertar al punto elegido (${chance}%).`);}} }}
+else if(a.type==='fire'){const hitLocation=a.hitLocation??'torso';if(!HIT_LOCATIONS.includes(hitLocation))return fail('Selecciona torso, cabeza o piernas.');if(!target||target.side===u.side||!targetable(target))return fail('Selecciona un enemigo activo.');if(!hasFirearm(u))return fail('Este soldado lleva un arma blanca: acércate para atacar.');if(!teamCanSee(s,u.side,target))return fail('Ningún compañero puede ver ese objetivo.');if(!shotLocationsFor(target).includes(hitLocation))return fail('Un objetivo cuerpo a tierra tiene una sola zona de tiro.');if(u.jammed)return fail('La cazoleta falló: vuelve a cebar el arma.');if(u.loaded<1)return fail('El arma está descargada.');if(!hasLineOfSight(s,u,target))return fail('No hay línea de tiro.');const aim=clamp(Math.floor(Number.isFinite(a.aim)?a.aim:0),0,4),w=weaponFor(u),chance=shotAccuracy(s,u,target,aim,hitLocation);if(!pay(actionCosts(s,u,target).fire+aim*actionCosts(s,u,target).aim))return fail('Faltan puntos de acción para disparar.');u.weaponReady=true;u.momentum=0;u.facing=directionTo(u,target);u.lastTargetId=target.id;u.lastShotPosition=positionOf(u);const risk=ignitionRisk(s,u);if(random(s)*100<risk){u.jammed=true;sayObserved(s,[u],`${u.name}: fallo de chispa. La carga se conserva${s.mode==='exploration'?'. Volvé a cebar la cazoleta.':`; cebar cuesta ${actionCosts(s,u).reprime} PA.`}`);}else{u.loaded--;const notifyCivilians=emitNoise(s,u,'fire',u,{deferCivilians:true});practice(u,'marksmanship',2);u.condition=Math.max(0,u.condition-1);s.smoke.push({...positionOf(u),radius:1,turns:3});if(w.id===1807){const length=dist(u,target),dx=(target.x-u.x)/length,dy=(target.y-u.y)/length;for(const {body:victim,kind} of physicalBodies(s).filter(({body,kind})=>kind==='npc'||body.id!==u.id)){const vx=victim.x-u.x,vy=victim.y-u.y,forward=vx*dx+vy*dy,across=Math.abs(vx*dy-vy*dx);if(forward<=0||forward>6||across>Math.max(.5,forward*.25)||!hasLineOfSight(s,u,victim))continue;if(kind!=='npc')victim.morale=Math.max(0,victim.morale-18);if(random(s)*100<Math.min(95,shotAccuracy(s,u,victim,aim,victim.id===target.id?hitLocation:'torso')+20))firearmImpact(s,u,victim,w.damage*(1-forward/12),victim.id===target.id?hitLocation:'torso');else if(kind!=='npc'&&victim.morale<15)rout(s,victim);}sayObserved(s,[u],`${u.name} descarga el trabuco: una nube de metralla barre tres casillas de ancho.`);}else{const hit=random(s)*100<chance;directedFireImpact(s,u,target,hitLocation,hit);if(!hit){target.morale=Math.max(0,target.morale-4);sayObserved(s,[u],`${u.name} dispara sin acertar al punto elegido (${chance}%).`);}}notifyCivilians(); }}
 else if(a.type==='swapHands'){
   let next;try{next=planSwapHands(u);}catch(error){return fail(error.message);}
   if(!pay(4))return fail('Cambiar de mano requiere 4 PA.');next.ap=u.ap;replaceUnit(u,next);sayObserved(s,[u],`${u.name} prepara el arma de la otra mano.`);
@@ -1524,17 +1548,18 @@ sayObserved(s,[u],loading.partial?`${u.name} dirige la recarga de ${spec.name}: 
 if(!gun.loaded)return fail('Primero hay que recargar la pieza.');const point=target||{x:a.x,y:a.y};
 if(!Number.isInteger(point.x)||!Number.isInteger(point.y)||!tile(s,point.x,point.y)||dist(gun,point)<1||dist(gun,point)>spec.range)return fail(`Objetivo fuera del alcance de ${spec.range} casillas o no válido.`);
 const facing=Math.atan2(point.y-gun.y,point.x-gun.x);if(Number.isFinite(gun.facing)&&Math.abs(Math.atan2(Math.sin(facing-gun.facing),Math.cos(facing-gun.facing)))>Math.PI/4)return fail('Gira la pieza antes de disparar fuera de su arco frontal.');
-gun.facing=facing;gun.loaded=false;emitNoise(s,u,'explosion',gun);s.smoke.push({x:gun.x,y:gun.y,radius:2,turns:3});
+const intended=target?null:intendedCivilian(s,u,point);
+gun.facing=facing;gun.loaded=false;const notifyCivilians=emitNoise(s,u,'explosion',gun,{deferCivilians:true});s.smoke.push({x:gun.x,y:gun.y,radius:2,turns:3});
 for(const event of artilleryShotTrace(s,u,gun,point,a.mode).events){
  if(event.type==='impact'){
-  const victim=s.units.find(v=>v.id===event.unitId);damage(s,victim,event.damage,u);
-  if(a.mode==='canister'&&alive(victim)){victim.morale=Math.max(0,victim.morale-12);if(victim.morale<15)rout(s,victim);}
+  const victim=flightVictim(s,{...event,victimId:event.unitId});physicalImpact(s,victim,event.damage,u,{kind:'artillery',projectile:false,intentional:victim===intended});
+  if(event.victimKind!=='npc'&&a.mode==='canister'&&alive(victim)){victim.morale=Math.max(0,victim.morale-12);if(victim.morale<15)rout(s,victim);}
  }else if(event.type==='breach'){
   const ground=tile(s,event.x,event.y);ground.blocked=false;ground.blocksSight=false;ground.type='rubble';ground.cover=20;delete ground.obstacleHeight;delete ground.projectileResistance;
   say(s,`La bala abre una brecha en ${event.stone?'la piedra':'el adobe'}.`);
  }else say(s,'La bala se detiene contra la fortificación.');
 }
-sayObserved(s,[u],a.mode==='canister'?`${spec.name} barre el frente con metralla.`:`${spec.name} dispara una bala rasa que atraviesa su línea de tiro.`);
+notifyCivilians();sayObserved(s,[u],a.mode==='canister'?`${spec.name} barre el frente con metralla.`:`${spec.name} dispara una bala rasa que atraviesa su línea de tiro.`);
 }
 for(const v of assigned){lowerWeapon(v);if(s.mode!=='exploration')v.ap-=cost;if(a.type==='artillery'||a.type==='artilleryReload'&&loading.rounds)practice(v,'explosives',a.type==='artillery'?2:1);}
 if(s.mode==='exploration')s.actionDurationSeconds=Math.max(1,Math.ceil(cost*.06));

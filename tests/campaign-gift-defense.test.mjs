@@ -32,11 +32,12 @@ test('a later real defense keeps the NPC and exact poncho delivered during the p
  // No units, items, battle outcomes or deployment snapshots are manufactured.
  const group=launchEnemyGroup(campaign,'coast','retiro',{immediate:true});assert.ok(group);assert.equal(group.units.length,group.initialStrength);
  campaign=order(campaign,{type:'wait',hours:1});assert.equal(campaign.pendingEncounter.groupId,group.id);
- campaign=order(campaign,{type:'respondToEncounter',groupId:group.id,choice:'tactical'});assert.equal(campaign.pendingBattle.defenseGroupId,group.id);assert.equal(campaign.pendingBattle.npcs,undefined);
+ campaign=order(campaign,{type:'respondToEncounter',groupId:group.id,choice:'tactical'});assert.equal(campaign.pendingBattle.defenseGroupId,group.id);assert.ok(campaign.pendingBattle.npcs.some(n=>n.id===npcId));
  const previous=structuredClone(campaign.sectorStates.retiro);assert.ok(previous.npcs.some(n=>n.id==='cabral'&&n.operativeId===3));
  const explicit=enterSector({...campaign.pendingBattle,npcs:[]},previous);assert.deepEqual(explicit.npcs,[],'an explicit empty roster remains authoritative');assert.deepEqual(campaign.sectorStates.retiro,previous);
  const before=structuredClone(campaign);pair=prepareCampaignBattle(campaign);assert.equal(pair.error,null,pair.error);assert.deepEqual(campaign,before);
- assert.equal(pair.battle.npcs.some(n=>n.operativeId!==undefined),false,'omitted rosters cannot resurrect named recruits');
+ assert.ok(pair.battle.npcs.some(n=>n.id==='cabral'),'unrecruited residents stay in a defended town');
+ const legacy=enterSector({...campaign.pendingBattle,npcs:undefined},previous);assert.equal(legacy.npcs.some(n=>n.operativeId!==undefined),false,'legacy omitted rosters cannot resurrect named recruits');
  assert.equal(pair.battle.npcs.filter(n=>n.id===npcId).length,1);assert.deepEqual(pair.battle.npcs.find(n=>n.id===npcId).questGifts,receipt);
  const explicitOwner=enterSector({...campaign.pendingBattle,npcs:[previous.npcs.find(n=>n.id===npcId)]},previous);assert.equal(explicitOwner.npcs.length,1);assert.deepEqual(explicitOwner.npcs[0].questGifts,receipt);
  assert.equal(pair.battle.units.filter(u=>u.side==='player'&&u.id==='110').length,1);assert.equal(pair.battle.units.filter(u=>u.side==='enemy').length,group.initialStrength);

@@ -2,8 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,isSupplied} from '../game/campaign.js';
 import {combatOrder,fight} from './opening-driver.mjs';
-import {actionCosts,canSee,hasLineOfSight,shotChance,getReachable,actBattle} from '../game/tactical.js';
+import {actionCosts,canSee,hasLineOfSight,shotChance,firearmShotOptions,weaponFor,getReachable,actBattle} from '../game/tactical.js';
 import {chooseEnemyAction} from '../game/tactical-ai.js';
+import {shotLocationEffects} from '../game/targeted-combat.js';
 import {sameCell,spacePoint,tacticalLevel} from '../game/tactical-space.js';
 import {syncBattleTime} from '../game/time.js';
 import {prepareCampaignBattle} from '../game/battle-handoff.js';
@@ -26,9 +27,32 @@ function rooftopReconOrder(b,u){
  return step?{type:'move',unitId:u.id,...spacePoint(step)}:null;
 }
 
+function aimedShotOrder(b,u){
+ const active=v=>v.hp>=15&&!v.departure&&!v.surrendered&&!v.unconscious&&!v.routed;
+ const observers=b.units.filter(v=>v.side===u.side&&active(v));
+ const targets=b.units.filter(v=>v.side!==u.side&&active(v)&&observers.some(p=>canSee(b,p,v)));
+ const shots=[];
+ // Use the same affordable body-region previews as the cursor. Their flight
+ // checks include observed civilian and friendly bodies; hidden occupants do
+ // not select a target or grant the squad knowledge of a blocked firing lane.
+ for(const target of targets){
+  const cost=actionCosts(b,u,target);if(u.ap<cost.fire)continue;
+  const maxAim=Math.min(4,Math.floor((u.ap-cost.fire)/cost.aim));
+  for(const option of firearmShotOptions(b,u,target,maxAim)){
+   if(option.chance<25)continue;
+   const damage=weaponFor(u).damage,effect=shotLocationEffects(option.hitLocation,damage*option.damageFactor,target);
+   const value=Math.min(target.hp,effect.damage)+(target.hp-effect.damage<15?0:effect.breathLoss*.15+(effect.knockedDown?10:0));
+   const score=option.chance*value/Math.max(1,Math.min(target.hp,damage))-(cost.fire+option.aim*cost.aim)*.2;
+   shots.push({score,action:{type:'fire',unitId:u.id,targetId:target.id,aim:option.aim,hitLocation:option.hitLocation}});
+  }
+ }
+ return shots.sort((a,b)=>b.score-a.score)[0]?.action??null;
+}
+
 function hiredAssaultOrder(b,u){
  const reconnaissance=rooftopReconOrder(b,u);if(reconnaissance)return reconnaissance;
  const action=combatOrder(b,u);
+ if(action?.type==='fire')return aimedShotOrder(b,u)??action;
  if(action?.type!=='stance'||action.stance!=='prone')return action;
  // Baker rifles take 105 PA to reload prone, against 70 PA kneeling. Keep
  // these muzzle-loaders crouched so the next volley need not wait two turns.
@@ -43,7 +67,7 @@ function hiredAssaultOrder(b,u){
  let aim=Math.min(4,Math.floor((u.ap-cost.fire)/cost.aim));
  const chance=shotChance(b,u,target,aim);
  while(aim>0&&shotChance(b,u,target,aim-1)===chance)aim--;
- if(chance>=25)return {type:'fire',unitId:u.id,targetId:target.id,aim};
+ if(chance>=25)return aimedShotOrder(b,u)??{type:'fire',unitId:u.id,targetId:target.id,aim};
  const automatic=chooseEnemyAction(b,u);
  return automatic?.type==='charge'?null:automatic;
 }
@@ -55,11 +79,20 @@ test('a hired-only squad earns its first expansion from Retiro and retains casua
  // Ordinary day contracts and issued finite equipment; no free areas, custom
  // super-soldier, edited enemy stats, clock changes or post-hoc casualty removal.
  for(const id of [128,142,123,115,131,110])order({type:'recruitCivic',id,term:'day'});
+ const hiredTreasury=c.resources.treasury;
+ assert.equal(3200-hiredTreasury,155,'all six day contracts are paid from the starting treasury');
+ // Four Baker rifles need forty issued loads; Retiro starts with thirty.
+ // Buy the missing ten before departure so Funes receives a usable weapon.
+ const rifleStock=c.resources.ammo_rifle_62,merchantStock=c.merchants.retiro.ammunition.rifle_62;
+ order({type:'purchaseAmmunition',ammoType:'rifle_62',quantity:10});
  const stagingTreasury=c.resources.treasury;
- assert.equal(3200-stagingTreasury,155,'all six day contracts are paid from the starting treasury');
+ assert.equal(hiredTreasury-stagingTreasury,30);
+ assert.equal(c.resources.ammo_rifle_62,rifleStock+10);
+ assert.equal(c.merchants.retiro.ammunition.rifle_62,merchantStock-10);
  order({type:'attack',sector:'buenos_aires'});
  const request=structuredClone(c.pendingBattle);
  assert.equal(c.hour,12);assert.equal(c.officer,null);assert.deepEqual(owned(c),['retiro']);assert.equal(request.enemies.length,6);
+ assert.ok(request.squad.every(u=>u.loaded===1&&u.ammo===9),'every hire draws its ten real matching loads');
  const orders=[];
  let {battle,actions}=fight(request,undefined,{controller:(b,u)=>{
   const action=hiredAssaultOrder(b,u);
@@ -70,6 +103,8 @@ test('a hired-only squad earns its first expansion from Retiro and retains casua
  assert.equal(battle.width,64);assert.equal(battle.height,48,'the squad must fight on the full authored map');
  assert.ok(orders.filter(a=>a.type==='fire').length>request.squad.length,'the assault requires more than the issued opening volley');
  assert.ok(orders.some(a=>a.type==='reload'),'finite ammunition must be reloaded during combat');
+ assert.ok(orders.some(a=>a.type==='fire'&&a.hitLocation==='head'));
+ assert.deepEqual(battle.npcs.map(n=>n.id).sort(),request.npcs.map(n=>n.id).sort(),'the assault retains every real civilian');
  assert.ok(orders.some(a=>a.type==='stance'&&a.stance==='crouched'));
  assert.ok(!orders.some(a=>a.type==='stance'&&a.stance==='prone'));
  // The changed firing lanes need not produce the former rout. Exercise a
@@ -85,7 +120,8 @@ test('a hired-only squad earns its first expansion from Retiro and retains casua
  if(carried.instanceId!==undefined)assert.equal(fieldWeapon.instanceId,carried.instanceId);
  const players=battle.units.filter(u=>u.side==='player'),dead=players.filter(u=>u.hp<=0),survivors=players.filter(u=>u.hp>0);
  assert.ok(players.some(u=>u.hp<request.squad.find(initial=>String(initial.id)===u.id).hp),'the assault must retain its actual wounds');
- assert.ok(survivors.some(u=>u.unconscious),'an incapacitated survivor must remain wounded through the return and reentry');
+ assert.ok(dead.length>0,'the earned victory retains its actual deaths');
+ assert.ok(survivors.some(u=>u.hp<request.squad.find(initial=>String(initial.id)===u.id).hp),'wounded survivors must retain their actual injuries');
  assert.ok(survivors.length>0);
  const pair=syncBattleTime(c,battle);assert.equal(pair.error,null);
  const saved=decodeSave(encodeSave(pair.campaign,pair.battle));

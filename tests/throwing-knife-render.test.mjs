@@ -46,7 +46,7 @@ test('NPC click and keyboard activation in knife mode reach point targeting with
  const s=field();s.npcs=[{id:'civil',name:'Vecino',x:3,y:2,stance:'standing'}];let clicked,talked=false;
  const frame=hitFrame(s,{onTile:t=>clicked=t,onTalk:()=>talked=true},'head','civil');assert.ok(frame);assert.match(frame.props['aria-label'],/Lanzar a la casilla de Vecino/);
  for(const input of [()=>frame.props.onClick(pointer(.1)),()=>frame.props.onKeyDown({key:'Enter',preventDefault(){}})]){
-  input();assert.equal(talked,false);assert.equal(clicked.id,'civil');
+  input();assert.equal(talked,false);assert.deepEqual(clicked,{x:3,y:2,tacticalLevel:0,anonymous:true,aimLocation:'torso'});assert.equal(clicked.id,undefined);assert.equal(clicked.targetId,undefined);
   assert.deepEqual(knifeThrowInputAction(s,s.units[0],clicked,{hitLocation:clicked.aimLocation}),{type:'throwKnife',aim:0,x:3,y:2,tacticalLevel:0,hitLocation:'torso'});
  }
 });

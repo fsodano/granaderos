@@ -19,7 +19,7 @@ const stock=s=>Object.fromEntries(Object.entries(AMMUNITION_RESOURCE_KEYS).map((
 const hire=(s,id=110)=>order(s,{type:'recruitCivic',id,term:'week'});
 const reject=(s,a)=>{const before=structuredClone(s),n=dispatchCampaign(s,a);assert.ok(n.lastError);assert.deepEqual(s,before);assert.deepEqual({...n,lastError:null},{...s,lastError:null});};
 const leave=(s,b)=>{const synced=syncBattleTime(s,b);assert.equal(synced.error,null);return order(synced.campaign,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:synced.battle,survivors:synced.battle.units.filter(u=>u.side==='player')});};
-const flat=s=>createBattle(s.pendingBattle.squad.map((u,i)=>({...u,x:2+i,y:2})),{...s.pendingBattle,width:12,height:10,tiles:Array.from({length:120},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[],npcs:[],props:[]});
+const flat=s=>createBattle(s.pendingBattle.squad.map((u,i)=>({...u,x:2+i,y:2})),{...s.pendingBattle,width:12,height:10,tiles:Array.from({length:120},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[],npcs:s.pendingBattle.npcs.map((npc,i)=>({...npc,x:10-i,y:8})),props:[]});
 
 test('fresh stock is an explicit finite total of 300 prepared loads with no personal grant',()=>{
  const s=initialCampaign();assert.deepEqual(Object.values(stock(s)),[100,60,30,20,20,20,10,20,20]);assert.equal(Object.values(stock(s)).reduce((a,b)=>a+b),300);

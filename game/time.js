@@ -1,6 +1,7 @@
 import {regionalWeatherAt,WEATHER_INTERVAL_HOURS} from './regional-weather.js';
 import {gainFatigue,recoverFatigue} from './fatigue.js';
 import {dispatchCampaign,hasPendingNpcGiftProgress} from './campaign.js';
+import {hasPendingCivilianHarm} from './campaign-civilian-harm.js';
 export const COMBAT_ROUND_SECONDS=6;
 export const REST_SECONDS=600;
 export function advanceBattleClock(s,seconds,{resting=false}={}){
@@ -19,7 +20,7 @@ export function advanceBattleClock(s,seconds,{resting=false}={}){
 export function syncBattleTime(campaign,battle){
  try{
  if(!campaign.pendingBattle||battle.battleId&&battle.battleId!==campaign.pendingBattle.id)return {campaign,battle,error:'El reloj no corresponde al despliegue.'};
- const receiptChange=hasPendingNpcGiftProgress(campaign,battle);
+ const giftChange=hasPendingNpcGiftProgress(campaign,battle),harmChange=hasPendingCivilianHarm(campaign,battle),receiptChange=giftChange||harmChange;
  const next=dispatchCampaign(campaign,{type:'syncTacticalTime',battleId:campaign.pendingBattle?.id,elapsedSeconds:battle.elapsedSeconds??0,...(receiptChange?{sectorState:battle}:{})});
  if(next.lastError)return {campaign,battle,error:next.lastError};
  const units=battle.units.map(u=>{const horse=u.mount&&next.horseState?.horses.find(h=>h.id===u.mount.id);return horse?{...u,mount:{...u.mount,condition:Math.min(u.mount.condition,horse.condition)}}:u;});

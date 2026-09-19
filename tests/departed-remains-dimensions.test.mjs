@@ -18,7 +18,7 @@ function departedBody(){
  // A full-size boundary and an existing bleeding wound isolate return custody.
  // Departure, elapsed time, death and the report all use the real reducers.
  let battle=createBattle(request.squad.map((u,i)=>({...u,x:42+i,y:47,...(u.id===3?{hp:16,bleeding:3,bandaged:0,condition:27}:{})})),{
-  ...request,width,height,enemies:[],npcs:[],props:[],
+  ...request,width,height,enemies:[],npcs:request.npcs,props:[],
   tiles:Array.from({length:width*height},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',cover:0,blocked:false})),
  });
  battle=act(battle,{type:'exit',unitIds:['3'],exitId:battle.exits.find(e=>e.destination==='buenos_aires').id});

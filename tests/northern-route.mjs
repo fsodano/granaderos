@@ -4,13 +4,39 @@ import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {syncBattleTime} from '../game/time.js';
-import {fight} from './opening-driver.mjs';
+import {fight,combatOrder} from './opening-driver.mjs';
 import {enterSector} from '../game/world.js';
 import {sameCell,sameSurface,spacePoint} from '../game/tactical-space.js';
-import {getReachable,teamCanSee,stanceCost,actionCosts,hasLineOfSight} from '../game/tactical.js';
+import {getReachable,teamCanSee,stanceCost,actionCosts,hasLineOfSight,firearmShotOptions,weaponFor} from '../game/tactical.js';
+import {shotLocationEffects} from '../game/targeted-combat.js';
 import {availableAmmunition,weaponAmmoType} from '../game/ammunition-types.js';
 import {ammoResourceKey} from '../game/campaign-ammunition.js';
 import {RECIPES} from '../game/data.js';
+
+export function northernCombatOrder(battle,unit){
+ const action=combatOrder(battle,unit);
+ // A doctor without ammunition keeps a low profile at the reserve position.
+ // Adjacent aid and weapon maintenance remain available through normal orders.
+ if(unit.medical>=60&&!unit.loaded&&!availableAmmunition(unit)&&action?.type==='move')return unit.stance!=='prone'&&unit.ap>=stanceCost(unit,'prone')?{type:'stance',unitId:unit.id,stance:'prone'}:null;
+ if(action?.type==='stance'&&action.stance==='prone'&&unit.stance==='standing')return {...action,stance:'crouched'};
+ if(action?.type!=='fire'&&!(action?.type==='stance'&&action.stance==='prone'))return action;
+ const targets=battle.units.filter(target=>target.side==='enemy'&&target.hp>=15&&!target.departure&&!target.surrendered&&!target.unconscious&&!target.routed&&teamCanSee(battle,unit.side,target));
+ const shots=[];
+ // Select from the actual cursor previews, including body height and known
+ // civilian bodies, instead of firing torso shots through a blocked lane.
+ for(const target of targets){
+  const cost=actionCosts(battle,unit,target);if(unit.ap<cost.fire)continue;
+  const maxAim=Math.min(4,Math.floor((unit.ap-cost.fire)/cost.aim));
+  for(const option of firearmShotOptions(battle,unit,target,maxAim)){
+   if(option.chance<25)continue;
+   const damage=weaponFor(unit).damage,effect=shotLocationEffects(option.hitLocation,damage*option.damageFactor,target);
+   const value=Math.min(target.hp,effect.damage)+(target.hp-effect.damage<15?0:effect.breathLoss*.15+(effect.knockedDown?10:0));
+   const score=option.chance*value/Math.max(1,Math.min(target.hp,damage))-(cost.fire+option.aim*cost.aim)*.2;
+   shots.push({score,action:{type:'fire',unitId:unit.id,targetId:target.id,aim:option.aim,hitLocation:option.hitLocation}});
+  }
+ }
+ return shots.sort((a,b)=>b.score-a.score)[0]?.action??action;
+}
 
 // Deliberately poor tactics for the captivity scenario: march into the open
 // east court of the authored citadel, kneel and hold fire. Soldiers still use
@@ -187,7 +213,7 @@ export function prepareTucumanSquad(start,{report=()=>{}}={}){
   order({type:'wait',hours:1});
  }
  for(const id of patients)assert.equal(campaign.operativeState[id].hp,campaign.operativeState[id].maxHp);
- const usedDressings=medicalStart+boughtDressings-12-campaign.operativeState[doctor].medkits;assert.ok(usedDressings>0);
+ const usedDressings=medicalStart+boughtDressings-12-campaign.operativeState[doctor].medkits;assert.ok(patients.length?usedDressings>0:usedDressings===0,'only actual surviving patients consume recovery supplies');
  for(const operativeId of [doctor,...patients])order({type:'assignCare',operativeId,assignment:'rest'});
  const restUntil=campaign.hour+6;for(let i=0;campaign.hour<restUntil&&i<20;i++)order({type:'wait',hours:1});assert.equal(campaign.hour,restUntil);
  for(const operativeId of originalSquad){order({type:'assignCare',operativeId,assignment:'active'});assert.equal(campaign.operativeState[operativeId].hp,campaign.operativeState[operativeId].maxHp);assert.equal(campaign.operativeState[operativeId].bleeding,0);}
@@ -253,12 +279,38 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
  order({type:'createSquad',name:'Rescate del norte',ids:fieldIds});const field=campaign.activeSquadId;
  for(const operativeId of fieldIds)order({type:'assignCare',operativeId,assignment:'active'});
  campaign=finishReloadsBeforeMarch(campaign,{report});
+ // The relief doctors have already marched from the south. Rest the force
+ // overnight, and defend the depot if a visible raiding column approaches.
+ // Once the squads are in transit, they cannot defend the local reserve.
+ const staging={startHour:campaign.hour,departureHour:null,defenses:[],renewals:[]};
+ const deploying=[...fieldIds,...supportIds],earliestDeparture=campaign.hour+(24-campaign.hour%24)%24;
+ for(const operativeId of deploying)order({type:'assignCare',operativeId,assignment:'rest'});
+ const renew=()=>{for(const id of deploying){const contract=campaign.contracts[id];if(contract?.expiresAt!=null&&contract.expiresAt-campaign.hour<=14){const cash=campaign.resources.treasury;order({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});staging.renewals.push({id,cost:cash-campaign.resources.treasury,hour:campaign.hour});}}};
+ for(let i=0;i<48;i++){
+  if(campaign.pendingEncounter){
+   const encounter=structuredClone(campaign.pendingEncounter),group=structuredClone(campaign.enemyGroups.find(group=>group.id===encounter.groupId));
+   order({type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});
+   assert.deepEqual(campaign.pendingBattle.enemies,group.units,'the defense uses the actual arriving group');
+   const defense=fightNorthernSector(campaign,encounter.sector,{controller:northernCombatOrder,report});campaign=defense.campaign;
+   staging.defenses.push({groupId:group.id,...defense.summary});
+   for(const id of deploying){assert.equal(campaign.operativeState[id].alive,true,'the rescue needs its surviving paid force');order({type:'assignCare',operativeId:id,assignment:'rest'});}
+   continue;
+  }
+  const approach=campaign.enemyGroups.some(group=>group.target==='cordoba'&&['marching','waiting'].includes(group.status));
+  if(campaign.hour>=earliestDeparture&&!approach&&deploying.every(id=>campaign.operativeState[id].energy===100))break;
+  renew();order({type:'wait',hours:1});
+ }
+ assert.equal(campaign.pendingEncounter,null);assert.ok(deploying.every(id=>campaign.operativeState[id].energy===100),'the rescue departs after actual rest');
+ renew();staging.departureHour=campaign.hour;
+ for(const operativeId of deploying)order({type:'assignCare',operativeId,assignment:'active'});
+ order({type:'selectSquad',id:support});campaign=finishReloadsBeforeMarch(campaign,{report});
+ order({type:'selectSquad',id:field});campaign=finishReloadsBeforeMarch(campaign,{report});
  order({type:'selectSquad',id:support});order({type:'attack',sector:'tucuman',queue:true});order({type:'selectSquad',id:field});order({type:'attack',sector:'tucuman',queue:true});
  for(let i=0;i<24&&![field,support].every(id=>campaign.squads.find(q=>q.id===id).journey?.status==='ready');i++){assert.equal(campaign.pendingEncounter,null);order({type:'wait',hours:1});}
  order({type:'beginAssault',sector:'tucuman'});
  for(const {id,record} of captives)assert.deepEqual(campaign.operativeState[id],record);
  const battle=enterSector(campaign.pendingBattle,campaign.sectorStates.tucuman);assert.deepEqual(decodeSave(encodeSave(campaign,battle)),{campaign,battle});
- report({event:'rescuePrepared',hour:campaign.hour,units:campaign.pendingBattle.squad.map(u=>u.id),cash:campaign.resources.treasury,hired,hiringCost,medicalPurchases,fieldIds,supportIds});return {campaign,events,captives,hired,hiringCost,medicalPurchases,fieldIds,supportIds};
+ report({event:'rescuePrepared',hour:campaign.hour,units:campaign.pendingBattle.squad.map(u=>u.id),cash:campaign.resources.treasury,hired,hiringCost,medicalPurchases,fieldIds,supportIds,staging});return {campaign,events,captives,hired,hiringCost,medicalPurchases,fieldIds,supportIds,staging};
 }
 
 export function stabilizeRescued(start,{patients,report=()=>{}}={}){

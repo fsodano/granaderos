@@ -49,9 +49,19 @@ export const grenadeTargetingMode = (unit,mode) => mode==='throwGrenade'||mode==
 export const retainedAttackCursor = (unit, mode) => (mode === 'throwKnife' && !heldThrowingKnife(unit) || mode === 'throwGrenade' && !heldGrenade(unit) || mode === 'fire' && !hasFirearm(unit || {})) ? 'move' : mode;
 export const pickupTargetAction = (target,unit) => ({type:target.side!==unit?.side&&target.hp>0&&!target.unconscious&&!target.surrendered&&!target.routed?'steal':'loot',targetId:target.id});
 export const targetItemAction = (mode, targetId, unit) => ({type: mode === 'fire' && hasFirearm(unit || {}) ? 'fire' : 'useItem', targetId});
+// Civilian aiming uses the existing ground-shot contract, never a body target.
+export const pointFireInputAction=(point,{aim=0}={})=>({type:'firePoint',x:point?.x,y:point?.y,tacticalLevel:tacticalLevel(point),hitLocation:'torso',aim});
+function explicitPointShot(state,point){
+ if(point?.anonymous)return true;
+ return Boolean(point?.id&&(state.npcs??[]).some(npc=>npc.id===point.id&&sameCell(npc,point)&&state.units.some(observer=>observer.side==='player'&&canSee(state,observer,npc))));
+}
+function visibleThrowPoint(state,point){
+ return explicitPointShot(state,point)?{x:point.x,y:point.y,tacticalLevel:tacticalLevel(point),anonymous:true}:visibleHover(state,point);
+}
 function knifeTarget(state,unit,point){
- const visible=visibleHover(state,point);
+ const visible=visibleThrowPoint(state,point);
  if(!visible)return null;
+ if(visible.anonymous)return {x:visible.x,y:visible.y,tacticalLevel:tacticalLevel(visible)};
  const target=cellOccupant(state.units.filter(other=>sameCell(other,visible)&&visibleHover(state,other)),visible);
  return target&&target.side!==unit?.side&&target.hp>0&&!target.surrendered?target:{x:visible.x,y:visible.y,tacticalLevel:tacticalLevel(visible)};
 }
@@ -60,7 +70,7 @@ export function knifeThrowInputAction(state,unit,point,{aim=0,hitLocation='torso
  return {type:'throwKnife',aim,...(target?.id?{targetId:target.id,hitLocation:canChooseShotLocation(target)?hitLocation:'torso'}:{x:point?.x,y:point?.y,tacticalLevel:tacticalLevel(point),hitLocation:'torso'})};
 }
 export function grenadeThrowInputAction(state,unit,point){
- const target=visibleHover(state,point)??point;
+ const target=visibleThrowPoint(state,point)??point;
  return {type:'throwGrenade',x:target?.x,y:target?.y,tacticalLevel:tacticalLevel(target),aim:0};
 }
 export function resolvedOrderType(state, unit, action) {
@@ -184,6 +194,8 @@ export function turnModel(state) {
 
 export function shotLocationOptions(state, unit, ctx = {}) {
   if(ctx.mode==='throwGrenade')return [];
+  if(ctx.mode==='throwKnife'&&explicitPointShot(state,ctx.target))return [];
+  if(ctx.mode==='fire'&&ctx.target&&(explicitPointShot(state,ctx.target)||!cellOccupant(state.units.filter(other=>other.side!==unit?.side&&other.hp>0&&!other.surrendered&&visibleHover(state,other)),ctx.target)))return [];
   if (!unit || !(hasFirearm(unit)||ctx.mode==='throwKnife'&&heldThrowingKnife(unit))) return [];
   return HIT_LOCATIONS.filter(([id])=>!ctx.target||canChooseShotLocation(ctx.target)||id==='torso').map(([id, label]) => ({id, label, active: id === hitLocationFor(ctx.hitLocation), disabled: !unitCanAct(state, unit) || Boolean(ctx.busy)}));
 }
@@ -237,7 +249,7 @@ export function targetingHelp(mode, unit, ctx = {}) {
 
 export function aimOptions(state, unit, ctx = {}) {
   if(grenadeTargetingMode(unit,ctx.mode)){
-    const preview=grenadeThrowPreview(state,unit,visibleHover(state,ctx.target),{aim:0});
+    const preview=grenadeThrowPreview(state,unit,visibleThrowPoint(state,ctx.target),{aim:0});
     return [{level:0,pa:state.mode==='exploration'?0:preview.pa,disabled:Boolean(ctx.busy)||!preview.valid}];
   }
   if(ctx.mode==='throwKnife'){
@@ -269,7 +281,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   if (!unit) return null;
   const mode = ctx.mode || 'move';
   if(grenadeTargetingMode(unit,mode)){
-    const target=visibleHover(state,point),preview=grenadeThrowPreview(state,unit,target,{aim:0});
+    const target=visibleThrowPoint(state,point),preview=grenadeThrowPreview(state,unit,target,{aim:0});
     const friendlyRisk=Array.isArray(preview.friendlyRisk)?preview.friendlyRisk.length>0:Boolean(preview.friendlyRisk);
     const reach=Number.isFinite(preview.range?.maximum)?`Alcance ${Math.round(preview.range.maximum*10)/10} casillas.`:'';
     const blocked=Boolean(preview.flight?.blocked),landing=preview.flight?.landing,landingLabel=landing?`${tacticalGridLabel(landing.x,landing.y)}${tacticalLevel(landing)>0?` · nivel ${tacticalLevel(landing)}`:''}`:undefined;
@@ -292,7 +304,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   if(recipient&&unit.activeSlot==='item'&&!heldGrenade(unit)&&['move','useItem'].includes(mode)){const gift=npcGiftPreview(state,unit,recipient);return {name:recipient.name,actionLabel:gift.label,pa:gift.pa,remaining:unit.ap,valid:gift.valid,reason:gift.reason,coverNote:'Se entrega el objeto que está en la mano. No se usa la reserva del cuartel.'};}
   const occupants = state.units.filter(v => sameCell(v, point) && !v.fled && !v.departure && (v.side === unit.side || state.units.some(p => p.side === unit.side && canSee(state, p, v))));
   const target = occupants.find(v => v.id === point.id) || occupants.find(v => v.hp > 0) || occupants[0];
-  if(mode==='fire'&&(!target||target.side===unit.side||target.hp<=0||target.surrendered)){
+  if(mode==='fire'&&(explicitPointShot(state,point)||!target||target.side===unit.side||target.hp<=0||target.surrendered)){
     const preview=pointFirePreview(state,unit,point,ctx.aim??0);
     const paired=Boolean(pairedPistol(unit));
     return {name:tacticalGridLabel(point.x,point.y),actionLabel:paired?'Disparar ambas pistolas a la casilla':'Disparar a la casilla',attackType:'fire',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,coverNote:`${firearmCostText(state,unit,point)} ${paired?'Un disparo por pistola. ':''}Sin objetivo confirmado. Altura fija; la cobertura y los cuerpos pueden interceptar el tiro. Puede herir aliados.`};
