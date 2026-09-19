@@ -127,6 +127,14 @@ const npcIds=new Set();
 for(const n of s.npcs){
  for(const gift of validateQuestGifts(n))claimStack(gift);
  need(coord(n)&&text(n.id)&&text(n.name)&&!ids.has(n.id)&&!npcIds.has(n.id),'personajes');npcIds.add(n.id);
+ if(n.hp!==undefined)need(number(n.hp,0,100),'salud civil');
+ if(n.energy!==undefined)need(number(n.energy,0,100),'energía civil');
+ if(n.unconscious!==undefined)need(typeof n.unconscious==='boolean','conciencia civil');
+ const npcHp=n.hp??100,npcEnergy=n.energy??100,npcIncapacitated=npcHp>0&&(npcHp<15||npcEnergy<=0);
+ if(n.unconscious===undefined&&npcIncapacitated)n.unconscious=true;
+ // Older trap records marked a dead civilian unconscious as well. Both
+ // boolean forms remain valid for a corpse; living health must be coherent.
+ if(npcHp>0&&(n.hp!==undefined||n.energy!==undefined))need((n.unconscious??false)===npcIncapacitated,'conciencia civil incompatible con sus heridas');
  if(n.stance!==undefined)need(['standing','crouched','prone'].includes(n.stance),'postura civil');
  if(n.movementMode!==undefined)need(['walk','run','crouch','prone'].includes(n.movementMode),'movimiento civil');
  if(n.facing!==undefined)need(integer(n.facing,0,7),'dirección civil');

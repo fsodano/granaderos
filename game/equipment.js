@@ -1,4 +1,6 @@
 import {wornOutfit} from './outfits.js';
+import {isGrenadeStack,makeGrenadeStack} from './grenades.js';
+import {operativeLocation,operativeInTransit} from './squads.js';
 import {validateReloadProgress} from './weapon-reload.js';
 import {heldSupply} from './held-supplies.js';
 import {heldTool} from './environment-interactions.js';
@@ -6,7 +8,7 @@ import {WEAPONS} from './data.js';
 import {AMMUNITION_TYPES,weaponAmmoType,availableAmmunition,addAmmunition} from './ammunition-types.js';
 import {initializeUnitAmmunition,syncUnitAmmunition,consumeWeaponAmmunition} from './tactical-ammunition.js';
 import {ammoResourceKey} from './campaign-ammunition.js';
-import {inventoryUsage,validateHands,validateEquipmentCursor,carriedObject,handMetadata,handRecord} from './tactical-inventory.js';
+import {inventoryUsage,validateHands,validateEquipmentCursor,carriedObject,handMetadata,handRecord,applyItemQuantity} from './tactical-inventory.js';
 import {FITTING_RULES_VERSION,validateFittingPattern,validateWeaponFittings,validateUnitFittings,normalizeUnitFittings,validItemIdentity,fittingItemIds,heldItemIds,fittingLabel} from './weapon-fittings.js';
 export const EQUIPMENT_CATALOG=[
  ...Object.values(WEAPONS).filter(w=>w.id>=1800&&w.id<=1813).map(w=>({...w,item:w.id,stockKey:String(w.id),category:w.id<1809?'firearm':'blade',price:({1800:240,1801:230,1802:420,1803:180,1804:100,1805:130,1806:180,1807:160,1808:220,1809:160,1810:110,1811:50,1812:70,1813:40})[w.id]})),
@@ -72,6 +74,25 @@ export const ammunitionStock=(s,type,at=s.location)=>s.merchants?.[at]?.ammuniti
 export const MEDICAL_STOCK_CAP=40;
 export const MEDICAL_DAILY_RESTOCK=5;
 export const medicalSupplyStock=(s,at=s.location)=>s.merchants?.[at]?.supplies?.medkits??0;
+export const GRENADE_PRICE=80;
+export const GRENADE_STOCK_CAP=6;
+export const grenadeStock=(s,at=s.location)=>s.merchants?.[at]?.grenades?.arsenal??0;
+// Authored campaign supply: one arsenal lot in Mendoza during the Cuyo phase.
+// This is not an attested shipment from Montevideo or a daily merchant refill.
+export function grenadeOffer(s,op,isSupplied,quantity=1){
+ const stock=grenadeStock(s),record=op&&s.operativeState[op.id];
+ let reason=s.defeated?'La campaña terminó.':s.pendingBattle||s.pendingEncounter?'Resolvé el encuentro antes de comprar granadas.':s.phase<3?'La remesa de arsenal se habilita durante la campaña de Cuyo.':s.location!=='mendoza'||s.sectors.mendoza?.owner!=='patriot'||!isSupplied(s,'mendoza')?'La remesa requiere la maestranza de Mendoza propia y abastecida.':!op||!s.recruited.includes(op.id)||!record?.alive||record.captured||record.hp<15||record.asleep||record.unconscious||record.routed||record.surrendered||record.energy<=0||operativeInTransit(s,op.id)||operativeLocation(s,op.id)!==s.location?'Elegí un combatiente disponible y presente en Mendoza.':!Number.isSafeInteger(quantity)||quantity<1||quantity>GRENADE_STOCK_CAP?'Elegí entre 1 y 6 granadas.':stock<quantity?'La remesa de arsenal no tiene suficientes granadas.':s.resources.treasury<GRENADE_PRICE*quantity?'No hay pesos suficientes.':null;
+ if(!reason)try{applyItemQuantity({...op,...record,id:String(op.id),loaded:record.carriedLoaded??0},{item:'inventory:grenade:arsenal',...makeGrenadeStack('arsenal',quantity)});}catch(error){reason=error.message;}
+ return {grenadeType:'arsenal',name:'Granada de arsenal',price:GRENADE_PRICE,stock,available:!reason,reason,note:'Remesa de arsenal. Existencias limitadas; no se reponen.',action:{type:'purchaseGrenades',operativeId:op?.id,grenadeType:'arsenal',quantity}};
+}
+export function purchaseGrenades(s,op,isSupplied,quantity=1){
+ const offer=grenadeOffer(s,op,isSupplied,quantity);need(offer.available,offer.reason);
+ const record=s.operativeState[op.id],next=applyItemQuantity({...op,...record,id:String(op.id),loaded:record.carriedLoaded??0},{item:'inventory:grenade:arsenal',...makeGrenadeStack('arsenal',quantity)});
+ record.inventory=next.inventory;if(next.pocketOrder)record.pocketOrder=next.pocketOrder;
+ s.resources.treasury-=GRENADE_PRICE*quantity;s.merchants.mendoza.grenades.arsenal-=quantity;
+ s.merchants.mendoza.cash=Math.min(1e9,s.merchants.mendoza.cash+GRENADE_PRICE*quantity);
+ return `${op.nickname??op.name} recibe ${quantity} granada${quantity===1?'':'s'} de la remesa de arsenal por ${GRENADE_PRICE*quantity} pesos.`;
+}
 const need=(ok,message)=>{if(!ok)throw Error(message);};
 const handheld=item=>Number.isInteger(Number(item))&&Number(item)>=1800&&Number(item)<=1813;
 const catalogItem=equipmentCatalogItem;
@@ -81,6 +102,11 @@ function migratedIdentitySequence(s){let maximum=0;const pending=[s];while(pendi
 const stockCap=item=>item.category==='artillery'?1:item.category==='blade'?6:3;
 const merchantCatalog=sector=>EQUIPMENT_CATALOG.filter(item=>sector==='ensenada'?isImportedEquipment(item):!isImportedEquipment(item));
 const initialMerchant=sector=>({ammunition:Object.fromEntries(Object.keys(AMMUNITION_TYPES).map(type=>[type,sector==='ensenada'?0:AMMUNITION_MERCHANT_CAP])),usedItems:[],stock:Object.fromEntries(merchantCatalog(sector).map(item=>[item.stockKey??item.item,stockCap(item)])),supplies:{medkits:sector==='ensenada'?0:MEDICAL_STOCK_CAP},restockHours:0,cash:sector==='ensenada'?0:MERCHANT_CASH});
+function containsGrenades(state){
+ const pending=[state],seen=new Set();
+ while(pending.length){const value=pending.pop();if(!value||typeof value!=='object'||seen.has(value))continue;seen.add(value);if(isGrenadeStack(value))return true;for(const child of Object.values(value))if(child&&typeof child==='object')pending.push(child);}
+ return false;
+}
 
 export function migrateEquipment(s){
  const legacy=s.fittingRulesVersion===undefined;
@@ -88,6 +114,12 @@ export function migrateEquipment(s){
  s.armory??={};
  for(const record of Object.values(s.operativeState??{})){if(record.bladeCondition===undefined)record.bladeCondition=100;normalizeUnitFittings(record);}
  if(s.merchants===undefined)s.merchants=Object.fromEntries([...WORKSHOP_SECTORS,'ensenada'].map(id=>[id,initialMerchant(id)]));
+ if(s.grenadeSupplyVersion===undefined){
+  need(Object.values(s.merchants).every(merchant=>merchant.grenades===undefined)&&!containsGrenades(s),'La remesa de granadas mezcla versiones.');
+  s.grenadeSupplyVersion=1;for(const [at,merchant]of Object.entries(s.merchants))merchant.grenades={arsenal:at==='mendoza'?GRENADE_STOCK_CAP:0};
+ }
+ need(s.grenadeSupplyVersion===1,'La versión de la remesa de granadas no es válida.');
+ for(const [at,merchant]of Object.entries(s.merchants))need(merchant.grenades!==null&&typeof merchant.grenades==='object'&&!Array.isArray(merchant.grenades)&&Object.keys(merchant.grenades).length===1&&Number.isSafeInteger(merchant.grenades.arsenal)&&merchant.grenades.arsenal>=0&&merchant.grenades.arsenal<=(at==='mendoza'?GRENADE_STOCK_CAP:0),'Las existencias de granadas no son válidas.');
  if(legacy)for(const [at,merchant]of Object.entries(s.merchants)){merchant.supplies??={medkits:at==='ensenada'?0:MEDICAL_STOCK_CAP};if(at!=='ensenada')merchant.stock['1811:india_socket']??=6;}
  if(s.armoryItems===undefined){
   need(Object.entries(s.armory).every(([item,count])=>catalogItem(item)&&Number.isInteger(count)&&count>=0&&count<=100000),'La armería antigua es inválida.');

@@ -5,7 +5,8 @@ import {handLayout,selectMainHand} from './hand-layout.js';
 import {reloadPlan,lookPreview} from './tactical.js';
 import {shotRangeText} from './shot-range.js';
 import {heldThrowingKnife} from './thrown-knife.js';
-import {knifeThrowPreview} from './tactical.js';
+import {heldGrenade} from './grenade-throw.js';
+import {knifeThrowPreview,grenadeThrowPreview} from './tactical.js';
 import {canChooseShotLocation} from './targeted-combat.js';
 import {tacticalGridLabel} from './tactical-grid.js';
 // Pure HUD model for the tactical battle inspector and squad strip.
@@ -42,9 +43,10 @@ export function heldSupplyAction(unit, target) {
   return {type: 'useItem', ...(unit.activeSupply === 'torches' ? {x: target.x, y: target.y, ...(target.tacticalLevel===undefined?{}:{tacticalLevel:target.tacticalLevel})} : {targetId: target?.id})};
 }
 
-export const attackCursorMode = unit => heldThrowingKnife(unit) ? 'throwKnife' : hasFirearm(unit || {}) ? 'fire' : 'useItem';
-export const aimedCursorMode = mode => mode === 'fire' || mode === 'throwKnife';
-export const retainedAttackCursor = (unit, mode) => (mode === 'throwKnife' && !heldThrowingKnife(unit) || mode === 'fire' && !hasFirearm(unit || {})) ? 'move' : mode;
+export const attackCursorMode = unit => heldGrenade(unit) ? 'throwGrenade' : heldThrowingKnife(unit) ? 'throwKnife' : hasFirearm(unit || {}) ? 'fire' : 'useItem';
+export const aimedCursorMode = mode => mode === 'fire' || mode === 'throwKnife' || mode === 'throwGrenade';
+export const grenadeTargetingMode = (unit,mode) => mode==='throwGrenade'||mode==='useItem'&&Boolean(heldGrenade(unit));
+export const retainedAttackCursor = (unit, mode) => (mode === 'throwKnife' && !heldThrowingKnife(unit) || mode === 'throwGrenade' && !heldGrenade(unit) || mode === 'fire' && !hasFirearm(unit || {})) ? 'move' : mode;
 export const pickupTargetAction = (target,unit) => ({type:target.side!==unit?.side&&target.hp>0&&!target.unconscious&&!target.surrendered&&!target.routed?'steal':'loot',targetId:target.id});
 export const targetItemAction = (mode, targetId, unit) => ({type: mode === 'fire' && hasFirearm(unit || {}) ? 'fire' : 'useItem', targetId});
 function knifeTarget(state,unit,point){
@@ -57,8 +59,13 @@ export function knifeThrowInputAction(state,unit,point,{aim=0,hitLocation='torso
  const target=knifeTarget(state,unit,point);
  return {type:'throwKnife',aim,...(target?.id?{targetId:target.id,hitLocation:canChooseShotLocation(target)?hitLocation:'torso'}:{x:point?.x,y:point?.y,tacticalLevel:tacticalLevel(point),hitLocation:'torso'})};
 }
+export function grenadeThrowInputAction(state,unit,point){
+ const target=visibleHover(state,point)??point;
+ return {type:'throwGrenade',x:target?.x,y:target?.y,tacticalLevel:tacticalLevel(target),aim:0};
+}
 export function resolvedOrderType(state, unit, action) {
   if (action.type !== 'useItem') return action.type;
+  if (heldGrenade(unit)) return 'throwGrenade';
   if (action.environment || unit.activeSlot === 'tool') return 'environment';
   if (unit.activeSlot === 'supply') return 'supply';
   if (unit.activeSlot === 'medical') return 'heal';
@@ -176,6 +183,7 @@ export function turnModel(state) {
 }
 
 export function shotLocationOptions(state, unit, ctx = {}) {
+  if(ctx.mode==='throwGrenade')return [];
   if (!unit || !(hasFirearm(unit)||ctx.mode==='throwKnife'&&heldThrowingKnife(unit))) return [];
   return HIT_LOCATIONS.filter(([id])=>!ctx.target||canChooseShotLocation(ctx.target)||id==='torso').map(([id, label]) => ({id, label, active: id === hitLocationFor(ctx.hitLocation), disabled: !unitCanAct(state, unit) || Boolean(ctx.busy)}));
 }
@@ -209,6 +217,8 @@ export function interruptHover(state, selectedId) {
 }
 
 export function targetingHelp(mode, unit, ctx = {}) {
+  if(mode==='move'&&heldGrenade(unit))return 'Granada en mano: clic en el suelo para caminar. Botón derecho o F: preparar el lanzamiento. Otro clic derecho vuelve a movimiento.';
+  if(grenadeTargetingMode(unit,mode))return 'Granada: clic en una casilla para lanzar. Otro clic derecho o Esc vuelve a movimiento. No permite aumentar la puntería ni elegir una parte del cuerpo. La explosión puede herir aliados.';
   if(mode==='throwKnife')return 'Facón: clic para lanzar; botón derecho sobre una persona para apuntar más, fuera de ella para mover.';
   if(mode==='talk')return 'Hablar: seleccioná una persona visible y contigua. Esc vuelve al cursor de movimiento.';
   if ((ctx.itemIntent==='steal'&&['move','useItem'].includes(mode))||mode==='loot'&&unit?.activeSlot==='unarmed') return 'Manos libres: seleccioná un enemigo contiguo para quitarle el arma. Requiere 28 PA como mínimo y consume todos los restantes. Los cuerpos se registran.';
@@ -226,6 +236,10 @@ export function targetingHelp(mode, unit, ctx = {}) {
 }
 
 export function aimOptions(state, unit, ctx = {}) {
+  if(grenadeTargetingMode(unit,ctx.mode)){
+    const preview=grenadeThrowPreview(state,unit,visibleHover(state,ctx.target),{aim:0});
+    return [{level:0,pa:state.mode==='exploration'?0:preview.pa,disabled:Boolean(ctx.busy)||!preview.valid}];
+  }
   if(ctx.mode==='throwKnife'){
     const target=knifeTarget(state,unit,ctx.target);
     return Array.from({length:5},(_,level)=>{
@@ -254,6 +268,15 @@ function meleePreparationText(state,preview){
 function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   if (!unit) return null;
   const mode = ctx.mode || 'move';
+  if(grenadeTargetingMode(unit,mode)){
+    const target=visibleHover(state,point),preview=grenadeThrowPreview(state,unit,target,{aim:0});
+    const friendlyRisk=Array.isArray(preview.friendlyRisk)?preview.friendlyRisk.length>0:Boolean(preview.friendlyRisk);
+    const reach=Number.isFinite(preview.range?.maximum)?`Alcance ${Math.round(preview.range.maximum*10)/10} casillas.`:'';
+    const blocked=Boolean(preview.flight?.blocked),landing=preview.flight?.landing,landingLabel=landing?`${tacticalGridLabel(landing.x,landing.y)}${tacticalLevel(landing)>0?` · nivel ${tacticalLevel(landing)}`:''}`:undefined;
+    return {name:target?tacticalGridLabel(target.x,target.y):'Granada',actionLabel:'Lanzar granada',attackLabel:'Lanzar granada',attackType:'throwGrenade',pa:preview.pa,energy:preview.costs?.energy,
+      chance:blocked?undefined:preview.chance,chanceLabel:'precisión',remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,blastRadius:preview.blastRadius,friendlyRisk,blocked,landing,landingLabel,
+      coverNote:[blocked?`Un obstáculo corta la trayectoria. Caída prevista: ${landingLabel??'antes del objetivo'}.`:null,preview.costs?.energy>0?`${preview.costs.energy} EN.`:null,reach,Number.isFinite(preview.blastRadius)?`Radio de explosión: ${preview.blastRadius} casillas.`:null,friendlyRisk?'Aliados dentro del radio de explosión.':'La explosión puede herir a cualquiera en la zona.'].filter(Boolean).join(' ')};
+  }
   if(mode==='throwKnife'){
     const target=knifeTarget(state,unit,point),preview=knifeThrowPreview(state,unit,target,{aim:ctx.aim??0,hitLocation:target?.id?hitLocationFor(ctx.hitLocation):'torso'});
     const label=target?.id?(HIT_LOCATIONS.find(([id])=>id===preview.hitLocation)?.[1]??'Torso'):undefined;
@@ -266,7 +289,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   if (reload) return reload;
   if (!point) return null;
   const recipient=state.npcs?.find(n=>sameCell(n,point));
-  if(recipient&&unit.activeSlot==='item'&&['move','useItem'].includes(mode)){const gift=npcGiftPreview(state,unit,recipient);return {name:recipient.name,actionLabel:gift.label,pa:gift.pa,remaining:unit.ap,valid:gift.valid,reason:gift.reason,coverNote:'Se entrega el objeto que está en la mano. No se usa la reserva del cuartel.'};}
+  if(recipient&&unit.activeSlot==='item'&&!heldGrenade(unit)&&['move','useItem'].includes(mode)){const gift=npcGiftPreview(state,unit,recipient);return {name:recipient.name,actionLabel:gift.label,pa:gift.pa,remaining:unit.ap,valid:gift.valid,reason:gift.reason,coverNote:'Se entrega el objeto que está en la mano. No se usa la reserva del cuartel.'};}
   const occupants = state.units.filter(v => sameCell(v, point) && !v.fled && !v.departure && (v.side === unit.side || state.units.some(p => p.side === unit.side && canSee(state, p, v))));
   const target = occupants.find(v => v.id === point.id) || occupants.find(v => v.hp > 0) || occupants[0];
   if(mode==='fire'&&(!target||target.side===unit.side||target.hp<=0||target.surrendered)){
@@ -314,7 +337,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
     coverNote=preview.prepare?'Prepara el arma sin disparar. Conserva los cartuchos; el próximo disparo no vuelve a pagar la preparación.':hasFirearm(unit)?'Una vez orientado, mirá otra vez en esa dirección para preparar el arma.':undefined;
   } else if (target && target.side !== unit.side && ['move', 'useItem', 'fire', 'melee'].includes(mode)) {
     if (target.hp <= 0 || target.surrendered) return null;
-    if (unit.activeSlot === 'item') return {name:target.name,reason:'Este objeto no se puede usar sobre una persona. Guardalo o elegí otro objeto.',valid:false};
+    if (unit.activeSlot === 'item') return {name:target.name,reason:heldGrenade(unit)?'Botón derecho o F para lanzar la granada a una casilla.':'Este objeto no se puede usar sobre una persona. Guardalo o elegí otro objeto.',valid:false};
     if (unit.activeSlot === 'tool') return {name: target.name, reason: 'La herramienta se usa sobre una puerta o un cofre.', valid: false};
     const attack = contextualAttack(state, unit, target, {type: mode, aim: ctx.aim || 0, hitLocation: hitLocationFor(ctx.hitLocation)});
     pa = attack.pa; attackType = attack.type;
@@ -369,6 +392,7 @@ export function fittingInventoryModel(state, unit) {
 
 export function equippedItemHelp(state, unit, ctx = {}) {
   if (!unit) return 'Seleccioná un combatiente.';
+  if(heldGrenade(unit)||ctx.mode==='throwGrenade')return targetingHelp(ctx.mode??'move',unit);
   if(ctx.mode==='throwKnife')return targetingHelp(ctx.mode,unit);
   const weapon = weaponFor(unit), costs = actionCosts(state, unit), exploring=state.mode==='exploration';
   if (unit.activeSlot === 'supply') return `${weapon.name} · ${exploring?0:supplyUsePreview(state, unit, ctx.target).cost} PA. ${targetingHelp('useItem', unit)}`;

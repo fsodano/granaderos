@@ -16,10 +16,12 @@ export function targetHitFrame(target,position){
 // attack reducer only when the player confirms the shot or throw.
 export function rightClickAim(state,unit,{mode='move',aim=0,busy=false,target=null,hitLocation='torso'}={}){
  if(busy)return null;
+ if(mode==='throwGrenade')return {mode:'move',aim:0};
  const character=target?.id&&[...state.units,...(state.npcs??[])].find(person=>person.id===target.id);
  if(['fire','throwKnife','useItem'].includes(mode)&&!visibleHover(state,character)?.id)return {mode:'move',aim:0};
  if(!unitCanAct(state,unit))return null;
  const nextMode=attackCursorMode(unit);
+ if(nextMode==='throwGrenade')return {mode:nextMode,aim:0};
  const maximum=aimOptions(state,unit,{mode:nextMode,target:visibleHover(state,target),hitLocation}).filter(option=>!option.disabled).at(-1)?.level??0;
  return {mode:nextMode,aim:aimedCursorMode(mode)&&mode===nextMode?(Math.max(0,Math.min(maximum,Number.isFinite(aim)?Math.floor(aim):0))+1)%(maximum+1):0};
 }

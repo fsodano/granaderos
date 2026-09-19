@@ -12,7 +12,7 @@ import {createBuildingRenderer} from './TacticalBuildings';
 import {isInteriorVisible} from '../../game/tactical-visibility.js';
 import {buildPropObjects} from './TacticalProps';
 import {canSee,tileIllumination,shotChance,hasFirearm,contextualAttack,ARTILLERY} from '../../game/tactical.js';
-import {heardNoiseModel,groundLootPiles,aimedCursorMode} from '../../game/ja2-hud.js';
+import {heardNoiseModel,groundLootPiles,aimedCursorMode,grenadeTargetingMode} from '../../game/ja2-hud.js';
 import {useMemo,useRef,type ReactNode} from 'react';
 import {sameCell,spaceKey,tacticalLevel,surfaceHeight} from '../../game/tactical-space.js';
 import {projectSurface,surfaceDrawDepth,surfaceRenderOffset} from '../lib/tactical-elevation';
@@ -68,6 +68,7 @@ export default function TacticalScene({viewport,cursorLevel=0,state:s,selected,u
  const illumination=useMemo(()=>new Map<string,number>(visibleTiles.map((t:any)=>[`${t.x},${t.y}`,tileIllumination(s,t.x,t.y)])),[s,visibleTiles]);
  const light=(x:number,y:number,level=0)=>s.night?.27+tileIllumination(s,x,y,level)*.73:1;
  const material=(t:any)=>terrainMaterial(t,s.sceneId??s.sectorId);
+ const areaThrow=grenadeTargetingMode(u,mode),pointThrow=areaThrow||mode==='throwKnife',grenadeHeld=grenadeTargetingMode(u,'useItem');
  const drawPerson=(v:any,npc=false)=>{
   const moving=positions[v.id]??{...v,direction:v.side==='enemy'?7:3,frame:0,moving:false};const at={...v,...moving},p=projectSurface(s,project,at),interactive=tacticalLevel(v)===cursorLevel,hovered=hover&&(hover.id?hover.id===v.id:sameCell(hover,v));
   const posture=spriteCondition(v),collapsed=posture==='dead'||posture==='unconscious';
@@ -75,9 +76,10 @@ export default function TacticalScene({viewport,cursorLevel=0,state:s,selected,u
   const direction=collapsed||moving.moving?moving.direction:Number.isInteger(v.facing)?(v.facing+1)%8:poses[v.id]&&poses[v.id]!=='idle'?(directions[v.id]??moving.direction):moving.direction;
   const selectedUnit=v.id===selected,top=p.y-(collapsed||posture==='prone'?24:mounted?72:49);
   const frame=targetHitFrame(v,p);
-  const pointerTarget=(event:any)=>{const bounds=event.currentTarget.getBoundingClientRect();return {...v,aimLocation:mode==='inventory'?'torso':aimedBodyPart(v,bounds.height?(event.clientY-bounds.top)/bounds.height:.5)};};
+  const bodyAim=!areaThrow&&canChooseShotLocation(v);
+  const pointerTarget=(event:any)=>{const bounds=event.currentTarget.getBoundingClientRect();return {...v,aimLocation:mode==='inventory'||areaThrow?'torso':aimedBodyPart(v,bounds.height?(event.clientY-bounds.top)/bounds.height:.5)};};
   return <g data-unit-id={v.id} data-npc-activity={npc?v.ai?.activity:undefined} data-moving={!collapsed&&moving.moving} data-direction={direction} data-posture={posture} data-tactical-level={tacticalLevel(v)||undefined} opacity={v.hp<=0?.7:1}>
-   <rect data-person-hit-target="true" {...frame} fill="transparent" pointerEvents={interactive?"all":"none"} role="button" tabIndex={interactive?0:-1} aria-label={mode==='inventory'?`Colocar objeto: ${v.name}`:npc&&mode!=='throwKnife'?`${u?.activeSlot==='item'&&['move','useItem'].includes(mode)?'Entregar objeto a':'Hablar con'} ${v.name}${v.ai?.activity?", "+(NPC_ACTIVITY_LABELS as any)[v.ai.activity]:""}`:npc?`Lanzar a la casilla de ${v.name}`:`${v.name} · ${v.hp<=0?'muerto':v.unconscious?'inconsciente':Math.ceil(v.hp)+' salud'}`} onMouseEnter={event=>onHover(pointerTarget(event))} onMouseMove={event=>onHover(pointerTarget(event))} onMouseLeave={()=>onHover(null)} onFocus={()=>onHover({...v,aimLocation:canChooseShotLocation(v)?hitLocation:'torso'})} onBlur={()=>onHover(null)} onClick={event=>npc&&mode!=='throwKnife'?onTalk(v):onTile(pointerTarget(event))} onKeyDown={e=>{if(aimedCursorMode(mode)&&['ArrowUp','ArrowDown'].includes(e.key)&&canChooseShotLocation(v)){e.preventDefault();const parts=['head','torso','legs'],index=Math.max(0,parts.indexOf(hitLocation));onHover({...v,aimLocation:parts[Math.max(0,Math.min(2,index+(e.key==='ArrowUp'?-1:1)))]});return;}if(e.key==='Enter'||e.key===' '){e.preventDefault();npc&&mode!=='throwKnife'?onTalk(v):onTile({...v,aimLocation:canChooseShotLocation(v)?hitLocation:'torso'});}}}/>
+   <rect data-person-hit-target="true" {...frame} fill="transparent" pointerEvents={interactive?"all":"none"} role="button" tabIndex={interactive?0:-1} aria-label={mode==='inventory'?`Colocar objeto: ${v.name}`:areaThrow?`Lanzar granada a la casilla de ${v.name}`:npc&&!pointThrow?`${u?.activeSlot==='item'&&!grenadeHeld&&['move','useItem'].includes(mode)?'Entregar objeto a':'Hablar con'} ${v.name}${v.ai?.activity?", "+(NPC_ACTIVITY_LABELS as any)[v.ai.activity]:""}`:npc?`Lanzar a la casilla de ${v.name}`:`${v.name} · ${v.hp<=0?'muerto':v.unconscious?'inconsciente':Math.ceil(v.hp)+' salud'}`} onMouseEnter={event=>onHover(pointerTarget(event))} onMouseMove={event=>onHover(pointerTarget(event))} onMouseLeave={()=>onHover(null)} onFocus={()=>onHover({...v,aimLocation:bodyAim?hitLocation:'torso'})} onBlur={()=>onHover(null)} onClick={event=>npc&&!pointThrow?onTalk(v):onTile(pointerTarget(event))} onKeyDown={e=>{if(aimedCursorMode(mode)&&['ArrowUp','ArrowDown'].includes(e.key)&&bodyAim){e.preventDefault();const parts=['head','torso','legs'],index=Math.max(0,parts.indexOf(hitLocation));onHover({...v,aimLocation:parts[Math.max(0,Math.min(2,index+(e.key==='ArrowUp'?-1:1)))]});return;}if(e.key==='Enter'||e.key===' '){e.preventDefault();npc&&!pointThrow?onTalk(v):onTile({...v,aimLocation:bodyAim?hitLocation:'torso'});}}}/>
    <ellipse cx={p.x+5} cy={p.y+2} rx={mounted?21:11} ry="4" fill="#13150f" opacity=".5" pointerEvents="none"/>
    {!npc&&v.side==='enemy'&&v.hp>0&&!v.surrendered&&<g aria-label="Enemigo" pointerEvents="none"><path d={`M${p.x-20},${top-4}l4,4l-4,4l-4,-4z`} fill="#bf644b" stroke="#fff0d0" strokeWidth="1.2"/></g>}
    {selectedUnit&&<ellipse cx={p.x} cy={p.y} rx="15" ry="6" fill="none" stroke="#dacb86" strokeWidth="1" pointerEvents="none"/>}

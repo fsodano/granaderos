@@ -1,4 +1,5 @@
 import {AMMUNITION_TYPES,validateAmmunitionStack,isAmmunitionStack} from './ammunition-types.js';
+import {GRENADE_TYPES,validateGrenadeStack,isGrenadeStack} from './grenades.js';
 import {OUTFITS,validateOutfit,wornOutfit} from './outfits.js';
 import {handLayout,handsRequired,selectMainHand} from './hand-layout.js';
 import {allocatePockets,rearrangePockets,pocketOrderFromSlots,validatePocketOrder} from './inventory-pockets.js';
@@ -55,6 +56,8 @@ function record(value) {
   for (const key of Object.keys(result)) if (['__proto__', 'constructor', 'prototype'].includes(key)) fail('Los datos del objeto no son válidos.');
   if(result.ammoType!==undefined&&!isAmmunitionStack(result))fail('El tipo de munición requiere una pila de cartuchos.');
   validateAmmunitionStack(result);
+  if(result.grenadeType!==undefined&&!isGrenadeStack(result))fail('El tipo de granada requiere una pila de granadas.');
+  validateGrenadeStack(result);
   if (result.weapon !== undefined) {
     const spec = weapon(result.weapon);
     result.loaded = quantity(result.loaded ?? 0);
@@ -134,6 +137,7 @@ export function handRecord(unit, slot) {
 }
 function recordDescriptor(item, value) {
   if (isAmmunitionStack(value)) {const spec=AMMUNITION_TYPES[value.ammoType];return {item,label:value.name,name:value.name,ammoType:value.ammoType,stackLimit:value.instanceId?1:spec.stackLimit,slotSize:1,weight:spec.weight,kind:'ammunition'};}
+  if (isGrenadeStack(value)) {const spec=GRENADE_TYPES[value.grenadeType];return {item,label:value.name,name:value.name,grenadeType:value.grenadeType,condition:value.condition,stackLimit:value.instanceId?1:spec.stackLimit,slotSize:1,weight:spec.weight,kind:'grenade'};}
   const spec = value.weapon === undefined ? null : weapon(value.weapon);
   const handheld = spec && spec.id >= 1800 && spec.id <= 1813;
   const compactWeapon = handheld && [1805, 1806, 1808, 1811, 1813].includes(spec.id);
@@ -293,6 +297,7 @@ function incoming(stack) {
   quantity(stack.count, 1);
   if (own(SUPPLY_ITEMS, stack.item)) {
     if (isAmmunitionStack(stack)||stack.ammoType!==undefined) fail('La munición debe conservar su pila de inventario.');
+    if (isGrenadeStack(stack)||stack.grenadeType!==undefined) fail('La granada debe conservar su pila de inventario.');
     if (['weapon', 'loaded', 'reloadProgress', 'condition', 'jammed', 'instanceId','fittings','fittingPattern'].some(key => stack[key] !== undefined)) fail('Los suministros no pueden contener datos de un arma.');
     return {kind: 'supply', key: stack.item, value: {count: stack.count, weight: SUPPLY_ITEMS[stack.item].weight}};
   }

@@ -14,6 +14,7 @@ import {rosterFor} from './campaign.js';
 import {enemyGroupStatus} from './enemy-groups.js';
 import {publicAssignmentNotice} from './assignment-attention.js';
 import {spaceKey} from './tactical-space.js';
+import {heldGrenade,grenadeThrowCosts,grenadeThrowRange,GRENADE_THROW} from './grenade-throw.js';
 
 // Explicit allowlists: new simulation fields remain private until reviewed here.
 const scalar=value=>value===null||['string','number','boolean'].includes(typeof value);
@@ -21,7 +22,7 @@ const pick=(value,keys)=>Object.fromEntries(keys.filter(key=>value?.[key]!==unde
 const POSITION=['x','y','tacticalLevel'];
 const ACTOR=['id','name','nickname','side',...POSITION,'hp','maxHp','stance','movementMode','facing','mounted','unconscious','knockedDown','entangled','routed','surrendered','militia','missionAlly'];
 const OWN=['ammunitionVersion','ap','maxAP','carriedAP','energy','fatigue','bleeding','bandaged','shock','morale','weapon','blade','condition','bladeCondition','weaponDropped','weaponReady','weaponMode','loaded','reloadProgress','ammo','jammed','medkits','priming','flints','rations','torches','boleadoras','activeSlot','activeItem','leftHandItem','activeTool','activeSupply','stealthMode','agility','dexterity','strength','wisdom','leadership','marksmanship','medical','mechanical','explosives','stealth','experienceLevel','militiaRank','militiaExperience'];
-const ITEM=['item','ammoType','kind','outfit','label','name','count','weight','weapon','loaded','reloadProgress','condition','jammed','itemType','toolKey','fittingPattern'];
+const ITEM=['item','ammoType','kind','grenadeType','outfit','label','name','count','weight','weapon','loaded','reloadProgress','condition','jammed','itemType','toolKey','fittingPattern'];
 const ACTION=['type','unitId','targetId','item','count','slot','toolKey','supplyKey','stance','movement','enabled',...POSITION,'linkId','aim','hitLocation','groundId','dropIndex','inventoryKey','kind','id','verb','index','destination'];
 const ORDERS=new Set(['move','climb','look','stealth','useItem','loot','reload','reprime','weapon','stance','mount','brace','repair','free','endTurn']);
 const onField=unit=>!unit.departure&&!unit.fled;
@@ -41,6 +42,15 @@ function fittingOrders(state,unit){
   const model=fittingInventoryModel(state,unit);
   return [...model.sources.map(source=>({...pick(source,['item','label','condition','weight']),...pick(source.preview,['valid','reason','pa']),action:pick(source.action,ACTION)})),
     ...(model.attached?.removals??[]).map(option=>({...pick(option,['label','destination']),...pick(option.preview,['valid','reason','pa']),action:pick(option.action,ACTION)}))];
+}
+function grenadePointOrders(state,unit,targets){
+  const seen=new Set();
+  return targets.flatMap(target=>{
+    const key=spaceKey(target);if(seen.has(key))return [];seen.add(key);
+    const point=pick(target,POSITION),preview=targetPreview(state,unit,point,{mode:'throwGrenade'});
+    return [{...point,...pick(preview,['name','pa','remaining','chance','chanceLabel','coverNote','attackType','attackLabel','actionLabel','valid','reason','blastRadius','friendlyRisk','blocked','landingLabel']),
+      ...(preview.landing?{landing:pick(preview.landing,POSITION)}:{}),action:{type:'throwGrenade',...point,aim:0}}];
+  });
 }
 
 /** Current shared sight, plus anonymous remembered contact. Never a save payload. */
@@ -73,22 +83,27 @@ export function playerKnownBattle(state){
       ...(noise?[{observerId:unit.id,kind:'heard',...pick(noise,[...POSITION,'radius','label']),turn:unit.lastHeardNoise.turn,anonymous:true}]:[])];
   });
   const livingTargets=[...players,...visible].filter(unit=>unit.hp>0);
-  const orders=actors.filter(unit=>!unit.militia).map(unit=>({unitId:unit.id,canAct:unitCanAct(state,unit),costs:pick(actionCosts(state,unit),['fire','aim','reload','reprime','melee','heal','weapon','stance','mount','brace','repair','free','loot','drop','equipLoot']),
+  const visibleNpcs=(state.npcs??[]).filter(seen);
+  const orders=actors.filter(unit=>!unit.militia).map(unit=>{
+    const grenade=heldGrenade(unit),throwCosts=grenade?grenadeThrowCosts(unit):null,throwPA=state.mode==='exploration'?0:throwCosts?.total;
+    const grenadeReady=Boolean(grenade&&unitCanAct(state,unit)&&!unit.equipmentCursor&&!unit.knockedDown&&!unit.mounted&&grenade.record.condition>0&&(state.mode==='exploration'||unit.ap>=throwPA));
+    return {unitId:unit.id,canAct:unitCanAct(state,unit),costs:grenade?{...pick(actionCosts(state,unit),['heal','weapon','stance','mount','free','loot','drop','equipLoot']),throwGrenade:throwPA}:pick(actionCosts(state,unit),['fire','aim','reload','reprime','melee','heal','weapon','stance','mount','brace','repair','free','loot','drop','equipLoot']),
+    ...(grenade?{grenade:{...item(grenade.record),item:grenade.slot,pa:throwPA,range:pick(grenadeThrowRange(unit,grenade),['maximum']),blastRadius:GRENADE_THROW.radius}}:{}),
     equipment:equipmentSlots(state,unit).map(slot=>({...pick(slot,['slot','label','pa','active','disabled']),action:pick(slot.action,ACTION)})),
-    hands:handSlots(state,unit).map(hand=>({...pick(hand,['side','item','blocked','label','weapon','loaded','condition','pa','reason','disabled']),...(hand.action?{action:pick(hand.action,ACTION)}:{})})),
+    hands:handSlots(state,unit).map(hand=>{const held=hand.item?.startsWith('inventory:')?unit.inventory?.[hand.item.slice(10)]:null;return {...pick(hand,['side','item','blocked','label','weapon','loaded','condition','pa','reason','disabled']),...(held?.kind==='grenade'?{...pick(held,['kind','grenadeType','condition']),count:1}:{}),...(hand.action?{action:pick(hand.action,ACTION)}:{})};}),
     fittings:fittingOrders(state,unit),
-    aim:aimOptions(state,unit).map(option=>pick(option,['level','pa','disabled'])),
-    orders:orderDescriptors(state,unit).filter(order=>ORDERS.has(order.id)).map(order=>pick(order,['id','label','kind','pa','disabled'])),
-    targets:livingTargets.flatMap(target=>{const preview=targetPreview(state,unit,target);return preview?[{targetId:target.id,...pick(preview,['name','pa','remaining','chance','chanceLabel','coverNote','hitLocation','attackType','attackLabel','actionLabel','valid','reason'])}]:[];}),
+    aim:grenade?[]:aimOptions(state,unit).map(option=>pick(option,['level','pa','disabled'])),
+    orders:orderDescriptors(state,unit).filter(order=>ORDERS.has(order.id)).map(order=>grenade&&order.id==='useItem'?{id:'useItem',label:'Lanzar granada',kind:'mode',pa:throwPA,disabled:!grenadeReady}:pick(order,['id','label','kind','pa','disabled'])),
+    targets:grenade?grenadePointOrders(state,unit,[...livingTargets,...visibleNpcs]):livingTargets.flatMap(target=>{const preview=targetPreview(state,unit,target);return preview?[{targetId:target.id,...pick(preview,['name','pa','remaining','chance','chanceLabel','coverNote','hitLocation','attackType','attackLabel','actionLabel','valid','reason'])}]:[];}),
     stealTargets:visible.filter(target=>target.hp>0&&!target.unconscious&&!target.surrendered&&!target.routed).map(target=>({targetId:target.id,...pick(stealPreview(state,unit,target),['pa','valid','reason']),action:{type:'steal',targetId:target.id}})),
     loot:nearbyLootOptions(state,unit).filter(option=>{
       const target=option.action.targetId?state.units.find(target=>target.id===option.action.targetId):option.action.groundId?(state.groundItems??[]).find(target=>target.id===option.action.groundId):(state.droppedWeapons??[])[option.action.dropIndex];
       return target&&seen(target);
     }).map(option=>({...item(option),source:option.source,action:pick(option.action,ACTION)})),
-  }));
+  };});
   const result={...pick(state,['sectorId','sectorName','sceneId','missionId','width','height','turn','phase','mode','status','sectorCleared','night','elapsedSeconds']),weather:pick(state.weather,['rain','humidity']),
     units:[...players.map(ownActor),...visible.map(unit=>pick(unit,ACTOR))],departedPlayers:state.units.filter(unit=>unit.side==='player'&&unit.departure).map(departure),
-    npcs:(state.npcs??[]).filter(seen).map(npc=>pick(npc,['id','name',...POSITION,'hp','mission'])),
+    npcs:visibleNpcs.map(npc=>pick(npc,['id','name',...POSITION,'hp','maxHp','unconscious','knockedDown','stance','mission'])),
     tiles:tiles.map(tile=>pick(tile,[...POSITION,'elevation','type','blocked','cover','open','buildingId','roomId'])),
     ...(state.upperSurfaces?{upperSurfaces:surfaces.map(surface=>pick(surface,['id',...POSITION,'elevation','type','kind','blocked','cover','slabThickness','material','buildingId','roomId']))}:{}),
     ...(state.climbLinks?{climbLinks:state.climbLinks.filter(link=>knownCells.has(spaceKey(link.from))&&knownCells.has(spaceKey(link.to))).map(link=>({...pick(link,['id','kind']),from:pick(link.from,POSITION),to:pick(link.to,POSITION)}))}:{}),

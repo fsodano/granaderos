@@ -77,7 +77,8 @@ test('reported absent weapons and empty hands persist while their loose ammuniti
 });
 
 test('merchant clocks and exact stored items migrate and round-trip without stock renewal',()=>{
- const old=initialCampaign();delete old.merchants;delete old.armoryItems;delete old.nextArmoryItemId;old.armory={1803:2,field8:1};const migrated=restoreCampaign(serializeCampaign(old));assert.equal(migrated.armoryItems.length,2);assert.equal(migrated.armoryItems[0].condition,100);assert.equal(migrated.armory.field8,1);
+ // A pre-merchant save also predates the grenade-supply version marker.
+ const old=initialCampaign();delete old.grenadeSupplyVersion;delete old.merchants;delete old.armoryItems;delete old.nextArmoryItemId;old.armory={1803:2,field8:1};const migrated=restoreCampaign(serializeCampaign(old));assert.equal(migrated.armoryItems.length,2);assert.equal(migrated.armoryItems[0].condition,100);assert.equal(migrated.armory.field8,1);
  let s=order(buy(initialCampaign(),1803,3),{type:'wait',hours:23});const loaded=restoreCampaign(serializeCampaign(s));assert.deepEqual(loaded,s);assert.deepEqual(order(loaded,{type:'wait',hours:24}),order(s,{type:'wait',hours:24}));
  for(const edit of [s=>s.merchants.retiro.stock[1803]=4,s=>s.merchants.retiro.cash=-1,s=>s.merchants.retiro.restockHours=24,s=>s.armoryItems[0].condition=101,s=>s.armoryItems.push({...s.armoryItems[0]}),s=>s.armory[1803]=0,s=>s.nextArmoryItemId=1,s=>s.operativeState[4].weaponDropped=1,s=>s.operativeState[4].bladeCondition=101]){const bad=buy(initialCampaign(),1803);edit(bad);assert.throws(()=>restoreCampaign(serializeCampaign(bad)));}
 });

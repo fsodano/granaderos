@@ -100,7 +100,9 @@ export function enterSector(request,previous=null,{placement=false}={}){
  state.npcs=residents.map(npc=>{
    const old=previous?.npcs?.find(n=>n.id===npc.id),authored=state.npcs.find(n=>n.id===npc.id),resident=structuredClone({...npc,...authored,...old});
    if(resident.ai){delete resident.ai.threat;delete resident.ai.safeAfter;resident.ai.activity='roaming';}
-   delete resident.lastMovePath;resident.stance='standing';resident.movementMode='walk';
+   delete resident.lastMovePath;
+   const incapacitated=(resident.hp??100)<=0||resident.unconscious;
+   resident.stance=incapacitated?'prone':'standing';resident.movementMode=incapacitated?'prone':'walk';
    return {...resident,...reserve(resident)};
  });
  const arriving=[];

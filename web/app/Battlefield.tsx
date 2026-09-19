@@ -3,6 +3,7 @@ import {spriteOrderPose} from '../../game/sprite-order-pose.js';
 import {tacticalViewport} from '../../game/tactical-viewport.js';
 import AimCursor from './AimCursor';
 import KnifeThrowEffect,{KNIFE_EFFECT_DURATION,type KnifeVisual} from './KnifeThrowEffect';
+import GrenadeThrowEffect,{GRENADE_EFFECT_DURATION,type GrenadeVisual} from './GrenadeThrowEffect';
 import InventoryMapCursor from './InventoryMapCursor';
 import {EquipmentInteractionProvider,useEquipmentInteraction} from '../lib/equipment-drag';
 import {selectedItemMapPreview,placeSelectedItemOnMap,inventoryIntentAt,toggleInventoryDestination,retainInventoryDestination,type InventoryMapOverride} from '../lib/inventory-map-controls';
@@ -11,6 +12,7 @@ import {npcGiftFeedback} from '../lib/npc-gift-feedback';
 import {hasAuthoredDialogue,dialogueReason,dialogueApproach,ambientReply} from '../../game/npc-dialogue.js';
 import {rightClickAim} from '../../game/aim-cursor.js';
 import {canChooseShotLocation} from '../../game/targeted-combat.js';
+import {heldGrenade} from '../../game/grenade-throw.js';
 import {tacticalGridLabel} from '../../game/tactical-grid.js';
 import TacticalScene from './TacticalScene';
 import {tacticalCamera} from '../../game/tactical-camera.js';
@@ -23,7 +25,7 @@ import {executeGroupMove} from '../../game/group-movement.js';
 import {autoBandageBattle} from '../../game/auto-bandage.js';
 import './tactical-hud.css';
 import {TACTICAL_KEYS,tacticalShortcut,pointerMovementIntent,pointerItemIntent} from '../../game/hotkeys.js';
-import {aimOptions, slotAction, targetPreview, targetingHelp, STANCES, unitCanAct, turnModel, visibleHover, interruptHover, heldSupplyAction, groupSelectionMode, isGroupGround, isMovementGround, movementAction, toggleMovementGroup, movementGroupModel, exitModel, fieldState, attackCursorMode, aimedCursorMode, retainedAttackCursor, knifeThrowInputAction, targetItemAction, pickupTargetAction, pickupSelection, resolvedOrderType, tacticalInputAction, cellOccupant} from '../../game/ja2-hud.js';
+import {aimOptions, slotAction, targetPreview, targetingHelp, STANCES, unitCanAct, turnModel, visibleHover, interruptHover, heldSupplyAction, groupSelectionMode, isGroupGround, isMovementGround, movementAction, toggleMovementGroup, movementGroupModel, exitModel, fieldState, attackCursorMode, aimedCursorMode, retainedAttackCursor, knifeThrowInputAction, grenadeThrowInputAction, grenadeTargetingMode, targetItemAction, pickupTargetAction, pickupSelection, resolvedOrderType, tacticalInputAction, cellOccupant} from '../../game/ja2-hud.js';
 import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import { useUnitMotion, type MovementFacingOverride } from './useUnitMotion';
 import {tacticalLevel,sameCell,spaceKey} from '../../game/tactical-space.js';
@@ -31,7 +33,7 @@ import {isInteriorVisible} from '../../game/tactical-visibility.js';
 import {projectSurface} from '../lib/tactical-elevation';
 import {fixedBayonetFor} from '../../game/weapon-fittings.js';
 import { ChevronRight } from 'lucide-react';
-import { actBattle, getKnifeThrowVisual, getMeleeAttackResult, getNpcGiftResult, endTurn, getReachable, weaponFor, hasFirearm, bladeFor, actionCosts, artilleryCosts, visibleEnemies, visibleTiles, visibleRooms, canSee, environmentTargetAt, lootSearchPreview, approachCompleted } from '../../game/tactical.js';
+import { actBattle, getKnifeThrowVisual, getGrenadeThrowVisual, getMeleeAttackResult, getNpcGiftResult, endTurn, getReachable, weaponFor, hasFirearm, bladeFor, actionCosts, artilleryCosts, visibleEnemies, visibleTiles, visibleRooms, canSee, environmentTargetAt, lootSearchPreview, approachCompleted } from '../../game/tactical.js';
 
 type Props = {battle:any; onChange:(s:any)=>any; onFinish:()=>void; peacefulVisit?:boolean; onMap?:()=>void; onMissionFinish?:()=>void; mission?:any; conversation?:any; quests?:any; onTalk?:(npcId:string,approach:string,unitId:string)=>void};
 const isAlive=(u:any)=>u.hp>0&&!u.routed&&!u.unconscious;
@@ -55,6 +57,9 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
   const [knifeEffect,setKnifeEffect]=useState<{id:number;visual:KnifeVisual}|null>(null),knifeEffectId=useRef(0);
   useEffect(()=>{if(!knifeEffect)return;const timer=setTimeout(()=>setKnifeEffect(null),KNIFE_EFFECT_DURATION);return()=>clearTimeout(timer);},[knifeEffect]);
   useEffect(()=>setKnifeEffect(null),[s.battleId,s.sectorId]);
+  const [grenadeEffect,setGrenadeEffect]=useState<{id:number;visual:GrenadeVisual}|null>(null),grenadeEffectId=useRef(0);
+  useEffect(()=>{if(!grenadeEffect)return;const timer=setTimeout(()=>setGrenadeEffect(null),GRENADE_EFFECT_DURATION);return()=>clearTimeout(timer);},[grenadeEffect]);
+  useEffect(()=>setGrenadeEffect(null),[s.battleId,s.sectorId]);
   const [keyHelp,setKeyHelp]=useState(false);
   const [exitOpen,setExitOpen]=useState(false),[exitUnitIds,setExitUnitIds]=useState<string[]>([]),[exitId,setExitId]=useState('');
   const [bandageReport,setBandageReport]=useState<any>(null);
@@ -126,7 +131,7 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
   function changeCursorLevel(level:number){setCursorLevel(level);setHover(null);setAim(0);aimTarget.current='';}
   useEffect(()=>{if(hover?.id&&!canChooseShotLocation(hover))setHitLocation('torso');},[hover?.id,hover?.stance,hover?.knockedDown,hover?.unconscious,hover?.hp,hover?.energy]);
   useEffect(()=>{const next=retainedAttackCursor(u,mode);if(next!==mode){setMode(next);setAim(0);}},[mode,u]);
-  const groupTarget=mode==='move'&&movementIntent!=='preserveFacing'&&(isGroupGround(s,u,hover)||groupSelectionMode(s)&&tacticalLevel(hover)>0&&isMovementGround(s,u,hover))?hover:null;
+  const groupTarget=mode==='move'&&!grenadeTargetingMode(u,mode)&&movementIntent!=='preserveFacing'&&(isGroupGround(s,u,hover)||groupSelectionMode(s)&&tacticalLevel(hover)>0&&isMovementGround(s,u,hover))?hover:null;
   const movementGroup=useMemo(()=>movementGroupModel(s,groupIds,selected,groupTarget),[s,groupIds,selected,groupTarget?.x,groupTarget?.y,groupTarget?.tacticalLevel]);
   const mapItemTarget=hover?(inventoryPeople.find((person:any)=>sameCell(person,hover))??hover):null;
   const inventoryMapIntent=inventoryIntentAt(inventoryMapOverride,mapItemTarget);
@@ -148,9 +153,10 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
   function openTalk(target:any){
     if(placeInventoryItem(target))return;
     if(busy||!u)return;
+    if(grenadeTargetingMode(u,mode)){order(grenadeThrowInputAction(s,u,target));return;}
     const actual=(s.npcs??[]).find((n:any)=>n.id===target.id)??renderedUnits.find((n:any)=>n.id===target.id&&n.side==='enemy');
     if(!actual||!canSee(s,u,actual))return;
-    if(['move','useItem'].includes(mode)&&u.activeSlot==='item'&&(s.npcs??[]).some((n:any)=>n.id===actual.id)){order({type:'useItem',targetId:actual.id});return;}
+    if(['move','useItem'].includes(mode)&&u.activeSlot==='item'&&!heldGrenade(u)&&(s.npcs??[]).some((n:any)=>n.id===actual.id)){order({type:'useItem',targetId:actual.id});return;}
     setSpeech(null);setGiftReply(null);setPendingGift(null);clearGroup();setMode('move');
     if(hasAuthoredDialogue(actual)){setTalking(actual);return;}
     const reason=dialogueReason(s,u,actual,{visible:true,busy});
@@ -183,14 +189,14 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
     if(u.equipmentCursor&&!['pickupEquipment','placeEquipment','returnEquipmentCursor','dragEquipment','inventoryMap','attachment'].includes(a.type)){equipmentStore.report('Colocá o devolvé el objeto antes de dar otra orden.');return null;}
     a=tacticalInputAction(s,u,a);
     setBandageReport(null);clearGroup();facingOverride.current=null;
-    const next=actBattle(s,{unitId:selected,aim,hitLocation,...a}),preserveFacing=a.type==='move'&&a.movementIntent==='preserveFacing';
-    const knifeVisual=getKnifeThrowVisual(s,next),giftResult=getNpcGiftResult(s,next),actionType=resolvedOrderType(s,u,a);
-    const preparationOnly=actionType==='throwKnife'&&!knifeVisual||actionType==='melee'&&!getMeleeAttackResult(s,next,selected);
+    const actionType=resolvedOrderType(s,u,a),next=actBattle(s,{unitId:selected,aim,...(actionType==='throwGrenade'?{}:{hitLocation}),...a}),preserveFacing=a.type==='move'&&a.movementIntent==='preserveFacing';
+    const knifeVisual=getKnifeThrowVisual(s,next),grenadeVisual=getGrenadeThrowVisual(s,next),giftResult=getNpcGiftResult(s,next);
+    const preparationOnly=actionType==='throwKnife'&&!knifeVisual||actionType==='throwGrenade'&&!grenadeVisual||actionType==='melee'&&!getMeleeAttackResult(s,next,selected);
     if(!next.lastError&&!['pickupEquipment','placeEquipment','returnEquipmentCursor','dragEquipment'].includes(a.type)){
       const target=s.units.find((t:any)=>t.id===a.targetId)||a;
       if(preparationOnly)setDirections(d=>({...d,[selected]:((next.units.find((actor:any)=>actor.id===selected)?.facing??u.facing??2)+1)%8}));
       else if(!preserveFacing&&Number.isFinite(target.x)&&Number.isFinite(target.y))setDirections(d=>({...d,[selected]:(Math.round(Math.atan2((target.x-u.x)-(target.y-u.y),-((target.x-u.x)+(target.y-u.y)))/(Math.PI/4))+8)%8}));
-      if(['fire','firePoint','throwKnife'].includes(actionType))setAim(0);
+      if(['fire','firePoint','throwKnife','throwGrenade'].includes(actionType))setAim(0);
       // Contact can stop paid preparation before a throw or melee attack occurs.
       const pose=spriteOrderPose(preparationOnly?'look':actionType);
       clearTimeout(poseTimers.current[selected]);
@@ -199,6 +205,7 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
     const accepted=onChange(next);
     if(giftResult&&accepted!==null){setTalking(null);setSpeech(null);setGiftReply(null);setPendingGift(giftResult);}
     if(knifeVisual&&accepted!==null)setKnifeEffect({id:++knifeEffectId.current,visual:knifeVisual});
+    if(grenadeVisual&&accepted!==null)setGrenadeEffect({id:++grenadeEffectId.current,visual:grenadeVisual});
     if(!next.lastError&&preserveFacing&&accepted!==null)facingOverride.current={battle:accepted??next,unitId:selected,direction:((u.facing??2)+1)%8};
     return accepted===null?null:accepted??next;
   };
@@ -207,7 +214,7 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
     return placeSelectedItemOnMap(equipmentStore,s,u,target,inventoryIntentAt(inventoryMapOverride,target),busy,order);
   }
   function bandageSquad(){if(busy)return;clearGroup();const {battle, ...report}=autoBandageBattle(s);setBandageReport(report);setMode('move');onChange(battle);}
-  function nextTurn(){if(busy||s.status!=='active')return;clearGroup();setBandageReport(null);setBusy(true);setTimeout(()=>{onChange(endTurn(s));setBusy(false);},450);}
+  function nextTurn(){if(busy||s.status!=='active')return;clearGroup();setBandageReport(null);setBusy(true);setTimeout(()=>{const next=endTurn(s),visual=getGrenadeThrowVisual(s,next),accepted=onChange(next);if(visual&&accepted!==null)setGrenadeEffect({id:++grenadeEffectId.current,visual});setBusy(false);},450);}
   useEffect(()=>{if(groupIds.length&&!groupSelectionMode(s))setGroupIds([]);},[s.status,s.mode,s.phase,s.interrupt,groupIds.length]);
   useEffect(()=>{if(!unitCanAct(s,u))setSelected(readyPlayers[0]?.id);},[s,selected]);
   useEffect(()=>{if(s.phase==='interrupt'){setMode('move');setInventoryId(null);setTalking(null);setHover(interruptHover(s,selected));}else setHover(null);},[s.phase,s.interrupt?.enemyId,s.interrupt?.unitIds?.join(',')]);
@@ -247,6 +254,7 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
   };window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);});
 
   const hw=26,hh=14,origin=s.height*hw+28,project=useCallback((x:number,y:number)=>({x:origin+(x-y)*hw,y:65+(x+y)*hh}),[origin]);
+  const grenadeLanding=preview?.attackType==='throwGrenade'&&preview.blocked&&preview.landing?projectSurface(s,project,preview.landing):null;
   const vw=(s.width+s.height)*hw+60,vh=(s.width+s.height)*hh+155;
   const followed=cameraFollowsSelection&&u?projectSurface(s,project,{...u,...motion.positions[u.id]}):{x:vw/2,y:vh/2};
   // Match the SVG viewport to its CSS dimensions: one logical pixel occupies
@@ -260,7 +268,7 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
   const hoverTarget=(point:any)=>{
     setInventoryMapOverride(value=>retainInventoryDestination(value,point));
     if(!point){setHover(null);return;}
-    const target=visibleHover(s,point),location=!pickedItem&&target?.id&&canChooseShotLocation(target)?point?.aimLocation??'torso':'torso';
+    const target=visibleHover(s,point),location=!pickedItem&&!grenadeTargetingMode(u,mode)&&target?.id&&canChooseShotLocation(target)?point?.aimLocation??'torso':'torso';
     const key=target?`${target.id??spaceKey(target)}:${location}`:'';
     if(aimTarget.current!==key){setAim(0);aimTarget.current=key;}
     setHitLocation(location);setHover((previous:any)=>previous&&sameCell(previous,point)&&previous.id===point.id&&previous.loot===point.loot&&previous.aimLocation===point.aimLocation?previous:point);
@@ -276,6 +284,7 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
     const itemAction=clickItemIntent.current;clickItemIntent.current='use';
     if(placeInventoryItem(t))return;
     const occupant=cellOccupant(renderedUnits,t);
+    if(grenadeTargetingMode(u,mode)){order(grenadeThrowInputAction(s,u,t));return;}
     if(mode==='throwKnife'){order(knifeThrowInputAction(s,u,t,{aim,hitLocation:t.aimLocation??hitLocation}));return;}
     if(mode==='talk'){const target=occupant??(s.npcs??[]).find((n:any)=>sameCell(n,t));if(target)openTalk(target);return;}
     if(additive&&occupant?.side==='player'&&groupSelectionMode(s)){selectUnit(occupant.id,true);return;}
@@ -292,6 +301,10 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
     if(mode==='move'&&movementGroup.members.length&&isGroupGround(s,u,t)){moveGroup(t);return;}
     if(u?.activeSlot==='supply'&&u.activeSupply==='torches'&&['move','useItem'].includes(mode)){order(heldSupplyAction(u,t));return;}
     if(pickupSelection(s,u,t,{mode,movementIntent:intent,itemIntent:itemAction}).length){openPickup(t);return;}
+    if(mode==='move'&&heldGrenade(u)){
+      if(occupant){if(occupant.side==='player'&&unitCanAct(s,occupant))selectUnit(occupant.id);return;}
+      order(movementAction(t));return;
+    }
     if(mode==='fire'&&(!occupant||occupant.side==='player'||occupant.hp<=0||occupant.surrendered)){order({type:'firePoint',x:t.x,y:t.y,tacticalLevel:tacticalLevel(t),hitLocation:'torso'});return;}
     if(occupant){
       if(u?.activeSlot==='supply'&&u.activeSupply==='rations'&&['move','useItem'].includes(mode))order(heldSupplyAction(u,occupant));
@@ -326,8 +339,14 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
     <JA2GroupMovePanel members={movementGroup.members} anchorId={movementGroup.anchorId} preview={movementGroup.preview} report={groupReport} busy={busy} onRemove={id=>{setGroupIds(ids=>ids.filter(member=>member!==id));setGroupReport(null);}} onClear={clearGroup}/>
     <div className="battle-middle" data-equipment-scope={equipmentStore.scope}><div className="field-wrap"><div className="map-caption"><span>↑ NORTE</span>{hasElevation&&<button className="line-button" aria-label="Cambiar altura del cursor" onClick={()=>changeCursorLevel(cursorLevel===0?1:0)}>Cursor: {cursorLevel===0?'Suelo':'Nivel superior'} · Tab</button>}<span>{pickedItem?'Objeto seleccionado: clic para pasar, dejar o lanzar. Sobre un personaje, botón derecho cambia el destino al suelo. Esc devuelve el objeto.':targetingHelp(mode,u,{movementIntent,itemIntent})}{hover&&` · ${tacticalGridLabel(hover.x,hover.y)}`}</span><span className="map-zoom"><button aria-label="Desplazar cámara a la izquierda" onClick={()=>panCamera(-90,0)}>←</button><button aria-label="Desplazar cámara hacia arriba" onClick={()=>panCamera(0,-65)}>↑</button><button aria-label="Centrar cámara en el combatiente seleccionado" onClick={()=>{setCameraFollowsSelection(true);setCameraOffset({x:0,y:0});}}>◎</button><button aria-label="Desplazar cámara hacia abajo" onClick={()=>panCamera(0,65)}>↓</button><button aria-label="Desplazar cámara a la derecha" onClick={()=>panCamera(90,0)}>→</button><button aria-label="Alejar campo" disabled={zoom<=1} onClick={()=>setZoom(Math.max(1,zoom-1))}>−</button><span>{Math.round(zoom*100)}%</span><button aria-label="Acercar campo" disabled={zoom>=3} onClick={()=>setZoom(Math.min(3,zoom+1))}>+</button></span></div>
       <svg ref={fieldRef} onFocusCapture={event=>{const bounds=(event.target as SVGElement).getBoundingClientRect();setCursorPoint(svgPoint({currentTarget:event.currentTarget,clientX:bounds.left+bounds.width/2,clientY:bounds.top+bounds.height/2}));}} onMouseMoveCapture={event=>{if(!pickedItem&&aimedCursorMode(mode))setCursorPoint(svgPoint(event));setMovementIntent(pointerMovementIntent(event));setItemIntent(pointerItemIntent(event));}} onClickCapture={event=>{additiveClick.current=event.shiftKey;clickMovementIntent.current=pointerMovementIntent(event);setMovementIntent(clickMovementIntent.current);clickItemIntent.current=pointerItemIntent(event);setItemIntent(clickItemIntent.current);}} onKeyDownCapture={event=>{if(['Enter',' '].includes(event.key)){if(event.shiftKey&&event.repeat){event.preventDefault();event.stopPropagation();return;}additiveClick.current=event.shiftKey;clickMovementIntent.current=pointerMovementIntent(event);setMovementIntent(clickMovementIntent.current);clickItemIntent.current=pointerItemIntent(event);setItemIntent(clickItemIntent.current);}}} onContextMenu={aimAtPointer} onMouseLeave={()=>setCursorPoint(null)} className={`tactical-field ${!pickedItem&&aimedCursorMode(mode)&&cursorPoint&&!busy?'aiming':''}`} viewBox={`${cameraX} ${cameraY} ${viewWidth} ${viewHeight}`} role="group" aria-label="Campo táctico. Seleccioná un soldado y una casilla.">
-        <TacticalScene cursorLevel={cursorLevel} viewport={sceneViewport} state={field} selected={selected} unit={u} players={players} units={renderedUnits} positions={motion.positions} poses={poses} directions={directions} hover={hover} mode={pickedItem?'inventory':mode} aim={aim} hitLocation={hitLocation} reachable={reachable} showSight={showSight} sight={sight} revealed={revealedBuildingRooms} project={project} onTile={tileClick} onHover={hoverTarget} onTalk={openTalk} onCannon={(id)=>{const itemPoint=s.artillery?.find((gun:any)=>gun.id===id);if(itemPoint&&placeInventoryItem({...itemPoint,id:undefined}))return;if(mode==='throwKnife'){const point=s.artillery?.find((gun:any)=>gun.id===id);if(point)tileClick(point);return;}setCannonId(id);setMode('artillery')}} cannonId={cannonId}/>
+        <TacticalScene cursorLevel={cursorLevel} viewport={sceneViewport} state={field} selected={selected} unit={u} players={players} units={renderedUnits} positions={motion.positions} poses={poses} directions={directions} hover={hover} mode={pickedItem?'inventory':mode} aim={aim} hitLocation={hitLocation} reachable={reachable} showSight={showSight} sight={sight} revealed={revealedBuildingRooms} project={project} onTile={tileClick} onHover={hoverTarget} onTalk={openTalk} onCannon={(id)=>{const itemPoint=s.artillery?.find((gun:any)=>gun.id===id);if(itemPoint&&placeInventoryItem({...itemPoint,id:undefined}))return;if(mode==='throwKnife'||grenadeTargetingMode(u,mode)){const point=s.artillery?.find((gun:any)=>gun.id===id);if(point)tileClick(point);return;}setCannonId(id);setMode('artillery')}} cannonId={cannonId}/>
         {knifeEffect&&<KnifeThrowEffect key={knifeEffect.id} state={s} visual={knifeEffect.visual} project={project}/>}
+        {grenadeEffect&&<GrenadeThrowEffect key={grenadeEffect.id} state={s} visual={grenadeEffect.visual} project={project}/>}
+        {grenadeLanding&&!pickedItem&&<g data-grenade-landing="true" transform={`translate(${grenadeLanding.x} ${grenadeLanding.y})`} pointerEvents="none" aria-label={`Caída prevista: ${preview.landingLabel}`}>
+          <ellipse rx="18" ry="9" fill="#ed9d7c" fillOpacity=".15" stroke="#ed9d7c" strokeWidth="1.5"/>
+          <path d="M-5-3L5 3M5-3L-5 3" stroke="#ed9d7c" strokeWidth="1.5"/>
+          <text y="-13" textAnchor="middle" fill="#ed9d7c" stroke="#11190f" strokeWidth="2" paintOrder="stroke" fontSize="10">Caída</text>
+        </g>}
         {!pickedItem&&aimedCursorMode(mode)&&cursorPoint&&!busy&&unitCanAct(s,u)&&<AimCursor exploring={s.mode==='exploration'} point={cursorPoint} aim={aim} preview={preview} target={hover} scale={1/zoom} bounds={{x:cameraX,y:cameraY,width:viewWidth,height:viewHeight}}/>}
         {pickedItem&&<InventoryMapCursor state={field} preview={itemPreview} target={mapItemTarget} project={project}/>}
       </svg>

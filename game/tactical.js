@@ -7,6 +7,8 @@ import {planEquipmentAttachment,planEquipmentPickup,planEquipmentCursorPlacement
 import {regionalWeatherAt} from './regional-weather.js';
 import {heldThrowingKnife,knifeThrowCosts,knifeThrowRange,knifeThrowChance,knifeThrowDamage} from './thrown-knife.js';
 import {knifeFlight} from './knife-flight.js';
+import {heldGrenade,grenadeThrowCosts,grenadeThrowRange,grenadeThrowChance,grenadeScatterRadius,GRENADE_THROW} from './grenade-throw.js';
+import {grenadeFlight,grenadeBlastExposure} from './grenade-flight.js';
 import {itemFlight} from './item-flight.js';
 import {usesElevationGeometry,elevationSightClear,absoluteBodyHeight,geometryCells,rayHeightIntersection} from './sight-geometry.js';
 import {tacticalLevel,spaceKey,sameSurface,sameCell,surfaceAt,surfaceHeight,accessStepsFrom} from './tactical-space.js';
@@ -91,6 +93,7 @@ export function actionCosts(s,u,point){
 // All ordinary hostile clicks, HUD previews and attack animations share this
 // choice. Gun mode is explicit; distance never silently changes fire into melee.
 export function contextualAttack(s,u,target,options={}){
+  if(heldGrenade(u)&&!['fire','melee'].includes(options.type))return {type:'throwGrenade',pa:grenadeThrowCosts(u,target).total,profile:GRENADE_THROW};
   const explicit=['fire','melee'].includes(options.type)?options.type:null;
   const type=explicit??(hasFirearm(u)?u.weaponMode??'fire':'melee');
   const costs=actionCosts(s,u,target),aim=clamp(Math.floor(Number.isFinite(options.aim)?options.aim:0),0,4);
@@ -561,6 +564,57 @@ function inventoryOrderReason(s,u,pa){
   if(!window||u.knockedDown)return 'El soldado no puede manejar equipo ahora.';
   if(s.mode!=='exploration'&&u.ap<pa)return `Faltan ${pa} PA para manejar el equipo.`;
   return null;
+}
+export function grenadeThrowPreview(s,u,target,options={}){
+  const costs=u?grenadeThrowCosts(u,target):{total:0,stance:0,turn:0,attack:0,aim:0,aimLevel:0,energy:0};
+  const grenade=heldGrenade(u),range=u?grenadeThrowRange(u,grenade):{maximum:0};
+  let reason=inventoryOrderReason(s,u,costs.total),flight=null;
+  if(!reason&&!grenade)reason='Prepará una granada en la mano principal.';
+  if(!reason&&grenade.record.condition<=0)reason='Esta granada está inutilizada.';
+  if(!reason&&grenade.record.condition<100&&(s.groundItems?.length??0)>=2000)reason='No queda espacio en el sector para conservar una granada fallida.';
+  if(!reason&&u.mounted)reason='Desmontá antes de lanzar la granada.';
+  if(!reason&&(!Number.isInteger(target?.x)||!Number.isInteger(target?.y)||!surfaceAt(s,target)))reason='Seleccioná una superficie del mapa.';
+  if(!reason&&(options.targetId!==undefined||options.hitLocation!==undefined))reason='La granada se lanza a una casilla, sin elegir una zona del cuerpo.';
+  if(!reason&&sameCell(u,target))reason='Seleccioná otra casilla para lanzar la granada.';
+  const distance=u&&target&&surfaceAt(s,target)?spaceDistance(s,u,target):Infinity;
+  if(!reason&&distance>range.maximum)reason='Fuera del alcance de la granada.';
+  if(!reason){flight=grenadeFlight(s,u,target);if(!flight.landing||flight.impact.kind==='invalid')reason='No hay una trayectoria válida para la granada.';}
+  // No enemy data or hidden civilian positions enter the public preview.
+  const friendlyRisk=Boolean(flight?.landing&&[...s.units.filter(v=>v.side===u.side&&onField(v)&&!v.fled),...(s.npcs??[]).filter(v=>(v.hp??100)>0&&!v.departure&&!v.fled&&canSee(s,u,v))]
+    .some(v=>grenadeBlastExposure(s,flight.landing,v,GRENADE_THROW.radius).multiplier>0));
+  return {valid:!reason,reason,pa:costs.total,aim:0,chance:reason?0:grenadeThrowChance(u,distance,grenade),costs,range,flight,blastRadius:GRENADE_THROW.radius,friendlyRisk};
+}
+const grenadeThrowVisuals=new WeakMap();
+export function getGrenadeThrowVisual(before,after){const visual=grenadeThrowVisuals.get(after);return before!==after&&visual?structuredClone(visual):null;}
+function grenadeScatter(s,u,point,range){
+  const radius=grenadeScatterRadius(dist(u,point)),candidates=[];
+  for(let y=point.y-radius;y<=point.y+radius;y++)for(let x=point.x-radius;x<=point.x+radius;x++){
+    const cell={x,y,tacticalLevel:tacticalLevel(point)};
+    if(!sameCell(cell,point)&&surfaceAt(s,cell)&&spaceDistance(s,u,cell)<=range.maximum)candidates.push(cell);
+  }
+  return candidates.length?candidates[Math.floor(random(s)*candidates.length)]:point;
+}
+function grenadeBlast(s,source,origin){
+  emitNoise(s,source,'explosion',origin);
+  // Routed, surrendered and unconscious bodies remain physically exposed.
+  // A departed or dead body cannot take another hit or earn combat credit.
+  for(const victim of s.units.filter(v=>onField(v)&&!v.fled)){
+    const {multiplier}=grenadeBlastExposure(s,origin,victim,GRENADE_THROW.radius);
+    if(multiplier<=0)continue;
+    const amount=GRENADE_THROW.damage*multiplier,breath=GRENADE_THROW.energyDamage*multiplier;
+    const automaticBreath=Math.ceil(Math.min(victim.hp,Math.round(amount))*.5);
+    damage(s,victim,amount,source,false,'torso',Math.max(0,Math.round(breath)-automaticBreath));
+  }
+  for(const npc of (s.npcs??[]).filter(n=>(n.hp??100)>0&&!n.departure&&!n.fled)){
+    const {multiplier}=grenadeBlastExposure(s,origin,npc,GRENADE_THROW.radius);
+    if(multiplier<=0)continue;
+    const visible=teamCanSee(s,'player',npc);
+    npc.hp=Math.max(0,(npc.hp??100)-Math.round(GRENADE_THROW.damage*multiplier));
+    npc.energy=Math.max(0,(npc.energy??100)-Math.round(GRENADE_THROW.energyDamage*multiplier));
+    npc.unconscious=isUnconscious(npc);
+    if(npc.hp<=0||npc.unconscious){npc.stance='prone';npc.movementMode='prone';}
+    if(visible)say(s,`${npc.name} ${npc.hp>0?'queda herido por la explosión.':'muere por la explosión.'}`);
+  }
 }
 // The attack cursor can inspect only bodies already known to this side. Actual
 // flight checks the complete roster after confirmation. Ground throws never
@@ -1241,7 +1295,13 @@ export function supplyUsePreview(s,u,target,key=u?.activeSupply){
   return {allowed:!reason,reason,cost};
 }
 
-function apply(s,a,enemy=false,movementPath=null){if(a.type==='useItem'){const user=s.units.find(v=>v.id===String(a.unitId));if(user?.activeSlot==='item'&&s.npcs?.some(n=>n.id===String(a.targetId)))a={...a,type:'giveItem'};else if(user?.activeSlot==='supply'){const point=s.units.find(v=>v.id===String(a.targetId));a={...a,type:heldSupply(user)?.action??'invalidSupply',...(point?positionOf(point):{}),targetId:a.targetId??(user.activeSupply==='rations'?'':undefined)};}else if(a.environment)a={...a,...a.environment,type:'environment'};else a={...a,type:user?.activeSlot==='medical'?'heal':user?contextualAttack(s,user,s.units.find(v=>v.id===String(a.targetId)),a).type:'melee'};}const fail=text=>{if(!enemy||u&&journalVisible(s,u)){s.lastError=text;say(s,text);}return false;};const u=s.units.find(u=>u.id===String(a.unitId));if(s.status!=='active')return fail('El combate ya terminó.');if(!u||!alive(u))return fail('El soldado no puede actuar.');if(u.side!==(enemy?'enemy':'player'))return fail('No puedes dar órdenes a ese soldado.');if(!enemy&&!interruptAvailable(s,u))return fail('Ese soldado no puede actuar en esta interrupción.');if(u.knockedDown&&!['stance','heal','ration'].includes(a.type))return fail('El soldado está derribado: debe ponerse de pie.');const observation=reactionObservation(s,u);const target=a.type==='giveItem'?s.npcs?.find(n=>n.id===String(a.targetId)):s.units.find(u=>u.id===String(a.targetId)&&!u.departure);if(a.type!=='inventoryMap'&&a.targetId!==undefined&&!target)return fail('El objetivo no está disponible en este sector.');const pay=n=>{if(!Number.isFinite(n)||n<0||s.mode!=='exploration'&&u.ap<n)return false;if(n>0&&(lowersWeapon(a.type)||a.type==='look'&&u.stance==='prone'))lowerWeapon(u);if(s.mode==='exploration'){if(a.type!=='move'&&a.type!=='climb')s.actionDurationSeconds=Math.max(1,Math.ceil(n*.06));return true;}u.ap-=n;return true;};
+function grenadeUseOrder(s,a){
+  const actor=s.units.find(v=>v.id===String(a.unitId));
+  const known=a.targetId===undefined?null:[...s.units,...(s.npcs??[])].find(v=>v.id===String(a.targetId)&&!v.departure&&(v.side===actor?.side||actor&&canSee(s,actor,v)));
+  const {targetId,environment,hitLocation,...rest}=a;
+  return {...rest,type:'throwGrenade',...(targetId===undefined?{}:known?positionOf(known):{x:undefined,y:undefined})};
+}
+function apply(s,a,enemy=false,movementPath=null){if(a.type==='useItem'){const user=s.units.find(v=>v.id===String(a.unitId));if(heldGrenade(user))a=grenadeUseOrder(s,a);else if(user?.activeSlot==='item'&&s.npcs?.some(n=>n.id===String(a.targetId)))a={...a,type:'giveItem'};else if(user?.activeSlot==='supply'){const point=s.units.find(v=>v.id===String(a.targetId));a={...a,type:heldSupply(user)?.action??'invalidSupply',...(point?positionOf(point):{}),targetId:a.targetId??(user.activeSupply==='rations'?'':undefined)};}else if(a.environment)a={...a,...a.environment,type:'environment'};else a={...a,type:user?.activeSlot==='medical'?'heal':user?contextualAttack(s,user,s.units.find(v=>v.id===String(a.targetId)),a).type:'melee'};}const fail=text=>{if(!enemy||u&&journalVisible(s,u)){s.lastError=text;say(s,text);}return false;};const u=s.units.find(u=>u.id===String(a.unitId));if(s.status!=='active')return fail('El combate ya terminó.');if(!u||!alive(u))return fail('El soldado no puede actuar.');if(u.side!==(enemy?'enemy':'player'))return fail('No puedes dar órdenes a ese soldado.');if(!enemy&&!interruptAvailable(s,u))return fail('Ese soldado no puede actuar en esta interrupción.');if(u.knockedDown&&!['stance','heal','ration'].includes(a.type))return fail('El soldado está derribado: debe ponerse de pie.');const observation=reactionObservation(s,u);const target=a.type==='giveItem'?s.npcs?.find(n=>n.id===String(a.targetId)):s.units.find(u=>u.id===String(a.targetId)&&!u.departure);if(a.type!=='inventoryMap'&&a.targetId!==undefined&&!target)return fail('El objetivo no está disponible en este sector.');const pay=n=>{if(!Number.isFinite(n)||n<0||s.mode!=='exploration'&&u.ap<n)return false;if(n>0&&(lowersWeapon(a.type)||a.type==='look'&&u.stance==='prone'))lowerWeapon(u);if(s.mode==='exploration'){if(a.type!=='move'&&a.type!=='climb')s.actionDurationSeconds=Math.max(1,Math.ceil(n*.06));return true;}u.ap-=n;return true;};
 if(a.type==='move'||a.type==='climb'){
   if(u.entangled)return fail('Las boleadoras inmovilizan al soldado: debe liberarse.');
   let postureCost=0;
@@ -1289,6 +1349,24 @@ if(a.type==='move'||a.type==='climb'){
   }
 
   sayObserved(s,[u],u.side==='player'?`${u.name} ${movementIntent==='preserveFacing'?'se desplaza sin girar':'avanza'} ${steps} casillas${exploring?'':` (${spent} PA)`}.`:`${u.name} avanza.`);
+}
+else if(a.type==='throwGrenade'){
+  const point=positionOf(a),preview=grenadeThrowPreview(s,u,point,a);
+  if(!preview.valid)return fail(preview.reason);
+  if(u.stance!=='standing')return fail('Ponete de pie antes de lanzar la granada.');
+  const grenade=heldGrenade(u),source={...positionOf(u),height:absoluteBodyHeight(s,u,'muzzle')};
+  const hit=random(s)*100<preview.chance,end=hit?point:grenadeScatter(s,u,point,preview.range),flight=grenadeFlight(s,u,end);
+  if(!flight.landing||flight.impact.kind==='invalid')return fail('No hay una trayectoria válida para la granada.');
+  const visible=journalVisible(s,u),extracted=extractItemQuantity(u,grenade.slot,1);
+  if(!pay(preview.pa))return fail('PA insuficientes.');
+  extracted.unit.ap=u.ap;replaceUnit(u,extracted.unit);
+  lowerWeapon(u);u.facing=preview.costs.facing;u.momentum=0;u.overwatch=false;u.braced=false;delete u.lastTargetId;delete u.lastShotPosition;
+  // A failed period grenade becomes a finite, recoverable but unusable object.
+  // Delayed malfunction fuses and physical bounces remain separate work.
+  const detonated=grenade.record.condition>=100||random(s)*100<grenade.record.condition;
+  if(detonated){grenadeBlast(s,u,flight.landing);if(visible)say(s,`${u.name}: explosión de granada.`);}
+  else{addGroundStack(s,{...extracted.stack,condition:0},flight.landing);emitNoise(s,u,'knife',flight.landing);if(visible)say(s,`${u.name}: la granada no explota y queda inutilizada.`);}
+  if(visible)grenadeThrowVisuals.set(s,{source,impact:flight.impact,landing:flight.landing,points:flight.points,radius:GRENADE_THROW.radius,detonated,visible:true});
 }
 else if(a.type==='throwKnife'){
   const point=target??{...positionOf(a),stance:'standing',mounted:false},preview=knifeThrowPreview(s,u,point,a);
@@ -1796,6 +1874,20 @@ export function actBattle(state,action){
   return next.lastError?next:cleanActionTime(settleAutonomous(next));
 }
 function actBattleInput(state,action){
+  if(action.type==='useItem'&&heldGrenade(state.units.find(u=>u.id===String(action.unitId))))action=grenadeUseOrder(state,action);
+  if(action.type==='throwGrenade'){
+    const unit=state.units.find(u=>u.id===String(action.unitId)),plan=grenadeThrowPreview(state,unit,action,action);
+    if(!plan.valid){const rejected=clone(state);rejected.lastError=plan.reason;say(rejected,plan.reason);return rejected;}
+    if(plan.costs.stance){
+      const prepared=actBattleOrder(state,{type:'stance',unitId:unit.id,stance:'standing'}),ready=prepared.units.find(u=>u.id===unit.id);
+      if(!approachCompleted(state,prepared,unit.id,{destination:positionOf(unit)})||!grenadeThrowPreview(prepared,ready,action,action).valid){
+        if(!prepared.lastError)say(prepared,'La preparación se detuvo antes del lanzamiento. Revisá la situación y apuntá de nuevo.');
+        return prepared;
+      }
+      return actBattleOrder(prepared,action);
+    }
+    return actBattleOrder(state,action);
+  }
   if(cursorOrders.has(action.type)){
     const unit=state.units.find(u=>u.id===String(action.unitId)),preview=equipmentCursorPreview(state,unit,action),next=clone(state);
     if(!preview.valid){next.lastError=preview.reason;say(next,preview.reason);return next;}

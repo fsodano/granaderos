@@ -1,4 +1,5 @@
 import {chooseArtilleryAction,holdsArtilleryPost} from './tactical-ai-artillery.js';
+import {chooseGrenadeThrow} from './tactical-ai-grenades.js';
 import {sameSurface,spaceKey,surfaceAt,tacticalLevel} from './tactical-space.js';
 import {atHand,moveOrder,planningPoint} from './tactical-planning-space.js';
 import {chooseSupplySharingAction} from './tactical-ai-sharing.js';
@@ -248,6 +249,8 @@ export function chooseEnemyAction(state, unit) {
   const cannon=chooseArtilleryAction(state,unit,targets,paths);
   if(cannon)return cannon;
   if(!targets.length&&holdsArtilleryPost(state,unit))return null;
+  const grenade=chooseGrenadeThrow(state,unit,targets);
+  if(grenade)return grenade;
   const backup = backupWeapon(state, unit, costs, targets);
   if (backup) return backup;
   if (['medical','tool','supply','item'].includes(unit.activeSlot)) {

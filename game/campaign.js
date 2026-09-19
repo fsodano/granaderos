@@ -1,4 +1,5 @@
 import {ammunitionSource} from './ammunition.js';
+import {purchaseGrenades} from './equipment.js';
 import {ammoResourceKey,initialAmmunitionStock,migrateCampaignAmmunition,syncCampaignAmmunition,validateCampaignAmmunition,syncCarriedAmmunition} from './campaign-ammunition.js';
 import {regionalConditions,validateRegionalWeather} from './regional-weather.js';
 import {issueInitialOutfit} from './outfits.js';
@@ -444,7 +445,7 @@ export function dispatchCampaign(previous,action){
   try{
     requireThat(action&&typeof action.type==='string','La orden no es válida.');
     requireThat(!s.defeated,'La campaña ha terminado. Inicia otra campaña para continuar.');
-    requireThat(!s.completed||['syncTacticalTime','wait','setSleep','assignCare','assignWork','purchaseToolkits','purchaseMedicalSupplies','purchaseAmmunition','horseAction','travel','cancelTravel','resumeTravel','beginAssault','visitSector','leaveSector','talkNPC','createSquad','selectSquad','squad','equip','resupply','repairWeapon','purchaseEquipment','purchaseUsedEquipment','sellEquipment','supplyTransfer','supplyArtillery','transport','militia','cancelMilitia','renewContract','dismiss'].includes(action.type),'La campaña está ganada. Puedes recorrer las provincias y atender a tus escuadras y estancias.');
+    requireThat(!s.completed||['syncTacticalTime','wait','setSleep','assignCare','assignWork','purchaseToolkits','purchaseMedicalSupplies','purchaseAmmunition','purchaseGrenades','horseAction','travel','cancelTravel','resumeTravel','beginAssault','visitSector','leaveSector','talkNPC','createSquad','selectSquad','squad','equip','resupply','repairWeapon','purchaseEquipment','purchaseUsedEquipment','sellEquipment','supplyTransfer','supplyArtillery','transport','militia','cancelMilitia','renewContract','dismiss'].includes(action.type),'La campaña está ganada. Puedes recorrer las provincias y atender a tus escuadras y estancias.');
     requireThat(!s.pendingEncounter||['respondToEncounter','selectSquad'].includes(action.type),'Hay un encuentro pendiente. Elegí cómo responder antes de continuar.');
     requireThat(!s.pendingBattle||['battleResult','leaveSector','talkNPC','finishMission','syncTacticalTime'].includes(action.type),'Hay una batalla pendiente. Resuélvela antes de dar nuevas órdenes.');
     if(['travel','attack','visitSector'].includes(action.type))requireThat(!s.squad.some(id=>militiaAssignment(s,id)),'Un instructor de la escuadra está asignado a las milicias. Cancelá su curso o dejalo en una escuadra de guarnición.');
@@ -501,6 +502,10 @@ export function dispatchCampaign(previous,action){
         requireThat(op&&s.recruited.includes(id)&&record.alive&&operativeLocation(s,id)===s.location,'El combatiente debe estar presente en esta localidad.');
         requireThat(['retiro','cordoba','mendoza'].includes(s.location)&&s.sectors[s.location].owner==='patriot'&&isSupplied(s,s.location),'Los botiquines se compran en una maestranza propia y abastecida.');
         requireThat(Number.isInteger(quantity)&&quantity>=1&&quantity<=20&&record.medkits+quantity<=100000,'Elegí entre 1 y 20 botiquines.');requireThat(quantity<=medicalSupplyStock(s),'La maestranza no tiene suficientes botiquines.');requireThat(!equipmentInventoryUsage(s,op).overloaded&&!equipmentInventoryUsage(s,op,{medkits:record.medkits+quantity}).overloaded,'No queda espacio para los botiquines. Retirá objetos antes de comprar más.');pay(s,{treasury:MEDICAL_KIT_PRICE*quantity});record.medkits+=quantity;s.merchants[s.location].supplies.medkits-=quantity;s.merchants[s.location].cash=Math.min(1e9,s.merchants[s.location].cash+MEDICAL_KIT_PRICE*quantity);note(s,`${op.name} recibe ${quantity} botiquines por ${MEDICAL_KIT_PRICE*quantity} pesos.`);break;
+      }
+      case 'purchaseGrenades':{
+        requireThat(action.grenadeType==='arsenal','El tipo de granada no está disponible.');
+        const op=rosterFor(s).find(o=>o.id===Number(action.operativeId));note(s,purchaseGrenades(s,op,isSupplied,action.quantity??1));break;
       }
       case 'academy':requireThat(!s.flags.academy,'La academia ya está organizada.');pay(s,{treasury:300,horses:20,muskets:40,textiles:60});s.flags.academy=true;note(s,'Se funda la academia de Granaderos en Retiro.');break;
       case 'horseAction':{
