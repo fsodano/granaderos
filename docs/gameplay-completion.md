@@ -55,6 +55,10 @@ Jujuy now has an accepted escort with local follow/wait and leader-change orders
 
 The prisoner panel now exposes detention time, wounds, unavailable equipment and paused service. Sector recapture and the panel use a shared contract-restoration rule; 13 focused checks, type checking and the build pass. See [prisoner custody](prisoner-custody.md). This does not implement a prison scene, physical rescue or escape; W08 remains open.
 
+## Detention entity construction
+
+A detention manifest and tactical placement layer now preserve captured identities and wounds without duplicating custody equipment. Detained entities remain immobile until freed; 25 focused checks pass. Campaign deployment, health settlement, paid release, safe-exit settlement and live controls remain required. See [detention work](detention-gameplay.md). This is a construction layer, not playable prison gameplay.
+
 ## Work order and completion evidence
 
 1. **Stabilize the integrated game.** Run the complete current suite, resolve failures without removing finite supply, permanent casualties, legal movement, or save checks. Preserve separate artwork and roster changes. Verify type checking, the production build and relevant live controls.

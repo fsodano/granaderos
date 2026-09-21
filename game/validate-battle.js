@@ -1,3 +1,4 @@
+import {validateDetainedPrisoner} from './detention.js';
 import {migrateBattleAmmunition} from './campaign-ammunition.js';
 import {civilianIncidents,validateCivilianWounds} from './civilian-harm.js';
 import {validateSectorDeployment} from './sector-deployment.js';
@@ -126,6 +127,7 @@ if(s.civilianTurns!==undefined)need(integer(s.civilianTurns,0,1e9),'turnos civil
 if(s.civilianSeconds!==undefined)need(number(s.civilianSeconds,0,6)&&s.civilianSeconds<6,'reloj civil');
 const npcIds=new Set();
 for(const n of s.npcs){
+ validateDetainedPrisoner(n);
  for(const gift of validateQuestGifts(n))claimStack(gift);
  need(coord(n)&&text(n.id)&&text(n.name)&&!ids.has(n.id)&&!npcIds.has(n.id),'personajes');npcIds.add(n.id);
  if(n.hp!==undefined)need(number(n.hp,0,100),'salud civil');

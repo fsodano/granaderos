@@ -77,6 +77,7 @@ function shelterScore(s,p,threat,tiles) {
 
 export function advanceNpc(s,n,budget=24,atTime=now(s)) {
   if(!mobile(n))return;
+  if(n.detention&&!n.detention.freed){n.lastMovePath=[];return;}
   n.ai??={cycle:0,homeId:null,activity:'roaming',wait:0};
   const ai=n.ai;n.lastMovePath=[];
   if(n.escort&&(n.entangled||n.knockedDown)){ai.activity='waiting';delete ai.destination;return;}
