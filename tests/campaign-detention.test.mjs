@@ -1,3 +1,4 @@
+import {applyHorseAction} from '../game/horses.js';
 import {detentionManifest} from '../game/detention.js';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
@@ -146,4 +147,51 @@ test('a freed prisoner who dies remains dead with the release history on later s
  campaign=order(campaign,{type:'squad',ids:[112]});campaign=order(campaign,{type:'visitSector'});({campaign,battle}=prepareCampaignBattle(campaign));
  const body=battle.npcs.find(n=>n.id===id);assert.equal(body.hp,0);assert.equal(body.detention.freed,true);assert.notEqual(body.detentionRelease.battleId,battle.battleId);
  assert.equal(decodeSave(encodeSave(campaign,battle)).campaign.operativeState[3].alive,false);
+});
+
+
+function escapeAdjacentPrisoner(){
+ let {campaign,battle}=freeAdjacentPrisoner();const npc=battle.npcs.find(n=>n.detention?.operativeId===3),leader=battle.units.find(u=>u.id==='112');
+ // Explicit boundary positions isolate physical crossing and return settlement.
+ const cells=battle.tiles.filter(t=>t.x===battle.width-1&&!t.blocked&&!battle.units.some(u=>u!==leader&&u.x===t.x&&u.y===t.y));
+ const cell=cells.find(t=>cells.some(v=>v.y===t.y+1));assert.ok(cell);leader.x=cell.x;leader.y=cell.y;npc.x=cell.x;npc.y=cell.y+1;
+ battle=actBattle(battle,{type:'exit',unitIds:['112'],exitId:'humahuaca:jujuy'});assert.equal(battle.lastError,null);assert.ok(battle.npcs.find(n=>n.id===npc.id).departure);return {campaign,battle,id:npc.id};
+}
+test('physical escape restores only the escaped prisoner and leaves finite equipment on the hostile map',()=>{
+ let {campaign,battle,id}=escapeAdjacentPrisoner();
+ // A retained captured horse isolates custody settlement without granting it to the escape.
+ campaign.horseState=applyHorseAction(campaign.horseState,{type:'acquire',location:'humahuaca',funds:180});const horse=campaign.horseState.horses.at(-1);horse.custody={kind:'captured',sector:'humahuaca',operativeId:3};
+ const before=structuredClone(campaign.operativeState[3]),cash=campaign.resources.treasury;
+ ({campaign,battle}=sync(campaign,battle));assert.equal(campaign.operativeState[3].captured,true);assert.equal(decodeSave(encodeSave(campaign,battle)).battle.npcs.find(n=>n.id===id).departure.destination,'jujuy');
+ campaign=order(campaign,{type:'battleResult',battleId:battle.battleId,outcome:'retreat',sectorState:battle,survivors:battle.units.filter(u=>u.side==='player')});
+ const r=campaign.operativeState[3],receipt=campaign.detentionRecords[id],field=campaign.sectorStates.humahuaca;
+ assert.equal(r.captured,false);assert.equal(r.location,'jujuy');assert.equal(r.hp,before.hp);assert.equal(campaign.loadouts[3].weapon,0);assert.equal(campaign.loadouts[3].blade,0);assert.deepEqual(r.inventory,{});assert.equal(r.medkits,0);assert.equal(campaign.resources.treasury,cash);assert.equal(campaign.horseState.horses.at(-1).location,'humahuaca');assert.equal(campaign.horseState.horses.at(-1).assignedTo,null);assert.equal(campaign.horseState.horses.at(-1).custody.kind,'field');assert.equal(campaign.operativeState[4].captured,true);assert.equal(campaign.sectors.humahuaca.owner,'royalist');
+ assert.equal(campaign.contracts[3].expiresAt,before.capturedContract.expiresAt===null?null:campaign.hour+before.capturedContract.expiresAt-before.capturedAt);assert.ok(campaign.recruited.includes(3));
+ const cache=field.groundItems.filter(g=>receipt.escape.cacheIds.includes(g.id));assert.ok(cache.length);assert.equal(cache.find(g=>g.item==='medkits').count,before.medkits);assert.ok(cache.some(g=>g.item==='weapon'&&g.loaded===before.capturedAmmunition.loaded));
+ assert.deepEqual(restoreCampaign(serializeCampaign(campaign)),campaign);
+ const missing=structuredClone(campaign);delete missing.detentionRecords[id].escape;assert.throws(()=>restoreCampaign(serializeCampaign(missing)));
+ const duplicate=dispatchCampaign(campaign,{type:'battleResult',battleId:battle.battleId,outcome:'retreat',sectorState:battle,survivors:battle.units.filter(u=>u.side==='player')});assert.ok(duplicate.lastError);assert.deepEqual(duplicate.sectorStates.humahuaca.groundItems,field.groundItems);
+});
+
+test('escape retains paid service time and refuses a destination occupied after deployment',()=>{
+ let {campaign,battle}=escapeAdjacentPrisoner();const r=campaign.operativeState[3];r.capturedContract={kind:'paid',term:'week',started:r.capturedAt,expiresAt:r.capturedAt+6,paid:200};
+ const occupied=structuredClone(campaign);occupied.sectors.jujuy.owner='royalist';
+ const action={type:'battleResult',battleId:battle.battleId,outcome:'retreat',sectorState:battle,survivors:battle.units.filter(u=>u.side==='player')};
+ const rejected=dispatchCampaign(occupied,action);assert.ok(rejected.lastError);assert.equal(rejected.operativeState[3].captured,true);assert.equal(rejected.detentionRecords[Object.keys(rejected.detentionRecords)[0]]?.escape,undefined);
+ campaign=order(campaign,action);assert.equal(campaign.contracts[3].expiresAt,campaign.hour+6);assert.deepEqual(restoreCampaign(serializeCampaign(campaign)),campaign);
+});
+test('a prisoner with an expired contract escapes without receiving free service',()=>{
+ let {campaign,battle}=escapeAdjacentPrisoner();const r=campaign.operativeState[3];r.capturedContract={kind:'paid',term:'day',started:0,expiresAt:r.capturedAt,paid:20};
+ campaign=order(campaign,{type:'battleResult',battleId:battle.battleId,outcome:'retreat',sectorState:battle,survivors:battle.units.filter(u=>u.side==='player')});
+ assert.equal(campaign.operativeState[3].captured,false);assert.equal(campaign.operativeState[3].location,'jujuy');assert.equal(campaign.recruited.includes(3),false);assert.equal(campaign.contracts[3],undefined);assert.deepEqual(restoreCampaign(serializeCampaign(campaign)),campaign);
+});
+test('equipment left by an escaped prisoner can be recovered once through ordinary field pickup',()=>{
+ let {campaign,battle,id}=escapeAdjacentPrisoner();campaign=order(campaign,{type:'battleResult',battleId:battle.battleId,outcome:'retreat',sectorState:battle,survivors:battle.units.filter(u=>u.side==='player')});
+ const cacheIds=campaign.detentionRecords[id].escape.cacheIds;
+ campaign=order(campaign,{type:'squad',ids:[112]});campaign=order(campaign,{type:'attack',sector:'humahuaca'});({campaign,battle}=prepareCampaignBattle(campaign));
+ assert.ok(!battle.npcs.some(n=>n.id===id));const stack=battle.groundItems.find(g=>cacheIds.includes(g.id)&&g.item==='medkits'),leader=battle.units.find(u=>u.id==='112');assert.ok(stack);
+ const tile=battle.tiles.find(t=>!t.blocked&&Math.abs(t.x-stack.x)+Math.abs(t.y-stack.y)===1&&!battle.units.some(u=>u.x===t.x&&u.y===t.y)&&!battle.npcs.some(n=>n.x===t.x&&n.y===t.y));assert.ok(tile);leader.x=tile.x;leader.y=tile.y;const before=leader.medkits;
+ battle=actBattle(battle,{type:'lootBatch',unitId:'112',items:[{groundId:stack.id,count:1}]});assert.equal(battle.lastError,null);assert.equal(battle.units.find(u=>u.id==='112').medkits,before+1);assert.equal(battle.groundItems.find(g=>g.id===stack.id).count,stack.count-1);
+ ({campaign,battle}=sync(campaign,battle));assert.deepEqual(decodeSave(encodeSave(campaign,battle)).battle.groundItems,battle.groundItems);
+ const second=actBattle(battle,{type:'lootBatch',unitId:'112',items:[{groundId:stack.id,count:stack.count}]});assert.ok(second.lastError);
 });

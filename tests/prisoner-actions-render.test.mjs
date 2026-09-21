@@ -1,9 +1,12 @@
+import {sectorExits} from '../game/tactical-exits.js';
+import {exitModel} from '../game/ja2-hud.js';
 import {register} from 'node:module';register('./tactical-render-loader.mjs',import.meta.url);
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createElement as h} from '../web/node_modules/react/index.js';
 import {renderToStaticMarkup as render} from '../web/node_modules/react-dom/server.node.js';
 import {createBattle,actBattle} from '../game/tactical.js';
 import {detentionManifest} from '../game/detention.js';
+const {default:JA2ExitPanel}=await import('../web/app/JA2ExitPanel.tsx');
 const {default:PrisonerActions}=await import('../web/app/PrisonerActions.tsx');
 test('visible prisoner controls show action costs, wait state and a fallen leader',()=>{
  const npc=detentionManifest({operativeState:{3:{captured:true,alive:true,capturedAt:1,capturedSector:'tucuman',hp:40,maxHp:80,energy:80,bleeding:0,bandaged:40}}},[{id:3,name:'Prisionero',maxHp:80}],'tucuman')[0];
@@ -14,4 +17,8 @@ test('visible prisoner controls show action costs, wait state and a fallen leade
  assert.match(html(),/Seguirme · 2 PA/);assert.match(html(),/Esperar aquí · 2 PA/);
  state=actBattle(state,{type:'prisonerEscort',unitId:'rescuer',targetKind:'npc',targetId:npc.id,escortOrder:'wait'});assert.match(html(),/Espera aquí/);
  state=actBattle(state,{type:'prisonerEscort',unitId:'rescuer',targetKind:'npc',targetId:npc.id,escortOrder:'follow'});state.units.push({...structuredClone(state.units[0]),id:'replacement',x:3,y:3});state.units[0].unconscious=true;assert.match(html(),/Necesita otro rescatista/);
+ state.units[0].unconscious=false;state.units[0].x=2;state.units[0].y=0;state.npcs[0].x=3;state.npcs[0].y=0;state.exits=sectorExits('tucuman');
+ const exitHtml=()=>render(h(JA2ExitPanel,{model:exitModel(state,{unitIds:['rescuer'],exitId:'tucuman:salta'}),busy:false,exploring:false,onUnits(){},onExit(){},onLeave(){},onClose(){}}));
+ assert.match(exitHtml(),/cruzará con su rescatista/);state.npcs[0].y=1;assert.match(exitHtml(),/quedará en el sector/);state.npcs[0].y=0;
+ state=actBattle(state,{type:'exit',unitIds:['rescuer'],exitId:'tucuman:salta'});assert.equal(state.lastError,null);assert.match(html(),/Prisionero salió hacia salta/);
 });

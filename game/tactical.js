@@ -1,3 +1,4 @@
+import {crossPrisonerEscorts,prisonerCanExit} from './prisoner-escape.js';
 import {PRISONER_RELEASE_AP,PRISONER_ESCORT_AP,recordPrisonerRelease,recordPrisonerEscort} from './prisoner-release.js';
 import {availableAmmunition,weaponAmmoType} from './ammunition-types.js';
 import {initializeUnitAmmunition,syncUnitAmmunition,consumeWeaponAmmunition} from './tactical-ammunition.js';
@@ -1860,7 +1861,8 @@ export function exitPreview(s,{unitIds,exitId}={}){
   if(!reason&&(!ids.length||new Set(ids).size!==ids.length))reason='Selecciona combatientes distintos para salir.';
   const eligibleIds=[],blocked=[],costById={};
   for(const id of ids){const u=s?.units?.find(v=>v.id===id),why=reason??(u?.militia?'La milicia actúa por su cuenta.':exitUnitReason(s,u,exit));if(why)blocked.push({id,reason:why});else {eligibleIds.push(id);costById[id]=stepCost(u,tile(s,u.x,u.y));}}
-  return {available:!reason&&!blocked.length&&ids.length>0,reason:reason??blocked[0]?.reason??null,edge:exit?.edge??null,destination:exit?.destination??null,eligibleIds,blocked,costById};
+  const prisoners=(s?.npcs??[]).filter(n=>n.detention?.freed&&!n.departure&&n.hp>0&&ids.includes(n.escort?.leaderId)&&teamCanSee(s,'player',n)).map(n=>({id:n.id,name:n.name,ready:Boolean(exit&&eligibleIds.includes(n.escort.leaderId)&&prisonerCanExit(s,n,s.units.find(u=>u.id===n.escort.leaderId),exit))}));
+  return {prisoners,available:!reason&&!blocked.length&&ids.length>0,reason:reason??blocked[0]?.reason??null,edge:exit?.edge??null,destination:exit?.destination??null,eligibleIds,blocked,costById};
 }
 function crossBoundary(s,u,exit){
   const exploring=s.mode==='exploration',observation={...reactionObservation(s,u),crossing:true},ground=tile(s,u.x,u.y),cost=stepCost(u,ground);
@@ -1888,6 +1890,7 @@ function applyExit(s,a){
     const u=s.units.find(v=>v.id===id),reason=exitUnitReason(s,u,exit);
     if(reason){sayObserved(s,[u],`${u.name}: ${reason}`);break;}
     if(!crossBoundary(s,u,exit))break;
+    for(const npc of crossPrisonerEscorts(s,u,exit))say(s,`${npc.name} cruza la salida junto a ${u.name}. Su equipo queda en el lugar de cautiverio.`);
     checkEnd(s);if(s.status!=='active')break;
   }
   return true;

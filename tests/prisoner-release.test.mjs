@@ -1,3 +1,4 @@
+import {sectorExits} from '../game/tactical-exits.js';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createBattle,actBattle,prisonerReleasePreview} from '../game/tactical.js';
 import {detentionManifest} from '../game/detention.js';
@@ -31,4 +32,23 @@ test('a freed prisoner can wait and accept a nearby replacement leader without c
  s=order(s,'replacement','follow');assert.equal(s.lastError,null);assert.deepEqual(s.npcs[0].escort,{leaderId:'replacement',waiting:false});assert.deepEqual(s.npcs[0].detentionRelease,receipt);
  assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(s))).npcs,s.npcs);
  for(const alter of [n=>delete n.detentionOrders,n=>{n.detentionOrders[1].paidAP=0;},n=>{n.detentionOrders[1].leader.x=10;},n=>{n.detentionOrders.reverse();}]){const invalid=structuredClone(s);alter(invalid.npcs[0]);assert.throws(()=>validateBattleSnapshot(invalid));}
+});
+
+
+test('a freed prisoner crosses only beside the departing rescuer at an authorized boundary',()=>{
+ const atExit=()=>{const s=free(field());s.exits=sectorExits('tucuman');s.units[0].x=2;s.units[0].y=0;s.npcs[0].x=3;s.npcs[0].y=0;return s;};
+ const escape=s=>actBattle(s,{type:'exit',unitIds:['rescuer'],exitId:'tucuman:salta'});
+ const s=atExit(),before=s.npcs[0].energy,next=escape(s);assert.equal(next.lastError,null);assert.equal(next.npcs[0].departure.destination,'salta');assert.equal(next.npcs[0].energy,before-1);assert.equal(next.status,'retreat');
+ assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(next))).npcs,next.npcs);
+ for(const mutate of [n=>{n.y=1;},n=>{n.escort.waiting=true;},n=>{n.energy=1;},n=>{n.entangled=true;},n=>{n.knockedDown=true;}]){const trial=atExit();mutate(trial.npcs[0]);assert.equal(escape(trial).npcs[0].departure,undefined);}
+ for(const mutate of [n=>delete n.detentionEscape,n=>{n.departure.destination='cordoba';},n=>{n.detentionEscape.leader.x=9;},n=>{n.departure.elapsedSeconds++;}]){const forged=structuredClone(next);mutate(forged.npcs[0]);assert.throws(()=>validateBattleSnapshot(forged));}
+});
+
+test('ordinary exploration movement brings the released follower to a joint boundary crossing',()=>{
+ let s=field({exploration:true});s.exits=sectorExits('tucuman');s=free(s);
+ for(const [x,y]of [[3,0],[5,0]]){s=actBattle(s,{type:'move',unitId:'rescuer',x,y});assert.equal(s.lastError,null);}
+ s=actBattle(s,{type:'rest',unitId:'rescuer'});assert.equal(s.lastError,null);
+ assert.equal(s.npcs[0].y,0);assert.equal(Math.abs(s.npcs[0].x-s.units[0].x),1);
+ s=actBattle(s,{type:'exit',unitIds:['rescuer'],exitId:'tucuman:salta'});assert.equal(s.lastError,null);assert.equal(s.npcs[0].departure.destination,'salta');assert.equal(s.units[0].departure.destination,'salta');
+ assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(s))).npcs,s.npcs);
 });

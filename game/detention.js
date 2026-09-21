@@ -1,3 +1,4 @@
+import {validatePrisonerEscape} from './prisoner-escape.js';
 import {validatePrisonerRelease} from './prisoner-release.js';
 import {captureSequence,detentionId} from './capture-identity.js';
 import {CAMPAIGN_SECTORS} from './data.js';
@@ -18,6 +19,7 @@ export function detentionManifest(campaign,roster,sector){
  }).concat(Object.values(campaign.detentionRecords??{}).filter(entry=>entry.npc.hp===0&&entry.npc.detention.sector===sector).map(entry=>structuredClone(entry.npc)));
 }
 export function validateDetainedPrisoner(npc){
+ validatePrisonerEscape(npc);
  if(npc.detention===undefined){if(npc.detentionRelease!==undefined||npc.detentionOrders!==undefined)throw Error('La liberación no tiene prisionero.');return;}
  const d=npc.detention;
  if(!d||typeof d!=='object'||Array.isArray(d)||Object.keys(d).length!==(d.captureSequence===undefined?4:5)||(d.captureSequence!==undefined&&(!Number.isInteger(d.captureSequence)||d.captureSequence<2||d.captureSequence>1e9))||!Number.isInteger(d.operativeId)||d.operativeId<0||!Number.isInteger(d.capturedAt)||d.capturedAt<0||!CAMPAIGN_SECTORS.some(s=>s.id===d.sector)||typeof d.freed!=='boolean'||npc.id!==detentionId(d.operativeId,d))throw Error('La identidad del prisionero es inválida.');

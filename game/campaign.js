@@ -1,3 +1,4 @@
+import {settlePrisonerEscapes} from './prisoner-escape-return.js';
 import {settleDetentionReturn} from './campaign-detention.js';
 import {advanceDetentionCare} from './detention-care.js';
 import {detentionManifest} from './detention.js';
@@ -336,6 +337,7 @@ function commitDeploymentReturn(s,request,snapshot,plan){
   s.squads=clone(plan.squadChanges.squads);const selected=s.squads.find(q=>q.id===s.activeSquadId);s.squad=[...selected.members];s.location=selected.location;
   for(const change of plan.horseChanges)Object.assign(s.horseState.horses.find(h=>h.id===change.id),clone(change));
   for(const h of s.horseState.horses)if(h.custody?.kind==='field'&&s.sectors[h.location]?.owner==='patriot'&&!occupyingGroups(s,h.location).length&&plan.outcome!=='defeat')h.custody=null;
+  settlePrisonerEscapes(s,request,snapshot,rosterFor(s));
   returnGarrison(s,request,snapshot,plan.auxiliary);
   settleSectorArtillery(snapshot,plan.outcome);
   snapshot.returnLedger={battleId:request.id,entries:clone([...plan.entries,...plan.auxiliary]),creditedCartridges:plan.ammunition.creditedCartridges,creditedAmmunition:clone(plan.ammunition.creditedAmmunition)};

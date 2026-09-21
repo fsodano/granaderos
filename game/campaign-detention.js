@@ -1,3 +1,4 @@
+import {validatePrisonerEscape} from './prisoner-escape.js';
 import {validatePrisonerRelease} from './prisoner-release.js';
 import {sameCaptivity,detentionId,captureSequence} from './capture-identity.js';
 import {validateDetainedPrisoner} from './detention.js';
@@ -13,12 +14,13 @@ function plans(campaign,battle){
  const manifest=request.detainedPrisoners??[],seen=new Set(),result=[];
  for(const npc of battle.npcs??[]){
   if(npc.detention===undefined)continue;
-  validateDetainedPrisoner(npc);validateCivilianWounds(npc,battle);validatePrisonerRelease(npc,battle);
+  validateDetainedPrisoner(npc);validateCivilianWounds(npc,battle);validatePrisonerRelease(npc,battle);validatePrisonerEscape(npc,battle);
   const original=manifest.find(n=>n.id===npc.id),d=npc.detention;
   need(original&&!seen.has(npc.id)&&equal({...original.detention,freed:d.freed},d),'El parte cambió la custodia de un prisionero.');seen.add(npc.id);
   const record=campaign.operativeState[d.operativeId],prior=campaign.detentionRecords?.[npc.id];
   if(prior?.npc.detentionRelease)need(equal(prior.npc.detentionRelease,npc.detentionRelease),'El parte perdió o cambió la liberación del prisionero.');
   need((prior?.npc.detentionOrders??[]).every((order,index)=>equal(order,npc.detentionOrders?.[index])),'El parte perdió órdenes del prisionero.');
+  if(prior?.npc.detentionEscape)need(equal(prior.npc,npc),'El parte cambió un prisionero que ya salió.');
   need(record,'Falta la hoja de servicio del prisionero.');
   const incidents=civilianIncidents(npc),oldIncidents=civilianIncidents(prior?.npc);
   need(oldIncidents.every((event,index)=>equal(event,incidents[index])),'El parte perdió heridas del prisionero.');
@@ -56,11 +58,16 @@ export function validateCampaignDetention(campaign){
  const records=campaign.detentionRecords??{},careEvents=new Set();
  need(records&&typeof records==='object'&&!Array.isArray(records)&&Object.keys(records).length<=10000,'El registro de prisioneros es inválido.');
  for(const [id,entry]of Object.entries(records)){
-  need(entry&&typeof entry==='object'&&Object.keys(entry).every(k=>['npc','ammunition','care','releaseAttempts'].includes(k))&&entry.npc?.id===id,'El recibo del prisionero es inválido.');
+  need(entry&&typeof entry==='object'&&Object.keys(entry).every(k=>['npc','ammunition','care','releaseAttempts','escape'].includes(k))&&entry.npc?.id===id,'El recibo del prisionero es inválido.');
   const npc=entry.npc;validateDetainedPrisoner(npc);validateCivilianWounds(npc);
   need(npc.detention,'La custodia guardada es inválida.');
   const d=npc.detention,r=campaign.operativeState[d.operativeId];
   need(r&&captureSequence(d)<=captureSequence(r)&&d.capturedAt<=campaign.hour,'Falta la hoja de servicio del prisionero.');
+  if(npc.detentionEscape&&!sameCaptivity(r,d))need(entry.escape,'Falta el parte de escape aceptado.');
+  if(entry.escape!==undefined){
+   const e=entry.escape;validatePrisonerEscape(npc);
+   need(e&&Object.keys(e).length===4&&e.battleId===npc.detentionEscape?.battleId&&e.destination===npc.departure?.destination&&Number.isInteger(e.hour)&&e.hour>=d.capturedAt&&e.hour<=campaign.hour&&Array.isArray(e.cacheIds)&&new Set(e.cacheIds).size===e.cacheIds.length&&e.cacheIds.every((key,index)=>key===`custody:${id}:${index}`)&&!sameCaptivity(r,d),'El parte de escape es inválido.');
+  }
   if(entry.releaseAttempts!==undefined){
    need(Array.isArray(entry.releaseAttempts)&&entry.releaseAttempts.length<=10000,'Los intentos de rescate son inválidos.');
    const attempts=new Set();
