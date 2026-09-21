@@ -1,7 +1,7 @@
-import {threePersonBatteryOrder} from './three-person-battery-driver.mjs';
+import {threePersonBatteryOrder,reliefBatteryOrder} from './three-person-battery-driver.mjs';
 import {coastalCommandOrder} from './coastal-command-driver.mjs';
 import {mountainBatteryOrder} from './mountain-battery-driver.mjs';
-import {prepareFreshTucumanRecapture,prepareFreshSaltaRecapture,prepareFreshJujuyAssault} from './fresh-northern-return-route.mjs';
+import {prepareFreshTucumanRecapture,prepareFreshSaltaRecapture,prepareFreshJujuyAssault,prepareFreshHumahuacaAssault} from './fresh-northern-return-route.mjs';
 import {prepareFreshCoastalCommand,prepareFreshEnsenadaAssault,recruitFreshNavalCommand,recoverFreshPort,prepareFreshBlockadeAssault,prepareFreshSantaFeAssault} from './fresh-coastal-route.mjs';
 import {prepareFreshUspallataAssault,recoverFreshUspallata,prepareFreshLosPatosAssault,completeFreshAndesPreparation} from './fresh-mountain-route.mjs';
 import {prepareFreshCuyoDefense,prepareFreshMendozaAssault,startFreshFoundry,prepareFreshArmyProduction,completeFreshArmyProduction} from './fresh-cuyo-route.mjs';
@@ -14,7 +14,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {beginFreshCampaign,recoverFreshCapital,prepareFreshNorthernAssault,prepareFreshSanLorenzo,prepareFreshMissionSupport,prepareFreshCordobaAssault,recoverFreshCordobaSurvivors,prepareFreshCordobaDefense,prepareFreshTucumanAssault} from './fresh-campaign-route.mjs';
 
-test('a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba, Tucumán and Salta victories through Yatasto, Mendoza production and both mountain passes, Ensenada, naval recruitment, Santa Fe, Tucumán and Salta recapture',()=>{
+test('a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba, Tucumán and Salta victories through Yatasto, Mendoza production and both mountain passes, Ensenada, naval recruitment, Santa Fe, Tucumán and Salta recapture, Jujuy and Humahuaca',()=>{
  const opening=beginFreshCampaign();
  assert.ok(opening.actions>0);assert.ok(opening.casualties.length>0);
  assert.equal(opening.campaign.officer,null);
@@ -144,6 +144,12 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  for(const id of [7,57,5])assert.equal(jujuy.campaign.operativeState[id].alive,true);
  for(const [id,record]of Object.entries(returnedSalta.campaign.operativeState))if(!record.alive)assert.equal(jujuy.campaign.operativeState[id].alive,false);
  assert.equal(jujuy.campaign.completed,false);
+ const humahuaca=fightNorthernSector(prepareFreshHumahuacaAssault(jujuy.campaign),'humahuaca',{controller:reliefBatteryOrder});
+ assert.equal(humahuaca.campaign.sectors.humahuaca.owner,'patriot');
+ for(const id of [7,57,5])assert.equal(humahuaca.campaign.operativeState[id].alive,true);
+ for(const [id,record]of Object.entries(jujuy.campaign.operativeState))if(!record.alive)assert.equal(humahuaca.campaign.operativeState[id].alive,false);
+ assert.equal(humahuaca.campaign.defeated,false);
+
  assert.equal(returnedSalta.campaign.defeated,false);assert.equal(returnedSalta.campaign.completed,false);
  assert.equal(returnedSalta.campaign.operativeState[57].alive,true);
  assert.equal(returnedSalta.campaign.operativeState[6].alive,false);

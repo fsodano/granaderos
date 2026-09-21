@@ -37,8 +37,15 @@ order({type:'attack',sector:'salta',queue:true,mode:'posta'});for(let h=0;h<24&&
 export function prepareFreshJujuyAssault(start){
  let c=decodeSave(encodeSave(start)).campaign;
  const order=a=>{c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);};
-order({type:'travel',sector:'cordoba',mode:'posta'});order({type:'purchaseEquipment',item:'swivel'});order({type:'configureArtillery',types:['swivel']});order({type:'travel',sector:'salta',mode:'posta'});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'rest'});for(let h=0;h<48&&(c.hour%24!==18||c.squad.some(id=>c.operativeState[id].fatigue>0));h++)order({type:'wait',hours:1});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});order({type:'attack',sector:'jujuy',queue:true,mode:'posta'});for(let h=0;h<24&&c.squads.find(q=>q.id===c.activeSquadId).journey?.status!=='ready';h++)order({type:'wait',hours:1});for(let h=0;h<24&&c.hour%24!==6;h++)order({type:'wait',hours:1});order({type:'beginAssault',sector:'jujuy'});
+order({type:'travel',sector:'cordoba',mode:'posta'});order({type:'purchaseEquipment',item:'swivel'});order({type:'purchaseEquipment',item:'bronze4'});order({type:'configureArtillery',types:['swivel']});order({type:'travel',sector:'salta',mode:'posta'});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'rest'});for(let h=0;h<48&&(c.hour%24!==18||c.squad.some(id=>c.operativeState[id].fatigue>0));h++)order({type:'wait',hours:1});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});order({type:'attack',sector:'jujuy',queue:true,mode:'posta'});for(let h=0;h<24&&c.squads.find(q=>q.id===c.activeSquadId).journey?.status!=='ready';h++)order({type:'wait',hours:1});for(let h=0;h<24&&c.hour%24!==6;h++)order({type:'wait',hours:1});order({type:'beginAssault',sector:'jujuy'});
  assert.deepEqual(c.pendingBattle.squad.map(u=>u.id),[7,57,5]);
  assert.equal(c.pendingBattle.artillery.filter(g=>!g.stationed).length,1);
  return c;
+}
+
+export function prepareFreshHumahuacaAssault(start){
+ let c=structuredClone(start);const order=a=>{c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);};
+ order({type:'configureArtillery',types:['bronze4']});order({type:'attack',sector:'humahuaca',queue:true,mode:'posta'});
+ for(let h=0;h<24&&c.squads.find(q=>q.id===c.activeSquadId).journey?.status!=='ready';h++)order({type:'wait',hours:1});
+ order({type:'beginAssault',sector:'humahuaca'});return c;
 }
