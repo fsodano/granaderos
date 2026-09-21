@@ -1,4 +1,5 @@
 import {settlePrisonerEscapes} from './prisoner-escape-return.js';
+import {redistributeMilitia} from './militia-distribution.js';
 import {settleDetentionReturn} from './campaign-detention.js';
 import {advanceDetentionCare} from './detention-care.js';
 import {detentionManifest} from './detention.js';
@@ -463,7 +464,7 @@ export function dispatchCampaign(previous,action){
   try{
     requireThat(action&&typeof action.type==='string','La orden no es válida.');
     requireThat(!s.defeated,'La campaña ha terminado. Inicia otra campaña para continuar.');
-    requireThat(!s.completed||['syncTacticalTime','wait','setSleep','assignCare','assignWork','purchaseToolkits','purchaseMedicalSupplies','purchaseAmmunition','purchaseGrenades','horseAction','travel','cancelTravel','resumeTravel','beginAssault','visitSector','leaveSector','talkNPC','createSquad','selectSquad','squad','equip','resupply','repairWeapon','purchaseEquipment','purchaseUsedEquipment','sellEquipment','supplyTransfer','supplyArtillery','transport','militia','cancelMilitia','renewContract','dismiss'].includes(action.type),'La campaña está ganada. Puedes recorrer las provincias y atender a tus escuadras y estancias.');
+    requireThat(!s.completed||['syncTacticalTime','wait','setSleep','assignCare','assignWork','purchaseToolkits','purchaseMedicalSupplies','purchaseAmmunition','purchaseGrenades','horseAction','travel','cancelTravel','resumeTravel','beginAssault','visitSector','leaveSector','talkNPC','createSquad','selectSquad','squad','equip','resupply','repairWeapon','purchaseEquipment','purchaseUsedEquipment','sellEquipment','supplyTransfer','supplyArtillery','transport','militia','cancelMilitia','transferMilitia','distributeMilitia','renewContract','dismiss'].includes(action.type),'La campaña está ganada. Puedes recorrer las provincias y atender a tus escuadras y estancias.');
     requireThat(!s.pendingEncounter||['respondToEncounter','selectSquad'].includes(action.type),'Hay un encuentro pendiente. Elegí cómo responder antes de continuar.');
     requireThat(!s.pendingBattle||['battleResult','leaveSector','talkNPC','finishMission','syncTacticalTime'].includes(action.type),'Hay una batalla pendiente. Resuélvela antes de dar nuevas órdenes.');
     if(['travel','attack','visitSector'].includes(action.type))requireThat(!s.squad.some(id=>militiaAssignment(s,id)),'Un instructor de la escuadra está asignado a las milicias. Cancelá su curso o dejalo en una escuadra de guarnición.');
@@ -477,6 +478,7 @@ export function dispatchCampaign(previous,action){
     if(Number.isFinite(targetId))requireThat(!operativeInTransit(s,targetId),'El combatiente está en camino. Esperá su llegada.');
     if(['squad','recruitCivic','createOfficer'].includes(action.type))requireThat(!activeSquad(s).journey,'Esperá la llegada o cancelá la ruta antes de reorganizar la escuadra.');
     switch(action.type){
+      case 'transferMilitia':case 'distributeMilitia':note(s,redistributeMilitia(s,action));break;
       case 'sectorInventory':note(s,moveSectorItem(s,action,rosterFor(s)));break;
       case 'syncTacticalTime':{
         requireThat(s.pendingBattle&&s.pendingBattle.id===action.battleId,'El reloj no corresponde al despliegue.');

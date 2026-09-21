@@ -10,6 +10,18 @@ export const GARRISON_RANKS=[
  {name:'Montonero',maxHp:75,marksmanship:58,morale:65,agility:75,strength:70,weapon:1803,blade:1812},
  {name:'Veterano',maxHp:85,marksmanship:75,morale:85,agility:70,strength:75,weapon:1801,blade:1811},
 ];
+function newGarrisonMember(s,rank){
+ const stats=GARRISON_RANKS[rank],key=ammoResourceKey(weaponAmmoType(stats.weapon)),rounds=Math.min(6,s.resources[key]??0);s.resources[key]-=rounds;
+ return initializeUnitAmmunition({...stats,id:s.nextMilitiaId++,name:`${stats.name} de la guarnición`,hp:stats.maxHp,militia:true,militiaRank:rank,leadership:30+rank*15,wisdom:55,dexterity:55,medical:15,loaded:Math.min(1,rounds),ammo:Math.max(0,rounds-1),condition:85,priming:6,flints:0,rations:0,medkits:0,torches:0,boleadoras:rank===1?1:0,inventory:{},overwatch:true},{defaultCount:0});
+}
+// Paid cohorts can exist as counts before their first deployment. Create only
+// the records needed by a transfer, using the same finite initial ammunition.
+export function materializeGarrisonRank(s,sector,rank,count){
+ if(s.sectors[sector]?.owner!=='patriot'||![0,1,2].includes(rank)||!Number.isInteger(count)||count<0||count>s.sectors[sector].militia[rank])throw Error('La guarnición no tiene esos defensores.');
+ s.garrisons??={};s.nextMilitiaId??=20000;s.garrisons[sector]??=[];
+ const records=s.garrisons[sector].filter(u=>u.hp>0&&u.militiaRank===rank);
+ for(let i=records.length;i<count;i++)s.garrisons[sector].push(newGarrisonMember(s,rank));
+}
 export function prepareGarrison(s,sector){
  s.garrisons??={};s.nextMilitiaId??=20000;
  if(s.sectors[sector]?.owner!=='patriot')return [];
@@ -17,7 +29,7 @@ export function prepareGarrison(s,sector){
  for(let rank=0;rank<3;rank++){
   const count=Math.min(slots,s.sectors[sector].militia[rank]);slots-=count;
   const retained=old.filter(u=>u.militiaRank===rank&&u.hp>0).slice(0,count);next.push(...retained);
-  for(let i=retained.length;i<count;i++){const stats=GARRISON_RANKS[rank],key=ammoResourceKey(weaponAmmoType(stats.weapon)),rounds=Math.min(6,s.resources[key]??0);s.resources[key]-=rounds;next.push(initializeUnitAmmunition({...stats,id:s.nextMilitiaId++,name:`${stats.name} de la guarnición`,hp:stats.maxHp,militia:true,militiaRank:rank,leadership:30+rank*15,wisdom:55,dexterity:55,medical:15,loaded:Math.min(1,rounds),ammo:Math.max(0,rounds-1),condition:85,priming:6,flints:0,rations:0,medkits:0,torches:0,boleadoras:rank===1?1:0,inventory:{},overwatch:true},{defaultCount:0}));}
+  for(let i=retained.length;i<count;i++)next.push(newGarrisonMember(s,rank));
  }
  // Keep transferred soldiers beyond the 60-person deployment limit as finite
  // reserves. Only a real reduction in rank strength releases surplus rounds.

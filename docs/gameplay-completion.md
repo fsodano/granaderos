@@ -224,3 +224,10 @@ Further Salta probes remain unsuccessful. Paid recovery, three finite-stock rese
 ## Strategic militia medical care
 
 Local hired doctors can now take a separate militia assignment and treat retained garrison wounds with finite personal supplies. Hourly triage, sleep, training custody, saved stops, paid resupply and real reentry are covered by ten new simulation/render checks. The live interface verified 20→26 health, save continuation, kit exhaustion, a 150-peso resupply and full recovery with a completed-care notice. See [militia medical care](militia-medical-care.md) for rates, restrictions and exact verification scope. The integrated suite passed 2,633 tests; the final 39-check care run also covers the later three added cases and completion-text correction. Type checking and the build pass. Tactical militia commands and the other open audit requirements remain unfinished.
+
+
+## City militia distribution
+
+The original manual's town redistribution choice now has manual rank/quantity transfers and an automatic distribution preview in the Sector panel. Exact defenders keep their wounds, experience and finite equipment; critical patients and training cohorts remain in place. Transfers obey connected city ownership, encounter restrictions and capacity. Thirteen new simulation/render checks cover custody, real sector reentry, paid count-only cohorts and stable balancing. The live interface moved a wounded veteran, retained the transfer after reload, balanced twelve defenders across three sectors and rejected an excessive quantity. See [city distribution](militia-distribution.md). Tactical commands and the remaining gameplay audit are still open.
+
+Integrated verification: **2,649/2,649 tests pass with no skips**, including the continuous fresh campaign through Tucumán recapture. The final 30-check focused run covers the last UI refinements; type checking, the production build, diff checks and the 49-file preservation check pass. This does not close the remaining campaign ending or audit gaps.
