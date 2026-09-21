@@ -1,4 +1,4 @@
-import {recoverFreshNorthernDoctor} from './fresh-northern-recovery.mjs';
+import {recoverFreshNorthernDoctor,reuniteFreshNorthernSquad} from './fresh-northern-recovery.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
 import {dispatchCampaign} from '../game/campaign.js';
 import {sanLorenzoCombatOrder} from './san-lorenzo-driver.mjs';
@@ -76,6 +76,13 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  assert.ok(relief.recruited.includes(10)&&relief.recruited.includes(4)&&relief.recruited.includes(1000));
  assert.equal(relief.contracts[1000].paid,300);
  assert.ok(relief.hour>tucuman.campaign.hour);
+ const reunited=reuniteFreshNorthernSquad(relief);
+ assert.equal(reunited.location,'tucuman');
+ assert.deepEqual(reunited.squad,[1000,4,10,122,126,1]);
+ assert.equal(reunited.flags.partisanSupply,true);
+ assert.equal(reunited.resources.muskets,relief.resources.muskets-50);
+ for(const id of reunited.squad)assert.equal(reunited.operativeState[id].location,'tucuman');
+ for(const [id,record]of Object.entries(relief.operativeState))if(!record.alive)assert.equal(reunited.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(tucuman.campaign.operativeState))if(!record.alive)assert.equal(relief.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(defense.campaign.operativeState))if(!record.alive)assert.equal(tucuman.campaign.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(healed.operativeState))if(!record.alive)assert.equal(defense.campaign.operativeState[id].alive,false);

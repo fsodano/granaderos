@@ -27,3 +27,20 @@ for(let i=0;i<30&&c.operativeState[122].hp<c.operativeState[122].maxHp;i++)order
 assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
  return c;
 }
+
+export function reuniteFreshNorthernSquad(start){
+ let c=decodeSave(encodeSave(start)).campaign;
+ const order=a=>{c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);};
+order({type:'squad',ids:[1000,10,4,122]});
+for(let leg=0;leg<6&&c.location!=='tucuman';leg++){
+ for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'rest'});
+ for(let i=0;i<30&&c.squad.some(id=>c.operativeState[id].fatigue>0||c.operativeState[id].energy<100||c.operativeState[id].asleep);i++)order({type:'wait',hours:1});
+ for(const id of [122,126]){const ct=c.contracts[id];if(ct.expiresAt-c.hour<60)order({type:'renewContract',id,term:'week',expectedExpiresAt:ct.expiresAt});}
+ for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
+ order({type:'travel',sector:'tucuman'});
+ assert.equal(c.pendingEncounter,null);
+}
+assert.equal(c.location,'tucuman');
+order({type:'squad',ids:[1000,4,10,122,126]});order({type:'diplomacy',kind:'partisanSupply'});order({type:'visitSector'});let b=approachNPC(enterSector(c.pendingBattle,c.sectorStates.tucuman),'4','azurduy');let sync=syncBattleTime(c,b);assert.equal(sync.error,null);c=sync.campaign;b=sync.battle;order({type:'talkNPC',npcId:'azurduy',unitId:4,approach:'recruit',sectorState:b});const npc=b.npcs.find(n=>n.id==='azurduy'),record=c.pendingBattle.squad.find(o=>o.id===1);b.npcs=b.npcs.filter(n=>n.id!=='azurduy');const unit=createBattle([record],{width:b.width,height:b.height,enemies:[],exploration:true}).units.find(u=>u.side==='player');b.units.push({...unit,x:npc.x,y:npc.y});sync=syncBattleTime(c,b);assert.equal(sync.error,null);c=sync.campaign;b=sync.battle;order({type:'leaveSector',battleId:c.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
+ return c;
+}
