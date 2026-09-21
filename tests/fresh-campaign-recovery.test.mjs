@@ -1,3 +1,4 @@
+import {prepareFreshCuyoDefense} from './fresh-cuyo-route.mjs';
 import {recoverFreshNorthernDoctor,reuniteFreshNorthernSquad,prepareFreshSaltaAssault,finishFreshNorthernCampaign} from './fresh-northern-recovery.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
 import {dispatchCampaign} from '../game/campaign.js';
@@ -86,6 +87,13 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  const yatasto=finishFreshNorthernCampaign(salta.campaign);
  assert.equal(yatasto.phase,3);assert.equal(yatasto.missions.yatasto.completed,true);
  assert.deepEqual(yatasto.squad,[1,0,8]);assert.equal(yatasto.completed,false);
+ const defended=fightNorthernSector(prepareFreshCuyoDefense(yatasto),'cordoba',{controller:tucumanCombatOrder});
+ assert.equal(defended.campaign.sectors.cordoba.owner,'patriot');
+ assert.equal(defended.campaign.sectors.salta.owner,'royalist');
+ assert.equal(defended.campaign.operativeState[0].alive,false);
+ assert.equal(defended.campaign.operativeState[1].hp,defended.campaign.operativeState[1].maxHp);
+ assert.equal(defended.campaign.completed,false);
+ for(const [id,record]of Object.entries(yatasto.operativeState))if(!record.alive)assert.equal(defended.campaign.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(salta.campaign.operativeState))if(!record.alive)assert.equal(yatasto.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(reunited.operativeState))if(!record.alive)assert.equal(salta.campaign.operativeState[id].alive,false);
  assert.equal(reunited.flags.partisanSupply,true);
