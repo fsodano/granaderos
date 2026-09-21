@@ -114,10 +114,11 @@ export function arriveForAssault(s,groups,target){
 }
 export function validateAssaultDeployment(s){
  const b=s.pendingBattle;if(b?.assaultSquads===undefined)return;
- const manifest=b.assaultSquads;
- need(!b.defenseGroupId&&!b.exploration&&!b.missionId&&sector(b.sector)&&Array.isArray(manifest)&&manifest.length>0&&manifest.length<=8&&new Set(manifest.map(q=>q?.id)).size===manifest.length,'Las escuadras del asalto son inválidas.');
- need(manifest.every(group=>{const q=s.squads.find(q=>q.id===group?.id);return q&&q.location===b.sector&&!q.journey&&sector(group.origin)?.neighbors.includes(b.sector)&&Array.isArray(group.members)&&group.members.length>0&&group.members.length<=6&&JSON.stringify(group.members)===JSON.stringify(q.members);}), 'Los participantes del asalto no corresponden a sus escuadras.');
+ const manifest=b.assaultSquads,mission=b.missionId==='san_lorenzo'&&b.sector==='san_lorenzo',location=mission?'san_nicolas':b.sector;
+ need(!b.defenseGroupId&&!b.exploration&&(!b.missionId&&sector(b.sector)||mission)&&Array.isArray(manifest)&&manifest.length>0&&manifest.length<=8&&new Set(manifest.map(q=>q?.id)).size===manifest.length,'Las escuadras del asalto son inválidas.');
+ need(manifest.every(group=>{const q=s.squads.find(q=>q.id===group?.id);return q&&q.location===location&&!q.journey&&(mission?group.origin==='san_nicolas':sector(group.origin)?.neighbors.includes(b.sector))&&Array.isArray(group.members)&&group.members.length>0&&group.members.length<=6&&JSON.stringify(group.members)===JSON.stringify(q.members);}), 'Los participantes del asalto no corresponden a sus escuadras.');
  for(const group of manifest){const name=s.squads.find(q=>q.id===group.id).name||group.id;if(group.name===undefined)group.name=name;need(group.name===name,'El nombre de la escuadra de llegada no corresponde a la campaña.');}
+ need(!mission||(b.origin==='san_nicolas'&&manifest.some(q=>q.id===s.activeSquadId)),'El origen de la misión no corresponde a la escuadra activa.');
  const ids=manifest.flatMap(q=>q.members);need(new Set(ids).size===ids.length&&ids.length===b.squad.length&&b.squad.every(u=>ids.includes(u.id)),'El destacamento del asalto está incompleto.');
- for(const group of manifest){const entry=entryFromSector(group.origin,b.sector);need(group.members.every(id=>{const unit=b.squad.find(u=>u.id===id);return s.operativeState[id]?.arrival?.fromSector===group.origin&&s.operativeState[id]?.location===b.sector&&unit.entryEdge===entry.entryEdge&&unit.entryAnchor?.x===entry.entryAnchor.x&&unit.entryAnchor?.y===entry.entryAnchor.y;}),'La entrada del asalto no corresponde al origen.');}
+ for(const group of manifest){const entry=entryFromSector(group.origin,b.sector);need(group.members.every(id=>{const unit=b.squad.find(u=>u.id===id);return s.operativeState[id]?.arrival?.fromSector===group.origin&&s.operativeState[id]?.location===location&&unit.entryEdge===entry.entryEdge&&unit.entryAnchor?.x===entry.entryAnchor.x&&unit.entryAnchor?.y===entry.entryAnchor.y;}),'La entrada del asalto no corresponde al origen.');}
 }

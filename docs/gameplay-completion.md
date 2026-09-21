@@ -29,7 +29,7 @@ The fresh-start integration test now continues from its actual San Nicolás vict
 
 Three additional controlled continuations did not win: keeping the commander in western shelter preserved him but lost the field squad; returning him after two rounds lost the mission; the stronger squad with more recovered medical supplies also lost. No battle rules, enemy strength, initial health or victory conditions were changed. These failures do not by themselves prove a balance defect.
 
-The next missing campaign control is coordinated mission deployment. `attack` currently passes only `s.squad` into San Lorenzo and bypasses ordinary queued assault handling. Implement explicit selection of eligible co-located squads, a validated manifest, arrival placement and complete return/save handling before treating this as supported mission reinforcement. Do not silently deploy reserves or claim that more soldiers will guarantee a win.
+Coordinated mission deployment is now implemented: the desk explicitly selects eligible co-located squads, retains a validated manifest, and uses the existing arrival and return/save rules. Eight-person placement, reload and entry passed live; focused tests cover settlement and a supporting soldier's physical exit. See [mission squads](mission-squads.md). The integrated suite passes 2,557/2,557 with no skips; type checking and the production build pass. This does not prove a fresh-campaign mission victory.
 
 ## Work order and completion evidence
 
