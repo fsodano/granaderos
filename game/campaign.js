@@ -272,12 +272,12 @@ function acknowledgeNpcGifts(s,snapshot){
   if(!count)continue;
   const npc=ENCOUNTERS.find(n=>n.id===local.id&&n.sector===s.pendingBattle.sector);
   if(quest.status==='unoffered')s.quests[quest.id]={status:'offered',offeredAt:s.hour,completedAt:null};
-  let text=`Recibimos ${count} de ${quest.carried.count} ponchos. Todavía falta abrigo para completar el encargo.`,outcome='questProgress';
+  let text=`Recibimos ${count} de ${quest.carried.count} ${quest.carried.label.toLowerCase()}. Todavía faltan objetos para completar el encargo.`,outcome='questProgress';
   if(complete){
    s.quests[quest.id]={...s.quests[quest.id],status:'completed',completedAt:s.hour};
    recordCityLoyalty(s,{sectorId:quest.sector,kind:'quest',eventId:`npc-${quest.id}`});
    note(s,`Encargo cumplido: ${quest.title}. La ciudad reconoce el servicio.`);text=quest.delivery;outcome='questCompleted';
-  }else if(count===quest.carried.count){text=quest.status==='completed'?quest.delivery:'Recibimos todos los ponchos. Falta asegurar las localidades del encargo.';}
+  }else if(count===quest.carried.count){text=quest.status==='completed'?quest.delivery:'Recibimos todos los objetos. Falta asegurar las localidades del encargo.';}
   s.conversations??={};s.conversations[npc.id]={met:true,lastApproach:'gift',hour:s.hour,text,giftCount:count};
   s.lastConversation={npcId:npc.id,speaker:npc.name,text,outcome,giftCount:count,operativeId:npc.operativeId??null,options:dialogueOptions(npc,questForNPC(s,npc.id)).map(([id])=>id)};
  }

@@ -28,3 +28,8 @@ test('completed and failed errands retain their terminal outcome without deliver
   assert.match(html,/Día 2 · 2:00/);assert.match(html,status==='completed'?/Los reclutas tendrán abrigo/:/El contacto murió/);
  }
 });
+
+test('medical delivery uses supply labels and acknowledged partial quantities',()=>{
+ const s=initialCampaign();s.quests['tucuman-vendas']={status:'offered',offeredAt:0,completedAt:null};s.conversations['local-tucuman']={giftCount:1};
+ const html=render(h(QuestJournal,{state:s}));assert.match(html,/Vendas entregadas: 1\/3/);assert.match(html,/Seleccioná la cantidad/);assert.doesNotMatch(html,/Ponchos entregados/);
+});

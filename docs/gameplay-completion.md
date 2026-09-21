@@ -39,6 +39,10 @@ The continuous Retiro route now continues through actual recovery at San Nicolá
 
 An actual six-person Córdoba continuation loses. This is not a successful fresh northern campaign, and no enemy, health, supply or victory rule was changed to make it pass. The established-area northern scenario remains separate evidence. Its eight regression checks pass with no skips; the expanded fresh-start check also passes. These checks cover the route changes, not the full gameplay audit.
 
+## Physical medical delivery
+
+Tucumán now has a carried dressing errand with partial deliveries, quantity refusal, persistent ownership, notebook progress and a one-time loyalty reward. All 49 focused checks, type checking and the build pass; see [medical delivery](physical-medical-delivery.md) for exact scope and the remaining live check. This does not complete escort, prison or alternative quest resolutions.
+
 ## Work order and completion evidence
 
 1. **Stabilize the integrated game.** Run the complete current suite, resolve failures without removing finite supply, permanent casualties, legal movement, or save checks. Preserve separate artwork and roster changes. Verify type checking, the production build and relevant live controls.
