@@ -1,3 +1,4 @@
+import {restoredCaptiveContract} from './prisoner-custody.js';
 import {escortArrival} from './quest-escort.js';
 import {missionAssaultManifest} from './mission-assault.js';
 import {hasPendingCivilianHarm,acknowledgeCivilianHarm,validateCampaignCivilianHarm,markCivilianServiceTransfer,migrateCampaignCivilianHealth} from './campaign-civilian-harm.js';
@@ -195,10 +196,10 @@ function releaseCaptives(s,at){
     const held=r.capturedAmmunition??{loaded:0,ammo:0};
     setCarriedLoading(r,{weapon:op.weapon,...held,weaponDropped:r.weaponDropped});r.capturedAmmunition={loaded:0,ammo:0};
     for(const h of s.horseState.horses)if(h.custody?.kind==='captured'&&h.custody.operativeId===op.id){h.custody=null;h.assignedTo=null;}
-    const contract=clone(r.capturedContract),remaining=contract.expiresAt===null?null:Math.max(0,contract.expiresAt-r.capturedAt);delete contract.departurePending;
+    const contract=restoredCaptiveContract(r,s.hour);
     Object.assign(r,{asleep:false,captured:false,capturedSector:null,capturedAt:null,capturedContract:null,location:at,arrival:null,residentSector:at,residentScene:null,assignment:r.hp<r.maxHp||r.bleeding?'patient':'rest'});
-    if(remaining===0){r.assignment='active';note(s,`${op.name} queda libre en ${sector(at).name}. Su contrato había terminado y puede volver a contratarse.`);continue;}
-    if(remaining!==null)contract.expiresAt=s.hour+remaining;s.contracts[op.id]=contract;s.recruited.push(op.id);if(s.location===at&&s.squad.length<6)s.squad.push(op.id);note(s,`${op.name} vuelve al servicio tras la liberación de ${sector(at).name}. Conserva sus heridas y equipo.`);
+    if(!contract){r.assignment='active';note(s,`${op.name} queda libre en ${sector(at).name}. Su contrato había terminado y puede volver a contratarse.`);continue;}
+    s.contracts[op.id]=contract;s.recruited.push(op.id);if(s.location===at&&s.squad.length<6)s.squad.push(op.id);note(s,`${op.name} vuelve al servicio tras la liberación de ${sector(at).name}. Conserva sus heridas y equipo.`);
   }
 }
 function prepareDefense(s,group,{excludeMercs=false}={}){

@@ -51,6 +51,10 @@ The current integrated suite passes **2,561/2,561 tests with no skips**. Added m
 
 Jujuy now has an accepted escort with local follow/wait and leader-change orders, actual movement to the western boundary, controlled-destination checks, one-time rewards, death failure, saved directives and notebook outcomes. Live acceptance, waiting, following, arrival and reload/notebook checks pass; see [escort gameplay](escort-gameplay.md) for exact scope. W07 remains partial for broader quest consequences and alternatives. W08 prison rescue/escape remains open. The integrated escort run passes 2,571/2,571 tests with no skips. The last intermediate-return and failure-text changes pass a separate 14-test follow-up; final type checking and the build pass.
 
+## Prisoner custody preparation
+
+The prisoner panel now exposes detention time, wounds, unavailable equipment and paused service. Sector recapture and the panel use a shared contract-restoration rule; 13 focused checks, type checking and the build pass. See [prisoner custody](prisoner-custody.md). This does not implement a prison scene, physical rescue or escape; W08 remains open.
+
 ## Work order and completion evidence
 
 1. **Stabilize the integrated game.** Run the complete current suite, resolve failures without removing finite supply, permanent casualties, legal movement, or save checks. Preserve separate artwork and roster changes. Verify type checking, the production build and relevant live controls.
