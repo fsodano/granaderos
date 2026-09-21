@@ -190,3 +190,14 @@ The continuous fresh-start route now approaches Los Patos through Uspallata with
 An independent ending-rule fixture exposed a defect: recruitment alone allowed victory after San Martín died. His death before completion now ends the campaign in defeat and prevents further orders. A living wounded commander can still finish without free healing. These ending fixtures test rules only; they do not establish a fresh-start ending. Coastal conquest, northern recovery, enemy forces and the actual ending remain open, as does overall balance.
 
 Validation: all 2,625 tests pass with no skips, including the continuous fresh-start route. Type checking, production build and diff checks pass. A controlled death mutation of a valid phase-4 checkpoint retains defeat after save reload. All 49 unrelated preservation files remain unchanged. W10 remains partial.
+
+
+## Coastal campaign checkpoint
+
+The phase-4 survivors return to Retiro using paid post travel. A paid renewal retains Valcourt, and San Martín physically recruits Cabral. The continuous fresh-start regression through this step passes in 178.3 seconds.
+
+Separate continuation probes from that real checkpoint establish an Ensenada victory after banking ordinary income, buying three Charlevilles from finite shop stock and hiring Arnaud, Valcourt and Beaumont for a day. The six-person force wins at hour 2,502 with 12,490 pesos. Cabral and Valcourt die; the campaign retains 56 permanent deaths. San Martín survives with 68 HP and no bleeding. Two earlier probes with five soldiers lose, including one with a cannon whose crew advances away from it. Those losses are separate alternatives, not claimed victories or part of the successful route.
+
+Two paid import orders for supplies and materials raise foreign reputation to 30. Brown and Bouchard then join through physical dialogue; both purchases remain timed shipments. The validated naval checkpoint is hour 2,503, with 12,150 pesos and six living squad members. It is not a campaign ending. Santa Fe and four northern sectors remain to be liberated. The complete Retiro-to-port regression now passes in 320.0 seconds, including both naval recruits and saved state. No runtime code changed in this checkpoint; the preceding integrated suite remains 2,625 passing tests. Diff checks and all 49 unrelated-file preservation checks pass. W10 remains partial.
+
+A subsequent branch pays for survivor renewals, post travel to Retiro, dressings, complete commander recovery and two further Charlevilles, waiting for actual shop stock. It reaches San Nicolás. Two Santa Fe assaults lose: the first has no reserve musket ammunition, while the second purchases sixty .69-calibre rounds before departure and still loses. Neither branch extends the successful campaign proof. The supplied staging save remains a starting point for further tactical investigation.
