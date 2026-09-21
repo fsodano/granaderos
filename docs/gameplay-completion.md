@@ -43,6 +43,10 @@ An actual six-person Córdoba continuation loses. This is not a successful fresh
 
 Tucumán now has a carried dressing errand with partial deliveries, quantity refusal, persistent ownership, notebook progress and a one-time loyalty reward. All 49 focused checks, type checking and the build pass; see [medical delivery](physical-medical-delivery.md) for exact scope. Live partial delivery, excessive-quantity refusal, completion and reload/notebook verification now pass. This does not complete escort, prison or alternative quest resolutions.
 
+## Integrated medical-delivery verification
+
+The current integrated suite passes **2,561/2,561 tests with no skips**. Added medical-errand checks cover permanent contact-death failure, retained completed rewards, physical supply custody, duplicate synchronization and rejection of missing saved receipts. All 49 unrelated files in the preservation snapshot remain byte-identical. This run does not close the remaining partial or unverified audit requirements.
+
 ## Work order and completion evidence
 
 1. **Stabilize the integrated game.** Run the complete current suite, resolve failures without removing finite supply, permanent casualties, legal movement, or save checks. Preserve separate artwork and roster changes. Verify type checking, the production build and relevant live controls.
