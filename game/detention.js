@@ -9,9 +9,11 @@ export function detentionManifest(campaign,roster,sector){
  return roster.flatMap(op=>{
   const r=campaign.operativeState[op.id];
   if(!r?.captured||!r.alive||r.capturedSector!==sector)return [];
+  const retained=campaign.detentionRecords?.[`captive:${op.id}:${r.capturedAt}`]?.npc;
+  if(retained)return [structuredClone(retained)];
   return [seedCivilianHealth({id:`captive:${op.id}:${r.capturedAt}`,name:op.name,portraitId:op.portraitId??op.id,
    detention:{operativeId:op.id,capturedAt:r.capturedAt,sector,freed:false}}, {...r,maxHp:r.maxHp??op.maxHp})];
- });
+ }).concat(Object.values(campaign.detentionRecords??{}).filter(entry=>entry.npc.hp===0&&entry.npc.detention.sector===sector).map(entry=>structuredClone(entry.npc)));
 }
 export function validateDetainedPrisoner(npc){
  if(npc.detention===undefined)return;
@@ -30,8 +32,9 @@ export function placeDetainedPrisoners(battle,manifest){
  for(const prisoner of manifest){
   validateDetainedPrisoner(prisoner);
   if(!prisoner.detention||prisoner.detention.freed||ids.has(prisoner.id))throw Error('El despliegue de prisioneros está duplicado o no corresponde al cautiverio.');
-  const point=candidates.shift();if(!point)throw Error('No queda espacio para situar a los prisioneros.');
-  ids.add(prisoner.id);result.npcs.push({...structuredClone(prisoner),x:point.x,y:point.y,tacticalLevel:0,stance:prisoner.unconscious?'prone':'standing',movementMode:prisoner.unconscious?'prone':'walk'});
+  const retained=candidates.findIndex(t=>t.x===prisoner.x&&t.y===prisoner.y);
+  const point=candidates.splice(retained>=0?retained:0,1)[0];if(!point)throw Error('No queda espacio para situar a los prisioneros.');
+  ids.add(prisoner.id);result.npcs.push({...structuredClone(prisoner),x:point.x,y:point.y,tacticalLevel:0,stance:prisoner.hp===0||prisoner.unconscious?'prone':'standing',movementMode:prisoner.hp===0||prisoner.unconscious?'prone':'walk'});
  }
  return result;
 }

@@ -1,3 +1,4 @@
+import {placeDetainedPrisoners} from './detention.js';
 import {exteriorComponent,entryTerrainCells} from './sector-entry.js';
 import {beginSectorDeployment} from './sector-deployment.js';
 import {spaceKey,surfacesAtLevel,tacticalLevel,validateTacticalSpace} from './tactical-space.js';
@@ -51,7 +52,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
    occupiedGuns.add(key(gun));return gun;
  });
  // Deployment intent does not establish contact. Resolve sight only after final placement.
- const state=createBattle([...map.squad,...(map.garrison??[]),...(map.missionAllies??[])],{...map,exploration:true,deferContact:true});
+ let state=createBattle([...map.squad,...(map.garrison??[]),...(map.missionAllies??[])],{...map,exploration:true,deferContact:true});
  for(const field of ['upperSurfaces','climbLinks'])if(map[field]!==undefined)state[field]=structuredClone(map[field]);
  if(previous){
    for(const unit of state.units.filter(u=>u.side==='player'&&u.hp>0)){const old=previous.units.find(u=>u.id===unit.id&&u.side==='player');for(const key of ['practiceTiles','ridingPracticeTiles'])if(old?.[key])unit[key]=structuredClone(old[key]);}
@@ -96,7 +97,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
  // its original local owner; saved coordinates already belong to the full map.
  // Explicit rosters control presence, especially after named recruitment.
  if(request.npcs===undefined)for(const npc of previous?.npcs??[]){
-   if(residents.some(current=>current.id===npc.id))continue;
+   if(npc.detention||residents.some(current=>current.id===npc.id))continue;
    const harmed=(civilianIncidents(npc).length>0||(npc.hp??civilianMaxHp(npc))<civilianMaxHp(npc)||(npc.energy??100)<100||npc.bleeding>0)&&!state.units.some(unit=>unit.side==='player'&&npc.operativeId!==undefined&&Number(unit.id)===npc.operativeId);
    if(harmed||npc.escort||npc.operativeId===undefined&&npc.questGifts?.length&&validateQuestGifts(npc).length)residents.push(structuredClone(npc));
  }
@@ -139,6 +140,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
      occupied.add(key(unit));
    }
  }
+ if(request.detainedPrisoners?.length)state=placeDetainedPrisoners(state,request.detainedPrisoners);
  state.sceneId=request.sceneId??null;state.missionId=request.missionId??request.sceneId??null;
  state.enteredHour=request.hour??0;
  const selecting=placement&&!request.exploration&&beginSectorDeployment(state,request),deferred=new Set(state.deployment?.units.map(u=>u.id)??[]);

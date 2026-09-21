@@ -1,3 +1,5 @@
+import {hasPendingDetentionHealth,acknowledgeDetentionHealth,validateCampaignDetention} from './campaign-detention.js';
+import {validateDetainedPrisoner} from './detention.js';
 import {failQuestsForDeadContact} from './quests.js';
 import {civilianMaxHp,civilianRestoredHp,migrateCivilianHealth,validateCivilianHealth} from './civilian-health.js';
 import {CIVIC_RECRUITS} from './recruitment.js';
@@ -37,6 +39,7 @@ export function migrateCivilianSnapshotHealth(campaign,snapshot,{legacy=false}={
  if(!snapshot)return;
  const sectorId=snapshot.sectorId??snapshot.sector,sceneId=snapshot.sceneId??null;
  for(const npc of snapshot.npcs??[]){
+  if(npc.detention!==undefined){validateDetainedPrisoner(npc);continue;}
   const service=serviceFor(campaign,sectorId,sceneId,npc);
   const id=authoredNpc(sectorId,sceneId,npc.id)?.operativeId,retained=ledgerOf(campaign).records[identity(sectorId,sceneId,npc.id)];
   const currentContact=id===undefined||!campaign.recruited?.includes(id)&&retained?.transferredTo!==id;
@@ -136,6 +139,7 @@ function context(campaign,battle){
  for(const npc of battle.npcs){
   need(npcId(npc?.id)&&!seen.has(npc.id),'La identidad del habitante no es válida.');seen.add(npc.id);
   validateCivilianWounds(npc,battle);
+  if(npc.detention!==undefined)continue;
   const incidents=civilianIncidents(npc),key=identity(request.sector,sceneId,npc.id),acknowledged=ledger.records[key]?.incidents??[];
   validatePrefix(acknowledged,incidents);
   const previousNpc=prior?.npcs?.find(previous=>previous.id===npc.id),previousIncidents=previousNpc?civilianIncidents(previousNpc):[];
@@ -167,12 +171,12 @@ function context(campaign,battle){
   const previous=prior?.npcs?.find(previous=>previous.id===npc.id),incidents=previous?civilianIncidents(previous):civilianIncidents(npc);
   need(seen.has(npc.id)||recruitedSurvivor(campaign,{sectorId:request.sector,sceneId,npcId:npc.id,incidents}),'El parte omitió un habitante del despliegue.');
  }
- for(const npc of prior?.npcs??[]){const incidents=civilianIncidents(npc);if(incidents.length)need(seen.has(npc.id)||recruitedSurvivor(campaign,{sectorId:request.sector,sceneId,npcId:npc.id,incidents}),'El parte omitió un habitante herido del sector.');}
+ for(const npc of prior?.npcs??[]){const incidents=civilianIncidents(npc);if(incidents.length&&!npc.detention)need(seen.has(npc.id)||recruitedSurvivor(campaign,{sectorId:request.sector,sceneId,npcId:npc.id,incidents}),'El parte omitió un habitante herido del sector.');}
  for(const record of Object.values(ledger.records))if(record.sectorId===request.sector&&record.sceneId===sceneId)need(seen.has(record.npcId)||recruitedSurvivor(campaign,record),'El parte omitió un habitante con daños civiles registrados.');
  return {request,sceneId,pending,healthUpdates};
 }
 
-export function hasPendingCivilianHarm(campaign,battle){const {pending,healthUpdates}=context(campaign,battle);return pending.length>0||healthUpdates.length>0;}
+export function hasPendingCivilianHarm(campaign,battle){const {pending,healthUpdates}=context(campaign,battle);return hasPendingDetentionHealth(campaign,battle)||pending.length>0||healthUpdates.length>0;}
 
 // The tactical receipt is the evidence. This ledger acknowledges it once,
 // including rural and unknown-source deaths that have no civic modifier.
@@ -181,7 +185,7 @@ export function acknowledgeCivilianHarm(campaign,battle){
  // rejected caller. Validation does not mutate any existing nested record.
  validateCampaignCivilianHarm({...campaign});
  const {request,sceneId,pending,healthUpdates}=context(campaign,battle);
- if(!pending.length&&!healthUpdates.length)return [];
+ if(!pending.length&&!healthUpdates.length){acknowledgeDetentionHealth(campaign,battle);return [];}
  const owner=campaign.sectors?.[civicSector(request.sector)]?.owner;
  need(['patriot','royalist'].includes(owner),'Falta el control de la localidad del incidente.');
  const planned=pending.map(entry=>({...entry,effects:entry.incidents.slice(entry.acknowledged.length).map(event=>effectFor(request.sector,owner,event,entry.key))}));
@@ -195,6 +199,7 @@ export function acknowledgeCivilianHarm(campaign,battle){
   for(const effect of entry.effects)if(effect.kind)need(Number.isFinite(effect.delta)&&!(campaign.cityLoyaltyEvents??[]).some(event=>event.key===`${cityForSector(civicSector(request.sector)).id}:${effect.kind}:${effect.eventId}`),'El efecto civil ya existe sin su recibo.');
  }
  // All receipt and capacity checks precede the first campaign mutation.
+ acknowledgeDetentionHealth(campaign,battle);
  campaign.civilianHarm??=emptyLedger();const messages=[];
  for(const entry of planned){
   const record=campaign.civilianHarm.records[entry.key]??={sectorId:request.sector,sceneId,npcId:entry.npc.id,incidents:[],effects:[],transferredTo:null,hpRestored:0};
@@ -220,6 +225,7 @@ export function acknowledgeCivilianHarm(campaign,battle){
 }
 
 export function validateCampaignCivilianHarm(campaign){
+ validateCampaignDetention(campaign);
  const snapshots=[...Object.values(campaign.sectorStates??{}),...Object.values(campaign.sceneStates??{})];
  const receiptOwners=[...snapshots,...(campaign.pendingBattle?[campaign.pendingBattle,campaign.pendingBattle.resumeSnapshot].filter(Boolean):[])];
  for(const snapshot of receiptOwners)for(const npc of snapshot.npcs??[])validateCivilianWounds(npc,snapshot);
@@ -258,6 +264,7 @@ export function validateCampaignCivilianHarm(campaign){
   if(campaign.pendingBattle?.sector===snapshot.sectorId&&(campaign.pendingBattle.sceneId??null)===(snapshot.sceneId??null))continue;
   migrateCivilianSnapshotHealth(campaign,snapshot);
   for(const npc of snapshot.npcs??[]){
+   if(npc.detention!==undefined)continue;
    const incidents=civilianIncidents(npc),sceneId=snapshot.sceneId??null;
    const medicalContact=npc.civilianWoundVersion===1&&authoredNpc(snapshot.sectorId,sceneId,npc.id)?.operativeId!==undefined&&((npc.hp??civilianMaxHp(npc))<civilianMaxHp(npc)||(npc.energy??100)<100);
    if(!incidents.length&&!medicalContact&&!civilianRestoredHp(npc))continue;
