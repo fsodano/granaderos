@@ -64,3 +64,15 @@ for(const operativeId of ids)order({type:'assignCare',operativeId,assignment:'ac
 for(const id of squads){order({type:'selectSquad',id});order({type:'attack',sector:'salta',queue:true});}for(let i=0;i<30&&!squads.every(id=>c.squads.find(q=>q.id===id)?.journey?.status==='ready');i++)order({type:'wait',hours:1});order({type:'beginAssault',sector:'salta'});
 assert.equal(c.pendingBattle.squad.length,8);return c;
 }
+
+export function finishFreshNorthernCampaign(start){
+ let c=decodeSave(encodeSave(start)).campaign;
+ const order=a=>{c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);};
+ const before=structuredClone(c.resources);order({type:'diplomacy',kind:'northPact'});
+ assert.equal(c.resources.muskets,before.muskets-20);assert.equal(c.resources.horses,before.horses-10);assert.equal(c.resources.powder,before.powder-10);
+ c=meetRecruits(c,['guemes','macacha'],1);
+for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'rest'});for(let i=0;i<30&&c.squad.some(id=>c.operativeState[id].fatigue>0||c.operativeState[id].energy<100||c.operativeState[id].asleep);i++)order({type:'wait',hours:1});for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
+order({type:'travel',sector:'tucuman'});assert.equal(c.pendingEncounter,null);order({type:'visitMission',mission:'yatasto'});let b=enterSector(c.pendingBattle,c.sceneStates.yatasto);
+for(const npcId of ['yatasto-belgrano','yatasto-san-martin','yatasto-san-martin']){b=approachNPC(b,'1',npcId);const pair=syncBattleTime(c,b);assert.equal(pair.error,null);c=pair.campaign;b=pair.battle;order({type:'talkNPC',npcId,unitId:1,approach:'mission',sectorState:b});const saved=decodeSave(encodeSave(c,b));c=saved.campaign;b=saved.battle;}
+order({type:'finishMission',battleId:c.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});assert.equal(c.phase,3);assert.equal(c.missions.yatasto.completed,true);assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);return c;
+}

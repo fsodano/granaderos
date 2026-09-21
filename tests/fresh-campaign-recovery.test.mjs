@@ -1,4 +1,4 @@
-import {recoverFreshNorthernDoctor,reuniteFreshNorthernSquad,prepareFreshSaltaAssault} from './fresh-northern-recovery.mjs';
+import {recoverFreshNorthernDoctor,reuniteFreshNorthernSquad,prepareFreshSaltaAssault,finishFreshNorthernCampaign} from './fresh-northern-recovery.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
 import {dispatchCampaign} from '../game/campaign.js';
 import {sanLorenzoCombatOrder} from './san-lorenzo-driver.mjs';
@@ -7,7 +7,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {beginFreshCampaign,recoverFreshCapital,prepareFreshNorthernAssault,prepareFreshSanLorenzo,prepareFreshMissionSupport,prepareFreshCordobaAssault,recoverFreshCordobaSurvivors,prepareFreshCordobaDefense,prepareFreshTucumanAssault} from './fresh-campaign-route.mjs';
 
-test('a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba, Tucumán and Salta victories',()=>{
+test('a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba, Tucumán and Salta victories through Yatasto',()=>{
  const opening=beginFreshCampaign();
  assert.ok(opening.actions>0);assert.ok(opening.casualties.length>0);
  assert.equal(opening.campaign.officer,null);
@@ -83,6 +83,10 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  const salta=fightNorthernSector(prepareFreshSaltaAssault(reunited),'salta',{controller:tucumanCombatOrder});
  assert.equal(salta.campaign.sectors.salta.owner,'patriot');
  assert.equal(salta.campaign.completed,false);
+ const yatasto=finishFreshNorthernCampaign(salta.campaign);
+ assert.equal(yatasto.phase,3);assert.equal(yatasto.missions.yatasto.completed,true);
+ assert.deepEqual(yatasto.squad,[1,0,8]);assert.equal(yatasto.completed,false);
+ for(const [id,record]of Object.entries(salta.campaign.operativeState))if(!record.alive)assert.equal(yatasto.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(reunited.operativeState))if(!record.alive)assert.equal(salta.campaign.operativeState[id].alive,false);
  assert.equal(reunited.flags.partisanSupply,true);
  assert.equal(reunited.resources.muskets,relief.resources.muskets-50);
