@@ -8,6 +8,12 @@ Physical deliveries retain their exact ownership. For example, if the Retiro con
 
 The saved failure includes its campaign hour and `contact-dead` reason. Save admission checks the date against the accepted hour and current time, and requires a matching death receipt in the same authored sector and scene. Old saves with already acknowledged deaths are not retroactively assigned new failures.
 
+## Campaign notebook
+
+The desk’s Cuaderno now lists only accepted errands. Pending entries show the contact, sector, acknowledged delivery count, required goods and uncontrolled required sectors. Completed and failed entries retain their outcome and date. Failed entries do not offer delivery instructions. The notebook reads acknowledged campaign receipts rather than hidden NPC inventories.
+
+Live browser verification on 21 September 2026 checked the empty notebook and imported a validated failure fixture made from a real one-poncho delivery followed by controlled fatal damage. The notebook displayed Fallido, the contact, 1/2 ponchos and the failure explanation. This checks display and import, not a player-fired fatal attack. Three notebook projection/render tests plus four quest tests pass; type checking and production build pass.
+
 ## Verification
 
 - 81 quest, gift, dialogue and campaign civilian tests pass.

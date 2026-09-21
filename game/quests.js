@@ -63,3 +63,13 @@ export function questGiftPlan(unit,npc){
  const extracted=extractItemQuantity(unit,unit.activeItem,1),{item,...gift}=extracted.stack;
  return {unit:extracted.unit,gifts:[...(npc.questGifts??[]),gift],label:'Entregar poncho'};
 }
+
+// The notebook exposes only errands already accepted by the player. Progress
+// comes from acknowledged receipts, never from unseen tactical NPC inventories.
+export function questJournal(state){
+ return NPC_QUESTS.flatMap(quest=>{
+  const record=state.quests?.[quest.id];if(!record)return [];
+  return [{...quest,...record,delivered:quest.carried?Math.min(quest.carried.count,state.conversations?.[quest.npcId]?.giftCount??0):null,
+   unsecured:record.status==='offered'?quest.requiredSectors.filter(id=>state.sectors[id]?.owner!=='patriot'):[]}];
+ }).sort((a,b)=>(a.status==='offered'?0:1)-(b.status==='offered'?0:1)||b.offeredAt-a.offeredAt);
+}
