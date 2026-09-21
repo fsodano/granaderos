@@ -147,3 +147,27 @@ test('a defeated squad can hire a rescue force and recover its actual prisoners 
  for(const {id:rawId} of captured){const id=Number(rawId),u=restored.operativeState[id];assert.equal(u.captured,false);assert.equal(u.hp,heldBeforeRescue[id].hp);assert.equal(u.assignment,'patient');assert.equal(u.location,'san_nicolas');assert.ok(restored.recruited.includes(id));assert.deepEqual(u.outfit,captives[id].outfit);assert.ok(restored.contracts[id]);}
  assert.deepEqual(restored.sectorStates.san_nicolas.artillery,[{...gun,side:'player'}]);assert.equal(ownedArtilleryCount(restored),1);assert.equal(restored.resources.cannons,0);assert.equal(restored.armory.swivel,0);
 });
+
+
+test('explicit empty battery survives full saves and leaves paid guns in reserve',()=>{
+ let c=order(initialCampaign(),{type:'purchaseEquipment',item:'swivel'});
+ assert.equal(deployedArtillery(c).length,1);
+ c=order(c,{type:'configureArtillery',types:[]});
+ c=decodeSave(encodeSave(c)).campaign;
+ assert.deepEqual(deployedArtillery(c),[]);
+ const count=c.resources.cannons,stock=structuredClone(c.armory);
+ c=order(c,{type:'travel',sector:'buenos_aires'});
+ c=order(c,{type:'attack',sector:'san_nicolas'});
+ assert.deepEqual(c.pendingBattle.artillery,[]);
+ assert.equal(c.resources.cannons,count);assert.deepEqual(c.armory,stock);
+ const battle=enterSector(c.pendingBattle,c.sectorStates.san_nicolas);
+ const restored=decodeSave(encodeSave(c,battle));
+ assert.deepEqual(restored.campaign,c);assert.deepEqual(restored.battle.artillery,[]);
+});
+test('explicit battery selection can enable a paid gun again and rejects malformed saves',()=>{
+ let c=order(initialCampaign(),{type:'purchaseEquipment',item:'swivel'});
+ c=order(c,{type:'configureArtillery',types:[]});
+ c=order(c,{type:'configureArtillery',types:['swivel']});
+ assert.equal(deployedArtillery(decodeSave(encodeSave(c)).campaign)[0].type,'swivel');
+ c.artillerySelectionExplicit='yes';assert.throws(()=>restoreCampaign(JSON.stringify(c)));
+});

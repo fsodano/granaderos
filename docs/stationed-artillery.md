@@ -36,3 +36,8 @@ This follows the recoverable team-wipe rule described by the [JA2 1.13 defeat do
 Automatic combat now uses the same verified victory condition as campaign reports. Once exploration is settled, no capable enemies remain and no reaction is pending, it returns victory without spending extra turns or attempting withdrawal. An unfinished fight still follows the existing bounded resolution and withdrawal rules.
 
 Verification for this checkpoint: 1,579 tests ran, with 1,572 passing and seven failures in the existing northern opening-playthrough chain. The first failure expects twelve reachable dressings; the later route checks depend on that failed step. The six prior stationed-artillery failures are resolved. Type checking and the production build pass. These results do not establish a completed northern route.
+
+
+### Empty battery choice
+
+Preparing a battery with all three slots set to “Sin pieza” now leaves reserve guns in storage. The explicit choice survives a full save and reload, and a later selection can enable guns again. Older saves without an explicit choice retain their automatic selection. This affects reserve deployment; guns already stationed in a sector remain there. Regression checks cover actual assault entry without consuming the purchased gun, saved continuation, renewed selection and invalid saved values.

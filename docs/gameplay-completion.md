@@ -240,3 +240,12 @@ The continuous Retiro-only regression now recaptures Salta after the Tucumán re
 The full fresh-start test passes in 241.1 seconds, including deterministic battle replay, campaign return and complete save validation. Salta falls at hour 2,642 with 4,792 pesos. San Martín survives at 88 HP; Bouchard dies, leaving 61 permanent deaths and only San Martín alive. This proves this costly continuation, not balanced difficulty or the complete campaign. Jujuy, Humahuaca, the Buenos Aires naval blockade and a new fourteen-soldier force marching toward Tucumán remain to be resolved before the ending can be verified.
 
 Validation for this tests-only extension: the complete continuous-route test passes with no skips, the diff check passes, and all 49 unrelated preservation files remain unchanged. The prior full-suite result remains 2,649 passing tests; it was not rerun for this extension. The broader JA2 audit remains open.
+
+
+## Northern continuation and empty artillery choice
+
+A separate continuation from the verified Salta save cannot start Jujuy without new powder. An ordinary Córdoba powder order, rest and a queued night post approach reach Jujuy at hour 2,668, where the new fourteen-soldier northern column defeats San Martín in two turns. This is a failed probe, not a continuous-route extension or a proved campaign dead end. A supported continuation still needs to be established.
+
+The probe exposed a real artillery choice defect: explicitly preparing three “Sin pieza” slots still selected reserve guns automatically. The campaign now records an explicit selection so an empty choice leaves purchased guns in reserve, including after reload. Older saves keep their automatic default, and a later chosen gun can deploy normally. Two new checks cover actual assault entry, retained stock, full campaign/battle saves, re-selection and invalid saved values.
+
+Validation: the integrated run passed 2,650 of 2,651 tests, including the continuous campaign. Its sole failure was the new test attempting an active campaign save without the battle. That test now saves both; both final focused checks pass. Type checking, the production build and diff checks pass. The complete suite was not repeated after this test-only correction. All 49 unrelated preservation files remain unchanged. The campaign ending and broader audit remain open.
