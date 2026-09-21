@@ -104,3 +104,39 @@ test('corpse-inclusive return ledgers restore above the live-unit limit while pr
  const restored=restoreCampaign(serializeCampaign(s));assert.equal(restored.sectorStates.retiro.returnLedger.entries.length,205);assert.deepEqual(restored.sectorStates.retiro.units,b.units);assert.deepEqual(decodeSave(encodeSave(s)).campaign.sectorStates.retiro,b);
  for(const alter of [ledger=>ledger.entries[0].unitId='missing-body',ledger=>ledger.entries[0].unitId=ledger.entries[1].unitId,ledger=>ledger.entries[0].kind='resident',ledger=>ledger.entries[0].sector='salta']){const bad=structuredClone(s);alter(bad.sectorStates.retiro.returnLedger);assert.throws(()=>restoreCampaign(serializeCampaign(bad)));}
 });
+
+// Scripted victory isolates campaign settlement; capture and return use real
+// movement/encounter orders. This does not establish combat balance.
+test('returning defenders free coastal captives without requiring a change of sector owner',()=>{
+ let s=order(initialCampaign(),{type:'recruitCivic',id:100,term:'week'});
+ s=order(s,{type:'createSquad',ids:[100],name:'Rescate'});
+ s=order(s,{type:'travel',sector:'buenos_aires',queue:true});
+ s=order(s,{type:'wait',hours:2});
+ launchEnemyGroup(s,'coast','retiro',{immediate:true});
+ s=order(s,{type:'wait',hours:1});
+ s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'tactical'});
+ let b=field(s,{4:{hp:10,bandaged:74},10:{hp:10,bandaged:86}});
+ b=cross(b,3,'buenos_aires');s=order(s,report(s,b));
+ assert.equal(s.sectors.retiro.owner,'patriot');assert.equal(s.blockade,true);
+ const held=structuredClone(s.operativeState[4]);assert.equal(held.captured,true);
+ s=restoreCampaign(serializeCampaign(s));
+ s=order(s,{type:'cancelTravel',choice:'return'});
+ for(let i=0;i<48&&!s.pendingEncounter;i++)s=order(s,{type:'wait',hours:1});
+ assert.ok(s.pendingEncounter,JSON.stringify(s.squads));
+ s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'tactical'});
+ assert.equal(s.pendingBattle.wasRoyalist,false);
+ const contested=structuredClone(s);launchEnemyGroup(contested,'coast','retiro',{immediate:true});
+ const uncleared=order(contested,scriptedBattleReport(contested));
+ for(const id of [4,10])assert.equal(uncleared.operativeState[id].captured,true,'another local enemy group must prevent release');
+ assert.deepEqual(restoreCampaign(serializeCampaign(uncleared)),uncleared);
+ const victory=scriptedBattleReport(s);
+ s=order(s,victory);
+ assert.equal(s.sectors.retiro.owner,'patriot');assert.equal(s.blockade,false);
+ for(const id of [4,10]){assert.equal(s.operativeState[id].captured,false);assert.ok(s.recruited.includes(id));}
+ const freed=s.operativeState[4];assert.equal(freed.hp,held.hp);assert.equal(freed.condition,held.condition);
+ assert.equal(freed.carriedLoaded,held.capturedAmmunition.loaded);assert.equal(freed.carriedAmmo,held.capturedAmmunition.ammo+held.capturedAmmunition.loaded);
+ assert.deepEqual(ammunitionByType(freed),ammunitionByType(held));
+ assert.equal(freed.assignment,'patient');assert.equal(freed.location,'retiro');
+ assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);assert.doesNotThrow(()=>decodeSave(encodeSave(s)));
+ reject(s,victory);
+});
