@@ -1,3 +1,4 @@
+import {autoBandageBattle} from '../game/auto-bandage.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
@@ -153,4 +154,19 @@ test('a pristine or legacy contact cannot heal a dismissed soldier during synchr
  }
  ({campaign,battle}=sync(campaign,battle));campaign=save(finish(campaign,battle));campaign=order(campaign,{type:'recruitCivic',id:100,term:'week'});
  assert.equal(campaign.operativeState[100].hp,60);assert.equal(campaign.operativeState[100].bleeding,2);assert.equal(campaign.operativeState[100].bandaged,3);
+});
+
+test('automatic civilian care retains named health, finite dressings and refusal through campaign saves',()=>{
+ let {campaign,battle}=paidVisit();wound(battle);({campaign,battle}=sync(campaign,battle));
+ const kits=battle.units[0].medkits,report=autoBandageBattle(battle);
+ assert.deepEqual(report.treatedIds,['npc:sosa']);assert.equal(report.untreated.length,0);
+ battle=report.battle;assert.equal(battle.units[0].medkits,kits-1);
+ ({campaign,battle}=sync(campaign,battle));({campaign,battle}=repeatSync(campaign,battle));
+ const health=structuredClone(campaign.operativeState[100]);
+ assert.equal(health.bleeding,0);assert.ok(health.bandaged>0);
+ ({campaign,battle}=decodeSave(encodeSave(campaign,battle)));
+ campaign=save(finish(campaign,battle));campaign=order(campaign,{type:'visitSector'});battle=enterSector(campaign.pendingBattle,campaign.sectorStates.buenos_aires);
+ assert.equal(npc(battle).hp,health.hp);assert.equal(npc(battle).bandaged,health.bandaged);
+ assert.ok(civilianIncidents(npc(battle)).some(event=>event.side==='player'));
+ assert.equal(battle.units.find(unit=>unit.id==='112').medkits,kits-1);
 });

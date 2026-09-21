@@ -134,3 +134,32 @@ test('departed medics and patients stay outside squad bandaging while their reco
  const report=autoBandageStatus(next);assert.deepEqual(report.doctors,[]);assert.deepEqual(report.patients.map(unit=>unit.id),['patient']);assert.equal(report.available,false);
  const result=autoBandageBattle(next);assert.equal(result.battle,next);assert.deepEqual(result.steps,[]);
 });
+
+const civilian=(extra={})=>({id:'neighbor',name:'Vecina',x:5,y:2,hp:50,energy:0,unconscious:true,stance:'prone',bleeding:2,bandaged:0,civilianWoundVersion:1,bleedSource:{attackerId:null,side:'unknown',militia:false,intentional:false},...extra});
+test('automatic care includes visible civilians through typed paid orders and exact replay',()=>{
+ const state=make([medic({facing:2})],{npcs:[civilian()]}),before=structuredClone(state);
+ assert.equal(autoBandageStatus(state).patients[0].id,'npc:neighbor');
+ const report=autoBandageBattle(state);
+ assert.deepEqual(state,before);assert.deepEqual(report.battle,replay(state,report.steps));
+ assert.deepEqual(report.treatedIds,['npc:neighbor']);assert.deepEqual(report.untreated,[]);
+ assert.ok(report.steps.some(a=>a.type==='move'));assert.ok(report.steps.some(a=>a.type==='useItem'&&a.targetKind==='npc'));
+ assert.equal(report.battle.units[0].medkits,2);assert.ok(report.elapsedSeconds>0);
+ assert.equal(report.battle.npcs[0].bleeding,0);assert.ok(report.battle.npcs[0].hp<=50);
+ assert.equal(report.battle.npcs[0].energy,0);assert.equal(report.battle.npcs[0].ap,undefined);
+});
+test('automatic civilian stabilization repeats finite dressings and reports exhaustion',()=>{
+ for(const kits of [1,8]){
+  const state=make([medic({x:4,facing:2,medical:40,medkits:kits})],{npcs:[civilian({hp:1,bleeding:0,bandaged:99,bleedSource:undefined})]});
+  const report=autoBandageBattle(state),npc=report.battle.npcs[0];
+  assert.deepEqual(report.battle,replay(state,report.steps));assert.ok(npc.hp>1);assert.ok(npc.hp<=15);assert.equal(npc.energy,0);
+  if(kits===1){assert.equal(report.battle.units[0].medkits,0);assert.equal(report.untreated[0].id,'npc:neighbor');assert.match(report.stoppedReason,/vendas/);}
+  else{assert.equal(npc.hp,15);assert.equal(report.untreated.length,0);assert.ok(report.steps.filter(a=>a.type==='useItem').length>1);}
+ }
+});
+test('hidden and departed civilians do not enable automatic care or disclose their identity',()=>{
+ const base=map();for(const t of base.tiles)if(t.x===3)Object.assign(t,{blocked:true,blocksSight:true,type:'wall'});
+ const state=make([medic({facing:2})],{...base,npcs:[civilian(),civilian({id:'gone',x:2,fled:true})]});
+ const status=autoBandageStatus(state),report=autoBandageBattle(state);
+ assert.deepEqual(status.patients,[]);assert.equal(status.available,false);assert.deepEqual(report.steps,[]);assert.deepEqual(report.untreated,[]);
+ assert.equal(JSON.stringify(status).includes('Vecina'),false);assert.deepEqual(report.battle,state);
+});

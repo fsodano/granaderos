@@ -183,9 +183,9 @@ export default function JA2Inventory({cursorLevel=0,onCursorLevelChange,unit, ba
         {unit.bleeding > 0 && <p className="danger-text">Hemorragia: −{unit.bleeding} salud / turno</p>}
         {unit.bandaged > 0 && <p>Heridas vendadas: {Math.ceil(unit.bandaged)}. Requieren tratamiento en campaña.</p>}
         <p>Las vendas reducen la hemorragia y estabilizan heridas críticas hasta 15 de salud. Se puede atender a un aliado inconsciente.</p>
-        <section className="ja2-auto-bandage" aria-label="Vendaje de la escuadra">
-          <button className="line-button" disabled={busy || !onAutoBandage || !bandaging.available} title={bandaging.reason || 'Los sanitarios se acercan a los heridos y usan sus propias vendas.'} onClick={onAutoBandage}>Vendar escuadra</button>
-          <p>Usa tiempo, fuerzas y vendas de los sanitarios. Puede necesitar varias vendas por herido. Se detiene ante peligro. La recuperación completa requiere atención en campaña.</p>
+        <section className="ja2-auto-bandage" aria-label="Vendaje de los heridos">
+          <button className="line-button" disabled={busy || !onAutoBandage || !bandaging.available} title={bandaging.reason || 'Los sanitarios atienden a la escuadra y a los civiles heridos a la vista con sus propias vendas.'} onClick={onAutoBandage}>Vendar heridos</button>
+          <p>Atiende a la escuadra y a los civiles heridos a la vista. Usa tiempo, fuerzas y vendas de los sanitarios. Puede necesitar varias vendas por herido. Se detiene ante peligro. La recuperación completa requiere atención en campaña.</p>
           {bandaging.reason && <p>{bandaging.reason}</p>}
           {bandageReport && <div role="status"><p>{bandageReport.treatedIds.length} atendidos · {bandageReport.elapsedSeconds} s.</p>{bandageReport.untreated.length > 0 ? <ul>{bandageReport.untreated.map((patient: any) => <li key={patient.id}>{patient.name}: {patient.reason}</li>)}</ul> : <p>Todas las heridas están vendadas.</p>}</div>}
         </section>

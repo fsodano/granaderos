@@ -148,13 +148,13 @@ test('the real inventory renders equipped tools and only reveals an open nearby 
 test('optional squad bandaging stays in medical equipment and reports untreated casualties',()=>{
   const s=createBattle([{id:'scout',name:'Sanitario',medical:80,hp:75,bleeding:2}],{exploration:true,enemies:[]});
   const ready=strip(s,true,{onAutoBandage:noop});
-  const button=ready.match(/<button[^>]*>Vendar escuadra<\/button>/)?.[0];
+  const button=ready.match(/<button[^>]*>Vendar heridos<\/button>/)?.[0];
   assert.ok(button);assert.ok(!button.includes('disabled'));assert.match(ready,/Usa tiempo, fuerzas y vendas/);
-  assert.ok(!strip(s,false,{onAutoBandage:noop}).includes('Vendar escuadra'));
+  assert.ok(!strip(s,false,{onAutoBandage:noop}).includes('Vendar heridos'));
   const report=strip(s,true,{onAutoBandage:noop,bandageReport:{treatedIds:['one'],elapsedSeconds:9,untreated:[{id:'blocked',name:'Herido aislado',reason:'No hay un camino abierto.'}]}});
   assert.match(report,/1 atendidos · 9 s/);assert.match(report,/Herido aislado: No hay un camino abierto/);
   s.mode='combat';
-  const blocked=strip(s,true,{onAutoBandage:noop}).match(/<button[^>]*>Vendar escuadra<\/button>/)?.[0];
+  const blocked=strip(s,true,{onAutoBandage:noop}).match(/<button[^>]*>Vendar heridos<\/button>/)?.[0];
   assert.ok(blocked);assert.match(blocked,/disabled=""/);assert.match(blocked,/sector seguro/);
 });
 
