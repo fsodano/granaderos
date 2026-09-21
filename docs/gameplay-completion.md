@@ -153,3 +153,11 @@ An immediate slow march to Mendoza loses. A separate saved-checkpoint probe usin
 The continuous fresh-start regression now wins Mendoza using the paid post approach, recruits Beltrán, pays the foundry's 500 pesos and 20 copper, proclaims emancipation and recruits Barcala. Its first cannon order consumes the normal recipe and completes at its actual due hour. Deterministic combat replay, returned equipment and full saves remain enforced. The continuous test passes in 125.9 seconds.
 
 The checkpoint is phase 3, hour 333, second 825, with 430 pesos and one cannon. Macacha, Beltrán and Barcala remain in Mendoza. There are 44 permanent deaths: Reed dies at Mendoza and Azurduy later dies from her retained wounds in Córdoba during production. The route does not establish preservation of every survivor or acceptable balance. Further recovery, three-cannon and 3,000-infantry preparation, mountain passes, lost territory and the ending remain open.
+
+## Fresh army production and squad capacity
+
+The continuous fresh-start route now pays for Macacha's care to full health, three musket batches, uniforms, 200 infantry and a second cannon. The saved checkpoint reaches hour 397 with 839 pesos. Prior deaths remain permanent. Phase 3, the remaining army preparation, mountain passes, lost territory and the ending remain open.
+
+Eight accumulated squad records previously blocked formation even when records were empty. Formation now replaces an empty record with no journey at the limit and assigns a new ID. Occupied squads and their routes remain intact. Regression checks cover a marching squad, save restoration and atomic rejection with eight occupied squads. A live import of the production checkpoint also formed Barcala's new squad while Macacha and Beltrán remained together.
+
+Validation: 2,618 tests pass, including the continuous fresh campaign. Type checks, production build, diff checks and the 49-file unrelated-change preservation check pass.

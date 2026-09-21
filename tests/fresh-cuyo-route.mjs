@@ -45,3 +45,12 @@ export function startFreshFoundry(start){
  assert.equal(c.resources.cannons,before+1);
  assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);return c;
 }
+
+export function prepareFreshArmyProduction(start){
+ let c=decodeSave(encodeSave(start)).campaign;
+ const order=a=>{c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);};
+order({type:'purchaseMedicalSupplies',operativeId:2,quantity:10});order({type:'assignCare',operativeId:2,assignment:'doctor'});order({type:'assignCare',operativeId:8,assignment:'patient'});order({type:'assignCare',operativeId:7,assignment:'rest'});for(let i=0;i<30&&c.operativeState[8].hp<c.operativeState[8].maxHp;i++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}assert.equal(c.operativeState[8].hp,c.operativeState[8].maxHp);for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'rest'});
+const waitFor=predicate=>{for(let i=0;i<80&&predicate();i++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}assert.equal(predicate(),false);};
+for(let i=0;i<3;i++)order({type:'produce',recipe:'muskets',sector:'mendoza'});waitFor(()=>c.production.length>0);
+order({type:'produce',recipe:'uniforms',sector:'mendoza'});const uniformId=c.production.at(-1).id;order({type:'produce',recipe:'cannon',sector:'mendoza'});waitFor(()=>c.production.some(p=>p.id===uniformId));order({type:'produce',recipe:'infantry',sector:'mendoza'});waitFor(()=>c.production.length>0);assert.equal(c.resources.infantry,200);assert.equal(c.resources.cannons,2);assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);return c;
+}

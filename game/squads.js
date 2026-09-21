@@ -27,3 +27,6 @@ export function validatePersonalInventory(inventory){
  }
  return inventory;
 }
+
+export function vacantSquad(s){return s.squads?.find(q=>q.members.length===0&&!q.journey);}
+export function canCreateSquad(s){return (s.squads?.length??0)<8||Boolean(vacantSquad(s));}

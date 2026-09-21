@@ -39,3 +39,25 @@ test('a departing squad stays intact until its requested stop takes effect',()=>
  s=order(s,{type:'wait',hours:12});const n=order(s,{...form,ids:[3],sector:'ensenada'});
  assert.equal(n.location,'ensenada');assert.deepEqual(n.squad,[3]);assert.deepEqual(n.squads[0].members,[4]);
 });
+
+test('formation replaces an unused empty record at the limit without disturbing a marching squad',()=>{
+ let s=order(initialCampaign(),{type:'squad',ids:[3,4]});
+ for(let i=0;i<7;i++)s=order(s,{...form,name:`Reserva ${i}`});
+ s=order(s,{type:'selectSquad',id:'squad-1'});s=order(s,{type:'travel',sector:'buenos_aires',queue:true});
+ assert.equal(s.squads.length,8);const before=structuredClone(s);
+ const n=order(s,form);
+ assert.equal(n.squads.length,8);assert.equal(n.activeSquadId,'squad-9');
+ assert.deepEqual(n.squads.find(q=>q.id==='squad-1'),s.squads[0]);
+ assert.deepEqual(n.operativeState,s.operativeState);assert.deepEqual(n.resources,s.resources);
+ assert.equal(n.location,'retiro');assert.deepEqual(n.squad,[10]);assert.deepEqual(s,before);
+ assert.deepEqual(decodeSave(encodeSave(n)).campaign,n);
+});
+
+test('eight occupied squads still reject another formation without losing personnel',()=>{
+ let s=initialCampaign();for(const id of [100,101,102,103,104])s=order(s,{type:'recruitCivic',id,term:'week'});
+ s=order(s,{type:'squad',ids:[3]});
+ for(const id of [4,10,100,101,102,103,104])s=order(s,{type:'createSquad',name:`Unidad ${id}`,ids:[id]});
+ assert.equal(s.squads.length,8);assert.ok(s.squads.every(q=>q.members.length));
+ const rejected=dispatchCampaign(s,{type:'createSquad',name:'Novena unidad',ids:[3]});
+ assert.match(rejected.lastError,/ocho escuadras/);assert.deepEqual(physical(rejected),physical(s));
+});

@@ -1,4 +1,4 @@
-import {prepareFreshCuyoDefense,prepareFreshMendozaAssault,startFreshFoundry} from './fresh-cuyo-route.mjs';
+import {prepareFreshCuyoDefense,prepareFreshMendozaAssault,startFreshFoundry,prepareFreshArmyProduction} from './fresh-cuyo-route.mjs';
 import {recoverFreshNorthernDoctor,reuniteFreshNorthernSquad,prepareFreshSaltaAssault,finishFreshNorthernCampaign} from './fresh-northern-recovery.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
 import {dispatchCampaign} from '../game/campaign.js';
@@ -99,6 +99,11 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  assert.equal(foundry.flags.foundry,true);assert.equal(foundry.flags.emancipation,true);
  assert.ok(foundry.recruited.includes(2)&&foundry.recruited.includes(7));
  assert.equal(foundry.phase,3);assert.equal(foundry.completed,false);
+ const army=prepareFreshArmyProduction(foundry);
+ assert.equal(army.operativeState[8].hp,army.operativeState[8].maxHp);
+ assert.equal(army.resources.infantry,200);assert.equal(army.resources.cannons,2);
+ assert.equal(army.phase,3);assert.equal(army.completed,false);
+ for(const [id,record]of Object.entries(foundry.operativeState))if(!record.alive)assert.equal(army.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(defended.campaign.operativeState))if(!record.alive)assert.equal(foundry.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(yatasto.operativeState))if(!record.alive)assert.equal(defended.campaign.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(salta.campaign.operativeState))if(!record.alive)assert.equal(yatasto.operativeState[id].alive,false);
