@@ -249,3 +249,103 @@ A separate continuation from the verified Salta save cannot start Jujuy without 
 The probe exposed a real artillery choice defect: explicitly preparing three “Sin pieza” slots still selected reserve guns automatically. The campaign now records an explicit selection so an empty choice leaves purchased guns in reserve, including after reload. Older saves keep their automatic default, and a later chosen gun can deploy normally. Two new checks cover actual assault entry, retained stock, full campaign/battle saves, re-selection and invalid saved values.
 
 Validation: the integrated run passed 2,650 of 2,651 tests, including the continuous campaign. Its sole failure was the new test attempting an active campaign save without the battle. That test now saves both; both final focused checks pass. Type checking, the production build and diff checks pass. The complete suite was not repeated after this test-only correction. All 49 unrelated preservation files remain unchanged. The campaign ending and broader audit remain open.
+
+
+## In progress: legal artillery crew posture
+
+Current uncommitted work rejects prone operators and helpers for cannon fire, reload, pivot and movement. The shared preview explains standing/crouching, and autonomous gunners pay the normal stance cost before handling a gun. Twenty-six focused simulation, AI and rendered-control checks pass. Rejected actions retain physical state and AP; standing/crouched operation remains available.
+
+This correction exposes a dependency in the previous campaign evidence: the integrated route retreats at Uspallata under the stricter crew rule. The full run passed 2,653 of 2,654 tests; the sole failure was that campaign battle. A subsequent legal crouch-preparation AI change passes focused checks, but the saved Uspallata approach still loses. A controller prioritizing nearby gun work and a later 22:00 approach also lose. These probes retain real costs and losses. They are not campaign extensions. The earlier Salta completion evidence remains historical and is not proof that the current uncommitted rules can reproduce that route.
+
+Do not commit this work as a completed integration or weaken the victory assertion. Establish a viable approach with legal crew actions and retain resulting casualties through the remaining route, then rerun the full integration. Unrelated tactical changes were checked against the pre-edit file, and all 49 preservation files match.
+
+
+### Uspallata reinforcement findings
+
+Further probes retain the saved army, paid recruitment and normal travel. Holding positions after contact still loses. A twelve-person force funded by ordinary income to 18,000 pesos reaches the assault at hour 1,572, but `enterSector` throws because the eastern boundary cannot place all soldiers. A nine-person force with an additional paid doctor also exceeds the entrance at hour 1,332. Replacing Farías with Roldán keeps the force at eight and fits, but the legal gun-priority controller loses in ten turns. No result extends the campaign.
+
+The next implementation dependency is crowded arrival handling: `beginAssault` currently commits the deployment before tactical entry discovers that the boundary is full. Preserve real entry edges, collision rules, supplies and staged squad custody. A full entrance must not strand the campaign in a pending battle that cannot open. The wider W02 requirement for later arrivals remains unfinished; do not hide this by expanding test maps or reducing requested squad sizes. After implementing safe staging/entry behavior, resume a supported Uspallata approach and verify the full campaign.
+
+
+### Legal mountain battery continuation
+
+A one-gun approach now wins Uspallata under the pending stance correction. Barcala and Paroissien advance their selected bronze cannon while infantry screens them; crew orders use legal previews, paid AP, shared visibility and standing/crouched handling. The actual battle at hour 1,332 ends in victory after twelve turns with six survivors. Pembroke and Farías die. Barcala, Paroissien, Arnaud, Blackwood, Harcourt and Leiva remain alive. Deterministic replay and complete campaign/battle saves pass.
+
+Two initial hours of carried medical care stop Harcourt's bleeding. The survivors travel to Mendoza, buy twenty kits for Beltrán, and use two supplied doctors to recover fully. Wounded contracts are renewed; healthy expired hires remain alive. Recovery ends at hour 1,354 with 810 pesos. The continuous fresh-start test reproduces this recovery and reaches Los Patos, where its old infantry controller loses.
+
+A separate continuation with the same mountain battery controller wins Los Patos at hour 1,914 in nine turns. Barcala, Paroissien, Arnaud, Beaumont and Roldán survive; Montiel, Montreuil and Valcourt die. Replay and saves pass. After fortification, the survivors return to Mendoza. Paroissien's 89 leadership meets San Martín's actual recruitment threshold; dialogue recruits him at hour 1,920, phase 4, with 6,188 pesos. These later successful helpers are now incorporated, but the full route has not yet been rerun with them. The coastal helper still assumes Valcourt is alive and must be updated to the actual surviving force. The earlier Salta-ending continuous proof remains historical until the revised full route passes. No casualties or victories were injected.
+
+
+### Coastal continuation with the surviving mountain force
+
+The revised coastal command brings Beltrán, Barcala, Paroissien and San Martín from Mendoza to Retiro through normal paid travel, then recruits Cabral through dialogue. Valcourt remains dead. A six-person Ensenada approach and an eight-person coordinated approach lose. Paid recruitment of the three additional living veterans, including Roldán, provides an eleven-person force. The daylight coordinated assault uses the mountain battery controller and wins at hour 2,334 in eighteen turns. Beltrán, Cabral, Arnaud and Blackwood die; Barcala, Paroissien, San Martín, Harcourt, Beaumont, Leiva and Roldán survive. Replay and complete saves pass.
+
+Normal paid imports satisfy the foreign-standing requirement. Selecting San Martín's actual squad allows the dialogue visit to recruit Brown and Bouchard. The resulting force has nine living members in service. A separate fourteen-hour recovery uses Paroissien and Roldán's carried kits, renews Harcourt and Roldán as needed, and restores San Martín and Harcourt fully at hour 2,348 with 4,960 pesos. Beaumont and Leiva's healthy contracts expire; they remain alive. The recovery helper is now included in the continuous test.
+
+The continuous new-game run reproduces the new mountain route, Ensenada victory and naval recruitment. It stops after 243.2 seconds when the old Santa Fe helper attempts to renew dead Arnaud. That rejection is correct. The helper must be rewritten for living personnel, including replacing dead Beltrán as doctor. The separate recovery probe passes; its insertion occurred after that full run started, so it is not yet part of a completed continuous-run result. No current full-suite pass or completed campaign is claimed. Artillery-posture and revised-route work remain uncommitted pending integration.
+
+
+### Naval blockade cleared on the revised route
+
+The supplied force returns to Retiro through concurrent queued travel. Ordinary income funds new daily support contracts, two purchased muskets for Brown and Bouchard, a bronze cannon, medical kits and ammunition. The renewed blockade occupies the road to San Nicolás, so Santa Fe cannot be reached first. A daylight nine-person Buenos Aires assault with the earlier controller loses.
+
+Revised coastal orders keep San Martín behind the gun and use actual crouched firing previews when a rifleman otherwise stalls on a prone-stance preference. The actual blockade battle wins at hour 3,078 after eleven turns. San Martín, Barcala and Brown survive at full health; Paroissien, Bouchard, Harcourt, Beaumont, Leiva and Roldán die. Deterministic replay and complete saves pass. The resulting campaign confirms `blockade:false`, 9,011 pesos and the three survivors in service. Four-soldier occupation groups remain in Tucumán and Salta. The preparation and battle are now in the continuous test, but that extended test has not yet been rerun.
+
+A three-person Santa Fe continuation buys a new cannon and medical supplies, rests and uses existing finite musket reserves. It reaches the actual battle at hour 3,102 and loses. The old helper's attempts to use dead Arnaud and Beltrán have been removed; current preparation uses only living soldiers. A viable Santa Fe approach and the remaining northern route are still required. The actual victory assertion remains in place. No full integration pass or campaign completion is claimed; the broader pending changes remain uncommitted.
+
+
+### Santa Fe and Tucumán with three living soldiers
+
+The Santa Fe diagnostic showed Brown running ten tiles ahead of the gun, triggering combat, followed by Barcala leaving the crew. The cannon never fired in that failed attempt. Keeping Brown with the battery during approach and preventing the crew from chasing targets after contact wins Santa Fe at hour 3,102. Barcala, San Martín and Brown survive at 31, 44 and 85 HP. The fourteen-turn result replays and saves successfully.
+
+Paid care in Córdoba uses Brown as doctor, patients Barcala and San Martín, a purchased refill when kits run out, then normal weapon repairs, provisions, rest and a new cannon. A daylight Tucumán victory kills San Martín and is therefore unusable for campaign continuation. Waiting at the staged boundary until 22:00 instead wins Tucumán at hour 3,166 with all three at full health. Replay, complete saves and explicit live-commander/non-defeated checks pass. The continuous route helpers now retain these results and no longer refer to dead Bouchard.
+
+A subsequent paid cannon and medical-supply preparation reaches Salta at hour 3,190 with the same three soldiers. Its first night assault loses; allowing Brown a late scout after several cannon rounds does not change the outcome. Salta remains the next tactical problem. The extended continuous route and full suite have not yet been rerun; the victory assertion and checks that prior deaths persist remain intact.
+
+
+### Salta close-contact diagnosis
+
+A fresh diagnostic from the saved night Tucumán victory reproduces Salta at hour 3,190. At turn three the loaded cannon is at (40,27), with five reserve rounds. Barcala and San Martín form a valid paid crew. A visible, able enemy is at (42,27), within 2.5 tiles of both operators. The artillery planner deliberately returns no gun order at that distance. This is a close-contact response problem, not missing ammunition or an invalid crew.
+
+Allowing the existing infantry controller at close contact still loses. A separate probe instead uses legal reachable cells costing at most 20 AP to move away from visible close threats. That probe wins the tactical battle after twenty turns with Barcala and Brown alive, but San Martín dies. It therefore does not prove a valid campaign continuation and was not installed in the continuous test. The next approach must keep the commander out of the exposed crew position while preserving enough personnel to operate the cannon. Full-route assertions remain unchanged.
+
+
+### Commander preservation and route acceptance
+
+Assigning Brown to the Salta gun while keeping San Martín behind it does not yet produce a valid continuation. One approach stalls at terrain; moving the helper to the east side allows more progress but the force loses. These are diagnostic controllers only and are not installed in the fresh-route test.
+
+The shared route helper now rejects a nominal tactical victory when campaign settlement sets `defeated`. This closes a verification gap outside San Lorenzo: owning the captured sector alone does not prove that the campaign can continue. Replaying the known daylight Tucumán result confirms that the new assertion rejects its terminal commander loss. The 26 focused artillery checks and type checking pass. A full fresh-route run is active; no new integrated pass is claimed.
+
+
+### Salta recapture with a one-person gun
+
+Replacing the newly purchased bronze cannon with a purchased swivel gun removes the need to expose San Martín as the second operator. The unchanged three-person controller wins Salta at hour 3,190 in ten turns and 77 actions. Barcala, San Martín and Brown all retain full health (85, 88 and 85). Six actual shots and reloads consume finite ammunition. Deterministic replay, complete saves, live-commander checks and all prior deaths pass. The Salta preparation helper now buys and explicitly selects the swivel.
+
+The resulting valid save has 9,571 pesos, no active enemy groups and only Jujuy and Humahuaca under royalist control. It is not a completed campaign. A paid return to Córdoba buys the next swivel because Salta has no supplied workshop. The subsequent staged Jujuy assault at hour 3,216 loses after 54 turns; its victory assertion correctly fails. This separate continuation is not integrated as a passing test. The full fresh-start run started before the Salta equipment change and is still pending; its result must not be attributed to the new helper.
+
+
+### Dawn Jujuy continuation
+
+The full fresh-start run with the previous Salta cannon completes the combined blockade, Santa Fe and night Tucumán route, then fails Salta after 290 seconds. A new run with the swivel correction is active. It started before the Jujuy extension below was added.
+
+A separate dawn Jujuy assault at hour 3,222 wins in fifteen turns and 66 actions using a purchased swivel and the existing three-person controller. Barcala survives at 29 HP with no bleeding; San Martín and Brown retain full health. Replay, campaign settlement and saves pass. The helper and Jujuy victory/survivor/permanent-death assertions are now part of the continuous route. Night swivel and night bronze approaches both lost.
+
+The subsequent Humahuaca preparation remains incomplete. Returning to Córdoba permits paid healing and a gun purchase, but during the long trip and care Jujuy is occupied again. The normal travel and adjacent-assault checks correctly reject advancing through the hostile sector. This exposes a strategic preparation requirement: carry the next gun and sufficient treatment supplies before taking Jujuy, or defend and recapture it through actual gameplay. No ownership or arrival state was overridden.
+
+
+### Continuous Salta verification and northern reserve experiments
+
+The complete Retiro-only route through Salta recapture passes in 296.5 seconds with the pending artillery-posture correction and revised helpers. This run includes the shared nonterminal-victory assertion. It started before Jujuy was added, so it proves the route through Salta, not Jujuy or the ending.
+
+A second swivel can be purchased only after actual merchant restocking. With that reserve, dawn Jujuy still wins, but a sixteen-soldier force reaches the sector during local healing/rest. The actual defense loses. Immediate departure with the reserve also loses against that force at Humahuaca. Buying a field cannon without waiting keeps the earlier departure, but its three-person crew loses at Humahuaca. These experiments remain outside the route helpers.
+
+A separate dawn Jujuy approach buys both a bronze cannon and a spare swivel, deploying only the bronze. It wins at hour 3,222 with San Martín and Brown alive, but Barcala dies. Replay and saves pass. A two-person continuation is being tested; it does not restore Barcala or change the established all-three-survivor Jujuy helper without further evidence.
+
+
+### Integrated artillery posture and Jujuy checkpoint
+
+The current full suite passes **2,656/2,656 tests with no skips** in 334.2 seconds. It includes the complete Retiro-only route through the revised mountain and coastal battles, Salta recapture with a swivel, and dawn Jujuy with all three remaining soldiers alive. Every route battle uses actual tactical orders, deterministic replay, complete saves and permanent-casualty checks. Nominal tactical victories that terminate the campaign are rejected. Type checking, the production build and diff checks also pass.
+
+All 49 unrelated files in the preservation snapshot match. Removing only the two new posture changes from the mixed tactical file reproduces its prior working contents exactly; the separate boleadoras changes are excluded from this commit.
+
+This checkpoint does not complete Humahuaca, the ending, or the remaining parity audit. The alternate two-person Humahuaca continuation loses once Brown is legally moved to the gun. Failed reserve-gun and defense probes remain outside the accepted route.

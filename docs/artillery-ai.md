@@ -34,6 +34,12 @@ Live browser checks used the production Battlefield and the actual turn reducer 
 
 The local practice at `http://127.0.0.1:3047/` uses controlled tactical state and the tactical snapshot validator. It does not read the user's campaign storage or claim a campaign victory. The campaign save and paid shared-work evidence comes from the automated budget tests.
 
+## Crew posture
+
+Operators and helpers must stand or crouch to fire, reload, pivot or drag a cannon. Prone soldiers do not count toward the required crew. Rejected orders spend no time, action points or ammunition. The reload control explains the required posture. An autonomous gunner first pays the normal cost to crouch, then plans a separate gun order. This applies to player, enemy and militia crews through the shared crew plan.
+
+The 26 focused artillery, autonomous-crew and reload-render checks pass. The fresh Retiro route through Salta also passes under this restriction; the extended route through Jujuy and the 2,656-test integrated suite also pass, as recorded in [gameplay completion](gameplay-completion.md). This does not establish full campaign completion or close the remaining scope below.
+
 ## Remaining scope
 
 Autonomous cannon relocation, remote crew assembly, indirect fire and distinct solid/canister reserve types remain absent. Static emplacement duty, six-tile recruitment, the short approach, damage score and cannon ballistics are period-game tuning. Full campaign balance under autonomous artillery still needs broader playthrough evidence. Artwork is maintained separately.

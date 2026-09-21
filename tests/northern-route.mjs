@@ -214,6 +214,9 @@ export function fightNorthernSector(start,sector,{report=()=>{},expectedOutcome=
  const restored=decodeSave(encodeSave(pair.campaign,pair.battle));
  const returned=dispatchCampaign(restored.campaign,{type:'battleResult',battleId:request.id,outcome:restored.battle.status,survivors:restored.battle.units.filter(u=>u.side==='player'),sectorState:restored.battle});
  assert.equal(returned.lastError,null,returned.lastError);
+ // A cleared battlefield cannot certify a continuing campaign when its
+ // commander has died and settlement has made the campaign terminal.
+ if(expectedOutcome==='victory')assert.equal(returned.defeated,false,'a route victory must leave the campaign playable');
  const navalLoss=expectedOutcome==='defeat'&&request.defenseGroupId&&campaign.enemyGroups.find(group=>group.id===request.defenseGroupId)?.theater==='coast';
  if(request.missionId==='san_lorenzo'){assert.equal(returned.flags.sanLorenzo,expectedOutcome==='victory');if(expectedOutcome==='victory')assert.equal(returned.defeated,false);}
  else assert.equal(returned.sectors[sector].owner,expectedOutcome==='victory'?'patriot':expectedOutcome==='retreat'||navalLoss?campaign.sectors[sector].owner:'royalist');

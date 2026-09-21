@@ -1,4 +1,4 @@
-import {ARTILLERY,artilleryCosts,artilleryCrewPlan,artilleryReloadPreview,artilleryShotTrace,artilleryCanisterContains,canSee,hasLineOfSight,movementStepCost} from './tactical.js';
+import {ARTILLERY,artilleryCosts,artilleryCrewPlan,artilleryReloadPreview,artilleryShotTrace,artilleryCanisterContains,canSee,hasLineOfSight,movementStepCost,stanceCost} from './tactical.js';
 import {sameSurface,tacticalLevel} from './tactical-space.js';
 import {moveOrder} from './tactical-planning-space.js';
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
@@ -38,6 +38,8 @@ export function chooseArtilleryAction(s,u,targets,paths){
   routes.sort((a,b)=>a.cost-b.cost||a.y-b.y||a.x-b.x);
   return routes[0]?moveOrder(s,u,routes[0]):null;
  }
+ // Crew members must pay to rise before they can handle the gun.
+ if(u.stance==='prone')return u.ap>=stanceCost(u,'crouched')?{type:'stance',unitId:u.id,stance:'crouched'}:null;
  // Preparation is useful without contact, but never fire at an old sighting.
  if(!gun.loaded){const load=artilleryReloadPreview(s,u,gun);return load.valid?{type:'artilleryReload',unitId:u.id,artilleryId:gun.id}:null;}
  const costs=artilleryCosts(s,u,gun),choices=[];

@@ -108,7 +108,7 @@ export function artilleryCosts(s,u,gun){const powderFactor=1+(50-clamp(u.explosi
 // loading step. Prefer stronger available helpers without spending other units' AP.
 export function artilleryCrewPlan(s,u,gun,cost,partial=false){
   const spec=ARTILLERY[gun?.type];
-  const eligible=v=>v.side===u?.side&&Boolean(v.militia)===Boolean(u?.militia)&&!v.fled&&!v.mounted&&
+  const eligible=v=>v.side===u?.side&&Boolean(v.militia)===Boolean(u?.militia)&&!v.fled&&!v.mounted&&v.stance!=='prone'&&
     !(v.side==='enemy'&&s.reactionStack?.length&&!s.reactionStack.at(-1).unitIds.includes(v.id))&&
     !inventoryOrderReason(s,v,cost)&&contactDistance(v,gun)<=1.5&&hasLineOfSight(s,v,gun)&&
     (dist(v,gun)===0||Number.isFinite(movementStepCost(s,v,v,gun)));
@@ -116,7 +116,7 @@ export function artilleryCrewPlan(s,u,gun,cost,partial=false){
   const helpers=s.units.filter(v=>v.id!==u.id&&eligible(v));
   if(partial)helpers.sort((a,b)=>b.ap-a.ap||String(a.id).localeCompare(String(b.id)));
   const assigned=eligible(u)?[u,...helpers].slice(0,spec.crew):[];
-  const reason=assigned.length<spec.crew?`La pieza necesita ${spec.crew} artilleros a pie, próximos y disponibles${s.mode==='exploration'?'':` con ${cost} PA cada uno`}.`:null;
+  const reason=assigned.length<spec.crew?`La pieza necesita ${spec.crew} artilleros de pie o agachados, próximos y disponibles${s.mode==='exploration'?'':` con ${cost} PA cada uno`}.`:null;
   return {crew:assigned.map(v=>v.id),reason};
 }
 export function artilleryReloadPreview(s,u,gun){

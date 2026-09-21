@@ -20,3 +20,12 @@ test('the production reload button is disabled when a required crew member canno
  const s=field();s.units[1].ap=0;const tree=componentTree(Strip,props(s));const button=nodes(tree).find(n=>n.type==='button'&&render(n).includes('Recargar pieza'));assert.equal(button.props.disabled,true);
  const html=render(h(Strip,props(s)));assert.match(html,/La pieza necesita 3 artilleros/);
 });
+
+
+test('the artillery reload control explains that prone crew must rise',()=>{
+ const s=field();s.units[1].stance='prone';
+ const tree=componentTree(Strip,props(s));
+ const button=nodes(tree).find(n=>n.type==='button'&&render(n).includes('Recargar pieza'));
+ assert.equal(button.props.disabled,true);
+ assert.match(render(h(Strip,props(s))),/de pie o agachados/);
+});

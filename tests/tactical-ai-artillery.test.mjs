@@ -108,3 +108,13 @@ test('a hired auto-resolve scout does not oscillate back to a loaded gun while s
  const order=automaticOrder(s,actor(s));assert.ok(order);assert.notEqual(order.artilleryId,'piece');
  s.artillery[0].loaded=false;s.artillery[0].ammo=1;actor(s).x=2;assert.equal(plan(s).type,'artilleryReload');
 });
+
+
+test('a prone autonomous gunner pays to crouch before operating the gun',()=>{
+ const s=field({type:'swivel',side:'player'});actor(s).militia=false;actor(s).stance='prone';
+ const action=plan(s);assert.deepEqual(action,{type:'stance',unitId:actor(s).id,stance:'crouched'});
+ const next=actBattle(s,action);assert.equal(next.lastError,null);
+ assert.equal(actor(next).stance,'crouched');assert.ok(actor(next).ap<actor(s).ap);
+ assert.equal(next.artillery[0].loaded,true);assert.equal(plan(next).type,'artillery');
+ actor(s).ap=0;assert.equal(plan(s),null);
+});
