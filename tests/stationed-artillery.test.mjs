@@ -1,3 +1,4 @@
+import {assertCustodyCare} from './custody-care-evidence.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {rosterFor} from '../game/campaign.js';
@@ -118,11 +119,14 @@ test('a defeated squad can hire a rescue force and recover its actual prisoners 
  assert.equal(restored.defeated,false);assert.equal(restored.location,'retiro');assert.deepEqual(restored.squad,[]);
  for(const u of dead)assert.equal(restored.operativeState[u.id].alive,false);
  for(const {id} of captured){assert.equal(restored.operativeState[id].captured,true);assert.equal(restored.operativeState[id].location,'san_nicolas');}
- const captives=structuredClone(restored.operativeState),cash=restored.resources.treasury;
+ const custodyStart=structuredClone(restored),captives=structuredClone(restored.operativeState),cash=restored.resources.treasury;
  for(const id of [123,115,110])restored=order(restored,{type:'recruitCivic',id,term:'week'});
  assert.equal(cash-restored.resources.treasury,371);
  restored=order(restored,{type:'travel',sector:'buenos_aires'});restored=order(restored,{type:'attack',sector:'san_nicolas'});
  assert.deepEqual(restored.pendingBattle.artillery,[{...gun,stationed:true}]);validateArtilleryDeployment(restored.pendingBattle);
+ const heldBeforeRescue=structuredClone(restored.operativeState);
+ for(const {id} of captured)assertCustodyCare(custodyStart,restored,Number(id));
+ assert.ok(Object.values(restored.detentionRecords??{}).some(entry=>entry.care?.length));
  const rescueEntry=enterSector(restored.pendingBattle,restored.sectorStates.san_nicolas);
  // Coordinate one order per rescuer per pass, as in the original paid
  // assault. Their real enemies can now stabilize critical comrades too.
@@ -139,6 +143,6 @@ test('a defeated squad can hire a rescue force and recover its actual prisoners 
  restored=decodeSave(encodeSave(restored)).campaign;
  assert.equal(restored.defeated,false);assert.equal(restored.sectors.san_nicolas.owner,'patriot');
  for(const u of dead){assert.equal(restored.operativeState[u.id].alive,false);assert.equal(restored.operativeState[u.id].hp,0);}
- for(const {id:rawId} of captured){const id=Number(rawId),u=restored.operativeState[id];assert.equal(u.captured,false);assert.equal(u.hp,captives[id].hp);assert.equal(u.assignment,'patient');assert.equal(u.location,'san_nicolas');assert.ok(restored.recruited.includes(id));assert.deepEqual(u.outfit,captives[id].outfit);assert.ok(restored.contracts[id]);}
+ for(const {id:rawId} of captured){const id=Number(rawId),u=restored.operativeState[id];assert.equal(u.captured,false);assert.equal(u.hp,heldBeforeRescue[id].hp);assert.equal(u.assignment,'patient');assert.equal(u.location,'san_nicolas');assert.ok(restored.recruited.includes(id));assert.deepEqual(u.outfit,captives[id].outfit);assert.ok(restored.contracts[id]);}
  assert.deepEqual(restored.sectorStates.san_nicolas.artillery,[{...gun,side:'player'}]);assert.equal(ownedArtilleryCount(restored),1);assert.equal(restored.resources.cannons,0);assert.equal(restored.armory.swivel,0);
 });

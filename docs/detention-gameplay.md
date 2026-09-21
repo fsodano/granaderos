@@ -1,10 +1,10 @@
 # Detention and physical rescue work
 
-Status: **in progress**. Campaign attacks, defenses and sector visits now deploy physical detainees. Their wounds, finite first aid and deaths settle into the original service records and survive full saves. Physical release and escape remain unimplemented. A full-suite run exposed unresolved rescue-route failures; do not treat this as completed rescue gameplay.
+Status: **in progress**. Campaign attacks, defenses and sector visits now deploy physical detainees. Their wounds, finite first aid and deaths settle into the original service records and survive full saves. Physical release and escape remain unimplemented. The sector-recapture rescue routes pass with finite custody care. This is not completed physical escape gameplay.
 
 ## Prisoner construction
 
-The detention manifest reads only living captives held in the requested sector. Each entity retains its captured operative identity, capture hour, name, health scale, current wounds, bandages, bleeding, energy and consciousness. It carries no weapon, ammunition, medical supply or inventory copy. That equipment remains in campaign custody.
+The detention manifest reads living captives held in the requested sector and retains bodies recorded there. Each entity retains its captured operative identity, capture hour, name, health scale, current wounds, bandages, bleeding, energy and consciousness. It carries no weapon, ammunition, medical supply or inventory copy. That equipment remains in campaign custody.
 
 Initial placement chooses separate walkable interior tiles, preferring rooms near the existing hostile force. It excludes occupied cells, map boundaries, blocked terrain and furniture. It does not create guards or change their weapons. Placement does not mutate its source battle. A detained civilian cannot roam or follow an escort order before being freed. Tactical validation rejects malformed identities, unknown sectors and copied equipment.
 
@@ -18,11 +18,21 @@ Fifteen focused construction, health and campaign checks pass. The campaign chec
 
 A live browser check imported the adjacent-medic fixture and used the visible “Vendar a Juan Bautista Cabral” control. Cabral changed from 11 to 15/96 HP, bleeding 2 to 0; the medic spent one dressing (4 to 3) and 20 AP (52 to 32). Reload retained these values and captive status. This is treatment-control evidence, not proof of a route through the guards.
 
-The integration run reported 2,584 passes, three failures (including a failed parent scenario) and three dependent skips. The two underlying failures are the northern rescue route and stationed-artillery rescue. Their old assertions assume captive wounds remain frozen during combat; physical detainees now bleed out before those controllers reach them. This is an unresolved gameplay issue, not a passing rescue route. Do not erase the casualties or grant free healing to make those checks pass. A complete detention design must provide and verify an actual finite-care/rescue path.
+The integration run reported 2,584 passes, three failures (including a failed parent scenario) and three dependent skips. The two underlying failures are the northern rescue route and stationed-artillery rescue. Their old assertions assume captive wounds remain frozen during combat; physical detainees now bleed out before those controllers reach them. That result is the earlier integration checkpoint. The finite-care change below addresses those failures without erasing casualties or granting supplies.
 
 1. Completed for current sector requests: bind the manifest to the encounter and retain positions when available on reentry.
-2. Connected: prisoner wounds, treatment and death update the captured service record. Finish the finite-care/rescue timing design and repair the two real route failures without inventing recovery.
+2. Connected and verified for sector recapture: prisoner wounds, finite treatment, death and custody care update their service records. The two real rescue routes now pass.
 3. Add an adjacent, paid release action and visible controls. A freed prisoner must still reach an authorized safe exit through actual movement.
 4. Settle each physical escape/rescue independently from sector victory. Restore only the saved unused contract time. Keep unrecovered equipment in hostile custody.
-5. Support failed attempts, recapture, permanent deaths and remaining detainees. Reject duplicate or missing settlement receipts.
+5. Support failed attempts, recapture, permanent deaths and remaining detainees. Before physical escape can return a soldier to service within the same hour, replace the current soldier-plus-capture-hour identity with a distinct capture-cycle identity. Reject duplicate or missing settlement receipts.
 6. Verify complete capture-to-rescue and escape paths, live controls, full saves and campaign continuation. Update W08 only for the paths actually completed.
+
+## Finite care in custody
+
+During an elapsed strategic hour, an able occupying guard with medical skill may stabilize one detained prisoner using one dressing from the actual confiscated medical supplies in that sector. The guard spends three energy. The ordinary first-aid formula controls partial work and the critical 15-HP ceiling. This does not restore full health, prisoner energy, equipment access or contract time. A second call in the same hour cannot repeat the stroke. No supplies, no able guard, or an active tactical encounter means no strategic treatment. Untreated prisoners can still bleed and die during tactical combat.
+
+Each stroke saves its hour, guard, supply owner, dressing charge and before/after health and bleeding. Sector snapshots and stationary enemy-group energy stay consistent. The campaign log and prisoner panel show actual care and its last hour. In the browser fixture, Cabral reached 15/96 HP using one confiscated dressing at day 1, 2:00; the panel retained that report after reload.
+
+Twenty focused care, campaign, health and panel checks pass. The paid stationed-artillery rescue passes its actual combat and save/return check. All eight established-area northern-route checks pass without skips, reaching Yatasto at hour 292, second 2534 with 1,377 pesos, 11 permanent deaths and no captives. The route verifies health gains and missing confiscated dressings against recorded care; it does not overwrite the captured records to create recovery. Earlier recovery changes raid timing, so the Salta gate checks every raid that actually arrives and rejects unanswered raids. These are sector-recapture routes, not proof of physical escape or the full Retiro-only campaign.
+
+Final integration verification: **2,597/2,597 tests pass with no skips**. Type checking and the production build pass. The live care report survives reload. These checks do not complete the physical release/escape requirements above.

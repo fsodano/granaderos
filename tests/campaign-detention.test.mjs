@@ -9,16 +9,16 @@ import {syncBattleTime} from '../game/time.js';
 import {advanceCivilianBleeding} from '../game/civilian-harm.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
-function captured(){
+function captured({custodySupplies=0}={}){
  let s=initialCampaign();s=order(s,{type:'recruitCivic',id:112,term:'week'});s.operativeState[112].location=s.location;s=order(s,{type:'purchaseMedicalSupplies',operativeId:112,quantity:2});s=order(s,{type:'squad',ids:[3,4,10]});s.operativeState[112].location='buenos_aires';s.location='humahuaca';s.squads[0].location=s.location;s.sectors.humahuaca.owner='patriot';
  launchEnemyGroup(s,'north','humahuaca',{immediate:true});s=order(s,{type:'wait',hours:1});s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'tactical'});
  let b=enterSector(s.pendingBattle);const u=b.units.find(u=>Number(u.id)===3);u.hp=11;u.bleeding=2;u.bandaged=20;u.unconscious=true;u.stance='prone';u.movementMode='prone';
- for(const u of b.units.filter(u=>u.side==='player')){u.surrendered=true;u.ap=0;}b.status='defeat';
+ for(const u of b.units.filter(u=>u.side==='player')){u.surrendered=true;u.ap=0;u.medkits=custodySupplies;}b.status='defeat';
  s=order(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'defeat',sectorState:b,survivors:b.units.filter(u=>u.side==='player')});
  for(const id of ['cordoba','tucuman','salta','jujuy'])s.sectors[id].owner='patriot';s.location='jujuy';s.squad=[112];s.squads[0].members=[112];s.squads[0].location=s.location;
  return order(s,{type:'attack',sector:'humahuaca'});
 }
-function start(){const next=prepareCampaignBattle(captured());assert.equal(next.error,null,next.error);return next;}
+function start(options){const next=prepareCampaignBattle(captured(options));assert.equal(next.error,null,next.error);return next;}
 function sync(campaign,battle){const next=syncBattleTime(campaign,battle);assert.equal(next.error,null,next.error);return next;}
 test('real capture deploys equipment-free prisoners and full saves retain wounds and custody',()=>{
  const {campaign,battle}=start(),n=battle.npcs.find(n=>n.detention?.operativeId===3);
@@ -76,4 +76,16 @@ test('sector victory releases only living prisoners and a later visit retains th
  campaign=order(campaign,{type:'squad',ids:[112]});campaign=order(campaign,{type:'visitSector'});({campaign,battle}=prepareCampaignBattle(campaign));
  const body=battle.npcs.find(n=>n.id===npc.id);assert.ok(body);assert.equal(body.hp,0);assert.equal(body.stance,'prone');
  assert.equal(decodeSave(encodeSave(campaign,battle)).campaign.operativeState[3].alive,false);
+});
+
+test('guards stabilize prisoners with finite confiscated dressings during elapsed campaign time',()=>{
+ const campaign=captured({custodySupplies:2}),r=campaign.operativeState[3],receipt=campaign.detentionRecords[`captive:3:${r.capturedAt}`];
+ assert.equal(r.hp,15);assert.equal(r.bleeding,0);assert.equal(r.captured,true);assert.equal(r.unconscious,false);
+ assert.equal([3,4,10].reduce((n,id)=>n+campaign.operativeState[id].medkits,0),5);
+ assert.equal(receipt.care.length,1);assert.equal(receipt.care[0].dressings,1);assert.equal(receipt.care[0].hpBefore,11);assert.equal(receipt.care[0].hpAfter,15);
+ assert.ok(campaign.log.some(entry=>entry.text.includes('equipo incautado')));
+ assert.deepEqual(restoreCampaign(serializeCampaign(campaign)),campaign);
+ const {campaign:next,battle,error}=prepareCampaignBattle(campaign);assert.equal(error,null);assert.equal(battle.npcs.find(n=>n.detention?.operativeId===3).hp,15);
+ assert.deepEqual(decodeSave(encodeSave(next,battle)).campaign,next);
+ const forged=structuredClone(campaign);forged.detentionRecords[receipt.npc.id].care[0].dressings=0;assert.throws(()=>restoreCampaign(serializeCampaign(forged)));
 });

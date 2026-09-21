@@ -11,3 +11,9 @@ test('prisoner panel distinguishes paused, expired and permanent service without
   assert.match(html,expiresAt===null?/Servicio sin vencimiento/:expiresAt===18?/Requiere una nueva contratación/:/quedan 6 h de servicio/);
  }
 });
+
+test('prisoner panel reports actual finite custody care',()=>{
+ const s=initialCampaign();s.hour=24;Object.assign(s.operativeState[112],{captured:true,capturedSector:'tucuman',capturedAt:18,hp:15,maxHp:64,capturedContract:{expiresAt:30}});
+ s.detentionRecords={'captive:112:18':{care:[{hour:19,dressings:1},{hour:20,dressings:1}]}};
+ const html=render(h(EnemyEncounters,{state:s,dispatch(){}}));assert.match(html,/Atención en cautiverio: 2 venda/);assert.match(html,/Última atención: día 1, 20:00/);assert.doesNotMatch(html,/Estado crítico/);
+});

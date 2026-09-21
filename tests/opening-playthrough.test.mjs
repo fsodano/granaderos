@@ -133,7 +133,9 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   assert.equal(prepared.field.length,6);assert.equal(prepared.support.length,6);assert.ok(prepared.hiringCost>0);
   for(const id of prepared.hired){assert.equal(before.operativeState[id].alive,true);assert.ok(!before.recruited.includes(id));assert.ok(prepared.campaign.contracts[id].paid>0);}
   const reserve=prepared.reservePreparation;assert.equal(before.operativeState[reserve.hired].alive,true);assert.ok(!before.recruited.includes(reserve.hired));assert.equal(prepared.campaign.contracts[reserve.hired].paid,reserve.hiringCost);assert.equal(reserve.weaponCost,230);
-  assert.ok(prepared.defenses.length>0,'the real depot encounter is resolved before the ready assault enters Salta');
+  assert.equal(prepared.campaign.pendingEncounter,null,'the assault cannot bypass a pending encounter');
+  assert.ok(prepared.campaign.enemyGroups.every(group=>group.status!=='waiting'),'no arrived raid remains unanswered');
+  for(const group of before.enemyGroups.filter(group=>group.target==='cordoba'&&group.status==='marching'&&group.arrivalAt<=prepared.campaign.hour))assert.ok(prepared.defenses.some(defense=>defense.groupId===group.id),'resolve every depot raid that actually arrives during preparation');
   for(const defense of prepared.defenses){assert.equal(defense.status,'victory');assert.ok(defense.actions>0);assert.equal(prepared.campaign.enemyGroups.find(group=>group.id===defense.groupId).status,'defeated');assert.ok(prepared.campaign.encounterHistory.some(event=>event.groupId===defense.groupId&&event.outcome==='victory'));}
   assert.ok(prepared.care.patients.every(id=>before.operativeState[id].hp<before.operativeState[id].maxHp),'care treats actual surviving wounds, without requiring a scripted critical casualty');assert.ok(prepared.care.patients.length?prepared.care.usedDressings>0:prepared.care.usedDressings===0);
   for(const id of prepared.care.patients)assert.equal(prepared.campaign.operativeState[id].hp,prepared.campaign.operativeState[id].maxHp);

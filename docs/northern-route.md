@@ -1,6 +1,12 @@
 # Northern campaign route verification
 
-## Integrated roster-price replay — 21 September 2026
+## Finite custody-care replay — 21 September 2026
+
+All eight established-area route checks pass with physical detainees and finite care in captivity. The checkpoint is phase 3, hour 292, second 2534: 1,377 pesos, 11 permanent deaths and no remaining captives. Guards use recorded confiscated dressings to stabilize prisoners; rescue does not receive free health or supplies. The paid northern relief, coastal recapture, medical courier, Salta assault and Yatasto meeting use ordinary campaign and tactical orders. The earlier recovery changes the raid schedule; every actually arrived raid must still receive a response before the Salta assault.
+
+This verifies sector-recapture rescue in the established southern scenario. Physical escape and the full Retiro-only campaign remain unproved. See [detention care](detention-gameplay.md#finite-care-in-custody). Earlier totals below are historical checkpoints.
+
+## Earlier integrated roster-price replay — 21 September 2026
 
 All eight established-area route checks pass with the current pending roster and contract prices. The route reaches Yatasto at phase 3, hour 307, second 2012, with 1,303 pesos, 14 permanent deaths and no remaining prisoners. It uses affordable living reinforcements for the Tucumán rescue, preserves actual casualties, and keeps a replacement's own weapon when the finite salvaged rifles run out. A later specialist is hired only after the campaign can pay. Medical assertions follow actual surviving wounds rather than requiring a particular critical casualty.
 

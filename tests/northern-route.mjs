@@ -1,3 +1,4 @@
+import {assertCustodyCare} from './custody-care-evidence.mjs';
 import assert from 'node:assert/strict';
 import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
@@ -276,6 +277,7 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
  let campaign=decodeSave(encodeSave(start)).campaign;const events=[];
  const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;events.push({action,hour:campaign.hour,second:campaign.secondOfHour??0});};
  assert.equal(campaign.sectors.tucuman.owner,'royalist');assert.deepEqual(campaign.squad,[]);
+ const custodyStart=structuredClone(campaign);
  const captives=Object.entries(campaign.operativeState).filter(([,r])=>r.captured&&r.capturedSector==='tucuman').map(([id,record])=>({id:Number(id),record:structuredClone(record)}));assert.ok(captives.length);
  const reserveIds=campaign.recruited.filter(id=>{const r=campaign.operativeState[id];return r.alive&&!r.captured&&r.location==='san_nicolas';});assert.ok(reserveIds.includes(112)&&reserveIds.includes(122));
  order({type:'createSquad',sector:'san_nicolas',name:'Apoyo sanitario',ids:reserveIds});const support=campaign.activeSquadId;
@@ -344,10 +346,11 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
   // time and dressings before the relief doctors leave him behind.
   if(coastalCaptives.length){
    const doctor=fieldIds.filter(id=>campaign.operativeState[id].alive&&campaign.operativeState[id].hp>=15&&campaign.operativeState[id].medkits>0).sort((a,b)=>rosterFor(campaign).find(op=>op.id===b).medical-rosterFor(campaign).find(op=>op.id===a).medical)[0];
+   const needsStabilization=coastalCaptives.some(({id})=>campaign.operativeState[id].hp<15||campaign.operativeState[id].bleeding);
    const linen=campaign.operativeState[doctor].medkits,careStart=campaign.hour;order({type:'assignCare',operativeId:doctor,assignment:'doctor'});
    for(const patient of coastalCaptives){assert.equal(campaign.operativeState[patient.id].hp,patient.hp);assert.equal(campaign.operativeState[patient.id].captured,false);order({type:'assignCare',operativeId:patient.id,assignment:'patient'});}
    for(let care=0;care<8&&coastalCaptives.some(({id})=>campaign.operativeState[id].hp<15||campaign.operativeState[id].bleeding);care++)order({type:'wait',hours:1});
-   assert.ok(campaign.operativeState[doctor].medkits<linen);
+   if(needsStabilization)assert.ok(campaign.operativeState[doctor].medkits<linen);else assert.equal(campaign.operativeState[doctor].medkits,linen);
    for(const patient of coastalCaptives){assert.ok(campaign.operativeState[patient.id].hp>=15);assert.equal(campaign.operativeState[patient.id].bleeding,0);order({type:'assignCare',operativeId:patient.id,assignment:'rest'});}
    order({type:'assignCare',operativeId:doctor,assignment:'active'});corridor.released=coastalCaptives;corridor.care={doctor,hours:campaign.hour-careStart,usedDressings:linen-campaign.operativeState[doctor].medkits};
   }
@@ -388,7 +391,7 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
  order({type:'selectSquad',id:support});order({type:'attack',sector:'tucuman',queue:true});order({type:'selectSquad',id:field});order({type:'attack',sector:'tucuman',queue:true});
  for(let i=0;i<24&&![field,support].every(id=>campaign.squads.find(q=>q.id===id).journey?.status==='ready');i++){assert.equal(campaign.pendingEncounter,null);order({type:'wait',hours:1});}
  order({type:'beginAssault',sector:'tucuman'});
- for(const {id,record} of captives)assert.deepEqual(campaign.operativeState[id],record);
+ for(const captive of captives){captive.custodyCare=assertCustodyCare(custodyStart,campaign,captive.id);captive.beforeCare=captive.record;captive.record=structuredClone(campaign.operativeState[captive.id]);}
  const battle=enterSector(campaign.pendingBattle,campaign.sectorStates.tucuman);assert.deepEqual(decodeSave(encodeSave(campaign,battle)),{campaign,battle});
  report({event:'rescuePrepared',hour:campaign.hour,units:campaign.pendingBattle.squad.map(u=>u.id),cash:campaign.resources.treasury,hired,hiringCost,medicalPurchases,fieldIds,supportIds,staging});return {campaign,events,captives,hired,hiringCost,medicalPurchases,fieldIds,supportIds,supportHires,staging};
 }

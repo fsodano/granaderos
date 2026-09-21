@@ -49,14 +49,25 @@ export function acknowledgeDetentionHealth(campaign,battle){
  }
 }
 export function validateCampaignDetention(campaign){
- const records=campaign.detentionRecords??{};
+ const records=campaign.detentionRecords??{},careEvents=new Set();
  need(records&&typeof records==='object'&&!Array.isArray(records)&&Object.keys(records).length<=10000,'El registro de prisioneros es inválido.');
  for(const [id,entry]of Object.entries(records)){
-  need(entry&&typeof entry==='object'&&Object.keys(entry).every(k=>['npc','ammunition'].includes(k))&&entry.npc?.id===id,'El recibo del prisionero es inválido.');
+  need(entry&&typeof entry==='object'&&Object.keys(entry).every(k=>['npc','ammunition','care'].includes(k))&&entry.npc?.id===id,'El recibo del prisionero es inválido.');
   const npc=entry.npc;validateDetainedPrisoner(npc);validateCivilianWounds(npc);
   need(npc.detention&&!npc.detention.freed,'La custodia guardada es inválida.');
   const d=npc.detention,r=campaign.operativeState[d.operativeId];
   need(r&&d.capturedAt<=campaign.hour,'Falta la hoja de servicio del prisionero.');
+  if(entry.care!==undefined){
+   need(Array.isArray(entry.care)&&entry.care.length<=10000,'La atención en cautiverio es inválida.');
+   let restored=0,previousHour=d.capturedAt;
+   for(const care of entry.care){
+    need(care&&Object.keys(care).length===8&&Number.isInteger(care.hour)&&care.hour>previousHour&&care.hour<=campaign.hour&&typeof care.guardId==='string'&&care.guardId.length>0&&Number.isInteger(care.sourceId)&&campaign.operativeState[care.sourceId]&&care.dressings===1,'El recibo de atención en cautiverio es inválido.');
+    need(['hpBefore','hpAfter','bleedingBefore','bleedingAfter'].every(k=>Number.isInteger(care[k])&&care[k]>=0)&&care.hpBefore>0&&care.hpAfter>=care.hpBefore&&care.hpAfter<=Math.max(15,care.hpBefore)&&care.hpAfter<=npc.maxHp&&care.bleedingBefore<=10&&care.bleedingAfter<=care.bleedingBefore,'El resultado de atención en cautiverio es inválido.');
+    const key=JSON.stringify([d.sector,care.hour,care.guardId]);need(!careEvents.has(key),'Un guardia atendió dos veces en la misma hora.');careEvents.add(key);
+    restored+=care.hpAfter-care.hpBefore;previousHour=care.hour;
+   }
+   need(restored<=civilianRestoredHp(npc),'La estabilización del prisionero perdió su recibo.');
+  }
   if(npc.hp===0)need(!r.alive&&r.hp===0&&!r.captured,'Un prisionero fallecido figura vivo.');
   if(entry.ammunition!==undefined)need(npc.hp===0&&Object.keys(entry.ammunition).every(k=>['loaded','ammo','preserveLoading','reloadProgress'].includes(k))&&['loaded','ammo'].every(k=>Number.isInteger(entry.ammunition[k])&&entry.ammunition[k]>=0),'La munición del prisionero fallecido es inválida.');
   if(r.captured&&r.capturedAt===d.capturedAt&&r.capturedSector===d.sector)for(const key of ['hp','energy','bleeding','bandaged'])need((r[key]??0)===(npc[key]??0),'Las heridas guardadas del prisionero no coinciden.');

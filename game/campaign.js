@@ -1,3 +1,4 @@
+import {advanceDetentionCare} from './detention-care.js';
 import {detentionManifest} from './detention.js';
 import {restoredCaptiveContract} from './prisoner-custody.js';
 import {escortArrival} from './quest-escort.js';
@@ -399,6 +400,7 @@ function tick(s,hours,options={}){
     for(const task of [...s.production])if(task.due<=s.hour&&s.sectors[task.sector].owner==='patriot'&&isSupplied(s,task.sector)){add(s,task.yield);s.production.splice(s.production.indexOf(task),1);logisticsEvents.push({kind:'production',sector:task.sector,name:task.name,goods:clone(task.yield)});note(s,`La maestranza completó: ${task.name}.`);}
     for(const shipment of [...s.shipments])if(shipment.due<=s.hour&&!s.blockade&&s.sectors.ensenada.owner==='patriot'){add(s,shipment.goods);s.shipments.splice(s.shipments.indexOf(shipment),1);logisticsEvents.push({kind:'shipment',sector:'ensenada',goods:clone(shipment.goods)});note(s,'Arribó un cargamento de contrabando a Ensenada.');}
     advanceMarchFatigue(s,rosterFor(s).map(op=>({...op,...(mountForOperative(s.horseState,op.id)??{})})),options);
+    for(const message of advanceDetentionCare(s,rosterFor(s)))note(s,message);
     const careOptions=assignmentContext(s,options);const deaths=advanceMedicalCare(s,rosterFor(s),careOptions);advanceAssignments(s,rosterFor(s),careOptions);recordCasualtyMorale(s,deaths);advanceMorale(s,rosterFor(s),careOptions);
     for(const id of deaths){
       s.operativeState[id].location=operativeLocation(s,id);

@@ -76,3 +76,10 @@ Record exact tested scope and remaining gaps. A fixture that injects a victory i
 ## Physical detention integration checkpoint
 
 Captives now deploy on campaign maps. Wounds, ordinary finite first aid and deaths synchronize with service records; full saves, reentry, live treatment and paused-contract sector release are checked. See [detention gameplay](detention-gameplay.md). This introduces an unresolved route issue: untreated physical prisoners can bleed out during the relief battle. The full integration run has 2,584 passes, three failures including the parent rescue scenario, and three dependent skips. Physical release/escape and a verified viable rescue path remain required; W08 is still partial.
+
+
+## Finite custody-care checkpoint
+
+Able occupying guards now use real confiscated dressings to stabilize prisoners during elapsed strategic hours. The first-aid formula, supply deductions, guard energy, once-per-hour receipts and full saves constrain treatment. Active tactical sectors receive no background care. The two failed sector-recapture routes now pass; the established route completes all eight checks through Yatasto with 11 permanent deaths. The live prisoner panel retains its exact treatment report after reload. See [detention care](detention-gameplay.md#finite-care-in-custody). This restores viable sector-recapture rescue; physical release, safe-exit escape and the full campaign remain open.
+
+The final custody-care integration suite passes **2,597/2,597 tests with no skips**. Type checking and the production build pass; unrelated art and roster files remain unchanged.

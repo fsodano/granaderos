@@ -1,3 +1,4 @@
+import {assertCustodyCare} from './custody-care-evidence.mjs';
 import {AMMUNITION_TYPES,ammunitionByType,totalReserveAmmunition,addAmmunition} from '../game/ammunition-types.js';
 import {syncCarriedAmmunition} from '../game/campaign-ammunition.js';
 import {initializeUnitAmmunition} from '../game/tactical-ammunition.js';
@@ -118,13 +119,15 @@ test('returning defenders free coastal captives without requiring a change of se
  let b=field(s,{4:{hp:10,bandaged:74},10:{hp:10,bandaged:86}});
  b=cross(b,3,'buenos_aires');s=order(s,report(s,b));
  assert.equal(s.sectors.retiro.owner,'patriot');assert.equal(s.blockade,true);
- const held=structuredClone(s.operativeState[4]);assert.equal(held.captured,true);
+ const custodyStart=structuredClone(s),held=structuredClone(s.operativeState[4]);assert.equal(held.captured,true);
  s=restoreCampaign(serializeCampaign(s));
  s=order(s,{type:'cancelTravel',choice:'return'});
  for(let i=0;i<48&&!s.pendingEncounter;i++)s=order(s,{type:'wait',hours:1});
  assert.ok(s.pendingEncounter,JSON.stringify(s.squads));
  s=order(s,{type:'respondToEncounter',groupId:s.pendingEncounter.groupId,choice:'tactical'});
  assert.equal(s.pendingBattle.wasRoyalist,false);
+ for(const id of [4,10])assertCustodyCare(custodyStart,s,id);
+ const caredHp=s.operativeState[4].hp;
  const contested=structuredClone(s);launchEnemyGroup(contested,'coast','retiro',{immediate:true});
  const uncleared=order(contested,scriptedBattleReport(contested));
  assert.equal(uncleared.blockade,true,'the unresolved coastal force must retain the blockade');
@@ -134,7 +137,7 @@ test('returning defenders free coastal captives without requiring a change of se
  s=order(s,victory);
  assert.equal(s.sectors.retiro.owner,'patriot');assert.equal(s.blockade,false);
  for(const id of [4,10]){assert.equal(s.operativeState[id].captured,false);assert.ok(s.recruited.includes(id));}
- const freed=s.operativeState[4];assert.equal(freed.hp,held.hp);assert.equal(freed.condition,held.condition);
+ const freed=s.operativeState[4];assert.equal(freed.hp,caredHp);assert.equal(freed.condition,held.condition);
  assert.equal(freed.carriedLoaded,held.capturedAmmunition.loaded);assert.equal(freed.carriedAmmo,held.capturedAmmunition.ammo+held.capturedAmmunition.loaded);
  assert.deepEqual(ammunitionByType(freed),ammunitionByType(held));
  assert.equal(freed.assignment,'patient');assert.equal(freed.location,'retiro');
