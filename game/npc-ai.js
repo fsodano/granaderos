@@ -5,8 +5,8 @@ import {directionTo, approximateHeardPosition} from './tactical-awareness.js';
 import {applyCivilianHarm} from './civilian-harm.js';
 
 // Local, deterministic state machines. No network, hidden enemy positions or RNG.
-export const NPC_ACTIVITIES = ['roaming','home','working','socializing','hiding','fleeing'];
-export const NPC_ACTIVITY_LABELS = {roaming:'paseando',home:'en casa',working:'trabajando',socializing:'en la pulpería',hiding:'a cubierto',fleeing:'buscando refugio'};
+export const NPC_ACTIVITIES = ['roaming','home','working','socializing','hiding','fleeing','following','waiting'];
+export const NPC_ACTIVITY_LABELS = {roaming:'paseando',home:'en casa',working:'trabajando',socializing:'en la pulpería',hiding:'a cubierto',fleeing:'buscando refugio',following:'siguiendo a la escolta',waiting:'esperando a la escolta'};
 const key = p => tacticalLevel(p)===0?`${p.x},${p.y}`:spaceKey(p);
 const point = planningPoint;
 const distance = (a,b) => Math.abs(a.x-b.x)+Math.abs(a.y-b.y);
@@ -79,11 +79,12 @@ export function advanceNpc(s,n,budget=24,atTime=now(s)) {
   if(!mobile(n))return;
   n.ai??={cycle:0,homeId:null,activity:'roaming',wait:0};
   const ai=n.ai;n.lastMovePath=[];
+  if(n.escort&&(n.entangled||n.knockedDown)){ai.activity='waiting';delete ai.destination;return;}
   const danger=ai.threat&&atTime<ai.safeAfter;
   if(!danger&&ai.threat){delete ai.threat;delete ai.safeAfter;delete ai.destination;ai.wait=0;}
   // Conference speakers remain available at their meeting while it is safe.
   // They still take shelter through the ordinary danger branch.
-  if(n.mission&&!danger){
+  if(n.mission&&!n.escort&&!danger){
     ai.activity='working';delete ai.destination;n.stance='standing';n.movementMode='walk';
     const visitor=s.units.find(u=>u.side==='player'&&u.hp>0&&!u.departure&&!u.unconscious&&atHand(u,n,1));
     if(visitor)n.facing=directionTo(n,visitor);
@@ -94,6 +95,15 @@ export function advanceNpc(s,n,budget=24,atTime=now(s)) {
     const choices=places.cells.filter(p=>p.path.length<=8).sort((a,b)=>shelterScore(s,b,ai.threat,routes.tiles)-shelterScore(s,a,ai.threat,routes.tiles)||a.y-b.y||a.x-b.x);
     ai.destination=point(choices[0]??n);ai.activity=sameCell(n,ai.destination)?'hiding':'fleeing';
     n.stance??='crouched';n.movementMode=n.stance==='prone'?'prone':'crouch';
+  }else if(n.escort){
+    // Escort movement uses the same occupied-cell, door and climbing routes as
+    // other civilians. An absent or incapacitated leader cannot pull an escort.
+    const leader=s.units.find(u=>u.id===n.escort.leaderId&&u.side==='player'&&u.hp>=15&&!u.unconscious&&!u.departure&&!u.fled&&!u.routed&&!u.surrendered&&u.energy>0);
+    n.stance='standing';n.movementMode='walk';ai.wait=0;delete ai.destination;
+    if(n.escort.waiting||!leader||atHand(n,leader,1)){ai.activity='waiting';if(leader)n.facing=directionTo(n,leader);return;}
+    const choices=places.cells.filter(p=>atHand(p,leader,1)).sort((a,b)=>a.path.length-b.path.length||a.y-b.y||a.x-b.x);
+    if(!choices.length){ai.activity='waiting';return;}
+    ai.destination=point(choices[0]);ai.activity='following';
   }else{
     n.stance='standing';n.movementMode='walk';
     const visitor=s.units.find(u=>u.side==='player'&&u.hp>0&&!u.departure&&!u.unconscious&&atHand(u,n,1));
@@ -132,6 +142,7 @@ export function advanceNpc(s,n,budget=24,atTime=now(s)) {
   }
   if(sameCell(n,ai.destination)){
     if(danger)ai.activity='hiding';
+    else if(n.escort){ai.activity='waiting';delete ai.destination;}
     else {ai.cycle++;ai.wait=2+hash(n.id+ai.cycle)%4;delete ai.destination;}
   }
 }

@@ -47,6 +47,10 @@ Tucumán now has a carried dressing errand with partial deliveries, quantity ref
 
 The current integrated suite passes **2,561/2,561 tests with no skips**. Added medical-errand checks cover permanent contact-death failure, retained completed rewards, physical supply custody, duplicate synchronization and rejection of missing saved receipts. All 49 unrelated files in the preservation snapshot remain byte-identical. This run does not close the remaining partial or unverified audit requirements.
 
+## Escort implementation in progress
+
+The shared civilian movement layer now supports validated following/waiting directives, finite movement, blocked routes, unavailable leaders, danger and restraint. All 23 focused checks pass. Campaign acceptance, orders, destination outcomes, rewards and live integration are still required; see [escort work](escort-gameplay.md). W07 and W08 remain partial.
+
 ## Work order and completion evidence
 
 1. **Stabilize the integrated game.** Run the complete current suite, resolve failures without removing finite supply, permanent casualties, legal movement, or save checks. Preserve separate artwork and roster changes. Verify type checking, the production build and relevant live controls.

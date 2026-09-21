@@ -138,6 +138,7 @@ for(const n of s.npcs){
  if(npcHp>0&&(n.hp!==undefined||n.energy!==undefined))need((n.unconscious??false)===npcIncapacitated,'conciencia civil incompatible con sus heridas');
  civilianIncidents(n);
  validateCivilianWounds(n,s);
+ if(n.escort!==undefined)need(object(n.escort)&&text(n.escort.leaderId)&&n.escort.leaderId.length>0&&typeof n.escort.waiting==='boolean'&&Object.keys(n.escort).every(key=>['leaderId','waiting'].includes(key)),'escolta civil');
  if(n.stance!==undefined)need(['standing','crouched','prone'].includes(n.stance),'postura civil');
  if(n.movementMode!==undefined)need(['walk','run','crouch','prone'].includes(n.movementMode),'movimiento civil');
  if(n.facing!==undefined)need(integer(n.facing,0,7),'dirección civil');
