@@ -13,6 +13,7 @@ import {availableAmmunition,weaponAmmoType} from '../game/ammunition-types.js';
 import {ammoResourceKey} from '../game/campaign-ammunition.js';
 import {doctorRate} from '../game/medical-care.js';
 import {RECIPES} from '../game/data.js';
+import {contractQuote} from '../game/contracts.js';
 
 export function northernCombatOrder(battle,unit){
  const action=combatOrder(battle,unit);
@@ -70,8 +71,14 @@ export function stageNorthernCare(start){
  assert.equal(campaign.flags.sanLorenzo,true);assert.equal(campaign.phase,2);
  const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;events.push({action,hour:campaign.hour,second:campaign.secondOfHour??0});};
  const cash=campaign.resources.treasury;
- for(const id of doctors)order({type:'recruitCivic',id,term:'week'});
- const hiringCost=cash-campaign.resources.treasury;assert.equal(hiringCost,294);
+ let expectedCost=0;
+ for(const id of doctors){
+  assert.ok(campaign.operativeState[id].alive&&!campaign.operativeState[id].captured,'relief doctors must remain available');
+  if(campaign.recruited.includes(id))continue;
+  expectedCost+=contractQuote(campaign,rosterFor(campaign).find(op=>op.id===id),'week').price;
+  order({type:'recruitCivic',id,term:'week'});
+ }
+ const hiringCost=cash-campaign.resources.treasury;assert.equal(hiringCost,expectedCost);
  if(campaign.location!=='san_nicolas'){
   order({type:'squad',ids:doctors});
   order({type:'travel',sector:'san_nicolas'});
@@ -105,8 +112,11 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
  const gather=(id,limit=1000,sector='san_nicolas')=>{
   let count=0;
   for(const row of model(id,sector).entries.filter(row=>row.reachable&&JSON.parse(row.expected).item==='medkits')){
-   const take=Math.min(row.count,limit-count);if(!take)break;
-   order({type:'sectorInventory',sector,operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count:take});
+   let take=Math.min(row.count,limit-count);if(!take)break;
+   const action={type:'sectorInventory',sector,operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected};
+   while(take>0){const preview=dispatchCampaign(campaign,{...action,count:take});if(!preview.lastError)break;assert.equal(preview.lastError,'No queda espacio en el inventario.');take--;}
+   if(!take)break;
+   order({...action,count:take});
    assert.equal(model(id,sector).entries.find(r=>r.key===row.key)?.count??0,row.count-take);gathered.push({sector,sourceKey:row.key,count:take,remaining:row.count-take});count+=take;
   }
   return count;
@@ -123,13 +133,16 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
   assert.equal(campaign.operativeState[id].medkits,0,'the donor parts with the actual carried dressings');
   donors.push({id,count});donatedDressings+=count;
  }
- assert.equal(gather(112),donatedDressings);
+ const collectedDonations=gather(112);assert.ok(collectedDonations<=donatedDressings);
  const medicalStart=doctors.reduce((sum,id)=>sum+campaign.operativeState[id].medkits,0);
- let boughtDressings=0;const medicalTrips=[];
+ let boughtDressings=0,laterRecoveredDressings=0;const medicalTrips=[];
  for(const operativeId of patients)order({type:'assignCare',operativeId,assignment:'patient'});
  for(const operativeId of doctors)order({type:'assignCare',operativeId,assignment:'doctor'});
  for(let i=0;patients.some(id=>campaign.operativeState[id].hp<campaign.operativeState[id].maxHp)&&i<60;i++){
   assert.equal(campaign.pendingEncounter,null,'resolve a real encounter before continuing care');
+  if(doctors.every(id=>campaign.operativeState[id].medkits===0)){
+   laterRecoveredDressings+=gather(112)+gather(122,1000,'san_lorenzo');
+  }
   if(doctors.every(id=>campaign.operativeState[id].medkits===0)){
    // San Nicolás has no medical shop. A real relief doctor carries paid
    // Retiro supplies back; the patients and their actual wounds stay here.
@@ -150,7 +163,7 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
   order({type:'wait',hours:1});
  }
  for(const id of patients)assert.equal(campaign.operativeState[id].hp,campaign.operativeState[id].maxHp,`patient ${id} must finish paid care`);
- const usedDressings=medicalStart+boughtDressings-doctors.reduce((sum,id)=>sum+campaign.operativeState[id].medkits,0);
+ const usedDressings=medicalStart+boughtDressings+laterRecoveredDressings-doctors.reduce((sum,id)=>sum+campaign.operativeState[id].medkits,0);
  assert.ok(patients.length?usedDressings>0:usedDressings===0,'only actual surviving patients consume recovery supplies');
  for(const operativeId of [...doctors,...patients])order({type:'assignCare',operativeId,assignment:'rest'});
  // Rest and stage for a daylight arrival without editing health or clocks.
@@ -180,7 +193,7 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
  for(const id of ids){assert.ok(campaign.operativeState[id].hp>=15);assert.equal(campaign.operativeState[id].bleeding,0);}
  assert.ok(campaign.resources.treasury>=0);assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
  for(const production of ammunitionProduction){assert.ok(campaign.hour>=production.due);assert.ok(!campaign.production.some(order=>order.id===production.id));assert.ok(campaign.resources[production.key]>=production.count);}
- const recovery={startHour:recoveryStart,endHour:campaign.hour,staging,doctors,patients,usedDressings,boughtDressings,medicalTrips,recoveredDressings,donatedDressings,donors,replacements,fieldIds:ids,gathered,ammunitionProduction};report({event:'recovered',...recovery,cash:campaign.resources.treasury});
+ const recovery={startHour:recoveryStart,endHour:campaign.hour,staging,doctors,patients,usedDressings,boughtDressings,medicalTrips,recoveredDressings,laterRecoveredDressings,collectedDonations,donatedDressings,donors,replacements,fieldIds:ids,gathered,ammunitionProduction};report({event:'recovered',...recovery,cash:campaign.resources.treasury});
  return {campaign,events,dead,recovery};
 }
 

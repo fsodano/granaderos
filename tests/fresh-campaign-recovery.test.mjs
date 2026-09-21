@@ -1,6 +1,6 @@
 import {dispatchCampaign} from '../game/campaign.js';
 import {sanLorenzoCombatOrder} from './san-lorenzo-driver.mjs';
-import {fightNorthernSector,northernCombatOrder} from './northern-route.mjs';
+import {fightNorthernSector,northernCombatOrder,prepareNorthernSquad} from './northern-route.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {beginFreshCampaign,recoverFreshCapital,prepareFreshNorthernAssault,prepareFreshSanLorenzo,prepareFreshMissionSupport} from './fresh-campaign-route.mjs';
@@ -44,4 +44,10 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  assert.ok(won.campaign.missionAllies.san_lorenzo.hp>0);assert.equal(won.campaign.defeated,false);
  for(const [id,record]of Object.entries(prior.operativeState))if(!record.alive)assert.equal(won.campaign.operativeState[id].alive,false);
  assert.ok(won.campaign.resources.treasury>=0);assert.equal(won.campaign.completed,false);
+ const north=prepareNorthernSquad(won.campaign);
+ assert.ok(north.recovery.usedDressings>0);assert.ok(north.campaign.hour>won.campaign.hour);
+ assert.equal(north.events.some(({action})=>action.type==='recruitCivic'&&action.id===112),false,'retain the surviving doctor contract');
+ for(const id of north.recovery.patients)assert.equal(north.campaign.operativeState[id].hp,north.campaign.operativeState[id].maxHp);
+ for(const [id,record]of Object.entries(won.campaign.operativeState))if(!record.alive)assert.equal(north.campaign.operativeState[id].alive,false);
+ assert.ok(north.campaign.resources.treasury>=0);
 });
