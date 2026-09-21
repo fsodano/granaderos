@@ -2,6 +2,12 @@
 
 Audit date: 6 September 2026. This is a requirements baseline for the complete gameplay request. It is not a declaration that the current game has full JA2 parity. Concurrent implementation can change the status of a row; update that row only after its acceptance condition is demonstrated.
 
+## Recovery and integrated gameplay checkpoint — 21 September 2026
+
+Critical first aid and civilian health persistence are recovered in `2c121e3`. Coastal defensive victories now release prisoners after the last local enemy force is defeated, even when sector ownership stays patriot; remaining coastal forces also retain the blockade. The current-price established-area route passes all eight checks and reaches Yatasto with 14 permanent deaths and no captives; see [the route checkpoint](northern-route.md).
+
+A fresh Retiro-only route now verifies paid recruitment, an actual Buenos Aires victory, medical recovery, finite battlefield equipment, replacement contracts and a coordinated San Nicolás victory. It does not yet verify San Lorenzo or the complete campaign. Its next mission experiment lost San Martín after clearing the enemy force and exposed a settlement failure. Mission defeat now preserves safe-field survivor custody without granting a victory reward; the mission remains terminally lost. See [remaining completion work and exact test scope](gameplay-completion.md).
+
 ## Current integration checkpoint — 12 September 2026
 
 Enemy and militia crews now use nearby friendly cannons with finite ammunition,

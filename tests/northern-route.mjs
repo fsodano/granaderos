@@ -287,11 +287,16 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
   order({type:'recruitCivic',id,term});hired.push(id);
  };
  for(const id of [141,127,119,103,104,111])hire(id);
- // Fill the three empty support seats with paid rifle specialists. Their
- // one-day contracts cover the ordinary twelve-hour approach and this assault.
- for(const id of [105,128,142])hire(id,'day');
+ // Fill support seats with living, affordable recruits. Earlier battles can
+ // permanently remove candidates; those deaths never become fresh hires.
  const present=id=>campaign.recruited.includes(id)&&campaign.operativeState[id].alive&&!campaign.operativeState[id].captured&&campaign.operativeState[id].location==='cordoba';
- const supportIds=[...new Set([111,...reserveIds,105,128,142])].filter(present).slice(0,6);
+ const supportCandidates=[111,...reserveIds],supportHires=[];
+ for(const id of [120,136,134,140,133,129,130,100,101,102,108,121,126,144,146]){
+  if([...new Set(supportCandidates)].filter(present).length>=6)break;
+  if(campaign.recruited.includes(id)||!campaign.operativeState[id].alive||campaign.operativeState[id].captured)continue;
+  hire(id,'day');supportCandidates.push(id);supportHires.push(id);
+ }
+ const supportIds=[...new Set(supportCandidates)].filter(present).slice(0,6);
  const fieldCandidates=()=>[...new Set([141,127,119,103,104,139,...campaign.recruited])].filter(id=>present(id)&&!supportIds.includes(id));
  for(const id of [140,133,129,130]){if(fieldCandidates().length>=6)break;hire(id);}
  const fieldIds=fieldCandidates().slice(0,6),hiringCost=cash-campaign.resources.treasury;
@@ -370,7 +375,7 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
  order({type:'beginAssault',sector:'tucuman'});
  for(const {id,record} of captives)assert.deepEqual(campaign.operativeState[id],record);
  const battle=enterSector(campaign.pendingBattle,campaign.sectorStates.tucuman);assert.deepEqual(decodeSave(encodeSave(campaign,battle)),{campaign,battle});
- report({event:'rescuePrepared',hour:campaign.hour,units:campaign.pendingBattle.squad.map(u=>u.id),cash:campaign.resources.treasury,hired,hiringCost,medicalPurchases,fieldIds,supportIds,staging});return {campaign,events,captives,hired,hiringCost,medicalPurchases,fieldIds,supportIds,staging};
+ report({event:'rescuePrepared',hour:campaign.hour,units:campaign.pendingBattle.squad.map(u=>u.id),cash:campaign.resources.treasury,hired,hiringCost,medicalPurchases,fieldIds,supportIds,staging});return {campaign,events,captives,hired,hiringCost,medicalPurchases,fieldIds,supportIds,supportHires,staging};
 }
 
 export function stabilizeRescued(start,{patients,report=()=>{}}={}){

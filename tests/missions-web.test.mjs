@@ -1,3 +1,4 @@
+import {scriptedBattleReport} from './scripted-battle-report.mjs';
 import {secureArea} from './secured-area-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign as reduce,restoreCampaign,serializeCampaign} from '../game/campaign.js';
@@ -19,4 +20,20 @@ test('San Martín is a temporary combat ally and only verified surviving victory
 test('fallen allied commander makes San Lorenzo an explicit terminal mission defeat',()=>{
  let s=officer();s.phase=1;s.flags.academy=true;s.sectors.san_nicolas.owner='patriot';s=step(s,{type:'travel',sector:'san_nicolas'});s=step(s,{type:'attack',sector:'san_lorenzo'});
  let b=createBattle([...s.pendingBattle.squad.map(u=>({...u,x:1,y:1})),...s.pendingBattle.missionAllies.map(u=>({...u,x:8,y:3,hp:20}))],{id:s.pendingBattle.id,sector:s.pendingBattle.sector,exits:s.pendingBattle.exits,exitRulesVersion:1,width:12,height:10,npcs:s.pendingBattle.npcs.map((npc,i)=>({...npc,x:5-i,y:8})),enemies:s.pendingBattle.enemies.map((u,i)=>({...u,name:'Lancero realista',x:9,y:3+i,hp:i?0:100,weapon:1812,loaded:0})),tiles:Array.from({length:120},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0}))});b=endTurn(b);assert.equal(b.units.find(u=>u.id==='57').hp,0);s=step(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'defeat',sectorState:b,survivors:b.units.filter(u=>u.side==='player').map(u=>({...u,id:Number(u.id)}))});assert.equal(s.defeated,true);assert.equal(s.missions.san_lorenzo.stage,'failed');assert.equal(s.flags.sanLorenzo,false);assert.ok(!s.recruited.includes(57));
+});
+
+// A scripted tactical result isolates mission settlement from combat balance.
+test('a cleared San Lorenzo field with a dead commander records terminal defeat without inventing captors',()=>{
+ let s=officer();s.phase=1;s.flags.academy=true;s.sectors.san_nicolas.owner='patriot';
+ s=step(s,{type:'travel',sector:'san_nicolas'});s=step(s,{type:'attack',sector:'san_lorenzo'});
+ const report=scriptedBattleReport(s,{units:[{id:57,hp:0}]});
+ const survivor=report.sectorState.units.find(u=>u.id==='1000'),cash=s.resources.treasury;
+ s=step(s,report);
+ assert.equal(s.defeated,true);assert.equal(s.completed,false);assert.equal(s.flags.sanLorenzo,false);
+ assert.deepEqual(s.missions.san_lorenzo,{stage:'failed',completed:false});
+ assert.equal(s.operativeState[1000].captured,false);assert.equal(s.operativeState[1000].hp,survivor.hp);
+ assert.equal(s.resources.treasury,cash,'mission defeat grants no victory prize');
+ assert.equal(s.missionAllies.san_lorenzo.hp,0);assert.equal(s.pendingBattle,null);
+ assert.equal(s.sectorStates.san_lorenzo.returnLedger.entries.find(e=>e.unitId==='1000').kind,'resident');
+ assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
 });

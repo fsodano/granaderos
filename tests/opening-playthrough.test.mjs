@@ -93,7 +93,8 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   assert.ok(prepared.hiringCost>0);
   for(const id of prepared.hired){assert.equal(before.operativeState[id].alive,true);assert.ok(!before.recruited.includes(id));assert.ok(prepared.campaign.contracts[id]);}
   assert.equal(prepared.fieldIds.length,6);assert.equal(prepared.supportIds.length,6);
-  for(const id of [105,128,142]){assert.ok(prepared.hired.includes(id));assert.equal(prepared.campaign.contracts[id].term,'day');assert.ok(prepared.campaign.contracts[id].expiresAt>prepared.campaign.hour);}
+  assert.ok(prepared.supportHires.length>0);
+  for(const id of prepared.supportHires){assert.ok(prepared.hired.includes(id));assert.equal(prepared.campaign.contracts[id].term,'day');assert.ok(prepared.campaign.contracts[id].expiresAt>prepared.campaign.hour);}
   for(const id of [...prepared.fieldIds,...prepared.supportIds])assert.ok(prepared.campaign.pendingBattle.squad.some(unit=>Number(unit.id)===id));
   const result=fightNorthernSector(prepared.campaign,'tucuman',{controller:cautiousCombatOrder}),returned=result.campaign;
   assertBattleClock(result);preserveDeaths(tucumanLoss,returned);evidence.battles.push(result.summary,...prepared.staging.defenses);evidence.corridor=prepared.staging.corridor;evidence.medical.push({stage:'rescuePreparation',purchases:prepared.medicalPurchases});evidence.rescues.push({sector:'tucuman',ids:prepared.captives.map(p=>p.id)});
@@ -134,7 +135,7 @@ test('established southern campaign reaches Yatasto through combat, defeat, resc
   const reserve=prepared.reservePreparation;assert.equal(before.operativeState[reserve.hired].alive,true);assert.ok(!before.recruited.includes(reserve.hired));assert.equal(prepared.campaign.contracts[reserve.hired].paid,reserve.hiringCost);assert.equal(reserve.weaponCost,230);
   assert.ok(prepared.defenses.length>0,'the real depot encounter is resolved before the ready assault enters Salta');
   for(const defense of prepared.defenses){assert.equal(defense.status,'victory');assert.ok(defense.actions>0);assert.equal(prepared.campaign.enemyGroups.find(group=>group.id===defense.groupId).status,'defeated');assert.ok(prepared.campaign.encounterHistory.some(event=>event.groupId===defense.groupId&&event.outcome==='victory'));}
-  assert.ok(prepared.care.patients.some(id=>before.operativeState[id].hp<15),'the actual rescue left a critical patient to restore before this march');assert.ok(prepared.care.usedDressings>0);
+  assert.ok(prepared.care.patients.every(id=>before.operativeState[id].hp<before.operativeState[id].maxHp),'care treats actual surviving wounds, without requiring a scripted critical casualty');assert.ok(prepared.care.patients.length?prepared.care.usedDressings>0:prepared.care.usedDressings===0);
   for(const id of prepared.care.patients)assert.equal(prepared.campaign.operativeState[id].hp,prepared.campaign.operativeState[id].maxHp);
   // The two squads coordinate aimed fire using their shared view of the field.
   const result=fightNorthernSector(prepared.campaign,'salta',{controller:northernCombatOrder});evidence.battles.push(...prepared.defenses,result.summary);evidence.reservePreparation=reserve;evidence.medical.push({stage:'saltaPreparation',...prepared.care});

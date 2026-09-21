@@ -127,6 +127,7 @@ test('returning defenders free coastal captives without requiring a change of se
  assert.equal(s.pendingBattle.wasRoyalist,false);
  const contested=structuredClone(s);launchEnemyGroup(contested,'coast','retiro',{immediate:true});
  const uncleared=order(contested,scriptedBattleReport(contested));
+ assert.equal(uncleared.blockade,true,'the unresolved coastal force must retain the blockade');
  for(const id of [4,10])assert.equal(uncleared.operativeState[id].captured,true,'another local enemy group must prevent release');
  assert.deepEqual(restoreCampaign(serializeCampaign(uncleared)),uncleared);
  const victory=scriptedBattleReport(s);

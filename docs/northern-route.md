@@ -1,5 +1,12 @@
 # Northern campaign route verification
 
+## Integrated roster-price replay — 21 September 2026
+
+All eight established-area route checks pass with the current pending roster and contract prices. The route reaches Yatasto at phase 3, hour 307, second 2012, with 1,303 pesos, 14 permanent deaths and no remaining prisoners. It uses affordable living reinforcements for the Tucumán rescue, preserves actual casualties, and keeps a replacement's own weapon when the finite salvaged rifles run out. A later specialist is hired only after the campaign can pay. Medical assertions follow actual surviving wounds rather than requiring a particular critical casualty.
+
+This is still the established southern scenario, not a complete campaign from Retiro. The old isolated-checkout totals below remain historical checkpoints.
+
+
 ## Critical first-aid checkpoint: 19 September 2026
 
 The current isolated gameplay checkout reaches Yatasto at **phase 3, hour 306, second 2677**, with **2,085 pesos**, **fifteen permanent deaths** and no remaining prisoners. It uses the established seed-8 southern fixture, in which Buenos Aires and Ensenada are already secured. It does not prove a complete Retiro-only campaign or the ending. Separate roster and contract work in the main checkout is outside this checkpoint.

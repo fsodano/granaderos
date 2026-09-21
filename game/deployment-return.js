@@ -70,7 +70,10 @@ export function planDeploymentReturn(s,request,snapshot,outcome){
   const departed=players.filter(u=>u.departure);
   if(request.exploration&&snapshot.status==='active')need(!snapshot.units.some(u=>u.side==='enemy'&&fieldCapable(u)),'La visita tiene un combate pendiente.');
   if(outcome==='retreat')need(snapshot.status==='retreat'&&departed.length>0&&!players.some(fieldCapable),'La retirada necesita salidas físicas y el cierre del combate.');
-  const friendly=outcome==='victory'||Boolean(request.exploration&&snapshot.status!=='defeat'&&!snapshot.units.some(u=>u.side==='enemy'&&fieldCapable(u)));
+  // A mission can fail after the field is won (San Martín's death). Its
+  // terminal campaign outcome must not invent captors on a cleared field.
+  const cleared=snapshot.status==='victory'&&!snapshot.units.some(u=>u.side==='enemy'&&fieldCapable(u));
+  const friendly=outcome==='victory'||cleared||Boolean(request.exploration&&snapshot.status!=='defeat'&&!snapshot.units.some(u=>u.side==='enemy'&&fieldCapable(u)));
   const classify=(u,auxiliary=false)=>{
     const departure=departureFor(s,request,snapshot,u),at=departure?.destination??sourceSector;
     const kind=u.hp<=0?'dead':departure?'departed':friendly?'resident':auxiliary?'dispersed':'captured';

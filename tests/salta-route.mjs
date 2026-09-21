@@ -107,7 +107,10 @@ export function prepareSaltaAssault(start,{report=()=>{}}={}){
  for(const receiver of replacements){
   const model=id=>sectorInventoryModel(route.campaign,'tucuman',rosterFor(route.campaign),id);
   if([1800,1801,1802].includes(rosterFor(route.campaign).find(op=>op.id===receiver).weapon))continue;
-  const gun=model(receiver).entries.find(row=>row.reachable&&[1800,1801,1802].includes(JSON.parse(row.expected).weapon));assert.ok(gun&&gun.reachable,'a short-gun replacement uses an actual reachable rifle');const incoming=JSON.parse(gun.expected);
+  const gun=model(receiver).entries.find(row=>row.reachable&&[1800,1801,1802].includes(JSON.parse(row.expected).weapon));
+  // Finite salvage can run out after earlier casualties. Keep the recruit's
+  // real weapon instead of assuming every replacement receives a rifle.
+  if(!gun)continue;const incoming=JSON.parse(gun.expected);
   order({type:'sectorInventory',sector:'tucuman',operativeId:receiver,direction:'take',sourceKey:gun.key,expected:gun.expected,count:1});
   const carried=model(receiver).carried.find(row=>row.equip?.some(e=>e.slot==='primary')&&JSON.parse(row.expected).weapon===incoming.weapon);assert.ok(carried);
   order({type:'sectorInventory',sector:'tucuman',operativeId:receiver,direction:'equip',inventoryKey:carried.inventoryKey,expected:carried.expected,slot:'primary'});
