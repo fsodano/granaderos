@@ -47,9 +47,9 @@ Tucumán now has a carried dressing errand with partial deliveries, quantity ref
 
 The current integrated suite passes **2,561/2,561 tests with no skips**. Added medical-errand checks cover permanent contact-death failure, retained completed rewards, physical supply custody, duplicate synchronization and rejection of missing saved receipts. All 49 unrelated files in the preservation snapshot remain byte-identical. This run does not close the remaining partial or unverified audit requirements.
 
-## Escort implementation in progress
+## Local escort gameplay
 
-The shared civilian movement layer now supports validated following/waiting directives, finite movement, blocked routes, unavailable leaders, danger and restraint. All 23 focused checks pass. Campaign acceptance, orders, destination outcomes, rewards and live integration are still required; see [escort work](escort-gameplay.md). W07 and W08 remain partial.
+Jujuy now has an accepted escort with local follow/wait and leader-change orders, actual movement to the western boundary, controlled-destination checks, one-time rewards, death failure, saved directives and notebook outcomes. Live acceptance, waiting, following, arrival and reload/notebook checks pass; see [escort gameplay](escort-gameplay.md) for exact scope. W07 remains partial for broader quest consequences and alternatives. W08 prison rescue/escape remains open. The integrated escort run passes 2,571/2,571 tests with no skips. The last intermediate-return and failure-text changes pass a separate 14-test follow-up; final type checking and the build pass.
 
 ## Work order and completion evidence
 

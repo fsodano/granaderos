@@ -33,3 +33,13 @@ test('medical delivery uses supply labels and acknowledged partial quantities',(
  const s=initialCampaign();s.quests['tucuman-vendas']={status:'offered',offeredAt:0,completedAt:null};s.conversations['local-tucuman']={giftCount:1};
  const html=render(h(QuestJournal,{state:s}));assert.match(html,/Vendas entregadas: 1\/3/);assert.match(html,/Seleccioná la cantidad/);assert.doesNotMatch(html,/Ponchos entregados/);
 });
+
+test('escort notebook shows its destination and waiting order without a goods delivery prompt',()=>{
+ const s=initialCampaign();s.quests['jujuy-arriero']={status:'offered',offeredAt:0,completedAt:null,escortOrder:{leaderId:'112',waiting:true}};
+ const html=render(h(QuestJournal,{state:s}));assert.match(html,/salida occidental hacia Humahuaca/);assert.match(html,/El arriero espera/);assert.doesNotMatch(html,/Entregá .*al conversar/);
+});
+
+test('failed escort notebook names the loss without implying delivered objects',()=>{
+ const s=initialCampaign();s.quests['jujuy-arriero']={status:'failed',offeredAt:0,completedAt:null,failedAt:0,failureReason:'contact-dead',escortOrder:{leaderId:'112',waiting:false}};
+ const html=render(h(QuestJournal,{state:s}));assert.match(html,/El arriero murió/);assert.doesNotMatch(html,/objetos ya entregados/);
+});

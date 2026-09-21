@@ -1,3 +1,4 @@
+import {applyQuestEscortOrders} from './quest-escort.js';
 import {regionalWeatherAt,WEATHER_INTERVAL_HOURS} from './regional-weather.js';
 import {gainFatigue,recoverFatigue} from './fatigue.js';
 import {dispatchCampaign,hasPendingNpcGiftProgress} from './campaign.js';
@@ -24,6 +25,6 @@ export function syncBattleTime(campaign,battle){
  const next=dispatchCampaign(campaign,{type:'syncTacticalTime',battleId:campaign.pendingBattle?.id,elapsedSeconds:battle.elapsedSeconds??0,...(receiptChange?{sectorState:battle}:{})});
  if(next.lastError)return {campaign,battle,error:next.lastError};
  const units=battle.units.map(u=>{const horse=u.mount&&next.horseState?.horses.find(h=>h.id===u.mount.id);return horse?{...u,mount:{...u.mount,condition:Math.min(u.mount.condition,horse.condition)}}:u;});
- return {campaign:next,battle:{...battle,units,syncedSeconds:battle.elapsedSeconds??0,savedHour:next.hour,savedSecond:next.secondOfHour??0},error:null};
+ return {campaign:next,battle:applyQuestEscortOrders(next,{...battle,units,syncedSeconds:battle.elapsedSeconds??0,savedHour:next.hour,savedSecond:next.secondOfHour??0}),error:null};
  }catch(error){return {campaign,battle,error:error.message};}
 }

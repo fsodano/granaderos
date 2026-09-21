@@ -16,9 +16,10 @@ export default function QuestJournal({state}:{state:any}){
     <p className="quest-date">Aceptado: {stamp(quest.offeredAt)}</p>
     {quest.carried&&<p>{quest.carried.label} entregad{quest.carried.item?'as':'os'}: {quest.delivered}/{quest.carried.count}</p>}
     {quest.status==='offered'?<>
-     <p>{quest.carried?quest.carried.instruction:`Entregá ${Object.entries(quest.cost).map(([key,count])=>`${count} ${(RESOURCE_NAMES as any)[key]?.toLowerCase()??key}`).join(' y ')} al conversar con el contacto.`}</p>
+     <p>{quest.escort?'Acompañá al arriero hasta la salida occidental hacia Humahuaca. Hablale allí para confirmar la llegada. Podés pedirle que espere o que siga a otro combatiente.':quest.carried?quest.carried.instruction:`Entregá ${Object.entries(quest.cost).map(([key,count])=>`${count} ${(RESOURCE_NAMES as any)[key]?.toLowerCase()??key}`).join(' y ')} al conversar con el contacto.`}</p>
+     {quest.escort&&<p>{quest.escortOrder?.waiting?'El arriero espera. Hablale para continuar.':'El arriero sigue al combatiente designado cuando el camino está libre.'}</p>}
      {quest.unsecured.length>0&&<p className="quest-blocker">Primero asegurá: {quest.unsecured.map(sectorName).join(', ')}.</p>}
-    </>:quest.status==='completed'?<p>{quest.delivery} <span className="quest-date">Cumplido: {stamp(quest.completedAt)}.</span></p>:<p>El contacto murió. El encargo terminó sin recompensa. Los objetos ya entregados permanecen con el contacto. <span className="quest-date">Fallido: {stamp(quest.failedAt)}.</span></p>}
+    </>:quest.status==='completed'?<p>{quest.delivery} <span className="quest-date">Cumplido: {stamp(quest.completedAt)}.</span></p>:<p>{quest.escort?'El arriero murió. La escolta terminó sin recompensa.':'El contacto murió. El encargo terminó sin recompensa. Los objetos ya entregados permanecen con el contacto.'} <span className="quest-date">Fallido: {stamp(quest.failedAt)}.</span></p>}
    </article>
   </li>)}</ul>}
  </section>;

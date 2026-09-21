@@ -98,7 +98,7 @@ export function enterSector(request,previous=null,{placement=false}={}){
  if(request.npcs===undefined)for(const npc of previous?.npcs??[]){
    if(residents.some(current=>current.id===npc.id))continue;
    const harmed=(civilianIncidents(npc).length>0||(npc.hp??civilianMaxHp(npc))<civilianMaxHp(npc)||(npc.energy??100)<100||npc.bleeding>0)&&!state.units.some(unit=>unit.side==='player'&&npc.operativeId!==undefined&&Number(unit.id)===npc.operativeId);
-   if(harmed||npc.operativeId===undefined&&npc.questGifts?.length&&validateQuestGifts(npc).length)residents.push(structuredClone(npc));
+   if(harmed||npc.escort||npc.operativeId===undefined&&npc.questGifts?.length&&validateQuestGifts(npc).length)residents.push(structuredClone(npc));
  }
  state.npcs=residents.map(npc=>{
    const old=previous?.npcs?.find(n=>n.id===npc.id),authored=state.npcs.find(n=>n.id===npc.id),resident=structuredClone({...npc,...authored,...old});

@@ -2,6 +2,7 @@ import {extractItemQuantity,SUPPLY_ITEMS} from './tactical-inventory.js';
 import {validateOutfit} from './outfits.js';
 // Authored errands use physical delivery receipts or adjacent NPC dialogue.
 export const NPC_QUESTS=[
+ {id:'jujuy-arriero',npcId:'local-jujuy',sector:'jujuy',title:'Escolta hasta la salida de la Quebrada',cost:{},escort:{edge:'W',destination:'humahuaca'},requiredSectors:['jujuy','humahuaca'],offer:'Acompañame hasta la salida occidental de Jujuy, hacia Humahuaca. Allí me reuniré con la recua. Seguiré al combatiente que acepte; hablame si debo esperar o seguir a otra persona. El camino debe estar bajo control patriota.',delivery:'Llegamos a la salida de la Quebrada. Esperaré aquí a la recua. El pueblo recordará tu ayuda.'},
  {id:'tucuman-vendas',npcId:'local-tucuman',sector:'tucuman',title:'Vendas para la Ciudadela',cost:{},carried:{item:'medkits',count:3,label:'Vendas',instruction:'Llevá las vendas restantes. Seleccioná la cantidad en tu inventario y entregásela al oficial.'},requiredSectors:['tucuman'],offer:'Necesitamos tres vendas para atender a los heridos de la Ciudadela. Traelas en tu equipo y entregámelas. Podemos recibirlas por separado.',delivery:'Recibimos las tres vendas para los heridos. La ciudad reconoce tu ayuda.'},
  {id:'retiro-uniformes',npcId:'local-retiro',sector:'retiro',title:'Abrigo para los nuevos reclutas',cost:{},carried:{outfit:'poncho',count:2,label:'Ponchos',instruction:'Llevá los ponchos restantes. Seleccioná cada uno en el inventario y entregáselo al contacto.'},requiredSectors:['retiro'],offer:'Los nuevos reclutas pasan frío en el patio. Traé dos ponchos de lana en buen estado. Seleccioná cada uno en tu inventario y entregámelo. El Cabildo sabrá que cumpliste tu palabra.',delivery:'Recibimos los dos ponchos. Los reclutas tendrán abrigo y el vecindario recordará esta ayuda.'},
  {id:'posta-polvora',npcId:'local-san_nicolas',sector:'san_nicolas',title:'Pólvora para la guardia de la posta',cost:{powder:5},requiredSectors:['san_nicolas'],offer:'La guardia de la posta necesita cinco cargas de pólvora para proteger a los correos. Volvé con esos pertrechos y podremos mantener abierto el relevo.',delivery:'La guardia recibe las cinco cargas. Los correos pueden contar con nuestra protección.'},
@@ -11,6 +12,14 @@ export function questForNPC(state,npcId){const q=NPC_QUESTS.find(q=>q.npcId===np
 export function validateQuests(quests,hour){
  return quests&&typeof quests==='object'&&!Array.isArray(quests)&&Object.entries(quests).every(([id,q])=>{
   if(!NPC_QUESTS.some(n=>n.id===id)||!q||!['offered','completed','failed'].includes(q.status)||!Number.isInteger(q.offeredAt)||q.offeredAt<0||q.offeredAt>hour)return false;
+  const definition=NPC_QUESTS.find(n=>n.id===id);
+  if(definition.escort){
+   const order=q.escortOrder;
+   if(!order||typeof order.leaderId!=='string'||!/^\d+$/.test(order.leaderId)||typeof order.waiting!=='boolean'||Object.keys(order).some(k=>!['leaderId','waiting'].includes(k)))return false;
+   if(q.status==='completed'){
+    const a=q.arrival;if(!a||Object.keys(a).length!==6||!['x','y','leaderX','leaderY','width','height'].every(k=>Number.isInteger(a[k]))||a.width<1||a.width>512||a.height<1||a.height>512||(a.x<0||a.x>1||Math.min(a.x,a.leaderX)!==0)||a.y<0||a.y>=a.height||a.leaderX<0||a.leaderX>=a.width||a.leaderY<0||a.leaderY>=a.height||Math.abs(a.x-a.leaderX)+Math.abs(a.y-a.leaderY)>1)return false;
+   }else if(q.arrival!==undefined)return false;
+  }else if(q.escortOrder!==undefined||q.arrival!==undefined)return false;
   const date=value=>Number.isInteger(value)&&value>=q.offeredAt&&value<=hour;
   if(q.status==='failed')return q.completedAt===null&&date(q.failedAt)&&q.failureReason==='contact-dead';
   return q.failedAt===undefined&&q.failureReason===undefined&&(q.status==='offered'?q.completedAt===null:date(q.completedAt));
@@ -23,7 +32,7 @@ export function failQuestsForDeadContact(campaign,sectorId,sceneId,npcId){
  const quest=NPC_QUESTS.find(q=>q.sector===sectorId&&q.npcId===npcId),record=quest&&campaign.quests?.[quest.id];
  if(record?.status!=='offered')return [];
  campaign.quests[quest.id]={...record,status:'failed',failedAt:campaign.hour,failureReason:'contact-dead'};
- return [`Encargo fallido: ${quest.title}. El contacto murió. Los objetos ya entregados no se recuperan.`];
+ return [`Encargo fallido: ${quest.title}. El contacto murió.${quest.carried?' Los objetos ya entregados no se recuperan.':''}`];
 }
 export function validateQuestFailures(campaign){
  for(const [id,record]of Object.entries(campaign.quests??{})){

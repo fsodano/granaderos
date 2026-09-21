@@ -1,4 +1,5 @@
 'use client';
+import {applyQuestEscortOrders} from '../../game/quest-escort.js';
 import {MAX_SAVE_BYTES} from '../../game/save-limits.js';
 import {playerKnownState,playerKnownBattle,playerKnownError} from '../../game/player-known-state.js';
 import {missionStatus} from '../../game/missions.js';
@@ -33,6 +34,7 @@ export default function Home(){
   function talkNPC(npcId:string,approach:string,unitId:string){
     const next=dispatchCampaign(campaign,{type:'talkNPC',npcId,approach,unitId,sectorState:battle});setCampaign(next);
     if(next.lastError){setNotice(next.lastError);return;}
+    setBattle(applyQuestEscortOrders(next,battle));
     if(next.lastConversation?.outcome==='recruited'){
       const id=next.lastConversation.operativeId,npc=battle.npcs.find((n:any)=>n.id===npcId),record=next.pendingBattle.squad.find((o:any)=>o.id===id);
       const updated=structuredClone(battle);updated.npcs=updated.npcs.filter((n:any)=>n.id!==npcId);

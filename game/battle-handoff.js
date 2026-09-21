@@ -1,3 +1,4 @@
+import {applyQuestEscortOrders} from './quest-escort.js';
 import {syncBattleTime} from './time.js';
 import {enterSector} from './world.js';
 
@@ -12,6 +13,6 @@ export function battleFromRequest(request, campaign = null, options = {}) {
 // Publish campaign and battle together so the first autosave is loadable.
 export function prepareCampaignBattle(campaign,options={}){
  if(!campaign?.pendingBattle)return {campaign,battle:null,error:'No hay un despliegue pendiente.'};
- const battle=battleFromRequest(campaign.pendingBattle,campaign,options);
+ const battle=applyQuestEscortOrders(campaign,battleFromRequest(campaign.pendingBattle,campaign,options));
  return syncBattleTime(campaign,battle);
 }

@@ -1,3 +1,4 @@
+import {validateQuestEscortOrders} from './quest-escort.js';
 import {validateSectorDeployment} from './sector-deployment.js';
 import {validateBattleSnapshot} from './validate-battle.js';
 import {restoreCampaign,rosterFor,hasPendingNpcGiftProgress} from './campaign.js';
@@ -33,6 +34,7 @@ export function decodeSave(text){
   if(battle)validateSectorDeployment(battle,campaign.pendingBattle);
   // A new receipt may still await its campaign reply. An acknowledged receipt
   // must remain physically present with its recipient in this deployment.
+  if(battle)validateQuestEscortOrders(campaign,battle);
   if(battle)hasPendingNpcGiftProgress(campaign,battle);
   if(battle)hasPendingCivilianHarm(campaign,battle);
   validateEquipmentOwnership(campaign,rosterFor(campaign),battle);
