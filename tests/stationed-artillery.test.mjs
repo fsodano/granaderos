@@ -8,6 +8,7 @@ import {deployedArtillery} from '../game/equipment.js';
 import {prepareSectorArtillery,validateArtilleryDeployment,validateArtilleryReport,settleSectorArtillery,ownedArtilleryCount,artillerySupplyPreview} from '../game/campaign-artillery.js';
 import {createBattle,actBattle,endTurn,getReachable,artilleryReloadPreview,artilleryCrewPlan,artilleryCosts,interruptAvailable} from '../game/tactical.js';
 import {enterSector} from '../game/world.js';
+import {buildSectorMap} from '../game/maps.js';
 import {automaticOrder} from '../game/autonomous-orders.js';import {sameSurface,tacticalLevel} from '../game/tactical-space.js';
 import {fight} from './opening-driver.mjs';
 import {encodeSave,decodeSave} from '../game/save.js';import {syncBattleTime} from '../game/time.js';
@@ -80,14 +81,14 @@ test('saved deployment registries reject duplicate identities and corrupted load
  const c=issued();for(const change of [r=>r.artillery.push({...r.artillery[0]}),r=>r.artillery[0].reloadProgress=1,r=>r.artilleryDeployment.issued=['missing'],r=>r.artilleryDeployment.site='elsewhere']){const next=structuredClone(c);change(next.pendingBattle);assert.throws(()=>save(next));}
 });
 
-// Move to the squad's own gun in legal short bounds, then hold fire. Enemy
+// Advance to the known central road in legal short bounds, then hold fire. Enemy
 // patrols and daylight contact determine the ambush; wounds come only from
 // normal enemy turns. No soldier is assigned a predetermined casualty state.
 function advanceAndHold(request){
- let battle=enterSector(request);const orders=[];
+ let battle=enterSector(request);const orders=[],rally=buildSectorMap(request).artillery[0];
  for(let window=0;window<100&&battle.status==='active';window++){
   if(battle.phase!=='interrupt')for(const id of battle.units.filter(u=>u.side==='player').map(u=>u.id)){
-   const unit=battle.units.find(u=>u.id===id),gun=battle.artillery[0];
+   const unit=battle.units.find(u=>u.id===id),gun=rally;
    if(!interruptAvailable(battle,unit)||unit.ap<3||Math.hypot(unit.x-gun.x,unit.y-gun.y)<=2)continue;
    const route=getReachable({...battle,mode:'exploration'},unit).filter(p=>Math.hypot(p.x-gun.x,p.y-gun.y)<=1.5).sort((a,b)=>a.cost-b.cost)[0];
    if(!route)continue;
@@ -102,7 +103,7 @@ function advanceAndHold(request){
 
 test('a defeated squad can hire a rescue force and recover its actual prisoners and stationed gun',()=>{
  const c=issued({reinforced:false}),request=structuredClone(c.pendingBattle),issuedGun=structuredClone(request.artillery[0]);
- const initial=enterSector(request),result=advanceAndHold(request);assert.equal(result.outcome,'defeat');
+ const initial=enterSector(request),result=advanceAndHold(request);assert.equal(result.outcome,'defeat',JSON.stringify({orders:result.orders.length,units:result.battle.units.filter(u=>u.side==='player').map(u=>({id:u.id,x:u.x,y:u.y,hp:u.hp})),rally:buildSectorMap(request).artillery[0]}));
  assert.ok(result.orders.some(o=>o.type==='move'));assert.ok(result.orders.some(o=>o.type==='endTurn'));
  assert.ok(result.battle.units.some(u=>u.side==='enemy'&&u.hp>=15));
  const playerUnits=result.battle.units.filter(u=>u.side==='player'),dead=playerUnits.filter(u=>u.hp<=0),captured=playerUnits.filter(u=>u.hp>0);

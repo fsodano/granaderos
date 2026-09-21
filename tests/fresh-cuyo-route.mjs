@@ -1,3 +1,4 @@
+import {RECIPES} from '../game/data.js';
 import {meetRecruits} from './campaign-recruitment-route.mjs';
 import assert from 'node:assert/strict';
 import {decodeSave,encodeSave} from '../game/save.js';
@@ -53,4 +54,43 @@ order({type:'purchaseMedicalSupplies',operativeId:2,quantity:10});order({type:'a
 const waitFor=predicate=>{for(let i=0;i<80&&predicate();i++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}assert.equal(predicate(),false);};
 for(let i=0;i<3;i++)order({type:'produce',recipe:'muskets',sector:'mendoza'});waitFor(()=>c.production.length>0);
 order({type:'produce',recipe:'uniforms',sector:'mendoza'});const uniformId=c.production.at(-1).id;order({type:'produce',recipe:'cannon',sector:'mendoza'});waitFor(()=>c.production.some(p=>p.id===uniformId));order({type:'produce',recipe:'infantry',sector:'mendoza'});waitFor(()=>c.production.length>0);assert.equal(c.resources.infantry,200);assert.equal(c.resources.cannons,2);assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);return c;
+}
+
+// Leave a trained local defense, then fund the full army through ordinary orders.
+export function completeFreshArmyProduction(start){
+ let c=decodeSave(encodeSave(start)).campaign;
+ const order=a=>{c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);};
+ for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
+ order({type:'travel',sector:'cordoba',mode:'posta'});
+ const before=structuredClone(c.resources);
+ order({type:'militia',sector:'cordoba',trainerId:7,rank:0});
+ assert.equal(c.resources.treasury,before.treasury-60);
+ assert.equal(c.resources.muskets,before.muskets-5);
+ for(let i=0;i<60&&c.militiaTraining.length;i++){
+  assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});
+ }
+ assert.equal(c.militiaTraining.length,0);assert.equal(c.sectors.cordoba.militia[0],3);
+ order({type:'createSquad',name:'Fundición de Mendoza',ids:[2,8],sector:'cordoba'});
+ order({type:'travel',sector:'mendoza',mode:'posta'});
+ for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'rest'});
+ for(let i=0;i<1500&&(c.resources.infantry<3000||c.resources.cannons<3);i++){
+  assert.equal(c.pendingEncounter,null);assert.equal(c.defeated,false);
+  const total=k=>c.resources[k]+c.production.reduce((sum,p)=>sum+(p.yield[k]??0),0);
+  const affordable=r=>Object.entries(RECIPES[r].cost).every(([key,value])=>c.resources[key]>=value);
+  const priorities=[
+   ['cannon',total('cannons')<3],['infantry',total('infantry')<3000],
+   ['muskets',total('infantry')<3000&&total('muskets')<200],
+   ['uniforms',total('infantry')<3000&&total('uniforms')<200],['powder',c.resources.powder<5],
+  ];
+  const recipe=c.production.filter(p=>p.sector==='mendoza').length<3
+   ?priorities.find(([id,needed])=>needed&&affordable(id))?.[0]:null;
+  if(recipe){
+   const paid=structuredClone(c.resources);order({type:'produce',recipe,sector:'mendoza'});
+   for(const [key,value]of Object.entries(RECIPES[recipe].cost))assert.equal(c.resources[key],paid[key]-value);
+  }else order({type:'wait',hours:1});
+ }
+ assert.equal(c.resources.infantry,3000);assert.equal(c.resources.cannons,3);
+ assert.equal(c.sectors.cordoba.owner,'patriot');assert.equal(c.sectors.tucuman.owner,'royalist');
+ assert.equal(c.squads.find(q=>q.members.includes(7)).location,'cordoba');
+ assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);return c;
 }

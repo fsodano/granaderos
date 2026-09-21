@@ -139,6 +139,23 @@ export function enterSector(request,previous=null,{placement=false}={}){
      if(unit.hp>0)unit.facing={N:4,E:6,S:0,W:2}[unit.entryEdge];
      occupied.add(key(unit));
    }
+   // Newly issued pieces travel with the arriving detachment. Map-template
+   // positions belong only to resident guns, not to a battery entering from
+   // the opposite edge of the expanded sector.
+   const crew=arriving.find(u=>u.hp>0&&!u.militia&&!u.missionAlly);
+   if(crew){
+     const fixed=new Set(stationed.map(g=>g.id));
+     const gunCells=new Set([...occupied,...state.artillery.filter(g=>fixed.has(g.id)||g.side!=='player').map(key)]);
+     const boundary=entryTerrainCells(state,crew,crew.entryEdge,component);
+     // Narrow roads can use every boundary cell for the arriving soldiers.
+     // Reserve the connected two-cell entry apron for their gun carriages.
+     const entries=state.tiles.filter(p=>component.has(key(p))&&boundary.some(e=>Math.max(Math.abs(p.x-e.x),Math.abs(p.y-e.y))<=2));
+     for(const gun of state.artillery.filter(g=>g.side==='player'&&!fixed.has(g.id))){
+       const cells=entries.filter(p=>!gunCells.has(key(p))).sort((a,b)=>Math.abs(a.x-crew.x)+Math.abs(a.y-crew.y)-Math.abs(b.x-crew.x)-Math.abs(b.y-crew.y)||a.y-b.y||a.x-b.x);
+       if(!cells.length)throw Error('No queda espacio para la batería en el borde de llegada.');
+       Object.assign(gun,{x:cells[0].x,y:cells[0].y});gunCells.add(key(gun));
+     }
+   }
  }
  if(request.detainedPrisoners?.length)state=placeDetainedPrisoners(state,request.detainedPrisoners);
  state.sceneId=request.sceneId??null;state.missionId=request.missionId??request.sceneId??null;
