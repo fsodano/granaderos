@@ -219,7 +219,7 @@ for(const u of state.units){normalizeOutfit(u);lowerWeapon(u);limitEnergy(u);if(
 const entered=sector.deferContact?state:initializeBattlePerception(state);say(entered,entered.mode==='exploration'?`Exploración de ${entered.sectorName}.`:`Combate en ${entered.sectorName}. Puedes conservar hasta 20 PA entre turnos.`);return entered;}
 export function initializeBattlePerception(state){if(state.deployment)return state;checkEnd(state);detectContact(state);rememberContacts(state);revealRooms(state);return resolveFirstContact(state);}
 function tile(s,x,y,level=0){if(level)return surfaceAt(s,{x,y,tacticalLevel:level});const at=s.tiles[y*s.width+x];return at?.x===x&&at?.y===y?at:s.tiles.find(t=>t.x===x&&t.y===y);}
-function occupied(s,x,y,except,level=0){const point={x,y,tacticalLevel:level};return propBlocksAt(s,x,y,level)||(s.npcs||[]).some(n=>sameCell(n,point))||s.units.some(u=>onField(u)&&!u.unconscious&&u.id!==except&&sameCell(u,point));}
+function occupied(s,x,y,except,level=0){const point={x,y,tacticalLevel:level};return propBlocksAt(s,x,y,level)||(s.npcs||[]).some(n=>!n.departure&&sameCell(n,point))||s.units.some(u=>onField(u)&&!u.unconscious&&u.id!==except&&sameCell(u,point));}
 export function carryCapacity(u){return Math.max(10,(u.strength||50)*.5);}
 export function carriedWeight(u){const inventory=Object.values(u.inventory||{}).reduce((sum,item)=>sum+(item&&typeof item==='object'?(item.count||0)*((item.weight||0)+fittingWeight(item))+(item.count||0)*(item.loaded||0)*.04:0),0);const cursor=u.equipmentCursor?.stack;return (cursor?cursor.count*((cursor.weight??0)+fittingWeight(cursor)+(cursor.loaded??0)*.04):0)+Number(u.weight??u.carryWeight??0)+(wornOutfit(u)?.weight??0)+inventory+(u.loaded||0)*.04+Object.entries(SUPPLY_ITEMS).reduce((sum,[key,item])=>sum+(key==='ammo'&&u.ammunitionVersion===1?0:(u[key]??0)*item.weight),0)+(u.weaponDropped?0:(u.weaponMetadata?.weight??weaponItemWeight(u.weapon))+fittingWeight(u))+(u.bladeMetadata?.weight??weaponItemWeight(u.blade))+(u.offHand?(u.offHand.weight??weaponItemWeight(u.offHand.weapon))+fittingWeight(u.offHand)+(u.offHand.loaded??0)*.04:0);}
 function weightPenalty(u){return Math.max(1,carriedWeight(u)/carryCapacity(u));}
@@ -342,7 +342,7 @@ export function climbPreview(s,u,action={}){
 function elevatedReachable(s,u,options,intent){
   const cells=new Map([...s.tiles,...(s.upperSurfaces??[])].map(cell=>[spaceKey(cell),cell]));
   const props=new Set((s.props??[]).filter(p=>p.blocksMovement!==false).flatMap(propCells).map(spaceKey));
-  const occupants=new Set([...(s.npcs??[]),...s.units.filter(v=>onField(v)&&!v.unconscious&&v.id!==u.id)].map(spaceKey));
+  const occupants=new Set([...(s.npcs??[]).filter(n=>!n.departure),...s.units.filter(v=>onField(v)&&!v.unconscious&&v.id!==u.id)].map(spaceKey));
   const origin={x:u.x,y:u.y,tacticalLevel:tacticalLevel(u)},start=spaceKey(origin),costs=new Map([[start,0]]),paths=new Map([[start,[]]]),queue=[{...origin,cost:0}];
   while(queue.length){
     queue.sort((a,b)=>a.cost-b.cost);const from=queue.shift(),fromKey=spaceKey(from);if(from.cost!==costs.get(fromKey))continue;
@@ -363,7 +363,7 @@ export function getReachable(s,unitOrId,options={}){
   if(s.upperSurfaces?.length)return elevatedReachable(s,u,options,intent);
   const tiles=new Map(s.tiles.map(t=>[`${t.x},${t.y}`,t])),props=new Set((s.props??[]).filter(p=>p.blocksMovement!==false).flatMap(propCells).map(p=>`${p.x},${p.y}`));
   const lookup=(x,y)=>tiles.get(`${x},${y}`),propBlocked=(x,y)=>props.has(`${x},${y}`);
-  const occupants=new Set([...(s.npcs??[]),...s.units.filter(v=>onField(v)&&!v.unconscious&&v.id!==u.id)].map(v=>`${v.x},${v.y}`));
+  const occupants=new Set([...(s.npcs??[]).filter(n=>!n.departure),...s.units.filter(v=>onField(v)&&!v.unconscious&&v.id!==u.id)].map(v=>`${v.x},${v.y}`));
   const costs=new Map([[`${u.x},${u.y}`,0]]),paths=new Map([[`${u.x},${u.y}`,[]]]),queue=[{x:u.x,y:u.y,cost:0}];
   while(queue.length){
     queue.sort((a,b)=>a.cost-b.cost);const p=queue.shift();if(p.cost!==costs.get(`${p.x},${p.y}`))continue;
@@ -1180,7 +1180,7 @@ export function environmentPreview(s,u,ref,verb){
   verb??=tool?.toolKey==='pliers'?'disarm':target?.locked?(tool?.verb??'inspect'):target?.open?'close':'open';
   const profile=environmentActionProfile(u??{},target,verb);
   let reason=environmentReachReason(s,u,target)??profile.reason;
-  if(!reason&&verb==='close'&&target.type==='door'&&(s.units.some(v=>onField(v)&&sameCell(v,target))||(s.npcs??[]).some(v=>sameCell(v,target))||s.artillery.some(v=>sameCell(v,target))))reason='Hay una persona o una pieza en el paso de la puerta.';
+  if(!reason&&verb==='close'&&target.type==='door'&&(s.units.some(v=>onField(v)&&sameCell(v,target))||(s.npcs??[]).some(v=>!v.departure&&sameCell(v,target))||s.artillery.some(v=>sameCell(v,target))))reason='Hay una persona o una pieza en el paso de la puerta.';
   if(!reason&&s.mode!=='exploration'&&u.ap<profile.pa)reason=`Faltan ${profile.pa} PA para manejar el objeto.`;
   return {...profile,reason,valid:!reason,action:{type:'environment',unitId:u?.id,kind:ref?.kind,id:ref?.id,verb}};
 }
@@ -1560,7 +1560,7 @@ const assigned=crew.crew.map(id=>s.units.find(v=>v.id===id));
 if(a.type==='artilleryMove'){
 const dx=a.x-gun.x,dy=a.y-gun.y;if(!Number.isInteger(a.x)||!Number.isInteger(a.y)||Math.abs(dx)+Math.abs(dy)!==1)return fail('La pieza se arrastra una casilla horizontal o vertical por orden.');
 const positions=[{x:a.x,y:a.y},...assigned.map(v=>({x:v.x+dx,y:v.y+dy}))],ids=new Set(assigned.map(v=>v.id));
-if(positions.some(p=>propBlocksAt(s,p.x,p.y)||!tile(s,p.x,p.y)||tile(s,p.x,p.y).blocked||tile(s,p.x,p.y).type==='water'||s.units.some(v=>onField(v)&&!v.unconscious&&!ids.has(v.id)&&sameCell(v,p))||(s.npcs??[]).some(v=>sameCell(v,p))||s.artillery.some(g=>g!==gun&&sameCell(g,p))))return fail('La pieza y su dotación no caben en ese terreno.');
+if(positions.some(p=>propBlocksAt(s,p.x,p.y)||!tile(s,p.x,p.y)||tile(s,p.x,p.y).blocked||tile(s,p.x,p.y).type==='water'||s.units.some(v=>onField(v)&&!v.unconscious&&!ids.has(v.id)&&sameCell(v,p))||(s.npcs??[]).some(v=>!v.departure&&sameCell(v,p))||s.artillery.some(g=>g!==gun&&sameCell(g,p))))return fail('La pieza y su dotación no caben en ese terreno.');
 gun.x=a.x;gun.y=a.y;for(const v of assigned){v.x+=dx;v.y+=dy;}sayObserved(s,[u],`${u.name} dirige el arrastre de ${spec.name}.`);
 }else if(a.type==='artilleryPivot'){
 if(!Number.isInteger(a.x)||!Number.isInteger(a.y)||!tile(s,a.x,a.y)||dist(gun,a)<1)return fail('Indica una casilla hacia la cual orientar la pieza.');gun.facing=Math.atan2(a.y-gun.y,a.x-gun.x);sayObserved(s,[u],`${spec.name} gira hacia la nueva línea de tiro.`);

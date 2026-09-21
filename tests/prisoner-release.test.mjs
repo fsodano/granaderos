@@ -52,3 +52,10 @@ test('ordinary exploration movement brings the released follower to a joint boun
  s=actBattle(s,{type:'exit',unitIds:['rescuer'],exitId:'tucuman:salta'});assert.equal(s.lastError,null);assert.equal(s.npcs[0].departure.destination,'salta');assert.equal(s.units[0].departure.destination,'salta');
  assert.deepEqual(validateBattleSnapshot(JSON.parse(JSON.stringify(s))).npcs,s.npcs);
 });
+
+test('a departed prisoner does not block the remaining squad at the exit tile',()=>{
+ let s=free(field({exploration:true}));s.exits=sectorExits('tucuman');s.units[0].x=2;s.units[0].y=0;s.npcs[0].x=3;s.npcs[0].y=0;
+ s.units.push({...structuredClone(s.units[0]),id:'rear-guard',x:3,y:2});
+ s=actBattle(s,{type:'exit',unitIds:['rescuer'],exitId:'tucuman:salta'});assert.equal(s.lastError,null);assert.ok(s.npcs[0].departure);
+ const next=actBattle(s,{type:'move',unitId:'rear-guard',x:3,y:0});assert.equal(next.lastError,null);assert.deepEqual([next.units.find(u=>u.id==='rear-guard').x,next.units.find(u=>u.id==='rear-guard').y],[3,0]);
+});
