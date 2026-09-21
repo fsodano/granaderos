@@ -2,6 +2,7 @@ import {EQUIPMENT_CATALOG,merchantStatus,unissuedArtilleryStock,newArtilleryPayl
 import {operativeInTransit,operativeLocation} from './squads.js';
 import {ARTILLERY,fieldCapable} from './tactical.js';
 import {storedArtilleryRecord} from './artillery-transport.js';
+import {merchantBuyingTerms} from './merchant-preferences.js';
 
 export const USED_ARTILLERY_LIMIT=100;
 const need=(ok,message)=>{if(!ok)throw Error(message);};
@@ -13,7 +14,7 @@ export function artilleryTradePreview(s,{sector,gunId=null,buy=false,sourceKind=
  const source=buy?merchant?.usedArtillery:sourceKind==='deployed'?s.sectorStates?.[sector]?.artillery:s.artilleryStores?.[s.location];
  const gun=!buy&&sourceKind==='stock'?(count>0?newArtilleryPayload(stockType,null):undefined):source?.find(g=>g.id===gunId);
  const catalog=EQUIPMENT_CATALOG.find(item=>item.item===gun?.type);
- const price=Math.floor((catalog?.price??0)*(buy ? .8 : .4));
+ const price=Math.floor((catalog?.price??0)*(buy ? .8 : merchantBuyingTerms(s.location,gun?.type).fraction));
  const market=merchantStatus(s,null,isSupplied);
  const local=s.squad.some(id=>s.operativeState[id]?.alive&&!s.operativeState[id]?.captured&&!operativeInTransit(s,id)&&operativeLocation(s,id)===s.location);
  const crew=s.squad.filter(id=>{const u=s.operativeState[id];return u?.alive&&!u.captured&&u.hp>=15&&!operativeInTransit(s,id)&&operativeLocation(s,id)===s.location;});

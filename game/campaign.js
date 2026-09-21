@@ -58,7 +58,7 @@ import {ENCOUNTERS,encounterForOperative,encountersFor,encounterRequirements} fr
 export {ENCOUNTERS,encountersFor} from './encounters.js';
 import {canCreateSquad,vacantSquad,canReassignOperative,migrateSquads,activeSquad,operativeLocation,operativeInTransit,travelingOperatives,synchronizeSquad,validateSectorSnapshot,validatePersonalInventory} from './squads.js';
 export {activeSquad,operativeLocation} from './squads.js';
-import {clearCarriedLoading,setCarriedLoading,isImportedEquipment,deliverEquipmentShipments,validEquipmentShipments,EQUIPMENT_CATALOG,refillCost,firearmRepairCost,deployedArtillery,migrateEquipment,advanceMerchants,merchantStatus,addEquipment,storeEquipment,takeEquipment,storedEquipmentMetadata,resaleQuote,returnEquipment,validateEquipment,equipmentInventoryUsage,allocateEquipmentAmmo,equipmentCatalogItem,equipmentLabel,medicalSupplyStock,ammunitionStock,AMMUNITION_PRICE,AMMUNITION_MERCHANT_CAP,validateEquipmentOwnership,USED_EQUIPMENT_LIMIT,usedEquipmentOffers} from './equipment.js';
+import {clearCarriedLoading,setCarriedLoading,isImportedEquipment,deliverEquipmentShipments,validEquipmentShipments,EQUIPMENT_CATALOG,refillCost,firearmRepairCost,deployedArtillery,migrateEquipment,advanceMerchants,merchantStatus,addEquipment,storeEquipment,takeEquipment,storedEquipmentMetadata,resaleBreakdown,returnEquipment,validateEquipment,equipmentInventoryUsage,allocateEquipmentAmmo,equipmentCatalogItem,equipmentLabel,medicalSupplyStock,ammunitionStock,AMMUNITION_PRICE,AMMUNITION_MERCHANT_CAP,validateEquipmentOwnership,USED_EQUIPMENT_LIMIT,usedEquipmentOffers} from './equipment.js';
 import {FITTING_RULES_VERSION} from './weapon-fittings.js';
 export {EQUIPMENT_CATALOG,armoryInventory,refillCost,firearmRepairCost} from './equipment.js';
 import {planTransfer,convoyStatus} from './logistics.js';
@@ -553,7 +553,7 @@ export function dispatchCampaign(previous,action){
       case 'sellEquipment':{
         const instance=s.armoryItems.find(item=>item.id===action.instanceId);requireThat(instance,'Ese ejemplar ya no está disponible en la armería.');
         const market=merchantStatus(s,null,isSupplied);requireThat(market.available,market.reason);
-        const price=resaleQuote(instance);requireThat(price>0,'El comerciante no compra armas sin valor de servicio.');const merchant=s.merchants[s.location];requireThat(merchant.cash>=price,'El comerciante no tiene fondos suficientes; su caja se repone con el tiempo.');
+        const quote=resaleBreakdown(instance,s.location);requireThat(!quote.reason,quote.reason);const price=quote.total;requireThat(price>0,'El comerciante no compra armas sin valor de servicio.');const merchant=s.merchants[s.location];requireThat(merchant.cash>=price,'El comerciante no tiene fondos suficientes; su caja se repone con el tiempo.');
         requireThat((merchant.usedItems?.length??0)<USED_EQUIPMENT_LIMIT,'El comerciante no puede guardar más armas usadas.');
         merchant.usedItems??=[];merchant.usedItems.push(takeEquipment(s,instance.item,instance.id));merchant.cash-=price;s.resources.treasury+=price;note(s,`Se vende ${equipmentLabel(instance)}, estado ${instance.condition}%, por ${price} pesos.`);break;
       }

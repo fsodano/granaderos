@@ -1,4 +1,4 @@
-import {EQUIPMENT_CATALOG,equipmentLabel,equipmentCatalogItem,isImportedEquipment,merchantStatus,resaleQuote,usedEquipmentBreakdown,takeEquipment,addEquipment,USED_EQUIPMENT_LIMIT,unissuedArtilleryStock} from './equipment.js';
+import {EQUIPMENT_CATALOG,equipmentLabel,equipmentCatalogItem,isImportedEquipment,merchantStatus,resaleBreakdown,usedEquipmentBreakdown,takeEquipment,addEquipment,USED_EQUIPMENT_LIMIT,unissuedArtilleryStock} from './equipment.js';
 import {artillerySaleOffers,artilleryTradePreview,tradeArtillery,USED_ARTILLERY_LIMIT} from './artillery-trade.js';
 import {fieldCapable} from './tactical.js';
 const need=(ok,message)=>{if(!ok)throw Error(message);};
@@ -6,7 +6,7 @@ const deferred={deferSettlement:true};
 const receipt=offer=>JSON.stringify([offer.price,offer.available,offer.instance??offer.catalog??offer.gun]);
 export function merchantExchangeOffers(s,isSupplied){
  const at=s.location,merchant=s.merchants?.[at],offers=[];
- for(const instance of s.armoryItems??[])offers.push({key:`sell:weapon:${instance.id}`,kind:'weapon',sell:true,instance,label:equipmentLabel(instance),price:resaleQuote(instance),available:1});
+ for(const instance of s.armoryItems??[]){const quote=resaleBreakdown(instance,at);offers.push({key:`sell:weapon:${instance.id}`,kind:'weapon',sell:true,instance,label:equipmentLabel(instance),price:quote.total,reason:quote.reason,available:1});}
  for(const instance of merchant?.usedItems??[])offers.push({key:`buy:weapon:${instance.id}`,kind:'weapon',sell:false,instance,label:equipmentLabel(instance),price:usedEquipmentBreakdown(instance).total,available:1});
  for(const catalog of EQUIPMENT_CATALOG.filter(item=>!isImportedEquipment(item))){const key=String(catalog.stockKey??catalog.item),available=merchant?.stock?.[key]??0;if(available>0)offers.push({key:`buy:new:${key}`,kind:'new',sell:false,catalog,label:catalog.name,price:catalog.price,available});}
  for(const plan of artillerySaleOffers(s,isSupplied,deferred))offers.push({key:`sell:artillery:${plan.action.sourceKind??'stored'}:${plan.gun.id??plan.gun.type}`,kind:'artillery',sell:true,gun:plan.gun,label:EQUIPMENT_CATALOG.find(item=>item.item===plan.gun.type).name,price:plan.price,available:plan.action.sourceKind==='stock'?plan.count:1,reason:plan.reason,action:plan.action});

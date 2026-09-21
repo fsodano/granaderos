@@ -12,10 +12,10 @@ New weapons and used weapons remain separate inventories. Used stock is not repl
 
 ## Explicit tuning
 
-- The merchant's purchase from the player remains 40% of new value, adjusted for each component's condition.
+- The merchant's purchase from the player follows its [local buying preference](merchant-preferences.md), adjusted for each component's condition. Retiro retains the general 40% rate; Caroya can refuse badly damaged handhelds.
 - The player's used purchase costs 80% of new value, adjusted for each component's condition. Each component is rounded down separately. There is no profitable immediate sell/buy cycle.
 - Each merchant can retain at most 1,000 used weapons; a full merchant refuses further sales. The existing 10,000-item armory limit also applies to used purchases.
-- Used weapons remain available until the player buys them. Background sales to third parties and merchant-specific preferences are not implemented. [Equipment exchange](merchant-exchange.md) now supports a combined net payment, and [artillery trading](artillery-trade.md) retains exact gun custody.
+- Used weapons remain available until the player buys them. Background sales to third parties are not implemented. [Workshop preferences](merchant-preferences.md) now supply local valuation and condition-based refusal. [Equipment exchange](merchant-exchange.md) now supports a combined net payment, and [artillery trading](artillery-trade.md) retains exact gun custody.
 
 ## Evidence
 

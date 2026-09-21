@@ -10,7 +10,7 @@ Supported offers are unequipped stored handheld weapons, exact local used weapon
 
 ## Transaction rules
 
-- The ordinary 40% sale, 80% used purchase and catalog prices determine the exchange. This adds no price bargaining or favorable exchange multiplier.
+- The [local buying preference](merchant-preferences.md), 80% used purchase and catalog prices determine the exchange. This adds no price bargaining or favorable exchange multiplier.
 - Only the net cash difference is required. Final player, merchant and storage balances must be valid. Outgoing goods free capacity for incoming goods during the same exchange.
 - Each selected offer carries its exact current record, price and available quantity as a receipt. A changed item or stock count requires reselection. Missing, repeated, remote or invalid lines reject the entire exchange.
 - Catalog quantities are removed once. Exact weapon and cannon records move between custodians; buying does not repair or refill them. A new cannon retains the existing deployment ammunition allowance, without duplicating its stock count.
@@ -22,4 +22,4 @@ Eight transaction/save cases cover a cashless exchange, a net payment, a net pay
 
 In a separate live QA fixture, treasury and merchant cash both started at zero. Cancelling a draft kept two player carbines and one shop carbine. Offering both player carbines at 72 pesos each paid for the shop carbine at 144. Confirmation and reload retained zero cash on both sides, one player weapon and two shop weapons. The fixture isolates trading and is not campaign-completion evidence.
 
-Dealer-specific preferences, background sales to other customers, cross-merchant exchanges and negotiation dialogue remain outside this implementation. The broader gameplay audit remains open.
+[Workshop preferences](merchant-preferences.md) now change the sale price and can refuse damaged handhelds. Background sales to other customers, cross-merchant exchanges and negotiation dialogue remain outside this implementation. The broader gameplay audit remains open.

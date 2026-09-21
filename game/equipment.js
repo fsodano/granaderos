@@ -1,4 +1,5 @@
 import {wornOutfit} from './outfits.js';
+import {merchantBuyingTerms,merchantWeaponRefusal} from './merchant-preferences.js';
 import {isGrenadeStack,makeGrenadeStack} from './grenades.js';
 import {operativeLocation,operativeInTransit} from './squads.js';
 import {validateReloadProgress} from './weapon-reload.js';
@@ -196,8 +197,8 @@ export function advanceMerchants(s,isSupplied){
  }
 }
 
-function tradeBreakdown(instance,fraction){const item=exactCatalogItem(instance),items=[];if(item&&handheld(item.item))items.push({name:item.name,condition:instance.condition,price:Math.floor(item.price*fraction*instance.condition/100)});const bayonet=instance?.fittings?.bayonet;if(bayonet){const spec=exactCatalogItem(bayonet);if(spec)items.push({name:spec.name,condition:bayonet.condition,price:Math.floor(spec.price*fraction*bayonet.condition/100)});}return {items,total:items.reduce((sum,item)=>sum+item.price,0)};}
-export const resaleBreakdown=instance=>tradeBreakdown(instance,.4);
+function tradeBreakdown(instance,fraction){const item=exactCatalogItem(instance),items=[];const append=(spec,condition)=>{const rate=typeof fraction==='function'?fraction(spec.item):fraction;items.push({name:spec.name,condition,price:Math.floor(spec.price*rate*condition/100)});};if(item&&handheld(item.item))append(item,instance.condition);const bayonet=instance?.fittings?.bayonet;if(bayonet){const spec=exactCatalogItem(bayonet);if(spec)append(spec,bayonet.condition);}return {items,total:items.reduce((sum,item)=>sum+item.price,0)};}
+export const resaleBreakdown=(instance,sector='retiro')=>({...tradeBreakdown(instance,item=>merchantBuyingTerms(sector,item).fraction),reason:merchantWeaponRefusal(sector,instance)});
 export const usedEquipmentBreakdown=instance=>tradeBreakdown(instance,.8);
 export function usedEquipmentOffers(s,isSupplied){
  const market=merchantStatus(s,null,isSupplied);
@@ -207,7 +208,7 @@ export function usedEquipmentOffers(s,isSupplied){
   return {instance,quote,reason,available:!reason,action:{type:'purchaseUsedEquipment',sector:s.location,instanceId:instance.id}};
  });
 }
-export function resaleQuote(instance){return resaleBreakdown(instance).total;}
+export function resaleQuote(instance,sector='retiro'){return resaleBreakdown(instance,sector).total;}
 
 export function returnEquipment(s,id,report){
  if(report.outfit!==undefined||report.poncho!==undefined){s.operativeState[id].outfit=structuredClone(wornOutfit(report));delete s.operativeState[id].poncho;}

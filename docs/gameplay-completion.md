@@ -417,3 +417,10 @@ Thirty-three focused trade/source/transport/merchant/render checks and type chec
 A two-sided armory proposal now transfers offered and purchased equipment together and settles only the net cash difference. This covers stored/used handheld weapons, local new catalog goods and existing artillery sale sources. Stale receipts, funds, capacities, ownership and gun crew are checked before any committed transfer. Imports and consumable/service controls remain separate. Thirty-three focused transaction, save and render checks pass; see [merchant exchange](merchant-exchange.md).
 
 A live zero-cash QA fixture passed draft cancellation, two-carbines-for-one exchange and reload with both cash balances unchanged at zero. Exact player/shop counts reversed from two/one to one/two. The full suite passes 2,686/2,686 tests with no skips in 350.2 seconds, including the continuous route through Humahuaca. The final UI price readout passes its focused render checks, type checking, production build and live inspection. All 51 pre-existing changed files remain unchanged. The campaign ending and broader audit remain incomplete.
+
+
+### Local workshop preferences
+
+Retiro remains a general buyer, Caroya now prefers cavalry equipment and refuses handheld host weapons below 25% condition, and El Plumerillo pays more for artillery. These are explicitly documented Granaderos adaptations. All direct sales and combined exchanges use the same local valuation and acceptance, while exact item metadata, finite cash and used-purchase prices remain intact. Six simulation/save cases and two render cases join a passing 59-test focused run.
+
+Live QA passed the Caroya 90-peso cavalry sale, damaged-weapon refusal in both interfaces, reload, a normal twelve-hour march to Mendoza, and sale of that same 20%-condition weapon for 14 pesos at El Plumerillo. The build and type checking pass. The full suite passes **2,694/2,694 tests**, with no failures or skips, in 355.8 seconds. Final diff checks pass; all 51 unrelated snapshot files remain unchanged. The ending and broader gameplay audit remain open; see [workshop preferences](merchant-preferences.md).
