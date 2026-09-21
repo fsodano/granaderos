@@ -12,3 +12,8 @@ test('the stationed artillery panel shows retained work and emits an exact finit
 test('shortages disable resupply and enemy artillery does not reveal private loads',()=>{
  const s=fixture();s.resources.powder=0;const html=render(h(Panel,{state:s,dispatch:()=>{}}));assert.match(html,/disabled/);assert.match(html,/Faltan pólvora o hierro/);s.sectorStates.retiro.artillery[0].side='enemy';assert.equal(render(h(Panel,{state:s,dispatch:()=>{}})),'');
 });
+test('transport controls explain preserved loads and display received guns without inventing reserves',()=>{
+ const s=fixture();s.artilleryStores={retiro:[{id:'received',type:'bronze4',side:'player',loaded:false,ammo:2,reloadProgress:.25}]};
+ const html=render(h(Panel,{state:s,dispatch:()=>{}}));
+ assert.match(html,/Destino de la pieza/);assert.match(html,/Enviar pieza/);assert.match(html,/Esperará si se corta la ruta/);assert.match(html,/Piezas transportadas al depósito/);assert.match(html,/Recarga 25%/);assert.match(html,/2 municiones de reserva/);
+});

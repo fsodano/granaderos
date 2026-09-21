@@ -59,9 +59,10 @@ export function deployedArtillery(s){
  for(const type of ['field8','swivel','bronze4']){available[type]=Math.min(remaining,s.armory?.[type]??0);remaining-=available[type];}
  available.bronze4+=remaining+(s.depots?.[s.location]?.cannons??0);
  // Older saves use an empty list for automatic selection; an explicit empty order keeps guns in reserve.
+ const stored=structuredClone(s.sectors?.[s.location]?.owner==='patriot'?(s.artilleryStores?.[s.location]??[]):[]);for(const g of stored)available[g.type]++;
  const types=[],selection=(s.artillerySelectionExplicit||s.artillerySelection?.length)?s.artillerySelection:['field8','swivel','bronze4'].flatMap(type=>Array(Math.min(available[type],3)).fill(type));
  for(const type of selection)if(types.length<3&&available[type]>0){types.push(type);available[type]--;}
- return types.map((type,i)=>({id:`gun-${i}`,type,side:'player',loaded:true,ammo:6}));
+ return types.map((type,i)=>{const index=stored.findIndex(g=>g.type===type);return index>=0?{...stored.splice(index,1)[0],recovered:true}:{id:`gun-${i}`,type,side:'player',loaded:true,ammo:6};});
 }
 
 export function isImportedEquipment(item){return [1800,1802].includes(Number(item?.item));}

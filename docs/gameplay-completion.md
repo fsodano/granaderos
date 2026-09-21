@@ -356,3 +356,17 @@ This checkpoint does not complete Humahuaca, the ending, or the remaining parity
 The W09 transport gap is present in the current code. `prepareSectorArtillery` permanently issues reserve stock and reuses saved guns only at their existing site. `deployedArtillery` creates reserve pieces with a full load and six rounds. No campaign action recovers a deployed piece for another sector. Merely increasing reserve stock on recovery would create ammunition and discard partial loading.
 
 Any transport implementation must preserve the exact gun identity, model, loaded state, reserve rounds and reload progress; remove the source exactly once; account for travel time and transport capacity; handle interrupted travel and hostile ownership; and validate those records through saves and deployment reports. The armory must expose a preview with rejection reasons. This is an open requirement, not an implemented feature or a change to the proven campaign route. W10 now reflects the integrated Jujuy checkpoint rather than the obsolete one-survivor Salta route.
+
+
+### Deployed artillery transport implementation
+
+A new convoy action and armory controls move the exact deployed gun to a local destination depot. Identity, load, finite reserve rounds and unfinished reload work survive arrival and later deployment. It requires a secured source, local crew, an organized cart or flotilla route, and capacity. Cut routes delay delivery through the existing convoy clock. Save validation rejects duplicate custody, invalid gun state and overweight shipments. Generic cannon resources remain separate.
+
+Four new transport cases and three panel cases pass, as do the 34 related logistics/equipment/save checks, 23 existing artillery checks, type checking and the production build. A live imported subsystem fixture verifies selection, dispatch, reload/resume, eighteen-hour arrival and the retained two rounds/40% partial load after the squad arrives. Actual redeployment is covered by the automated test. The full integration run is active; the feature is uncommitted pending that result. See [artillery transport](artillery-transport.md) for adaptations and remaining scope.
+
+
+### Artillery transport integrated verification
+
+The full suite passes **2,661/2,661 tests with no skips** in 336.3 seconds. The continuous route through Jujuy remains valid. Final focused transport/render checks, type checking, production build and diff checks pass. All 49 unrelated snapshot files remain unchanged. The transport implementation and its exact live/automated boundaries are documented in [artillery transport](artillery-transport.md).
+
+The next campaign continuation still needs Humahuaca and the ending. The verified Jujuy save has exactly three living roster members (Brown, Barcala and San Martín), all without equipped outfits; reserve uniforms and ponchos are zero. Future preparation must use actual procurement and equipment capacity rather than presume spare troops or protection.

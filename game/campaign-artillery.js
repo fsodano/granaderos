@@ -13,12 +13,13 @@ export function prepareSectorArtillery(s,request){
  if(request.artilleryDeployment?.site===site(request))return request;
  const fresh=clone(request.artillery??[]),old=previousBattle(s,request)?.artillery??[];
  const at=request.origin??s.location,depot=s.depots?.[at];
- need(fresh.length<=s.resources.cannons+(depot?.cannons??0),'No quedan esas piezas en los depósitos.');
+ need(fresh.filter(g=>!g.recovered).length<=s.resources.cannons+(depot?.cannons??0),'No quedan esas piezas en los depósitos.');
  for(const gun of [...fresh].sort((a,b)=>(a.type==='bronze4')-(b.type==='bronze4'))){
+  if(gun.recovered){const stored=s.artilleryStores?.[at]??[],index=stored.findIndex(g=>g.id===gun.id);need(index>=0&&JSON.stringify({...stored[index],recovered:true})===JSON.stringify(gun),'La pieza recuperada ya no está disponible.');stored.splice(index,1);continue;}
   if(s.resources.cannons>0){s.resources.cannons--;if((s.armory?.[gun.type]??0)>0)s.armory[gun.type]--;}
   else {need(gun.type==='bronze4','El depósito local no contiene ese modelo de artillería.');depot.cannons--;}
  }
- fresh.forEach((gun,i)=>{gun.id=`${request.id}:piece-${i}`;delete gun.stationed;});
+ fresh.forEach((gun,i)=>{if(!gun.recovered)gun.id=`${request.id}:piece-${i}`;delete gun.recovered;delete gun.stationed;});
  const occupied=s.sectors[parent(request.sector)]?.owner==='royalist';
  const stationed=old.map(gun=>({...clone(gun),stationed:true,...(occupied?{side:'enemy'}:{})}));
  request.artillery=[...stationed,...fresh];request.cannons=0;
@@ -53,7 +54,7 @@ export function settleSectorArtillery(snapshot,outcome){
  for(const gun of snapshot.artillery)delete gun.stationed;
 }
 export function ownedArtilleryCount(s){
- return (s.resources.cannons??0)+Object.values(s.depots??{}).reduce((n,d)=>n+(d.cannons??0),0)+
+ return Object.entries(s.artilleryStores??{}).filter(([id])=>s.sectors[id]?.owner==='patriot').reduce((n,[,guns])=>n+guns.length,0)+(s.convoys??[]).reduce((n,c)=>n+(c.artillery?.length??0),0)+(s.resources.cannons??0)+Object.values(s.depots??{}).reduce((n,d)=>n+(d.cannons??0),0)+
  Object.entries(s.sectorStates??{}).filter(([id])=>s.sectors[parent(id)]?.owner==='patriot').reduce((n,[,b])=>n+(b.artillery??[]).filter(g=>g.side==='player').length,0);
 }
 const supplyCost=type=>({powder:type==='field8'?2:1,scrapIron:type==='field8'?2:1});
