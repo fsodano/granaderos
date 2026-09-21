@@ -12,6 +12,8 @@ Twenty-five focused detention, civilian and escort checks, type checking and the
 
 ## Required integration
 
+A pure health planner now checks captive identity, capture time, sector, health scale and cumulative critical-care acknowledgements. It retains actual damage, bleeding, bandages and lower energy; rejects repeated healing receipts and resurrection; and returns medical changes without changing equipment or custody. Nine focused construction and health checks pass, including actual bleeding progression and JSON receipt replay. Treatment acknowledgement tests use explicit fixtures. This planner is not yet called by campaign settlement; prisoner death cleanup and atomic receipt persistence remain required.
+
 1. Bind the manifest to a real pending encounter and retain prisoner positions on reentry.
 2. Connect prisoner wounds, treatment and death to their original captured service records, with no healing or equipment duplication on save or return.
 3. Add an adjacent, paid release action and visible controls. A freed prisoner must still reach an authorized safe exit through actual movement.
