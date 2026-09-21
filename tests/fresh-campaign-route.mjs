@@ -144,3 +144,21 @@ export function prepareFreshMissionSupport(start,{report=()=>{}}={}){
  report({event:'freshMissionSupport',hour:campaign.hour,paid:cash-campaign.resources.treasury,treasury:campaign.resources.treasury,transfers:salvage.transfers,unfilled:salvage.unfilled});
  return {campaign,squads:[main,second]};
 }
+
+// Keep the surviving doctors with the advance. All participants travel through
+// ordinary queued squad orders; no new soldiers or supplies are injected.
+export function prepareFreshCordobaAssault(start){
+ let campaign=finishReloadsBeforeMarch(decodeSave(encodeSave(start)).campaign);
+ const order=action=>{campaign=dispatchCampaign(campaign,action);assert.equal(campaign.lastError,null,JSON.stringify(action)+': '+campaign.lastError);};
+ const field=campaign.activeSquadId;
+ order({type:'createSquad',name:'Socorro de Córdoba',ids:[112,122]});
+ const support=campaign.activeSquadId,squads=[field,support];
+ for(const operativeId of [112,122])order({type:'assignCare',operativeId,assignment:'active'});
+ for(const id of squads){order({type:'selectSquad',id});order({type:'attack',sector:'cordoba',queue:true});}
+ const ready=()=>squads.every(id=>campaign.squads.find(s=>s.id===id)?.journey?.status==='ready');
+ for(let i=0;i<24&&!ready();i++)order({type:'wait',hours:1});
+ assert.ok(ready());assert.equal(campaign.pendingEncounter,null);
+ order({type:'beginAssault',sector:'cordoba'});
+ assert.equal(campaign.pendingBattle.squad.length,8);
+ return campaign;
+}

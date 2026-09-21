@@ -3,9 +3,9 @@ import {sanLorenzoCombatOrder} from './san-lorenzo-driver.mjs';
 import {fightNorthernSector,northernCombatOrder,prepareNorthernSquad} from './northern-route.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {beginFreshCampaign,recoverFreshCapital,prepareFreshNorthernAssault,prepareFreshSanLorenzo,prepareFreshMissionSupport} from './fresh-campaign-route.mjs';
+import {beginFreshCampaign,recoverFreshCapital,prepareFreshNorthernAssault,prepareFreshSanLorenzo,prepareFreshMissionSupport,prepareFreshCordobaAssault} from './fresh-campaign-route.mjs';
 
-test('a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás and San Lorenzo victories',()=>{
+test('a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo and Córdoba victories',()=>{
  const opening=beginFreshCampaign();
  assert.ok(opening.actions>0);assert.ok(opening.casualties.length>0);
  assert.equal(opening.campaign.officer,null);
@@ -50,4 +50,9 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  for(const id of north.recovery.patients)assert.equal(north.campaign.operativeState[id].hp,north.campaign.operativeState[id].maxHp);
  for(const [id,record]of Object.entries(won.campaign.operativeState))if(!record.alive)assert.equal(north.campaign.operativeState[id].alive,false);
  assert.ok(north.campaign.resources.treasury>=0);
+ const cordoba=fightNorthernSector(prepareFreshCordobaAssault(north.campaign),'cordoba',{controller:northernCombatOrder});
+ assert.equal(cordoba.campaign.sectors.cordoba.owner,'patriot');
+ for(const [id,record]of Object.entries(north.campaign.operativeState))if(!record.alive)assert.equal(cordoba.campaign.operativeState[id].alive,false);
+ assert.ok(cordoba.campaign.resources.treasury>=0);
+ assert.equal(cordoba.campaign.completed,false);
 });
