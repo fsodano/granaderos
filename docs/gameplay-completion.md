@@ -181,3 +181,12 @@ Barcala recovers two actual dressings from Pembroke's corpse. Two hours of care 
 The extended continuous test passes in 153.6 seconds. Runtime code is unchanged in this step; the preceding full suite passed 2,623 tests. This costly route remains distinct from a general balance claim. Los Patos, subsequent phase progression, lost territory, the ending and other partial audit requirements remain open.
 
 A separate eight-person Los Patos probe waits for paid replacement weapons to restock, then uses explicit two-squad travel and actual combat. It loses at hour 1,912. That failed continuation is not included as a victory or used to advance the campaign phase.
+
+
+## Los Patos and San Martín recruitment
+
+The continuous fresh-start route now approaches Los Patos through Uspallata with eight paid, equipped soldiers. The victory retains five further deaths (Barcala, Macacha, Montiel, Montreuil and Roldán), for 54 permanent deaths. Fortification advances the campaign to phase 4. Valcourt receives purchased medical care in Mendoza, then physically meets and recruits San Martín through the normal dialogue. Arnaud and Beaumont leave service alive when their contracts expire; their location depends on whether expiry precedes departure. Save round trips retain the result. No battle victory, health, money or territory is injected.
+
+An independent ending-rule fixture exposed a defect: recruitment alone allowed victory after San Martín died. His death before completion now ends the campaign in defeat and prevents further orders. A living wounded commander can still finish without free healing. These ending fixtures test rules only; they do not establish a fresh-start ending. Coastal conquest, northern recovery, enemy forces and the actual ending remain open, as does overall balance.
+
+Validation: all 2,625 tests pass with no skips, including the continuous fresh-start route. Type checking, production build and diff checks pass. A controlled death mutation of a valid phase-4 checkpoint retains defeat after save reload. All 49 unrelated preservation files remain unchanged. W10 remains partial.

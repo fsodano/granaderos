@@ -1,4 +1,4 @@
-import {prepareFreshUspallataAssault,recoverFreshUspallata} from './fresh-mountain-route.mjs';
+import {prepareFreshUspallataAssault,recoverFreshUspallata,prepareFreshLosPatosAssault,completeFreshAndesPreparation} from './fresh-mountain-route.mjs';
 import {prepareFreshCuyoDefense,prepareFreshMendozaAssault,startFreshFoundry,prepareFreshArmyProduction,completeFreshArmyProduction} from './fresh-cuyo-route.mjs';
 import {recoverFreshNorthernDoctor,reuniteFreshNorthernSquad,prepareFreshSaltaAssault,finishFreshNorthernCampaign} from './fresh-northern-recovery.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
@@ -9,7 +9,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {beginFreshCampaign,recoverFreshCapital,prepareFreshNorthernAssault,prepareFreshSanLorenzo,prepareFreshMissionSupport,prepareFreshCordobaAssault,recoverFreshCordobaSurvivors,prepareFreshCordobaDefense,prepareFreshTucumanAssault} from './fresh-campaign-route.mjs';
 
-test('a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba, Tucumán and Salta victories through Yatasto, Mendoza production and Uspallata recovery',()=>{
+test('a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba, Tucumán and Salta victories through Yatasto, Mendoza production and both mountain passes through San Martín recruitment',()=>{
  const opening=beginFreshCampaign();
  assert.ok(opening.actions>0);assert.ok(opening.casualties.length>0);
  assert.equal(opening.campaign.officer,null);
@@ -112,6 +112,13 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  const passRecovery=recoverFreshUspallata(pass.campaign);
  assert.equal(passRecovery.phase,3);assert.equal(passRecovery.completed,false);
  for(const id of [128,109,132,145,106])assert.equal(passRecovery.operativeState[id].alive,false);
+ const patos=fightNorthernSector(prepareFreshLosPatosAssault(passRecovery),'los_patos',{controller:tucumanCombatOrder});
+ assert.equal(patos.campaign.sectors.los_patos.owner,'patriot');
+ const andes=completeFreshAndesPreparation(patos.campaign);
+ assert.equal(andes.phase,4);assert.ok(andes.recruited.includes(57));assert.equal(andes.completed,false);
+ assert.ok(['mendoza','uspallata','los_patos'].every(id=>andes.sectors[id].owner==='patriot'&&andes.sectors[id].fort>=1));
+ for(const id of [7,8,147,143,135])assert.equal(andes.operativeState[id].alive,false);
+ for(const [id,record]of Object.entries(passRecovery.operativeState))if(!record.alive)assert.equal(andes.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(army.operativeState))if(!record.alive)assert.equal(passRecovery.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(foundry.operativeState))if(!record.alive)assert.equal(army.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(defended.campaign.operativeState))if(!record.alive)assert.equal(foundry.operativeState[id].alive,false);

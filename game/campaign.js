@@ -136,6 +136,10 @@ export function availableActions(s){
 }
 function progress(s){
   if(s.completed)return;
+  if(s.recruited.includes(57)&&(!s.operativeState[57]?.alive||s.operativeState[57].hp<=0)){
+    if(!s.defeated)note(s,'San Martín ha caído. El ejército debe reorganizarse desde una nueva campaña.');
+    s.defeated=true;return;
+  }
   if(s.phase===0&&s.flags.academy){s.phase=1;note(s,'La academia de Retiro está organizada. Llegan noticias de un desembarco realista junto a San Lorenzo.');}
   if(s.phase===1&&s.flags.sanLorenzo){s.phase=2;standing(s,'directory',15);note(s,'Victoria en San Lorenzo. San Martín marcha al norte para estudiar la situación del Ejército del Norte.');}
   if(s.phase===2&&s.missions?.yatasto?.completed&&s.sectors.tucuman.owner==='patriot'&&s.flags.northPact&&isSupplied(s,'salta')){s.phase=3;s.flags.mentoring=true;note(s,'En Yatasto, San Martín confía el norte a Güemes. El esfuerzo principal se traslada a Cuyo.');}
