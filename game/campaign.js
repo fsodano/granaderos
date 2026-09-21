@@ -1,4 +1,5 @@
 import {queueArtilleryTransport,deliverTransportedArtillery,validateArtilleryTransport} from './artillery-transport.js';
+import {tradeArtillery} from './artillery-trade.js';
 import {enterSector} from './world.js';
 import {settlePrisonerEscapes} from './prisoner-escape-return.js';
 import {redistributeMilitia} from './militia-distribution.js';
@@ -466,7 +467,7 @@ export function dispatchCampaign(previous,action){
   try{
     requireThat(action&&typeof action.type==='string','La orden no es válida.');
     requireThat(!s.defeated,'La campaña ha terminado. Inicia otra campaña para continuar.');
-    requireThat(!s.completed||['syncTacticalTime','wait','setSleep','assignCare','assignWork','purchaseToolkits','purchaseMedicalSupplies','purchaseAmmunition','purchaseGrenades','horseAction','travel','cancelTravel','resumeTravel','beginAssault','visitSector','leaveSector','talkNPC','createSquad','selectSquad','squad','equip','resupply','repairWeapon','purchaseEquipment','purchaseUsedEquipment','sellEquipment','supplyTransfer','supplyArtillery','transportArtillery','transport','militia','cancelMilitia','transferMilitia','distributeMilitia','renewContract','dismiss'].includes(action.type),'La campaña está ganada. Puedes recorrer las provincias y atender a tus escuadras y estancias.');
+    requireThat(!s.completed||['syncTacticalTime','wait','setSleep','assignCare','assignWork','purchaseToolkits','purchaseMedicalSupplies','purchaseAmmunition','purchaseGrenades','horseAction','travel','cancelTravel','resumeTravel','beginAssault','visitSector','leaveSector','talkNPC','createSquad','selectSquad','squad','equip','resupply','repairWeapon','purchaseEquipment','purchaseUsedEquipment','sellEquipment','sellArtillery','purchaseUsedArtillery','supplyTransfer','supplyArtillery','transportArtillery','transport','militia','cancelMilitia','transferMilitia','distributeMilitia','renewContract','dismiss'].includes(action.type),'La campaña está ganada. Puedes recorrer las provincias y atender a tus escuadras y estancias.');
     requireThat(!s.pendingEncounter||['respondToEncounter','selectSquad'].includes(action.type),'Hay un encuentro pendiente. Elegí cómo responder antes de continuar.');
     requireThat(!s.pendingBattle||['battleResult','leaveSector','talkNPC','finishMission','syncTacticalTime'].includes(action.type),'Hay una batalla pendiente. Resuélvela antes de dar nuevas órdenes.');
     if(['travel','attack','visitSector'].includes(action.type))requireThat(!s.squad.some(id=>militiaAssignment(s,id)),'Un instructor de la escuadra está asignado a las milicias. Cancelá su curso o dejalo en una escuadra de guarnición.');
@@ -565,6 +566,7 @@ export function dispatchCampaign(previous,action){
         merchant.cash=Math.min(1000000000,merchant.cash+offer.quote.total);
         note(s,`Se compra ${equipmentLabel(instance)} usado, estado ${instance.condition}%, por ${offer.quote.total} pesos.`);break;
       }
+      case 'sellArtillery':case 'purchaseUsedArtillery':{const plan=tradeArtillery(s,action,isSupplied);note(s,`Se ${action.type==='sellArtillery'?'vende':'compra'} la pieza usada por ${plan.price} pesos. Conserva su carga y munición.`);break;}
       case 'transportArtillery':{const plan=queueArtilleryTransport(s,action);note(s,`La pieza sale hacia ${sector(plan.destination).name}: ${plan.hours} horas de transporte.`);break;}
       case 'supplyArtillery':{const delivered=supplyStationedArtillery(s,action,isSupplied);note(s,`La pieza recibe ${delivered.count} municiones de reserva. Debe cargarse en el campo.`);break;}
       case 'configureArtillery':{

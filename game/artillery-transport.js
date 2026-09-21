@@ -50,6 +50,10 @@ export function validateArtilleryTransport(s){
   validateReloadProgress(gun.reloadProgress,1,Number(gun.loaded));seen.add(gun.id);
  };
  for(const [at,guns] of Object.entries(stores)){need(known(at)&&Array.isArray(guns)&&guns.length<=2000,'El depósito de artillería es inválido.');guns.forEach(validate);}
+ for(const merchant of Object.values(s.merchants??{}))if(merchant.usedArtillery!==undefined){
+  need(Array.isArray(merchant.usedArtillery)&&merchant.usedArtillery.length<=100,'Las piezas usadas del comerciante son inválidas.');
+  merchant.usedArtillery.forEach(validate);
+ }
  for(const c of s.convoys??[])if(c.artillery!==undefined){
   need(Array.isArray(c.artillery)&&c.artillery.length===1&&known(c.source)&&known(c.destination)&&c.source!==c.destination&&['carts','flotilla'].includes(c.mode)&&Object.keys(c.goods).length===1&&c.goods.cannons===1,'El convoy de artillería es inválido.');
   c.artillery.forEach(validate);
