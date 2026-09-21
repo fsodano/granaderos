@@ -1,4 +1,5 @@
-import {prepareFreshTucumanRecapture} from './fresh-northern-return-route.mjs';
+import {holdBatteryOrder} from './holding-battery-driver.mjs';
+import {prepareFreshTucumanRecapture,prepareFreshSaltaRecapture} from './fresh-northern-return-route.mjs';
 import {batteryOrder} from './advancing-battery-driver.mjs';
 import {prepareFreshCoastalCommand,prepareFreshEnsenadaAssault,recruitFreshNavalCommand,prepareFreshSantaFeAssault} from './fresh-coastal-route.mjs';
 import {prepareFreshUspallataAssault,recoverFreshUspallata,prepareFreshLosPatosAssault,completeFreshAndesPreparation} from './fresh-mountain-route.mjs';
@@ -12,7 +13,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {beginFreshCampaign,recoverFreshCapital,prepareFreshNorthernAssault,prepareFreshSanLorenzo,prepareFreshMissionSupport,prepareFreshCordobaAssault,recoverFreshCordobaSurvivors,prepareFreshCordobaDefense,prepareFreshTucumanAssault} from './fresh-campaign-route.mjs';
 
-test('a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba, Tucumán and Salta victories through Yatasto, Mendoza production and both mountain passes, Ensenada, naval recruitment, Santa Fe and Tucumán recapture',()=>{
+test('a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba, Tucumán and Salta victories through Yatasto, Mendoza production and both mountain passes, Ensenada, naval recruitment, Santa Fe, Tucumán and Salta recapture',()=>{
  const opening=beginFreshCampaign();
  assert.ok(opening.actions>0);assert.ok(opening.casualties.length>0);
  assert.equal(opening.campaign.officer,null);
@@ -128,6 +129,13 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  const recaptured=fightNorthernSector(prepareFreshTucumanRecapture(santaFe.campaign),'tucuman',{controller:batteryOrder,report:r=>console.log(JSON.stringify(r))});
  assert.equal(recaptured.campaign.sectors.tucuman.owner,'patriot');assert.equal(recaptured.campaign.defeated,false);
  for(const id of [57,6])assert.ok(recaptured.campaign.operativeState[id].alive);
+ const returnedSalta=fightNorthernSector(prepareFreshSaltaRecapture(recaptured.campaign),'salta',{controller:holdBatteryOrder,report:r=>console.log(JSON.stringify(r))});
+ assert.equal(returnedSalta.campaign.sectors.salta.owner,'patriot');
+ assert.equal(returnedSalta.campaign.defeated,false);assert.equal(returnedSalta.campaign.completed,false);
+ assert.equal(returnedSalta.campaign.operativeState[57].alive,true);
+ assert.equal(returnedSalta.campaign.operativeState[6].alive,false);
+ assert.equal(Object.values(returnedSalta.campaign.operativeState).filter(u=>!u.alive).length,61);
+ for(const [id,record]of Object.entries(recaptured.campaign.operativeState))if(!record.alive)assert.equal(returnedSalta.campaign.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(santaFe.campaign.operativeState))if(!record.alive)assert.equal(recaptured.campaign.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(navy.operativeState))if(!record.alive)assert.equal(santaFe.campaign.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(andes.operativeState))if(!record.alive)assert.equal(navy.operativeState[id].alive,false);

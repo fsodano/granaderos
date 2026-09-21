@@ -231,3 +231,12 @@ Local hired doctors can now take a separate militia assignment and treat retaine
 The original manual's town redistribution choice now has manual rank/quantity transfers and an automatic distribution preview in the Sector panel. Exact defenders keep their wounds, experience and finite equipment; critical patients and training cohorts remain in place. Transfers obey connected city ownership, encounter restrictions and capacity. Thirteen new simulation/render checks cover custody, real sector reentry, paid count-only cohorts and stable balancing. The live interface moved a wounded veteran, retained the transfer after reload, balanced twelve defenders across three sectors and rejected an excessive quantity. See [city distribution](militia-distribution.md). Tactical commands and the remaining gameplay audit are still open.
 
 Integrated verification: **2,649/2,649 tests pass with no skips**, including the continuous fresh campaign through Tucumán recapture. The final 30-check focused run covers the last UI refinements; type checking, the production build, diff checks and the 49-file preservation check pass. This does not close the remaining campaign ending or audit gaps.
+
+
+## Continuous Salta recapture
+
+The continuous Retiro-only regression now recaptures Salta after the Tucumán return. Real paid care in Córdoba restores Bouchard; three finite-stock cannon purchases, ordinary rest and queued post travel lead to a 02:00 assault. The test controller prioritizes medical aid, crouches after contact and keeps the crew at its gun instead of chasing targets. It uses shared visible targets, legal orders, finite ammunition and normal AP costs. No combat rules or enemy strength changed.
+
+The full fresh-start test passes in 241.1 seconds, including deterministic battle replay, campaign return and complete save validation. Salta falls at hour 2,642 with 4,792 pesos. San Martín survives at 88 HP; Bouchard dies, leaving 61 permanent deaths and only San Martín alive. This proves this costly continuation, not balanced difficulty or the complete campaign. Jujuy, Humahuaca, the Buenos Aires naval blockade and a new fourteen-soldier force marching toward Tucumán remain to be resolved before the ending can be verified.
+
+Validation for this tests-only extension: the complete continuous-route test passes with no skips, the diff check passes, and all 49 unrelated preservation files remain unchanged. The prior full-suite result remains 2,649 passing tests; it was not rerun for this extension. The broader JA2 audit remains open.
