@@ -27,4 +27,4 @@ Live browser verification imported such an established-area fixture. The desk in
 
 The full integrated suite passes 2,557 tests with no failures or skips. Type checking and the production build pass. All 49 unrelated pending files still match the preservation snapshot.
 
-Fresh-campaign San Lorenzo victory and the full campaign ending remain unproven.
+A continuous Retiro-only test now earns San Lorenzo victory with twelve explicitly selected soldiers, paid contracts and recovered finite equipment. San Martín survives at 88 health; all 20 cumulative deaths remain recorded. See [fresh campaign evidence](gameplay-completion.md#fresh-san-lorenzo-victory-checkpoint). The full campaign ending remains unproven.

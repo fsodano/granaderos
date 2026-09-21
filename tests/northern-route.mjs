@@ -201,10 +201,12 @@ export function fightNorthernSector(start,sector,{report=()=>{},expectedOutcome=
  const returned=dispatchCampaign(restored.campaign,{type:'battleResult',battleId:request.id,outcome:restored.battle.status,survivors:restored.battle.units.filter(u=>u.side==='player'),sectorState:restored.battle});
  assert.equal(returned.lastError,null,returned.lastError);
  const navalLoss=expectedOutcome==='defeat'&&request.defenseGroupId&&campaign.enemyGroups.find(group=>group.id===request.defenseGroupId)?.theater==='coast';
- assert.equal(returned.sectors[sector].owner,expectedOutcome==='victory'?'patriot':expectedOutcome==='retreat'||navalLoss?campaign.sectors[sector].owner:'royalist');assert.equal(returned.pendingBattle,null);
+ if(request.missionId==='san_lorenzo'){assert.equal(returned.flags.sanLorenzo,expectedOutcome==='victory');if(expectedOutcome==='victory')assert.equal(returned.defeated,false);}
+ else assert.equal(returned.sectors[sector].owner,expectedOutcome==='victory'?'patriot':expectedOutcome==='retreat'||navalLoss?campaign.sectors[sector].owner:'royalist');
+ assert.equal(returned.pendingBattle,null);
  if(navalLoss){assert.equal(returned.blockade,true);assert.equal(returned.enemyGroups.find(group=>group.id===request.defenseGroupId).status,'stationed');}
 
- for(const u of result.battle.units.filter(u=>u.side==='player'&&u.hp<=0))assert.equal(returned.operativeState[Number(u.id)].alive,false);
+ for(const u of result.battle.units.filter(u=>u.side==='player'&&u.hp<=0)){if(u.missionAlly)assert.equal(returned.missionAllies[request.missionId].hp,0);else assert.equal(returned.operativeState[Number(u.id)].alive,false);}
  assert.deepEqual(decodeSave(encodeSave(returned)).campaign,returned);
  return {campaign:returned,summary};
 }

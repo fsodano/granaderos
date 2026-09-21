@@ -1,3 +1,4 @@
+import {finishReloadsBeforeMarch} from './pre-march-reload.mjs';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {enterSector} from '../game/world.js';
 import {equipOpeningRifles} from './opening-equipment.mjs';
@@ -124,4 +125,22 @@ export function prepareFreshSanLorenzo(start,{report=()=>{}}={}){
  assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
  report({event:'freshSanLorenzoPreparation',hour:campaign.hour,field,paid:cash-campaign.resources.treasury,recoveredDressings:recovered,transfers:salvage.transfers,unfilled:salvage.unfilled});
  return campaign;
+}
+
+export function prepareFreshMissionSupport(start,{report=()=>{}}={}){
+ let campaign=decodeSave(encodeSave(start)).campaign;
+ const dead=Object.entries(campaign.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
+ const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;};
+ const main=campaign.activeSquadId,support=[136,100,101,102,108,130],cash=campaign.resources.treasury;
+ for(const id of support){assert.ok(campaign.operativeState[id].alive);if(!campaign.recruited.includes(id))order({type:'recruitCivic',id,term:'week'});}
+ order({type:'createSquad',ids:support,name:'Apoyo de San Lorenzo'});const second=campaign.activeSquadId;
+ order({type:'visitSector'});
+ const salvage=equipOpeningRifles(enterSector(campaign.pendingBattle,campaign.sectorStates.san_nicolas),support);
+ const synced=syncBattleTime(campaign,salvage.battle);assert.equal(synced.error,null);campaign=synced.campaign;
+ order({type:'leaveSector',battleId:campaign.pendingBattle.id,sectorState:synced.battle,survivors:synced.battle.units.filter(u=>u.side==='player')});
+ for(const id of [main,second]){order({type:'selectSquad',id});campaign=finishReloadsBeforeMarch(campaign,{report});}
+ for(const id of dead)assert.equal(campaign.operativeState[id].alive,false);
+ assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
+ report({event:'freshMissionSupport',hour:campaign.hour,paid:cash-campaign.resources.treasury,treasury:campaign.resources.treasury,transfers:salvage.transfers,unfilled:salvage.unfilled});
+ return {campaign,squads:[main,second]};
 }

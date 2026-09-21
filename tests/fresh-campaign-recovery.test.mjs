@@ -1,9 +1,11 @@
+import {dispatchCampaign} from '../game/campaign.js';
+import {sanLorenzoCombatOrder} from './san-lorenzo-driver.mjs';
 import {fightNorthernSector,northernCombatOrder} from './northern-route.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {beginFreshCampaign,recoverFreshCapital,prepareFreshNorthernAssault,prepareFreshSanLorenzo} from './fresh-campaign-route.mjs';
+import {beginFreshCampaign,recoverFreshCapital,prepareFreshNorthernAssault,prepareFreshSanLorenzo,prepareFreshMissionSupport} from './fresh-campaign-route.mjs';
 
-test('a Retiro-only campaign pays for its opening, retains real losses and funds medical recovery and a coordinated northern assault',()=>{
+test('a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás and San Lorenzo victories',()=>{
  const opening=beginFreshCampaign();
  assert.ok(opening.actions>0);assert.ok(opening.casualties.length>0);
  assert.equal(opening.campaign.officer,null);
@@ -34,4 +36,12 @@ test('a Retiro-only campaign pays for its opening, retains real losses and funds
  assert.equal(prepared.flags.sanLorenzo,false);
  assert.equal(prepared.pendingBattle,null);
  assert.equal(prepared.completed,false);
+ const supported=prepareFreshMissionSupport(prepared);
+ const mission=dispatchCampaign(supported.campaign,{type:'attack',sector:'san_lorenzo',squadIds:supported.squads});
+ assert.equal(mission.lastError,null);assert.equal(mission.pendingBattle.squad.length,12);
+ const won=fightNorthernSector(mission,'san_lorenzo',{controller:sanLorenzoCombatOrder});
+ assert.equal(won.campaign.flags.sanLorenzo,true);assert.equal(won.campaign.phase,2);
+ assert.ok(won.campaign.missionAllies.san_lorenzo.hp>0);assert.equal(won.campaign.defeated,false);
+ for(const [id,record]of Object.entries(prior.operativeState))if(!record.alive)assert.equal(won.campaign.operativeState[id].alive,false);
+ assert.ok(won.campaign.resources.treasury>=0);assert.equal(won.campaign.completed,false);
 });
