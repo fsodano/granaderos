@@ -93,3 +93,24 @@ test('loss of the active column selects the existing surviving squad without dup
  assert.equal(s.activeSquadId,surviving.id);assert.deepEqual(s.squad,surviving.members);assert.deepEqual(s.squads.find(q=>q.id===surviving.id).members,surviving.members);assert.deepEqual(s.squads.find(q=>q.id===active).members,[]);
  const members=s.squads.flatMap(q=>q.members);assert.equal(new Set(members).size,members.length);assert.ok(fallen.every(id=>!s.operativeState[id].alive));roundtrip(s);
 });
+
+
+test('a crowded mountain assault stays staged without consuming gear or committing an unusable battle',()=>{
+ let s=front();s.sectors.mendoza.owner='patriot';s.location='mendoza';
+ for(const q of s.squads){q.location='mendoza';for(const id of q.members)s.operativeState[id].location='mendoza';}
+ s=order(s,{type:'purchaseEquipment',item:'bronze4'});
+ for(const q of [...s.squads]){s=order(s,{type:'selectSquad',id:q.id});s=order(s,{type:'attack',sector:'uspallata',queue:true});}
+ for(let i=0;i<48&&s.squads.some(q=>q.journey?.status!=='ready');i++)s=wait(s,1);
+ assert.ok(s.squads.every(q=>q.journey?.status==='ready'));
+ const before=structuredClone(s),rejected=dispatchCampaign(s,{type:'beginAssault',sector:'uspallata'});
+ assert.match(rejected.lastError,/No queda espacio.*borde/);
+ assert.deepEqual({...rejected,lastError:before.lastError},before);
+ assert.equal(rejected.pendingBattle,null);assert.deepEqual(restoreCampaign(serializeCampaign(rejected)),{...rejected,lastError:null});
+ // A refused approach is still a real queued journey and can return normally.
+ const returning=order(rejected,{type:'cancelTravel',choice:'stop'});
+ assert.equal(returning.squads.find(q=>q.id===returning.activeSquadId).journey.returning,true);
+ const smaller=order(returning,{type:'beginAssault',sector:'uspallata'});
+ assert.equal(smaller.pendingBattle.squad.length,6);assert.equal(smaller.pendingBattle.artillery.length,1);
+ assert.equal(smaller.resources.cannons,before.resources.cannons-1);
+ assert.equal(enterSector(smaller.pendingBattle).units.filter(u=>u.side==='player').length,6);
+});

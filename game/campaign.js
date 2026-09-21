@@ -1,3 +1,4 @@
+import {enterSector} from './world.js';
 import {settlePrisonerEscapes} from './prisoner-escape-return.js';
 import {redistributeMilitia} from './militia-distribution.js';
 import {settleDetentionReturn} from './campaign-detention.js';
@@ -790,7 +791,10 @@ export function dispatchCampaign(previous,action){
     reorganizeAfterLoss(s,previous);
     delayCrossingEnemyGroups(s);
     if(s.pendingBattle&&!previous.pendingBattle)prepareSectorArtillery(s,s.pendingBattle);
-    if(s.pendingBattle&&!s.pendingBattle.exits)prepareDeploymentExits(s,s.pendingBattle);releaseDeferred(s);synchronizeSquad(s);migrateMedicalCare(s,rosterFor(s));migrateAssignments(s,rosterFor(s));migrateMorale(s,rosterFor(s));migrateEquipment(s);migrateEnemyGroups(s);syncCampaignAmmunition(s,rosterFor(s));validateCampaignAmmunition(s,rosterFor(s));validateDeploymentReturnState(s);validateEquipmentOwnership(s,rosterFor(s));progress(s);if(Object.keys(s.assignmentAttention.reported).length)reconcileAssignmentAttention(s,assignmentStates(s,rosterFor(s),assignmentContext(s)));reconcileContractAttention(s);return s;
+    if(s.pendingBattle&&!s.pendingBattle.exits)prepareDeploymentExits(s,s.pendingBattle);
+    // Check real arrival geometry before committing soldiers, ammunition or guns.
+    if(['attack','beginAssault'].includes(action.type)&&s.pendingBattle&&!previous.pendingBattle)enterSector(s.pendingBattle,s.sectorStates[s.pendingBattle.sector],{placement:true});
+    releaseDeferred(s);synchronizeSquad(s);migrateMedicalCare(s,rosterFor(s));migrateAssignments(s,rosterFor(s));migrateMorale(s,rosterFor(s));migrateEquipment(s);migrateEnemyGroups(s);syncCampaignAmmunition(s,rosterFor(s));validateCampaignAmmunition(s,rosterFor(s));validateDeploymentReturnState(s);validateEquipmentOwnership(s,rosterFor(s));progress(s);if(Object.keys(s.assignmentAttention.reported).length)reconcileAssignmentAttention(s,assignmentStates(s,rosterFor(s),assignmentContext(s)));reconcileContractAttention(s);return s;
   }catch(error){const rejected=clone(previous);rejected.lastError=error.message;return rejected;}
 }
 export function serializeCampaign(s){return JSON.stringify(s);}
