@@ -1,3 +1,4 @@
+import {failQuestsForDeadContact} from './quests.js';
 import {civilianMaxHp,civilianRestoredHp,migrateCivilianHealth,validateCivilianHealth} from './civilian-health.js';
 import {CIVIC_RECRUITS} from './recruitment.js';
 import {CAMPAIGN_SECTORS,OPERATIVES} from './data.js';
@@ -206,6 +207,7 @@ export function acknowledgeCivilianHarm(campaign,battle){
    record.effects.push(structuredClone(effect));
   }
   record.incidents=structuredClone(entry.incidents);record.hpRestored=civilianRestoredHp(entry.npc);
+  if(entry.incidents.some(event=>event.kind==='death'))messages.push(...failQuestsForDeadContact(campaign,request.sector,sceneId,entry.npc.id));
  }
  for(const {id,hp,energy,bleeding,bandaged,unconscious}of healthUpdates){
   const operative=campaign.operativeState[id];

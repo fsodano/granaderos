@@ -1,3 +1,5 @@
+import {applyCivilianHarm} from '../game/civilian-harm.js';
+import {encodeSave,decodeSave} from '../game/save.js';
 import {deliverPonchos} from './npc-gift-helpers.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,restoreCampaign,serializeCampaign,questForNPC} from '../game/campaign.js';
@@ -13,3 +15,19 @@ test('quest requests require adjacency and insufficient deliveries preserve the 
  let{s,b}=meeting();const far=structuredClone(b);far.units[0].x=0;far.units[0].y=0;assert.ok(dispatchCampaign(s,{type:'talkNPC',npcId:'local-retiro',approach:'quest',unitId:1000,sectorState:far}).lastError);s=talk(s,b);s.resources.textiles=0;const denied=dispatchCampaign(s,{type:'talkNPC',npcId:'local-retiro',approach:'quest',unitId:1000,sectorState:b});assert.ok(denied.lastError);assert.equal(denied.quests['retiro-uniformes'].status,'offered');assert.equal(denied.cityLoyaltyEvents.length,0);s.quests['retiro-uniformes'].completedAt=999;assert.throws(()=>restoreCampaign(serializeCampaign(s)));const old=initialCampaign();delete old.quests;assert.deepEqual(restoreCampaign(serializeCampaign(old)).quests,{});
 });
 test('each local errand has exact goods and northern route conditions',()=>{const s=initialCampaign();assert.deepEqual(questForNPC(s,'local-san_nicolas').cost,{powder:5});assert.equal(questForNPC(s,'macacha').conditionMet,false);s.sectors.salta.owner='patriot';s.sectors.jujuy.owner='patriot';assert.equal(questForNPC(s,'macacha').conditionMet,true);});
+
+test('partial physical delivery stays with a dead contact and cannot earn the completion reward',()=>{
+ let {s,b}=meeting();b=deliverPonchos(b,1);
+ let pair=syncBattleTime(s,b);assert.equal(pair.error,null);s=pair.campaign;b=pair.battle;
+ assert.equal(s.quests['retiro-uniformes'].status,'offered');
+ const receipt=structuredClone(b.npcs.find(n=>n.id==='local-retiro').questGifts),stock=s.resources.ponchos;
+ applyCivilianHarm(b,b.npcs.find(n=>n.id==='local-retiro'),{source:b.units.find(u=>u.id==='1000'),damage:100,breathLoss:0,intentional:true});
+ pair=syncBattleTime(s,b);assert.equal(pair.error,null);s=pair.campaign;b=pair.battle;
+ assert.equal(s.quests['retiro-uniformes'].status,'failed');
+ const saved=decodeSave(encodeSave(s,b));s=saved.campaign;b=saved.battle;
+ assert.deepEqual(b.npcs.find(n=>n.id==='local-retiro').questGifts,receipt);
+ assert.equal(s.resources.ponchos,stock);assert.equal(s.conversations['local-retiro'].giftCount,1);
+ assert.equal(s.cityLoyaltyEvents.filter(e=>e.kind==='quest').length,0);
+ const rejected=dispatchCampaign(s,{type:'talkNPC',npcId:'local-retiro',approach:'quest',unitId:1000,sectorState:b});
+ assert.ok(rejected.lastError);assert.deepEqual(rejected.quests,s.quests);
+});

@@ -191,3 +191,44 @@ test('real paid grenade death survives synchronization, live save, final report,
  const omitted=structuredClone(b);omitted.npcs=omitted.npcs.filter(npc=>npc.id!==id);assert.throws(()=>decodeSave(encodeSave(s,omitted)));const rejected=dispatchCampaign(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:omitted,survivors:omitted.units.filter(unit=>unit.side==='player')});assert.ok(rejected.lastError);assert.deepEqual({...rejected,lastError:null},{...s,lastError:null});
  s=finish(s,b);s=snapshot(s);const hour=s.hour;s=order(s,{type:'visitSector'});assert.equal(s.hour,hour);b=enterSector(s.pendingBattle,s.sectorStates.mendoza);assert.equal(b.npcs.find(npc=>npc.id===id).hp,0);({campaign:s,battle:b}=sync(s,b));assert.equal(s.sectors.mendoza.loyalty,loyalty-10);assert.equal(record(s,id).incidents.length,1);s=finish(s,b);assert.deepEqual(snapshot(s),s);
 });
+
+test('an accepted errand fails once on contact death and retains that result through saves and reentry',()=>{
+ let {s,b}=visit();
+ // Accepted-errand fixture isolates consequences; existing quest tests cover
+ // the adjacent conversation and physical delivery controls.
+ s.quests['retiro-uniformes']={status:'offered',offeredAt:s.hour,completedAt:null};
+ const npc=b.npcs.find(n=>n.id==='local-retiro');
+ injury(b,npc,20,{intentional:true});({campaign:s,battle:b}=sync(s,b));
+ assert.equal(s.quests['retiro-uniformes'].status,'offered');
+ injury(b,npc,100,{intentional:true});({campaign:s,battle:b}=sync(s,b));
+ assert.deepEqual(s.quests['retiro-uniformes'],{status:'failed',offeredAt:0,completedAt:null,failedAt:s.hour,failureReason:'contact-dead'});
+ assert.equal(s.log.filter(e=>e.text.startsWith('Encargo fallido:')).length,1);
+ assert.equal(s.cityLoyaltyEvents.filter(e=>e.kind==='quest').length,0);
+ const before=structuredClone(s);({campaign:s,battle:b}=sync(s,b));assert.deepEqual(s,before);
+ s=finish(s,b);s=snapshot(s);s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);
+ assert.equal(s.quests['retiro-uniformes'].status,'failed');
+ assert.equal(b.npcs.find(n=>n.id==='local-retiro').hp,0);
+ assert.equal(s.log.filter(e=>e.text.startsWith('Encargo fallido:')).length,1);
+});
+
+test('contact death neither creates an unknown errand nor revokes a completed delivery',()=>{
+ for(const status of ['unoffered','completed']){
+  const {s,b}=visit();if(status==='completed')s.quests['retiro-uniformes']={status,offeredAt:0,completedAt:0};
+  injury(b,b.npcs.find(n=>n.id==='local-retiro'),100);
+  acknowledgeCivilianHarm(s,b);
+  assert.equal(s.quests['retiro-uniformes']?.status,status==='unoffered'?undefined:status);
+ }
+});
+
+test('failed-errand saves require a matching death receipt and bounded failure date',()=>{
+ let {s,b}=visit();s.quests['retiro-uniformes']={status:'offered',offeredAt:0,completedAt:null};
+ injury(b,b.npcs.find(n=>n.id==='local-retiro'),100);({campaign:s,battle:b}=sync(s,b));s=finish(s,b);
+ assert.equal(snapshot(s).quests['retiro-uniformes'].status,'failed');
+ for(const change of [
+  state=>state.quests['retiro-uniformes'].failedAt=-1,
+  state=>state.quests['retiro-uniformes'].failedAt=state.hour+1,
+  state=>state.quests['retiro-uniformes'].failureReason='missing',
+  state=>state.quests['retiro-uniformes'].completedAt=0,
+  state=>state.quests['posta-polvora']={...state.quests['retiro-uniformes']}
+ ]){const bad=structuredClone(s);change(bad);assert.throws(()=>snapshot(bad));}
+});

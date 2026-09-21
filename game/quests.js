@@ -7,7 +7,30 @@ export const NPC_QUESTS=[
  {id:'salta-correos',npcId:'macacha',sector:'salta',title:'Monturas y armas para los enlaces del norte',cost:{muskets:5,horses:2},requiredSectors:['salta','jujuy'],offer:'Mis enlaces necesitan cinco mosquetes y dos caballos de remuda. Asegurá Salta y Jujuy antes de entregarlos: no mandaré a nadie por un camino ocupado.',delivery:'Las armas y las remudas ya están con los enlaces. Salta y Jujuy podrán sostener sus comunicaciones.'},
 ];
 export function questForNPC(state,npcId){const q=NPC_QUESTS.find(q=>q.npcId===npcId);return q?{...q,status:state.quests?.[q.id]?.status??'unoffered',conditionMet:q.requiredSectors.every(id=>state.sectors[id]?.owner==='patriot')}:null;}
-export function validateQuests(quests,hour){return quests&&typeof quests==='object'&&!Array.isArray(quests)&&Object.entries(quests).every(([id,q])=>NPC_QUESTS.some(n=>n.id===id)&&q&&['offered','completed'].includes(q.status)&&Number.isInteger(q.offeredAt)&&q.offeredAt>=0&&q.offeredAt<=hour&&(q.status==='offered'?q.completedAt===null:Number.isInteger(q.completedAt)&&q.completedAt>=q.offeredAt&&q.completedAt<=hour));}
+export function validateQuests(quests,hour){
+ return quests&&typeof quests==='object'&&!Array.isArray(quests)&&Object.entries(quests).every(([id,q])=>{
+  if(!NPC_QUESTS.some(n=>n.id===id)||!q||!['offered','completed','failed'].includes(q.status)||!Number.isInteger(q.offeredAt)||q.offeredAt<0||q.offeredAt>hour)return false;
+  const date=value=>Number.isInteger(value)&&value>=q.offeredAt&&value<=hour;
+  if(q.status==='failed')return q.completedAt===null&&date(q.failedAt)&&q.failureReason==='contact-dead';
+  return q.failedAt===undefined&&q.failureReason===undefined&&(q.status==='offered'?q.completedAt===null:date(q.completedAt));
+ });
+}
+// Only a recorded death ends an accepted errand. Injury, flight and temporary
+// enemy occupation do not erase it, and completed deliveries remain credited.
+export function failQuestsForDeadContact(campaign,sectorId,sceneId,npcId){
+ if(sceneId)return [];
+ const quest=NPC_QUESTS.find(q=>q.sector===sectorId&&q.npcId===npcId),record=quest&&campaign.quests?.[quest.id];
+ if(record?.status!=='offered')return [];
+ campaign.quests[quest.id]={...record,status:'failed',failedAt:campaign.hour,failureReason:'contact-dead'};
+ return [`Encargo fallido: ${quest.title}. El contacto murió. Los objetos ya entregados no se recuperan.`];
+}
+export function validateQuestFailures(campaign){
+ for(const [id,record]of Object.entries(campaign.quests??{})){
+  if(record.status!=='failed')continue;
+  const quest=NPC_QUESTS.find(q=>q.id===id);
+  if(!quest||!Object.values(campaign.civilianHarm?.records??{}).some(receipt=>receipt.sectorId===quest.sector&&receipt.sceneId===null&&receipt.npcId===quest.npcId&&receipt.incidents.some(event=>event.kind==='death')))throw Error('El encargo fallido no tiene un fallecimiento registrado.');
+ }
+}
 
 // Accepted objects stay with the recipient, with their exact identity and wear.
 // A receipt is physical ownership, not a debit against distant campaign goods.

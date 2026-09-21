@@ -23,7 +23,7 @@ import {speechFor} from './characters.js';
 import {prepareGarrison,returnGarrison,validGarrisons,reserveMilitiaTrainees,returnMilitiaTrainees,validMilitiaTrainees} from './garrison.js';
 import {tradeQuote,applyPolicy,dailyPolitics,validatePolitics,policyStatus} from './politics.js';
 export {tradeQuote,policyStatus} from './politics.js';
-import {questForNPC,validateQuests,validateQuestGifts,NPC_QUESTS} from './quests.js';
+import {questForNPC,validateQuests,validateQuestFailures,validateQuestGifts,NPC_QUESTS} from './quests.js';
 export {questForNPC,NPC_QUESTS} from './quests.js';
 import {recordCityLoyalty,validCityLoyaltyEvents} from './cities.js';
 import {contractQuote,contractStatus,migrateContracts} from './contracts.js';
@@ -236,7 +236,7 @@ export function hasPendingNpcGiftProgress(campaign,battle){
   if(npc?.questGifts===undefined&&!quest?.carried)continue;
   const count=validateQuestGifts(npc).length,acknowledged=campaign.conversations?.[npc.id]?.giftCount??0;
   requireThat(count>=acknowledged,'El parte perdió objetos que el interlocutor ya recibió.');
-  if(count>acknowledged||count>0&&count===quest?.carried?.count&&quest.status!=='completed'&&quest.conditionMet)changed=true;
+  if(count>acknowledged||count>0&&count===quest?.carried?.count&&!['completed','failed'].includes(quest.status)&&quest.conditionMet)changed=true;
  }
  return changed;
 }
@@ -266,7 +266,7 @@ function acknowledgeNpcGifts(s,snapshot){
   const quest=questForNPC(s,local.id);if(!quest?.carried)continue;
   const count=validateQuestGifts(local).length,previous=s.conversations?.[local.id],acknowledged=previous?.giftCount??0;
   requireThat(count>=acknowledged,'El parte perdió objetos que el interlocutor ya recibió.');
-  const complete=count===quest.carried.count&&quest.status!=='completed'&&quest.conditionMet;
+  const complete=count===quest.carried.count&&!['completed','failed'].includes(quest.status)&&quest.conditionMet;
   if(count===acknowledged&&!complete)continue;
   if(!count)continue;
   const npc=ENCOUNTERS.find(n=>n.id===local.id&&n.sector===s.pendingBattle.sector);
@@ -618,7 +618,7 @@ export function dispatchCampaign(previous,action){
         for(const message of acknowledgeCivilianHarm(s,snapshot))note(s,message);
         const quest=questForNPC(s,npc.id),authored=hasAuthoredDialogue(npc);
         requireThat(authored?dialogueOptions(npc,quest).some(([id])=>id===action.approach):action.approach==='friendly','Este interlocutor no ofrece esa conversación.');
-        let text=(authored?npc.greeting:ambientReply(npc,s.conversations?.[npc.id]?1:0))+(quest&&quest.status!=='completed'?` ${quest.offer}`:''),outcome='conversation';
+        let text=(authored?npc.greeting:ambientReply(npc,s.conversations?.[npc.id]?1:0))+(quest&&!['completed','failed'].includes(quest.status)?` ${quest.offer}`:''),outcome='conversation';
         if(action.approach==='repeat'){text=s.conversations?.[npc.id]?.text??npc.greeting;outcome='repeated';}
         if(action.approach==='direct'&&npc.operativeId!==undefined){
           const gate=npc.operativeId>=100?civicStatus(s,npc.operativeId,true):recruitmentStatus(s,npc.operativeId,true),reason=encounterRequirements(s,npc,actor)??(!gate.available?gate.reason:null);
@@ -626,7 +626,7 @@ export function dispatchCampaign(previous,action){
         }else if(action.approach==='direct')text=npc.greeting;
         if(action.approach==='mission'){requireThat(s.pendingBattle.sceneId==='yatasto','No hay una conferencia pendiente.');text=talkMission(s,npc.id,isSupplied(s,'salta'));outcome='mission';}
         if(action.approach==='quest'){
-          requireThat(quest,'Este interlocutor no tiene un encargo pendiente.');requireThat(quest.status!=='completed','El encargo ya fue cumplido.');
+          requireThat(quest,'Este interlocutor no tiene un encargo pendiente.');requireThat(!['completed','failed'].includes(quest.status),'El encargo ya terminó.');
           if(quest.status==='unoffered'){s.quests[quest.id]={status:'offered',offeredAt:s.hour,completedAt:null};text=quest.offer;outcome='questOffered';}
           else{requireThat(!quest.carried,'Los objetos del encargo se registran cuando el interlocutor los recibe.');requireThat(quest.conditionMet,'Primero asegurá las localidades indicadas en el encargo.');pay(s,quest.cost);s.quests[quest.id]={...s.quests[quest.id],status:'completed',completedAt:s.hour};recordCityLoyalty(s,{sectorId:quest.sector,kind:'quest',eventId:`npc-${quest.id}`});text=quest.delivery;outcome='questCompleted';note(s,`Encargo cumplido: ${quest.title}. La ciudad reconoce el servicio.`);}
         }
@@ -829,5 +829,5 @@ export function restoreCampaign(text){
   requireThat(object(s.sectorStates)&&Object.entries(s.sectorStates).every(([id,snapshot])=>(sector(id)||id==='san_lorenzo')&&validateSectorSnapshot(snapshot)),'Los sectores guardados son inválidos.');
   for(const quest of NPC_QUESTS)if(quest.carried&&quest.sector!==s.pendingBattle?.sector&&(s.conversations[quest.npcId]?.giftCount??0)>0)validateAcknowledgedNpcGiftReceipts(s,s.sectorStates[quest.sector]?.npcs??[],quest.sector);
   if(s.pendingBattle&&(s.pendingBattle.hour!==undefined||s.pendingBattle.secondOfHour!==undefined))requireThat(Number.isSafeInteger(s.pendingBattle.hour)&&s.pendingBattle.hour>=0&&(s.pendingBattle.secondOfHour===undefined||Number.isInteger(s.pendingBattle.secondOfHour)&&s.pendingBattle.secondOfHour>=0&&s.pendingBattle.secondOfHour<3600),'La hora inicial del despliegue es inválida.');
-  requireThat(!s.pendingBattle||s.pendingBattle.syncedSeconds===undefined||(Number.isSafeInteger(s.pendingBattle.syncedSeconds)&&s.pendingBattle.syncedSeconds>=0),'El reloj del despliegue es inválido.');requireThat(Number.isInteger(s.secondOfHour??0)&&(s.secondOfHour??0)>=0&&(s.secondOfHour??0)<3600,'El reloj guardado es inválido.');requireThat(s.deferredRaids===undefined||(Array.isArray(s.deferredRaids)&&s.deferredRaids.length<=1000&&s.deferredRaids.every(r=>object(r)&&['north','coast','interior'].includes(r.theater)&&sector(r.target))),'Las incursiones pendientes son inválidas.');validatePolitics(s);validateMedicalCare(s,rosterFor(s));validateAssignments(s,rosterFor(s));validateAssignmentAttention(s,rosterFor(s));validateLogisticsNotice(s);validateArtilleryDeployment(s.pendingBattle);validateContractAttention(s,rosterFor(s));validateMorale(s,rosterFor(s));validateEquipment(s,rosterFor(s));validateEnemyGroups(s,rosterFor(s));validateCampaignAmmunition(s,rosterFor(s));validateDeploymentReturnState(s);if(s.pendingBattle){if(s.pendingBattle.exits===undefined)prepareDeploymentExits(s,s.pendingBattle);requireThat(s.pendingBattle.exitRulesVersion===1&&validateSectorExits(s.pendingBattle.sector,s.pendingBattle.sceneId??null,s.pendingBattle.exits),'Las salidas guardadas son inválidas.');if(s.pendingBattle.resumeSnapshot){const b=validateSectorSnapshot(s.pendingBattle.resumeSnapshot);requireThat(b.battleId===s.pendingBattle.id&&b.sectorId===s.pendingBattle.sector&&(b.sceneId??null)===(s.pendingBattle.sceneId??null)&&b.syncedSeconds===(s.pendingBattle.syncedSeconds??0),'La resolución pendiente es inválida.');}}validateCampaignCivilianHarm(s);s.lastError=null;return s;
+  requireThat(!s.pendingBattle||s.pendingBattle.syncedSeconds===undefined||(Number.isSafeInteger(s.pendingBattle.syncedSeconds)&&s.pendingBattle.syncedSeconds>=0),'El reloj del despliegue es inválido.');requireThat(Number.isInteger(s.secondOfHour??0)&&(s.secondOfHour??0)>=0&&(s.secondOfHour??0)<3600,'El reloj guardado es inválido.');requireThat(s.deferredRaids===undefined||(Array.isArray(s.deferredRaids)&&s.deferredRaids.length<=1000&&s.deferredRaids.every(r=>object(r)&&['north','coast','interior'].includes(r.theater)&&sector(r.target))),'Las incursiones pendientes son inválidas.');validatePolitics(s);validateMedicalCare(s,rosterFor(s));validateAssignments(s,rosterFor(s));validateAssignmentAttention(s,rosterFor(s));validateLogisticsNotice(s);validateArtilleryDeployment(s.pendingBattle);validateContractAttention(s,rosterFor(s));validateMorale(s,rosterFor(s));validateEquipment(s,rosterFor(s));validateEnemyGroups(s,rosterFor(s));validateCampaignAmmunition(s,rosterFor(s));validateDeploymentReturnState(s);if(s.pendingBattle){if(s.pendingBattle.exits===undefined)prepareDeploymentExits(s,s.pendingBattle);requireThat(s.pendingBattle.exitRulesVersion===1&&validateSectorExits(s.pendingBattle.sector,s.pendingBattle.sceneId??null,s.pendingBattle.exits),'Las salidas guardadas son inválidas.');if(s.pendingBattle.resumeSnapshot){const b=validateSectorSnapshot(s.pendingBattle.resumeSnapshot);requireThat(b.battleId===s.pendingBattle.id&&b.sectorId===s.pendingBattle.sector&&(b.sceneId??null)===(s.pendingBattle.sceneId??null)&&b.syncedSeconds===(s.pendingBattle.syncedSeconds??0),'La resolución pendiente es inválida.');}}validateCampaignCivilianHarm(s);validateQuestFailures(s);s.lastError=null;return s;
 }
