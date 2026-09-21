@@ -1,11 +1,12 @@
+import {tucumanCombatOrder} from './tucuman-driver.mjs';
 import {dispatchCampaign} from '../game/campaign.js';
 import {sanLorenzoCombatOrder} from './san-lorenzo-driver.mjs';
 import {fightNorthernSector,northernCombatOrder,prepareNorthernSquad} from './northern-route.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {beginFreshCampaign,recoverFreshCapital,prepareFreshNorthernAssault,prepareFreshSanLorenzo,prepareFreshMissionSupport,prepareFreshCordobaAssault,recoverFreshCordobaSurvivors,prepareFreshCordobaDefense} from './fresh-campaign-route.mjs';
+import {beginFreshCampaign,recoverFreshCapital,prepareFreshNorthernAssault,prepareFreshSanLorenzo,prepareFreshMissionSupport,prepareFreshCordobaAssault,recoverFreshCordobaSurvivors,prepareFreshCordobaDefense,prepareFreshTucumanAssault} from './fresh-campaign-route.mjs';
 
-test('a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo and Córdoba victories',()=>{
+test('a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba and Tucumán victories',()=>{
  const opening=beginFreshCampaign();
  assert.ok(opening.actions>0);assert.ok(opening.casualties.length>0);
  assert.equal(opening.campaign.officer,null);
@@ -64,6 +65,11 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  const defense=fightNorthernSector(prepareFreshCordobaDefense(healed),'cordoba',{controller:northernCombatOrder});
  assert.equal(defense.campaign.sectors.cordoba.owner,'patriot');
  assert.equal(defense.campaign.pendingEncounter,null);
+ const tucuman=fightNorthernSector(prepareFreshTucumanAssault(defense.campaign),'tucuman',{controller:tucumanCombatOrder});
+ assert.equal(tucuman.campaign.sectors.tucuman.owner,'patriot');
+ assert.ok(tucuman.campaign.resources.treasury>=0);
+ assert.equal(tucuman.campaign.completed,false);
+ for(const [id,record]of Object.entries(defense.campaign.operativeState))if(!record.alive)assert.equal(tucuman.campaign.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(healed.operativeState))if(!record.alive)assert.equal(defense.campaign.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(cordoba.campaign.operativeState))if(!record.alive)assert.equal(healed.operativeState[id].alive,false);
 });

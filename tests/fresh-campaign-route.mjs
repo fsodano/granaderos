@@ -4,7 +4,7 @@ import {enterSector} from '../game/world.js';
 import {equipOpeningRifles} from './opening-equipment.mjs';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
-import {weaponAmmoType} from '../game/ammunition-types.js';
+import {weaponAmmoType,availableAmmunition} from '../game/ammunition-types.js';
 import {ammoResourceKey} from '../game/campaign-ammunition.js';
 import {fight} from './opening-driver.mjs';
 import {hiredAssaultOrder} from './hired-assault-driver.mjs';
@@ -196,5 +196,26 @@ for(let leg=0;leg<4&&c.location!=='cordoba';leg++){
  assert.equal(c.location,'cordoba');
  assert.equal(c.pendingEncounter?.sector,'cordoba');
  order({type:'respondToEncounter',groupId:c.pendingEncounter.groupId,choice:'tactical'});
+ return c;
+}
+
+export function prepareFreshTucumanAssault(start){
+ let c=decodeSave(encodeSave(start)).campaign;
+const order=a=>{c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);};
+order({type:'squad',ids:[111,125,130,139]});for(const id of [144,146])order({type:'recruitCivic',id,term:'week'});
+const main=c.activeSquadId,supportIds=[121,126,129,133];for(const id of supportIds)order({type:'recruitCivic',id,term:'week'});order({type:'createSquad',name:'Apoyo de Tucumán',ids:supportIds});const support=c.activeSquadId;
+for(const id of [111,125,130,139,144,146,...supportIds]){const model=()=>sectorInventoryModel(c,'cordoba',rosterFor(c),id);
+ const row=model().entries.find(r=>r.reachable&&[1800,1801,1802].includes(JSON.parse(r.expected).weapon));
+ if(row){const gun=JSON.parse(row.expected);order({type:'sectorInventory',sector:'cordoba',operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count:1});const item=model().carried.find(r=>r.expected&&JSON.parse(r.expected).weapon===gun.weapon);order({type:'sectorInventory',sector:'cordoba',operativeId:id,direction:'equip',inventoryKey:item.inventoryKey,expected:item.expected,slot:'primary'});}
+ const ammoType=weaponAmmoType(rosterFor(c).find(o=>o.id===id).weapon);
+ for(const row of model().entries.filter(r=>r.reachable&&JSON.parse(r.expected).ammoType===ammoType)){const count=Math.min(row.count,Math.max(0,12-availableAmmunition(c.operativeState[id],ammoType)));if(count)order({type:'sectorInventory',sector:'cordoba',operativeId:id,direction:'take',sourceKey:row.key,expected:row.expected,count});}
+ order({type:'assignCare',operativeId:id,assignment:'rest'});
+}
+for(let i=0;i<24&&[111,125,130,139,144,146,...supportIds].some(id=>c.operativeState[id].energy<100||c.operativeState[id].fatigue>0||c.operativeState[id].asleep);i++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
+for(const operativeId of [111,125,130,139,144,146,...supportIds])order({type:'assignCare',operativeId,assignment:'active'});
+for(const id of [main,support]){order({type:'selectSquad',id});order({type:'attack',sector:'tucuman',queue:true});}for(let i=0;i<24&&![main,support].every(id=>c.squads.find(s=>s.id===id)?.journey?.status==='ready');i++)order({type:'wait',hours:1});order({type:'beginAssault',sector:'tucuman'});
+ assert.equal(c.pendingBattle.squad.length,10);
+ const battle=enterSector(c.pendingBattle,c.sectorStates.tucuman);
+ assert.deepEqual(decodeSave(encodeSave(c,battle)),{campaign:c,battle});
  return c;
 }
