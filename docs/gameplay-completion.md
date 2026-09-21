@@ -41,7 +41,7 @@ An actual six-person Córdoba continuation loses. This is not a successful fresh
 
 ## Physical medical delivery
 
-Tucumán now has a carried dressing errand with partial deliveries, quantity refusal, persistent ownership, notebook progress and a one-time loyalty reward. All 49 focused checks, type checking and the build pass; see [medical delivery](physical-medical-delivery.md) for exact scope and the remaining live check. This does not complete escort, prison or alternative quest resolutions.
+Tucumán now has a carried dressing errand with partial deliveries, quantity refusal, persistent ownership, notebook progress and a one-time loyalty reward. All 49 focused checks, type checking and the build pass; see [medical delivery](physical-medical-delivery.md) for exact scope. Live partial delivery, excessive-quantity refusal, completion and reload/notebook verification now pass. This does not complete escort, prison or alternative quest resolutions.
 
 ## Work order and completion evidence
 
