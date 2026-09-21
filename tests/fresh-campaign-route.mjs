@@ -181,3 +181,20 @@ for(const id of [111,125])assert.equal(c.operativeState[id].hp,c.operativeState[
  assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
  return c;
 }
+
+export function prepareFreshCordobaDefense(start){
+ let c=decodeSave(encodeSave(start)).campaign;
+const order=a=>{c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);};
+for(const id of [111,125]){const m=sectorInventoryModel(c,c.location,rosterFor(c),id),item=m.carried.find(r=>r.equip?.some(e=>e.slot==='primary'));assert.ok(item);order({type:'sectorInventory',sector:c.location,operativeId:id,direction:'equip',inventoryKey:item.inventoryKey,expected:item.expected,slot:'primary'});}
+for(let leg=0;leg<4&&c.location!=='cordoba';leg++){
+ for(const operativeId of [111,125,139])order({type:'assignCare',operativeId,assignment:'rest'});
+ for(let i=0;i<24&&[111,125,139].some(id=>c.operativeState[id].energy<100||c.operativeState[id].fatigue>0||c.operativeState[id].asleep);i++)order({type:'wait',hours:1});
+ for(const operativeId of [111,125,139]){const contract=c.contracts[operativeId];if(contract.expiresAt-c.hour<36)order({type:'renewContract',id:operativeId,term:'week',expectedExpiresAt:contract.expiresAt});order({type:'assignCare',operativeId,assignment:'active'});}
+ order({type:'travel',sector:'cordoba'});if(c.pendingEncounter)break;
+}
+
+ assert.equal(c.location,'cordoba');
+ assert.equal(c.pendingEncounter?.sector,'cordoba');
+ order({type:'respondToEncounter',groupId:c.pendingEncounter.groupId,choice:'tactical'});
+ return c;
+}

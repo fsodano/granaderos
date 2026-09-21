@@ -107,3 +107,7 @@ The continuous Retiro-only route now wins Córdoba after San Nicolás and San Lo
 ## Fresh Córdoba survivor recovery
 
 The continuous fresh-start regression now also recovers the two wounded soldiers who routed to Buenos Aires during Córdoba. A paid local doctor uses finite recovered dressings. When those are exhausted, the stabilized patients and doctor travel to Retiro and buy supplies from its real shop. Both regain full health through elapsed care, all 25 prior deaths persist, and campaign saves round-trip. The checkpoint reaches hour 117 with 604 pesos and the two patients at Retiro; the northern survivors remain at Córdoba. The focused continuous test passes. Re-equipment, reunion and the subsequent northern campaign remain open.
+
+## Fresh reunion and Córdoba defense
+
+The fresh-start route now equips the routed survivors from their existing carried pistols, rests the recovery party, renews contracts when required and travels back to Córdoba. The elapsed time produces an actual northern enemy counterattack. All five living hires participate in its tactical defense, which wins and replays deterministically. Campaign saves and permanent casualties remain enforced. The focused continuous route test passes through this defense. The resulting checkpoint is hour 152, second 1713, with 1,112 pesos, five living hires and the same 25 deaths. The first attempt with unequipped routed soldiers retreated; no combat rules or enemy strength were changed. The advance beyond Córdoba and the ending remain open.
