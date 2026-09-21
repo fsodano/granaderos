@@ -3,6 +3,7 @@ import {atHand,planningPoint} from './tactical-planning-space.js';
 import {propCells} from './props.js';
 import {directionTo, approximateHeardPosition} from './tactical-awareness.js';
 import {applyCivilianHarm} from './civilian-harm.js';
+import {recoverEnergy} from './fatigue.js';
 
 // Local, deterministic state machines. No network, hidden enemy positions or RNG.
 export const NPC_ACTIVITIES = ['roaming','home','working','socializing','hiding','fleeing','following','waiting'];
@@ -125,7 +126,7 @@ export function advanceNpc(s,n,budget=24,atTime=now(s)) {
   if(!route){delete ai.destination;return;}
   for(const p of route.path){
     const t=routes.tiles.get(key(p)),climbing=!sameSurface(n,p),up=climbing&&surfaceHeight(s,p)>surfaceHeight(s,n),cost=climbing?(up?20:15):n.stance==='prone'?16:n.stance==='crouched'?10:8;
-    if(climbing&&((n.stance??'standing')!=='standing'||(n.energy??100)<(up?12:8)))break;
+    if(climbing&&(n.stance??'standing')!=='standing')break;
     if(t.type==='door'&&!t.open){
       if(budget<6)break;
       if(t.trap&&t.trap.armed!==false){
@@ -139,6 +140,9 @@ export function advanceNpc(s,n,budget=24,atTime=now(s)) {
       t.open=true;t.blocked=false;t.blocksSight=false;budget-=6;
     }
     if(budget<cost)break;
+    // Spend this civilian phase resting before a climb would exhaust the
+    // resident. Do not keep walking with zero breath and an awake flag.
+    if(climbing&&(n.energy??100)<=(up?12:8)){recoverEnergy(n,10);break;}
     budget-=cost;if(climbing)n.energy=Math.max(0,(n.energy??100)-(up?12:8));if(n.x!==p.x||n.y!==p.y)n.facing=directionTo(n,p);Object.assign(n,point(p));n.lastMovePath.push(climbing?{...p}:point(p));
   }
   if(sameCell(n,ai.destination)){

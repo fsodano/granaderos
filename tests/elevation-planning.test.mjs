@@ -127,3 +127,17 @@ test('a crouched AI search can stand and use a roof bridge to reach a remembered
  assert.ok(orders.some(order=>order.type==='stance'&&order.stance==='standing'));assert.equal(s.units[0].tacticalLevel,1);assert.ok(s.units[0].ap<=100-20-stanceCost(before.units[0],'standing'));
  assert.ok(s.units[0].energy<=88);assert.deepEqual(s,replay(before,orders));
 });
+
+test('civilian climb exhaustion consumes a rest phase before resuming and remains saveable',()=>{
+ for(const descending of [true,false]){
+  const from=descending?link.to:link.from,to=descending?link.from:link.to,cost=descending?15:20,breath=descending?8:12;
+  const s=field([{id:'p',x:0,y:0}],{npcs:[{id:'n',name:'Vecino',...from,hp:100,energy:breath,unconscious:false,stance:'standing',ai:{cycle:0,wait:0,homeId:null,activity:'roaming',destination:to}}]});
+  const n=s.npcs[0],players=structuredClone(s.units);
+  advanceNpc(s,n,cost-1);assert.ok(sameCell(n,from));assert.equal(n.energy,breath,'an insufficient action budget cannot fund rest');
+  advanceNpc(s,n,cost);assert.ok(sameCell(n,from));assert.equal(n.energy,breath+10);assert.equal(n.unconscious,false);assert.equal(n.hp,100);
+  const saved=validateBattleSnapshot(JSON.parse(JSON.stringify(s)));
+  advanceNpc(s,n,cost);advanceNpc(saved,saved.npcs[0],cost);
+  assert.ok(sameCell(n,to));assert.equal(n.energy,10);assert.deepEqual(saved.npcs,s.npcs);assert.deepEqual(s.units,players);
+  assert.doesNotThrow(()=>validateBattleSnapshot(s));
+ }
+});

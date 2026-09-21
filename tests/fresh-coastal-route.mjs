@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {dispatchCampaign} from '../game/campaign.js';
+import {dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {meetRecruits} from './campaign-recruitment-route.mjs';
 
@@ -45,4 +45,24 @@ export function recruitFreshNavalCommand(start){
  assert.ok(c.operativeState[57].alive);assert.equal(c.defeated,false);
  for(const id of [3,118])assert.equal(c.operativeState[id].alive,false);
  assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);return c;
+}
+
+export function prepareFreshSantaFeAssault(start){
+ let c=decodeSave(encodeSave(start)).campaign;
+ const order=a=>{c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);};
+for(const id of [105,138])order({type:'renewContract',id,term:'day',expectedExpiresAt:c.contracts[id].expiresAt});
+order({type:'travel',sector:'retiro',mode:'posta'});
+order({type:'purchaseMedicalSupplies',operativeId:2,quantity:15});
+for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:operativeId===2?'doctor':operativeId===57?'patient':'rest'});
+for(let i=0;i<24&&c.operativeState[57].hp<c.operativeState[57].maxHp;i++)order({type:'wait',hours:1});assert.equal(c.operativeState[57].hp,c.operativeState[57].maxHp);
+for(const operativeId of [5,6])if(rosterFor(c).find(o=>o.id===operativeId).weapon!==1801){for(let h=0;h<25&&!c.merchants.retiro.stock['1801'];h++){for(const id of [105,138])if(c.contracts[id].expiresAt-c.hour<=1)order({type:'renewContract',id,term:'day',expectedExpiresAt:c.contracts[id].expiresAt});order({type:'wait',hours:1});}order({type:'purchaseEquipment',item:1801});order({type:'equip',operativeId,slot:'weapon',itemId:1801});}
+for(const id of [105,138])order({type:'renewContract',id,term:'day',expectedExpiresAt:c.contracts[id].expiresAt});
+for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
+order({type:'purchaseAmmunition',ammoType:'musket_69',quantity:60});
+order({type:'travel',sector:'san_nicolas',mode:'posta'});
+ order({type:'attack',sector:'santa_fe',queue:true,mode:'posta'});
+ for(let i=0;i<20&&c.squads.find(q=>q.id===c.activeSquadId).journey?.status!=='ready';i++)order({type:'wait',hours:1});
+ order({type:'beginAssault',sector:'santa_fe'});
+ assert.equal(c.pendingBattle.squad.length,6);assert.ok(c.hour%24>=6&&c.hour%24<20);
+ return c;
 }
