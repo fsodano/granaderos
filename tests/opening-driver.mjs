@@ -4,6 +4,7 @@ import {actBattle,endTurn,getReachable,hasLineOfSight,canSee,shotChance,actionCo
 import {chooseEnemyAction} from '../game/tactical-ai.js';
 import {sameSurface,spacePoint} from '../game/tactical-space.js';
 import {availableAmmunition} from '../game/ammunition-types.js';
+import {criticalFirstAidNeeded} from '../game/first-aid.js';
 
 const alive=u=>u.hp>0&&!u.departure&&!u.surrendered&&!u.unconscious&&!u.routed;
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
@@ -16,7 +17,7 @@ export function combatOrder(b,u){
  // The commander takes a firing posture at contact, but must be able to
  // stand and search when only incapacitated allies remain.
  if(visible.length&&u.missionAlly&&u.stance!=='prone'&&u.ap>=stanceCost(u,'prone'))return {type:'stance',unitId:u.id,stance:'prone'};
- const patient=b.units.filter(v=>v.side===u.side&&v.hp>0&&!v.departure&&!v.surrendered&&!v.routed&&v.bleeding>0&&sameSurface(u,v)&&distance(u,v)<=1.5&&hasLineOfSight(b,u,v)).sort((a,b)=>a.hp-b.hp)[0];
+ const patient=b.units.filter(v=>v.side===u.side&&v.hp>0&&!v.departure&&!v.surrendered&&!v.routed&&(v.bleeding>0||criticalFirstAidNeeded(v))&&sameSurface(u,v)&&distance(u,v)<=1.5&&hasLineOfSight(b,u,v)).sort((a,b)=>a.hp-b.hp)[0];
  if(patient&&u.medkits>0&&u.medical>0){
   if(u.activeSlot==='medical'&&u.ap>=cost.heal)return {type:'useItem',unitId:u.id,targetId:patient.id};
   if(u.activeSlot!=='medical'&&u.ap>=cost.heal+cost.weapon)return {type:'weapon',unitId:u.id,slot:'medical'};

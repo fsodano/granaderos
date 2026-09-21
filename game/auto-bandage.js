@@ -1,9 +1,10 @@
 import {sameCell} from './tactical-space.js';
 import {atHand,moveOrder,planningPoint} from './tactical-planning-space.js';
 import {actBattle, canEndCombat, CRITICAL_HEALTH, getReachable, hasLineOfSight} from './tactical.js';
+import {criticalFirstAidNeeded} from './first-aid.js';
 
 const present = unit => unit.side === 'player' && unit.hp > 0 && !unit.routed && !unit.fled && !unit.departure && !unit.surrendered;
-const needsBandage = unit => present(unit) && (unit.bleeding > 0 || (unit.bandaged ?? 0) < unit.maxHp - unit.hp);
+const needsBandage = unit => present(unit) && (criticalFirstAidNeeded(unit) || unit.bleeding > 0 || (unit.bandaged ?? 0) < unit.maxHp - unit.hp);
 const conscious = unit => present(unit) && unit.hp >= CRITICAL_HEALTH && !unit.unconscious && (unit.energy ?? 100) > 0;
 const doctorReady = unit => !unit.militia && conscious(unit) && unit.medical > 0 && (!unit.knockedDown || unit.activeSlot === 'medical');
 const summary = unit => ({id: unit.id, name: unit.nickname || unit.name, hp: unit.hp, bleeding: unit.bleeding ?? 0, medkits: unit.medkits ?? 0});
@@ -48,7 +49,7 @@ function plansFor(state) {
   return plans.sort((a, b) => selfCare(a) - selfCare(b) || urgency(a.patient) - urgency(b.patient) || a.destination.cost - b.destination.cost || b.doctor.medical - a.doctor.medical || String(a.patient.id).localeCompare(String(b.patient.id)) || String(a.doctor.id).localeCompare(String(b.doctor.id)));
 }
 
-/** Execute ordinary, immutable tactical orders. No rest, refill, HP recovery or direct movement. */
+/** Execute ordinary tactical orders, including paid critical stabilization. */
 export function autoBandageBattle(state) {
   let battle = state;
   const steps = [], treatedIds = [];
@@ -62,8 +63,10 @@ export function autoBandageBattle(state) {
       battle = actBattle(battle, action); steps.push(action);
       if (battle.lastError) stoppedReason = battle.lastError;
     }
-    // Each casualty needs at most a paid stand, one approach, one equip and one treatment.
-    const limit = initialPatients.length * 4 + 1;
+    // Each successful treatment consumes one existing dressing. Bound extra
+    // stand/equip/approach orders per stroke; rescued medics can use their kits.
+    // Never refill supplies or rest to finish.
+    const limit = state.units.filter(u=>present(u)&&!u.militia&&u.medical>0).reduce((sum,u)=>sum+(u.medkits??0),0)*4+1;
     while (!stoppedReason && battle.units.some(needsBandage)) {
       const danger = admissionReason(battle);
       if (danger) { stoppedReason = danger; break; }
@@ -78,8 +81,8 @@ export function autoBandageBattle(state) {
       if (next.lastError) { stoppedReason = next.lastError; break; }
       const actor = next.units.find(unit => unit.id === doctor.id);
       const casualty = next.units.find(unit => unit.id === patient.id);
-      const progressed = action.type === 'stance' ? actor.stance==='standing' : action.type === 'weapon' ? actor.activeSlot === 'medical' : action.type === 'move' ? !sameCell(actor,doctor) : actor.medkits < doctor.medkits && !needsBandage(casualty);
-      if (action.type === 'useItem' && progressed && !treatedIds.includes(patient.id)) treatedIds.push(patient.id);
+      const progressed = action.type === 'stance' ? actor.stance==='standing' : action.type === 'weapon' ? actor.activeSlot === 'medical' : action.type === 'move' ? !sameCell(actor,doctor) : actor.medkits < doctor.medkits && (casualty.hp>patient.hp||casualty.bleeding<patient.bleeding||(casualty.bandaged??0)>(patient.bandaged??0));
+      if (action.type === 'useItem' && progressed && !needsBandage(casualty) && !treatedIds.includes(patient.id)) treatedIds.push(patient.id);
       if (next.mode !== 'exploration' || next.phase !== 'player') { stoppedReason = DANGER; break; }
       if (!conscious(actor)) { stoppedReason = 'Vendaje detenido: el sanitario quedó sin fuerzas o fuera de combate.'; break; }
       if (next.status !== 'active' || admissionReason(next)) { stoppedReason = DANGER; break; }

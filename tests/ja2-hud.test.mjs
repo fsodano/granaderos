@@ -263,15 +263,15 @@ test('stance control cycles all three paid postures and gets up after knockdown'
   u.mounted=true;assert.equal(orderDescriptors(s,u).find(d=>d.id==='stance').disabled,true);
 });
 
-test('equipped medical item previews and treats unconscious allies and self without restoring HP',()=>{
+test('equipped medical item previews critical stabilization while ordinary wounds need campaign recovery',()=>{
   let s=battle([merc(0),merc(1,{hp:10,bleeding:4,bandaged:0})]);
   let u=players(s)[0],patient=players(s)[1];u.activeSlot='medical';
-  const beforeHP=patient.hp,beforeKits=u.medkits;
+  const beforeKits=u.medkits;
   const preview=targetPreview(s,u,patient,{mode:'move'});
   assert.equal(patient.unconscious,true);assert.equal(preview.valid,true);assert.equal(preview.pa,actionCosts(s,u).heal);assert.equal(preview.chance,undefined);
   s=actBattle(s,{unitId:u.id,...orderAction(s,u,{targetId:patient.id},'useItem')});
   assert.equal(s.lastError,null);u=players(s)[0];patient=players(s)[1];
-  assert.equal(patient.hp,beforeHP);assert.equal(patient.bleeding,0);assert.equal(u.medkits,beforeKits-1);
+  assert.equal(patient.hp,15);assert.equal(patient.bleeding,0);assert.equal(u.medkits,beforeKits-1);assert.equal(patient.hp,preview.treatment.hpAfter);assert.match(preview.coverNote,/Salud: \+5, hasta 15/);
   assert.equal(targetPreview(s,u,patient,{mode:'move'}).valid,false);
   u.hp=40;u.bleeding=3;u.bandaged=0;
   assert.equal(targetPreview(s,u,u,{mode:'move'}).valid,true);

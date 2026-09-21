@@ -1,6 +1,36 @@
 # Northern campaign route verification
 
-## Shared-turn budget checkpoint: 12 September 2026
+## Critical first-aid checkpoint: 19 September 2026
+
+The current isolated gameplay checkout reaches Yatasto at **phase 3, hour 306, second 2677**, with **2,085 pesos**, **fifteen permanent deaths** and no remaining prisoners. It uses the established seed-8 southern fixture, in which Buenos Aires and Ensenada are already secured. It does not prove a complete Retiro-only campaign or the ending. Separate roster and contract work in the main checkout is outside this checkpoint.
+
+The route uses ordinary orders, paid contracts, finite ammunition and dressings, actual journeys, deterministic combat replays and complete save/return checks. Critical first aid now changes real survival and subsequent supply needs. The controller treats eligible critical allies, uses observed body-region aiming, and coordinates one order per soldier per pass. The controller does not edit enemy health, skill, equipment or turn costs.
+
+| Battle | Arrival hour | Turns | Orders | Actual result |
+| --- | ---: | ---: | ---: | --- |
+| Córdoba | 156 | 8 | 83 | Victory; 123, 115 and 136 die |
+| Tucumán, exposed relief patrol | 174 | 1 | 28 | Defeat; 131, 121 and 124 die; 126 is captured at 5 HP |
+| Buenos Aires, coastal defense | 186 | 1 | 0 | The existing critical reserve cannot act; 134 is captured at 12 HP |
+| Buenos Aires, paid relief attack | 198 | 6 | 79 | Victory; 134 is released with his actual wound and equipment |
+| Tucumán, joint rescue | 233 | 6 | 145 | Victory; all twelve rescuers survive; 126 is released |
+| Córdoba, depot defense | 294 | 8 | 41 | Victory; 107 and 120 die; paid guard 113 survives at 20 HP |
+| Salta, joint assault | 294 | 8 | 231 | Victory; 125, 126, 111 and 103 die |
+
+The first medical stock runs out before the northern march. Doctor 112 travels from San Nicolás to Retiro, rests, buys three dressings for 90 pesos, and returns through the actual route. This trip runs from hour 72 to 131; recovery and daylight staging finish at hour 144. The doctors use 23 dressings from real carried, recovered, donated and purchased supplies. The workshop also completes the existing paid order for sixty matching rifle cartridges before departure.
+
+The extra travel exposes a real coastal raid. Its defeat and blockade are retained, then the paid relief force returns south and defeats the same stationed group. Released soldier 134 keeps his 12 HP, bleeding and dropped-gun state. Two hours of local care consume two dressings before the force returns to Córdoba. Release retains his loose cartridges and does not recreate his missing gun. The additional delay also requires ordinary contract renewals.
+
+The Tucumán rescue retains prisoner 126's original wound, belongings and remaining contract time. One dressing stops his bleeding. Courier 119 then makes both twelve-hour trips, buys thirteen dressings for 390 pesos, and returns while existing paid doctors work. Both qualified doctors survived, so this recovery hires no replacement doctor. Ten dressings are consumed during this recovery, including two collected from actual field supplies. The force finishes treatment and rest at hour 264.
+
+Before Salta, doctors restore three actual wounded survivors, including 122 at 7 HP. This care consumes thirty dressings, four of them donated through the sector inventory. The route purchases **52 dressings for 1,560 pesos** across its northern preparation, Córdoba stock, rescue stock and courier trip. The recorded strategic care steps consume **66 dressings** in total; that figure excludes tactical first-aid strokes and includes the earlier finite carried and field supplies.
+
+Córdoba's two existing reserves cannot hold the later four-person raid alone. The route reloads their real guns and hires Kerr (113) for a week at 189 pesos. It buys one finite Charleville for 230 pesos and equips him through the normal armory. The resulting three-person defense wins with two real deaths. Both waiting assault journeys are preserved during that remote defense. The approaching northern column remains delayed by the opposing routes; normal entry into Salta intercepts that actual column there.
+
+The final Salta assault leaves eight local survivors, all uninjured, so the final medical step spends no dressing. Doctor 139 pays the normal northern-pact resources, travels to the Yatasto meeting and completes its movement and dialogue. Former prisoner 126 dies in the Salta battle; rescue does not protect him from later consequences. The fifteen deaths remain permanent. This verifies the reference route and its consequences, not general combat balance or full JA2 parity.
+
+Verification: all **8/8** playthrough checks pass from the opening state, with no skips, in **121.86 seconds**. Each selected combat repeats deterministically before its result is accepted, and full saves retain the real state. The separate artillery suite also passes **12/12**, including its paid rescue and retained gun. Earlier checkpoints below are historical results, not current outcome claims.
+
+## Historical shared-turn budget checkpoint: 12 September 2026
 
 Enemy turn budgets now begin together, before any shared crew action. This changes real tactical outcomes, including encounters without cannon emplacements. The established southern fixture still uses seed 8, ordinary orders, finite equipment, paid contracts, deterministic battle replays and full saves. It starts with Buenos Aires and Ensenada secured; it does not establish a complete Retiro-only campaign.
 

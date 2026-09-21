@@ -53,9 +53,9 @@ test('an actual firearm injury opens bleeding and treatment preserves personal h
  const repeated=use(treated);assert.ok(repeated.lastError);assert.equal(repeated.units[0].medkits,treated.units[0].medkits);assert.deepEqual(repeated.npcs,treated.npcs);
 });
 
-test('bandages neither revive corpses nor raise critical HP or restore energy',()=>{
+test('critical first aid makes partial health progress without reviving corpses or restoring energy',()=>{
  for(const patient of [{hp:0,bleeding:0,bandaged:0,bleedSource:undefined},{departure:{edge:'E'}},{fled:true}])reject(field({},patient));
- const s=field({x:5},{hp:5}),next=use(s);assert.equal(next.lastError,null);assert.equal(next.npcs[0].hp,5);assert.equal(next.npcs[0].energy,0);assert.equal(next.npcs[0].unconscious,true);assert.equal(next.npcs[0].bandaged,95);
+ const s=field({x:5},{hp:5}),preview=plan(s),next=use(s);assert.equal(preview.treatment.partial,true);assert.equal(next.lastError,null);assert.equal(next.npcs[0].hp,13);assert.equal(next.npcs[0].energy,0);assert.equal(next.npcs[0].unconscious,true);assert.equal(next.npcs[0].bleeding,0);assert.equal(next.npcs[0].bandaged,0);assert.equal(next.units[0].medkits,1);
 });
 
 test('hidden or unknown civilian targets fail before revealing a path or consuming supplies',()=>{
@@ -93,7 +93,7 @@ test('a hidden civilian blocker does not alter the medical preview and stops the
 test('typed civilian treatment fits a saved player interrupt and preserves its continuation',()=>{
  const s=field({x:1,y:1,agility:100,experienceLevel:10,ap:100},{x:4,y:4,hp:10},{enemies:[{id:'e',x:7,y:1,weapon:1809,agility:30,experienceLevel:1,patrol:false}]});s.units[1].ap=24;
  const paused=endTurn(s);assert.equal(paused.phase,'interrupt');assert.ok(paused.interrupt.unitIds.includes('p'));
- const treated=use(paused);assert.equal(treated.lastError,null);assert.equal(treated.phase,'interrupt');assert.equal(treated.units[0].medkits,1);assert.equal(treated.npcs[0].bleeding,0);assert.equal(treated.npcs[0].hp,10);
+ const treated=use(paused);assert.equal(treated.lastError,null);assert.equal(treated.phase,'interrupt');assert.equal(treated.units[0].medkits,1);assert.equal(treated.npcs[0].bleeding,0);assert.equal(treated.npcs[0].hp,15);assert.equal(treated.npcs[0].unconscious,true);
  assert.deepEqual(use(validateBattleSnapshot(JSON.parse(JSON.stringify(paused)))),treated);
  assert.deepEqual(endTurn(validateBattleSnapshot(JSON.parse(JSON.stringify(treated)))),endTurn(treated));
 });

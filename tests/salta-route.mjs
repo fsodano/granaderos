@@ -6,10 +6,16 @@ import {enterSector} from '../game/world.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {attendYatasto} from './mission-helpers.mjs';
 import {contractQuote} from '../game/contracts.js';
+import {fightNorthernSector,northernCombatOrder} from './northern-route.mjs';
 
 function orders(start){
  let campaign=decodeSave(encodeSave(start)).campaign;const events=[];
- return {get campaign(){return campaign;},events,prepareWeapons(report){campaign=finishReloadsBeforeMarch(campaign,{report});},order(action){
+ return {get campaign(){return campaign;},events,prepareWeapons(report){campaign=finishReloadsBeforeMarch(campaign,{report});},resolveEncounter(report){
+  const encounter=structuredClone(campaign.pendingEncounter),group=structuredClone(campaign.enemyGroups.find(group=>group.id===encounter.groupId));
+  const next=dispatchCampaign(campaign,{type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});assert.equal(next.lastError,null,next.lastError);assert.deepEqual(next.pendingBattle.enemies,group.units);
+  const result=fightNorthernSector(next,encounter.sector,{controller:northernCombatOrder,report});campaign=result.campaign;
+  return {groupId:group.id,...result.summary};
+ },order(action){
   const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);
   campaign=next;events.push({action,hour:campaign.hour,second:campaign.secondOfHour??0});
  }};
@@ -25,6 +31,21 @@ function renew(route,ids,buffer){
 export function prepareSaltaAssault(start,{report=()=>{}}={}){
  const route=orders(start),{order}=route;
  assert.equal(start.location,'tucuman');assert.equal(start.pendingBattle,null);
+ // Keep the supply depot defended while the northern force marches. Its
+ // actual reserves reload their own guns; a paid guard buys a finite musket.
+ const selected=start.activeSquadId,reserves=start.recruited.filter(id=>{const r=start.operativeState[id];return r.alive&&!r.captured&&r.location==='cordoba';});
+ assert.ok(reserves.length&&reserves.length<6);
+ order({type:'createSquad',sector:'cordoba',name:'Reserva de Córdoba',ids:reserves});
+ for(const operativeId of reserves)order({type:'assignCare',operativeId,assignment:'active'});
+ route.prepareWeapons(report);
+ for(const operativeId of reserves)order({type:'assignCare',operativeId,assignment:'rest'});
+ const guard=113,cashBeforeGuard=route.campaign.resources.treasury,gunStock=route.campaign.merchants.cordoba.stock['1801'];
+ order({type:'recruitCivic',id:guard,term:'week'});const guardCost=cashBeforeGuard-route.campaign.resources.treasury;
+ assert.equal(guardCost,route.campaign.contracts[guard].paid);
+ order({type:'purchaseEquipment',item:1801,quantity:1});order({type:'equip',operativeId:guard,itemId:1801,slot:'weapon'});
+ assert.equal(route.campaign.merchants.cordoba.stock['1801'],gunStock-1);assert.equal(cashBeforeGuard-route.campaign.resources.treasury,guardCost+230);
+ route.prepareWeapons(report);order({type:'selectSquad',id:selected});
+ const reservePreparation={ids:[...reserves,guard],hired:guard,hiringCost:guardCost,weapon:1801,weaponCost:230},defenses=[];
  // Keep service paid while staging a daylight arrival. Replacements are hired
  // locally after the rest, with their normal equipment and real contracts.
  const earliestDeparture=start.hour+(24-start.hour%24)%24;
@@ -104,13 +125,18 @@ export function prepareSaltaAssault(start,{report=()=>{}}={}){
  }
  assert.equal(route.campaign.hour,departure+12);
  assert.ok(deploying.every(id=>route.campaign.squads.find(s=>s.id===id)?.journey?.status==='ready'));
+ while(route.campaign.pendingEncounter){
+  const queued=structuredClone(route.campaign.squads.filter(s=>deploying.includes(s.id)).map(s=>s.journey));
+  defenses.push(route.resolveEncounter(report));
+  assert.deepEqual(route.campaign.squads.filter(s=>deploying.includes(s.id)).map(s=>s.journey),queued,'a remote defense preserves both waiting assault routes');
+ }
  order({type:'beginAssault',sector:'salta'});
  const campaign=route.campaign,request=campaign.pendingBattle;
  assert.deepEqual(request.squad.map(u=>Number(u.id)).sort((a,b)=>a-b),[...field,...support].sort((a,b)=>a-b));
  const battle=enterSector(request,campaign.sectorStates.salta);
  assert.deepEqual(decodeSave(encodeSave(campaign,battle)),{campaign,battle});
  report({event:'jointSaltaDeployment',hour:campaign.hour,units:request.squad.map(u=>u.id),patients,usedDressings});
- return {campaign,battle,events:route.events,departure,hired,hiringCost,field,support,care:{patients,doctors,usedDressings,gatheredDressings,donatedDressings}};
+ return {campaign,battle,events:route.events,departure,hired,hiringCost,field,support,reservePreparation,defenses,care:{patients,doctors,usedDressings,gatheredDressings,donatedDressings}};
 }
 
 export function completeNorthernMission(start,{report=()=>{}}={}){

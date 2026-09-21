@@ -10,6 +10,7 @@ import {heldThrowingKnife,knifeThrowDamage} from './thrown-knife.js';
 import {availableAmmunition} from './ammunition-types.js';
 import {planFitBayonet} from './tactical-inventory.js';
 import {shotLocationEffects,shotLocationsFor} from './targeted-combat.js';
+import {criticalFirstAidNeeded} from './first-aid.js';
 
 // Decisions use only this soldier's sight and the last place an opponent was seen.
 // No randomness or state changes occur here; tactical.js applies the returned order.
@@ -113,7 +114,7 @@ function fieldAid(state, unit, costs, targets, paths) {
   if (!(unit.medkits > 0 && unit.medical > 0)) return null;
   const prepare = unit.activeSlot === 'medical' ? 0 : costs.weapon;
   if (unit.ap < prepare + costs.heal || unit.knockedDown && prepare) return null;
-  const patients = state.units.filter(other => other.side === unit.side && other.hp > 0 && other.bleeding > 0 &&
+  const patients = state.units.filter(other => other.side === unit.side && other.hp > 0 && (other.bleeding > 0 || criticalFirstAidNeeded(other)) &&
     !other.departure && !other.fled && !other.routed && !other.surrendered && distance(unit, other) <= 5 &&
     (other.id === unit.id || atHand(unit,other) && hasLineOfSight(state, unit, other) || canSee(state, unit, other)));
   // First stop the medic's own bleeding. For others, prefer the shortest

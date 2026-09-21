@@ -95,6 +95,27 @@ test('capture and rescue retain prepared loading and keep captive rounds out of 
  s=order(s,{type:'attack',sector:'san_nicolas'});const withoutWork=structuredClone(s);delete withoutWork.operativeState[10].capturedAmmunition.preserveLoading;delete withoutWork.operativeState[10].capturedAmmunition.reloadProgress;const restoredWithoutWork=order(withoutWork,scriptedBattleReport(withoutWork));s=order(s,scriptedBattleReport(s));assert.equal(s.operativeState[10].captured,false);assert.equal(s.operativeState[10].carriedLoaded,1);assert.equal(s.operativeState[10].carriedReloadProgress,.5);assert.equal(s.operativeState[10].carriedAmmo,captiveReserve+1);assert.deepEqual(ammunitionByType(s.operativeState[10]),ammunitionByType(captive));if(heldMain)assert.equal(s.operativeState[10].activeItem,captive.activeItem);assert.deepEqual(s.resources,restoredWithoutWork.resources);assert.equal(stockAndCarriedAmmo(s),stockAndCarriedAmmo(restoredWithoutWork));assert.equal(restoredWithoutWork.operativeState[10].carriedLoaded,1);assert.equal(restoredWithoutWork.operativeState[10].carriedReloadProgress,undefined);assert.deepEqual(s.operativeState[10].offHand,{count:1,weapon:1805,weight:1.3,loaded:1,condition:59,instanceId:'captive-second'});assert.deepEqual(s.operativeState[10].outfit,{...makeOutfit('poncho',43),instanceId:'captive-coat'});assert.equal(s.operativeState[10].leftHandItem,'inventory:key');assert.equal(s.operativeState[10].inventory.key.instanceId,'captive-key');roundtrip(s);
  }
 });
+test('rescuing a captive who left his gun behind preserves loose rounds without inventing personal loading',()=>{
+ let s=equip(fixture());s=order(s,{type:'visitSector'});
+ let b=actBattle(flatBattle(s),{type:'drop',unitId:'10',item:'primary',count:1});assert.equal(b.lastError,null);
+ s=leave(s,b);const reserve=ammunitionByType(s.operativeState[10]),loose=totalReserveAmmunition(s.operativeState[10]);
+ const dropped=structuredClone(s.sectorStates.retiro.groundItems.find(item=>item.instanceId==='held-musket'));
+ assert.equal(s.operativeState[10].weaponDropped,true);assert.equal(s.operativeState[10].carriedLoaded,undefined);roundtrip(s);
+ s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});
+ // Controlled defeat fixture: an incapacitated soldier cannot leave with
+ // the two able soldiers. His gun was already dropped by an ordinary order.
+ b=createBattle(s.pendingBattle.squad.map((u,i)=>({...u,x:2+i,y:15,...(u.id===10?{hp:10,bandaged:u.maxHp-10,unconscious:true}:{})})),{...s.pendingBattle,width:20,height:16,tiles:Array.from({length:320},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0})),enemies:s.pendingBattle.enemies.map((u,i)=>({...u,x:18,y:i,ap:0})),props:[],npcs:s.pendingBattle.npcs.map((npc,i)=>({...npc,x:10-i,y:8}))});
+ b=actBattle(b,{type:'exit',unitIds:['3','4'],exitId:b.exits.find(e=>e.destination==='buenos_aires').id});assert.equal(b.lastError,null);assert.equal(b.status,'retreat');
+ s=order(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'retreat',sectorState:b,survivors:b.units.filter(u=>u.side==='player')});
+ assert.equal(s.operativeState[10].captured,true);assert.deepEqual(s.operativeState[10].capturedAmmunition,{loaded:0,ammo:loose});roundtrip(s);
+ s=order(s,{type:'attack',sector:'san_nicolas'});const before=structuredClone(s.resources);
+ s=order(s,scriptedBattleReport(s));const freed=s.operativeState[10];
+ assert.equal(freed.captured,false);assert.equal(freed.weaponDropped,true);assert.equal(freed.carriedLoaded,undefined);assert.equal(freed.carriedReloadProgress,undefined);
+ assert.equal(freed.carriedAmmo,loose);assert.deepEqual(ammunitionByType(freed),reserve);assert.deepEqual(freed.capturedAmmunition,{loaded:0,ammo:0});
+ assert.deepEqual(s.sectorStates.retiro.groundItems.find(item=>item.instanceId==='held-musket'),dropped);
+ assert.equal(s.resources.cartridges,before.cartridges+80,'only the ordinary conquest reward enters stock, not the prisoner’s loose rounds');roundtrip(s);
+ const corrupt=structuredClone(s);corrupt.operativeState[10].carriedLoaded=0;assert.throws(()=>decodeSave(encodeSave(corrupt)),/carga personal/);
+});
 test('a weapon passed through the armory can be dropped by its new owner after a shared visit',()=>{
  let s=equip(fixture());s=order(s,{type:'visitSector'});s=leave(s,flatBattle(s));
  s=order(s,{type:'purchaseEquipment',item:1805,quantity:1});s=order(s,{type:'equip',operativeId:10,slot:'weapon',itemId:1805});const stored=s.armoryItems.find(i=>i.instanceId==='held-musket');s=order(s,{type:'equip',operativeId:3,slot:'weapon',itemId:1800,instanceId:stored.id});

@@ -11,6 +11,7 @@ import {getReachable,teamCanSee,stanceCost,actionCosts,hasLineOfSight,firearmSho
 import {shotLocationEffects} from '../game/targeted-combat.js';
 import {availableAmmunition,weaponAmmoType} from '../game/ammunition-types.js';
 import {ammoResourceKey} from '../game/campaign-ammunition.js';
+import {doctorRate} from '../game/medical-care.js';
 import {RECIPES} from '../game/data.js';
 
 export function northernCombatOrder(battle,unit){
@@ -124,14 +125,32 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
  }
  assert.equal(gather(112),donatedDressings);
  const medicalStart=doctors.reduce((sum,id)=>sum+campaign.operativeState[id].medkits,0);
+ let boughtDressings=0;const medicalTrips=[];
  for(const operativeId of patients)order({type:'assignCare',operativeId,assignment:'patient'});
  for(const operativeId of doctors)order({type:'assignCare',operativeId,assignment:'doctor'});
  for(let i=0;patients.some(id=>campaign.operativeState[id].hp<campaign.operativeState[id].maxHp)&&i<60;i++){
   assert.equal(campaign.pendingEncounter,null,'resolve a real encounter before continuing care');
+  if(doctors.every(id=>campaign.operativeState[id].medkits===0)){
+   // San Nicolás has no medical shop. A real relief doctor carries paid
+   // Retiro supplies back; the patients and their actual wounds stay here.
+   const courier=doctors[0],startHour=campaign.hour,rate=doctorRate(rosterFor(campaign).find(op=>op.id===courier));
+   const quantity=patients.reduce((sum,id)=>sum+Math.ceil((campaign.operativeState[id].maxHp-campaign.operativeState[id].hp)/rate)+Number(campaign.operativeState[id].bleeding>0),0);
+   assert.ok(quantity>0&&quantity<=20);
+   order({type:'assignCare',operativeId:courier,assignment:'active'});order({type:'createSquad',name:'Abastecimiento sanitario',ids:[courier]});
+   order({type:'travel',sector:'retiro'});assert.equal(campaign.pendingEncounter,null);
+   order({type:'assignCare',operativeId:courier,assignment:'rest'});
+   for(let rest=0;rest<18&&(campaign.operativeState[courier].energy<100||campaign.operativeState[courier].fatigue>0||campaign.operativeState[courier].asleep);rest++)order({type:'wait',hours:1});
+   assert.equal(campaign.operativeState[courier].energy,100);assert.equal(campaign.operativeState[courier].fatigue,0);assert.equal(campaign.operativeState[courier].asleep,false);
+   order({type:'assignCare',operativeId:courier,assignment:'active'});
+   const cash=campaign.resources.treasury,stock=campaign.merchants.retiro.supplies.medkits;
+   order({type:'purchaseMedicalSupplies',operativeId:courier,quantity});assert.equal(cash-campaign.resources.treasury,quantity*30);assert.equal(campaign.merchants.retiro.supplies.medkits,stock-quantity);boughtDressings+=quantity;
+   order({type:'travel',sector:'san_nicolas'});assert.equal(campaign.pendingEncounter,null);assert.ok(campaign.hour>startHour);
+   order({type:'assignCare',operativeId:courier,assignment:'doctor'});medicalTrips.push({courier,startHour,endHour:campaign.hour,quantity,cost:quantity*30});
+  }
   order({type:'wait',hours:1});
  }
- for(const id of patients)assert.equal(campaign.operativeState[id].hp,campaign.operativeState[id].maxHp);
- const usedDressings=medicalStart-doctors.reduce((sum,id)=>sum+campaign.operativeState[id].medkits,0);
+ for(const id of patients)assert.equal(campaign.operativeState[id].hp,campaign.operativeState[id].maxHp,`patient ${id} must finish paid care`);
+ const usedDressings=medicalStart+boughtDressings-doctors.reduce((sum,id)=>sum+campaign.operativeState[id].medkits,0);
  assert.ok(patients.length?usedDressings>0:usedDressings===0,'only actual surviving patients consume recovery supplies');
  for(const operativeId of [...doctors,...patients])order({type:'assignCare',operativeId,assignment:'rest'});
  // Rest and stage for a daylight arrival without editing health or clocks.
@@ -161,7 +180,7 @@ export function prepareNorthernSquad(start,{report=()=>{}}={}){
  for(const id of ids){assert.ok(campaign.operativeState[id].hp>=15);assert.equal(campaign.operativeState[id].bleeding,0);}
  assert.ok(campaign.resources.treasury>=0);assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
  for(const production of ammunitionProduction){assert.ok(campaign.hour>=production.due);assert.ok(!campaign.production.some(order=>order.id===production.id));assert.ok(campaign.resources[production.key]>=production.count);}
- const recovery={startHour:recoveryStart,endHour:campaign.hour,staging,doctors,patients,usedDressings,recoveredDressings,donatedDressings,donors,replacements,fieldIds:ids,gathered,ammunitionProduction};report({event:'recovered',...recovery,cash:campaign.resources.treasury});
+ const recovery={startHour:recoveryStart,endHour:campaign.hour,staging,doctors,patients,usedDressings,boughtDressings,medicalTrips,recoveredDressings,donatedDressings,donors,replacements,fieldIds:ids,gathered,ammunitionProduction};report({event:'recovered',...recovery,cash:campaign.resources.treasury});
  return {campaign,events,dead,recovery};
 }
 
@@ -180,7 +199,11 @@ export function fightNorthernSector(start,sector,{report=()=>{},expectedOutcome=
  const pair=syncBattleTime(campaign,result.battle);assert.equal(pair.error,null);
  const restored=decodeSave(encodeSave(pair.campaign,pair.battle));
  const returned=dispatchCampaign(restored.campaign,{type:'battleResult',battleId:request.id,outcome:restored.battle.status,survivors:restored.battle.units.filter(u=>u.side==='player'),sectorState:restored.battle});
- assert.equal(returned.lastError,null,returned.lastError);assert.equal(returned.sectors[sector].owner,expectedOutcome==='victory'?'patriot':expectedOutcome==='retreat'?campaign.sectors[sector].owner:'royalist');assert.equal(returned.pendingBattle,null);
+ assert.equal(returned.lastError,null,returned.lastError);
+ const navalLoss=expectedOutcome==='defeat'&&request.defenseGroupId&&campaign.enemyGroups.find(group=>group.id===request.defenseGroupId)?.theater==='coast';
+ assert.equal(returned.sectors[sector].owner,expectedOutcome==='victory'?'patriot':expectedOutcome==='retreat'||navalLoss?campaign.sectors[sector].owner:'royalist');assert.equal(returned.pendingBattle,null);
+ if(navalLoss){assert.equal(returned.blockade,true);assert.equal(returned.enemyGroups.find(group=>group.id===request.defenseGroupId).status,'stationed');}
+
  for(const u of result.battle.units.filter(u=>u.side==='player'&&u.hp<=0))assert.equal(returned.operativeState[Number(u.id)].alive,false);
  assert.deepEqual(decodeSave(encodeSave(returned)).campaign,returned);
  return {campaign:returned,summary};
@@ -242,7 +265,22 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
  const reserveIds=campaign.recruited.filter(id=>{const r=campaign.operativeState[id];return r.alive&&!r.captured&&r.location==='san_nicolas';});assert.ok(reserveIds.includes(112)&&reserveIds.includes(122));
  order({type:'createSquad',sector:'san_nicolas',name:'Apoyo sanitario',ids:reserveIds});const support=campaign.activeSquadId;
  for(const operativeId of campaign.squad)order({type:'assignCare',operativeId,assignment:'active'});
- order({type:'travel',sector:'cordoba'});assert.equal(campaign.location,'cordoba');assert.equal(campaign.pendingEncounter,null);
+ order({type:'travel',sector:'cordoba'});assert.equal(campaign.location,'cordoba');
+ const corridor={loss:null,recapture:null,released:[]},earlyDefenses=[],earlyRenewals=[];
+ if(campaign.pendingEncounter){
+  const encounter=structuredClone(campaign.pendingEncounter);assert.equal(encounter.sector,'buenos_aires');
+  order({type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});
+  // The actual southern reserve is critically wounded. Resolve that defense
+  // and retain its casualty/captive result before assembling a relief force.
+  assert.ok(campaign.pendingBattle.squad.every(unit=>unit.hp<15));
+  const loss=fightNorthernSector(campaign,encounter.sector,{expectedOutcome:'defeat',controller:northernCombatOrder,report});campaign=loss.campaign;corridor.loss={groupId:encounter.groupId,...loss.summary};
+ }
+ const defendDepot=()=>{
+  if(!campaign.pendingEncounter)return;
+  const encounter=structuredClone(campaign.pendingEncounter);assert.equal(encounter.sector,'cordoba');
+  order({type:'respondToEncounter',groupId:encounter.groupId,choice:'tactical'});
+  const defense=fightNorthernSector(campaign,encounter.sector,{controller:northernCombatOrder,report});campaign=defense.campaign;earlyDefenses.push({groupId:encounter.groupId,...defense.summary});
+ };
  const cash=campaign.resources.treasury,hired=[];
  const hire=(id,term='week')=>{
   if(campaign.recruited.includes(id)||!campaign.operativeState[id].alive||campaign.operativeState[id].captured)return;
@@ -273,16 +311,38 @@ export function prepareRescueSquad(start,{report=()=>{}}={}){
   }
   if(!campaign.operativeState[id].outfit){const outfit=model(id).entries.find(row=>row.reachable&&JSON.parse(row.expected).item==='outfit');if(outfit){order({type:'sectorInventory',sector:'cordoba',operativeId:id,direction:'take',sourceKey:outfit.key,expected:outfit.expected,count:1});const carried=model(id).carried.find(row=>row.equip?.some(e=>e.slot==='outfit'));order({type:'sectorInventory',sector:'cordoba',operativeId:id,direction:'equip',inventoryKey:carried.inventoryKey,expected:carried.expected,slot:'outfit'});}}
  }
- order({type:'squad',ids:supportIds});
+ let reliefSquad=null;
+ if(corridor.loss){
+  order({type:'createSquad',name:'Asegurar el camino del sur',ids:fieldIds});reliefSquad=campaign.activeSquadId;
+  for(const operativeId of fieldIds)order({type:'assignCare',operativeId,assignment:'active'});
+  campaign=finishReloadsBeforeMarch(campaign,{report});
+  order({type:'attack',sector:'buenos_aires'});assert.ok(campaign.pendingBattle);
+  const coastalCaptives=Object.entries(campaign.operativeState).filter(([,r])=>r.captured&&r.capturedSector==='buenos_aires').map(([id,r])=>({id:Number(id),hp:r.hp,bleeding:r.bleeding}));
+  const recapture=fightNorthernSector(campaign,'buenos_aires',{controller:northernCombatOrder,report});campaign=recapture.campaign;corridor.recapture=recapture.summary;
+  for(const id of [...fieldIds,...supportIds]){const contract=campaign.contracts[id];if(contract?.expiresAt!==null&&contract.expiresAt-campaign.hour<=28){const cash=campaign.resources.treasury;order({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});earlyRenewals.push({id,cost:cash-campaign.resources.treasury,hour:campaign.hour});}}
+  // The released southern reserve stays wounded. Spend real local medical
+  // time and dressings before the relief doctors leave him behind.
+  if(coastalCaptives.length){
+   const doctor=fieldIds.filter(id=>campaign.operativeState[id].alive&&campaign.operativeState[id].hp>=15&&campaign.operativeState[id].medkits>0).sort((a,b)=>rosterFor(campaign).find(op=>op.id===b).medical-rosterFor(campaign).find(op=>op.id===a).medical)[0];
+   const linen=campaign.operativeState[doctor].medkits,careStart=campaign.hour;order({type:'assignCare',operativeId:doctor,assignment:'doctor'});
+   for(const patient of coastalCaptives){assert.equal(campaign.operativeState[patient.id].hp,patient.hp);assert.equal(campaign.operativeState[patient.id].captured,false);order({type:'assignCare',operativeId:patient.id,assignment:'patient'});}
+   for(let care=0;care<8&&coastalCaptives.some(({id})=>campaign.operativeState[id].hp<15||campaign.operativeState[id].bleeding);care++)order({type:'wait',hours:1});
+   assert.ok(campaign.operativeState[doctor].medkits<linen);
+   for(const patient of coastalCaptives){assert.ok(campaign.operativeState[patient.id].hp>=15);assert.equal(campaign.operativeState[patient.id].bleeding,0);order({type:'assignCare',operativeId:patient.id,assignment:'rest'});}
+   order({type:'assignCare',operativeId:doctor,assignment:'active'});corridor.released=coastalCaptives;corridor.care={doctor,hours:campaign.hour-careStart,usedDressings:linen-campaign.operativeState[doctor].medkits};
+  }
+  order({type:'travel',sector:'cordoba'});defendDepot();
+ }
+ order({type:'selectSquad',id:support});order({type:'squad',ids:supportIds});
  for(const operativeId of supportIds)order({type:'assignCare',operativeId,assignment:'active'});
  campaign=finishReloadsBeforeMarch(campaign,{report});
- order({type:'createSquad',name:'Rescate del norte',ids:fieldIds});const field=campaign.activeSquadId;
+ if(reliefSquad)order({type:'selectSquad',id:reliefSquad});else order({type:'createSquad',name:'Rescate del norte',ids:fieldIds});const field=campaign.activeSquadId;
  for(const operativeId of fieldIds)order({type:'assignCare',operativeId,assignment:'active'});
  campaign=finishReloadsBeforeMarch(campaign,{report});
  // The relief doctors have already marched from the south. Rest the force
  // overnight, and defend the depot if a visible raiding column approaches.
  // Once the squads are in transit, they cannot defend the local reserve.
- const staging={startHour:campaign.hour,departureHour:null,defenses:[],renewals:[]};
+ const staging={startHour:campaign.hour,departureHour:null,defenses:earlyDefenses,renewals:earlyRenewals,corridor};
  const deploying=[...fieldIds,...supportIds],earliestDeparture=campaign.hour+(24-campaign.hour%24)%24;
  for(const operativeId of deploying)order({type:'assignCare',operativeId,assignment:'rest'});
  const renew=()=>{for(const id of deploying){const contract=campaign.contracts[id];if(contract?.expiresAt!=null&&contract.expiresAt-campaign.hour<=14){const cash=campaign.resources.treasury;order({type:'renewContract',id,term:'day',expectedExpiresAt:contract.expiresAt});staging.renewals.push({id,cost:cash-campaign.resources.treasury,hour:campaign.hour});}}};

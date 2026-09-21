@@ -21,7 +21,7 @@ test('a real enemy turn equips dressings, treats a critical ally and restores it
   const s=field(),before=structuredClone(s),n=endTurn(s);
   assert.equal(n.lastError,null);assert.equal(n.turn,2);assert.equal(n.elapsedSeconds,6);
   assert.equal(medic(n).ap,0);assert.equal(medic(n).medkits,1);assert.equal(medic(n).activeSlot,'primary');
-  assert.equal(medic(n).loaded,1);assert.equal(medic(n).ammo,3);assert.equal(patient(n).bleeding,0);assert.equal(patient(n).hp,10);assert.equal(patient(n).bandaged,90);assert.equal(patient(n).unconscious,true);
+  assert.equal(medic(n).loaded,1);assert.equal(medic(n).ammo,3);assert.equal(patient(n).bleeding,0);assert.equal(patient(n).hp,15);assert.equal(patient(n).bandaged,85);assert.equal(patient(n).unconscious,false);assert.equal(patient(n).ap,0);
   assert.ok(!n.log.some(line=>/medic|patient|venda/.test(line)),'unseen treatment stays out of the player journal');
   assert.deepEqual(s,before);assert.deepEqual(n,endTurn(validateBattleSnapshot(JSON.parse(JSON.stringify(s)))));
   assert.doesNotThrow(()=>validateBattleSnapshot(n));
@@ -29,8 +29,8 @@ test('a real enemy turn equips dressings, treats a critical ally and restores it
 
 test('aid spends only the available dressing and does not repeat on a stable patient',()=>{
   const s=field({medkits:1,ap:100}),n=endTurn(s);
-  assert.equal(medic(n).medkits,0);assert.equal(patient(n).bleeding,0);assert.equal(patient(n).bandaged,90);assert.ok(!n.log.some(line=>line.includes('venda a')));
-  assert.equal(patient(n).hp,10);assert.equal(patient(endTurn(n)).hp,10);
+  assert.equal(medic(n).medkits,0);assert.equal(patient(n).bleeding,0);assert.equal(patient(n).bandaged,85);assert.ok(!n.log.some(line=>line.includes('venda a')));
+  assert.equal(patient(n).hp,15);assert.equal(patient(endTurn(n)).hp,15);
   assert.equal(medic(endTurn(n)).medkits,0);
 });
 
@@ -46,7 +46,7 @@ test('finite supplies, aptitude, AP and patient state exclude impossible treatme
   for(const patch of [{medkits:0},{medical:0},{ap:28},{energy:0},{routed:true}]) {
     const s=field(patch);assert.notEqual(chooseEnemyAction(s,medic(s))?.slot,'medical');
   }
-  for(const patch of [{hp:0},{routed:true},{surrendered:true},{fled:true},{departure:{edge:'E'}},{bleeding:0,bandaged:90}]) {
+  for(const patch of [{hp:0},{routed:true},{surrendered:true},{fled:true},{departure:{edge:'E'}},{hp:15,bleeding:0,bandaged:85}]) {
     const s=field({},patch);assert.notEqual(chooseEnemyAction(s,medic(s))?.slot,'medical');
   }
   const s=field({ap:25,activeSlot:'medical'});assert.equal(chooseEnemyAction(s,medic(s)).targetId,'patient');
@@ -58,7 +58,7 @@ test('a medic walks a real short path while reserving AP for equipment, treatmen
   const path=getReachable(s,medic(s)).find(p=>p.x===order.x&&p.y===order.y);
   assert.equal(path.cost,16);assert.ok(medic(s).ap-path.cost>=actionCosts(s,medic(s)).heal+4);
   const n=endTurn(s);assert.equal(medic(n).x,13);assert.equal(medic(n).ap,0);assert.equal(medic(n).activeSlot,'primary');
-  assert.equal(medic(n).medkits,1);assert.equal(patient(n).bleeding,0);assert.equal(patient(n).hp,10);
+  assert.equal(medic(n).medkits,1);assert.equal(patient(n).bleeding,0);assert.equal(patient(n).hp,15);assert.equal(patient(n).ap,0);
 });
 
 test('rescue decisions do not reveal hidden patients or respond to unseen opposing coordinates',()=>{

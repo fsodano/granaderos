@@ -9,6 +9,7 @@ import {createBattle,initializeBattlePerception} from './tactical.js';
 import {validEntry,validateSectorExits} from './tactical-exits.js';
 import {validateBattleSnapshot} from './validate-battle.js';
 import {validateQuestGifts} from './quests.js';
+import {migrateCivilianHealth,civilianMaxHp} from './civilian-health.js';
 import {civilianIncidents} from './civilian-harm.js';
 
 const key=spaceKey;
@@ -96,11 +97,18 @@ export function enterSector(request,previous=null,{placement=false}={}){
  // Explicit rosters control presence, especially after named recruitment.
  if(request.npcs===undefined)for(const npc of previous?.npcs??[]){
    if(residents.some(current=>current.id===npc.id))continue;
-   const harmed=(civilianIncidents(npc).length>0||(npc.hp??100)<100||(npc.energy??100)<100||npc.bleeding>0)&&!state.units.some(unit=>unit.side==='player'&&npc.operativeId!==undefined&&Number(unit.id)===npc.operativeId);
+   const harmed=(civilianIncidents(npc).length>0||(npc.hp??civilianMaxHp(npc))<civilianMaxHp(npc)||(npc.energy??100)<100||npc.bleeding>0)&&!state.units.some(unit=>unit.side==='player'&&npc.operativeId!==undefined&&Number(unit.id)===npc.operativeId);
    if(harmed||npc.operativeId===undefined&&npc.questGifts?.length&&validateQuestGifts(npc).length)residents.push(structuredClone(npc));
  }
  state.npcs=residents.map(npc=>{
    const old=previous?.npcs?.find(n=>n.id===npc.id),authored=state.npcs.find(n=>n.id===npc.id),resident=structuredClone({...npc,...authored,...old});
+   if(old&&npc.operativeId!==undefined&&npc.civilianHealthVersion===1){
+     if(old.civilianHealthVersion===undefined){
+       const migrated=migrateCivilianHealth(structuredClone(old),npc);Object.assign(resident,migrated);
+     }
+     // A prior pristine contact cannot overwrite a soldier's later wounds.
+     else if(old.civilianWoundVersion===undefined)for(const key of ['civilianHealthVersion','maxHp','hp','energy','unconscious','civilianWoundVersion','bleeding','bandaged','bleedSource']){if(npc[key]!==undefined)resident[key]=structuredClone(npc[key]);else delete resident[key];}
+   }
    if(resident.ai){delete resident.ai.threat;delete resident.ai.safeAfter;resident.ai.activity='roaming';}
    delete resident.lastMovePath;
    const incapacitated=(resident.hp??100)<=0||resident.unconscious;

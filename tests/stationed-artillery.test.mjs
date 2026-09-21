@@ -6,7 +6,7 @@ import {dispatchCampaign,isSupplied,restoreCampaign,serializeCampaign} from '../
 import {deployedArtillery} from '../game/equipment.js';
 import {prepareSectorArtillery,validateArtilleryDeployment,validateArtilleryReport,settleSectorArtillery,ownedArtilleryCount,artillerySupplyPreview} from '../game/campaign-artillery.js';
 import {createBattle,actBattle,endTurn,getReachable,artilleryReloadPreview,artilleryCrewPlan,artilleryCosts,interruptAvailable} from '../game/tactical.js';
-import {enterSector} from '../game/world.js';import {autoResolve} from '../game/auto-resolve.js';
+import {enterSector} from '../game/world.js';
 import {automaticOrder} from '../game/autonomous-orders.js';import {sameSurface,tacticalLevel} from '../game/tactical-space.js';
 import {fight} from './opening-driver.mjs';
 import {encodeSave,decodeSave} from '../game/save.js';import {syncBattleTime} from '../game/time.js';
@@ -124,16 +124,18 @@ test('a defeated squad can hire a rescue force and recover its actual prisoners 
  restored=order(restored,{type:'travel',sector:'buenos_aires'});restored=order(restored,{type:'attack',sector:'san_nicolas'});
  assert.deepEqual(restored.pendingBattle.artillery,[{...gun,stationed:true}]);validateArtilleryDeployment(restored.pendingBattle);
  const rescueEntry=enterSector(restored.pendingBattle,restored.sectorStates.san_nicolas);
- const rescue=autoResolve(restored.pendingBattle,restored.sectorStates.san_nicolas);
- assert.equal(rescue.outcome,'victory');assert.equal(rescue.battle.status,'victory');assert.equal(rescue.timedOut,false);assert.equal(rescue.withdrawalRounds,0);
- assert.ok(rescue.actions>0);assert.ok(rescue.rounds<=80);assert.ok(rescue.battle.elapsedSeconds>0);
+ // Coordinate one order per rescuer per pass, as in the original paid
+ // assault. Their real enemies can now stabilize critical comrades too.
+ const rescue=fight(restored.pendingBattle,restored.sectorStates.san_nicolas,{controller:automaticOrder});
+ assert.equal(rescue.battle.status,'victory');
+ assert.ok(rescue.actions>0);assert.ok(rescue.battle.turn<=80);assert.ok(rescue.battle.elapsedSeconds>0);
  assert.ok(rescue.battle.units.filter(u=>u.side==='player').reduce((n,u)=>n+u.loaded+u.ammo,0)<rescueEntry.units.filter(u=>u.side==='player').reduce((n,u)=>n+u.loaded+u.ammo,0));
  assert.ok(rescue.battle.units.some(u=>u.side==='enemy'&&u.hp===0&&rescueEntry.units.find(v=>v.id===u.id)?.hp>0));
  const cleared=act(rescue.battle,{type:'explore'});
  assert.equal(cleared.status,'active');assert.equal(cleared.mode,'exploration');assert.equal(cleared.sectorCleared,true);
  assert.equal(cleared.elapsedSeconds,rescue.battle.elapsedSeconds);assert.deepEqual(cleared.artillery,rescue.battle.artillery);
  const clock=syncBattleTime(restored,cleared);assert.equal(clock.error,null);const resumed=decodeSave(encodeSave(clock.campaign,clock.battle));
- restored=order(resumed.campaign,{type:'battleResult',battleId:resumed.campaign.pendingBattle.id,outcome:rescue.outcome,sectorState:resumed.battle,survivors:resumed.battle.units.filter(u=>u.side==='player')});
+ restored=order(resumed.campaign,{type:'battleResult',battleId:resumed.campaign.pendingBattle.id,outcome:rescue.battle.status,sectorState:resumed.battle,survivors:resumed.battle.units.filter(u=>u.side==='player')});
  restored=decodeSave(encodeSave(restored)).campaign;
  assert.equal(restored.defeated,false);assert.equal(restored.sectors.san_nicolas.owner,'patriot');
  for(const u of dead){assert.equal(restored.operativeState[u.id].alive,false);assert.equal(restored.operativeState[u.id].hp,0);}

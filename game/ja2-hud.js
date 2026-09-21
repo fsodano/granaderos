@@ -249,7 +249,7 @@ export function targetingHelp(mode, unit, ctx = {}) {
   if (unit?.activeSlot === 'tool' && ['move', 'useItem'].includes(mode)) return 'Seleccioná una puerta o un cofre para usar la herramienta. Las casillas libres permiten avanzar.';
   if(hasFirearm(unit||{})&&unit.weaponMode==='melee'&&['move','useItem'].includes(mode))return `${fixedBayonetFor(unit)?'Estocada de bayoneta':'Culatazo'}: seleccioná un enemigo para acercarte y golpear. No dispara ni recarga. Botón derecho o F: apuntar para disparar.`;
   if(heldThrowingKnife(unit)&&['move','useItem'].includes(mode))return 'Clic sobre un enemigo: acercarse y atacar con el facón. Botón derecho o F: apuntar para lanzarlo.';
-  if (mode === 'useItem') return unit?.activeSlot === 'medical' ? 'Seleccionate a vos, a un aliado o a un civil herido. Se acerca y venda si hay ruta y PA suficientes. Detiene la hemorragia, sin recuperar salud.' : hasFirearm(unit || {}) ? 'Seleccioná un enemigo. Apuntar consume PA adicionales.' : 'Seleccioná un enemigo para acercarte y usar el arma blanca.';
+  if (mode === 'useItem') return unit?.activeSlot === 'medical' ? 'Seleccionate a vos, a un aliado o a un civil herido. Se acerca y venda si hay ruta y PA suficientes. Reduce la hemorragia y estabiliza heridas críticas hasta 15 de salud. Puede necesitar más de una venda.' : hasFirearm(unit || {}) ? 'Seleccioná un enemigo. Apuntar consume PA adicionales.' : 'Seleccioná un enemigo para acercarte y usar el arma blanca.';
   return ({move: 'Seleccioná una casilla para avanzar. Sobre un combatiente se usa el objeto equipado.', loot: 'Seleccioná un cuerpo o equipo visible. Elegí qué recoger; los PA incluyen el desplazamiento.', torch: 'Seleccioná una casilla para arrojar la antorcha.', bolas: 'Seleccioná un enemigo para lanzar las boleadoras.', artillery: 'Seleccioná un objetivo dentro del arco del cañón.', artilleryMove: 'Seleccioná una casilla contigua al cañón.', artilleryPivot: 'Seleccioná hacia dónde apuntar el cañón.'})[mode] || 'Seleccioná una orden.';
 }
 
@@ -283,6 +283,15 @@ function meleePreparationText(state,preview){
   if(state.mode==='exploration')return `${preview.movePa?preview.stancePa?'Se acerca, se levanta y ataca':'Se acerca y ataca':'Se levanta antes de atacar'}. Sin coste de PA; consume tiempo${preview.movePa?' y energía':''}. El contacto puede detener la acción.`;
   return [preview.movePa?`Desplazamiento: ${preview.movePa} PA`:null,preview.stancePa?`Levantarse: ${preview.stancePa} PA`:null,`ataque: ${preview.strikePa??preview.actionPa} PA`].filter(Boolean).join(' · ')+'. El contacto puede detener la acción.';
 }
+function medicalTreatmentText(state, preview) {
+  if (!preview.valid || !preview.treatment) return undefined;
+  const treatment=preview.treatment;
+  const approach=preview.movePa?(state.mode==='exploration'?'Se acerca. Consume tiempo y energía.':`Desplazamiento: ${preview.movePa} PA · vendas: ${preview.actionPa} PA.`):'';
+  return [approach,'Usa una venda.',treatment.hpGain>0?`Salud: +${treatment.hpGain}, hasta ${treatment.hpAfter}.`:null,
+    treatment.bleedingAfter>0?`Hemorragia restante: ${treatment.bleedingAfter}.`:'Sin hemorragia al terminar.',
+    treatment.partial?'Tratamiento parcial: necesita más vendas.':treatment.critical?'Estabilizado. La recuperación completa requiere atención en campaña.':'Las heridas quedan vendadas; la recuperación de salud requiere atención en campaña.',
+    preview.movePa?'El contacto puede detener la acción.':null].filter(Boolean).join(' ');
+}
 function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   if (!unit) return null;
   const mode = ctx.mode || 'move';
@@ -310,9 +319,8 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
   if(civilianAid){
     const patient=state.npcs.find(n=>n.id===civilianAid.targetId),options={targetKind:'npc'};
     const local=mode==='heal'?medicalUsePreview(state,unit,patient,options):null;
-    const preview=local?{pa:local.cost,valid:local.allowed,reason:local.reason,movePa:0,actionPa:local.cost}:itemUsePreview(state,unit,patient,options);
-    const movement=preview.movePa?(state.mode==='exploration'?'Se acerca y usa una venda. Consume tiempo y energía.':`Desplazamiento: ${preview.movePa} PA · vendas: ${preview.actionPa} PA.`):'Usa una venda.';
-    return {name:patient.name,actionLabel:preview.movePa?'Acercarse y vendar':'Vendar',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,coverNote:`${movement} Detiene la hemorragia; no recupera salud.`};
+    const preview=local?{pa:local.cost,valid:local.allowed,reason:local.reason,movePa:0,actionPa:local.cost,treatment:local.treatment}:itemUsePreview(state,unit,patient,options);
+    return {name:patient.name,actionLabel:preview.movePa?'Acercarse y vendar':'Vendar',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,treatment:preview.treatment,coverNote:medicalTreatmentText(state,preview)};
   }
   const recipient=state.npcs?.find(n=>sameCell(n,point));
   if(recipient&&unit.activeSlot==='item'&&!heldGrenade(unit)&&['move','useItem'].includes(mode)){const gift=npcGiftPreview(state,unit,recipient);return {name:recipient.name,actionLabel:gift.label,pa:gift.pa,remaining:unit.ap,valid:gift.valid,reason:gift.reason,coverNote:'Se entrega el objeto que está en la mano. No se usa la reserva del cuartel.'};}
@@ -349,13 +357,11 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
     return {name: summary.label, pa: preview.pa, chance: preview.chance ?? undefined, chanceLabel: 'éxito', attackLabel: preview.label, actionLabel: preview.label, remaining: Math.max(0, unit.ap - (state.mode === 'exploration' ? 0 : preview.pa)), coverNote:preview.movePa?`Desplazamiento: ${preview.movePa} PA · uso: ${preview.actionPa} PA. El contacto puede detener la acción.`:undefined, reason: preview.reason, valid: preview.valid};
   }
   if (mode === 'heal' || unit.activeSlot === 'medical' && ['move', 'useItem'].includes(mode) && target) {
-    if(mode!=='heal'){
-      const preview=itemUsePreview(state,unit,target);
-      return {name:target?.name||tacticalGridLabel(point.x,point.y),actionLabel:preview.movePa?'Acercarse y vendar':'Vendar',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),coverNote:preview.movePa?`Desplazamiento: ${preview.movePa} PA · vendas: ${preview.actionPa} PA. El contacto puede detener la acción.`:undefined,reason:preview.reason,valid:preview.valid};
-    }
-    const preview = medicalUsePreview(state, unit, target ?? null);
-    return {name: target?.name || tacticalGridLabel(point.x, point.y), actionLabel: 'Vendar', pa: preview.cost, remaining: Math.max(0, unit.ap - (state.mode === 'exploration' ? 0 : preview.cost)), reason: preview.reason, valid: preview.allowed};
+    const local=mode==='heal'?medicalUsePreview(state,unit,target??null):null;
+    const preview=local?{pa:local.cost,valid:local.allowed,reason:local.reason,movePa:0,actionPa:local.cost,treatment:local.treatment}:itemUsePreview(state,unit,target);
+    return {name:target?.name||tacticalGridLabel(point.x,point.y),actionLabel:preview.movePa?'Acercarse y vendar':'Vendar',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),coverNote:medicalTreatmentText(state,preview),treatment:preview.treatment,reason:preview.reason,valid:preview.valid};
   }
+
   let pa, chance, chanceLabel, reason, actionLabel, attackType, attackLabel, coverNote;
   if (mode === 'look') {
     const preview=lookPreview(state,unit,point);
@@ -424,8 +430,8 @@ export function equippedItemHelp(state, unit, ctx = {}) {
   if (unit.activeSlot === 'supply') return `${weapon.name} · ${exploring?0:supplyUsePreview(state, unit, ctx.target).cost} PA. ${targetingHelp('useItem', unit)}`;
   if (unit.activeSlot === 'item') return `${weapon.name}. ${targetingHelp('useItem',unit)}`;
   if (unit.activeSlot === 'tool') return `${weapon.name}. Seleccioná una puerta o un cofre para usarla.`;
-  if (unit.activeSlot === 'medical' && exploring) return 'Vendas: sin coste de PA. Seleccionate a vos, a un aliado o a un civil herido. Consume tiempo y vendas. Detiene la hemorragia; no recupera salud.';
-  if (unit.activeSlot === 'medical') return `Vendas: ${costs.heal} PA, más el desplazamiento. Seleccionate a vos, a un aliado o a un civil herido. Se acerca y venda si hay PA suficientes. Detiene la hemorragia; no recupera salud.`;
+  if (unit.activeSlot === 'medical' && exploring) return 'Vendas: sin coste de PA. Seleccionate a vos, a un aliado o a un civil herido. Consume tiempo y vendas. Reduce la hemorragia y estabiliza heridas críticas hasta 15 de salud. La recuperación completa requiere atención en campaña.';
+  if (unit.activeSlot === 'medical') return `Vendas: ${costs.heal} PA, más el desplazamiento. Seleccionate a vos, a un aliado o a un civil herido. Se acerca y venda si hay PA suficientes. Reduce la hemorragia y estabiliza heridas críticas hasta 15 de salud. La recuperación completa requiere atención en campaña.`;
   const attack = contextualAttack(state, unit, ctx.target, {type: ctx.mode, aim: ctx.aim || 0});
   const reload = attack.type === 'fire' ? emptyGunPreview(state, unit) : null;
   if (reload) return `${weapon.name} · ${reload.actionLabel}${reload.valid ? `: ${reload.pa} PA. ${reload.coverNote}` : `. ${reload.reason}`}`;

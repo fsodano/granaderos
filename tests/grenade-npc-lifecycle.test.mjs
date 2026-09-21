@@ -28,8 +28,8 @@ function armedVisit(){
 }
 
 test('actual blast wounds, unconsciousness and death survive live save, report and sector reentry without standing the NPC up',()=>{
- for(const initialHp of [100,60,40]){
-  let s=armedVisit();const request=s.pendingBattle;
+ for(const condition of ['healthy',60,40]){
+  let s=armedVisit();const request=s.pendingBattle,initialHp=condition==='healthy'?request.npcs[0].maxHp:condition;
   // Known pre-existing wounds isolate the three outcomes of the same blast.
   // Only the targeted resident starts wounded; the grenade remains paid stock.
   let b=createBattle(request.squad.map(u=>({...u,x:1,y:2})),{...request,seed:45,width:12,height:10,tiles:flat(),enemies:[],props:[],

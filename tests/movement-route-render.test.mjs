@@ -78,7 +78,13 @@ test('full Buenos Aires ambient motion preserves reachable routes across ten act
    const old=oldActors.find(person=>person.id===actor.id);if(!old||sameCell(old,actor))continue;
    moving++;const route=movementRoute(state,old,actor),destination=fullRange(state,old).find(point=>sameCell(point,actor));
    assert.equal(route[0],old);assert.ok(sameCell(route.at(-1),actor));
-   if(destination){assert.deepEqual(route,[old,...destination.path]);compared++;}
+   if(destination){
+    // Civilian routines record their actual cardinal steps. Named residents
+    // now also have finite HP and a soldier-style reachable overlay; that
+    // alternative path must not replace the authoritative movement record.
+    const path=actor.lastMovePath?.length?actor.lastMovePath:destination.path;
+    assert.deepEqual(route,[old,...path]);compared++;
+   }
   }
   assert.deepEqual(state,before);state=next;
  }

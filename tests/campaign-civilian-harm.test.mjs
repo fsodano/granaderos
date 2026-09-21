@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor,isSupplied,restoreCampaign,serializeCampaign,recruitmentStatus} from '../game/campaign.js';
 import {acknowledgeCivilianHarm,hasPendingCivilianHarm,validateCampaignCivilianHarm} from '../game/campaign-civilian-harm.js';
 import {applyCivilianHarm,civilianIncidents} from '../game/civilian-harm.js';
-import {ENCOUNTERS} from '../game/encounters.js';
+import {ENCOUNTERS,encountersFor} from '../game/encounters.js';
 import {grenadeOffer} from '../game/equipment.js';
 import {extractItemQuantity} from '../game/tactical-inventory.js';
 import {sectorInventoryModel} from '../game/sector-inventory.js';
@@ -33,7 +33,7 @@ function ruleFixture(sectorId='retiro',owner='patriot'){
  const pair=visit();
  // Responsibility fixtures change only the scene and its control. They call
  // the real damage recorder and campaign receipt API; they are not travel tests.
- pair.s.pendingBattle.sector=sectorId;pair.s.pendingBattle.npcs=structuredClone(ENCOUNTERS.filter(npc=>npc.sector===sectorId));
+ pair.s.pendingBattle.sector=sectorId;pair.s.pendingBattle.npcs=encountersFor(pair.s,sectorId);
  pair.s.sectors[sectorId].owner=owner;pair.s.sectors[sectorId].loyalty=50;
  pair.b.sectorId=sectorId;pair.b.npcs=structuredClone(pair.s.pendingBattle.npcs);pair.b.npcs.forEach((npc,index)=>Object.assign(npc,{x:3+index,y:3}));
  return pair;
@@ -109,7 +109,7 @@ test('a critically wounded named volunteer stays unconscious through real remote
   let b=enterSector(s.pendingBattle);let npc=b.npcs.find(npc=>npc.id==='sosa');assert.ok(npc);
   if(damage===95){
    injury(b,npc,20);({campaign:s,battle:b}=sync(s,b));assert.equal(s.operativeState[100].hp,s.operativeState[100].maxHp-20);npc=b.npcs.find(npc=>npc.id==='sosa');
-   injury(b,npc,75);npc.energy=12;assert.equal(civilianIncidents(npc).length,1);assert.equal(hasPendingCivilianHarm(s,b),true);
+   injury(b,npc,npc.hp-1);npc.energy=12;assert.equal(civilianIncidents(npc).length,1);assert.equal(hasPendingCivilianHarm(s,b),true);
   }else injury(b,npc,damage);
   ({campaign:s,battle:b}=sync(s,b));assert.equal(s.operativeState[100].hp,damage===100?0:1);assert.equal(s.operativeState[100].unconscious,damage===95);if(damage===95)assert.equal(s.operativeState[100].energy,12);
   ({campaign:s,battle:b}=decodeSave(encodeSave(s,b)));s=finish(s,b);
@@ -136,7 +136,7 @@ test('dismissal and real contract expiry preserve a wounded contact transfer acr
   // scene. Stabilize the real injury before a full contract day elapses.
   const request=s.pendingBattle;
   let b=createBattle(request.squad.map(unit=>({...unit,x:2,y:2})),{...request,width:12,height:10,tiles:flat(),enemies:[],props:[],npcs:request.npcs.map((npc,index)=>({...npc,x:npc.id==='sosa'?3:8,y:npc.id==='sosa'?2:5+index}))});
-  b=act(b,{type:'weapon',unitId:'110',slot:'medical'});injury(b,b.npcs.find(npc=>npc.id==='sosa'),70);({campaign:s,battle:b}=sync(s,b));
+  b=act(b,{type:'weapon',unitId:'110',slot:'medical'});injury(b,b.npcs.find(npc=>npc.id==='sosa'),40);({campaign:s,battle:b}=sync(s,b));
   const hp=b.npcs.find(npc=>npc.id==='sosa').hp,dressings=b.units.find(unit=>unit.id==='110').medkits;
   b=act(b,{type:'useItem',unitId:'110',targetId:'sosa',targetKind:'npc'});assert.equal(b.npcs.find(npc=>npc.id==='sosa').hp,hp);assert.equal(b.units.find(unit=>unit.id==='110').medkits,dressings-1);
   ({campaign:s,battle:b}=sync(s,b));assert.equal(s.operativeState[100].bleeding,0);s=finish(s,b);
@@ -164,7 +164,7 @@ test('legacy injuries never receive retroactive blame, and a missing canonical l
  const wounded=visit();injury(wounded.b,wounded.b.npcs.find(npc=>npc.id==='local-retiro'),20);const synchronized=sync(wounded.s,wounded.b),raw=JSON.parse(encodeSave(synchronized.campaign,synchronized.battle));assert.equal(raw.campaign.cityLoyaltyEvents.length,0);delete raw.campaign.civilianHarm;assert.throws(()=>decodeSave(JSON.stringify(raw)));
  const live=visit();injury(live.b,live.b.npcs.find(npc=>npc.id==='local-retiro'),100);acknowledgeCivilianHarm(live.s,live.b);
  for(const change of [
-  bad=>delete bad.civilianHarm,bad=>bad.civilianHarm=null,bad=>bad.civilianHarm.version=2,
+  bad=>delete bad.civilianHarm,bad=>bad.civilianHarm=null,bad=>bad.civilianHarm.version=3,
   bad=>bad.civilianHarm.records={},bad=>bad.cityLoyaltyEvents=[],
   bad=>Object.values(bad.civilianHarm.records)[0].effects[0].delta=-99,
   bad=>Object.values(bad.civilianHarm.records)[0].effects[0].owner='invalid',

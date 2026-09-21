@@ -95,11 +95,11 @@ test('repeated fire at the same target gives a bonus that movement clears',()=>{
  assert.ok(shotChance(s,a,t)>shotChance(s,{...a,lastTargetId:undefined},t));
  s=order(s,{type:'move',x:1,y:2});assert.equal(s.units[0].lastTargetId,undefined);
 });
-test('equipped medical kit bandages self or an unconscious ally without restoring HP or ammunition',()=>{
+test('equipped medical kit stabilizes a critical ally without restoring ordinary HP or ammunition',()=>{
  let s=field([{id:'p',x:1,y:1,hp:80,bleeding:2,medical:80},{id:'ally',x:2,y:1,hp:10,bleeding:5}]);
  const rounds=s.units[0].loaded;s=order(s,{type:'weapon',slot:'medical'});
  assert.equal(s.units[0].activeSlot,'medical');s=order(s,{type:'useItem',targetId:'ally'});
- assert.equal(s.units[1].hp,10);assert.equal(s.units[1].bleeding,0);assert.equal(s.units[1].bandaged,90);assert.equal(s.units[1].unconscious,true);
+ assert.equal(s.units[1].hp,15);assert.equal(s.units[1].bleeding,0);assert.equal(s.units[1].bandaged,85);assert.equal(s.units[1].unconscious,false);assert.equal(s.units[1].ap,0);
  s=order(s,{type:'useItem',targetId:'p'});assert.equal(s.units[0].hp,80);assert.equal(s.units[0].medkits,0);assert.equal(s.units[0].loaded,rounds);
  const n=actBattle(s,{type:'useItem',unitId:'p',targetId:'ally'});assert.ok(n.lastError);assert.deepEqual(n.units,s.units);
  assert.doesNotThrow(()=>validateBattleSnapshot(s));

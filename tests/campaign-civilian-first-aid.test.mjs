@@ -50,7 +50,7 @@ function repeatSync(campaign,battle){
 
 test('paid first aid keeps wounds and refusal through save, reentry, and paid service transfer',()=>{
  let {campaign,battle}=paidVisit();wound(battle);
- assert.equal(npc(battle).hp,80);assert.equal(npc(battle).bleeding,2);assert.equal(npc(battle).bandaged,0);
+ assert.equal(npc(battle).hp,npc(battle).maxHp-20);assert.equal(npc(battle).bleeding,2);assert.equal(npc(battle).bandaged,0);
  assert.equal(Object.hasOwn(playerKnownBattle(battle).npcs.find(npc=>npc.id==='sosa'),'bleedSource'),false);
  ({campaign,battle}=sync(campaign,battle));
  const woundedHp=campaign.operativeState[100].maxHp-20;
@@ -68,7 +68,7 @@ test('paid first aid keeps wounds and refusal through save, reentry, and paid se
  ({campaign,battle}=decodeSave(encodeSave(campaign,battle)));campaign=save(finish(campaign,battle));
  assert.equal(campaign.operativeState[112].medkits,supplies-1);
  campaign=order(campaign,{type:'visitSector'});battle=enterSector(campaign.pendingBattle,campaign.sectorStates.buenos_aires);
- assert.equal(npc(battle).hp,80);assert.equal(npc(battle).bleeding,0);assert.equal(npc(battle).bandaged,20);assert.equal(npc(battle).civilianWoundVersion,1);
+ assert.equal(npc(battle).hp,npc(battle).maxHp-20);assert.equal(npc(battle).bleeding,0);assert.equal(npc(battle).bandaged,20);assert.equal(npc(battle).civilianWoundVersion,1);
  const refusal=dispatchCampaign(campaign,{type:'talkNPC',unitId:112,npcId:'sosa',approach:'friendly',sectorState:battle});assert.match(refusal.lastError,/Me heriste/);
  campaign=finish(campaign,battle);const cash=campaign.resources.treasury;
  campaign=order(campaign,{type:'recruitCivic',id:100,term:'week'});assert.equal(campaign.resources.treasury,cash-campaign.contracts[100].paid);
@@ -120,7 +120,7 @@ test('invalid civilian wound fields and missing canonical medical records reject
 });
 
 test('a delayed civilian death retains its real absent attacker across sector reentry exactly once',()=>{
- let {campaign,battle}=paidVisit();wound(battle,{damage:96});({campaign,battle}=sync(campaign,battle));campaign=save(finish(campaign,battle));
+ let {campaign,battle}=paidVisit();wound(battle,{damage:npc(battle).hp-4});({campaign,battle}=sync(campaign,battle));campaign=save(finish(campaign,battle));
  const loyalty=campaign.sectors.buenos_aires.loyalty;campaign=order(campaign,{type:'recruitCivic',id:110,term:'week'});campaign=order(campaign,{type:'squad',ids:[110]});campaign=order(campaign,{type:'visitSector'});
  battle=enterSector(campaign.pendingBattle,campaign.sectorStates.buenos_aires);assert.equal(battle.units.some(unit=>unit.id==='112'),false);assert.equal(npc(battle).bleedSource.attackerId,'112');
  battle=act(battle,{type:'rest'});assert.equal(npc(battle).hp,0);assert.equal(npc(battle).bleeding,0);assert.equal(npc(battle).bleedSource,undefined);
@@ -145,9 +145,9 @@ test('a pristine or legacy contact cannot heal a dismissed soldier during synchr
  campaign=save(finish(campaign,battle));const wounded=structuredClone(campaign.operativeState[100]);
  assert.equal(wounded.hp,60);assert.equal(wounded.bleeding,2);assert.equal(wounded.bandaged,3);
  campaign=order(campaign,{type:'dismiss',id:100});campaign=order(campaign,{type:'visitSector'});battle=enterSector(campaign.pendingBattle,campaign.sectorStates.buenos_aires);
- assert.ok(npc(battle));assert.equal(npc(battle).civilianWoundVersion,undefined);assert.equal(npc(battle).bleeding,undefined);
+ assert.ok(npc(battle));assert.equal(npc(battle).hp,60);assert.equal(npc(battle).civilianWoundVersion,1);assert.equal(npc(battle).bleeding,2);
  for(const legacy of [false,true]){
-  const field=structuredClone(battle);if(legacy)npc(field).hp=100;
+  const field=structuredClone(battle);if(legacy){delete npc(field).civilianWoundVersion;delete npc(field).bleeding;delete npc(field).bandaged;delete npc(field).bleedSource;}
   const synced=sync(campaign,field);assert.equal(synced.campaign.operativeState[100].hp,60);assert.equal(synced.campaign.operativeState[100].bleeding,2);assert.equal(synced.campaign.operativeState[100].bandaged,3);
   assert.equal(hasPendingCivilianHarm(synced.campaign,synced.battle),false);assert.deepEqual(decodeSave(encodeSave(synced.campaign,synced.battle)),{campaign:synced.campaign,battle:synced.battle});
  }

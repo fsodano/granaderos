@@ -80,7 +80,7 @@ test('main controls expose facing and stealth while aim and body targeting stay 
   for(const label of ['Cargar','Atacar','Vendar','Cubrir'])assert.ok(!markup.includes(`aria-label="${label}"`));
   s.units[0].activeSlot='medical';s.units[0].stealthMode=true;markup=orders(s);
   assert.ok(!markup.includes('aria-label="Zona de tiro"'));assert.match(markup,/aria-label="Sigilo" aria-pressed="true"/);
-  assert.match(markup,/Detiene la hemorragia; no recupera salud/);
+  assert.match(markup,/Reduce la hemorragia y estabiliza heridas críticas hasta 15 de salud/);
 });
 
 test('automatic exploration is explained without a separate return button',()=>{

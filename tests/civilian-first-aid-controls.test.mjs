@@ -39,7 +39,7 @@ test('civilian treatment previews share the reducer costs and show no AP in expl
   const s=field({exploration}),u=s.units[0],npc=s.npcs[0],before=structuredClone(s);
   const plan=itemUsePreview(s,u,npc,{targetKind:'npc'}),preview=targetPreview(s,u,npc,{mode:'move'});
   assert.equal(plan.valid,true);assert.equal(preview.valid,true);assert.equal(preview.actionLabel,'Acercarse y vendar');assert.equal(preview.pa,exploration?0:plan.pa);
-  assert.match(preview.coverNote,/no recupera salud/);if(exploration)assert.doesNotMatch(preview.coverNote,/\d+ PA/);
+  assert.match(preview.coverNote,/recuperación de salud requiere atención en campaña/);if(exploration)assert.doesNotMatch(preview.coverNote,/\d+ PA/);
   const local=medicalUsePreview(s,u,npc,{targetKind:'npc'}),direct=targetPreview(s,u,npc,{mode:'heal'});
   assert.equal(direct.valid,local.allowed);assert.equal(direct.reason,local.reason);assert.deepEqual(s,before);
  }
@@ -71,4 +71,30 @@ test('public medical controls expose observed wounds without revealing harm attr
  assert.deepEqual(view.orders[0].medicalTargets[0].action,{type:'useItem',targetId:'civil',targetKind:'npc'});
  assert.doesNotMatch(JSON.stringify(view),/private-source|private-player|hidden-patient|Hidden name|bleedSource|civilianHarm/);
  const other=structuredClone(s);other.npcs[1].hp=1;other.npcs[1].bleeding=8;assert.deepEqual(playerKnownBattle(other),view);
+});
+
+test('critical civilian previews show partial health and bleeding progress without promising full treatment',()=>{
+ const s=field({exploration:false,medical:1,dexterity:0,experienceLevel:1});
+ const u=s.units[0],npc=s.npcs[0];npc.x=2;npc.hp=3;npc.bleeding=8;
+ const before=structuredClone(s),preview=targetPreview(s,u,npc,{mode:'useItem'});
+ assert.equal(preview.valid,true);assert.equal(preview.treatment.partial,true);
+ assert.equal(preview.treatment.hpAfter,6);assert.equal(preview.treatment.bleedingAfter,4);
+ assert.match(preview.coverNote,/Salud: \+3, hasta 6/);assert.match(preview.coverNote,/Hemorragia restante: 4/);assert.match(preview.coverNote,/Tratamiento parcial/);
+ assert.doesNotMatch(preview.coverNote,/Sin hemorragia|Estabilizado\./);
+ const next=actBattle(s,{unitId:u.id,type:'useItem',targetId:npc.id,targetKind:'npc'});
+ assert.equal(next.lastError,null);assert.equal(next.npcs[0].hp,preview.treatment.hpAfter);assert.equal(next.npcs[0].bleeding,preview.treatment.bleedingAfter);
+ const view=playerKnownBattle(s),known=view.orders[0].medicalTargets[0];
+ assert.equal(known.treatment.hpAfter,6);assert.equal(known.treatment.partial,true);assert.equal(known.treatment.dressingsUsed,1);
+ assert.deepEqual(s,before);
+});
+
+test('critical allied and civilian target controls expose the same observed treatment forecast',()=>{
+ const s=field({exploration:false,medical:80}),u=s.units[0],npc=s.npcs[0];npc.x=2;npc.hp=10;npc.bleeding=2;
+ const ally={...u,id:'patient',name:'Herido',hp:10,bleeding:2,bandaged:0,maxHp:100,unconscious:true,ap:0,x:1,y:5};s.units.push(ally);
+ const npcPreview=targetPreview(s,u,npc,{mode:'useItem'}),allyPreview=targetPreview(s,u,ally,{mode:'useItem'});
+ for(const preview of [npcPreview,allyPreview]){assert.equal(preview.valid,true);assert.equal(preview.treatment.hpAfter,15);assert.match(preview.coverNote,/Estabilizado/);}
+ const view=playerKnownBattle(s),order=view.orders.find(o=>o.unitId===u.id);
+ const target=order.targets.find(t=>t.targetId===ally.id);assert.equal(target.treatment.hpAfter,15);assert.equal(target.treatment.complete,true);
+ assert.equal(order.medicalTargets[0].treatment.hpAfter,15);
+ npc.civilianFirstAid={version:1,hpRestored:35};assert.doesNotMatch(JSON.stringify(playerKnownBattle(s)),/civilianFirstAid|hpRestored/);
 });

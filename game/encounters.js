@@ -1,3 +1,4 @@
+import {seedCivilianHealth} from './civilian-health.js';
 import {CAMPAIGN_SECTORS,OPERATIVES} from './data.js';
 import {CIVIC_RECRUITS} from './recruitment.js';
 const local=[
@@ -23,7 +24,7 @@ export function encountersFor(s,sector){
  // A wounded contact who entered the service roster remains there after a
  // contract expires. Do not create a fresh, unwounded civilian on return.
  const transferred=new Set(Object.values(s.civilianHarm?.records??{}).filter(record=>record.sectorId===sector&&record.sceneId===null&&record.transferredTo!==null&&record.transferredTo!==undefined).map(record=>`${record.npcId}:${record.transferredTo}`));
- return ENCOUNTERS.filter(n=>n.sector===sector&&(n.operativeId===undefined||!s.recruited.includes(n.operativeId)&&!transferred.has(`${n.id}:${n.operativeId}`))).map(n=>({...n}));
+ return ENCOUNTERS.filter(n=>n.sector===sector&&(n.operativeId===undefined||!s.recruited.includes(n.operativeId)&&!transferred.has(`${n.id}:${n.operativeId}`))).map(n=>seedCivilianHealth(n,n.operativeId===undefined?null:s.operativeState[n.operativeId]));
 }
 export function encounterRequirements(s,npc,actor){
  const liberated=new Set(CAMPAIGN_SECTORS.filter(d=>s.sectors[d.id].owner==='patriot').map(d=>d.id==='retiro'?'buenos_aires':d.id)).size;

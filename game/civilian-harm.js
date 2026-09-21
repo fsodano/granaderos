@@ -1,3 +1,5 @@
+import {civilianMaxHp,validateCivilianHealth} from './civilian-health.js';
+export {civilianMaxHp,civilianRestoredHp} from './civilian-health.js';
 import {isUnconscious} from './tactical-condition.js';
 
 const need=(ok,message)=>{if(!ok)throw Error(message);};
@@ -8,16 +10,17 @@ const fields=['sequence','kind','attackerId','side','militia','intentional','hpB
 const originFields=['attackerId','side','militia','intentional'];
 const unknownOrigin=()=>({attackerId:null,side:'unknown',militia:false,intentional:false});
 
-export const civilianBandaged=npc=>npc.bandaged??((npc.bleeding??0)>0?0:Math.max(0,100-(npc.hp??100)));
+export const civilianBandaged=npc=>npc.bandaged??((npc.bleeding??0)>0?0:Math.max(0,civilianMaxHp(npc)-(npc.hp??civilianMaxHp(npc))));
 export function validateCivilianWounds(npc,state){
- const hp=npc.hp??100,bleeding=npc.bleeding??0;
+ validateCivilianHealth(npc);
+ const hp=npc.hp??civilianMaxHp(npc),bleeding=npc.bleeding??0;
  need(health(hp),'La salud civil no es válida.');
  if(npc.civilianWoundVersion!==undefined)need(npc.civilianWoundVersion===1,'La versión de las heridas civiles no es válida.');
  if(['bleeding','bandaged','bleedSource'].some(key=>npc[key]!==undefined))need(npc.civilianWoundVersion===1,'Falta la versión de las heridas civiles.');
  if(npc.civilianWoundVersion===1&&hp===0)need(civilianIncidents(npc).some(event=>event.kind==='death'),'Falta el registro de la muerte del habitante.');
  need(Number.isInteger(bleeding)&&bleeding>=0&&bleeding<=10&&(hp>0||bleeding===0),'La hemorragia civil no es válida.');
  if(bleeding>0)need(npc.civilianWoundVersion===1&&npc.bleedSource!==undefined,'Falta el origen de la hemorragia civil.');
- if(npc.bandaged!==undefined)need(health(npc.bandaged)&&npc.bandaged<=100-hp,'Las vendas del habitante no son válidas.');
+ if(npc.bandaged!==undefined)need(health(npc.bandaged)&&npc.bandaged<=civilianMaxHp(npc)-hp,'Las vendas del habitante no son válidas.');
  if(npc.bleedSource!==undefined){
   const source=npc.bleedSource;
   need(bleeding>0&&object(source)&&Object.keys(source).length===originFields.length&&originFields.every(key=>Object.hasOwn(source,key)),'El origen de la hemorragia civil no es válido.');

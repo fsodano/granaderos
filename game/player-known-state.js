@@ -31,6 +31,7 @@ const item=stack=>typeof stack==='number'?{count:stack}:{...pick(stack,ITEM),...
 const cursor=unit=>unit.equipmentCursor?{equipmentCursor:{sourceId:unit.equipmentCursor.sourceId,stack:item(unit.equipmentCursor.stack)}}:{};
 const handMetadata=unit=>Object.fromEntries(['weaponMetadata','bladeMetadata'].filter(key=>unit[key]!==undefined).map(key=>[key,item(unit[key])]));
 const inventory=unit=>Object.fromEntries(Object.entries(unit.inventory??{}).map(([key,stack])=>[key,item(stack)]));
+const treatmentPreview=preview=>preview?.treatment?{treatment:pick(preview.treatment,['critical','targetHP','hpGain','hpAfter','work','remainingWork','capacity','dressingsUsed','bleedingAfter','bandagedAfter','complete','partial'])}:{};
 const fresh=(state,contact)=>contact&&Number.isInteger(contact.turn)&&contact.turn<=state.turn&&state.turn-contact.turn<=3;
 const departure=unit=>({...pick(unit,['id','name','nickname','hp','maxHp']),...pick(unit.departure,['edge','destination','elapsedSeconds','mountId'])});
 
@@ -94,8 +95,8 @@ export function playerKnownBattle(state){
     fittings:fittingOrders(state,unit),
     aim:grenade?[]:aimOptions(state,unit).map(option=>pick(option,['level','pa','disabled'])),
     orders:orderDescriptors(state,unit).filter(order=>ORDERS.has(order.id)).map(order=>grenade&&order.id==='useItem'?{id:'useItem',label:'Lanzar granada',kind:'mode',pa:throwPA,disabled:!grenadeReady}:pick(order,['id','label','kind','pa','disabled'])),
-    targets:grenade?grenadePointOrders(state,unit,[...livingTargets,...visibleNpcs]):livingTargets.flatMap(target=>{const preview=targetPreview(state,unit,target);return preview?[{targetId:target.id,...pick(preview,['name','pa','remaining','chance','chanceLabel','coverNote','hitLocation','attackType','attackLabel','actionLabel','valid','reason'])}]:[];}),
-    medicalTargets:visibleNpcs.flatMap(npc=>{const action=civilianMedicalInputAction(state,unit,npc);if(!action)return [];const preview=targetPreview(state,unit,npc);return [{targetId:npc.id,targetKind:'npc',...pick(preview,['name','pa','remaining','coverNote','actionLabel','valid','reason']),action}];}),
+    targets:grenade?grenadePointOrders(state,unit,[...livingTargets,...visibleNpcs]):livingTargets.flatMap(target=>{const preview=targetPreview(state,unit,target);return preview?[{targetId:target.id,...treatmentPreview(preview),...pick(preview,['name','pa','remaining','chance','chanceLabel','coverNote','hitLocation','attackType','attackLabel','actionLabel','valid','reason'])}]:[];}),
+    medicalTargets:visibleNpcs.flatMap(npc=>{const action=civilianMedicalInputAction(state,unit,npc);if(!action)return [];const preview=targetPreview(state,unit,npc);return [{targetId:npc.id,targetKind:'npc',...treatmentPreview(preview),...pick(preview,['name','pa','remaining','coverNote','actionLabel','valid','reason']),action}];}),
     stealTargets:visible.filter(target=>target.hp>0&&!target.unconscious&&!target.surrendered&&!target.routed).map(target=>({targetId:target.id,...pick(stealPreview(state,unit,target),['pa','valid','reason']),action:{type:'steal',targetId:target.id}})),
     loot:nearbyLootOptions(state,unit).filter(option=>{
       const target=option.action.targetId?state.units.find(target=>target.id===option.action.targetId):option.action.groundId?(state.groundItems??[]).find(target=>target.id===option.action.groundId):(state.droppedWeapons??[])[option.action.dropIndex];

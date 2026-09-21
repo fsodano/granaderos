@@ -73,7 +73,7 @@ test('mounted orders use current selection, AP, equipment, targets and callbacks
  const selected={...updated,unit:updated.players[1],selected:updated.players[1].id};
  assert.match(counted(Panel,selected).html,/Soldado 2 · 100 PA/);
  const medical={...selected,unit:{...selected.unit,activeSlot:'medical'},target:selected.players[0]};
- assert.match(counted(Panel,medical).html,/Detiene la hemorragia/);
+ assert.match(counted(Panel,medical).html,/Reduce la hemorragia y estabiliza heridas críticas hasta 15 de salud/);
  assert.deepEqual(props.battle,before,'rendering and callbacks do not mutate the input battle');
  assert.deepEqual(counted(Strip,updated).calls,{},'a new closed menu does not retain optional work');
 });

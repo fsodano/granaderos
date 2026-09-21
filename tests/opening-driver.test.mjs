@@ -20,11 +20,22 @@ test('the opening driver budgets turning before extra aim',()=>{
  const next=apply(s,order);assert.equal(next.units[0].ap,0);assert.equal(next.units[0].facing,4);
 });
 
-test('a commander with only a critical ally can stand and then search instead of changing posture forever',()=>{
- let s=field([{id:'57',x:1,y:1,missionAlly:true,weapon:1808,stance:'prone'},{id:'patient',x:2,y:1,hp:9,maxHp:100,bandaged:91}],{x:31,y:11});
+test('a commander with no dressings and only a critical ally can stand and then search',()=>{
+ let s=field([{id:'57',x:1,y:1,missionAlly:true,weapon:1808,stance:'prone',medkits:0},{id:'patient',x:2,y:1,hp:9,maxHp:100,bandaged:91}],{x:31,y:11});
  const first=combatOrder(s,s.units[0]);assert.deepEqual(first,{type:'stance',unitId:'57',stance:'standing'});
  s=apply(s,first);const second=combatOrder(s,s.units[0]);assert.equal(second.type,'move');assert.equal(second.tacticalLevel,0,'reconnaissance retains its intended ground floor');
  const start={x:s.units[0].x,y:s.units[0].y},next=apply(s,second);assert.notDeepEqual({x:next.units[0].x,y:next.units[0].y},start);assert.equal(next.units[1].hp,9);
+});
+
+test('the opening driver treats a critical ally after equipping medical supplies and then restores its gun',()=>{
+ let s=field([{id:'57',x:1,y:1,missionAlly:true,weapon:1808,stance:'prone',medical:60,medkits:2},{id:'patient',x:2,y:1,hp:1,maxHp:100,bandaged:99,bleeding:0}],{x:31,y:11});
+ s.units[0].ap=100;
+ const orders=[];
+ for(let i=0;i<4;i++){const order=combatOrder(s,s.units[0]);orders.push(order);s=apply(s,order);}
+ assert.deepEqual(orders.map(order=>order.type),['weapon','useItem','useItem','weapon']);
+ assert.deepEqual(orders.filter(order=>order.type==='weapon').map(order=>order.slot),['medical','primary']);
+ assert.equal(s.units[1].hp,15);assert.equal(s.units[1].bleeding,0);assert.equal(s.units[1].unconscious,false);assert.equal(s.units[1].ap,0);
+ assert.equal(s.units[0].medkits,0);assert.equal(s.units[0].ap,42);
 });
 
 test('the commander still waits for able infantry and takes a firing posture at contact',()=>{

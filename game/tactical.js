@@ -24,7 +24,7 @@ import {shotRangeModifiers} from './shot-range.js';
 import {limitEnergy,maximumEnergy,recoverEnergy,recoverFatigue} from './fatigue.js';
 import {recordMilitiaHit} from './militia-experience.js';
 import {projectilePath,projectileFlight,pointProjectileFlight,physicalBodies,concealmentAt,concealmentSightPenalty} from './projectile-cover.js';
-import {applyCivilianHarm,civilianWoundedByPlayer,civilianBandaged,advanceCivilianBleeding} from './civilian-harm.js';
+import {applyCivilianHarm,civilianWoundedByPlayer,advanceCivilianBleeding} from './civilian-harm.js';
 import {boundaryMatches} from './tactical-exits.js';
 import {HELD_SUPPLIES,heldSupply,clearEmptySupply} from './held-supplies.js';
 import {heldTool,environmentActionProfile,resolveEnvironmentInteraction,extractContainerItem} from './environment-interactions.js';
@@ -40,6 +40,7 @@ export {AP_CARRY_LIMIT,CRITICAL_HEALTH,maxActionPoints,actionPointBudget,stanceC
 import {propBlocksAt,propCells} from './props.js';
 import {advanceBattleClock,COMBAT_ROUND_SECONDS,REST_SECONDS} from './time.js';
 import {practice} from './skill-training.js';
+import {firstAidPlan} from './first-aid.js';
 // Deterministic, serializable tactical simulation. The browser uses this module directly.
 export const WEAPONS = Object.fromEntries([
   [1800,'Brown Bess',58,12,6,45,18,1],[1801,'Charleville',52,11,5,42,22,1],
@@ -1208,7 +1209,7 @@ export function containerLootPreview(s,u,ref,index,count=1){
 }
 
 export function medicalUsePreview(s,u,target=u,{targetKind='unit'}={}){
-  const cost=u?actionCosts(s,u).heal:0;
+  const baseCost=u?actionCosts(s,u).heal:0;let treatment=null;
   const civilian=targetKind==='npc';
   let reason=!u||!alive(u)||s.status!=='active'||(u.side==='player'?!interruptAvailable(s,u):s.phase!=='enemy')?'El soldado no puede usar equipo ahora.':null;
   if(!reason&&!['unit','npc'].includes(targetKind))reason='El tipo de herido no es válido.';
@@ -1217,9 +1218,8 @@ export function medicalUsePreview(s,u,target=u,{targetKind='unit'}={}){
   if(!reason&&(!target||!civilian&&(target.side!==u.side||target.hp<=0||target.departure||target.routed)||contactDistance(u,target)>1.5||!hasLineOfSight(s,u,target)))reason='El herido debe estar vivo, junto a ti y al alcance de las vendas.';
   if(!reason&&!u.medkits)reason='No quedan vendas.';
   if(!reason&&!(u.medical>0))reason='Este soldado no tiene conocimientos de primeros auxilios.';
-  if(!reason&&!target.bleeding&&(civilian?civilianBandaged(target):target.bandaged??0)>=(civilian?100-(target.hp??100):target.maxHp-target.hp))reason='Las heridas ya están vendadas. Necesita recuperación en campaña.';
-  if(!reason&&s.mode!=='exploration'&&u.ap<cost)reason=`Vendar requiere ${cost} PA.`;
-  return {allowed:!reason,reason,cost};
+  if(!reason){treatment=firstAidPlan(u,target,{baseCost,budgetAP:s.mode==='exploration'?Infinity:u.ap,targetKind});if(!treatment.valid)reason=treatment.reason;}
+  return {allowed:!reason,reason,cost:treatment?.paCost??baseCost,treatment};
 }
 
 // Ordinary held-item targeting can include an approach. Explicit heal/melee
@@ -1274,8 +1274,8 @@ export function itemUsePreview(s,u,target,{targetKind='unit'}={}){
   const civilian=targetKind==='npc',type=u.activeSlot==='medical'||civilian?'heal':contextualAttack(s,u,target).type;
   if(!['heal','melee'].includes(type))return null;
   if(type==='melee')return meleePreview(s,u,target,{approach:true});
-  const actionPa=actionCosts(s,u)[type==='heal'?'heal':'melee'],reach=type==='heal'?1.5:bladeFor(u).reach;
-  const result=(reason=null,route=null)=>({type,actionPa,movePa:route?.cost??0,pa:actionPa+(route?.cost??0),destination:route?positionOf(route):null,path:route?.path??[],valid:!reason,reason});
+  let actionPa=actionCosts(s,u).heal,treatment=null;const reach=1.5;
+  const result=(reason=null,route=null)=>({type,actionPa,movePa:route?.cost??0,pa:actionPa+(route?.cost??0),destination:route?positionOf(route):null,path:route?.path??[],valid:!reason,reason,treatment});
   if(!alive(u)||s.status!=='active'||(u.side==='player'?!interruptAvailable(s,u):s.phase!=='enemy'))return result('El combatiente no puede actuar ahora.');
   if(!['unit','npc'].includes(targetKind))return result('El tipo de herido no es válido.');
   if(civilian&&(!target||!s.npcs?.includes(target)||target.departure||target.fled||(target.hp??100)<=0||!canSee(s,u,target)))return result('El habitante herido debe estar vivo y a la vista.');
@@ -1285,6 +1285,7 @@ export function itemUsePreview(s,u,target,{targetKind='unit'}={}){
     // Validate the actual supplies and patient before searching. The virtual
     // position removes only the reach check; it grants no AP, kit or treatment.
     const medical=medicalUsePreview(s,{...u,...positionOf(target),tacticalLevel:tacticalLevel(target)},target,{targetKind});
+    actionPa=medical.cost;treatment=medical.treatment;
     if(!medical.allowed)return result(medical.reason);
   }
   const inReach=contactDistance(u,target)<=reach&&hasLineOfSight(s,u,target);
@@ -1294,7 +1295,9 @@ export function itemUsePreview(s,u,target,{targetKind='unit'}={}){
   if(u.entangled)return result('Primero debés liberarte de las boleadoras.');
   const route=knownApproachRoute(s,u,cell=>contactDistance(cell,target)>0&&contactDistance(cell,target)<=reach&&hasLineOfSight(s,cell,target));
   if(!route)return result('No hay una ruta para acercarse y usar el objeto.');
-  return result(s.mode!=='exploration'&&route.cost+actionPa>u.ap?'PA insuficientes para acercarse y usar el objeto.':null,route);
+  const arrived=medicalUsePreview(s,{...u,...positionOf(target),tacticalLevel:tacticalLevel(target),ap:Math.max(0,u.ap-route.cost)},target,{targetKind});
+  actionPa=arrived.cost;treatment=arrived.treatment;
+  return result(!arrived.allowed?s.mode!=='exploration'&&route.cost+actionPa>u.ap?'PA insuficientes para acercarse y usar el objeto.':arrived.reason:null,route);
 }
 
 export function supplyUsePreview(s,u,target,key=u?.activeSupply){
@@ -1742,10 +1745,15 @@ else if(a.type==='mount'){if(tacticalLevel(u)!==0)return fail('La montura debe p
 else if(a.type==='heal'){
   const t=target||u;
   const preview=medicalUsePreview(s,u,t,{targetKind:a.targetKind});if(!preview.allowed)return fail(preview.reason);pay(preview.cost);
-  u.medkits--;practice(u,'medical',3);t.bleeding=0;
-  if(a.targetKind==='npc'){t.bandaged=100-(t.hp??100);t.civilianWoundVersion=1;delete t.bleedSource;}
-  else{t.bandaged=t.maxHp-t.hp;refreshCondition(t);}
-  sayObserved(s,[u,t],`${u.name} venda a ${t.name} y detiene la hemorragia. La salud se recupera con descanso y atención médica.`);
+  const treatment=preview.treatment,bleedReduced=(t.bleeding??0)-treatment.bleedingAfter;u.medkits-=treatment.dressingsUsed;practice(u,'medical',3);
+  t.hp=treatment.hpAfter;t.bleeding=treatment.bleedingAfter;t.bandaged=treatment.bandagedAfter;
+  if(a.targetKind==='npc'){
+    t.civilianWoundVersion=1;if(!t.bleeding)delete t.bleedSource;t.unconscious=isUnconscious(t);
+    if(treatment.hpGain>0)t.civilianFirstAid={version:1,hpRestored:(t.civilianFirstAid?.hpRestored??0)+treatment.hpGain};
+  }
+  else refreshCondition(t);
+  const progress=[treatment.hpGain>0?`recupera ${treatment.hpGain} de salud crítica`:null,bleedReduced>0?`reduce la hemorragia en ${bleedReduced}`:null].filter(Boolean).join(' y ');
+  sayObserved(s,[u,t],treatment.critical?`${u.name} venda a ${t.name}: ${progress}${treatment.partial?'; necesita más primeros auxilios.':'; estabilizado. La recuperación restante requiere descanso y atención médica.'}`:`${u.name} venda a ${t.name} y detiene la hemorragia. La salud se recupera con descanso y atención médica.`);
 }
 else if(a.type==='stance'){
   if(u.mounted)return fail('Debes desmontar antes de cambiar de postura.');

@@ -9,7 +9,7 @@ const patient = (extra = {}) => ({id: 'patient', name: 'Herido', x: 5, y: 2, med
 const make = (squad = [medic(), patient()], sector = {}) => createBattle(squad, map(sector));
 const replay = (initial, steps) => steps.reduce((state, action) => {const next = actBattle(state, action); assert.equal(next.lastError, null); return next;}, initial);
 
-test('auto-bandage replays only legal orders with real movement, time, kits and no HP recovery', () => {
+test('auto-bandage replays legal orders with paid movement, finite kits and critical stabilization only', () => {
   const state = make([medic({hp: 85, bleeding: 2}), patient({hp: 12, bleeding: 1})]);
   state.units[0].ap = 3;
   const before = structuredClone(state), report = autoBandageBattle(state);
@@ -22,8 +22,9 @@ test('auto-bandage replays only legal orders with real movement, time, kits and 
   assert.equal(report.battle.units[0].medkits, 1);
   assert.equal(report.battle.units[0].ap, 3);
   assert.ok(report.elapsedSeconds > 4); assert.ok(report.battle.units[0].energy < state.units[0].energy);
-  for (const unit of report.battle.units) {assert.equal(unit.bleeding, 0); assert.ok(unit.hp <= before.units.find(candidate => candidate.id === unit.id).hp);}
-  assert.equal(report.battle.units[1].unconscious, true); assert.ok(report.battle.units[1].hp < 12);
+  for (const unit of report.battle.units) assert.equal(unit.bleeding, 0);
+  assert.equal(report.battle.units[0].hp, before.units[0].hp, 'ordinary bandaging does not restore health');
+  assert.equal(report.battle.units[1].unconscious, false); assert.equal(report.battle.units[1].hp, 15);
   assert.equal(report.battle.units[0].activeSlot, 'medical');
 });
 
