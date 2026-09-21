@@ -171,3 +171,13 @@ A subsequent paid six-person Uspallata assault failed after three rounds. Inspec
 The capture/rescue regression now advances to the map's authored central rally point before holding fire. This replaces its old assumption that a newly issued gun already stood there. Real enemy wounds, deaths, prisoners, paid relief, finite ammunition, recovered artillery and save checks still pass. The live arrival also restores all three guns after reload.
 
 Final integrated verification: 2,623 tests pass with no skips. Type checking, the production build and diff checks pass. All 49 unrelated files in the preservation snapshot remain unchanged. Two six-person Uspallata probes still lose after the arrival correction; this is an open route problem, not a claimed victory.
+
+## Fresh Uspallata victory and recovery
+
+The continuous Retiro-only route now wins Uspallata with two explicitly coordinated squads and eight soldiers. It funds six daily contracts, manufactures finite ammunition, buys Leiva a Charleville, waits for daytime arrival and retains normal travel fatigue. The victory at hour 1,332 has five new deaths: Blackwood, Harcourt, Pembroke, Farías and Leiva. Macacha and Arnaud survive at 3 HP.
+
+Barcala recovers two actual dressings from Pembroke's corpse. Two hours of care stop both survivors' bleeding; Arnaud remains alive at 2 HP. Beltrán buys twenty dressings in Mendoza and reaches Uspallata through the paid post network. Macacha resumes medical work when stable. Paid contract renewals retain Arnaud, and the four survivors return to Mendoza for the remaining purchased care. All four finish at full health, without bleeding, at hour 1,390 with 603 pesos. Uspallata is fortified; its three stationed cannons remain physical equipment. The route retains 49 permanent deaths, lost northern territory and phase 3.
+
+The extended continuous test passes in 153.6 seconds. Runtime code is unchanged in this step; the preceding full suite passed 2,623 tests. This costly route remains distinct from a general balance claim. Los Patos, subsequent phase progression, lost territory, the ending and other partial audit requirements remain open.
+
+A separate eight-person Los Patos probe waits for paid replacement weapons to restock, then uses explicit two-squad travel and actual combat. It loses at hour 1,912. That failed continuation is not included as a victory or used to advance the campaign phase.

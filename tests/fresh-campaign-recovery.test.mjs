@@ -1,3 +1,4 @@
+import {prepareFreshUspallataAssault,recoverFreshUspallata} from './fresh-mountain-route.mjs';
 import {prepareFreshCuyoDefense,prepareFreshMendozaAssault,startFreshFoundry,prepareFreshArmyProduction,completeFreshArmyProduction} from './fresh-cuyo-route.mjs';
 import {recoverFreshNorthernDoctor,reuniteFreshNorthernSquad,prepareFreshSaltaAssault,finishFreshNorthernCampaign} from './fresh-northern-recovery.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
@@ -8,7 +9,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {beginFreshCampaign,recoverFreshCapital,prepareFreshNorthernAssault,prepareFreshSanLorenzo,prepareFreshMissionSupport,prepareFreshCordobaAssault,recoverFreshCordobaSurvivors,prepareFreshCordobaDefense,prepareFreshTucumanAssault} from './fresh-campaign-route.mjs';
 
-test('a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba, Tucumán and Salta victories through Yatasto and Mendoza production',()=>{
+test('a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba, Tucumán and Salta victories through Yatasto, Mendoza production and Uspallata recovery',()=>{
  const opening=beginFreshCampaign();
  assert.ok(opening.actions>0);assert.ok(opening.casualties.length>0);
  assert.equal(opening.campaign.officer,null);
@@ -105,6 +106,13 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  assert.equal(initialArmy.resources.infantry,200);assert.equal(initialArmy.resources.cannons,2);
  assert.equal(army.resources.infantry,3000);assert.equal(army.resources.cannons,3);
  assert.equal(army.phase,3);assert.equal(army.completed,false);
+ const pass=fightNorthernSector(prepareFreshUspallataAssault(army),'uspallata',{controller:tucumanCombatOrder});
+ assert.equal(pass.campaign.sectors.uspallata.owner,'patriot');
+ assert.equal(pass.campaign.operativeState[8].hp,3);assert.equal(pass.campaign.operativeState[105].hp,3);
+ const passRecovery=recoverFreshUspallata(pass.campaign);
+ assert.equal(passRecovery.phase,3);assert.equal(passRecovery.completed,false);
+ for(const id of [128,109,132,145,106])assert.equal(passRecovery.operativeState[id].alive,false);
+ for(const [id,record]of Object.entries(army.operativeState))if(!record.alive)assert.equal(passRecovery.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(foundry.operativeState))if(!record.alive)assert.equal(army.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(defended.campaign.operativeState))if(!record.alive)assert.equal(foundry.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(yatasto.operativeState))if(!record.alive)assert.equal(defended.campaign.operativeState[id].alive,false);
