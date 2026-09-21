@@ -802,7 +802,11 @@ export function dispatchCampaign(previous,action){
 export function serializeCampaign(s){return JSON.stringify(s);}
 export function restoreCampaign(text){
   assertSaveSize(text);
-  const s=JSON.parse(text),base=initialCampaign();
+  return restoreCampaignValue(JSON.parse(text));
+}
+// Parsed compact saves have already passed their encoded and expansion limits.
+export function restoreCampaignValue(s){
+  const base=initialCampaign();
   const integer=(v,min,max)=>Number.isInteger(v)&&v>=min&&v<=max;
   const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
   requireThat(object(s)&&s.version===1&&integer(s.hour,0,24*365*100)&&integer(s.phase,0,4)&&integer(s.seed,0,4294967295)&&sector(s.location),'El archivo de campaña no es compatible.');

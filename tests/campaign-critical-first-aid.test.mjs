@@ -1,3 +1,4 @@
+import {compactSaveTerrain} from '../game/save-terrain.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,restoreCampaign} from '../game/campaign.js';
@@ -80,6 +81,7 @@ test('legacy implicit health migrates once with unchanged harm receipts in a liv
  // preserved its missing 20 HP. Those historical numbers must remain exact.
  incident.hpBefore=100;incident.hpAfter=80;record(raw.campaign).incidents[0]=structuredClone(incident);
  const oldReceipts=structuredClone(civilianIncidents(npc(raw.battle))),loaded=decodeSave(JSON.stringify(raw));
+ const compactLegacy=structuredClone(raw);compactSaveTerrain(compactLegacy);compactLegacy.schema=2;assert.deepEqual(decodeSave(JSON.stringify(compactLegacy)),loaded);
  assert.equal(npc(loaded.battle).maxHp,70);assert.equal(npc(loaded.battle).hp,50);assert.equal(loaded.campaign.operativeState[100].hp,50);assert.deepEqual(civilianIncidents(npc(loaded.battle)),oldReceipts);
  assert.deepEqual(decodeSave(encodeSave(loaded.campaign,loaded.battle)),loaded);
  const old=structuredClone(raw.battle),entered=enterSector(loaded.campaign.pendingBattle,old);
