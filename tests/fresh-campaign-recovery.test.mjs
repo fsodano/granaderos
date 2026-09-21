@@ -1,4 +1,4 @@
-import {recoverFreshNorthernDoctor,reuniteFreshNorthernSquad} from './fresh-northern-recovery.mjs';
+import {recoverFreshNorthernDoctor,reuniteFreshNorthernSquad,prepareFreshSaltaAssault} from './fresh-northern-recovery.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
 import {dispatchCampaign} from '../game/campaign.js';
 import {sanLorenzoCombatOrder} from './san-lorenzo-driver.mjs';
@@ -7,7 +7,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {beginFreshCampaign,recoverFreshCapital,prepareFreshNorthernAssault,prepareFreshSanLorenzo,prepareFreshMissionSupport,prepareFreshCordobaAssault,recoverFreshCordobaSurvivors,prepareFreshCordobaDefense,prepareFreshTucumanAssault} from './fresh-campaign-route.mjs';
 
-test('a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba and Tucumán victories',()=>{
+test('a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba, Tucumán and Salta victories',()=>{
  const opening=beginFreshCampaign();
  assert.ok(opening.actions>0);assert.ok(opening.casualties.length>0);
  assert.equal(opening.campaign.officer,null);
@@ -78,7 +78,12 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  assert.ok(relief.hour>tucuman.campaign.hour);
  const reunited=reuniteFreshNorthernSquad(relief);
  assert.equal(reunited.location,'tucuman');
- assert.deepEqual(reunited.squad,[1000,4,10,122,126,1]);
+ assert.deepEqual(reunited.squad,[1000,10,4,122,1]);
+ assert.deepEqual(reunited.squads.find(q=>q.name==='Apoyo de los oficiales').members,[9,11,126]);
+ const salta=fightNorthernSector(prepareFreshSaltaAssault(reunited),'salta',{controller:tucumanCombatOrder});
+ assert.equal(salta.campaign.sectors.salta.owner,'patriot');
+ assert.equal(salta.campaign.completed,false);
+ for(const [id,record]of Object.entries(reunited.operativeState))if(!record.alive)assert.equal(salta.campaign.operativeState[id].alive,false);
  assert.equal(reunited.flags.partisanSupply,true);
  assert.equal(reunited.resources.muskets,relief.resources.muskets-50);
  for(const id of reunited.squad)assert.equal(reunited.operativeState[id].location,'tucuman');

@@ -129,3 +129,9 @@ The continuous fresh-start test now continues after Tucumán through recovery of
 ## Fresh northern reunion and Azurduy
 
 The continuous fresh-start regression now also rests and marches the relief party from Buenos Aires to Tucumán, renews the two paid survivors' contracts before expiry, and reunites all five operatives. The ordinary partisan-supply decision removes exactly 50 muskets. Dorrego then physically approaches and recruits Azurduy through the authored dialogue gate. All six soldiers are at Tucumán, all 34 deaths persist, and saves round-trip. The continuous test passes in 77.1 seconds. The resulting checkpoint is hour 217, second 359, with 1,244 pesos. A subsequent six-person Salta probe, using recovered firearms and matching finite ammunition, loses at turn 7. Salta, the northern agreement, Yatasto and the remaining campaign are still unverified from a fresh start.
+
+## Fresh Salta victory
+
+The continuous fresh-start route now stops at Córdoba for actual recruitment of Quiroga and Paz, marches the expanded relief force north and recruits Azurduy after the same finite musket delivery. Two squads rest together, collect actual weapons and typed cartridges, and coordinate their Salta arrival. Existing long guns are retained instead of being replaced during collection. The eight-person assault wins Salta, replays deterministically and returns through campaign saves. The continuous regression passes in 105.5 seconds.
+
+The result is phase 2, hour 243, second 3122, with 1,819 pesos and 41 permanent deaths. Azurduy is the only surviving recruit. This is a costly playable continuation, not a balance acceptance. A separate saved-checkpoint probe completes the northern pact and recruits Güemes and Macacha; those steps are not yet part of the continuous test. Yatasto and the remaining campaign stay open.
