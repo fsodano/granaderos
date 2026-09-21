@@ -1,3 +1,4 @@
+import {validatePrisonerRelease} from './prisoner-release.js';
 import {NPC_QUESTS} from './quests.js';
 import {boundaryMatches,findSectorExit} from './tactical-exits.js';
 import {atHand} from './tactical-planning-space.js';
@@ -17,7 +18,8 @@ export function validateQuestEscortOrders(campaign,battle){
  const expected=applyQuestEscortOrders(campaign,battle);
  for(const quest of NPC_QUESTS)if(quest.escort&&quest.sector===battle.sectorId&&!battle.sceneId&&campaign.quests?.[quest.id]&&!battle.npcs.some(n=>n.id===quest.npcId))throw Error('Falta el personaje del encargo de escolta.');
  for(let i=0;i<battle.npcs.length;i++){
-  const npc=battle.npcs[i],order=expected.npcs[i].escort;
+  const npc=battle.npcs[i];if(npc.detention){validatePrisonerRelease(npc,battle);continue;}
+  const order=expected.npcs[i].escort;
   if(npc.escort&&!NPC_QUESTS.some(q=>q.escort&&q.npcId===npc.id&&q.sector===battle.sectorId&&!battle.sceneId))throw Error('La escolta no tiene un encargo autorizado.');
   if(Boolean(npc.escort)!==Boolean(order)||npc.escort&&(npc.escort.leaderId!==order.leaderId||npc.escort.waiting!==order.waiting))throw Error('La orden de escolta no coincide con el encargo.');
  }

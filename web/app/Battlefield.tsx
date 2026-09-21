@@ -1,4 +1,5 @@
 'use client';
+import PrisonerActions from './PrisonerActions';
 import {spriteOrderPose} from '../../game/sprite-order-pose.js';
 import {tacticalViewport} from '../../game/tactical-viewport.js';
 import AimCursor from './AimCursor';
@@ -333,6 +334,7 @@ function BattlefieldContents({battle:s,onChange,onFinish,peacefulVisit=false,con
   };
   return <section className={`battle-layout ${s.night?'night-field':''}`}>
     <header className="battle-header"><div><p className="eyebrow">OPERACIÓN TERRESTRE · {s.night?'NOCHE':'DÍA'} · {s.weather.rain?'LLUVIA':'CIELO DESPEJADO'}</p><h1>{s.sectorName}</h1></div><div className="battle-status"><span className="turn-dot"/>{busy?'Procesando órdenes':turn.label}<span className="enemy-count">{enemies.length} avistados</span></div></header>
+    <PrisonerActions state={s} unit={u} busy={busy} onRelease={id=>order({type:'free',targetKind:'npc',targetId:id})} onEscort={(id,escortOrder)=>order({type:'prisonerEscort',targetKind:'npc',targetId:id,escortOrder})}/>
     <JA2CampaignReturn battle={s} peacefulVisit={peacefulVisit} busy={busy} onFinish={onFinish}/>
     {turn.interrupted&&<section className="ja2-interrupt-banner" aria-label="Interrupción de combate" role="status"><div><strong>Interrupción</strong><span>Actuá con los PA restantes. Después continúa el turno enemigo.</span></div><div className="ja2-interrupt-units" aria-label="Combatientes disponibles">{turn.units.map((p:any)=><button key={p.id} disabled={busy} aria-pressed={p.id===selected} onClick={()=>selectUnit(p.id)}>{p.nickname||p.name} · {p.ap} PA</button>)}</div><button className="line-button" disabled={busy} onClick={nextTurn}>Continuar turno enemigo</button></section>}
     {mission&&<details className="hud-mission" aria-label="Objetivos de la misión"><summary>{mission.name} · Objetivos</summary><ul>{(mission.objectives||[]).map((objective:any,index:number)=><li key={index}>{typeof objective==='string'?objective:`${objective.done?'✓ ':''}${objective.text||objective.label||objective.name}`}</li>)}</ul>{s.sceneId==='yatasto'&&onMissionFinish&&<button className="line-button" disabled={busy||!(mission.objectives||[]).every((o:any)=>o.done)} onClick={onMissionFinish}>Concluir el encuentro</button>}</details>}

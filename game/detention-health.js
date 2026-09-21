@@ -1,3 +1,4 @@
+import {sameCaptivity} from './capture-identity.js';
 import {validateDetainedPrisoner} from './detention.js';
 import {civilianRestoredHp} from './civilian-health.js';
 import {validateCivilianWounds,civilianIncidents} from './civilian-harm.js';
@@ -10,7 +11,7 @@ const need=(ok,message)=>{if(!ok)throw Error(message);};
 export function planDetentionHealth(operativeId,record,npc,acknowledged=0){
  validateDetainedPrisoner(npc);validateCivilianWounds(npc);
  const d=npc.detention;
- need(d&&d.operativeId===operativeId&&record?.captured&&record.capturedAt===d.capturedAt&&record.capturedSector===d.sector,'El parte no corresponde al cautiverio actual.');
+ need(d&&d.operativeId===operativeId&&sameCaptivity(record,d),'El parte no corresponde al cautiverio actual.');
  need(npc.maxHp===record.maxHp&&Number.isFinite(record.hp)&&record.hp>=0&&record.hp<=record.maxHp,'La salud del prisionero no corresponde a su hoja de servicio.');
  need(Number.isFinite(npc.energy)&&npc.energy>=0&&npc.energy<=100,'La energía del prisionero no es válida.');
  need(!(record.bleeding>0||record.bandaged>0)||npc.civilianWoundVersion===1,'El parte perdió las heridas del prisionero.');

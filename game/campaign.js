@@ -1,3 +1,4 @@
+import {settleDetentionReturn} from './campaign-detention.js';
 import {advanceDetentionCare} from './detention-care.js';
 import {detentionManifest} from './detention.js';
 import {restoredCaptiveContract} from './prisoner-custody.js';
@@ -188,7 +189,7 @@ function reorganizeAfterLoss(s,previous){
  note(s,Object.values(s.operativeState).some(r=>r.alive&&r.captured)?'Quedan combatientes prisioneros. El cuartel de Retiro puede contratar una fuerza de rescate.':'No quedan combatientes en servicio. Podés contratar otra escuadra en Retiro.');
 }
 function captureOperatives(s,ids,at,ammunition={}){
-  for(const id of ids){const r=s.operativeState[id],contract=clone(s.contracts[id]);removeFromService(s,id);Object.assign(r,{captured:true,capturedSector:at,capturedAt:s.hour,capturedContract:contract,capturedAmmunition:clone(ammunition[id]??{loaded:0,ammo:0}),location:at});}
+  for(const id of ids){const r=s.operativeState[id],contract=clone(s.contracts[id]);removeFromService(s,id);Object.assign(r,{captureSequence:(r.captureSequence??0)+1,captured:true,capturedSector:at,capturedAt:s.hour,capturedContract:contract,capturedAmmunition:clone(ammunition[id]??{loaded:0,ammo:0}),location:at});}
   if(ids.length)note(s,`${ids.map(id=>rosterFor(s).find(o=>o.id===id).nickname).join(', ')} quedan prisioneros en ${sector(at).name}.`);
 }
 function releaseCaptives(s,at){
@@ -777,6 +778,7 @@ export function dispatchCampaign(previous,action){
       default:throw Error('Orden desconocida.');
     }
     for(const [flag,at] of Object.entries({academy:'retiro',foundry:'mendoza',northPact:'salta',partisanSupply:'tucuman',parliament:'mendoza',emancipation:'buenos_aires',commission:'buenos_aires'}))if(s.flags[flag]&&!previous.flags[flag])recordCityLoyalty(s,{sectorId:at,kind:'quest',eventId:`quest-${flag}`});
+    if(previous.pendingBattle&&!s.pendingBattle)settleDetentionReturn(s,previous.pendingBattle);
     reorganizeAfterLoss(s,previous);
     delayCrossingEnemyGroups(s);
     if(s.pendingBattle&&!previous.pendingBattle)prepareSectorArtillery(s,s.pendingBattle);

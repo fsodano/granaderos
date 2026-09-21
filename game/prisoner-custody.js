@@ -1,3 +1,4 @@
+import {detentionId} from './capture-identity.js';
 // Capture pauses the unused portion of a contract. Neither the status panel
 // nor release may charge for, or grant service during, detention.
 export function captiveServiceHours(record){
@@ -15,7 +16,7 @@ export function restoredCaptiveContract(record,hour){
 export function prisonerStatus(state,operative){
  const record=state.operativeState[operative.id];
  if(!record?.captured)return null;
- const care=state.detentionRecords?.[`captive:${operative.id}:${record.capturedAt}`]?.care??[];
+ const care=state.detentionRecords?.[detentionId(operative.id,record)]?.care??[];
  return {id:operative.id,name:operative.name,sector:record.capturedSector,hp:record.hp,maxHp:record.maxHp??operative.maxHp,
   capturedAt:record.capturedAt,heldHours:Math.max(0,state.hour-record.capturedAt),serviceHours:captiveServiceHours(record),
   careDressings:care.reduce((sum,event)=>sum+event.dressings,0),lastCareHour:care.at(-1)?.hour??null,
