@@ -162,3 +162,22 @@ export function prepareFreshCordobaAssault(start){
  assert.equal(campaign.pendingBattle.squad.length,8);
  return campaign;
 }
+
+// Routed wounded survivors receive local care, then travel to the actual
+// Retiro medical shop after recovered field dressings are exhausted.
+export function recoverFreshCordobaSurvivors(start){
+ let c=decodeSave(encodeSave(start)).campaign;
+const order=a=>{c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);};
+order({type:'selectSquad',id:c.squads.find(s=>s.members.includes(111)).id});
+order({type:'recruitCivic',id:139,term:'week'});
+let model=()=>sectorInventoryModel(c,'buenos_aires',rosterFor(c),139);
+for(const row of model().entries.filter(r=>r.reachable&&JSON.parse(r.expected).item==='medkits')){order({type:'sectorInventory',sector:'buenos_aires',operativeId:139,direction:'take',sourceKey:row.key,expected:row.expected,count:Math.min(row.count,10)});if(c.operativeState[139].medkits>=10)break;}
+for(const operativeId of [111,125])order({type:'assignCare',operativeId,assignment:'patient'});
+order({type:'assignCare',operativeId:139,assignment:'doctor'});
+for(let i=0;i<30&&[111,125].some(id=>c.operativeState[id].hp<c.operativeState[id].maxHp);i++){assert.equal(c.pendingEncounter,null);
+if(!c.operativeState[139].medkits){const row=model().entries.find(r=>r.reachable&&JSON.parse(r.expected).item==='medkits');if(row)order({type:'sectorInventory',sector:'buenos_aires',operativeId:139,direction:'take',sourceKey:row.key,expected:row.expected,count:Math.min(row.count,10)});else {if(c.location!=='retiro'){order({type:'squad',ids:[111,125,139]});for(const operativeId of [111,125,139])order({type:'assignCare',operativeId,assignment:'active'});order({type:'travel',sector:'retiro'});for(const operativeId of [111,125])order({type:'assignCare',operativeId,assignment:'patient'});}order({type:'purchaseMedicalSupplies',operativeId:139,quantity:4});order({type:'assignCare',operativeId:139,assignment:'doctor'});}}
+order({type:'wait',hours:1});}
+for(const id of [111,125])assert.equal(c.operativeState[id].hp,c.operativeState[id].maxHp);
+ assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);
+ return c;
+}

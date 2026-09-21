@@ -103,3 +103,7 @@ Validation: **2,615/2,615 tests pass with no skips**; type checking and the prod
 ## Fresh Córdoba continuation
 
 The continuous Retiro-only route now wins Córdoba after San Nicolás and San Lorenzo. The existing two doctors join the six-person field force through ordinary queued squad travel. No personnel, supplies, sectors or victories are injected. Each tactical battle replays deterministically and passes through campaign save/return. The focused full-route test passes in 34.5 seconds. The Córdoba checkpoint is phase 2, hour 84, second 1635, with 611 pesos and 25 permanent deaths; only four hired survivors remain. This is a costly viable continuation, not evidence of good balance or a completed campaign. Later northern sectors, Yatasto and the ending remain unverified from the fresh start.
+
+## Fresh Córdoba survivor recovery
+
+The continuous fresh-start regression now also recovers the two wounded soldiers who routed to Buenos Aires during Córdoba. A paid local doctor uses finite recovered dressings. When those are exhausted, the stabilized patients and doctor travel to Retiro and buy supplies from its real shop. Both regain full health through elapsed care, all 25 prior deaths persist, and campaign saves round-trip. The checkpoint reaches hour 117 with 604 pesos and the two patients at Retiro; the northern survivors remain at Córdoba. The focused continuous test passes. Re-equipment, reunion and the subsequent northern campaign remain open.
