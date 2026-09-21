@@ -11,6 +11,7 @@ import {moraleStatus} from '../../game/morale.js';
 import {equipmentInventoryUsage,medicalSupplyStock,MEDICAL_STOCK_CAP,MEDICAL_DAILY_RESTOCK} from '../../game/equipment.js';
 import './medical-care.css';
 import StudyForecast from './StudyForecast';
+import MilitiaCare from './MilitiaCare';
 const equipment=WEAPONS as Record<number,{capacity?:number;name:string}>;
 
 export function MedicalSupplyPurchase({s,op,blocked,pharmacy,dispatch}:{s:any;op:any;blocked:boolean;pharmacy:boolean;dispatch:(action:any)=>void}){
@@ -68,6 +69,7 @@ export default function MedicalCare({state:s,sectorId,dispatch}:{state:any;secto
     <header><div><p className="eyebrow">PERSONAL EN {place?.grid}</p><h2 id="medical-care-title">Asignaciones del personal</h2></div><p>Organizá la atención, el descanso, la práctica y las reparaciones. Cada trabajo necesita tiempo y personal presente en un sector seguro.</p></header>
     {['retiro','cordoba','mendoza'].includes(sectorId)&&<p className="care-condition" role="status">Maestranza: {medicalSupplyStock(s,sectorId)}/{MEDICAL_STOCK_CAP} botiquines disponibles. Repone {MEDICAL_DAILY_RESTOCK} cada 24 horas de abastecimiento; próxima reposición en {24-(s.merchants?.[sectorId]?.restockHours??0)} horas abastecidas.</p>}
     {!personnel.length?<p className="care-empty">No hay combatientes contratados en {place?.name}.</p>:<div className="care-personnel">{personnel.map(op=><PersonnelCard key={op.id} s={s} op={op} roster={roster} blocked={blocked} pharmacy={pharmacy} dispatch={dispatch}/>)}</div>}
+    <MilitiaCare state={s} sectorId={sectorId} roster={roster}/>
     <p className="care-help">Las vendas reducen la hemorragia y estabilizan heridas críticas hasta 15 de salud; el médico continúa la recuperación con botiquines. El descanso recupera energía y 1 de salud cada 6 horas sin hemorragia, salvo heridas críticas. La práctica mejora habilidades de forma gradual; un instructor con más habilidad acelera el aprendizaje. Reparar consume herramientas para mantener armas, bayonetas y herramientas llevadas. Desatascar un arma también consume un punto; no repone munición. La fatiga limita la energía máxima. El personal agotado duerme automáticamente y retoma su tarea al recuperarse. Dormir conserva la asignación y recupera energía más rápido que estar en servicio sin actividad. Para marchar, despertá al personal y elegí «En servicio» o dejá al personal en otra escuadra.</p>
   </section>;
 }

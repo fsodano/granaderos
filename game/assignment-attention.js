@@ -94,7 +94,7 @@ function compatibleCode(assignment,code){
   if(assignment==='sleep')return Object.hasOwn(SLEEP_ISSUE_TEXT,code);
   if(assignment==='militia')return ['sleeping','unstable'].includes(code)||code.startsWith('militia_')&&code!=='militia_busy';
   if(common.has(code))return true;
-  if(Object.hasOwn(CARE_ASSIGNMENTS,assignment))return ({doctor:['no_medical_skill','no_medkits','no_patients'],patient:['healing_complete','no_doctor'],rest:['rest_complete','bleeding','critical']})[assignment]?.includes(code);
+  if(Object.hasOwn(CARE_ASSIGNMENTS,assignment))return ({doctor:['no_medical_skill','no_medkits','no_patients'],militia_doctor:['no_medical_skill','no_medkits','no_militia_patients'],patient:['healing_complete','no_doctor'],rest:['rest_complete','bleeding','critical']})[assignment]?.includes(code);
   if(assignment==='repair')return ['invalid_repair_scope','repair_pack_full','repair_complete','no_mechanical_skill','no_tools','target_unavailable','target_not_firearm','target_changed'].includes(code);
   return ['invalid_skill','zero_skill','training_complete',...(assignment==='instructor'?['no_students']:[]),...(assignment==='student'?['missing_instructor','instructor_unavailable','instructor_assignment','instructor_skill','instructor_busy']:[])].includes(code)&&!(assignment==='instructor'&&code==='training_complete');
 }
