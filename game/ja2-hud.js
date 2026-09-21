@@ -322,7 +322,7 @@ function targetPreviewWithCosts(state, unit, point, ctx = {}) {
     const preview=local?{pa:local.cost,valid:local.allowed,reason:local.reason,movePa:0,actionPa:local.cost,treatment:local.treatment}:itemUsePreview(state,unit,patient,options);
     return {name:patient.name,actionLabel:preview.movePa?'Acercarse y vendar':'Vendar',pa:preview.pa,remaining:Math.max(0,unit.ap-(state.mode==='exploration'?0:preview.pa)),valid:preview.valid,reason:preview.reason,treatment:preview.treatment,coverNote:medicalTreatmentText(state,preview)};
   }
-  const recipient=state.npcs?.find(n=>sameCell(n,point));
+  const recipient=state.npcs?.find(n=>!n.departure&&!n.fled&&sameCell(n,point)&&canSee(state,unit,n));
   if(recipient&&unit.activeSlot==='item'&&!heldGrenade(unit)&&['move','useItem'].includes(mode)){const gift=npcGiftPreview(state,unit,recipient);return {name:recipient.name,actionLabel:gift.label,pa:gift.pa,remaining:unit.ap,valid:gift.valid,reason:gift.reason,coverNote:'Se entrega el objeto que está en la mano. No se usa la reserva del cuartel.'};}
   const occupants = state.units.filter(v => sameCell(v, point) && !v.fled && !v.departure && (v.side === unit.side || state.units.some(p => p.side === unit.side && canSee(state, p, v))));
   const target = occupants.find(v => v.id === point.id) || occupants.find(v => v.hp > 0) || occupants[0];

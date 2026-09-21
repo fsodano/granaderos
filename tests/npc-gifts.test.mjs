@@ -1,7 +1,7 @@
 import {deliverPonchos} from './npc-gift-helpers.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,npcGiftPreview} from '../game/tactical.js';
+import {createBattle,actBattle,npcGiftPreview,getReachable} from '../game/tactical.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {makeOutfit} from '../game/outfits.js';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
@@ -46,4 +46,16 @@ test('issued ponchos leave local stock once, remain with the NPC through saves a
  c=decodeSave(encodeSave(c)).campaign;c=step(c,{type:'visitSector'});pair=prepareCampaignBattle(c);c=pair.campaign;b=pair.battle;
  assert.equal(npc(b).questGifts.length,2);assert.ok(!Object.values(b.units.find(u=>u.id==='1000').inventory).some(r=>r.kind==='outfit'));
  const again=dispatchCampaign(c,{type:'talkNPC',npcId:'local-retiro',unitId:1000,approach:'quest',sectorState:b});assert.ok(again.lastError);assert.deepEqual(again.cityLoyaltyEvents,c.cityLoyaltyEvents);
+});
+
+test('departed recipients do not replace the empty-cell movement preview',()=>{
+ const b=field(),u=b.units[0],point={x:3,y:2};
+ npc(b).departure={destination:'buenos_aires'};
+ const empty={...b,npcs:[]},ctx={mode:'move',reachable:getReachable(b,u)},expected=targetPreview(empty,u,point,ctx);
+ assert.equal(expected.valid,true);
+ assert.deepEqual(targetPreview(b,u,point,ctx),expected);
+ const moved=actBattle(b,{type:'move',unitId:u.id,...point});
+ assert.equal(moved.lastError,null);
+ assert.deepEqual([moved.units[0].x,moved.units[0].y],[point.x,point.y]);
+ assert.deepEqual(moved.units[0].inventory,u.inventory);
 });

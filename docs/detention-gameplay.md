@@ -60,3 +60,5 @@ Focused checks include an ordinary walk/follow/wait-to-catch-up route through a 
 ### Verified combat rescue from arrival
 
 `tests/prisoner-rescue-route.test.mjs` uses an established-front capture fixture and paid six-person relief force. Rescuers retain their actual map arrival positions. Ordinary combat, release, following and boundary actions return all three prisoners to Jujuy, with saves between departures. Five rescuers survive and one remains dead. Confiscated equipment stays in unique field caches. The guards are defeated before evacuation; this route does not prove stealth escape or a fresh campaign. Departed prisoners no longer occupy their former cells for movement, door closure or artillery movement.
+
+The held-item cursor now excludes departed, fled and unseen NPC gift recipients. The departed-cell regression proves that an escaped recipient no longer replaces the movement preview, actual movement succeeds and the carried item remains owned. The regression fails against the old lookup; the 20 focused gift, prisoner and civilian-aid checks pass with the fix.
