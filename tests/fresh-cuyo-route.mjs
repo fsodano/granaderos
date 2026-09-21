@@ -1,3 +1,4 @@
+import {meetRecruits} from './campaign-recruitment-route.mjs';
 import assert from 'node:assert/strict';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {dispatchCampaign,rosterFor} from '../game/campaign.js';
@@ -19,4 +20,28 @@ for(const id of c.squad){const model=()=>sectorInventoryModel(c,'cordoba',roster
 for(let i=0;i<24&&!c.pendingEncounter;i++)order({type:'wait',hours:1});assert.equal(c.pendingEncounter?.sector,'cordoba');
 order({type:'respondToEncounter',groupId:c.pendingEncounter.groupId,choice:'tactical'});assert.equal(c.contracts[142].term,'day');assert.ok(c.contracts[142].paid>0);
  return c;
+}
+
+export function prepareFreshMendozaAssault(start){
+ let c=decodeSave(encodeSave(start)).campaign;
+ const order=a=>{c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);};
+ for(const operativeId of c.squad)order({type:'assignCare',operativeId,assignment:'active'});
+ order({type:'attack',sector:'mendoza',queue:true,mode:'posta'});
+ for(let i=0;i<12&&c.squads.find(q=>q.id===c.activeSquadId).journey?.status!=='ready';i++)order({type:'wait',hours:1});
+ order({type:'beginAssault',sector:'mendoza'});return c;
+}
+
+export function startFreshFoundry(start){
+ let c=decodeSave(encodeSave(start)).campaign;
+ const order=a=>{c=dispatchCampaign(c,a);assert.equal(c.lastError,null,JSON.stringify(a)+c.lastError);};
+ c=meetRecruits(c,['beltran'],8);
+ const resources=structuredClone(c.resources);order({type:'foundry'});
+ assert.equal(c.resources.treasury,resources.treasury-500);assert.equal(c.resources.copper,resources.copper-20);
+ order({type:'diplomacy',kind:'emancipation'});c=meetRecruits(c,['barcala'],8);
+ order({type:'produce',recipe:'cannon',sector:'mendoza'});
+ const production=structuredClone(c.production.at(-1)),before=c.resources.cannons;
+ for(let i=0;i<60&&c.production.some(p=>p.id===production.id);i++){assert.equal(c.pendingEncounter,null);order({type:'wait',hours:1});}
+ assert.equal(c.production.some(p=>p.id===production.id),false);assert.ok(c.hour>=production.due);
+ assert.equal(c.resources.cannons,before+1);
+ assert.deepEqual(decodeSave(encodeSave(c)).campaign,c);return c;
 }

@@ -1,4 +1,4 @@
-import {prepareFreshCuyoDefense} from './fresh-cuyo-route.mjs';
+import {prepareFreshCuyoDefense,prepareFreshMendozaAssault,startFreshFoundry} from './fresh-cuyo-route.mjs';
 import {recoverFreshNorthernDoctor,reuniteFreshNorthernSquad,prepareFreshSaltaAssault,finishFreshNorthernCampaign} from './fresh-northern-recovery.mjs';
 import {tucumanCombatOrder} from './tucuman-driver.mjs';
 import {dispatchCampaign} from '../game/campaign.js';
@@ -8,7 +8,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {beginFreshCampaign,recoverFreshCapital,prepareFreshNorthernAssault,prepareFreshSanLorenzo,prepareFreshMissionSupport,prepareFreshCordobaAssault,recoverFreshCordobaSurvivors,prepareFreshCordobaDefense,prepareFreshTucumanAssault} from './fresh-campaign-route.mjs';
 
-test('a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba, Tucumán and Salta victories through Yatasto',()=>{
+test('a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba, Tucumán and Salta victories through Yatasto and Mendoza production',()=>{
  const opening=beginFreshCampaign();
  assert.ok(opening.actions>0);assert.ok(opening.casualties.length>0);
  assert.equal(opening.campaign.officer,null);
@@ -93,6 +93,13 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  assert.equal(defended.campaign.operativeState[0].alive,false);
  assert.equal(defended.campaign.operativeState[1].hp,defended.campaign.operativeState[1].maxHp);
  assert.equal(defended.campaign.completed,false);
+ const mendoza=fightNorthernSector(prepareFreshMendozaAssault(defended.campaign),'mendoza',{controller:tucumanCombatOrder});
+ assert.equal(mendoza.campaign.sectors.mendoza.owner,'patriot');
+ const foundry=startFreshFoundry(mendoza.campaign);
+ assert.equal(foundry.flags.foundry,true);assert.equal(foundry.flags.emancipation,true);
+ assert.ok(foundry.recruited.includes(2)&&foundry.recruited.includes(7));
+ assert.equal(foundry.phase,3);assert.equal(foundry.completed,false);
+ for(const [id,record]of Object.entries(defended.campaign.operativeState))if(!record.alive)assert.equal(foundry.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(yatasto.operativeState))if(!record.alive)assert.equal(defended.campaign.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(salta.campaign.operativeState))if(!record.alive)assert.equal(yatasto.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(reunited.operativeState))if(!record.alive)assert.equal(salta.campaign.operativeState[id].alive,false);
