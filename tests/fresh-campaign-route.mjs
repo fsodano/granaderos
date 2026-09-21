@@ -1,3 +1,4 @@
+import {sectorInventoryModel} from '../game/sector-inventory.js';
 import {enterSector} from '../game/world.js';
 import {equipOpeningRifles} from './opening-equipment.mjs';
 import assert from 'node:assert/strict';
@@ -97,5 +98,30 @@ export function prepareFreshNorthernAssault(prepared,{report=()=>{}}={}){
  order({type:'beginAssault',sector:'san_nicolas'});
  assert.equal(campaign.pendingBattle.squad.length,12);
  report({event:'freshJointAssault',hour:campaign.hour,sector:campaign.pendingBattle.sector,treasury:campaign.resources.treasury});
+ return campaign;
+}
+
+// Replace actual northern losses with affordable paid hires and recover only
+// equipment physically left on the cleared battlefield.
+export function prepareFreshSanLorenzo(start,{report=()=>{}}={}){
+ let campaign=decodeSave(encodeSave(start)).campaign;
+ const dead=Object.entries(campaign.operativeState).filter(([,r])=>!r.alive).map(([id])=>Number(id));
+ const order=action=>{const next=dispatchCampaign(campaign,action);assert.equal(next.lastError,null,JSON.stringify(action)+': '+next.lastError);campaign=next;};
+ assert.equal(campaign.sectors.san_nicolas.owner,'patriot');
+ const field=[120,111,125,103,140,112],cash=campaign.resources.treasury;
+ for(const id of field){assert.ok(campaign.operativeState[id].alive);if(!campaign.recruited.includes(id))order({type:'recruitCivic',id,term:'week'});}
+ order({type:'squad',ids:field});order({type:'visitSector'});
+ const salvage=equipOpeningRifles(enterSector(campaign.pendingBattle,campaign.sectorStates.san_nicolas),field);
+ const synced=syncBattleTime(campaign,salvage.battle);assert.equal(synced.error,null);campaign=synced.campaign;
+ order({type:'leaveSector',battleId:campaign.pendingBattle.id,sectorState:synced.battle,survivors:synced.battle.units.filter(u=>u.side==='player')});
+ let recovered=0;
+ const inventory=sectorInventoryModel(campaign,'san_nicolas',rosterFor(campaign),112);
+ for(const row of inventory.entries.filter(row=>row.reachable&&JSON.parse(row.expected).item==='medkits')){
+  const count=Math.min(row.count,10-recovered);if(!count)break;
+  order({type:'sectorInventory',sector:'san_nicolas',operativeId:112,direction:'take',sourceKey:row.key,expected:row.expected,count});recovered+=count;
+ }
+ for(const id of dead)assert.equal(campaign.operativeState[id].alive,false);
+ assert.deepEqual(decodeSave(encodeSave(campaign)).campaign,campaign);
+ report({event:'freshSanLorenzoPreparation',hour:campaign.hour,field,paid:cash-campaign.resources.treasury,recoveredDressings:recovered,transfers:salvage.transfers,unfilled:salvage.unfilled});
  return campaign;
 }
