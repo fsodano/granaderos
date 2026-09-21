@@ -1,3 +1,5 @@
+import {prepareFreshTucumanRecapture} from './fresh-northern-return-route.mjs';
+import {batteryOrder} from './advancing-battery-driver.mjs';
 import {prepareFreshCoastalCommand,prepareFreshEnsenadaAssault,recruitFreshNavalCommand,prepareFreshSantaFeAssault} from './fresh-coastal-route.mjs';
 import {prepareFreshUspallataAssault,recoverFreshUspallata,prepareFreshLosPatosAssault,completeFreshAndesPreparation} from './fresh-mountain-route.mjs';
 import {prepareFreshCuyoDefense,prepareFreshMendozaAssault,startFreshFoundry,prepareFreshArmyProduction,completeFreshArmyProduction} from './fresh-cuyo-route.mjs';
@@ -10,7 +12,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {beginFreshCampaign,recoverFreshCapital,prepareFreshNorthernAssault,prepareFreshSanLorenzo,prepareFreshMissionSupport,prepareFreshCordobaAssault,recoverFreshCordobaSurvivors,prepareFreshCordobaDefense,prepareFreshTucumanAssault} from './fresh-campaign-route.mjs';
 
-test('a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba, Tucumán and Salta victories through Yatasto, Mendoza production and both mountain passes, Ensenada, naval recruitment and Santa Fe',()=>{
+test('a Retiro-only campaign retains paid recovery and real losses through coordinated San Nicolás, San Lorenzo, Córdoba, Tucumán and Salta victories through Yatasto, Mendoza production and both mountain passes, Ensenada, naval recruitment, Santa Fe and Tucumán recapture',()=>{
  const opening=beginFreshCampaign();
  assert.ok(opening.actions>0);assert.ok(opening.casualties.length>0);
  assert.equal(opening.campaign.officer,null);
@@ -123,6 +125,10 @@ test('a Retiro-only campaign retains paid recovery and real losses through coord
  const santaFe=fightNorthernSector(prepareFreshSantaFeAssault(navy),'santa_fe',{controller:tucumanCombatOrder,report:r=>console.log(JSON.stringify(r))});
  assert.equal(santaFe.campaign.sectors.santa_fe.owner,'patriot');assert.ok(santaFe.campaign.operativeState[57].alive);
  assert.equal(santaFe.campaign.completed,false);
+ const recaptured=fightNorthernSector(prepareFreshTucumanRecapture(santaFe.campaign),'tucuman',{controller:batteryOrder,report:r=>console.log(JSON.stringify(r))});
+ assert.equal(recaptured.campaign.sectors.tucuman.owner,'patriot');assert.equal(recaptured.campaign.defeated,false);
+ for(const id of [57,6])assert.ok(recaptured.campaign.operativeState[id].alive);
+ for(const [id,record]of Object.entries(santaFe.campaign.operativeState))if(!record.alive)assert.equal(recaptured.campaign.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(navy.operativeState))if(!record.alive)assert.equal(santaFe.campaign.operativeState[id].alive,false);
  for(const [id,record]of Object.entries(andes.operativeState))if(!record.alive)assert.equal(navy.operativeState[id].alive,false);
  assert.equal(andes.phase,4);assert.ok(andes.recruited.includes(57));assert.equal(andes.completed,false);
