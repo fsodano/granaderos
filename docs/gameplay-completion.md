@@ -349,3 +349,10 @@ The current full suite passes **2,656/2,656 tests with no skips** in 334.2 secon
 All 49 unrelated files in the preservation snapshot match. Removing only the two new posture changes from the mixed tactical file reproduces its prior working contents exactly; the separate boleadoras changes are excluded from this commit.
 
 This checkpoint does not complete Humahuaca, the ending, or the remaining parity audit. The alternate two-person Humahuaca continuation loses once Brown is legally moved to the gun. Failed reserve-gun and defense probes remain outside the accepted route.
+
+
+### Artillery transport gap confirmed
+
+The W09 transport gap is present in the current code. `prepareSectorArtillery` permanently issues reserve stock and reuses saved guns only at their existing site. `deployedArtillery` creates reserve pieces with a full load and six rounds. No campaign action recovers a deployed piece for another sector. Merely increasing reserve stock on recovery would create ammunition and discard partial loading.
+
+Any transport implementation must preserve the exact gun identity, model, loaded state, reserve rounds and reload progress; remove the source exactly once; account for travel time and transport capacity; handle interrupted travel and hostile ownership; and validate those records through saves and deployment reports. The armory must expose a preview with rejection reasons. This is an open requirement, not an implemented feature or a change to the proven campaign route. W10 now reflects the integrated Jujuy checkpoint rather than the obsolete one-survivor Salta route.
