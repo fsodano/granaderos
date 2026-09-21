@@ -7,7 +7,7 @@ import {validateReloadProgress} from './weapon-reload.js';
 const need=(ok,message)=>{if(!ok)throw Error(message);};
 const parent=id=>id==='san_lorenzo'?'san_nicolas':id;
 const known=id=>CAMPAIGN_SECTORS.some(s=>s.id===id);
-const record=gun=>({id:gun.id,type:gun.type,side:'player',loaded:gun.loaded,ammo:gun.ammo,...(gun.reloadProgress?{reloadProgress:gun.reloadProgress}:{})});
+export const storedArtilleryRecord=gun=>({id:gun.id,type:gun.type,side:'player',loaded:gun.loaded,ammo:gun.ammo,...(gun.reloadProgress?{reloadProgress:gun.reloadProgress}:{})});
 export function artilleryTransportPreview(s,{sector,gunId,destination,mode='carts'}){
  const gun=s.sectorStates?.[sector]?.artillery?.find(g=>g.id===gunId),source=parent(sector);
  const option=transferOptions(s,source,destination).find(o=>o.id===mode);
@@ -31,7 +31,7 @@ export function queueArtilleryTransport(s,action){
  const guns=s.sectorStates[action.sector].artillery;
  guns.splice(guns.findIndex(g=>g.id===action.gunId),1);
  s.convoys??=[];
- s.convoys.push({id:`artillery-${s.hour}-${plan.gun.id}`,source:plan.source,destination:plan.destination,mode:plan.mode,goods:{cannons:1},due:plan.due,artillery:[record(plan.gun)]});
+ s.convoys.push({id:`artillery-${s.hour}-${plan.gun.id}`,source:plan.source,destination:plan.destination,mode:plan.mode,goods:{cannons:1},due:plan.due,artillery:[storedArtilleryRecord(plan.gun)]});
  return plan;
 }
 export function deliverTransportedArtillery(s,convoy){

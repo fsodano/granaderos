@@ -54,15 +54,20 @@ export function setCarriedLoading(record,unit){
  if(WEAPONS[unit.weapon]?.capacity>0&&!unit.weaponDropped){record.carriedLoaded=unit.loaded??0;if(unit.reloadProgress)record.carriedReloadProgress=unit.reloadProgress;else delete record.carriedReloadProgress;}
  else clearCarriedLoading(record);
 }
-export function deployedArtillery(s){
+export function unissuedArtilleryStock(s){
  let remaining=s.resources.cannons;const available={field8:0,swivel:0,bronze4:0};
  for(const type of ['field8','swivel','bronze4']){available[type]=Math.min(remaining,s.armory?.[type]??0);remaining-=available[type];}
- available.bronze4+=remaining+(s.depots?.[s.location]?.cannons??0);
+ available.bronze4+=remaining;
+ return {camp:available,depot:{field8:0,swivel:0,bronze4:s.depots?.[s.location]?.cannons??0}};
+}
+export function newArtilleryPayload(type,id){return {id,type,side:'player',loaded:true,ammo:6};}
+export function deployedArtillery(s){
+ const stock=unissuedArtilleryStock(s),available={...stock.camp};available.bronze4+=stock.depot.bronze4;
  // Older saves use an empty list for automatic selection; an explicit empty order keeps guns in reserve.
  const stored=structuredClone(s.sectors?.[s.location]?.owner==='patriot'?(s.artilleryStores?.[s.location]??[]):[]);for(const g of stored)available[g.type]++;
  const types=[],selection=(s.artillerySelectionExplicit||s.artillerySelection?.length)?s.artillerySelection:['field8','swivel','bronze4'].flatMap(type=>Array(Math.min(available[type],3)).fill(type));
  for(const type of selection)if(types.length<3&&available[type]>0){types.push(type);available[type]--;}
- return types.map((type,i)=>{const index=stored.findIndex(g=>g.type===type);return index>=0?{...stored.splice(index,1)[0],recovered:true}:{id:`gun-${i}`,type,side:'player',loaded:true,ammo:6};});
+ return types.map((type,i)=>{const index=stored.findIndex(g=>g.type===type);return index>=0?{...stored.splice(index,1)[0],recovered:true}:newArtilleryPayload(type,`gun-${i}`);});
 }
 
 export function isImportedEquipment(item){return [1800,1802].includes(Number(item?.item));}
