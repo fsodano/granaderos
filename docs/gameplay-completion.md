@@ -445,3 +445,8 @@ The open T05 interface check also passed in a controlled full-save fixture: Cabr
 ### Nested interruption persistence
 
 A new full-campaign regression verifies saving at both levels of a nested interruption and exact continuation against the unsaved battle. All fourteen interrupt tests pass. Live QA restored the deepest window after reload, returned to the parent window, and resumed player turn one with unchanged player AP and six elapsed seconds. See [live evidence](ja2-live-verification.md#nested-interrupt-save-and-return-windows--21-september-2026). This test/documentation change does not alter runtime behavior. Hearing-only and door-triggered live checks, the broader parity audit, and the campaign ending remain open.
+
+
+### Hearing and door interruption verification
+
+Live hearing-only QA verified an unseen reloader grants Cabral an interrupt without exposing its identity or exact position. A paid crouch and reload retain the anonymous area, 97 AP and six-second clock. Live door QA verified opening the door exposes the guard, triggers its reaction shot and returns control on the same turn. A new action-driven projection regression protects non-disclosure. All 25 interrupt/projection tests pass; T06 now records completed live checks. These are subsystem checks, not evidence of the remaining strategic features or campaign ending.

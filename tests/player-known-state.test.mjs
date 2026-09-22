@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createBattle,actBattle,canSee} from '../game/tactical.js';
+import {createBattle,actBattle,canSee,endTurn} from '../game/tactical.js';
 import {playerKnownBattle,playerKnownCampaign,playerKnownState,playerKnownError} from '../game/player-known-state.js';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
 import {launchEnemyGroup} from '../game/enemy-groups.js';
@@ -118,4 +118,25 @@ test('a corpse-heavy sector emits only active-person order lists and preserves u
   assert.ok(view.orders[0].targets.some(target=>target.targetId==='q'&&target.valid));
   assert.ok(!JSON.stringify(view.orders).includes('old-corpse-'));
   assert.ok(JSON.stringify(view.orders).length<15_000);assert.ok(JSON.stringify(view).length<400_000);
+});
+
+
+test('an actual hearing-only interrupt exposes an anonymous area but no unseen source',()=>{
+ const battle=createBattle([{id:'p',x:5,y:2,facing:0,agility:100}],{
+  width:16,height:10,seed:45,
+  tiles:Array.from({length:160},(_,i)=>({x:i%16,y:Math.floor(i/16),type:'grass',blocked:false,cover:0})),
+  enemies:[{id:secret,name:secret,x:5,y:5,facing:0,loaded:0,ammo:2}]
+ });
+ const paused=endTurn(battle);assert.equal(paused.phase,'interrupt');
+ assert.equal(canSee(paused,paused.units[0],paused.units[1]),false);
+ const view=playerKnownBattle(paused);
+ assert.deepEqual(view.interrupt,{side:'player',unitIds:['p']});
+ assert.equal(view.units.some(unit=>unit.side==='enemy'),false);
+ assert.deepEqual(view.contacts,[{observerId:'p',kind:'heard',x:4,y:4,radius:2,label:'Ruido: zona aproximada',turn:1,anonymous:true}]);
+ assert.equal(JSON.stringify(view).includes(secret),false);
+ assert.equal(view.orders[0].canAct,true);
+ const crouched=actBattle(paused,{type:'stance',unitId:'p',stance:'crouched'});
+ assert.equal(crouched.lastError,null);assert.equal(crouched.units[0].ap,97);
+ assert.equal(JSON.stringify(playerKnownBattle(crouched)).includes(secret),false);
+ assert.equal(playerKnownBattle(crouched).units.some(unit=>unit.side==='enemy'),false);
 });
