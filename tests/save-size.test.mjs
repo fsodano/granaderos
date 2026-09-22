@@ -13,6 +13,9 @@ function longCampaign(){
   const state=initialCampaign();state.hour=6500;
   const bodies=[];
   for(let i=0;i<35;i++){
+    // Model a large pre-reserve history, not a playable campaign route. Keep
+    // all 1,050 bodies so the new dispatch limit cannot weaken save-size QA.
+    state.enemyReserves.remaining.coast=30;
     const group=launchEnemyGroup(state,'coast','retiro',{immediate:true});group.status='engaged';
     const battle=createBattle([],{id:group.id,sector:'retiro',width:20,height:16,enemies:group.units.map(unit=>({...unit,hp:0}))});
     recordEnemyGroupResult(state,group.id,battle,'victory');
