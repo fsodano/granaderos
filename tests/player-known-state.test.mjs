@@ -84,7 +84,7 @@ test('hidden ground gear and departed observers cannot reveal enemy or item data
 });
 
 test('campaign projection retains player records and reported groups without snapshots, enemy units, RNG or future waypoints',()=>{
-  const campaign=initialCampaign(),battle=fixture(),group=launchEnemyGroup(campaign,'coast','retiro');
+  const campaign=initialCampaign(),battle=fixture(),group=launchEnemyGroup(campaign,'coast','retiro',{immediate:true});
   group.route.push(secret);group.seed=424242421;group.units[0].name=secret;campaign.seed=424242421;
   campaign.operativeState[0].secret=secret;campaign.operativeState[0].location=secret;campaign.sectorStates.retiro=battle;campaign.sceneStates.yatasto=battle;campaign.sectorRemains.retiro=[{private:secret}];
   campaign.pendingBattle={id:secret,sector:'retiro',name:'Defensa de Retiro',seed:424242421,enemies:[{name:secret}],squad:[{private:secret}],resumeSnapshot:battle};campaign.log=[{text:secret,hour:0}];campaign.privateState={secret};

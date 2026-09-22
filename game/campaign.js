@@ -1,3 +1,4 @@
+import {refreshEnemyIntelligence,recordEnemyPresence} from './enemy-intelligence.js';
 import {queueArtilleryTransport,deliverTransportedArtillery,validateArtilleryTransport} from './artillery-transport.js';
 import {tradeArtillery} from './artillery-trade.js';
 import {exchangeMerchantEquipment} from './merchant-exchange.js';
@@ -159,15 +160,13 @@ function raid(s,theater,forcedTarget=null){
   const priorities=theater==='north'?NORTHERN_AXIS:theater==='coast'?['san_nicolas','santa_fe','ensenada','buenos_aires']:['cordoba'];
   targets.sort((a,b)=>theater==='coast'?b.income-a.income:priorities.indexOf(a.id)-priorities.indexOf(b.id));
   const target=forcedTarget?sector(forcedTarget):targets.find(x=>theater!=='interior'||s.sectors[x.id].loyalty<50);if(!target||s.sectors[target.id].owner!=='patriot')return;
-  const group=launchEnemyGroup(s,theater,target.id);if(!group)return;
-  note(s,theater==='north'?`Pezuela ordena a la vanguardia de Pío Tristán avanzar sobre ${target.name} por Humahuaca.`:theater==='coast'?`Romarate dirige una incursión contra ${target.name}: la recaudación aduanera atrae a la flotilla de Montevideo.`:`Las partidas leales a la Corona marchan contra ${target.name} y los convoyes de Cuyo.`);
-  note(s,`${group.initialStrength} realistas en marcha. Llegada prevista en ${group.arrivalAt-s.hour} horas.`);
+  launchEnemyGroup(s,theater,target.id);
 }
 function loseSectorToGroup(s,group){
   const region=s.sectors[group.target];region.damageUntil=s.hour+24*14;recordCityLoyalty(s,{sectorId:group.target,kind:'defeat',eventId:group.id});
   if(group.theater==='coast'){s.blockade=true;note(s,`La flotilla realista establece un bloqueo en ${sector(group.target).name}. Las aduanas reducen sus ingresos.`);}
   else {if(group.theater==='interior'){const powder=Math.min(20,s.resources.powder),silver=Math.min(150,s.resources.treasury);s.resources.powder-=powder;s.resources.treasury-=silver;note(s,`Las partidas saquean ${silver} pesos y ${powder} cargas de pólvora y cortan los convoyes de Cuyo.`);}region.owner='royalist';region.militia=[0,0,0];delete s.garrisons[group.target];note(s,`Los realistas ocupan ${sector(group.target).name} y cortan la ruta de abastecimiento.`);}
-  region.militia=[0,0,0];delete s.garrisons[group.target];group.status='stationed';group.resolvedAt=s.hour;
+  region.militia=[0,0,0];delete s.garrisons[group.target];group.status='stationed';group.resolvedAt=s.hour;recordEnemyPresence(s,group);
 }
 function addDefenseHistory(s,group,outcome,casualties,text,extra={}){s.encounterHistory.unshift({groupId:group.id,sector:group.target,hour:s.hour,outcome,casualties,text,...extra});s.encounterHistory=s.encounterHistory.slice(0,40);}
 function settleEnemyEncounters(s,options={}){
@@ -440,7 +439,7 @@ function tick(s,hours,options={}){
     const travelAttention=advanceSquadTravel(s,rosterFor(s),{note,onArrival:q=>meetEnemyGroups(s,q.location),releaseAtArrival:q=>{for(const id of [...q.members])if(s.contracts[id]?.departurePending){removeFromService(s,id);note(s,'Un voluntario cumple su contrato y deja la escuadra al llegar.');}}});
     advanceEnemyGroups(s);
     for(const q of s.squads)if(q.journey?.status==='moving'&&q.journey.elapsed===0&&s.enemyGroups.some(g=>g.target===q.location&&['waiting','engaged','stationed'].includes(g.status))){q.journey.status='paused';q.journey.reason='contact';}
-    settleEnemyEncounters(s,options);progress(s);
+    settleEnemyEncounters(s,options);refreshEnemyIntelligence(s,options);progress(s);
     assignmentEvents.push(...recordSleepEvents(s,prepareSleep(s,rosterFor(s),assignmentContext(s,options))));
     // Finish every hourly subsystem before stopping an explicit wait. Travel
     // and tactical synchronization must process their complete durations.
@@ -800,7 +799,7 @@ export function dispatchCampaign(previous,action){
     if(s.pendingBattle&&!s.pendingBattle.exits)prepareDeploymentExits(s,s.pendingBattle);
     // Check real arrival geometry before committing soldiers, ammunition or guns.
     if(['attack','beginAssault'].includes(action.type)&&s.pendingBattle&&!previous.pendingBattle)enterSector(s.pendingBattle,s.sectorStates[s.pendingBattle.sector],{placement:true});
-    releaseDeferred(s);synchronizeSquad(s);migrateMedicalCare(s,rosterFor(s));migrateAssignments(s,rosterFor(s));migrateMorale(s,rosterFor(s));migrateEquipment(s);migrateEnemyGroups(s);syncCampaignAmmunition(s,rosterFor(s));validateCampaignAmmunition(s,rosterFor(s));validateDeploymentReturnState(s);validateEquipmentOwnership(s,rosterFor(s));progress(s);if(Object.keys(s.assignmentAttention.reported).length)reconcileAssignmentAttention(s,assignmentStates(s,rosterFor(s),assignmentContext(s)));reconcileContractAttention(s);return s;
+    releaseDeferred(s);synchronizeSquad(s);migrateMedicalCare(s,rosterFor(s));migrateAssignments(s,rosterFor(s));migrateMorale(s,rosterFor(s));migrateEquipment(s);migrateEnemyGroups(s);syncCampaignAmmunition(s,rosterFor(s));validateCampaignAmmunition(s,rosterFor(s));validateDeploymentReturnState(s);validateEquipmentOwnership(s,rosterFor(s));progress(s);if(Object.keys(s.assignmentAttention.reported).length)reconcileAssignmentAttention(s,assignmentStates(s,rosterFor(s),assignmentContext(s)));reconcileContractAttention(s);refreshEnemyIntelligence(s);return s;
   }catch(error){const rejected=clone(previous);rejected.lastError=error.message;return rejected;}
 }
 export function serializeCampaign(s){return JSON.stringify(s);}

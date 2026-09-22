@@ -3,6 +3,7 @@ import {CAMPAIGN_SECTORS} from './data.js';
 import {ROYALIST_COMMANDS,NORTHERN_AXIS,oppositionFor} from './narrative.js';
 import {operativeInTransit,operativeLocation,validatePersonalInventory} from './squads.js';
 import {migrateEnemyReserves,validateEnemyReserves} from './enemy-reserves.js';
+import {migrateEnemyIntelligence,validateEnemyIntelligence,clearEnemyReport} from './enemy-intelligence.js';
 
 // Manual p.44: threatened sectors offer tactical combat, auto-resolve, or a
 // possible withdrawal. Route duration and group strength are period game tuning.
@@ -11,7 +12,7 @@ const sector=id=>CAMPAIGN_SECTORS.find(s=>s.id===id);
 const need=(ok,message)=>{if(!ok)throw Error(message);};
 const copy=value=>structuredClone(value);
 const active=unit=>unit.hp>0&&!unit.routed&&!unit.departure&&!unit.surrendered;
-export function migrateEnemyGroups(s){s.enemyGroups??=[];s.nextEnemyGroupId??=1;s.pendingEncounter??=null;s.encounterHistory??=[];for(const r of Object.values(s.operativeState??{})){r.captured??=false;r.capturedSector??=null;r.capturedAt??=null;r.capturedContract??=null;r.captureSequence??=Math.max(r.captured?1:0,...Object.values(s.detentionRecords??{}).filter(entry=>entry.npc?.detention?.operativeId!==undefined&&s.operativeState[entry.npc.detention.operativeId]===r).map(entry=>entry.npc.detention.captureSequence??1));}migrateEnemyReserves(s);return s;}
+export function migrateEnemyGroups(s){s.enemyGroups??=[];s.nextEnemyGroupId??=1;s.pendingEncounter??=null;s.encounterHistory??=[];for(const r of Object.values(s.operativeState??{})){r.captured??=false;r.capturedSector??=null;r.capturedAt??=null;r.capturedContract??=null;r.captureSequence??=Math.max(r.captured?1:0,...Object.values(s.detentionRecords??{}).filter(entry=>entry.npc?.detention?.operativeId!==undefined&&s.operativeState[entry.npc.detention.operativeId]===r).map(entry=>entry.npc.detention.captureSequence??1));}migrateEnemyReserves(s);migrateEnemyIntelligence(s);return s;}
 export function localDefenderIds(s,at,{exclude=[]}={}){return s.recruited.filter(id=>s.operativeState[id]?.alive&&!operativeInTransit(s,id)&&operativeLocation(s,id)===at&&!exclude.includes(id));}
 export function localDefenderCount(s,at,options){return localDefenderIds(s,at,options).length+s.sectors[at].militia.reduce((sum,n)=>sum+n,0);}
 export function occupyingGroups(s,at){return s.enemyGroups.filter(g=>g.target===at&&g.status==='stationed');}
@@ -91,6 +92,7 @@ export function recordEnemyGroupResult(s,groupId,battle,outcome){
  const group=s.enemyGroups.find(g=>g.id===groupId);need(group&&['engaged','stationed'].includes(group.status),'El grupo enemigo ya no corresponde al combate.');
  const reports=group.units.map(u=>battle.units.find(v=>v.side==='enemy'&&String(v.id)===String(u.id)));need(reports.every(Boolean),'El parte del grupo enemigo está incompleto.');
  group.units=reports.map(copy);group.status=outcome==='victory'?'defeated':'stationed';group.resolvedAt=s.hour;
+ if(outcome==='victory')clearEnemyReport(s,group.id);
  return group;
 }
 
@@ -104,7 +106,7 @@ export function validateEnemyGroups(s,roster){
   need(Array.isArray(g.units)&&g.units.length===g.initialStrength&&new Set(g.units.map(u=>u?.id)).size===g.units.length,'La fuerza del grupo realista es inválida.');
   for(const u of g.units){need(object(u)&&typeof u.id==='string'&&u.id.startsWith(`${g.id}-`)&&typeof u.name==='string'&&u.name.length<=200&&number(u.maxHp,1,100)&&number(u.hp,0,u.maxHp)&&(u.weapon===0||integer(u.weapon,1800,1813))&&(u.blade===undefined||u.blade===0||integer(u.blade,1809,1813)),'El soldado realista guardado es inválido.');for(const key of ['energy','condition','bladeCondition','morale','marksmanship','agility','dexterity','wisdom','strength','medical','mechanical','fatigue','bleeding'])need(number(u[key]??0,0,100),'El estado del realista guardado es inválido.');need(number(u.bandaged??0,0,u.maxHp-u.hp)&&integer(u.loaded??0,0,2)&&integer(u.ammo??0,0,100000),'Los pertrechos realistas guardados son inválidos.');validatePersonalInventory(u.inventory??{});}
  }
- validateEnemyReserves(s);
+ validateEnemyReserves(s);validateEnemyIntelligence(s);
  for(const op of roster){const r=s.operativeState[op.id];need(integer(r.captureSequence,0,1e9)&&(!r.captured||r.captureSequence>0)&&typeof r.captured==='boolean','El cautiverio guardado es inválido.');if(r.captured){const c=r.capturedContract;need(r.alive&&r.hp>0&&!s.recruited.includes(op.id)&&!s.squads.some(q=>q.members.includes(op.id))&&sector(r.capturedSector)&&integer(r.capturedAt,0,s.hour)&&object(c)&&['paid','patriot','legacy'].includes(c.kind)&&['day','week','month'].includes(c.term)&&integer(c.started,0,r.capturedAt)&&(c.expiresAt===null?c.kind!=='paid':integer(c.expiresAt,0,1e9))&&integer(c.paid,0,1e9),'El prisionero guardado es inválido.');}else need(r.capturedSector===null&&r.capturedAt===null&&r.capturedContract===null,'El cautiverio guardado es inválido.');}
  const b=s.pendingBattle;
  if(b?.defenseGroupId){const g=s.enemyGroups.find(g=>g.id===b.defenseGroupId);need(g?.status==='engaged'&&g.target===b.sector&&b.wasRoyalist===(s.sectors[b.sector].owner==='royalist')&&b.defenseFort===(b.wasRoyalist?0:s.sectors[b.sector].fort)&&integer(b.defenseFort,0,3)&&Array.isArray(b.enemies)&&JSON.stringify(b.enemies)===JSON.stringify(g.units)&&!b.exploration&&!b.occupationGroupIds,'La defensa guardada es inválida.');}

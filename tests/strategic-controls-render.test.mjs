@@ -56,11 +56,18 @@ test('personnel buys the last finite medicine stock with matching price, capacit
 });
 
 
-test('front reports identify a crossing sector without promising an arrival that a ready squad holds',async()=>{
+test('front reports require observers and never disclose the enemy crossing schedule',async()=>{
   const {default:EnemyEncounters}=await import('../web/app/EnemyEncounters.tsx');
   const {launchEnemyGroup,delayCrossingEnemyGroups}=await import('../game/enemy-groups.js');
   const s=initialCampaign(),g=launchEnemyGroup(s,'north','tucuman');s.hour=40;g.routeIndex=3;
   s.squads[0].location='tucuman';s.squads[0].journey={path:['tucuman','salta'],status:'ready',intent:'attack',returning:false,elapsed:12,legHours:12};delayCrossingEnemyGroups(s);
-  const html=render(h(EnemyEncounters,{state:s,dispatch:noop}));assert.match(html,/Rutas opuestas: el contacto será en Salta/);assert.doesNotMatch(html,/Llegada prevista/);
-  s.squads[0].journey.returning=true;const returning=render(h(EnemyEncounters,{state:s,dispatch:noop}));assert.match(returning,/Llegada prevista/);assert.doesNotMatch(returning,/Rutas opuestas/);
+  const html=render(h(EnemyEncounters,{state:s,dispatch:noop}));assert.match(html,/Sin partes recientes/);assert.doesNotMatch(html,/Rutas opuestas|Llegada prevista|Salta/);
+  s.sectors.tucuman.owner='patriot';s.sectors.tucuman.militia=[1,0,0];const observed=render(h(EnemyEncounters,{state:s,dispatch:noop}));assert.match(observed,/Salta/);assert.match(observed,/3 realistas observados/);assert.doesNotMatch(observed,/Llegada prevista|Rutas opuestas/);
+});
+
+test('the journal identifies historical commands without publishing target or activity predictions',async()=>{
+ const {default:CampaignOffice}=await import('../web/app/CampaignOffice.tsx');
+ const s=initialCampaign();s.sectors.jujuy.owner='patriot';s.sectors.san_nicolas.owner='patriot';
+ const html=render(h(CampaignOffice,{state:s,section:'journal',dispatch:noop}));
+ assert.match(html,/Joaquín de la Pezuela/);assert.match(html,/Pío Tristán/);assert.match(html,/Jacinto de Romarate/);assert.match(html,/MANDO REALISTA · REFERENCIA/);assert.doesNotMatch(html,/MANDO REALISTA ACTIVO|MANDO CONTENIDO|Objetivo:/);
 });

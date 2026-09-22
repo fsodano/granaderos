@@ -11,7 +11,7 @@ import {environmentTargetSummary} from './environment-interactions.js';
 import {unitCanAct,handSlots,equipmentSlots,aimOptions,orderDescriptors,nearbyLootOptions,civilianMedicalInputAction,targetPreview,heardNoiseModel,fittingInventoryModel} from './ja2-hud.js';
 import {CAMPAIGN_SECTORS,RESOURCE_NAMES} from './data.js';
 import {rosterFor} from './campaign.js';
-import {enemyGroupStatus} from './enemy-groups.js';
+import {enemyIntelligenceReports} from './enemy-intelligence.js';
 import {publicAssignmentNotice} from './assignment-attention.js';
 import {spaceKey} from './tactical-space.js';
 import {heldGrenade,grenadeThrowCosts,grenadeThrowRange,GRENADE_THROW} from './grenade-throw.js';
@@ -138,7 +138,7 @@ export function playerKnownCampaign(state){
     operatives:roster.map(unit=>{const record=state.operativeState[unit.id];return {inTransit:operativeInTransit(state,unit.id),maximumEnergy:maximumEnergy(record),...pick(unit,['id','name','nickname','weapon','blade',...OWN]),...pick(record,['hp','maxHp','alive','location','assignment','asleep','sleepCollapsed','captured','capturedSector','energy','fatigue','bleeding','bandaged','morale','condition','carriedAmmo','carriedLoaded','carriedReloadProgress','medkits','priming','flints','rations','torches','boleadoras']),weaponFittings:fittings(record.weaponFittings),...pick(record,['activeItem','activeSlot','leftHandItem','weaponFittingPattern','bladeFittingPattern','bladeCondition','toolkitPoints','repairTargetId','repairWeaponId','repairScope']),...(record.pocketOrder?{pocketOrder:structuredClone(record.pocketOrder)}:{}),...cursor(record),...handMetadata(record),inventory:inventory(record),outfit:record.outfit?item(record.outfit):null,...(record.offHand?{offHand:item(record.offHand)}:{}),contract:pick(state.contracts?.[unit.id],['kind','term','started','expiresAt','paid'])};}),
     flags:pick(state.flags,['academy','sanLorenzo','northPact','partisanSupply','foundry','parliament','emancipation','commission','mentoring']),
     horses:(state.horseState?.horses??[]).map(horse=>({...pick(horse,['id','name','location','assignedTo','stamina','condition','feed','hired','hireUntil','returned','pregnantUntil']),...(horse.custody?{custody:pick(horse.custody,['kind','sector','operativeId'])}:{})})),
-    enemyReports:(state.enemyGroups??[]).filter(group=>['marching','waiting','engaged','stationed'].includes(group.status)).map(group=>pick(enemyGroupStatus(state,group),['id','name','commander','strength','location','destination','remaining','status','crossingAt'])),
+    enemyReports:enemyIntelligenceReports(state),
     pendingEncounter:state.pendingEncounter?pick(state.pendingEncounter,['groupId','sector','arrivedAt']):null,
     pendingBattle:state.pendingBattle?{...pick(state.pendingBattle,['sector','sceneId','name','exploration']),resumeAvailable:Boolean(state.pendingBattle.resumeSnapshot)}:null,
   };

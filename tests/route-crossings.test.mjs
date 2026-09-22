@@ -23,7 +23,7 @@ function front(hour=40){
 }
 test('opposing routes delay the actual army, save its ETA, and meet at the attack destination',()=>{
  let s=attack(front()),g=s.enemyGroups[0];assert.equal(g.nextArrivalAt,53);assert.equal(g.arrivalAt,53);assert.equal(enemyGroupStatus(s,g).crossingAt,'salta');
- const view=playerKnownCampaign(s).enemyReports[0];assert.equal(view.crossingAt,'salta');assert.equal(view.remaining,13);assert.equal(view.units,undefined);assert.equal(view.route,undefined);
+ assert.deepEqual(playerKnownCampaign(s).enemyReports,[],'a held crossing does not reveal an unobserved enemy schedule');
  s=wait(roundtrip(s),24);assert.equal(s.hour,52);assert.equal(s.pendingEncounter,null);assert.equal(s.squads[0].journey.status,'ready');assert.equal(s.enemyGroups[0].status,'marching');assert.equal(s.sectors.tucuman.owner,'patriot');
  const enemy=structuredClone(s.enemyGroups[0].units);s=order(roundtrip(s),{type:'beginAssault',sector:'salta'});assert.deepEqual(s.pendingBattle.occupationGroupIds,['enemy-group-1']);assert.deepEqual(s.pendingBattle.enemies,enemy);assert.equal(s.enemyGroups[0].target,'salta');assert.deepEqual(s.enemyGroups[0].route,['humahuaca','jujuy','salta']);roundtrip(s);
  const b=enterSector(s.pendingBattle),u=b.units.find(u=>u.id==='enemy-group-1-0');assert.equal(u.hp,63);assert.equal(u.bandaged,37);assert.equal(u.ammo,1);assert.equal(u.condition,42);assert.equal(b.units.filter(u=>u.side==='enemy').length,enemy.length);

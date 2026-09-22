@@ -291,3 +291,12 @@ The second fixture moved Dorrego to (8,4), set the shooter's marksmanship to zer
 See [named-target projectile rules](directed-projectiles.md) for simulation coverage, explicit tuning and remaining limits.
 
 Final isolated validation passed **1027/1027 tests**, type checking, production build and whitespace checks. Static export verified 278 files and 189 asset references using the committed art baseline. The shared checkout browser checks above included its concurrent visual work; the isolated run confirms no dependency on those uncommitted assets.
+
+
+## Interactive interrupt action and saved continuation — 21 September 2026
+
+An isolated QA save used the full-campaign interrupt fixture from `interactive-interrupts.test.mjs`: actual travel and attack requests supplied the campaign envelope, while a small grass battlefield and a single blade-equipped opponent isolated the interface. `endTurn` produced the interrupt through ordinary enemy actions; the interrupt was not inserted manually. This is interface/persistence evidence, not campaign-balance evidence.
+
+The live interface identified Cabral, Dorrego and Paroissien as eligible, each with 69 AP. Cabral's ordinary C shortcut crouched him and reduced his budget to 66 AP. The interrupt remained active on turn one; the public state showed six elapsed seconds and the enemy at (6,1). Reload and Continue Campaign restored the same interrupt and the 66/69/69 player budgets. Selecting Dorrego changed the eligible selection. Pressing **Continuar turno enemigo** resumed playback, then returned to player turn two with the enemy at (2,1). Elapsed time remained six seconds. Dorrego retained both loaded pistol charges; no forced player shot occurred. The enemy's attacks caused real wounds before control returned.
+
+This verifies an ordinary paid non-firearm action, eligible selection, save/reload and visible enemy continuation. Enemy AP remains private in the public projection; exact enemy-budget continuity and rejected ineligible actions remain simulation-test evidence. Nested, hearing-triggered and door-triggered interrupt qualification still need their separate live checks.

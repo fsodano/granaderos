@@ -7,11 +7,9 @@ export const ROYALIST_COMMANDS=[
 ];
 export const NORTHERN_AXIS=['humahuaca','jujuy','salta','tucuman'];
 export function coastalRevenue(s){return CAMPAIGN_SECTORS.filter(d=>d.theater==='coast'&&s.sectors[d.id].owner==='patriot').reduce((v,d)=>v+Math.floor(d.income*(s.sectors[d.id].damageUntil>s.hour?.25:1)*(s.blockade?.25:1)),0);}
-export function royalistIntel(s){
- const north=NORTHERN_AXIS.find(id=>s.sectors[id].owner==='patriot');
- const ports=['san_nicolas','santa_fe','ensenada','buenos_aires'].filter(id=>s.sectors[id].owner==='patriot').sort((a,b)=>CAMPAIGN_SECTORS.find(x=>x.id===b).income-CAMPAIGN_SECTORS.find(x=>x.id===a).income);
- return ROYALIST_COMMANDS.map(c=>({...c,target:c.id==='north'?north??null:c.id==='naval'?ports[0]??null:c.id==='partisans'&&s.sectors.cordoba.owner==='patriot'&&s.sectors.cordoba.loyalty<50?'cordoba':null,nextActionHours:c.id==='north'?120-s.hour%120:c.id==='naval'?168-s.hour%168:c.id==='partisans'?144-s.hour%144:null,active:s.completed||s.defeated?false:c.id==='north'?Boolean(north):c.id==='naval'?coastalRevenue(s)>=500:c.id==='partisans'?s.sectors.cordoba.owner==='patriot'&&s.sectors.cordoba.loyalty<50:true}));
-}
+// Public background doctrine, not access to the enemy dispatch scheduler.
+export function royalistIntel(){return ROYALIST_COMMANDS.map(command=>({...command}));}
+
 export function mentorDispatch(s){
  const messages=[
  'San Martín: «La instrucción comienza en Retiro. Reunamos hombres, caballos y armas antes de empeñar al regimiento».',
