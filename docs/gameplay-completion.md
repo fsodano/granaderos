@@ -440,3 +440,8 @@ Forty-six related simulation/save/projection/render checks pass, followed by the
 
 
 The open T05 interface check also passed in a controlled full-save fixture: Cabral spent 3 AP to crouch during a real interrupt, reload retained the 66/69/69 player budgets, and Continue Enemy Turn returned to player turn two with the same six-second clock and no forced player shot. See [the live record](ja2-live-verification.md#interactive-interrupt-action-and-saved-continuation--21-september-2026). Broader interrupt qualification remains T06.
+
+
+### Nested interruption persistence
+
+A new full-campaign regression verifies saving at both levels of a nested interruption and exact continuation against the unsaved battle. All fourteen interrupt tests pass. Live QA restored the deepest window after reload, returned to the parent window, and resumed player turn one with unchanged player AP and six elapsed seconds. See [live evidence](ja2-live-verification.md#nested-interrupt-save-and-return-windows--21-september-2026). This test/documentation change does not alter runtime behavior. Hearing-only and door-triggered live checks, the broader parity audit, and the campaign ending remain open.

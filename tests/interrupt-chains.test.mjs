@@ -2,6 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,endTurn,canSee,interruptAvailable,actionCosts} from '../game/tactical.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
+import {initialCampaign} from './legacy-campaign-fixture.mjs';
+import {dispatchCampaign} from '../game/campaign.js';
+import {syncBattleTime} from '../game/time.js';
+import {encodeSave,decodeSave} from '../game/save.js';
 const tiles=(width=16)=>Array.from({length:width*10},(_,i)=>({x:i%width,y:Math.floor(i/width),type:'grass',blocked:false,cover:0}));
 const field=(squad,enemies,extra={})=>createBattle(squad,{width:16,height:10,tiles:tiles(),enemies,seed:45,...extra});
 function nested(){
@@ -69,4 +73,34 @@ test('nested reactions resume an existing enemy turn instead of restarting its b
  s=endTurn(saved);assert.equal(s.phase,'interrupt');assert.equal(s.interrupt.enemyId,'b');assert.equal(s.reactionStack,undefined);
  s=endTurn(s);assert.equal(s.turn,2);assert.equal(s.phase,'player');assert.equal(s.elapsedSeconds,6);assert.equal(s.enemyTurn,undefined);
  assert.ok(s.units.find(u=>u.id==='d').ap<=dBudget);assert.doesNotThrow(()=>validateBattleSnapshot(s));
+});
+
+test('full campaign saves preserve both nested return windows and their remaining budgets',()=>{
+ let campaign=dispatchCampaign(initialCampaign(),{type:'travel',sector:'buenos_aires'});
+ campaign=dispatchCampaign(campaign,{type:'attack',sector:'san_nicolas'});
+ assert.equal(campaign.lastError,null);
+ let battle=createBattle([
+  {id:'3',x:1,y:1,agility:30},
+  {id:'4',x:1,y:5,agility:90,experienceLevel:9},
+  {id:'10',x:12,y:7,facing:2,agility:100,experienceLevel:10}
+ ],{...campaign.pendingBattle,width:16,height:10,tiles:tiles(),seed:45,hour:campaign.hour,
+ enemies:[{id:'b',x:7,y:1,agility:70,weapon:1813},{id:'d',x:8,y:7,facing:6,agility:100,experienceLevel:10}]});
+ battle=actBattle(battle,{type:'move',unitId:'3',x:4,y:1});
+ assert.deepEqual(battle.interrupt.unitIds,['4']);
+ battle=actBattle(battle,{type:'move',unitId:'4',x:3,y:5});
+ assert.deepEqual(battle.interrupt.unitIds,['10']);assert.equal(battle.reactionStack.length,2);
+ const pair=syncBattleTime(campaign,battle);assert.equal(pair.error,null);
+ const saved=decodeSave(encodeSave(pair.campaign,pair.battle));
+ assert.deepEqual(saved.battle,pair.battle);
+ const parent=endTurn(saved.battle);
+ assert.equal(parent.phase,'interrupt');assert.equal(parent.interrupt.enemyId,'b');
+ assert.equal(parent.reactionStack.length,1);
+ // Save a second time at the parent, so neither return path can rely on transient state.
+ const parentPair=syncBattleTime(saved.campaign,parent);assert.equal(parentPair.error,null);
+ const restoredParent=decodeSave(encodeSave(parentPair.campaign,parentPair.battle));
+ const finished=endTurn(restoredParent.battle);
+ assert.deepEqual(finished,endTurn(endTurn(pair.battle)));
+ assert.equal(finished.phase,'player');assert.equal(finished.turn,1);assert.equal(finished.elapsedSeconds,6);
+ assert.equal(finished.reactionStack,undefined);assert.equal(finished.enemyTurn,undefined);
+ assert.equal(finished.units.find(u=>u.id==='10').ap,battle.units.find(u=>u.id==='10').ap);
 });

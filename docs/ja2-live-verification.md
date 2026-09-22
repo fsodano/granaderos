@@ -299,4 +299,13 @@ An isolated QA save used the full-campaign interrupt fixture from `interactive-i
 
 The live interface identified Cabral, Dorrego and Paroissien as eligible, each with 69 AP. Cabral's ordinary C shortcut crouched him and reduced his budget to 66 AP. The interrupt remained active on turn one; the public state showed six elapsed seconds and the enemy at (6,1). Reload and Continue Campaign restored the same interrupt and the 66/69/69 player budgets. Selecting Dorrego changed the eligible selection. Pressing **Continuar turno enemigo** resumed playback, then returned to player turn two with the enemy at (2,1). Elapsed time remained six seconds. Dorrego retained both loaded pistol charges; no forced player shot occurred. The enemy's attacks caused real wounds before control returned.
 
-This verifies an ordinary paid non-firearm action, eligible selection, save/reload and visible enemy continuation. Enemy AP remains private in the public projection; exact enemy-budget continuity and rejected ineligible actions remain simulation-test evidence. Nested, hearing-triggered and door-triggered interrupt qualification still need their separate live checks.
+This verifies an ordinary paid non-firearm action, eligible selection, save/reload and visible enemy continuation. Enemy AP remains private in the public projection; exact enemy-budget continuity and rejected ineligible actions remain simulation-test evidence. Hearing-triggered and door-triggered interrupt qualification still need their separate live checks. Nested continuation is checked below.
+
+
+## Nested interrupt save and return windows — 21 September 2026
+
+A controlled full-campaign fixture used normal travel/attack requests and ordinary movement actions to produce two nested reaction windows. Its grass map, positions and attributes isolate this subsystem; it is not campaign-balance or progression evidence. The initial player budgets were Cabral 75, Dorrego 88, and Paroissien 100 AP, with six elapsed seconds on turn one.
+
+Import and browser reload restored Paroissien as the only eligible soldier. The visible Continue control returned to the parent interruption, where Dorrego alone was eligible with 88 AP. A second Continue completed enemy reactions and returned to **Turno 1 · Ejército patriota**, not a new round. Public state confirmed player phase, no interrupt, six elapsed seconds, the same 75/88/100 AP budgets, and one loaded charge for each player. Enemy attacks reduced Cabral from 58 to 46 HP; no player shot was forced. The temporary QA tab was closed.
+
+The new full-envelope regression test saves at the deepest window and again at the parent, then compares the final battle against uninterrupted simulation. All fourteen interrupt tests pass. Exact enemy AP and stack contents are covered by that regression; the browser's public state does not disclose them. Hearing-only and door-triggered live verification remain open.
