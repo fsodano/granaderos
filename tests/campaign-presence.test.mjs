@@ -126,3 +126,18 @@ test('older authored saves retain their original fixed behavior; edited location
  assert.ok(encountersFor(saved(s).campaign,'retiro').some(n=>n.operativeId===3));
  const bad=JSON.parse(encodeSave(s));placement(bad.campaign.contentCampaign.package).sectors=[A];bad.campaign.contentCampaign.identity=contentIdentity(bad.campaign.contentCampaign.package);assert.throws(()=>decodeSave(JSON.stringify(bad)),/presencia/);
 });
+
+test('an actual hostile-sector assault deploys its authored resident and preserves it in a full active save',()=>{
+ let s=ready(definition({sectors:['san_nicolas']}));
+ s=travel(s,'buenos_aires');
+ s=order(s,{type:'attack',sector:'san_nicolas'});
+ assert.equal(s.pendingBattle.wasRoyalist,true);
+ assert.equal(s.pendingBattle.npcs.filter(n=>n.operativeId===3).length,1);
+ const battle=enterSector(s.pendingBattle,s.sectorStates.san_nicolas);
+ assert.ok(battle.units.some(u=>u.side==='enemy'&&u.hp>0),'the assault has actual hostile defenders');
+ assert.equal(battle.npcs.filter(n=>n.operativeId===3).length,1);
+ const restored=saved(s,battle);
+ assert.equal(contact(restored.battle).contentId,'person-3');
+ assert.equal(contact(restored.battle).presenceRevision,person(restored.campaign).revision);
+ assert.equal(encountersFor(restored.campaign,'retiro').some(n=>n.operativeId===3),false);
+});
