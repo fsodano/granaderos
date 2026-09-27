@@ -25,6 +25,7 @@ import { campaignContentReport } from '../../../game/campaign-content.js';
 import { CONTENT_LAUNCH_KEY } from '../../../game/content-launch.js';
 import './editor.css';
 import PlacementMap from './PlacementMap';
+import ArrivalSites from './ArrivalSites';
 const DRAFT_KEY = 'granaderos.content-draft.v1';
 const labels: Record<string, string> = {
   maxHp: 'Salud',
@@ -394,7 +395,7 @@ export default function ContentEditor() {
         <h2>Jugar con las fichas editadas</h2>
         <p>
           Aplica nombres, apodos, biografías, retratos, atributos iniciales y
-          paga de los mercenarios existentes. La partida conserva una copia de
+          paga y tiempo de viaje de los mercenarios existentes. Los puntos de llegada se configuran en Llegadas. La partida conserva una copia de
           este contenido y se guarda por separado.
         </p>
         {integration && (
@@ -425,6 +426,7 @@ export default function ContentEditor() {
         {[
           ['characters', 'Personajes'],
           ['weapons', 'Armas de fuego'],
+          ['arrivals', 'Llegadas'],
           ['test', 'Pruebas'],
         ].map(([id, name]) => (
           <button
@@ -439,7 +441,7 @@ export default function ContentEditor() {
           </button>
         ))}
       </nav>
-      {tab !== 'test' ? (
+      {tab === 'arrivals' ? <ArrivalSites draft={draft} onChange={change}/> : tab !== 'test' ? (
         <div className="editor-columns">
           <aside>
             <h2>
@@ -591,6 +593,11 @@ export default function ContentEditor() {
                         </select>
                       </label>
                     </div>
+                    {Number(item.id.slice(7)) >= 100 && <label>
+                      Tiempo de viaje (horas)
+                      <input type="number" min={0} max={168} value={item.arrivalHours ?? 0} onChange={e=>update({arrivalHours:e.target.valueAsNumber})}/>
+                      <small>El contrato comienza al llegar. Con 0, la llegada es inmediata si el destino es seguro.</small>
+                    </label>}
                     <h3>Atributos</h3>
                     <div className="fields">
                       {ATTRIBUTE_FIELDS.map((k) =>

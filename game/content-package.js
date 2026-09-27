@@ -1,4 +1,5 @@
 // Versioned authoring data. No mutable campaign state or global catalog changes.
+import { defaultArrivalSites, validateArrivalSites } from "./arrival-sites.js";
 import { CONTENT_CELLS, contentCellIds } from "./content-map.js";
 import { OPERATIVES, CAMPAIGN_SECTORS } from "./data.js";
 import { CIVIC_RECRUITS } from "./recruitment.js";
@@ -31,6 +32,7 @@ export function defaultContentPackage() {
     version: 1,
     id: "granaderos",
     name: "Granaderos",
+    arrivalSites: defaultArrivalSites(),
     characters: [...OPERATIVES, ...CIVIC_RECRUITS].map((o) => ({
       id: `person-${o.id}`,
       name: o.name,
@@ -39,6 +41,7 @@ export function defaultContentPackage() {
       biography: o.biography || "",
       portrait: portrait(o.id),
       monthlyPay: o.monthlyPay ?? 0,
+      ...(o.id >= 100 ? {arrivalHours: 6} : {}),
       weapon: WEAPONS[o.weapon] ? `firearm-${o.weapon}` : null,
       attributes: Object.fromEntries(ATTRIBUTE_FIELDS.map((k) => [k, o[k] ?? 50])),
     })),
@@ -86,6 +89,7 @@ export function validateContentPackage(value) {
       `texto inválido (máximo ${max} caracteres).`,
     );
   text(value.name, "Nombre", 100);
+  if (value.arrivalSites !== undefined) errors.push(...validateArrivalSites(value.arrivalSites));
   for (const key of ["characters", "weapons", "placements"])
     check(
       Array.isArray(value[key]) && value[key].length <= 500,
@@ -122,6 +126,7 @@ export function validateContentPackage(value) {
       `${c.id}.portrait`,
       "usá un retrato local o una imagen PNG, JPEG o WebP de hasta 250 KB.",
     );
+    if (c.arrivalHours !== undefined) check(integer(c.arrivalHours, 0, 168), `${c.id}.arrivalHours`, "el viaje debe durar de 0 a 168 horas.");
     check(integer(c.monthlyPay, 0, 1000000), `${c.id}.monthlyPay`, "paga inválida.");
     check(c.weapon === null || sets.weapons.has(c.weapon), `${c.id}.weapon`, "el arma no existe.");
     check(record(c.attributes) && Object.keys(c.attributes).length === ATTRIBUTE_FIELDS.length && Object.keys(c.attributes).every(k => ATTRIBUTE_FIELDS.includes(k)), `${c.id}.attributes`, "la lista de atributos no es válida.");
