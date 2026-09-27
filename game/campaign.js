@@ -1,3 +1,4 @@
+import {attachCampaignContent,validateCampaignContent} from './campaign-content.js';
 import {MISSION_SCENES,YATASTO_NPCS,missionStatus,talkMission,sanLorenzoAlly,validateMissions} from './missions.js';
 export {MISSION_SCENES,missionStatus} from './missions.js';
 import {dailyIncome,artilleryCount,collectSectorCash} from './economy.js';
@@ -48,8 +49,10 @@ const requireThat = (test,message) => {if(!test)throw Error(message);};
 const pay = (s,cost) => {for(const [key,value] of Object.entries(cost))requireThat(s.resources[key]>=value,`Faltan recursos: ${RESOURCE_NAMES[key]??key} (${value}).`);for(const [key,value] of Object.entries(cost))s.resources[key]-=value;};
 const add = (s,values) => {for(const [key,value] of Object.entries(values))s.resources[key]=(s.resources[key]??0)+value;};
 const standing = (s,id,value) => {if(id!=='royalists')s.reputation[id]=clamp(s.reputation[id]+value);};
-export function initialCampaign(seed=1812){
-  return {equipmentShipments:[],missions:{},sceneStates:{},missionAllies:{},garrisons:{},nextMilitiaId:20000,quests:{},cityLoyaltyEvents:[],contracts:{},militiaTraining:[],foundMoney:[],economyVersion:2,version:1,seed:seed>>>0,hour:0,phase:0,location:'retiro',activeSquadId:'squad-1',squads:[{id:'squad-1',name:'Primera escuadra',members:[],location:'retiro'}],sectorStates:{},resources:{treasury:3200},reputation:{directory:35,gauchos:0,pardos:10,foreign:20,indigenous:0,royalists:-100},sectors:Object.fromEntries(CAMPAIGN_SECTORS.map(x=>[x.id,{owner:['buenos_aires','retiro','ensenada'].includes(x.id)?'patriot':'royalist',loyalty:['buenos_aires','retiro','ensenada'].includes(x.id)?65:25,militia:[0,0,0],damageUntil:0,fort:0}])),artillerySelection:[],armory:{},loadouts:{},lastConversation:null,conversations:{},officer:null,recruited:[],squad:[],operativeState:Object.fromEntries([...OPERATIVES,...CIVIC_RECRUITS].map(o=>[o.id,{hp:o.maxHp,fatigue:0,alive:true,xp:0,priming:50,flints:4,rations:2,torches:2,condition:100}])),flags:{armyFunded:false,academy:false,sanLorenzo:false,northPact:false,partisanSupply:false,foundry:false,parliament:false,emancipation:false,commission:false,mentoring:false},routes:{posta:false,flotilla:false,carts:false,mules:false},blockade:false,pendingBattle:null,completed:false,defeated:false,log:[{hour:0,text:'Buenos Aires, 1812. El Cabildo encomienda la formación de los Granaderos. Prepará tu hoja de servicio y reuní a los primeros voluntarios.'}],lastError:null};
+export function initialCampaign(seed=1812,content=null){
+  const state={equipmentShipments:[],missions:{},sceneStates:{},missionAllies:{},garrisons:{},nextMilitiaId:20000,quests:{},cityLoyaltyEvents:[],contracts:{},militiaTraining:[],foundMoney:[],economyVersion:2,version:1,seed:seed>>>0,hour:0,phase:0,location:'retiro',activeSquadId:'squad-1',squads:[{id:'squad-1',name:'Primera escuadra',members:[],location:'retiro'}],sectorStates:{},resources:{treasury:3200},reputation:{directory:35,gauchos:0,pardos:10,foreign:20,indigenous:0,royalists:-100},sectors:Object.fromEntries(CAMPAIGN_SECTORS.map(x=>[x.id,{owner:['buenos_aires','retiro','ensenada'].includes(x.id)?'patriot':'royalist',loyalty:['buenos_aires','retiro','ensenada'].includes(x.id)?65:25,militia:[0,0,0],damageUntil:0,fort:0}])),artillerySelection:[],armory:{},loadouts:{},lastConversation:null,conversations:{},officer:null,recruited:[],squad:[],operativeState:Object.fromEntries([...OPERATIVES,...CIVIC_RECRUITS].map(o=>[o.id,{hp:o.maxHp,fatigue:0,alive:true,xp:0,priming:50,flints:4,rations:2,torches:2,condition:100}])),flags:{armyFunded:false,academy:false,sanLorenzo:false,northPact:false,partisanSupply:false,foundry:false,parliament:false,emancipation:false,commission:false,mentoring:false},routes:{posta:false,flotilla:false,carts:false,mules:false},blockade:false,pendingBattle:null,completed:false,defeated:false,log:[{hour:0,text:'Buenos Aires, 1812. El Cabildo encomienda la formación de los Granaderos. Prepará tu hoja de servicio y reuní a los primeros voluntarios.'}],lastError:null};
+  if(content!==null)attachCampaignContent(state,content);
+  return state;
 }
 export function isSupplied(s,id){
   if(s.sectors[id]?.owner!=='patriot')return false;
@@ -316,7 +319,7 @@ export function dispatchCampaign(previous,action){
 export function serializeCampaign(s){return JSON.stringify(s);}
 export function restoreCampaign(text){
   requireThat(typeof text==='string'&&text.length<=5_000_000,'El archivo de campaña no es compatible.');
-  const s=JSON.parse(text),base=initialCampaign();
+  const s=JSON.parse(text);validateCampaignContent(s);const base=initialCampaign();
   const integer=(v,min,max)=>Number.isInteger(v)&&v>=min&&v<=max;
   const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
   requireThat(object(s)&&s.version===1&&integer(s.hour,0,24*365*100)&&integer(s.phase,0,4)&&integer(s.seed,0,4294967295)&&sector(s.location),'El archivo de campaña no es compatible.');

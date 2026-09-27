@@ -1,4 +1,5 @@
 export function portraitFor(id:number|string):string|null {
+ if(typeof id==='string'&&(/^\/art\/[a-zA-Z0-9_-]+\.(png|webp|jpg|jpeg)$/.test(id)||/^data:image\/(png|webp|jpeg);base64,[A-Za-z0-9+/=]+$/.test(id)))return id;
  if(['avatar-woman-scout','avatar-woman-civilian','avatar-man-gaucho','avatar-man-soldier'].includes(String(id)))return `/art/${id}.webp`;
  const value=Number(id);
  if([103,104].includes(value))return `/art/portrait-${value}.png`;

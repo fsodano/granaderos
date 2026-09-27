@@ -822,6 +822,7 @@ export default function SectorEditor() {
         <a href="/" className="editor-brand">
           GRANADEROS <small>Constructor de sectores</small>
         </a>
+        <a href="/story">Editor de historia</a>
         <input
           aria-label="Nombre del sector"
           value={doc.metadata.title}

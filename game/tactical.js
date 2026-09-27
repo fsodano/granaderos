@@ -1,3 +1,4 @@
+import {WEAPONS} from './firearm-definitions.js';
 import {hearNpcNoise,runCivilianPhase,advanceCivilianTime} from './npc-ai.js';
 import {choosePatrolAction} from './npc-patrol.js';
 import {directionTo} from './npc-perception.js';
@@ -5,13 +6,7 @@ import {propBlocksAt} from './props.js';
 import {advanceBattleClock,COMBAT_ROUND_SECONDS,REST_SECONDS} from './time.js';
 import {practice} from './skill-training.js';
 // Deterministic, serializable tactical simulation. The browser uses this module directly.
-export const WEAPONS = Object.fromEntries([
-  [1800,'Brown Bess',58,12,6,45,18,1],[1801,'Charleville',52,11,5,42,22,1],
-  [1802,'Fusil Baker',64,16,10,70,45,1],[1803,'Tercerola',44,9,4,38,12,1],
-  [1804,'Escopeta Criolla',48,10,4,35,10,1],[1805,'Pistola de Arzón',42,7,3,32,8,1],
-  [1806,'Pistola de Duelo de Oficial',38,6,2,28,12,1],[1807,'Trabuco Naranjero',75,12,5,40,6,1],
-  [1808,'Pistola Doble Cañón',40,8,3,55,9,2],
-].map(([id,name,damage,fireAP,aimAP,reloadAP,range,capacity])=>[id,{id,name,damage,fireAP,aimAP,reloadAP,range,capacity}]));
+export {WEAPONS} from './firearm-definitions.js';
 export const ARTILLERY={bronze4:{name:'Cañón de Bronce de 4 lb',crew:2,fireAP:30,reloadAP:60,radius:4,range:80,damage:85},field8:{name:'Cañón de Campaña de 8 lb',crew:3,fireAP:40,reloadAP:75,radius:6,range:110,damage:110},swivel:{name:'Pedrero de Regala',crew:1,fireAP:20,reloadAP:35,radius:3,range:35,damage:65}};
 export const BLADES=Object.fromEntries([[1809,'Sable Corvo Sanmartiniano',12,46,1.5],[1810,'Sable de Caroya',14,42,1.5],[1811,'Bayoneta de Cubo',16,50,2],[1812,'Lanza de Tacuara',18,56,2.5],[1813,'Facón Gaucho con Poncho',8,32,1.5]].map(([id,name,ap,damage,reach])=>[id,{id,name,ap,damage,reach}]));
 export function bladeFor(unit){return unit.activeSlot==='blade'?(BLADES[unit.blade]||BLADES[unit.weapon]||BLADES[1811]):(BLADES[unit.weapon]||BLADES[1811]);}
