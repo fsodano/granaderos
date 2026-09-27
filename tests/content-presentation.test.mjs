@@ -88,20 +88,20 @@ test('saved presentation cannot diverge in a deployment, active actor, saved res
 });
 
 test('an authored mission contact keeps its presentation through conversation, save and scene reentry',()=>{
- const d=definition(),c=d.characters.find(c=>c.id==='person-57');Object.assign(c,{name:'Comandante del Río',spriteAppearance:'gaucho',personality:'Un mando paciente.'});
+ const d=definition(),c=d.characters.find(c=>c.id==='person-57');Object.assign(c,{name:'Comandante del Río',spriteAppearance:'gaucho',personality:'Un mando paciente.',abilities:['rapid_first_aid']});
  let {s,id}=hired(d);
  // Open the existing mission gate; this fixture does not claim a full campaign run.
  s.phase=2;s.flags.sanLorenzo=true;for(const sector of ['cordoba','tucuman','salta'])s.sectors[sector].owner='patriot';
  s=order(s,{type:'travel',sector:'tucuman'});s=order(s,{type:'visitMission',mission:'yatasto'});
  let b=enterSector(s.pendingBattle),pair=saved(s,b),npc=pair.battle.npcs.find(n=>n.id==='yatasto-san-martin');
- assert.equal(npc.name,c.name);assert.equal(npc.spriteAppearance,c.spriteAppearance);assert.equal(npc.storyProfile.personality,c.personality);assert.equal(npc.operativeId,undefined);
+ assert.deepEqual(npc.abilities,['rapid_first_aid']);assert.equal(npc.name,c.name);assert.equal(npc.spriteAppearance,c.spriteAppearance);assert.equal(npc.storyProfile.personality,c.personality);assert.equal(npc.operativeId,undefined);
  s=pair.campaign;b=pair.battle;const spot=getReachable(b,String(id)).find(p=>Math.abs(p.x-npc.x)+Math.abs(p.y-npc.y)===1);assert.ok(spot);
  b=actBattle(b,{type:'move',unitId:String(id),x:spot.x,y:spot.y});assert.equal(b.lastError,null);pair=syncBattleTime(s,b);assert.equal(pair.error,null);
  s=order(pair.campaign,{type:'talkNPC',npcId:npc.id,unitId:id,approach:'friendly',sectorState:pair.battle});assert.equal(s.lastConversation.speaker,c.name);
  assert.ok(!s.lastConversation.options.includes('recruit'));assert.ok(saved(s,pair.battle));
  s=order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});
  s=order(saved(s).campaign,{type:'visitMission',mission:'yatasto'});pair=saved(s,enterSector(s.pendingBattle,s.sceneStates.yatasto));
- npc=pair.battle.npcs.find(n=>n.id==='yatasto-san-martin');assert.equal(npc.spriteAppearance,c.spriteAppearance);assert.equal(npc.storyProfile.personality,c.personality);
+ npc=pair.battle.npcs.find(n=>n.id==='yatasto-san-martin');assert.deepEqual(npc.abilities,['rapid_first_aid']);assert.equal(npc.spriteAppearance,c.spriteAppearance);assert.equal(npc.storyProfile.personality,c.personality);
  const invalid=JSON.parse(encodeSave(pair.campaign,pair.battle));invalid.battle.npcs.find(n=>n.id===npc.id).storyProfile.personality='Changed';assert.throws(()=>decodeSave(JSON.stringify(invalid)),/voz o apariencia/);
 });
 
@@ -115,7 +115,7 @@ test('malformed voice and missing art choices fail before launch; older packages
 
 test('initial local recruits still require a meeting and can actually join a new authored campaign',()=>{
  for(const [target,sector] of [[3,'retiro'],[4,'buenos_aires'],[10,'buenos_aires']]){
-  const d=definition();d.characters.at(-1).attributes.leadership=100;
+  const d=definition();d.characters.at(-1).attributes.leadership=100;d.characters.find(c=>c.id===`person-${target}`).abilities=['rapid_first_aid'];
   if(target===3){const c=d.characters.find(c=>c.id==='person-3');c.name='A'.repeat(100);c.speech.hired='B'.repeat(800);}
   let {s,id}=hired(d);
   assert.ok(dispatchCampaign(s,{type:'recruit',id:target}).lastError);
@@ -126,7 +126,7 @@ test('initial local recruits still require a meeting and can actually join a new
   // Same physical NPC-to-soldier transition as the actual game screen.
   b=pair.battle;b.npcs=b.npcs.filter(n=>n.id!==npc.id);const record=s.pendingBattle.squad.find(o=>o.id===target);
   const joined=createBattle([record],{width:b.width,height:b.height,enemies:[],exploration:true}).units[0];b.units.push({...joined,x:npc.x,y:npc.y});
-  const restored=saved(s,b);assert.equal(speechFor(restored.battle.units.find(u=>u.id===String(target)),'hired'),d.characters.find(c=>c.id===`person-${target}`).speech.hired);
+  const restored=saved(s,b);assert.deepEqual(restored.battle.units.find(u=>u.id===String(target)).abilities,['rapid_first_aid']);assert.equal(speechFor(restored.battle.units.find(u=>u.id===String(target)),'hired'),d.characters.find(c=>c.id===`person-${target}`).speech.hired);
  }
 });
 

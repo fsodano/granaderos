@@ -24,7 +24,8 @@ import { encodeSave } from '../../../game/save.js';
 import { campaignContentReport } from '../../../game/campaign-content.js';
 import { CONTENT_LAUNCH_KEY } from '../../../game/content-launch.js';
 import './editor.css';
-import {isContractCharacter} from '../../../game/content-character-ids.js';
+import {CHARACTER_ABILITIES,legacyCharacterAbilities} from '../../../game/character-abilities.js';
+import {isContractCharacter,legacyOperativeId} from '../../../game/content-character-ids.js';
 import CharacterPresentation from './CharacterPresentation';
 import {SPEECH_EVENTS} from '../../../game/characters.js';
 import {characterPresentationDefaults} from '../../../game/content-character-presentation.js';
@@ -220,6 +221,7 @@ export default function ContentEditor() {
         biography: '',
         traits: [],
         ridingSkill: 0,
+        abilities: [],
         personality: '',
         speech: Object.fromEntries(SPEECH_EVENTS.map(event=>[event,''])),
         spriteAppearance: 'granadero',
@@ -237,7 +239,7 @@ export default function ContentEditor() {
   }
   function duplicateCharacter() {
     if (collection !== 'characters' || !isContractCharacter(item)) return;
-    const added = {...structuredClone(item), ...structuredClone(characterPresentationDefaults(item)), recruitmentSource:'contract', service:'contract', progression:item.progression??'experience', traits:[...characterTraits], ridingSkill, id: nextId('person', draft.characters), name: `${item.name.slice(0, 92)} (copia)`};
+    const added = {...structuredClone(item), ...structuredClone(characterPresentationDefaults(item)), abilities:[...(item.abilities??legacyCharacterAbilities(legacyOperativeId(item.id)))], recruitmentSource:'contract', service:'contract', progression:item.progression??'experience', traits:[...characterTraits], ridingSkill, id: nextId('person', draft.characters), name: `${item.name.slice(0, 92)} (copia)`};
     change({...draft, characters: [...draft.characters, added]});
     setSelected(added.id);
     setSearches(current=>({...current,characters:''}));
@@ -430,7 +432,7 @@ export default function ContentEditor() {
         <h2>Jugar con el contenido editado</h2>
         <p>
           Aplica nombres, apodos, biografías, retratos, atributos iniciales y
-          paga, especialidades, progreso, carácter, frases, apariencia y tiempo de viaje de los contratables. Podés crear, duplicar y quitar candidatos del boletín. También podés configurar las armas de fuego de personajes, enemigos y milicias. Los puntos de llegada se configuran en Llegadas. La partida conserva una copia de
+          paga, especialidades, progreso, habilidades, carácter, frases, apariencia y tiempo de viaje de los contratables. Podés crear, duplicar y quitar candidatos del boletín. También podés configurar las armas de fuego de personajes, enemigos y milicias. Los puntos de llegada se configuran en Llegadas. La partida conserva una copia de
           este contenido y se guarda por separado.
         </p>
         {integration && (
@@ -656,6 +658,19 @@ export default function ContentEditor() {
                         </label>)}
                       </div>
                     </fieldset>}
+                    <fieldset aria-label="Habilidades de combate">
+                      <legend>Habilidades de combate</legend>
+                      <p>Elegí las capacidades de este personaje. Sin casillas marcadas, no tendrá ninguna de estas ventajas. Las funciones de historia se conservan por ahora.</p>
+                      <div className="fields">
+                        {CHARACTER_ABILITIES.map(ability=>{
+                          const abilities=item.abilities??legacyCharacterAbilities(legacyOperativeId(item.id));
+                          return <label key={ability.id}>
+                            <input type="checkbox" checked={abilities.includes(ability.id)} onChange={e=>update({abilities:e.target.checked?[...abilities,ability.id]:abilities.filter((id:string)=>id!==ability.id)})}/>
+                            {ability.name}<small>{ability.description}</small>
+                          </label>;
+                        })}
+                      </div>
+                    </fieldset>
                     <CharacterPresentation character={item} portraits={defaultContentPackage().characters} weapon={draft.weapons.find((w:any)=>w.id===item.weapon)?.template??0} onChange={update}/>
                     <h3>Atributos</h3>
                     <div className="fields">

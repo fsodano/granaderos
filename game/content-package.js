@@ -1,4 +1,5 @@
 import {FORCE_EQUIPMENT,defaultForceEquipment,validateForceEquipment} from './content-force-equipment.js';
+import {legacyCharacterAbilities,validCharacterAbilities} from './character-abilities.js';
 import {legacyOperativeId} from './content-character-ids.js';
 import {characterProfile,SPEECH_EVENTS} from './characters.js';
 import {SPEECH_LINE_LIMIT} from './content-character-presentation.js';
@@ -49,6 +50,7 @@ export function defaultContentPackage() {
       role: o.role || "",
       biography: o.biography || "",
       portrait: portrait(o.id),
+      abilities:legacyCharacterAbilities(o.id),
       personality:characterProfile(o).personality,
       speech:{...characterProfile(o).speech},
       spriteAppearance:spriteAppearance(o),
@@ -137,6 +139,7 @@ export function validateContentPackage(value) {
     text(c.nickname, `${c.id}.nickname`, 100);
     text(c.role, `${c.id}.role`, 200, true);
     text(c.biography, `${c.id}.biography`, 5000, true);
+    if(c.abilities!==undefined)check(validCharacterAbilities(c.abilities),c.id,'habilidades no válidas.');
     if(c.personality!==undefined)text(c.personality,`${c.id}.personality`,2000,true);
     if(c.speech!==undefined){
       check(record(c.speech)&&Object.keys(c.speech).length===SPEECH_EVENTS.length&&Object.keys(c.speech).every(key=>SPEECH_EVENTS.includes(key)),c.id,'la lista de frases no es válida.');

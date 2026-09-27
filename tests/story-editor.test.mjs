@@ -12,6 +12,31 @@ import {operativeIdForCharacter} from '../game/content-character-ids.js';
 register('./tactical-render-loader.mjs',import.meta.url);
 const draftKey='granaderos.content-draft.v1';
 
+test('the editor removes a historical ability and assigns abilities to a new identity through undo, copy and campaign launch',async t=>{
+ const m=await mount(t);const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
+ const ability=name=>[...m.document.querySelectorAll('fieldset[aria-label="Habilidades de combate"] label')].find(l=>l.textContent.startsWith(name)).querySelector('input');
+ await m.input(m.document.querySelector('input[type="search"]'),'person-3');await m.click(m.document.querySelector('.entry-list button'));
+ assert.equal(ability('Protección de compañeros').checked,true);await m.click(ability('Protección de compañeros'));assert.ok(!draft().characters.find(c=>c.id==='person-3').abilities.includes('bodyguard'));
+ await m.click([...m.document.querySelectorAll('button')].find(b=>b.textContent.includes('Crear personaje')));
+ assert.equal(m.document.querySelectorAll('fieldset[aria-label="Habilidades de combate"] input:checked').length,0);
+ await m.input(m.label('Nombre'),'Alma Nueva');await m.click(ability('Protección de compañeros'));await m.click(ability('Atención rápida'));
+ await m.click(m.button('Deshacer'));assert.equal(ability('Atención rápida').checked,false);await m.click(m.button('Rehacer'));assert.equal(ability('Atención rápida').checked,true);
+ await m.click(m.button('Duplicar personaje'));const c=draft().characters.at(-1);assert.deepEqual(c.abilities,['bodyguard','rapid_first_aid']);
+ await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));
+ assert.ok(!rosterFor(campaign).find(o=>o.id===3).abilities.includes('bodyguard'));
+ const id=operativeIdForCharacter(campaign.contentCampaign.package,c.id);campaign=dispatchCampaign(campaign,{type:'recruitCivic',id,term:'week'});assert.equal(campaign.lastError,null);
+ campaign=dispatchCampaign(campaign,{type:'wait',hours:6});campaign=dispatchCampaign(campaign,{type:'visitSector'});assert.equal(campaign.lastError,null);
+ const pair=decodeSave(encodeSave(campaign,enterSector(campaign.pendingBattle)));assert.deepEqual(pair.battle.units.find(u=>u.id===String(id)).abilities,c.abilities);
+});
+
+test('an older draft shows effective historical abilities and can explicitly disable them',async t=>{
+ const d=defaultContentPackage();for(const c of d.characters)delete c.abilities;
+ const m=await mount(t,JSON.stringify(d));await m.input(m.document.querySelector('input[type="search"]'),'person-10');await m.click(m.document.querySelector('.entry-list button'));
+ const box=[...m.document.querySelectorAll('fieldset[aria-label="Habilidades de combate"] label')].find(l=>l.textContent.startsWith('Atención rápida')).querySelector('input');assert.equal(box.checked,true);await m.click(box);
+ const updated=parseContentPackage(m.dom.window.localStorage.getItem(draftKey));assert.deepEqual(updated.characters.find(c=>c.id==='person-10').abilities,[]);
+ await m.click(m.button('Iniciar campaña con estas fichas'));const {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.deepEqual(rosterFor(campaign).find(o=>o.id===10).abilities,[]);
+});
+
 test('the editor previews independent portrait and body choices and authors the character voice through undo, copy and launch',async t=>{
  const m=await mount(t);const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
  await m.input(m.document.querySelector('input[type="search"]'),'person-100');await m.click(m.document.querySelector('.entry-list button'));
@@ -29,9 +54,9 @@ test('the editor previews independent portrait and body choices and authors the 
 });
 
 test('the real bulletin dossier shows authored personality and hiring phrase',async t=>{
- const d=defaultContentPackage(),c=d.characters.find(c=>c.id==='person-100');Object.assign(c,{name:'Clara Voz',personality:'Una voz propia.'});c.speech.hired='Partimos al amanecer.';
+ const d=defaultContentPackage(),c=d.characters.find(c=>c.id==='person-100');Object.assign(c,{name:'Clara Voz',personality:'Una voz propia.',abilities:['counterattack'],traits:['teacher']});c.speech.hired='Partimos al amanecer.';
  const m=await mount(t,undefined,null,initialCampaign(42,d));await m.input(m.document.querySelector('input[type="search"]'),'Clara Voz');await m.click(m.button('Atributos, carácter y equipo →'));
- const dialog=m.document.querySelector('[role="dialog"]');assert.ok(dialog);assert.match(dialog.textContent,/Una voz propia\./);assert.match(dialog.textContent,/Partimos al amanecer\./);
+ const dialog=m.document.querySelector('[role="dialog"]');assert.ok(dialog);assert.match(dialog.textContent,/Una voz propia\./);assert.match(dialog.textContent,/Partimos al amanecer\./);assert.match(dialog.textContent,/Contragolpe/);assert.match(dialog.textContent,/Instrucción/);
 });
 
 test('the editor creates, duplicates and removes actual contract candidates with undo and safe historical guards',async t=>{
