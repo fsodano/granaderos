@@ -1,0 +1,55 @@
+{
+  "method": "Observation-only loader records the argument to recoverFreshNorthernDoctor; unmodified game modules and full preceding fresh route. This diagnostic does not establish a fix.",
+  "hour": 200,
+  "treasury": 1441,
+  "currentLocation": "tucuman",
+  "patients": [
+    {
+      "id": "104",
+      "hp": 15,
+      "maxHp": 72,
+      "bleeding": 0,
+      "location": "tucuman",
+      "medkits": 0,
+      "captured": false
+    },
+    {
+      "id": "111",
+      "hp": 13,
+      "maxHp": 79,
+      "bleeding": 4,
+      "location": "cordoba",
+      "medkits": 0,
+      "captured": false
+    },
+    {
+      "id": "120",
+      "hp": 29,
+      "maxHp": 75,
+      "bleeding": 0,
+      "location": "tucuman",
+      "medkits": 0,
+      "captured": false
+    },
+    {
+      "id": "121",
+      "hp": 22,
+      "maxHp": 82,
+      "bleeding": 4,
+      "location": "tucuman",
+      "medkits": 0,
+      "captured": false
+    },
+    {
+      "id": "139",
+      "hp": 15,
+      "maxHp": 73,
+      "bleeding": 0,
+      "location": "tucuman",
+      "medkits": 0,
+      "captured": false
+    }
+  ],
+  "result": "FAIL: no fit local medic at Córdoba; all other hired survivors are at Tucumán.",
+  "durationMs": 112010.784875
+}

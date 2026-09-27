@@ -7,6 +7,9 @@
     "test": "node --test tests/*.test.mjs",
     "dev": "npm --prefix web run dev",
     "build": "node tools/build-web.mjs",
-    "typecheck": "node web/node_modules/typescript/bin/tsc --project web/tsconfig.json --noEmit"
+    "typecheck": "node web/node_modules/typescript/bin/tsc --project web/tsconfig.json --noEmit",
+    "audit:docs": "node tools/audit-docs.mjs",
+    "docs:progress": "node tools/audit-docs.mjs --write",
+    "audit:baseline": "node tools/audit-baseline.mjs"
   }
 }

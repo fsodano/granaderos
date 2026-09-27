@@ -7,6 +7,9 @@ accepted features on GitHub `main`, approved scope changes and open work.
 
 ## Published baseline
 
+- [Formal implementation audit — 27 September](formal-audit-2026-09-27.md)
+- [Machine-readable requirement register](requirements.json)
+
 - [Published implementation and verification ledger](published-progress.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)

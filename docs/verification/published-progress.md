@@ -1,210 +1,260 @@
 # Granaderos implementation and verification ledger
 
-## Objective and completion rule
+<!-- Generated from requirements.json by npm run docs:progress. Edit the register, not this view. -->
 
-Implement the entire supplied specification as a WEB GAME, using the supplied JA2 v1.13 source as reference, including original graphics. Player-facing content must be Spanish; code and docs remain English. Build and test the actual game; use semver and check in progress through GitHub pull requests. A small playable encounter is a milestone, not completion. This file records evidence rather than planned work as accomplished.
+Updated 2026-09-27. **The complete game and story editor are not accepted.**
 
-## Current status — 2026-09-27
+Read [the design](../specification/game-design.md) for the target and [the formal audit](formal-audit-2026-09-27.md) for evidence and limits.
+The published baseline assessed here is `490d5dde4914f7d1050f1901ddf783aa88bc95ed`. Later PRs must update this register.
+The larger local sources and the editor prototype are separate from published main.
 
-**The full game and story editor are not complete.** This is the primary progress
-ledger. It was not updated alongside recent PRs; its previous latest checkpoint
-was 2026-09-05. This update reconciles published work through PR #27. Earlier
-work-log entries below are historical snapshots, not current verification.
+## Verified results and current failures
 
-Published baseline: `main` at `5f1deab1ef35143ef3c2ba1af421528467e23510`.
-[PR #27 checks](https://github.com/fsodano/granaderos/actions/runs/36355036006/job/108720967309)
-passed on source commit `b70877f3fb3bce59f7f367b7ff0749b440ff254e`: 537 tests,
-TypeScript checks, and production export (721 files, 631 asset references).
-This establishes that delivery's checks. It does not establish a complete
-campaign playthrough or compatibility with unpublished branches.
+| Source | Passing / total | Failed | Skipped | Types / build |
+|---|---:|---:|---:|---|
+| published | 537 / 537 | 0 | 0 | PASS / PASS |
+| original | 3040 / 3047 | 4 | 3 | PASS / PASS |
+| prototype | 2895 / 2896 | 1 | 0 | PASS / PASS |
+| presence | 548 / 548 | 0 | 0 | PASS / PASS |
 
-The published game has `/story` for content and `/editor` for sector construction.
-The local editor on port 3107 is a separate prototype. Its larger gameplay
-implementation and the original working checkout still require consolidation.
-A feature in that prototype is not automatically a feature on GitHub `main`.
+The advanced local suite has three independent failure points; a failed child also fails its parent. Three later route milestones are skipped. The prototype fails at San Lorenzo. Published CI runs a smaller suite and cannot close those failures. The prepared presence feature is local only.
 
-### Delivered and verified scopes
+## Status and maintenance rules
 
-`VERIFIED` below applies only to the stated, bounded capability. The requirement
-IDs connect it to the broader acceptance table; they do not close that whole row.
-See [story-editor.md](../development/story-editor.md) for behavior and test details.
+- VERIFIED: the complete **bounded row** has specific accepted evidence. Parent requirements remain separate.
+- PARTIAL: a published subset exists; the row states the remaining work.
+- LOCAL_ONLY: relevant implementation exists locally but is not accepted in the published release.
+- MISSING: no accepted implementation of the stated capability was found.
+- FAILED: required acceptance currently fails, or the combined release is inconsistent.
+- UNVERIFIED: available evidence does not establish acceptance.
+- SUPERSEDED: an explicit design change replaced the old requirement.
 
-| Capability | Status | Published evidence | Remaining boundary |
-|---|---|---|---|
-| Choose the custom officer's existing portraits | VERIFIED | [PR #19](https://github.com/fsodano/granaderos/pull/19); character creator tests | Not a complete face animation set (ART-02) |
-| Edited names, portraits, biography and attributes in an isolated campaign and save | VERIFIED | [PR #20](https://github.com/fsodano/granaderos/pull/20); `campaign-content.test.mjs`, `story-editor.test.mjs` | Not arbitrary narrative composition (ENG-03, ROST-01) |
-| Contract candidates stay off-map; paid arrivals use controlled, suitable reception sites | VERIFIED | [PR #21](https://github.com/fsodano/granaderos/pull/21); `hiring-arrivals.test.mjs` | Timed arrival, not a geographic transport simulation (REC-01, REC-02, LOG-01/02) |
-| Authored firearm stats, images and variants survive use, loot, equipment changes and saves | VERIFIED | [PR #22](https://github.com/fsodano/granaderos/pull/22); `content-weapons.test.mjs` | Melee, artillery, ammunition types, accessories and merchant stocks are not authored yet (ITEM-01/02) |
-| Authored firearms for generated enemy and militia classes | VERIFIED | [PR #23](https://github.com/fsodano/granaderos/pull/23); `content-force-equipment.test.mjs` | Does not configure complete forces or strategic opposition (MIL-01, AI-01/02/03) |
-| Add, copy, remove and hire new contract identities | VERIFIED | [PR #24](https://github.com/fsodano/granaderos/pull/24); `content-roster.test.mjs` | New encounter NPCs and replacement of historical campaign roles remain pending (REC-02, ROST-01) |
-| Authored voice phrases, personality, portrait and tactical appearance | VERIFIED | [PR #25](https://github.com/fsodano/granaderos/pull/25); `content-presentation.test.mjs` | Phrases are not branching dialogue or quests (ART-02/03/05, NAR-01) |
-| Combat abilities configurable independently of character identity | VERIFIED | [PR #26](https://github.com/fsodano/granaderos/pull/26); `content-abilities.test.mjs` | Historical campaign and recruitment gates remain fixed (ROST-02) |
-| Exact land-cell selection, travel, tactical entry and independent saved scenes | VERIFIED | [PR #27](https://github.com/fsodano/granaderos/pull/27); `world-cells.test.mjs`, `world-cells-render.test.mjs` | Includes 40-cell save test; not live NPC placement or water-cell travel (MAP-01/02, ENG-03) |
+The register retains 168 entries: 11 VERIFIED, 101 PARTIAL, 38 LOCAL_ONLY, 6 MISSING, 9 FAILED, 2 UNVERIFIED, 1 SUPERSEDED.
+Rows overlap in scope. Neither these counts nor test totals are a completion percentage.
 
-### Open integration work
+Edit [requirements.json](requirements.json), record exact source/checks and remaining gaps, then run `npm run docs:progress` and `npm run audit:docs`. Update the design for policy changes. A dated audit stays an evidence snapshot. Do not mark a local branch as published or close a broad row from one passing fixture.
 
-| ID | Work | Status | Evidence required to close |
-|---|---|---|---|
-| STORY-01 | Fixed, initial-random and daily NPC presence on exact cells | IN PROGRESS | Real encounters and local recruitment, deterministic saves, scene protection, no duplicate residents; implementation branch is not yet published |
-| STORY-02 | New encounter identities, persistent civilian condition and death successors | TODO | Wounds/death and identity persist through movement, recruitment and saves; successor inherits the intended campaign role exactly once |
-| STORY-03 | Branching dialogue, quests, conditions and effects | TODO | Author and complete a branching quest through the normal interface; save at each branch |
-| STORY-04 | Triggered movement inside a tactical sector | TODO | Authored interaction starts real pathfinding, handles interruption and resumes after save/load |
-| STORY-05 | Configurable campaign rules and historical role extraction | PARTIAL | Existing sheets/abilities work; remaining combat, care, economy, progression, logistics and opposition rules require configuration and gameplay tests |
-| STORY-06 | Complete equipment and merchant authoring | PARTIAL | Firearms work; melee, artillery, ammunition, attachments, stocks and replenishment remain |
-| STORY-07 | Campaign start, ownership, chapters and endings | TODO | A second distinct playable campaign created without engine-code changes |
-| STORY-08 | Portable, immutable content package and asset/dependency validation | PARTIAL | Package identity and embedded weapon/portrait data work; full narrative/rule/asset package still pending |
-| INTEGRATION-01 | Consolidate published game, local prototype and advanced gameplay work | PARTIAL | Preserve the current pesos-only economy and contract behavior; run the complete combined suite and actual campaign routes |
-| QA-01 | Full campaign completion and failure routes | PARTIAL | Recorded uninterrupted gameplay across all phases; injected victory results and focused combat fixtures are insufficient |
+## Scope changes that override the original specification
 
-The prototype's latest recorded broad run had 2894/2895 tests pass, with a
-San Lorenzo route defeat still unresolved. That is an earlier diagnostic result,
-not a new check on this published baseline. The smaller published suite cannot
-be used to declare that prototype defect fixed.
+[Current design decisions](../specification/game-design.md#decisions-that-override-earlier-documents) preserve the pesos-only economy, all elite contract terms, hire-only candidates and the approved opening. Old material-production and horse-care requirements do not override those decisions.
 
-### Maintenance rule
+## Delivery order
 
-Every implementation PR must update this file with the bounded behavior delivered,
-the affected requirement IDs, tests run and remaining gaps. Mark a delivery
-verified only after its exact source commit passes the relevant checks; record
-its PR here. Unmerged code must stay explicitly in progress. Keep full acceptance
-rows open until their own evidence is complete. Do not infer a completion
-percentage from PR counts or test counts.
+1. **INTEGRATION-01, START-01, FIX-01, FIX-02, FIX-03, FIX-04** — Establish a combined acceptance path. Preserve pesos and all hire terms, publish Retiro-only/free opening separately, then diagnose each reproduced route failure. Import the needed advanced systems with their own tests; do not replace the reducer wholesale.
+2. **STORY-01, STORY-02** — Publish the prepared presence feature, then integrate persistent world identities, wounds, belongings and successors as separate deliveries.
+3. **STORY-03, STORY-04, STORY-05, STORY-06, STORY-08** — Deliver authored dialogue/quests, scripted movement, rules, equipment/merchants and portable content one feature at a time.
+4. **STORY-07, QA-01, QA-02, REL-01, REL-02, UX-02** — Close remaining parity and presentation gaps. Finish both the stock and independently authored campaigns and the release audit.
 
-### Scope changes that override the original specification
+Finish one bounded feature, its controls and persistence, update evidence, pass relevant checks and exact-head CI, then merge. Preserve the unpublished sources and approved pesos/contract policies.
 
-[PR #12](https://github.com/fsodano/granaderos/pull/12) replaced the original
-materials/production/convoy/horse-care economy with pesos. Campaign preparations,
-diplomacy, equipment and ammunition use the treasury; the army preparation costs
-3000 pesos. Raw-material production and individual horse care must not be
-reintroduced merely to satisfy an obsolete checklist. [PR #17](https://github.com/fsodano/granaderos/pull/17)
-removed the one-day-only limit for elite hires; current day/week/month terms must
-remain available subject to funds. Historical log entries describe earlier designs.
+## Published deliveries
 
-## Milestones
+| ID | Requirement | Status | Published scope | Remaining work / acceptance |
+|---|---|---|---|---|
+| DEL-19 [PR](https://github.com/fsodano/granaderos/pull/19) | Choose the custom officer's existing portraits | VERIFIED | Published in PR #19; bounded behavior has regression evidence. | Choose the custom officer's existing portraits. The broader boundary remains: Not a complete face animation set (ART-02). |
+| DEL-20 [PR](https://github.com/fsodano/granaderos/pull/20) | Edited names, portraits, biography and attributes in an isolated campaign and save | VERIFIED | Published in PR #20; bounded behavior has regression evidence. | Edited names, portraits, biography and attributes in an isolated campaign and save. The broader boundary remains: Not arbitrary narrative composition (ENG-03, ROST-01). |
+| DEL-21 [PR](https://github.com/fsodano/granaderos/pull/21) | Contract candidates stay off-map; paid arrivals use controlled, suitable reception sites | VERIFIED | Published in PR #21; bounded behavior has regression evidence. | Contract candidates stay off-map; paid arrivals use controlled, suitable reception sites. The broader boundary remains: Timed arrival, not a geographic transport simulation (REC-01, REC-02, LOG-01/02). |
+| DEL-22 [PR](https://github.com/fsodano/granaderos/pull/22) | Authored firearm stats, images and variants survive use, loot, equipment changes and saves | VERIFIED | Published in PR #22; bounded behavior has regression evidence. | Authored firearm stats, images and variants survive use, loot, equipment changes and saves. The broader boundary remains: Melee, artillery, ammunition types, accessories and merchant stocks are not authored yet (ITEM-01/02). |
+| DEL-23 [PR](https://github.com/fsodano/granaderos/pull/23) | Authored firearms for generated enemy and militia classes | VERIFIED | Published in PR #23; bounded behavior has regression evidence. | Authored firearms for generated enemy and militia classes. The broader boundary remains: Does not configure complete forces or strategic opposition (MIL-01, AI-01/02/03). |
+| DEL-24 [PR](https://github.com/fsodano/granaderos/pull/24) | Add, copy, remove and hire new contract identities | VERIFIED | Published in PR #24; bounded behavior has regression evidence. | Add, copy, remove and hire new contract identities. The broader boundary remains: New encounter NPCs and replacement of historical campaign roles remain pending (REC-02, ROST-01). |
+| DEL-25 [PR](https://github.com/fsodano/granaderos/pull/25) | Authored voice phrases, personality, portrait and tactical appearance | VERIFIED | Published in PR #25; bounded behavior has regression evidence. | Authored voice phrases, personality, portrait and tactical appearance. The broader boundary remains: Phrases are not branching dialogue or quests (ART-02/03/05, NAR-01). |
+| DEL-26 [PR](https://github.com/fsodano/granaderos/pull/26) | Combat abilities configurable independently of character identity | VERIFIED | Published in PR #26; bounded behavior has regression evidence. | Combat abilities configurable independently of character identity. The broader boundary remains: Historical campaign and recruitment gates remain fixed (ROST-02). |
+| DEL-27 [PR](https://github.com/fsodano/granaderos/pull/27) | Exact land-cell selection, travel, tactical entry and independent saved scenes | VERIFIED | Published in PR #27; bounded behavior has regression evidence. | Exact land-cell selection, travel, tactical entry and independent saved scenes. The broader boundary remains: Includes 40-cell save test; not live NPC placement or water-cell travel (MAP-01/02, ENG-03). |
+| DATA-01 | Historical baseline attributes, firearm/melee/artillery values and map counts | VERIFIED | 36 source-table comparisons pass. | 13 attribute profiles, 9 firearms, 5 blades, 3 artillery profiles, 13 named sectors and 4 theaters match the declared reference; this does not certify balance or art. |
 
-1. **0.1.0 development:** playable browser campaign and tactical core, original static art, saves, automated checks and static build.
-2. **0.2.0:** historical scenario and rules fidelity; complete recruitment flows.
-3. **0.3.0:** complete strategic logistics, faction behavior and campaign narrative.
-4. **0.4.0:** animation, sound and responsive interface polish.
-5. **1.0.0 candidate:** full specification audit, balancing and recorded campaign playthrough.
+## Original design
 
-## Full requirements and acceptance evidence
+| ID | Requirement | Status | Published scope | Remaining work / acceptance |
+|---|---|---|---|---|
+| ENG-01 | Build browser game using supplied source as reference | PARTIAL | React browser engine, Node simulation and static export. | Full release controls, accessibility and current visual acceptance. |
+| ENG-02 | Launch browser game | PARTIAL | Documented development server and production export. | Verify the release deployment and complete player flow on the delivered artifact. |
+| ENG-03 | Save/load and versioning | PARTIAL | Versioned campaign/tactical saves; authored roster/weapons and 40 cell scenes round-trip. | Integrate larger local state and all new content migrations; corrupt/old saves and continuation. |
+| NAR-01 | Elío/Vigodet, Pezuela, Tristán, Romarate and Loyalist commands | PARTIAL | Named commands and campaign narrative exist. | Actual advanced opposing forces and authored command objectives across the full campaign. |
+| NAR-02 | Retiro recruitment and training phase | PARTIAL | Retiro setup, paid roster and custom officer work. | Publish free first-person start and Retiro-only control, then pass the fresh opening. |
+| NAR-03 | San Lorenzo river ambush | PARTIAL | Authored San Lorenzo mission and win/loss tests. | Fresh prototype route loses; repeat under consolidated rules with actual supplies and casualties. |
+| NAR-04 | Yatasto/Northern Army transition | PARTIAL | Yatasto mission and chapter transitions. | Fresh route cannot currently complete northern medical relief and later acceptance. |
+| NAR-05 | El Plumerillo campaign preparation under the pesos-only economy | PARTIAL | Treasury-funded camp preparations and artillery prerequisites. | Complete the fresh route with purchases; retain the pesos-only model. |
+| NAR-06 | Pehuenche diplomacy and San Martín final unlock | PARTIAL | Treaty and gated San Martín unlock. | Reach and finish through legal campaign actions without injected victories. |
+| FAC-01 | Six factions, reputation effects and immutable Royalist hostility | PARTIAL | Faction reputations, policies and hostility checks. | Integrate civilian consequences, recruitment and full-route political effects. |
+| REC-01 | Logia Lautaro, monthly stipends and ideological contracts | PARTIAL | Dossiers, finite paid contracts, treasury payments and safe timed arrivals. | Integrate contract attention/refusal/history with casualties and campaign routes. |
+| REC-02 | Civic bulletin, low-cost provincial recruits and growth | PARTIAL | Replaceable paid roster, progression, equipment and controlled arrivals. | Preserve off-map candidates while adding separate authored encounter identities. |
+| REC-03 | Cabildo custom officer examination and four historical traits | PARTIAL | Custom attributes, portrait selection and tested traits. | Publish the revised free opening and verify progression across a full route. |
+| LOG-01 | Chasque/posta travel network | PARTIAL | Land cell travel, controlled reception sites and route rules. | Integrate concurrent advanced routes, fatigue and route interruptions; no horse-care economy. |
+| LOG-02 | Armed river flotilla | PARTIAL | Named river routes and transport rules. | Actual passengers/cargo, route capacity and river deployment through the final game. |
+| LOG-03 | Cuyo ox-cart heavy supply trains | PARTIAL | Transport definitions and campaign route gates. | Finite carried guns/cargo and cart capacities without restoring resource convoys. |
+| ECO-01 | British imports and timed deliveries | PARTIAL | Imports bought in pesos with timed delivery. | Integrate exact used equipment, stock and safe delivery across occupation changes. |
+| ECO-02 | Retiro/Beltrán raw-material production chains | SUPERSEDED | Removed by PR #12. | No work: keep pesos-only procurement; do not restore material recipes. |
+| ECO-03 | Rural income, raids and recovery in the pesos economy | PARTIAL | Sector income and damage/recovery rules. | Validate loss and recovery in the pesos economy; individual livestock simulation is superseded. |
+| ECO-04 | Customs revenue and naval blockades | PARTIAL | Coastal income and blockade effects. | Link advanced naval forces, defense and blockade removal through actual battles. |
+| ECO-05 | Provincial treasuries | PARTIAL | Capture money and recurring revenue checks. | Validate all territorial transfers and repeated recapture without duplicate rewards. |
+| MIL-01 | Cívicos, Montoneras and veteran line/Granaderos tiers | PARTIAL | Militia training, ranks and generated historical loadouts. | Integrate persistent individual militia, autonomous combat, wounds and finite gear. |
+| TAC-01 | 100 AP, exact weapon cycles, long reloads, prone penalty | PARTIAL | 100 AP and reference firearm cycles. | Integrate partial loading/readiness and shared costs through interruptions and saves. |
+| TAC-02 | Smoothbore dispersion and Baker precision | PARTIAL | Range-dependent firearm combat and distinct weapons. | Integrate newer range/cover model; verify the reference distances and visible predictions. |
+| TAC-03 | Expanding persistent smoke, LOS/CTH/interrupt effects | PARTIAL | Powder-smoke state, aging and visibility effects. | Integrate later spreading visuals; verify volleys, dissipation and interruption costs. |
+| TAC-04 | Weather/fouling misfires, 15 AP re-prime, flint durability | PARTIAL | Ignition, weather, priming and weapon condition. | Integrate paid partial loading, both hands and repair without free charges. |
+| TAC-05 | Straight-line charge and +10% damage per tile | PARTIAL | Mounted charge path, AP and momentum tests. | Integrate shared advanced movement, facing, equipment and saved interruption behavior. |
+| TAC-06 | Sabre bleeding/parry, bayonet reach/intercepts, lance knockdown, facón defense | PARTIAL | Distinct held blade actions and reactions. | Integrate physical fittings, gun strikes, wounds and actual finite item ownership. |
+| TAC-07 | Formation morale shock and routing | PARTIAL | Morale, rout and dropped equipment. | Integrate persistent morale, actual exit/capture and survivor settlement. |
+| TAC-08 | Crew-served 4/8 lb guns and swivels | PARTIAL | Three crew-served gun profiles and artillery actions. | Integrate persistent emplacement, individual crews, ammunition and transport. |
+| TAC-09 | Solid shot penetration and structural destruction | PARTIAL | Solid shot and terrain destruction. | Integrate persistent wall/height/material behavior and visual breach acceptance. |
+| TAC-10 | Canister cones and suppression | PARTIAL | Canister and suppression tests. | Integrate advanced ally/civilian injuries, walls and aftermath. |
+| MAP-01 | All 13 named strategic sectors and four theaters | PARTIAL | 13 named sectors, four theaters and 1188 exact grid cells. | Complete geography/terrain visual audit and transport rules beyond land entry. |
+| MAP-02 | Camino Real, Paraná choke point and Andean supply routes | PARTIAL | Land routes and exact-cell tactical entry. | Integrate queued routes, crossings, supply restrictions and mountain/river acceptance. |
+| ENV-01 | Mud costs, heat, humidity/fouling | PARTIAL | Biome movement and weather/ignition rules. | Integrate regional weather, fatigue, AI and visible terrain costs. |
+| ENV-02 | Altitude, ponchos, cold and winter pass closure | PARTIAL | Altitude, warm clothing and pass restrictions. | Validate equipment custody and a real seasonal mountain route. |
+| AI-01 | Northern invasion objective | PARTIAL | Northern pressure events and objectives. | Integrate physical forces, finite reserves, routes, garrisons and defense. |
+| AI-02 | Revenue-triggered coastal raids | PARTIAL | Customs-related coastal pressure. | Integrate actual naval forces and treasury/capture consequences. |
+| AI-03 | Low-loyalty partisan raids | PARTIAL | Local loyalty and partisan pressure. | Integrate physical mobile groups and recovery without material stockpiles. |
+| ROST-01 | All 13 historical operatives, exact stats and loadouts | PARTIAL | All 13 baseline stat profiles match; names, sheets, gear and portraits are configurable. | Extract campaign roles, add encounter identities and verify all recruit conditions. |
+| ROST-02 | Unique operative abilities and gated availability | PARTIAL | Separate configurable combat abilities; historical availability gates exist. | Extract remaining role-dependent gates and test replacement characters. |
+| ITEM-01 | All 9 firearms and 5 melee weapons | PARTIAL | 9 firearms and 5 blades match reference values; firearm variants/images are authored. | Author melee/fittings/ammunition and integrate physical inventory/condition. |
+| ITEM-02 | All 3 artillery pieces and 5 consumable/equipment types | PARTIAL | Three artillery profiles and period supply actions. | Complete authoring, finite stores, transport, consumption and saved ownership. |
+| ART-01 | Main menu and period desk interfaces | PARTIAL | Spanish menu and campaign desk with original art. | Verify current complete UI flow, usability, layout and release performance. |
+| ART-02 | Historical portraits and face animations | PARTIAL | Usable portraits and configurable character images. | Complete expression/face animation sets and visual review. |
+| ART-03 | Uniforms, infantry and cavalry animations | PARTIAL | Illustrated sprite families and tactical animation runtime. | Full stance/action/direction/equipment target and visual review; 144 active sequences is not the 216 target. |
+| ART-04 | Terrain, colonial buildings, rivers, foundry, ships and ordnance | PARTIAL | Sector terrain, building catalogue, maps and ordnance graphics. | Validate complete scaled environment art, collision and authored sector layouts. |
+| ART-05 | Historical sound and dialogue conversion | PARTIAL | Spanish event phrases and period game sounds. | Branching voiced/text dialogue coverage and full audio/provenance review. |
+| QA-01 | Campaign end-to-end completion | FAILED | Smaller published route tests pass. | Fresh advanced route, established recovery and prisoner rescue fail; complete fresh victory/defeat/recovery acceptance. |
+| QA-02 | Artifact/release audit | PARTIAL | Repeatable static build, semver and passing published CI. | Consolidated artifact, all requirements accepted and recorded release playthrough. |
 
-Status: TODO = no accepted implementation; IN PROGRESS = work not yet verified and published; PARTIAL = implemented subset or incomplete acceptance evidence; VERIFIED = evidence covers the complete stated scope; SUPERSEDED = replaced by an approved scope change.
+## Story and integration
 
-The broad rows below remain open unless their complete acceptance evidence is available. The verified delivery scopes above identify concrete progress within those rows. This refresh does not claim a new full-specification audit of every older subsystem.
+| ID | Requirement | Status | Published scope | Remaining work / acceptance |
+|---|---|---|---|---|
+| STORY-01 | Fixed, initial-random and daily world presence | LOCAL_ONLY | Map authoring and seeded preview; campaign launch still gates edited placements. | Publish reviewed presence integration with exact-cell encounters and save continuation. |
+| STORY-02 | New world identities, persistent residents and death successors | MISSING | Paid identities work; historical encounters remain fixed identities. | Connect authored NPC life state, belongings, custody, recruitment, death and successor role receipts. |
+| STORY-03 | Branching dialogue, conditions, effects and quests | MISSING | Event phrases and fixed historical conversations. | Implement graph editing, typed effects, role bindings and persistent receipts. |
+| STORY-04 | Triggered tactical movement and arrival actions | MISSING | Ambient NPC routines exist. | Add persistent scripted orders and explicit interruption/arrival policies. |
+| STORY-05 | Configurable game rules and campaign roles | PARTIAL | Character sheets, firearm stats, classes and abilities are configurable. | Extract supported care, combat, economy, progression, opposition and role rules. |
+| STORY-06 | Complete equipment and merchant authoring | PARTIAL | Firearms, images, variants and generated loadouts work. | Add melee, artillery, ammunition, fittings, stock, price and replenishment authoring. |
+| STORY-07 | Campaign composition and an independent second campaign | MISSING | Existing historical chapter and ending logic. | Author starting ownership/resources, chapters, roles, objectives and endings. |
+| STORY-08 | Portable immutable content, assets and dependency checks | PARTIAL | Pinned sheet/weapon data and versioned content saves. | Package all supported content/assets and validate references and migrations. |
+| INTEGRATION-01 | Consolidate published, prototype and advanced local gameplay | FAILED | Published baseline is green, but excludes most advanced local gameplay. | Import one bounded capability at a time, preserve approved policy and carry its tests into main. |
+| START-01 | Free first person and Retiro-only opening | LOCAL_ONLY | Three sectors controlled; academy funding remains. | Publish the approved opening with pesos-only finance and all contract terms. |
 
-| ID | Requirement | Status | Required acceptance evidence |
-|---|---|---|---|
-| ENG-01 | Build browser game using supplied source as reference | PARTIAL | Static build and browser QA; final release audit pending |
-| ENG-02 | Launch browser game | PARTIAL | Local browser menu/campaign/tactical runtime verified; hosted build pending |
-| ENG-03 | Save/load and versioning | PARTIAL | Round-trip campaign/tactical saves and versioned package |
-| NAR-01 | Elío/Vigodet, Pezuela, Tristán, Romarate and Loyalist commands | PARTIAL | In-game narrative and multi-command objectives |
-| NAR-02 | Retiro recruitment and training phase | PARTIAL | Costs, recruits and mounts advance phase only on requirements |
-| NAR-03 | San Lorenzo river ambush | PARTIAL | Authored playable tactical map, force composition and win/loss conditions |
-| NAR-04 | Yatasto/Northern Army transition | PARTIAL | Triggered sequence and Güemes frontier assignment |
-| NAR-05 | El Plumerillo campaign preparation under the pesos-only economy | PARTIAL | 3000-peso funding and remaining campaign prerequisites; full route acceptance pending (original production scope replaced by PR #12) |
-| NAR-06 | Pehuenche diplomacy and San Martín final unlock | PARTIAL | Treaty and logistics prerequisites enforced; no early recruitment |
-| FAC-01 | Six factions, reputation effects and immutable Royalist hostility | PARTIAL | Gameplay changes recruitment, tariffs, morale and raids; persistence |
-| REC-01 | Logia Lautaro, monthly stipends and ideological contracts | PARTIAL | Functional recruitment screen and monthly financial cycle |
-| REC-02 | Civic bulletin, low-cost provincial recruits and growth | PARTIAL | Recruitment, starting equipment and progression |
-| REC-03 | Cabildo custom officer examination and four historical traits | PARTIAL | Character creation and tested tactical trait effects |
-| LOG-01 | Chasque/posta travel network | PARTIAL | Route control and travel time; individual remount stamina/care was removed by PR #12 |
-| LOG-02 | Armed river flotilla | PARTIAL | River navigation, artillery transport and amphibious deployment |
-| LOG-03 | Cuyo ox-cart heavy supply trains | PARTIAL | Distinct speed, capacity and logistics use |
-| ECO-01 | British imports and timed deliveries | PARTIAL | Purchase in pesos, inventory and delivery under control/blockade changes; silver resource replaced by PR #12 |
-| ECO-02 | Retiro/Beltrán raw-material production chains | SUPERSEDED | Replaced by pesos-only procurement and campaign payments in PR #12; do not restore obsolete material recipes |
-| ECO-03 | Estancia income, raids and recovery | PARTIAL | Income tied to livestock and multiweek recovery |
-| ECO-04 | Customs revenue and naval blockades | PARTIAL | Blockade reduces income and can be lifted |
-| ECO-05 | Provincial treasuries | PARTIAL | Capture payouts and recurring tax without repeat-capture exploit |
-| MIL-01 | Cívicos, Montoneras and veteran line/Granaderos tiers | PARTIAL | Training, historical loadouts and distinct behavior |
-| TAC-01 | 100 AP, exact weapon cycles, long reloads, prone penalty | PARTIAL | Runtime AP deductions and weapon XML match specification |
-| TAC-02 | Smoothbore dispersion and Baker precision | PARTIAL | Range-based combat tests including 15/25/35/50 tiles |
-| TAC-03 | Expanding persistent smoke, LOS/CTH/interrupt effects | PARTIAL | Volley smoke in tactical runtime, aging and visibility checks |
-| TAC-04 | Weather/fouling misfires, 15 AP re-prime, flint durability | PARTIAL | Failed ignition consumes trigger AP but preserves main charge; repair cycle |
-| TAC-05 | Straight-line charge and +10% damage per tile | PARTIAL | Path, AP, collision and momentum tests in runtime |
-| TAC-06 | Sabre bleeding/parry, bayonet reach/intercepts, lance knockdown, facón defense | PARTIAL | Distinct melee behaviors verified against target types |
-| TAC-07 | Formation morale shock and routing | PARTIAL | Leadership/speed checks, dropped weapons and fleeing enemies |
-| TAC-08 | Crew-served 4/8 lb guns and swivels | PARTIAL | Crew requirements, movement/pivot AP and range |
-| TAC-09 | Solid shot penetration and structural destruction | PARTIAL | Multi-target and wall-breach scenario |
-| TAC-10 | Canister cones and suppression | PARTIAL | Cone geometry, damage falloff and morale tests |
-| MAP-01 | All 13 named strategic sectors and four theaters | PARTIAL | Map geography, names, biomes, sector assets and tactical maps |
-| MAP-02 | Camino Real, Paraná choke point and Andean supply routes | PARTIAL | Contested route interruption changes supply and travel |
-| ENV-01 | Mud costs, heat, humidity/fouling | PARTIAL | Biome-specific movement and stamina tests |
-| ENV-02 | Altitude, ponchos, cold and winter pass closure | PARTIAL | Equipment mitigation and seasonal transit tests |
-| AI-01 | Northern invasion objective | PARTIAL | Royalist corps advances Humahuaca–Jujuy–Salta–Tucumán |
-| AI-02 | Revenue-triggered coastal raids | PARTIAL | Naval response to customs growth |
-| AI-03 | Low-loyalty partisan raids | PARTIAL | Target selection and economic damage |
-| ROST-01 | All 13 historical operatives, exact stats and loadouts | PARTIAL | Data validation and recruitment in running game |
-| ROST-02 | Unique operative abilities and gated availability | PARTIAL | Runtime tests per operative including bodyguard and grand strategist |
-| ITEM-01 | All 9 firearms and 5 melee weapons | PARTIAL | XML values, inventory images, sounds and use in combat |
-| ITEM-02 | All 3 artillery pieces and 5 consumable/equipment types | PARTIAL | Data and actual consumption/carry effects |
-| ART-01 | Main menu and period desk interfaces | PARTIAL | Original assets exported and rendered in engine |
-| ART-02 | Historical portraits and face animations | PARTIAL | 13 usable face sets, correct palettes and expression offsets |
-| ART-03 | Uniforms, infantry and cavalry animations | PARTIAL | Complete stance/action/direction frame sets rendered in tactical engine |
-| ART-04 | Terrain, colonial buildings, rivers, foundry, ships and ordnance | PARTIAL | Engine tilesets and authored sector maps |
-| ART-05 | Historical sound and dialogue conversion | PARTIAL | No unintentional modern weapon/mercenary audio in campaign |
-| QA-01 | Campaign end-to-end completion | PARTIAL | Recorded playthrough covering phases, victory and defeat |
-| QA-02 | Artifact/release audit | PARTIAL | Reproducible package, installation docs, semver, PR and tested release |
+## JA2 gameplay parity
 
-## Historical work log (earlier designs and checkpoints)
+| ID | Requirement | Status | Published scope | Remaining work / acceptance |
+|---|---|---|---|---|
+| JA2-T01 | Free exploration changes to individual turns at contact. G13,66; M6,29. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-T02 | Leaving contact can return play to free exploration while living opponents remain elsewhere. M34; user clarification, 2026-09-12. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-T03 | AP depend on attributes, experience, wounds, and breath; actions preview and consume their actual cost. G19,21,38; M35-36. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-T04 | Unused AP carry into the next turn within a cap. G13. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-T05 | An interrupt gives the affected side a temporary chance to act with remaining AP. G13,22,27-28; M31. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-T06 | Interrupt qualification depends on awareness and experience, not just an overwatch toggle. G22,26-28,38. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-T07 | All enemy actions obey the same state and cost constraints. G19; M35. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-T08 | End-turn, tactical time, strategic time, light lifetime, and saves agree. G69; M34,43. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-T09 | Retreat requires a real exit and leaves the sector state consistent. G13; M8-9,21,34. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-T10 | Group selection and movement are available during exploration. M6,17-20. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-C01 | A shot can target torso, head, or legs with different accuracy and consequences. G47,62-65; M29-30. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-C02 | Spend up to four aim increments; the same target can be easier to reacquire. G47,62-63. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-C03 | Accuracy includes weapon condition, distance, stance, wounds, breath, shock, and light. G47,61-63. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-C04 | Cover stops projectiles; concealment affects detection without necessarily stopping a shot. G13. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-C05 | Damage can cause breath loss, shock, critical unconsciousness, bleeding, and death. G19,28,62. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-C06 | Field bandaging stabilizes wounds; strategic care restores health. G22,62,81; M33,39. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-C07 | Post-combat automatic bandaging is an optional convenience, with real medics, time, and supplies. M7,33-34. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-C08 | Unarmed attacks can exhaust/incapacitate rather than simply substitute a blade. G27-29,64-66; M31. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-C09 | Blades and thrown knives support quiet attacks and short-range tradeoffs. G28-29,63. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-C10 | Thrown explosive objects have scatter, blast, obstruction, and supply costs. G51-56; M32. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-C11 | Area damage can harm allies, corpses cannot act, and incapacitated people remain accessible. G51-52,60,64-66. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-C12 | Equipment protects specific body regions and degrades. G49,53. | PARTIAL | Published related core exists; full parity acceptance is not established. | Physical outfit slots exist locally. Region protection, garment wear and repair remain absent. |
+| JA2-V01 | The player sees current enemies only through squad observation; individual sight remains distinct from shared knowledge. G13,66; M35. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-V02 | Facing and stance affect observation; looking/turning is a tactical action. G27-28,66; M17-20. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-V03 | Movement and gunfire produce noises with approximate location, range, and uncertainty. G13,27-29,66; M35. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-V04 | Stealth is a deliberate movement option with costs and noise reduction. G13,23-27,66. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-V05 | Day/night and local light affect detection and fire. G13,26-29,47; M35. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-V06 | Camouflage changes observation in suitable terrain and can wear off. G22-23. | MISSING | No accepted implementation found in the audited sources. | Implement terrain-dependent camouflage, consumption/wear and observation tests. |
+| JA2-V07 | Enemy memory represents last observed or heard information and can become stale. G13,66. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-V08 | Rooms, doors, and windows hide interior information correctly. G13-15,64; M26,35. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-V09 | Rooftops and elevations support movement, sight, and different firing angles. G14-15,64; M17-20. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-V10 | Regions have distinct climate and terrain. User gameplay-playlist clarification. | PARTIAL | Published related core exists; full parity acceptance is not established. | Local calendar weather exists. Integrate and verify terrain effects, UI and routes in the published economy. |
+| JA2-P01 | Walk, run, crouch, and prone movement have different time/AP/breath costs. G13,19,23,27-29. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-P02 | Normal movement supports diagonals without passing through blocked corners. M17-20. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-P03 | Reverse movement, sidesteps, and crawling preserve tactical facing when requested. M17-20. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-P04 | Fences, low obstacles, ladders, roofs, and water impose different traversal rules. G14-15,25,64; M17-20. | PARTIAL | Published related core exists; full parity acceptance is not established. | Local terrace links exist. Fence/low-obstacle traversal and supported water behavior remain incomplete. |
+| JA2-P05 | Weight and strength affect movement and fatigue. G23-25,38. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-P06 | Mounts add period mobility without bypassing infantry constraints. Granaderos specification; analogous transport choice G71-73. | PARTIAL | Published related core exists; full parity acceptance is not established. | Retain mounted tactical use/riding; horse breeding and individual horse care are superseded by PR #12. |
+| JA2-I01 | Equipment occupies hands, body slots, and finite pockets with item-size/stack restrictions. M21-24. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-I02 | Nearby allies can give/pass items; distant allies can catch a thrown item with an explicit risk/cost. G14; M22-25. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-I03 | Items can be dropped, picked up, split, stacked, and stored persistently in the sector. G20,64-66,110-111; M21-25. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-I04 | A hand item drives the contextual Use action. M25. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-I05 | Primary/secondary hand weapons retain independent loading, condition, and compatibility. G14,26,48. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-I06 | Attachments have compatible hosts, effects, condition, and reversible/permanent installation rules. G47-48. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Local Brown Bess socket fitting exists. Broader supported fittings/permanent installation require explicit design. |
+| JA2-I07 | Equipment condition affects performance, failures, repair needs, and resale. G47-48,62,69-70. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-I08 | Ammunition is typed and compatible with a weapon, not interchangeable abstract shots. G49-50; M21-24. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Local caliber compatibility exists. Alternate period loads and complete interaction parity remain open. |
+| JA2-I09 | Weapon readiness, reload work, jams, and clearing failures are visible and consume the proper resources. G19,47-50. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-I10 | Corpses and unconscious opponents provide finite equipment; theft from a conscious target has risk. G64-66. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-E01 | Locked doors and containers support keys and attempts with appropriate tools. G22,26,64; M25-27. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-E02 | Force, pry, or breach are alternatives with noise, strength, and damage tradeoffs. G64; M26. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-E03 | Traps can be discovered, triggered, and disarmed. G22,25,54-56; M26-27,32. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-E04 | Containers have contents that can be inspected and removed once. M21-26. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-E05 | Environmental demolition leaves persistent passages and debris. G54-56,64. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-A01 | Doctor and Patient require co-location, skill, finite medical equipment, and time. G22,62,69,81. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-A02 | Rest/sleep restore energy; fatigue constrains sustained work and marching. G19,38,69. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-A03 | A repair specialist spends time and tools to repair personal and local equipment. G22,69-70; M39. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Local carried-equipment repair exists. Ground stores, artillery, vehicles and protection repair remain missing. |
+| JA2-A04 | Self-practice improves a selected skill over time, with slower progress near its cap. G23-25. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-A05 | A qualified instructor accelerates a co-located student's selected skill. G23,26. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-A06 | Field practice rewards actual successful use, and zero aptitude remains meaningful. G22-25. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-A07 | Completed work or required attention stops time compression and informs the player. G69; M38-43. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-R01 | Compare and hire distinct specialists with prepaid terms and optional gear. G16-18,21-22,69; M11-14. | PARTIAL | Published related core exists; full parity acceptance is not established. | Paid candidates and safe arrivals are published. Optional hire gear and broader availability remain open; preserve all three elite terms. |
+| JA2-R02 | Renewals, expiry, dismissal, salaries, and death are consequential and preserve personal history. G21-22,69. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-R03 | Medical deposits and insurance add a financial risk choice. M14. | MISSING | No accepted implementation found in the audited sources. | Define a period contract guarantee/compensation choice, cost and claim/refund rules; then implement it. |
+| JA2-R04 | Individual morale responds to events and changes performance. G19-20,29-30,62. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-R05 | Relationships affect morale, willingness to serve together, and departure. G29-31. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Local cohesion exists. Authored likes/dislikes, complaints, refusal and departure remain missing. |
+| JA2-R06 | Personality and specialist traits change behavior beyond flavor text. G26-38. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-R07 | Custom character creation allocates attributes and selects traits without bypassing progression. G32-46. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-R08 | Local recruits require real encounters and conditions. G16-18,41-46. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-S01 | Captured economic sites fund a recurring campaign; loyalty and disruption affect revenue. G59-60,69-70. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-S02 | Shops have meaningful stock, prices, purchase/sale, repairs, and delivery constraints. G57-58,69-70. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-S03 | Militia training consumes money/time, uses leadership/teaching, and requires civic support. G59-60. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-S04 | Militia rank progression distinguishes training from combat experience. G60. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-S05 | Local militia fight and suffer persistent casualties; direct control differs from hired soldiers. G59-60. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-S06 | Enemy patrols, garrisons, reinforcements, and counterattacks move in the strategic world. G19,59,69,79-81,96-97. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-S07 | A defended sector can offer tactical defense, retreat, or auto-resolve with real losses. G19,59-60; M8-9,34. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-S08 | Army pressure responds to progress, valuable targets, and the campaign's current state. G19,59,69,96-97. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-S09 | Civilians and quests affect civic support and territorial cooperation. G69,75-95. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-W01 | Multiple six-person squads act independently with real locations. G16,69. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-W02 | Travel is a queued process with route choice, arrival time, cancellation, and encounters. G71-73; M43-44. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-W03 | Transport has capacity, operating cost, route restrictions, and recovery opportunities. G69,71-73. | PARTIAL | Published related core exists; full parity acceptance is not established. | Transport has route definitions. Actual passenger/cargo capacities, rest and vessel gameplay remain incomplete. |
+| JA2-W04 | The map exposes known enemy information, roads, locations, supplies, assignments, and time. G59-60,69-73. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-W05 | Dialogue offers approaches whose outcomes depend on the speaker and prior events. G29-31,75-106; M27-28. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-W06 | Giving a carried object can complete a local interaction. G75-95; M7-8,25,27. | LOCAL_ONLY | This complete capability is not accepted in the published release. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-W07 | Quests include exploration, deliveries, rescue/escort, and branching local consequences. G75-106. | PARTIAL | Published related core exists; full parity acceptance is not established. | Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main. |
+| JA2-W08 | Surrender, capture, imprisonment, and rescue are distinct from death or rout. G66-68. | FAILED | This complete capability is not accepted in the published release. | Local custody, physical release and following exist; current rescue route fails. Self-escape/carrying remain incomplete. |
+| JA2-W09 | Tactical changes, local gear, personnel condition, and unfinished battles survive return and save/load. G19-20,64-66. | PARTIAL | Published related core exists; full parity acceptance is not established. | Published cell saves work. Integrate advanced state validators/migrations; no whole-game save acceptance until the combined route passes. |
+| JA2-W10 | A complete campaign can be played from a clean start through the actual tactical rules. G13-18,59,75-106. | FAILED | This complete capability is not accepted in the published release. | Fresh route fails at northern medical relief; established Córdoba recapture and prisoner-rescue routes also fail. |
 
-- Goal execution started: established Git repository and upstream submodule; dispatched independent engine-build, campaign-data and graphics work. No game-completion claim.
+## Player and release acceptance
 
+| ID | Requirement | Status | Published scope | Remaining work / acceptance |
+|---|---|---|---|---|
+| UX-01 | Complete Spanish desk, dossiers, map and tactical controls | PARTIAL | Spanish desk/dossiers and current map/tactical controls exist. | Verify all player actions after consolidation, keyboard/pointer use and useful rejection messages. |
+| UX-02 | Usable performance on recorded hardware | UNVERIFIED | Some local CPU/render improvements have focused evidence. | Record cold entry, large battles, lighting, group travel, inventory and repeated save/load; isolated helper speed is insufficient. |
+| UX-03 | Lighting, multi-cell buildings and room reveal | PARTIAL | Published light, building geometry and roof rendering have tests. | Integrate local height/doors/windows/occlusion and visually verify night and multi-leaf doorway behavior. |
+| UX-04 | Animated introduction, reduced motion and safe continuation | LOCAL_ONLY | Published menu exists. | Publish the local four-scene opening, skip/replay/reduced-motion controls without replacing an existing save. |
+| UX-05 | Searchable characters/weapons and exact-cell appearance map | VERIFIED | Published story editor includes search, image previews and character-local cell selection. | Searchable characters/weapons and exact-cell appearance map. Use normal controls; retain state through saves; record exact release revision and any limitations. |
+| REL-01 | Release-scale visual, audio and historical review | UNVERIFIED | Art assets and provenance notes exist; prior reviews cover bounded samples. | Complete the declared animation target, equipment/side silhouettes, historical content and audio review. |
+| REL-02 | Fresh complete campaign plus defeat and recovery acceptance | FAILED | The smaller main suite passes; both larger local suites fail. | Finish fresh campaign, actual ending, defeat, prisoner rescue and recovery without injected victories or free supplies. |
 
-- Web clarification implemented: browser rules and React interface are primary; all thirteen portraits and fourteen maps installed. Persistent goal remains active until full acceptance audit.
+## Failed acceptance routes
 
-- Second web milestone: Cabildo custom officer and civic bulletin implemented and exercised in browser; custom officer and volunteer survived save/resume. Four custom doctrines and finite tactical consumables influence real orders. Named Royalist commands have distinct timed behaviors. Added explicit mobile orders, visible battle errors, zoom, original synthesized sound effects, cannon/foundry art and eight infantry action poses. Pose artwork is not a complete animation set. GitHub web CI for 9a9ca07 passed (run33964710149); later changes require their own CI run.
+| ID | Requirement | Status | Published scope | Remaining work / acceptance |
+|---|---|---|---|---|
+| FIX-01 | Fresh campaign has no fit northern relief medic | FAILED | These larger acceptance routes are not present in the published suite. | Recover with actually available people, travel, purchases and care; pass the remaining fresh route. |
+| FIX-02 | Established recovery loses Córdoba to its persistent garrison | FAILED | These larger acceptance routes are not present in the published suite. | Diagnose rules, balance or route-controller assumptions; win/recover through legal actions with real losses. |
+| FIX-03 | Physical prisoner rescue ends in defeat instead of retreat | FAILED | These larger acceptance routes are not present in the published suite. | Preserve actual exit, wounds, finite gear and captive identity; complete paid rescue and return. |
+| FIX-04 | Prototype fresh route loses at San Lorenzo | FAILED | These larger acceptance routes are not present in the published suite. | Reconcile the failing route with the supported opening/economy; pass the battle and continue without overriding results. |
 
-## Additional gameplay requirements
+## Evidence index
 
-The user supplied twelve detailed JA2-style gameplay comments and six reference screenshots. The expanded requirements and separate acceptance ledger are preserved in `specification/gameplay-expansion.md`. Persistent sector exploration, multiple squads, NPC dialogue, full dossiers, individual inventories/loot, energy/unconsciousness, night play, horses and true movement animation are required for completion. Current battle-only encounter generation does not satisfy this scope.
+| ID | Evidence | Scope and limits |
+|---|---|---|
+| E-PUBLISHED | [Record](../evidence/formal-audit-2026-09-27/checks.json) · [CI](https://github.com/fsodano/granaderos/actions/runs/36356017429/job/108723788789) | Published PR #28 exact-head CI: 537 tests, types, export. Does not run the larger local acceptance suite. |
+| E-LOCAL | [Record](../evidence/formal-audit-2026-09-27/original-tests.txt) | Fresh advanced local suite: 3040 pass, 4 fail, 3 skipped. Dirty source identified by manifest and unchanged hashes. |
+| E-PROTOTYPE | [Record](../evidence/formal-audit-2026-09-27/prototype-tests.txt) | Fresh clean editor prototype suite: 2895 pass, 1 fail. |
+| E-PRESENCE | [Record](../evidence/formal-audit-2026-09-27/presence-tests.txt) | Local e2dff96: 548 passing checks. Not published. |
+| E-BASELINE | [Record](../evidence/formal-audit-2026-09-27/published-baseline.json) | 36 runtime comparisons to the original numerical tables; new-campaign and elite-contract probes. |
+| E-PARITY | [Record](../evidence/formal-audit-2026-09-27/parity-source.json) | All 87 local parity requirements and historical claims preserved. Not fresh visual acceptance. |
+| E-CONFLICTS | [Record](formal-audit-2026-09-27.md) | Cross-branch conflicts, limitations, failed routes and closure conditions. |
 
-### Recruitment desk and encounter integration checkpoint
-
-Implemented a separate Spanish Escritorio screen with service dossiers and a return to the strategic map. Encounter-only characters have no hire card. Tactical NPC markers open conversations, gated by adjacency and backend campaign requirements. Browser verification in an isolated QA save: opened desk, returned to map, entered Retiro, approached the sergeant and received his dialogue. Combined engine tests: 145 passed; TypeScript and static production build passed before the next animation/horse UI batch. The full game remains incomplete.
-
-### dev.4 evidence checkpoint
-
-166 tests pass, TypeScript passes, static build verifies 155 files and 73 asset references. Original infantry walk/crouch/crawl and cavalry walk rigs are preserved with render and verification scripts. Browser checks cover the separate desk, adjacent Retiro greeting and horse buy/assign/feed. The legal opening playthrough wins both opening battles without injected victories; this does not establish full campaign balance. See REQUIREMENT-AUDIT.md for remaining requirements.
-
-
-## 2026-09-05 — 0.2.0-dev.1 personal campaign start
-
-New campaigns start at the desk with no personnel. One free custom officer has
-manual attributes, original portrait, class and an effective trait questionnaire.
-Seven fictional paid volunteers use finite day/week/month contracts with XP pay
-growth and elite daily limits; historical figures remain tactical encounters.
-The strategic map now focuses on personnel, sectors, time and city militia.
-NPC supply quests award city loyalty once. See NEW-START-AUDIT.md for browser
-acceptance and scope limits. All 192 tests, typecheck and static build pass.
-Previous milestone PR #1 merged as e8cc25d92352cd02b1d44f3e41c8065c9dcb1615.
-Current branch: feat/0.2.0-personal-campaign-start. Native engine submodule edits
-are pre-existing and excluded from this web milestone.
-
-
-## Full implementation continuation — active
-
-The user resumed the complete game objective after the campaign-start milestone.
-Do not treat PR #2 or its 192 tests as complete-game acceptance. The broader
-REQUIREMENT-AUDIT.md remains the gap ledger and has stale entries that must be
-rechecked against current code. Root is adding actual faction policy consequences;
-campaign_data owns live tactical militia and casualty conservation; engine_build
-owns practiced riding/sneaking persistence and UI; graphics owns adapted keyboard
-controls. Screenshot capture was blocked by the locked Mac; this does not block
-implementation or automated verification. Do not mark the full goal complete.
-
-Final 0.3.0-dev.1 checkpoint: 209 tests, typecheck and production export pass.
-Browser QA tab9 (?qa=1) resumes with Sosa and three Retiro militia. After reload,
-Z on a focused command button correctly selected Agachado y sigiloso. Spanish
-help opens, save/resume preserves the sector, and console error list is empty.
-Two requested screenshots were displayed inline (recruitment desk and map).
-Local dev server session36459 was started on port3000.
-Next work is detailed in NEXT-IMPLEMENTATION.md; full goal remains active.
-
-
-## 0.4.0-dev.1 — tactical visuals and campaign continuity
-
-The tactical renderer now uses original generated material textures and transparent vegetation, proportional eight-direction soldiers with stance and action atlases, depth sorting, textured building cutaways, and a compact bottom squad HUD. Camera zoom and panning make the field inspectable at playing scale. See TACTICAL-VISUALS.md for provenance and remaining visual gaps; this is an intermediate art pass, not final JA2-level scenery density.
-
-This checkpoint also integrates shared tactical/campaign time, authored historical encounters, finite industry inputs and delayed equipment imports. All 228 automated tests, TypeScript checks, and the static build passed before the version-only checkpoint update. Browser review verified the daylight San Lorenzo scene and camera controls.
+Per-row acceptance, local assessment, source notes and test paths are retained in [the register](requirements.json). The full 87-row historical parity assessment is preserved in the audit; its old implementation claims are not fresh certification. Earlier milestones remain in [the historical log](../archive/published-progress-through-pr28.md).

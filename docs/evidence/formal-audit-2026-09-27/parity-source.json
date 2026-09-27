@@ -1,0 +1,661 @@
+{
+  "source": "Local docs/verification/ja2-parity-audit.md at the original snapshot; statements are historical claims, not fresh per-row certification. G = supplied Patusco strategy guide; M = original JA2 manual, printed pages.",
+  "requirements": [
+    {
+      "id": "JA2-T01",
+      "requirement": "Free exploration changes to individual turns at contact. G13,66; M6,29.",
+      "historicalClaim": "**Implemented entry and first-contact flow; live hostile entry verified**: ordinary assaults begin in exploration and sight is evaluated only after final deployment. Either side can detect the other; enemy-only discovery gives the enemy first initiative. Seven hostile-entry tests cover arrival, resident positions, retained opponents, stopping at contact and exact saves. The real San Nicolás approach retained AP before contact, charged the enemy-first round once, and resumed paid combat without a second clock charge. See [hostile-sector entry](hostile-sector-entry.md).",
+      "acceptance": "Numerical initiative and sight ranges remain Granaderos tuning. The revised legal campaign route reaches Yatasto with actual deaths, captivity, rescue, finite medical supplies and paid replacements. This verifies the early northern route, not a complete winning campaign.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-T02",
+      "requirement": "Leaving contact can return play to free exploration while living opponents remain elsewhere. M34; user clarification, 2026-09-12.",
+      "historicalClaim": "**Implemented automatic return**: two complete rounds without visual contact on either side resume exploration. A sighting during a round resets the delay. Saved counters, enemy-first initiative and completed militia phases preserve the boundary; anonymous noises remain investigation clues. The separate return button is removed, and exploration controls show zero AP. All 1,431 tests pass; the live production battlefield verified both quiet turns, saved continuation, free movement and renewed contact. See [automatic exploration](automatic-exploration.md).",
+      "acceptance": "Hostile entry now begins in exploration and resolves contact after final placement, as recorded in T01. Movement still consumes energy and time; unseen enemies do not imply sector clearance.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-T03",
+      "requirement": "AP depend on attributes, experience, wounds, and breath; actions preview and consume their actual cost. G19,21,38; M35-36.",
+      "historicalClaim": "**Implemented**: `tactical-condition.js`, shared `actionCosts`, `ja2-hud.js`; condition/HUD tests.",
+      "acceptance": "Retain tests across stance, equipment, medical aid, movement, and every interrupt phase. Current 100-point scale is an adaptation.",
+      "evidenceFiles": [
+        "game/ja2-hud.js",
+        "game/tactical-condition.js"
+      ]
+    },
+    {
+      "id": "JA2-T04",
+      "requirement": "Unused AP carry into the next turn within a cap. G13.",
+      "historicalClaim": "**Implemented**: 20-point cap represents five points on the classic 25-point scale.",
+      "acceptance": "Never refresh the initial combat budget twice after exploration, reentry, save/load, or a reaction.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-T05",
+      "requirement": "An interrupt gives the affected side a temporary chance to act with remaining AP. G13,22,27-28; M31.",
+      "historicalClaim": "**Implemented; live action/save/continuation verified**: `tactical.js` pauses and resumes the enemy phase with the same AP, clock, and position. Seven `interactive-interrupts.test.mjs` cases cover action/pass, eligibility, medical aid, persistence, and atomic errors; HUD tests cover eligibility and Continue. `Battlefield.tsx` exposes the decision window and soldier selection.",
+      "acceptance": "A controlled live check paid 3 AP to crouch, restored the same interrupt and player budgets after reload, selected another eligible soldier, and continued the enemy from its saved position. Player turn two retained the six-second clock without a forced shot; see [live interrupt evidence](ja2-live-verification.md#interactive-interrupt-action-and-saved-continuation--21-september-2026). Exact private enemy AP and ineligible rejection remain simulation evidence. Broader qualification remains T06.",
+      "evidenceFiles": [
+        "game/tactical.js",
+        "tests/interactive-interrupts.test.mjs",
+        "web/app/Battlefield.tsx"
+      ]
+    },
+    {
+      "id": "JA2-T06",
+      "requirement": "Interrupt qualification depends on awareness and experience, not just an overwatch toggle. G22,26-28,38.",
+      "historicalClaim": "**Implemented; nested, hearing and door live checks verified**: new sight through opened doors, changed visible positions, and newly heard anonymous reports qualify through `interruptInitiative`. `reactionStack` supports interrupted interruptions with remaining AP and saved return windows. Seven `interrupt-chains.test.mjs` cases cover two nesting levels, hearing-only contact, unchanged sound, door exposure, atomic errors, corrupt continuations, and restoration of the original enemy turn.",
+      "acceptance": "A full campaign save test restores both nested return windows. Live reload restored Paroissien, Continue restored Dorrego, and a second Continue returned to player turn one with unchanged player AP and six elapsed seconds; see [nested live evidence](ja2-live-verification.md#nested-interrupt-save-and-return-windows--21-september-2026). Live hearing-only QA kept the enemy unseen through a paid crouch and reload; live door opening exposed the guard and triggered its remaining-AP shot. See [hearing and door evidence](ja2-live-verification.md#hearing-only-and-door-triggered-interrupts--21-september-2026). The deterministic initiative formula, 8/10/12-tile visual reaction limits, hearing radii, and once-per-round limit are explicit period-game tuning. Enemy hold-fire policy may decline a reaction.",
+      "evidenceFiles": [
+        "tests/interrupt-chains.test.mjs"
+      ]
+    },
+    {
+      "id": "JA2-T07",
+      "requirement": "All enemy actions obey the same state and cost constraints. G19; M35.",
+      "historicalClaim": "**Partial**: `tactical-ai.js` uses shared costs, observed targets, cover, maintenance, and recent contact memory. Medics equip dressings to treat themselves or adjacent wounded allies, can make a short observed rescue approach, and pay to restore their weapon. Prepared pack firearms use actual capacity-checked swaps; enemy bayonet fitting now passes the same equipment guard. Eighteen care/equipment tests cover costs, supplies and saved reactions; see [AI field equipment](ai-field-equipment.md). Searches use short paths, reserve attack AP, and avoid exposed pursuit during interrupts; unseen opposing positions do not influence route planning. Ordinary movement now also executes from observed occupancy, stopping at actual blockers step by step rather than rejecting a distant route from private enemy positions; see [movement knowledge](movement-knowledge.md). Blade squads pay for ordinary movement and melee separately. Fire decisions compare affordable body regions, aim and damage after penetration through the shared shot rules; eight targeting tests cover selection and actual saved reactions. See [AI shot selection](ai-shot-selection.md). Exhausted soldiers now recover visible finite cartridges or loaded guns through ordinary paid movement, pickup, equip and reload actions; fourteen simulation/save cases cover source ownership, capacity, visibility and reactions. See [AI scavenging](ai-scavenging.md). Enemies and militia now give finite cartridges and dressings to locally observed allies through paid transfers, with short supply trips outside contact. Twenty-two tests cover costs, capacity, actual treatment/reloading, saved reactions, militia support, and dressing handovers for non-bleeding critical patients; the production battlefield also passes a live militia handover and R reload. See [AI supply sharing](ai-supply-sharing.md).",
+      "acceptance": "Search limits (three steps/24 AP normally, one protected step during an interrupt) are Granaderos tuning. Incoming exposure still uses torso chance. Specialist tools, firearm/tool handovers, coordinated supply requests, wider cache searches and broader equipment choice remain incomplete; body-region scoring weights are explicit game tuning.",
+      "evidenceFiles": [
+        "game/tactical-ai.js"
+      ]
+    },
+    {
+      "id": "JA2-T08",
+      "requirement": "End-turn, tactical time, strategic time, light lifetime, and saves agree. G69; M34,43.",
+      "historicalClaim": "**Partial**: `time.js`, `syncTacticalTime`, `time-bridge.test.mjs`. Exploration movement advances wounds and light after every completed step and charges posture setup once; nine `exploration-step-time.test.mjs` cases cover early collapse, dawn contact, torch expiry, shared ally time, saves and atomic errors.  The first campaign battle now synchronizes any immediate enemy initiative before the UI publishes the battle and autosaves. Three tests cover immediate contact, exact resume and peaceful entry; see [exploration patrols and entry clock](exploration-patrols.md).",
+      "acceptance": "Ordinary attack and visit requests now carry exact campaign start times, matching direct simulation with the existing browser clock behavior. Four deployment tests cover night arrival, dawn, manual/automatic entry and saved-origin rejection; the seven time-bridge cases cover exploration clocks, real visual contact, paid combat rounds and campaign synchronization. See [deployment clock](deployment-clock.md). Preserve the clock contract for every new action and suspended interrupt; an invalid order must not advance any clock.",
+      "evidenceFiles": [
+        "game/time.js",
+        "tests/exploration-step-time.test.mjs",
+        "tests/time-bridge.test.mjs"
+      ]
+    },
+    {
+      "id": "JA2-T09",
+      "requirement": "Retreat requires a real exit and leaves the sector state consistent. G13; M8-9,21,34.",
+      "historicalClaim": "**Implemented core; partial overall**: shared exit previews and paid boundary orders retain complete departure records. Routed units flee through ordinary movement/reactions or surrender when trapped. Campaign return partitions soldiers, squads, militia, horses, captives, ammunition and corpses; explicit edge arrivals face inward. Simulation suites cover these rules. Live checks verified south-edge admission, one saved/reloaded departure, the remaining two departures, and the same three members returning to Buenos Aires; see [live record](ja2-live-verification.md).",
+      "acceptance": "Enemy counterfire, rout and surrender at exits remain unverified live. The single live encounter must close before following an escaped subgroup; JA2's immediate follow-group choice remains absent. No casualty-carrying mechanic is assumed. Exact-edge crossing and outward-step costs are Granaderos tuning.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-T10",
+      "requirement": "Group selection and movement are available during exploration. M6,17-20.",
+      "historicalClaim": "**Implemented in simulation and HUD; basic live input verified**: Shift-click selects friendly soldiers or portraits; `group-movement.js` plans distinct destinations from their initial offsets, then executes ordinary legal movement orders. Core and HUD tests cover formations, blocked routes, exhaustion, anonymous previews, atomic errors and contact. Live Retiro input selected soldiers 1000/110 and corrected the E4 hover to distinct cells (3,4)/(3,5); see [live record](ja2-live-verification.md).",
+      "acceptance": "Members move sequentially and consume the sum of their actual movement time. Formation fallback searches within two tiles. These are Granaderos adaptations; simultaneous movement is not simulated. Group first-contact behavior and the complete movement-animation flow remain unverified live.",
+      "evidenceFiles": [
+        "game/group-movement.js"
+      ]
+    },
+    {
+      "id": "JA2-C01",
+      "requirement": "A shot can target torso, head, or legs with different accuracy and consequences. G47,62-65; M29-30.",
+      "historicalClaim": "**Implemented in simulation; head/leg UI verified**: `targeted-combat.js`, `shotChance`, the common damage pipeline, and ordinary `useItem` support all three locations. Nine helper and six `targeted-fire.test.mjs` cases cover penalties, injury/breath, leg knockdown/unhorsing, atomic errors, saved interrupts, and medical-item compatibility. Pointer position now selects the region in a fixed sprite hit frame; prone, fallen and unconscious targets have one region in the cursor, preview, reducer and enemy shot choices. The new controls have automated event-handler and render checks; see [aim cursor](aim-cursor.md). Earlier live cover checks verified head/leg previews and actual firing, before this cursor change. Enemy region selection now uses the same rules.",
+      "acceptance": "Guide-derived head/leg deductions are 3/1 percentage points per tile of effective sight distance. Damage multipliers 1/1.5/0.65 and balance/breath effects are explicit Granaderos tuning. Live leg knockdown/unhorsing remains pending; keep all wounds and knockdown state persistent.",
+      "evidenceFiles": [
+        "game/targeted-combat.js",
+        "tests/targeted-fire.test.mjs"
+      ]
+    },
+    {
+      "id": "JA2-C02",
+      "requirement": "Spend up to four aim increments; the same target can be easier to reacquire. G47,62-63.",
+      "historicalClaim": "**Implemented**: aim0-4, paid aim, repeated target and firing-position memory. Right-click enters the firearm cursor and cycles affordable extra aim; left-click fires. The reticle shows body region, total AP and remaining AP. The lower-panel aim and body-region buttons are removed. [Aim cursor](aim-cursor.md) records automated checks and a live right-click aim/AP demonstration. Prone selection still needs live verification.",
+      "acceptance": "Invalidate aim memory after movement, target loss as appropriate, and weapon changes; integrate hit-location penalties.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-C03",
+      "requirement": "Accuracy includes weapon condition, distance, stance, wounds, breath, shock, and light. G47,61-63.",
+      "historicalClaim": "**Partial; range separation implemented**: `shot-range.js` separates physical weapon reach and effective sight distance. Excess sight distance counts twice; weapon and sight limits independently halve remaining accuracy. Named shots, point impacts, AI, reactions and HUD use the same terms. Nine focused tests cover boundaries, darkness, training, light, smoke, team spotting, obstruction, anonymous previews, costs and saved fire. Live checks verified pistol over-range, rifle within-range, the smoke-induced sight penalty, and a paid shot/reload. See [source and adaptation](shot-range.md).",
+      "acceptance": "Classic range terms are source-derived. The conversion of local concealment/light/smoke to apparent distance and the remaining skill, stance, aim and injury weights are explicit Granaderos tuning. Detailed optical geometry and equipment modifiers remain incomplete.",
+      "evidenceFiles": [
+        "game/shot-range.js"
+      ]
+    },
+    {
+      "id": "JA2-C04",
+      "requirement": "Cover stops projectiles; concealment affects detection without necessarily stopping a shot. G13.",
+      "historicalClaim": "**Implemented for current firearm paths; partial overall**: muzzle/body-height traces check terrain, window sills, furniture footprints and diagonal corners. Material resistance stops or reduces damage; concealment changes detection/aim without absorbing shots. Ordinary and blunderbuss shots share the path rules. Fourteen focused tests cover costs, regions, posture, materials, saves, AI and public warnings. Live head/leg previews, a spent blocked shot, reload and a clear head impact passed; see [cover record](projectile-cover.md).",
+      "acceptance": "Location fire now uses the existing F cursor, shared costs, fixed-height projectile geometry, seeded scatter and friendly-body interception. Fifteen tests and live keyboard/save checks cover it; see [location fire](location-fire.md). Named-target single bullets now check intervening bodies and seeded miss collisions. Fifteen focused tests and live interception/miss/save checks cover the change; see [named-target shots](directed-projectiles.md). Knowledge-limited warnings and enemy shot options avoid inspecting hidden bodies. Optional authored terraces now use physical height for sight and firearms, with slab occlusion and separate stacked actors; 36 single-storey house terraces are active on fresh campaign maps. See [elevation record](tactical-elevation.md). Arbitrary terrain slopes, destructible furniture, continuation beyond the aimed endpoint, body penetration, ricochet and material thickness remain absent. Heights/resistance are game tuning. Artillery keeps separate rules. AI shot ranking now values partial damage loss; incoming exposure remains a torso-chance estimate.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-C05",
+      "requirement": "Damage can cause breath loss, shock, critical unconsciousness, bleeding, and death. G19,28,62.",
+      "historicalClaim": "**Implemented**: `damage`, `tactical-condition.js`, `advanceWounds`.",
+      "acceptance": "New body-location and melee actions must use the same death/condition pipeline and cannot cause AP underflow or silent resurrection.",
+      "evidenceFiles": [
+        "game/tactical-condition.js"
+      ]
+    },
+    {
+      "id": "JA2-C06",
+      "requirement": "Field bandaging stabilizes wounds; strategic care restores health. G22,62,81; M33,39.",
+      "historicalClaim": "**Implemented**: `heal`/medical `useItem`, `medical-care.js`, `campaign-care.test.mjs`. Direct aliases and contextual use share `medicalUsePreview`, including the kit-in-hand rule (M33). Eleven held-item admission tests cover paid selection, finite use, wrong-hand rollback, critical collapse during exploration selection, and real interrupt save/resume. Thirteen approach tests cover paid movement before treatment or melee, shared total costs and safe stopping. The earlier noncritical live targeting check moved the equipped medic three tiles and applied one dressing without HP gain; reload preserved the result. See [item approach](item-approach.md).",
+      "acceptance": "Civilian targeting now uses the same held-kit approach and treatment path, with persistent bleeding and dressings; see [civilian first aid](civilian-first-aid.md). Critical first aid now restores living casualties toward 15 HP through paid partial treatment, with shared previews and once-only named-civilian campaign synchronization. See [critical first aid](critical-first-aid.md) for reference rules, explicit AP/supply adaptations and verification. Keep personal supplies finite through every result and transfer path. Authored civilian treatment responses remain open.",
+      "evidenceFiles": [
+        "game/medical-care.js",
+        "tests/campaign-care.test.mjs"
+      ]
+    },
+    {
+      "id": "JA2-C07",
+      "requirement": "Post-combat automatic bandaging is an optional convenience, with real medics, time, and supplies. M7,33-34.",
+      "historicalClaim": "**Implemented in the simulation and HUD**: optional equipment action uses legal movement, equipped medical supplies, real time and AP; it stops for contact, exhaustion, blocked access or exhausted supplies. Planner tests cover replay, self-care, repeated critical treatment, rescued medics, collapsing medics, blocked paths, new contact and cleared-victory exploration; equipment render coverage exists.",
+      "acceptance": "Automatic bandaging now repeats partial critical treatment using finite existing dressings, including already-bandaged critical casualties. It grants no patient energy or AP. See [critical first aid](critical-first-aid.md) for verification. Automatic treatment now includes visible wounded civilians through ordinary paid orders, finite dressings and campaign synchronization; see [automatic civilian care](automatic-civilian-care.md). A live adjacent civilian treatment and save continuation passed, consuming one dressing and two seconds without noncritical HP gain. Broader full-campaign balance remains open.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-C08",
+      "requirement": "Unarmed attacks can exhaust/incapacitate rather than simply substitute a blade. G27-29,64-66; M31.",
+      "historicalClaim": "**Implemented in simulation; live UI verification pending**: empty hands use fists with strength/dexterity/agility, energy, and defender-awareness effects. Punches emphasize breath loss and can incapacitate without consuming firearm ammunition. Six `unarmed-combat.test.mjs` cases cover knockout, finite unconscious loot, missing weapons, carried weight, skill effects, and atomic out-of-range rejection.",
+      "acceptance": "The unarmed chance/damage values are Granaderos tuning. Hand selection must remain explicit; a dropped or missing blade cannot create an unowned bayonet. Contested held-weapon grabs now use I10.",
+      "evidenceFiles": [
+        "tests/unarmed-combat.test.mjs"
+      ]
+    },
+    {
+      "id": "JA2-C09",
+      "requirement": "Blades and thrown knives support quiet attacks and short-range tradeoffs. G28-29,63.",
+      "historicalClaim": "**Adapted**: held facones support aimed, finite throws with physical cover/body/floor collision and recovery of the same item. Melee remains contextual at contact distance. Standing and turning are paid preparation and can be interrupted. AP is spent only in combat. AI uses the same owned-item rules. See [knife controls, source and adaptations](contextual-knife-throws.md).",
+      "acceptance": "Geometry, cursor, combat, inventory and fresh Retiro save/reentry checks pass; live aiming, cancellation, energy-only exploration, pickup and re-equipping are checked. A dedicated illustrated throw pose remains missing. Improvised facón throws, range/AP/damage tuning and supported recovery are period-game adaptations; no standard military throwing doctrine or automatic stealth kill is claimed.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-C10",
+      "requirement": "Thrown explosive objects have scatter, blast, obstruction, and supply costs. G51-56; M32.",
+      "historicalClaim": "**Partial; equipped grenade path implemented**: a finite paid arsenal lot supplies physical hand grenades, with paid standing preparation, bounded scatter, curved obstruction tests, supported landing, health/energy blast, friendly casualties, condition-zero duds and saved custody. Enemy and militia throwers use ordinary owned equipment and paid actions. See [hand grenades](hand-grenades.md).",
+      "acceptance": "Subsequent bounces, destructible-window blast propagation, delayed malfunction fuses, placed charges and encounter balance remain incomplete. Mendoza supply is authored fiction, not an attested Montevideo transfer.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-C11",
+      "requirement": "Area damage can harm allies, corpses cannot act, and incapacitated people remain accessible. G51-52,60,64-66.",
+      "historicalClaim": "**Partial**: friendly canister damage, critical health, loot, and finishing attacks exist. Grenade tests now distinguish living allies, throwers, unconscious, routed and surrendered people from dead and departed bodies; civilian blast injuries survive report/save/reentry. Bullets, knives, blunderbuss and cannon now also collide with civilian bodies, with no combat credit. See [hand grenades](hand-grenades.md) and [civilian consequences](civilian-consequences.md).",
+      "acceptance": "Check the other area attacks and UI paths; civilian hostility and chain reactions remain unimplemented.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-C12",
+      "requirement": "Equipment protects specific body regions and degrades. G49,53.",
+      "historicalClaim": "**Partial**: physical head, torso and leg slots retain exact garment records, weight, condition and custody through pockets, drops, corpses, campaign return and saves. Legacy ponchos remain torso equipment. Only a serviceable worn poncho provides the existing melee/climate modifiers. See [body equipment](body-equipment-2026-09-26.md).",
+      "acceptance": "Body slots are implemented; regional ballistic protection, garment wear and repair remain absent. Add period-appropriate protection only where historically justified; keep coverage, weight, condition, and penetration separate.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-V01",
+      "requirement": "The player sees current enemies only through squad observation; individual sight remains distinct from shared knowledge. G13,66; M35.",
+      "historicalClaim": "**Implemented** for basic current sight: `canSee`, `teamCanSee`, `visibleEnemies`. WebMCP uses an explicit player-known projection: current actors follow shared LOS and room disclosure; unseen movement retains anonymous historical sight coordinates, while hearing exposes only an approximate area. Private enemy health, identities, equipment, RNG and reaction queues are absent. Pure regressions cover sight loss, hearing-only interrupts, hidden loot and detached output. Live projected reads and successful action responses worked; see [live record](ja2-live-verification.md).",
+      "acceptance": "A controlled live location shot retained hidden actors outside the public state and omitted their identity from its impact log. Broader hidden-enemy projection scenarios remain unverified live. Named enemy journal events now require observation at event time; hidden attackers retain anonymous wound reports, and visible enemy advances omit private route totals. Nine integration tests and a live blind-fire/self-treatment/reload check cover this change; see [journal contract](tactical-journal.md). Other journal branches remain unverified live. Shared knowledge must not grant individual sight through a wall. The projection uses current sight plus short contact memory, without a persistent explored-terrain cache. Reducer text errors remain authoritative; error objects and raw tactical logs are not returned.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-V02",
+      "requirement": "Facing and stance affect observation; looking/turning is a tactical action. G27-28,66; M17-20.",
+      "historicalClaim": "**Partial overall; authoritative facing is implemented**: simulation stores eight directions, updates direction with movement/attacks, and charges a separate Look action. Awareness integration tests verify rear approaches, paid turns, unchanged position, and atomic AP rejection. HUD and idle sprites use simulation facing; live UI verification is pending.",
+      "acceptance": "The forward 180-degree cone, two-tile peripheral awareness, and 2 AP per 45-degree turn (4 prone) are Granaderos tuning. Terrain concealment now reduces detection range more when crouched or prone, separately from the existing earned stealth effect. Observer posture changes projectile and sight height around cover and optional authored terraces (C04/V09). Tall roofs and multi-storey interiors remain pending.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-V03",
+      "requirement": "Movement and gunfire produce noises with approximate location, range, and uncertainty. G13,27-29,66; M35.",
+      "historicalClaim": "**Implemented in simulation; live UI verification pending**: movement/charge, discharge, reload, doors, melee, and explosions notify unseen nearby opponents. Reports contain only area, turn, kind, and uncertainty; validation rejects source identities and extra fields. Integration tests cover footstep/gunfire range, new close sounds retained until investigation, anonymous saves, and enemy searches. HUD and scene display an approximate area.",
+      "acceptance": "Each listener retains one latest report, with deterministic coarse cells and a three-turn lifetime. Range, wall attenuation, grid precision, and perception modifiers are stated Granaderos tuning; verify the visible sound cue without revealing a hidden unit.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-V04",
+      "requirement": "Stealth is a deliberate movement option with costs and noise reduction. G13,23-27,66.",
+      "historicalClaim": "**Implemented in simulation; live UI verification pending**: independent `stealthMode` survives posture changes and saves. Quiet movement uses shared AP/path previews, skill-dependent sound reduction, pace, terrain, mounts, and carried burden. Thirteen awareness helper tests and eleven integration tests cover these rules. HUD exposes the toggle and active state.",
+      "acceptance": "Toggling is free; unmounted movement uses a 1.25 AP multiplier. Overload adds sound range from carried gear, weapon, ammunition, and strength capacity. These are Granaderos values, not an exact JA2 formula. Verify the visible toggle, preview, and feedback.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-V05",
+      "requirement": "Day/night and local light affect detection and fire. G13,26-29,47; M35.",
+      "historicalClaim": "**Implemented**: clock-linked night, lights, torches, LOS, night-vision traits, `lighting.test.mjs`.",
+      "acceptance": "Directional sight and sound must integrate without revealing dark enemies from decorative room discovery.",
+      "evidenceFiles": [
+        "tests/lighting.test.mjs"
+      ]
+    },
+    {
+      "id": "JA2-V06",
+      "requirement": "Camouflage changes observation in suitable terrain and can wear off. G22-23.",
+      "historicalClaim": "**Missing**: tactical traits are not consumable camouflage.",
+      "acceptance": "Add camouflage state and terrain applicability if period equipment supports it; validate finite use and duration.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-V07",
+      "requirement": "Enemy memory represents last observed or heard information and can become stale. G13,66.",
+      "historicalClaim": "**Implemented for one recent sight and one sound per soldier**: movement/charge observations update each completed tile; anonymous sound remains separate. AI turns toward a heard area, searches it, and stops after inspection without following unseen source movement. Integration tests change hidden source coordinates and obtain identical enemy behavior; nearby rear sounds cause one paid look. Reentry tests rebase encounter-relative memory and reaction markers.",
+      "acceptance": "The three-turn limit and single-record capacity are explicit tuning. Preserve the distinction between stale exact sightings and uncertain sounds when adding radio/voice sharing, patrols, or multiple remembered contacts. Live UI verification remains pending.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-V08",
+      "requirement": "Rooms, doors, and windows hide interior information correctly. G13-15,64; M26,35.",
+      "historicalClaim": "**Implemented** for existing ground rooms; optional terraces preserve separate floor visibility and slab occlusion.",
+      "acceptance": "Public observations retain known floors without revealing hidden stacked occupants or objects. Single-storey campaign house terraces are active; complex multi-storey interiors remain pending; discovery alone must not reveal current unseen occupants.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-V09",
+      "requirement": "Rooftops and elevations support movement, sight, and different firing angles. G14-15,64; M17-20.",
+      "historicalClaim": "**Partial**: 36 single-storey house terraces in nine fresh campaign sectors have paid accesses, floor-aware movement, sight, firearms, AI and HUD. Tests verify all 688 walkable roof cells reach a ground exit, plus a normal paid campaign/save/reentry cycle. Full Buenos Aires night movement and torch use passed live. See [elevation record](tactical-elevation.md).",
+      "acceptance": "Other eligible sectors still need live visual/combat acceptance; their complete topology is tested. Tall mansions remain decorative until their access and rooftop structures are supported. Dedicated climb poses, stairs, arbitrary slopes, falling and destructible support remain absent. Decorative roofs alone do not activate gameplay.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-V10",
+      "requirement": "Regions have distinct climate and terrain. User gameplay-playlist clarification.",
+      "historicalClaim": "**Period-game adaptation**: regional exterior terrain retains authored landmarks and saved geometry. Calendar-driven weather is shared by assault, defense and exploration, and changes on the tactical clock. Existing powder, poncho, torch, cover and movement effects apply; exploration still spends no AP. See [regional conditions](regional-conditions.md).",
+      "acceptance": "Broad regional profiles and six-hour weather intervals are Granaderos tuning. No playable snow, temperature simulation or precipitation animation. Saved sectors keep their existing terrain. The full reference playlist has not been reviewed.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-P01",
+      "requirement": "Walk, run, crouch, and prone movement have different time/AP/breath costs. G13,19,23,27-29.",
+      "historicalClaim": "**Implemented**: `movementEnergy`, `stepCost`, paid stance changes.",
+      "acceptance": "Test switching modes during pending moves and interrupts; reject free posture changes on invalid destinations.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-P02",
+      "requirement": "Normal movement supports diagonals without passing through blocked corners. M17-20.",
+      "historicalClaim": "**Implemented in simulation; live verification pending**: `movementStepCost` defines legal adjacent steps and corner checks for the eight-way pathfinder, ordinary movement and charges. Ten `diagonal-movement.test.mjs` cases cover all directions, load/gait costs, walls/doors/props, AP, exploration energy/time, exhaustion, interruption and save/resume. Existing combat, AI, group and bandage cohorts also pass.",
+      "acceptance": "Diagonal AP, time and energy use a 1.4 multiplier rounded up per step. This is Granaderos tuning. Verify visible previews and animation with the host display available.",
+      "evidenceFiles": [
+        "tests/diagonal-movement.test.mjs"
+      ]
+    },
+    {
+      "id": "JA2-P03",
+      "requirement": "Reverse movement, sidesteps, and crawling preserve tactical facing when requested. M17-20.",
+      "historicalClaim": "**Implemented in simulation and HUD; basic live input verified**: Alt-click applies per-order `movementIntent: 'preserveFacing'` for walking, crouching or crawling. Facing remains unchanged through paid steps and interruptions; later ordinary movement turns normally. Eleven core cases plus HUD, input and animation-helper tests cover this contract. Live Alt-click moved only soldier 1000 to D4/(3,3), retained east-facing orientation, and left 115 stationary; see [live record](ja2-live-verification.md).",
+      "acceptance": "Preserve-facing AP costs `ceil(normal step AP × 1.25)`; time uses a 1.25 multiplier before final rounding, with no extra energy multiplier. Mounted and running movement reject this intent. These are Granaderos adaptations. Group movement uses ordinary facing; Alt returns to an individual order. All posture, interruption and moving-sprite combinations remain unverified live.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-P04",
+      "requirement": "Fences, low obstacles, ladders, roofs, and water impose different traversal rules. G14-15,25,64; M17-20.",
+      "historicalClaim": "**Partial**: water/cliffs are blocked; props/buildings have collision. House terrace links in nine fresh campaign sectors validate support, landing space, standing posture, AP, energy and load; mounted climbing rejects.",
+      "acceptance": "Tall roofs and other obstacle types still need authored access rules. Add supported vault/swim or wade actions with AP/breath, gear, and landing-space validation. Do not make every obstacle generic passable terrain.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-P05",
+      "requirement": "Weight and strength affect movement and fatigue. G23-25,38.",
+      "historicalClaim": "**Implemented** as a carrying ratio and fatigue/energy cost.",
+      "acceptance": "Include all equipment/supplies and inventory transfers in total weight; expose overburden effects before movement.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-P06",
+      "requirement": "Mounts add period mobility without bypassing infantry constraints. Granaderos specification; analogous transport choice G71-73.",
+      "historicalClaim": "**Implemented**: assigned mounts, stamina, dismount, riding skill, and campaign persistence.",
+      "acceptance": "New movement/elevation/interrupt systems must validate mounted actions consistently.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-I01",
+      "requirement": "Equipment occupies hands, body slots, and finite pockets with item-size/stack restrictions. M21-24.",
+      "historicalClaim": "**Partial**: every soldier now has four large and eight small physical pockets. Long equipment needs a large pocket; compact equipment can use either size. Selection and drag moves enforce compatible destinations, preserve item metadata, and retain placement through tactical and campaign saves.",
+      "acceptance": "Campaign equipment now prepares main-hand tools, bandages, supplies and ordinary objects with shared tactical hand/pocket checks. Six campaign tests and one UI interaction test cover save/deployment, loading, stale choices and unavailable soldiers. Live preparation, save/load and tactical entry passed; see [main-hand objects](main-hand-objects.md). Campaign dragging between both hands and the twelve pockets is implemented with shared placement rules, saved pocket order and loading preservation. Five transaction/save cases, two component checks and a live rifle/dressing/torch save-load check cover it; see [campaign equipment dragging](campaign-equipment-dragging.md). Ten new layout, transaction, campaign-save and render checks pass; the full suite passes 1,441 tests. Live movement, incompatible-slot rejection, save restoration and equipping a loaded fitted rifle pass. See [physical pockets](inventory-pockets.md). Two-hand weapon occupancy and independent pistol swaps are now implemented; see [two-hand equipment](two-hand-equipment.md). The general outfit slot now holds a finite, transferable poncho. Worn and packed garments retain condition and weight through tactical/map changes, custody, return and save/reentry. Initial issue consumes stock once; depot withdrawals consume local stock and a large pocket. Live stow/equip and save checks pass. See [individual outfits](outfit-equipment.md). The second hand now accepts supplies, tools, and non-weapon pocket items with finite counts, displaced-equipment capacity checks, exact-use selection, and campaign/custody persistence. See [second-hand items](held-offhand-items.md). Direct pointer dragging now connects pockets and both hands, with shared admission/AP previews and atomic changed-content rejection. Eight focused cases and live dressing/pistol exchanges cover the new moves; see [equipment dragging](equipment-dragging.md). Ordinary pocket objects and loose ammunition now also occupy the main hand without becoming weapons. Actual drops, transfers and campaign saves retain the item and other hand; see [ordinary hand objects](main-hand-objects.md). A shared item cursor now supports click placement and dragging across both hands, all pockets and the finite outfit slot. Right-click inspects or cancels; live click, keyboard, mouse-drag and campaign save/load checks pass. See [equipment click placement](equipment-click-placement.md). Physical partial pocket stacks now support one-item pickup, Shift pickup, exact quantities, bounded merging and a retained cursor remainder. Save admission and campaign persistence use the same finite totals. See [pocket stack quantities and original-source correction](pocket-stack-quantities.md). Hands retain the original single-item limit; multiple-item hand stacks were incorrectly listed as a parity requirement. Durable cursor exchanges now replace the earlier source reservation: occupied-slot replacements leave the displaced object on the cursor, with real pickup, partial-stack placement, classic oversized-stack handling and saved custody. Same-soldier slot arrangement is free. See [cursor exchanges](equipment-cursor-exchanges.md). Individual stack-member selection remains partial. Selected quantities now pass, relay, drop or toss from the inventory cursor onto the map with exact source checks, geometry and campaign persistence. See [inventory map cursor](inventory-map-cursor.md) for verified controls and remaining scope.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-I02",
+      "requirement": "Nearby allies can give/pass items; distant allies can catch a thrown item with an explicit risk/cost. G14; M22-25.",
+      "historicalClaim": "**Implemented; direct giving, relay passing, and both catch outcomes verified live**: exact-quantity transfers share inventory previews. A valid chain of adjacent soldiers passes the exact item to its recipient; each sender pays 4 AP. The preview shows the route and all participant costs, and a stale confirmation cannot silently change into a throw. Throws within six tiles cost 8 AP and display their catch chance; a successful combat catch costs the recipient 2 AP, while failure leaves the exact stack at their feet.",
+      "acceptance": "Twelve new relay cases cover routes, obstacles, current control windows, AP, capacity, atomic rejection, weapon identity and metadata, exploration time, and campaign saves. Live production-inventory checks passed three cartridges through two intermediates, then verified separate 95% successful and 5% failed throws and restoration. Exact tuning and atomic relay limits are documented in [inventory relay](inventory-relay.md). The full suite passed 1,397 tests. Direct [map cursor controls](inventory-map-cursor.md) now expose these transfers and checked ground tosses; AP and catch formulas remain Granaderos tuning.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-I03",
+      "requirement": "Items can be dropped, picked up, split, stacked, and stored persistently in the sector. G20,64-66,110-111; M21-25.",
+      "historicalClaim": "**Partial**: deliberate drops, selected quantities, equivalent-item merging, finite pickups, corpse loot, and swaps now use the same inventory rules. Loaded/jammed/condition data survives ground stacks and both save boundaries. Actual visit/report/reentry tests retain dropped weapons and old generic equipment without replacement guns or ammunition.",
+      "acceptance": "Strategic sector access now lists discovered equipment and supports exact local pickup/drop quantities in safe sectors. It checks walking access, capacity and current source contents, preserves loaded/fitted weapons and personal cartridges, and uses validated save/reentry paths. Seventeen simulation/save tests and two component checks cover the new flow; see [sector inventory](sector-inventory.md). Depleted ground objects cannot be picked up again. A controlled live body/ground picker spent actual approach and pickup AP, took partial cartridges and a loaded fitted musket, and retained both sources and receiver after reload. Ten approach cases, eleven batch cases and two component tests cover the picker contract. Select All and per-row quantities share one atomic 8 AP pickup from a single tile. Live full selection, capacity rejection and reduction to a valid partial selection passed; see [loot approach](loot-approach.md). Live tactical dropping, strategic partial pickup/drop, quantity rejection, save loading and reentry now pass. The check found and fixed loss of a carried loaded gun charge on campaign return; the repeated loop preserved the exact ammunition total. See [sector inventory](sector-inventory.md). Blocked paths, full packs and body/container variants remain automated-test evidence. Visited mission sites now appear under their parent sector through a labelled site selector, with separate source pools and shared local-presence, occupation and path checks. Real San Lorenzo remains can be recovered after victory; completed Yatasto pickup/drop and saves pass simulation checks. A live production-component harness recovered one dressing and one cartridge from the real San Lorenzo save and preserved the distinct town stock after saving/loading. See [sector inventory](sector-inventory.md). Carried weapons can now be equipped directly from a safe town, without entering the tactical map. Prepared load, partial work, condition and fittings survive the supported map/armory/deployment/return paths; capture/rescue and finite ammunition are tested. A live Córdoba recovery pickup/equip/save/load check passed. See [carried weapon equipment](campaign-carried-equip.md).",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-I04",
+      "requirement": "A hand item drives the contextual Use action. M25.",
+      "historicalClaim": "**Implemented for current held items; partial live verification**: firearm, blade, medical equipment, empty hands, a selected inventory tool and held supplies use contextual actions. Model, HUD and transaction tests cover costs, targeting, removal and persistence. Direct medical and supply aliases require the same paid held-item selection as contextual use; saved interrupt tests retain the separate equip/use windows. Ordinary targeting with dressings, blades or empty hands now includes an affordable approach; thirteen tests cover costs and interruption. A live medical selection spent the previewed 42 AP on movement and aid and survived reload. See [item approach](item-approach.md). The live quick-skirmish item strip had no separate Charge or Heal commands. After an actual victory, equipping Vendas cost 4 AP and portrait-targeted aid used two real dressings without HP gain; the cleared-sector return control then accepted the campaign report. See [live record](ja2-live-verification.md).",
+      "acceptance": "A controlled live key/container flow and alarm inspection/disarm flow now pass, including paid approach and save continuation; see [environment approach](environment-approach.md). Live lock-pick/crowbar attempts and the full held-supply flow remain unverified. Physical grenades now use the same contextual hand contract, with point targeting and finite supply; see [hand grenades](hand-grenades.md). A successful medical interaction does not establish those other item types.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-I05",
+      "requirement": "Primary/secondary hand weapons retain independent loading, condition, and compatibility. G14,26,48.",
+      "historicalClaim": "**Partial**: two one-handed firearms retain independent load, reload work, condition and fittings. Paid swaps, finite cartridge accounting, pocket displacement, campaign returns and saves are implemented; see [two-hand equipment](two-hand-equipment.md).",
+      "acceptance": "Paired fire now uses both physically held usable pistols through the ordinary aim cursor. Shared costs, per-gun chance, independent ignition and ammunition, ambidextrous custom selection, saved interruptions and known-cover AI decisions pass simulation and live checks; see [paired pistol fire](paired-pistol-fire.md). R and empty-fire clicks now reload the main gun and an affordable second gun through one shared plan; a full main hand permits continued second-hand work without swapping. Finite stock, per-gun partial work, real enemy turns, saved interrupts and campaign return are covered by 24 new tests. Live keyboard, cursor, saved continuation and exploration checks pass; see [paired pistol loading](paired-pistol-reload.md). Automatic second-gun reprime now uses the existing R key and order control, with main-first AP and finite priming costs. Pocketed/invalid guns are excluded and a failed spare cannot block loading a usable main hand; see [paired pistol priming](paired-pistol-reprime.md). Broader dual-weapon handling remains partial.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-I06",
+      "requirement": "Attachments have compatible hosts, effects, condition, and reversible/permanent installation rules. G47-48.",
+      "historicalClaim": "**Implemented for one removable period fitting; partial overall**: the identified India socket bayonet fits only Brown Bess 1800. Paid fit/remove, separate condition and wear, explicit close-combat mode and deliberate fire, finite variant stock, exact transfers, resale, reports and versioned saves are covered by fitting, transaction, campaign and UI tests. Live purchase, fit, removal, transfer, incompatible-host rejection, save and campaign return passed; see [live verification](ja2-live-verification.md). Exact held and pocket firearms now expose an attachment slot in their item details. Cursor fitting, full-pack removal, 20 AP exchange and custom bayonet metadata retain ownership through tactical and campaign saves. Twenty-eight new checks and live finite-purchase, stored-rifle, AP-rejection and save checks pass; see [physical attachment slots](attachment-slots.md).",
+      "acceptance": "The fitting plan records period evidence and explicit tuning. Unmarked legacy bayonets remain loose. Baker sword bayonets, other socket patterns and other supported fittings are not added. The current adaptation has no permanent fitting type. Gun use now has explicit firing/close-combat controls in the main strip and inventory: a bayonet thrust when fitted, a gun strike otherwise, with ordinary paid approach and retained mode through saves. See [weapon modes](weapon-modes.md).",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-I07",
+      "requirement": "Equipment condition affects performance, failures, repair needs, and resale. G47-48,62,69-70.",
+      "historicalClaim": "**Partial**: firearm condition affects accuracy/ignition; tactical maintenance and timed repair exist. Primary/blade condition, loaded rounds, and ignition failure survive give/drop/loot/equip and campaign reports. Exact stored handheld items preserve condition/jammed state on strategic swaps; resale removes one selected stored item and pays its condition-adjusted value. Tool condition also affects success and decreases on attempts; environmental tests retain that wear through transfers and reports. Inventory/equip, assignment, and merchant tests provide evidence.",
+      "acceptance": "Carried tools and fitted bayonets now have timed queued repair; see A03. Add condition/repair to supported protection. Dealer buyback/preferences and artillery resale remain partial (S02). Live inventory/merchant UI verification is pending; numerical condition and price formulas are Granaderos tuning.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-I08",
+      "requirement": "Ammunition is typed and compatible with a weapon, not interchangeable abstract shots. G49-50; M21-24.",
+      "historicalClaim": "**Implemented compatibility core; partial interaction parity**: nine prepared handheld loads have physical inventory stacks, compatible reloads, separate stocks and finite supply. R, empty-fire clicks, paired pistols, AI supply searches, transfers, returns and saves use the same types. Live keyboard reloads leave incompatible cartridges intact and the empty reticle names the missing load. Clicking or dragging a selected cartridge stack onto a gun now loads that physical hand or pocket host, retains the cursor remainder, and uses shared reload work/time. Component, conservation and campaign-save checks plus a live pistol load verify the interaction; see [selected loading](inventory-ammunition-loading.md) and [typed ammunition](typed-ammunition.md).",
+      "acceptance": "Alternate loads for one gun remain absent. Caliber/load mapping, initial stock, prices and production costs are Granaderos tuning. Modern AP/HP cartridges are inappropriate. Artillery ammunition remains a separate model.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-I09",
+      "requirement": "Weapon readiness, reload work, jams, and clearing failures are visible and consume the proper resources. G19,47-50.",
+      "historicalClaim": "**Partial; handheld loading and readiness implemented**: black-powder loading, priming and condition use finite resources. A shared reload plan spends available AP, retains unfinished work on the weapon, and completes individual charges without creating ammunition. Sixteen simulation/save cases and a reticle check cover injured soldiers, separate barrels, transfers, saved interrupts and autonomous militia. A live firing confirmation spent 36 AP on loading; next-turn R spent the remaining 6 AP and consumed one real cartridge. See [loading across turns](reload-progress.md).",
+      "acceptance": "Partial loading is a period adaptation. Firing now separates raising and discharge costs, retains readiness between shots and turns, and clears it on physical actions or collapse. Seventeen simulation/save tests cover shared player/AI costs and saved enemy reactions; see [weapon readiness](weapon-readiness.md). Live keyboard and pointer shots confirmed a 6 AP first shot, a 4 AP follow-up, and restored preparation cost after loading. The existing L look cursor now offers paid preparation when already facing a direction, following the pinned v1.13 enhancement. Eleven focused checks cover costs, held items, saved interruptions and full saves; see [look readiness](look-readiness.md). Live L and pointer preparation spent the displayed 2 AP, retained both charges and nine reserve cartridges, and rejected repeated preparation without spending AP. Target-specific turning now uses the pinned v1.13 stance combination in the preview, aim limits, AI and reducer; ten focused tests include actual shots and saved interruptions. See [turning to fire](shot-turning.md). Live keyboard verification charged the displayed 8 AP for turning and firing, then previewed a 4 AP same-direction follow-up. A 12 AP reversal was rejected with 11 AP available and preserved ammunition and facing. The subsequent reference-control correction wins both opening battles with unchanged combat costs; all 1,310 tests pass; see [opening control](opening-control.md). The former failing strategy is recorded in the shot-turning checkpoint. General campaign balance remains open. Physical pointer and live save continuation for partial loading, live readiness save continuation, lower-weapon input, target-change AP and broader balance remain open. Artillery now retains simultaneous crew loading work across turns, spends only the available shared step, and consumes a reserve shot only on completion. Fourteen simulation/save cases, two production UI cases, and a live four-turn wounded-crew check pass; see [artillery loading](artillery-reload-progress.md). Shared crew checks also enforce current interrupt authority, geometry, control class, and exploration timing. The earlier persistence warning was stale: issued cannons already retain identity, ownership, ammunition and unfinished work through returns and reentry; 26 existing lifecycle/reload checks were re-run. See [stationed artillery](stationed-artillery.md). Enemy and militia crews now use real cannon fire, reloads, pivots and short crew approaches, with shared trajectory safety and one AP issue per enemy phase. Nineteen new AI/budget checks include actual phases, saved multi-turn crew loading and continued hired-scout searches. See [autonomous artillery](artillery-ai.md). Relocating cannons, remote crew assembly and distinct ammunition types remain open.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-I10",
+      "requirement": "Corpses and unconscious opponents provide finite equipment; theft from a conscious target has risk. G64-66.",
+      "historicalClaim": "**Implemented for finite loot and conscious held weapons**: Ctrl-targeting with empty hands, or the existing pickup cursor, attempts a contested grab. It consumes remaining AP, preserves loaded rounds, condition, ignition failure and fittings, and stores the displaced gun only when capacity permits. Thirteen tests cover failure, invalid orders, identity, modifiers, real interrupts and campaign saves. See [weapon stealing](weapon-stealing.md).",
+      "acceptance": "The minimum AP, energy and probability weights are game tuning. Enemy-initiated theft and a full inventory-choice policy remain absent. Prepared pack guns now use paid capacity-checked swaps; see [AI field equipment](ai-field-equipment.md). This does not permit taking hidden pack contents from a conscious opponent. Dead-body searches now approach before showing inventory; a live partial pickup and reload retained fifteen of nineteen body cartridges. See [loot approach](loot-approach.md).",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-E01",
+      "requirement": "Locked doors and containers support keys and attempts with appropriate tools. G22,26,64; M25-27.",
+      "historicalClaim": "**Implemented in simulation; key UI flow verified live**: `environment-interactions.js` and shared tactical previews require the equipped matching key or actual lock picks. Mechanical skill, dexterity, experience, difficulty, and tool condition affect attempts. AP, RNG, wear, and persistent lock state are covered by eighteen helper and ten transaction tests. A legally reachable Yatasto chest supplies finite tools and the key to the other door leaf.",
+      "acceptance": "Costs/chances/wear are Granaderos tuning. Eleven approach tests and one keyboard event test supplement these cases. A controlled live fixture opened a chest, took/equipped its key, approached and unlocked the other door, and retained the result after reload. Verify the authored Yatasto route and live lock-pick failures separately; see [environment approach](environment-approach.md). A consumed or transferred tool must not reappear on reentry.",
+      "evidenceFiles": [
+        "game/environment-interactions.js"
+      ]
+    },
+    {
+      "id": "JA2-E02",
+      "requirement": "Force, pry, or breach are alternatives with noise, strength, and damage tradeoffs. G64; M26.",
+      "historicalClaim": "**Partial**: bare force and an equipped crowbar use strength-based checks, AP, noise, and persistent lock damage; repeated successful attempts can break the lock. Lock damage is separate from door collision and wall destruction. Helpers test successful/failed attempts and crowbar wear.",
+      "acceptance": "Generic nearby wall breach and cannon terrain destruction remain separate. Authored period demolition must use finite supported supplies, material resistance, and shared injury/noise rules. Modern shaped charges are not an appropriate literal substitute. Live force/pry controls remain unverified.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-E03",
+      "requirement": "Traps can be discovered, triggered, and disarmed. G22,25,54-56; M26-27,32.",
+      "historicalClaim": "**Implemented for nonexplosive traps; controlled alarm UI flow verified live**: uncertain inspection records discovery per side; public previews conceal an unknown trap and its difficulty. Equipped pliers and mechanical skill permit disarm, with wear and a one-shot failure effect. Mendoza has a locked cache with an alarm. Generic injury-trap tests prove shared wounds, breath, and persistent spent state without free opening or repeat damage.",
+      "acceptance": "A live controlled alarm was discovered through paid approach/inspection and disarmed with equipped pliers, spending 18 AP and two condition points. The authored Mendoza route and live failed disarm remain unverified. The authored alarm has a 20-tile base noise radius; checks and damage are tuning. Injury traps are tested prototypes, not claims about an actual historical cache. Additional authored injury/explosive mechanisms require historical support and appropriate tools; planted explosives remain outside this completed nonexplosive subset.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-E04",
+      "requirement": "Containers have contents that can be inspected and removed once. M21-26.",
+      "historicalClaim": "**Implemented in simulation; basic finite pickup verified live**: existing chests hold finite item stacks hidden until opened. Selected quantities use the same AP, reach, capacity, condition, load, and identity rules as tactical transfers. Ten transaction tests cover full-pack rollback, depletion, exact save/reentry, and duplicate identity rejection across a chest and pack.",
+      "acceptance": "Fresh-map metadata creates the cache once; returning to the sector retains depleted contents and changed locks/traps. A live controlled chest opened after a paid approach, supplied its only key, and remained empty after reload. Partial-quantity pickup and the authored cache route remain unverified live. Strategic sector-inventory access remains I03.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-E05",
+      "requirement": "Environmental demolition leaves persistent passages and debris. G54-56,64.",
+      "historicalClaim": "**Partial**: breach/solid-shot tile changes persist.",
+      "acceptance": "Apply material resistance and dangerous blast/fragment effects through shared damage and visibility rules.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-A01",
+      "requirement": "Doctor and Patient require co-location, skill, finite medical equipment, and time. G22,62,69,81.",
+      "historicalClaim": "**Implemented**: `medical-care.js`, campaign-care and fitting-campaign tests. Workshop medical purchases now consume finite stock (40 maximum, five restored per supplied day); the ordinary UI shows stock and sells the remaining quantity. Live purchase verified 40→35 shop kits, 2→7 carried kits and the 150-peso payment.",
+      "acceptance": "Stock caps and refill rates are campaign tuning. Keep assignment eligibility and progress correct during travel, tactical deployment, exhaustion, contract expiry, occupation and death.",
+      "evidenceFiles": [
+        "game/medical-care.js"
+      ]
+    },
+    {
+      "id": "JA2-A02",
+      "requirement": "Rest/sleep restore energy; fatigue constrains sustained work and marching. G19,38,69.",
+      "historicalClaim": "**Partial**: independent manual sleep/wake and safe-sector autosleep preserve assignments, suspend work and resume after recovery. Idle on-duty soldiers recover energy slowly; doctors, practice, repair and militia instructors spend energy/fatigue. Sleep transitions pause explicit waits and survive saves. See `sleep.md`.",
+      "acceptance": "Energy capacity now falls with fatigue; tactical fatigue uses hourly time rather than movement-order count. Marching charges hourly load/terrain/transport effort and stops further stages when exhausted. See `fatigue.md`. Collapse now prevents early waking and premature route resumption until energy capacity reaches 60. Arrival contact takes priority and forced defense retains the recovery requirement. The source confirms that fatigue stops occur after a stage; mid-stage sleep is not a missing classic behavior. Individual profile needs, wound thresholds and night training now change shared Sleep/Rest/Patient recovery and are shown in Personnel; eight simulation/save tests and a render check cover the rates. Live QA confirmed the night-training readout, exact hourly recovery and automatic waking with the assignment retained. Vehicle-passenger rest remains open; see [sleep evidence](sleep.md). Rates and thresholds are identified adaptations.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-A03",
+      "requirement": "A repair specialist spends time and tools to repair personal and local equipment. G22,69-70; M39.",
+      "historicalClaim": "**Implemented for carried handheld equipment; partial overall**: a selected local owner's continuing queue repairs secondary/primary weapons, mounted fittings, pack weapons and worn tools, with finite toolkit points and one shared hourly work cost. Jam clearing preserves ammunition; legacy bulk stacks repair individually. Old gun-only jobs retain their scope. Thirteen repair and two render tests supplement legacy assignment/save coverage. Live UI purchased tools, assigned four damaged items, stopped after two of 24 requested hours with eight points spent, and preserved completion after reload. See [repair record](equipment-repair.md).",
+      "acceptance": "Shared sector-ground/armory, artillery and vehicle repair queues are absent. Protection has no supported repair model yet. Mechanical-only rate, one-point jam clearing, tool price and wear costs are Granaderos tuning, not exact JA2 formulas.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-A04",
+      "requirement": "Self-practice improves a selected skill over time, with slower progress near its cap. G23-25.",
+      "historicalClaim": "**Implemented for the nine classic subjects and two period subjects**: shared training labels and validation now cover health, strength, dexterity, leadership and powder handling as well as the earlier six. The actual-rate forecast exposes productive work hours and remaining gains. Model, lifecycle and component tests cover caps, zero aptitude, saved credit, health wounds, XP and deployment. Live study, health growth, save/load and peaceful return passed; see [attribute training](attribute-training.md).",
+      "acceptance": "The +10 earned-growth cap, forty-practice threshold and rate are Granaderos tuning. Live health gain uses disclosed prior practice. A full uninterrupted fresh course and campaign-wide balance remain unverified.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-A05",
+      "requirement": "A qualified instructor accelerates a co-located student's selected skill. G23,26.",
+      "historicalClaim": "**Implemented for the nine classic subjects and two period subjects**: one better instructor teaches one student in the same skill and sector. Existing tests cover teacher qualifications, separation, work costs, exhaustion and deterministic saves. The visible forecast uses the actual teaching rate. Live leadership pairing reduced the estimate from 45 to 23 productive hours; one hour charged both soldiers energy, advanced progress and survived saving. See [attribute training](attribute-training.md).",
+      "acceptance": "The one-student limit and rate remain explicit Granaderos tuning. The live check covers pairing and partial work, not a complete fresh course.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-A06",
+      "requirement": "Field practice rewards actual successful use, and zero aptitude remains meaningful. G22-25.",
+      "historicalClaim": "**Partial; complete subject schema**: successful weapon grabs now produce valid dexterity practice and full saves. Heavy-load strength uses the shared earned cap; paid artillery crews learn from completed loads and shots. Rejected, empty and partial work cannot farm powder/dexterity gains. Lifecycle tests cover theft, a real paid retreat, XP, wounds and reentry; see [attribute training](attribute-training.md).",
+      "acceptance": "Health and leadership need further appropriate field events; broader explosives/disarming and experience-event coverage remain incomplete. Rates and thresholds are period adaptations.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-A07",
+      "requirement": "Completed work or required attention stops time compression and informs the player. G69; M38-43.",
+      "historicalClaim": "**Implemented for current assignments; partial overall**: explicit waits stop before an already blocked task or after the full hour of a new medical, rest, repair, practice or militia event. Shared typed conditions, saved task markers, grouped notices and public projection preserve costs and prevent repeated zero-hour stops. Rest remains productive while personal morale can recover. Fifteen helper, 20 integration and four render tests cover continuation, saves, finite supplies and full travel/tactical clocks. Live rest stopped a 24-hour request after one hour, retained its notice after reload and then continued six selected hours. See [time-control record](assignment-time-control.md).",
+      "acceptance": "Only explicit waits pause on assignments. Queued travel arrivals and route problems now stop explicit waits with route status/log feedback. Blocking travel and tactical synchronization retain full durations. Finite contracts now stop explicit waits two hours before expiry and again on expiry, with grouped saved notices and guarded paid renewals beside the clock. Fourteen simulation/save and three render/input cases cover acknowledgement, simultaneous events, transit, tactical time, stale actions and encounter priority; live warning, payment, reload and continuation passed. See [contract attention](contract-attention.md). Workshop production, imported weapons, cargo shipments and convoys now stop explicit waits after their actual completion hour, with grouped quantities and destination receipts beside the map clock. Thirteen integration cases and three component checks cover finite delivery, blocked routes/ports, concurrent notices, travel/tactical clocks, saves and public projection. A live 24-hour request stopped at hour 12 for sixty cartridges; save/load retained the receipt and a new wait continued without duplicate stock. See [production and delivery attention](logistics-attention.md). Due jobs now also stop explicit waits once for blocked ports, occupied or unsupplied workshops, full imported-weapon storage and existing convoy route/snow interruptions. Saved job/cause acknowledgements allow continued waiting without repeated warnings; restored access produces the ordinary once-only completion. Seventy-five focused checks cover interruption, delivery, save and clock integration. Inputs remain paid or reserved; no new shortage mechanic is claimed. Existing encounter/defeat controls retain precedence.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-R01",
+      "requirement": "Compare and hire distinct specialists with prepaid terms and optional gear. G16-18,21-22,69; M11-14.",
+      "historicalClaim": "**Partial**: civic roster, attributes, day/week/month contracts, and armory exist.",
+      "acceptance": "Separate optional hire equipment, arrival delay/location, availability, and term discounts where appropriate. Current specialist day-only rule is a Granaderos design rule, not classic JA2 parity.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-R02",
+      "requirement": "Renewals, expiry, dismissal, salaries, and death are consequential and preserve personal history. G21-22,69.",
+      "historicalClaim": "**Implemented** for finite contracts and persistent records.",
+      "acceptance": "Renewal and expiry now pause explicit waits with persisted notices and paid renewal controls; see [contract attention](contract-attention.md). Add renewal refusal/availability reasons driven by relationships and morale.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-R03",
+      "requirement": "Medical deposits and insurance add a financial risk choice. M14.",
+      "historicalClaim": "**Missing**.",
+      "acceptance": "If retaining this classic choice, present a period contract guarantee/compensation equivalent and real claim/refund conditions. It is not inherently a modern technology exception.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-R04",
+      "requirement": "Individual morale responds to events and changes performance. G19-20,29-30,62.",
+      "historicalClaim": "**Partial**: personal morale now persists through tactical reports and campaign saves. Victory/defeat/retreat, paid or missed wages, casualties, existing temperament, and timed safe recovery affect it; twelve morale tests verify bounded events, performance, and no deployment bonus farming.",
+      "acceptance": "Fatigue-specific morale events and civilian conduct remain to be implemented. Numerical event weights and recovery rates are Granaderos tuning; live personnel UI checks remain pending.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-R05",
+      "requirement": "Relationships affect morale, willingness to serve together, and departure. G29-31.",
+      "historicalClaim": "**Partial**: real shared squad service creates bounded cohesion and increases the morale impact of losing a long-serving companion. Individual temperament remains authored. Cohesion timers, deployment bonuses, and casualty consequences persist deterministically.",
+      "acceptance": "Authored interpersonal preferences, complaints, willingness to serve together, and departure are absent. Neutral cohesion does not substitute for those rules; no historical friendships or hostility have been invented.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-R06",
+      "requirement": "Personality and specialist traits change behavior beyond flavor text. G26-38.",
+      "historicalClaim": "**Partial**: several authored trait effects, optimistic/pessimistic starting morale, speech events.",
+      "acceptance": "Audit every exposed trait and remove unsupported claims; implement relevant phobias/preferences/refusals or disclose them as narrative-only.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-R07",
+      "requirement": "Custom character creation allocates attributes and selects traits without bypassing progression. G32-46.",
+      "historicalClaim": "**Implemented**: `character-profile.js`, `recruitment.js`, progression tests.",
+      "acceptance": "Keep selected traits mechanically effective and show their tradeoffs. Current point budget and questionnaire are intentional adaptations.",
+      "evidenceFiles": [
+        "game/character-profile.js",
+        "game/recruitment.js"
+      ]
+    },
+    {
+      "id": "JA2-R08",
+      "requirement": "Local recruits require real encounters and conditions. G16-18,41-46.",
+      "historicalClaim": "**Implemented**: encounters, leadership gates, local dialogue, and finite recruitment.",
+      "acceptance": "New relationship/morale systems must participate in recruitment when authored; remote recruitment must not teleport existing wounded records.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-S01",
+      "requirement": "Captured economic sites fund a recurring campaign; loyalty and disruption affect revenue. G59-60,69-70.",
+      "historicalClaim": "**Implemented for current economic sites**: the shared sector-income rule scales the base by local loyalty, then damage, coastal blockade and supply. The selected-sector panel and Resources table show the same contribution and reductions as the daily payment. Ten focused simulation/render cases cover real payments, midnight ordering, policy losses, quest effects and save continuation; see [sector income](sector-income.md).",
+      "acceptance": "The thirteen sector bases, local rather than city-average loyalty and one daily collection are period-game tuning. Initial income is now 286 rather than 440 pesos at 65% loyalty. Live UI verification and a complete campaign balance playthrough under the reduced income remain pending.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-S02",
+      "requirement": "Shops have meaningful stock, prices, purchase/sale, repairs, and delivery constraints. G57-58,69-70.",
+      "historicalClaim": "**Partial**: supplied workshops and imports have finite stock and timed refresh; workshop resale funds are finite. Exact stored weapon instances retain condition and jam state, with condition-based resale and stale-sale rejection. Imported ownership arrives after the paid delivery and blockade rules. Fourteen merchant tests cover stock, money, equipment, and campaign boundaries. Sold handheld weapons now remain as exact local shop stock and can be bought again with preserved condition, ignition failure and fittings. Eight transaction/save tests and three render/input tests cover this flow; see [used equipment](merchant-buyback.md).",
+      "acceptance": "Stored, undeployed and locally emplaced artillery can now be sold and repurchased through supplied workshops. Exact ammunition/loading, crew handover, finite funds and duplicate ownership are checked; see [artillery trading](artillery-trade.md). Local equipment exchanges now settle one net payment across exact used weapons, local catalog purchases and artillery, with stale-offer receipts and final capacity checks; see [merchant exchange](merchant-exchange.md). [Workshop buying preferences](merchant-preferences.md) now give Caroya cavalry rates and a damaged-handheld refusal, El Plumerillo artillery rates and Retiro general rates. Direct sales and exchanges share those rules. The basic visible new-purchase/sale/used-purchase/save route passed in a separate browser campaign; worn/fitted metadata remains automated-test evidence. Stock, local buying fractions, refresh, and fund values are Granaderos tuning. Live direct-sale/refusal, travel to a second buyer, exchange and save checks pass; fitted/loaded metadata and full capacity boundaries remain automated-test evidence. Individual merchant relationships and background resale are not modeled.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-S03",
+      "requirement": "Militia training consumes money/time, uses leadership/teaching, and requires civic support. G59-60.",
+      "historicalClaim": "**Implemented** as a period cohort/city adaptation: `militia.js`, campaign reducer.",
+      "acceptance": "Three-person cohorts, a 60-person deployment cap, prices and hourly rates are Granaderos tuning. New regular courses preserve reserved personal records, consume 120 pesos and no horses; legacy count-only courses remain supported. Preserve these records across interrupted time, contracts and occupation.",
+      "evidenceFiles": [
+        "game/militia.js"
+      ]
+    },
+    {
+      "id": "JA2-S04",
+      "requirement": "Militia rank progression distinguishes training from combat experience. G60.",
+      "historicalClaim": "**Implemented for current militia ranks**: first wounds and kills award bounded persistent credit. Living returned soldiers advance through the same identity and equipment record; new paid courses stop at the middle rank. Training reserves individual soldiers and retains wounds, ammunition, fittings and experience on completion or cancellation. Eleven tests cover real kills, returned promotions, revisits, custody and legacy saves. See [militia experience](militia-combat-experience.md).",
+      "acceptance": "Thresholds and attribute gains are explicit Granaderos tuning. Previously paid legacy top-rank courses retain their count contract. Autonomous militia combat is covered by S05. Strategic medical assignments now treat retained garrison wounds with local doctors and finite supplies; see [militia medical care](militia-medical-care.md).",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-S05",
+      "requirement": "Local militia fight and suffer persistent casualties; direct control differs from hired soldiers. G59-60.",
+      "historicalClaim": "**Implemented autonomous core; partial overall**: local militia use normal AI actions, finite equipment and remaining AP in their own phase and interrupts. Hired control remains separate. Saved nested reactions resume paid militia progress. Campaign returns retain identities, supplies, wounds, casualties and earned promotions. Focused simulation/save/render checks cover these rules; see [militia autonomy](militia-autonomy.md).",
+      "acceptance": "Live paid training, status cards, rejected manual selection and contextual medical targeting passed. Automatic combat and saved reactions remain unverified live; a validated importable defense demo is provided. Peaceful patrols now advance local militia through fixed map waypoints, one legal step per six seconds, with energy costs and no AP charge. Real contact stops ambient movement. Five focused tests and a live patrol/save check cover this behavior; see [exploration patrols](exploration-patrols.md). Militia now operate nearby friendly cannons using their own eligible crews and finite ammunition; see [autonomous artillery](artillery-ai.md). Strategic medical care now uses a separate local assignment, personal kits, hourly triage and saved stops. Ten simulation/render checks and a live treatment, save, depletion and paid-resupply sequence cover it; see [militia medical care](militia-medical-care.md). Town redistribution is now available through manual rank/quantity transfers and an automatic capacity-aware plan, preserving exact soldiers and finite supplies. Thirteen new simulation/render checks and live transfer, wound, reload and balancing checks cover it; see [city militia distribution](militia-distribution.md). The original manual p. 44 supports this strategic choice; a classic tactical command menu is not established by the cited pages and remains a separate open audit item. Shared friendly allegiance, phase placement and AP refresh are Granaderos adaptations.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-S06",
+      "requirement": "Enemy patrols, garrisons, reinforcements, and counterattacks move in the strategic world. G19,59,69,79-81,96-97.",
+      "historicalClaim": "**Partial**: persistent groups store actual soldiers, routes, strength, seeds, arrival times, and surviving occupation forces. Waiting and travel stop for a real sector defense.",
+      "acceptance": "Opposing surface routes now delay the actual enemy group and resolve contact at the player arrival sector, including saved waits, cancellation and occupied return destinations; see [route crossings](route-crossings.md). [Finite command reserves](enemy-reserves.md) now debit each newly dispatched group and persist after casualties, history trimming and reload. [Observed enemy reports](enemy-intelligence.md) now retain last sightings from fit local soldiers, nearby militia and actual contact, with stationary counts hidden and no future route or ETA. Territorial recruitment, garrison-to-group transfers and broader intelligence remain incomplete.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-S07",
+      "requirement": "A defended sector can offer tactical defense, retreat, or auto-resolve with real losses. G19,59-60; M8-9,34.",
+      "historicalClaim": "**Implemented adaptation**: Spanish encounter controls offer tactical defense, seeded shared-engine auto-resolve, or pre-combat adjacent withdrawal. Local hired soldiers and militia spend gear and return wounds/losses once; forts affect cover. Combat timeout attempts bounded physical withdrawal and leaves unresolved encounters playable. Captives retain state and are released by recapture.",
+      "acceptance": "Original individual auto-resolve retreat controls and automatic explosive use are not reproduced. Live checks for the latest timeout handoff remain pending.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-S08",
+      "requirement": "Army pressure responds to progress, valuable targets, and the campaign's current state. G19,59,69,96-97.",
+      "historicalClaim": "**Partial**: timed northern columns move through the corridor, naval forces target revenue, and partisan groups threaten supply; actual defeat and persistent counterattack change control, blockade, gear, and personnel.",
+      "acceptance": "[Finite reinforcement budgets](enemy-reserves.md) now constrain northern, coastal and interior dispatches independently. Mobile-group intelligence now follows [saved observations](enemy-intelligence.md), rather than exposing exact off-map orders. Territorial recruitment, force-request priorities and broader intelligence still need a strategic simulation.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-S09",
+      "requirement": "Civilians and quests affect civic support and territorial cooperation. G69,75-95.",
+      "historicalClaim": "**Partial; civilian harm implemented**: civilian bodies can receive firearm, knife, cannon and grenade impacts. Persistent player wounds cause refusal; death responsibility and territorial control affect local support once. Named injuries survive recruitment, reports and saves. Equipped bandages now treat civilians; bleeding, dressings and delayed death attribution persist. See [civilian first aid](civilian-first-aid.md). Capturing a town preserves prior support losses. See [civilian consequences](civilian-consequences.md).",
+      "acceptance": "Armed civilian factions, militia retaliation, witness-based attribution, distant-town effects, morale, theft/aid reputation and failed-quest branches remain incomplete.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-W01",
+      "requirement": "Multiple six-person squads act independently with real locations. G16,69.",
+      "historicalClaim": "**Implemented**: `squads.js`, up to eight squads, strict co-location and squad tests. Formation now permits a chosen town with physically present personnel, even when another squad is marching. The labelled selector, exact location/route preservation, rejection and save cases pass; a live production-component check formed the actual San Nicolás reserve while the selected force remained in Tucumán. See [remote formation](remote-squad-formation.md).",
+      "acceptance": "New work assignments, travel and tactical defense must not silently select or teleport another squad.",
+      "evidenceFiles": [
+        "game/squads.js"
+      ]
+    },
+    {
+      "id": "JA2-W02",
+      "requirement": "Travel is a queued process with route choice, arrival time, cancellation, and encounters. G71-73; M43-44.",
+      "historicalClaim": "**Partial**: the map now schedules concurrent squad routes with waypoints, stage/destination ETA, real in-transit availability, stop-after-stage, timed reversal, save/reload, exhaustion pauses and same-hour arrival defenses. Contracts and hired mounts stay with travelers until a real arrival. See [queued travel](squad-travel.md). Squad rows and numbered map markers now start a read-only route preview. A second destination click or confirmation queues the actual route; Escape and right-click cancel only the draft. The compact desktop screen keeps the roster, map and clock together. Model, render and live two-squad checks cover this interface; see [map orders](strategic-map-orders.md).",
+      "acceptance": "Hostile map orders now queue an adjacent approach and stop at the boundary. Ready squads may attack together, wait for later squads, or return over the distance already covered. Up to eight squads deploy through their real approach edges and remain separate after battle. See [coordinated attacks](coordinated-assault.md). Opposing-route contact now follows JA2's destination-sector model; see [route crossings](route-crossings.md). Initial hostile arrivals now have a saved placement screen with single-soldier/group selection, clear, spread and confirmation on each actual approach edge. Contact waits until confirmation; peaceful and resumed encounters retain their normal entry. See [sector arrival placement](sector-arrival-placement.md). Mid-battle arrival placement remains open. Fatigue stops after a stage follow the classic source; saved collapse now requires recovery before manual waking and route resumption. See [sleep evidence](sleep.md). Scripted attack orders can still use the blocking API. Travel hours and transport costs remain period-game tuning. Explicit multi-squad San Lorenzo assembly, southern arrival placement, return/save validation and live eight-person entry are now supported; see [mission squads](mission-squads.md).",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-W03",
+      "requirement": "Transport has capacity, operating cost, route restrictions, and recovery opportunities. G69,71-73.",
+      "historicalClaim": "**Partial**: horses, postas, carts, mules and flotilla have strategic rules.",
+      "acceptance": "Connect actual riders/cargo to capacity and passenger rest; tactical vehicle-like operation needs an appropriate period vehicle/vessel design.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-W04",
+      "requirement": "The map exposes known enemy information, roads, locations, supplies, assignments, and time. G59-60,69-73.",
+      "historicalClaim": "**Partial**: strategic panels cover much of this data. WebMCP preserves player resources, ownership, squads, hired/captured records, horses and the same observed/stale enemy reports displayed by the UI. It omits authoritative enemy rosters, future waypoints, RNG, pending deployment internals and stored tactical snapshots. Live projected reads and successful action responses worked; the actual post-care return showed patriot San Nicolás and the correct resident squad. See [live record](ja2-live-verification.md).",
+      "acceptance": "Hidden-enemy and private-field exclusion remain pure-test evidence. Strategic summaries expose owned routes and in-transit status. Enemy reports now use [observed or stale sightings](enemy-intelligence.md); hidden groups, future routes and arrival schedules are not projected. Current/old reports, actual contact and save continuation pass simulation and live interface checks; authored static garrison intelligence remains separate. New fields default to private through explicit allowlists. This is a state-read/response boundary, not a new mutation-authorization system or proof of all map controls.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-W05",
+      "requirement": "Dialogue offers approaches whose outcomes depend on the speaker and prior events. G29-31,75-106; M27-28.",
+      "historicalClaim": "**Partial**: special characters, including non-recruitable quest and mission contacts, use a compact portrait/text/choices panel over the map. Ordinary civilians and enemies use brief varied replies without a conversation menu. J selects the talk cursor. Range, visibility, actor availability and actual campaign choices are enforced. Nine new tests, the full 1,450-test suite and live quest/speech/save checks pass; see [dialogue interface](npc-dialogue.md). Special panels now replay each character's last saved reply without repeating effects. Direct questions report current recruitment blockers; fresh local recruitment of Cabral, Dorrego and Paroissien is corrected. Five simulation cases, one component case and live quest replay/save checks cover the change.",
+      "acceptance": "Player-wounded contacts now persistently refuse cooperation; named injury and death reach recruitment records. See [civilian consequences](civilian-consequences.md). Other failed approaches, personality/reputation effects and quest failures remain incomplete. Some special contacts currently use an existing generic period portrait.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-W06",
+      "requirement": "Giving a carried object can complete a local interaction. G75-95; M7-8,25,27.",
+      "historicalClaim": "**Partial**: the Retiro clothing errand now uses two physical ponchos. Selecting a carried garment and clicking its recipient transfers one exact object, with legal approach, visibility and availability checks. NPC ownership, item identity, partial delivery, full saves and reentry persist. Selected pocket, hand and worn items now use direct NPC offers, with contact-time acceptance/refusal, portrait replies and automatic quest progress. The first poncho starts the errand; the second rewards once without confirmation. See [selected NPC gifts](selected-npc-gifts.md) for current validation and [carried deliveries](carried-quest-deliveries.md) for the earlier held-item flow.",
+      "acceptance": "Tucumán now accepts three physically carried dressings through selected single or partial-batch offers. Excess and wrong items are refused, exact custody survives saves/reentry, the notebook tracks acknowledged quantities, and the loyalty reward occurs once. All 49 focused checks, type checking and the build pass; live partial delivery, excess refusal, cursor return, completion and reload/notebook checks also pass. See [medical delivery](physical-medical-delivery.md). Extend physical giving to other suitable portable quest goods and NPC responses. The bulk powder and cavalry-supply errands still consume campaign resources.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-W07",
+      "requirement": "Quests include exploration, deliveries, rescue/escort, and branching local consequences. G75-106.",
+      "historicalClaim": "**Partial**: three errands and authored San Lorenzo/Yatasto progression. Accepted errands now fail permanently when their contact has a newly acknowledged death. The campaign log records the failure once; partial delivered objects remain with the contact, completed rewards remain credited, and saves require a matching death receipt. See [quest failures](quest-failures.md).",
+      "acceptance": "Jujuy now has a local escort entity with adjacent follow/wait and leader-change dialogue, real civilian movement, a physical western-exit destination, required territorial control, saved orders, death failure and a one-time reward. Live arrival and reload/notebook verification pass; see [escort gameplay](escort-gameplay.md). Expand optional resolutions, broader consequences and escape destinations. Do not copy Arulco's story into the historical setting.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-W08",
+      "requirement": "Surrender, capture, imprisonment, and rescue are distinct from death or rout. G66-68.",
+      "historicalClaim": "**Partial**: mobile rout, trapped surrender, physical departure, field capture, inaccessible captive gear/ammunition, contract pause and release after recapture have separate records and tests. The established-area route retains actual deaths and captures at Tucumán and in a coastal defeat. Paid relief squads defeat the persistent enemies and release their prisoners with actual wounds, equipment and remaining contract time. A dropped-gun release regression preserves loose ammunition without inventing personal loading. See [northern route](northern-route.md).",
+      "acceptance": "Physical detainees now retain tactical wounds, first aid, death and save receipts. Able guards can provide finite care using confiscated dressings during elapsed strategic time; both sector-recapture rescue routes pass. See [detention care](detention-gameplay.md). Paid physical release, finite following, adjacent wait/follow orders, replacement leadership, saved failed attempts and distinct recapture identities now pass focused and live control checks. Joint safe-exit rescue now restores remaining service at the actual destination and leaves confiscated equipment for later physical pickup. Controlled live exit/return/reload and simulation checks pass. An unaided rescue approach, self-directed escape, detention choices and their narrative consequences remain open. Coastal defense victory now releases prisoners after the last local enemy group is defeated, including sectors that retained patriot ownership. A returning-squad regression covers actual capture, travel reversal and encounter entry, then a scripted victory report isolates settlement. It verifies retained wounds, ammunition, saves, duplicate-report rejection and no release while another local group remains. This does not establish a playable prison scene or combat balance.",
+      "evidenceFiles": []
+    },
+    {
+      "id": "JA2-W09",
+      "requirement": "Tactical changes, local gear, personnel condition, and unfinished battles survive return and save/load. G19-20,64-66.",
+      "historicalClaim": "**Implemented** for current state: `world.js`, `save.js`, schema validators and integration tests.",
+      "acceptance": "Every added awareness, trap, attachment, inventory slot, assignment, enemy group, and interrupt state needs a validated migration and a reload continuation test. Large browser/export saves now use lossless terrain palettes after a real final-battle save exceeded 5 MB. The file limit remains, with bounded expansion and exact state validation. Older saves, malformed compact input, deterministic continuation and live reloads are verified; see [compact saves](compact-saves.md). Ordinary issued guns now retain paid unfinished reload work through campaign returns, save/load, and redeployment. A live controlled return/reload check and the fresh northern route pass; see [campaign reload work](campaign-reload-work.md). Every held gun now retains its actual load on campaign return, including ordinary full and empty guns. Exact stock/held accounting, repeated return/save/reentry, exhausted firing, armory swaps and the fresh route through Mendoza pass; see [persistent gun loads](campaign-gun-loads.md). Initial issue and finite reserve replenishment remain separate strategic supply behavior. Stationed artillery now consumes depot stock once and retains identity, position, ownership, load, reserves and unfinished loading through reports and reentry. Thirteen new tests and a live purchase/victory/exhaustion/resupply/reload/save route pass; see [stationed artillery](stationed-artillery.md). Deployed guns can now be recovered into cart or flotilla convoys and arrive in a local depot with exact identity, ammunition and unfinished loading. Local crew, secured terrain, route and capacity rules apply; interrupted delivery, redeployment and save validation pass. Live dispatch, reload/resume and arrival retain the gun state. See [artillery transport](artillery-transport.md). Tactical convoy ambushes and disassembled high-pass transport remain outside this implementation.",
+      "evidenceFiles": [
+        "game/save.js",
+        "game/world.js"
+      ]
+    },
+    {
+      "id": "JA2-W10",
+      "requirement": "A complete campaign can be played from a clean start through the actual tactical rules. G13-18,59,75-106.",
+      "historicalClaim": "**Partial; current integration check, 27 September:** the fresh paid route passes the opening, northern battles, Córdoba medical recovery and its actual counterattack, survivor reunification and a Tucumán victory. Battles retain replay, save and permanent-casualty assertions. The next care helper fails because a wounded location has no fit local medic. The current broad run has 2,944 passed, four failed and three skipped of 2,951 checks. See [current evidence](evidence/campaign-progress-cordoba-2026-09-27.json) and [remaining work](gameplay-follow-up-2026-09-27.md). Earlier coastal, mountain and final northern checkpoints remain historical evidence, not current clean-start acceptance.",
+      "acceptance": "Complete real medical relief, then revalidate the remaining route and actual ending with paid supplies and real casualties. Established Córdoba recapture and physical Humahuaca rescue also fail. Scripted victory reports isolate subsystem settlement; they do not prove campaign playability or general balance.",
+      "evidenceFiles": []
+    }
+  ]
+}
