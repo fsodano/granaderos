@@ -1,3 +1,4 @@
+import { compileWeaponDefinition } from "./weapon-definition.js";
 // Versioned authoring data. No mutable campaign state or global catalog changes.
 import { defaultArrivalSites, validateArrivalSites } from "./arrival-sites.js";
 import { CONTENT_CELLS, contentCellIds } from "./content-map.js";
@@ -139,6 +140,7 @@ export function validateContentPackage(value) {
   }
   for (const w of value.weapons.filter(record)) {
     text(w.name, w.id, 100);
+    try { compileWeaponDefinition(w); } catch(error) { errors.push(`${w.id}: ${error.message}`); }
     check(
       FIREARM_TEMPLATES.some((t) => t.id === w.template),
       `${w.id}.template`,

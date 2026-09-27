@@ -43,7 +43,7 @@ test('S2 inventory: Güemes stats, hand slots, slotAction, backpack records, sup
   assert.deepEqual(slotAction(u),{type:'weapon',slot:'blade'});
   u.activeSlot='blade';assert.deepEqual(slotAction(u),{type:'weapon',slot:'primary'});u.activeSlot='primary';
   u.inventory.found={count:1,weight:4,weapon:1800,loaded:1,condition:63,jammed:true};
-  assert.deepEqual(inventoryModel(s,u).backpack.find(b=>b.key==='found'),{key:'found',count:1,weight:4,weapon:1800,loaded:1,condition:63,jammed:true,equippable:true,name:'Brown Bess'});
+  assert.deepEqual(inventoryModel(s,u).backpack.find(b=>b.key==='found'),{key:'found',count:1,weight:4,weapon:1800,loaded:1,condition:63,jammed:true,equippable:true,name:'Brown Bess',art:'/art/weapon-1800.png'});
   assert.deepEqual(backpackEquipAction('found','primary'),{type:'equipLoot',inventoryKey:'found',slot:'primary'});
   u.inventory.junk={count:1,weight:2,weapon:9999,loaded:0};
   assert.equal(inventoryModel(s,u).backpack.find(b=>b.key==='junk').equippable,false);

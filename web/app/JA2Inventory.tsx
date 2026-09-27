@@ -105,7 +105,7 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
       </div>
       <div className="paper-doll">
         <button className={`hand-slot primary ${inv.activeSlot === 'primary' ? 'active' : ''}`} disabled={busyDisabled} aria-label={`Arma principal: ${slots.primary?.name ?? '—'}. Cambiar a arma secundaria`} onClick={() => onOrder(slotAction(unit))}>
-          {slots.primary?.id >= 1800 && slots.primary?.id <= 1813 && <img src={`/art/weapon-${slots.primary.id}.png`} alt="" />}
+          {slots.primary?.id >= 1800 && slots.primary?.id <= 1813 && <img src={slots.primary.art??`/art/weapon-${slots.primary.id}.png`} alt="" />}
           <span>{slots.primary?.name ?? '—'}</span>
         </button>
         <button className={`hand-slot blade ${inv.activeSlot === 'blade' ? 'active' : ''}`} disabled={busyDisabled} aria-label={`Arma secundaria: ${slots.blade?.name ?? '—'}. Cambiar a arma principal`} onClick={() => onOrder(slotAction(unit))}>
@@ -124,6 +124,7 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
           const blade = (BLADES as any)[item.weapon];
           return (
             <div key={item.key} className={`slot-cell ${item.equippable ? 'equippable' : ''}`}>
+              {item.art&&<img src={item.art} alt="" style={{width:"100%",height:45,objectFit:"contain"}}/>}
               <span>{item.name ?? 'Pertrechos'} · {item.count}{gun ? ` · ${item.loaded || 0} carga(s)` : ''}{item.condition !== undefined ? ` · estado ${item.condition}%` : ''}</span>
               {item.equippable && <>
                 <button className="line-button" disabled={equipDisabled} onClick={() => onOrder(backpackEquipAction(item.key, 'primary'))}>Equipar principal · 6 PA</button>

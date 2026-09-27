@@ -11,9 +11,10 @@ import {enterSector} from '../game/world.js';
 register('./tactical-render-loader.mjs',import.meta.url);
 const {default:StoryEditor}=await import('../web/app/story/page.tsx');
 const {default:Recruitment}=await import('../web/app/Recruitment.tsx');
+const {default:Armory}=await import('../web/app/Armory.tsx');
 const draftKey='granaderos.content-draft.v1';
 
-async function mount(t,stored,launch=null,recruitCampaign=null){
+async function mount(t,stored,launch=null,recruitCampaign=null,view='recruitment'){
  const console=new VirtualConsole();
  console.on('jsdomError',error=>{if(!error.message.includes('navigation'))throw error;});
  const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:launch?'https://granaderos.test/?content=1&launch=1':'https://granaderos.test/story',pretendToBeVisual:true,virtualConsole:console});
@@ -21,14 +22,14 @@ async function mount(t,stored,launch=null,recruitCampaign=null){
  if(launch)dom.window.sessionStorage.setItem(CONTENT_LAUNCH_KEY,encodeSave(launch));
  dom.window.scrollTo=()=>{};
  dom.window.localStorage.setItem('granaderos.campaign.v1','ordinary save');
- const globals={window:dom.window,document:dom.window.document,navigator:dom.window.navigator,localStorage:dom.window.localStorage,sessionStorage:dom.window.sessionStorage,HTMLElement:dom.window.HTMLElement,Element:dom.window.Element,Node:dom.window.Node,Document:dom.window.Document,ShadowRoot:dom.window.ShadowRoot,MutationObserver:dom.window.MutationObserver,getComputedStyle:dom.window.getComputedStyle.bind(dom.window),requestAnimationFrame:dom.window.requestAnimationFrame.bind(dom.window),cancelAnimationFrame:dom.window.cancelAnimationFrame.bind(dom.window),IS_REACT_ACT_ENVIRONMENT:true};
+ const globals={window:dom.window,document:dom.window.document,navigator:dom.window.navigator,localStorage:dom.window.localStorage,sessionStorage:dom.window.sessionStorage,HTMLElement:dom.window.HTMLElement,Element:dom.window.Element,Node:dom.window.Node,Document:dom.window.Document,ShadowRoot:dom.window.ShadowRoot,MutationObserver:dom.window.MutationObserver,getComputedStyle:dom.window.getComputedStyle.bind(dom.window),requestAnimationFrame:dom.window.requestAnimationFrame.bind(dom.window),cancelAnimationFrame:dom.window.cancelAnimationFrame.bind(dom.window),FileReader:dom.window.FileReader,IS_REACT_ACT_ENVIRONMENT:true};
  const previous=new Map(Object.keys(globals).map(key=>[key,Object.getOwnPropertyDescriptor(globalThis,key)]));
  for(const [key,value]of Object.entries(globals))Object.defineProperty(globalThis,key,{configurable:true,writable:true,value});
  const {createRoot}=await import('../web/node_modules/react-dom/client.js');
  const root=createRoot(dom.window.document.getElementById('root'));
  t.after(async()=>{try{await act(async()=>root.unmount());}finally{dom.window.close();for(const [key,descriptor]of previous){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}});
  let current=recruitCampaign;
- function HiringScreen(){const [campaign,setCampaign]=useState(recruitCampaign);current=campaign;return h(Recruitment,{state:campaign,dispatch:action=>setCampaign(s=>dispatchCampaign(s,action))});}
+ function HiringScreen(){const [campaign,setCampaign]=useState(recruitCampaign);current=campaign;return h(view==='armory'?Armory:Recruitment,{state:campaign,dispatch:action=>setCampaign(s=>dispatchCampaign(s,action))});}
  const Component=recruitCampaign?HiringScreen:launch?(await import('../web/app/page.tsx')).default:StoryEditor;
  await act(async()=>root.render(h(Component)));
  const document=dom.window.document;
@@ -80,11 +81,11 @@ test('invalid stored data is retained for recovery instead of crashing or being 
  assert.equal(parseContentPackage(m.dom.window.localStorage.getItem(draftKey)).characters[0].name,'Nuevo borrador');
 });
 
-test('weapons and placement drafts cannot launch until those settings are applied by the campaign',async t=>{
- const draft=defaultContentPackage();draft.weapons[0].damage++;
+test('placement drafts cannot launch until those settings are applied by the campaign',async t=>{
+ const draft=defaultContentPackage();draft.placements[0].sectors=['cell-0-0'];
  const m=await mount(t,JSON.stringify(draft));
  assert.equal(m.button('Iniciar campaña con estas fichas').disabled,true);
- assert.match(m.document.querySelector('.campaign-launch').textContent,/armas editadas/);
+ assert.match(m.document.querySelector('.campaign-launch').textContent,/apariciones editadas/);
  assert.equal(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY),null);
 });
 
@@ -156,4 +157,37 @@ test('the mounted bulletin hires to a chosen port, redirects and cancels with on
  await m.input(m.label('Estado'),'pending');card=m.document.querySelector('[data-operative-id="110"]');assert.ok(card);
  await m.click([...card.querySelectorAll('button')].find(b=>b.textContent.startsWith('Cancelar llegada')));
  assert.equal(m.campaign.resources.treasury,initial.resources.treasury);assert.equal(m.campaign.hiringArrivals.length,0);
+});
+
+
+test('the editor creates a firearm with a custom image and launches its actual campaign assignment',async t=>{
+ const m=await mount(t);await m.click(m.button('Armas de fuego'));await m.click(m.button('+ Crear arma'));
+ await m.input(m.label('Nombre'),'Pistola de prueba');
+ await m.input(m.label('Familia de funcionamiento'),'1805');
+ await m.input(m.label('Daño'),37);await m.input(m.label('Capacidad de carga'),3);await m.input(m.label('Peso (kg)'),2);await m.input(m.label('Precio (pesos)'),180);
+ const file=new m.dom.window.File([Uint8Array.from(Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aL5kAAAAASUVORK5CYII=','base64'))],'weapon.png',{type:'image/png'});
+ const input=m.document.querySelector('input[aria-label="Imagen del arma"]');Object.defineProperty(input,'files',{configurable:true,value:[file]});
+ await act(async()=>{input.dispatchEvent(new m.dom.window.Event('change',{bubbles:true}));await new Promise(resolve=>setTimeout(resolve,30));});
+ let draft=parseContentPackage(m.dom.window.localStorage.getItem(draftKey));const weapon=draft.weapons.find(w=>w.name==='Pistola de prueba');assert.ok(weapon);assert.match(weapon.art,/^data:image\/png;base64,/);
+ assert.equal(m.document.querySelector('.weapon-preview').getAttribute('src'),weapon.art);
+ await m.click(m.button('Personajes'));await m.input(m.document.querySelector('input[type="search"]'),'person-100');await m.click(m.document.querySelector('.entry-list button'));
+ await m.input(m.label('Arma de fuego'),weapon.id);await m.click(m.button('Iniciar campaña con estas fichas'));
+ let campaign=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY)).campaign;
+ campaign=dispatchCampaign(campaign,{type:'recruitCivic',id:100,term:'week'});assert.equal(campaign.lastError,null);
+ campaign=dispatchCampaign(campaign,{type:'wait',hours:6});assert.equal(campaign.lastError,null);
+ campaign=dispatchCampaign(campaign,{type:'visitSector'});assert.equal(campaign.lastError,null);
+ const restored=decodeSave(encodeSave(campaign,enterSector(campaign.pendingBattle))),unit=restored.battle.units.find(u=>u.id==='100');
+ assert.equal(unit.loaded,3);assert.equal(unit.weaponMetadata.contentWeapon.damage,37);assert.equal(unit.weaponMetadata.contentWeapon.art,weapon.art);
+});
+
+test('the mounted armory purchases and equips the selected authored firearm instance',async t=>{
+ const d=defaultContentPackage();d.weapons.push({...d.weapons.find(w=>w.template===1805),id:'pistola-editor',name:'Pistola del editor',damage:70,price:200,art:'/art/weapon-1808.png'});
+ let s=initialCampaign(5,d);s=dispatchCampaign(s,{type:'recruitCivic',id:100,term:'week'});s=dispatchCampaign(s,{type:'wait',hours:6});assert.equal(s.lastError,null);
+ const m=await mount(t,undefined,null,s,'armory');
+ const article=[...m.document.querySelectorAll('.armory-catalog article')].find(a=>a.textContent.includes('Pistola del editor'));assert.ok(article);assert.equal(article.querySelector('img').getAttribute('src'),'/art/weapon-1808.png');
+ const treasury=m.campaign.resources.treasury;await m.click(article.querySelector('button'));assert.equal(m.campaign.lastError,null);assert.equal(m.campaign.resources.treasury,treasury-200);
+ const item=m.campaign.armoryItems.find(i=>i.contentWeapon?.id==='pistola-editor');assert.ok(item);
+ await m.input(m.document.querySelector('#armory-weapon'),item.id);assert.equal(m.campaign.lastError,null);
+ const saved=decodeSave(encodeSave(m.campaign)).campaign;assert.equal(saved.operativeState[100].weaponMetadata.contentWeapon.id,'pistola-editor');assert.equal(saved.armory['pistola-editor'],0);
+ assert.match(m.document.querySelector('#armory-weapon').selectedOptions[0].textContent,/Pistola del editor/);
 });

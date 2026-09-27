@@ -24,6 +24,9 @@ import { encodeSave } from '../../../game/save.js';
 import { campaignContentReport } from '../../../game/campaign-content.js';
 import { CONTENT_LAUNCH_KEY } from '../../../game/content-launch.js';
 import './editor.css';
+import {FIREARM_PRICES} from '../../../game/weapon-definition.js';
+import {WEAPONS as BASE_FIREARMS} from '../../../game/firearm-definitions.js';
+import {WEAPONS as BASE_ITEMS} from '../../../game/data.js';
 import PlacementMap from './PlacementMap';
 import ArrivalSites from './ArrivalSites';
 const DRAFT_KEY = 'granaderos.content-draft.v1';
@@ -44,6 +47,9 @@ const labels: Record<string, string> = {
   reloadAP: 'PA de recarga completa',
   range: 'Alcance',
   readyAP: 'PA para levantar el arma',
+  capacity: 'Capacidad de carga',
+  weight: 'Peso (kg)',
+  price: 'Precio (pesos)',
 };
 const clock = (minute: number) =>
   `Día ${Math.floor(minute / 1440) + 1} · ${String(Math.floor((minute % 1440) / 60)).padStart(2, '0')}:${String(minute % 60).padStart(2, '0')}`;
@@ -78,6 +84,7 @@ export default function ContentEditor() {
   const testImportRef = useRef<HTMLInputElement>(null);
   const importRef = useRef<HTMLInputElement>(null);
   const portraitRef = useRef<HTMLInputElement>(null);
+  const weaponArtRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     try {
       const saved = localStorage.getItem(DRAFT_KEY);
@@ -252,7 +259,7 @@ export default function ContentEditor() {
       setNotice(e.message);
     }
   }
-  async function uploadPortrait(file: File | undefined) {
+  async function uploadImage(file: File | undefined, collection: 'characters' | 'weapons', field: 'portrait' | 'art') {
     if (!file || !item) return;
     const target = item.id;
     try {
@@ -269,8 +276,8 @@ export default function ContentEditor() {
       });
       change({
         ...draft,
-        characters: draft.characters.map((c: any) =>
-          c.id === target ? { ...c, portrait: data } : c,
+        [collection]: draft[collection].map((c: any) =>
+          c.id === target ? { ...c, [field]: data } : c,
         ),
       });
     } catch (e: any) {
@@ -285,7 +292,8 @@ export default function ContentEditor() {
           type="number"
           value={Number.isFinite(value) ? value : ''}
           min={key === 'maxHp' ? 15 : 0}
-          max={key === 'reloadAP' ? 500 : 100}
+          max={key === 'reloadAP' ? 500 : key === 'price' ? 1000000 : key === 'weight' ? 30 : key === 'capacity' ? 8 : 100}
+          step={key === 'weight' ? .1 : 1}
           onChange={(e) =>
             update(
               attributes
@@ -374,10 +382,11 @@ export default function ContentEditor() {
         type="file"
         accept="image/png,image/jpeg,image/webp"
         onChange={(e) => {
-          void uploadPortrait(e.target.files?.[0]);
+          void uploadImage(e.target.files?.[0], 'characters', 'portrait');
           e.target.value = '';
         }}
       />
+      <input hidden ref={weaponArtRef} type="file" accept="image/png,image/jpeg,image/webp" aria-label="Imagen del arma" onChange={e=>{void uploadImage(e.target.files?.[0],'weapons','art');e.target.value='';}}/>
       {notice && (
         <div role="status" className="notice">
           {notice}
@@ -392,10 +401,10 @@ export default function ContentEditor() {
         apariciones. Podés iniciar una campaña separada con las fichas editadas.
       </p>
       <section className="campaign-launch" aria-label="Integración de campaña">
-        <h2>Jugar con las fichas editadas</h2>
+        <h2>Jugar con el contenido editado</h2>
         <p>
           Aplica nombres, apodos, biografías, retratos, atributos iniciales y
-          paga y tiempo de viaje de los mercenarios existentes. Los puntos de llegada se configuran en Llegadas. La partida conserva una copia de
+          paga y tiempo de viaje de los mercenarios existentes, además de sus armas de fuego. Los puntos de llegada se configuran en Llegadas. La partida conserva una copia de
           este contenido y se guarda por separado.
         </p>
         {integration && (
@@ -494,7 +503,7 @@ export default function ContentEditor() {
                     setSelected(i.id);
                   }}
                 >
-                  {tab === 'weapons' && <img className="weapon-thumbnail" src={`/art/weapon-${i.template}.png`} alt=""/>}
+                  {tab === 'weapons' && <img className="weapon-thumbnail" src={i.art??`/art/weapon-${i.template}.png`} alt=""/>}
                   {i.name ??
                     draft.characters.find((c: any) => c.id === i.character)
                       ?.name ??
@@ -608,7 +617,10 @@ export default function ContentEditor() {
                 )}
                 {tab === 'weapons' && (
                   <>
-                    <img className="weapon-preview" src={`/art/weapon-${item.template}.png`} alt={item.name}/>
+                    <img className="weapon-preview" src={item.art??`/art/weapon-${item.template}.png`} alt={item.name}/>
+                    <button onClick={()=>weaponArtRef.current?.click()}>Cambiar imagen del arma</button>
+                    <button disabled={!item.art} onClick={()=>update({art:undefined})}>Usar imagen de la familia</button>
+                    <small>PNG, JPEG o WebP · hasta 250 KB</small>
                     <label>
                       Nombre
                       <input
@@ -632,9 +644,7 @@ export default function ContentEditor() {
                       </select>
                     </label>
                     <p>
-                      La familia conserva la munición, los cañones y el manejo
-                      del arma original. Los valores siguientes se aplican en la
-                      prueba de tiro.
+                      La familia conserva el mecanismo del arma original. Estos valores se usan en la prueba de tiro y en la campaña, incluida la armería y el equipo recuperado.
                     </p>
                     <div className="fields">
                       {[
@@ -644,6 +654,9 @@ export default function ContentEditor() {
                         'reloadAP',
                         'range',
                       ].map((k) => numeric(k, item[k]))}
+                      {numeric('capacity',item.capacity??BASE_FIREARMS[item.template]?.capacity)}
+                      {numeric('weight',item.weight??(BASE_ITEMS as any)[item.template]?.weight)}
+                      {numeric('price',item.price??(FIREARM_PRICES as any)[item.template])}
                     </div>
                   </>
                 )}

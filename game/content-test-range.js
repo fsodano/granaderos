@@ -1,3 +1,4 @@
+import {weaponMetadata} from './weapon-definition.js';
 import { resolveContent } from "./content-package.js";
 import { createBattle, WEAPONS, actBattle, shotChance, actionCosts } from "./tactical.js";
 // The first adapter reuses a verified firearm family for ammunition/handling.
@@ -9,23 +10,14 @@ export function createContentTestRange(content, characterId, seed = 18130203) {
   if (!character) throw Error("Seleccioná un personaje.");
   const weapon = definitions.weapons.find((w) => w.id === character.weapon);
   if (!weapon) throw Error("Asigná un arma de fuego para probar el tiro.");
-  const profile = {
-    ...WEAPONS[weapon.template],
-    ...Object.fromEntries(
-      ["name", "damage", "fireAP", "aimAP", "reloadAP", "range", "readyAP"].map((k) => [
-        k,
-        weapon[k],
-      ]),
-    ),
-    contentId: weapon.id,
-  };
   const unit = {
     ...character.attributes,
     id: character.id,
     name: character.name,
     nickname: character.nickname,
     hp: character.attributes.maxHp,
-    weapon: profile,
+    weapon: weapon.template,
+    weaponMetadata: weaponMetadata(weapon),
     ammo: 20,
     blade: 1813,
     x: 2,
