@@ -1,3 +1,4 @@
+import {secureArea} from './controlled-area-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
@@ -29,7 +30,7 @@ test('income readout matches actual campaign daily payout',()=>{
  assert.equal(next.resources.treasury-s.resources.treasury,expected);
 });
 test('income readout applies control, damage and blockade without mutation',()=>{
- const s=initialCampaign(),d=CAMPAIGN_SECTORS.find(d=>d.id==='ensenada');
+ const s=secureArea(initialCampaign(),'ensenada'),d=CAMPAIGN_SECTORS.find(d=>d.id==='ensenada');
  s.sectors[d.id].damageUntil=10;s.blockade=true;
  const before=JSON.stringify(s);
  assert.equal(sectorIncome(s,d),10);

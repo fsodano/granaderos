@@ -1,10 +1,11 @@
+import {secureArea} from './controlled-area-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,restoreCampaign} from '../game/campaign.js';
 import {tradeQuote} from '../game/politics.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null);return n;};
 test('actual import orders use reputation prices and retain shipping delay',()=>{
- let s=initialCampaign();s.reputation.foreign=60;const cash=s.resources.treasury;
+ let s=secureArea(initialCampaign(),'ensenada');s.reputation.foreign=60;const cash=s.resources.treasury;
  s=order(s,{type:'purchaseEquipment',item:1802});assert.equal(cash-s.resources.treasury,336);assert.ok(s.equipmentShipments[0].due>=72&&s.equipmentShipments[0].due<=120);
  assert.equal(tradeQuote({...s,reputation:{foreign:0}},250),300);
 });

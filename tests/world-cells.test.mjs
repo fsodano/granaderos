@@ -1,3 +1,4 @@
+import {secureArea} from './controlled-area-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,serializeCampaign,restoreCampaign,isSupplied,operativeLocation,dailyIncome} from '../game/campaign.js';
@@ -12,7 +13,7 @@ import {encodeSave,decodeSave} from '../game/save.js';
 import {syncBattleTime} from '../game/time.js';
 import {expandCellScene} from '../game/cell-scene-storage.js';
 const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError,null,`${a.type}: ${next.lastError}`);return next;};
-const ready=()=>order(initialCampaign(42),{type:'recruitCivic',id:110,term:'week'});
+const ready=()=>order(secureArea(initialCampaign(42),'buenos_aires','ensenada'),{type:'recruitCivic',id:110,term:'week'});
 const saved=(s,b=null)=>decodeSave(encodeSave(s,b));
 const travel=(s,sector)=>order(s,{type:'travel',sector});
 const visit=s=>{const campaign=order(s,{type:'visitSector'});return {campaign,battle:enterSector({...campaign.pendingBattle,hour:campaign.hour},campaign.sectorStates[campaign.location])};};

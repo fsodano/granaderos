@@ -1,3 +1,4 @@
+import {secureArea} from './controlled-area-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
@@ -129,7 +130,7 @@ test('older authored saves retain their original fixed behavior; edited location
 
 test('an actual hostile-sector assault deploys its authored resident and preserves it in a full active save',()=>{
  let s=ready(definition({sectors:['san_nicolas']}));
- s=travel(s,'buenos_aires');
+ secureArea(s,'buenos_aires');s=travel(s,'buenos_aires');
  s=order(s,{type:'attack',sector:'san_nicolas'});
  assert.equal(s.pendingBattle.wasRoyalist,true);
  assert.equal(s.pendingBattle.npcs.filter(n=>n.operativeId===3).length,1);

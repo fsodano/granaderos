@@ -1,3 +1,4 @@
+import {secureArea} from './controlled-area-fixture.mjs';
 import {register} from 'node:module';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -217,6 +218,7 @@ test('mounted authoring configures travel and plausible reception sites through 
  assert.equal(content.arrivalSites.some(s=>s.sector==='retiro'),false);
  await m.click(m.button('Iniciar campaña con estas fichas'));
  let campaign=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY)).campaign;
+ assert.ok(dispatchCampaign(campaign,{type:'recruitCivic',id:110,term:'week',destination:'ensenada'}).lastError);secureArea(campaign,'ensenada');
  campaign=dispatchCampaign(campaign,{type:'recruitCivic',id:110,term:'week',destination:'ensenada'});assert.equal(campaign.lastError,null);
  assert.equal(campaign.recruited.includes(110),false);assert.equal(campaign.hiringArrivals[0].dueAt,3);
  campaign=dispatchCampaign(decodeSave(encodeSave(campaign)).campaign,{type:'wait',hours:3});assert.equal(campaign.lastError,null);
@@ -224,7 +226,7 @@ test('mounted authoring configures travel and plausible reception sites through 
 });
 
 test('the mounted bulletin hires to a chosen port, redirects and cancels with one refund',async t=>{
- const initial=initialCampaign(42,defaultContentPackage());
+ const initial=secureArea(initialCampaign(42,defaultContentPackage()),'ensenada');
  const m=await mount(t,undefined,null,initial);
  await m.input(m.label('Buscar mercenario'),rosterFor(initial).find(o=>o.id===110).name);
  await m.input(m.label('Destino de nuevos contratados'),'ensenada');
@@ -284,7 +286,7 @@ test('the editor assigns troop firearms with undo, dependency protection and a r
  await m.input(m.document.querySelector('input[type="search"]'),'tropa-editor');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Eliminar'));
  assert.match(m.document.querySelector('.notice').textContent,/tropas que la usan/);assert.ok(draft().weapons.some(w=>w.id==='tropa-editor'));
  await m.click(m.button('Iniciar campaña con estas fichas'));let s=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY)).campaign;
- for(const action of [{type:'recruitCivic',id:110,term:'week'},{type:'wait',hours:6},{type:'travel',sector:'buenos_aires'},{type:'attack',sector:'san_nicolas'}]){s=dispatchCampaign(s,action);assert.equal(s.lastError,null);}
+ for(const action of [{type:'recruitCivic',id:110,term:'week'},{type:'wait',hours:6},{type:'attack',sector:'buenos_aires'}]){s=dispatchCampaign(s,action);assert.equal(s.lastError,null);}
  const saved=decodeSave(encodeSave(s,enterSector(s.pendingBattle)));assert.equal(saved.battle.units.find(u=>u.id==='enemy-0').weaponMetadata.contentWeapon.id,'tropa-editor');assert.equal(saved.battle.units.find(u=>u.id==='enemy-0').loaded,4);
 });
 test('an older draft can enable troop authoring without missing references',async t=>{

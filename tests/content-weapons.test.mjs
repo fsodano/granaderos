@@ -1,3 +1,4 @@
+import {secureArea} from './controlled-area-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {defaultContentPackage} from '../game/content-package.js';
@@ -41,7 +42,7 @@ test('authored variants own separate shop prices, stock and exact used armory in
 });
 test('imported edited guns retain identity through saved shipment and blockade delays',()=>{
  const d=content(),w=d.weapons.find(w=>w.id==='firearm-1800');w.damage=81;w.name='Fusil del puerto';w.price=450;
- let s=order(initialCampaign(8,d),{type:'purchaseEquipment',item:w.id});assert.equal(s.resources.treasury,2750);
+ let s=order(secureArea(initialCampaign(8,d),'ensenada'),{type:'purchaseEquipment',item:w.id});assert.equal(s.resources.treasury,2750);
  const due=s.equipmentShipments[0].due;s.blockade=true;s=order(save(s).campaign,{type:'wait',hours:due});assert.equal(s.equipmentShipments.length,1);assert.equal(s.armoryItems.length,0);
  s.blockade=false;s=order(s,{type:'wait',hours:1});assert.equal(s.equipmentShipments.length,0);assert.equal(contentWeaponOf(s.armoryItems[0]).damage,81);assert.ok(save(s));
 });
@@ -66,7 +67,7 @@ test('loot and repeated swaps conserve both variants, their loads, condition and
 });
 test('a gun taken in combat survives retreat, campaign save and redeployment',()=>{
  const d=content();d.weapons.find(w=>w.id==='pistola-del-sur').damage=100;d.characters.find(c=>c.id==='person-110').attributes.marksmanship=100;
- let s=order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});
+ let s=order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'week'});secureArea(s,'buenos_aires');s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});
  // A compact combat fixture uses the real campaign deployment and return handlers.
  const request=s.pendingBattle,north=d.weapons.find(w=>w.id==='pistola-del-norte');
  let b=createBattle(request.squad.map(u=>({...u,x:1,y:1})),{width:12,height:8,sectorId:request.sector,seed:45,tiles:field().tiles,enemies:[{id:'guard',x:2,y:1,hp:10,weapon:north.template,weaponMetadata:weaponMetadata(north),loaded:3,condition:44},{id:'other',x:11,y:7,weapon:1800}]});

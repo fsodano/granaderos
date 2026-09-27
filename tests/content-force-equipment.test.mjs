@@ -1,3 +1,4 @@
+import {secureArea} from './controlled-area-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {defaultContentPackage,validateContentPackage,parseContentPackage,encodeContentPackage} from '../game/content-package.js';
@@ -22,7 +23,7 @@ function content(){
  return d;
 }
 function attack(d=content()){
- let s=initialCampaign(8,d);for(const id of [110,111,112,113])s=order(s,{type:'recruitCivic',id,term:'week'});
+ let s=secureArea(initialCampaign(8,d),'buenos_aires');for(const id of [110,111,112,113])s=order(s,{type:'recruitCivic',id,term:'week'});
  s=order(s,{type:'travel',sector:'buenos_aires'});return order(s,{type:'attack',sector:'san_nicolas'});
 }
 function train(s,rank){s=order(s,{type:'militia',trainerId:1000,rank});return order(s,{type:'wait',hours:s.militiaTraining[0].remaining});}
@@ -74,7 +75,7 @@ test('a generated enemy firearm can be recovered and retained through campaign r
  assert.equal(weaponFor(b.units.find(u=>u.id==='110')).contentId,'guard-pistol');assert.ok(save(s,b));
 });
 test('trained militia use all authored ranks and retain identity, wear and spent ammunition on reentry',()=>{
- let s=order(initialCampaign(8,content()),{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
+ let s=order(secureArea(initialCampaign(8,content()),'buenos_aires','ensenada'),{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
  s=train(s,0);s=order(s,{type:'visitSector'});let request=s.pendingBattle;assert.equal(request.garrison.length,3);
  assert.ok(request.garrison.every(u=>contentWeaponOf(u).id==='line-pistol'&&u.loaded===6&&u.ammo===0));
  let b=createBattle([...request.squad.map(u=>({...u,x:1,y:8})),...request.garrison.map((u,i)=>({...u,x:1,y:1+i*2}))],{...request,exploration:false,width:14,height:10,tiles,seed:45,enemies:[{id:'raider',x:4,y:1,weapon:1800}]});
@@ -91,6 +92,6 @@ test('saved pending forces and garrisons reject edited definitions, incompatible
  const s=attack();for(const mutate of [u=>u.weapon=1800,u=>u.loaded=99,u=>u.ammo=-1,u=>delete u.ammo,u=>u.weaponMetadata.contentWeapon.damage++]){
   const bad=structuredClone(s);mutate(bad.pendingBattle.enemies[0]);assert.throws(()=>save(bad,enterSector(s.pendingBattle)));
  }
- let militia=order(initialCampaign(8,content()),{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});militia=train(militia,0);militia=order(militia,{type:'visitSector'});militia=leave(militia,enterSector(militia.pendingBattle));
+ let militia=order(secureArea(initialCampaign(8,content()),'buenos_aires','ensenada'),{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});militia=train(militia,0);militia=order(militia,{type:'visitSector'});militia=leave(militia,enterSector(militia.pendingBattle));
  for(const mutate of [u=>u.weapon=1800,u=>u.loaded=99,u=>u.ammo=-1,u=>u.weaponMetadata.contentWeapon.damage++]){const bad=structuredClone(militia);mutate(bad.garrisons.retiro[0]);assert.throws(()=>save(bad));}
 });

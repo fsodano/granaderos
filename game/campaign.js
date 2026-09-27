@@ -76,13 +76,13 @@ const pay = (s,cost) => {for(const [key,value] of Object.entries(cost))requireTh
 const add = (s,values) => {for(const [key,value] of Object.entries(values))s.resources[key]=(s.resources[key]??0)+value;};
 const standing = (s,id,value) => {if(id!=='royalists')s.reputation[id]=clamp(s.reputation[id]+value);};
 export function initialCampaign(seed=1812,content=null){
-  const state={hiringArrivals:[],equipmentShipments:[],missions:{},sceneStates:{},missionAllies:{},garrisons:{},nextMilitiaId:20000,quests:{},cityLoyaltyEvents:[],contracts:{},militiaTraining:[],foundMoney:[],economyVersion:2,version:1,seed:seed>>>0,hour:0,phase:0,location:'retiro',activeSquadId:'squad-1',squads:[{id:'squad-1',name:'Primera escuadra',members:[],location:'retiro'}],sectorStates:{},resources:{treasury:3200},reputation:{directory:35,gauchos:0,pardos:10,foreign:20,indigenous:0,royalists:-100},sectors:Object.fromEntries(CAMPAIGN_SECTORS.map(x=>[x.id,{owner:['buenos_aires','retiro','ensenada'].includes(x.id)?'patriot':'royalist',loyalty:['buenos_aires','retiro','ensenada'].includes(x.id)?65:25,militia:[0,0,0],damageUntil:0,fort:0}])),artillerySelection:[],armory:{},loadouts:{},lastConversation:null,conversations:{},officer:null,recruited:[],squad:[],operativeState:Object.fromEntries([...OPERATIVES,...CIVIC_RECRUITS].map(o=>[o.id,{hp:o.maxHp,fatigue:0,alive:true,xp:0,priming:50,flints:4,rations:2,torches:2,condition:100}])),flags:{armyFunded:false,academy:false,sanLorenzo:false,northPact:false,partisanSupply:false,foundry:false,parliament:false,emancipation:false,commission:false,mentoring:false},routes:{posta:false,flotilla:false,carts:false,mules:false},blockade:false,pendingBattle:null,completed:false,defeated:false,log:[{hour:0,text:'Buenos Aires, 1812. El Cabildo encomienda la formación de los Granaderos. Prepará tu hoja de servicio y reuní a los primeros voluntarios.'}],lastError:null};
+  const state={hiringArrivals:[],equipmentShipments:[],missions:{},sceneStates:{},missionAllies:{},garrisons:{},nextMilitiaId:20000,quests:{},cityLoyaltyEvents:[],contracts:{},militiaTraining:[],foundMoney:[],economyVersion:2,version:1,seed:seed>>>0,hour:0,phase:0,location:'retiro',activeSquadId:'squad-1',squads:[{id:'squad-1',name:'Primera escuadra',members:[],location:'retiro'}],sectorStates:{},resources:{treasury:3200},reputation:{directory:35,gauchos:0,pardos:10,foreign:20,indigenous:0,royalists:-100},sectors:Object.fromEntries(CAMPAIGN_SECTORS.map(x=>[x.id,{owner:x.id==='retiro'?'patriot':'royalist',loyalty:x.id==='retiro'?65:25,militia:[0,0,0],damageUntil:0,fort:0}])),artillerySelection:[],armory:{},loadouts:{},lastConversation:null,conversations:{},officer:null,recruited:[],squad:[],operativeState:Object.fromEntries([...OPERATIVES,...CIVIC_RECRUITS].map(o=>[o.id,{hp:o.maxHp,fatigue:0,alive:true,xp:0,priming:50,flints:4,rations:2,torches:2,condition:100}])),flags:{armyFunded:false,academy:false,sanLorenzo:false,northPact:false,partisanSupply:false,foundry:false,parliament:false,emancipation:false,commission:false,mentoring:false},routes:{posta:false,flotilla:false,carts:false,mules:false},blockade:false,pendingBattle:null,completed:false,defeated:false,log:[{hour:0,text:'Retiro, 1812. Solo el cuartel está bajo tu control. Contratá combatientes, creá tu granadero o combiná ambas opciones para partir.'}],lastError:null};
   if(content!==null)attachCampaignContent(state,content);
   return state;
 }
 export function isSupplied(s,id){
-  if(s.sectors[id]?.owner!=='patriot')return false;
-  const visited=new Set(['buenos_aires']),queue=['buenos_aires'];
+  if(s.sectors[id]?.owner!=='patriot'||s.sectors.retiro.owner!=='patriot')return false;
+  const visited=new Set(['retiro']),queue=['retiro'];
   while(queue.length){const here=queue.shift();for(const next of sector(here).neighbors){if(!visited.has(next)&&s.sectors[next].owner==='patriot'){visited.add(next);queue.push(next);}}}
   return visited.has(id);
 }
@@ -111,16 +111,17 @@ export function campaignObjectives(s){
 export function availableActions(s){
   return {recruits:OPERATIVES.map(o=>({...o,...recruitmentStatus(s,o.id)})),destinations:CAMPAIGN_SECTORS.filter(x=>x.id!==s.location),phase:PHASES[s.phase]};
 }
+function hasReadyCombatant(s){return s.recruited.some(id=>s.operativeState[id]?.alive&&s.operativeState[id].hp>0&&!s.operativeState[id].captured);}
 function progress(s){
   if(s.completed)return;
-  if(s.phase===0&&s.flags.academy){s.phase=1;note(s,'La academia de Retiro está organizada. Llegan noticias de un desembarco realista junto a San Lorenzo.');}
+  if(s.phase===0&&(s.flags.academy||hasReadyCombatant(s))){s.flags.academy=true;s.phase=1;note(s,'El destacamento está listo para partir. Llegan noticias de un desembarco realista junto a San Lorenzo.');}
   if(s.phase===1&&s.flags.sanLorenzo){s.phase=2;standing(s,'directory',15);note(s,'Victoria en San Lorenzo. San Martín marcha al norte para estudiar la situación del Ejército del Norte.');}
   if(s.phase===2&&s.missions?.yatasto?.completed&&s.sectors.tucuman.owner==='patriot'&&s.flags.northPact&&isSupplied(s,'salta')){s.phase=3;s.flags.mentoring=true;note(s,'En Yatasto, San Martín confía el norte a Güemes. El esfuerzo principal se traslada a Cuyo.');}
   if(s.phase===3&&s.flags.foundry&&s.flags.parliament&&s.flags.armyFunded&&artilleryCount(s)>=3&&['mendoza','uspallata','los_patos'].every(id=>s.sectors[id].owner==='patriot'&&s.sectors[id].fort>=1)){
     s.phase=4;note(s,'El Plumerillo alcanza plena capacidad. Tres mil infantes, artillería y pasos seguros: San Martín puede incorporarse al ejército.');
   }
   if(!s.completed&&s.phase===4&&s.recruited.includes(57)&&Object.values(s.sectors).every(x=>x.owner==='patriot')&&!s.blockade&&!s.pendingBattle){s.completed=true;note(s,'¡Campaña concluida! Las provincias están libres y el Ejército de los Andes queda preparado para la liberación continental.');for(const op of rosterFor(s).filter(o=>s.recruited.includes(o.id)&&s.operativeState[o.id]?.alive)){const line=speechFor(op,'ending');if(line?.trim())note(s,`${op.name}: «${line}»`);}}
-  if(s.sectors.buenos_aires.owner!=='patriot'){s.defeated=true;note(s,'La capital ha caído. El ejército debe reorganizarse desde una nueva campaña.');}
+  if(s.sectors.retiro.owner!=='patriot'){s.defeated=true;note(s,'El cuartel de Retiro ha caído. El ejército debe reorganizarse desde una nueva campaña.');}
 }
 function raid(s,theater,forcedTarget=null){
   const targets=CAMPAIGN_SECTORS.filter(x=>x.theater===theater&&s.sectors[x.id].owner==='patriot'&&x.id!=='retiro');
@@ -178,7 +179,7 @@ export function dispatchCampaign(previous,action){
     switch(action.type){
       case 'syncTacticalTime':{requireThat(s.pendingBattle&&s.pendingBattle.id===action.battleId,'El reloj no corresponde al despliegue.');const elapsed=action.elapsedSeconds,previous=s.pendingBattle.syncedSeconds??0;requireThat(Number.isSafeInteger(elapsed)&&elapsed>=previous&&elapsed-previous<=864000,'El tiempo táctico es inválido.');const seconds=(s.secondOfHour??0)+elapsed-previous;const hours=Math.floor(seconds/3600);s.secondOfHour=seconds%3600;if(hours)tick(s,hours);s.pendingBattle.syncedSeconds=elapsed;break;}
       case 'wait':tick(s,action.hours??24);break;
-      case 'academy':requireThat(!s.flags.academy,'La academia ya está organizada.');pay(s,{treasury:300});s.flags.academy=true;note(s,'Se funda la academia de Granaderos en Retiro.');break;
+      case 'academy':requireThat(s.flags.academy||hasReadyCombatant(s),'Contratá un combatiente o creá tu granadero para comenzar.');break;
       case 'purchaseEquipment':{
         const item=equipmentCatalog(s).find(o=>String(o.item)===String(action.item)),quantity=action.quantity??1;
         requireThat(item&&Number.isInteger(quantity)&&quantity>0&&quantity<=100,'El pedido de armamento es inválido.');
@@ -209,7 +210,7 @@ export function dispatchCampaign(previous,action){
         if(action.type==='resupply'){record.priming=Math.max(50,record.priming??50);record.flints=Math.max(4,record.flints??4);record.rations=Math.max(2,record.rations??2);record.torches=Math.max(2,record.torches??2);note(s,`${op.name} recibe sílex, cargas de cebo y raciones por ${cost} pesos.`);}else{record.condition=100;note(s,`La maestranza repara el arma de ${op.name} por ${cost} pesos.`);}break;
       }
       case 'createOfficer':{
-        requireThat(!s.officer,'El Cabildo ya ha designado a tu oficial.');requireThat(s.sectors.buenos_aires.owner==='patriot','El Cabildo de Buenos Aires está ocupado.');
+        requireThat(!s.officer,'El Cabildo ya ha designado a tu oficial.');requireThat(s.sectors.retiro.owner==='patriot','El cuartel de Retiro está ocupado.');
         const op=createOfficerRecord(action.name,action.answers,action.profile);const creationCost=action.profile?.version===2?0:300;pay(s,{treasury:creationCost});s.officer={name:op.name,answers:clone(action.answers),...(action.profile?{profile:clone(action.profile)}:{})};s.contracts[op.id]={kind:'patriot',term:'month',started:s.hour,expiresAt:null,paid:creationCost};s.operativeState[op.id]={hp:op.maxHp,fatigue:0,alive:true,xp:0,priming:50,flints:4,rations:2,torches:2,condition:100};s.recruited.push(op.id);s.operativeState[op.id].location=s.location;if(s.squad.length<6)s.squad.push(op.id);note(s,`${op.name} aprueba el examen y recibe su comisión de oficial.`);break;
       }
       case 'recruitCivic':{
@@ -366,8 +367,9 @@ export function dispatchCampaign(previous,action){
       }
       default:throw Error('Orden desconocida.');
     }
+    releaseDeferred(s);receiveDueHires(s);synchronizeSquad(s);synchronizeCampaignPresence(s);progress(s);
     for(const [flag,at] of Object.entries({academy:'retiro',foundry:'mendoza',northPact:'salta',partisanSupply:'tucuman',parliament:'mendoza',emancipation:'buenos_aires',commission:'buenos_aires'}))if(s.flags[flag]&&!previous.flags[flag])recordCityLoyalty(s,{sectorId:at,kind:'quest',eventId:`quest-${flag}`});
-    releaseDeferred(s);receiveDueHires(s);synchronizeSquad(s);synchronizeCampaignPresence(s);progress(s);return s;
+    return s;
   }catch(error){const rejected=clone(previous);rejected.lastError=error.message;return rejected;}
 }
 export function serializeCampaign(s){return JSON.stringify(s,cellSceneSaveReplacer(weaponSaveReplacer(s)));}

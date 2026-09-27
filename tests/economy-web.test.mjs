@@ -14,24 +14,24 @@ test('fresh economy has one resource and retired orders cannot consume funds',()
  for(const type of ['produce','contraband','supplyTransfer','horseAction']){const n=dispatchCampaign(s,{type});assert.ok(n.lastError);assert.deepEqual(n.resources,s.resources);}
 });
 test('daily income matches the screen, pays once at midnight, and survives a reload',()=>{
- let s=initialCampaign();const income=dailyIncome(s);assert.equal(income,440);assert.deepEqual(incomeSummary(s),{daily:440,hoursUntilPayment:24});
+ let s=initialCampaign();const income=dailyIncome(s);assert.equal(income,80);assert.deepEqual(incomeSummary(s),{daily:80,hoursUntilPayment:24});
  s=step(s,{type:'wait',hours:23});assert.equal(s.resources.treasury,3200);assert.equal(incomeSummary(s).hoursUntilPayment,1);
  s=decodeSave(encodeSave(s)).campaign;s=step(s,{type:'wait',hours:1});assert.equal(s.resources.treasury,3200+income);
  s=step(s,{type:'wait',hours:1});assert.equal(s.resources.treasury,3200+income);
  s=step(s,{type:'wait',hours:47});assert.equal(s.resources.treasury,3200+3*income);
 });
 test('control, damage and blockade change the same income used for payment',()=>{
- let s=initialCampaign();s.sectors.mendoza.owner='patriot';assert.equal(dailyIncome(s),540,'local income does not require a supply chain');
+ let s=initialCampaign();s.sectors.mendoza.owner='patriot';assert.equal(dailyIncome(s),180,'local income does not require a supply chain');
  s.sectors.mendoza.damageUntil=48;assert.equal(incomeSources(s).find(x=>x.id==='mendoza').income,25);
  s.blockade=true;const income=dailyIncome(s);s=step(s,{type:'wait',hours:24});assert.equal(s.resources.treasury,3200+income);
  s.sectors.mendoza.owner='royalist';assert.equal(incomeSources(s).find(x=>x.id==='mendoza').income,0);
- s.blockade=false;s.sectors.mendoza.owner='patriot';s.hour=48;assert.equal(dailyIncome(s),540);
+ s.blockade=false;s.sectors.mendoza.owner='patriot';s.hour=48;assert.equal(dailyIncome(s),180);
 });
 test('campaign purchases, diplomacy and transport only require pesos',()=>{
- let s=initialCampaign();s=step(s,{type:'academy'});assert.equal(s.resources.treasury,2900);
- s=step(s,{type:'transport',mode:'posta'});s=step(s,{type:'fortify',sector:'retiro'});assert.equal(s.resources.treasury,2600);
- s.sectors.salta.owner='patriot';s=step(s,{type:'diplomacy',kind:'northPact'});assert.equal(s.resources.treasury,2300);
- s=step(s,{type:'purchaseEquipment',item:'bronze4',quantity:3});assert.equal(s.armory.bronze4,3);assert.deepEqual(s.resources,{treasury:200});
+ let s=initialCampaign();assert.ok(dispatchCampaign(s,{type:'academy'}).lastError);assert.equal(s.resources.treasury,3200);
+ s=step(s,{type:'transport',mode:'posta'});s=step(s,{type:'fortify',sector:'retiro'});assert.equal(s.resources.treasury,2900);
+ s.sectors.salta.owner='patriot';s=step(s,{type:'diplomacy',kind:'northPact'});assert.equal(s.resources.treasury,2600);
+ s=step(s,{type:'purchaseEquipment',item:'bronze4',quantity:3});assert.equal(s.armory.bronze4,3);assert.deepEqual(s.resources,{treasury:500});
  const before=structuredClone(s);const denied=dispatchCampaign(s,{type:'purchaseEquipment',item:'field8'});assert.ok(denied.lastError);assert.deepEqual(denied.armory,before.armory);assert.deepEqual(denied.resources,before.resources);
 });
 test('cash is found through tactical looting and paid once after save and re-entry',()=>{
