@@ -1,5 +1,6 @@
 import {gainsExperience} from './content-character-ids.js';
 import {campaignPlace,worldCell,locationId,validWorldLocation,worldOwner,cellTravelPlan,cellTravelReason,cellStepHours,adjacentCells} from './world-cells.js';
+import {compactCellScene,expandCellScene,cellSceneSaveReplacer} from './cell-scene-storage.js';
 import {validateForceWeapon} from './content-force-equipment.js';
 import {weaponSaveReplacer,weaponSpecification,validateWeaponCarrier,validateWeaponReferences,setWeaponDefinition} from './weapon-definition.js';
 import {usesAuthoredEquipment,addArmoryStock,equipArmoryItem,validateArmoryItems} from './armory-items.js';
@@ -271,7 +272,7 @@ export function dispatchCampaign(previous,action){
       case 'leaveSector':{
         requireThat(s.pendingBattle?.exploration&&action.battleId===s.pendingBattle.id,'La visita no corresponde al sector abierto.');const snapshot=validateSectorSnapshot(action.sectorState);const visit=s.pendingBattle;
         if(!sector(visit.sector))requireThat(snapshot.sectorId===visit.sector&&snapshot.sourceMapId===visit.sector,'El parte no corresponde a la celda abierta.');
-        const reports=(action.survivors??[]).filter(r=>!snapshot.units.some(u=>u.militia&&Number(u.id)===Number(r.id)));returnGarrison(s,visit,snapshot);requireThat(Array.isArray(reports)&&new Set(reports.map(r=>Number(r.id))).size===reports.length,'El parte de la escuadra es inválido.');s.resources.treasury+=returnAmmunition(visit,reports,snapshot);if(visit.sceneId)s.sceneStates[visit.sceneId]=clone(snapshot);else s.sectorStates[visit.sector]=clone(snapshot);
+        const reports=(action.survivors??[]).filter(r=>!snapshot.units.some(u=>u.militia&&Number(u.id)===Number(r.id)));returnGarrison(s,visit,snapshot);requireThat(Array.isArray(reports)&&new Set(reports.map(r=>Number(r.id))).size===reports.length,'El parte de la escuadra es inválido.');s.resources.treasury+=returnAmmunition(visit,reports,snapshot);if(visit.sceneId)s.sceneStates[visit.sceneId]=clone(snapshot);else s.sectorStates[visit.sector]=clone(compactCellScene(snapshot));
         for(const report of reports){const id=Number(report.id);returnTraining(s,id,report);requireThat(s.squad.includes(id),'El combatiente no pertenece a la visita.');returnEquipment(s,id,report,snapshot);for(const [field,max]of Object.entries({hp:rosterFor(s).find(o=>o.id===id).maxHp,energy:100,weight:1000,strength:100,strengthTraining:10000,priming:100000,flints:100000,rations:100000,torches:100000,condition:100,fatigue:100,boleadoras:100000})){if(report[field]!==undefined){requireThat(Number.isFinite(report[field])&&report[field]>=0&&report[field]<=max,'El estado del combatiente es inválido.');s.operativeState[id][field]=report[field];}}s.operativeState[id].alive=s.operativeState[id].hp>0;if(report.inventory!==undefined){validatePersonalInventory(report.inventory);s.operativeState[id].inventory=clone(report.inventory);}}
         s.squad=s.squad.filter(id=>s.operativeState[id].alive);if(!s.completed&&!s.recruited.some(id=>s.operativeState[id].alive))s.defeated=true;collectSectorCash(s,snapshot);s.pendingBattle=null;note(s,'La escuadra vuelve a la carta de operaciones.');break;
       }
@@ -368,7 +369,7 @@ export function dispatchCampaign(previous,action){
     releaseDeferred(s);receiveDueHires(s);synchronizeSquad(s);progress(s);return s;
   }catch(error){const rejected=clone(previous);rejected.lastError=error.message;return rejected;}
 }
-export function serializeCampaign(s){return JSON.stringify(s,weaponSaveReplacer(s));}
+export function serializeCampaign(s){return JSON.stringify(s,cellSceneSaveReplacer(weaponSaveReplacer(s)));}
 export function restoreCampaign(text){
   requireThat(typeof text==='string'&&text.length<=5_000_000,'El archivo de campaña no es compatible.');
   const s=JSON.parse(text);validateCampaignContent(s);const base=initialCampaign();
@@ -418,6 +419,7 @@ export function restoreCampaign(text){
   migrateSquads(s);
   requireThat(Array.isArray(s.squads)&&s.squads.length>0&&s.squads.length<=8&&new Set(s.squads.map(q=>q.id)).size===s.squads.length&&s.squads.every(q=>object(q)&&typeof q.id==='string'&&/^squad-[1-9][0-9]*$/.test(q.id)&&typeof q.name==='string'&&q.name.length<=30&&validWorldLocation(q.location)&&validIds(q.members)&&q.members.length<=6&&q.members.every(id=>s.recruited.includes(id))),'Las escuadras guardadas son inválidas.');
   const assigned=s.squads.flatMap(q=>q.members);requireThat(new Set(assigned).size===assigned.length,'Un combatiente no puede pertenecer a dos escuadras.');const selected=s.squads.find(q=>q.id===s.activeSquadId);requireThat(selected&&selected.location===s.location&&JSON.stringify(selected.members)===JSON.stringify(s.squad),'La escuadra activa del archivo es inválida.');
-  requireThat(object(s.sectorStates)&&Object.entries(s.sectorStates).every(([id,snapshot])=>(validWorldLocation(id)||id==='san_lorenzo')&&validateSectorSnapshot(snapshot)&&(sector(id)||id==='san_lorenzo'||snapshot.sectorId===id&&snapshot.sourceMapId===id)),'Los sectores guardados son inválidos.');
+  requireThat(object(s.sectorStates)&&Object.entries(s.sectorStates).every(([id,snapshot])=>(validWorldLocation(id)||id==='san_lorenzo')&&validateSectorSnapshot(expandCellScene(snapshot))&&(sector(id)||id==='san_lorenzo'||snapshot.sectorId===id&&snapshot.sourceMapId===id)),'Los sectores guardados son inválidos.');
+  for(const [id,snapshot]of Object.entries(s.sectorStates))s.sectorStates[id]=compactCellScene(snapshot);
   requireThat(!s.pendingBattle||s.pendingBattle.syncedSeconds===undefined||(Number.isSafeInteger(s.pendingBattle.syncedSeconds)&&s.pendingBattle.syncedSeconds>=0),'El reloj del despliegue es inválido.');requireThat(Number.isInteger(s.secondOfHour??0)&&(s.secondOfHour??0)>=0&&(s.secondOfHour??0)<3600,'El reloj guardado es inválido.');requireThat(s.deferredRaids===undefined||(Array.isArray(s.deferredRaids)&&s.deferredRaids.length<=1000&&s.deferredRaids.every(r=>object(r)&&['north','coast','interior'].includes(r.theater)&&sector(r.target))),'Las incursiones pendientes son inválidas.');validatePolitics(s);requireThat(s.economyVersion===2&&Object.keys(s.resources).length===1,'La economía guardada es inválida.');s.lastError=null;return s;
 }

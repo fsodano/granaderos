@@ -10,6 +10,7 @@ import {enterSector} from '../game/world.js';
 import {actBattle} from '../game/tactical.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {syncBattleTime} from '../game/time.js';
+import {expandCellScene} from '../game/cell-scene-storage.js';
 const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError,null,`${a.type}: ${next.lastError}`);return next;};
 const ready=()=>order(initialCampaign(42),{type:'recruitCivic',id:110,term:'week'});
 const saved=(s,b=null)=>decodeSave(encodeSave(s,b));
@@ -108,15 +109,37 @@ test('saved cell locations and scene receipts cannot alias another cell, open wa
  }
  const pair=visit(s),wrong=structuredClone(pair.battle);wrong.sourceMapId='cell-27-27';assert.throws(()=>saved(pair.campaign,wrong),/celda/);
  assert.ok(dispatchCampaign(pair.campaign,{type:'leaveSector',battleId:pair.campaign.pendingBattle.id,sectorState:wrong,survivors:wrong.units}).lastError);
- const completed=leave(pair);completed.sectorStates['cell-26-27'].sectorId='cell-27-27';assert.throws(()=>saved(completed),/sectores/);
+ const completed=leave(pair);completed.sectorStates['cell-26-27'].sectorId='cell-27-27';assert.throws(()=>saved(completed),/sectores|celda/);
 });
 test('travel does not enable the placement editor before the live character-presence adapter is implemented',()=>{
  const d=defaultContentPackage();d.placements[0].sectors=['cell-26-27'];assert.ok(campaignContentReport(d).blocked.some(x=>/apariciones/.test(x)));
 });
-test('twenty visited cells load together and remain separate after a continuous march',()=>{
+test('forty visited cells fit the existing browser save limit and remain separate after a continuous march',()=>{
  let s=ready();
  for(let col=27;col>=8;col--)s=leave(visit(travel(s,`cell-${col}-29`)));
- const restored=saved(s).campaign;assert.equal(Object.keys(restored.sectorStates).length,20);assert.equal(restored.location,'cell-8-29');
+ for(let col=8;col<=27;col++)s=leave(visit(travel(s,`cell-${col}-28`)));
+ const encoded=encodeSave(s);assert.ok(encoded.length<1_000_000,`${encoded.length} characters`);
+ const restored=decodeSave(encoded).campaign;assert.equal(Object.keys(restored.sectorStates).length,40);assert.equal(restored.location,'retiro');
  for(const [id,scene]of Object.entries(restored.sectorStates)){assert.equal(scene.sectorId,id);assert.equal(scene.sourceMapId,id);}
- assert.equal(visit(restored).battle.sourceMapId,'cell-8-29');
+ assert.equal(visit(travel(restored,'cell-8-29')).battle.sourceMapId,'cell-8-29');
+});
+test('compressed active and retained cells preserve all terrain fields and accept earlier tile arrays',()=>{
+ const pair=visit(travel(ready(),'cell-26-28'));
+ const wall=pair.battle.tiles.find(t=>t.type==='wall');Object.assign(wall,{type:'rubble',blocked:false,blocksSight:false,cover:17});
+ const expected=JSON.parse(JSON.stringify(pair.battle.tiles)),before=JSON.stringify(pair.battle);
+ const wire=encodeSave(pair.campaign,pair.battle);assert.equal(JSON.stringify(pair.battle),before);assert.equal(JSON.parse(wire).battle.tiles.format,'cell-tiles-v1');
+ assert.deepEqual(decodeSave(wire).battle.tiles,expected);
+ const s=leave(pair);assert.equal(s.sectorStates[s.location].tiles.format,'cell-tiles-v1');assert.deepEqual(visit(saved(s).campaign).battle.tiles,expected);
+ const old=JSON.parse(encodeSave(s));old.campaign.sectorStates[s.location]=expandCellScene(s.sectorStates[s.location]);
+ assert.deepEqual(visit(decodeSave(JSON.stringify(old)).campaign).battle.tiles,expected);
+ const oldActive=JSON.parse(wire);oldActive.battle=pair.battle;assert.deepEqual(decodeSave(JSON.stringify(oldActive)).battle.tiles,expected);
+});
+test('malformed or excessive compressed terrain is rejected before scene allocation',()=>{
+ const pair=visit(travel(ready(),'cell-26-28')),wire=encodeSave(pair.campaign,pair.battle);
+ for(const mutate of [
+  p=>p.format='unknown',p=>p.runs[0]=p.palette.length,p=>p.runs[1]=-1,p=>p.runs[1]=1000000000,
+  p=>p.runs.pop(),p=>p.palette[0].x=0,p=>p.runs.push(0,1),p=>p.palette.push({type:'grass',blocked:false,cover:0}),
+  p=>{p.palette=[{type:'grass',blocked:false,cover:0,note:'x'.repeat(5000)}];p.runs=[0,3072];},
+ ]){const bad=JSON.parse(wire);mutate(bad.battle.tiles);assert.throws(()=>decodeSave(JSON.stringify(bad)),/comprimido/);}
+ const bad=JSON.parse(wire);bad.battle.sourceMapId='retiro';assert.throws(()=>decodeSave(JSON.stringify(bad)),/comprimido/);
 });

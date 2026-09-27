@@ -3,9 +3,11 @@ import {propBlocksAt} from './props.js';
 import {buildSectorMap} from './maps.js';
 import {createBattle} from './tactical.js';
 import {worldCell} from './world-cells.js';
+import {expandCellScene} from './cell-scene-storage.js';
 
 // Re-enter a persistent sector with the current squad, retaining terrain and ground gear.
 export function enterSector(request,previous=null){
+ previous=expandCellScene(previous);
  if(previous&&worldCell(request.sector)?.anchor===false&&(previous.sectorId!==request.sector||previous.sourceMapId!==request.sector))throw Error('La escena guardada pertenece a otra celda.');
  const map=buildSectorMap({...request,compactLayout:previous?previous.width===20&&previous.height===16:request.compactLayout});
  if(previous){
