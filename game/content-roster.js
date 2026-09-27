@@ -1,3 +1,4 @@
+import {authoredPresentation} from './content-character-presentation.js';
 import {characterForOperative,operativeIdForCharacter,legacyOperativeId,isContractCharacter} from './content-character-ids.js';
 import {CIVIC_DEFAULTS} from './civic-recruits.js';
 // Historical roles keep their original slots. New contract identities never
@@ -8,6 +9,7 @@ export function authoredOperative(state, operative) {
   return {
     ...operative,
     ...definition.attributes,
+    ...authoredPresentation(definition),
     ...(definition.traits===undefined?{}:{traits:definition.traits}),
     ...(definition.service===undefined?{}:{service:definition.service}),
     ...(definition.progression===undefined?{}:{progression:definition.progression}),

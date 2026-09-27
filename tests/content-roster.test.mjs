@@ -19,6 +19,8 @@ const save=(s,b=null)=>decodeSave(encodeSave(s,b));
 function authored(){
  const d=defaultContentPackage(),template=d.characters.find(c=>c.id==='person-100');
  const c={...structuredClone(template),id:'lucia-del-rio',name:'Lucía del Río',nickname:'Luz',biography:'Exploradora del río.',portrait:'/art/avatar-woman-scout.webp',monthlyPay:300,arrivalHours:2,traits:['teacher','line_marksman'],ridingSkill:35,attributes:{...template.attributes,marksmanship:85,mechanical:80}};
+ // Compatibility fixture: the first authored roster format had no voice or appearance fields.
+ for(const field of ['personality','speech','spriteAppearance'])delete c[field];
  d.characters=d.characters.filter(c=>!isContractCharacter(c));d.characters.push(c);return d;
 }
 

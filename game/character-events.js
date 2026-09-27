@@ -14,7 +14,7 @@ export function characterEventLines(before,after){
  const speaker=after.units.find(u=>u.side==='player'&&u.hp>0&&!u.unconscious&&!u.routed);
  if(speaker){if(!before.sectorCleared&&after.sectorCleared)events.push({unit:speaker,event:'cleared'});
  else if(!visibleEnemies(before).length&&visibleEnemies(after).length)events.push({unit:speaker,event:'contact'});}
- return events.slice(0,3).map(({unit,event})=>`${unit.nickname||unit.name}: «${speechFor(unit,event)}»`);
+ return events.flatMap(({unit,event})=>{const line=speechFor(unit,event);return line?.trim()?[`${unit.nickname||unit.name}: «${line}»`]:[];}).slice(0,3);
 }
 export function withCharacterSpeech(before,after){
  const lines=characterEventLines(before,after);

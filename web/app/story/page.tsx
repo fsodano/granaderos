@@ -25,6 +25,9 @@ import { campaignContentReport } from '../../../game/campaign-content.js';
 import { CONTENT_LAUNCH_KEY } from '../../../game/content-launch.js';
 import './editor.css';
 import {isContractCharacter} from '../../../game/content-character-ids.js';
+import CharacterPresentation from './CharacterPresentation';
+import {SPEECH_EVENTS} from '../../../game/characters.js';
+import {characterPresentationDefaults} from '../../../game/content-character-presentation.js';
 import {CONTENT_TRAITS} from '../../../game/content-character-options.js';
 import {FIREARM_PRICES} from '../../../game/weapon-definition.js';
 import {WEAPONS as BASE_FIREARMS} from '../../../game/firearm-definitions.js';
@@ -217,6 +220,9 @@ export default function ContentEditor() {
         biography: '',
         traits: [],
         ridingSkill: 0,
+        personality: '',
+        speech: Object.fromEntries(SPEECH_EVENTS.map(event=>[event,''])),
+        spriteAppearance: 'granadero',
         weapon: draft.weapons[0]?.id ?? null,
       };
     else if (collection === 'weapons')
@@ -231,7 +237,7 @@ export default function ContentEditor() {
   }
   function duplicateCharacter() {
     if (collection !== 'characters' || !isContractCharacter(item)) return;
-    const added = {...structuredClone(item), recruitmentSource:'contract', service:'contract', progression:item.progression??'experience', traits:[...characterTraits], ridingSkill, id: nextId('person', draft.characters), name: `${item.name.slice(0, 92)} (copia)`};
+    const added = {...structuredClone(item), ...structuredClone(characterPresentationDefaults(item)), recruitmentSource:'contract', service:'contract', progression:item.progression??'experience', traits:[...characterTraits], ridingSkill, id: nextId('person', draft.characters), name: `${item.name.slice(0, 92)} (copia)`};
     change({...draft, characters: [...draft.characters, added]});
     setSelected(added.id);
     setSearches(current=>({...current,characters:''}));
@@ -424,7 +430,7 @@ export default function ContentEditor() {
         <h2>Jugar con el contenido editado</h2>
         <p>
           Aplica nombres, apodos, biografías, retratos, atributos iniciales y
-          paga, especialidades, progreso y tiempo de viaje de los contratables. Podés crear, duplicar y quitar candidatos del boletín. También podés configurar las armas de fuego de personajes, enemigos y milicias. Los puntos de llegada se configuran en Llegadas. La partida conserva una copia de
+          paga, especialidades, progreso, carácter, frases, apariencia y tiempo de viaje de los contratables. Podés crear, duplicar y quitar candidatos del boletín. También podés configurar las armas de fuego de personajes, enemigos y milicias. Los puntos de llegada se configuran en Llegadas. La partida conserva una copia de
           este contenido y se guarda por separado.
         </p>
         {integration && (
@@ -650,6 +656,7 @@ export default function ContentEditor() {
                         </label>)}
                       </div>
                     </fieldset>}
+                    <CharacterPresentation character={item} portraits={defaultContentPackage().characters} weapon={draft.weapons.find((w:any)=>w.id===item.weapon)?.template??0} onChange={update}/>
                     <h3>Atributos</h3>
                     <div className="fields">
                       {ATTRIBUTE_FIELDS.map((k) =>

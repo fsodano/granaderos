@@ -1,5 +1,8 @@
 import {FORCE_EQUIPMENT,defaultForceEquipment,validateForceEquipment} from './content-force-equipment.js';
 import {legacyOperativeId} from './content-character-ids.js';
+import {characterProfile,SPEECH_EVENTS} from './characters.js';
+import {SPEECH_LINE_LIMIT} from './content-character-presentation.js';
+import {SPRITE_APPEARANCES,spriteAppearance} from './sprite-appearances.js';
 import {CONTENT_TRAITS} from './content-character-options.js';
 import { compileWeaponDefinition } from "./weapon-definition.js";
 // Versioned authoring data. No mutable campaign state or global catalog changes.
@@ -46,6 +49,9 @@ export function defaultContentPackage() {
       role: o.role || "",
       biography: o.biography || "",
       portrait: portrait(o.id),
+      personality:characterProfile(o).personality,
+      speech:{...characterProfile(o).speech},
+      spriteAppearance:spriteAppearance(o),
       monthlyPay: o.monthlyPay ?? 0,
       ...(o.id >= 100 ? {arrivalHours:6,recruitmentSource:'contract',service:'contract',progression:'experience',traits:[...(o.traits??[])],ridingSkill:o.ridingSkill??((o.traits??[]).includes('expert_rider')?80:0)} : {}),
       weapon: WEAPONS[o.weapon] ? `firearm-${o.weapon}` : null,
@@ -131,6 +137,12 @@ export function validateContentPackage(value) {
     text(c.nickname, `${c.id}.nickname`, 100);
     text(c.role, `${c.id}.role`, 200, true);
     text(c.biography, `${c.id}.biography`, 5000, true);
+    if(c.personality!==undefined)text(c.personality,`${c.id}.personality`,2000,true);
+    if(c.speech!==undefined){
+      check(record(c.speech)&&Object.keys(c.speech).length===SPEECH_EVENTS.length&&Object.keys(c.speech).every(key=>SPEECH_EVENTS.includes(key)),c.id,'la lista de frases no es válida.');
+      if(record(c.speech))for(const event of SPEECH_EVENTS)text(c.speech[event],`${c.id}.speech.${event}`,SPEECH_LINE_LIMIT,true);
+    }
+    if(c.spriteAppearance!==undefined)check(typeof c.spriteAppearance==='string'&&Object.hasOwn(SPRITE_APPEARANCES,c.spriteAppearance),c.id,'apariencia de combate no válida.');
     check(
       typeof c.portrait === "string" &&
         (/^\/art\/[a-zA-Z0-9_-]+\.(webp|png|jpg)$/.test(c.portrait) ||

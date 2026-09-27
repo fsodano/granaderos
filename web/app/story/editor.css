@@ -334,3 +334,5 @@
 
 .content-editor .weapon-preview {display:block;width:100%;max-width:460px;height:180px;object-fit:contain;margin:0 auto 20px;background:#202925;border:1px solid #56604f;border-radius:6px}
 .content-editor .weapon-thumbnail {width:80px;height:44px;object-fit:contain;float:left;margin-right:10px}
+
+.character-presentation{margin-top:1.5rem;padding-top:1rem;border-top:1px solid #535d4c}.appearance-choice{display:flex;gap:1rem;align-items:center}.appearance-choice svg{flex:none;background:#182119;border-radius:.4rem}.appearance-choice label{flex:1;min-width:0}.character-presentation small{display:block;line-height:1.4}
