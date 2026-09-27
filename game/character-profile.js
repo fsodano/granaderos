@@ -6,7 +6,13 @@ export const CHARACTER_CLASSES=[
  {id:'baqueano',name:'Baqueano',description:'Escopeta y facón para explorar la campaña.',weapon:1804,blade:1813},
  {id:'artesano',name:'Artesano',description:'Pistola y saber de taller.',weapon:1805,blade:1813},
 ];
-export const CHARACTER_PORTRAITS=[{id:'avatar-woman-scout',src:'/art/avatar-woman-scout.webp',name:'Exploradora'},{id:'avatar-woman-civilian',src:'/art/avatar-woman-civilian.webp',name:'Artesana'},{id:'avatar-man-gaucho',src:'/art/avatar-man-gaucho.webp',name:'Gaucho'},{id:'avatar-man-soldier',src:'/art/avatar-man-soldier.webp',name:'Soldado'},{id:'103',src:'/art/portrait-103.png',name:'Marino'},{id:'104',src:'/art/portrait-104.png',name:'Voluntario'}];
+export const CHARACTER_PORTRAITS=[
+ {id:'avatar-woman-scout',src:'/art/avatar-woman-scout.webp',name:'Exploradora'},
+ {id:'avatar-woman-civilian',src:'/art/avatar-woman-civilian.webp',name:'Artesana'},
+ {id:'avatar-man-gaucho',src:'/art/avatar-man-gaucho.webp',name:'Gaucho'},
+ {id:'avatar-man-soldier',src:'/art/avatar-man-soldier.webp',name:'Soldado'},
+ ...Array.from({length:48},(_,index)=>{const id=100+index;return {id:String(id),src:`/art/portrait-${id}.${[103,104].includes(id)?'png':'webp'}`,name:`Retrato ${index+5}`};}),
+];
 export const PROFILE_QUESTIONS=[
  {id:'specialty',label:'Durante una marcha difícil, ¿qué tarea asumes?',choices:[{id:'rider',name:'Domar y conducir los caballos'},{id:'night',name:'Reconocer el terreno después del ocaso'},{id:'teacher',name:'Instruir a los voluntarios nuevos'}]},
  {id:'temperament',label:'Tras un revés, ¿cómo juzgas la próxima jornada?',choices:[{id:'optimistic',name:'Confío en que podremos recuperarnos'},{id:'pessimistic',name:'Preveo lo peor para no exponer a mis compañeros'},{id:'steady',name:'Me concentro en la tarea inmediata'}]},
