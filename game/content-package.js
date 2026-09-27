@@ -1,10 +1,12 @@
 import {FORCE_EQUIPMENT,defaultForceEquipment,validateForceEquipment} from './content-force-equipment.js';
+import {legacyOperativeId} from './content-character-ids.js';
+import {CONTENT_TRAITS} from './content-character-options.js';
 import { compileWeaponDefinition } from "./weapon-definition.js";
 // Versioned authoring data. No mutable campaign state or global catalog changes.
 import { defaultArrivalSites, validateArrivalSites } from "./arrival-sites.js";
 import { CONTENT_CELLS, contentCellIds } from "./content-map.js";
 import { OPERATIVES, CAMPAIGN_SECTORS } from "./data.js";
-import { CIVIC_RECRUITS } from "./recruitment.js";
+import { CIVIC_RECRUITS } from "./civic-recruits.js";
 import { ENCOUNTERS } from "./encounters.js";
 import { WEAPONS } from "./firearm-definitions.js";
 export const CONTENT_FORMAT = "granaderos-content";
@@ -45,7 +47,7 @@ export function defaultContentPackage() {
       biography: o.biography || "",
       portrait: portrait(o.id),
       monthlyPay: o.monthlyPay ?? 0,
-      ...(o.id >= 100 ? {arrivalHours: 6} : {}),
+      ...(o.id >= 100 ? {arrivalHours:6,recruitmentSource:'contract',service:'contract',progression:'experience',traits:[...(o.traits??[])],ridingSkill:o.ridingSkill??((o.traits??[]).includes('expert_rider')?80:0)} : {}),
       weapon: WEAPONS[o.weapon] ? `firearm-${o.weapon}` : null,
       attributes: Object.fromEntries(ATTRIBUTE_FIELDS.map((k) => [k, o[k] ?? 50])),
     })),
@@ -119,6 +121,12 @@ export function validateContentPackage(value) {
   }
   for(const field of Object.keys(FORCE_EQUIPMENT))if(value[field]!==undefined)errors.push(...validateForceEquipment(field,value[field],sets.weapons));
   for (const c of value.characters.filter(record)) {
+    if(legacyOperativeId(c.id)===undefined)check(c.recruitmentSource==='contract'&&c.service==='contract'&&['experience','fixed'].includes(c.progression)&&Array.isArray(c.traits),c.id,'los personajes nuevos necesitan contratación, servicio por contrato, progreso y especialidades explícitos.');
+    if(c.recruitmentSource!==undefined)check(['contract','encounter'].includes(c.recruitmentSource),c.id,'origen de contratación inválido.');
+    if(c.service!==undefined)check(['contract','permanent'].includes(c.service),c.id,'servicio inválido.');
+    if(c.progression!==undefined)check(['experience','fixed'].includes(c.progression),c.id,'progreso inválido.');
+    if(c.traits!==undefined)check(Array.isArray(c.traits)&&c.traits.length<=CONTENT_TRAITS.length&&new Set(c.traits).size===c.traits.length&&c.traits.every(id=>CONTENT_TRAITS.some(t=>t.id===id)),c.id,'especialidades inválidas.');
+    if(c.ridingSkill!==undefined)check(integer(c.ridingSkill,0,100),c.id,'equitación fuera de rango.');
     text(c.name, c.id, 100);
     text(c.nickname, `${c.id}.nickname`, 100);
     text(c.role, `${c.id}.role`, 200, true);

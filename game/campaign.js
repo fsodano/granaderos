@@ -1,3 +1,4 @@
+import {gainsExperience} from './content-character-ids.js';
 import {validateForceWeapon} from './content-force-equipment.js';
 import {weaponSaveReplacer,weaponSpecification,validateWeaponCarrier,validateWeaponReferences,setWeaponDefinition} from './weapon-definition.js';
 import {usesAuthoredEquipment,addArmoryStock,equipArmoryItem,validateArmoryItems} from './armory-items.js';
@@ -30,11 +31,7 @@ import {ROYALIST_COMMANDS,NORTHERN_AXIS,coastalRevenue,royalistIntel,mentorDispa
 export {ROYALIST_COMMANDS,royalistIntel,mentorDispatch} from './narrative.js';
 import {rosterFor as baseRosterFor,CIVIC_RECRUITS,civicStatus as baseCivicStatus,createOfficerRecord} from './recruitment.js';
 export {CIVIC_RECRUITS} from './recruitment.js';
-export function civicStatus(s,id,local=false){
-  id=Number(id);const op=CIVIC_RECRUITS.find(o=>o.id===id),record=s.operativeState[id];
-  const reason=!op?'No existe ese voluntario.':s.recruited.includes(id)?'Ya se encuentra en tus filas.':pendingHire(s,id)?'Este contratado ya está en camino.':!record?.alive?'Ha caído en combate.':record.captured?'Este personaje está cautivo.':null;
-  return {available:!reason,reason:reason??'Disponible por contrato en el escritorio.'};
-}
+export function civicStatus(s,id,local=false){return baseCivicStatus(s,id);}
 import {OPERATIVES, WEAPONS, CAMPAIGN_SECTORS, FACTIONS, PHASES, RESOURCE_NAMES} from './data.js';
 export {OPERATIVES, WEAPONS, CAMPAIGN_SECTORS, FACTIONS, PHASES, RESOURCE_NAMES};
 export function rosterFor(s){return baseRosterFor(s).map(o=>{const record=s.operativeState?.[o.id]??{};return {...o,...(s.loadouts?.[o.id]??{}),...(record.weaponMetadata?{weaponMetadata:record.weaponMetadata}:{}),...Object.fromEntries(TRAINABLE_SKILLS.map(skill=>[skill,Math.min(100,(o[skill]??0)+(record.trainedStats?.[skill]??0))])),strength:Math.max(o.strength,Math.min(100,record.strength??o.strength))};});}
@@ -332,10 +329,10 @@ export function dispatchCampaign(previous,action){
         requireThat(survivors.every(x=>x&&request.squad.some(o=>o.id===Number(x.id))&&Number.isFinite(x.hp)&&x.hp>=0)&&new Set(survivors.map(x=>Number(x.id))).size===survivors.length,'El parte de bajas contiene combatientes o heridas inválidos.');
         const battleSnapshot=action.sectorState?validateSectorSnapshot(action.sectorState):null;if(request.missionId==='san_lorenzo'){requireThat(battleSnapshot,'San Lorenzo necesita un parte táctico completo.');const commander=battleSnapshot.units.find(u=>Number(u.id)===57&&u.missionAlly);requireThat(commander,'Falta el comandante aliado en el parte.');s.missionAllies.san_lorenzo=clone(commander);if(action.outcome==='victory'&&commander.hp>0)requireThat(battleSnapshot.status==='victory','La victoria exige derrotar a los realistas y conservar con vida al comandante.');if(commander.hp<=0){action={...action,outcome:'defeat'};s.defeated=true;s.missions.san_lorenzo={stage:'failed',completed:false};note(s,'San Martín ha caído en San Lorenzo. La misión y la campaña concluyen con una derrota.');}else if(action.outcome==='victory')s.missions.san_lorenzo={stage:'completed',completed:true};}returnGarrison(s,request,battleSnapshot);s.resources.treasury+=returnAmmunition(request,survivors,battleSnapshot);
         for(const id of s.squad){const report=survivors.find(x=>Number(x.id)===id);if(report){returnTraining(s,id,report);returnEquipment(s,id,report,battleSnapshot);const max=rosterFor(s).find(o=>o.id===id).maxHp;s.operativeState[id].hp=Math.max(0,Math.min(max,Number(report.hp)||0));s.operativeState[id].alive=s.operativeState[id].hp>0;for(const [field,limit] of Object.entries({priming:100000,flints:100000,rations:100000,torches:100000,condition:100,fatigue:100,energy:100,weight:1000,strength:100,strengthTraining:10000,boleadoras:100000}))if(report[field]!==undefined){requireThat(Number.isFinite(report[field])&&report[field]>=0&&report[field]<=limit,'El parte de suministros es inválido.');s.operativeState[id][field]=report[field];}if(report.inventory!==undefined)s.operativeState[id].inventory=clone(validatePersonalInventory(report.inventory));}else if(action.outcome!=='retreat'){s.operativeState[id].hp=0;s.operativeState[id].alive=false;}}
-        for(const id of s.squad)if((id===1000||CIVIC_RECRUITS.some(o=>o.id===id))&&s.operativeState[id].alive){
+        for(const id of s.squad)if(gainsExperience(s,rosterFor(s).find(o=>o.id===id))&&s.operativeState[id].alive){
           const before=rosterFor(s).find(o=>o.id===id),xp=action.outcome==='victory'?60:action.outcome==='defeat'?20:10;
           s.operativeState[id].xp=(s.operativeState[id].xp??0)+xp;const after=rosterFor(s).find(o=>o.id===id);
-          if(after.level>before.level){s.operativeState[id].hp+=after.maxHp-before.maxHp;note(s,`${after.name} mejora su instrucción tras el combate: grado${after.level}.`);}
+          if(after.level>before.level){s.operativeState[id].maxHp=after.maxHp;s.operativeState[id].hp+=after.maxHp-before.maxHp;note(s,`${after.name} mejora su instrucción tras el combate: grado${after.level}.`);}
         }
         if(action.outcome==='victory'){
           recordCityLoyalty(s,{sectorId:request.sector==='san_lorenzo'?'san_nicolas':request.sector,kind:'victory',eventId:request.id});if(request.sector==='san_lorenzo')s.flags.sanLorenzo=true;
@@ -366,13 +363,13 @@ export function restoreCampaign(text){
   requireThat(object(s.reputation)&&Object.keys(base.reputation).every(k=>integer(s.reputation[k],-100,100))&&s.reputation.royalists===-100,'Las relaciones del archivo son inválidas.');
   requireThat(object(s.sectors)&&Object.keys(s.sectors).length===13&&CAMPAIGN_SECTORS.every(d=>{const r=s.sectors[d.id];return object(r)&&['patriot','royalist'].includes(r.owner)&&integer(r.loyalty,0,100)&&integer(r.fort,0,3)&&integer(r.damageUntil,0,1e9)&&Array.isArray(r.militia)&&r.militia.length===3&&r.militia.every(x=>integer(x,0,100000));}),'El mapa del archivo es inválido.');
   s.militiaTraining??=[];
-  requireThat(Array.isArray(s.militiaTraining)&&s.militiaTraining.length<=13&&new Set(s.militiaTraining.map(t=>t?.sector)).size===s.militiaTraining.length&&new Set(s.militiaTraining.map(t=>t?.trainerId)).size===s.militiaTraining.length&&s.militiaTraining.every(t=>object(t)&&sector(t.sector)&&integer(t.rank,0,2)&&integer(t.trainerId,0,1000)&&s.recruited?.includes(t.trainerId)&&t.count===3&&integer(t.duration,1,96)&&integer(t.remaining,1,t.duration)&&integer(t.started,0,s.hour)),'Los cursos de milicias guardados son inválidos.');
+  requireThat(Array.isArray(s.militiaTraining)&&s.militiaTraining.length<=13&&new Set(s.militiaTraining.map(t=>t?.sector)).size===s.militiaTraining.length&&new Set(s.militiaTraining.map(t=>t?.trainerId)).size===s.militiaTraining.length&&s.militiaTraining.every(t=>object(t)&&sector(t.sector)&&integer(t.rank,0,2)&&Number.isInteger(t.trainerId)&&baseRosterFor(s).some(o=>o.id===t.trainerId)&&s.recruited?.includes(t.trainerId)&&t.count===3&&integer(t.duration,1,96)&&integer(t.remaining,1,t.duration)&&integer(t.started,0,s.hour)),'Los cursos de milicias guardados son inválidos.');
   // Version1 migration: old saves did not contain civic volunteers or a custom officer.
   if(s.officer===undefined)s.officer=null;
   requireThat(s.officer===null||(object(s.officer)&&typeof s.officer.name==='string'&&object(s.officer.answers)),'El examen guardado es inválido.');
   if(s.officer)createOfficerRecord(s.officer.name,s.officer.answers,s.officer.profile);
   requireThat(object(s.operativeState),'Las hojas de servicio son inválidas.');
-  for(const op of CIVIC_RECRUITS)s.operativeState[op.id]??={hp:op.maxHp,fatigue:0,alive:true,xp:0,priming:50,flints:4,rations:2,torches:2,condition:100};
+  for(const op of s.contentCampaign?[]:CIVIC_RECRUITS)s.operativeState[op.id]??={hp:op.maxHp,fatigue:0,alive:true,xp:0,priming:50,flints:4,rations:2,torches:2,condition:100};
   for(const op of Object.values(s.operativeState)){requireThat(object(op),'Las hojas de servicio son inválidas.');validateTraining(op);op.xp??=0;if(op.inventory!==undefined)validatePersonalInventory(op.inventory);for(const [field,limit]of Object.entries({energy:100,weight:1000,strength:100,strengthTraining:10000,boleadoras:100000})){if(op[field]!==undefined)requireThat(Number.isFinite(op[field])&&op[field]>=0&&op[field]<=limit,'El estado físico guardado es inválido.');}for(const [field,baseline] of Object.entries({priming:50,flints:4,rations:2,torches:2,condition:100})){op[field]??=baseline;requireThat(integer(op[field],0,field==='condition'?100:100000),'Los suministros guardados son inválidos.');}requireThat(integer(op.xp,0,1e7),'La experiencia guardada es inválida.');}
   for(const op of rosterFor(s))validateWeaponCarrier({...s.operativeState[op.id],weapon:op.weapon});
   s.missions??={};s.sceneStates??={};s.missionAllies??={};requireThat(validateMissions(s)&&object(s.sceneStates)&&Object.entries(s.sceneStates).every(([id,b])=>id==='yatasto'&&b.sceneId===id&&validateSectorSnapshot(b))&&object(s.missionAllies)&&Object.entries(s.missionAllies).every(([id,u])=>id==='san_lorenzo'&&object(u)&&u.missionAlly===true&&Number(u.id)===57&&typeof u.name==='string'&&Number.isInteger(u.weapon)&&(u.weapon===0||u.weapon>=1800&&u.weapon<=1813)&&Number.isInteger(u.blade)&&u.blade>=1809&&u.blade<=1813&&Number.isInteger(u.ammo)&&u.ammo>=0&&u.ammo<=100000&&Number.isInteger(u.loaded)&&u.loaded>=0&&u.loaded<=(weaponSpecification(u)?.capacity??0)&&Number.isFinite(u.hp)&&u.hp>=0&&u.hp<=100),'Las escenas guardadas son inválidas.');
@@ -389,6 +386,8 @@ export function restoreCampaign(text){
   const ids=rosterFor(s).map(o=>o.id),validIds=values=>Array.isArray(values)&&new Set(values).size===values.length&&values.every(id=>ids.includes(id));
   requireThat(validIds(s.recruited)&&validIds(s.squad)&&s.squad.length<=6&&s.squad.every(id=>s.recruited.includes(id)),'El destacamento del archivo es inválido.');
   requireThat(object(s.operativeState)&&rosterFor(s).every(o=>{const r=s.operativeState[o.id];return object(r)&&integer(r.hp,0,o.maxHp)&&integer(r.fatigue,0,100)&&typeof r.alive==='boolean'&&r.alive===(r.hp>0);}),'Las hojas de servicio son inválidas.');
+  // Older authored saves retained the initial ceiling after gaining a level.
+  for(const op of rosterFor(s))if(s.operativeState[op.id].maxHp!==undefined)s.operativeState[op.id].maxHp=op.maxHp;
   validateHireArrivals(s,rosterFor(s));
   requireThat(object(s.flags)&&Object.keys(base.flags).every(k=>typeof s.flags[k]==='boolean')&&object(s.routes)&&Object.keys(base.routes).every(k=>typeof s.routes[k]==='boolean'),'Los acuerdos del archivo son inválidos.');
   requireThat(['blockade','completed','defeated'].every(k=>typeof s[k]==='boolean')&&Array.isArray(s.log)&&s.log.length<=80&&s.log.every(p=>object(p)&&integer(p.hour,0,1e9)&&typeof p.text==='string'&&p.text.length<=1000),'El registro del archivo es inválido.');

@@ -1,3 +1,4 @@
+import {characterForOperative,isContractOperative} from './content-character-ids.js';
 import {CAMPAIGN_SECTORS} from './data.js';
 import {arrivalSitesFor,arrivalSiteLabel} from './arrival-sites.js';
 import {CONTRACT_TERMS,contractQuote} from './contracts.js';
@@ -13,7 +14,7 @@ export function hiringArrivalReason(state,destination){
 export function hiringArrivalOptions(state){
   return CAMPAIGN_SECTORS.filter(s=>!hiringArrivalReason(state,s.id)).map(s=>({id:s.id,name:s.name,infrastructure:arrivalSiteLabel(arrivalSitesFor(state).find(site=>site.sector===s.id))}));
 }
-export function hiringTravelHours(state,id){return state.contentCampaign?.package.characters.find(c=>c.id===`person-${id}`)?.arrivalHours??0;}
+export function hiringTravelHours(state,id){return characterForOperative(state,id)?.arrivalHours??0;}
 export function pendingHire(state,id){return (state.hiringArrivals??[]).find(a=>a.operativeId===Number(id));}
 export function hireArrivalOrder(state,operative,term,quote,destination){
   const travelHours=hiringTravelHours(state,operative.id);
@@ -50,7 +51,7 @@ export function validateHireArrivals(state,roster){
   for(const a of state.hiringArrivals){
     need(a&&typeof a==='object'&&!Array.isArray(a)&&Object.keys(a).length===keys.length&&keys.every(k=>Object.hasOwn(a,k)));
     const operative=roster.find(o=>o.id===a.operativeId);
-    need(operative&&operative.id>=100&&operative.id<1000&&!ids.has(a.operativeId)&&!state.recruited.includes(a.operativeId)&&!state.contracts?.[a.operativeId]);ids.add(a.operativeId);
+    need(operative&&isContractOperative(state,operative)&&!ids.has(a.operativeId)&&!state.recruited.includes(a.operativeId)&&!state.contracts?.[a.operativeId]);ids.add(a.operativeId);
     need(state.operativeState[a.operativeId]?.alive&&!state.operativeState[a.operativeId]?.captured&&arrivalSitesFor(state).some(site=>site.sector===a.destination));
     need(integer(a.bookedAt,0,state.hour)&&integer(a.departedAt,a.bookedAt,state.hour)&&integer(a.travelHours,1,168)&&a.travelHours===hiringTravelHours(state,a.operativeId)&&a.dueAt===a.departedAt+a.travelHours);
     need(Object.hasOwn(CONTRACT_TERMS,a.term));
