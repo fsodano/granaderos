@@ -11,6 +11,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Machine-readable requirement register](requirements.json)
 
 - [Published implementation and verification ledger](published-progress.md)
+- [Authored world presence verification](character-presence.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 
