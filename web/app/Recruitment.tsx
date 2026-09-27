@@ -3,7 +3,7 @@ import {useState} from 'react';
 import {CAMPAIGN_SECTORS,rosterFor,contractQuote,contractStatus,civicStatus} from '../../game/campaign.js';
 import {hiringArrivalOptions,hiringArrivalReason,hiringTravelHours,pendingHire} from '../../game/hiring-arrivals.js';
 import {filterMercenaries} from '../../game/mercenary-catalogue.js';
-import {CIVIC_RECRUITS} from '../../game/recruitment.js';
+import {isContractOperative} from '../../game/content-character-ids.js';
 import {characterProfile} from '../../game/characters.js';
 import {portraitFor} from '../lib/portraits';
 import CharacterDossier from './CharacterDossier';
@@ -14,7 +14,7 @@ export default function Recruitment({state:s,dispatch}:Props){
  const [selected,setSelected]=useState<number|null>(null),[periods,setPeriods]=useState<Record<number,string>>({});
  const [query,setQuery]=useState(''),[specialty,setSpecialty]=useState('all'),[availability,setAvailability]=useState('all'),[sort,setSort]=useState('name');
  const [chosenDestination,setDestination]=useState('');
- const roster=rosterFor(s).filter(o=>CIVIC_RECRUITS.some(c=>c.id===o.id));
+ const roster=rosterFor(s).filter(o=>isContractOperative(s,o));
  const serving=roster.filter(o=>{const r=s.operativeState[o.id];return s.recruited.includes(o.id)&&r?.alive&&r.hp>0&&!r.captured;}).length;
  const options=hiringArrivalOptions(s);
  const destination=options.some(o=>o.id===chosenDestination)?chosenDestination:options.find(o=>o.id===s.location)?.id??options[0]?.id??'';

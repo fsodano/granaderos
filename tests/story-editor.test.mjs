@@ -8,11 +8,46 @@ import {CONTENT_LAUNCH_KEY,CONTENT_SAVE_KEY} from '../game/content-launch.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {initialCampaign,dispatchCampaign,rosterFor,CAMPAIGN_SECTORS} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';
+import {operativeIdForCharacter} from '../game/content-character-ids.js';
 register('./tactical-render-loader.mjs',import.meta.url);
 const {default:StoryEditor}=await import('../web/app/story/page.tsx');
 const {default:Recruitment}=await import('../web/app/Recruitment.tsx');
 const {default:Armory}=await import('../web/app/Armory.tsx');
 const draftKey='granaderos.content-draft.v1';
+
+test('the editor creates, duplicates and removes actual contract candidates with undo and safe historical guards',async t=>{
+ const m=await mount(t);const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
+ await m.click(m.button('Eliminar'));assert.match(m.document.body.textContent,/No se pueden eliminar hasta separar esas funciones/);
+ const add=[...m.document.querySelectorAll('button')].find(b=>b.textContent.includes('Crear personaje'));assert.ok(add);await m.click(add);
+ await m.input(m.label('Nombre'),'Clara Nueva');await m.input(m.label('Apodo'),'Clara');
+ await m.input(m.label('Progreso por combate'),'fixed');await m.input(m.label('Equitación'),62);
+ const trait=[...m.document.querySelectorAll('label')].find(l=>l.textContent.trim()==='Instrucción').querySelector('input');await m.click(trait);
+ const original=draft().characters.at(-1);assert.equal(original.recruitmentSource,'contract');assert.equal(original.service,'contract');assert.deepEqual(original.traits,['teacher']);assert.equal(original.progression,'fixed');
+ assert.equal(m.document.querySelector('section[aria-label="Aparición del personaje"]'),null);
+ await m.click(m.button('Duplicar personaje'));const copy=draft().characters.at(-1);assert.notEqual(copy.id,original.id);assert.equal(copy.name,'Clara Nueva (copia)');assert.equal(copy.ridingSkill,62);assert.deepEqual(copy.traits,['teacher']);
+ await m.click(m.button('Eliminar'));assert.equal(draft().characters.some(c=>c.id===copy.id),false);
+ await m.click(m.button('Deshacer'));assert.equal(draft().characters.some(c=>c.id===copy.id),true);
+ await m.click(m.button('Rehacer'));assert.equal(draft().characters.some(c=>c.id===copy.id),false);
+ await m.input(m.document.querySelector('input[type="search"]'),'person-100');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Eliminar'));
+ assert.equal(draft().characters.some(c=>c.id==='person-100'),false);
+ assert.equal(m.button('Iniciar campaña con estas fichas').disabled,false);await m.click(m.button('Iniciar campaña con estas fichas'));
+ const {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));
+ const id=operativeIdForCharacter(campaign.contentCampaign.package,original.id);assert.ok(id>=2000);
+ assert.equal(rosterFor(campaign).find(o=>o.id===id).name,'Clara Nueva');assert.equal(rosterFor(campaign).some(o=>o.id===100),false);
+});
+
+test('the bulletin searches and hires a new identity without showing deleted catalogue members',async t=>{
+ const definition=defaultContentPackage(),template=definition.characters.find(c=>c.id==='person-100');
+ definition.characters=definition.characters.filter(c=>c.id!=='person-100');
+ definition.characters.push({...structuredClone(template),id:'clara-nueva',name:'Clara Nueva',nickname:'Clara',arrivalHours:2});
+ const m=await mount(t,undefined,null,initialCampaign(42,definition));
+ const search=m.document.querySelector('input[type="search"]');await m.input(search,'Clara Nueva');
+ assert.ok(!m.document.body.textContent.includes('Rafael Sosa'));
+ const card=[...m.document.querySelectorAll('article')].find(a=>a.textContent.includes('Clara Nueva'));assert.ok(card);
+ const hire=[...card.querySelectorAll('button')].find(b=>b.textContent.includes('Contratar'));assert.ok(hire);await m.click(hire);
+ const id=operativeIdForCharacter(definition,'clara-nueva');assert.equal(m.campaign.hiringArrivals[0].operativeId,id);assert.equal(m.campaign.hiringArrivals[0].dueAt,2);
+ assert.equal(decodeSave(encodeSave(m.campaign)).campaign.recruited.includes(id),false);
+});
 
 async function mount(t,stored,launch=null,recruitCampaign=null,view='recruitment'){
  const console=new VirtualConsole();

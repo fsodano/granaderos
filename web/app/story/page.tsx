@@ -24,6 +24,8 @@ import { encodeSave } from '../../../game/save.js';
 import { campaignContentReport } from '../../../game/campaign-content.js';
 import { CONTENT_LAUNCH_KEY } from '../../../game/content-launch.js';
 import './editor.css';
+import {isContractCharacter} from '../../../game/content-character-ids.js';
+import {CONTENT_TRAITS} from '../../../game/content-character-options.js';
 import {FIREARM_PRICES} from '../../../game/weapon-definition.js';
 import {WEAPONS as BASE_FIREARMS} from '../../../game/firearm-definitions.js';
 import {WEAPONS as BASE_ITEMS} from '../../../game/data.js';
@@ -134,6 +136,9 @@ export default function ContentEditor() {
         )
       : items;
   const item = items.find((i: any) => i.id === selected) ?? items[0];
+  const contractDefaults = tab==='characters' ? defaultContentPackage().characters.find(c=>c.id===item?.id) : null;
+  const characterTraits = item?.traits??contractDefaults?.traits??[];
+  const ridingSkill = item?.ridingSkill??contractDefaults?.ridingSkill??0;
   const placement = draft.placements.find((p: any) => p.character === item?.id);
   function change(next: any) {
     setReady(true);
@@ -204,12 +209,14 @@ export default function ContentEditor() {
     let added: any;
     if (collection === 'characters')
       added = {
-        ...structuredClone(defaultContentPackage().characters[0]),
+        ...structuredClone(defaultContentPackage().characters.find(isContractCharacter)!),
         id: nextId('person', draft.characters),
         name: 'Nuevo personaje',
         nickname: 'Nuevo',
         role: '',
         biography: '',
+        traits: [],
+        ridingSkill: 0,
         weapon: draft.weapons[0]?.id ?? null,
       };
     else if (collection === 'weapons')
@@ -222,7 +229,15 @@ export default function ContentEditor() {
     setSelected(added.id);
     setSearches((current) => ({ ...current, [collection]: '' }));
   }
+  function duplicateCharacter() {
+    if (collection !== 'characters' || !isContractCharacter(item)) return;
+    const added = {...structuredClone(item), recruitmentSource:'contract', service:'contract', progression:item.progression??'experience', traits:[...characterTraits], ridingSkill, id: nextId('person', draft.characters), name: `${item.name.slice(0, 92)} (copia)`};
+    change({...draft, characters: [...draft.characters, added]});
+    setSelected(added.id);
+    setSearches(current=>({...current,characters:''}));
+  }
   function remove() {
+    if(collection==='characters'&&!isContractCharacter(item)){setNotice('Los mandos históricos todavía tienen funciones de campaña. No se pueden eliminar hasta separar esas funciones.');return;}
     if(collection==='weapons'&&forceWeaponUsers(draft,item.id).length){setNotice('Asigná otra arma a las tropas que la usan.');return;}
 
     if (
@@ -248,6 +263,7 @@ export default function ContentEditor() {
       [collection]: items.filter((i: any) => i.id !== item.id),
     });
     setSelected('');
+    setSearches(current=>({...current,[collection]:''}));
   }
   async function importFile(file: File | undefined) {
     if (!file) return;
@@ -408,7 +424,7 @@ export default function ContentEditor() {
         <h2>Jugar con el contenido editado</h2>
         <p>
           Aplica nombres, apodos, biografías, retratos, atributos iniciales y
-          paga y tiempo de viaje de los mercenarios existentes, además de las armas de fuego de personajes, enemigos y milicias. Los puntos de llegada se configuran en Llegadas. La partida conserva una copia de
+          paga, especialidades, progreso y tiempo de viaje de los contratables. Podés crear, duplicar y quitar candidatos del boletín. También podés configurar las armas de fuego de personajes, enemigos y milicias. Los puntos de llegada se configuran en Llegadas. La partida conserva una copia de
           este contenido y se guarda por separado.
         </p>
         {integration && (
@@ -525,7 +541,10 @@ export default function ContentEditor() {
                     <h2>{item.name ?? 'Regla de aparición'}</h2>
                     <code>{item.id}</code>
                   </div>
-                  <button onClick={remove}>Eliminar</button>
+                  <div>
+                    {tab==='characters'&&isContractCharacter(item)&&<button onClick={duplicateCharacter}>Duplicar personaje</button>}
+                    <button onClick={remove}>Eliminar</button>
+                  </div>
                 </div>
                 {tab === 'characters' && (
                   <>
@@ -582,8 +601,8 @@ export default function ContentEditor() {
                           min={0}
                           max={1000000}
                           value={item.monthlyPay}
-                          disabled={Number(item.id.slice(7)) < 100}
-                          title={Number(item.id.slice(7)) < 100 ? "Servicio permanente" : undefined}
+                          disabled={!isContractCharacter(item)}
+                          title={!isContractCharacter(item) ? "Servicio permanente" : undefined}
                           onChange={(e) =>
                             update({ monthlyPay: e.target.valueAsNumber })
                           }
@@ -606,11 +625,31 @@ export default function ContentEditor() {
                         </select>
                       </label>
                     </div>
-                    {Number(item.id.slice(7)) >= 100 && <label>
+                    {isContractCharacter(item) && <label>
                       Tiempo de viaje (horas)
                       <input type="number" min={0} max={168} value={item.arrivalHours ?? 0} onChange={e=>update({arrivalHours:e.target.valueAsNumber})}/>
                       <small>El contrato comienza al llegar. Con 0, la llegada es inmediata si el destino es seguro.</small>
                     </label>}
+                    {isContractCharacter(item)&&<fieldset>
+                      <legend>Formación y progreso</legend>
+                      <label>Progreso por combate
+                        <select value={item.progression??'experience'} onChange={e=>update({progression:e.target.value})}>
+                          <option value="experience">Gana experiencia y niveles</option>
+                          <option value="fixed">Conserva el nivel inicial</option>
+                        </select>
+                      </label>
+                      <small>La instrucción de atributos sigue disponible con ambas opciones.</small>
+                      <label>Equitación
+                        <input type="number" min={0} max={100} value={ridingSkill} onChange={e=>update({ridingSkill:e.target.valueAsNumber})}/>
+                        <small>Reduce el esfuerzo y el coste de moverse a caballo. Equitación experta asegura un mínimo de 80.</small>
+                      </label>
+                      <div className="fields">
+                        {CONTENT_TRAITS.map(trait=><label key={trait.id}>
+                          <input type="checkbox" checked={characterTraits.includes(trait.id)} onChange={e=>update({traits:e.target.checked?[...characterTraits,trait.id]:characterTraits.filter((id:string)=>id!==trait.id)})}/>
+                          {trait.name}
+                        </label>)}
+                      </div>
+                    </fieldset>}
                     <h3>Atributos</h3>
                     <div className="fields">
                       {ATTRIBUTE_FIELDS.map((k) =>
@@ -664,8 +703,8 @@ export default function ContentEditor() {
                     </div>
                   </>
                 )}
-                {tab === 'characters' && Number(item.id.slice(7)) >= 100 && <p>Se contrata desde el boletín. No aparece en el mapa antes de contratarlo.</p>}
-                {tab === 'characters' && !(Number(item.id.slice(7)) >= 100) && (
+                {tab === 'characters' && isContractCharacter(item) && <p>Se contrata desde el boletín. No aparece en el mapa antes de contratarlo.</p>}
+                {tab === 'characters' && !(isContractCharacter(item)) && (
                   <section aria-label="Aparición del personaje">
                     <h3>Aparición y recorridos</h3>
                     {placement ? (

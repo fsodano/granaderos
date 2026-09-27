@@ -1,3 +1,6 @@
+import {authoredRoster} from './content-roster.js';
+import {OPERATIVES} from './data.js';
+import {CIVIC_RECRUITS} from './civic-recruits.js';
 import {weaponMetadata} from './weapon-definition.js';
 import { resolveContent } from "./content-package.js";
 import { createBattle, WEAPONS, actBattle, shotChance, actionCosts } from "./tactical.js";
@@ -10,9 +13,11 @@ export function createContentTestRange(content, characterId, seed = 18130203) {
   if (!character) throw Error("Seleccioná un personaje.");
   const weapon = definitions.weapons.find((w) => w.id === character.weapon);
   if (!weapon) throw Error("Asigná un arma de fuego para probar el tiro.");
+  const operative=authoredRoster({contentCampaign:{package:definitions}},[...OPERATIVES,...CIVIC_RECRUITS]).find(o=>o.contentId===characterId);
   const unit = {
+    ...operative,
     ...character.attributes,
-    id: character.id,
+    id: String(operative.id),
     name: character.name,
     nickname: character.nickname,
     hp: character.attributes.maxHp,
