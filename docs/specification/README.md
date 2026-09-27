@@ -2,6 +2,8 @@
 
 [Documentation index](../README.md)
 
+- [Current game design](game-design.md): approved product contract, scope decisions and full release acceptance.
+
 - [Original supplied design](original.txt): the original campaign, history,
   equipment and native conversion brief.
 - [Expanded gameplay requirements](gameplay-expansion.md): the later JA2-style

@@ -1,0 +1,63 @@
+
+> granaderos@0.4.0-dev.1 build
+> node tools/build-web.mjs
+
+
+> granaderos-web@0.4.0-dev.1 build
+> vinext build
+
+
+  vinext build  (Vite 8.0.13)
+
+[1/5] analyze client references...
+[2Ktransforming...✓ 218 modules transformed.
+rendering chunks...
+✓ built in 1.29s
+[2/5] analyze server references...
+[2Ktransforming...✓ 535 modules transformed.
+rendering chunks...
+✓ built in 1.76s
+[3/5] build rsc environment...
+[2Ktransforming...✓ 215 modules transformed.
+rendering chunks...
+computing gzip size...
+✓ built in 824ms
+[4/5] build client environment...
+[2Ktransforming...✓ 2332 modules transformed.
+rendering chunks...
+computing gzip size...
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[33m[PLUGIN_TIMINGS] [0mYour build spent significant time in plugins. Here is a breakdown:
+  - vinext:middleware-server-only (38%)
+  - rsc:virtual-client-package (11%)
+  - vinext:css-data-url (11%)
+  - vinext:jsx-in-js (9%)
+  - alias (7%)
+See https://rolldown.rs/options/checks#plugintimings for more details.
+
+✓ built in 3.03s
+[5/5] build ssr environment...
+[2Ktransforming...✓ 538 modules transformed.
+rendering chunks...
+computing gzip size...
+✓ built in 939ms
+[0m  Pre-rendering all routes (output: 'export')...
+[vinext] Production server for prerendering running at http://127.0.0.1:54205
+  Prerendered 2 routes (0 skipped).
+  Discovered 1 CDN warmup path(s).
+[0m
+  Route (app)
+  ─ ○ /
+
+  ○ Static
+
+  ○ Routes marked static were confirmed by speculative prerender (attempted render
+    succeeded without dynamic API usage).
+
+  Build complete. Run `vinext start` to start the production server.
+
+Static export verified: 962 files, 858 asset references, staged in dist/.

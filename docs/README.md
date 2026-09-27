@@ -9,6 +9,8 @@ Player-facing text is Spanish. Code and documentation are English.
 | Task | Read |
 | --- | --- |
 | Install, run, build or test the browser game | [Development setup](development/getting-started.md) |
+| Read the current game design | [Game design](specification/game-design.md) |
+| Review formal cross-branch verification | [27 September audit](verification/formal-audit-2026-09-27.md) |
 | Check published features and remaining work | [Published progress ledger](verification/published-progress.md) |
 | Edit campaign content | [Story editor](development/story-editor.md) |
 | Build tactical sectors | [Sector editor](development/sector-editor.md) |
@@ -33,6 +35,21 @@ Player-facing text is Spanish. Code and documentation are English.
 | [Archive](archive/README.md) | Superseded progress ledgers, audits and design snapshots |
 
 The [changelog](CHANGELOG.md) records release checkpoints.
+
+## Current design and tracking
+
+[Game design](specification/game-design.md) is the current product contract.
+[Published progress](verification/published-progress.md) is generated from
+[the requirement register](verification/requirements.json). It separates published
+work, local-only code, failed acceptance, missing behavior and unverified claims.
+[The formal audit](verification/formal-audit-2026-09-27.md) preserves the evidence.
+These documents extend this topic structure; they do not replace the feature notes.
+
+Update the affected register rows in each feature PR, then run
+`npm run docs:progress` and `npm run audit:docs`. A dated audit remains a snapshot.
+The old [PROGRESS.md link](PROGRESS.md) leads to the same active ledger.
+Explicit user decisions override older design notes; record the resolution in
+the current design and register. Preserve all original and parity requirements.
 
 ## Which document governs status?
 

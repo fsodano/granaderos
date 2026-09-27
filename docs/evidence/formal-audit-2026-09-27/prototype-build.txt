@@ -1,0 +1,64 @@
+
+> granaderos@0.4.0-dev.1 build
+> node tools/build-web.mjs
+
+
+> granaderos-web@0.4.0-dev.1 build
+> vinext build
+
+
+  vinext build  (Vite 8.0.13)
+
+[1/5] analyze client references...
+[2Ktransforming...✓ 219 modules transformed.
+rendering chunks...
+✓ built in 1.28s
+[2/5] analyze server references...
+[2Ktransforming...✓ 532 modules transformed.
+rendering chunks...
+✓ built in 1.78s
+[3/5] build rsc environment...
+[2Ktransforming...✓ 216 modules transformed.
+rendering chunks...
+computing gzip size...
+✓ built in 933ms
+[4/5] build client environment...
+[2Ktransforming...✓ 2326 modules transformed.
+rendering chunks...
+computing gzip size...
+[plugin builtin:vite-reporter] 
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+[33m[PLUGIN_TIMINGS] [0mYour build spent significant time in plugins. Here is a breakdown:
+  - vinext:middleware-server-only (35%)
+  - rsc:virtual-client-package (12%)
+  - alias (11%)
+  - vinext:css-data-url (10%)
+  - vinext:jsx-in-js (7%)
+See https://rolldown.rs/options/checks#plugintimings for more details.
+
+✓ built in 3.29s
+[5/5] build ssr environment...
+[2Ktransforming...✓ 535 modules transformed.
+rendering chunks...
+computing gzip size...
+✓ built in 1.01s
+[0m  Pre-rendering all routes (output: 'export')...
+[vinext] Production server for prerendering running at http://127.0.0.1:54202
+  Prerendered 3 routes (0 skipped).
+  Discovered 2 CDN warmup path(s).
+[0m
+  Route (app)
+  ┌ ○ /      
+  └ ○ /editor
+
+  ○ Static
+
+  ○ Routes marked static were confirmed by speculative prerender (attempted render
+    succeeded without dynamic API usage).
+
+  Build complete. Run `vinext start` to start the production server.
+
+Static export verified: 965 files, 859 asset references, staged in dist/.

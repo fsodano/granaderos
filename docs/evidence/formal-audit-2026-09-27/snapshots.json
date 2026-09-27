@@ -1,0 +1,60 @@
+{
+  "original": {
+    "before": {
+      "capturedAt": "2026-09-27T22:48:33.216311+00:00",
+      "branch": "main",
+      "head": "eb39ef7e903fa33f1d463b2af0db2de3c66cf93c",
+      "dirtyPathCount": 290,
+      "statusSha256": "0e21673a24fb35d904d270f8948f160667f5a9307a71e9faf24e558a2e9846aa",
+      "sourceFileCount": 2035,
+      "sourceSha256": "b14503f4f5b70338c8c062832540185381c79eb99f2db98ba0a1c8bafa9438fe"
+    },
+    "after": {
+      "capturedAt": "2026-09-27T22:55:35.472623+00:00",
+      "branch": "main",
+      "head": "eb39ef7e903fa33f1d463b2af0db2de3c66cf93c",
+      "dirtyPathCount": 290,
+      "statusSha256": "0e21673a24fb35d904d270f8948f160667f5a9307a71e9faf24e558a2e9846aa",
+      "sourceFileCount": 2035,
+      "sourceSha256": "b14503f4f5b70338c8c062832540185381c79eb99f2db98ba0a1c8bafa9438fe"
+    },
+    "sourceUnchanged": true,
+    "statusUnchanged": true
+  },
+  "prototype": {
+    "before": {
+      "capturedAt": "2026-09-27T22:48:33.697933+00:00",
+      "branch": "codex/game-content-editor",
+      "head": "390028896a4e95a325337763cb82d6e9114a5045",
+      "dirtyPathCount": 0,
+      "statusSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sourceFileCount": 1944,
+      "sourceSha256": "4fde8270b567aa984455423fae8b48eefd4e25912633aa7cc5badadad06b8eeb"
+    },
+    "after": {
+      "capturedAt": "2026-09-27T22:55:35.772595+00:00",
+      "branch": "codex/game-content-editor",
+      "head": "390028896a4e95a325337763cb82d6e9114a5045",
+      "dirtyPathCount": 0,
+      "statusSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sourceFileCount": 1944,
+      "sourceSha256": "4fde8270b567aa984455423fae8b48eefd4e25912633aa7cc5badadad06b8eeb"
+    },
+    "sourceUnchanged": true,
+    "statusUnchanged": true
+  },
+  "presence": {
+    "before": {
+      "capturedAt": "2026-09-27T22:48:33.944981+00:00",
+      "branch": "codex/publish-character-presence",
+      "head": "e2dff9662476cc5b7435a63c381840108beea5f9",
+      "dirtyPathCount": 0,
+      "statusSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sourceFileCount": 1105,
+      "sourceSha256": "a7e3cdff4c9dbf708c80541497eaded7f30d74ab1b26215dade12a608562a75f"
+    },
+    "after": null,
+    "sourceUnchanged": null,
+    "statusUnchanged": null
+  }
+}
