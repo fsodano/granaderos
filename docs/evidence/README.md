@@ -11,6 +11,8 @@ using a result. Published acceptance is recorded in [published progress](../veri
 
 ## Campaign and route records
 
+- [Formal audit evidence](formal-audit-2026-09-27/) and [scope/method](../verification/formal-audit-2026-09-27.md): three source manifests, complete logs, comparisons and reproduced failures.
+
 - [Current campaign and performance report](../verification/gameplay-and-campaign-performance-2026-09-27.md) *(workspace)*
 - [Latest gameplay follow-up](../verification/gameplay-follow-up-2026-09-27.md) *(workspace)*
 - [26 September regression audit](../verification/current-worktree-regressions-2026-09-26.md) *(workspace)*

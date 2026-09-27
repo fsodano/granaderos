@@ -20,6 +20,10 @@ jobs:
           cache-dependency-path: web/package-lock.json
       - name: Install browser dependencies
         run: npm ci --prefix web
+      - name: Check design and progress records
+        run: npm run audit:docs
+      - name: Check reference gameplay values
+        run: npm run audit:baseline
       - name: Test tactical and strategic simulation
         run: npm test
       - name: Check browser types

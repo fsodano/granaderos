@@ -1,0 +1,55 @@
+{
+  "published": {
+    "source": "490d5dde4914f7d1050f1901ddf783aa88bc95ed",
+    "testSource": "f6697ea022014410fbafc6080f6587c204647e7c",
+    "total": 537,
+    "passed": 537,
+    "failed": 0,
+    "skipped": 0,
+    "types": "PASS",
+    "build": "PASS",
+    "files": 721,
+    "assetReferences": 631,
+    "evidence": "https://github.com/fsodano/granaderos/actions/runs/36356017429/job/108723788789"
+  },
+  "original": {
+    "source": "eb39ef7e903fa33f1d463b2af0db2de3c66cf93c",
+    "total": 3047,
+    "passed": 3040,
+    "failed": 4,
+    "skipped": 3,
+    "types": "PASS",
+    "build": "PASS",
+    "files": 962,
+    "assetReferences": 858,
+    "rawLogSha256": "1bf1f5fab30b0a3e552e545b95e15173a25c5c1acdf97c0e457eb9f1b1e48c9d",
+    "storedLogSha256": "e7034b85d68685d76e933e3db8b5ec10163532662e07b9be5a8df91134f968cc"
+  },
+  "prototype": {
+    "source": "390028896a4e95a325337763cb82d6e9114a5045",
+    "total": 2896,
+    "passed": 2895,
+    "failed": 1,
+    "skipped": 0,
+    "types": "PASS",
+    "build": "PASS",
+    "files": 965,
+    "assetReferences": 859,
+    "rawLogSha256": "0ed86391106ea0d6b9cc4dc77e7cea2a970fa277182e2274055a992709362087",
+    "storedLogSha256": "eb286e0d973c5a3294fdb1e3f7d2ed2f9eb529c4f481658fe55e206edb3a7eb3"
+  },
+  "presence": {
+    "source": "e2dff9662476cc5b7435a63c381840108beea5f9",
+    "total": 548,
+    "passed": 548,
+    "failed": 0,
+    "skipped": 0,
+    "types": "PASS",
+    "build": "PASS",
+    "files": 721,
+    "assetReferences": 631,
+    "publication": "Local commit only; no PR or merge at audit time.",
+    "rawLogSha256": "8f93b70a01642af440570f8434fe3640f8337155e9bb9fb3489fc0b36ce5d750",
+    "storedLogSha256": "8f93b70a01642af440570f8434fe3640f8337155e9bb9fb3489fc0b36ce5d750"
+  }
+}
