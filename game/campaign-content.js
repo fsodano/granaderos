@@ -1,3 +1,4 @@
+import {weaponMetadata,validateWeaponReferences,restoreWeaponReferences} from './weapon-definition.js';
 import {contentIdentity,canonicalContent} from "./content-identity.js";
 import { defaultContentPackage, resolveContent } from "./content-package.js";
 import { contentCellIds } from "./content-map.js";
@@ -22,13 +23,9 @@ export function campaignContentReport(content) {
     blocked.push(
       "La campaña aún necesita los personajes originales. Agregar o eliminar personajes requiere integrar los roles de historia.",
     );
-  if (
-    canonicalContent(value.weapons) !== canonicalContent(baseline.weapons) ||
-    value.characters.some(
-      (c) => c.weapon !== baseline.characters.find((b) => b.id === c.id)?.weapon,
-    )
-  )
-    blocked.push("Las armas editadas todavía no se pueden usar en campaña. Restablecé sus valores para jugar con estas fichas.");
+  const weaponFields=new Set(['id','template','name','damage','fireAP','aimAP','reloadAP','range','readyAP','capacity','weight','price','art']);
+  if(value.weapons.some(w=>Object.keys(w).some(key=>!weaponFields.has(key))||w.readyAP!==0))
+    blocked.push("Este paquete incluye manejo de armas que esta versión todavía no puede aplicar.");
   const locations = (list) => list.map((p) => ({ ...p, sectors: contentCellIds(p.sectors) }));
   if (
     canonicalContent(locations(value.placements)) !== canonicalContent(locations(baseline.placements))
@@ -43,10 +40,14 @@ export function attachCampaignContent(state, content) {
   const definitions = resolveContent(content),
     report = campaignContentReport(definitions);
   if (report.blocked.length) throw Error(report.blocked.join("\n"));
-  state.contentCampaign = { version: 2, adapter: "character-sheets-v1", identity: contentIdentity(definitions), package: definitions };
+  state.contentCampaign = { version: 2, adapter: "character-weapons-v2", identity: contentIdentity(definitions), package: definitions };
+  state.armoryItems=[];state.nextArmoryItemId=1;
   for (const c of definitions.characters) {
     const id = Number(c.id.slice("person-".length)),
       record = state.operativeState[id];
+    const weapon=definitions.weapons.find(w=>w.id===c.weapon);
+    state.loadouts[id]={...state.loadouts[id],weapon:weapon?.template??0};
+    if(weapon)record.weaponMetadata=weaponMetadata(weapon);
     record.hp = c.attributes.maxHp;
     record.maxHp = c.attributes.maxHp;
     record.bandaged = 0;
@@ -56,13 +57,14 @@ export function attachCampaignContent(state, content) {
   return state;
 }
 export function validateCampaignContent(state) {
-  if (state?.contentCampaign === undefined) return;
+  if (state?.contentCampaign === undefined) {validateWeaponReferences(state,state);return;}
   const context = state.contentCampaign;
-  if (!context || context.version !== 2 || context.adapter !== "character-sheets-v1")
+  if (!context || context.version !== 2 || !["character-sheets-v1","character-weapons-v2"].includes(context.adapter))
     throw Error("La versión del contenido de campaña no es compatible.");
   const definitions = resolveContent(context.package),
     report = campaignContentReport(definitions);
   if (report.blocked.length) throw Error(report.blocked.join("\n"));
   if(canonicalContent(context.identity)!==canonicalContent(contentIdentity(definitions)))throw Error("El contenido de campaña no coincide con su identidad guardada.");
-  state.contentCampaign = { version: 2, adapter: "character-sheets-v1", identity: contentIdentity(definitions), package: definitions };
+  restoreWeaponReferences(state,state);validateWeaponReferences(state,state);
+  state.contentCampaign = { version: 2, adapter: context.adapter, identity: contentIdentity(definitions), package: definitions };
 }

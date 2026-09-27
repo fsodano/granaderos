@@ -1,3 +1,4 @@
+import {weaponSpecification} from './weapon-definition.js';
 // Pure HUD model for the tactical battle inspector and squad strip.
 // Read-only descriptors plus action-object constructors; no game rules.
 import {weaponFor, bladeFor, hasFirearm, carriedWeight, carryCapacity, WEAPONS, BLADES} from './tactical.js';
@@ -62,18 +63,19 @@ export function inventoryModel(state, unit) {
   const backpack = Object.entries(unit.inventory || {})
     .filter(([, record]) => record && typeof record === 'object')
     .map(([key, record]) => {
-      const weapon = WEAPONS[record.weapon];
+      const weapon = WEAPONS[record.weapon]?weaponSpecification(record):null;
       const blade = BLADES[record.weapon];
       return {
         key,
         ...record,
         equippable: Boolean(weapon || blade),
         name: weapon?.name ?? blade?.name ?? null,
+        art: weapon?.art ?? (blade?`/art/weapon-${blade.id}.png`:null),
       };
     });
   return {
     stats,
-    slots: {primary: weaponFor(unit), blade: BLADES[unit.blade] || bladeFor(unit)},
+    slots: {primary: weaponFor({...unit,activeSlot:"primary"}), blade: BLADES[unit.blade] || bladeFor(unit)},
     activeSlot: unit.activeSlot,
     weight: carriedWeight(unit),
     capacity: carryCapacity(unit),

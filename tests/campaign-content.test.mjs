@@ -81,8 +81,8 @@ test("integration report explicitly identifies pending behavior instead of silen
   d.weapons[0].damage = 99;
   d.placements[0].sectors = ["cell-0-0"];
   let report = campaignContentReport(d);
-  assert.equal(report.blocked.length, 2);
-  assert.ok(report.blocked.some((t) => t.includes("armas")));
+  assert.equal(report.blocked.length, 1);
+  assert.ok(!report.blocked.some((t) => t.includes("armas")));
   assert.ok(report.blocked.some((t) => t.includes("apariciones")));
   assert.throws(()=>initialCampaign(1,d));
   d.characters.pop();

@@ -1,3 +1,4 @@
+import {validateWeaponCarrier,weaponSpecification} from './weapon-definition.js';
 import {validateBattleSnapshot} from './validate-battle.js';
 export function migrateSquads(s){
  if(!s.squads)s.squads=[{id:'squad-1',name:'Primera escuadra',members:[...s.squad],location:s.location}];
@@ -14,8 +15,9 @@ export function validatePersonalInventory(inventory){
   if(key.length>100||/[<>\x00-\x1f]/.test(key))throw Error('El inventario del combatiente es inválido.');
   if(typeof value==='number'){if(!Number.isInteger(value)||value<0||value>10000)throw Error('La cantidad de pertrechos es inválida.');continue;}
   if(!value||typeof value!=='object'||Array.isArray(value)||!Number.isInteger(value.count)||value.count<0||value.count>10000||!Number.isFinite(value.weight)||value.weight<0||value.weight>1000)throw Error('Los pertrechos del combatiente son inválidos.');
+  validateWeaponCarrier(value);
   if(value.weapon!==undefined&&(!Number.isInteger(value.weapon)||value.weapon<1800||value.weapon>1813))throw Error('El arma recuperada es inválida.');
-  if(value.loaded!==undefined&&(!Number.isInteger(value.loaded)||value.loaded<0||value.loaded>2))throw Error('La carga del arma recuperada es inválida.');
+  if(value.loaded!==undefined&&(!Number.isInteger(value.loaded)||value.loaded<0||value.loaded>(weaponSpecification(value)?.capacity??0)))throw Error('La carga del arma recuperada es inválida.');
   if(value.condition!==undefined&&(!Number.isFinite(value.condition)||value.condition<0||value.condition>100))throw Error('El estado del arma recuperada es inválido.');
  }
  return inventory;
