@@ -1,0 +1,15 @@
+# Physical inventory pockets
+
+> **Development-workspace record.** This note describes a separate development
+> checkout. Its implementation and test results are not published-main acceptance.
+> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+
+Every soldier uses four large and eight small storage pockets. Long equipment occupies one large pocket. Compact equipment fits either size; supply stack limits remain enforced. A fifth large item cannot enter even when small pockets are empty.
+
+Select an object and then its destination, or drag it. Compatible occupied destinations swap. Pocket organization costs no AP. Existing equipment changes retain their costs. Placement is a preference over actual item records, never a second inventory: moving a pocket cannot manufacture ammunition or replace a weapon. Loaded rounds, condition, fittings and identity remain in those records. Invalid or stale swaps are rejected before mutation. Overfull inventories display the excess for giving or dropping.
+
+Ten new tests cover geometry, swaps, metadata, stale requests, bounded oversized quantities, validation, full campaign return/reentry and rendered pockets. The full 1,441-test suite, typecheck, build and diff check pass.
+
+A separate live production-component demonstration displayed all twelve pockets, rejected small destinations for a Brown Bess, moved it to the fourth large pocket, and restored its position after saving/loading. Equipping it reduced AP from 100 to 94 and retained its prepared round, 63% gun condition and 73% bayonet condition. This is a controlled fixture, not a complete campaign playthrough.
+
+Long guns now occupy both hands; small guns can share the hands with another weapon or a held utility item. Weapons put away consume real pocket space. See [two-hand equipment](two-hand-equipment.md). Free placement of arbitrary items in either hand and the outfit slot remain pending. The explicit firearm/close-combat switch is now implemented; see weapon-modes.md. The pocket container also expands at intermediate window widths so its small pockets remain visible.

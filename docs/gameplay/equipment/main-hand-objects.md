@@ -1,0 +1,25 @@
+# Ordinary objects in the main hand
+
+> **Development-workspace record.** This note describes a separate development
+> checkout. Its implementation and test results are not published-main acceptance.
+> See [published progress](../../verification/published-progress.md) for the main branch baseline.
+
+Ordinary pocket objects, loose cartridges, priming powder and flints can occupy either hand. Dragging to the main hand or selecting **Poner en mano principal** spends four AP during combat. Exploration uses time without AP. One physical item leaves the pocket count; the rest of a stack stays packed. Names and condition appear in the hand display. An available compact weapon can stay in the other hand; long guns still require two hands.
+
+These objects do not become weapons. Targeting a person shows a refusal without movement, attack, AP expenditure or ammunition use. A cartridge held in either hand remains personal on campaign return; only the remaining loose cartridges enter shared stock. The held cartridge also stays personal after rescue, and the return allowance counts it once. The main strip explains that the object can be stored, passed or dropped. Dressing, tool and usable-supply placement still selects the existing contextual use instead. Weapon selection clears the ordinary-object selection and preserves the original weapon load and condition.
+
+Removing the last held item clears its reference. The other occupied hand stays available, including when it holds a supply rather than a weapon. Tactical and campaign validators reject missing, malformed, duplicate-hand and out-of-mode references. Campaign reports and the public player view retain the selected object. Hand validation uses the current loadout when checking a weapon explicitly retained in the second hand.
+
+Eight focused model tests cover placement, counts, exact identity and condition, both-hand drags, transfers, dropped items, all attack aliases, invalid references, AP/capacity rejection, a synchronized campaign save and reentry, an explicit retained blade through campaign return, and cartridge conservation across return and reentry. A capture/rescue regression also retains the held cartridge through custody. Two component checks cover the hand display and the squad label. The full suite, typecheck, production build and static export are checked before commit.
+
+Live verification used the separate production Battlefield preview on port 3020. Dragging a keepsake into the main hand changed 90 to 86 AP, showed condition 44%, and retained the pistol in the other hand with one load and 81% condition. Clicking the enemy showed the refusal and retained 86 AP. Tactical save validation and reload retained both objects. Selecting the pistol then spent four AP (86 to 82) and kept its original load. The user's campaign on port 3000 was not changed.
+
+## Campaign preparation
+
+The sector equipment screen now offers **Poner en mano principal** for carried bandages, tools, usable supplies and ordinary objects. Existing main and secondary weapons can also be selected again. Selecting an already held item is disabled. These controls reuse the tactical drag planner, including exact item selection, two-hand occupancy and pocket capacity. A main-hand selection can take an item from the second hand without duplicating it.
+
+Campaign preparation requires a conscious, awake soldier present in a safe friendly sector, with no pending encounter. It does not require a prior scouting visit. It changes no time, energy, health or shared stock. The dispatcher checks the selected item again before applying the order. Initial loading eligibility, completed charges, independent pistol loads and partial reload work remain intact.
+
+Six campaign tests cover all item modes, exact metadata, full saves, deployment and return, independent hands and pistol loads, loading eligibility, stale orders, unavailable soldiers and full pockets. A component interaction test applies the displayed bandage choice through the campaign reducer and checks the disabled states. Live verification on the separate port 3019 preview prepared bandages and a second-hand torch, saved and restored the campaign, then entered the tactical map with both objects in their selected hands. After returning, a spare poncho was selected as an ordinary main-hand object and retained through another full campaign save.
+
+This does not add improvised attacks or object-specific conversations. Campaign dragging and [pocket quantity selection](pocket-stack-quantities.md) are now implemented; each hand retains the original JA2 single-item limit. Full inventory and JA2 parity remain open.

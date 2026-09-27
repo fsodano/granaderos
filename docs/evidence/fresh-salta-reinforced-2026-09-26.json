@@ -1,0 +1,331 @@
+{
+  "scope": "Earned Salta victory; full campaign and ending remain incomplete.",
+  "reinforcements": [
+    100,
+    119,
+    130
+  ],
+  "readiness": [
+    {
+      "id": 9,
+      "hp": 92,
+      "morale": 80,
+      "weapon": 1800,
+      "loaded": 1,
+      "ammo": 11,
+      "weaponDropped": false
+    },
+    {
+      "id": 11,
+      "hp": 58,
+      "morale": 7.899999999999999,
+      "weapon": 1802,
+      "loaded": 1,
+      "ammo": 6,
+      "weaponDropped": false
+    },
+    {
+      "id": 146,
+      "hp": 74,
+      "morale": 5,
+      "weapon": 1801,
+      "loaded": 1,
+      "ammo": 12,
+      "weaponDropped": false
+    },
+    {
+      "id": 1000,
+      "hp": 78,
+      "morale": 17,
+      "weapon": 1802,
+      "loaded": 1,
+      "ammo": 7,
+      "weaponDropped": false
+    },
+    {
+      "id": 10,
+      "hp": 72,
+      "morale": 16,
+      "weapon": 1801,
+      "loaded": 1,
+      "ammo": 11,
+      "weaponDropped": false
+    },
+    {
+      "id": 1,
+      "hp": 88,
+      "morale": 80,
+      "weapon": 1800,
+      "loaded": 1,
+      "ammo": 12,
+      "weaponDropped": false
+    },
+    {
+      "id": 116,
+      "hp": 79,
+      "morale": 19,
+      "weapon": 1800,
+      "loaded": 1,
+      "ammo": 12,
+      "weaponDropped": false
+    },
+    {
+      "id": 129,
+      "hp": 88,
+      "morale": 21,
+      "weapon": 1801,
+      "loaded": 1,
+      "ammo": 11,
+      "weaponDropped": false
+    },
+    {
+      "id": 134,
+      "hp": 70,
+      "morale": 13,
+      "weapon": 1801,
+      "loaded": 1,
+      "ammo": 9,
+      "weaponDropped": false
+    },
+    {
+      "id": 100,
+      "hp": 70,
+      "morale": 80,
+      "weapon": 1800,
+      "loaded": 1,
+      "ammo": 12,
+      "weaponDropped": false
+    },
+    {
+      "id": 119,
+      "hp": 76,
+      "morale": 72,
+      "weapon": 1800,
+      "loaded": 1,
+      "ammo": 11,
+      "weaponDropped": false
+    },
+    {
+      "id": 130,
+      "hp": 67,
+      "morale": 80,
+      "weapon": 1800,
+      "loaded": 1,
+      "ammo": 9,
+      "weaponDropped": false
+    }
+  ],
+  "summary": {
+    "sector": "salta",
+    "preparationSeconds": 0,
+    "startSeconds": 2234499,
+    "elapsedSeconds": 546,
+    "status": "victory",
+    "turns": 34,
+    "actions": 329,
+    "units": [
+      {
+        "id": "9",
+        "side": "player",
+        "hp": 0,
+        "ammo": 11,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "11",
+        "side": "player",
+        "hp": 0,
+        "ammo": 0,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "146",
+        "side": "player",
+        "hp": 74,
+        "ammo": 5,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "1000",
+        "side": "player",
+        "hp": 78,
+        "ammo": 2,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "10",
+        "side": "player",
+        "hp": 0,
+        "ammo": 0,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "1",
+        "side": "player",
+        "hp": 0,
+        "ammo": 11,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "116",
+        "side": "player",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "129",
+        "side": "player",
+        "hp": 0,
+        "ammo": 7,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "134",
+        "side": "player",
+        "hp": 70,
+        "ammo": 2,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "100",
+        "side": "player",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "119",
+        "side": "player",
+        "hp": 0,
+        "ammo": 11,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "130",
+        "side": "player",
+        "hp": 0,
+        "ammo": 9,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-0",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-1",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-2",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-3",
+        "side": "enemy",
+        "hp": 9,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-4",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-5",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-6",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-7",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 11,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-8",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 11,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-9",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-10",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-11",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 11,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-12",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": true
+      }
+    ]
+  },
+  "hour": 620,
+  "treasury": 1693
+}

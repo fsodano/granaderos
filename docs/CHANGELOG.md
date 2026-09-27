@@ -1,5 +1,8 @@
 # Changelog
 
+> **Release history.** Entries describe their recorded checkpoints. Read
+> [published progress](verification/published-progress.md) for current scope.
+
 ## 0.4.0-dev.1
 
 - Removed the artificial day-only cap on elite specialists: day, weekly and monthly

@@ -1,0 +1,215 @@
+{
+  "scope": "Current rules; fresh Retiro campaign through San Lorenzo. Full campaign remains incomplete.",
+  "seed": 8,
+  "support": [
+    123,
+    115,
+    113,
+    110,
+    124,
+    141
+  ],
+  "supportHiringCost": 0,
+  "preMissionTreasury": 263,
+  "summary": {
+    "sector": "san_lorenzo",
+    "preparationSeconds": 0,
+    "startSeconds": 461980,
+    "elapsedSeconds": 84,
+    "status": "victory",
+    "turns": 14,
+    "actions": 131,
+    "units": [
+      {
+        "id": "120",
+        "side": "player",
+        "hp": 21,
+        "ammo": 8,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "111",
+        "side": "player",
+        "hp": 10,
+        "ammo": 7,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "125",
+        "side": "player",
+        "hp": 0,
+        "ammo": 8,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "103",
+        "side": "player",
+        "hp": 0,
+        "ammo": 7,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "140",
+        "side": "player",
+        "hp": 0,
+        "ammo": 0,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "112",
+        "side": "player",
+        "hp": 0,
+        "ammo": 0,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "123",
+        "side": "player",
+        "hp": 3,
+        "ammo": 9,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "115",
+        "side": "player",
+        "hp": 0,
+        "ammo": 7,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "113",
+        "side": "player",
+        "hp": 15,
+        "ammo": 0,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "110",
+        "side": "player",
+        "hp": 0,
+        "ammo": 9,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "124",
+        "side": "player",
+        "hp": 0,
+        "ammo": 5,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "141",
+        "side": "player",
+        "hp": 0,
+        "ammo": 8,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "57",
+        "side": "player",
+        "hp": 88,
+        "ammo": 8,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "enemy-0",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-1",
+        "side": "enemy",
+        "hp": 46,
+        "ammo": 7,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-2",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-3",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 11,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-4",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 11,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-5",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 10,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "enemy-6",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 9,
+        "loaded": 0,
+        "routed": true
+      }
+    ]
+  },
+  "phase": 2,
+  "hour": 128,
+  "treasury": 513,
+  "commanderHp": 88,
+  "casualties": [
+    110,
+    114,
+    115,
+    137,
+    107,
+    131,
+    141,
+    124,
+    125,
+    103,
+    140,
+    112
+  ],
+  "living": [
+    123,
+    116,
+    113,
+    119,
+    127,
+    104,
+    121,
+    120,
+    111
+  ],
+  "nextFailure": "Northern medical recovery requires more dressings than the route's fixed maximum of 20."
+}

@@ -1,0 +1,618 @@
+{
+  "sourceCommit": "2ffd1c5",
+  "variant": "indexed",
+  "node": "v25.9.0",
+  "started": "2026-09-12T17:00:07.769Z",
+  "cases": [
+    {
+      "metadata": {
+        "sector": "retiro",
+        "night": false,
+        "width": 64,
+        "height": 48,
+        "tiles": 3072,
+        "buildings": 21,
+        "props": 29,
+        "lights": 1,
+        "upperSurfaces": 30,
+        "climbLinks": 1,
+        "observer": {
+          "x": 23,
+          "y": 20
+        },
+        "target": {
+          "x": 23,
+          "y": 11
+        },
+        "terrace": {
+          "x": 39,
+          "y": 2
+        }
+      },
+      "measurements": {
+        "explorationReachable": {
+          "flat": {
+            "iterations": 12,
+            "calls": 12,
+            "medianMs": 16.808,
+            "p95Ms": 18.411,
+            "maxMs": 18.411,
+            "meanMs": 17.101,
+            "heapPeakDeltaMB": 37.068,
+            "retainedHeapDeltaMB": 0.007,
+            "rssPeakDeltaMB": 34.125,
+            "rssAfterMB": 148.984,
+            "result": {
+              "count": 2314,
+              "pathEntries": 51582,
+              "maxPath": 46
+            }
+          },
+          "upper": {
+            "iterations": 12,
+            "calls": 12,
+            "medianMs": 22.572,
+            "p95Ms": 24.821,
+            "maxMs": 24.821,
+            "meanMs": 22.981,
+            "heapPeakDeltaMB": 65.204,
+            "retainedHeapDeltaMB": 0.023,
+            "rssPeakDeltaMB": 65.672,
+            "rssAfterMB": 215.938,
+            "result": {
+              "count": 2344,
+              "pathEntries": 52415,
+              "maxPath": 46
+            }
+          }
+        },
+        "combatReachable": {
+          "flat": {
+            "iterations": 16,
+            "calls": 16,
+            "medianMs": 3.733,
+            "p95Ms": 4.288,
+            "maxMs": 4.288,
+            "meanMs": 3.736,
+            "heapPeakDeltaMB": 61.696,
+            "retainedHeapDeltaMB": -0.008,
+            "rssPeakDeltaMB": 0.016,
+            "rssAfterMB": 215.859,
+            "result": {
+              "count": 463,
+              "pathEntries": 4400,
+              "maxPath": 16
+            }
+          },
+          "upper": {
+            "iterations": 16,
+            "calls": 16,
+            "medianMs": 4.55,
+            "p95Ms": 5.616,
+            "maxMs": 5.616,
+            "meanMs": 4.613,
+            "heapPeakDeltaMB": 61.764,
+            "retainedHeapDeltaMB": 0.006,
+            "rssPeakDeltaMB": 0.125,
+            "rssAfterMB": 216.047,
+            "result": {
+              "count": 463,
+              "pathEntries": 4400,
+              "maxPath": 16
+            }
+          }
+        },
+        "visibleTiles": {
+          "flat": {
+            "iterations": 24,
+            "calls": 24,
+            "medianMs": 0.681,
+            "p95Ms": 0.876,
+            "maxMs": 0.99,
+            "meanMs": 0.692,
+            "heapPeakDeltaMB": 22.181,
+            "retainedHeapDeltaMB": 0.097,
+            "rssPeakDeltaMB": 2.344,
+            "rssAfterMB": 218.406,
+            "result": {
+              "count": 186
+            }
+          },
+          "upper": {
+            "iterations": 24,
+            "calls": 24,
+            "medianMs": 2.131,
+            "p95Ms": 2.265,
+            "maxMs": 2.882,
+            "meanMs": 2.155,
+            "heapPeakDeltaMB": 62.257,
+            "retainedHeapDeltaMB": 0.003,
+            "rssPeakDeltaMB": 0.016,
+            "rssAfterMB": 218.453,
+            "result": {
+              "count": 171
+            }
+          }
+        }
+      },
+      "outputs": {
+        "flat": {
+          "reach": "903308f2a19f0afb041c2b578694d9725005eaa8f71f7dd921c1f79d032a2d4d",
+          "combat": "91f6ed42353c5812038f5d7ce3429dc22027a97e7633c7c203795c6f825085b0",
+          "visibility": "f64b82a41cdaf9c9d173bb54a0be8c7f97d823825d5ae958ab0a85ce05337898",
+          "sight": "a1f7c100a8ec00f9aa4d66598299e8ca153b406d0171abb84cf611c031b7c6b6",
+          "shot": 95,
+          "reachableCount": 2314,
+          "visibleCount": 186
+        },
+        "upper": {
+          "reach": "41174a8f4fc3dfaec0b877679560a48fede81d63c3e68883938b2729bc2ab6f6",
+          "combat": "e809812990375524d2db41b7ae811f56a7ecc041b3675d2c2b9844757352638e",
+          "visibility": "f050d346dd81c44beb5cce488069297b03fa90b94193f7b59755d6d49ce2e00a",
+          "sight": "f6b6fd04f6a013327cd8c3cca37ba7c1d56c96c9996b13097f02af2edd497111",
+          "shot": 95,
+          "reachableCount": 2344,
+          "visibleCount": 171
+        }
+      }
+    },
+    {
+      "metadata": {
+        "sector": "retiro",
+        "night": true,
+        "width": 64,
+        "height": 48,
+        "tiles": 3072,
+        "buildings": 21,
+        "props": 29,
+        "lights": 1,
+        "upperSurfaces": 30,
+        "climbLinks": 1,
+        "observer": {
+          "x": 23,
+          "y": 20
+        },
+        "target": {
+          "x": 23,
+          "y": 14
+        },
+        "terrace": {
+          "x": 39,
+          "y": 2
+        }
+      },
+      "measurements": {
+        "explorationReachable": {
+          "flat": {
+            "iterations": 12,
+            "calls": 12,
+            "medianMs": 17.994,
+            "p95Ms": 19.247,
+            "maxMs": 19.247,
+            "meanMs": 18.118,
+            "heapPeakDeltaMB": 62.633,
+            "retainedHeapDeltaMB": -0.004,
+            "rssPeakDeltaMB": 0.094,
+            "rssAfterMB": 219.359,
+            "result": {
+              "count": 2314,
+              "pathEntries": 51582,
+              "maxPath": 46
+            }
+          },
+          "upper": {
+            "iterations": 12,
+            "calls": 12,
+            "medianMs": 22.969,
+            "p95Ms": 26.808,
+            "maxMs": 26.808,
+            "meanMs": 23.094,
+            "heapPeakDeltaMB": 62.203,
+            "retainedHeapDeltaMB": 0.021,
+            "rssPeakDeltaMB": 0.125,
+            "rssAfterMB": 219.578,
+            "result": {
+              "count": 2344,
+              "pathEntries": 52415,
+              "maxPath": 46
+            }
+          }
+        },
+        "combatReachable": {
+          "flat": {
+            "iterations": 16,
+            "calls": 16,
+            "medianMs": 3.62,
+            "p95Ms": 3.875,
+            "maxMs": 3.875,
+            "meanMs": 3.646,
+            "heapPeakDeltaMB": 61.288,
+            "retainedHeapDeltaMB": -0.056,
+            "rssPeakDeltaMB": 0,
+            "rssAfterMB": 219.578,
+            "result": {
+              "count": 463,
+              "pathEntries": 4400,
+              "maxPath": 16
+            }
+          },
+          "upper": {
+            "iterations": 16,
+            "calls": 16,
+            "medianMs": 4.912,
+            "p95Ms": 6.308,
+            "maxMs": 6.308,
+            "meanMs": 4.968,
+            "heapPeakDeltaMB": 61.705,
+            "retainedHeapDeltaMB": 0.05,
+            "rssPeakDeltaMB": 0.031,
+            "rssAfterMB": 219.609,
+            "result": {
+              "count": 463,
+              "pathEntries": 4400,
+              "maxPath": 16
+            }
+          }
+        },
+        "visibleTiles": {
+          "flat": {
+            "iterations": 24,
+            "calls": 24,
+            "medianMs": 1.107,
+            "p95Ms": 1.586,
+            "maxMs": 1.591,
+            "meanMs": 1.196,
+            "heapPeakDeltaMB": 51.803,
+            "retainedHeapDeltaMB": 0.012,
+            "rssPeakDeltaMB": 0.016,
+            "rssAfterMB": 219.641,
+            "result": {
+              "count": 63
+            }
+          },
+          "upper": {
+            "iterations": 24,
+            "calls": 24,
+            "medianMs": 1.406,
+            "p95Ms": 1.565,
+            "maxMs": 1.603,
+            "meanMs": 1.417,
+            "heapPeakDeltaMB": 63.888,
+            "retainedHeapDeltaMB": 0.022,
+            "rssPeakDeltaMB": 0,
+            "rssAfterMB": 219.641,
+            "result": {
+              "count": 58
+            }
+          }
+        }
+      },
+      "outputs": {
+        "flat": {
+          "reach": "903308f2a19f0afb041c2b578694d9725005eaa8f71f7dd921c1f79d032a2d4d",
+          "combat": "91f6ed42353c5812038f5d7ce3429dc22027a97e7633c7c203795c6f825085b0",
+          "visibility": "65751bfebac0b6720bc7a5b0e4c07f8cb55fa159556c4f274c3e482e1fee1943",
+          "sight": "ba33c4a4452c9861b5191f8dce5abf745d113934937f4913a5ecb2076e55a09e",
+          "shot": 37,
+          "reachableCount": 2314,
+          "visibleCount": 63
+        },
+        "upper": {
+          "reach": "41174a8f4fc3dfaec0b877679560a48fede81d63c3e68883938b2729bc2ab6f6",
+          "combat": "e809812990375524d2db41b7ae811f56a7ecc041b3675d2c2b9844757352638e",
+          "visibility": "936ad74abce45fb3f6abdf14e7ba0d9841af1bf5d18a1995f3998882f92bf81e",
+          "sight": "48a0c06916ba5cc69ec8b463317b69ac15ed45ecbf99869a2a3270d663c79931",
+          "shot": 37,
+          "reachableCount": 2344,
+          "visibleCount": 58
+        }
+      }
+    },
+    {
+      "metadata": {
+        "sector": "tucuman",
+        "night": false,
+        "width": 64,
+        "height": 48,
+        "tiles": 3072,
+        "buildings": 21,
+        "props": 27,
+        "lights": 1,
+        "upperSurfaces": 30,
+        "climbLinks": 1,
+        "observer": {
+          "x": 23,
+          "y": 20
+        },
+        "target": {
+          "x": 23,
+          "y": 11
+        },
+        "terrace": {
+          "x": 2,
+          "y": 2
+        }
+      },
+      "measurements": {
+        "explorationReachable": {
+          "flat": {
+            "iterations": 12,
+            "calls": 12,
+            "medianMs": 17.96,
+            "p95Ms": 18.665,
+            "maxMs": 18.665,
+            "meanMs": 17.921,
+            "heapPeakDeltaMB": 64.276,
+            "retainedHeapDeltaMB": 0.017,
+            "rssPeakDeltaMB": 0.078,
+            "rssAfterMB": 222.172,
+            "result": {
+              "count": 2315,
+              "pathEntries": 50994,
+              "maxPath": 47
+            }
+          },
+          "upper": {
+            "iterations": 12,
+            "calls": 12,
+            "medianMs": 23.645,
+            "p95Ms": 28.232,
+            "maxMs": 28.232,
+            "meanMs": 23.848,
+            "heapPeakDeltaMB": 57.442,
+            "retainedHeapDeltaMB": -0.001,
+            "rssPeakDeltaMB": 0.219,
+            "rssAfterMB": 222.438,
+            "result": {
+              "count": 2345,
+              "pathEntries": 52037,
+              "maxPath": 47
+            }
+          }
+        },
+        "combatReachable": {
+          "flat": {
+            "iterations": 16,
+            "calls": 16,
+            "medianMs": 3.593,
+            "p95Ms": 3.85,
+            "maxMs": 3.85,
+            "meanMs": 3.574,
+            "heapPeakDeltaMB": 58.861,
+            "retainedHeapDeltaMB": 0.003,
+            "rssPeakDeltaMB": 0,
+            "rssAfterMB": 222.281,
+            "result": {
+              "count": 458,
+              "pathEntries": 4093,
+              "maxPath": 16
+            }
+          },
+          "upper": {
+            "iterations": 16,
+            "calls": 16,
+            "medianMs": 4.741,
+            "p95Ms": 6.476,
+            "maxMs": 6.476,
+            "meanMs": 4.803,
+            "heapPeakDeltaMB": 61.644,
+            "retainedHeapDeltaMB": 0.053,
+            "rssPeakDeltaMB": 0.031,
+            "rssAfterMB": 222.313,
+            "result": {
+              "count": 458,
+              "pathEntries": 4093,
+              "maxPath": 16
+            }
+          }
+        },
+        "visibleTiles": {
+          "flat": {
+            "iterations": 24,
+            "calls": 24,
+            "medianMs": 0.841,
+            "p95Ms": 1.188,
+            "maxMs": 1.212,
+            "meanMs": 0.857,
+            "heapPeakDeltaMB": 40.259,
+            "retainedHeapDeltaMB": -0.001,
+            "rssPeakDeltaMB": 0.016,
+            "rssAfterMB": 222.328,
+            "result": {
+              "count": 282
+            }
+          },
+          "upper": {
+            "iterations": 24,
+            "calls": 24,
+            "medianMs": 2.533,
+            "p95Ms": 2.97,
+            "maxMs": 3.3,
+            "meanMs": 2.574,
+            "heapPeakDeltaMB": 60.761,
+            "retainedHeapDeltaMB": 0.027,
+            "rssPeakDeltaMB": 0.016,
+            "rssAfterMB": 222.344,
+            "result": {
+              "count": 266
+            }
+          }
+        }
+      },
+      "outputs": {
+        "flat": {
+          "reach": "797b939d0d0854bc96b93c17c0d13a7323175499a7d9c3237858ceb3adc14642",
+          "combat": "596e9e14c9909df28261dcbbdd21303fcf4691ee986d07fd7a8456b2d6f262bb",
+          "visibility": "969c791ded6f679a7a6473291dfe81ca5bf6f9089d7dd959d9fa7622707b0beb",
+          "sight": "36dc1d67c2e1f1747be102daac6e29519e2bfafddfd9e234aaf5951ab59d1c97",
+          "shot": 95,
+          "reachableCount": 2315,
+          "visibleCount": 282
+        },
+        "upper": {
+          "reach": "de78898b7959c8ffb8c9d9475490d43ba520551c648f30d64cbee8ba330d3b6a",
+          "combat": "e313497296f3b099ee3f7e4e8dfce93bf7cd3ee90571e7e266dbb6b1d9cd9a4d",
+          "visibility": "8154f9ac1afac72e301c6f5ce161abd8694e3a053d86a3404fca6bb6c5d7a40b",
+          "sight": "7420182277d18262c016636511f2641883b43f0c5fe3d8e67132db5a9d703ec9",
+          "shot": 95,
+          "reachableCount": 2345,
+          "visibleCount": 266
+        }
+      }
+    },
+    {
+      "metadata": {
+        "sector": "tucuman",
+        "night": true,
+        "width": 64,
+        "height": 48,
+        "tiles": 3072,
+        "buildings": 21,
+        "props": 27,
+        "lights": 1,
+        "upperSurfaces": 30,
+        "climbLinks": 1,
+        "observer": {
+          "x": 23,
+          "y": 20
+        },
+        "target": {
+          "x": 23,
+          "y": 15
+        },
+        "terrace": {
+          "x": 2,
+          "y": 2
+        }
+      },
+      "measurements": {
+        "explorationReachable": {
+          "flat": {
+            "iterations": 12,
+            "calls": 12,
+            "medianMs": 18.159,
+            "p95Ms": 18.477,
+            "maxMs": 18.477,
+            "meanMs": 18.041,
+            "heapPeakDeltaMB": 64.276,
+            "retainedHeapDeltaMB": 0.016,
+            "rssPeakDeltaMB": 0,
+            "rssAfterMB": 222.422,
+            "result": {
+              "count": 2315,
+              "pathEntries": 50994,
+              "maxPath": 47
+            }
+          },
+          "upper": {
+            "iterations": 12,
+            "calls": 12,
+            "medianMs": 24.208,
+            "p95Ms": 29.931,
+            "maxMs": 29.931,
+            "meanMs": 24.347,
+            "heapPeakDeltaMB": 57.702,
+            "retainedHeapDeltaMB": 0.027,
+            "rssPeakDeltaMB": 0.078,
+            "rssAfterMB": 222.547,
+            "result": {
+              "count": 2345,
+              "pathEntries": 52037,
+              "maxPath": 47
+            }
+          }
+        },
+        "combatReachable": {
+          "flat": {
+            "iterations": 16,
+            "calls": 16,
+            "medianMs": 3.529,
+            "p95Ms": 3.654,
+            "maxMs": 3.654,
+            "meanMs": 3.499,
+            "heapPeakDeltaMB": 58.861,
+            "retainedHeapDeltaMB": 0.003,
+            "rssPeakDeltaMB": 0,
+            "rssAfterMB": 222.516,
+            "result": {
+              "count": 458,
+              "pathEntries": 4093,
+              "maxPath": 16
+            }
+          },
+          "upper": {
+            "iterations": 16,
+            "calls": 16,
+            "medianMs": 4.981,
+            "p95Ms": 6.162,
+            "maxMs": 6.162,
+            "meanMs": 5.001,
+            "heapPeakDeltaMB": 61.646,
+            "retainedHeapDeltaMB": 0.051,
+            "rssPeakDeltaMB": 0,
+            "rssAfterMB": 222.516,
+            "result": {
+              "count": 458,
+              "pathEntries": 4093,
+              "maxPath": 16
+            }
+          }
+        },
+        "visibleTiles": {
+          "flat": {
+            "iterations": 24,
+            "calls": 24,
+            "medianMs": 1.132,
+            "p95Ms": 1.245,
+            "maxMs": 1.266,
+            "meanMs": 1.13,
+            "heapPeakDeltaMB": 48.758,
+            "retainedHeapDeltaMB": -0.03,
+            "rssPeakDeltaMB": 0,
+            "rssAfterMB": 222.516,
+            "result": {
+              "count": 63
+            }
+          },
+          "upper": {
+            "iterations": 24,
+            "calls": 24,
+            "medianMs": 1.403,
+            "p95Ms": 1.545,
+            "maxMs": 1.552,
+            "meanMs": 1.409,
+            "heapPeakDeltaMB": 63.134,
+            "retainedHeapDeltaMB": 0.001,
+            "rssPeakDeltaMB": 0,
+            "rssAfterMB": 222.516,
+            "result": {
+              "count": 61
+            }
+          }
+        }
+      },
+      "outputs": {
+        "flat": {
+          "reach": "797b939d0d0854bc96b93c17c0d13a7323175499a7d9c3237858ceb3adc14642",
+          "combat": "596e9e14c9909df28261dcbbdd21303fcf4691ee986d07fd7a8456b2d6f262bb",
+          "visibility": "afc9e25efdf8363d5008ca2fa3f711f604151af8b2f404785665bda89a623f20",
+          "sight": "9edd98a5ab72e2fd48da2d506a5aadabe5b847fc691294bf1ecbc881123c2326",
+          "shot": 19,
+          "reachableCount": 2315,
+          "visibleCount": 63
+        },
+        "upper": {
+          "reach": "de78898b7959c8ffb8c9d9475490d43ba520551c648f30d64cbee8ba330d3b6a",
+          "combat": "e313497296f3b099ee3f7e4e8dfce93bf7cd3ee90571e7e266dbb6b1d9cd9a4d",
+          "visibility": "a175e4187a17f6d078fa9b1f1b736f6263064532a580d313fb5095ced1b7cc2b",
+          "sight": "a53d985053f4d2c14d12dc1753cd450f812d20df3882c0e5d928d7daf4fe54b0",
+          "shot": 19,
+          "reachableCount": 2345,
+          "visibleCount": 61
+        }
+      }
+    }
+  ],
+  "finished": "2026-09-12T17:00:11.826Z",
+  "sink": 380586
+}

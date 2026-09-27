@@ -1,0 +1,63 @@
+{
+  "scope": "Cuyo preparation from current earned Yatasto checkpoint. Mendoza battle still loses; full campaign incomplete.",
+  "hour": 646,
+  "treasury": 557,
+  "sector": "cordoba",
+  "originalEnvoyAlive": false,
+  "paidMarksman": {
+    "kind": "paid",
+    "term": "day",
+    "started": 646,
+    "expiresAt": 670,
+    "paid": 1290
+  },
+  "field": [
+    {
+      "id": 0,
+      "hp": 82,
+      "maxHp": 82,
+      "alive": true
+    },
+    {
+      "id": 8,
+      "hp": 70,
+      "maxHp": 70,
+      "alive": true
+    },
+    {
+      "id": 1000,
+      "hp": 80,
+      "maxHp": 80,
+      "alive": true
+    },
+    {
+      "id": 134,
+      "hp": 72,
+      "maxHp": 72,
+      "alive": true
+    },
+    {
+      "id": 146,
+      "hp": 76,
+      "maxHp": 76,
+      "alive": true
+    },
+    {
+      "id": 142,
+      "hp": 79,
+      "maxHp": 79,
+      "alive": true
+    }
+  ],
+  "withdrawals": [
+    {
+      "groupId": "enemy-group-3",
+      "sector": "salta",
+      "hour": 636,
+      "outcome": "retreat",
+      "casualties": [],
+      "text": "Los granaderos abandonan Salta · Cuartel de los Infernales y llegan a San Miguel de Tucumán · La Ciudadela."
+    }
+  ],
+  "saltaOwner": "royalist"
+}

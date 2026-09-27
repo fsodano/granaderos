@@ -1,7 +1,7 @@
 # Sector builder implementation plan
 
 Status: implemented as the web editor at `/editor` in the dedicated feature worktree.
-See [the editor guide](../sector-editor.md) for controls, file workflows, limits
+See [the editor guide](../development/sector-editor.md) for controls, file workflows, limits
 and verification evidence. The sections below preserve the design rationale.
 The actual source format is version 1; unknown versions are rejected. All 15
 existing sector definitions are migrated and tested against reference hashes.

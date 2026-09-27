@@ -1,0 +1,47 @@
+# Verification and current status
+
+[Documentation index](../README.md)
+
+Read the [published progress ledger](published-progress.md) first. It records
+accepted features on GitHub `main`, approved scope changes and open work.
+
+## Published baseline
+
+- [Published implementation and verification ledger](published-progress.md)
+- [Story editor](../development/story-editor.md)
+- [Sector editor](../development/sector-editor.md)
+
+The records below come from the separate development checkout unless stated
+otherwise. Their test counts and implemented behavior are not acceptance of the
+published game. [Workspace gameplay acceptance](gameplay-completion.md) records
+that checkout's latest known failures. The [parity audit](ja2-parity-audit.md)
+retains its detailed requirements; approved published scope changes still apply.
+
+## Development-workspace acceptance and recent records
+
+- [Gameplay completion work](gameplay-completion.md) *(workspace)*
+- [Classic JA2 gameplay parity audit](ja2-parity-audit.md) *(workspace)*
+- [Gameplay follow-up — 27 September 2026](gameplay-follow-up-2026-09-27.md) *(workspace)*
+- [Campaign start, movement and performance — 27 September 2026](gameplay-and-campaign-performance-2026-09-27.md) *(workspace)*
+- [Current worktree regression audit — 2026-09-26](current-worktree-regressions-2026-09-26.md) *(workspace)*
+- [Main campaign integration audit — 2026-09-26](main-campaign-integration-2026-09-26.md) *(workspace)*
+- [Equipment redesign acceptance and current progress](equipment-redesign-2026-09-26.md) *(workspace)*
+
+## Bounded route and tactical records
+
+These records describe their stated checkpoint. Later changes can alter their
+results. Read their limits before using them as acceptance evidence.
+
+- [Opening campaign with turning AP](opening-control.md) *(workspace)*
+- [Northern campaign route verification](northern-route.md) *(workspace)*
+- [Verified advance to the Mendoza foundry](mendoza-route.md) *(workspace)*
+- [JA2 gameplay: live verification record](ja2-live-verification.md) *(workspace)*
+- [Tactical simulation verification](tactical-verification.md)
+
+[Raw evidence](../evidence/README.md) holds machine-readable results. [Archived
+audits](../archive/README.md) retain earlier findings for traceability.
+
+A rules test, prepared scene, save continuation or isolated checkout verifies
+only that scope. A full campaign claim requires a complete route with real
+resources, casualties and campaign settlement. Documentation link checks do not
+establish gameplay correctness.

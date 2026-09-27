@@ -1,0 +1,35 @@
+{
+  "scope": "Humahuaca established-front rescue investigation; scripted initial capture, real subsequent tactical orders. No victory or evacuation achieved.",
+  "guards": 11,
+  "entryEnergy": [
+    64,
+    64,
+    64,
+    64,
+    64,
+    64
+  ],
+  "latestTrial": {
+    "controller": "tucumanCombatOrder, clear guards before release, normal rest before assault",
+    "outcome": "defeat",
+    "turn": 8,
+    "orders": 100,
+    "departures": 0,
+    "guardsKilled": 1
+  },
+  "otherTrials": [
+    "Covered approach lost at turn 6.",
+    "Clearing guards before prisoner interaction also lost.",
+    "Additional pre-march rest did not change arrival energy.",
+    "Poncho issue could not complete because the depot had insufficient stock; that trial stopped before combat."
+  ],
+  "nextAction": "Prepare a stronger relief force with actual paid equipment or additional coordinated recruits; preserve all prisoner-release and physical-exit requirements.",
+  "rulesChanged": false,
+  "logs": [
+    "/tmp/granaderos-humahuaca-trial.log",
+    "/tmp/granaderos-humahuaca-clear-first.log",
+    "/tmp/granaderos-humahuaca-line.log",
+    "/tmp/granaderos-humahuaca-rested.log",
+    "/tmp/granaderos-humahuaca-clothed.log"
+  ]
+}

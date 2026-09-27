@@ -1,6 +1,6 @@
 # 05 — Weapons, Items, Attachments, Ammo, and Economy
 
-> Economy update: the browser game now uses pesos only. The material, convoy, and horse-management mappings below describe the earlier implementation. See [the current economy rules](../INDUSTRY-AND-IMPORTS.md).
+> Economy update: the browser game now uses pesos only. The material, convoy, and horse-management mappings below describe the earlier implementation. See [the current economy rules](../gameplay/campaign/INDUSTRY-AND-IMPORTS.md).
 
 **Audience:** an agent with zero prior JA2 knowledge who must port the engine's item/weapon
 systems into the browser clone (`game/` + `web/`). This document is the translation guide from
@@ -81,7 +81,7 @@ distinction maps to `firearm`/`blade`/`artillery`. The `IC_AMMO`, `IC_ARMOUR`, `
 `IC_MEDKIT`, `IC_FACE` classes are **not yet modeled** as separate web item records — the web
 clone tracks priming/flints/rations as numeric counters on each operative
 (`game/campaign.js:56` `operativeState`), which is a deliberate simplification documented in
-`docs/EQUIPMENT-IMPLEMENTATION-PLAN.md`.
+`docs/plans/EQUIPMENT-IMPLEMENTATION-PLAN.md`.
 
 ---
 
@@ -205,7 +205,7 @@ gunsmith/assist reductions. The `reload` action (`tactical.js:81`) transfers rou
 credits looted rounds from dead/unconscious sources and caps returned rounds by each soldier's
 issued quantity and the total issued stock. This is the web analogue of the engine's
 `DeductAmmo` (`Weapons.cpp:2744,3573`) and the campaign's finite-cartridge handoff
-(`docs/WEB-SYSTEMS.md:35-37`).
+(`docs/development/WEB-SYSTEMS.md:35-37`).
 
 ---
 
@@ -245,7 +245,7 @@ and the `interceptCharge` mechanic (`tactical.js:69`) requiring a braced bayonet
 `WM_ATTACHED_BAYONET` mode (`Weapons.h:18`) is the conceptual equivalent.
 
 **Port note:** the web clone does **not** yet model a mounted/attached bayonet state on the
-musket — the bayonet is an interchangeable secondary weapon. `docs/EQUIPMENT-IMPLEMENTATION-PLAN.md`
+musket — the bayonet is an interchangeable secondary weapon. `docs/plans/EQUIPMENT-IMPLEMENTATION-PLAN.md`
 explicitly lists "socket bayonet attached to musket" as a gap: "Bayonet is an interchangeable
 secondary weapon; compatible musket attachment/mount state is not modeled."
 
@@ -321,7 +321,7 @@ The web clone tracks these as **numeric counters** on each operative
 condition:100`), consumed by the tactical actions `reprime` (`tactical.js:82`), `repair`
 (`tactical.js:129`, consumes a flint), and `ration` (`tactical.js:130`). The albarda is modeled
 in `game/logistics.js:8` (`mules` transport option: `baseCapacity:40, saddleBonus:40,
-saddleWeight:6`). `docs/EQUIPMENT-IMPLEMENTATION-PLAN.md` documents the gap between these
+saddleWeight:6`). `docs/plans/EQUIPMENT-IMPLEMENTATION-PLAN.md` documents the gap between these
 counters and a full finite-item/container model.
 
 ---
@@ -600,12 +600,12 @@ Use this to verify a ported system against the engine. Each item cites the engin
 4. **The web clone has no `Data-Granaderos` directory** — the GRANADEROS data lives in
    `game/data.js`, not in engine XML. The engine `gamedir/Data-1.13/TableData/Items/*.xml` is
    the *schema* reference, not the GRANADEROS content.
-5. **Period kit is counters, not finite items** (`game/campaign.js:56`). `docs/EQUIPMENT-IMPLEMENTATION-PLAN.md`
+5. **Period kit is counters, not finite items** (`game/campaign.js:56`). `docs/plans/EQUIPMENT-IMPLEMENTATION-PLAN.md`
    documents the gap to a full finite-item/container model; do not claim container
    compatibility that does not exist.
 6. **The bayonet is not yet a mounted attachment** — it is an interchangeable secondary blade.
    Do not claim musket-mounted bayonet state.
-7. **Prices are game-balance values, not historical market claims** (`docs/WEB-SYSTEMS.md:83`).
+7. **Prices are game-balance values, not historical market claims** (`docs/development/WEB-SYSTEMS.md:83`).
    The engine's `usPrice`/`dSellModifier` are the *mechanism*; the web flat prices are the
    *balance*.
 8. **File names contain spaces** (e.g. `"Arms Dealer Init.cpp"`, `"ShopKeeper Interface.cpp"`).
