@@ -1,0 +1,393 @@
+{
+  "environment": "Development and production follow-ups in the Codex in-app browser; each section identifies its scenario.",
+  "budgetMs": 16.7,
+  "fixture": "tools/performance-fixtures/frame-rate-check.tsx",
+  "method": "Eight-second requestAnimationFrame window around an ordinary 18-tile actBattle move in the actual Battlefield component. Movement samples require a rendered data-moving=true actor. Selected-unit camera tracking enabled. No campaign persistence.",
+  "interpretation": "Production forest movement at 100% passes the 60 FPS budget in daylight and night, including immediate movement after 300% to 100% zoom. Native-density scenery removes the measured zoom texture rebuild stalls. Whole-game locked 60 FPS, cold loading, zoom interaction itself, and large battles remain unverified.",
+  "beforeTileControlReuse": {
+    "dayInteriorRun": {
+      "movingFrames": 470,
+      "meanMs": 9.184485106382946,
+      "p95Ms": 16.6,
+      "p99Ms": 25,
+      "maximumMs": 91.6,
+      "framesAbove16_8Ms": 8
+    },
+    "nightInteriorRun": {
+      "movingFrames": 473,
+      "meanMs": 9.161539112050853,
+      "p95Ms": 15.9,
+      "p99Ms": 25.1,
+      "maximumMs": 91.6,
+      "framesAbove16_8Ms": 9,
+      "cachedLayers": 179,
+      "cachedRasterPixels": 70340946
+    }
+  },
+  "nightInteriorRun": {
+    "movingFrames": 514,
+    "meanMs": 8.398264591439686,
+    "p95Ms": 9.3,
+    "p99Ms": 10.3,
+    "maximumMs": 16.8,
+    "longTasksDuringMovement": 0,
+    "orderCalculationLongTaskMs": 195
+  },
+  "dayInteriorRun": {
+    "movingFrames": 514,
+    "meanMs": 8.39845914396888,
+    "p95Ms": 8.6,
+    "p99Ms": 10.3,
+    "maximumMs": 18.1,
+    "framesAbove16_8Ms": 2,
+    "longTasksDuringMovement": 0,
+    "orderCalculationLongTaskMs": 199
+  },
+  "movementPlanningFollowup": {
+    "scene": "Buenos Aires, night, 100% zoom, camera follow, 18-tile walk, development server",
+    "change": "Stop move-order Dijkstra search at destination; index scenery obstacle cells once per terrain state",
+    "nodeOrderBeforeMs": [
+      33.55,
+      32.87,
+      26.37,
+      27.33,
+      25.45,
+      27.7
+    ],
+    "nodeOrderAfterMs": [
+      12.75,
+      9.53,
+      8.13,
+      8.46,
+      7.19,
+      7.17
+    ],
+    "browser": {
+      "movingFrames": 509,
+      "meanMs": 8.513442043221998,
+      "p95Ms": 9.4,
+      "p99Ms": 15.1,
+      "maxMs": 58.7,
+      "framesOver16_8ms": 2,
+      "preAnimationLongTaskMs": 223
+    },
+    "acceptance": "Not locked 60 FPS; no proven browser tail improvement. Cold loading and broader scenes remain unverified.",
+    "checks": "60 focused movement/rendering tests pass"
+  },
+  "stableRouteQueueFollowup": {
+    "changes": [
+      "stable minimum-cost heap preserves insertion order for ties",
+      "base movement cost cached by terrain type within each search"
+    ],
+    "exactRouteComparisons": 32,
+    "comparisonScope": "Buenos Aires, San Lorenzo, Mendoza, Uspallata; exploration and combat; walk, run, crouch, prone; full arrays including paths and costs compared with pre-change search",
+    "aggregateNodeSearchMs": {
+      "before": 325.20625,
+      "after": 200.455332
+    },
+    "focusedTestsPassed": 68,
+    "browserProfile": {
+      "scene": "Buenos Aires night, 100% zoom, camera follow, development server with React Profiler",
+      "reachableSearchMs": 17.5,
+      "applyMoveMs": 9.3,
+      "initialBattlefieldRenderMs": 128.7,
+      "movingFrames": 505,
+      "meanFrameMs": 8.548,
+      "p95Ms": 9.2,
+      "p99Ms": 16.7,
+      "maxMs": 58.4,
+      "framesOver16_8ms": 3,
+      "preAnimationLongTaskMs": 212
+    },
+    "nextAction": "Profile and reduce first battlefield redraw; do not close steady 60 FPS acceptance."
+  },
+  "groundControlReuseFollowup": {
+    "change": "Retain base ground-tile React elements across unit changes; clone occupied labels only and render sight as separate overlay",
+    "browserProfile": {
+      "scene": "Buenos Aires night, 100% zoom, camera follow, development server with React Profiler",
+      "searchMs": 17.1,
+      "orderMs": 7.3,
+      "initialBattlefieldRenderMs": 29.5,
+      "movingFrames": 510,
+      "meanMs": 8.479811764705879,
+      "p95Ms": 8.6,
+      "p99Ms": 10.4,
+      "maxMs": 50,
+      "framesOver16_8ms": 3,
+      "preAnimationLongTaskMs": 99
+    },
+    "previousInitialRenderMs": 128.7,
+    "previousPreAnimationLongTaskMs": 212,
+    "verification": [
+      "36 rendering/control tests pass",
+      "typecheck passes",
+      "live occupied label moves from U23 to P36",
+      "Enter on reused U23 control moves soldier back",
+      "V shows 2062 sight overlay polygons"
+    ],
+    "acceptance": "Initial redraw improves substantially; 50 ms frame and 99 ms pre-animation pause mean steady 60 FPS remains open."
+  },
+  "productionAsyncRasterFollowup": {
+    "changes": [
+      "Keep cached scenery layers mounted when actors share an exact depth; hide cache while members interleave",
+      "Use asynchronous FileReader data URLs for SVG/PNG preparation instead of synchronous blob URL creation"
+    ],
+    "measurementCorrection": "Do not collect full DOM/AX snapshots during the sampling window. That inspection produced repeatable 58-67 ms measurement interference. Read only the small status output, then collect results after 8 seconds.",
+    "cacheRetention": {
+      "before": 175,
+      "after": 175,
+      "retainedImageReferences": 175
+    },
+    "productionNightBeforeConversion": {
+      "movingFrames": 519,
+      "meanMs": 8.333526,
+      "p99Ms": 10.2,
+      "maxMs": 10.4,
+      "over16_8ms": 0,
+      "preAnimationTaskMs": 55
+    },
+    "daylightRegressionBeforeConversion": {
+      "repeated": true,
+      "maxFrameMs": 1017.7,
+      "blockingTaskMs": 1013,
+      "attribution": "BlobCallback; finer timings measured blob URL creation blocking for 695.7 ms and SVG blob preparation taking 1016 ms"
+    },
+    "daylightAfterConversion": {
+      "movingFrames": 517,
+      "meanMs": 8.359574,
+      "p99Ms": 9.9,
+      "maxMs": 33.2,
+      "over16_8ms": 1,
+      "preAnimationTaskMs": 150
+    },
+    "nightAfterConversion": {
+      "movingFrames": 517,
+      "meanMs": 8.349903,
+      "p99Ms": 9.8,
+      "maxMs": 16.7,
+      "over16_8ms": 0,
+      "preAnimationTaskMs": 141
+    },
+    "scope": "Buenos Aires, 100% zoom, camera follow, production static build; no full-page inspection during animation. Fixture includes route selection time before applying the command. Warm scenery; no broad cold-load or full battle acceptance.",
+    "verification": [
+      "22 rendering/terrain tests pass",
+      "typecheck passes",
+      "visual check retains scenery and roof cutaways"
+    ],
+    "remaining": [
+      "Daylight start-up 33 ms frame",
+      "Pre-animation input/render task",
+      "Large battles, forest movement, cold loading, rapid zoom",
+      "Broader full-game completion"
+    ]
+  },
+  "forestAndZoomFollowup": {
+    "environment": "Production static build, 100% zoom, camera follows selected soldier; Tucuman has six squad members.",
+    "method": "Route selection runs in a separate Prepare route action. The eight-second sample starts before issuing the ordinary move command. Only the small status is read during sampling. No full DOM/AX snapshots during samples; no campaign saves modified.",
+    "changes": [
+      "Queue bounds, cloning and definition preparation with raster work.",
+      "Keep fading woodland images separate from large static depth caches.",
+      "Omit redundant daylight brightness filters and share exact shaded tree textures at night, with a 32-entry reusable cache.",
+      "Reuse detached prepared scenery sources for resolution changes; retain higher resolution images when zooming out; debounce resolution preparation for 300 ms."
+    ],
+    "cityNight": {
+      "movingFrames": 519,
+      "meanMs": 8.3333,
+      "p99Ms": 10.1,
+      "maximumMovingMs": 10.3,
+      "wholeMaximumMs": 16.7,
+      "framesAbove16_8Ms": 0,
+      "longTasks": 0
+    },
+    "cityDayRevealedRooms": {
+      "movingFrames": 519,
+      "meanMs": 8.3328,
+      "p99Ms": 10,
+      "maximumMovingMs": 10.3,
+      "wholeMaximumMs": 17.1,
+      "framesAbove16_8Ms": 0,
+      "longTasks": 0
+    },
+    "forestBeforeFoliageFix": {
+      "movingFrames": 421,
+      "meanMs": 10.4722,
+      "p99Ms": 33.4,
+      "maximumMovingMs": 83.3,
+      "framesAbove16_8Ms": 23,
+      "longTaskMs": 91
+    },
+    "forestDayAfter": {
+      "movingFrames": 519,
+      "meanMs": 8.3333,
+      "p99Ms": 10.1,
+      "maximumMovingMs": 10.3,
+      "wholeMaximumMs": 25,
+      "framesAbove16_8Ms": 0,
+      "longTasks": 0
+    },
+    "forestNightFinal": {
+      "movingFrames": 519,
+      "meanMs": 8.3333,
+      "p99Ms": 10.1,
+      "maximumMovingMs": 10.4,
+      "wholeMaximumMs": 25,
+      "framesAbove16_8Ms": 0,
+      "longTasks": 0,
+      "orderMs": 14.1
+    },
+    "zoomBefore": {
+      "sequence": "100 to 200 to 300 to 200 to 100 percent",
+      "wholeMaximumMs": 91.7,
+      "framesAbove16_8Ms": 7,
+      "longTaskMs": 96
+    },
+    "validation": {
+      "focusedRenderingTests": 24,
+      "failed": 0,
+      "typecheck": "pass",
+      "productionBuild": {
+        "status": "pass",
+        "files": 960,
+        "assetReferences": 856,
+        "temporaryTestRouteRemoved": true
+      }
+    },
+    "limits": [
+      "Movement measurements do not prove a locked rate across all gameplay.",
+      "A 25 ms move-start frame remains in the forest.",
+      "Large combat, moving lights, other hardware and first-load coverage remain open."
+    ],
+    "zoomFinal": {
+      "sequence": "100 to 200 to 300 to 200 to 100 percent",
+      "wholeMaximumMs": 33.2,
+      "framesAbove16_8Ms": 6,
+      "longTasks": 0
+    }
+  },
+  "onDemandRoutesFollowup": {
+    "change": "Compute and retain UI reachability only when a cursor target or conversation needs it; skip during blocking animation and clear the cursor after accepted movement.",
+    "checks": {
+      "focusedTests": 36,
+      "failed": 0,
+      "typecheck": "pass"
+    },
+    "productionForestWarm": {
+      "movingFrames": 518,
+      "meanMs": 8.3332,
+      "maximumMs": 10.3,
+      "wholeMaximumMs": 10.3,
+      "framesAbove16_8Ms": 0
+    },
+    "productionNight100AfterZoom": {
+      "movingFrames": 509,
+      "meanMs": 8.4976,
+      "maximumMs": 92.4,
+      "framesAbove16_8Ms": 1,
+      "longTaskMs": 86
+    },
+    "productionNight100WarmRepeat": {
+      "movingFrames": 518,
+      "meanMs": 8.3338,
+      "maximumMs": 10.3,
+      "wholeMaximumMs": 10.3,
+      "framesAbove16_8Ms": 0
+    },
+    "limits": [
+      "A 92.4 ms frame after zoom remains reproducible evidence against locked 60 FPS.",
+      "Warm repeat meets budget; this does not establish first-use, zoom or combat acceptance.",
+      "No claim of causal frame-time improvement without a matched baseline."
+    ]
+  },
+  "zoomCacheMemoryFollowup": {
+    "changes": [
+      "Return oversized scenery images to the settled zoom density after an 800 ms delay.",
+      "Reuse a prepared image when the 16 million pixel limit makes its physical dimensions unchanged."
+    ],
+    "memory": {
+      "layers": 202,
+      "pixelsAt300Percent": 153161634,
+      "previousPixelsRetainedAt100Percent": 153161634,
+      "newPixelsSettledAt100Percent": 79646810,
+      "reductionPercent": 48.0
+    },
+    "cappedGroundIdentityAcrossZoom": "Same rendered image href confirmed for the ground at x25 y48. The largest image changes identity because a different layer becomes the largest after downsampling; that initial comparison was invalid.",
+    "productionNight100ImmediateMovement": {
+      "movingFrames": 420,
+      "meanMs": 10.2738,
+      "maximumMs": 49.7,
+      "framesAbove16_8Ms": 28,
+      "longTasks": 0
+    },
+    "productionNight100WarmFinal": {
+      "movingFrames": 519,
+      "meanMs": 8.3331,
+      "maximumMs": 10.4,
+      "wholeMaximumMs": 10.4,
+      "framesAbove16_8Ms": 0,
+      "longTasks": 0
+    },
+    "rejectedTrial": "Deferring all downsampling until actors stop did not improve frame tails and was removed.",
+    "verification": {
+      "renderingTests": 23,
+      "failed": 0,
+      "typecheck": "pass",
+      "visual": "Night forest, buildings, soldier, HUD and 100 percent zoom inspected."
+    },
+    "acceptance": "Memory use improves after settled zoom; immediate movement during cache replacement still misses 60 FPS. No locked frame rate or matched causal frame-time improvement claim."
+  },
+  "nativeDensityFollowup": {
+    "change": "Rasterize scenery once at native device density (maximum 3), independent of camera zoom. Release detached vector sources after preparation. Preserve actor, tree, control and effect rendering.",
+    "tradeoff": "Cached buildings and ground can look softer when magnified above 100%; normal zoom detail is unchanged.",
+    "scenario": "Production build; Tucuman forest; six soldiers; selected camera tracking; prepared 18-tile route; 300% to 100% zoom immediately followed by movement; eight-second sampling; no full DOM inspection during sampling.",
+    "baseline": {
+      "movingFrames": 425,
+      "meanMs": 10.1755,
+      "p95Ms": 17,
+      "p99Ms": 41.7,
+      "maximumMs": 48.4,
+      "framesAbove16_8Ms": 24,
+      "longTasks": 0
+    },
+    "rejectedResizeTrial": {
+      "movingFrames": 421,
+      "maximumMs": 58.3,
+      "framesAbove16_8Ms": 27,
+      "retained": false
+    },
+    "finalDay": {
+      "movingFrames": 518,
+      "meanMs": 8.3332,
+      "p95Ms": 9.5,
+      "p99Ms": 10.2,
+      "maximumMs": 10.3,
+      "framesAbove16_8Ms": 0,
+      "longTasks": 0,
+      "wholeWindowMaximumMs": 16.1
+    },
+    "finalNight": {
+      "movingFrames": 518,
+      "meanMs": 8.3359,
+      "p95Ms": 9.8,
+      "p99Ms": 10.1,
+      "maximumMs": 10.3,
+      "framesAbove16_8Ms": 0,
+      "longTasks": 0,
+      "wholeWindowMaximumMs": 10.3
+    },
+    "cache": {
+      "layers": 202,
+      "pixelsAt300Percent": 79646810,
+      "pixelsAt100Percent": 79646810,
+      "allImageReferencesRetainedAcrossZoomAndWalk": true,
+      "previousPixelsAt300Percent": 153161634
+    },
+    "validation": "13 focused rendering tests pass; TypeScript check and production build pass. Screenshot reviewed at 100%.",
+    "limits": [
+      "Cold scene preparation",
+      "Large combat and simultaneous movement",
+      "Moving lights and room reveal transitions",
+      "Frame time during the zoom clicks themselves",
+      "Other hardware"
+    ]
+  }
+}

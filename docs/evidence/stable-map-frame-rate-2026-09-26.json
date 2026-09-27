@@ -1,0 +1,39 @@
+{
+  "date": "2026-09-26",
+  "environment": "Production static export, Codex in-app browser, localhost:3002/performance-check.html",
+  "fixture": "tools/performance-fixtures/frame-rate-check.tsx",
+  "runtimeChange": "Campaign return, group hint and interrupt notices are positioned over the map instead of changing its flex height.",
+  "scenario": {"enemies": 30, "players": 6, "visibleEnemies": 30, "renderedActors": 36, "zoomPercent": 100, "sampleSeconds": 8},
+  "mapBeforeAndAfterReaction": {"width": 1280, "height": 422, "viewBox": "846 651 1280 422"},
+  "initialSceneryPreparation": {
+    "night": false, "reactions": true, "movingFrames": 9, "movingMaxMs": 42.6,
+    "wholeMaxMs": 49.2, "wholeOver16_8Ms": 13, "mainThreadLongTasks": 2,
+    "longTaskDurationsMs": [67,69], "phase": "interrupt", "lastError": null,
+    "note": "Scenery conversion was still active; one recorded callback was FileReader.onload. This run does not meet the frame-time target."
+  },
+  "preparedSceneReaction": {
+    "night": false, "reactions": true, "cachedLayersBefore": 202, "vectorLayersBefore": 1,
+    "orderElapsedMs": 64.4, "movingFrames": 30, "movingMeanMs": 8.31667,
+    "movingP95Ms": 10.1, "movingMaxMs": 10.2, "wholeMaxMs": 10.3,
+    "wholeOver16_8Ms": 0, "mainThreadLongTasks": 0, "longAnimationFrames": 0,
+    "phase": "interrupt", "actualPosition": [43,19], "lastError": null
+  },
+  "preparedDayCameraFollow": {
+    "night": false, "reactions": false, "cameraFollowsSelected": true,
+    "orderElapsedMs": 19.9, "movingFrames": 346, "movingMeanMs": 8.33353,
+    "movingP95Ms": 9.3, "movingMaxMs": 10.2, "wholeMaxMs": 10.4,
+    "wholeOver16_8Ms": 0, "mainThreadLongTasks": 0, "longAnimationFrames": 0,
+    "phase": "player", "actualPosition": [46,10], "lastError": null
+  },
+  "preparedNightCameraFollow": {
+    "night": true, "reactions": false, "cameraFollowsSelected": true,
+    "cachedLayersBefore": 202, "vectorLayersBefore": 1,
+    "orderElapsedMs": 21.2, "movingFrames": 347, "movingMeanMs": 8.33401,
+    "movingP95Ms": 8.5, "movingMaxMs": 10.3, "wholeMaxMs": 10.3,
+    "wholeOver16_8Ms": 0, "mainThreadLongTasks": 0, "longAnimationFrames": 0,
+    "phase": "player", "actualPosition": [46,10], "lastError": null
+  },
+  "visualCheck": "The interruption banner, available-unit buttons and continue-turn control remain visible above the map. The map and bottom roster remain visible. Browser console warnings/errors were checked separately.",
+  "full60FpsAccepted": false,
+  "remaining": "Initial scenery preparation, simultaneous group movement, complete enemy turns, night reactions and full campaign encounters are not established by these samples."
+}

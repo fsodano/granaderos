@@ -1,6 +1,6 @@
 # 07 — Strategic Layer (engine/Strategic → game/campaign.js + clock/world)
 
-> Economy update: the browser game now uses pesos only. The material, convoy, and horse-management mappings below describe the earlier implementation. See [the current economy rules](../INDUSTRY-AND-IMPORTS.md).
+> Economy update: the browser game now uses pesos only. The material, convoy, and horse-management mappings below describe the earlier implementation. See [the current economy rules](../gameplay/campaign/INDUSTRY-AND-IMPORTS.md).
 
 Reference for porting the JA2 v1.13-derived strategic layer to the browser
 simulation. Every claim below is extracted from the C++ engine under
@@ -182,7 +182,7 @@ the battle's `elapsedSeconds` and recomputes `night` and light timers.
 strategic hours (`secondOfHour` carries the remainder) and runs `tick` for
 those hours. This is the only path where tactical time advances the strategic
 clock; an open tactical sector pauses strategic contract expiry
-(`docs/WEB-SYSTEMS.md:119`).
+(`docs/development/WEB-SYSTEMS.md:119`).
 
 ---
 
@@ -412,7 +412,7 @@ unported.
   rank-specific stats (`GARRISON_RANKS`, `game/garrison.js:3`), stable numeric
   IDs starting at 20000, and finite cartridges deducted from campaign stores.
   Garrisons deploy only in Patriot-controlled sectors (defense/exploration),
-  never on offensive missions (`docs/WEB-SYSTEMS.md:135`).
+  never on offensive missions (`docs/development/WEB-SYSTEMS.md:135`).
 - **Garrison return**: `returnGarrison` (`game/garrison.js:21`) requires a
   complete validated tactical snapshot, removes dead defenders from strategic
   militia counts, and preserves surviving identities. `validGarrisons`
@@ -648,4 +648,4 @@ and `tests/contracts-web.test.mjs`):
 11. **Full campaign**: reach phase 5 (San Martín recruited, all 13 sectors
     Patriot, no blockade, no pending battle) using only reducer orders and
     tactical outcome events — the integration test completes within 120
-    simulated days (`docs/WEB-SYSTEMS.md:41`).
+    simulated days (`docs/development/WEB-SYSTEMS.md:41`).

@@ -1,0 +1,21 @@
+{
+  "source": "Continuation of verified fresh seed-8 Yatasto campaign through prepareFreshCuyoDefense",
+  "hour": 431,
+  "treasury": 345,
+  "squad": [
+    1,
+    8,
+    142
+  ],
+  "contract142": {
+    "kind": "paid",
+    "term": "day",
+    "started": 431,
+    "expiresAt": 455,
+    "paid": 1290
+  },
+  "medicalRule": "Buy only the calculated treatment deficit after accounting for carried dressings. Healthy troops require no treatment purchase.",
+  "pendingEncounter": null,
+  "scope": "The full fresh-start integration rerun confirms Cuyo staging. It then fails at the actual Mendoza battle with defeat rather than victory. The daylight approach and paid reloads do not establish that the current three-person force can win.",
+  "integrationLog": "/tmp/granaderos-route-cuyo-current.log"
+}

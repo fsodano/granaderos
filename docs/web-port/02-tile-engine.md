@@ -843,7 +843,7 @@ The shade level per tile = ambient + sum of light contributions, clamped to 1..1
   (walkable interiors, independent double doors, window sight, night roof hiding);
   `tests/lighting.test.mjs` (night illumination); `tests/save-web.test.mjs` (malformed
   tiles rejected before rendering); `tests/world-web.test.mjs` (tile mutation persistence).
-- **Assets:** `docs/TACTICAL-VISUALS.md` documents the terrain/scenery/unit art pipeline
+- **Assets:** `docs/art/TACTICAL-VISUALS.md` documents the terrain/scenery/unit art pipeline
   (`terrain-{name}-v1.webp` patterns, `scenery-*-v1.webp` sprites, `SpriteFigure` rigs).
 
 ---

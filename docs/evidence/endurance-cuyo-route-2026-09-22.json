@@ -1,0 +1,1300 @@
+{
+  "date": "2026-09-22",
+  "source": "Current-endurance Tucuman checkpoint; all continuation steps use public campaign/tactical orders.",
+  "changes": [
+    "Build medical parties from the actual doctor and wounded soldiers rather than every local survivor.",
+    "Renew expiring paid contracts before recovery and regrouping consume time.",
+    "Resolve each queued real counterattack with its local garrison.",
+    "March only squads physically present at the northern assembly point.",
+    "Keep Cuyo reserves in separate real squads and a five-person field force before hiring the specialist.",
+    "Sell finite surplus guns and use territorial income for production.",
+    "Wait for a Cordoba threat only when one exists; do not spend the specialist contract waiting for a remote Salta attack."
+  ],
+  "checkpoints": [
+    {
+      "checkpoint": "northern-relief",
+      "hour": 281,
+      "secondOfHour": 2312,
+      "phase": 2,
+      "location": "buenos_aires",
+      "treasury": 280,
+      "infantry": 0,
+      "cannons": 0,
+      "completed": false,
+      "defeated": false,
+      "recruitedAlive": [
+        107,
+        136,
+        134,
+        127,
+        141,
+        104,
+        121,
+        111,
+        125,
+        103,
+        140,
+        101,
+        126,
+        139,
+        144,
+        146,
+        1000,
+        10,
+        4
+      ],
+      "squad": [
+        121,
+        125,
+        1000,
+        10,
+        4
+      ]
+    },
+    {
+      "checkpoint": "northern-reunion",
+      "hour": 321,
+      "secondOfHour": 2845,
+      "phase": 2,
+      "location": "tucuman",
+      "treasury": 454,
+      "infantry": 0,
+      "cannons": 0,
+      "completed": false,
+      "defeated": false,
+      "recruitedAlive": [
+        107,
+        136,
+        134,
+        127,
+        141,
+        104,
+        111,
+        103,
+        140,
+        139,
+        144,
+        146,
+        1000,
+        10,
+        4,
+        9,
+        11,
+        1
+      ],
+      "squad": [
+        9,
+        11,
+        127,
+        4,
+        111,
+        1
+      ]
+    },
+    {
+      "checkpoint": "salta-won",
+      "hour": 342,
+      "secondOfHour": 3055,
+      "phase": 2,
+      "location": "salta",
+      "treasury": 1057,
+      "infantry": 0,
+      "cannons": 0,
+      "completed": false,
+      "defeated": false,
+      "recruitedAlive": [
+        107,
+        134,
+        127,
+        141,
+        104,
+        111,
+        103,
+        140,
+        139,
+        144,
+        146,
+        1000,
+        10,
+        4,
+        9,
+        11,
+        1
+      ],
+      "squad": [
+        141,
+        140,
+        134,
+        103,
+        104
+      ]
+    },
+    {
+      "checkpoint": "yatasto",
+      "hour": 360,
+      "secondOfHour": 1105,
+      "phase": 3,
+      "location": "tucuman",
+      "treasury": 1454,
+      "infantry": 0,
+      "cannons": 0,
+      "completed": false,
+      "defeated": false,
+      "recruitedAlive": [
+        134,
+        127,
+        141,
+        104,
+        111,
+        103,
+        140,
+        139,
+        144,
+        146,
+        1000,
+        10,
+        4,
+        9,
+        11,
+        1,
+        0,
+        8
+      ],
+      "squad": [
+        1,
+        0,
+        8
+      ]
+    },
+    {
+      "checkpoint": "cuyo-prepared",
+      "hour": 375,
+      "secondOfHour": 1105,
+      "phase": 3,
+      "location": "cordoba",
+      "treasury": 22,
+      "infantry": 0,
+      "cannons": 0,
+      "completed": false,
+      "defeated": false,
+      "recruitedAlive": [
+        134,
+        127,
+        141,
+        104,
+        111,
+        103,
+        140,
+        139,
+        144,
+        146,
+        1000,
+        10,
+        4,
+        9,
+        11,
+        1,
+        0,
+        8,
+        142
+      ],
+      "squad": [
+        1,
+        0,
+        8,
+        11,
+        4,
+        142
+      ]
+    },
+    {
+      "checkpoint": "mendoza-won",
+      "hour": 392,
+      "secondOfHour": 1420,
+      "phase": 3,
+      "location": "mendoza",
+      "treasury": 676,
+      "infantry": 0,
+      "cannons": 0,
+      "completed": false,
+      "defeated": false,
+      "recruitedAlive": [
+        134,
+        127,
+        141,
+        104,
+        111,
+        103,
+        140,
+        139,
+        144,
+        146,
+        1000,
+        10,
+        9,
+        11,
+        0,
+        8,
+        142
+      ],
+      "squad": [
+        0,
+        8,
+        11,
+        142
+      ]
+    },
+    {
+      "checkpoint": "foundry",
+      "hour": 443,
+      "secondOfHour": 1531,
+      "phase": 3,
+      "location": "mendoza",
+      "treasury": 715,
+      "infantry": 0,
+      "cannons": 1,
+      "completed": false,
+      "defeated": false,
+      "recruitedAlive": [
+        1000,
+        10,
+        9,
+        11,
+        0,
+        8,
+        2,
+        7
+      ],
+      "squad": [
+        0,
+        8,
+        11,
+        2,
+        7
+      ]
+    },
+    {
+      "checkpoint": "initial-army",
+      "hour": 496,
+      "secondOfHour": 1531,
+      "phase": 3,
+      "location": "mendoza",
+      "treasury": 747,
+      "infantry": 200,
+      "cannons": 2,
+      "completed": false,
+      "defeated": false,
+      "recruitedAlive": [
+        1000,
+        10,
+        9,
+        11,
+        0,
+        8,
+        2,
+        7
+      ],
+      "squad": [
+        0,
+        8,
+        11,
+        2,
+        7
+      ]
+    },
+    {
+      "checkpoint": "complete-army",
+      "hour": 1214,
+      "secondOfHour": 1531,
+      "phase": 3,
+      "location": "mendoza",
+      "treasury": 8371,
+      "infantry": 3000,
+      "cannons": 3,
+      "completed": false,
+      "defeated": false,
+      "recruitedAlive": [
+        1000,
+        10,
+        9,
+        11,
+        0,
+        8,
+        2,
+        7
+      ],
+      "squad": [
+        2,
+        8
+      ]
+    },
+    {
+      "checkpoint": "uspallata-prepared",
+      "hour": 1404,
+      "secondOfHour": 1531,
+      "phase": 3,
+      "location": "uspallata",
+      "treasury": 3549,
+      "infantry": 3000,
+      "cannons": 2,
+      "completed": false,
+      "defeated": false,
+      "recruitedAlive": [
+        1000,
+        10,
+        9,
+        11,
+        0,
+        8,
+        2,
+        7,
+        105,
+        128,
+        109,
+        132,
+        145,
+        106
+      ],
+      "squad": [
+        145,
+        106
+      ]
+    }
+  ],
+  "battles": [
+    {
+      "event": "battleFinished",
+      "sector": "tucuman",
+      "preparationSeconds": 0,
+      "startSeconds": 1071512,
+      "elapsedSeconds": 84,
+      "status": "victory",
+      "turns": 12,
+      "actions": 152,
+      "units": [
+        {
+          "id": "107",
+          "side": "player",
+          "hp": 36,
+          "ammo": 10,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "136",
+          "side": "player",
+          "hp": 94,
+          "ammo": 9,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "134",
+          "side": "player",
+          "hp": 72,
+          "ammo": 8,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "127",
+          "side": "player",
+          "hp": 73,
+          "ammo": 11,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "141",
+          "side": "player",
+          "hp": 86,
+          "ammo": 9,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "104",
+          "side": "player",
+          "hp": 72,
+          "ammo": 9,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "111",
+          "side": "player",
+          "hp": 79,
+          "ammo": 9,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "103",
+          "side": "player",
+          "hp": 72,
+          "ammo": 6,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "140",
+          "side": "player",
+          "hp": 67,
+          "ammo": 1,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "101",
+          "side": "player",
+          "hp": 0,
+          "ammo": 9,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "126",
+          "side": "player",
+          "hp": 0,
+          "ammo": 8,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "139",
+          "side": "player",
+          "hp": 73,
+          "ammo": 9,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "144",
+          "side": "player",
+          "hp": 81,
+          "ammo": 6,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "146",
+          "side": "player",
+          "hp": 74,
+          "ammo": 9,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-group-2-0",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 5,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-group-2-1",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 2,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "enemy-group-2-2",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 5,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-group-2-3",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 5,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "122",
+          "side": "player",
+          "hp": 0,
+          "ammo": 8,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "enemy-0",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "enemy-1",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 11,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "enemy-3",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "enemy-4",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-5",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "enemy-6",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 1,
+          "routed": false
+        }
+      ]
+    },
+    {
+      "event": "battleFinished",
+      "sector": "cordoba",
+      "preparationSeconds": 0,
+      "startSeconds": 1071596,
+      "elapsedSeconds": 101,
+      "status": "victory",
+      "turns": 7,
+      "actions": 89,
+      "units": [
+        {
+          "id": "107",
+          "side": "player",
+          "hp": 18,
+          "ammo": 10,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "121",
+          "side": "player",
+          "hp": 0,
+          "ammo": 9,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "125",
+          "side": "player",
+          "hp": 4,
+          "ammo": 7,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "1000",
+          "side": "player",
+          "hp": 15,
+          "ammo": 7,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "10",
+          "side": "player",
+          "hp": 72,
+          "ammo": 7,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "4",
+          "side": "player",
+          "hp": 84,
+          "ammo": 0,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "enemy-group-3-0",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 5,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-group-3-1",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 5,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-group-3-2",
+          "side": "enemy",
+          "hp": 14,
+          "ammo": 4,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "enemy-group-3-3",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 1,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "enemy-group-1-0",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 5,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "enemy-group-1-2",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 5,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "131",
+          "side": "player",
+          "hp": 0,
+          "ammo": 3,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "113",
+          "side": "player",
+          "hp": 0,
+          "ammo": 9,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "124",
+          "side": "player",
+          "hp": 0,
+          "ammo": 0,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "116",
+          "side": "player",
+          "hp": 0,
+          "ammo": 0,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "117",
+          "side": "player",
+          "hp": 0,
+          "ammo": 8,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "129",
+          "side": "player",
+          "hp": 0,
+          "ammo": 7,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "133",
+          "side": "player",
+          "hp": 0,
+          "ammo": 9,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-0",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "enemy-1",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-2",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 10,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "enemy-3",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 10,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "enemy-4",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 0,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "enemy-5",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 0,
+          "loaded": 0,
+          "routed": false
+        }
+      ]
+    },
+    {
+      "event": "battleFinished",
+      "sector": "salta",
+      "preparationSeconds": 0,
+      "startSeconds": 1234045,
+      "elapsedSeconds": 210,
+      "status": "victory",
+      "turns": 11,
+      "actions": 285,
+      "units": [
+        {
+          "id": "9",
+          "side": "player",
+          "hp": 92,
+          "ammo": 11,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "11",
+          "side": "player",
+          "hp": 78,
+          "ammo": 2,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "127",
+          "side": "player",
+          "hp": 73,
+          "ammo": 11,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "4",
+          "side": "player",
+          "hp": 84,
+          "ammo": 11,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "111",
+          "side": "player",
+          "hp": 79,
+          "ammo": 8,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "1",
+          "side": "player",
+          "hp": 88,
+          "ammo": 7,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "146",
+          "side": "player",
+          "hp": 74,
+          "ammo": 8,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "1000",
+          "side": "player",
+          "hp": 17,
+          "ammo": 11,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "10",
+          "side": "player",
+          "hp": 72,
+          "ammo": 10,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "139",
+          "side": "player",
+          "hp": 75,
+          "ammo": 12,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "136",
+          "side": "player",
+          "hp": 0,
+          "ammo": 6,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "144",
+          "side": "player",
+          "hp": 81,
+          "ammo": 11,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "141",
+          "side": "player",
+          "hp": 15,
+          "ammo": 8,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "140",
+          "side": "player",
+          "hp": 67,
+          "ammo": 1,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "134",
+          "side": "player",
+          "hp": 74,
+          "ammo": 9,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "103",
+          "side": "player",
+          "hp": 72,
+          "ammo": 12,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "104",
+          "side": "player",
+          "hp": 72,
+          "ammo": 5,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-0",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "enemy-1",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-2",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-3",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "enemy-4",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "enemy-5",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 10,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-6",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-7",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 11,
+          "loaded": 1,
+          "routed": false
+        }
+      ]
+    },
+    {
+      "event": "battleFinished",
+      "sector": "mendoza",
+      "preparationSeconds": 0,
+      "startSeconds": 1412313,
+      "elapsedSeconds": 307,
+      "status": "victory",
+      "turns": 6,
+      "actions": 129,
+      "units": [
+        {
+          "id": "1",
+          "side": "player",
+          "hp": 0,
+          "ammo": 9,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "0",
+          "side": "player",
+          "hp": 82,
+          "ammo": 8,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "8",
+          "side": "player",
+          "hp": 70,
+          "ammo": 0,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "11",
+          "side": "player",
+          "hp": 78,
+          "ammo": 0,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "4",
+          "side": "player",
+          "hp": 0,
+          "ammo": 9,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "142",
+          "side": "player",
+          "hp": 79,
+          "ammo": 10,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-0",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 9,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "enemy-1",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 0,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "enemy-2",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 11,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "enemy-3",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 11,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-4",
+          "side": "enemy",
+          "hp": 2,
+          "ammo": 11,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "enemy-5",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 11,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-6",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 1,
+          "routed": false
+        }
+      ]
+    }
+  ],
+  "validation": {
+    "battleReplayAndSaveRoundTrip": "passed for reported victories",
+    "fullFreshIntegration": {
+      "status": "confirmed through Mendoza; stopped at first cannon funding before the affordability fix",
+      "durationMs": 163504.98775,
+      "failure": "Faltan recursos: Pesos de plata (180).",
+      "log": "/tmp/granaderos-fresh-integration-current.log",
+      "followup": "Current foundry and full army continuation passes after waiting for real income."
+    }
+  },
+  "remaining": [
+    "Fund care and paid contracts for the actual eight Uspallata survivors; verify Los Patos and later stages",
+    "Later campaign and ending",
+    "Full current suite",
+    "Knife and sword character artwork",
+    "Locked 60 FPS including movement start, zoom, cold load and large combat"
+  ],
+  "mountainFollowup": {
+    "previousOutcome": "defeat in eight turns with the gun held behind screening infantry",
+    "change": "The artillery controller advances a loaded gun through ordinary artilleryMove orders when visible targets exist but no safe firing action is available.",
+    "battle": {
+      "event": "battleFinished",
+      "sector": "uspallata",
+      "preparationSeconds": 0,
+      "startSeconds": 5055931,
+      "elapsedSeconds": 131,
+      "status": "victory",
+      "turns": 8,
+      "actions": 122,
+      "units": [
+        {
+          "id": "7",
+          "side": "player",
+          "hp": 85,
+          "ammo": 10,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "8",
+          "side": "player",
+          "hp": 70,
+          "ammo": 0,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "105",
+          "side": "player",
+          "hp": 70,
+          "ammo": 8,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "128",
+          "side": "player",
+          "hp": 22,
+          "ammo": 7,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "109",
+          "side": "player",
+          "hp": 33,
+          "ammo": 6,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "132",
+          "side": "player",
+          "hp": 78,
+          "ammo": 6,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "145",
+          "side": "player",
+          "hp": 15,
+          "ammo": 6,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "106",
+          "side": "player",
+          "hp": 70,
+          "ammo": 6,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "enemy-0",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "enemy-1",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-2",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "enemy-3",
+          "side": "enemy",
+          "hp": 9,
+          "ammo": 12,
+          "loaded": 0,
+          "routed": true
+        },
+        {
+          "id": "enemy-4",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 11,
+          "loaded": 0,
+          "routed": false
+        },
+        {
+          "id": "enemy-5",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-6",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-7",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 1,
+          "routed": false
+        },
+        {
+          "id": "enemy-8",
+          "side": "enemy",
+          "hp": 0,
+          "ammo": 12,
+          "loaded": 1,
+          "routed": false
+        }
+      ]
+    },
+    "validation": {
+      "deterministicReplay": "pass",
+      "saveRoundTrip": "pass",
+      "settledOwner": "patriot",
+      "defeated": false,
+      "completed": false
+    },
+    "recovery": {
+      "status": "incomplete",
+      "change": "Eight survivors return to Mendoza as two real squads instead of merging into one.",
+      "failure": "Day renewal for wounded operative 145 at expiry 1422 needs 1230 pesos.",
+      "log": "/tmp/granaderos-uspallata-verified-current.log"
+    }
+  }
+}

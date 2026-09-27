@@ -1,0 +1,270 @@
+{
+  "scope": "Current fresh route through paid recovery and supplied Córdoba victory; later campaign incomplete.",
+  "readiness": [
+    {
+      "id": 123,
+      "weapon": 1800,
+      "weaponDropped": false,
+      "loaded": 1,
+      "ammo": 9
+    },
+    {
+      "id": 113,
+      "weapon": 1804,
+      "weaponDropped": false,
+      "loaded": 1,
+      "ammo": 9
+    },
+    {
+      "id": 120,
+      "weapon": 1800,
+      "weaponDropped": false,
+      "loaded": 1,
+      "ammo": 9
+    },
+    {
+      "id": 111,
+      "weapon": 1800,
+      "weaponDropped": false,
+      "loaded": 1,
+      "ammo": 9
+    },
+    {
+      "id": 134,
+      "weapon": 1801,
+      "weaponDropped": false,
+      "loaded": 1,
+      "ammo": 9
+    },
+    {
+      "id": 136,
+      "weapon": 1800,
+      "weaponDropped": false,
+      "loaded": 1,
+      "ammo": 9
+    },
+    {
+      "id": 122,
+      "weapon": 1805,
+      "weaponDropped": false,
+      "loaded": 1,
+      "ammo": 9
+    },
+    {
+      "id": 116,
+      "weapon": 1800,
+      "weaponDropped": false,
+      "loaded": 1,
+      "ammo": 9
+    },
+    {
+      "id": 117,
+      "weapon": 1803,
+      "weaponDropped": false,
+      "loaded": 1,
+      "ammo": 9
+    },
+    {
+      "id": 121,
+      "weapon": 1805,
+      "weaponDropped": false,
+      "loaded": 1,
+      "ammo": 9
+    },
+    {
+      "id": 126,
+      "weapon": 1804,
+      "weaponDropped": false,
+      "loaded": 1,
+      "ammo": 9
+    },
+    {
+      "id": 129,
+      "weapon": 1803,
+      "weaponDropped": false,
+      "loaded": 1,
+      "ammo": 9
+    }
+  ],
+  "summary": {
+    "sector": "cordoba",
+    "preparationSeconds": 0,
+    "startSeconds": 1207279,
+    "elapsedSeconds": 289,
+    "status": "victory",
+    "turns": 15,
+    "actions": 183,
+    "units": [
+      {
+        "id": "123",
+        "side": "player",
+        "hp": 0,
+        "ammo": 7,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "113",
+        "side": "player",
+        "hp": 82,
+        "ammo": 5,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "120",
+        "side": "player",
+        "hp": 73,
+        "ammo": 2,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "111",
+        "side": "player",
+        "hp": 77,
+        "ammo": 9,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "134",
+        "side": "player",
+        "hp": 68,
+        "ammo": 6,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "136",
+        "side": "player",
+        "hp": 90,
+        "ammo": 9,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "122",
+        "side": "player",
+        "hp": 15,
+        "ammo": 9,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "116",
+        "side": "player",
+        "hp": 75,
+        "ammo": 8,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "117",
+        "side": "player",
+        "hp": 88,
+        "ammo": 9,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "121",
+        "side": "player",
+        "hp": 80,
+        "ammo": 8,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "126",
+        "side": "player",
+        "hp": 63,
+        "ammo": 5,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "129",
+        "side": "player",
+        "hp": 86,
+        "ammo": 9,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-0",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-1",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-2",
+        "side": "enemy",
+        "hp": 3,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-3",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-4",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-5",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-6",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-7",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 11,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-8",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 1,
+        "routed": false
+      }
+    ]
+  },
+  "hour": 335,
+  "treasury": 446
+}

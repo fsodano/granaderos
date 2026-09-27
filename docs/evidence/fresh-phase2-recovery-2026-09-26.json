@@ -1,0 +1,365 @@
+{
+  "scope": "Paid recovery from the earned San Lorenzo victory. The following Córdoba assault retreats; full campaign incomplete.",
+  "recovery": {
+    "startHour": 128,
+    "endHour": 312,
+    "staging": {
+      "startHour": 128,
+      "arrivalHour": 128,
+      "startSector": "san_nicolas",
+      "hiringCost": 119
+    },
+    "doctors": [
+      122,
+      116
+    ],
+    "patients": [
+      123,
+      113,
+      120,
+      111
+    ],
+    "usedDressings": 52,
+    "boughtDressings": 26,
+    "medicalTrips": [
+      {
+        "courier": 122,
+        "startHour": 148,
+        "endHour": 206,
+        "quantity": 20,
+        "cost": 600
+      },
+      {
+        "courier": 122,
+        "startHour": 236,
+        "endHour": 292,
+        "quantity": 6,
+        "cost": 180
+      }
+    ],
+    "careRenewals": [
+      {
+        "id": 116,
+        "hour": 148,
+        "cost": 8
+      },
+      {
+        "id": 116,
+        "hour": 148,
+        "cost": 8
+      },
+      {
+        "id": 123,
+        "hour": 148,
+        "cost": 27
+      },
+      {
+        "id": 123,
+        "hour": 148,
+        "cost": 27
+      },
+      {
+        "id": 123,
+        "hour": 148,
+        "cost": 27
+      },
+      {
+        "id": 116,
+        "hour": 226,
+        "cost": 8
+      },
+      {
+        "id": 122,
+        "hour": 236,
+        "cost": 17
+      },
+      {
+        "id": 116,
+        "hour": 236,
+        "cost": 8
+      },
+      {
+        "id": 116,
+        "hour": 236,
+        "cost": 8
+      },
+      {
+        "id": 116,
+        "hour": 236,
+        "cost": 8
+      },
+      {
+        "id": 123,
+        "hour": 236,
+        "cost": 27
+      },
+      {
+        "id": 123,
+        "hour": 236,
+        "cost": 27
+      },
+      {
+        "id": 123,
+        "hour": 236,
+        "cost": 27
+      },
+      {
+        "id": 113,
+        "hour": 236,
+        "cost": 30
+      },
+      {
+        "id": 113,
+        "hour": 236,
+        "cost": 30
+      },
+      {
+        "id": 113,
+        "hour": 236,
+        "cost": 30
+      },
+      {
+        "id": 120,
+        "hour": 236,
+        "cost": 16
+      },
+      {
+        "id": 111,
+        "hour": 236,
+        "cost": 28
+      },
+      {
+        "id": 122,
+        "hour": 298,
+        "cost": 17
+      },
+      {
+        "id": 123,
+        "hour": 298,
+        "cost": 27
+      },
+      {
+        "id": 113,
+        "hour": 298,
+        "cost": 30
+      },
+      {
+        "id": 120,
+        "hour": 298,
+        "cost": 16
+      },
+      {
+        "id": 111,
+        "hour": 298,
+        "cost": 28
+      },
+      {
+        "id": 116,
+        "hour": 300,
+        "cost": 8
+      },
+      {
+        "id": 113,
+        "hour": 311,
+        "cost": 30
+      }
+    ],
+    "recoveredDressings": 12,
+    "laterRecoveredDressings": 0,
+    "collectedDonations": 12,
+    "donatedDressings": 12,
+    "donors": [
+      {
+        "id": 113,
+        "count": 2
+      },
+      {
+        "id": 119,
+        "count": 2
+      },
+      {
+        "id": 127,
+        "count": 2
+      },
+      {
+        "id": 104,
+        "count": 2
+      },
+      {
+        "id": 121,
+        "count": 2
+      },
+      {
+        "id": 120,
+        "count": 2
+      }
+    ],
+    "replacements": [
+      134,
+      136
+    ],
+    "fieldIds": [
+      123,
+      113,
+      120,
+      111,
+      134,
+      136
+    ],
+    "gathered": [
+      {
+        "sector": "san_lorenzo",
+        "sourceKey": "[\"body\",\"125\",\"medkits\"]",
+        "count": 2,
+        "remaining": 0
+      },
+      {
+        "sector": "san_lorenzo",
+        "sourceKey": "[\"body\",\"112\",\"medkits\"]",
+        "count": 8,
+        "remaining": 0
+      },
+      {
+        "sector": "san_lorenzo",
+        "sourceKey": "[\"body\",\"enemy-6\",\"medkits\"]",
+        "count": 2,
+        "remaining": 0
+      },
+      {
+        "sector": "san_nicolas",
+        "sourceKey": "ground:sector-item-0",
+        "count": 2,
+        "remaining": 0
+      },
+      {
+        "sector": "san_nicolas",
+        "sourceKey": "ground:sector-item-1",
+        "count": 2,
+        "remaining": 0
+      },
+      {
+        "sector": "san_nicolas",
+        "sourceKey": "ground:sector-item-2",
+        "count": 2,
+        "remaining": 0
+      },
+      {
+        "sector": "san_nicolas",
+        "sourceKey": "ground:sector-item-3",
+        "count": 2,
+        "remaining": 0
+      },
+      {
+        "sector": "san_nicolas",
+        "sourceKey": "ground:sector-item-4",
+        "count": 2,
+        "remaining": 0
+      },
+      {
+        "sector": "san_nicolas",
+        "sourceKey": "ground:sector-item-5",
+        "count": 2,
+        "remaining": 0
+      }
+    ],
+    "ammunitionProduction": [
+      {
+        "type": "pistol_69",
+        "key": "ammo_pistol_69",
+        "id": "128-0-1276464017",
+        "due": 139,
+        "count": 60,
+        "cost": {
+          "treasury": 30,
+          "powder": 5,
+          "lead": 3
+        }
+      },
+      {
+        "type": "shot_16",
+        "key": "ammo_shot_16",
+        "id": "128-1-1276464017",
+        "due": 139,
+        "count": 60,
+        "cost": {
+          "treasury": 30,
+          "powder": 5,
+          "lead": 3
+        }
+      }
+    ]
+  },
+  "treasury": 601,
+  "patients": [
+    {
+      "id": 123,
+      "hp": 85,
+      "maxHp": 85,
+      "contract": {
+        "kind": "paid",
+        "term": "day",
+        "started": 298,
+        "expiresAt": 336,
+        "paid": 27
+      }
+    },
+    {
+      "id": 113,
+      "hp": 82,
+      "maxHp": 82,
+      "contract": {
+        "kind": "paid",
+        "term": "day",
+        "started": 311,
+        "expiresAt": 359,
+        "paid": 30
+      }
+    },
+    {
+      "id": 120,
+      "hp": 73,
+      "maxHp": 73,
+      "contract": {
+        "kind": "paid",
+        "term": "day",
+        "started": 298,
+        "expiresAt": 342,
+        "paid": 16
+      }
+    },
+    {
+      "id": 111,
+      "hp": 77,
+      "maxHp": 77,
+      "contract": {
+        "kind": "paid",
+        "term": "day",
+        "started": 298,
+        "expiresAt": 342,
+        "paid": 28
+      }
+    }
+  ],
+  "doctors": [
+    {
+      "id": 122,
+      "contract": {
+        "kind": "paid",
+        "term": "day",
+        "started": 298,
+        "expiresAt": 344,
+        "paid": 17
+      }
+    },
+    {
+      "id": 116,
+      "contract": {
+        "kind": "paid",
+        "term": "day",
+        "started": 300,
+        "expiresAt": 348,
+        "paid": 8
+      }
+    }
+  ]
+}

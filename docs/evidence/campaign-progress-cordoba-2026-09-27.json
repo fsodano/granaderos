@@ -1,0 +1,176 @@
+{
+  "date": "2026-09-27",
+  "scope": "Current fresh route after lower exploration stamina costs and finite poncho transfer. Earlier campaign-progress-2026-09-27.json evidence is preserved and refers to its own prior checkpoints.",
+  "fullGameplayComplete": false,
+  "modifiedFiles": [
+    "tests/fresh-campaign-route.mjs",
+    "tests/fresh-campaign-recovery.test.mjs"
+  ],
+  "runtimeChanges": [],
+  "cordobaRecovery": {
+    "start": {
+      "hour": 143,
+      "treasury": 1415,
+      "source": "/tmp/granaderos-sept27-current-cordoba-won.json"
+    },
+    "preparation": "Paid local contracts up to twelve living defenders; actual recovered firearms/ammunition; ordinary reloads; ordinary visit, walking and climbing to an authored roof; concurrent care at actual survivor locations.",
+    "battle": {
+      "sector": "cordoba",
+      "status": "victory",
+      "turns": 28,
+      "actions": 157,
+      "elapsedSeconds": 648,
+      "deterministicReplay": true,
+      "saveSettlement": true,
+      "defenseRecord": {
+        "groupId": "enemy-group-1",
+        "sector": "cordoba",
+        "hour": 150,
+        "outcome": "victory",
+        "casualties": [
+          116,
+          144,
+          146,
+          124,
+          136,
+          101
+        ],
+        "text": "Córdoba y talleres de Caroya: defensa victoriosa. 6 granaderos y 0 milicianos caídos; 0 prisioneros.",
+        "captured": [],
+        "militiaCasualties": [],
+        "militiaDispersed": 0,
+        "dispositions": [
+          {
+            "unitId": "107",
+            "kind": "resident",
+            "sector": "cordoba"
+          },
+          {
+            "unitId": "116",
+            "kind": "dead",
+            "sector": "cordoba"
+          },
+          {
+            "unitId": "117",
+            "kind": "resident",
+            "sector": "cordoba"
+          },
+          {
+            "unitId": "121",
+            "kind": "resident",
+            "sector": "cordoba"
+          },
+          {
+            "unitId": "126",
+            "kind": "resident",
+            "sector": "cordoba"
+          },
+          {
+            "unitId": "129",
+            "kind": "resident",
+            "sector": "cordoba"
+          },
+          {
+            "unitId": "144",
+            "kind": "dead",
+            "sector": "cordoba"
+          },
+          {
+            "unitId": "146",
+            "kind": "dead",
+            "sector": "cordoba"
+          },
+          {
+            "unitId": "124",
+            "kind": "dead",
+            "sector": "cordoba"
+          },
+          {
+            "unitId": "136",
+            "kind": "dead",
+            "sector": "cordoba"
+          },
+          {
+            "unitId": "134",
+            "kind": "resident",
+            "sector": "cordoba"
+          },
+          {
+            "unitId": "101",
+            "kind": "dead",
+            "sector": "cordoba"
+          }
+        ]
+      }
+    },
+    "care": {
+      "doctors": [
+        139,
+        146,
+        107
+      ],
+      "patients": [
+        {
+          "id": 123,
+          "startSector": "buenos_aires",
+          "startHealth": 50,
+          "endSector": "buenos_aires",
+          "endHealth": 87,
+          "maxHealth": 87,
+          "bleeding": 0,
+          "alive": true
+        },
+        {
+          "id": 117,
+          "startSector": "cordoba",
+          "startHealth": 15,
+          "endSector": "cordoba",
+          "endHealth": 90,
+          "maxHealth": 90,
+          "bleeding": 0,
+          "alive": true
+        },
+        {
+          "id": 129,
+          "startSector": "cordoba",
+          "startHealth": 66,
+          "endSector": "cordoba",
+          "endHealth": 88,
+          "maxHealth": 88,
+          "bleeding": 0,
+          "alive": true
+        }
+      ],
+      "allOriginalWoundedAliveAndFullyHealed": true,
+      "allOriginalDeathsPermanent": true
+    },
+    "end": {
+      "hour": 156,
+      "treasury": 778,
+      "sector": "cordoba",
+      "pendingEncounter": null,
+      "source": "/tmp/granaderos-sept27-current-cordoba-healed.json"
+    },
+    "log": "/tmp/granaderos-cordoba-care-defense-20260927.log"
+  },
+  "fullFreshRoute": {
+    "command": "node --test tests/fresh-campaign-recovery.test.mjs",
+    "durationMs": 112542.628708,
+    "passed": false,
+    "verifiedThrough": "Original opening and northern battles, Córdoba care and actual defense, all-survivor reunification and preparation, and real Tucumán victory with replay/save settlement.",
+    "nextBlocker": {
+      "file": "tests/fresh-northern-recovery.mjs",
+      "line": 34,
+      "function": "recoverFreshNorthernDoctor",
+      "assertion": "assert.ok(medic)",
+      "reason": "The route assumes every wounded location has a living local operative with at least 15 health. The actual Tucumán result leaves one patient location with no such operative. Further legal medical relief is required; no health, casualties or battle outcomes were edited.",
+      "tucumanCheckpointRecorded": false
+    },
+    "log": "/tmp/granaderos-fresh-campaign-recovery-20260927.log"
+  },
+  "remaining": [
+    "Fresh-start-to-ending completion remains unverified.",
+    "The next medical relief driver must handle patients without a fit local medic through actual recruitment, supply and travel orders.",
+    "No victory, finite-resource, custody, save or permanent-casualty assertion was weakened."
+  ]
+}

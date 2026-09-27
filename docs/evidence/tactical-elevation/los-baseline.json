@@ -1,0 +1,66 @@
+[
+  {
+    "sector": "retiro",
+    "night": false,
+    "name": "flat",
+    "count": 3072,
+    "directSight": "1b2273a220e37a3b9fd330e92dd24818fbb58d3b1ef537aa7f66acedbd99cd8e",
+    "fractionalSight": "1b2273a220e37a3b9fd330e92dd24818fbb58d3b1ef537aa7f66acedbd99cd8e"
+  },
+  {
+    "sector": "retiro",
+    "night": false,
+    "name": "upper",
+    "count": 3102,
+    "directSight": "3175d5a2574ccb18bf0ad83f73326032c7fffbe4a86e7273927a21178e899843",
+    "fractionalSight": "152ce3dbeacbfea1ff3502256c1f545cc4bd8c0a4ba55e22351a8ef17c33cef4"
+  },
+  {
+    "sector": "retiro",
+    "night": true,
+    "name": "flat",
+    "count": 3072,
+    "directSight": "1b2273a220e37a3b9fd330e92dd24818fbb58d3b1ef537aa7f66acedbd99cd8e",
+    "fractionalSight": "1b2273a220e37a3b9fd330e92dd24818fbb58d3b1ef537aa7f66acedbd99cd8e"
+  },
+  {
+    "sector": "retiro",
+    "night": true,
+    "name": "upper",
+    "count": 3102,
+    "directSight": "3175d5a2574ccb18bf0ad83f73326032c7fffbe4a86e7273927a21178e899843",
+    "fractionalSight": "152ce3dbeacbfea1ff3502256c1f545cc4bd8c0a4ba55e22351a8ef17c33cef4"
+  },
+  {
+    "sector": "tucuman",
+    "night": false,
+    "name": "flat",
+    "count": 3072,
+    "directSight": "578cb19b2c9dcbb983ec9630527ca27eac8595715c56bfa9c686aca6fc9f2455",
+    "fractionalSight": "578cb19b2c9dcbb983ec9630527ca27eac8595715c56bfa9c686aca6fc9f2455"
+  },
+  {
+    "sector": "tucuman",
+    "night": false,
+    "name": "upper",
+    "count": 3102,
+    "directSight": "9dc41eb2fdb686d073696449a2152bb9ea1fa63f9b9dcfe2c12e33a65da36ad2",
+    "fractionalSight": "66f8020ebe6d53e3c19b4d4d686224057da86830b20a519f183b5b524264a8aa"
+  },
+  {
+    "sector": "tucuman",
+    "night": true,
+    "name": "flat",
+    "count": 3072,
+    "directSight": "578cb19b2c9dcbb983ec9630527ca27eac8595715c56bfa9c686aca6fc9f2455",
+    "fractionalSight": "578cb19b2c9dcbb983ec9630527ca27eac8595715c56bfa9c686aca6fc9f2455"
+  },
+  {
+    "sector": "tucuman",
+    "night": true,
+    "name": "upper",
+    "count": 3102,
+    "directSight": "9dc41eb2fdb686d073696449a2152bb9ea1fa63f9b9dcfe2c12e33a65da36ad2",
+    "fractionalSight": "66f8020ebe6d53e3c19b4d4d686224057da86830b20a519f183b5b524264a8aa"
+  }
+]

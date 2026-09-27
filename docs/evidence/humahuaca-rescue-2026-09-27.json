@@ -1,0 +1,277 @@
+{
+  "scope": "Established-front Humahuaca rescue only; original capture and strategic staging are scripted fixtures. Actual paid recruits, two purchased Baker rifles delivered through ordinary time, normal rest and paid posta travel precede all attempted battles. This is not a fresh campaign and no successful rescue is claimed.",
+  "status": "incomplete",
+  "baseline": {
+    "test": "tests/prisoner-rescue-route.test.mjs",
+    "outcome": "defeat",
+    "arrivalEnergy": 46,
+    "reliefCount": 6,
+    "guardCount": 11,
+    "log": "/tmp/granaderos-rescue-baseline-20260927.log"
+  },
+  "trials": [
+    {
+      "controller": "cautiousCombatOrder with legal visible-prisoner trajectory checks",
+      "checkpoint": "/tmp/granaderos-rescue-agent-geometry-safe-20260927-state.json",
+      "initial": {
+        "hour": 124,
+        "treasury": 2581,
+        "relief": [
+          {
+            "id": "112",
+            "weapon": 1802,
+            "hp": 64,
+            "energy": 88
+          },
+          {
+            "id": "123",
+            "weapon": 1802,
+            "hp": 83,
+            "energy": 88
+          },
+          {
+            "id": "115",
+            "weapon": 1802,
+            "hp": 70,
+            "energy": 88
+          },
+          {
+            "id": "110",
+            "weapon": 1800,
+            "hp": 85,
+            "energy": 88
+          },
+          {
+            "id": "114",
+            "weapon": 1800,
+            "hp": 81,
+            "energy": 88
+          },
+          {
+            "id": "113",
+            "weapon": 1802,
+            "hp": 80,
+            "energy": 88
+          },
+          {
+            "id": "131",
+            "weapon": 1803,
+            "hp": 82,
+            "energy": 88
+          },
+          {
+            "id": "136",
+            "weapon": 1800,
+            "hp": 90,
+            "energy": 88
+          }
+        ]
+      },
+      "outcome": {
+        "status": "defeat",
+        "turn": 8,
+        "orders": 99,
+        "physicalDepartureOrders": 0,
+        "prisoners": [
+          {
+            "id": "captive:3:118",
+            "hp": 15,
+            "freed": false,
+            "departed": false
+          },
+          {
+            "id": "captive:4:118",
+            "hp": 84,
+            "freed": false,
+            "departed": false
+          },
+          {
+            "id": "captive:10:118",
+            "hp": 72,
+            "freed": false,
+            "departed": false
+          }
+        ],
+        "rescuers": [
+          {
+            "id": "112",
+            "hp": 0,
+            "energy": 80
+          },
+          {
+            "id": "123",
+            "hp": 0,
+            "energy": 67
+          },
+          {
+            "id": "115",
+            "hp": 0,
+            "energy": 65
+          },
+          {
+            "id": "110",
+            "hp": 11,
+            "energy": 60
+          },
+          {
+            "id": "114",
+            "hp": 0,
+            "energy": 72
+          },
+          {
+            "id": "113",
+            "hp": 0,
+            "energy": 66.415
+          },
+          {
+            "id": "131",
+            "hp": 0,
+            "energy": 47
+          },
+          {
+            "id": "136",
+            "hp": 0,
+            "energy": 40
+          }
+        ]
+      }
+    },
+    {
+      "controller": "tucumanCombatOrder with legal visible-prisoner trajectory checks",
+      "checkpoint": "/tmp/granaderos-rescue-agent-northern-safe-20260927-state.json",
+      "initial": {
+        "hour": 124,
+        "treasury": 2581,
+        "relief": [
+          {
+            "id": "112",
+            "weapon": 1802,
+            "hp": 64,
+            "energy": 88
+          },
+          {
+            "id": "123",
+            "weapon": 1802,
+            "hp": 83,
+            "energy": 88
+          },
+          {
+            "id": "115",
+            "weapon": 1802,
+            "hp": 70,
+            "energy": 88
+          },
+          {
+            "id": "110",
+            "weapon": 1800,
+            "hp": 85,
+            "energy": 88
+          },
+          {
+            "id": "114",
+            "weapon": 1800,
+            "hp": 81,
+            "energy": 88
+          },
+          {
+            "id": "113",
+            "weapon": 1802,
+            "hp": 80,
+            "energy": 88
+          },
+          {
+            "id": "131",
+            "weapon": 1803,
+            "hp": 82,
+            "energy": 88
+          },
+          {
+            "id": "136",
+            "weapon": 1800,
+            "hp": 90,
+            "energy": 88
+          }
+        ]
+      },
+      "outcome": {
+        "status": "defeat",
+        "turn": 5,
+        "orders": 90,
+        "physicalDepartureOrders": 0,
+        "prisoners": [
+          {
+            "id": "captive:3:118",
+            "hp": 15,
+            "freed": false,
+            "departed": false
+          },
+          {
+            "id": "captive:4:118",
+            "hp": 84,
+            "freed": false,
+            "departed": false
+          },
+          {
+            "id": "captive:10:118",
+            "hp": 72,
+            "freed": false,
+            "departed": false
+          }
+        ],
+        "rescuers": [
+          {
+            "id": "112",
+            "hp": 0,
+            "energy": 66
+          },
+          {
+            "id": "123",
+            "hp": 1,
+            "energy": 66
+          },
+          {
+            "id": "115",
+            "hp": 12,
+            "energy": 59
+          },
+          {
+            "id": "110",
+            "hp": 0,
+            "energy": 37
+          },
+          {
+            "id": "114",
+            "hp": 11,
+            "energy": 53
+          },
+          {
+            "id": "113",
+            "hp": 0,
+            "energy": 66.415
+          },
+          {
+            "id": "131",
+            "hp": 0,
+            "energy": 48
+          },
+          {
+            "id": "136",
+            "hp": 0,
+            "energy": 49
+          }
+        ]
+      }
+    }
+  ],
+  "implemented": [
+    "Nonblocking firearm warning enumerates legal miss trajectories through current cover and body geometry using only known bodies. Actual damage, RNG, AP and ammunition rules are unchanged.",
+    "Prisoner panel reports fleeing or sheltering during an active threat; it no longer claims that a prisoner follows while danger AI prevents following."
+  ],
+  "validation": {
+    "focusedTests": 53,
+    "passed": 53,
+    "typecheck": "passed",
+    "physicalRouteAssertions": "unchanged; require every original prisoner alive and physically departed to Jujuy plus actual saved evacuation orders"
+  },
+  "remaining": "The attempted forces lose the guard engagement before any release or departure. The final three prisoners retain 15, 84 and 72 HP in both paid attempts. Release and adjacent-boundary evacuation pass focused mechanics tests, but the complete arrival-to-escape route remains unverified."
+}

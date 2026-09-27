@@ -1,0 +1,398 @@
+{
+  "scope": "Paid rear guard and real road defense. Salta assault still retreats; full campaign incomplete.",
+  "rearGuardHires": [
+    127,
+    104,
+    101,
+    102,
+    108,
+    139
+  ],
+  "defense": {
+    "event": "battleFinished",
+    "sector": "cordoba",
+    "preparationSeconds": 0,
+    "startSeconds": 2097273,
+    "elapsedSeconds": 84,
+    "status": "victory",
+    "turns": 14,
+    "actions": 224,
+    "units": [
+      {
+        "id": "146",
+        "side": "player",
+        "hp": 74,
+        "ammo": 8,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "1000",
+        "side": "player",
+        "hp": 78,
+        "ammo": 7,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "10",
+        "side": "player",
+        "hp": 72,
+        "ammo": 5,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "4",
+        "side": "player",
+        "hp": 0,
+        "ammo": 6,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "11",
+        "side": "player",
+        "hp": 58,
+        "ammo": 6,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "127",
+        "side": "player",
+        "hp": 15,
+        "ammo": 2,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "104",
+        "side": "player",
+        "hp": 0,
+        "ammo": 3,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "101",
+        "side": "player",
+        "hp": 0,
+        "ammo": 9,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "102",
+        "side": "player",
+        "hp": 0,
+        "ammo": 9,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "108",
+        "side": "player",
+        "hp": 26,
+        "ammo": 6,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "139",
+        "side": "player",
+        "hp": 0,
+        "ammo": 8,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-group-2-0",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 5,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-group-2-1",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 4,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-group-2-2",
+        "side": "enemy",
+        "hp": 13,
+        "ammo": 3,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "enemy-group-2-3",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 5,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-group-2-4",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 5,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-group-2-5",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 1,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-group-2-6",
+        "side": "enemy",
+        "hp": 22,
+        "ammo": 4,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-group-2-7",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 5,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-group-2-8",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 5,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-group-2-9",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 5,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-group-2-10",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 5,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-group-2-11",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 4,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-group-2-12",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 4,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "120",
+        "side": "player",
+        "hp": 0,
+        "ammo": 9,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "111",
+        "side": "player",
+        "hp": 0,
+        "ammo": 0,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "126",
+        "side": "player",
+        "hp": 0,
+        "ammo": 8,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "enemy-group-1-0",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 5,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-group-1-1",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 5,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-group-1-2",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 5,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-group-1-3",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 5,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-group-1-4",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 5,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-group-1-8",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 0,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "enemy-group-1-9",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 5,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-group-1-10",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 5,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "123",
+        "side": "player",
+        "hp": 0,
+        "ammo": 0,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "enemy-0",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-1",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 0,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-3",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 0,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-4",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 0,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-5",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-6",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 0,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-7",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 0,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "enemy-8",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 0,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "113",
+        "side": "player",
+        "hp": 0,
+        "ammo": 8,
+        "loaded": 0,
+        "routed": true
+      }
+    ]
+  },
+  "reunion": {
+    "hour": 600,
+    "treasury": 1562,
+    "suppliedTucuman": true,
+    "cordobaOwner": "patriot",
+    "rearGuard": {
+      "id": "squad-13",
+      "name": "Guardia del camino de Córdoba",
+      "members": [
+        108
+      ],
+      "location": "cordoba"
+    }
+  },
+  "saltaFailure": "Retreat after legal coordinated march; low morale and incomplete loading require further preparation."
+}

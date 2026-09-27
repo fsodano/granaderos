@@ -1,0 +1,407 @@
+{
+  "date": "2026-09-22",
+  "source": "Continuation from the current-endurance Cordoba counterattack checkpoint using public campaign and tactical actions.",
+  "preparation": {
+    "hour": 224,
+    "treasury": 1027,
+    "squad": [
+      107,
+      136,
+      134,
+      127,
+      141,
+      104,
+      121,
+      111,
+      125,
+      103,
+      140,
+      101,
+      122,
+      126,
+      139,
+      144,
+      146
+    ],
+    "allOriginalSurvivorsRetained": true,
+    "allHealthyLoadedAndSupplied": true,
+    "events": [
+      {
+        "stage": "surplus-equipment-sales",
+        "sales": [
+          {
+            "instanceId": "armory-1",
+            "item": 1804,
+            "price": 27
+          },
+          {
+            "instanceId": "armory-2",
+            "item": 1804,
+            "price": 27
+          },
+          {
+            "instanceId": "armory-3",
+            "item": 1804,
+            "price": 28
+          },
+          {
+            "instanceId": "armory-4",
+            "item": 1804,
+            "price": 29
+          },
+          {
+            "instanceId": "armory-5",
+            "item": 1804,
+            "price": 30
+          },
+          {
+            "instanceId": "armory-6",
+            "item": 1804,
+            "price": 30
+          },
+          {
+            "instanceId": "armory-7",
+            "item": 1804,
+            "price": 30
+          },
+          {
+            "instanceId": "armory-8",
+            "item": 1805,
+            "price": 62
+          },
+          {
+            "instanceId": "armory-9",
+            "item": 1805,
+            "price": 63
+          },
+          {
+            "instanceId": "armory-10",
+            "item": 1805,
+            "price": 63
+          },
+          {
+            "instanceId": "armory-11",
+            "item": 1805,
+            "price": 65
+          }
+        ],
+        "treasury": 1049
+      },
+      {
+        "event": "tucumanMedicalRecovery",
+        "hour": 197,
+        "treasury": 987,
+        "medic": 107,
+        "patients": [
+          {
+            "id": 134,
+            "hp": 70,
+            "maxHp": 70,
+            "bleeding": 0,
+            "expiresAt": 204
+          },
+          {
+            "id": 122,
+            "hp": 67,
+            "maxHp": 67,
+            "bleeding": 0,
+            "expiresAt": 224
+          },
+          {
+            "id": 126,
+            "hp": 65,
+            "maxHp": 65,
+            "bleeding": 0,
+            "expiresAt": 264
+          }
+        ]
+      },
+      {
+        "event": "finishedReload",
+        "id": 136,
+        "paidPAEquivalent": 42,
+        "loaded": 1,
+        "ammo": 9
+      },
+      {
+        "event": "finishedReload",
+        "id": 134,
+        "paidPAEquivalent": 45,
+        "loaded": 1,
+        "ammo": 11
+      },
+      {
+        "event": "finishedReload",
+        "id": 104,
+        "paidPAEquivalent": 45,
+        "loaded": 1,
+        "ammo": 9
+      },
+      {
+        "event": "finishedReload",
+        "id": 121,
+        "paidPAEquivalent": 60,
+        "loaded": 1,
+        "ammo": 11
+      },
+      {
+        "event": "finishedReload",
+        "id": 125,
+        "paidPAEquivalent": 39,
+        "loaded": 1,
+        "ammo": 9
+      },
+      {
+        "event": "finishedReload",
+        "id": 103,
+        "paidPAEquivalent": 39,
+        "loaded": 1,
+        "ammo": 9
+      },
+      {
+        "event": "finishedReload",
+        "id": 140,
+        "paidPAEquivalent": 60,
+        "loaded": 1,
+        "ammo": 9
+      },
+      {
+        "event": "finishedReload",
+        "id": 122,
+        "paidPAEquivalent": 21,
+        "loaded": 1,
+        "ammo": 9
+      }
+    ]
+  },
+  "battle": {
+    "event": "battleFinished",
+    "sector": "tucuman",
+    "preparationSeconds": 0,
+    "startSeconds": 808081,
+    "elapsedSeconds": 331,
+    "status": "victory",
+    "turns": 7,
+    "actions": 264,
+    "units": [
+      {
+        "id": "107",
+        "side": "player",
+        "hp": 76,
+        "ammo": 11,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "136",
+        "side": "player",
+        "hp": 92,
+        "ammo": 5,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "134",
+        "side": "player",
+        "hp": 70,
+        "ammo": 9,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "127",
+        "side": "player",
+        "hp": 71,
+        "ammo": 11,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "141",
+        "side": "player",
+        "hp": 84,
+        "ammo": 8,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "104",
+        "side": "player",
+        "hp": 70,
+        "ammo": 8,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "121",
+        "side": "player",
+        "hp": 36,
+        "ammo": 10,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "111",
+        "side": "player",
+        "hp": 77,
+        "ammo": 8,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "125",
+        "side": "player",
+        "hp": 56,
+        "ammo": 7,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "103",
+        "side": "player",
+        "hp": 70,
+        "ammo": 9,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "140",
+        "side": "player",
+        "hp": 65,
+        "ammo": 7,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "101",
+        "side": "player",
+        "hp": 70,
+        "ammo": 9,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "122",
+        "side": "player",
+        "hp": 0,
+        "ammo": 8,
+        "loaded": 0,
+        "routed": false
+      },
+      {
+        "id": "126",
+        "side": "player",
+        "hp": 65,
+        "ammo": 8,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "139",
+        "side": "player",
+        "hp": 73,
+        "ammo": 6,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "144",
+        "side": "player",
+        "hp": 79,
+        "ammo": 11,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "146",
+        "side": "player",
+        "hp": 72,
+        "ammo": 6,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-0",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-1",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 11,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-2",
+        "side": "enemy",
+        "hp": 11,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-3",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-4",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 1,
+        "routed": false
+      },
+      {
+        "id": "enemy-5",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 0,
+        "routed": true
+      },
+      {
+        "id": "enemy-6",
+        "side": "enemy",
+        "hp": 0,
+        "ammo": 12,
+        "loaded": 1,
+        "routed": false
+      }
+    ]
+  },
+  "settlement": {
+    "hour": 224,
+    "treasury": 1277,
+    "phase": 2,
+    "owner": "patriot",
+    "completed": false,
+    "defeated": false
+  },
+  "validation": {
+    "deterministicReplay": "pass",
+    "saveRoundTrip": "pass",
+    "sectorInventoryTests": 24,
+    "typecheck": "pass",
+    "productionBuild": "pass",
+    "fullFreshIntegration": {
+      "status": "fails after Tucuman victory",
+      "durationMs": 81993.149791,
+      "failure": "the local medical party must fit a real squad",
+      "file": "tests/fresh-northern-recovery.mjs:27",
+      "log": "/tmp/granaderos-fresh-integration-current.log"
+    }
+  },
+  "limits": [
+    "Does not establish full campaign completion or locked 60 FPS.",
+    "Knife and sword character artwork remains unresolved."
+  ]
+}

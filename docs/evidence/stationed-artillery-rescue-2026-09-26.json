@@ -1,0 +1,28 @@
+{
+  "scope": "Legacy campaign rescue with paid contracts, finite clothing, real rest and battle orders; final custody and cannon settlement verified by focused regression.",
+  "hourAtEntry": 57,
+  "treasuryAtEntry": 2486,
+  "contractCost": 889,
+  "reliefIds": [
+    123,
+    115,
+    110,
+    131,
+    113,
+    124
+  ],
+  "outcome": "victory",
+  "turn": 13,
+  "orders": 182,
+  "originalDead": [
+    3,
+    4
+  ],
+  "newDead": [
+    131,
+    124
+  ],
+  "releasedPrisoner": 10,
+  "verification": "/tmp/granaderos-artillery-rescue-verified.log",
+  "limits": "Full fresh campaign, ending, equipment art and FPS acceptance remain incomplete."
+}

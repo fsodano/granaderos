@@ -1,0 +1,17 @@
+{
+  "scope": "Continuation from earned Salta victory; Cuyo and final ending not yet verified.",
+  "phase": 3,
+  "hour": 635,
+  "treasury": 2121,
+  "envoy": 146,
+  "envoyAlive": true,
+  "originalEnvoyAlive": false,
+  "mission": {
+    "stage": "completed",
+    "reports": true,
+    "assessment": true,
+    "frontier": true,
+    "completed": true
+  },
+  "completed": false
+}

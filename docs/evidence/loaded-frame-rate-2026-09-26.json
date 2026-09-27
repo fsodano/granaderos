@@ -1,0 +1,140 @@
+{
+  "scenario": {
+    "sector": "tucuman",
+    "enemies": 30,
+    "visibleEnemies": 30,
+    "players": 6,
+    "renderedActors": 36,
+    "zoomPercent": 100,
+    "lighting": "day",
+    "durationSeconds": 8,
+    "build": "production",
+    "browser": "Codex in-app browser"
+  },
+  "fixture": "tools/performance-fixtures/frame-rate-check.tsx",
+  "placement": "Test-only player placement at x43, y20..25, facing W; normal sight rules. No user save modified.",
+  "idle": {
+    "meanMs": 8.3348,
+    "maxMs": 25.1,
+    "framesOver16_8ms": 1,
+    "longTasks": 0
+  },
+  "movementBaseline": {
+    "searchMs": 4.9,
+    "orderMs": 73.3,
+    "movingFrames": 14,
+    "movingMeanMs": 19.0429,
+    "movingMaxMs": 124.9,
+    "movingOverBudget": 2,
+    "wholeOverBudget": 3
+  },
+  "rejectedFurnitureIndexTrial": {
+    "orderMs": 77.8,
+    "movingFrames": 14,
+    "movingMeanMs": 19.6714,
+    "movingMaxMs": 116.6,
+    "movingOverBudget": 3,
+    "wholeOverBudget": 4,
+    "disposition": "Removed: no clear improvement."
+  },
+  "result": "FAIL: movement does not sustain 60 FPS. Idle average does not establish loaded gameplay performance.",
+  "next": "Investigate repeated elevated sight/projectile calculations and render/presentation stall; enemy-turn, night and simultaneous movement measurements still pending.",
+  "directVisibilityFollowup": {
+    "changes": [
+      "Direct observer-target checks instead of rebuilding all hostile lists for each target",
+      "Reuse the known-body scene within one shot-options calculation, per hand; no cross-action cache"
+    ],
+    "localVisibilityBenchmarkMs": {
+      "before": 3.04145,
+      "after": 0.10744,
+      "iterations": 50
+    },
+    "productionMovement": {
+      "searchMs": 4.5,
+      "orderMs": 67,
+      "movingFrames": 20,
+      "movingMeanMs": 12.5,
+      "movingMaxMs": 83,
+      "movingFramesOver16_8ms": 1,
+      "wholeFramesOver16_8ms": 2,
+      "wholeMeanMs": 8.47312
+    },
+    "status": "Improved single comparison, still fails 60 FPS. Simulation and presentation stalls remain."
+  },
+  "aimSightFollowup": {
+    "change": "Reuse the already established line of sight across aim levels in one firearmShotOptions call. Separate projectile traces remain per hit region.",
+    "validation": {
+      "focusedTests": 39,
+      "integrationTests": 50,
+      "typecheck": "pass",
+      "productionBuild": "pass"
+    },
+    "nodeMovementProbe": {
+      "iterations": 25,
+      "medianMs": 50.222208,
+      "p95Ms": 60.269042,
+      "requestedDestination": [
+        46,
+        10
+      ],
+      "actualPosition": [
+        43,
+        19
+      ],
+      "phase": "interrupt",
+      "lastError": null
+    },
+    "limit": "Node timing is not browser FPS evidence. The action includes reaction processing and stops after one tile; this fixture does not establish sustained walking performance. Browser retest remains required."
+  },
+  "separatedMovementAndReactions": {
+    "sameProductionBuild": true,
+    "scenario": {
+      "enemies": 30,
+      "visibleEnemiesBeforeAndAfter": 30,
+      "renderedActors": 36,
+      "zoomPercent": 100,
+      "day": true
+    },
+    "uninterruptedMovement": {
+      "enemyOverwatch": false,
+      "requestedDestination": [
+        46,
+        10
+      ],
+      "actualDestination": [
+        46,
+        10
+      ],
+      "phase": "player",
+      "searchMs": 4.7,
+      "orderMs": 23.2,
+      "movingFrames": 346,
+      "movingMeanMs": 8.33295,
+      "movingP95Ms": 8.7,
+      "movingP99Ms": 9.2,
+      "movingMaxMs": 9.3,
+      "movingOverBudget": 0,
+      "wholeMaxMs": 25,
+      "wholeOverBudget": 1
+    },
+    "movementWithReactions": {
+      "enemyOverwatch": true,
+      "requestedDestination": [
+        46,
+        10
+      ],
+      "actualDestination": [
+        43,
+        19
+      ],
+      "phase": "interrupt",
+      "searchMs": 3.1,
+      "orderMs": 62.9,
+      "movingFrames": 19,
+      "movingMaxMs": 91.6,
+      "movingOverBudget": 2,
+      "wholeOverBudget": 3
+    },
+    "conclusion": "Continuous animation passes this loaded day scene; starting movement and resolving reactions still miss the frame budget. Do not claim full 60 FPS."
+  }
+}

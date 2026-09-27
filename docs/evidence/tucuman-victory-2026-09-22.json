@@ -1,0 +1,34 @@
+{
+  "source": "Fresh seed-8 Retiro campaign through public commands; daylight coordinated assault, deterministic tactical replay, time synchronization and complete save round-trip in fightNorthernSector",
+  "hour": 272,
+  "treasury": 624,
+  "sectorOwner": "patriot",
+  "survivors": [
+    {
+      "id": 116,
+      "hp": 51,
+      "location": "cordoba"
+    },
+    {
+      "id": 141,
+      "hp": 86,
+      "location": "tucuman"
+    },
+    {
+      "id": 100,
+      "hp": 7,
+      "location": "tucuman"
+    },
+    {
+      "id": 144,
+      "hp": 81,
+      "location": "tucuman"
+    },
+    {
+      "id": 133,
+      "hp": 26,
+      "location": "tucuman"
+    }
+  ],
+  "scope": "Tucuman victory only. Distributed wounded stabilization and evacuation subsequently reach Cordoba hospital care, interrupted by enemy-group-2 at hour 294. Salta and later route stages are not verified on this state."
+}
