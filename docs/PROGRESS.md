@@ -4,15 +4,81 @@
 
 Implement the entire supplied specification as a WEB GAME, using the supplied JA2 v1.13 source as reference, including original graphics. Player-facing content must be Spanish; code and docs remain English. Build and test the actual game; use semver and check in progress through GitHub pull requests. A small playable encounter is a milestone, not completion. This file records evidence rather than planned work as accomplished.
 
-## Current browser milestone
+## Current status — 2026-09-27
 
-The user clarified that the deliverable is a web game. The browser implementation is now primary; earlier native build work is retained as reference. No licensed JA2 installation is needed to run this implementation.
+**The full game and story editor are not complete.** This is the primary progress
+ledger. It was not updated alongside recent PRs; its previous latest checkpoint
+was 2026-09-05. This update reconciles published work through PR #27. Earlier
+work-log entries below are historical snapshots, not current verification.
 
-Implemented: Spanish campaign and tactical interface; thirteen historical operatives and portraits; fourteen authored tactical maps; five campaign phases; recruitment, diplomacy, production, transport and strategic raids; firearm reloads, misfires, smoke, melee, mounted charges, reactions, crew-served artillery and operative bonuses; local save/export/import.
+Published baseline: `main` at `5f1deab1ef35143ef3c2ba1af421528467e23510`.
+[PR #27 checks](https://github.com/fsodano/granaderos/actions/runs/36355036006/job/108720967309)
+passed on source commit `b70877f3fb3bce59f7f367b7ff0749b440ff254e`: 537 tests,
+TypeScript checks, and production export (721 files, 631 asset references).
+This establishes that delivery's checks. It does not establish a complete
+campaign playthrough or compatibility with unpublished branches.
 
-Evidence: see `WEB-SYSTEMS.md`, `tactical-verification.md`, and `tests/*.test.mjs`. Automated campaign progression uses injected victory results; it is not evidence of a complete human playthrough. Browser QA has exercised recruitment preparation, production completion, deployment, movement and rejected invalid orders through the real interface.
+The published game has `/story` for content and `/editor` for sector construction.
+The local editor on port 3107 is a separate prototype. Its larger gameplay
+implementation and the original working checkout still require consolidation.
+A feature in that prototype is not automatically a feature on GitHub `main`.
 
-Remaining full-release work includes full animation and dialogue sets, remaining strategic logistics and faction behavior, broader tactical fidelity, balance and an end-to-end campaign playthrough. The checklist below preserves original acceptance criteria; TODO means not fully proved even where a subset is implemented.
+### Delivered and verified scopes
+
+`VERIFIED` below applies only to the stated, bounded capability. The requirement
+IDs connect it to the broader acceptance table; they do not close that whole row.
+See [story-editor.md](story-editor.md) for behavior and test details.
+
+| Capability | Status | Published evidence | Remaining boundary |
+|---|---|---|---|
+| Choose the custom officer's existing portraits | VERIFIED | [PR #19](https://github.com/fsodano/granaderos/pull/19); character creator tests | Not a complete face animation set (ART-02) |
+| Edited names, portraits, biography and attributes in an isolated campaign and save | VERIFIED | [PR #20](https://github.com/fsodano/granaderos/pull/20); `campaign-content.test.mjs`, `story-editor.test.mjs` | Not arbitrary narrative composition (ENG-03, ROST-01) |
+| Contract candidates stay off-map; paid arrivals use controlled, suitable reception sites | VERIFIED | [PR #21](https://github.com/fsodano/granaderos/pull/21); `hiring-arrivals.test.mjs` | Timed arrival, not a geographic transport simulation (REC-01, REC-02, LOG-01/02) |
+| Authored firearm stats, images and variants survive use, loot, equipment changes and saves | VERIFIED | [PR #22](https://github.com/fsodano/granaderos/pull/22); `content-weapons.test.mjs` | Melee, artillery, ammunition types, accessories and merchant stocks are not authored yet (ITEM-01/02) |
+| Authored firearms for generated enemy and militia classes | VERIFIED | [PR #23](https://github.com/fsodano/granaderos/pull/23); `content-force-equipment.test.mjs` | Does not configure complete forces or strategic opposition (MIL-01, AI-01/02/03) |
+| Add, copy, remove and hire new contract identities | VERIFIED | [PR #24](https://github.com/fsodano/granaderos/pull/24); `content-roster.test.mjs` | New encounter NPCs and replacement of historical campaign roles remain pending (REC-02, ROST-01) |
+| Authored voice phrases, personality, portrait and tactical appearance | VERIFIED | [PR #25](https://github.com/fsodano/granaderos/pull/25); `content-presentation.test.mjs` | Phrases are not branching dialogue or quests (ART-02/03/05, NAR-01) |
+| Combat abilities configurable independently of character identity | VERIFIED | [PR #26](https://github.com/fsodano/granaderos/pull/26); `content-abilities.test.mjs` | Historical campaign and recruitment gates remain fixed (ROST-02) |
+| Exact land-cell selection, travel, tactical entry and independent saved scenes | VERIFIED | [PR #27](https://github.com/fsodano/granaderos/pull/27); `world-cells.test.mjs`, `world-cells-render.test.mjs` | Includes 40-cell save test; not live NPC placement or water-cell travel (MAP-01/02, ENG-03) |
+
+### Open integration work
+
+| ID | Work | Status | Evidence required to close |
+|---|---|---|---|
+| STORY-01 | Fixed, initial-random and daily NPC presence on exact cells | IN PROGRESS | Real encounters and local recruitment, deterministic saves, scene protection, no duplicate residents; implementation branch is not yet published |
+| STORY-02 | New encounter identities, persistent civilian condition and death successors | TODO | Wounds/death and identity persist through movement, recruitment and saves; successor inherits the intended campaign role exactly once |
+| STORY-03 | Branching dialogue, quests, conditions and effects | TODO | Author and complete a branching quest through the normal interface; save at each branch |
+| STORY-04 | Triggered movement inside a tactical sector | TODO | Authored interaction starts real pathfinding, handles interruption and resumes after save/load |
+| STORY-05 | Configurable campaign rules and historical role extraction | PARTIAL | Existing sheets/abilities work; remaining combat, care, economy, progression, logistics and opposition rules require configuration and gameplay tests |
+| STORY-06 | Complete equipment and merchant authoring | PARTIAL | Firearms work; melee, artillery, ammunition, attachments, stocks and replenishment remain |
+| STORY-07 | Campaign start, ownership, chapters and endings | TODO | A second distinct playable campaign created without engine-code changes |
+| STORY-08 | Portable, immutable content package and asset/dependency validation | PARTIAL | Package identity and embedded weapon/portrait data work; full narrative/rule/asset package still pending |
+| INTEGRATION-01 | Consolidate published game, local prototype and advanced gameplay work | PARTIAL | Preserve the current pesos-only economy and contract behavior; run the complete combined suite and actual campaign routes |
+| QA-01 | Full campaign completion and failure routes | PARTIAL | Recorded uninterrupted gameplay across all phases; injected victory results and focused combat fixtures are insufficient |
+
+The prototype's latest recorded broad run had 2894/2895 tests pass, with a
+San Lorenzo route defeat still unresolved. That is an earlier diagnostic result,
+not a new check on this published baseline. The smaller published suite cannot
+be used to declare that prototype defect fixed.
+
+### Maintenance rule
+
+Every implementation PR must update this file with the bounded behavior delivered,
+the affected requirement IDs, tests run and remaining gaps. Mark a delivery
+verified only after its exact source commit passes the relevant checks; record
+its PR here. Unmerged code must stay explicitly in progress. Keep full acceptance
+rows open until their own evidence is complete. Do not infer a completion
+percentage from PR counts or test counts.
+
+### Scope changes that override the original specification
+
+[PR #12](https://github.com/fsodano/granaderos/pull/12) replaced the original
+materials/production/convoy/horse-care economy with pesos. Campaign preparations,
+diplomacy, equipment and ammunition use the treasury; the army preparation costs
+3000 pesos. Raw-material production and individual horse care must not be
+reintroduced merely to satisfy an obsolete checklist. [PR #17](https://github.com/fsodano/granaderos/pull/17)
+removed the one-day-only limit for elite hires; current day/week/month terms must
+remain available subject to funds. Historical log entries describe earlier designs.
 
 ## Milestones
 
@@ -22,9 +88,11 @@ Remaining full-release work includes full animation and dialogue sets, remaining
 4. **0.4.0:** animation, sound and responsive interface polish.
 5. **1.0.0 candidate:** full specification audit, balancing and recorded campaign playthrough.
 
-## Requirements and acceptance evidence
+## Full requirements and acceptance evidence
 
-Status: TODO = not proved; PARTIAL = implemented subset with limitations; VERIFIED = authoritative evidence covers the requirement.
+Status: TODO = no accepted implementation; IN PROGRESS = work not yet verified and published; PARTIAL = implemented subset or incomplete acceptance evidence; VERIFIED = evidence covers the complete stated scope; SUPERSEDED = replaced by an approved scope change.
+
+The broad rows below remain open unless their complete acceptance evidence is available. The verified delivery scopes above identify concrete progress within those rows. This refresh does not claim a new full-specification audit of every older subsystem.
 
 | ID | Requirement | Status | Required acceptance evidence |
 |---|---|---|---|
@@ -35,17 +103,17 @@ Status: TODO = not proved; PARTIAL = implemented subset with limitations; VERIFI
 | NAR-02 | Retiro recruitment and training phase | PARTIAL | Costs, recruits and mounts advance phase only on requirements |
 | NAR-03 | San Lorenzo river ambush | PARTIAL | Authored playable tactical map, force composition and win/loss conditions |
 | NAR-04 | Yatasto/Northern Army transition | PARTIAL | Triggered sequence and Güemes frontier assignment |
-| NAR-05 | El Plumerillo foundry and 3,000 infantry preparation | PARTIAL | Resource consumption, manufacturing and uniforms tracked in saves |
+| NAR-05 | El Plumerillo campaign preparation under the pesos-only economy | PARTIAL | 3000-peso funding and remaining campaign prerequisites; full route acceptance pending (original production scope replaced by PR #12) |
 | NAR-06 | Pehuenche diplomacy and San Martín final unlock | PARTIAL | Treaty and logistics prerequisites enforced; no early recruitment |
 | FAC-01 | Six factions, reputation effects and immutable Royalist hostility | PARTIAL | Gameplay changes recruitment, tariffs, morale and raids; persistence |
 | REC-01 | Logia Lautaro, monthly stipends and ideological contracts | PARTIAL | Functional recruitment screen and monthly financial cycle |
 | REC-02 | Civic bulletin, low-cost provincial recruits and growth | PARTIAL | Recruitment, starting equipment and progression |
 | REC-03 | Cabildo custom officer examination and four historical traits | PARTIAL | Character creation and tested tactical trait effects |
-| LOG-01 | Chasque/posta horse relay network | PARTIAL | Route control, travel time and remount stamina/cost |
+| LOG-01 | Chasque/posta travel network | PARTIAL | Route control and travel time; individual remount stamina/care was removed by PR #12 |
 | LOG-02 | Armed river flotilla | PARTIAL | River navigation, artillery transport and amphibious deployment |
 | LOG-03 | Cuyo ox-cart heavy supply trains | PARTIAL | Distinct speed, capacity and logistics use |
-| ECO-01 | British contraband and 72–120 hour deliveries | PARTIAL | Silver purchase, restricted historical inventory and timed delivery |
-| ECO-02 | Retiro/Beltrán production chains | PARTIAL | Materials become weapons, artillery and cartridges over time |
+| ECO-01 | British imports and timed deliveries | PARTIAL | Purchase in pesos, inventory and delivery under control/blockade changes; silver resource replaced by PR #12 |
+| ECO-02 | Retiro/Beltrán raw-material production chains | SUPERSEDED | Replaced by pesos-only procurement and campaign payments in PR #12; do not restore obsolete material recipes |
 | ECO-03 | Estancia income, raids and recovery | PARTIAL | Income tied to livestock and multiweek recovery |
 | ECO-04 | Customs revenue and naval blockades | PARTIAL | Blockade reduces income and can be lifted |
 | ECO-05 | Provincial treasuries | PARTIAL | Capture payouts and recurring tax without repeat-capture exploit |
@@ -79,7 +147,7 @@ Status: TODO = not proved; PARTIAL = implemented subset with limitations; VERIFI
 | QA-01 | Campaign end-to-end completion | PARTIAL | Recorded playthrough covering phases, victory and defeat |
 | QA-02 | Artifact/release audit | PARTIAL | Reproducible package, installation docs, semver, PR and tested release |
 
-## Work log
+## Historical work log (earlier designs and checkpoints)
 
 - Goal execution started: established Git repository and upstream submodule; dispatched independent engine-build, campaign-data and graphics work. No game-completion claim.
 
