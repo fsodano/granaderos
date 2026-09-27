@@ -4,7 +4,9 @@ import {isContractCharacter,operativeIdForCharacter} from './content-character-i
 import {weaponMetadata,validateWeaponReferences,restoreWeaponReferences} from './weapon-definition.js';
 import {contentIdentity,canonicalContent} from "./content-identity.js";
 import { defaultContentPackage, resolveContent } from "./content-package.js";
-import { contentCellIds } from "./content-map.js";
+import {contentCellIds} from "./content-map.js";
+import {worldCell} from "./world-cells.js";
+import {initializeCampaignPresence} from "./campaign-presence.js";
 export function campaignContentReport(content) {
   const value = resolveContent(content),
     baseline = defaultContentPackage(),
@@ -28,11 +30,15 @@ export function campaignContentReport(content) {
   const weaponFields=new Set(['id','template','name','damage','fireAP','aimAP','reloadAP','range','readyAP','capacity','weight','price','art']);
   if(value.weapons.some(w=>Object.keys(w).some(key=>!weaponFields.has(key))||w.readyAP!==0))
     blocked.push("Este paquete incluye manejo de armas que esta versión todavía no puede aplicar.");
-  const locations = (list) => list.map((p) => ({ ...p, sectors: contentCellIds(p.sectors) }));
-  if (
-    canonicalContent(locations(value.placements)) !== canonicalContent(locations(baseline.placements))
-  )
-    blocked.push("Las apariciones editadas todavía no se pueden usar en campaña. Restablecé sus ubicaciones para jugar con estas fichas.");
+  const placementFields=new Set(['id','character','mode','sectors','moveChance','afterDeath','delayMin','delayMax','selection','loadedGuard']);
+  if(value.placements.some(p=>Object.keys(p).some(k=>!placementFields.has(k))))
+    blocked.push('Este paquete incluye reglas de apariciones que todavía no se pueden aplicar.');
+  if(value.placements.some(p=>isContractCharacter(value.characters.find(c=>c.id===p.character))))
+    blocked.push('Los contratables del boletín no tienen apariciones: llegan después de contratarlos.');
+  if(value.placements.some(p=>p.sectors.some(id=>!worldCell(id)?.land)))
+    blocked.push('Las apariciones necesitan celdas terrestres. Las celdas de agua todavía no admiten encuentros.');
+  if(value.placements.some(p=>p.afterDeath!==null))
+    blocked.push('Las apariciones por muerte todavía necesitan la integración de bajas civiles y sucesiones.');
   pending.push(
     "Los requisitos de reclutamiento, las funciones de campaña y el servicio permanente de los personajes históricos conservan sus reglas originales.",
   );
@@ -42,7 +48,7 @@ export function attachCampaignContent(state, content) {
   const definitions = resolveContent(content),
     report = campaignContentReport(definitions);
   if (report.blocked.length) throw Error(report.blocked.join("\n"));
-  state.contentCampaign = { version: 2, adapter: "character-weapons-v2", identity: contentIdentity(definitions), package: definitions };
+  state.contentCampaign = { version: 2, adapter: "character-presence-v1", identity: contentIdentity(definitions), package: definitions };
   state.armoryItems=[];state.nextArmoryItemId=1;
   for (const c of definitions.characters) {
     const id=operativeIdForCharacter(definitions,c.id);
@@ -57,17 +63,23 @@ export function attachCampaignContent(state, content) {
     if (record.strength !== undefined) record.strength = c.attributes.strength;
   }
   for(const id of Object.keys(state.operativeState))if(!definitions.characters.some(c=>operativeIdForCharacter(definitions,c.id)===Number(id)))delete state.operativeState[id];
+  initializeCampaignPresence(state);
   return state;
 }
 export function validateCampaignContent(state) {
   if (state?.contentCampaign === undefined) {validateWeaponReferences(state,state);validatePresentationReferences(state);validateAbilityReferences(state);return;}
   const context = state.contentCampaign;
-  if (!context || context.version !== 2 || !["character-sheets-v1","character-weapons-v2"].includes(context.adapter))
+  if (!context || context.version !== 2 || !["character-sheets-v1","character-weapons-v2","character-presence-v1"].includes(context.adapter))
     throw Error("La versión del contenido de campaña no es compatible.");
   const definitions = resolveContent(context.package),
     report = campaignContentReport(definitions);
   if (report.blocked.length) throw Error(report.blocked.join("\n"));
   if(canonicalContent(context.identity)!==canonicalContent(contentIdentity(definitions)))throw Error("El contenido de campaña no coincide con su identidad guardada.");
+  if(context.adapter!=='character-presence-v1'){
+    const locations=list=>list.map(p=>({...p,sectors:contentCellIds(p.sectors)}));
+    if(canonicalContent(locations(definitions.placements))!==canonicalContent(locations(defaultContentPackage().placements)))
+      throw Error('Las apariciones editadas necesitan una campaña nueva con presencia de personajes.');
+  }
   restoreWeaponReferences(state,state);validateWeaponReferences(state,state);
   validatePresentationReferences(state);validateAbilityReferences(state);
   state.contentCampaign = { version: 2, adapter: context.adapter, identity: contentIdentity(definitions), package: definitions };

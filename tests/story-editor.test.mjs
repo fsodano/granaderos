@@ -164,11 +164,11 @@ test('invalid stored data is retained for recovery instead of crashing or being 
  assert.equal(parseContentPackage(m.dom.window.localStorage.getItem(draftKey)).characters[0].name,'Nuevo borrador');
 });
 
-test('placement drafts cannot launch until those settings are applied by the campaign',async t=>{
+test('water placements cannot launch as land encounters',async t=>{
  const draft=defaultContentPackage();draft.placements[0].sectors=['cell-0-0'];
  const m=await mount(t,JSON.stringify(draft));
  assert.equal(m.button('Iniciar campaña con estas fichas').disabled,true);
- assert.match(m.document.querySelector('.campaign-launch').textContent,/apariciones editadas/);
+ assert.match(m.document.querySelector('.campaign-launch').textContent,/celdas terrestres/);
  assert.equal(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY),null);
 });
 
@@ -292,4 +292,20 @@ test('an older draft can enable troop authoring without missing references',asyn
  const m=await mount(t,JSON.stringify(d));await m.click(m.button('Armas de fuego'));assert.match(m.document.querySelector('section[aria-label="Armamento de las tropas"]').textContent,/armas originales/);
  await m.click(m.button('Configurar armas de enemigos'));await m.click(m.button('Configurar armas de milicias'));
  await m.input(m.label('Soldados de línea'),'');const stored=parseContentPackage(m.dom.window.localStorage.getItem(draftKey));assert.equal(stored.militiaEquipment.veteran,null);assert.equal(stored.oppositionEquipment.officer,'firearm-1805');assert.equal(m.button('Iniciar campaña con estas fichas').disabled,false);
+});
+
+
+test('the placement map authors a daily range and scene guards, restores edits, then launches the actual encounter',async t=>{
+ const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=0;
+ const m=await mount(t,JSON.stringify(d));const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
+ await m.input(m.document.querySelector('input[type="search"]'),'person-3');await m.click(m.document.querySelector('.entry-list button'));
+ await m.click(m.button('Quitar todas'));assert.equal(m.button('Iniciar campaña con estas fichas').disabled,true);
+ for(const id of ['cell-27-27','cell-26-27'])await m.click(m.document.querySelector(`[data-cell="${id}"]`));
+ await m.input(m.label('Ubicación'),'daily');await m.input(m.label('Elección diaria'),'alternate');await m.input(m.label('Protección mientras hay una escena abierta'),'range');
+ await m.click(m.button('Deshacer'));assert.notEqual(draft().placements.find(p=>p.character==='person-3').loadedGuard,'range');await m.click(m.button('Rehacer'));
+ const p=draft().placements.find(p=>p.character==='person-3');assert.deepEqual(p.sectors,['cell-27-27','cell-26-27']);assert.equal(p.selection,'alternate');assert.equal(p.loadedGuard,'range');
+ await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));
+ campaign=dispatchCampaign(campaign,{type:'recruitCivic',id:110,term:'week'});campaign=dispatchCampaign(campaign,{type:'travel',sector:campaign.contentPresence.people['person-3'].sector});assert.equal(campaign.lastError,null);
+ if(campaign.location!==campaign.contentPresence.people['person-3'].sector)campaign=dispatchCampaign(campaign,{type:'travel',sector:campaign.contentPresence.people['person-3'].sector});
+ campaign=dispatchCampaign(campaign,{type:'visitSector'});assert.equal(campaign.lastError,null);const battle=enterSector(campaign.pendingBattle);assert.ok(battle.npcs.some(n=>n.operativeId===3));assert.ok(decodeSave(encodeSave(campaign,battle)));
 });
