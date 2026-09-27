@@ -29,6 +29,8 @@ import {WEAPONS as BASE_FIREARMS} from '../../../game/firearm-definitions.js';
 import {WEAPONS as BASE_ITEMS} from '../../../game/data.js';
 import PlacementMap from './PlacementMap';
 import ArrivalSites from './ArrivalSites';
+import ForceEquipment from './ForceEquipment';
+import {forceWeaponUsers} from '../../../game/content-force-equipment.js';
 const DRAFT_KEY = 'granaderos.content-draft.v1';
 const labels: Record<string, string> = {
   maxHp: 'Salud',
@@ -221,6 +223,8 @@ export default function ContentEditor() {
     setSearches((current) => ({ ...current, [collection]: '' }));
   }
   function remove() {
+    if(collection==='weapons'&&forceWeaponUsers(draft,item.id).length){setNotice('Asigná otra arma a las tropas que la usan.');return;}
+
     if (
       collection === 'characters' &&
       draft.placements.some(
@@ -404,7 +408,7 @@ export default function ContentEditor() {
         <h2>Jugar con el contenido editado</h2>
         <p>
           Aplica nombres, apodos, biografías, retratos, atributos iniciales y
-          paga y tiempo de viaje de los mercenarios existentes, además de sus armas de fuego. Los puntos de llegada se configuran en Llegadas. La partida conserva una copia de
+          paga y tiempo de viaje de los mercenarios existentes, además de las armas de fuego de personajes, enemigos y milicias. Los puntos de llegada se configuran en Llegadas. La partida conserva una copia de
           este contenido y se guarda por separado.
         </p>
         {integration && (
@@ -828,6 +832,7 @@ export default function ContentEditor() {
             ) : (
               <p>Creá un registro para comenzar.</p>
             )}
+            {tab==='weapons'&&<ForceEquipment draft={draft} onChange={change}/>}
           </section>
         </div>
       ) : (

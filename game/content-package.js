@@ -1,3 +1,4 @@
+import {FORCE_EQUIPMENT,defaultForceEquipment,validateForceEquipment} from './content-force-equipment.js';
 import { compileWeaponDefinition } from "./weapon-definition.js";
 // Versioned authoring data. No mutable campaign state or global catalog changes.
 import { defaultArrivalSites, validateArrivalSites } from "./arrival-sites.js";
@@ -34,6 +35,8 @@ export function defaultContentPackage() {
     id: "granaderos",
     name: "Granaderos",
     arrivalSites: defaultArrivalSites(),
+    oppositionEquipment: defaultForceEquipment('oppositionEquipment'),
+    militiaEquipment: defaultForceEquipment('militiaEquipment'),
     characters: [...OPERATIVES, ...CIVIC_RECRUITS].map((o) => ({
       id: `person-${o.id}`,
       name: o.name,
@@ -114,6 +117,7 @@ export function validateContentPackage(value) {
       sets[key].add(item.id);
     }
   }
+  for(const field of Object.keys(FORCE_EQUIPMENT))if(value[field]!==undefined)errors.push(...validateForceEquipment(field,value[field],sets.weapons));
   for (const c of value.characters.filter(record)) {
     text(c.name, c.id, 100);
     text(c.nickname, `${c.id}.nickname`, 100);

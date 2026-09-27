@@ -191,3 +191,22 @@ test('the mounted armory purchases and equips the selected authored firearm inst
  const saved=decodeSave(encodeSave(m.campaign)).campaign;assert.equal(saved.operativeState[100].weaponMetadata.contentWeapon.id,'pistola-editor');assert.equal(saved.armory['pistola-editor'],0);
  assert.match(m.document.querySelector('#armory-weapon').selectedOptions[0].textContent,/Pistola del editor/);
 });
+
+test('the editor assigns troop firearms with undo, dependency protection and a real attack launch',async t=>{
+ const d=defaultContentPackage();d.weapons.push({...d.weapons.find(w=>w.template===1805),id:'tropa-editor',name:'Arma de las tropas',capacity:4,damage:67,art:'/art/weapon-1808.png'});
+ const m=await mount(t,JSON.stringify(d));await m.click(m.button('Armas de fuego'));
+ const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
+ await m.input(m.label('Oficiales enemigos'),'tropa-editor');await m.input(m.label('Cívicos'),'tropa-editor');await m.input(m.label('Veteranos enemigos'),'');
+ assert.equal(draft().oppositionEquipment.veteran,null);await m.click(m.button('Deshacer'));assert.equal(draft().oppositionEquipment.veteran,'firearm-1801');await m.click(m.button('Rehacer'));assert.equal(draft().oppositionEquipment.veteran,null);
+ await m.input(m.document.querySelector('input[type="search"]'),'tropa-editor');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Eliminar'));
+ assert.match(m.document.querySelector('.notice').textContent,/tropas que la usan/);assert.ok(draft().weapons.some(w=>w.id==='tropa-editor'));
+ await m.click(m.button('Iniciar campaña con estas fichas'));let s=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY)).campaign;
+ for(const action of [{type:'recruitCivic',id:110,term:'week'},{type:'wait',hours:6},{type:'travel',sector:'buenos_aires'},{type:'attack',sector:'san_nicolas'}]){s=dispatchCampaign(s,action);assert.equal(s.lastError,null);}
+ const saved=decodeSave(encodeSave(s,enterSector(s.pendingBattle)));assert.equal(saved.battle.units.find(u=>u.id==='enemy-0').weaponMetadata.contentWeapon.id,'tropa-editor');assert.equal(saved.battle.units.find(u=>u.id==='enemy-0').loaded,4);
+});
+test('an older draft can enable troop authoring without missing references',async t=>{
+ const d=defaultContentPackage();delete d.oppositionEquipment;delete d.militiaEquipment;
+ const m=await mount(t,JSON.stringify(d));await m.click(m.button('Armas de fuego'));assert.match(m.document.querySelector('section[aria-label="Armamento de las tropas"]').textContent,/armas originales/);
+ await m.click(m.button('Configurar armas de enemigos'));await m.click(m.button('Configurar armas de milicias'));
+ await m.input(m.label('Soldados de línea'),'');const stored=parseContentPackage(m.dom.window.localStorage.getItem(draftKey));assert.equal(stored.militiaEquipment.veteran,null);assert.equal(stored.oppositionEquipment.officer,'firearm-1805');assert.equal(m.button('Iniciar campaña con estas fichas').disabled,false);
+});
