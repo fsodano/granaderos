@@ -1,3 +1,4 @@
+import {authoredOperative} from './content-roster.js';
 import {applyCharacterProfile} from './character-profile.js';
 export * from './character-profile.js';
 import {OPERATIVES} from './data.js';
@@ -36,11 +37,11 @@ export function createOfficerRecord(name,answers,profile){
  return applyCharacterProfile(op,answers,profile);
 }
 export function rosterFor(state){
- const base=[...OPERATIVES,...CIVIC_RECRUITS];if(state.officer)base.push(createOfficerRecord(state.officer.name,state.officer.answers,state.officer.profile));
+ const base=[...OPERATIVES,...CIVIC_RECRUITS].map(op=>authoredOperative(state,op));if(state.officer)base.push(createOfficerRecord(state.officer.name,state.officer.answers,state.officer.profile));
  return base.map(op=>{
    const progress=state.operativeState?.[op.id],xp=progress?.xp??0,level=1+Math.min(9,Math.floor(xp/100));
    if(op.id!==1000&&!CIVIC_RECRUITS.some(c=>c.id===op.id))return {...op,xp,level:1};
-   const grown={...op,xp,level};for(const field of ['maxHp','agility','dexterity','strength','leadership','wisdom','marksmanship','mechanical','explosives','medical'])grown[field]=Math.min(95,op[field]+(level-1)*(field==='marksmanship'?4:2));return grown;
+   const grown={...op,xp,level};for(const field of ['maxHp','agility','dexterity','strength','leadership','wisdom','marksmanship','mechanical','explosives','medical'])grown[field]=Math.min(state.contentCampaign?Math.max(95,op[field]):95,op[field]+(level-1)*(field==='marksmanship'?4:2));return grown;
  });
 }
 export function civicStatus(state,id){
