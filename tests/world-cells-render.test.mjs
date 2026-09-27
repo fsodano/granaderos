@@ -1,0 +1,42 @@
+import {register} from 'node:module';
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {JSDOM} from '../web/node_modules/jsdom/lib/api.js';
+import {createElement as h,act,useState} from '../web/node_modules/react/index.js';
+import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
+import {WORLD_CELLS} from '../game/world-cells.js';
+import {enterSector} from '../game/world.js';
+import {encodeSave,decodeSave} from '../game/save.js';
+register('./tactical-render-loader.mjs',import.meta.url);
+
+test('the actual campaign map selects exact cells, previews the march, enters, saves and shows cell-specific stock',async t=>{
+ const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:'https://granaderos.test',pretendToBeVisual:true});
+ const globals={window:dom.window,document:dom.window.document,navigator:dom.window.navigator,HTMLElement:dom.window.HTMLElement,Element:dom.window.Element,Node:dom.window.Node,Document:dom.window.Document,ShadowRoot:dom.window.ShadowRoot,MutationObserver:dom.window.MutationObserver,getComputedStyle:dom.window.getComputedStyle.bind(dom.window),requestAnimationFrame:dom.window.requestAnimationFrame.bind(dom.window),cancelAnimationFrame:dom.window.cancelAnimationFrame.bind(dom.window),IS_REACT_ACT_ENVIRONMENT:true};
+ const previous=new Map(Object.keys(globals).map(k=>[k,Object.getOwnPropertyDescriptor(globalThis,k)]));
+ for(const [k,v]of Object.entries(globals))Object.defineProperty(globalThis,k,{configurable:true,writable:true,value:v});
+ const {default:Campaign}=await import('../web/app/Campaign.tsx');
+ const {createRoot}=await import('../web/node_modules/react-dom/client.js');
+ const root=createRoot(dom.window.document.getElementById('root'));let current,dispatch;
+ t.after(async()=>{try{await act(async()=>root.unmount());}finally{dom.window.close();for(const[k,d]of previous){if(d)Object.defineProperty(globalThis,k,d);else delete globalThis[k];}}});
+ function Screen(){const [s,setState]=useState(()=>dispatchCampaign(initialCampaign(),{type:'recruitCivic',id:110,term:'week'}));current=s;dispatch=a=>setState(previous=>dispatchCampaign(previous,a));return h(Campaign,{state:s,dispatch,onBattle:()=>{},onOpenDesk:()=>{}});}
+ const click=async e=>{assert.ok(e);await act(async()=>e.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));};
+ const button=text=>[...dom.window.document.querySelectorAll('button')].find(b=>b.textContent.trim()===text);
+ const cell=id=>dom.window.document.querySelector(`[data-map-cell="${id}"]`);
+ await act(async()=>root.render(h(Screen)));
+ assert.equal(dom.window.document.querySelectorAll('[data-map-cell]').length,1188);
+ await click(cell('cell-26-27'));assert.equal(cell('cell-26-27').getAttribute('aria-pressed'),'true');assert.match(dom.window.document.body.textContent,/Marcha a pie · 4 horas/);
+ assert.ok(dom.window.document.querySelector('[data-cell-route]'));await click(button('Mover escuadra aquí'));
+ assert.equal(current.location,'cell-26-27');assert.equal(current.hour,4);assert.equal(current.lastError,null);
+ assert.equal(dom.window.document.querySelector('[data-squad-cell]').getAttribute('data-squad-cell'),'cell-26-27');
+ await click([...dom.window.document.querySelectorAll('button')].find(b=>b.textContent.startsWith('Entrar al sector ·')));
+ const pair=decodeSave(encodeSave(current,enterSector(current.pendingBattle)));assert.equal(pair.battle.sourceMapId,'cell-26-27');
+ const u=pair.battle.units[0];pair.battle.groundItems.push({id:'supplies',type:'rations',count:3,x:u.x,y:u.y});
+ await act(async()=>dispatch({type:'leaveSector',battleId:current.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units}));assert.equal(current.lastError,null);
+ await click(dom.window.document.querySelector('button[aria-label="Objetos"]'));assert.match(dom.window.document.querySelector('.atlas-stock').textContent,/rations: 3/);
+ await click(cell('cell-26-28'));assert.equal(cell('cell-26-28').getAttribute('aria-pressed'),'true');assert.ok(!dom.window.document.querySelector('.atlas-stock').textContent.includes('rations: 3'));
+ await click(button('Mover escuadra aquí'));assert.equal(current.location,'cell-26-28');assert.equal(current.lastError,null);
+ await click(dom.window.document.querySelector('button[aria-label="Escuadras"]'));assert.match(dom.window.document.querySelector('.squad-card').textContent,/Celda 27,29/);
+ const water=WORLD_CELLS.find(c=>!c.land);await click(cell(water.id));assert.equal(button('Mover escuadra aquí').disabled,true);assert.match(dom.window.document.body.textContent,/agua abierta/i);
+ await click(cell('cell-26-28'));await act(async()=>cell('cell-26-28').dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true})));
+ assert.equal(cell('cell-26-29').getAttribute('aria-pressed'),'true');assert.equal(cell('cell-26-29').getAttribute('tabindex'),'0');
+});

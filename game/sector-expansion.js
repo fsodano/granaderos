@@ -37,7 +37,7 @@ export function expandSectorMap(core){
  if(id==='jujuy')for(let y=DY+14;y<=DY+15;y++)Object.assign(tiles[y*width+DX+10],{type:'road',blocked:false,blocksSight:false,cover:0});
  // Town blocks have 2–3 clear squares between five-square houses.
  // Missions retain their open fields; passes remain undeveloped.
- const target=rural.has(id)?0:['san_lorenzo','yatasto'].includes(id)?6:20;
+ const target=core.worldCell?core.buildings.length:rural.has(id)?0:['san_lorenzo','yatasto'].includes(id)?6:20;
  const lots=[];
  for(const y of [3,11,19,27,35,42])for(let x=3;x<=width-7;x+=8)lots.push({x,y});
  // Rotate plot priority per place, deterministically, for distinct neighbourhoods.

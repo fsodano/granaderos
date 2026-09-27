@@ -27,8 +27,8 @@ export const MAP_MODES=Object.freeze([
  {id:'horses',label:'Caballos'}, {id:'items',label:'Objetos'},
 ]);
 
-// Enlarged urban footprints on one shared map grid. Districts are display areas
-// of existing operational sectors, not new income sources or tactical maps.
+// Enlarged urban footprints on one shared map grid. Districts share locality
+// administration; world-cells.js gives each physical tile its own scene key.
 export const MAP_TILE_SIZE=18;
 const URBAN_TILES={
  buenos_aires:[[25,28,'Barrio del oeste'],[26,28,'San Nicolás'],[25,29,'Monserrat'],[26,29,'Plaza Mayor'],[27,29,'Fuerte y ribera'],[26,30,'San Telmo']],

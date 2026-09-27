@@ -68,9 +68,19 @@ Las asignaciones se aplican cuando se crea un soldado. Las tropas que ya existen
 
 La inteligencia artificial usa el coste de disparo, alcance y capacidad del arma elegida. El equipo recuperado conserva su definición, imagen y carga. Al regresar del combate, la devolución de cartuchos incluye las cargas recuperadas de enemigos. Volver a un combate pendiente usa las existencias reales de los soldados guardados, sin volver a acreditar cargas recuperadas antes.
 
+## Recorrer celdas del mapa
+
+La carta de operaciones permite seleccionar las 1188 celdas de la cuadrícula con el ratón o las flechas del teclado. Las celdas terrestres fuera de una localidad y los barrios distintos tienen una ubicación, una escena y objetos propios. El marcador de la escuadra, la organización de unidades y la vista de objetos usan esa ubicación exacta. No se trasladan a la ciudad más cercana.
+
+La marcha hacia una celda muestra el recorrido y las horas previstas. Cada tramo consume dos horas, o cuatro en terreno montañoso. Se comprueban el control, el invierno, las incursiones y los contratos durante el recorrido. Si se interrumpe la marcha, la escuadra conserva la última celda alcanzada. Los contratados que llegan durante la marcha permanecen en su destino de recepción. No se incorporan a una escuadra que pasa cerca.
+
+El sector principal de cada localidad conserva su nombre, plano y guardados anteriores. Las rutas existentes entre esos sectores mantienen sus tiempos y transportes. Para salir de ellas hacia otras celdas se usa marcha a pie. Los barrios comparten el control de su localidad; liberarla habilita sus barrios. Los ingresos, las guarniciones, los talleres y los puntos de recepción no se multiplican en cada barrio o celda rural. El terreno abierto no genera una nueva localidad ni es un destino válido para contratar.
+
+Las nuevas escenas tienen terreno esquemático estable. Sus puertas, cambios en el terreno, equipo y objetos se conservan al salir, guardar y regresar. Las partidas comprueban que cada escena pertenece a su celda. El terreno de las celdas nuevas se guarda sin repetir coordenadas y tipos iguales; al entrar se recupera el plano completo, incluidos los cambios. Esto reduce el tamaño del guardado al explorar muchas celdas, sin borrar escenas anteriores. Los NPC existentes permanecen en sus sectores originales hasta integrar sus reglas de aparición. El agua abierta se puede seleccionar, pero la marcha terrestre no puede entrar; las flotillas actuales usan rutas entre localidades y todavía no permiten explorar celdas de agua.
+
 ## Borradores que todavía no llegan a la campaña
 
-El mapa permite marcar cualquier celda con una X desde la ficha del personaje, incluido terreno fuera de las localidades. Se pueden simular ubicaciones con una semilla. Cambiar estas apariciones todavía bloquea el inicio de campaña hasta integrar el recorrido y la presencia en esas celdas. Crear personajes de encuentro, eliminar mandos históricos y usar opciones de historia no compatibles todavía bloquea el inicio de campaña.
+El mapa permite marcar cualquier celda con una X desde la ficha del personaje, incluido terreno fuera de las localidades. Se pueden simular ubicaciones con una semilla. El recorrido terrestre y las escenas independientes ya están integrados, pero cambiar las apariciones todavía bloquea el inicio de campaña hasta conectar la presencia y continuidad de los personajes. Crear personajes de encuentro, eliminar mandos históricos y usar opciones de historia no compatibles todavía bloquea el inicio de campaña.
 
 Los mandos históricos conservan su servicio permanente, requisitos de reclutamiento y funciones de campaña. Sus habilidades de combate ya son configurables. Quedan pendientes su extracción, las apariciones en el mundo, los diálogos y encargos editables, las escenas y la composición completa de campaña. Esta entrega no completa todo el editor de historia.
 
@@ -92,3 +102,5 @@ Los mandos históricos conservan su servicio permanente, requisitos de reclutami
 
 
 `tests/content-abilities.test.mjs` comprueba las capacidades con acciones de combate, fuego enemigo, apoyo de formación, dotaciones, límites de PA, guardados y compatibilidad. También comprueba quitar habilidades a identidades históricas y cambiar el nombre u orden del catálogo sin cambiar sus capacidades. Las pruebas del editor cubren selección, borradores anteriores, deshacer/rehacer, duplicación y lanzamiento; las de presentación comprueban incorporación local y reentrada en una escena de misión con capacidades editadas. Se usan escenarios de combate acotados; no prueban una campaña completa.
+
+`tests/world-cells.test.mjs` recorre, entra y vuelve a entrar en dos celdas rurales y dos barrios distintos con la campaña real. Comprueba objetos recogidos, puertas, relojes, contratos, llegadas, escuadras separadas, incursiones, servicios, agua, invierno y rechazo de escenas intercambiadas. `tests/world-cells-render.test.mjs` monta la carta de operaciones, selecciona celdas, ordena marchas, entra, guarda y consulta objetos con los controles reales. También se comprueba un recorrido continuo por 40 celdas, que antes excedía el límite de guardado, y el rechazo de terreno comprimido inválido o con un tamaño de expansión excesivo. Estas pruebas no sustituyen la continuidad de NPC ni una campaña completa.
