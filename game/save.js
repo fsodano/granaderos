@@ -3,6 +3,7 @@ import {validatePresentationReferences} from './content-character-presentation.j
 import {validateWeaponReferences,weaponSaveReplacer,restoreWeaponReferences} from './weapon-definition.js';
 import {validateBattleSnapshot} from './validate-battle.js';
 import {restoreCampaign} from './campaign.js';
+import {worldCell} from './world-cells.js';
 export const SAVE_KEY='granaderos.campaign.v1';
 export function encodeSave(campaign,battle=null){return JSON.stringify({format:'granaderos',schema:1,savedAt:new Date().toISOString(),campaign,battle},weaponSaveReplacer(campaign));}
 export function decodeSave(text){
@@ -16,6 +17,7 @@ export function decodeSave(text){
   if(battle&&((battle.sceneId??null)!==(campaign.pendingBattle.sceneId??null)||(battle.syncedSeconds??0)!==(campaign.pendingBattle.syncedSeconds??0)||(battle.elapsedSeconds??0)!==(battle.syncedSeconds??0)))throw Error('El reloj táctico guardado no coincide con la campaña.');
   if(battle&&battle.battleId&&battle.battleId!==campaign.pendingBattle.id)throw Error('El reloj pertenece a otro despliegue.');
   if(battle&&(battle.sectorId!==campaign.pendingBattle.sector||!campaign.pendingBattle.squad.every(u=>battle.units.some(t=>t.side==='player'&&String(t.id)===String(u.id)))))throw Error('El destacamento guardado no corresponde al sector.');
+  if(battle&&worldCell(battle.sectorId)?.anchor===false&&battle.sourceMapId!==battle.sectorId)throw Error('La escena guardada no corresponde a la celda.');
   if(battle){validateWeaponReferences(campaign,battle);validatePresentationReferences(campaign,battle);validateAbilityReferences(campaign,battle);}
   return {campaign,battle};
 }
