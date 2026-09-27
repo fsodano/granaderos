@@ -7,7 +7,7 @@ export function missionContacts(s){
  return YATASTO_NPCS.map(n=>{
   if(n.id!=='yatasto-san-martin'||!s.contentCampaign)return {...n};
   const op=authoredOperative(s,{id:57});
-  return {...n,name:op.name,portraitId:op.portraitId,contentId:op.contentId,...(op.storyProfile?{storyProfile:op.storyProfile}:{}),...(op.spriteAppearance?{spriteAppearance:op.spriteAppearance}:{})};
+  return {...n,name:op.name,portraitId:op.portraitId,contentId:op.contentId,...(op.abilities===undefined?{}:{abilities:[...op.abilities]}),...(op.storyProfile?{storyProfile:op.storyProfile}:{}),...(op.spriteAppearance?{spriteAppearance:op.spriteAppearance}:{})};
  });
 }
 export function missionStatus(s,id){const scene=MISSION_SCENES[id];if(!scene)return null;const m=s.missions?.[id]??{};return {...scene,stage:m.completed?'completed':m.stage??'arrival',completed:Boolean(m.completed),objectives:id==='yatasto'?[{id:'reports',text:'Escuchar los partes de Belgrano.',done:Boolean(m.reports)},{id:'assessment',text:'Estudiar con San Martín la alternativa continental.',done:Boolean(m.assessment)},{id:'frontier',text:'Acordar el mando de Güemes y asegurar la ruta a Salta.',done:Boolean(m.frontier)}]:[{id:'victory',text:'Derrotar al destacamento realista.',done:Boolean(m.completed)},{id:'commander',text:'Mantener con vida al comandante aliado.',done:Boolean(m.completed)}]};}

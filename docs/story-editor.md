@@ -22,6 +22,14 @@ La ficha permite elegir especialidades aplicadas por las reglas actuales, equita
 
 Todos estos candidatos se incorporan por contrato desde el boletín. Una paga de cero es un contrato gratuito con el plazo elegido, no servicio permanente. El editor protege a los mandos históricos de eliminación y duplicación hasta separar sus funciones de campaña. El arma blanca inicial todavía usa el valor general existente.
 
+## Habilidades de combate
+
+Cada personaje puede recibir o perder cualquiera de las 19 habilidades de combate. La lista incluye protección de compañeros, contragolpe, tiro y movimiento rápidos, atención médica, exploración nocturna, carga montada, intimidación y apoyo de mando, recarga y artillería. Cada opción explica su efecto. Ninguna casilla marcada significa que el personaje no tiene esas ventajas, aunque conserve un nombre o identidad históricos. Los personajes nuevos empiezan sin habilidades; duplicar conserva la selección efectiva.
+
+Las acciones, las decisiones enemigas, los efectos sobre compañeros cercanos y los costes mostrados usan estas opciones. La hoja de servicio muestra las habilidades elegidas y las especialidades del personaje. Las reglas de distancia, facción, dotación y estado siguen vigentes. Por ejemplo, un protector debe estar junto al mando, tener salud y puntos de acción, y solo puede interponerse una vez por turno. Un mando con liderazgo de al menos 90 conserva la protección prevista por las reglas generales; la habilidad «Mando protegido» permite recibirla sin ese umbral.
+
+Las habilidades acompañan a la incorporación local, los contactos de misión, los soldados, los aliados temporales y los guardados. Las partidas rechazan listas inválidas o diferentes de las definidas para esa campaña. Las campañas normales y los paquetes anteriores sin este campo conservan sus capacidades históricas. Las funciones estratégicas, requisitos de reclutamiento y servicio de los mandos históricos todavía necesitan su propia configuración.
+
 ## Carácter, frases y apariencia
 
 Cada ficha puede elegir un retrato de la biblioteca, conservar una imagen importada y seleccionar por separado uno de los ocho tipos de apariencia ya disponibles. La vista previa muestra el cuerpo con el arma asignada. Elegir un retrato no cambia el cuerpo ni los atributos. La apariencia llega al soldado, al contacto local y al comandante aliado; también se conserva al volver a entrar y al guardar. El personaje correspondiente en Yatasto usa su ficha. Todavía no se edita el color de piel ni se crean animaciones nuevas desde este formulario.
@@ -64,7 +72,7 @@ La inteligencia artificial usa el coste de disparo, alcance y capacidad del arma
 
 El mapa permite marcar cualquier celda con una X desde la ficha del personaje, incluido terreno fuera de las localidades. Se pueden simular ubicaciones con una semilla. Cambiar estas apariciones todavía bloquea el inicio de campaña hasta integrar el recorrido y la presencia en esas celdas. Crear personajes de encuentro, eliminar mandos históricos y usar opciones de historia no compatibles todavía bloquea el inicio de campaña.
 
-Los mandos históricos conservan sus habilidades, servicio permanente, requisitos de reclutamiento y funciones de campaña. Quedan pendientes su extracción, las apariciones en el mundo, los diálogos y encargos editables, las escenas y la composición completa de campaña. Esta entrega no completa todo el editor de historia.
+Los mandos históricos conservan su servicio permanente, requisitos de reclutamiento y funciones de campaña. Sus habilidades de combate ya son configurables. Quedan pendientes su extracción, las apariciones en el mundo, los diálogos y encargos editables, las escenas y la composición completa de campaña. Esta entrega no completa todo el editor de historia.
 
 ## Validación
 
@@ -81,3 +89,6 @@ Los mandos históricos conservan sus habilidades, servicio permanente, requisito
 `tests/content-roster.test.mjs` comprueba identidades nuevas, eliminación del catálogo, separación respecto del oficial y la milicia, contratación y llegada, desvío y cancelación, entrenamiento y progreso, guardado y rechazo de identidades inválidas. El combate compacto verifica heridas reales, retirada y nuevo despliegue; no equivale a completar la campaña. El formulario montado crea, duplica, elimina y contrata candidatos nuevos.
 
 `tests/content-presentation.test.mjs` comprueba las frases con eventos tácticos reales, llegada única, silencios, final de campaña, aparición del contacto y comandante, incorporación local, compatibilidad y rechazo de cambios en guardados. El cierre usa un estado final preparado y el combate un terreno compacto; no prueban una campaña entera. El editor montado cubre retrato/apariencia independientes, frases, duplicación y lanzamiento; la prueba de presentación táctica comprueba el cuerpo elegido después de guardar y cargar.
+
+
+`tests/content-abilities.test.mjs` comprueba las capacidades con acciones de combate, fuego enemigo, apoyo de formación, dotaciones, límites de PA, guardados y compatibilidad. También comprueba quitar habilidades a identidades históricas y cambiar el nombre u orden del catálogo sin cambiar sus capacidades. Las pruebas del editor cubren selección, borradores anteriores, deshacer/rehacer, duplicación y lanzamiento; las de presentación comprueban incorporación local y reentrada en una escena de misión con capacidades editadas. Se usan escenarios de combate acotados; no prueban una campaña completa.

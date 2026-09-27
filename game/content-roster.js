@@ -10,6 +10,7 @@ export function authoredOperative(state, operative) {
     ...operative,
     ...definition.attributes,
     ...authoredPresentation(definition),
+    ...(definition.abilities===undefined?{}:{abilities:[...definition.abilities]}),
     ...(definition.traits===undefined?{}:{traits:definition.traits}),
     ...(definition.service===undefined?{}:{service:definition.service}),
     ...(definition.progression===undefined?{}:{progression:definition.progression}),

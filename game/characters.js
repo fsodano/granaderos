@@ -1,4 +1,5 @@
 // Original dramatic characterization and dialogue, not authenticated historical quotations.
+import {CHARACTER_ABILITIES} from './character-abilities.js';
 import {CONTENT_TRAITS} from './content-character-options.js';
 import {MERCENARY_ADDITIONS} from './mercenaries.js';
 // Events are stable identifiers shared by tactical and strategic presentation.
@@ -33,7 +34,8 @@ export const CHARACTER_PROFILES=Object.fromEntries(rows.map(([id,personality,ski
 function baseCharacterProfile(operative){if(Number(operative.id)===1000)return customProfile(operative);if(operative.contentId&&operative.recruitmentSource==='contract'&&!CHARACTER_PROFILES[operative.id])return {personality:operative.biography||'Su historia se define durante la campaña.',skills:(operative.traits??[]).map(id=>CONTENT_TRAITS.find(t=>t.id===id)?.name??id),registry:'Boletín Revolucionario Cívico',speech:{hired:'Acepto el contrato. Estoy listo.',contact:'Enemigo a la vista.',cleared:'Sector asegurado.',wounded:'Estoy herido. Necesito atención.',exhausted:'Necesito descansar.',death:'Continúen sin mí…',ending:'La campaña ha terminado.'}};if(operative.contentId&&operative.recruitmentSource==='contract')return {...CHARACTER_PROFILES[operative.id],skills:(operative.traits??[]).map(id=>CONTENT_TRAITS.find(t=>t.id===id)?.name??id)};return CHARACTER_PROFILES[operative.id]??{personality:'Oficial formado ante la comisión del Cabildo. Su carrera se define por las decisiones y experiencias de la campaña.',skills:operative.traits||[],registry:'Comisión del Cabildo',speech:{hired:'Acepto la comisión. Serviré con responsabilidad.',contact:'Enemigo a la vista. Prepárense.',cleared:'Sector asegurado. Revisen a los compañeros.',wounded:'Estoy herido. Necesito atención.',exhausted:'No puedo seguir así. Debo descansar.',death:'Continúen sin mí…',ending:'La campaña termina; nuestra responsabilidad continúa.'}};}
 export function characterProfile(operative){
  const base=baseCharacterProfile(operative);
- return operative.storyProfile?{...base,...operative.storyProfile}:base;
+ const profile=operative.storyProfile?{...base,...operative.storyProfile}:base;
+ return operative.abilities===undefined?profile:{...profile,skills:[...new Set([...operative.abilities.map(id=>CHARACTER_ABILITIES.find(a=>a.id===id)?.name??id),...(operative.traits??[]).map(id=>CONTENT_TRAITS.find(t=>t.id===id)?.name??id)])]};
 }
 export function speechFor(operative,event){return characterProfile(operative).speech[event]??null;}
 

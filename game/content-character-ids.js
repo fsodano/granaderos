@@ -25,3 +25,16 @@ export function isContractOperative(state,operative){
  return definition?isContractCharacter(definition):CIVIC_RECRUITS.some(o=>o.id===operative.id)&&!state.contentCampaign;
 }
 export function gainsExperience(state,operative){return operative.id===1000||isContractOperative(state,operative)&&operative.progression!=='fixed';}
+
+// All deployed and retained actor copies that must agree with pinned definitions.
+export function campaignActors(value){
+ const actors=scene=>[...(Array.isArray(scene?.units)?scene.units:[]),...(Array.isArray(scene?.npcs)?scene.npcs:[])];
+ const pending=value.pendingBattle;
+ return [...actors(value),...(pending?.squad??[]),...(pending?.missionAllies??[]),...(pending?.npcs??[]),
+  ...Object.values(value.missionAllies??{}),...Object.values(value.sectorStates??{}).flatMap(actors),...Object.values(value.sceneStates??{}).flatMap(actors)];
+}
+export function characterForActor(state,actor){
+ if(!state.contentCampaign)return undefined;
+ const reference=actor.operativeId??(Number.isFinite(Number(actor.id))?Number(actor.id):operativeIdForCharacter(state.contentCampaign.package,actor.contentId));
+ return characterForOperative(state,reference);
+}

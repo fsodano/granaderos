@@ -1,7 +1,7 @@
 import {OPERATIVES} from './data.js';
 import {CIVIC_RECRUITS} from './civic-recruits.js';
 import {characterProfile} from './characters.js';
-import {legacyOperativeId,isContractCharacter,characterForOperative,operativeIdForCharacter} from './content-character-ids.js';
+import {legacyOperativeId,isContractCharacter,characterForActor,campaignActors} from './content-character-ids.js';
 import {spriteAppearance} from './sprite-appearances.js';
 import {canonicalContent} from './content-identity.js';
 
@@ -28,14 +28,9 @@ export function authoredPresentation(character){
 
 export function validatePresentationReferences(state,value=state){
  const need=condition=>{if(!condition)throw Error('La voz o apariencia guardada no coincide con el personaje de la campaña.');};
- const actors=scene=>[...(Array.isArray(scene?.units)?scene.units:[]),...(Array.isArray(scene?.npcs)?scene.npcs:[])];
- const pending=value.pendingBattle;
- const carriers=[...actors(value),...(pending?.squad??[]),...(pending?.missionAllies??[]),...(pending?.npcs??[]),
-  ...Object.values(value.missionAllies??{}),...Object.values(value.sectorStates??{}).flatMap(actors),...Object.values(value.sceneStates??{}).flatMap(actors)];
- for(const actor of carriers){
+ for(const actor of campaignActors(value)){
   if(!state.contentCampaign){need(actor.storyProfile===undefined);continue;}
-  const reference=actor.operativeId??(Number.isFinite(Number(actor.id))?Number(actor.id):operativeIdForCharacter(state.contentCampaign.package,actor.contentId));
-  const definition=characterForOperative(state,reference);
+  const definition=characterForActor(state,actor);
   if(!definition){need(actor.storyProfile===undefined);continue;}
   if(actor.contentId!==undefined)need(actor.contentId===definition.id);
   const expected=authoredPresentation(definition);

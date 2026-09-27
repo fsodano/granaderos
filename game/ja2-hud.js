@@ -1,7 +1,7 @@
 import {weaponSpecification} from './weapon-definition.js';
 // Pure HUD model for the tactical battle inspector and squad strip.
 // Read-only descriptors plus action-object constructors; no game rules.
-import {weaponFor, bladeFor, hasFirearm, carriedWeight, carryCapacity, WEAPONS, BLADES} from './tactical.js';
+import {weaponFor, bladeFor, actionCosts, hasFirearm, carriedWeight, carryCapacity, WEAPONS, BLADES} from './tactical.js';
 
 const alive = u => u.hp > 0 && !u.routed && !u.unconscious;
 const hasTrait = (u, id) => Array.isArray(u.traits) && u.traits.includes(id);
@@ -113,13 +113,6 @@ const ORDER_DEFS = [
   {id: 'artilleryReload', label: 'Recargar pieza', kind: 'order'},
 ];
 
-const reloadPa = u => {
-  const w = weaponFor(u);
-  const rounds = Math.min(w.capacity - u.loaded, u.ammo);
-  if (rounds <= 0) return 0;
-  return Math.ceil(Math.ceil((w.reloadAP * rounds) / w.capacity) * (u.stance === 'prone' ? 1.5 : 1));
-};
-
 export function orderDescriptors(state, unit, ctx = {}) {
   const u = unit || {};
   const unitAlive = Boolean(unit) && alive(u);
@@ -158,10 +151,11 @@ export function orderDescriptors(state, unit, ctx = {}) {
     artilleryReload: !hasGun || !cannonSelected,
   };
 
+  const costs=actionCosts(state,u);
   const pa = {
-    fire: weaponFor(u).fireAP,
-    melee: blade.ap,
-    reload: reloadPa(u),
+    fire: costs.fire,
+    melee: costs.melee,
+    reload: costs.reload,
     reprime: hasTrait(u, 'gunsmith_artillerist') ? 10 : 15,
     repair: hasTrait(u, 'gunsmith_artillerist') ? 18 : 25,
     brace: 16,
@@ -172,7 +166,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
     weapon: 4,
     stance: u.knockedDown ? 12 : 6,
     mount: hasTrait(u, 'cavalry_commander') ? 8 : 12,
-    heal: Number(u.id) === 10 ? 18 : hasTrait(u, 'field_rescuer') ? 20 : 25,
+    heal: costs.heal,
   };
 
   const active = {
