@@ -46,6 +46,8 @@ test("authored campaign can hire, deploy, save and restore with exact identity a
   s = dispatchCampaign(s, { type: "recruitCivic", id: 100, term: "day" });
   assert.equal(s.lastError, null);
   assert.equal(s.resources.treasury, 3170);
+  assert.equal(s.recruited.includes(100), false);
+  s=dispatchCampaign(s,{type:"wait",hours:6});assert.equal(s.lastError,null);
   s = dispatchCampaign(s, { type: "visitSector" });
   assert.equal(s.lastError, null);
   const pair = {campaign:s,battle:enterSector(s.pendingBattle,s.sectorStates[s.location])};
@@ -139,6 +141,7 @@ test('contract candidates remain off-map before hiring in ordinary and authored 
   const before=rosterFor(state).filter(op=>op.id>=100&&op.id<1000);
   for(const sector of Object.keys(state.sectors))for(const npc of encountersFor(state,sector))assert.ok(!before.some(op=>op.id===npc.operativeId));
   state=dispatchCampaign(state,{type:'recruitCivic',id:100,term:'week'});assert.equal(state.lastError,null);
+  if(state.hiringArrivals?.length)state=dispatchCampaign(state,{type:"wait",hours:6});
   assert.ok(state.recruited.includes(100));
   for(const sector of Object.keys(state.sectors))assert.ok(!encountersFor(state,sector).some(n=>n.operativeId===100));
  }

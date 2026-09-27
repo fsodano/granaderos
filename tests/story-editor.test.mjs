@@ -2,17 +2,18 @@ import {register} from 'node:module';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {JSDOM,VirtualConsole} from '../web/node_modules/jsdom/lib/api.js';
-import {createElement as h,act} from '../web/node_modules/react/index.js';
+import {createElement as h,act,useState} from '../web/node_modules/react/index.js';
 import {defaultContentPackage,parseContentPackage} from '../game/content-package.js';
 import {CONTENT_LAUNCH_KEY,CONTENT_SAVE_KEY} from '../game/content-launch.js';
 import {decodeSave,encodeSave} from '../game/save.js';
-import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
+import {initialCampaign,dispatchCampaign,rosterFor,CAMPAIGN_SECTORS} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';
 register('./tactical-render-loader.mjs',import.meta.url);
 const {default:StoryEditor}=await import('../web/app/story/page.tsx');
+const {default:Recruitment}=await import('../web/app/Recruitment.tsx');
 const draftKey='granaderos.content-draft.v1';
 
-async function mount(t,stored,launch=null){
+async function mount(t,stored,launch=null,recruitCampaign=null){
  const console=new VirtualConsole();
  console.on('jsdomError',error=>{if(!error.message.includes('navigation'))throw error;});
  const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:launch?'https://granaderos.test/?content=1&launch=1':'https://granaderos.test/story',pretendToBeVisual:true,virtualConsole:console});
@@ -26,10 +27,12 @@ async function mount(t,stored,launch=null){
  const {createRoot}=await import('../web/node_modules/react-dom/client.js');
  const root=createRoot(dom.window.document.getElementById('root'));
  t.after(async()=>{try{await act(async()=>root.unmount());}finally{dom.window.close();for(const [key,descriptor]of previous){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}});
- const Component=launch?(await import('../web/app/page.tsx')).default:StoryEditor;
+ let current=recruitCampaign;
+ function HiringScreen(){const [campaign,setCampaign]=useState(recruitCampaign);current=campaign;return h(Recruitment,{state:campaign,dispatch:action=>setCampaign(s=>dispatchCampaign(s,action))});}
+ const Component=recruitCampaign?HiringScreen:launch?(await import('../web/app/page.tsx')).default:StoryEditor;
  await act(async()=>root.render(h(Component)));
  const document=dom.window.document;
- return {dom,document,
+ return {dom,document,get campaign(){return current;},
   button(text){const button=[...document.querySelectorAll('button')].find(b=>b.textContent.trim()===text);assert.ok(button,text);return button;},
   label(text){const label=[...document.querySelectorAll('label')].find(l=>l.firstChild?.textContent.trim()===text);assert.ok(label,text);return label.querySelector('input,select');},
   async click(element){await act(async()=>element.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));},
@@ -57,6 +60,7 @@ test('the mounted story editor authors a character, recovers the draft and launc
  assert.equal(campaign.contentCampaign.package.name,'Historia de prueba');
  const officer=rosterFor(campaign).find(o=>o.id===100);assert.equal(officer.name,'Lucía del Río');assert.equal(officer.nickname,'Luz');assert.equal(officer.maxHp,59);
  campaign=dispatchCampaign(campaign,{type:'recruitCivic',id:100,term:'week'});assert.equal(campaign.lastError,null);
+ campaign=dispatchCampaign(campaign,{type:'wait',hours:6});assert.equal(campaign.lastError,null);
  campaign=dispatchCampaign(campaign,{type:'visitSector'});assert.equal(campaign.lastError,null);
  const battle=enterSector(campaign.pendingBattle,campaign.sectorStates[campaign.location]);
  const restored=decodeSave(encodeSave(campaign,battle));
@@ -108,4 +112,48 @@ test('the real game entry consumes the editor launch and saves the authored camp
  await m.click(m.button('Correspondencia'));
  const contacts=m.document.querySelector('.contact-list');assert.ok(contacts);assert.match(contacts.textContent,/Nombre de campaña/);
  assert.ok(!contacts.textContent.includes(definition.characters.find(c=>c.id==='person-100').name),'contract candidates have no advertised world location');
+});
+
+
+test('mounted authoring configures travel and plausible reception sites through undo and launch',async t=>{
+ const m=await mount(t);
+ await m.input(m.document.querySelector('input[type="search"]'),'person-110');
+ await m.click(m.document.querySelector('.entry-list button'));
+ await m.input(m.label('Tiempo de viaje (horas)'),3);
+ await m.click(m.button('Llegadas'));
+ const label=`Cuartel en ${CAMPAIGN_SECTORS.find(s=>s.id==='retiro').name}`;
+ const checkbox=[...m.document.querySelectorAll('input[type="checkbox"]')].find(c=>c.getAttribute('aria-label')===label);
+ assert.ok(checkbox);assert.equal(checkbox.checked,true);
+ await m.click(checkbox);assert.equal(checkbox.checked,false);
+ await m.click(m.button('Deshacer'));assert.equal(checkbox.checked,true);
+ await m.click(m.button('Rehacer'));assert.equal(checkbox.checked,false);
+ assert.equal([...m.document.querySelectorAll('input[type="checkbox"]')].some(c=>c.getAttribute('aria-label')===`Puerto en ${CAMPAIGN_SECTORS.find(s=>s.id==='mendoza').name}`),false);
+ const serialized=m.dom.window.localStorage.getItem(draftKey),content=parseContentPackage(serialized);
+ assert.equal(content.characters.find(c=>c.id==='person-110').arrivalHours,3);
+ assert.equal(content.arrivalSites.some(s=>s.sector==='retiro'),false);
+ await m.click(m.button('Iniciar campaña con estas fichas'));
+ let campaign=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY)).campaign;
+ campaign=dispatchCampaign(campaign,{type:'recruitCivic',id:110,term:'week',destination:'ensenada'});assert.equal(campaign.lastError,null);
+ assert.equal(campaign.recruited.includes(110),false);assert.equal(campaign.hiringArrivals[0].dueAt,3);
+ campaign=dispatchCampaign(decodeSave(encodeSave(campaign)).campaign,{type:'wait',hours:3});assert.equal(campaign.lastError,null);
+ assert.equal(campaign.operativeState[110].location,'ensenada');assert.equal(campaign.contracts[110].expiresAt,171);
+});
+
+test('the mounted bulletin hires to a chosen port, redirects and cancels with one refund',async t=>{
+ const initial=initialCampaign(42,defaultContentPackage());
+ const m=await mount(t,undefined,null,initial);
+ await m.input(m.label('Buscar mercenario'),rosterFor(initial).find(o=>o.id===110).name);
+ await m.input(m.label('Destino de nuevos contratados'),'ensenada');
+ let card=m.document.querySelector('[data-operative-id="110"]');assert.ok(card);
+ const hire=[...card.querySelectorAll('button')].find(b=>b.textContent.startsWith('Contratar'));assert.ok(hire);assert.equal(hire.disabled,false);
+ await m.click(hire);assert.equal(m.campaign.lastError,null);
+ const paid=initial.resources.treasury-m.campaign.resources.treasury;assert.ok(paid>0);
+ assert.equal(m.campaign.hiringArrivals[0].destination,'ensenada');assert.match(card.textContent,/En viaje · faltan 6 horas/);
+ assert.equal([...card.querySelectorAll('button')].some(b=>b.textContent.startsWith('Contratar')),false);
+ await m.input(card.querySelector('select'),'retiro');assert.equal(m.campaign.lastError,null);assert.equal(m.campaign.hiringArrivals[0].destination,'retiro');
+ assert.equal(decodeSave(encodeSave(m.campaign)).campaign.resources.treasury,initial.resources.treasury-paid);
+ await m.input(m.label('Estado'),'available');assert.equal(m.document.querySelector('[data-operative-id="110"]'),null);
+ await m.input(m.label('Estado'),'pending');card=m.document.querySelector('[data-operative-id="110"]');assert.ok(card);
+ await m.click([...card.querySelectorAll('button')].find(b=>b.textContent.startsWith('Cancelar llegada')));
+ assert.equal(m.campaign.resources.treasury,initial.resources.treasury);assert.equal(m.campaign.hiringArrivals.length,0);
 });
