@@ -1,0 +1,265 @@
+{
+  "date": "2026-09-27",
+  "screen": "actual Home campaign, Retiro, one hired Baltasar Acosta",
+  "browser": "Codex in-app browser, 120 Hz frame cadence, 100 percent map zoom",
+  "method": "Built-in requestAnimationFrame observer; no page snapshot or screenshot during measurement. Movement frames are reported separately. QA storage is separate from the normal campaign save.",
+  "universal60FpsAccepted": false,
+  "coldDevelopment": {
+    "windowSeconds": 6,
+    "beforeBatchedPublication": {
+      "cachedLayers": 31,
+      "frames": 219,
+      "meanMs": 27.515,
+      "p95Ms": 125,
+      "maxMs": 184.044,
+      "over16_8ms": 52
+    },
+    "afterBatchedPublication": {
+      "cachedLayers": 204,
+      "frames": 687,
+      "meanMs": 8.744,
+      "p95Ms": 9.7,
+      "maxMs": 175.444,
+      "over16_8ms": 5
+    },
+    "limitation": "Initial sector-entry pauses remain. The improvement removes repeated paints during preparation; it is not a cold-load frame-budget pass."
+  },
+  "longWalks": [
+    {
+      "build": "production before recorded-route reuse",
+      "route": "AO13 to AO55, 42 tiles",
+      "camera": "fixed",
+      "durationSeconds": 20,
+      "movement": {
+        "frames": 1211,
+        "meanMs": 8.34,
+        "p95Ms": 8.8,
+        "maxMs": 16.7,
+        "over16_8ms": 0
+      },
+      "all": {
+        "frames": 2383,
+        "meanMs": 8.393,
+        "p95Ms": 9,
+        "maxMs": 90.8,
+        "over16_8ms": 3
+      },
+      "longTasks": [
+        {
+          "atMs": 47.6,
+          "durationMs": 90
+        }
+      ]
+    },
+    {
+      "build": "production before recorded-route reuse",
+      "route": "AO55 to AO13, 42 tiles",
+      "camera": "follow selected character",
+      "durationSeconds": 20,
+      "movement": {
+        "frames": 1210,
+        "meanMs": 8.333,
+        "p95Ms": 8.7,
+        "maxMs": 9.3,
+        "over16_8ms": 0
+      },
+      "all": {
+        "frames": 2383,
+        "meanMs": 8.393,
+        "p95Ms": 9,
+        "maxMs": 108.3,
+        "over16_8ms": 3
+      },
+      "longTasks": [
+        {
+          "atMs": 44.2,
+          "durationMs": 99
+        }
+      ]
+    },
+    {
+      "build": "production with recorded-route reuse and lower walking energy",
+      "route": "AO13 to AO55, 42 tiles",
+      "camera": "follow selected character",
+      "durationSeconds": 20,
+      "startEnergy": 58.2,
+      "endEnergy": 56.1,
+      "arrivedConscious": true,
+      "movement": {
+        "frames": 1211,
+        "meanMs": 8.333,
+        "p95Ms": 9.3,
+        "maxMs": 10.3,
+        "over16_8ms": 0
+      },
+      "all": {
+        "frames": 2391,
+        "meanMs": 8.365,
+        "p95Ms": 9.7,
+        "maxMs": 41.8,
+        "over16_8ms": 4
+      },
+      "longTasks": []
+    },
+    {
+      "build": "development with recorded-route reuse, before 60 Hz publication limit",
+      "route": "AO13 to AO55, 42 tiles",
+      "camera": "follow selected character",
+      "durationSeconds": 20,
+      "startEnergy": 97.94,
+      "endEnergy": 95.84,
+      "arrivedConscious": true,
+      "movement": {
+        "frames": 880,
+        "meanMs": 11.504,
+        "p95Ms": 25.9,
+        "maxMs": 50,
+        "over16_8ms": 127
+      },
+      "all": {
+        "frames": 2025,
+        "meanMs": 9.877,
+        "p95Ms": 24.9,
+        "maxMs": 59.9,
+        "over16_8ms": 137
+      },
+      "longTasks": [
+        {
+          "atMs": 118.1,
+          "durationMs": 51
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "A previous development sample used crouched movement and ended in exhaustion; it is not equivalent to the walking samples above.",
+    "These measurements do not establish performance for cold entry, all combat scenes, large squads, every weather condition or other devices.",
+    "Frame observer cadence is not the sprite atlas animation rate or proof that every displayed scene was repainted on each callback."
+  ],
+  "longWalksNote": "The original 42-tile samples precede incremental route redirection; retained as historical comparison.",
+  "subHourClockBenchmark": {
+    "checkpoint": "/tmp/granaderos-cuyo-agent-fresh-20260927-mendoza-ready.json",
+    "hour": 656,
+    "phase": 3,
+    "savedSectors": 6,
+    "units": 20,
+    "steps": 40,
+    "stepSeconds": 3,
+    "allStepsDeepEqual": true,
+    "fullDispatch": {
+      "medianMs": 19.311792000000082,
+      "p95Ms": 21.96829200000002
+    },
+    "trustedSubHour": {
+      "medianMs": 0.058832999999935964,
+      "p95Ms": 0.10599999999999454
+    }
+  },
+  "liveMovementControls": {
+    "build": "production, incremental movement before step precomputation",
+    "redirect": {
+      "from": "AO55",
+      "abandonedDestination": "AO42",
+      "newDestination": "AQ44",
+      "arrived": "AQ44",
+      "startEnergy": 56.1,
+      "endEnergy": 55.51
+    },
+    "tripleClick": {
+      "input": "native clickCount 3",
+      "from": "AQ44",
+      "to": "AQ56",
+      "tiles": 12,
+      "movementMode": "run",
+      "startEnergy": 55.51,
+      "endEnergy": 37.51
+    }
+  },
+  "finalIncrementalWalk": {
+    "build": "production after one-step precomputation, final map controls and 60 Hz position update cap",
+    "route": "AQ55 to AQ13, 42 tiles",
+    "camera": "following merc after destination click",
+    "durationSeconds": 20,
+    "screen": "battle",
+    "campaign": true,
+    "sector": "retiro",
+    "players": 1,
+    "startParty": [
+      {
+        "id": "110",
+        "x": 54,
+        "y": 42,
+        "energy": 37.46,
+        "movementMode": "walk",
+        "unconscious": false
+      }
+    ],
+    "endParty": [
+      {
+        "id": "110",
+        "x": 12,
+        "y": 42,
+        "energy": 35.36,
+        "movementMode": "walk",
+        "unconscious": false
+      }
+    ],
+    "cachedLayers": 204,
+    "all": {
+      "frames": 2397,
+      "meanMs": 8.347225698790156,
+      "p95Ms": 9.8,
+      "maxMs": 33.1,
+      "over16_8ms": 1
+    },
+    "moving": {
+      "frames": 1261,
+      "meanMs": 8.33338620142744,
+      "p95Ms": 9.6,
+      "maxMs": 10.4,
+      "over16_8ms": 0
+    },
+    "positionUpdates": {
+      "frames": 601,
+      "meanMs": 17.45740432612313,
+      "p95Ms": 25,
+      "maxMs": 33.4,
+      "over16_8ms": 142
+    },
+    "longTasks": [],
+    "browserErrors": [],
+    "note": "rAF cadence and rendered position update cadence are separate measurements. This local prepared-scene result does not guarantee universal 60 FPS."
+  },
+  "midWalkReload": {
+    "command": "AQ56 toward AQ14, then immediate reload",
+    "restoredPosition": {
+      "x": 54,
+      "y": 42
+    },
+    "energyBefore": 37.51,
+    "energyAfter": 37.46,
+    "committedTiles": 1,
+    "abandonedRemainderSaved": false
+  },
+  "validation": {
+    "focusedFinal": {
+      "tests": 110,
+      "passed": 110,
+      "failed": 0
+    },
+    "typecheck": "passed",
+    "staticBuild": "passed, 962 files and 858 asset references",
+    "broadRun": {
+      "tests": 2901,
+      "passed": 2893,
+      "failed": 5,
+      "skipped": 3,
+      "note": "The run overlapped the final precompute test adjustment. Its portrait test failure was corrected and passes in the final focused run; four remaining failures count three campaign scenarios plus one parent failure."
+    },
+    "remainingScenarios": [
+      "Fresh campaign medical recovery interrupted by an enemy encounter in C\u00f3rdoba at hour 150",
+      "Established C\u00f3rdoba rescue preparation loses its defense",
+      "Physical prisoner rescue ends in defeat instead of retreat"
+    ]
+  }
+}

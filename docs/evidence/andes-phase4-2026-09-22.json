@@ -1,0 +1,142 @@
+{
+  "cuyo": {
+    "hour": 439,
+    "phase": 3,
+    "treasury": 648,
+    "infantry": 0,
+    "cannons": 0,
+    "squad": [
+      141,
+      4,
+      1,
+      8,
+      142
+    ],
+    "controlled": {
+      "cordoba": "patriot",
+      "mendoza": "royalist",
+      "uspallata": "royalist",
+      "los_patos": "royalist"
+    },
+    "completed": false
+  },
+  "mendoza": {
+    "hour": 444,
+    "phase": 3,
+    "treasury": 898,
+    "infantry": 0,
+    "cannons": 0,
+    "squad": [
+      141,
+      1,
+      8
+    ],
+    "controlled": {
+      "cordoba": "patriot",
+      "mendoza": "patriot",
+      "uspallata": "royalist",
+      "los_patos": "royalist"
+    },
+    "completed": false
+  },
+  "foundry": {
+    "hour": 476,
+    "phase": 3,
+    "treasury": 547,
+    "infantry": 0,
+    "cannons": 1,
+    "squad": [
+      141,
+      1,
+      8,
+      2,
+      7
+    ],
+    "controlled": {
+      "cordoba": "patriot",
+      "mendoza": "patriot",
+      "uspallata": "royalist",
+      "los_patos": "royalist"
+    },
+    "completed": false
+  },
+  "army": {
+    "hour": 1262,
+    "phase": 3,
+    "treasury": 9177,
+    "infantry": 3000,
+    "cannons": 3,
+    "squad": [
+      2,
+      8
+    ],
+    "controlled": {
+      "cordoba": "patriot",
+      "mendoza": "patriot",
+      "uspallata": "royalist",
+      "los_patos": "royalist"
+    },
+    "completed": false
+  },
+  "uspallata": {
+    "hour": 1428,
+    "phase": 3,
+    "treasury": 4022,
+    "infantry": 3000,
+    "cannons": 2,
+    "squad": [
+      106
+    ],
+    "controlled": {
+      "cordoba": "patriot",
+      "mendoza": "patriot",
+      "uspallata": "patriot",
+      "los_patos": "royalist"
+    },
+    "completed": false
+  },
+  "losPatos": {
+    "hour": 2010,
+    "phase": 3,
+    "treasury": 6203,
+    "infantry": 3000,
+    "cannons": 1,
+    "squad": [
+      138,
+      135
+    ],
+    "controlled": {
+      "cordoba": "patriot",
+      "mendoza": "patriot",
+      "uspallata": "patriot",
+      "los_patos": "patriot"
+    },
+    "completed": false
+  },
+  "andes": {
+    "hour": 2016,
+    "phase": 4,
+    "treasury": 6672,
+    "infantry": 3000,
+    "cannons": 1,
+    "squad": [
+      7,
+      8,
+      57
+    ],
+    "controlled": {
+      "cordoba": "patriot",
+      "mendoza": "patriot",
+      "uspallata": "patriot",
+      "los_patos": "patriot"
+    },
+    "completed": false
+  },
+  "method": "Public campaign commands, paid reserve travel before the short elite contract, real tactical victories, deterministic battle replay, time synchronization and save round-trips.",
+  "scope": "Checkpoint continuation reaches phase 4 and San Martin recruitment. Full fresh-start integration is running. Coastal campaign and ending remain unverified on this state.",
+  "freshStartVerification": {
+    "result": "phase 4 reached; Ensenada combat still active after 81 turns",
+    "durationMs": 348697.635833,
+    "fullCampaignPassed": false
+  }
+}

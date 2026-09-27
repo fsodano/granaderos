@@ -771,7 +771,7 @@ deterministic policy, not the C++ plan-library AI.
 6. **Clock.** C++ uses `GetWorldTotalSeconds()` for light/smoke/bomb decay
    (`TeamTurns.cpp:150-170`). JS uses `advanceBattleClock` + `COMBAT_ROUND_SECONDS`
    (6 s/round) and `REST_SECONDS` (10 min) via `game/time.js` — see
-   `docs/tactical-verification.md` "Shared campaign clock".
+   `docs/verification/tactical-verification.md` "Shared campaign clock".
 7. **UI planning mode** (`Handle UI Plan.cpp`) clones soldiers; the JS has no
    planning mode — the browser must implement it client-side by previewing
    `getReachable` paths and `actionCosts` without mutating state.
@@ -802,7 +802,7 @@ deterministic policy, not the C++ plan-library AI.
 | Sound | — (renderer) | browser verification pending |
 | AI turn | `endTurn` enemy loop (`:139`) | `tests/battle-integration.test.mjs` |
 
-### Coverage gaps (from `docs/tactical-verification.md` + code audit)
+### Coverage gaps (from `docs/verification/tactical-verification.md` + code audit)
 
 1. **Armor slots** — C++ `TotalArmourProtection`/`ArmourProtection`
    (`Weapons.cpp:7919,8013`) has no JS equivalent. `validate-battle.js` has no

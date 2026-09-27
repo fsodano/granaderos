@@ -1,0 +1,123 @@
+{
+  "baseline": "74cb625",
+  "implementationBase": "5df4e86",
+  "date": "2026-09-12",
+  "runtime": "v25.9.0",
+  "platform": "darwin",
+  "architecture": "arm64",
+  "nodeEnv": "production",
+  "renderMode": "renderToStaticMarkup with query timing hooks and V8 CPU profiler",
+  "fixture": "Initial campaign seed 8; paid day contracts [128,142,123,115,131,110]; attack Buenos Aires; enter sector; initial state plus twelve ordinary ambient snapshots, rendered with day/night lighting",
+  "warmups": 3,
+  "samplesPerCase": 13,
+  "results": [
+    {
+      "night": false,
+      "fixture": {
+        "tiles": 3072,
+        "upper": 125,
+        "buildings": 20,
+        "units": 12,
+        "lights": 1
+      },
+      "before": {
+        "render": {
+          "mean": 199.8815963076923,
+          "median": 198.19733399999996,
+          "max": 211.53758300000004,
+          "n": 13
+        },
+        "minimapTerrain": {
+          "mean": 137.37010600000002,
+          "median": 137.12350000000015,
+          "max": 139.7818339999999,
+          "n": 13
+        }
+      },
+      "after": {
+        "render": {
+          "mean": 53.45647738461538,
+          "median": 52.087416000000076,
+          "max": 64.66370800000004,
+          "n": 13
+        },
+        "minimapTerrain": {
+          "mean": 2.2862304615384628,
+          "median": 2.271624999999858,
+          "max": 2.7464579999998477,
+          "n": 13
+        }
+      },
+      "allHtmlHashesMatch": true,
+      "hashes": [
+        "610c0d467dcca2b19262b7db5afc9d794935eca623d0065a692c59c41a1d7a42",
+        "610c0d467dcca2b19262b7db5afc9d794935eca623d0065a692c59c41a1d7a42",
+        "610c0d467dcca2b19262b7db5afc9d794935eca623d0065a692c59c41a1d7a42",
+        "610c0d467dcca2b19262b7db5afc9d794935eca623d0065a692c59c41a1d7a42",
+        "610c0d467dcca2b19262b7db5afc9d794935eca623d0065a692c59c41a1d7a42",
+        "610c0d467dcca2b19262b7db5afc9d794935eca623d0065a692c59c41a1d7a42",
+        "610c0d467dcca2b19262b7db5afc9d794935eca623d0065a692c59c41a1d7a42",
+        "610c0d467dcca2b19262b7db5afc9d794935eca623d0065a692c59c41a1d7a42",
+        "610c0d467dcca2b19262b7db5afc9d794935eca623d0065a692c59c41a1d7a42",
+        "610c0d467dcca2b19262b7db5afc9d794935eca623d0065a692c59c41a1d7a42",
+        "610c0d467dcca2b19262b7db5afc9d794935eca623d0065a692c59c41a1d7a42",
+        "610c0d467dcca2b19262b7db5afc9d794935eca623d0065a692c59c41a1d7a42",
+        "610c0d467dcca2b19262b7db5afc9d794935eca623d0065a692c59c41a1d7a42"
+      ]
+    },
+    {
+      "night": true,
+      "fixture": {
+        "tiles": 3072,
+        "upper": 125,
+        "buildings": 20,
+        "units": 12,
+        "lights": 1
+      },
+      "before": {
+        "render": {
+          "mean": 201.6619327692308,
+          "median": 199.2095420000005,
+          "max": 216.94629200000054,
+          "n": 13
+        },
+        "minimapTerrain": {
+          "mean": 139.15666023076932,
+          "median": 138.1604580000003,
+          "max": 147.8829999999998,
+          "n": 13
+        }
+      },
+      "after": {
+        "render": {
+          "mean": 51.01580115384615,
+          "median": 51.13729199999989,
+          "max": 56.50154199999997,
+          "n": 13
+        },
+        "minimapTerrain": {
+          "mean": 1.9478655384615335,
+          "median": 1.893666999999823,
+          "max": 2.3506670000001577,
+          "n": 13
+        }
+      },
+      "allHtmlHashesMatch": true,
+      "hashes": [
+        "f3dea1680927dd6cded24f7be5c30f675e1f295e68078107b100caba62cfef38",
+        "f3dea1680927dd6cded24f7be5c30f675e1f295e68078107b100caba62cfef38",
+        "f3dea1680927dd6cded24f7be5c30f675e1f295e68078107b100caba62cfef38",
+        "f3dea1680927dd6cded24f7be5c30f675e1f295e68078107b100caba62cfef38",
+        "f3dea1680927dd6cded24f7be5c30f675e1f295e68078107b100caba62cfef38",
+        "f3dea1680927dd6cded24f7be5c30f675e1f295e68078107b100caba62cfef38",
+        "f3dea1680927dd6cded24f7be5c30f675e1f295e68078107b100caba62cfef38",
+        "f3dea1680927dd6cded24f7be5c30f675e1f295e68078107b100caba62cfef38",
+        "f3dea1680927dd6cded24f7be5c30f675e1f295e68078107b100caba62cfef38",
+        "f3dea1680927dd6cded24f7be5c30f675e1f295e68078107b100caba62cfef38",
+        "f3dea1680927dd6cded24f7be5c30f675e1f295e68078107b100caba62cfef38",
+        "f3dea1680927dd6cded24f7be5c30f675e1f295e68078107b100caba62cfef38",
+        "f3dea1680927dd6cded24f7be5c30f675e1f295e68078107b100caba62cfef38"
+      ]
+    }
+  ]
+}

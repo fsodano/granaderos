@@ -1,0 +1,66 @@
+{
+  "scope": "Current endurance balance; focused public-command continuations from the verified naval recruitment checkpoint. Not a full fresh integration rerun or campaign-ending proof.",
+  "portRecovery": {
+    "hour": 2452,
+    "treasury": 3679,
+    "routedSurvivor135": {
+      "previousLocation": "buenos_aires",
+      "finalLocation": "retiro",
+      "hp": 78,
+      "bleeding": 0
+    },
+    "correction": "The prior field list omitted routed survivors no longer present in Ensenada. Current care includes living recruited survivors in both coastal sectors. Actual first aid, travel, finite supplies and paid renewals are retained."
+  },
+  "blockadePreparation": {
+    "hour": 3222,
+    "treasury": 8909,
+    "field": [
+      2,
+      8,
+      57,
+      5,
+      6,
+      109,
+      138,
+      128,
+      135
+    ],
+    "replacement": "Beltran replaces fallen Barcala; operative 128 replaces fallen 106. Routed operative 135 receives a purchased replacement gun.",
+    "requirements": "All nine combatants healthy, loaded, with reserve rounds; a paid cannon; no prior deaths reversed."
+  },
+  "blockadeVictory": {
+    "turns": 20,
+    "actions": 361,
+    "elapsedSeconds": 366,
+    "livingField": [
+      2,
+      57,
+      6,
+      128
+    ],
+    "blockade": false,
+    "deterministicReplay": "pass",
+    "saveAndSettlement": "pass",
+    "campaignPlayable": true
+  },
+  "remaining": [
+    "Santa Fe now passes in the subsequent northern-return evidence; later counterattacks and ending remain open.",
+    "Northern return preparations use actual survivors; later counterattacks interrupt the planned final march.",
+    "Full integration and actual campaign ending remain unverified.",
+    "60 FPS transitions and blade artwork remain open."
+  ],
+  "santaFeTrials": {
+    "preparationHour": 3270,
+    "paidSupport": [
+      128,
+      142,
+      146
+    ],
+    "originalThreePerson": "defeat at turn 6",
+    "supportedBronzeFour": "defeat at turn 11",
+    "reservedCommanderCrew": "tactical victory at turn 10, but commander death makes the campaign defeated; continuation gate correctly rejects it",
+    "bouchardCrew": "defeat at turn 7",
+    "singleCrewSwivel": "retreat at turn 23, commander dead; not accepted",
+    "validContinuationCheckpoint": "Verified blockade victory. No Santa Fe result is accepted as the continuing campaign."
+  }
+}

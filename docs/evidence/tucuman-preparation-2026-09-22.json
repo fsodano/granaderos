@@ -1,0 +1,88 @@
+{
+  "source": "Fresh seed-8 Retiro campaign through public commands and real C\u00f3rdoba defense; reproduced by tests/fresh-campaign-recovery.test.mjs",
+  "hour": 260,
+  "treasury": 90,
+  "squad": [
+    {
+      "id": 116,
+      "hp": 77,
+      "maxHp": 77,
+      "bleeding": 0,
+      "loaded": 1,
+      "ammo": 11,
+      "morale": 19,
+      "contractExpiresAt": 293
+    },
+    {
+      "id": 127,
+      "hp": 73,
+      "maxHp": 73,
+      "bleeding": 0,
+      "loaded": 1,
+      "ammo": 12,
+      "morale": 27,
+      "contractExpiresAt": 293
+    },
+    {
+      "id": 141,
+      "hp": 86,
+      "maxHp": 86,
+      "bleeding": 0,
+      "loaded": 1,
+      "ammo": 9,
+      "morale": 27,
+      "contractExpiresAt": 293
+    },
+    {
+      "id": 100,
+      "hp": 72,
+      "maxHp": 72,
+      "bleeding": 0,
+      "loaded": 1,
+      "ammo": 9,
+      "morale": 21,
+      "contractExpiresAt": 294
+    },
+    {
+      "id": 139,
+      "hp": 73,
+      "maxHp": 73,
+      "bleeding": 0,
+      "loaded": 1,
+      "ammo": 11,
+      "morale": 83,
+      "contractExpiresAt": 276
+    },
+    {
+      "id": 144,
+      "hp": 79,
+      "maxHp": 79,
+      "bleeding": 0,
+      "loaded": 1,
+      "ammo": 12,
+      "morale": 40.4,
+      "contractExpiresAt": 314
+    },
+    {
+      "id": 146,
+      "hp": 72,
+      "maxHp": 72,
+      "bleeding": 0,
+      "loaded": 1,
+      "ammo": 9,
+      "morale": 41.65,
+      "contractExpiresAt": 314
+    },
+    {
+      "id": 133,
+      "hp": 89,
+      "maxHp": 89,
+      "bleeding": 0,
+      "loaded": 1,
+      "ammo": 9,
+      "morale": 82,
+      "contractExpiresAt": 356
+    }
+  ],
+  "scope": "Preparation only. Combat controller still loses Tucum\u00e1n. No completion claim for this battle or subsequent campaign route."
+}

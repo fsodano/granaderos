@@ -3,7 +3,7 @@
 **Consumer:** web-port agent building the Next.js/Canvas/WebAudio clone.
 **Source root:** `/Users/fsodano/fibradev/games/granaderos/engine/`
 **Scope:** `sgp/Button System.h`, `sgp/Button Sound Control.h`, `Utils/Music Control.h`, `TileEngine/Ambient Control.h`, `TileEngine/Radar Screen.h`, `Tactical/Interface Panels.h`, `Ja2/Fade Screen.h`, `Ja2/Loading Screen.h`, `Ja2/HelpScreen.h`, `Ja2/Credits.h`, `sgp/Font.h`, `Utils/Font Control.h`, plus the hotkey tables.
-**Rule:** every subsystem lists key structs/functions with `file:line` anchors, a DOM/Canvas/WebAudio recipe, keyboard/a11y notes, and a mapping to `web/components`, `web/hooks`, `docs/TACTICAL-VISUALS.md`, and `docs/TACTICAL-HOTKEYS.md`. Do not touch engine code; this document is read-only reference.
+**Rule:** every subsystem lists key structs/functions with `file:line` anchors, a DOM/Canvas/WebAudio recipe, keyboard/a11y notes, and a mapping to `web/components`, `web/hooks`, `docs/art/TACTICAL-VISUALS.md`, and `docs/gameplay/tactical/TACTICAL-HOTKEYS.md`. Do not touch engine code; this document is read-only reference.
 
 > **SGP core is not re-derived here.** The button/mouse-region/input-atom/font-rasterizer plumbing that lives in `sgp/` (video surfaces, `mousesystem`, `input.cpp`, `soundman`, `Cursor Control`) is covered by `docs/web-port/01-platform-sgp.md`. This document covers the **game-facing UI/audio/input subsystems** built on top of that core, and how each maps to the browser.
 
@@ -181,7 +181,7 @@ Key functions:
 - `RenderRadarScreen` → the minimap SVG; `MoveRadarScreen` → camera pan.
 - `RadarRegionButtonCallback` → the minimap `onClick` that calls `onCenter` (`TacticalMinimap.tsx:5`); `RadarRegionMoveCallback` → drag-to-pan (add `onPointerDown`/`onPointerMove`).
 - `ToggleRadarScreenRender` → show/hide the minimap (the `hud-selection` block in `Battlefield.tsx:86`).
-- `LoadRadarScreenBitmap` → the minimap background (currently a flat `#17211a` rect; could use the terrain atlas from `docs/TACTICAL-VISUALS.md`).
+- `LoadRadarScreenBitmap` → the minimap background (currently a flat `#17211a` rect; could use the terrain atlas from `docs/art/TACTICAL-VISUALS.md`).
 - `CreateDestroyMouseRegionsForSquadList` → the roster cards rendered alongside the minimap.
 
 ### 6.3 Keyboard / a11y
@@ -231,7 +231,7 @@ Key data/functions:
 
 ### 8.2 Web recipe (DOM/Canvas)
 
-- **Splash overlay:** a full-screen `<div>` showing the sector's loading image while the sector data loads (async `fetch`/`import` of the map). `GetLoadScreenID` → a lookup from `sectorName`/`s.night` to an image in `web/public/art` (reuse the terrain/scenery assets from `docs/TACTICAL-VISUALS.md`).
+- **Splash overlay:** a full-screen `<div>` showing the sector's loading image while the sector data loads (async `fetch`/`import` of the map). `GetLoadScreenID` → a lookup from `sectorName`/`s.night` to an image in `web/public/art` (reuse the terrain/scenery assets from `docs/art/TACTICAL-VISUALS.md`).
 - **Day/night:** pick `szDay` vs `szNight` from `s.night`; `RandomAltSector` → randomly choose `szDayAlt`/`szNightAlt`.
 - **Aspect ratio:** `fLoadingScreenAspectRatio` → `object-fit: cover` / `aspect-ratio` CSS so the splash fills without distortion.
 - **Flow:** show splash → load map → `DisplayLoadScreenWithID` equivalent → fade out (compose with §7) → mount `Battlefield`/`TacticalScene`.
@@ -266,7 +266,7 @@ Key functions:
 
 ### 9.3 Keyboard / a11y
 
-- `H`/`?` toggles help; `Escape` closes it (`Battlefield.tsx:35,39`). This matches `docs/TACTICAL-HOTKEYS.md` ("H opens the Spanish reference").
+- `H`/`?` toggles help; `Escape` closes it (`Battlefield.tsx:35,39`). This matches `docs/gameplay/tactical/TACTICAL-HOTKEYS.md` ("H opens the Spanish reference").
 - The help panel should be a real `<dialog>`/`role="dialog"` with `aria-modal` when open, focus trapped, and `aria-label` describing it.
 - `iLastMouseClickY` (click-to-scroll) → optional; keyboard scroll via arrow keys/PageUp/PageDown.
 
@@ -314,7 +314,7 @@ Named colors (`Font Control.h:123-175`): `FONT_MCOLOR_*` (black/white/dkwhite/lt
 
 - Fonts are presentation; ensure the DOM text remains real text (not canvas-only) wherever possible for screen readers and text scaling.
 - Respect user font-size preferences; avoid fixed-pixel canvas text for critical readable content.
-- Maintain contrast between `FONT_MCOLOR_*` foregrounds and the tactical backgrounds (see `docs/TACTICAL-VISUALS.md` for the muted palette).
+- Maintain contrast between `FONT_MCOLOR_*` foregrounds and the tactical backgrounds (see `docs/art/TACTICAL-VISUALS.md` for the muted palette).
 
 ---
 
@@ -330,7 +330,7 @@ The authoritative adapted hotkey table is `game/hotkeys.js`:
 
 - **Dispatch:** `Battlefield.tsx:32-58` registers a `window` `keydown` listener, calls `tacticalShortcut`, and maps each action to state/`order()` calls. This is the reference implementation for any new screen's hotkeys.
 - **Help display:** `TACTICAL_KEYS` is rendered as a `<dl>` in the help panel (`Battlefield.tsx:71`).
-- **Documentation:** the authoritative human-readable mapping is `docs/TACTICAL-HOTKEYS.md`; keep `game/hotkeys.js` and that doc in sync.
+- **Documentation:** the authoritative human-readable mapping is `docs/gameplay/tactical/TACTICAL-HOTKEYS.md`; keep `game/hotkeys.js` and that doc in sync.
 
 ### 12.3 Keyboard / a11y
 
