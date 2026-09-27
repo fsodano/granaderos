@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-27",
-  "baseline": "490d5dde4914f7d1050f1901ddf783aa88bc95ed",
+  "baseline": "e8e98f09fdb786e5a3f241165a9e7af09a26436d",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -40,6 +40,11 @@
       "id": "E-CONFLICTS",
       "path": "docs/verification/formal-audit-2026-09-27.md",
       "description": "Cross-branch conflicts, limitations, failed routes and closure conditions."
+    },
+    {
+      "id": "E-WORLD-PRESENCE",
+      "path": "docs/verification/character-presence.md",
+      "description": "Existing encounter identities: actual placement, local recruitment, daily relocation, loaded-scene protection and active saves; 549 passing tests, types and build. New world identities and civilian condition remain outside this delivery."
     }
   ],
   "queue": [
@@ -61,7 +66,7 @@
         "STORY-01",
         "STORY-02"
       ],
-      "action": "Publish the prepared presence feature, then integrate persistent world identities, wounds, belongings and successors as separate deliveries."
+      "action": "Complete new persistent world identities, wounds, belongings and successors as separate deliveries; existing encounter placement is now connected."
     },
     {
       "order": 3,
@@ -276,7 +281,7 @@
       "published": "Published in PR #27; bounded behavior has regression evidence.",
       "local": "Not needed for this bounded acceptance.",
       "remaining": "",
-      "acceptance": "Exact land-cell selection, travel, tactical entry and independent saved scenes. The broader boundary remains: Includes 40-cell save test; not live NPC placement or water-cell travel (MAP-01/02, ENG-03).",
+      "acceptance": "Exact land-cell selection, travel, tactical entry and independent saved scenes. The broader boundary remains: Includes 40-cell save test; live NPC placement is covered by PRESENCE-01; water-cell travel remains open (MAP-01/02, ENG-03).",
       "evidence": [
         "E-PUBLISHED"
       ],
@@ -309,6 +314,30 @@
         "ITEM-01",
         "ITEM-02",
         "MAP-01"
+      ]
+    },
+    {
+      "id": "PRESENCE-01",
+      "group": "Published deliveries",
+      "requirement": "Existing encounter identities use authored fixed, once-random and daily exact-cell placements",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Campaign scenes, physical conversation/recruitment, scheduled relocation and full saves use the configured locations.",
+      "local": "Earlier local-only evidence is retained in the formal audit.",
+      "remaining": "",
+      "acceptance": "Existing historical encounter identities appear exactly once, retain deterministic location decisions and protect loaded scenes. Paid candidates never become world NPCs. New world identities, civilian damage/custody/stock and death successors remain STORY-02.",
+      "evidence": [
+        "E-WORLD-PRESENCE"
+      ],
+      "parents": [
+        "STORY-01",
+        "ENG-03",
+        "ROST-01"
+      ],
+      "testFiles": [
+        "tests/campaign-presence.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/content-system.test.mjs"
       ]
     },
     {
@@ -1067,14 +1096,14 @@
       "id": "STORY-01",
       "group": "Story and integration",
       "requirement": "Fixed, initial-random and daily world presence",
-      "status": "LOCAL_ONLY",
+      "status": "PARTIAL",
       "priority": "P1",
-      "published": "Map authoring and seeded preview; campaign launch still gates edited placements.",
-      "local": "e2dff96 implements real encounters and timed relocation; 548 checks pass.",
-      "remaining": "Publish reviewed presence integration with exact-cell encounters and save continuation.",
+      "published": "Existing encounter identities use authored fixed, once-random and daily placements in real campaign scenes.",
+      "local": "The prepared presence implementation is incorporated by this delivery; its earlier audit snapshot remains unchanged.",
+      "remaining": "Extend the same system to new encounter identities and their persistent civilian state through STORY-02.",
       "acceptance": "No clones, rerolls, recruited/dead appearances or loaded-scene relocation; observe then recruit at the configured current cell.",
       "evidence": [
-        "E-PRESENCE"
+        "E-WORLD-PRESENCE"
       ]
     },
     {
@@ -2940,5 +2969,15 @@
         "E-PROTOTYPE"
       ]
     }
-  ]
+  ],
+  "latestPublishedCheck": {
+    "source": "e8e98f09fdb786e5a3f241165a9e7af09a26436d",
+    "total": 549,
+    "passed": 549,
+    "failed": 0,
+    "skipped": 0,
+    "types": "PASS",
+    "build": "PASS",
+    "evidenceId": "E-WORLD-PRESENCE"
+  }
 }

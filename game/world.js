@@ -40,7 +40,7 @@ export function enterSector(request,previous=null){
    Object.assign(unit,reserve(prior??unit));
  }
  state.npcs=(map.npcs??[]).map(npc=>{
-   const old=previous?.npcs?.find(n=>n.id===npc.id),resident=structuredClone({...npc,...old});
+   const old=previous?.npcs?.find(n=>n.id===npc.id&&n.presenceRevision===npc.presenceRevision),resident=structuredClone({...npc,...old});
    if(resident.ai){delete resident.ai.threat;delete resident.ai.safeAfter;resident.ai.activity='roaming';}
    delete resident.lastMovePath;resident.stance='standing';resident.movementMode='walk';
    return {...resident,...reserve(resident)};

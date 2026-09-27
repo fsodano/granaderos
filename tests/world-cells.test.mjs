@@ -111,8 +111,8 @@ test('saved cell locations and scene receipts cannot alias another cell, open wa
  assert.ok(dispatchCampaign(pair.campaign,{type:'leaveSector',battleId:pair.campaign.pendingBattle.id,sectorState:wrong,survivors:wrong.units}).lastError);
  const completed=leave(pair);completed.sectorStates['cell-26-27'].sectorId='cell-27-27';assert.throws(()=>saved(completed),/sectores|celda/);
 });
-test('travel does not enable the placement editor before the live character-presence adapter is implemented',()=>{
- const d=defaultContentPackage();d.placements[0].sectors=['cell-26-27'];assert.ok(campaignContentReport(d).blocked.some(x=>/apariciones/.test(x)));
+test('land cell placements can launch with the live character-presence adapter',()=>{
+ const d=defaultContentPackage();d.placements[0].sectors=['cell-26-27'];assert.deepEqual(campaignContentReport(d).blocked,[]);
 });
 test('forty visited cells fit the existing browser save limit and remain separate after a continuous march',()=>{
  let s=ready();

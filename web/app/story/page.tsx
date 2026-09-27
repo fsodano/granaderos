@@ -161,6 +161,8 @@ export default function ContentEditor() {
     });
   }
   function updatePlacement(patch: any) {
+    const next={...placement,...patch};
+    if(next.selection==='alternate'&&(next.mode!=='daily'||next.sectors.length!==2))patch={...patch,selection:'random'};
     change({
       ...draft,
       placements: draft.placements.map((p: any) =>
@@ -805,29 +807,30 @@ export default function ContentEditor() {
                             ))}
                           </ul>
                         </details>
-                        {placement.mode === 'daily' && (
-                          <label>
-                            Probabilidad diaria de elegir ubicación (%)
-                            <input
-                              type="number"
-                              min={0}
-                              max={100}
-                              value={placement.moveChance}
-                              onChange={(e) =>
-                                updatePlacement({
-                                  moveChance: e.target.valueAsNumber,
-                                })
-                              }
-                            />
+                        {placement.mode === 'daily' && <>
+                          <label>Probabilidad diaria de elegir ubicación (%)
+                            <input type="number" min={0} max={100} value={placement.moveChance} onChange={e=>updatePlacement({moveChance:e.target.valueAsNumber})}/>
                           </label>
-                        )}
+                          <label>Elección diaria
+                            <select value={placement.selection??'random'} onChange={e=>updatePlacement({selection:e.target.value})}>
+                              <option value="random">Sortear entre las celdas marcadas</option>
+                              <option value="alternate" disabled={placement.sectors.length!==2}>Alternar entre dos celdas</option>
+                            </select>
+                          </label>
+                          <label>Protección mientras hay una escena abierta
+                            <select value={placement.loadedGuard??'current'} onChange={e=>updatePlacement({loadedGuard:e.target.value})}>
+                              <option value="current">No salir de la celda abierta ni entrar en ella</option>
+                              <option value="range">No trasladarse si alguna celda del rango está abierta</option>
+                            </select>
+                          </label>
+                        </>}
                         <p>
                           Un sorteo puede conservar el sector actual. Los
                           muertos y reclutados no se trasladan. El sector
                           abierto queda protegido.
                         </p>
                         <label>
-                          Aparece después de la muerte de
+                          Aparece después de la muerte de (solo simulación)
                           <select
                             value={placement.afterDeath ?? ''}
                             onChange={(e) =>

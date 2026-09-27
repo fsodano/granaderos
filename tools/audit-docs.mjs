@@ -49,8 +49,14 @@ need(original.length===50,'The original register must retain 50 broad requiremen
 for(const id of original)need(ids.has(id),`Dropped original requirement ${id}`);
 for(const q of data.queue??[]){need(nonempty(q.action),'Queue action missing');for(const id of q.ids??[])need(ids.has(id),`Unknown queued requirement ${id}`);}
 const auditPath='docs/evidence/formal-audit-2026-09-27';
-const checks=JSON.parse(read(`${auditPath}/checks.json`));
+const archivedChecks=JSON.parse(read(`${auditPath}/checks.json`));
+const checks={...archivedChecks,published:data.latestPublishedCheck??archivedChecks.published};
+if(data.latestPublishedCheck){
+ need(/^[0-9a-f]{40}$/.test(checks.published.source),'Latest published check needs an exact source commit');
+ need(evidence.has(checks.published.evidenceId),'Latest published check needs registered evidence');
+}
 for(const [name,c]of Object.entries(checks)){
+ need(['total','passed','failed','skipped'].every(k=>Number.isSafeInteger(c[k])&&c[k]>=0),`${name}: invalid test counts`);
  need(c.total===c.passed+c.failed+c.skipped,`${name}: inconsistent test counts`);
  if(c.storedLogSha256){const digest=createHash('sha256').update(read(`${auditPath}/${name}-tests.txt`)).digest('hex');need(digest===c.storedLogSha256,`${name}: altered retained log`);}
 }
@@ -76,7 +82,7 @@ const out=[
  '| Source | Passing / total | Failed | Skipped | Types / build |',
  '|---|---:|---:|---:|---|',
  ...Object.entries(checks).map(([name,c])=>`| ${name} | ${c.passed} / ${c.total} | ${c.failed} | ${c.skipped} | ${c.types} / ${c.build} |`),'',
- 'The advanced local suite has three independent failure points; a failed child also fails its parent. Three later route milestones are skipped. The prototype fails at San Lorenzo. Published CI runs a smaller suite and cannot close those failures. The prepared presence feature is local only.','',
+ 'The advanced local suite has three independent failure points; a failed child also fails its parent. Three later route milestones are skipped. The prototype fails at San Lorenzo. Published CI runs a smaller suite and cannot close those failures. The presence row preserves the earlier local audit snapshot; newer published verification is recorded separately.','',
  '## Status and maintenance rules','',
  '- VERIFIED: the complete **bounded row** has specific accepted evidence. Parent requirements remain separate.',
  '- PARTIAL: a published subset exists; the row states the remaining work.',

@@ -1,7 +1,7 @@
 import {WEAPONS} from './data.js';
 import {contentWeaponOf,weaponRecord,validateWeaponCarrier,setWeaponDefinition} from './weapon-definition.js';
 const need=(ok,message)=>{if(!ok)throw Error(message);};
-export const usesAuthoredEquipment=s=>s.contentCampaign?.adapter==='character-weapons-v2';
+export const usesAuthoredEquipment=s=>['character-weapons-v2','character-presence-v1'].includes(s.contentCampaign?.adapter);
 export const equipmentKey=value=>contentWeaponOf(value)?.id??String(value.weapon??value.item??value);
 export function storeArmoryItem(s,record){
  need(s.armoryItems.length<10000,'La armería está llena.');

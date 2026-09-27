@@ -194,12 +194,14 @@ export function validateContentPackage(value) {
       Array.isArray(p.sectors) &&
         p.sectors.length > 0 &&
         p.sectors.length <= CONTENT_SECTORS.length &&
-        new Set(p.sectors).size === p.sectors.length &&
+        contentCellIds(p.sectors).length === p.sectors.length &&
         p.sectors.every((s) => CONTENT_SECTORS.some((d) => d.id === s)) &&
         (p.mode !== "fixed" || p.sectors.length === 1),
       p.id,
       "seleccioná sectores válidos; la ubicación fija necesita uno.",
     );
+    if(p.selection!==undefined)check(['random','alternate'].includes(p.selection)&& (p.selection!=='alternate'||p.mode==='daily'&&p.sectors?.length===2),p.id,'la alternancia diaria necesita dos celdas.');
+    if(p.loadedGuard!==undefined)check(['current','range'].includes(p.loadedGuard),p.id,'protección de escena inválida.');
     check(integer(p.moveChance, 0, 100), p.id, "probabilidad fuera de rango.");
     check(
       p.afterDeath === null || (sets.characters.has(p.afterDeath) && p.afterDeath !== p.character),

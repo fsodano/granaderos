@@ -5,19 +5,19 @@
 Updated 2026-09-27. **The complete game and story editor are not accepted.**
 
 Read [the design](../specification/game-design.md) for the target and [the formal audit](formal-audit-2026-09-27.md) for evidence and limits.
-The published baseline assessed here is `490d5dde4914f7d1050f1901ddf783aa88bc95ed`. Later PRs must update this register.
+The published baseline assessed here is `e8e98f09fdb786e5a3f241165a9e7af09a26436d`. Later PRs must update this register.
 The larger local sources and the editor prototype are separate from published main.
 
 ## Verified results and current failures
 
 | Source | Passing / total | Failed | Skipped | Types / build |
 |---|---:|---:|---:|---|
-| published | 537 / 537 | 0 | 0 | PASS / PASS |
+| published | 549 / 549 | 0 | 0 | PASS / PASS |
 | original | 3040 / 3047 | 4 | 3 | PASS / PASS |
 | prototype | 2895 / 2896 | 1 | 0 | PASS / PASS |
 | presence | 548 / 548 | 0 | 0 | PASS / PASS |
 
-The advanced local suite has three independent failure points; a failed child also fails its parent. Three later route milestones are skipped. The prototype fails at San Lorenzo. Published CI runs a smaller suite and cannot close those failures. The prepared presence feature is local only.
+The advanced local suite has three independent failure points; a failed child also fails its parent. Three later route milestones are skipped. The prototype fails at San Lorenzo. Published CI runs a smaller suite and cannot close those failures. The presence row preserves the earlier local audit snapshot; newer published verification is recorded separately.
 
 ## Status and maintenance rules
 
@@ -29,7 +29,7 @@ The advanced local suite has three independent failure points; a failed child al
 - UNVERIFIED: available evidence does not establish acceptance.
 - SUPERSEDED: an explicit design change replaced the old requirement.
 
-The register retains 168 entries: 11 VERIFIED, 101 PARTIAL, 38 LOCAL_ONLY, 6 MISSING, 9 FAILED, 2 UNVERIFIED, 1 SUPERSEDED.
+The register retains 169 entries: 12 VERIFIED, 102 PARTIAL, 37 LOCAL_ONLY, 6 MISSING, 9 FAILED, 2 UNVERIFIED, 1 SUPERSEDED.
 Rows overlap in scope. Neither these counts nor test totals are a completion percentage.
 
 Edit [requirements.json](requirements.json), record exact source/checks and remaining gaps, then run `npm run docs:progress` and `npm run audit:docs`. Update the design for policy changes. A dated audit stays an evidence snapshot. Do not mark a local branch as published or close a broad row from one passing fixture.
@@ -41,7 +41,7 @@ Edit [requirements.json](requirements.json), record exact source/checks and rema
 ## Delivery order
 
 1. **INTEGRATION-01, START-01, FIX-01, FIX-02, FIX-03, FIX-04** — Establish a combined acceptance path. Preserve pesos and all hire terms, publish Retiro-only/free opening separately, then diagnose each reproduced route failure. Import the needed advanced systems with their own tests; do not replace the reducer wholesale.
-2. **STORY-01, STORY-02** — Publish the prepared presence feature, then integrate persistent world identities, wounds, belongings and successors as separate deliveries.
+2. **STORY-01, STORY-02** — Complete new persistent world identities, wounds, belongings and successors as separate deliveries; existing encounter placement is now connected.
 3. **STORY-03, STORY-04, STORY-05, STORY-06, STORY-08** — Deliver authored dialogue/quests, scripted movement, rules, equipment/merchants and portable content one feature at a time.
 4. **STORY-07, QA-01, QA-02, REL-01, REL-02, UX-02** — Close remaining parity and presentation gaps. Finish both the stock and independently authored campaigns and the release audit.
 
@@ -59,8 +59,9 @@ Finish one bounded feature, its controls and persistence, update evidence, pass 
 | DEL-24 [PR](https://github.com/fsodano/granaderos/pull/24) | Add, copy, remove and hire new contract identities | VERIFIED | Published in PR #24; bounded behavior has regression evidence. | Add, copy, remove and hire new contract identities. The broader boundary remains: New encounter NPCs and replacement of historical campaign roles remain pending (REC-02, ROST-01). |
 | DEL-25 [PR](https://github.com/fsodano/granaderos/pull/25) | Authored voice phrases, personality, portrait and tactical appearance | VERIFIED | Published in PR #25; bounded behavior has regression evidence. | Authored voice phrases, personality, portrait and tactical appearance. The broader boundary remains: Phrases are not branching dialogue or quests (ART-02/03/05, NAR-01). |
 | DEL-26 [PR](https://github.com/fsodano/granaderos/pull/26) | Combat abilities configurable independently of character identity | VERIFIED | Published in PR #26; bounded behavior has regression evidence. | Combat abilities configurable independently of character identity. The broader boundary remains: Historical campaign and recruitment gates remain fixed (ROST-02). |
-| DEL-27 [PR](https://github.com/fsodano/granaderos/pull/27) | Exact land-cell selection, travel, tactical entry and independent saved scenes | VERIFIED | Published in PR #27; bounded behavior has regression evidence. | Exact land-cell selection, travel, tactical entry and independent saved scenes. The broader boundary remains: Includes 40-cell save test; not live NPC placement or water-cell travel (MAP-01/02, ENG-03). |
+| DEL-27 [PR](https://github.com/fsodano/granaderos/pull/27) | Exact land-cell selection, travel, tactical entry and independent saved scenes | VERIFIED | Published in PR #27; bounded behavior has regression evidence. | Exact land-cell selection, travel, tactical entry and independent saved scenes. The broader boundary remains: Includes 40-cell save test; live NPC placement is covered by PRESENCE-01; water-cell travel remains open (MAP-01/02, ENG-03). |
 | DATA-01 | Historical baseline attributes, firearm/melee/artillery values and map counts | VERIFIED | 36 source-table comparisons pass. | 13 attribute profiles, 9 firearms, 5 blades, 3 artillery profiles, 13 named sectors and 4 theaters match the declared reference; this does not certify balance or art. |
+| PRESENCE-01 | Existing encounter identities use authored fixed, once-random and daily exact-cell placements | VERIFIED | Campaign scenes, physical conversation/recruitment, scheduled relocation and full saves use the configured locations. | Existing historical encounter identities appear exactly once, retain deterministic location decisions and protect loaded scenes. Paid candidates never become world NPCs. New world identities, civilian damage/custody/stock and death successors remain STORY-02. |
 
 ## Original design
 
@@ -121,7 +122,7 @@ Finish one bounded feature, its controls and persistence, update evidence, pass 
 
 | ID | Requirement | Status | Published scope | Remaining work / acceptance |
 |---|---|---|---|---|
-| STORY-01 | Fixed, initial-random and daily world presence | LOCAL_ONLY | Map authoring and seeded preview; campaign launch still gates edited placements. | Publish reviewed presence integration with exact-cell encounters and save continuation. |
+| STORY-01 | Fixed, initial-random and daily world presence | PARTIAL | Existing encounter identities use authored fixed, once-random and daily placements in real campaign scenes. | Extend the same system to new encounter identities and their persistent civilian state through STORY-02. |
 | STORY-02 | New world identities, persistent residents and death successors | MISSING | Paid identities work; historical encounters remain fixed identities. | Connect authored NPC life state, belongings, custody, recruitment, death and successor role receipts. |
 | STORY-03 | Branching dialogue, conditions, effects and quests | MISSING | Event phrases and fixed historical conversations. | Implement graph editing, typed effects, role bindings and persistent receipts. |
 | STORY-04 | Triggered tactical movement and arrival actions | MISSING | Ambient NPC routines exist. | Add persistent scripted orders and explicit interruption/arrival policies. |
@@ -256,5 +257,6 @@ Finish one bounded feature, its controls and persistence, update evidence, pass 
 | E-BASELINE | [Record](../evidence/formal-audit-2026-09-27/published-baseline.json) | 36 runtime comparisons to the original numerical tables; new-campaign and elite-contract probes. |
 | E-PARITY | [Record](../evidence/formal-audit-2026-09-27/parity-source.json) | All 87 local parity requirements and historical claims preserved. Not fresh visual acceptance. |
 | E-CONFLICTS | [Record](formal-audit-2026-09-27.md) | Cross-branch conflicts, limitations, failed routes and closure conditions. |
+| E-WORLD-PRESENCE | [Record](character-presence.md) | Existing encounter identities: actual placement, local recruitment, daily relocation, loaded-scene protection and active saves; 549 passing tests, types and build. New world identities and civilian condition remain outside this delivery. |
 
 Per-row acceptance, local assessment, source notes and test paths are retained in [the register](requirements.json). The full 87-row historical parity assessment is preserved in the audit; its old implementation claims are not fresh certification. Earlier milestones remain in [the historical log](../archive/published-progress-through-pr28.md).
