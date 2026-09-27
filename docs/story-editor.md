@@ -30,7 +30,15 @@ Las partidas nuevas del editor guardan estas definiciones por referencia al paqu
 
 La munición mantiene la economía existente: se compran diez cartuchos por arma al entrar al sector y se devuelve el valor de los cartuchos restantes al salir. Los cartuchos de un arma guardada en la mochila siguen en esa arma. Cambiar un arma en la armería se hace fuera del sector y devuelve el arma descargada. La disponibilidad comercial sigue siendo ilimitada; todavía no hay cantidades y reposición configurables por comerciante.
 
-Esta entrega admite armas de fuego de las familias existentes. La asignación de armas editadas a enemigos generados y milicias, las armas blancas, la artillería, los accesorios, los tipos de munición y el coste de levantar el arma siguen pendientes. Las opciones de manejo todavía no integradas bloquean el inicio de campaña.
+Esta entrega admite armas de fuego de las familias existentes. Las armas blancas, la artillería, los accesorios, los tipos de munición y el coste de levantar el arma siguen pendientes. Las opciones de manejo todavía no integradas bloquean el inicio de campaña.
+
+## Armamento de enemigos y milicias
+
+La sección Armas de fuego incluye el armamento de las tropas. Se puede elegir un arma del catálogo, o ninguna, para oficiales, infantería y veteranos enemigos y para cada uno de los tres grados de milicia. El editor impide eliminar un arma mientras alguna tropa la use. Estas asignaciones se guardan con el borrador y participan en deshacer, rehacer, importación y exportación. Los paquetes anteriores sin estas opciones conservan las armas originales y pueden activar su configuración desde la misma sección.
+
+Las asignaciones se aplican cuando se crea un soldado. Las tropas que ya existen conservan su equipo, munición y desgaste al regresar al sector. Una tropa sin arma de fuego no recibe cartuchos ni cebo. Las nuevas tropas enemigas reciben trece cartuchos en total y las milicias seis, distribuidos entre carga y reserva según la capacidad real del arma. Estas cantidades corresponden al abastecimiento actual; todavía no son una regla editable.
+
+La inteligencia artificial usa el coste de disparo, alcance y capacidad del arma elegida. El equipo recuperado conserva su definición, imagen y carga. Al regresar del combate, la devolución de cartuchos incluye las cargas recuperadas de enemigos. Volver a un combate pendiente usa las existencias reales de los soldados guardados, sin volver a acreditar cargas recuperadas antes.
 
 ## Borradores que todavía no llegan a la campaña
 
@@ -47,3 +55,5 @@ Las habilidades, el servicio, los requisitos de reclutamiento y las funciones hi
 `tests/hiring-arrivals.test.mjs` comprueba control e infraestructura, bloqueo, incursiones en la misma hora, cobro y devolución únicos, desvíos, guardado y llegada tras salir de un sector. Las pruebas del formulario montado también configuran el viaje y los puntos de llegada, contratan, desvían y cancelan desde el boletín.
 
 `tests/content-weapons.test.mjs` cubre variantes, compra, importación, ejemplares usados, disparos de la IA, abandono, recuperación, cambios de equipo, retirada, guardado y nuevo despliegue. El caso de combate usa un escenario pequeño con el despliegue y el regreso reales de campaña; no sustituye un recorrido completo. También comprueba imágenes grandes compartidas y rechazo de definiciones o referencias alteradas. El formulario montado crea un arma con imagen propia, la asigna, inicia la campaña y equipa un ejemplar desde la armería.
+
+`tests/content-force-equipment.test.mjs` comprueba todas las asignaciones, un ataque de campaña, tropas sin arma, disparos de la IA, recuperación y regreso al combate, instrucción y ascensos de milicia, munición persistente y guardados alterados. Los casos de disparo y recuperación usan terreno compacto y actores generados por la campaña; no representan una prueba completa del mapa o de la campaña. El formulario montado cubre asignación, deshacer/rehacer, protección de referencias y activación en borradores anteriores.

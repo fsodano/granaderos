@@ -1,3 +1,4 @@
+import {authoredForceEquipment} from './content-force-equipment.js';
 import {CAMPAIGN_SECTORS} from './data.js';
 export const ROYALIST_COMMANDS=[
  {id:'crown',name:'Consejo de la Corona',commander:'Francisco Javier de Elío y Gaspar de Vigodet',theater:'coast',objective:'Sostener Montevideo, estrangular las aduanas y coordinar la restauración colonial.',doctrine:'Gobierno colonial y bloqueo del estuario'},
@@ -22,9 +23,9 @@ export function mentorDispatch(s){
  ];
  return {name:'José de San Martín',role:s.phase<4?'Mentor estratégico':'Comandante disponible',text:messages[s.phase],deployable:s.phase>=4};
 }
-export function oppositionFor(request){
+export function oppositionFor(request,state){
  const command=ROYALIST_COMMANDS.find(c=>c.id===(request.theater==='north'?'north':request.theater==='coast'?'naval':'partisans'));
  const count=Math.max(3,request.squad.length+request.difficulty-1);
  const names=request.theater==='north'?['Oficial de la vanguardia de Tristán','Veterano del Ejército Real del Perú','Fusilero de Pezuela']:request.theater==='coast'?['Oficial de la flotilla de Romarate','Infante de desembarco realista','Marinero de la escuadra de Montevideo']:['Oficial de los cuadros de Talavera','Partidario del Cabildo realista','Miliciano leal a la Corona'];
- return {enemyCommand:command.id,enemyCommander:command.commander,enemyObjective:command.objective,enemies:Array.from({length:count},(_,i)=>({id:`enemy-${i}`,name:`${names[i%names.length]} ${Math.floor(i/names.length)+1}`,weapon:i===0?1805:i%3===0?1801:1800,blade:i===0?1809:1811,marksmanship:50+request.difficulty*5+(request.theater==='north'?3:0),morale:60+request.difficulty*5,leadership:i===0?75:40}))};
+ return {enemyCommand:command.id,enemyCommander:command.commander,enemyObjective:command.objective,enemies:Array.from({length:count},(_,i)=>authoredForceEquipment(state,'oppositionEquipment',i===0?'officer':i%3===0?'veteran':'line',{id:`enemy-${i}`,name:`${names[i%names.length]} ${Math.floor(i/names.length)+1}`,weapon:i===0?1805:i%3===0?1801:1800,blade:i===0?1809:1811,marksmanship:50+request.difficulty*5+(request.theater==='north'?3:0),morale:60+request.difficulty*5,leadership:i===0?75:40},13))};
 }
