@@ -16,6 +16,17 @@ import {spriteRender,spriteViewport,spriteMovementFrame} from '../game/sprite-re
 import {ILLUSTRATED_SPRITE_ATLASES} from '../game/illustrated-sprite-atlases.js';
 import {tacticalCamera} from '../game/tactical-camera.js';
 const project=(x,y)=>({x:200+(x-y)*26,y:65+(x+y)*14});
+
+test('a saved authored campaign actor renders its chosen body without inferring it from the portrait',async()=>{
+ const {defaultContentPackage}=await import('../game/content-package.js');
+ const {initialCampaign,dispatchCampaign}=await import('../game/campaign.js');
+ const {encodeSave,decodeSave}=await import('../game/save.js');
+ const d=defaultContentPackage(),c=d.characters.find(c=>c.id==='person-100');c.spriteAppearance='woman-scout';c.portrait='/art/avatar-man-gaucho.webp';c.arrivalHours=0;
+ let campaign=dispatchCampaign(initialCampaign(42,d),{type:'recruitCivic',id:100,term:'week'});campaign=dispatchCampaign(campaign,{type:'visitSector'});assert.equal(campaign.lastError,null);
+ const pair=decodeSave(encodeSave(campaign,enterSector(campaign.pendingBattle))),unit=pair.battle.units.find(u=>u.id==='100');
+ const markup=render(h(SpriteFigure,{unit,position:{x:100,y:100},motion:{direction:2,moving:false,frame:0}}));
+ assert.match(markup,/data-sprite="woman-scout-idle"/);assert.match(markup,/\/art\/illustrated\/woman-scout-idle/);assert.ok(!markup.includes('granadero-idle'));
+});
 const state={tiles:[{x:2,y:2,roomId:'a'},{x:4,y:2,roomId:'b'}],buildings:[{id:'house',x:1,y:1,width:5,height:4,rooms:[{id:'a',cells:[{x:2,y:2}]},{id:'b',cells:[{x:4,y:2}]}]}],props:[{id:'a-table',type:'table',x:2,y:2,buildingId:'house'},{id:'b-bed',type:'bed',x:4,y:2,buildingId:'house'},{id:'untagged',type:'chest',x:4,y:2},{id:'outside',type:'barrels',x:0,y:0},{id:'invalid',type:'chest',x:9,y:9,buildingId:'missing'}]};
 const props=revealed=>buildPropObjects({state,project,light:()=>.4,revealed:new Set(revealed)});
 test('scene preserves distinct dead/unconscious states even with pending motion and firing',()=>{

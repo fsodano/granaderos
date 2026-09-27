@@ -10,10 +10,29 @@ import {initialCampaign,dispatchCampaign,rosterFor,CAMPAIGN_SECTORS} from '../ga
 import {enterSector} from '../game/world.js';
 import {operativeIdForCharacter} from '../game/content-character-ids.js';
 register('./tactical-render-loader.mjs',import.meta.url);
-const {default:StoryEditor}=await import('../web/app/story/page.tsx');
-const {default:Recruitment}=await import('../web/app/Recruitment.tsx');
-const {default:Armory}=await import('../web/app/Armory.tsx');
 const draftKey='granaderos.content-draft.v1';
+
+test('the editor previews independent portrait and body choices and authors the character voice through undo, copy and launch',async t=>{
+ const m=await mount(t);const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
+ await m.input(m.document.querySelector('input[type="search"]'),'person-100');await m.click(m.document.querySelector('.entry-list button'));
+ const oldBody=m.label('Apariencia en combate').value;
+ await m.input(m.label('Retrato disponible'),'/art/avatar-woman-scout.webp');assert.equal(m.label('Apariencia en combate').value,oldBody);
+ await m.input(m.label('Apariencia en combate'),'woman-scout');await m.input(m.label('Carácter'),'Serena y observadora.');
+ await m.input(m.label('Al incorporarse'),'Lista para partir.');await m.input(m.label('Al recibir una herida'),'');
+ assert.match(m.document.querySelector('.appearance-choice image').getAttribute('href'),/woman-scout/);
+ await m.click(m.button('Deshacer'));assert.notEqual(m.label('Al recibir una herida').value,'');await m.click(m.button('Rehacer'));assert.equal(m.label('Al recibir una herida').value,'');
+ await m.click(m.button('Duplicar personaje'));const copy=draft().characters.at(-1);assert.equal(copy.personality,'Serena y observadora.');assert.equal(copy.speech.hired,'Lista para partir.');assert.equal(copy.speech.wounded,'');assert.equal(copy.spriteAppearance,'woman-scout');assert.equal(copy.portrait,'/art/avatar-woman-scout.webp');
+ await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));
+ const id=operativeIdForCharacter(campaign.contentCampaign.package,copy.id);campaign=dispatchCampaign(campaign,{type:'recruitCivic',id,term:'week'});campaign=dispatchCampaign(campaign,{type:'wait',hours:6});assert.equal(campaign.lastError,null);
+ campaign=dispatchCampaign(campaign,{type:'visitSector'});const pair=decodeSave(encodeSave(campaign,enterSector(campaign.pendingBattle)));const unit=pair.battle.units.find(u=>u.id===String(id));
+ assert.equal(unit.spriteAppearance,'woman-scout');assert.equal(unit.storyProfile.personality,'Serena y observadora.');assert.equal(unit.storyProfile.speech.hired,'Lista para partir.');assert.equal(unit.storyProfile.speech.wounded,'');
+});
+
+test('the real bulletin dossier shows authored personality and hiring phrase',async t=>{
+ const d=defaultContentPackage(),c=d.characters.find(c=>c.id==='person-100');Object.assign(c,{name:'Clara Voz',personality:'Una voz propia.'});c.speech.hired='Partimos al amanecer.';
+ const m=await mount(t,undefined,null,initialCampaign(42,d));await m.input(m.document.querySelector('input[type="search"]'),'Clara Voz');await m.click(m.button('Atributos, carácter y equipo →'));
+ const dialog=m.document.querySelector('[role="dialog"]');assert.ok(dialog);assert.match(dialog.textContent,/Una voz propia\./);assert.match(dialog.textContent,/Partimos al amanecer\./);
+});
 
 test('the editor creates, duplicates and removes actual contract candidates with undo and safe historical guards',async t=>{
  const m=await mount(t);const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
@@ -60,6 +79,10 @@ async function mount(t,stored,launch=null,recruitCampaign=null,view='recruitment
  const globals={window:dom.window,document:dom.window.document,navigator:dom.window.navigator,localStorage:dom.window.localStorage,sessionStorage:dom.window.sessionStorage,HTMLElement:dom.window.HTMLElement,Element:dom.window.Element,Node:dom.window.Node,Document:dom.window.Document,ShadowRoot:dom.window.ShadowRoot,MutationObserver:dom.window.MutationObserver,getComputedStyle:dom.window.getComputedStyle.bind(dom.window),requestAnimationFrame:dom.window.requestAnimationFrame.bind(dom.window),cancelAnimationFrame:dom.window.cancelAnimationFrame.bind(dom.window),FileReader:dom.window.FileReader,IS_REACT_ACT_ENVIRONMENT:true};
  const previous=new Map(Object.keys(globals).map(key=>[key,Object.getOwnPropertyDescriptor(globalThis,key)]));
  for(const [key,value]of Object.entries(globals))Object.defineProperty(globalThis,key,{configurable:true,writable:true,value});
+ // Portal components must load after the DOM exists, as they do in the browser.
+ const {default:StoryEditor}=await import('../web/app/story/page.tsx');
+ const {default:Recruitment}=await import('../web/app/Recruitment.tsx');
+ const {default:Armory}=await import('../web/app/Armory.tsx');
  const {createRoot}=await import('../web/node_modules/react-dom/client.js');
  const root=createRoot(dom.window.document.getElementById('root'));
  t.after(async()=>{try{await act(async()=>root.unmount());}finally{dom.window.close();for(const [key,descriptor]of previous){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}});
@@ -70,9 +93,9 @@ async function mount(t,stored,launch=null,recruitCampaign=null,view='recruitment
  const document=dom.window.document;
  return {dom,document,get campaign(){return current;},
   button(text){const button=[...document.querySelectorAll('button')].find(b=>b.textContent.trim()===text);assert.ok(button,text);return button;},
-  label(text){const label=[...document.querySelectorAll('label')].find(l=>l.firstChild?.textContent.trim()===text);assert.ok(label,text);return label.querySelector('input,select');},
+  label(text){const label=[...document.querySelectorAll('label')].find(l=>l.firstChild?.textContent.trim()===text);assert.ok(label,text);return label.querySelector('input,select,textarea');},
   async click(element){await act(async()=>element.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));},
-  async input(element,value){assert.ok(element);const prototype=element.tagName==='SELECT'?dom.window.HTMLSelectElement.prototype:dom.window.HTMLInputElement.prototype;Object.getOwnPropertyDescriptor(prototype,'value').set.call(element,String(value));await act(async()=>element.dispatchEvent(new dom.window.Event(element.tagName==='SELECT'?'change':'input',{bubbles:true})));},
+  async input(element,value){assert.ok(element);const prototype=element.tagName==='SELECT'?dom.window.HTMLSelectElement.prototype:element.tagName==='TEXTAREA'?dom.window.HTMLTextAreaElement.prototype:dom.window.HTMLInputElement.prototype;Object.getOwnPropertyDescriptor(prototype,'value').set.call(element,String(value));await act(async()=>element.dispatchEvent(new dom.window.Event(element.tagName==='SELECT'?'change':'input',{bubbles:true})));},
  };
 }
 

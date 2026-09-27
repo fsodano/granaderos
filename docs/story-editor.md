@@ -18,9 +18,19 @@ Cada candidato nuevo tiene identidad propia. Duplicar copia su ficha, retrato y 
 
 Las identidades nuevas no reciben poderes por ocupar el número de un mando histórico. El paquete de cada partida queda fijado al iniciarla, y el guardado conserva la correspondencia entre sus personajes y sus hojas de servicio. Los candidatos eliminados no se restauran al cargar.
 
-La ficha permite elegir especialidades aplicadas por las reglas actuales, equitación y progreso por experiencia o nivel fijo. Equitación experta garantiza una destreza ecuestre mínima de 80. Con ambas opciones de progreso se conserva el entrenamiento práctico de atributos. Las especialidades llegan al combate y a la instrucción de milicia; un instructor nuevo puede guardar y continuar un curso. Los contratables nuevos usan frases generales de servicio; editar su voz y sus diálogos sigue pendiente.
+La ficha permite elegir especialidades aplicadas por las reglas actuales, equitación y progreso por experiencia o nivel fijo. Equitación experta garantiza una destreza ecuestre mínima de 80. Con ambas opciones de progreso se conserva el entrenamiento práctico de atributos. Las especialidades llegan al combate y a la instrucción de milicia; un instructor nuevo puede guardar y continuar un curso. Los contratables nuevos pueden tener carácter, frases y apariencia propios. Los diálogos con opciones y encargos siguen pendientes.
 
-Todos estos candidatos se incorporan por contrato desde el boletín. Una paga de cero es un contrato gratuito con el plazo elegido, no servicio permanente. El editor protege a los mandos históricos de eliminación y duplicación hasta separar sus funciones de campaña. El arma blanca inicial y la apariencia táctica de los nuevos candidatos aún usan los valores generales existentes.
+Todos estos candidatos se incorporan por contrato desde el boletín. Una paga de cero es un contrato gratuito con el plazo elegido, no servicio permanente. El editor protege a los mandos históricos de eliminación y duplicación hasta separar sus funciones de campaña. El arma blanca inicial todavía usa el valor general existente.
+
+## Carácter, frases y apariencia
+
+Cada ficha puede elegir un retrato de la biblioteca, conservar una imagen importada y seleccionar por separado uno de los ocho tipos de apariencia ya disponibles. La vista previa muestra el cuerpo con el arma asignada. Elegir un retrato no cambia el cuerpo ni los atributos. La apariencia llega al soldado, al contacto local y al comandante aliado; también se conserva al volver a entrar y al guardar. El personaje correspondiente en Yatasto usa su ficha. Todavía no se edita el color de piel ni se crean animaciones nuevas desde este formulario.
+
+El carácter describe al personaje en su hoja de servicio, sin modificar su moral. Las siete frases corresponden a incorporación, detección de enemigos, sector asegurado, herida, agotamiento, muerte y fin de campaña. Cada frase admite hasta 800 caracteres; una frase vacía mantiene el silencio. El contratado pronuncia su incorporación al llegar, una sola vez. Las frases tácticas se disparan por los eventos reales y el cierre de campaña usa las frases de los compañeros vivos.
+
+Estas opciones participan en la recuperación del borrador, deshacer/rehacer, duplicación, exportación, inicio y guardado. Los paquetes anteriores sin estos campos conservan sus perfiles. Las partidas rechazan voces o apariencias que difieren de la definición incluida. Los saludos, las conversaciones ramificadas, las misiones y los finales alternativos todavía requieren sus propios editores y reglas.
+
+La prueba de incorporación también detectó que Cabral, Dorrego y Paroissien no tenían una condición regional adicional y se rechazaban después de cumplir el encuentro. Ahora pueden incorporarse al cumplir su conversación local, liderazgo, control y demás condiciones del encuentro. La contratación remota sigue bloqueada para ellos.
 
 ## Llegadas y contratos
 
@@ -69,3 +79,5 @@ Los mandos históricos conservan sus habilidades, servicio permanente, requisito
 `tests/content-force-equipment.test.mjs` comprueba todas las asignaciones, un ataque de campaña, tropas sin arma, disparos de la IA, recuperación y regreso al combate, instrucción y ascensos de milicia, munición persistente y guardados alterados. Los casos de disparo y recuperación usan terreno compacto y actores generados por la campaña; no representan una prueba completa del mapa o de la campaña. El formulario montado cubre asignación, deshacer/rehacer, protección de referencias y activación en borradores anteriores.
 
 `tests/content-roster.test.mjs` comprueba identidades nuevas, eliminación del catálogo, separación respecto del oficial y la milicia, contratación y llegada, desvío y cancelación, entrenamiento y progreso, guardado y rechazo de identidades inválidas. El combate compacto verifica heridas reales, retirada y nuevo despliegue; no equivale a completar la campaña. El formulario montado crea, duplica, elimina y contrata candidatos nuevos.
+
+`tests/content-presentation.test.mjs` comprueba las frases con eventos tácticos reales, llegada única, silencios, final de campaña, aparición del contacto y comandante, incorporación local, compatibilidad y rechazo de cambios en guardados. El cierre usa un estado final preparado y el combate un terreno compacto; no prueban una campaña entera. El editor montado cubre retrato/apariencia independientes, frases, duplicación y lanzamiento; la prueba de presentación táctica comprueba el cuerpo elegido después de guardar y cargar.

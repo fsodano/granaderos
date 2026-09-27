@@ -1,3 +1,4 @@
+import {validatePresentationReferences} from './content-character-presentation.js';
 import {isContractCharacter,operativeIdForCharacter} from './content-character-ids.js';
 import {weaponMetadata,validateWeaponReferences,restoreWeaponReferences} from './weapon-definition.js';
 import {contentIdentity,canonicalContent} from "./content-identity.js";
@@ -9,7 +10,7 @@ export function campaignContentReport(content) {
     blocked = [],
     pending = [];
   const supported=new Set(['format','version','id','name','characters','weapons','placements','arrivalSites','oppositionEquipment','militiaEquipment']);
-  const characterFields=new Set(['id','name','nickname','role','biography','portrait','monthlyPay','weapon','attributes','arrivalHours','recruitmentSource','service','progression','traits','ridingSkill']);
+  const characterFields=new Set(['id','name','nickname','role','biography','portrait','monthlyPay','weapon','attributes','arrivalHours','recruitmentSource','service','progression','traits','ridingSkill','personality','speech','spriteAppearance']);
   if(Object.keys(value).some(key=>!supported.has(key))||value.characters.some(c=>Object.keys(c).some(key=>!characterFields.has(key))))
     blocked.push('Este paquete incluye opciones de historia que esta versión todavía no puede aplicar.');
   if(value.characters.some(c=>!isContractCharacter(c)&&c.arrivalHours!==undefined))
@@ -58,7 +59,7 @@ export function attachCampaignContent(state, content) {
   return state;
 }
 export function validateCampaignContent(state) {
-  if (state?.contentCampaign === undefined) {validateWeaponReferences(state,state);return;}
+  if (state?.contentCampaign === undefined) {validateWeaponReferences(state,state);validatePresentationReferences(state);return;}
   const context = state.contentCampaign;
   if (!context || context.version !== 2 || !["character-sheets-v1","character-weapons-v2"].includes(context.adapter))
     throw Error("La versión del contenido de campaña no es compatible.");
@@ -67,5 +68,6 @@ export function validateCampaignContent(state) {
   if (report.blocked.length) throw Error(report.blocked.join("\n"));
   if(canonicalContent(context.identity)!==canonicalContent(contentIdentity(definitions)))throw Error("El contenido de campaña no coincide con su identidad guardada.");
   restoreWeaponReferences(state,state);validateWeaponReferences(state,state);
+  validatePresentationReferences(state);
   state.contentCampaign = { version: 2, adapter: context.adapter, identity: contentIdentity(definitions), package: definitions };
 }
