@@ -88,6 +88,14 @@ export function advanceNpc(s,n,budget=24,atTime=now(s)) {
     if(visitor)n.facing=directionTo(n,visitor);
     return;
   }
+  // Conversation and routine pauses need no route search. Keep the movement
+  // budget for the phase where this actor actually has somewhere to go.
+  if(!danger&&!n.scriptedMove){
+    n.stance='standing';n.movementMode='walk';
+    const visitor=s.units.find(u=>u.side==='player'&&u.hp>0&&!u.departure&&!u.unconscious&&distance(u,n)<=1);
+    if(visitor){n.facing=directionTo(n,visitor);return;}
+    if(ai.wait>0){ai.wait--;return;}
+  }
   const routes=npcRoutes(s,n),places=destinations(s,n,routes);
   if(danger){
     const choices=places.cells.filter(p=>p.path.length<=8).sort((a,b)=>shelterScore(s,b,ai.threat,routes.tiles)-shelterScore(s,a,ai.threat,routes.tiles)||a.y-b.y||a.x-b.x);
@@ -96,10 +104,6 @@ export function advanceNpc(s,n,budget=24,atTime=now(s)) {
   }else if(n.scriptedMove){
     ai.destination={...n.scriptedMove.target};ai.activity='meeting';ai.wait=0;n.stance='standing';n.movementMode='walk';
   }else{
-    n.stance='standing';n.movementMode='walk';
-    const visitor=s.units.find(u=>u.side==='player'&&u.hp>0&&!u.departure&&!u.unconscious&&distance(u,n)<=1);
-    if(visitor){n.facing=directionTo(n,visitor);return;}
-    if(ai.wait>0){ai.wait--;return;}
     if(!ai.destination||!routes.records.has(key(ai.destination))){
       const hour=((s.startSeconds??43200)+atTime)/3600%24;
       const activity=hour<6||hour>=22?'home':['roaming','working','socializing','home'][(ai.cycle+hash(n.id))%4];
