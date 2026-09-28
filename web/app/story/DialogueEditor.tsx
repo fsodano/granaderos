@@ -1,5 +1,6 @@
 'use client';
 import DialogueConditions from './DialogueConditions';
+import DialogueEffects from './DialogueEffects';
 import {useState} from 'react';
 const nextId=(prefix:string,items:any[])=>{let n=1;while(items.some(i=>i.id===`${prefix}-${n}`))n++;return `${prefix}-${n}`;};
 export default function DialogueEditor({value,greeting,characters,onChange}:{value:any;greeting:string;characters:any[];onChange:(value:any)=>void}){
@@ -24,10 +25,11 @@ export default function DialogueEditor({value,greeting,characters,onChange}:{val
     <label>Texto de la opción<input maxLength={160} value={choice.label} onChange={e=>changeNode({choices:node.choices.map((c:any)=>c.id===choice.id?{...c,label:e.target.value}:c)})}/></label>
     <label>Respuesta siguiente<select value={choice.next} onChange={e=>changeNode({choices:node.choices.map((c:any)=>c.id===choice.id?{...c,next:e.target.value}:c)})}>{value.nodes.map((n:any)=><option key={n.id} value={n.id}>{n.title}</option>)}</select></label>
     <DialogueConditions conditions={choice.conditions} characters={characters} onChange={conditions=>changeNode({choices:node.choices.map((c:any)=>c.id===choice.id?{...c,conditions}:c)})}/>
+    <DialogueEffects effects={choice.effects} onChange={effects=>changeNode({choices:node.choices.map((c:any)=>c.id===choice.id?{...c,effects}:c)})}/>
     <button type="button" onClick={()=>changeNode({choices:node.choices.filter((c:any)=>c.id!==choice.id)})}>Quitar opción {i+1}</button>
    </fieldset>)}
    <button type="button" disabled={node.choices.length>=12} onClick={()=>changeNode({choices:[...node.choices,{id:nextId('choice',node.choices),label:'Continuar',next:value.nodes.find((n:any)=>n.id!==node.id)?.id??node.id}]})}>Agregar opción</button>
-   <small>Hasta 30 pasajes y 12 opciones por pasaje. Las condiciones deciden qué opciones aparecen. Estas opciones todavía no conceden objetos ni activan encargos.</small>
+   <small>Hasta 30 pasajes y 12 opciones por pasaje. Las condiciones deciden qué opciones aparecen. Podés agregar un pago o una recompensa en pesos. Los objetos y encargos todavía no están disponibles.</small>
   </>}
  </fieldset>;
 }
