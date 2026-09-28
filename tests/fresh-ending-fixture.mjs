@@ -1,3 +1,4 @@
+import {workshopServiceQuote} from '../game/workshop-service.js';
 import {firstAidPlan} from '../game/first-aid.js';
 import {doctorRate,careAssignmentReason} from '../game/medical-care.js';
 import assert from 'node:assert/strict';
@@ -36,9 +37,9 @@ export function finishHistoricalFromCuyo(prefix,{onCheckpoint}={}){
  // Mountain losses require real replacements before exposing the commander.
  s=order(s,{type:'wait',hours:24});const relief=[125,103,127,112,104,117,139].filter(id=>civicStatus(s,id).available).slice(0,6-s.squad.length);
  for(const id of relief)s=order(s,{type:'recruitCivic',id,term:'week',destination:'mendoza'});
- if(relief.length)s=order(s,{type:'wait',hours:6});s=workshop(s);
+ if(relief.length)s=order(s,{type:'wait',hours:6});const commanderRestock=workshopServiceQuote(s,rosterFor(s).find(o=>o.id===57),'resupply',isSupplied(s,s.location)).cost;s=workshop(s);
  for(const id of relief){s=order(s,{type:'purchaseEquipment',item:'firearm-1801'});const item=s.armoryItems.find(i=>i.contentWeapon?.template===1801);assert.ok(item);s=order(s,{type:'equip',operativeId:id,slot:'weapon',itemId:'firearm-1801',instanceId:item.id});}
- notes.push({stage:'cuyo-relief',hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,relief,squad:[...s.squad]});onCheckpoint?.('cuyo-relief',s,notes);
+ notes.push({stage:'cuyo-relief',commanderRestock,hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,relief,squad:[...s.squad]});onCheckpoint?.('cuyo-relief',s,notes);
  s=order(s,{type:'purchaseEquipment',item:'firearm-1801'});const instance=s.armoryItems.find(i=>i.contentWeapon?.template===1801);assert.ok(instance);s=order(s,{type:'equip',operativeId:57,slot:'weapon',itemId:'firearm-1801',instanceId:instance.id});assert.ok(s.resources.treasury>0);
  for(const [via,sector] of [['cordoba','santa_fe'],['buenos_aires','ensenada'],[null,'jujuy'],[null,'humahuaca']]){
   if(sector==='jujuy'){
@@ -73,6 +74,6 @@ export function finishHistoricalFromCuyo(prefix,{onCheckpoint}={}){
   notes.push({stage:sector,hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,squad:[...s.squad],actions,turns:battle.turn,deaths:deaths(s),commanderHp:s.operativeState[57].hp,completed:s.completed});onCheckpoint?.(sector,s,notes);
   if(!s.completed)s=order(s,{type:'fortify',sector});
  }
- assert.equal(s.completed,true);assert.equal(s.defeated,false);assert.equal(s.pendingBattle,null);assert.equal(s.blockade,false);assert.equal(s.phase,4);assert.equal(Object.keys(s.sectors).length,13);assert.ok(Object.values(s.sectors).every(r=>r.owner==='patriot'));assert.equal(s.operativeState[57].hp,58);assert.ok(s.recruited.includes(57));assert.equal(s.contracts[57].expiresAt,null);assert.equal(s.resources.treasury,5564);for(const id of [1000,123,127])assert.equal(s.operativeState[id].alive,false);
+ assert.equal(s.completed,true);assert.equal(s.defeated,false);assert.equal(s.pendingBattle,null);assert.equal(s.blockade,false);assert.equal(s.phase,4);assert.equal(Object.keys(s.sectors).length,13);assert.ok(Object.values(s.sectors).every(r=>r.owner==='patriot'));assert.equal(s.operativeState[57].hp,58);assert.ok(s.recruited.includes(57));assert.equal(s.contracts[57].expiresAt,null);assert.equal(s.resources.treasury,5478);for(const id of [1000,123,127])assert.equal(s.operativeState[id].alive,false);
  return {campaign:s,notes,prefix:prefix.notes};
 }

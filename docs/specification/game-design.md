@@ -322,6 +322,14 @@ visible policy. A movement changes the existing resident's location and local
 routine; it does not create another person. The player sees discovered/reported
 locations and the time of the report, not private random state.
 
+Residents with a character sheet carry the six current personal supply quantities
+from their shared identity. Adjacent dead or unconscious residents can be looted
+through ordinary paid orders. Collection reduces the original holder; movement,
+service changes, saves and distinct successors cannot replenish or duplicate it.
+The temporary mission ally retains actual supplies in later contacts. Complete
+weapons, pockets, gifts and merchant custody remain separate. See
+[finite civilian supplies](../verification/civilian-finite-supplies.md).
+
 Successors are distinct people. Confirm the triggering death once, retain the
 chosen delay and destination, and hold blocked arrivals without rerolling.
 Transfer only the explicitly assigned service role, stock or responsibility.

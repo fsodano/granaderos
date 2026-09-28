@@ -63,3 +63,11 @@ campaign. Other separately accepted historical routes retain their own forces
 and paid support. The larger advanced medical, recapture and prisoner-rescue
 failures remain recorded against their identified sources. No browser or loaded
 combat performance acceptance is claimed.
+
+## Publication
+
+[PR #80](https://github.com/fsodano/granaderos/pull/80) merged at
+2026-09-28 15:06:11 UTC as `cd2693f7b3a65f62a06478e6a7868340c2105683`.
+[GitHub verification](https://github.com/fsodano/granaderos/actions/runs/36439784546/job/108986964402)
+passed at 15:05:52 UTC for the exact PR head
+`a2e3ed9c56b47e9203a9033f5719e178db10154e`.

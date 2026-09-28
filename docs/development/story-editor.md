@@ -30,7 +30,9 @@ En la ficha, **Suministros iniciales** permite configurar cargas de cebo, pedern
 
 La campaña asigna esas cantidades una sola vez. El personaje las lleva al incorporarse, tanto por llegada contratada como por reclutamiento en el lugar. Guardar, renovar, despedir y volver a contratar conservan lo que quede; no entregan otro lote. Duplicar copia las cantidades con una identidad distinta. Los paquetes anteriores conservan los valores originales. Deshacer, rehacer, importar y exportar incluyen esta configuración.
 
-La munición inicial del despliegue se configura en **Reglas**. La reposición pagada del taller conserva sus cantidades y precios publicados; no usa la dotación inicial como objetivo. Esta opción todavía no crea un inventario que se pueda saquear de un habitante civil. Tampoco cambia el equipo del granadero creado por el jugador.
+La munición inicial del despliegue se configura en **Reglas**. La reposición pagada del taller conserva sus cantidades y precios publicados; no usa la dotación inicial como objetivo. Tampoco cambia el equipo del granadero creado por el jugador.
+
+Los habitantes con ficha llevan estos suministros desde su aparición. Con **Recoger equipo**, podés seleccionarlos cuando estén muertos o inconscientes y junto al combatiente. La acción cuesta 8 PA en combate y muestra las cantidades recogidas. Lo que retirás deja de pertenecer al habitante. Cambiar de celda, incorporarse, salir del servicio o cargar la partida conserva lo que queda. Un sucesor usa sus propias cantidades; no copia las del cuerpo anterior. Las armas, armaduras, regalos e inventarios completos de habitantes siguen pendientes. Véase la [verificación de suministros civiles](../verification/civilian-finite-supplies.md).
 
 ## Estado inicial de cada personaje
 

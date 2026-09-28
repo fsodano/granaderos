@@ -3,7 +3,7 @@ import {dispatchCampaign} from '../game/campaign.js';import {incomeSummary} from
 import {order,saved,visit,leave} from './local-contract-fixture.mjs';import {freshHistoricalEnding} from './fresh-ending-fixture.mjs';
 
 test('a fresh stock campaign wins all localities with actual combat and continues after saved victory and service expiry',()=>{
- const {campaign:won,notes}=freshHistoricalEnding();assert.deepEqual(notes.filter(n=>n.actions).map(n=>n.stage),['santa_fe','ensenada','jujuy','humahuaca']);assert.equal(won.hour,582);assert.ok(won.log.some(e=>e.text.includes('¡Campaña concluida!')));
+ const {campaign:won,notes}=freshHistoricalEnding();assert.equal(notes.find(n=>n.stage==='cuyo-relief').commanderRestock,86);assert.deepEqual(notes.filter(n=>n.actions).map(n=>n.stage),['santa_fe','ensenada','jujuy','humahuaca']);assert.equal(won.hour,582);assert.ok(won.log.some(e=>e.text.includes('¡Campaña concluida!')));
  assert.deepEqual(notes.find(n=>n.stage==='coastal-care').care,{hours:36,dressingsBought:34,cost:340});assert.equal(won.sectors.buenos_aires.fort,2);
  const dead=Object.entries(won.operativeState).filter(([,r])=>!r.alive).map(([id])=>id),money=won.resources.treasury,daily=incomeSummary(won).daily;let s=saved({campaign:order(won,{type:'wait',hours:48})}).campaign;
  assert.equal(s.completed,true);assert.equal(s.defeated,false);assert.equal(s.hour,630);assert.equal(s.resources.treasury,money+2*daily);assert.equal(s.operativeState[128].alive,true);assert.ok(!s.recruited.includes(128));assert.ok(!s.squad.includes(128));assert.equal(s.contracts[128],undefined);assert.equal(s.blockade,false);assert.ok(Object.values(s.sectors).every(r=>r.owner==='patriot'));

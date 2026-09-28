@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "6866d1d78bab58d9abc873eadcb028ad32e0f014",
+  "baseline": "082ee305e239dbc1e6a2c53d446f2eca3ae9b15e",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -332,7 +332,13 @@
     {
       "id": "E-LOCAL-OPENING",
       "path": "docs/verification/local-recruit-opening.md",
-      "description": "Fresh default campaign with a legal free officer and only physically recruited Cabral, Dorrego and Paroissien reaches saved San Lorenzo completion. Actual gear purchases, 19 hours of finite care, paid dressings, rest, permanent deaths, tactical replay and continued saved visit are covered. 872 passing tests, zero failures/skips, types, export and baseline checks; this does not claim solo or all-seed balance or the separate advanced route fixes."
+      "description": "Fresh default campaign with a legal free officer and only physically recruited Cabral, Dorrego and Paroissien reaches saved San Lorenzo completion. Actual gear purchases, 19 hours of finite care, paid dressings, rest, permanent deaths, tactical replay and continued saved visit are covered. 872 passing tests, zero failures/skips, types, export and baseline checks; this does not claim solo or all-seed balance or the separate advanced route fixes.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36439784546/job/108986964402"
+    },
+    {
+      "id": "E-CIVILIAN-SUPPLIES",
+      "path": "docs/verification/civilian-finite-supplies.md",
+      "description": "Six finite personal supply quantities belong to the resident identity. Actual collection, partial transfers, critical aid, daily movement, recruitment, return, death succession, named ally consumption, legacy admission and pointer/keyboard controls are covered. 879 passing tests with zero failures/skips, types, production export and all 36 baseline checks; complete equipment, inventory and custody remain open."
     }
   ],
   "queue": [
@@ -381,12 +387,38 @@
   ],
   "requirements": [
     {
+      "id": "CIVILIANSUPPLIES-01",
+      "group": "Published deliveries",
+      "requirement": "Keep finite resident supplies through collection, movement and service",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "The six personal supply quantities come from each resident identity. Paid adjacent collection from a body or unconscious resident reduces its stock; ordinary movement, service changes and saves retain the remainder. A successor keeps its separate allocation.",
+      "local": "Six simulations cover actual collection and finite aid, daily relocation, local recruitment and dismissal, actual death and successor, rejected/partial/capped transfers, older saves and actual named ally ration use. Mounted pointer and keyboard collection preserves quantities and reports them. A formerly collected resident entering the actual allied role also keeps its empty stock. The initial broad run reached historical victory but found an outdated treasury expectation: actual replenishment costs 86 pesos. The final corrected release source passes 879 tests with zero failures/skips; types, production export and all 36 baseline checks pass.",
+      "remaining": "",
+      "acceptance": "Author finite resident supplies, collect and spend them through actual orders, save and relocate, then recruit and return without replenishment. Confirm death, retain the empty body and activate a distinct successor with its own stock.",
+      "evidence": [
+        "E-CIVILIAN-SUPPLIES"
+      ],
+      "parents": [
+        "STORY-02",
+        "STORY-06",
+        "JA2-C06",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/civilian-supplies.test.mjs",
+        "tests/civilian-interaction.test.mjs",
+        "tests/character-supplies.test.mjs",
+        "tests/civilian-state.test.mjs"
+      ]
+    },
+    {
       "id": "LOCALOPENING-01",
       "group": "Published deliveries",
       "requirement": "Complete a fresh coastal opening with the created officer and local recruits only",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "A legal free officer and actual local encounters complete Buenos Aires, San Nicolás and San Lorenzo without bulletin hires, preserving paid preparation, finite care and permanent losses.",
+      "published": "A legal free officer and actual local encounters complete Buenos Aires, San Nicolás and San Lorenzo without bulletin hires, preserving paid preparation, finite care and permanent losses. Merged through PR #80 after exact-head CI.",
       "local": "Three opening routes pass; the local force pays 230 pesos for its first musket, 920 for later muskets, 27 for workshop service and 180 for 18 dressings. Nineteen care hours and six hours of rest precede the remaining victories and saved hour-80 continuation.",
       "remaining": "",
       "acceptance": "Start with Retiro and no people, create the free officer, recruit only actual residents, pay normal equipment and treatment costs, win through ordinary orders and preserve all deaths and wounds through save/replay and continued play.",
@@ -399,7 +431,8 @@
       ],
       "testFiles": [
         "tests/fresh-coastal-route.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/80"
     },
     {
       "id": "TREATMENTSPEECH-01",
@@ -2641,9 +2674,9 @@
       "requirement": "New world identities, persistent residents and death successors",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "New and existing world residents retain physical identity. Confirmed civilian or active military death can activate a distinct new world successor after a saved delay; earlier bodies and each character health stay separate. New residents can offer paid local service for all published terms, with quoted prices and persistent expiry, renewal and return. Authored progression can omit historical identities or copy them into independent residents; generic original residents are optional. Confirmed casualties can leave the service ledger through expiry or dismissal without invalidating saves; known stale deceased-service bits are repaired. Military bodies and finite equipment now persist through reentry and renewed occupation without rejoining service. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Each character can author initial wounds, energy and fatigue, assigned once and retained through actual treatment, care and service changes.",
+      "published": "New and existing world residents retain physical identity. Confirmed civilian or active military death can activate a distinct new world successor after a saved delay; earlier bodies and each character health stay separate. New residents can offer paid local service for all published terms, with quoted prices and persistent expiry, renewal and return. Authored progression can omit historical identities or copy them into independent residents; generic original residents are optional. Confirmed casualties can leave the service ledger through expiry or dismissal without invalidating saves; known stale deceased-service bits are repaired. Military bodies and finite equipment now persist through reentry and renewed occupation without rejoining service. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Each character can author initial wounds, energy and fatigue, assigned once and retained through actual treatment, care and service changes. Residents retain six finite personal supply quantities. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation.",
       "local": "Preview transitions supplied the core schedule. Published identity, health and successor activation are connected; advanced inventories and role transfer remain separate.",
-      "remaining": "Extend starting allocations into complete editable belongings, NPC looting, custody and explicit role/stock transfer. Strategic civilian care and unloaded-sector bleeding remain separate work.",
+      "remaining": "Extend starting allocations into complete editable belongings, civilian weapon and armour looting, custody and explicit role/stock transfer. Strategic civilian care and unloaded-sector bleeding remain separate work.",
       "acceptance": "Move an injured NPC, reload, recruit it, confirm death and activate one distinct successor without healing or duplicating goods.",
       "evidence": [
         "E-CONFLICTS",
@@ -2655,7 +2688,8 @@
         "E-CONTRACT-CASUALTY",
         "E-MILITARY-REMAINS",
         "E-CHARACTER-SUPPLIES",
-        "E-CHARACTER-CONDITION"
+        "E-CHARACTER-CONDITION",
+        "E-CIVILIAN-SUPPLIES"
       ]
     },
     {
@@ -2733,7 +2767,7 @@
       "requirement": "Complete equipment and merchant authoring",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment.",
+      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain six finite personal supply quantities. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation.",
       "local": "Physical inventory, fittings and merchants are more complete locally but not generally authored.",
       "remaining": "Add artillery, ammunition types and pricing, fittings, merchant stock, buyback and replenishment authoring; integrate civilian belongings and complete physical custody.",
       "acceptance": "Create each supported equipment type; buy/use/trade/reload without duplication or lost instance data.",
@@ -2744,7 +2778,8 @@
         "E-FORCE-BLADES",
         "E-SUPPLY-RULES",
         "E-IMPORT-RULES",
-        "E-CHARACTER-SUPPLIES"
+        "E-CHARACTER-SUPPLIES",
+        "E-CIVILIAN-SUPPLIES"
       ]
     },
     {
@@ -3110,7 +3145,7 @@
       "requirement": "Field bandaging stabilizes wounds; strategic care restores health. G22,62,81; M33,39.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Manual field care stops bleeding and uses finite partial work to stabilize critical casualties. Ordinary health recovery requires campaign care. Supplies and bandaged wounds persist through normal controls, saves, recruitment and real route continuation.",
+      "published": "Manual field care stops bleeding and uses finite partial work to stabilize critical casualties. Ordinary health recovery requires campaign care. Supplies and bandaged wounds persist through normal controls, saves, recruitment and real route continuation. Residents retain six finite personal supply quantities. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
       "remaining": "Integrate held-item medical targeting, physical dressing custody and the preserved treatment-response gaps; verify the complete behavior in normal play.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
@@ -3119,7 +3154,8 @@
         "E-LOCAL",
         "E-PUBLISHED",
         "E-FIRST-AID",
-        "E-STRATEGIC-CARE"
+        "E-STRATEGIC-CARE",
+        "E-CIVILIAN-SUPPLIES"
       ],
       "sourceRow": "JA2-C06",
       "sourceNotes": "Civilian targeting now uses the same held-kit approach and treatment path, with persistent bleeding and dressings; see [civilian first aid](civilian-first-aid.md). Critical first aid now restores living casualties toward 15 HP through paid partial treatment, with shared previews and once-only named-civilian campaign synchronization. See [critical first aid](critical-first-aid.md) for reference rules, explicit AP/supply adaptations and verification. Keep personal supplies finite through every result and transfer path. Authored civilian treatment responses remain open."
@@ -4601,13 +4637,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "2f7f0187d95b0b199c0b7a3fe767ff527910ae99",
-    "total": 871,
-    "passed": 871,
+    "source": "6866d1d78bab58d9abc873eadcb028ad32e0f014",
+    "total": 872,
+    "passed": 872,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-TREATMENT-SPEECH"
+    "evidenceId": "E-LOCAL-OPENING"
   }
 }
