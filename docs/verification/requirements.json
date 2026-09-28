@@ -344,6 +344,11 @@
       "id": "E-SUPPLY-CONDITIONS",
       "path": "docs/verification/story-supply-conditions.md",
       "description": "Current personal supply ranges gate dialogue, chapters and failure. Actual collection, finite treatment, paid purchase, named ally consumption, current-scene boundaries and editor reference protection are covered. 886 passing tests with zero failures/skips, types, export and all 36 baseline checks; arbitrary inventory and transfers remain separate."
+    },
+    {
+      "id": "E-PARTIAL-RELOAD",
+      "path": "docs/verification/partial-firearm-reloads.md",
+      "description": "Authored firearm loading retains paid partial work on its physical weapon through turns, swaps, collection and active saves. Exploration stops on contact or collapse and credits only elapsed time. 61 focused tests pass; complete release regression and static acceptance are pending."
     }
   ],
   "queue": [
@@ -391,6 +396,32 @@
     }
   ],
   "requirements": [
+    {
+      "id": "PARTIALRELOAD-01",
+      "group": "Published deliveries",
+      "requirement": "Complete authored firearm loading across turns and retain work on the physical weapon",
+      "status": "LOCAL_ONLY",
+      "priority": "P1",
+      "published": "Not yet accepted on main. Firearm reloads use available AP, retain paid work on the gun and transfer a cartridge only on completed loading. Exploration retains only elapsed work before contact or incapacity.",
+      "local": "Six simulations and a mounted battlefield case cover authored long loads, multi-barrel work, posture, swaps, corpse collection, invalid saved work, active campaign save, pointer/keyboard costs and exploration interruption. The overlapping focused group passes 61 tests.",
+      "remaining": "Finish complete release regression, types, build, baseline and exact-head GitHub CI.",
+      "acceptance": "Use an authored firearm whose reload cannot fit one turn, pay actual partial work and resume after save; preserve finite charges and the same weapon work across ownership paths, actual interruption and the ordinary controls.",
+      "evidence": [
+        "E-PARTIAL-RELOAD"
+      ],
+      "parents": [
+        "TAC-01",
+        "TAC-04",
+        "STORY-06",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/partial-firearm-reloads.test.mjs",
+        "tests/partial-reload-controls.test.mjs",
+        "tests/tactical-web.test.mjs",
+        "tests/content-weapons.test.mjs"
+      ]
+    },
     {
       "id": "SUPPLYCONDITIONS-01",
       "group": "Published deliveries",

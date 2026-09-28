@@ -410,3 +410,16 @@ Los mandos históricos conservan su servicio permanente, requisitos de reclutami
 `tests/campaign-story.test.mjs` verifica capítulos ordenados, llegada pagada, vencimiento de contrato, encargos resueltos por diálogo, derrota por plazo y muerte táctica real, finales simultáneos, interrupción de viajes y guardados inválidos. El editor montado cubre orden, condiciones, referencias, deshacer y lanzamiento; las vistas muestran el objetivo y el final propios. La [verificación de capítulos](../verification/campaign-story.md) distingue estas rutas breves de la campaña completa pendiente.
 
 `tests/campaign-cast.test.mjs` recorre contratación, encuentro, diálogo, encargo y final con solo dos identidades nuevas; comprueba un elenco vacío con granadero gratuito, los habitantes genéricos opcionales y que los personajes eliminados no vuelvan al cargar. El editor montado copia y reemplaza un mando, guarda su incorporación local y verifica que no herede la bonificación de marcha. La [verificación del elenco](../verification/campaign-cast.md) registra los límites.
+
+## Recargas que duran varios turnos
+
+El valor de recarga de un arma puede superar los puntos de acción de un turno.
+**Recargar** usa los puntos disponibles y conserva el avance en esa arma.
+En el turno siguiente podés continuar. El botón muestra el coste de esta orden
+y cuánto trabajo quedará. Solo una carga terminada consume un cartucho.
+Un arma con varios cañones puede cargar uno antes de terminar el siguiente.
+
+Guardar, cambiar de arma o recogerla conserva su avance. En exploración se gasta
+tiempo: el contacto con un enemigo o la caída del soldado interrumpe el trabajo.
+El avance no se completa gratis al pasar a combate. La artillería mantiene sus
+reglas separadas. Véase la [verificación de recargas](../verification/partial-firearm-reloads.md).

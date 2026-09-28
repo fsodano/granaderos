@@ -503,3 +503,13 @@ empty. The check does not grant or consume goods and does not imply life, presen
 or service. Existing six personal supplies share this rule. Arbitrary inventory
 and dialogue transfers remain separate work. See the
 [verification record](../verification/story-supply-conditions.md).
+
+### Partial firearm loading
+
+An authored firearm's reload cost can span turns. Each order pays available work;
+only completed charges consume reserve cartridges. Unfinished work belongs to
+the specific gun through active saves, swaps, storage and recovery. Exploration
+pays elapsed time and preserves partial work when contact or incapacity interrupts
+it. Controls preview the current cost and remaining work using the same plan.
+Artillery and full strategic ammunition custody are separate integration steps.
+See the [verification record](../verification/partial-firearm-reloads.md).
