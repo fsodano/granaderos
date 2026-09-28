@@ -1,3 +1,4 @@
+import {chooseArtilleryAction,holdsArtilleryPost} from './tactical-ai-artillery.js';
 import {militiaPatrolRules} from './militia-patrol-rules.js';
 import {recordMilitiaHit} from './militia-experience.js';
 import {firearmPreparation,lowerWeapon} from './weapon-readiness.js';
@@ -42,15 +43,18 @@ export function hasTrait(u,id){return Array.isArray(u.traits)&&u.traits.includes
 function nearbyTrait(s,u,id,radius=4){return s.units.some(v=>v.side===u.side&&alive(v)&&hasTrait(v,id)&&dist(u,v)<=radius);}
 export function actionCosts(s,u){const w=weaponFor(u),cavalry=u.mounted&&hasTrait(u,'cavalry_commander'),firstShot=Math.max(1,Math.ceil(w.fireAP*(cavalry?.8:1))-(hasCharacterAbility(u,'quick_shot')&&[1803,1805,1806,1808].includes(w.id)?2:0)),preparation=firearmPreparation(u,w,firstShot);return{heal:hasCharacterAbility(u,'rapid_first_aid')?18:hasTrait(u,'field_rescuer')?20:25,breach:hasCharacterAbility(u,'breaching')?25:45,mount:hasTrait(u,'cavalry_commander')?8:12,fire:preparation.total,ready:preparation.ready,discharge:preparation.discharge,aim:Math.max(0,Math.ceil(w.aimAP*(hasTrait(u,'line_marksman')?.65:1))),reprime:hasTrait(u,'gunsmith_artillerist')?10:15,repair:hasTrait(u,'gunsmith_artillerist')?18:25,reload:reloadPlan(u,s).pa,melee:Math.ceil(bladeFor(u).ap*(cavalry?.8:1))};}
 export function artilleryCosts(s,u,gun){const spec=ARTILLERY[gun.type],assist=(nearby(s,u,'loading_support',2)?.8:1)*(hasTrait(u,'gunsmith_artillerist')?.85:1),base={bronze4:{move:20,pivot:10},field8:{move:30,pivot:15},swivel:{move:10,pivot:5}}[gun.type];return{crew:spec.crew,fire:Math.ceil(spec.fireAP*assist*(hasCharacterAbility(u,'artillery_fire')?.85:1)),reload:Math.ceil(spec.reloadAP*assist*(hasCharacterAbility(u,'artillery_loading')?.8:1)),move:base.move,pivot:base.pivot};}
+export function artilleryContact(s,u,gun){
+ if(!u||!gun||dist(u,gun)>1.5||!hasLineOfSight(s,u,gun))return false;
+ const ground=tile(s,gun.x,gun.y);if(!ground||ground.blocked||ground.type==='water'||propBlocksAt(s,gun.x,gun.y))return false;
+ return u.x===gun.x||u.y===gun.y||[tile(s,u.x,gun.y),tile(s,gun.x,u.y)].every(t=>t&&!t.blocked&&!propBlocksAt(s,t.x,t.y));
+}
 // Every assigned artillerist performs the same work. Crew eligibility is shared
 // with the controls; a hired soldier cannot spend an autonomous militia's AP.
 export function artilleryCrewPlan(s,u,gun,cost,partial=false){
  const spec=ARTILLERY[gun?.type];
  if(!u||!spec||gun.side!==u.side)return {crew:[],reason:'Debes estar junto a una pieza de artillería propia.'};
- const eligible=v=>v.side===u.side&&Boolean(v.militia)===Boolean(u.militia)&&alive(v)&&!v.knockedDown&&!v.fled&&!v.departure&&!v.surrendered&&!v.mounted&&v.stance!=='prone'&&
-  (s.mode==='exploration'||s.phase===v.side&&v.ap>=cost)&&dist(v,gun)<=1.5&&hasLineOfSight(s,v,gun)&&
-  !propBlocksAt(s,gun.x,gun.y)&&!tile(s,gun.x,gun.y)?.blocked&&
-  (v.x===gun.x||v.y===gun.y||[tile(s,v.x,gun.y),tile(s,gun.x,v.y)].every(t=>t&&!t.blocked&&!propBlocksAt(s,t.x,t.y)));
+ const eligible=v=>v.side===u.side&&Boolean(v.militia)===Boolean(u.militia)&&alive(v)&&!v.knockedDown&&!v.fled&&!v.departure&&!v.surrendered&&!v.entangled&&!v.mounted&&v.stance!=='prone'&&
+  (s.mode==='exploration'||s.phase===v.side&&v.ap>=cost)&&artilleryContact(s,v,gun);
  const helpers=s.units.filter(v=>v.id!==u.id&&eligible(v));
  if(partial)helpers.sort((a,b)=>b.ap-a.ap||String(a.id).localeCompare(String(b.id)));
  const assigned=eligible(u)?[u,...helpers].slice(0,spec.crew):[];
@@ -63,6 +67,28 @@ export function artilleryReloadPreview(s,u,gun){
  const plan=planReload({loaded:Number(gun?.loaded??false),ammo:gun?.ammo??0,reloadProgress:gun?.reloadProgress,ap},rate,1,s.mode==='exploration');
  const reason=gun?.loaded?'La pieza ya está cargada.':gun&&gun.ammo<1?'No quedan municiones para la pieza.':crew.reason||(!plan.pa?'Faltan puntos de acción para recargar.':null);
  return {...plan,crew:crew.crew,rate,reason,valid:!reason};
+}
+// The same read-only trace governs actual fire and autonomous collateral checks.
+// Perception callers may filter actors; execution always supplies the full field.
+export function artilleryCanisterContains(s,gun,point,body){
+ const spec=ARTILLERY[gun.type],length=dist(gun,point);if(!length)return false;
+ const dx=(point.x-gun.x)/length,dy=(point.y-gun.y)/length,vx=body.x-gun.x,vy=body.y-gun.y,forward=vx*dx+vy*dy,across=Math.abs(vx*dy-vy*dx);
+ return forward>1&&forward<=spec.radius*2&&across<=Math.max(1,forward*.5)&&hasLineOfSight(s,gun,body);
+}
+export function artilleryShotTrace(s,u,gun,point,mode='solid'){
+ const spec=ARTILLERY[gun.type],events=[],cells=[];
+ if(mode==='canister'){
+  for(const v of victims(s).filter(v=>targetable(s,v)&&artilleryCanisterContains(s,gun,point,v))){const forward=((v.x-gun.x)*(point.x-gun.x)+(v.y-gun.y)*(point.y-gun.y))/dist(gun,point);events.push({type:'impact',unitId:v.id,victimKind:civilian(s,v)?'npc':'unit',damage:spec.damage*Math.max(.35,1-forward/(spec.radius*3))*(hasCharacterAbility(u,'artillery_fire')?1.15:1)});}
+ }else{
+  let energy=spec.damage,penetration=({bronze4:3,field8:5,swivel:1}[gun.type])+(hasCharacterAbility(u,'artillery_loading')?1:0);
+  for(const p of line(gun,point)){
+   cells.push(p);const ground=tile(s,p.x,p.y);
+   if(ground?.blocked){if(ground.type==='water'||ground.type==='cliff')break;const stone=ground.material==='stone'||ground.type==='stone',resistance=stone?3:1;if(penetration<resistance){events.push({type:'stopped'});break;}penetration-=resistance;events.push({type:'breach',x:p.x,y:p.y,stone});}
+   for(const v of victims(s).filter(v=>targetable(s,v)&&v.x===p.x&&v.y===p.y)){events.push({type:'impact',unitId:v.id,victimKind:civilian(s,v)?'npc':'unit',damage:energy});energy*=.75;penetration--;}
+   if(penetration<0||energy<20)break;
+  }
+ }
+ return {events,cells};
 }
 export function interruptInitiative(s,u){return (u.agility||0)+(u.wisdom||0)*.25+(nearby(s,u,'tactical_command',4)?25:0)+(nearby(s,u,'strategic_command',6)?50:0);}
 export function ignitionRisk(s,u){const w=weaponFor(u);return clamp(misfireChance(u.condition,s.weather.rain,s.weather.humidity)*(w.id===1801?.9:1)*(hasTrait(u,'gunsmith_artillerist')?.65:1)-(w.id===1806?1:0)+(u.priming===0?15:0),0,95);}
@@ -124,7 +150,7 @@ function advanceExploration(s,seconds){
   advanceCivilianTime(s,step,()=>{
    for(const u of s.units.filter(u=>(u.side==='enemy'||u.side==='player'&&u.militia)&&alive(u))){
     const planning={...s,mode:'combat',turn:(s.civilianTurns??0)+1},actor={...u,ap:u.militia?100:24,patrolTurn:undefined};
-    const patrol=u.militia?militiaPatrolOrder(planning,actor):choosePatrolAction(planning,actor);if(!patrol)continue;
+    const patrol=holdsArtilleryPost(planning,actor)?null:u.militia?militiaPatrolOrder(planning,actor):choosePatrolAction(planning,actor);if(!patrol)continue;
     const next=getReachable(planning,actor).find(p=>p.x===patrol.x&&p.y===patrol.y)?.path[0];if(!next)continue;
     const cost=movementEnergy(u,tile(s,next.x,next.y));const rules=militiaPatrolRules(s);if(u.energy<=cost||u.militia&&u.energy-cost<rules.energyReserve){u.energy=Math.min(100,u.energy+(u.militia?rules.restEnergy:10));continue;}
     lowerWeapon(u);u.facing=directionTo(u,next);u.x=next.x;u.y=next.y;exhaust(s,u,cost);if(detectContact(s))return false;
@@ -196,19 +222,16 @@ if(!gun.loaded)return fail('Primero hay que recargar la pieza.');const point=tar
 if(!Number.isInteger(point.x)||!Number.isInteger(point.y)||!tile(s,point.x,point.y)||dist(gun,point)<1||dist(gun,point)>spec.range)return fail(`Objetivo fuera del alcance de ${spec.range} casillas o no válido.`);
 const facing=Math.atan2(point.y-gun.y,point.x-gun.x);if(Number.isFinite(gun.facing)&&Math.abs(Math.atan2(Math.sin(facing-gun.facing),Math.cos(facing-gun.facing)))>Math.PI/4)return fail('Gira la pieza antes de disparar fuera de su arco frontal.');
 gun.facing=facing;npcNoise(s,gun,'explosion');gun.loaded=false;s.smoke.push({x:gun.x,y:gun.y,radius:2,turns:3});
-if(a.mode==='canister'){
-const len=dist(gun,point),dx=(point.x-gun.x)/len,dy=(point.y-gun.y)/len;
-for(const v of victims(s).filter(v=>targetable(s,v))){const vx=v.x-gun.x,vy=v.y-gun.y,forward=vx*dx+vy*dy,across=Math.abs(vx*dy-vy*dx);if(forward>1&&forward<=spec.radius*2&&across<=Math.max(1,forward*.5)&&hasLineOfSight(s,gun,v)){damage(s,v,spec.damage*Math.max(.35,1-forward/(spec.radius*3))*(hasCharacterAbility(u,'artillery_fire')?1.15:1),u,false,v===target);if(!civilian(s,v)&&alive(v)){v.morale=Math.max(0,v.morale-12);if(v.morale<15)rout(s,v);}}}
-say(s,`${spec.name} barre el frente con metralla.`);
-}else{
-let energy=spec.damage,penetration=({bronze4:3,field8:5,swivel:1}[gun.type])+(hasCharacterAbility(u,'artillery_loading')?1:0);
-for(const p of line(gun,point)){
-const ground=tile(s,p.x,p.y);if(ground?.blocked){if(ground.type==='water'||ground.type==='cliff'){break;}const stone=ground.material==='stone'||ground.type==='stone';const resistance=stone?3:1;if(penetration<resistance){say(s,'La bala se detiene contra la fortificación.');break;}penetration-=resistance;ground.blocked=false;ground.blocksSight=false;ground.type='rubble';ground.cover=20;say(s,`La bala abre una brecha en ${stone?'la piedra':'el adobe'}.`);}
-for(const victim of victims(s).filter(v=>targetable(s,v)&&v.x===p.x&&v.y===p.y)){damage(s,victim,energy,u,false,victim===target);energy*=.75;penetration--;}
-if(penetration<0||energy<20)break;
+for(const event of artilleryShotTrace(s,u,gun,point,a.mode).events){
+ if(event.type==='impact'){
+  const v=event.victimKind==='npc'?s.npcs.find(v=>v.id===event.unitId):s.units.find(v=>v.id===event.unitId);damage(s,v,event.damage,u,false,v===target);
+  if(a.mode==='canister'&&!civilian(s,v)&&alive(v)){v.morale=Math.max(0,v.morale-12);if(v.morale<15)rout(s,v);}
+ }else if(event.type==='breach'){
+  const ground=tile(s,event.x,event.y);ground.blocked=false;ground.blocksSight=false;ground.type='rubble';ground.cover=20;say(s,`La bala abre una brecha en ${event.stone?'la piedra':'el adobe'}.`);
+ }else say(s,'La bala se detiene contra la fortificación.');
 }
-say(s,`${spec.name} dispara una bala rasa que atraviesa su línea de tiro.`);
-}}
+say(s,a.mode==='canister'?`${spec.name} barre el frente con metralla.`:`${spec.name} dispara una bala rasa que atraviesa su línea de tiro.`);
+}
 for(const v of assigned){if(s.mode!=='exploration')v.ap-=cost;lowerWeapon(v);}
 if(s.mode==='exploration')s.actionDurationSeconds=Math.max(1,Math.ceil(cost*.06));
 }
@@ -315,15 +338,17 @@ function runMilitiaPhase(s){
  runForcePhase(s,'player');
 }
 function runForcePhase(s,side){
- const enemy=side==='enemy',order=action=>apply(s,action,enemy);
- for(const u of s.units.filter(u=>u.side===side&&(enemy||u.militia)&&alive(u))){
-  if(enemy){u.maxAP=maxActionPoints(s,u);u.ap=Math.max(0,u.maxAP-u.reactionSpent);}
-  // Militia reactions already spent this allied turn's AP. Do not charge them
-  // against the following round as well, and do not issue another AP budget.
-  u.reactionSpent=0;
-  for(let n=0;n<12&&u.ap>=6&&s.status==='active';n++){
+ const enemy=side==='enemy',order=action=>apply(s,action,enemy),actors=s.units.filter(u=>u.side===side&&(enemy||u.militia)&&alive(u));s.phase=side;
+ // Allocate the whole side once. A helper may spend AP before its own decision;
+ // visiting that helper later must not issue a second budget.
+ for(const u of actors){if(enemy){u.maxAP=maxActionPoints(s,u);u.ap=Math.max(0,u.maxAP-u.reactionSpent);}u.reactionSpent=0;}
+ for(const u of actors){
+  for(let n=0;n<12&&alive(u)&&u.ap>0&&s.status==='active';n++){
    const targets=s.units.filter(t=>t.side!==side&&alive(t)&&canSee(s,u,t)).sort((a,b)=>dist(u,a)-dist(u,b)),t=targets[0];
+   const artillery=chooseArtilleryAction(s,u,targets);if(artillery){if(!order(artillery))break;continue;}
+   if(u.ap<6)break;
    if(!t){
+    if(holdsArtilleryPost(s,u))break;
     const patrol=enemy?choosePatrolAction(s,u):militiaPatrolOrder(s,u);
     if(patrol){u.patrolTurn=s.turn;order(patrol);if(s.units.some(v=>v.side!==side&&alive(v)&&canSee(s,u,v)))continue;}
     break;
