@@ -43,7 +43,7 @@ test('new world identities are independent of bulletin candidates and cannot inh
  assert.equal(encountersFor(s,A).find(n=>n.contentId==='alma-posta').operativeId,id);assert.equal(encountersFor(s,'retiro').some(n=>n.contentId==='alma-posta'),false);
  assert.equal(encountersFor(s,A).some(n=>n.operativeId===100),false);assert.equal(s.flags.foundry,false);assert.equal(s.flags.northPact,false);
  s=save(s).campaign;assert.equal(idFor(s),id);assert.equal(rosterFor(s).find(o=>o.id===id).service,'permanent');
- for(const mutate of [x=>delete x.characters.at(-1).encounter,x=>x.characters.at(-1).encounter.recruitable='yes',x=>x.characters.at(-1).encounter.requiredSector=A,x=>x.characters.at(-1).encounter.unknown=true,x=>x.characters.at(-1).monthlyPay=10,x=>x.characters.at(-1).arrivalHours=6,x=>x.characters.at(-1).service='contract',x=>x.characters[0].encounter=x.characters.at(-1).encounter]){const copy=authored();mutate(copy);assert.throws(()=>initialCampaign(42,copy));}
+ for(const mutate of [x=>delete x.characters.at(-1).encounter,x=>x.characters.at(-1).encounter.recruitable='yes',x=>x.characters.at(-1).encounter.requiredSector=A,x=>x.characters.at(-1).encounter.unknown=true,x=>x.characters.at(-1).monthlyPay=10,x=>x.characters.at(-1).arrivalHours=6,x=>x.characters.at(-1).service='unknown',x=>x.characters[0].encounter=x.characters.at(-1).encounter]){const copy=authored();mutate(copy);assert.throws(()=>initialCampaign(42,copy));}
  const wire=JSON.parse(encodeSave(s));wire.campaign.contentCampaign.adapter='character-weapons-v2';delete wire.campaign.contentPresence;assert.throws(()=>decodeSave(JSON.stringify(wire)),/habitantes nuevos/);
 });
 

@@ -25,7 +25,7 @@ import {validateTraining,TRAINABLE_SKILLS} from './skill-training.js';
 import {militiaCourse,militiaAssignment,MILITIA_COHORT,MILITIA_LIMIT,militiaEligibility} from './militia.js';
 export {militiaCourse,militiaAssignment} from './militia.js';
 import {returnAmmunition} from './ammunition.js';
-import {ENCOUNTERS,encounterDefinitions,canRecruitEncounter,encounterForOperative,encountersFor,encounterRequirements} from './encounters.js';
+import {ENCOUNTERS,encounterDefinitions,canRecruitEncounter,encounterForOperative,encountersFor,encounterRequirements,encounterHireTerms} from './encounters.js';
 export {ENCOUNTERS,encountersFor} from './encounters.js';
 import {migrateSquads,activeSquad,operativeLocation,synchronizeSquad,validateSectorSnapshot,validatePersonalInventory} from './squads.js';
 export {activeSquad,operativeLocation} from './squads.js';
@@ -266,8 +266,9 @@ export function dispatchCampaign(previous,action){
         requireThat(['friendly','direct','recruit','quest','mission'].includes(action.approach),'La forma de dirigirse al interlocutor es inválida.');
         const quest=questForNPC(s,npc.id);let text=npc.greeting+(quest&&quest.status!=='completed'?` ${quest.offer}`:''),outcome='conversation';
         if(action.approach==='direct'){
-          const terms=`un mando con ${npc.requiredLeadership} de liderazgo y ${npc.requiredLiberated} localidades seguras`;
-          text=!canRecruitEncounter(npc)?npc.greeting:npc.recruitable===undefined?`Para incorporarme necesito ${terms} y que se cumplan mis compromisos regionales.`:`Puedo incorporarme sin paga. Necesito ${terms}.${npc.requiredSector?` También debe estar liberada ${sector(npc.requiredSector).name}.`:''}`;
+          const terms=`un mando con ${npc.requiredLeadership} de liderazgo y ${npc.requiredLiberated} localidades seguras`,hireTerms=encounterHireTerms(s,npc);
+          const service=hireTerms.length?`Puedo incorporarme por contrato: ${hireTerms.map(q=>`${q.name.toLowerCase()}, ${q.price} pesos`).join('; ')}.`:'Puedo incorporarme sin paga.';
+          text=!canRecruitEncounter(npc)?npc.greeting:npc.recruitable===undefined?`Para incorporarme necesito ${terms} y que se cumplan mis compromisos regionales.`:`${service} Necesito ${terms}.${npc.requiredSector?` También debe estar liberada ${sector(npc.requiredSector).name}.`:''}`;
         }
         if(action.approach==='mission'){requireThat(s.pendingBattle.sceneId==='yatasto','No hay una conferencia pendiente.');text=talkMission(s,npc.id,isSupplied(s,'salta'));outcome='mission';}
         if(action.approach==='quest'){
@@ -429,6 +430,7 @@ export function restoreCampaign(text){
   requireThat(object(s.loadouts)&&Object.entries(s.loadouts).every(([id,slots])=>baseRosterFor(s).some(o=>o.id===Number(id))&&object(slots)&&Object.entries(slots).every(([slot,v])=>['weapon','blade'].includes(slot)&&(v===0&&slot==='weapon'||integer(v,slot==='blade'?1809:1800,1813)))),'Los equipos guardados son inválidos.');
   s.cityLoyaltyEvents??=[];requireThat(validCityLoyaltyEvents(s.cityLoyaltyEvents),'El registro de lealtad es inválido.');
   migrateContracts(s);requireThat(object(s.contracts)&&Object.entries(s.contracts).every(([id,c])=>s.recruited.includes(Number(id))&&object(c)&&(c.departurePending===undefined||typeof c.departurePending==='boolean')&&['paid','patriot','legacy'].includes(c.kind)&&['day','week','month'].includes(c.term)&&integer(c.started,0,s.hour)&&(c.expiresAt===null?c.kind!=='paid':integer(c.expiresAt,c.departurePending&&deployed(s,Number(id))?0:s.hour+1,1e9))&&integer(c.paid,0,1e9))&&s.recruited.every(id=>s.contracts[id]),'Los contratos guardados son inválidos.');
+  for(const id of s.recruited){const c=characterForOperative(s,id);if(!c||!isWorldCharacter(c))continue;const contract=s.contracts[id];requireThat(c.service==='contract'?contract.kind==='paid'&&contract.expiresAt!==null:contract.kind==='patriot'&&contract.expiresAt===null&&contract.paid===0,'El contrato del habitante no coincide con su servicio.');}
   const ids=rosterFor(s).map(o=>o.id),validIds=values=>Array.isArray(values)&&new Set(values).size===values.length&&values.every(id=>ids.includes(id));
   requireThat(validIds(s.recruited)&&validIds(s.squad)&&s.squad.length<=6&&s.squad.every(id=>s.recruited.includes(id)),'El destacamento del archivo es inválido.');
   requireThat(s.recruited.every(id=>characterForOperative(s,id)?.encounter?.recruitable!==false),'Un habitante no reclutable no puede estar en la escuadra.');
