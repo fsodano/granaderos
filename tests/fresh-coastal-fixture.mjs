@@ -46,7 +46,7 @@ export function freshCoastalRoute(kind,{onCheckpoint}={}){
  assert.ok(first.every(id=>s.recruited.includes(id)&&s.contracts[id].started===6));notes.push({stage:'ready',hour:s.hour,funds:s.resources.treasury,squad:[...s.squad]});
  for(const sector of ['buenos_aires','san_nicolas','san_lorenzo']){
   s=order(s,{type:'attack',sector});assert.ok(s.pendingBattle);const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
-  const {battle,orders,actions}=kind==='local'?cautiousFight(request,previous,{scoutCostWeight:.01,avoidCivilians:true}):fight(request,previous);assert.equal(battle.status,'victory',`${kind}: ${sector}`);
+  const {battle,orders,actions}=kind==='local'?cautiousFight(request,previous,{scoutCostWeight:.01,avoidCivilians:true,holdPosition:sector==='san_lorenzo'?['57']:[]}):fight(request,previous);assert.equal(battle.status,'victory',`${kind}: ${sector}`);
   // Replay every legal order with the normal campaign clock. Reload halfway
   // through the real engagement, then verify its deterministic final state.
   let p={campaign:s,battle:enterSector(request,previous)};
@@ -66,6 +66,11 @@ export function freshCoastalRoute(kind,{onCheckpoint}={}){
   if(kind==='local'&&sector==='buenos_aires'){
    s=recruitLocal(s,4);s=recruitLocal(s,10);const recovery=prepareLocalOpening(s);s=recovery.campaign;
    notes.push({stage:'local-recovery',hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,squad:[...s.squad],...recovery.care});onCheckpoint?.('local-recovery',s,notes);
+  }
+  if(kind==='local'&&sector==='san_nicolas'){
+   const recovery=prepareLocalOpening(s,{buyWeapons:false});s=recovery.campaign;
+   const daylight=s.hour%24;if(daylight<6||daylight>=20)s=order(s,{type:'wait',hours:daylight<6?6-daylight:30-daylight});
+   notes.push({stage:'local-final-recovery',hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,squad:[...s.squad],...recovery.care});onCheckpoint?.('local-final-recovery',s,notes);
   }
   if(kind!=='local'&&sector!=='san_lorenzo'){
    const available=[131,136,141,137,113,124,112,108].filter(id=>s.operativeState[id].alive&&!s.recruited.includes(id)),replacements=available.slice(0,6-s.squad.length);
