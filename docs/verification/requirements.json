@@ -188,7 +188,8 @@
     {
       "id": "E-CAMPAIGN-ROLES",
       "path": "docs/verification/campaign-roles.md",
-      "description": "Two strategic roles bind to authored character identities. Real paid arrival activates them; actual contract expiry and tactical death remove them. Exact cell/locality travel, one-time foundry/funding payments, pinned saves, mounted editor reference controls and actual treasury controls are covered. Custody and occupation checks use prepared states. Other roles, function values and full campaign composition remain open."
+      "description": "Two strategic roles bind to authored character identities. Real paid arrival activates them; actual contract expiry and tactical death remove them. Exact cell/locality travel, one-time foundry/funding payments, pinned saves, mounted editor reference controls and actual treasury controls are covered. Custody and occupation checks use prepared states. Other roles, function values and full campaign composition remain open.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36387749886/job/108816651510"
     },
     {
       "id": "E-FOUNDRY-PROJECT",
@@ -491,7 +492,8 @@
         "tests/story-editor.test.mjs",
         "tests/campaign-cast-render.test.mjs",
         "tests/campaign-web.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/55"
     },
     {
       "id": "FOUNDRY-01",
