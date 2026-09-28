@@ -373,6 +373,16 @@ los trasladados aparecen en terreno exterior conectado al acceso de llegada.
 Estas áreas, límites y accesos todavía no son campos editables.
 [Verificación y pendientes](../verification/city-militia-distribution.md).
 
+## Elegir la batería
+
+En **Escritorio → Tesorería → Comprar armas y revisar equipo**, la batería muestra
+las piezas que saldrán en el próximo despliegue. Elegí hasta tres y usá
+**Preparar batería**. Si dejás todos los espacios en **Sin pieza**, esa elección
+se conserva al guardar y aunque compres otro cañón. Podés elegir piezas de nuevo
+más adelante. La pantalla impide preparar más unidades de un modelo que las
+existentes. Elegir no cobra dinero ni adelanta el reloj.
+[Verificación y alcance pendiente](../verification/explicit-artillery-selection.md).
+
 ## Territorio inicial
 
 En **Reglas**, la tabla **Territorio al iniciar la campaña** define el control patriota o realista y la lealtad de las trece localidades. La lealtad permite valores enteros de 0 a 100. **Restaurar territorio original** vuelve a Retiro patriota con 65% de lealtad y las otras localidades realistas con 25%. Podés deshacer y rehacer los cambios.
