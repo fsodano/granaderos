@@ -25,7 +25,8 @@ Runtime source: `29c7edad645e9dafe571509c1159996ff5550b77`.
 The final complete suite passed **681/681 tests**, without failures or skips.
 Types, production export (721 files, 631 asset references), all 36 baseline
 comparisons and the documentation audit passed. The register retains 183
-requirements and 22 evidence records. Exact-head CI is required before merge.
+requirements and 22 evidence records. [Exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36376129600/job/108782227264)
+passed for merged PR #45.
 
 - `tests/meeting-arrivals.test.mjs`: actual conversation accepts a meeting quest;
   an early completion attempt is rejected without money or progress. Six-second
@@ -54,6 +55,7 @@ This optimization is not a loaded-combat frame-rate measurement.
 
 ARRIVAL-01 is bounded. STORY-03 and STORY-04 remain partial. This is a dialogue
 condition for current presence at a commanded meeting, not an automatic arrival
-callback or a permanent history flag. Marker authoring, automatic actions on
-arrival, returning to ambient routines, multiple-actor sequencing, historical
-scene roles and complete campaign acceptance remain open.
+callback or a permanent history flag. At this checkpoint, marker authoring,
+automatic arrival actions, routine return, multiple-actor sequencing, historical
+roles and full campaign acceptance remained open.
+[Ending a meeting](meeting-release.md) is a later bounded delivery.

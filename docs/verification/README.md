@@ -26,6 +26,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Required character survival](quest-survival.md)
 - [Dialogue-triggered local meetings](dialogue-movements.md)
 - [Arrival-gated dialogue and quest effects](meeting-arrivals.md)
+- [Ending a local meeting](meeting-release.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 

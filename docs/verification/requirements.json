@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "29c7edad645e9dafe571509c1159996ff5550b77",
+  "baseline": "2f1287020a76ce47d5422c28d4361d76a557c8fd",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -128,7 +128,13 @@
     {
       "id": "E-MEETING-ARRIVAL",
       "path": "docs/verification/meeting-arrivals.md",
-      "description": "Authored dialogue requires actual conscious presence at the latest local meeting destination. Real walking, saved re-entry, quest completion and one reward pass, along with mounted authoring/game controls. Prepared alarms, incapacity and occupancy isolate physical guards. Does not add automatic arrival actions or establish a full campaign."
+      "description": "Authored dialogue requires actual conscious presence at the latest local meeting destination. Real walking, saved re-entry, quest completion and one reward pass, along with mounted authoring/game controls. Prepared alarms, incapacity and occupancy isolate physical guards. Does not add automatic arrival actions or establish a full campaign.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36376129600/job/108782227264"
+    },
+    {
+      "id": "E-MEETING-RELEASE",
+      "path": "docs/verification/meeting-release.md",
+      "description": "Actual dialogue releases another resident or the speaker from a commanded meeting, with saved routine return and atomic quest/payment effects. Later orders, once-only replay, rollback, invalid saves and mounted editor/game double-click acceptance pass. Does not add automatic choreography or prove a full campaign."
     }
   ],
   "queue": [
@@ -177,6 +183,29 @@
   ],
   "requirements": [
     {
+      "id": "ROUTINE-01",
+      "group": "Published deliveries",
+      "requirement": "End local meetings and return authored residents to their routines",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "A resident can be released by another speaker or its own conversation. The release clears the local destination, persists through re-entry, and combines atomically with quest and money effects. Replaying a used release cannot cancel a later meeting or repeat payment.",
+      "local": "Uses published movement commands, civilian routines and dialogue transactions; no advanced scene director is imported.",
+      "remaining": "",
+      "acceptance": "Author release and self-targeting through undo, copy and launch. Perform real calls, arrival and release, observe ordinary movement, save and re-enter. Reject no-order and insufficient-funds transactions and invalid saved evidence. Verify later calls and one combined result after a mounted double click.",
+      "evidence": [
+        "E-MEETING-RELEASE"
+      ],
+      "parents": [
+        "STORY-03",
+        "STORY-04"
+      ],
+      "testFiles": [
+        "tests/meeting-release.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/meeting-release-ui.test.mjs"
+      ]
+    },
+    {
       "id": "ARRIVAL-01",
       "group": "Published deliveries",
       "requirement": "Gate dialogue and quest effects on actual resident arrival at a meeting",
@@ -197,7 +226,8 @@
         "tests/meeting-arrivals.test.mjs",
         "tests/story-editor.test.mjs",
         "tests/meeting-arrivals-ui.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/45"
     },
     {
       "id": "MEETING-01",
@@ -1570,7 +1600,7 @@
       "requirement": "Branching dialogue, conditions, effects and quests",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "New residents have authored branching dialogue with saved progress. Conditions cover day, pesos, locality control, character and quest state. Choices apply one-time treasury operations and shared quest transitions with saved evidence. Different residents can participate. The journal reports accepted objectives, deadlines and failure causes. Overdue quests or confirmed deaths of required characters fail active objectives once. Historical conversations keep their existing rules. Dialogue choices can also call another authored resident to a persistent meeting point in the loaded sector. A dialogue condition can require actual conscious arrival at the latest local meeting before applying its effects.",
+      "published": "New residents have authored branching dialogue with saved progress. Conditions cover day, pesos, locality control, character and quest state. Choices apply one-time treasury operations and shared quest transitions with saved evidence. Different residents can participate. The journal reports accepted objectives, deadlines and failure causes. Overdue quests or confirmed deaths of required characters fail active objectives once. Historical conversations keep their existing rules. Dialogue choices can also call another authored resident to a persistent meeting point in the loaded sector. A dialogue condition can require actual conscious arrival at the latest local meeting before applying its effects. A dialogue can end its own or another resident meeting and return the actor to its routine, atomically with quest and money effects.",
       "local": "Authored resident quest transitions are accepted in the bounded published scope. Advanced historical role and objective systems are not imported.",
       "remaining": "Add item/escort/objective and other gameplay effects, historical role bindings and their receipts; extend authoring to historical conversations without bypassing campaign gates.",
       "acceptance": "Author and finish alternate quest branches through normal controls, including failures and saves.",
@@ -1584,7 +1614,8 @@
         "E-QUEST-DEADLINES",
         "E-QUEST-SURVIVAL",
         "E-DIALOGUE-MOVEMENTS",
-        "E-MEETING-ARRIVAL"
+        "E-MEETING-ARRIVAL",
+        "E-MEETING-RELEASE"
       ]
     },
     {
@@ -1593,14 +1624,15 @@
       "requirement": "Triggered tactical movement and arrival actions",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Dialogue choices call another authored resident through real paths and usable doors to a pinned meeting square beside the speaker. Arrival holds position; danger and blockers pause movement. Commands survive saves and same-sector re-entry; a daily relocation ends the old local order. A dialogue condition can require actual conscious arrival at the latest local meeting before applying its effects.",
+      "published": "Dialogue choices call another authored resident through real paths and usable doors to a pinned meeting square beside the speaker. Arrival holds position; danger and blockers pause movement. Commands survive saves and same-sector re-entry; a daily relocation ends the old local order. A dialogue condition can require actual conscious arrival at the latest local meeting before applying its effects. A dialogue can end its own or another resident meeting and return the actor to its routine, atomically with quest and money effects.",
       "local": "Real civilian pathfinding and escorts exist locally; not a general story sequence.",
-      "remaining": "Add authored map markers, automatic arrival effects, return to ambient routines, multi-actor sequences, automatic non-dialogue triggers and historical role actors. Verify a composed story scene through normal controls.",
+      "remaining": "Add authored map markers, automatic arrival effects, multi-actor sequences, automatic non-dialogue triggers and historical role actors. Verify a composed story scene through normal controls.",
       "acceptance": "Interaction sends a resident through a door to a marker; blocked path cannot finish; save, combat and reentry resume correctly.",
       "evidence": [
         "E-CONFLICTS",
         "E-DIALOGUE-MOVEMENTS",
-        "E-MEETING-ARRIVAL"
+        "E-MEETING-ARRIVAL",
+        "E-MEETING-RELEASE"
       ]
     },
     {
@@ -3433,13 +3465,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "29c7edad645e9dafe571509c1159996ff5550b77",
-    "total": 681,
-    "passed": 681,
+    "source": "2f1287020a76ce47d5422c28d4361d76a557c8fd",
+    "total": 689,
+    "passed": 689,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-MEETING-ARRIVAL"
+    "evidenceId": "E-MEETING-RELEASE"
   }
 }
