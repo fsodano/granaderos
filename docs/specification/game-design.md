@@ -221,6 +221,15 @@ locations, chapters, objectives, opposition and endings. Rules are validated
 settings or a supported typed condition/effect vocabulary, not arbitrary code
 embedded in content. Unsupported options must block launch with a useful reason.
 
+The authored supply rules set initial treasury and cartridge allotments for each
+player firearm deployment, new enemy and new militiaman. Defaults remain 3200
+pesos and 10/13/6 cartridges. Initial funds are delivered once; loading a save
+never restores them. Each player cartridge costs one peso under the existing
+return/refund rules. Zero is valid. Capacity caps the loaded portion and the rest
+remains in reserve. Blade primaries receive none. Existing troops retain spent
+supplies; mission allies keep their separate allotments. Broader care, priming,
+progression and economy rules remain separate authoring requirements.
+
 Drafts have validation, undo/redo, import/export and recovery. A campaign pins an
 immutable content version and assets. Editing a draft cannot alter an active save.
 Random results, pending events, exact item custody and all actor identities survive

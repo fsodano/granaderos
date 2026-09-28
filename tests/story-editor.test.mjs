@@ -479,3 +479,14 @@ test('the editor configures both troop slots, protects references and launches a
  for(const action of [{type:'recruitCivic',id:110,term:'week'},{type:'wait',hours:6},{type:'attack',sector:'buenos_aires'}]){campaign=dispatchCampaign(campaign,action);assert.equal(campaign.lastError,null);}
  const pair=decodeSave(encodeSave(campaign,enterSector(campaign.pendingBattle)));assert.equal(pair.battle.units.find(u=>u.id==='enemy-0').bladeMetadata.contentWeapon.id,'lanza-editor');const line=pair.battle.units.find(u=>u.id==='enemy-1');assert.equal(line.weaponMetadata.contentWeapon.id,'lanza-editor');assert.deepEqual([line.loaded,line.ammo,line.priming],[0,0,0]);
 });
+
+test('the editor configures initial money and ammunition, validates limits and preserves rules through undo and launch',async t=>{
+ const old=defaultContentPackage();delete old.rules;const m=await mount(t,JSON.stringify(old));const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));await m.click(m.button('Reglas'));
+ assert.equal(m.label('Fondos iniciales (pesos)').value,'3200');await m.input(m.label('Fondos iniciales (pesos)'),9000);await m.input(m.label('Cartuchos por combatiente de la escuadra'),3);await m.input(m.label('Cartuchos por enemigo nuevo'),7);await m.input(m.label('Cartuchos por miliciano nuevo'),5);
+ await m.click(m.button('Deshacer'));assert.equal(m.label('Cartuchos por miliciano nuevo').value,'6');await m.click(m.button('Rehacer'));assert.equal(m.label('Cartuchos por miliciano nuevo').value,'5');
+ await m.input(m.label('Cartuchos por enemigo nuevo'),101);assert.equal(m.button('Iniciar campaña con estas fichas').disabled,true);await m.input(m.label('Cartuchos por enemigo nuevo'),7);
+ await m.click(m.button('Restaurar fondos y cartuchos originales'));assert.equal(m.label('Fondos iniciales (pesos)').value,'3200');await m.click(m.button('Deshacer'));assert.equal(m.label('Fondos iniciales (pesos)').value,'9000');assert.deepEqual(draft().rules,{startingTreasury:9000,deploymentCartridges:3,enemyCartridges:7,militiaCartridges:5});
+ await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.equal(campaign.resources.treasury,9000);
+ for(const action of [{type:'recruitCivic',id:110,term:'week'},{type:'wait',hours:6},{type:'attack',sector:'buenos_aires'}]){campaign=dispatchCampaign(campaign,action);assert.equal(campaign.lastError,null);}
+ const pair=decodeSave(encodeSave(campaign,enterSector(campaign.pendingBattle)));assert.equal(pair.battle.units.find(u=>u.id==='110').loaded+pair.battle.units.find(u=>u.id==='110').ammo,3);assert.ok(pair.battle.units.filter(u=>u.side==='enemy').every(u=>u.loaded+u.ammo===7));
+});

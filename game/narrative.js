@@ -1,3 +1,4 @@
+import {campaignRules} from './campaign-rules.js';
 import {authoredForceEquipment} from './content-force-equipment.js';
 import {CAMPAIGN_SECTORS} from './data.js';
 export const ROYALIST_COMMANDS=[
@@ -27,5 +28,5 @@ export function oppositionFor(request,state){
  const command=ROYALIST_COMMANDS.find(c=>c.id===(request.theater==='north'?'north':request.theater==='coast'?'naval':'partisans'));
  const count=Math.max(3,request.squad.length+request.difficulty-1);
  const names=request.theater==='north'?['Oficial de la vanguardia de Tristán','Veterano del Ejército Real del Perú','Fusilero de Pezuela']:request.theater==='coast'?['Oficial de la flotilla de Romarate','Infante de desembarco realista','Marinero de la escuadra de Montevideo']:['Oficial de los cuadros de Talavera','Partidario del Cabildo realista','Miliciano leal a la Corona'];
- return {enemyCommand:command.id,enemyCommander:command.commander,enemyObjective:command.objective,enemies:Array.from({length:count},(_,i)=>authoredForceEquipment(state,'oppositionEquipment',i===0?'officer':i%3===0?'veteran':'line',{id:`enemy-${i}`,name:`${names[i%names.length]} ${Math.floor(i/names.length)+1}`,weapon:i===0?1805:i%3===0?1801:1800,blade:i===0?1809:1811,marksmanship:50+request.difficulty*5+(request.theater==='north'?3:0),morale:60+request.difficulty*5,leadership:i===0?75:40},13))};
+ return {enemyCommand:command.id,enemyCommander:command.commander,enemyObjective:command.objective,enemies:Array.from({length:count},(_,i)=>authoredForceEquipment(state,'oppositionEquipment',i===0?'officer':i%3===0?'veteran':'line',{id:`enemy-${i}`,name:`${names[i%names.length]} ${Math.floor(i/names.length)+1}`,weapon:i===0?1805:i%3===0?1801:1800,blade:i===0?1809:1811,marksmanship:50+request.difficulty*5+(request.theater==='north'?3:0),morale:60+request.difficulty*5,leadership:i===0?75:40},campaignRules(state).enemyCartridges))};
 }

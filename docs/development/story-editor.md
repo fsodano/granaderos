@@ -114,7 +114,7 @@ Las variantes aparecen por separado en la armería. Cada ejemplar conserva su id
 
 Las partidas nuevas del editor guardan estas definiciones por referencia al paquete incluido. La imagen no se repite por cada ejemplar. Al cargar se comprueba la identidad del paquete y cada referencia; también se admiten las definiciones completas guardadas anteriormente. Las campañas normales y las campañas antiguas con solo fichas conservan su catálogo publicado.
 
-La munición mantiene la economía existente: se compran diez cartuchos por arma al entrar al sector y se devuelve el valor de los cartuchos restantes al salir. Los cartuchos de un arma guardada en la mochila siguen en esa arma. Cambiar un arma en la armería se hace fuera del sector y devuelve el arma descargada. La disponibilidad comercial sigue siendo ilimitada; todavía no hay cantidades y reposición configurables por comerciante.
+La munición mantiene la economía existente: se compra la cantidad de cartuchos configurada en **Reglas** por arma de fuego al entrar al sector (diez por defecto) y se devuelve el valor de los cartuchos restantes al salir. Los cartuchos de un arma guardada en la mochila siguen en esa arma. Cambiar un arma en la armería se hace fuera del sector y devuelve el arma descargada. La disponibilidad comercial sigue siendo ilimitada; todavía no hay cantidades y reposición configurables por comerciante.
 
 La artillería, los accesorios, los tipos de munición y el coste de levantar el arma siguen pendientes de edición. Las opciones de manejo todavía no integradas bloquean el inicio de campaña.
 
@@ -134,9 +134,19 @@ La sección Armas incluye el armamento de las tropas. Se puede elegir un arma pr
 
 Usá **Configurar armas blancas de enemigos** o **Configurar armas blancas de milicias** para elegir además el arma secundaria de cada tipo de tropa. Cada espacio puede usar una variante distinta. **Arma blanca original** conserva la secundaria original de ese tipo. No significa dejarlo sin arma blanca. Estos campos también participan en deshacer, rehacer, importación, exportación y la protección contra eliminar armas en uso. Se pueden configurar las secundarias sin cambiar las principales.
 
-Las asignaciones se aplican cuando se crea un soldado. Las tropas que ya existen conservan su equipo, munición y desgaste al regresar al sector. Una tropa cuya arma principal es blanca, o no tiene arma principal, no recibe cartuchos ni cebo. Las nuevas tropas enemigas reciben trece cartuchos en total y las milicias seis, distribuidos entre carga y reserva según la capacidad real del arma. Estas cantidades corresponden al abastecimiento actual; todavía no son una regla editable.
+Las asignaciones se aplican cuando se crea un soldado. Las tropas que ya existen conservan su equipo, munición y desgaste al regresar al sector. Una tropa cuya arma principal es blanca, o no tiene arma principal, no recibe cartuchos ni cebo. Las nuevas tropas enemigas reciben trece cartuchos en total y las milicias seis por defecto. Podés cambiar ambas cantidades en **Reglas**. Se distribuyen entre carga y reserva según la capacidad real del arma.
 
 La inteligencia artificial usa los valores del arma elegida. Si lleva un arma de fuego, cambia a la secundaria editada cuando el enemigo está a su alcance o el arma de fuego está descargada y el enemigo está cerca. Vuelve al arma de fuego al alejarse el blanco, si tiene carga o está lo bastante lejos para recargar. Cambiar de mano cuesta los 4 PA habituales. Un soldado derribado se levanta antes de cambiar de arma. Los soldados con arma blanca principal usan su alcance y coste de ataque editados. El equipo recuperado conserva su definición, imagen y carga. Al regresar del combate, la devolución de cartuchos incluye las cargas recuperadas de enemigos. Volver a un combate pendiente usa las existencias reales de los soldados guardados, sin volver a acreditar cargas recuperadas antes.
+
+## Fondos y abastecimiento
+
+En **Reglas** podés definir los fondos iniciales y los cartuchos por combatiente de la escuadra, enemigo nuevo y miliciano nuevo. Los fondos permiten entre 0 y 1.000.000 de pesos; cada cantidad permite entre 0 y 100 cartuchos enteros. **Restaurar fondos y cartuchos originales** vuelve a 3.200 pesos y 10, 13 y 6 cartuchos, respectivamente. Deshacer recupera los valores anteriores.
+
+Los fondos se entregan una sola vez al crear la campaña. Cada entrada o ataque compra la cantidad indicada por cada arma principal de fuego de la escuadra, a 1 peso por cartucho. La carga nunca supera la capacidad del arma; el resto queda en reserva. Salir devuelve el valor de los cartuchos restantes según las reglas de recuperación existentes. La pantalla de campaña muestra el precio real antes de entrar.
+
+Cero deja las armas descargadas y sin reserva. Las armas principales blancas no reciben cartuchos. Las tropas guardadas conservan lo que les queda; la regla de enemigos y milicias solo se aplica al crear soldados. Los aliados temporales de misiones conservan su abastecimiento propio. El cebo, las piedras, los tipos de munición y el precio por cartucho aún no son configurables.
+
+Un borrador anterior usa los valores originales. La campaña guarda su propia copia de las reglas: cambiar el borrador no cambia una partida existente, y cargar una partida no vuelve a entregar los fondos iniciales.
 
 ## Recorrer celdas del mapa
 
@@ -242,3 +252,5 @@ Los mandos históricos conservan su servicio permanente, requisitos de reclutami
 `tests/content-blades.test.mjs` comprueba combate, intercepción, IA, peso, variantes de armería, cambios entre espacios, estado conservado, regreso y guardado, imágenes compartidas y paquetes anteriores. Las pruebas montadas verifican creación, asignación, protección de referencias, compra, imagen secundaria y cambio de mano con guardado activo. Son pruebas limitadas; no acreditan una campaña completa.
 
 `tests/force-blades.test.mjs` cubre ambos espacios de enemigos y milicias, cartuchos según el arma principal, decisiones de cambio de la IA, tropas guardadas y recuperación de un arma principal con retirada y reentrada. Usa tropas reales emitidas por campaña en escenarios pequeños preparados. El editor montado conserva ambas selecciones y las aplica a un ataque real. Ver [armas blancas de las tropas](../verification/force-blades.md).
+
+`tests/campaign-rules.test.mjs` cubre fondos iniciales, valores válidos, copias guardadas, cobros y devoluciones, cargas nulas y milicias con cartuchos consumidos. El editor montado modifica, restaura, deshace y lanza las reglas. La pantalla montada comprueba el precio, la entrada, la salida y el guardado automático. Ver [fondos y abastecimiento](../verification/campaign-supply-rules.md).
