@@ -266,7 +266,7 @@ En el campo táctico podés usar los cursores normales para atacar o atender a u
 
 La muerte cancela los traslados y el reclutamiento. El cuerpo queda en su escena. La campaña aplica una vez la consecuencia local de lealtad y marca como fallido un encargo pendiente de ese contacto. Si muere un mando indispensable de la historia original, la campaña termina. San Martín comparte su salud entre sus funciones de contacto y aliado.
 
-Todavía no se pueden editar sus pertenencias, saquearlos ni mantenerlos cautivos. No se inventa equipo para sus cuerpos. Las heridas se conservan fuera de la escena, pero todavía no se simula atención médica o hemorragia mientras el sector está cerrado. La [verificación](../verification/civilian-state.md) detalla las pruebas y los límites.
+Todavía no se pueden editar sus pertenencias, saquearlos ni mantenerlos cautivos. No se inventa equipo para sus cuerpos. Las heridas se conservan fuera de la escena. Un habitante reclutado puede recibir [atención médica en campaña](../gameplay/characters/strategic-medical-care.md) y conserva la salud recuperada al dejar el servicio. El cuidado de habitantes fuera del servicio y su hemorragia en sectores cerrados siguen pendientes. La [verificación](../verification/civilian-state.md) detalla las pruebas y los límites.
 
 ## Aparición después de una muerte
 

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "2ed9f7ac0eb2b20a2d52a9b4a4b4667699b930b1",
+  "baseline": "c64120315a81360c902552555e0d838b5f8b257f",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -260,7 +260,13 @@
     {
       "id": "E-POST-CAMPAIGN",
       "path": "docs/verification/independent-post-campaign.md",
-      "description": "A downloadable independent three-chapter package completes actual paid recruitment, two battles, local dialogues, replacements, workshop service, finite care, three permanent losses and the saved return ending. Replay, midpoint saves, post-victory reentry, real deadline failure, content pinning and mounted example load/edit/undo/launch are covered. One seed/strategy is accepted; stock geography/opposition and advanced integration remain separate."
+      "description": "A downloadable independent three-chapter package completes actual paid recruitment, two battles, local dialogues, replacements, workshop service, finite care, three permanent losses and the saved return ending. Replay, midpoint saves, post-victory reentry, real deadline failure, content pinning and mounted example load/edit/undo/launch are covered. One seed/strategy is accepted; stock geography/opposition and advanced integration remain separate. PR #68 merged after CI passed at 000a91ba63b9910ad892263c23474afd120dba0b.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36416617388/job/108909164560"
+    },
+    {
+      "id": "E-STRATEGIC-CARE",
+      "path": "docs/verification/strategic-medical-care.md",
+      "description": "Hired doctors and patients share an exact safe cell and spend time, energy and finite dressings. Actual campaign controls assign, advance and purchase; saves retain wounds, stocks and work. A real injured resident is recruited, treated, dismissed and encountered with recovered health. Prepared wounds are declared in the other fixtures. Advanced rest, bleeding, militia care, physical custody and northern relief remain open."
     }
   ],
   "queue": [
@@ -309,12 +315,34 @@
   ],
   "requirements": [
     {
+      "id": "CARE-01",
+      "group": "Published deliveries",
+      "requirement": "Assign serving doctors and patients for finite hourly care through campaign controls",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Doctors first stop bleeding, then restore health in the same safe controlled cell. Personal dressings and energy limit treatment; supplied local workshops sell explicit quantities. Medical assignments prevent marching or deployment and cannot overlap militia instruction.",
+      "local": "Six simulation checks and a mounted campaign flow cover finite care, distinct patients, remote rejection, expiry, purchase and saved continuation. An actually wounded resident retains recovery after recruitment, treatment and return to the world.",
+      "remaining": "",
+      "acceptance": "Use actual assignment and time controls, spend finite supplies, buy replacements, save and deploy recovered personnel; reject remote care and invalid work without granting health or supplies.",
+      "evidence": [
+        "E-STRATEGIC-CARE"
+      ],
+      "parents": [
+        "JA2-A01",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/medical-care.test.mjs",
+        "tests/medical-care-render.test.mjs"
+      ]
+    },
+    {
       "id": "POST-01",
       "group": "Published deliveries",
       "requirement": "Load, edit and finish a complete independent campaign package",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "La ruta de las postas is a downloadable three-chapter scenario with thirteen independent identities, paid service, two actual locality battles, world contacts, a timed objective and its own ending. The editor loads it with undo and the verified seed.",
+      "published": "La ruta de las postas is a downloadable three-chapter scenario with thirteen independent identities, paid service, two actual locality battles, world contacts, a timed objective and its own ending. The editor loads it with undo and the verified seed. Merged through PR #68 after exact-head CI.",
       "local": "A fresh seed-8 route pays for replacements and supplies, preserves three deaths, returns to Córdoba and saves victory; a separate fresh timed route loses. Mounted controls load, edit, undo and launch real play.",
       "remaining": "",
       "acceptance": "Use a portable package without engine-specific scenario code; launch and complete its declared beginning, middle and ending through actual campaign actions, with losses, costs, saved continuation and a real failure path.",
@@ -330,7 +358,8 @@
       "testFiles": [
         "tests/post-campaign.test.mjs",
         "tests/story-editor.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/68"
     },
     {
       "id": "AMMOSAVE-01",
@@ -3407,16 +3436,17 @@
       "id": "JA2-A01",
       "group": "JA2 gameplay parity",
       "requirement": "Doctor and Patient require co-location, skill, finite medical equipment, and time. G22,62,69,81.",
-      "status": "LOCAL_ONLY",
+      "status": "PARTIAL",
       "priority": "P1",
-      "published": "This complete capability is not accepted in the published release.",
+      "published": "The published doctor/patient subset has exact-cell co-location, skill, finite dressings, hourly progress, controls and saves. CARE-01 records its bounded acceptance.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
-      "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
+      "remaining": "Integrate and verify the advanced care model, physical kit custody and full exhaustion, occupation, travel and death routes. Resolve the northern medical-relief failure separately.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-STRATEGIC-CARE"
       ],
       "sourceRow": "JA2-A01",
       "sourceNotes": "Stock caps and refill rates are campaign tuning. Keep assignment eligibility and progress correct during travel, tactical deployment, exhaustion, contract expiry, occupation and death."
@@ -4211,13 +4241,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "32f7dc096cbdb3c152a79996a337d1fc1f885443",
-    "total": 807,
-    "passed": 807,
+    "source": "2ed9f7ac0eb2b20a2d52a9b4a4b4667699b930b1",
+    "total": 810,
+    "passed": 810,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-CARTRIDGE-SAVE"
+    "evidenceId": "E-POST-CAMPAIGN"
   }
 }

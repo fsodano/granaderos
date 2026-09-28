@@ -18,6 +18,7 @@ the [workspace acceptance record](../../verification/gameplay-completion.md) and
 
 ## Health and care
 
+- [Atención médica en campaña](strategic-medical-care.md)
 - [Critical first aid](critical-first-aid.md) *(workspace)*
 - [Civilian first aid](civilian-first-aid.md) *(workspace)*
 - [Automatic civilian care](automatic-civilian-care.md) *(workspace)*

@@ -45,7 +45,9 @@ cartridges. This exercises the actual campaign/save path and the separate
 Release checks: **810/810 tests**, zero failures or skips (192,882 ms); type
 check; production export (722 files, 632 asset references, including the package);
 36 baseline checks; documentation audit (206 requirements, all 50 original and
-87 parity rows, 45 evidence records). Exact-head GitHub CI is required before merge.
+87 parity rows, 45 evidence records). [PR #68](https://github.com/fsodano/granaderos/pull/68)
+merged after [CI](https://github.com/fsodano/granaderos/actions/runs/36416617388/job/108909164560)
+passed at `000a91ba63b9910ad892263c23474afd120dba0b`.
 
 ## Limits
 
