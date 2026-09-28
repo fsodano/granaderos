@@ -33,6 +33,7 @@ import {CHARACTER_ABILITIES,legacyCharacterAbilities} from '../../../game/charac
 import {isContractCharacter,isHistoricalCharacter,isWorldCharacter,legacyOperativeId} from '../../../game/content-character-ids.js';
 import CharacterPresentation from './CharacterPresentation';
 import CharacterSupplies from './CharacterSupplies';
+import CharacterCondition from './CharacterCondition';
 import postCampaign from '../../public/campaigns/la-ruta-de-las-postas.json';
 import {SPEECH_EVENTS} from '../../../game/characters.js';
 import {characterPresentationDefaults} from '../../../game/content-character-presentation.js';
@@ -742,7 +743,8 @@ export default function ContentEditor() {
                         })}
                       </div>
                     </fieldset>
-                    <CharacterSupplies character={item} onChange={update}/>
+      <CharacterSupplies character={item} onChange={update}/>
+      <CharacterCondition character={item} onChange={update}/>
                     <CharacterPresentation character={item} portraits={defaultContentPackage().characters} weapon={draft.weapons.find((w:any)=>w.id===item.weapon)?.template??0} onChange={update}/>
                     <h3>Atributos</h3>
                     <div className="fields">

@@ -1,6 +1,7 @@
 import {validateCareRules} from './campaign-care-rules.js';
 import {validateFoundry} from './campaign-foundry.js';
 import {validStartingSupplies} from './character-supplies.js';
+import {validStartingCondition} from './character-condition.js';
 import {validateCampaignRoles} from './campaign-roles.js';
 import {validateCampaignStory} from './campaign-story.js';
 import {DEFAULT_IMPORT_RULES,validateImportRules} from './campaign-imports.js';
@@ -179,6 +180,7 @@ export function validateContentPackage(value) {
     text(c.biography, `${c.id}.biography`, 5000, true);
     if(c.abilities!==undefined)check(validCharacterAbilities(c.abilities),c.id,'habilidades no válidas.');
     if(c.startingSupplies!==undefined)check(validStartingSupplies(c.startingSupplies),`${c.id}.startingSupplies`,'los seis suministros iniciales necesitan cantidades enteras de 0 a 1000.');
+    if(c.startingCondition!==undefined)check(validStartingCondition(c.startingCondition,c.attributes?.maxHp),`${c.id}.startingCondition`,'el estado inicial necesita cinco valores enteros: salud de 1 al máximo, energía y fatiga de 0 a 100, sangrado de 0 a 10 y heridas vendadas dentro de la salud perdida. El sangrado necesita una herida sin vendar.');
     if(c.personality!==undefined)text(c.personality,`${c.id}.personality`,2000,true);
     if(c.speech!==undefined){
       check(record(c.speech)&&Object.keys(c.speech).length===SPEECH_EVENTS.length&&Object.keys(c.speech).every(key=>SPEECH_EVENTS.includes(key)),c.id,'la lista de frases no es válida.');
