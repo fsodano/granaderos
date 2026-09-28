@@ -7,6 +7,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 
 ## Published baseline
 
+- [Autonomous local artillery crews](autonomous-artillery-crews.md)
 - [Authored finite artillery replenishment](authored-artillery-supply.md)
 - [Artillery loading by the actual crew](artillery-crew-loading.md)
 - [Stationed artillery and finite issue](stationed-artillery.md)

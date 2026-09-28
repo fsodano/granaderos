@@ -460,6 +460,11 @@
       "id": "E-ARTILLERY-SUPPLY",
       "path": "docs/verification/authored-artillery-supply.md",
       "description": "Pinned optional supply permission, three model prices and a purchase reserve cap drive exact local cannon replenishment under the published pesos economy. Seven simulations, two mounted armory cases and one mounted editor case pass; overlapping artillery group 28/28. Full regression passes 1054/1054, zero failures/skips, with types, export and 36 reference comparisons. An actually exhausted paid gun purchases one round, saves unloaded, and loads through its ordinary crew. Prepared eligibility/model/work boundaries remain explicit. Exact-head publication remains required."
+    },
+    {
+      "id": "E-ARTILLERY-AUTONOMY",
+      "path": "docs/verification/autonomous-artillery-crews.md",
+      "description": "Seventeen simulations and two mounted Battlefield cases verify enemy/militia gun operation, short crew assembly, paid posture, finite shared AP/loading, visibility and collateral checks, quiet posts and saved continuation. An actual purchased retained gun and paid cohort fire and persist through complete campaign saves in a declared local ambush. Final overlap passes 29/29 and complete regression 1073/1073, zero failures/skips, with types, export and 36 reference checks. Exact-head publication remains required; broad AI, transport and artillery authoring remain open."
     }
   ],
   "queue": [
@@ -507,6 +512,34 @@
     }
   ],
   "requirements": [
+    {
+      "id": "ARTILLERYAI-01",
+      "group": "Published deliveries",
+      "requirement": "Operate local artillery through enemy and militia turns with finite shared crew budgets and safe observed targeting",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Enemy and militia crews operate nearby owned guns with finite AP, ammunition and retained work.",
+      "local": "Seventeen simulations and two mounted Battlefield cases pass, including scattered/prone crew assembly and a real purchased gun with paid militia. Full regression passes 1073/1073, zero failures/skips, with types, export and all 36 baseline comparisons.",
+      "remaining": "",
+      "acceptance": "Assemble a capable local crew, pay every participant once per phase, retain unfinished work and finite reserve, respect perception and collateral, hold serviceable posts, release depleted guns and preserve actual paid identities/resources through saves.",
+      "evidence": [
+        "E-ARTILLERY-AUTONOMY"
+      ],
+      "parents": [
+        "TAC-08",
+        "MIL-01",
+        "JA2-S05",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/artillery-autonomy.test.mjs",
+        "tests/artillery-autonomy-render.test.mjs",
+        "tests/stationed-artillery.test.mjs",
+        "tests/artillery-crew-loading.test.mjs",
+        "tests/militia-autonomy.test.mjs",
+        "tests/militia-exploration.test.mjs"
+      ]
+    },
     {
       "id": "ARTILLERYSUPPLY-01",
       "group": "Published deliveries",
@@ -2888,8 +2921,8 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Paid local militia cohorts materialize with historical loadouts, fight as local allies and retain actual tactical wounds, casualties and depleted equipment through saved reentry. Individual promotion and advanced militia behavior are tracked separately. PR #89 adds local physician care with finite dressings. PR #90 preserves individual participants through paid promotion. PR #91 advances unloaded wounds and preserves actual finite remains. PR #92 adds combat-earned promotion with persistent opponent credit and disallows new paid veteran courses. PR #93 pins authored promotion thresholds and attribute gains and fixes the large-encounter credit boundary. PR #94 adds an explicit choice between fresh cohorts and individual promotion with the actual quote and eligibility. PR #95 integrates autonomous allied turns, finite reactions and distinct militia controls. PR #96 publishes finite local exploration patrols, real contact and synchronized saved continuation. PR #97 publishes connected-city transfers, automatic balancing and saved physical arrivals. PR #98 pins authored patrol activation, waypoint timing and exploration reserve/recovery.",
-      "local": "Individual promotion acceptance is tracked by MILITIATRAIN-01; local physician work by MILITIACARE-01. The larger preserved parity source is not equivalent to published integration. Retained militia wound time is tracked by MILITIAWOUND-01. Combat-earned promotion is tracked by MILITIAXP-01. Editable progression is tracked by MILITIARULES-01. The practical course selector is tracked by MILITIACHOICE-01. Autonomous combat and distinct controls are tracked by MILITIAAI-01. MILITIAPATROL-01 accepts bounded peaceful patrols, contact and saved UI clock controls. MILITIADIST-01 tracks city transfers, automatic balancing and safe saved arrivals. PATROLRULES-01 tracks optional patrol activation, timing and exploration energy settings.",
-      "remaining": "Integrate advanced support/artillery, custody, configurable city rules and the remaining defense acceptance.",
+      "local": "Individual promotion acceptance is tracked by MILITIATRAIN-01; local physician work by MILITIACARE-01. The larger preserved parity source is not equivalent to published integration. Retained militia wound time is tracked by MILITIAWOUND-01. Combat-earned promotion is tracked by MILITIAXP-01. Editable progression is tracked by MILITIARULES-01. The practical course selector is tracked by MILITIACHOICE-01. Autonomous combat and distinct controls are tracked by MILITIAAI-01. MILITIAPATROL-01 accepts bounded peaceful patrols, contact and saved UI clock controls. MILITIADIST-01 tracks city transfers, automatic balancing and safe saved arrivals. PATROLRULES-01 tracks optional patrol activation, timing and exploration energy settings. ARTILLERYAI-01 accepts local automatic gun crews, shared budgets, safe observed targeting and saved finite resources.",
+      "remaining": "Integrate advanced support, custody, configurable city rules and the remaining defense acceptance.",
       "acceptance": "Training, historical loadouts and distinct behavior",
       "evidence": [
         "E-PUBLISHED",
@@ -2903,7 +2936,8 @@
         "E-MILITIA-AUTONOMY",
         "E-MILITIA-PATROLS",
         "E-MILITIA-DISTRIBUTION",
-        "E-PATROL-RULES"
+        "E-PATROL-RULES",
+        "E-ARTILLERY-AUTONOMY"
       ]
     },
     {
@@ -3020,7 +3054,7 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Three crew-served gun profiles and artillery actions.",
-      "local": "See local suite and preserved parity source; not equivalent to published integration. EMPLACEMENT-01 accepts bounded physical sector persistence, finite first issue, capture and migration. CREWLOAD-01 accepts retained individual crew work, finite completed shots and shared controls. ARTILLERYSUPPLY-01 accepts pinned pesos prices, supply permission, reserve cap and finite local replenishment.",
+      "local": "See local suite and preserved parity source; not equivalent to published integration. EMPLACEMENT-01 accepts bounded physical sector persistence, finite first issue, capture and migration. CREWLOAD-01 accepts retained individual crew work, finite completed shots and shared controls. ARTILLERYSUPPLY-01 accepts pinned pesos prices, supply permission, reserve cap and finite local replenishment. ARTILLERYAI-01 accepts local automatic gun crews, shared budgets, safe observed targeting and saved finite resources.",
       "remaining": "Publish accepted physical emplacements, partial crew loading and authored replenishment after exact-head CI; integrate autonomous crews and strategic recovery/transport.",
       "acceptance": "Crew requirements, movement/pivot AP and range",
       "evidence": [
@@ -3028,7 +3062,8 @@
         "E-CONFLICTS",
         "E-STATIONED-ARTILLERY",
         "E-ARTILLERY-CREW-LOADING",
-        "E-ARTILLERY-SUPPLY"
+        "E-ARTILLERY-SUPPLY",
+        "E-ARTILLERY-AUTONOMY"
       ]
     },
     {
@@ -4903,8 +4938,8 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Paid local militia and saved tactical casualties are published. PRs #89\u201391 add finite local physician care, individual training and unloaded wound deaths with retained actual remains. PR #95 integrates autonomous allied turns, finite reactions and distinct militia controls. PR #96 publishes finite local exploration patrols, real contact and synchronized saved continuation. PR #97 publishes connected-city transfers, automatic balancing and saved physical arrivals. PR #98 pins authored patrol activation, waypoint timing and exploration reserve/recovery.",
-      "local": "MILITIAAI-01 accepts the bounded published-engine autonomous phases, saved reactions and control restrictions with actual paid wounded survivors. The preserved advanced source still contains separate patrol, artillery and redistribution scope. MILITIAPATROL-01 accepts bounded peaceful patrols, contact and saved UI clock controls. MILITIADIST-01 tracks city transfers, automatic balancing and safe saved arrivals. PATROLRULES-01 tracks optional patrol activation, timing and exploration energy settings.",
-      "remaining": "Integrate advanced support/artillery, custody, configurable city rules and the remaining defense acceptance.",
+      "local": "MILITIAAI-01 accepts the bounded published-engine autonomous phases, saved reactions and control restrictions with actual paid wounded survivors. The preserved advanced source still contains separate patrol, artillery and redistribution scope. MILITIAPATROL-01 accepts bounded peaceful patrols, contact and saved UI clock controls. MILITIADIST-01 tracks city transfers, automatic balancing and safe saved arrivals. PATROLRULES-01 tracks optional patrol activation, timing and exploration energy settings. ARTILLERYAI-01 accepts local automatic gun crews, shared budgets, safe observed targeting and saved finite resources.",
+      "remaining": "Integrate advanced support, custody, configurable city rules and the remaining defense acceptance.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
@@ -4916,7 +4951,8 @@
         "E-MILITIA-AUTONOMY",
         "E-MILITIA-PATROLS",
         "E-MILITIA-DISTRIBUTION",
-        "E-PATROL-RULES"
+        "E-PATROL-RULES",
+        "E-ARTILLERY-AUTONOMY"
       ],
       "sourceRow": "JA2-S05",
       "sourceNotes": "Live paid training, status cards, rejected manual selection and contextual medical targeting passed. Automatic combat and saved reactions remain unverified live; a validated importable defense demo is provided. Peaceful patrols now advance local militia through fixed map waypoints, one legal step per six seconds, with energy costs and no AP charge. Real contact stops ambient movement. Five focused tests and a live patrol/save check cover this behavior; see [exploration patrols](exploration-patrols.md). Militia now operate nearby friendly cannons using their own eligible crews and finite ammunition; see [autonomous artillery](artillery-ai.md). Strategic medical care now uses a separate local assignment, personal kits, hourly triage and saved stops. Ten simulation/render checks and a live treatment, save, depletion and paid-resupply sequence cover it; see [militia medical care](militia-medical-care.md). Town redistribution is now available through manual rank/quantity transfers and an automatic capacity-aware plan, preserving exact soldiers and finite supplies. Thirteen new simulation/render checks and live transfer, wound, reload and balancing checks cover it; see [city militia distribution](militia-distribution.md). The original manual p. 44 supports this strategic choice; a classic tactical command menu is not established by the cited pages and remains a separate open audit item. Shared friendly allegiance, phase placement and AP refresh are Granaderos adaptations."

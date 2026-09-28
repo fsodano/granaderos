@@ -203,7 +203,7 @@ Las partidas nuevas del editor guardan estas definiciones por referencia al paqu
 
 La munición mantiene la economía existente: se compra la cantidad de cartuchos configurada en **Reglas** por arma de fuego al entrar al sector (diez por defecto) y se devuelve el valor de los cartuchos restantes al salir. Los cartuchos de un arma guardada en la mochila siguen en esa arma. Cambiar un arma en la armería se hace fuera del sector y devuelve el arma descargada. La disponibilidad comercial sigue siendo ilimitada; todavía no hay cantidades y reposición configurables por comerciante.
 
-La artillería, los accesorios, los tipos de munición y el coste de levantar el arma siguen pendientes de edición. Las opciones de manejo todavía no integradas bloquean el inicio de campaña.
+Los perfiles de artillería, los accesorios y los tipos de munición siguen pendientes de edición. Las opciones de manejo todavía no integradas bloquean el inicio de campaña.
 
 ## Armas blancas aplicadas a la campaña
 
@@ -589,3 +589,18 @@ La pantalla indica por qué una compra no está disponible.
 Comprar no carga la pieza ni borra una recarga parcial. La dotación debe cargarla
 en el campo. El límite no elimina munición que ya existe, ni cambia la entrega
 inicial de una carga y seis reservas. [Verificación](../verification/authored-artillery-supply.md).
+
+
+## Dotaciones automáticas
+
+Los realistas y las milicias usan cañones propios cercanos si reúnen una dotación
+capaz. Cada integrante paga su parte de trabajo. Los primeros artilleros esperan
+junto al cañón mientras llegan los demás; los que están tendidos deben levantarse.
+La recarga conserva su avance entre turnos y solo consume munición al terminar.
+Las piezas sin munición liberan a la dotación para otras acciones.
+
+El disparo exige un objetivo visible. La dotación evita trayectorias que alcancen
+aliados o civiles visibles. Una amenaza muy cercana tiene prioridad. Las escuadras
+contratadas conservan el control manual; no prestan sus PA a las milicias.
+Guardar conserva los recursos reales. El traslado estratégico y los perfiles
+editables de cañones siguen pendientes. [Verificación](../verification/autonomous-artillery-crews.md).

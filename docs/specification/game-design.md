@@ -708,3 +708,18 @@ with a six-round limit; these are game tuning. A lower limit preserves existing
 rounds and the initial purchased bundle. Old packages keep their identity. See
 [verification](../verification/authored-artillery-supply.md) for paid depletion,
 reload and saved UI continuation, and for prepared eligibility boundaries.
+
+
+### Autonomous local artillery crews
+
+Nearby capable enemies and militia use their own control-group crew, real AP,
+finite shots and retained loading work. Short approaches and paid stance changes
+assemble the local crew; adjacent operators wait for helpers. A close threat
+returns them to ordinary combat. Quiet posts retain only their needed crew, and
+depleted pieces release it. Shared enemy budgets are issued before any cannon
+work, preventing a helper from receiving a second issue at its individual slot.
+Visible-target selection and execution share penetrating and canister traces,
+with known-friendly and visible-civilian checks. Hired soldiers retain manual
+control. [Verification](../verification/autonomous-artillery-crews.md) separates
+real paid-gun/cohort continuation from prepared geometry. Strategic transport,
+gun authoring, remote assembly and advanced AI remain separate.
