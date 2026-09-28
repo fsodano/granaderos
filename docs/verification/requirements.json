@@ -272,7 +272,8 @@
     {
       "id": "E-LOCAL-WORKSHOP",
       "path": "docs/verification/local-workshop-service.md",
-      "description": "A two-squad paid-hire route reproduced remote repair and replenishment. Shared workshop eligibility now checks the recipient exact location, availability, control and supply. Real return travel, payment, repeat rejection, saves, deployment and mounted armory controls pass. Wear is a declared prepared fixture; timed repair, stock custody and armory transfers remain separate."
+      "description": "A two-squad paid-hire route reproduced remote repair and replenishment. Shared workshop eligibility now checks the recipient exact location, availability, control and supply. Real return travel, payment, repeat rejection, saves, deployment and mounted armory controls pass. Wear is a declared prepared fixture; timed repair, stock custody and armory transfers remain separate.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36419410898/job/108918251655"
     },
     {
       "id": "E-STRATEGIC-REST",
@@ -385,7 +386,7 @@
       "requirement": "Require actual local presence for paid workshop replenishment and repair",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "The selected workshop can service only a person actually present there. The armory shows the person location and blocks remote service with a reason. Explicit dressing purchases share the same eligibility.",
+      "published": "The selected workshop can service only a person actually present there. The armory shows the person location and blocks remote service with a reason. Explicit dressing purchases share the same eligibility. Merged through PR #70 after exact-head CI.",
       "local": "A formerly accepted remote request fails in the new regression. Actual paid hires and travel, local service, return, once-only charges, saves and deployment are covered, together with mounted armory controls. Prepared wear is declared.",
       "remaining": "",
       "acceptance": "Separate two serving people by real travel; reject distant service without changing state; return and pay through normal controls; retain the actual supplies and condition in saves and deployment.",
@@ -400,7 +401,8 @@
       "testFiles": [
         "tests/workshop-service.test.mjs",
         "tests/workshop-service-render.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/70"
     },
     {
       "id": "CARE-01",
@@ -4333,13 +4335,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "c64120315a81360c902552555e0d838b5f8b257f",
-    "total": 817,
-    "passed": 817,
+    "source": "d3e7d078653f9dd15c98926f57cec18430a25727",
+    "total": 821,
+    "passed": 821,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-STRATEGIC-CARE"
+    "evidenceId": "E-LOCAL-WORKSHOP"
   }
 }
