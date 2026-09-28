@@ -35,6 +35,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Import ports and saved delivery windows](import-supply-rules.md)
 - [Authored campaign chapters and endings](campaign-story.md)
 - [Independent campaign casts](campaign-cast.md)
+- [Assigned strategic campaign roles](campaign-roles.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 

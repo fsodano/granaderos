@@ -1,3 +1,4 @@
+import {campaignRole,campaignRoleActive,foundryReason} from './campaign-roles.js';
 import {campaignStory,campaignChapterIndex,advanceCampaignStory,validateCampaignProgress} from './campaign-story.js';
 import {importRulesFor,importOrderReason} from './campaign-imports.js';
 import {headquartersFor,headquartersName,campaignChapters,hasWorkshop} from './campaign-headquarters.js';
@@ -334,7 +335,7 @@ export function dispatchCampaign(previous,action){
             if(!s.squad.length||s.defeated){note(s,'La marcha se interrumpe antes de alcanzar la siguiente celda.');break;}
             const blocked=cellTravelReason(s,next);if(blocked){note(s,`La marcha se detiene: ${blocked}`);break;}
             s.location=next;synchronizeSquad(s);
-            for(const id of s.squad)s.operativeState[id].fatigue=Math.min(90,s.operativeState[id].fatigue+(s.recruited.includes(57)?0:worldCell(next).biome==='mountain'?4:2));
+            for(const id of s.squad)s.operativeState[id].fatigue=Math.min(90,s.operativeState[id].fatigue+(campaignRoleActive(s,'marchCommander')?0:worldCell(next).biome==='mountain'?4:2));
           }
           note(s,`La escuadra queda en ${campaignPlace(s.location).name}.`);break;
         }
@@ -346,11 +347,11 @@ export function dispatchCampaign(previous,action){
         const mountain=path.some(id=>sector(id).biome==='mountain');requireThat(!(path.some(id=>['uspallata','los_patos'].includes(id))&&campaignDate(s).month>=6&&campaignDate(s).month<=8),'La nieve invernal ha cerrado los pasos.');
         if(mode==='posta')pay(s,{treasury:10*Math.max(1,path.length-1)});
         const hours=Math.max(1,Math.ceil((path.length-1)*(mode==='posta'?4:mode==='flotilla'?5:mode==='carts'?18:12)*(mountain?1.5:1)));tick(s,hours,{joinArrivals:false});if(s.defeated){note(s,'La marcha se interrumpe: la campaña ha terminado.');break;}if(!s.squad.length){note(s,'La marcha se cancela al terminar el último contrato.');break;}const openPath=[];for(const id of path){if(s.sectors[id].owner!=='patriot')break;openPath.push(id);}s.location=openPath.at(-1)??s.location;if(s.location!==action.sector)note(s,'El avance se detiene: una incursión cortó la ruta durante la marcha.');
-        for(const id of s.squad)s.operativeState[id].fatigue=Math.min(90,s.operativeState[id].fatigue+(s.recruited.includes(57)?0:mountain?20:8));note(s,`El destacamento llega a ${sector(s.location).name}.`);break;
+        for(const id of s.squad)s.operativeState[id].fatigue=Math.min(90,s.operativeState[id].fatigue+(campaignRoleActive(s,'marchCommander')?0:mountain?20:8));note(s,`El destacamento llega a ${sector(s.location).name}.`);break;
       }
       case 'transport':requireThat(['posta','flotilla','carts','mules'].includes(action.mode),'Transporte desconocido.');requireThat(!s.routes[action.mode],'Ese transporte ya está organizado.');pay(s,action.mode==='posta'?{treasury:150}:action.mode==='flotilla'?{treasury:400}:action.mode==='mules'?{treasury:120}:{treasury:180});s.routes[action.mode]=true;note(s,'La nueva red de transporte queda disponible.');break;
       case 'fundArmy':requireThat(s.flags.foundry,'Primero organizá El Plumerillo.');requireThat(!s.flags.armyFunded,'El ejército ya está financiado.');pay(s,{treasury:3000});s.flags.armyFunded=true;note(s,'Se abonan 3000 pesos para instruir y equipar al Ejército de los Andes.');break;
-      case 'foundry':requireThat(s.sectors.mendoza.owner==='patriot'&&s.recruited.includes(2),'Libera Mendoza e incorpora a Beltrán.');requireThat(!s.flags.foundry,'El Plumerillo ya está organizado.');pay(s,{treasury:500});s.flags.foundry=true;note(s,'Beltrán organiza El Plumerillo.');break;
+      case 'foundry':{const reason=foundryReason(s);requireThat(!reason,reason);requireThat(!s.flags.foundry,'El Plumerillo ya está organizado.');pay(s,{treasury:500});s.flags.foundry=true;note(s,`${campaignRole(s,'foundryEngineer').name} organiza El Plumerillo.`);break;}
       case 'policy':{applyPolicy(s,action.kind);break;}
       case 'diplomacy':{
         const kind=action.kind;

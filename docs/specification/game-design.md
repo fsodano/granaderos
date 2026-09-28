@@ -105,10 +105,25 @@ and no historical recruitment gate. Empty casts support the normal free player
 creation path. New editor identities never reuse reserved original slots.
 
 Generic original map residents can be included or excluded independently; older
-packages retain them. Saves pin this choice and the cast. Historical foundry UI
-is absent if its engineer is absent. Replacing the cast does not reassign campaign
+packages retain them. Saves pin this choice and the cast. Foundry UI uses the assigned engineer and is absent when no engineer exists and
+preparation has not been completed. Replacing the cast does not reassign campaign
 functions or compose factions, opposition commanders, diplomacy and world events.
 Those remain separate work from selecting who can appear in a new campaign.
+
+## Strategic role assignment
+
+Campaign content can assign the foundry and global marching privileges to any
+catalogue identity or disable either. Omitted configuration keeps the original
+identity only if that identity remains in the cast. Explicit role references
+protect deletion. Definitions stay pinned in the campaign save.
+
+A role requires actual incorporation, life, freedom and valid service. Paid
+travel does not count as service; death, custody or expiry removes the privilege.
+The marching privilege suppresses travel fatigue for all squads. Preparing the
+foundry is a one-time payment; completion persists after its engineer leaves.
+The treasury displays the assigned character and the actual availability reason.
+Location, text, cost and effect-strength authoring, other mission roles and
+succession transfer remain separate contracts.
 
 ## Player flow
 

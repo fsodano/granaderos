@@ -46,7 +46,17 @@ En **Reglas**, **Incluir habitantes genéricos del mapa original** controla los 
 
 Podés quitar todo el elenco y crear otro. Un catálogo vacío permite crear al granadero del jugador al iniciar. El editor no reutiliza los puestos reservados de personajes originales para una identidad nueva. Las campañas iniciadas conservan su propio catálogo y esta opción, aunque después cambies el borrador.
 
-Si volvés al avance histórico con mandos faltantes, el inicio queda bloqueado hasta recuperarlos. El botón para preparar El Plumerillo no aparece si Beltrán no forma parte del catálogo. La copia de un mando no hereda ese taller, su bonificación estratégica ni su papel de misión. La reasignación de esas funciones, las facciones, los mandos enemigos, la diplomacia y los eventos del mundo todavía requieren su propia edición.
+Si volvés al avance histórico con mandos faltantes, el inicio queda bloqueado hasta recuperarlos. El botón para preparar El Plumerillo usa al responsable de fundición elegido en Reglas. Sin responsable no aparece, salvo que la fundición ya esté organizada. La copia de un mando no hereda ese taller, su bonificación estratégica ni su papel de misión. Asigná la fundición y la marcha de forma explícita. Las facciones, los mandos enemigos, la diplomacia y los eventos del mundo todavía requieren su propia edición.
+
+## Funciones de campaña
+
+En **Reglas**, elegí el **Responsable de fundición** y el **Responsable de marcha**. Podés usar personajes nuevos, asignar ambos papeles a la misma persona o elegir **Ninguno**. La asignación queda guardada al iniciar la campaña. No cambia una partida ya iniciada. Antes de eliminar un personaje asignado, quitá o reasigná su función. Deshacer, rehacer y **Restaurar funciones originales** conservan ese control. Restaurar usa Beltrán y San Martín solamente si siguen en el catálogo.
+
+El responsable debe haberse incorporado, estar vivo, libre y con servicio vigente. Un contratado que todavía viaja no activa la función. La muerte, el cautiverio y el fin del contrato la desactivan. El responsable de marcha evita el aumento de fatiga por viajes de todas las escuadras, tanto entre celdas como entre localidades.
+
+El responsable de fundición permite organizar El Plumerillo por 500 pesos si Mendoza está bajo tu control. La tesorería muestra su nombre y el motivo de un bloqueo. Después podés financiar el ejército por 3000 pesos. La fundición ya pagada permanece organizada si su responsable muere o deja el servicio. La ubicación, el nombre, los costos y la intensidad de estas funciones todavía conservan sus valores originales.
+
+Estos papeles no transfieren misiones, pertenencias, habilidades de combate ni requisitos de incorporación. Un sucesor no los hereda automáticamente. La campaña histórica necesita la fundición para avanzar: si la desactivás, usá capítulos propios con otros objetivos.
 
 ## Diálogos con opciones
 
@@ -98,7 +108,7 @@ Cada personaje puede recibir o perder cualquiera de las 19 habilidades de combat
 
 Las acciones, las decisiones enemigas, los efectos sobre compañeros cercanos y los costes mostrados usan estas opciones. La hoja de servicio muestra las habilidades elegidas y las especialidades del personaje. Las reglas de distancia, facción, dotación y estado siguen vigentes. Por ejemplo, un protector debe estar junto al mando, tener salud y puntos de acción, y solo puede interponerse una vez por turno. Un mando con liderazgo de al menos 90 conserva la protección prevista por las reglas generales; la habilidad «Mando protegido» permite recibirla sin ese umbral.
 
-Las habilidades acompañan a la incorporación local, los contactos de misión, los soldados, los aliados temporales y los guardados. Las partidas rechazan listas inválidas o diferentes de las definidas para esa campaña. Las campañas normales y los paquetes anteriores sin este campo conservan sus capacidades históricas. Las funciones estratégicas, requisitos de reclutamiento y servicio de los mandos históricos todavía necesitan su propia configuración.
+Las habilidades acompañan a la incorporación local, los contactos de misión, los soldados, los aliados temporales y los guardados. Las partidas rechazan listas inválidas o diferentes de las definidas para esa campaña. Las campañas normales y los paquetes anteriores sin este campo conservan sus capacidades históricas. La fundición y la marcha se asignan en Reglas. Los demás papeles históricos, requisitos de reclutamiento y servicio de los mandos todavía necesitan su propia configuración.
 
 ## Carácter, frases y apariencia
 
@@ -162,7 +172,7 @@ Un encuentro táctico puede completar un encargo, pero el capítulo y la victori
 
 El contenido y la secuencia de capítulos cumplidos quedan en la partida. Cambiar el borrador no cambia una campaña iniciada. No se puede eliminar un personaje o encargo usado por estos objetivos. Elegir **Campaña histórica original** recupera el avance original; deshacer recupera los capítulos propios anteriores.
 
-Este control reemplaza el avance, los objetivos y el final originales. San Lorenzo y Yatasto quedan disponibles solamente con el avance histórico. El mapa, la economía, las incursiones, los contactos y los requisitos de reclutamiento históricos siguen vigentes. Los capítulos propios no habilitan esas funciones por su número. Bouchard y San Martín conservan requisitos de incorporación ligados a las misiones originales y no pueden incorporarse con capítulos propios. Para esos papeles, usá habitantes nuevos hasta disponer de funciones históricas editables. Los capítulos propios permiten quitar y copiar los mandos como habitantes independientes. Sus funciones históricas todavía no se reasignan, y la composición completa de una segunda campaña sigue pendiente.
+Este control reemplaza el avance, los objetivos y el final originales. San Lorenzo y Yatasto quedan disponibles solamente con el avance histórico. El mapa, la economía, las incursiones, los contactos y los requisitos de reclutamiento históricos siguen vigentes. Los capítulos propios no habilitan esas funciones por su número. Bouchard y San Martín conservan requisitos de incorporación ligados a las misiones originales y no pueden incorporarse con capítulos propios. Para esos papeles, usá habitantes nuevos hasta disponer de funciones históricas editables. Los capítulos propios permiten quitar y copiar los mandos como habitantes independientes. Podés asignar la fundición y la marcha a esos habitantes desde Reglas. Los otros papeles históricos y la composición completa de una segunda campaña siguen pendientes.
 
 ## Fondos y abastecimiento
 

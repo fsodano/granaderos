@@ -39,14 +39,19 @@ Runtime source: `e12d99a476615b7f1793e43ce6a46a35c7fba46b`.
 Release checks: **758/758 tests**, zero failures or skips (187,666 ms); type check;
 production export (721 files, 631 asset references); 36 baseline checks; documentation
 audit (192 requirements, all 50 original and 87 parity rows, 31 evidence records);
-110 changed local links. Exact-head GitHub checks are required before merge.
+110 changed local links. Accepted in
+[PR #54](https://github.com/fsodano/granaderos/pull/54) at
+`7ed3071eb4935d5332ae5ea68d0e3d07c91abbc1`, with
+[successful exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36386862263/job/108813938115).
+Merged into `main` as `ccbf848ed55c8e19408c0f6139dc870277682406`.
 
 ## Limits
 
 CAST-01 covers cast composition, not the complete world. This short two-person
-route is not a second full campaign acceptance. Historical recruitment gates and
-strategic functions remain on retained historical identities; copies do not
-inherit them. Factions, opposition commanders, diplomacy, calendar raids and world
+route is not a second full campaign acceptance. At this checkpoint historical recruitment gates and strategic functions remained
+on retained historical identities; copies do not inherit them automatically. The
+subsequent [role assignment delivery](campaign-roles.md) explicitly assigns the
+foundry and marching privileges. Other mission roles remain separate. Factions, opposition commanders, diplomacy, calendar raids and world
 geography still require authoring. Generic residents can be omitted and replaced
 with new inhabitants, but their original municipal quests are not automatically
 converted into editable quest definitions. No full historical campaign, live
