@@ -645,3 +645,13 @@ test('the editor authors physical character conditions through undo, copy and a 
  await m.click(m.button('Duplicar personaje'));const copy=draft().characters.at(-1),conditions=copy.encounter.dialogue.nodes[0].choices[0].conditions;assert.deepEqual(conditions,[{type:'character',character:'person-110',state:'unconscious'}]);
  await m.click(m.button('Iniciar campaña con estas fichas'));const {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.equal(dialogueConditionsMet(campaign,conditions),true);assert.equal(campaign.operativeState[110].hp,1);await m.input(m.label('Estado requerido'),'healthy');assert.equal(dialogueConditionsMet(campaign,conditions),true);assert.equal(dialogueConditionsMet(campaign,draft().characters.at(-1).encounter.dialogue.nodes[0].choices[0].conditions),false);
 });
+
+test('the editor authors optional treatment speech through undo, copy, clearing and pinned launch',async t=>{
+ const d=defaultContentPackage(),m=await mount(t,JSON.stringify(d));const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
+ await m.input(m.document.querySelector('input[type="search"]'),'person-112');await m.click(m.document.querySelector('.entry-list button'));
+ const label='Al recibir primeros auxilios de otra persona';assert.equal(m.label(label).value,'');assert.equal(d.characters.find(c=>c.id==='person-112').speech.treated,undefined);
+ await m.input(m.label(label),'Gracias por ayudarme.');await m.click(m.button('Deshacer'));assert.equal(m.label(label).value,'');assert.equal(draft().characters.find(c=>c.id==='person-112').speech.treated,undefined);await m.click(m.button('Rehacer'));assert.equal(m.label(label).value,'Gracias por ayudarme.');
+ await m.click(m.button('Duplicar personaje'));assert.equal(draft().characters.at(-1).speech.treated,'Gracias por ayudarme.');await m.input(m.label(label),'');assert.equal(draft().characters.at(-1).speech.treated,undefined);
+ await m.click(m.button('Iniciar campaña con estas fichas'));const {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.equal(rosterFor(campaign).find(o=>o.id===112).storyProfile.speech.treated,'Gracias por ayudarme.');
+ await m.input(m.label(label),'Otra respuesta.');assert.equal(rosterFor(campaign).find(o=>o.id===112).storyProfile.speech.treated,'Gracias por ayudarme.');assert.equal(draft().characters.at(-1).speech.treated,'Otra respuesta.');
+});

@@ -1,4 +1,4 @@
-import {SPEECH_EVENTS} from '../../../game/characters.js';
+import {AUTHORABLE_SPEECH_EVENTS,OPTIONAL_SPEECH_EVENTS} from '../../../game/characters.js';
 import {CHARACTER_PORTRAITS} from '../../../game/character-profile.js';
 import {APPEARANCE_LABELS,SPEECH_LABELS,SPEECH_LINE_LIMIT,characterPresentationDefaults} from '../../../game/content-character-presentation.js';
 import {spriteRender,spriteViewport} from '../../../game/sprite-render.js';
@@ -33,8 +33,9 @@ export default function CharacterPresentation({character,portraits,weapon,onChan
   </label>
   <small>Describe su personalidad en la hoja de servicio. La moral mantiene las reglas de combate.</small>
   <p>Estas frases se usan cuando ocurre cada evento. Dejá una frase vacía para que no hable en esa situación.</p>
-  {SPEECH_EVENTS.map(event=><label key={event}>{SPEECH_LABELS[event as keyof typeof SPEECH_LABELS]}
-   <textarea rows={2} maxLength={SPEECH_LINE_LIMIT} value={values.speech[event]??''} onChange={e=>onChange({speech:{...values.speech,[event]:e.target.value}})}/>
+  {AUTHORABLE_SPEECH_EVENTS.map(event=><label key={event}>{SPEECH_LABELS[event as keyof typeof SPEECH_LABELS]}
+   <textarea rows={2} maxLength={SPEECH_LINE_LIMIT} value={values.speech[event]??''} onChange={e=>{const speech={...values.speech,[event]:e.target.value};if(OPTIONAL_SPEECH_EVENTS.includes(event)&&!e.target.value)delete speech[event];onChange({speech});}}/>
+   {event==='treated'&&<small>Habla después de recibir vendas de otra persona si está consciente. No habla al vendarse solo, durante un tratamiento que lo deja inconsciente ni al recuperarse con el tiempo.</small>}
   </label>)}
  </section>;
 }
