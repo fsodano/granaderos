@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-27",
-  "baseline": "e8e98f09fdb786e5a3f241165a9e7af09a26436d",
+  "baseline": "b11d24edd64976064ec30b3d7fa6ed8aa6248deb",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -44,7 +44,13 @@
     {
       "id": "E-WORLD-PRESENCE",
       "path": "docs/verification/character-presence.md",
-      "description": "Existing encounter identities: actual placement, local recruitment, daily relocation, loaded-scene protection and active saves; 549 passing tests, types and build. New world identities and civilian condition remain outside this delivery."
+      "description": "Existing encounter identities: actual placement, local recruitment, daily relocation, loaded-scene protection and active saves; 549 passing tests, types and build. New world identities and civilian condition remain outside this delivery.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36359181764"
+    },
+    {
+      "id": "E-RETIRO-OPENING",
+      "path": "docs/verification/retiro-opening.md",
+      "description": "Retiro-only startup, free version-2 character, actual hire arrival, pesos and all contract terms, resume/import, and real first hired-squad conquest with casualties and save/reentry. Complete fresh campaign routes and balance remain unverified."
     }
   ],
   "queue": [
@@ -58,7 +64,7 @@
         "FIX-03",
         "FIX-04"
       ],
-      "action": "Establish a combined acceptance path. Preserve pesos and all hire terms, publish Retiro-only/free opening separately, then diagnose each reproduced route failure. Import the needed advanced systems with their own tests; do not replace the reducer wholesale."
+      "action": "Extend the combined acceptance path beyond Retiro startup and the first hired-squad conquest. Preserve pesos and all hire terms, verify fresh opening routes, then diagnose each reproduced later-route failure. Import advanced systems with their own tests; do not replace the reducer wholesale."
     },
     {
       "order": 2,
@@ -93,6 +99,31 @@
     }
   ],
   "requirements": [
+    {
+      "id": "OPENING-01",
+      "group": "Published deliveries",
+      "requirement": "Retiro-only startup and free first-person phase advance with saved continuation",
+      "status": "VERIFIED",
+      "priority": "P0",
+      "published": "Stock and authored starts have only Retiro, pesos-only finance, optional free personal creation, all paid terms and arrival-gated service. Hired-only saves open the map. A real first conquest retains casualties and saves.",
+      "local": "Earlier broader development-workspace opening and route evidence remains separate.",
+      "remaining": "",
+      "acceptance": "Empty, custom, hired and mixed starts; no fee or unlock from a failed/cancelled/pending hire; controlled reception; headquarters supply/loss; prior saves; real first hired-squad battle and return. Full San Lorenzo and complete campaign routes are outside this bounded row.",
+      "evidence": [
+        "E-RETIRO-OPENING"
+      ],
+      "parents": [
+        "START-01",
+        "NAR-02",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/retiro-start.test.mjs",
+        "tests/retiro-start-render.test.mjs",
+        "tests/retiro-expansion.test.mjs",
+        "tests/retiro-resume.test.mjs"
+      ]
+    },
     {
       "id": "DEL-19",
       "group": "Published deliveries",
@@ -338,7 +369,8 @@
         "tests/campaign-presence.test.mjs",
         "tests/story-editor.test.mjs",
         "tests/content-system.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/31"
     },
     {
       "id": "ENG-01",
@@ -406,13 +438,14 @@
       "requirement": "Retiro recruitment and training phase",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Retiro setup, paid roster and custom officer work.",
+      "published": "Retiro-only startup and free first-person phase advance work, including paid arrival timing and saved continuation. Militia instruction still requires the complete city.",
       "local": "See local suite and preserved parity source; not equivalent to published integration.",
-      "remaining": "Publish free first-person start and Retiro-only control, then pass the fresh opening.",
+      "remaining": "Verify the full fresh opening and training route through normal play, beyond startup and the first hired-squad conquest.",
       "acceptance": "Costs, recruits and mounts advance phase only on requirements",
       "evidence": [
         "E-PUBLISHED",
-        "E-CONFLICTS"
+        "E-CONFLICTS",
+        "E-RETIRO-OPENING"
       ]
     },
     {
@@ -1226,15 +1259,21 @@
       "id": "START-01",
       "group": "Story and integration",
       "requirement": "Free first person and Retiro-only opening",
-      "status": "LOCAL_ONLY",
+      "status": "PARTIAL",
       "priority": "P0",
-      "published": "Three sectors controlled; academy funding remains.",
+      "published": "Retiro-only startup, first-person phase advance without academy payment, paid arrival timing, save/resume/import and a hired-squad first conquest are connected.",
       "local": "Revised free opening and Retiro-only control are implemented locally.",
-      "remaining": "Publish the approved opening with pesos-only finance and all contract terms.",
+      "remaining": "Verify complete fresh opening routes through San Lorenzo for both custom and hired squads with real costs and losses; broader route acceptance remains open.",
       "acceptance": "Fresh custom-only and hired-only campaigns survive save/load and can complete the opening with real costs/losses.",
       "evidence": [
         "E-LOCAL",
-        "E-CONFLICTS"
+        "E-CONFLICTS",
+        "E-RETIRO-OPENING"
+      ],
+      "testFiles": [
+        "tests/retiro-start.test.mjs",
+        "tests/retiro-expansion.test.mjs",
+        "tests/retiro-resume.test.mjs"
       ]
     },
     {
@@ -2971,13 +3010,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "e8e98f09fdb786e5a3f241165a9e7af09a26436d",
-    "total": 549,
-    "passed": 549,
+    "source": "b11d24edd64976064ec30b3d7fa6ed8aa6248deb",
+    "total": 568,
+    "passed": 568,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-WORLD-PRESENCE"
+    "evidenceId": "E-RETIRO-OPENING"
   }
 }

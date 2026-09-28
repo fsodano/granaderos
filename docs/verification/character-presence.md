@@ -27,7 +27,10 @@ Local verification ran on source
 reorganization. All **549 tests passed, with no failures or skips**; TypeScript
 and production export also passed (721 files, 631 asset references). Subsequent
 integration of the formal-audit documents changes documentation/tracking only.
-Exact-head GitHub CI is required before this delivery can merge.
+The exact-head [GitHub CI run](https://github.com/fsodano/granaderos/actions/runs/36359181764) passed on source
+`0a65711272fe4575be6792a8365cd4b94292a217`;
+[PR #31](https://github.com/fsodano/granaderos/pull/31) merged as
+`2ee9479250ac3887ecbe4230891e04faeba224e4`.
 
 Eleven dedicated presence cases cover real movement to a rural NPC, conversation,
 local recruitment, active and campaign saves, reentry, fixed/initial/daily rules,

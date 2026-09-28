@@ -25,7 +25,7 @@ npm run dev
 
 Open [localhost:3000](http://localhost:3000), or the address shown by the development server.
 
-Choose **Nueva campaña** to start at the Retiro desk. Hire combatants or create your own character, then pay 300 pesos to organize the regiment and advance the opening chapter. Character creation is free; hiring uses the quoted contract price. **Combate de San Lorenzo** starts a separate battle.
+Choose **Nueva campaña** to start at the Retiro desk. Retiro is the only controlled sector. Hire combatants or create your own free character; the first person in service advances the opening chapter without an extra academy payment. Hires use the quoted contract price and must arrive before joining the force. **Combate de San Lorenzo** starts a separate battle.
 
 The game saves campaign progress in browser storage. Use **Guardar** to export a portable save file and **Importar partida** to load one.
 

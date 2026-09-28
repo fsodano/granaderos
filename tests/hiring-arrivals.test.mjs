@@ -1,3 +1,4 @@
+import {secureArea} from './controlled-area-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
@@ -17,12 +18,12 @@ test('hiring rejects uncontrolled, open-water and unsupported destinations witho
  for(const destination of ['salta','cell-25-29','river','uspallata','los_patos']){
   const next=dispatchCampaign(s,{...hire,destination});assert.ok(next.lastError);assert.deepEqual({...next,lastError:null},s);
  }
- assert.deepEqual(new Set(hiringArrivalOptions(s).map(o=>o.id)),new Set(['buenos_aires','retiro','ensenada']));
- s.blockade=true;assert.ok(hiringArrivalReason(s,'ensenada'));assert.equal(hiringArrivalReason(s,'buenos_aires'),null);
+ assert.deepEqual(new Set(hiringArrivalOptions(s).map(o=>o.id)),new Set(['retiro']));
+ secureArea(s,'buenos_aires','ensenada');s.blockade=true;assert.ok(hiringArrivalReason(s,'ensenada'));assert.equal(hiringArrivalReason(s,'buenos_aires'),null);
  s.enemyGroups=[{target:'retiro',status:'stationed'}];assert.ok(hiringArrivalReason(s,'retiro'));
 });
 test('a controlled port receives legacy hires at that port instead of teleporting them to the active squad',()=>{
- let s=order(initialCampaign(42),{...hire,destination:'ensenada'});
+ let s=order(secureArea(initialCampaign(42),'ensenada'),{...hire,destination:'ensenada'});
  assert.ok(s.recruited.includes(110));assert.equal(s.squad.includes(110),false);assert.equal(s.operativeState[110].location,'ensenada');
  s=saved(s);assert.equal(s.operativeState[110].location,'ensenada');assert.equal(s.contracts[110].started,0);
 });
@@ -40,21 +41,21 @@ test('a pending hire remains off-map across saves and pays once with service sta
  s=saved(s);assert.equal(s.contracts[110].paid,paid);assert.equal(s.recruited.filter(id=>id===110).length,1);
 });
 test('lost control holds arrivals and a saved redirect restarts travel without another payment',()=>{
- let s=order(initialCampaign(42,defaultContentPackage()),{...hire,destination:'ensenada'});const money=s.resources.treasury;
+ let s=order(secureArea(initialCampaign(42,defaultContentPackage()),'ensenada','buenos_aires'),{...hire,destination:'ensenada'});const money=s.resources.treasury;
  s.sectors.ensenada.owner='royalist';s=order(s,{type:'wait',hours:6});assert.equal(s.recruited.includes(110),false);assert.equal(s.contracts[110],undefined);
  const invalid=dispatchCampaign(s,{type:'redirectHire',id:110,destination:'river'});assert.ok(invalid.lastError);assert.deepEqual(invalid.hiringArrivals,s.hiringArrivals);
  s=order(saved(s),{type:'redirectHire',id:110,destination:'retiro'});assert.equal(s.hiringArrivals[0].dueAt,12);assert.equal(s.resources.treasury,money);
  s=order(saved(s),{type:'wait',hours:6});assert.equal(s.operativeState[110].location,'retiro');assert.equal(s.contracts[110].started,12);assert.equal(s.resources.treasury,money);
 });
 test('naval blockade holds a water-only arrival until a safe land destination is chosen',()=>{
- let s=order(initialCampaign(42,defaultContentPackage()),{...hire,destination:'ensenada'});
+ let s=order(secureArea(initialCampaign(42,defaultContentPackage()),'ensenada','buenos_aires'),{...hire,destination:'ensenada'});
  s.blockade=true;s=order(s,{type:'wait',hours:6});assert.equal(s.recruited.includes(110),false);
  s=order(saved(s),{type:'redirectHire',id:110,destination:'buenos_aires'});
  s=order(s,{type:'wait',hours:6});assert.equal(s.operativeState[110].location,'buenos_aires');assert.equal(s.squad.includes(110),false);assert.equal(s.contracts[110].started,12);
 });
 test('same-hour naval raid is resolved before an arrival is admitted',()=>{
  const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=168;
- const initial=initialCampaign(42,d);initial.sectors.san_nicolas.owner='patriot';initial.sectors.santa_fe.owner='patriot';
+ const initial=secureArea(initialCampaign(42,d),'ensenada','buenos_aires');initial.sectors.san_nicolas.owner='patriot';initial.sectors.santa_fe.owner='patriot';
  let s=order(initial,{...hire,destination:'ensenada'});
  s=order(s,{type:'wait',hours:168});assert.equal(s.blockade,true);assert.equal(s.recruited.includes(110),false);assert.equal(s.hiringArrivals.length,1);
  assert.ok(saved(s));
@@ -85,7 +86,7 @@ test('a loaded destination holds the hire through tactical time and save, then a
 });
 test('remote arrival during another deployment does not alter its squad or invalidate its save',()=>{
  const d=defaultContentPackage();d.characters.find(c=>c.id==='person-100').arrivalHours=0;
- let s=order(initialCampaign(42,d),{type:'recruitCivic',id:100,term:'week'});s=order(s,{...hire,destination:'ensenada'});s=order(s,{type:'visitSector'});
+ let s=order(initialCampaign(42,d),{type:'recruitCivic',id:100,term:'week'});secureArea(s,'ensenada');s=order(s,{...hire,destination:'ensenada'});s=order(s,{type:'visitSector'});
  const battle=enterSector(s.pendingBattle);advanceBattleClock(battle,6*3600);const pair=syncBattleTime(s,battle);assert.equal(pair.error,null);
  assert.ok(pair.campaign.recruited.includes(110));assert.equal(pair.campaign.squad.includes(110),false);assert.equal(pair.campaign.operativeState[110].location,'ensenada');
  assert.ok(decodeSave(encodeSave(pair.campaign,pair.battle)));
@@ -112,7 +113,7 @@ test('each configured travel duration and published weekly or monthly term is re
 test('an arrival at the departure point does not join a squad already marching elsewhere',()=>{
  const d=defaultContentPackage();d.characters.find(c=>c.id==='person-100').arrivalHours=0;
  let s=order(initialCampaign(42,d),{type:'recruitCivic',id:100,term:'week'});s=order(s,hire);
- s=order(s,{type:'travel',sector:'buenos_aires'});
+ secureArea(s,'buenos_aires');s=order(s,{type:'travel',sector:'buenos_aires'});
  assert.equal(s.location,'buenos_aires');assert.equal(s.operativeState[110].location,'retiro');assert.equal(s.squad.includes(110),false);
  assert.equal(s.contracts[110].started,6);assert.equal(saved(s).operativeState[110].location,'retiro');
 });

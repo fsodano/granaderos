@@ -1,3 +1,4 @@
+import {secureArea} from './controlled-area-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {defaultContentPackage,validateContentPackage} from '../game/content-package.js';
@@ -91,7 +92,7 @@ test('an authored mission contact keeps its presentation through conversation, s
  const d=definition(),c=d.characters.find(c=>c.id==='person-57');Object.assign(c,{name:'Comandante del Río',spriteAppearance:'gaucho',personality:'Un mando paciente.',abilities:['rapid_first_aid']});
  let {s,id}=hired(d);
  // Open the existing mission gate; this fixture does not claim a full campaign run.
- s.phase=2;s.flags.sanLorenzo=true;for(const sector of ['cordoba','tucuman','salta'])s.sectors[sector].owner='patriot';
+ s.phase=2;s.flags.sanLorenzo=true;for(const sector of ['buenos_aires','cordoba','tucuman','salta'])s.sectors[sector].owner='patriot';
  s=order(s,{type:'travel',sector:'tucuman'});s=order(s,{type:'visitMission',mission:'yatasto'});
  let b=enterSector(s.pendingBattle),pair=saved(s,b),npc=pair.battle.npcs.find(n=>n.id==='yatasto-san-martin');
  assert.deepEqual(npc.abilities,['rapid_first_aid']);assert.equal(npc.name,c.name);assert.equal(npc.spriteAppearance,c.spriteAppearance);assert.equal(npc.storyProfile.personality,c.personality);assert.equal(npc.operativeId,undefined);
@@ -113,11 +114,11 @@ test('malformed voice and missing art choices fail before launch; older packages
 });
 
 
-test('initial local recruits still require a meeting and can actually join a new authored campaign',()=>{
+test('local recruits require a meeting in explicitly controlled territory',()=>{
  for(const [target,sector] of [[3,'retiro'],[4,'buenos_aires'],[10,'buenos_aires']]){
   const d=definition();d.characters.at(-1).attributes.leadership=100;d.characters.find(c=>c.id===`person-${target}`).abilities=['rapid_first_aid'];
   if(target===3){const c=d.characters.find(c=>c.id==='person-3');c.name='A'.repeat(100);c.speech.hired='B'.repeat(800);}
-  let {s,id}=hired(d);
+  let {s,id}=hired(d);secureArea(s,'buenos_aires');
   assert.ok(dispatchCampaign(s,{type:'recruit',id:target}).lastError);
   if(s.location!==sector)s=order(s,{type:'travel',sector});s=order(s,{type:'visitSector'});let b=enterSector(s.pendingBattle);
   const npc=b.npcs.find(n=>n.operativeId===target),spot=getReachable(b,String(id)).find(p=>Math.abs(p.x-npc.x)+Math.abs(p.y-npc.y)===1);assert.ok(spot);

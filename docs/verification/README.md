@@ -12,6 +12,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 
 - [Published implementation and verification ledger](published-progress.md)
 - [Authored world presence verification](character-presence.md)
+- [Retiro opening verification](retiro-opening.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 

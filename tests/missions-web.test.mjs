@@ -1,8 +1,9 @@
+import {secureArea} from './controlled-area-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign as reduce,restoreCampaign,serializeCampaign} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';import {createBattle,actBattle,endTurn} from '../game/tactical.js';import {attendYatasto} from './mission-helpers.mjs';
 const step=(s,a)=>{const n=reduce(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
-const officer=()=>step(initialCampaign(),{type:'createOfficer',name:'Isabel del Norte',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
+const officer=()=>step(secureArea(initialCampaign(),'buenos_aires'),{type:'createOfficer',name:'Isabel del Norte',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
 function northernCampaign(){const s=officer();s.phase=2;s.flags.sanLorenzo=true;s.flags.northPact=true;for(const id of ['cordoba','tucuman','salta'])s.sectors[id].owner='patriot';return s;}
 test('Yatasto requires physical reports and decision and persists separately from Tucumán',()=>{
  let s=northernCampaign();assert.ok(reduce(s,{type:'visitMission',mission:'yatasto'}).lastError);s=step(s,{type:'travel',sector:'tucuman'});s=step(s,{type:'visitSector'});let b=enterSector(s.pendingBattle);s=step(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:b,survivors:b.units.map(u=>({...u,id:Number(u.id)}))});const town=JSON.stringify(s.sectorStates.tucuman);s=attendYatasto(s);assert.equal(s.phase,3);assert.equal(s.missions.yatasto.completed,true);assert.ok(!s.recruited.includes(57));assert.equal(JSON.stringify(s.sectorStates.tucuman),town);assert.equal(s.sceneStates.yatasto.sceneId,'yatasto');assert.equal(restoreCampaign(serializeCampaign(s)).missions.yatasto.completed,true);

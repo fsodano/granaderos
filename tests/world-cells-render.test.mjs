@@ -1,3 +1,4 @@
+import {secureArea} from './controlled-area-fixture.mjs';
 import {register} from 'node:module';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -18,7 +19,7 @@ test('the actual campaign map selects exact cells, previews the march, enters, s
  const {createRoot}=await import('../web/node_modules/react-dom/client.js');
  const root=createRoot(dom.window.document.getElementById('root'));let current,dispatch;
  t.after(async()=>{try{await act(async()=>root.unmount());}finally{dom.window.close();for(const[k,d]of previous){if(d)Object.defineProperty(globalThis,k,d);else delete globalThis[k];}}});
- function Screen(){const [s,setState]=useState(()=>dispatchCampaign(initialCampaign(),{type:'recruitCivic',id:110,term:'week'}));current=s;dispatch=a=>setState(previous=>dispatchCampaign(previous,a));return h(Campaign,{state:s,dispatch,onBattle:()=>{},onOpenDesk:()=>{}});}
+ function Screen(){const [s,setState]=useState(()=>dispatchCampaign(secureArea(initialCampaign(),'buenos_aires','ensenada'),{type:'recruitCivic',id:110,term:'week'}));current=s;dispatch=a=>setState(previous=>dispatchCampaign(previous,a));return h(Campaign,{state:s,dispatch,onBattle:()=>{},onOpenDesk:()=>{}});}
  const click=async e=>{assert.ok(e);await act(async()=>e.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));};
  const button=text=>[...dom.window.document.querySelectorAll('button')].find(b=>b.textContent.trim()===text);
  const cell=id=>dom.window.document.querySelector(`[data-map-cell="${id}"]`);

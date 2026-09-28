@@ -1,3 +1,4 @@
+import {secureArea} from './controlled-area-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {defaultContentPackage,validateContentPackage} from '../game/content-package.js';
@@ -55,7 +56,7 @@ test('a newly authored candidate has one paid saved arrival, actual deployment a
 
 test('new arrivals can redirect and cancel once, and malformed identity or record saves are rejected',()=>{
  const d=authored(),id=operativeIdForCharacter(d,'lucia-del-rio');let s=order(initialCampaign(42,d),{type:'recruitCivic',id,term:'day'});
- s=order(save(s).campaign,{type:'redirectHire',id,destination:'ensenada'});assert.equal(s.hiringArrivals[0].destination,'ensenada');assert.equal(s.resources.treasury,3190);
+ secureArea(s,'ensenada');s=order(save(s).campaign,{type:'redirectHire',id,destination:'ensenada'});assert.equal(s.hiringArrivals[0].destination,'ensenada');assert.equal(s.resources.treasury,3190);
  for(const mutate of [v=>v.hiringArrivals[0].operativeId=100,v=>delete v.operativeState[id],v=>v.hiringArrivals[0].paid++,v=>v.recruited.push(100)]){const copy=structuredClone(s);mutate(copy);assert.throws(()=>save(copy));}
  s=order(save(s).campaign,{type:'cancelHireArrival',id});assert.equal(s.resources.treasury,3200);assert.ok(dispatchCampaign(s,{type:'cancelHireArrival',id}).lastError);assert.equal(save(s).campaign.recruited.length,0);
 });
@@ -67,7 +68,7 @@ test('new characters retain actual combat injuries and experience across return,
   // Saved veteran and practice fixture just below the next thresholds.
   s.operativeState[id].xp=95;s.operativeState[id].condition=50;s.operativeState[id].skillPractice={mechanical:39};
   s=save(s).campaign;
-  s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});const request=s.pendingBattle;
+  secureArea(s,'buenos_aires');s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});const request=s.pendingBattle;
   // Compact combat fixture with actual campaign soldiers and return handlers.
   let b=createBattle(request.squad.map(u=>({...u,x:1,y:1})),{width:12,height:8,sectorId:request.sector,seed:45,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[{id:'guard',x:10,y:1,weapon:1806,blade:1811,ammo:0,fatigue:100,marksmanship:100}]});
   b=actBattle(b,{type:'repair',unitId:String(id)});assert.equal(b.lastError,null);assert.equal(b.units[0].trainedStats.mechanical,1);
@@ -97,7 +98,7 @@ test('explicit service, training traits and progress use the same campaign rules
 test('a new teacher can save an ongoing militia course and finish it after reload',()=>{
  const d=authored();d.characters.at(-1).arrivalHours=0;const id=operativeIdForCharacter(d,'lucia-del-rio');
  let s=order(initialCampaign(42,d),{type:'recruitCivic',id,term:'week'});
- s=order(s,{type:'militia',trainerId:id,rank:0});s=save(s).campaign;
+ secureArea(s,'buenos_aires','ensenada');s=order(s,{type:'militia',trainerId:id,rank:0});s=save(s).campaign;
  assert.equal(s.militiaTraining[0].trainerId,id);s=order(s,{type:'wait',hours:s.militiaTraining[0].remaining});
  assert.equal(s.sectors.retiro.militia[0],3);assert.ok(save(s));
 });
