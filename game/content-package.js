@@ -1,3 +1,4 @@
+import {validateCampaignStory} from './campaign-story.js';
 import {DEFAULT_IMPORT_RULES,validateImportRules} from './campaign-imports.js';
 import {validateHeadquarters} from './campaign-headquarters.js';
 import {defaultStartingTerritory,validateStartingTerritory} from './content-territory.js';
@@ -117,6 +118,7 @@ export function validateContentPackage(value) {
       `texto inválido (máximo ${max} caracteres).`,
     );
   text(value.name, "Nombre", 100);
+  try{validateCampaignStory(value.campaignStory,new Set((Array.isArray(value.characters)?value.characters:[]).map(c=>c?.id)),new Set((Array.isArray(value.quests)?value.quests:[]).map(q=>q?.id)));}catch(error){errors.push(error.message);}
   try{validateContentQuests(value.quests,new Set((Array.isArray(value.characters)?value.characters:[]).map(c=>c?.id)));}catch(error){errors.push(error.message);}
   errors.push(...validateImportRules(value.imports),...validateCampaignRules(value.rules),...validateHeadquarters(value.headquarters),...validateStartingTerritory(value.startingTerritory,value.headquarters));
   if (value.arrivalSites !== undefined) errors.push(...validateArrivalSites(value.arrivalSites));

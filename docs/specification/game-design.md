@@ -58,8 +58,8 @@ initial location, supply origin, formation presentation, local armory/workshop
 access and loss condition. Scheduled raids retain the stock headquarters protection.
 Districts share locality control; open land remains neutral. Initial choices grant
 no capture reward, forces or completed missions and never reset later saved control.
-Historical contacts, later chapters and endings retain their own role rules
-until those are authored separately.
+Changing headquarters does not remap historical contacts or their role rules.
+Authored chapter progression is a separate choice, described below.
 
 Imported firearm families use an authored reception port and inclusive delivery
 window of 1–720 hours, or an explicit disabled setting. Defaults remain Ensenada
@@ -69,6 +69,29 @@ blockade govern delivery, after resolving same-hour raids. Delayed orders remain
 pending without another payment or duplicate stock. Authored weapon instances
 retain their definition on delivery. Physical port depots, transport and choosing
 imported families remain separate requirements from these published supply rules.
+
+## Authored campaign progression
+
+Authors can replace the original progression with one to twelve ordered chapters,
+an introduction and victory/defeat text. Every chapter requires all of its one to
+six campaign conditions: time, money, locality control, character state or quest
+state. Completed chapters are recorded once and remain completed. Tactical meeting
+conditions feed a quest first; campaign completion waits until the scene settles.
+Paid candidates satisfy service conditions only after actual arrival.
+
+Optional failure conditions are conjunctive. Headquarters loss and total deployed
+force loss remain core failures. Failure takes precedence over simultaneous
+victory, including actual quest expiry and confirmed tactical deaths. An ending
+during an attack approach prevents deployment; defeat during travel preserves the
+last reached position. Saves pin definitions and validate ordered progress and the
+terminal result. UI objectives and endings follow the chosen progression.
+
+Original San Lorenzo/Yatasto missions and their implicit essential-character
+failures belong to the historical progression. Authored chapter indexes cannot
+unlock them. Original contacts, recruitment gates, economic roles, factions,
+calendar raids and world geography still need separate composition. This does not
+establish an independent second full campaign or change the original design's
+historical acceptance requirements.
 
 ## Player flow
 
