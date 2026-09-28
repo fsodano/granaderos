@@ -469,7 +469,7 @@
     {
       "id": "E-ARTILLERY-PROFILES",
       "path": "docs/verification/authored-artillery-profiles.md",
-      "description": "Eight simulations and three mounted checks cover all three authored cannon families, model images/names, actual purchase prices, crew and action costs, ballistics, finite initial ammunition, saved physical use, compact references and pinned launch. Full regression passes 1084/1084, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required; gun transport/trade, extra families and distinct ammunition stocks remain open."
+      "description": "Eight simulations and three mounted checks cover all three authored cannon families, model images/names, actual purchase prices, crew and action costs, ballistics, finite initial ammunition, saved physical use, compact references and pinned launch. Full regression passes 1084/1084, zero failures/skips, with types, export and 36 reference comparisons. Published by PR #105 after successful exact-head CI; gun transport/trade, extra families and distinct ammunition stocks remain open."
     },
     {
       "id": "E-ARTILLERY-TRANSPORT",
@@ -558,7 +558,7 @@
       "requirement": "Author all three cannon families and their images, costs, crew, ballistics and one-time ammunition allowance",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. The story editor pins complete gun profiles used by purchases, controls, player/enemy/militia combat and saved physical emplacements.",
+      "published": "Published by PR #105 after successful exact-head CI. The story editor pins complete gun profiles used by purchases, controls, player/enemy/militia combat and saved physical emplacements.",
       "local": "Eight simulations and three mounted editor/armory/production-field checks pass. Full regression passes 1084/1084, zero failures/skips, with types, export and all 36 baseline comparisons. An initial default-label regression is corrected in the final runtime.",
       "remaining": "",
       "acceptance": "Search/edit model names and images, validate strict fields, undo/reset/launch, charge actual authored prices, use authored costs/crew/ballistics and finite initial load, retain real gun ammunition on reentry and reject changed scene definitions while storing uploaded assets once.",
@@ -576,7 +576,8 @@
         "tests/artillery-profiles-render.test.mjs",
         "tests/story-editor.test.mjs",
         "tests/stationed-artillery-render.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/105"
     },
     {
       "id": "ARTILLERYAI-01",
@@ -5503,13 +5504,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "5ff4186b334a6596eee40c49c4112fac2917f204",
-    "total": 1073,
-    "passed": 1073,
+    "source": "fb49f84e6787bc73737a949bd6d0a60282fcf181",
+    "total": 1084,
+    "passed": 1084,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-PARALLEL-VERIFICATION"
+    "evidenceId": "E-ARTILLERY-PROFILES"
   }
 }
