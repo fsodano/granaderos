@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "d320299472f9ac924d1c59e2217850661bc1607e",
+  "baseline": "8573561eddc9dcc1701d18fea13f68bb6bdb4586",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -309,6 +309,11 @@
       "id": "E-CRITICAL-MILITARY",
       "path": "docs/verification/critical-military-condition.md",
       "description": "Shared critical-health and exhaustion incapacity, zero action budgets, finite stabilization without immediate AP, actual wound speech, battle settlement and saved enemy casualties with finite looting. Paid-hire and prepared-boundary checks, mounted controls and fresh campaign regression retain real care, losses, defense and costs. 854 passing tests, zero failures/skips, types, export and baseline checks; advanced condition, custody and browser performance remain separate."
+    },
+    {
+      "id": "E-CIVILIAN-BREATH",
+      "path": "docs/verification/civilian-breath-recovery.md",
+      "description": "Loaded civilian phases recover finite capped energy after the movement opportunity. Actual harm, critical wounds, corpses, departed actors, split saved cadence and finite aid retain their boundaries. A content-authored exhausted resident wakes through ordinary sector time, converses, joins and returns with its recovered energy while unloaded time grants nothing. 858 passing tests, zero failures/skips, types, export and baseline checks; full fatigue, unloaded simulation and browser performance remain separate."
     }
   ],
   "queue": [
@@ -356,6 +361,31 @@
     }
   ],
   "requirements": [
+    {
+      "id": "NPCBREATH-01",
+      "group": "Published deliveries",
+      "requirement": "Recover exhausted world residents through actual loaded sector time",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Living present civilians recover ten energy after each loaded civilian phase, once per complete combat round or six exploration seconds. Waking grants no same-phase movement, health, AP or cleared harm; critical wounds, dead actors and unloaded time retain their separate rules.",
+      "local": "Four new cases cover actual damage history, split saved time, real tactical clocks, critical/dead/departed actors, finite stabilization and an authored exhausted resident continuing through conversation, local recruitment, dismissal and saved return.",
+      "remaining": "",
+      "acceptance": "Author a resident with zero energy; verify it is initially incapacitated, recover through actual loaded time, converse and recruit normally, then save/return without resetting energy, healing wounds or giving an unloaded grant.",
+      "evidence": [
+        "E-CIVILIAN-BREATH"
+      ],
+      "parents": [
+        "STORY-02",
+        "STORY-08",
+        "JA2-C05",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/civilian-breath-recovery.test.mjs",
+        "tests/npc-ai.test.mjs",
+        "tests/character-condition.test.mjs"
+      ]
+    },
     {
       "id": "MILITARYCONDITION-01",
       "group": "Published deliveries",
