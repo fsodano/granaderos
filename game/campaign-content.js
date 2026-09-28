@@ -15,7 +15,7 @@ export function campaignContentReport(content) {
     baseline = defaultContentPackage(),
     blocked = [],
     pending = [];
-  const supported=new Set(['format','version','id','name','characters','weapons','placements','arrivalSites','oppositionEquipment','militiaEquipment','oppositionBlades','militiaBlades','quests','rules','startingTerritory','headquarters','imports','campaignStory','includeOriginalResidents']);
+  const supported=new Set(['format','version','id','name','characters','weapons','placements','arrivalSites','oppositionEquipment','militiaEquipment','oppositionBlades','militiaBlades','quests','rules','startingTerritory','headquarters','imports','campaignStory','includeOriginalResidents','campaignRoles']);
   const characterFields=new Set(['id','name','nickname','role','biography','portrait','monthlyPay','weapon','blade','attributes','arrivalHours','recruitmentSource','service','progression','traits','ridingSkill','personality','speech','spriteAppearance','abilities','encounter']);
   if(Object.keys(value).some(key=>!supported.has(key))||value.characters.some(c=>Object.keys(c).some(key=>!characterFields.has(key))))
     blocked.push('Este paquete incluye opciones de historia que esta versión todavía no puede aplicar.');
@@ -43,7 +43,7 @@ export function campaignContentReport(content) {
   if(value.placements.some(p=>p.afterDeath!==null&&!isWorldCharacter(value.characters.find(c=>c.id===p.character))))
     blocked.push('La aparición por muerte necesita un habitante nuevo; los mandos históricos conservan sus funciones de campaña.');
   pending.push(
-    value.campaignStory?"Los personajes históricos que conserves mantienen sus requisitos y funciones originales. Sus copias como habitantes tienen reglas propias.":"Los requisitos de reclutamiento, las funciones de campaña y el servicio permanente de los personajes históricos conservan sus reglas originales.",
+    value.campaignStory?"Los personajes históricos que conserves mantienen sus requisitos de incorporación y papeles de misión. La fundición y la marcha usan las funciones asignadas en Reglas. Sus copias como habitantes tienen reglas propias.":"Los requisitos de reclutamiento, los papeles de misión y el servicio permanente de los personajes históricos conservan sus reglas originales. La fundición y la marcha usan las funciones asignadas en Reglas.",
   );
   return { blocked, pending };
 }

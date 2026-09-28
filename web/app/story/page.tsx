@@ -262,6 +262,7 @@ export default function ContentEditor() {
   }
   function remove() {
     if(collection==='characters'&&isHistoricalCharacter(item)&&!draft.campaignStory){setNotice('El avance histórico necesita sus mandos. Elegí capítulos propios en Reglas para quitar este personaje.');return;}
+    if(collection==='characters'&&Object.values(draft.campaignRoles??{}).includes(item.id)){setNotice('Quitá o reasigná su función de campaña en Reglas antes de eliminar este personaje.');return;}
     if(collection==='weapons'&&forceWeaponUsers(draft,item.id).length){setNotice('Asigná otra arma a las tropas que la usan.');return;}
 
     if (
