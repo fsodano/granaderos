@@ -72,6 +72,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Configurable campaign headquarters](campaign-headquarters.md)
 - [Import ports and saved delivery windows](import-supply-rules.md)
 - [Authored campaign chapters and endings](campaign-story.md)
+- [Drop and recover carried weapons](drop-recovered-weapons.md)
 - [Independent campaign casts](campaign-cast.md)
 - [Assigned strategic campaign roles](campaign-roles.md)
 - [Authored foundry project and workshop](foundry-project.md)
