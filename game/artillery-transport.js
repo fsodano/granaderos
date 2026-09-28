@@ -22,10 +22,10 @@ export function artilleryTransferDelay(s,transfer){
  if((s.artilleryDepots?.[transfer.to]?.length??0)>=2000)return 'El depósito de destino está lleno.';
  return '';
 }
-export function artilleryTransportQuote(s,sector,gunId,to,mode){
- const rules=artilleryTransportRules(s),cost=rules[`${mode}Fee`]??0,from=parent(sector),gun=s.sectorStates?.[sector]?.artillery?.find(g=>g.id===gunId),spec=gun&&artilleryProfile(s,gun),path=road(s,from,to,mode);
+export function artilleryTransportQuote(s,sector,gunId,to,mode,source='field'){
+ const rules=artilleryTransportRules(s),cost=rules[`${mode}Fee`]??0,from=parent(sector),gun=(source==='depot'?s.artilleryDepots?.[sector]:s.sectorStates?.[sector]?.artillery)?.find(g=>g.id===gunId),spec=gun&&artilleryProfile(s,gun),path=road(s,from,to,mode);
  const crew=(s.squad??[]).filter(id=>{const r=s.operativeState[id];return r?.alive&&capable(r)&&!r.captured&&!careAssignmentBusy(r.assignment)&&!s.militiaTraining?.some(c=>c.trainerId===id)&&operativeLocation(s,id)===from;});
- const reason=s.defeated?'La campaña ha terminado.':s.pendingBattle?'Salí de la escena táctica antes de enviar la pieza.':!rules.enabled?'Esta campaña no permite trasladar piezas de artillería.':!gun||from!==s.location||!place(from)?'La pieza debe estar emplazada en esta localidad.':
+ const reason=s.defeated?'La campaña ha terminado.':s.pendingBattle?'Salí de la escena táctica antes de enviar la pieza.':!rules.enabled?'Esta campaña no permite trasladar piezas de artillería.':!['field','depot'].includes(source)?'El origen de la pieza no es válido.':!gun||from!==s.location||!place(from)||source==='depot'&&sector!==s.location?'La pieza debe estar emplazada o guardada en esta localidad.':
   gun.side!=='player'||s.sectors[from]?.owner!=='patriot'?'La pieza y su localidad deben estar bajo tu control.':hostile(s,from)?'Aún quedan enemigos capaces de combatir junto a la pieza.':
   crew.length<spec.crew?`Se necesitan ${spec.crew} combatientes disponibles de la escuadra para cargar esta pieza.`:!place(to)||to===from?'Elegí otra localidad como destino.':s.sectors[to]?.owner!=='patriot'?'El destino debe estar bajo tu control.':
   !['carts','flotilla'].includes(mode)?'Los cañones completos viajan en carretas o flotilla.':!s.routes[mode]?'Primero organizá ese transporte.':!path?'No hay una ruta controlada apta para ese transporte. Las carretas no llevan cañones completos por los pasos de montaña.':
@@ -35,8 +35,8 @@ export function artilleryTransportQuote(s,sector,gunId,to,mode){
 }
 const stored=gun=>{const copy=structuredClone(gun);delete copy.x;delete copy.y;delete copy.stationed;delete copy.fromDepot;return copy;};
 export function dispatchArtilleryTransport(s,action){
- const q=artilleryTransportQuote(s,action.sector,action.artilleryId,action.to,action.mode);need(q.available,q.reason);s.resources.treasury-=q.cost;
- const guns=s.sectorStates[action.sector].artillery,index=guns.findIndex(g=>g.id===action.artilleryId),gun=stored(guns[index]);guns.splice(index,1);
+ const q=artilleryTransportQuote(s,action.sector,action.artilleryId,action.to,action.mode,action.source);need(q.available,q.reason);s.resources.treasury-=q.cost;
+ const guns=action.source==='depot'?s.artilleryDepots[action.sector]:s.sectorStates[action.sector].artillery,index=guns.findIndex(g=>g.id===action.artilleryId),gun=stored(guns[index]);guns.splice(index,1);
  s.artilleryTransfers??=[];s.artilleryTransfers.push({id:gun.id,from:q.from,to:q.to,mode:q.mode,path:q.path,departedAt:s.hour,dueAt:s.hour+q.hours,gun});return q;
 }
 export function deliverArtilleryTransfers(s){
