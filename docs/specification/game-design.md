@@ -241,8 +241,20 @@ the exact selected workshop. Selecting another squad cannot service someone
 remotely. The armory shows the actual person location and unavailable-service
 reason; the campaign rechecks it before charging.
 These are declared tuning values, not a claim of exact JA2 numerical behavior.
-Advanced care, strategic bleeding, rest/sleep and physical kit custody retain
+Advanced care, strategic bleeding, automatic sleep and physical kit custody retain
 separate acceptance requirements. See [care verification](../verification/strategic-medical-care.md).
+
+Explicit rest uses safe serving personnel and real campaign hours. It restores
+energy and reduces fatigue; patients receive the same recovery while waiting for
+care. Stable, nonbleeding rest wounds receive one health point per six continuous
+hours. Saves preserve partial hours, while assignment changes and unsafe presence
+clear them without a grant. Rest blocks travel, deployment and militia work until
+service resumes. Contract expiry stops recovery before that hour's work. Rates
+use an eight-hour reference adjusted by wounds and the authored night-vision
+trait; no historical-ID profile is implied. The existing supplied daily recovery
+is retained. Automatic sleep/wake, collapse, configurable sleep needs, global
+fatigue capacity and advanced marching remain separate integrations. See
+[rest acceptance](../verification/strategic-rest.md).
 
 The editor supports these appearance rules:
 
