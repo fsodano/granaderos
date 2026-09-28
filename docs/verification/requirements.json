@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-27",
-  "baseline": "94046adfa62c24d39fdae0483c6c0364cbd3da94",
+  "baseline": "9c9e57221af4d725c454ff27b6766cead3f99899",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -98,7 +98,13 @@
     {
       "id": "E-DIALOGUE-PAYMENTS",
       "path": "docs/verification/dialogue-payments.md",
-      "description": "One-time dialogue payments and rewards use actual local conversations, funds and persistent per-choice receipts. Mounted editor/game controls, loops, saves, service changes, separate identities and rejection checks pass. A prepared treasury ceiling covers overflow. Does not establish item rewards, quest state or complete campaign acceptance."
+      "description": "One-time dialogue payments and rewards use actual local conversations, funds and persistent per-choice receipts. Mounted editor/game controls, loops, saves, service changes, separate identities and rejection checks pass. A prepared treasury ceiling covers overflow. Does not establish item rewards, quest state or complete campaign acceptance.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36370521027/job/108765701197"
+    },
+    {
+      "id": "E-AUTHORED-QUESTS",
+      "path": "docs/verification/authored-quests.md",
+      "description": "Editor-authored quests start and resolve through actual resident dialogue. Ordered saved transitions, quest conditions, atomic treasury effects, alternate failure, multiple participants and the mounted campaign journal pass. Does not establish item objectives, historical quest overrides, automatic failures or a complete campaign."
     }
   ],
   "queue": [
@@ -130,7 +136,7 @@
         "STORY-06",
         "STORY-08"
       ],
-      "action": "Extend conditional dialogue and one-time treasury effects with quests and other effects; deliver scripted movement, rules, equipment/merchants and portable content one feature at a time."
+      "action": "Extend conditional dialogue and shared quest states with item/objective and historical role effects; deliver scripted movement, rules, equipment/merchants and portable content one feature at a time."
     },
     {
       "order": 4,
@@ -146,6 +152,28 @@
     }
   ],
   "requirements": [
+    {
+      "id": "QUEST-01",
+      "group": "Published deliveries",
+      "requirement": "Author shared quest states, dialogue transitions and a player journal",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Create named quests in the editor and use their states as choice conditions or effects. Resident conversations start and resolve quests, optionally with an atomic payment/reward. An ordered saved event history supplies the campaign journal and blocks illegal terminal transitions.",
+      "local": "Uses published dialogue, treasury and save paths. Historical municipal errands keep their existing rules.",
+      "remaining": "",
+      "acceptance": "Author, copy, delete, undo and launch a quest; protect dialogue references. Physically accept and resolve a day-gated quest, or take its failure branch; allow different residents to participate without duplicate state/rewards. Reject premature, unaffordable and terminal transitions plus invalid saved histories. Show active and completed objectives through the actual mounted game controls.",
+      "evidence": [
+        "E-AUTHORED-QUESTS"
+      ],
+      "parents": [
+        "STORY-03"
+      ],
+      "testFiles": [
+        "tests/content-quests.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/webmcp-campaign.test.mjs"
+      ]
+    },
     {
       "id": "PAYMENT-01",
       "group": "Published deliveries",
@@ -166,7 +194,8 @@
         "tests/dialogue-payments.test.mjs",
         "tests/story-editor.test.mjs",
         "tests/webmcp-campaign.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/40"
     },
     {
       "id": "CONDITION-01",
@@ -1421,16 +1450,17 @@
       "requirement": "Branching dialogue, conditions, effects and quests",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "New world residents support authored branching text graphs, actual local choices and saved progress. Choices can require campaign day, pesos, named locality control and character life/service/presence. Event phrases and fixed historical conversations remain available. Authored choices can charge or reward pesos once, with saved receipts and visible terms.",
-      "local": "No general authorable quest graph accepted.",
-      "remaining": "Add quest state, item and other gameplay effects, role bindings and their persistent receipts; extend authoring to historical roles without bypassing their campaign gates.",
+      "published": "New world residents support authored branching text graphs, actual local choices and saved progress. Choices can require campaign day, pesos, named locality control and character life/service/presence. Event phrases and fixed historical conversations remain available. Authored choices can charge or reward pesos once, with saved receipts and visible terms. Shared authored quests have explicit start/completion/failure, quest-state conditions, ordered saved transitions and a campaign journal. Different residents can start and resolve the same objective.",
+      "local": "Authored resident quest transitions are accepted in the bounded published scope. Advanced historical role and objective systems are not imported.",
+      "remaining": "Add item/objective and other gameplay effects, automatic failure policies, historical role bindings and their receipts; extend authoring to historical conversations without bypassing campaign gates.",
       "acceptance": "Author and finish alternate quest branches through normal controls, including failures and saves.",
       "evidence": [
         "E-CONFLICTS",
         "E-AUTHORED-RESIDENTS",
         "E-AUTHORED-DIALOGUES",
         "E-DIALOGUE-CONDITIONS",
-        "E-DIALOGUE-PAYMENTS"
+        "E-DIALOGUE-PAYMENTS",
+        "E-AUTHORED-QUESTS"
       ]
     },
     {
@@ -3277,13 +3307,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "94046adfa62c24d39fdae0483c6c0364cbd3da94",
-    "total": 635,
-    "passed": 635,
+    "source": "9c9e57221af4d725c454ff27b6766cead3f99899",
+    "total": 645,
+    "passed": 645,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-DIALOGUE-PAYMENTS"
+    "evidenceId": "E-AUTHORED-QUESTS"
   }
 }

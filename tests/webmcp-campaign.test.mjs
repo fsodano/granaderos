@@ -1,3 +1,4 @@
+import {questPackage} from './content-quest-fixture.mjs';
 import {dialoguePackage} from './dialogue-fixture.mjs';
 import {readyLocal,localId,localNPC,tactical as localTactical,order as localOrder,leave as leaveLocal,visit as visitLocal} from './local-contract-fixture.mjs';
 import {register} from 'node:module';
@@ -136,4 +137,12 @@ test('the mounted conversation displays an unaffordable payment and cannot selec
  const d=dialoguePackage();d.characters.at(-1).encounter.dialogue.nodes[0].choices[0].effects=[{type:'treasury',operation:'pay',amount:1000000}];const p=readyLocal(undefined,d),m=await mount(t,p),npc=m.document.querySelector('[data-unit-id="authored-alma-contract"]');
  await act(async()=>npc.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));await m.click('Conversar');const before=structuredClone(pair(m.read()));
  const button=[...m.document.querySelectorAll('[aria-label="Conversación"] button')].find(b=>b.textContent.startsWith('Contame sobre el norte.'));assert.equal(button.disabled,true);assert.match(button.textContent,/Pagar 1000000 pesos/);assert.match(button.textContent,/Faltan/);await m.click('Contame sobre el norte.');assert.deepEqual(pair(m.read()),before);assert.deepEqual(m.saved(),before);
+});
+
+test('the mounted conversation starts and completes a quest and the campaign journal shows its real saved status',async t=>{
+ const p=readyLocal(undefined,questPackage()),m=await mount(t,p),cash=p.campaign.resources.treasury;
+ async function open(){const npc=m.document.querySelector('[data-unit-id="authored-alma-contract"]');assert.ok(npc);await act(async()=>npc.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));await m.click('Conversar');}
+ async function map(){await m.click('Cerrar conversación');await act(async()=>m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'m',bubbles:true})));}
+ await open();await m.click('Acepto el encargo.');assert.match(m.document.querySelector('[aria-label="Conversación"]').textContent,/El parte de la ribera: en curso/);await map();let journal=m.document.querySelector('[aria-label="Encargos de la historia"]');assert.ok(journal);assert.match(journal.textContent,/En curso/);assert.match(journal.textContent,/Volvé con el parte/);
+ await m.click('Volver al sector táctico');if([...m.document.querySelectorAll('button')].some(b=>b.textContent.trim().startsWith('Pausar exploración')))await m.click('Pausar exploración');await open();await m.click('Aquí está el parte.');assert.equal(m.read().campaign.resources.treasury,cash+175);assert.deepEqual(m.saved(),pair(m.read()));await map();journal=m.document.querySelector('[aria-label="Encargos de la historia"]');assert.match(journal.textContent,/Completado/);assert.match(journal.textContent,/Resuelto el día/);assert.equal(m.read().campaign.contentQuestEvents.length,2);
 });

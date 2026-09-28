@@ -1,3 +1,4 @@
+import {validateContentQuests} from './content-quests.js';
 import {validateDialogue} from './content-dialogue.js';
 import {FORCE_EQUIPMENT,defaultForceEquipment,validateForceEquipment} from './content-force-equipment.js';
 import {legacyCharacterAbilities,validCharacterAbilities} from './character-abilities.js';
@@ -41,6 +42,7 @@ export function defaultContentPackage() {
     version: 1,
     id: "granaderos",
     name: "Granaderos",
+    quests: [],
     arrivalSites: defaultArrivalSites(),
     oppositionEquipment: defaultForceEquipment('oppositionEquipment'),
     militiaEquipment: defaultForceEquipment('militiaEquipment'),
@@ -104,6 +106,7 @@ export function validateContentPackage(value) {
       `texto inválido (máximo ${max} caracteres).`,
     );
   text(value.name, "Nombre", 100);
+  try{validateContentQuests(value.quests);}catch(error){errors.push(error.message);}
   if (value.arrivalSites !== undefined) errors.push(...validateArrivalSites(value.arrivalSites));
   for (const key of ["characters", "weapons", "placements"])
     check(
@@ -112,7 +115,7 @@ export function validateContentPackage(value) {
       "se necesita una lista de hasta 500 elementos.",
     );
   if (errors.length) return errors;
-  const sets = {};
+  const sets = {quests:new Set((value.quests??[]).map(q=>q.id))};
   for (const key of ["characters", "weapons", "placements"]) {
     sets[key] = new Set();
     for (const [i, item] of value[key].entries()) {
@@ -136,7 +139,7 @@ export function validateContentPackage(value) {
       check((c.service==='contract'||c.service==='permanent'&&c.monthlyPay===0)&&c.arrivalHours===undefined,c.id,'los habitantes se incorporan en el lugar; el servicio permanente no tiene paga ni demora de llegada.');
       check(record(e)&&['recruitable','greeting','requiredLeadership','requiredLiberated','requiredSector'].every(k=>Object.hasOwn(e,k))&&Object.keys(e).every(k=>['recruitable','greeting','requiredLeadership','requiredLiberated','requiredSector','dialogue'].includes(k)),c.id,'la configuración del encuentro no es válida.');
       if(record(e)){
-        if(e.dialogue!==undefined)try{validateDialogue(e.dialogue,sets.characters);}catch(error){errors.push(`${c.id}: ${error.message}`);}
+        if(e.dialogue!==undefined)try{validateDialogue(e.dialogue,sets.characters,sets.quests);}catch(error){errors.push(`${c.id}: ${error.message}`);}
         check(typeof e.recruitable==='boolean',c.id,'elegí si puede incorporarse.');
         text(e.greeting,`${c.id}.encounter.greeting`,1000,true);
         check(integer(e.requiredLeadership,0,100)&&integer(e.requiredLiberated,0,12),c.id,'los requisitos del encuentro están fuera de rango.');

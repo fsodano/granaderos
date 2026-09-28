@@ -1,5 +1,6 @@
 'use client';
 import DialogueEditor from './DialogueEditor';
+import QuestEditor from './QuestEditor';
 import { useEffect, useRef, useState } from 'react';
 import {
   ATTRIBUTE_FIELDS,
@@ -472,6 +473,7 @@ export default function ContentEditor() {
           ['characters', 'Personajes'],
           ['weapons', 'Armas de fuego'],
           ['arrivals', 'Llegadas'],
+          ['quests', 'Encargos'],
           ['test', 'Pruebas'],
         ].map(([id, name]) => (
           <button
@@ -486,7 +488,7 @@ export default function ContentEditor() {
           </button>
         ))}
       </nav>
-      {tab === 'arrivals' ? <ArrivalSites draft={draft} onChange={change}/> : tab !== 'test' ? (
+      {tab === 'quests' ? <QuestEditor draft={draft} onChange={change}/> : tab === 'arrivals' ? <ArrivalSites draft={draft} onChange={change}/> : tab !== 'test' ? (
         <div className="editor-columns">
           <aside>
             <h2>
@@ -696,7 +698,7 @@ export default function ContentEditor() {
                         </label>
                       </>}
                     </fieldset>}
-                    {isWorldCharacter(item)&&<DialogueEditor key={item.id} characters={draft.characters} value={item.encounter.dialogue} greeting={item.encounter.greeting} onChange={dialogue=>update({encounter:{...item.encounter,dialogue}})}/>}
+                    {isWorldCharacter(item)&&<DialogueEditor key={item.id} characters={draft.characters} quests={draft.quests??[]} value={item.encounter.dialogue} greeting={item.encounter.greeting} onChange={dialogue=>update({encounter:{...item.encounter,dialogue}})}/>}
                     <fieldset aria-label="Habilidades de combate">
                       <legend>Habilidades de combate</legend>
                       <p>Elegí las capacidades de este personaje. Sin casillas marcadas, no tendrá ninguna de estas ventajas. Las funciones de historia se conservan por ahora.</p>
