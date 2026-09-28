@@ -1,3 +1,4 @@
+import {validMilitiaArrival} from './militia-arrival.js';
 import {validMilitiaExperience} from './militia-experience.js';
 import {validateCivilianWounds} from './civilian-harm.js';
 import {validCivilianSupplies} from './civilian-supplies.js';
@@ -22,7 +23,7 @@ for(const t of s.tiles){need(coord(t)&&!seen.has(`${t.x},${t.y}`),'posiciones');
 s.mode??='combat';s.phase??='player';s.status??='active';s.seed??=1812;s.turn??=1;s.weather??={rain:0,humidity:0};need(['combat','exploration'].includes(s.mode)&&['player','enemy'].includes(s.phase)&&['active','victory','defeat'].includes(s.status)&&integer(s.seed,0,4294967295)&&integer(s.turn,1,1e9),'turnos');need(object(s.weather)&&number(s.weather.rain,0,100)&&number(s.weather.humidity,0,100),'clima');
 need(s.conditionVersion===undefined||s.conditionVersion===1,'versión del estado físico');const legacyCondition=s.conditionVersion===undefined;s.conditionVersion=1;
 need(Array.isArray(s.units)&&s.units.length<=200,'combatientes');const ids=new Set();
-for(const u of s.units){need(validMilitiaExperience(u),'experiencia de milicia');if(u.militiaCreditId!==undefined)need(typeof u.militiaCreditId==='string'&&u.militiaCreditId.length>0&&u.militiaCreditId.length<=2400,'identidad de experiencia');need(coord(u)&&text(u.id)&&!ids.has(u.id)&&text(u.name)&&['player','enemy'].includes(u.side),'combatientes');ids.add(u.id);
+for(const u of s.units){need(validMilitiaArrival(u,s.sectorId),'llegada de milicia');need(validMilitiaExperience(u),'experiencia de milicia');if(u.militiaCreditId!==undefined)need(typeof u.militiaCreditId==='string'&&u.militiaCreditId.length>0&&u.militiaCreditId.length<=2400,'identidad de experiencia');need(coord(u)&&text(u.id)&&!ids.has(u.id)&&text(u.name)&&['player','enemy'].includes(u.side),'combatientes');ids.add(u.id);
 const defaults={maxHp:100,ap:100,morale:80,condition:100,marksmanship:50,agility:50,strength:50,medical:30,bleeding:0,loaded:0,ammo:0,weapon:1800,stance:'standing',activeSlot:'primary',energy:100,unconscious:u.energy===0,movementMode:'walk',fatigue:0,priming:50,flints:4,rations:2,torches:2,boleadoras:1,strengthTraining:0,inventory:{}};for(const[k,v]of Object.entries(defaults))if(u[k]===undefined)u[k]=v;
 need(number(u.maxHp,1,1000)&&number(u.hp,0,u.maxHp)&&number(u.ap,0,100),'salud o acción');if(u.bandaged!==undefined)need(number(u.bandaged,0,u.maxHp-u.hp),'heridas vendadas');for(const key of ['morale','condition','marksmanship','agility','strength','medical','bleeding','energy','fatigue'])need(number(u[key],0,100),'atributos');
 need(integer(u.weapon,0,65535),'armas');validateWeaponCarrier(u);if(u.blade!==undefined)need(integer(u.blade,0,65535),'armas blancas');need(integer(u.loaded,0,weaponSpecification(u)?.capacity??(BLADES[u.weapon]?0:100)),'cargas');

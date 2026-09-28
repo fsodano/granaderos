@@ -62,3 +62,11 @@ The broad militia and JA2-S05 requirements remain partial. City redistribution,
 advanced search/support, artillery crews, custody and wider defense routes are
 separate. This delivery does not import the advanced interrupt or elevation
 systems from the development checkout.
+
+## Publication
+
+[PR #96](https://github.com/fsodano/granaderos/pull/96) merged on 28 September
+2026 at 20:28:35 UTC as `eae94517c350aa918508e95aebd626808c271a7c`, after
+[successful exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36477353178/job/109114280647)
+for `289af11e24eb45fc324aaa10acc69b3b4791a518` (completed at 20:28:11 UTC).
+The scope remains the local patrols, search and saved controls above.
