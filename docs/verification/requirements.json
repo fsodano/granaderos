@@ -439,7 +439,7 @@
       "requirement": "Author included firearm preparation cost and retain the paid firing position",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI is still required before merge. This implementation accepts nonzero authored preparation, charges it within the first shot, and discounts only that part while the actor retains the firing position. Unconfigured and default weapons retain zero preparation.",
+      "published": "Authored firearm preparation is charged within the first shot and discounted only while the actor retains the firing position. Unconfigured and default weapons retain zero preparation. Merged through PR #84 after exact-head CI.",
       "local": "Nine simulations and two mounted controls cover real discharges, finite charges, failed ignition, physical handling, invalid states, actual enemy fire, paid campaign save, editor undo/validation and pointer/keyboard continuation. The combined simulation group passes 41 tests, plus two mounted cases. The initial broad source passes 903/903, zero failures/skips, types, export and all 36 baseline comparisons. The final source adds actual exploration seconds in the control and a clock regression; its filtered twelve-case group includes all eleven new cases and one existing project check. Final complete regression passes 904/904, zero failures/skips, types, export and all 36 baseline comparisons.",
       "remaining": "",
       "acceptance": "Author a nonzero preparation cost, launch the pinned campaign, pay the first shot and save the cheaper next shot. Keep finite charges, reject invalid readiness and lower the weapon after actual physical work or incapacity.",
@@ -457,7 +457,8 @@
         "tests/authored-weapon-readiness.test.mjs",
         "tests/weapon-readiness-controls.test.mjs",
         "tests/story-editor.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/84"
     },
     {
       "id": "PARTIALRELOAD-01",
@@ -2355,7 +2356,7 @@
       "requirement": "100 AP, exact weapon cycles, long reloads, prone penalty",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "100 AP and reference firearm cycles. This bounded PR accepts authored preparation within the first shot, retained firing position and actual AP/time controls. Exact-head CI is required before merge.",
+      "published": "100 AP and reference firearm cycles. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI.",
       "local": "See local suite and preserved parity source; not equivalent to published integration.",
       "remaining": "Integrate partial loading/readiness and shared costs through interruptions and saves.",
       "acceptance": "Runtime AP deductions and weapon XML match specification",
@@ -2903,7 +2904,7 @@
       "requirement": "Complete equipment and merchant authoring",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain six finite personal supply quantities. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of six personal supply types can gate dialogue, chapters and failure. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. This bounded PR accepts authored preparation within the first shot, retained firing position and actual AP/time controls. Exact-head CI is required before merge. This bounded PR accepts an optional pinned cartridge unit price for deployment and finite return credit; exact-head CI remains required before merge.",
+      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain six finite personal supply quantities. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of six personal supply types can gate dialogue, chapters and failure. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI. This bounded PR accepts an optional pinned cartridge unit price for deployment and finite return credit; exact-head CI remains required before merge.",
       "local": "Physical inventory, fittings and merchants are more complete locally but not generally authored.",
       "remaining": "Add artillery, ammunition types and dealer pricing, fittings, merchant stock, buyback and replenishment authoring; integrate civilian belongings and complete physical custody.",
       "acceptance": "Create each supported equipment type; buy/use/trade/reload without duplication or lost instance data.",
@@ -3846,7 +3847,7 @@
       "requirement": "Weapon readiness, reload work, jams, and clearing failures are visible and consume the proper resources. G19,47-50.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Published related core exists; full parity acceptance is not established. PR #83 publishes paid partial firearm loading, physical tactical work retention and actual AP/time controls with saved continuation. This bounded PR accepts authored preparation within the first shot, retained firing position and actual AP/time controls. Exact-head CI is required before merge.",
+      "published": "Published related core exists; full parity acceptance is not established. PR #83 publishes paid partial firearm loading, physical tactical work retention and actual AP/time controls with saved continuation. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
       "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
@@ -4779,13 +4780,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "05362e315ec6402808ac2b3eba89bb2c708ebaa4",
-    "total": 893,
-    "passed": 893,
+    "source": "8573da89c2ee086ef8b7c9969e3df90386b1c542",
+    "total": 904,
+    "passed": 904,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-PARTIAL-RELOAD"
+    "evidenceId": "E-WEAPON-READINESS"
   }
 }
