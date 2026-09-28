@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-27",
-  "baseline": "bb64ac520f8ec1a01d9f77bee510161167a32684",
+  "baseline": "a6730e4cf0dd9fff4198d55d31ece77f4388bfde",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -68,7 +68,13 @@
     {
       "id": "E-DEATH-SUCCESSORS",
       "path": "docs/verification/death-successors.md",
-      "description": "Civilian and active military death activate a distinct authored resident once, with saved delay/destination, scene protection and chained successors. Mounted editor and save rejection checks pass. Does not transfer campaign roles or goods."
+      "description": "Civilian and active military death activate a distinct authored resident once, with saved delay/destination, scene protection and chained successors. Mounted editor and save rejection checks pass. Does not transfer campaign roles or goods.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36366117414/job/108752759672"
+    },
+    {
+      "id": "E-TACTICAL-ORDER-SYNC",
+      "path": "docs/verification/tactical-order-sync.md",
+      "description": "Mounted game-page tools synchronize campaign time, finite supplies, civilian death and successor schedules with active autosaves. Consecutive calls, UI controls, stale results, invalid orders and standalone combat are covered. Does not establish browser protocol compatibility, player-known projection or full campaign acceptance."
     }
   ],
   "queue": [
@@ -117,6 +123,29 @@
   ],
   "requirements": [
     {
+      "id": "TOOL-01",
+      "group": "Published deliveries",
+      "requirement": "Registered tactical orders commit the same campaign and battle state as game controls",
+      "status": "VERIFIED",
+      "priority": "P0",
+      "published": "Tool orders update campaign time and persistent actors before autosave. Consecutive calls see the last accepted pair. Failed orders and stale UI results cannot overwrite that pair; standalone combat remains supported.",
+      "local": "The mounted published game now checks the adapter independently of the separate advanced tool implementation.",
+      "remaining": "",
+      "acceptance": "Resume an authored active save; issue consecutive registered orders across midnight; interleave normal controls; wound, aid and kill a resident; observe its delayed successor; decode the autosave. Reject invalid orders and a delayed older UI result. Preserve standalone combat and abort registration on unmount.",
+      "evidence": [
+        "E-TACTICAL-ORDER-SYNC"
+      ],
+      "parents": [
+        "INTEGRATION-01",
+        "ENG-03"
+      ],
+      "testFiles": [
+        "tests/webmcp-campaign.test.mjs",
+        "tests/time-bridge.test.mjs",
+        "tests/death-successors.test.mjs"
+      ]
+    },
+    {
       "id": "SUCCESSOR-01",
       "group": "Published deliveries",
       "requirement": "Activate a distinct authored world resident after confirmed character death",
@@ -137,7 +166,8 @@
         "tests/story-editor.test.mjs",
         "tests/content-system.test.mjs",
         "tests/time-bridge.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/35"
     },
     {
       "id": "RESIDENT-01",
@@ -3114,13 +3144,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "bb64ac520f8ec1a01d9f77bee510161167a32684",
-    "total": 598,
-    "passed": 598,
+    "source": "a6730e4cf0dd9fff4198d55d31ece77f4388bfde",
+    "total": 603,
+    "passed": 603,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-DEATH-SUCCESSORS"
+    "evidenceId": "E-TACTICAL-ORDER-SYNC"
   }
 }

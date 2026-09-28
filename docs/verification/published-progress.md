@@ -5,14 +5,14 @@
 Updated 2026-09-27. **The complete game and story editor are not accepted.**
 
 Read [the design](../specification/game-design.md) for the target and [the formal audit](formal-audit-2026-09-27.md) for evidence and limits.
-The published baseline assessed here is `bb64ac520f8ec1a01d9f77bee510161167a32684`. Later PRs must update this register.
+The published baseline assessed here is `a6730e4cf0dd9fff4198d55d31ece77f4388bfde`. Later PRs must update this register.
 The larger local sources and the editor prototype are separate from published main.
 
 ## Verified results and current failures
 
 | Source | Passing / total | Failed | Skipped | Types / build |
 |---|---:|---:|---:|---|
-| published | 598 / 598 | 0 | 0 | PASS / PASS |
+| published | 603 / 603 | 0 | 0 | PASS / PASS |
 | original | 3040 / 3047 | 4 | 3 | PASS / PASS |
 | prototype | 2895 / 2896 | 1 | 0 | PASS / PASS |
 | presence | 548 / 548 | 0 | 0 | PASS / PASS |
@@ -29,7 +29,7 @@ The advanced local suite has three independent failure points; a failed child al
 - UNVERIFIED: available evidence does not establish acceptance.
 - SUPERSEDED: an explicit design change replaced the old requirement.
 
-The register retains 173 entries: 17 VERIFIED, 103 PARTIAL, 36 LOCAL_ONLY, 5 MISSING, 9 FAILED, 2 UNVERIFIED, 1 SUPERSEDED.
+The register retains 174 entries: 18 VERIFIED, 103 PARTIAL, 36 LOCAL_ONLY, 5 MISSING, 9 FAILED, 2 UNVERIFIED, 1 SUPERSEDED.
 Rows overlap in scope. Neither these counts nor test totals are a completion percentage.
 
 Edit [requirements.json](requirements.json), record exact source/checks and remaining gaps, then run `npm run docs:progress` and `npm run audit:docs`. Update the design for policy changes. A dated audit stays an evidence snapshot. Do not mark a local branch as published or close a broad row from one passing fixture.
@@ -51,7 +51,8 @@ Finish one bounded feature, its controls and persistence, update evidence, pass 
 
 | ID | Requirement | Status | Published scope | Remaining work / acceptance |
 |---|---|---|---|---|
-| SUCCESSOR-01 | Activate a distinct authored world resident after confirmed character death | VERIFIED | Author predecessor, delay and exact cells; civilian or active military death schedules one arrival. Waiting survives saves, protects a loaded destination and keeps separate identities, health and bodies. | Create the dependency in the mounted editor; cause real civilian and military death; save before/after the deadline; protect a loaded cell; recruit or kill the successor and continue a chain without repeating the activation. Reject forged schedules and reversal of confirmed military death. |
+| TOOL-01 | Registered tactical orders commit the same campaign and battle state as game controls | VERIFIED | Tool orders update campaign time and persistent actors before autosave. Consecutive calls see the last accepted pair. Failed orders and stale UI results cannot overwrite that pair; standalone combat remains supported. | Resume an authored active save; issue consecutive registered orders across midnight; interleave normal controls; wound, aid and kill a resident; observe its delayed successor; decode the autosave. Reject invalid orders and a delayed older UI result. Preserve standalone combat and abort registration on unmount. |
+| SUCCESSOR-01 [PR](https://github.com/fsodano/granaderos/pull/35) | Activate a distinct authored world resident after confirmed character death | VERIFIED | Author predecessor, delay and exact cells; civilian or active military death schedules one arrival. Waiting survives saves, protects a loaded destination and keeps separate identities, health and bodies. | Create the dependency in the mounted editor; cause real civilian and military death; save before/after the deadline; protect a loaded cell; recruit or kill the successor and continue a chain without repeating the activation. Reject forged schedules and reversal of confirmed military death. |
 | RESIDENT-01 [PR](https://github.com/fsodano/granaderos/pull/34) | Create independent world residents with authored encounters and persistent identity | VERIFIED | Create, copy, remove and launch new residents with exact-cell placement, authored greeting, portrait and recruitment requirements; local unpaid permanent recruitment, wounds, death, progression and dismissal survive saves. | Create through the actual editor, choose cells, copy and undo; meet, wound, aid, relocate, recruit or refuse recruitment, save, die and dismiss without duplicated identities. No inherited historical powers or bulletin admission. |
 | CIVILIAN-01 [PR](https://github.com/fsodano/granaderos/pull/33) | Existing world residents retain wounds and death across relocation, recruitment and saves | VERIFIED | Ordinary tactical attack and medical controls affect residents; health persists by identity, corpses stay in their scene, medical charges are finite and can be replenished for pesos, and death applies local consequences once. | Real injury and aid, active save, daily relocation, recruitment and redeployment without healing; permanent death and corpse reentry; finite medical charges and paid replenishment; mission identity, failed local errand and unique loyalty receipt; legacy injuries and invalid snapshots. Excludes new world definitions, personal stock, custody and successors. |
 | OPENING-01 [PR](https://github.com/fsodano/granaderos/pull/32) | Retiro-only startup and free first-person phase advance with saved continuation | VERIFIED | Stock and authored starts have only Retiro, pesos-only finance, optional free personal creation, all paid terms and arrival-gated service. Hired-only saves open the map. A real first conquest retains casualties and saves. | Empty, custom, hired and mixed starts; no fee or unlock from a failed/cancelled/pending hire; controlled reception; headquarters supply/loss; prior saves; real first hired-squad battle and return. Full San Lorenzo and complete campaign routes are outside this bounded row. |
@@ -265,6 +266,7 @@ Finish one bounded feature, its controls and persistence, update evidence, pass 
 | E-RETIRO-OPENING | [Record](retiro-opening.md) · [CI](https://github.com/fsodano/granaderos/actions/runs/36360760155) | Retiro-only startup, free version-2 character, actual hire arrival, pesos and all contract terms, resume/import, and real first hired-squad conquest with casualties and save/reentry. Complete fresh campaign routes and balance remain unverified. |
 | E-CIVILIAN-STATE | [Record](civilian-state.md) · [CI](https://github.com/fsodano/granaderos/actions/runs/36363917668/job/108746414452) | Existing residents retain injuries and death across tactical actions, active saves, exact-cell relocation, recruitment and dismissal. Finite medical supplies, paid replenishment, mission identity and local consequences are covered. New NPC identities, inventory, custody and successors remain open. |
 | E-AUTHORED-RESIDENTS | [Record](authored-residents.md) · [CI](https://github.com/fsodano/granaderos/actions/runs/36364894495/job/108749224573) | New world residents are created in the editor and encountered in the real campaign, with local recruitment policy, greetings, placement, wounds, death, progression, dismissal and saved identity. Inventory, custody, paid local contracts and successors remain open. |
-| E-DEATH-SUCCESSORS | [Record](death-successors.md) | Civilian and active military death activate a distinct authored resident once, with saved delay/destination, scene protection and chained successors. Mounted editor and save rejection checks pass. Does not transfer campaign roles or goods. |
+| E-DEATH-SUCCESSORS | [Record](death-successors.md) · [CI](https://github.com/fsodano/granaderos/actions/runs/36366117414/job/108752759672) | Civilian and active military death activate a distinct authored resident once, with saved delay/destination, scene protection and chained successors. Mounted editor and save rejection checks pass. Does not transfer campaign roles or goods. |
+| E-TACTICAL-ORDER-SYNC | [Record](tactical-order-sync.md) | Mounted game-page tools synchronize campaign time, finite supplies, civilian death and successor schedules with active autosaves. Consecutive calls, UI controls, stale results, invalid orders and standalone combat are covered. Does not establish browser protocol compatibility, player-known projection or full campaign acceptance. |
 
 Per-row acceptance, local assessment, source notes and test paths are retained in [the register](requirements.json). The full 87-row historical parity assessment is preserved in the audit; its old implementation claims are not fresh certification. Earlier milestones remain in [the historical log](../archive/published-progress-through-pr28.md).
