@@ -44,3 +44,7 @@ repair assignments with elapsed work, finite tool custody, local armory transfer
 merchant stock or transport of purchased equipment. It retains the existing
 instant workshop prices and refill targets. No live-browser or full performance
 acceptance is claimed.
+
+[PR #70](https://github.com/fsodano/granaderos/pull/70) merged after
+[GitHub CI](https://github.com/fsodano/granaderos/actions/runs/36419410898/job/108918251655)
+passed at `9eacc99f7eb3778f9a389f2097e58a9af6294d13`.
