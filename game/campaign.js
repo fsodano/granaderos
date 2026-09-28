@@ -1,3 +1,4 @@
+import {headquartersFor,headquartersName,campaignChapters,hasWorkshop} from './campaign-headquarters.js';
 import {campaignRules} from './campaign-rules.js';
 import {synchronizeDialogueMovements,validateDialogueMovements} from './dialogue-movement.js';
 import {updateContentQuests} from './content-quests.js';
@@ -89,8 +90,9 @@ export function initialCampaign(seed=1812,content=null){
   return state;
 }
 export function isSupplied(s,id){
-  if(s.sectors[id]?.owner!=='patriot'||s.sectors.retiro.owner!=='patriot')return false;
-  const visited=new Set(['retiro']),queue=['retiro'];
+  const origin=headquartersFor(s);
+  if(s.sectors[id]?.owner!=='patriot'||s.sectors[origin].owner!=='patriot')return false;
+  const visited=new Set([origin]),queue=[origin];
   while(queue.length){const here=queue.shift();for(const next of sector(here).neighbors){if(!visited.has(next)&&s.sectors[next].owner==='patriot'){visited.add(next);queue.push(next);}}}
   return visited.has(id);
 }
@@ -119,10 +121,10 @@ export function recruitmentStatus(s,id,local=false){
   const [available,reason]=conditions[id]??[false,'No está disponible.'];return {available,reason:available?'Disponible para incorporarse.':reason};
 }
 export function campaignObjectives(s){
-  return PHASES.map((p,i)=>({...p,complete:i<s.phase||(i===4&&s.completed),active:i===s.phase&&!s.completed}));
+  return campaignChapters(s).map((p,i)=>({...p,complete:i<s.phase||(i===4&&s.completed),active:i===s.phase&&!s.completed}));
 }
 export function availableActions(s){
-  return {recruits:OPERATIVES.map(o=>({...o,...recruitmentStatus(s,o.id)})),destinations:CAMPAIGN_SECTORS.filter(x=>x.id!==s.location),phase:PHASES[s.phase]};
+  return {recruits:OPERATIVES.map(o=>({...o,...recruitmentStatus(s,o.id)})),destinations:CAMPAIGN_SECTORS.filter(x=>x.id!==s.location),phase:campaignChapters(s)[s.phase]};
 }
 function hasReadyCombatant(s){return s.recruited.some(id=>s.operativeState[id]?.alive&&s.operativeState[id].hp>0&&!s.operativeState[id].captured);}
 function progress(s){
@@ -134,10 +136,10 @@ function progress(s){
     s.phase=4;note(s,'El Plumerillo alcanza plena capacidad. Tres mil infantes, artillería y pasos seguros: San Martín puede incorporarse al ejército.');
   }
   if(!s.completed&&s.phase===4&&s.recruited.includes(57)&&Object.values(s.sectors).every(x=>x.owner==='patriot')&&!s.blockade&&!s.pendingBattle){s.completed=true;note(s,'¡Campaña concluida! Las provincias están libres y el Ejército de los Andes queda preparado para la liberación continental.');for(const op of rosterFor(s).filter(o=>s.recruited.includes(o.id)&&s.operativeState[o.id]?.alive)){const line=speechFor(op,'ending');if(line?.trim())note(s,`${op.name}: «${line}»`);}}
-  if(s.sectors.retiro.owner!=='patriot'){s.defeated=true;note(s,'El cuartel de Retiro ha caído. El ejército debe reorganizarse desde una nueva campaña.');}
+  if(s.sectors[headquartersFor(s)].owner!=='patriot'){s.defeated=true;note(s,`El cuartel de ${headquartersName(s)} ha caído. El ejército debe reorganizarse desde una nueva campaña.`);}
 }
 function raid(s,theater,forcedTarget=null){
-  const targets=CAMPAIGN_SECTORS.filter(x=>x.theater===theater&&s.sectors[x.id].owner==='patriot'&&x.id!=='retiro');
+  const targets=CAMPAIGN_SECTORS.filter(x=>x.theater===theater&&s.sectors[x.id].owner==='patriot'&&x.id!==headquartersFor(s));
   if(!targets.length)return;
   const priorities=theater==='north'?NORTHERN_AXIS:theater==='coast'?['san_nicolas','santa_fe','ensenada','buenos_aires']:['cordoba'];
   targets.sort((a,b)=>theater==='coast'?b.income-a.income:priorities.indexOf(a.id)-priorities.indexOf(b.id));
@@ -207,7 +209,7 @@ export function dispatchCampaign(previous,action){
       case 'purchaseEquipment':{
         const item=equipmentCatalog(s).find(o=>String(o.item)===String(action.item)),quantity=action.quantity??1;
         requireThat(item&&Number.isInteger(quantity)&&quantity>0&&quantity<=100,'El pedido de armamento es inválido.');
-        requireThat(s.sectors.retiro.owner==='patriot'&&isSupplied(s,'retiro'),'La sala de armas de Retiro está incomunicada.');
+        requireThat(isSupplied(s,headquartersFor(s)),`La sala de armas de ${headquartersName(s)} está incomunicada.`);
         if(isImportedEquipment(item)){requireThat(s.sectors.ensenada.owner==='patriot'&&s.reputation.foreign>=0,'El pedido requiere Ensenada libre y comerciantes dispuestos a negociar.');s.equipmentShipments??=[];requireThat(s.equipmentShipments.length<1000,'Hay demasiados pedidos pendientes.');pay(s,{treasury:tradeQuote(s,item.price)*quantity});const delay=72+Math.floor(random(s)*49);s.equipmentShipments.push({item:item.item,quantity,due:s.hour+delay});note(s,`Pedido de ${quantity} × ${item.name}: arribo en ${delay} horas, sujeto al bloqueo.`);break;}
         pay(s,{treasury:item.price*quantity});s.armory??={};addArmoryStock(s,item,quantity);
         note(s,`La sala de armas entrega ${quantity} × ${item.name}.`);break;
@@ -229,12 +231,12 @@ export function dispatchCampaign(previous,action){
       }
       case 'resupply':case 'repairWeapon':{
         const id=Number(action.operativeId),op=rosterFor(s).find(o=>o.id===id),record=s.operativeState[id];requireThat(op&&s.recruited.includes(id)&&record.alive,'El combatiente no está disponible.');
-        requireThat(['retiro','cordoba','mendoza'].includes(s.location)&&s.sectors[s.location].owner==='patriot'&&isSupplied(s,s.location),'Debes llegar a un taller comunicado en Retiro, Córdoba o Mendoza.');
+        requireThat(hasWorkshop(s,s.location)&&s.sectors[s.location].owner==='patriot'&&isSupplied(s,s.location),'Debes llegar a un taller comunicado: el cuartel general, Retiro, Córdoba o Mendoza.');
         const cost=action.type==='resupply'?refillCost(record):firearmRepairCost(record);requireThat(cost>0,action.type==='resupply'?'Las provisiones ya están completas.':'El arma ya está en perfecto estado.');pay(s,{treasury:cost});
         if(action.type==='resupply'){record.priming=Math.max(50,record.priming??50);record.flints=Math.max(4,record.flints??4);record.rations=Math.max(2,record.rations??2);record.torches=Math.max(2,record.torches??2);record.medkits=Math.max(2,record.medkits??2);note(s,`${op.name} recibe vendas, sílex, cargas de cebo y raciones por ${cost} pesos.`);}else{record.condition=100;note(s,`La maestranza repara el arma de ${op.name} por ${cost} pesos.`);}break;
       }
       case 'createOfficer':{
-        requireThat(!s.officer,'El Cabildo ya ha designado a tu oficial.');requireThat(s.sectors.retiro.owner==='patriot','El cuartel de Retiro está ocupado.');
+        requireThat(!s.officer,'El Cabildo ya ha designado a tu oficial.');requireThat(s.sectors[headquartersFor(s)].owner==='patriot',`El cuartel de ${headquartersName(s)} está ocupado.`);
         const op=createOfficerRecord(action.name,action.answers,action.profile);const creationCost=action.profile?.version===2?0:300;pay(s,{treasury:creationCost});s.officer={name:op.name,answers:clone(action.answers),...(action.profile?{profile:clone(action.profile)}:{})};s.contracts[op.id]={kind:'patriot',term:'month',started:s.hour,expiresAt:null,paid:creationCost};s.operativeState[op.id]={hp:op.maxHp,fatigue:0,alive:true,xp:0,priming:50,flints:4,rations:2,torches:2,condition:100};s.recruited.push(op.id);s.operativeState[op.id].location=s.location;if(s.squad.length<6)s.squad.push(op.id);note(s,`${op.name} aprueba el examen y recibe su comisión de oficial.`);break;
       }
       case 'recruitCivic':{
@@ -397,7 +399,7 @@ export function dispatchCampaign(previous,action){
       default:throw Error('Orden desconocida.');
     }
     updateContentQuests(s);releaseDeferred(s);receiveDueHires(s);synchronizeSquad(s);synchronizeCampaignPresence(s);synchronizeDialogueMovements(s);progress(s);
-    for(const [flag,at] of Object.entries({academy:'retiro',foundry:'mendoza',northPact:'salta',partisanSupply:'tucuman',parliament:'mendoza',emancipation:'buenos_aires',commission:'buenos_aires'}))if(s.flags[flag]&&!previous.flags[flag])recordCityLoyalty(s,{sectorId:at,kind:'quest',eventId:`quest-${flag}`});
+    for(const [flag,at] of Object.entries({academy:headquartersFor(s),foundry:'mendoza',northPact:'salta',partisanSupply:'tucuman',parliament:'mendoza',emancipation:'buenos_aires',commission:'buenos_aires'}))if(s.flags[flag]&&!previous.flags[flag])recordCityLoyalty(s,{sectorId:at,kind:'quest',eventId:`quest-${flag}`});
     return s;
   }catch(error){const rejected=clone(previous);rejected.lastError=error.message;return rejected;}
 }
