@@ -3,7 +3,7 @@ import DialogueConditions from './DialogueConditions';
 import DialogueEffects from './DialogueEffects';
 import {useState} from 'react';
 const nextId=(prefix:string,items:any[])=>{let n=1;while(items.some(i=>i.id===`${prefix}-${n}`))n++;return `${prefix}-${n}`;};
-export default function DialogueEditor({value,greeting,characters,quests,onChange}:{value:any;greeting:string;characters:any[];quests:any[];onChange:(value:any)=>void}){
+export default function DialogueEditor({value,greeting,characters,quests,ownerId,onChange}:{value:any;greeting:string;characters:any[];quests:any[];ownerId:string;onChange:(value:any)=>void}){
  const [selected,setSelected]=useState(value?.entry??'start');
  const node=value?.nodes.find((n:any)=>n.id===selected)??value?.nodes[0];
  const changeNode=(patch:any)=>onChange({...value,nodes:value.nodes.map((n:any)=>n.id===node.id?{...n,...patch}:n)});
@@ -25,7 +25,7 @@ export default function DialogueEditor({value,greeting,characters,quests,onChang
     <label>Texto de la opción<input maxLength={160} value={choice.label} onChange={e=>changeNode({choices:node.choices.map((c:any)=>c.id===choice.id?{...c,label:e.target.value}:c)})}/></label>
     <label>Respuesta siguiente<select value={choice.next} onChange={e=>changeNode({choices:node.choices.map((c:any)=>c.id===choice.id?{...c,next:e.target.value}:c)})}>{value.nodes.map((n:any)=><option key={n.id} value={n.id}>{n.title}</option>)}</select></label>
     <DialogueConditions conditions={choice.conditions} characters={characters} quests={quests} onChange={conditions=>changeNode({choices:node.choices.map((c:any)=>c.id===choice.id?{...c,conditions}:c)})}/>
-    <DialogueEffects quests={quests} effects={choice.effects} onChange={effects=>changeNode({choices:node.choices.map((c:any)=>c.id===choice.id?{...c,effects}:c)})}/>
+    <DialogueEffects ownerId={ownerId} characters={characters} quests={quests} effects={choice.effects} onChange={effects=>changeNode({choices:node.choices.map((c:any)=>c.id===choice.id?{...c,effects}:c)})}/>
     <button type="button" onClick={()=>changeNode({choices:node.choices.filter((c:any)=>c.id!==choice.id)})}>Quitar opción {i+1}</button>
    </fieldset>)}
    <button type="button" disabled={node.choices.length>=12} onClick={()=>changeNode({choices:[...node.choices,{id:nextId('choice',node.choices),label:'Continuar',next:value.nodes.find((n:any)=>n.id!==node.id)?.id??node.id}]})}>Agregar opción</button>

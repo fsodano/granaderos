@@ -48,7 +48,17 @@ Deshacer, rehacer, duplicar, recuperar el borrador e importar/exportar conservan
 
 El juego comprueba las condiciones al mostrar las opciones y al elegirlas. Una opción puede aparecer al pasar de día o después de la muerte de otro personaje. Las referencias a personajes impiden eliminarlos mientras una conversación los use. Las condiciones no cambian el estado por sí solas. Para cambiar el dinero disponible, agregá una operación en «Pago o recompensa».
 
-Activá «Cambiar los pesos al elegir esta opción», elegí si el jugador paga o recibe y escribí el importe. El juego muestra esas condiciones antes de elegir. Cada operación se aplica una sola vez por personaje y opción. Guardar, volver a la conversación o incorporar y luego despedir al personaje no la repite. Si faltan fondos, la opción queda desactivada y explica cuánto falta. Las copias de personajes tienen registros independientes. Una opción también puede cambiar un encargo. Si combina ese cambio con pesos, ambos se aplican juntos. Estas operaciones todavía no entregan objetos ni ordenan movimientos.
+Activá «Cambiar los pesos al elegir esta opción», elegí si el jugador paga o recibe y escribí el importe. El juego muestra esas condiciones antes de elegir. Cada operación se aplica una sola vez por personaje y opción. Guardar, volver a la conversación o incorporar y luego despedir al personaje no la repite. Si faltan fondos, la opción queda desactivada y explica cuánto falta. Las copias de personajes tienen registros independientes. Una opción también puede cambiar un encargo. Si combina ese cambio con pesos, ambos se aplican juntos. Una opción también puede llamar a otro habitante. Las operaciones combinadas se aceptan juntas. La entrega de objetos sigue pendiente.
+
+## Movimientos por diálogo
+
+En una opción, activá «Llamar a otro personaje al elegir esta opción» y elegí otro habitante creado en el editor. Debe estar consciente en el mismo sector y tener un camino libre. El juego elige una casilla disponible junto al interlocutor. El destino queda fijado en ese lugar, aunque después el interlocutor se mueva.
+
+El personaje camina, abre puertas utilizables y espera al llegar. Un bloqueo pausa la marcha; el peligro lo hace buscar refugio y después retomar el camino. Las heridas incapacitantes detienen el movimiento. Guardar y volver al sector conservan la orden. Si su rutina diaria lo lleva a otra celda, esa orden local deja de aplicarse. Incorporarlo lo quita de la escena; si vuelve a la misma aparición, puede retomar el encuentro.
+
+Cada opción emite una sola orden. Otra opción puede darle otro destino. Repetir una opción ya usada no repite la orden anterior. Si faltan el personaje o el camino, la opción explica el problema. Un pago o un cambio de encargo de esa misma opción tampoco se aplica. La referencia impide eliminar al personaje desde el editor.
+
+Por ahora el destino es el lugar del interlocutor. Faltan los marcadores del mapa, las acciones al llegar, las secuencias de varios actores y los disparadores automáticos. Esta función no permite llamar a candidatos del boletín ni cambia las escenas históricas.
 
 ## Encargos
 
@@ -204,3 +214,5 @@ Los mandos históricos conservan su servicio permanente, requisitos de reclutami
 `tests/quest-deadlines.test.mjs` comprueba vencimientos con segundos de aceptación reales, descanso táctico, viajes, espera, finalización previa y registros alterados. El editor conserva el plazo y la página del juego muestra el tiempo restante y el fracaso automático. La [verificación de plazos](../verification/quest-deadlines.md) registra su alcance.
 
 `tests/quest-survival.test.mjs` comprueba muerte civil real, una baja militar en una batalla compacta preparada, aceptación bloqueada tras una muerte, resultados ya completos, heridas y cambios de servicio. El editor montado conserva y protege las referencias; la página del juego registra una muerte real y muestra el fallo guardado. La [verificación de supervivencia](../verification/quest-survival.md) separa esas pruebas de una campaña completa.
+
+`tests/dialogue-movements.test.mjs` comprueba la llamada real, marcha, espera, guardado, reentrada, nuevas órdenes, muerte y cambio diario de sector. Las pruebas de rutinas usan casas preparadas para comprobar puertas, obstáculos, alarma y refugio. El editor y el juego montados comprueban creación, referencias y ejecución con guardado. La [verificación de encuentros](../verification/dialogue-movements.md) detalla sus límites.

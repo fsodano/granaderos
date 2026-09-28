@@ -1,3 +1,4 @@
+import {validateMovementScene} from './dialogue-movement.js';
 import {validWorldLocation} from './world-cells.js';
 import {OPERATIVES} from './data.js';
 import {encounterDefinitions} from './encounters.js';
@@ -76,6 +77,7 @@ export function acknowledgeCivilians(s,snapshot){
  const request=s.pendingBattle;
  need(request&&snapshot.sectorId===request.sector&&(snapshot.sceneId??null)===(request.sceneId??null)&&(!snapshot.battleId||snapshot.battleId===request.id));
  s.civilianState??={version:1,people:{}};
+ validateMovementScene(s,snapshot);
  const expected=request.npcs??[];
  need(snapshot.npcs.length===expected.length,'Faltan habitantes en el parte del sector.');
  for(const n of snapshot.npcs){

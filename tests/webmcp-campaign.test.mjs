@@ -161,3 +161,10 @@ test('the mounted game confirms a required resident death and reports the automa
  for(let i=0;i<6&&m.read().battle.npcs.find(n=>n.id===victim.id).hp>0;i++)await act(async()=>m.issue({type:'melee',unitId:unit.id,targetId:victim.id}));assert.equal(m.read().battle.npcs.find(n=>n.id===victim.id).hp,0);assert.equal(m.read().campaign.contentQuestEvents.at(-1).death,'pablo');assert.deepEqual(m.saved(),pair(m.read()));
  await act(async()=>m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'m',bubbles:true})));const journal=m.document.querySelector('[aria-label="Encargos de la historia"]');assert.match(journal.textContent,/Fallido/);assert.match(journal.textContent,/muerte de Pablo/);
 });
+
+test('the mounted conversation starts movement in the active sector and autosaves its progress',async t=>{
+ const {movementPackage}=await import('./dialogue-movement-fixture.mjs');const m=await mount(t,readyLocal(undefined,movementPackage()));const npc=m.document.querySelector('[data-unit-id="authored-alma-contract"]');
+ await act(async()=>npc.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));await m.click('Conversar');assert.match(m.document.querySelector('[aria-label="Conversación"]').textContent,/Llamar a Pablo/);const before=m.read().battle.npcs.find(n=>n.contentId==='pablo');
+ await m.click('Contame sobre el norte.');let p=m.read(),guest=p.battle.npcs.find(n=>n.contentId==='pablo');assert.deepEqual([guest.x,guest.y],[before.x,before.y]);assert.equal(p.campaign.dialogueMovements.length,1);assert.match(m.document.querySelector('[aria-label="Conversación"]').textContent,/Pablo recibió la llamada/);assert.equal(guest.scriptedMove.order,0);assert.deepEqual(m.saved(),pair(p));await m.click('Cerrar conversación');
+ await act(async()=>m.issue({type:'rest'}));p=m.read();guest=p.battle.npcs.find(n=>n.contentId==='pablo');assert.deepEqual({x:guest.x,y:guest.y},guest.scriptedMove.target);assert.deepEqual(m.saved(),pair(p));
+});

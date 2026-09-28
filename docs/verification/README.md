@@ -24,6 +24,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Authored quest states and journal](authored-quests.md)
 - [Automatic quest deadlines](quest-deadlines.md)
 - [Required character survival](quest-survival.md)
+- [Dialogue-triggered local meetings](dialogue-movements.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 

@@ -12,13 +12,13 @@ export function validateDialogue(graph,characters,quests){
  const ids=new Set();
  for(const node of graph.nodes){
   need(fields(node,['id','title','text','choices'])&&id(node.id)&&!ids.has(node.id)&&text(node.title,80)&&text(node.text,1000)&&Array.isArray(node.choices)&&node.choices.length<=12,'Cada pasaje necesita identidad, título, texto y hasta 12 opciones válidas.');ids.add(node.id);
-  const choices=new Set();for(const c of node.choices){need(object(c)&&['id','label','next'].every(k=>Object.hasOwn(c,k))&&Object.keys(c).every(k=>['id','label','next','conditions','effects'].includes(k))&&id(c.id)&&!choices.has(c.id)&&text(c.label,160)&&id(c.next),'Las opciones del diálogo no son válidas.');choices.add(c.id);validateDialogueConditions(c.conditions,characters,quests);validateDialogueEffects(c.effects,quests);}
+  const choices=new Set();for(const c of node.choices){need(object(c)&&['id','label','next'].every(k=>Object.hasOwn(c,k))&&Object.keys(c).every(k=>['id','label','next','conditions','effects'].includes(k))&&id(c.id)&&!choices.has(c.id)&&text(c.label,160)&&id(c.next),'Las opciones del diálogo no son válidas.');choices.add(c.id);validateDialogueConditions(c.conditions,characters,quests);validateDialogueEffects(c.effects,quests,characters);}
  }
  need(ids.has(graph.entry)&&graph.nodes.every(n=>n.choices.every(c=>ids.has(c.next))),'El comienzo o un destino del diálogo no existe.');
 
 }
 const definition=(s,npc)=>characterForOperative(s,npc?.operativeId)?.encounter?.dialogue;
-const view=(s,npc,node,battle)=>({node:node.id,text:node.text,choices:node.choices.filter(c=>dialogueConditionsMet(s,c.conditions,battle)).map(c=>{const quote=dialogueEffectQuote(s,npc,node.id,c);return {id:c.id,label:c.label,...(quote?{effectLabel:quote.label,available:quote.available,reason:quote.reason}:{})};})});
+const view=(s,npc,node,battle)=>({node:node.id,text:node.text,choices:node.choices.filter(c=>dialogueConditionsMet(s,c.conditions,battle)).map(c=>{const quote=dialogueEffectQuote(s,npc,node.id,c,battle);return {id:c.id,label:c.label,...(quote?{effectLabel:quote.label,available:quote.available,reason:quote.reason}:{})};})});
 export function dialogueForNPC(s,npc,battle=null){
  const graph=definition(s,npc);if(!graph)return null;
  const node=graph.nodes.find(n=>n.id===(s.conversations?.[npc.id]?.dialogueNode??graph.entry));
@@ -30,7 +30,7 @@ export function chooseDialogue(s,npc,choice,expectedNode,battle=null){
  if(choice===undefined){need(expectedNode===undefined,'Falta la opción del diálogo.');return current;}
  need(expectedNode===current.node,'La conversación cambió. Elegí una opción del pasaje actual.');
  const graph=definition(s,npc),node=graph.nodes.find(n=>n.id===current.node),selected=node.choices.find(c=>c.id===choice);need(selected,'Esa opción no pertenece al pasaje actual.');need(current.choices.some(c=>c.id===choice),'Esa opción no está disponible en este momento.');
- const effect=applyDialogueEffects(s,npc,node.id,selected),next=graph.nodes.find(n=>n.id===selected.next);return {...view(s,npc,next,battle),...(effect?{effect}:{})};
+ const effect=applyDialogueEffects(s,npc,node.id,selected,battle),next=graph.nodes.find(n=>n.id===selected.next);return {...view(s,npc,next,battle),...(effect?{effect}:{})};
 }
 export function validateSavedDialogues(s,npcs){
  for(const [npcId,record]of Object.entries(s.conversations??{})){

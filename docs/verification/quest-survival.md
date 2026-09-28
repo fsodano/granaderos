@@ -28,7 +28,8 @@ Runtime source: `78fc6c4900f960b8307a7ce18b4d594346721b54`.
 The complete local suite passed **661/661 tests**, without failures or skips.
 Types, production export and all 36 baseline comparisons passed. The register
 retains 181 requirements and 20 evidence records. Exact-head CI is required before
-merge.
+merge. [Accepted CI](https://github.com/fsodano/granaderos/actions/runs/36373244554/job/108773741237)
+passed for PR #43.
 
 - `tests/quest-survival.test.mjs`: actual approach and civilian melee death,
   once-only saved failure, blocked post-death acceptance, retained completion,
@@ -48,6 +49,7 @@ merge.
 ## Limits
 
 SURVIVAL-01 is bounded; STORY-03 remains partial. This rule checks confirmed death,
-not capture, dismissal, absence or escort failure. Item objectives, scripted
-movement and historical role overrides remain open. The journal and rules checks
+not capture, dismissal, absence or escort failure. At this checkpoint, item
+objectives, scripted movement and historical role overrides remained open.
+[Local meetings](dialogue-movements.md) are a later bounded delivery. The journal and rules checks
 do not establish full campaign, live-browser or performance acceptance.
