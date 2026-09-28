@@ -42,8 +42,10 @@ These compact cases are subsystem evidence, not fresh campaign routes.
 Release checks: **798/798 tests**, zero failures or skips (197,543 ms); type
 check; production export (721 files, 631 asset references); 36 baseline checks;
 documentation audit (201 requirements, all 50 original and 87 parity rows,
-40 evidence records). The five new focused tests pass. Exact-head GitHub CI is
-required before merge.
+40 evidence records). The five new focused tests pass.
+[PR #63](https://github.com/fsodano/granaderos/pull/63) merged after
+[exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36397601446/job/108847600598)
+passed on `a19cc38254a1ce90164de1aef38190185cff1015`.
 
 ## Limits
 
