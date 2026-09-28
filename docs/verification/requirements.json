@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "5119b5ca619d4974aac0fb5594d51a699074b778",
+  "baseline": "63dadebad11cdabaf372ea36d9557beab2a16407",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -224,7 +224,12 @@
     {
       "id": "E-FRESH-COASTAL",
       "path": "docs/verification/fresh-coastal-opening.md",
-      "description": "Two fresh default-content seed-8 routes reach saved phase 2 through actual Buenos Aires, San Nicolas and San Lorenzo combat: a free created officer with local/paid support and a hire-only force. Paid controlled arrivals and replacements, finite medical supplies, permanent casualties, every-order clock synchronization and midpoint reload/replay are covered. Created-only unpaid play, north/Cuyo/ending, general balance and live performance remain unaccepted."
+      "description": "Two fresh default-content seed-8 routes reach saved phase 2 through actual Buenos Aires, San Nicolas and San Lorenzo combat: a free created officer with local/paid support and a hire-only force. Paid controlled arrivals and replacements, finite medical supplies, permanent casualties, every-order clock synchronization and midpoint reload/replay are covered. Created-only unpaid play, north/Cuyo/ending, general balance and live performance remain unaccepted. PR #61 merged after CI passed at bd9ad39e6684170f543788b26afc76b1d4b8a77d."
+    },
+    {
+      "id": "E-FRESH-NORTHERN",
+      "path": "docs/verification/fresh-northern-opening.md",
+      "description": "Fresh stock mixed-force continuation from the accepted coastal route: actual Cordoba/Tucuman/Salta battles, every-order clock/replay and midpoint saves, real losses, paid workshop service and replacement arrivals, 550-peso diplomacy, physical Yatasto dialogue and saved phase 3. The original created actor dies and the campaign continues. Advanced medical/rescue failures, Cuyo/ending, other force builds and live performance remain open."
     }
   ],
   "queue": [
@@ -579,12 +584,35 @@
       "pr": "https://github.com/fsodano/granaderos/pull/57"
     },
     {
+      "id": "NORTH-01",
+      "group": "Published deliveries",
+      "requirement": "Complete a fresh northern continuation and physical Yatasto transition",
+      "status": "VERIFIED",
+      "priority": "P0",
+      "published": "From the fresh created-officer coastal route, actual northern battles, losses, workshop purchases and controlled replacement arrivals reach Salta. Paid diplomacy and real travel/ordered conference dialogue produce saved phase 3. Every battle replays with tactical time and midpoint reload. The created actor and unavailable historical medic remain dead.",
+      "local": "Published care and equipment rules only; the separate advanced medical, recapture and rescue failures remain open. The controller accounts for expensive unseen forest movement without changing actual AP or energy costs.",
+      "remaining": "",
+      "acceptance": "Continue an untouched stock route through actual Cordoba, Tucuman and Salta victories, permanent losses, paid supplies/replacements and northern agreements, then physically complete Yatasto and save phase 3 with a living commander and no open scene.",
+      "evidence": [
+        "E-FRESH-NORTHERN"
+      ],
+      "parents": [
+        "NAR-04",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/fresh-northern-route.test.mjs",
+        "tests/fresh-coastal-route.test.mjs",
+        "tests/missions-web.test.mjs"
+      ]
+    },
+    {
       "id": "COAST-01",
       "group": "Published deliveries",
       "requirement": "Complete fresh mixed and hire-only coastal openings with actual battles and losses",
       "status": "VERIFIED",
       "priority": "P0",
-      "published": "Both seed-8 routes start with Retiro alone and 3200 pesos, pay for week hires and actual arrivals, win the three coastal fights, preserve actual casualties, pay replacements into controlled plausible destinations and settle San Lorenzo with the living commander. Every combat replays with campaign time and midpoint save/reload; no victory or resources are injected.",
+      "published": "Both seed-8 routes start with Retiro alone and 3200 pesos, pay for week hires and actual arrivals, win the three coastal fights, preserve actual casualties, pay replacements into controlled plausible destinations and settle San Lorenzo with the living commander. Every combat replays with campaign time and midpoint save/reload; no victory or resources are injected. Merged through PR #61 after exact-head CI.",
       "local": "Published rules and scenes only. The created-officer route uses a legal free profile, physical Cabral recruitment and paid support. The old prototype and advanced route failures remain separate.",
       "remaining": "",
       "acceptance": "From untouched stock campaigns, reach saved phase 2 through Buenos Aires, San Nicolas and San Lorenzo with a mixed created force and a hire-only force, real costs/losses, finite care, controlled arrivals, deterministic legal-order replay and permanent-death checks.",
@@ -1339,15 +1367,20 @@
       "id": "NAR-04",
       "group": "Original design",
       "requirement": "Yatasto/Northern Army transition",
-      "status": "PARTIAL",
+      "status": "VERIFIED",
       "priority": "P1",
-      "published": "Yatasto mission and chapter transitions.",
-      "local": "See local suite and preserved parity source; not equivalent to published integration.",
-      "remaining": "Fresh route cannot currently complete northern medical relief and later acceptance.",
+      "published": "A fresh mixed force wins the actual Cordoba, Tucuman and Salta maps with casualties and paid replacements, pays the northern pact and partisan supply, travels to the physical Yatasto conference and completes its ordered reports and frontier agreement. Saved phase 3 preserves the created officer death and the surviving temporary commander.",
+      "local": "The separate advanced northern medical-relief failure remains FIX-01. This row accepts the published narrative transition, not that larger medical model.",
+      "remaining": "",
       "acceptance": "Triggered sequence and G\u00fcemes frontier assignment",
       "evidence": [
         "E-PUBLISHED",
-        "E-CONFLICTS"
+        "E-CONFLICTS",
+        "E-FRESH-NORTHERN"
+      ],
+      "testFiles": [
+        "tests/fresh-northern-route.test.mjs",
+        "tests/missions-web.test.mjs"
       ]
     },
     {
@@ -2180,7 +2213,7 @@
       "requirement": "Consolidate published, prototype and advanced local gameplay",
       "status": "FAILED",
       "priority": "P0",
-      "published": "Published baseline is green, but excludes most advanced local gameplay. A fresh paid continuation exposed and fixed deceased-contract save rejection; paid relief now saves its San Nicolas defeat. Full route acceptance remains open. New mixed and hire-only routes now win and save the complete coastal opening through San Lorenzo; northern and ending acceptance remain open.",
+      "published": "Published baseline is green, but excludes most advanced local gameplay. A fresh paid continuation exposed and fixed deceased-contract save rejection; paid relief now saves its San Nicolas defeat. Full route acceptance remains open. New mixed and hire-only routes now win and save the complete coastal opening through San Lorenzo; northern and ending acceptance remain open. A fresh mixed force now also completes saved Yatasto phase 3 under published rules; advanced-system failures and Cuyo/ending acceptance remain open.",
       "local": "Both larger suites fail; economy, opening and elite-contract policies differ.",
       "remaining": "Import one bounded capability at a time, preserve approved policy and carry its tests into main.",
       "acceptance": "One release has the full combined behavior, passing combined suite, legal complete routes and no undocumented policy regressions.",
@@ -2189,7 +2222,8 @@
         "E-PROTOTYPE",
         "E-CONFLICTS",
         "E-CONTRACT-CASUALTY",
-        "E-FRESH-COASTAL"
+        "E-FRESH-COASTAL",
+        "E-FRESH-NORTHERN"
       ]
     },
     {
@@ -3898,12 +3932,13 @@
       "requirement": "Fresh campaign has no fit northern relief medic",
       "status": "FAILED",
       "priority": "P0",
-      "published": "These larger acceptance routes are not present in the published suite.",
+      "published": "A new published route reaches Yatasto using available survivors, paid replacements and existing field care. It does not run or repair the larger advanced doctor-assignment route, which remains failed on its recorded source.",
       "local": "Fresh failure reproduced on the identified snapshot.",
       "remaining": "Recover with actually available people, travel, purchases and care; pass the remaining fresh route.",
       "acceptance": "Reproduce the failure, diagnose its cause, implement a bounded fix and run the full route with save/replay and permanent-loss checks.",
       "evidence": [
-        "E-LOCAL"
+        "E-LOCAL",
+        "E-FRESH-NORTHERN"
       ]
     },
     {
@@ -3976,13 +4011,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "5119b5ca619d4974aac0fb5594d51a699074b778",
-    "total": 792,
-    "passed": 792,
+    "source": "63dadebad11cdabaf372ea36d9557beab2a16407",
+    "total": 793,
+    "passed": 793,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-FRESH-COASTAL"
+    "evidenceId": "E-FRESH-NORTHERN"
   }
 }
