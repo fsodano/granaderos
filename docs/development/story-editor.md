@@ -18,7 +18,7 @@ Cada candidato nuevo tiene identidad propia. Duplicar copia su ficha, retrato y 
 
 Las identidades nuevas no reciben poderes por ocupar el número de un mando histórico. El paquete de cada partida queda fijado al iniciarla, y el guardado conserva la correspondencia entre sus personajes y sus hojas de servicio. Los candidatos eliminados no se restauran al cargar.
 
-La ficha permite elegir especialidades aplicadas por las reglas actuales, equitación y progreso por experiencia o nivel fijo. Equitación experta garantiza una destreza ecuestre mínima de 80. Con ambas opciones de progreso se conserva el entrenamiento práctico de atributos. Las especialidades llegan al combate y a la instrucción de milicia; un instructor nuevo puede guardar y continuar un curso. Los contratables nuevos pueden tener carácter, frases y apariencia propios. Los diálogos con opciones y encargos siguen pendientes.
+La ficha permite elegir especialidades aplicadas por las reglas actuales, equitación y progreso por experiencia o nivel fijo. Equitación experta garantiza una destreza ecuestre mínima de 80. Con ambas opciones de progreso se conserva el entrenamiento práctico de atributos. Las especialidades llegan al combate y a la instrucción de milicia; un instructor nuevo puede guardar y continuar un curso. Los contratables nuevos pueden tener carácter, frases y apariencia propios. Los habitantes nuevos tienen diálogos con opciones. Los encargos editables siguen pendientes.
 
 Todos estos candidatos se incorporan por contrato desde el boletín. Una paga de cero es un contrato gratuito con el plazo elegido, no servicio permanente. El editor protege a los mandos históricos de eliminación y duplicación hasta separar sus funciones de campaña. El arma blanca inicial todavía usa el valor general existente.
 
@@ -36,6 +36,16 @@ Duplicar un habitante copia su configuración y sus celdas con otra identidad. E
 
 Los habitantes usan la salud persistente: cambiar de celda, guardar o incorporarse no los cura. Si dejan la escuadra, vuelven con su estado de soldado. Su progreso puede conservar el nivel inicial o ganar experiencia según la ficha.
 
+## Diálogos con opciones
+
+En la ficha de un habitante nuevo, activá «Escribir una conversación con opciones». Elegí el comienzo y escribí la respuesta del personaje. «Agregar pasaje» crea otra respuesta. «Agregar opción» permite escribir lo que el jugador puede decir y elegir la respuesta siguiente.
+
+Los títulos sirven para organizar el diálogo; el jugador ve el texto y las opciones. Un pasaje sin opciones termina ese tramo. Para volver a una pregunta anterior, agregá una opción que conduzca a ella. Se admiten hasta 30 pasajes y 12 opciones por pasaje. Podés conservar pasajes sin conectar mientras escribís. El editor avisa que todavía no tienen entrada y protege de eliminación los que ya están referenciados.
+
+Al jugar, acercate al habitante y elegí «Conversar». La partida conserva el pasaje actual aunque cierres la conversación, salgas del sector o incorpores y luego despidas al personaje. Volver a conversar retoma ese pasaje. Una elección atrasada no reemplaza una rama ya elegida. Los habitantes muertos o inconscientes no pueden conversar.
+
+Deshacer, rehacer, duplicar, recuperar el borrador e importar/exportar conservan el diálogo. La copia de un personaje tiene su propio diálogo y progreso. Estas opciones cambian el texto de la conversación. Todavía no agregan condiciones, recompensas, encargos o movimientos dirigidos.
+
 ## Habilidades de combate
 
 Cada personaje puede recibir o perder cualquiera de las 19 habilidades de combate. La lista incluye protección de compañeros, contragolpe, tiro y movimiento rápidos, atención médica, exploración nocturna, carga montada, intimidación y apoyo de mando, recarga y artillería. Cada opción explica su efecto. Ninguna casilla marcada significa que el personaje no tiene esas ventajas, aunque conserve un nombre o identidad históricos. Los personajes nuevos empiezan sin habilidades; duplicar conserva la selección efectiva.
@@ -50,7 +60,7 @@ Cada ficha puede elegir un retrato de la biblioteca, conservar una imagen import
 
 El carácter describe al personaje en su hoja de servicio, sin modificar su moral. Las siete frases corresponden a incorporación, detección de enemigos, sector asegurado, herida, agotamiento, muerte y fin de campaña. Cada frase admite hasta 800 caracteres; una frase vacía mantiene el silencio. El contratado pronuncia su incorporación al llegar, una sola vez. Las frases tácticas se disparan por los eventos reales y el cierre de campaña usa las frases de los compañeros vivos.
 
-Estas opciones participan en la recuperación del borrador, deshacer/rehacer, duplicación, exportación, inicio y guardado. Los paquetes anteriores sin estos campos conservan sus perfiles. Las partidas rechazan voces o apariencias que difieren de la definición incluida. Los habitantes nuevos tienen un saludo editable. Las conversaciones ramificadas, las misiones y los finales alternativos todavía requieren sus propios editores y reglas.
+Estas opciones participan en la recuperación del borrador, deshacer/rehacer, duplicación, exportación, inicio y guardado. Los paquetes anteriores sin estos campos conservan sus perfiles. Las partidas rechazan voces o apariencias que difieren de la definición incluida. Los habitantes nuevos tienen un saludo editable. Las ramificaciones de texto para habitantes nuevos se editan desde su ficha. Las condiciones, efectos, misiones y finales alternativos todavía necesitan sus propios controles y reglas.
 
 La prueba de incorporación también detectó que Cabral, Dorrego y Paroissien no tenían una condición regional adicional y se rechazaban después de cumplir el encuentro. Ahora pueden incorporarse al cumplir su conversación local, liderazgo, control y demás condiciones del encuentro. La contratación remota sigue bloqueada para ellos.
 
@@ -130,7 +140,7 @@ Esta opción activa habitantes nuevos. Los mandos históricos conservan sus func
 
 El mapa permite marcar cualquier celda con una X desde la ficha del personaje, incluido terreno fuera de las localidades. Se pueden simular ubicaciones con una semilla. Las ubicaciones fijas, el sorteo inicial y los cambios diarios ya se aplican a las nuevas campañas. Eliminar mandos históricos y usar opciones de historia no compatibles todavía bloquea el inicio de campaña.
 
-Los mandos históricos conservan su servicio permanente, requisitos de reclutamiento y funciones de campaña. Sus habilidades de combate ya son configurables. Quedan pendientes su extracción, las transferencias de funciones a sucesores, los diálogos y encargos editables, las escenas dirigidas y la composición completa de campaña. Esta entrega no completa todo el editor de historia.
+Los mandos históricos conservan su servicio permanente, requisitos de reclutamiento y funciones de campaña. Sus habilidades de combate ya son configurables. Quedan pendientes su extracción, las transferencias de funciones a sucesores, las condiciones y efectos del diálogo, los encargos editables, las escenas dirigidas y la composición completa de campaña. Esta entrega no completa todo el editor de historia.
 
 ## Validación
 
@@ -163,3 +173,6 @@ Los mandos históricos conservan su servicio permanente, requisitos de reclutami
 
 
 `tests/local-contracts.test.mjs` comprueba los tres plazos locales, pago único, requisitos, heridas, vencimiento, regreso, renovación, baja, contrato gratuito y rechazo de guardados alterados. El editor montado configura el servicio, usa deshacer y duplica. La página del juego montada muestra el precio, contrata por el plazo seleccionado y conserva el resultado al guardar. La [verificación de contratos locales](../verification/local-contracts.md) registra el alcance.
+
+
+`tests/content-dialogue.test.mjs` comprueba ramas, vueltas, finales, continuidad, condiciones físicas de conversación y guardados alterados. El editor montado crea los pasajes, protege referencias, deshace, duplica e inicia una campaña donde se recorre una rama. La página del juego montada usa las opciones, rechaza un segundo clic atrasado y guarda el resultado. La [verificación de diálogos](../verification/authored-dialogues.md) registra su alcance.

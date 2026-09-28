@@ -56,6 +56,8 @@ checks. This closes that bounded recruitment row, not full campaign integration.
 
 Historical roles retain their original service policy. NPC belongings, looting,
 custody, merchant stock, role transfer, branching dialogue and scripted movement
-remain open. Returning to an authored cell uses existing placement rules; it does
+remained open at this checkpoint. [The later dialogue delivery](authored-dialogues.md)
+adds resident text branches; the [current ledger](published-progress.md) records
+the remaining scope. Returning to an authored cell uses existing placement rules; it does
 not simulate a physical journey. These automated and mounted-DOM checks do not
 establish a browser campaign playthrough or full-game acceptance.

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-27",
-  "baseline": "ce371e5af7a5925fc84e5a8fed9b7d836e62f5e2",
+  "baseline": "8496b3d4fa435a92b273cfbab4e950dc8b5c5832",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -80,7 +80,13 @@
     {
       "id": "E-LOCAL-CONTRACTS",
       "path": "docs/verification/local-contracts.md",
-      "description": "Authored world residents offer local day, week or month service with visible prices. Real conversation, payment, wounds, deferred expiry, return, renewal, rehire and save rejection pass. Bulletin candidates remain separate. Does not establish NPC belongings, custody or a full campaign route."
+      "description": "Authored world residents offer local day, week or month service with visible prices. Real conversation, payment, wounds, deferred expiry, return, renewal, rehire and save rejection pass. Bulletin candidates remain separate. Does not establish NPC belongings, custody or a full campaign route.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36367792897/job/108757575324"
+    },
+    {
+      "id": "E-AUTHORED-DIALOGUES",
+      "path": "docs/verification/authored-dialogues.md",
+      "description": "New resident text graphs are authored in the mounted editor, followed through actual local conversations and preserved across saves and service changes. The mounted game rejects stale choice clicks. Does not add conditions, quest effects, rewards or historical role overrides."
     }
   ],
   "queue": [
@@ -112,7 +118,7 @@
         "STORY-06",
         "STORY-08"
       ],
-      "action": "Deliver authored dialogue/quests, scripted movement, rules, equipment/merchants and portable content one feature at a time."
+      "action": "Extend authored dialogue with conditions, effects and quests; deliver scripted movement, rules, equipment/merchants and portable content one feature at a time."
     },
     {
       "order": 4,
@@ -128,6 +134,28 @@
     }
   ],
   "requirements": [
+    {
+      "id": "DIALOGUE-01",
+      "group": "Published deliveries",
+      "requirement": "Author and play branching resident text conversations with saved passage progress",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "The resident sheet edits passage text, entry and choice destinations with copy, undo and reference protection. Actual local conversations follow branches and loops, retain progress and reject stale choices or invalid saved cursors.",
+      "local": "Uses the accepted published encounter, immutable package and save paths. No advanced quest reducer is imported.",
+      "remaining": "",
+      "acceptance": "Author a graph through the mounted editor, keep disconnected draft passages, copy independently, launch, physically approach and save a chosen branch. Follow both branches and a loop; retain progress through other approaches, departure, recruitment and dismissal. Reject invalid graphs, cursors, text and stale UI clicks.",
+      "evidence": [
+        "E-AUTHORED-DIALOGUES"
+      ],
+      "parents": [
+        "STORY-03"
+      ],
+      "testFiles": [
+        "tests/content-dialogue.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/webmcp-campaign.test.mjs"
+      ]
+    },
     {
       "id": "LOCAL-01",
       "group": "Published deliveries",
@@ -151,7 +179,8 @@
         "tests/story-editor.test.mjs",
         "tests/webmcp-campaign.test.mjs",
         "tests/contracts-web.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/37"
     },
     {
       "id": "TOOL-01",
@@ -1332,15 +1361,16 @@
       "id": "STORY-03",
       "group": "Story and integration",
       "requirement": "Branching dialogue, conditions, effects and quests",
-      "status": "MISSING",
+      "status": "PARTIAL",
       "priority": "P1",
-      "published": "Event phrases, fixed historical conversations and a configurable greeting for new world residents.",
+      "published": "New world residents support authored branching text graphs, actual local choices and saved progress. Event phrases and fixed historical conversations remain available.",
       "local": "No general authorable quest graph accepted.",
-      "remaining": "Implement graph editing, typed effects, role bindings and persistent receipts.",
+      "remaining": "Add typed conditions/effects, quest state, role bindings and persistent effect receipts; extend authoring to historical roles without bypassing their campaign gates.",
       "acceptance": "Author and finish alternate quest branches through normal controls, including failures and saves.",
       "evidence": [
         "E-CONFLICTS",
-        "E-AUTHORED-RESIDENTS"
+        "E-AUTHORED-RESIDENTS",
+        "E-AUTHORED-DIALOGUES"
       ]
     },
     {
@@ -3187,13 +3217,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "ce371e5af7a5925fc84e5a8fed9b7d836e62f5e2",
-    "total": 611,
-    "passed": 611,
+    "source": "8496b3d4fa435a92b273cfbab4e950dc8b5c5832",
+    "total": 618,
+    "passed": 618,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-LOCAL-CONTRACTS"
+    "evidenceId": "E-AUTHORED-DIALOGUES"
   }
 }

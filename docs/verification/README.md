@@ -18,6 +18,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Death successor verification](death-successors.md)
 - [Registered tactical order synchronization](tactical-order-sync.md)
 - [Authored local contracts](local-contracts.md)
+- [Authored dialogue choices](authored-dialogues.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 
