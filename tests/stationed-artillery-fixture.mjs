@@ -5,8 +5,8 @@ import {enterSector} from '../game/world.js';
 import {actBattle,getReachable} from '../game/tactical.js';
 import {fight} from './cuyo-route-driver.mjs';
 import {order,saved,sync,leave} from './local-contract-fixture.mjs';
-export function issuedBattery(){
- const d=defaultContentPackage();d.rules.startingTreasury=10000;d.startingTerritory.buenos_aires={owner:'patriot',loyalty:65};
+export function issuedBattery(content){
+ const d=content?structuredClone(content):defaultContentPackage();d.rules.startingTreasury=10000;d.startingTerritory.buenos_aires={owner:'patriot',loyalty:65};
  for(const id of [110,114,136,141,120,131])d.characters.find(c=>c.id===`person-${id}`).arrivalHours=0;
  let s=initialCampaign(8,d);for(const id of [110,114,136,141,120,131])s=order(s,{type:'recruitCivic',id,term:'week'});
  const money=s.resources.treasury;s=order(s,{type:'purchaseEquipment',item:'swivel'});assert.equal(s.resources.treasury,money-400);
@@ -15,10 +15,10 @@ export function issuedBattery(){
  s=order(s,{type:'wait',hours:6});s=order(s,{type:'travel',sector:'buenos_aires'});return order(s,{type:'attack',sector:'san_nicolas'});
 }
 let won;
-export function wonBattery(){
- if(won)return structuredClone(won);
- const s=issuedBattery(),result=fight({...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},null,{scoutCostWeight:.01,avoidCivilians:true});assert.equal(result.battle.status,'victory');assert.ok(result.actions>0);
- const p=saved(sync({campaign:s,battle:result.battle}));won=saved({campaign:order(p.campaign,{type:'battleResult',battleId:p.campaign.pendingBattle.id,outcome:'victory',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')})}).campaign;return structuredClone(won);
+export function wonBattery(content){
+ if(!content&&won)return structuredClone(won);
+ const s=issuedBattery(content),result=fight({...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},null,{scoutCostWeight:.01,avoidCivilians:true});assert.equal(result.battle.status,'victory');assert.ok(result.actions>0);
+ const p=saved(sync({campaign:s,battle:result.battle}));const resultCampaign=saved({campaign:order(p.campaign,{type:'battleResult',battleId:p.campaign.pendingBattle.id,outcome:'victory',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')})}).campaign;if(!content)won=resultCampaign;return structuredClone(resultCampaign);
 }
 export function fireStationed(p){
  const gun=p.battle.artillery[0];let approach;
