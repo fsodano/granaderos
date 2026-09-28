@@ -4,9 +4,10 @@ import {initialCampaign} from '../game/campaign.js';
 import {createBattle,endTurn} from '../game/tactical.js';
 import {order,saved,sync,leave} from './local-contract-fixture.mjs';
 export const MILITIA_DOCTOR=112,SECOND_MILITIA_DOCTOR=137;
-export function woundedGarrison({twoDoctors=false,casualty=false,careRules,passage=false,headquarters='retiro'}={}){
+export function woundedGarrison({twoDoctors=false,casualty=false,careRules,passage=false,headquarters='retiro',configure=()=>{}}={}){
  const d=defaultContentPackage();d.rules.startingTreasury=10000;for(const sector of ['buenos_aires','ensenada'])d.startingTerritory[sector]={owner:'patriot',loyalty:65};if(careRules)d.careRules=careRules;if(headquarters!=='retiro'){d.headquarters=headquarters;d.startingTerritory[headquarters]={owner:'patriot',loyalty:65};}
  for(const id of [MILITIA_DOCTOR,SECOND_MILITIA_DOCTOR]){const c=d.characters.find(c=>c.id===`person-${id}`);c.arrivalHours=0;c.attributes.medical=id===MILITIA_DOCTOR?80:60;c.attributes.leadership=50;}
+ configure(d);
  let s=order(initialCampaign(42,d),{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
  for(const id of twoDoctors?[MILITIA_DOCTOR,SECOND_MILITIA_DOCTOR]:[MILITIA_DOCTOR])s=order(s,{type:'recruitCivic',id,term:'month'});
  const cost=s.resources.treasury;s=order(s,{type:'militia',trainerId:1000,rank:0});assert.ok(s.resources.treasury<cost);const trainingCost=cost-s.resources.treasury;s=order(s,{type:'wait',hours:s.militiaTraining[0].remaining});s=order(s,{type:'visitSector'});const r=s.pendingBattle;

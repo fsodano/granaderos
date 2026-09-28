@@ -1,3 +1,4 @@
+import {validMilitiaExperience} from './militia-experience.js';
 import {workshopServiceQuote} from './workshop-service.js';
 import {CARE_ASSIGNMENTS,careAssignmentBusy,assignMedicalCare,advanceMedicalCare,advanceMilitaryWounds,validateMedicalCare,medicalSupplyQuote} from './medical-care.js';
 import {enforceHistoricalLoss} from './historical-loss.js';
@@ -409,7 +410,7 @@ export function dispatchCampaign(previous,action){
       }
       case 'militia':{
         const at=action.sector??s.location,rank=Number(action.rank??0),trainerId=Number(action.trainerId),trainer=rosterFor(s).find(o=>o.id===trainerId);
-        requireThat(s.sectors[at]?.owner==='patriot'&&isSupplied(s,at),'La instrucción necesita un sector propio y abastecido.');requireThat([0,1,2].includes(rank),'Grado de milicia inválido.');const eligibility=militiaEligibility(s,at);requireThat(eligibility.eligible,eligibility.reason);
+        requireThat(s.sectors[at]?.owner==='patriot'&&isSupplied(s,at),'La instrucción necesita un sector propio y abastecido.');requireThat([0,1].includes(rank),'Los veteranos ascienden por experiencia de combate, no por instrucción.');const eligibility=militiaEligibility(s,at);requireThat(eligibility.eligible,eligibility.reason);
         requireThat(trainer&&s.recruited.includes(trainerId)&&s.operativeState[trainerId]?.alive&&operativeLocation(s,trainerId)===at,'Elegí un instructor contratado y presente en el sector.');
         requireThat(trainer.leadership>=30,'El instructor necesita al menos 30 de liderazgo.');requireThat(!careAssignmentBusy(s.operativeState[trainerId]?.assignment),'Poné al combatiente en servicio antes de asignarlo a las milicias.');requireThat(!militiaAssignment(s,trainerId),'El instructor ya dirige otro curso.');requireThat(!s.militiaTraining.some(t=>t.sector===at),'Ya hay un curso activo en ese sector.');
         const region=s.sectors[at];requireThat(rank===0||region.militia[rank-1]>=MILITIA_COHORT,'La promoción necesita tres milicianos del grado anterior.');requireThat(rank>0||region.militia.reduce((a,b)=>a+b,0)+MILITIA_COHORT<=MILITIA_LIMIT,'La guarnición admite hasta sesenta milicianos.');
@@ -511,7 +512,7 @@ export function restoreCampaign(text){
   if(s.pendingBattle!==null){const b=s.pendingBattle;requireThat((!b.sceneId||(b.sceneId==='yatasto'&&b.sector==='tucuman'&&b.exploration===true))&&(!b.missionAllies||(b.sector==='san_lorenzo'&&Array.isArray(b.missionAllies)&&b.missionAllies.length===1&&Number(b.missionAllies[0].id)===57&&b.missionAllies[0].missionAlly===true)),'La escena pendiente es inválida.');requireThat(object(b)&&typeof b.id==='string'&&b.id.length<100&&(validWorldLocation(b.sector)||b.sector==='san_lorenzo')&&integer(b.seed,0,4294967295)&&Array.isArray(b.squad)&&b.squad.length<=6&&b.squad.every(o=>object(o)&&s.squad.includes(o.id)&&integer(o.loaded,0,weaponSpecification(o)?.capacity??0)&&integer(o.ammo,0,campaignRules(s).deploymentCartridges)&&integer(o.hp,1,100)),'La batalla guardada es inválida.');if(!sector(b.sector)&&b.sector!=='san_lorenzo')requireThat(b.exploration===true&&b.sector===s.location,'La visita guardada no corresponde a la celda actual.');if(b.origin!==undefined)requireThat(validWorldLocation(b.origin),'El origen del despliegue es inválido.');}
 
   for(const unit of [...(s.pendingBattle?.squad??[]),...(s.pendingBattle?.missionAllies??[]),...Object.values(s.missionAllies??{})])validateWeaponCarrier(unit);
-  for(const unit of [...(s.pendingBattle?.enemies??[]),...(s.pendingBattle?.garrison??[])])validateForceWeapon(unit);
+  for(const unit of [...(s.pendingBattle?.enemies??[]),...(s.pendingBattle?.garrison??[])]){validateForceWeapon(unit);requireThat(validMilitiaExperience(unit),'La experiencia de la tropa guardada es inválida.');}
   migrateSquads(s);
   requireThat(Array.isArray(s.squads)&&s.squads.length>0&&s.squads.length<=8&&new Set(s.squads.map(q=>q.id)).size===s.squads.length&&s.squads.every(q=>object(q)&&typeof q.id==='string'&&/^squad-[1-9][0-9]*$/.test(q.id)&&typeof q.name==='string'&&q.name.length<=30&&validWorldLocation(q.location)&&validIds(q.members)&&q.members.length<=6&&q.members.every(id=>s.recruited.includes(id))),'Las escuadras guardadas son inválidas.');
   const assigned=s.squads.flatMap(q=>q.members);requireThat(new Set(assigned).size===assigned.length,'Un combatiente no puede pertenecer a dos escuadras.');const selected=s.squads.find(q=>q.id===s.activeSquadId);requireThat(selected&&selected.location===s.location&&JSON.stringify(selected.members)===JSON.stringify(s.squad),'La escuadra activa del archivo es inválida.');

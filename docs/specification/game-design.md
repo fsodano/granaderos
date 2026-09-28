@@ -581,12 +581,12 @@ for the separate unloaded-militia wound clock and custody requirements.
 
 ### Individual militia promotion
 
-New paid promotion courses reserve the actual three fit soldiers. Completion
+New paid promotion courses reserve three fit cívicos to become montoneros. Completion
 changes their rank and training attributes without replacing their health,
 weapons or finite supplies. Cancellation or instructor departure returns them
 at the previous rank. Saved identities remain separate from a deployed garrison,
 even if the course completes while another squad is inside the sector. Older
-count-only courses retain their earlier contract. See the
+count-only courses and already-paid veteran courses retain their earlier contract. See the
 [verification and compatibility limits](../verification/militia-training-identities.md).
 
 ### Militia wounds outside the active scene
@@ -598,3 +598,15 @@ existing rank count once and retains the actual corpse and finite possessions
 in the known saved scene. Older records without a scene cannot establish a body
 position. See [wound and remains verification](../verification/unloaded-militia-wounds.md)
 for real travel, remote tactical time, collection, saves and compatibility limits.
+
+### Combat-earned militia rank
+
+Surviving militia gain one rank on return when new combat credit reaches the
+next threshold. A first eligible wound earns one point; an eligible kill upgrades
+that opponent receipt to three. Stable opponent identities prevent repeated
+credit across saved encounters. Civilians, allies and already helpless opponents
+grant none. Thresholds of two and five are currently fixed Granaderos tuning.
+New instruction can create cívicos or promote them to montoneros; veteran rank
+requires combat. Promotion preserves the actual wounded soldier and finite
+belongings. See [bounded combat verification](../verification/militia-combat-progression.md)
+for prior paid-course compatibility and the separate allied-AI scope.
