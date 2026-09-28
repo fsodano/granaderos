@@ -1,6 +1,8 @@
 # Partial firearm loading and retained weapon work
 
-Runtime/test source: `65a71ca1f3599a2b8b7e3723267a0a03f1078721`.
+Runtime implementation: `65a71ca1f3599a2b8b7e3723267a0a03f1078721`.
+
+Final runtime/test source: `05362e315ec6402808ac2b3eba89bb2c708ebaa4`.
 
 A firearm no longer requires its entire reload cost in one turn. The order spends
 available AP and retains unfinished work as a fraction of one charge on that gun.
@@ -57,11 +59,35 @@ regression at this source passed 878/893 tests, with 15 failures and zero skips
 (198,687.378 ms). Failures concern changed route tactics, fixed route outcomes
 and casualty/care fixtures; this source is not accepted for publication. Types,
 production export (722 files, 632 references) and all 36 baseline checks pass.
-A subsequent controller adjustment prioritizes cover over unfinished loading,
-then spends spare AP on partial work. The focused route group passes 9/11: the
-local-only route still loses its commander, and the independent post fixture
-requires medical work even when its current survivors are healthy. Further route
-verification and exact-head GitHub CI remain pending.
+The acceptance controller now prioritizes cover before unfinished loading, then
+spends spare AP on partial work. Actual coastal casualties still drive the remains
+and Retiro checks. The local-only force buys and consumes a second finite course
+of treatment before San Lorenzo. The Cuyo recruitment check now supports a full
+squad: the engineer can serve at the foundry without a deployed slot, and the
+commander joins after a normal squad selection leaves one person in Mendoza.
+
+The historical continuation waits for morning arrivals at Ensenada and Jujuy.
+The diagnostic night approach lost its forward force while the held commander
+could not see the remaining enemy. Ordinary waiting and the same paid journeys
+restore a complete route, retaining all actual casualties. Changed treasury,
+health and contract expectations come from that route. The post-campaign fixture
+requires every actual survivor to be healthy but no longer demands treatment when
+none is wounded. No game rule, health, stock, enemy, AP or result is changed to
+make these route fixtures pass. The focused historical ending test passes, including 48 hours after victory and
+the actual four surviving daily contracts expiring off the map. The route wins at
+hour 582, second 510, with 7,068 pesos and fourteen permanent deaths; the commander
+retains 88 HP. The local-only opening reaches hour 135, second 90, with 4,429 pesos,
+Cabral dead and Dorrego/Paroissien in service. Its two recovery courses consume
+7 + 14 hours of care and 5 + 12 purchased dressings, plus three purchased muskets.
+[Current route checkpoints](../evidence/partial-reload-routes-2026-09-28.json) retain
+these observed values. Earlier dated route records remain evidence of their
+original sources.
+
+The final complete release run passes **893/893 tests**, zero failures or skips,
+in 208,795.622 ms. Types, production export (722 files, 632 asset references),
+all 36 baseline comparisons and the documentation audit pass (221 requirements,
+60 evidence records, preserving all 50 original and 87 parity rows). Exact-head
+GitHub CI is still required before this delivery can merge.
 
 ## Limits
 

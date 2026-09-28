@@ -1,0 +1,440 @@
+{
+  "date": "2026-09-28",
+  "source": "05362e315ec6402808ac2b3eba89bb2c708ebaa4",
+  "method": "Untouched default package, seed 8; fresh campaign, ordinary orders, paid care and equipment, actual battle replay and validated saves. These summaries record current route outcomes after the partial-loading change. Earlier dated route records retain their original source and outcomes.",
+  "local": {
+    "result": {
+      "hour": 135,
+      "second": 90,
+      "treasury": 4429,
+      "phase": 2,
+      "completed": false,
+      "defeated": false,
+      "squad": [
+        1000,
+        4,
+        10
+      ],
+      "dead": [
+        3
+      ],
+      "commanderHp": 88,
+      "controlled": [
+        "buenos_aires",
+        "retiro",
+        "san_nicolas"
+      ]
+    },
+    "checkpoints": [
+      {
+        "stage": "ready",
+        "hour": 6,
+        "funds": 2970,
+        "squad": [
+          1000,
+          3
+        ]
+      },
+      {
+        "sector": "buenos_aires",
+        "actions": 31,
+        "turns": 4,
+        "hour": 18,
+        "second": 36,
+        "funds": 2950,
+        "units": [
+          {
+            "id": "1000",
+            "hp": 42,
+            "bleeding": 0,
+            "medkits": 1,
+            "routed": false
+          },
+          {
+            "id": "3",
+            "hp": 0,
+            "bleeding": 0,
+            "medkits": 2,
+            "routed": false
+          }
+        ],
+        "settledFunds": 3207,
+        "phase": 1,
+        "deaths": [
+          3
+        ]
+      },
+      {
+        "stage": "local-recovery",
+        "hour": 55,
+        "second": 54,
+        "funds": 3015,
+        "squad": [
+          1000,
+          4,
+          10
+        ],
+        "hours": 7,
+        "dressingsBought": 5,
+        "dressingCost": 50,
+        "weaponCost": 690,
+        "workshopCost": 12
+      },
+      {
+        "sector": "san_nicolas",
+        "actions": 50,
+        "turns": 4,
+        "hour": 67,
+        "second": 78,
+        "funds": 2985,
+        "units": [
+          {
+            "id": "1000",
+            "hp": 25,
+            "bleeding": 0,
+            "medkits": 1,
+            "routed": false
+          },
+          {
+            "id": "4",
+            "hp": 47,
+            "bleeding": 0,
+            "medkits": 1,
+            "routed": false
+          },
+          {
+            "id": "10",
+            "hp": 72,
+            "bleeding": 0,
+            "medkits": 0,
+            "routed": false
+          }
+        ],
+        "settledFunds": 3255,
+        "phase": 1,
+        "deaths": [
+          3
+        ]
+      },
+      {
+        "stage": "local-final-recovery",
+        "hour": 135,
+        "second": 78,
+        "funds": 4185,
+        "squad": [
+          1000,
+          4,
+          10
+        ],
+        "hours": 14,
+        "dressingsBought": 12,
+        "dressingCost": 120,
+        "weaponCost": 0,
+        "workshopCost": 60
+      },
+      {
+        "sector": "san_lorenzo",
+        "actions": 41,
+        "turns": 2,
+        "hour": 135,
+        "second": 90,
+        "funds": 4155,
+        "units": [
+          {
+            "id": "1000",
+            "hp": 87,
+            "bleeding": 0,
+            "medkits": 2,
+            "routed": false
+          },
+          {
+            "id": "4",
+            "hp": 84,
+            "bleeding": 0,
+            "medkits": 2,
+            "routed": false
+          },
+          {
+            "id": "10",
+            "hp": 72,
+            "bleeding": 0,
+            "medkits": 0,
+            "routed": false
+          },
+          {
+            "id": "57",
+            "hp": 88,
+            "bleeding": 0,
+            "medkits": 0,
+            "routed": false
+          }
+        ],
+        "settledFunds": 4429,
+        "phase": 2,
+        "deaths": [
+          3
+        ]
+      }
+    ]
+  },
+  "historical": {
+    "result": {
+      "hour": 582,
+      "second": 510,
+      "treasury": 7068,
+      "phase": 4,
+      "completed": true,
+      "defeated": false,
+      "squad": [
+        57,
+        105,
+        103,
+        112,
+        104
+      ],
+      "dead": [
+        0,
+        3,
+        9,
+        10,
+        110,
+        113,
+        120,
+        123,
+        127,
+        128,
+        137,
+        141,
+        142,
+        1000
+      ],
+      "commanderHp": 88,
+      "controlled": [
+        "buenos_aires",
+        "retiro",
+        "ensenada",
+        "san_nicolas",
+        "santa_fe",
+        "cordoba",
+        "mendoza",
+        "uspallata",
+        "los_patos",
+        "tucuman",
+        "salta",
+        "jujuy",
+        "humahuaca"
+      ]
+    },
+    "checkpoints": [
+      {
+        "stage": "cuyo-relief",
+        "commanderRestock": 87,
+        "hour": 348,
+        "second": 384,
+        "funds": 3069,
+        "relief": [
+          127,
+          112
+        ],
+        "squad": [
+          137,
+          125,
+          103,
+          57,
+          127,
+          112
+        ]
+      },
+      {
+        "stage": "santa_fe",
+        "hour": 372,
+        "second": 402,
+        "funds": 3915,
+        "squad": [
+          137,
+          125,
+          103,
+          57,
+          127,
+          112
+        ],
+        "actions": 74,
+        "turns": 3,
+        "deaths": [
+          0,
+          3,
+          9,
+          10,
+          110,
+          113,
+          120,
+          123,
+          141,
+          1000
+        ],
+        "commanderHp": 88,
+        "completed": false
+      },
+      {
+        "stage": "coastal-care",
+        "hour": 434,
+        "second": 402,
+        "funds": 6028,
+        "relief": [],
+        "care": {
+          "hours": 26,
+          "dressingsBought": 26,
+          "cost": 260
+        },
+        "squad": [
+          137,
+          125,
+          103,
+          57,
+          127,
+          112
+        ]
+      },
+      {
+        "stage": "ensenada",
+        "hour": 464,
+        "second": 426,
+        "funds": 7056,
+        "squad": [
+          137,
+          125,
+          103,
+          57,
+          112
+        ],
+        "actions": 80,
+        "turns": 4,
+        "deaths": [
+          0,
+          3,
+          9,
+          10,
+          110,
+          113,
+          120,
+          123,
+          127,
+          141,
+          1000
+        ],
+        "commanderHp": 88,
+        "completed": false
+      },
+      {
+        "stage": "northern-relief",
+        "hour": 542,
+        "second": 426,
+        "funds": 7430,
+        "squad": [
+          137,
+          57,
+          128,
+          142
+        ]
+      },
+      {
+        "stage": "jujuy",
+        "hour": 560,
+        "second": 474,
+        "funds": 8762,
+        "squad": [
+          57,
+          142
+        ],
+        "actions": 73,
+        "turns": 8,
+        "deaths": [
+          0,
+          3,
+          9,
+          10,
+          110,
+          113,
+          120,
+          123,
+          127,
+          128,
+          137,
+          141,
+          1000
+        ],
+        "commanderHp": 88,
+        "completed": false
+      },
+      {
+        "stage": "final-relief",
+        "hour": 566,
+        "second": 474,
+        "funds": 5671,
+        "squad": [
+          57,
+          142,
+          105,
+          103,
+          112,
+          104
+        ],
+        "relief": [
+          105,
+          103,
+          112,
+          104
+        ]
+      },
+      {
+        "stage": "humahuaca",
+        "hour": 582,
+        "second": 510,
+        "funds": 7068,
+        "squad": [
+          57,
+          105,
+          103,
+          112,
+          104
+        ],
+        "actions": 102,
+        "turns": 6,
+        "deaths": [
+          0,
+          3,
+          9,
+          10,
+          110,
+          113,
+          120,
+          123,
+          127,
+          128,
+          137,
+          141,
+          142,
+          1000
+        ],
+        "commanderHp": 88,
+        "completed": true
+      }
+    ]
+  },
+  "postVictory": {
+    "verifiedBy": "tests/fresh-ending-route.test.mjs",
+    "hoursAdvanced": 48,
+    "finalHour": 630,
+    "expiredLivingContracts": [
+      103,
+      104,
+      105,
+      112
+    ],
+    "retainedCommanderHp": 88,
+    "allThirteenLocalitiesControlled": true,
+    "casualtiesRemainDead": true,
+    "expiredHiresAbsentOnReentry": true
+  },
+  "limits": "One stock seed and tested force strategies. Not a live-browser or performance check; advanced medical, prisoner-rescue and recapture routes remain separate."
+}

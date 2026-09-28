@@ -1,5 +1,9 @@
 # Fresh opening with a created officer and local recruits
 
+Later partial-loading integration changes the route tactics, costs and casualties.
+See [the partial-loading record](partial-firearm-reloads.md) for that source and
+its new checkpoints; the results below retain their original source.
+
 Source: `6866d1d78bab58d9abc873eadcb028ad32e0f014`.
 
 A fresh default story-package campaign, seed 8, completes Buenos Aires,

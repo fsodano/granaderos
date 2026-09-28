@@ -51,8 +51,11 @@ An initial named-ally save fixture omitted clock synchronization; it was correct
 to confirm the actual orders before save. The complete release run passes **886/886 tests**, with zero failures or skips,
 in 210,947.431 ms. Types, production export (722 files, 632 asset references),
 all 36 baseline comparisons and the documentation audit pass (220 requirements,
-59 evidence records, preserving all 50 original and 87 parity rows). Exact-head
-GitHub CI remains required before merge.
+59 evidence records, preserving all 50 original and 87 parity rows).
+[PR #82](https://github.com/fsodano/granaderos/pull/82) merged after
+[GitHub CI](https://github.com/fsodano/granaderos/actions/runs/36443357146/job/108999241427)
+passed at `440b05a7857e8ad7fb34906e17e75d5909f85721`. The resulting main commit
+is `ed16346acc98d71fdfa078fb0eaa3de1322dd273` (28 September, 15:41 UTC).
 
 ## Limits
 
