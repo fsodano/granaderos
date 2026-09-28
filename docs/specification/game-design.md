@@ -617,3 +617,14 @@ requires combat. Promotion preserves the actual wounded soldier and finite
 belongings. See [bounded combat verification](../verification/militia-combat-progression.md)
 for prior paid-course compatibility and the separate allied-AI scope. See also
 [authored promotion verification](../verification/authored-militia-progression.md).
+
+### Autonomous local defenders
+
+Local militia fight under automatic control, using their own remaining action
+points and finite authored equipment. They act after enemies in a normal round,
+or after the player's response in enemy-first contact. Reactions spend the same
+budget; no extra points are issued for their phase. The squad and temporary
+mission allies retain manual control. Garrison cards report status, and squad
+members can still treat wounded defenders. Saved return retains identity, wounds,
+casualties, supplies and combat credit. See [bounded combat and control checks](../verification/autonomous-militia-combat.md)
+for the separate patrol, redistribution, artillery and advanced-AI requirements.

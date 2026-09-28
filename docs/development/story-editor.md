@@ -327,6 +327,16 @@ la campaña; cambiar el borrador después no cambia la partida. El mapa muestra
 los umbrales de esa partida. El precio y la duración de los cursos siguen sus
 reglas actuales. [Verificación de reglas editables](../verification/authored-militia-progression.md).
 
+## Milicias en combate
+
+La guarnición actúa por su cuenta. Usa las armas, los cartuchos y las reglas
+guardadas con esa campaña. Sus disparos de reacción consumen los mismos puntos
+de acción que su turno. Las tarjetas de la guarnición muestran salud y estado;
+no permiten dar órdenes directas. Podés seleccionar a un integrante de la
+escuadra para atender a un miliciano herido. Al volver y guardar se conservan
+sus heridas, bajas, armas, suministros restantes y experiencia.
+[Alcance verificado y pendientes](../verification/autonomous-militia-combat.md).
+
 ## Territorio inicial
 
 En **Reglas**, la tabla **Territorio al iniciar la campaña** define el control patriota o realista y la lealtad de las trece localidades. La lealtad permite valores enteros de 0 a 100. **Restaurar territorio original** vuelve a Retiro patriota con 65% de lealtad y las otras localidades realistas con 25%. Podés deshacer y rehacer los cambios.
