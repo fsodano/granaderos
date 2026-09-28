@@ -27,7 +27,7 @@ export {MISSION_SCENES,missionStatus} from './missions.js';
 import {dailyIncome,artilleryCount,collectSectorCash} from './economy.js';
 export {dailyIncome,incomeSources,incomeSummary} from './economy.js';
 import {speechFor} from './characters.js';
-import {prepareGarrison,returnGarrison,validGarrisons,reserveMilitiaTrainees,returnMilitiaTrainees,validMilitiaTrainees} from './garrison.js';
+import {prepareGarrison,returnGarrison,validGarrisons,reserveMilitiaTrainees,returnMilitiaTrainees,validMilitiaTrainees,advanceMilitiaWounds} from './garrison.js';
 import {tradeQuote,applyPolicy,dailyPolitics,validatePolitics,policyStatus} from './politics.js';
 export {tradeQuote,policyStatus} from './politics.js';
 import {questForNPC,validateQuests} from './quests.js';
@@ -196,6 +196,7 @@ function tick(s,hours,{joinArrivals=true,stopOnDefeat=true,traveling=[],civilian
       course.remaining--;if(course.remaining<=0){if(course.rank>0)returnMilitiaTrainees(s,course,true);else s.sectors[course.sector].militia[0]+=course.count;s.militiaTraining=s.militiaTraining.filter(t=>t!==course);note(s,`Tres milicianos completan su instrucción en ${sector(course.sector).name}.`);}
     }
     const careRoster=rosterFor(s);advanceMedicalCare(s,careRoster,{traveling});
+    for(const death of advanceMilitiaWounds(s))note(s,`${death.name} fallece por sus heridas en ${sector(death.sector).name}.`);
     const woundDeaths=advanceMilitaryWounds(s,careRoster);
     for(const id of woundDeaths){
       s.operativeState[id].location=operativeLocation(s,id);

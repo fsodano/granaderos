@@ -1,3 +1,5 @@
+import {strategicBleedingPercent} from './campaign-care-rules.js';
+import {refreshMilitaryCondition} from './actor-condition.js';
 import {campaignRules} from './campaign-rules.js';
 import {authoredForceEquipment,MILITIA_EQUIPMENT_ROLES,validateForceWeapon} from './content-force-equipment.js';
 import {weaponSpecification} from './weapon-definition.js';
@@ -31,7 +33,7 @@ export function returnGarrison(s,request,snapshot){
 // Only existing local soldiers need care. Querying patients must not generate
 // another cohort or issue its starting equipment.
 export function militiaCarePatients(s,sector){
- if(s.sectors[sector]?.owner!=='patriot'||s.pendingBattle?.sector===sector)return [];
+ if(s.sectors[sector]?.owner!=='patriot'||s.pendingBattle?.sector===sector&&!s.pendingBattle.sceneId)return [];
  return (s.garrisons?.[sector]??[]).filter(u=>u.hp>0&&(u.bleeding>0||u.hp<u.maxHp)).sort((a,b)=>Number(b.bleeding>0)-Number(a.bleeding>0)||a.hp/a.maxHp-b.hp/b.maxHp||a.id-b.id);
 }
 function validCareCondition(u){
@@ -79,4 +81,28 @@ export function validMilitiaTrainees(s,course){
  return course.rank>0&&Array.isArray(course.trainees)&&course.trainees.length===course.count&&course.trainees.every(u=>u&&u.militiaRank===course.rank-1)
   &&validGarrisons({...s,garrisons:{[course.sector]:course.trainees}})
   &&course.trainees.every(u=>!Object.values(s.garrisons??{}).some(units=>units.some(v=>v.id===u.id))&&!s.pendingBattle?.garrison?.some(v=>String(v.id)===String(u.id)));
+}
+
+// Use the campaign's hourly wound rule only for retained, unloaded defenders.
+// New cohorts have no wound, and the loaded scene owns its own tactical clock.
+export const militiaWoundLoss=(s,unit)=>Math.ceil((unit.bleeding??0)*strategicBleedingPercent(s)/100);
+export function advanceMilitiaWounds(s){
+ const deaths=[],deployed=new Set((s.pendingBattle?.garrison??[]).map(u=>String(u.id)));
+ for(const [sector,units] of Object.entries(s.garrisons??{})){
+  if(s.sectors[sector]?.owner!=='patriot')continue;
+  for(const unit of units){
+   if(unit.hp<=0||!unit.bleeding||deployed.has(String(unit.id)))continue;
+   unit.hp=Math.max(0,unit.hp-militiaWoundLoss(s,unit));refreshMilitaryCondition(unit);
+   if(unit.hp>0)continue;
+   unit.energy=0;unit.deathMinute=s.hour*60+Math.floor((s.secondOfHour??0)/60);
+   const prior=s.sectorStates?.[sector]?.units?.find(u=>u.militia&&String(u.id)===String(unit.id));
+   // Real wounds came from a saved visit. Old records without a scene do not
+   // supply a position from which a physical corpse could safely be invented.
+   if(prior){const {id,x,y}=prior;Object.assign(prior,structuredClone(unit),{id,x,y});}
+   s.sectors[sector].militia[unit.militiaRank]=Math.max(0,s.sectors[sector].militia[unit.militiaRank]-1);
+   deaths.push({id:unit.id,name:unit.name,sector});
+  }
+  s.garrisons[sector]=units.filter(u=>u.hp>0);
+ }
+ return deaths;
 }

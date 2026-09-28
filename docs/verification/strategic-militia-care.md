@@ -73,3 +73,7 @@ Mounted checks do not establish live-browser performance or full-game parity.
 New paid promotion courses subsequently preserve those individual soldiers; see
 the [promotion verification](militia-training-identities.md) and its separate
 publication status.
+
+The subsequent [unloaded militia wound integration](unloaded-militia-wounds.md)
+tracks hourly loss and retained local bodies separately, with its own publication
+status and compatibility limits.

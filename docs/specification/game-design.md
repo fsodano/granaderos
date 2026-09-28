@@ -588,3 +588,13 @@ at the previous rank. Saved identities remain separate from a deployed garrison,
 even if the course completes while another squad is inside the sector. Older
 count-only courses retain their earlier contract. See the
 [verification and compatibility limits](../verification/militia-training-identities.md).
+
+### Militia wounds outside the active scene
+
+Retained militia share the authored hourly bleeding rate after local physician
+work. Actually deployed defenders use only their tactical clock. A separate mission
+scene leaves the town garrison and its physician on their strategic clocks. A death reduces the
+existing rank count once and retains the actual corpse and finite possessions
+in the known saved scene. Older records without a scene cannot establish a body
+position. See [wound and remains verification](../verification/unloaded-militia-wounds.md)
+for real travel, remote tactical time, collection, saves and compatibility limits.

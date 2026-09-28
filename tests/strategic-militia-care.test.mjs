@@ -27,8 +27,9 @@ test('two militia doctors cannot spend two dressings on one patient in the same 
 test('militia medical work requires the exact location and blocks deployment or simultaneous training',()=>{
  let {campaign:s,patientId:id}=woundedGarrison();s=order(s,{type:'assignCare',id:D,assignment:'militia_doctor'});
  for(const action of [{type:'visitSector'},{type:'travel',sector:'buenos_aires'},{type:'militia',trainerId:D,rank:0}])assert.match(dispatchCampaign(s,action).lastError,/servicio/);
+ s=order(s,{type:'wait',hours:1});assert.equal(patient(s,id).bleeding,0);
  s=order(s,{type:'assignCare',id:D,assignment:'active'});s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'assignCare',id:D,assignment:'militia_doctor'});const stock=s.operativeState[D].medkits,hp=patient(s,id).hp;s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[D].medkits,stock);assert.equal(patient(s,id).hp,hp);assert.deepEqual(militiaCarePatients(s,'buenos_aires'),[]);assert.match(careStatus(s,doctor(s),rosterFor(s)),/Sin milicianos heridos/);assert.ok(saved({campaign:s}));
- s=order(s,{type:'assignCare',id:D,assignment:'active'});s=order(s,{type:'travel',sector:'retiro'});s=order(s,{type:'assignCare',id:D,assignment:'militia_doctor'});s=order(s,{type:'createSquad',name:'Patrulla de Isabel',ids:[1000]});s=order(s,{type:'travel',sector:'buenos_aires'});assert.equal(patient(s,id).hp,Math.min(patient(s,id).maxHp,hp+6),'two existing dressings stop blood then heal once');assert.equal(s.operativeState[D].medkits,0);assert.ok(saved({campaign:s}));
+ s=order(s,{type:'assignCare',id:D,assignment:'active'});s=order(s,{type:'travel',sector:'retiro'});s=order(s,{type:'assignCare',id:D,assignment:'militia_doctor'});s=order(s,{type:'createSquad',name:'Patrulla de Isabel',ids:[1000]});s=order(s,{type:'travel',sector:'buenos_aires'});assert.equal(patient(s,id).hp,Math.min(patient(s,id).maxHp,hp+6),'the remaining dressing heals the soldier after earlier local stabilization');assert.equal(s.operativeState[D].medkits,0);assert.ok(saved({campaign:s}));
 });
 
 test('a deployed garrison owns its tactical wounds and receives no remote medical duplication',()=>{

@@ -268,7 +268,7 @@ reposición de provisiones del taller. La atención sigue gastando una venda por
 hora de trabajo. Detener la hemorragia tiene prioridad sobre recuperar salud.
 La atención necesita presencia segura y real en la misma celda. Los mismos
 valores rigen para **Médico de milicias**, que atiende a los heridos de la
-guarnición con sus propias vendas. La pantalla de campaña muestra su salud.
+guarnición con sus propias vendas. La pantalla de campaña muestra su salud y la pérdida horaria por hemorragia. La milicia herida fuera del sector abierto usa el mismo porcentaje de daño horario; el médico trabaja antes de ese daño. Abrir la conferencia de Yatasto no detiene las heridas ni la atención de la guarnición que quedó en la ciudad. Si un soldado muere, deja de contar como defensor. Su cuerpo y sus objetos permanecen en la escena guardada conocida. [Heridas de milicias verificadas](../verification/unloaded-militia-wounds.md).
 [Atención a milicias verificada](../verification/strategic-militia-care.md).
 
 Los nuevos cursos de ascenso conservan a los tres soldados que participan.

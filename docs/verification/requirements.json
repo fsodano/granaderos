@@ -390,7 +390,13 @@
     {
       "id": "E-MILITIA-TRAINING",
       "path": "docs/verification/militia-training-identities.md",
-      "description": "Paid promotions reserve actual stable militia and return the same identities with unchanged wounds and finite equipment. Nine new simulations and a mounted production campaign check cover both ranks, cancellation, instructor departure/death, completion during deployment, saves, malformed identities and older count-only contracts. The focused group passes 28/28, types and 36 reference comparisons pass. Export passes. The initial complete run passes 947/948 with a stale promotion-kit replacement expectation; the corrected authored-kit and identity group passes 17/17. Final complete regression passes 949/949, zero failures/skips. Exact-head CI is required before merge; combat-earned promotion, custody and unloaded bleeding are separate."
+      "description": "Paid promotions reserve actual stable militia and return the same identities with unchanged wounds and finite equipment. Nine new simulations and a mounted production campaign check cover both ranks, cancellation, instructor departure/death, completion during deployment, saves, malformed identities and older count-only contracts. The focused group passes 28/28, types and 36 reference comparisons pass. Export passes. The initial complete run passes 947/948 with a stale promotion-kit replacement expectation; the corrected authored-kit and identity group passes 17/17. Final complete regression passes 949/949, zero failures/skips. PR #90 merged after successful exact-head CI at 6f8036cd63d13bb342d04870543ab35443347531; combat-earned promotion, custody and unloaded bleeding are separate.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36463605592/job/109068040941"
+    },
+    {
+      "id": "E-MILITIA-WOUNDS",
+      "path": "docs/verification/unloaded-militia-wounds.md",
+      "description": "Existing unloaded militia use the authored hourly bleeding rate after local finite care. Actual wounds, travel, remote tactical time, deaths, saved bodies, finite collection and new distinct cohorts pass. Eight simulations and one mounted screen check are included in a final 49/49 reviewed group. Initial full regression passed 956/956, before added checks reproduced frozen town wounds and blocked town care during Yatasto. The corrected separate-scene boundaries pass; final complete regression passes 958/958, zero failures/skips, and production export passes. Successful exact-head CI remains required before merge. Older records without a scene cannot supply a body position; custody and full defense routes stay separate."
     }
   ],
   "queue": [
@@ -439,12 +445,39 @@
   ],
   "requirements": [
     {
+      "id": "MILITIAWOUND-01",
+      "group": "Published deliveries",
+      "requirement": "Advance retained militia wounds outside the loaded sector and preserve actual deaths and finite remains",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Existing local militia lose authored hourly health after physician work; actual deaths reduce counts once and retain their bodies and possessions in the known saved scene.",
+      "local": "Eight new simulations and one mounted campaign check pass. The initial group passed 30/30; the final reviewed group passes 49/49 including real local care during a separate anchored conference. The initial complete source passed 956/956, zero failures/skips, but did not cover the subsequently reproduced mission-boundary gaps. Actual deployed identities now govern wound exclusion, and a town physician remains available outside Yatasto. Types and all 36 reference comparisons pass; final complete regression passes 958/958, zero failures/skips. Production export and the documentation audit pass.",
+      "remaining": "",
+      "acceptance": "Wound a paid local militiaman, leave the sector and advance actual time. Local care prevents hourly loss with finite supplies. Untreated death reduces one count and leaves its actual finite body in the known scene through collection, saves and reentry; new training cannot revive that identity.",
+      "evidence": [
+        "E-MILITIA-WOUNDS"
+      ],
+      "parents": [
+        "INTEGRATION-01",
+        "MIL-01",
+        "JA2-A01"
+      ],
+      "testFiles": [
+        "tests/unloaded-militia-wounds.test.mjs",
+        "tests/unloaded-militia-wounds-render.test.mjs",
+        "tests/militia-care-fixture.mjs",
+        "tests/strategic-militia-care.test.mjs",
+        "tests/military-remains.test.mjs",
+        "tests/missions-web.test.mjs"
+      ]
+    },
+    {
       "id": "MILITIATRAIN-01",
       "group": "Published deliveries",
       "requirement": "Preserve actual militia participants and possessions through new paid promotion courses",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. New paid promotions reserve three stable local soldiers and preserve each identity and its health, equipment and supplies on completion or return.",
+      "published": "Published on main through PR #90 on 2026-09-28 after successful exact-head CI. New paid promotions reserve three stable local soldiers and preserve each identity and its health, equipment and supplies on completion or return.",
       "local": "Nine new simulations and one mounted campaign check pass in a 28-test overlapping group. Actual paid cohorts, an enemy wound with finite treatment, both rank completions, cancellation, instructor expiry/death, deployment overlap and saved identities are checked. Types and all 36 reference comparisons pass. Initial complete regression passes 947/948, zero skips; a former test expected a fresh kit at promotion. The corrected conservation and separate authored-starting-kit checks pass 17/17. Final complete regression passes 949/949, zero failures/skips. Types, production export, all 36 reference comparisons and the documentation audit pass.",
       "remaining": "",
       "acceptance": "Train a cohort, wound and treat a member through actual orders, pay for promotion and save. Complete or cancel without replacing, healing or resupplying the reserved soldiers. Preserve them when a different squad returns from a deployment. Reject invalid saved identities and retain older count-only course compatibility.",
@@ -462,7 +495,8 @@
         "tests/garrison-web.test.mjs",
         "tests/militia-web.test.mjs",
         "tests/content-force-equipment.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/90"
     },
     {
       "id": "MILITIACARE-01",
@@ -2501,15 +2535,16 @@
       "requirement": "C\u00edvicos, Montoneras and veteran line/Granaderos tiers",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Paid local militia cohorts materialize with historical loadouts, fight as local allies and retain actual tactical wounds, casualties and depleted equipment through saved reentry. Individual promotion and advanced militia behavior are tracked separately. PR #89 adds local physician care with finite dressings.",
-      "local": "Individual promotion acceptance is tracked by MILITIATRAIN-01; local physician work by MILITIACARE-01. The larger preserved parity source is not equivalent to published integration.",
-      "remaining": "Publish individual promotion, then integrate unloaded wound time, combat-earned progression, redistribution, custody and the remaining advanced militia behavior.",
+      "published": "Paid local militia cohorts materialize with historical loadouts, fight as local allies and retain actual tactical wounds, casualties and depleted equipment through saved reentry. Individual promotion and advanced militia behavior are tracked separately. PR #89 adds local physician care with finite dressings. PR #90 preserves individual participants through paid promotion.",
+      "local": "Individual promotion acceptance is tracked by MILITIATRAIN-01; local physician work by MILITIACARE-01. The larger preserved parity source is not equivalent to published integration. Retained militia wound time is tracked by MILITIAWOUND-01.",
+      "remaining": "Publish unloaded wound time, then integrate combat-earned progression, redistribution, custody and the remaining advanced militia behavior.",
       "acceptance": "Training, historical loadouts and distinct behavior",
       "evidence": [
         "E-PUBLISHED",
         "E-CONFLICTS",
         "E-MILITIA-TRAINING",
-        "E-MILITIA-CARE"
+        "E-MILITIA-CARE",
+        "E-MILITIA-WOUNDS"
       ]
     },
     {
@@ -4943,13 +4978,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "eec006720ea3283304835b0099c2a74dad3d4536",
-    "total": 939,
-    "passed": 939,
+    "source": "5ebb46107c279883aee24fc1833498a8f8de0417",
+    "total": 949,
+    "passed": 949,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-MILITIA-CARE"
+    "evidenceId": "E-MILITIA-TRAINING"
   }
 }
