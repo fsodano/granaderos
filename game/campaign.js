@@ -129,12 +129,13 @@ export function availableActions(s){
   return {recruits:OPERATIVES.map(o=>({...o,...recruitmentStatus(s,o.id)})),destinations:CAMPAIGN_SECTORS.filter(x=>x.id!==s.location),phase:campaignChapters(s)[campaignChapterIndex(s)]};
 }
 function hasReadyCombatant(s){return s.recruited.some(id=>s.operativeState[id]?.alive&&s.operativeState[id].hp>0&&!s.operativeState[id].captured);}
+function endingSpeech(s){for(const op of rosterFor(s).filter(o=>s.recruited.includes(o.id)&&s.operativeState[o.id]?.alive)){const line=speechFor(op,'ending');if(line?.trim())note(s,`${op.name}: «${line}»`);}}
 function progress(s){
   if(s.completed)return;
   if(campaignStory(s)){
     updateContentQuests(s);
     if(s.sectors[headquartersFor(s)].owner!=='patriot')s.defeated=true;
-    advanceCampaignStory(s);return;
+    advanceCampaignStory(s);if(s.completed)endingSpeech(s);return;
   }
   if(s.defeated)return;
   if(s.phase===0&&(s.flags.academy||hasReadyCombatant(s))){s.flags.academy=true;s.phase=1;note(s,'El destacamento está listo para partir. Llegan noticias de un desembarco realista junto a San Lorenzo.');}
@@ -143,7 +144,7 @@ function progress(s){
   if(s.phase===3&&s.flags.foundry&&s.flags.parliament&&s.flags.armyFunded&&artilleryCount(s)>=3&&['mendoza','uspallata','los_patos'].every(id=>s.sectors[id].owner==='patriot'&&s.sectors[id].fort>=1)){
     s.phase=4;note(s,'El Plumerillo alcanza plena capacidad. Tres mil infantes, artillería y pasos seguros: San Martín puede incorporarse al ejército.');
   }
-  if(!s.completed&&s.phase===4&&s.recruited.includes(57)&&Object.values(s.sectors).every(x=>x.owner==='patriot')&&!s.blockade&&!s.pendingBattle){s.completed=true;note(s,'¡Campaña concluida! Las provincias están libres y el Ejército de los Andes queda preparado para la liberación continental.');for(const op of rosterFor(s).filter(o=>s.recruited.includes(o.id)&&s.operativeState[o.id]?.alive)){const line=speechFor(op,'ending');if(line?.trim())note(s,`${op.name}: «${line}»`);}}
+  if(!s.completed&&s.phase===4&&s.recruited.includes(57)&&Object.values(s.sectors).every(x=>x.owner==='patriot')&&!s.blockade&&!s.pendingBattle){s.completed=true;note(s,'¡Campaña concluida! Las provincias están libres y el Ejército de los Andes queda preparado para la liberación continental.');endingSpeech(s);}
   if(s.sectors[headquartersFor(s)].owner!=='patriot'){s.defeated=true;note(s,`El cuartel de ${headquartersName(s)} ha caído. El ejército debe reorganizarse desde una nueva campaña.`);}
 }
 function raid(s,theater,forcedTarget=null){

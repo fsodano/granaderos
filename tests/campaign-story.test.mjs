@@ -20,11 +20,11 @@ test('authored chapters validate bounded definitions, references and campaign-on
 });
 
 test('paid arrival advances an authored service objective once without unlocking original history, then a real dialogue resolves the campaign after leaving',()=>{
- let p=readyLocal(undefined,fixture());assert.equal(p.campaign.phase,0);assert.equal(p.campaign.campaignProgress.completed.length,1);assert.equal(p.campaign.campaignProgress.completed[0].chapter,'service');assert.equal(p.campaign.flags.academy,false);assert.equal(p.campaign.completed,false);assert.equal(availableActions(p.campaign).phase.id,'report');assert.equal(campaignChapterIndex(p.campaign),1);
+ const d=fixture();d.characters.find(c=>c.id==='person-110').speech.ending='El correo llegó, podemos descansar.';let p=readyLocal(undefined,d);assert.equal(p.campaign.phase,0);assert.equal(p.campaign.campaignProgress.completed.length,1);assert.equal(p.campaign.campaignProgress.completed[0].chapter,'service');assert.equal(p.campaign.flags.academy,false);assert.equal(p.campaign.completed,false);assert.equal(availableActions(p.campaign).phase.id,'report');assert.equal(campaignChapterIndex(p.campaign),1);
  assert.equal(campaignObjectives(p.campaign)[0].complete,true);assert.equal(campaignObjectives(p.campaign)[1].active,true);
  p=saved(choose(choose(p,'start','accept'),'active','complete'));assert.equal(p.campaign.completed,false);assert.equal(p.campaign.campaignProgress.completed.length,1);const cash=p.campaign.resources.treasury;
  let s=saved({campaign:leave(p)}).campaign;assert.equal(s.completed,true);assert.equal(s.defeated,false);assert.equal(s.flags.sanLorenzo,false);assert.equal(s.phase,0);assert.equal(s.campaignProgress.completed.length,2);assert.equal(s.campaignProgress.outcome.type,'victory');assert.ok(s.resources.treasury>=cash);assert.ok(campaignObjectives(s).every(c=>c.complete&&!c.active));
- const receipts=structuredClone(s.campaignProgress);s=saved({campaign:order(s,{type:'wait',hours:2})}).campaign;assert.deepEqual(s.campaignProgress,receipts);assert.equal(s.log.filter(e=>e.text===story().victory).length,1);assert.equal(s.log.filter(e=>e.text==='Objetivo cumplido: Objetivo service.').length,1);
+ const receipts=structuredClone(s.campaignProgress);s=saved({campaign:order(s,{type:'wait',hours:2})}).campaign;assert.deepEqual(s.campaignProgress,receipts);assert.equal(s.log.filter(e=>e.text===story().victory).length,1);assert.equal(s.log.filter(e=>e.text.includes('El correo llegó, podemos descansar.')).length,1);assert.equal(s.log.filter(e=>e.text==='Objetivo cumplido: Objetivo service.').length,1);
  assert.match(dispatchCampaign(s,{type:'attack',sector:'san_lorenzo'}).lastError,/ganada/);
 });
 
