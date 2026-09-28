@@ -11,7 +11,7 @@ import {createElement as h,act,useState} from '../web/node_modules/react/index.j
 import {defaultContentPackage,parseContentPackage} from '../game/content-package.js';
 import {CONTENT_LAUNCH_KEY,CONTENT_SAVE_KEY} from '../game/content-launch.js';
 import {decodeSave,encodeSave} from '../game/save.js';
-import {initialCampaign,dispatchCampaign,rosterFor,CAMPAIGN_SECTORS} from '../game/campaign.js';
+import {initialCampaign,dispatchCampaign,rosterFor,CAMPAIGN_SECTORS,deploymentCost} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';
 import {actBattle,getReachable,actionCosts} from '../game/tactical.js';
 import {syncBattleTime} from '../game/time.js';
@@ -678,4 +678,12 @@ test('the weapon editor authors included preparation cost through validation, un
  gun=draft().weapons.find(w=>w.name==='Pistola preparada');await m.click(m.button('Personajes'));await m.input(m.document.querySelector('input[type="search"]'),'person-110');await m.click(m.document.querySelector('.entry-list button'));await m.input(m.label('Arma principal'),gun.id);await m.click(m.button('Iniciar campaña con estas fichas'));
  let s=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY)).campaign;for(const a of [{type:'recruitCivic',id:110,term:'week'},{type:'wait',hours:6},{type:'visitSector'}]){s=dispatchCampaign(s,a);assert.equal(s.lastError,null);}
  const restored=decodeSave(encodeSave(s,enterSector(s.pendingBattle))),u=restored.battle.units.find(u=>u.id==='110');assert.equal(u.weaponMetadata.contentWeapon.readyAP,7);assert.equal(u.loaded,3);assert.equal(u.weaponReady,undefined);assert.equal(actionCosts(restored.battle,u).ready,7);assert.equal(actionCosts(restored.battle,u).fire,20);
+});
+
+
+test('the editor authors cartridge price with undo, original defaults and a pinned actual entry charge',async t=>{
+ const m=await mount(t);await m.click(m.button('Reglas'));const price=()=>m.label('Precio del cartucho (pesos)');assert.equal(price().value,'1');await m.input(m.label('Cartuchos por combatiente de la escuadra'),7);await m.input(price(),3);
+ const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));assert.equal(draft().rules.cartridgePrice,3);await m.click(m.button('Deshacer'));assert.equal(price().value,'1');assert.equal(Object.hasOwn(draft().rules,'cartridgePrice'),false);await m.click(m.button('Rehacer'));assert.equal(price().value,'3');
+ await m.input(price(),'');assert.equal(price().value,'');assert.equal(m.button('Iniciar campaña con estas fichas').disabled,true);await m.click(m.button('Deshacer'));await m.input(price(),.5);assert.equal(m.button('Iniciar campaña con estas fichas').disabled,true);await m.click(m.button('Deshacer'));await m.click(m.button('Restaurar fondos y cartuchos originales'));assert.equal(price().value,'1');assert.equal(Object.hasOwn(draft().rules,'cartridgePrice'),false);await m.click(m.button('Deshacer'));assert.equal(price().value,'3');
+ await m.click(m.button('Iniciar campaña con estas fichas'));let s=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY)).campaign;for(const a of [{type:'recruitCivic',id:110,term:'week'},{type:'wait',hours:6}]){s=dispatchCampaign(s,a);assert.equal(s.lastError,null);}const money=s.resources.treasury;assert.equal(deploymentCost(s),21);s=dispatchCampaign(s,{type:'visitSector'});assert.equal(s.lastError,null);assert.equal(s.resources.treasury,money-21);assert.equal(s.pendingBattle.issuedCartridges,7);const restored=decodeSave(encodeSave(s,enterSector(s.pendingBattle)));assert.equal(restored.campaign.contentCampaign.package.rules.cartridgePrice,3);assert.equal(restored.battle.units[0].loaded+restored.battle.units[0].ammo,7);
 });

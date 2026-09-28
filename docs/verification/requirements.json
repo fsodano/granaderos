@@ -357,6 +357,11 @@
       "id": "E-WEAPON-READINESS",
       "path": "docs/verification/authored-weapon-readiness.md",
       "description": "Authored preparation is included in the first shot and retained as the actor firing position. Finite consecutive shots, actual failed ignition, paid handling, incapacity, strict snapshots, enemy fire, active campaign save, editor launch and pointer/keyboard controls are covered. Exploration controls show actual elapsed seconds. Final complete source: 904 tests pass, zero failures/skips, types, production export and all 36 baseline comparisons. Full directional readiness, hands and strategic ammunition custody remain separate."
+    },
+    {
+      "id": "E-CARTRIDGE-PRICE",
+      "path": "docs/verification/authored-cartridge-price.md",
+      "description": "Optional pinned cartridge unit price drives deployment quotes, actual entry/assault payments and finite departure/result credits. Five simulations cover legacy identity, saved price, actual spent ammunition, zero and rejected costs, finite recovered-round limits and treasury overflow; two mounted editor/campaign cases pass. Complete regression passes 911/911 with zero failures/skips; types, production export and all 36 baseline comparisons pass. Exact-head CI remains required before merge; ammunition types and strategic custody remain separate."
     }
   ],
   "queue": [
@@ -405,12 +410,36 @@
   ],
   "requirements": [
     {
+      "id": "CARTRIDGEPRICE-01",
+      "group": "Published deliveries",
+      "requirement": "Author a pinned cartridge unit price for paid issue and finite returns",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI is still required before merge. Optional cartridge price preserves the one-peso legacy default and multiplies the same finite quantity for both deployment payment and return credit.",
+      "local": "Five simulations and two mounted cases cover strict optional content, legacy identity, real paid entry, a real discharge and saved retreat, duplicate report rejection, zero and unaffordable prices, overflow refusal, editor undo and actual campaign controls. Complete regression passes 911/911, zero failures/skips; types, production export and all 36 baseline comparisons also pass.",
+      "remaining": "",
+      "acceptance": "Author and pin a unit price, pay the real deployment quote, discharge a cartridge and refund only the unspent quantity after save. Reject changed pinned prices, excess credit and repeated settlement.",
+      "evidence": [
+        "E-CARTRIDGE-PRICE"
+      ],
+      "parents": [
+        "ECO-01",
+        "STORY-06",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/authored-cartridge-price.test.mjs",
+        "tests/campaign-rules-ui.test.mjs",
+        "tests/story-editor.test.mjs"
+      ]
+    },
+    {
       "id": "WEAPONREADY-01",
       "group": "Published deliveries",
       "requirement": "Author included firearm preparation cost and retain the paid firing position",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI is still required before merge. This implementation accepts nonzero authored preparation, charges it within the first shot, and discounts only that part while the actor retains the firing position. Unconfigured and default weapons retain zero preparation.",
+      "published": "Authored firearm preparation is charged within the first shot and discounted only while the actor retains the firing position. Unconfigured and default weapons retain zero preparation. Merged through PR #84 after exact-head CI.",
       "local": "Nine simulations and two mounted controls cover real discharges, finite charges, failed ignition, physical handling, invalid states, actual enemy fire, paid campaign save, editor undo/validation and pointer/keyboard continuation. The combined simulation group passes 41 tests, plus two mounted cases. The initial broad source passes 903/903, zero failures/skips, types, export and all 36 baseline comparisons. The final source adds actual exploration seconds in the control and a clock regression; its filtered twelve-case group includes all eleven new cases and one existing project check. Final complete regression passes 904/904, zero failures/skips, types, export and all 36 baseline comparisons.",
       "remaining": "",
       "acceptance": "Author a nonzero preparation cost, launch the pinned campaign, pay the first shot and save the cheaper next shot. Keep finite charges, reject invalid readiness and lower the weapon after actual physical work or incapacity.",
@@ -428,7 +457,8 @@
         "tests/authored-weapon-readiness.test.mjs",
         "tests/weapon-readiness-controls.test.mjs",
         "tests/story-editor.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/84"
     },
     {
       "id": "PARTIALRELOAD-01",
@@ -2234,14 +2264,15 @@
       "requirement": "British imports and timed deliveries",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Imported firearm orders are bought in pesos with authored ports and delivery windows, stored deadlines, blockade/occupation delays, same-hour raid precedence and unique authored instances.",
+      "published": "Imported firearm orders are bought in pesos with authored ports and delivery windows, stored deadlines, blockade/occupation delays, same-hour raid precedence and unique authored instances. This bounded PR accepts an optional pinned cartridge unit price for deployment and finite return credit; exact-head CI remains required before merge.",
       "local": "See local suite and preserved parity source; not equivalent to published integration.",
       "remaining": "Integrate finite merchant stock, physical port custody and cargo transport under control/blockade changes.",
       "acceptance": "Purchase in pesos, inventory and delivery under control/blockade changes; silver resource replaced by PR #12",
       "evidence": [
         "E-PUBLISHED",
         "E-CONFLICTS",
-        "E-IMPORT-RULES"
+        "E-IMPORT-RULES",
+        "E-CARTRIDGE-PRICE"
       ]
     },
     {
@@ -2325,7 +2356,7 @@
       "requirement": "100 AP, exact weapon cycles, long reloads, prone penalty",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "100 AP and reference firearm cycles. This bounded PR accepts authored preparation within the first shot, retained firing position and actual AP/time controls. Exact-head CI is required before merge.",
+      "published": "100 AP and reference firearm cycles. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI.",
       "local": "See local suite and preserved parity source; not equivalent to published integration.",
       "remaining": "Integrate partial loading/readiness and shared costs through interruptions and saves.",
       "acceptance": "Runtime AP deductions and weapon XML match specification",
@@ -2844,7 +2875,7 @@
       "requirement": "Configurable game rules and campaign roles",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss. Import port, disabled orders and delivery windows are configurable. Ordered campaign chapters, global completion/failure conditions and ending text are authored separately from historical progression. Historical profiles can be copied without their implicit roles and removed from an authored campaign. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Pending scene saves accept the full supported authored cartridge range, including zero and 100, without resetting spent rounds. Medical eligibility, hourly healing and effort, rest rates/intervals and dressing prices are authored and pinned; both workshop purchase paths use that price. Current quantities of six personal supply types can gate dialogue, chapters and failure. Active scenes override stale deployed records; the check does not grant or consume goods.",
+      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss. Import port, disabled orders and delivery windows are configurable. Ordered campaign chapters, global completion/failure conditions and ending text are authored separately from historical progression. Historical profiles can be copied without their implicit roles and removed from an authored campaign. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Pending scene saves accept the full supported authored cartridge range, including zero and 100, without resetting spent rounds. Medical eligibility, hourly healing and effort, rest rates/intervals and dressing prices are authored and pinned; both workshop purchase paths use that price. Current quantities of six personal supply types can gate dialogue, chapters and failure. Active scenes override stale deployed records; the check does not grant or consume goods. This bounded PR accepts an optional pinned cartridge unit price for deployment and finite return credit; exact-head CI remains required before merge.",
       "local": "Larger systems still embed many rules and historical identity gates.",
       "remaining": "Extract remaining care, combat, economy, character progression, opposition and historical campaign identity rules.",
       "acceptance": "Change supported rules and replace role identities through the editor, then run/save the resulting campaign.",
@@ -2863,7 +2894,8 @@
         "E-CHARACTER-SUPPLIES",
         "E-CARTRIDGE-SAVE",
         "E-CARE-RULES",
-        "E-SUPPLY-CONDITIONS"
+        "E-SUPPLY-CONDITIONS",
+        "E-CARTRIDGE-PRICE"
       ]
     },
     {
@@ -2872,9 +2904,9 @@
       "requirement": "Complete equipment and merchant authoring",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain six finite personal supply quantities. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of six personal supply types can gate dialogue, chapters and failure. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. This bounded PR accepts authored preparation within the first shot, retained firing position and actual AP/time controls. Exact-head CI is required before merge.",
+      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain six finite personal supply quantities. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of six personal supply types can gate dialogue, chapters and failure. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI. This bounded PR accepts an optional pinned cartridge unit price for deployment and finite return credit; exact-head CI remains required before merge.",
       "local": "Physical inventory, fittings and merchants are more complete locally but not generally authored.",
-      "remaining": "Add artillery, ammunition types and pricing, fittings, merchant stock, buyback and replenishment authoring; integrate civilian belongings and complete physical custody.",
+      "remaining": "Add artillery, ammunition types and dealer pricing, fittings, merchant stock, buyback and replenishment authoring; integrate civilian belongings and complete physical custody.",
       "acceptance": "Create each supported equipment type; buy/use/trade/reload without duplication or lost instance data.",
       "evidence": [
         "E-PUBLISHED",
@@ -2887,7 +2919,8 @@
         "E-CIVILIAN-SUPPLIES",
         "E-SUPPLY-CONDITIONS",
         "E-PARTIAL-RELOAD",
-        "E-WEAPON-READINESS"
+        "E-WEAPON-READINESS",
+        "E-CARTRIDGE-PRICE"
       ]
     },
     {
@@ -3814,7 +3847,7 @@
       "requirement": "Weapon readiness, reload work, jams, and clearing failures are visible and consume the proper resources. G19,47-50.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Published related core exists; full parity acceptance is not established. PR #83 publishes paid partial firearm loading, physical tactical work retention and actual AP/time controls with saved continuation. This bounded PR accepts authored preparation within the first shot, retained firing position and actual AP/time controls. Exact-head CI is required before merge.",
+      "published": "Published related core exists; full parity acceptance is not established. PR #83 publishes paid partial firearm loading, physical tactical work retention and actual AP/time controls with saved continuation. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
       "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
@@ -4747,13 +4780,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "05362e315ec6402808ac2b3eba89bb2c708ebaa4",
-    "total": 893,
-    "passed": 893,
+    "source": "8573da89c2ee086ef8b7c9969e3df90386b1c542",
+    "total": 904,
+    "passed": 904,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-PARTIAL-RELOAD"
+    "evidenceId": "E-WEAPON-READINESS"
   }
 }

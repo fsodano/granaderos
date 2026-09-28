@@ -62,3 +62,11 @@ This delivery supports the authored firearm preparation field. Paid directional
 turning, explicit look/raise orders, two independently held firearms, strategic
 physical ammunition custody and complete JA2 readiness parity remain separate.
 Mounted DOM checks do not establish live-browser usability or performance.
+
+## Publication
+
+[PR #84](https://github.com/fsodano/granaderos/pull/84) merged at
+2026-09-28 16:21:55 UTC as `51dee5c579166dfcb27939b628c9a85ea2db7093`.
+[GitHub verification](https://github.com/fsodano/granaderos/actions/runs/36448362783/job/109016421266)
+passed at 16:20:50 UTC for the exact PR head
+`2949a944ce8513c9901f587c104be551f4575f64`.

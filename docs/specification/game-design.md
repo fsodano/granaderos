@@ -524,3 +524,13 @@ actor and active scene, not to an inventory gun or a fresh deployment. Zero is
 the existing default and remains the fallback for unconfigured older weapons.
 See the [bounded acceptance record](../verification/authored-weapon-readiness.md);
 directional turning and independent hands remain separate requirements.
+
+### Authored cartridge price
+
+A campaign can pin an optional shared cartridge unit price. An absent value
+preserves one peso and older content identities. Deployment payment and finite
+return credit use the same price while issued, held and returned cartridges
+remain quantities. Actual spent/lost rounds are not refunded, and a settled
+request cannot be credited twice. Zero price is an authored economic choice.
+The [verification record](../verification/authored-cartridge-price.md) separates
+this price from ammunition types, merchant pricing and strategic custody.
