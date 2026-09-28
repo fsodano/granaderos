@@ -271,13 +271,24 @@ valores rigen para **Médico de milicias**, que atiende a los heridos de la
 guarnición con sus propias vendas. La pantalla de campaña muestra su salud y la pérdida horaria por hemorragia. La milicia herida fuera del sector abierto usa el mismo porcentaje de daño horario; el médico trabaja antes de ese daño. Abrir la conferencia de Yatasto no detiene las heridas ni la atención de la guarnición que quedó en la ciudad. Si un soldado muere, deja de contar como defensor. Su cuerpo y sus objetos permanecen en la escena guardada conocida. [Heridas de milicias verificadas](../verification/unloaded-militia-wounds.md).
 [Atención a milicias verificada](../verification/strategic-militia-care.md).
 
-Los nuevos cursos de ascenso conservan a los tres soldados que participan.
+Los nuevos cursos de ascenso promueven a tres cívicos a montoneros y conservan
+a los tres soldados que participan.
 Necesitan al menos 15 de salud, más de 10 de energía y no pueden estar sangrando,
 inconscientes, en fuga ni desplegados. El mapa muestra quiénes están en el curso
 y su salud. Ascender no los cura ni repone sus armas o suministros. Suspender el
 curso los devuelve al grado anterior sin devolver los pesos gastados. Las
 partidas antiguas con cursos que solo guardaban cantidades conservan ese
 contrato anterior. [Ascensos y compatibilidad](../verification/militia-training-identities.md).
+
+Los veteranos nuevos ascienden por experiencia de combate. Un primer impacto
+que hiere a un rival apto suma un punto; abatirlo eleva ese registro a tres. No
+se suman puntos repetidos por el mismo rival, ni por dañar civiles, aliados o
+enemigos ya indefensos. Al regresar vivo, cada miliciano puede ganar un grado
+si obtuvo puntos nuevos: dos para montonero y cinco para veterano. Estos valores
+aún no son editables. La salud, el arma y los suministros restantes se conservan.
+La lista de salud de la guarnición muestra el grado y los puntos. Los cursos de
+veteranos ya pagados en partidas anteriores conservan su contrato.
+[Ascensos en combate verificados](../verification/militia-combat-progression.md).
 
 **Restaurar atención y descanso originales** recupera los valores originales.
 Podés deshacerlo. Las partidas iniciadas conservan sus reglas y las horas de

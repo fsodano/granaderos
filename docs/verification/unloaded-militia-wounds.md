@@ -74,8 +74,10 @@ Types and all 36 reference baseline comparisons pass. Final complete regression
 on `61bdfa0` passes **958/958**, zero failures or skips (229,423.091 ms).
 Production export passes with 722 files and 632 asset references. The
 documentation audit passes with 229 requirements and 68 evidence records,
-including all 50 original and 87 parity rows. Successful exact-head GitHub CI is required before merge; this delivery is
-not yet on main.
+including all 50 original and 87 parity rows. [Exact-head GitHub CI](https://github.com/fsodano/granaderos/actions/runs/36465815536/job/109075499522)
+passed at `c4d0e094fe6127933392d2e84b380cd1ec1a6dc6`.
+[PR #91](https://github.com/fsodano/granaderos/pull/91) merged on
+2026-09-28 at 18:47:57 UTC as `7be4aa7c8b80cc5cbded49f38055431c82f8e113`.
 
 ## Limits
 
