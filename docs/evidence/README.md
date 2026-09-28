@@ -11,6 +11,8 @@ using a result. Published acceptance is recorded in [published progress](../veri
 
 ## Campaign and route records
 
+- [Fresh Cuyo preparation](fresh-cuyo-preparation-2026-09-28.json) and [verification scope](../verification/fresh-cuyo-preparation.md).
+
 - [Fresh Mendoza campaign loss](historical-mendoza-loss-2026-09-28.json) and [verification scope](../verification/historical-campaign-loss.md).
 
 - [Fresh northern route data](fresh-northern-2026-09-28.json) and [verification scope](../verification/fresh-northern-opening.md).

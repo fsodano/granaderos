@@ -1,0 +1,418 @@
+{
+  "source": "0ae7f73a30c917d14632d1ed8e81f880da51ef7e",
+  "scope": "Full fresh stock seed-8 mixed coastal/northern prefix, followed by actual Mendoza, Uspallata and Los Patos combat, civilian-aware fire, finite medical care, paid supplies, fortification, hired replacements, renewal, 3000-peso army funding, three purchased artillery pieces and physical San Martin recruitment at phase 4. Final historical victory remains false.",
+  "prefix": [
+    {
+      "sector": "cordoba",
+      "actions": 53,
+      "turns": 4,
+      "hour": 48,
+      "second": 92,
+      "units": [
+        {
+          "id": "1000",
+          "hp": 0,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "110",
+          "hp": 87,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "136",
+          "hp": 92,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "141",
+          "hp": 86,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "120",
+          "hp": 0,
+          "bleeding": 0,
+          "medkits": 1,
+          "routed": false
+        },
+        {
+          "id": "131",
+          "hp": 84,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        }
+      ],
+      "fundsBeforeSettlement": 3983,
+      "fundsAfterReplacements": 3870,
+      "replacements": [
+        115,
+        123
+      ],
+      "deaths": [
+        3,
+        9,
+        10,
+        120,
+        1000
+      ]
+    },
+    {
+      "sector": "tucuman",
+      "actions": 52,
+      "turns": 5,
+      "hour": 66,
+      "second": 122,
+      "units": [
+        {
+          "id": "110",
+          "hp": 0,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "136",
+          "hp": 94,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "141",
+          "hp": 2,
+          "bleeding": 6,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "131",
+          "hp": 35,
+          "bleeding": 3,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "115",
+          "hp": 15,
+          "bleeding": 0,
+          "medkits": 1,
+          "routed": false
+        },
+        {
+          "id": "123",
+          "hp": 83,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        }
+      ],
+      "fundsBeforeSettlement": 3810,
+      "fundsAfterReplacements": 4546,
+      "replacements": [
+        114
+      ],
+      "deaths": [
+        3,
+        9,
+        10,
+        110,
+        120,
+        1000
+      ]
+    },
+    {
+      "sector": "salta",
+      "actions": 41,
+      "turns": 6,
+      "hour": 84,
+      "second": 164,
+      "units": [
+        {
+          "id": "136",
+          "hp": 0,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "141",
+          "hp": 0,
+          "bleeding": 0,
+          "medkits": 1,
+          "routed": false
+        },
+        {
+          "id": "131",
+          "hp": 0,
+          "bleeding": 0,
+          "medkits": 1,
+          "routed": false
+        },
+        {
+          "id": "115",
+          "hp": 0,
+          "bleeding": 0,
+          "medkits": 0,
+          "routed": false
+        },
+        {
+          "id": "123",
+          "hp": 83,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "114",
+          "hp": 33,
+          "bleeding": 4,
+          "medkits": 2,
+          "routed": true
+        }
+      ],
+      "fundsBeforeSettlement": 4486,
+      "fundsAfterReplacements": 3978,
+      "replacements": [
+        137,
+        113,
+        124,
+        112
+      ],
+      "deaths": [
+        3,
+        8,
+        9,
+        10,
+        110,
+        115,
+        120,
+        131,
+        136,
+        141,
+        1000
+      ]
+    },
+    {
+      "stage": "yatasto",
+      "hour": 102,
+      "second": 227,
+      "phase": 3,
+      "funds": 4118,
+      "squad": [
+        123,
+        137,
+        113,
+        124,
+        112
+      ],
+      "deaths": [
+        3,
+        8,
+        9,
+        10,
+        110,
+        114,
+        115,
+        120,
+        131,
+        136,
+        141,
+        1000
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "stage": "mendoza",
+      "hour": 132,
+      "second": 253,
+      "funds": 2905,
+      "squad": [
+        123,
+        137,
+        112,
+        108
+      ],
+      "actions": 47,
+      "turns": 4,
+      "deaths": [
+        3,
+        8,
+        9,
+        10,
+        110,
+        113,
+        114,
+        115,
+        120,
+        124,
+        131,
+        136,
+        141,
+        1000
+      ],
+      "engineerHp": 21,
+      "commanderHp": 88
+    },
+    {
+      "stage": "uspallata",
+      "hour": 150,
+      "second": 323,
+      "funds": 2288,
+      "squad": [
+        123,
+        137,
+        112,
+        108,
+        134,
+        111
+      ],
+      "actions": 66,
+      "turns": 4,
+      "deaths": [
+        3,
+        8,
+        9,
+        10,
+        110,
+        113,
+        114,
+        115,
+        120,
+        124,
+        131,
+        136,
+        141,
+        1000
+      ],
+      "engineerHp": 26,
+      "commanderHp": 88
+    },
+    {
+      "stage": "los_patos",
+      "hour": 162,
+      "second": 361,
+      "funds": 2364,
+      "squad": [
+        123,
+        137,
+        112,
+        134,
+        111
+      ],
+      "actions": 72,
+      "turns": 6,
+      "deaths": [
+        3,
+        8,
+        9,
+        10,
+        108,
+        110,
+        113,
+        114,
+        115,
+        120,
+        124,
+        131,
+        136,
+        141,
+        1000
+      ],
+      "engineerHp": 26,
+      "commanderHp": 88
+    },
+    {
+      "stage": "funded",
+      "hour": 234,
+      "second": 361,
+      "funds": 310,
+      "phase": 4,
+      "artillery": 3
+    },
+    {
+      "stage": "commander",
+      "hour": 252,
+      "second": 361,
+      "funds": 1150,
+      "phase": 4,
+      "squad": [
+        123,
+        137,
+        112,
+        134,
+        111,
+        57
+      ],
+      "deaths": [
+        3,
+        8,
+        9,
+        10,
+        108,
+        110,
+        113,
+        114,
+        115,
+        120,
+        124,
+        131,
+        136,
+        141,
+        1000
+      ],
+      "engineerHp": 46,
+      "commanderHp": 88
+    }
+  ],
+  "final": {
+    "hour": 252,
+    "second": 361,
+    "phase": 4,
+    "funds": 1150,
+    "squad": [
+      123,
+      137,
+      112,
+      134,
+      111,
+      57
+    ],
+    "controlled": [
+      "buenos_aires",
+      "retiro",
+      "san_nicolas",
+      "cordoba",
+      "mendoza",
+      "uspallata",
+      "los_patos",
+      "tucuman",
+      "salta"
+    ],
+    "foundry": true,
+    "armyFunded": true,
+    "parliament": true,
+    "armory": {
+      "firearm-1801": 0,
+      "firearm-1803": 3,
+      "firearm-1804": 2,
+      "firearm-1805": 2,
+      "swivel": 3
+    },
+    "commander": 88,
+    "engineer": 46,
+    "completed": false,
+    "defeated": false,
+    "pendingBattle": null
+  }
+}

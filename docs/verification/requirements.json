@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "b3dfa12cf81948db95eaabf35e98ad91a2da3a04",
+  "baseline": "0ae7f73a30c917d14632d1ed8e81f880da51ef7e",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -234,7 +234,12 @@
     {
       "id": "E-HISTORICAL-LOSS",
       "path": "docs/verification/historical-campaign-loss.md",
-      "description": "Fresh stock coastal/northern continuation pays fortifications, a replacement and five muskets, then wins Mendoza tactically with Beltran dead. Confirmed indispensable death now yields a saved explicit campaign defeat. Prepared compact military deaths cover assigned engineer, recruited commander, completed-project and custom-story exceptions, old-save migration and revived-save rejection; the strategic view names the cause. This is a loss route, not Cuyo or full-campaign success."
+      "description": "Fresh stock coastal/northern continuation pays fortifications, a replacement and five muskets, then wins Mendoza tactically with Beltran dead. Confirmed indispensable death now yields a saved explicit campaign defeat. Prepared compact military deaths cover assigned engineer, recruited commander, completed-project and custom-story exceptions, old-save migration and revived-save rejection; the strategic view names the cause. This is a loss route, not Cuyo or full-campaign success. PR #63 merged after CI passed at a19cc38254a1ce90164de1aef38190185cff1015."
+    },
+    {
+      "id": "E-FRESH-CUYO",
+      "path": "docs/verification/fresh-cuyo-preparation.md",
+      "description": "Fresh stock mixed Retiro/coastal/northern route wins actual Mendoza/Uspallata/Los Patos with replay and midpoint saves, pays supplies, fortifications, controlled arrivals and muskets, treats/recruits the living engineer, rejects early commander recruitment, pays 3000-peso funding and three artillery pieces, then physically recruits San Martin at saved phase 4. Final victory, other forces, advanced systems, independent stories and live performance remain open."
     }
   ],
   "queue": [
@@ -283,12 +288,36 @@
   ],
   "requirements": [
     {
+      "id": "CUYO-01",
+      "group": "Published deliveries",
+      "requirement": "Prepare Cuyo from a fresh campaign and physically recruit the late commander",
+      "status": "VERIFIED",
+      "priority": "P0",
+      "published": "The untouched stock mixed force continues through actual Cuyo combat, preserves indispensable residents, pays project/funding, treaty, artillery, fortifications, supplies and replacement contracts, then reaches phase 4 and recruits San Martin in person. Early recruitment and duplicate funding are rejected; the created actor and casualties stay dead.",
+      "local": "Every Cuyo battle replays with campaign time and midpoint save/reload. The controller avoids fire through visible civilians; the separate loss route remains valid. Published care rules only, not advanced medical parity.",
+      "remaining": "",
+      "acceptance": "From untouched Retiro complete the coast, north and three Cuyo victories with real losses/purchases, treat and recruit the engineer, satisfy the pesos-only preparations, reject early commander service and retain actual late incorporation at saved phase 4.",
+      "evidence": [
+        "E-FRESH-CUYO"
+      ],
+      "parents": [
+        "NAR-05",
+        "NAR-06",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/fresh-cuyo-route.test.mjs",
+        "tests/historical-loss.test.mjs",
+        "tests/foundry-project.test.mjs"
+      ]
+    },
+    {
       "id": "LOSS-01",
       "group": "Published deliveries",
       "requirement": "End original campaigns explicitly when an unfinished indispensable role is permanently lost",
       "status": "VERIFIED",
       "priority": "P0",
-      "published": "A confirmed death of the assigned engineer before foundry completion or the historical commander before victory ends the original campaign. Active military deaths, scene settlement, saved continuation and older nonterminal casualty saves retain the defeat. The strategic screen names the actor and unfinished project.",
+      "published": "A confirmed death of the assigned engineer before foundry completion or the historical commander before victory ends the original campaign. Active military deaths, scene settlement, saved continuation and older nonterminal casualty saves retain the defeat. The strategic screen names the actor and unfinished project. Merged through PR #63 after exact-head CI.",
       "local": "Fresh stock Mendoza defeat after actual tactical victory, plus declared prepared military-death boundaries and rendered cause. Authored chapters use their own rules; completed projects and established victories are not revoked.",
       "remaining": "",
       "acceptance": "Reproduce a legal fresh Mendoza victory with the engineer casualty; persist explicit terminal loss at the active checkpoint and settlement; cover assigned military roles, late commander, old saves, completed foundry and custom progression without revived actors or false success.",
@@ -1417,32 +1446,42 @@
       "id": "NAR-05",
       "group": "Original design",
       "requirement": "El Plumerillo campaign preparation under the pesos-only economy",
-      "status": "PARTIAL",
+      "status": "VERIFIED",
       "priority": "P1",
-      "published": "Treasury-funded camp preparations and artillery prerequisites. A fresh Mendoza tactical victory with Beltran dead now ends the campaign explicitly; successful Cuyo preparation and the historical ending remain open.",
-      "local": "See local suite and preserved parity source; not equivalent to published integration.",
-      "remaining": "Complete the fresh route with purchases; retain the pesos-only model.",
-      "acceptance": "3000-peso funding and remaining campaign prerequisites; full route acceptance pending (original production scope replaced by PR #12)",
+      "published": "The fresh mixed route now wins actual Mendoza and both mountain passes, treats/recruits the living foundry engineer and pays the foundry, three artillery pieces, fortifications and 3000-peso army funding. Income, renewal, replacement arrivals, deaths and saved phase 4 use normal gameplay.",
+      "local": "Published care and equipment model only; larger advanced failures remain separate. This accepts preparation through Cuyo, not the final historical victory.",
+      "remaining": "",
+      "acceptance": "Pay 3000-peso funding and all Cuyo prerequisites through a complete fresh Retiro-to-Cuyo route with actual combat, contracts, supplies and permanent losses; retain the pesos-only model adopted in PR #12.",
       "evidence": [
         "E-PUBLISHED",
         "E-CONFLICTS",
-        "E-HISTORICAL-LOSS"
+        "E-HISTORICAL-LOSS",
+        "E-FRESH-CUYO"
+      ],
+      "testFiles": [
+        "tests/fresh-cuyo-route.test.mjs",
+        "tests/foundry-project.test.mjs"
       ]
     },
     {
       "id": "NAR-06",
       "group": "Original design",
       "requirement": "Pehuenche diplomacy and San Mart\u00edn final unlock",
-      "status": "PARTIAL",
+      "status": "VERIFIED",
       "priority": "P1",
-      "published": "Treaty and gated San Mart\u00edn unlock. A fresh Mendoza tactical victory with Beltran dead now ends the campaign explicitly; successful Cuyo preparation and the historical ending remain open.",
-      "local": "See local suite and preserved parity source; not equivalent to published integration.",
-      "remaining": "Reach and finish through legal campaign actions without injected victories.",
+      "published": "The fresh Cuyo route pays the Pehuenche agreement, rejects physical San Martin recruitment during phase 3, completes the funded/fortified/artillery prerequisites, returns to Mendoza and recruits him in person into permanent unpaid service at phase 4.",
+      "local": "The final historical victory is still open. The original commander stays alive and preserves health through the actual route and saves.",
+      "remaining": "",
       "acceptance": "Treaty and logistics prerequisites enforced; no early recruitment",
       "evidence": [
         "E-PUBLISHED",
         "E-CONFLICTS",
-        "E-HISTORICAL-LOSS"
+        "E-HISTORICAL-LOSS",
+        "E-FRESH-CUYO"
+      ],
+      "testFiles": [
+        "tests/fresh-cuyo-route.test.mjs",
+        "tests/missions-web.test.mjs"
       ]
     },
     {
@@ -2245,7 +2284,7 @@
       "requirement": "Consolidate published, prototype and advanced local gameplay",
       "status": "FAILED",
       "priority": "P0",
-      "published": "Published baseline is green, but excludes most advanced local gameplay. A fresh paid continuation exposed and fixed deceased-contract save rejection; paid relief now saves its San Nicolas defeat. Full route acceptance remains open. New mixed and hire-only routes now win and save the complete coastal opening through San Lorenzo; northern and ending acceptance remain open. A fresh mixed force now also completes saved Yatasto phase 3 under published rules; advanced-system failures and Cuyo/ending acceptance remain open. A fresh Mendoza tactical victory with Beltran dead now ends the campaign explicitly; successful Cuyo preparation and the historical ending remain open.",
+      "published": "Published baseline is green, but excludes most advanced local gameplay. A fresh paid continuation exposed and fixed deceased-contract save rejection; paid relief now saves its San Nicolas defeat. Full route acceptance remains open. New mixed and hire-only routes now win and save the complete coastal opening through San Lorenzo; northern and ending acceptance remain open. A fresh mixed force now also completes saved Yatasto phase 3 under published rules; advanced-system failures and Cuyo/ending acceptance remain open. A fresh Mendoza tactical victory with Beltran dead now ends the campaign explicitly; successful Cuyo preparation and the historical ending remain open. Successful fresh Cuyo preparation and physical commander incorporation now reach saved phase 4; final victory and advanced integration remain open.",
       "local": "Both larger suites fail; economy, opening and elite-contract policies differ.",
       "remaining": "Import one bounded capability at a time, preserve approved policy and carry its tests into main.",
       "acceptance": "One release has the full combined behavior, passing combined suite, legal complete routes and no undocumented policy regressions.",
@@ -2256,7 +2295,8 @@
         "E-CONTRACT-CASUALTY",
         "E-FRESH-COASTAL",
         "E-FRESH-NORTHERN",
-        "E-HISTORICAL-LOSS"
+        "E-HISTORICAL-LOSS",
+        "E-FRESH-CUYO"
       ]
     },
     {
@@ -4044,13 +4084,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "b3dfa12cf81948db95eaabf35e98ad91a2da3a04",
-    "total": 798,
-    "passed": 798,
+    "source": "0ae7f73a30c917d14632d1ed8e81f880da51ef7e",
+    "total": 799,
+    "passed": 799,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-HISTORICAL-LOSS"
+    "evidenceId": "E-FRESH-CUYO"
   }
 }
