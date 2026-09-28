@@ -2,13 +2,14 @@
 // positions. It cannot grant AP, supplies, health, territory or a battle outcome.
 // This is one reproducible strategy, not the game AI or a general balance proof.
 // Reserve AP for fire, use prone fire, treat bleeding and search past cleared
-// remembered positions. The unguarded strategy demonstrates a lost campaign in
-// Mendoza; avoidCivilians filters shots through visible noncombatants.
+// remembered positions. avoidCivilians filters shots through visible residents;
+// holdPosition keeps selected actors at their actual entry cells. They can still
+// fire, reload and bandage, and retain the same risks and costs.
 import {enterSector} from '../game/world.js';
 import {actBattle,endTurn,getReachable,bladeFor,weaponFor,actionCosts,hasFirearm,shotChance,teamCanSee} from '../game/tactical.js';
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),live=u=>u.hp>0&&!u.routed&&!u.unconscious;
 const clearOfCivilians=(b,u,t)=>{const dx=t.x-u.x,dy=t.y-u.y,length=dx*dx+dy*dy;return !b.npcs.some(n=>{if(n.hp<=0||!teamCanSee(b,'player',n))return false;const f=((n.x-u.x)*dx+(n.y-u.y)*dy)/length;return f>0&&f<1&&Math.hypot(n.x-u.x-f*dx,n.y-u.y-f*dy)<.8;});};
-export function fight(request,previous=null,{scoutCostWeight=.1,avoidCivilians=false}={}){let b=enterSector(request,previous),actions=0;const orders=[];let known=[];
+export function fight(request,previous=null,{scoutCostWeight=.1,avoidCivilians=false,holdPosition=[]}={}){let b=enterSector(request,previous),actions=0;const orders=[];let known=[];
 for(let round=0;round<80&&b.status==='active';round++){
  for(const id of b.units.filter(u=>u.side==='player').map(u=>u.id)){
   const visited=new Set();
@@ -29,7 +30,7 @@ for(let round=0;round<80&&b.status==='active';round++){
    if(hasFirearm(u)&&!u.loaded&&u.ammo&&visible.length)opts.push({type:'reload'});
    const goal=visible.length?visible:known.length?known:[{x:b.width-3,y:Math.round(b.height/2)}];
    const currentDistance=Math.min(...goal.map(t=>dist(u,t)));
-   const moves=getReachable(b,u).filter(p=>p.cost>0&&p.cost<=Math.max(0,u.ap-30)&&!visited.has(`${p.x},${p.y}`));
+   const moves=(holdPosition.includes(u.id)?[]:getReachable(b,u)).filter(p=>p.cost>0&&p.cost<=Math.max(0,u.ap-30)&&!visited.has(`${p.x},${p.y}`));
    const scored=moves.map(p=>{const actor={...u,x:p.x,y:p.y},distance=Math.min(...goal.map(t=>dist(p,t))),cover=b.tiles.find(t=>t.x===p.x&&t.y===p.y)?.cover??0,chance=visible.length?Math.max(...visible.map(t=>shotChance(b,actor,t,2))):0;return {p,distance,score:visible.length?chance*.7+cover*.7-Math.max(0,5-distance)*12-p.cost*.2:-distance-p.cost*scoutCostWeight};}).filter(x=>visible.length?x.distance>=3||!hasFirearm(u):x.distance<currentDistance).sort((a,b)=>b.score-a.score);
    const currentScore=visible.length?Math.max(...visible.map(t=>shotChance(b,u,t,2)))*.7+(b.tiles.find(t=>t.x===u.x&&t.y===u.y)?.cover??0)*.7-Math.max(0,5-currentDistance)*12:-currentDistance;
    if(scored[0]&&scored[0].score>currentScore+2)opts.push({type:'move',x:scored[0].p.x,y:scored[0].p.y});
