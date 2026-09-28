@@ -37,7 +37,10 @@ the editor is a release requirement.
 - A new game has no pre-hired historical squad. The player can create one free
   personal character or hire a paid candidate. The formation chapter advances
   with that first person in service, without an extra academy funding charge.
-  A pending hire must arrive first. See [opening acceptance](../verification/retiro-opening.md).
+  A pending hire must arrive first. See [opening acceptance](../verification/retiro-opening.md)
+  and the [verified local-recruit route](../verification/local-recruit-opening.md).
+  The local route requires ordinary paid equipment and finite care; it does not
+  guarantee solo or all-profile victory.
 - A bulletin candidate exists off-map until hired and delivered. A dossier is not
   an NPC encounter. Arrival requires a controlled, suitable reception location;
   an arbitrary river, sea cell or mountain pass is not a reception facility.

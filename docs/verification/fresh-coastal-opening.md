@@ -66,3 +66,8 @@ These are simulation, replay and save checks. They do not establish live-browser
 usability or frame rate. The separate advanced/prototype failures remain recorded
 against those sources. This delivery adds verification; it changes no gameplay
 rules, prices or combat difficulty.
+
+A later [local-recruit opening checkpoint](local-recruit-opening.md) verifies a
+created officer with actual local recruits and no bulletin hires through saved
+San Lorenzo completion and a subsequent sector visit. It preserves actual paid
+care and losses; the earlier scope and figures above remain dated evidence.

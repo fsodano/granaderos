@@ -69,3 +69,8 @@ Starting ownership was not editable at this checkpoint. Later deliveries add
 package retain this opening. The broader rule editor remains separate work.
 No new browser playthrough or loaded-combat performance measurement was done here. Existing route failures in the dated
 formal audit are retained until their own acceptance passes.
+
+A later [local-recruit opening checkpoint](local-recruit-opening.md) verifies a
+created officer with actual local recruits and no bulletin hires through saved
+San Lorenzo completion and a subsequent sector visit. It preserves actual paid
+care and losses; the earlier scope and figures above remain dated evidence.

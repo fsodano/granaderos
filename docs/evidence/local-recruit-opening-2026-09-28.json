@@ -1,0 +1,78 @@
+{
+  "source": "6866d1d78bab58d9abc873eadcb028ad32e0f014",
+  "date": "2026-09-28",
+  "seed": 8,
+  "initialFunds": 3200,
+  "initialTerritory": [
+    "retiro"
+  ],
+  "initialPersonnel": [],
+  "bulletinHires": [],
+  "firstWeaponCost": 230,
+  "care": {
+    "stage": "local-recovery",
+    "hour": 67,
+    "second": 69,
+    "funds": 2648,
+    "squad": [
+      1000,
+      3,
+      4,
+      10
+    ],
+    "hours": 19,
+    "dressingsBought": 18,
+    "dressingCost": 180,
+    "weaponCost": 920,
+    "workshopCost": 27
+  },
+  "opening": {
+    "hour": 79,
+    "second": 101,
+    "funds": 3399
+  },
+  "continuation": {
+    "hour": 80,
+    "funds": 3399,
+    "squad": [
+      3,
+      4
+    ]
+  },
+  "battles": [
+    {
+      "sector": "buenos_aires",
+      "actions": 33,
+      "turns": 5,
+      "deaths": []
+    },
+    {
+      "sector": "san_nicolas",
+      "actions": 32,
+      "turns": 3,
+      "deaths": [
+        1000,
+        10
+      ]
+    },
+    {
+      "sector": "san_lorenzo",
+      "actions": 23,
+      "turns": 2,
+      "deaths": [
+        1000,
+        10
+      ]
+    }
+  ],
+  "survivors": {
+    "3": 96,
+    "4": 41
+  },
+  "temporaryCommanderHealth": 88,
+  "permanentMilitaryDeaths": [
+    1000,
+    10
+  ],
+  "method": "Actual orders and purchases, finite care, tactical replay with active save/load, ordinary scene return. No injected outcome, resources or restored casualties."
+}
