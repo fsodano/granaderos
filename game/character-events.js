@@ -8,7 +8,7 @@ export function characterEventLines(before,after){
  const events=[];
  for(const unit of after.units.filter(u=>u.side==='player')){
   const old=before.units.find(u=>u.id===unit.id);if(!old)continue;
-  const event=old.hp>0&&unit.hp<=0?'death':!old.unconscious&&unit.unconscious?'exhausted':unit.hp<old.hp?'wounded':null;
+  const event=old.hp>0&&unit.hp<=0?'death':unit.hp<old.hp?'wounded':!old.unconscious&&unit.unconscious&&(unit.energy??100)<=0?'exhausted':null;
   if(event)events.push({unit,event});
  }
  const speaker=after.units.find(u=>u.side==='player'&&u.hp>0&&!u.unconscious&&!u.routed);

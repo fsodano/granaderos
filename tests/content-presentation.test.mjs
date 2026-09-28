@@ -47,10 +47,11 @@ test('actual tactical contact, wounds, exhaustion, clearance and death emit auth
  after=withCharacterSpeech(before,endTurn(before));assert.ok(after.units[0].hp<before.units[0].hp);assert.ok(after.log.some(l=>l.includes(lines.wounded)));
  for(let i=0;i<10&&after.units[0].hp>0;i++){before=after;after=withCharacterSpeech(before,endTurn(before));}
  assert.equal(after.units[0].hp,0);assert.equal(after.log.filter(l=>l.includes(lines.death)).length,1);
+ before=field({...op,hp:41},[{id:'guard',x:2,y:1,weapon:1813,overwatch:false}]);after=endTurn(before);assert.ok(after.units[0].hp>0&&after.units[0].hp<15);assert.equal(after.units[0].unconscious,true);assert.ok(characterEventLines(before,after).some(l=>l.includes(lines.wounded)));assert.ok(!characterEventLines(before,after).some(l=>l.includes(lines.exhausted)));
  before=field({...op,energy:1},[],{exploration:true});after=actBattle(before,{type:'move',unitId:String(id),x:2,y:1});assert.equal(after.lastError,null);assert.ok(after.units[0].unconscious);assert.ok(characterEventLines(before,after).some(l=>l.includes(lines.exhausted)));
- before=field(op,[{id:'guard',x:4,y:1,hp:1,weapon:1800,overwatch:false}]);after=actBattle(before,{type:'fire',unitId:String(id),targetId:'guard'});assert.equal(after.lastError,null);assert.equal(after.sectorCleared,true);assert.ok(characterEventLines(before,after).some(l=>l.includes(lines.cleared)));
+ before=field(op,[{id:'guard',x:4,y:1,hp:20,weapon:1800,overwatch:false}]);after=actBattle(before,{type:'fire',unitId:String(id),targetId:'guard'});assert.equal(after.lastError,null);assert.equal(after.sectorCleared,true);assert.ok(characterEventLines(before,after).some(l=>l.includes(lines.cleared)));
  const silent={...op,storyProfile:{...op.storyProfile,speech:Object.fromEntries(SPEECH_EVENTS.map(event=>[event,'  ']))}};
- before=field(silent,[{id:'guard',x:4,y:1,hp:1,overwatch:false}]);after=actBattle(before,{type:'fire',unitId:String(id),targetId:'guard'});assert.equal(after.sectorCleared,true);assert.deepEqual(characterEventLines(before,after),[]);assert.deepEqual(withCharacterSpeech(before,after).log,after.log);
+ before=field(silent,[{id:'guard',x:4,y:1,hp:20,overwatch:false}]);after=actBattle(before,{type:'fire',unitId:String(id),targetId:'guard'});assert.equal(after.sectorCleared,true);assert.deepEqual(characterEventLines(before,after),[]);assert.deepEqual(withCharacterSpeech(before,after).log,after.log);
 });
 
 test('authored endings and silent arrival lines respect real campaign transitions without repetition',()=>{

@@ -16,7 +16,7 @@ test('mounted field controls apply partial care by mouse and keyboard without gr
  function Screen(){const [s,set]=useState(current);current=s;return h(Battlefield,{battle:s,onChange:set,onFinish(){},onRetreat(){}});}
  t.after(async()=>{await act(async()=>root.unmount());dom.window.close();for(const [key,descriptor]of old)if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];});
  await act(async()=>root.render(h(Screen)));const doc=dom.window.document;
- assert.equal(current.units[1].unconscious,true);assert.equal(current.units[1].ap,0);assert.ok(doc.querySelectorAll('.squad-card:disabled').length>0);
+ assert.equal(current.units[1].unconscious,true);assert.equal(current.units[1].ap,0);assert.ok(doc.querySelectorAll('.ja2-portrait-cell:disabled').length>0);
  const click=async e=>{assert.ok(e);await act(async()=>e.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));};
  await click(doc.querySelector('button[aria-label="Vendar"]'));await click(doc.querySelector('[data-unit-id="patient"]'));
  assert.equal(current.lastError,null);assert.equal(current.units[1].hp,9);assert.equal(current.units[1].unconscious,true);assert.equal(current.units[1].ap,0);assert.equal(current.units[0].medkits,1);assert.equal(current.units[0].ap,75);assert.match(doc.body.textContent,/el tratamiento debe continuar/);assert.ok(validateBattleSnapshot(current));

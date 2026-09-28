@@ -1,3 +1,4 @@
+import {refreshMilitaryCondition} from '../game/actor-condition.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
@@ -42,7 +43,7 @@ test('character conditions distinguish presence, service and accepted deployed h
  assert.equal(dialogueConditionsMet(p.campaign,c('present'),p.battle),true);assert.equal(dialogueConditionsMet(p.campaign,c('serving'),p.battle),false);
  p=hireLocal(p);assert.equal(dialogueConditionsMet(p.campaign,c('present'),p.battle),false);assert.equal(dialogueConditionsMet(p.campaign,c('serving'),p.battle),true);
  // A prepared active casualty precedes settlement of its service record.
- p.battle.units.find(u=>u.id===String(id)).hp=0;p=saved(p);assert.equal(p.campaign.operativeState[id].alive,true);assert.equal(dialogueConditionsMet(p.campaign,c('dead'),p.battle),true);assert.equal(dialogueConditionsMet(p.campaign,c('alive'),p.battle),false);assert.equal(dialogueConditionsMet(p.campaign,c('serving'),p.battle),false);
+ const casualty=p.battle.units.find(u=>u.id===String(id));casualty.hp=0;refreshMilitaryCondition(casualty);p=saved(p);assert.equal(p.campaign.operativeState[id].alive,true);assert.equal(dialogueConditionsMet(p.campaign,c('dead'),p.battle),true);assert.equal(dialogueConditionsMet(p.campaign,c('alive'),p.battle),false);assert.equal(dialogueConditionsMet(p.campaign,c('serving'),p.battle),false);
  assert.equal(dialogueForNPC(p.campaign,npc,p.battle).node,'start');
 });
 

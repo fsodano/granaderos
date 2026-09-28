@@ -13,7 +13,7 @@ import {mountCampaign} from './mounted-campaign-fixture.mjs';
 function wonMission(){
  let s=order(secureArea(initialCampaign(8,defaultContentPackage()),'buenos_aires','san_nicolas'),{type:'createOfficer',name:'Isabel',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
  s=order(s,{type:'travel',sector:'san_nicolas'});s=order(s,{type:'attack',sector:'san_lorenzo'});
- let b=createBattle([...s.pendingBattle.squad.map(u=>({...u,x:2,y:3})),...s.pendingBattle.missionAllies.map(u=>({...u,x:3,y:3,hp:45}))],{id:s.pendingBattle.id,sector:'san_lorenzo',npcs:s.pendingBattle.npcs,hour:s.hour,width:12,height:10,enemies:[{id:'last-royalist',name:'Último realista',x:4,y:3,hp:10,maxHp:60,weapon:1800}],tiles:Array.from({length:120},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0}))});
+ let b=createBattle([...s.pendingBattle.squad.map(u=>({...u,x:2,y:3})),...s.pendingBattle.missionAllies.map(u=>({...u,x:3,y:3,hp:45}))],{id:s.pendingBattle.id,sector:'san_lorenzo',npcs:s.pendingBattle.npcs,hour:s.hour,width:12,height:10,enemies:[{id:'last-royalist',name:'Último realista',x:4,y:3,hp:20,maxHp:60,weapon:1800}],tiles:Array.from({length:120},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0}))});
  b=actBattle(b,{type:'melee',unitId:'57',targetId:'last-royalist'});assert.equal(b.status,'victory');return saved(sync({campaign:s,battle:b}));
 }
 const apply=(p,a)=>{const b=actBattle(p.battle,a);assert.equal(b.lastError,null,b.lastError);return saved(sync({campaign:p.campaign,battle:b}));};

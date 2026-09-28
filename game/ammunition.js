@@ -6,7 +6,7 @@ export function returnAmmunition(request,reports,snapshot,previous=null){
   const enemies=request.exploration?[]:previous&&!previous.sectorCleared?previous.units.filter(u=>u.side==='enemy'):request.enemies??[];
   const bodies=retainedMilitaryBodies(previous,[...(request.squad??[]),...(request.garrison??[]),...(request.missionAllies??[]),...enemies],request.sector),counted=new Set();
   const count=(current,ammo,loaded)=>{if(!current||counted.has(current.id))return;counted.add(current.id);if(current.hp<=0||current.unconscious||current.routed)looted+=Math.max(0,ammo+loaded-(current.ammo??0)-(current.loaded??0));};
-  for(const body of bodies)count(snapshot.units.find(u=>u.id===body.id&&u.hp===0),body.ammo??0,body.loaded??0);
+  for(const body of bodies)count(snapshot.units.find(u=>u.id===body.id&&(u.hp===0||u.unconscious)),body.ammo??0,body.loaded??0);
   for(const source of [...(request.garrison??[]),...(request.garrisonLootSources??[]),...(request.missionAllies??[])])count(snapshot.units.find(u=>(u.militia||u.missionAlly)&&String(u.id)===String(source.id)),source.ammo??0,source.loaded??0);
   for(const source of request.ammunitionSources??request.enemies??[])count(snapshot.units.find(u=>u.side==='enemy'&&String(u.id)===String(source.id)),source.ammo??12,source.loaded??weaponSpecification(source)?.capacity??0);
  }

@@ -2,6 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {createBattle,actBattle,endTurn,maxActionPoints} from '../game/tactical.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {completedTacticalVictory} from '../game/battle-outcome.js';
+import {returnAmmunition} from '../game/ammunition.js';
 import {enterSector} from '../game/world.js';
 import {defaultContentPackage} from '../game/content-package.js';
 import {initialCampaign} from '../game/campaign.js';
@@ -29,11 +30,12 @@ test('only critical health ends the last fighting force, while exhaustion can re
 
 test('actual damage leaves an incapacitated enemy whose body, wounds and finite equipment persist after victory and new occupation',()=>{
  // A compact prepared encounter isolates casualty persistence, not a fresh route.
- const request={id:'critical-encounter',sector:'retiro',hour:12,exploration:false,squad:[{id:110,name:'Soldado',x:1,y:1,weapon:1813}],enemies:[{id:'enemy-0',name:'Herido realista',x:2,y:1,hp:41,maxHp:100,weapon:1800,ammo:3,loaded:1,overwatch:false}]};
+ const request={id:'critical-encounter',sector:'retiro',hour:12,exploration:false,issuedCartridges:0,squad:[{id:110,name:'Soldado',x:1,y:1,weapon:1813,ammo:0,loaded:0}],enemies:[{id:'enemy-0',name:'Herido realista',x:2,y:1,hp:41,maxHp:100,weapon:1800,ammo:3,loaded:1,overwatch:false}]};
  let b=createBattle(request.squad,{...request,width:20,height:16});b=actBattle(b,{type:'melee',unitId:'110',targetId:'enemy-0'});assert.equal(b.lastError,null);assert.equal(b.status,'victory');const casualty=b.units.find(u=>u.id==='enemy-0');assert.equal(casualty.hp,9);assert.equal(casualty.unconscious,true);assert.equal(casualty.ap,0);assert.equal(casualty.ammo,3);assert.equal(completedTacticalVictory(b),true);
  b=validateBattleSnapshot(actBattle(b,{type:'explore'}));assert.equal(b.mode,'exploration');assert.equal(b.status,'active');assert.equal(b.units.find(u=>u.id==='enemy-0').hp,9);
  const visitRequest={...request,exploration:true,enemies:[],compactLayout:true};let entered=enterSector(visitRequest,b);const savedEnemy=entered.units.find(u=>u.id==='enemy-0');assert.equal(savedEnemy.hp,9);assert.equal(savedEnemy.ammo,3);assert.equal(savedEnemy.unconscious,true);assert.ok(validateBattleSnapshot(entered));
  const occupied=enterSector({...request,id:'new-garrison',enemies:[{...request.enemies[0],hp:100}]},entered);assert.equal(occupied.units.find(u=>u.id==='enemy-0').hp,100);const old=occupied.units.find(u=>u.originalUnitId==='enemy-0');assert.ok(old);assert.equal(old.hp,9);assert.equal(old.ammo,3);assert.equal(old.unconscious,true);assert.ok(validateBattleSnapshot(occupied));
+ const looted=actBattle(occupied,{type:'loot',unitId:'110',targetId:old.id,item:'ammo'});assert.equal(looted.lastError,null);assert.equal(looted.units.find(u=>u.id===old.id).ammo,0);assert.equal(looted.units.find(u=>u.id==='110').ammo,3);assert.equal(returnAmmunition({...request,id:'new-garrison'},looted.units.filter(u=>u.side==='player'),looted,entered),3);assert.ok(actBattle(looted,{type:'loot',unitId:'110',targetId:old.id,item:'ammo'}).lastError);assert.ok(validateBattleSnapshot(looted));
 });
 
 test('old snapshots migrate critical incapacity without healing, and current snapshots reject inconsistent consciousness and action budgets',()=>{
