@@ -66,6 +66,13 @@ test('registered orders retain standalone combat and unregister when the game un
  await m.unmount();assert.ok(m.registrations.every(r=>r.signal.aborted));
 });
 
+test('a delayed UI turn cannot overwrite a newer accepted tool order',async t=>{
+ const m=await mount(t,fixture()),before=structuredClone(pair(m.read()));const unitId=before.battle.units.find(u=>u.side==='player').id;
+ const action={type:'movement',unitId,movement:'crouch'},want=expected(before,action);
+ await act(async()=>{m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'d',bubbles:true}));m.issue(action);await new Promise(resolve=>setTimeout(resolve,500));});
+ assert.deepEqual(pair(m.read()),want);assert.deepEqual(m.saved(),want);assert.match(m.document.querySelector('[role="status"]').textContent,/combate cambió/);
+});
+
 async function mount(t,saved){
  const console=new VirtualConsole();console.on('jsdomError',error=>{throw error;});
  const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:'https://granaderos.test/?content=1',pretendToBeVisual:true,virtualConsole:console});dom.window.scrollTo=()=>{};
