@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-27",
-  "baseline": "d5d2ca1ebc0a709acb36cc177e013c2c1ef3010e",
+  "baseline": "cee87d8f96bc55fc0076e3cc7194804297a5961e",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -56,7 +56,13 @@
     {
       "id": "E-CIVILIAN-STATE",
       "path": "docs/verification/civilian-state.md",
-      "description": "Existing residents retain injuries and death across tactical actions, active saves, exact-cell relocation, recruitment and dismissal. Finite medical supplies, paid replenishment, mission identity and local consequences are covered. New NPC identities, inventory, custody and successors remain open."
+      "description": "Existing residents retain injuries and death across tactical actions, active saves, exact-cell relocation, recruitment and dismissal. Finite medical supplies, paid replenishment, mission identity and local consequences are covered. New NPC identities, inventory, custody and successors remain open.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36363917668/job/108746414452"
+    },
+    {
+      "id": "E-AUTHORED-RESIDENTS",
+      "path": "docs/verification/authored-residents.md",
+      "description": "New world residents are created in the editor and encountered in the real campaign, with local recruitment policy, greetings, placement, wounds, death, progression, dismissal and saved identity. Inventory, custody, paid local contracts and successors remain open."
     }
   ],
   "queue": [
@@ -75,10 +81,9 @@
     {
       "order": 2,
       "ids": [
-        "STORY-01",
         "STORY-02"
       ],
-      "action": "Extend the connected location and health identity into new authored world NPCs, belongings, custody and death successors as separate deliveries."
+      "action": "Extend connected world identities and health into belongings, custody and death successors, with explicit role/stock transfer, as separate deliveries."
     },
     {
       "order": 3,
@@ -105,6 +110,30 @@
     }
   ],
   "requirements": [
+    {
+      "id": "RESIDENT-01",
+      "group": "Published deliveries",
+      "requirement": "Create independent world residents with authored encounters and persistent identity",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Create, copy, remove and launch new residents with exact-cell placement, authored greeting, portrait and recruitment requirements; local unpaid permanent recruitment, wounds, death, progression and dismissal survive saves.",
+      "local": "Uses the connected presence and civilian ledger, without importing advanced custody or inventories.",
+      "remaining": "",
+      "acceptance": "Create through the actual editor, choose cells, copy and undo; meet, wound, aid, relocate, recruit or refuse recruitment, save, die and dismiss without duplicated identities. No inherited historical powers or bulletin admission.",
+      "evidence": [
+        "E-AUTHORED-RESIDENTS"
+      ],
+      "parents": [
+        "STORY-01",
+        "STORY-02"
+      ],
+      "testFiles": [
+        "tests/authored-residents.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/civilian-interaction.test.mjs",
+        "tests/campaign-presence.test.mjs"
+      ]
+    },
     {
       "id": "CIVILIAN-01",
       "group": "Published deliveries",
@@ -1161,14 +1190,22 @@
       "id": "STORY-01",
       "group": "Story and integration",
       "requirement": "Fixed, initial-random and daily world presence",
-      "status": "PARTIAL",
+      "status": "VERIFIED",
       "priority": "P1",
-      "published": "Existing encounter identities use authored fixed, once-random and daily placements in real campaign scenes.",
+      "published": "Existing and newly authored world residents use fixed, initial-random and daily exact-cell placements in real campaign scenes; health, death, recruitment and saved presence remain one identity.",
       "local": "The prepared presence implementation is incorporated by this delivery; its earlier audit snapshot remains unchanged.",
-      "remaining": "Extend the same system to new encounter identities and their persistent civilian state through STORY-02.",
+      "remaining": "",
       "acceptance": "No clones, rerolls, recruited/dead appearances or loaded-scene relocation; observe then recruit at the configured current cell.",
       "evidence": [
-        "E-WORLD-PRESENCE"
+        "E-WORLD-PRESENCE",
+        "E-CIVILIAN-STATE",
+        "E-AUTHORED-RESIDENTS"
+      ],
+      "testFiles": [
+        "tests/campaign-presence.test.mjs",
+        "tests/civilian-state.test.mjs",
+        "tests/authored-residents.test.mjs",
+        "tests/story-editor.test.mjs"
       ]
     },
     {
@@ -1177,13 +1214,14 @@
       "requirement": "New world identities, persistent residents and death successors",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Existing historical and local residents retain wounds and death across real tactical actions, daily placement, recruitment, dismissal and saves. Paid candidates remain off-map.",
-      "local": "Prototype has preview transition helpers; full campaign identity/health/succession still absent.",
-      "remaining": "Connect new authored world identities, editable belongings, NPC looting, custody, successors and explicit role/stock transfer. Strategic civilian care and unloaded-sector bleeding remain separate work.",
+      "published": "Existing and new authored world residents retain health and death across tactical actions, daily placement, local recruitment, progression, dismissal and saves. Paid bulletin candidates remain off-map.",
+      "local": "The older prototype transition helpers remain a separate snapshot. Published world identity and health are connected; succession remains gated.",
+      "remaining": "Connect editable belongings, NPC looting, custody, paid local contracts, successors and explicit role/stock transfer. Strategic civilian care and unloaded-sector bleeding remain separate work.",
       "acceptance": "Move an injured NPC, reload, recruit it, confirm death and activate one distinct successor without healing or duplicating goods.",
       "evidence": [
         "E-CONFLICTS",
-        "E-CIVILIAN-STATE"
+        "E-CIVILIAN-STATE",
+        "E-AUTHORED-RESIDENTS"
       ]
     },
     {
@@ -3044,13 +3082,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "d5d2ca1ebc0a709acb36cc177e013c2c1ef3010e",
-    "total": 582,
-    "passed": 582,
+    "source": "cee87d8f96bc55fc0076e3cc7194804297a5961e",
+    "total": 590,
+    "passed": 590,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-CIVILIAN-STATE"
+    "evidenceId": "E-AUTHORED-RESIDENTS"
   }
 }
