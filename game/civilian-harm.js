@@ -15,6 +15,7 @@ export function validateCivilianWounds(npc,state){
  validateCivilianHealth(npc);
  const hp=npc.hp??civilianMaxHp(npc),bleeding=npc.bleeding??0;
  need(health(hp),'La salud civil no es válida.');
+ if(npc.civilianWoundSeconds!==undefined)need(Number.isInteger(npc.civilianWoundSeconds)&&npc.civilianWoundSeconds>=0&&npc.civilianWoundSeconds<6&&bleeding>0,'El reloj de la hemorragia civil no es válido.');
  if(npc.civilianWoundVersion!==undefined)need(npc.civilianWoundVersion===1,'La versión de las heridas civiles no es válida.');
  if(['bleeding','bandaged','bleedSource'].some(key=>npc[key]!==undefined))need(npc.civilianWoundVersion===1,'Falta la versión de las heridas civiles.');
  if(npc.civilianWoundVersion===1&&hp===0)need(civilianIncidents(npc).some(event=>event.kind==='death'),'Falta el registro de la muerte del habitante.');
@@ -38,7 +39,7 @@ export function validateCivilianWounds(npc,state){
 function refreshCivilianCondition(npc){
  npc.unconscious=isUnconscious(npc);
  if(npc.hp===0||npc.unconscious||npc.knockedDown){npc.stance='prone';npc.movementMode='prone';npc.mounted=false;}
- if(npc.hp===0){npc.bleeding=0;delete npc.bleedSource;}
+ if(npc.hp===0){npc.bleeding=0;delete npc.bleedSource;delete npc.civilianWoundSeconds;}
 }
 function recordIncident(npc,incidents,before,origin){
  const kind=npc.hp===0?'death':origin.side==='player'&&!origin.militia&&!incidents.some(event=>event.kind==='wounded')?'wounded':null;
@@ -53,8 +54,21 @@ export function advanceCivilianBleeding(state,npc,ticks){
  validateCivilianWounds(npc,state);
  const incidents=civilianIncidents(npc),before=npc.hp??100,origin=npc.bleedSource??unknownOrigin();
  npc.hp=Math.max(0,before-npc.bleeding*ticks);
- if(npc.hp===0)recordIncident(npc,incidents,before,origin);
+ if(npc.hp===0)recordIncident(npc,incidents,before-(Math.ceil(before/npc.bleeding)-1)*npc.bleeding,origin);
  refreshCivilianCondition(npc);
+ return npc;
+}
+
+// A resident carries the unfinished six-second interval across sector exits.
+// Older wounded snapshots start at zero; there is no retroactive damage.
+export function advanceCivilianWoundTime(state,npc,seconds){
+ need(Number.isSafeInteger(seconds)&&seconds>=0,'El tiempo de la hemorragia civil no es válido.');
+ if(!npc||npc.hp<=0||!npc.bleeding||npc.departure||npc.fled||!seconds)return npc;
+ const elapsed=(npc.civilianWoundSeconds??0)+seconds,ticks=Math.floor(elapsed/6);
+ // Validate the saved remainder before replacing it with the next interval.
+ validateCivilianWounds(npc,state);
+ if(ticks)advanceCivilianBleeding(state,npc,ticks);
+ if(npc.hp>0)npc.civilianWoundSeconds=elapsed%6;
  return npc;
 }
 

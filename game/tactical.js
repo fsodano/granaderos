@@ -6,7 +6,7 @@ import {civilianSupplyLoot} from './civilian-supplies.js';
 import {CHARACTER_SUPPLY_LABELS} from './character-supplies.js';
 import {isUnconscious,fieldCapable,refreshMilitaryCondition} from './actor-condition.js';
 import {seedCivilianHealth,isCivilianUnconscious,civilianRestoredHp} from './civilian-health.js';
-import {applyCivilianHarm,advanceCivilianBleeding} from './civilian-harm.js';
+import {applyCivilianHarm,advanceCivilianWoundTime} from './civilian-harm.js';
 import {hasCharacterAbility} from './character-abilities.js';
 import {weaponSpecification,contentWeaponOf,weaponRecord,setWeaponDefinition,validateWeaponCarrier} from './weapon-definition.js';
 import {WEAPONS} from './firearm-definitions.js';
@@ -93,7 +93,8 @@ function advanceExploration(s,seconds){
   const step=Math.min(6,remaining);remaining-=step;advanceBattleClock(s,step);
   s.actionTimeAppliedSeconds=(s.actionTimeAppliedSeconds??0)+step;
   s.explorationWoundSeconds=(s.explorationWoundSeconds??0)+step;
-  while(s.explorationWoundSeconds>=6){s.explorationWoundSeconds-=6;for(const u of s.units.filter(present))if(u.bleeding){u.hp=Math.max(0,u.hp-u.bleeding);refreshMilitaryCondition(u);}for(const n of s.npcs??[])advanceCivilianBleeding(s,n,1);}
+  while(s.explorationWoundSeconds>=6){s.explorationWoundSeconds-=6;for(const u of s.units.filter(present))if(u.bleeding){u.hp=Math.max(0,u.hp-u.bleeding);refreshMilitaryCondition(u);}}
+  for(const n of s.npcs??[])advanceCivilianWoundTime(s,n,step);
   checkEnd(s);if(s.status!=='active'||detectContact(s))break;
   advanceCivilianTime(s,step,()=>{
    for(const u of s.units.filter(u=>u.side==='enemy'&&alive(u))){
@@ -226,7 +227,7 @@ else if(a.type==='heal'){
  const t=target||u,isCivilian=civilian(s,t);if(t.hp<=0||(!isCivilian&&t.side!==u.side)||dist(u,t)>1.5)return fail('El herido debe estar a tu lado.');
  const plan=firstAidPlan(u,t,{baseCost:actionCosts(s,u).heal,budgetAP:s.mode==='exploration'?Infinity:u.ap,targetKind:isCivilian?'npc':'unit'});if(!plan.valid)return fail(plan.reason);if(!pay(plan.paCost))return fail(`Vendar requiere ${plan.paCost} PA.`);
  const before=t.hp;u.medkits-=plan.dressingsUsed;practice(u,'medical',3);t.hp=plan.hpAfter;t.bleeding=plan.bleedingAfter;t.bandaged=plan.bandagedAfter;
- if(isCivilian){if(!t.bleeding)delete t.bleedSource;t.civilianWoundVersion=1;if(t.hp>before)t.civilianFirstAid={version:1,hpRestored:civilianRestoredHp(t)+t.hp-before};t.unconscious=isCivilianUnconscious(t);}
+ if(isCivilian){if(!t.bleeding){delete t.bleedSource;delete t.civilianWoundSeconds;}t.civilianWoundVersion=1;if(t.hp>before)t.civilianFirstAid={version:1,hpRestored:civilianRestoredHp(t)+t.hp-before};t.unconscious=isCivilianUnconscious(t);}
  say(s,plan.partial?`${u.name} estabiliza a ${t.name}; el tratamiento debe continuar.`:`${u.name} venda a ${t.name}. La recuperación de salud continúa en campaña.`);
  // Speak only for this accepted, paid stroke, before any later ambient recovery.
  // Current HP/energy, rather than an older military flag, decides consciousness.
@@ -283,6 +284,6 @@ for(const u of s.units.filter(u=>u.side==='enemy'&&alive(u))){u.maxAP=maxActionP
 }
 function finishCombatRound(s){
  if(s.npcs?.length)say(s,`Turno ${s.turn}: actúan los civiles.`);
- for(const n of s.npcs??[])advanceCivilianBleeding(s,n,1);
+ for(const n of s.npcs??[])advanceCivilianWoundTime(s,n,6);
  runCivilianPhase(s);
 s.smoke=s.smoke.map(v=>({...v,radius:Math.min((v.radius||1)+.5,3),turns:v.turns-1})).filter(v=>v.turns>0);for(const u of s.units.filter(present)){u.energy=Math.min(100,(u.energy??100)+10);refreshMilitaryCondition(u);if(u.bleeding){u.hp=Math.max(0,u.hp-u.bleeding);say(s,`${u.name} pierde ${u.bleeding} de salud por hemorragia.`);}refreshMilitaryCondition(u);if(u.side==='player'){u.maxAP=maxActionPoints(s,u);u.ap=Math.max(0,u.maxAP-u.reactionSpent);u.reactionSpent=0;}u.momentum=0;u.lastDirection=null;}s.turn++;s.phase='player';s.roundTimeCharged=false;checkEnd(s);if(s.status==='active')say(s,`Turno ${s.turn}: ¡órdenes, comandante!`);s.lastError=null;return s;}
