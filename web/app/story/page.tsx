@@ -270,7 +270,7 @@ export default function ContentEditor() {
 
     if (
       collection === 'characters' &&
-      (storyReferences(draft.campaignStory,'character',item.id)||(draft.quests??[]).some((q:any)=>q.requiredAlive?.includes(item.id))||draft.placements.some((p:any)=>p.afterDeath===item.id)||draft.characters.some((owner:any)=>owner.id!==item.id&&owner.encounter?.dialogue?.nodes.some((n:any)=>n.choices.some((choice:any)=>choice.conditions?.some((c:any)=>['character','meeting'].includes(c.type)&&c.character===item.id)||choice.effects?.some((e:any)=>e.type==='movement'&&e.character===item.id)))))
+      (storyReferences(draft.campaignStory,'character',item.id)||(draft.quests??[]).some((q:any)=>q.requiredAlive?.includes(item.id))||draft.placements.some((p:any)=>p.afterDeath===item.id)||draft.characters.some((owner:any)=>owner.id!==item.id&&owner.encounter?.dialogue?.nodes.some((n:any)=>n.choices.some((choice:any)=>choice.conditions?.some((c:any)=>['character','meeting','supply'].includes(c.type)&&c.character===item.id)||choice.effects?.some((e:any)=>e.type==='movement'&&e.character===item.id)))))
     ) {
       setNotice(
         'Quitá primero las apariciones y condiciones, los movimientos y los encargos que usan este personaje.',
