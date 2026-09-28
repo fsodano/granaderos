@@ -62,11 +62,17 @@ documentation audit (191 requirements, all 50 original and 87 parity rows,
 30 evidence records); 107 changed local links. Exact-head GitHub checks are
 required before merge.
 
+Accepted in [PR #53](https://github.com/fsodano/granaderos/pull/53) at
+`5f8c892a3ccb8b0d091ec4799510dc7bff19d2b4`, with
+[successful exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36385619850/job/108810257020).
+Merged into `main` as `1a5352be5ca9982e9a985bd6e7ff214c02733353`.
+
 ## Limits
 
 CHAPTERS-01 is bounded. These short routes establish the chapter contract, not a
-second full independent campaign. Historical identities still cannot be removed;
-recruitment and economic roles, factions, calendar incursions, contacts and map
+second full independent campaign. At this checkpoint historical identities could
+not be removed; the subsequent [cast delivery](campaign-cast.md) permits removal
+and independent profile copies. Recruitment and economic roles, factions, calendar incursions, contacts and map
 composition retain existing behavior. Branching chapter graphs, authored tactical
 missions/markers, automatic scene effects and complete campaign balance remain
 open. Conditions on movement arrival must resolve a quest through dialogue first.

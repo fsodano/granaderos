@@ -93,6 +93,23 @@ calendar raids and world geography still need separate composition. This does no
 establish an independent second full campaign or change the original design's
 historical acceptance requirements.
 
+## Authored campaign cast
+
+Authored progression may remove any historical character, subject to content
+references. Removed characters have no fallback encounter, contact or service
+record in a new campaign. Original progression still requires its essential cast.
+Authors may copy a historical profile into an independent resident, retaining the
+editable sheet, presentation, equipment, abilities and placement but no implicit
+strategic role. The copy starts with permanent local service, experience growth
+and no historical recruitment gate. Empty casts support the normal free player
+creation path. New editor identities never reuse reserved original slots.
+
+Generic original map residents can be included or excluded independently; older
+packages retain them. Saves pin this choice and the cast. Historical foundry UI
+is absent if its engineer is absent. Replacing the cast does not reassign campaign
+functions or compose factions, opposition commanders, diplomacy and world events.
+Those remain separate work from selecting who can appear in a new campaign.
+
 ## Player flow
 
 The title offers a new campaign, continuation, import/export, help and editor
