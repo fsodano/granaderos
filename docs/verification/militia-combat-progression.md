@@ -64,5 +64,10 @@ orders, redistribute soldiers between cities, implement custody or prove the
 advanced defense and prisoner routes. The accepted combat sequence uses real
 reaction fire after an overwatch order; it does not establish full militia AI.
 
-Exact-head GitHub CI must pass before merge. The broader integration and complete
-campaign acceptance requirements remain open.
+[Exact-head GitHub CI](https://github.com/fsodano/granaderos/actions/runs/36468396494/job/109084156807)
+passed at `86fb6c9e2494eba4ff9581505dae66bb55066b34`.
+[PR #92](https://github.com/fsodano/granaderos/pull/92) merged on
+2026-09-28 at 19:11:33 UTC as `8dc41470317b8fdee5a4a9a5e8a47e40a512e97e`.
+A later [authored-rule review](authored-militia-progression.md) reproduces and
+corrects the large-encounter receipt limit; its publication is tracked separately.
+The broader integration and complete campaign acceptance requirements remain open.

@@ -2,8 +2,8 @@ import assert from 'node:assert/strict';
 import {woundedGarrison,MILITIA_DOCTOR as D} from './militia-care-fixture.mjs';
 import {order,saved,sync,leave} from './local-contract-fixture.mjs';
 import {createBattle,actBattle,endTurn} from '../game/tactical.js';
-export function combatMilitia(){
- const configure=d=>{d.weapons.push({...structuredClone(d.weapons.find(w=>w.id==='firearm-1805')),id:'militia-test-pistol',name:'Pistola de instrucción',damage:100,capacity:3,fireAP:8,range:24});d.militiaEquipment.green='militia-test-pistol';};
+export function combatMilitia(customize=()=>{}){
+ const configure=d=>{d.weapons.push({...structuredClone(d.weapons.find(w=>w.id==='firearm-1805')),id:'militia-test-pistol',name:'Pistola de instrucción',damage:100,capacity:3,fireAP:8,range:24});d.militiaEquipment.green='militia-test-pistol';customize(d);};
  let {campaign:s,patientId:id}=woundedGarrison({configure});s=order(s,{type:'assignCare',id:D,assignment:'militia_doctor'});s=order(s,{type:'wait',hours:2});s=order(s,{type:'purchaseMedicalSupplies',id:D,quantity:4});s=order(s,{type:'wait',hours:4});s=order(s,{type:'assignCare',id:D,assignment:'active'});assert.equal(s.garrisons.retiro.find(u=>u.id===id).hp,43);if(s.hour%24<6)s=order(s,{type:'wait',hours:6-s.hour%24});return {s:saved({campaign:s}).campaign,id};
 }
 export function militiaReaction(s,id){

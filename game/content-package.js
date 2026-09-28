@@ -1,3 +1,4 @@
+import {validateMilitiaProgression} from './militia-progression-rules.js';
 import {validateCareRules} from './campaign-care-rules.js';
 import {validateFoundry} from './campaign-foundry.js';
 import {validStartingSupplies} from './character-supplies.js';
@@ -126,7 +127,7 @@ export function validateContentPackage(value) {
   check(value.includeOriginalResidents===undefined||typeof value.includeOriginalResidents==='boolean', "Habitantes originales", "elegí si se incluyen los habitantes genéricos del mapa.");
   try{validateCampaignStory(value.campaignStory,new Set((Array.isArray(value.characters)?value.characters:[]).map(c=>c?.id)),new Set((Array.isArray(value.quests)?value.quests:[]).map(q=>q?.id)));}catch(error){errors.push(error.message);}
   try{validateContentQuests(value.quests,new Set((Array.isArray(value.characters)?value.characters:[]).map(c=>c?.id)));}catch(error){errors.push(error.message);}
-  errors.push(...validateCareRules(value.careRules),...validateFoundry(value.foundry),...validateCampaignRoles(value.campaignRoles,Array.isArray(value.characters)?value.characters:[]),...validateImportRules(value.imports),...validateCampaignRules(value.rules),...validateHeadquarters(value.headquarters),...validateStartingTerritory(value.startingTerritory,value.headquarters));
+  errors.push(...validateMilitiaProgression(value.militiaProgression),...validateCareRules(value.careRules),...validateFoundry(value.foundry),...validateCampaignRoles(value.campaignRoles,Array.isArray(value.characters)?value.characters:[]),...validateImportRules(value.imports),...validateCampaignRules(value.rules),...validateHeadquarters(value.headquarters),...validateStartingTerritory(value.startingTerritory,value.headquarters));
   if (value.arrivalSites !== undefined) errors.push(...validateArrivalSites(value.arrivalSites));
   for (const key of ["characters", "weapons", "placements"])
     check(

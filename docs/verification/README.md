@@ -21,6 +21,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Individual militia promotion courses](militia-training-identities.md)
 - [Militia wounds outside the loaded sector](unloaded-militia-wounds.md)
 - [Combat-earned militia promotion](militia-combat-progression.md)
+- [Authored militia promotion rules](authored-militia-progression.md)
 - [Finite civilian supplies](civilian-finite-supplies.md)
 - [Authored resident verification](authored-residents.md)
 - [Death successor verification](death-successors.md)
