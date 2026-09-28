@@ -1,7 +1,7 @@
 {
   "schema": 1,
-  "updated": "2026-09-27",
-  "baseline": "9c9e57221af4d725c454ff27b6766cead3f99899",
+  "updated": "2026-09-28",
+  "baseline": "012a7bb0bf13431b396ddf749f6e9b94d95e6698",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -104,7 +104,13 @@
     {
       "id": "E-AUTHORED-QUESTS",
       "path": "docs/verification/authored-quests.md",
-      "description": "Editor-authored quests start and resolve through actual resident dialogue. Ordered saved transitions, quest conditions, atomic treasury effects, alternate failure, multiple participants and the mounted campaign journal pass. Does not establish item objectives, historical quest overrides, automatic failures or a complete campaign."
+      "description": "Editor-authored quests start and resolve through actual resident dialogue. Ordered saved transitions, quest conditions, atomic treasury effects, alternate failure, multiple participants and the mounted campaign journal pass. Does not establish item objectives, historical quest overrides, automatic failures or a complete campaign.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36371571238/job/108768867498"
+    },
+    {
+      "id": "E-QUEST-DEADLINES",
+      "path": "docs/verification/quest-deadlines.md",
+      "description": "Optional quest deadlines use acceptance seconds and expire once during actual tactical rest, strategic wait or cell travel. Mounted editor/game controls show the limit, remaining time and saved failure. Invalid/missing expiry evidence is rejected. Does not establish automatic death/escort/item failures or a full campaign."
     }
   ],
   "queue": [
@@ -153,6 +159,28 @@
   ],
   "requirements": [
     {
+      "id": "DEADLINE-01",
+      "group": "Published deliveries",
+      "requirement": "Author precise quest deadlines with automatic persistent failure",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "An optional 1\u2013720 hour limit starts at actual quest acceptance. Tactical and strategic time expire it once, with ordered evidence and visible remaining time. Completed quests retain their result and unstarted quests do not tick.",
+      "local": "Uses published campaign time and quest events. No wall-clock timer or advanced scheduler is imported.",
+      "remaining": "",
+      "acceptance": "Author a deadline through undo/copy/launch. Accept at a nonzero campaign second, preserve the last ten minutes through save, then expire after actual tactical actions. Verify strategic waiting/travel, sorted simultaneous due work, early completion, untimed legacy quests and rejection of altered or missing expiration records. Show remaining time and expiry in the mounted game.",
+      "evidence": [
+        "E-QUEST-DEADLINES"
+      ],
+      "parents": [
+        "STORY-03"
+      ],
+      "testFiles": [
+        "tests/quest-deadlines.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/webmcp-campaign.test.mjs"
+      ]
+    },
+    {
       "id": "QUEST-01",
       "group": "Published deliveries",
       "requirement": "Author shared quest states, dialogue transitions and a player journal",
@@ -172,7 +200,8 @@
         "tests/content-quests.test.mjs",
         "tests/story-editor.test.mjs",
         "tests/webmcp-campaign.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/41"
     },
     {
       "id": "PAYMENT-01",
@@ -1450,9 +1479,9 @@
       "requirement": "Branching dialogue, conditions, effects and quests",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "New world residents support authored branching text graphs, actual local choices and saved progress. Choices can require campaign day, pesos, named locality control and character life/service/presence. Event phrases and fixed historical conversations remain available. Authored choices can charge or reward pesos once, with saved receipts and visible terms. Shared authored quests have explicit start/completion/failure, quest-state conditions, ordered saved transitions and a campaign journal. Different residents can start and resolve the same objective.",
+      "published": "New residents have authored branching dialogue with saved progress. Conditions cover day, pesos, locality control, character state and quest state. Choices apply one-time treasury operations and shared quest start/completion/failure with saved evidence. Different residents can participate. The campaign journal reports accepted objectives and precise optional deadlines; overdue active quests fail once. Historical conversations retain their existing rules.",
       "local": "Authored resident quest transitions are accepted in the bounded published scope. Advanced historical role and objective systems are not imported.",
-      "remaining": "Add item/objective and other gameplay effects, automatic failure policies, historical role bindings and their receipts; extend authoring to historical conversations without bypassing campaign gates.",
+      "remaining": "Add item/objective and other gameplay effects, automatic death/escort failure policies, historical role bindings and their receipts; extend authoring to historical conversations without bypassing campaign gates.",
       "acceptance": "Author and finish alternate quest branches through normal controls, including failures and saves.",
       "evidence": [
         "E-CONFLICTS",
@@ -1460,7 +1489,8 @@
         "E-AUTHORED-DIALOGUES",
         "E-DIALOGUE-CONDITIONS",
         "E-DIALOGUE-PAYMENTS",
-        "E-AUTHORED-QUESTS"
+        "E-AUTHORED-QUESTS",
+        "E-QUEST-DEADLINES"
       ]
     },
     {
@@ -3307,13 +3337,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "9c9e57221af4d725c454ff27b6766cead3f99899",
-    "total": 645,
-    "passed": 645,
+    "source": "012a7bb0bf13431b396ddf749f6e9b94d95e6698",
+    "total": 652,
+    "passed": 652,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-AUTHORED-QUESTS"
+    "evidenceId": "E-QUEST-DEADLINES"
   }
 }
