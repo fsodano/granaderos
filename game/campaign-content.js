@@ -13,7 +13,7 @@ export function campaignContentReport(content) {
     blocked = [],
     pending = [];
   const supported=new Set(['format','version','id','name','characters','weapons','placements','arrivalSites','oppositionEquipment','militiaEquipment','quests']);
-  const characterFields=new Set(['id','name','nickname','role','biography','portrait','monthlyPay','weapon','attributes','arrivalHours','recruitmentSource','service','progression','traits','ridingSkill','personality','speech','spriteAppearance','abilities','encounter']);
+  const characterFields=new Set(['id','name','nickname','role','biography','portrait','monthlyPay','weapon','blade','attributes','arrivalHours','recruitmentSource','service','progression','traits','ridingSkill','personality','speech','spriteAppearance','abilities','encounter']);
   if(Object.keys(value).some(key=>!supported.has(key))||value.characters.some(c=>Object.keys(c).some(key=>!characterFields.has(key))))
     blocked.push('Este paquete incluye opciones de historia que esta versión todavía no puede aplicar.');
   if(value.characters.some(c=>!isContractCharacter(c)&&c.arrivalHours!==undefined))
@@ -27,8 +27,8 @@ export function campaignContentReport(content) {
     blocked.push('El servicio, el progreso y las especialidades de los mandos históricos todavía conservan sus reglas originales.');
   if(value.characters.some(c=>isContractCharacter(c)&&(c.recruitmentSource==='encounter'||c.service==='permanent')))
     blocked.push('Los candidatos del boletín se incorporan por contrato. Para servicio permanente, creá un habitante.');
-  const weaponFields=new Set(['id','template','name','damage','fireAP','aimAP','reloadAP','range','readyAP','capacity','weight','price','art']);
-  if(value.weapons.some(w=>Object.keys(w).some(key=>!weaponFields.has(key))||w.readyAP!==0))
+  const weaponFields=new Set(['id','template','name','damage','fireAP','aimAP','reloadAP','range','readyAP','capacity','weight','price','art','ap','reach']);
+  if(value.weapons.some(w=>Object.keys(w).some(key=>!weaponFields.has(key))||(w.template<1809&&w.readyAP!==0)||(w.template>=1809&&['fireAP','aimAP','reloadAP','range','readyAP','capacity'].some(key=>Object.hasOwn(w,key)))||(w.template<1809&&['ap','reach'].some(key=>Object.hasOwn(w,key)))))
     blocked.push("Este paquete incluye manejo de armas que esta versión todavía no puede aplicar.");
   const placementFields=new Set(['id','character','mode','sectors','moveChance','afterDeath','delayMin','delayMax','selection','loadedGuard']);
   if(value.placements.some(p=>Object.keys(p).some(k=>!placementFields.has(k))))
@@ -56,6 +56,7 @@ export function attachCampaignContent(state, content) {
     const weapon=definitions.weapons.find(w=>w.id===c.weapon);
     state.loadouts[id]={...state.loadouts[id],weapon:weapon?.template??0};
     if(weapon)record.weaponMetadata=weaponMetadata(weapon);
+    if(c.blade!==undefined){const blade=definitions.weapons.find(w=>w.id===c.blade);state.loadouts[id].blade=blade.template;record.bladeMetadata=weaponMetadata(blade);}
     record.hp = c.attributes.maxHp;
     record.maxHp = c.attributes.maxHp;
     record.bandaged = 0;

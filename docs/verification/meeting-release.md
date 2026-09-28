@@ -31,7 +31,9 @@ Runtime source: `2f1287020a76ce47d5422c28d4361d76a557c8fd`.
 The complete local suite passed **689/689 tests**, without failures or skips
 (183643 ms). Types, production export (721 files, 631 asset references), all 36
 baseline comparisons and the documentation audit passed. The register retains
-184 requirements and 23 evidence records. Exact-head CI is required before merge.
+184 requirements and 23 evidence records. Exact-head [CI](https://github.com/fsodano/granaderos/actions/runs/36376899052/job/108784480770) passed for `889e8ac5c73335442f84b4dd0c11efda82e699ea`.
+[PR #46](https://github.com/fsodano/granaderos/pull/46) merged as
+`09998ab180fbc029ecb0d582db23ffce122a302b`.
 
 - `tests/meeting-release.test.mjs`: actual call, arrival and release; one atomic
   quest result/payment; subsequent routine movement; saved re-entry; no-order

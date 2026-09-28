@@ -63,7 +63,7 @@ export function inventoryModel(state, unit) {
   const backpack = Object.entries(unit.inventory || {})
     .filter(([, record]) => record && typeof record === 'object')
     .map(([key, record]) => {
-      const weapon = WEAPONS[record.weapon]?weaponSpecification(record):null;
+      const weapon = weaponSpecification(record);
       const blade = BLADES[record.weapon];
       return {
         key,
@@ -75,7 +75,7 @@ export function inventoryModel(state, unit) {
     });
   return {
     stats,
-    slots: {primary: weaponFor({...unit,activeSlot:"primary"}), blade: BLADES[unit.blade] || bladeFor(unit)},
+    slots: {primary: weaponFor({...unit,activeSlot:"primary"}), blade: bladeFor({...unit,activeSlot:'blade'})},
     activeSlot: unit.activeSlot,
     weight: carriedWeight(unit),
     capacity: carryCapacity(unit),
@@ -137,7 +137,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
     stance: false,
     overwatch: !firearm,
     mount: !u.horse,
-    brace: blade.id !== 1811 || u.ap < 16,
+    brace: blade.id !== 1811 || u.ap < blade.ap,
     repair: !firearm || (u.flints ?? 4) < 1,
     ration: (u.rations ?? 2) < 1,
     torch: (u.torches ?? 2) < 1,

@@ -10,7 +10,7 @@ export const EQUIPMENT_CATALOG=[
 ];
 export function equipmentCatalog(s){
  if(!usesAuthoredEquipment(s))return EQUIPMENT_CATALOG;
- return [...s.contentCampaign.package.weapons.map(w=>{const contentWeapon=compileWeaponDefinition(w);return {...contentWeapon,id:w.template,item:w.id,stockKey:w.id,category:'firearm',contentWeapon};}),...EQUIPMENT_CATALOG.filter(w=>w.category!=='firearm')];
+ return [...s.contentCampaign.package.weapons.map(w=>{const contentWeapon=compileWeaponDefinition(w);return {...contentWeapon,id:w.template,item:w.id,stockKey:w.id,category:w.template<1809?'firearm':'blade',contentWeapon};}),...EQUIPMENT_CATALOG.filter(w=>w.category!=='firearm'&&!s.contentCampaign.package.weapons.some(authored=>authored.template===w.id))];
 }
 export function armoryInventory(s){return equipmentCatalog(s).map(item=>({...item,quantity:s.armory?.[item.stockKey??item.item]??0}));}
 export function armoryOptions(s,op,slot){

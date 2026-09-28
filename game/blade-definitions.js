@@ -1,0 +1,1 @@
+export const BLADES=Object.fromEntries([[1809,'Sable Corvo Sanmartiniano',12,46,1.5],[1810,'Sable de Caroya',14,42,1.5],[1811,'Bayoneta de Cubo',16,50,2],[1812,'Lanza de Tacuara',18,56,2.5],[1813,'Facón Gaucho con Poncho',8,32,1.5]].map(([id,name,ap,damage,reach])=>[id,{id,name,ap,damage,reach}]));

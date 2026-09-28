@@ -23,7 +23,7 @@ export function equipArmoryItem(s,op,action){
  s.armoryItems.splice(index,1);s.armory[equipmentKey(item)]--;
  if(op[slot])storeArmoryItem(s,weaponRecord({...op,...record,loaded:0},slot==='blade'?'blade':'primary'));
  s.loadouts[op.id]={...s.loadouts[op.id],[slot]:item.weapon};
- if(slot==='weapon'){setWeaponDefinition(record,item);record.condition=item.condition;record.jammed=item.jammed;}
+ if(slot==='weapon'){setWeaponDefinition(record,item);record.condition=item.condition;record.jammed=item.jammed;}else setWeaponDefinition(record,item,'blade');
  return item;
 }
 export function validateArmoryItems(s){

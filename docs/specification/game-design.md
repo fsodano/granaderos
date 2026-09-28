@@ -186,7 +186,11 @@ can inspect fixed and randomized results through a seeded preview.
 Character identity and campaign role are separate. Authors can replace the paid
 roster and create encounter characters without borrowing a historical numeric ID.
 Weapons include compatible ammunition, melee, artillery, attachments and supported
-handling rules. Merchant stock, prices, buyback and replenishment are authored
+handling rules. An authored blade retains its identity, image, damage, attack
+cost, reach, weight and price across equipped slots, storage and campaign returns.
+Its family selects the existing melee techniques; technique authoring is separate.
+Older content without a blade assignment retains the original character loadout.
+Merchant stock, prices, buyback and replenishment are authored
 rules, not uncontrolled duplication of owned items.
 
 Dialogue is a graph of authored text, conditions, choices and effects. Quests

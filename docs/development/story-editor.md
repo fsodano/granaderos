@@ -20,7 +20,7 @@ Las identidades nuevas no reciben poderes por ocupar el número de un mando hist
 
 La ficha permite elegir especialidades aplicadas por las reglas actuales, equitación y progreso por experiencia o nivel fijo. Equitación experta garantiza una destreza ecuestre mínima de 80. Con ambas opciones de progreso se conserva el entrenamiento práctico de atributos. Las especialidades llegan al combate y a la instrucción de milicia; un instructor nuevo puede guardar y continuar un curso. Los contratables nuevos pueden tener carácter, frases y apariencia propios. Los habitantes nuevos tienen diálogos con opciones. Los encargos editables se conectan a las opciones de diálogo y tienen un registro en la carta de campaña.
 
-Todos estos candidatos se incorporan por contrato desde el boletín. Una paga de cero es un contrato gratuito con el plazo elegido, no servicio permanente. El editor protege a los mandos históricos de eliminación y duplicación hasta separar sus funciones de campaña. El arma blanca inicial todavía usa el valor general existente.
+Todos estos candidatos se incorporan por contrato desde el boletín. Una paga de cero es un contrato gratuito con el plazo elegido, no servicio permanente. El editor protege a los mandos históricos de eliminación y duplicación hasta separar sus funciones de campaña. La ficha permite elegir el arma principal y el arma blanca inicial. Un paquete anterior sin esta selección conserva el equipo original del personaje.
 
 ## Crear habitantes del mundo
 
@@ -116,11 +116,21 @@ Las partidas nuevas del editor guardan estas definiciones por referencia al paqu
 
 La munición mantiene la economía existente: se compran diez cartuchos por arma al entrar al sector y se devuelve el valor de los cartuchos restantes al salir. Los cartuchos de un arma guardada en la mochila siguen en esa arma. Cambiar un arma en la armería se hace fuera del sector y devuelve el arma descargada. La disponibilidad comercial sigue siendo ilimitada; todavía no hay cantidades y reposición configurables por comerciante.
 
-Esta entrega admite armas de fuego de las familias existentes. Las armas blancas, la artillería, los accesorios, los tipos de munición y el coste de levantar el arma siguen pendientes. Las opciones de manejo todavía no integradas bloquean el inicio de campaña.
+La artillería, los accesorios, los tipos de munición y el coste de levantar el arma siguen pendientes de edición. Las opciones de manejo todavía no integradas bloquean el inicio de campaña.
+
+## Armas blancas aplicadas a la campaña
+
+La sección **Armas** incluye las nueve familias de fuego y las cinco de armas blancas. Usá **Crear arma blanca** para agregar una variante de sable, bayoneta, lanza o facón. Podés editar nombre, imagen, daño, PA de ataque, alcance cuerpo a cuerpo, peso y precio. El alcance admite decimales entre 1 y 4 casillas. La familia conserva sus técnicas: desvío con sable, derribo con lanza, contragolpe con facón e intercepción con bayoneta. La bayoneta usa los PA, el daño y el alcance editados también al detener una carga.
+
+En la ficha del personaje, **Arma principal** admite un arma de fuego o blanca. **Arma blanca** elige su equipo secundario. **Equipo original del personaje** conserva el valor general para paquetes anteriores. El editor impide eliminar una variante asignada a cualquiera de los dos espacios. Copiar el personaje, deshacer, rehacer y lanzar la campaña conservan estas selecciones. El campo de prueba sigue siendo una prueba de tiro; un personaje con arma principal blanca debe probarse en la campaña.
+
+Cada variante tiene su propio precio y existencias en la armería. Al equiparla, el arma anterior vuelve como un ejemplar separado. El nombre y la imagen propios aparecen en la hoja de servicio, la armería, los dos espacios del inventario y la mochila. Las armas blancas recuperadas del espacio principal de un cuerpo pueden equiparse en cualquiera de los dos espacios. Los cambios, el regreso a campaña y el guardado conservan su definición y estado. El peso de las armas blancas editadas cuenta mientras están equipadas o guardadas; cambiar de mano activa no modifica ese peso.
+
+Los residentes todavía no tienen inventario civil: esta asignación se aplica a su equipo militar al incorporarse. El saqueo del espacio secundario de un cuerpo, las armas blancas de las tropas genéricas, el desgaste cuerpo a cuerpo, los accesorios y la edición de técnicas especiales requieren entregas separadas. Esta entrega no acredita el sistema completo de inventario o combate sin armas.
 
 ## Armamento de enemigos y milicias
 
-La sección Armas de fuego incluye el armamento de las tropas. Se puede elegir un arma del catálogo, o ninguna, para oficiales, infantería y veteranos enemigos y para cada uno de los tres grados de milicia. El editor impide eliminar un arma mientras alguna tropa la use. Estas asignaciones se guardan con el borrador y participan en deshacer, rehacer, importación y exportación. Los paquetes anteriores sin estas opciones conservan las armas originales y pueden activar su configuración desde la misma sección.
+La sección Armas incluye el armamento de las tropas. Se puede elegir un arma de fuego del catálogo, o ninguna, para oficiales, infantería y veteranos enemigos y para cada uno de los tres grados de milicia. El editor impide eliminar un arma mientras alguna tropa la use. Estas asignaciones se guardan con el borrador y participan en deshacer, rehacer, importación y exportación. Los paquetes anteriores sin estas opciones conservan las armas originales y pueden activar su configuración desde la misma sección.
 
 Las asignaciones se aplican cuando se crea un soldado. Las tropas que ya existen conservan su equipo, munición y desgaste al regresar al sector. Una tropa sin arma de fuego no recibe cartuchos ni cebo. Las nuevas tropas enemigas reciben trece cartuchos en total y las milicias seis, distribuidos entre carga y reserva según la capacidad real del arma. Estas cantidades corresponden al abastecimiento actual; todavía no son una regla editable.
 
@@ -226,3 +236,5 @@ Los mandos históricos conservan su servicio permanente, requisitos de reclutami
 `tests/meeting-arrivals.test.mjs` comprueba llegada real, rechazo anticipado, reentrada y recompensa única. Algunos casos preparados aíslan alarma, incapacidad y bloqueo; la recuperación usa el reloj y la marcha habituales. El editor y el juego montados verifican la condición y su guardado. La [verificación de llegada](../verification/meeting-arrivals.md) registra el alcance.
 
 `tests/meeting-release.test.mjs` comprueba salida real, rutina posterior, guardado, salida desde el propio personaje y transacciones combinadas. El editor montado conserva la orden; el juego montado verifica una salida y una recompensa tras un doble clic. La [verificación de salida](../verification/meeting-release.md) registra el alcance.
+
+`tests/content-blades.test.mjs` comprueba combate, intercepción, IA, peso, variantes de armería, cambios entre espacios, estado conservado, regreso y guardado, imágenes compartidas y paquetes anteriores. Las pruebas montadas verifican creación, asignación, protección de referencias, compra, imagen secundaria y cambio de mano con guardado activo. Son pruebas limitadas; no acreditan una campaña completa.
