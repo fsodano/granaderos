@@ -42,6 +42,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Military bodies and finite equipment on reentry](military-remains.md)
 - [San Lorenzo settlement after exploration](post-victory-mission.md)
 - [Fresh mixed and hired coastal opening routes](fresh-coastal-opening.md)
+- [Explicit loss of indispensable historical actors](historical-campaign-loss.md)
 - [Fresh northern continuation through Yatasto](fresh-northern-opening.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)

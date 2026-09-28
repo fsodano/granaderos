@@ -1,3 +1,4 @@
+import {enforceHistoricalLoss} from './historical-loss.js';
 import {previousDeploymentScene,withoutPreviousCasualties} from './military-remains.js';
 import {completedTacticalVictory} from './battle-outcome.js';
 import {foundryFor} from './campaign-foundry.js';
@@ -141,6 +142,7 @@ function progress(s){
     if(s.sectors[headquartersFor(s)].owner!=='patriot')s.defeated=true;
     advanceCampaignStory(s);if(s.completed)endingSpeech(s);return;
   }
+  enforceHistoricalLoss(s);
   if(s.defeated)return;
   if(s.phase===0&&(s.flags.academy||hasReadyCombatant(s))){s.flags.academy=true;s.phase=1;note(s,'El destacamento está listo para partir. Llegan noticias de un desembarco realista junto a San Lorenzo.');}
   if(s.phase===1&&s.flags.sanLorenzo){s.phase=2;standing(s,'directory',15);note(s,'Victoria en San Lorenzo. San Martín marcha al norte para estudiar la situación del Ejército del Norte.');}
@@ -475,5 +477,5 @@ export function restoreCampaign(text){
   const assigned=s.squads.flatMap(q=>q.members);requireThat(new Set(assigned).size===assigned.length,'Un combatiente no puede pertenecer a dos escuadras.');const selected=s.squads.find(q=>q.id===s.activeSquadId);requireThat(selected&&selected.location===s.location&&JSON.stringify(selected.members)===JSON.stringify(s.squad),'La escuadra activa del archivo es inválida.');
   requireThat(object(s.sectorStates)&&Object.entries(s.sectorStates).every(([id,snapshot])=>(validWorldLocation(id)||id==='san_lorenzo')&&validateSectorSnapshot(expandCellScene(snapshot))&&(sector(id)||id==='san_lorenzo'||snapshot.sectorId===id&&snapshot.sourceMapId===id)),'Los sectores guardados son inválidos.');
   for(const [id,snapshot]of Object.entries(s.sectorStates))s.sectorStates[id]=compactCellScene(snapshot);
-  requireThat(!s.pendingBattle||s.pendingBattle.syncedSeconds===undefined||(Number.isSafeInteger(s.pendingBattle.syncedSeconds)&&s.pendingBattle.syncedSeconds>=0),'El reloj del despliegue es inválido.');requireThat(Number.isInteger(s.secondOfHour??0)&&(s.secondOfHour??0)>=0&&(s.secondOfHour??0)<3600,'El reloj guardado es inválido.');requireThat(s.deferredRaids===undefined||(Array.isArray(s.deferredRaids)&&s.deferredRaids.length<=1000&&s.deferredRaids.every(r=>object(r)&&['north','coast','interior'].includes(r.theater)&&sector(r.target))),'Las incursiones pendientes son inválidas.');validatePolitics(s);requireThat(s.economyVersion===2&&Object.keys(s.resources).length===1,'La economía guardada es inválida.');if(migrateCampaignCivilians(s))synchronizeCampaignPresence(s);validateCampaignCivilians(s);validateCampaignPresence(s);validateDialogueMovements(s,encounterDefinitions(s));s.lastError=null;return s;
+  requireThat(!s.pendingBattle||s.pendingBattle.syncedSeconds===undefined||(Number.isSafeInteger(s.pendingBattle.syncedSeconds)&&s.pendingBattle.syncedSeconds>=0),'El reloj del despliegue es inválido.');requireThat(Number.isInteger(s.secondOfHour??0)&&(s.secondOfHour??0)>=0&&(s.secondOfHour??0)<3600,'El reloj guardado es inválido.');requireThat(s.deferredRaids===undefined||(Array.isArray(s.deferredRaids)&&s.deferredRaids.length<=1000&&s.deferredRaids.every(r=>object(r)&&['north','coast','interior'].includes(r.theater)&&sector(r.target))),'Las incursiones pendientes son inválidas.');validatePolitics(s);requireThat(s.economyVersion===2&&Object.keys(s.resources).length===1,'La economía guardada es inválida.');if(migrateCampaignCivilians(s))synchronizeCampaignPresence(s);validateCampaignCivilians(s);validateCampaignPresence(s);validateDialogueMovements(s,encounterDefinitions(s));enforceHistoricalLoss(s);s.lastError=null;return s;
 }

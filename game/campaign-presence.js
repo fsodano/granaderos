@@ -1,3 +1,4 @@
+import {historicalRequiredActors} from './historical-loss.js';
 import {civilianDiedHere} from './campaign-civilians.js';
 import {encounterDefinitions} from './encounters.js';
 import {createContentSession,advancePlacementState,changePlacementStatus} from './content-placement.js';
@@ -50,8 +51,8 @@ export function synchronizeCampaignPresence(state){
 }
 // Successors, quest survival and campaign conditions need confirmed deployed deaths.
 function successionActors(state,snapshot){
- if(!state.contentPresence)return [];
- const content=state.contentCampaign.package,storyConditions=[...(content.campaignStory?.chapters??[]).flatMap(c=>c.conditions),...(content.campaignStory?.failureConditions??[])],sources=new Set([...storyConditions.filter(c=>c.type==='character').map(c=>c.character),...content.placements.filter(p=>p.afterDeath!==null).map(p=>p.afterDeath),...(content.quests??[]).flatMap(q=>q.requiredAlive??[])].map(id=>operativeIdForCharacter(content,id)));
+ const content=state.contentCampaign?.package??{placements:[]},storyConditions=[...(content.campaignStory?.chapters??[]).flatMap(c=>c.conditions),...(content.campaignStory?.failureConditions??[])],sources=new Set([...storyConditions.filter(c=>c.type==='character').map(c=>c.character),...content.placements.filter(p=>p.afterDeath!==null).map(p=>p.afterDeath),...(content.quests??[]).flatMap(q=>q.requiredAlive??[])].map(id=>operativeIdForCharacter(content,id)));
+ for(const actor of historicalRequiredActors(state))sources.add(actor.id);
  return snapshot.units.filter(u=>u.side==='player'&&!u.militia&&sources.has(Number(u.id))&&state.pendingBattle?.squad.some(o=>o.id===Number(u.id)));
 }
 export function acknowledgeSuccessionDeaths(state,snapshot){
