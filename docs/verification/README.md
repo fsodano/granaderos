@@ -25,6 +25,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Choose militia instruction](militia-course-choice.md)
 - [Autonomous militia combat and controls](autonomous-militia-combat.md)
 - [Saved local militia patrols](militia-exploration-patrols.md)
+- [City militia distribution and physical arrivals](city-militia-distribution.md)
 - [Finite civilian supplies](civilian-finite-supplies.md)
 - [Authored resident verification](authored-residents.md)
 - [Death successor verification](death-successors.md)

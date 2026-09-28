@@ -345,6 +345,21 @@ la exploración o esconder la pestaña detiene ese reloj. El guardado conserva
 posiciones, energía y ritmo de patrulla. Estos valores de patrulla aún no son
 campos editables. [Verificación](../verification/militia-exploration-patrols.md).
 
+## Distribuir milicias
+
+En la campaña, abrí **Distribuir milicias** en la ficha del sector. Elegí destino,
+grado y cantidad, y usá **Trasladar defensores**. Solo se puede mover gente entre
+sectores propios conectados de la misma ciudad. El área actual de Buenos Aires
+incluye Retiro y Ensenada. **Distribuir de forma pareja** muestra el resultado
+previsto antes de aplicar el reparto.
+
+El traslado es inmediato y conserva heridas, armas, munición y experiencia. No
+cobra pesos ni adelanta el reloj. Los heridos inestables y los alumnos permanecen
+en su sector. Cada destino admite 60 plazas, incluida la instrucción. Al entrar,
+los trasladados aparecen en terreno exterior conectado al acceso de llegada.
+Estas áreas, límites y accesos todavía no son campos editables.
+[Verificación y pendientes](../verification/city-militia-distribution.md).
+
 ## Territorio inicial
 
 En **Reglas**, la tabla **Territorio al iniciar la campaña** define el control patriota o realista y la lealtad de las trece localidades. La lealtad permite valores enteros de 0 a 100. **Restaurar territorio original** vuelve a Retiro patriota con 65% de lealtad y las otras localidades realistas con 25%. Podés deshacer y rehacer los cambios.
