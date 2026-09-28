@@ -244,7 +244,7 @@
     {
       "id": "E-FRESH-ENDING",
       "path": "docs/verification/fresh-historical-ending.md",
-      "description": "One untouched stock seed-8 mixed route reaches all thirteen locality victories through actual combat, paid supplies/contracts, controlled arrivals, permanent losses and original mission/project gates. Every final battle replays with campaign time and midpoint saves. Saved victory retains the living commander; 48-hour post-victory income, contract expiry and sector re-entry preserve the ending without reintroducing an expired hire. Other force builds, advanced systems, independent stories and live performance remain open."
+      "description": "One untouched stock seed-8 mixed route reaches all thirteen locality victories through actual combat, paid supplies/contracts, controlled arrivals, permanent losses and original mission/project gates. Every final battle replays with campaign time and midpoint saves. Saved victory retains the living commander; 48-hour post-victory income, contract expiry and sector re-entry preserve the ending without reintroducing an expired hire. Other force builds, advanced systems, independent stories and live performance remain open. PR #65 merged after CI passed at c45127b32c074346ca8e085545dc69dfe1d9629d."
     },
     {
       "id": "E-CHARACTER-SUPPLIES",
@@ -352,7 +352,7 @@
       "requirement": "Finish a fresh stock historical campaign and continue after saved victory",
       "status": "VERIFIED",
       "priority": "P0",
-      "published": "The complete mixed Retiro route wins all thirteen localities without injected outcomes or resources. Real paid service, supplies, finite care, controlled arrivals and losses lead to historical victory with San Martin alive. The created actor stays dead. A 48-hour continuation receives income, expires a daily contract and re-enters the sector without restoring the former hire or repeating the ending.",
+      "published": "The complete mixed Retiro route wins all thirteen localities without injected outcomes or resources. Real paid service, supplies, finite care, controlled arrivals and losses lead to historical victory with San Martin alive. The created actor stays dead. A 48-hour continuation receives income, expires a daily contract and re-enters the sector without restoring the former hire or repeating the ending. Merged through PR #65 after exact-head CI.",
       "local": "Published stock seed 8 and one strategy only. The hired-only and unpaid-only full routes, larger advanced gameplay, authored second campaign and live performance remain separate requirements.",
       "remaining": "",
       "acceptance": "Run the complete fresh mixed historical campaign through actual battle settlement and original gates, replay/save the final battles, preserve casualties and real treasury costs, then save victory and continue through income, contract expiry and retained-sector re-entry.",
