@@ -1,5 +1,5 @@
 import {historicalRequiredActors} from './historical-loss.js';
-import {civilianDiedHere,resumeCivilianServiceReturns} from './campaign-civilians.js';
+import {civilianDiedHere,resumeCivilianServiceReturns,synchronizeResidentWounds} from './campaign-civilians.js';
 import {encounterDefinitions} from './encounters.js';
 import {createContentSession,advancePlacementState,changePlacementStatus} from './content-placement.js';
 import {isContractCharacter,operativeIdForCharacter,characterForOperative} from './content-character-ids.js';
@@ -55,10 +55,17 @@ export function synchronizeCampaignPresence(state){
   }
   state.contentPresence=strip(runtime);
   resumeCivilianServiceReturns(state);
+  synchronizeResidentWounds(state);
   for(const [sector,scene] of Object.entries(state.sectorStates))
     scene.npcs=(scene.npcs??[]).filter(n=>currentResident(state,n,sector));
   if(state.pendingBattle&&!state.pendingBattle.sceneId)
     state.pendingBattle.npcs=(state.pendingBattle.npcs??[]).filter(n=>currentResident(state,n,state.pendingBattle.sector));
+}
+// Split the physical clock at placement deadlines. An unseen successor starts
+// bleeding at its actual appearance, and daily movement precedes later deaths.
+export function nextCampaignPresenceChange(state){
+ const r=state.contentPresence;if(!r)return Infinity;
+ return Math.min(r.nextDaily,...r.events.filter(e=>e.at>r.minute).map(e=>e.at))*60;
 }
 // Successors, quest survival and campaign conditions need confirmed deployed deaths.
 function successionActors(state,snapshot){

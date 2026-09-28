@@ -48,8 +48,8 @@ test('an editor-authored critical resident is stabilized, recruited, treated wit
 });
 
 test('authored bleeding enters the actual civilian clock without blaming the player and death remains saved',()=>{
- const d=localPackage({pay:0,service:'permanent'});d.characters.find(c=>c.id==='alma-contract').startingCondition={hp:4,energy:100,fatigue:0,bleeding:3,bandaged:0};
- let s=order(initialCampaign(42,d),{type:'recruitCivic',id:110,term:'month'});s=order(s,{type:'travel',sector:'cell-27-27'});let p=visit(s);assert.equal(localNPC(p.battle).hp,4);assert.equal(localNPC(p.battle).bleeding,3);assert.equal(localNPC(p.battle).bleedSource.side,'unknown');
+ const d=localPackage({pay:0,service:'permanent'});d.characters.find(c=>c.id==='alma-contract').startingCondition={hp:4,energy:100,fatigue:0,bleeding:3,bandaged:0};d.placements.find(p=>p.character==='alma-contract').sectors=['retiro'];
+ let s=order(initialCampaign(42,d),{type:'recruitCivic',id:110,term:'month'});let p=visit(s);assert.equal(localNPC(p.battle).hp,4);assert.equal(localNPC(p.battle).bleeding,3);assert.equal(localNPC(p.battle).bleedSource.side,'unknown');
  for(let i=0;i<5&&localNPC(p.battle).hp>0;i++)p=tactical(p,{type:'rest'});
  assert.equal(localNPC(p.battle).hp,0);assert.ok(civilianIncidents(localNPC(p.battle)).every(e=>e.side==='unknown'));p=saved(p);const id=localId(p.campaign);assert.equal(p.campaign.operativeState[id].alive,false);s=leave(p);p=visit(saved({campaign:s}).campaign);assert.equal(localNPC(p.battle).hp,0);assert.ok(saved(p));
 });
