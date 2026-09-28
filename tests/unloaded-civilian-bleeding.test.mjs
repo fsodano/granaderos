@@ -92,6 +92,8 @@ test('legacy wound clocks start from the saved health and malformed or inconsist
  clear(wire);const oldHp=npc(p).hp;p=decodeSave(JSON.stringify(wire));assert.equal(npc(p).hp,oldHp);p=remote(p);for(let i=0;i<5;i++)p=second(p);assert.equal(health(p.campaign).hp,oldHp);p=second(p);assert.equal(health(p.campaign).hp,oldHp-health(p.campaign).bleeding);
  for(const value of [-1,6,1.5,'2',null]){const bad=structuredClone(wire);bad.battle.npcs.find(n=>n.contentId==='patient').civilianWoundSeconds=value;assert.throws(()=>decodeSave(JSON.stringify(bad)));}
  const bad=structuredClone(wire);bad.campaign.civilianState.people[`person-${id(bad.campaign)}`].health.civilianWoundSeconds=4;assert.throws(()=>decodeSave(JSON.stringify(bad)));
+ const malformed=leave(wound(visit(ready())));health(malformed).civilianWoundSeconds=Math.ceil(health(malformed).hp/health(malformed).bleeding)*6;
+ const rejected=dispatchCampaign(malformed,{type:'wait',hours:1});assert.match(rejected.lastError,/intervalo/);assert.deepEqual({...rejected,lastError:null},malformed);
  const s=order(initialCampaign(42),{type:'wait',hours:1});assert.ok(!encountersFor(s,'retiro').some(n=>n.operativeId===110));assert.ok(!s.civilianState?.people['person-110']);
 });
 

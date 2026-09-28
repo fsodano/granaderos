@@ -181,6 +181,7 @@ function advanceOffscreenTime(s,seconds){
  setTime(at);
  while(at<end){
   const next=Math.min(end,at+nextUnloadedCivilianDeath(s),nextContentQuestDeadline(s));
+  requireThat(Number.isSafeInteger(next)&&next>at,'El intervalo de los habitantes no es válido.');
   setTime(next);advanceUnloadedCivilians(s,next-at);at=next;
   if(at<end){synchronizeCampaignPresence(s);updateContentQuests(s);progress(s);}
  }
