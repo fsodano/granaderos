@@ -53,6 +53,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Local workshop service](local-workshop-service.md)
 - [Explicit strategic rest](strategic-rest.md)
 - [Authored care and rest rules](authored-care-rules.md)
+- [Finite field first aid and persistent wounds](finite-first-aid.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 

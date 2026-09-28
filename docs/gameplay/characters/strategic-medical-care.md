@@ -2,6 +2,9 @@
 
 [Personajes](README.md) · [Verificación](../../verification/strategic-medical-care.md)
 
+Los [primeros auxilios en el campo](field-first-aid.md) detienen la hemorragia y
+estabilizan. La atención en campaña recupera la salud restante.
+
 En el mapa, abrí **Organizar escuadras** y buscá **Atención médica y descanso**.
 
 1. Dejá al médico y al herido en la misma celda bajo control patriota.

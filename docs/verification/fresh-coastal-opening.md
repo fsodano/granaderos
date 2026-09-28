@@ -6,6 +6,11 @@ default content, seed 8, Retiro alone, no personnel and 3,200 pesos. Neither rou
 grants territory, supplies, health or a battle result.
 
 Source: `5119b5ca619d4974aac0fb5594d51a699074b778`.
+
+Later manual-care integration changed the reproducible route costs and casualties.
+See [the finite first-aid regression record](finite-first-aid.md) for that source;
+the checkpoint below remains evidence of this earlier release.
+
 [Recorded checkpoints](../evidence/fresh-coastal-2026-09-28.json) retain the figures.
 
 | Route | Start | Saved San Lorenzo result |

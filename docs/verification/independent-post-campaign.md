@@ -1,6 +1,11 @@
 # Independent post campaign
 
 Source: `2ed9f7ac0eb2b20a2d52a9b4a4b4667699b930b1`.
+
+Later manual-care integration changed the reproducible route costs and casualties.
+See [the finite first-aid regression record](finite-first-aid.md) for that source;
+the checkpoint below remains evidence of this earlier release.
+
 [Recorded route](../evidence/independent-post-campaign-2026-09-28.json).
 [Player and author guide](../development/example-post-campaign.md).
 
