@@ -484,7 +484,7 @@
     {
       "id": "E-ARTILLERY-TRADING",
       "path": "docs/verification/finite-artillery-trading.md",
-      "description": "Local workshop sales and repurchases retain exact field/depot guns, finite funds, load and unfinished work; unissued stock converts once using authored allowance. Six simulations and two mounted production-game cases pass, overlap 40/40 and complete regression 1111/1111, zero failures/skips. Types, export and 36 reference checks pass. Real purchased/fired guns and configured workshops are distinguished from prepared custody/rejection boundaries; two invalid initial test-fixture assumptions were corrected without relaxing engine restrictions. Exact-head publication remains required."
+      "description": "Local workshop sales and repurchases retain exact field/depot guns, finite funds, load and unfinished work; unissued stock converts once using authored allowance. Six simulations and two mounted production-game cases pass, overlap 40/40 and complete regression 1111/1111, zero failures/skips. Types, export and 36 reference checks pass. Real purchased/fired guns and configured workshops are distinguished from prepared custody/rejection boundaries; two invalid initial test-fixture assumptions were corrected without relaxing engine restrictions. Published by PR #108 after successful exact-head CI."
     },
     {
       "id": "E-PARALLEL-VERIFICATION",
@@ -573,7 +573,7 @@
       "requirement": "Sell and repurchase exact local artillery with finite workshop funds, saved custody and unchanged ammunition",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Local field/depot/unissued gun sales and repurchases conserve physical identity, load and both finite balances.",
+      "published": "Published by PR #108 after successful exact-head CI. Local field/depot/unissued gun sales and repurchases conserve physical identity, load and both finite balances.",
       "local": "Six simulations and two mounted production-game checks pass; overlap 40/40 and complete regression 1111/1111, zero failures/skips, with types, export and 36 reference checks.",
       "remaining": "",
       "acceptance": "Trade actual purchased and fired guns through valid configured workshops, retain load and declared partial work through full saves and real redeployment, issue stock identity once, reject repeats, stale stock, unavailable access/crew/funds, capacity overflow and duplicate ownership, and show matching prices/reasons in the armory.",
@@ -590,7 +590,8 @@
         "tests/artillery-trading-render.test.mjs",
         "tests/artillery-transport.test.mjs",
         "tests/stationed-artillery.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/108"
     },
     {
       "id": "ARTILLERYTRANSPORTRULES-01",
@@ -5603,13 +5604,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "07f74aea7065707d1ea98a423aa0cfd379fda0e5",
-    "total": 1103,
-    "passed": 1103,
+    "source": "9aada7fe1a4e649112817832bf721534153c50ad",
+    "total": 1111,
+    "passed": 1111,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-ARTILLERY-TRANSPORT-RULES"
+    "evidenceId": "E-ARTILLERY-TRADING"
   }
 }
