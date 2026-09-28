@@ -761,3 +761,16 @@ organization. Fees are paid once; an interrupted route delays the same saved gun
 without another charge. Invalid rates or schedules are rejected. The armory
 shares the actual quote and insufficient-funds reason. Crew and geographical
 restrictions remain in force. See [verification](../verification/authored-artillery-transport.md).
+
+
+### Finite local artillery trading
+
+A controlled supplied workshop buys local emplacements, depot pieces or one
+unissued armory gun. Emplacements require their full available crew. Sales and
+repurchases exchange finite pesos and one exact physical gun, retaining ammunition
+and unfinished work. Each shop starts with 1,200 pesos, holds up to 100 guns and
+keeps its balance and stock through saves. Default buying rates are 40% at Retiro
+and other workshops, 30% in Córdoba and 50% in Mendoza; repurchase is 80%.
+These are game tuning. Merchant-held guns do not count toward the army. Remote
+sales, cash refresh, merchant authoring, depot forwarding and equipment-wide
+physical custody remain separate. [Verification](../verification/finite-artillery-trading.md).
