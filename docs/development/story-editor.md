@@ -337,6 +337,14 @@ escuadra para atender a un miliciano herido. Al volver y guardar se conservan
 sus heridas, bajas, armas, suministros restantes y experiencia.
 [Alcance verificado y pendientes](../verification/autonomous-militia-combat.md).
 
+En exploración, las milicias recorren puntos del mapa. Cada seis segundos pueden
+avanzar una casilla y gastar energía, sin consumir puntos de acción ni munición.
+Si el paso las dejaría con menos de 50 de energía, descansan ese intervalo.
+El contacto real con enemigos detiene la patrulla e inicia los turnos. Pausar
+la exploración o esconder la pestaña detiene ese reloj. El guardado conserva
+posiciones, energía y ritmo de patrulla. Estos valores de patrulla aún no son
+campos editables. [Verificación](../verification/militia-exploration-patrols.md).
+
 ## Territorio inicial
 
 En **Reglas**, la tabla **Territorio al iniciar la campaña** define el control patriota o realista y la lealtad de las trece localidades. La lealtad permite valores enteros de 0 a 100. **Restaurar territorio original** vuelve a Retiro patriota con 65% de lealtad y las otras localidades realistas con 25%. Podés deshacer y rehacer los cambios.

@@ -33,7 +33,8 @@ civilian group passes **32/32**. All 36 reference comparisons pass. Complete
 regression passes **993/993**, zero failures or skips (235,750.841 ms), on
 the source above. Types and production export pass with 722 files and 632 asset
 references.
-Exact-head CI remains required before publication.
+The documentation audit passes with 234 requirements and 73 evidence records,
+retaining all 50 original and 87 parity rows. Exact-head CI remains required before publication.
 
 Prepared tactical boundaries cover one-step movement and AP conservation, actual
 visual contact, hidden-position-independent waypoints, exact saved continuation,
