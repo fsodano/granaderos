@@ -25,6 +25,7 @@ test('a project-gated dialogue hides premature rewards and settles a real saved 
 });
 
 test('project conditions validate exact fields and booleans and failure takes precedence over the same completed project',()=>{
+ assert.equal(dialogueConditionsMet(initialCampaign(),[project('missing',false)]),false);
  for(const c of [{type:'project',project:'missing',completed:true},{type:'project',project:'foundry',completed:'true'},{type:'project',project:'army'},{type:'project',project:'army',completed:true,reward:1}]){assert.throws(()=>validateDialogueConditions([c],new Set(),new Set()),/proyecto/);const d=foundryPackage();d.campaignStory.chapters[0].conditions=[c];assert.throws(()=>initialCampaign(42,d),/proyecto/);}
  const d=foundryPackage();d.campaignStory.chapters=[chapter('taller',[project('foundry')])];d.campaignStory.failureConditions=[project('foundry')];const id=operativeIdForCharacter(d,'engineer');let s=order(initialCampaign(42,d),{type:'recruitCivic',id,term:'week'});assert.equal(dialogueConditionsMet(s,[project('foundry',false),project('army',false)]),true);s=order(s,{type:'wait',hours:6});s=order(s,{type:'foundry'});assert.equal(s.flags.foundry,true);assert.equal(s.defeated,true);assert.equal(s.completed,false);assert.deepEqual(s.campaignProgress.completed,[]);assert.equal(saved({campaign:s}).campaign.campaignProgress.outcome.type,'defeat');
 });

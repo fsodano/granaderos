@@ -33,7 +33,7 @@ export function dialogueConditionsMet(s,conditions,battle=null){
   if(c.type==='character')return characterState(s,c.character,battle)[c.state]===true;
   if(c.type==='meeting')return atDialogueMeeting(s,c.character,battle);
   if(c.type==='quest')return contentQuestStatus(s,c.quest)===c.status;
-  if(c.type==='project')return campaignProjectComplete(s,c.project)===c.completed;
+  if(c.type==='project')return Object.hasOwn(CAMPAIGN_PROJECT_LABELS,c.project)&&campaignProjectComplete(s,c.project)===c.completed;
   if(c.type==='sector')return s.sectors[c.sector]?.owner===c.owner;
   if(!['day','treasury'].includes(c.type))return false;
   const value=c.type==='day'?Math.floor(s.hour/24)+1:s.resources.treasury;
