@@ -568,3 +568,13 @@ removes the person from marching squads without reviving or replenishing it.
 A squad with no survivors stops at its last reached location. See the
 [verification record](../verification/strategic-military-wounds.md) for the hourly
 boundary and the remaining fractional-time, custody and strategic-remains scope.
+
+### Local militia physicians
+
+A serving physician can be assigned to existing local militia instead of the
+recruited patients. Each effective hour spends one personal dressing using the
+pinned care rates. Bleeding takes priority and each soldier is treated at most
+once that hour. The loaded scene owns deployed garrison health. Treatment keeps
+identity and finite equipment through saved reentry; it cannot recreate a
+casualty. See the [bounded verification](../verification/strategic-militia-care.md)
+for the separate unloaded-militia wound clock and custody requirements.

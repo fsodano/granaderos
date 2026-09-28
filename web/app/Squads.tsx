@@ -1,4 +1,5 @@
 'use client';
+import {careAssignmentBusy} from '../../game/medical-care.js';
 import {useState} from 'react';
 import {CAMPAIGN_SECTORS} from '../../game/data.js';
 import {rosterFor,operativeLocation} from '../../game/campaign.js';
@@ -10,7 +11,7 @@ export default function Squads({state:s,dispatch}:Props){
  const roster=rosterFor(s),squads=s.squads??[{id:'squad-1',name:'Primera escuadra',members:s.squad,location:s.location}],hired=roster.filter(o=>s.recruited.includes(o.id));
  const sectorName=(id:string)=>campaignPlace(id)?.name??id;
  const local=hired.filter(o=>s.operativeState[o.id].alive&&operativeLocation(s,o.id)===s.location);
- const careBusy=s.squad.some((id:number)=>['doctor','patient','rest'].includes(s.operativeState[id].assignment));
+ const careBusy=s.squad.some((id:number)=>careAssignmentBusy(s.operativeState[id].assignment));
  const chosen=members.filter(id=>local.some(o=>o.id===id));
  return <section className="squads-panel" aria-labelledby="squads-title"><div className="section-intro"><p className="eyebrow">ORDEN DE BATALLA</p><h2 id="squads-title">Escuadras en campaña</h2><p>Cada escuadra conserva su ubicación. Los combatientes deben reunirse en un mismo sector para cambiar de unidad.</p></div>
   <div className="squads-cards">{squads.map((q:any)=><article key={q.id} className={q.id===s.activeSquadId?'squad-card selected':'squad-card'}><div className="squad-card-title"><h3>{q.name}</h3><span>{q.members.length}/6</span></div><p>{sectorName(q.location)}</p><ol>{Array.from({length:6},(_,i)=>{const op=roster.find(o=>o.id===q.members[i]);return <li key={i} className={op?'':'vacant'}>{op?op.name:'Plaza libre'}</li>;})}</ol><button className={q.id===s.activeSquadId?'gold-button':'line-button'} disabled={q.id===s.activeSquadId} onClick={()=>dispatch({type:'selectSquad',id:q.id})}>{q.id===s.activeSquadId?'✓ Escuadra activa':'Tomar el mando'}</button></article>)}</div>

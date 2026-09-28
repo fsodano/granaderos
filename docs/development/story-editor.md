@@ -266,7 +266,10 @@ Las heridas y la visión nocturna modifican los ritmos base de descanso.
 El precio de las vendas rige tanto para la compra por cantidad como para la
 reposición de provisiones del taller. La atención sigue gastando una venda por
 hora de trabajo. Detener la hemorragia tiene prioridad sobre recuperar salud.
-La atención necesita presencia segura y real en la misma celda.
+La atención necesita presencia segura y real en la misma celda. Los mismos
+valores rigen para **Médico de milicias**, que atiende a los heridos de la
+guarnición con sus propias vendas. La pantalla de campaña muestra su salud.
+[Atención a milicias verificada](../verification/strategic-militia-care.md).
 
 **Restaurar atención y descanso originales** recupera los valores originales.
 Podés deshacerlo. Las partidas iniciadas conservan sus reglas y las horas de

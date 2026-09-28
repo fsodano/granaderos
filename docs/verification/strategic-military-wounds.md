@@ -82,8 +82,12 @@ casualties, victory and saved continuation. The final complete source passes
 **932/932 tests**, zero failures or skips (220,608.377 ms). Types, production
 export (722 files, 632 asset references), all 36 baseline comparisons and the
 documentation audit pass. The audit retains all 50 original and 87 parity rows
-within 226 requirements and 65 evidence records. Exact-head GitHub CI remains
-required before merge; this delivery is not yet on main.
+within 226 requirements and 65 evidence records.
+
+Published through [PR #88](https://github.com/fsodano/granaderos/pull/88).
+[Exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36459085707/job/109052809002)
+passed for `584fe59c67a8a9db9f05bdea6566be12c8336abe`. The PR merged on
+2026-09-28 at 17:46:01 UTC as `80b5bf2dd28ff9a331cb55666bbc18be2713de81`.
 
 ## Limits
 
