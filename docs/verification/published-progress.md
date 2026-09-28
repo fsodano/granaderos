@@ -5,7 +5,7 @@
 Updated 2026-09-28. **The complete game and story editor are not accepted.**
 
 Read [the design](../specification/game-design.md) for the target and [the formal audit](formal-audit-2026-09-27.md) for evidence and limits.
-The published baseline assessed here is `c64120315a81360c902552555e0d838b5f8b257f`. Later PRs must update this register.
+The published baseline assessed here is `d3e7d078653f9dd15c98926f57cec18430a25727`. Later PRs must update this register.
 The larger local sources and the editor prototype are separate from published main.
 
 ## Verified results and current failures
@@ -29,7 +29,7 @@ The advanced local suite has three independent failure points; a failed child al
 - UNVERIFIED: available evidence does not establish acceptance.
 - SUPERSEDED: an explicit design change replaced the old requirement.
 
-The register retains 207 entries: 56 VERIFIED, 102 PARTIAL, 35 LOCAL_ONLY, 2 MISSING, 9 FAILED, 2 UNVERIFIED, 1 SUPERSEDED.
+The register retains 208 entries: 57 VERIFIED, 102 PARTIAL, 35 LOCAL_ONLY, 2 MISSING, 9 FAILED, 2 UNVERIFIED, 1 SUPERSEDED.
 Rows overlap in scope. Neither these counts nor test totals are a completion percentage.
 
 Edit [requirements.json](requirements.json), record exact source/checks and remaining gaps, then run `npm run docs:progress` and `npm run audit:docs`. Update the design for policy changes. A dated audit stays an evidence snapshot. Do not mark a local branch as published or close a broad row from one passing fixture.
@@ -51,6 +51,7 @@ Finish one bounded feature, its controls and persistence, update evidence, pass 
 
 | ID | Requirement | Status | Published scope | Remaining work / acceptance |
 |---|---|---|---|---|
+| WORKSHOP-01 | Require actual local presence for paid workshop replenishment and repair | VERIFIED | The selected workshop can service only a person actually present there. The armory shows the person location and blocks remote service with a reason. Explicit dressing purchases share the same eligibility. | Separate two serving people by real travel; reject distant service without changing state; return and pay through normal controls; retain the actual supplies and condition in saves and deployment. |
 | CARE-01 | Assign serving doctors and patients for finite hourly care through campaign controls | VERIFIED | Doctors first stop bleeding, then restore health in the same safe controlled cell. Personal dressings and energy limit treatment; supplied local workshops sell explicit quantities. Medical assignments prevent marching or deployment and cannot overlap militia instruction. | Use actual assignment and time controls, spend finite supplies, buy replacements, save and deploy recovered personnel; reject remote care and invalid work without granting health or supplies. |
 | POST-01 | Load, edit and finish a complete independent campaign package | VERIFIED | La ruta de las postas is a downloadable three-chapter scenario with thirteen independent identities, paid service, two actual locality battles, world contacts, a timed objective and its own ending. The editor loads it with undo and the verified seed. | Use a portable package without engine-specific scenario code; launch and complete its declared beginning, middle and ending through actual campaign actions, with losses, costs, saved continuation and a real failure path. |
 | AMMOSAVE-01 [PR](https://github.com/fsodano/granaderos/pull/67) | Save every supported authored cartridge allocation through actual deployment | VERIFIED | Pending squad reserve validation follows the pinned cartridge allowance instead of a fixed ten-round maximum. Authored allocations through 100 save in exploration and combat; out-of-range reserves remain rejected. Merged through PR #67 after exact-head CI. | Launch a valid authored allowance above the old reserve cap, enter a real scene, save/reload, expend ammunition and settle once without rejecting valid quantities or replenishing spent rounds. |
@@ -334,5 +335,6 @@ Finish one bounded feature, its controls and persistence, update evidence, pass 
 | E-CARTRIDGE-SAVE | [Record](authored-cartridge-save.md) · [CI](https://github.com/fsodano/granaderos/actions/runs/36414937984/job/108903700414) | A normal authored campaign with 14 initial cartridges reproduced a stale ten-reserve save limit. Pending deployment validation now uses its pinned rule. Real exploration and combat deployments cover 0, 10, 11, 14 and 100, invalid excess reserves, paid issue/refund and duplicate settlement rejection. Actual firing, reload and active save preserve consumption with a 100-round allocation. PR #67 merged after CI passed at 1f77280fc516baede6f694233789a769a1f3a9b9. |
 | E-POST-CAMPAIGN | [Record](independent-post-campaign.md) | A downloadable independent three-chapter package completes actual paid recruitment, two battles, local dialogues, replacements, workshop service, finite care, three permanent losses and the saved return ending. Replay, midpoint saves, post-victory reentry, real deadline failure, content pinning and mounted example load/edit/undo/launch are covered. One seed/strategy is accepted; stock geography/opposition and advanced integration remain separate. |
 | E-STRATEGIC-CARE | [Record](strategic-medical-care.md) | Hired doctors and patients share an exact safe cell and spend time, energy and finite dressings. Actual campaign controls assign, advance and purchase; saves retain wounds, stocks and work. A real injured resident is recruited, treated, dismissed and encountered with recovered health. Prepared wounds are declared in the other fixtures. Advanced rest, bleeding, militia care, physical custody and northern relief remain open. |
+| E-LOCAL-WORKSHOP | [Record](local-workshop-service.md) | A two-squad paid-hire route reproduced remote repair and replenishment. Shared workshop eligibility now checks the recipient exact location, availability, control and supply. Real return travel, payment, repeat rejection, saves, deployment and mounted armory controls pass. Wear is a declared prepared fixture; timed repair, stock custody and armory transfers remain separate. |
 
 Per-row acceptance, local assessment, source notes and test paths are retained in [the register](requirements.json). The full 87-row historical parity assessment is preserved in the audit; its old implementation claims are not fresh certification. Earlier milestones remain in [the historical log](../archive/published-progress-through-pr28.md).

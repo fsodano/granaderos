@@ -236,6 +236,10 @@ three energy and adds two fatigue. It stops bleeding first; later hours restore
 hour. Assigned staff cannot march, deploy or instruct militia. Supplies can be
 purchased locally at a supplied workshop in quantities of 1–20 for ten pesos each.
 Assignments and quantities persist; service changes cannot grant new stock.
+Workshop replenishment and weapon repair also require the recipient to be at
+the exact selected workshop. Selecting another squad cannot service someone
+remotely. The armory shows the actual person location and unavailable-service
+reason; the campaign rechecks it before charging.
 These are declared tuning values, not a claim of exact JA2 numerical behavior.
 Advanced care, strategic bleeding, rest/sleep and physical kit custody retain
 separate acceptance requirements. See [care verification](../verification/strategic-medical-care.md).
