@@ -1,5 +1,5 @@
 import {dialoguePackage} from './dialogue-fixture.mjs';
-import {readyLocal,localId,localNPC,tactical as localTactical} from './local-contract-fixture.mjs';
+import {readyLocal,localId,localNPC,tactical as localTactical,order as localOrder,leave as leaveLocal,visit as visitLocal} from './local-contract-fixture.mjs';
 import {register} from 'node:module';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -99,6 +99,13 @@ test('the actual conversation follows authored choices, rejects a second stale c
  await act(async()=>{north.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true}));river.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true}));});
  assert.equal(m.read().campaign.lastConversation.dialogueNode,'north');assert.match(m.document.querySelector('[role="status"]').textContent,/conversación cambió/);assert.deepEqual(m.saved(),pair(m.read()));
  await m.click('Volvamos a las opciones.');await m.click('Prefiero conocer el río.');assert.equal(m.read().campaign.lastConversation.dialogueNode,'river');assert.match(m.document.querySelector('[aria-label="Conversación"]').textContent,/Seguí la ribera al amanecer/);assert.deepEqual(m.saved(),pair(m.read()));
+});
+
+test('the mounted conversation reveals a day-gated choice when the actual tactical clock crosses midnight',async t=>{
+ const d=dialoguePackage();d.characters.at(-1).encounter.dialogue.nodes[0].choices[0].conditions=[{type:'day',min:2,max:null}];let p=readyLocal(undefined,d);
+ let s=localOrder(leaveLocal(p),{type:'wait',hours:23-p.campaign.hour});p=visitLocal(s);const n=localNPC(p.battle),unit=p.battle.units.find(u=>u.side==='player'),spot=getReachable(p.battle,unit.id).find(t=>Math.abs(t.x-n.x)+Math.abs(t.y-n.y)===1);assert.ok(spot);if(spot.cost)p=localTactical(p,{type:'move',x:spot.x,y:spot.y});
+ const m=await mount(t,p),npc=m.document.querySelector('[data-unit-id="authored-alma-contract"]');assert.ok(npc);await act(async()=>npc.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));await m.click('Conversar');assert.ok(!m.document.querySelector('[aria-label="Conversación"]').textContent.includes('Contame sobre el norte.'));
+ await act(async()=>{for(let i=0;i<6;i++)m.issue({type:'rest'});});assert.ok(m.read().campaign.hour>=24);assert.match(m.document.querySelector('[aria-label="Conversación"]').textContent,/Contame sobre el norte/);assert.deepEqual(m.saved(),pair(m.read()));
 });
 
 async function mount(t,saved){

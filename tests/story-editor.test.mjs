@@ -1,3 +1,5 @@
+import {dialoguePackage} from './dialogue-fixture.mjs';
+import {dialogueConditionsMet} from '../game/dialogue-conditions.js';
 import {secureArea} from './controlled-area-fixture.mjs';
 import {register} from 'node:module';
 import test from 'node:test';
@@ -380,4 +382,16 @@ test('the editor builds connected dialogue passages with dependency protection, 
  let battle=enterSector({...campaign.pendingBattle,hour:campaign.hour}),npc=battle.npcs.find(n=>n.contentId===copy.id),unit=battle.units.find(u=>u.side==='player'),tile=getReachable(battle,unit.id).find(t=>Math.abs(t.x-npc.x)+Math.abs(t.y-npc.y)===1);assert.ok(tile);battle=actBattle(battle,{type:'move',unitId:unit.id,x:tile.x,y:tile.y});assert.equal(battle.lastError,null);({campaign,battle}=syncBattleTime(campaign,battle));
  campaign=dispatchCampaign(campaign,{type:'talkNPC',npcId:npc.id,unitId:unit.id,approach:'dialogue',sectorState:battle});assert.equal(campaign.lastError,null);assert.equal(campaign.lastConversation.text,'Elegí tu camino.');
  campaign=dispatchCampaign(campaign,{type:'talkNPC',npcId:npc.id,unitId:unit.id,approach:'dialogue',dialogueNode:'start',dialogueChoice:'choice-1',sectorState:battle});assert.equal(campaign.lastError,null);assert.equal(decodeSave(encodeSave(campaign,battle)).campaign.lastConversation.text,'La posta está al norte.');
+});
+
+
+test('the editor authors choice conditions, protects character references, undoes and launches their real rules',async t=>{
+ const m=await mount(t,JSON.stringify(dialoguePackage())),draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
+ await m.input(m.document.querySelector('input[type="search"]'),'alma-contract');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Agregar condición'));await m.input(m.label('Desde el día'),2);await m.input(m.label('Hasta el día (opcional)'),3);await m.click(m.button('Agregar condición'));
+ let field=m.document.querySelector('[aria-label="Condición 2"]');await m.input(field.querySelector('select'),'character');field=m.document.querySelector('[aria-label="Condición 2"]');await m.input(field.querySelectorAll('select')[1],'person-100');await m.input(field.querySelectorAll('select')[2],'serving');
+ await m.click(m.button('Deshacer'));assert.equal(m.label('Estado requerido').value,'alive');await m.click(m.button('Rehacer'));assert.equal(m.label('Estado requerido').value,'serving');
+ await m.input(m.document.querySelector('input[type="search"]'),'person-100');await m.click([...m.document.querySelectorAll('.entry-list button')].find(b=>b.querySelector('small')?.textContent==='person-100'));await m.click(m.button('Eliminar'));assert.ok(draft().characters.some(c=>c.id==='person-100'));assert.match(m.document.body.textContent,/Quitá primero las apariciones y condiciones/);
+ await m.input(m.document.querySelector('input[type="search"]'),'alma-contract');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Duplicar personaje'));const copy=draft().characters.at(-1),conditions=copy.encounter.dialogue.nodes[0].choices[0].conditions;
+ assert.deepEqual(conditions,[{type:'day',min:2,max:3},{type:'character',character:'person-100',state:'serving'}]);await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.equal(dialogueConditionsMet(campaign,conditions),false);
+ campaign=dispatchCampaign(campaign,{type:'recruitCivic',id:100,term:'month'});assert.equal(campaign.lastError,null);campaign=dispatchCampaign(campaign,{type:'wait',hours:24});assert.equal(campaign.lastError,null);assert.equal(dialogueConditionsMet(campaign,conditions),true);campaign=dispatchCampaign(campaign,{type:'wait',hours:48});assert.equal(dialogueConditionsMet(campaign,conditions),false);assert.ok(decodeSave(encodeSave(campaign)));
 });

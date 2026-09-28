@@ -136,7 +136,7 @@ export function validateContentPackage(value) {
       check((c.service==='contract'||c.service==='permanent'&&c.monthlyPay===0)&&c.arrivalHours===undefined,c.id,'los habitantes se incorporan en el lugar; el servicio permanente no tiene paga ni demora de llegada.');
       check(record(e)&&['recruitable','greeting','requiredLeadership','requiredLiberated','requiredSector'].every(k=>Object.hasOwn(e,k))&&Object.keys(e).every(k=>['recruitable','greeting','requiredLeadership','requiredLiberated','requiredSector','dialogue'].includes(k)),c.id,'la configuración del encuentro no es válida.');
       if(record(e)){
-        if(e.dialogue!==undefined)try{validateDialogue(e.dialogue);}catch(error){errors.push(`${c.id}: ${error.message}`);}
+        if(e.dialogue!==undefined)try{validateDialogue(e.dialogue,sets.characters);}catch(error){errors.push(`${c.id}: ${error.message}`);}
         check(typeof e.recruitable==='boolean',c.id,'elegí si puede incorporarse.');
         text(e.greeting,`${c.id}.encounter.greeting`,1000,true);
         check(integer(e.requiredLeadership,0,100)&&integer(e.requiredLiberated,0,12),c.id,'los requisitos del encuentro están fuera de rango.');
