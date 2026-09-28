@@ -16,6 +16,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Civilian state verification](civilian-state.md)
 - [Authored resident verification](authored-residents.md)
 - [Death successor verification](death-successors.md)
+- [Registered tactical order synchronization](tactical-order-sync.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 
