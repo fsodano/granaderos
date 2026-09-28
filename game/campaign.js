@@ -27,7 +27,7 @@ export {MISSION_SCENES,missionStatus} from './missions.js';
 import {dailyIncome,artilleryCount,collectSectorCash} from './economy.js';
 export {dailyIncome,incomeSources,incomeSummary} from './economy.js';
 import {speechFor} from './characters.js';
-import {prepareGarrison,returnGarrison,validGarrisons} from './garrison.js';
+import {prepareGarrison,returnGarrison,validGarrisons,reserveMilitiaTrainees,returnMilitiaTrainees,validMilitiaTrainees} from './garrison.js';
 import {tradeQuote,applyPolicy,dailyPolitics,validatePolitics,policyStatus} from './politics.js';
 export {tradeQuote,policyStatus} from './politics.js';
 import {questForNPC,validateQuests} from './quests.js';
@@ -69,7 +69,7 @@ function returnEquipment(s,id,report,snapshot){
 }
 function removeFromService(s,id){
   const location=operativeLocation(s,id);s.operativeState[id].location=location;if(s.operativeState[id].assignment!==undefined)s.operativeState[id].assignment='active';if(s.operativeState[id].recoveryHours!==undefined)s.operativeState[id].recoveryHours=0;s.recruited=s.recruited.filter(x=>x!==id);s.squad=s.squad.filter(x=>x!==id);for(const squad of s.squads)squad.members=squad.members.filter(x=>x!==id);
-  for(const course of s.militiaTraining.filter(t=>t.trainerId===id)){if(course.rank>0&&s.sectors[course.sector].owner==='patriot')s.sectors[course.sector].militia[course.rank-1]+=course.count;}s.militiaTraining=s.militiaTraining.filter(t=>t.trainerId!==id);delete s.contracts[id];
+  for(const course of s.militiaTraining.filter(t=>t.trainerId===id))returnMilitiaTrainees(s,course);s.militiaTraining=s.militiaTraining.filter(t=>t.trainerId!==id);delete s.contracts[id];
 }
 function signContract(s,op,term){
   const quote=contractQuote(s,op,term??'day');requireThat(quote.available,quote.reason);pay(s,{treasury:quote.price});s.contracts[op.id]={kind:quote.permanent?'patriot':'paid',term:term??'day',started:s.hour,expiresAt:quote.expiresAt,paid:quote.price};
@@ -193,14 +193,14 @@ function tick(s,hours,{joinArrivals=true,stopOnDefeat=true,traveling=[],civilian
     for(const course of [...(s.militiaTraining??[])]){
       if(s.sectors[course.sector].owner!=='patriot'){s.militiaTraining=s.militiaTraining.filter(t=>t!==course);note(s,'La ocupación enemiga dispersa un curso de milicias.');continue;}
       if(!s.operativeState[course.trainerId]?.alive||operativeLocation(s,course.trainerId)!==course.sector||!isSupplied(s,course.sector)||!militiaEligibility(s,course.sector).eligible)continue;
-      course.remaining--;if(course.remaining<=0){s.sectors[course.sector].militia[course.rank]+=course.count;s.militiaTraining=s.militiaTraining.filter(t=>t!==course);note(s,`Tres milicianos completan su instrucción en ${sector(course.sector).name}.`);}
+      course.remaining--;if(course.remaining<=0){if(course.rank>0)returnMilitiaTrainees(s,course,true);else s.sectors[course.sector].militia[0]+=course.count;s.militiaTraining=s.militiaTraining.filter(t=>t!==course);note(s,`Tres milicianos completan su instrucción en ${sector(course.sector).name}.`);}
     }
     const careRoster=rosterFor(s);advanceMedicalCare(s,careRoster,{traveling});
     const woundDeaths=advanceMilitaryWounds(s,careRoster);
     for(const id of woundDeaths){
       s.operativeState[id].location=operativeLocation(s,id);
       s.squad=s.squad.filter(member=>member!==id);for(const squad of s.squads)squad.members=squad.members.filter(member=>member!==id);
-      for(const course of s.militiaTraining.filter(t=>t.trainerId===id))if(course.rank>0&&s.sectors[course.sector].owner==='patriot')s.sectors[course.sector].militia[course.rank-1]+=course.count;
+      for(const course of s.militiaTraining.filter(t=>t.trainerId===id))returnMilitiaTrainees(s,course);
       s.militiaTraining=s.militiaTraining.filter(t=>t.trainerId!==id);
       note(s,`${careRoster.find(o=>o.id===id).name} fallece por sus heridas.`);
     }
@@ -412,11 +412,11 @@ export function dispatchCampaign(previous,action){
         requireThat(trainer&&s.recruited.includes(trainerId)&&s.operativeState[trainerId]?.alive&&operativeLocation(s,trainerId)===at,'Elegí un instructor contratado y presente en el sector.');
         requireThat(trainer.leadership>=30,'El instructor necesita al menos 30 de liderazgo.');requireThat(!careAssignmentBusy(s.operativeState[trainerId]?.assignment),'Poné al combatiente en servicio antes de asignarlo a las milicias.');requireThat(!militiaAssignment(s,trainerId),'El instructor ya dirige otro curso.');requireThat(!s.militiaTraining.some(t=>t.sector===at),'Ya hay un curso activo en ese sector.');
         const region=s.sectors[at];requireThat(rank===0||region.militia[rank-1]>=MILITIA_COHORT,'La promoción necesita tres milicianos del grado anterior.');requireThat(rank>0||region.militia.reduce((a,b)=>a+b,0)+MILITIA_COHORT<=MILITIA_LIMIT,'La guarnición admite hasta sesenta milicianos.');
-        const course=militiaCourse(trainer,rank);pay(s,course.cost);if(rank>0)region.militia[rank-1]-=course.count;
-        s.militiaTraining.push({sector:at,rank,trainerId,count:course.count,remaining:course.hours,duration:course.hours,started:s.hour});note(s,`${trainer.name} inicia un curso de milicias de ${course.hours} horas en ${sector(at).name}.`);break;
+        const course=militiaCourse(trainer,rank);pay(s,course.cost);const trainees=rank>0?reserveMilitiaTrainees(s,at,rank,course.count):undefined;if(rank>0)region.militia[rank-1]-=course.count;
+        s.militiaTraining.push({...(trainees?{trainees}:{}),sector:at,rank,trainerId,count:course.count,remaining:course.hours,duration:course.hours,started:s.hour});note(s,`${trainer.name} inicia un curso de milicias de ${course.hours} horas en ${sector(at).name}.`);break;
       }
       case 'cancelMilitia':{
-        const course=s.militiaTraining.find(t=>t.sector===action.sector);requireThat(course,'No hay un curso activo en ese sector.');if(course.rank>0&&s.sectors[course.sector].owner==='patriot')s.sectors[course.sector].militia[course.rank-1]+=course.count;s.militiaTraining=s.militiaTraining.filter(t=>t!==course);note(s,'Se suspende el curso. Los soldados regresan a su grado anterior; los suministros de instrucción ya se consumieron.');break;
+        const course=s.militiaTraining.find(t=>t.sector===action.sector);requireThat(course,'No hay un curso activo en ese sector.');returnMilitiaTrainees(s,course);s.militiaTraining=s.militiaTraining.filter(t=>t!==course);note(s,'Se suspende el curso. Los soldados regresan a su grado anterior; los suministros de instrucción ya se consumieron.');break;
       }
       case 'fortify':{const at=action.sector??s.location;requireThat(s.sectors[at]?.owner==='patriot','Solo puedes fortificar sectores propios.');requireThat(s.sectors[at].fort<3,'El sector ya tiene la máxima fortificación.');pay(s,{treasury:150});s.sectors[at].fort++;note(s,`Se refuerzan las defensas de ${sector(at).name}.`);break;}
       case 'attack':{
@@ -483,6 +483,8 @@ export function restoreCampaign(text){
   for(const op of rosterFor(s))validateWeaponCarrier({...s.operativeState[op.id],weapon:op.weapon,blade:op.blade});
   s.missions??={};s.sceneStates??={};s.missionAllies??={};requireThat(validateMissions(s)&&object(s.sceneStates)&&Object.entries(s.sceneStates).every(([id,b])=>id==='yatasto'&&b.sceneId===id&&validateSectorSnapshot(b))&&object(s.missionAllies)&&Object.entries(s.missionAllies).every(([id,u])=>id==='san_lorenzo'&&object(u)&&u.missionAlly===true&&Number(u.id)===57&&typeof u.name==='string'&&Number.isInteger(u.weapon)&&(u.weapon===0||u.weapon>=1800&&u.weapon<=1813)&&Number.isInteger(u.blade)&&u.blade>=1809&&u.blade<=1813&&Number.isInteger(u.ammo)&&u.ammo>=0&&u.ammo<=100000&&Number.isInteger(u.loaded)&&u.loaded>=0&&u.loaded<=(weaponSpecification(u)?.capacity??0)&&Number.isFinite(u.hp)&&u.hp>=0&&u.hp<=100),'Las escenas guardadas son inválidas.');
   s.garrisons??={};s.nextMilitiaId??=20000;requireThat(validGarrisons(s),'Las guarniciones guardadas son inválidas.');
+  requireThat(s.militiaTraining.every(course=>validMilitiaTrainees(s,course)),'Los milicianos en instrucción son inválidos.');
+  const traineeIds=s.militiaTraining.flatMap(course=>(course.trainees??[]).map(u=>u.id));requireThat(new Set(traineeIds).size===traineeIds.length,'Los milicianos en instrucción son inválidos.');
   s.quests??={};requireThat(validateQuests(s.quests,s.hour),'Los encargos guardados son inválidos.');
   s.lastConversation??=null;s.conversations??={};
   requireThat(object(s.conversations)&&Object.entries(s.conversations).every(([id,c])=>[...encounterDefinitions(s),...YATASTO_NPCS].some(n=>n.id===id)&&object(c)&&c.met===true&&['friendly','direct','recruit','quest','mission','dialogue'].includes(c.lastApproach)&&integer(c.hour,0,1e9)&&(c.sector===undefined||validWorldLocation(c.sector)||c.sector==='san_lorenzo')),'Las conversaciones guardadas son inválidas.');
