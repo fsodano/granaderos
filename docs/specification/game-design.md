@@ -628,3 +628,14 @@ mission allies retain manual control. Garrison cards report status, and squad
 members can still treat wounded defenders. Saved return retains identity, wounds,
 casualties, supplies and combat credit. See [bounded combat and control checks](../verification/autonomous-militia-combat.md)
 for the separate patrol, redistribution, artillery and advanced-AI requirements.
+
+### Local militia exploration
+
+During exploration, local militia follow fixed map waypoints with one legal step
+per six-second ambient tick. The step spends energy and lowers a prepared gun,
+without spending AP or refilling any supply. A tired defender rests to preserve
+a 50-energy reserve. Actual sight contact stops the patrol and starts the existing
+combat initiative. Pausing or hiding the game stops ambient time. Complete saved
+continuation preserves patrol cadence and synchronized campaign time. The same
+waypoints support paid movement after lost combat contact. See [verification](../verification/militia-exploration-patrols.md)
+for prepared boundaries, real paid-garrison acceptance and remaining scope.
