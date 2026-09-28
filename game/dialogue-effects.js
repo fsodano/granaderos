@@ -9,7 +9,7 @@ export function validateDialogueEffects(effects,quests,characters){
  const types=new Set();for(const e of effects){
   need(object(e)&&!types.has(e.type),'Las operaciones del diálogo no pueden repetirse.');types.add(e.type);
   if(e.type==='treasury')need(exact(e,['type','operation','amount'])&&['pay','receive'].includes(e.operation)&&Number.isSafeInteger(e.amount)&&e.amount>=1&&e.amount<=1000000,'La operación necesita un importe entre 1 y 1000000 pesos.');
-  else if(e.type==='movement')need(exact(e,['type','character','destination'])&&characters?.has(e.character)&&e.destination==='speaker','El movimiento necesita un personaje y el destino del encuentro.');
+  else if(e.type==='movement')need(exact(e,['type','character','destination'])&&characters?.has(e.character)&&['speaker','routine'].includes(e.destination),'El movimiento necesita un personaje y el destino del encuentro.');
   else need(e.type==='quest'&&exact(e,['type','quest','status'])&&quests?.has(e.quest)&&['active','completed','failed'].includes(e.status),'La operación necesita un encargo y un estado válidos.');
  }
 }
@@ -22,7 +22,7 @@ export function dialogueEffectQuote(s,npc,node,choice,battle=null){
  const movement=choice.effects.find(e=>e.type==='movement'),move=movement&&!used?movementQuote(s,battle,movement,npc):null;
  const reason=used?null:next<0?`Faltan ${-next} pesos.`:next>1000000000?'La tesorería no admite este importe.':transition?.reason??move?.reason??null;
  const labels=[...(move?[move.label]:[]),...(money?[`${amount>0?'Recibir':'Pagar'} ${Math.abs(amount)} pesos · una sola vez`]:[]),...(transition?[`${transition.quest.title}: ${QUEST_STATE_LABELS[quest.status]}${quest.status==='active'&&transition.quest.deadlineHours!=null?` · plazo de ${transition.quest.deadlineHours} h`:''}`]:[])];
- return {available:!reason,reason,label:used?'Operación ya realizada':labels.join(' · '),used,amount,...(movement?{movement:{character:movement.character,name:s.contentCampaign.package.characters.find(c=>c.id===movement.character).name}}:{}),...(quest?{quest:{id:quest.quest,title:transition.quest.title,status:quest.status}}:{})};
+ return {available:!reason,reason,label:used?'Operación ya realizada':labels.join(' · '),used,amount,...(movement?{movement:{character:movement.character,...(movement.destination==='routine'?{destination:'routine'}:{}),name:s.contentCampaign.package.characters.find(c=>c.id===movement.character).name}}:{}),...(quest?{quest:{id:quest.quest,title:transition.quest.title,status:quest.status}}:{})};
 }
 export function applyDialogueEffects(s,npc,node,choice,battle=null){
  const quote=dialogueEffectQuote(s,npc,node,choice,battle);if(!quote)return null;
@@ -51,7 +51,7 @@ export function validateLastDialogueEffect(s,npc,graph,last){
  const receipt=receiptFor(s,npc,effect.node,effect.choice),choice=graph?.nodes.find(n=>n.id===effect.node)?.choices.find(c=>c.id===effect.choice);
  need(receipt&&receipt.amount===effect.amount&&choice?.next===last.dialogueNode,'La operación de la conversación guardada no tiene su registro.');
  const movement=choice.effects.find(e=>e.type==='movement'),person=s.contentCampaign?.package.characters.find(c=>c.id===movement?.character);
- need(movement?exact(effect.movement,['character','name'])&&effect.movement.character===movement.character&&effect.movement.name===person?.name:effect.movement===undefined,'El movimiento guardado no coincide con el diálogo.');
+ need(movement?exact(effect.movement,['character','name',...(movement.destination==='routine'?['destination']:[])])&&effect.movement.character===movement.character&&effect.movement.name===person?.name&&(movement.destination!=='routine'||effect.movement.destination==='routine'):effect.movement===undefined,'El movimiento guardado no coincide con el diálogo.');
  const quest=choice.effects.find(e=>e.type==='quest'),definition=s.contentCampaign?.package.quests?.find(q=>q.id===quest?.quest);
  need(quest?exact(effect.quest,['id','title','status'])&&effect.quest.id===quest.quest&&effect.quest.title===definition?.title&&effect.quest.status===quest.status:effect.quest===undefined,'El resultado guardado del encargo no coincide con el diálogo.');
 }
