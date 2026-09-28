@@ -44,11 +44,17 @@ documentation audit (194 requirements, all 50 original and 87 parity rows,
 33 evidence records); 114 changed local links. Exact-head GitHub checks are
 required before merge.
 
+Accepted in [PR #56](https://github.com/fsodano/granaderos/pull/56) at
+`a16f58ee128d75518ec940c60e5be77ca9105048`, with
+[successful exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36388812936/job/108819869666).
+Merged into `main` as `9acd4fe28a627586307c2cf6ccd70a1b6139562e`.
+
 ## Limits
 
 FOUNDRY-01 configures one strategic project. It does not create or move tactical
 buildings, rename the geographic map, change original missions or replace their
-Cuyo control, artillery and fortification requirements. Other economic services,
-project-based chapter conditions, artillery authoring, faction/world composition
-and complete alternate-campaign acceptance remain open. No complete historical
+Cuyo control, artillery and fortification requirements. The subsequent [project conditions delivery](project-conditions.md) connects
+preparation/funding to chapters and dialogue. Other economic services, artillery
+authoring, faction/world composition and complete alternate-campaign acceptance
+remain open. No complete historical
 campaign, live browser session or sustained loaded-combat performance is claimed.

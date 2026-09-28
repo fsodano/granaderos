@@ -37,6 +37,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Independent campaign casts](campaign-cast.md)
 - [Assigned strategic campaign roles](campaign-roles.md)
 - [Authored foundry project and workshop](foundry-project.md)
+- [Project conditions in chapters and dialogue](project-conditions.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 

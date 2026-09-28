@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "b212d117b421c054596212aa74075758902602c6",
+  "baseline": "616af1964f746e9e86799cee31b8048609238fe7",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -194,7 +194,13 @@
     {
       "id": "E-FOUNDRY-PROJECT",
       "path": "docs/verification/foundry-project.md",
-      "description": "Authored locality, project/army names and two prices drive real preparation, funding, loyalty and repair/resupply. Paid arrival in Salta and a Jujuy workshop route save without Mendoza control. Mounted authoring and actual treasury payments are covered. Wear, occupation, supply cuts and insufficient funds use prepared states. Original Cuyo gates, tactical buildings and full campaign composition remain separate."
+      "description": "Authored locality, project/army names and two prices drive real preparation, funding, loyalty and repair/resupply. Paid arrival in Salta and a Jujuy workshop route save without Mendoza control. Mounted authoring and actual treasury payments are covered. Wear, occupation, supply cuts and insufficient funds use prepared states. Original Cuyo gates, tactical buildings and full campaign composition remain separate.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36388812936/job/108819869666"
+    },
+    {
+      "id": "E-PROJECT-CONDITIONS",
+      "path": "docs/verification/project-conditions.md",
+      "description": "Completed or pending foundry/funding steps drive authored chapters, failure and dialogue eligibility. Real paid arrival, preparation, contract expiry and funding reach a saved ending; a real resident quest rejects premature rewards and completes after funding and scene settlement. Mounted authoring, undo and copying retain the shared condition. Arbitrary projects and full campaign composition remain open."
     }
   ],
   "queue": [
@@ -519,6 +525,32 @@
         "tests/campaign-roles.test.mjs",
         "tests/campaign-headquarters.test.mjs",
         "tests/campaign-web.test.mjs"
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/56"
+    },
+    {
+      "id": "PROJECTS-01",
+      "group": "Published deliveries",
+      "requirement": "Use completed or pending strategic projects as chapter and dialogue conditions",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Shared conditions expose actual foundry organization and army funding, completed or pending. Hiring alone does not satisfy them. Ordered chapters and failure use the same state as rechecked dialogue choices. Completion persists after the engineer leaves. Editor controls author, undo and copy the condition; saves pin definitions and completion receipts.",
+      "local": "Two existing strategic projects; conditions do not create or pay for project effects.",
+      "remaining": "",
+      "acceptance": "Author both project and completion choices; launch real preparation/funding to ordered saved victory; block a premature dialogue reward and complete its real quest after payment and re-entry; retain completion after actual contract expiry; verify failure precedence and reject invalid or changed definitions.",
+      "evidence": [
+        "E-PROJECT-CONDITIONS"
+      ],
+      "parents": [
+        "STORY-03",
+        "STORY-05",
+        "STORY-07"
+      ],
+      "testFiles": [
+        "tests/project-conditions.test.mjs",
+        "tests/dialogue-conditions.test.mjs",
+        "tests/campaign-story.test.mjs",
+        "tests/story-editor.test.mjs"
       ]
     },
     {
@@ -1920,7 +1952,7 @@
       "requirement": "Branching dialogue, conditions, effects and quests",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "New residents have authored branching dialogue with saved progress. Conditions cover day, pesos, locality control, character and quest state. Choices apply one-time treasury operations and shared quest transitions with saved evidence. Different residents can participate. The journal reports accepted objectives, deadlines and failure causes. Overdue quests or confirmed deaths of required characters fail active objectives once. Historical conversations keep their existing rules. Dialogue choices can also call another authored resident to a persistent meeting point in the loaded sector. A dialogue condition can require actual conscious arrival at the latest local meeting before applying its effects. A dialogue can end its own or another resident meeting and return the actor to its routine, atomically with quest and money effects.",
+      "published": "New residents have authored branching dialogue with saved progress. Conditions cover day, pesos, locality control, character and quest state. Choices apply one-time treasury operations and shared quest transitions with saved evidence. Different residents can participate. The journal reports accepted objectives, deadlines and failure causes. Overdue quests or confirmed deaths of required characters fail active objectives once. Historical conversations keep their existing rules. Dialogue choices can also call another authored resident to a persistent meeting point in the loaded sector. A dialogue condition can require actual conscious arrival at the latest local meeting before applying its effects. A dialogue can end its own or another resident meeting and return the actor to its routine, atomically with quest and money effects. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions.",
       "local": "Authored resident quest transitions are accepted in the bounded published scope. Advanced historical role and objective systems are not imported.",
       "remaining": "Add item/escort/objective and other gameplay effects, historical role bindings and their receipts; extend authoring to historical conversations without bypassing campaign gates.",
       "acceptance": "Author and finish alternate quest branches through normal controls, including failures and saves.",
@@ -1935,7 +1967,8 @@
         "E-QUEST-SURVIVAL",
         "E-DIALOGUE-MOVEMENTS",
         "E-MEETING-ARRIVAL",
-        "E-MEETING-RELEASE"
+        "E-MEETING-RELEASE",
+        "E-PROJECT-CONDITIONS"
       ]
     },
     {
@@ -1961,7 +1994,7 @@
       "requirement": "Configurable game rules and campaign roles",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss. Import port, disabled orders and delivery windows are configurable. Ordered campaign chapters, global completion/failure conditions and ending text are authored separately from historical progression. Historical profiles can be copied without their implicit roles and removed from an authored campaign. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward.",
+      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss. Import port, disabled orders and delivery windows are configurable. Ordered campaign chapters, global completion/failure conditions and ending text are authored separately from historical progression. Historical profiles can be copied without their implicit roles and removed from an authored campaign. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions.",
       "local": "Larger systems still embed many rules and historical identity gates.",
       "remaining": "Extract remaining care, combat, economy, character progression, opposition and historical campaign identity rules.",
       "acceptance": "Change supported rules and replace role identities through the editor, then run/save the resulting campaign.",
@@ -1975,7 +2008,8 @@
         "E-CAMPAIGN-STORY",
         "E-CAMPAIGN-CAST",
         "E-CAMPAIGN-ROLES",
-        "E-FOUNDRY-PROJECT"
+        "E-FOUNDRY-PROJECT",
+        "E-PROJECT-CONDITIONS"
       ]
     },
     {
@@ -2003,7 +2037,7 @@
       "requirement": "Campaign composition and an independent second campaign",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Initial funds, cartridge allotments, locality control/loyalty, headquarters and imports are configurable. Optional authored chapters replace historical progression with ordered conditions and persistent victory/defeat, driven by real campaign actions. Original world and role composition remain. A wholly authored cast now completes a short hire/encounter/quest/ending route without historical roster identities. Original generic residents are optional. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward.",
+      "published": "Initial funds, cartridge allotments, locality control/loyalty, headquarters and imports are configurable. Optional authored chapters replace historical progression with ordered conditions and persistent victory/defeat, driven by real campaign actions. Original world and role composition remain. A wholly authored cast now completes a short hire/encounter/quest/ending route without historical roster identities. Original generic residents are optional. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions.",
       "local": "No second complete campaign accepted.",
       "remaining": "Compose and reassign remaining recruitment/economic roles and strategic function values, factions, opposition commanders, diplomacy, calendar events and world geography; finish an independent second full campaign.",
       "acceptance": "Build and finish a distinct campaign with no engine source changes.",
@@ -2015,7 +2049,8 @@
         "E-CAMPAIGN-STORY",
         "E-CAMPAIGN-CAST",
         "E-CAMPAIGN-ROLES",
-        "E-FOUNDRY-PROJECT"
+        "E-FOUNDRY-PROJECT",
+        "E-PROJECT-CONDITIONS"
       ]
     },
     {
@@ -3804,13 +3839,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "b212d117b421c054596212aa74075758902602c6",
-    "total": 774,
-    "passed": 774,
+    "source": "616af1964f746e9e86799cee31b8048609238fe7",
+    "total": 779,
+    "passed": 779,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-FOUNDRY-PROJECT"
+    "evidenceId": "E-PROJECT-CONDITIONS"
   }
 }
