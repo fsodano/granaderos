@@ -669,7 +669,7 @@ El taller guarda cada pieza con su munición y su recarga. Recomprarla la devuel
 al depósito local. Una venta o compra repetida no duplica la pieza ni el pago.
 Los precios de cada modelo se toman de **Armas → Artillería**. Por ahora, el taller
 empieza con 1.200 pesos, paga 40% del precio (30% en Córdoba, 50% en Mendoza) y
-cobra 80% para recomprar. Estos porcentajes y fondos todavía no se editan. No hay
+cobra 80% para recomprar. Estos porcentajes y fondos se pueden cambiar en las reglas siguientes. No hay
 venta a distancia ni renovación automática de caja. [Verificación](../verification/finite-artillery-trading.md).
 
 
@@ -681,3 +681,19 @@ el transporte disponibles. Se aplican las horas y el precio que definiste en las
 reglas de traslado. No hace falta emplazarla primero en un combate. Al llegar,
 conserva su identidad, carga, reservas y recarga incompleta. Elegila en la batería
 cuando la escuadra alcance el nuevo depósito. [Verificación](../verification/depot-artillery-transport.md).
+
+
+## Reglas de comercio de artillería
+
+En **Reglas → Comercio de artillería** podés permitir las operaciones, definir
+los fondos iniciales de cada taller y elegir los porcentajes de compra y recompra.
+**Agregar precio local** permite elegir una localidad y un porcentaje distinto de
+compra; también podés cambiarla o quitarla. Esa excepción solo se usa si existe
+un taller allí. No crea instalaciones.
+
+El taller recibe los fondos una vez. Las operaciones cambian su caja y guardar
+no la restaura. Cero pesos o cero por ciento permite operaciones sin pago. Si el
+taller paga más al comprar que al revender, beneficia al jugador hasta agotar sus
+fondos. La armería muestra el pago local y la caja reales. Deshacer, rehacer,
+restaurar y la validación funcionan; los cambios del borrador no alteran partidas
+iniciadas. [Verificación](../verification/authored-artillery-trading.md).

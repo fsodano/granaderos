@@ -784,3 +784,15 @@ apply. The action explicitly selects field or depot custody and removes that
 exact gun once. Full saves and later attack entry retain its finite load and
 unfinished work. This permits returning a gun from headquarters to the front
 without inventing an intermediate battle. [Verification](../verification/depot-artillery-transport.md).
+
+
+### Authored artillery commerce
+
+Campaigns can pin workshop starting cash, trade permission, general buying and
+repurchase percentages and named-locality buying overrides. A shop's configured
+cash is issued once and then preserved through transactions and saves. Zero rates
+allow free transfers; a generous buying subsidy stops when the finite shop cash
+cannot fund another offer. Integer-percent arithmetic gives exact peso rounding.
+Editor overrides change prices at existing workshops and do not create new
+facilities. The armory shows and executes the same actual rates. See
+[verification](../verification/authored-artillery-trading.md).
