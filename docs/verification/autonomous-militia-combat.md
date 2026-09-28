@@ -64,3 +64,11 @@ artillery crews, scavenging/sharing, custody and broader defense routes remain
 separate work. The larger militia and JA2-S05 rows stay partial. Existing hired
 turns and the advanced development-workspace documents are not replaced by this
 bounded delivery.
+
+## Publication
+
+[PR #95](https://github.com/fsodano/granaderos/pull/95) merged on 28 September
+2026 at 20:09:41 UTC as `47c95c458ee57f29307a07ae4082b628056efce1`, after
+[successful exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36475009290/job/109106406963)
+for `49d5279a315e798171df40cb99425c554ed41d2d` (completed at 20:08:51 UTC).
+The published scope is the bounded combat and control behavior above.
