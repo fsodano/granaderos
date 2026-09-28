@@ -181,10 +181,10 @@ test('water placements cannot launch as land encounters',async t=>{
 
 
 test('the weapon catalogue shows its existing images and search filters the list',async t=>{
- const m=await mount(t);await m.click(m.button('Armas de fuego'));
+ const m=await mount(t);await m.click(m.button('Armas'));
  const definitions=defaultContentPackage().weapons;
  assert.equal(m.document.querySelectorAll('.entry-list img').length,definitions.length);
- for(const img of m.document.querySelectorAll('.entry-list img'))assert.match(img.getAttribute('src'),/^\/art\/weapon-180[0-8]\.png$/);
+ for(const img of m.document.querySelectorAll('.entry-list img'))assert.match(img.getAttribute('src'),/^\/art\/weapon-18(0[0-9]|1[0-3])\.png$/);
  await m.input(m.document.querySelector('input[type="search"]'),'Baker');
  const entry=m.document.querySelector('.entry-list button');assert.ok(entry);assert.equal(m.document.querySelectorAll('.entry-list button').length,1);
  await m.click(entry);assert.equal(m.document.querySelector('.weapon-preview').getAttribute('src'),'/art/weapon-1802.png');
@@ -252,7 +252,7 @@ test('the mounted bulletin hires to a chosen port, redirects and cancels with on
 
 
 test('the editor creates a firearm with a custom image and launches its actual campaign assignment',async t=>{
- const m=await mount(t);await m.click(m.button('Armas de fuego'));await m.click(m.button('+ Crear arma'));
+ const m=await mount(t);await m.click(m.button('Armas'));await m.click(m.button('+ Crear arma'));
  await m.input(m.label('Nombre'),'Pistola de prueba');
  await m.input(m.label('Familia de funcionamiento'),'1805');
  await m.input(m.label('Daño'),37);await m.input(m.label('Capacidad de carga'),3);await m.input(m.label('Peso (kg)'),2);await m.input(m.label('Precio (pesos)'),180);
@@ -262,7 +262,7 @@ test('the editor creates a firearm with a custom image and launches its actual c
  let draft=parseContentPackage(m.dom.window.localStorage.getItem(draftKey));const weapon=draft.weapons.find(w=>w.name==='Pistola de prueba');assert.ok(weapon);assert.match(weapon.art,/^data:image\/png;base64,/);
  assert.equal(m.document.querySelector('.weapon-preview').getAttribute('src'),weapon.art);
  await m.click(m.button('Personajes'));await m.input(m.document.querySelector('input[type="search"]'),'person-100');await m.click(m.document.querySelector('.entry-list button'));
- await m.input(m.label('Arma de fuego'),weapon.id);await m.click(m.button('Iniciar campaña con estas fichas'));
+ await m.input(m.label('Arma principal'),weapon.id);await m.click(m.button('Iniciar campaña con estas fichas'));
  let campaign=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY)).campaign;
  campaign=dispatchCampaign(campaign,{type:'recruitCivic',id:100,term:'week'});assert.equal(campaign.lastError,null);
  campaign=dispatchCampaign(campaign,{type:'wait',hours:6});assert.equal(campaign.lastError,null);
@@ -285,7 +285,7 @@ test('the mounted armory purchases and equips the selected authored firearm inst
 
 test('the editor assigns troop firearms with undo, dependency protection and a real attack launch',async t=>{
  const d=defaultContentPackage();d.weapons.push({...d.weapons.find(w=>w.template===1805),id:'tropa-editor',name:'Arma de las tropas',capacity:4,damage:67,art:'/art/weapon-1808.png'});
- const m=await mount(t,JSON.stringify(d));await m.click(m.button('Armas de fuego'));
+ const m=await mount(t,JSON.stringify(d));await m.click(m.button('Armas'));
  const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
  await m.input(m.label('Oficiales enemigos'),'tropa-editor');await m.input(m.label('Cívicos'),'tropa-editor');await m.input(m.label('Veteranos enemigos'),'');
  assert.equal(draft().oppositionEquipment.veteran,null);await m.click(m.button('Deshacer'));assert.equal(draft().oppositionEquipment.veteran,'firearm-1801');await m.click(m.button('Rehacer'));assert.equal(draft().oppositionEquipment.veteran,null);
@@ -297,7 +297,7 @@ test('the editor assigns troop firearms with undo, dependency protection and a r
 });
 test('an older draft can enable troop authoring without missing references',async t=>{
  const d=defaultContentPackage();delete d.oppositionEquipment;delete d.militiaEquipment;
- const m=await mount(t,JSON.stringify(d));await m.click(m.button('Armas de fuego'));assert.match(m.document.querySelector('section[aria-label="Armamento de las tropas"]').textContent,/armas originales/);
+ const m=await mount(t,JSON.stringify(d));await m.click(m.button('Armas'));assert.match(m.document.querySelector('section[aria-label="Armamento de las tropas"]').textContent,/armas originales/);
  await m.click(m.button('Configurar armas de enemigos'));await m.click(m.button('Configurar armas de milicias'));
  await m.input(m.label('Soldados de línea'),'');const stored=parseContentPackage(m.dom.window.localStorage.getItem(draftKey));assert.equal(stored.militiaEquipment.veteran,null);assert.equal(stored.oppositionEquipment.officer,'firearm-1805');assert.equal(m.button('Iniciar campaña con estas fichas').disabled,false);
 });
@@ -443,4 +443,26 @@ test('the editor authors return to routine through undo, copy and campaign launc
  const m=await mount(t,JSON.stringify(d)),draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));await m.input(m.document.querySelector('input[type="search"]'),'alma-contract');await m.click(m.document.querySelector('.entry-list button'));await m.input(m.label('Pasaje que estás editando'),'north');await m.click(m.document.querySelector('[aria-label="Movimiento en el sector"] input'));await m.input(m.label('Orden del personaje'),'routine');assert.equal(m.label('Personaje que retoma su rutina').value,'pablo');await m.input(m.label('Personaje que retoma su rutina'),'alma-contract');assert.equal(draft().characters.find(c=>c.id==='alma-contract').encounter.dialogue.nodes[1].choices[0].effects.find(e=>e.type==='movement').character,'alma-contract');await m.click(m.button('Deshacer'));
  await m.click(m.button('Deshacer'));assert.equal(m.label('Orden del personaje').value,'speaker');await m.click(m.button('Rehacer'));assert.equal(m.label('Orden del personaje').value,'routine');await m.click(m.button('Duplicar personaje'));assert.deepEqual(draft().characters.at(-1).encounter.dialogue.nodes[1].choices[0].effects.find(e=>e.type==='movement'),{type:'movement',character:'pablo',destination:'routine'});
  await m.click(m.button('Iniciar campaña con estas fichas'));const {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.deepEqual(campaign.contentCampaign.package.characters.find(c=>c.id==='alma-contract').encounter.dialogue.nodes[1].choices[0].effects.find(e=>e.type==='movement'),{type:'movement',character:'pablo',destination:'routine'});
+});
+
+test('the editor creates and assigns a blade with undo, dependency protection and campaign launch',async t=>{
+ const m=await mount(t);const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
+ await m.click(m.button('Armas'));await m.click(m.button('Crear arma blanca'));await m.input(m.label('Nombre'),'Lanza de prueba');await m.input(m.label('Familia de funcionamiento'),'1812');
+ await m.input(m.label('Daño'),37);await m.input(m.label('PA de ataque'),19);await m.input(m.label('Alcance cuerpo a cuerpo'),2.7);await m.input(m.label('Peso (kg)'),2);await m.input(m.label('Precio (pesos)'),95);
+ assert.equal(m.document.querySelector('.weapon-preview').getAttribute('src'),'/art/weapon-1812.png');assert.ok(!m.document.body.textContent.includes('Capacidad de carga'));
+ await m.click(m.button('Deshacer'));assert.notEqual(m.label('Precio (pesos)').value,'95');await m.click(m.button('Rehacer'));assert.equal(m.label('Precio (pesos)').value,'95');
+ const blade=draft().weapons.at(-1);assert.equal(blade.reach,2.7);assert.equal(m.label('Oficiales enemigos').querySelector(`option[value="${blade.id}"]`),null);
+ await m.click(m.button('Personajes'));await m.input(m.document.querySelector('input[type="search"]'),'person-110');await m.click(m.document.querySelector('.entry-list button'));await m.input(m.label('Arma blanca'),blade.id);
+ await m.click(m.button('Duplicar personaje'));assert.equal(draft().characters.at(-1).blade,blade.id);
+ await m.click(m.button('Armas'));await m.input(m.document.querySelector('input[type="search"]'),blade.id);await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Eliminar'));assert.match(m.document.querySelector('.notice').textContent,/personajes que la usan/);
+ await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));
+ for(const action of [{type:'recruitCivic',id:110,term:'week'},{type:'wait',hours:6},{type:'visitSector'}]){campaign=dispatchCampaign(campaign,action);assert.equal(campaign.lastError,null);}
+ const saved=decodeSave(encodeSave(campaign,enterSector(campaign.pendingBattle))),unit=saved.battle.units.find(u=>u.id==='110');assert.equal(unit.bladeMetadata.contentWeapon.id,blade.id);assert.equal(unit.bladeMetadata.contentWeapon.ap,19);assert.equal(unit.bladeMetadata.contentWeapon.reach,2.7);
+});
+
+test('the mounted armory sells an authored blade and keeps its displayed identity after equipping',async t=>{
+ const d=defaultContentPackage();d.weapons.push({id:'sable-editor',template:1809,name:'Sable del editor',damage:29,ap:11,reach:1.6,price:73,art:'/art/weapon-1810.png'});
+ let s=initialCampaign(5,d);s=dispatchCampaign(s,{type:'recruitCivic',id:110,term:'week'});s=dispatchCampaign(s,{type:'wait',hours:6});const before=s.resources.treasury;
+ const m=await mount(t,undefined,null,s,'armory');const article=[...m.document.querySelectorAll('.armory-catalog article')].find(a=>a.textContent.includes('Sable del editor'));assert.ok(article);assert.equal(article.querySelector('img').getAttribute('src'),'/art/weapon-1810.png');await m.click(article.querySelector('button'));assert.equal(m.campaign.resources.treasury,before-73);
+ const instance=m.campaign.armoryItems.find(i=>i.contentWeapon?.id==='sable-editor');await m.input(m.document.querySelector('#armory-blade'),instance.id);assert.match(m.document.querySelector('#armory-blade option[value="equipped"]').textContent,/Sable del editor/);assert.equal(decodeSave(encodeSave(m.campaign)).campaign.operativeState[110].bladeMetadata.contentWeapon.id,'sable-editor');
 });

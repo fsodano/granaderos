@@ -109,7 +109,7 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
           <span>{slots.primary?.name ?? '—'}</span>
         </button>
         <button className={`hand-slot blade ${inv.activeSlot === 'blade' ? 'active' : ''}`} disabled={busyDisabled} aria-label={`Arma secundaria: ${slots.blade?.name ?? '—'}. Cambiar a arma principal`} onClick={() => onOrder(slotAction(unit))}>
-          {slots.blade?.id >= 1800 && slots.blade?.id <= 1813 && <img src={`/art/weapon-${slots.blade.id}.png`} alt="" />}
+          {slots.blade?.id >= 1800 && slots.blade?.id <= 1813 && <img src={slots.blade.art??`/art/weapon-${slots.blade.id}.png`} alt="" />}
           <span>{slots.blade?.name ?? '—'}</span>
         </button>
         <div className="paper-readouts">

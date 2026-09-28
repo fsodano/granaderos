@@ -7,7 +7,7 @@ import {gainsExperience,characterForOperative,isWorldCharacter} from './content-
 import {campaignPlace,worldCell,locationId,validWorldLocation,worldOwner,cellTravelPlan,cellTravelReason,cellStepHours,adjacentCells} from './world-cells.js';
 import {compactCellScene,expandCellScene,cellSceneSaveReplacer} from './cell-scene-storage.js';
 import {validateForceWeapon} from './content-force-equipment.js';
-import {weaponSaveReplacer,weaponSpecification,validateWeaponCarrier,validateWeaponReferences,setWeaponDefinition} from './weapon-definition.js';
+import {weaponSaveReplacer,weaponSpecification,validateWeaponCarrier,validateWeaponReferences,setWeaponDefinition,weaponRecord} from './weapon-definition.js';
 import {usesAuthoredEquipment,addArmoryStock,equipArmoryItem,validateArmoryItems} from './armory-items.js';
 import {hiringArrivalReason,hiringArrivalOptions,pendingHire,hireArrivalOrder,advanceHireArrivals,redirectHire,cancelHireArrival,validateHireArrivals} from './hiring-arrivals.js';
 import {attachCampaignContent,validateCampaignContent} from './campaign-content.js';
@@ -41,7 +41,7 @@ export {CIVIC_RECRUITS} from './recruitment.js';
 export function civicStatus(s,id,local=false){return baseCivicStatus(s,id);}
 import {OPERATIVES, WEAPONS, CAMPAIGN_SECTORS, FACTIONS, PHASES, RESOURCE_NAMES} from './data.js';
 export {OPERATIVES, WEAPONS, CAMPAIGN_SECTORS, FACTIONS, PHASES, RESOURCE_NAMES};
-export function rosterFor(s){return baseRosterFor(s).map(o=>{const record=s.operativeState?.[o.id]??{};return {...o,...(s.loadouts?.[o.id]??{}),...(record.weaponMetadata?{weaponMetadata:record.weaponMetadata}:{}),...Object.fromEntries(TRAINABLE_SKILLS.map(skill=>[skill,Math.min(100,(o[skill]??0)+(record.trainedStats?.[skill]??0))])),strength:Math.max(o.strength,Math.min(100,record.strength??o.strength))};});}
+export function rosterFor(s){return baseRosterFor(s).map(o=>{const record=s.operativeState?.[o.id]??{};return {...o,...(s.loadouts?.[o.id]??{}),...(record.weaponMetadata?{weaponMetadata:record.weaponMetadata}:{}),...(record.bladeMetadata?{bladeMetadata:record.bladeMetadata}:{}),...Object.fromEntries(TRAINABLE_SKILLS.map(skill=>[skill,Math.min(100,(o[skill]??0)+(record.trainedStats?.[skill]??0))])),strength:Math.max(o.strength,Math.min(100,record.strength??o.strength))};});}
 export function deploymentCost(s){const roster=rosterFor(s);return s.squad.reduce((total,id)=>total+(weaponSpecification(roster.find(o=>o.id===id))?.capacity?10:0),0);}
 function returnTraining(s,id,report){validateTraining(report);for(const field of ['trainedStats','skillPractice'])if(report[field]!==undefined)s.operativeState[id][field]=clone(report[field]);}
 function returnEquipment(s,id,report,snapshot){
@@ -52,6 +52,7 @@ function returnEquipment(s,id,report,snapshot){
  const record=s.operativeState[id];
  record.medkits=actual.medkits??0;record.bleeding=actual.bleeding??0;
  s.loadouts[id]={...s.loadouts[id],weapon:actual.weaponDropped?0:actual.weapon,...(actual.blade===undefined?{}:{blade:actual.blade})};
+ setWeaponDefinition(record,weaponRecord(actual,'blade'),'blade');
  setWeaponDefinition(record,actual.weaponDropped?{}:actual);record.jammed=actual.weaponDropped?false:Boolean(actual.jammed);
  record.inventory=clone(validatePersonalInventory(actual.inventory));
 }
@@ -422,7 +423,7 @@ export function restoreCampaign(text){
   requireThat(object(s.operativeState),'Las hojas de servicio son inválidas.');
   for(const op of s.contentCampaign?[]:CIVIC_RECRUITS)s.operativeState[op.id]??={hp:op.maxHp,fatigue:0,alive:true,xp:0,priming:50,flints:4,rations:2,torches:2,condition:100};
   for(const op of Object.values(s.operativeState)){requireThat(object(op),'Las hojas de servicio son inválidas.');validateTraining(op);for(const k of ['medkits','bleeding'])if(op[k]!==undefined)requireThat(Number.isInteger(op[k]),'Los suministros y heridas guardados son inválidos.');op.xp??=0;if(op.inventory!==undefined)validatePersonalInventory(op.inventory);for(const [field,limit]of Object.entries({energy:100,bleeding:10,medkits:1000000,weight:1000,strength:100,strengthTraining:10000,boleadoras:100000})){if(op[field]!==undefined)requireThat(Number.isFinite(op[field])&&op[field]>=0&&op[field]<=limit,'El estado físico guardado es inválido.');}for(const [field,baseline] of Object.entries({priming:50,flints:4,rations:2,torches:2,condition:100})){op[field]??=baseline;requireThat(integer(op[field],0,field==='condition'?100:100000),'Los suministros guardados son inválidos.');}requireThat(integer(op.xp,0,1e7),'La experiencia guardada es inválida.');}
-  for(const op of rosterFor(s))validateWeaponCarrier({...s.operativeState[op.id],weapon:op.weapon});
+  for(const op of rosterFor(s))validateWeaponCarrier({...s.operativeState[op.id],weapon:op.weapon,blade:op.blade});
   s.missions??={};s.sceneStates??={};s.missionAllies??={};requireThat(validateMissions(s)&&object(s.sceneStates)&&Object.entries(s.sceneStates).every(([id,b])=>id==='yatasto'&&b.sceneId===id&&validateSectorSnapshot(b))&&object(s.missionAllies)&&Object.entries(s.missionAllies).every(([id,u])=>id==='san_lorenzo'&&object(u)&&u.missionAlly===true&&Number(u.id)===57&&typeof u.name==='string'&&Number.isInteger(u.weapon)&&(u.weapon===0||u.weapon>=1800&&u.weapon<=1813)&&Number.isInteger(u.blade)&&u.blade>=1809&&u.blade<=1813&&Number.isInteger(u.ammo)&&u.ammo>=0&&u.ammo<=100000&&Number.isInteger(u.loaded)&&u.loaded>=0&&u.loaded<=(weaponSpecification(u)?.capacity??0)&&Number.isFinite(u.hp)&&u.hp>=0&&u.hp<=100),'Las escenas guardadas son inválidas.');
   s.garrisons??={};s.nextMilitiaId??=20000;requireThat(validGarrisons(s),'Las guarniciones guardadas son inválidas.');
   s.quests??={};requireThat(validateQuests(s.quests,s.hour),'Los encargos guardados son inválidos.');

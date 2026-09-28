@@ -13,7 +13,7 @@ export default function ForceEquipment({draft,onChange}:{draft:any;onChange:(val
    </> : <div className="fields">{Object.entries(group.roles).map(([role,label])=><label key={role}>{label}
     <select value={draft[field][role]??''} onChange={e=>onChange({...draft,[field]:{...draft[field],[role]:e.target.value||null}})}>
      <option value="">Sin arma de fuego</option>
-     {draft.weapons.map((weapon:any)=><option key={weapon.id} value={weapon.id}>{weapon.name}</option>)}
+     {draft.weapons.filter((w:any)=>w.template<1809).map((weapon:any)=><option key={weapon.id} value={weapon.id}>{weapon.name}</option>)}
     </select>
    </label>)}</div>}
   </fieldset>)}

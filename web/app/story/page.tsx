@@ -6,6 +6,7 @@ import {
   ATTRIBUTE_FIELDS,
   CONTENT_SECTORS,
   FIREARM_TEMPLATES,
+  BLADE_TEMPLATES,
   CONTENT_LIMIT,
   defaultContentPackage,
   validateContentPackage,
@@ -32,7 +33,7 @@ import CharacterPresentation from './CharacterPresentation';
 import {SPEECH_EVENTS} from '../../../game/characters.js';
 import {characterPresentationDefaults} from '../../../game/content-character-presentation.js';
 import {CONTENT_TRAITS} from '../../../game/content-character-options.js';
-import {FIREARM_PRICES} from '../../../game/weapon-definition.js';
+import {FIREARM_PRICES,BLADE_PRICES,isBladeDefinition} from '../../../game/weapon-definition.js';
 import {WEAPONS as BASE_FIREARMS} from '../../../game/firearm-definitions.js';
 import {WEAPONS as BASE_ITEMS} from '../../../game/data.js';
 import {CAMPAIGN_SECTORS} from '../../../game/data.js';
@@ -53,6 +54,8 @@ const labels: Record<string, string> = {
   explosives: 'Explosivos',
   medical: 'Medicina',
   damage: 'Daño',
+  ap: 'PA de ataque',
+  reach: 'Alcance cuerpo a cuerpo',
   fireAP: 'PA de disparo',
   aimAP: 'PA por nivel de puntería',
   reloadAP: 'PA de recarga completa',
@@ -231,11 +234,12 @@ export default function ContentEditor() {
         speech: Object.fromEntries(SPEECH_EVENTS.map(event=>[event,''])),
         spriteAppearance: 'granadero',
         weapon: draft.weapons[0]?.id ?? null,
+        blade: draft.weapons.find(isBladeDefinition)?.id,
       };
     else if (collection === 'weapons')
       added = {
-        ...structuredClone(defaultContentPackage().weapons[0]),
-        id: nextId('firearm', draft.weapons),
+        ...structuredClone(defaultContentPackage().weapons.find(w=>isBladeDefinition(w)===(kind==='blade'))!),
+        id: nextId(kind==='blade'?'blade':'firearm', draft.weapons),
         name: 'Nueva arma',
       };
     if(collection==='characters'&&kind==='encounter'){
@@ -268,7 +272,7 @@ export default function ContentEditor() {
     }
     if (
       collection === 'weapons' &&
-      draft.characters.some((c: any) => c.weapon === item.id)
+      draft.characters.some((c: any) => c.weapon === item.id || c.blade === item.id)
     ) {
       setNotice('Asigná otra arma a los personajes que la usan.');
       return;
@@ -328,8 +332,8 @@ export default function ContentEditor() {
           type="number"
           value={Number.isFinite(value) ? value : ''}
           min={key === 'maxHp' ? 15 : 0}
-          max={key === 'reloadAP' ? 500 : key === 'price' ? 1000000 : key === 'weight' ? 30 : key === 'capacity' ? 8 : 100}
-          step={key === 'weight' ? .1 : 1}
+          max={key === 'reloadAP' ? 500 : key === 'price' ? 1000000 : key === 'weight' ? 30 : key === 'capacity' ? 8 : key==='reach'?4:100}
+          step={['weight','reach'].includes(key) ? .1 : 1}
           onChange={(e) =>
             update(
               attributes
@@ -471,7 +475,7 @@ export default function ContentEditor() {
       <nav aria-label="Secciones del editor">
         {[
           ['characters', 'Personajes'],
-          ['weapons', 'Armas de fuego'],
+          ['weapons', 'Armas'],
           ['arrivals', 'Llegadas'],
           ['quests', 'Encargos'],
           ['test', 'Pruebas'],
@@ -504,6 +508,7 @@ export default function ContentEditor() {
               </small>
             </h2>
             {tab==='characters'&&<button onClick={()=>add('encounter')}>Crear habitante</button>}
+            {tab==='weapons'&&<button onClick={()=>add('blade')}>Crear arma blanca</button>}
             <button className="primary" onClick={()=>add()}>
               + Crear{' '}
               {tab === 'characters'
@@ -628,19 +633,25 @@ export default function ContentEditor() {
                         />
                       </label>
                       <label>
-                        Arma de fuego
+                        Arma principal
                         <select
                           value={item.weapon ?? ''}
                           onChange={(e) =>
                             update({ weapon: e.target.value || null })
                           }
                         >
-                          <option value="">Sin arma de fuego</option>
+                          <option value="">Sin arma principal</option>
                           {draft.weapons.map((w: any) => (
                             <option key={w.id} value={w.id}>
                               {w.name}
                             </option>
                           ))}
+                        </select>
+                      </label>
+                      <label>Arma blanca
+                        <select value={item.blade??''} onChange={e=>update({blade:e.target.value||undefined})}>
+                          <option value="">Equipo original del personaje</option>
+                          {draft.weapons.filter(isBladeDefinition).map((w:any)=><option key={w.id} value={w.id}>{w.name}</option>)}
                         </select>
                       </label>
                     </div>
@@ -742,7 +753,7 @@ export default function ContentEditor() {
                           update({ template: Number(e.target.value) })
                         }
                       >
-                        {FIREARM_TEMPLATES.map((t) => (
+                        {(isBladeDefinition(item)?BLADE_TEMPLATES:FIREARM_TEMPLATES).map((t) => (
                           <option key={t.id} value={t.id}>
                             {t.name}
                           </option>
@@ -750,19 +761,19 @@ export default function ContentEditor() {
                       </select>
                     </label>
                     <p>
-                      La familia conserva el mecanismo del arma original. Estos valores se usan en la prueba de tiro y en la campaña, incluida la armería y el equipo recuperado.
+                      La familia conserva sus técnicas de combate. El nombre, la imagen y estos valores se usan en la campaña, la armería y el equipo recuperado. La prueba de tiro admite armas de fuego.
                     </p>
                     <div className="fields">
-                      {[
+                      {(isBladeDefinition(item)?['damage','ap','reach']:[
                         'damage',
                         'fireAP',
                         'aimAP',
                         'reloadAP',
                         'range',
-                      ].map((k) => numeric(k, item[k]))}
-                      {numeric('capacity',item.capacity??BASE_FIREARMS[item.template]?.capacity)}
+                      ]).map((k) => numeric(k, item[k]))}
+                      {!isBladeDefinition(item)&&numeric('capacity',item.capacity??BASE_FIREARMS[item.template]?.capacity)}
                       {numeric('weight',item.weight??(BASE_ITEMS as any)[item.template]?.weight)}
-                      {numeric('price',item.price??(FIREARM_PRICES as any)[item.template])}
+                      {numeric('price',item.price??({...FIREARM_PRICES,...BLADE_PRICES} as any)[item.template])}
                     </div>
                   </>
                 )}

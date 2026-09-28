@@ -7,6 +7,7 @@ import {characterProfile,SPEECH_EVENTS} from './characters.js';
 import {SPEECH_LINE_LIMIT} from './content-character-presentation.js';
 import {SPRITE_APPEARANCES,spriteAppearance} from './sprite-appearances.js';
 import {CONTENT_TRAITS} from './content-character-options.js';
+import {BLADES} from "./blade-definitions.js";
 import { compileWeaponDefinition } from "./weapon-definition.js";
 // Versioned authoring data. No mutable campaign state or global catalog changes.
 import { defaultArrivalSites, validateArrivalSites } from "./arrival-sites.js";
@@ -34,6 +35,7 @@ export const CONTENT_SECTORS = [
   ...CONTENT_CELLS,
   ...CAMPAIGN_SECTORS.map(({ id, name, grid }) => ({ id, name, grid })),
 ];
+export const BLADE_TEMPLATES=Object.values(BLADES).map(w=>({id:w.id,name:w.name}));
 export const FIREARM_TEMPLATES = Object.values(WEAPONS).map((w) => ({ id: w.id, name: w.name }));
 const portrait = (id) => `/art/portrait-${id}.${[103, 104].includes(id) ? "png" : "webp"}`;
 export function defaultContentPackage() {
@@ -60,9 +62,10 @@ export function defaultContentPackage() {
       monthlyPay: o.monthlyPay ?? 0,
       ...(o.id >= 100 ? {arrivalHours:6,recruitmentSource:'contract',service:'contract',progression:'experience',traits:[...(o.traits??[])],ridingSkill:o.ridingSkill??((o.traits??[]).includes('expert_rider')?80:0)} : {}),
       weapon: WEAPONS[o.weapon] ? `firearm-${o.weapon}` : null,
+      blade: `blade-${o.blade??1813}`,
       attributes: Object.fromEntries(ATTRIBUTE_FIELDS.map((k) => [k, o[k] ?? 50])),
     })),
-    weapons: Object.values(WEAPONS).map((w) => ({
+    weapons: [...Object.values(WEAPONS).map((w) => ({
       id: `firearm-${w.id}`,
       template: w.id,
       name: w.name,
@@ -72,7 +75,7 @@ export function defaultContentPackage() {
       reloadAP: w.reloadAP,
       range: w.range,
       readyAP: 0,
-    })),
+    })),...Object.values(BLADES).map(w=>({id:`blade-${w.id}`,template:w.id,name:w.name,damage:w.damage,ap:w.ap,reach:w.reach}))],
     placements: ENCOUNTERS.filter((n) => n.operativeId !== undefined && n.operativeId < 100).map((n) => ({
       id: `placement-${n.id}`,
       character: `person-${n.operativeId}`,
@@ -131,7 +134,7 @@ export function validateContentPackage(value) {
       sets[key].add(item.id);
     }
   }
-  for(const field of Object.keys(FORCE_EQUIPMENT))if(value[field]!==undefined)errors.push(...validateForceEquipment(field,value[field],sets.weapons));
+  for(const field of Object.keys(FORCE_EQUIPMENT))if(value[field]!==undefined)errors.push(...validateForceEquipment(field,value[field],new Set(value.weapons.filter(w=>WEAPONS[w?.template]).map(w=>w.id))));
   for (const c of value.characters.filter(record)) {
     if(legacyOperativeId(c.id)===undefined)check(['contract','encounter'].includes(c.recruitmentSource)&&['contract','permanent'].includes(c.service)&&['experience','fixed'].includes(c.progression)&&Array.isArray(c.traits),c.id,'los personajes nuevos necesitan origen, servicio, progreso y especialidades explícitos.');
     if(isWorldCharacter(c)){
@@ -173,6 +176,7 @@ export function validateContentPackage(value) {
     if (c.arrivalHours !== undefined) check(integer(c.arrivalHours, 0, 168), `${c.id}.arrivalHours`, "el viaje debe durar de 0 a 168 horas.");
     check(integer(c.monthlyPay, 0, 1000000), `${c.id}.monthlyPay`, "paga inválida.");
     check(c.weapon === null || sets.weapons.has(c.weapon), `${c.id}.weapon`, "el arma no existe.");
+    if(c.blade!==undefined)check(value.weapons.some(w=>w.id===c.blade&&BLADES[w.template]),`${c.id}.blade`,"el arma blanca no existe.");
     check(record(c.attributes) && Object.keys(c.attributes).length === ATTRIBUTE_FIELDS.length && Object.keys(c.attributes).every(k => ATTRIBUTE_FIELDS.includes(k)), `${c.id}.attributes`, "la lista de atributos no es válida.");
     for (const k of ATTRIBUTE_FIELDS)
       check(
@@ -185,10 +189,11 @@ export function validateContentPackage(value) {
     text(w.name, w.id, 100);
     try { compileWeaponDefinition(w); } catch(error) { errors.push(`${w.id}: ${error.message}`); }
     check(
-      FIREARM_TEMPLATES.some((t) => t.id === w.template),
+      [...FIREARM_TEMPLATES,...BLADE_TEMPLATES].some((t) => t.id === w.template),
       `${w.id}.template`,
       "familia no compatible.",
     );
+    if(BLADES[w.template])continue;
     for (const k of ["damage", "fireAP", "aimAP", "reloadAP", "range", "readyAP"])
       check(
         integer(w[k], ["readyAP", "aimAP"].includes(k) ? 0 : 1, k === "reloadAP" ? 500 : 100),

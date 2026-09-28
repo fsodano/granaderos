@@ -12,7 +12,7 @@ export function createContentTestRange(content, characterId, seed = 18130203) {
     character = definitions.characters.find((c) => c.id === characterId);
   if (!character) throw Error("Seleccioná un personaje.");
   const weapon = definitions.weapons.find((w) => w.id === character.weapon);
-  if (!weapon) throw Error("Asigná un arma de fuego para probar el tiro.");
+  if (!weapon || !WEAPONS[weapon.template]) throw Error("Asigná un arma de fuego para probar el tiro.");
   const operative=authoredRoster({contentCampaign:{package:definitions}},[...OPERATIVES,...CIVIC_RECRUITS]).find(o=>o.contentId===characterId);
   const unit = {
     ...operative,
