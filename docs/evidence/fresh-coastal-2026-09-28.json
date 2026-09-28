@@ -1,0 +1,463 @@
+{
+  "source": "5119b5ca619d4974aac0fb5594d51a699074b778",
+  "date": "2026-09-28",
+  "scope": "Fresh default content, seed 8. Ordinary character creation or paid week hires, real arrival and exact campaign clock, visible-target tactical orders, midpoint save/reload and deterministic replay, actual deaths and paid replacements. No terrain, territory, money, gear, health or battle outcome is injected.",
+  "routes": {
+    "created": {
+      "notes": [
+        {
+          "stage": "ready",
+          "hour": 6,
+          "funds": 2836,
+          "squad": [
+            1000,
+            3,
+            110,
+            136,
+            141,
+            120
+          ]
+        },
+        {
+          "sector": "buenos_aires",
+          "actions": 56,
+          "turns": 5,
+          "hour": 18,
+          "second": 42,
+          "funds": 2786,
+          "units": [
+            {
+              "id": "1000",
+              "hp": 85,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "3",
+              "hp": 0,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "110",
+              "hp": 85,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "136",
+              "hp": 90,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "141",
+              "hp": 84,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "120",
+              "hp": 73,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            }
+          ],
+          "settledFunds": 3070,
+          "phase": 1,
+          "deaths": [
+            3
+          ]
+        },
+        {
+          "sector": "san_nicolas",
+          "actions": 38,
+          "turns": 2,
+          "hour": 36,
+          "second": 54,
+          "funds": 3143,
+          "units": [
+            {
+              "id": "1000",
+              "hp": 85,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "110",
+              "hp": 85,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "136",
+              "hp": 90,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "141",
+              "hp": 84,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "120",
+              "hp": 73,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "131",
+              "hp": 82,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            }
+          ],
+          "settledFunds": 3435,
+          "phase": 1,
+          "deaths": [
+            3
+          ]
+        },
+        {
+          "sector": "san_lorenzo",
+          "actions": 35,
+          "turns": 2,
+          "hour": 36,
+          "second": 66,
+          "funds": 3375,
+          "units": [
+            {
+              "id": "1000",
+              "hp": 87,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "110",
+              "hp": 87,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "136",
+              "hp": 92,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "141",
+              "hp": 86,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "120",
+              "hp": 18,
+              "bleeding": 4,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "131",
+              "hp": 82,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "57",
+              "hp": 88,
+              "bleeding": 0,
+              "medkits": 0,
+              "routed": false
+            }
+          ],
+          "settledFunds": 3673,
+          "phase": 2,
+          "deaths": [
+            3
+          ]
+        }
+      ],
+      "final": {
+        "hour": 36,
+        "second": 68,
+        "phase": 2,
+        "funds": 3673,
+        "squad": [
+          1000,
+          110,
+          136,
+          141,
+          120,
+          131
+        ],
+        "controlled": [
+          "buenos_aires",
+          "retiro",
+          "san_nicolas"
+        ],
+        "dead": [
+          3,
+          10
+        ],
+        "commander": 88,
+        "completed": false,
+        "defeated": false
+      }
+    },
+    "hired": {
+      "notes": [
+        {
+          "stage": "ready",
+          "hour": 6,
+          "funds": 2535,
+          "squad": [
+            110,
+            114,
+            136,
+            141,
+            120,
+            131
+          ]
+        },
+        {
+          "sector": "buenos_aires",
+          "actions": 64,
+          "turns": 5,
+          "hour": 18,
+          "second": 30,
+          "funds": 2475,
+          "units": [
+            {
+              "id": "110",
+              "hp": 0,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "114",
+              "hp": 32,
+              "bleeding": 3,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "136",
+              "hp": 90,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "141",
+              "hp": 84,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "120",
+              "hp": 44,
+              "bleeding": 0,
+              "medkits": 1,
+              "routed": false
+            },
+            {
+              "id": "131",
+              "hp": 82,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            }
+          ],
+          "settledFunds": 2759,
+          "phase": 1,
+          "deaths": [
+            110
+          ]
+        },
+        {
+          "sector": "san_nicolas",
+          "actions": 49,
+          "turns": 3,
+          "hour": 36,
+          "second": 52,
+          "funds": 2755,
+          "units": [
+            {
+              "id": "114",
+              "hp": 54,
+              "bleeding": 0,
+              "medkits": 1,
+              "routed": false
+            },
+            {
+              "id": "136",
+              "hp": 90,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "141",
+              "hp": 84,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "120",
+              "hp": 71,
+              "bleeding": 0,
+              "medkits": 0,
+              "routed": false
+            },
+            {
+              "id": "131",
+              "hp": 0,
+              "bleeding": 6,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "137",
+              "hp": 0,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            }
+          ],
+          "settledFunds": 3031,
+          "phase": 1,
+          "deaths": [
+            110,
+            131,
+            137
+          ]
+        },
+        {
+          "sector": "san_lorenzo",
+          "actions": 53,
+          "turns": 3,
+          "hour": 42,
+          "second": 72,
+          "funds": 2600,
+          "units": [
+            {
+              "id": "114",
+              "hp": 73,
+              "bleeding": 0,
+              "medkits": 0,
+              "routed": false
+            },
+            {
+              "id": "136",
+              "hp": 44,
+              "bleeding": 0,
+              "medkits": 1,
+              "routed": false
+            },
+            {
+              "id": "141",
+              "hp": 86,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "120",
+              "hp": 73,
+              "bleeding": 0,
+              "medkits": 0,
+              "routed": false
+            },
+            {
+              "id": "113",
+              "hp": 0,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "124",
+              "hp": 85,
+              "bleeding": 0,
+              "medkits": 2,
+              "routed": false
+            },
+            {
+              "id": "57",
+              "hp": 88,
+              "bleeding": 0,
+              "medkits": 0,
+              "routed": false
+            }
+          ],
+          "settledFunds": 2885,
+          "phase": 2,
+          "deaths": [
+            110,
+            131,
+            137,
+            113
+          ]
+        }
+      ],
+      "final": {
+        "hour": 42,
+        "second": 74,
+        "phase": 2,
+        "funds": 2885,
+        "squad": [
+          114,
+          136,
+          141,
+          120,
+          124
+        ],
+        "controlled": [
+          "buenos_aires",
+          "retiro",
+          "san_nicolas"
+        ],
+        "dead": [
+          4,
+          10,
+          110,
+          113,
+          131,
+          137
+        ],
+        "commander": 88,
+        "completed": false,
+        "defeated": false
+      }
+    }
+  },
+  "limits": [
+    "Opening only: Retiro through Buenos Aires, San Nicolas and San Lorenzo. North, Cuyo and the ending remain unaccepted.",
+    "One reproducible strategy and seed, not general balance or all possible character builds.",
+    "Simulation and persistence evidence, not live-browser or performance acceptance.",
+    "The older prototype and advanced checkout failures remain separate."
+  ]
+}
