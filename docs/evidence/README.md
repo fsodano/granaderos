@@ -11,6 +11,8 @@ using a result. Published acceptance is recorded in [published progress](../veri
 
 ## Campaign and route records
 
+- [Fresh northern route data](fresh-northern-2026-09-28.json) and [verification scope](../verification/fresh-northern-opening.md).
+
 - [Fresh mixed/hired coastal route data](fresh-coastal-2026-09-28.json) and [verification scope](../verification/fresh-coastal-opening.md).
 
 - [Formal audit evidence](formal-audit-2026-09-27/) and [scope/method](../verification/formal-audit-2026-09-27.md): three source manifests, complete logs, comparisons and reproduced failures.

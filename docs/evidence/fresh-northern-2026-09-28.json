@@ -1,0 +1,472 @@
+{
+  "source": "63dadebad11cdabaf372ea36d9557beab2a16407",
+  "date": "2026-09-28",
+  "scope": "Untouched seed-8 default content, free created officer with paid support, the accepted coastal prefix and real Cordoba/Tucuman/Salta combat. Each battle replays ordinary visible-target orders with campaign time and midpoint save/reload. Real workshop purchases, paid controlled arrivals, 550-peso diplomacy, physical conference travel/dialogue and saved phase 3. No resources, health, territory or victories are injected.",
+  "prefix": [
+    {
+      "stage": "ready",
+      "hour": 6,
+      "funds": 2836,
+      "squad": [
+        1000,
+        3,
+        110,
+        136,
+        141,
+        120
+      ]
+    },
+    {
+      "sector": "buenos_aires",
+      "actions": 56,
+      "turns": 5,
+      "hour": 18,
+      "second": 42,
+      "funds": 2786,
+      "units": [
+        {
+          "id": "1000",
+          "hp": 85,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "3",
+          "hp": 0,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "110",
+          "hp": 85,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "136",
+          "hp": 90,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "141",
+          "hp": 84,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "120",
+          "hp": 73,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        }
+      ],
+      "settledFunds": 3070,
+      "phase": 1,
+      "deaths": [
+        3
+      ]
+    },
+    {
+      "sector": "san_nicolas",
+      "actions": 38,
+      "turns": 2,
+      "hour": 36,
+      "second": 54,
+      "funds": 3143,
+      "units": [
+        {
+          "id": "1000",
+          "hp": 85,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "110",
+          "hp": 85,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "136",
+          "hp": 90,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "141",
+          "hp": 84,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "120",
+          "hp": 73,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "131",
+          "hp": 82,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        }
+      ],
+      "settledFunds": 3435,
+      "phase": 1,
+      "deaths": [
+        3
+      ]
+    },
+    {
+      "sector": "san_lorenzo",
+      "actions": 35,
+      "turns": 2,
+      "hour": 36,
+      "second": 66,
+      "funds": 3375,
+      "units": [
+        {
+          "id": "1000",
+          "hp": 87,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "110",
+          "hp": 87,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "136",
+          "hp": 92,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "141",
+          "hp": 86,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "120",
+          "hp": 18,
+          "bleeding": 4,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "131",
+          "hp": 82,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "57",
+          "hp": 88,
+          "bleeding": 0,
+          "medkits": 0,
+          "routed": false
+        }
+      ],
+      "settledFunds": 3673,
+      "phase": 2,
+      "deaths": [
+        3
+      ]
+    }
+  ],
+  "notes": [
+    {
+      "sector": "cordoba",
+      "actions": 53,
+      "turns": 4,
+      "hour": 48,
+      "second": 92,
+      "units": [
+        {
+          "id": "1000",
+          "hp": 0,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "110",
+          "hp": 87,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "136",
+          "hp": 92,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "141",
+          "hp": 86,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "120",
+          "hp": 0,
+          "bleeding": 0,
+          "medkits": 1,
+          "routed": false
+        },
+        {
+          "id": "131",
+          "hp": 84,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        }
+      ],
+      "fundsBeforeSettlement": 3983,
+      "fundsAfterReplacements": 3870,
+      "replacements": [
+        115,
+        123
+      ],
+      "deaths": [
+        3,
+        9,
+        10,
+        120,
+        1000
+      ]
+    },
+    {
+      "sector": "tucuman",
+      "actions": 52,
+      "turns": 5,
+      "hour": 66,
+      "second": 122,
+      "units": [
+        {
+          "id": "110",
+          "hp": 0,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "136",
+          "hp": 94,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "141",
+          "hp": 2,
+          "bleeding": 6,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "131",
+          "hp": 35,
+          "bleeding": 3,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "115",
+          "hp": 15,
+          "bleeding": 0,
+          "medkits": 1,
+          "routed": false
+        },
+        {
+          "id": "123",
+          "hp": 83,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        }
+      ],
+      "fundsBeforeSettlement": 3810,
+      "fundsAfterReplacements": 4546,
+      "replacements": [
+        114
+      ],
+      "deaths": [
+        3,
+        9,
+        10,
+        110,
+        120,
+        1000
+      ]
+    },
+    {
+      "sector": "salta",
+      "actions": 41,
+      "turns": 6,
+      "hour": 84,
+      "second": 164,
+      "units": [
+        {
+          "id": "136",
+          "hp": 0,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "141",
+          "hp": 0,
+          "bleeding": 0,
+          "medkits": 1,
+          "routed": false
+        },
+        {
+          "id": "131",
+          "hp": 0,
+          "bleeding": 0,
+          "medkits": 1,
+          "routed": false
+        },
+        {
+          "id": "115",
+          "hp": 0,
+          "bleeding": 0,
+          "medkits": 0,
+          "routed": false
+        },
+        {
+          "id": "123",
+          "hp": 83,
+          "bleeding": 0,
+          "medkits": 2,
+          "routed": false
+        },
+        {
+          "id": "114",
+          "hp": 33,
+          "bleeding": 4,
+          "medkits": 2,
+          "routed": true
+        }
+      ],
+      "fundsBeforeSettlement": 4486,
+      "fundsAfterReplacements": 3978,
+      "replacements": [
+        137,
+        113,
+        124,
+        112
+      ],
+      "deaths": [
+        3,
+        8,
+        9,
+        10,
+        110,
+        115,
+        120,
+        131,
+        136,
+        141,
+        1000
+      ]
+    },
+    {
+      "stage": "yatasto",
+      "hour": 102,
+      "second": 227,
+      "phase": 3,
+      "funds": 4118,
+      "squad": [
+        123,
+        137,
+        113,
+        124,
+        112
+      ],
+      "deaths": [
+        3,
+        8,
+        9,
+        10,
+        110,
+        114,
+        115,
+        120,
+        131,
+        136,
+        141,
+        1000
+      ]
+    }
+  ],
+  "final": {
+    "hour": 102,
+    "second": 227,
+    "phase": 3,
+    "funds": 4118,
+    "squad": [
+      123,
+      137,
+      113,
+      124,
+      112
+    ],
+    "controlled": [
+      "buenos_aires",
+      "retiro",
+      "san_nicolas",
+      "cordoba",
+      "tucuman",
+      "salta"
+    ],
+    "dead": [
+      3,
+      8,
+      9,
+      10,
+      110,
+      114,
+      115,
+      120,
+      131,
+      136,
+      141,
+      1000
+    ],
+    "commander": 88,
+    "completed": false,
+    "defeated": false
+  },
+  "limits": [
+    "One stock seed and mixed force; hired-only northern continuation remains unaccepted.",
+    "Published care and equipment rules only: the separate advanced medical, recapture and rescue failures are not closed.",
+    "Jujuy, Humahuaca, Cuyo and the ending remain outside this accepted route.",
+    "No live-browser, general balance or sustained performance claim."
+  ]
+}

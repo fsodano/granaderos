@@ -46,7 +46,9 @@ needed for the actual return after post-victory exploration.
 Release checks: **792/792 tests**, zero failures or skips (190,646 ms); type
 check; production export (721 files, 631 asset references); 36 baseline checks;
 documentation audit (199 requirements, all 50 original and 87 parity rows,
-38 evidence records). Exact-head GitHub checks are required before merge.
+38 evidence records). [PR #61](https://github.com/fsodano/granaderos/pull/61) merged
+after [exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36394524991/job/108837669091)
+passed on `bd9ad39e6684170f543788b26afc76b1d4b8a77d`.
 
 ## Limits
 
