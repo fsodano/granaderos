@@ -40,7 +40,7 @@ failure is retained in this record. Final full regression passes **1044/1044**, 
 preceding successful type check and production export: 722 files and 632 asset
 references. All 36 reference comparisons pass on the final source. Documentation
 validation passes with 239 requirements and 78 evidence records, retaining the
-50 original and 87 parity rows. Exact-head CI remains required before merge.
+50 original and 87 parity rows. Exact-head CI passed before publication.
 
 Prepared tactical boundaries verify real end turns with wounded crews, minimum
 available AP, spare helpers, replacement specialists, movement, pivoting,
@@ -67,3 +67,8 @@ choices, strategic recovery/transport, finite resupply, trade and editable gun
 profiles remain separate. The preserved [crew-loading record](../gameplay/equipment/artillery-reload-progress.md)
 describes a larger development system and its own dated checks. This delivery
 keeps the published AP scale and authored ability rules.
+
+## Publication
+
+Published in [PR #101](https://github.com/fsodano/granaderos/pull/101) on 2026-09-28.
+Exact head `e634a07b52dd77f1dea369d9bb8b755c25d95ffe` passed [CI run 36488533405](https://github.com/fsodano/granaderos/actions/runs/36488533405), including the full suite, types and production build. Merge commit: `915456e1311b55e4a9861335255e1e00761ffe2b`. This publication does not close the broader artillery or campaign requirements.
