@@ -25,9 +25,9 @@ function stabilized(){let {campaign:s,patientId}=woundedGarrison();s=order(s,{ty
 const preserved=['id','hp','maxHp','energy','fatigue','bleeding','bandaged','ammo','loaded','priming','flints','rations','torches','medkits','boleadoras','condition','weapon','blade','weaponMetadata','bladeMetadata','inventory'];
 function unchanged(actual,before){for(const key of preserved)assert.deepEqual(actual[key],before[key],`${before.id}: ${key}`);}
 
-test('paid promotions retain an actually injured and treated soldier, equipment and identity through both ranks and reentry',()=>{
+test('paid regular promotion retains an actually injured and treated soldier, equipment and identity through reentry',()=>{
  let {s,patientId}=stabilized();const before=structuredClone(militia(s)),next=s.nextMilitiaId;
- for(const rank of [1,2]){
+ for(const rank of [1]){
   const money=s.resources.treasury;s=promotion(s,1000,rank);assert.equal(s.resources.treasury,money-60*(rank+1));assert.deepEqual(s.sectors.retiro.militia,[0,0,0]);assert.deepEqual(militia(s),[]);
   assert.deepEqual(s.militiaTraining[0].trainees.map(u=>u.id),before.map(u=>u.id));s=save(s);s=finish(s);assert.equal(s.militiaTraining.length,0);assert.equal(s.sectors.retiro.militia[rank],3);
   for(const u of militia(s)){const prior=before.find(v=>v.id===u.id);unchanged(u,prior);assert.equal(u.militiaRank,rank);assert.equal(u.marksmanship,prior.marksmanship+8*rank);assert.equal(u.leadership,prior.leadership+5*rank);}
@@ -76,4 +76,11 @@ test('territorial loss disperses a reserved cohort instead of returning it behin
  let s=promotion(trained());const ids=s.militiaTraining[0].trainees.map(u=>u.id);
  // Prepared territory boundary; this is not a claimed successful defense route.
  s.sectors.retiro.owner='royalist';s=order(s,{type:'wait',hours:1});assert.equal(s.militiaTraining.length,0);assert.deepEqual(s.sectors.retiro.militia,[0,0,0]);assert.ok(militia(s).every(u=>!ids.includes(u.id)));assert.ok(save(s));
+});
+
+test('an older paid veteran course with saved individuals completes without replacing its participants',()=>{
+ let {s}=stabilized();s=finish(promotion(s));const before=structuredClone(militia(s));
+ // Explicit already-paid, pre-policy save boundary. New veteran tuition is rejected.
+ s.militiaTraining=[{sector:'retiro',rank:2,trainerId:1000,count:3,duration:48,remaining:1,started:s.hour,trainees:structuredClone(before)}];s.garrisons.retiro=[];s.sectors.retiro.militia=[0,0,0];
+ s=finish(save(s));assert.deepEqual(s.sectors.retiro.militia,[0,0,3]);for(const u of militia(s)){unchanged(u,before.find(v=>v.id===u.id));assert.equal(u.militiaRank,2);}assert.ok(save(s));
 });

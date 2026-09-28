@@ -84,7 +84,7 @@ test('trained militia retain their authored weapons, identity, wear and spent am
  s=save(leave(s,b)).campaign;s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);
  const retained=b.units.find(u=>u.id===id);assert.equal(retained.loaded,5);assert.equal(retained.condition,condition);assert.equal(weaponFor(retained).contentId,'line-pistol');assert.ok(save(s,b));s=leave(s,b);
  const original=structuredClone(s.garrisons.retiro);
- for(const rank of [1,2]){
+ for(const rank of [1]){
   s=train(s,rank);s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);
   const units=b.units.filter(u=>u.militia&&u.hp>0);assert.equal(units.length,3);for(const u of units){const prior=original.find(v=>String(v.id)===u.id);assert.ok(prior);assert.equal(u.militiaRank,rank);assert.equal(contentWeaponOf(u).id,'line-pistol');for(const key of ['loaded','ammo','condition','hp','maxHp'])assert.equal(u[key],prior[key],key);}s=save(leave(s,b)).campaign;
  }
