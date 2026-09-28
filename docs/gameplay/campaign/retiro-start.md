@@ -1,5 +1,16 @@
 # Retiro-only campaign opening
 
+## Published opening
+
+The published startup uses Retiro-only control and no extra academy payment.
+Custom creation is optional and free through the current creator; a pending paid
+hire starts service on arrival. Retiro supplies the first squad. The new
+[acceptance record](../../verification/retiro-opening.md) covers startup, saves
+and a real first conquest on the pesos-only published runtime. Its results are
+separate from the development-workspace records below.
+
+## Historical development-workspace record
+
 > **Development-workspace record.** This note describes a separate development
 > checkout. Its implementation and test results are not published-main acceptance.
 > See [published progress](../../verification/published-progress.md) for the main branch baseline.

@@ -27,7 +27,7 @@ Run subsequent commands from the repository root. Dependencies are installed in 
 
 `npm run dev` starts the web package's Vinext development server. Open [localhost:3000](http://localhost:3000), or the address printed by the server if its port changes. Stop the server with Ctrl+C.
 
-Choose **Nueva campaña** to begin at the Retiro desk. Hire combatants or create a character. Character creation is free; organizing the regiment costs 300 pesos and advances the opening chapter. **Combate de San Lorenzo** starts a separate battle.
+Choose **Nueva campaña** to begin at the Retiro desk. Retiro is the only controlled sector. Hire combatants or create a free character. The first person in service advances the opening chapter without an extra academy payment; wait for a pending hire to arrive. **Combate de San Lorenzo** starts a separate battle.
 
 The published economy uses pesos for hiring, equipment and campaign preparations. It has no strategic material stocks, production chains, resource convoys or horse care. Saves from the earlier economy are rejected; start a new campaign.
 

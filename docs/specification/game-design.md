@@ -35,9 +35,9 @@ the editor is a release requirement.
   elites ([PR #17](https://github.com/fsodano/granaderos/pull/17)). A local prototype
   that restricts elites to one day does not change this decision.
 - A new game has no pre-hired historical squad. The player can create one free
-  personal character or hire a paid candidate. The latest local opening starts
-  with that first person and removes the extra academy funding charge. This is
-  the opening selected for consolidation; it is not yet the published behavior.
+  personal character or hire a paid candidate. The formation chapter advances
+  with that first person in service, without an extra academy funding charge.
+  A pending hire must arrive first. See [opening acceptance](../verification/retiro-opening.md).
 - A bulletin candidate exists off-map until hired and delivered. A dossier is not
   an NPC encounter. Arrival requires a controlled, suitable reception location;
   an arbitrary river, sea cell or mountain pass is not a reception facility.
@@ -48,11 +48,11 @@ the editor is a release requirement.
 - Equipped objects drive contextual use. Avoid redundant dedicated Charge/Heal
   controls where the held weapon or medical item already defines the action.
 
-The stock campaign starts with Retiro as its only controlled sector, as recorded
-in the latest local campaign clarification. The published version still controls
-Buenos Aires, Retiro and Ensenada. Correct this through a separate opening-route
-delivery; do not import the local material economy with it. Starting ownership
-must also be an explicit setting in the campaign package.
+The stock campaign and default story-package launch start with Retiro as the only
+controlled sector. Retiro is the supply origin and headquarters. Buenos Aires and
+Ensenada begin occupied. Existing saves keep their territory. Starting ownership
+is still a required explicit setting in the campaign package; that authoring
+capability is not yet connected.
 
 ## Player flow
 
