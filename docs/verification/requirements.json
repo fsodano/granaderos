@@ -432,6 +432,11 @@
       "id": "E-MILITIA-DISTRIBUTION",
       "path": "docs/verification/city-militia-distribution.md",
       "description": "Manual and automatic connected-city transfers preserve identities, actual wounds and promotion, finite equipment and saved physical arrivals. Fourteen simulations and two mounted production-game checks pass; full regression passes 1009/1009, zero failures/skips, with types, export and 36 baseline comparisons. Exact-head publication remains required. Full 60-person cohorts fit both compact and expanded exterior approaches. Prepared boundaries and actual paid campaign sequences are distinguished."
+    },
+    {
+      "id": "E-PATROL-RULES",
+      "path": "docs/verification/authored-militia-patrols.md",
+      "description": "Optional pinned patrol activation, waypoint intervals, energy reserve and rest recovery work through actual tactical movement, paid garrison visits, attack requests and strict paired saves. Six simulations and one mounted editor launch case pass. Full regression passes 1016/1016, zero failures/skips, with types, export and all 36 reference checks; exact-head publication remains required and older package identities retain original rules."
     }
   ],
   "queue": [
@@ -479,6 +484,33 @@
     }
   ],
   "requirements": [
+    {
+      "id": "PATROLRULES-01",
+      "group": "Published deliveries",
+      "requirement": "Author optional militia patrol activity, timing and exploration energy rules with pinned tactical continuation",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Optional patrol activity, waypoint timing and exploration energy settings are pinned to each campaign and tactical scene.",
+      "local": "Six simulations and one mounted editor case pass. Actual paid cohorts hold position under disabled patrols, retain finite combat reactions, and preserve rules through visits, saves, return and attack deployment. Full regression passes 1016/1016, zero failures/skips, plus types, export and all 36 baseline comparisons.",
+      "remaining": "",
+      "acceptance": "Edit and reset strict patrol settings, preserve older optional content identity, pin launch rules, change actual resting and movement, retain combat when patrols are disabled, and reject mismatched campaign reports and saved scenes.",
+      "evidence": [
+        "E-PATROL-RULES"
+      ],
+      "parents": [
+        "MIL-01",
+        "STORY-06",
+        "JA2-S05",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/authored-militia-patrol.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/militia-exploration.test.mjs",
+        "tests/militia-exploration-render.test.mjs",
+        "tests/militia-autonomy.test.mjs"
+      ]
+    },
     {
       "id": "MILITIADIST-01",
       "group": "Published deliveries",
@@ -2728,7 +2760,7 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Paid local militia cohorts materialize with historical loadouts, fight as local allies and retain actual tactical wounds, casualties and depleted equipment through saved reentry. Individual promotion and advanced militia behavior are tracked separately. PR #89 adds local physician care with finite dressings. PR #90 preserves individual participants through paid promotion. PR #91 advances unloaded wounds and preserves actual finite remains. PR #92 adds combat-earned promotion with persistent opponent credit and disallows new paid veteran courses. PR #93 pins authored promotion thresholds and attribute gains and fixes the large-encounter credit boundary. PR #94 adds an explicit choice between fresh cohorts and individual promotion with the actual quote and eligibility. PR #95 integrates autonomous allied turns, finite reactions and distinct militia controls.",
-      "local": "Individual promotion acceptance is tracked by MILITIATRAIN-01; local physician work by MILITIACARE-01. The larger preserved parity source is not equivalent to published integration. Retained militia wound time is tracked by MILITIAWOUND-01. Combat-earned promotion is tracked by MILITIAXP-01. Editable progression is tracked by MILITIARULES-01. The practical course selector is tracked by MILITIACHOICE-01. Autonomous combat and distinct controls are tracked by MILITIAAI-01. MILITIAPATROL-01 accepts bounded peaceful patrols, contact and saved UI clock controls. MILITIADIST-01 tracks city transfers, automatic balancing and safe saved arrivals.",
+      "local": "Individual promotion acceptance is tracked by MILITIATRAIN-01; local physician work by MILITIACARE-01. The larger preserved parity source is not equivalent to published integration. Retained militia wound time is tracked by MILITIAWOUND-01. Combat-earned promotion is tracked by MILITIAXP-01. Editable progression is tracked by MILITIARULES-01. The practical course selector is tracked by MILITIACHOICE-01. Autonomous combat and distinct controls are tracked by MILITIAAI-01. MILITIAPATROL-01 accepts bounded peaceful patrols, contact and saved UI clock controls. MILITIADIST-01 tracks city transfers, automatic balancing and safe saved arrivals. PATROLRULES-01 tracks optional patrol activation, timing and exploration energy settings.",
       "remaining": "Publish bounded militia patrols after exact-head CI; integrate city redistribution, advanced support/artillery, custody and the remaining defense acceptance.",
       "acceptance": "Training, historical loadouts and distinct behavior",
       "evidence": [
@@ -2742,7 +2774,8 @@
         "E-MILITIA-CHOICE",
         "E-MILITIA-AUTONOMY",
         "E-MILITIA-PATROLS",
-        "E-MILITIA-DISTRIBUTION"
+        "E-MILITIA-DISTRIBUTION",
+        "E-PATROL-RULES"
       ]
     },
     {
@@ -3302,7 +3335,7 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain six finite personal supply quantities. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of six personal supply types can gate dialogue, chapters and failure. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI. PR #85 publishes an optional pinned cartridge unit price for deployment and finite return credit, after exact-head CI.",
-      "local": "Physical inventory, fittings and merchants are more complete locally but not generally authored.",
+      "local": "Physical inventory, fittings and merchants are more complete locally but not generally authored. PATROLRULES-01 tracks optional patrol activation, timing and exploration energy settings.",
       "remaining": "Add artillery, ammunition types and dealer pricing, fittings, merchant stock, buyback and replenishment authoring; integrate civilian belongings and complete physical custody.",
       "acceptance": "Create each supported equipment type; buy/use/trade/reload without duplication or lost instance data.",
       "evidence": [
@@ -3317,7 +3350,8 @@
         "E-SUPPLY-CONDITIONS",
         "E-PARTIAL-RELOAD",
         "E-WEAPON-READINESS",
-        "E-CARTRIDGE-PRICE"
+        "E-CARTRIDGE-PRICE",
+        "E-PATROL-RULES"
       ]
     },
     {
@@ -4733,7 +4767,7 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Paid local militia and saved tactical casualties are published. PRs #89\u201391 add finite local physician care, individual training and unloaded wound deaths with retained actual remains. PR #95 integrates autonomous allied turns, finite reactions and distinct militia controls.",
-      "local": "MILITIAAI-01 accepts the bounded published-engine autonomous phases, saved reactions and control restrictions with actual paid wounded survivors. The preserved advanced source still contains separate patrol, artillery and redistribution scope. MILITIAPATROL-01 accepts bounded peaceful patrols, contact and saved UI clock controls. MILITIADIST-01 tracks city transfers, automatic balancing and safe saved arrivals.",
+      "local": "MILITIAAI-01 accepts the bounded published-engine autonomous phases, saved reactions and control restrictions with actual paid wounded survivors. The preserved advanced source still contains separate patrol, artillery and redistribution scope. MILITIAPATROL-01 accepts bounded peaceful patrols, contact and saved UI clock controls. MILITIADIST-01 tracks city transfers, automatic balancing and safe saved arrivals. PATROLRULES-01 tracks optional patrol activation, timing and exploration energy settings.",
       "remaining": "Publish bounded militia patrols after exact-head CI; integrate city redistribution, advanced support/artillery, custody and the remaining defense acceptance.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
@@ -4745,7 +4779,8 @@
         "E-MILITIA-WOUNDS",
         "E-MILITIA-AUTONOMY",
         "E-MILITIA-PATROLS",
-        "E-MILITIA-DISTRIBUTION"
+        "E-MILITIA-DISTRIBUTION",
+        "E-PATROL-RULES"
       ],
       "sourceRow": "JA2-S05",
       "sourceNotes": "Live paid training, status cards, rejected manual selection and contextual medical targeting passed. Automatic combat and saved reactions remain unverified live; a validated importable defense demo is provided. Peaceful patrols now advance local militia through fixed map waypoints, one legal step per six seconds, with energy costs and no AP charge. Real contact stops ambient movement. Five focused tests and a live patrol/save check cover this behavior; see [exploration patrols](exploration-patrols.md). Militia now operate nearby friendly cannons using their own eligible crews and finite ammunition; see [autonomous artillery](artillery-ai.md). Strategic medical care now uses a separate local assignment, personal kits, hourly triage and saved stops. Ten simulation/render checks and a live treatment, save, depletion and paid-resupply sequence cover it; see [militia medical care](militia-medical-care.md). Town redistribution is now available through manual rank/quantity transfers and an automatic capacity-aware plan, preserving exact soldiers and finite supplies. Thirteen new simulation/render checks and live transfer, wound, reload and balancing checks cover it; see [city militia distribution](militia-distribution.md). The original manual p. 44 supports this strategic choice; a classic tactical command menu is not established by the cited pages and remains a separate open audit item. Shared friendly allegiance, phase placement and AP refresh are Granaderos adaptations."

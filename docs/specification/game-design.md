@@ -634,7 +634,7 @@ for the separate patrol, redistribution, artillery and advanced-AI requirements.
 During exploration, local militia follow fixed map waypoints with one legal step
 per six-second ambient tick. The step spends energy and lowers a prepared gun,
 without spending AP or refilling any supply. A tired defender rests to preserve
-a 50-energy reserve. Actual sight contact stops the patrol and starts the existing
+an authored energy reserve (50 by default). Actual sight contact stops the patrol and starts the existing
 combat initiative. Pausing or hiding the game stops ambient time. Complete saved
 continuation preserves patrol cadence and synchronized campaign time. The same
 waypoints support paid movement after lost combat contact. See [verification](../verification/militia-exploration-patrols.md)
@@ -653,3 +653,13 @@ exterior ground; large groups can spread inward. Old source scenes cannot restor
 the transferred people. These city boundaries, limits and approaches remain fixed
 rules. See [verification](../verification/city-militia-distribution.md) for scope,
 prepared boundaries and actual paid/wounded campaign sequences.
+
+### Authored patrol settings
+
+Optional campaign content controls militia patrol/search activity, intervals per
+fixed waypoint, exploration energy reserve and rest recovery. Defaults retain
+the existing behavior; older package identities do not gain a new field. New
+deployments and saved tactical scenes carry the pinned campaign choice. Disabled
+patrols retain combat and reactions. Strict report and save checks reject rule
+drift. Fixed waypoint coordinates and combat search costs remain separate. See
+[verification](../verification/authored-militia-patrols.md).
