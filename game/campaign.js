@@ -1,3 +1,4 @@
+import {dispatchArtilleryTransport,deliverArtilleryTransfers,validateArtilleryTransport} from './artillery-transport.js';
 import {validateCampaignArtilleryProfiles,artillerySaveReplacer,restoreArtilleryReferences} from './artillery-definitions.js';
 import {artillerySupplyQuote} from './artillery-supply.js';
 import {migrateArtilleryState,prepareSectorArtillery,validateArtilleryReport,settleSectorArtillery,validateCampaignArtillery,ownedArtilleryCount} from './campaign-artillery.js';
@@ -228,7 +229,7 @@ function tick(s,hours,{joinArrivals=true,stopOnDefeat=true,traveling=[],civilian
     if(!s.completed&&s.hour%168===0&&coastalRevenue(s)>=500)raid(s,'coast');
     if(!s.completed&&s.hour%144===0)raid(s,'interior');
     // Resolve same-hour occupation and blockade before admitting imported goods.
-    deliverEquipmentShipments(s);
+    deliverEquipmentShipments(s);deliverArtilleryTransfers(s);
     receiveDueHires(s,joinArrivals);synchronizeSquad(s);synchronizeCampaignPresence(s);synchronizeDialogueMovements(s);progress(s);if((s.defeated&&stopOnDefeat)||(woundDeaths.length&&traveling.length&&!traveling.some(id=>s.squad.includes(id))))break;
   }
 }
@@ -241,7 +242,7 @@ export function dispatchCampaign(previous,action){
     requireThat(action&&typeof action.type==='string','La orden no es válida.');
     if(action.sectorState){validateCampaignPatrol(s,action.sectorState);validateCampaignArtilleryProfiles(s,action.sectorState);validateArtilleryReport(s.pendingBattle,action.sectorState);}
     requireThat(!s.defeated||s.pendingBattle&&['syncTacticalTime','leaveSector','battleResult'].includes(action.type),'La campaña ha terminado. Inicia otra campaña para continuar.');
-    requireThat(!s.completed||['syncTacticalTime','wait','travel','visitSector','leaveSector','talkNPC','createSquad','selectSquad','squad','equip','resupply','repairWeapon','purchaseEquipment','configureArtillery','resupplyArtillery','transport','militia','cancelMilitia','transferMilitia','distributeMilitia','renewContract','dismiss','redirectHire','cancelHireArrival','assignCare','purchaseMedicalSupplies'].includes(action.type),'La campaña está ganada. Puedes recorrer las provincias y atender a tus escuadras.');
+    requireThat(!s.completed||['syncTacticalTime','wait','travel','visitSector','leaveSector','talkNPC','createSquad','selectSquad','squad','equip','resupply','repairWeapon','purchaseEquipment','configureArtillery','resupplyArtillery','transportArtillery','transport','militia','cancelMilitia','transferMilitia','distributeMilitia','renewContract','dismiss','redirectHire','cancelHireArrival','assignCare','purchaseMedicalSupplies'].includes(action.type),'La campaña está ganada. Puedes recorrer las provincias y atender a tus escuadras.');
     requireThat(!s.pendingBattle||['battleResult','leaveSector','talkNPC','finishMission','syncTacticalTime'].includes(action.type),'Hay una batalla pendiente. Resuélvela antes de dar nuevas órdenes.');
     if(['travel','attack','visitSector'].includes(action.type))requireThat(!s.squad.some(id=>militiaAssignment(s,id)),'Un instructor de la escuadra está asignado a las milicias. Cancelá su curso o dejalo en una escuadra de guarnición.');
     if(['travel','attack','visitSector','visitMission'].includes(action.type))requireThat(!s.squad.some(id=>careAssignmentBusy(s.operativeState[id].assignment)),'Volvé a poner en servicio a los médicos, pacientes y combatientes en descanso de la escuadra antes de marchar o entrar al sector.');
@@ -264,6 +265,7 @@ export function dispatchCampaign(previous,action){
         if(snapshot){acknowledgeCivilians(s,snapshot);acknowledgeSuccessionDeaths(s,snapshot);if(campaignStory(s))advanceCampaignStory(s,snapshot);}
         s.pendingBattle.syncedSeconds=elapsed;break;
       }
+      case 'transportArtillery':{const quote=dispatchArtilleryTransport(s,action);note(s,`La pieza parte hacia ${sector(quote.to).name}. Llegada prevista en ${quote.hours} horas si la ruta sigue abierta.`);break;}
       case 'resupplyArtillery':{
         const quote=artillerySupplyQuote(s,action.sector,action.artilleryId,isSupplied(s,s.location));requireThat(quote.available,quote.reason);pay(s,{treasury:quote.cost});const gun=s.sectorStates[action.sector].artillery.find(g=>g.id===action.artilleryId);gun.ammo++;note(s,`Se compra una munición de artillería por ${quote.cost} pesos. Queda en reserva junto a la pieza.`);break;
       }
@@ -503,7 +505,7 @@ export function restoreCampaign(text){
   requireThat(object(s.conversations)&&Object.entries(s.conversations).every(([id,c])=>[...encounterDefinitions(s),...YATASTO_NPCS].some(n=>n.id===id)&&object(c)&&c.met===true&&['friendly','direct','recruit','quest','mission','dialogue'].includes(c.lastApproach)&&integer(c.hour,0,1e9)&&(c.sector===undefined||validWorldLocation(c.sector)||c.sector==='san_lorenzo')),'Las conversaciones guardadas son inválidas.');
   requireThat(s.lastConversation===null||(object(s.lastConversation)&&[...encounterDefinitions(s),...YATASTO_NPCS].some(n=>n.id===s.lastConversation.npcId)&&typeof s.lastConversation.text==='string'&&s.lastConversation.text.length<2000&&typeof s.lastConversation.speaker==='string'&&s.lastConversation.speaker.length<=100&&Array.isArray(s.lastConversation.options)&&s.lastConversation.options.every(o=>['friendly','direct','recruit','quest','mission','dialogue'].includes(o))),'El diálogo guardado es inválido.');
   validateSavedDialogues(s,encounterDefinitions(s));
-  s.armory??={};s.loadouts??={};s.artillerySelection??=[];requireThat(s.artillerySelectionExplicit===undefined||typeof s.artillerySelectionExplicit==='boolean','La elección de batería guardada es inválida.');requireThat(Array.isArray(s.artillerySelection)&&s.artillerySelection.length<=3&&s.artillerySelection.every(t=>['bronze4','field8','swivel'].includes(t)),'La batería guardada es inválida.');
+  s.armory??={};s.loadouts??={};s.artillerySelection??=[];requireThat(s.artillerySelectionExplicit===undefined||typeof s.artillerySelectionExplicit==='boolean','La elección de batería guardada es inválida.');requireThat(Array.isArray(s.artillerySelection)&&s.artillerySelection.length<=3&&s.artillerySelection.every(t=>['bronze4','field8','swivel'].includes(t)||typeof t==='string'&&t.startsWith('depot:')&&t.length>6&&t.length<=166),'La batería guardada es inválida.');
   requireThat(object(s.armory)&&Object.entries(s.armory).every(([key,v])=>[...equipmentCatalog(s),...EQUIPMENT_CATALOG].some(o=>String(o.item)===key)&&integer(v,0,100000)),'La armería guardada es inválida.');validateArmoryItems(s);
   requireThat(object(s.loadouts)&&Object.entries(s.loadouts).every(([id,slots])=>baseRosterFor(s).some(o=>o.id===Number(id))&&object(slots)&&Object.entries(slots).every(([slot,v])=>['weapon','blade'].includes(slot)&&(v===0&&slot==='weapon'||integer(v,slot==='blade'?1809:1800,1813)))),'Los equipos guardados son inválidos.');
   s.cityLoyaltyEvents??=[];requireThat(validCityLoyaltyEvents(s.cityLoyaltyEvents),'El registro de lealtad es inválido.');
@@ -528,7 +530,7 @@ export function restoreCampaign(text){
   requireThat(Array.isArray(s.squads)&&s.squads.length>0&&s.squads.length<=8&&new Set(s.squads.map(q=>q.id)).size===s.squads.length&&s.squads.every(q=>object(q)&&typeof q.id==='string'&&/^squad-[1-9][0-9]*$/.test(q.id)&&typeof q.name==='string'&&q.name.length<=30&&validWorldLocation(q.location)&&validIds(q.members)&&q.members.length<=6&&q.members.every(id=>s.recruited.includes(id))),'Las escuadras guardadas son inválidas.');
   const assigned=s.squads.flatMap(q=>q.members);requireThat(new Set(assigned).size===assigned.length,'Un combatiente no puede pertenecer a dos escuadras.');const selected=s.squads.find(q=>q.id===s.activeSquadId);requireThat(selected&&selected.location===s.location&&JSON.stringify(selected.members)===JSON.stringify(s.squad),'La escuadra activa del archivo es inválida.');
   requireThat(object(s.sectorStates)&&Object.entries(s.sectorStates).every(([id,snapshot])=>(validWorldLocation(id)||id==='san_lorenzo')&&validateSectorSnapshot(expandCellScene(snapshot))&&(sector(id)||id==='san_lorenzo'||snapshot.sectorId===id&&snapshot.sourceMapId===id)),'Los sectores guardados son inválidos.');
-  migrateArtilleryState(s);validateCampaignArtillery(s);
+  migrateArtilleryState(s);validateArtilleryTransport(s);validateCampaignArtillery(s);
   for(const scene of [s.pendingBattle,...Object.values(s.sectorStates),...Object.values(s.sceneStates)]){validateCampaignPatrol(s,scene);validateCampaignArtilleryProfiles(s,scene);}
   for(const [id,snapshot]of Object.entries(s.sectorStates))s.sectorStates[id]=compactCellScene(snapshot);
   requireThat(!s.pendingBattle||s.pendingBattle.syncedSeconds===undefined||(Number.isSafeInteger(s.pendingBattle.syncedSeconds)&&s.pendingBattle.syncedSeconds>=0),'El reloj del despliegue es inválido.');requireThat(Number.isInteger(s.secondOfHour??0)&&(s.secondOfHour??0)>=0&&(s.secondOfHour??0)<3600,'El reloj guardado es inválido.');requireThat(s.deferredRaids===undefined||(Array.isArray(s.deferredRaids)&&s.deferredRaids.length<=1000&&s.deferredRaids.every(r=>object(r)&&['north','coast','interior'].includes(r.theater)&&sector(r.target))),'Las incursiones pendientes son inválidas.');validatePolitics(s);requireThat(s.economyVersion===2&&Object.keys(s.resources).length===1,'La economía guardada es inválida.');if(migrateCampaignCivilians(s))synchronizeCampaignPresence(s);migrateCampaignCivilianSupplies(s);validateCampaignCivilians(s);if(resumeCivilianServiceReturns(s))validateCampaignCivilians(s);validateCampaignPresence(s);validateDialogueMovements(s,encounterDefinitions(s));enforceHistoricalLoss(s);s.lastError=null;return s;

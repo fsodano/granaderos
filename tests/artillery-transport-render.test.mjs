@@ -1,0 +1,28 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {act} from '../web/node_modules/react/index.js';
+import {mountCampaign} from './mounted-campaign-fixture.mjs';
+import {fieldGun} from './artillery-transport-fixture.mjs';
+import {order,saved,visit} from './local-contract-fixture.mjs';
+import {depotSelection} from '../game/artillery-transport.js';
+import {enterSector} from '../game/world.js';
+const choose=async(m,e,value)=>{assert.ok(e);Object.getOwnPropertyDescriptor(m.dom.window.HTMLSelectElement.prototype,'value').set.call(e,value);await act(async()=>e.dispatchEvent(new m.dom.window.Event('change',{bubbles:true})));};
+const armory=async m=>{await m.click('Volver a la campaña');await m.click('Escritorio');await m.click('Tesorería');const summary=[...m.document.querySelectorAll('summary')].find(s=>s.textContent==='Comprar armas y revisar equipo');assert.ok(summary);await act(async()=>summary.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));};
+
+test('mounted production armory sends one actual fired gun, rejects unavailable transport and displays finite saved cargo',async t=>{
+ const m=await mountCampaign(t,visit(fieldGun()));await armory(m);const before=m.saved().campaign,gun=before.sectorStates.san_nicolas.artillery[0],panel=m.document.querySelector(`[data-artillery-id="${gun.id}"]`),selects=panel.querySelectorAll('fieldset select'),send=panel.querySelector('fieldset button');
+ await choose(m,selects[0],'buenos_aires');await choose(m,selects[1],'flotilla');assert.equal(send.disabled,true);assert.match(panel.textContent,/Primero organizá ese transporte/);await m.click('Enviar pieza');assert.deepEqual(m.saved().campaign,before);
+ await choose(m,selects[1],'carts');assert.equal(send.disabled,false);assert.match(panel.textContent,/18 horas · 1 combatiente para cargar/);await m.click('Enviar pieza');assert.equal(m.document.querySelector(`[data-artillery-id="${gun.id}"]`),null);
+ const transfer=m.document.querySelector(`[data-artillery-transfer-id="${gun.id}"]`);assert.ok(transfer);assert.match(transfer.textContent,/San Nicolás.*Buenos Aires.*Carretas/);assert.match(transfer.textContent,/Descargada · 6 en reserva.*Llegada en 18 horas/);
+ const after=saved({campaign:m.saved().campaign}).campaign;assert.equal(after.artilleryTransfers.length,1);assert.equal(after.resources.treasury,before.resources.treasury);assert.equal(after.hour,before.hour);assert.deepEqual(after.sectorStates.san_nicolas.artillery,[]);assert.equal(after.artilleryTransfers[0].gun.id,gun.id);assert.equal(after.artilleryTransfers[0].gun.ammo,6);assert.equal(after.artilleryTransfers[0].gun.loaded,false);
+ // A detached stale control cannot dispatch a second piece.
+ await act(async()=>send.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));assert.equal(m.saved().campaign.artilleryTransfers.length,1);
+});
+
+test('mounted local depot preserves declared unfinished loading and selects its exact gun for a real attack',async t=>{
+ let s=fieldGun();s.sectorStates.san_nicolas.artillery[0].reloadProgress=.4;const gun=structuredClone(s.sectorStates.san_nicolas.artillery[0]),token=depotSelection(gun);
+ s=order(s,{type:'transportArtillery',sector:'san_nicolas',artilleryId:gun.id,to:'buenos_aires',mode:'carts'});s=order(s,{type:'wait',hours:18});s=order(s,{type:'travel',sector:'buenos_aires'});const m=await mountCampaign(t,visit(saved({campaign:s}).campaign));await armory(m);
+ const depot=m.document.querySelector('[aria-label="Depósito local de artillería"]');assert.ok(depot);assert.match(depot.textContent,/Recarga 40% · 6 en reserva/);assert.equal(m.document.querySelector('#battery-0').value,token);
+ await choose(m,m.document.querySelector('#battery-1'),token);const prepare=()=>[...m.document.querySelectorAll('button')].find(b=>b.textContent==='Preparar batería');assert.equal(prepare().disabled,true);assert.match(m.document.querySelector('.armory-loadout').textContent,/solo puede ocupar un lugar/);
+ await choose(m,m.document.querySelector('#battery-1'),'');await m.click('Preparar batería');const selected=saved({campaign:m.saved().campaign}).campaign;assert.deepEqual(selected.artillerySelection,[token]);assert.equal(selected.artilleryDepots.buenos_aires.length,1);
+ s=order(selected,{type:'attack',sector:'ensenada'});assert.deepEqual(s.artilleryDepots.buenos_aires,[]);const p=saved({campaign:s,battle:enterSector(s.pendingBattle)});for(const key of ['id','type','side','loaded','ammo','reloadProgress','facing'])assert.deepEqual(p.battle.artillery[0][key],gun[key],key);
+});
