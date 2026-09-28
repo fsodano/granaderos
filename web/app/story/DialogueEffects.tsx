@@ -1,5 +1,7 @@
 'use client';
-export default function DialogueEffects({effects=[],quests,onChange}:{effects?:any[];quests:any[];onChange:(effects:any[])=>void}){
+import {isWorldCharacter} from '../../../game/content-character-ids.js';
+export default function DialogueEffects({effects=[],quests,characters,ownerId,onChange}:{effects?:any[];quests:any[];characters:any[];ownerId:string;onChange:(effects:any[])=>void}){
+ const candidates=characters.filter(c=>c.id!==ownerId&&isWorldCharacter(c)),movement=effects.find(e=>e.type==='movement');
  const effect=effects.find(e=>e.type==='treasury'),quest=effects.find(e=>e.type==='quest');
  const change=(type:string,value:any)=>onChange([...effects.filter(e=>e.type!==type),...(value?[value]:[])]);
  return <><fieldset aria-label="Pago o recompensa"><legend>Pago o recompensa</legend>
@@ -17,5 +19,8 @@ export default function DialogueEffects({effects=[],quests,onChange}:{effects?:a
    <label>Resultado del encargo<select value={quest.status} onChange={e=>change('quest',{...quest,status:e.target.value})}><option value="active">Iniciar</option><option value="completed">Completar</option><option value="failed">Fallar</option></select></label>
    <p>Iniciar requiere un encargo sin iniciar. Completar o fallar requiere que esté en curso. El cambio y el pago de esta opción se aplican juntos, una sola vez.</p>
   </>}
+ </fieldset><fieldset aria-label="Movimiento en el sector"><legend>Movimiento en el sector</legend>
+  <label><input type="checkbox" disabled={!candidates.length} checked={Boolean(movement)} onChange={e=>change('movement',e.target.checked?{type:'movement',character:candidates[0].id,destination:'speaker'}:null)}/>Llamar a otro personaje al elegir esta opción</label>
+  {movement&&<><label>Personaje que viene<select value={movement.character} onChange={e=>change('movement',{...movement,character:e.target.value})}>{candidates.map(c=><option key={c.id} value={c.id}>{c.name}</option>)}</select></label><p>Debe estar consciente en el mismo sector y tener un camino libre. Camina hasta una casilla junto al interlocutor y espera allí. El peligro interrumpe la marcha. La orden se aplica una sola vez. Otro diálogo puede darle un nuevo destino.</p></>}
  </fieldset></>;
 }

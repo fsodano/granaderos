@@ -1,3 +1,4 @@
+import {synchronizeDialogueMovements,validateDialogueMovements} from './dialogue-movement.js';
 import {updateContentQuests} from './content-quests.js';
 import {dialogueForNPC,chooseDialogue,validateSavedDialogues} from './content-dialogue.js';
 import {acknowledgeCivilians,transferCivilian,validateCampaignCivilians,migrateCampaignCivilians} from './campaign-civilians.js';
@@ -172,7 +173,7 @@ function tick(s,hours,{joinArrivals=true}={}){
     if(!s.completed&&s.hour%120===0)raid(s,'north');
     if(!s.completed&&s.hour%168===0&&coastalRevenue(s)>=500)raid(s,'coast');
     if(!s.completed&&s.hour%144===0)raid(s,'interior');
-    receiveDueHires(s,joinArrivals);synchronizeSquad(s);synchronizeCampaignPresence(s);progress(s);if(s.defeated)break;
+    receiveDueHires(s,joinArrivals);synchronizeSquad(s);synchronizeCampaignPresence(s);synchronizeDialogueMovements(s);progress(s);if(s.defeated)break;
   }
 }
 function travelPath(s,from,to){
@@ -267,7 +268,7 @@ export function dispatchCampaign(previous,action){
         acknowledgeCivilians(s,snapshot);requireThat(npc&&actor&&unit&&local&&(local.hp??100)>0&&!local.unconscious&&s.squad.includes(id)&&unit.hp>0&&!unit.unconscious,'El interlocutor no está disponible en este sector.');requireThat(snapshot.mode==='exploration'||snapshot.status==='victory'||snapshot.sectorCleared,'Terminá el combate antes de conversar.');requireThat(Number.isInteger(local.x)&&Number.isInteger(local.y)&&Math.abs(unit.x-local.x)+Math.abs(unit.y-local.y)<=1,'Acercá al combatiente al interlocutor para hablar.');
         requireThat(['friendly','direct','recruit','quest','mission','dialogue'].includes(action.approach),'La forma de dirigirse al interlocutor es inválida.');
         const quest=questForNPC(s,npc.id);let text=npc.greeting+(quest&&quest.status!=='completed'?` ${quest.offer}`:''),outcome='conversation',dialogue=null;
-        if(action.approach==='dialogue'){dialogue=chooseDialogue(s,npc,action.dialogueChoice,action.dialogueNode,snapshot);text=dialogue.text;outcome='dialogue';if(dialogue.effect?.applied){if(dialogue.effect.amount)note(s,`${npc.name}: ${dialogue.effect.amount>0?'entrega':'recibe'} ${Math.abs(dialogue.effect.amount)} pesos.`);if(dialogue.effect.quest)note(s,`Encargo «${dialogue.effect.quest.title}»: ${dialogue.effect.quest.status==='active'?'en curso':dialogue.effect.quest.status==='completed'?'completado':'fallido'}.`);}}
+        if(action.approach==='dialogue'){dialogue=chooseDialogue(s,npc,action.dialogueChoice,action.dialogueNode,snapshot);text=dialogue.text;outcome='dialogue';if(dialogue.effect?.applied){if(dialogue.effect.amount)note(s,`${npc.name}: ${dialogue.effect.amount>0?'entrega':'recibe'} ${Math.abs(dialogue.effect.amount)} pesos.`);if(dialogue.effect.movement)note(s,`${npc.name} llama a ${dialogue.effect.movement.name} para un encuentro en este sector.`);if(dialogue.effect.quest)note(s,`Encargo «${dialogue.effect.quest.title}»: ${dialogue.effect.quest.status==='active'?'en curso':dialogue.effect.quest.status==='completed'?'completado':'fallido'}.`);}}
         if(action.approach==='direct'){
           const terms=`un mando con ${npc.requiredLeadership} de liderazgo y ${npc.requiredLiberated} localidades seguras`,hireTerms=encounterHireTerms(s,npc);
           const service=hireTerms.length?`Puedo incorporarme por contrato: ${hireTerms.map(q=>`${q.name.toLowerCase()}, ${q.price} pesos`).join('; ')}.`:'Puedo incorporarme sin paga.';
@@ -393,7 +394,7 @@ export function dispatchCampaign(previous,action){
       }
       default:throw Error('Orden desconocida.');
     }
-    updateContentQuests(s);releaseDeferred(s);receiveDueHires(s);synchronizeSquad(s);synchronizeCampaignPresence(s);progress(s);
+    updateContentQuests(s);releaseDeferred(s);receiveDueHires(s);synchronizeSquad(s);synchronizeCampaignPresence(s);synchronizeDialogueMovements(s);progress(s);
     for(const [flag,at] of Object.entries({academy:'retiro',foundry:'mendoza',northPact:'salta',partisanSupply:'tucuman',parliament:'mendoza',emancipation:'buenos_aires',commission:'buenos_aires'}))if(s.flags[flag]&&!previous.flags[flag])recordCityLoyalty(s,{sectorId:at,kind:'quest',eventId:`quest-${flag}`});
     return s;
   }catch(error){const rejected=clone(previous);rejected.lastError=error.message;return rejected;}
@@ -428,7 +429,7 @@ export function restoreCampaign(text){
   s.lastConversation??=null;s.conversations??={};
   requireThat(object(s.conversations)&&Object.entries(s.conversations).every(([id,c])=>[...encounterDefinitions(s),...YATASTO_NPCS].some(n=>n.id===id)&&object(c)&&c.met===true&&['friendly','direct','recruit','quest','mission','dialogue'].includes(c.lastApproach)&&integer(c.hour,0,1e9)&&(c.sector===undefined||validWorldLocation(c.sector)||c.sector==='san_lorenzo')),'Las conversaciones guardadas son inválidas.');
   requireThat(s.lastConversation===null||(object(s.lastConversation)&&[...encounterDefinitions(s),...YATASTO_NPCS].some(n=>n.id===s.lastConversation.npcId)&&typeof s.lastConversation.text==='string'&&s.lastConversation.text.length<2000&&typeof s.lastConversation.speaker==='string'&&s.lastConversation.speaker.length<=100&&Array.isArray(s.lastConversation.options)&&s.lastConversation.options.every(o=>['friendly','direct','recruit','quest','mission','dialogue'].includes(o))),'El diálogo guardado es inválido.');
-  validateSavedDialogues(s,encounterDefinitions(s));
+  validateSavedDialogues(s,encounterDefinitions(s));validateDialogueMovements(s,encounterDefinitions(s));
   s.armory??={};s.loadouts??={};s.artillerySelection??=[];requireThat(Array.isArray(s.artillerySelection)&&s.artillerySelection.length<=3&&s.artillerySelection.every(t=>['bronze4','field8','swivel'].includes(t)),'La batería guardada es inválida.');
   requireThat(object(s.armory)&&Object.entries(s.armory).every(([key,v])=>[...equipmentCatalog(s),...EQUIPMENT_CATALOG].some(o=>String(o.item)===key)&&integer(v,0,100000)),'La armería guardada es inválida.');validateArmoryItems(s);
   requireThat(object(s.loadouts)&&Object.entries(s.loadouts).every(([id,slots])=>baseRosterFor(s).some(o=>o.id===Number(id))&&object(slots)&&Object.entries(slots).every(([slot,v])=>['weapon','blade'].includes(slot)&&(v===0&&slot==='weapon'||integer(v,slot==='blade'?1809:1800,1813)))),'Los equipos guardados son inválidos.');

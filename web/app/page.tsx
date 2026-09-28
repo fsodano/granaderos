@@ -1,4 +1,5 @@
 'use client';
+import {projectDialogueMovements} from '../../game/dialogue-movement.js';
 import {CONTENT_LAUNCH_KEY,CONTENT_SAVE_KEY,campaignStorageKey} from '../../game/content-launch.js';
 import {dialogueForNPC} from '../../game/content-dialogue.js';
 import {encounterHireTerms} from '../../game/encounters.js';
@@ -57,7 +58,7 @@ export default function Home(){
     if(!campaign||!battle||current.screen!=='battle'){setNotice('Primero entrá al sector para conversar.');return;}
     const next=dispatchCampaign(campaign,{type:'talkNPC',npcId,approach,unitId,term,...(choice?{dialogueNode:choice.node,dialogueChoice:choice.id}:{}),sectorState:battle});
     if(next.lastError){setNotice(next.lastError);return;}
-    let updated=battle;
+    let updated=projectDialogueMovements(next,battle);
     if(next.lastConversation?.outcome==='recruited'){
       const id=next.lastConversation.operativeId,npc=battle.npcs.find((n:any)=>n.id===npcId),record=next.pendingBattle.squad.find((o:any)=>o.id===id);
       updated=structuredClone(battle);updated.npcs=updated.npcs.filter((n:any)=>n.id!==npcId);

@@ -50,6 +50,7 @@ for(const n of s.npcs){
  if(n.movementMode!==undefined)need(['walk','run','crouch','prone'].includes(n.movementMode),'movimiento civil');
  if(n.facing!==undefined)need(integer(n.facing,0,7),'dirección civil');
  if(n.lastMovePath!==undefined)need(Array.isArray(n.lastMovePath)&&n.lastMovePath.length<=128&&n.lastMovePath.every(coord),'ruta civil');
+ if(n.scriptedMove!==undefined){const m=n.scriptedMove;need(object(m)&&Object.keys(m).length===2&&integer(m.order,0,999)&&object(m.target)&&Object.keys(m.target).length===2&&coord(m.target),'movimiento del diálogo');}
  if(n.ai!==undefined){const a=n.ai;need(object(a)&&integer(a.cycle,0,1e9)&&integer(a.wait,0,100)&&NPC_ACTIVITIES.includes(a.activity)&&(a.homeId===null||text(a.homeId)),'rutina civil');
   if(a.destination!==undefined)need(coord(a.destination),'destino civil');
   if(a.safeAfter!==undefined)need(Number.isSafeInteger(a.safeAfter)&&a.safeAfter>=0,'calma civil');

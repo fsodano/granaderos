@@ -421,3 +421,12 @@ test('the editor configures required survivors, protects character references an
  await m.click(m.button('Personajes'));await m.input(m.document.querySelector('input[type="search"]'),'person-110');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Eliminar'));assert.ok(draft().characters.some(c=>c.id==='person-110'));assert.match(m.document.body.textContent,/Quitá primero las apariciones y condiciones/);
  await m.click(m.button('Iniciar campaña con estas fichas'));const {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.deepEqual(campaign.contentCampaign.package.quests.map(q=>q.requiredAlive),[['person-110'],['person-110']]);assert.deepEqual(contentQuestJournal(campaign),[]);
 });
+
+test('the editor authors dialogue movement with undo, copy, protected character references and campaign launch',async t=>{
+ const {movementPackage}=await import('./dialogue-movement-fixture.mjs');const d=movementPackage();delete d.characters.find(c=>c.id==='alma-contract').encounter.dialogue.nodes[0].choices[0].effects;
+ const m=await mount(t,JSON.stringify(d)),draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));await m.input(m.document.querySelector('input[type="search"]'),'alma-contract');await m.click(m.document.querySelector('.entry-list button'));
+ await m.click(m.document.querySelector('[aria-label="Movimiento en el sector"] input'));assert.equal(m.label('Personaje que viene').value,'pablo');assert.equal(m.label('Personaje que viene').options.length,1);
+ await m.click(m.button('Deshacer'));assert.equal(m.document.querySelector('[aria-label="Movimiento en el sector"] input').checked,false);await m.click(m.button('Rehacer'));await m.click(m.button('Duplicar personaje'));assert.deepEqual(draft().characters.at(-1).encounter.dialogue.nodes[0].choices[0].effects,[{type:'movement',character:'pablo',destination:'speaker'}]);
+ await m.input(m.document.querySelector('input[type="search"]'),'pablo');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Eliminar'));assert.ok(draft().characters.some(c=>c.id==='pablo'));
+ await m.click(m.button('Iniciar campaña con estas fichas'));const {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.equal(campaign.contentCampaign.package.characters.find(c=>c.id==='alma-contract').encounter.dialogue.nodes[0].choices[0].effects[0].character,'pablo');
+});

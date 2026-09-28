@@ -3,8 +3,8 @@ import {propCells} from './props.js';
 import {directionTo, approximateHeardPosition} from './npc-perception.js';
 
 // Local, deterministic state machines. No network, hidden enemy positions or RNG.
-export const NPC_ACTIVITIES = ['roaming','home','working','socializing','hiding','fleeing'];
-export const NPC_ACTIVITY_LABELS = {roaming:'paseando',home:'en casa',working:'trabajando',socializing:'en la pulpería',hiding:'a cubierto',fleeing:'buscando refugio'};
+export const NPC_ACTIVITIES = ['roaming','home','working','socializing','meeting','hiding','fleeing'];
+export const NPC_ACTIVITY_LABELS = {meeting:'en un encuentro',roaming:'paseando',home:'en casa',working:'trabajando',socializing:'en la pulpería',hiding:'a cubierto',fleeing:'buscando refugio'};
 const key = p => `${p.x},${p.y}`;
 const point = p => ({x:p.x,y:p.y});
 const distance = (a,b) => Math.abs(a.x-b.x)+Math.abs(a.y-b.y);
@@ -74,11 +74,14 @@ export function advanceNpc(s,n,budget=24,atTime=now(s)) {
   n.ai??={cycle:0,homeId:null,activity:'roaming',wait:0};
   const ai=n.ai;n.lastMovePath=[];
   const danger=ai.threat&&atTime<ai.safeAfter;
-  if(!danger&&s.approachingNpcIds?.includes(n.id))return;
+  if(!danger&&!n.scriptedMove&&s.approachingNpcIds?.includes(n.id))return;
   if(!danger&&ai.threat){delete ai.threat;delete ai.safeAfter;delete ai.destination;ai.wait=0;}
+  if(!danger&&n.scriptedMove&&distance(n,n.scriptedMove.target)===0){
+    ai.destination={...n.scriptedMove.target};ai.activity='meeting';ai.wait=0;n.stance='standing';n.movementMode='walk';return;
+  }
   // Conference speakers remain available at their meeting while it is safe.
   // They still take shelter through the ordinary danger branch.
-  if(n.mission&&!danger){
+  if(n.mission&&!danger&&!n.scriptedMove){
     ai.activity='working';delete ai.destination;n.stance='standing';n.movementMode='walk';
     const visitor=s.units.find(u=>u.side==='player'&&u.hp>0&&!u.departure&&!u.unconscious&&distance(u,n)<=1);
     if(visitor)n.facing=directionTo(n,visitor);
@@ -89,6 +92,8 @@ export function advanceNpc(s,n,budget=24,atTime=now(s)) {
     const choices=places.cells.filter(p=>p.path.length<=8).sort((a,b)=>shelterScore(s,b,ai.threat,routes.tiles)-shelterScore(s,a,ai.threat,routes.tiles)||a.y-b.y||a.x-b.x);
     ai.destination=point(choices[0]??n);ai.activity=distance(n,ai.destination)?'fleeing':'hiding';
     n.stance??='crouched';n.movementMode=n.stance==='prone'?'prone':'crouch';
+  }else if(n.scriptedMove){
+    ai.destination={...n.scriptedMove.target};ai.activity='meeting';ai.wait=0;n.stance='standing';n.movementMode='walk';
   }else{
     n.stance='standing';n.movementMode='walk';
     const visitor=s.units.find(u=>u.side==='player'&&u.hp>0&&!u.departure&&!u.unconscious&&distance(u,n)<=1);
@@ -106,7 +111,7 @@ export function advanceNpc(s,n,budget=24,atTime=now(s)) {
     }
   }
   const route=routes.records.get(key(ai.destination));
-  if(!route){delete ai.destination;return;}
+  if(!route){if(!n.scriptedMove)delete ai.destination;return;}
   for(const p of route.path){
     const t=routes.tiles.get(key(p)),cost=n.stance==='prone'?16:n.stance==='crouched'?10:8;
     if(t.type==='door'&&!t.open){
@@ -124,8 +129,9 @@ export function advanceNpc(s,n,budget=24,atTime=now(s)) {
     if(budget<cost)break;
     budget-=cost;n.facing=directionTo(n,p);Object.assign(n,p);n.lastMovePath.push(point(p));
   }
-  if(distance(n,ai.destination)===0){
+  if(ai.destination&&distance(n,ai.destination)===0){
     if(danger)ai.activity='hiding';
+    else if(n.scriptedMove)ai.activity='meeting';
     else {ai.cycle++;ai.wait=2+hash(n.id+ai.cycle)%4;delete ai.destination;}
   }
 }
