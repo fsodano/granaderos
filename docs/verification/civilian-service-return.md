@@ -53,7 +53,12 @@ The five new cases also pass, including validation before legacy conversion.
 The complete release regression passes **924/924 tests**, with zero failures or
 skips (219,612.186 ms). Types, production export (722 files, 632 asset references),
 all 36 baseline comparisons and the documentation audit also pass. Exact-head
-GitHub CI is required before merge; this delivery is not yet on main.
+GitHub CI passed before merge.
+
+Published through [PR #87](https://github.com/fsodano/granaderos/pull/87).
+[Exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36456204052/job/109043065947)
+passed for `4a167e5284ab8bb9e11616720812dd68f580111f`. The PR merged on
+2026-09-28 at 17:25:20 UTC as `98f860cbe4fea05ca5b863d1ba75e6251e1653bd`.
 
 ## Limits
 
@@ -64,3 +69,7 @@ care, capture/rescue custody and full belongings transfer remain separate work.
 The expiry test follows the current military clock; it does not establish
 unloaded military wound simulation. Simulation checks do not establish live
 browser performance or full-game completion.
+
+The subsequent [hourly military-wound delivery](strategic-military-wounds.md)
+adds a separately configured service clock. Its verification and remaining
+fractional-time, custody and strategic-remains limits are recorded separately.

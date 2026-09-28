@@ -272,7 +272,17 @@ La atención necesita presencia segura y real en la misma celda.
 Podés deshacerlo. Las partidas iniciadas conservan sus reglas y las horas de
 recuperación ya transcurridas. Cambiar el borrador no cambia una partida guardada.
 El umbral crítico, los primeros auxilios tácticos y la recuperación diaria
-conservan sus reglas actuales. [Alcance verificado](../verification/authored-care-rules.md).
+mantienen sus valores actuales. La recuperación diaria no cura a una persona que
+sigue sangrando o tiene menos de 15 de salud. [Reglas de atención verificadas](../verification/authored-care-rules.md).
+
+**Daño horario de hemorragia (%)** admite de 0 a 100 y usa 25 por defecto.
+Fuera del despliegue táctico, cada cambio de hora resta ese porcentaje de la
+intensidad de la hemorragia, redondeado hacia arriba. Por ejemplo, intensidad 5
+al 25 % resta 2 de salud. Cero desactiva ese daño. El médico atiende primero;
+el descanso solo no detiene la pérdida. La regla también se aplica durante la
+marcha y mientras usás otra escuadra. Los candidatos no contratados y los que
+todavía están llegando quedan fuera de este reloj. Las bajas y el momento de
+muerte se conservan al guardar. [Alcance verificado](../verification/strategic-military-wounds.md).
 
 ## Territorio inicial
 

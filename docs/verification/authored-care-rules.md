@@ -52,3 +52,7 @@ live-browser usability or performance claim is made.
 [PR #72](https://github.com/fsodano/granaderos/pull/72) merged after
 [GitHub CI](https://github.com/fsodano/granaderos/actions/runs/36422917141/job/108929776748)
 passed at `9c8aded66da6c792165c44670551f2af1fe5e293`.
+
+The subsequent [hourly military-wound delivery](strategic-military-wounds.md)
+adds a separately configured service clock. Its verification and remaining
+fractional-time, custody and strategic-remains limits are recorded separately.

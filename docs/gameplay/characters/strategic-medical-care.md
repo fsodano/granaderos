@@ -38,3 +38,12 @@ pertenece a otra integración. El [descanso explícito](strategic-rest.md) permi
 El creador de historias puede cambiar los ritmos y costos de atención y descanso.
 Los valores de esta guía describen las reglas originales; el estado de atención
 y los precios visibles usan las reglas guardadas de cada campaña.
+
+Una persona en servicio que sigue sangrando pierde salud en cada cambio de hora,
+también durante la marcha. Con las reglas originales pierde el 25 % de la
+intensidad de la hemorragia, redondeado hacia arriba: intensidad 5 resta 2 de
+salud por hora. El médico trabaja antes de aplicar esa pérdida. Descansar no
+detiene la hemorragia, y la recuperación diaria no cura heridas abiertas ni
+estados críticos. La campaña conserva las bajas; una escuadra sin sobrevivientes
+no alcanza el destino. El editor permite cambiar este porcentaje.
+[Verificación y límites](../../verification/strategic-military-wounds.md).

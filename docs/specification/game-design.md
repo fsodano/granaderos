@@ -545,8 +545,8 @@ actors once. Reentry and saving cannot stop bleeding; finite aid can. Off-screen
 death is recorded at its actual minute, with one set of consequences and the
 original successor delay. Bodies and successors remain separate identities.
 See the [bounded acceptance record](../verification/unloaded-civilian-bleeding.md).
-Strategic civilian care, off-screen recovery and military wound clocks remain
-separate requirements.
+Strategic civilian care and off-screen recovery remain separate requirements.
+Military service wounds use the hourly rule below.
 
 ### Return from military service
 
@@ -557,3 +557,14 @@ still controls its next appearance, and active scenes do not gain a duplicate.
 Dead service actors remain military bodies. See the
 [bounded verification](../verification/civilian-service-return.md) for legacy
 conversion and the separate military-clock and custody requirements.
+
+### Military wounds outside deployment
+
+Untreated service wounds consume configured health at campaign hour boundaries
+after local physician work. Waiting, travel and other-squad time share this
+rule; deployed, arriving and out-of-service people do not receive a second clock.
+The editor pins an optional percentage (default 25; zero disables it). Death
+removes the person from marching squads without reviving or replenishing it.
+A squad with no survivors stops at its last reached location. See the
+[verification record](../verification/strategic-military-wounds.md) for the hourly
+boundary and the remaining fractional-time, custody and strategic-remains scope.
