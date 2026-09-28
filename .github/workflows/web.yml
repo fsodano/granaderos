@@ -8,6 +8,27 @@ on:
 permissions:
   contents: read
 jobs:
+  tests:
+    name: Tests (${{ matrix.group }}/4)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        group: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install test dependencies
+        run: npm ci --prefix web
+      - name: Verify complete test partition
+        run: node tools/test-shard.mjs --check
+      - name: Test tactical and strategic simulation
+        run: node tools/test-shard.mjs --run ${{ matrix.group }}
   web:
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -24,8 +45,6 @@ jobs:
         run: npm run audit:docs
       - name: Check reference gameplay values
         run: npm run audit:baseline
-      - name: Test tactical and strategic simulation
-        run: npm test
       - name: Check browser types
         run: npm run typecheck
       - name: Build and verify static game export
