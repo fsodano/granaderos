@@ -27,7 +27,7 @@ test('six actual safe rest hours yield one health point and saved partial hours 
 
 test('rest does not stop bleeding or grant critical healing, and a patient without a doctor recovers only breath and fatigue',()=>{
  for(const config of [{bleeding:3},{hp:10}]){
-  let s=order(preparedRest(config),{type:'assignCare',id:PATIENT,assignment:'rest'}),r={...s.operativeState[PATIENT]};s=order(s,{type:'wait',hours:6});assert.equal(s.operativeState[PATIENT].hp,r.hp);assert.equal(s.operativeState[PATIENT].bleeding,r.bleeding);assert.equal(s.operativeState[PATIENT].recoveryHours,0);assert.match(careStatus(s,op(s,PATIENT),rosterFor(s)),/necesita un médico/);assert.ok(s.operativeState[PATIENT].energy>r.energy);assert.ok(saved({campaign:s}));
+  let s=order(preparedRest(config),{type:'assignCare',id:PATIENT,assignment:'rest'}),r={...s.operativeState[PATIENT]};s=order(s,{type:'wait',hours:6});assert.equal(s.operativeState[PATIENT].hp,r.hp-(r.bleeding?6:0));assert.equal(s.operativeState[PATIENT].bleeding,r.bleeding);assert.equal(s.operativeState[PATIENT].recoveryHours,0);assert.match(careStatus(s,op(s,PATIENT),rosterFor(s)),/necesita un médico/);assert.ok(s.operativeState[PATIENT].energy>r.energy);assert.ok(saved({campaign:s}));
  }
  let s=order(preparedRest(),{type:'assignCare',id:PATIENT,assignment:'patient'}),hp=s.operativeState[PATIENT].hp;s=order(s,{type:'wait',hours:6});assert.equal(s.operativeState[PATIENT].hp,hp);assert.ok(s.operativeState[PATIENT].energy>8);assert.match(careStatus(s,op(s,PATIENT),rosterFor(s)),/Sin médico/);
 });

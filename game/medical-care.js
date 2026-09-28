@@ -1,11 +1,11 @@
-import {careRules,DEFAULT_CARE_RULES} from './campaign-care-rules.js';
+import {careRules,DEFAULT_CARE_RULES,strategicBleedingPercent} from './campaign-care-rules.js';
 import {restRecovery,recoverAtRest} from './strategic-rest.js';
 import {operativeLocation} from './squads.js';
 import {worldOwner} from './world-cells.js';
 import {workshopAccessReason} from './workshop-service.js';
 
 // Bounded integration of strategic doctor/patient work. Tactical first aid,
-// automatic sleep, militia care and unloaded bleeding retain separate integrations.
+// automatic sleep, militia care and civilian care retain separate integrations.
 export const CARE_ASSIGNMENTS=Object.freeze({active:'En servicio',doctor:'Médico',patient:'Paciente',rest:'Descanso'});
 export const MEDICAL_SUPPLY_PRICE=DEFAULT_CARE_RULES.dressingPrice;
 export const doctorRate=(op,s)=>careRules(s).baseHealing+Math.floor((op.medical??0)/careRules(s).skillStep);
@@ -49,9 +49,24 @@ export function advanceMedicalCare(s,roster,{traveling=[]}={}){
  }
  return [...treated];
 }
+// Strategic medical work runs first at each hour boundary. The active tactical
+// scene owns deployed wounds; unjoined arrivals, former service and custody do
+// not receive another simulation here.
+export function advanceMilitaryWounds(s,roster){
+ const deaths=[],percent=strategicBleedingPercent(s);
+ for(const op of roster){
+  const r=s.operativeState[op.id];if(!available(s,op.id)||!r.bleeding)continue;
+  r.hp=Math.max(0,r.hp-Math.ceil(r.bleeding*percent/100));
+  if(r.recoveryHours!==undefined)r.recoveryHours=0;
+  if(r.hp>0)continue;
+  Object.assign(r,{alive:false,bleeding:0,energy:0,assignment:'active',recoveryHours:0,deathMinute:s.hour*60+Math.floor((s.secondOfHour??0)/60)});
+  deaths.push(op.id);
+ }
+ return deaths;
+}
 export function careStatus(s,op,roster){
  const r=s.operativeState[op.id],role=assignment(s,op.id);if(!r?.alive)return 'Caído en servicio.';
- if(role==='active')return 'Disponible para marchar y combatir.';
+ if(role==='active')return r.bleeding>0?`Hemorragia sin atender: pierde ${Math.ceil(r.bleeding*strategicBleedingPercent(s)/100)} de salud por hora fuera del combate.`:'Disponible para marchar y combatir.';
  const reason=careAssignmentReason(s,op,role);if(reason)return reason;
  if(role==='rest'){
   const rate=restRecovery(op,r,s),recovery=`+${rate.energy} energía/h · −${rate.fatigue} fatiga/h.`;
