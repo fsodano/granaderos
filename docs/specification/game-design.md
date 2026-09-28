@@ -663,3 +663,13 @@ deployments and saved tactical scenes carry the pinned campaign choice. Disabled
 patrols retain combat and reactions. Strict report and save checks reject rule
 drift. Fixed waypoint coordinates and combat search costs remain separate. See
 [verification](../verification/authored-militia-patrols.md).
+
+### Explicit battery choice
+
+The effective automatic or named battery appears in the armory. Preparing three
+empty slots records an explicit no-artillery choice; saves and later purchases
+retain it. A subsequent valid named choice selects only the available quantities
+of those actual models. An explicit empty tactical manifest cannot fall back to
+a stock count. Selection spends no money, time or stock. See
+[verification](../verification/explicit-artillery-selection.md) for actual paid
+attack entry and the separate stationed-artillery integration.

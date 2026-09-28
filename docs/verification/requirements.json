@@ -437,6 +437,11 @@
       "id": "E-PATROL-RULES",
       "path": "docs/verification/authored-militia-patrols.md",
       "description": "Optional pinned patrol activation, waypoint intervals, energy reserve and rest recovery work through actual tactical movement, paid garrison visits, attack requests and strict paired saves. Six simulations and one mounted editor launch case pass. Full regression passes 1016/1016, zero failures/skips, with types, export and all 36 reference checks; exact-head publication remains required and older package identities retain original rules."
+    },
+    {
+      "id": "E-BATTERY-CHOICE",
+      "path": "docs/verification/explicit-artillery-selection.md",
+      "description": "Explicit empty and named battery choices survive actual paid purchases, attack requests, tactical entry and full saves. Effective model counts drive deployment; unavailable quantities cannot invent another model. Four simulations and one mounted production-game check pass within 18 overlapping cases. Full regression passes 1021/1021, zero failures/skips, with types, export and all 36 reference checks; exact-head publication remains required and stationed cannon persistence and autonomous crews remain separate."
     }
   ],
   "queue": [
@@ -484,6 +489,31 @@
     }
   ],
   "requirements": [
+    {
+      "id": "BATTERYCHOICE-01",
+      "group": "Published deliveries",
+      "requirement": "Respect explicit empty or named artillery choices in controls, finite model selection and saved deployment",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Empty and named artillery choices retain their meaning through saves and actual tactical entry.",
+      "local": "Four simulations and one mounted production-game check pass within 18 overlapping cases. Actual paid stock stays unselected after saving an empty choice; new purchases cannot change it, and later valid choices deploy their exact models. Full regression passes 1021/1021, zero failures/skips, with types, export and all 36 baseline comparisons.",
+      "remaining": "",
+      "acceptance": "Display effective automatic stock, save explicit no-gun choice, reject invalid model quantities, preserve older selection semantics, and honor the exact selected manifest through tactical entry and complete saves.",
+      "evidence": [
+        "E-BATTERY-CHOICE"
+      ],
+      "parents": [
+        "INTEGRATION-01",
+        "ITEM-01"
+      ],
+      "testFiles": [
+        "tests/artillery-selection.test.mjs",
+        "tests/artillery-selection-render.test.mjs",
+        "tests/equipment-web.test.mjs",
+        "tests/artillery.test.mjs",
+        "tests/workshop-service-render.test.mjs"
+      ]
+    },
     {
       "id": "PATROLRULES-01",
       "group": "Published deliveries",
@@ -3073,14 +3103,15 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Nine firearms and five blade families match reference base values. Firearm and blade variants/images are authored and retained in character equipment, combat and saves. Enemy roles and militia ranks now support independent primary and secondary blade selections.",
-      "local": "See local suite and preserved parity source; not equivalent to published integration.",
+      "local": "See local suite and preserved parity source; not equivalent to published integration. BATTERYCHOICE-01 tracks explicit saved artillery choice and exact model availability.",
       "remaining": "Author fittings/ammunition; finish physical inventory, secondary corpse looting, wear and unarmed behavior.",
       "acceptance": "XML values, inventory images, sounds and use in combat",
       "evidence": [
         "E-PUBLISHED",
         "E-CONFLICTS",
         "E-AUTHORED-BLADES",
-        "E-FORCE-BLADES"
+        "E-FORCE-BLADES",
+        "E-BATTERY-CHOICE"
       ]
     },
     {
