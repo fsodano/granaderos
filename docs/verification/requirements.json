@@ -454,7 +454,7 @@
     {
       "id": "E-ARTILLERY-CREW-LOADING",
       "path": "docs/verification/artillery-crew-loading.md",
-      "description": "Retained partial cannon loading uses simultaneous eligible crews, finite ammunition and shared UI costs. Ten simulations and two mounted field checks pass; final ability/loading group 23/23. The first full run recorded 1042 pass and two outdated rejection expectations; after replacing those with partial-work, finite-round and specialist-advantage assertions, full regression passes 1044/1044 with no failures/skips. Types, export and 36 reference comparisons pass. Actual paid guns preserve work through saves/withdrawal and exhaust seven issued shots; prepared crew boundaries are distinct. Exact-head publication remains required."
+      "description": "Retained partial cannon loading uses simultaneous eligible crews, finite ammunition and shared UI costs. Ten simulations and two mounted field checks pass; final ability/loading group 23/23. The first full run recorded 1042 pass and two outdated rejection expectations; after replacing those with partial-work, finite-round and specialist-advantage assertions, full regression passes 1044/1044 with no failures/skips. Types, export and 36 reference comparisons pass. Actual paid guns preserve work through saves/withdrawal and exhaust seven issued shots; prepared crew boundaries are distinct. Published by PR #101 after successful exact-head CI."
     },
     {
       "id": "E-ARTILLERY-SUPPLY",
@@ -539,7 +539,7 @@
       "requirement": "Retain simultaneous artillery crew loading across turns and full saves with finite reserve and shared controls",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Actual assigned crew AP limits each loading step, and completion consumes one reserve shot.",
+      "published": "Published by PR #101 after successful exact-head CI. Actual assigned crew AP limits each loading step, and completion consumes one reserve shot.",
       "local": "Ten new simulations and two mounted field cases pass 12/12; final ability/loading group 23/23. Complete regression passes 1044/1044, zero failures/skips, with types, export and 36 baseline comparisons. Two earlier legacy rejection expectations were replaced with retained-work and finite-ammunition checks.",
       "remaining": "",
       "acceptance": "Use real tactical turns and paid gun manifests to retain unfinished work, choose capable helpers, apply authored specialist costs, conserve ammunition through completion and full saves, retain captured work on reentry and share disabled-state reasons with mounted controls.",
@@ -556,7 +556,8 @@
         "tests/artillery-crew-render.test.mjs",
         "tests/content-abilities.test.mjs",
         "tests/artillery.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/101"
     },
     {
       "id": "EMPLACEMENT-01",
@@ -5370,13 +5371,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "75b6409fa12ade7c00f1ea0207e421f59245f579",
-    "total": 1032,
-    "passed": 1032,
+    "source": "8f6410ddbd641c161d1a31e9dc18694d1bf4b348",
+    "total": 1044,
+    "passed": 1044,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-STATIONED-ARTILLERY"
+    "evidenceId": "E-ARTILLERY-CREW-LOADING"
   }
 }
