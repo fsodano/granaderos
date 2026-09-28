@@ -119,7 +119,8 @@ test('content identity matches SHA-256 and rejects a changed embedded story',asy
 });
 
 test('unknown story settings cannot launch with silently ignored rules',()=>{
- for(const mutate of [d=>d.ruleset={combat:{}},d=>d.quests=[],d=>d.characters[0].service='contract',d=>d.characters[0].monthlyPay++]){
+ const supported=authored();supported.quests=[];assert.deepEqual(campaignContentReport(supported).blocked,[]);assert.deepEqual(initialCampaign(1,supported).contentCampaign.package.quests,[]);
+ for(const mutate of [d=>d.ruleset={combat:{}},d=>d.scenes=[],d=>d.characters[0].service='contract',d=>d.characters[0].monthlyPay++]){
   const definition=authored();mutate(definition);
   assert.ok(campaignContentReport(definition).blocked.length);assert.throws(()=>initialCampaign(1,definition));
  }
