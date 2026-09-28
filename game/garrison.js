@@ -27,7 +27,18 @@ export function returnGarrison(s,request,snapshot){
  for(const issued of request.garrison){const actual=snapshot.units.find(u=>u.side==='player'&&String(u.id)===String(issued.id));if(!actual||!actual.militia||actual.militiaRank!==issued.militiaRank)throw Error('El parte de la guarnición es incompleto.');if(actual.hp<=0){s.sectors[request.sector].militia[issued.militiaRank]=Math.max(0,s.sectors[request.sector].militia[issued.militiaRank]-1);continue;}survivors.push({...structuredClone(actual),id:issued.id});}
  s.garrisons??={};s.garrisons[request.sector]=survivors;
 }
+// Only existing local soldiers need care. Querying patients must not generate
+// another cohort or issue its starting equipment.
+export function militiaCarePatients(s,sector){
+ if(s.sectors[sector]?.owner!=='patriot'||s.pendingBattle?.sector===sector)return [];
+ return (s.garrisons?.[sector]??[]).filter(u=>u.hp>0&&(u.bleeding>0||u.hp<u.maxHp)).sort((a,b)=>Number(b.bleeding>0)-Number(a.bleeding>0)||a.hp/a.maxHp-b.hp/b.maxHp||a.id-b.id);
+}
+function validCareCondition(u){
+ return u.hp<=u.maxHp&&(u.bleeding===undefined||Number.isInteger(u.bleeding)&&u.bleeding>=0&&u.bleeding<=10)
+  &&(u.bandaged===undefined||Number.isFinite(u.bandaged)&&u.bandaged>=0&&u.bandaged<=u.maxHp-u.hp)
+  &&['energy','fatigue'].every(k=>u[k]===undefined||Number.isFinite(u[k])&&u[k]>=0&&u[k]<=100);
+}
 export function validGarrisons(s){
  if(!s.garrisons||typeof s.garrisons!=='object'||Array.isArray(s.garrisons)||!Number.isInteger(s.nextMilitiaId)||s.nextMilitiaId<20000||s.nextMilitiaId>1e9)return false;
- const ids=new Set();return Object.entries(s.garrisons).every(([sector,units])=>s.sectors[sector]&&Array.isArray(units)&&units.length<=60&&units.every(u=>{if(!u||typeof u.name!=='string'||u.name.length>100||!Number.isInteger(u.weapon)||(u.weapon!==0&&(u.weapon<1800||u.weapon>1813))||!Number.isInteger(u.blade)||u.blade<1809||u.blade>1813||!Number.isFinite(u.condition)||u.condition<0||u.condition>100||!Number.isInteger(u.maxHp)||u.maxHp<1||u.maxHp>100||!Number.isInteger(u.id)||u.id<20000||u.id>=s.nextMilitiaId||ids.has(u.id)||!Number.isInteger(u.militiaRank)||u.militiaRank<0||u.militiaRank>2||u.militia!==true||!Number.isFinite(u.hp)||u.hp<=0||u.hp>100)return false;ids.add(u.id);validateForceWeapon(u);if((u.loaded??0)>(weaponSpecification(u)?.capacity??0))return false;validatePersonalInventory(u.inventory??{});return ['ammo','loaded','priming','flints','rations','torches','medkits','boleadoras'].every(k=>Number.isInteger(u[k]??0)&&(u[k]??0)>=0&&(u[k]??0)<=100000);}));
+ const ids=new Set();return Object.entries(s.garrisons).every(([sector,units])=>s.sectors[sector]&&Array.isArray(units)&&units.length<=60&&units.every(u=>{if(!u||typeof u.name!=='string'||u.name.length>100||!Number.isInteger(u.weapon)||(u.weapon!==0&&(u.weapon<1800||u.weapon>1813))||!Number.isInteger(u.blade)||u.blade<1809||u.blade>1813||!Number.isFinite(u.condition)||u.condition<0||u.condition>100||!Number.isInteger(u.maxHp)||u.maxHp<1||u.maxHp>100||!Number.isInteger(u.id)||u.id<20000||u.id>=s.nextMilitiaId||ids.has(u.id)||!Number.isInteger(u.militiaRank)||u.militiaRank<0||u.militiaRank>2||u.militia!==true||!Number.isFinite(u.hp)||u.hp<=0||u.hp>100||!validCareCondition(u))return false;ids.add(u.id);validateForceWeapon(u);if((u.loaded??0)>(weaponSpecification(u)?.capacity??0))return false;validatePersonalInventory(u.inventory??{});return ['ammo','loaded','priming','flints','rations','torches','medkits','boleadoras'].every(k=>Number.isInteger(u[k]??0)&&(u[k]??0)>=0&&(u[k]??0)<=100000);}));
 }

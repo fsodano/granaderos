@@ -1,4 +1,5 @@
 'use client';
+import {careAssignmentBusy} from '../../game/medical-care.js';
 import {historicalLossReason} from '../../game/historical-loss.js';
 import {campaignStory} from '../../game/campaign-story.js';
 import StoryQuestJournal from './StoryQuestJournal';
@@ -22,10 +23,10 @@ const place=campaignPlace;
 export default function Campaign({state:s,dispatch,onBattle,onOpenDesk}:{state:any;dispatch:(a:any)=>void;onBattle:()=>void;onOpenDesk:()=>void}){
  const [selected,setSelected]=useState(s.location),[dossier,setDossier]=useState<number|null>(null),[manage,setManage]=useState(false),[trainerId,setTrainerId]=useState(''),[hours,setHours]=useState(1);
  const roster=rosterFor(s),hired=s.recruited.map((id:number)=>roster.find(o=>o.id===id)).filter(Boolean),def=place(selected)!,sector=s.sectors[selected],physical=worldCell(selected)!,owner=worldOwner(s,selected),city=getCityStatus(s,physical.locality),eligibility=militiaEligibility(s,selected),training=s.militiaTraining?.find((t:any)=>t.sector===selected);
- const trainers=hired.filter((o:any)=>s.operativeState[o.id]?.alive&&operativeLocation(s,o.id)===selected&&o.leadership>=30&&!militiaAssignment(s,o.id)&&!['doctor','patient','rest'].includes(s.operativeState[o.id].assignment)).sort((a:any,b:any)=>militiaCourse(a,0).hours-militiaCourse(b,0).hours);const trainer=trainers.find((o:any)=>String(o.id)===trainerId)??trainers[0];
+ const trainers=hired.filter((o:any)=>s.operativeState[o.id]?.alive&&operativeLocation(s,o.id)===selected&&o.leadership>=30&&!militiaAssignment(s,o.id)&&!careAssignmentBusy(s.operativeState[o.id].assignment)).sort((a:any,b:any)=>militiaCourse(a,0).hours-militiaCourse(b,0).hours);const trainer=trainers.find((o:any)=>String(o.id)===trainerId)??trainers[0];
  const objective=campaignStory(s)?campaignObjectives(s).find((c:any)=>c.active):null;
  const rank=sector?.militia[0]>=3?1:sector?.militia[1]>=3?2:0;
- const careBusy=s.squad.some((id:number)=>['doctor','patient','rest'].includes(s.operativeState[id].assignment));
+ const careBusy=s.squad.some((id:number)=>careAssignmentBusy(s.operativeState[id].assignment));
  const gridTravel=!worldCell(s.location)?.anchor||!physical.anchor,route=gridTravel?cellTravelPlan(s,selected):null;
  const blocked=owner==='royalist'&&!physical.anchor?'Liberá el sector principal para recorrer sus barrios.':route?.reason;const course=trainer?militiaCourse(trainer,rank):null;
  return <section className="strategy-screen"><header className="strategy-top"><div><p className="eyebrow">CARTA DE OPERACIONES</p><h1>Provincias Unidas</h1></div><div className="strategy-time"><span>Día {Math.floor(s.hour/24)+1} · {String(s.hour%24).padStart(2,'0')}:00</span><select aria-label="Tiempo a avanzar" value={hours} onChange={e=>setHours(Number(e.target.value))}><option value={1}>1 hora</option><option value={6}>6 horas</option><option value={24}>1 día</option></select><button className="line-button" disabled={Boolean(s.pendingBattle)||s.defeated} onClick={()=>dispatch({type:'wait',hours})}>Avanzar</button></div><button className="gold-button" onClick={onOpenDesk}>Escritorio →</button></header>

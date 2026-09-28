@@ -1,3 +1,5 @@
+import {militiaCarePatients} from './garrison.js';
+import {refreshMilitaryCondition} from './actor-condition.js';
 import {careRules,DEFAULT_CARE_RULES,strategicBleedingPercent} from './campaign-care-rules.js';
 import {restRecovery,recoverAtRest} from './strategic-rest.js';
 import {operativeLocation} from './squads.js';
@@ -5,8 +7,10 @@ import {worldOwner} from './world-cells.js';
 import {workshopAccessReason} from './workshop-service.js';
 
 // Bounded integration of strategic doctor/patient work. Tactical first aid,
-// automatic sleep, militia care and civilian care retain separate integrations.
-export const CARE_ASSIGNMENTS=Object.freeze({active:'En servicio',doctor:'Médico',patient:'Paciente',rest:'Descanso'});
+// automatic sleep and civilian care retain separate integrations.
+export const CARE_ASSIGNMENTS=Object.freeze({active:'En servicio',doctor:'Médico',militia_doctor:'Médico de milicias',patient:'Paciente',rest:'Descanso'});
+export const careAssignmentBusy=value=>value!=='active'&&Object.hasOwn(CARE_ASSIGNMENTS,value);
+const medicalAssignment=value=>value==='doctor'||value==='militia_doctor';
 export const MEDICAL_SUPPLY_PRICE=DEFAULT_CARE_RULES.dressingPrice;
 export const doctorRate=(op,s)=>careRules(s).baseHealing+Math.floor((op.medical??0)/careRules(s).skillStep);
 const need=(ok,message)=>{if(!ok)throw Error(message);};
@@ -21,7 +25,7 @@ export function careAssignmentReason(s,op,value){
  if(value==='active')return '';
  if(s.militiaTraining?.some(c=>c.trainerId===op.id))return 'Suspendé primero la instrucción de milicias.';
  if(!safe(s,op.id))return 'La atención y el descanso necesitan un sector bajo control patriota y sin combate.';
- if(value==='doctor'){
+ if(medicalAssignment(value)){
   const r=s.operativeState[op.id];
   if((op.medical??0)<careRules(s).minimumSkill)return `Necesita al menos ${careRules(s).minimumSkill} de medicina.`;
   if(r.hp<15||r.bleeding>0||(r.energy??100)<=10)return 'El médico debe estar estable y tener más de 10 de energía.';
@@ -42,6 +46,13 @@ export function advanceMedicalCare(s,roster,{traveling=[]}={}){
   if(r.bleeding>0)r.bleeding=0;
   else r.hp=Math.min(patient.maxHp,r.hp+doctorRate(doctor,s));
   if(r.bandaged!==undefined)r.bandaged=Math.min(r.bandaged,patient.maxHp-r.hp);
+ }
+ for(const doctor of roster.filter(o=>present(s,o,traveling)&&assignment(s,o.id)==='militia_doctor'&&!careAssignmentReason(s,o,'militia_doctor'))){
+  const patient=militiaCarePatients(s,operativeLocation(s,doctor.id)).find(u=>!treated.has(u.id));if(!patient)continue;
+  const medic=s.operativeState[doctor.id];medic.medkits=(medic.medkits??2)-1;medic.energy=Math.max(0,(medic.energy??100)-careRules(s).energyCost);medic.fatigue=Math.min(100,(medic.fatigue??0)+careRules(s).fatigueCost);treated.add(patient.id);
+  if(patient.bleeding>0)patient.bleeding=0;else patient.hp=Math.min(patient.maxHp,patient.hp+doctorRate(doctor,s));
+  if(patient.bandaged!==undefined)patient.bandaged=Math.min(patient.bandaged,patient.maxHp-patient.hp);
+  recoverAtRest(patient,patient,{state:s});refreshMilitaryCondition(patient);
  }
  for(const op of roster){const r=s.operativeState[op.id];if(!['patient','rest'].includes(r.assignment))continue;
   if(!present(s,op,traveling)){if(r.recoveryHours!==undefined)r.recoveryHours=0;continue;}
@@ -75,6 +86,10 @@ export function careStatus(s,op,roster){
   if(!needsCare(s,op)&&(r.energy??100)>=100&&(r.fatigue??0)===0)return 'Descanso completo. Puede volver al servicio.';
   return `${recovery}${r.hp<op.maxHp?` +1 salud cada ${careRules(s).restHealingHours} h (${r.recoveryHours??0}/${careRules(s).restHealingHours}).`:''}`;
  }
+ if(role==='militia_doctor'){
+  const patients=militiaCarePatients(s,operativeLocation(s,op.id));
+  return patients.length?`${patients.length} ${patients.length===1?'miliciano herido':'milicianos heridos'} en esta celda. Atiende a uno por hora; primero detiene la hemorragia. Cada atención consume una venda.`:'Sin milicianos heridos en esta celda. No consume vendas.';
+ }
  if(role==='doctor'){
   const patients=roster.filter(o=>o.id!==op.id&&present(s,o,[])&&assignment(s,o.id)==='patient'&&operativeLocation(s,o.id)===operativeLocation(s,op.id)&&needsCare(s,o));
   return patients.length?`Hasta ${doctorRate(op,s)} salud por hora; una venda, ${careRules(s).energyCost} de energía y ${careRules(s).fatigueCost} de fatiga por hora de atención.`:'Sin pacientes heridos asignados en este sector.';
@@ -92,6 +107,6 @@ export function validateMedicalCare(s,roster){
  for(const op of roster){const r=s.operativeState[op.id];if(r.recoveryHours!==undefined)need(Number.isInteger(r.recoveryHours)&&r.recoveryHours>=0&&r.recoveryHours<careRules(s).restHealingHours&&(r.recoveryHours===0||r.assignment==='rest'),'El descanso guardado es inválido.');if(r.assignment===undefined)continue;need(Object.hasOwn(CARE_ASSIGNMENTS,r.assignment),'La asignación médica guardada es inválida.');
   if(r.assignment==='active')continue;
   need(s.recruited.includes(op.id)&&r.alive&&r.hp>0&&!deployed(s,op.id)&&!s.militiaTraining.some(c=>c.trainerId===op.id),'La asignación médica es incompatible con el servicio.');
-  if(r.assignment==='doctor')need(op.medical>=careRules(s).minimumSkill,'La asignación necesita conocimientos médicos.');
+  if(medicalAssignment(r.assignment))need(op.medical>=careRules(s).minimumSkill,'La asignación necesita conocimientos médicos.');
  }
 }

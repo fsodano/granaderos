@@ -9,7 +9,7 @@ export default function MedicalCare({state:s,dispatch}:{state:any;dispatch:(acti
  const roster=rosterFor(s),hired=roster.filter(o=>s.recruited.includes(o.id)&&s.operativeState[o.id]?.alive);
  return <section className="squads-panel medical-care" aria-label="Atención médica en campaña">
   <h2>Atención médica y descanso</h2>
-  <p>Asigná un médico y pacientes en la misma celda controlada. Primero se detiene la hemorragia; después se recupera salud. Cada hora de atención consume una venda del médico. Elegí Descanso para recuperar energía y reducir fatiga sin atender pacientes. Para marchar, volvé a ponerlos en servicio.</p>
+  <p>Asigná un médico y pacientes en la misma celda controlada. Médico de milicias atiende a los heridos de la guarnición local. Primero se detiene la hemorragia; después se recupera salud. Cada hora de atención consume una venda del médico. Elegí Descanso para recuperar energía y reducir fatiga sin atender pacientes. Para marchar, volvé a ponerlos en servicio.</p>
   {!hired.length?<p>No hay combatientes disponibles.</p>:<div className="squads-personnel squads-table-scroll"><table><thead><tr><th>Combatiente</th><th>Estado</th><th>Asignación</th><th>Vendas</th></tr></thead><tbody>{hired.map(o=>{
    const r=s.operativeState[o.id],quantity=quantities[o.id]??4,quote=medicalSupplyQuote(s,o,quantity,isSupplied(s,s.location));
    return <tr key={o.id} data-care-id={o.id}>
@@ -24,5 +24,9 @@ export default function MedicalCare({state:s,dispatch}:{state:any;dispatch:(acti
     </td>
    </tr>;
   })}</tbody></table></div>}
+  {(s.garrisons?.[s.location]?.length??0)>0&&<section aria-label="Salud de la guarnición">
+   <h3>Guarnición de {campaignPlace(s.location)?.name}</h3>
+   <ul>{s.garrisons[s.location].map((u:any,index:number)=><li key={u.id}>{index+1}. {u.name}: {Math.round(u.hp)}/{u.maxHp} salud · {u.bleeding??0} hemorragia</li>)}</ul>
+  </section>}
  </section>;
 }
