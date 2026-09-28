@@ -2,7 +2,7 @@ import test from 'node:test';import assert from 'node:assert/strict';
 import {DEFAULT_MILITIA_PROGRESSION,MILITIA_PROGRESSION_FIELDS,militiaProgression} from '../game/militia-progression-rules.js';
 import {defaultContentPackage,validateContentPackage,encodeContentPackage,parseContentPackage} from '../game/content-package.js';
 import {initialCampaign} from '../game/campaign.js';
-import {earnedMilitiaRank,promoteMilitia} from '../game/militia-experience.js';
+import {earnedMilitiaRank,promoteMilitia,recordMilitiaHit,validMilitiaExperience} from '../game/militia-experience.js';
 import {campaignContentReport} from '../game/campaign-content.js';
 import {order,saved,visit,leave} from './local-contract-fixture.mjs';
 import {combatMilitia,militiaReaction} from './militia-combat-fixture.mjs';
@@ -33,4 +33,18 @@ test('authored gains respect attribute caps and high thresholds still require ne
  const u={militia:true,militiaRank:0,hp:40,marksmanship:95,leadership:99,experienceLevel:9,name:'Defensor'};const promoted=promoteMilitia(structuredClone(u),1,rules({marksmanshipGain:100,leadershipGain:100,levelGain:9}));assert.equal(promoted.marksmanship,100);assert.equal(promoted.leadership,100);assert.equal(promoted.experienceLevel,10);assert.equal(promoted.hp,40);
  // Ledger boundary only; these prepared receipts are not claimed as real kills.
  const credit=Array.from({length:33},(_,i)=>({id:`opponent-${i}`,points:3}));const actual={...u,militiaExperience:99,militiaCombatCredit:credit};assert.equal(earnedMilitiaRank(u,actual,rules({regularThreshold:99,veteranThreshold:100})),1);assert.equal(earnedMilitiaRank(actual,structuredClone(actual),rules({regularThreshold:99,veteranThreshold:100})),0);
+});
+
+test('high thresholds retain enough distinct opponent receipts to earn the next rank after a large encounter',()=>{
+ const policy=rules({regularThreshold:99,veteranThreshold:100});
+ // Boundary proof, not a fabricated campaign victory: a saved green soldier
+ // has 98 earlier wound receipts, then wounds up to 199 new enemies from the
+ // supported 200-unit tactical limit before returning for its first ascent.
+ const issued={id:'militia',side:'player',hp:60,militia:true,militiaRank:0,name:'Defensor',militiaExperience:98,militiaCombatCredit:Array.from({length:98},(_,i)=>({id:`old-${i}`,points:1}))};
+ const returned=structuredClone(issued),battle={battleId:'large',startSeconds:0};
+ for(let i=0;i<199;i++)recordMilitiaHit(battle,returned,{id:`enemy-${i}`,side:'enemy',hp:50},true,10);
+ assert.equal(returned.militiaExperience,297);assert.equal(validMilitiaExperience(returned),true);assert.equal(earnedMilitiaRank(issued,returned,policy),1);promoteMilitia(returned,1,policy);
+ const next=structuredClone(returned);recordMilitiaHit({battleId:'next',startSeconds:6},next,{id:'new-opponent',side:'enemy',hp:0},true,30);assert.equal(next.militiaExperience,300);assert.equal(validMilitiaExperience(next),true);assert.equal(earnedMilitiaRank(returned,next,policy),2);assert.equal(earnedMilitiaRank(returned,structuredClone(returned),policy),1);
+ // A fully bounded ledger still refuses an extra identity, without corruption.
+ const saturated={...next,militiaCombatCredit:Array.from({length:300},(_,i)=>({id:`cap-${i}`,points:3})),militiaExperience:900};recordMilitiaHit(battle,saturated,{id:'beyond-cap',side:'enemy',hp:0},true,30);assert.equal(saturated.militiaExperience,900);assert.equal(saturated.militiaCombatCredit.length,300);assert.equal(validMilitiaExperience(saturated),true);assert.equal(validMilitiaExperience({...saturated,militiaCombatCredit:[...saturated.militiaCombatCredit,{id:'extra',points:1}],militiaExperience:901}),false);
 });
