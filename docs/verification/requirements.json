@@ -314,7 +314,8 @@
     {
       "id": "E-CIVILIAN-BREATH",
       "path": "docs/verification/civilian-breath-recovery.md",
-      "description": "Loaded civilian phases recover finite capped energy after the movement opportunity. Actual harm, critical wounds, corpses, departed actors, split saved cadence and finite aid retain their boundaries. A content-authored exhausted resident wakes through ordinary sector time, converses, joins and returns with its recovered energy while unloaded time grants nothing. 858 passing tests, zero failures/skips, types, export and baseline checks; full fatigue, unloaded simulation and browser performance remain separate."
+      "description": "Loaded civilian phases recover finite capped energy after the movement opportunity. Actual harm, critical wounds, corpses, departed actors, split saved cadence and finite aid retain their boundaries. A content-authored exhausted resident wakes through ordinary sector time, converses, joins and returns with its recovered energy while unloaded time grants nothing. 858 passing tests, zero failures/skips, types, export and baseline checks; full fatigue, unloaded simulation and browser performance remain separate.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36433528281/job/108965502241"
     },
     {
       "id": "E-HEALTH-CONDITIONS",
@@ -399,7 +400,7 @@
       "requirement": "Recover exhausted world residents through actual loaded sector time",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Living present civilians recover ten energy after each loaded civilian phase, once per complete combat round or six exploration seconds. Waking grants no same-phase movement, health, AP or cleared harm; critical wounds, dead actors and unloaded time retain their separate rules.",
+      "published": "Living present civilians recover ten energy after each loaded civilian phase, once per complete combat round or six exploration seconds. Waking grants no same-phase movement, health, AP or cleared harm; critical wounds, dead actors and unloaded time retain their separate rules. Merged through PR #77 after exact-head CI.",
       "local": "Four new cases cover actual damage history, split saved time, real tactical clocks, critical/dead/departed actors, finite stabilization and an authored exhausted resident continuing through conversation, local recruitment, dismissal and saved return.",
       "remaining": "",
       "acceptance": "Author a resident with zero energy; verify it is initially incapacitated, recover through actual loaded time, converse and recruit normally, then save/return without resetting energy, healing wounds or giving an unloaded grant.",
@@ -416,7 +417,8 @@
         "tests/civilian-breath-recovery.test.mjs",
         "tests/npc-ai.test.mjs",
         "tests/character-condition.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/77"
     },
     {
       "id": "MILITARYCONDITION-01",
@@ -4538,13 +4540,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "d320299472f9ac924d1c59e2217850661bc1607e",
-    "total": 854,
-    "passed": 854,
+    "source": "8573561eddc9dcc1701d18fea13f68bb6bdb4586",
+    "total": 858,
+    "passed": 858,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-CRITICAL-MILITARY"
+    "evidenceId": "E-CIVILIAN-BREATH"
   }
 }
