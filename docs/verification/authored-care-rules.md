@@ -48,3 +48,7 @@ physical kit custody, merchant stock or advanced first-aid mechanics. Published
 historical and independent route regressions are retained with default rules;
 this does not establish balance for every possible authored combination. No
 live-browser usability or performance claim is made.
+
+[PR #72](https://github.com/fsodano/granaderos/pull/72) merged after
+[GitHub CI](https://github.com/fsodano/granaderos/actions/runs/36422917141/job/108929776748)
+passed at `9c8aded66da6c792165c44670551f2af1fe5e293`.

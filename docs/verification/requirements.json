@@ -284,7 +284,8 @@
     {
       "id": "E-CARE-RULES",
       "path": "docs/verification/authored-care-rules.md",
-      "description": "Nine optional pinned settings control actual medical eligibility, healing, effort, rest progress and dressing prices across bulk purchase and workshop refill. Old identities/defaults, strict validation, custom and zero values, saved intervals, finite costs and mounted editor undo/reset/launch pass. Prepared wounds/stocks are declared; arbitrary balance and advanced care remain separate."
+      "description": "Nine optional pinned settings control actual medical eligibility, healing, effort, rest progress and dressing prices across bulk purchase and workshop refill. Old identities/defaults, strict validation, custom and zero values, saved intervals, finite costs and mounted editor undo/reset/launch pass. Prepared wounds/stocks are declared; arbitrary balance and advanced care remain separate.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36422917141/job/108929776748"
     },
     {
       "id": "E-CIVILIAN-LOSS-LOG",
@@ -366,7 +367,7 @@
       "requirement": "Author and pin medical work, rest recovery and dressing prices",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "The Rules tab accepts nine care values with bounded integers, undo and reset. Campaigns preserve them across saves and use the same dressing price for both workshop paths, including free legitimate replenishment.",
+      "published": "The Rules tab accepts nine care values with bounded integers, undo and reset. Campaigns preserve them across saves and use the same dressing price for both workshop paths, including free legitimate replenishment. Merged through PR #72 after exact-head CI.",
       "local": "Five simulation cases and mounted authoring verify legacy identity, custom eligibility/healing/effort, long saved rest intervals, zero costs/recovery, finite stock, actual paid launch and later draft isolation.",
       "remaining": "",
       "acceptance": "Edit valid and invalid care rules, launch and use them through real campaign actions, verify both dressing purchase paths and save partial recovery without rerolling or restoring stock.",
@@ -383,7 +384,8 @@
       "testFiles": [
         "tests/authored-care-rules.test.mjs",
         "tests/story-editor.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/72"
     },
     {
       "id": "REST-01",
@@ -4365,13 +4367,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "807843a3f29750dc227423275f4b28c1371c35de",
-    "total": 827,
-    "passed": 827,
+    "source": "8274f58b959b6408bfdc8a97540421836f78e204",
+    "total": 833,
+    "passed": 833,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-STRATEGIC-REST"
+    "evidenceId": "E-CARE-RULES"
   }
 }
