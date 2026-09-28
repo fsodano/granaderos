@@ -38,7 +38,8 @@ Runtime source: `8496b3d4fa435a92b273cfbab4e950dc8b5c5832`.
 The complete local suite passed **618/618 tests**, with no failures or skips.
 Types, production export and all 36 baseline comparisons passed. The documentation
 audit retains 176 requirements, including all 50 original and 87 parity rows, with
-15 evidence records. Exact-head CI must pass before merge.
+15 evidence records. [PR #38](https://github.com/fsodano/granaderos/pull/38) merged after
+[exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36368752169/job/108760372645) passed.
 
 - `tests/content-dialogue.test.mjs`: both branches, a loop, a terminal passage,
   active saves, other approaches, departure, recruitment/dismissal/return,
@@ -53,9 +54,11 @@ audit retains 176 requirements, including all 50 original and 87 parity rows, wi
 
 ## Limits
 
-STORY-03 remains partial. Conditions, gameplay effects, quest states, rewards,
+At this checkpoint, STORY-03 remained partial. Conditions, gameplay effects, quest states, rewards,
 role bindings and effect receipts are still open. Graphs currently belong to new
 world residents; historical conversations retain their stock mission/recruitment
 behavior. Recorded voice, arbitrary campaign endings and authored scene movement
 are separate work. These checks do not establish full campaign or live-browser
 acceptance.
+
+[Choice conditions](dialogue-conditions.md) were delivered in the following checkpoint.

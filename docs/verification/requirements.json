@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-27",
-  "baseline": "8496b3d4fa435a92b273cfbab4e950dc8b5c5832",
+  "baseline": "22629a10c8dbc61fad50308447982d3b2b7b88ff",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -86,7 +86,13 @@
     {
       "id": "E-AUTHORED-DIALOGUES",
       "path": "docs/verification/authored-dialogues.md",
-      "description": "New resident text graphs are authored in the mounted editor, followed through actual local conversations and preserved across saves and service changes. The mounted game rejects stale choice clicks. Does not add conditions, quest effects, rewards or historical role overrides."
+      "description": "New resident text graphs are authored in the mounted editor, followed through actual local conversations and preserved across saves and service changes. The mounted game rejects stale choice clicks. Does not add conditions, quest effects, rewards or historical role overrides.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36368752169/job/108760372645"
+    },
+    {
+      "id": "E-DIALOGUE-CONDITIONS",
+      "path": "docs/verification/dialogue-conditions.md",
+      "description": "Authored choices require campaign day, pesos, locality control or character state. Actual time, purchases, civilian death, editor authoring and mounted game visibility pass; unavailable choices are rejected again by the campaign. Locality control and deployed casualties also use explicitly prepared save-admitted fixtures. Does not establish quest effects or full campaign acceptance."
     }
   ],
   "queue": [
@@ -135,6 +141,28 @@
   ],
   "requirements": [
     {
+      "id": "CONDITION-01",
+      "group": "Published deliveries",
+      "requirement": "Author and enforce campaign conditions on dialogue choices",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Each choice supports up to six required conditions for day, treasury, named locality control or character state. The mounted editor protects character references; the game hides unavailable choices and checks them again when selected.",
+      "local": "Uses the accepted published campaign, active scene and immutable content package; no advanced quest reducer is imported.",
+      "remaining": "",
+      "acceptance": "Author ranges and character conditions through the editor, undo/copy/launch and protect referenced characters. Advance actual time, spend pesos and kill a civilian to change available choices. Distinguish living, dead, serving and present identities, preserve saves and reject unavailable or malformed conditions.",
+      "evidence": [
+        "E-DIALOGUE-CONDITIONS"
+      ],
+      "parents": [
+        "STORY-03"
+      ],
+      "testFiles": [
+        "tests/dialogue-conditions.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/webmcp-campaign.test.mjs"
+      ]
+    },
+    {
       "id": "DIALOGUE-01",
       "group": "Published deliveries",
       "requirement": "Author and play branching resident text conversations with saved passage progress",
@@ -154,7 +182,8 @@
         "tests/content-dialogue.test.mjs",
         "tests/story-editor.test.mjs",
         "tests/webmcp-campaign.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/38"
     },
     {
       "id": "LOCAL-01",
@@ -1363,14 +1392,15 @@
       "requirement": "Branching dialogue, conditions, effects and quests",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "New world residents support authored branching text graphs, actual local choices and saved progress. Event phrases and fixed historical conversations remain available.",
+      "published": "New world residents support authored branching text graphs, actual local choices and saved progress. Choices can require campaign day, pesos, named locality control and character life/service/presence. Event phrases and fixed historical conversations remain available.",
       "local": "No general authorable quest graph accepted.",
-      "remaining": "Add typed conditions/effects, quest state, role bindings and persistent effect receipts; extend authoring to historical roles without bypassing their campaign gates.",
+      "remaining": "Add typed effects, quest state, role bindings and persistent effect receipts; extend authoring to historical roles without bypassing their campaign gates.",
       "acceptance": "Author and finish alternate quest branches through normal controls, including failures and saves.",
       "evidence": [
         "E-CONFLICTS",
         "E-AUTHORED-RESIDENTS",
-        "E-AUTHORED-DIALOGUES"
+        "E-AUTHORED-DIALOGUES",
+        "E-DIALOGUE-CONDITIONS"
       ]
     },
     {
@@ -3217,13 +3247,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "8496b3d4fa435a92b273cfbab4e950dc8b5c5832",
-    "total": 618,
-    "passed": 618,
+    "source": "22629a10c8dbc61fad50308447982d3b2b7b88ff",
+    "total": 626,
+    "passed": 626,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-AUTHORED-DIALOGUES"
+    "evidenceId": "E-DIALOGUE-CONDITIONS"
   }
 }

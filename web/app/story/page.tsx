@@ -258,9 +258,7 @@ export default function ContentEditor() {
 
     if (
       collection === 'characters' &&
-      draft.placements.some(
-        (p: any) => p.afterDeath === item.id,
-      )
+      (draft.placements.some((p:any)=>p.afterDeath===item.id)||draft.characters.some((owner:any)=>owner.id!==item.id&&owner.encounter?.dialogue?.nodes.some((n:any)=>n.choices.some((choice:any)=>choice.conditions?.some((c:any)=>c.type==='character'&&c.character===item.id)))))
     ) {
       setNotice(
         'Quitá primero las apariciones y condiciones que usan este personaje.',
@@ -698,7 +696,7 @@ export default function ContentEditor() {
                         </label>
                       </>}
                     </fieldset>}
-                    {isWorldCharacter(item)&&<DialogueEditor key={item.id} value={item.encounter.dialogue} greeting={item.encounter.greeting} onChange={dialogue=>update({encounter:{...item.encounter,dialogue}})}/>}
+                    {isWorldCharacter(item)&&<DialogueEditor key={item.id} characters={draft.characters} value={item.encounter.dialogue} greeting={item.encounter.greeting} onChange={dialogue=>update({encounter:{...item.encounter,dialogue}})}/>}
                     <fieldset aria-label="Habilidades de combate">
                       <legend>Habilidades de combate</legend>
                       <p>Elegí las capacidades de este personaje. Sin casillas marcadas, no tendrá ninguna de estas ventajas. Las funciones de historia se conservan por ahora.</p>
