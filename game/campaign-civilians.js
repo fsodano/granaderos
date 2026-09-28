@@ -21,7 +21,12 @@ function definition(n){
 }
 function service(s,n){
  const id=operativeId(n),base=OPERATIVES.find(o=>o.id===id);
- return base?{...authoredOperative(s,base),...s.operativeState[id]}:undefined;
+ if(!base)return undefined;
+ const current={...authoredOperative(s,base),...s.operativeState[id]},prior=id===57?s.missionAllies?.san_lorenzo:null;
+ // Old saves kept mission wounds only on the retained ally. Until a civilian
+ // receipt exists, that earlier injury must not be replaced by a full roster HP.
+ if(prior&&!s.civilianState?.people['person-57']){current.hp=Math.min(current.hp,prior.hp);current.energy=Math.min(current.energy??100,prior.energy??100);current.bleeding=Math.max(current.bleeding??0,prior.bleeding??0);}
+ return current;
 }
 export function campaignCivilian(s,n){
  const record=s.civilianState?.people[civilianKey(n)],id=operativeId(n);
