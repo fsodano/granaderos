@@ -3,7 +3,7 @@ import {initialCampaign} from '../game/campaign.js';
 import {defaultContentPackage} from '../game/content-package.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {syncBattleTime} from '../game/time.js';
-import {fight} from './opening-driver.mjs';
+import {fight} from './coastal-route-driver.mjs';
 import {order} from './local-contract-fixture.mjs';
 let cached;
 export function paidCasualty(){

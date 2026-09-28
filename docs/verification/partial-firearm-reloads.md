@@ -53,7 +53,15 @@ The first diagnostic exploration fixture contained a visible enemy and exposed
 that an atomic long load could finish before contact stopped its clock. The
 corrected runtime retains only the actual six seconds of work. The campaign
 fixture now retains its expected residents and real failed ignition. Full release
-regression, static checks and exact-head GitHub CI are still pending.
+regression at this source passed 878/893 tests, with 15 failures and zero skips
+(198,687.378 ms). Failures concern changed route tactics, fixed route outcomes
+and casualty/care fixtures; this source is not accepted for publication. Types,
+production export (722 files, 632 references) and all 36 baseline checks pass.
+A subsequent controller adjustment prioritizes cover over unfinished loading,
+then spends spare AP on partial work. The focused route group passes 9/11: the
+local-only route still loses its commander, and the independent post fixture
+requires medical work even when its current survivors are healthy. Further route
+verification and exact-head GitHub CI remain pending.
 
 ## Limits
 

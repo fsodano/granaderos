@@ -348,7 +348,7 @@
     {
       "id": "E-PARTIAL-RELOAD",
       "path": "docs/verification/partial-firearm-reloads.md",
-      "description": "Authored firearm loading retains paid partial work on its physical weapon through turns, swaps, collection and active saves. Exploration stops on contact or collapse and credits only elapsed time. 61 focused tests pass; complete release regression and static acceptance are pending."
+      "description": "Authored firearm loading retains paid partial work on its physical weapon through turns, swaps, collection and active saves. Exploration stops on contact or collapse and credits only elapsed time. 61 focused tests pass; complete release regression and static acceptance are pending. The first full source passes 878/893 with 15 route/fixture failures; static checks pass. Not accepted for publication."
     }
   ],
   "queue": [
@@ -400,11 +400,11 @@
       "id": "PARTIALRELOAD-01",
       "group": "Published deliveries",
       "requirement": "Complete authored firearm loading across turns and retain work on the physical weapon",
-      "status": "LOCAL_ONLY",
+      "status": "FAILED",
       "priority": "P1",
       "published": "Not yet accepted on main. Firearm reloads use available AP, retain paid work on the gun and transfer a cartridge only on completed loading. Exploration retains only elapsed work before contact or incapacity.",
-      "local": "Six simulations and a mounted battlefield case cover authored long loads, multi-barrel work, posture, swaps, corpse collection, invalid saved work, active campaign save, pointer/keyboard costs and exploration interruption. The overlapping focused group passes 61 tests.",
-      "remaining": "Finish complete release regression, types, build, baseline and exact-head GitHub CI.",
+      "local": "Six simulations and a mounted battlefield case cover authored long loads, multi-barrel work, posture, swaps, corpse collection, invalid saved work, active campaign save, pointer/keyboard costs and exploration interruption. The overlapping focused group passes 61 tests. Initial full source passes 878/893 with 15 failures, zero skips. Types, export and baseline checks pass. Updated cover/loading priorities pass 9/11 selected route checks; local commander survival and the post care fixture remain unresolved.",
+      "remaining": "Resolve route and fixture failures, rerun complete release regression and require exact-head GitHub CI before publication.",
       "acceptance": "Use an authored firearm whose reload cannot fit one turn, pay actual partial work and resume after save; preserve finite charges and the same weapon work across ownership paths, actual interruption and the ordinary controls.",
       "evidence": [
         "E-PARTIAL-RELOAD"
