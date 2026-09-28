@@ -6,8 +6,9 @@ const need=(ok,message)=>{if(!ok)throw Error(message);};
 const site=r=>r.sceneId??r.sector;
 const parent=id=>id==='san_lorenzo'?'san_nicolas':id;
 const previous=(s,r)=>expandCellScene(r.sceneId?s.sceneStates?.[r.sceneId]:s.sectorStates?.[r.sector]);
-const validGun=g=>g&&typeof g.id==='string'&&g.id.length>0&&g.id.length<=160&&Object.hasOwn(ARTILLERY,g.type)&&['player','enemy'].includes(g.side)&&typeof g.loaded==='boolean'&&Number.isInteger(g.ammo)&&g.ammo>=0&&g.ammo<=1000000;
+const validGun=g=>g&&typeof g.id==='string'&&g.id.length>0&&g.id.length<=160&&Object.hasOwn(ARTILLERY,g.type)&&['player','enemy'].includes(g.side)&&typeof g.loaded==='boolean'&&Number.isInteger(g.ammo)&&g.ammo>=0&&g.ammo<=1000000&&(g.facing===undefined||Number.isFinite(g.facing)&&Math.abs(g.facing)<=Math.PI*2);
 const list=values=>{need(Array.isArray(values)&&values.length<=2000&&new Set(values.map(g=>g?.id)).size===values.length&&values.every(validGun),'Las piezas de artillería son inválidas.');for(const g of values)validateReloadProgress(g.reloadProgress,1,Number(g.loaded));return values;};
+export {list as validateArtilleryInventory};
 const nextId=s=>`piece-${s.nextArtilleryId++}`;
 
 // Older artillery was a reusable stock projection. Reconcile repeated snapshots
@@ -28,7 +29,13 @@ export function prepareSectorArtillery(s,request){
  migrateArtilleryState(s);
  if(request.artilleryDeployment?.site===site(request))return request;
  const fresh=structuredClone(list(request.artillery??[])),old=structuredClone(list(previous(s,request)?.artillery??[]));
- for(const gun of fresh){need((s.armory?.[gun.type]??0)>0,'No quedan esas piezas en la armería.');s.armory[gun.type]--;gun.id=nextId(s);delete gun.stationed;}
+ for(const gun of fresh){
+  if(gun.fromDepot){
+   const at=request.origin??s.location,stock=s.artilleryDepots?.[at]??[],index=stock.findIndex(g=>g.id===gun.id),original=stock[index];
+   need(gun.fromDepot===at&&s.sectors[at]?.owner==='patriot'&&original&&['type','side','loaded','ammo','reloadProgress','facing'].every(key=>gun[key]===original[key]),'La pieza seleccionada no coincide con el depósito local.');stock.splice(index,1);delete gun.fromDepot;
+  }else{need((s.armory?.[gun.type]??0)>0,'No quedan esas piezas en la armería.');s.armory[gun.type]--;gun.id=nextId(s);}
+  delete gun.stationed;
+ }
  const occupied=s.sectors[parent(request.sector)]?.owner==='royalist';
  const stationed=old.map(g=>({...g,stationed:true,...(occupied?{side:'enemy'}:{})}));
  request.artillery=[...stationed,...fresh];request.cannons=request.artillery.length;request.artilleryDeployment={version:1,site:site(request),issued:fresh.map(g=>g.id)};
@@ -57,11 +64,13 @@ export function settleSectorArtillery(snapshot,outcome){
 export function ownedArtilleryCount(s){
  const owned=new Map();for(const [id,b]of Object.entries(s.sectorStates??{}))if(s.sectors[parent(id)]?.owner==='patriot')for(const g of b.artillery??[])if(g.side==='player')owned.set(g.id,g);
  if(s.pendingBattle)for(const g of s.pendingBattle.artillery??[])if(g.side==='player')owned.set(g.id,g);else owned.delete(g.id);
+ for(const [at,guns]of Object.entries(s.artilleryDepots??{}))if(s.sectors[at]?.owner==='patriot')for(const g of guns)owned.set(g.id,g);
+ for(const t of s.artilleryTransfers??[])owned.set(t.gun.id,t.gun);
  return artilleryCount(s)+owned.size;
 }
 export function validateCampaignArtillery(s){
  need(s.artilleryVersion===1&&Number.isSafeInteger(s.nextArtilleryId)&&s.nextArtilleryId>=1&&s.nextArtilleryId<=1e9,'El registro de piezas es inválido.');const ids=new Set();
- for(const b of [...Object.values(s.sectorStates??{}),...Object.values(s.sceneStates??{})])for(const g of list(b.artillery??[])){if(/^piece-[1-9][0-9]*$/.test(g.id))need(Number(g.id.slice(6))<s.nextArtilleryId,'La secuencia de piezas es inválida.');need(!ids.has(g.id),'Una pieza no puede estar en dos sectores.');ids.add(g.id);}
+ for(const b of [...Object.values(s.sectorStates??{}),...Object.values(s.sceneStates??{}),...Object.values(s.artilleryDepots??{}).map(artillery=>({artillery})),...(s.artilleryTransfers??[]).map(t=>({artillery:[t.gun]}))])for(const g of list(b.artillery??[])){if(/^piece-[1-9][0-9]*$/.test(g.id))need(Number(g.id.slice(6))<s.nextArtilleryId,'La secuencia de piezas es inválida.');need(!ids.has(g.id),'Una pieza no puede estar en dos sectores.');ids.add(g.id);}
  if(s.pendingBattle){
   const r=s.pendingBattle;validateArtilleryDeployment(r);
   for(const id of r.artilleryDeployment.issued){need(!ids.has(id),'Una pieza desplegada ya existe en otro sector.');if(/^piece-[1-9][0-9]*$/.test(id))need(Number(id.slice(6))<s.nextArtilleryId,'La secuencia de piezas es inválida.');}

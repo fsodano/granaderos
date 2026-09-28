@@ -469,7 +469,12 @@
     {
       "id": "E-ARTILLERY-PROFILES",
       "path": "docs/verification/authored-artillery-profiles.md",
-      "description": "Eight simulations and three mounted checks cover all three authored cannon families, model images/names, actual purchase prices, crew and action costs, ballistics, finite initial ammunition, saved physical use, compact references and pinned launch. Full regression passes 1084/1084, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required; gun transport/trade, extra families and distinct ammunition stocks remain open."
+      "description": "Eight simulations and three mounted checks cover all three authored cannon families, model images/names, actual purchase prices, crew and action costs, ballistics, finite initial ammunition, saved physical use, compact references and pinned launch. Full regression passes 1084/1084, zero failures/skips, with types, export and 36 reference comparisons. Published by PR #105 after successful exact-head CI; gun transport/trade, extra families and distinct ammunition stocks remain open."
+    },
+    {
+      "id": "E-ARTILLERY-TRANSPORT",
+      "path": "docs/verification/finite-artillery-transport.md",
+      "description": "Exact-gun field dispatch, organized controlled routes, delayed arrival, local depot selection and actual attack deployment retain finite identity, ammunition and loading. Ten simulations and two mounted checks pass; final overlap 22/22 and complete regression 1096/1096 with no failures/skips. Types, export and 36 reference checks pass. A separate malformed-facing probe drove the final shared validation correction. No weight, arbitrary-cell routes or convoy battle claim. Exact-head publication remains required."
     },
     {
       "id": "E-PARALLEL-VERIFICATION",
@@ -523,12 +528,37 @@
   ],
   "requirements": [
     {
+      "id": "ARTILLERYTRANSPORT-01",
+      "group": "Published deliveries",
+      "requirement": "Transport one retained artillery piece to a controlled local depot and redeploy it without fresh ammunition",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. One retained gun travels to a controlled local depot and enters the next attack with its exact finite load and work.",
+      "local": "Ten simulations and two mounted production-game checks pass 12/12; earlier overlap 37/37 and final transport/emplacement group 22/22. Complete regression passes 1096/1096, zero failures/skips, with types, export and 36 reference checks. A malformed-facing probe was corrected and covered before the final full run.",
+      "remaining": "",
+      "acceptance": "Recover an actual purchased and fired gun with available local crew, quote organized controlled cart/coastal routes, retain finite load and unfinished work through full saves, delay interrupted delivery, choose the exact local depot gun and consume it once on real attack entry.",
+      "evidence": [
+        "E-ARTILLERY-TRANSPORT"
+      ],
+      "parents": [
+        "TAC-08",
+        "ITEM-02",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/artillery-transport.test.mjs",
+        "tests/artillery-transport-render.test.mjs",
+        "tests/artillery-selection.test.mjs",
+        "tests/stationed-artillery.test.mjs"
+      ]
+    },
+    {
       "id": "ARTILLERYPROFILE-01",
       "group": "Published deliveries",
       "requirement": "Author all three cannon families and their images, costs, crew, ballistics and one-time ammunition allowance",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. The story editor pins complete gun profiles used by purchases, controls, player/enemy/militia combat and saved physical emplacements.",
+      "published": "Published by PR #105 after successful exact-head CI. The story editor pins complete gun profiles used by purchases, controls, player/enemy/militia combat and saved physical emplacements.",
       "local": "Eight simulations and three mounted editor/armory/production-field checks pass. Full regression passes 1084/1084, zero failures/skips, with types, export and all 36 baseline comparisons. An initial default-label regression is corrected in the final runtime.",
       "remaining": "",
       "acceptance": "Search/edit model names and images, validate strict fields, undo/reset/launch, charge actual authored prices, use authored costs/crew/ballistics and finite initial load, retain real gun ammunition on reentry and reject changed scene definitions while storing uploaded assets once.",
@@ -546,7 +576,8 @@
         "tests/artillery-profiles-render.test.mjs",
         "tests/story-editor.test.mjs",
         "tests/stationed-artillery-render.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/105"
     },
     {
       "id": "ARTILLERYAI-01",
@@ -3094,8 +3125,8 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Three crew-served gun profiles and artillery actions.",
-      "local": "See local suite and preserved parity source; not equivalent to published integration. EMPLACEMENT-01 accepts bounded physical sector persistence, finite first issue, capture and migration. CREWLOAD-01 accepts retained individual crew work, finite completed shots and shared controls. ARTILLERYSUPPLY-01 accepts pinned pesos prices, supply permission, reserve cap and finite local replenishment. ARTILLERYAI-01 accepts local automatic gun crews, shared budgets, safe observed targeting and saved finite resources. ARTILLERYPROFILE-01 accepts editing the three gun families, model images, costs, crew, ballistics and finite initial ammunition with saved package references.",
-      "remaining": "Publish accepted physical emplacements, partial crew loading and authored replenishment after exact-head CI; integrate autonomous crews and strategic recovery/transport.",
+      "local": "See local suite and preserved parity source; not equivalent to published integration. EMPLACEMENT-01 accepts bounded physical sector persistence, finite first issue, capture and migration. CREWLOAD-01 accepts retained individual crew work, finite completed shots and shared controls. ARTILLERYSUPPLY-01 accepts pinned pesos prices, supply permission, reserve cap and finite local replenishment. ARTILLERYAI-01 accepts local automatic gun crews, shared budgets, safe observed targeting and saved finite resources. ARTILLERYPROFILE-01 accepts editing the three gun families, model images, costs, crew, ballistics and finite initial ammunition with saved package references. ARTILLERYTRANSPORT-01 accepts finite field-to-depot custody and exact redeployment through actual purchase, combat and saved travel.",
+      "remaining": "Publish the accepted pending artillery deliveries after exact-head CI; integrate trading, advanced transport and broader campaign acceptance.",
       "acceptance": "Crew requirements, movement/pivot AP and range",
       "evidence": [
         "E-PUBLISHED",
@@ -3104,7 +3135,8 @@
         "E-ARTILLERY-CREW-LOADING",
         "E-ARTILLERY-SUPPLY",
         "E-ARTILLERY-AUTONOMY",
-        "E-ARTILLERY-PROFILES"
+        "E-ARTILLERY-PROFILES",
+        "E-ARTILLERY-TRANSPORT"
       ]
     },
     {
@@ -3298,7 +3330,7 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Three artillery profiles and period supply actions.",
-      "local": "See local suite and preserved parity source; not equivalent to published integration. EMPLACEMENT-01 accepts bounded physical sector persistence, finite first issue, capture and migration. CREWLOAD-01 accepts retained individual crew work, finite completed shots and shared controls. ARTILLERYSUPPLY-01 accepts pinned pesos prices, supply permission, reserve cap and finite local replenishment. ARTILLERYPROFILE-01 accepts editing the three gun families, model images, costs, crew, ballistics and finite initial ammunition with saved package references.",
+      "local": "See local suite and preserved parity source; not equivalent to published integration. EMPLACEMENT-01 accepts bounded physical sector persistence, finite first issue, capture and migration. CREWLOAD-01 accepts retained individual crew work, finite completed shots and shared controls. ARTILLERYSUPPLY-01 accepts pinned pesos prices, supply permission, reserve cap and finite local replenishment. ARTILLERYPROFILE-01 accepts editing the three gun families, model images, costs, crew, ballistics and finite initial ammunition with saved package references. ARTILLERYTRANSPORT-01 accepts finite field-to-depot custody and exact redeployment through actual purchase, combat and saved travel.",
       "remaining": "Complete authoring, finite stores, transport, consumption and saved ownership.",
       "acceptance": "Data and actual consumption/carry effects",
       "evidence": [
@@ -3307,7 +3339,8 @@
         "E-STATIONED-ARTILLERY",
         "E-ARTILLERY-CREW-LOADING",
         "E-ARTILLERY-SUPPLY",
-        "E-ARTILLERY-PROFILES"
+        "E-ARTILLERY-PROFILES",
+        "E-ARTILLERY-TRANSPORT"
       ]
     },
     {
@@ -5471,13 +5504,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "5ff4186b334a6596eee40c49c4112fac2917f204",
-    "total": 1073,
-    "passed": 1073,
+    "source": "fb49f84e6787bc73737a949bd6d0a60282fcf181",
+    "total": 1084,
+    "passed": 1084,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-PARALLEL-VERIFICATION"
+    "evidenceId": "E-ARTILLERY-PROFILES"
   }
 }

@@ -1,3 +1,4 @@
+import {localArtilleryDepot,depotSelection} from './artillery-transport.js';
 import {artilleryProfile} from './artillery-definitions.js';
 import {importRulesFor,importPortName,importDelayReason} from './campaign-imports.js';
 import {compileWeaponDefinition} from './weapon-definition.js';
@@ -23,15 +24,24 @@ export function needsResupply(record){return [['priming',50],['flints',4],['rati
 export function refillCost(record,dressingPrice=10){return Math.ceil(Math.max(0,50-(record.priming??50))*.4+Math.max(0,4-(record.flints??4))*8+Math.max(0,2-(record.rations??2))*10+Math.max(0,2-(record.torches??2))*8+Math.max(0,2-(record.medkits??2))*dressingPrice);}
 export function firearmRepairCost(record){return Math.ceil(Math.max(0,100-(record.condition??100))*1.5);}
 export function artillerySelectionReason(s,types){
- if(!Array.isArray(types)||types.length>3||!types.every(type=>['bronze4','field8','swivel'].includes(type)))return 'Seleccioná hasta tres piezas de artillería.';
+ const depot=localArtilleryDepot(s);
+ if(!Array.isArray(types)||types.length>3||!types.every(type=>['bronze4','field8','swivel'].includes(type)||depot.some(g=>depotSelection(g)===type)))return 'Seleccioná hasta tres piezas de artillería.';
  for(const type of ['bronze4','field8','swivel'])if(types.filter(t=>t===type).length>(s.armory?.[type]??0))return 'No disponés de tantas piezas de ese modelo.';
+ if(types.filter(type=>type.startsWith('depot:')).some((type,i,all)=>all.indexOf(type)!==i))return 'Una pieza del depósito solo puede ocupar un lugar en la batería.';
  return null;
 }
+export function artilleryDeploymentChoices(s){
+ return s.artillerySelectionExplicit||s.artillerySelection?.length?s.artillerySelection??[]:[...['field8','swivel','bronze4'].flatMap(type=>Array.from({length:Math.min(3,s.armory?.[type]??0)},()=>type)),...localArtilleryDepot(s).map(depotSelection)].slice(0,3);
+}
 export function deployedArtillery(s){
- const available={...s.armory},types=[];
- const chosen=s.artillerySelectionExplicit||s.artillerySelection?.length?s.artillerySelection??[]:['field8','swivel','bronze4'].flatMap(type=>Array.from({length:Math.min(3,available[type]??0)},()=>type));
- for(const type of chosen)if(types.length<3&&(available[type]??0)>0){types.push(type);available[type]--;}
- return types.map((type,i)=>({id:`gun-${i}`,type,side:'player',loaded:artilleryProfile(s,type).initialLoaded,ammo:artilleryProfile(s,type).initialAmmo}));
+ const available={...s.armory},depot=localArtilleryDepot(s),used=new Set(),guns=[];
+ for(const choice of artilleryDeploymentChoices(s)){
+  if(guns.length>=3)break;
+  const stored=depot.find(g=>depotSelection(g)===choice);
+  if(stored&&!used.has(stored.id)){guns.push({...structuredClone(stored),fromDepot:s.location});used.add(stored.id);}
+  else if(['bronze4','field8','swivel'].includes(choice)&&(available[choice]??0)>0){available[choice]--;guns.push({id:`gun-${guns.length}`,type:choice,side:'player',loaded:artilleryProfile(s,choice).initialLoaded,ammo:artilleryProfile(s,choice).initialAmmo});}
+ }
+ return guns;
 }
 
 export function isImportedEquipment(item){return [1800,1802].includes(Number(item?.contentWeapon?.template??item?.item));}

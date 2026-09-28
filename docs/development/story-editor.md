@@ -621,3 +621,22 @@ Las piezas compradas reciben su munición inicial una sola vez. Volver al sector
 conserva la carga real. Las reglas de reposición siguen en **Reglas**. La edición
 se aplica tanto a los cañones propios como a los enemigos de ese modelo. No crea
 familias adicionales. [Verificación](../verification/authored-artillery-profiles.md).
+
+
+## Trasladar una pieza de artillería
+
+En la armería, cada pieza emplazada muestra **Trasladar pieza**. Elegí otra
+localidad controlada y carretas o flotilla. La escuadra debe estar junto a la
+pieza y tener la dotación disponible que define su perfil. Organizá primero el
+transporte. El botón explica por qué un envío no está disponible.
+
+La pieza viaja con su carga, reservas y recarga incompleta. Al llegar entra en
+el depósito del destino. Cuando tu escuadra esté allí, elegí esa pieza en la
+batería del próximo ataque. No recibe munición nueva. Una ruta ocupada, un
+bloqueo, enemigos en el destino o un depósito lleno demoran la entrega.
+
+Por ahora, las rutas usan localidades y sus conexiones: 18 horas por tramo en
+carreta o cinco en flotilla. Estos tiempos todavía no se editan. Las carretas no
+cruzan sectores de montaña con un cañón completo; la flotilla usa localidades
+costeras. La selección libre de celdas para personajes sigue siendo independiente
+de estos envíos. [Verificación y límites](../verification/finite-artillery-transport.md).
