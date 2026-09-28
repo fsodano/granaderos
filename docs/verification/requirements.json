@@ -308,7 +308,8 @@
     {
       "id": "E-CRITICAL-MILITARY",
       "path": "docs/verification/critical-military-condition.md",
-      "description": "Shared critical-health and exhaustion incapacity, zero action budgets, finite stabilization without immediate AP, actual wound speech, battle settlement and saved enemy casualties with finite looting. Paid-hire and prepared-boundary checks, mounted controls and fresh campaign regression retain real care, losses, defense and costs. 854 passing tests, zero failures/skips, types, export and baseline checks; advanced condition, custody and browser performance remain separate."
+      "description": "Shared critical-health and exhaustion incapacity, zero action budgets, finite stabilization without immediate AP, actual wound speech, battle settlement and saved enemy casualties with finite looting. Paid-hire and prepared-boundary checks, mounted controls and fresh campaign regression retain real care, losses, defense and costs. 854 passing tests, zero failures/skips, types, export and baseline checks; advanced condition, custody and browser performance remain separate.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36431208186/job/108957557840"
     },
     {
       "id": "E-CIVILIAN-BREATH",
@@ -392,7 +393,7 @@
       "requirement": "Apply critical military incapacity and retain living enemy casualties across saved visits",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Living soldiers below 15 health or with zero energy cannot act; breath recovery cannot heal critical wounds, and stabilization grants no immediate AP. Critical casualties no longer hold the field and preserve their wounds and finite belongings through reentry and new occupation.",
+      "published": "Living soldiers below 15 health or with zero energy cannot act; breath recovery cannot heal critical wounds, and stabilization grants no immediate AP. Critical casualties no longer hold the field and preserve their wounds and finite belongings through reentry and new occupation. Merged through PR #76 after exact-head CI.",
       "local": "Five new simulation cases and existing mounted first-aid controls verify actions, breath, treatment, legacy migration and current-save rejection. Fresh campaign checks retain real replacement hires, 36 hours of paid care, purchases, later coastal defenses, permanent losses and saved continuation.",
       "remaining": "",
       "acceptance": "Incapacitate through actual damage, prevent illegal actions, stabilize with finite supplies without immediate AP, save and settle the field, then revisit and loot actual finite casualty equipment without resurrection or duplication. Keep the stock and independent campaign routes playable with real resources.",
@@ -412,7 +413,8 @@
         "tests/fresh-ending-route.test.mjs",
         "tests/historical-loss.test.mjs",
         "tests/post-campaign.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/76"
     },
     {
       "id": "INITIALCONDITION-01",
@@ -4505,13 +4507,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "605e39c2c53f382f3b74dddcbdcb758e7871a794",
-    "total": 849,
-    "passed": 849,
+    "source": "d320299472f9ac924d1c59e2217850661bc1607e",
+    "total": 854,
+    "passed": 854,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-CHARACTER-CONDITION"
+    "evidenceId": "E-CRITICAL-MILITARY"
   }
 }

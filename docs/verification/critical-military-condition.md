@@ -93,3 +93,7 @@ incapacitated people. Strategic bleeding and civilian breath recovery are also
 separate work. Scripted and mounted-DOM tests do not establish browser usability,
 performance or balance across every seed and squad. Advanced integration remains
 open in the requirement register.
+
+[PR #76](https://github.com/fsodano/granaderos/pull/76) merged after
+[GitHub CI](https://github.com/fsodano/granaderos/actions/runs/36431208186/job/108957557840)
+passed at `7aefa528b519f4d058e9f92668618414d80f5b9c`.
