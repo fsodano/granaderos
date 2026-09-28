@@ -1,3 +1,4 @@
+import {CAMPAIGN_PROJECT_LABELS,campaignProjectComplete} from './campaign-projects.js';
 import {atDialogueMeeting} from './dialogue-movement.js';
 import {contentQuestStatus,CONTENT_QUEST_STATES} from './content-quests.js';
 import {CAMPAIGN_SECTORS} from './data.js';
@@ -15,6 +16,7 @@ export function validateDialogueConditions(conditions,characters,quests){
   if(c.type==='character')need(exact(c,['type','character','state'])&&characters?.has(c.character)&&DIALOGUE_PERSON_STATES.includes(c.state),'La condición necesita un personaje y un estado válidos.');
   else if(c.type==='meeting')need(exact(c,['type','character'])&&characters?.has(c.character),'La condición del encuentro necesita un personaje válido.');
   else if(c.type==='quest')need(exact(c,['type','quest','status'])&&quests?.has(c.quest)&&CONTENT_QUEST_STATES.includes(c.status),'La condición necesita un encargo y un estado válidos.');
+  else if(c.type==='project')need(exact(c,['type','project','completed'])&&Object.hasOwn(CAMPAIGN_PROJECT_LABELS,c.project)&&typeof c.completed==='boolean','La condición necesita un proyecto y un estado válidos.');
   else if(c.type==='sector')need(exact(c,['type','sector','owner'])&&CAMPAIGN_SECTORS.some(s=>s.id===c.sector)&&['patriot','royalist'].includes(c.owner),'La condición necesita una localidad y un control válidos.');
   else if(c.type==='day'||c.type==='treasury')need(exact(c,['type','min','max'])&&integer(c.min,c.type==='day'?1:0,1000000000)&&(c.max===null||integer(c.max,c.min,1000000000)),'La condición necesita un intervalo válido.');
   else need(false,'El tipo de condición del diálogo no está disponible.');
@@ -31,6 +33,7 @@ export function dialogueConditionsMet(s,conditions,battle=null){
   if(c.type==='character')return characterState(s,c.character,battle)[c.state]===true;
   if(c.type==='meeting')return atDialogueMeeting(s,c.character,battle);
   if(c.type==='quest')return contentQuestStatus(s,c.quest)===c.status;
+  if(c.type==='project')return campaignProjectComplete(s,c.project)===c.completed;
   if(c.type==='sector')return s.sectors[c.sector]?.owner===c.owner;
   if(!['day','treasury'].includes(c.type))return false;
   const value=c.type==='day'?Math.floor(s.hour/24)+1:s.resources.treasury;
