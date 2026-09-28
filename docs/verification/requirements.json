@@ -194,7 +194,8 @@
     {
       "id": "E-FOUNDRY-PROJECT",
       "path": "docs/verification/foundry-project.md",
-      "description": "Authored locality, project/army names and two prices drive real preparation, funding, loyalty and repair/resupply. Paid arrival in Salta and a Jujuy workshop route save without Mendoza control. Mounted authoring and actual treasury payments are covered. Wear, occupation, supply cuts and insufficient funds use prepared states. Original Cuyo gates, tactical buildings and full campaign composition remain separate."
+      "description": "Authored locality, project/army names and two prices drive real preparation, funding, loyalty and repair/resupply. Paid arrival in Salta and a Jujuy workshop route save without Mendoza control. Mounted authoring and actual treasury payments are covered. Wear, occupation, supply cuts and insufficient funds use prepared states. Original Cuyo gates, tactical buildings and full campaign composition remain separate.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36388812936/job/108819869666"
     },
     {
       "id": "E-PROJECT-CONDITIONS",
@@ -524,7 +525,8 @@
         "tests/campaign-roles.test.mjs",
         "tests/campaign-headquarters.test.mjs",
         "tests/campaign-web.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/56"
     },
     {
       "id": "PROJECTS-01",

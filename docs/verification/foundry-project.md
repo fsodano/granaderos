@@ -44,6 +44,11 @@ documentation audit (194 requirements, all 50 original and 87 parity rows,
 33 evidence records); 114 changed local links. Exact-head GitHub checks are
 required before merge.
 
+Accepted in [PR #56](https://github.com/fsodano/granaderos/pull/56) at
+`a16f58ee128d75518ec940c60e5be77ca9105048`, with
+[successful exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36388812936/job/108819869666).
+Merged into `main` as `9acd4fe28a627586307c2cf6ccd70a1b6139562e`.
+
 ## Limits
 
 FOUNDRY-01 configures one strategic project. It does not create or move tactical
