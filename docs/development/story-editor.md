@@ -88,15 +88,25 @@ La campaña conserva el reloj y un estado aleatorio propio para estas decisiones
 
 Al trasladarse se elimina la copia de la escena anterior. La nueva escena inicia una rutina local; no copia coordenadas, casas o destinos del sector anterior. Volver al mismo sector sin un traslado conserva la rutina guardada. La correspondencia muestra la ubicación fija conocida o el último encuentro; no revela el resultado de los sorteos.
 
-Esta entrega integra los personajes de encuentro existentes. No incorpora todavía daño civil, inventarios de NPC editables, cautiverio, nuevas identidades de encuentro ni transferencia de funciones a un sucesor. Las condiciones de muerte se pueden simular en el editor, pero bloquean el inicio de campaña hasta completar esas funciones. Las escenas de misión especiales conservan su elenco propio.
+Esta entrega integra los personajes de encuentro existentes. La salud y la muerte de estos personajes ya se conservan en campaña. No incorpora todavía inventarios de NPC editables, cautiverio, nuevas identidades de encuentro ni transferencia de funciones a un sucesor. Las condiciones de muerte se pueden simular en el editor, pero bloquean el inicio de campaña hasta completar esas funciones. Las escenas de misión especiales conservan su elenco propio.
 
 Las partidas anteriores mantienen sus encuentros originales. Las nuevas campañas usan una versión explícita con presencia guardada; quitar ese registro o cambiar posiciones por fuera del rango invalida el archivo. Las pruebas exportadas del simulador pasan a la versión 2 por el cambio en las reglas de sorteo: los archivos de prueba de versión 1 se rechazan con un aviso para crear una prueba nueva. El paquete de contenido y las partidas anteriores mantienen su compatibilidad.
+
+## Heridas y muerte de los habitantes
+
+Las heridas pertenecen al personaje. Guardar, cambiar de celda o incorporarlo a la escuadra no restaura su salud. La salud máxima usa su ficha. Al incorporarse deja de existir como NPC en las escenas guardadas. Si luego deja el servicio, conserva su estado de soldado.
+
+En el campo táctico podés usar los cursores normales para atacar o atender a un habitante. Las armas y las trampas pueden herirlo. La hemorragia continúa mientras la escena está abierta. Un personaje inconsciente no puede caminar ni conversar. Los primeros auxilios gastan una carga de vendas, detienen la hemorragia y estabilizan a un herido crítico en 15 puntos; no lo curan por completo. Las vendas gastadas no se reponen al volver a entrar. En un taller abastecido podés reponer provisiones: cada carga de vendas que falta cuesta 10 pesos, hasta recuperar las dos cargas iniciales.
+
+La muerte cancela los traslados y el reclutamiento. El cuerpo queda en su escena. La campaña aplica una vez la consecuencia local de lealtad y marca como fallido un encargo pendiente de ese contacto. Si muere un mando indispensable de la historia original, la campaña termina. San Martín comparte su salud entre sus funciones de contacto y aliado.
+
+Esto todavía no permite crear NPC nuevos, editar sus pertenencias, saquearlos, mantenerlos cautivos ni activar sucesores. No se inventa equipo para sus cuerpos. Las heridas se conservan fuera de la escena, pero todavía no se simula atención médica o hemorragia mientras el sector está cerrado. La [verificación](../verification/civilian-state.md) detalla las pruebas y los límites.
 
 ## Borradores que todavía no llegan a la campaña
 
 El mapa permite marcar cualquier celda con una X desde la ficha del personaje, incluido terreno fuera de las localidades. Se pueden simular ubicaciones con una semilla. Las ubicaciones fijas, el sorteo inicial y los cambios diarios ya se aplican a las nuevas campañas. Crear personajes de encuentro, eliminar mandos históricos y usar opciones de historia no compatibles todavía bloquea el inicio de campaña.
 
-Los mandos históricos conservan su servicio permanente, requisitos de reclutamiento y funciones de campaña. Sus habilidades de combate ya son configurables. Quedan pendientes su extracción, las identidades nuevas de encuentro, las bajas civiles y sucesiones, los diálogos y encargos editables, las escenas dirigidas y la composición completa de campaña. Esta entrega no completa todo el editor de historia.
+Los mandos históricos conservan su servicio permanente, requisitos de reclutamiento y funciones de campaña. Sus habilidades de combate ya son configurables. Quedan pendientes su extracción, las identidades nuevas de encuentro, las sucesiones por muerte, los diálogos y encargos editables, las escenas dirigidas y la composición completa de campaña. Esta entrega no completa todo el editor de historia.
 
 ## Validación
 
@@ -120,3 +130,5 @@ Los mandos históricos conservan su servicio permanente, requisitos de reclutami
 `tests/world-cells.test.mjs` recorre, entra y vuelve a entrar en dos celdas rurales y dos barrios distintos con la campaña real. Comprueba objetos recogidos, puertas, relojes, contratos, llegadas, escuadras separadas, incursiones, servicios, agua, invierno y rechazo de escenas intercambiadas. `tests/world-cells-render.test.mjs` monta la carta de operaciones, selecciona celdas, ordena marchas, entra, guarda y consulta objetos con los controles reales. También se comprueba un recorrido continuo por 40 celdas, que antes excedía el límite de guardado, y el rechazo de terreno comprimido inválido o con un tamaño de expansión excesivo. Estas pruebas no sustituyen la continuidad de NPC ni una campaña completa.
 
 `tests/campaign-presence.test.mjs` comprueba conversación e incorporación en una celda rural mediante movimiento táctico real, guardado activo, reentrada, sorteo único, recorridos diarios, protección de escenas a las 04:00, eliminación de copias antiguas y rechazo de registros inválidos. También comprueba la aparición en un ataque real a un sector enemigo y su guardado activo. Comprueba correspondencia sin revelar sorteos y conservación de contratos fuera del mapa. El editor montado configura las celdas y reglas, usa deshacer/rehacer e inicia un encuentro real. No prueba bajas civiles ni una campaña completa.
+
+`tests/civilian-state.test.mjs` comprueba heridas, muerte, cambios de celda, incorporación, baja del servicio, misiones, lealtad y guardados. `tests/civilian-interaction.test.mjs` usa los controles del campo táctico montado para atacar y atender a un NPC. No equivalen a un recorrido completo de campaña.

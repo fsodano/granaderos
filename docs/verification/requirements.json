@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-27",
-  "baseline": "b11d24edd64976064ec30b3d7fa6ed8aa6248deb",
+  "baseline": "638afa9af706ea1bcd136f0f502e5c6658f07d00",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -50,7 +50,13 @@
     {
       "id": "E-RETIRO-OPENING",
       "path": "docs/verification/retiro-opening.md",
-      "description": "Retiro-only startup, free version-2 character, actual hire arrival, pesos and all contract terms, resume/import, and real first hired-squad conquest with casualties and save/reentry. Complete fresh campaign routes and balance remain unverified."
+      "description": "Retiro-only startup, free version-2 character, actual hire arrival, pesos and all contract terms, resume/import, and real first hired-squad conquest with casualties and save/reentry. Complete fresh campaign routes and balance remain unverified.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36360760155"
+    },
+    {
+      "id": "E-CIVILIAN-STATE",
+      "path": "docs/verification/civilian-state.md",
+      "description": "Existing residents retain injuries and death across tactical actions, active saves, exact-cell relocation, recruitment and dismissal. Finite medical supplies, paid replenishment, mission identity and local consequences are covered. New NPC identities, inventory, custody and successors remain open."
     }
   ],
   "queue": [
@@ -72,7 +78,7 @@
         "STORY-01",
         "STORY-02"
       ],
-      "action": "Complete new persistent world identities, wounds, belongings and successors as separate deliveries; existing encounter placement is now connected."
+      "action": "Extend the connected location and health identity into new authored world NPCs, belongings, custody and death successors as separate deliveries."
     },
     {
       "order": 3,
@@ -100,6 +106,30 @@
   ],
   "requirements": [
     {
+      "id": "CIVILIAN-01",
+      "group": "Published deliveries",
+      "requirement": "Existing world residents retain wounds and death across relocation, recruitment and saves",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Ordinary tactical attack and medical controls affect residents; health persists by identity, corpses stay in their scene, medical charges are finite and can be replenished for pesos, and death applies local consequences once.",
+      "local": "The advanced-workspace health and harm helpers supplied the bounded physical model; wider custody, inventory and civic systems are not imported.",
+      "remaining": "",
+      "acceptance": "Real injury and aid, active save, daily relocation, recruitment and redeployment without healing; permanent death and corpse reentry; finite medical charges and paid replenishment; mission identity, failed local errand and unique loyalty receipt; legacy injuries and invalid snapshots. Excludes new world definitions, personal stock, custody and successors.",
+      "evidence": [
+        "E-CIVILIAN-STATE"
+      ],
+      "parents": [
+        "STORY-02",
+        "JA2-S09"
+      ],
+      "testFiles": [
+        "tests/civilian-state.test.mjs",
+        "tests/civilian-interaction.test.mjs",
+        "tests/campaign-presence.test.mjs",
+        "tests/missions-web.test.mjs"
+      ]
+    },
+    {
       "id": "OPENING-01",
       "group": "Published deliveries",
       "requirement": "Retiro-only startup and free first-person phase advance with saved continuation",
@@ -122,7 +152,8 @@
         "tests/retiro-start-render.test.mjs",
         "tests/retiro-expansion.test.mjs",
         "tests/retiro-resume.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/32"
     },
     {
       "id": "DEL-19",
@@ -420,7 +451,7 @@
     {
       "id": "NAR-01",
       "group": "Original design",
-      "requirement": "Elío/Vigodet, Pezuela, Tristán, Romarate and Loyalist commands",
+      "requirement": "El\u00edo/Vigodet, Pezuela, Trist\u00e1n, Romarate and Loyalist commands",
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Named commands and campaign narrative exist.",
@@ -472,7 +503,7 @@
       "published": "Yatasto mission and chapter transitions.",
       "local": "See local suite and preserved parity source; not equivalent to published integration.",
       "remaining": "Fresh route cannot currently complete northern medical relief and later acceptance.",
-      "acceptance": "Triggered sequence and Güemes frontier assignment",
+      "acceptance": "Triggered sequence and G\u00fcemes frontier assignment",
       "evidence": [
         "E-PUBLISHED",
         "E-CONFLICTS"
@@ -496,10 +527,10 @@
     {
       "id": "NAR-06",
       "group": "Original design",
-      "requirement": "Pehuenche diplomacy and San Martín final unlock",
+      "requirement": "Pehuenche diplomacy and San Mart\u00edn final unlock",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Treaty and gated San Martín unlock.",
+      "published": "Treaty and gated San Mart\u00edn unlock.",
       "local": "See local suite and preserved parity source; not equivalent to published integration.",
       "remaining": "Reach and finish through legal campaign actions without injected victories.",
       "acceptance": "Treaty and logistics prerequisites enforced; no early recruitment",
@@ -631,7 +662,7 @@
     {
       "id": "ECO-02",
       "group": "Original design",
-      "requirement": "Retiro/Beltrán raw-material production chains",
+      "requirement": "Retiro/Beltr\u00e1n raw-material production chains",
       "status": "SUPERSEDED",
       "priority": "P1",
       "published": "Removed by PR #12.",
@@ -691,7 +722,7 @@
     {
       "id": "MIL-01",
       "group": "Original design",
-      "requirement": "Cívicos, Montoneras and veteran line/Granaderos tiers",
+      "requirement": "C\u00edvicos, Montoneras and veteran line/Granaderos tiers",
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Militia training, ranks and generated historical loadouts.",
@@ -781,7 +812,7 @@
     {
       "id": "TAC-06",
       "group": "Original design",
-      "requirement": "Sabre bleeding/parry, bayonet reach/intercepts, lance knockdown, facón defense",
+      "requirement": "Sabre bleeding/parry, bayonet reach/intercepts, lance knockdown, fac\u00f3n defense",
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Distinct held blade actions and reactions.",
@@ -871,7 +902,7 @@
     {
       "id": "MAP-02",
       "group": "Original design",
-      "requirement": "Camino Real, Paraná choke point and Andean supply routes",
+      "requirement": "Camino Real, Paran\u00e1 choke point and Andean supply routes",
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Land routes and exact-cell tactical entry.",
@@ -922,7 +953,7 @@
       "published": "Northern pressure events and objectives.",
       "local": "See local suite and preserved parity source; not equivalent to published integration.",
       "remaining": "Integrate physical forces, finite reserves, routes, garrisons and defense.",
-      "acceptance": "Royalist corps advances Humahuaca–Jujuy–Salta–Tucumán",
+      "acceptance": "Royalist corps advances Humahuaca\u2013Jujuy\u2013Salta\u2013Tucum\u00e1n",
       "evidence": [
         "E-PUBLISHED",
         "E-CONFLICTS"
@@ -1143,14 +1174,15 @@
       "id": "STORY-02",
       "group": "Story and integration",
       "requirement": "New world identities, persistent residents and death successors",
-      "status": "MISSING",
+      "status": "PARTIAL",
       "priority": "P1",
-      "published": "Paid identities work; historical encounters remain fixed identities.",
+      "published": "Existing historical and local residents retain wounds and death across real tactical actions, daily placement, recruitment, dismissal and saves. Paid candidates remain off-map.",
       "local": "Prototype has preview transition helpers; full campaign identity/health/succession still absent.",
-      "remaining": "Connect authored NPC life state, belongings, custody, recruitment, death and successor role receipts.",
+      "remaining": "Connect new authored world identities, editable belongings, NPC looting, custody, successors and explicit role/stock transfer. Strategic civilian care and unloaded-sector bleeding remain separate work.",
       "acceptance": "Move an injured NPC, reload, recruit it, confirm death and activate one distinct successor without healing or duplicating goods.",
       "evidence": [
-        "E-CONFLICTS"
+        "E-CONFLICTS",
+        "E-CIVILIAN-STATE"
       ]
     },
     {
@@ -1616,7 +1648,7 @@
         "E-PUBLISHED"
       ],
       "sourceRow": "JA2-C09",
-      "sourceNotes": "Geometry, cursor, combat, inventory and fresh Retiro save/reentry checks pass; live aiming, cancellation, energy-only exploration, pickup and re-equipping are checked. A dedicated illustrated throw pose remains missing. Improvised facón throws, range/AP/damage tuning and supported recovery are period-game adaptations; no standard military throwing doctrine or automatic stealth kill is claimed."
+      "sourceNotes": "Geometry, cursor, combat, inventory and fresh Retiro save/reentry checks pass; live aiming, cancellation, energy-only exploration, pickup and re-equipping are checked. A dedicated illustrated throw pose remains missing. Improvised fac\u00f3n throws, range/AP/damage tuning and supported recovery are period-game adaptations; no standard military throwing doctrine or automatic stealth kill is claimed."
     },
     {
       "id": "JA2-C10",
@@ -1904,7 +1936,7 @@
         "E-PUBLISHED"
       ],
       "sourceRow": "JA2-P03",
-      "sourceNotes": "Preserve-facing AP costs `ceil(normal step AP × 1.25)`; time uses a 1.25 multiplier before final rounding, with no extra energy multiplier. Mounted and running movement reject this intent. These are Granaderos adaptations. Group movement uses ordinary facing; Alt returns to an individual order. All posture, interruption and moving-sprite combinations remain unverified live."
+      "sourceNotes": "Preserve-facing AP costs `ceil(normal step AP \u00d7 1.25)`; time uses a 1.25 multiplier before final rounding, with no extra energy multiplier. Mounted and running movement reject this intent. These are Granaderos adaptations. Group movement uses ordinary facing; Alt returns to an individual order. All posture, interruption and moving-sprite combinations remain unverified live."
     },
     {
       "id": "JA2-P04",
@@ -2012,7 +2044,7 @@
         "E-PUBLISHED"
       ],
       "sourceRow": "JA2-I03",
-      "sourceNotes": "Strategic sector access now lists discovered equipment and supports exact local pickup/drop quantities in safe sectors. It checks walking access, capacity and current source contents, preserves loaded/fitted weapons and personal cartridges, and uses validated save/reentry paths. Seventeen simulation/save tests and two component checks cover the new flow; see [sector inventory](sector-inventory.md). Depleted ground objects cannot be picked up again. A controlled live body/ground picker spent actual approach and pickup AP, took partial cartridges and a loaded fitted musket, and retained both sources and receiver after reload. Ten approach cases, eleven batch cases and two component tests cover the picker contract. Select All and per-row quantities share one atomic 8 AP pickup from a single tile. Live full selection, capacity rejection and reduction to a valid partial selection passed; see [loot approach](loot-approach.md). Live tactical dropping, strategic partial pickup/drop, quantity rejection, save loading and reentry now pass. The check found and fixed loss of a carried loaded gun charge on campaign return; the repeated loop preserved the exact ammunition total. See [sector inventory](sector-inventory.md). Blocked paths, full packs and body/container variants remain automated-test evidence. Visited mission sites now appear under their parent sector through a labelled site selector, with separate source pools and shared local-presence, occupation and path checks. Real San Lorenzo remains can be recovered after victory; completed Yatasto pickup/drop and saves pass simulation checks. A live production-component harness recovered one dressing and one cartridge from the real San Lorenzo save and preserved the distinct town stock after saving/loading. See [sector inventory](sector-inventory.md). Carried weapons can now be equipped directly from a safe town, without entering the tactical map. Prepared load, partial work, condition and fittings survive the supported map/armory/deployment/return paths; capture/rescue and finite ammunition are tested. A live Córdoba recovery pickup/equip/save/load check passed. See [carried weapon equipment](campaign-carried-equip.md)."
+      "sourceNotes": "Strategic sector access now lists discovered equipment and supports exact local pickup/drop quantities in safe sectors. It checks walking access, capacity and current source contents, preserves loaded/fitted weapons and personal cartridges, and uses validated save/reentry paths. Seventeen simulation/save tests and two component checks cover the new flow; see [sector inventory](sector-inventory.md). Depleted ground objects cannot be picked up again. A controlled live body/ground picker spent actual approach and pickup AP, took partial cartridges and a loaded fitted musket, and retained both sources and receiver after reload. Ten approach cases, eleven batch cases and two component tests cover the picker contract. Select All and per-row quantities share one atomic 8 AP pickup from a single tile. Live full selection, capacity rejection and reduction to a valid partial selection passed; see [loot approach](loot-approach.md). Live tactical dropping, strategic partial pickup/drop, quantity rejection, save loading and reentry now pass. The check found and fixed loss of a carried loaded gun charge on campaign return; the repeated loop preserved the exact ammunition total. See [sector inventory](sector-inventory.md). Blocked paths, full packs and body/container variants remain automated-test evidence. Visited mission sites now appear under their parent sector through a labelled site selector, with separate source pools and shared local-presence, occupation and path checks. Real San Lorenzo remains can be recovered after victory; completed Yatasto pickup/drop and saves pass simulation checks. A live production-component harness recovered one dressing and one cartridge from the real San Lorenzo save and preserved the distinct town stock after saving/loading. See [sector inventory](sector-inventory.md). Carried weapons can now be equipped directly from a safe town, without entering the tactical map. Prepared load, partial work, condition and fittings survive the supported map/armory/deployment/return paths; capture/rescue and finite ammunition are tested. A live C\u00f3rdoba recovery pickup/equip/save/load check passed. See [carried weapon equipment](campaign-carried-equip.md)."
     },
     {
       "id": "JA2-I04",
@@ -2650,14 +2682,15 @@
       "requirement": "Civilians and quests affect civic support and territorial cooperation. G69,75-95.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Published related core exists; full parity acceptance is not established.",
+      "published": "Existing civilian deaths apply one local loyalty effect, close unfinished local errands, persist globally and prevent dead conversations. Complete civic parity remains open.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
       "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-CIVILIAN-STATE"
       ],
       "sourceRow": "JA2-S09",
       "sourceNotes": "Armed civilian factions, militia retaliation, witness-based attribution, distant-town effects, morale, theft/aid reputation and failed-quest branches remain incomplete."
@@ -2768,7 +2801,7 @@
         "E-PUBLISHED"
       ],
       "sourceRow": "JA2-W06",
-      "sourceNotes": "Tucumán now accepts three physically carried dressings through selected single or partial-batch offers. Excess and wrong items are refused, exact custody survives saves/reentry, the notebook tracks acknowledged quantities, and the loyalty reward occurs once. All 49 focused checks, type checking and the build pass; live partial delivery, excess refusal, cursor return, completion and reload/notebook checks also pass. See [medical delivery](physical-medical-delivery.md). Extend physical giving to other suitable portable quest goods and NPC responses. The bulk powder and cavalry-supply errands still consume campaign resources."
+      "sourceNotes": "Tucum\u00e1n now accepts three physically carried dressings through selected single or partial-batch offers. Excess and wrong items are refused, exact custody survives saves/reentry, the notebook tracks acknowledged quantities, and the loyalty reward occurs once. All 49 focused checks, type checking and the build pass; live partial delivery, excess refusal, cursor return, completion and reload/notebook checks also pass. See [medical delivery](physical-medical-delivery.md). Extend physical giving to other suitable portable quest goods and NPC responses. The bulk powder and cavalry-supply errands still consume campaign resources."
     },
     {
       "id": "JA2-W07",
@@ -2832,7 +2865,7 @@
       "priority": "P0",
       "published": "This complete capability is not accepted in the published release.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
-      "remaining": "Fresh route fails at northern medical relief; established Córdoba recapture and prisoner-rescue routes also fail.",
+      "remaining": "Fresh route fails at northern medical relief; established C\u00f3rdoba recapture and prisoner-rescue routes also fail.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
@@ -2840,7 +2873,7 @@
         "E-PUBLISHED"
       ],
       "sourceRow": "JA2-W10",
-      "sourceNotes": "Complete real medical relief, then revalidate the remaining route and actual ending with paid supplies and real casualties. Established Córdoba recapture and physical Humahuaca rescue also fail. Scripted victory reports isolate subsystem settlement; they do not prove campaign playability or general balance."
+      "sourceNotes": "Complete real medical relief, then revalidate the remaining route and actual ending with paid supplies and real casualties. Established C\u00f3rdoba recapture and physical Humahuaca rescue also fail. Scripted victory reports isolate subsystem settlement; they do not prove campaign playability or general balance."
     },
     {
       "id": "UX-01",
@@ -2969,7 +3002,7 @@
     {
       "id": "FIX-02",
       "group": "Failed acceptance routes",
-      "requirement": "Established recovery loses Córdoba to its persistent garrison",
+      "requirement": "Established recovery loses C\u00f3rdoba to its persistent garrison",
       "status": "FAILED",
       "priority": "P0",
       "published": "These larger acceptance routes are not present in the published suite.",
@@ -3010,13 +3043,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "b11d24edd64976064ec30b3d7fa6ed8aa6248deb",
-    "total": 568,
-    "passed": 568,
+    "source": "638afa9af706ea1bcd136f0f502e5c6658f07d00",
+    "total": 582,
+    "passed": 582,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-RETIRO-OPENING"
+    "evidenceId": "E-CIVILIAN-STATE"
   }
 }

@@ -27,8 +27,9 @@ uses the free version-2 profile.
 ## Evidence
 
 The runtime and tests are recorded in source
-`b11d24edd64976064ec30b3d7fa6ed8aa6248deb`. The exact-head CI for the delivery must
-pass before merge. The complete local run passed **568/568 tests**, with no
+`b11d24edd64976064ec30b3d7fa6ed8aa6248deb`. [PR #32](https://github.com/fsodano/granaderos/pull/32)
+merged after [exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36360760155)
+passed for `94d3c8982e2ed579d94419b81926fff2de2a3884`. The complete local run passed **568/568 tests**, with no
 failures or skips, in 179 seconds. TypeScript and production export passed
 (721 files, 631 asset references). The reference-value audit passed 36/36
 checks, the documentation audit retained all original/parity requirements, and
