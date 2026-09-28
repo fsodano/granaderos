@@ -459,7 +459,7 @@
     {
       "id": "E-ARTILLERY-SUPPLY",
       "path": "docs/verification/authored-artillery-supply.md",
-      "description": "Pinned optional supply permission, three model prices and a purchase reserve cap drive exact local cannon replenishment under the published pesos economy. Seven simulations, two mounted armory cases and one mounted editor case pass; overlapping artillery group 28/28. Full regression passes 1054/1054, zero failures/skips, with types, export and 36 reference comparisons. An actually exhausted paid gun purchases one round, saves unloaded, and loads through its ordinary crew. Prepared eligibility/model/work boundaries remain explicit. Exact-head publication remains required."
+      "description": "Pinned optional supply permission, three model prices and a purchase reserve cap drive exact local cannon replenishment under the published pesos economy. Seven simulations, two mounted armory cases and one mounted editor case pass; overlapping artillery group 28/28. Full regression passes 1054/1054, zero failures/skips, with types, export and 36 reference comparisons. An actually exhausted paid gun purchases one round, saves unloaded, and loads through its ordinary crew. Prepared eligibility/model/work boundaries remain explicit. Published by PR #102 after successful exact-head CI."
     },
     {
       "id": "E-ARTILLERY-AUTONOMY",
@@ -577,7 +577,7 @@
       "requirement": "Configure and buy finite reserve ammunition for an exact local artillery emplacement without changing its retained work",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. One paid reserve round preserves the exact gun, load and unfinished work; permission, model prices and purchase cap are pinned by the story editor.",
+      "published": "Published by PR #102 after successful exact-head CI. One paid reserve round preserves the exact gun, load and unfinished work; permission, model prices and purchase cap are pinned by the story editor.",
       "local": "Seven simulations, two mounted armory cases and one mounted editor case pass. Full regression passes 1054/1054, zero failures/skips, with types, export and all 36 reference comparisons. Actual paid depletion and replenishment are distinguished from prepared eligibility and model-price boundaries.",
       "remaining": "",
       "acceptance": "Exhaust a purchased gun through real shots, buy one reserve through the displayed quote, preserve complete saves and load through the real crew; enforce pinned prices, free/disabled supply, caps, control, connection, personnel and funds atomically, while the editor supports undo, reset, validation and saved launch.",
@@ -595,7 +595,8 @@
         "tests/artillery-supply-render.test.mjs",
         "tests/story-editor.test.mjs",
         "tests/artillery-crew-loading.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/102"
     },
     {
       "id": "CREWLOAD-01",
@@ -5441,13 +5442,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "8f6410ddbd641c161d1a31e9dc18694d1bf4b348",
-    "total": 1044,
-    "passed": 1044,
+    "source": "27c689a9479529edb292aa25311eb8455a395ff5",
+    "total": 1054,
+    "passed": 1054,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-ARTILLERY-CREW-LOADING"
+    "evidenceId": "E-ARTILLERY-SUPPLY"
   }
 }
