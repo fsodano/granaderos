@@ -6,7 +6,7 @@ import {dispatchCampaign} from '../game/campaign.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {preparedCare,DOCTOR,PATIENT} from './medical-care-fixture.mjs';
 
-test('the actual campaign screen assigns a doctor and patient, advances their treatment and buys finite dressings',async t=>{
+test('the actual campaign screen assigns a doctor and patient, advances treatment, buys finite dressings and rests the doctor',async t=>{
  const dom=new JSDOM('<div id="root"></div>',{url:'http://localhost/',pretendToBeVisual:true});
  const globals={window:dom.window,document:dom.window.document,navigator:dom.window.navigator,HTMLElement:dom.window.HTMLElement,Element:dom.window.Element,Node:dom.window.Node,Document:dom.window.Document,ShadowRoot:dom.window.ShadowRoot,MutationObserver:dom.window.MutationObserver,getComputedStyle:dom.window.getComputedStyle.bind(dom.window),requestAnimationFrame:dom.window.requestAnimationFrame.bind(dom.window),cancelAnimationFrame:dom.window.cancelAnimationFrame.bind(dom.window),IS_REACT_ACT_ENVIRONMENT:true};
  const old=new Map(Object.keys(globals).map(k=>[k,Object.getOwnPropertyDescriptor(globalThis,k)]));for(const [key,value]of Object.entries(globals))Object.defineProperty(globalThis,key,{value,configurable:true,writable:true});
@@ -23,5 +23,9 @@ test('the actual campaign screen assigns a doctor and patient, advances their tr
  const hp=current.operativeState[PATIENT].hp;await click(button('Avanzar'));assert.equal(current.operativeState[PATIENT].hp,hp);assert.equal(current.operativeState[PATIENT].bleeding,0);await click(button('Avanzar'));assert.equal(current.operativeState[PATIENT].hp,hp+6);
  const money=current.resources.treasury;await input(row(DOCTOR).querySelector('input'),'4');await click(row(DOCTOR).querySelector('button'));assert.equal(current.lastError,null);assert.equal(current.resources.treasury,money-40);assert.equal(current.operativeState[DOCTOR].medkits,6);
  await input(row(DOCTOR).querySelector('input'),'21');assert.equal(row(DOCTOR).querySelector('button').disabled,true);assert.match(row(DOCTOR).textContent,/entre 1 y 20/);
+ await input(row(DOCTOR).querySelector('select'),'rest');assert.equal(current.operativeState[DOCTOR].energy,94);assert.equal([...doc.querySelectorAll('button')].find(b=>b.textContent.startsWith('Entrar al sector ·')).disabled,true);
+ await click(button('Avanzar'));assert.equal(current.operativeState[DOCTOR].energy,100);assert.equal(current.operativeState[DOCTOR].fatigue,0);assert.equal(current.operativeState[DOCTOR].medkits,6);assert.match(row(DOCTOR).textContent,/Descanso completo/);assert.match(row(DOCTOR).textContent,/Energía: 100 · Fatiga: 0/);
+ const rested=decodeSave(encodeSave(current)).campaign;assert.equal(rested.operativeState[DOCTOR].assignment,'rest');assert.equal(rested.operativeState[DOCTOR].energy,100);
+ await input(row(DOCTOR).querySelector('select'),'doctor');
  const restored=decodeSave(encodeSave(current)).campaign;assert.equal(restored.operativeState[PATIENT].hp,hp+6);assert.equal(restored.operativeState[DOCTOR].medkits,6);assert.equal(restored.operativeState[DOCTOR].assignment,'doctor');
 });

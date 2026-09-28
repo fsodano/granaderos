@@ -68,7 +68,7 @@ function returnEquipment(s,id,report,snapshot){
  record.inventory=clone(validatePersonalInventory(actual.inventory));
 }
 function removeFromService(s,id){
-  const location=operativeLocation(s,id);s.operativeState[id].location=location;if(s.operativeState[id].assignment!==undefined)s.operativeState[id].assignment='active';s.recruited=s.recruited.filter(x=>x!==id);s.squad=s.squad.filter(x=>x!==id);for(const squad of s.squads)squad.members=squad.members.filter(x=>x!==id);
+  const location=operativeLocation(s,id);s.operativeState[id].location=location;if(s.operativeState[id].assignment!==undefined)s.operativeState[id].assignment='active';if(s.operativeState[id].recoveryHours!==undefined)s.operativeState[id].recoveryHours=0;s.recruited=s.recruited.filter(x=>x!==id);s.squad=s.squad.filter(x=>x!==id);for(const squad of s.squads)squad.members=squad.members.filter(x=>x!==id);
   for(const course of s.militiaTraining.filter(t=>t.trainerId===id)){if(course.rank>0&&s.sectors[course.sector].owner==='patriot')s.sectors[course.sector].militia[course.rank-1]+=course.count;}s.militiaTraining=s.militiaTraining.filter(t=>t.trainerId!==id);delete s.contracts[id];
 }
 function signContract(s,op,term){
@@ -210,7 +210,7 @@ export function dispatchCampaign(previous,action){
     requireThat(!s.completed||['syncTacticalTime','wait','travel','visitSector','leaveSector','talkNPC','createSquad','selectSquad','squad','equip','resupply','repairWeapon','purchaseEquipment','transport','militia','cancelMilitia','renewContract','dismiss','redirectHire','cancelHireArrival','assignCare','purchaseMedicalSupplies'].includes(action.type),'La campaña está ganada. Puedes recorrer las provincias y atender a tus escuadras.');
     requireThat(!s.pendingBattle||['battleResult','leaveSector','talkNPC','finishMission','syncTacticalTime'].includes(action.type),'Hay una batalla pendiente. Resuélvela antes de dar nuevas órdenes.');
     if(['travel','attack','visitSector'].includes(action.type))requireThat(!s.squad.some(id=>militiaAssignment(s,id)),'Un instructor de la escuadra está asignado a las milicias. Cancelá su curso o dejalo en una escuadra de guarnición.');
-    if(['travel','attack','visitSector','visitMission'].includes(action.type))requireThat(!s.squad.some(id=>['doctor','patient'].includes(s.operativeState[id].assignment)),'Volvé a poner en servicio a los médicos y pacientes de la escuadra antes de marchar o entrar al sector.');
+    if(['travel','attack','visitSector','visitMission'].includes(action.type))requireThat(!s.squad.some(id=>['doctor','patient','rest'].includes(s.operativeState[id].assignment)),'Volvé a poner en servicio a los médicos, pacientes y combatientes en descanso de la escuadra antes de marchar o entrar al sector.');
     switch(action.type){
       case 'syncTacticalTime':{
         requireThat(s.pendingBattle&&s.pendingBattle.id===action.battleId,'El reloj no corresponde al despliegue.');
@@ -380,7 +380,7 @@ export function dispatchCampaign(previous,action){
         const at=action.sector??s.location,rank=Number(action.rank??0),trainerId=Number(action.trainerId),trainer=rosterFor(s).find(o=>o.id===trainerId);
         requireThat(s.sectors[at]?.owner==='patriot'&&isSupplied(s,at),'La instrucción necesita un sector propio y abastecido.');requireThat([0,1,2].includes(rank),'Grado de milicia inválido.');const eligibility=militiaEligibility(s,at);requireThat(eligibility.eligible,eligibility.reason);
         requireThat(trainer&&s.recruited.includes(trainerId)&&s.operativeState[trainerId]?.alive&&operativeLocation(s,trainerId)===at,'Elegí un instructor contratado y presente en el sector.');
-        requireThat(trainer.leadership>=30,'El instructor necesita al menos 30 de liderazgo.');requireThat(!['doctor','patient'].includes(s.operativeState[trainerId]?.assignment),'Poné al combatiente en servicio antes de asignarlo a las milicias.');requireThat(!militiaAssignment(s,trainerId),'El instructor ya dirige otro curso.');requireThat(!s.militiaTraining.some(t=>t.sector===at),'Ya hay un curso activo en ese sector.');
+        requireThat(trainer.leadership>=30,'El instructor necesita al menos 30 de liderazgo.');requireThat(!['doctor','patient','rest'].includes(s.operativeState[trainerId]?.assignment),'Poné al combatiente en servicio antes de asignarlo a las milicias.');requireThat(!militiaAssignment(s,trainerId),'El instructor ya dirige otro curso.');requireThat(!s.militiaTraining.some(t=>t.sector===at),'Ya hay un curso activo en ese sector.');
         const region=s.sectors[at];requireThat(rank===0||region.militia[rank-1]>=MILITIA_COHORT,'La promoción necesita tres milicianos del grado anterior.');requireThat(rank>0||region.militia.reduce((a,b)=>a+b,0)+MILITIA_COHORT<=MILITIA_LIMIT,'La guarnición admite hasta sesenta milicianos.');
         const course=militiaCourse(trainer,rank);pay(s,course.cost);if(rank>0)region.militia[rank-1]-=course.count;
         s.militiaTraining.push({sector:at,rank,trainerId,count:course.count,remaining:course.hours,duration:course.hours,started:s.hour});note(s,`${trainer.name} inicia un curso de milicias de ${course.hours} horas en ${sector(at).name}.`);break;

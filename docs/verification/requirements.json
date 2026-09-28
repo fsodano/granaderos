@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "d3e7d078653f9dd15c98926f57cec18430a25727",
+  "baseline": "807843a3f29750dc227423275f4b28c1371c35de",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -272,7 +272,13 @@
     {
       "id": "E-LOCAL-WORKSHOP",
       "path": "docs/verification/local-workshop-service.md",
-      "description": "A two-squad paid-hire route reproduced remote repair and replenishment. Shared workshop eligibility now checks the recipient exact location, availability, control and supply. Real return travel, payment, repeat rejection, saves, deployment and mounted armory controls pass. Wear is a declared prepared fixture; timed repair, stock custody and armory transfers remain separate."
+      "description": "A two-squad paid-hire route reproduced remote repair and replenishment. Shared workshop eligibility now checks the recipient exact location, availability, control and supply. Real return travel, payment, repeat rejection, saves, deployment and mounted armory controls pass. Wear is a declared prepared fixture; timed repair, stock custody and armory transfers remain separate.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36419410898/job/108918251655"
+    },
+    {
+      "id": "E-STRATEGIC-REST",
+      "path": "docs/verification/strategic-rest.md",
+      "description": "Explicit rest and waiting patients recover energy and fatigue during safe campaign hours. Stable rest wounds recover once per six continuous hours; saves retain partial time and changes cannot grant health. Exhausted care, actual physician work/rest, remote squad travel, contract expiry, occupation, invalid saves and mounted controls pass. Automatic sleep, collapse, global energy capacity and advanced route parity remain open."
     }
   ],
   "queue": [
@@ -321,12 +327,36 @@
   ],
   "requirements": [
     {
+      "id": "REST-01",
+      "group": "Published deliveries",
+      "requirement": "Rest serving personnel and resume work through persistent strategic assignments",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Squad controls assign explicit rest, show energy/fatigue and stop deployment until service resumes. Safe hourly recovery preserves partial stable healing; patients recover breath while waiting. Assignment changes and contract expiry grant no extra interval.",
+      "local": "Six simulation cases and the extended mounted medical screen cover progress, saves, stops and concurrent squad travel. The actual wounded-resident route rests its physician after paid and finite care without creating supplies.",
+      "remaining": "",
+      "acceptance": "Spend campaign time to recover an exhausted person, save mid-rest, resume care or deployment, and reject incompatible work while preserving finite supplies and health.",
+      "evidence": [
+        "E-STRATEGIC-REST"
+      ],
+      "parents": [
+        "JA2-A01",
+        "JA2-A02",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/strategic-rest.test.mjs",
+        "tests/medical-care.test.mjs",
+        "tests/medical-care-render.test.mjs"
+      ]
+    },
+    {
       "id": "WORKSHOP-01",
       "group": "Published deliveries",
       "requirement": "Require actual local presence for paid workshop replenishment and repair",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "The selected workshop can service only a person actually present there. The armory shows the person location and blocks remote service with a reason. Explicit dressing purchases share the same eligibility.",
+      "published": "The selected workshop can service only a person actually present there. The armory shows the person location and blocks remote service with a reason. Explicit dressing purchases share the same eligibility. Merged through PR #70 after exact-head CI.",
       "local": "A formerly accepted remote request fails in the new regression. Actual paid hires and travel, local service, return, once-only charges, saves and deployment are covered, together with mounted armory controls. Prepared wear is declared.",
       "remaining": "",
       "acceptance": "Separate two serving people by real travel; reject distant service without changing state; return and pay through normal controls; retain the actual supplies and condition in saves and deployment.",
@@ -341,7 +371,8 @@
       "testFiles": [
         "tests/workshop-service.test.mjs",
         "tests/workshop-service-render.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/70"
     },
     {
       "id": "CARE-01",
@@ -3468,7 +3499,7 @@
       "requirement": "Doctor and Patient require co-location, skill, finite medical equipment, and time. G22,62,69,81.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "The published doctor/patient subset has exact-cell co-location, skill, finite dressings, hourly progress, controls and saves. CARE-01 records its bounded acceptance.",
+      "published": "The published doctor/patient subset has exact-cell co-location, skill, finite dressings, hourly progress, controls and saves. CARE-01 records its bounded acceptance. Explicit rest lets tired doctors recover and return to treatment; waiting patients also recover energy and fatigue.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
       "remaining": "Integrate and verify the advanced care model, physical kit custody and full exhaustion, occupation, travel and death routes. Resolve the northern medical-relief failure separately.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
@@ -3476,7 +3507,8 @@
         "E-PARITY",
         "E-LOCAL",
         "E-PUBLISHED",
-        "E-STRATEGIC-CARE"
+        "E-STRATEGIC-CARE",
+        "E-STRATEGIC-REST"
       ],
       "sourceRow": "JA2-A01",
       "sourceNotes": "Stock caps and refill rates are campaign tuning. Keep assignment eligibility and progress correct during travel, tactical deployment, exhaustion, contract expiry, occupation and death."
@@ -3487,14 +3519,15 @@
       "requirement": "Rest/sleep restore energy; fatigue constrains sustained work and marching. G19,38,69.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Published related core exists; full parity acceptance is not established.",
+      "published": "Explicit strategic rest restores energy and reduces fatigue through normal controls; patients also recover while waiting. Fatigue and energy are shown, safe time is required and saves retain progress. REST-01 records this bounded delivery.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
-      "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
+      "remaining": "Integrate automatic sleep/wake and collapse, global fatigue-limited capacity, individual configurable sleep needs and advanced marching effort; verify their combined campaign and tactical routes.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-STRATEGIC-REST"
       ],
       "sourceRow": "JA2-A02",
       "sourceNotes": "Energy capacity now falls with fatigue; tactical fatigue uses hourly time rather than movement-order count. Marching charges hourly load/terrain/transport effort and stops further stages when exhausted. See `fatigue.md`. Collapse now prevents early waking and premature route resumption until energy capacity reaches 60. Arrival contact takes priority and forced defense retains the recovery requirement. The source confirms that fatigue stops occur after a stage; mid-stage sleep is not a missing classic behavior. Individual profile needs, wound thresholds and night training now change shared Sleep/Rest/Patient recovery and are shown in Personnel; eight simulation/save tests and a render check cover the rates. Live QA confirmed the night-training readout, exact hourly recovery and automatic waking with the assignment retained. Vehicle-passenger rest remains open; see [sleep evidence](sleep.md). Rates and thresholds are identified adaptations."
@@ -4271,13 +4304,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "c64120315a81360c902552555e0d838b5f8b257f",
-    "total": 817,
-    "passed": 817,
+    "source": "d3e7d078653f9dd15c98926f57cec18430a25727",
+    "total": 821,
+    "passed": 821,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-STRATEGIC-CARE"
+    "evidenceId": "E-LOCAL-WORKSHOP"
   }
 }

@@ -2,7 +2,7 @@
 
 [Personajes](README.md) · [Verificación](../../verification/strategic-medical-care.md)
 
-En el mapa, abrí **Organizar escuadras** y buscá **Atención médica**.
+En el mapa, abrí **Organizar escuadras** y buscá **Atención médica y descanso**.
 
 1. Dejá al médico y al herido en la misma celda bajo control patriota.
 2. Seleccioná **Médico** para quien va a atender y **Paciente** para el herido.
@@ -30,4 +30,4 @@ contrato no repone suministros. Si el contrato vence, termina su tarea médica.
 La asignación, las heridas y las cantidades se conservan al guardar. Un habitante
 reclutado puede recibir esta atención; si luego deja el servicio, conserva su salud
 al regresar al mundo. El cuidado de milicias y de habitantes fuera del servicio
-pertenece a otra integración. El descanso y el sueño estratégicos siguen pendientes.
+pertenece a otra integración. El [descanso explícito](strategic-rest.md) permite recuperar energía y reducir fatiga. El sueño automático sigue pendiente.
