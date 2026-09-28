@@ -13,6 +13,7 @@ import {weaponSpecification,contentWeaponOf,weaponRecord,setWeaponDefinition,val
 import {WEAPONS} from './firearm-definitions.js';
 import {hearNpcNoise,runCivilianPhase,advanceCivilianTime} from './npc-ai.js';
 import {choosePatrolAction} from './npc-patrol.js';
+import {militiaPatrolOrder} from './militia-patrol.js';
 import {directionTo} from './npc-perception.js';
 import {propBlocksAt} from './props.js';
 import {advanceBattleClock,COMBAT_ROUND_SECONDS,REST_SECONDS} from './time.js';
@@ -98,11 +99,12 @@ function advanceExploration(s,seconds){
   for(const n of s.npcs??[])advanceCivilianWoundTime(s,n,step);
   checkEnd(s);if(s.status!=='active'||detectContact(s))break;
   advanceCivilianTime(s,step,()=>{
-   for(const u of s.units.filter(u=>u.side==='enemy'&&alive(u))){
-    const patrol=choosePatrolAction({...s,mode:'combat',turn:(s.civilianTurns??0)+1},{...u,ap:24,patrolTurn:undefined});if(!patrol)continue;
-    const next=getReachable(s,u).find(p=>p.x===patrol.x&&p.y===patrol.y)?.path[0];if(!next)continue;
-    const cost=movementEnergy(u,tile(s,next.x,next.y));if(u.energy<=cost){u.energy=Math.min(100,u.energy+10);continue;}
-    u.facing=directionTo(u,next);Object.assign(u,next);exhaust(s,u,cost);if(detectContact(s))return false;
+   for(const u of s.units.filter(u=>(u.side==='enemy'||u.side==='player'&&u.militia)&&alive(u))){
+    const planning={...s,mode:'combat',turn:(s.civilianTurns??0)+1},actor={...u,ap:u.militia?100:24,patrolTurn:undefined};
+    const patrol=u.militia?militiaPatrolOrder(planning,actor):choosePatrolAction(planning,actor);if(!patrol)continue;
+    const next=getReachable(planning,actor).find(p=>p.x===patrol.x&&p.y===patrol.y)?.path[0];if(!next)continue;
+    const cost=movementEnergy(u,tile(s,next.x,next.y));if(u.energy<=cost||u.militia&&u.energy-cost<50){u.energy=Math.min(100,u.energy+10);continue;}
+    lowerWeapon(u);u.facing=directionTo(u,next);u.x=next.x;u.y=next.y;exhaust(s,u,cost);if(detectContact(s))return false;
    }
    return true;
   });
@@ -296,7 +298,7 @@ function runForcePhase(s,side){
   for(let n=0;n<12&&u.ap>=6&&s.status==='active';n++){
    const targets=s.units.filter(t=>t.side!==side&&alive(t)&&canSee(s,u,t)).sort((a,b)=>dist(u,a)-dist(u,b)),t=targets[0];
    if(!t){
-    const patrol=choosePatrolAction(s,u);
+    const patrol=enemy?choosePatrolAction(s,u):militiaPatrolOrder(s,u);
     if(patrol){u.patrolTurn=s.turn;order(patrol);if(s.units.some(v=>v.side!==side&&alive(v)&&canSee(s,u,v)))continue;}
     break;
    }
