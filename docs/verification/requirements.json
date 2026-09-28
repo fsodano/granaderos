@@ -449,7 +449,7 @@
     {
       "id": "E-STATIONED-ARTILLERY",
       "path": "docs/verification/stationed-artillery.md",
-      "description": "New paid guns leave unissued stock once and retain physical identity, ownership, position, load and finite ammunition through actual victory, withdrawal, recapture, firing, reload and saved visits. Ten simulations and one mounted production-game case pass; the earlier artillery overlap passes 22/22 and final scene group 14/14. Full regression passes 1032/1032, zero failures/skips, with types, export and all 36 reference checks. Legacy projections reconcile once; transport, resupply, loading across turns and autonomous crews remain separate. Exact-head publication remains required."
+      "description": "New paid guns leave unissued stock once and retain physical identity, ownership, position, load and finite ammunition through actual victory, withdrawal, recapture, firing, reload and saved visits. Ten simulations and one mounted production-game case pass; the earlier artillery overlap passes 22/22 and final scene group 14/14. Full regression passes 1032/1032, zero failures/skips, with types, export and all 36 reference checks. Legacy projections reconcile once; transport, resupply, loading across turns and autonomous crews remain separate. Exact-head publication remains required. Published by PR #100 after successful exact-head CI."
     },
     {
       "id": "E-ARTILLERY-CREW-LOADING",
@@ -533,7 +533,7 @@
       "requirement": "Issue artillery once and preserve physical sector emplacements, finite ammunition, capture and saved ownership",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Paid attack guns become retained sector pieces rather than reusable stock projections.",
+      "published": "Published by PR #100 after successful exact-head CI. Paid attack guns become retained sector pieces with finite ammunition, stable identity and actual capture.",
       "local": "Ten simulations and one mounted production-game check pass. Full regression passes 1032/1032, zero failures/skips, with types, export and 36 baseline comparisons. Actual established-area combat and paid guns are distinguished from prepared migration and conference boundaries.",
       "remaining": "",
       "acceptance": "Buy and issue actual guns, settle real combat outcomes, fire and reload finite rounds, return through full saves with unchanged positions and ammunition, join a second purchased piece, reject identity/ammunition corruption and migrate old reusable projections without creating additional paid guns.",
@@ -550,7 +550,8 @@
         "tests/stationed-artillery-render.test.mjs",
         "tests/artillery.test.mjs",
         "tests/artillery-selection.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/100"
     },
     {
       "id": "BATTERYCHOICE-01",
@@ -5335,13 +5336,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "f18756ca8104b7c827599404d7c78d14bac9e19a",
-    "total": 1021,
-    "passed": 1021,
+    "source": "75b6409fa12ade7c00f1ea0207e421f59245f579",
+    "total": 1032,
+    "passed": 1032,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-BATTERY-CHOICE"
+    "evidenceId": "E-STATIONED-ARTILLERY"
   }
 }
