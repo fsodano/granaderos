@@ -5,7 +5,7 @@ import {createBattle,actBattle,getReachable} from '../game/tactical.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {civilianSuppliesFor} from '../game/civilian-supplies.js';
 import {decodeSave,encodeSave} from '../game/save.js';
-import {missionContacts} from '../game/missions.js';
+import {missionContacts,sanLorenzoAlly} from '../game/missions.js';
 import {enterSector} from '../game/world.js';
 import {secureArea} from './controlled-area-fixture.mjs';
 import {order,saved,visit,leave,tactical,localPackage,localNPC,localId,hireLocal,sync,A} from './local-contract-fixture.mjs';
@@ -56,4 +56,12 @@ test('the real temporary commander stock reaches its shared identity and later m
  let p=saved(sync({campaign:s,battle:enterSector({...s.pendingBattle,hour:s.hour})})),u=p.battle.units.find(u=>u.missionAlly&&u.id==='57');assert.equal(u.medkits,0);assert.equal(p.campaign.operativeState[57].medkits,0);assert.equal(p.campaign.operativeState[57].missionSuppliesVersion,1);
  const step=getReachable(p.battle,u).find(t=>t.cost>0);assert.ok(step);p=tactical(p,{type:'move',unitId:'57',x:step.x,y:step.y});p=tactical(p,{type:'ration',unitId:'57'});p=saved(p);assert.equal(p.battle.units.find(u=>u.id==='57').rations,0);assert.equal(p.campaign.operativeState[57].rations,0);
  const contact=missionContacts(p.campaign).find(n=>n.id==='yatasto-san-martin');assert.equal(contact.civilianSupplies.medkits,0);assert.equal(contact.civilianSupplies.rations,0);assert.ok(saved(p));
+});
+
+test('authored and previously collected resident supplies remain finite when that identity becomes the mission ally',()=>{
+ const d=defaultContentPackage(),c=person(d,57);c.startingSupplies={...stock};c.startingCondition={hp:1,energy:100,fatigue:0,bleeding:0,bandaged:0};Object.assign(d.placements.find(p=>p.character===c.id),{mode:'fixed',sectors:['retiro']});person(d,110).arrivalHours=0;person(d,110).attributes.medical=80;
+ let s=initialCampaign(42,d);assert.equal(sanLorenzoAlly(s).medkits,7);s=order(s,{type:'recruitCivic',id:110,term:'month'});let p=visit(s);const n=p.battle.npcs.find(n=>n.operativeId===57);for(let i=0;i<12;i++){const target=p.battle.npcs.find(x=>x.id===n.id),u=p.battle.units[0];if(Math.hypot(u.x-target.x,u.y-target.y)<=1.5)break;const spot=getReachable(p.battle,u).filter(t=>Math.abs(t.x-target.x)+Math.abs(t.y-target.y)===1).sort((a,b)=>a.cost-b.cost)[0];assert.ok(spot);p=tactical(p,{type:'move',x:spot.x,y:spot.y});}p=tactical(p,{type:'loot',targetId:n.id});
+ for(let i=0;i<2;i++)p=tactical(p,{type:'heal',targetId:n.id});s=saved({campaign:leave(p)}).campaign;for(const k of Object.keys(stock))assert.equal(sanLorenzoAlly(s)[k],0,k);
+ // Prepared territorial approach isolates the actual subsequent role transition.
+ s=secureArea(s,'buenos_aires','san_nicolas');s=order(s,{type:'travel',sector:'san_nicolas'});s=order(s,{type:'attack',sector:'san_lorenzo'});p=saved(sync({campaign:s,battle:enterSector({...s.pendingBattle,hour:s.hour})}));const ally=p.battle.units.find(u=>u.missionAlly&&u.id==='57');assert.ok(ally);for(const k of Object.keys(stock))assert.equal(ally[k],0,k);assert.ok(saved(p));
 });
