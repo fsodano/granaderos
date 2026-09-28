@@ -46,7 +46,11 @@ the civilian clock boundary. These counts overlap. At the source above, the full
 **871/871** tests, with zero failures or skips, in 206,775 ms. Types, production
 export (722 files, 632 asset references), all 36 baseline checks and the
 documentation audit pass (217 requirements, all 50 original and 87 parity rows,
-56 evidence records). Exact-head GitHub CI and publication are recorded separately.
+56 evidence records). [PR #79](https://github.com/fsodano/granaderos/pull/79) merged as
+`fef6ec3bc2bd273e27ca5df0198d82e17115ba7b` on 2026-09-28 at 14:50 UTC.
+[GitHub CI](https://github.com/fsodano/granaderos/actions/runs/36437714941/job/108979835409)
+passed at 14:49 UTC for exact head `a682d08551a3a4854e199bae6182674a5f814c75`.
+The merge checked the unchanged parent main before integration.
 
 ## Limits
 

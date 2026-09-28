@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "2f7f0187d95b0b199c0b7a3fe767ff527910ae99",
+  "baseline": "6866d1d78bab58d9abc873eadcb028ad32e0f014",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -326,7 +326,13 @@
     {
       "id": "E-TREATMENT-SPEECH",
       "path": "docs/verification/authored-treatment-speech.md",
-      "description": "Optional authored first-aid responses follow actual finite care for another conscious person. Paid military and resident routes, invalid and silent cases, civilian recovery timing, saved voice integrity and editor undo/copy/pinned launch are covered. 871 passing tests, zero failures/skips, types, export and baseline checks; physical inventory and complete medical integration remain separate."
+      "description": "Optional authored first-aid responses follow actual finite care for another conscious person. Paid military and resident routes, invalid and silent cases, civilian recovery timing, saved voice integrity and editor undo/copy/pinned launch are covered. 871 passing tests, zero failures/skips, types, export and baseline checks; physical inventory and complete medical integration remain separate.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36437714941/job/108979835409"
+    },
+    {
+      "id": "E-LOCAL-OPENING",
+      "path": "docs/verification/local-recruit-opening.md",
+      "description": "Fresh default campaign with a legal free officer and only physically recruited Cabral, Dorrego and Paroissien reaches saved San Lorenzo completion. Actual gear purchases, 19 hours of finite care, paid dressings, rest, permanent deaths, tactical replay and continued saved visit are covered. 872 passing tests, zero failures/skips, types, export and baseline checks; this does not claim solo or all-seed balance or the separate advanced route fixes."
     }
   ],
   "queue": [
@@ -375,12 +381,33 @@
   ],
   "requirements": [
     {
+      "id": "LOCALOPENING-01",
+      "group": "Published deliveries",
+      "requirement": "Complete a fresh coastal opening with the created officer and local recruits only",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "A legal free officer and actual local encounters complete Buenos Aires, San Nicolás and San Lorenzo without bulletin hires, preserving paid preparation, finite care and permanent losses.",
+      "local": "Three opening routes pass; the local force pays 230 pesos for its first musket, 920 for later muskets, 27 for workshop service and 180 for 18 dressings. Nineteen care hours and six hours of rest precede the remaining victories and saved hour-80 continuation.",
+      "remaining": "",
+      "acceptance": "Start with Retiro and no people, create the free officer, recruit only actual residents, pay normal equipment and treatment costs, win through ordinary orders and preserve all deaths and wounds through save/replay and continued play.",
+      "evidence": [
+        "E-LOCAL-OPENING"
+      ],
+      "parents": [
+        "START-01",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/fresh-coastal-route.test.mjs"
+      ]
+    },
+    {
       "id": "TREATMENTSPEECH-01",
       "group": "Published deliveries",
       "requirement": "Author conscious patient responses to actual first aid",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "A living conscious patient can speak an optional authored line after another person spends a dressing on actual tactical care. Loading, later recovery, self-care and invalid orders do not trigger a response.",
+      "published": "A living conscious patient can speak an optional authored line after another person spends a dressing on actual tactical care. Loading, later recovery, self-care and invalid orders do not trigger a response. Merged through PR #79 after exact-head CI.",
       "local": "Five simulation cases cover strict optional content, actual paid critical military and resident care, spent supplies, saved voice, older identity, silent and rejected boundaries and civilian phase timing. A mounted editor case covers undo, duplicate, clear and pinned launch.",
       "remaining": "",
       "acceptance": "Author a response, stabilize an actual critical patient through finite care and saved continuation, speak on consciousness and retain spent supplies without replaying speech from load or later recovery.",
@@ -397,7 +424,8 @@
         "tests/treatment-speech.test.mjs",
         "tests/content-presentation.test.mjs",
         "tests/story-editor.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/79"
     },
     {
       "id": "HEALTHCONDITION-01",
@@ -2785,17 +2813,18 @@
       "id": "START-01",
       "group": "Story and integration",
       "requirement": "Free first person and Retiro-only opening",
-      "status": "PARTIAL",
+      "status": "VERIFIED",
       "priority": "P0",
-      "published": "Retiro-only startup, first-person phase advance without academy payment, paid arrival timing, save/resume/import and a hired-squad first conquest are connected. Fresh mixed created-officer and hire-only forces now complete the coastal opening through a saved San Lorenzo victory with actual casualties and paid reinforcements.",
-      "local": "Revised free opening and Retiro-only control are implemented locally.",
-      "remaining": "The created-officer route uses paid support. A route using only the created person and local recruits remains unverified.",
+      "published": "Retiro-only startup, first-person phase advance without academy payment, paid arrival timing, save/resume/import and a hired-squad first conquest are connected. Fresh mixed created-officer and hire-only forces now complete the coastal opening through a saved San Lorenzo victory with actual casualties and paid reinforcements. A free created officer with physically recruited local residents also completes the three coastal battles, pays for finite recovery, and preserves two deaths through saved hour-80 continuation without bulletin hires.",
+      "local": "The mixed, bulletin-only and local-recruit starts pass with actual costs, losses and saved continuation on the recorded release source.",
+      "remaining": "",
       "acceptance": "Fresh custom-only and hired-only campaigns survive save/load and can complete the opening with real costs/losses.",
       "evidence": [
         "E-LOCAL",
         "E-CONFLICTS",
         "E-RETIRO-OPENING",
-        "E-FRESH-COASTAL"
+        "E-FRESH-COASTAL",
+        "E-LOCAL-OPENING"
       ],
       "testFiles": [
         "tests/retiro-start.test.mjs",
@@ -4572,13 +4601,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "ea854d4b0d1ccdf61e32f771f5be95dd00b09823",
-    "total": 865,
-    "passed": 865,
+    "source": "2f7f0187d95b0b199c0b7a3fe767ff527910ae99",
+    "total": 871,
+    "passed": 871,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-HEALTH-CONDITIONS"
+    "evidenceId": "E-TREATMENT-SPEECH"
   }
 }
