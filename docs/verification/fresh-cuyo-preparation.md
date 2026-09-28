@@ -43,7 +43,9 @@ prepared foundry, treaty, artillery and paid army without granting the final win
 Release checks: **799/799 tests**, zero failures or skips (199,436 ms); type
 check; production export (721 files, 631 asset references); 36 baseline checks;
 documentation audit (202 requirements, all 50 original and 87 parity rows,
-41 evidence records). Exact-head GitHub CI is required before merge.
+41 evidence records). [PR #64](https://github.com/fsodano/granaderos/pull/64) merged
+after [GitHub CI](https://github.com/fsodano/granaderos/actions/runs/36410288477/job/108888618738)
+passed at `cb8d997991cf9af9a0ab06ad447c4ac68f854941`.
 
 Final checkpoint: hour 252, second 361, phase 4, 1,150 pesos and nine controlled
 localities. Six people form the current squad; San Martín has 88 HP. The engineer
