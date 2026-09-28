@@ -619,8 +619,8 @@ export default function ContentEditor() {
                           min={0}
                           max={1000000}
                           value={item.monthlyPay}
-                          disabled={!isContractCharacter(item)}
-                          title={!isContractCharacter(item) ? "Servicio permanente" : undefined}
+                          disabled={!isContractCharacter(item)&&!(isWorldCharacter(item)&&item.service==='contract')}
+                          title={!isContractCharacter(item)&&item.service!=='contract' ? "Servicio permanente" : undefined}
                           onChange={(e) =>
                             update({ monthlyPay: e.target.valueAsNumber })
                           }
@@ -675,7 +675,14 @@ export default function ContentEditor() {
                       </label>
                       <label><input type="checkbox" checked={item.encounter.recruitable} onChange={e=>update({encounter:{...item.encounter,recruitable:e.target.checked}})}/>Puede incorporarse a la escuadra</label>
                       {item.encounter.recruitable&&<>
-                        <p>Se incorpora donde lo encontrás, sin paga y con servicio permanente. Conserva sus heridas.</p>
+                        <label>Tipo de servicio
+                          <select value={item.service} onChange={e=>update({service:e.target.value,...(e.target.value==='permanent'?{monthlyPay:0}:{})})}>
+                            <option value="permanent">Permanente, sin paga</option>
+                            <option value="contract">Contrato diario, semanal o mensual</option>
+                          </select>
+                        </label>
+                        <p>Se incorpora donde lo encontrás y conserva sus heridas. {item.service==='contract'?'La paga mensual define el precio de cada plazo. El jugador elige y paga antes de incorporarlo.':'Sirve sin paga y sin fecha de vencimiento.'}</p>
+                        {item.service==='contract'&&<small>Precio inicial: {Math.ceil(item.monthlyPay/30)} pesos por día, {Math.ceil(item.monthlyPay/30)*7} por semana y {Math.ceil(item.monthlyPay/30)*30} por mes. El día se redondea hacia arriba; la experiencia puede aumentar el precio futuro.</small>}
                         <label>Liderazgo mínimo del interlocutor
                           <input type="number" min={0} max={100} value={item.encounter.requiredLeadership} onChange={e=>update({encounter:{...item.encounter,requiredLeadership:e.target.valueAsNumber}})}/>
                         </label>

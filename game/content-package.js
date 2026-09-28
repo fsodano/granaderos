@@ -132,7 +132,7 @@ export function validateContentPackage(value) {
     if(legacyOperativeId(c.id)===undefined)check(['contract','encounter'].includes(c.recruitmentSource)&&['contract','permanent'].includes(c.service)&&['experience','fixed'].includes(c.progression)&&Array.isArray(c.traits),c.id,'los personajes nuevos necesitan origen, servicio, progreso y especialidades explícitos.');
     if(isWorldCharacter(c)){
       const e=c.encounter;
-      check(c.service==='permanent'&&c.monthlyPay===0&&c.arrivalHours===undefined,c.id,'los habitantes se incorporan en el lugar, con servicio permanente y sin paga.');
+      check((c.service==='contract'||c.service==='permanent'&&c.monthlyPay===0)&&c.arrivalHours===undefined,c.id,'los habitantes se incorporan en el lugar; el servicio permanente no tiene paga ni demora de llegada.');
       check(record(e)&&Object.keys(e).length===5&&Object.keys(e).every(k=>['recruitable','greeting','requiredLeadership','requiredLiberated','requiredSector'].includes(k)),c.id,'la configuración del encuentro no es válida.');
       if(record(e)){
         check(typeof e.recruitable==='boolean',c.id,'elegí si puede incorporarse.');

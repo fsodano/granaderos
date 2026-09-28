@@ -1,3 +1,4 @@
+import {contractQuote,CONTRACT_TERMS} from './contracts.js';
 import {campaignCivilian,civilianDiedHere} from './campaign-civilians.js';
 import {campaignPlace} from './world-cells.js';
 import {characterForOperative,isWorldCharacter,isContractOperative,operativeIdForCharacter} from './content-character-ids.js';
@@ -62,5 +63,16 @@ export function encounterContacts(s){
   const met=s.conversations?.[n.id]?.sector;
   const place=met??(s.contentPresence?p?.mode==='fixed'?p.sectors[0]:null:n.sector);
   return [{...n,name:c?.name??n.name,locationLabel:place?`${met?'Último encuentro: ':''}${campaignPlace(place)?.name??place}`:'Ubicación por descubrir'}];
+ });
+}
+
+// Local service terms do not turn a resident into a bulletin candidate.
+export function encounterHireTerms(s,npc){
+ const c=characterForOperative(s,npc.operativeId);
+ if(!c||!isWorldCharacter(c)||c.service!=='contract'||!canRecruitEncounter(npc))return [];
+ const op=authoredOperative(s,{id:npc.operativeId});
+ return Object.entries(CONTRACT_TERMS).map(([term,period])=>{
+  const q=contractQuote(s,op,term),funded=s.resources.treasury>=q.price;
+  return {...q,name:period.name,available:q.available&&funded,reason:q.reason??(funded?null:`Necesitás ${q.price} pesos para este contrato.`)};
  });
 }

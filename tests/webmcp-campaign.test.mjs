@@ -1,3 +1,4 @@
+import {readyLocal,localId,localNPC,tactical as localTactical} from './local-contract-fixture.mjs';
 import {register} from 'node:module';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -71,6 +72,22 @@ test('a delayed UI turn cannot overwrite a newer accepted tool order',async t=>{
  const action={type:'movement',unitId,movement:'crouch'},want=expected(before,action);
  await act(async()=>{m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'d',bubbles:true}));m.issue(action);await new Promise(resolve=>setTimeout(resolve,500));});
  assert.deepEqual(pair(m.read()),want);assert.deepEqual(m.saved(),want);assert.match(m.document.querySelector('[role="status"]').textContent,/combate cambió/);
+});
+
+test('the actual conversation displays a local contract price and hires the wounded resident for the selected term',async t=>{
+ let p=readyLocal();p=localTactical(p,{type:'melee',targetId:localNPC(p.battle).id});p=localTactical(p,{type:'heal',targetId:localNPC(p.battle).id});const hp=localNPC(p.battle).hp,id=localId(p.campaign),cash=p.campaign.resources.treasury;
+ const m=await mount(t,p),npc=m.document.querySelector('[data-unit-id="authored-alma-contract"]');assert.ok(npc);
+ await act(async()=>npc.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));
+ const select=m.document.querySelector('[aria-label="Conversación"] select');assert.ok(select);assert.deepEqual([...select.options].map(o=>o.textContent),['Un día · 10 pesos','Una semana · 70 pesos','Un mes · 300 pesos']);
+ await act(async()=>{select.value='week';select.dispatchEvent(new m.dom.window.Event('change',{bubbles:true}));});
+ await m.click('Contratar · 70 pesos');const state=m.read();assert.equal(state.campaign.resources.treasury,cash-70);assert.equal(state.campaign.contracts[id].term,'week');assert.equal(state.campaign.contracts[id].expiresAt,p.campaign.hour+168);assert.equal(state.campaign.hiringArrivals.length,0);
+ assert.equal(state.battle.units.find(u=>u.id===String(id)).hp,hp);assert.equal(localNPC(state.battle),undefined);assert.deepEqual(m.saved(),pair(state));
+});
+
+test('the actual conversation shows missing funds and disables the local hiring action',async t=>{
+ const p=readyLocal({pay:1000000}),m=await mount(t,p),npc=m.document.querySelector('[data-unit-id="authored-alma-contract"]');assert.ok(npc);
+ await act(async()=>npc.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));
+ const button=[...m.document.querySelectorAll('button')].find(b=>b.textContent==='Contratar · 33334 pesos');assert.ok(button);assert.equal(button.disabled,true);assert.match(m.document.querySelector('[aria-label="Conversación"]').textContent,/Necesitás 33334 pesos/);assert.deepEqual(pair(m.read()),p);
 });
 
 async function mount(t,saved){

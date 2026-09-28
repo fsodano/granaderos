@@ -355,3 +355,14 @@ test('the editor authors a death successor that appears once after an actual sav
  battle=enterSector({...campaign.pendingBattle,hour:campaign.hour},campaign.sectorStates.retiro);pair=decodeSave(encodeSave(campaign,battle));
  assert.equal(pair.battle.npcs.filter(n=>n.contentId===target).length,1);assert.equal(pair.battle.npcs.find(n=>n.contentId===target).hp,61);assert.equal(pair.battle.npcs.find(n=>n.contentId===source).hp,0);assert.equal(pair.campaign.contentPresence.receipts.length,1);
 });
+
+
+test('the editor authors paid local service through price, copy, undo and campaign launch',async t=>{
+ const m=await mount(t),draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));await m.click(m.button('Crear habitante'));
+ await m.input(m.label('Nombre'),'Alma del contrato');const field=m.document.querySelector('fieldset[aria-label="Encuentro del habitante"]');await m.click(field.querySelector('input[type="checkbox"]'));
+ await m.input(m.label('Tipo de servicio'),'contract');assert.equal(m.label('Paga mensual').disabled,false);await m.input(m.label('Paga mensual'),90);
+ await m.input(m.label('Tipo de servicio'),'permanent');assert.equal(m.label('Paga mensual').value,'0');assert.equal(m.label('Paga mensual').disabled,true);
+ await m.click(m.button('Deshacer'));assert.equal(m.label('Tipo de servicio').value,'contract');assert.equal(m.label('Paga mensual').value,'90');
+ await m.click(m.button('Duplicar personaje'));const copy=draft().characters.at(-1);assert.equal(copy.service,'contract');assert.equal(copy.monthlyPay,90);assert.equal(copy.recruitmentSource,'encounter');assert.equal(copy.arrivalHours,undefined);
+ await m.click(m.button('Iniciar campaña con estas fichas'));const {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));const id=operativeIdForCharacter(campaign.contentCampaign.package,copy.id),op=rosterFor(campaign).find(o=>o.id===id);assert.equal(op.service,'contract');assert.equal(op.monthlyPay,90);assert.equal(op.recruitmentSource,'encounter');
+});
