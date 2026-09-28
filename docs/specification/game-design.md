@@ -228,7 +228,7 @@ repair, training and rescue consume real time and available resources. A route
 must adapt to actual survivors; it cannot revive an expected doctor or give free
 supplies to reach a scripted checkpoint.
 
-The current doctor/patient integration assigns serving personnel in the same
+The default doctor/patient integration assigns serving personnel in the same
 safe controlled cell. Doctors need medicine 20, health 15, no bleeding, energy
 over 10 and a personal dressing. Each actual working hour spends one dressing,
 three energy and adds two fatigue. It stops bleeding first; later hours restore
@@ -255,6 +255,16 @@ trait; no historical-ID profile is implied. The existing supplied daily recovery
 is retained. Automatic sleep/wake, collapse, configurable sleep needs, global
 fatigue capacity and advanced marching remain separate integrations. See
 [rest acceptance](../verification/strategic-rest.md).
+
+An optional authored care group configures minimum medicine, base healing and
+skill interval, dressing price, treatment energy/fatigue costs, base rest recovery
+and the stable-rest healing interval. Bounded whole values are pinned per campaign;
+legacy packages omit the group and retain their identity/defaults. Both dressing
+purchase paths use the same price. Free supplies still require actual missing
+stock or an explicit quantity purchase; reissuing completed refill work cannot
+grant another charge or allocation. Saved partial rest hours use the pinned
+interval. Core safe-presence, critical-threshold and finite-dressing rules remain.
+See [care-rule acceptance](../verification/authored-care-rules.md).
 
 The editor supports these appearance rules:
 
