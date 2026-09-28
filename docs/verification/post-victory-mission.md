@@ -13,6 +13,8 @@ qualify as post-victory exploration. A commander who dies after victory still
 forces mission and campaign defeat.
 
 Runtime source: `898b5574caf9482817381b35e0e799a0ade88eca`.
+Merged through [PR #60](https://github.com/fsodano/granaderos/pull/60);
+[exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36393328686/job/108833856001) passed.
 
 ## Verification
 
