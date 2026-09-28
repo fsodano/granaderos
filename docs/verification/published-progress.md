@@ -5,7 +5,7 @@
 Updated 2026-09-28. **The complete game and story editor are not accepted.**
 
 Read [the design](../specification/game-design.md) for the target and [the formal audit](formal-audit-2026-09-27.md) for evidence and limits.
-The published baseline assessed here is `6866d1d78bab58d9abc873eadcb028ad32e0f014`. Later PRs must update this register.
+The published baseline assessed here is `082ee305e239dbc1e6a2c53d446f2eca3ae9b15e`. Later PRs must update this register.
 The larger local sources and the editor prototype are separate from published main.
 
 ## Verified results and current failures
@@ -29,7 +29,7 @@ The advanced local suite has three independent failure points; a failed child al
 - UNVERIFIED: available evidence does not establish acceptance.
 - SUPERSEDED: an explicit design change replaced the old requirement.
 
-The register retains 218 entries: 68 VERIFIED, 101 PARTIAL, 35 LOCAL_ONLY, 2 MISSING, 9 FAILED, 2 UNVERIFIED, 1 SUPERSEDED.
+The register retains 219 entries: 68 VERIFIED, 101 PARTIAL, 36 LOCAL_ONLY, 2 MISSING, 9 FAILED, 2 UNVERIFIED, 1 SUPERSEDED.
 Rows overlap in scope. Neither these counts nor test totals are a completion percentage.
 
 Edit [requirements.json](requirements.json), record exact source/checks and remaining gaps, then run `npm run docs:progress` and `npm run audit:docs`. Update the design for policy changes. A dated audit stays an evidence snapshot. Do not mark a local branch as published or close a broad row from one passing fixture.
@@ -51,6 +51,7 @@ Finish one bounded feature, its controls and persistence, update evidence, pass 
 
 | ID | Requirement | Status | Published scope | Remaining work / acceptance |
 |---|---|---|---|---|
+| CIVILIANSUPPLIES-01 | Keep finite resident supplies through collection, movement and service | LOCAL_ONLY | Not yet accepted on main. The six personal supply quantities come from each resident identity. Paid adjacent collection from a body or unconscious resident reduces its stock; ordinary movement, service changes and saves retain the remainder. A successor keeps its separate allocation. | Finish full release regression and exact-head GitHub CI before publication. |
 | LOCALOPENING-01 | Complete a fresh coastal opening with the created officer and local recruits only | VERIFIED | A legal free officer and actual local encounters complete Buenos Aires, San Nicolás and San Lorenzo without bulletin hires, preserving paid preparation, finite care and permanent losses. | Start with Retiro and no people, create the free officer, recruit only actual residents, pay normal equipment and treatment costs, win through ordinary orders and preserve all deaths and wounds through save/replay and continued play. |
 | TREATMENTSPEECH-01 | Author conscious patient responses to actual first aid | VERIFIED | A living conscious patient can speak an optional authored line after another person spends a dressing on actual tactical care. Loading, later recovery, self-care and invalid orders do not trigger a response. | Author a response, stabilize an actual critical patient through finite care and saved continuation, speak on consciousness and retain spent supplies without replaying speech from load or later recovery. |
 | HEALTHCONDITION-01 [PR](https://github.com/fsodano/granaderos/pull/78) | Author dialogue, rescue objectives and failure rules from current character health | VERIFIED | Dialogue choices and campaign rules can require consciousness, unconsciousness, wounds, bleeding, stable consciousness or full health. They use current scene/identity health, while physical condition does not imply presence or service. Merged through PR #78 after exact-head CI. | Author a response and rescue objective, apply actual finite treatment, reveal/select the branch and settle/save the objective. Query current deployed wounds and resolve an actual unconsciousness failure without using stale military health, inventing death or granting resources. |
@@ -356,5 +357,6 @@ Finish one bounded feature, its controls and persistence, update evidence, pass 
 | E-HEALTH-CONDITIONS | [Record](story-health-conditions.md) · [CI](https://github.com/fsodano/granaderos/actions/runs/36435629331/job/108972694656) | Six new physical character states drive authored dialogue and campaign conditions. Actual finite rescue, current deployed and mission-ally health, saved state, earned maximum health, editor undo/copy/pinning and actual enemy damage are covered. Validated tactical checkpoints resolve health failures; stale service sheets cannot satisfy deployed physical queries. 865 passing tests, zero failures/skips, types, export and baseline checks; automatic speech/rewards and complete advanced integration remain separate. |
 | E-TREATMENT-SPEECH | [Record](authored-treatment-speech.md) | Optional authored first-aid responses follow actual finite care for another conscious person. Paid military and resident routes, invalid and silent cases, civilian recovery timing, saved voice integrity and editor undo/copy/pinned launch are covered. 871 passing tests, zero failures/skips, types, export and baseline checks; physical inventory and complete medical integration remain separate. |
 | E-LOCAL-OPENING | [Record](local-recruit-opening.md) | Fresh default campaign with a legal free officer and only physically recruited Cabral, Dorrego and Paroissien reaches saved San Lorenzo completion. Actual gear purchases, 19 hours of finite care, paid dressings, rest, permanent deaths, tactical replay and continued saved visit are covered. 872 passing tests, zero failures/skips, types, export and baseline checks; this does not claim solo or all-seed balance or the separate advanced route fixes. |
+| E-CIVILIAN-SUPPLIES | [Record](civilian-finite-supplies.md) | Six finite personal supply quantities belong to the resident identity. Actual collection, partial transfers, critical aid, daily movement, recruitment, return, death succession, named ally consumption, legacy admission and pointer/keyboard controls are covered. Full release checks pending; complete equipment, inventory and custody remain open. |
 
 Per-row acceptance, local assessment, source notes and test paths are retained in [the register](requirements.json). The full 87-row historical parity assessment is preserved in the audit; its old implementation claims are not fresh certification. Earlier milestones remain in [the historical log](../archive/published-progress-through-pr28.md).

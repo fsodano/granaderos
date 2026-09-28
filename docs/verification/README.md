@@ -14,6 +14,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Authored world presence verification](character-presence.md)
 - [Retiro opening verification](retiro-opening.md)
 - [Civilian state verification](civilian-state.md)
+- [Finite civilian supplies](civilian-finite-supplies.md)
 - [Authored resident verification](authored-residents.md)
 - [Death successor verification](death-successors.md)
 - [Registered tactical order synchronization](tactical-order-sync.md)

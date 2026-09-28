@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "6866d1d78bab58d9abc873eadcb028ad32e0f014",
+  "baseline": "082ee305e239dbc1e6a2c53d446f2eca3ae9b15e",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -332,6 +332,11 @@
       "id": "E-LOCAL-OPENING",
       "path": "docs/verification/local-recruit-opening.md",
       "description": "Fresh default campaign with a legal free officer and only physically recruited Cabral, Dorrego and Paroissien reaches saved San Lorenzo completion. Actual gear purchases, 19 hours of finite care, paid dressings, rest, permanent deaths, tactical replay and continued saved visit are covered. 872 passing tests, zero failures/skips, types, export and baseline checks; this does not claim solo or all-seed balance or the separate advanced route fixes."
+    },
+    {
+      "id": "E-CIVILIAN-SUPPLIES",
+      "path": "docs/verification/civilian-finite-supplies.md",
+      "description": "Six finite personal supply quantities belong to the resident identity. Actual collection, partial transfers, critical aid, daily movement, recruitment, return, death succession, named ally consumption, legacy admission and pointer/keyboard controls are covered. Full release checks pending; complete equipment, inventory and custody remain open."
     }
   ],
   "queue": [
@@ -379,6 +384,32 @@
     }
   ],
   "requirements": [
+    {
+      "id": "CIVILIANSUPPLIES-01",
+      "group": "Published deliveries",
+      "requirement": "Keep finite resident supplies through collection, movement and service",
+      "status": "LOCAL_ONLY",
+      "priority": "P1",
+      "published": "Not yet accepted on main. The six personal supply quantities come from each resident identity. Paid adjacent collection from a body or unconscious resident reduces its stock; ordinary movement, service changes and saves retain the remainder. A successor keeps its separate allocation.",
+      "local": "Six simulations cover actual collection and finite aid, daily relocation, local recruitment and dismissal, actual death and successor, rejected/partial/capped transfers, older saves and actual named ally ration use. Mounted pointer and keyboard collection preserves quantities and reports them. A formerly collected resident entering the actual allied role also keeps its empty stock. The initial broad run reached historical victory but found an outdated treasury expectation: actual replenishment costs 86 pesos.",
+      "remaining": "Finish full release regression and exact-head GitHub CI before publication.",
+      "acceptance": "Author finite resident supplies, collect and spend them through actual orders, save and relocate, then recruit and return without replenishment. Confirm death, retain the empty body and activate a distinct successor with its own stock.",
+      "evidence": [
+        "E-CIVILIAN-SUPPLIES"
+      ],
+      "parents": [
+        "STORY-02",
+        "STORY-06",
+        "JA2-C06",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/civilian-supplies.test.mjs",
+        "tests/civilian-interaction.test.mjs",
+        "tests/character-supplies.test.mjs",
+        "tests/civilian-state.test.mjs"
+      ]
+    },
     {
       "id": "LOCALOPENING-01",
       "group": "Published deliveries",
