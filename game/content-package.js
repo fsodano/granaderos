@@ -179,7 +179,7 @@ export function validateContentPackage(value) {
     if (c.arrivalHours !== undefined) check(integer(c.arrivalHours, 0, 168), `${c.id}.arrivalHours`, "el viaje debe durar de 0 a 168 horas.");
     check(integer(c.monthlyPay, 0, 1000000), `${c.id}.monthlyPay`, "paga inválida.");
     check(c.weapon === null || sets.weapons.has(c.weapon), `${c.id}.weapon`, "el arma no existe.");
-    if(c.blade!==undefined)check(value.weapons.some(w=>w.id===c.blade&&BLADES[w.template]),`${c.id}.blade`,"el arma blanca no existe.");
+    if(c.blade!==undefined)check(value.weapons.some(w=>w?.id===c.blade&&BLADES[w.template]),`${c.id}.blade`,"el arma blanca no existe.");
     check(record(c.attributes) && Object.keys(c.attributes).length === ATTRIBUTE_FIELDS.length && Object.keys(c.attributes).every(k => ATTRIBUTE_FIELDS.includes(k)), `${c.id}.attributes`, "la lista de atributos no es válida.");
     for (const k of ATTRIBUTE_FIELDS)
       check(

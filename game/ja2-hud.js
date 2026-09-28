@@ -158,7 +158,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
     reload: costs.reload,
     reprime: hasTrait(u, 'gunsmith_artillerist') ? 10 : 15,
     repair: hasTrait(u, 'gunsmith_artillerist') ? 18 : 25,
-    brace: 16,
+    brace: blade.ap,
     ration: 10,
     torch: 10,
     bolas: 12,

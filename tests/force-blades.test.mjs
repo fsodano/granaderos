@@ -17,6 +17,7 @@ function content(){const d=defaultContentPackage();d.weapons.push({id:'lanza-de-
 function attack(d=content()){let s=secureArea(initialCampaign(8,d),'buenos_aires');for(const id of [110,111,112,113])s=order(s,{type:'recruitCivic',id,term:'week'});s=order(s,{type:'travel',sector:'buenos_aires'});return order(s,{type:'attack',sector:'san_nicolas'});}
 
 test('troop primary and secondary blade selections validate and protect references independently',()=>{
+ const malformed=content();malformed.weapons.push(null);assert.ok(validateContentPackage(malformed).length);
  const d=content();assert.deepEqual(parseContentPackage(encodeContentPackage(d)),d);assert.deepEqual(forceWeaponUsers(d,'lanza-de-tropa'),['Oficiales enemigos · arma blanca','Infantería enemiga','Cívicos','Montoneros · arma blanca']);assert.deepEqual(defaultForceBlades('oppositionEquipment',[]),{officer:null,line:null,veteran:null});
  for(const field of ['oppositionBlades','militiaBlades'])for(const value of [null,[],{},'bad',{...d[field],extra:null},{...d[field],[Object.keys(d[field])[0]]:'missing'},{...d[field],[Object.keys(d[field])[0]]:'firearm-1800'}]){const bad=structuredClone(d);bad[field]=value;assert.ok(validateContentPackage(bad).length);assert.throws(()=>initialCampaign(8,bad));}
 });
