@@ -110,9 +110,9 @@ export function changePlacementStatus(state, id, status, loadedSector = null) {
     person.hp = 0;
     person.sector = null;
     for (const p of s.content.placements.filter((p) => p.afterDeath === id)) {
-      if (s.receipts.includes(p.id)) continue;
-      s.receipts.push(p.id);
+      if (s.receipts.some(receipt=>receipt.placement===p.id)) continue;
       const delay = p.delayMin + Math.floor(draw(s) * (p.delayMax - p.delayMin + 1));
+      s.receipts.push({placement:p.id,trigger:id,minute:s.minute,at:s.minute+delay});
       s.events.push({ placement: p.id, at: s.minute + delay });
     }
   } else {

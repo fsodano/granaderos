@@ -357,7 +357,7 @@ export default function ContentEditor() {
       <header>
         <div>
           <a href="/">← Volver al juego</a> · <a href="/editor">Editar sectores</a>
-          <p className="eyebrow">Taller de campañas · primera entrega</p>
+          <p className="eyebrow">Taller de campañas</p>
           <h1>El mundo y sus protagonistas</h1>
           <p>Editá el contenido. Probá sus reglas en una sesión separada.</p>
         </div>
@@ -433,15 +433,16 @@ export default function ContentEditor() {
       )}
       <p className="scope-note">
         El borrador se guarda en este navegador. Las pruebas no modifican tu
-        partida. Esta entrega permite probar atributos, armas de fuego y
-        apariciones. Podés iniciar una campaña separada con las fichas editadas.
+        partida. Editá personajes, armas y apariciones. Podés iniciar una campaña
+        separada con estas fichas.
       </p>
       <section className="campaign-launch" aria-label="Integración de campaña">
         <h2>Jugar con el contenido editado</h2>
         <p>
-          Aplica nombres, apodos, biografías, retratos, atributos iniciales y
-          paga, especialidades, progreso, habilidades, carácter, frases, apariencia y tiempo de viaje de los contratables. Podés crear, duplicar y quitar candidatos del boletín. También podés configurar las armas de fuego de personajes, enemigos y milicias. Los puntos de llegada se configuran en Llegadas. La partida conserva una copia de
-          este contenido y se guarda por separado.
+          Creá contratables y habitantes, elegí sus celdas y configurá sus fichas,
+          encuentros y sucesores. También podés editar las armas de personajes,
+          enemigos y milicias. La campaña conserva una copia de este contenido
+          y se guarda por separado.
         </p>
         {integration && (
           <ul>
@@ -859,7 +860,7 @@ export default function ContentEditor() {
                           abierto queda protegido.
                         </p>
                         <label>
-                          Aparece después de la muerte de (solo simulación)
+                          Aparece después de la muerte de{!isWorldCharacter(item)&&' (solo simulación)'}
                           <select
                             value={placement.afterDeath ?? ''}
                             onChange={(e) =>
@@ -880,6 +881,7 @@ export default function ContentEditor() {
                               ))}
                           </select>
                         </label>
+                        {placement.afterDeath&&<p>La muerte confirmada activa a este personaje una sola vez. Llega con su propia salud. Esta regla solo activa su aparición. Si la celda de llegada está abierta, espera hasta que salgas.</p>}
                         {placement.afterDeath && (
                           <div className="fields">
                             <label>

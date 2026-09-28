@@ -37,8 +37,8 @@ export function campaignContentReport(content) {
     blocked.push('Los contratables del boletín no tienen apariciones: llegan después de contratarlos.');
   if(value.placements.some(p=>p.sectors.some(id=>!worldCell(id)?.land)))
     blocked.push('Las apariciones necesitan celdas terrestres. Las celdas de agua todavía no admiten encuentros.');
-  if(value.placements.some(p=>p.afterDeath!==null))
-    blocked.push('Las apariciones por muerte todavía necesitan la integración de bajas civiles y sucesiones.');
+  if(value.placements.some(p=>p.afterDeath!==null&&!isWorldCharacter(value.characters.find(c=>c.id===p.character))))
+    blocked.push('La aparición por muerte necesita un habitante nuevo; los mandos históricos conservan sus funciones de campaña.');
   pending.push(
     "Los requisitos de reclutamiento, las funciones de campaña y el servicio permanente de los personajes históricos conservan sus reglas originales.",
   );

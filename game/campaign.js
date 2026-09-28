@@ -184,7 +184,18 @@ export function dispatchCampaign(previous,action){
     requireThat(!s.pendingBattle||['battleResult','leaveSector','talkNPC','finishMission','syncTacticalTime'].includes(action.type),'Hay una batalla pendiente. Resuélvela antes de dar nuevas órdenes.');
     if(['travel','attack','visitSector'].includes(action.type))requireThat(!s.squad.some(id=>militiaAssignment(s,id)),'Un instructor de la escuadra está asignado a las milicias. Cancelá su curso o dejalo en una escuadra de guarnición.');
     switch(action.type){
-      case 'syncTacticalTime':{requireThat(s.pendingBattle&&s.pendingBattle.id===action.battleId,'El reloj no corresponde al despliegue.');const elapsed=action.elapsedSeconds,previous=s.pendingBattle.syncedSeconds??0;requireThat(Number.isSafeInteger(elapsed)&&elapsed>=previous&&elapsed-previous<=864000,'El tiempo táctico es inválido.');if(action.sectorState){const snapshot=validateSectorSnapshot(action.sectorState);requireThat(snapshot.elapsedSeconds===elapsed,'El parte y el reloj no coinciden.');acknowledgeCivilians(s,snapshot);}const seconds=(s.secondOfHour??0)+elapsed-previous;const hours=Math.floor(seconds/3600);s.secondOfHour=seconds%3600;if(hours)tick(s,hours);s.pendingBattle.syncedSeconds=elapsed;break;}
+      case 'syncTacticalTime':{
+        requireThat(s.pendingBattle&&s.pendingBattle.id===action.battleId,'El reloj no corresponde al despliegue.');
+        const elapsed=action.elapsedSeconds,previous=s.pendingBattle.syncedSeconds??0;
+        requireThat(Number.isSafeInteger(elapsed)&&elapsed>=previous&&elapsed-previous<=864000,'El tiempo táctico es inválido.');
+        const snapshot=action.sectorState?validateSectorSnapshot(action.sectorState):null;
+        if(snapshot)requireThat(snapshot.elapsedSeconds===elapsed,'El parte y el reloj no coinciden.');
+        const seconds=(s.secondOfHour??0)+elapsed-previous,hours=Math.floor(seconds/3600);
+        s.secondOfHour=seconds%3600;if(hours)tick(s,hours);
+        // A death is confirmed at this tactical checkpoint, after its time has elapsed.
+        if(snapshot)acknowledgeCivilians(s,snapshot);
+        s.pendingBattle.syncedSeconds=elapsed;break;
+      }
       case 'wait':tick(s,action.hours??24);break;
       case 'academy':requireThat(s.flags.academy||hasReadyCombatant(s),'Contratá un combatiente o creá tu granadero para comenzar.');break;
       case 'purchaseEquipment':{

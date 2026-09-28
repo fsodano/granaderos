@@ -9,6 +9,8 @@ import {CONTENT_LAUNCH_KEY,CONTENT_SAVE_KEY} from '../game/content-launch.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {initialCampaign,dispatchCampaign,rosterFor,CAMPAIGN_SECTORS} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';
+import {actBattle,getReachable} from '../game/tactical.js';
+import {syncBattleTime} from '../game/time.js';
 import {operativeIdForCharacter} from '../game/content-character-ids.js';
 register('./tactical-render-loader.mjs',import.meta.url);
 const draftKey='granaderos.content-draft.v1';
@@ -330,4 +332,26 @@ test('the actual editor creates a world resident, copies its cell range, undoes 
  campaign=dispatchCampaign(campaign,{type:'visitSector'});assert.equal(campaign.lastError,null);
  const pair=decodeSave(encodeSave(campaign,enterSector(campaign.pendingBattle))),npc=pair.battle.npcs.find(n=>n.operativeId===id);
  assert.ok(npc);assert.equal(npc.name,'Alma de la Posta');assert.equal(npc.greeting,'Conozco estas tierras.');assert.equal(npc.recruitable,true);assert.equal(npc.requiredLeadership,35);assert.equal(npc.requiredSector,'retiro');assert.equal(npc.hp,original.attributes.maxHp);
+});
+
+test('the editor authors a death successor that appears once after an actual saved campaign death',async t=>{
+ const m=await mount(t),draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
+ await m.click(m.button('Crear habitante'));await m.input(m.label('Nombre'),'Pablo');await m.input(m.label('Salud'),30);await m.click(m.button('Configurar aparición'));const source=draft().characters.at(-1).id;
+ await m.click(m.button('Crear habitante'));await m.input(m.label('Nombre'),'Sal');await m.input(m.label('Salud'),61);await m.click(m.button('Configurar aparición'));const target=draft().characters.at(-1).id;
+ await m.input(m.label('Aparece después de la muerte de'),source);await m.input(m.label('Demora máxima (minutos)'),90);await m.input(m.label('Demora mínima (minutos)'),30);
+ await m.click(m.button('Deshacer'));assert.equal(m.label('Demora mínima (minutos)').value,'0');await m.click(m.button('Rehacer'));assert.equal(m.label('Demora mínima (minutos)').value,'30');
+ await m.click([...m.document.querySelectorAll('.entry-list button')].find(b=>b.querySelector('small')?.textContent===source));await m.click(m.button('Eliminar'));assert.ok(draft().characters.some(c=>c.id===source));assert.ok(m.document.body.textContent.includes('Quitá primero las apariciones y condiciones'));
+ assert.equal(m.button('Iniciar campaña con estas fichas').disabled,false);await m.click(m.button('Iniciar campaña con estas fichas'));
+ let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.equal(campaign.contentPresence.people[target].appeared,false);
+ const order=a=>{campaign=dispatchCampaign(campaign,a);assert.equal(campaign.lastError,null);};
+ order({type:'recruitCivic',id:110,term:'month'});order({type:'wait',hours:6});order({type:'visitSector'});
+ let battle=enterSector({...campaign.pendingBattle,hour:campaign.hour});const npc=battle.npcs.find(n=>n.contentId===source);assert.ok(npc);assert.ok(!battle.npcs.some(n=>n.contentId===target));
+ const spot=getReachable(battle,'110').find(p=>Math.abs(p.x-npc.x)+Math.abs(p.y-npc.y)===1);assert.ok(spot);
+ if(spot.cost)battle=actBattle(battle,{type:'move',unitId:'110',x:spot.x,y:spot.y});assert.equal(battle.lastError,null);
+ for(let i=0;i<3&&battle.npcs.find(n=>n.contentId===source).hp>0;i++)battle=actBattle(battle,{type:'melee',unitId:'110',targetId:npc.id});assert.equal(battle.lastError,null);assert.equal(battle.npcs.find(n=>n.contentId===source).hp,0);
+ let pair=syncBattleTime(campaign,battle);assert.equal(pair.error,null);pair=decodeSave(encodeSave(pair.campaign,pair.battle));({campaign,battle}=pair);assert.equal(campaign.contentPresence.receipts.length,1);
+ const receipt=campaign.contentPresence.receipts[0];assert.ok(receipt.at-receipt.minute>=30&&receipt.at-receipt.minute<=90);
+ order({type:'leaveSector',battleId:campaign.pendingBattle.id,sectorState:battle,survivors:battle.units.filter(u=>u.side==='player')});order({type:'wait',hours:Math.ceil((receipt.at-campaign.contentPresence.minute)/60)});order({type:'visitSector'});
+ battle=enterSector({...campaign.pendingBattle,hour:campaign.hour},campaign.sectorStates.retiro);pair=decodeSave(encodeSave(campaign,battle));
+ assert.equal(pair.battle.npcs.filter(n=>n.contentId===target).length,1);assert.equal(pair.battle.npcs.find(n=>n.contentId===target).hp,61);assert.equal(pair.battle.npcs.find(n=>n.contentId===source).hp,0);assert.equal(pair.campaign.contentPresence.receipts.length,1);
 });
