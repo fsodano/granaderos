@@ -14,7 +14,7 @@ const now = s => s.elapsedSeconds??0;
 
 // Cardinal routes cannot cut corners. Unlocked doors are usable, but opening
 // one is a separate paid step. Occupancy is rebuilt for each actor.
-export function npcRoutes(s,n) {
+export function npcRoutes(s,n,{stopWhen}={}) {
   const tiles=new Map(s.tiles.map(t=>[key(t),t]));
   const occupied=new Set([...(s.npcs??[]).filter(v=>v!==n&&v.id!==n.id&&mobile(v)),...s.units.filter(v=>v.id!==n.id&&v.hp>0&&!v.departure&&!v.unconscious)].map(key));
   for(const p of s.props??[])if(p.blocksMovement!==false)for(const cell of propCells(p))occupied.add(key(cell));
@@ -22,6 +22,7 @@ export function npcRoutes(s,n) {
   const records=new Map([[key(n),{...point(n),path:[]}]]),queue=[point(n)];
   for(let i=0;i<queue.length;i++){
     const from=queue[i],record=records.get(key(from));
+    if(stopWhen?.(from,tiles.get(key(from))))break;
     for(const [dx,dy] of [[1,0],[0,1],[-1,0],[0,-1]]){
       const at={x:from.x+dx,y:from.y+dy},id=key(at);
       if(records.has(id)||!usable(tiles.get(id)))continue;

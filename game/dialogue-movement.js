@@ -14,7 +14,7 @@ export function movementQuote(s,battle,effect,speaker){
  const actor=battle.npcs?.find(n=>character(s,n)===effect.character),host=battle.npcs?.find(n=>n.id===speaker.id);
  if(!actor||!host||actor===host||actor.hp<=0||actor.unconscious||actor.departure||actor.surrendered||actor.mission||host.hp<=0)return fail(`${name} debe estar consciente y disponible en este sector.`);
  if((s.dialogueMovements?.length??0)>=1000)return fail('Se alcanzó el límite de movimientos de esta campaña.');
- const routes=npcRoutes(battle,actor),target=[...routes.records.values()].filter(p=>Math.abs(p.x-host.x)+Math.abs(p.y-host.y)===1&&routes.tiles.get(`${p.x},${p.y}`)?.type!=='door').sort((a,b)=>a.path.length-b.path.length||a.y-b.y||a.x-b.x)[0];
+ const routes=npcRoutes(battle,actor,{stopWhen:(p,t)=>Math.abs(p.x-host.x)+Math.abs(p.y-host.y)===1&&t?.type!=='door'}),target=[...routes.records.values()].filter(p=>Math.abs(p.x-host.x)+Math.abs(p.y-host.y)===1&&routes.tiles.get(`${p.x},${p.y}`)?.type!=='door').sort((a,b)=>a.path.length-b.path.length||a.y-b.y||a.x-b.x)[0];
  if(!target)return fail(`No hay un camino libre para que ${name} llegue al encuentro.`);
  return {reason:null,label:`Llamar a ${name} a este lugar · una sola vez`,target:{x:target.x,y:target.y},revision:actor.presenceRevision,character:effect.character,sector:battle.sectorId};
 }
