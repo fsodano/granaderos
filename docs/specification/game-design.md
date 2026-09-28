@@ -122,8 +122,23 @@ travel does not count as service; death, custody or expiry removes the privilege
 The marching privilege suppresses travel fatigue for all squads. Preparing the
 foundry is a one-time payment; completion persists after its engineer leaves.
 The treasury displays the assigned character and the actual availability reason.
-Location, text, cost and effect-strength authoring, other mission roles and
-succession transfer remain separate contracts.
+Foundry location, names and costs are authored separately. March effect strength,
+other mission roles and succession transfer remain separate contracts.
+
+## Authored foundry project
+
+The foundry project selects one of the supported existing land localities, names
+its project and army and defines organization/funding prices in whole pesos from
+zero to one million. Original values remain defaults. Preparation requires the
+assigned engineer's valid service and control of the chosen locality. It charges
+once and records its local loyalty reward there; funding charges once afterward.
+Pinned saves retain configuration and completed steps.
+
+The prepared locality supplies actual repair and resupply while controlled and
+connected to headquarters. Existing workshops remain. Occupation and supply cuts
+block the service without deleting preparation. Treasury, logs and historical
+preparation text reflect configured names/prices. This does not move tactical
+buildings, change the map geography or replace the original Cuyo mission gates.
 
 ## Player flow
 

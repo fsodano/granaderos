@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "b3d1387cb3a6e0e3b7028e9545154c0cf7af9cf4",
+  "baseline": "b212d117b421c054596212aa74075758902602c6",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -188,7 +188,13 @@
     {
       "id": "E-CAMPAIGN-ROLES",
       "path": "docs/verification/campaign-roles.md",
-      "description": "Two strategic roles bind to authored character identities. Real paid arrival activates them; actual contract expiry and tactical death remove them. Exact cell/locality travel, one-time foundry/funding payments, pinned saves, mounted editor reference controls and actual treasury controls are covered. Custody and occupation checks use prepared states. Other roles, function values and full campaign composition remain open."
+      "description": "Two strategic roles bind to authored character identities. Real paid arrival activates them; actual contract expiry and tactical death remove them. Exact cell/locality travel, one-time foundry/funding payments, pinned saves, mounted editor reference controls and actual treasury controls are covered. Custody and occupation checks use prepared states. Other roles, function values and full campaign composition remain open.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36387749886/job/108816651510"
+    },
+    {
+      "id": "E-FOUNDRY-PROJECT",
+      "path": "docs/verification/foundry-project.md",
+      "description": "Authored locality, project/army names and two prices drive real preparation, funding, loyalty and repair/resupply. Paid arrival in Salta and a Jujuy workshop route save without Mendoza control. Mounted authoring and actual treasury payments are covered. Wear, occupation, supply cuts and insufficient funds use prepared states. Original Cuyo gates, tactical buildings and full campaign composition remain separate."
     }
   ],
   "queue": [
@@ -485,6 +491,33 @@
         "tests/campaign-roles.test.mjs",
         "tests/story-editor.test.mjs",
         "tests/campaign-cast-render.test.mjs",
+        "tests/campaign-web.test.mjs"
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/55"
+    },
+    {
+      "id": "FOUNDRY-01",
+      "group": "Published deliveries",
+      "requirement": "Author foundry location, project and army names, prices and usable workshop access",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Eleven existing land localities and bounded whole-peso prices are configurable. Real preparation/funding charge once and apply local loyalty at the configured site. Completed preparation enables repair/resupply there under control and supply rules. Editor, treasury, logs and historical preparation text use the configuration. Saved projects retain their definitions and completion.",
+      "local": "Existing strategic project and workshop services; tactical buildings and historical Cuyo mission gates do not relocate.",
+      "remaining": "",
+      "acceptance": "Author location, names and both prices with undo and reset; launch paid arrival, prepare/fund and use the actual non-Mendoza workshop; apply one local reward and each charge once; accept free setup, reject invalid content/insufficient funds and altered saves; block occupied or unsupplied service; preserve default and original-route behavior.",
+      "evidence": [
+        "E-FOUNDRY-PROJECT"
+      ],
+      "parents": [
+        "STORY-05",
+        "STORY-07",
+        "ECO-01"
+      ],
+      "testFiles": [
+        "tests/foundry-project.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/campaign-roles.test.mjs",
+        "tests/campaign-headquarters.test.mjs",
         "tests/campaign-web.test.mjs"
       ]
     },
@@ -1928,7 +1961,7 @@
       "requirement": "Configurable game rules and campaign roles",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss. Import port, disabled orders and delivery windows are configurable. Ordered campaign chapters, global completion/failure conditions and ending text are authored separately from historical progression. Historical profiles can be copied without their implicit roles and removed from an authored campaign. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks.",
+      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss. Import port, disabled orders and delivery windows are configurable. Ordered campaign chapters, global completion/failure conditions and ending text are authored separately from historical progression. Historical profiles can be copied without their implicit roles and removed from an authored campaign. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward.",
       "local": "Larger systems still embed many rules and historical identity gates.",
       "remaining": "Extract remaining care, combat, economy, character progression, opposition and historical campaign identity rules.",
       "acceptance": "Change supported rules and replace role identities through the editor, then run/save the resulting campaign.",
@@ -1941,7 +1974,8 @@
         "E-IMPORT-RULES",
         "E-CAMPAIGN-STORY",
         "E-CAMPAIGN-CAST",
-        "E-CAMPAIGN-ROLES"
+        "E-CAMPAIGN-ROLES",
+        "E-FOUNDRY-PROJECT"
       ]
     },
     {
@@ -1969,7 +2003,7 @@
       "requirement": "Campaign composition and an independent second campaign",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Initial funds, cartridge allotments, locality control/loyalty, headquarters and imports are configurable. Optional authored chapters replace historical progression with ordered conditions and persistent victory/defeat, driven by real campaign actions. Original world and role composition remain. A wholly authored cast now completes a short hire/encounter/quest/ending route without historical roster identities. Original generic residents are optional. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks.",
+      "published": "Initial funds, cartridge allotments, locality control/loyalty, headquarters and imports are configurable. Optional authored chapters replace historical progression with ordered conditions and persistent victory/defeat, driven by real campaign actions. Original world and role composition remain. A wholly authored cast now completes a short hire/encounter/quest/ending route without historical roster identities. Original generic residents are optional. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward.",
       "local": "No second complete campaign accepted.",
       "remaining": "Compose and reassign remaining recruitment/economic roles and strategic function values, factions, opposition commanders, diplomacy, calendar events and world geography; finish an independent second full campaign.",
       "acceptance": "Build and finish a distinct campaign with no engine source changes.",
@@ -1980,7 +2014,8 @@
         "E-HEADQUARTERS",
         "E-CAMPAIGN-STORY",
         "E-CAMPAIGN-CAST",
-        "E-CAMPAIGN-ROLES"
+        "E-CAMPAIGN-ROLES",
+        "E-FOUNDRY-PROJECT"
       ]
     },
     {
@@ -3769,13 +3804,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "b3d1387cb3a6e0e3b7028e9545154c0cf7af9cf4",
-    "total": 767,
-    "passed": 767,
+    "source": "b212d117b421c054596212aa74075758902602c6",
+    "total": 774,
+    "passed": 774,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-CAMPAIGN-ROLES"
+    "evidenceId": "E-FOUNDRY-PROJECT"
   }
 }
