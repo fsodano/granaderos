@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "315de1d578dd8cbc9ae131b45cee02cd45780f58",
+  "baseline": "29c7edad645e9dafe571509c1159996ff5550b77",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -122,7 +122,13 @@
     {
       "id": "E-DIALOGUE-MOVEMENTS",
       "path": "docs/verification/dialogue-movements.md",
-      "description": "Actual conversations call another authored resident to a pinned local meeting point. Walking, saves, re-entry, later orders, daily relocation and death pass; prepared door layouts cover blockers, traps and shelter. Mounted editor/game controls author and run the order. Does not establish marker/arrival sequences or full campaign acceptance."
+      "description": "Actual conversations call another authored resident to a pinned local meeting point. Walking, saves, re-entry, later orders, daily relocation and death pass; prepared door layouts cover blockers, traps and shelter. Mounted editor/game controls author and run the order. Does not establish marker/arrival sequences or full campaign acceptance.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36374790313/job/108778298184"
+    },
+    {
+      "id": "E-MEETING-ARRIVAL",
+      "path": "docs/verification/meeting-arrivals.md",
+      "description": "Authored dialogue requires actual conscious presence at the latest local meeting destination. Real walking, saved re-entry, quest completion and one reward pass, along with mounted authoring/game controls. Prepared alarms, incapacity and occupancy isolate physical guards. Does not add automatic arrival actions or establish a full campaign."
     }
   ],
   "queue": [
@@ -171,6 +177,29 @@
   ],
   "requirements": [
     {
+      "id": "ARRIVAL-01",
+      "group": "Published deliveries",
+      "requirement": "Gate dialogue and quest effects on actual resident arrival at a meeting",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "An option appears only when the resident is conscious and safe at the destination of its latest same-sector movement order. Time alone cannot complete the arrival. The normal dialogue transaction can then complete a quest or issue a one-time reward.",
+      "local": "Uses the published movement command and active scene. No advanced escort or historical scene system is imported.",
+      "remaining": "",
+      "acceptance": "Author the condition through undo, copy and launch. Reject early completion, reach the destination through actual movement, preserve availability through save and re-entry, and issue one reward. Verify wrong-scene rejection and declared prepared danger/incapacity/blocker probes. Exercise the mounted game conversation and autosave.",
+      "evidence": [
+        "E-MEETING-ARRIVAL"
+      ],
+      "parents": [
+        "STORY-03",
+        "STORY-04"
+      ],
+      "testFiles": [
+        "tests/meeting-arrivals.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/meeting-arrivals-ui.test.mjs"
+      ]
+    },
+    {
       "id": "MEETING-01",
       "group": "Published deliveries",
       "requirement": "Call an authored resident to a persistent same-sector meeting through dialogue",
@@ -192,7 +221,8 @@
         "tests/npc-ai.test.mjs",
         "tests/story-editor.test.mjs",
         "tests/webmcp-campaign.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/44"
     },
     {
       "id": "SURVIVAL-01",
@@ -1540,7 +1570,7 @@
       "requirement": "Branching dialogue, conditions, effects and quests",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "New residents have authored branching dialogue with saved progress. Conditions cover day, pesos, locality control, character and quest state. Choices apply one-time treasury operations and shared quest transitions with saved evidence. Different residents can participate. The journal reports accepted objectives, deadlines and failure causes. Overdue quests or confirmed deaths of required characters fail active objectives once. Historical conversations keep their existing rules. Dialogue choices can also call another authored resident to a persistent meeting point in the loaded sector.",
+      "published": "New residents have authored branching dialogue with saved progress. Conditions cover day, pesos, locality control, character and quest state. Choices apply one-time treasury operations and shared quest transitions with saved evidence. Different residents can participate. The journal reports accepted objectives, deadlines and failure causes. Overdue quests or confirmed deaths of required characters fail active objectives once. Historical conversations keep their existing rules. Dialogue choices can also call another authored resident to a persistent meeting point in the loaded sector. A dialogue condition can require actual conscious arrival at the latest local meeting before applying its effects.",
       "local": "Authored resident quest transitions are accepted in the bounded published scope. Advanced historical role and objective systems are not imported.",
       "remaining": "Add item/escort/objective and other gameplay effects, historical role bindings and their receipts; extend authoring to historical conversations without bypassing campaign gates.",
       "acceptance": "Author and finish alternate quest branches through normal controls, including failures and saves.",
@@ -1553,7 +1583,8 @@
         "E-AUTHORED-QUESTS",
         "E-QUEST-DEADLINES",
         "E-QUEST-SURVIVAL",
-        "E-DIALOGUE-MOVEMENTS"
+        "E-DIALOGUE-MOVEMENTS",
+        "E-MEETING-ARRIVAL"
       ]
     },
     {
@@ -1562,13 +1593,14 @@
       "requirement": "Triggered tactical movement and arrival actions",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Dialogue choices call another authored resident through real paths and usable doors to a pinned meeting square beside the speaker. Arrival holds position; danger and blockers pause movement. Commands survive saves and same-sector re-entry; a daily relocation ends the old local order.",
+      "published": "Dialogue choices call another authored resident through real paths and usable doors to a pinned meeting square beside the speaker. Arrival holds position; danger and blockers pause movement. Commands survive saves and same-sector re-entry; a daily relocation ends the old local order. A dialogue condition can require actual conscious arrival at the latest local meeting before applying its effects.",
       "local": "Real civilian pathfinding and escorts exist locally; not a general story sequence.",
-      "remaining": "Add authored map markers, arrival effects, multi-actor sequences, automatic non-dialogue triggers and historical role actors. Verify a composed story scene through normal controls.",
+      "remaining": "Add authored map markers, automatic arrival effects, return to ambient routines, multi-actor sequences, automatic non-dialogue triggers and historical role actors. Verify a composed story scene through normal controls.",
       "acceptance": "Interaction sends a resident through a door to a marker; blocked path cannot finish; save, combat and reentry resume correctly.",
       "evidence": [
         "E-CONFLICTS",
-        "E-DIALOGUE-MOVEMENTS"
+        "E-DIALOGUE-MOVEMENTS",
+        "E-MEETING-ARRIVAL"
       ]
     },
     {
@@ -3401,13 +3433,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "315de1d578dd8cbc9ae131b45cee02cd45780f58",
-    "total": 674,
-    "passed": 674,
+    "source": "29c7edad645e9dafe571509c1159996ff5550b77",
+    "total": 681,
+    "passed": 681,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-DIALOGUE-MOVEMENTS"
+    "evidenceId": "E-MEETING-ARRIVAL"
   }
 }

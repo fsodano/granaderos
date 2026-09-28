@@ -32,7 +32,8 @@ Runtime source: `315de1d578dd8cbc9ae131b45cee02cd45780f58`.
 The final complete local suite passed **674/674 tests**, without failures or skips
 (193374 ms). Types, production export (721 files, 631 asset references) and all
 36 baseline comparisons passed. The register retains 182 requirements and 21
-evidence records. Exact-head CI is required before merge.
+evidence records. [Exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36374790313/job/108778298184)
+passed for merged PR #44.
 
 - `tests/dialogue-movements.test.mjs`: actual approach and conversation, deferred
   walking, holding, active save and re-entry, once-only receipts, later commands,
@@ -61,3 +62,6 @@ speaker-relative destination and one movement per choice. Authored map markers,
 arrival effects, multi-actor sequences, automatic non-dialogue triggers, movement
 of historical role actors and a dedicated scene editor remain open. It does not
 establish full campaign, live-browser or loaded-battle performance acceptance.
+
+[Arrival-gated dialogue](meeting-arrivals.md) adds a later condition for current
+physical arrival. It does not supply automatic arrival callbacks.

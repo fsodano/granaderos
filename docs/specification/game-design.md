@@ -228,7 +228,11 @@ order is accepted. It is not a teleport or a following behavior. Arrival holds
 position; blocked routes and danger pause the order. A later accepted order can
 replace it. Repeating a consumed choice cannot repeat or restore a previous order.
 Death stops movement, and changing the resident's sector/presence ends the old
-local order. Unloaded scenes do not simulate this route. Map-marker destinations,
+local order. Unloaded scenes do not simulate this route. A dialogue condition may
+require actual conscious, safe presence at the latest commanded destination in the
+active sector before its quest or money effects are accepted. This is a current
+physical condition, not an elapsed-time or permanent completion flag.
+Map-marker destinations,
 arrival effects and multi-actor story sequences remain part of the target design;
 see the separate status and evidence in [local meetings](../verification/dialogue-movements.md).
 
