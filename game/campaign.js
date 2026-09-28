@@ -1,4 +1,4 @@
-import {expireContentQuests} from './content-quests.js';
+import {updateContentQuests} from './content-quests.js';
 import {dialogueForNPC,chooseDialogue,validateSavedDialogues} from './content-dialogue.js';
 import {acknowledgeCivilians,transferCivilian,validateCampaignCivilians,migrateCampaignCivilians} from './campaign-civilians.js';
 import {synchronizeCampaignPresence,validateCampaignPresence,acknowledgeSuccessionDeaths} from './campaign-presence.js';
@@ -393,7 +393,7 @@ export function dispatchCampaign(previous,action){
       }
       default:throw Error('Orden desconocida.');
     }
-    expireContentQuests(s);releaseDeferred(s);receiveDueHires(s);synchronizeSquad(s);synchronizeCampaignPresence(s);progress(s);
+    updateContentQuests(s);releaseDeferred(s);receiveDueHires(s);synchronizeSquad(s);synchronizeCampaignPresence(s);progress(s);
     for(const [flag,at] of Object.entries({academy:'retiro',foundry:'mendoza',northPact:'salta',partisanSupply:'tucuman',parliament:'mendoza',emancipation:'buenos_aires',commission:'buenos_aires'}))if(s.flags[flag]&&!previous.flags[flag])recordCityLoyalty(s,{sectorId:at,kind:'quest',eventId:`quest-${flag}`});
     return s;
   }catch(error){const rejected=clone(previous);rejected.lastError=error.message;return rejected;}

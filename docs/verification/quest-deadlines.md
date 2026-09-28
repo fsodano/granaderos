@@ -27,8 +27,8 @@ treasury transaction occurred.
 Runtime source: `012a7bb0bf13431b396ddf749f6e9b94d95e6698`.
 The complete local suite passed **652/652 tests**, without failures or skips.
 Types, production export and all 36 baseline comparisons passed. The register
-retains 180 requirements and 19 evidence records. Exact-head CI must pass before
-merge.
+retains 180 requirements and 19 evidence records. [PR #42](https://github.com/fsodano/granaderos/pull/42) merged after
+[exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36372359110/job/108771147841) passed.
 
 - `tests/quest-deadlines.test.mjs`: acceptance at a nonzero campaign second,
   five real tactical rests with ten minutes remaining, save/reload and a sixth
@@ -45,7 +45,9 @@ merge.
 
 ## Limits
 
-DEADLINE-01 is a bounded delivery; STORY-03 remains partial. Deadlines fail active
+At this checkpoint, DEADLINE-01 is a bounded delivery; STORY-03 remains partial. Deadlines fail active
 quests and do not grant rewards. Death/escort policies, item objectives, historical
 role overrides and scripted movement remain open. No complete campaign,
 live-browser or performance acceptance is claimed.
+
+[Required character survival](quest-survival.md) adds automatic failure on confirmed death in the following checkpoint.

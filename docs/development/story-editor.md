@@ -56,11 +56,13 @@ En «Encargos», creá un título y un objetivo. Podés buscar, duplicar, elimin
 
 En una opción del diálogo, activá «Cambiar un encargo al elegir esta opción». Elegí el encargo y el resultado: iniciar, completar o fallar. El recorrido permitido es «Sin iniciar» → «En curso» → «Completado» o «Fallido». Un estado final no se reinicia. El juego desactiva un cambio que no corresponde al estado actual y explica la causa.
 
-Usá «Estado de un encargo» como condición para mostrar las respuestas de cada etapa. Podés combinarla con días, pesos, control o estado de personajes. Una persona puede ofrecer el encargo y otra recibir el resultado. Para exigir una localidad liberada, agregá esa condición a la opción que lo completa. La muerte no lo falla sola: configurá esa condición en una opción de fracaso de otro interlocutor disponible. Para un vencimiento automático, usá el plazo del encargo.
+Usá «Estado de un encargo» como condición para mostrar las respuestas de cada etapa. Podés combinarla con días, pesos, control o estado de personajes. Una persona puede ofrecer el encargo y otra recibir el resultado. Para exigir una localidad liberada, agregá esa condición a la opción que lo completa. Para una reacción elegida por el jugador, configurá esas condiciones en una opción de fracaso de otro interlocutor disponible. Para un fallo automático, usá el plazo o los personajes necesarios del encargo.
 
 El campo «Plazo desde la aceptación» admite de 1 a 720 horas. Dejalo vacío para no limitar el tiempo. Cuenta desde el momento real de aceptación e incluye viajes, esperas y acciones dentro del sector. Si vence mientras está en curso, el encargo queda fallido una sola vez. Completalo antes del límite para conservar el resultado. El tiempo no corre para un encargo sin iniciar.
 
-La carta de campaña muestra el título, objetivo, estado y días de inicio/resolución desde que se acepta el encargo. También muestra los minutos restantes, el vencimiento y si falló por el plazo. Cerrá la conversación y pulsá M para consultar la carta. Los encargos sin iniciar no revelan su descripción. Guardar conserva la secuencia de cambios y cada operación ya realizada. Repetir una opción consumida conserva el estado y no vuelve a pagar. Los encargos históricos del Cabildo conservan sus reglas originales.
+En «Personajes necesarios para el encargo», elegí hasta seis personas que deban seguir vivas. Si muere cualquiera mientras está en curso, falla una sola vez y conserva la causa. Si una ya murió, no se puede iniciar. Se aplica tanto a habitantes como a combatientes incorporados. Las heridas, la inconsciencia o la salida del servicio no son una muerte. Un encargo completado conserva su resultado aunque después muera alguien. La referencia protege al personaje de eliminación en el editor.
+
+La carta de campaña muestra el título, objetivo, estado y días de inicio/resolución desde que se acepta el encargo. También muestra los minutos restantes, el vencimiento y si falló por el plazo o la muerte de una persona necesaria. Cerrá la conversación y pulsá M para consultar la carta. Los encargos sin iniciar no revelan su descripción. Guardar conserva la secuencia de cambios y cada operación ya realizada. Repetir una opción consumida conserva el estado y no vuelve a pagar. Los encargos históricos del Cabildo conservan sus reglas originales.
 
 ## Habilidades de combate
 
@@ -156,7 +158,7 @@ Esta opción activa habitantes nuevos. Los mandos históricos conservan sus func
 
 El mapa permite marcar cualquier celda con una X desde la ficha del personaje, incluido terreno fuera de las localidades. Se pueden simular ubicaciones con una semilla. Las ubicaciones fijas, el sorteo inicial y los cambios diarios ya se aplican a las nuevas campañas. Eliminar mandos históricos y usar opciones de historia no compatibles todavía bloquea el inicio de campaña.
 
-Los mandos históricos conservan su servicio permanente, requisitos de reclutamiento y funciones de campaña. Sus habilidades de combate ya son configurables. Quedan pendientes su extracción, las transferencias de funciones a sucesores, los efectos sobre objetos y funciones de campaña, los objetivos sobre objetos y las políticas de fallo por muerte o escolta, las escenas dirigidas y la composición completa de campaña. Esta entrega no completa todo el editor de historia.
+Los mandos históricos conservan su servicio permanente, requisitos de reclutamiento y funciones de campaña. Sus habilidades de combate ya son configurables. Quedan pendientes su extracción, las transferencias de funciones a sucesores, los efectos sobre objetos y funciones de campaña, los objetivos sobre objetos y escoltas, las escenas dirigidas y la composición completa de campaña. Esta entrega no completa todo el editor de historia.
 
 ## Validación
 
@@ -200,3 +202,5 @@ Los mandos históricos conservan su servicio permanente, requisitos de reclutami
 `tests/content-quests.test.mjs` comprueba aceptación, una condición de día real, finalización con recompensa, fracaso alternativo, participantes distintos, pagos atómicos, estados finales y guardados alterados. El editor montado crea y conecta un encargo; la página del juego muestra su cambio desde la conversación y el registro de campaña. La [verificación de encargos](../verification/authored-quests.md) conserva los límites de esta entrega.
 
 `tests/quest-deadlines.test.mjs` comprueba vencimientos con segundos de aceptación reales, descanso táctico, viajes, espera, finalización previa y registros alterados. El editor conserva el plazo y la página del juego muestra el tiempo restante y el fracaso automático. La [verificación de plazos](../verification/quest-deadlines.md) registra su alcance.
+
+`tests/quest-survival.test.mjs` comprueba muerte civil real, una baja militar en una batalla compacta preparada, aceptación bloqueada tras una muerte, resultados ya completos, heridas y cambios de servicio. El editor montado conserva y protege las referencias; la página del juego registra una muerte real y muestra el fallo guardado. La [verificación de supervivencia](../verification/quest-survival.md) separa esas pruebas de una campaña completa.

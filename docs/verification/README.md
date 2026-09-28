@@ -23,6 +23,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Dialogue payments and rewards](dialogue-payments.md)
 - [Authored quest states and journal](authored-quests.md)
 - [Automatic quest deadlines](quest-deadlines.md)
+- [Required character survival](quest-survival.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 

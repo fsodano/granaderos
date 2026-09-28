@@ -1,3 +1,4 @@
+import {survivalPackage} from './quest-survival-fixture.mjs';
 import {questPackage} from './content-quest-fixture.mjs';
 import {dialoguePackage} from './dialogue-fixture.mjs';
 import {readyLocal,localId,localNPC,tactical as localTactical,order as localOrder,leave as leaveLocal,visit as visitLocal} from './local-contract-fixture.mjs';
@@ -152,4 +153,11 @@ test('the mounted game displays a quest deadline and saves its automatic failure
  await act(async()=>npc.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));await m.click('Conversar');assert.match(m.document.querySelector('[aria-label="Conversación"]').textContent,/plazo de 1 h/);await m.click('Acepto el encargo.');
  await m.click('Cerrar conversación');await act(async()=>m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'m',bubbles:true})));assert.match(m.document.querySelector('[aria-label="Encargos de la historia"]').textContent,/Plazo restante: 60 minutos/);await m.click('Volver al sector táctico');if([...m.document.querySelectorAll('button')].some(b=>b.textContent.trim().startsWith('Pausar exploración')))await m.click('Pausar exploración');
  await act(async()=>{for(let i=0;i<6;i++)m.issue({type:'rest',unitId:m.read().battle.units.find(u=>u.side==='player').id});});assert.equal(m.read().campaign.contentQuestEvents.at(-1).to,'failed');assert.deepEqual(m.saved(),pair(m.read()));await act(async()=>m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'m',bubbles:true})));const journal=m.document.querySelector('[aria-label="Encargos de la historia"]');assert.match(journal.textContent,/Fallido/);assert.match(journal.textContent,/vencimiento del plazo/);
+});
+
+test('the mounted game confirms a required resident death and reports the automatic quest failure in its saved journal',async t=>{
+ const p=readyLocal(undefined,survivalPackage()),m=await mount(t,p),npc=m.document.querySelector('[data-unit-id="authored-alma-contract"]');await act(async()=>npc.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));await m.click('Conversar');await m.click('Acepto el encargo.');await m.click('Cerrar conversación');
+ const state=m.read(),unit=state.battle.units.find(u=>u.side==='player'),victim=state.battle.npcs.find(n=>n.contentId==='pablo'),tile=getReachable(state.battle,unit.id).find(t=>Math.abs(t.x-victim.x)+Math.abs(t.y-victim.y)===1);assert.ok(tile);if(tile.cost)await act(async()=>m.issue({type:'move',unitId:unit.id,x:tile.x,y:tile.y}));
+ for(let i=0;i<6&&m.read().battle.npcs.find(n=>n.id===victim.id).hp>0;i++)await act(async()=>m.issue({type:'melee',unitId:unit.id,targetId:victim.id}));assert.equal(m.read().battle.npcs.find(n=>n.id===victim.id).hp,0);assert.equal(m.read().campaign.contentQuestEvents.at(-1).death,'pablo');assert.deepEqual(m.saved(),pair(m.read()));
+ await act(async()=>m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'m',bubbles:true})));const journal=m.document.querySelector('[aria-label="Encargos de la historia"]');assert.match(journal.textContent,/Fallido/);assert.match(journal.textContent,/muerte de Pablo/);
 });

@@ -45,9 +45,10 @@ export function synchronizeCampaignPresence(state){
   if(state.pendingBattle&&!state.pendingBattle.sceneId)
     state.pendingBattle.npcs=(state.pendingBattle.npcs??[]).filter(n=>currentResident(state,n,state.pendingBattle.sector));
 }
+// Successors and quest survival rules need confirmed deployed deaths.
 function successionActors(state,snapshot){
  if(!state.contentPresence)return [];
- const content=state.contentCampaign.package,sources=new Set(content.placements.filter(p=>p.afterDeath!==null).map(p=>operativeIdForCharacter(content,p.afterDeath)));
+ const content=state.contentCampaign.package,sources=new Set([...content.placements.filter(p=>p.afterDeath!==null).map(p=>p.afterDeath),...(content.quests??[]).flatMap(q=>q.requiredAlive??[])].map(id=>operativeIdForCharacter(content,id)));
  return snapshot.units.filter(u=>u.side==='player'&&!u.militia&&sources.has(Number(u.id))&&state.pendingBattle?.squad.some(o=>o.id===Number(u.id)));
 }
 export function acknowledgeSuccessionDeaths(state,snapshot){

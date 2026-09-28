@@ -198,7 +198,10 @@ ordered event record persists progress and supplies the player journal. An optio
 deadline starts at acceptance with campaign-second precision. Tactical actions,
 travel and waiting advance the same limit; expiration fails an active quest once.
 Unstarted quests have no running timer and completed quests keep their result.
-Automatic death/escort failures and item objectives require their own authored rules.
+Quests can require specific characters to survive. Confirmed death fails an active
+quest, including death during military service; wounds, unconsciousness and service
+changes do not. Dead requirements block acceptance. Completed quests keep their
+result. Escort and item objectives require their own authored rules.
 A scene can order an existing actor to walk to a marker, approach, face, wait and
 speak. It uses ordinary movement, doors, time, combat interruptions and saved
 continuation. Arrival is an actual reached location, never a teleport or timer-only
