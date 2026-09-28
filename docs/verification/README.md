@@ -7,6 +7,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 
 ## Published baseline
 
+- [Stationed artillery and finite issue](stationed-artillery.md)
 - [Formal implementation audit — 27 September](formal-audit-2026-09-27.md)
 - [Machine-readable requirement register](requirements.json)
 

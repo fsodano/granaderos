@@ -376,12 +376,24 @@ Estas áreas, límites y accesos todavía no son campos editables.
 ## Elegir la batería
 
 En **Escritorio → Tesorería → Comprar armas y revisar equipo**, la batería muestra
-las piezas que saldrán en el próximo despliegue. Elegí hasta tres y usá
+las piezas que saldrán en el próximo ataque. Elegí hasta tres y usá
 **Preparar batería**. Si dejás todos los espacios en **Sin pieza**, esa elección
 se conserva al guardar y aunque compres otro cañón. Podés elegir piezas de nuevo
 más adelante. La pantalla impide preparar más unidades de un modelo que las
 existentes. Elegir no cobra dinero ni adelanta el reloj.
 [Verificación y alcance pendiente](../verification/explicit-artillery-selection.md).
+
+## Cañones emplazados
+
+Al atacar, cada cañón elegido sale una vez de la armería y queda en ese sector.
+Conserva su ubicación, orientación, carga y munición al guardar y volver. Ganar
+el combate captura las piezas. Retirarse puede dejarlas en manos realistas.
+**Piezas emplazadas en este sector** muestra el dueño, la carga y las reservas.
+Preparar una batería vacía no retira los cañones que ya están allí.
+
+Por ahora, la recuperación estratégica, el transporte y la reposición de esas
+piezas siguen pendientes de integración. Los perfiles de artillería todavía no
+se editan desde la ficha de armas. [Verificación](../verification/stationed-artillery.md).
 
 ## Territorio inicial
 
