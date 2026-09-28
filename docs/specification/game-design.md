@@ -280,6 +280,12 @@ field, but exhaustion alone does not settle a battle. Incapacitated enemy wounds
 and finite equipment persist across visits and a distinct new occupation.
 Complete shock, wound/AP, custody and transport behavior retain separate work.
 See [critical condition acceptance](../verification/critical-military-condition.md).
+Living, present civilians recover ten energy after each loaded civilian phase:
+once per completed combat round or six exploration seconds. Waking grants no
+movement in that same phase, health, AP or cleared wound history. Critical health
+still requires care, corpses remain dead and unloaded scenes do not recover.
+Saved partial intervals and identity preserve recovery through visits and service
+changes. See [civilian breath recovery](../verification/civilian-breath-recovery.md).
 These stroke and indivisible-dressing rules are explicit
 Granaderos adaptations. See [manual care](../gameplay/characters/field-first-aid.md).
 

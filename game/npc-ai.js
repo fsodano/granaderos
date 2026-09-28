@@ -1,4 +1,5 @@
 import {applyCivilianHarm} from './civilian-harm.js';
+import {recoverCivilianBreath} from './civilian-health.js';
 import {propCells} from './props.js';
 import {directionTo, approximateHeardPosition} from './npc-perception.js';
 
@@ -146,7 +147,11 @@ export function runCivilianPhase(s,atTime=now(s)) {
   const phase=s.phase;s.phase='civilian';
   s.civilianTurns=(s.civilianTurns??0)+1;
   const npcs=s.npcs??[],offset=s.civilianTurns%Math.max(1,npcs.length);
-  for(let i=0;i<npcs.length;i++)advanceNpc(s,npcs[(i+offset)%npcs.length],24,atTime);
+  for(let i=0;i<npcs.length;i++){
+    const npc=npcs[(i+offset)%npcs.length];advanceNpc(s,npc,24,atTime);
+    // Recover after its phase: a newly conscious resident moves next phase.
+    recoverCivilianBreath(npc);
+  }
   s.phase=phase;
 }
 

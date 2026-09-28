@@ -11,6 +11,6 @@ export default function CharacterCondition({character,onChange}:{character:any,o
     </label>)}</div>
     <button disabled={character.startingCondition===undefined} onClick={()=>onChange({startingCondition:undefined})}>Restablecer estado sano</button>
     <small>Un habitante con menos de 15 de salud o sin energía no puede conversar. Las vendas estabilizan las heridas; la recuperación completa necesita atención o descanso. El sangrado avanza mientras el sector está abierto. Los candidatos del boletín siguen fuera del mapa hasta su llegada.</small>
-    {condition.energy===0&&<p>Para un habitante que deba conversar, usá energía mayor que 0.</p>}
+    {condition.energy===0&&<p>Un habitante agotado recupera energía mientras su sector está abierto. Si tiene menos de 15 de salud, también necesita primeros auxilios para conversar.</p>}
   </fieldset>;
 }

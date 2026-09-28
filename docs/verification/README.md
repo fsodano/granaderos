@@ -57,6 +57,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Authored care and rest rules](authored-care-rules.md)
 - [Finite field first aid and persistent wounds](finite-first-aid.md)
 - [Critical military condition and retained casualties](critical-military-condition.md)
+- [Loaded civilian breath recovery](civilian-breath-recovery.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 
