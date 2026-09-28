@@ -25,8 +25,8 @@ available. Conditions do not change saved passage text or charge resources.
 Runtime source: `22629a10c8dbc61fad50308447982d3b2b7b88ff`.
 The complete local suite passed **626/626 tests**, without failures or skips.
 Types, production export and all 36 baseline comparisons passed. The register
-retains 177 requirements and 16 evidence records. Exact-head CI is required before
-merge.
+retains 177 requirements and 16 evidence records. [PR #39](https://github.com/fsodano/granaderos/pull/39) merged after
+[exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36369928510/job/108763904616) passed.
 
 - `tests/dialogue-conditions.test.mjs`: actual elapsed days open/close a branch;
   a paid armory purchase changes available funds; an actual civilian death opens
@@ -43,9 +43,11 @@ merge.
 
 ## Limits
 
-CONDITION-01 is a bounded delivery; STORY-03 remains partial. Quest state,
+At this checkpoint, CONDITION-01 is a bounded delivery; STORY-03 remains partial. Quest state,
 gameplay effects, rewards, effect receipts, historical role bindings and scripted
 movement remain open. Ownership conditions address the named campaign localities,
 not independently captured rural cells. Placement authoring still supports all
 eligible land cells. These checks do not establish full campaign, live-browser or
 loaded-combat performance acceptance.
+
+[Dialogue payments and rewards](dialogue-payments.md) extend these choices in the following checkpoint.

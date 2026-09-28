@@ -123,3 +123,17 @@ async function mount(t,saved){
  if(saved){await click('Continuar campaña');if(saved.battle.mode==='exploration')await click('Pausar exploración');}
  return {dom,document,registrations,unmount,click,read:()=>registrations.find(t=>t.name==='read_granaderos_state').execute(),issue:action=>registrations.find(t=>t.name==='issue_granaderos_tactical_order').execute(action),saved:()=>decodeSave(dom.window.localStorage.getItem(CONTENT_SAVE_KEY))};
 }
+
+test('the mounted conversation shows reward terms, applies them once and saves the receipt after a double click',async t=>{
+ const d=dialoguePackage();d.characters.at(-1).encounter.dialogue.nodes[0].choices[0].effects=[{type:'treasury',operation:'receive',amount:175}];const p=readyLocal(undefined,d),cash=p.campaign.resources.treasury,m=await mount(t,p),npc=m.document.querySelector('[data-unit-id="authored-alma-contract"]');
+ await act(async()=>npc.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));await m.click('Conversar');
+ const button=[...m.document.querySelectorAll('[aria-label="Conversación"] button')].find(b=>b.textContent.startsWith('Contame sobre el norte.'));assert.match(button.textContent,/Recibir 175 pesos · una sola vez/);
+ await act(async()=>{button.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true}));button.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true}));});assert.equal(m.read().campaign.resources.treasury,cash+175);assert.match(m.document.querySelector('[aria-label="Conversación"]').textContent,/Recibiste 175 pesos/);assert.deepEqual(m.saved(),pair(m.read()));
+ await m.click('Volvamos a las opciones.');assert.match(m.document.querySelector('[aria-label="Conversación"]').textContent,/Operación ya realizada/);await m.click('Contame sobre el norte.');assert.equal(m.read().campaign.resources.treasury,cash+175);assert.match(m.document.querySelector('[aria-label="Conversación"]').textContent,/no se repite/);assert.deepEqual(m.saved(),pair(m.read()));
+});
+
+test('the mounted conversation displays an unaffordable payment and cannot select it',async t=>{
+ const d=dialoguePackage();d.characters.at(-1).encounter.dialogue.nodes[0].choices[0].effects=[{type:'treasury',operation:'pay',amount:1000000}];const p=readyLocal(undefined,d),m=await mount(t,p),npc=m.document.querySelector('[data-unit-id="authored-alma-contract"]');
+ await act(async()=>npc.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));await m.click('Conversar');const before=structuredClone(pair(m.read()));
+ const button=[...m.document.querySelectorAll('[aria-label="Conversación"] button')].find(b=>b.textContent.startsWith('Contame sobre el norte.'));assert.equal(button.disabled,true);assert.match(button.textContent,/Pagar 1000000 pesos/);assert.match(button.textContent,/Faltan/);await m.click('Contame sobre el norte.');assert.deepEqual(pair(m.read()),before);assert.deepEqual(m.saved(),before);
+});

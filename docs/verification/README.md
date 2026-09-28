@@ -20,6 +20,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Authored local contracts](local-contracts.md)
 - [Authored dialogue choices](authored-dialogues.md)
 - [Dialogue choice conditions](dialogue-conditions.md)
+- [Dialogue payments and rewards](dialogue-payments.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 
