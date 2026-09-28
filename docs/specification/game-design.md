@@ -803,3 +803,15 @@ cannot fund another offer. Integer-percent arithmetic gives exact peso rounding.
 Editor overrides change prices at existing workshops and do not create new
 facilities. The armory shows and executes the same actual rates. See
 [verification](../verification/authored-artillery-trading.md).
+
+### Finite secondary recovery
+
+The ordinary body collection includes a soldier's actual secondary blade as
+well as the primary weapon, supplies and stored items. The blade keeps its
+pinned name, image, values and wear. It moves once into the collector's carried
+inventory; the body or unconscious owner retains an empty secondary slot.
+Equipping it stores the displaced weapon without recreating either piece.
+Saved tactical return, later entry and surviving militia storage preserve the
+empty slot. A later armory purchase provides a new piece through the normal paid
+path. This does not add civilian weapons, stealth theft, armour, fitting rules
+or complete inventory custody. See [secondary recovery](../verification/secondary-weapon-recovery.md).
