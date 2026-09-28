@@ -378,7 +378,13 @@
     {
       "id": "E-MILITARY-WOUNDS",
       "path": "docs/verification/strategic-military-wounds.md",
-      "description": "Configurable hourly military bleeding follows finite doctor work, excludes loaded or out-of-service identities, preserves deaths and cancels survivorless travel. Seven new simulations cover actual enemy injuries, paid travel, saves, a successor and an authored loss; one new mounted editor case covers authoring and paid service. The overlapping group passes 29 checks and two mounted care checks pass. Types and all 36 baseline comparisons pass; the first complete source passes 931/932, zero skips, with historical commander health 49 instead of the previous expected 88 after victory. The revised route uses finite local treatment before marches and reaches victory with actual saved continuation; the final complete source passes 932/932, zero failures/skips, types, export and all 36 baseline comparisons. Exact-head CI remains required before merge. Fractional military time, custody and physical strategic remains stay separate."
+      "description": "Configurable hourly military bleeding follows finite doctor work, excludes loaded or out-of-service identities, preserves deaths and cancels survivorless travel. Seven new simulations cover actual enemy injuries, paid travel, saves, a successor and an authored loss; one new mounted editor case covers authoring and paid service. The overlapping group passes 29 checks and two mounted care checks pass. Types and all 36 baseline comparisons pass; the first complete source passes 931/932, zero skips, with historical commander health 49 instead of the previous expected 88 after victory. The revised route uses finite local treatment before marches and reaches victory with actual saved continuation; the final complete source passes 932/932, zero failures/skips, types, export and all 36 baseline comparisons. Published through PR #88 after successful exact-head CI. Fractional military time, custody and physical strategic remains stay separate.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36459085707/job/109052809002"
+    },
+    {
+      "id": "E-MILITIA-CARE",
+      "path": "docs/verification/strategic-militia-care.md",
+      "description": "Local militia physicians treat existing garrison identities with authored skill/healing/costs and finite personal dressings. Six simulations and a mounted campaign check cover actual paid training, enemy wounds and casualties, hourly work, purchases, saves, reentry, local/deployed boundaries and no duplicate treatment. The existing overlapping group passes 14 tests, seven new checks pass, types and all 36 baseline comparisons pass. The complete source passes 939/939 tests, zero failures/skips, and production export. Exact-head CI remains required before merge; unloaded militia wound time and custody stay separate."
     }
   ],
   "queue": [
@@ -427,12 +433,38 @@
   ],
   "requirements": [
     {
+      "id": "MILITIACARE-01",
+      "group": "Published deliveries",
+      "requirement": "Assign finite local physician care to existing wounded militia garrisons",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. A qualified serving doctor treats one existing local militiaman each hour using finite personal dressings and the campaign care rules.",
+      "local": "Six simulations and one mounted production campaign case use actual paid training and enemy injuries in declared compact geometry, preserve casualties and validate saved health before treatment. The existing medical/garrison/militia group passes 14 checks and the seven new checks pass. Types and all 36 baseline comparisons pass. The complete source passes 939/939 tests, zero failures/skips, production export and the documentation audit.",
+      "remaining": "",
+      "acceptance": "Train a local cohort with actual funds and time, wound a member through an enemy action, assign a local physician, spend finite dressings and save. Reentry preserves the treated identity and its equipment. Dead members never become healthy replacements.",
+      "evidence": [
+        "E-MILITIA-CARE"
+      ],
+      "parents": [
+        "INTEGRATION-01",
+        "MIL-01",
+        "JA2-A01"
+      ],
+      "testFiles": [
+        "tests/strategic-militia-care.test.mjs",
+        "tests/strategic-militia-care-render.test.mjs",
+        "tests/militia-care-fixture.mjs",
+        "tests/garrison-web.test.mjs",
+        "tests/medical-care.test.mjs"
+      ]
+    },
+    {
       "id": "MILITARYWOUND-01",
       "group": "Published deliveries",
       "requirement": "Advance authored military bleeding during strategic hours and retain real deaths",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Still-serving, nondeployed actors lose configured health each hour when their bleeding remains untreated; local doctors work first.",
+      "published": "Published on main through PR #88 on 2026-09-28 after successful exact-head CI. Still-serving, nondeployed actors lose configured health each hour when their bleeding remains untreated; local doctors work first.",
       "local": "Seven new simulations use declared actual-shot geometry, paid service and ordinary clocks; death preserves the last reached cell, one successor and saved campaign loss. The new mounted control pins its rate. The overlapping medical group passes 29 checks and two mounted care checks pass. The first full source passes 931/932, zero skips; the completed historical route returns commander health 49 instead of the prior expected 88. Types, export and all 36 baseline comparisons pass. The revised fresh route spends seven urgent-care hours and ten existing dressings, then 18 recovery hours with 14 purchased dressings for 140 pesos. Actual victory is at hour 582 with 7,048 pesos and commander health 88; saved 48-hour continuation, four expiries and a sector visit pass. The final complete source passes 932/932, zero failures/skips; types, production export and all 36 baseline comparisons also pass.",
       "remaining": "",
       "acceptance": "Wound a paid recruit, retreat, wait or march through real hours and save. Retain actual loss, finite treatment, one death and successor timing; stop a march with no survivors. Author and pin the rate through the editor.",
@@ -450,7 +482,8 @@
         "tests/medical-care.test.mjs",
         "tests/strategic-rest.test.mjs",
         "tests/story-editor.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/88"
     },
     {
       "id": "CIVILIANRETURN-01",
@@ -4875,13 +4908,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "7f6ce719985858d7f35cf5198ea2e74c5652037f",
-    "total": 924,
-    "passed": 924,
+    "source": "3963284a8146b9097cb01f987223cf06f77d48bf",
+    "total": 932,
+    "passed": 932,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-CIVILIAN-RETURN"
+    "evidenceId": "E-MILITARY-WOUNDS"
   }
 }

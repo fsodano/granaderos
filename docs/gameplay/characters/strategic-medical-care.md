@@ -32,8 +32,8 @@ contrato no repone suministros. Si el contrato vence, termina su tarea médica.
 
 La asignación, las heridas y las cantidades se conservan al guardar. Un habitante
 reclutado puede recibir esta atención; si luego deja el servicio, conserva su salud
-al regresar al mundo. El cuidado de milicias y de habitantes fuera del servicio
-pertenece a otra integración. El [descanso explícito](strategic-rest.md) permite recuperar energía y reducir fatiga. El sueño automático sigue pendiente.
+al regresar al mundo. El cuidado de habitantes fuera del servicio pertenece a
+otra integración. El [descanso explícito](strategic-rest.md) permite recuperar energía y reducir fatiga. El sueño automático sigue pendiente.
 
 El creador de historias puede cambiar los ritmos y costos de atención y descanso.
 Los valores de esta guía describen las reglas originales; el estado de atención
@@ -47,3 +47,15 @@ detiene la hemorragia, y la recuperación diaria no cura heridas abiertas ni
 estados críticos. La campaña conserva las bajas; una escuadra sin sobrevivientes
 no alcanza el destino. El editor permite cambiar este porcentaje.
 [Verificación y límites](../../verification/strategic-military-wounds.md).
+
+Para atender a una guarnición, elegí **Médico de milicias**. No hace falta
+asignar cada miliciano: se atiende primero la hemorragia y luego a los más
+heridos. Cada médico atiende a una persona por hora y usa sus propias vendas.
+Debe estar en la misma celda controlada, fuera de un despliegue. Dos médicos
+no gastan vendas en el mismo paciente durante una hora.
+
+La pantalla muestra la salud de los milicianos de tu ubicación actual. Sus
+heridas tratadas y sus cantidades de equipo se conservan al volver al sector.
+Las bajas siguen siendo bajas. Volvé a poner al médico **En servicio** antes de
+marchar, entrar al campo o asignarlo como instructor.
+[Verificación y límites de la atención a milicias](../../verification/strategic-militia-care.md).

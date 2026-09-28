@@ -58,3 +58,7 @@ stock. Exhaustion and unsafe occupation stop work by eligibility, but their full
 advanced route acceptance remains open. The separate northern medical-relief
 failure is not closed by these checks. Broader JA2 care and full release acceptance
 remain partial.
+
+The subsequent [local militia-care delivery](strategic-militia-care.md) adds
+finite treatment of existing garrison identities. Its verification and remaining
+wound-clock, custody and physical-remains limits are recorded separately.
