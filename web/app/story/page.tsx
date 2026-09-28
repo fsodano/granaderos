@@ -33,6 +33,7 @@ import {CHARACTER_ABILITIES,legacyCharacterAbilities} from '../../../game/charac
 import {isContractCharacter,isHistoricalCharacter,isWorldCharacter,legacyOperativeId} from '../../../game/content-character-ids.js';
 import CharacterPresentation from './CharacterPresentation';
 import CharacterSupplies from './CharacterSupplies';
+import postCampaign from '../../public/campaigns/la-ruta-de-las-postas.json';
 import {SPEECH_EVENTS} from '../../../game/characters.js';
 import {characterPresentationDefaults} from '../../../game/content-character-presentation.js';
 import {CONTENT_TRAITS} from '../../../game/content-character-options.js';
@@ -390,6 +391,18 @@ export default function ContentEditor() {
           </button>
         </div>
       </header>
+      <details>
+        <summary>Campaña de ejemplo: La ruta de las postas</summary>
+        <p>Partí de Córdoba, reuní una custodia y recuperá las comunicaciones con Tucumán y Salta. Incluye personajes, contratos, encuentros y tres capítulos propios.</p>
+        <button onClick={()=>safely(()=>{
+          const value=parseContentPackage(JSON.stringify(postCampaign));
+          change(value);setTab('characters');setSelected(value.characters[0].id);setSeed(8);
+          setSearches(current=>({...current,characters:''}));
+          setNotice('La ruta de las postas está cargada. Podés editarla o deshacer para recuperar el borrador anterior.');
+        })}>Cargar La ruta de las postas</button>{' '}
+        <a href="/campaigns/la-ruta-de-las-postas.json" download>Descargar campaña de ejemplo</a>
+        <p>Cargarla reemplaza el borrador y permite deshacer. Las partidas iniciadas conservan su contenido.</p>
+      </details>
       <input
         ref={testImportRef}
         hidden

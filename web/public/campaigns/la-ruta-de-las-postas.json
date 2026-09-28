@@ -1,0 +1,1399 @@
+{
+  "format": "granaderos-content",
+  "version": 1,
+  "id": "ruta-de-las-postas",
+  "name": "La ruta de las postas",
+  "quests": [
+    {
+      "id": "postas",
+      "title": "Volver a oír al norte",
+      "description": "Aceptá el encargo de Inés en Córdoba. Recuperá Tucumán y hablá con Mateo. Recuperá Salta, hablá con Elena y regresá junto a Inés. Los tres enlaces deben sobrevivir. Tenés siete días desde la aceptación.",
+      "deadlineHours": 168,
+      "requiredAlive": [
+        "ines",
+        "mateo",
+        "elena"
+      ]
+    },
+    {
+      "id": "posta-tucuman",
+      "title": "La posta interrumpida",
+      "description": "Liberá Tucumán y conversá con Mateo para restablecer el primer enlace."
+    },
+    {
+      "id": "posta-salta",
+      "title": "La última estafeta",
+      "description": "Con el enlace de Tucumán confirmado, liberá Salta y buscá a Elena."
+    }
+  ],
+  "rules": {
+    "startingTreasury": 6000,
+    "deploymentCartridges": 14,
+    "enemyCartridges": 13,
+    "militiaCartridges": 6
+  },
+  "startingTerritory": {
+    "buenos_aires": {
+      "owner": "royalist",
+      "loyalty": 25
+    },
+    "retiro": {
+      "owner": "royalist",
+      "loyalty": 25
+    },
+    "ensenada": {
+      "owner": "royalist",
+      "loyalty": 25
+    },
+    "san_nicolas": {
+      "owner": "royalist",
+      "loyalty": 25
+    },
+    "santa_fe": {
+      "owner": "royalist",
+      "loyalty": 25
+    },
+    "cordoba": {
+      "owner": "patriot",
+      "loyalty": 65
+    },
+    "mendoza": {
+      "owner": "royalist",
+      "loyalty": 25
+    },
+    "uspallata": {
+      "owner": "royalist",
+      "loyalty": 25
+    },
+    "los_patos": {
+      "owner": "royalist",
+      "loyalty": 25
+    },
+    "tucuman": {
+      "owner": "royalist",
+      "loyalty": 25
+    },
+    "salta": {
+      "owner": "royalist",
+      "loyalty": 25
+    },
+    "jujuy": {
+      "owner": "royalist",
+      "loyalty": 25
+    },
+    "humahuaca": {
+      "owner": "royalist",
+      "loyalty": 25
+    }
+  },
+  "headquarters": "cordoba",
+  "imports": {
+    "port": null,
+    "minHours": 72,
+    "maxHours": 120
+  },
+  "arrivalSites": [
+    {
+      "sector": "retiro",
+      "facilities": [
+        "barracks"
+      ]
+    },
+    {
+      "sector": "buenos_aires",
+      "facilities": [
+        "port",
+        "post"
+      ]
+    },
+    {
+      "sector": "ensenada",
+      "facilities": [
+        "port"
+      ]
+    },
+    {
+      "sector": "san_nicolas",
+      "facilities": [
+        "landing",
+        "post"
+      ]
+    },
+    {
+      "sector": "santa_fe",
+      "facilities": [
+        "port",
+        "post"
+      ]
+    },
+    {
+      "sector": "cordoba",
+      "facilities": [
+        "post"
+      ]
+    },
+    {
+      "sector": "mendoza",
+      "facilities": [
+        "post"
+      ]
+    },
+    {
+      "sector": "tucuman",
+      "facilities": [
+        "post"
+      ]
+    },
+    {
+      "sector": "salta",
+      "facilities": [
+        "post"
+      ]
+    },
+    {
+      "sector": "jujuy",
+      "facilities": [
+        "post"
+      ]
+    },
+    {
+      "sector": "humahuaca",
+      "facilities": [
+        "post"
+      ]
+    }
+  ],
+  "oppositionEquipment": {
+    "officer": "firearm-1805",
+    "line": "firearm-1800",
+    "veteran": "firearm-1801"
+  },
+  "militiaEquipment": {
+    "green": "firearm-1804",
+    "regular": "firearm-1803",
+    "veteran": "firearm-1801"
+  },
+  "characters": [
+    {
+      "id": "leon",
+      "name": "León Acosta",
+      "nickname": "León",
+      "role": "Custodia de las postas",
+      "biography": "Combatiente contratado para recuperar las comunicaciones entre Córdoba y Salta. Su contrato y sus heridas se conservan durante la campaña.",
+      "portrait": "/art/portrait-123.webp",
+      "abilities": [],
+      "personality": "Sobrio y escéptico. No promete victorias, pero cumple cada guardia.",
+      "speech": {
+        "hired": "Me incorporo a la custodia.",
+        "contact": "Veo movimiento enemigo.",
+        "cleared": "El paso está despejado.",
+        "wounded": "Estoy herido.",
+        "exhausted": "Necesito descansar.",
+        "death": "No podré continuar.",
+        "ending": "Las postas vuelven a recibir noticias."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 600,
+      "arrivalHours": 6,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "line_marksman",
+        "steadfast"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1802",
+      "blade": "blade-1811",
+      "attributes": {
+        "maxHp": 83,
+        "agility": 68,
+        "dexterity": 81,
+        "strength": 76,
+        "leadership": 65,
+        "wisdom": 72,
+        "marksmanship": 88,
+        "mechanical": 35,
+        "explosives": 43,
+        "medical": 31
+      },
+      "startingSupplies": {
+        "priming": 50,
+        "flints": 4,
+        "rations": 3,
+        "torches": 2,
+        "medkits": 3,
+        "boleadoras": 1
+      }
+    },
+    {
+      "id": "alonso",
+      "name": "Alonso Varela",
+      "nickname": "Alonso",
+      "role": "Custodia de las postas",
+      "biography": "Combatiente contratado para recuperar las comunicaciones entre Córdoba y Salta. Su contrato y sus heridas se conservan durante la campaña.",
+      "portrait": "/art/portrait-137.webp",
+      "abilities": [],
+      "personality": "Audaz, con orgullo herido. Protege a sus subordinados, aunque le cuesta aceptar el mando de alguien más joven.",
+      "speech": {
+        "hired": "Me incorporo a la custodia.",
+        "contact": "Veo movimiento enemigo.",
+        "cleared": "El paso está despejado.",
+        "wounded": "Estoy herido.",
+        "exhausted": "Necesito descansar.",
+        "death": "No podré continuar.",
+        "ending": "Las postas vuelven a recibir noticias."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 600,
+      "arrivalHours": 6,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "cavalry_commander",
+        "expert_rider"
+      ],
+      "ridingSkill": 80,
+      "weapon": "firearm-1801",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 85,
+        "agility": 83,
+        "dexterity": 79,
+        "strength": 82,
+        "leadership": 85,
+        "wisdom": 78,
+        "marksmanship": 81,
+        "mechanical": 23,
+        "explosives": 24,
+        "medical": 28
+      },
+      "startingSupplies": {
+        "priming": 50,
+        "flints": 4,
+        "rations": 3,
+        "torches": 2,
+        "medkits": 3,
+        "boleadoras": 1
+      }
+    },
+    {
+      "id": "benicio",
+      "name": "Benicio Rojas",
+      "nickname": "Benicio",
+      "role": "Sanitario del correo",
+      "biography": "Combatiente contratado para recuperar las comunicaciones entre Córdoba y Salta. Su contrato y sus heridas se conservan durante la campaña.",
+      "portrait": "/art/portrait-112.webp",
+      "abilities": [],
+      "personality": "Minucioso y algo vanidoso. Explica cada cura incluso cuando nadie se lo pide.",
+      "speech": {
+        "hired": "Me incorporo a la custodia.",
+        "contact": "Veo movimiento enemigo.",
+        "cleared": "El paso está despejado.",
+        "wounded": "Estoy herido.",
+        "exhausted": "Necesito descansar.",
+        "death": "No podré continuar.",
+        "ending": "Las postas vuelven a recibir noticias."
+      },
+      "spriteAppearance": "surgeon",
+      "monthlyPay": 600,
+      "arrivalHours": 6,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "field_rescuer",
+        "teacher"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1801",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 64,
+        "agility": 58,
+        "dexterity": 91,
+        "strength": 49,
+        "leadership": 62,
+        "wisdom": 91,
+        "marksmanship": 42,
+        "mechanical": 30,
+        "explosives": 19,
+        "medical": 94
+      },
+      "startingSupplies": {
+        "priming": 50,
+        "flints": 4,
+        "rations": 3,
+        "torches": 2,
+        "medkits": 3,
+        "boleadoras": 1
+      }
+    },
+    {
+      "id": "tomas",
+      "name": "Tomás Ledesma",
+      "nickname": "Tomás",
+      "role": "Custodia de las postas",
+      "biography": "Combatiente contratado para recuperar las comunicaciones entre Córdoba y Salta. Su contrato y sus heridas se conservan durante la campaña.",
+      "portrait": "/art/portrait-134.webp",
+      "abilities": [],
+      "personality": "Suspicaz y puntual. Revisa dos veces cada puerta antes de descansar.",
+      "speech": {
+        "hired": "Me incorporo a la custodia.",
+        "contact": "Veo movimiento enemigo.",
+        "cleared": "El paso está despejado.",
+        "wounded": "Estoy herido.",
+        "exhausted": "Necesito descansar.",
+        "death": "No podré continuar.",
+        "ending": "Las postas vuelven a recibir noticias."
+      },
+      "spriteAppearance": "gaucho",
+      "monthlyPay": 600,
+      "arrivalHours": 6,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "night_vision",
+        "guerrilla_tactician"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1802",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 68,
+        "agility": 84,
+        "dexterity": 77,
+        "strength": 58,
+        "leadership": 33,
+        "wisdom": 80,
+        "marksmanship": 68,
+        "mechanical": 23,
+        "explosives": 17,
+        "medical": 29
+      },
+      "startingSupplies": {
+        "priming": 50,
+        "flints": 4,
+        "rations": 3,
+        "torches": 2,
+        "medkits": 3,
+        "boleadoras": 1
+      }
+    },
+    {
+      "id": "julian",
+      "name": "Julián Salvatierra",
+      "nickname": "Julián",
+      "role": "Custodia de las postas",
+      "biography": "Combatiente contratado para recuperar las comunicaciones entre Córdoba y Salta. Su contrato y sus heridas se conservan durante la campaña.",
+      "portrait": "/art/portrait-111.webp",
+      "abilities": [],
+      "personality": "Meticuloso y poco diplomático. Exige cuentas claras porque una firma ajena ya le costó su carrera.",
+      "speech": {
+        "hired": "Me incorporo a la custodia.",
+        "contact": "Veo movimiento enemigo.",
+        "cleared": "El paso está despejado.",
+        "wounded": "Estoy herido.",
+        "exhausted": "Necesito descansar.",
+        "death": "No podré continuar.",
+        "ending": "Las postas vuelven a recibir noticias."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 600,
+      "arrivalHours": 6,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "gunsmith_artillerist",
+        "workshop_training"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1801",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 77,
+        "agility": 60,
+        "dexterity": 89,
+        "strength": 71,
+        "leadership": 78,
+        "wisdom": 91,
+        "marksmanship": 62,
+        "mechanical": 92,
+        "explosives": 86,
+        "medical": 24
+      },
+      "startingSupplies": {
+        "priming": 50,
+        "flints": 4,
+        "rations": 3,
+        "torches": 2,
+        "medkits": 3,
+        "boleadoras": 1
+      }
+    },
+    {
+      "id": "simon",
+      "name": "Simón Vera",
+      "nickname": "Simón",
+      "role": "Custodia de las postas",
+      "biography": "Combatiente contratado para recuperar las comunicaciones entre Córdoba y Salta. Su contrato y sus heridas se conservan durante la campaña.",
+      "portrait": "/art/portrait-108.webp",
+      "abilities": [],
+      "personality": "Risueño con los compañeros, desconfiado con los oficiales. Nunca apura a una montura agotada.",
+      "speech": {
+        "hired": "Me incorporo a la custodia.",
+        "contact": "Veo movimiento enemigo.",
+        "cleared": "El paso está despejado.",
+        "wounded": "Estoy herido.",
+        "exhausted": "Necesito descansar.",
+        "death": "No podré continuar.",
+        "ending": "Las postas vuelven a recibir noticias."
+      },
+      "spriteAppearance": "gaucho",
+      "monthlyPay": 600,
+      "arrivalHours": 6,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "expert_rider"
+      ],
+      "ridingSkill": 80,
+      "weapon": "firearm-1801",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 82,
+        "agility": 76,
+        "dexterity": 64,
+        "strength": 86,
+        "leadership": 32,
+        "wisdom": 52,
+        "marksmanship": 46,
+        "mechanical": 18,
+        "explosives": 10,
+        "medical": 24
+      },
+      "startingSupplies": {
+        "priming": 50,
+        "flints": 4,
+        "rations": 3,
+        "torches": 2,
+        "medkits": 3,
+        "boleadoras": 1
+      }
+    },
+    {
+      "id": "roque",
+      "name": "Roque Medina",
+      "nickname": "Roque",
+      "role": "Custodia de las postas",
+      "biography": "Combatiente contratado para recuperar las comunicaciones entre Córdoba y Salta. Su contrato y sus heridas se conservan durante la campaña.",
+      "portrait": "/art/portrait-114.webp",
+      "abilities": [],
+      "personality": "Severo con el descuido y paciente con el error honesto. Aprende los nombres de todos.",
+      "speech": {
+        "hired": "Me incorporo a la custodia.",
+        "contact": "Veo movimiento enemigo.",
+        "cleared": "El paso está despejado.",
+        "wounded": "Estoy herido.",
+        "exhausted": "Necesito descansar.",
+        "death": "No podré continuar.",
+        "ending": "Las postas vuelven a recibir noticias."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 600,
+      "arrivalHours": 6,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "teacher",
+        "steadfast"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1802",
+      "blade": "blade-1811",
+      "attributes": {
+        "maxHp": 81,
+        "agility": 63,
+        "dexterity": 72,
+        "strength": 77,
+        "leadership": 88,
+        "wisdom": 78,
+        "marksmanship": 78,
+        "mechanical": 34,
+        "explosives": 35,
+        "medical": 28
+      },
+      "startingSupplies": {
+        "priming": 50,
+        "flints": 4,
+        "rations": 3,
+        "torches": 2,
+        "medkits": 3,
+        "boleadoras": 1
+      }
+    },
+    {
+      "id": "claudio",
+      "name": "Claudio Soria",
+      "nickname": "Claudio",
+      "role": "Custodia de las postas",
+      "biography": "Combatiente contratado para recuperar las comunicaciones entre Córdoba y Salta. Su contrato y sus heridas se conservan durante la campaña.",
+      "portrait": "/art/portrait-124.webp",
+      "abilities": [],
+      "personality": "Enérgico y orgulloso de su equitación. Cuida más a las monturas que a su uniforme y rechaza las cargas sin salida.",
+      "speech": {
+        "hired": "Me incorporo a la custodia.",
+        "contact": "Veo movimiento enemigo.",
+        "cleared": "El paso está despejado.",
+        "wounded": "Estoy herido.",
+        "exhausted": "Necesito descansar.",
+        "death": "No podré continuar.",
+        "ending": "Las postas vuelven a recibir noticias."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 600,
+      "arrivalHours": 6,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "cavalry_commander",
+        "expert_rider"
+      ],
+      "ridingSkill": 80,
+      "weapon": "firearm-1801",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 85,
+        "agility": 80,
+        "dexterity": 74,
+        "strength": 83,
+        "leadership": 79,
+        "wisdom": 72,
+        "marksmanship": 73,
+        "mechanical": 22,
+        "explosives": 20,
+        "medical": 26
+      },
+      "startingSupplies": {
+        "priming": 50,
+        "flints": 4,
+        "rations": 3,
+        "torches": 2,
+        "medkits": 3,
+        "boleadoras": 1
+      }
+    },
+    {
+      "id": "nicolas",
+      "name": "Nicolás Ponce",
+      "nickname": "Nicolás",
+      "role": "Custodia de las postas",
+      "biography": "Combatiente contratado para recuperar las comunicaciones entre Córdoba y Salta. Su contrato y sus heridas se conservan durante la campaña.",
+      "portrait": "/art/portrait-115.webp",
+      "abilities": [],
+      "personality": "Reservado y competitivo. Lleva una cuenta privada de los disparos desperdiciados.",
+      "speech": {
+        "hired": "Me incorporo a la custodia.",
+        "contact": "Veo movimiento enemigo.",
+        "cleared": "El paso está despejado.",
+        "wounded": "Estoy herido.",
+        "exhausted": "Necesito descansar.",
+        "death": "No podré continuar.",
+        "ending": "Las postas vuelven a recibir noticias."
+      },
+      "spriteAppearance": "gaucho",
+      "monthlyPay": 600,
+      "arrivalHours": 6,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "line_marksman"
+      ],
+      "ridingSkill": 20,
+      "weapon": "firearm-1801",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 70,
+        "agility": 74,
+        "dexterity": 82,
+        "strength": 62,
+        "leadership": 31,
+        "wisdom": 75,
+        "marksmanship": 86,
+        "mechanical": 42,
+        "explosives": 21,
+        "medical": 17
+      },
+      "startingSupplies": {
+        "priming": 50,
+        "flints": 4,
+        "rations": 3,
+        "torches": 2,
+        "medkits": 3,
+        "boleadoras": 1
+      }
+    },
+    {
+      "id": "feliciano",
+      "name": "Feliciano Arce",
+      "nickname": "Feliciano",
+      "role": "Custodia de las postas",
+      "biography": "Combatiente contratado para recuperar las comunicaciones entre Córdoba y Salta. Su contrato y sus heridas se conservan durante la campaña.",
+      "portrait": "/art/portrait-131.webp",
+      "abilities": [],
+      "personality": "Orgulloso de su oficio. Acepta críticas precisas y rechaza las burlas.",
+      "speech": {
+        "hired": "Me incorporo a la custodia.",
+        "contact": "Veo movimiento enemigo.",
+        "cleared": "El paso está despejado.",
+        "wounded": "Estoy herido.",
+        "exhausted": "Necesito descansar.",
+        "death": "No podré continuar.",
+        "ending": "Las postas vuelven a recibir noticias."
+      },
+      "spriteAppearance": "granadero",
+      "monthlyPay": 600,
+      "arrivalHours": 6,
+      "recruitmentSource": "contract",
+      "service": "contract",
+      "progression": "experience",
+      "traits": [
+        "cavalry_commander",
+        "expert_rider"
+      ],
+      "ridingSkill": 80,
+      "weapon": "firearm-1802",
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 82,
+        "agility": 81,
+        "dexterity": 76,
+        "strength": 79,
+        "leadership": 64,
+        "wisdom": 68,
+        "marksmanship": 82,
+        "mechanical": 29,
+        "explosives": 23,
+        "medical": 25
+      },
+      "startingSupplies": {
+        "priming": 50,
+        "flints": 4,
+        "rations": 3,
+        "torches": 2,
+        "medkits": 3,
+        "boleadoras": 1
+      }
+    },
+    {
+      "id": "ines",
+      "name": "Inés Arce",
+      "nickname": "Inés",
+      "role": "Enlace de la posta",
+      "biography": "Mantiene las comunicaciones locales. Su supervivencia es necesaria para completar el encargo de las postas.",
+      "portrait": "/art/portrait-8.webp",
+      "abilities": [],
+      "personality": "Observadora, persuasiva y prudente. Escucha antes de hablar y protege a quienes arriesgan su vida llevando noticias entre los pueblos.",
+      "speech": {
+        "hired": "Me incorporo a la custodia.",
+        "contact": "Veo movimiento enemigo.",
+        "cleared": "El paso está despejado.",
+        "wounded": "Estoy herido.",
+        "exhausted": "Necesito descansar.",
+        "death": "No podré continuar.",
+        "ending": "Las postas vuelven a recibir noticias."
+      },
+      "spriteAppearance": "woman-shawl",
+      "monthlyPay": 0,
+      "weapon": null,
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 70,
+        "agility": 88,
+        "dexterity": 86,
+        "strength": 55,
+        "leadership": 89,
+        "wisdom": 94,
+        "marksmanship": 65,
+        "mechanical": 45,
+        "explosives": 20,
+        "medical": 65
+      },
+      "service": "permanent",
+      "recruitmentSource": "encounter",
+      "progression": "fixed",
+      "traits": [],
+      "ridingSkill": 0,
+      "encounter": {
+        "recruitable": false,
+        "greeting": "Hace una semana que no llegan partes del norte. No podemos enviar otro correo por un camino ocupado. Reuní una custodia, abrí Tucumán y Salta y traé la respuesta de sus enlaces. Disponemos de siete días.",
+        "requiredLeadership": 0,
+        "requiredLiberated": 0,
+        "requiredSector": null,
+        "dialogue": {
+          "entry": "offer",
+          "nodes": [
+            {
+              "id": "offer",
+              "title": "Siete días de silencio",
+              "text": "Hace una semana que no llegan partes del norte. No podemos enviar otro correo por un camino ocupado. Reuní una custodia, abrí Tucumán y Salta y traé la respuesta de sus enlaces. Disponemos de siete días.",
+              "choices": [
+                {
+                  "id": "accept",
+                  "label": "Acepto. Voy a abrir la ruta.",
+                  "next": "report",
+                  "effects": [
+                    {
+                      "type": "quest",
+                      "quest": "postas",
+                      "status": "active"
+                    }
+                  ]
+                },
+                {
+                  "id": "ask",
+                  "label": "¿Dónde encuentro a los enlaces?",
+                  "next": "directions"
+                }
+              ]
+            },
+            {
+              "id": "directions",
+              "title": "Los enlaces",
+              "text": "Mateo espera en la posta de Tucumán. Elena administra la estafeta de Salta. Necesitamos a ambos vivos. Tus contratados deben llegar antes de marchar; el taller de Córdoba puede reponer sus suministros.",
+              "choices": [
+                {
+                  "id": "back",
+                  "label": "Volvamos al encargo.",
+                  "next": "offer"
+                }
+              ]
+            },
+            {
+              "id": "report",
+              "title": "La respuesta del norte",
+              "text": "¿Qué noticias traés de las dos postas?",
+              "choices": [
+                {
+                  "id": "finish",
+                  "label": "Mateo y Elena confirmaron la reapertura.",
+                  "next": "done",
+                  "conditions": [
+                    {
+                      "type": "quest",
+                      "quest": "postas",
+                      "status": "active"
+                    },
+                    {
+                      "type": "quest",
+                      "quest": "posta-tucuman",
+                      "status": "completed"
+                    },
+                    {
+                      "type": "quest",
+                      "quest": "posta-salta",
+                      "status": "completed"
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "type": "quest",
+                      "quest": "postas",
+                      "status": "completed"
+                    },
+                    {
+                      "type": "treasury",
+                      "operation": "receive",
+                      "amount": 400
+                    }
+                  ]
+                },
+                {
+                  "id": "abandon",
+                  "label": "No podremos completar el encargo.",
+                  "next": "failed",
+                  "conditions": [
+                    {
+                      "type": "quest",
+                      "quest": "postas",
+                      "status": "active"
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "type": "quest",
+                      "quest": "postas",
+                      "status": "failed"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "done",
+              "title": "Vuelve la correspondencia",
+              "text": "El primer correo saldrá al amanecer. La tesorería entrega 400 pesos a la custodia. Gracias por devolvernos las noticias.",
+              "choices": []
+            },
+            {
+              "id": "failed",
+              "title": "La ruta sigue cerrada",
+              "text": "Avisaré a las familias. El encargo ha terminado sin abrir la comunicación.",
+              "choices": []
+            }
+          ]
+        }
+      },
+      "startingSupplies": {
+        "priming": 0,
+        "flints": 0,
+        "rations": 0,
+        "torches": 0,
+        "medkits": 0,
+        "boleadoras": 0
+      }
+    },
+    {
+      "id": "mateo",
+      "name": "Mateo Luna",
+      "nickname": "Mateo",
+      "role": "Enlace de la posta",
+      "biography": "Mantiene las comunicaciones locales. Su supervivencia es necesaria para completar el encargo de las postas.",
+      "portrait": "/art/portrait-100.webp",
+      "abilities": [],
+      "personality": "Trabajador de pocas palabras, aprende con la práctica y se preocupa por conservar las monturas.",
+      "speech": {
+        "hired": "Me incorporo a la custodia.",
+        "contact": "Veo movimiento enemigo.",
+        "cleared": "El paso está despejado.",
+        "wounded": "Estoy herido.",
+        "exhausted": "Necesito descansar.",
+        "death": "No podré continuar.",
+        "ending": "Las postas vuelven a recibir noticias."
+      },
+      "spriteAppearance": "gaucho",
+      "monthlyPay": 0,
+      "recruitmentSource": "encounter",
+      "service": "permanent",
+      "progression": "fixed",
+      "traits": [],
+      "ridingSkill": 0,
+      "weapon": null,
+      "blade": "blade-1813",
+      "attributes": {
+        "maxHp": 70,
+        "agility": 72,
+        "dexterity": 60,
+        "strength": 78,
+        "leadership": 35,
+        "wisdom": 60,
+        "marksmanship": 43,
+        "mechanical": 20,
+        "explosives": 15,
+        "medical": 20
+      },
+      "encounter": {
+        "recruitable": false,
+        "greeting": "Me quedé para recibir al correo, pero llegaron las patrullas. Si controlan Tucumán, puedo reabrir este tramo. En Salta todavía espera Elena.",
+        "requiredLeadership": 0,
+        "requiredLiberated": 0,
+        "requiredSector": null,
+        "dialogue": {
+          "entry": "waiting",
+          "nodes": [
+            {
+              "id": "waiting",
+              "title": "La posta vacía",
+              "text": "Me quedé para recibir al correo, pero llegaron las patrullas. Si controlan Tucumán, puedo reabrir este tramo. En Salta todavía espera Elena.",
+              "choices": [
+                {
+                  "id": "prepare",
+                  "label": "Prepararemos la reapertura de la posta.",
+                  "next": "confirm",
+                  "conditions": [
+                    {
+                      "type": "quest",
+                      "quest": "postas",
+                      "status": "active"
+                    },
+                    {
+                      "type": "quest",
+                      "quest": "posta-tucuman",
+                      "status": "not-started"
+                    },
+                    {
+                      "type": "sector",
+                      "sector": "tucuman",
+                      "owner": "patriot"
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "type": "quest",
+                      "quest": "posta-tucuman",
+                      "status": "active"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "done",
+              "title": "El próximo tramo",
+              "text": "Los 200 pesos de la posta ayudarán a sostener el viaje. Buscá a Elena en Salta y volvé a Córdoba con su respuesta.",
+              "choices": []
+            },
+            {
+              "id": "confirm",
+              "title": "Confirmar la reapertura",
+              "text": "El camino está asegurado. Confirmá la reapertura para que empiece a salir la correspondencia.",
+              "choices": [
+                {
+                  "id": "reopen",
+                  "label": "Tucumán está bajo nuestro control. Reabramos la posta.",
+                  "next": "done",
+                  "conditions": [
+                    {
+                      "type": "quest",
+                      "quest": "postas",
+                      "status": "active"
+                    },
+                    {
+                      "type": "quest",
+                      "quest": "posta-tucuman",
+                      "status": "active"
+                    },
+                    {
+                      "type": "sector",
+                      "sector": "tucuman",
+                      "owner": "patriot"
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "type": "quest",
+                      "quest": "posta-tucuman",
+                      "status": "completed"
+                    },
+                    {
+                      "type": "treasury",
+                      "operation": "receive",
+                      "amount": 200
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "startingSupplies": {
+        "priming": 0,
+        "flints": 0,
+        "rations": 0,
+        "torches": 0,
+        "medkits": 0,
+        "boleadoras": 0
+      }
+    },
+    {
+      "id": "elena",
+      "name": "Elena Correa",
+      "nickname": "Elena",
+      "role": "Enlace de la posta",
+      "biography": "Mantiene las comunicaciones locales. Su supervivencia es necesaria para completar el encargo de las postas.",
+      "portrait": "/art/portrait-1.webp",
+      "abilities": [],
+      "personality": "Resuelta y solidaria con las partidas. Su autoridad nace de compartir los riesgos y sostener a quienes combaten lejos de sus hogares.",
+      "speech": {
+        "hired": "Me incorporo a la custodia.",
+        "contact": "Veo movimiento enemigo.",
+        "cleared": "El paso está despejado.",
+        "wounded": "Estoy herido.",
+        "exhausted": "Necesito descansar.",
+        "death": "No podré continuar.",
+        "ending": "Las postas vuelven a recibir noticias."
+      },
+      "spriteAppearance": "woman-scout",
+      "monthlyPay": 0,
+      "weapon": null,
+      "blade": "blade-1809",
+      "attributes": {
+        "maxHp": 88,
+        "agility": 89,
+        "dexterity": 86,
+        "strength": 80,
+        "leadership": 91,
+        "wisdom": 82,
+        "marksmanship": 77,
+        "mechanical": 20,
+        "explosives": 45,
+        "medical": 52
+      },
+      "service": "permanent",
+      "recruitmentSource": "encounter",
+      "progression": "fixed",
+      "traits": [],
+      "ridingSkill": 0,
+      "encounter": {
+        "recruitable": false,
+        "greeting": "Guardé las cartas durante la ocupación. No las enviaré hasta saber que Tucumán también puede recibirlas.",
+        "requiredLeadership": 0,
+        "requiredLiberated": 0,
+        "requiredSector": null,
+        "dialogue": {
+          "entry": "waiting",
+          "nodes": [
+            {
+              "id": "waiting",
+              "title": "Cartas sin destino",
+              "text": "Guardé las cartas durante la ocupación. No las enviaré hasta saber que Tucumán también puede recibirlas.",
+              "choices": [
+                {
+                  "id": "prepare",
+                  "label": "Prepararemos la reapertura de la posta.",
+                  "next": "confirm",
+                  "conditions": [
+                    {
+                      "type": "quest",
+                      "quest": "postas",
+                      "status": "active"
+                    },
+                    {
+                      "type": "quest",
+                      "quest": "posta-tucuman",
+                      "status": "completed"
+                    },
+                    {
+                      "type": "quest",
+                      "quest": "posta-salta",
+                      "status": "not-started"
+                    },
+                    {
+                      "type": "sector",
+                      "sector": "salta",
+                      "owner": "patriot"
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "type": "quest",
+                      "quest": "posta-salta",
+                      "status": "active"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "done",
+              "title": "La confirmación",
+              "text": "Salta está lista. Llevá mi confirmación a Inés, en Córdoba. Recibís 200 pesos para el regreso.",
+              "choices": []
+            },
+            {
+              "id": "confirm",
+              "title": "Confirmar la reapertura",
+              "text": "El camino está asegurado. Confirmá la reapertura para que empiece a salir la correspondencia.",
+              "choices": [
+                {
+                  "id": "reopen",
+                  "label": "Mateo reabrió Tucumán y Salta ya está segura.",
+                  "next": "done",
+                  "conditions": [
+                    {
+                      "type": "quest",
+                      "quest": "postas",
+                      "status": "active"
+                    },
+                    {
+                      "type": "quest",
+                      "quest": "posta-tucuman",
+                      "status": "completed"
+                    },
+                    {
+                      "type": "quest",
+                      "quest": "posta-salta",
+                      "status": "active"
+                    },
+                    {
+                      "type": "sector",
+                      "sector": "salta",
+                      "owner": "patriot"
+                    }
+                  ],
+                  "effects": [
+                    {
+                      "type": "quest",
+                      "quest": "posta-salta",
+                      "status": "completed"
+                    },
+                    {
+                      "type": "treasury",
+                      "operation": "receive",
+                      "amount": 200
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "startingSupplies": {
+        "priming": 0,
+        "flints": 0,
+        "rations": 0,
+        "torches": 0,
+        "medkits": 0,
+        "boleadoras": 0
+      }
+    }
+  ],
+  "weapons": [
+    {
+      "id": "firearm-1800",
+      "template": 1800,
+      "name": "Brown Bess",
+      "damage": 58,
+      "fireAP": 12,
+      "aimAP": 6,
+      "reloadAP": 45,
+      "range": 18,
+      "readyAP": 0
+    },
+    {
+      "id": "firearm-1801",
+      "template": 1801,
+      "name": "Charleville",
+      "damage": 52,
+      "fireAP": 11,
+      "aimAP": 5,
+      "reloadAP": 42,
+      "range": 22,
+      "readyAP": 0
+    },
+    {
+      "id": "firearm-1802",
+      "template": 1802,
+      "name": "Fusil Baker",
+      "damage": 64,
+      "fireAP": 16,
+      "aimAP": 10,
+      "reloadAP": 70,
+      "range": 45,
+      "readyAP": 0
+    },
+    {
+      "id": "firearm-1803",
+      "template": 1803,
+      "name": "Tercerola",
+      "damage": 44,
+      "fireAP": 9,
+      "aimAP": 4,
+      "reloadAP": 38,
+      "range": 12,
+      "readyAP": 0
+    },
+    {
+      "id": "firearm-1804",
+      "template": 1804,
+      "name": "Escopeta Criolla",
+      "damage": 48,
+      "fireAP": 10,
+      "aimAP": 4,
+      "reloadAP": 35,
+      "range": 10,
+      "readyAP": 0
+    },
+    {
+      "id": "firearm-1805",
+      "template": 1805,
+      "name": "Pistola de Arzón",
+      "damage": 42,
+      "fireAP": 7,
+      "aimAP": 3,
+      "reloadAP": 32,
+      "range": 8,
+      "readyAP": 0
+    },
+    {
+      "id": "firearm-1806",
+      "template": 1806,
+      "name": "Pistola de Duelo de Oficial",
+      "damage": 38,
+      "fireAP": 6,
+      "aimAP": 2,
+      "reloadAP": 28,
+      "range": 12,
+      "readyAP": 0
+    },
+    {
+      "id": "firearm-1807",
+      "template": 1807,
+      "name": "Trabuco Naranjero",
+      "damage": 75,
+      "fireAP": 12,
+      "aimAP": 5,
+      "reloadAP": 40,
+      "range": 6,
+      "readyAP": 0
+    },
+    {
+      "id": "firearm-1808",
+      "template": 1808,
+      "name": "Pistola Doble Cañón",
+      "damage": 40,
+      "fireAP": 8,
+      "aimAP": 3,
+      "reloadAP": 55,
+      "range": 9,
+      "readyAP": 0
+    },
+    {
+      "id": "blade-1809",
+      "template": 1809,
+      "name": "Sable Corvo Sanmartiniano",
+      "damage": 46,
+      "ap": 12,
+      "reach": 1.5
+    },
+    {
+      "id": "blade-1810",
+      "template": 1810,
+      "name": "Sable de Caroya",
+      "damage": 42,
+      "ap": 14,
+      "reach": 1.5
+    },
+    {
+      "id": "blade-1811",
+      "template": 1811,
+      "name": "Bayoneta de Cubo",
+      "damage": 50,
+      "ap": 16,
+      "reach": 2
+    },
+    {
+      "id": "blade-1812",
+      "template": 1812,
+      "name": "Lanza de Tacuara",
+      "damage": 56,
+      "ap": 18,
+      "reach": 2.5
+    },
+    {
+      "id": "blade-1813",
+      "template": 1813,
+      "name": "Facón Gaucho con Poncho",
+      "damage": 32,
+      "ap": 8,
+      "reach": 1.5
+    }
+  ],
+  "placements": [
+    {
+      "id": "posta-ines",
+      "character": "ines",
+      "mode": "fixed",
+      "sectors": [
+        "cell-14-20"
+      ],
+      "moveChance": 100,
+      "afterDeath": null,
+      "delayMin": 0,
+      "delayMax": 0
+    },
+    {
+      "id": "posta-mateo",
+      "character": "mateo",
+      "mode": "fixed",
+      "sectors": [
+        "cell-12-11"
+      ],
+      "moveChance": 100,
+      "afterDeath": null,
+      "delayMin": 0,
+      "delayMax": 0
+    },
+    {
+      "id": "posta-elena",
+      "character": "elena",
+      "mode": "fixed",
+      "sectors": [
+        "cell-12-7"
+      ],
+      "moveChance": 100,
+      "afterDeath": null,
+      "delayMin": 0,
+      "delayMax": 0
+    }
+  ],
+  "includeOriginalResidents": false,
+  "campaignRoles": {
+    "foundryEngineer": null,
+    "marchCommander": null
+  },
+  "campaignStory": {
+    "introduction": "Córdoba, 1812. La correspondencia del norte se ha detenido. Contratá una custodia, esperá su llegada y buscá a Inés en el sector. Sus instrucciones abren una campaña propia de tres capítulos.",
+    "victory": "La ruta de las postas vuelve a unir Córdoba, Tucumán y Salta. Las familias reciben sus cartas y la custodia concluye el encargo.",
+    "defeat": "El encargo de las postas ha fracasado. La custodia no pudo asegurar a sus enlaces y regresar dentro del plazo.",
+    "chapters": [
+      {
+        "id": "encargo",
+        "name": "El encargo de Inés",
+        "objective": "Contratá una custodia y hablá con Inés en Córdoba para aceptar el encargo.",
+        "conditions": [
+          {
+            "type": "quest",
+            "quest": "postas",
+            "status": "active"
+          }
+        ]
+      },
+      {
+        "id": "ruta",
+        "name": "Dos postas abiertas",
+        "objective": "Liberá Tucumán y Salta. Hablá con Mateo y Elena en ese orden.",
+        "conditions": [
+          {
+            "type": "quest",
+            "quest": "posta-tucuman",
+            "status": "completed"
+          },
+          {
+            "type": "quest",
+            "quest": "posta-salta",
+            "status": "completed"
+          }
+        ]
+      },
+      {
+        "id": "regreso",
+        "name": "La respuesta en Córdoba",
+        "objective": "Volvé junto a Inés y entregá las dos confirmaciones antes del plazo.",
+        "conditions": [
+          {
+            "type": "quest",
+            "quest": "postas",
+            "status": "completed"
+          }
+        ]
+      }
+    ],
+    "failureConditions": [
+      {
+        "type": "quest",
+        "quest": "postas",
+        "status": "failed"
+      }
+    ]
+  }
+}

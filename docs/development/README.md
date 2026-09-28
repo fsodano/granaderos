@@ -9,6 +9,7 @@ browser game and run the available checks.
 | --- | --- |
 | Setup, commands and source layout | [Getting started](getting-started.md) |
 | Campaign content authoring | [Story editor](story-editor.md) |
+| Editable example campaign | [La ruta de las postas](example-post-campaign.md) |
 | Tactical map authoring | [Sector editor](sector-editor.md) |
 | Campaign architecture and implementation history | [Browser campaign systems](WEB-SYSTEMS.md) |
 | Save storage and compaction | [Compact campaign saves](compact-saves.md) |

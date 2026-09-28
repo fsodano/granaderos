@@ -2,6 +2,8 @@
 
 El editor de historia se abre en `/story`, desde el menú del juego o desde el constructor de sectores. El constructor existente permanece en `/editor` con sus mapas, edificios y pruebas.
 
+El ejemplo **La ruta de las postas** se puede cargar, editar y descargar desde el editor. Su [guía](example-post-campaign.md) explica el recorrido y cómo recuperar el borrador anterior.
+
 ## Fichas aplicadas a la campaña
 
 Nombres, apodos, retratos, biografías, función mostrada, diez atributos iniciales y paga mensual. El catálogo permite crear, duplicar y quitar contratables y habitantes nuevos. Se pueden buscar personajes, deshacer y rehacer cambios, recuperar el borrador e importar o exportar el paquete. Los retratos pueden usar imágenes locales o archivos PNG, JPEG y WebP de hasta 250 KB.

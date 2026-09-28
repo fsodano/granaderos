@@ -48,6 +48,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Fresh northern continuation through Yatasto](fresh-northern-opening.md)
 - [Character starting supplies](character-starting-supplies.md)
 - [Saving authored cartridge allocations](authored-cartridge-save.md)
+- [Independent post campaign](independent-post-campaign.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 

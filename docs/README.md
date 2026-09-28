@@ -13,6 +13,7 @@ Player-facing text is Spanish. Code and documentation are English.
 | Review formal cross-branch verification | [27 September audit](verification/formal-audit-2026-09-27.md) |
 | Check published features and remaining work | [Published progress ledger](verification/published-progress.md) |
 | Edit campaign content | [Story editor](development/story-editor.md) |
+| Play or modify the independent example | [La ruta de las postas](development/example-post-campaign.md) |
 | Build tactical sectors | [Sector editor](development/sector-editor.md) |
 | Find controls and game-system notes | [Gameplay index](gameplay/README.md) |
 | Find art sources and visual decisions | [Art guide](art/README.md) and [decision records](adr/README.md) |
