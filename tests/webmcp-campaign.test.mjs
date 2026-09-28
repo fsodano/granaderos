@@ -1,3 +1,4 @@
+import {dialoguePackage} from './dialogue-fixture.mjs';
 import {readyLocal,localId,localNPC,tactical as localTactical} from './local-contract-fixture.mjs';
 import {register} from 'node:module';
 import test from 'node:test';
@@ -88,6 +89,16 @@ test('the actual conversation shows missing funds and disables the local hiring 
  const p=readyLocal({pay:1000000}),m=await mount(t,p),npc=m.document.querySelector('[data-unit-id="authored-alma-contract"]');assert.ok(npc);
  await act(async()=>npc.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));
  const button=[...m.document.querySelectorAll('button')].find(b=>b.textContent==='Contratar · 33334 pesos');assert.ok(button);assert.equal(button.disabled,true);assert.match(m.document.querySelector('[aria-label="Conversación"]').textContent,/Necesitás 33334 pesos/);assert.deepEqual(pair(m.read()),p);
+});
+
+test('the actual conversation follows authored choices, rejects a second stale click and saves the selected branch',async t=>{
+ const p=readyLocal(undefined,dialoguePackage()),m=await mount(t,p),npc=m.document.querySelector('[data-unit-id="authored-alma-contract"]');assert.ok(npc);
+ await act(async()=>npc.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));await m.click('Conversar');
+ let conversation=m.document.querySelector('[aria-label="Conversación"]');assert.match(conversation.textContent,/El camino tiene dos salidas/);
+ const north=[...conversation.querySelectorAll('button')].find(b=>b.textContent==='Contame sobre el norte.'),river=[...conversation.querySelectorAll('button')].find(b=>b.textContent==='Prefiero conocer el río.');assert.ok(north&&river);
+ await act(async()=>{north.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true}));river.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true}));});
+ assert.equal(m.read().campaign.lastConversation.dialogueNode,'north');assert.match(m.document.querySelector('[role="status"]').textContent,/conversación cambió/);assert.deepEqual(m.saved(),pair(m.read()));
+ await m.click('Volvamos a las opciones.');await m.click('Prefiero conocer el río.');assert.equal(m.read().campaign.lastConversation.dialogueNode,'river');assert.match(m.document.querySelector('[aria-label="Conversación"]').textContent,/Seguí la ribera al amanecer/);assert.deepEqual(m.saved(),pair(m.read()));
 });
 
 async function mount(t,saved){

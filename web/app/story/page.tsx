@@ -1,4 +1,5 @@
 'use client';
+import DialogueEditor from './DialogueEditor';
 import { useEffect, useRef, useState } from 'react';
 import {
   ATTRIBUTE_FIELDS,
@@ -697,6 +698,7 @@ export default function ContentEditor() {
                         </label>
                       </>}
                     </fieldset>}
+                    {isWorldCharacter(item)&&<DialogueEditor key={item.id} value={item.encounter.dialogue} greeting={item.encounter.greeting} onChange={dialogue=>update({encounter:{...item.encounter,dialogue}})}/>}
                     <fieldset aria-label="Habilidades de combate">
                       <legend>Habilidades de combate</legend>
                       <p>Elegí las capacidades de este personaje. Sin casillas marcadas, no tendrá ninguna de estas ventajas. Las funciones de historia se conservan por ahora.</p>
