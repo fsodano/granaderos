@@ -391,8 +391,8 @@ el combate captura las piezas. Retirarse puede dejarlas en manos realistas.
 **Piezas emplazadas en este sector** muestra el dueño, la carga y las reservas.
 Preparar una batería vacía no retira los cañones que ya están allí.
 
-Por ahora, la recuperación estratégica, el transporte y la reposición de esas
-piezas siguen pendientes de integración. Los perfiles de artillería todavía no
+La recuperación estratégica y el transporte de esas piezas siguen pendientes
+de integración. La reposición se configura en las reglas que se describen abajo. Los perfiles de artillería todavía no
 se editan desde la ficha de armas. [Verificación](../verification/stationed-artillery.md).
 
 ## Territorio inicial
@@ -573,3 +573,19 @@ asignado paga el mismo paso; los ayudantes que no participan conservan sus punto
 La escuadra no usa los puntos de acción de la milicia. Durante la exploración,
 el trabajo consume tiempo y no resta puntos de combate.
 [Verificación y alcance](../verification/artillery-crew-loading.md).
+
+## Reponer munición de artillería
+
+En **Reglas → Munición de artillería** podés permitir o impedir la reposición,
+fijar el precio por modelo y elegir el límite de reserva para nuevas compras.
+Cero pesos permite comprar gratis. Estos valores quedan guardados con cada
+campaña. Cambiar el borrador no cambia partidas iniciadas.
+
+En la armería, **Comprar 1 munición** paga el precio y agrega una reserva al cañón
+local. La pieza y el sector deben ser propios. Se necesita una conexión al cuartel,
+un combatiente disponible y ningún enemigo capaz de combatir en el lugar.
+La pantalla indica por qué una compra no está disponible.
+
+Comprar no carga la pieza ni borra una recarga parcial. La dotación debe cargarla
+en el campo. El límite no elimina munición que ya existe, ni cambia la entrega
+inicial de una carga y seis reservas. [Verificación](../verification/authored-artillery-supply.md).

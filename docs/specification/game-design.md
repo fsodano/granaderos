@@ -696,3 +696,15 @@ modifiers affect remaining work. Shared crew checks govern controls and executio
 hired actors cannot commandeer militia AP. Peaceful work advances one simultaneous
 duration without spending combat AP. See [verification](../verification/artillery-crew-loading.md)
 for prepared tactical boundaries and actual paid-gun continuation.
+
+### Authored artillery replenishment
+
+An exact local friendly emplacement can receive one purchased reserve round in
+a controlled, connected, cleared sector with an available squad. Payment uses
+pesos and preserves position, identity, current load and unfinished work. The
+story editor pins the permission, three model prices and purchase reserve limit.
+The default prices are 20/30/10 pesos for four-pounder/eight-pounder/swivel rounds,
+with a six-round limit; these are game tuning. A lower limit preserves existing
+rounds and the initial purchased bundle. Old packages keep their identity. See
+[verification](../verification/authored-artillery-supply.md) for paid depletion,
+reload and saved UI continuation, and for prepared eligibility boundaries.
