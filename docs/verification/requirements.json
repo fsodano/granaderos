@@ -402,7 +402,8 @@
     {
       "id": "E-MILITIA-COMBAT",
       "path": "docs/verification/militia-combat-progression.md",
-      "description": "Combat-earned ranks preserve actual militia identity, wounds and finite equipment. Real reaction kills, bounded opponent receipts, active saves, peaceful reentry and prior paid veteran contracts pass. The overlapping group passes 54/54; complete regression passes 967/967, zero failures/skips, and types, export, 36 reference comparisons and documentation validation pass. Exact-head CI remains required before merge. Thresholds are fixed Granaderos tuning; full allied AI, redistribution and advanced defense routes remain separate."
+      "description": "Combat-earned ranks preserve actual militia identity, wounds and finite equipment. Real reaction kills, bounded opponent receipts, active saves, peaceful reentry and prior paid veteran contracts pass. The overlapping group passes 54/54; complete regression passes 967/967, zero failures/skips, and types, export, 36 reference comparisons and documentation validation pass. PR #92 merged after successful exact-head CI at 86fb6c9e2494eba4ff9581505dae66bb55066b34. Thresholds are fixed Granaderos tuning; full allied AI, redistribution and advanced defense routes remain separate.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36468396494/job/109084156807"
     },
     {
       "id": "E-MILITIA-RULES",
@@ -487,7 +488,7 @@
       "requirement": "Earn militia promotion in combat without replacing wounded soldiers or replenishing their belongings",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Combat-earned ranks preserve the actual survivor and finite belongings. New veteran tuition is rejected; prior paid contracts remain supported.",
+      "published": "Published on main through PR #92 on 2026-09-28 after successful exact-head CI. Combat-earned ranks preserve the actual survivor and finite belongings. New veteran tuition is rejected; prior paid contracts remain supported.",
       "local": "Seven new simulations, one mounted campaign test and one individual legacy-course check pass in a 54/54 overlapping group. Actual reaction kills preserve the wounded soldier, weapon, spent cartridges and wear through both ranks, saves and reentry. Types and all 36 baseline comparisons pass. Complete regression passes 967/967, zero failures/skips. Production export and the documentation audit pass.",
       "remaining": "",
       "acceptance": "Earn both ranks through actual finite combat, return and save without replacing or healing the survivor; prevent repeated opponent credit and peaceful promotion; reject invalid saved credit and new veteran tuition while retaining prior paid contracts.",
@@ -505,7 +506,8 @@
         "tests/militia-combat-fixture.mjs",
         "tests/militia-training-identities.test.mjs",
         "tests/content-force-equipment.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/92"
     },
     {
       "id": "MILITIAWOUND-01",
@@ -2599,9 +2601,9 @@
       "requirement": "C\u00edvicos, Montoneras and veteran line/Granaderos tiers",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Paid local militia cohorts materialize with historical loadouts, fight as local allies and retain actual tactical wounds, casualties and depleted equipment through saved reentry. Individual promotion and advanced militia behavior are tracked separately. PR #89 adds local physician care with finite dressings. PR #90 preserves individual participants through paid promotion. PR #91 advances unloaded wounds and preserves actual finite remains.",
+      "published": "Paid local militia cohorts materialize with historical loadouts, fight as local allies and retain actual tactical wounds, casualties and depleted equipment through saved reentry. Individual promotion and advanced militia behavior are tracked separately. PR #89 adds local physician care with finite dressings. PR #90 preserves individual participants through paid promotion. PR #91 advances unloaded wounds and preserves actual finite remains. PR #92 adds combat-earned promotion with persistent opponent credit and disallows new paid veteran courses.",
       "local": "Individual promotion acceptance is tracked by MILITIATRAIN-01; local physician work by MILITIACARE-01. The larger preserved parity source is not equivalent to published integration. Retained militia wound time is tracked by MILITIAWOUND-01. Combat-earned promotion is tracked by MILITIAXP-01. Editable progression is tracked by MILITIARULES-01.",
-      "remaining": "Publish combat-earned progression, then integrate configurable progression rules, allied autonomy, redistribution, custody and the remaining advanced militia behavior.",
+      "remaining": "Publish configurable progression and its high-credit correction, then integrate allied autonomy, redistribution, custody and the remaining advanced militia behavior.",
       "acceptance": "Training, historical loadouts and distinct behavior",
       "evidence": [
         "E-PUBLISHED",
@@ -4565,11 +4567,11 @@
       "id": "JA2-S04",
       "group": "JA2 gameplay parity",
       "requirement": "Militia rank progression distinguishes training from combat experience. G60.",
-      "status": "LOCAL_ONLY",
+      "status": "PARTIAL",
       "priority": "P1",
-      "published": "This complete capability is not accepted in the published release.",
-      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check. Combat-earned promotion now has bounded integration evidence in MILITIAXP-01, with configurable thresholds and a high-credit boundary correction in MILITIARULES-01. Exact-head publication remains pending.",
-      "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
+      "published": "PR #92 publishes actual combat-earned promotion, new paid regular instruction and prior veteran-course compatibility. Existing finite local care and individual participants remain preserved. The further large-encounter receipt correction is accepted locally with MILITIARULES-01, pending publication.",
+      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check. Combat-earned promotion now has bounded integration evidence in MILITIAXP-01, with configurable thresholds and a high-credit boundary correction in MILITIARULES-01. PR #92 passed exact-head CI and merged; the reviewed rule/cap delivery remains pending.",
+      "remaining": "Publish the reviewed high-credit correction and authored rule checks, then assess closure against the actual combat, failure-path, resource and save evidence.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
@@ -5053,13 +5055,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "61bdfa00e0ded0d88effae5c54ae6094d621d3f8",
-    "total": 958,
-    "passed": 958,
+    "source": "34f586ba81842765f2f9382e4801fc0477a1366d",
+    "total": 967,
+    "passed": 967,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-MILITIA-WOUNDS"
+    "evidenceId": "E-MILITIA-COMBAT"
   }
 }
