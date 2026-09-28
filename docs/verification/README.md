@@ -126,3 +126,6 @@ A rules test, prepared scene, save continuation or isolated checkout verifies
 only that scope. A full campaign claim requires a complete route with real
 resources, casualties and campaign settlement. Documentation link checks do not
 establish gameplay correctness.
+
+[Complete parallel CI verification](parallel-verification.md) documents the full
+test partition and retained publication gates. It is infrastructure evidence.
