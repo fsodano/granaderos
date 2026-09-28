@@ -36,3 +36,7 @@ This corrects the runtime diary transaction. It does not expand the journal,
 revive an essential character, change campaign failure conditions or relax file
 validation. Previously invalid oversized files are not silently accepted. The
 broader advanced integration remains open.
+
+[PR #73](https://github.com/fsodano/granaderos/pull/73) merged after
+[GitHub CI](https://github.com/fsodano/granaderos/actions/runs/36424710104/job/108935711518)
+passed at `e4ce17444d2a581c8492c88856698c2d3190bfc0`.

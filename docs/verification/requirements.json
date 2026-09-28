@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "f203f74dc49b8f0f9ea6f212e91e7b31450240a8",
+  "baseline": "020feff7d0df17e99d289ef916d0a14d57042366",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -290,7 +290,13 @@
     {
       "id": "E-CIVILIAN-LOSS-LOG",
       "path": "docs/verification/civilian-loss-log.md",
-      "description": "A full diary reproduces an 81-entry invalid save on essential civilian death. The fix preserves the newest 80 entries, active save/load, once-only death acknowledgement, departure and permanent defeat. Prepared chapter/diary; real fatal orders. 834 passing tests, types, build and baseline checks."
+      "description": "A full diary reproduces an 81-entry invalid save on essential civilian death. The fix preserves the newest 80 entries, active save/load, once-only death acknowledgement, departure and permanent defeat. Prepared chapter/diary; real fatal orders. 834 passing tests, types, build and baseline checks.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36424710104/job/108935711518"
+    },
+    {
+      "id": "E-FIRST-AID",
+      "path": "docs/verification/finite-first-aid.md",
+      "description": "Finite skill-based manual stabilization, ordinary bandaging without health gain, persistent bandaged wounds, civilian/recruit continuity, actual mouse/keyboard controls and valid saves. Fresh stock and independent campaigns retain paid supplies, replacements, elapsed time and permanent loss. 844 passing tests, types, export and baseline checks; no full advanced or browser-performance claim."
     }
   ],
   "queue": [
@@ -339,12 +345,38 @@
   ],
   "requirements": [
     {
+      "id": "FIRSTAID-01",
+      "group": "Published deliveries",
+      "requirement": "Stabilize critical casualties with finite field work and retain bandaged wounds",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Manual care uses partial skill-based work toward 15 HP, spends one dressing per effective stroke and the normal AP or exploration time. Ordinary bandaging does not restore ordinary health. Bandaged wounds persist through return, recruitment, strategic recovery and saves.",
+      "local": "Ten new plan, simulation and mounted-control checks cover treatment, failure and persistence. The two fresh coastal routes, northern route, complete stock campaign, independent post campaign and explicit historical loss pass with actual resources and casualties.",
+      "remaining": "",
+      "acceptance": "Apply partial care through actual controls, consume finite supplies and time, save midway, preserve stabilized and bandaged state through campaign return, and recover ordinary health only through campaign care. Reject repeated completed or unavailable work.",
+      "evidence": [
+        "E-FIRST-AID"
+      ],
+      "parents": [
+        "JA2-C06",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/first-aid-plan.test.mjs",
+        "tests/critical-first-aid.test.mjs",
+        "tests/first-aid-render.test.mjs",
+        "tests/civilian-state.test.mjs",
+        "tests/fresh-ending-route.test.mjs",
+        "tests/post-campaign.test.mjs"
+      ]
+    },
+    {
       "id": "LOSSLOG-01",
       "group": "Published deliveries",
       "requirement": "Save essential civilian deaths with a full campaign journal",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Essential civilian death notices retain the newest 80 journal entries without losing the fatal state. Actual active saves, repeated acknowledgement, departure and saved defeat remain valid.",
+      "published": "Essential civilian death notices retain the newest 80 journal entries without losing the fatal state. Actual active saves, repeated acknowledgement, departure and saved defeat remain valid. Merged through PR #73 after exact-head CI.",
       "local": "The new regression first reproduced 81 entries. It prepares a chapter and full diary, then uses actual paid recruitment, travel, approach and fatal orders; the existing civilian and historical loss routes remain covered.",
       "remaining": "",
       "acceptance": "Fill the journal, cause an actual essential civilian death, save/reload the active scene, settle it and preserve the death, defeat and bounded once-only notice.",
@@ -359,7 +391,8 @@
         "tests/civilian-loss-log.test.mjs",
         "tests/civilian-state.test.mjs",
         "tests/historical-loss.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/73"
     },
     {
       "id": "CARERULES-01",
@@ -465,12 +498,13 @@
       "requirement": "Load, edit and finish a complete independent campaign package",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "La ruta de las postas is a downloadable three-chapter scenario with thirteen independent identities, paid service, two actual locality battles, world contacts, a timed objective and its own ending. The editor loads it with undo and the verified seed. Merged through PR #68 after exact-head CI.",
+      "published": "La ruta de las postas is a downloadable three-chapter scenario with thirteen independent identities, paid service, two actual locality battles, world contacts, a timed objective and its own ending. The editor loads it with undo and the verified seed. Merged through PR #68 after exact-head CI. The later finite-first-aid regression completes after eight hours of paid medical work, actual weapon purchases and a daylight approach to Salta.",
       "local": "A fresh seed-8 route pays for replacements and supplies, preserves three deaths, returns to Córdoba and saves victory; a separate fresh timed route loses. Mounted controls load, edit, undo and launch real play.",
       "remaining": "",
       "acceptance": "Use a portable package without engine-specific scenario code; launch and complete its declared beginning, middle and ending through actual campaign actions, with losses, costs, saved continuation and a real failure path.",
       "evidence": [
-        "E-POST-CAMPAIGN"
+        "E-POST-CAMPAIGN",
+        "E-FIRST-AID"
       ],
       "parents": [
         "STORY-07",
@@ -535,12 +569,13 @@
       "requirement": "Finish a fresh stock historical campaign and continue after saved victory",
       "status": "VERIFIED",
       "priority": "P0",
-      "published": "The complete mixed Retiro route wins all thirteen localities without injected outcomes or resources. Real paid service, supplies, finite care, controlled arrivals and losses lead to historical victory with San Martin alive. The created actor stays dead. A 48-hour continuation receives income, expires a daily contract and re-enters the sector without restoring the former hire or repeating the ending. Merged through PR #65 after exact-head CI.",
+      "published": "The complete mixed Retiro route wins all thirteen localities without injected outcomes or resources. Real paid service, supplies, finite care, controlled arrivals and losses lead to historical victory with San Martin alive. The created actor stays dead. A 48-hour continuation receives income, expires a daily contract and re-enters the sector without restoring the former hire or repeating the ending. Merged through PR #65 after exact-head CI. The later finite-first-aid regression replays the full route with additional paid replacements, victory at hour 450 and a saved 48-hour continuation.",
       "local": "Published stock seed 8 and one strategy only. The hired-only and unpaid-only full routes, larger advanced gameplay, authored second campaign and live performance remain separate requirements.",
       "remaining": "",
       "acceptance": "Run the complete fresh mixed historical campaign through actual battle settlement and original gates, replay/save the final battles, preserve casualties and real treasury costs, then save victory and continue through income, contract expiry and retained-sector re-entry.",
       "evidence": [
-        "E-FRESH-ENDING"
+        "E-FRESH-ENDING",
+        "E-FIRST-AID"
       ],
       "parents": [
         "INTEGRATION-01",
@@ -565,7 +600,8 @@
       "remaining": "",
       "acceptance": "From untouched Retiro complete the coast, north and three Cuyo victories with real losses/purchases, treat and recruit the engineer, satisfy the pesos-only preparations, reject early commander service and retain actual late incorporation at saved phase 4.",
       "evidence": [
-        "E-FRESH-CUYO"
+        "E-FRESH-CUYO",
+        "E-FIRST-AID"
       ],
       "parents": [
         "NAR-05",
@@ -584,12 +620,13 @@
       "requirement": "End original campaigns explicitly when an unfinished indispensable role is permanently lost",
       "status": "VERIFIED",
       "priority": "P0",
-      "published": "A confirmed death of the assigned engineer before foundry completion or the historical commander before victory ends the original campaign. Active military deaths, scene settlement, saved continuation and older nonterminal casualty saves retain the defeat. The strategic screen names the actor and unfinished project. Merged through PR #63 after exact-head CI.",
+      "published": "A confirmed death of the assigned engineer before foundry completion or the historical commander before victory ends the original campaign. Active military deaths, scene settlement, saved continuation and older nonterminal casualty saves retain the defeat. The strategic screen names the actor and unfinished project. Merged through PR #63 after exact-head CI. With finite field aid, the unprotected fresh Mendoza route loses both indispensable actors and saves the commander death; separate role tests retain engineer-only coverage.",
       "local": "Fresh stock Mendoza defeat after actual tactical victory, plus declared prepared military-death boundaries and rendered cause. Authored chapters use their own rules; completed projects and established victories are not revoked.",
       "remaining": "",
       "acceptance": "Reproduce a legal fresh Mendoza victory with the engineer casualty; persist explicit terminal loss at the active checkpoint and settlement; cover assigned military roles, late commander, old saves, completed foundry and custom progression without revived actors or false success.",
       "evidence": [
-        "E-HISTORICAL-LOSS"
+        "E-HISTORICAL-LOSS",
+        "E-FIRST-AID"
       ],
       "parents": [
         "NAR-05",
@@ -920,7 +957,8 @@
       "remaining": "",
       "acceptance": "Continue an untouched stock route through actual Cordoba, Tucuman and Salta victories, permanent losses, paid supplies/replacements and northern agreements, then physically complete Yatasto and save phase 3 with a living commander and no open scene.",
       "evidence": [
-        "E-FRESH-NORTHERN"
+        "E-FRESH-NORTHERN",
+        "E-FIRST-AID"
       ],
       "parents": [
         "NAR-04",
@@ -943,7 +981,8 @@
       "remaining": "",
       "acceptance": "From untouched stock campaigns, reach saved phase 2 through Buenos Aires, San Nicolas and San Lorenzo with a mixed created force and a hire-only force, real costs/losses, finite care, controlled arrivals, deterministic legal-order replay and permanent-death checks.",
       "evidence": [
-        "E-FRESH-COASTAL"
+        "E-FRESH-COASTAL",
+        "E-FIRST-AID"
       ],
       "parents": [
         "START-01",
@@ -2878,14 +2917,16 @@
       "requirement": "Field bandaging stabilizes wounds; strategic care restores health. G22,62,81; M33,39.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Published related core exists; full parity acceptance is not established.",
+      "published": "Manual field care stops bleeding and uses finite partial work to stabilize critical casualties. Ordinary health recovery requires campaign care. Supplies and bandaged wounds persist through normal controls, saves, recruitment and real route continuation.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
-      "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
+      "remaining": "Integrate held-item medical targeting, physical dressing custody and the preserved treatment-response gaps; verify the complete behavior in normal play.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-FIRST-AID",
+        "E-STRATEGIC-CARE"
       ],
       "sourceRow": "JA2-C06",
       "sourceNotes": "Civilian targeting now uses the same held-kit approach and treatment path, with persistent bleeding and dressings; see [civilian first aid](civilian-first-aid.md). Critical first aid now restores living casualties toward 15 HP through paid partial treatment, with shared previews and once-only named-civilian campaign synchronization. See [critical first aid](critical-first-aid.md) for reference rules, explicit AP/supply adaptations and verification. Keep personal supplies finite through every result and transfer path. Authored civilian treatment responses remain open."
@@ -4367,13 +4408,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "8274f58b959b6408bfdc8a97540421836f78e204",
-    "total": 833,
-    "passed": 833,
+    "source": "f203f74dc49b8f0f9ea6f212e91e7b31450240a8",
+    "total": 834,
+    "passed": 834,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-CARE-RULES"
+    "evidenceId": "E-CIVILIAN-LOSS-LOG"
   }
 }

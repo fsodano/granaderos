@@ -3,10 +3,10 @@ import {dispatchCampaign} from '../game/campaign.js';
 import {saved} from './local-contract-fixture.mjs';
 import {freshMendozaLoss} from './historical-loss-fixture.mjs';
 
-test('a fresh Mendoza tactical victory becomes a saved campaign defeat when its required engineer dies',()=>{
+test('a fresh Mendoza tactical victory becomes a saved campaign defeat when its required engineer and commander die',()=>{
  const {campaign:s,deathCheckpoint:p}=freshMendozaLoss();
  assert.equal(p.campaign.defeated,true);assert.equal(p.campaign.completed,false);assert.ok(p.campaign.pendingBattle);assert.equal(s.defeated,true);assert.equal(s.completed,false);assert.equal(s.pendingBattle,null);assert.equal(s.sectors.mendoza.owner,'patriot');assert.equal(s.flags.foundry,false);assert.equal(s.operativeState[2].hp,0);
- assert.equal(saved({campaign:s}).campaign.defeated,true);assert.ok(dispatchCampaign(s,{type:'foundry'}).lastError);assert.ok(dispatchCampaign(s,{type:'wait',hours:1}).lastError);assert.ok(s.log.some(e=>/Beltrán ha muerto/.test(e.text)));
+ assert.equal(saved({campaign:s}).campaign.defeated,true);assert.ok(dispatchCampaign(s,{type:'foundry'}).lastError);assert.ok(dispatchCampaign(s,{type:'wait',hours:1}).lastError);assert.equal(s.operativeState[57].hp,0);assert.ok(s.log.some(e=>/San Martín ha muerto/.test(e.text)));
 });
 
 test('a serving assigned engineer death fails the original campaign at the active checkpoint and rejects a revived active save',async()=>{

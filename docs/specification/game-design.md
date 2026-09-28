@@ -266,6 +266,17 @@ grant another charge or allocation. Saved partial rest hours use the pinned
 interval. Core safe-presence, critical-threshold and finite-dressing rules remain.
 See [care-rule acceptance](../verification/authored-care-rules.md).
 
+Manual field first aid uses finite local strokes. It stops ordinary bleeding
+without restoring ordinary lost health. Critical care restores living patients
+only toward 15 HP (or a smaller personal maximum), with partial work based on the
+medic's skill. Each effective stroke consumes one dressing and the existing
+18/20/25 action-point cost; exploration spends time instead. Care does not grant
+patient energy, AP or posture. Bandaged wounds persist through campaign return,
+recruitment and saved deployment, and strategic recovery reduces those wounds.
+Automatic service and the complete military critical-condition pipeline remain
+separate integrations. These stroke and indivisible-dressing rules are explicit
+Granaderos adaptations. See [manual care](../gameplay/characters/field-first-aid.md).
+
 The editor supports these appearance rules:
 
 - A fixed cell.

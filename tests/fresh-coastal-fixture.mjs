@@ -1,3 +1,4 @@
+import {firstAidPlan} from '../game/first-aid.js';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
 import {defaultContentPackage} from '../game/content-package.js';
@@ -49,7 +50,7 @@ export function freshCoastalRoute(kind,{onCheckpoint}={}){
   if(sector==='san_lorenzo')assert.ok(battle.units.some(u=>u.id==='57'&&u.missionAlly&&u.hp>0));
   p=tactical(p,{type:'explore'});
   for(const actor of p.battle.units.filter(u=>u.side==='player'&&u.hp>0&&!u.routed&&!u.unconscious).sort((a,b)=>a.hp-b.hp)){
-   const current=p.battle.units.find(u=>u.id===actor.id);if(current.medkits&&(current.bleeding||current.hp<current.maxHp-15))p=tactical(p,{type:'heal',unitId:actor.id});
+   const current=p.battle.units.find(u=>u.id===actor.id);if(firstAidPlan(current,current).valid)p=tactical(p,{type:'heal',unitId:actor.id});
   }
   p=saved(p);const report={type:'battleResult',battleId:request.id,outcome:'victory',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')};
   s=saved({campaign:order(p.campaign,report)}).campaign;assert.equal(s.defeated,false);assert.ok(dispatchCampaign(s,report).lastError);

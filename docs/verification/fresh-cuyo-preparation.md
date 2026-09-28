@@ -6,6 +6,11 @@ Retiro through the accepted [coast](fresh-coastal-opening.md) and
 [north](fresh-northern-opening.md). The final historical campaign remains open.
 
 Source: `0ae7f73a30c917d14632d1ed8e81f880da51ef7e`.
+
+Later manual-care integration changed the reproducible route costs and casualties.
+See [the finite first-aid regression record](finite-first-aid.md) for that source;
+the checkpoint below remains evidence of this earlier release.
+
 [Recorded checkpoints](../evidence/fresh-cuyo-preparation-2026-09-28.json).
 
 ## Method and acceptance

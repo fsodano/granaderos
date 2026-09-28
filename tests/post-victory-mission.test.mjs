@@ -19,10 +19,10 @@ function wonMission(){
 const apply=(p,a)=>{const b=actBattle(p.battle,a);assert.equal(b.lastError,null,b.lastError);return saved(sync({campaign:p.campaign,battle:b}));};
 const report=p=>({type:'battleResult',battleId:p.campaign.pendingBattle.id,outcome:'victory',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});
 
-test('San Lorenzo settles after actual post-victory exploration, medical care, recovery and reload',()=>{
+test('San Lorenzo settles after actual post-victory exploration, field care, loot and reload',()=>{
  let p=wonMission(),before=p.battle.units.find(u=>u.id==='57').hp;
  p=apply(p,{type:'explore'});p=apply(p,{type:'heal',unitId:'1000',targetId:'57'});
- assert.ok(p.battle.units.find(u=>u.id==='57').hp>before);assert.equal(p.battle.units.find(u=>u.id==='1000').medkits,1);
+ assert.equal(p.battle.units.find(u=>u.id==='57').hp,before);assert.equal(p.battle.units.find(u=>u.id==='57').bandaged,p.battle.units.find(u=>u.id==='57').maxHp-before);assert.equal(p.battle.units.find(u=>u.id==='1000').medkits,1);
  p=apply(p,{type:'move',unitId:'1000',x:4,y:2});p=apply(p,{type:'loot',unitId:'1000',targetId:'last-royalist',item:'weapon'});
  assert.equal(p.battle.status,'active');assert.equal(p.battle.mode,'exploration');assert.equal(p.battle.sectorCleared,true);
  const commander=structuredClone(p.battle.units.find(u=>u.id==='57')),s=saved({campaign:order(p.campaign,report(p))}).campaign;

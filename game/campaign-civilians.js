@@ -63,7 +63,7 @@ function remember(s,n,scene){
  const record={npcId:n.id,sector:scene.sectorId??scene.sector,sceneId:scene.sceneId??null,health:physical(n)};
  s.civilianState.people[key]=record;
  const id=operativeId(n);
- if(id!==undefined&&!s.recruited.includes(id))Object.assign(s.operativeState[id],{hp:Math.ceil(n.hp),alive:n.hp>0,energy:n.energy,bleeding:n.bleeding??0});
+ if(id!==undefined&&!s.recruited.includes(id))Object.assign(s.operativeState[id],{hp:Math.ceil(n.hp),alive:n.hp>0,energy:n.energy,bleeding:n.bleeding??0,bandaged:n.bandaged??0});
  if(n.hp===0&&before?.health.hp!==0)applyDeath(s,n,record);
 }
 function compareHistory(previous,n){
@@ -94,7 +94,7 @@ export function acknowledgeCivilians(s,snapshot){
  }
  const commander=snapshot.units.find(u=>u.missionAlly&&Number(u.id)===57);
  if(commander&&request.missionAllies?.some(u=>u.id===57)){
-  Object.assign(s.operativeState[57],{hp:Math.ceil(commander.hp),alive:commander.hp>0,energy:commander.energy,bleeding:commander.bleeding??0});
+  Object.assign(s.operativeState[57],{hp:Math.ceil(commander.hp),alive:commander.hp>0,energy:commander.energy,bleeding:commander.bleeding??0,bandaged:commander.bandaged??0});
   const record=s.civilianState.people['person-57'];if(record)record.inService=true;
   if(commander.hp===0)for(const scene of [...Object.values(s.sectorStates),...Object.values(s.sceneStates)])scene.npcs=(scene.npcs??[]).filter(n=>operativeId(n)!==57);
  }

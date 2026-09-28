@@ -1,3 +1,4 @@
+import {firstAidPlan} from '../game/first-aid.js';
 import assert from 'node:assert/strict';
 import {dispatchCampaign,isSupplied} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';
@@ -24,7 +25,7 @@ export function freshNorthernRoute({onCheckpoint}={}){
   const before=p.campaign.resources.treasury;const record={sector,actions,turns:battle.turn,hour:p.campaign.hour,second:p.campaign.secondOfHour,units:battle.units.filter(u=>u.side==='player').map(({id,hp,bleeding,medkits,routed})=>({id,hp,bleeding,medkits,routed}))};
   p=tactical(p,{type:'explore'});
   for(const actor of p.battle.units.filter(u=>u.side==='player'&&u.hp>0&&!u.routed&&!u.unconscious).sort((a,b)=>a.hp-b.hp)){
-   const current=p.battle.units.find(u=>u.id===actor.id);if(current.medkits&&(current.bleeding||current.hp<current.maxHp-15))p=tactical(p,{type:'heal',unitId:actor.id});
+   const current=p.battle.units.find(u=>u.id===actor.id);if(firstAidPlan(current,current).valid)p=tactical(p,{type:'heal',unitId:actor.id});
   }
   p=saved(p);const report={type:'battleResult',battleId:request.id,outcome:'victory',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')};
   s=saved({campaign:order(p.campaign,report)}).campaign;assert.equal(s.defeated,false);assert.ok(dispatchCampaign(s,report).lastError);assert.equal(s.sectors[sector].owner,'patriot');assert.ok(isSupplied(s,sector));

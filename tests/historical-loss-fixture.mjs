@@ -16,7 +16,7 @@ export function freshMendozaLoss(){
   s=order(s,{type:'purchaseEquipment',item:'firearm-1801',quantity:1});const instance=s.armoryItems.find(i=>i.contentWeapon?.template===1801);assert.ok(instance);
   s=order(s,{type:'equip',operativeId:id,slot:'weapon',itemId:'firearm-1801',instanceId:instance.id});
  }
- s=saved({campaign:s}).campaign;assert.equal(s.hour,120);assert.equal(s.resources.treasury,2683);assert.equal(s.operativeState[2].alive,true);
+ s=saved({campaign:s}).campaign;assert.equal(s.hour,120);assert.equal(s.resources.treasury,2845);assert.equal(s.operativeState[2].alive,true);
  s=order(s,{type:'attack',sector:'mendoza'});const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0};
  const {battle,orders,actions}=fight(request,s.sectorStates.mendoza,{scoutCostWeight:.01});assert.equal(battle.status,'victory');assert.equal(battle.npcs.find(n=>n.operativeId===2).hp,0);
  let p={campaign:s,battle:enterSector(request,s.sectorStates.mendoza)},deathCheckpoint;

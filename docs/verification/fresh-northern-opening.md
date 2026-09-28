@@ -6,6 +6,11 @@ then wins the actual Córdoba, Tucumán and Salta maps, pays for supplies and
 replacements, signs the northern agreements and reaches the conference in person.
 
 Source: `63dadebad11cdabaf372ea36d9557beab2a16407`.
+
+Later manual-care integration changed the reproducible route costs and casualties.
+See [the finite first-aid regression record](finite-first-aid.md) for that source;
+the checkpoint below remains evidence of this earlier release.
+
 [Recorded checkpoints](../evidence/fresh-northern-2026-09-28.json) retain the battles,
 payments, replacements, deaths and final figures.
 

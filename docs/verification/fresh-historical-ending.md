@@ -7,6 +7,11 @@ the northern route; the remaining force continues through Cuyo and wins the fina
 campaign with San Martín alive.
 
 Source: `61d7130e2e2f9c78ad163b560765d29d9275d7a4`.
+
+Later manual-care integration changed the reproducible route costs and casualties.
+See [the finite first-aid regression record](finite-first-aid.md) for that source;
+the checkpoint below remains evidence of this earlier release.
+
 [Recorded checkpoints](../evidence/fresh-historical-ending-2026-09-28.json).
 The complete test includes the accepted [coastal](fresh-coastal-opening.md),
 [northern](fresh-northern-opening.md) and [Cuyo](fresh-cuyo-preparation.md) prefixes.

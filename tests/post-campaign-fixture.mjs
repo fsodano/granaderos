@@ -1,7 +1,9 @@
+import {firstAidPlan} from '../game/first-aid.js';
+import {doctorRate,careAssignmentReason} from '../game/medical-care.js';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {parseContentPackage} from '../game/content-package.js';
-import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
+import {initialCampaign,dispatchCampaign,rosterFor} from '../game/campaign.js';
 import {operativeIdForCharacter} from '../game/content-character-ids.js';
 import {contentQuestStatus} from '../game/content-quests.js';
 import {actBattle,endTurn,getReachable} from '../game/tactical.js';
@@ -33,7 +35,7 @@ export function finishPostCampaign({onCheckpoint}={}){
   for(const [i,a]of result.orders.entries()){p=tactical(p,a);if(i===Math.floor(result.orders.length/2))p=saved(p);}
   assert.deepEqual(p.battle.units,result.battle.units);assert.deepEqual(p.battle.npcs,result.battle.npcs);assert.equal(p.battle.seed,result.battle.seed);assert.equal(p.battle.elapsedSeconds,result.battle.elapsedSeconds);
   p=tactical(saved(p),{type:'explore'});
-  for(const u of p.battle.units.filter(u=>u.side==='player'&&u.hp>0&&!u.routed&&!u.unconscious&&u.medkits&&(u.bleeding||u.hp<u.maxHp-15)))p=tactical(p,{type:'heal',unitId:u.id});
+  for(const u of p.battle.units.filter(u=>u.side==='player'&&u.hp>0&&!u.routed&&!u.unconscious&&firstAidPlan(u,u).valid))p=tactical(p,{type:'heal',unitId:u.id});
   const report={type:'battleResult',battleId:request.id,outcome:'victory',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')};s=saved({campaign:order(p.campaign,report)}).campaign;
   assert.ok(dispatchCampaign(s,report).lastError);assert.equal(s.sectors[sector].owner,'patriot');assert.equal(s.completed,false);assert.equal(s.defeated,false);
   p=approachPost(s,contact);p=choosePost(choosePost(p,'waiting','prepare'),'confirm','reopen');s=saved({campaign:leave(saved(p))}).campaign;assert.equal(contentQuestStatus(s,quest),'completed');
@@ -45,12 +47,29 @@ export function finishPostCampaign({onCheckpoint}={}){
    if(available.length)s=order(s,{type:'wait',hours:6});
    s=order(s,{type:'travel',sector:'cordoba'});
    for(const id of s.squad)for(const type of ['resupply','repairWeapon']){const n=dispatchCampaign(s,{type,operativeId:id});if(!n.lastError)s=n;}
-   let care=visit(s);
-   for(const id of s.squad)for(let i=0;i<2;i++){const u=care.battle.units.find(u=>u.id===String(id));if(u.hp>0&&!u.unconscious&&!u.routed&&u.medkits&&(u.bleeding||u.hp<u.maxHp))care=tactical(care,{type:'heal',unitId:u.id});}
-   s=leave(saved(care));
+   // Treat actual battle wounds through paid, hourly campaign work. The best
+   // surviving doctor is selected from this campaign, not a fixed identity.
+   const care={hours:0,dressingsBought:0,cost:0};
+   while(true){
+    const roster=rosterFor(s).filter(o=>s.squad.includes(o.id));
+    const patient=roster.filter(o=>s.operativeState[o.id].hp<o.maxHp||s.operativeState[o.id].bleeding).sort((a,b)=>a.medical-b.medical)[0];if(!patient)break;
+    assert.ok(care.hours<48,'the route must recover with finite care before its deadline');
+    const doctor=roster.filter(o=>o.id!==patient.id&&o.medical>=20&&s.operativeState[o.id].hp>=15&&!s.operativeState[o.id].bleeding&&s.operativeState[o.id].energy>10).sort((a,b)=>b.medical-a.medical)[0];assert.ok(doctor,'a living, available local doctor is required');
+    for(const o of roster)s=order(s,{type:'assignCare',id:o.id,assignment:'active'});
+    if(!s.operativeState[doctor.id].medkits){const quantity=Math.min(20,Math.ceil((patient.maxHp-s.operativeState[patient.id].hp)/doctorRate(doctor,s))+Number(s.operativeState[patient.id].bleeding>0));const before=s.resources.treasury;s=order(s,{type:'purchaseMedicalSupplies',id:doctor.id,quantity});care.dressingsBought+=quantity;care.cost+=before-s.resources.treasury;}
+    assert.equal(careAssignmentReason(s,doctor,'doctor'),'');s=order(s,{type:'assignCare',id:doctor.id,assignment:'doctor'});s=order(s,{type:'assignCare',id:patient.id,assignment:'patient'});
+    const stock=s.operativeState[doctor.id].medkits;s=saved({campaign:order(s,{type:'wait',hours:1})}).campaign;assert.equal(s.operativeState[doctor.id].medkits,stock-1);care.hours++;
+   }
+   for(const id of s.squad)s=order(s,{type:'assignCare',id,assignment:'active'});
+   assert.ok(care.hours>0);assert.ok(care.dressingsBought>0);assert.equal(care.cost,care.dressingsBought*10);
    for(const id of s.squad){const n=dispatchCampaign(s,{type:'resupply',operativeId:id});if(!n.lastError)s=n;}
+   for(const id of s.squad){s=order(s,{type:'purchaseEquipment',item:'firearm-1801',quantity:1});const item=s.armoryItems.find(i=>i.contentWeapon?.template===1801);assert.ok(item);s=order(s,{type:'equip',operativeId:id,slot:'weapon',itemId:'firearm-1801',instanceId:item.id});}
    s=order(s,{type:'travel',sector:'tucuman'});
-   notes.push({stage:'relief',...summary(s)});onCheckpoint?.('relief',s,notes);
+   // The attack approach takes 12 hours. Leave in time to reach Salta in
+   // daylight after the medical delay; waiting spends real campaign time.
+   const arrivalHour=(s.hour+12)%24,daylightWait=arrivalHour<6?6-arrivalHour:arrivalHour>=20?30-arrivalHour:0;
+   if(daylightWait)s=order(s,{type:'wait',hours:daylightWait});
+   notes.push({stage:'relief',care,daylightWait,...summary(s)});onCheckpoint?.('relief',s,notes);
   }
 
  }
