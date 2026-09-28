@@ -18,7 +18,7 @@ Cada candidato nuevo tiene identidad propia. Duplicar copia su ficha, retrato y 
 
 Las identidades nuevas no reciben poderes por ocupar el número de un mando histórico. El paquete de cada partida queda fijado al iniciarla, y el guardado conserva la correspondencia entre sus personajes y sus hojas de servicio. Los candidatos eliminados no se restauran al cargar.
 
-La ficha permite elegir especialidades aplicadas por las reglas actuales, equitación y progreso por experiencia o nivel fijo. Equitación experta garantiza una destreza ecuestre mínima de 80. Con ambas opciones de progreso se conserva el entrenamiento práctico de atributos. Las especialidades llegan al combate y a la instrucción de milicia; un instructor nuevo puede guardar y continuar un curso. Los contratables nuevos pueden tener carácter, frases y apariencia propios. Los habitantes nuevos tienen diálogos con opciones. Los encargos editables siguen pendientes.
+La ficha permite elegir especialidades aplicadas por las reglas actuales, equitación y progreso por experiencia o nivel fijo. Equitación experta garantiza una destreza ecuestre mínima de 80. Con ambas opciones de progreso se conserva el entrenamiento práctico de atributos. Las especialidades llegan al combate y a la instrucción de milicia; un instructor nuevo puede guardar y continuar un curso. Los contratables nuevos pueden tener carácter, frases y apariencia propios. Los habitantes nuevos tienen diálogos con opciones. Los encargos editables se conectan a las opciones de diálogo y tienen un registro en la carta de campaña.
 
 Todos estos candidatos se incorporan por contrato desde el boletín. Una paga de cero es un contrato gratuito con el plazo elegido, no servicio permanente. El editor protege a los mandos históricos de eliminación y duplicación hasta separar sus funciones de campaña. El arma blanca inicial todavía usa el valor general existente.
 
@@ -48,7 +48,17 @@ Deshacer, rehacer, duplicar, recuperar el borrador e importar/exportar conservan
 
 El juego comprueba las condiciones al mostrar las opciones y al elegirlas. Una opción puede aparecer al pasar de día o después de la muerte de otro personaje. Las referencias a personajes impiden eliminarlos mientras una conversación los use. Las condiciones no cambian el estado por sí solas. Para cambiar el dinero disponible, agregá una operación en «Pago o recompensa».
 
-Activá «Cambiar los pesos al elegir esta opción», elegí si el jugador paga o recibe y escribí el importe. El juego muestra esas condiciones antes de elegir. Cada operación se aplica una sola vez por personaje y opción. Guardar, volver a la conversación o incorporar y luego despedir al personaje no la repite. Si faltan fondos, la opción queda desactivada y explica cuánto falta. Las copias de personajes tienen registros independientes. Estas operaciones todavía no entregan objetos, crean encargos ni ordenan movimientos.
+Activá «Cambiar los pesos al elegir esta opción», elegí si el jugador paga o recibe y escribí el importe. El juego muestra esas condiciones antes de elegir. Cada operación se aplica una sola vez por personaje y opción. Guardar, volver a la conversación o incorporar y luego despedir al personaje no la repite. Si faltan fondos, la opción queda desactivada y explica cuánto falta. Las copias de personajes tienen registros independientes. Una opción también puede cambiar un encargo. Si combina ese cambio con pesos, ambos se aplican juntos. Estas operaciones todavía no entregan objetos ni ordenan movimientos.
+
+## Encargos
+
+En «Encargos», creá un título y un objetivo. Podés buscar, duplicar, eliminar, deshacer y recuperar los cambios. Una conversación que usa el encargo impide eliminarlo hasta quitar esa referencia. Duplicar crea otra identidad; las conversaciones existentes siguen usando el original.
+
+En una opción del diálogo, activá «Cambiar un encargo al elegir esta opción». Elegí el encargo y el resultado: iniciar, completar o fallar. El recorrido permitido es «Sin iniciar» → «En curso» → «Completado» o «Fallido». Un estado final no se reinicia. El juego desactiva un cambio que no corresponde al estado actual y explica la causa.
+
+Usá «Estado de un encargo» como condición para mostrar las respuestas de cada etapa. Podés combinarla con días, pesos, control o estado de personajes. Una persona puede ofrecer el encargo y otra recibir el resultado. Para exigir una localidad liberada, agregá esa condición a la opción que lo completa. La muerte o el paso de días no lo fallan solos: configurá esas condiciones en una opción de fracaso de otro interlocutor disponible.
+
+La carta de campaña muestra el título, objetivo, estado y días de inicio/resolución desde que se acepta el encargo. Cerrá la conversación y pulsá M para consultar la carta. Los encargos sin iniciar no revelan su descripción. Guardar conserva la secuencia de cambios y cada operación ya realizada. Repetir una opción consumida conserva el estado y no vuelve a pagar. Los encargos históricos del Cabildo conservan sus reglas originales.
 
 ## Habilidades de combate
 
@@ -64,7 +74,7 @@ Cada ficha puede elegir un retrato de la biblioteca, conservar una imagen import
 
 El carácter describe al personaje en su hoja de servicio, sin modificar su moral. Las siete frases corresponden a incorporación, detección de enemigos, sector asegurado, herida, agotamiento, muerte y fin de campaña. Cada frase admite hasta 800 caracteres; una frase vacía mantiene el silencio. El contratado pronuncia su incorporación al llegar, una sola vez. Las frases tácticas se disparan por los eventos reales y el cierre de campaña usa las frases de los compañeros vivos.
 
-Estas opciones participan en la recuperación del borrador, deshacer/rehacer, duplicación, exportación, inicio y guardado. Los paquetes anteriores sin estos campos conservan sus perfiles. Las partidas rechazan voces o apariencias que difieren de la definición incluida. Los habitantes nuevos tienen un saludo editable. Las ramificaciones de texto para habitantes nuevos se editan desde su ficha. Las condiciones de las opciones ya consultan el estado de campaña. Los pagos y recompensas en pesos ya se aplican una vez con un registro guardado. Los objetos, encargos y finales alternativos todavía necesitan sus propios controles y reglas.
+Estas opciones participan en la recuperación del borrador, deshacer/rehacer, duplicación, exportación, inicio y guardado. Los paquetes anteriores sin estos campos conservan sus perfiles. Las partidas rechazan voces o apariencias que difieren de la definición incluida. Los habitantes nuevos tienen un saludo editable. Las ramificaciones de texto para habitantes nuevos se editan desde su ficha. Las condiciones de las opciones ya consultan el estado de campaña. Los pagos y recompensas en pesos ya se aplican una vez con un registro guardado. Los estados de encargos tienen condiciones, efectos y registro de campaña. Los objetos y finales alternativos todavía necesitan sus propios controles y reglas.
 
 La prueba de incorporación también detectó que Cabral, Dorrego y Paroissien no tenían una condición regional adicional y se rechazaban después de cumplir el encuentro. Ahora pueden incorporarse al cumplir su conversación local, liderazgo, control y demás condiciones del encuentro. La contratación remota sigue bloqueada para ellos.
 
@@ -144,7 +154,7 @@ Esta opción activa habitantes nuevos. Los mandos históricos conservan sus func
 
 El mapa permite marcar cualquier celda con una X desde la ficha del personaje, incluido terreno fuera de las localidades. Se pueden simular ubicaciones con una semilla. Las ubicaciones fijas, el sorteo inicial y los cambios diarios ya se aplican a las nuevas campañas. Eliminar mandos históricos y usar opciones de historia no compatibles todavía bloquea el inicio de campaña.
 
-Los mandos históricos conservan su servicio permanente, requisitos de reclutamiento y funciones de campaña. Sus habilidades de combate ya son configurables. Quedan pendientes su extracción, las transferencias de funciones a sucesores, los efectos sobre objetos y funciones de campaña, los encargos editables, las escenas dirigidas y la composición completa de campaña. Esta entrega no completa todo el editor de historia.
+Los mandos históricos conservan su servicio permanente, requisitos de reclutamiento y funciones de campaña. Sus habilidades de combate ya son configurables. Quedan pendientes su extracción, las transferencias de funciones a sucesores, los efectos sobre objetos y funciones de campaña, los objetivos sobre objetos y las políticas de fallo automático, las escenas dirigidas y la composición completa de campaña. Esta entrega no completa todo el editor de historia.
 
 ## Validación
 
@@ -184,3 +194,5 @@ Los mandos históricos conservan su servicio permanente, requisitos de reclutami
 `tests/dialogue-conditions.test.mjs` comprueba intervalos, compras reales, muerte de habitantes, estados de personajes, opciones no disponibles y condiciones inválidas. El editor montado configura y conserva estas reglas; la conversación montada muestra una opción al cruzar medianoche. La [verificación de condiciones](../verification/dialogue-conditions.md) separa acciones reales de los estados preparados.
 
 `tests/dialogue-payments.test.mjs` comprueba pagos y recompensas reales, guardados, ciclos, cambios de servicio, identidades independientes, rechazos y registros alterados. El editor montado configura y ejecuta un pago; el juego montado muestra el importe, bloquea fondos insuficientes y conserva una sola recompensa tras un doble clic. La [verificación de pagos](../verification/dialogue-payments.md) registra sus límites.
+
+`tests/content-quests.test.mjs` comprueba aceptación, una condición de día real, finalización con recompensa, fracaso alternativo, participantes distintos, pagos atómicos, estados finales y guardados alterados. El editor montado crea y conecta un encargo; la página del juego muestra su cambio desde la conversación y el registro de campaña. La [verificación de encargos](../verification/authored-quests.md) conserva los límites de esta entrega.

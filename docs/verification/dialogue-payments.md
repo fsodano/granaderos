@@ -29,8 +29,8 @@ Older conversations without effects need no receipts and remain compatible.
 Runtime source: `94046adfa62c24d39fdae0483c6c0364cbd3da94`.
 The complete local suite passed **635/635 tests**, without failures or skips.
 Types, production export and all 36 baseline comparisons passed. The register
-retains 178 requirements and 17 evidence records. Exact-head CI must pass before
-merge.
+retains 178 requirements and 17 evidence records. [PR #40](https://github.com/fsodano/granaderos/pull/40) merged after
+[exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36370521027/job/108765701197) passed.
 
 - `tests/dialogue-payments.test.mjs`: real conversation rewards/charges, loops,
   saves, local service changes and distinct residents; hidden, stale or
@@ -45,8 +45,10 @@ merge.
 
 ## Limits
 
-PAYMENT-01 is a bounded delivery; STORY-03 remains partial. These are one-time
+At this checkpoint, PAYMENT-01 is a bounded delivery; STORY-03 remains partial. These are one-time
 treasury operations. Item rewards, recurring merchant transactions, authorable
 quest states, historical role effects and scripted movement remain open. Receipts
 validate internal save consistency; they are not a cryptographic anti-cheat
 system. No complete campaign, live-browser or performance acceptance is claimed.
+
+[Authored quest states](authored-quests.md) extend these effects in the following checkpoint.
