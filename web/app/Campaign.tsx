@@ -1,5 +1,5 @@
 'use client';
-import {militiaProgression} from '../../game/militia-progression-rules.js';
+import MilitiaTraining from './MilitiaTraining';
 import {careAssignmentBusy} from '../../game/medical-care.js';
 import {historicalLossReason} from '../../game/historical-loss.js';
 import {campaignStory} from '../../game/campaign-story.js';
@@ -10,10 +10,8 @@ import {incomeSources,incomeSummary} from '../../game/economy.js';
 import {missionStatus} from '../../game/missions.js';
 import MissionBriefing from './MissionBriefing';
 import {useState} from 'react';
-import {campaignObjectives,deploymentCost,rosterFor,operativeLocation,isSupplied,militiaCourse,militiaAssignment} from '../../game/campaign.js';
+import {campaignObjectives,deploymentCost,rosterFor,operativeLocation,militiaAssignment} from '../../game/campaign.js';
 import {getCityStatus} from '../../game/cities.js';
-import {militiaPromotionStatus} from '../../game/garrison.js';
-import {militiaEligibility} from '../../game/militia.js';
 import {contractStatus} from '../../game/contracts.js';
 import {campaignPlace,worldCell,worldOwner,cellTravelPlan} from '../../game/world-cells.js';
 import {portraitFor} from '../lib/portraits';
@@ -23,15 +21,12 @@ import MedicalCare from './MedicalCare';
 import './strategy.css';
 const place=campaignPlace;
 export default function Campaign({state:s,dispatch,onBattle,onOpenDesk}:{state:any;dispatch:(a:any)=>void;onBattle:()=>void;onOpenDesk:()=>void}){
- const [selected,setSelected]=useState(s.location),[dossier,setDossier]=useState<number|null>(null),[manage,setManage]=useState(false),[trainerId,setTrainerId]=useState(''),[hours,setHours]=useState(1);
- const roster=rosterFor(s),hired=s.recruited.map((id:number)=>roster.find(o=>o.id===id)).filter(Boolean),def=place(selected)!,sector=s.sectors[selected],physical=worldCell(selected)!,owner=worldOwner(s,selected),city=getCityStatus(s,physical.locality),eligibility=militiaEligibility(s,selected),training=s.militiaTraining?.find((t:any)=>t.sector===selected);
- const trainers=hired.filter((o:any)=>s.operativeState[o.id]?.alive&&operativeLocation(s,o.id)===selected&&o.leadership>=30&&!militiaAssignment(s,o.id)&&!careAssignmentBusy(s.operativeState[o.id].assignment)).sort((a:any,b:any)=>militiaCourse(a,0).hours-militiaCourse(b,0).hours);const trainer=trainers.find((o:any)=>String(o.id)===trainerId)??trainers[0];
+ const [selected,setSelected]=useState(s.location),[dossier,setDossier]=useState<number|null>(null),[manage,setManage]=useState(false),[hours,setHours]=useState(1);
+ const roster=rosterFor(s),hired=s.recruited.map((id:number)=>roster.find(o=>o.id===id)).filter(Boolean),def=place(selected)!,sector=s.sectors[selected],physical=worldCell(selected)!,owner=worldOwner(s,selected),city=getCityStatus(s,physical.locality);
  const objective=campaignStory(s)?campaignObjectives(s).find((c:any)=>c.active):null;
- const rank=sector?.militia[0]>=3?1:0;
- const promotion=rank>0?militiaPromotionStatus(s,selected,rank):null;
  const careBusy=s.squad.some((id:number)=>careAssignmentBusy(s.operativeState[id].assignment));
  const gridTravel=!worldCell(s.location)?.anchor||!physical.anchor,route=gridTravel?cellTravelPlan(s,selected):null;
- const blocked=owner==='royalist'&&!physical.anchor?'Liberá el sector principal para recorrer sus barrios.':route?.reason;const course=trainer?militiaCourse(trainer,rank):null;
+ const blocked=owner==='royalist'&&!physical.anchor?'Liberá el sector principal para recorrer sus barrios.':route?.reason;
  return <section className="strategy-screen"><header className="strategy-top"><div><p className="eyebrow">CARTA DE OPERACIONES</p><h1>Provincias Unidas</h1></div><div className="strategy-time"><span>Día {Math.floor(s.hour/24)+1} · {String(s.hour%24).padStart(2,'0')}:00</span><select aria-label="Tiempo a avanzar" value={hours} onChange={e=>setHours(Number(e.target.value))}><option value={1}>1 hora</option><option value={6}>6 horas</option><option value={24}>1 día</option></select><button className="line-button" disabled={Boolean(s.pendingBattle)||s.defeated} onClick={()=>dispatch({type:'wait',hours})}>Avanzar</button></div><button className="gold-button" onClick={onOpenDesk}>Escritorio →</button></header>
  {s.lastError&&<p className="notice error" role="alert">{s.lastError}</p>}{s.defeated&&<p className="notice error">{campaignStory(s)?.defeat??historicalLossReason(s)??'La campaña terminó. Conservá tu partida o comenzá otra desde el menú.'}</p>}{s.completed&&<p className="notice">{campaignStory(s)?.victory??'Las provincias están libres. Podés continuar administrando tus fuerzas.'}</p>}
  <>{objective&&<section className="notice" aria-label="Objetivo actual de campaña"><strong>{objective.name}</strong><p>{objective.objective}</p></section>}</>
@@ -42,6 +37,6 @@ export default function Campaign({state:s,dispatch,onBattle,onOpenDesk}:{state:a
  {careBusy&&<p className="notice">Hay personas en atención médica o descanso en la escuadra activa. Ponelos en servicio o dejalos en otra escuadra antes de marchar.</p>}
  {blocked&&!(owner==='royalist'&&physical.anchor)&&<p className="muted">{blocked}</p>}{route&&!route.reason&&selected!==s.location&&<p>Marcha a pie · {route.hours} horas</p>}
  {!campaignStory(s)&&selected==='tucuman'&&s.phase>=2&&!missionStatus(s,'yatasto').completed&&<MissionBriefing mission={missionStatus(s,'yatasto')} canEnter={s.location==='tucuman'&&owner==='patriot'&&s.squad.length>0&&!careBusy} blocked={Boolean(s.pendingBattle)||careBusy} onEnter={()=>dispatch({type:'visitMission',mission:'yatasto'})}/>}
- {sector?<><button className="line-button" disabled={sector.owner!=='patriot'||sector.fort>=3||s.resources.treasury<150||Boolean(s.pendingBattle)} onClick={()=>dispatch({type:'fortify',sector:selected})}>Fortificar · 150 pesos ({sector.fort}/3)</button><section className="simple-militia"><h3>Milicias</h3><p>{sector.militia.reduce((a:number,b:number)=>a+b,0)} defensores</p><p>{sector.militia[0]} {sector.militia[0]===1?'cívico':'cívicos'} · {sector.militia[1]} {sector.militia[1]===1?'montonero':'montoneros'} · {sector.militia[2]} {sector.militia[2]===1?'veterano':'veteranos'}</p><small>Los veteranos ascienden por experiencia de combate. Montonero: {militiaProgression(s).regularThreshold} puntos · Veterano: {militiaProgression(s).veteranThreshold} puntos.</small>{training?<><p>{training.count} en instrucción · {training.remaining} h</p>{training.trainees&&<ul aria-label="Milicianos en instrucción">{training.trainees.map((u:any)=><li key={u.id}>{u.name} · {Math.round(u.hp)}/{u.maxHp} salud</li>)}</ul>}{(!eligibility.eligible||!isSupplied(s,selected))&&<small>Instrucción detenida: {!eligibility.eligible?eligibility.reason:'falta abastecimiento.'}</small>}<button className="line-button" onClick={()=>dispatch({type:'cancelMilitia',sector:selected})}>Suspender instrucción</button></>:!eligibility.eligible?<p className="muted">{eligibility.reason}</p>:<><label>Instructor<select aria-label="Instructor de milicias" value={trainer?.id??''} onChange={e=>setTrainerId(e.target.value)}>{!trainers.length&&<option value="">Necesitás un instructor disponible</option>}{trainers.map((o:any)=><option key={o.id} value={o.id}>{o.nickname}</option>)}</select></label><button className="line-button" disabled={!trainer||!isSupplied(s,selected)||Boolean(s.pendingBattle)||Boolean(promotion&&!promotion.ready)} onClick={()=>dispatch({type:'militia',sector:selected,rank,trainerId:trainer?.id})}>Entrenar milicias{course?` · ${course.cost.treasury} pesos`:''}</button>{course&&<small>{course.hours} horas · {rank===0?'Tres nuevos defensores':'Promover tres defensores: conservan su salud, armas y suministros.'}</small>}{promotion&&!promotion.ready&&<p className="notice">{promotion.reason}</p>}</>}</section></>:<p>Esta celda conserva su propio terreno y sus objetos. Los servicios y las milicias se administran en el sector principal de la localidad.</p>}</aside></div>
+ {sector?<><button className="line-button" disabled={sector.owner!=='patriot'||sector.fort>=3||s.resources.treasury<150||Boolean(s.pendingBattle)} onClick={()=>dispatch({type:'fortify',sector:selected})}>Fortificar · 150 pesos ({sector.fort}/3)</button><MilitiaTraining key={selected} state={s} sectorId={selected} dispatch={dispatch}/></>:<p>Esta celda conserva su propio terreno y sus objetos. Los servicios y las milicias se administran en el sector principal de la localidad.</p>}</aside></div>
  <StoryQuestJournal state={s}/>{manage&&<div className="strategy-management"><Squads state={s} dispatch={dispatch}/><MedicalCare state={s} dispatch={dispatch}/></div>}<CharacterDossier operative={hired.find((o:any)=>o.id===dossier)} record={s.operativeState[dossier??-1]} onClose={()=>setDossier(null)}/></section>;
 }

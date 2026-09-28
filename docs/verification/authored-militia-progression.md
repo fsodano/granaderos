@@ -68,6 +68,12 @@ allowing the second ascent. A prepared boundary test covers that sequence,
 peaceful return, the new cap and rejection beyond it. These are explicit
 ledger checks, not claims of 298 actual combat victories. The final complete run includes this boundary regression.
 
-Exact-head GitHub CI is required before merge. This feature does not establish
+[Exact-head GitHub CI](https://github.com/fsodano/granaderos/actions/runs/36470608608/job/109091623451)
+passed at `dda3968a13a0affd20bde06ff4fb6ed167219943`.
+[PR #93](https://github.com/fsodano/granaderos/pull/93) merged on
+2026-09-28 at 19:28:11 UTC as `4dddb7a26afea5b83fe2bb3c5c5f0a9867b4ddd7`.
+Together with published paid-course, combat-credit and finite-care evidence, this
+closes the rank-progression scope of JA2-S04. Allied autonomy, direct control,
+patrols and redistribution remain in JA2-S05. This feature does not establish
 live-browser behavior, autonomous militia turns, city redistribution, custody,
 advanced defense routes or exact JA2 numerical fidelity.
