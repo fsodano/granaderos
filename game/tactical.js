@@ -42,6 +42,28 @@ export function hasTrait(u,id){return Array.isArray(u.traits)&&u.traits.includes
 function nearbyTrait(s,u,id,radius=4){return s.units.some(v=>v.side===u.side&&alive(v)&&hasTrait(v,id)&&dist(u,v)<=radius);}
 export function actionCosts(s,u){const w=weaponFor(u),cavalry=u.mounted&&hasTrait(u,'cavalry_commander'),firstShot=Math.max(1,Math.ceil(w.fireAP*(cavalry?.8:1))-(hasCharacterAbility(u,'quick_shot')&&[1803,1805,1806,1808].includes(w.id)?2:0)),preparation=firearmPreparation(u,w,firstShot);return{heal:hasCharacterAbility(u,'rapid_first_aid')?18:hasTrait(u,'field_rescuer')?20:25,breach:hasCharacterAbility(u,'breaching')?25:45,mount:hasTrait(u,'cavalry_commander')?8:12,fire:preparation.total,ready:preparation.ready,discharge:preparation.discharge,aim:Math.max(0,Math.ceil(w.aimAP*(hasTrait(u,'line_marksman')?.65:1))),reprime:hasTrait(u,'gunsmith_artillerist')?10:15,repair:hasTrait(u,'gunsmith_artillerist')?18:25,reload:reloadPlan(u,s).pa,melee:Math.ceil(bladeFor(u).ap*(cavalry?.8:1))};}
 export function artilleryCosts(s,u,gun){const spec=ARTILLERY[gun.type],assist=(nearby(s,u,'loading_support',2)?.8:1)*(hasTrait(u,'gunsmith_artillerist')?.85:1),base={bronze4:{move:20,pivot:10},field8:{move:30,pivot:15},swivel:{move:10,pivot:5}}[gun.type];return{crew:spec.crew,fire:Math.ceil(spec.fireAP*assist*(hasCharacterAbility(u,'artillery_fire')?.85:1)),reload:Math.ceil(spec.reloadAP*assist*(hasCharacterAbility(u,'artillery_loading')?.8:1)),move:base.move,pivot:base.pivot};}
+// Every assigned artillerist performs the same work. Crew eligibility is shared
+// with the controls; a hired soldier cannot spend an autonomous militia's AP.
+export function artilleryCrewPlan(s,u,gun,cost,partial=false){
+ const spec=ARTILLERY[gun?.type];
+ if(!u||!spec||gun.side!==u.side)return {crew:[],reason:'Debes estar junto a una pieza de artillería propia.'};
+ const eligible=v=>v.side===u.side&&Boolean(v.militia)===Boolean(u.militia)&&alive(v)&&!v.knockedDown&&!v.fled&&!v.departure&&!v.surrendered&&!v.mounted&&v.stance!=='prone'&&
+  (s.mode==='exploration'||s.phase===v.side&&v.ap>=cost)&&dist(v,gun)<=1.5&&hasLineOfSight(s,v,gun)&&
+  !propBlocksAt(s,gun.x,gun.y)&&!tile(s,gun.x,gun.y)?.blocked&&
+  (v.x===gun.x||v.y===gun.y||[tile(s,v.x,gun.y),tile(s,gun.x,v.y)].every(t=>t&&!t.blocked&&!propBlocksAt(s,t.x,t.y)));
+ const helpers=s.units.filter(v=>v.id!==u.id&&eligible(v));
+ if(partial)helpers.sort((a,b)=>b.ap-a.ap||String(a.id).localeCompare(String(b.id)));
+ const assigned=eligible(u)?[u,...helpers].slice(0,spec.crew):[];
+ const reason=assigned.length<spec.crew?`La pieza necesita ${spec.crew} artilleros de pie o agachados, próximos y disponibles${s.mode==='exploration'?'':` con ${cost} PA cada uno`}.`:null;
+ return {crew:assigned.map(v=>v.id),reason};
+}
+export function artilleryReloadPreview(s,u,gun){
+ const spec=ARTILLERY[gun?.type],rate=spec&&u?artilleryCosts(s,u,gun).reload:0;
+ const crew=artilleryCrewPlan(s,u,gun,1,true),ap=crew.crew.length?Math.min(...crew.crew.map(id=>s.units.find(v=>v.id===id).ap)):0;
+ const plan=planReload({loaded:Number(gun?.loaded??false),ammo:gun?.ammo??0,reloadProgress:gun?.reloadProgress,ap},rate,1,s.mode==='exploration');
+ const reason=gun?.loaded?'La pieza ya está cargada.':gun&&gun.ammo<1?'No quedan municiones para la pieza.':crew.reason||(!plan.pa?'Faltan puntos de acción para recargar.':null);
+ return {...plan,crew:crew.crew,rate,reason,valid:!reason};
+}
 export function interruptInitiative(s,u){return (u.agility||0)+(u.wisdom||0)*.25+(nearby(s,u,'tactical_command',4)?25:0)+(nearby(s,u,'strategic_command',6)?50:0);}
 export function ignitionRisk(s,u){const w=weaponFor(u);return clamp(misfireChance(u.condition,s.weather.rain,s.weather.humidity)*(w.id===1801?.9:1)*(hasTrait(u,'gunsmith_artillerist')?.65:1)-(w.id===1806?1:0)+(u.priming===0?15:0),0,95);}
 function nearby(s,u,ability,radius=4){return s?.units?.some(v=>hasCharacterAbility(v,ability)&&v.side===u.side&&alive(v)&&dist(u,v)<=radius);}
@@ -154,10 +176,10 @@ else if(a.type==='charge'){const blade=bladeFor(u);if(!target||!targetable(s,tar
 else if(['artillery','artilleryReload','artilleryMove','artilleryPivot'].includes(a.type)){
 const gun=s.artillery.find(g=>g.id===a.artilleryId),spec=ARTILLERY[gun?.type];
 if(!gun||!spec||gun.side!==u.side||dist(u,gun)>1.5)return fail('Debes estar junto a una pieza de artillería propia.');
-const costs=artilleryCosts(s,u,gun),cost=costs[{artillery:'fire',artilleryReload:'reload',artilleryMove:'move',artilleryPivot:'pivot'}[a.type]];
-const crew=s.units.filter(v=>v.side===u.side&&alive(v)&&!v.knockedDown&&!v.mounted&&dist(v,gun)<=1.5&&v.ap>=cost);
-if(crew.length<spec.crew||!crew.includes(u))return fail(`La pieza necesita ${spec.crew} artilleros a pie, próximos y con ${cost} PA cada uno.`);
-const assigned=[u,...crew.filter(v=>v.id!==u.id)].slice(0,spec.crew);
+const costs=artilleryCosts(s,u,gun),loading=a.type==='artilleryReload'?artilleryReloadPreview(s,u,gun):null;
+const cost=loading?loading.pa:costs[{artillery:'fire',artilleryMove:'move',artilleryPivot:'pivot'}[a.type]];
+const crew=loading??artilleryCrewPlan(s,u,gun,cost);if(crew.reason)return fail(crew.reason);
+const assigned=crew.crew.map(id=>s.units.find(v=>v.id===id));
 if(a.type==='artilleryMove'){
 const dx=a.x-gun.x,dy=a.y-gun.y;if(!Number.isInteger(a.x)||!Number.isInteger(a.y)||Math.abs(dx)+Math.abs(dy)!==1)return fail('La pieza se arrastra una casilla horizontal o vertical por orden.');
 const positions=[{x:a.x,y:a.y},...assigned.map(v=>({x:v.x+dx,y:v.y+dy}))],ids=new Set(assigned.map(v=>v.id));
@@ -166,7 +188,9 @@ gun.x=a.x;gun.y=a.y;for(const v of assigned){v.x+=dx;v.y+=dy;}say(s,`${u.name} d
 }else if(a.type==='artilleryPivot'){
 if(!Number.isInteger(a.x)||!Number.isInteger(a.y)||!tile(s,a.x,a.y)||dist(gun,a)<1)return fail('Indica una casilla hacia la cual orientar la pieza.');gun.facing=Math.atan2(a.y-gun.y,a.x-gun.x);say(s,`${spec.name} gira hacia la nueva línea de tiro.`);
 }else if(a.type==='artilleryReload'){
-if(gun.loaded||gun.ammo<1)return fail('La pieza está cargada o no quedan municiones.');gun.loaded=true;gun.ammo--;say(s,`${u.name} dirige la recarga de ${spec.name}.`);
+if(loading.rounds){gun.loaded=true;gun.ammo--;delete gun.reloadProgress;}
+else if(loading.progress>0)gun.reloadProgress=loading.progress;
+say(s,loading.partial?`${u.name} dirige la recarga de ${spec.name}: ${cost} PA por artillero; faltan ${loading.remainingPA} PA por artillero.`:`${u.name} completa la recarga de ${spec.name}.`);
 }else{
 if(!gun.loaded)return fail('Primero hay que recargar la pieza.');const point=target||{x:a.x,y:a.y};
 if(!Number.isInteger(point.x)||!Number.isInteger(point.y)||!tile(s,point.x,point.y)||dist(gun,point)<1||dist(gun,point)>spec.range)return fail(`Objetivo fuera del alcance de ${spec.range} casillas o no válido.`);
@@ -185,7 +209,8 @@ if(penetration<0||energy<20)break;
 }
 say(s,`${spec.name} dispara una bala rasa que atraviesa su línea de tiro.`);
 }}
-for(const v of assigned){v.ap-=cost;lowerWeapon(v);}
+for(const v of assigned){if(s.mode!=='exploration')v.ap-=cost;lowerWeapon(v);}
+if(s.mode==='exploration')s.actionDurationSeconds=Math.max(1,Math.ceil(cost*.06));
 }
 else if(a.type==='door'){const door=a.doorId?s.tiles.find(t=>t.doorId===a.doorId):tile(s,a.x,a.y);if(!door||door.type!=='door'||dist(u,door)>1.5)return fail('Acércate a la hoja de puerta que quieres accionar.');if(door.locked)return fail('La puerta está cerrada con llave.');if(!pay(4))return fail('Accionar la puerta requiere 4 PA.');door.open=typeof a.open==='boolean'?a.open:!door.open;door.blocked=!door.open;door.blocksSight=!door.open;say(s,`${u.name} ${door.open?'abre':'cierra'} la puerta.`);}
 else if(a.type==='throwTorch'){const point={x:a.x,y:a.y};if(!Number.isInteger(a.x)||!Number.isInteger(a.y)||!tile(s,a.x,a.y)||tile(s,a.x,a.y).blocked||dist(u,point)>8||!hasLineOfSight(s,u,point))return fail('La antorcha debe caer en terreno accesible a ocho casillas o menos.');if(!u.torches)return fail('No quedan antorchas.');if(!pay(10))return fail('Lanzar la antorcha requiere 10 PA.');u.torches--;s.lights.push({id:`torch-${u.id}-${s.turn}-${s.lights.length}`,type:'torch',x:a.x,y:a.y,radius:4,intensity:1,turns:s.weather.rain>50?4:8,age:0});say(s,`${u.name} lanza una antorcha encendida.`);}

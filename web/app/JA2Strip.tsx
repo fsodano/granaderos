@@ -36,7 +36,9 @@ function LogOverlay({log}: { log: string[] }) {
 
 export default function JA2Strip({battle, selected, unit, players, missionAllies, localMilitia, mode, showSight, aim, costs, weapon, firearm, cannonId, shotType, gunCosts, artillery, busy, inventoryId, vw, vh, cameraRect, project, cameraX, cameraY, zoom, onSelect, onOrder, onMode, onToggleSight, onEndTurn, onRetreat, onOpenInventory, onCloseInventory, onCameraCenter, onCameraPan, onZoom, onCannonChange, onShotTypeChange, onSetAim}: Props) {
   const units = battle.units.filter((v: any) => v.side === 'player' || players.some((p: any) => canSee(battle, p, v)));
-  const gridDefs = unit ? orderDescriptors(battle, unit, {busy}).filter((d: any) => !GRID_EXCLUDE.has(d.id)) : [];
+  const descriptors=orderDescriptors(battle,unit,{busy,cannonId});
+  const gunOrders: {id:string;kind:string;disabled:boolean;pa?:number;seconds?:number;detail?:string}[]=descriptors.filter(d=>d.id.startsWith('artillery'));
+  const gridDefs = unit ? descriptors.filter((d: any) => !GRID_EXCLUDE.has(d.id)) : [];
   if (inventoryId) {
     return (
       <section className="ja2-strip inventory-open">
@@ -63,15 +65,12 @@ export default function JA2Strip({battle, selected, unit, players, missionAllies
         </div>
         {(artillery || []).length > 0 && <div className="ja2-artillery">
           <p className="eyebrow">ARTILLERÍA DE CAMPAÑA</p>
-          <select aria-label="Seleccionar pieza de artillería" value={cannonId} onChange={e => onCannonChange(e.target.value)}><option value="">Elegir cañón</option>{artillery.map((a: any) => <option key={a.id} value={a.id}>{(ARTILLERY as any)[a.type]?.name ?? a.type} · {a.loaded ? 'cargado' : 'descargado'}</option>)}</select>
+          <select aria-label="Seleccionar pieza de artillería" value={cannonId} onChange={e => onCannonChange(e.target.value)}><option value="">Elegir cañón</option>{artillery.map((a: any) => <option key={a.id} value={a.id}>{(ARTILLERY as any)[a.type]?.name ?? a.type} · {a.loaded ? 'cargado' : a.reloadProgress?`recarga ${Math.floor(a.reloadProgress*100)}%`:'descargado'}</option>)}</select>
           <select aria-label="Munición de artillería" value={shotType} onChange={e => onShotTypeChange(e.target.value)}><option value="solid">Bala rasa</option><option value="canister">Metralla</option></select>
           <div>
-            <button className="line-button" disabled={!cannonId} onClick={() => onMode('artillery')}>Disparar · {gunCosts?.fire ?? '—'} PA</button>
-            <button className="line-button" disabled={!cannonId} onClick={() => onMode('artilleryMove')}>Desplazar · {gunCosts?.move ?? '—'} PA</button>
-            <button className="line-button" disabled={!cannonId} onClick={() => onMode('artilleryPivot')}>Girar · {gunCosts?.pivot ?? '—'} PA</button>
-            <button className="line-button" disabled={!cannonId} onClick={() => onOrder({ type: 'artilleryReload', artilleryId: cannonId })}>Recargar pieza · {gunCosts?.reload ?? '—'} PA</button>
+            {gunOrders.map(d=><button key={d.id} className="line-button" disabled={d.disabled} title={d.detail} onClick={()=>d.kind==='mode'?onMode(d.id):onOrder({type:d.id,artilleryId:cannonId})}>{({artillery:'Disparar',artilleryMove:'Desplazar',artilleryPivot:'Girar',artilleryReload:'Recargar pieza'} as Record<string,string>)[d.id]} · {d.seconds!==undefined?`${d.seconds} s`:`${d.pa} PA`}</button>)}
           </div>
-          <small>La pieza debe apuntar al objetivo. Cada artillero paga el coste de la orden.</small>
+          <small>La pieza debe apuntar al objetivo. {gunOrders.find(d=>d.id==='artilleryReload')?.detail}</small>
         </div>}
         <button className="line-button" disabled={!unit} onClick={() => unit && onOpenInventory(unit.id)}>Equipo y órdenes</button>
         <button className="gold-button end-turn" disabled={busy || battle.status !== 'active'} onClick={onEndTurn}>{busy ? 'Procesando…' : battle.mode === 'exploration' ? 'Descansar' : 'Fin del turno'}</button>

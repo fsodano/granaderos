@@ -66,7 +66,7 @@ export function validateCampaignArtillery(s){
   const r=s.pendingBattle;validateArtilleryDeployment(r);
   for(const id of r.artilleryDeployment.issued){need(!ids.has(id),'Una pieza desplegada ya existe en otro sector.');if(/^piece-[1-9][0-9]*$/.test(id))need(Number(id.slice(6))<s.nextArtilleryId,'La secuencia de piezas es inválida.');}
   const old=list(previous(s,r)?.artillery??[]),occupied=s.sectors[parent(r.sector)]?.owner==='royalist';
-  for(const g of r.artillery.filter(g=>g.stationed)){const source=old.find(v=>v.id===g.id);need(source&&g.type===source.type&&g.side===(occupied?'enemy':source.side)&&g.ammo===source.ammo&&g.loaded===source.loaded&&g.x===source.x&&g.y===source.y,'La pieza emplazada no coincide con su sector.');}
+  for(const g of r.artillery.filter(g=>g.stationed)){const source=old.find(v=>v.id===g.id);need(source&&g.type===source.type&&g.side===(occupied?'enemy':source.side)&&g.ammo===source.ammo&&g.loaded===source.loaded&&g.x===source.x&&g.y===source.y&&g.facing===source.facing&&g.reloadProgress===source.reloadProgress,'La pieza emplazada no coincide con su sector.');}
   need(old.every(g=>r.artillery.some(v=>v.id===g.id&&v.stationed)),'Faltan piezas emplazadas en el despliegue.');
  }
 }
