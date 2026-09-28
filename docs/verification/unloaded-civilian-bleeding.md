@@ -76,8 +76,12 @@ nonpositive event intervals. Its focused test passes and verifies atomic rejecti
 of a malformed in-memory clock. The final guarded source passes **919/919 tests**, with zero failures or skips
 (217,449.841 ms), types, production export (722 files, 632 asset references), all
 36 baseline comparisons and the documentation audit (224 requirements, 63
-evidence records, retaining all 50 original and 87 parity rows). Exact-head GitHub CI is
-required before merge; this delivery is not yet on main.
+evidence records, retaining all 50 original and 87 parity rows).
+
+Published through [PR #86](https://github.com/fsodano/granaderos/pull/86).
+[Exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36453922698/job/109035294959)
+passed for `1ed164502aeab9cf2dd34ad4f56b09ecf83c126a`. The PR merged on
+2026-09-28 at 17:08:44 UTC as `1302eecd04eb7929aafbf9b5d7674b07b9f99127`.
 
 ## Limits
 
@@ -88,3 +92,7 @@ armour/weapon custody or arbitrary transfer of a dead actor's possessions. A
 former recruit's service condition becomes civilian state at its next actual
 civilian checkpoint; this change does not create a second service simulation.
 Simulation checks do not establish loaded-browser performance or full-game parity.
+
+The subsequent [service-return delivery](civilian-service-return.md) resumes
+previously recorded residents when they leave military service. Its limits and
+verification are separate from the wound-clock checkpoint above.
