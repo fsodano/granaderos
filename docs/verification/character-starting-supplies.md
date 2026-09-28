@@ -32,7 +32,9 @@ saved soldier. Simulation/DOM coverage does not establish live-browser usability
 Release checks: **805/805 tests**, zero failures or skips (192,057 ms); type
 check; production export (721 files, 631 asset references); 36 baseline checks;
 documentation audit (204 requirements, all 50 original and 87 parity rows,
-43 evidence records). Exact-head GitHub CI is required before merge.
+43 evidence records). [PR #66](https://github.com/fsodano/granaderos/pull/66) merged
+after [GitHub CI](https://github.com/fsodano/granaderos/actions/runs/36413464076/job/108898912435)
+passed at `51e9faf5732c019b779ebee6b551acf635568e72`.
 
 ## Limits
 
