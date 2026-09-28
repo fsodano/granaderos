@@ -602,3 +602,14 @@ test('the editor edits starting supplies through undo, copy, reset and a playabl
  campaign=dispatchCampaign(campaign,{type:'recruitCivic',id,term:'day'});assert.equal(campaign.lastError,null);campaign=dispatchCampaign(campaign,{type:'wait',hours:6});assert.equal(campaign.lastError,null);campaign=dispatchCampaign(campaign,{type:'visitSector'});assert.equal(campaign.lastError,null);
  const battle=decodeSave(encodeSave(campaign,enterSector(campaign.pendingBattle,campaign.sectorStates[campaign.location]))).battle;const u=battle.units.find(u=>u.id===String(id));assert.equal(u.torches,0);assert.equal(u.medkits,7);
 });
+
+test('the mounted editor loads the complete example, restores the previous draft and launches its configured headquarters',async t=>{
+ const m=await mount(t),draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
+ await m.input(m.label('Nombre'),'Borrador conservado');await m.click([...m.document.querySelectorAll('summary')].find(s=>s.textContent.includes('La ruta de las postas')));await m.click(m.button('Cargar La ruta de las postas'));
+ assert.equal(draft().id,'ruta-de-las-postas');assert.equal(draft().characters.length,13);assert.equal(draft().campaignStory.chapters.length,3);assert.equal(m.document.querySelector('a[download][href="/campaigns/la-ruta-de-las-postas.json"]').textContent,'Descargar campaña de ejemplo');
+ await m.click(m.button('Deshacer'));assert.equal(draft().characters[0].name,'Borrador conservado');await m.click(m.button('Rehacer'));assert.equal(draft().id,'ruta-de-las-postas');await m.input(m.label('Nombre'),'León del Camino');
+ await m.click(m.button('Pruebas'));assert.equal(m.label('Semilla de la campaña').value,'8');await m.click(m.button('Personajes'));
+ await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.equal(campaign.location,'cordoba');assert.equal(campaign.resources.treasury,6000);assert.ok(Object.keys(campaign.operativeState).every(id=>Number(id)>=2000));assert.equal(rosterFor(campaign).find(o=>o.contentId==='leon').name,'León del Camino');
+ const id=operativeIdForCharacter(campaign.contentCampaign.package,'leon');campaign=dispatchCampaign(campaign,{type:'recruitCivic',id,term:'week'});assert.equal(campaign.lastError,null);campaign=dispatchCampaign(campaign,{type:'wait',hours:6});assert.equal(campaign.lastError,null);campaign=dispatchCampaign(campaign,{type:'visitSector'});assert.equal(campaign.lastError,null);
+ const restored=decodeSave(encodeSave(campaign,enterSector(campaign.pendingBattle,campaign.sectorStates[campaign.location])));assert.ok(restored.battle.npcs.some(n=>n.contentId==='ines'));assert.equal(restored.battle.units.find(u=>u.id===String(id)).ammo+restored.battle.units.find(u=>u.id===String(id)).loaded,14);assert.equal(m.dom.window.localStorage.getItem('granaderos.campaign.v1'),'ordinary save');
+});
