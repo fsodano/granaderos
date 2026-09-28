@@ -47,7 +47,7 @@ export function maxActionPoints(s,u){if(u.hp<=0||isUnconscious(u))return 0;const
 function holdMorale(s,u){if(nearby(s,u,'strategic_command',6)||(u.militia&&nearby(s,u,'militia_command',4))||(u.mounted&&nearbyTrait(s,u,'cavalry_commander',4))||(!u.mounted&&nearby(s,u,'foot_morale',4))){u.morale=Math.max(20,u.morale);u.routed=false;return true;}return false;}
 export function reloadPlan(unit,state){const w=weaponFor(unit);return planReload(unit,reloadRoundCost(unit,w,Boolean(state&&nearby(state,unit,'loading_support',2))),w.capacity,state?.mode==='exploration');}
 export function reloadCost(unit,state){return reloadPlan(unit,state).totalPA;}
-function makeUnit(raw,side,index,x,y){raw={...raw};lowerWeapon(raw);const stats=raw.stats||{};const weapon=raw.weapon??raw.primary??1800;const w=typeof weapon==='object'?weapon:weaponSpecification({...raw,weapon})||WEAPONS[1800];return {...raw,id:String(raw.id??`${side}-${index}`),name:raw.name||raw.nickname||(side==='player'?'Granadero':'Realista'),side,x:raw.x??x,y:raw.y??y,maxHp:raw.maxHp??raw.health??stats.health??100,hp:raw.hp??raw.health??stats.health??100,ap:100,morale:raw.morale??Math.min(100,(raw.personality==='optimistic'?90:raw.personality==='pessimistic'?70:80)+((raw.traits||[]).includes('steadfast')?10:0)),marksmanship:raw.marksmanship??stats.marksmanship??70,agility:raw.agility??stats.agility??75,strength:raw.strength??stats.strength??75,medical:raw.medical??stats.medical??30,mechanical:raw.mechanical??stats.mechanical??0,stealth:raw.stealth??stats.stealth??0,weapon,loaded:raw.loaded??(WEAPONS[weapon]||typeof weapon==='object'?w.capacity:0),ammo:raw.ammo??12,condition:raw.condition??100,stance:'standing',mounted:Boolean(raw.mounted),horse:Boolean(raw.horse||raw.canMount||raw.mounted),jammed:Boolean(raw.jammed),bleeding:raw.bleeding??0,routed:false,medkits:raw.medkits??2,momentum:0,lastDirection:null,activeSlot:raw.activeSlot||'primary',fatigue:raw.fatigue||0,priming:raw.priming??50,flints:raw.flints??4,rations:raw.rations??2,energy:raw.energy??100,unconscious:(raw.energy??100)<=0,movementMode:raw.movementMode||'walk',inventory:{...raw.inventory},boleadoras:raw.boleadoras??1,torches:raw.torches??2,strengthTraining:raw.strengthTraining??0,interceptTurn:0,parryTurn:0,counterTurn:0,braceTurn:0,braced:false,knockedDown:false,overwatch:side==='enemy',reactionTurn:0,reactionSpent:0};}
+function makeUnit(raw,side,index,x,y){raw={...raw};lowerWeapon(raw);const stats=raw.stats||{};const weapon=raw.weapon??raw.primary??1800;const w=typeof weapon==='object'?weapon:weaponSpecification({...raw,weapon})||WEAPONS[1800];return {...raw,id:String(raw.id??`${side}-${index}`),name:raw.name||raw.nickname||(side==='player'?'Granadero':'Realista'),side,x:raw.x??x,y:raw.y??y,maxHp:raw.maxHp??raw.health??stats.health??100,hp:raw.hp??raw.health??stats.health??100,ap:100,morale:raw.morale??Math.min(100,(raw.personality==='optimistic'?90:raw.personality==='pessimistic'?70:80)+((raw.traits||[]).includes('steadfast')?10:0)),marksmanship:raw.marksmanship??stats.marksmanship??70,agility:raw.agility??stats.agility??75,strength:raw.strength??stats.strength??75,medical:raw.medical??stats.medical??30,mechanical:raw.mechanical??stats.mechanical??0,stealth:raw.stealth??stats.stealth??0,weapon,loaded:raw.loaded??(WEAPONS[weapon]||typeof weapon==='object'?w.capacity:0),ammo:raw.ammo??12,condition:raw.condition??100,stance:'standing',mounted:Boolean(raw.mounted),horse:Boolean(raw.horse||raw.canMount||raw.mounted),jammed:Boolean(raw.jammed),bleeding:raw.bleeding??0,routed:false,medkits:raw.medkits??2,momentum:0,lastDirection:null,activeSlot:raw.activeSlot||'primary',fatigue:raw.fatigue||0,priming:raw.priming??50,flints:raw.flints??4,rations:raw.rations??2,energy:raw.energy??100,unconscious:(raw.energy??100)<=0,movementMode:raw.movementMode||'walk',inventory:{...raw.inventory},boleadoras:raw.boleadoras??1,torches:raw.torches??2,strengthTraining:raw.strengthTraining??0,interceptTurn:0,parryTurn:0,counterTurn:0,braceTurn:0,braced:false,knockedDown:false,overwatch:side==='enemy'||Boolean(raw.militia),reactionTurn:0,reactionSpent:0};}
 export function createBattle(squad=[],sector={}){const width=sector.width||16,height=sector.height||12;const state={version:1,conditionVersion:1,battleId:sector.id??null,startSeconds:(sector.hour??(sector.night||sector.weather?.night?0:12))*3600+(sector.secondOfHour??0),elapsedSeconds:0,syncedSeconds:0,roundTimeCharged:false,sectorId:sector.sector||sector.id||'san-lorenzo',...(sector.sourceMapId?{sourceMapId:sector.sourceMapId,sourceMapRevision:sector.sourceMapRevision}:{}),sectorName:sector.name||'San Lorenzo',width,height,biome:sector.biome||'grassland',altitude:sector.altitude||0,night:Boolean(sector.night||sector.weather?.night||(sector.hour!==undefined&&(sector.hour%24>=20||sector.hour%24<6))),enemyCommand:sector.enemyCommand||null,objective:sector.objective||null,npcs:structuredClone(sector.npcs||[]).map(n=>n.civilianHealthVersion===1?n:seedCivilianHealth(n,{maxHp:n.maxHp??100,hp:n.hp??100,energy:n.energy??100})),props:structuredClone(sector.props??[]),buildings:sector.buildings||[],revealedRooms:[],decor:sector.decor||[],turn:1,enemyTurns:0,roundFirstSide:sector.firstSide==='enemy'?'enemy':'player',phase:'player',mode:sector.exploration?'exploration':'combat',sectorCleared:false,status:'active',seed:(sector.seed??18130203)>>>0,weather:{rain:0,humidity:0,...sector.weather},tiles:[],units:[],droppedWeapons:[],groundItems:structuredClone(sector.groundItems??[]),lights:(sector.lights||[]).map((l,i)=>({id:`light-${i}`,type:'campfire',radius:4,intensity:1,...l})),artillery:(sector.artillery||[]).map((g,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',loaded:true,ammo:6,...g})),smoke:[],log:[],lastError:null};
 state.weather.rain=typeof state.weather.rain==='boolean'?(state.weather.rain?40:0):state.weather.rain;state.weather.humidity=state.weather.humidity>0&&state.weather.humidity<=1?state.weather.humidity*10:state.weather.humidity;
 for(let y=0;y<height;y++)for(let x=0;x<width;x++){const edge=x===Math.floor(width*.56)&&y>1&&y<height-2&&y!==Math.floor(height/2);state.tiles.push({x,y,type:edge?'wall':sector.biome==='wetland'&&x>3&&x<width-3&&y%3===0?'mud':sector.biome==='mountain'||sector.biome==='foothills'?'stone':'grass',blocked:edge,cover:edge?40:sector.biome==='forest'&&x>3&&x<width-3&&y%3===0?20:0});}
@@ -249,6 +249,7 @@ export function actBattle(state,action){
   s.mode='exploration';s.status='active';s.roundTimeCharged=false;delete s.enemyFirstAwaitingPlayer;delete s.contactInitiative;
   say(s,'El sector está despejado. Puedes explorar y recoger equipo.');return s;
  }
+ if(s.units.find(u=>u.id===String(action.unitId))?.militia){s.lastError='Las milicias actúan por su cuenta; seleccioná un integrante de la escuadra.';say(s,s.lastError);return s;}
  const oldMode=s.mode;delete s.actionDurationSeconds;
  if(action.type==='move')s.approachingNpcIds=s.npcs.filter(n=>Math.abs(n.x-action.x)+Math.abs(n.y-action.y)===1).map(n=>n.id);
  const success=apply(s,action);
@@ -280,10 +281,46 @@ function authoredBladeSwitch(u,target){
  if((WEAPONS[u.weapon]||!u.weapon)&&(distance<=blade.reach||!u.loaded&&distance<=6)&&u.ap>=4)return 'blade';
  return null;
 }
-function runEnemyPhase(s){
-for(const u of s.units.filter(u=>u.side==='enemy'&&alive(u))){u.maxAP=maxActionPoints(s,u);u.ap=Math.max(0,u.maxAP-u.reactionSpent);u.reactionSpent=0;for(let n=0;n<12&&u.ap>=6&&s.status==='active';n++){const targets=s.units.filter(t=>t.side==='player'&&alive(t)&&canSee(s,u,t)).sort((a,b)=>dist(u,a)-dist(u,b));const t=targets[0];if(!t){const patrol=choosePatrolAction(s,u);if(patrol){u.patrolTurn=s.turn;apply(s,patrol,true);if(s.units.some(v=>v.side==='player'&&alive(v)&&canSee(s,u,v)))continue;}break;}const weaponSwitch=authoredBladeSwitch(u,t);if(u.entangled){if(!apply(s,{type:'free',unitId:u.id},true))break;}else if(u.knockedDown){if(!apply(s,{type:'stance',unitId:u.id,stance:'standing'},true))break;}else if(weaponSwitch){if(!apply(s,{type:'weapon',unitId:u.id,slot:weaponSwitch},true))break;}else if(dist(u,t)<=bladeFor(u).reach&&hasLineOfSight(s,u,t)){if(!apply(s,{type:'melee',unitId:u.id,targetId:t.id},true))break;}else if(!u.loaded&&dist(u,t)<=6&&(u.x===t.x||u.y===t.y||Math.abs(u.x-t.x)===Math.abs(u.y-t.y))&&hasLineOfSight(s,u,t)&&u.ap>=Math.ceil(dist(u,t)*stepCost(u,t))+actionCosts(s,u).melee){if(!apply(s,{type:'charge',unitId:u.id,targetId:t.id},true))break;}else if(u.jammed){if(!apply(s,{type:'reprime',unitId:u.id},true))break;}else if(hasFirearm(u)&&!u.loaded&&u.ammo){if(!apply(s,{type:'reload',unitId:u.id},true))break;}else if(hasFirearm(u)&&u.loaded&&hasLineOfSight(s,u,t)&&shotChance(s,u,t)>=20){if(!apply(s,{type:'fire',unitId:u.id,targetId:t.id},true))break;}else{const candidates=getReachable(s,u).filter(p=>p.cost>0).sort((a,b)=>(dist(a,t)*10+a.cost*.1)-(dist(b,t)*10+b.cost*.1));if(!candidates.length)break;const p=candidates[0];if(dist(p,t)>=dist(u,t)||!apply(s,{type:'move',unitId:u.id,x:p.x,y:p.y},true))break;}}if(alive(u)&&u.ap>=bladeFor(u).ap&&bladeFor(u).id===1811)u.braced=true;}
+function runEnemyPhase(s){runForcePhase(s,'enemy');}
+function runMilitiaPhase(s){
+ if(s.units.some(u=>u.side==='player'&&u.militia&&alive(u)))say(s,`Turno ${s.turn}: actúa la guarnición local.`);
+ runForcePhase(s,'player');
+}
+function runForcePhase(s,side){
+ const enemy=side==='enemy',order=action=>apply(s,action,enemy);
+ for(const u of s.units.filter(u=>u.side===side&&(enemy||u.militia)&&alive(u))){
+  if(enemy){u.maxAP=maxActionPoints(s,u);u.ap=Math.max(0,u.maxAP-u.reactionSpent);}
+  // Militia reactions already spent this allied turn's AP. Do not charge them
+  // against the following round as well, and do not issue another AP budget.
+  u.reactionSpent=0;
+  for(let n=0;n<12&&u.ap>=6&&s.status==='active';n++){
+   const targets=s.units.filter(t=>t.side!==side&&alive(t)&&canSee(s,u,t)).sort((a,b)=>dist(u,a)-dist(u,b)),t=targets[0];
+   if(!t){
+    const patrol=choosePatrolAction(s,u);
+    if(patrol){u.patrolTurn=s.turn;order(patrol);if(s.units.some(v=>v.side!==side&&alive(v)&&canSee(s,u,v)))continue;}
+    break;
+   }
+   const weaponSwitch=authoredBladeSwitch(u,t);
+   if(u.entangled){if(!order({type:'free',unitId:u.id}))break;}
+   else if(u.knockedDown){if(!order({type:'stance',unitId:u.id,stance:'standing'}))break;}
+   else if(weaponSwitch){if(!order({type:'weapon',unitId:u.id,slot:weaponSwitch}))break;}
+   else if(dist(u,t)<=bladeFor(u).reach&&hasLineOfSight(s,u,t)){if(!order({type:'melee',unitId:u.id,targetId:t.id}))break;}
+   else if(!u.loaded&&dist(u,t)<=6&&(u.x===t.x||u.y===t.y||Math.abs(u.x-t.x)===Math.abs(u.y-t.y))&&hasLineOfSight(s,u,t)&&u.ap>=Math.ceil(dist(u,t)*stepCost(u,t))+actionCosts(s,u).melee){if(!order({type:'charge',unitId:u.id,targetId:t.id}))break;}
+   else if(u.jammed){if(!order({type:'reprime',unitId:u.id}))break;}
+   else if(hasFirearm(u)&&!u.loaded&&u.ammo){if(!order({type:'reload',unitId:u.id}))break;}
+   else if(hasFirearm(u)&&u.loaded&&hasLineOfSight(s,u,t)&&shotChance(s,u,t)>=20){if(!order({type:'fire',unitId:u.id,targetId:t.id}))break;}
+   else{
+    const candidates=getReachable(s,u).filter(p=>p.cost>0).sort((a,b)=>(dist(a,t)*10+a.cost*.1)-(dist(b,t)*10+b.cost*.1)),p=candidates[0];
+    if(!p||dist(p,t)>=dist(u,t)||!order({type:'move',unitId:u.id,x:p.x,y:p.y}))break;
+   }
+  }
+  if(alive(u)&&u.ap>=bladeFor(u).ap&&bladeFor(u).id===1811)u.braced=true;
+ }
 }
 function finishCombatRound(s){
+ // Allies spend their remaining AP once, after the player and enemy phases.
+ // With enemy-first contact this runs after the player's deferred response.
+ runMilitiaPhase(s);if(s.status!=='active'){s.phase='player';s.turn++;s.lastError=null;return s;}
  if(s.npcs?.length)say(s,`Turno ${s.turn}: actúan los civiles.`);
  for(const n of s.npcs??[])advanceCivilianWoundTime(s,n,6);
  runCivilianPhase(s);

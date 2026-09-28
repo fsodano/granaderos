@@ -32,11 +32,14 @@ test('actual attacks issue authored blades without cartridges and AI chooses the
 });
 
 test('trained militia retain both chosen slots through switching, save and real campaign return',()=>{
- let s=order(secureArea(initialCampaign(8,content()),'buenos_aires','ensenada'),{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
- s=order(s,{type:'militia',trainerId:1000,rank:0});s=order(s,{type:'wait',hours:s.militiaTraining[0].remaining});s=order(s,{type:'visitSector'});let b=enterSector(s.pendingBattle),u=b.units.find(u=>u.militia),id=u.id;
- assert.equal(contentWeaponOf(u).id,'lanza-de-tropa');assert.equal(contentWeaponOf(u,'blade').id,'blade-1813');assert.deepEqual([u.loaded,u.ammo,u.priming],[0,0,0]);
- b=actBattle(b,{type:'weapon',unitId:id,slot:'blade'});assert.equal(b.lastError,null);assert.equal(weaponFor(b.units.find(u=>u.id===id)).contentId,'blade-1813');
- const pair=syncBattleTime(s,b);assert.equal(pair.error,null);s=order(pair.campaign,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});s=save(s).campaign;s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);u=b.units.find(u=>u.id===id);assert.equal(contentWeaponOf(u).id,'lanza-de-tropa');assert.equal(contentWeaponOf(u,'blade').id,'blade-1813');assert.equal(u.activeSlot,'blade');assert.ok(save(s,b));
+ const d=content();d.militiaEquipment.green='firearm-1805';d.militiaBlades.green='lanza-de-tropa';d.rules.militiaCartridges=0;
+ let s=order(secureArea(initialCampaign(8,d),'buenos_aires','ensenada'),{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
+ s=order(s,{type:'militia',trainerId:1000,rank:0});s=order(s,{type:'wait',hours:s.militiaTraining[0].remaining});if(s.hour%24<6||s.hour%24>=20)s=order(s,{type:'wait',hours:(30-s.hour%24)%24});s=order(s,{type:'visitSector'});const r=s.pendingBattle;
+ // Paid soldiers meet a declared nearby raider; switching is an actual AI decision.
+ let b=createBattle([...r.squad.map((u,i)=>({...u,x:1,y:8+i})),...r.garrison.map((u,i)=>({...u,x:1,y:1+i*3}))],{...r,exploration:false,width:14,height:10,tiles,enemies:[{id:'raider',x:4,y:1,weapon:1813,blade:1813,hp:100,maxHp:100,fatigue:100,patrol:false}]}),u=b.units.find(u=>u.militia),id=u.id;
+ assert.equal(contentWeaponOf(u).id,'firearm-1805');assert.equal(contentWeaponOf(u,'blade').id,'lanza-de-tropa');assert.deepEqual([u.loaded,u.ammo,u.priming],[0,0,6]);
+ b=endTurn(b);assert.equal(b.lastError,null);u=b.units.find(u=>u.militia&&!u.routed&&u.activeSlot==='blade');assert.ok(u);id=u.id;assert.equal(weaponFor(u).contentId,'lanza-de-tropa');assert.ok(b.units.find(u=>u.id==='raider').hp<100);
+ const pair=syncBattleTime(s,b);assert.equal(pair.error,null);s=order(pair.campaign,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});s=save(s).campaign;s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);u=b.units.find(u=>u.id===id);assert.equal(contentWeaponOf(u).id,'firearm-1805');assert.equal(contentWeaponOf(u,'blade').id,'lanza-de-tropa');assert.equal(u.activeSlot,'blade');assert.ok(save(s,b));
 });
 
 test('secondary-only configuration preserves firearm defaults and original secondary choices remain compatible',()=>{

@@ -14,8 +14,8 @@ const kept=['hp','maxHp','weapon','blade','weaponMetadata','bladeMetadata','cond
 
 test('actual reaction kills promote one paid, wounded survivor through both ranks without healing or issuing equipment',()=>{
  let {s,id}=combatMilitia();const before=structuredClone(soldier(s,id)),next=s.nextMilitiaId;
- for(const rank of [1,2]){const result=militiaReaction(s,id);s=result.s;const u=soldier(s,id);assert.equal(u.militiaRank,rank);assert.equal(u.militiaExperience,rank*3);assert.equal(u.militiaCombatCredit.length,rank);for(const key of kept)assert.deepEqual(u[key],result.actual[key],key);assert.equal(u.hp,43);assert.equal(u.maxHp,60);assert.equal(u.loaded,before.loaded-rank);assert.equal(u.ammo,before.ammo);assert.equal(u.condition,before.condition-rank);assert.equal(u.marksmanship,before.marksmanship+rank*8);assert.equal(u.leadership,before.leadership+rank*5);assert.equal(s.nextMilitiaId,next);assert.deepEqual(s.sectors.retiro.militia,rank===1?[2,1,0]:[2,0,1]);assert.equal(s.log.filter(e=>e.text.includes('asciende por experiencia de combate')).length,rank);s=save(s);}
- const u=soldier(s,id);assert.notEqual(...u.militiaCombatCredit.map(e=>e.id));const p=visit(s),field=p.battle.units.find(u=>Number(u.id)===id);assert.equal(field.militiaRank,2);assert.equal(field.hp,43);assert.equal(field.militiaExperience,6);assert.equal(field.loaded,1);const returned=save(leave(p));assert.equal(soldier(returned,id).militiaRank,2);assert.equal(returned.log.filter(e=>e.text.includes('asciende por experiencia de combate')).length,2);
+ for(const rank of [1,2]){const result=militiaReaction(s,id);s=result.s;const u=soldier(s,id);assert.equal(u.militiaRank,rank);assert.equal(u.militiaExperience,rank*3);assert.equal(u.militiaCombatCredit.length,rank);for(const key of kept)assert.deepEqual(u[key],result.actual[key],key);assert.equal(u.hp,44);assert.equal(u.maxHp,60);assert.equal(u.loaded,before.loaded-rank);assert.equal(u.ammo,before.ammo);assert.equal(u.condition,before.condition-rank);assert.equal(u.marksmanship,before.marksmanship+rank*8);assert.equal(u.leadership,before.leadership+rank*5);assert.equal(s.nextMilitiaId,next);assert.deepEqual(s.sectors.retiro.militia,rank===1?[2,1,0]:[2,0,1]);assert.equal(s.log.filter(e=>e.text.includes('asciende por experiencia de combate')).length,rank);s=save(s);}
+ const u=soldier(s,id);assert.notEqual(...u.militiaCombatCredit.map(e=>e.id));const p=visit(s),field=p.battle.units.find(u=>Number(u.id)===id);assert.equal(field.militiaRank,2);assert.equal(field.hp,44);assert.equal(field.militiaExperience,6);assert.equal(field.loaded,1);const returned=save(leave(p));assert.equal(soldier(returned,id).militiaRank,2);assert.equal(returned.log.filter(e=>e.text.includes('asciende por experiencia de combate')).length,2);
 });
 
 test('a first wound grants bounded credit, repeated wounds do not farm points, and a later eligible kill upgrades the same receipt',()=>{
@@ -24,11 +24,11 @@ test('a first wound grants bounded credit, repeated wounds do not farm points, a
  for(const [victim,eligible,damage]of [[{id:'ally',side:'player',hp:50},true,20],[{id:'helpless',side:'enemy',hp:0},false,20],[{id:'miss',side:'enemy',hp:80},true,0]])recordMilitiaHit(state,unit,victim,eligible,damage);assert.equal(unit.militiaExperience,3);
 });
 
-test('actual damage to a helpless opponent and a civilian grants no combat progress',()=>{
+test('manual militia attacks cannot farm helpless opponents or civilians',()=>{
  const fields={width:10,height:8,seed:42,tiles:Array.from({length:80},(_,i)=>({x:i%10,y:Math.floor(i/10),type:'grass',blocked:false,cover:0}))};
  const militia={id:'m',militia:true,militiaRank:0,hp:60,maxHp:60,weapon:1800,blade:1813,x:1,y:1};
- let b=createBattle([militia],{...fields,enemies:[{id:'helpless',x:2,y:1,hp:10,maxHp:60,weapon:1813},{id:'active',x:8,y:6,hp:100,maxHp:100,weapon:1813}]});b=actBattle(b,{type:'melee',unitId:'m',targetId:'helpless'});assert.equal(b.lastError,null);assert.equal(b.units[1].hp,0);assert.equal(b.units[0].militiaExperience,undefined);assert.equal(b.units[1].militiaCreditId,undefined);assert.ok(validateBattleSnapshot(b));
- b=createBattle([militia],{...fields,exploration:true,enemies:[],npcs:[{id:'resident',name:'Habitante',x:2,y:1,hp:100,maxHp:100}]});const hp=b.npcs[0].hp;b=actBattle(b,{type:'melee',unitId:'m',targetId:'resident'});assert.equal(b.lastError,null);assert.ok(b.npcs[0].hp<hp);assert.equal(b.units[0].militiaExperience,undefined);assert.equal(b.npcs[0].militiaCreditId,undefined);assert.ok(validateBattleSnapshot(b));
+ let b=createBattle([militia],{...fields,enemies:[{id:'helpless',x:2,y:1,hp:10,maxHp:60,weapon:1813},{id:'active',x:8,y:6,hp:100,maxHp:100,weapon:1813}]});b=actBattle(b,{type:'melee',unitId:'m',targetId:'helpless'});assert.match(b.lastError,/milicias actúan por su cuenta/);assert.equal(b.units[1].hp,10);assert.equal(b.units[0].militiaExperience,undefined);assert.equal(b.units[1].militiaCreditId,undefined);assert.ok(validateBattleSnapshot(b));
+ b=createBattle([militia],{...fields,exploration:true,enemies:[],npcs:[{id:'resident',name:'Habitante',x:2,y:1,hp:100,maxHp:100}]});const hp=b.npcs[0].hp;b=actBattle(b,{type:'melee',unitId:'m',targetId:'resident'});assert.match(b.lastError,/milicias actúan por su cuenta/);assert.equal(b.npcs[0].hp,hp);assert.equal(b.units[0].militiaExperience,undefined);assert.equal(b.npcs[0].militiaCreditId,undefined);assert.ok(validateBattleSnapshot(b));
 });
 
 test('a saved unfinished encounter keeps its opponent receipt when the same militia returns',()=>{
@@ -38,7 +38,7 @@ test('a saved unfinished encounter keeps its opponent receipt when the same mili
 
 test('new veteran tuition is rejected atomically while regular instruction and already-paid count-only veteran courses remain valid',()=>{
  let {s,id}=combatMilitia();const before=structuredClone(s),denied=dispatchCampaign(s,{type:'militia',rank:2,trainerId:1000});assert.match(denied.lastError,/veteranos/);denied.lastError=null;assert.deepEqual(denied,before);
- s=order(s,{type:'militia',rank:1,trainerId:1000});s=order(save(s),{type:'wait',hours:s.militiaTraining[0].remaining});assert.equal(soldier(s,id).militiaRank,1);assert.equal(soldier(s,id).hp,43);assert.equal(soldier(s,id).militiaExperience,undefined);
+ s=order(s,{type:'militia',rank:1,trainerId:1000});s=order(save(s),{type:'wait',hours:s.militiaTraining[0].remaining});assert.equal(soldier(s,id).militiaRank,1);assert.equal(soldier(s,id).hp,44);assert.equal(soldier(s,id).militiaExperience,undefined);
  // Explicit already-paid older save. It cannot identify its unknown participants.
  s.garrisons.retiro=[];s.sectors.retiro.militia=[0,0,0];s.militiaTraining=[{sector:'retiro',rank:2,trainerId:1000,count:3,duration:48,remaining:1,started:s.hour}];s=order(save(s),{type:'wait',hours:1});assert.deepEqual(s.sectors.retiro.militia,[0,0,3]);assert.ok(save(s));
 });

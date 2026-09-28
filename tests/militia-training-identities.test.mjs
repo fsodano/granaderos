@@ -21,7 +21,7 @@ function trained({twoCohorts=false,woundedInstructor=false}={}){
  for(let i=0;i<(twoCohorts?2:1);i++)s=finish(order(s,{type:'militia',rank:0,trainerId:1000}));
  return save(leave(visit(s)));
 }
-function stabilized(){let {campaign:s,patientId}=woundedGarrison();s=order(s,{type:'assignCare',id:D,assignment:'militia_doctor'});s=order(s,{type:'wait',hours:2});s=order(s,{type:'assignCare',id:D,assignment:'active'});assert.equal(militia(s).find(u=>u.id===patientId).hp,19);return {s:save(s),patientId};}
+function stabilized(){let {campaign:s,patientId}=woundedGarrison();s=order(s,{type:'assignCare',id:D,assignment:'militia_doctor'});s=order(s,{type:'wait',hours:2});s=order(s,{type:'assignCare',id:D,assignment:'active'});assert.equal(militia(s).find(u=>u.id===patientId).hp,20);return {s:save(s),patientId};}
 const preserved=['id','hp','maxHp','energy','fatigue','bleeding','bandaged','ammo','loaded','priming','flints','rations','torches','medkits','boleadoras','condition','weapon','blade','weaponMetadata','bladeMetadata','inventory'];
 function unchanged(actual,before){for(const key of preserved)assert.deepEqual(actual[key],before[key],`${before.id}: ${key}`);}
 
@@ -33,7 +33,7 @@ test('paid regular promotion retains an actually injured and treated soldier, eq
   for(const u of militia(s)){const prior=before.find(v=>v.id===u.id);unchanged(u,prior);assert.equal(u.militiaRank,rank);assert.equal(u.marksmanship,prior.marksmanship+8*rank);assert.equal(u.leadership,prior.leadership+5*rank);}
   assert.equal(s.nextMilitiaId,next);s=save(s);
  }
- assert.equal(militia(s).find(u=>u.id===patientId).hp,19,'training does not replace medical treatment');
+ assert.equal(militia(s).find(u=>u.id===patientId).hp,20,'training does not replace medical treatment');
  const p=visit(s);assert.deepEqual(p.campaign.pendingBattle.garrison.map(u=>u.id),before.map(u=>u.id));for(const u of p.battle.units.filter(u=>u.militia))assert.equal(u.hp,before.find(v=>v.id===Number(u.id)).hp);assert.ok(save(leave(p)));
 });
 

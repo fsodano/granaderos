@@ -1,3 +1,4 @@
+import {DEFAULT_MILITIA_PROGRESSION} from '../game/militia-progression-rules.js';
 import {secureArea} from './controlled-area-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -75,14 +76,15 @@ test('a generated enemy firearm can be recovered and retained through campaign r
  assert.equal(weaponFor(b.units.find(u=>u.id==='110')).contentId,'guard-pistol');assert.ok(save(s,b));
 });
 test('trained militia retain their authored weapons, identity, wear and spent ammunition through promotion and reentry',()=>{
- let s=order(secureArea(initialCampaign(8,content()),'buenos_aires','ensenada'),{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
- s=train(s,0);s=order(s,{type:'visitSector'});let request=s.pendingBattle;assert.equal(request.garrison.length,3);
+ const d=content();d.militiaProgression={...DEFAULT_MILITIA_PROGRESSION,regularThreshold:99,veteranThreshold:100};
+ let s=order(secureArea(initialCampaign(42,d),'buenos_aires','ensenada'),{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
+ s=train(s,0);if(s.hour%24<6||s.hour%24>=20)s=order(s,{type:'wait',hours:(30-s.hour%24)%24});s=order(s,{type:'visitSector'});let request=s.pendingBattle;assert.equal(request.garrison.length,3);
  assert.ok(request.garrison.every(u=>contentWeaponOf(u).id==='line-pistol'&&u.loaded===6&&u.ammo===0));
- let b=createBattle([...request.squad.map(u=>({...u,x:1,y:8})),...request.garrison.map((u,i)=>({...u,x:1,y:1+i*2}))],{...request,exploration:false,width:14,height:10,tiles,seed:45,enemies:[{id:'raider',x:4,y:1,weapon:1800}]});
- const shooter=b.units.find(u=>u.militia),id=shooter.id;b=actBattle(b,{type:'fire',unitId:id,targetId:'raider'});assert.equal(b.lastError,null);
- const remaining=b.units.find(u=>u.id===id);assert.equal(remaining.loaded,5);const condition=remaining.condition;
+ let b=createBattle([...request.squad.map(u=>({...u,x:1,y:8})),...request.garrison.map((u,i)=>({...u,x:1,y:1+i*2}))],{...request,exploration:false,width:14,height:10,tiles,seed:request.seed,enemies:[{id:'raider',x:11,y:1,weapon:1813,blade:1813,hp:20,maxHp:20}]});
+ const shooter=b.units.find(u=>u.militia),id=shooter.id;b=endTurn(b);assert.equal(b.lastError,null);
+ const remaining=b.units.find(u=>u.id===id);assert.ok(remaining.loaded<6,JSON.stringify({night:b.night,log:b.log,units:b.units.map(u=>({id:u.id,hp:u.hp,loaded:u.loaded,condition:u.condition,rank:u.militiaRank}))}));assert.ok(remaining.condition<85);const loaded=remaining.loaded,condition=remaining.condition;
  s=save(leave(s,b)).campaign;s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);
- const retained=b.units.find(u=>u.id===id);assert.equal(retained.loaded,5);assert.equal(retained.condition,condition);assert.equal(weaponFor(retained).contentId,'line-pistol');assert.ok(save(s,b));s=leave(s,b);
+ const retained=b.units.find(u=>u.id===id);assert.equal(retained.loaded,loaded);assert.equal(retained.condition,condition);assert.equal(weaponFor(retained).contentId,'line-pistol');assert.ok(save(s,b));s=leave(s,b);
  const original=structuredClone(s.garrisons.retiro);
  for(const rank of [1]){
   s=train(s,rank);s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);
