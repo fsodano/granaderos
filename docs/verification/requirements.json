@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "32f7dc096cbdb3c152a79996a337d1fc1f885443",
+  "baseline": "2ed9f7ac0eb2b20a2d52a9b4a4b4667699b930b1",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -255,6 +255,11 @@
       "id": "E-CARTRIDGE-SAVE",
       "path": "docs/verification/authored-cartridge-save.md",
       "description": "A normal authored campaign with 14 initial cartridges reproduced a stale ten-reserve save limit. Pending deployment validation now uses its pinned rule. Real exploration and combat deployments cover 0, 10, 11, 14 and 100, invalid excess reserves, paid issue/refund and duplicate settlement rejection. Actual firing, reload and active save preserve consumption with a 100-round allocation."
+    },
+    {
+      "id": "E-POST-CAMPAIGN",
+      "path": "docs/verification/independent-post-campaign.md",
+      "description": "A downloadable independent three-chapter package completes actual paid recruitment, two battles, local dialogues, replacements, workshop service, finite care, three permanent losses and the saved return ending. Replay, midpoint saves, post-victory reentry, real deadline failure, content pinning and mounted example load/edit/undo/launch are covered. One seed/strategy is accepted; stock geography/opposition and advanced integration remain separate."
     }
   ],
   "queue": [
@@ -268,7 +273,7 @@
         "FIX-03",
         "FIX-04"
       ],
-      "action": "Preserve the accepted fresh mixed published historical route and post-victory continuation. Verify remaining force starts and an independently authored full campaign; diagnose each advanced medical, recapture and prisoner-rescue failure. Import advanced systems with their tests and approved pesos/contract policies one capability at a time; do not replace the reducer wholesale."
+      "action": "Preserve the accepted fresh mixed published historical route and post-victory continuation. Preserve the accepted independent post campaign, verify remaining force starts and broader authored composition; diagnose each advanced medical, recapture and prisoner-rescue failure. Import advanced systems with their tests and approved pesos/contract policies one capability at a time; do not replace the reducer wholesale."
     },
     {
       "order": 2,
@@ -302,6 +307,30 @@
     }
   ],
   "requirements": [
+    {
+      "id": "POST-01",
+      "group": "Published deliveries",
+      "requirement": "Load, edit and finish a complete independent campaign package",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "La ruta de las postas is a downloadable three-chapter scenario with thirteen independent identities, paid service, two actual locality battles, world contacts, a timed objective and its own ending. The editor loads it with undo and the verified seed.",
+      "local": "A fresh seed-8 route pays for replacements and supplies, preserves three deaths, returns to Córdoba and saves victory; a separate fresh timed route loses. Mounted controls load, edit, undo and launch real play.",
+      "remaining": "",
+      "acceptance": "Use a portable package without engine-specific scenario code; launch and complete its declared beginning, middle and ending through actual campaign actions, with losses, costs, saved continuation and a real failure path.",
+      "evidence": [
+        "E-POST-CAMPAIGN"
+      ],
+      "parents": [
+        "STORY-07",
+        "STORY-08",
+        "INTEGRATION-01",
+        "QA-01"
+      ],
+      "testFiles": [
+        "tests/post-campaign.test.mjs",
+        "tests/story-editor.test.mjs"
+      ]
+    },
     {
       "id": "AMMOSAVE-01",
       "group": "Published deliveries",
@@ -2172,7 +2201,7 @@
       "requirement": "Campaign end-to-end completion",
       "status": "FAILED",
       "priority": "P0",
-      "published": "One full fresh mixed stock campaign covers all phases, actual final victory and saved continuation. A separate fresh Mendoza route verifies terminal defeat after an indispensable casualty. The hired-only coastal opening is also accepted.",
+      "published": "One full fresh mixed stock campaign covers all phases, actual final victory and saved continuation. A separate fresh Mendoza route verifies terminal defeat after an indispensable casualty. The hired-only coastal opening is also accepted. A fresh independent three-chapter scenario covers paid replacements, two battles, saved victory and a separate timed defeat.",
       "local": "The preserved advanced recovery and prisoner-rescue audits still have unresolved acceptance failures. The new stock route covers the published care and equipment model only.",
       "remaining": "Complete and record the combined advanced victory/defeat/recovery routes, including prisoner rescue and the remaining force starts; preserve the accepted published paths.",
       "acceptance": "Recorded playthrough covering phases, victory and defeat",
@@ -2182,7 +2211,8 @@
         "E-LOCAL",
         "E-PROTOTYPE",
         "E-FRESH-ENDING",
-        "E-HISTORICAL-LOSS"
+        "E-HISTORICAL-LOSS",
+        "E-POST-CAMPAIGN"
       ]
     },
     {
@@ -2338,9 +2368,9 @@
       "requirement": "Campaign composition and an independent second campaign",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Initial funds, cartridge allotments, locality control/loyalty, headquarters and imports are configurable. Optional authored chapters replace historical progression with ordered conditions and persistent victory/defeat, driven by real campaign actions. Original world and role composition remain. A wholly authored cast now completes a short hire/encounter/quest/ending route without historical roster identities. Original generic residents are optional. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions.",
-      "local": "No second complete campaign accepted.",
-      "remaining": "Compose and reassign remaining recruitment/economic roles and strategic function values, factions, opposition commanders, diplomacy, calendar events and world geography; finish an independent second full campaign.",
+      "published": "Initial funds, cartridge allotments, locality control/loyalty, headquarters and imports are configurable. Optional authored chapters replace historical progression with ordered conditions and persistent victory/defeat, driven by real campaign actions. Original world and role composition remain. A wholly authored cast now completes a short hire/encounter/quest/ending route without historical roster identities. Original generic residents are optional. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions. The independent post campaign now completes its entire authored three-chapter route with real paid service, combat, losses, conversations and ending; its timed failure and editor load/edit/launch are also accepted.",
+      "local": "One complete compact second scenario is accepted with seed 8. Broader authoring still reuses the stock world and opposition; no universal balance claim.",
+      "remaining": "Compose and reassign remaining recruitment/economic roles and strategic function values, factions, opposition commanders, diplomacy, calendar events and world geography; broaden campaign composition beyond the stock world.",
       "acceptance": "Build and finish a distinct campaign with no engine source changes.",
       "evidence": [
         "E-CONFLICTS",
@@ -2351,7 +2381,8 @@
         "E-CAMPAIGN-CAST",
         "E-CAMPAIGN-ROLES",
         "E-FOUNDRY-PROJECT",
-        "E-PROJECT-CONDITIONS"
+        "E-PROJECT-CONDITIONS",
+        "E-POST-CAMPAIGN"
       ]
     },
     {
@@ -2360,13 +2391,14 @@
       "requirement": "Portable immutable content, assets and dependency checks",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Pinned sheet/weapon data and versioned content saves. Pending scene saves accept the full supported authored cartridge range, including zero and 100, without resetting spent rounds.",
+      "published": "Pinned sheet/weapon data and versioned content saves. Pending scene saves accept the full supported authored cartridge range, including zero and 100, without resetting spent rounds. The bundled post package round-trips through ordinary import/export and launched content remains pinned; its images come from the installed game.",
       "local": "Full narrative/rule/asset portability is unaccepted.",
       "remaining": "Package all supported content/assets and validate references and migrations.",
       "acceptance": "Export, import in a clean profile, play and reload; later draft edits cannot change the running campaign.",
       "evidence": [
         "E-PUBLISHED",
-        "E-CARTRIDGE-SAVE"
+        "E-CARTRIDGE-SAVE",
+        "E-POST-CAMPAIGN"
       ]
     },
     {
@@ -2375,7 +2407,7 @@
       "requirement": "Consolidate published, prototype and advanced local gameplay",
       "status": "FAILED",
       "priority": "P0",
-      "published": "The published rules now accept a complete fresh mixed historical route, a hired-only coastal opening, explicit historical loss and saved post-victory continuation. Editable content, paid arrivals, permanent casualties, story gates and treasury costs are exercised. Most advanced local gameplay is still outside this integrated release.",
+      "published": "The published rules now accept a complete fresh mixed historical route, a hired-only coastal opening, explicit historical loss and saved post-victory continuation. Editable content, paid arrivals, permanent casualties, story gates and treasury costs are exercised. Most advanced local gameplay is still outside this integrated release. A complete compact independent authored scenario is also accepted, with its own ending and real deadline failure.",
       "local": "The preserved advanced/prototype audits contain failures and policy differences. Those source-specific results are not replaced by the published route; later concurrent local changes are not yet accepted in main.",
       "remaining": "Import one bounded capability at a time, preserve approved policy and carry its tests into main.",
       "acceptance": "One release has the full combined behavior, passing combined suite, legal complete routes and no undocumented policy regressions.",
@@ -2388,7 +2420,8 @@
         "E-FRESH-NORTHERN",
         "E-HISTORICAL-LOSS",
         "E-FRESH-CUYO",
-        "E-FRESH-ENDING"
+        "E-FRESH-ENDING",
+        "E-POST-CAMPAIGN"
       ]
     },
     {

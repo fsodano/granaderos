@@ -93,6 +93,11 @@ calendar raids and world geography still need separate composition. This does no
 establish an independent second full campaign or change the original design's
 historical acceptance requirements.
 
+The bundled [post campaign](../development/example-post-campaign.md) demonstrates
+a complete independent three-chapter scenario with paid arrivals, new contacts,
+two actual battles, a timed objective and a saved ending. It uses the existing
+world and opposition; it does not close their separate authoring requirements.
+
 ## Authored campaign cast
 
 Authored progression may remove any historical character, subject to content
