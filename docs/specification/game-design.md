@@ -58,8 +58,17 @@ initial location, supply origin, formation presentation, local armory/workshop
 access and loss condition. Scheduled raids retain the stock headquarters protection.
 Districts share locality control; open land remains neutral. Initial choices grant
 no capture reward, forces or completed missions and never reset later saved control.
-Historical contacts, import port, later chapters and endings retain their own role
-rules until those are authored separately.
+Historical contacts, later chapters and endings retain their own role rules
+until those are authored separately.
+
+Imported firearm families use an authored reception port and inclusive delivery
+window of 1–720 hours, or an explicit disabled setting. Defaults remain Ensenada
+and 72–120 hours. Only the four compatible river ports are eligible. The paid
+order stores its sampled due time; reload never rerolls it. Actual control and
+blockade govern delivery, after resolving same-hour raids. Delayed orders remain
+pending without another payment or duplicate stock. Authored weapon instances
+retain their definition on delivery. Physical port depots, transport and choosing
+imported families remain separate requirements from these published supply rules.
 
 ## Player flow
 

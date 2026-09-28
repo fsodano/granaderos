@@ -1,3 +1,4 @@
+import {importRulesFor,importOrderReason} from './campaign-imports.js';
 import {headquartersFor,headquartersName,campaignChapters,hasWorkshop} from './campaign-headquarters.js';
 import {campaignRules} from './campaign-rules.js';
 import {synchronizeDialogueMovements,validateDialogueMovements} from './dialogue-movement.js';
@@ -164,7 +165,6 @@ function tick(s,hours,{joinArrivals=true}={}){
       if(!s.operativeState[course.trainerId]?.alive||operativeLocation(s,course.trainerId)!==course.sector||!isSupplied(s,course.sector)||!militiaEligibility(s,course.sector).eligible)continue;
       course.remaining--;if(course.remaining<=0){s.sectors[course.sector].militia[course.rank]+=course.count;s.militiaTraining=s.militiaTraining.filter(t=>t!==course);note(s,`Tres milicianos completan su instrucción en ${sector(course.sector).name}.`);}
     }
-    deliverEquipmentShipments(s);
     if(s.hour%24===0){
       dailyPolitics(s);
       const income=dailyIncome(s);
@@ -177,6 +177,8 @@ function tick(s,hours,{joinArrivals=true}={}){
     if(!s.completed&&s.hour%120===0)raid(s,'north');
     if(!s.completed&&s.hour%168===0&&coastalRevenue(s)>=500)raid(s,'coast');
     if(!s.completed&&s.hour%144===0)raid(s,'interior');
+    // Resolve same-hour occupation and blockade before admitting imported goods.
+    deliverEquipmentShipments(s);
     receiveDueHires(s,joinArrivals);synchronizeSquad(s);synchronizeCampaignPresence(s);synchronizeDialogueMovements(s);progress(s);if(s.defeated)break;
   }
 }
@@ -210,7 +212,7 @@ export function dispatchCampaign(previous,action){
         const item=equipmentCatalog(s).find(o=>String(o.item)===String(action.item)),quantity=action.quantity??1;
         requireThat(item&&Number.isInteger(quantity)&&quantity>0&&quantity<=100,'El pedido de armamento es inválido.');
         requireThat(isSupplied(s,headquartersFor(s)),`La sala de armas de ${headquartersName(s)} está incomunicada.`);
-        if(isImportedEquipment(item)){requireThat(s.sectors.ensenada.owner==='patriot'&&s.reputation.foreign>=0,'El pedido requiere Ensenada libre y comerciantes dispuestos a negociar.');s.equipmentShipments??=[];requireThat(s.equipmentShipments.length<1000,'Hay demasiados pedidos pendientes.');pay(s,{treasury:tradeQuote(s,item.price)*quantity});const delay=72+Math.floor(random(s)*49);s.equipmentShipments.push({item:item.item,quantity,due:s.hour+delay});note(s,`Pedido de ${quantity} × ${item.name}: arribo en ${delay} horas, sujeto al bloqueo.`);break;}
+        if(isImportedEquipment(item)){const reason=importOrderReason(s);requireThat(!reason,reason);s.equipmentShipments??=[];requireThat(s.equipmentShipments.length<1000,'Hay demasiados pedidos pendientes.');pay(s,{treasury:tradeQuote(s,item.price)*quantity});const rules=importRulesFor(s),delay=rules.minHours+Math.floor(random(s)*(rules.maxHours-rules.minHours+1));s.equipmentShipments.push({item:item.item,quantity,due:s.hour+delay});note(s,`Pedido de ${quantity} × ${item.name}: arribo en ${delay} horas, sujeto al bloqueo.`);break;}
         pay(s,{treasury:item.price*quantity});s.armory??={};addArmoryStock(s,item,quantity);
         note(s,`La sala de armas entrega ${quantity} × ${item.name}.`);break;
       }

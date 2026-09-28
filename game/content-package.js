@@ -1,3 +1,4 @@
+import {DEFAULT_IMPORT_RULES,validateImportRules} from './campaign-imports.js';
 import {validateHeadquarters} from './campaign-headquarters.js';
 import {defaultStartingTerritory,validateStartingTerritory} from './content-territory.js';
 import {DEFAULT_CAMPAIGN_RULES,validateCampaignRules} from './campaign-rules.js';
@@ -51,6 +52,7 @@ export function defaultContentPackage() {
     rules: {...DEFAULT_CAMPAIGN_RULES},
     startingTerritory: defaultStartingTerritory(),
     headquarters: 'retiro',
+    imports: {...DEFAULT_IMPORT_RULES},
     arrivalSites: defaultArrivalSites(),
     oppositionEquipment: defaultForceEquipment('oppositionEquipment'),
     militiaEquipment: defaultForceEquipment('militiaEquipment'),
@@ -116,7 +118,7 @@ export function validateContentPackage(value) {
     );
   text(value.name, "Nombre", 100);
   try{validateContentQuests(value.quests,new Set((Array.isArray(value.characters)?value.characters:[]).map(c=>c?.id)));}catch(error){errors.push(error.message);}
-  errors.push(...validateCampaignRules(value.rules),...validateHeadquarters(value.headquarters),...validateStartingTerritory(value.startingTerritory,value.headquarters));
+  errors.push(...validateImportRules(value.imports),...validateCampaignRules(value.rules),...validateHeadquarters(value.headquarters),...validateStartingTerritory(value.startingTerritory,value.headquarters));
   if (value.arrivalSites !== undefined) errors.push(...validateArrivalSites(value.arrivalSites));
   for (const key of ["characters", "weapons", "placements"])
     check(

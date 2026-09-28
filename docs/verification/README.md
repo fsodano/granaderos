@@ -32,6 +32,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Initial funds and cartridge allotments](campaign-supply-rules.md)
 - [Starting territorial control and loyalty](starting-territory.md)
 - [Configurable campaign headquarters](campaign-headquarters.md)
+- [Import ports and saved delivery windows](import-supply-rules.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 
