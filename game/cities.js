@@ -20,7 +20,7 @@ export function getCityStatus(state,cityOrSector){
  const loyalty=Math.floor(city.sectors.reduce((sum,id)=>sum+Math.max(0,Math.min(100,Number(state.sectors?.[id]?.loyalty)||0)),0)/city.sectors.length);
  return {...city,loyalty,threshold:CITY_LOYALTY_THRESHOLD,controlled:uncontrolled.length===0,uncontrolled};
 }
-export const CITY_LOYALTY_REWARDS=Object.freeze({quest:8,victory:10,defense:3,defeat:-12});
+export const CITY_LOYALTY_REWARDS=Object.freeze({quest:8,victory:10,defense:3,defeat:-12,civilianPlayerIntentional:-10,civilianPlayerAccidental:-5,civilianMilitia:-7,civilianMilitiaAccidental:-4,civilianEnemyPatriot:-3,civilianEnemyPatriotAccidental:-1,civilianEnemyRoyalist:10,civilianEnemyRoyalistAccidental:5});
 // Campaign calls this only after validating and applying the actual outcome.
 // Stable quest/battle IDs prevent a repeated result from farming loyalty.
 export function recordCityLoyalty(state,{sectorId,kind,eventId}){

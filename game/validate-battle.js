@@ -1,3 +1,4 @@
+import {validateCivilianWounds} from './civilian-harm.js';
 import {validCharacterAbilities} from './character-abilities.js';
 import {validateWeaponCarrier,weaponSpecification} from './weapon-definition.js';
 import {NPC_ACTIVITIES} from './npc-ai.js';
@@ -42,6 +43,7 @@ if(s.civilianTurns!==undefined)need(integer(s.civilianTurns,0,1e9),'turnos civil
 if(s.civilianSeconds!==undefined)need(number(s.civilianSeconds,0,6)&&s.civilianSeconds<6,'reloj civil');
 const npcIds=new Set();
 for(const n of s.npcs){
+ validateCivilianWounds(n,s);
  need(coord(n)&&text(n.id)&&text(n.name)&&!ids.has(n.id)&&!npcIds.has(n.id),'personajes');npcIds.add(n.id);
  if(n.abilities!==undefined)need(validCharacterAbilities(n.abilities),'habilidades del personaje');
  if(n.stance!==undefined)need(['standing','crouched','prone'].includes(n.stance),'postura civil');

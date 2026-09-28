@@ -70,7 +70,7 @@ test('new characters retain actual combat injuries and experience across return,
   s=save(s).campaign;
   secureArea(s,'buenos_aires');s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});const request=s.pendingBattle;
   // Compact combat fixture with actual campaign soldiers and return handlers.
-  let b=createBattle(request.squad.map(u=>({...u,x:1,y:1})),{width:12,height:8,sectorId:request.sector,seed:45,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[{id:'guard',x:10,y:1,weapon:1806,blade:1811,ammo:0,fatigue:100,marksmanship:100}]});
+  let b=createBattle(request.squad.map(u=>({...u,x:1,y:1})),{width:12,height:8,id:request.id,sector:request.sector,npcs:request.npcs,seed:45,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[{id:'guard',x:10,y:1,weapon:1806,blade:1811,ammo:0,fatigue:100,marksmanship:100}]});
   b=actBattle(b,{type:'repair',unitId:String(id)});assert.equal(b.lastError,null);assert.equal(b.units[0].trainedStats.mechanical,1);
   b=endTurn(b);
   assert.equal(b.lastError,null);const hp=b.units.find(u=>u.id===String(id)).hp;assert.ok(hp>0&&hp<c.attributes.maxHp,JSON.stringify({hp,log:b.log}));

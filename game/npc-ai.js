@@ -1,3 +1,4 @@
+import {applyCivilianHarm} from './civilian-harm.js';
 import {propCells} from './props.js';
 import {directionTo, approximateHeardPosition} from './npc-perception.js';
 
@@ -113,7 +114,7 @@ export function advanceNpc(s,n,budget=24,atTime=now(s)) {
       if(t.trap&&t.trap.armed!==false){
         t.trap.armed=false;
         if(t.trap.type==='alarm')hearNpcNoise(s,t,'alarm',20);
-        else {n.hp=Math.max(0,(n.hp??100)-(t.trap.damage??18));n.energy=Math.max(0,(n.energy??100)-(t.trap.breathLoss??25));n.unconscious=n.hp<15||n.energy<=0;}
+        else applyCivilianHarm(s,n,{damage:t.trap.damage??18,breathLoss:t.trap.breathLoss??25});
         // Triggering a trap spends this attempt; it never silently opens a door
         // or discloses the trap to either combat faction.
         break;

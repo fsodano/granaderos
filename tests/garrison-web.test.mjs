@@ -11,7 +11,7 @@ test('trained local militia become real allied soldiers and retain finite ammo a
 test('actual tactical militia casualties reduce strategic counts and never respawn on reload',()=>{
  let s=trained();s=step(s,{type:'visitSector'});const request=s.pendingBattle;
  const squad=[...request.squad.map(u=>({...u,x:1,y:1})),...request.garrison.map((u,i)=>({...u,x:8,y:3+i}))];
- let b=createBattle(squad,{id:'retiro',width:14,height:10,tiles:Array.from({length:140},(_,i)=>({x:i%14,y:Math.floor(i/14),type:'grass',blocked:false,cover:0})),enemies:[{id:'raider',name:'Asaltante realista',x:9,y:3,weapon:1812,blade:1812,strength:95,agility:95,hp:100,maxHp:100}]});
+ let b=createBattle(squad,{id:request.id,sector:request.sector,npcs:request.npcs,width:14,height:10,tiles:Array.from({length:140},(_,i)=>({x:i%14,y:Math.floor(i/14),type:'grass',blocked:false,cover:0})),enemies:[{id:'raider',name:'Asaltante realista',x:9,y:3,weapon:1812,blade:1812,strength:95,agility:95,hp:100,maxHp:100}]});
  b=endTurn(b);const killed=b.units.filter(u=>u.militia&&u.hp<=0);assert.ok(killed.length>0,'The real enemy phase must kill at least one nearby militia soldier');s=leave(s,b);assert.equal(s.sectors.retiro.militia[0],3-killed.length);s=restoreCampaign(serializeCampaign(s));s=step(s,{type:'visitSector'});const next=enterSector(s.pendingBattle,s.sectorStates.retiro);assert.equal(next.units.filter(u=>u.militia&&u.hp>0).length,3-killed.length);assert.ok(killed.every(dead=>next.units.some(u=>u.id===dead.id&&u.hp===0)));
 });
 test('garrison deployment requires complete casualty snapshots and validates saved records',()=>{
