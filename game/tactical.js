@@ -345,10 +345,16 @@ function runForcePhase(s,side){
  for(const u of actors){
   for(let n=0;n<12&&alive(u)&&u.ap>0&&s.status==='active';n++){
    const targets=s.units.filter(t=>t.side!==side&&alive(t)&&canSee(s,u,t)).sort((a,b)=>dist(u,a)-dist(u,b)),t=targets[0];
-   const artillery=chooseArtilleryAction(s,u,targets);if(artillery){if(!order(artillery))break;continue;}
+   const artillery=chooseArtilleryAction(s,u,targets);if(artillery){
+    // Perceived paths cannot authorize a longer detour around an unseen body.
+    if(artillery.type==='move'){const path=getReachable(s,u).find(p=>p.x===artillery.x&&p.y===artillery.y);if(!path||path.cost>24||path.path.length>3)break;}
+    if(!order(artillery))break;continue;
+   }
+   // Keep the first operators at the gun while their helpers approach/stand.
+   // An exhausted post or immediate close threat returns to ordinary combat.
+   if(holdsArtilleryPost(s,u)&&targets.every(t=>dist(u,t)>2.5))break;
    if(u.ap<6)break;
    if(!t){
-    if(holdsArtilleryPost(s,u))break;
     const patrol=enemy?choosePatrolAction(s,u):militiaPatrolOrder(s,u);
     if(patrol){u.patrolTurn=s.turn;order(patrol);if(s.units.some(v=>v.side!==side&&alive(v)&&canSee(s,u,v)))continue;}
     break;

@@ -46,7 +46,7 @@ test('short local approaches use legal paths and a prone gunner pays to stand be
  const action=choose(b);assert.equal(action.type,'move');const path=getReachable(b,u).find(p=>p.x===action.x&&p.y===action.y);assert.ok(path.cost<=24&&path.path.length<=3);
  const approached=endTurn(b);assert.ok(artilleryContact(approached,crewOf(approached)[0],approached.artillery[0]));assert.equal(approached.artillery[0].loaded,true);assert.ok(crewOf(approached)[0].ap<=100-path.cost-35);
  const prone=field({type:'swivel',hidden:true,loaded:false});crewOf(prone)[0].stance='prone';assert.equal(choose(prone).type,'stance');const n=endTurn(prone);assert.equal(crewOf(n)[0].stance,'standing');assert.equal(crewOf(n)[0].ap,59);assert.equal(n.artillery[0].ammo,1);
- const remote=field({type:'swivel',hidden:true});crewOf(remote)[0].x=0;crewOf(remote)[0].y=8;assert.equal(choose(remote),null);
+ const remote=field({type:'swivel',hidden:true});crewOf(remote)[0].x=0;crewOf(remote)[0].y=10;assert.equal(choose(remote),null);
 });
 
 test('pivot requires a complete paid shot budget and actual enemy turns preserve the pivot cost',()=>{
@@ -114,4 +114,18 @@ test('a paid local cohort operates a purchased retained gun and full campaign sa
  const gunner=battle.units.find(u=>u.id===String(r.garrison[0].id));assert.ok(gunner.militiaExperience>0);for(const u of before.units.filter(u=>u.side==='player'&&!u.militia))assert.equal(battle.units.find(v=>v.id===u.id).hp,u.hp);
  const p=saved(sync({campaign:s,battle})),returned=visit(saved({campaign:leave(p)}).campaign);assert.equal(returned.battle.artillery[0].id,gun.id);assert.equal(returned.battle.artillery[0].loaded,false);assert.equal(returned.battle.artillery[0].ammo,gun.ammo);
  const retained=returned.battle.units.find(u=>u.id===gunner.id);for(const key of ['hp','loaded','ammo','condition','militiaExperience','militiaCombatCredit'])assert.deepEqual(retained[key],gunner[key],key);assert.equal(returned.campaign.armory.swivel??0,0);
+});
+
+
+test('a scattered heavy crew holds its post while helpers approach and then fires in a real phase',()=>{
+ for(const side of ['enemy','player']){
+  const b=field({side});crewOf(b)[1].x=0;crewOf(b)[2].x=1;crewOf(b)[2].y=5;
+  const first=position(crewOf(b)[0]),n=endTurn(b);assert.equal(n.lastError,null);assert.ok(n.log.some(line=>line.includes('dispara una bala rasa')),side);assert.ok(n.units.find(u=>u.id==='target').hp<300,side);assert.deepEqual(position(crewOf(n)[0]),first);assert.ok(crewOf(n).every(u=>artilleryContact(n,u,n.artillery[0])));
+  for(const line of n.log.filter(s=>s.includes('avanza (')))assert.ok(Number(line.match(/\((\d+) PA/)[1])<=24,line);
+ }
+});
+
+test('a standing heavy operator waits for prone helpers to pay their own posture cost',()=>{
+ const b=field({hidden:true,loaded:false});for(const u of crewOf(b).slice(1))u.stance='prone';
+ const n=endTurn(b);assert.equal(n.lastError,null);assert.equal(n.artillery[0].loaded,true);assert.equal(n.artillery[0].ammo,1);assert.deepEqual(crewOf(n).map(u=>u.ap),[25,19,19]);assert.ok(crewOf(n).every(u=>u.stance==='standing'));assert.equal(n.log.filter(line=>line.includes('se pone de pie')).length,2);
 });

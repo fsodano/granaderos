@@ -14,7 +14,7 @@ export function chooseArtilleryAction(s,u,targets){
  const gun=localPost(s,u);if(!gun||targets.some(v=>distance(u,v)<=2.5))return null;
  const perceived={...s,units:s.units.filter(v=>v.side===u.side||canSee(s,u,v)),npcs:(s.npcs??[]).filter(n=>(n.hp??100)>0&&!n.departure&&canSee(s,u,n))};
  if(!artilleryContact(s,u,gun)){
-  const routes=getReachable(perceived,u).filter(p=>p.cost>0&&p.cost<=Math.min(24,u.ap)&&p.path.length<=3&&artilleryContact(perceived,{...u,...p},gun)&&p.path.every(step=>!targets.some(v=>distance(step,v)<=2.5))).sort((a,b)=>a.cost-b.cost||a.y-b.y||a.x-b.x);
+  const routes=getReachable(perceived,u).filter(p=>p.cost>0&&p.cost<=Math.min(24,u.ap)&&p.path.length<=3&&distance(p,gun)<distance(u,gun)&&p.path.every(step=>!targets.some(v=>distance(step,v)<=2.5))).sort((a,b)=>Number(artilleryContact(perceived,{...u,...b},gun))-Number(artilleryContact(perceived,{...u,...a},gun))||distance(a,gun)-distance(b,gun)||a.cost-b.cost||a.y-b.y||a.x-b.x);
   return routes[0]?{type:'move',unitId:u.id,x:routes[0].x,y:routes[0].y}:null;
  }
  if(u.stance==='prone')return u.ap>=6?{type:'stance',unitId:u.id,stance:'standing'}:null;
