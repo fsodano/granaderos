@@ -464,12 +464,17 @@
     {
       "id": "E-ARTILLERY-AUTONOMY",
       "path": "docs/verification/autonomous-artillery-crews.md",
-      "description": "Seventeen simulations and two mounted Battlefield cases verify enemy/militia gun operation, short crew assembly, paid posture, finite shared AP/loading, visibility and collateral checks, quiet posts and saved continuation. An actual purchased retained gun and paid cohort fire and persist through complete campaign saves in a declared local ambush. Final overlap passes 29/29 and complete regression 1073/1073, zero failures/skips, with types, export and 36 reference checks. Exact-head publication remains required; broad AI, transport and artillery authoring remain open."
+      "description": "Seventeen simulations and two mounted Battlefield cases verify enemy/militia gun operation, short crew assembly, paid posture, finite shared AP/loading, visibility and collateral checks, quiet posts and saved continuation. An actual purchased retained gun and paid cohort fire and persist through complete campaign saves in a declared local ambush. Final overlap passes 29/29 and complete regression 1073/1073, zero failures/skips, with types, export and 36 reference checks. Published by PR #103 after successful exact-head CI; broad AI, transport and artillery authoring remain open."
     },
     {
       "id": "E-ARTILLERY-PROFILES",
       "path": "docs/verification/authored-artillery-profiles.md",
       "description": "Eight simulations and three mounted checks cover all three authored cannon families, model images/names, actual purchase prices, crew and action costs, ballistics, finite initial ammunition, saved physical use, compact references and pinned launch. Full regression passes 1084/1084, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required; gun transport/trade, extra families and distinct ammunition stocks remain open."
+    },
+    {
+      "id": "E-PARALLEL-VERIFICATION",
+      "path": "docs/verification/parallel-verification.md",
+      "description": "All 178 root test files appear once in four required CI groups with no name filters. Initial and final complete partition runs both pass 1073/1073, zero failures/skips. Final groups pass 240/312/259/262; argument and unsupported-target guards preserve coverage. Documentation, reference, type, export and artifact checks remain; types/export and 36 reference comparisons pass locally. Exact-head publication remains required. This verifies infrastructure, not game completion or hosted speed."
     }
   ],
   "queue": [
@@ -549,7 +554,7 @@
       "requirement": "Operate local artillery through enemy and militia turns with finite shared crew budgets and safe observed targeting",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Enemy and militia crews operate nearby owned guns with finite AP, ammunition and retained work.",
+      "published": "Published by PR #103 after successful exact-head CI. Enemy and militia crews operate nearby owned guns with finite AP, ammunition and retained work.",
       "local": "Seventeen simulations and two mounted Battlefield cases pass, including scattered/prone crew assembly and a real purchased gun with paid militia. Full regression passes 1073/1073, zero failures/skips, with types, export and all 36 baseline comparisons.",
       "remaining": "",
       "acceptance": "Assemble a capable local crew, pay every participant once per phase, retain unfinished work and finite reserve, respect perception and collateral, hold serviceable posts, release depleted guns and preserve actual paid identities/resources through saves.",
@@ -569,7 +574,8 @@
         "tests/artillery-crew-loading.test.mjs",
         "tests/militia-autonomy.test.mjs",
         "tests/militia-exploration.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/103"
     },
     {
       "id": "ARTILLERYSUPPLY-01",
@@ -3386,7 +3392,7 @@
       "status": "FAILED",
       "priority": "P0",
       "published": "One full fresh mixed stock campaign covers all phases, actual final victory and saved continuation. A separate fresh Mendoza route verifies terminal defeat after an indispensable casualty. The hired-only coastal opening is also accepted. A fresh independent three-chapter scenario covers paid replacements, two battles, saved victory and a separate timed defeat.",
-      "local": "The preserved advanced recovery and prisoner-rescue audits still have unresolved acceptance failures. The new stock route covers the published care and equipment model only.",
+      "local": "The preserved advanced recovery and prisoner-rescue audits still have unresolved acceptance failures. The new stock route covers the published care and equipment model only. CIVERIFY-01 tracks complete test coverage across parallel CI jobs; this does not establish missing gameplay or performance acceptance.",
       "remaining": "Complete and record the combined advanced victory/defeat/recovery routes, including prisoner rescue and the remaining force starts; preserve the accepted published paths.",
       "acceptance": "Recorded playthrough covering phases, victory and defeat",
       "evidence": [
@@ -3396,7 +3402,8 @@
         "E-PROTOTYPE",
         "E-FRESH-ENDING",
         "E-HISTORICAL-LOSS",
-        "E-POST-CAMPAIGN"
+        "E-POST-CAMPAIGN",
+        "E-PARALLEL-VERIFICATION"
       ]
     },
     {
@@ -5439,16 +5446,37 @@
         "tests/contract-casualty-presence.test.mjs"
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/59"
+    },
+    {
+      "id": "CIVERIFY-01",
+      "group": "Published deliveries",
+      "requirement": "Run every simulation test in verified parallel CI groups while retaining all acceptance gates",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. All simulation files are partitioned once across four required jobs, with document/reference/type/export/artifact gates retained.",
+      "local": "The final four groups pass 1073/1073 tests, zero failures/skips: 240/312/259/262 across all 178 files. Argument/non-file guards, types, export, 36 reference comparisons and documentation validation pass.",
+      "remaining": "",
+      "acceptance": "Partition the exact root test-file set once, run all four groups with propagated failures and no name filters, keep document/reference/type/export/artifact verification, reject invalid targets or arguments and require all exact-head CI jobs before publication.",
+      "evidence": [
+        "E-PARALLEL-VERIFICATION"
+      ],
+      "parents": [
+        "QA-01",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tools/test-shard-selftest.mjs"
+      ]
     }
   ],
   "latestPublishedCheck": {
-    "source": "27c689a9479529edb292aa25311eb8455a395ff5",
-    "total": 1054,
-    "passed": 1054,
+    "source": "3e8801f6ca99cc68b43da51fde36a5e5e4af73d9",
+    "total": 1073,
+    "passed": 1073,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-ARTILLERY-SUPPLY"
+    "evidenceId": "E-ARTILLERY-AUTONOMY"
   }
 }
