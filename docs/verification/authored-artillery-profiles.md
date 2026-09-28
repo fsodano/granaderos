@@ -46,7 +46,7 @@ Eight simulations and three mounted checks pass. Complete regression passes
 **1084/1084**, zero failures or skips (242,633.821 ms), on the source above.
 Types, production export (722 files, 632 asset references), all 36 reference
 comparisons and the documentation audit (242 requirements, 81 evidence records)
-pass. Exact-head CI remains required before publication.
+pass. Exact-head CI passed before publication.
 
 The initial full run on `53b0a6c852996429da3cb1384a091406322f3dec` passed
 1083 and failed one existing armory display assertion: a default name changed
@@ -75,3 +75,8 @@ not live-browser or loaded-performance acceptance.
 Artillery transport/recovery, dealer stock/trade, additional gun families, separate
 solid/canister reserve types and directional artillery animation remain separate.
 The overall equipment, artillery and story-editor requirements remain partial.
+
+## Publication
+
+Published in [PR #105](https://github.com/fsodano/granaderos/pull/105) on 2026-09-28.
+Exact head `7b191d54c3b17927215ceab147291710444dc0f2` passed [CI run 36497038434](https://github.com/fsodano/granaderos/actions/runs/36497038434), including the full suite, types and production build. Merge commit: `55e42ba964e3f7e83dc320f5d042d3ae68b82678`. This publication does not close the broader artillery or campaign requirements.
