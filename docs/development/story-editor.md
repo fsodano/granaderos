@@ -117,6 +117,14 @@ El juego comprueba las condiciones al mostrar las opciones y al elegirlas. Una o
 
 Activá «Cambiar los pesos al elegir esta opción», elegí si el jugador paga o recibe y escribí el importe. El juego muestra esas condiciones antes de elegir. Cada operación se aplica una sola vez por personaje y opción. Guardar, volver a la conversación o incorporar y luego despedir al personaje no la repite. Si faltan fondos, la opción queda desactivada y explica cuánto falta. Las copias de personajes tienen registros independientes. Una opción también puede cambiar un encargo. Si combina ese cambio con pesos, ambos se aplican juntos. Una opción también puede llamar a otro habitante. Las operaciones combinadas se aceptan juntas. La entrega de objetos sigue pendiente.
 
+## Condiciones sobre suministros
+
+En una condición de diálogo, capítulo o derrota, elegí **Suministros de un personaje**. Seleccioná el personaje, el suministro, la cantidad mínima y un máximo opcional. Podés comprobar cargas de cebo, pedernales, raciones, antorchas, vendas o boleadoras. Los límites son inclusivos. Para exigir que no queden vendas, usá mínimo 0 y máximo 0. Un máximo vacío no tiene tope adicional.
+
+Por ejemplo, una respuesta puede exigir que el sanitario conserve cinco vendas después de atender al habitante. Un capítulo puede exigir una compra real de suministros. La condición consulta la cantidad actual y no entrega ni consume objetos. Si también exigís que la persona viva, esté presente o esté incorporada, agregá esas condiciones.
+
+Durante una escena se usa el inventario actual del actor. Fuera de ella se usa lo que conserva su ficha. Un soldado desplegado sin su escena actual no cumple la condición: una cantidad desconocida no significa cero. Las derrotas pueden activarse al confirmar el gasto en la escena; los capítulos esperan hasta cerrarla. El editor protege los personajes usados por estas condiciones. Véase la [verificación de condiciones de suministros](../verification/story-supply-conditions.md).
+
 ## Condiciones sobre proyectos
 
 En una condición de diálogo o capítulo, elegí **Estado de un proyecto**. Seleccioná **Organización de la fundición** o **Financiación del ejército**, y elegí **Completado** o **Pendiente**. También se puede usar en las condiciones de derrota.
@@ -219,7 +227,7 @@ La inteligencia artificial usa los valores del arma elegida. Si lleva un arma de
 
 En **Reglas → Objetivos y final de campaña**, elegí **Capítulos propios**. Escribí la introducción y los textos de victoria y derrota. Agregá entre uno y doce capítulos. Cada capítulo tiene nombre, objetivo visible y entre una y seis condiciones. Podés subirlo, bajarlo, eliminarlo y deshacer o rehacer cada cambio.
 
-Las condiciones permiten usar el día, los pesos disponibles, el control de una localidad, el estado de un personaje, de un encargo o de un proyecto. Todas las condiciones de un capítulo deben cumplirse. Los capítulos se evalúan en orden después de las acciones de campaña y al avanzar el reloj; varios pueden completarse en el mismo momento. Los capítulos ya cumplidos conservan su resultado aunque después cambie el control o termine un contrato. La contratación pendiente no cuenta como incorporación: el personaje debe llegar y entrar en servicio.
+Las condiciones permiten usar el día, los pesos disponibles, el control de una localidad, el estado de un personaje, sus suministros, un encargo o un proyecto. Todas las condiciones de un capítulo deben cumplirse. Los capítulos se evalúan en orden después de las acciones de campaña y al avanzar el reloj; varios pueden completarse en el mismo momento. Los capítulos ya cumplidos conservan su resultado aunque después cambie el control o termine un contrato. La contratación pendiente no cuenta como incorporación: el personaje debe llegar y entrar en servicio.
 
 Un encuentro táctico puede completar un encargo, pero el capítulo y la victoria esperan hasta salir de la escena. Para exigir que un personaje llegue a un encuentro, completá un encargo mediante una opción con esa condición de llegada y usá el encargo en el capítulo. La carta, el escritorio y el cuaderno muestran los objetivos propios. Al completar el último, el juego registra la victoria una sola vez y muestra tu texto. Los personajes incorporados que siguen vivos también dicen su frase de cierre configurada.
 
@@ -318,7 +326,7 @@ En el campo táctico podés usar los cursores normales para atacar o atender a u
 
 La muerte cancela los traslados y el reclutamiento. El cuerpo queda en su escena. La campaña aplica una vez la consecuencia local de lealtad y marca como fallido un encargo pendiente de ese contacto. Si muere un mando indispensable de la historia original, la campaña termina. San Martín comparte su salud entre sus funciones de contacto y aliado.
 
-Todavía no se pueden editar sus pertenencias, saquearlos ni mantenerlos cautivos. No se inventa equipo para sus cuerpos. Las heridas se conservan fuera de la escena. Un habitante reclutado puede recibir [atención médica en campaña](../gameplay/characters/strategic-medical-care.md) y conserva la salud recuperada al dejar el servicio. El cuidado de habitantes fuera del servicio y su hemorragia en sectores cerrados siguen pendientes. La [verificación](../verification/civilian-state.md) detalla las pruebas y los límites.
+Los seis suministros personales se pueden configurar y recoger de un cuerpo o una persona inconsciente. El equipo completo, las armas, las armaduras y el cautiverio siguen pendientes. Las heridas se conservan fuera de la escena. Un habitante reclutado puede recibir [atención médica en campaña](../gameplay/characters/strategic-medical-care.md) y conserva la salud recuperada al dejar el servicio. El cuidado de habitantes fuera del servicio y su hemorragia en sectores cerrados siguen pendientes. La [verificación](../verification/civilian-state.md) detalla las pruebas y los límites.
 
 ## Aparición después de una muerte
 
