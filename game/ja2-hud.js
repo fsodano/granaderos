@@ -75,7 +75,7 @@ export function inventoryModel(state, unit) {
     });
   return {
     stats,
-    slots: {primary: weaponFor({...unit,activeSlot:"primary"}), blade: bladeFor({...unit,activeSlot:'blade'})},
+    slots: {primary: weaponFor({...unit,activeSlot:"primary"}), blade: unit.blade?bladeFor({...unit,activeSlot:'blade'}):null},
     activeSlot: unit.activeSlot,
     weight: carriedWeight(unit),
     capacity: carryCapacity(unit),
