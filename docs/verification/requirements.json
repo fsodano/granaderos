@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "8b8ea9abbbe799d0641e1ffd72109b97cc275ea1",
+  "baseline": "a2f5123587bb9852ec0fd9d58a9284ef9457be6d",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -3700,9 +3700,9 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "8b8ea9abbbe799d0641e1ffd72109b97cc275ea1",
-    "total": 750,
-    "passed": 750,
+    "source": "a2f5123587bb9852ec0fd9d58a9284ef9457be6d",
+    "total": 751,
+    "passed": 751,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",

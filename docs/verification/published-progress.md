@@ -5,14 +5,14 @@
 Updated 2026-09-28. **The complete game and story editor are not accepted.**
 
 Read [the design](../specification/game-design.md) for the target and [the formal audit](formal-audit-2026-09-27.md) for evidence and limits.
-The published baseline assessed here is `8b8ea9abbbe799d0641e1ffd72109b97cc275ea1`. Later PRs must update this register.
+The published baseline assessed here is `a2f5123587bb9852ec0fd9d58a9284ef9457be6d`. Later PRs must update this register.
 The larger local sources and the editor prototype are separate from published main.
 
 ## Verified results and current failures
 
 | Source | Passing / total | Failed | Skipped | Types / build |
 |---|---:|---:|---:|---|
-| published | 750 / 750 | 0 | 0 | PASS / PASS |
+| published | 751 / 751 | 0 | 0 | PASS / PASS |
 | original | 3040 / 3047 | 4 | 3 | PASS / PASS |
 | prototype | 2895 / 2896 | 1 | 0 | PASS / PASS |
 | presence | 548 / 548 | 0 | 0 | PASS / PASS |

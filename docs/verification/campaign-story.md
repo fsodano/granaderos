@@ -27,7 +27,7 @@ implicit indispensable historical NPC defeat are original-mode behavior.
 
 ## Verification
 
-Runtime source: `8b8ea9abbbe799d0641e1ffd72109b97cc275ea1`.
+Runtime source: `a2f5123587bb9852ec0fd9d58a9284ef9457be6d`.
 
 - `tests/campaign-story.test.mjs`: schema limits and legacy defaults; actual paid
   arrival, open-scene quest acceptance/completion and victory on return; ordered
@@ -35,7 +35,10 @@ Runtime source: `8b8ea9abbbe799d0641e1ffd72109b97cc275ea1`.
   and deadline defeat; simultaneous failure precedence; actual melee death of a
   historical contact with and without an authored death requirement; actual
   approach/travel cancellation; rejected missing, reordered, future, inconsistent
-  and modified-content saves.
+  and modified-content saves. A separate prepared compact enemy battle kills a
+  serving character without a quest-survival dependency: its campaign death
+  condition now resolves at the real tactical checkpoint, before settlement, and
+  save admission rejects a forged living actor.
 - Headquarters occupation is prepared to isolate defeat precedence. The actual
   dialogue/death route uses the existing controlled open-cell fixture, an authored
   placement and low-health contact. It is not a historical mission victory.
@@ -47,11 +50,13 @@ Runtime source: `8b8ea9abbbe799d0641e1ffd72109b97cc275ea1`.
   chapter is marked complete and no historical mentor/chapter prompt is shown.
 - Focused authoring/runtime/render checks: 53 passed before the clock correction;
   30 focused chapter, deadline and civilian checks passed after it; 20 chapter
-  and character-presentation checks passed after connecting ending lines. Additional headquarters
+  and character-presentation checks passed after connecting ending lines. Another
+  26 chapter, survival and successor checks passed after adding deployed death
+  confirmation for campaign conditions. Additional headquarters
   and civilian compatibility cases passed. The attack-approach regression was
   reproduced before the fix and passed afterward.
 
-Final release validation: **750/750 tests**, zero failures or skips (188,900 ms);
+Final release validation: **751/751 tests**, zero failures or skips (188,479 ms);
 type check; production export (721 files, 631 asset references); 36 baseline checks;
 documentation audit (191 requirements, all 50 original and 87 parity rows,
 30 evidence records); 107 changed local links. Exact-head GitHub checks are
