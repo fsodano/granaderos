@@ -1,3 +1,4 @@
+import {militiaArrivalTerrain} from './militia-arrival.js';
 import {seedCivilianHealth} from './civilian-health.js';
 import {sectorCash} from './economy.js';
 import {propBlocksAt} from './props.js';
@@ -31,13 +32,19 @@ export function enterSector(request,previous=null){
  }
  for(const body of retainedMilitaryBodies(previous,state.units,request.sector))if(!state.units.some(u=>u.id===body.id))state.units.push(body);
  const occupied=new Set(state.units.filter(u=>u.side==='enemy'&&u.hp>0&&!u.routed).map(u=>`${u.x},${u.y}`));
- const reserve=(preferred)=>{
-   const candidates=state.tiles.filter(t=>!t.blocked&&!propBlocksAt(state,t.x,t.y)&&!occupied.has(`${t.x},${t.y}`));
-   candidates.sort((a,b)=>Math.abs(a.x-preferred.x)+Math.abs(a.y-preferred.y)-Math.abs(b.x-preferred.x)-Math.abs(b.y-preferred.y)||a.y-b.y||a.x-b.x);
+ const reserve=(preferred,terrain=state.tiles,ordered=false)=>{
+   const candidates=terrain.filter(t=>!t.blocked&&!propBlocksAt(state,t.x,t.y)&&!occupied.has(`${t.x},${t.y}`));
+   if(!ordered)candidates.sort((a,b)=>Math.abs(a.x-preferred.x)+Math.abs(a.y-preferred.y)-Math.abs(b.x-preferred.x)-Math.abs(b.y-preferred.y)||a.y-b.y||a.x-b.x);
    if(!candidates[0])throw Error('No queda espacio libre para entrar en el sector.');
    const {x,y}=candidates[0];occupied.add(`${x},${y}`);return{x,y};
  };
+ const arrivalAreas=new Map();
  for(const unit of state.units.filter(u=>u.side==='player'&&u.hp>0)){
+   if(unit.militiaArrival){
+     const route=`${unit.militiaArrival.from}:${unit.militiaArrival.to}`;
+     if(!arrivalAreas.has(route))arrivalAreas.set(route,militiaArrivalTerrain(state,unit));
+     const arrival=arrivalAreas.get(route);Object.assign(unit,reserve(arrival.anchor,arrival.cells,true));delete unit.militiaArrival;continue;
+   }
    const prior=previous?.units.find(v=>v.side==='player'&&v.id===unit.id);
    Object.assign(unit,reserve(prior??unit));
  }

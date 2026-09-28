@@ -1,3 +1,5 @@
+import {redistributeMilitia} from './militia-distribution.js';
+import {validMilitiaArrival} from './militia-arrival.js';
 import {validMilitiaExperience} from './militia-experience.js';
 import {workshopServiceQuote} from './workshop-service.js';
 import {CARE_ASSIGNMENTS,careAssignmentBusy,assignMedicalCare,advanceMedicalCare,advanceMilitaryWounds,validateMedicalCare,medicalSupplyQuote} from './medical-care.js';
@@ -234,7 +236,7 @@ export function dispatchCampaign(previous,action){
   try{
     requireThat(action&&typeof action.type==='string','La orden no es válida.');
     requireThat(!s.defeated||s.pendingBattle&&['syncTacticalTime','leaveSector','battleResult'].includes(action.type),'La campaña ha terminado. Inicia otra campaña para continuar.');
-    requireThat(!s.completed||['syncTacticalTime','wait','travel','visitSector','leaveSector','talkNPC','createSquad','selectSquad','squad','equip','resupply','repairWeapon','purchaseEquipment','transport','militia','cancelMilitia','renewContract','dismiss','redirectHire','cancelHireArrival','assignCare','purchaseMedicalSupplies'].includes(action.type),'La campaña está ganada. Puedes recorrer las provincias y atender a tus escuadras.');
+    requireThat(!s.completed||['syncTacticalTime','wait','travel','visitSector','leaveSector','talkNPC','createSquad','selectSquad','squad','equip','resupply','repairWeapon','purchaseEquipment','transport','militia','cancelMilitia','transferMilitia','distributeMilitia','renewContract','dismiss','redirectHire','cancelHireArrival','assignCare','purchaseMedicalSupplies'].includes(action.type),'La campaña está ganada. Puedes recorrer las provincias y atender a tus escuadras.');
     requireThat(!s.pendingBattle||['battleResult','leaveSector','talkNPC','finishMission','syncTacticalTime'].includes(action.type),'Hay una batalla pendiente. Resuélvela antes de dar nuevas órdenes.');
     if(['travel','attack','visitSector'].includes(action.type))requireThat(!s.squad.some(id=>militiaAssignment(s,id)),'Un instructor de la escuadra está asignado a las milicias. Cancelá su curso o dejalo en una escuadra de guarnición.');
     if(['travel','attack','visitSector','visitMission'].includes(action.type))requireThat(!s.squad.some(id=>careAssignmentBusy(s.operativeState[id].assignment)),'Volvé a poner en servicio a los médicos, pacientes y combatientes en descanso de la escuadra antes de marchar o entrar al sector.');
@@ -408,6 +410,7 @@ export function dispatchCampaign(previous,action){
         else if(kind==='autonomy'){pay(s,{treasury:80});standing(s,'gauchos',15);standing(s,'directory',-3);note(s,'El ejército reconoce las autoridades provinciales.');}
         else throw Error('No existe esa propuesta diplomática.');break;
       }
+      case 'transferMilitia':case 'distributeMilitia':note(s,redistributeMilitia(s,action));break;
       case 'militia':{
         const at=action.sector??s.location,rank=Number(action.rank??0),trainerId=Number(action.trainerId),trainer=rosterFor(s).find(o=>o.id===trainerId);
         requireThat(s.sectors[at]?.owner==='patriot'&&isSupplied(s,at),'La instrucción necesita un sector propio y abastecido.');requireThat([0,1].includes(rank),'Los veteranos ascienden por experiencia de combate, no por instrucción.');const eligibility=militiaEligibility(s,at);requireThat(eligibility.eligible,eligibility.reason);
@@ -512,7 +515,7 @@ export function restoreCampaign(text){
   if(s.pendingBattle!==null){const b=s.pendingBattle;requireThat((!b.sceneId||(b.sceneId==='yatasto'&&b.sector==='tucuman'&&b.exploration===true))&&(!b.missionAllies||(b.sector==='san_lorenzo'&&Array.isArray(b.missionAllies)&&b.missionAllies.length===1&&Number(b.missionAllies[0].id)===57&&b.missionAllies[0].missionAlly===true)),'La escena pendiente es inválida.');requireThat(object(b)&&typeof b.id==='string'&&b.id.length<100&&(validWorldLocation(b.sector)||b.sector==='san_lorenzo')&&integer(b.seed,0,4294967295)&&Array.isArray(b.squad)&&b.squad.length<=6&&b.squad.every(o=>object(o)&&s.squad.includes(o.id)&&integer(o.loaded,0,weaponSpecification(o)?.capacity??0)&&integer(o.ammo,0,campaignRules(s).deploymentCartridges)&&integer(o.hp,1,100)),'La batalla guardada es inválida.');if(!sector(b.sector)&&b.sector!=='san_lorenzo')requireThat(b.exploration===true&&b.sector===s.location,'La visita guardada no corresponde a la celda actual.');if(b.origin!==undefined)requireThat(validWorldLocation(b.origin),'El origen del despliegue es inválido.');}
 
   for(const unit of [...(s.pendingBattle?.squad??[]),...(s.pendingBattle?.missionAllies??[]),...Object.values(s.missionAllies??{})])validateWeaponCarrier(unit);
-  for(const unit of [...(s.pendingBattle?.enemies??[]),...(s.pendingBattle?.garrison??[])]){validateForceWeapon(unit);requireThat(validMilitiaExperience(unit),'La experiencia de la tropa guardada es inválida.');}
+  for(const unit of [...(s.pendingBattle?.enemies??[]),...(s.pendingBattle?.garrison??[])]){validateForceWeapon(unit);requireThat(validMilitiaArrival(unit,s.pendingBattle.sector),'La llegada de la milicia es inválida.');requireThat(validMilitiaExperience(unit),'La experiencia de la tropa guardada es inválida.');}
   migrateSquads(s);
   requireThat(Array.isArray(s.squads)&&s.squads.length>0&&s.squads.length<=8&&new Set(s.squads.map(q=>q.id)).size===s.squads.length&&s.squads.every(q=>object(q)&&typeof q.id==='string'&&/^squad-[1-9][0-9]*$/.test(q.id)&&typeof q.name==='string'&&q.name.length<=30&&validWorldLocation(q.location)&&validIds(q.members)&&q.members.length<=6&&q.members.every(id=>s.recruited.includes(id))),'Las escuadras guardadas son inválidas.');
   const assigned=s.squads.flatMap(q=>q.members);requireThat(new Set(assigned).size===assigned.length,'Un combatiente no puede pertenecer a dos escuadras.');const selected=s.squads.find(q=>q.id===s.activeSquadId);requireThat(selected&&selected.location===s.location&&JSON.stringify(selected.members)===JSON.stringify(s.squad),'La escuadra activa del archivo es inválida.');
