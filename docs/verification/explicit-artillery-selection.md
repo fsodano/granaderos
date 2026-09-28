@@ -30,8 +30,10 @@ controls. Complete regression passes **1021/1021**, zero failures or skips
 (239,150.789 ms), on the source above. Types and production export pass with
 722 files and 632 asset references. All 36 baseline comparisons pass. The
 documentation audit passes with 237 requirements and 76 evidence records,
-retaining all 50 original and 87 parity rows. Exact-head CI remains required
-before publication.
+retaining all 50 original and 87 parity rows. Published in [PR #99](https://github.com/fsodano/granaderos/pull/99). Exact-head CI passed on
+`49b9e899a500c54b0119c806621c0ceaa3fe60ac` on 2026-09-28 at 21:23:21 UTC
+([run](https://github.com/fsodano/granaderos/actions/runs/36483713161)).
+Merge commit: `4ca7494087ebd5392cb07a520f3e6cd96f24ab8d`, 21:27:06 UTC.
 
 An actual free officer purchases a swivel for 400 pesos, selects no artillery,
 saves, attacks Buenos Aires and enters with no guns while keeping its paid stock.
