@@ -605,8 +605,11 @@ Surviving militia gain one rank on return when new combat credit reaches the
 next threshold. A first eligible wound earns one point; an eligible kill upgrades
 that opponent receipt to three. Stable opponent identities prevent repeated
 credit across saved encounters. Civilians, allies and already helpless opponents
-grant none. Thresholds of two and five are currently fixed Granaderos tuning.
+grant none. Thresholds default to two and five as Granaderos tuning. The editor can author
+ordered cumulative thresholds and per-rank attribute gains, pinned to each new
+campaign. Zero gains keep the current effective attribute.
 New instruction can create cívicos or promote them to montoneros; veteran rank
 requires combat. Promotion preserves the actual wounded soldier and finite
 belongings. See [bounded combat verification](../verification/militia-combat-progression.md)
-for prior paid-course compatibility and the separate allied-AI scope.
+for prior paid-course compatibility and the separate allied-AI scope. See also
+[authored promotion verification](../verification/authored-militia-progression.md).

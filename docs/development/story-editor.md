@@ -284,11 +284,21 @@ Los veteranos nuevos ascienden por experiencia de combate. Un primer impacto
 que hiere a un rival apto suma un punto; abatirlo eleva ese registro a tres. No
 se suman puntos repetidos por el mismo rival, ni por dañar civiles, aliados o
 enemigos ya indefensos. Al regresar vivo, cada miliciano puede ganar un grado
-si obtuvo puntos nuevos: dos para montonero y cinco para veterano. Estos valores
-aún no son editables. La salud, el arma y los suministros restantes se conservan.
+si obtuvo puntos nuevos: dos para montonero y cinco para veterano. En **Reglas → Ascensos de milicias** podés cambiar los puntos necesarios: de 1
+a 99 para montonero y de 2 a 100 para veterano. El segundo valor debe superar al
+primero. También podés cambiar la puntería y el liderazgo ganados por ascenso
+(de 0 a 100) y los niveles de experiencia ganados (de 0 a 9). Cero conserva ese
+atributo. La puntería y el liderazgo tienen un máximo de 100; el nivel, de 10.
+Las mejoras también rigen para el curso pagado a montonero. La salud, el arma y los suministros restantes se conservan.
 La lista de salud de la guarnición muestra el grado y los puntos. Los cursos de
 veteranos ya pagados en partidas anteriores conservan su contrato.
 [Ascensos en combate verificados](../verification/militia-combat-progression.md).
+
+**Restaurar ascensos de milicias originales** recupera los umbrales 2 y 5 y las
+mejoras 8, 5 y 1. Podés deshacer el cambio. Las reglas quedan guardadas al iniciar
+la campaña; cambiar el borrador después no cambia la partida. El mapa muestra
+los umbrales de esa partida. El precio y la duración de los cursos siguen sus
+reglas actuales. [Verificación de reglas editables](../verification/authored-militia-progression.md).
 
 **Restaurar atención y descanso originales** recupera los valores originales.
 Podés deshacerlo. Las partidas iniciadas conservan sus reglas y las horas de

@@ -403,6 +403,11 @@
       "id": "E-MILITIA-COMBAT",
       "path": "docs/verification/militia-combat-progression.md",
       "description": "Combat-earned ranks preserve actual militia identity, wounds and finite equipment. Real reaction kills, bounded opponent receipts, active saves, peaceful reentry and prior paid veteran contracts pass. The overlapping group passes 54/54; complete regression passes 967/967, zero failures/skips, and types, export, 36 reference comparisons and documentation validation pass. Exact-head CI remains required before merge. Thresholds are fixed Granaderos tuning; full allied AI, redistribution and advanced defense routes remain separate."
+    },
+    {
+      "id": "E-MILITIA-RULES",
+      "path": "docs/verification/authored-militia-progression.md",
+      "description": "Optional pinned militia promotion thresholds and attribute gains are authored through editor controls, saved launch and real paid instruction. Three actual reaction kills exercise authored thresholds and retain wounds, finite shots and wear. Initial full regression passes 973/973, zero failures/skips. A subsequently added boundary check reproduced exhausted opponent credit; the correction passes a 59/59 reviewed group. Final full regression passes 974/974, zero failures/skips, with types, export, all 36 reference comparisons and documentation validation passing. Exact-head CI remains required before merge. Full allied AI and defense routes remain separate."
     }
   ],
   "queue": [
@@ -451,6 +456,32 @@
   ],
   "requirements": [
     {
+      "id": "MILITIARULES-01",
+      "group": "Published deliveries",
+      "requirement": "Author and pin militia promotion thresholds and attribute gains through the editor and saved campaign",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. The editor authors and pins cumulative promotion thresholds and attribute gains used by actual combat and paid regular instruction.",
+      "local": "Five simulations and two mounted checks cover this delivery. The initial overlapping group passed 52/52; the final reviewed group passes 59/59, with the mounted editor also passing separately. Initial full regression passed 973/973, zero failures/skips. A new receipt-boundary regression reproduced a 100-record limit that blocked later credit; the corrected bounded ledger preserves room for the next rank under supported thresholds and encounter size. Types and all 36 reference comparisons pass; final full regression passes 974/974, zero failures/skips. Final export and documentation validation pass.",
+      "remaining": "",
+      "acceptance": "Edit, validate, undo, restore, export and launch promotion rules; actual combat and paid instruction use their pinned values while keeping the same wounded soldiers and finite possessions. Old campaigns keep defaults and later draft edits cannot change active saves.",
+      "evidence": [
+        "E-MILITIA-RULES"
+      ],
+      "parents": [
+        "INTEGRATION-01",
+        "MIL-01",
+        "JA2-S04",
+        "STORY-05"
+      ],
+      "testFiles": [
+        "tests/authored-militia-progression.test.mjs",
+        "tests/authored-militia-progression-render.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/militia-combat-fixture.mjs"
+      ]
+    },
+    {
       "id": "MILITIAXP-01",
       "group": "Published deliveries",
       "requirement": "Earn militia promotion in combat without replacing wounded soldiers or replenishing their belongings",
@@ -465,7 +496,8 @@
       ],
       "parents": [
         "INTEGRATION-01",
-        "MIL-01"
+        "MIL-01",
+        "JA2-S04"
       ],
       "testFiles": [
         "tests/militia-combat-progression.test.mjs",
@@ -2568,7 +2600,7 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Paid local militia cohorts materialize with historical loadouts, fight as local allies and retain actual tactical wounds, casualties and depleted equipment through saved reentry. Individual promotion and advanced militia behavior are tracked separately. PR #89 adds local physician care with finite dressings. PR #90 preserves individual participants through paid promotion. PR #91 advances unloaded wounds and preserves actual finite remains.",
-      "local": "Individual promotion acceptance is tracked by MILITIATRAIN-01; local physician work by MILITIACARE-01. The larger preserved parity source is not equivalent to published integration. Retained militia wound time is tracked by MILITIAWOUND-01. Combat-earned promotion is tracked by MILITIAXP-01.",
+      "local": "Individual promotion acceptance is tracked by MILITIATRAIN-01; local physician work by MILITIACARE-01. The larger preserved parity source is not equivalent to published integration. Retained militia wound time is tracked by MILITIAWOUND-01. Combat-earned promotion is tracked by MILITIAXP-01. Editable progression is tracked by MILITIARULES-01.",
       "remaining": "Publish combat-earned progression, then integrate configurable progression rules, allied autonomy, redistribution, custody and the remaining advanced militia behavior.",
       "acceptance": "Training, historical loadouts and distinct behavior",
       "evidence": [
@@ -2577,7 +2609,8 @@
         "E-MILITIA-TRAINING",
         "E-MILITIA-CARE",
         "E-MILITIA-WOUNDS",
-        "E-MILITIA-COMBAT"
+        "E-MILITIA-COMBAT",
+        "E-MILITIA-RULES"
       ]
     },
     {
@@ -3107,7 +3140,7 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss. Import port, disabled orders and delivery windows are configurable. Ordered campaign chapters, global completion/failure conditions and ending text are authored separately from historical progression. Historical profiles can be copied without their implicit roles and removed from an authored campaign. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Pending scene saves accept the full supported authored cartridge range, including zero and 100, without resetting spent rounds. Medical eligibility, hourly healing and effort, rest rates/intervals and dressing prices are authored and pinned; both workshop purchase paths use that price. Current quantities of six personal supply types can gate dialogue, chapters and failure. Active scenes override stale deployed records; the check does not grant or consume goods. PR #85 publishes an optional pinned cartridge unit price for deployment and finite return credit, after exact-head CI.",
-      "local": "Larger systems still embed many rules and historical identity gates.",
+      "local": "Larger systems still embed many rules and historical identity gates. Authored militia progression thresholds and gains are tracked by MILITIARULES-01; this local delivery does not close the remaining rules.",
       "remaining": "Extract remaining care, combat, economy, character progression, opposition and historical campaign identity rules.",
       "acceptance": "Change supported rules and replace role identities through the editor, then run/save the resulting campaign.",
       "evidence": [
@@ -3126,7 +3159,8 @@
         "E-CARTRIDGE-SAVE",
         "E-CARE-RULES",
         "E-SUPPLY-CONDITIONS",
-        "E-CARTRIDGE-PRICE"
+        "E-CARTRIDGE-PRICE",
+        "E-MILITIA-RULES"
       ]
     },
     {
@@ -4534,13 +4568,18 @@
       "status": "LOCAL_ONLY",
       "priority": "P1",
       "published": "This complete capability is not accepted in the published release.",
-      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
+      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check. Combat-earned promotion now has bounded integration evidence in MILITIAXP-01, with configurable thresholds and a high-credit boundary correction in MILITIARULES-01. Exact-head publication remains pending.",
       "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-MILITIA-COMBAT",
+        "E-MILITIA-RULES",
+        "E-MILITIA-CARE",
+        "E-MILITIA-TRAINING",
+        "E-MILITIA-WOUNDS"
       ],
       "sourceRow": "JA2-S04",
       "sourceNotes": "Thresholds and attribute gains are explicit Granaderos tuning. Previously paid legacy top-rank courses retain their count contract. Autonomous militia combat is covered by S05. Strategic medical assignments now treat retained garrison wounds with local doctors and finite supplies; see [militia medical care](militia-medical-care.md)."
@@ -4551,14 +4590,17 @@
       "requirement": "Local militia fight and suffer persistent casualties; direct control differs from hired soldiers. G59-60.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Published related core exists; full parity acceptance is not established.",
+      "published": "Paid local militia and saved tactical casualties are published. PRs #89\u201391 add finite local physician care, individual training and unloaded wound deaths with retained actual remains. Autonomous allied turns and distinct control are not integrated.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
-      "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
+      "remaining": "Integrate autonomous allied combat and control restrictions, saved reactions and peaceful patrols, city redistribution, and the separate artillery/defense acceptance recorded in the preserved source.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-MILITIA-CARE",
+        "E-MILITIA-TRAINING",
+        "E-MILITIA-WOUNDS"
       ],
       "sourceRow": "JA2-S05",
       "sourceNotes": "Live paid training, status cards, rejected manual selection and contextual medical targeting passed. Automatic combat and saved reactions remain unverified live; a validated importable defense demo is provided. Peaceful patrols now advance local militia through fixed map waypoints, one legal step per six seconds, with energy costs and no AP charge. Real contact stops ambient movement. Five focused tests and a live patrol/save check cover this behavior; see [exploration patrols](exploration-patrols.md). Militia now operate nearby friendly cannons using their own eligible crews and finite ammunition; see [autonomous artillery](artillery-ai.md). Strategic medical care now uses a separate local assignment, personal kits, hourly triage and saved stops. Ten simulation/render checks and a live treatment, save, depletion and paid-resupply sequence cover it; see [militia medical care](militia-medical-care.md). Town redistribution is now available through manual rank/quantity transfers and an automatic capacity-aware plan, preserving exact soldiers and finite supplies. Thirteen new simulation/render checks and live transfer, wound, reload and balancing checks cover it; see [city militia distribution](militia-distribution.md). The original manual p. 44 supports this strategic choice; a classic tactical command menu is not established by the cited pages and remains a separate open audit item. Shared friendly allegiance, phase placement and AP refresh are Granaderos adaptations."
