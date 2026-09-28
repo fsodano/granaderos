@@ -16,7 +16,8 @@ export const doctorRate=(op,s)=>careRules(s).baseHealing+Math.floor((op.medical?
 const need=(ok,message)=>{if(!ok)throw Error(message);};
 const deployed=(s,id)=>Boolean(s.pendingBattle?.squad.some(u=>Number(u.id)===id));
 const available=(s,id)=>s.recruited.includes(id)&&s.operativeState[id]?.alive&&s.operativeState[id].hp>0&&!s.operativeState[id].captured&&!deployed(s,id);
-const safe=(s,id)=>worldOwner(s,operativeLocation(s,id))==='patriot'&&s.pendingBattle?.sector!==operativeLocation(s,id);
+// A separate conference scene does not deploy the town hospital or garrison.
+const safe=(s,id)=>worldOwner(s,operativeLocation(s,id))==='patriot'&&(s.pendingBattle?.sector!==operativeLocation(s,id)||Boolean(s.pendingBattle?.sceneId));
 const assignment=(s,id)=>s.operativeState[id]?.assignment??'active';
 const needsCare=(s,op)=>s.operativeState[op.id].bleeding>0||s.operativeState[op.id].hp<op.maxHp;
 export function careAssignmentReason(s,op,value){

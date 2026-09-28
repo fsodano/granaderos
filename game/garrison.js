@@ -33,7 +33,7 @@ export function returnGarrison(s,request,snapshot){
 // Only existing local soldiers need care. Querying patients must not generate
 // another cohort or issue its starting equipment.
 export function militiaCarePatients(s,sector){
- if(s.sectors[sector]?.owner!=='patriot'||s.pendingBattle?.sector===sector)return [];
+ if(s.sectors[sector]?.owner!=='patriot'||s.pendingBattle?.sector===sector&&!s.pendingBattle.sceneId)return [];
  return (s.garrisons?.[sector]??[]).filter(u=>u.hp>0&&(u.bleeding>0||u.hp<u.maxHp)).sort((a,b)=>Number(b.bleeding>0)-Number(a.bleeding>0)||a.hp/a.maxHp-b.hp/b.maxHp||a.id-b.id);
 }
 function validCareCondition(u){
@@ -87,11 +87,11 @@ export function validMilitiaTrainees(s,course){
 // New cohorts have no wound, and the loaded scene owns its own tactical clock.
 export const militiaWoundLoss=(s,unit)=>Math.ceil((unit.bleeding??0)*strategicBleedingPercent(s)/100);
 export function advanceMilitiaWounds(s){
- const deaths=[];
+ const deaths=[],deployed=new Set((s.pendingBattle?.garrison??[]).map(u=>String(u.id)));
  for(const [sector,units] of Object.entries(s.garrisons??{})){
-  if(s.sectors[sector]?.owner!=='patriot'||s.pendingBattle?.sector===sector)continue;
+  if(s.sectors[sector]?.owner!=='patriot')continue;
   for(const unit of units){
-   if(unit.hp<=0||!unit.bleeding)continue;
+   if(unit.hp<=0||!unit.bleeding||deployed.has(String(unit.id)))continue;
    unit.hp=Math.max(0,unit.hp-militiaWoundLoss(s,unit));refreshMilitaryCondition(unit);
    if(unit.hp>0)continue;
    unit.energy=0;unit.deathMinute=s.hour*60+Math.floor((s.secondOfHour??0)/60);

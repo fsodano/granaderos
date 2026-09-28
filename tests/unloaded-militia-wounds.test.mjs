@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {dispatchCampaign} from '../game/campaign.js';
 import {DEFAULT_CARE_RULES} from '../game/campaign-care-rules.js';
 import {militiaWoundLoss,militiaCarePatients} from '../game/garrison.js';
+import {enterSector} from '../game/world.js';
 import {getReachable,actBattle} from '../game/tactical.js';
 import {weaponSpecification} from '../game/weapon-definition.js';
 import {order,saved,visit,leave,tactical} from './local-contract-fixture.mjs';
@@ -46,4 +47,23 @@ test('a loaded garrison is damaged only by tactical time and its actual casualty
 
 test('older wounded records without a retained scene lose one soldier without inventing a body position',()=>{
  let {campaign:s,patientId:id}=woundedGarrison();delete s.sectorStates.retiro;s=save(s);const hp=patient(s,id).hp;s=order(s,{type:'wait',hours:hp});assert.equal(patient(s,id),undefined);assert.equal(s.sectorStates.retiro,undefined);assert.deepEqual(s.sectors.retiro.militia,[2,0,0]);s=save(s);const p=visit(s);assert.ok(!p.battle.units.some(u=>Number(u.id)===id));assert.equal(p.campaign.pendingBattle.garrison.length,2);assert.ok(saved(p));
+});
+
+test('a separate mission scene does not freeze wounded town militia that did not deploy',()=>{
+ let {campaign:s,patientId:id}=woundedGarrison({headquarters:'tucuman'});
+ // Authored northern headquarters with a real paid cohort and enemy injury.
+ // Only the historical conference gate is prepared; no campaign victory is claimed.
+ s.phase=2;s.flags.sanLorenzo=true;const hp=s.garrisons.tucuman.find(u=>u.id===id).hp;
+ s=order(save(s),{type:'visitMission',mission:'yatasto'});assert.deepEqual(s.pendingBattle.garrison,[]);
+ let p=saved({campaign:s,battle:enterSector({...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0})}),start=s.hour;
+ assert.ok(!p.battle.units.some(u=>u.militia));while(p.campaign.hour===start)p=tactical(p,{type:'rest',seconds:600});
+ assert.equal(p.campaign.garrisons.tucuman.find(u=>u.id===id).hp,hp-1);s=save(leave(p));assert.ok(s.sceneStates.yatasto);assert.equal(s.garrisons.tucuman.find(u=>u.id===id).hp,hp-1);
+ const town=visit(s);assert.equal(town.battle.units.find(u=>Number(u.id)===id).hp,hp-1);assert.ok(saved(town));
+});
+
+test('a physician left in town can stabilize local militia while another squad attends the separate conference',()=>{
+ let {campaign:s,patientId:id}=woundedGarrison({headquarters:'tucuman',careRules:rules(100)});s.phase=2;s.flags.sanLorenzo=true;const hp=s.garrisons.tucuman.find(u=>u.id===id).hp,stock=s.operativeState[D].medkits;
+ s=order(s,{type:'assignCare',id:D,assignment:'militia_doctor'});s=order(s,{type:'createSquad',name:'Comisión en Yatasto',ids:[1000]});s=order(save(s),{type:'visitMission',mission:'yatasto'});
+ let p=saved({campaign:s,battle:enterSector({...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0})}),start=s.hour;assert.ok(!p.battle.units.some(u=>Number(u.id)===D));
+ while(p.campaign.hour===start)p=tactical(p,{type:'rest',seconds:600});const local=p.campaign.garrisons.tucuman.find(u=>u.id===id);assert.equal(local.hp,hp);assert.equal(local.bleeding,0);assert.equal(p.campaign.operativeState[D].medkits,stock-1);s=save(leave(p));assert.equal(s.garrisons.tucuman.find(u=>u.id===id).hp,hp);assert.ok(save(s));
 });
