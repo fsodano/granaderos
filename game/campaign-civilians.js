@@ -126,15 +126,20 @@ function refreshCivilianScenes(s){
  }
  for(const scene of [...Object.values(s.sectorStates),...Object.values(s.sceneStates),...(request?[request]:[])])scene.npcs=(scene.npcs??[]).filter(n=>n.hp>0||civilianDiedHere(s,n,scene.sectorId??scene.sector,scene.sceneId??null));
 }
+function unloadedWounds(s){
+ const excluded=new Set([...(s.pendingBattle?.npcs??[]).map(civilianKey),...s.recruited.map(id=>`person-${id}`)]);
+ return Object.entries(s.civilianState?.people??{}).filter(([key,r])=>!excluded.has(key)&&!r.inService&&r.health.hp>0&&r.health.bleeding>0);
+}
+export function nextUnloadedCivilianDeath(s){
+ return Math.min(Infinity,...unloadedWounds(s).map(([,r])=>Math.ceil(r.health.hp/r.health.bleeding)*6-(r.health.civilianWoundSeconds??0)));
+}
 // The campaign clock advances residents outside the loaded scene. Its endpoint
 // is already on s; loaded actors are advanced only by the tactical clock.
 export function advanceUnloadedCivilians(s,seconds){
  need(Number.isSafeInteger(seconds)&&seconds>=0,'El tiempo de los habitantes no es válido.');
  if(!seconds||!s.civilianState)return;
- const loaded=new Set((s.pendingBattle?.npcs??[]).map(civilianKey));
  const start=s.hour*3600+(s.secondOfHour??0)-seconds;let changed=false;
- for(const [key,record]of Object.entries(s.civilianState.people)){
-  if(loaded.has(key)||record.inService||!record.health.bleeding||record.health.hp<=0)continue;
+ for(const [,record]of unloadedWounds(s)){
   const original=encounterDefinitions(s).find(n=>n.id===record.npcId)??YATASTO_NPCS.find(n=>n.id===record.npcId);
   need(original,'El habitante no pertenece a este mundo.');
   if(s.recruited.includes(operativeId(original)))continue;

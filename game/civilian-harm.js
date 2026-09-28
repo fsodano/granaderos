@@ -54,7 +54,7 @@ export function advanceCivilianBleeding(state,npc,ticks){
  validateCivilianWounds(npc,state);
  const incidents=civilianIncidents(npc),before=npc.hp??100,origin=npc.bleedSource??unknownOrigin();
  npc.hp=Math.max(0,before-npc.bleeding*ticks);
- if(npc.hp===0)recordIncident(npc,incidents,before,origin);
+ if(npc.hp===0)recordIncident(npc,incidents,before-(Math.ceil(before/npc.bleeding)-1)*npc.bleeding,origin);
  refreshCivilianCondition(npc);
  return npc;
 }

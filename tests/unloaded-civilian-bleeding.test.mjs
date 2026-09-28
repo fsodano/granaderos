@@ -17,11 +17,15 @@ const now=s=>s.hour*3600+(s.secondOfHour??0);
 const npc=p=>p.battle.npcs.find(n=>n.contentId==='patient');
 const id=s=>operativeIdForCharacter(s.contentCampaign.package,'patient');
 const health=s=>s.civilianState.people[`person-${id(s)}`].health;
-function ready({successor=false}={}){
+function ready({successor=false,quest=false}={}){
  const d=defaultContentPackage(),base=structuredClone(d.characters.find(c=>c.id==='person-100'));delete base.arrivalHours;
  for(const [name,label]of [['patient','Vecino herido'],...(successor?[['successor','Sucesor']]:[])]){
   d.characters.push({...structuredClone(base),id:name,name:label,nickname:label,monthlyPay:0,recruitmentSource:'encounter',service:'permanent',attributes:{...base.attributes,maxHp:100},weapon:null,abilities:[],traits:[],encounter:{recruitable:true,greeting:label,requiredLeadership:0,requiredLiberated:0,requiredSector:null}});
   d.placements.push({id:`place-${name}`,character:name,mode:'fixed',sectors:[A],moveChance:100,afterDeath:name==='successor'?'patient':null,delayMin:name==='successor'?1:0,delayMax:name==='successor'?1:0});
+ }
+ if(quest){
+  d.quests=[{id:'keep-patient',title:'Proteger al vecino',description:'El vecino debe sobrevivir.',requiredAlive:['patient'],deadlineHours:1}];
+  d.characters.find(c=>c.id==='patient').encounter.dialogue={entry:'start',nodes:[{id:'start',title:'Ayuda',text:'Necesito tu ayuda.',choices:[{id:'accept',label:'Voy a ayudarte.',next:'start',effects:[{type:'quest',quest:'keep-patient',status:'active'}]}]}]};
  }
  for(const id of [110,111])d.characters.find(c=>c.id===`person-${id}`).arrivalHours=0;
  let s=order(initialCampaign(42,d),{type:'recruitCivic',id:110,term:'month'});
@@ -121,4 +125,20 @@ test('a historical command casualty outside the loaded sector preserves the expl
  p=act(p,{type:'melee',targetId:'san-martin'});const actor=p.battle.npcs.find(n=>n.id==='san-martin');assert.ok(actor.hp>0&&actor.bleeding>0);
  s=order(leave(saved(p)),{type:'wait',hours:1});assert.equal(s.defeated,true);assert.equal(s.operativeState[57].alive,false);assert.equal(s.civilianState.people['person-57'].health.hp,0);
  assert.ok(s.log.some(l=>l.text.includes('La campaña no puede continuar sin este mando')));assert.equal(saved({campaign:s}).campaign.defeated,true);
+});
+
+
+test('batched and incremental tactical checkpoints produce identical off-screen death receipts and succession',()=>{
+ let p=approach(visit(ready({successor:true,quest:true})));p.campaign=order(p.campaign,{type:'talkNPC',npcId:npc(p).id,unitId:110,approach:'dialogue',dialogueNode:'start',dialogueChoice:'accept',sectorState:p.battle});
+ const initial=remote(wound(p));let immediate=saved(initial),battle=initial.battle;
+ for(let i=0;i<40;i++){
+  battle=actBattle(battle,{type:'ambient'});assert.equal(battle.lastError,null);
+  immediate=sync({campaign:immediate.campaign,battle});
+ }
+ const batch=sync({campaign:initial.campaign,battle});assert.equal(now(batch.campaign),now(immediate.campaign));
+ assert.deepEqual(health(batch.campaign),health(immediate.campaign));assert.deepEqual(batch.campaign.contentPresence,immediate.campaign.contentPresence);
+ assert.equal(health(batch.campaign).hp,0);assert.deepEqual(batch.campaign.contentQuestEvents,immediate.campaign.contentQuestEvents);
+ const failed=batch.campaign.contentQuestEvents.at(-1);assert.equal(failed.death,'patient');assert.equal(Math.floor((failed.hour*3600+failed.secondOfHour)/60),batch.campaign.operativeState[id(batch.campaign)].deathMinute);
+ assert.ok(saved(batch));assert.ok(saved(immediate));
+ let later=batch;for(let i=0;i<6;i++)later=act(later,{type:'rest'});assert.equal(later.campaign.contentQuestEvents.length,2);assert.deepEqual(later.campaign.contentQuestEvents.at(-1),failed);assert.ok(saved(later));
 });

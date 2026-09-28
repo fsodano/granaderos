@@ -31,6 +31,11 @@ export function applyQuestTransition(s,effect,source){
  const quote=questTransitionQuote(s,effect);need(quote.available,quote.reason);
  s.contentQuestEvents=[...(s.contentQuestEvents??[]),{quest:effect.quest,from:quote.from,to:effect.status,...source,hour:s.hour,secondOfHour:s.secondOfHour??0}];
 }
+export function nextContentQuestDeadline(s){
+ const starts=(s.contentCampaign?.package.quests??[]).filter(q=>q.deadlineHours!=null&&contentQuestStatus(s,q.id)==='active')
+  .map(q=>secondsOf(s.contentQuestEvents.find(e=>e.quest===q.id&&e.to==='active'))+q.deadlineHours*3600);
+ return Math.min(Infinity,...starts.filter(deadline=>deadline>timeOf(s)));
+}
 export function updateContentQuests(s){
  const due=(s.contentCampaign?.package.quests??[]).filter(q=>q.deadlineHours!=null&&contentQuestStatus(s,q.id)==='active').map(q=>{
   const start=s.contentQuestEvents.find(e=>e.quest===q.id&&e.to==='active');return {quest:q.id,deadline:secondsOf(start)+q.deadlineHours*3600};
