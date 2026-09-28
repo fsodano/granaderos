@@ -1,3 +1,4 @@
+import {validateCampaignPatrol} from './militia-patrol-rules.js';
 import {redistributeMilitia} from './militia-distribution.js';
 import {validMilitiaArrival} from './militia-arrival.js';
 import {validMilitiaExperience} from './militia-experience.js';
@@ -235,6 +236,7 @@ export function dispatchCampaign(previous,action){
   const s=migrateSquads(clone(previous));s.lastError=null;s.militiaTraining??=[];s.missions??={};s.sceneStates??={};s.missionAllies??={};s.quests??={};migrateContracts(s);
   try{
     requireThat(action&&typeof action.type==='string','La orden no es válida.');
+    if(action.sectorState)validateCampaignPatrol(s,action.sectorState);
     requireThat(!s.defeated||s.pendingBattle&&['syncTacticalTime','leaveSector','battleResult'].includes(action.type),'La campaña ha terminado. Inicia otra campaña para continuar.');
     requireThat(!s.completed||['syncTacticalTime','wait','travel','visitSector','leaveSector','talkNPC','createSquad','selectSquad','squad','equip','resupply','repairWeapon','purchaseEquipment','transport','militia','cancelMilitia','transferMilitia','distributeMilitia','renewContract','dismiss','redirectHire','cancelHireArrival','assignCare','purchaseMedicalSupplies'].includes(action.type),'La campaña está ganada. Puedes recorrer las provincias y atender a tus escuadras.');
     requireThat(!s.pendingBattle||['battleResult','leaveSector','talkNPC','finishMission','syncTacticalTime'].includes(action.type),'Hay una batalla pendiente. Resuélvela antes de dar nuevas órdenes.');
@@ -457,6 +459,7 @@ export function dispatchCampaign(previous,action){
       }
       default:throw Error('Orden desconocida.');
     }
+    if(s.pendingBattle&&s.pendingBattle.id!==previous.pendingBattle?.id&&s.contentCampaign?.package.militiaPatrol!==undefined)s.pendingBattle.militiaPatrol=clone(s.contentCampaign.package.militiaPatrol);
     updateContentQuests(s);releaseDeferred(s);receiveDueHires(s);synchronizeSquad(s);synchronizeCampaignPresence(s);synchronizeDialogueMovements(s);progress(s);
     for(const [flag,at] of Object.entries({academy:headquartersFor(s),foundry:foundryFor(s).sector,northPact:'salta',partisanSupply:'tucuman',parliament:'mendoza',emancipation:'buenos_aires',commission:'buenos_aires'}))if(s.flags[flag]&&!previous.flags[flag])recordCityLoyalty(s,{sectorId:at,kind:'quest',eventId:`quest-${flag}`});
     return s;
@@ -520,6 +523,7 @@ export function restoreCampaign(text){
   requireThat(Array.isArray(s.squads)&&s.squads.length>0&&s.squads.length<=8&&new Set(s.squads.map(q=>q.id)).size===s.squads.length&&s.squads.every(q=>object(q)&&typeof q.id==='string'&&/^squad-[1-9][0-9]*$/.test(q.id)&&typeof q.name==='string'&&q.name.length<=30&&validWorldLocation(q.location)&&validIds(q.members)&&q.members.length<=6&&q.members.every(id=>s.recruited.includes(id))),'Las escuadras guardadas son inválidas.');
   const assigned=s.squads.flatMap(q=>q.members);requireThat(new Set(assigned).size===assigned.length,'Un combatiente no puede pertenecer a dos escuadras.');const selected=s.squads.find(q=>q.id===s.activeSquadId);requireThat(selected&&selected.location===s.location&&JSON.stringify(selected.members)===JSON.stringify(s.squad),'La escuadra activa del archivo es inválida.');
   requireThat(object(s.sectorStates)&&Object.entries(s.sectorStates).every(([id,snapshot])=>(validWorldLocation(id)||id==='san_lorenzo')&&validateSectorSnapshot(expandCellScene(snapshot))&&(sector(id)||id==='san_lorenzo'||snapshot.sectorId===id&&snapshot.sourceMapId===id)),'Los sectores guardados son inválidos.');
+  for(const scene of [s.pendingBattle,...Object.values(s.sectorStates),...Object.values(s.sceneStates)])validateCampaignPatrol(s,scene);
   for(const [id,snapshot]of Object.entries(s.sectorStates))s.sectorStates[id]=compactCellScene(snapshot);
   requireThat(!s.pendingBattle||s.pendingBattle.syncedSeconds===undefined||(Number.isSafeInteger(s.pendingBattle.syncedSeconds)&&s.pendingBattle.syncedSeconds>=0),'El reloj del despliegue es inválido.');requireThat(Number.isInteger(s.secondOfHour??0)&&(s.secondOfHour??0)>=0&&(s.secondOfHour??0)<3600,'El reloj guardado es inválido.');requireThat(s.deferredRaids===undefined||(Array.isArray(s.deferredRaids)&&s.deferredRaids.length<=1000&&s.deferredRaids.every(r=>object(r)&&['north','coast','interior'].includes(r.theater)&&sector(r.target))),'Las incursiones pendientes son inválidas.');validatePolitics(s);requireThat(s.economyVersion===2&&Object.keys(s.resources).length===1,'La economía guardada es inválida.');if(migrateCampaignCivilians(s))synchronizeCampaignPresence(s);migrateCampaignCivilianSupplies(s);validateCampaignCivilians(s);if(resumeCivilianServiceReturns(s))validateCampaignCivilians(s);validateCampaignPresence(s);validateDialogueMovements(s,encounterDefinitions(s));enforceHistoricalLoss(s);s.lastError=null;return s;
 }

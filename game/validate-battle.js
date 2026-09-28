@@ -1,3 +1,4 @@
+import {validateMilitiaPatrol} from './militia-patrol-rules.js';
 import {validMilitiaArrival} from './militia-arrival.js';
 import {validMilitiaExperience} from './militia-experience.js';
 import {validateCivilianWounds} from './civilian-harm.js';
@@ -20,7 +21,7 @@ need(object(value),'datos tácticos');safeTree(value);need(JSON.stringify(value)
 need(integer(s.width,4,128)&&integer(s.height,4,128),'dimensiones');const coord=p=>object(p)&&integer(p.x,0,s.width-1)&&integer(p.y,0,s.height-1);
 need(Array.isArray(s.tiles)&&s.tiles.length===s.width*s.height,'casillas');const seen=new Set();
 for(const t of s.tiles){need(coord(t)&&!seen.has(`${t.x},${t.y}`),'posiciones');seen.add(`${t.x},${t.y}`);need(['wall','grass','road','water','stone','mud','forest','scrub','floor','door','window','rubble','cliff'].includes(t.type)&&typeof t.blocked==='boolean'&&number(t.cover,0,100),'terreno');for(const key of ['blocksSight','open','locked'])if(t[key]!==undefined)need(typeof t[key]==='boolean','puertas');for(const key of ['buildingId','roomId','doorId'])if(t[key]!=null)need(text(t[key]),'habitaciones');}
-s.mode??='combat';s.phase??='player';s.status??='active';s.seed??=1812;s.turn??=1;s.weather??={rain:0,humidity:0};need(['combat','exploration'].includes(s.mode)&&['player','enemy'].includes(s.phase)&&['active','victory','defeat'].includes(s.status)&&integer(s.seed,0,4294967295)&&integer(s.turn,1,1e9),'turnos');need(object(s.weather)&&number(s.weather.rain,0,100)&&number(s.weather.humidity,0,100),'clima');
+need(!validateMilitiaPatrol(s.militiaPatrol).length,'reglas de patrulla');s.mode??='combat';s.phase??='player';s.status??='active';s.seed??=1812;s.turn??=1;s.weather??={rain:0,humidity:0};need(['combat','exploration'].includes(s.mode)&&['player','enemy'].includes(s.phase)&&['active','victory','defeat'].includes(s.status)&&integer(s.seed,0,4294967295)&&integer(s.turn,1,1e9),'turnos');need(object(s.weather)&&number(s.weather.rain,0,100)&&number(s.weather.humidity,0,100),'clima');
 need(s.conditionVersion===undefined||s.conditionVersion===1,'versión del estado físico');const legacyCondition=s.conditionVersion===undefined;s.conditionVersion=1;
 need(Array.isArray(s.units)&&s.units.length<=200,'combatientes');const ids=new Set();
 for(const u of s.units){need(validMilitiaArrival(u,s.sectorId),'llegada de milicia');need(validMilitiaExperience(u),'experiencia de milicia');if(u.militiaCreditId!==undefined)need(typeof u.militiaCreditId==='string'&&u.militiaCreditId.length>0&&u.militiaCreditId.length<=2400,'identidad de experiencia');need(coord(u)&&text(u.id)&&!ids.has(u.id)&&text(u.name)&&['player','enemy'].includes(u.side),'combatientes');ids.add(u.id);
