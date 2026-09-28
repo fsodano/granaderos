@@ -32,11 +32,21 @@ export function synchronizeCampaignPresence(state){
   let runtime={...state.contentPresence,content:state.contentCampaign.package,history:[]};
   const loaded=state.pendingBattle&&locationId(state.pendingBattle.sector)
     ?contentCellIds([state.pendingBattle.sector])[0]:null;
+  // Off-screen bleeding can confirm a death inside a batched interval.
+  // Process those events in order before daily movement or successor deadlines.
+  const deaths=runtime.content.characters.map(c=>({character:c,id:operativeIdForCharacter(runtime.content,c.id)}))
+    .filter(({character:c,id})=>state.operativeState[id].alive===false&&runtime.people[c.id].alive)
+    .map(v=>({...v,minute:state.operativeState[v.id].deathMinute??minuteOf(state)}))
+    .sort((a,b)=>a.minute-b.minute);
+  for(const {character:c,id,minute}of deaths){
+    need(Number.isSafeInteger(minute)&&minute>=runtime.minute&&minute<=minuteOf(state));
+    runtime=advancePlacementState(runtime,minute,loaded,52560000);
+    state.operativeState[id].deathMinute=minute;runtime=changePlacementStatus(runtime,c.id,'dead',loaded);
+  }
   runtime=advancePlacementState(runtime,minuteOf(state),loaded,52560000);
   for(const c of runtime.content.characters){
     const numeric=operativeIdForCharacter(runtime.content,c.id),record=state.operativeState[numeric],person=runtime.people[c.id];
-    if(record.alive===false&&person.alive){record.deathMinute=runtime.minute;runtime=changePlacementStatus(runtime,c.id,'dead',loaded);}
-    else if(person.alive&&person.recruited!==state.recruited.includes(numeric))
+    if(person.alive&&person.recruited!==state.recruited.includes(numeric))
       runtime=changePlacementStatus(runtime,c.id,state.recruited.includes(numeric)?'recruited':'released',loaded);
     // A casualty can leave the service ledger when its contract ends. This is
     // not a living placement transition and must not release or revive an actor.

@@ -12,7 +12,7 @@ import {campaignRules,cartridgePrice} from './campaign-rules.js';
 import {synchronizeDialogueMovements,validateDialogueMovements} from './dialogue-movement.js';
 import {updateContentQuests} from './content-quests.js';
 import {dialogueForNPC,chooseDialogue,validateSavedDialogues} from './content-dialogue.js';
-import {acknowledgeCivilians,transferCivilian,validateCampaignCivilians,migrateCampaignCivilians,migrateCampaignCivilianSupplies} from './campaign-civilians.js';
+import {advanceUnloadedCivilians,acknowledgeCivilians,transferCivilian,validateCampaignCivilians,migrateCampaignCivilians,migrateCampaignCivilianSupplies} from './campaign-civilians.js';
 import {synchronizeCampaignPresence,validateCampaignPresence,acknowledgeSuccessionDeaths} from './campaign-presence.js';
 import {isContractOperative,gainsExperience,characterForOperative,isWorldCharacter} from './content-character-ids.js';
 import {campaignPlace,worldCell,locationId,validWorldLocation,worldOwner,cellTravelPlan,cellTravelReason,cellStepHours,adjacentCells} from './world-cells.js';
@@ -172,10 +172,10 @@ function raid(s,theater,forcedTarget=null){
 }
 function deployed(s,id){return s.pendingBattle?.squad?.some(u=>Number(u.id)===Number(id));}
 function releaseDeferred(s){if(s.pendingBattle)return;for(const id of [...s.recruited])if(s.contracts?.[id]?.departurePending){removeFromService(s,id);note(s,'Un voluntario cumple su contrato y deja el destacamento.');}const raids=s.deferredRaids??[];s.deferredRaids=[];for(const r of raids)raid(s,r.theater,r.target);}
-function tick(s,hours,{joinArrivals=true,stopOnDefeat=true,traveling=[]}={}){
+function tick(s,hours,{joinArrivals=true,stopOnDefeat=true,traveling=[],civilianSeconds=3600}={}){
   requireThat(Number.isInteger(hours)&&hours>=1&&hours<=240,'El avance debe ser de 1 a 240 horas.');
   for(let i=0;i<hours;i++){
-    s.hour++;for(const id of [...s.recruited]){const contract=s.contracts?.[id];if(contract?.expiresAt!==null&&contract?.expiresAt!==undefined&&contract.expiresAt<=s.hour){if(deployed(s,id)){contract.departurePending=true;continue;}const name=rosterFor(s).find(o=>o.id===id)?.name??'Un combatiente';removeFromService(s,id);note(s,`${name} concluye su contrato y deja el destacamento. Su hoja de servicio queda disponible.`);}}
+    s.hour++;advanceUnloadedCivilians(s,civilianSeconds);for(const id of [...s.recruited]){const contract=s.contracts?.[id];if(contract?.expiresAt!==null&&contract?.expiresAt!==undefined&&contract.expiresAt<=s.hour){if(deployed(s,id)){contract.departurePending=true;continue;}const name=rosterFor(s).find(o=>o.id===id)?.name??'Un combatiente';removeFromService(s,id);note(s,`${name} concluye su contrato y deja el destacamento. Su hoja de servicio queda disponible.`);}}
     for(const course of [...(s.militiaTraining??[])]){
       if(s.sectors[course.sector].owner!=='patriot'){s.militiaTraining=s.militiaTraining.filter(t=>t!==course);note(s,'La ocupación enemiga dispersa un curso de milicias.');continue;}
       if(!s.operativeState[course.trainerId]?.alive||operativeLocation(s,course.trainerId)!==course.sector||!isSupplied(s,course.sector)||!militiaEligibility(s,course.sector).eligible)continue;
@@ -218,9 +218,14 @@ export function dispatchCampaign(previous,action){
         requireThat(Number.isSafeInteger(elapsed)&&elapsed>=previous&&elapsed-previous<=864000,'El tiempo táctico es inválido.');
         const snapshot=action.sectorState?validateSectorSnapshot(action.sectorState):null;
         if(snapshot)requireThat(snapshot.elapsedSeconds===elapsed,'El parte y el reloj no coinciden.');
-        const seconds=(s.secondOfHour??0)+elapsed-previous,hours=Math.floor(seconds/3600);
-        // The tactical actions already consumed this whole interval, even if a defeat occurred within it.
-        s.secondOfHour=seconds%3600;if(hours)tick(s,hours,{stopOnDefeat:false});
+        // Split at real hour boundaries. Off-screen wounds advance for the
+        // exact delta; the loaded scene has already consumed its own time.
+        for(let remaining=elapsed-previous;remaining>0;){
+          const step=Math.min(remaining,3600-(s.secondOfHour??0));remaining-=step;
+          s.secondOfHour=(s.secondOfHour??0)+step;
+          if(s.secondOfHour===3600){s.secondOfHour=0;tick(s,1,{stopOnDefeat:false,civilianSeconds:step});}
+          else advanceUnloadedCivilians(s,step);
+        }
         // A death is confirmed at this tactical checkpoint, after its time has elapsed.
         if(snapshot){acknowledgeCivilians(s,snapshot);acknowledgeSuccessionDeaths(s,snapshot);if(campaignStory(s))advanceCampaignStory(s,snapshot);}
         s.pendingBattle.syncedSeconds=elapsed;break;

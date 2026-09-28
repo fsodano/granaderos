@@ -43,7 +43,7 @@ export function enterSector(request,previous=null){
  }
  state.npcs=(map.npcs??[]).map(npc=>{
    const old=previous?.npcs?.find(n=>n.id===npc.id&&n.presenceRevision===npc.presenceRevision),resident=structuredClone({...npc,...old});
-   if(npc.civilianHealthVersion===1){for(const k of ['civilianHealthVersion','maxHp','hp','energy','unconscious','civilianWoundVersion','bleeding','bandaged','bleedSource','civilianHarm','civilianFirstAid']){delete resident[k];if(npc[k]!==undefined)resident[k]=structuredClone(npc[k]);}}
+   if(npc.civilianHealthVersion===1){for(const k of ['civilianHealthVersion','maxHp','hp','energy','unconscious','civilianWoundVersion','civilianWoundSeconds','bleeding','bandaged','bleedSource','civilianHarm','civilianFirstAid']){delete resident[k];if(npc[k]!==undefined)resident[k]=structuredClone(npc[k]);}}
    else Object.assign(resident,seedCivilianHealth(resident,{maxHp:resident.maxHp??100,hp:resident.hp??100,energy:resident.energy??100}));
    if(resident.ai){delete resident.ai.threat;delete resident.ai.safeAfter;resident.ai.activity='roaming';}
    delete resident.lastMovePath;resident.stance=resident.hp===0||resident.unconscious?'prone':'standing';resident.movementMode=resident.stance==='prone'?'prone':'walk';

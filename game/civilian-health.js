@@ -3,7 +3,7 @@ export {CRITICAL_HEALTH} from './actor-condition.js';
 export const isCivilianUnconscious=isUnconscious;
 
 // One loaded civilian phase. Waking cannot heal wounds, move the actor, grant
-// combat AP or resume an expired/departed presence. Unloaded scenes do not tick.
+// combat AP or resume an expired/departed presence. Unloaded breath does not tick.
 export const CIVILIAN_BREATH_RECOVERY=10;
 export function recoverCivilianBreath(npc){
  if(npc.civilianHealthVersion!==1||npc.hp<=0||npc.departure)return;
