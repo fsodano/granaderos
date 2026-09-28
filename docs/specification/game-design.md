@@ -1,6 +1,6 @@
 # Granaderos: current game design
 
-Updated 2026-09-27. This is the product contract. Implementation and acceptance
+Updated 2026-09-28. This is the product contract. Implementation and acceptance
 status live in [PROGRESS.md](../verification/published-progress.md), with evidence in [the audit](../verification/formal-audit-2026-09-27.md).
 A capability described here can still be missing from the published game.
 
@@ -193,8 +193,9 @@ Dialogue is a graph of authored text, conditions, choices and effects. Quests
 track explicit state, participants, receipts and completion/failure consequences.
 Authored quests begin unstarted, become active and then complete or fail. Terminal
 states do not reopen. Dialogue conditions define the requirements; an accepted
-choice applies its quest change and optional treasury operation atomically. An
-ordered event record persists progress and supplies the player journal. An optional
+choice applies its quest change, optional treasury operation and optional local
+movement atomically. An ordered event record persists progress and supplies the
+player journal. An optional
 deadline starts at acceptance with campaign-second precision. Tactical actions,
 travel and waiting advance the same limit; expiration fails an active quest once.
 Unstarted quests have no running timer and completed quests keep their result.
@@ -218,6 +219,18 @@ Random results, pending events, exact item custody and all actor identities surv
 save/load. Assets and references must travel with a portable package or produce a
 clear missing-dependency error. The map/sector constructor and story editor have
 separate responsibilities but must form one usable workflow.
+
+### Local dialogue meeting policy
+
+An authored dialogue may call another available world resident in the loaded
+sector to a reachable square beside its speaker. The square is fixed when the
+order is accepted. It is not a teleport or a following behavior. Arrival holds
+position; blocked routes and danger pause the order. A later accepted order can
+replace it. Repeating a consumed choice cannot repeat or restore a previous order.
+Death stops movement, and changing the resident's sector/presence ends the old
+local order. Unloaded scenes do not simulate this route. Map-marker destinations,
+arrival effects and multi-actor story sequences remain part of the target design;
+see the separate status and evidence in [local meetings](../verification/dialogue-movements.md).
 
 ## Presentation and release acceptance
 
