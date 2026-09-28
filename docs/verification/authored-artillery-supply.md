@@ -73,3 +73,8 @@ profiles remain separate. Supply uses the published controlled-road connection
 policy; physical delivery convoys and distinct solid/canister stocks are not
 introduced. The preserved [stationed artillery record](../gameplay/campaign/stationed-artillery.md)
 describes a different, dated economy and acceptance checkpoint.
+
+## Publication
+
+Published in [PR #102](https://github.com/fsodano/granaderos/pull/102) on 2026-09-28.
+Exact head `dd9a1841c509bb5960438946cacae8810470f287` passed [CI run 36491224484](https://github.com/fsodano/granaderos/actions/runs/36491224484), including the full suite, types and production build. Merge commit: `a44eaebf3d8155ef810f19f968fd3b77ef67be91`. This publication does not close the broader artillery or campaign requirements.
