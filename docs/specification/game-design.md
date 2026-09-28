@@ -174,6 +174,11 @@ the northern campaign and Yatasto handover; Cuyo and El Plumerillo preparation;
 and San Martín's field deployment and final liberation. His early mentor/mission
 role is distinct from the late recruitable field role. Required participants,
 chapter gates, defeat, victory and post-victory continuation need explicit rules.
+For the original progression, confirmed death of San Martín before victory ends
+the campaign. Confirmed death of the assigned foundry engineer also ends it while
+the foundry remains unprepared. The loss reason names the actor and blocked task.
+The death does not undo a completed foundry or an established victory. Authored
+chapter campaigns use their own failure conditions instead.
 
 The political model includes the Directory, northern gauchos, Pardos y Morenos,
 foreign volunteers, Indigenous allies and permanently hostile Royalists. Decisions

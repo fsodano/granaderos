@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "63dadebad11cdabaf372ea36d9557beab2a16407",
+  "baseline": "b3dfa12cf81948db95eaabf35e98ad91a2da3a04",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -229,7 +229,12 @@
     {
       "id": "E-FRESH-NORTHERN",
       "path": "docs/verification/fresh-northern-opening.md",
-      "description": "Fresh stock mixed-force continuation from the accepted coastal route: actual Cordoba/Tucuman/Salta battles, every-order clock/replay and midpoint saves, real losses, paid workshop service and replacement arrivals, 550-peso diplomacy, physical Yatasto dialogue and saved phase 3. The original created actor dies and the campaign continues. Advanced medical/rescue failures, Cuyo/ending, other force builds and live performance remain open."
+      "description": "Fresh stock mixed-force continuation from the accepted coastal route: actual Cordoba/Tucuman/Salta battles, every-order clock/replay and midpoint saves, real losses, paid workshop service and replacement arrivals, 550-peso diplomacy, physical Yatasto dialogue and saved phase 3. The original created actor dies and the campaign continues. Advanced medical/rescue failures, Cuyo/ending, other force builds and live performance remain open. PR #62 merged after CI passed at 09b9d2bed0be8d72a22d3af266f3d9009de0f712."
+    },
+    {
+      "id": "E-HISTORICAL-LOSS",
+      "path": "docs/verification/historical-campaign-loss.md",
+      "description": "Fresh stock coastal/northern continuation pays fortifications, a replacement and five muskets, then wins Mendoza tactically with Beltran dead. Confirmed indispensable death now yields a saved explicit campaign defeat. Prepared compact military deaths cover assigned engineer, recruited commander, completed-project and custom-story exceptions, old-save migration and revived-save rejection; the strategic view names the cause. This is a loss route, not Cuyo or full-campaign success."
     }
   ],
   "queue": [
@@ -277,6 +282,31 @@
     }
   ],
   "requirements": [
+    {
+      "id": "LOSS-01",
+      "group": "Published deliveries",
+      "requirement": "End original campaigns explicitly when an unfinished indispensable role is permanently lost",
+      "status": "VERIFIED",
+      "priority": "P0",
+      "published": "A confirmed death of the assigned engineer before foundry completion or the historical commander before victory ends the original campaign. Active military deaths, scene settlement, saved continuation and older nonterminal casualty saves retain the defeat. The strategic screen names the actor and unfinished project.",
+      "local": "Fresh stock Mendoza defeat after actual tactical victory, plus declared prepared military-death boundaries and rendered cause. Authored chapters use their own rules; completed projects and established victories are not revoked.",
+      "remaining": "",
+      "acceptance": "Reproduce a legal fresh Mendoza victory with the engineer casualty; persist explicit terminal loss at the active checkpoint and settlement; cover assigned military roles, late commander, old saves, completed foundry and custom progression without revived actors or false success.",
+      "evidence": [
+        "E-HISTORICAL-LOSS"
+      ],
+      "parents": [
+        "NAR-05",
+        "NAR-06",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/historical-loss.test.mjs",
+        "tests/historical-loss-render.test.mjs",
+        "tests/campaign-roles.test.mjs",
+        "tests/missions-web.test.mjs"
+      ]
+    },
     {
       "id": "ROUTINE-01",
       "group": "Published deliveries",
@@ -589,7 +619,7 @@
       "requirement": "Complete a fresh northern continuation and physical Yatasto transition",
       "status": "VERIFIED",
       "priority": "P0",
-      "published": "From the fresh created-officer coastal route, actual northern battles, losses, workshop purchases and controlled replacement arrivals reach Salta. Paid diplomacy and real travel/ordered conference dialogue produce saved phase 3. Every battle replays with tactical time and midpoint reload. The created actor and unavailable historical medic remain dead.",
+      "published": "From the fresh created-officer coastal route, actual northern battles, losses, workshop purchases and controlled replacement arrivals reach Salta. Paid diplomacy and real travel/ordered conference dialogue produce saved phase 3. Every battle replays with tactical time and midpoint reload. The created actor and unavailable historical medic remain dead. Merged through PR #62 after exact-head CI.",
       "local": "Published care and equipment rules only; the separate advanced medical, recapture and rescue failures remain open. The controller accounts for expensive unseen forest movement without changing actual AP or energy costs.",
       "remaining": "",
       "acceptance": "Continue an untouched stock route through actual Cordoba, Tucuman and Salta victories, permanent losses, paid supplies/replacements and northern agreements, then physically complete Yatasto and save phase 3 with a living commander and no open scene.",
@@ -1389,13 +1419,14 @@
       "requirement": "El Plumerillo campaign preparation under the pesos-only economy",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Treasury-funded camp preparations and artillery prerequisites.",
+      "published": "Treasury-funded camp preparations and artillery prerequisites. A fresh Mendoza tactical victory with Beltran dead now ends the campaign explicitly; successful Cuyo preparation and the historical ending remain open.",
       "local": "See local suite and preserved parity source; not equivalent to published integration.",
       "remaining": "Complete the fresh route with purchases; retain the pesos-only model.",
       "acceptance": "3000-peso funding and remaining campaign prerequisites; full route acceptance pending (original production scope replaced by PR #12)",
       "evidence": [
         "E-PUBLISHED",
-        "E-CONFLICTS"
+        "E-CONFLICTS",
+        "E-HISTORICAL-LOSS"
       ]
     },
     {
@@ -1404,13 +1435,14 @@
       "requirement": "Pehuenche diplomacy and San Mart\u00edn final unlock",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Treaty and gated San Mart\u00edn unlock.",
+      "published": "Treaty and gated San Mart\u00edn unlock. A fresh Mendoza tactical victory with Beltran dead now ends the campaign explicitly; successful Cuyo preparation and the historical ending remain open.",
       "local": "See local suite and preserved parity source; not equivalent to published integration.",
       "remaining": "Reach and finish through legal campaign actions without injected victories.",
       "acceptance": "Treaty and logistics prerequisites enforced; no early recruitment",
       "evidence": [
         "E-PUBLISHED",
-        "E-CONFLICTS"
+        "E-CONFLICTS",
+        "E-HISTORICAL-LOSS"
       ]
     },
     {
@@ -2213,7 +2245,7 @@
       "requirement": "Consolidate published, prototype and advanced local gameplay",
       "status": "FAILED",
       "priority": "P0",
-      "published": "Published baseline is green, but excludes most advanced local gameplay. A fresh paid continuation exposed and fixed deceased-contract save rejection; paid relief now saves its San Nicolas defeat. Full route acceptance remains open. New mixed and hire-only routes now win and save the complete coastal opening through San Lorenzo; northern and ending acceptance remain open. A fresh mixed force now also completes saved Yatasto phase 3 under published rules; advanced-system failures and Cuyo/ending acceptance remain open.",
+      "published": "Published baseline is green, but excludes most advanced local gameplay. A fresh paid continuation exposed and fixed deceased-contract save rejection; paid relief now saves its San Nicolas defeat. Full route acceptance remains open. New mixed and hire-only routes now win and save the complete coastal opening through San Lorenzo; northern and ending acceptance remain open. A fresh mixed force now also completes saved Yatasto phase 3 under published rules; advanced-system failures and Cuyo/ending acceptance remain open. A fresh Mendoza tactical victory with Beltran dead now ends the campaign explicitly; successful Cuyo preparation and the historical ending remain open.",
       "local": "Both larger suites fail; economy, opening and elite-contract policies differ.",
       "remaining": "Import one bounded capability at a time, preserve approved policy and carry its tests into main.",
       "acceptance": "One release has the full combined behavior, passing combined suite, legal complete routes and no undocumented policy regressions.",
@@ -2223,7 +2255,8 @@
         "E-CONFLICTS",
         "E-CONTRACT-CASUALTY",
         "E-FRESH-COASTAL",
-        "E-FRESH-NORTHERN"
+        "E-FRESH-NORTHERN",
+        "E-HISTORICAL-LOSS"
       ]
     },
     {
@@ -4011,13 +4044,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "63dadebad11cdabaf372ea36d9557beab2a16407",
-    "total": 793,
-    "passed": 793,
+    "source": "b3dfa12cf81948db95eaabf35e98ad91a2da3a04",
+    "total": 798,
+    "passed": 798,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-FRESH-NORTHERN"
+    "evidenceId": "E-HISTORICAL-LOSS"
   }
 }

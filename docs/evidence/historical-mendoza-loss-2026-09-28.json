@@ -1,0 +1,93 @@
+{
+  "source": "b3dfa12cf81948db95eaabf35e98ad91a2da3a04",
+  "scope": "Fresh stock seed-8 mixed coastal/northern prefix, paid fortification, reinforcement and five Charleville muskets, then actual Mendoza combat. Tactical victory with a required engineer casualty is a campaign defeat; this is not a successful Cuyo route.",
+  "actions": 83,
+  "turns": 4,
+  "deathCheckpoint": {
+    "hour": 132,
+    "second": 239,
+    "phase": 3,
+    "funds": 2623,
+    "squad": [
+      123,
+      137,
+      113,
+      124,
+      112,
+      108
+    ],
+    "controlled": [
+      "buenos_aires",
+      "retiro",
+      "san_nicolas",
+      "cordoba",
+      "tucuman",
+      "salta"
+    ],
+    "deaths": [
+      2,
+      3,
+      8,
+      9,
+      10,
+      110,
+      114,
+      115,
+      120,
+      131,
+      136,
+      141,
+      1000
+    ],
+    "engineer": 0,
+    "commander": 38,
+    "foundry": false,
+    "defeated": true,
+    "completed": false,
+    "pendingBattle": "mendoza-132-927983332"
+  },
+  "settled": {
+    "hour": 132,
+    "second": 251,
+    "phase": 3,
+    "funds": 2898,
+    "squad": [
+      123,
+      137,
+      112,
+      108
+    ],
+    "controlled": [
+      "buenos_aires",
+      "retiro",
+      "san_nicolas",
+      "cordoba",
+      "mendoza",
+      "tucuman",
+      "salta"
+    ],
+    "deaths": [
+      2,
+      3,
+      8,
+      9,
+      10,
+      110,
+      113,
+      114,
+      115,
+      120,
+      124,
+      131,
+      136,
+      141,
+      1000
+    ],
+    "engineer": 0,
+    "commander": 30,
+    "foundry": false,
+    "defeated": true,
+    "completed": false,
+    "pendingBattle": null
+  }
+}

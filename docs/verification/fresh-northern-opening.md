@@ -41,7 +41,9 @@ The coastal pair and new northern test pass as a focused group. Release checks:
 **793/793 tests**, zero failures or skips (193,717 ms); type check; production
 export (721 files, 631 asset references); 36 baseline checks; documentation audit
 (200 requirements, all 50 original and 87 parity rows, 39 evidence records).
-Exact-head GitHub CI is required before merge.
+[PR #62](https://github.com/fsodano/granaderos/pull/62) merged after
+[exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36396068305/job/108842643134)
+passed on `09b9d2bed0be8d72a22d3af266f3d9009de0f712`.
 
 The final saved checkpoint is hour 102, second 227, with 4,118 pesos, five current
 squad members and twelve permanent deaths. Six strategic localities are controlled.
