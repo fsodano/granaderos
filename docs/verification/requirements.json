@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "012a7bb0bf13431b396ddf749f6e9b94d95e6698",
+  "baseline": "78fc6c4900f960b8307a7ce18b4d594346721b54",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -110,7 +110,13 @@
     {
       "id": "E-QUEST-DEADLINES",
       "path": "docs/verification/quest-deadlines.md",
-      "description": "Optional quest deadlines use acceptance seconds and expire once during actual tactical rest, strategic wait or cell travel. Mounted editor/game controls show the limit, remaining time and saved failure. Invalid/missing expiry evidence is rejected. Does not establish automatic death/escort/item failures or a full campaign."
+      "description": "Optional quest deadlines use acceptance seconds and expire once during actual tactical rest, strategic wait or cell travel. Mounted editor/game controls show the limit, remaining time and saved failure. Invalid/missing expiry evidence is rejected. Does not establish automatic death/escort/item failures or a full campaign.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36372359110/job/108771147841"
+    },
+    {
+      "id": "E-QUEST-SURVIVAL",
+      "path": "docs/verification/quest-survival.md",
+      "description": "Authored quests require up to six living characters and fail once on confirmed civilian or military death. Actual civilian actions and a prepared compact battle with a real enemy kill verify persistence; mounted controls protect references and display the saved failure cause. Does not establish escort/item objectives or full campaign acceptance."
     }
   ],
   "queue": [
@@ -159,6 +165,29 @@
   ],
   "requirements": [
     {
+      "id": "SURVIVAL-01",
+      "group": "Published deliveries",
+      "requirement": "Require character survival and persist automatic quest failure on confirmed death",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Authors choose required living characters. An active quest fails when any required identity dies; an already dead requirement blocks acceptance. Military deaths are confirmed before battle settlement. Completed quests keep their result, and wounds or service changes do not fail the quest.",
+      "local": "Uses published identity, civilian health, tactical death acknowledgement and quest evidence. No advanced captivity or escort system is imported.",
+      "remaining": "",
+      "acceptance": "Author and copy survivor references through undo and launch, and protect referenced characters from deletion. Kill a required resident through real actions and confirm a required serving unit death in a prepared battle. Preserve the cause through save and the mounted campaign journal. Reject invalid references/evidence, block post-death acceptance and retain completion, injury and service semantics.",
+      "evidence": [
+        "E-QUEST-SURVIVAL"
+      ],
+      "parents": [
+        "STORY-03"
+      ],
+      "testFiles": [
+        "tests/quest-survival.test.mjs",
+        "tests/death-successors.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/webmcp-campaign.test.mjs"
+      ]
+    },
+    {
       "id": "DEADLINE-01",
       "group": "Published deliveries",
       "requirement": "Author precise quest deadlines with automatic persistent failure",
@@ -178,7 +207,8 @@
         "tests/quest-deadlines.test.mjs",
         "tests/story-editor.test.mjs",
         "tests/webmcp-campaign.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/42"
     },
     {
       "id": "QUEST-01",
@@ -1479,9 +1509,9 @@
       "requirement": "Branching dialogue, conditions, effects and quests",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "New residents have authored branching dialogue with saved progress. Conditions cover day, pesos, locality control, character state and quest state. Choices apply one-time treasury operations and shared quest start/completion/failure with saved evidence. Different residents can participate. The campaign journal reports accepted objectives and precise optional deadlines; overdue active quests fail once. Historical conversations retain their existing rules.",
+      "published": "New residents have authored branching dialogue with saved progress. Conditions cover day, pesos, locality control, character and quest state. Choices apply one-time treasury operations and shared quest transitions with saved evidence. Different residents can participate. The journal reports accepted objectives, deadlines and failure causes. Overdue quests or confirmed deaths of required characters fail active objectives once. Historical conversations keep their existing rules.",
       "local": "Authored resident quest transitions are accepted in the bounded published scope. Advanced historical role and objective systems are not imported.",
-      "remaining": "Add item/objective and other gameplay effects, automatic death/escort failure policies, historical role bindings and their receipts; extend authoring to historical conversations without bypassing campaign gates.",
+      "remaining": "Add item/escort/objective and other gameplay effects, historical role bindings and their receipts; extend authoring to historical conversations without bypassing campaign gates.",
       "acceptance": "Author and finish alternate quest branches through normal controls, including failures and saves.",
       "evidence": [
         "E-CONFLICTS",
@@ -1490,7 +1520,8 @@
         "E-DIALOGUE-CONDITIONS",
         "E-DIALOGUE-PAYMENTS",
         "E-AUTHORED-QUESTS",
-        "E-QUEST-DEADLINES"
+        "E-QUEST-DEADLINES",
+        "E-QUEST-SURVIVAL"
       ]
     },
     {
@@ -3337,13 +3368,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "012a7bb0bf13431b396ddf749f6e9b94d95e6698",
-    "total": 652,
-    "passed": 652,
+    "source": "78fc6c4900f960b8307a7ce18b4d594346721b54",
+    "total": 661,
+    "passed": 661,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-QUEST-DEADLINES"
+    "evidenceId": "E-QUEST-SURVIVAL"
   }
 }
