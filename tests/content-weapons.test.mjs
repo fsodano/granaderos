@@ -103,7 +103,7 @@ test('saved definitions cannot diverge from the pinned package in hands, invento
  for(const mutate of [v=>v.operativeState[110].weaponMetadata.contentWeapon.damage++,v=>v.armoryItems[0].contentWeapon.template=1800,v=>v.armory['pistola-del-sur']++,v=>v.armoryItems[0].loaded=2]){const altered=structuredClone(s);mutate(altered);assert.throws(()=>save(altered));}
  s=order(s,{type:'visitSector'});const b=enterSector(s.pendingBattle),altered=structuredClone(b);altered.units[0].weaponMetadata.contentWeapon.name='Otra arma';assert.throws(()=>save(s,altered),/arma guardada/);
  assert.equal(campaignContentReport(content()).blocked.length,0);
- const unsupported=content();unsupported.weapons[0].readyAP=2;assert.ok(campaignContentReport(unsupported).blocked.length);
+ const prepared=content();prepared.weapons[0].readyAP=2;assert.equal(campaignContentReport(prepared).blocked.length,0);
  for(const id of ['bronze4','field8','swivel'])assert.throws(()=>compileWeaponDefinition(custom({id})),/identidad/);
 });
 

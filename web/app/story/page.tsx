@@ -785,10 +785,12 @@ export default function ContentEditor() {
                     <p>
                       La familia conserva sus técnicas de combate. El nombre, la imagen y estos valores se usan en la campaña, la armería y el equipo recuperado. La prueba de tiro admite armas de fuego.
                     </p>
+                    {!isBladeDefinition(item)&&<p>Los PA para levantar el arma están incluidos en el primer disparo. Mientras el soldado conserve la posición de tiro, los siguientes disparos descuentan ese costo. Moverse, recargar o cambiar de postura vuelve a bajar el arma. Cero conserva el costo completo en cada disparo.</p>}
                     <div className="fields">
                       {(isBladeDefinition(item)?['damage','ap','reach']:[
                         'damage',
                         'fireAP',
+                        'readyAP',
                         'aimAP',
                         'reloadAP',
                         'range',

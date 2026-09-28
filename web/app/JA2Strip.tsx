@@ -55,7 +55,7 @@ export default function JA2Strip({battle, selected, unit, players, missionAllies
             const label = d.id === 'stance' ? (unit?.stance === 'prone' ? 'De pie' : 'Cuerpo a tierra') : d.id === 'mount' ? (unit?.mounted ? 'Desmontar' : 'Montar') : d.label;
             return (
               <button key={d.id} className={d.kind === 'mode' && mode === d.id ? 'selected' : ''} disabled={d.disabled} aria-label={label} title={d.detail} onClick={() => { if (d.kind === 'mode') onMode(d.id); else if (d.id === 'sight') onToggleSight(); else onOrder(orderAction(battle, unit, {}, d.id)); }}>
-                {Icon && <Icon size={16} />}<span>{label}{d.seconds!==undefined?` · ${d.seconds} s`:d.kind === 'order' && d.pa !== undefined ? ` · ${d.pa} PA` : ''}{d.id==='reload'&&d.detail&&<small style={{display:'block'}}>{d.detail}</small>}</span>
+                {Icon && <Icon size={16} />}<span>{label}{d.seconds!==undefined?` · ${d.seconds} s`:d.kind === 'order' && d.pa !== undefined ? ` · ${d.pa} PA` : ''}{['reload','fire'].includes(d.id)&&d.detail&&<small style={{display:'block'}}>{d.detail}</small>}</span>
               </button>
             );
           })}

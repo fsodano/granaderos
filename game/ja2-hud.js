@@ -180,6 +180,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
     const d = {id: def.id, label: def.label, kind: def.kind, disabled: baseDisabled || disabled[def.id]};
     if (def.id in pa) d.pa = pa[def.id];
     if (def.id in active) d.active = active[def.id];
+    if(def.id==='fire'&&firearm&&(weaponFor(u).readyAP??0)>0)d.detail=costs.ready?`Preparar: ${costs.ready} PA · disparar: ${costs.discharge} PA.`:`Arma en posición de tiro · disparar: ${costs.discharge} PA.`;
     if(def.id==='reload'){if(state.mode==='exploration')d.seconds=loading.pa?Math.max(1,Math.ceil(loading.pa*.06)):0;d.detail=loading.partial?`${loading.rounds} cartuchos; después faltan ${loading.remainingPA} PA.`:`${loading.rounds} cartuchos; recarga completa.`;}
     return d;
   });

@@ -37,7 +37,7 @@ export function weaponSpecification(value,slot='primary'){
  const raw=typeof value==='object'&&value!==null?slot==='blade'?value.blade:value.weapon??value.item??value.id:value;
  const id=typeof raw==='object'?raw.id:raw,definition=contentWeaponOf(value,slot);
  if(!ITEMS[id]&&!FIREARMS[id])return null;
- return {...ITEMS[id],...FIREARMS[id],...BLADES[id],...(BLADES[id]?{capacity:0}:{}),...(typeof raw==='object'?raw:{}),...definition,id,...(definition?{contentId:definition.id}:{}),art:definition?.art??`/art/weapon-${id}.png`,price:definition?.price??FIREARM_PRICES[id]??BLADE_PRICES[id]};
+ return {...ITEMS[id],...FIREARMS[id],...BLADES[id],...(FIREARMS[id]?{readyAP:0}:{}),...(BLADES[id]?{capacity:0}:{}),...(typeof raw==='object'?raw:{}),...definition,id,...(definition?{contentId:definition.id}:{}),art:definition?.art??`/art/weapon-${id}.png`,price:definition?.price??FIREARM_PRICES[id]??BLADE_PRICES[id]};
 }
 export function weaponMetadata(definition){return {contentWeapon:compileWeaponDefinition(definition)};}
 export function validateWeaponCarrier(value){
