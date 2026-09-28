@@ -265,7 +265,7 @@ export function dispatchCampaign(previous,action){
         if(snapshot){acknowledgeCivilians(s,snapshot);acknowledgeSuccessionDeaths(s,snapshot);if(campaignStory(s))advanceCampaignStory(s,snapshot);}
         s.pendingBattle.syncedSeconds=elapsed;break;
       }
-      case 'transportArtillery':{const quote=dispatchArtilleryTransport(s,action);note(s,`La pieza parte hacia ${sector(quote.to).name}. Llegada prevista en ${quote.hours} horas si la ruta sigue abierta.`);break;}
+      case 'transportArtillery':{const quote=dispatchArtilleryTransport(s,action);note(s,`La pieza parte hacia ${sector(quote.to).name}. Envío: ${quote.cost} pesos. Llegada prevista en ${quote.hours} horas si la ruta sigue abierta.`);break;}
       case 'resupplyArtillery':{
         const quote=artillerySupplyQuote(s,action.sector,action.artilleryId,isSupplied(s,s.location));requireThat(quote.available,quote.reason);pay(s,{treasury:quote.cost});const gun=s.sectorStates[action.sector].artillery.find(g=>g.id===action.artilleryId);gun.ammo++;note(s,`Se compra una munición de artillería por ${quote.cost} pesos. Queda en reserva junto a la pieza.`);break;
       }

@@ -11,7 +11,7 @@ export function SendArtillery({state:s,sector,gun,dispatch}:{state:any;sector:st
  return <fieldset aria-label={`Trasladar ${artilleryProfile(s,gun).name}`}><legend>Trasladar pieza</legend>
   <label>Destino de la pieza<select value={to} onChange={e=>setChosen(e.target.value)}><option value="">Elegir destino</option>{destinations.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}</select></label>
   <label>Transporte de la pieza<select value={mode} onChange={e=>setMode(e.target.value)}><option value="carts">Carretas</option><option value="flotilla">Flotilla</option></select></label>
-  <p>{quote.available?`${quote.hours} horas · ${quote.crew} ${quote.crew===1?'combatiente':'combatientes'} para cargar. La pieza conserva su carga y munición.`:quote.reason}</p>
+  <p>{quote.available?`${quote.hours} horas · ${quote.cost} pesos · ${quote.crew} ${quote.crew===1?'combatiente':'combatientes'} para cargar. La pieza conserva su carga y munición.`:quote.reason}</p>
   <button className="line-button" disabled={!quote.available} onClick={()=>dispatch({type:'transportArtillery',sector,artilleryId:gun.id,to,mode})}>Enviar pieza</button>
  </fieldset>;
 }

@@ -636,7 +636,22 @@ batería del próximo ataque. No recibe munición nueva. Una ruta ocupada, un
 bloqueo, enemigos en el destino o un depósito lleno demoran la entrega.
 
 Por ahora, las rutas usan localidades y sus conexiones: 18 horas por tramo en
-carreta o cinco en flotilla. Estos tiempos todavía no se editan. Las carretas no
+carreta o cinco en flotilla. Estos valores predeterminados se pueden cambiar en las reglas siguientes. Las carretas no
 cruzan sectores de montaña con un cañón completo; la flotilla usa localidades
 costeras. La selección libre de celdas para personajes sigue siendo independiente
 de estos envíos. [Verificación y límites](../verification/finite-artillery-transport.md).
+
+
+## Reglas de traslado de artillería
+
+En **Reglas → Traslado de artillería** podés permitir o impedir nuevos envíos,
+configurar las horas por tramo y el precio por pieza para carretas y flotillas.
+El tiempo debe ser un entero de 1 a 168 horas. El precio puede ser de cero a
+1.000.000 de pesos. Se cobra una sola vez al enviar la pieza, además de organizar
+la red; una demora no genera otro cobro.
+
+La armería muestra el precio y la duración reales. Si faltan fondos, conserva
+la pieza. La ruta debe seguir controlada y ser apta para el transporte; estas
+reglas no eliminan la dotación ni las restricciones de costa y montaña. Deshacer,
+rehacer y restaurar las reglas originales funcionan. Los cambios del borrador
+solo se aplican a nuevas campañas. [Verificación](../verification/authored-artillery-transport.md).
