@@ -1,4 +1,5 @@
 'use client';
+import {militiaWoundLoss} from '../../game/garrison.js';
 import {useState} from 'react';
 import {rosterFor,isSupplied,operativeLocation} from '../../game/campaign.js';
 import {CARE_ASSIGNMENTS,careAssignmentReason,careStatus,medicalSupplyQuote} from '../../game/medical-care.js';
@@ -26,7 +27,7 @@ export default function MedicalCare({state:s,dispatch}:{state:any;dispatch:(acti
   })}</tbody></table></div>}
   {(s.garrisons?.[s.location]?.length??0)>0&&<section aria-label="Salud de la guarnición">
    <h3>Guarnición de {campaignPlace(s.location)?.name}</h3>
-   <ul>{s.garrisons[s.location].map((u:any,index:number)=><li key={u.id}>{index+1}. {u.name}: {Math.round(u.hp)}/{u.maxHp} salud · {u.bleeding??0} hemorragia</li>)}</ul>
+   <ul>{s.garrisons[s.location].map((u:any,index:number)=><li key={u.id}>{index+1}. {u.name}: {Math.round(u.hp)}/{u.maxHp} salud · {u.bleeding??0} hemorragia{u.bleeding>0&&<small>Sin atender: pierde {militiaWoundLoss(s,u)} salud/h fuera del combate.</small>}</li>)}</ul>
   </section>}
  </section>;
 }
