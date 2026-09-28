@@ -1,7 +1,6 @@
 import {importRulesFor,importPortName,importDelayReason} from './campaign-imports.js';
 import {compileWeaponDefinition} from './weapon-definition.js';
 import {usesAuthoredEquipment,equipmentKey,addArmoryStock} from './armory-items.js';
-import {artilleryCount} from './economy.js';
 import {WEAPONS} from './data.js';
 export const EQUIPMENT_CATALOG=[
  ...Object.values(WEAPONS).filter(w=>w.id>=1800&&w.id<=1813).map(w=>({...w,item:w.id,category:w.id<1809?'firearm':'blade',price:({1800:240,1801:230,1802:420,1803:180,1804:100,1805:130,1806:180,1807:160,1808:220,1809:160,1810:110,1811:50,1812:70,1813:40})[w.id]})),
@@ -21,10 +20,15 @@ export function armoryOptions(s,op,slot){
 export function needsResupply(record){return [['priming',50],['flints',4],['rations',2],['torches',2],['medkits',2]].some(([key,target])=>(record[key]??target)<target);}
 export function refillCost(record,dressingPrice=10){return Math.ceil(Math.max(0,50-(record.priming??50))*.4+Math.max(0,4-(record.flints??4))*8+Math.max(0,2-(record.rations??2))*10+Math.max(0,2-(record.torches??2))*8+Math.max(0,2-(record.medkits??2))*dressingPrice);}
 export function firearmRepairCost(record){return Math.ceil(Math.max(0,100-(record.condition??100))*1.5);}
+export function artillerySelectionReason(s,types){
+ if(!Array.isArray(types)||types.length>3||!types.every(type=>['bronze4','field8','swivel'].includes(type)))return 'Seleccioná hasta tres piezas de artillería.';
+ for(const type of ['bronze4','field8','swivel'])if(types.filter(t=>t===type).length>(s.armory?.[type]??0))return 'No disponés de tantas piezas de ese modelo.';
+ return null;
+}
 export function deployedArtillery(s){
- if(s.artillerySelection?.length)return s.artillerySelection.slice(0,Math.min(3,artilleryCount(s))).map((type,i)=>({id:`gun-${i}`,type,side:'player',loaded:true,ammo:6}));
- const available=artilleryCount(s),types=[];
- for(const type of ['field8','swivel','bronze4'])for(let i=0;i<(s.armory?.[type]??0)&&types.length<available&&types.length<3;i++)types.push(type);
+ const available={...s.armory},types=[];
+ const chosen=s.artillerySelectionExplicit||s.artillerySelection?.length?s.artillerySelection??[]:['field8','swivel','bronze4'].flatMap(type=>Array.from({length:Math.min(3,available[type]??0)},()=>type));
+ for(const type of chosen)if(types.length<3&&(available[type]??0)>0){types.push(type);available[type]--;}
  return types.map((type,i)=>({id:`gun-${i}`,type,side:'player',loaded:true,ammo:6}));
 }
 
