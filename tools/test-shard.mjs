@@ -21,7 +21,9 @@ if(mode==='--check'&&process.argv.length===3){
 }else if(mode==='--run'&&/^[1-4]$/.test(number??'')&&process.argv.length===4){
  const files=groups[Number(number)-1];
  console.log(`Running complete test group ${number}/${count}: ${files.length} of ${all.length} files; no name filters.`);
- const result=spawnSync(process.execPath,['--test','--test-concurrency=2',...files],{cwd:root,stdio:'inherit'});
+ // An inherited Node test context suppresses nested runners instead of executing files.
+ const env={...process.env};delete env.NODE_TEST_CONTEXT;
+ const result=spawnSync(process.execPath,['--test','--test-concurrency=2',...files],{cwd:root,stdio:'inherit',env});
  if(result.error)throw result.error;
  process.exitCode=result.status??1;
 }else{

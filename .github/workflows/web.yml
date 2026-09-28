@@ -25,6 +25,8 @@ jobs:
           cache-dependency-path: web/package-lock.json
       - name: Install test dependencies
         run: npm ci --prefix web
+      - name: Test partition coverage and failure propagation
+        run: node --test tools/test-shard-selftest.mjs
       - name: Verify complete test partition
         run: node tools/test-shard.mjs --check
       - name: Test tactical and strategic simulation

@@ -39,7 +39,7 @@ final artillery/emplacement overlap passes **29/29**, following an earlier
 passes **1073/1073**, zero failures or skips (247,254.318 ms), on the source above.
 Types, production export (722 files, 632 asset references), all 36 reference
 comparisons and the documentation audit (241 requirements, 80 evidence records)
-pass. Exact-head CI remains required before publication.
+pass. Exact-head CI passed before publication.
 
 The first full regression passed 1071/1071 on
 `32f7ed31e41f96de6b97e19c576aa4bc05703f4b`. A separate scattered-crew probe
@@ -70,3 +70,8 @@ Advanced interrupt queues from the preserved development source are not part of
 this synchronous published engine. The broad artillery, militia and integration
 requirements remain partial. The [dated development record](../gameplay/tactical/artillery-ai.md)
 retains its separate scope and test counts; it is not the acceptance record here.
+
+## Publication
+
+Published in [PR #103](https://github.com/fsodano/granaderos/pull/103) on 2026-09-28.
+Exact head `3ad3565d8a4b9adf5f490e654b338f11cae51140` passed [CI run 36493237943](https://github.com/fsodano/granaderos/actions/runs/36493237943), including the full suite, types and production build. Merge commit: `4d85860b8fe2390a7323fbf62b8b3809485c7c5f`. This publication does not close the broader artillery or campaign requirements.
