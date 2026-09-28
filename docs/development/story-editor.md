@@ -671,3 +671,13 @@ Los precios de cada modelo se toman de **Armas → Artillería**. Por ahora, el 
 empieza con 1.200 pesos, paga 40% del precio (30% en Córdoba, 50% en Mendoza) y
 cobra 80% para recomprar. Estos porcentajes y fondos todavía no se editan. No hay
 venta a distancia ni renovación automática de caja. [Verificación](../verification/finite-artillery-trading.md).
+
+
+## Reenviar piezas guardadas
+
+Cada pieza del depósito local también muestra **Trasladar pieza**. Podés enviar
+una pieza recuperada o recomprada a otra localidad controlada, con la dotación y
+el transporte disponibles. Se aplican las horas y el precio que definiste en las
+reglas de traslado. No hace falta emplazarla primero en un combate. Al llegar,
+conserva su identidad, carga, reservas y recarga incompleta. Elegila en la batería
+cuando la escuadra alcance el nuevo depósito. [Verificación](../verification/depot-artillery-transport.md).

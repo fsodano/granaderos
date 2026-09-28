@@ -7,6 +7,8 @@ accepted features on GitHub `main`, approved scope changes and open work.
 
 ## Published baseline
 
+- [Forwarding stored artillery to the front](depot-artillery-transport.md)
+
 - [Finite local artillery trading](finite-artillery-trading.md)
 
 - [Authored artillery transport rules](authored-artillery-transport.md)
