@@ -15,6 +15,8 @@ Invalid life, health and placement data remain rejected.
 ## Verification
 
 Runtime source: `c42397154c346166a35c168bd2143acc669f7062`.
+Merged through [PR #58](https://github.com/fsodano/granaderos/pull/58);
+[exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36390970281/job/108826469296) passed.
 
 - `tests/contract-casualty-presence.test.mjs`: real seed-8 paid hires, arrival,
   Buenos Aires combat, actual casualty and saved victory settlement. Its actual
@@ -47,7 +49,8 @@ The real capital snapshot retained one player corpse and two enemy corpses.
 Peaceful reentry discarded all three military bodies while retaining the two
 civilian bodies. The campaign casualty remained permanently dead. The contract
 fix does not change scene reentry or claim military-body persistence through it.
-BODY-01 tracks this separate defect and requires its own regression and fix.
+BODY-01 tracks this separate defect. Its later correction and regression scope
+are recorded in [military body persistence](military-remains.md).
 
 The larger local care, recapture, prisoner-rescue and performance gaps remain
 open. No full campaign or live-browser acceptance is claimed.

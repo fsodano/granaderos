@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "c42397154c346166a35c168bd2143acc669f7062",
+  "baseline": "b063d878f39e9db2bf5af2c63b57f1ef39765046",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -206,7 +206,13 @@
     {
       "id": "E-CONTRACT-CASUALTY",
       "path": "docs/verification/contract-casualty-presence.md",
-      "description": "A fresh paid capital victory produced a real casualty whose contract expiry invalidated later saves. Expiry/dismissal presence is now synchronized without reviving the actor; narrowly identified old stale flags are repaired. Actual paid relief reaches a saved San Nicolas defeat, not full campaign acceptance. A separate military-body reentry defect is reproduced and remains open."
+      "description": "A fresh paid capital victory produced a real casualty whose contract expiry invalidated later saves. Expiry/dismissal presence is now synchronized without reviving the actor; narrowly identified old stale flags are repaired. Actual paid relief reaches a saved San Nicolas defeat, not full campaign acceptance. A separate military-body reentry defect was reproduced; its later correction is tracked by BODY-01.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36390970281/job/108826469296"
+    },
+    {
+      "id": "E-MILITARY-REMAINS",
+      "path": "docs/verification/military-remains.md",
+      "description": "Actual capital casualties retain identity, positions and finite gear through saved visits. Real ammunition/weapon recovery cannot repeat; prior deaths do not rejoin service or become new report casualties. Prepared reoccupation isolates reused enemy IDs and accounting, followed by a real second battle and saved settlement. No body restoration from already erased snapshots, custody/transport, full campaign or live-browser acceptance is claimed."
     }
   ],
   "queue": [
@@ -218,8 +224,7 @@
         "FIX-01",
         "FIX-02",
         "FIX-03",
-        "FIX-04",
-        "BODY-01"
+        "FIX-04"
       ],
       "action": "Extend the combined acceptance path beyond Retiro startup and the first hired-squad conquest. Preserve pesos and all hire terms, verify fresh opening routes, then diagnose each reproduced later-route failure. Import advanced systems with their own tests; do not replace the reducer wholesale."
     },
@@ -582,7 +587,8 @@
         "tests/contract-casualty-presence.test.mjs",
         "tests/campaign-presence.test.mjs",
         "tests/local-contracts.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/58"
     },
     {
       "id": "ARRIVAL-01",
@@ -1964,9 +1970,9 @@
       "requirement": "New world identities, persistent residents and death successors",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "New and existing world residents retain physical identity. Confirmed civilian or active military death can activate a distinct new world successor after a saved delay; earlier bodies and each character health stay separate. New residents can offer paid local service for all published terms, with quoted prices and persistent expiry, renewal and return. Authored progression can omit historical identities or copy them into independent residents; generic original residents are optional. Confirmed casualties can leave the service ledger through expiry or dismissal without invalidating saves; known stale deceased-service bits are repaired.",
+      "published": "New and existing world residents retain physical identity. Confirmed civilian or active military death can activate a distinct new world successor after a saved delay; earlier bodies and each character health stay separate. New residents can offer paid local service for all published terms, with quoted prices and persistent expiry, renewal and return. Authored progression can omit historical identities or copy them into independent residents; generic original residents are optional. Confirmed casualties can leave the service ledger through expiry or dismissal without invalidating saves; known stale deceased-service bits are repaired. Military bodies and finite equipment now persist through reentry and renewed occupation without rejoining service.",
       "local": "Preview transitions supplied the core schedule. Published identity, health and successor activation are connected; advanced inventories and role transfer remain separate.",
-      "remaining": "Fix military-body retention on sector reentry. Connect editable belongings, NPC looting, custody and explicit role/stock transfer. Strategic civilian care and unloaded-sector bleeding remain separate work.",
+      "remaining": "Connect editable belongings, NPC looting, custody and explicit role/stock transfer. Strategic civilian care and unloaded-sector bleeding remain separate work.",
       "acceptance": "Move an injured NPC, reload, recruit it, confirm death and activate one distinct successor without healing or duplicating goods.",
       "evidence": [
         "E-CONFLICTS",
@@ -1975,7 +1981,8 @@
         "E-DEATH-SUCCESSORS",
         "E-LOCAL-CONTRACTS",
         "E-CAMPAIGN-CAST",
-        "E-CONTRACT-CASUALTY"
+        "E-CONTRACT-CASUALTY",
+        "E-MILITARY-REMAINS"
       ]
     },
     {
@@ -3872,31 +3879,37 @@
     },
     {
       "id": "BODY-01",
-      "group": "Story and integration",
+      "group": "Published deliveries",
       "requirement": "Retain military corpses when revisiting a settled sector",
-      "status": "FAILED",
+      "status": "VERIFIED",
       "priority": "P1",
-      "published": "A real fresh capital victory retains military casualties in the stored battle, but peaceful reentry discards one player body and two enemy bodies. Civilian bodies and campaign death records remain.",
-      "local": "Advanced workspace has body/crew continuity work that is not integrated or accepted here.",
-      "remaining": "Preserve player and enemy corpses across reentry, fresh occupation and save/load without creating living actors, duplicate identities, equipment or report casualties.",
+      "published": "Player, enemy and militia bodies retain their saved positions, weapon identity and depleted supplies on reentry. Fresh enemy garrisons receive distinct identities from older remains. Only confirmed prior casualties are excluded from current service reports; recovered old-body ammunition is counted once.",
+      "local": "Actual fresh paid capital deaths and a real second combat are covered. Reoccupation is prepared to isolate scene continuity; the larger local custody/crew systems remain separate.",
+      "remaining": "",
       "acceptance": "Use actual combat deaths and real return/reentry; retain positions, death appearance and finite belongings across saved visits and a fresh occupation, while current living squads and new enemies remain distinct.",
       "evidence": [
-        "E-CONTRACT-CASUALTY"
+        "E-MILITARY-REMAINS"
       ],
       "parents": [
         "INTEGRATION-01",
         "STORY-02"
+      ],
+      "testFiles": [
+        "tests/military-remains.test.mjs",
+        "tests/world-web.test.mjs",
+        "tests/ammunition-web.test.mjs",
+        "tests/contract-casualty-presence.test.mjs"
       ]
     }
   ],
   "latestPublishedCheck": {
-    "source": "c42397154c346166a35c168bd2143acc669f7062",
-    "total": 782,
-    "passed": 782,
+    "source": "b063d878f39e9db2bf5af2c63b57f1ef39765046",
+    "total": 786,
+    "passed": 786,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-CONTRACT-CASUALTY"
+    "evidenceId": "E-MILITARY-REMAINS"
   }
 }

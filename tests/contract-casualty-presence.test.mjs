@@ -1,16 +1,8 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
-import {defaultContentPackage} from '../game/content-package.js';
+import {dispatchCampaign} from '../game/campaign.js';
 import {encodeSave,decodeSave} from '../game/save.js';
-import {syncBattleTime} from '../game/time.js';
-import {fight} from './opening-driver.mjs';
 import {order,saved} from './local-contract-fixture.mjs';
-let cached;
-function paidCasualty(){
- if(cached)return structuredClone(cached);
- let s=initialCampaign(8,defaultContentPackage());for(const id of [128,142,123,115,131,110])s=order(s,{type:'recruitCivic',id,term:'day'});s=order(s,{type:'wait',hours:6});s=order(s,{type:'attack',sector:'buenos_aires'});const request=s.pendingBattle,{battle}=fight(request);assert.equal(battle.status,'victory');const victim=battle.units.find(u=>u.side==='player'&&u.hp===0);assert.ok(victim);const pair=syncBattleTime(s,battle);assert.equal(pair.error,null);const restored=decodeSave(encodeSave(pair.campaign,pair.battle));s=order(restored.campaign,{type:'battleResult',battleId:request.id,outcome:'victory',sectorState:restored.battle,survivors:restored.battle.units.filter(u=>u.side==='player')});
- const id=Number(victim.id);assert.equal(s.operativeState[id].alive,false);assert.equal(s.contentPresence.people[`person-${id}`].recruited,true);cached={campaign:s,id};return structuredClone(cached);
-}
+import {paidCasualty} from './paid-casualty-fixture.mjs';
 
 test('an actual hired casualty remains dead and saveable when its contract expires after a fresh capital victory',()=>{
  const {campaign:before,id}=paidCasualty(),death=before.operativeState[id].deathMinute,corpse=structuredClone(before.sectorStates.buenos_aires.units.find(u=>Number(u.id)===id));let s=order(before,{type:'wait',hours:before.contracts[id].expiresAt-before.hour});assert.ok(!s.recruited.includes(id));assert.equal(s.contracts[id],undefined);s=saved({campaign:s}).campaign;assert.equal(s.contentPresence.people[`person-${id}`].recruited,false);assert.equal(s.contentPresence.people[`person-${id}`].alive,false);assert.equal(s.contentPresence.people[`person-${id}`].sector,null);assert.equal(s.operativeState[id].hp,0);assert.equal(s.operativeState[id].deathMinute,death);assert.deepEqual(s.sectorStates.buenos_aires.units.find(u=>Number(u.id)===id),corpse);assert.deepEqual(s.contentPresence.receipts,before.contentPresence.receipts);assert.deepEqual(s.contentPresence.events,before.contentPresence.events);
