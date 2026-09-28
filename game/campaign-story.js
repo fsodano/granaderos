@@ -25,7 +25,7 @@ export function validateCampaignStory(value,characters,quests){
  conditions(value.failureConditions,false);
 }
 export const campaignChapterIndex=s=>campaignStory(s)?Math.min(s.campaignProgress?.completed.length??0,campaignStory(s).chapters.length-1):s.phase;
-export const storyReferences=(story,type,id)=>[...(story?.chapters??[]).flatMap(c=>c.conditions),...(story?.failureConditions??[])].some(c=>c.type===type&&c[type]===id);
+export const storyReferences=(story,type,id)=>[...(story?.chapters??[]).flatMap(c=>c.conditions),...(story?.failureConditions??[])].some(c=>(c.type===type||type==='character'&&c.type==='supply')&&c[type]===id);
 export function initializeCampaignStory(s){
  if(!campaignStory(s))return;
  s.campaignProgress={version:1,completed:[],outcome:null};

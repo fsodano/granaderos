@@ -493,3 +493,13 @@ additional local parity requirements and identifies conflicting implementations.
 Legacy design documents remain available for provenance, with current-status
 banners. Every feature PR must update its requirement entries, design decisions
 when needed, verification evidence and the generated progress view.
+
+### Personal supply conditions
+
+Dialogue choices, authored chapters and campaign failure may require a named
+character to retain an inclusive supply quantity range. Current tactical stock
+overrides the deployed service snapshot; absent tactical state is unknown, not
+empty. The check does not grant or consume goods and does not imply life, presence
+or service. Existing six personal supplies share this rule. Arbitrary inventory
+and dialogue transfers remain separate work. See the
+[verification record](../verification/story-supply-conditions.md).

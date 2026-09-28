@@ -1,3 +1,4 @@
+import {CHARACTER_SUPPLY_LABELS} from './character-supplies.js';
 import {isUnconscious} from './actor-condition.js';
 import {rosterFor} from './recruitment.js';
 import {CAMPAIGN_PROJECT_LABELS,campaignProjectComplete} from './campaign-projects.js';
@@ -17,6 +18,7 @@ export function validateDialogueConditions(conditions,characters,quests){
  for(const c of conditions){
   need(object(c),'La condición del diálogo no es válida.');
   if(c.type==='character')need(exact(c,['type','character','state'])&&characters?.has(c.character)&&DIALOGUE_PERSON_STATES.includes(c.state),'La condición necesita un personaje y un estado válidos.');
+  else if(c.type==='supply')need(exact(c,['type','character','item','min','max'])&&characters?.has(c.character)&&Object.hasOwn(CHARACTER_SUPPLY_LABELS,c.item)&&integer(c.min,0,c.item==='medkits'?1000000:100000)&&(c.max===null||integer(c.max,c.min,c.item==='medkits'?1000000:100000)),'La condición necesita un personaje, un suministro y un intervalo válidos.');
   else if(c.type==='meeting')need(exact(c,['type','character'])&&characters?.has(c.character),'La condición del encuentro necesita un personaje válido.');
   else if(c.type==='quest')need(exact(c,['type','quest','status'])&&quests?.has(c.quest)&&CONTENT_QUEST_STATES.includes(c.status),'La condición necesita un encargo y un estado válidos.');
   else if(c.type==='project')need(exact(c,['type','project','completed'])&&Object.hasOwn(CAMPAIGN_PROJECT_LABELS,c.project)&&typeof c.completed==='boolean','La condición necesita un proyecto y un estado válidos.');
@@ -25,12 +27,16 @@ export function validateDialogueConditions(conditions,characters,quests){
   else need(false,'El tipo de condición del diálogo no está disponible.');
  }
 }
-function characterState(s,character,battle,state){
+function characterPhysical(s,character,battle){
  const id=operativeIdForCharacter(s.contentCampaign.package,character),record=s.operativeState[id],request=s.pendingBattle,deployed=[...(request?.squad??[]),...(request?.missionAllies??[])].some(u=>Number(u.id)===id);
  const scene=battle&&request&&battle.sectorId===request.sector&&(battle.sceneId??null)===(request.sceneId??null)&&(!battle.battleId||battle.battleId===request.id)?battle:null;
  const unit=deployed?scene?.units.find(u=>u.side==='player'&&Number(u.id)===id):null;
  const identifies=n=>n.operativeId!=null&&Number(n.operativeId)===id||n.contentId===character||id===57&&n.id==='yatasto-san-martin';
  const resident=!s.recruited.includes(id)?scene?.npcs?.find(n=>identifies(n)&&request.npcs?.some(expected=>expected.id===n.id&&identifies(expected))):null;
+ return {id,record,deployed,unit,resident};
+}
+function characterState(s,character,battle,state){
+ const {id,record,deployed,unit,resident}=characterPhysical(s,character,battle);
  const physical=unit??resident??record,alive=unit||resident?physical.hp>0:record?.alive===true;
  const physicalKnown=!deployed||Boolean(unit),conscious=physicalKnown&&alive&&!isUnconscious(physical),maxHp=(unit??resident)?.maxHp??(['wounded','healthy'].includes(state)?rosterFor(s).find(o=>o.id===id)?.maxHp:undefined);
  const stable=conscious&&(physical.bleeding??0)===0;
@@ -39,6 +45,13 @@ function characterState(s,character,battle,state){
 export function dialogueConditionsMet(s,conditions,battle=null){
  return (conditions??[]).every(c=>{
   if(c.type==='character')return characterState(s,c.character,battle,c.state)[c.state]===true;
+  if(c.type==='supply'){
+   const {record,deployed,unit,resident}=characterPhysical(s,c.character,battle);
+   // Deployed stock lives in the open scene; the service sheet is a stale snapshot.
+   if(deployed&&!unit)return false;
+   const value=(unit??resident?.civilianSupplies??record)?.[c.item];
+   return Number.isSafeInteger(value)&&value>=c.min&&(c.max===null||value<=c.max);
+  }
   if(c.type==='meeting')return atDialogueMeeting(s,c.character,battle);
   if(c.type==='quest')return contentQuestStatus(s,c.quest)===c.status;
   if(c.type==='project')return Object.hasOwn(CAMPAIGN_PROJECT_LABELS,c.project)&&campaignProjectComplete(s,c.project)===c.completed;
