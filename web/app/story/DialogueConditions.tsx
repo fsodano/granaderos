@@ -2,13 +2,13 @@
 import {isWorldCharacter} from '../../../game/content-character-ids.js';
 import {QUEST_STATE_LABELS} from '../../../game/content-quests.js';
 import {CAMPAIGN_SECTORS} from '../../../game/data.js';
-export default function DialogueConditions({conditions=[],characters,quests,onChange}:{conditions?:any[];characters:any[];quests:any[];onChange:(conditions:any[])=>void}){
+export default function DialogueConditions({conditions=[],characters,quests,onChange,campaign=false}:{campaign?:boolean;conditions?:any[];characters:any[];quests:any[];onChange:(conditions:any[])=>void}){
  const residents=characters.filter(isWorldCharacter);
  const update=(index:number,value:any)=>onChange(conditions.map((c,i)=>i===index?value:c));
  const initial=(type:string)=>type==='meeting'?{type,character:residents[0].id}:type==='quest'?{type,quest:quests[0].id,status:'active'}:type==='character'?{type,character:characters[0].id,state:'alive'}:type==='sector'?{type,sector:'retiro',owner:'patriot'}:{type,min:type==='day'?1:0,max:null};
- return <div><p>La opción aparece cuando se cumplen todas sus condiciones.</p>
+ return <div><p>{campaign?'Se evalúan todas las condiciones en el estado de la campaña.':'La opción aparece cuando se cumplen todas sus condiciones.'}</p>
   {conditions.map((c,i)=><fieldset key={i} aria-label={`Condición ${i+1}`}><legend>Condición {i+1}</legend>
-   <label>Tipo de condición<select value={c.type} onChange={e=>update(i,initial(e.target.value))}><option value="day">Día de campaña</option><option value="treasury">Pesos disponibles</option><option value="sector">Control de una localidad</option><option value="character">Estado de un personaje</option><option value="meeting" disabled={!residents.length}>Personaje en su encuentro</option><option value="quest" disabled={!quests.length}>Estado de un encargo</option></select></label>
+   <label>Tipo de condición<select value={c.type} onChange={e=>update(i,initial(e.target.value))}><option value="day">Día de campaña</option><option value="treasury">Pesos disponibles</option><option value="sector">Control de una localidad</option><option value="character">Estado de un personaje</option>{!campaign&&<option value="meeting" disabled={!residents.length}>Personaje en su encuentro</option>}<option value="quest" disabled={!quests.length}>Estado de un encargo</option></select></label>
    {c.type==='meeting'?<>
     <label>Personaje que debe llegar<select value={c.character} onChange={e=>update(i,{...c,character:e.target.value})}>{residents.map(person=><option key={person.id} value={person.id}>{person.name}</option>)}</select></label>
     <p>Debe estar consciente y sin peligro inmediato en el destino de su última llamada, dentro del sector abierto. Una orden pendiente o un tiempo transcurrido no bastan.</p>

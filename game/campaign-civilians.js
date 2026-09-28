@@ -1,3 +1,4 @@
+import {campaignStory} from './campaign-story.js';
 import {validateMovementScene} from './dialogue-movement.js';
 import {validWorldLocation} from './world-cells.js';
 import {OPERATIVES} from './data.js';
@@ -51,7 +52,7 @@ function applyDeath(s,n,record){
  }
  for(const q of NPC_QUESTS.filter(q=>q.npcId===n.id))if(s.quests[q.id]?.status!=='completed')
   s.quests[q.id]={status:'failed',offeredAt:s.quests[q.id]?.offeredAt??s.hour,completedAt:null,failedAt:s.hour};
- if((operativeId(n)===57||n.id==='yatasto-belgrano')&&!s.completed){
+ if(!campaignStory(s)&&(operativeId(n)===57||n.id==='yatasto-belgrano')&&!s.completed){
   s.defeated=true;
   if(record.sceneId==='yatasto')s.missions.yatasto={...(s.missions.yatasto??{}),stage:'failed',completed:false};
   s.log.push({hour:s.hour,text:`${n.name} ha muerto. La campaña no puede continuar sin este mando.`});
