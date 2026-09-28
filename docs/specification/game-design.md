@@ -228,6 +228,18 @@ repair, training and rescue consume real time and available resources. A route
 must adapt to actual survivors; it cannot revive an expected doctor or give free
 supplies to reach a scripted checkpoint.
 
+The current doctor/patient integration assigns serving personnel in the same
+safe controlled cell. Doctors need medicine 20, health 15, no bleeding, energy
+over 10 and a personal dressing. Each actual working hour spends one dressing,
+three energy and adds two fatigue. It stops bleeding first; later hours restore
+`2 + floor(medicine / 20)` health. A patient receives at most one treatment per
+hour. Assigned staff cannot march, deploy or instruct militia. Supplies can be
+purchased locally at a supplied workshop in quantities of 1–20 for ten pesos each.
+Assignments and quantities persist; service changes cannot grant new stock.
+These are declared tuning values, not a claim of exact JA2 numerical behavior.
+Advanced care, strategic bleeding, rest/sleep and physical kit custody retain
+separate acceptance requirements. See [care verification](../verification/strategic-medical-care.md).
+
 The editor supports these appearance rules:
 
 - A fixed cell.

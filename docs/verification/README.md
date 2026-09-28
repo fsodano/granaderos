@@ -49,6 +49,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Character starting supplies](character-starting-supplies.md)
 - [Saving authored cartridge allocations](authored-cartridge-save.md)
 - [Independent post campaign](independent-post-campaign.md)
+- [Strategic medical care](strategic-medical-care.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 
