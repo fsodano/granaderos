@@ -278,7 +278,8 @@
     {
       "id": "E-STRATEGIC-REST",
       "path": "docs/verification/strategic-rest.md",
-      "description": "Explicit rest and waiting patients recover energy and fatigue during safe campaign hours. Stable rest wounds recover once per six continuous hours; saves retain partial time and changes cannot grant health. Exhausted care, actual physician work/rest, remote squad travel, contract expiry, occupation, invalid saves and mounted controls pass. Automatic sleep, collapse, global energy capacity and advanced route parity remain open."
+      "description": "Explicit rest and waiting patients recover energy and fatigue during safe campaign hours. Stable rest wounds recover once per six continuous hours; saves retain partial time and changes cannot grant health. Exhausted care, actual physician work/rest, remote squad travel, contract expiry, occupation, invalid saves and mounted controls pass. Automatic sleep, collapse, global energy capacity and advanced route parity remain open.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36421115971/job/108923796823"
     },
     {
       "id": "E-CARE-RULES",
@@ -362,7 +363,7 @@
       "requirement": "Rest serving personnel and resume work through persistent strategic assignments",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Squad controls assign explicit rest, show energy/fatigue and stop deployment until service resumes. Safe hourly recovery preserves partial stable healing; patients recover breath while waiting. Assignment changes and contract expiry grant no extra interval.",
+      "published": "Squad controls assign explicit rest, show energy/fatigue and stop deployment until service resumes. Safe hourly recovery preserves partial stable healing; patients recover breath while waiting. Assignment changes and contract expiry grant no extra interval. Merged through PR #71 after exact-head CI.",
       "local": "Six simulation cases and the extended mounted medical screen cover progress, saves, stops and concurrent squad travel. The actual wounded-resident route rests its physician after paid and finite care without creating supplies.",
       "remaining": "",
       "acceptance": "Spend campaign time to recover an exhausted person, save mid-rest, resume care or deployment, and reject incompatible work while preserving finite supplies and health.",
@@ -378,7 +379,8 @@
         "tests/strategic-rest.test.mjs",
         "tests/medical-care.test.mjs",
         "tests/medical-care-render.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/71"
     },
     {
       "id": "WORKSHOP-01",
@@ -4335,13 +4337,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "d3e7d078653f9dd15c98926f57cec18430a25727",
-    "total": 821,
-    "passed": 821,
+    "source": "807843a3f29750dc227423275f4b28c1371c35de",
+    "total": 827,
+    "passed": 827,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-LOCAL-WORKSHOP"
+    "evidenceId": "E-STRATEGIC-REST"
   }
 }
