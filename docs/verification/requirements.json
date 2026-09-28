@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "9574d6f73b59bff42904fe70b3e7d8252de2ee84",
+  "baseline": "19457d4a200cdb4b74610952ea3a7db7f8d28199",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -140,7 +140,13 @@
     {
       "id": "E-AUTHORED-BLADES",
       "path": "docs/verification/authored-blades.md",
-      "description": "Edited blade damage, AP, reach, weight, price and images drive character equipment, actual melee/AI/interception, armory instances, tactical swaps, campaign return and saved references. Mounted editor, armory and active inventory pass. Older packages remain compatible. Does not establish complete inventory, generic troop blades, merchant rules or full campaign acceptance."
+      "description": "Edited blade damage, AP, reach, weight, price and images drive character equipment, actual melee/AI/interception, armory instances, tactical swaps, campaign return and saved references. Mounted editor, armory and active inventory pass. Older packages remain compatible. Does not establish complete inventory, generic troop blades, merchant rules or full campaign acceptance.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36378558820/job/108789304922"
+    },
+    {
+      "id": "E-FORCE-BLADES",
+      "path": "docs/verification/force-blades.md",
+      "description": "Primary and optional secondary blade selections apply to newly issued enemies and militia. Actual attacks, finite ammunition, AI hand changes, trained-militia return, primary corpse recovery and saved reentry pass. Mounted editor launches both selections; the inventory displays the authored bayonet reserve. Compact scenes do not prove full campaign or inventory parity."
     }
   ],
   "queue": [
@@ -233,6 +239,32 @@
         "tests/content-blades.test.mjs",
         "tests/content-blades-ui.test.mjs",
         "tests/story-editor.test.mjs",
+        "tests/ja2-hud.test.mjs"
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/47"
+    },
+    {
+      "id": "TROOP-01",
+      "group": "Published deliveries",
+      "requirement": "Configure independent primary and secondary blade loadouts for enemy roles and militia ranks",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "New troops receive configured primary firearms or blades and optional authored secondary blades. Blade primaries receive no cartridges or priming. Existing troops retain gear and active hand. Enemy AI switches to authored secondaries at close range and back to available firearms at distance. Editor and saved references preserve both choices.",
+      "local": "Uses published generated forces, equipment and hand switching. Advanced inventory, fittings and unarmed integration remain separate.",
+      "remaining": "",
+      "acceptance": "Author both slots with undo, dependency protection and actual attack launch. Check primary-blade ammunition, AI hand-change costs and recovery from knockdown, trained militia return/reentry, primary corpse loot and retreat, older and secondary-only packages, malformed entries and displayed authored bayonet reserve.",
+      "evidence": [
+        "E-FORCE-BLADES"
+      ],
+      "parents": [
+        "ITEM-01",
+        "STORY-06"
+      ],
+      "testFiles": [
+        "tests/force-blades.test.mjs",
+        "tests/content-force-equipment.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/content-blades-ui.test.mjs",
         "tests/ja2-hud.test.mjs"
       ]
     },
@@ -1454,14 +1486,15 @@
       "requirement": "All 9 firearms and 5 melee weapons",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Nine firearms and five blade families match reference base values. Firearm and blade variants/images are authored and retained in character equipment, combat and saves.",
+      "published": "Nine firearms and five blade families match reference base values. Firearm and blade variants/images are authored and retained in character equipment, combat and saves. Enemy roles and militia ranks now support independent primary and secondary blade selections.",
       "local": "See local suite and preserved parity source; not equivalent to published integration.",
-      "remaining": "Author fittings/ammunition and generic troop blades; finish physical inventory, secondary corpse looting, wear and unarmed behavior.",
+      "remaining": "Author fittings/ammunition; finish physical inventory, secondary corpse looting, wear and unarmed behavior.",
       "acceptance": "XML values, inventory images, sounds and use in combat",
       "evidence": [
         "E-PUBLISHED",
         "E-CONFLICTS",
-        "E-AUTHORED-BLADES"
+        "E-AUTHORED-BLADES",
+        "E-FORCE-BLADES"
       ]
     },
     {
@@ -1688,14 +1721,15 @@
       "requirement": "Complete equipment and merchant authoring",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character loadouts, armory instances and returns retain definitions. Generic troop authoring currently selects firearms.",
+      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently.",
       "local": "Physical inventory, fittings and merchants are more complete locally but not generally authored.",
-      "remaining": "Add generic troop blades, artillery, ammunition, fittings, merchant stock, buyback and replenishment authoring; integrate civilian belongings and complete physical custody.",
+      "remaining": "Add artillery, ammunition, fittings, merchant stock, buyback and replenishment authoring; integrate civilian belongings and complete physical custody.",
       "acceptance": "Create each supported equipment type; buy/use/trade/reload without duplication or lost instance data.",
       "evidence": [
         "E-PUBLISHED",
         "E-PARITY",
-        "E-AUTHORED-BLADES"
+        "E-AUTHORED-BLADES",
+        "E-FORCE-BLADES"
       ]
     },
     {
@@ -3498,13 +3532,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "9574d6f73b59bff42904fe70b3e7d8252de2ee84",
-    "total": 698,
-    "passed": 698,
+    "source": "19457d4a200cdb4b74610952ea3a7db7f8d28199",
+    "total": 704,
+    "passed": 704,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-AUTHORED-BLADES"
+    "evidenceId": "E-FORCE-BLADES"
   }
 }

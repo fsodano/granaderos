@@ -28,6 +28,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Arrival-gated dialogue and quest effects](meeting-arrivals.md)
 - [Ending a local meeting](meeting-release.md)
 - [Authored melee weapons](authored-blades.md)
+- [Primary and secondary troop blade loadouts](force-blades.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 

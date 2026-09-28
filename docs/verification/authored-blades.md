@@ -31,8 +31,11 @@ authored definition exists. All 13 focused compatibility checks passed.
 The final full suite passed **698/698 tests**, with zero failures or skips
 (184986 ms). Types, production export (721 files, 631 asset references), all
 36 numerical baseline checks and the documentation audit passed. The register
-retains 185 requirements and 24 evidence records. Exact-head CI is required
-before merge.
+retains 185 requirements and 24 evidence records. Exact-head
+[CI](https://github.com/fsodano/granaderos/actions/runs/36378558820/job/108789304922)
+passed for `94c66acce231787a19e88ff53e523e9d0d74efc4`.
+[PR #47](https://github.com/fsodano/granaderos/pull/47) merged as
+`ade6c601f9ded982148acfdd3feb11e71b6f523a`.
 
 - `tests/content-blades.test.mjs`: edited AP/damage/reach in both slots, stable
   weight, family knockdown, actual enemy phase and bayonet interception, separate
@@ -49,10 +52,11 @@ before merge.
 
 ## Limits
 
-BLADE-01 is bounded; ITEM-01 and STORY-06 remain partial. NPC civilian inventory,
+BLADE-01 is bounded; ITEM-01 and STORY-06 remain partial. At this checkpoint, NPC civilian inventory,
 secondary corpse looting, generic troop blade assignments, blade wear, editable
 family techniques, attachments, ammunition, artillery and merchant stock rules are
-separate work. The shooting range still requires a firearm. Secondary authored
+separate work. [A later troop delivery](force-blades.md) adds primary and secondary
+blade selections for generated enemies and militia. The shooting range still requires a firearm. Secondary authored
 weight is counted; the older numeric secondary loadout retains its legacy weight
 accounting. The legacy fallback bayonet/unarmed model and full two-hand item parity
 are not closed by this delivery. No live-browser, full campaign, final ending or
