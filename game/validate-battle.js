@@ -1,4 +1,5 @@
 import {validateCivilianWounds} from './civilian-harm.js';
+import {validCivilianSupplies} from './civilian-supplies.js';
 import {isUnconscious,refreshMilitaryCondition} from './actor-condition.js';
 import {validCharacterAbilities} from './character-abilities.js';
 import {validateWeaponCarrier,weaponSpecification} from './weapon-definition.js';
@@ -48,6 +49,7 @@ if(s.civilianSeconds!==undefined)need(number(s.civilianSeconds,0,6)&&s.civilianS
 const npcIds=new Set();
 for(const n of s.npcs){
  validateCivilianWounds(n,s);
+ if(n.civilianSupplies!==undefined)need(validCivilianSupplies(n.civilianSupplies),'suministros civiles');
  need(coord(n)&&text(n.id)&&text(n.name)&&!ids.has(n.id)&&!npcIds.has(n.id),'personajes');npcIds.add(n.id);
  if(n.abilities!==undefined)need(validCharacterAbilities(n.abilities),'habilidades del personaje');
  if(n.stance!==undefined)need(['standing','crouched','prone'].includes(n.stance),'postura civil');

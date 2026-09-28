@@ -9,12 +9,19 @@ import {civilianMaxHp,civilianRestoredHp,seedCivilianHealth,migrateCivilianHealt
 import {civilianIncidents,validateCivilianWounds} from './civilian-harm.js';
 import {recordCityLoyalty} from './cities.js';
 import {NPC_QUESTS} from './quests.js';
+import {CIVILIAN_SUPPLY_FIELDS,civilianSuppliesFor,validCivilianSupplies} from './civilian-supplies.js';
 
 const need=(ok,message='El estado de los habitantes no coincide con la campaña.')=>{if(!ok)throw Error(message);};
 const fields=['civilianHealthVersion','maxHp','hp','energy','unconscious','civilianWoundVersion','bleeding','bandaged','bleedSource','civilianHarm','civilianFirstAid'];
 const physical=n=>Object.fromEntries(fields.filter(k=>n[k]!==undefined).map(k=>[k,structuredClone(n[k])]));
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 const operativeId=n=>n.id==='yatasto-san-martin'?57:n.operativeId;
+function supplies(s,n){
+ const id=operativeId(n),result=civilianSuppliesFor(s.operativeState[id]);
+ const prior=id===57?s.missionAllies?.san_lorenzo:null;
+ if(prior&&s.operativeState[57]?.missionSuppliesVersion!==1&&!s.civilianState?.people['person-57']){const carried=civilianSuppliesFor(prior);for(const k of CIVILIAN_SUPPLY_FIELDS)result[k]=Math.min(result[k],carried[k]);}
+ return result;
+}
 export const civilianKey=n=>operativeId(n)!==undefined?`person-${operativeId(n)}`:`npc-${n.id}`;
 function definition(s,n){
  const original=[...encounterDefinitions(s),...YATASTO_NPCS].find(v=>v.id===n.id);
@@ -33,10 +40,10 @@ function service(s,n){
 export function campaignCivilian(s,n){
  const record=s.civilianState?.people[civilianKey(n)],id=operativeId(n);
  const metadata={...n};for(const k of fields)delete metadata[k];
- if(record&&!record.inService&&!s.recruited.includes(id))return {...metadata,...structuredClone(record.health)};
+ if(record&&!record.inService&&!s.recruited.includes(id))return {...metadata,...structuredClone(record.health),civilianSupplies:supplies(s,n)};
  const seeded=seedCivilianHealth(metadata,service(s,n));
  if(record?.health.civilianHarm&&seeded.hp>0&&record.health.hp>0)seeded.civilianHarm=structuredClone(record.health.civilianHarm);
- return seeded;
+ return {...seeded,civilianSupplies:supplies(s,n)};
 }
 export function civilianDiedHere(s,n,sector,sceneId=null){
  const record=s.civilianState?.people[civilianKey(n)];
@@ -63,7 +70,10 @@ function remember(s,n,scene){
  const record={npcId:n.id,sector:scene.sectorId??scene.sector,sceneId:scene.sceneId??null,health:physical(n)};
  s.civilianState.people[key]=record;
  const id=operativeId(n);
- if(id!==undefined&&!s.recruited.includes(id))Object.assign(s.operativeState[id],{hp:Math.ceil(n.hp),alive:n.hp>0,energy:n.energy,bleeding:n.bleeding??0,bandaged:n.bandaged??0});
+ if(id!==undefined&&!s.recruited.includes(id)){
+  Object.assign(s.operativeState[id],{hp:Math.ceil(n.hp),alive:n.hp>0,energy:n.energy,bleeding:n.bleeding??0,bandaged:n.bandaged??0});
+  if(n.civilianSupplies!==undefined){need(validCivilianSupplies(n.civilianSupplies),'Los suministros del habitante no son válidos.');for(const k of CIVILIAN_SUPPLY_FIELDS)s.operativeState[id][k]=n.civilianSupplies[k];}
+ }
  if(n.hp===0&&before?.health.hp!==0)applyDeath(s,n,record);
 }
 function compareHistory(previous,n){
@@ -86,6 +96,8 @@ export function acknowledgeCivilians(s,snapshot){
   const prior=expected.find(v=>v.id===n.id);
   need(prior&&prior.operativeId===n.operativeId&&prior.contentId===n.contentId&&prior.presenceRevision===n.presenceRevision&&!s.recruited.includes(operativeId(n)));
   const previous=campaignCivilian(s,prior);compareHistory(previous,n);
+  n.civilianSupplies??=structuredClone(previous.civilianSupplies);
+  need(validCivilianSupplies(n.civilianSupplies)&&CIVILIAN_SUPPLY_FIELDS.every(k=>n.civilianSupplies[k]<=previous.civilianSupplies[k]),'Los suministros del habitante aumentaron sin una entrega.');
   for(const e of civilianIncidents(n).slice(civilianIncidents(previous).length))if(e.side!=='unknown'){
    const actor=snapshot.units.find(u=>String(u.id)===e.attackerId),source=previous.bleedSource;
    need(actor&&actor.side===e.side&&Boolean(actor.militia)===e.militia||e.kind==='death'&&source&&['attackerId','side','militia','intentional'].every(k=>source[k]===e[k]),'El responsable de la nueva herida no está en el sector.');
@@ -95,6 +107,7 @@ export function acknowledgeCivilians(s,snapshot){
  const commander=snapshot.units.find(u=>u.missionAlly&&Number(u.id)===57);
  if(commander&&request.missionAllies?.some(u=>u.id===57)){
   Object.assign(s.operativeState[57],{hp:Math.ceil(commander.hp),alive:commander.hp>0,energy:commander.energy,bleeding:commander.bleeding??0,bandaged:commander.bandaged??0});
+  const carried=civilianSuppliesFor(commander);for(const k of CIVILIAN_SUPPLY_FIELDS)s.operativeState[57][k]=carried[k];s.operativeState[57].missionSuppliesVersion=1;
   const record=s.civilianState.people['person-57'];if(record)record.inService=true;
   if(commander.hp===0)for(const scene of [...Object.values(s.sectorStates),...Object.values(s.sceneStates)])scene.npcs=(scene.npcs??[]).filter(n=>operativeId(n)!==57);
  }
@@ -102,7 +115,7 @@ export function acknowledgeCivilians(s,snapshot){
  // with the single identity, including the currently loaded request.
  for(const scene of [...Object.values(s.sectorStates),...Object.values(s.sceneStates),request])for(const n of scene.npcs??[]){
   const record=s.civilianState.people[civilianKey(n)];
-  if((record||operativeId(n)===57)&&!s.recruited.includes(operativeId(n))){const current=physical(campaignCivilian(s,n));if(!same(physical(n),current)){for(const k of fields)delete n[k];Object.assign(n,current);}}
+  if((record||operativeId(n)===57)&&!s.recruited.includes(operativeId(n))){const actor=campaignCivilian(s,n),current=physical(actor);if(!same(physical(n),current)){for(const k of fields)delete n[k];Object.assign(n,current);}n.civilianSupplies=actor.civilianSupplies;}
  }
  for(const scene of [...Object.values(s.sectorStates),...Object.values(s.sceneStates),request])scene.npcs=(scene.npcs??[]).filter(n=>n.hp>0||civilianDiedHere(s,n,scene.sectorId??scene.sector,scene.sceneId??null));
 }
@@ -118,7 +131,8 @@ export function validateCivilianScene(s,scene,{active=false}={}){
   definition(s,n);validateCivilianWounds(n,scene);
   const record=s.civilianState?.people[civilianKey(n)];
   need(!s.recruited.includes(operativeId(n)));
-  need(same(physical(n),physical(campaignCivilian(s,n))));
+  const expected=campaignCivilian(s,n);need(same(physical(n),physical(expected)));
+  need(validCivilianSupplies(n.civilianSupplies)&&CIVILIAN_SUPPLY_FIELDS.every(k=>n.civilianSupplies[k]===expected.civilianSupplies[k]),'Los suministros guardados del habitante no coinciden con su ficha.');
   if(n.hp===0)need(civilianDiedHere(s,n,scene.sectorId??scene.sector,scene.sceneId??null));
   if(record&&!record.inService)need(record.health.hp===n.hp);
  }
@@ -157,10 +171,14 @@ export function migrateCampaignCivilians(s){
  return true;
 }
 export function migrateActiveCivilians(s,battle,{legacy=false}={}){
+ for(const n of battle.npcs??[])if(n.civilianSupplies===undefined)n.civilianSupplies=supplies(s,n);
  for(const n of battle.npcs??[])if(n.civilianHealthVersion===undefined){
   migrateCivilianHealth(n,service(s,n));
   const expected=campaignCivilian(s,n);if(legacy)continue;need(n.hp===expected.hp,'La herida civil anterior no coincide con la campaña.');
   Object.assign(n,physical(expected));
  }
  if(legacy)acknowledgeCivilians(s,battle);
+}
+export function migrateCampaignCivilianSupplies(s){
+ for(const scene of [...Object.values(s.sectorStates),...Object.values(s.sceneStates),...(s.pendingBattle?[s.pendingBattle]:[])])for(const n of scene.npcs??[])if(n.civilianSupplies===undefined)n.civilianSupplies=supplies(s,n);
 }
