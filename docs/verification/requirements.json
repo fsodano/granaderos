@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-27",
-  "baseline": "22629a10c8dbc61fad50308447982d3b2b7b88ff",
+  "baseline": "94046adfa62c24d39fdae0483c6c0364cbd3da94",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -92,7 +92,13 @@
     {
       "id": "E-DIALOGUE-CONDITIONS",
       "path": "docs/verification/dialogue-conditions.md",
-      "description": "Authored choices require campaign day, pesos, locality control or character state. Actual time, purchases, civilian death, editor authoring and mounted game visibility pass; unavailable choices are rejected again by the campaign. Locality control and deployed casualties also use explicitly prepared save-admitted fixtures. Does not establish quest effects or full campaign acceptance."
+      "description": "Authored choices require campaign day, pesos, locality control or character state. Actual time, purchases, civilian death, editor authoring and mounted game visibility pass; unavailable choices are rejected again by the campaign. Locality control and deployed casualties also use explicitly prepared save-admitted fixtures. Does not establish quest effects or full campaign acceptance.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36369928510/job/108763904616"
+    },
+    {
+      "id": "E-DIALOGUE-PAYMENTS",
+      "path": "docs/verification/dialogue-payments.md",
+      "description": "One-time dialogue payments and rewards use actual local conversations, funds and persistent per-choice receipts. Mounted editor/game controls, loops, saves, service changes, separate identities and rejection checks pass. A prepared treasury ceiling covers overflow. Does not establish item rewards, quest state or complete campaign acceptance."
     }
   ],
   "queue": [
@@ -124,7 +130,7 @@
         "STORY-06",
         "STORY-08"
       ],
-      "action": "Extend authored dialogue with conditions, effects and quests; deliver scripted movement, rules, equipment/merchants and portable content one feature at a time."
+      "action": "Extend conditional dialogue and one-time treasury effects with quests and other effects; deliver scripted movement, rules, equipment/merchants and portable content one feature at a time."
     },
     {
       "order": 4,
@@ -140,6 +146,28 @@
     }
   ],
   "requirements": [
+    {
+      "id": "PAYMENT-01",
+      "group": "Published deliveries",
+      "requirement": "Author one-time dialogue payments and rewards with persistent receipts",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "A resident choice can charge or grant pesos once. The editor authors the operation; actual conversation controls show the amount, disable unaffordable choices and report the result. Campaign choices atomically persist the changed treasury, passage and receipt.",
+      "local": "Uses the accepted published conversation, treasury and save paths. No advanced economy reducer is imported.",
+      "remaining": "",
+      "acceptance": "Author, undo, copy and launch a paid choice. Pay or receive the exact amount once through loops, saves, local recruitment and dismissal; keep separate identities independent. Reject hidden, stale, unaffordable or malformed operations and inconsistent receipts without partial state changes. Show cost, reward, failure and consumed state in the mounted game.",
+      "evidence": [
+        "E-DIALOGUE-PAYMENTS"
+      ],
+      "parents": [
+        "STORY-03"
+      ],
+      "testFiles": [
+        "tests/dialogue-payments.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/webmcp-campaign.test.mjs"
+      ]
+    },
     {
       "id": "CONDITION-01",
       "group": "Published deliveries",
@@ -160,7 +188,8 @@
         "tests/dialogue-conditions.test.mjs",
         "tests/story-editor.test.mjs",
         "tests/webmcp-campaign.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/39"
     },
     {
       "id": "DIALOGUE-01",
@@ -1392,15 +1421,16 @@
       "requirement": "Branching dialogue, conditions, effects and quests",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "New world residents support authored branching text graphs, actual local choices and saved progress. Choices can require campaign day, pesos, named locality control and character life/service/presence. Event phrases and fixed historical conversations remain available.",
+      "published": "New world residents support authored branching text graphs, actual local choices and saved progress. Choices can require campaign day, pesos, named locality control and character life/service/presence. Event phrases and fixed historical conversations remain available. Authored choices can charge or reward pesos once, with saved receipts and visible terms.",
       "local": "No general authorable quest graph accepted.",
-      "remaining": "Add typed effects, quest state, role bindings and persistent effect receipts; extend authoring to historical roles without bypassing their campaign gates.",
+      "remaining": "Add quest state, item and other gameplay effects, role bindings and their persistent receipts; extend authoring to historical roles without bypassing their campaign gates.",
       "acceptance": "Author and finish alternate quest branches through normal controls, including failures and saves.",
       "evidence": [
         "E-CONFLICTS",
         "E-AUTHORED-RESIDENTS",
         "E-AUTHORED-DIALOGUES",
-        "E-DIALOGUE-CONDITIONS"
+        "E-DIALOGUE-CONDITIONS",
+        "E-DIALOGUE-PAYMENTS"
       ]
     },
     {
@@ -3247,13 +3277,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "22629a10c8dbc61fad50308447982d3b2b7b88ff",
-    "total": 626,
-    "passed": 626,
+    "source": "94046adfa62c24d39fdae0483c6c0364cbd3da94",
+    "total": 635,
+    "passed": 635,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-DIALOGUE-CONDITIONS"
+    "evidenceId": "E-DIALOGUE-PAYMENTS"
   }
 }

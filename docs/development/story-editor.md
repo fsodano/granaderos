@@ -46,7 +46,9 @@ Al jugar, acercate al habitante y elegí «Conversar». La partida conserva el p
 
 Deshacer, rehacer, duplicar, recuperar el borrador e importar/exportar conservan el diálogo. La copia de un personaje tiene su propio diálogo y progreso. Cada opción puede tener hasta seis condiciones. Todas deben cumplirse para mostrarla. Podés exigir un intervalo de días, pesos disponibles, el control patriota o realista de una localidad, o que un personaje esté vivo, muerto, incorporado o presente en el mundo. Un límite máximo vacío no tiene tope. El primer día es el día 1. «Presente en el mundo» significa que ya apareció, tiene una celda asignada y no está incorporado ni cautivo. El control se consulta sobre las localidades existentes; la selección de celdas de aparición conserva todo el mapa.
 
-El juego comprueba las condiciones al mostrar las opciones y al elegirlas. Una opción puede aparecer al pasar de día o después de la muerte de otro personaje. Las referencias a personajes impiden eliminarlos mientras una conversación los use. Estas condiciones todavía no entregan recompensas, crean encargos ni ordenan movimientos.
+El juego comprueba las condiciones al mostrar las opciones y al elegirlas. Una opción puede aparecer al pasar de día o después de la muerte de otro personaje. Las referencias a personajes impiden eliminarlos mientras una conversación los use. Las condiciones no cambian el estado por sí solas. Para cambiar el dinero disponible, agregá una operación en «Pago o recompensa».
+
+Activá «Cambiar los pesos al elegir esta opción», elegí si el jugador paga o recibe y escribí el importe. El juego muestra esas condiciones antes de elegir. Cada operación se aplica una sola vez por personaje y opción. Guardar, volver a la conversación o incorporar y luego despedir al personaje no la repite. Si faltan fondos, la opción queda desactivada y explica cuánto falta. Las copias de personajes tienen registros independientes. Estas operaciones todavía no entregan objetos, crean encargos ni ordenan movimientos.
 
 ## Habilidades de combate
 
@@ -62,7 +64,7 @@ Cada ficha puede elegir un retrato de la biblioteca, conservar una imagen import
 
 El carácter describe al personaje en su hoja de servicio, sin modificar su moral. Las siete frases corresponden a incorporación, detección de enemigos, sector asegurado, herida, agotamiento, muerte y fin de campaña. Cada frase admite hasta 800 caracteres; una frase vacía mantiene el silencio. El contratado pronuncia su incorporación al llegar, una sola vez. Las frases tácticas se disparan por los eventos reales y el cierre de campaña usa las frases de los compañeros vivos.
 
-Estas opciones participan en la recuperación del borrador, deshacer/rehacer, duplicación, exportación, inicio y guardado. Los paquetes anteriores sin estos campos conservan sus perfiles. Las partidas rechazan voces o apariencias que difieren de la definición incluida. Los habitantes nuevos tienen un saludo editable. Las ramificaciones de texto para habitantes nuevos se editan desde su ficha. Las condiciones de las opciones ya consultan el estado de campaña. Los efectos, encargos y finales alternativos todavía necesitan sus propios controles y reglas.
+Estas opciones participan en la recuperación del borrador, deshacer/rehacer, duplicación, exportación, inicio y guardado. Los paquetes anteriores sin estos campos conservan sus perfiles. Las partidas rechazan voces o apariencias que difieren de la definición incluida. Los habitantes nuevos tienen un saludo editable. Las ramificaciones de texto para habitantes nuevos se editan desde su ficha. Las condiciones de las opciones ya consultan el estado de campaña. Los pagos y recompensas en pesos ya se aplican una vez con un registro guardado. Los objetos, encargos y finales alternativos todavía necesitan sus propios controles y reglas.
 
 La prueba de incorporación también detectó que Cabral, Dorrego y Paroissien no tenían una condición regional adicional y se rechazaban después de cumplir el encuentro. Ahora pueden incorporarse al cumplir su conversación local, liderazgo, control y demás condiciones del encuentro. La contratación remota sigue bloqueada para ellos.
 
@@ -142,7 +144,7 @@ Esta opción activa habitantes nuevos. Los mandos históricos conservan sus func
 
 El mapa permite marcar cualquier celda con una X desde la ficha del personaje, incluido terreno fuera de las localidades. Se pueden simular ubicaciones con una semilla. Las ubicaciones fijas, el sorteo inicial y los cambios diarios ya se aplican a las nuevas campañas. Eliminar mandos históricos y usar opciones de historia no compatibles todavía bloquea el inicio de campaña.
 
-Los mandos históricos conservan su servicio permanente, requisitos de reclutamiento y funciones de campaña. Sus habilidades de combate ya son configurables. Quedan pendientes su extracción, las transferencias de funciones a sucesores, los efectos del diálogo, los encargos editables, las escenas dirigidas y la composición completa de campaña. Esta entrega no completa todo el editor de historia.
+Los mandos históricos conservan su servicio permanente, requisitos de reclutamiento y funciones de campaña. Sus habilidades de combate ya son configurables. Quedan pendientes su extracción, las transferencias de funciones a sucesores, los efectos sobre objetos y funciones de campaña, los encargos editables, las escenas dirigidas y la composición completa de campaña. Esta entrega no completa todo el editor de historia.
 
 ## Validación
 
@@ -180,3 +182,5 @@ Los mandos históricos conservan su servicio permanente, requisitos de reclutami
 `tests/content-dialogue.test.mjs` comprueba ramas, vueltas, finales, continuidad, condiciones físicas de conversación y guardados alterados. El editor montado crea los pasajes, protege referencias, deshace, duplica e inicia una campaña donde se recorre una rama. La página del juego montada usa las opciones, rechaza un segundo clic atrasado y guarda el resultado. La [verificación de diálogos](../verification/authored-dialogues.md) registra su alcance.
 
 `tests/dialogue-conditions.test.mjs` comprueba intervalos, compras reales, muerte de habitantes, estados de personajes, opciones no disponibles y condiciones inválidas. El editor montado configura y conserva estas reglas; la conversación montada muestra una opción al cruzar medianoche. La [verificación de condiciones](../verification/dialogue-conditions.md) separa acciones reales de los estados preparados.
+
+`tests/dialogue-payments.test.mjs` comprueba pagos y recompensas reales, guardados, ciclos, cambios de servicio, identidades independientes, rechazos y registros alterados. El editor montado configura y ejecuta un pago; el juego montado muestra el importe, bloquea fondos insuficientes y conserva una sola recompensa tras un doble clic. La [verificación de pagos](../verification/dialogue-payments.md) registra sus límites.
