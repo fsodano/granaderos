@@ -1,7 +1,8 @@
+import {careRules} from './campaign-care-rules.js';
 import {operativeLocation} from './squads.js';
 import {worldOwner} from './world-cells.js';
 import {hasWorkshop} from './campaign-headquarters.js';
-import {refillCost,firearmRepairCost} from './equipment.js';
+import {refillCost,firearmRepairCost,needsResupply} from './equipment.js';
 
 export function workshopAccessReason(s,op,supplied){
  if(s.defeated)return 'La campaña ha terminado.';
@@ -14,7 +15,8 @@ export function workshopAccessReason(s,op,supplied){
 
 export function workshopServiceQuote(s,op,service,supplied){
  if(!['resupply','repairWeapon'].includes(service))return {available:false,cost:0,reason:'El servicio de taller no existe.'};
- const r=s.operativeState[op?.id],cost=r?(service==='resupply'?refillCost(r):firearmRepairCost(r)):0;
- const reason=workshopAccessReason(s,op,supplied)||(cost===0?(service==='resupply'?'Las provisiones ya están completas.':'El arma ya está en perfecto estado.'):s.resources.treasury<cost?'No hay suficientes pesos.':'');
+ const r=s.operativeState[op?.id],cost=r?(service==='resupply'?refillCost(r,careRules(s).dressingPrice):firearmRepairCost(r)):0;
+ const complete=r&&(service==='resupply'?!needsResupply(r):cost===0);
+ const reason=workshopAccessReason(s,op,supplied)||(complete?(service==='resupply'?'Las provisiones ya están completas.':'El arma ya está en perfecto estado.'):s.resources.treasury<cost?'No hay suficientes pesos.':'');
  return {available:!reason,cost,reason};
 }
