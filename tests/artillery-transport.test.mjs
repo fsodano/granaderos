@@ -71,3 +71,12 @@ test('prepared route geography and authored crew sizes constrain dispatch withou
  for(const [to,mode] of [['uspallata','carts'],['jujuy','carts'],['mendoza','flotilla']])assert.match(artilleryTransportQuote(s,'san_nicolas',gun.id,to,mode).reason,/No hay una ruta/);
  s.contentCampaign.package.artilleryProfiles=structuredClone(artilleryProfilesFor(s));s.contentCampaign.package.artilleryProfiles.swivel.crew=6;const quote=artilleryTransportQuote(s,'san_nicolas',gun.id,'buenos_aires','carts');assert.equal(quote.available,false);assert.match(quote.reason,/6 combatientes/);const result=dispatchCampaign(s,{type:'transportArtillery',sector:'san_nicolas',artilleryId:gun.id,to:'buenos_aires',mode:'carts'});assert.match(result.lastError,/6 combatientes/);assert.deepEqual(result.sectorStates.san_nicolas.artillery,[gun]);assert.equal(result.artilleryTransfers,undefined);
 });
+
+
+test('saved transit and depot pieces reject invalid facing before they can poison a later deployment',()=>{
+ const transit=send(fieldGun()),arrived=order(transit,{type:'wait',hours:18});
+ for(const state of [transit,arrived])for(const facing of ['north',null,7,-7]){
+  const wire=JSON.parse(encodeSave(state)),gun=wire.campaign.artilleryTransfers[0]?.gun??wire.campaign.artilleryDepots.buenos_aires[0];gun.facing=facing;assert.throws(()=>decodeSave(JSON.stringify(wire)),/artillería/);
+ }
+ for(const state of [transit,arrived]){const wire=JSON.parse(encodeSave(state)),gun=wire.campaign.artilleryTransfers[0]?.gun??wire.campaign.artilleryDepots.buenos_aires[0];delete gun.facing;assert.ok(decodeSave(JSON.stringify(wire)));}
+});

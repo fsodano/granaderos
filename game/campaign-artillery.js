@@ -6,7 +6,7 @@ const need=(ok,message)=>{if(!ok)throw Error(message);};
 const site=r=>r.sceneId??r.sector;
 const parent=id=>id==='san_lorenzo'?'san_nicolas':id;
 const previous=(s,r)=>expandCellScene(r.sceneId?s.sceneStates?.[r.sceneId]:s.sectorStates?.[r.sector]);
-const validGun=g=>g&&typeof g.id==='string'&&g.id.length>0&&g.id.length<=160&&Object.hasOwn(ARTILLERY,g.type)&&['player','enemy'].includes(g.side)&&typeof g.loaded==='boolean'&&Number.isInteger(g.ammo)&&g.ammo>=0&&g.ammo<=1000000;
+const validGun=g=>g&&typeof g.id==='string'&&g.id.length>0&&g.id.length<=160&&Object.hasOwn(ARTILLERY,g.type)&&['player','enemy'].includes(g.side)&&typeof g.loaded==='boolean'&&Number.isInteger(g.ammo)&&g.ammo>=0&&g.ammo<=1000000&&(g.facing===undefined||Number.isFinite(g.facing)&&Math.abs(g.facing)<=Math.PI*2);
 const list=values=>{need(Array.isArray(values)&&values.length<=2000&&new Set(values.map(g=>g?.id)).size===values.length&&values.every(validGun),'Las piezas de artillería son inválidas.');for(const g of values)validateReloadProgress(g.reloadProgress,1,Number(g.loaded));return values;};
 export {list as validateArtilleryInventory};
 const nextId=s=>`piece-${s.nextArtilleryId++}`;
