@@ -6,7 +6,9 @@ all thirteen keys and exactly those two values per locality. Unknown cells,
 partial maps and unsupported owner types are rejected. Missing maps retain the
 original Retiro-only start and original loyalty values.
 
-Retiro remains the headquarters and supply origin and must start patriot. The
+At this checkpoint, Retiro remains the headquarters and supply origin and must
+start patriot. The later [headquarters delivery](campaign-headquarters.md) adds
+an explicit choice with corresponding supply, workshop and loss rules. The
 editor explains this constraint. Districts share their locality's control; open
 land stays neutral. Character appearance cells remain independent of ownership.
 
@@ -27,7 +29,11 @@ Runtime source: `275d98d60df50d715ed906dc7058f596c62aec87`.
 The full suite passed **717/717 tests**, with no failures or skips (186122 ms).
 Types, production export (721 files, 631 asset references), all 36 numerical
 baseline checks and the documentation audit passed. The register retains
-188 requirements and 27 evidence records. Exact-head CI is required before merge.
+188 requirements and 27 evidence records.
+[PR #50](https://github.com/fsodano/granaderos/pull/50) was accepted at
+`d8806e9fde2f2a09703c6837e7af6c180c2a331c` after
+[exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36381500171/job/108798018240)
+passed; merge commit `cf60d95390798fa640c2dd62e16701e38f25b62b`.
 
 - `tests/starting-territory.test.mjs`: complete schema, limits, invalid maps,
   ordinary/older defaults, no free results or forces, actual hire arrival in a
@@ -49,8 +55,8 @@ baseline checks and the documentation audit passed. The register retains
 
 ## Limits
 
-TERRITORY-01 is bounded; STORY-05 and STORY-07 remain partial. Other headquarters,
-independent rural ownership, additional factions, authored initial forces and
+TERRITORY-01 is bounded; STORY-05 and STORY-07 remain partial. Other headquarters were still missing at this checkpoint. Independent rural
+ownership, additional factions, authored initial forces and
 fortifications, campaign role identities, chapters and endings remain open.
 Arbitrary starting choices are not certified as balanced or completable. No second
 complete campaign, live-browser or sustained loaded-battle acceptance is claimed.

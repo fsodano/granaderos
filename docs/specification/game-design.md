@@ -51,11 +51,15 @@ the editor is a release requirement.
 The stock campaign and default story-package launch start with Retiro as the only
 controlled sector. Retiro is the supply origin and headquarters. Buenos Aires and
 Ensenada begin occupied. Existing saves keep their territory. Authored campaigns
-can explicitly set each of the thirteen localities' starting owner and loyalty (0–100). Retiro must still
-start patriot because it remains the headquarters and supply origin. Districts
-share locality control; open land remains neutral. These initial choices grant no
-capture reward, forces or completed missions and never reset later saved control.
-Authoring another headquarters and its role gates remains required.
+can explicitly set each of the thirteen localities' starting owner and loyalty
+(0–100), and select a headquarters from the eleven compatible non-pass localities.
+The selected headquarters must start patriot. It determines the empty squad's
+initial location, supply origin, formation presentation, local armory/workshop
+access and loss condition. Scheduled raids retain the stock headquarters protection.
+Districts share locality control; open land remains neutral. Initial choices grant
+no capture reward, forces or completed missions and never reset later saved control.
+Historical contacts, import port, later chapters and endings retain their own role
+rules until those are authored separately.
 
 ## Player flow
 

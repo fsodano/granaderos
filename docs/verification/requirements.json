@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "275d98d60df50d715ed906dc7058f596c62aec87",
+  "baseline": "317de6c2481611f3b534129dd59455e49688e5d9",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -158,7 +158,13 @@
     {
       "id": "E-STARTING-TERRITORY",
       "path": "docs/verification/starting-territory.md",
-      "description": "Authored starting control and loyalty apply once to the thirteen localities. Actual hire destinations, arrival, supply connectivity, daily income, militia eligibility, travel, exploration entry and hostile attack use the resulting state. Mounted editor and rendered desk/map show the choices. Later territorial changes use an explicitly prepared saved-state fixture; no complete campaign or alternate headquarters is accepted."
+      "description": "Authored starting control and loyalty apply once to the thirteen localities. Actual hire destinations, arrival, supply connectivity, daily income, militia eligibility, travel, exploration entry and hostile attack use the resulting state. Mounted editor and rendered desk/map show the choices. Later territorial changes use an explicitly prepared saved-state fixture; no complete campaign or alternate headquarters is accepted.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36381500171/job/108798018240"
+    },
+    {
+      "id": "E-HEADQUARTERS",
+      "path": "docs/verification/campaign-headquarters.md",
+      "description": "Eleven plausible headquarters choices drive actual starting location, supply, creation, purchase, workshop access, hiring, travel, peaceful entry, frontier attack and saved continuation. Existing scheduled-raid protection follows the selected base; a prepared occupation verifies defeat. Mounted editor and rendered desk/journal show the selection. Historical roles, import port, later chapters and endings remain fixed."
     }
   ],
   "queue": [
@@ -311,8 +317,8 @@
       "requirement": "Author initial locality control and loyalty without resetting later campaign territory",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "The Rules form sets patriot/royalist control and 0\u2013100 loyalty for all thirteen localities. Retiro remains the required headquarters. Actual campaign systems use the chosen state; startup grants no victory, reward or militia. The desk describes the initial map and the strategic map shows current ownership. Saves retain later changes.",
-      "local": "Open land stays neutral and districts share locality control. Alternate headquarters and campaign role composition remain separate.",
+      "published": "The Rules form sets patriot/royalist control and 0\u2013100 loyalty for all thirteen localities. The selected headquarters must start controlled (originally Retiro; see HQ-01). Actual campaign systems use the chosen state; startup grants no victory, reward or militia. The desk describes the initial map and the strategic map shows current ownership. Saves retain later changes.",
+      "local": "Open land stays neutral and districts share locality control. Broader campaign role composition remains separate.",
       "remaining": "",
       "acceptance": "Validate complete territory maps and original/older defaults; author, undo and restore through editor controls; launch real arrivals, travel, sector entry, neighbor assault and daily income; check supply and militia requirements; preserve later saved ownership and reject altered pinned content; render initial/current territory accurately.",
       "evidence": [
@@ -327,6 +333,31 @@
         "tests/starting-territory-render.test.mjs",
         "tests/story-editor.test.mjs",
         "tests/retiro-start-render.test.mjs"
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/50"
+    },
+    {
+      "id": "HQ-01",
+      "group": "Published deliveries",
+      "requirement": "Choose a campaign headquarters with real starting, supply, workshop and defeat behavior",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "The selected compatible locality starts controlled, holds the empty squad and anchors supply. Local purchases, creation, repair and replenishment use it. Arrival remains subject to real reception rules. Scheduled-raid protection and headquarters-loss defeat follow the selected base. Formation UI, editor history and immutable saves preserve the choice.",
+      "local": "Uses published headquarters mechanics. Historical contacts, imports, later chapters and ending roles are not relocated.",
+      "remaining": "",
+      "acceptance": "Validate all eleven supported locations and older defaults, reject occupied/invalid bases, start a free officer or paid hire at an alternative base, exercise local purchases and workshop costs, real travel, peaceful entry and frontier attack, retain current travel on save, verify raid protection and defeat after prepared occupation, reject altered pinned content, author with undo/default restoration and render the correct formation chapter.",
+      "evidence": [
+        "E-HEADQUARTERS"
+      ],
+      "parents": [
+        "STORY-05",
+        "STORY-07"
+      ],
+      "testFiles": [
+        "tests/campaign-headquarters.test.mjs",
+        "tests/campaign-headquarters-render.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/retiro-start.test.mjs"
       ]
     },
     {
@@ -1767,15 +1798,16 @@
       "requirement": "Configurable game rules and campaign roles",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with Retiro retained as headquarters.",
+      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss.",
       "local": "Larger systems still embed many rules and historical identity gates.",
-      "remaining": "Extract remaining care, combat, economy, progression, opposition and role rules, including alternate headquarters and campaign identity gates.",
+      "remaining": "Extract remaining care, combat, economy, progression, opposition and historical campaign identity rules.",
       "acceptance": "Change supported rules and replace role identities through the editor, then run/save the resulting campaign.",
       "evidence": [
         "E-PUBLISHED",
         "E-CONFLICTS",
         "E-SUPPLY-RULES",
-        "E-STARTING-TERRITORY"
+        "E-STARTING-TERRITORY",
+        "E-HEADQUARTERS"
       ]
     },
     {
@@ -1802,14 +1834,15 @@
       "requirement": "Campaign composition and an independent second campaign",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Initial funds, cartridge allotments and locality control/loyalty are configurable. Historical headquarters, chapter and ending logic still define the campaign.",
+      "published": "Initial funds, cartridge allotments, locality control/loyalty and headquarters are configurable. Historical contacts, import port, later chapter and ending logic still define the campaign.",
       "local": "No second complete campaign accepted.",
-      "remaining": "Author alternate headquarters, chapters, roles, objectives and endings; finish an independent second campaign.",
+      "remaining": "Author chapters, role identities, objectives and endings; finish an independent second campaign.",
       "acceptance": "Build and finish a distinct campaign with no engine source changes.",
       "evidence": [
         "E-CONFLICTS",
         "E-SUPPLY-RULES",
-        "E-STARTING-TERRITORY"
+        "E-STARTING-TERRITORY",
+        "E-HEADQUARTERS"
       ]
     },
     {
@@ -3598,13 +3631,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "275d98d60df50d715ed906dc7058f596c62aec87",
-    "total": 717,
-    "passed": 717,
+    "source": "317de6c2481611f3b534129dd59455e49688e5d9",
+    "total": 725,
+    "passed": 725,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-STARTING-TERRITORY"
+    "evidenceId": "E-HEADQUARTERS"
   }
 }
