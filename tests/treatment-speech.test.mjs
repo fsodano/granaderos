@@ -50,7 +50,10 @@ test('only accepted care for another conscious patient emits the optional line; 
 });
 
 test('a resident that wakes in the following ambient phase does not retroactively speak for care received while exhausted',()=>{
+ for(const pendingSeconds of [0,5]){
  const b=createBattle([{id:'doc',name:'Sanitario',x:1,y:1,medical:80,medkits:2}],{width:8,height:8,enemies:[],exploration:true,npcs:[{id:'civil',name:'Vecina',x:2,y:1,civilianHealthVersion:1,maxHp:100,hp:14,energy:0,unconscious:true,civilianWoundVersion:1,bleeding:0,bandaged:0,storyProfile:{speech:{treated:phrase}}}]});
- const n=actBattle(b,{type:'heal',unitId:'doc',targetId:'civil'});assert.equal(n.lastError,null);assert.equal(n.npcs[0].hp,15);assert.equal(n.units[0].medkits,1);assert.equal(n.npcs[0].energy,10);assert.equal(n.npcs[0].unconscious,false);assert.equal(count(n),0);assert.ok(validateBattleSnapshot(n));
- const later=actBattle(validateBattleSnapshot(n),{type:'ambient'});assert.equal(later.npcs[0].hp,15);assert.equal(later.npcs[0].energy,20);assert.equal(count(later),0);
+ b.civilianSeconds=pendingSeconds;
+ const n=actBattle(b,{type:'heal',unitId:'doc',targetId:'civil'});assert.equal(n.lastError,null);assert.equal(n.npcs[0].hp,15);assert.equal(n.units[0].medkits,1);assert.equal(n.npcs[0].energy,pendingSeconds?10:0);assert.equal(n.npcs[0].unconscious,!pendingSeconds);assert.equal(count(n),0);assert.ok(validateBattleSnapshot(n));
+ const later=actBattle(validateBattleSnapshot(n),{type:'ambient'});assert.equal(later.npcs[0].hp,15);assert.equal(later.npcs[0].energy,pendingSeconds?20:10);assert.equal(later.npcs[0].unconscious,false);assert.equal(count(later),0);
+ }
 });
