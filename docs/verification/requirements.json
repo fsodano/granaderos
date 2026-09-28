@@ -290,7 +290,8 @@
     {
       "id": "E-CIVILIAN-LOSS-LOG",
       "path": "docs/verification/civilian-loss-log.md",
-      "description": "A full diary reproduces an 81-entry invalid save on essential civilian death. The fix preserves the newest 80 entries, active save/load, once-only death acknowledgement, departure and permanent defeat. Prepared chapter/diary; real fatal orders. 834 passing tests, types, build and baseline checks."
+      "description": "A full diary reproduces an 81-entry invalid save on essential civilian death. The fix preserves the newest 80 entries, active save/load, once-only death acknowledgement, departure and permanent defeat. Prepared chapter/diary; real fatal orders. 834 passing tests, types, build and baseline checks.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36424710104/job/108935711518"
     },
     {
       "id": "E-FIRST-AID",
@@ -375,7 +376,7 @@
       "requirement": "Save essential civilian deaths with a full campaign journal",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Essential civilian death notices retain the newest 80 journal entries without losing the fatal state. Actual active saves, repeated acknowledgement, departure and saved defeat remain valid.",
+      "published": "Essential civilian death notices retain the newest 80 journal entries without losing the fatal state. Actual active saves, repeated acknowledgement, departure and saved defeat remain valid. Merged through PR #73 after exact-head CI.",
       "local": "The new regression first reproduced 81 entries. It prepares a chapter and full diary, then uses actual paid recruitment, travel, approach and fatal orders; the existing civilian and historical loss routes remain covered.",
       "remaining": "",
       "acceptance": "Fill the journal, cause an actual essential civilian death, save/reload the active scene, settle it and preserve the death, defeat and bounded once-only notice.",
@@ -390,7 +391,8 @@
         "tests/civilian-loss-log.test.mjs",
         "tests/civilian-state.test.mjs",
         "tests/historical-loss.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/73"
     },
     {
       "id": "CARERULES-01",
@@ -4406,13 +4408,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "8274f58b959b6408bfdc8a97540421836f78e204",
-    "total": 833,
-    "passed": 833,
+    "source": "f203f74dc49b8f0f9ea6f212e91e7b31450240a8",
+    "total": 834,
+    "passed": 834,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-CARE-RULES"
+    "evidenceId": "E-CIVILIAN-LOSS-LOG"
   }
 }
