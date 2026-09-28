@@ -53,8 +53,9 @@ RULES-01 closes only this supply subset. STORY-05 and STORY-06 remain partial.
 Mission allies retain their own supplies. Priming powder, flints, ammunition
 types, cartridge prices, care, progression, merchant stocks, starting ownership
 and campaign roles still needed authoring at this checkpoint. A later delivery
-adds [starting control and loyalty](starting-territory.md), while alternate
-headquarters and historical role rules remain open. A zero-money campaign may
+adds [starting control and loyalty](starting-territory.md), followed by
+[headquarters selection](campaign-headquarters.md). Other historical role rules
+remain open. A zero-money campaign may
 require a free personal character and zero-cost deployment settings; authoring does not promise
 that arbitrary settings produce a balanced or completable scenario. No complete
 campaign, live-browser or sustained loaded-battle performance acceptance is claimed.
