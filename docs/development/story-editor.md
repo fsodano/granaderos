@@ -22,6 +22,14 @@ La ficha permite elegir especialidades aplicadas por las reglas actuales, equita
 
 Todos estos candidatos se incorporan por contrato desde el boletín. Una paga de cero es un contrato gratuito con el plazo elegido, no servicio permanente. El avance histórico protege a sus mandos. Con capítulos propios, podés quitarlos o copiarlos como habitantes independientes, sin transferir sus funciones históricas. La ficha permite elegir el arma principal y el arma blanca inicial. Un paquete anterior sin esta selección conserva el equipo original del personaje.
 
+## Suministros iniciales de cada personaje
+
+En la ficha, **Suministros iniciales** permite configurar cargas de cebo, pedernales, raciones, antorchas, vendas y boleadoras. Cada cantidad debe ser un entero de 0 a 1000. Cero significa que no lleva ese suministro. **Restablecer suministros originales** recupera 50 cargas, 4 pedernales, 2 raciones, 2 antorchas, 2 vendas y 1 juego de boleadoras.
+
+La campaña asigna esas cantidades una sola vez. El personaje las lleva al incorporarse, tanto por llegada contratada como por reclutamiento en el lugar. Guardar, renovar, despedir y volver a contratar conservan lo que quede; no entregan otro lote. Duplicar copia las cantidades con una identidad distinta. Los paquetes anteriores conservan los valores originales. Deshacer, rehacer, importar y exportar incluyen esta configuración.
+
+La munición inicial del despliegue se configura en **Reglas**. La reposición pagada del taller conserva sus cantidades y precios publicados; no usa la dotación inicial como objetivo. Esta opción todavía no crea un inventario que se pueda saquear de un habitante civil. Tampoco cambia el equipo del granadero creado por el jugador.
+
 ## Crear habitantes del mundo
 
 «Crear habitante» agrega una identidad propia. Puede tener retrato, apariencia, atributos, saludo, habilidades y una ubicación fija, sorteada al inicio o elegida cada día entre las celdas marcadas. No ocupa un puesto histórico ni aparece en el boletín. Sin una aparición configurada queda fuera del mapa.

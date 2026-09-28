@@ -46,6 +46,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Fresh Cuyo preparation and late commander recruitment](fresh-cuyo-preparation.md)
 - [Explicit loss of indispensable historical actors](historical-campaign-loss.md)
 - [Fresh northern continuation through Yatasto](fresh-northern-opening.md)
+- [Character starting supplies](character-starting-supplies.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 
