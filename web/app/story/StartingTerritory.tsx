@@ -11,7 +11,7 @@ export default function StartingTerritory({draft,onChange}:{draft:any;onChange:(
   <p>Elegí quién controla cada localidad y su lealtad inicial. Sus barrios comparten el control; el terreno abierto conserva su estado neutral. Las apariciones de personajes se eligen por celda en su ficha.</p>
   <label>Cuartel general<select value={headquarters} onChange={e=>chooseHeadquarters(e.target.value)}>{HEADQUARTERS_OPTIONS.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}</select></label>
   <p>La primera escuadra comienza en el cuartel. Allí nace el abastecimiento y funciona una sala de armas con taller. Debe comenzar bajo control patriota; perderlo termina la campaña. Al elegirlo, esa localidad pasa a control patriota. Revisá también sus puntos de recepción en Llegadas.</p>
-  <p>Los capítulos posteriores, los contactos históricos y el puerto de importaciones conservan sus funciones actuales.</p>
+  <p>Los capítulos posteriores y los contactos históricos conservan sus funciones actuales. El puerto de importaciones se configura a continuación.</p>
   <p>Estas opciones se aplican una sola vez. El juego conserva las conquistas, pérdidas y cambios de lealtad al guardar. El control inicial no concede recompensas de combate ni completa misiones.</p>
   <div className="table-wrap"><table><thead><tr><th>Localidad</th><th>Control inicial</th><th>Lealtad inicial (%)</th></tr></thead><tbody>{CAMPAIGN_SECTORS.map(s=><tr key={s.id}>
    <th scope="row">{s.name}</th>

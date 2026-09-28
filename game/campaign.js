@@ -165,7 +165,6 @@ function tick(s,hours,{joinArrivals=true}={}){
       if(!s.operativeState[course.trainerId]?.alive||operativeLocation(s,course.trainerId)!==course.sector||!isSupplied(s,course.sector)||!militiaEligibility(s,course.sector).eligible)continue;
       course.remaining--;if(course.remaining<=0){s.sectors[course.sector].militia[course.rank]+=course.count;s.militiaTraining=s.militiaTraining.filter(t=>t!==course);note(s,`Tres milicianos completan su instrucción en ${sector(course.sector).name}.`);}
     }
-    deliverEquipmentShipments(s);
     if(s.hour%24===0){
       dailyPolitics(s);
       const income=dailyIncome(s);
@@ -178,6 +177,8 @@ function tick(s,hours,{joinArrivals=true}={}){
     if(!s.completed&&s.hour%120===0)raid(s,'north');
     if(!s.completed&&s.hour%168===0&&coastalRevenue(s)>=500)raid(s,'coast');
     if(!s.completed&&s.hour%144===0)raid(s,'interior');
+    // Resolve same-hour occupation and blockade before admitting imported goods.
+    deliverEquipmentShipments(s);
     receiveDueHires(s,joinArrivals);synchronizeSquad(s);synchronizeCampaignPresence(s);synchronizeDialogueMovements(s);progress(s);if(s.defeated)break;
   }
 }

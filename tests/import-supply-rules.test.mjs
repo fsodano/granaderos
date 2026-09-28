@@ -40,3 +40,9 @@ test('disabled, occupied or hostile-trade orders reject without payment while lo
 test('active import rules survive draft edits and saved content changes are rejected',()=>{
  const d=content(),s=order(initialCampaign(8,d),purchase),due=s.equipmentShipments[0].due;d.imports.port='ensenada';d.imports.minHours=1;const restored=save(s).campaign;assert.equal(restored.contentCampaign.package.imports.port,'buenos_aires');assert.equal(restored.equipmentShipments[0].due,due);const altered=structuredClone(s);altered.contentCampaign.package.imports.port='santa_fe';assert.throws(()=>save(altered),/identidad/);
 });
+
+test('a real same-hour naval raid blocks the due import before it enters the armory',()=>{
+ const d=defaultContentPackage();d.imports={port:'buenos_aires',minHours:168,maxHours:168};for(const id of ['buenos_aires','ensenada','san_nicolas','santa_fe'])d.startingTerritory[id]={owner:'patriot',loyalty:65};let s=order(initialCampaign(8,d),{type:'purchaseEquipment',item:'firearm-1802'});s=order(s,{type:'wait',hours:168});assert.equal(s.blockade,true);assert.equal(s.armoryItems.length,0);assert.equal(s.equipmentShipments.length,1);assert.equal(s.equipmentShipments[0].due,168);const money=s.resources.treasury;s=save(s).campaign;s=order(s,{type:'wait',hours:1});assert.equal(s.armoryItems.length,0);
+ // Clearing the retained blockade isolates eventual delivery; no naval victory is claimed.
+ s.blockade=false;s=order(s,{type:'wait',hours:1});assert.equal(s.armoryItems.length,1);assert.equal(s.equipmentShipments.length,0);assert.equal(s.resources.treasury,money);assert.equal(save(s).campaign.armory['firearm-1802'],1);
+});
