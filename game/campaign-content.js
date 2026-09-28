@@ -1,5 +1,6 @@
 import {initializeCampaignStory} from './campaign-story.js';
 import {startingCharacterSupplies} from './character-supplies.js';
+import {startingCharacterCondition} from './character-condition.js';
 import {applyStartingTerritory} from './content-territory.js';
 import {campaignRules} from './campaign-rules.js';
 import {validateAbilityReferences} from './content-character-abilities.js';
@@ -17,7 +18,7 @@ export function campaignContentReport(content) {
     blocked = [],
     pending = [];
   const supported=new Set(['format','version','id','name','characters','weapons','placements','arrivalSites','oppositionEquipment','militiaEquipment','oppositionBlades','militiaBlades','quests','rules','startingTerritory','headquarters','imports','campaignStory','includeOriginalResidents','campaignRoles','foundry','careRules']);
-  const characterFields=new Set(['id','name','nickname','role','biography','portrait','monthlyPay','weapon','blade','attributes','arrivalHours','recruitmentSource','service','progression','traits','ridingSkill','personality','speech','spriteAppearance','abilities','encounter','startingSupplies']);
+  const characterFields=new Set(['id','name','nickname','role','biography','portrait','monthlyPay','weapon','blade','attributes','arrivalHours','recruitmentSource','service','progression','traits','ridingSkill','personality','speech','spriteAppearance','abilities','encounter','startingSupplies','startingCondition']);
   if(Object.keys(value).some(key=>!supported.has(key))||value.characters.some(c=>Object.keys(c).some(key=>!characterFields.has(key))))
     blocked.push('Este paquete incluye opciones de historia que esta versión todavía no puede aplicar.');
   if(value.characters.some(c=>!isContractCharacter(c)&&c.arrivalHours!==undefined))
@@ -67,6 +68,7 @@ export function attachCampaignContent(state, content) {
     record.hp = c.attributes.maxHp;
     record.maxHp = c.attributes.maxHp;
     record.bandaged = 0;
+    if(c.startingCondition!==undefined)Object.assign(record,startingCharacterCondition(c));
     // The saved legacy strength floor must use the authored starting attribute.
     if (record.strength !== undefined) record.strength = c.attributes.strength;
   }

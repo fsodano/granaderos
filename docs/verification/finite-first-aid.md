@@ -87,3 +87,7 @@ work strokes and indivisible period dressings are explicit Granaderos adaptation
 not exact classic JA2 numerical parity. These accepted routes do not establish
 balance for all parties/seeds or sustained browser frame rate. The combined
 advanced integration and performance requirements remain open.
+
+[PR #74](https://github.com/fsodano/granaderos/pull/74) merged after
+[GitHub CI](https://github.com/fsodano/granaderos/actions/runs/36426641781/job/108942115478)
+passed at `452be30364110c77fe559625434285865854b81f`.

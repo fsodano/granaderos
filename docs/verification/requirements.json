@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "020feff7d0df17e99d289ef916d0a14d57042366",
+  "baseline": "605e39c2c53f382f3b74dddcbdcb758e7871a794",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -296,7 +296,13 @@
     {
       "id": "E-FIRST-AID",
       "path": "docs/verification/finite-first-aid.md",
-      "description": "Finite skill-based manual stabilization, ordinary bandaging without health gain, persistent bandaged wounds, civilian/recruit continuity, actual mouse/keyboard controls and valid saves. Fresh stock and independent campaigns retain paid supplies, replacements, elapsed time and permanent loss. 844 passing tests, types, export and baseline checks; no full advanced or browser-performance claim."
+      "description": "Finite skill-based manual stabilization, ordinary bandaging without health gain, persistent bandaged wounds, civilian/recruit continuity, actual mouse/keyboard controls and valid saves. Fresh stock and independent campaigns retain paid supplies, replacements, elapsed time and permanent loss. 844 passing tests, types, export and baseline checks; no full advanced or browser-performance claim.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36426641781/job/108942115478"
+    },
+    {
+      "id": "E-CHARACTER-CONDITION",
+      "path": "docs/verification/character-starting-condition.md",
+      "description": "Authored living initial health, energy, fatigue, bleeding and bandaged wounds are validated and assigned once. Actual paid arrival, rest, rehire, critical resident stabilization, purchased strategic care, civilian return, unattended bleed death and mounted editor copy/reset/launch preserve condition and pinned content. 849 passing tests, types, export and baseline checks; no initial death, unloaded bleeding or advanced-care claim."
     }
   ],
   "queue": [
@@ -345,12 +351,35 @@
   ],
   "requirements": [
     {
+      "id": "INITIALCONDITION-01",
+      "group": "Published deliveries",
+      "requirement": "Author initial character wounds, energy and fatigue without resetting later condition",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "A complete optional initial condition is authored in each character sheet and assigned once at campaign creation. Bulletin candidates remain off map until controlled arrival. Real treatment, rest, service changes and saves retain the later mutable state.",
+      "local": "Four simulation cases and a mounted editor case cover strict bounds, older content identity, paid arrivals, recovery and rehire, actual critical resident treatment and purchased strategic care, saved return, unknown-origin bleeding death and draft isolation.",
+      "remaining": "",
+      "acceptance": "Create an injured resident through the editor, encounter and stabilize it with finite supplies, recruit and treat it, then dismiss/save/re-enter without resetting health; retain the same one-time policy for bulletin arrivals and legacy packages.",
+      "evidence": [
+        "E-CHARACTER-CONDITION"
+      ],
+      "parents": [
+        "STORY-02",
+        "STORY-08",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/character-condition.test.mjs",
+        "tests/story-editor.test.mjs"
+      ]
+    },
+    {
       "id": "FIRSTAID-01",
       "group": "Published deliveries",
       "requirement": "Stabilize critical casualties with finite field work and retain bandaged wounds",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Manual care uses partial skill-based work toward 15 HP, spends one dressing per effective stroke and the normal AP or exploration time. Ordinary bandaging does not restore ordinary health. Bandaged wounds persist through return, recruitment, strategic recovery and saves.",
+      "published": "Manual care uses partial skill-based work toward 15 HP, spends one dressing per effective stroke and the normal AP or exploration time. Ordinary bandaging does not restore ordinary health. Bandaged wounds persist through return, recruitment, strategic recovery and saves. Merged through PR #74 after exact-head CI.",
       "local": "Ten new plan, simulation and mounted-control checks cover treatment, failure and persistence. The two fresh coastal routes, northern route, complete stock campaign, independent post campaign and explicit historical loss pass with actual resources and casualties.",
       "remaining": "",
       "acceptance": "Apply partial care through actual controls, consume finite supplies and time, save midway, preserve stabilized and bandaged state through campaign return, and recover ordinary health only through campaign care. Reject repeated completed or unavailable work.",
@@ -368,7 +397,8 @@
         "tests/civilian-state.test.mjs",
         "tests/fresh-ending-route.test.mjs",
         "tests/post-campaign.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/74"
     },
     {
       "id": "LOSSLOG-01",
@@ -499,7 +529,7 @@
       "status": "VERIFIED",
       "priority": "P1",
       "published": "La ruta de las postas is a downloadable three-chapter scenario with thirteen independent identities, paid service, two actual locality battles, world contacts, a timed objective and its own ending. The editor loads it with undo and the verified seed. Merged through PR #68 after exact-head CI. The later finite-first-aid regression completes after eight hours of paid medical work, actual weapon purchases and a daylight approach to Salta.",
-      "local": "A fresh seed-8 route pays for replacements and supplies, preserves three deaths, returns to Córdoba and saves victory; a separate fresh timed route loses. Mounted controls load, edit, undo and launch real play.",
+      "local": "A fresh seed-8 route pays for replacements and supplies, preserves three deaths, returns to C\u00f3rdoba and saves victory; a separate fresh timed route loses. Mounted controls load, edit, undo and launch real play.",
       "remaining": "",
       "acceptance": "Use a portable package without engine-specific scenario code; launch and complete its declared beginning, middle and ending through actual campaign actions, with losses, costs, saved continuation and a real failure path.",
       "evidence": [
@@ -745,7 +775,7 @@
       "requirement": "Author initial locality control and loyalty without resetting later campaign territory",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "The Rules form sets patriot/royalist control and 0–100 loyalty for all thirteen localities. The selected headquarters must start controlled (originally Retiro; see HQ-01). Actual campaign systems use the chosen state; startup grants no victory, reward or militia. The desk describes the initial map and the strategic map shows current ownership. Saves retain later changes.",
+      "published": "The Rules form sets patriot/royalist control and 0\u2013100 loyalty for all thirteen localities. The selected headquarters must start controlled (originally Retiro; see HQ-01). Actual campaign systems use the chosen state; startup grants no victory, reward or militia. The desk describes the initial map and the strategic map shows current ownership. Saves retain later changes.",
       "local": "Open land stays neutral and districts share locality control. Broader campaign role composition remains separate.",
       "remaining": "",
       "acceptance": "Validate complete territory maps and original/older defaults; author, undo and restore through editor controls; launch real arrivals, travel, sector entry, neighbor assault and daily income; check supply and militia requirements; preserve later saved ownership and reject altered pinned content; render initial/current territory accurately.",
@@ -795,7 +825,7 @@
       "requirement": "Author the import port and saved delivery window for imported firearm orders",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Four existing river ports or disabled orders and 1–720-hour delivery windows are authored. A paid order samples its due time once. Ownership, blockade and same-hour raids gate delivery; delayed orders retain their due time and charge. Delivered variants retain their definition and can be equipped. Mounted editor/armory controls show real availability and delay reasons.",
+      "published": "Four existing river ports or disabled orders and 1\u2013720-hour delivery windows are authored. A paid order samples its due time once. Ownership, blockade and same-hour raids gate delivery; delayed orders retain their due time and charge. Delivered variants retain their definition and can be equipped. Mounted editor/armory controls show real availability and delay reasons.",
       "local": "Uses the published general armory and original imported families; physical port depots and cargo transport remain separate.",
       "remaining": "",
       "acceptance": "Validate ports, limits and older defaults; author with undo/restoration and launch a delivered order; pay once, save and retain the sampled deadline; hold occupied/blocked and same-hour-raid deliveries; deliver once and equip a variant; reject invalid or altered content; keep local purchases and existing carried imports when new orders are disabled.",
@@ -1123,7 +1153,7 @@
       "requirement": "Author precise quest deadlines with automatic persistent failure",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "An optional 1–720 hour limit starts at actual quest acceptance. Tactical and strategic time expire it once, with ordered evidence and visible remaining time. Completed quests retain their result and unstarted quests do not tick.",
+      "published": "An optional 1\u2013720 hour limit starts at actual quest acceptance. Tactical and strategic time expire it once, with ordered evidence and visible remaining time. Completed quests retain their result and unstarted quests do not tick.",
       "local": "Uses published campaign time and quest events. No wall-clock timer or advanced scheduler is imported.",
       "remaining": "",
       "acceptance": "Author a deadline through undo/copy/launch. Accept at a nonzero campaign second, preserve the last ten minutes through save, then expire after actual tactical actions. Verify strategic waiting/travel, sorted simultaneous due work, early completion, untimed legacy quests and rejection of altered or missing expiration records. Show remaining time and expiry in the mounted game.",
@@ -1678,7 +1708,7 @@
     {
       "id": "NAR-01",
       "group": "Original design",
-      "requirement": "Elío/Vigodet, Pezuela, Tristán, Romarate and Loyalist commands",
+      "requirement": "El\u00edo/Vigodet, Pezuela, Trist\u00e1n, Romarate and Loyalist commands",
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Named commands and campaign narrative exist.",
@@ -1737,7 +1767,7 @@
       "published": "A fresh mixed force wins the actual Cordoba, Tucuman and Salta maps with casualties and paid replacements, pays the northern pact and partisan supply, travels to the physical Yatasto conference and completes its ordered reports and frontier agreement. Saved phase 3 preserves the created officer death and the surviving temporary commander.",
       "local": "The separate advanced northern medical-relief failure remains FIX-01. This row accepts the published narrative transition, not that larger medical model.",
       "remaining": "",
-      "acceptance": "Triggered sequence and Güemes frontier assignment",
+      "acceptance": "Triggered sequence and G\u00fcemes frontier assignment",
       "evidence": [
         "E-PUBLISHED",
         "E-CONFLICTS",
@@ -1772,7 +1802,7 @@
     {
       "id": "NAR-06",
       "group": "Original design",
-      "requirement": "Pehuenche diplomacy and San Martín final unlock",
+      "requirement": "Pehuenche diplomacy and San Mart\u00edn final unlock",
       "status": "VERIFIED",
       "priority": "P1",
       "published": "The fresh Cuyo route pays the Pehuenche agreement, rejects physical San Martin recruitment during phase 3, completes the funded/fortified/artillery prerequisites, returns to Mendoza and recruits him in person into permanent unpaid service at phase 4.",
@@ -1923,7 +1953,7 @@
     {
       "id": "ECO-02",
       "group": "Original design",
-      "requirement": "Retiro/Beltrán raw-material production chains",
+      "requirement": "Retiro/Beltr\u00e1n raw-material production chains",
       "status": "SUPERSEDED",
       "priority": "P1",
       "published": "Removed by PR #12.",
@@ -1983,7 +2013,7 @@
     {
       "id": "MIL-01",
       "group": "Original design",
-      "requirement": "Cívicos, Montoneras and veteran line/Granaderos tiers",
+      "requirement": "C\u00edvicos, Montoneras and veteran line/Granaderos tiers",
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Militia training, ranks and generated historical loadouts.",
@@ -2073,7 +2103,7 @@
     {
       "id": "TAC-06",
       "group": "Original design",
-      "requirement": "Sabre bleeding/parry, bayonet reach/intercepts, lance knockdown, facón defense",
+      "requirement": "Sabre bleeding/parry, bayonet reach/intercepts, lance knockdown, fac\u00f3n defense",
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Distinct held blade actions and reactions.",
@@ -2163,7 +2193,7 @@
     {
       "id": "MAP-02",
       "group": "Original design",
-      "requirement": "Camino Real, Paraná choke point and Andean supply routes",
+      "requirement": "Camino Real, Paran\u00e1 choke point and Andean supply routes",
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Land routes and exact-cell tactical entry.",
@@ -2214,7 +2244,7 @@
       "published": "Northern pressure events and objectives.",
       "local": "See local suite and preserved parity source; not equivalent to published integration.",
       "remaining": "Integrate physical forces, finite reserves, routes, garrisons and defense.",
-      "acceptance": "Royalist corps advances Humahuaca–Jujuy–Salta–Tucumán",
+      "acceptance": "Royalist corps advances Humahuaca\u2013Jujuy\u2013Salta\u2013Tucum\u00e1n",
       "evidence": [
         "E-PUBLISHED",
         "E-CONFLICTS"
@@ -2451,7 +2481,7 @@
       "requirement": "New world identities, persistent residents and death successors",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "New and existing world residents retain physical identity. Confirmed civilian or active military death can activate a distinct new world successor after a saved delay; earlier bodies and each character health stay separate. New residents can offer paid local service for all published terms, with quoted prices and persistent expiry, renewal and return. Authored progression can omit historical identities or copy them into independent residents; generic original residents are optional. Confirmed casualties can leave the service ledger through expiry or dismissal without invalidating saves; known stale deceased-service bits are repaired. Military bodies and finite equipment now persist through reentry and renewed occupation without rejoining service. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment.",
+      "published": "New and existing world residents retain physical identity. Confirmed civilian or active military death can activate a distinct new world successor after a saved delay; earlier bodies and each character health stay separate. New residents can offer paid local service for all published terms, with quoted prices and persistent expiry, renewal and return. Authored progression can omit historical identities or copy them into independent residents; generic original residents are optional. Confirmed casualties can leave the service ledger through expiry or dismissal without invalidating saves; known stale deceased-service bits are repaired. Military bodies and finite equipment now persist through reentry and renewed occupation without rejoining service. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Each character can author initial wounds, energy and fatigue, assigned once and retained through actual treatment, care and service changes.",
       "local": "Preview transitions supplied the core schedule. Published identity, health and successor activation are connected; advanced inventories and role transfer remain separate.",
       "remaining": "Extend starting allocations into complete editable belongings, NPC looting, custody and explicit role/stock transfer. Strategic civilian care and unloaded-sector bleeding remain separate work.",
       "acceptance": "Move an injured NPC, reload, recruit it, confirm death and activate one distinct successor without healing or duplicating goods.",
@@ -2464,7 +2494,8 @@
         "E-CAMPAIGN-CAST",
         "E-CONTRACT-CASUALTY",
         "E-MILITARY-REMAINS",
-        "E-CHARACTER-SUPPLIES"
+        "E-CHARACTER-SUPPLIES",
+        "E-CHARACTER-CONDITION"
       ]
     },
     {
@@ -2983,7 +3014,7 @@
         "E-PUBLISHED"
       ],
       "sourceRow": "JA2-C09",
-      "sourceNotes": "Geometry, cursor, combat, inventory and fresh Retiro save/reentry checks pass; live aiming, cancellation, energy-only exploration, pickup and re-equipping are checked. A dedicated illustrated throw pose remains missing. Improvised facón throws, range/AP/damage tuning and supported recovery are period-game adaptations; no standard military throwing doctrine or automatic stealth kill is claimed."
+      "sourceNotes": "Geometry, cursor, combat, inventory and fresh Retiro save/reentry checks pass; live aiming, cancellation, energy-only exploration, pickup and re-equipping are checked. A dedicated illustrated throw pose remains missing. Improvised fac\u00f3n throws, range/AP/damage tuning and supported recovery are period-game adaptations; no standard military throwing doctrine or automatic stealth kill is claimed."
     },
     {
       "id": "JA2-C10",
@@ -3271,7 +3302,7 @@
         "E-PUBLISHED"
       ],
       "sourceRow": "JA2-P03",
-      "sourceNotes": "Preserve-facing AP costs `ceil(normal step AP × 1.25)`; time uses a 1.25 multiplier before final rounding, with no extra energy multiplier. Mounted and running movement reject this intent. These are Granaderos adaptations. Group movement uses ordinary facing; Alt returns to an individual order. All posture, interruption and moving-sprite combinations remain unverified live."
+      "sourceNotes": "Preserve-facing AP costs `ceil(normal step AP \u00d7 1.25)`; time uses a 1.25 multiplier before final rounding, with no extra energy multiplier. Mounted and running movement reject this intent. These are Granaderos adaptations. Group movement uses ordinary facing; Alt returns to an individual order. All posture, interruption and moving-sprite combinations remain unverified live."
     },
     {
       "id": "JA2-P04",
@@ -3379,7 +3410,7 @@
         "E-PUBLISHED"
       ],
       "sourceRow": "JA2-I03",
-      "sourceNotes": "Strategic sector access now lists discovered equipment and supports exact local pickup/drop quantities in safe sectors. It checks walking access, capacity and current source contents, preserves loaded/fitted weapons and personal cartridges, and uses validated save/reentry paths. Seventeen simulation/save tests and two component checks cover the new flow; see [sector inventory](sector-inventory.md). Depleted ground objects cannot be picked up again. A controlled live body/ground picker spent actual approach and pickup AP, took partial cartridges and a loaded fitted musket, and retained both sources and receiver after reload. Ten approach cases, eleven batch cases and two component tests cover the picker contract. Select All and per-row quantities share one atomic 8 AP pickup from a single tile. Live full selection, capacity rejection and reduction to a valid partial selection passed; see [loot approach](loot-approach.md). Live tactical dropping, strategic partial pickup/drop, quantity rejection, save loading and reentry now pass. The check found and fixed loss of a carried loaded gun charge on campaign return; the repeated loop preserved the exact ammunition total. See [sector inventory](sector-inventory.md). Blocked paths, full packs and body/container variants remain automated-test evidence. Visited mission sites now appear under their parent sector through a labelled site selector, with separate source pools and shared local-presence, occupation and path checks. Real San Lorenzo remains can be recovered after victory; completed Yatasto pickup/drop and saves pass simulation checks. A live production-component harness recovered one dressing and one cartridge from the real San Lorenzo save and preserved the distinct town stock after saving/loading. See [sector inventory](sector-inventory.md). Carried weapons can now be equipped directly from a safe town, without entering the tactical map. Prepared load, partial work, condition and fittings survive the supported map/armory/deployment/return paths; capture/rescue and finite ammunition are tested. A live Córdoba recovery pickup/equip/save/load check passed. See [carried weapon equipment](campaign-carried-equip.md)."
+      "sourceNotes": "Strategic sector access now lists discovered equipment and supports exact local pickup/drop quantities in safe sectors. It checks walking access, capacity and current source contents, preserves loaded/fitted weapons and personal cartridges, and uses validated save/reentry paths. Seventeen simulation/save tests and two component checks cover the new flow; see [sector inventory](sector-inventory.md). Depleted ground objects cannot be picked up again. A controlled live body/ground picker spent actual approach and pickup AP, took partial cartridges and a loaded fitted musket, and retained both sources and receiver after reload. Ten approach cases, eleven batch cases and two component tests cover the picker contract. Select All and per-row quantities share one atomic 8 AP pickup from a single tile. Live full selection, capacity rejection and reduction to a valid partial selection passed; see [loot approach](loot-approach.md). Live tactical dropping, strategic partial pickup/drop, quantity rejection, save loading and reentry now pass. The check found and fixed loss of a carried loaded gun charge on campaign return; the repeated loop preserved the exact ammunition total. See [sector inventory](sector-inventory.md). Blocked paths, full packs and body/container variants remain automated-test evidence. Visited mission sites now appear under their parent sector through a labelled site selector, with separate source pools and shared local-presence, occupation and path checks. Real San Lorenzo remains can be recovered after victory; completed Yatasto pickup/drop and saves pass simulation checks. A live production-component harness recovered one dressing and one cartridge from the real San Lorenzo save and preserved the distinct town stock after saving/loading. See [sector inventory](sector-inventory.md). Carried weapons can now be equipped directly from a safe town, without entering the tactical map. Prepared load, partial work, condition and fittings survive the supported map/armory/deployment/return paths; capture/rescue and finite ammunition are tested. A live C\u00f3rdoba recovery pickup/equip/save/load check passed. See [carried weapon equipment](campaign-carried-equip.md)."
     },
     {
       "id": "JA2-I04",
@@ -4139,7 +4170,7 @@
         "E-PUBLISHED"
       ],
       "sourceRow": "JA2-W06",
-      "sourceNotes": "Tucumán now accepts three physically carried dressings through selected single or partial-batch offers. Excess and wrong items are refused, exact custody survives saves/reentry, the notebook tracks acknowledged quantities, and the loyalty reward occurs once. All 49 focused checks, type checking and the build pass; live partial delivery, excess refusal, cursor return, completion and reload/notebook checks also pass. See [medical delivery](physical-medical-delivery.md). Extend physical giving to other suitable portable quest goods and NPC responses. The bulk powder and cavalry-supply errands still consume campaign resources."
+      "sourceNotes": "Tucum\u00e1n now accepts three physically carried dressings through selected single or partial-batch offers. Excess and wrong items are refused, exact custody survives saves/reentry, the notebook tracks acknowledged quantities, and the loyalty reward occurs once. All 49 focused checks, type checking and the build pass; live partial delivery, excess refusal, cursor return, completion and reload/notebook checks also pass. See [medical delivery](physical-medical-delivery.md). Extend physical giving to other suitable portable quest goods and NPC responses. The bulk powder and cavalry-supply errands still consume campaign resources."
     },
     {
       "id": "JA2-W07",
@@ -4203,7 +4234,7 @@
       "priority": "P0",
       "published": "This complete capability is not accepted in the published release.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
-      "remaining": "Fresh route fails at northern medical relief; established Córdoba recapture and prisoner-rescue routes also fail.",
+      "remaining": "Fresh route fails at northern medical relief; established C\u00f3rdoba recapture and prisoner-rescue routes also fail.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
@@ -4211,7 +4242,7 @@
         "E-PUBLISHED"
       ],
       "sourceRow": "JA2-W10",
-      "sourceNotes": "Complete real medical relief, then revalidate the remaining route and actual ending with paid supplies and real casualties. Established Córdoba recapture and physical Humahuaca rescue also fail. Scripted victory reports isolate subsystem settlement; they do not prove campaign playability or general balance."
+      "sourceNotes": "Complete real medical relief, then revalidate the remaining route and actual ending with paid supplies and real casualties. Established C\u00f3rdoba recapture and physical Humahuaca rescue also fail. Scripted victory reports isolate subsystem settlement; they do not prove campaign playability or general balance."
     },
     {
       "id": "UX-01",
@@ -4341,7 +4372,7 @@
     {
       "id": "FIX-02",
       "group": "Failed acceptance routes",
-      "requirement": "Established recovery loses Córdoba to its persistent garrison",
+      "requirement": "Established recovery loses C\u00f3rdoba to its persistent garrison",
       "status": "FAILED",
       "priority": "P0",
       "published": "These larger acceptance routes are not present in the published suite.",
@@ -4408,13 +4439,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "f203f74dc49b8f0f9ea6f212e91e7b31450240a8",
-    "total": 834,
-    "passed": 834,
+    "source": "020feff7d0df17e99d289ef916d0a14d57042366",
+    "total": 844,
+    "passed": 844,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-CIVILIAN-LOSS-LOG"
+    "evidenceId": "E-FIRST-AID"
   }
 }

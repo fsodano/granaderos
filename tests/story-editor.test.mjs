@@ -614,6 +614,19 @@ test('the mounted editor loads the complete example, restores the previous draft
  const restored=decodeSave(encodeSave(campaign,enterSector(campaign.pendingBattle,campaign.sectorStates[campaign.location])));assert.ok(restored.battle.npcs.some(n=>n.contentId==='ines'));assert.equal(restored.battle.units.find(u=>u.id===String(id)).ammo+restored.battle.units.find(u=>u.id===String(id)).loaded,14);assert.equal(m.dom.window.localStorage.getItem('granaderos.campaign.v1'),'ordinary save');
 });
 
+test('the editor authors initial condition with undo, copy, reset and validation and launches real wounded service',async t=>{
+ const {order,saved}=await import('./local-contract-fixture.mjs');
+ const m=await mount(t),draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
+ await m.input(m.document.querySelector('input[type="search"]'),'person-110');await m.click(m.document.querySelector('.entry-list button'));assert.ok(m.document.querySelector('[aria-label="Estado inicial"]'));
+ for(const [label,value]of [['Salud inicial',30],['Energía inicial',61],['Fatiga inicial',23],['Sangrado inicial',3],['Heridas vendadas iniciales',7]])await m.input(m.label(label),value);
+ const expected={hp:30,energy:61,fatigue:23,bleeding:3,bandaged:7};assert.deepEqual(draft().characters.find(c=>c.id==='person-110').startingCondition,expected);
+ await m.click(m.button('Deshacer'));assert.equal(m.label('Heridas vendadas iniciales').value,'0');await m.click(m.button('Rehacer'));await m.click(m.button('Duplicar personaje'));const copy=draft().characters.at(-1);assert.deepEqual(copy.startingCondition,expected);
+ await m.input(m.label('Heridas vendadas iniciales'),100);assert.equal(m.button('Iniciar campaña con estas fichas').disabled,true);await m.click(m.button('Deshacer'));await m.click(m.button('Restablecer estado sano'));assert.equal(draft().characters.at(-1).startingCondition,undefined);assert.equal(m.label('Salud inicial').value,String(copy.attributes.maxHp));await m.click(m.button('Deshacer'));
+ await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));const id=operativeIdForCharacter(campaign.contentCampaign.package,copy.id);assert.deepEqual(Object.fromEntries(Object.keys(expected).map(k=>[k,campaign.operativeState[id][k]])),expected);assert.ok(!campaign.recruited.includes(id));
+ campaign=order(campaign,{type:'recruitCivic',id,term:'week'});campaign=order(campaign,{type:'wait',hours:6});campaign=saved({campaign}).campaign;assert.equal(campaign.operativeState[id].hp,30);assert.equal(campaign.operativeState[id].bleeding,3);assert.equal(campaign.operativeState[id].location,'retiro');
+ await m.input(m.label('Salud inicial'),31);assert.equal(draft().characters.at(-1).startingCondition.hp,31);assert.equal(campaign.operativeState[id].hp,30);assert.equal(m.dom.window.localStorage.getItem('granaderos.campaign.v1'),'ordinary save');
+});
+
 test('the editor authors care and rest rules with undo, validation, reset and a pinned paid campaign launch',async t=>{
  const {DEFAULT_CARE_RULES,careRules}=await import('../game/campaign-care-rules.js');const {order,saved}=await import('./local-contract-fixture.mjs');const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=0;
  const m=await mount(t,JSON.stringify(d)),draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));await m.click(m.button('Reglas'));assert.ok(m.document.querySelector('[aria-label="Reglas de atención y descanso"]'));
