@@ -366,7 +366,13 @@
     {
       "id": "E-UNLOADED-CIVILIAN",
       "path": "docs/verification/unloaded-civilian-bleeding.md",
-      "description": "Previously recorded civilian wounds retain six-second remainder through unloaded time, actual other-squad actions and saves. Actual death minute preserves succession deadlines, original responsibility, one loyalty/errand consequence and historical command loss. Eight new simulations plus existing civilian/time cases; the first full run passed 917/918 and exposed a late campaign deadline. The corrected source passes the event-order group and equivalent batched/split receipts; the corrected complete source passes 919/919 with zero failures/skips and static checks. The final guarded source passes 919/919 with zero failures/skips, types, export and all 36 baseline comparisons. Exact-head CI remains required before merge. Strategic care, off-screen recovery and military bleeding remain separate."
+      "description": "Previously recorded civilian wounds retain six-second remainder through unloaded time, actual other-squad actions and saves. Actual death minute preserves succession deadlines, original responsibility, one loyalty/errand consequence and historical command loss. Eight new simulations plus existing civilian/time cases; the first full run passed 917/918 and exposed a late campaign deadline. The corrected source passes the event-order group and equivalent batched/split receipts; the corrected complete source passes 919/919 with zero failures/skips and static checks. The final guarded source passes 919/919 with zero failures/skips, types, export and all 36 baseline comparisons. Published through PR #86 after successful exact-head CI. Strategic care, off-screen recovery and military bleeding remain separate.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36453922698/job/109035294959"
+    },
+    {
+      "id": "E-CIVILIAN-RETURN",
+      "path": "docs/verification/civilian-service-return.md",
+      "description": "Known world residents resume current service wounds and finite supplies at dismissal or expiry. Five simulations cover actual enemy injuries and death, a spent torch, actual medical care, saved rehire and strict conversion of older departed flags. Existing civilian/supply/casualty/wound group passes 30 checks. Complete regression passes 924/924, zero failures/skips; types, production export and all 36 baseline comparisons pass. Exact-head CI is required before merge; unseen actors, military wound time and custody stay separate."
     }
   ],
   "queue": [
@@ -415,12 +421,36 @@
   ],
   "requirements": [
     {
+      "id": "CIVILIANRETURN-01",
+      "group": "Published deliveries",
+      "requirement": "Resume known world residents from current condition when military service ends",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Previously recorded residents return with current service wounds and finite supplies when dismissed or their contract expires, without waiting for another encounter.",
+      "local": "Five simulations use paid local service, an actual enemy pistol shot and torch expenditure in compact geometry, ordinary retreat, medical care, dismissal/expiry, rehire and saves. Earlier invalid records are checked before conversion; real casualties remain military bodies. Complete regression passes 924/924 with zero failures/skips; types, production export and all 36 baseline comparisons pass.",
+      "remaining": "",
+      "acceptance": "Wound a hired world resident in an actual battle, retreat, dismiss or let its contract expire, save and continue civilian time. Keep current health and stock, preserve treatment, reject resurrection and do not duplicate the active actor.",
+      "evidence": [
+        "E-CIVILIAN-RETURN"
+      ],
+      "parents": [
+        "STORY-02",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/civilian-service-return.test.mjs",
+        "tests/civilian-state.test.mjs",
+        "tests/civilian-supplies.test.mjs",
+        "tests/contract-casualty-presence.test.mjs"
+      ]
+    },
+    {
       "id": "CIVILIANWOUND-01",
       "group": "Published deliveries",
       "requirement": "Retain civilian bleeding through unloaded time, real death deadlines and saved consequences",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Recorded out-of-service civilian wounds retain their unfinished interval and consume actual unloaded campaign time. Loaded tactical actors are excluded from that update.",
+      "published": "Published on main through PR #86 on 2026-09-28 after successful exact-head CI. Recorded out-of-service civilian wounds retain their unfinished interval and consume actual unloaded campaign time. Loaded tactical actors are excluded from that update.",
       "local": "Eight new simulations use paid recruitment, actual wounding, medical supplies, squad changes and saved continuation. They cover partial time, no double damage, real death minutes, one successor, body retention, errands, loyalty, legacy clocks and historical loss. Boundary clock and northern chapter fixtures are explicitly identified. The first complete source passed 917/918 with one campaign deadline timestamp failure. The corrected source processes deadlines and off-screen death timestamps in order; the 33-case event group and expanded batch comparison pass. The corrected source passes 919/919 with zero failures/skips, types, production export and all 36 baseline comparisons. An additional invalid-interval guard passes focused verification; the final guarded source passes 919/919 with zero failures/skips, types, production export and all 36 baseline comparisons.",
       "remaining": "",
       "acceptance": "Wound a resident, leave or select another squad, save between intervals and return. Preserve actual damage, one attributed death and the successor delay. Stabilization stops further loss; repeated clocks do not duplicate it.",
@@ -436,7 +466,8 @@
         "tests/civilian-state.test.mjs",
         "tests/death-successors.test.mjs",
         "tests/time-bridge.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/86"
     },
     {
       "id": "CARTRIDGEPRICE-01",
@@ -4811,13 +4842,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "6beb6cdf4d028b839592d0d2902face825936fc7",
-    "total": 911,
-    "passed": 911,
+    "source": "abff99203b5086194efa6ece6308f6de3a2f7c0e",
+    "total": 919,
+    "passed": 919,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-CARTRIDGE-PRICE"
+    "evidenceId": "E-UNLOADED-CIVILIAN"
   }
 }

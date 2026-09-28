@@ -15,6 +15,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Retiro opening verification](retiro-opening.md)
 - [Civilian state verification](civilian-state.md)
 - [Civilian wounds outside the loaded sector](unloaded-civilian-bleeding.md)
+- [Known residents returning from service](civilian-service-return.md)
 - [Finite civilian supplies](civilian-finite-supplies.md)
 - [Authored resident verification](authored-residents.md)
 - [Death successor verification](death-successors.md)

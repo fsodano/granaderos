@@ -547,3 +547,13 @@ original successor delay. Bodies and successors remain separate identities.
 See the [bounded acceptance record](../verification/unloaded-civilian-bleeding.md).
 Strategic civilian care, off-screen recovery and military wound clocks remain
 separate requirements.
+
+### Return from military service
+
+A known world resident leaving service resumes its current physical condition and
+remaining personal supplies before its next civilian encounter. Its old civilian
+cache cannot heal a service wound or restore an injury already treated. Placement
+still controls its next appearance, and active scenes do not gain a duplicate.
+Dead service actors remain military bodies. See the
+[bounded verification](../verification/civilian-service-return.md) for legacy
+conversion and the separate military-clock and custody requirements.
