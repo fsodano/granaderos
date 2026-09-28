@@ -1,5 +1,5 @@
 import {historicalRequiredActors} from './historical-loss.js';
-import {civilianDiedHere} from './campaign-civilians.js';
+import {civilianDiedHere,resumeCivilianServiceReturns} from './campaign-civilians.js';
 import {encounterDefinitions} from './encounters.js';
 import {createContentSession,advancePlacementState,changePlacementStatus} from './content-placement.js';
 import {isContractCharacter,operativeIdForCharacter,characterForOperative} from './content-character-ids.js';
@@ -54,6 +54,7 @@ export function synchronizeCampaignPresence(state){
     runtime.people[c.id].hp=record.hp;
   }
   state.contentPresence=strip(runtime);
+  resumeCivilianServiceReturns(state);
   for(const [sector,scene] of Object.entries(state.sectorStates))
     scene.npcs=(scene.npcs??[]).filter(n=>currentResident(state,n,sector));
   if(state.pendingBattle&&!state.pendingBattle.sceneId)

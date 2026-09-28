@@ -1,6 +1,7 @@
 import {campaignStory} from './campaign-story.js';
 import {validateMovementScene} from './dialogue-movement.js';
-import {validWorldLocation} from './world-cells.js';
+import {validWorldLocation,locationId} from './world-cells.js';
+import {characterForOperative,isContractOperative} from './content-character-ids.js';
 import {OPERATIVES} from './data.js';
 import {encounterDefinitions} from './encounters.js';
 import {YATASTO_NPCS} from './missions.js';
@@ -37,10 +38,10 @@ function service(s,n){
  if(prior&&!s.civilianState?.people['person-57']){current.hp=Math.min(current.hp,prior.hp);current.energy=Math.min(current.energy??100,prior.energy??100);current.bleeding=Math.max(current.bleeding??0,prior.bleeding??0);}
  return current;
 }
-export function campaignCivilian(s,n){
+export function campaignCivilian(s,n,{fromService=false}={}){
  const record=s.civilianState?.people[civilianKey(n)],id=operativeId(n);
  const metadata={...n};for(const k of fields)delete metadata[k];
- if(record&&!record.inService&&!s.recruited.includes(id))return {...metadata,...structuredClone(record.health),civilianSupplies:supplies(s,n)};
+ if(record&&!fromService&&!record.inService&&!s.recruited.includes(id))return {...metadata,...structuredClone(record.health),civilianSupplies:supplies(s,n)};
  const seeded=seedCivilianHealth(metadata,service(s,n));
  if(record?.health.civilianHarm&&seeded.hp>0&&record.health.hp>0)seeded.civilianHarm=structuredClone(record.health.civilianHarm);
  return {...seeded,civilianSupplies:supplies(s,n)};
@@ -150,6 +151,26 @@ export function advanceUnloadedCivilians(s,seconds){
   if(n.hp===0){s.log.unshift({hour:Math.floor(deathSecond/3600),text:`${n.name} murió por sus heridas mientras la escuadra estaba fuera del sector.`});s.log=s.log.slice(0,80);}
  }
  if(changed)refreshCivilianScenes(s);
+}
+
+// The service sheet is authoritative until departure. Resume a previously
+// encountered world identity once, using its current wounds and finite stock.
+// The active request is never populated here; reentry admits the returning NPC.
+export function resumeCivilianServiceReturns(s){
+ if(!s.civilianState||!s.contentPresence)return false;
+ let changed=false;
+ for(const [key,record]of Object.entries(s.civilianState.people)){
+  if(!record.inService)continue;
+  const original=encounterDefinitions(s).find(n=>civilianKey(n)===key),id=original&&operativeId(original),serviceRecord=s.operativeState[id];
+  if(id===undefined||isContractOperative(s,{id})||s.recruited.includes(id)||s.pendingBattle?.missionAllies?.some(u=>Number(u.id)===id)||!serviceRecord?.alive||serviceRecord.hp<=0||serviceRecord.captured)continue;
+  const character=characterForOperative(s,id),person=character&&s.contentPresence.people[character.id],sector=person&&locationId(person.sector);
+  if(!person?.alive||person.recruited||!person.appeared||!sector)continue;
+  need(record.health.hp>0,'Un habitante muerto no puede volver del servicio.');
+  const current=campaignCivilian(s,original,{fromService:true});
+  remember(s,current,{sector,sceneId:null});changed=true;
+ }
+ if(changed)refreshCivilianScenes(s);
+ return changed;
 }
 
 export function transferCivilian(s,n){
