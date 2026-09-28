@@ -55,7 +55,7 @@ function applyDeath(s,n,record){
  if(!campaignStory(s)&&(operativeId(n)===57||n.id==='yatasto-belgrano')&&!s.completed){
   s.defeated=true;
   if(record.sceneId==='yatasto')s.missions.yatasto={...(s.missions.yatasto??{}),stage:'failed',completed:false};
-  s.log.push({hour:s.hour,text:`${n.name} ha muerto. La campaña no puede continuar sin este mando.`});
+  s.log.unshift({hour:s.hour,text:`${n.name} ha muerto. La campaña no puede continuar sin este mando.`});s.log=s.log.slice(0,80);
  }
 }
 function remember(s,n,scene){
