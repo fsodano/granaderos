@@ -46,8 +46,9 @@ required before merge.
 
 ## Limits
 
-ROLES-01 assigns two existing strategic privileges. Foundry location, name, setup
-cost, funding cost and effect strength still use existing rules. Mission identities,
+ROLES-01 assigns two existing strategic privileges. At this checkpoint foundry location, name, setup cost and funding cost retained
+existing rules; the subsequent [foundry project delivery](foundry-project.md)
+authors them. March effect strength still uses existing rules. Mission identities,
 recruitment gates, indispensable original-story actors and successor role transfer
 remain separate work. The original campaign still needs its foundry to progress;
 an author who disables it must provide another progression. Roles do not grant
