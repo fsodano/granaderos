@@ -26,7 +26,8 @@ new local routine but keeps health and injury history. Recruitment transfers the
 current health into the soldier and removes the NPC from retained scenes. A
 later dismissal uses the returned soldier's condition. Death stops placement
 updates, prevents recruitment and leaves the body in its actual scene. Reentry
-keeps the body's position and collapsed presentation.
+keeps the body's position and collapsed presentation. When a commander has several
+mission identities, death also removes stale copies from earlier locations.
 
 The first player wound and death retain attributed receipts. A death changes the
 local city's loyalty once: intentional player kills -10, accidental player kills
@@ -40,11 +41,12 @@ and the defeated campaign saved.
 Save admission checks health, bleeding, consciousness, injury history, identity,
 scene membership and the campaign's matching record. Old saves without a civilian
 ledger migrate existing injuries from the previous 100-point scale. Migration
-does not reroll placement or reset an injured resident to full health.
+does not reroll placement or reset an injured resident to full health. Older
+saves that retain commander wounds only in a mission ally keep those wounds.
 
 ## Evidence
 
-Runtime and tests: `638afa9af706ea1bcd136f0f502e5c6658f07d00`.
+Runtime and tests: `d5d2ca1ebc0a709acb36cc177e013c2c1ef3010e`.
 
 - `tests/civilian-state.test.mjs` uses actual movement, melee and medical actions
   before save, daily relocation, recruitment and a second deployment. It also
@@ -59,7 +61,7 @@ Runtime and tests: `638afa9af706ea1bcd136f0f502e5c6658f07d00`.
   as the game. The original combat and mission assertions are retained.
 
 The complete local suite passed **582/582 tests**, with no failures or skips, in
-178 seconds. TypeScript and the production export passed (721 files and 631
+181 seconds. TypeScript and the production export passed (721 files and 631
 asset references). The baseline audit passed all 36 comparisons. Documentation
 checks retained 171 requirements, including all 50 original and 87 parity rows.
 All 44 local links in changed documents resolved. The

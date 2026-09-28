@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-27",
-  "baseline": "638afa9af706ea1bcd136f0f502e5c6658f07d00",
+  "baseline": "d5d2ca1ebc0a709acb36cc177e013c2c1ef3010e",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -127,7 +127,8 @@
         "tests/civilian-interaction.test.mjs",
         "tests/campaign-presence.test.mjs",
         "tests/missions-web.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/33"
     },
     {
       "id": "OPENING-01",
@@ -3043,7 +3044,7 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "638afa9af706ea1bcd136f0f502e5c6658f07d00",
+    "source": "d5d2ca1ebc0a709acb36cc177e013c2c1ef3010e",
     "total": 582,
     "passed": 582,
     "failed": 0,
