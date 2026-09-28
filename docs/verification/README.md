@@ -49,6 +49,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Partial firearm loading](partial-firearm-reloads.md)
 - [Authored melee weapons](authored-blades.md)
 - [Primary and secondary troop blade loadouts](force-blades.md)
+- [Explicit artillery selection](explicit-artillery-selection.md)
 - [Initial funds and cartridge allotments](campaign-supply-rules.md)
 - [Starting territorial control and loyalty](starting-territory.md)
 - [Configurable campaign headquarters](campaign-headquarters.md)

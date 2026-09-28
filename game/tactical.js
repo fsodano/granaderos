@@ -57,7 +57,7 @@ if(Array.isArray(sector.tiles))state.tiles=sector.tiles.map(t=>({blocked:false,c
 state.units=squad.map((u,i)=>makeUnit(u,'player',i,1+Math.floor(i/(height-2)),1+i%(height-2)));
 const enemies=Array.isArray(sector.enemies)?sector.enemies:Array.from({length:sector.exploration?0:sector.enemyCount||Math.max(3,squad.length+(sector.difficulty||1)-1)},(_,i)=>({id:`enemy-${i}`,name:`Realista ${i+1}`,weapon:i%3===0?1801:1800,marksmanship:50+(sector.difficulty||1)*5,morale:60+(sector.difficulty||1)*5}));
 state.units.push(...enemies.map((u,i)=>makeUnit(u,'enemy',i,width-2-Math.floor(i/(height-2)),1+i%(height-2))));
-if(!state.artillery.length&&sector.cannons>0)state.artillery=Array.from({length:Math.min(sector.cannons,3)},(_,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',x:2,y:2+i*3,loaded:true,ammo:6}));
+if(!Array.isArray(sector.artillery)&&sector.cannons>0)state.artillery=Array.from({length:Math.min(sector.cannons,3)},(_,i)=>({id:`gun-${i}`,type:'bronze4',side:'player',x:2,y:2+i*3,loaded:true,ammo:6}));
 for(const u of state.units){if(u.side==='enemy'&&u.patrol!==false)u.patrolOrigin??={x:u.x,y:u.y};u.maxAP=maxActionPoints(state,u);u.ap=u.maxAP;refreshMilitaryCondition(u);}
 say(state,`Combate en ${state.sectorName}. Cada soldado dispone de 100 puntos de acción.`);checkEnd(state);detectContact(state);revealRooms(state);if(sector.firstSide==='enemy'&&state.mode==='combat'&&state.status==='active')state.contactInitiative='enemy';return resolveFirstContact(state);}
 function tile(s,x,y){const at=s.tiles[y*s.width+x];return at?.x===x&&at?.y===y?at:s.tiles.find(t=>t.x===x&&t.y===y);}
