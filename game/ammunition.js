@@ -1,3 +1,4 @@
+import {cartridgePrice} from './campaign-rules.js';
 import {weaponSpecification} from './weapon-definition.js';
 import {retainedMilitaryBodies} from './military-remains.js';
 export function returnAmmunition(request,reports,snapshot,previous=null){
@@ -19,4 +20,11 @@ export function returnAmmunition(request,reports,snapshot,previous=null){
   returned+=Math.min(count,(issued.loaded??0)+(issued.ammo??0)+looted);
  }
  return Math.min((request.issuedCartridges??0)+looted,returned);
+}
+
+// Keep quantity accounting independent from the campaign's pinned unit price.
+export function ammunitionRefund(state,request,reports,snapshot,previous=null){
+ const amount=returnAmmunition(request,reports,snapshot,previous)*cartridgePrice(state);
+ if(!Number.isSafeInteger(amount)||amount<0||state.resources.treasury+amount>1000000000)throw Error('La tesorería no admite el valor de los cartuchos devueltos.');
+ return amount;
 }
