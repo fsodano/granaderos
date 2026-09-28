@@ -45,6 +45,7 @@ the [workspace acceptance record](../../verification/gameplay-completion.md) and
 
 ## Repair and trade
 
+- [Reposición y reparación en el taller](workshop-service.md)
 - [Carried equipment repair](equipment-repair.md) *(workspace)*
 - [Local equipment exchange](merchant-exchange.md) *(workspace)*
 - [Local used-weapon trading](merchant-buyback.md) *(workspace)*

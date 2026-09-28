@@ -50,6 +50,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Saving authored cartridge allocations](authored-cartridge-save.md)
 - [Independent post campaign](independent-post-campaign.md)
 - [Strategic medical care](strategic-medical-care.md)
+- [Local workshop service](local-workshop-service.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 

@@ -1,6 +1,6 @@
 import {operativeLocation} from './squads.js';
 import {worldOwner} from './world-cells.js';
-import {hasWorkshop} from './campaign-headquarters.js';
+import {workshopAccessReason} from './workshop-service.js';
 
 // Bounded integration of strategic doctor/patient work. Tactical first aid,
 // sleep, militia care and unloaded bleeding retain their separate integrations.
@@ -57,7 +57,7 @@ export function careStatus(s,op,roster){
 }
 export function medicalSupplyQuote(s,op,quantity,supplied){
  const cost=quantity*MEDICAL_SUPPLY_PRICE;
- const reason=!op||!available(s,op.id)?'El combatiente no está disponible.':!Number.isInteger(quantity)||quantity<1||quantity>20?'Elegí entre 1 y 20 vendas.':(s.operativeState[op.id].medkits??2)+quantity>1000?'No puede llevar más de 1000 vendas.':operativeLocation(s,op.id)!==s.location||!safe(s,op.id)||!hasWorkshop(s,s.location)||!supplied?'El combatiente debe estar en el taller controlado y abastecido.':s.resources.treasury<cost?'No hay suficientes pesos.':'';
+ const reason=!op||!available(s,op.id)?'El combatiente no está disponible.':!Number.isInteger(quantity)||quantity<1||quantity>20?'Elegí entre 1 y 20 vendas.':(s.operativeState[op.id].medkits??2)+quantity>1000?'No puede llevar más de 1000 vendas.':workshopAccessReason(s,op,supplied)||(s.resources.treasury<cost?'No hay suficientes pesos.':'');
  return {cost,reason,available:!reason};
 }
 export function validateMedicalCare(s,roster){
