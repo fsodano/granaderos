@@ -13,7 +13,7 @@ import {mountCampaign} from './mounted-campaign-fixture.mjs';
 function wonMission(){
  let s=order(secureArea(initialCampaign(8,defaultContentPackage()),'buenos_aires','san_nicolas'),{type:'createOfficer',name:'Isabel',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
  s=order(s,{type:'travel',sector:'san_nicolas'});s=order(s,{type:'attack',sector:'san_lorenzo'});
- let b=createBattle([...s.pendingBattle.squad.map(u=>({...u,x:2,y:3})),...s.pendingBattle.missionAllies.map(u=>({...u,x:3,y:3,hp:45}))],{id:s.pendingBattle.id,sector:'san_lorenzo',npcs:s.pendingBattle.npcs,hour:s.hour,width:12,height:10,enemies:[{id:'last-royalist',name:'Último realista',x:4,y:3,hp:10,maxHp:60,weapon:1800}],tiles:Array.from({length:120},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0}))});
+ let b=createBattle([...s.pendingBattle.squad.map(u=>({...u,x:2,y:3})),...s.pendingBattle.missionAllies.map(u=>({...u,x:3,y:3,hp:45}))],{id:s.pendingBattle.id,sector:'san_lorenzo',npcs:s.pendingBattle.npcs,hour:s.hour,width:12,height:10,enemies:[{id:'last-royalist',name:'Último realista',x:4,y:3,hp:20,maxHp:60,weapon:1800}],tiles:Array.from({length:120},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0}))});
  b=actBattle(b,{type:'melee',unitId:'57',targetId:'last-royalist'});assert.equal(b.status,'victory');return saved(sync({campaign:s,battle:b}));
 }
 const apply=(p,a)=>{const b=actBattle(p.battle,a);assert.equal(b.lastError,null,b.lastError);return saved(sync({campaign:p.campaign,battle:b}));};
@@ -33,10 +33,10 @@ test('San Lorenzo settles after actual post-victory exploration, field care, loo
 
 test('mission victory still requires a cleared result and no standing enemies',()=>{
  const original=apply(wonMission(),{type:'explore'});
- for(const change of [b=>b.sectorCleared=false,b=>b.status='defeat',b=>b.mode='combat',b=>{b.units.find(u=>u.side==='enemy').hp=10;},b=>{b.status='victory';b.units.find(u=>u.side==='enemy').hp=10;}]){
+ for(const change of [b=>b.sectorCleared=false,b=>b.status='defeat',b=>b.mode='combat',b=>{b.units.find(u=>u.side==='enemy').hp=20;},b=>{b.status='victory';b.units.find(u=>u.side==='enemy').hp=20;}]){
   const p=structuredClone(original);change(p.battle);assert.ok(dispatchCampaign(p.campaign,report(p)).lastError);
  }
- const routed=structuredClone(original),enemy=routed.battle.units.find(u=>u.side==='enemy');enemy.hp=10;enemy.routed=true;
+ const routed=structuredClone(original),enemy=routed.battle.units.find(u=>u.side==='enemy');enemy.hp=20;enemy.routed=true;
  assert.equal(dispatchCampaign(routed.campaign,report(routed)).lastError,null,'a routed enemy no longer contests a cleared sector');
 });
 

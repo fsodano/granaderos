@@ -24,6 +24,14 @@ Las heridas vendadas y los suministros gastados se conservan al guardar, salir
 del sector y volver. Esto también se aplica al reclutar a un habitante herido.
 La atención no puede usar las vendas de otra persona a distancia.
 
-El tratamiento automático y los efectos completos del estado crítico de los
-soldados siguen pendientes de integración. Esta guía describe el tratamiento
-manual disponible, no todo el comportamiento médico de JA2.
+Un soldado vivo con menos de 15 de salud o sin energía queda inconsciente. No
+puede actuar ni vendarse solo. Recuperar energía no cura una herida crítica.
+Al alcanzar 15 de salud puede recuperar la consciencia si tiene energía, pero
+no recibe puntos de acción hasta su próximo turno normal.
+
+Los enemigos con heridas críticas dejan de disputar el sector. Conservan sus
+heridas y equipo al volver; podés recoger lo que aún tengan. El agotamiento por
+sí solo no termina el combate.
+
+El tratamiento automático y otros efectos avanzados siguen pendientes. Esta
+guía describe el tratamiento manual disponible, no todo el comportamiento de JA2.

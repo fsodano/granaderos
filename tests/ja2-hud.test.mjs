@@ -4,7 +4,7 @@ import {OPERATIVES} from '../game/data.js';
 import {rosterCells,inventoryModel,orderDescriptors,orderAction,slotAction,backpackEquipAction,levelFor} from '../game/ja2-hud.js';
 const tiles=()=>Array.from({length:80},(_,i)=>({x:i%10,y:Math.floor(i/10),type:'grass',blocked:false,cover:0}));
 const merc=(id,extra={})=>({...OPERATIVES[id],...extra});
-function battle(units=[merc(0)],extra={}){return createBattle(units,{width:10,height:8,tiles:tiles(),enemies:[{id:'enemy-0',x:5,y:1,hp:10,weapon:1800,condition:63}],seed:45,...extra});}
+function battle(units=[merc(0)],extra={}){return createBattle(units,{width:10,height:8,tiles:tiles(),enemies:[{id:'enemy-0',x:5,y:1,hp:20,weapon:1800,condition:63}],seed:45,...extra});}
 const players=s=>s.units.filter(u=>u.side==='player');
 const ORDER_IDS=['move','fire','melee','charge','heal','loot','reload','reprime','weapon','stance','overwatch','mount','brace','repair','ration','torch','bolas','free','sight','endTurn','artillery','artilleryMove','artilleryPivot','artilleryReload'];
 test('S1 squad strip: 4 players render 4 filled cells plus 2 empty slots, selection flag follows selectedId',()=>{

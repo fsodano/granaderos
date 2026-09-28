@@ -1,22 +1,23 @@
 import {expandCellScene} from './cell-scene-storage.js';
+import {CRITICAL_HEALTH,refreshMilitaryCondition} from './actor-condition.js';
 
 export function previousDeploymentScene(campaign,request){
  return expandCellScene(request.sceneId?campaign.sceneStates[request.sceneId]:campaign.sectorStates[request.sector]);
 }
 
-// Keep the body identity across visits. Only a new enemy garrison can reuse an
-// identity; a deceased member of the player's force cannot return alive.
+// Keep dead bodies and incapacitated enemy casualties across visits. Only a
+// new enemy garrison can reuse an identity. A casualty never becomes that recruit.
 export function retainedMilitaryBodies(previous,deployed,sector){
  const used=new Set([...deployed,...(previous?.units??[])].map(u=>String(u.id)));
- return (previous?.units??[]).filter(u=>u.hp<=0).map(raw=>{
+ return (previous?.units??[]).filter(u=>u.hp<=0||previous.sectorCleared&&u.side==='enemy'&&u.hp<CRITICAL_HEALTH).map(raw=>{
   const body=structuredClone(raw),existing=deployed.find(u=>String(u.id)===String(raw.id));
   if(existing&&existing.hp!==0){
    if(raw.side!=='enemy')throw Error('Un soldado fallecido no puede volver a entrar vivo.');
-   body.originalUnitId=raw.id;const base=`corpse:${previous.battleId??sector}:${raw.id}`;let id=base,suffix=0;
+   body.originalUnitId=raw.id;const base=`${raw.hp<=0?'corpse':'casualty'}:${previous.battleId??sector}:${raw.id}`;let id=base,suffix=0;
    while(used.has(id))id=`${base}:${++suffix}`;
    body.id=id;used.add(id);
   }
-  return body;
+  return refreshMilitaryCondition(body);
  });
 }
 

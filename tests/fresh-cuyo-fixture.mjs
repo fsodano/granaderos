@@ -1,6 +1,6 @@
 import {firstAidPlan} from '../game/first-aid.js';
 import assert from 'node:assert/strict';
-import {dispatchCampaign,rosterFor,isSupplied} from '../game/campaign.js';
+import {dispatchCampaign,rosterFor,isSupplied,civicStatus} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';
 import {actBattle,endTurn,createBattle,getReachable} from '../game/tactical.js';
 import {artilleryCount} from '../game/economy.js';
@@ -31,9 +31,16 @@ export function freshCuyoRoute({onCheckpoint}={}){
  for(const sector of Object.keys(s.sectors).filter(id=>s.sectors[id].owner==='patriot'))s=order(s,{type:'fortify',sector});
  s=order(s,{type:'travel',sector:'cordoba'});s=order(s,{type:'recruitCivic',id:108,term:'week',destination:'cordoba'});s=order(s,{type:'wait',hours:6});s=workshop(s);
  for(const id of s.squad)if(rosterFor(s).find(o=>o.id===id).weapon!==1802)s=musket(s,id);
- s=saved({campaign:s}).campaign;assert.equal(s.hour,120);assert.equal(s.resources.treasury,2845);
+ s=saved({campaign:s}).campaign;assert.equal(s.hour,120);assert.equal(s.resources.treasury,2587);
  for(const sector of ['mendoza','uspallata','los_patos']){
-  s=order(s,{type:'attack',sector});assert.ok(s.pendingBattle);const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
+  if(sector==='los_patos'){
+   // The mountain casualties need replacements from the controlled reception
+   // site. Pay their contracts and muskets, then return along the actual road.
+   s=order(s,{type:'travel',sector:'mendoza'});s=order(s,{type:'wait',hours:24});const relief=[125,103,127,112,104,117,139].filter(id=>civicStatus(s,id).available).slice(0,6-s.squad.length);
+   for(const id of relief)s=order(s,{type:'recruitCivic',id,term:'week',destination:'mendoza'});if(relief.length)s=order(s,{type:'wait',hours:6});s=workshop(s);for(const id of relief)s=musket(s,id);s=order(s,{type:'travel',sector:'uspallata'});
+   notes.push({stage:'mountain-relief',hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,relief,squad:[...s.squad]});onCheckpoint?.('mountain-relief',s,notes);
+  }
+  onCheckpoint?.(`approach-${sector}`,s,notes);s=order(s,{type:'attack',sector});assert.ok(s.pendingBattle);const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
   const {battle,orders,actions}=fight(request,previous,{scoutCostWeight:.01,avoidCivilians:true});assert.equal(battle.status,'victory',sector);let p={campaign:s,battle:enterSector(request,previous)};
   for(let i=0;i<orders.length;i++){p=tactical(p,orders[i]);if(i===Math.floor(orders.length/2))p=saved(p);}
   assert.deepEqual(p.battle.units,battle.units);assert.deepEqual(p.battle.npcs,battle.npcs);assert.equal(p.battle.seed,battle.seed);assert.equal(p.battle.elapsedSeconds,battle.elapsedSeconds);p=saved(p);p=tactical(p,{type:'explore'});

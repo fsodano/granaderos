@@ -1,6 +1,6 @@
-export const CRITICAL_HEALTH=15;
-export const isCivilianUnconscious=n=>n.hp>0&&(n.hp<CRITICAL_HEALTH||(n.energy??100)<=0);
-const isUnconscious=isCivilianUnconscious;
+import {CRITICAL_HEALTH,isUnconscious} from './actor-condition.js';
+export {CRITICAL_HEALTH} from './actor-condition.js';
+export const isCivilianUnconscious=isUnconscious;
 
 const need=(ok,message)=>{if(!ok)throw Error(message);};
 const unknownOrigin=()=>({attackerId:null,side:'unknown',militia:false,intentional:false});
