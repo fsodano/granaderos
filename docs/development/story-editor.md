@@ -708,3 +708,15 @@ Guardar, salir y volver al sector conserva ese cambio. Una compra posterior
 puede equipar otra pieza. Esto aún no incluye las armas y armaduras de habitantes
 civiles. La [verificación](../verification/secondary-weapon-recovery.md) registra
 los casos de recuperación, regreso y guardado.
+
+
+### Dejar un arma recuperada
+
+En **Equipo y órdenes**, cada arma recuperada tiene **Dejar una pieza en el
+suelo**. La pieza queda en la celda del soldado. Cuesta 4 PA en combate o un
+segundo en exploración. Para recuperarla, cerrá el inventario, elegí **Recoger
+equipo** y hacé clic en esa celda. También funciona si hay un soldado encima.
+La pieza conserva la imagen, los valores, el desgaste y la carga que tenía.
+Guardar, salir y volver al sector mantiene su estado. Por ahora, esta operación
+se aplica a las armas recuperadas guardadas en la mochila. Las armas en uso y
+los suministros tienen seguimiento separado. [Verificación](../verification/drop-recovered-weapons.md).

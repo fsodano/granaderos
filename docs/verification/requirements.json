@@ -510,6 +510,11 @@
       "id": "E-SECONDARY-RECOVERY",
       "path": "docs/verification/secondary-weapon-recovery.md",
       "description": "Military secondary blades transfer once into carried inventory through ordinary body looting, retaining authored definitions and wear. Five simulations and one mounted production-game case pass; related equipment group passes 27/27. Complete regression passes 1137/1137, zero failures/skips, with types, export and 36 baseline comparisons. Exact-head publication remains required."
+    },
+    {
+      "id": "E-DROP-RECOVERED-WEAPONS",
+      "path": "docs/verification/drop-recovered-weapons.md",
+      "description": "One recovered firearm or blade moves from carried inventory to the field and back through normal controls, retaining its authored image, definition, weight and mechanism. Six simulations and one mounted production-game case pass; related group 31/31. Complete regression passes 1144/1144, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
     }
   ],
   "queue": [
@@ -3445,7 +3450,7 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Nine firearms and five blade families match reference base values. Firearm and blade variants/images are authored and retained in character equipment, combat and saves. Enemy roles and militia ranks now support independent primary and secondary blade selections.",
-      "local": "See local suite and preserved parity source; not equivalent to published integration. BATTERYCHOICE-01 tracks explicit saved artillery choice and exact model availability. SECONDARYLOOT-01 tracks finite recovery of military secondary weapons, their authored identity and saved empty source slots.",
+      "local": "See local suite and preserved parity source; not equivalent to published integration. BATTERYCHOICE-01 tracks explicit saved artillery choice and exact model availability. SECONDARYLOOT-01 tracks finite recovery of military secondary weapons, their authored identity and saved empty source slots. DROPWEAPON-01 tracks finite ground placement and collection of recovered weapons.",
       "remaining": "Author fittings/ammunition; finish complete physical inventory, civilian equipment looting, wear and unarmed behavior. SECONDARYLOOT-01 accepts bounded military secondary recovery.",
       "acceptance": "XML values, inventory images, sounds and use in combat",
       "evidence": [
@@ -3454,7 +3459,8 @@
         "E-AUTHORED-BLADES",
         "E-FORCE-BLADES",
         "E-BATTERY-CHOICE",
-        "E-SECONDARY-RECOVERY"
+        "E-SECONDARY-RECOVERY",
+        "E-DROP-RECOVERED-WEAPONS"
       ]
     },
     {
@@ -4688,14 +4694,15 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Published related core exists; full parity acceptance is not established.",
-      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check. SECONDARYLOOT-01 tracks finite recovery of military secondary weapons, their authored identity and saved empty source slots.",
+      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check. SECONDARYLOOT-01 tracks finite recovery of military secondary weapons, their authored identity and saved empty source slots. DROPWEAPON-01 tracks finite ground placement and collection of recovered weapons.",
       "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
         "E-PUBLISHED",
-        "E-SECONDARY-RECOVERY"
+        "E-SECONDARY-RECOVERY",
+        "E-DROP-RECOVERED-WEAPONS"
       ],
       "sourceRow": "JA2-I10",
       "sourceNotes": "The minimum AP, energy and probability weights are game tuning. Enemy-initiated theft and a full inventory-choice policy remain absent. Prepared pack guns now use paid capacity-checked swaps; see [AI field equipment](ai-field-equipment.md). This does not permit taking hidden pack contents from a conscious opponent. Dead-body searches now approach before showing inventory; a live partial pickup and reload retained fifteen of nineteen body cartridges. See [loot approach](loot-approach.md)."
@@ -5690,6 +5697,31 @@
         "tests/secondary-loot.test.mjs",
         "tests/secondary-loot-render.test.mjs",
         "tests/content-blades.test.mjs",
+        "tests/equip-loot.test.mjs"
+      ]
+    },
+    {
+      "id": "DROPWEAPON-01",
+      "group": "Published deliveries",
+      "requirement": "Leave recovered weapons on the field and recover each piece without lost or duplicate custody",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Recovered weapons move once between carried inventory and field cells, retaining authored identity, weight and mechanism through saved return.",
+      "local": "Six simulations and one mounted production-game check pass; related group 31/31. Complete regression 1144/1144, zero failures/skips, with types, export and 36 reference comparisons.",
+      "remaining": "",
+      "acceptance": "Use the real inventory to leave one stored weapon at the soldier feet for four combat AP or one exploration second; collect it from an occupied cell; preserve definition, image, weight, wear, jam, load and unfinished reload through full saves and sector return; keep both pieces when local drop indices collide across fields; reject invalid, absent or unavailable equipment without changing custody.",
+      "evidence": [
+        "E-DROP-RECOVERED-WEAPONS"
+      ],
+      "parents": [
+        "ITEM-01",
+        "JA2-I10",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/drop-recovered-weapons.test.mjs",
+        "tests/drop-recovered-weapons-render.test.mjs",
+        "tests/secondary-loot.test.mjs",
         "tests/equip-loot.test.mjs"
       ]
     }
