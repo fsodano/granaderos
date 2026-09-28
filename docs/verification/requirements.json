@@ -249,7 +249,7 @@
     {
       "id": "E-CHARACTER-SUPPLIES",
       "path": "docs/verification/character-starting-supplies.md",
-      "description": "Per-character finite initial priming, flints, rations, torches, dressings and boleadoras. Mounted authoring covers undo, copy, reset, invalid launch and saved deployment. Real paid arrival and local/historical recruitment preserve zero amounts; torch consumption, renewal, dismissal, rehire and paid workshop service retain actual stocks. Civilian loot/custody and player-created officer allocations remain separate."
+      "description": "Per-character finite initial priming, flints, rations, torches, dressings and boleadoras. Mounted authoring covers undo, copy, reset, invalid launch and saved deployment. Real paid arrival and local/historical recruitment preserve zero amounts; torch consumption, renewal, dismissal, rehire and paid workshop service retain actual stocks. Civilian loot/custody and player-created officer allocations remain separate. PR #66 merged after CI passed at 51e9faf5732c019b779ebee6b551acf635568e72."
     },
     {
       "id": "E-CARTRIDGE-SAVE",
@@ -329,7 +329,7 @@
       "requirement": "Author finite starting personal supplies without refilling on service changes",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Character sheets accept six explicit integer supply counts, including zero. New campaigns allocate once; contracted arrivals and local recruitment use the saved counts. Older packages retain original defaults.",
+      "published": "Character sheets accept six explicit integer supply counts, including zero. New campaigns allocate once; contracted arrivals and local recruitment use the saved counts. Older packages retain original defaults. Merged through PR #66 after exact-head CI.",
       "local": "Editor undo, redo, copy, reset, validation and launch are mounted. Real torch consumption survives save/reload, renewal, dismissal and rehire; workshop service charges for its existing targets. Historical recruitment retains zero quantities.",
       "remaining": "",
       "acceptance": "Author and import valid counts; reject incomplete or unsupported allocations; recruit through normal controls, consume supplies, save, renew and rehire without duplicating them.",
