@@ -49,13 +49,17 @@ Runtime and tests: `cee87d8f96bc55fc0076e3cc7194804297a5961e`.
 The complete local suite passed **590/590 tests**, with no failures or skips, in
 183 seconds. TypeScript, the production export (721 files and 631 asset references)
 and all 36 baseline comparisons passed. The documentation audit retains 172
-requirements, all 50 original and 87 parity rows, and 11 evidence records. Exact-head
-CI must pass before merge. No browser playthrough or loaded-combat performance
+requirements, all 50 original and 87 parity rows, and 11 evidence records. [PR #34](https://github.com/fsodano/granaderos/pull/34)
+merged at `86b25fbe54a380c2404f29c371c9d942e6d50998` after
+[CI for `8682130`](https://github.com/fsodano/granaderos/actions/runs/36364894495/job/108749224573) passed. No browser playthrough or loaded-combat performance
 claim is included.
 
-## Limits and next delivery
+## Limits at this checkpoint
 
 This does not add NPC inventory, loot, capture/custody, paid local contracts,
 death successors or role/stock transfers. It does not add a branching dialogue or
 quest graph. Water encounters remain unsupported. Historical regional gates and
 campaign roles remain fixed. STORY-02 and the complete campaign remain open.
+
+Death-triggered activation is covered by the later [successor delivery](death-successors.md).
+The [requirement register](requirements.json) holds current status for every open item.

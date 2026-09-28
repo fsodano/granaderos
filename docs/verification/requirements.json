@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-27",
-  "baseline": "cee87d8f96bc55fc0076e3cc7194804297a5961e",
+  "baseline": "bb64ac520f8ec1a01d9f77bee510161167a32684",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -62,7 +62,13 @@
     {
       "id": "E-AUTHORED-RESIDENTS",
       "path": "docs/verification/authored-residents.md",
-      "description": "New world residents are created in the editor and encountered in the real campaign, with local recruitment policy, greetings, placement, wounds, death, progression, dismissal and saved identity. Inventory, custody, paid local contracts and successors remain open."
+      "description": "New world residents are created in the editor and encountered in the real campaign, with local recruitment policy, greetings, placement, wounds, death, progression, dismissal and saved identity. Inventory, custody, paid local contracts and successors remain open.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36364894495/job/108749224573"
+    },
+    {
+      "id": "E-DEATH-SUCCESSORS",
+      "path": "docs/verification/death-successors.md",
+      "description": "Civilian and active military death activate a distinct authored resident once, with saved delay/destination, scene protection and chained successors. Mounted editor and save rejection checks pass. Does not transfer campaign roles or goods."
     }
   ],
   "queue": [
@@ -83,7 +89,7 @@
       "ids": [
         "STORY-02"
       ],
-      "action": "Extend connected world identities and health into belongings, custody and death successors, with explicit role/stock transfer, as separate deliveries."
+      "action": "Extend world identities, health and successor activation into belongings, custody, paid local contracts and explicit role/stock transfer, as separate deliveries."
     },
     {
       "order": 3,
@@ -111,6 +117,29 @@
   ],
   "requirements": [
     {
+      "id": "SUCCESSOR-01",
+      "group": "Published deliveries",
+      "requirement": "Activate a distinct authored world resident after confirmed character death",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Author predecessor, delay and exact cells; civilian or active military death schedules one arrival. Waiting survives saves, protects a loaded destination and keeps separate identities, health and bodies.",
+      "local": "The preview transition helper is now connected to confirmed campaign death, saved receipts and real encounter activation.",
+      "remaining": "",
+      "acceptance": "Create the dependency in the mounted editor; cause real civilian and military death; save before/after the deadline; protect a loaded cell; recruit or kill the successor and continue a chain without repeating the activation. Reject forged schedules and reversal of confirmed military death.",
+      "evidence": [
+        "E-DEATH-SUCCESSORS"
+      ],
+      "parents": [
+        "STORY-02"
+      ],
+      "testFiles": [
+        "tests/death-successors.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/content-system.test.mjs",
+        "tests/time-bridge.test.mjs"
+      ]
+    },
+    {
       "id": "RESIDENT-01",
       "group": "Published deliveries",
       "requirement": "Create independent world residents with authored encounters and persistent identity",
@@ -132,7 +161,8 @@
         "tests/story-editor.test.mjs",
         "tests/civilian-interaction.test.mjs",
         "tests/campaign-presence.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/34"
     },
     {
       "id": "CIVILIAN-01",
@@ -1214,14 +1244,15 @@
       "requirement": "New world identities, persistent residents and death successors",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Existing and new authored world residents retain health and death across tactical actions, daily placement, local recruitment, progression, dismissal and saves. Paid bulletin candidates remain off-map.",
-      "local": "The older prototype transition helpers remain a separate snapshot. Published world identity and health are connected; succession remains gated.",
-      "remaining": "Connect editable belongings, NPC looting, custody, paid local contracts, successors and explicit role/stock transfer. Strategic civilian care and unloaded-sector bleeding remain separate work.",
+      "published": "New and existing world residents retain physical identity. Confirmed civilian or active military death can activate a distinct new world successor after a saved delay; earlier bodies and each character health stay separate.",
+      "local": "Preview transitions supplied the core schedule. Published identity, health and successor activation are connected; advanced inventories and role transfer remain separate.",
+      "remaining": "Connect editable belongings, NPC looting, custody, paid local contracts and explicit role/stock transfer. Strategic civilian care and unloaded-sector bleeding remain separate work.",
       "acceptance": "Move an injured NPC, reload, recruit it, confirm death and activate one distinct successor without healing or duplicating goods.",
       "evidence": [
         "E-CONFLICTS",
         "E-CIVILIAN-STATE",
-        "E-AUTHORED-RESIDENTS"
+        "E-AUTHORED-RESIDENTS",
+        "E-DEATH-SUCCESSORS"
       ]
     },
     {
@@ -1230,12 +1261,13 @@
       "requirement": "Branching dialogue, conditions, effects and quests",
       "status": "MISSING",
       "priority": "P1",
-      "published": "Event phrases and fixed historical conversations.",
+      "published": "Event phrases, fixed historical conversations and a configurable greeting for new world residents.",
       "local": "No general authorable quest graph accepted.",
       "remaining": "Implement graph editing, typed effects, role bindings and persistent receipts.",
       "acceptance": "Author and finish alternate quest branches through normal controls, including failures and saves.",
       "evidence": [
-        "E-CONFLICTS"
+        "E-CONFLICTS",
+        "E-AUTHORED-RESIDENTS"
       ]
     },
     {
@@ -3082,13 +3114,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "cee87d8f96bc55fc0076e3cc7194804297a5961e",
-    "total": 590,
-    "passed": 590,
+    "source": "bb64ac520f8ec1a01d9f77bee510161167a32684",
+    "total": 598,
+    "passed": 598,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-AUTHORED-RESIDENTS"
+    "evidenceId": "E-DEATH-SUCCESSORS"
   }
 }
