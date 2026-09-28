@@ -1,6 +1,6 @@
 # Complete CI verification in parallel groups
 
-Workflow/script source: `cb8b732f20e04fb7d9b35093f8dd51b25c9be72b`.
+Workflow/script source: `5ff4186b334a6596eee40c49c4112fac2917f204`.
 
 The previous successful supply PR ran 1,054 tests in one job and took 18m47s.
 The largest single test took 360.9 seconds; the complete fresh historical route
@@ -29,11 +29,11 @@ At this source the manifest contains 178 test files, grouped as 45/45/44/44.
 The initial complete partition run passes 1,073 tests: 240/312/259/262 by group,
 zero failures or skips. Local durations were 259.749, 118.704, 228.845 and
 101.284 seconds. An additional unsupported-target guard leaves the manifest
-unchanged. The complete rerun on the final source also passes **1073/1073**,
+unchanged. The complete application rerun on `cb8b732f20e04fb7d9b35093f8dd51b25c9be72b` also passes **1073/1073**,
 zero failures or skips, with the same 240/312/259/262 case counts. Final group
 durations are 407.342, 141.729, 278.697 and 127.848 seconds; other local suites
 were running concurrently, so these are not hosted-runner performance results.
-Four standalone infrastructure tests verify exact fixture coverage, seven invalid command forms, a non-file target and actual child-test failure propagation. These run in each simulation CI job before the application suite.
+Four standalone infrastructure tests verify exact fixture coverage, seven invalid command forms, a non-file target and actual child-test failure propagation. These run in each simulation CI job before the application suite. The failure-propagation test exposed an inherited Node runner context suppressing nested execution. The final helper clears that internal context before starting its child runner; all four infrastructure cases now pass. The application files and partition manifest remain unchanged. Exact-head CI repeats the entire application suite on this correction.
 The workflow parses and retains each simulation, document, reference, type,
 export and artifact step. The unchanged browser runtime passes types and production export (722 files,
 632 references); all 36 baseline comparisons pass. Documentation validation
