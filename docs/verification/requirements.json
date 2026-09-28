@@ -350,7 +350,13 @@
     {
       "id": "E-PARTIAL-RELOAD",
       "path": "docs/verification/partial-firearm-reloads.md",
-      "description": "Authored firearm loading retains paid partial work on its physical weapon through turns, swaps, collection and active saves. Exploration stops on contact or collapse and credits only elapsed time. Initial route failures are retained and corrected through actual cover, paid care, squad capacity and daylight orders. Final regression: 893 passing tests, zero failures/skips, types, export and all 36 baseline comparisons. This does not establish full strategic ammunition custody or loaded-browser performance."
+      "description": "Authored firearm loading retains paid partial work on its physical weapon through turns, swaps, collection and active saves. Exploration stops on contact or collapse and credits only elapsed time. Initial route failures are retained and corrected through actual cover, paid care, squad capacity and daylight orders. Final regression: 893 passing tests, zero failures/skips, types, export and all 36 baseline comparisons. This does not establish full strategic ammunition custody or loaded-browser performance.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36446078370/job/109008608807"
+    },
+    {
+      "id": "E-WEAPON-READINESS",
+      "path": "docs/verification/authored-weapon-readiness.md",
+      "description": "Authored preparation is included in the first shot and retained as the actor firing position. Finite consecutive shots, actual failed ignition, paid handling, incapacity, strict snapshots, enemy fire, active campaign save, editor launch and pointer/keyboard controls are covered. Exploration controls show actual elapsed seconds. Final complete source: 904 tests pass, zero failures/skips, types, production export and all 36 baseline comparisons. Full directional readiness, hands and strategic ammunition custody remain separate."
     }
   ],
   "queue": [
@@ -399,12 +405,38 @@
   ],
   "requirements": [
     {
+      "id": "WEAPONREADY-01",
+      "group": "Published deliveries",
+      "requirement": "Author included firearm preparation cost and retain the paid firing position",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI is still required before merge. This implementation accepts nonzero authored preparation, charges it within the first shot, and discounts only that part while the actor retains the firing position. Unconfigured and default weapons retain zero preparation.",
+      "local": "Nine simulations and two mounted controls cover real discharges, finite charges, failed ignition, physical handling, invalid states, actual enemy fire, paid campaign save, editor undo/validation and pointer/keyboard continuation. The combined simulation group passes 41 tests, plus two mounted cases. The initial broad source passes 903/903, zero failures/skips, types, export and all 36 baseline comparisons. The final source adds actual exploration seconds in the control and a clock regression; its filtered twelve-case group includes all eleven new cases and one existing project check. Final complete regression passes 904/904, zero failures/skips, types, export and all 36 baseline comparisons.",
+      "remaining": "",
+      "acceptance": "Author a nonzero preparation cost, launch the pinned campaign, pay the first shot and save the cheaper next shot. Keep finite charges, reject invalid readiness and lower the weapon after actual physical work or incapacity.",
+      "evidence": [
+        "E-WEAPON-READINESS"
+      ],
+      "parents": [
+        "TAC-01",
+        "TAC-04",
+        "STORY-06",
+        "INTEGRATION-01",
+        "JA2-I09"
+      ],
+      "testFiles": [
+        "tests/authored-weapon-readiness.test.mjs",
+        "tests/weapon-readiness-controls.test.mjs",
+        "tests/story-editor.test.mjs"
+      ]
+    },
+    {
       "id": "PARTIALRELOAD-01",
       "group": "Published deliveries",
       "requirement": "Complete authored firearm loading across turns and retain work on the physical weapon",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded implementation for this PR; merge to main still requires exact-head GitHub CI. Firearm reloads use available AP, retain paid work on the gun and transfer a cartridge only on completed loading. Exploration retains only elapsed work before contact or incapacity.",
+      "published": "Firearm reloads use available AP, retain paid work on the gun and transfer a cartridge only on completed loading. Exploration retains only elapsed work before contact or incapacity. Merged through PR #83 after exact-head CI.",
       "local": "Six simulations and a mounted battlefield case cover authored long loads, multi-barrel work, posture, swaps, corpse collection, invalid saved work, active campaign save, pointer/keyboard costs and exploration interruption. The overlapping focused group passes 61 tests. The initial broad source passed 878/893 with 15 route/fixture failures. The final source uses cover, finite paid recovery, actual squad capacity and morning arrivals, retaining costs and permanent casualties. The fresh historical route wins at hour 582 and survives saved continuation and four actual contract expiries. All 893 tests pass with zero failures/skips; types, export and baseline checks pass.",
       "remaining": "",
       "acceptance": "Use an authored firearm whose reload cannot fit one turn, pay actual partial work and resume after save; preserve finite charges and the same weapon work across ownership paths, actual interruption and the ordinary controls.",
@@ -415,7 +447,8 @@
         "TAC-01",
         "TAC-04",
         "STORY-06",
-        "INTEGRATION-01"
+        "INTEGRATION-01",
+        "JA2-I09"
       ],
       "testFiles": [
         "tests/partial-firearm-reloads.test.mjs",
@@ -425,7 +458,8 @@
         "tests/fresh-coastal-route.test.mjs",
         "tests/fresh-cuyo-route.test.mjs",
         "tests/fresh-ending-route.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/83"
     },
     {
       "id": "SUPPLYCONDITIONS-01",
@@ -2291,13 +2325,14 @@
       "requirement": "100 AP, exact weapon cycles, long reloads, prone penalty",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "100 AP and reference firearm cycles.",
+      "published": "100 AP and reference firearm cycles. This bounded PR accepts authored preparation within the first shot, retained firing position and actual AP/time controls. Exact-head CI is required before merge.",
       "local": "See local suite and preserved parity source; not equivalent to published integration.",
       "remaining": "Integrate partial loading/readiness and shared costs through interruptions and saves.",
       "acceptance": "Runtime AP deductions and weapon XML match specification",
       "evidence": [
         "E-PUBLISHED",
-        "E-CONFLICTS"
+        "E-CONFLICTS",
+        "E-WEAPON-READINESS"
       ]
     },
     {
@@ -2336,7 +2371,7 @@
       "requirement": "Weather/fouling misfires, 15 AP re-prime, flint durability",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Ignition, weather, priming and weapon condition. This bounded delivery adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time; merge requires exact-head CI.",
+      "published": "Ignition, weather, priming and weapon condition. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI.",
       "local": "See local suite and preserved parity source; not equivalent to published integration.",
       "remaining": "Integrate both hands, full strategic cartridge custody and repair without free charges.",
       "acceptance": "Failed ignition consumes trigger AP but preserves main charge; repair cycle",
@@ -2837,7 +2872,7 @@
       "requirement": "Complete equipment and merchant authoring",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain six finite personal supply quantities. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of six personal supply types can gate dialogue, chapters and failure. Active scenes override stale deployed records; the check does not grant or consume goods. This bounded delivery adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time; merge requires exact-head CI.",
+      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain six finite personal supply quantities. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of six personal supply types can gate dialogue, chapters and failure. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. This bounded PR accepts authored preparation within the first shot, retained firing position and actual AP/time controls. Exact-head CI is required before merge.",
       "local": "Physical inventory, fittings and merchants are more complete locally but not generally authored.",
       "remaining": "Add artillery, ammunition types and pricing, fittings, merchant stock, buyback and replenishment authoring; integrate civilian belongings and complete physical custody.",
       "acceptance": "Create each supported equipment type; buy/use/trade/reload without duplication or lost instance data.",
@@ -2851,7 +2886,8 @@
         "E-CHARACTER-SUPPLIES",
         "E-CIVILIAN-SUPPLIES",
         "E-SUPPLY-CONDITIONS",
-        "E-PARTIAL-RELOAD"
+        "E-PARTIAL-RELOAD",
+        "E-WEAPON-READINESS"
       ]
     },
     {
@@ -3778,14 +3814,16 @@
       "requirement": "Weapon readiness, reload work, jams, and clearing failures are visible and consume the proper resources. G19,47-50.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Published related core exists; full parity acceptance is not established.",
+      "published": "Published related core exists; full parity acceptance is not established. PR #83 publishes paid partial firearm loading, physical tactical work retention and actual AP/time controls with saved continuation. This bounded PR accepts authored preparation within the first shot, retained firing position and actual AP/time controls. Exact-head CI is required before merge.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
       "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-PARTIAL-RELOAD",
+        "E-WEAPON-READINESS"
       ],
       "sourceRow": "JA2-I09",
       "sourceNotes": "Partial loading is a period adaptation. Firing now separates raising and discharge costs, retains readiness between shots and turns, and clears it on physical actions or collapse. Seventeen simulation/save tests cover shared player/AI costs and saved enemy reactions; see [weapon readiness](weapon-readiness.md). Live keyboard and pointer shots confirmed a 6 AP first shot, a 4 AP follow-up, and restored preparation cost after loading. The existing L look cursor now offers paid preparation when already facing a direction, following the pinned v1.13 enhancement. Eleven focused checks cover costs, held items, saved interruptions and full saves; see [look readiness](look-readiness.md). Live L and pointer preparation spent the displayed 2 AP, retained both charges and nine reserve cartridges, and rejected repeated preparation without spending AP. Target-specific turning now uses the pinned v1.13 stance combination in the preview, aim limits, AI and reducer; ten focused tests include actual shots and saved interruptions. See [turning to fire](shot-turning.md). Live keyboard verification charged the displayed 8 AP for turning and firing, then previewed a 4 AP same-direction follow-up. A 12 AP reversal was rejected with 11 AP available and preserved ammunition and facing. The subsequent reference-control correction wins both opening battles with unchanged combat costs; all 1,310 tests pass; see [opening control](opening-control.md). The former failing strategy is recorded in the shot-turning checkpoint. General campaign balance remains open. Physical pointer and live save continuation for partial loading, live readiness save continuation, lower-weapon input, target-change AP and broader balance remain open. Artillery now retains simultaneous crew loading work across turns, spends only the available shared step, and consumes a reserve shot only on completion. Fourteen simulation/save cases, two production UI cases, and a live four-turn wounded-crew check pass; see [artillery loading](artillery-reload-progress.md). Shared crew checks also enforce current interrupt authority, geometry, control class, and exploration timing. The earlier persistence warning was stale: issued cannons already retain identity, ownership, ammunition and unfinished work through returns and reentry; 26 existing lifecycle/reload checks were re-run. See [stationed artillery](stationed-artillery.md). Enemy and militia crews now use real cannon fire, reloads, pivots and short crew approaches, with shared trajectory safety and one AP issue per enemy phase. Nineteen new AI/budget checks include actual phases, saved multi-turn crew loading and continued hired-scout searches. See [autonomous artillery](artillery-ai.md). Relocating cannons, remote crew assembly and distinct ammunition types remain open."
@@ -4709,13 +4747,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "78fdb5b9c802326e6a49fd9ec2be530a70dea9db",
-    "total": 886,
-    "passed": 886,
+    "source": "05362e315ec6402808ac2b3eba89bb2c708ebaa4",
+    "total": 893,
+    "passed": 893,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-SUPPLY-CONDITIONS"
+    "evidenceId": "E-PARTIAL-RELOAD"
   }
 }

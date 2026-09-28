@@ -86,8 +86,11 @@ original sources.
 The final complete release run passes **893/893 tests**, zero failures or skips,
 in 208,795.622 ms. Types, production export (722 files, 632 asset references),
 all 36 baseline comparisons and the documentation audit pass (221 requirements,
-60 evidence records, preserving all 50 original and 87 parity rows). Exact-head
-GitHub CI is still required before this delivery can merge.
+60 evidence records, preserving all 50 original and 87 parity rows).
+[PR #83](https://github.com/fsodano/granaderos/pull/83) merged after
+[GitHub CI](https://github.com/fsodano/granaderos/actions/runs/36446078370/job/109008608807)
+passed at `f571152cae7012c14633b3b953e3e3c0345493c3`. The resulting main commit
+is `88b0be0ab346c9b02a0ccf0c75353e77b6f2f8c5` (28 September, 16:02 UTC).
 
 ## Limits
 
