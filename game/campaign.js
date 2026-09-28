@@ -1,3 +1,4 @@
+import {workshopServiceQuote} from './workshop-service.js';
 import {CARE_ASSIGNMENTS,assignMedicalCare,advanceMedicalCare,validateMedicalCare,medicalSupplyQuote} from './medical-care.js';
 import {enforceHistoricalLoss} from './historical-loss.js';
 import {previousDeploymentScene,withoutPreviousCasualties} from './military-remains.js';
@@ -6,7 +7,7 @@ import {foundryFor} from './campaign-foundry.js';
 import {campaignRole,campaignRoleActive,foundryReason} from './campaign-roles.js';
 import {campaignStory,campaignChapterIndex,advanceCampaignStory,validateCampaignProgress} from './campaign-story.js';
 import {importRulesFor,importOrderReason} from './campaign-imports.js';
-import {headquartersFor,headquartersName,campaignChapters,hasWorkshop} from './campaign-headquarters.js';
+import {headquartersFor,headquartersName,campaignChapters} from './campaign-headquarters.js';
 import {campaignRules} from './campaign-rules.js';
 import {synchronizeDialogueMovements,validateDialogueMovements} from './dialogue-movement.js';
 import {updateContentQuests} from './content-quests.js';
@@ -42,7 +43,7 @@ import {ENCOUNTERS,encounterDefinitions,canRecruitEncounter,encounterForOperativ
 export {ENCOUNTERS,encountersFor} from './encounters.js';
 import {migrateSquads,activeSquad,operativeLocation,synchronizeSquad,validateSectorSnapshot,validatePersonalInventory} from './squads.js';
 export {activeSquad,operativeLocation} from './squads.js';
-import {isImportedEquipment,deliverEquipmentShipments,validEquipmentShipments,EQUIPMENT_CATALOG,equipmentCatalog,refillCost,firearmRepairCost,deployedArtillery} from './equipment.js';
+import {isImportedEquipment,deliverEquipmentShipments,validEquipmentShipments,EQUIPMENT_CATALOG,equipmentCatalog,deployedArtillery} from './equipment.js';
 export {EQUIPMENT_CATALOG,armoryInventory,refillCost,firearmRepairCost} from './equipment.js';
 import {ROYALIST_COMMANDS,NORTHERN_AXIS,coastalRevenue,royalistIntel,mentorDispatch,oppositionFor} from './narrative.js';
 export {ROYALIST_COMMANDS,royalistIntel,mentorDispatch} from './narrative.js';
@@ -253,9 +254,8 @@ export function dispatchCampaign(previous,action){
         s.armory[itemId]--;s.armory[op[slot]]=(s.armory[op[slot]]??0)+1;s.loadouts??={};s.loadouts[id]={...(s.loadouts[id]??{}),[slot]:itemId};note(s,`${op.name} recibe ${WEAPONS[itemId].name}.`);break;
       }
       case 'resupply':case 'repairWeapon':{
-        const id=Number(action.operativeId),op=rosterFor(s).find(o=>o.id===id),record=s.operativeState[id];requireThat(op&&s.recruited.includes(id)&&record.alive,'El combatiente no está disponible.');
-        requireThat(hasWorkshop(s,s.location)&&s.sectors[s.location].owner==='patriot'&&isSupplied(s,s.location),'Debes llegar a un taller bajo tu control y comunicado con el cuartel general.');
-        const cost=action.type==='resupply'?refillCost(record):firearmRepairCost(record);requireThat(cost>0,action.type==='resupply'?'Las provisiones ya están completas.':'El arma ya está en perfecto estado.');pay(s,{treasury:cost});
+        const id=Number(action.operativeId),op=rosterFor(s).find(o=>o.id===id),record=s.operativeState[id],quote=workshopServiceQuote(s,op,action.type,isSupplied(s,s.location));
+        requireThat(quote.available,quote.reason);const cost=quote.cost;pay(s,{treasury:cost});
         if(action.type==='resupply'){record.priming=Math.max(50,record.priming??50);record.flints=Math.max(4,record.flints??4);record.rations=Math.max(2,record.rations??2);record.torches=Math.max(2,record.torches??2);record.medkits=Math.max(2,record.medkits??2);note(s,`${op.name} recibe vendas, sílex, cargas de cebo y raciones por ${cost} pesos.`);}else{record.condition=100;note(s,`La maestranza repara el arma de ${op.name} por ${cost} pesos.`);}break;
       }
       case 'createOfficer':{
