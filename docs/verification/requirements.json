@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "0ae7f73a30c917d14632d1ed8e81f880da51ef7e",
+  "baseline": "61d7130e2e2f9c78ad163b560765d29d9275d7a4",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -240,6 +240,11 @@
       "id": "E-FRESH-CUYO",
       "path": "docs/verification/fresh-cuyo-preparation.md",
       "description": "Fresh stock mixed Retiro/coastal/northern route wins actual Mendoza/Uspallata/Los Patos with replay and midpoint saves, pays supplies, fortifications, controlled arrivals and muskets, treats/recruits the living engineer, rejects early commander recruitment, pays 3000-peso funding and three artillery pieces, then physically recruits San Martin at saved phase 4. Final victory, other forces, advanced systems, independent stories and live performance remain open."
+    },
+    {
+      "id": "E-FRESH-ENDING",
+      "path": "docs/verification/fresh-historical-ending.md",
+      "description": "One untouched stock seed-8 mixed route reaches all thirteen locality victories through actual combat, paid supplies/contracts, controlled arrivals, permanent losses and original mission/project gates. Every final battle replays with campaign time and midpoint saves. Saved victory retains the living commander; 48-hour post-victory income, contract expiry and sector re-entry preserve the ending without reintroducing an expired hire. Other force builds, advanced systems, independent stories and live performance remain open."
     }
   ],
   "queue": [
@@ -253,7 +258,7 @@
         "FIX-03",
         "FIX-04"
       ],
-      "action": "Extend the combined acceptance path beyond Retiro startup and the first hired-squad conquest. Preserve pesos and all hire terms, verify fresh opening routes, then diagnose each reproduced later-route failure. Import advanced systems with their own tests; do not replace the reducer wholesale."
+      "action": "Preserve the accepted fresh mixed published historical route and post-victory continuation. Verify remaining force starts and an independently authored full campaign; diagnose each advanced medical, recapture and prisoner-rescue failure. Import advanced systems with their tests and approved pesos/contract policies one capability at a time; do not replace the reducer wholesale."
     },
     {
       "order": 2,
@@ -287,6 +292,31 @@
     }
   ],
   "requirements": [
+    {
+      "id": "WIN-01",
+      "group": "Published deliveries",
+      "requirement": "Finish a fresh stock historical campaign and continue after saved victory",
+      "status": "VERIFIED",
+      "priority": "P0",
+      "published": "The complete mixed Retiro route wins all thirteen localities without injected outcomes or resources. Real paid service, supplies, finite care, controlled arrivals and losses lead to historical victory with San Martin alive. The created actor stays dead. A 48-hour continuation receives income, expires a daily contract and re-enters the sector without restoring the former hire or repeating the ending.",
+      "local": "Published stock seed 8 and one strategy only. The hired-only and unpaid-only full routes, larger advanced gameplay, authored second campaign and live performance remain separate requirements.",
+      "remaining": "",
+      "acceptance": "Run the complete fresh mixed historical campaign through actual battle settlement and original gates, replay/save the final battles, preserve casualties and real treasury costs, then save victory and continue through income, contract expiry and retained-sector re-entry.",
+      "evidence": [
+        "E-FRESH-ENDING"
+      ],
+      "parents": [
+        "INTEGRATION-01",
+        "QA-01"
+      ],
+      "testFiles": [
+        "tests/fresh-ending-route.test.mjs",
+        "tests/fresh-cuyo-route.test.mjs",
+        "tests/fresh-northern-route.test.mjs",
+        "tests/fresh-coastal-route.test.mjs",
+        "tests/historical-loss.test.mjs"
+      ]
+    },
     {
       "id": "CUYO-01",
       "group": "Published deliveries",
@@ -2088,15 +2118,17 @@
       "requirement": "Campaign end-to-end completion",
       "status": "FAILED",
       "priority": "P0",
-      "published": "Smaller published route tests pass.",
-      "local": "See local suite and preserved parity source; not equivalent to published integration.",
-      "remaining": "Fresh advanced route, established recovery and prisoner rescue fail; complete fresh victory/defeat/recovery acceptance.",
+      "published": "One full fresh mixed stock campaign covers all phases, actual final victory and saved continuation. A separate fresh Mendoza route verifies terminal defeat after an indispensable casualty. The hired-only coastal opening is also accepted.",
+      "local": "The preserved advanced recovery and prisoner-rescue audits still have unresolved acceptance failures. The new stock route covers the published care and equipment model only.",
+      "remaining": "Complete and record the combined advanced victory/defeat/recovery routes, including prisoner rescue and the remaining force starts; preserve the accepted published paths.",
       "acceptance": "Recorded playthrough covering phases, victory and defeat",
       "evidence": [
         "E-PUBLISHED",
         "E-CONFLICTS",
         "E-LOCAL",
-        "E-PROTOTYPE"
+        "E-PROTOTYPE",
+        "E-FRESH-ENDING",
+        "E-HISTORICAL-LOSS"
       ]
     },
     {
@@ -2284,8 +2316,8 @@
       "requirement": "Consolidate published, prototype and advanced local gameplay",
       "status": "FAILED",
       "priority": "P0",
-      "published": "Published baseline is green, but excludes most advanced local gameplay. A fresh paid continuation exposed and fixed deceased-contract save rejection; paid relief now saves its San Nicolas defeat. Full route acceptance remains open. New mixed and hire-only routes now win and save the complete coastal opening through San Lorenzo; northern and ending acceptance remain open. A fresh mixed force now also completes saved Yatasto phase 3 under published rules; advanced-system failures and Cuyo/ending acceptance remain open. A fresh Mendoza tactical victory with Beltran dead now ends the campaign explicitly; successful Cuyo preparation and the historical ending remain open. Successful fresh Cuyo preparation and physical commander incorporation now reach saved phase 4; final victory and advanced integration remain open.",
-      "local": "Both larger suites fail; economy, opening and elite-contract policies differ.",
+      "published": "The published rules now accept a complete fresh mixed historical route, a hired-only coastal opening, explicit historical loss and saved post-victory continuation. Editable content, paid arrivals, permanent casualties, story gates and treasury costs are exercised. Most advanced local gameplay is still outside this integrated release.",
+      "local": "The preserved advanced/prototype audits contain failures and policy differences. Those source-specific results are not replaced by the published route; later concurrent local changes are not yet accepted in main.",
       "remaining": "Import one bounded capability at a time, preserve approved policy and carry its tests into main.",
       "acceptance": "One release has the full combined behavior, passing combined suite, legal complete routes and no undocumented policy regressions.",
       "evidence": [
@@ -2296,7 +2328,8 @@
         "E-FRESH-COASTAL",
         "E-FRESH-NORTHERN",
         "E-HISTORICAL-LOSS",
-        "E-FRESH-CUYO"
+        "E-FRESH-CUYO",
+        "E-FRESH-ENDING"
       ]
     },
     {
@@ -4084,13 +4117,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "0ae7f73a30c917d14632d1ed8e81f880da51ef7e",
-    "total": 799,
-    "passed": 799,
+    "source": "61d7130e2e2f9c78ad163b560765d29d9275d7a4",
+    "total": 800,
+    "passed": 800,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-FRESH-CUYO"
+    "evidenceId": "E-FRESH-ENDING"
   }
 }
