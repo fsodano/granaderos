@@ -746,8 +746,18 @@ arrival time. Dispatch, shipment, depot and subsequent attack carry one exact
 piece with its remaining load, reserves and unfinished work. Local depot choices
 refer to that identity. No new ammunition or generic gun appears on delivery.
 Control loss, blockade, enemies at the destination or full storage delays arrival.
-An occupied depot cannot supply a friendly battery. Current fixed rates are
+An occupied depot cannot supply a friendly battery. Default rates are
 18 hours per cart link and five per flotilla link, with no dispatch fee after
-organizing the network. Mountain crossings by assembled guns, arbitrary-cell
+organizing the network. Campaigns can now author these rates and dispatch fees. Mountain crossings by assembled guns, arbitrary-cell
 routes, bulk capacity and convoy combat remain outside this delivery. See
 [verification and prepared boundaries](../verification/finite-artillery-transport.md).
+
+
+### Authored artillery transport
+
+The story editor pins permission, hours per link and one dispatch fee for each
+cart/flotilla mode. Defaults retain 18/5-hour links and free dispatch after network
+organization. Fees are paid once; an interrupted route delays the same saved gun
+without another charge. Invalid rates or schedules are rejected. The armory
+shares the actual quote and insufficient-funds reason. Crew and geographical
+restrictions remain in force. See [verification](../verification/authored-artillery-transport.md).
