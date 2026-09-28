@@ -8,6 +8,8 @@ export function isContractCharacter(definition){
  const id=legacyOperativeId(definition.id);
  return id===undefined?definition.recruitmentSource==='contract':id>=100;
 }
+export function isWorldCharacter(definition){return legacyOperativeId(definition.id)===undefined&&definition.recruitmentSource==='encounter';}
+export function isHistoricalCharacter(definition){const id=legacyOperativeId(definition.id);return id!==undefined&&id<100;}
 function indexFor(content){
  if(indexes.has(content))return indexes.get(content);
  // The package is immutable during a campaign. Order in the editor cannot move
@@ -24,7 +26,7 @@ export function isContractOperative(state,operative){
  const definition=characterForOperative(state,operative.id);
  return definition?isContractCharacter(definition):CIVIC_RECRUITS.some(o=>o.id===operative.id)&&!state.contentCampaign;
 }
-export function gainsExperience(state,operative){return operative.id===1000||isContractOperative(state,operative)&&operative.progression!=='fixed';}
+export function gainsExperience(state,operative){return operative.id===1000||(isContractOperative(state,operative)||characterForOperative(state,operative.id)?.recruitmentSource==='encounter')&&operative.progression!=='fixed';}
 
 // All deployed and retained actor copies that must agree with pinned definitions.
 export function campaignActors(value){

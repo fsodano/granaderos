@@ -311,3 +311,23 @@ test('the placement map authors a daily range and scene guards, restores edits, 
  if(campaign.location!==campaign.contentPresence.people['person-3'].sector)campaign=dispatchCampaign(campaign,{type:'travel',sector:campaign.contentPresence.people['person-3'].sector});
  campaign=dispatchCampaign(campaign,{type:'visitSector'});assert.equal(campaign.lastError,null);const battle=enterSector(campaign.pendingBattle);assert.ok(battle.npcs.some(n=>n.operativeId===3));assert.ok(decodeSave(encodeSave(campaign,battle)));
 });
+
+test('the actual editor creates a world resident, copies its cell range, undoes deletion and launches a real encounter',async t=>{
+ const m=await mount(t),draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
+ await m.click(m.button('Crear habitante'));await m.input(m.label('Nombre'),'Alma de la Posta');await m.input(m.label('Saludo al conversar'),'Conozco estas tierras.');
+ const box=[...m.document.querySelectorAll('label')].find(l=>l.textContent.includes('Puede incorporarse a la escuadra')).querySelector('input');assert.equal(box.checked,false);await m.click(box);
+ await m.input(m.label('Liderazgo mínimo del interlocutor'),35);await m.input(m.label('Localidad que debe estar liberada'),'retiro');await m.click(m.button('Configurar aparición'));
+ await m.click(m.button('Quitar todas'));await m.click(m.document.querySelector('[data-cell="cell-27-27"]'));await m.click(m.document.querySelector('[data-cell="cell-26-27"]'));
+ const original=draft().characters.at(-1);assert.equal(original.recruitmentSource,'encounter');assert.equal(original.service,'permanent');assert.equal(original.arrivalHours,undefined);assert.equal(original.encounter.requiredLeadership,35);
+ const originalPlacement=draft().placements.find(p=>p.character===original.id);assert.equal(originalPlacement.mode,'once');assert.deepEqual(originalPlacement.sectors,['cell-27-27','cell-26-27']);
+ await m.click(m.button('Duplicar personaje'));const copy=draft().characters.at(-1);assert.notEqual(copy.id,original.id);assert.deepEqual(copy.encounter,original.encounter);assert.deepEqual(draft().placements.at(-1).sectors,originalPlacement.sectors);
+ await m.click(m.button('Eliminar'));assert.ok(!draft().placements.some(p=>p.character===copy.id));assert.ok(!draft().characters.some(c=>c.id===copy.id));
+ await m.click(m.button('Deshacer'));assert.ok(draft().characters.some(c=>c.id===copy.id));await m.click(m.button('Rehacer'));assert.ok(!draft().characters.some(c=>c.id===copy.id));
+ assert.equal(m.button('Iniciar campaña con estas fichas').disabled,false);await m.click(m.button('Iniciar campaña con estas fichas'));
+ let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));const id=operativeIdForCharacter(campaign.contentCampaign.package,original.id);
+ campaign=dispatchCampaign(campaign,{type:'createOfficer',name:'Oficial de la posta',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});assert.equal(campaign.lastError,null);
+ campaign=dispatchCampaign(campaign,{type:'travel',sector:campaign.contentPresence.people[original.id].sector});assert.equal(campaign.lastError,null);
+ campaign=dispatchCampaign(campaign,{type:'visitSector'});assert.equal(campaign.lastError,null);
+ const pair=decodeSave(encodeSave(campaign,enterSector(campaign.pendingBattle))),npc=pair.battle.npcs.find(n=>n.operativeId===id);
+ assert.ok(npc);assert.equal(npc.name,'Alma de la Posta');assert.equal(npc.greeting,'Conozco estas tierras.');assert.equal(npc.recruitable,true);assert.equal(npc.requiredLeadership,35);assert.equal(npc.requiredSector,'retiro');assert.equal(npc.hp,original.attributes.maxHp);
+});

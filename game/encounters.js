@@ -1,6 +1,6 @@
 import {campaignCivilian,civilianDiedHere} from './campaign-civilians.js';
 import {campaignPlace} from './world-cells.js';
-import {characterForOperative} from './content-character-ids.js';
+import {characterForOperative,isWorldCharacter,isContractOperative,operativeIdForCharacter} from './content-character-ids.js';
 import {characterPresentInSector} from './campaign-presence.js';
 import {authoredOperative} from './content-roster.js';
 import {CAMPAIGN_SECTORS,OPERATIVES} from './data.js';
@@ -23,14 +23,22 @@ const local=[
 ];
 const civilians={retiro:['Sargento del cuartel','La instrucción continúa en el patio. Revisá las provisiones de cada hombre antes de marchar.'],san_nicolas:['Maestra de posta','Los desembarcos amenazan las comunicaciones. Quien custodie este paso mantendrá abierto el camino del río.'],santa_fe:['Consignatario del puerto','El comercio trae recursos, pero también atrae a los corsarios. Una guarnición firme protege la recaudación.'],uspallata:['Guía de la cordillera','No suban sin ponchos ni animales de carga. En invierno la nieve decide qué caminos quedan abiertos.'],los_patos:['Enlace pehuenche','Los pasos se abren con acuerdos y respeto. La palabra empeñada aquí debe valer también en el campamento.'],tucuman:['Oficial de la Ciudadela','El norte puede resistir si el Camino Real permanece abierto. Ninguna fortaleza se sostiene sin abastecimiento.'],jujuy:['Arriero de la posta','Las recuas traen provisiones desde Salta. Si cae la Quebrada, habrá que defender cada tramo del camino.'],humahuaca:['Vigía de la quebrada','Desde estas alturas vemos las columnas que bajan del Alto Perú. Avisaremos antes de que alcancen Jujuy.'],san_lorenzo:['Fraile de San Carlos','El convento ofrece abrigo. Afuera, las barrancas dominan el camino que sube desde el río.']};
 export const ENCOUNTERS=[...local.map(n=>({...n,name:[...OPERATIVES,...CIVIC_RECRUITS].find(o=>o.id===n.operativeId).name,x:n.x??3,y:n.y??7})),...Object.entries(civilians).map(([sector,[name,greeting]])=>({id:`local-${sector}`,sector,name,greeting,x:3,y:7,requiredLeadership:0,requiredLiberated:0,requiredSector:sector}))];
+export const canRecruitEncounter=n=>n.operativeId!==undefined&&n.recruitable!==false;
+export function encounterDefinitions(s){
+ const content=s.contentCampaign?.package;
+ return [...ENCOUNTERS,...(content?.characters??[]).filter(isWorldCharacter).map(c=>({
+  id:`authored-${c.id}`,contentId:c.id,operativeId:operativeIdForCharacter(content,c.id),name:c.name,
+  sector:null,x:3,y:7,...c.encounter,
+ }))];
+}
 export function encounterForOperative(id){return ENCOUNTERS.find(n=>n.operativeId===Number(id));}
 export function encountersFor(s,sector){
- return ENCOUNTERS.filter(n=>{
+ return encounterDefinitions(s).filter(n=>{
   if(civilianDiedHere(s,n,sector))return true;
   if(s.civilianState?.people[`npc-${n.id}`]?.health.hp===0)return false;
   if(n.operativeId===undefined)return n.sector===sector;
-  if(n.operativeId>=100||s.recruited.includes(n.operativeId)||s.operativeState?.[n.operativeId]?.alive===false)return false;
   const character=characterForOperative(s,n.operativeId);
+  if((n.operativeId>=100&&!character)||isContractOperative(s,{id:n.operativeId})||s.recruited.includes(n.operativeId)||s.operativeState?.[n.operativeId]?.alive===false)return false;
   return s.contentPresence&&character?characterPresentInSector(s,character.id,sector):n.sector===sector;
  }).map(n=>{
   const op=n.operativeId===undefined?null:authoredOperative(s,{id:n.operativeId,name:n.name});
@@ -42,13 +50,13 @@ export function encounterRequirements(s,npc,actor){
  const liberated=new Set(CAMPAIGN_SECTORS.filter(d=>s.sectors[d.id].owner==='patriot').map(d=>d.id==='retiro'?'buenos_aires':d.id)).size;
  if(actor.leadership<npc.requiredLeadership)return `Necesitás un interlocutor con al menos ${npc.requiredLeadership} puntos de liderazgo.`;
  if(liberated<npc.requiredLiberated)return `Primero asegurá al menos ${npc.requiredLiberated} localidades patriotas.`;
- if(s.sectors[npc.requiredSector]?.owner!=='patriot')return 'Primero liberá esta localidad.';
+ if(npc.requiredSector&&s.sectors[npc.requiredSector]?.owner!=='patriot')return `Primero liberá ${CAMPAIGN_SECTORS.find(d=>d.id===npc.requiredSector)?.name??'la localidad requerida'}.`;
  return null;
 }
 
 // The directory supplies fixed hints and last encounters, not live random rolls.
 export function encounterContacts(s){
- return ENCOUNTERS.filter(n=>n.operativeId!==undefined&&n.operativeId<100&&!s.recruited.includes(n.operativeId)&&s.operativeState?.[n.operativeId]?.alive!==false).flatMap(n=>{
+ return encounterDefinitions(s).filter(n=>canRecruitEncounter(n)&&!isContractOperative(s,{id:n.operativeId})&&!s.recruited.includes(n.operativeId)&&s.operativeState?.[n.operativeId]?.alive!==false).flatMap(n=>{
   const c=characterForOperative(s,n.operativeId),p=c&&s.contentCampaign.package.placements.find(p=>p.character===c.id);
   if(s.contentPresence&&!p)return [];
   const met=s.conversations?.[n.id]?.sector;

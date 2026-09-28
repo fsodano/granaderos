@@ -1,6 +1,6 @@
 import {acknowledgeCivilians,transferCivilian,validateCampaignCivilians,migrateCampaignCivilians} from './campaign-civilians.js';
 import {synchronizeCampaignPresence,validateCampaignPresence} from './campaign-presence.js';
-import {gainsExperience} from './content-character-ids.js';
+import {gainsExperience,characterForOperative,isWorldCharacter} from './content-character-ids.js';
 import {campaignPlace,worldCell,locationId,validWorldLocation,worldOwner,cellTravelPlan,cellTravelReason,cellStepHours,adjacentCells} from './world-cells.js';
 import {compactCellScene,expandCellScene,cellSceneSaveReplacer} from './cell-scene-storage.js';
 import {validateForceWeapon} from './content-force-equipment.js';
@@ -25,7 +25,7 @@ import {validateTraining,TRAINABLE_SKILLS} from './skill-training.js';
 import {militiaCourse,militiaAssignment,MILITIA_COHORT,MILITIA_LIMIT,militiaEligibility} from './militia.js';
 export {militiaCourse,militiaAssignment} from './militia.js';
 import {returnAmmunition} from './ammunition.js';
-import {ENCOUNTERS,encounterForOperative,encountersFor,encounterRequirements} from './encounters.js';
+import {ENCOUNTERS,encounterDefinitions,canRecruitEncounter,encounterForOperative,encountersFor,encounterRequirements} from './encounters.js';
 export {ENCOUNTERS,encountersFor} from './encounters.js';
 import {migrateSquads,activeSquad,operativeLocation,synchronizeSquad,validateSectorSnapshot,validatePersonalInventory} from './squads.js';
 export {activeSquad,operativeLocation} from './squads.js';
@@ -91,6 +91,11 @@ export function isSupplied(s,id){
 export function recruitmentStatus(s,id,local=false){
   if(s.recruited.includes(id))return {available:false,reason:'Ya se encuentra en tus filas.'};
   if(!s.operativeState[id]?.alive)return {available:false,reason:'Ha caído en combate.'};
+  const character=characterForOperative(s,id);
+  if(character&&isWorldCharacter(character)){
+    const reason=!character.encounter.recruitable?'Este habitante no es un recluta.':s.operativeState[id].captured?'Este habitante está cautivo.':!local?'Buscá a este habitante en el mapa y hablá con él o ella.':null;
+    return {available:!reason,reason:reason??'Disponible para incorporarse.'};
+  }
   const conditions={
     3:[true,''],4:[true,''],10:[true,''],
     0:[s.flags.northPact,'Acuerda la defensa autónoma del norte.'],
@@ -248,7 +253,10 @@ export function dispatchCampaign(previous,action){
         acknowledgeCivilians(s,snapshot);requireThat(npc&&actor&&unit&&local&&(local.hp??100)>0&&!local.unconscious&&s.squad.includes(id)&&unit.hp>0&&!unit.unconscious,'El interlocutor no está disponible en este sector.');requireThat(snapshot.mode==='exploration'||snapshot.status==='victory'||snapshot.sectorCleared,'Terminá el combate antes de conversar.');requireThat(Number.isInteger(local.x)&&Number.isInteger(local.y)&&Math.abs(unit.x-local.x)+Math.abs(unit.y-local.y)<=1,'Acercá al combatiente al interlocutor para hablar.');
         requireThat(['friendly','direct','recruit','quest','mission'].includes(action.approach),'La forma de dirigirse al interlocutor es inválida.');
         const quest=questForNPC(s,npc.id);let text=npc.greeting+(quest&&quest.status!=='completed'?` ${quest.offer}`:''),outcome='conversation';
-        if(action.approach==='direct')text=npc.operativeId!==undefined?`Para incorporarme necesito un mando con ${npc.requiredLeadership} de liderazgo, ${npc.requiredLiberated} localidades seguras y que se cumplan mis compromisos regionales.`:npc.greeting;
+        if(action.approach==='direct'){
+          const terms=`un mando con ${npc.requiredLeadership} de liderazgo y ${npc.requiredLiberated} localidades seguras`;
+          text=!canRecruitEncounter(npc)?npc.greeting:npc.recruitable===undefined?`Para incorporarme necesito ${terms} y que se cumplan mis compromisos regionales.`:`Puedo incorporarme sin paga. Necesito ${terms}.${npc.requiredSector?` También debe estar liberada ${sector(npc.requiredSector).name}.`:''}`;
+        }
         if(action.approach==='mission'){requireThat(s.pendingBattle.sceneId==='yatasto','No hay una conferencia pendiente.');text=talkMission(s,npc.id,isSupplied(s,'salta'));outcome='mission';}
         if(action.approach==='quest'){
           requireThat(quest,'Este interlocutor no tiene un encargo pendiente.');requireThat(quest.status!=='completed','El encargo ya fue cumplido.');
@@ -256,10 +264,10 @@ export function dispatchCampaign(previous,action){
           else{requireThat(quest.conditionMet,'Primero asegurá las localidades indicadas en el encargo.');add(s,{treasury:quest.reward});s.quests[quest.id]={...s.quests[quest.id],status:'completed',completedAt:s.hour};recordCityLoyalty(s,{sectorId:quest.sector,kind:'quest',eventId:`npc-${quest.id}`});text=quest.delivery;outcome='questCompleted';note(s,`Encargo cumplido: ${quest.title}. Pago recibido: ${quest.reward} pesos.`);}
         }
         if(action.approach==='recruit'){
-          requireThat(npc.operativeId!==undefined,'Este habitante no es un recluta.');requireThat(!s.recruited.includes(npc.operativeId),'Este combatiente ya se incorporó.');const reason=encounterRequirements(s,npc,actor);requireThat(!reason,reason);
-          const gate=npc.operativeId>=100?civicStatus(s,npc.operativeId,true):recruitmentStatus(s,npc.operativeId,true);requireThat(gate.available,gate.reason);const op=rosterFor(s).find(o=>o.id===npc.operativeId);signContract(s,op,action.term);s.recruited.push(op.id);transferCivilian(s,local);s.operativeState[op.id].location=s.location;if(s.squad.length<6){s.squad.push(op.id);s.pendingBattle.squad.push({...clone(op),...clone(s.operativeState[op.id]),loaded:0,ammo:0});}const line=s.contentCampaign?speechFor(op,'hired'):'Acepto servir junto a ustedes.';text=`${line?.trim()?line+' ':''}${op.name} se incorpora a la fuerza patriota.`;outcome='recruited';note(s,text);
+          requireThat(canRecruitEncounter(npc),'Este habitante no es un recluta.');requireThat(!s.recruited.includes(npc.operativeId),'Este combatiente ya se incorporó.');const reason=encounterRequirements(s,npc,actor);requireThat(!reason,reason);
+          const gate=recruitmentStatus(s,npc.operativeId,true);requireThat(gate.available,gate.reason);const op=rosterFor(s).find(o=>o.id===npc.operativeId);signContract(s,op,action.term);s.recruited.push(op.id);transferCivilian(s,local);s.operativeState[op.id].location=s.location;if(s.squad.length<6){s.squad.push(op.id);s.pendingBattle.squad.push({...clone(op),...clone(s.operativeState[op.id]),loaded:0,ammo:0});}const line=s.contentCampaign?speechFor(op,'hired'):'Acepto servir junto a ustedes.';text=`${line?.trim()?line+' ':''}${op.name} se incorpora a la fuerza patriota.`;outcome='recruited';note(s,text);
         }
-        s.conversations??={};s.conversations[npc.id]={met:true,lastApproach:action.approach,hour:s.hour,sector:s.pendingBattle.sector};s.lastConversation={npcId:npc.id,speaker:npc.name,text,outcome,operativeId:npc.operativeId??null,options:[...(npc.operativeId!==undefined&&!s.recruited.includes(npc.operativeId)?['friendly','direct','recruit']:['friendly','direct']),...(s.pendingBattle.sceneId==='yatasto'?['mission']:[]),...(questForNPC(s,npc.id)&&questForNPC(s,npc.id).status!=='completed'?['quest']:[])]};break;
+        s.conversations??={};s.conversations[npc.id]={met:true,lastApproach:action.approach,hour:s.hour,sector:s.pendingBattle.sector};s.lastConversation={npcId:npc.id,speaker:npc.name,text,outcome,operativeId:npc.operativeId??null,options:[...(canRecruitEncounter(npc)&&!s.recruited.includes(npc.operativeId)?['friendly','direct','recruit']:['friendly','direct']),...(s.pendingBattle.sceneId==='yatasto'?['mission']:[]),...(questForNPC(s,npc.id)&&questForNPC(s,npc.id).status!=='completed'?['quest']:[])]};break;
       }
       case 'visitMission':{
         requireThat(action.mission==='yatasto','La escena solicitada no existe.');requireThat(s.location==='tucuman'&&s.phase>=2,'Viajá a Tucumán después de San Lorenzo para acudir a Yatasto.');requireThat(!s.missions.yatasto?.completed,'La conferencia de Yatasto ya concluyó.');
@@ -402,8 +410,8 @@ export function restoreCampaign(text){
   s.garrisons??={};s.nextMilitiaId??=20000;requireThat(validGarrisons(s),'Las guarniciones guardadas son inválidas.');
   s.quests??={};requireThat(validateQuests(s.quests,s.hour),'Los encargos guardados son inválidos.');
   s.lastConversation??=null;s.conversations??={};
-  requireThat(object(s.conversations)&&Object.entries(s.conversations).every(([id,c])=>[...ENCOUNTERS,...YATASTO_NPCS].some(n=>n.id===id)&&object(c)&&c.met===true&&['friendly','direct','recruit','quest','mission'].includes(c.lastApproach)&&integer(c.hour,0,1e9)&&(c.sector===undefined||validWorldLocation(c.sector)||c.sector==='san_lorenzo')),'Las conversaciones guardadas son inválidas.');
-  requireThat(s.lastConversation===null||(object(s.lastConversation)&&[...ENCOUNTERS,...YATASTO_NPCS].some(n=>n.id===s.lastConversation.npcId)&&typeof s.lastConversation.text==='string'&&s.lastConversation.text.length<2000&&typeof s.lastConversation.speaker==='string'&&s.lastConversation.speaker.length<=100&&Array.isArray(s.lastConversation.options)&&s.lastConversation.options.every(o=>['friendly','direct','recruit','quest','mission'].includes(o))),'El diálogo guardado es inválido.');
+  requireThat(object(s.conversations)&&Object.entries(s.conversations).every(([id,c])=>[...encounterDefinitions(s),...YATASTO_NPCS].some(n=>n.id===id)&&object(c)&&c.met===true&&['friendly','direct','recruit','quest','mission'].includes(c.lastApproach)&&integer(c.hour,0,1e9)&&(c.sector===undefined||validWorldLocation(c.sector)||c.sector==='san_lorenzo')),'Las conversaciones guardadas son inválidas.');
+  requireThat(s.lastConversation===null||(object(s.lastConversation)&&[...encounterDefinitions(s),...YATASTO_NPCS].some(n=>n.id===s.lastConversation.npcId)&&typeof s.lastConversation.text==='string'&&s.lastConversation.text.length<2000&&typeof s.lastConversation.speaker==='string'&&s.lastConversation.speaker.length<=100&&Array.isArray(s.lastConversation.options)&&s.lastConversation.options.every(o=>['friendly','direct','recruit','quest','mission'].includes(o))),'El diálogo guardado es inválido.');
   s.armory??={};s.loadouts??={};s.artillerySelection??=[];requireThat(Array.isArray(s.artillerySelection)&&s.artillerySelection.length<=3&&s.artillerySelection.every(t=>['bronze4','field8','swivel'].includes(t)),'La batería guardada es inválida.');
   requireThat(object(s.armory)&&Object.entries(s.armory).every(([key,v])=>[...equipmentCatalog(s),...EQUIPMENT_CATALOG].some(o=>String(o.item)===key)&&integer(v,0,100000)),'La armería guardada es inválida.');validateArmoryItems(s);
   requireThat(object(s.loadouts)&&Object.entries(s.loadouts).every(([id,slots])=>baseRosterFor(s).some(o=>o.id===Number(id))&&object(slots)&&Object.entries(slots).every(([slot,v])=>['weapon','blade'].includes(slot)&&(v===0&&slot==='weapon'||integer(v,slot==='blade'?1809:1800,1813)))),'Los equipos guardados son inválidos.');
@@ -411,6 +419,7 @@ export function restoreCampaign(text){
   migrateContracts(s);requireThat(object(s.contracts)&&Object.entries(s.contracts).every(([id,c])=>s.recruited.includes(Number(id))&&object(c)&&(c.departurePending===undefined||typeof c.departurePending==='boolean')&&['paid','patriot','legacy'].includes(c.kind)&&['day','week','month'].includes(c.term)&&integer(c.started,0,s.hour)&&(c.expiresAt===null?c.kind!=='paid':integer(c.expiresAt,c.departurePending&&deployed(s,Number(id))?0:s.hour+1,1e9))&&integer(c.paid,0,1e9))&&s.recruited.every(id=>s.contracts[id]),'Los contratos guardados son inválidos.');
   const ids=rosterFor(s).map(o=>o.id),validIds=values=>Array.isArray(values)&&new Set(values).size===values.length&&values.every(id=>ids.includes(id));
   requireThat(validIds(s.recruited)&&validIds(s.squad)&&s.squad.length<=6&&s.squad.every(id=>s.recruited.includes(id)),'El destacamento del archivo es inválido.');
+  requireThat(s.recruited.every(id=>characterForOperative(s,id)?.encounter?.recruitable!==false),'Un habitante no reclutable no puede estar en la escuadra.');
   requireThat(object(s.operativeState)&&rosterFor(s).every(o=>{const r=s.operativeState[o.id];return object(r)&&integer(r.hp,0,o.maxHp)&&integer(r.fatigue,0,100)&&typeof r.alive==='boolean'&&r.alive===(r.hp>0)&&(r.location===undefined||validWorldLocation(r.location));}),'Las hojas de servicio son inválidas.');
   // Older authored saves retained the initial ceiling after gaining a level.
   for(const op of rosterFor(s))if(s.operativeState[op.id].maxHp!==undefined)s.operativeState[op.id].maxHp=op.maxHp;

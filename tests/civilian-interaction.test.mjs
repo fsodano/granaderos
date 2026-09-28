@@ -12,7 +12,7 @@ test('the actual battlefield routes NPC clicks and keyboard selection through at
  const previous=new Map(Object.keys(globals).map(k=>[k,Object.getOwnPropertyDescriptor(globalThis,k)]));for(const[k,v]of Object.entries(globals))Object.defineProperty(globalThis,k,{configurable:true,writable:true,value:v});
  const {default:Battlefield}=await import('../web/app/Battlefield.tsx');const {createRoot}=await import('../web/node_modules/react-dom/client.js');const root=createRoot(document.getElementById('root'));
  t.after(async()=>{try{await act(async()=>root.unmount());}finally{dom.window.close();for(const[k,d]of previous){if(d)Object.defineProperty(globalThis,k,d);else delete globalThis[k];}}});
- let battle=createBattle([{id:'doctor',name:'Médico',x:1,y:1,weapon:1809,medkits:2}],{width:8,height:8,exploration:true,enemies:[],npcs:[{id:'resident',name:'Vecino',x:2,y:1}]});
+ let battle=createBattle([{id:'doctor',name:'Médico',x:1,y:1,weapon:1809,medkits:2}],{width:8,height:8,exploration:true,enemies:[],npcs:[{id:'resident',name:'Vecino',x:2,y:1,operativeId:2000,recruitable:false}]});
  let conversations=0;
  const draw=()=>root.render(h(Battlefield,{battle,onChange:next=>{battle=next;draw();},onFinish:()=>{},onRetreat:()=>{},onTalk:()=>conversations++}));
  const click=async selector=>{const node=document.querySelector(selector);assert.ok(node,selector);await act(async()=>node.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));};
@@ -20,6 +20,9 @@ test('the actual battlefield routes NPC clicks and keyboard selection through at
  await click('[aria-label="Curar"]');const patient=document.querySelector('[data-unit-id="resident"]');assert.match(patient.getAttribute('aria-label'),/Atender a/);await act(async()=>patient.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'Enter',bubbles:true})));
  assert.equal(battle.lastError,null);assert.equal(battle.npcs[0].bleeding,0);assert.equal(battle.units[0].medkits,1);assert.ok(battle.npcs[0].hp<100);assert.equal(conversations,0);
  await act(async()=>document.body.dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'g',bubbles:true})));await click('[data-unit-id="resident"]');assert.ok(document.querySelector('[aria-label="Conversación"]'));
+ assert.ok(![...document.querySelectorAll('[aria-label="Conversación"] button')].some(b=>b.textContent==='Proponer incorporación'));
+ battle={...battle,npcs:battle.npcs.map(n=>({...n,recruitable:true}))};await act(async()=>draw());
+ const recruit=[...document.querySelectorAll('[aria-label="Conversación"] button')].find(b=>b.textContent==='Proponer incorporación');assert.ok(recruit);await act(async()=>recruit.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));assert.equal(conversations,1);
  // A stale open dialogue closes as soon as the actual physical state changes.
  battle={...battle,npcs:battle.npcs.map(n=>({...n,hp:0,unconscious:false,bleeding:0}))};await act(async()=>draw());assert.equal(document.querySelector('[aria-label="Conversación"]'),null);
  assert.match(document.querySelector('[data-unit-id="resident"]').getAttribute('aria-label'),/Muerto/);assert.equal(document.querySelector('[data-unit-id="resident"]').getAttribute('data-posture'),'dead');await click('[data-unit-id="resident"]');assert.equal(document.querySelector('[aria-label="Conversación"]'),null);

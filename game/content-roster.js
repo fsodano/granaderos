@@ -1,7 +1,7 @@
 import {authoredPresentation} from './content-character-presentation.js';
 import {characterForOperative,operativeIdForCharacter,legacyOperativeId,isContractCharacter} from './content-character-ids.js';
 import {CIVIC_DEFAULTS} from './civic-recruits.js';
-// Historical roles keep their original slots. New contract identities never
+// Historical roles keep their original slots. New authored identities never
 // acquire their numeric powers and need no entry in the built-in catalogue.
 export function authoredOperative(state, operative) {
   const definition = characterForOperative(state,operative.id);
