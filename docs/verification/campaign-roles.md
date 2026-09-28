@@ -44,6 +44,11 @@ documentation audit (193 requirements, all 50 original and 87 parity rows,
 32 evidence records); 112 changed local links. Exact-head GitHub checks are
 required before merge.
 
+Accepted in [PR #55](https://github.com/fsodano/granaderos/pull/55) at
+`04d4b5ce4da52c09687e72b7f3a8aeecf3f3f8cc`, with
+[successful exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36387749886/job/108816651510).
+Merged into `main` as `b2c9fb453f255f29d00e0fa1baccf88d1b60c641`.
+
 ## Limits
 
 ROLES-01 assigns two existing strategic privileges. At this checkpoint foundry location, name, setup cost and funding cost retained
