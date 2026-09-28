@@ -138,3 +138,12 @@ test('mission contacts share San Martín health and a dead essential speaker cau
  while(pair.battle.npcs.find(n=>n.id==='yatasto-san-martin').hp>0)pair=act(pair,{type:'melee',targetId:'yatasto-san-martin'});
  assert.equal(pair.campaign.defeated,true);assert.equal(pair.campaign.missions.yatasto.stage,'failed');pair=saved(pair);s=leave(pair);assert.equal(s.defeated,true);assert.ok(saved({campaign:s}));assert.equal(encountersFor(s,'mendoza').some(n=>n.id==='san-martin'),false);
 });
+
+
+test('used medical charges can be bought again at a supplied workshop, with a real price and no free repeat',()=>{
+ let pair=approach(visit(ready(false)));pair=act(pair,{type:'melee',targetId:'cabral'});pair=act(pair,{type:'heal',targetId:'cabral'});
+ let s=leave(pair);s=order(s,{type:'travel',sector:'retiro'});assert.equal(s.operativeState[110].medkits,1);
+ const poor=structuredClone(s);poor.resources.treasury=0;const rejected=dispatchCampaign(poor,{type:'resupply',operativeId:110});assert.ok(rejected.lastError);assert.equal(rejected.operativeState[110].medkits,1);assert.equal(rejected.resources.treasury,0);
+ const cash=s.resources.treasury;s=order(s,{type:'resupply',operativeId:110});assert.equal(s.resources.treasury,cash-10);assert.equal(s.operativeState[110].medkits,2);assert.ok(dispatchCampaign(s,{type:'resupply',operativeId:110}).lastError);
+ pair=visit(saved({campaign:s}).campaign);assert.equal(pair.battle.units[0].medkits,2);
+});

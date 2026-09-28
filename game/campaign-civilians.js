@@ -77,13 +77,18 @@ export function acknowledgeCivilians(s,snapshot){
   definition(n);validateCivilianWounds(n,snapshot);
   const prior=expected.find(v=>v.id===n.id);
   need(prior&&prior.operativeId===n.operativeId&&prior.contentId===n.contentId&&prior.presenceRevision===n.presenceRevision&&!s.recruited.includes(operativeId(n)));
-  compareHistory(campaignCivilian(s,prior),n);
+  const previous=campaignCivilian(s,prior);compareHistory(previous,n);
+  for(const e of civilianIncidents(n).slice(civilianIncidents(previous).length))if(e.side!=='unknown'){
+   const actor=snapshot.units.find(u=>String(u.id)===e.attackerId),source=previous.bleedSource;
+   need(actor&&actor.side===e.side&&Boolean(actor.militia)===e.militia||e.kind==='death'&&source&&['attackerId','side','militia','intentional'].every(k=>source[k]===e[k]),'El responsable de la nueva herida no está en el sector.');
+  }
   remember(s,n,snapshot);
  }
  const commander=snapshot.units.find(u=>u.missionAlly&&Number(u.id)===57);
  if(commander&&request.missionAllies?.some(u=>u.id===57)){
   Object.assign(s.operativeState[57],{hp:Math.ceil(commander.hp),alive:commander.hp>0,energy:commander.energy,bleeding:commander.bleeding??0});
   const record=s.civilianState.people['person-57'];if(record)record.inService=true;
+  if(commander.hp===0)for(const scene of [...Object.values(s.sectorStates),...Object.values(s.sceneStates)])scene.npcs=(scene.npcs??[]).filter(n=>operativeId(n)!==57);
  }
  // A retained tactical scene is only a cache. Keep its physical state in step
  // with the single identity, including the currently loaded request.
