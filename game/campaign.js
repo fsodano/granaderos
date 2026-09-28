@@ -163,7 +163,7 @@ function raid(s,theater,forcedTarget=null){
 }
 function deployed(s,id){return s.pendingBattle?.squad?.some(u=>Number(u.id)===Number(id));}
 function releaseDeferred(s){if(s.pendingBattle)return;for(const id of [...s.recruited])if(s.contracts?.[id]?.departurePending){removeFromService(s,id);note(s,'Un voluntario cumple su contrato y deja el destacamento.');}const raids=s.deferredRaids??[];s.deferredRaids=[];for(const r of raids)raid(s,r.theater,r.target);}
-function tick(s,hours,{joinArrivals=true}={}){
+function tick(s,hours,{joinArrivals=true,stopOnDefeat=true}={}){
   requireThat(Number.isInteger(hours)&&hours>=1&&hours<=240,'El avance debe ser de 1 a 240 horas.');
   for(let i=0;i<hours;i++){
     s.hour++;for(const id of [...s.recruited]){const contract=s.contracts?.[id];if(contract?.expiresAt!==null&&contract?.expiresAt!==undefined&&contract.expiresAt<=s.hour){if(deployed(s,id)){contract.departurePending=true;continue;}const name=rosterFor(s).find(o=>o.id===id)?.name??'Un combatiente';removeFromService(s,id);note(s,`${name} concluye su contrato y deja el destacamento. Su hoja de servicio queda disponible.`);}}
@@ -186,7 +186,7 @@ function tick(s,hours,{joinArrivals=true}={}){
     if(!s.completed&&s.hour%144===0)raid(s,'interior');
     // Resolve same-hour occupation and blockade before admitting imported goods.
     deliverEquipmentShipments(s);
-    receiveDueHires(s,joinArrivals);synchronizeSquad(s);synchronizeCampaignPresence(s);synchronizeDialogueMovements(s);progress(s);if(s.defeated)break;
+    receiveDueHires(s,joinArrivals);synchronizeSquad(s);synchronizeCampaignPresence(s);synchronizeDialogueMovements(s);progress(s);if(s.defeated&&stopOnDefeat)break;
   }
 }
 function travelPath(s,from,to){
@@ -208,7 +208,8 @@ export function dispatchCampaign(previous,action){
         const snapshot=action.sectorState?validateSectorSnapshot(action.sectorState):null;
         if(snapshot)requireThat(snapshot.elapsedSeconds===elapsed,'El parte y el reloj no coinciden.');
         const seconds=(s.secondOfHour??0)+elapsed-previous,hours=Math.floor(seconds/3600);
-        s.secondOfHour=seconds%3600;if(hours)tick(s,hours);
+        // The tactical actions already consumed this whole interval, even if a defeat occurred within it.
+        s.secondOfHour=seconds%3600;if(hours)tick(s,hours,{stopOnDefeat:false});
         // A death is confirmed at this tactical checkpoint, after its time has elapsed.
         if(snapshot){acknowledgeCivilians(s,snapshot);acknowledgeSuccessionDeaths(s,snapshot);}
         s.pendingBattle.syncedSeconds=elapsed;break;

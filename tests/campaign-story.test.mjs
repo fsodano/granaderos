@@ -76,3 +76,9 @@ test('a campaign ending during the approach prevents a new battle, and a defeat 
   let s=order(initialCampaign(42,d),{type:'recruitCivic',id:110,term:'week'});s=order(s,{type:'wait',hours:20});s=order(s,{type:mode.endsWith('travel')?'travel':'attack',sector:'buenos_aires'});assert.equal(s.pendingBattle,null,mode);assert.equal(s.location,'retiro',mode);assert.equal(s.completed,mode.startsWith('victory'));assert.equal(s.defeated,mode.startsWith('defeat'));assert.ok(saved({campaign:s}));
  }
 });
+
+test('a batched tactical checkpoint retains all elapsed time when a deadline ends the campaign partway through it',async()=>{
+ const {actBattle}=await import('../game/tactical.js'),{sync}=await import('./local-contract-fixture.mjs');const d=fixture();d.quests[0].deadlineHours=1;d.campaignStory.failureConditions=[{type:'quest',quest:'river-post',status:'failed'}];let p=choose(readyLocal(undefined,d),'start','accept');const began=p.campaign.hour*3600+(p.campaign.secondOfHour??0),previous=p.battle.elapsedSeconds;let battle=p.battle;
+ for(let i=0;i<18;i++){battle=actBattle(battle,{type:'rest',unitId:battle.units.find(u=>u.side==='player').id});assert.equal(battle.lastError,null);}
+ p=saved(sync({campaign:p.campaign,battle}));assert.equal(p.campaign.defeated,true);assert.equal(p.campaign.hour*3600+(p.campaign.secondOfHour??0),began+battle.elapsedSeconds-previous);assert.equal(p.campaign.contentQuestEvents.at(-1).deadline,began+3600);assert.equal(p.campaign.campaignProgress.outcome.hour,Math.floor((began+3600)/3600));const outcome=structuredClone(p.campaign.campaignProgress.outcome);p=saved(tactical(p,{type:'rest'}));assert.deepEqual(p.campaign.campaignProgress.outcome,outcome);assert.ok(saved({campaign:leave(p)}));
+});
