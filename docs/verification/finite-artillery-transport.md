@@ -74,4 +74,9 @@ TAC-08, ITEM-02 and overall integration remain partial. Gun trading, configurabl
 transport rules, advanced logistics, physical supplies and broader parity require
 separate deliveries. The old [development transport record](../gameplay/campaign/artillery-transport.md)
 has its own dated, larger-economy checks and does not establish these behaviors on
-published main. Exact-head CI remains required before publication.
+published main. Exact-head CI passed before publication.
+
+## Publication
+
+Published in [PR #106](https://github.com/fsodano/granaderos/pull/106) on 2026-09-28.
+Exact head `e6eee1bbe2d627416e5c8040069a26c176acdffd` passed [CI run 36497971084](https://github.com/fsodano/granaderos/actions/runs/36497971084), including the full suite, types and production build. Merge commit: `57c06c71fed581375b380acdf55a4318398dcdfd`. This publication does not close the broader artillery or campaign requirements.

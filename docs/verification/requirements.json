@@ -474,7 +474,7 @@
     {
       "id": "E-ARTILLERY-TRANSPORT",
       "path": "docs/verification/finite-artillery-transport.md",
-      "description": "Exact-gun field dispatch, organized controlled routes, delayed arrival, local depot selection and actual attack deployment retain finite identity, ammunition and loading. Ten simulations and two mounted checks pass; final overlap 22/22 and complete regression 1096/1096 with no failures/skips. Types, export and 36 reference checks pass. A separate malformed-facing probe drove the final shared validation correction. No weight, arbitrary-cell routes or convoy battle claim. Exact-head publication remains required."
+      "description": "Exact-gun field dispatch, organized controlled routes, delayed arrival, local depot selection and actual attack deployment retain finite identity, ammunition and loading. Ten simulations and two mounted checks pass; final overlap 22/22 and complete regression 1096/1096 with no failures/skips. Types, export and 36 reference checks pass. A separate malformed-facing probe drove the final shared validation correction. No weight, arbitrary-cell routes or convoy battle claim. Published by PR #106 after successful exact-head CI."
     },
     {
       "id": "E-ARTILLERY-TRANSPORT-RULES",
@@ -563,7 +563,7 @@
       "requirement": "Transport one retained artillery piece to a controlled local depot and redeploy it without fresh ammunition",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. One retained gun travels to a controlled local depot and enters the next attack with its exact finite load and work.",
+      "published": "Published by PR #106 after successful exact-head CI. One retained gun travels to a controlled local depot and enters the next attack with its exact finite load and work.",
       "local": "Ten simulations and two mounted production-game checks pass 12/12; earlier overlap 37/37 and final transport/emplacement group 22/22. Complete regression passes 1096/1096, zero failures/skips, with types, export and 36 reference checks. A malformed-facing probe was corrected and covered before the final full run.",
       "remaining": "",
       "acceptance": "Recover an actual purchased and fired gun with available local crew, quote organized controlled cart/coastal routes, retain finite load and unfinished work through full saves, delay interrupted delivery, choose the exact local depot gun and consume it once on real attack entry.",
@@ -580,7 +580,8 @@
         "tests/artillery-transport-render.test.mjs",
         "tests/artillery-selection.test.mjs",
         "tests/stationed-artillery.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/106"
     },
     {
       "id": "ARTILLERYPROFILE-01",
@@ -5537,13 +5538,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "fb49f84e6787bc73737a949bd6d0a60282fcf181",
-    "total": 1084,
-    "passed": 1084,
+    "source": "ffa7c8e05fa537ec9cf888f88bcf6b081db45872",
+    "total": 1096,
+    "passed": 1096,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-ARTILLERY-PROFILES"
+    "evidenceId": "E-ARTILLERY-TRANSPORT"
   }
 }
