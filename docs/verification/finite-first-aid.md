@@ -1,6 +1,7 @@
 # Finite field first aid and persistent bandaged wounds
 
-Source: `6708cc15e0d947d38c2d3569cca73ea1c7fae020`.
+Source: `020feff7d0df17e99d289ef916d0a14d57042366`.
+[Player guide](../gameplay/characters/field-first-aid.md).
 
 Manual field care now separates stabilization from ordinary health recovery.
 The same work plan treats soldiers and civilians. A living patient below 15 HP
@@ -58,14 +59,23 @@ casualties and costs are not claims about this new source.
   retains the win and deaths, expires paid service and revisits without spawning
   an expired hire or granting a second ending.
 
+The separate unprotected Mendoza strategy still wins the tactical encounter but
+loses the campaign. Under this source both Beltrán and San Martín die; the saved
+loss reports the commander. The dedicated assigned-engineer tests still isolate
+that role's required death and the exceptions for a completed foundry or authored
+progression. The diary-overflow fix is a separate prerequisite, recorded in
+[its own acceptance](civilian-loss-log.md).
+
 Every tested battle uses ordinary orders, replays with the normal campaign clock
 and saves midway. No money, health, territory, personnel or victory is injected.
 The independent route uses the downloadable authored package; the historical
 route uses untouched default content. Their tactics and replacements changed
 because ordinary wounds now persist. Enemy rules and difficulty were not weakened.
 
-Release checks are in progress. This record will receive their final results
-before publication; it is not yet an exact-head GitHub acceptance record.
+Release checks: **844/844 tests**, zero failures or skips (201,345 ms); type
+check; production export (722 files, 632 asset references); 36 baseline checks;
+documentation audit (212 requirements, all 50 original and 87 parity rows,
+51 evidence records). Exact-head GitHub CI is required before merge.
 
 ## Limits
 

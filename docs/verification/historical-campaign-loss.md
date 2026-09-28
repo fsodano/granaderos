@@ -7,6 +7,11 @@ campaign defeat and shows the responsible character and unfinished project on
 the strategic screen.
 
 Source: `b3dfa12cf81948db95eaabf35e98ad91a2da3a04`.
+
+The later [finite first-aid regression](finite-first-aid.md) retains this defeat
+route with changed casualties: both required Mendoza actors die. The figures
+below remain the checkpoint of this earlier source.
+
 [Recorded route result](../evidence/historical-mendoza-loss-2026-09-28.json).
 
 ## Rules and verification
