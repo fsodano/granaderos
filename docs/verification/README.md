@@ -18,6 +18,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Known residents returning from service](civilian-service-return.md)
 - [Military wounds during strategic hours](strategic-military-wounds.md)
 - [Local militia medical care](strategic-militia-care.md)
+- [Individual militia promotion courses](militia-training-identities.md)
 - [Finite civilian supplies](civilian-finite-supplies.md)
 - [Authored resident verification](authored-residents.md)
 - [Death successor verification](death-successors.md)

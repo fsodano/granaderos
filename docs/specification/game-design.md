@@ -578,3 +578,13 @@ once that hour. The loaded scene owns deployed garrison health. Treatment keeps
 identity and finite equipment through saved reentry; it cannot recreate a
 casualty. See the [bounded verification](../verification/strategic-militia-care.md)
 for the separate unloaded-militia wound clock and custody requirements.
+
+### Individual militia promotion
+
+New paid promotion courses reserve the actual three fit soldiers. Completion
+changes their rank and training attributes without replacing their health,
+weapons or finite supplies. Cancellation or instructor departure returns them
+at the previous rank. Saved identities remain separate from a deployed garrison,
+even if the course completes while another squad is inside the sector. Older
+count-only courses retain their earlier contract. See the
+[verification and compatibility limits](../verification/militia-training-identities.md).

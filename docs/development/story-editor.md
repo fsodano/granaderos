@@ -221,7 +221,7 @@ La sección Armas incluye el armamento de las tropas. Se puede elegir un arma pr
 
 Usá **Configurar armas blancas de enemigos** o **Configurar armas blancas de milicias** para elegir además el arma secundaria de cada tipo de tropa. Cada espacio puede usar una variante distinta. **Arma blanca original** conserva la secundaria original de ese tipo. No significa dejarlo sin arma blanca. Estos campos también participan en deshacer, rehacer, importación, exportación y la protección contra eliminar armas en uso. Se pueden configurar las secundarias sin cambiar las principales.
 
-Las asignaciones se aplican cuando se crea un soldado. Las tropas que ya existen conservan su equipo, munición y desgaste al regresar al sector. Una tropa cuya arma principal es blanca, o no tiene arma principal, no recibe cartuchos ni cebo. Las nuevas tropas enemigas reciben trece cartuchos en total y las milicias seis por defecto. Podés cambiar ambas cantidades en **Reglas**. Se distribuyen entre carga y reserva según la capacidad real del arma.
+Las asignaciones se aplican cuando se crea un soldado. Las tropas que ya existen conservan su equipo, munición y desgaste al regresar al sector y al completar nuevos cursos de ascenso. Elegir otra arma para el nuevo grado no reemplaza el arma de un soldado existente. Una tropa cuya arma principal es blanca, o no tiene arma principal, no recibe cartuchos ni cebo. Las nuevas tropas enemigas reciben trece cartuchos en total y las milicias seis por defecto. Podés cambiar ambas cantidades en **Reglas**. Se distribuyen entre carga y reserva según la capacidad real del arma.
 
 La inteligencia artificial usa los valores del arma elegida. Si lleva un arma de fuego, cambia a la secundaria editada cuando el enemigo está a su alcance o el arma de fuego está descargada y el enemigo está cerca. Vuelve al arma de fuego al alejarse el blanco, si tiene carga o está lo bastante lejos para recargar. Cambiar de mano cuesta los 4 PA habituales. Un soldado derribado se levanta antes de cambiar de arma. Los soldados con arma blanca principal usan su alcance y coste de ataque editados. El equipo recuperado conserva su definición, imagen y carga. Al regresar del combate, la devolución de cartuchos incluye las cargas recuperadas de enemigos. Volver a un combate pendiente usa las existencias reales de los soldados guardados, sin volver a acreditar cargas recuperadas antes.
 
@@ -270,6 +270,14 @@ La atención necesita presencia segura y real en la misma celda. Los mismos
 valores rigen para **Médico de milicias**, que atiende a los heridos de la
 guarnición con sus propias vendas. La pantalla de campaña muestra su salud.
 [Atención a milicias verificada](../verification/strategic-militia-care.md).
+
+Los nuevos cursos de ascenso conservan a los tres soldados que participan.
+Necesitan al menos 15 de salud, más de 10 de energía y no pueden estar sangrando,
+inconscientes, en fuga ni desplegados. El mapa muestra quiénes están en el curso
+y su salud. Ascender no los cura ni repone sus armas o suministros. Suspender el
+curso los devuelve al grado anterior sin devolver los pesos gastados. Las
+partidas antiguas con cursos que solo guardaban cantidades conservan ese
+contrato anterior. [Ascensos y compatibilidad](../verification/militia-training-identities.md).
 
 **Restaurar atención y descanso originales** recupera los valores originales.
 Podés deshacerlo. Las partidas iniciadas conservan sus reglas y las horas de
