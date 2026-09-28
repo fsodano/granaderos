@@ -30,7 +30,10 @@ The full suite passed **725/725 tests**, with no failures or skips (187686 ms).
 Types, production export (721 files, 631 asset references), all 36 numerical
 baseline checks and the documentation audit passed. The register retains
 189 requirements and 28 evidence records. All 103 local links in the changed
-documents resolved. Exact-head CI is required before merge.
+documents resolved. [PR #51](https://github.com/fsodano/granaderos/pull/51)
+was accepted at `0da1b2113db4d291e48e095af90c7e7e2d0e339e` after
+[exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36382300891/job/108800397641)
+passed; merge commit `ff9f42c0ad73c8dba4b0b47c6841f75483a5f2a7`.
 
 - `tests/campaign-headquarters.test.mjs`: all eleven valid bases, invalid/occupied
   bases, older defaults and implicit territory; real free creation, initial
@@ -51,8 +54,9 @@ documents resolved. Exact-head CI is required before merge.
 
 ## Limits
 
-HQ-01 is bounded. Historical contacts, original side quests, import-port identity,
-later chapters and ending rules remain separate. The published armory and raid
+HQ-01 is bounded. Import-port identity was separate at this checkpoint; a later
+delivery adds [import ports and windows](import-supply-rules.md). Historical contacts,
+original side quests, later chapters and ending rules remain separate. The published armory and raid
 models are retained; advanced physical stores and full strategic warfare remain
 unintegrated. Arbitrary headquarters choices are not certified as balanced or
 completable. No independent complete campaign, live-browser or sustained loaded

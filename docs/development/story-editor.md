@@ -110,7 +110,7 @@ El boletín muestra las llegadas pendientes, el destino y el tiempo restante. Ca
 
 Cada arma puede tener su propio nombre, imagen, daño, alcance, costes de disparo, puntería y recarga, capacidad, peso y precio. Se pueden crear variantes de una misma familia y asignarlas a los personajes. La imagen puede ser un archivo PNG, JPEG o WebP de hasta 250 KB. El campo de prueba y la campaña usan la misma definición.
 
-Las variantes aparecen por separado en la armería. Cada ejemplar conserva su identidad, desgaste y atasco al equiparlo o devolverlo. Las familias importadas conservan la entrega por Ensenada y sus demoras por bloqueo. El inventario, las armas recuperadas y el equipo abandonado muestran el nombre y la imagen propios. Disparar, recargar, recuperar un arma, cambiarla y volver al mapa conservan su definición.
+Las variantes aparecen por separado en la armería. Cada ejemplar conserva su identidad, desgaste y atasco al equiparlo o devolverlo. Las familias importadas usan el puerto y los plazos configurados en **Reglas**, con demoras por bloqueo u ocupación. El inventario, las armas recuperadas y el equipo abandonado muestran el nombre y la imagen propios. Disparar, recargar, recuperar un arma, cambiarla y volver al mapa conservan su definición.
 
 Las partidas nuevas del editor guardan estas definiciones por referencia al paquete incluido. La imagen no se repite por cada ejemplar. Al cargar se comprueba la identidad del paquete y cada referencia; también se admiten las definiciones completas guardadas anteriormente. Las campañas normales y las campañas antiguas con solo fichas conservan su catálogo publicado.
 
@@ -158,7 +158,17 @@ El control inicial habilita los destinos de contratación que también tengan in
 
 El escritorio muestra las localidades iniciales; la carta muestra el control actual. La campaña guarda una copia de las opciones y aplica el territorio solo al comenzar. Las conquistas, pérdidas y cambios de lealtad posteriores se conservan al cargar. Los borradores anteriores mantienen el inicio original. El cuartel elegido es el origen de abastecimiento y dispone de sala de armas y taller. Las compras locales, la creación del personaje, las reparaciones y la reposición funcionan con sus reglas de control y comunicación. La pérdida del cuartel termina la campaña. Las incursiones por calendario conservan la protección que antes tenía Retiro.
 
-Revisá **Llegadas** para habilitar la recepción en la nueva base. La contratación conserva sus requisitos de control, infraestructura y bloqueo. Los talleres históricos de Retiro, Córdoba y Mendoza siguen existiendo y requieren comunicación con el cuartel. Ensenada conserva el puerto de importaciones. La selección del cuartel no mueve a los contactos históricos ni cambia los capítulos posteriores; esas funciones y los finales todavía requieren edición.
+Revisá **Llegadas** para habilitar la recepción en la nueva base. La contratación conserva sus requisitos de control, infraestructura y bloqueo. Los talleres históricos de Retiro, Córdoba y Mendoza siguen existiendo y requieren comunicación con el cuartel. El puerto de importaciones se configura por separado. La selección del cuartel no mueve a los contactos históricos ni cambia los capítulos posteriores; esas funciones y los finales todavía requieren edición.
+
+## Puerto y plazos de importación
+
+En **Reglas → Importaciones de armas** podés elegir Buenos Aires, Ensenada, San Nicolás o Santa Fe. **Sin importaciones** impide nuevos pedidos de armas importadas. Las compras locales siguen disponibles y los personajes conservan las armas que ya tienen. Esta regla afecta las familias Brown Bess y Baker y sus variantes; elegir qué familias se importan todavía no está disponible.
+
+Los plazos mínimo y máximo permiten entre 1 y 720 horas enteras. El mínimo no puede superar al máximo. Usá valores iguales para una entrega de plazo fijo. El plazo se sortea una sola vez al comprar y queda guardado con el pedido. **Restaurar importaciones originales** vuelve a Ensenada y al intervalo de 72 a 120 horas; deshacer recupera los valores anteriores.
+
+El pedido necesita el puerto bajo control patriota, comerciantes dispuestos a negociar y la sala de armas del cuartel comunicada. Se paga por adelantado. Un bloqueo permite encargar, pero demora la entrega. La pérdida del puerto también retiene los pedidos. Las incursiones de esa misma hora se resuelven antes de entregar las armas. Al recuperar las condiciones, el pedido se entrega una vez sin cambiar el plazo ni cobrar de nuevo.
+
+La armería muestra el puerto, los plazos y las demoras por bloqueo u ocupación. Deshabilita los pedidos que no se pueden aceptar y conserva las compras locales. Cada variante importada llega como un ejemplar con su propia definición e imagen. El abastecimiento usa la armería general publicada; no hay todavía almacenes portuarios físicos ni transporte de estos pedidos hasta el cuartel. La recepción de contratados se configura por separado en **Llegadas**.
 
 ## Recorrer celdas del mapa
 
@@ -270,3 +280,5 @@ Los mandos históricos conservan su servicio permanente, requisitos de reclutami
 `tests/starting-territory.test.mjs` verifica formato, inicio, contratación y llegada, abastecimiento, ingresos diarios, requisitos de milicia, viajes y entrada real, ataque a un vecino ocupado y guardados. El editor montado configura el territorio, valida límites, deshace y lanza la campaña. La comprobación de escritorio y mapa usa la vista renderizada, sin una sesión de navegador. Ver [territorio inicial](../verification/starting-territory.md).
 
 `tests/campaign-headquarters.test.mjs` comprueba los once destinos, el inicio y suministro alternativos, creación, compra, taller, contratación y viaje reales, entrada y ataque, protección ante incursiones, derrota y guardados. La pérdida del cuartel y el desgaste para probar el taller usan estados preparados, sin afirmar victorias enemigas ni desgaste obtenido en combate. El editor montado configura y lanza la base; el escritorio y cuaderno muestran su nombre. Ver [cuartel general](../verification/campaign-headquarters.md).
+
+`tests/import-supply-rules.test.mjs` verifica puertos, plazos, pedidos deshabilitados, cobro único, plazo guardado, entrega, bloqueo y ocupación, variantes equipadas y guardados. Una incursión naval real que coincide con la entrega conserva el pedido pendiente. El editor y la armería montados cubren los controles, deshacer, lanzar, comprar y mostrar las demoras. Ver [importaciones configurables](../verification/import-supply-rules.md).

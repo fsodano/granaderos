@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "317de6c2481611f3b534129dd59455e49688e5d9",
+  "baseline": "c5787476d3082c8ea1b85e1d1aed55e646680d7d",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -164,7 +164,13 @@
     {
       "id": "E-HEADQUARTERS",
       "path": "docs/verification/campaign-headquarters.md",
-      "description": "Eleven plausible headquarters choices drive actual starting location, supply, creation, purchase, workshop access, hiring, travel, peaceful entry, frontier attack and saved continuation. Existing scheduled-raid protection follows the selected base; a prepared occupation verifies defeat. Mounted editor and rendered desk/journal show the selection. Historical roles, import port, later chapters and endings remain fixed."
+      "description": "Eleven plausible headquarters choices drive actual starting location, supply, creation, purchase, workshop access, hiring, travel, peaceful entry, frontier attack and saved continuation. Existing scheduled-raid protection follows the selected base; a prepared occupation verifies defeat. Mounted editor and rendered desk/journal show the selection. Historical roles, import port, later chapters and endings remain fixed.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36382300891/job/108800397641"
+    },
+    {
+      "id": "E-IMPORT-RULES",
+      "path": "docs/verification/import-supply-rules.md",
+      "description": "Four plausible import ports or disabled orders, saved seeded delivery windows, real payments, unique authored instances, equipping and active saves are covered. Occupation/blockade fixtures check delayed reception; a real same-hour naval raid now precedes delivery. Mounted editor/armory controls preserve settings, orders, disabled states and delay explanations. Physical port custody and transport remain unaccepted."
     }
   ],
   "queue": [
@@ -343,7 +349,7 @@
       "status": "VERIFIED",
       "priority": "P1",
       "published": "The selected compatible locality starts controlled, holds the empty squad and anchors supply. Local purchases, creation, repair and replenishment use it. Arrival remains subject to real reception rules. Scheduled-raid protection and headquarters-loss defeat follow the selected base. Formation UI, editor history and immutable saves preserve the choice.",
-      "local": "Uses published headquarters mechanics. Historical contacts, imports, later chapters and ending roles are not relocated.",
+      "local": "Uses published headquarters mechanics. Historical contacts, later chapters and ending roles are not relocated; import policy is covered separately by IMPORT-01.",
       "remaining": "",
       "acceptance": "Validate all eleven supported locations and older defaults, reject occupied/invalid bases, start a free officer or paid hire at an alternative base, exercise local purchases and workshop costs, real travel, peaceful entry and frontier attack, retain current travel on save, verify raid protection and defeat after prepared occupation, reject altered pinned content, author with undo/default restoration and render the correct formation chapter.",
       "evidence": [
@@ -358,6 +364,32 @@
         "tests/campaign-headquarters-render.test.mjs",
         "tests/story-editor.test.mjs",
         "tests/retiro-start.test.mjs"
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/51"
+    },
+    {
+      "id": "IMPORT-01",
+      "group": "Published deliveries",
+      "requirement": "Author the import port and saved delivery window for imported firearm orders",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Four existing river ports or disabled orders and 1\u2013720-hour delivery windows are authored. A paid order samples its due time once. Ownership, blockade and same-hour raids gate delivery; delayed orders retain their due time and charge. Delivered variants retain their definition and can be equipped. Mounted editor/armory controls show real availability and delay reasons.",
+      "local": "Uses the published general armory and original imported families; physical port depots and cargo transport remain separate.",
+      "remaining": "",
+      "acceptance": "Validate ports, limits and older defaults; author with undo/restoration and launch a delivered order; pay once, save and retain the sampled deadline; hold occupied/blocked and same-hour-raid deliveries; deliver once and equip a variant; reject invalid or altered content; keep local purchases and existing carried imports when new orders are disabled.",
+      "evidence": [
+        "E-IMPORT-RULES"
+      ],
+      "parents": [
+        "STORY-05",
+        "STORY-06",
+        "ECO-01"
+      ],
+      "testFiles": [
+        "tests/import-supply-rules.test.mjs",
+        "tests/equipment-imports.test.mjs",
+        "tests/hiring-arrivals.test.mjs",
+        "tests/story-editor.test.mjs"
       ]
     },
     {
@@ -1202,13 +1234,14 @@
       "requirement": "British imports and timed deliveries",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Imports bought in pesos with timed delivery.",
+      "published": "Imported firearm orders are bought in pesos with authored ports and delivery windows, stored deadlines, blockade/occupation delays, same-hour raid precedence and unique authored instances.",
       "local": "See local suite and preserved parity source; not equivalent to published integration.",
-      "remaining": "Integrate exact used equipment, stock and safe delivery across occupation changes.",
+      "remaining": "Integrate finite merchant stock, physical port custody and cargo transport under control/blockade changes.",
       "acceptance": "Purchase in pesos, inventory and delivery under control/blockade changes; silver resource replaced by PR #12",
       "evidence": [
         "E-PUBLISHED",
-        "E-CONFLICTS"
+        "E-CONFLICTS",
+        "E-IMPORT-RULES"
       ]
     },
     {
@@ -1798,7 +1831,7 @@
       "requirement": "Configurable game rules and campaign roles",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss.",
+      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss. Import port, disabled orders and delivery windows are configurable.",
       "local": "Larger systems still embed many rules and historical identity gates.",
       "remaining": "Extract remaining care, combat, economy, progression, opposition and historical campaign identity rules.",
       "acceptance": "Change supported rules and replace role identities through the editor, then run/save the resulting campaign.",
@@ -1807,7 +1840,8 @@
         "E-CONFLICTS",
         "E-SUPPLY-RULES",
         "E-STARTING-TERRITORY",
-        "E-HEADQUARTERS"
+        "E-HEADQUARTERS",
+        "E-IMPORT-RULES"
       ]
     },
     {
@@ -1816,7 +1850,7 @@
       "requirement": "Complete equipment and merchant authoring",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops.",
+      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows.",
       "local": "Physical inventory, fittings and merchants are more complete locally but not generally authored.",
       "remaining": "Add artillery, ammunition types and pricing, fittings, merchant stock, buyback and replenishment authoring; integrate civilian belongings and complete physical custody.",
       "acceptance": "Create each supported equipment type; buy/use/trade/reload without duplication or lost instance data.",
@@ -1825,7 +1859,8 @@
         "E-PARITY",
         "E-AUTHORED-BLADES",
         "E-FORCE-BLADES",
-        "E-SUPPLY-RULES"
+        "E-SUPPLY-RULES",
+        "E-IMPORT-RULES"
       ]
     },
     {
@@ -1834,7 +1869,7 @@
       "requirement": "Campaign composition and an independent second campaign",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Initial funds, cartridge allotments, locality control/loyalty and headquarters are configurable. Historical contacts, import port, later chapter and ending logic still define the campaign.",
+      "published": "Initial funds, cartridge allotments, locality control/loyalty, headquarters and import port are configurable. Historical contacts, later chapter and ending logic still define the campaign.",
       "local": "No second complete campaign accepted.",
       "remaining": "Author chapters, role identities, objectives and endings; finish an independent second campaign.",
       "acceptance": "Build and finish a distinct campaign with no engine source changes.",
@@ -3631,13 +3666,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "317de6c2481611f3b534129dd59455e49688e5d9",
-    "total": 725,
-    "passed": 725,
+    "source": "c5787476d3082c8ea1b85e1d1aed55e646680d7d",
+    "total": 736,
+    "passed": 736,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-HEADQUARTERS"
+    "evidenceId": "E-IMPORT-RULES"
   }
 }
