@@ -444,7 +444,7 @@
     {
       "id": "E-BATTERY-CHOICE",
       "path": "docs/verification/explicit-artillery-selection.md",
-      "description": "Explicit empty and named battery choices survive actual paid purchases, attack requests, tactical entry and full saves. Effective model counts drive deployment; unavailable quantities cannot invent another model. Four simulations and one mounted production-game check pass within 18 overlapping cases. Full regression passes 1021/1021, zero failures/skips, with types, export and all 36 reference checks; exact-head publication remains required and stationed cannon persistence and autonomous crews remain separate."
+      "description": "Explicit empty and named battery choices survive actual paid purchases, attack requests, tactical entry and full saves. Effective model counts drive deployment; unavailable quantities cannot invent another model. Four simulations and one mounted production-game check pass within 18 overlapping cases. Full regression passes 1021/1021, zero failures/skips, with types, export and all 36 reference checks; published by PR #99 after successful exact-head CI and stationed cannon persistence and autonomous crews remain separate."
     },
     {
       "id": "E-STATIONED-ARTILLERY",
@@ -558,7 +558,7 @@
       "requirement": "Respect explicit empty or named artillery choices in controls, finite model selection and saved deployment",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Empty and named artillery choices retain their meaning through saves and actual tactical entry.",
+      "published": "Published by PR #99 after successful exact-head CI. Empty and named artillery choices retain their meaning through saves and actual tactical entry.",
       "local": "Four simulations and one mounted production-game check pass within 18 overlapping cases. Actual paid stock stays unselected after saving an empty choice; new purchases cannot change it, and later valid choices deploy their exact models. Full regression passes 1021/1021, zero failures/skips, with types, export and all 36 baseline comparisons.",
       "remaining": "",
       "acceptance": "Display effective automatic stock, save explicit no-gun choice, reject invalid model quantities, preserve older selection semantics, and honor the exact selected manifest through tactical entry and complete saves.",
@@ -575,7 +575,8 @@
         "tests/equipment-web.test.mjs",
         "tests/artillery.test.mjs",
         "tests/workshop-service-render.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/99"
     },
     {
       "id": "PATROLRULES-01",
@@ -5334,13 +5335,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "40010d251b5527560e78f521a72d9607fd9ba64e",
-    "total": 1016,
-    "passed": 1016,
+    "source": "f18756ca8104b7c827599404d7c78d14bac9e19a",
+    "total": 1021,
+    "passed": 1021,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-PATROL-RULES"
+    "evidenceId": "E-BATTERY-CHOICE"
   }
 }
