@@ -32,10 +32,10 @@ export function initializeCampaignStory(s){
  s.log=[{hour:0,text:campaignStory(s).introduction}];
 }
 // Campaign objectives use settled campaign state. Do not finish an open scene.
-export function advanceCampaignStory(s){
+export function advanceCampaignStory(s,battle=null){
  const story=campaignStory(s);if(!story||s.campaignProgress.outcome)return;
  const log=value=>{s.log.unshift({hour:s.hour,text:value});s.log=s.log.slice(0,80);};
- if(s.defeated||(story.failureConditions.length>0&&dialogueConditionsMet(s,story.failureConditions))){
+ if(s.defeated||(story.failureConditions.length>0&&dialogueConditionsMet(s,story.failureConditions,battle))){
   s.defeated=true;s.campaignProgress.outcome={type:'defeat',...stamp(s)};log(story.defeat);return;
  }
  if(s.pendingBattle)return;

@@ -6,9 +6,10 @@ import {dialogueConditionsMet,DIALOGUE_PERSON_STATES} from '../game/dialogue-con
 import {dialogueForNPC} from '../game/content-dialogue.js';
 import {secureArea} from './controlled-area-fixture.mjs';
 import {enterSector} from '../game/world.js';
+import {createBattle,endTurn} from '../game/tactical.js';
 import {refreshMilitaryCondition} from '../game/actor-condition.js';
 import {dialoguePackage} from './dialogue-fixture.mjs';
-import {order,saved,visit,leave,tactical,talk,localNPC,readyLocal} from './local-contract-fixture.mjs';
+import {order,saved,visit,leave,tactical,talk,localNPC,readyLocal,hireLocal,sync} from './local-contract-fixture.mjs';
 const gate=(character,state)=>[{type:'character',character,state}];
 const condition=(s,character,state,battle)=>dialogueConditionsMet(s,gate(character,state),battle);
 const healthStates=['conscious','unconscious','wounded','bleeding','stable','healthy'];
@@ -56,4 +57,13 @@ test('a named mission ally uses its current tactical condition before the civili
  let s=order(secureArea(initialCampaign(8,defaultContentPackage()),'buenos_aires','san_nicolas'),{type:'createOfficer',name:'Isabel',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});s=order(s,{type:'travel',sector:'san_nicolas'});s=order(s,{type:'attack',sector:'san_lorenzo'});
  const b=enterSector({...s.pendingBattle,hour:s.hour}),ally=b.units.find(u=>u.missionAlly&&u.id==='57');assert.ok(ally);assert.ok(s.operativeState[57].hp>=15);ally.hp=14;refreshMilitaryCondition(ally);
  assert.equal(condition(s,'person-57','unconscious',b),true);assert.equal(condition(s,'person-57','wounded',b),true);assert.equal(condition(s,'person-57','stable',b),false);assert.equal(condition(s,'person-57','unconscious',{...b,battleId:'other'}),false);
+});
+
+
+test('an authored unconsciousness failure uses actual enemy damage immediately and never mistakes the deployed service sheet for current health',()=>{
+ const d=dialoguePackage();person(d,110).attributes.maxHp=80;d.startingTerritory.buenos_aires.owner='patriot';d.campaignStory={introduction:'Inicio',victory:'Final',defeat:'El sanitario quedó inconsciente.',chapters:[{id:'later',name:'Después',objective:'Esperá.',conditions:[{type:'day',min:1000,max:null}]}],failureConditions:gate('person-110','unconscious')};
+ let p=hireLocal(readyLocal(undefined,d)),s=leave(p);s=order(s,{type:'travel',sector:'retiro'});s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});const r=s.pendingBattle;
+ // Compact geometry and the hostile loadout isolate one actual enemy hit.
+ let battle=createBattle(r.squad.map(u=>({...u,x:1,y:u.id===110?1:6})),{width:12,height:8,id:r.id,sector:r.sector,npcs:r.npcs,seed:45,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[{id:'guard',x:7,y:1,weapon:1802,ammo:0,fatigue:100,marksmanship:100}]});battle=endTurn(battle);assert.equal(battle.units.find(u=>u.id==='110').hp,8);assert.equal(battle.status,'active');assert.equal(s.operativeState[110].hp,80);
+ for(const state of healthStates)assert.equal(condition(s,'person-110',state),false,'deployed health is unknown without its current scene');assert.equal(condition(s,'person-110','unconscious',battle),true);p=saved(sync({campaign:s,battle}));assert.equal(p.campaign.operativeState[110].hp,80);assert.equal(p.campaign.defeated,true);assert.equal(p.campaign.completed,false);assert.equal(p.campaign.campaignProgress.outcome.type,'defeat');assert.ok(p.campaign.pendingBattle);assert.equal(p.battle.units.find(u=>u.id==='110').hp,8);
 });

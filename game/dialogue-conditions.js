@@ -32,9 +32,9 @@ function characterState(s,character,battle,state){
  const identifies=n=>n.operativeId!=null&&Number(n.operativeId)===id||n.contentId===character||id===57&&n.id==='yatasto-san-martin';
  const resident=!s.recruited.includes(id)?scene?.npcs?.find(n=>identifies(n)&&request.npcs?.some(expected=>expected.id===n.id&&identifies(expected))):null;
  const physical=unit??resident??record,alive=unit||resident?physical.hp>0:record?.alive===true;
- const conscious=alive&&!isUnconscious(physical),maxHp=(unit??resident)?.maxHp??(['wounded','healthy'].includes(state)?rosterFor(s).find(o=>o.id===id)?.maxHp:undefined);
+ const physicalKnown=!deployed||Boolean(unit),conscious=physicalKnown&&alive&&!isUnconscious(physical),maxHp=(unit??resident)?.maxHp??(['wounded','healthy'].includes(state)?rosterFor(s).find(o=>o.id===id)?.maxHp:undefined);
  const stable=conscious&&(physical.bleeding??0)===0;
- return {alive,dead:Boolean(record)&&!alive,serving:alive&&!record?.captured&&s.recruited.includes(id),present:alive&&!record?.captured&&!s.recruited.includes(id)&&Boolean(s.contentPresence?.people[character]?.appeared&&s.contentPresence.people[character].sector),conscious,unconscious:alive&&!conscious,wounded:alive&&physical.hp<maxHp,bleeding:alive&&(physical.bleeding??0)>0,stable,healthy:stable&&physical.hp===maxHp};
+ return {alive,dead:Boolean(record)&&!alive,serving:alive&&!record?.captured&&s.recruited.includes(id),present:alive&&!record?.captured&&!s.recruited.includes(id)&&Boolean(s.contentPresence?.people[character]?.appeared&&s.contentPresence.people[character].sector),conscious,unconscious:physicalKnown&&alive&&!conscious,wounded:physicalKnown&&alive&&physical.hp<maxHp,bleeding:physicalKnown&&alive&&(physical.bleeding??0)>0,stable,healthy:stable&&physical.hp===maxHp};
 }
 export function dialogueConditionsMet(s,conditions,battle=null){
  return (conditions??[]).every(c=>{
