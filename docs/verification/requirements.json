@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "5abbe16b3290c41753a1571c15d8b22267ec1f4b",
+  "baseline": "32f7dc096cbdb3c152a79996a337d1fc1f885443",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -250,6 +250,11 @@
       "id": "E-CHARACTER-SUPPLIES",
       "path": "docs/verification/character-starting-supplies.md",
       "description": "Per-character finite initial priming, flints, rations, torches, dressings and boleadoras. Mounted authoring covers undo, copy, reset, invalid launch and saved deployment. Real paid arrival and local/historical recruitment preserve zero amounts; torch consumption, renewal, dismissal, rehire and paid workshop service retain actual stocks. Civilian loot/custody and player-created officer allocations remain separate."
+    },
+    {
+      "id": "E-CARTRIDGE-SAVE",
+      "path": "docs/verification/authored-cartridge-save.md",
+      "description": "A normal authored campaign with 14 initial cartridges reproduced a stale ten-reserve save limit. Pending deployment validation now uses its pinned rule. Real exploration and combat deployments cover 0, 10, 11, 14 and 100, invalid excess reserves, paid issue/refund and duplicate settlement rejection. Actual firing, reload and active save preserve consumption with a 100-round allocation."
     }
   ],
   "queue": [
@@ -297,6 +302,27 @@
     }
   ],
   "requirements": [
+    {
+      "id": "AMMOSAVE-01",
+      "group": "Published deliveries",
+      "requirement": "Save every supported authored cartridge allocation through actual deployment",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Pending squad reserve validation follows the pinned cartridge allowance instead of a fixed ten-round maximum. Authored allocations through 100 save in exploration and combat; out-of-range reserves remain rejected.",
+      "local": "The new scenario exposed a real rejected save at 14 cartridges. Regression coverage includes zero, boundary values, paid issue/refund, finite firing/reload, active save and rejected duplicate departure.",
+      "remaining": "",
+      "acceptance": "Launch a valid authored allowance above the old reserve cap, enter a real scene, save/reload, expend ammunition and settle once without rejecting valid quantities or replenishing spent rounds.",
+      "evidence": [
+        "E-CARTRIDGE-SAVE"
+      ],
+      "parents": [
+        "STORY-05",
+        "STORY-08"
+      ],
+      "testFiles": [
+        "tests/authored-cartridge-save.test.mjs"
+      ]
+    },
     {
       "id": "SUPPLIES-01",
       "group": "Published deliveries",
@@ -2266,7 +2292,7 @@
       "requirement": "Configurable game rules and campaign roles",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss. Import port, disabled orders and delivery windows are configurable. Ordered campaign chapters, global completion/failure conditions and ending text are authored separately from historical progression. Historical profiles can be copied without their implicit roles and removed from an authored campaign. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment.",
+      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss. Import port, disabled orders and delivery windows are configurable. Ordered campaign chapters, global completion/failure conditions and ending text are authored separately from historical progression. Historical profiles can be copied without their implicit roles and removed from an authored campaign. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Pending scene saves accept the full supported authored cartridge range, including zero and 100, without resetting spent rounds.",
       "local": "Larger systems still embed many rules and historical identity gates.",
       "remaining": "Extract remaining care, combat, economy, character progression, opposition and historical campaign identity rules.",
       "acceptance": "Change supported rules and replace role identities through the editor, then run/save the resulting campaign.",
@@ -2282,7 +2308,8 @@
         "E-CAMPAIGN-ROLES",
         "E-FOUNDRY-PROJECT",
         "E-PROJECT-CONDITIONS",
-        "E-CHARACTER-SUPPLIES"
+        "E-CHARACTER-SUPPLIES",
+        "E-CARTRIDGE-SAVE"
       ]
     },
     {
@@ -2333,12 +2360,13 @@
       "requirement": "Portable immutable content, assets and dependency checks",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Pinned sheet/weapon data and versioned content saves.",
+      "published": "Pinned sheet/weapon data and versioned content saves. Pending scene saves accept the full supported authored cartridge range, including zero and 100, without resetting spent rounds.",
       "local": "Full narrative/rule/asset portability is unaccepted.",
       "remaining": "Package all supported content/assets and validate references and migrations.",
       "acceptance": "Export, import in a clean profile, play and reload; later draft edits cannot change the running campaign.",
       "evidence": [
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-CARTRIDGE-SAVE"
       ]
     },
     {
