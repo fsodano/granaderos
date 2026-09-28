@@ -46,6 +46,9 @@ The course panel is separated from the surrounding campaign component to keep
 its selection and eligibility presentation together. These are mounted DOM
 checks, not live-browser acceptance or performance measurements.
 
-Exact-head GitHub CI remains required before merge. Prices, durations, cohort
+[PR #94](https://github.com/fsodano/granaderos/pull/94) merged on 28 September
+2026 at 19:48:49 UTC as `9878f197d76d8a1520299a0f1d307a8695335d40`, after
+[successful exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36472716979/job/109098703148)
+on `00ba9d8f18e41902cb86de01f60b3c3c051d2728`. Prices, durations, cohort
 size, allied autonomy, city redistribution and advanced defense routes remain
 separate requirements.

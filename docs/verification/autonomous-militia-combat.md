@@ -31,7 +31,8 @@ The overlapping militia, equipment and care group passes **72/72**. A subsequent
 readability-only phase refactor passes all ten directly affected autonomy/blade
 checks. All 36 reference comparisons pass. Complete regression passes **983/983**, zero failures or skips (233,294.336 ms),
 on the source above. Types and production export pass; the export contains
-722 files and 632 asset references. Exact-head CI is required before publication.
+722 files and 632 asset references. The documentation audit passes with 233 requirements and 72 evidence records,
+retaining all 50 original and 87 parity rows. Exact-head CI is required before publication.
 
 The mounted combat check starts with paid militia and a wound caused by a real
 enemy attack. Finite physician care stabilizes that soldier. A declared compact

@@ -414,7 +414,13 @@
     {
       "id": "E-MILITIA-CHOICE",
       "path": "docs/verification/militia-course-choice.md",
-      "description": "The production campaign lets the player select new c\u00edvicos or promotion despite existing candidates. Actual payment, course time, saved wounded participants and finite possessions pass; a prepared low-treasury case cannot spend through the disabled control. The overlapping group passes 11/11, types and 36 reference comparisons pass. Complete regression passes 976/976, zero failures/skips. Export and documentation validation pass; exact-head publication remains required."
+      "description": "The production campaign lets the player select new c\u00edvicos or promotion despite existing candidates. Actual payment, course time, saved wounded participants and finite possessions pass; a prepared low-treasury case cannot spend through the disabled control. The overlapping group passes 11/11, types and 36 reference comparisons pass. Complete regression passes 976/976, zero failures/skips. Export and documentation validation pass; PR #94 merged after successful exact-head CI at 00ba9d8f18e41902cb86de01f60b3c3c051d2728.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36472716979/job/109098703148"
+    },
+    {
+      "id": "E-MILITIA-AUTONOMY",
+      "path": "docs/verification/autonomous-militia-combat.md",
+      "description": "Autonomous local defenders use ordinary combat costs, finite authored equipment and saved reactions. Direct commands and selection are blocked while squad medical targeting remains available. Five simulations and two mounted field checks pass within 72 overlapping tests; full regression passes 983/983 with no failures/skips, types, export and all 36 reference comparisons. Exact-head CI remains required. Patrols, redistribution, advanced AI and broader defense acceptance remain separate."
     }
   ],
   "queue": [
@@ -463,12 +469,39 @@
   ],
   "requirements": [
     {
+      "id": "MILITIAAI-01",
+      "group": "Published deliveries",
+      "requirement": "Local militia fight autonomously with finite equipment and distinct player controls",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Normal combat and enemy-first contact grant a single militia phase using remaining AP, actual weapons and finite supplies. Direct militia orders and selection are rejected; status and squad medical targeting remain available.",
+      "local": "Five new simulations and two mounted production field checks pass. The overlapping group passes 72/72; the final refactor passes ten affected checks. Full regression passes 983/983, zero failures/skips, with types, export and all 36 reference comparisons passing. Actual paid wounded militia retain finite shots, wear and earned rank through saved campaign return.",
+      "remaining": "",
+      "acceptance": "Use ordinary phases and reactions, preserve finite AP/equipment and deterministic saves, exclude unconscious defenders, reject manual control, retain medical targeting, and save actual paid survivors, wounds, casualties and earned rank.",
+      "evidence": [
+        "E-MILITIA-AUTONOMY"
+      ],
+      "parents": [
+        "MIL-01",
+        "JA2-S05",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/militia-autonomy.test.mjs",
+        "tests/militia-autonomy-render.test.mjs",
+        "tests/militia-combat-progression.test.mjs",
+        "tests/content-force-equipment.test.mjs",
+        "tests/force-blades.test.mjs",
+        "tests/campaign-rules.test.mjs"
+      ]
+    },
+    {
       "id": "MILITIACHOICE-01",
       "group": "Published deliveries",
       "requirement": "Choose fresh militia cohorts or individual promotion through practical campaign controls",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. The campaign explicitly chooses fresh c\u00edvicos or individual promotion, shows the actual quote and blocks unavailable or unaffordable orders.",
+      "published": "Published on main through PR #94 on 2026-09-28 after successful exact-head CI. The campaign explicitly chooses fresh c\u00edvicos or individual promotion, shows the actual quote and blocks unavailable or unaffordable orders.",
       "local": "Two new mounted campaign tests pass in an 11/11 overlapping group. New paid cohorts no longer require promoting the existing wounded candidates first; selected promotion retains those same people and finite equipment. Types and all 36 reference comparisons pass. Complete regression passes 976/976, zero failures/skips. Export and documentation validation pass.",
       "remaining": "",
       "acceptance": "Select and pay for new militia despite existing promotion candidates, complete the actual hours, then select and finish promotion with the original wounded identities. Display and enforce the real selected cost and availability; preserve course and participants through saved campaign controls.",
@@ -483,7 +516,8 @@
         "tests/militia-course-choice.test.mjs",
         "tests/militia-training-identities-render.test.mjs",
         "tests/militia-web.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/94"
     },
     {
       "id": "MILITIARULES-01",
@@ -2631,9 +2665,9 @@
       "requirement": "C\u00edvicos, Montoneras and veteran line/Granaderos tiers",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Paid local militia cohorts materialize with historical loadouts, fight as local allies and retain actual tactical wounds, casualties and depleted equipment through saved reentry. Individual promotion and advanced militia behavior are tracked separately. PR #89 adds local physician care with finite dressings. PR #90 preserves individual participants through paid promotion. PR #91 advances unloaded wounds and preserves actual finite remains. PR #92 adds combat-earned promotion with persistent opponent credit and disallows new paid veteran courses. PR #93 pins authored promotion thresholds and attribute gains and fixes the large-encounter credit boundary.",
-      "local": "Individual promotion acceptance is tracked by MILITIATRAIN-01; local physician work by MILITIACARE-01. The larger preserved parity source is not equivalent to published integration. Retained militia wound time is tracked by MILITIAWOUND-01. Combat-earned promotion is tracked by MILITIAXP-01. Editable progression is tracked by MILITIARULES-01. The practical course selector is tracked by MILITIACHOICE-01.",
-      "remaining": "Publish the practical course selector, then integrate allied autonomy, redistribution, custody and the remaining advanced militia behavior.",
+      "published": "Paid local militia cohorts materialize with historical loadouts, fight as local allies and retain actual tactical wounds, casualties and depleted equipment through saved reentry. Individual promotion and advanced militia behavior are tracked separately. PR #89 adds local physician care with finite dressings. PR #90 preserves individual participants through paid promotion. PR #91 advances unloaded wounds and preserves actual finite remains. PR #92 adds combat-earned promotion with persistent opponent credit and disallows new paid veteran courses. PR #93 pins authored promotion thresholds and attribute gains and fixes the large-encounter credit boundary. PR #94 adds an explicit choice between fresh cohorts and individual promotion with the actual quote and eligibility.",
+      "local": "Individual promotion acceptance is tracked by MILITIATRAIN-01; local physician work by MILITIACARE-01. The larger preserved parity source is not equivalent to published integration. Retained militia wound time is tracked by MILITIAWOUND-01. Combat-earned promotion is tracked by MILITIAXP-01. Editable progression is tracked by MILITIARULES-01. The practical course selector is tracked by MILITIACHOICE-01. Autonomous combat and distinct controls are tracked by MILITIAAI-01.",
+      "remaining": "Publish bounded autonomous combat after exact-head CI, then integrate peaceful patrols, redistribution, custody and remaining advanced militia behavior.",
       "acceptance": "Training, historical loadouts and distinct behavior",
       "evidence": [
         "E-PUBLISHED",
@@ -2643,7 +2677,8 @@
         "E-MILITIA-WOUNDS",
         "E-MILITIA-COMBAT",
         "E-MILITIA-RULES",
-        "E-MILITIA-CHOICE"
+        "E-MILITIA-CHOICE",
+        "E-MILITIA-AUTONOMY"
       ]
     },
     {
@@ -4634,8 +4669,8 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Paid local militia and saved tactical casualties are published. PRs #89\u201391 add finite local physician care, individual training and unloaded wound deaths with retained actual remains. Autonomous allied turns and distinct control are not integrated.",
-      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
-      "remaining": "Integrate autonomous allied combat and control restrictions, saved reactions and peaceful patrols, city redistribution, and the separate artillery/defense acceptance recorded in the preserved source.",
+      "local": "MILITIAAI-01 accepts the bounded published-engine autonomous phases, saved reactions and control restrictions with actual paid wounded survivors. The preserved advanced source still contains separate patrol, artillery and redistribution scope.",
+      "remaining": "Publish bounded combat autonomy after exact-head CI; integrate peaceful patrols, city redistribution, advanced search/support and separate artillery/defense acceptance recorded in the preserved source.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
@@ -4643,7 +4678,8 @@
         "E-PUBLISHED",
         "E-MILITIA-CARE",
         "E-MILITIA-TRAINING",
-        "E-MILITIA-WOUNDS"
+        "E-MILITIA-WOUNDS",
+        "E-MILITIA-AUTONOMY"
       ],
       "sourceRow": "JA2-S05",
       "sourceNotes": "Live paid training, status cards, rejected manual selection and contextual medical targeting passed. Automatic combat and saved reactions remain unverified live; a validated importable defense demo is provided. Peaceful patrols now advance local militia through fixed map waypoints, one legal step per six seconds, with energy costs and no AP charge. Real contact stops ambient movement. Five focused tests and a live patrol/save check cover this behavior; see [exploration patrols](exploration-patrols.md). Militia now operate nearby friendly cannons using their own eligible crews and finite ammunition; see [autonomous artillery](artillery-ai.md). Strategic medical care now uses a separate local assignment, personal kits, hourly triage and saved stops. Ten simulation/render checks and a live treatment, save, depletion and paid-resupply sequence cover it; see [militia medical care](militia-medical-care.md). Town redistribution is now available through manual rank/quantity transfers and an automatic capacity-aware plan, preserving exact soldiers and finite supplies. Thirteen new simulation/render checks and live transfer, wound, reload and balancing checks cover it; see [city militia distribution](militia-distribution.md). The original manual p. 44 supports this strategic choice; a classic tactical command menu is not established by the cited pages and remains a separate open audit item. Shared friendly allegiance, phase placement and AP refresh are Granaderos adaptations."
@@ -5096,13 +5132,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "b608f1e68b9c34bb4de759850d8e8dadb4d66844",
-    "total": 974,
-    "passed": 974,
+    "source": "d19cef1dfcc7780f46abb04d33652f1a927c1012",
+    "total": 976,
+    "passed": 976,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-MILITIA-RULES"
+    "evidenceId": "E-MILITIA-CHOICE"
   }
 }
