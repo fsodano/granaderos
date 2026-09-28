@@ -23,6 +23,7 @@ import {
   decodeContentSession,
 } from '../../../game/content-placement.js';
 import { createContentTestRange,contentShotPreview } from '../../../game/content-test-range.js';
+import ArtilleryProfiles from './ArtilleryProfiles';
 import { actBattle, endTurn, weaponFor } from '../../../game/tactical.js';
 import { initialCampaign } from '../../../game/campaign.js';
 import { encodeSave } from '../../../game/save.js';
@@ -92,6 +93,7 @@ export default function ContentEditor() {
   const [past, setPast] = useState<any[]>([]);
   const [future, setFuture] = useState<any[]>([]);
   const [tab, setTab] = useState('characters');
+  const [weaponKind,setWeaponKind]=useState('handheld');
   const [selected, setSelected] = useState('person-0');
   const [searches, setSearches] = useState<Record<string, string>>({});
   const [notice, setNotice] = useState('');
@@ -512,7 +514,8 @@ export default function ContentEditor() {
           </button>
         ))}
       </nav>
-      {tab === 'rules' ? <CampaignRules draft={draft} onChange={change}/> : tab === 'quests' ? <QuestEditor draft={draft} onChange={change}/> : tab === 'arrivals' ? <ArrivalSites draft={draft} onChange={change}/> : tab !== 'test' ? (
+      {tab==='weapons'&&<nav aria-label="Tipos de armas"><button aria-pressed={weaponKind==='handheld'} onClick={()=>setWeaponKind('handheld')}>Armas portátiles</button><button aria-pressed={weaponKind==='artillery'} onClick={()=>setWeaponKind('artillery')}>Artillería</button></nav>}
+      {tab==='weapons'&&weaponKind==='artillery'?<ArtilleryProfiles draft={draft} onChange={change}/>:tab === 'rules' ? <CampaignRules draft={draft} onChange={change}/> : tab === 'quests' ? <QuestEditor draft={draft} onChange={change}/> : tab === 'arrivals' ? <ArrivalSites draft={draft} onChange={change}/> : tab !== 'test' ? (
         <div className="editor-columns">
           <aside>
             <h2>
