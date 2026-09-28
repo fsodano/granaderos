@@ -655,3 +655,19 @@ la pieza. La ruta debe seguir controlada y ser apta para el transporte; estas
 reglas no eliminan la dotación ni las restricciones de costa y montaña. Deshacer,
 rehacer y restaurar las reglas originales funcionan. Los cambios del borrador
 solo se aplican a nuevas campañas. [Verificación](../verification/authored-artillery-transport.md).
+
+
+## Vender y recomprar artillería
+
+En un taller controlado y comunicado con el cuartel general, la armería muestra
+**Comercio de piezas**. Podés vender una pieza sin emplazar, del depósito local
+o emplazada junto al taller. Para esta última, la escuadra necesita su dotación
+completa disponible. El taller muestra sus fondos, su precio y el motivo de un
+rechazo. Las escenas pendientes y los enemigos presentes impiden la operación.
+
+El taller guarda cada pieza con su munición y su recarga. Recomprarla la devuelve
+al depósito local. Una venta o compra repetida no duplica la pieza ni el pago.
+Los precios de cada modelo se toman de **Armas → Artillería**. Por ahora, el taller
+empieza con 1.200 pesos, paga 40% del precio (30% en Córdoba, 50% en Mendoza) y
+cobra 80% para recomprar. Estos porcentajes y fondos todavía no se editan. No hay
+venta a distancia ni renovación automática de caja. [Verificación](../verification/finite-artillery-trading.md).

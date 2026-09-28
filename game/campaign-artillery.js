@@ -70,7 +70,7 @@ export function ownedArtilleryCount(s){
 }
 export function validateCampaignArtillery(s){
  need(s.artilleryVersion===1&&Number.isSafeInteger(s.nextArtilleryId)&&s.nextArtilleryId>=1&&s.nextArtilleryId<=1e9,'El registro de piezas es inválido.');const ids=new Set();
- for(const b of [...Object.values(s.sectorStates??{}),...Object.values(s.sceneStates??{}),...Object.values(s.artilleryDepots??{}).map(artillery=>({artillery})),...(s.artilleryTransfers??[]).map(t=>({artillery:[t.gun]}))])for(const g of list(b.artillery??[])){if(/^piece-[1-9][0-9]*$/.test(g.id))need(Number(g.id.slice(6))<s.nextArtilleryId,'La secuencia de piezas es inválida.');need(!ids.has(g.id),'Una pieza no puede estar en dos sectores.');ids.add(g.id);}
+ for(const b of [...Object.values(s.sectorStates??{}),...Object.values(s.sceneStates??{}),...Object.values(s.artilleryDepots??{}).map(artillery=>({artillery})),...(s.artilleryTransfers??[]).map(t=>({artillery:[t.gun]})),...Object.values(s.artilleryMerchants??{}).map(shop=>({artillery:shop.guns}))])for(const g of list(b.artillery??[])){if(/^piece-[1-9][0-9]*$/.test(g.id))need(Number(g.id.slice(6))<s.nextArtilleryId,'La secuencia de piezas es inválida.');need(!ids.has(g.id),'Una pieza no puede estar en dos sectores.');ids.add(g.id);}
  if(s.pendingBattle){
   const r=s.pendingBattle;validateArtilleryDeployment(r);
   for(const id of r.artilleryDeployment.issued){need(!ids.has(id),'Una pieza desplegada ya existe en otro sector.');if(/^piece-[1-9][0-9]*$/.test(id))need(Number(id.slice(6))<s.nextArtilleryId,'La secuencia de piezas es inválida.');}
