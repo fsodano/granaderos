@@ -48,7 +48,8 @@ required before merge.
 
 FOUNDRY-01 configures one strategic project. It does not create or move tactical
 buildings, rename the geographic map, change original missions or replace their
-Cuyo control, artillery and fortification requirements. Other economic services,
-project-based chapter conditions, artillery authoring, faction/world composition
-and complete alternate-campaign acceptance remain open. No complete historical
+Cuyo control, artillery and fortification requirements. The subsequent [project conditions delivery](project-conditions.md) connects
+preparation/funding to chapters and dialogue. Other economic services, artillery
+authoring, faction/world composition and complete alternate-campaign acceptance
+remain open. No complete historical
 campaign, live browser session or sustained loaded-combat performance is claimed.

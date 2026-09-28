@@ -140,6 +140,16 @@ block the service without deleting preparation. Treasury, logs and historical
 preparation text reflect configured names/prices. This does not move tactical
 buildings, change the map geography or replace the original Cuyo mission gates.
 
+## Project conditions
+
+Dialogue and authored campaign conditions can require foundry preparation or army
+funding to be complete or pending. They read the actual persistent step; hiring or
+elapsed time is not completion. Conditions do not apply or pay for projects.
+Completed steps remain true after the responsible character leaves or the locality
+changes control. Authors can combine separate service and control conditions when
+needed. Dialogue eligibility is rechecked at selection; ordered chapter history,
+scene settlement and failure precedence retain their existing rules.
+
 ## Player flow
 
 The title offers a new campaign, continuation, import/export, help and editor

@@ -66,7 +66,7 @@ La localidad debe estar bajo tu control y el responsable de fundición debe esta
 
 Una fundición organizada ofrece reparación y abastecimiento en su localidad mientras esté bajo tu control y comunicada con el cuartel. Los talleres que ya existían siguen disponibles. Una ocupación o un corte de suministro bloquean esos servicios; no borran la preparación pagada. Podés deshacer cambios, restaurar los valores originales y probarlos en una campaña nueva.
 
-Esta opción no mueve edificios tácticos ni cambia los nombres del mapa. La campaña histórica todavía requiere controlar y fortificar Mendoza y los pasos de Cuyo, comprar tres cañones y acordar el paso con los pehuenches. Sus textos de preparación muestran el proyecto y precio elegidos. Para otra historia, usá capítulos propios. Las condiciones de capítulo sobre proyectos y la edición de otros servicios siguen pendientes.
+Esta opción no mueve edificios tácticos ni cambia los nombres del mapa. La campaña histórica todavía requiere controlar y fortificar Mendoza y los pasos de Cuyo, comprar tres cañones y acordar el paso con los pehuenches. Sus textos de preparación muestran el proyecto y precio elegidos. Para otra historia, usá capítulos propios. Podés usar la organización y la financiación como condiciones de capítulos o diálogos. La edición de otros servicios sigue pendiente.
 
 ## Diálogos con opciones
 
@@ -81,6 +81,14 @@ Deshacer, rehacer, duplicar, recuperar el borrador e importar/exportar conservan
 El juego comprueba las condiciones al mostrar las opciones y al elegirlas. Una opción puede aparecer al pasar de día o después de la muerte de otro personaje. Las referencias a personajes impiden eliminarlos mientras una conversación los use. Las condiciones no cambian el estado por sí solas. Para cambiar el dinero disponible, agregá una operación en «Pago o recompensa».
 
 Activá «Cambiar los pesos al elegir esta opción», elegí si el jugador paga o recibe y escribí el importe. El juego muestra esas condiciones antes de elegir. Cada operación se aplica una sola vez por personaje y opción. Guardar, volver a la conversación o incorporar y luego despedir al personaje no la repite. Si faltan fondos, la opción queda desactivada y explica cuánto falta. Las copias de personajes tienen registros independientes. Una opción también puede cambiar un encargo. Si combina ese cambio con pesos, ambos se aplican juntos. Una opción también puede llamar a otro habitante. Las operaciones combinadas se aceptan juntas. La entrega de objetos sigue pendiente.
+
+## Condiciones sobre proyectos
+
+En una condición de diálogo o capítulo, elegí **Estado de un proyecto**. Seleccioná **Organización de la fundición** o **Financiación del ejército**, y elegí **Completado** o **Pendiente**. También se puede usar en las condiciones de derrota.
+
+El juego comprueba el paso realizado por el jugador. Contratar al responsable no lo completa. La condición tampoco organiza el proyecto ni cobra dinero: esos pasos se hacen desde la tesorería. Una preparación pagada sigue completa cuando termina el contrato del responsable o cambia el control de la localidad. Si también precisás servicio vigente o control, agregá esas condiciones por separado.
+
+Por ejemplo, el primer capítulo puede exigir una fundición organizada y el segundo un ejército financiado. Un habitante puede esperar la financiación para aceptar el informe final y pagar la recompensa de un encargo. Las condiciones se vuelven a comprobar al elegir la opción. Los pagos y capítulos cumplidos no se repiten al cargar la partida.
 
 ## Movimientos por diálogo
 
@@ -174,7 +182,7 @@ La inteligencia artificial usa los valores del arma elegida. Si lleva un arma de
 
 En **Reglas → Objetivos y final de campaña**, elegí **Capítulos propios**. Escribí la introducción y los textos de victoria y derrota. Agregá entre uno y doce capítulos. Cada capítulo tiene nombre, objetivo visible y entre una y seis condiciones. Podés subirlo, bajarlo, eliminarlo y deshacer o rehacer cada cambio.
 
-Las condiciones permiten usar el día, los pesos disponibles, el control de una localidad, el estado de un personaje o el estado de un encargo. Todas las condiciones de un capítulo deben cumplirse. Los capítulos se evalúan en orden después de las acciones de campaña y al avanzar el reloj; varios pueden completarse en el mismo momento. Los capítulos ya cumplidos conservan su resultado aunque después cambie el control o termine un contrato. La contratación pendiente no cuenta como incorporación: el personaje debe llegar y entrar en servicio.
+Las condiciones permiten usar el día, los pesos disponibles, el control de una localidad, el estado de un personaje, de un encargo o de un proyecto. Todas las condiciones de un capítulo deben cumplirse. Los capítulos se evalúan en orden después de las acciones de campaña y al avanzar el reloj; varios pueden completarse en el mismo momento. Los capítulos ya cumplidos conservan su resultado aunque después cambie el control o termine un contrato. La contratación pendiente no cuenta como incorporación: el personaje debe llegar y entrar en servicio.
 
 Un encuentro táctico puede completar un encargo, pero el capítulo y la victoria esperan hasta salir de la escena. Para exigir que un personaje llegue a un encuentro, completá un encargo mediante una opción con esa condición de llegada y usá el encargo en el capítulo. La carta, el escritorio y el cuaderno muestran los objetivos propios. Al completar el último, el juego registra la victoria una sola vez y muestra tu texto. Los personajes incorporados que siguen vivos también dicen su frase de cierre configurada.
 
