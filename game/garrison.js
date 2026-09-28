@@ -25,7 +25,8 @@ export function returnGarrison(s,request,snapshot){
  if(!snapshot)throw Error('El parte de la guarnición necesita el estado del sector.');
  const survivors=[];
  for(const issued of request.garrison){const actual=snapshot.units.find(u=>u.side==='player'&&String(u.id)===String(issued.id));if(!actual||!actual.militia||actual.militiaRank!==issued.militiaRank)throw Error('El parte de la guarnición es incompleto.');if(actual.hp<=0){s.sectors[request.sector].militia[issued.militiaRank]=Math.max(0,s.sectors[request.sector].militia[issued.militiaRank]-1);continue;}survivors.push({...structuredClone(actual),id:issued.id});}
- s.garrisons??={};s.garrisons[request.sector]=survivors;
+ const issuedIds=new Set(request.garrison.map(u=>u.id));
+ s.garrisons??={};s.garrisons[request.sector]=[...(s.garrisons[request.sector]??[]).filter(u=>!issuedIds.has(u.id)),...survivors];
 }
 // Only existing local soldiers need care. Querying patients must not generate
 // another cohort or issue its starting equipment.
@@ -41,4 +42,41 @@ function validCareCondition(u){
 export function validGarrisons(s){
  if(!s.garrisons||typeof s.garrisons!=='object'||Array.isArray(s.garrisons)||!Number.isInteger(s.nextMilitiaId)||s.nextMilitiaId<20000||s.nextMilitiaId>1e9)return false;
  const ids=new Set();return Object.entries(s.garrisons).every(([sector,units])=>s.sectors[sector]&&Array.isArray(units)&&units.length<=60&&units.every(u=>{if(!u||typeof u.name!=='string'||u.name.length>100||!Number.isInteger(u.weapon)||(u.weapon!==0&&(u.weapon<1800||u.weapon>1813))||!Number.isInteger(u.blade)||u.blade<1809||u.blade>1813||!Number.isFinite(u.condition)||u.condition<0||u.condition>100||!Number.isInteger(u.maxHp)||u.maxHp<1||u.maxHp>100||!Number.isInteger(u.id)||u.id<20000||u.id>=s.nextMilitiaId||ids.has(u.id)||!Number.isInteger(u.militiaRank)||u.militiaRank<0||u.militiaRank>2||u.militia!==true||!Number.isFinite(u.hp)||u.hp<=0||u.hp>100||!validCareCondition(u))return false;ids.add(u.id);validateForceWeapon(u);if((u.loaded??0)>(weaponSpecification(u)?.capacity??0))return false;validatePersonalInventory(u.inventory??{});return ['ammo','loaded','priming','flints','rations','torches','medkits','boleadoras'].every(k=>Number.isInteger(u[k]??0)&&(u[k]??0)>=0&&(u[k]??0)<=100000);}));
+}
+
+// A paid promotion reserves actual stable soldiers. Their equipment and wounds
+// belong to them throughout the course, not to a replacement rank template.
+function availableTrainees(s,sector,rank){
+ const deployed=new Set((s.pendingBattle?.garrison??[]).map(u=>String(u.id)));
+ return (s.garrisons?.[sector]??[]).filter(u=>u.militiaRank===rank-1&&u.hp>=15&&!u.bleeding&&!u.unconscious&&!u.routed&&(u.energy??100)>10&&!deployed.has(String(u.id)));
+}
+export function militiaPromotionStatus(s,sector,rank,count=3){
+ const existing=(s.garrisons?.[sector]??[]).filter(u=>u.militiaRank===rank-1&&u.hp>0).length;
+ const unissued=Math.max(0,(s.sectors[sector]?.militia[rank-1]??0)-existing);
+ const available=availableTrainees(s,sector,rank).length+unissued;
+ return {available,ready:available>=count,reason:`La promoción necesita ${count} milicianos estables, presentes y fuera del despliegue. Disponibles: ${available}.`};
+}
+export function reserveMilitiaTrainees(s,sector,rank,count){
+ prepareGarrison(s,sector);
+ const trainees=availableTrainees(s,sector,rank).slice(0,count);
+ if(trainees.length!==count)throw Error(militiaPromotionStatus(s,sector,rank,count).reason);
+ const ids=new Set(trainees.map(u=>u.id));s.garrisons[sector]=s.garrisons[sector].filter(u=>!ids.has(u.id));
+ return structuredClone(trainees);
+}
+function promoteMilitia(record,rank){
+ if(rank===record.militiaRank)return record;
+ record.militiaRank=rank;record.marksmanship=Math.min(100,(record.marksmanship??50)+8);record.leadership=Math.min(100,(record.leadership??30)+5);record.experienceLevel=Math.min(10,(record.experienceLevel??4)+1);
+ if(rank===2&&!record.name.startsWith('Veterano '))record.name=`Veterano ${record.name}`.slice(0,100);
+ return record;
+}
+export function returnMilitiaTrainees(s,course,completed=false){
+ if(course.rank===0||s.sectors[course.sector].owner!=='patriot')return;
+ const rank=completed?course.rank:course.rank-1;s.sectors[course.sector].militia[rank]+=course.count;
+ if(course.trainees){s.garrisons[course.sector]??=[];s.garrisons[course.sector].push(...course.trainees.map(u=>promoteMilitia(structuredClone(u),rank)));}
+}
+export function validMilitiaTrainees(s,course){
+ if(course.trainees===undefined)return true; // Earlier paid courses kept counts only.
+ return course.rank>0&&Array.isArray(course.trainees)&&course.trainees.length===course.count&&course.trainees.every(u=>u&&u.militiaRank===course.rank-1)
+  &&validGarrisons({...s,garrisons:{[course.sector]:course.trainees}})
+  &&course.trainees.every(u=>!Object.values(s.garrisons??{}).some(units=>units.some(v=>v.id===u.id))&&!s.pendingBattle?.garrison?.some(v=>String(v.id)===String(u.id)));
 }

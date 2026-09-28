@@ -54,8 +54,12 @@ seven new checks pass, as do types and all 36 baseline comparisons. Complete
 release regression passes **939/939 tests**, zero failures or skips
 (221,710.723 ms). Production export passes (722 files, 632 asset references),
 along with the documentation audit (227 requirements and 66 evidence records,
-retaining all 50 original and 87 parity rows). Exact-head GitHub CI is required
-before merge; this delivery is not yet on main.
+retaining all 50 original and 87 parity rows). Published through [PR #89](https://github.com/fsodano/granaderos/pull/89)
+on 28 September 2026 at 18:06:24 UTC.
+[CI](https://github.com/fsodano/granaderos/actions/runs/36460805665/job/109058554695)
+passed at 18:05:29 UTC for exact head
+`0de9e91aa277a88a2a3300bc80dc1eb89e1c58e6`; the merge commit is
+`934d195379b65ae17c09ae093aecfec5603ae98d`.
 
 ## Limits
 
@@ -65,3 +69,7 @@ that clock, strategic militia deaths and their physical remains are separate
 work. This does not add militia travel, capture/rescue custody, automatic sleep,
 new equipment transfers, distant treatment or a complete defense route.
 Mounted checks do not establish live-browser performance or full-game parity.
+
+New paid promotion courses subsequently preserve those individual soldiers; see
+the [promotion verification](militia-training-identities.md) and its separate
+publication status.

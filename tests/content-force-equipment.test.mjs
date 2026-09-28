@@ -74,7 +74,7 @@ test('a generated enemy firearm can be recovered and retained through campaign r
  assert.equal(b.units.find(u=>u.id==='enemy-0').hp,0);assert.equal(b.units.find(u=>u.id==='enemy-0').weaponDropped,true);
  assert.equal(weaponFor(b.units.find(u=>u.id==='110')).contentId,'guard-pistol');assert.ok(save(s,b));
 });
-test('trained militia use all authored ranks and retain identity, wear and spent ammunition on reentry',()=>{
+test('trained militia retain their authored weapons, identity, wear and spent ammunition through promotion and reentry',()=>{
  let s=order(secureArea(initialCampaign(8,content()),'buenos_aires','ensenada'),{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
  s=train(s,0);s=order(s,{type:'visitSector'});let request=s.pendingBattle;assert.equal(request.garrison.length,3);
  assert.ok(request.garrison.every(u=>contentWeaponOf(u).id==='line-pistol'&&u.loaded===6&&u.ammo===0));
@@ -83,10 +83,18 @@ test('trained militia use all authored ranks and retain identity, wear and spent
  const remaining=b.units.find(u=>u.id===id);assert.equal(remaining.loaded,5);const condition=remaining.condition;
  s=save(leave(s,b)).campaign;s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);
  const retained=b.units.find(u=>u.id===id);assert.equal(retained.loaded,5);assert.equal(retained.condition,condition);assert.equal(weaponFor(retained).contentId,'line-pistol');assert.ok(save(s,b));s=leave(s,b);
- for(const [rank,weapon,loaded,ammo]of [[1,'guard-pistol',4,2],[2,null,0,0]]){
+ const original=structuredClone(s.garrisons.retiro);
+ for(const rank of [1,2]){
   s=train(s,rank);s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);
-  const units=b.units.filter(u=>u.militia&&u.hp>0);assert.equal(units.length,3);assert.ok(units.every(u=>u.militiaRank===rank&&(contentWeaponOf(u)?.id??null)===weapon&&u.loaded===loaded&&u.ammo===ammo));s=save(leave(s,b)).campaign;
+  const units=b.units.filter(u=>u.militia&&u.hp>0);assert.equal(units.length,3);for(const u of units){const prior=original.find(v=>String(v.id)===u.id);assert.ok(prior);assert.equal(u.militiaRank,rank);assert.equal(contentWeaponOf(u).id,'line-pistol');for(const key of ['loaded','ammo','condition','hp','maxHp'])assert.equal(u[key],prior[key],key);}s=save(leave(s,b)).campaign;
  }
+});
+test('previously unmaterialized rank counts use each authored starting kit once',()=>{
+ const s=initialCampaign(8,content());
+ // Explicit older saved-count boundary; this does not claim a promotion grants a new kit.
+ s.sectors.retiro.militia=[1,1,1];const units=prepareGarrison(s,'retiro');
+ assert.deepEqual(units.map(u=>[u.militiaRank,contentWeaponOf(u)?.id??null,u.loaded,u.ammo]),[[0,'line-pistol',6,0],[1,'guard-pistol',4,2],[2,null,0,0]]);
+ assert.deepEqual(prepareGarrison(save(s).campaign,'retiro'),units);
 });
 test('saved pending forces and garrisons reject edited definitions, incompatible hosts and invalid ammunition',()=>{
  const s=attack();for(const mutate of [u=>u.weapon=1800,u=>u.loaded=99,u=>u.ammo=-1,u=>delete u.ammo,u=>u.weaponMetadata.contentWeapon.damage++]){
