@@ -222,7 +222,7 @@ export function dispatchCampaign(previous,action){
         // The tactical actions already consumed this whole interval, even if a defeat occurred within it.
         s.secondOfHour=seconds%3600;if(hours)tick(s,hours,{stopOnDefeat:false});
         // A death is confirmed at this tactical checkpoint, after its time has elapsed.
-        if(snapshot){acknowledgeCivilians(s,snapshot);acknowledgeSuccessionDeaths(s,snapshot);}
+        if(snapshot){acknowledgeCivilians(s,snapshot);acknowledgeSuccessionDeaths(s,snapshot);if(campaignStory(s))advanceCampaignStory(s,snapshot);}
         s.pendingBattle.syncedSeconds=elapsed;break;
       }
       case 'wait':tick(s,action.hours??24);break;

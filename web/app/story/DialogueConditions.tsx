@@ -1,4 +1,5 @@
 'use client';
+import {DIALOGUE_PERSON_STATE_LABELS} from '../../../game/dialogue-conditions.js';
 import {CAMPAIGN_PROJECT_LABELS} from '../../../game/campaign-projects.js';
 import {isWorldCharacter} from '../../../game/content-character-ids.js';
 import {QUEST_STATE_LABELS} from '../../../game/content-quests.js';
@@ -22,7 +23,8 @@ export default function DialogueConditions({conditions=[],characters,quests,onCh
     <label>Estado del encargo requerido<select value={c.status} onChange={e=>update(i,{...c,status:e.target.value})}>{Object.entries(QUEST_STATE_LABELS).map(([id,label])=><option key={id} value={id}>{label}</option>)}</select></label>
    </>:c.type==='character'?<>
     <label>Personaje de la condición<select value={c.character} onChange={e=>update(i,{...c,character:e.target.value})}>{characters.map(person=><option key={person.id} value={person.id}>{person.name}</option>)}</select></label>
-    <label>Estado requerido<select value={c.state} onChange={e=>update(i,{...c,state:e.target.value})}><option value="alive">Vivo</option><option value="dead">Muerto</option><option value="serving">Incorporado al servicio</option><option value="present">Presente en el mundo</option></select></label>
+    <label>Estado requerido<select value={c.state} onChange={e=>update(i,{...c,state:e.target.value})}>{Object.entries(DIALOGUE_PERSON_STATE_LABELS).map(([id,label])=><option key={id} value={id}>{label}</option>)}</select></label>
+    <p>La salud usa el estado actual, también durante el combate. Estar consciente o sano no exige presencia ni servicio: combiná esas condiciones si las necesitás. Una persona estabilizada todavía puede estar herida.</p>
    </>:c.type==='sector'?<>
     <label>Localidad de la condición<select value={c.sector} onChange={e=>update(i,{...c,sector:e.target.value})}>{CAMPAIGN_SECTORS.map(place=><option key={place.id} value={place.id}>{place.name}</option>)}</select></label>
     <label>Control requerido<select value={c.owner} onChange={e=>update(i,{...c,owner:e.target.value})}><option value="patriot">Patriota</option><option value="royalist">Realista</option></select></label>

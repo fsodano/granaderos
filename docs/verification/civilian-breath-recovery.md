@@ -45,7 +45,11 @@ final four-case recovery file passes after adding explicit damage attribution an
 the complete stabilization/waking boundary. Release checks pass **858/858 tests**, zero failures or skips (205,715 ms);
 type checking; production export (722 files, 632 asset references); 36 baseline
 checks; and the documentation audit (215 requirements, all 50 original and 87
-parity rows, 54 evidence records). Exact-head GitHub CI is required before merge.
+parity rows, 54 evidence records). [PR #77](https://github.com/fsodano/granaderos/pull/77) merged as
+`acf5dbca9e079456931e38dd791c55c45226e124` on 2026-09-28 at 14:23 UTC.
+[GitHub CI](https://github.com/fsodano/granaderos/actions/runs/36433528281/job/108965502241)
+passed at 14:22 UTC for exact head `6537e40f796ba4897ed43ef838cdbfac4f772bf2`.
+The merge checked the unchanged parent main before integration.
 
 ## Limits
 

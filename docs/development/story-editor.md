@@ -96,6 +96,21 @@ Al jugar, acercate al habitante y elegí «Conversar». La partida conserva el p
 
 Deshacer, rehacer, duplicar, recuperar el borrador e importar/exportar conservan el diálogo. La copia de un personaje tiene su propio diálogo y progreso. Cada opción puede tener hasta seis condiciones. Todas deben cumplirse para mostrarla. Podés exigir un intervalo de días, pesos disponibles, el control patriota o realista de una localidad, o que un personaje esté vivo, muerto, incorporado o presente en el mundo. Un límite máximo vacío no tiene tope. El primer día es el día 1. «Presente en el mundo» significa que ya apareció, tiene una celda asignada y no está incorporado ni cautivo. El control se consulta sobre las localidades existentes; la selección de celdas de aparición conserva todo el mapa.
 
+Las condiciones de personaje también pueden usar su salud actual:
+
+| Estado | Qué exige |
+| --- | --- |
+| Consciente | Está vivo, tiene al menos 15 de salud y energía mayor que 0. |
+| Inconsciente | Está vivo, pero tiene menos de 15 de salud o energía 0. |
+| Herido | Está vivo y su salud es menor que su máximo actual. |
+| Con hemorragia | Está vivo y tiene sangrado. |
+| Consciente y sin sangrado | Puede estar herido, pero está consciente y no sangra. |
+| Salud completa y consciente | Está consciente, no sangra y alcanzó su máximo actual. |
+
+Podés usar estos estados en diálogos, capítulos y condiciones de derrota. Por ejemplo, una respuesta puede aparecer después de estabilizar a un habitante. Un objetivo de rescate puede exigir **Consciente y sin sangrado**, o **Salud completa y consciente** si necesitás toda la recuperación. Un muerto no cumple ninguno de esos estados físicos.
+
+Estar sano no significa estar en el mapa ni incorporado. Agregá condiciones de presencia o servicio cuando las necesites. En el sector abierto, el diálogo consulta la condición táctica actual, también para un aliado de misión. Las derrotas se comprueban al confirmar ese estado; los capítulos se completan al salir. Sin el estado actual de un soldado desplegado, el juego no usa su hoja anterior para dar por cumplida una condición física. Estas condiciones no curan, pagan ni generan respuestas automáticas: el autor escribe la opción y el resultado.
+
 El juego comprueba las condiciones al mostrar las opciones y al elegirlas. Una opción puede aparecer al pasar de día o después de la muerte de otro personaje. Las referencias a personajes impiden eliminarlos mientras una conversación los use. Las condiciones no cambian el estado por sí solas. Para cambiar el dinero disponible, agregá una operación en «Pago o recompensa».
 
 Activá «Cambiar los pesos al elegir esta opción», elegí si el jugador paga o recibe y escribí el importe. El juego muestra esas condiciones antes de elegir. Cada operación se aplica una sola vez por personaje y opción. Guardar, volver a la conversación o incorporar y luego despedir al personaje no la repite. Si faltan fondos, la opción queda desactivada y explica cuánto falta. Las copias de personajes tienen registros independientes. Una opción también puede cambiar un encargo. Si combina ese cambio con pesos, ambos se aplican juntos. Una opción también puede llamar a otro habitante. Las operaciones combinadas se aceptan juntas. La entrega de objetos sigue pendiente.

@@ -1,3 +1,5 @@
+import {isUnconscious} from './actor-condition.js';
+import {rosterFor} from './recruitment.js';
 import {CAMPAIGN_PROJECT_LABELS,campaignProjectComplete} from './campaign-projects.js';
 import {atDialogueMeeting} from './dialogue-movement.js';
 import {contentQuestStatus,CONTENT_QUEST_STATES} from './content-quests.js';
@@ -7,7 +9,8 @@ const need=(ok,message)=>{if(!ok)throw Error(message);};
 const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
 const exact=(v,keys)=>object(v)&&Object.keys(v).length===keys.length&&keys.every(k=>Object.hasOwn(v,k));
 const integer=(v,min,max)=>Number.isSafeInteger(v)&&v>=min&&v<=max;
-export const DIALOGUE_PERSON_STATES=['alive','dead','serving','present'];
+export const DIALOGUE_PERSON_STATE_LABELS=Object.freeze({alive:'Vivo',dead:'Muerto',serving:'Incorporado al servicio',present:'Presente en el mundo',conscious:'Consciente',unconscious:'Inconsciente',wounded:'Herido',bleeding:'Con hemorragia',stable:'Consciente y sin sangrado',healthy:'Salud completa y consciente'});
+export const DIALOGUE_PERSON_STATES=Object.keys(DIALOGUE_PERSON_STATE_LABELS);
 export function validateDialogueConditions(conditions,characters,quests){
  if(conditions===undefined)return;
  need(Array.isArray(conditions)&&conditions.length<=6,'Cada opción admite hasta seis condiciones.');
@@ -22,15 +25,20 @@ export function validateDialogueConditions(conditions,characters,quests){
   else need(false,'El tipo de condición del diálogo no está disponible.');
  }
 }
-function characterState(s,character,battle){
- const id=operativeIdForCharacter(s.contentCampaign.package,character),record=s.operativeState[id],deployed=s.pendingBattle?.squad.some(u=>Number(u.id)===id);
- const scene=deployed&&battle&&battle.sectorId===s.pendingBattle.sector&&(!battle.battleId||battle.battleId===s.pendingBattle.id)?battle:null;
- const unit=scene?.units.find(u=>u.side==='player'&&Number(u.id)===id),alive=unit?unit.hp>0:record?.alive===true;
- return {alive,dead:Boolean(record)&&!alive,serving:alive&&!record?.captured&&s.recruited.includes(id),present:alive&&!record?.captured&&!s.recruited.includes(id)&&Boolean(s.contentPresence?.people[character]?.appeared&&s.contentPresence.people[character].sector)};
+function characterState(s,character,battle,state){
+ const id=operativeIdForCharacter(s.contentCampaign.package,character),record=s.operativeState[id],request=s.pendingBattle,deployed=[...(request?.squad??[]),...(request?.missionAllies??[])].some(u=>Number(u.id)===id);
+ const scene=battle&&request&&battle.sectorId===request.sector&&(battle.sceneId??null)===(request.sceneId??null)&&(!battle.battleId||battle.battleId===request.id)?battle:null;
+ const unit=deployed?scene?.units.find(u=>u.side==='player'&&Number(u.id)===id):null;
+ const identifies=n=>n.operativeId!=null&&Number(n.operativeId)===id||n.contentId===character||id===57&&n.id==='yatasto-san-martin';
+ const resident=!s.recruited.includes(id)?scene?.npcs?.find(n=>identifies(n)&&request.npcs?.some(expected=>expected.id===n.id&&identifies(expected))):null;
+ const physical=unit??resident??record,alive=unit||resident?physical.hp>0:record?.alive===true;
+ const physicalKnown=!deployed||Boolean(unit),conscious=physicalKnown&&alive&&!isUnconscious(physical),maxHp=(unit??resident)?.maxHp??(['wounded','healthy'].includes(state)?rosterFor(s).find(o=>o.id===id)?.maxHp:undefined);
+ const stable=conscious&&(physical.bleeding??0)===0;
+ return {alive,dead:Boolean(record)&&!alive,serving:alive&&!record?.captured&&s.recruited.includes(id),present:alive&&!record?.captured&&!s.recruited.includes(id)&&Boolean(s.contentPresence?.people[character]?.appeared&&s.contentPresence.people[character].sector),conscious,unconscious:physicalKnown&&alive&&!conscious,wounded:physicalKnown&&alive&&physical.hp<maxHp,bleeding:physicalKnown&&alive&&(physical.bleeding??0)>0,stable,healthy:stable&&physical.hp===maxHp};
 }
 export function dialogueConditionsMet(s,conditions,battle=null){
  return (conditions??[]).every(c=>{
-  if(c.type==='character')return characterState(s,c.character,battle)[c.state]===true;
+  if(c.type==='character')return characterState(s,c.character,battle,c.state)[c.state]===true;
   if(c.type==='meeting')return atDialogueMeeting(s,c.character,battle);
   if(c.type==='quest')return contentQuestStatus(s,c.quest)===c.status;
   if(c.type==='project')return Object.hasOwn(CAMPAIGN_PROJECT_LABELS,c.project)&&campaignProjectComplete(s,c.project)===c.completed;
