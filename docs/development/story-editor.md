@@ -100,7 +100,7 @@ La campaña conserva el reloj y un estado aleatorio propio para estas decisiones
 
 Al trasladarse se elimina la copia de la escena anterior. La nueva escena inicia una rutina local; no copia coordenadas, casas o destinos del sector anterior. Volver al mismo sector sin un traslado conserva la rutina guardada. La correspondencia muestra la ubicación fija conocida o el último encuentro; no revela el resultado de los sorteos.
 
-Los personajes de encuentro existentes y los habitantes nuevos usan estas apariciones. La salud y la muerte se conservan en campaña. Todavía faltan inventarios de NPC editables, cautiverio y transferencia de funciones a un sucesor. Las condiciones de muerte se pueden simular en el editor, pero bloquean el inicio de campaña hasta completar esas funciones. Las escenas de misión especiales conservan su elenco propio.
+Los personajes de encuentro existentes y los habitantes nuevos usan estas apariciones. La salud y la muerte se conservan en campaña. Todavía faltan inventarios de NPC editables, cautiverio y transferencia de funciones a un sucesor. Los habitantes nuevos pueden activarse por la muerte de otro personaje. Los mandos históricos todavía no pueden usarse como sucesores. Las escenas de misión especiales conservan su elenco propio.
 
 Las partidas anteriores mantienen sus encuentros originales. Las nuevas campañas usan una versión explícita con presencia guardada; quitar ese registro o cambiar posiciones por fuera del rango invalida el archivo. Las pruebas exportadas del simulador pasan a la versión 2 por el cambio en las reglas de sorteo: los archivos de prueba de versión 1 se rechazan con un aviso para crear una prueba nueva. El paquete de contenido y las partidas anteriores mantienen su compatibilidad.
 
@@ -112,13 +112,23 @@ En el campo táctico podés usar los cursores normales para atacar o atender a u
 
 La muerte cancela los traslados y el reclutamiento. El cuerpo queda en su escena. La campaña aplica una vez la consecuencia local de lealtad y marca como fallido un encargo pendiente de ese contacto. Si muere un mando indispensable de la historia original, la campaña termina. San Martín comparte su salud entre sus funciones de contacto y aliado.
 
-Todavía no se pueden editar sus pertenencias, saquearlos, mantenerlos cautivos ni activar sucesores. No se inventa equipo para sus cuerpos. Las heridas se conservan fuera de la escena, pero todavía no se simula atención médica o hemorragia mientras el sector está cerrado. La [verificación](../verification/civilian-state.md) detalla las pruebas y los límites.
+Todavía no se pueden editar sus pertenencias, saquearlos ni mantenerlos cautivos. No se inventa equipo para sus cuerpos. Las heridas se conservan fuera de la escena, pero todavía no se simula atención médica o hemorragia mientras el sector está cerrado. La [verificación](../verification/civilian-state.md) detalla las pruebas y los límites.
+
+## Aparición después de una muerte
+
+En la ficha de un habitante nuevo, elegí «Aparece después de la muerte de» y el personaje que debe morir. Configurá la demora mínima y máxima, en minutos, y sus celdas de llegada. Cero permite una aparición inmediata. El sucesor empieza fuera del mapa y no figura como contacto antes de activarse.
+
+La muerte confirmada programa la aparición una sola vez. La demora se sortea una vez y se guarda; al vencer, se elige una celda del rango. Guardar, cargar o volver a comprobar la muerte no repite los sorteos. Si la celda elegida está abierta, la llegada espera a que el jugador salga, sin elegir otra. La misma regla se aplica si el personaje anterior muere después de incorporarse a la escuadra: se activa al confirmar la baja durante el combate, sin esperar a salir del sector.
+
+El sucesor es otra persona: usa su propia salud, retrato, atributos y equipo asignado. El cuerpo del anterior permanece en su escena. No recibe automáticamente su inventario, pertenencias o funciones de campaña. Si tiene un recorrido diario, comienza a usarlo después de aparecer. Su muerte puede activar a otro sucesor; las dependencias circulares se rechazan.
+
+Esta opción activa habitantes nuevos. Los mandos históricos conservan sus funciones originales. La muerte de un mando indispensable todavía termina la campaña, aunque otra aparición dependa de ella. La transferencia de una función histórica o de mercadería necesita su propia configuración.
 
 ## Borradores que todavía no llegan a la campaña
 
 El mapa permite marcar cualquier celda con una X desde la ficha del personaje, incluido terreno fuera de las localidades. Se pueden simular ubicaciones con una semilla. Las ubicaciones fijas, el sorteo inicial y los cambios diarios ya se aplican a las nuevas campañas. Eliminar mandos históricos y usar opciones de historia no compatibles todavía bloquea el inicio de campaña.
 
-Los mandos históricos conservan su servicio permanente, requisitos de reclutamiento y funciones de campaña. Sus habilidades de combate ya son configurables. Quedan pendientes su extracción, las sucesiones por muerte, los diálogos y encargos editables, las escenas dirigidas y la composición completa de campaña. Esta entrega no completa todo el editor de historia.
+Los mandos históricos conservan su servicio permanente, requisitos de reclutamiento y funciones de campaña. Sus habilidades de combate ya son configurables. Quedan pendientes su extracción, las transferencias de funciones a sucesores, los diálogos y encargos editables, las escenas dirigidas y la composición completa de campaña. Esta entrega no completa todo el editor de historia.
 
 ## Validación
 
@@ -146,3 +156,5 @@ Los mandos históricos conservan su servicio permanente, requisitos de reclutami
 `tests/civilian-state.test.mjs` comprueba heridas, muerte, cambios de celda, incorporación, baja del servicio, misiones, lealtad y guardados. `tests/civilian-interaction.test.mjs` usa los controles del campo táctico montado para atacar y atender a un NPC. No equivalen a un recorrido completo de campaña.
 
 `tests/authored-residents.test.mjs` comprueba habitantes nuevos con saludo, retrato, salud, celdas fijas o sorteadas, traslado diario, incorporación local, condiciones, muerte, progreso, retiro del servicio y guardados. El formulario montado crea un habitante, marca celdas, duplica, elimina, deshace e inicia una campaña con ese encuentro. Los controles de conversación ocultan la incorporación para un habitante no reclutable. Son pruebas acotadas, no una campaña completa.
+
+`tests/death-successors.test.mjs` comprueba bajas civiles y militares, demoras, relojes, guardados, protección de la escena abierta, recorridos diarios y cadenas de sucesión con cuerpos conservados. El editor montado crea la condición y la verifica después de una muerte real en la campaña. La [verificación de sucesores](../verification/death-successors.md) registra su alcance.

@@ -34,7 +34,7 @@ export function synchronizeCampaignPresence(state){
   runtime=advancePlacementState(runtime,minuteOf(state),loaded,52560000);
   for(const c of runtime.content.characters){
     const numeric=operativeIdForCharacter(runtime.content,c.id),record=state.operativeState[numeric],person=runtime.people[c.id];
-    if(record.alive===false&&person.alive)runtime=changePlacementStatus(runtime,c.id,'dead',loaded);
+    if(record.alive===false&&person.alive){record.deathMinute=runtime.minute;runtime=changePlacementStatus(runtime,c.id,'dead',loaded);}
     else if(person.alive&&person.recruited!==state.recruited.includes(numeric))
       runtime=changePlacementStatus(runtime,c.id,state.recruited.includes(numeric)?'recruited':'released',loaded);
     runtime.people[c.id].hp=record.hp;
@@ -45,9 +45,54 @@ export function synchronizeCampaignPresence(state){
   if(state.pendingBattle&&!state.pendingBattle.sceneId)
     state.pendingBattle.npcs=(state.pendingBattle.npcs??[]).filter(n=>currentResident(state,n,state.pendingBattle.sector));
 }
+function successionActors(state,snapshot){
+ if(!state.contentPresence)return [];
+ const content=state.contentCampaign.package,sources=new Set(content.placements.filter(p=>p.afterDeath!==null).map(p=>operativeIdForCharacter(content,p.afterDeath)));
+ return snapshot.units.filter(u=>u.side==='player'&&!u.militia&&sources.has(Number(u.id))&&state.pendingBattle?.squad.some(o=>o.id===Number(u.id)));
+}
+export function acknowledgeSuccessionDeaths(state,snapshot){
+ for(const unit of successionActors(state,snapshot)){
+  const record=state.operativeState[Number(unit.id)];
+  need(record.deathMinute===undefined||unit.hp===0);
+  if(unit.hp===0){record.hp=0;record.alive=false;record.bleeding=0;}
+ }
+}
+export function validateActiveSuccessionDeaths(state,snapshot){
+ for(const unit of successionActors(state,snapshot))need(state.operativeState[Number(unit.id)].alive===(unit.hp>0));
+}
 export function validatePresenceScene(state,scene){
   if(!state.contentPresence||scene.sceneId)return;
   for(const npc of scene.npcs??[])need(currentResident(state,npc,scene.sectorId??scene.sector));
+}
+function validateSuccessions(state){
+ const r=state.contentPresence,placements=state.contentCampaign.package.placements;
+ const object=v=>v!==null&&typeof v==='object'&&!Array.isArray(v);
+ const integer=(v,min,max)=>Number.isSafeInteger(v)&&v>=min&&v<=max;
+ need(Array.isArray(r.events)&&Array.isArray(r.receipts)&&r.events.length<=placements.length&&r.receipts.length<=placements.length);
+ const receipts=new Map(),events=new Map();
+ for(const receipt of r.receipts){
+  need(object(receipt)&&Object.keys(receipt).length===4&&['placement','trigger','minute','at'].every(k=>Object.hasOwn(receipt,k)));
+  const p=placements.find(p=>p.id===receipt.placement);
+  need(p&&p.afterDeath===receipt.trigger&&r.people[p.afterDeath]?.alive===false&&!receipts.has(p.id));
+  need(integer(receipt.minute,0,r.minute)&&receipt.minute===state.operativeState[operativeIdForCharacter(state.contentCampaign.package,p.afterDeath)]?.deathMinute&&integer(receipt.at,receipt.minute+p.delayMin,receipt.minute+p.delayMax));
+  receipts.set(p.id,receipt);
+ }
+ for(const event of r.events){
+  need(object(event)&&Object.keys(event).every(k=>['placement','at','destination'].includes(k)));
+  const p=placements.find(p=>p.id===event.placement),receipt=receipts.get(event.placement);
+  need(p&&receipt&&event.at===receipt.at&&!events.has(p.id)&&!r.people[p.character]?.appeared);
+  need(event.destination===undefined||p.sectors.includes(event.destination));
+  if(event.at<=r.minute)need(event.destination!==undefined&&state.pendingBattle&&locationId(event.destination)===locationId(state.pendingBattle.sector));
+  else need(event.destination===undefined);
+  events.set(p.id,event);
+ }
+ for(const p of placements.filter(p=>p.afterDeath!==null)){
+  const person=r.people[p.character],receipt=receipts.get(p.id);
+  need(Boolean(receipt)===(r.people[p.afterDeath]?.alive===false));
+  if(!receipt)need(!person.appeared&&person.sector===null&&person.revision===0);
+  else if(person.appeared)need(!events.has(p.id)&&receipt.at<=r.minute);
+  else if(person.alive&&!person.recruited)need(events.has(p.id));
+ }
 }
 export function validateCampaignPresence(state){
   const content=state.contentCampaign?.package,r=state.contentPresence;
@@ -62,15 +107,16 @@ export function validateCampaignPresence(state){
     const p=r.people[c.id],placement=content.placements.find(v=>v.character===c.id),record=state.operativeState[operativeIdForCharacter(content,c.id)];
     need(object(p)&&['alive','recruited','appeared','suspended'].every(k=>typeof p[k]==='boolean')&&p.suspended===false&&integer(p.revision,0,1e9));
     need(Object.keys(p).every(k=>['alive','recruited','appeared','suspended','revision','sector','hp'].includes(k)));
+    if(record.deathMinute!==undefined)need(record.alive===false&&integer(record.deathMinute,0,r.minute));
     need(p.hp===record.hp&&p.alive===record.alive&&p.recruited===state.recruited.includes(operativeIdForCharacter(content,c.id)));
     need(p.sector===null||placement?.sectors.includes(p.sector));
     need(!p.appeared||Boolean(placement)&&p.revision>=1);
     need(p.alive||p.hp===0&&p.sector===null);
     if(!placement||isContractCharacter(c))need(!p.appeared&&p.sector===null&&p.revision===0);
-    else need(p.appeared&&(!p.alive||p.sector!==null));
+    else if(placement.afterDeath===null||p.appeared)need(p.appeared&&(!p.alive||p.sector!==null));
+    else need(p.sector===null&&p.revision===0&&!p.recruited);
   }
-  // Death-triggered introductions are still a separate, explicitly gated capability.
-  need(Array.isArray(r.events)&&r.events.length===0&&Array.isArray(r.receipts)&&r.receipts.length===0);
+ validateSuccessions(state);
   for(const scene of Object.values(state.sectorStates))validatePresenceScene(state,scene);
   if(state.pendingBattle)validatePresenceScene(state,state.pendingBattle);
 }

@@ -58,7 +58,7 @@ export function encounterRequirements(s,npc,actor){
 export function encounterContacts(s){
  return encounterDefinitions(s).filter(n=>canRecruitEncounter(n)&&!isContractOperative(s,{id:n.operativeId})&&!s.recruited.includes(n.operativeId)&&s.operativeState?.[n.operativeId]?.alive!==false).flatMap(n=>{
   const c=characterForOperative(s,n.operativeId),p=c&&s.contentCampaign.package.placements.find(p=>p.character===c.id);
-  if(s.contentPresence&&!p)return [];
+  if(s.contentPresence&&(!p||p.afterDeath&&!s.contentPresence.people[c.id].appeared))return [];
   const met=s.conversations?.[n.id]?.sector;
   const place=met??(s.contentPresence?p?.mode==='fixed'?p.sectors[0]:null:n.sector);
   return [{...n,name:c?.name??n.name,locationLabel:place?`${met?'Último encuentro: ':''}${campaignPlace(place)?.name??place}`:'Ubicación por descubrir'}];

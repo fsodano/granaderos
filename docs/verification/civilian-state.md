@@ -70,7 +70,7 @@ merged at `5812d9b9c2e1bfae180216b4e413a0ebf4845097` after
 [CI for `c00c6af`](https://github.com/fsodano/granaderos/actions/runs/36363917668/job/108746414452) passed.
 No new browser playthrough or loaded-combat performance measurement was made.
 
-## Remaining work
+## Remaining work at this checkpoint
 
 STORY-02 remains partial. New authored world identities, editable personal stock,
 NPC looting, custody, successor activation and role/stock transfer are not yet
@@ -82,3 +82,6 @@ Civic parity remains partial: armed civilian factions, witnesses, retaliation,
 distant effects, theft/aid reputation and authored failure branches still need
 integration. Long-term medical care and the advanced contextual inventory rules
 also remain separate. This delivery does not establish full campaign completion.
+
+New world identities were subsequently connected by the [resident delivery](authored-residents.md).
+See the [requirement register](requirements.json) for current status.
