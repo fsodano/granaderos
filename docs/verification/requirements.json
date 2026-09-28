@@ -489,7 +489,7 @@
     {
       "id": "E-PARALLEL-VERIFICATION",
       "path": "docs/verification/parallel-verification.md",
-      "description": "All 178 root test files appear once in four required CI groups with no name filters. Initial and final complete partition runs both pass 1073/1073, zero failures/skips. Final groups pass 240/312/259/262; argument and unsupported-target guards preserve coverage. Documentation, reference, type, export and artifact checks remain; types/export and 36 reference comparisons pass locally. Exact-head publication remains required. This verifies infrastructure, not game completion or hosted speed."
+      "description": "All 178 root test files appear once in four required CI groups with no name filters. Initial and final complete partition runs both pass 1073/1073, zero failures/skips. Final groups pass 240/312/259/262; argument and unsupported-target guards preserve coverage. Documentation, reference, type, export and artifact checks remain; types/export and 36 reference comparisons pass locally. Published by PR #104 after successful exact-head CI. This verifies infrastructure, not game completion or hosted speed."
     },
     {
       "id": "E-DEPOT-ARTILLERY-TRANSPORT",
@@ -5615,7 +5615,7 @@
       "requirement": "Run every simulation test in verified parallel CI groups while retaining all acceptance gates",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. All simulation files are partitioned once across four required jobs, with document/reference/type/export/artifact gates retained.",
+      "published": "Published by PR #104 after successful exact-head CI. All simulation files are partitioned once across four required jobs, with document/reference/type/export/artifact gates retained.",
       "local": "The final four groups pass 1073/1073 tests, zero failures/skips: 240/312/259/262 across all 178 files. Argument/non-file guards, types, export, 36 reference comparisons and documentation validation pass.",
       "remaining": "",
       "acceptance": "Partition the exact root test-file set once, run all four groups with propagated failures and no name filters, keep document/reference/type/export/artifact verification, reject invalid targets or arguments and require all exact-head CI jobs before publication.",
@@ -5628,17 +5628,18 @@
       ],
       "testFiles": [
         "tools/test-shard-selftest.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/104"
     }
   ],
   "latestPublishedCheck": {
-    "source": "3e8801f6ca99cc68b43da51fde36a5e5e4af73d9",
+    "source": "5ff4186b334a6596eee40c49c4112fac2917f204",
     "total": 1073,
     "passed": 1073,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-ARTILLERY-AUTONOMY"
+    "evidenceId": "E-PARALLEL-VERIFICATION"
   }
 }

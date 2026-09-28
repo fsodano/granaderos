@@ -40,8 +40,15 @@ export and artifact step. The unchanged browser runtime passes types and product
 passes with 242 requirements and 81 evidence records, retaining the original
 50 and parity 87 rows.
 
-The local timings do not establish hosted-runner improvement. The exact PR head
-must pass the changed GitHub workflow before merge; its actual remote duration
-will be recorded after completion. These are verification-infrastructure checks,
+The exact PR head passed all five hosted jobs. The slowest group finished in
+6m49s; the other simulation groups took 3m45s, 6m29s and 3m18s, and the web job
+took 1m22s. The preceding single-job PR took 13m37s. These particular runs show
+a shorter publication gate; they do not guarantee that duration for future
+changes or establish game performance. These are verification-infrastructure checks,
 not new game mechanics, live-browser acceptance or a claim that the overall game
 is complete. QA-01 and overall integration remain open.
+
+## Publication
+
+Published in [PR #104](https://github.com/fsodano/granaderos/pull/104) on 2026-09-28.
+Exact head `0b78eb86b5f8c794a2435968b2531412694cef9e` passed [CI run 36495763245](https://github.com/fsodano/granaderos/actions/runs/36495763245), including the full suite, types and production build. Merge commit: `4b157161c8f50f374d26cdf07f4dff43652cdb62`. This publication does not close the broader artillery or campaign requirements.
