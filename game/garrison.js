@@ -1,3 +1,4 @@
+import {militiaProgression} from './militia-progression-rules.js';
 import {validMilitiaExperience,earnedMilitiaRank,promoteMilitia} from './militia-experience.js';
 import {strategicBleedingPercent} from './campaign-care-rules.js';
 import {refreshMilitaryCondition} from './actor-condition.js';
@@ -27,7 +28,7 @@ export function returnGarrison(s,request,snapshot){
  if(!request.garrison?.length)return;
  if(!snapshot)throw Error('El parte de la guarnición necesita el estado del sector.');
  const survivors=[];
- for(const issued of request.garrison){const actual=snapshot.units.find(u=>u.side==='player'&&String(u.id)===String(issued.id));if(!actual||!actual.militia||actual.militiaRank!==issued.militiaRank)throw Error('El parte de la guarnición es incompleto.');if(actual.hp<=0){s.sectors[request.sector].militia[issued.militiaRank]=Math.max(0,s.sectors[request.sector].militia[issued.militiaRank]-1);continue;}const rank=earnedMilitiaRank(issued,actual),record=promoteMilitia({...structuredClone(actual),id:issued.id},rank);if(rank!==issued.militiaRank){s.sectors[request.sector].militia[issued.militiaRank]--;s.sectors[request.sector].militia[rank]++;s.log.unshift({hour:s.hour,text:`${record.name} asciende por experiencia de combate (${record.militiaExperience} puntos).`});s.log=s.log.slice(0,80);}survivors.push(record);}
+ for(const issued of request.garrison){const actual=snapshot.units.find(u=>u.side==='player'&&String(u.id)===String(issued.id));if(!actual||!actual.militia||actual.militiaRank!==issued.militiaRank)throw Error('El parte de la guarnición es incompleto.');if(actual.hp<=0){s.sectors[request.sector].militia[issued.militiaRank]=Math.max(0,s.sectors[request.sector].militia[issued.militiaRank]-1);continue;}const rank=earnedMilitiaRank(issued,actual,militiaProgression(s)),record=promoteMilitia({...structuredClone(actual),id:issued.id},rank,militiaProgression(s));if(rank!==issued.militiaRank){s.sectors[request.sector].militia[issued.militiaRank]--;s.sectors[request.sector].militia[rank]++;s.log.unshift({hour:s.hour,text:`${record.name} asciende por experiencia de combate (${record.militiaExperience} puntos).`});s.log=s.log.slice(0,80);}survivors.push(record);}
  const issuedIds=new Set(request.garrison.map(u=>u.id));
  s.garrisons??={};s.garrisons[request.sector]=[...(s.garrisons[request.sector]??[]).filter(u=>!issuedIds.has(u.id)),...survivors];
 }
@@ -69,7 +70,7 @@ export function reserveMilitiaTrainees(s,sector,rank,count){
 export function returnMilitiaTrainees(s,course,completed=false){
  if(course.rank===0||s.sectors[course.sector].owner!=='patriot')return;
  const rank=completed?course.rank:course.rank-1;s.sectors[course.sector].militia[rank]+=course.count;
- if(course.trainees){s.garrisons[course.sector]??=[];s.garrisons[course.sector].push(...course.trainees.map(u=>promoteMilitia(structuredClone(u),rank)));}
+ if(course.trainees){s.garrisons[course.sector]??=[];s.garrisons[course.sector].push(...course.trainees.map(u=>promoteMilitia(structuredClone(u),rank,militiaProgression(s))));}
 }
 export function validMilitiaTrainees(s,course){
  if(course.trainees===undefined)return true; // Earlier paid courses kept counts only.
