@@ -260,7 +260,8 @@
     {
       "id": "E-POST-CAMPAIGN",
       "path": "docs/verification/independent-post-campaign.md",
-      "description": "A downloadable independent three-chapter package completes actual paid recruitment, two battles, local dialogues, replacements, workshop service, finite care, three permanent losses and the saved return ending. Replay, midpoint saves, post-victory reentry, real deadline failure, content pinning and mounted example load/edit/undo/launch are covered. One seed/strategy is accepted; stock geography/opposition and advanced integration remain separate."
+      "description": "A downloadable independent three-chapter package completes actual paid recruitment, two battles, local dialogues, replacements, workshop service, finite care, three permanent losses and the saved return ending. Replay, midpoint saves, post-victory reentry, real deadline failure, content pinning and mounted example load/edit/undo/launch are covered. One seed/strategy is accepted; stock geography/opposition and advanced integration remain separate. PR #68 merged after CI passed at 000a91ba63b9910ad892263c23474afd120dba0b.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36416617388/job/108909164560"
     },
     {
       "id": "E-STRATEGIC-CARE",
@@ -341,7 +342,7 @@
       "requirement": "Load, edit and finish a complete independent campaign package",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "La ruta de las postas is a downloadable three-chapter scenario with thirteen independent identities, paid service, two actual locality battles, world contacts, a timed objective and its own ending. The editor loads it with undo and the verified seed.",
+      "published": "La ruta de las postas is a downloadable three-chapter scenario with thirteen independent identities, paid service, two actual locality battles, world contacts, a timed objective and its own ending. The editor loads it with undo and the verified seed. Merged through PR #68 after exact-head CI.",
       "local": "A fresh seed-8 route pays for replacements and supplies, preserves three deaths, returns to Córdoba and saves victory; a separate fresh timed route loses. Mounted controls load, edit, undo and launch real play.",
       "remaining": "",
       "acceptance": "Use a portable package without engine-specific scenario code; launch and complete its declared beginning, middle and ending through actual campaign actions, with losses, costs, saved continuation and a real failure path.",
@@ -357,7 +358,8 @@
       "testFiles": [
         "tests/post-campaign.test.mjs",
         "tests/story-editor.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/68"
     },
     {
       "id": "AMMOSAVE-01",
@@ -4239,13 +4241,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "32f7dc096cbdb3c152a79996a337d1fc1f885443",
-    "total": 807,
-    "passed": 807,
+    "source": "2ed9f7ac0eb2b20a2d52a9b4a4b4667699b930b1",
+    "total": 810,
+    "passed": 810,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-CARTRIDGE-SAVE"
+    "evidenceId": "E-POST-CAMPAIGN"
   }
 }
