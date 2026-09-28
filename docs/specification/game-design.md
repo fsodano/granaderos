@@ -686,3 +686,13 @@ Friendly stationed pieces count toward the historical army requirement. Legacy
 stock projections migrate once, prioritizing the active battery and then the
 latest retained scenes. [Verification and limits](../verification/stationed-artillery.md)
 distinguish actual combat from prepared migration and separate-scene boundaries.
+
+### Retained artillery crew work
+
+Each cannon keeps unfinished loading across turns, replacement crews and saves.
+All required artillerists pay the same step, limited by the least available
+assigned AP. A completed load consumes one reserve shot. Authored specialist
+modifiers affect remaining work. Shared crew checks govern controls and execution;
+hired actors cannot commandeer militia AP. Peaceful work advances one simultaneous
+duration without spending combat AP. See [verification](../verification/artillery-crew-loading.md)
+for prepared tactical boundaries and actual paid-gun continuation.

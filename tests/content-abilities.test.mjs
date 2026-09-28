@@ -109,7 +109,7 @@ test('loading support changes actual firearm and artillery admission and the dis
  const supported=make(['loading_support']),plain=make([]);supported.units[0].ap=36;plain.units[0].ap=36;
  assert.equal(pa(supported,'reload'),36);assert.equal(pa(plain,'reload'),36);assert.equal(act(supported,{type:'reload',unitId:'gunner'}).units[0].loaded,1);const partial=act(plain,{type:'reload',unitId:'gunner'});assert.equal(partial.units[0].loaded,0);assert.equal(partial.units[0].ammo,plain.units[0].ammo);assert.equal(partial.units[0].reloadProgress,.8);
  for(const u of supported.units.filter(u=>u.side==='player'))u.ap=50;for(const u of plain.units.filter(u=>u.side==='player'))u.ap=50;
- assert.equal(act(supported,{type:'artilleryReload',unitId:'gunner',artilleryId:'gun'}).artillery[0].loaded,true);assert.ok(actBattle(plain,{type:'artilleryReload',unitId:'gunner',artilleryId:'gun'}).lastError);
+ const complete=act(supported,{type:'artilleryReload',unitId:'gunner',artilleryId:'gun'}),unfinished=act(plain,{type:'artilleryReload',unitId:'gunner',artilleryId:'gun'});assert.equal(complete.artillery[0].loaded,true);assert.equal(complete.artillery[0].ammo,2);assert.equal(complete.units[0].ap,2);assert.equal(unfinished.artillery[0].loaded,false);assert.equal(unfinished.artillery[0].ammo,3);assert.equal(unfinished.artillery[0].reloadProgress,50/60);assert.equal(unfinished.units[0].ap,0);
 });
 
 function battery(abilities,type='swivel'){
@@ -120,7 +120,7 @@ test('authored artillery abilities affect real crew costs, canister damage and s
  assert.equal(act(fast,{type:'artillery',unitId:2000,artilleryId:'gun',x:10,y:3}).units[0].ap,0);assert.ok(actBattle(plain,{type:'artillery',unitId:2000,artilleryId:'gun',x:10,y:3}).lastError);
  const skillShot=act(battery(['artillery_fire']),{type:'artillery',unitId:2000,artilleryId:'gun',x:10,y:3,mode:'canister'}),baseShot=act(battery([]),{type:'artillery',unitId:2000,artilleryId:'gun',x:10,y:3,mode:'canister'});assert.ok(skillShot.units.at(-1).hp<baseShot.units.at(-1).hp);
  const crew=battery(['artillery_loading'],'field8'),bare=battery([],'field8');for(const b of [crew,bare]){b.artillery[0].loaded=false;for(const u of b.units.filter(u=>u.side==='player'))u.ap=60;}
- assert.equal(act(crew,{type:'artilleryReload',unitId:2000,artilleryId:'gun'}).units[0].ap,0);assert.ok(actBattle(bare,{type:'artilleryReload',unitId:2000,artilleryId:'gun'}).lastError);
+ const skilled=act(crew,{type:'artilleryReload',unitId:2000,artilleryId:'gun'}),unskilled=act(bare,{type:'artilleryReload',unitId:2000,artilleryId:'gun'});assert.equal(skilled.units[0].ap,0);assert.equal(skilled.artillery[0].loaded,true);assert.equal(skilled.artillery[0].ammo,4);assert.equal(unskilled.artillery[0].loaded,false);assert.equal(unskilled.artillery[0].ammo,5);assert.equal(unskilled.artillery[0].reloadProgress,.8);assert.ok(unskilled.units.filter(u=>u.side==='player').every(u=>u.ap===0));
  const wall=abilities=>{const b=battery(abilities);for(const x of [3,4])Object.assign(b.tiles.find(t=>t.x===x&&t.y===3),{type:'wall',material:'adobe',blocked:true});return act(b,{type:'artillery',unitId:2000,artilleryId:'gun',x:10,y:3});};
  assert.equal(wall(['artillery_loading']).tiles.find(t=>t.x===4&&t.y===3).blocked,false);assert.equal(wall([]).tiles.find(t=>t.x===4&&t.y===3).blocked,true);
 });

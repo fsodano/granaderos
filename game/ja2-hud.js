@@ -1,7 +1,7 @@
 import {weaponSpecification} from './weapon-definition.js';
 // Pure HUD model for the tactical battle inspector and squad strip.
 // Read-only descriptors plus action-object constructors; no game rules.
-import {weaponFor, bladeFor, actionCosts, reloadPlan, hasFirearm, carriedWeight, carryCapacity, WEAPONS, BLADES} from './tactical.js';
+import {weaponFor, bladeFor, actionCosts, reloadPlan, artilleryCosts, artilleryCrewPlan, artilleryReloadPreview, hasFirearm, carriedWeight, carryCapacity, WEAPONS, BLADES} from './tactical.js';
 
 const alive = u => u.hp > 0 && !u.routed && !u.unconscious;
 const hasTrait = (u, id) => Array.isArray(u.traits) && u.traits.includes(id);
@@ -122,8 +122,8 @@ export function orderDescriptors(state, unit, ctx = {}) {
   const firearm = hasFirearm(u);
   const blade = bladeFor(u);
   const loading=reloadPlan(u,state);
-  const hasGun = (state.artillery || []).some(g => g.side === 'player');
-  const cannonSelected = Boolean(ctx.cannonId);
+  const gun=(state.artillery||[]).find(g=>g.id===ctx.cannonId),gunCosts=gun&&unit?artilleryCosts(state,u,gun):null,gunLoading=artilleryReloadPreview(state,unit,gun);
+  const gunPlans=Object.fromEntries(['artillery','artilleryMove','artilleryPivot','artilleryReload'].map(id=>[id,id==='artilleryReload'?gunLoading:artilleryCrewPlan(state,unit,gun,gunCosts?.[{artillery:'fire',artilleryMove:'move',artilleryPivot:'pivot'}[id]]??0)]));
 
   const disabled = {
     move: false,
@@ -146,10 +146,10 @@ export function orderDescriptors(state, unit, ctx = {}) {
     free: !u.entangled,
     sight: false,
     endTurn: false,
-    artillery: !hasGun || !cannonSelected,
-    artilleryMove: !hasGun || !cannonSelected,
-    artilleryPivot: !hasGun || !cannonSelected,
-    artilleryReload: !hasGun || !cannonSelected,
+    artillery: Boolean(gunPlans.artillery.reason) || !gun?.loaded,
+    artilleryMove: Boolean(gunPlans.artilleryMove.reason),
+    artilleryPivot: Boolean(gunPlans.artilleryPivot.reason),
+    artilleryReload: Boolean(gunPlans.artilleryReload.reason),
   };
 
   const costs=actionCosts(state,u);
@@ -180,6 +180,11 @@ export function orderDescriptors(state, unit, ctx = {}) {
     const d = {id: def.id, label: def.label, kind: def.kind, disabled: baseDisabled || disabled[def.id]};
     if (def.id in pa) d.pa = pa[def.id];
     if (def.id in active) d.active = active[def.id];
+    if(def.id in gunPlans){
+      const plan=gunPlans[def.id],cost=def.id==='artilleryReload'?gunLoading.pa:gunCosts?.[{artillery:'fire',artilleryMove:'move',artilleryPivot:'pivot'}[def.id]]??0;
+      d.pa=state.mode==='exploration'?0:cost;if(state.mode==='exploration')d.seconds=cost?Math.max(1,Math.ceil(cost*.06)):0;
+      d.detail=plan.reason||(def.id==='artillery'&&!gun.loaded?'Primero hay que recargar la pieza.':def.id==='artilleryReload'&&gunLoading.partial?`${cost} PA por artillero ahora; faltan ${gunLoading.remainingPA} PA por artillero.`:state.mode==='exploration'?'Trabajo simultáneo de la dotación.':`${cost} PA por artillero.`);
+    }
     if(def.id==='fire'&&firearm&&(weaponFor(u).readyAP??0)>0){if(state.mode==='exploration'){d.seconds=Math.max(1,Math.ceil(costs.fire*.06));d.detail=costs.ready?'Levanta el arma antes de disparar.':'Arma en posición de tiro.';}else d.detail=costs.ready?`Preparar: ${costs.ready} PA · disparar: ${costs.discharge} PA.`:`Arma en posición de tiro · disparar: ${costs.discharge} PA.`;}
     if(def.id==='reload'){if(state.mode==='exploration')d.seconds=loading.pa?Math.max(1,Math.ceil(loading.pa*.06)):0;d.detail=loading.partial?`${loading.rounds} cartuchos; después faltan ${loading.remainingPA} PA.`:`${loading.rounds} cartuchos; recarga completa.`;}
     return d;

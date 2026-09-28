@@ -449,7 +449,12 @@
     {
       "id": "E-STATIONED-ARTILLERY",
       "path": "docs/verification/stationed-artillery.md",
-      "description": "New paid guns leave unissued stock once and retain physical identity, ownership, position, load and finite ammunition through actual victory, withdrawal, recapture, firing, reload and saved visits. Ten simulations and one mounted production-game case pass; the earlier artillery overlap passes 22/22 and final scene group 14/14. Full regression passes 1032/1032, zero failures/skips, with types, export and all 36 reference checks. Legacy projections reconcile once; transport, resupply, loading across turns and autonomous crews remain separate. Exact-head publication remains required."
+      "description": "New paid guns leave unissued stock once and retain physical identity, ownership, position, load and finite ammunition through actual victory, withdrawal, recapture, firing, reload and saved visits. Ten simulations and one mounted production-game case pass; the earlier artillery overlap passes 22/22 and final scene group 14/14. Full regression passes 1032/1032, zero failures/skips, with types, export and all 36 reference checks. Legacy projections reconcile once; transport, resupply, loading across turns and autonomous crews remain separate. Exact-head publication remains required. Published by PR #100 after successful exact-head CI."
+    },
+    {
+      "id": "E-ARTILLERY-CREW-LOADING",
+      "path": "docs/verification/artillery-crew-loading.md",
+      "description": "Retained partial cannon loading uses simultaneous eligible crews, finite ammunition and shared UI costs. Ten simulations and two mounted field checks pass; final ability/loading group 23/23. The first full run recorded 1042 pass and two outdated rejection expectations; after replacing those with partial-work, finite-round and specialist-advantage assertions, full regression passes 1044/1044 with no failures/skips. Types, export and 36 reference comparisons pass. Actual paid guns preserve work through saves/withdrawal and exhaust seven issued shots; prepared crew boundaries are distinct. Exact-head publication remains required."
     }
   ],
   "queue": [
@@ -498,12 +503,37 @@
   ],
   "requirements": [
     {
+      "id": "CREWLOAD-01",
+      "group": "Published deliveries",
+      "requirement": "Retain simultaneous artillery crew loading across turns and full saves with finite reserve and shared controls",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Actual assigned crew AP limits each loading step, and completion consumes one reserve shot.",
+      "local": "Ten new simulations and two mounted field cases pass 12/12; final ability/loading group 23/23. Complete regression passes 1044/1044, zero failures/skips, with types, export and 36 baseline comparisons. Two earlier legacy rejection expectations were replaced with retained-work and finite-ammunition checks.",
+      "remaining": "",
+      "acceptance": "Use real tactical turns and paid gun manifests to retain unfinished work, choose capable helpers, apply authored specialist costs, conserve ammunition through completion and full saves, retain captured work on reentry and share disabled-state reasons with mounted controls.",
+      "evidence": [
+        "E-ARTILLERY-CREW-LOADING"
+      ],
+      "parents": [
+        "TAC-08",
+        "ITEM-02",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/artillery-crew-loading.test.mjs",
+        "tests/artillery-crew-render.test.mjs",
+        "tests/content-abilities.test.mjs",
+        "tests/artillery.test.mjs"
+      ]
+    },
+    {
       "id": "EMPLACEMENT-01",
       "group": "Published deliveries",
       "requirement": "Issue artillery once and preserve physical sector emplacements, finite ammunition, capture and saved ownership",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Paid attack guns become retained sector pieces rather than reusable stock projections.",
+      "published": "Published by PR #100 after successful exact-head CI. Paid attack guns become retained sector pieces with finite ammunition, stable identity and actual capture.",
       "local": "Ten simulations and one mounted production-game check pass. Full regression passes 1032/1032, zero failures/skips, with types, export and 36 baseline comparisons. Actual established-area combat and paid guns are distinguished from prepared migration and conference boundaries.",
       "remaining": "",
       "acceptance": "Buy and issue actual guns, settle real combat outcomes, fire and reload finite rounds, return through full saves with unchanged positions and ammunition, join a second purchased piece, reject identity/ammunition corruption and migrate old reusable projections without creating additional paid guns.",
@@ -520,7 +550,8 @@
         "tests/stationed-artillery-render.test.mjs",
         "tests/artillery.test.mjs",
         "tests/artillery-selection.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/100"
     },
     {
       "id": "BATTERYCHOICE-01",
@@ -2959,13 +2990,14 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Three crew-served gun profiles and artillery actions.",
-      "local": "See local suite and preserved parity source; not equivalent to published integration. EMPLACEMENT-01 accepts bounded physical sector persistence, finite first issue, capture and migration.",
-      "remaining": "Publish accepted physical emplacements after exact-head CI; integrate partial crew loading, autonomous crews, resupply and strategic recovery/transport.",
+      "local": "See local suite and preserved parity source; not equivalent to published integration. EMPLACEMENT-01 accepts bounded physical sector persistence, finite first issue, capture and migration. CREWLOAD-01 accepts retained individual crew work, finite completed shots and shared controls.",
+      "remaining": "Publish accepted physical emplacements and partial crew loading after exact-head CI; integrate autonomous crews, resupply and strategic recovery/transport.",
       "acceptance": "Crew requirements, movement/pivot AP and range",
       "evidence": [
         "E-PUBLISHED",
         "E-CONFLICTS",
-        "E-STATIONED-ARTILLERY"
+        "E-STATIONED-ARTILLERY",
+        "E-ARTILLERY-CREW-LOADING"
       ]
     },
     {
@@ -3159,13 +3191,14 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Three artillery profiles and period supply actions.",
-      "local": "See local suite and preserved parity source; not equivalent to published integration. EMPLACEMENT-01 accepts bounded physical sector persistence, finite first issue, capture and migration.",
+      "local": "See local suite and preserved parity source; not equivalent to published integration. EMPLACEMENT-01 accepts bounded physical sector persistence, finite first issue, capture and migration. CREWLOAD-01 accepts retained individual crew work, finite completed shots and shared controls.",
       "remaining": "Complete authoring, finite stores, transport, consumption and saved ownership.",
       "acceptance": "Data and actual consumption/carry effects",
       "evidence": [
         "E-PUBLISHED",
         "E-CONFLICTS",
-        "E-STATIONED-ARTILLERY"
+        "E-STATIONED-ARTILLERY",
+        "E-ARTILLERY-CREW-LOADING"
       ]
     },
     {
@@ -5303,13 +5336,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "f18756ca8104b7c827599404d7c78d14bac9e19a",
-    "total": 1021,
-    "passed": 1021,
+    "source": "75b6409fa12ade7c00f1ea0207e421f59245f579",
+    "total": 1032,
+    "passed": 1032,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-BATTERY-CHOICE"
+    "evidenceId": "E-STATIONED-ARTILLERY"
   }
 }

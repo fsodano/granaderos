@@ -49,7 +49,7 @@ regression passes **1032/1032**, zero failures or skips (240,898.493 ms), on the
 source above. Types and production export pass with 722 files and 632 asset
 references. All 36 reference comparisons pass. Documentation validation passes
 with 238 requirements and 77 evidence records, retaining all 50 original and
-87 parity rows. Exact-head CI remains required before publication.
+87 parity rows. Exact-head publication is recorded below.
 
 The authored established-area fixture starts with Buenos Aires controlled and
 10,000 pesos, pays six ordinary week contracts with immediate authored arrivals
@@ -82,3 +82,11 @@ remain separate. Preserved development records describe larger, dated systems:
 [stationed artillery](../gameplay/campaign/stationed-artillery.md),
 [transport](../gameplay/campaign/artillery-transport.md) and
 [crew loading](../gameplay/equipment/artillery-reload-progress.md).
+
+
+## Publication
+
+Published in [PR #100](https://github.com/fsodano/granaderos/pull/100).
+Exact-head CI passed on `e092ab687e1153715a01352865e3ac327b410558` at
+2026-09-28 21:46:55 UTC ([run](https://github.com/fsodano/granaderos/actions/runs/36486287948)).
+Merge commit: `b1ae19d68af4069fcb12c2594caef7fa913e9fc6`, 21:48:02 UTC.
