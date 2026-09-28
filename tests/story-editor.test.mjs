@@ -490,3 +490,13 @@ test('the editor configures initial money and ammunition, validates limits and p
  for(const action of [{type:'recruitCivic',id:110,term:'week'},{type:'wait',hours:6},{type:'attack',sector:'buenos_aires'}]){campaign=dispatchCampaign(campaign,action);assert.equal(campaign.lastError,null);}
  const pair=decodeSave(encodeSave(campaign,enterSector(campaign.pendingBattle)));assert.equal(pair.battle.units.find(u=>u.id==='110').loaded+pair.battle.units.find(u=>u.id==='110').ammo,3);assert.ok(pair.battle.units.filter(u=>u.side==='enemy').every(u=>u.loaded+u.ammo===7));
 });
+
+test('the editor authors initial control and loyalty, restores older defaults and launches real arrival options',async t=>{
+ const d=defaultContentPackage();delete d.startingTerritory;const m=await mount(t,JSON.stringify(d));const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));
+ await m.click(m.button('Reglas'));const control=id=>m.document.querySelector(`[aria-label="Control inicial de ${CAMPAIGN_SECTORS.find(s=>s.id===id).name}"]`),loyalty=id=>m.document.querySelector(`[aria-label="Lealtad inicial de ${CAMPAIGN_SECTORS.find(s=>s.id===id).name}"]`);
+ assert.equal(control('retiro').value,'patriot');assert.equal(control('retiro').disabled,true);assert.equal(control('mendoza').value,'royalist');await m.input(control('mendoza'),'patriot');await m.input(loyalty('mendoza'),91);assert.equal(draft().startingTerritory.mendoza.loyalty,91);
+ await m.click(m.button('Deshacer'));assert.equal(loyalty('mendoza').value,'25');await m.click(m.button('Rehacer'));assert.equal(loyalty('mendoza').value,'91');await m.input(loyalty('mendoza'),101);assert.equal(m.button('Iniciar campaña con estas fichas').disabled,true);await m.input(loyalty('mendoza'),91);
+ await m.click(m.button('Restaurar territorio original'));assert.equal(control('mendoza').value,'royalist');await m.click(m.button('Deshacer'));assert.equal(control('mendoza').value,'patriot');assert.equal(loyalty('mendoza').value,'91');
+ await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.deepEqual(campaign.sectors.mendoza,{owner:'patriot',loyalty:91,militia:[0,0,0],damageUntil:0,fort:0});assert.equal(campaign.resources.treasury,3200);
+ campaign=dispatchCampaign(campaign,{type:'recruitCivic',id:110,term:'week',destination:'mendoza'});assert.equal(campaign.lastError,null);assert.equal(campaign.hiringArrivals[0].destination,'mendoza');campaign=dispatchCampaign(campaign,{type:'wait',hours:6});assert.equal(campaign.lastError,null);assert.equal(campaign.operativeState[110].location,'mendoza');assert.equal(decodeSave(encodeSave(campaign)).campaign.sectors.mendoza.owner,'patriot');
+});

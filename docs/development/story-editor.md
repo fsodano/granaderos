@@ -148,6 +148,16 @@ Cero deja las armas descargadas y sin reserva. Las armas principales blancas no 
 
 Un borrador anterior usa los valores originales. La campaña guarda su propia copia de las reglas: cambiar el borrador no cambia una partida existente, y cargar una partida no vuelve a entregar los fondos iniciales.
 
+## Territorio inicial
+
+En **Reglas**, la tabla **Territorio al iniciar la campaña** define el control patriota o realista y la lealtad de las trece localidades. La lealtad permite valores enteros de 0 a 100. **Restaurar territorio original** vuelve a Retiro patriota con 65% de lealtad y las otras localidades realistas con 25%. Podés deshacer y rehacer los cambios.
+
+Retiro debe seguir bajo control patriota: todavía es el cuartel de partida y el origen de abastecimiento. Cada localidad comparte el control con sus barrios. El terreno abierto permanece neutral. Las apariciones de personajes siguen usando cualquier celda terrestre desde su propia ficha.
+
+El control inicial habilita los destinos de contratación que también tengan infraestructura de recepción. No abre una ruta de abastecimiento a través de localidades enemigas: una Mendoza patriota puede seguir incomunicada con Retiro. Los ingresos y los requisitos de instrucción de milicia usan el control y la lealtad reales. Comenzar con una localidad no entrega una recompensa de conquista, tropas ni una misión completada.
+
+El escritorio muestra las localidades iniciales; la carta muestra el control actual. La campaña guarda una copia de las opciones y aplica el territorio solo al comenzar. Las conquistas, pérdidas y cambios de lealtad posteriores se conservan al cargar. Los borradores anteriores mantienen el inicio original. Cambiar el cuartel, las funciones históricas, los capítulos y los finales sigue pendiente.
+
 ## Recorrer celdas del mapa
 
 La carta de operaciones permite seleccionar las 1188 celdas de la cuadrícula con el ratón o las flechas del teclado. Las celdas terrestres fuera de una localidad y los barrios distintos tienen una ubicación, una escena y objetos propios. El marcador de la escuadra, la organización de unidades y la vista de objetos usan esa ubicación exacta. No se trasladan a la ciudad más cercana.
@@ -254,3 +264,5 @@ Los mandos históricos conservan su servicio permanente, requisitos de reclutami
 `tests/force-blades.test.mjs` cubre ambos espacios de enemigos y milicias, cartuchos según el arma principal, decisiones de cambio de la IA, tropas guardadas y recuperación de un arma principal con retirada y reentrada. Usa tropas reales emitidas por campaña en escenarios pequeños preparados. El editor montado conserva ambas selecciones y las aplica a un ataque real. Ver [armas blancas de las tropas](../verification/force-blades.md).
 
 `tests/campaign-rules.test.mjs` cubre fondos iniciales, valores válidos, copias guardadas, cobros y devoluciones, cargas nulas y milicias con cartuchos consumidos. El editor montado modifica, restaura, deshace y lanza las reglas. La pantalla montada comprueba el precio, la entrada, la salida y el guardado automático. Ver [fondos y abastecimiento](../verification/campaign-supply-rules.md).
+
+`tests/starting-territory.test.mjs` verifica formato, inicio, contratación y llegada, abastecimiento, ingresos diarios, requisitos de milicia, viajes y entrada real, ataque a un vecino ocupado y guardados. El editor montado configura el territorio, valida límites, deshace y lanza la campaña. La comprobación de escritorio y mapa usa la vista renderizada, sin una sesión de navegador. Ver [territorio inicial](../verification/starting-territory.md).

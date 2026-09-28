@@ -1,3 +1,4 @@
+import {applyStartingTerritory} from './content-territory.js';
 import {campaignRules} from './campaign-rules.js';
 import {validateAbilityReferences} from './content-character-abilities.js';
 import {validatePresentationReferences} from './content-character-presentation.js';
@@ -13,7 +14,7 @@ export function campaignContentReport(content) {
     baseline = defaultContentPackage(),
     blocked = [],
     pending = [];
-  const supported=new Set(['format','version','id','name','characters','weapons','placements','arrivalSites','oppositionEquipment','militiaEquipment','oppositionBlades','militiaBlades','quests','rules']);
+  const supported=new Set(['format','version','id','name','characters','weapons','placements','arrivalSites','oppositionEquipment','militiaEquipment','oppositionBlades','militiaBlades','quests','rules','startingTerritory']);
   const characterFields=new Set(['id','name','nickname','role','biography','portrait','monthlyPay','weapon','blade','attributes','arrivalHours','recruitmentSource','service','progression','traits','ridingSkill','personality','speech','spriteAppearance','abilities','encounter']);
   if(Object.keys(value).some(key=>!supported.has(key))||value.characters.some(c=>Object.keys(c).some(key=>!characterFields.has(key))))
     blocked.push('Este paquete incluye opciones de historia que esta versión todavía no puede aplicar.');
@@ -51,6 +52,7 @@ export function attachCampaignContent(state, content) {
   if (report.blocked.length) throw Error(report.blocked.join("\n"));
   state.contentCampaign = { version: 2, adapter: "character-presence-v1", identity: contentIdentity(definitions), package: definitions };
   state.resources.treasury=campaignRules(state).startingTreasury;
+  applyStartingTerritory(state);
   state.armoryItems=[];state.nextArmoryItemId=1;
   for (const c of definitions.characters) {
     const id=operativeIdForCharacter(definitions,c.id);
