@@ -1,0 +1,225 @@
+{
+  "source": "c42397154c346166a35c168bd2143acc669f7062",
+  "date": "2026-09-28",
+  "scope": "Fresh seed-8 default content. Real hiring, combat, casualties, local visits, renewal, replacements and saved checkpoints. No territory, victory, health, money or equipment was granted. A failed strategy is not proof that the scenario is unwinnable.",
+  "beforeFix": {
+    "source": "87cf6ba3d7404bd7d8c1e4f2ef10097ec75b5161",
+    "rejectedSave": "Las apariciones guardadas son inv\u00e1lidas.",
+    "cause": "Operative 115 died in the capital battle. At contract expiry the roster removed it but its deceased presence remained recruited=true.",
+    "redTests": 3
+  },
+  "economicalOpening": [
+    {
+      "sector": "buenos_aires",
+      "status": "defeat",
+      "actions": 61,
+      "turns": 5,
+      "hour": 18,
+      "funds": 2587,
+      "players": [
+        {
+          "id": "110",
+          "hp": 37,
+          "routed": true
+        },
+        {
+          "id": "136",
+          "hp": 0,
+          "routed": false
+        },
+        {
+          "id": "120",
+          "hp": 0,
+          "routed": false
+        },
+        {
+          "id": "134",
+          "hp": 24,
+          "routed": true
+        },
+        {
+          "id": "141",
+          "hp": 4,
+          "routed": true
+        },
+        {
+          "id": "107",
+          "hp": 0,
+          "routed": false
+        }
+      ]
+    }
+  ],
+  "capitalAndLocalContacts": [
+    {
+      "sector": "buenos_aires",
+      "status": "victory",
+      "actions": 73,
+      "turns": 4,
+      "hour": 18,
+      "funds": 286,
+      "players": [
+        {
+          "id": "128",
+          "hp": 79,
+          "routed": false
+        },
+        {
+          "id": "142",
+          "hp": 79,
+          "routed": false
+        },
+        {
+          "id": "123",
+          "hp": 83,
+          "routed": false
+        },
+        {
+          "id": "115",
+          "hp": 0,
+          "routed": false
+        },
+        {
+          "id": "131",
+          "hp": 8,
+          "routed": false
+        },
+        {
+          "id": "110",
+          "hp": 58,
+          "routed": false
+        }
+      ]
+    },
+    {
+      "unavailableResident": 4,
+      "hp": 0
+    },
+    {
+      "unavailableResident": 10,
+      "hp": 0
+    },
+    {
+      "error": "Cannot read properties of null (reading 'sceneId')",
+      "hour": 30,
+      "funds": 850,
+      "squad": [],
+      "contracts": {}
+    }
+  ],
+  "paidReliefAfterFix": [
+    {
+      "ready": true,
+      "hour": 30,
+      "funds": 227,
+      "squad": [
+        110,
+        123,
+        136,
+        141,
+        120,
+        134
+      ],
+      "health": [
+        {
+          "id": 110,
+          "hp": 63
+        },
+        {
+          "id": 123,
+          "hp": 83
+        },
+        {
+          "id": 136,
+          "hp": 90
+        },
+        {
+          "id": 141,
+          "hp": 84
+        },
+        {
+          "id": 120,
+          "hp": 73
+        },
+        {
+          "id": 134,
+          "hp": 68
+        }
+      ]
+    },
+    {
+      "sector": "san_nicolas",
+      "status": "defeat",
+      "actions": 31,
+      "turns": 5,
+      "hour": 42,
+      "funds": 167,
+      "players": [
+        {
+          "id": "110",
+          "hp": 0,
+          "routed": false
+        },
+        {
+          "id": "123",
+          "hp": 22,
+          "routed": true
+        },
+        {
+          "id": "136",
+          "hp": 29,
+          "routed": true
+        },
+        {
+          "id": "141",
+          "hp": 28,
+          "routed": true
+        },
+        {
+          "id": "120",
+          "hp": 0,
+          "routed": false
+        },
+        {
+          "id": "134",
+          "hp": 0,
+          "routed": false
+        }
+      ]
+    }
+  ],
+  "corpseReentry": {
+    "before": [
+      {
+        "id": "115",
+        "side": "player"
+      },
+      {
+        "id": "enemy-1",
+        "side": "enemy"
+      },
+      {
+        "id": "enemy-5",
+        "side": "enemy"
+      }
+    ],
+    "after": [],
+    "civilianBodies": [
+      "dorrego",
+      "paroissien"
+    ],
+    "confirmedCasualties": [
+      {
+        "id": "115",
+        "hp": 0,
+        "alive": false
+      }
+    ]
+  },
+  "limits": [
+    "The capital/local-contact probe stops when all original day contracts expire; its controller then attempted to use the correctly cancelled attack, which has no pending battle.",
+    "The relief continuation renews 110 and 123 for a week and hires 136, 141, 120 and 134 for a week to controlled Buenos Aires. It saves successfully after the presence repair but loses San Nicolas.",
+    "Military corpses disappear on peaceful reentry; civilian bodies and confirmed campaign deaths remain. This is a separate reproduced defect.",
+    "No full stock/alternate campaign, browser session or sustained frame-rate acceptance."
+  ]
+}

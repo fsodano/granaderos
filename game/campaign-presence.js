@@ -37,6 +37,9 @@ export function synchronizeCampaignPresence(state){
     if(record.alive===false&&person.alive){record.deathMinute=runtime.minute;runtime=changePlacementStatus(runtime,c.id,'dead',loaded);}
     else if(person.alive&&person.recruited!==state.recruited.includes(numeric))
       runtime=changePlacementStatus(runtime,c.id,state.recruited.includes(numeric)?'recruited':'released',loaded);
+    // A casualty can leave the service ledger when its contract ends. This is
+    // not a living placement transition and must not release or revive an actor.
+    if(!runtime.people[c.id].alive)runtime.people[c.id].recruited=state.recruited.includes(numeric);
     runtime.people[c.id].hp=record.hp;
   }
   state.contentPresence=strip(runtime);
@@ -105,11 +108,15 @@ export function validateCampaignPresence(state){
   need(r.nextDaily===240+1440*(Math.floor((r.minute-240)/1440)+1));
   need(object(r.people)&&Object.keys(r.people).length===content.characters.length);
   for(const c of content.characters){
-    const p=r.people[c.id],placement=content.placements.find(v=>v.character===c.id),record=state.operativeState[operativeIdForCharacter(content,c.id)];
+    const id=operativeIdForCharacter(content,c.id),p=r.people[c.id],placement=content.placements.find(v=>v.character===c.id),record=state.operativeState[id];
     need(object(p)&&['alive','recruited','appeared','suspended'].every(k=>typeof p[k]==='boolean')&&p.suspended===false&&integer(p.revision,0,1e9));
     need(Object.keys(p).every(k=>['alive','recruited','appeared','suspended','revision','sector','hp'].includes(k)));
     if(record.deathMinute!==undefined)need(record.alive===false&&integer(record.deathMinute,0,r.minute));
-    need(p.hp===record.hp&&p.alive===record.alive&&p.recruited===state.recruited.includes(operativeIdForCharacter(content,c.id)));
+    // Older saves retained this derived bit after a confirmed casualty's expiry
+    // or dismissal. Repair only the stale service bit; all death, health,
+    // placement, scene and succession checks below still apply.
+    if(record.alive===false&&record.hp===0&&integer(record.deathMinute,0,r.minute)&&p.alive===false&&p.hp===0&&p.sector===null&&p.recruited&&!state.recruited.includes(id)&&!state.contracts[id])p.recruited=false;
+    need(p.hp===record.hp&&p.alive===record.alive&&p.recruited===state.recruited.includes(id));
     need(p.sector===null||placement?.sectors.includes(p.sector));
     need(!p.appeared||Boolean(placement)&&p.revision>=1);
     need(p.alive||p.hp===0&&p.sector===null);

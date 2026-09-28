@@ -38,6 +38,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Assigned strategic campaign roles](campaign-roles.md)
 - [Authored foundry project and workshop](foundry-project.md)
 - [Project conditions in chapters and dialogue](project-conditions.md)
+- [Deceased contracts and saved continuation](contract-casualty-presence.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 

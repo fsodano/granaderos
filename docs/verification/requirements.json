@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "616af1964f746e9e86799cee31b8048609238fe7",
+  "baseline": "c42397154c346166a35c168bd2143acc669f7062",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -200,7 +200,13 @@
     {
       "id": "E-PROJECT-CONDITIONS",
       "path": "docs/verification/project-conditions.md",
-      "description": "Completed or pending foundry/funding steps drive authored chapters, failure and dialogue eligibility. Real paid arrival, preparation, contract expiry and funding reach a saved ending; a real resident quest rejects premature rewards and completes after funding and scene settlement. Mounted authoring, undo and copying retain the shared condition. Arbitrary projects and full campaign composition remain open."
+      "description": "Completed or pending foundry/funding steps drive authored chapters, failure and dialogue eligibility. Real paid arrival, preparation, contract expiry and funding reach a saved ending; a real resident quest rejects premature rewards and completes after funding and scene settlement. Mounted authoring, undo and copying retain the shared condition. Arbitrary projects and full campaign composition remain open.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36389860350/job/108823085104"
+    },
+    {
+      "id": "E-CONTRACT-CASUALTY",
+      "path": "docs/verification/contract-casualty-presence.md",
+      "description": "A fresh paid capital victory produced a real casualty whose contract expiry invalidated later saves. Expiry/dismissal presence is now synchronized without reviving the actor; narrowly identified old stale flags are repaired. Actual paid relief reaches a saved San Nicolas defeat, not full campaign acceptance. A separate military-body reentry defect is reproduced and remains open."
     }
   ],
   "queue": [
@@ -212,7 +218,8 @@
         "FIX-01",
         "FIX-02",
         "FIX-03",
-        "FIX-04"
+        "FIX-04",
+        "BODY-01"
       ],
       "action": "Extend the combined acceptance path beyond Retiro startup and the first hired-squad conquest. Preserve pesos and all hire terms, verify fresh opening routes, then diagnose each reproduced later-route failure. Import advanced systems with their own tests; do not replace the reducer wholesale."
     },
@@ -551,6 +558,30 @@
         "tests/dialogue-conditions.test.mjs",
         "tests/campaign-story.test.mjs",
         "tests/story-editor.test.mjs"
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/57"
+    },
+    {
+      "id": "CASUALTY-01",
+      "group": "Published deliveries",
+      "requirement": "Keep saves valid when a confirmed casualty leaves paid service",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Dead presence membership follows expiry and dismissal without a living release or resurrection. Confirmed stale dead-service flags in older saves are narrowly repaired. Death, health, placement, scene and succession checks remain enforced.",
+      "local": "Reproduced through actual fresh paid capital combat and expiry. The subsequent paid relief loses San Nicolas; full route acceptance remains open.",
+      "remaining": "",
+      "acceptance": "Kill a paid actor in actual combat, settle victory, expire or remove the contract and reload; retain death and stored scene, permit another paid hire; repair the known stale flag and reject changes to life, health or placement.",
+      "evidence": [
+        "E-CONTRACT-CASUALTY"
+      ],
+      "parents": [
+        "INTEGRATION-01",
+        "STORY-02"
+      ],
+      "testFiles": [
+        "tests/contract-casualty-presence.test.mjs",
+        "tests/campaign-presence.test.mjs",
+        "tests/local-contracts.test.mjs"
       ]
     },
     {
@@ -1933,9 +1964,9 @@
       "requirement": "New world identities, persistent residents and death successors",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "New and existing world residents retain physical identity. Confirmed civilian or active military death can activate a distinct new world successor after a saved delay; earlier bodies and each character health stay separate. New residents can offer paid local service for all published terms, with quoted prices and persistent expiry, renewal and return. Authored progression can omit historical identities or copy them into independent residents; generic original residents are optional.",
+      "published": "New and existing world residents retain physical identity. Confirmed civilian or active military death can activate a distinct new world successor after a saved delay; earlier bodies and each character health stay separate. New residents can offer paid local service for all published terms, with quoted prices and persistent expiry, renewal and return. Authored progression can omit historical identities or copy them into independent residents; generic original residents are optional. Confirmed casualties can leave the service ledger through expiry or dismissal without invalidating saves; known stale deceased-service bits are repaired.",
       "local": "Preview transitions supplied the core schedule. Published identity, health and successor activation are connected; advanced inventories and role transfer remain separate.",
-      "remaining": "Connect editable belongings, NPC looting, custody and explicit role/stock transfer. Strategic civilian care and unloaded-sector bleeding remain separate work.",
+      "remaining": "Fix military-body retention on sector reentry. Connect editable belongings, NPC looting, custody and explicit role/stock transfer. Strategic civilian care and unloaded-sector bleeding remain separate work.",
       "acceptance": "Move an injured NPC, reload, recruit it, confirm death and activate one distinct successor without healing or duplicating goods.",
       "evidence": [
         "E-CONFLICTS",
@@ -1943,7 +1974,8 @@
         "E-AUTHORED-RESIDENTS",
         "E-DEATH-SUCCESSORS",
         "E-LOCAL-CONTRACTS",
-        "E-CAMPAIGN-CAST"
+        "E-CAMPAIGN-CAST",
+        "E-CONTRACT-CASUALTY"
       ]
     },
     {
@@ -2073,14 +2105,15 @@
       "requirement": "Consolidate published, prototype and advanced local gameplay",
       "status": "FAILED",
       "priority": "P0",
-      "published": "Published baseline is green, but excludes most advanced local gameplay.",
+      "published": "Published baseline is green, but excludes most advanced local gameplay. A fresh paid continuation exposed and fixed deceased-contract save rejection; paid relief now saves its San Nicolas defeat. Full route acceptance remains open.",
       "local": "Both larger suites fail; economy, opening and elite-contract policies differ.",
       "remaining": "Import one bounded capability at a time, preserve approved policy and carry its tests into main.",
       "acceptance": "One release has the full combined behavior, passing combined suite, legal complete routes and no undocumented policy regressions.",
       "evidence": [
         "E-LOCAL",
         "E-PROTOTYPE",
-        "E-CONFLICTS"
+        "E-CONFLICTS",
+        "E-CONTRACT-CASUALTY"
       ]
     },
     {
@@ -3836,16 +3869,34 @@
       "evidence": [
         "E-PROTOTYPE"
       ]
+    },
+    {
+      "id": "BODY-01",
+      "group": "Story and integration",
+      "requirement": "Retain military corpses when revisiting a settled sector",
+      "status": "FAILED",
+      "priority": "P1",
+      "published": "A real fresh capital victory retains military casualties in the stored battle, but peaceful reentry discards one player body and two enemy bodies. Civilian bodies and campaign death records remain.",
+      "local": "Advanced workspace has body/crew continuity work that is not integrated or accepted here.",
+      "remaining": "Preserve player and enemy corpses across reentry, fresh occupation and save/load without creating living actors, duplicate identities, equipment or report casualties.",
+      "acceptance": "Use actual combat deaths and real return/reentry; retain positions, death appearance and finite belongings across saved visits and a fresh occupation, while current living squads and new enemies remain distinct.",
+      "evidence": [
+        "E-CONTRACT-CASUALTY"
+      ],
+      "parents": [
+        "INTEGRATION-01",
+        "STORY-02"
+      ]
     }
   ],
   "latestPublishedCheck": {
-    "source": "616af1964f746e9e86799cee31b8048609238fe7",
-    "total": 779,
-    "passed": 779,
+    "source": "c42397154c346166a35c168bd2143acc669f7062",
+    "total": 782,
+    "passed": 782,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-PROJECT-CONDITIONS"
+    "evidenceId": "E-CONTRACT-CASUALTY"
   }
 }
