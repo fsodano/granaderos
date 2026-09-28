@@ -1,3 +1,4 @@
+import {importRulesFor,importOrderReason} from './campaign-imports.js';
 import {headquartersFor,headquartersName,campaignChapters,hasWorkshop} from './campaign-headquarters.js';
 import {campaignRules} from './campaign-rules.js';
 import {synchronizeDialogueMovements,validateDialogueMovements} from './dialogue-movement.js';
@@ -210,7 +211,7 @@ export function dispatchCampaign(previous,action){
         const item=equipmentCatalog(s).find(o=>String(o.item)===String(action.item)),quantity=action.quantity??1;
         requireThat(item&&Number.isInteger(quantity)&&quantity>0&&quantity<=100,'El pedido de armamento es inválido.');
         requireThat(isSupplied(s,headquartersFor(s)),`La sala de armas de ${headquartersName(s)} está incomunicada.`);
-        if(isImportedEquipment(item)){requireThat(s.sectors.ensenada.owner==='patriot'&&s.reputation.foreign>=0,'El pedido requiere Ensenada libre y comerciantes dispuestos a negociar.');s.equipmentShipments??=[];requireThat(s.equipmentShipments.length<1000,'Hay demasiados pedidos pendientes.');pay(s,{treasury:tradeQuote(s,item.price)*quantity});const delay=72+Math.floor(random(s)*49);s.equipmentShipments.push({item:item.item,quantity,due:s.hour+delay});note(s,`Pedido de ${quantity} × ${item.name}: arribo en ${delay} horas, sujeto al bloqueo.`);break;}
+        if(isImportedEquipment(item)){const reason=importOrderReason(s);requireThat(!reason,reason);s.equipmentShipments??=[];requireThat(s.equipmentShipments.length<1000,'Hay demasiados pedidos pendientes.');pay(s,{treasury:tradeQuote(s,item.price)*quantity});const rules=importRulesFor(s),delay=rules.minHours+Math.floor(random(s)*(rules.maxHours-rules.minHours+1));s.equipmentShipments.push({item:item.item,quantity,due:s.hour+delay});note(s,`Pedido de ${quantity} × ${item.name}: arribo en ${delay} horas, sujeto al bloqueo.`);break;}
         pay(s,{treasury:item.price*quantity});s.armory??={};addArmoryStock(s,item,quantity);
         note(s,`La sala de armas entrega ${quantity} × ${item.name}.`);break;
       }

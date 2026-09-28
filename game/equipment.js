@@ -1,3 +1,4 @@
+import {importRulesFor,importPortName,importDelayReason} from './campaign-imports.js';
 import {compileWeaponDefinition} from './weapon-definition.js';
 import {usesAuthoredEquipment,equipmentKey,addArmoryStock} from './armory-items.js';
 import {artilleryCount} from './economy.js';
@@ -29,7 +30,7 @@ export function deployedArtillery(s){
 export function isImportedEquipment(item){return [1800,1802].includes(Number(item?.contentWeapon?.template??item?.item));}
 export function deliverEquipmentShipments(s){
  s.equipmentShipments??=[];
- if(s.blockade||s.sectors.ensenada.owner!=='patriot')return;
- for(const shipment of [...s.equipmentShipments])if(shipment.due<=s.hour){const item=equipmentCatalog(s).find(w=>String(w.item)===String(shipment.item));if(!item)throw Error('El pedido de armas ya no corresponde al catálogo.');addArmoryStock(s,item,shipment.quantity);s.equipmentShipments.splice(s.equipmentShipments.indexOf(shipment),1);s.log.unshift({hour:s.hour,text:`Arriban a Ensenada ${shipment.quantity} armas importadas para la sala de armas.`});s.log=s.log.slice(0,80);}
+ if(importDelayReason(s))return;
+ for(const shipment of [...s.equipmentShipments])if(shipment.due<=s.hour){const item=equipmentCatalog(s).find(w=>String(w.item)===String(shipment.item));if(!item)throw Error('El pedido de armas ya no corresponde al catálogo.');addArmoryStock(s,item,shipment.quantity);s.equipmentShipments.splice(s.equipmentShipments.indexOf(shipment),1);s.log.unshift({hour:s.hour,text:`Arriban a ${importPortName(s)} ${shipment.quantity} armas importadas para la sala de armas.`});s.log=s.log.slice(0,80);}
 }
-export function validEquipmentShipments(s){return Array.isArray(s.equipmentShipments)&&s.equipmentShipments.length<=1000&&s.equipmentShipments.every(q=>q&&isImportedEquipment(equipmentCatalog(s).find(w=>String(w.item)===String(q.item)))&&Number.isInteger(q.quantity)&&q.quantity>0&&q.quantity<=100&&Number.isInteger(q.due)&&q.due>=0&&q.due<=1e9);}
+export function validEquipmentShipments(s){return Array.isArray(s.equipmentShipments)&&s.equipmentShipments.length<=1000&&(importRulesFor(s).port!==null||s.equipmentShipments.length===0)&&s.equipmentShipments.every(q=>q&&isImportedEquipment(equipmentCatalog(s).find(w=>String(w.item)===String(q.item)))&&Number.isInteger(q.quantity)&&q.quantity>0&&q.quantity<=100&&Number.isInteger(q.due)&&q.due>=0&&q.due<=1e9);}
