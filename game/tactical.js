@@ -1,4 +1,5 @@
 import {firstAidPlan} from './first-aid.js';
+import {speechFor} from './characters.js';
 import {isUnconscious,fieldCapable,refreshMilitaryCondition} from './actor-condition.js';
 import {seedCivilianHealth,isCivilianUnconscious,civilianRestoredHp} from './civilian-health.js';
 import {applyCivilianHarm,advanceCivilianBleeding} from './civilian-harm.js';
@@ -200,6 +201,11 @@ else if(a.type==='heal'){
  const before=t.hp;u.medkits-=plan.dressingsUsed;practice(u,'medical',3);t.hp=plan.hpAfter;t.bleeding=plan.bleedingAfter;t.bandaged=plan.bandagedAfter;
  if(isCivilian){if(!t.bleeding)delete t.bleedSource;t.civilianWoundVersion=1;if(t.hp>before)t.civilianFirstAid={version:1,hpRestored:civilianRestoredHp(t)+t.hp-before};t.unconscious=isCivilianUnconscious(t);}
  say(s,plan.partial?`${u.name} estabiliza a ${t.name}; el tratamiento debe continuar.`:`${u.name} venda a ${t.name}. La recuperación de salud continúa en campaña.`);
+ // Speak only for this accepted, paid stroke, before any later ambient recovery.
+ // Current HP/energy, rather than an older military flag, decides consciousness.
+ if(t!==u&&!t.departure&&t.hp>0&&!isUnconscious(t)){
+  const line=speechFor(t,'treated');if(line?.trim())say(s,`${t.nickname||t.name}: «${line}»`);
+ }
 }
 else if(a.type==='stance'){if(u.mounted)return fail('Debes desmontar antes de cambiar de postura.');if(!['standing','prone'].includes(a.stance)||u.stance===a.stance)return fail('Postura no válida.');const cost=u.knockedDown?12:6;if(!pay(cost))return fail(`Cambiar de postura requiere ${cost} PA.`);u.stance=a.stance;if(a.stance==='standing')u.knockedDown=false;u.momentum=0;say(s,`${u.name} ${a.stance==='prone'?'se tiende cuerpo a tierra':'se pone de pie'}.`);}
 else return fail('Orden desconocida.');checkEnd(s);return true;}

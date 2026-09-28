@@ -295,6 +295,11 @@ an inferred result from an older service sheet. Validated tactical checkpoints
 resolve failure rules; chapter success still waits for settlement. Health does
 not imply presence, service, automatic speech or rewards. See
 [story health conditions](../verification/story-health-conditions.md).
+An optional authored first-aid response belongs to the patient and is emitted
+only after an accepted, paid tactical stroke by another person, while the patient
+is conscious. A later recovery tick, self-care, rejected order or saved reload
+cannot emit it. Blank or omitted text stays silent, and older packages retain
+their identity. See [treatment responses](../verification/authored-treatment-speech.md).
 These stroke and indivisible-dressing rules are explicit
 Granaderos adaptations. See [manual care](../gameplay/characters/field-first-aid.md).
 

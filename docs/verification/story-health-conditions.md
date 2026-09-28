@@ -61,8 +61,11 @@ At the source above, the complete release suite passes **865/865** checks,
 with zero failures or skips, in 205,134 ms. Browser types, the static export
 (722 files and 632 checked references), and all 36 baseline checks pass.
 The documentation audit preserves the 50 original requirements and 87 parity
-rows within 216 tracked requirements and 55 evidence records. GitHub publication
-and exact-head CI are recorded separately when this feature is merged.
+rows within 216 tracked requirements and 55 evidence records. [PR #78](https://github.com/fsodano/granaderos/pull/78) merged as
+`1cba8a0356b8c690b2f908112eac63a165679391` on 2026-09-28 at 14:39 UTC.
+[GitHub CI](https://github.com/fsodano/granaderos/actions/runs/36435629331/job/108972694656)
+passed at 14:38 UTC for exact head `6cfa77a795ea9cb517f5f5711df20b199d713642`.
+The merge checked the unchanged parent main before integration.
 
 ## Limits
 

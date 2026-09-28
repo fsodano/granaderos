@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "ea854d4b0d1ccdf61e32f771f5be95dd00b09823",
+  "baseline": "2f7f0187d95b0b199c0b7a3fe767ff527910ae99",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -320,7 +320,13 @@
     {
       "id": "E-HEALTH-CONDITIONS",
       "path": "docs/verification/story-health-conditions.md",
-      "description": "Six new physical character states drive authored dialogue and campaign conditions. Actual finite rescue, current deployed and mission-ally health, saved state, earned maximum health, editor undo/copy/pinning and actual enemy damage are covered. Validated tactical checkpoints resolve health failures; stale service sheets cannot satisfy deployed physical queries. 865 passing tests, zero failures/skips, types, export and baseline checks; automatic speech/rewards and complete advanced integration remain separate."
+      "description": "Six new physical character states drive authored dialogue and campaign conditions. Actual finite rescue, current deployed and mission-ally health, saved state, earned maximum health, editor undo/copy/pinning and actual enemy damage are covered. Validated tactical checkpoints resolve health failures; stale service sheets cannot satisfy deployed physical queries. 865 passing tests, zero failures/skips, types, export and baseline checks; automatic speech/rewards and complete advanced integration remain separate.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36435629331/job/108972694656"
+    },
+    {
+      "id": "E-TREATMENT-SPEECH",
+      "path": "docs/verification/authored-treatment-speech.md",
+      "description": "Optional authored first-aid responses follow actual finite care for another conscious person. Paid military and resident routes, invalid and silent cases, civilian recovery timing, saved voice integrity and editor undo/copy/pinned launch are covered. 871 passing tests, zero failures/skips, types, export and baseline checks; physical inventory and complete medical integration remain separate."
     }
   ],
   "queue": [
@@ -369,12 +375,37 @@
   ],
   "requirements": [
     {
+      "id": "TREATMENTSPEECH-01",
+      "group": "Published deliveries",
+      "requirement": "Author conscious patient responses to actual first aid",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "A living conscious patient can speak an optional authored line after another person spends a dressing on actual tactical care. Loading, later recovery, self-care and invalid orders do not trigger a response.",
+      "local": "Five simulation cases cover strict optional content, actual paid critical military and resident care, spent supplies, saved voice, older identity, silent and rejected boundaries and civilian phase timing. A mounted editor case covers undo, duplicate, clear and pinned launch.",
+      "remaining": "",
+      "acceptance": "Author a response, stabilize an actual critical patient through finite care and saved continuation, speak on consciousness and retain spent supplies without replaying speech from load or later recovery.",
+      "evidence": [
+        "E-TREATMENT-SPEECH"
+      ],
+      "parents": [
+        "STORY-02",
+        "STORY-03",
+        "JA2-C06",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/treatment-speech.test.mjs",
+        "tests/content-presentation.test.mjs",
+        "tests/story-editor.test.mjs"
+      ]
+    },
+    {
       "id": "HEALTHCONDITION-01",
       "group": "Published deliveries",
       "requirement": "Author dialogue, rescue objectives and failure rules from current character health",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Dialogue choices and campaign rules can require consciousness, unconsciousness, wounds, bleeding, stable consciousness or full health. They use current scene/identity health, while physical condition does not imply presence or service.",
+      "published": "Dialogue choices and campaign rules can require consciousness, unconsciousness, wounds, bleeding, stable consciousness or full health. They use current scene/identity health, while physical condition does not imply presence or service. Merged through PR #78 after exact-head CI.",
       "local": "Six simulations and a mounted editor case cover actual paid aid, a rescue response and chapter, current military and mission-ally queries, maximum-health growth, actual enemy damage, immediate saved failure, import and editor undo/copy/pinned launch.",
       "remaining": "",
       "acceptance": "Author a response and rescue objective, apply actual finite treatment, reveal/select the branch and settle/save the objective. Query current deployed wounds and resolve an actual unconsciousness failure without using stale military health, inventing death or granting resources.",
@@ -392,7 +423,8 @@
         "tests/story-health-conditions.test.mjs",
         "tests/story-editor.test.mjs",
         "tests/campaign-story.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/78"
     },
     {
       "id": "NPCBREATH-01",
@@ -4540,13 +4572,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "8573561eddc9dcc1701d18fea13f68bb6bdb4586",
-    "total": 858,
-    "passed": 858,
+    "source": "ea854d4b0d1ccdf61e32f771f5be95dd00b09823",
+    "total": 865,
+    "passed": 865,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-CIVILIAN-BREATH"
+    "evidenceId": "E-HEALTH-CONDITIONS"
   }
 }

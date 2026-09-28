@@ -13,7 +13,7 @@ import {validateDialogue} from './content-dialogue.js';
 import {FORCE_EQUIPMENT,defaultForceEquipment,validateForceEquipment} from './content-force-equipment.js';
 import {legacyCharacterAbilities,validCharacterAbilities} from './character-abilities.js';
 import {legacyOperativeId,isWorldCharacter} from './content-character-ids.js';
-import {characterProfile,SPEECH_EVENTS} from './characters.js';
+import {characterProfile,SPEECH_EVENTS,AUTHORABLE_SPEECH_EVENTS} from './characters.js';
 import {SPEECH_LINE_LIMIT} from './content-character-presentation.js';
 import {SPRITE_APPEARANCES,spriteAppearance} from './sprite-appearances.js';
 import {CONTENT_TRAITS} from './content-character-options.js';
@@ -183,8 +183,8 @@ export function validateContentPackage(value) {
     if(c.startingCondition!==undefined)check(validStartingCondition(c.startingCondition,c.attributes?.maxHp),`${c.id}.startingCondition`,'el estado inicial necesita cinco valores enteros: salud de 1 al máximo, energía y fatiga de 0 a 100, sangrado de 0 a 10 y heridas vendadas dentro de la salud perdida. El sangrado necesita una herida sin vendar.');
     if(c.personality!==undefined)text(c.personality,`${c.id}.personality`,2000,true);
     if(c.speech!==undefined){
-      check(record(c.speech)&&Object.keys(c.speech).length===SPEECH_EVENTS.length&&Object.keys(c.speech).every(key=>SPEECH_EVENTS.includes(key)),c.id,'la lista de frases no es válida.');
-      if(record(c.speech))for(const event of SPEECH_EVENTS)text(c.speech[event],`${c.id}.speech.${event}`,SPEECH_LINE_LIMIT,true);
+      check(record(c.speech)&&SPEECH_EVENTS.every(key=>Object.hasOwn(c.speech,key))&&Object.keys(c.speech).every(key=>AUTHORABLE_SPEECH_EVENTS.includes(key)),c.id,'la lista de frases no es válida.');
+      if(record(c.speech))for(const event of Object.keys(c.speech))text(c.speech[event],`${c.id}.speech.${event}`,SPEECH_LINE_LIMIT,true);
     }
     if(c.spriteAppearance!==undefined)check(typeof c.spriteAppearance==='string'&&Object.hasOwn(SPRITE_APPEARANCES,c.spriteAppearance),c.id,'apariencia de combate no válida.');
     check(

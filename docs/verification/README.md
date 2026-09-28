@@ -21,6 +21,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Authored dialogue choices](authored-dialogues.md)
 - [Dialogue choice conditions](dialogue-conditions.md)
 - [Authored health conditions for dialogue and story](story-health-conditions.md)
+- [Authored first-aid responses](authored-treatment-speech.md)
 - [Dialogue payments and rewards](dialogue-payments.md)
 - [Authored quest states and journal](authored-quests.md)
 - [Automatic quest deadlines](quest-deadlines.md)
