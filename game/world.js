@@ -5,6 +5,7 @@ import {buildSectorMap} from './maps.js';
 import {createBattle} from './tactical.js';
 import {worldCell} from './world-cells.js';
 import {expandCellScene} from './cell-scene-storage.js';
+import {retainedMilitaryBodies} from './military-remains.js';
 
 // Re-enter a persistent sector with the current squad, retaining terrain and ground gear.
 export function enterSector(request,previous=null){
@@ -28,7 +29,7 @@ export function enterSector(request,previous=null){
    state.lights=structuredClone(previous.lights??map.lights??[]).map(light=>Number.isFinite(light.turns)?{...light,remainingSeconds:Math.max(0,(light.remainingSeconds??light.turns*600)-elapsedSeconds),turns:Math.max(0,Math.ceil(((light.remainingSeconds??light.turns*600)-elapsedSeconds)/600)),age:(light.age||0)+ticks}:light).filter(light=>light.turns!==0);
    if(!request.exploration&&!previous.sectorCleared)state.units=state.units.filter(u=>u.side==='player').concat(structuredClone(previous.units.filter(u=>u.side==='enemy')));
  }
- if(previous)state.units.push(...structuredClone(previous.units.filter(u=>u.militia&&u.hp<=0&&!state.units.some(v=>v.id===u.id))));
+ for(const body of retainedMilitaryBodies(previous,state.units,request.sector))if(!state.units.some(u=>u.id===body.id))state.units.push(body);
  const occupied=new Set(state.units.filter(u=>u.side==='enemy'&&u.hp>0&&!u.routed).map(u=>`${u.x},${u.y}`));
  const reserve=(preferred)=>{
    const candidates=state.tiles.filter(t=>!t.blocked&&!propBlocksAt(state,t.x,t.y)&&!occupied.has(`${t.x},${t.y}`));

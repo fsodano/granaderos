@@ -1,7 +1,6 @@
 import {enterSector} from '../game/world.js';
-import {buildSectorMap} from '../game/maps.js';
 import {actBattle,endTurn,getReachable,bladeFor,hasLineOfSight,shotChance} from '../game/tactical.js';
-export function fight(request){const map=buildSectorMap(request);let b=enterSector(request),actions=0;
+export function fight(request,previous=null){let b=enterSector(request,previous),actions=0;
 for(let round=0;round<80&&b.status==='active';round++){
 for(const id of b.units.filter(u=>u.side==='player').map(u=>u.id)){
 for(let attempt=0;attempt<20&&b.status==='active';attempt++){
