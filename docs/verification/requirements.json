@@ -427,6 +427,11 @@
       "id": "E-MILITIA-PATROLS",
       "path": "docs/verification/militia-exploration-patrols.md",
       "description": "Nine simulations and a mounted production-game interval check verify legal militia exploration steps, finite energy/AP/equipment, actual contact, exact saved continuation, pause and hidden-document guards, real paid garrison visits and reentry. Ten final focused cases and the earlier 79-case overlapping group pass. Full regression passes 993/993, zero failures/skips, plus types, export and 36 reference comparisons. Exact-head publication remains required; broad defense and advanced militia scope stay open."
+    },
+    {
+      "id": "E-MILITIA-DISTRIBUTION",
+      "path": "docs/verification/city-militia-distribution.md",
+      "description": "Manual and automatic connected-city transfers preserve identities, actual wounds and promotion, finite equipment and saved physical arrivals. Fourteen simulations and two mounted production-game checks pass; full regression passes 1009/1009, zero failures/skips, with types, export and 36 baseline comparisons. Exact-head publication remains required. Full 60-person cohorts fit both compact and expanded exterior approaches. Prepared boundaries and actual paid campaign sequences are distinguished."
     }
   ],
   "queue": [
@@ -474,6 +479,31 @@
     }
   ],
   "requirements": [
+    {
+      "id": "MILITIADIST-01",
+      "group": "Published deliveries",
+      "requirement": "Redistribute local militia through connected city sectors with finite identities, capacity and safe saved arrivals",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Manual and previewed automatic city transfers retain physical identities and finite equipment through safe exterior arrivals.",
+      "local": "Fourteen simulations and two mounted game checks pass 16/16. The actual paid wounded promoted defender retains 44 HP, earned credit and remaining equipment through city transfer, saved entry and return. Full 60-person compact and expanded arrivals pass. Full regression passes 1009/1009, zero failures/skips, plus types, export and all 36 reference comparisons.",
+      "remaining": "",
+      "acceptance": "Manual and automatic controls preserve actual people and finite possessions, reserve patients and trainees, reject invalid routes and capacity atomically, enter through connected exterior approaches and retain complete saves without recreating source defenders.",
+      "evidence": [
+        "E-MILITIA-DISTRIBUTION"
+      ],
+      "parents": [
+        "MIL-01",
+        "JA2-S05",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/militia-distribution.test.mjs",
+        "tests/militia-distribution-render.test.mjs",
+        "tests/militia-training-identities.test.mjs",
+        "tests/garrison-web.test.mjs"
+      ]
+    },
     {
       "id": "MILITIAPATROL-01",
       "group": "Published deliveries",
@@ -2698,7 +2728,7 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Paid local militia cohorts materialize with historical loadouts, fight as local allies and retain actual tactical wounds, casualties and depleted equipment through saved reentry. Individual promotion and advanced militia behavior are tracked separately. PR #89 adds local physician care with finite dressings. PR #90 preserves individual participants through paid promotion. PR #91 advances unloaded wounds and preserves actual finite remains. PR #92 adds combat-earned promotion with persistent opponent credit and disallows new paid veteran courses. PR #93 pins authored promotion thresholds and attribute gains and fixes the large-encounter credit boundary. PR #94 adds an explicit choice between fresh cohorts and individual promotion with the actual quote and eligibility. PR #95 integrates autonomous allied turns, finite reactions and distinct militia controls.",
-      "local": "Individual promotion acceptance is tracked by MILITIATRAIN-01; local physician work by MILITIACARE-01. The larger preserved parity source is not equivalent to published integration. Retained militia wound time is tracked by MILITIAWOUND-01. Combat-earned promotion is tracked by MILITIAXP-01. Editable progression is tracked by MILITIARULES-01. The practical course selector is tracked by MILITIACHOICE-01. Autonomous combat and distinct controls are tracked by MILITIAAI-01. MILITIAPATROL-01 accepts bounded peaceful patrols, contact and saved UI clock controls.",
+      "local": "Individual promotion acceptance is tracked by MILITIATRAIN-01; local physician work by MILITIACARE-01. The larger preserved parity source is not equivalent to published integration. Retained militia wound time is tracked by MILITIAWOUND-01. Combat-earned promotion is tracked by MILITIAXP-01. Editable progression is tracked by MILITIARULES-01. The practical course selector is tracked by MILITIACHOICE-01. Autonomous combat and distinct controls are tracked by MILITIAAI-01. MILITIAPATROL-01 accepts bounded peaceful patrols, contact and saved UI clock controls. MILITIADIST-01 tracks city transfers, automatic balancing and safe saved arrivals.",
       "remaining": "Publish bounded militia patrols after exact-head CI; integrate city redistribution, advanced support/artillery, custody and the remaining defense acceptance.",
       "acceptance": "Training, historical loadouts and distinct behavior",
       "evidence": [
@@ -2711,7 +2741,8 @@
         "E-MILITIA-RULES",
         "E-MILITIA-CHOICE",
         "E-MILITIA-AUTONOMY",
-        "E-MILITIA-PATROLS"
+        "E-MILITIA-PATROLS",
+        "E-MILITIA-DISTRIBUTION"
       ]
     },
     {
@@ -4702,7 +4733,7 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Paid local militia and saved tactical casualties are published. PRs #89\u201391 add finite local physician care, individual training and unloaded wound deaths with retained actual remains. PR #95 integrates autonomous allied turns, finite reactions and distinct militia controls.",
-      "local": "MILITIAAI-01 accepts the bounded published-engine autonomous phases, saved reactions and control restrictions with actual paid wounded survivors. The preserved advanced source still contains separate patrol, artillery and redistribution scope. MILITIAPATROL-01 accepts bounded peaceful patrols, contact and saved UI clock controls.",
+      "local": "MILITIAAI-01 accepts the bounded published-engine autonomous phases, saved reactions and control restrictions with actual paid wounded survivors. The preserved advanced source still contains separate patrol, artillery and redistribution scope. MILITIAPATROL-01 accepts bounded peaceful patrols, contact and saved UI clock controls. MILITIADIST-01 tracks city transfers, automatic balancing and safe saved arrivals.",
       "remaining": "Publish bounded militia patrols after exact-head CI; integrate city redistribution, advanced support/artillery, custody and the remaining defense acceptance.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
@@ -4713,7 +4744,8 @@
         "E-MILITIA-TRAINING",
         "E-MILITIA-WOUNDS",
         "E-MILITIA-AUTONOMY",
-        "E-MILITIA-PATROLS"
+        "E-MILITIA-PATROLS",
+        "E-MILITIA-DISTRIBUTION"
       ],
       "sourceRow": "JA2-S05",
       "sourceNotes": "Live paid training, status cards, rejected manual selection and contextual medical targeting passed. Automatic combat and saved reactions remain unverified live; a validated importable defense demo is provided. Peaceful patrols now advance local militia through fixed map waypoints, one legal step per six seconds, with energy costs and no AP charge. Real contact stops ambient movement. Five focused tests and a live patrol/save check cover this behavior; see [exploration patrols](exploration-patrols.md). Militia now operate nearby friendly cannons using their own eligible crews and finite ammunition; see [autonomous artillery](artillery-ai.md). Strategic medical care now uses a separate local assignment, personal kits, hourly triage and saved stops. Ten simulation/render checks and a live treatment, save, depletion and paid-resupply sequence cover it; see [militia medical care](militia-medical-care.md). Town redistribution is now available through manual rank/quantity transfers and an automatic capacity-aware plan, preserving exact soldiers and finite supplies. Thirteen new simulation/render checks and live transfer, wound, reload and balancing checks cover it; see [city militia distribution](militia-distribution.md). The original manual p. 44 supports this strategic choice; a classic tactical command menu is not established by the cited pages and remains a separate open audit item. Shared friendly allegiance, phase placement and AP refresh are Granaderos adaptations."

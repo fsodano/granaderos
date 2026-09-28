@@ -639,3 +639,17 @@ combat initiative. Pausing or hiding the game stops ambient time. Complete saved
 continuation preserves patrol cadence and synchronized campaign time. The same
 waypoints support paid movement after lost combat contact. See [verification](../verification/militia-exploration-patrols.md)
 for prepared boundaries, real paid-garrison acceptance and remaining scope.
+
+### City militia distribution
+
+Manual rank/quantity transfers and a previewed automatic plan distribute militia
+inside connected controlled sectors of the existing city area. Transfers preserve
+actual people, wounds, earned ranks and finite equipment without advancing time
+or charging money. Patients and trainees reserve capacity; each sector admits
+60 defenders including instruction. A count-only cohort receives its authored
+included kit once. Invalid or occupied routes and active deployments reject
+atomically. Transferred people enter from their final city approach on connected
+exterior ground; large groups can spread inward. Old source scenes cannot restore
+the transferred people. These city boundaries, limits and approaches remain fixed
+rules. See [verification](../verification/city-militia-distribution.md) for scope,
+prepared boundaries and actual paid/wounded campaign sequences.
