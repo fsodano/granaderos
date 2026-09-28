@@ -1,4 +1,5 @@
 import {validateCivilianWounds} from './civilian-harm.js';
+import {isUnconscious,refreshMilitaryCondition} from './actor-condition.js';
 import {validCharacterAbilities} from './character-abilities.js';
 import {validateWeaponCarrier,weaponSpecification} from './weapon-definition.js';
 import {NPC_ACTIVITIES} from './npc-ai.js';
@@ -17,6 +18,7 @@ need(integer(s.width,4,128)&&integer(s.height,4,128),'dimensiones');const coord=
 need(Array.isArray(s.tiles)&&s.tiles.length===s.width*s.height,'casillas');const seen=new Set();
 for(const t of s.tiles){need(coord(t)&&!seen.has(`${t.x},${t.y}`),'posiciones');seen.add(`${t.x},${t.y}`);need(['wall','grass','road','water','stone','mud','forest','scrub','floor','door','window','rubble','cliff'].includes(t.type)&&typeof t.blocked==='boolean'&&number(t.cover,0,100),'terreno');for(const key of ['blocksSight','open','locked'])if(t[key]!==undefined)need(typeof t[key]==='boolean','puertas');for(const key of ['buildingId','roomId','doorId'])if(t[key]!=null)need(text(t[key]),'habitaciones');}
 s.mode??='combat';s.phase??='player';s.status??='active';s.seed??=1812;s.turn??=1;s.weather??={rain:0,humidity:0};need(['combat','exploration'].includes(s.mode)&&['player','enemy'].includes(s.phase)&&['active','victory','defeat'].includes(s.status)&&integer(s.seed,0,4294967295)&&integer(s.turn,1,1e9),'turnos');need(object(s.weather)&&number(s.weather.rain,0,100)&&number(s.weather.humidity,0,100),'clima');
+need(s.conditionVersion===undefined||s.conditionVersion===1,'versión del estado físico');const legacyCondition=s.conditionVersion===undefined;s.conditionVersion=1;
 need(Array.isArray(s.units)&&s.units.length<=200,'combatientes');const ids=new Set();
 for(const u of s.units){need(coord(u)&&text(u.id)&&!ids.has(u.id)&&text(u.name)&&['player','enemy'].includes(u.side),'combatientes');ids.add(u.id);
 const defaults={maxHp:100,ap:100,morale:80,condition:100,marksmanship:50,agility:50,strength:50,medical:30,bleeding:0,loaded:0,ammo:0,weapon:1800,stance:'standing',activeSlot:'primary',energy:100,unconscious:u.energy===0,movementMode:'walk',fatigue:0,priming:50,flints:4,rations:2,torches:2,boleadoras:1,strengthTraining:0,inventory:{}};for(const[k,v]of Object.entries(defaults))if(u[k]===undefined)u[k]=v;
@@ -25,7 +27,9 @@ need(integer(u.weapon,0,65535),'armas');validateWeaponCarrier(u);if(u.blade!==un
 for(const k of ['ammo','priming','flints','rations','torches','boleadoras','medkits','strengthTraining'])if(u[k]!==undefined)need(integer(u[k],0,1000000),'suministros');
 for(const k of ['unconscious','knockedDown','weaponDropped','fled','braced','mounted','horse','canMount','jammed','routed','entangled','poncho','overwatch'])if(u[k]!==undefined)need(typeof u[k]==='boolean','estados del soldado');
 need(['standing','prone'].includes(u.stance)&&['primary','blade'].includes(u.activeSlot)&&['walk','run','crouch','prone'].includes(u.movementMode),'posturas');
-need(u.unconscious===(u.energy===0),'agotamiento');
+if(legacyCondition)refreshMilitaryCondition(u);
+need(u.unconscious===isUnconscious(u),'consciencia');
+if(u.hp<=0||u.unconscious)need(u.ap===0&&(u.maxAP===undefined||u.maxAP===0)&&!u.mounted&&!u.braced&&!u.overwatch,'acciones de un combatiente incapacitado');
 for(const key of ['leadership','wisdom','dexterity','mechanical','explosives','maxAP'])if(u[key]!==undefined)need(number(u[key],0,100),'atributos adicionales');for(const key of ['reactionSpent','reactionTurn','interceptTurn','parryTurn','counterTurn','braceTurn','momentum'])if(u[key]!==undefined)need(number(u[key],0,1000000000),'iniciativa');if(u.lastDirection!=null)need(text(u.lastDirection),'dirección');
 if(u.abilities!==undefined)need(validCharacterAbilities(u.abilities),'habilidades');
 if(u.traits!==undefined)need(Array.isArray(u.traits)&&u.traits.length<=30&&u.traits.every(text),'rasgos');

@@ -33,7 +33,7 @@ test('San Lorenzo settles after actual post-victory exploration, field care, loo
 
 test('mission victory still requires a cleared result and no standing enemies',()=>{
  const original=apply(wonMission(),{type:'explore'});
- for(const change of [b=>b.sectorCleared=false,b=>b.status='defeat',b=>b.mode='combat',b=>{b.units.find(u=>u.side==='enemy').hp=10;},b=>{b.status='victory';b.units.find(u=>u.side==='enemy').hp=10;}]){
+ for(const change of [b=>b.sectorCleared=false,b=>b.status='defeat',b=>b.mode='combat',b=>{b.units.find(u=>u.side==='enemy').hp=20;},b=>{b.status='victory';b.units.find(u=>u.side==='enemy').hp=20;}]){
   const p=structuredClone(original);change(p.battle);assert.ok(dispatchCampaign(p.campaign,report(p)).lastError);
  }
  const routed=structuredClone(original),enemy=routed.battle.units.find(u=>u.side==='enemy');enemy.hp=10;enemy.routed=true;
