@@ -6,7 +6,7 @@ En el mapa, abrí **Organizar escuadras**. En **Atención médica y descanso**,
 seleccioná **Descanso** para la persona y avanzá el tiempo. La tabla muestra su
 energía, su fatiga y el resultado de cada hora.
 
-Un personaje sano, sin visión nocturna, recupera 12 de energía y reduce 8 de
+Con las reglas originales, un personaje sano, sin visión nocturna, recupera 12 de energía y reduce 8 de
 fatiga por hora. Las heridas reducen la recuperación. La visión nocturna modifica
 el ritmo. La tabla indica el valor que corresponde a cada persona. Al completar
 el descanso aparece un aviso. Seleccioná **En servicio** para volver a marchar.
@@ -27,3 +27,6 @@ descansar y volver a su tarea; conserva sus vendas restantes.
 
 Esta función requiere una asignación explícita. El sueño automático y el colapso
 por agotamiento siguen pendientes de integración.
+
+El creador de historias puede cambiar los ritmos base y las horas de curación.
+La tabla muestra el ritmo y el intervalo de la campaña en curso.

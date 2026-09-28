@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "807843a3f29750dc227423275f4b28c1371c35de",
+  "baseline": "8274f58b959b6408bfdc8a97540421836f78e204",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -278,7 +278,13 @@
     {
       "id": "E-STRATEGIC-REST",
       "path": "docs/verification/strategic-rest.md",
-      "description": "Explicit rest and waiting patients recover energy and fatigue during safe campaign hours. Stable rest wounds recover once per six continuous hours; saves retain partial time and changes cannot grant health. Exhausted care, actual physician work/rest, remote squad travel, contract expiry, occupation, invalid saves and mounted controls pass. Automatic sleep, collapse, global energy capacity and advanced route parity remain open."
+      "description": "Explicit rest and waiting patients recover energy and fatigue during safe campaign hours. Stable rest wounds recover once per six continuous hours; saves retain partial time and changes cannot grant health. Exhausted care, actual physician work/rest, remote squad travel, contract expiry, occupation, invalid saves and mounted controls pass. Automatic sleep, collapse, global energy capacity and advanced route parity remain open.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36421115971/job/108923796823"
+    },
+    {
+      "id": "E-CARE-RULES",
+      "path": "docs/verification/authored-care-rules.md",
+      "description": "Nine optional pinned settings control actual medical eligibility, healing, effort, rest progress and dressing prices across bulk purchase and workshop refill. Old identities/defaults, strict validation, custom and zero values, saved intervals, finite costs and mounted editor undo/reset/launch pass. Prepared wounds/stocks are declared; arbitrary balance and advanced care remain separate."
     }
   ],
   "queue": [
@@ -327,12 +333,37 @@
   ],
   "requirements": [
     {
+      "id": "CARERULES-01",
+      "group": "Published deliveries",
+      "requirement": "Author and pin medical work, rest recovery and dressing prices",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "The Rules tab accepts nine care values with bounded integers, undo and reset. Campaigns preserve them across saves and use the same dressing price for both workshop paths, including free legitimate replenishment.",
+      "local": "Five simulation cases and mounted authoring verify legacy identity, custom eligibility/healing/effort, long saved rest intervals, zero costs/recovery, finite stock, actual paid launch and later draft isolation.",
+      "remaining": "",
+      "acceptance": "Edit valid and invalid care rules, launch and use them through real campaign actions, verify both dressing purchase paths and save partial recovery without rerolling or restoring stock.",
+      "evidence": [
+        "E-CARE-RULES"
+      ],
+      "parents": [
+        "STORY-05",
+        "STORY-08",
+        "JA2-A01",
+        "JA2-A02",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/authored-care-rules.test.mjs",
+        "tests/story-editor.test.mjs"
+      ]
+    },
+    {
       "id": "REST-01",
       "group": "Published deliveries",
       "requirement": "Rest serving personnel and resume work through persistent strategic assignments",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Squad controls assign explicit rest, show energy/fatigue and stop deployment until service resumes. Safe hourly recovery preserves partial stable healing; patients recover breath while waiting. Assignment changes and contract expiry grant no extra interval.",
+      "published": "Squad controls assign explicit rest, show energy/fatigue and stop deployment until service resumes. Safe hourly recovery preserves partial stable healing; patients recover breath while waiting. Assignment changes and contract expiry grant no extra interval. Merged through PR #71 after exact-head CI.",
       "local": "Six simulation cases and the extended mounted medical screen cover progress, saves, stops and concurrent squad travel. The actual wounded-resident route rests its physician after paid and finite care without creating supplies.",
       "remaining": "",
       "acceptance": "Spend campaign time to recover an exhausted person, save mid-rest, resume care or deployment, and reject incompatible work while preserving finite supplies and health.",
@@ -348,7 +379,8 @@
         "tests/strategic-rest.test.mjs",
         "tests/medical-care.test.mjs",
         "tests/medical-care-render.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/71"
     },
     {
       "id": "WORKSHOP-01",
@@ -2414,7 +2446,7 @@
       "requirement": "Configurable game rules and campaign roles",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss. Import port, disabled orders and delivery windows are configurable. Ordered campaign chapters, global completion/failure conditions and ending text are authored separately from historical progression. Historical profiles can be copied without their implicit roles and removed from an authored campaign. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Pending scene saves accept the full supported authored cartridge range, including zero and 100, without resetting spent rounds.",
+      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss. Import port, disabled orders and delivery windows are configurable. Ordered campaign chapters, global completion/failure conditions and ending text are authored separately from historical progression. Historical profiles can be copied without their implicit roles and removed from an authored campaign. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Pending scene saves accept the full supported authored cartridge range, including zero and 100, without resetting spent rounds. Medical eligibility, hourly healing and effort, rest rates/intervals and dressing prices are authored and pinned; both workshop purchase paths use that price.",
       "local": "Larger systems still embed many rules and historical identity gates.",
       "remaining": "Extract remaining care, combat, economy, character progression, opposition and historical campaign identity rules.",
       "acceptance": "Change supported rules and replace role identities through the editor, then run/save the resulting campaign.",
@@ -2431,7 +2463,8 @@
         "E-FOUNDRY-PROJECT",
         "E-PROJECT-CONDITIONS",
         "E-CHARACTER-SUPPLIES",
-        "E-CARTRIDGE-SAVE"
+        "E-CARTRIDGE-SAVE",
+        "E-CARE-RULES"
       ]
     },
     {
@@ -4304,13 +4337,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "d3e7d078653f9dd15c98926f57cec18430a25727",
-    "total": 821,
-    "passed": 821,
+    "source": "807843a3f29750dc227423275f4b28c1371c35de",
+    "total": 827,
+    "passed": 827,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-LOCAL-WORKSHOP"
+    "evidenceId": "E-STRATEGIC-REST"
   }
 }

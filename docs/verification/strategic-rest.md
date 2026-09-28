@@ -54,3 +54,7 @@ tactical and daily recovery are retained; this does not certify their advanced
 parity. Critical military first aid, automatic bandaging, militia care and the
 separate northern medical-relief failure also retain their own acceptance.
 Simulation and mounted-DOM checks are not live-browser or performance acceptance.
+
+[PR #71](https://github.com/fsodano/granaderos/pull/71) merged after
+[GitHub CI](https://github.com/fsodano/granaderos/actions/runs/36421115971/job/108923796823)
+passed at `5864f07cdd31999d21b2eb2818d47b6dc09c31be`.

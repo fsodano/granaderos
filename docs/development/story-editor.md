@@ -212,6 +212,31 @@ Cero deja las armas descargadas y sin reserva. Las armas principales blancas no 
 
 Un borrador anterior usa los valores originales. La campaña guarda su propia copia de las reglas: cambiar el borrador no cambia una partida existente, y cargar una partida no vuelve a entregar los fondos iniciales.
 
+## Atención médica y descanso
+
+En **Reglas → Atención médica y descanso** podés configurar la medicina mínima,
+la salud base por hora, cuántos puntos de medicina suman un punto de curación,
+el precio de las vendas, la energía y fatiga del médico, la recuperación base
+por descanso y las horas necesarias para recuperar un punto de salud estable.
+
+Cada campo admite solo enteros dentro del rango indicado. La medicina mínima va
+de 0 a 100; la salud base y el intervalo de habilidad, de 1 a 100; el precio,
+de 0 a 10.000 pesos; los costos y ritmos de energía/fatiga, de 0 a 100; y el
+intervalo de curación por descanso, de 1 a 168 horas. Cero permite vendas
+gratuitas, elimina ese costo de trabajo o desactiva ese ritmo de recuperación.
+Las heridas y la visión nocturna modifican los ritmos base de descanso.
+
+El precio de las vendas rige tanto para la compra por cantidad como para la
+reposición de provisiones del taller. La atención sigue gastando una venda por
+hora de trabajo. Detener la hemorragia tiene prioridad sobre recuperar salud.
+La atención necesita presencia segura y real en la misma celda.
+
+**Restaurar atención y descanso originales** recupera los valores originales.
+Podés deshacerlo. Las partidas iniciadas conservan sus reglas y las horas de
+recuperación ya transcurridas. Cambiar el borrador no cambia una partida guardada.
+El umbral crítico, los primeros auxilios tácticos y la recuperación diaria
+conservan sus reglas actuales. [Alcance verificado](../verification/authored-care-rules.md).
+
 ## Territorio inicial
 
 En **Reglas**, la tabla **Territorio al iniciar la campaña** define el control patriota o realista y la lealtad de las trece localidades. La lealtad permite valores enteros de 0 a 100. **Restaurar territorio original** vuelve a Retiro patriota con 65% de lealtad y las otras localidades realistas con 25%. Podés deshacer y rehacer los cambios.
