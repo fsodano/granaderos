@@ -393,6 +393,15 @@ Older packages retain the original 50/4/2/2/2/1 defaults. This is separate from 
 cartridge deployment and workshop refill targets. Civilian lootable belongings,
 item custody and the player-created officer's own allocation remain separate work.
 
+Each catalogued character can also author its living initial physical condition:
+health, energy, fatigue, bleeding and bandaged wounds. The optional complete group
+is validated against maximum health and assigned once at campaign creation.
+Arrival and local recruitment retain it; later treatment, rest, service changes
+and saved continuation retain the mutable condition instead of reapplying the
+initial values. Omission preserves the original healthy defaults. This is not
+initial death/capture authoring or unloaded civilian bleeding. A resident with
+zero energy cannot converse; civilian breath recovery remains separate work.
+
 Drafts have validation, undo/redo, import/export and recovery. A campaign pins an
 immutable content version and assets. Editing a draft cannot alter an active save.
 Random results, pending events, exact item custody and all actor identities survive

@@ -32,6 +32,14 @@ La campaña asigna esas cantidades una sola vez. El personaje las lleva al incor
 
 La munición inicial del despliegue se configura en **Reglas**. La reposición pagada del taller conserva sus cantidades y precios publicados; no usa la dotación inicial como objetivo. Esta opción todavía no crea un inventario que se pueda saquear de un habitante civil. Tampoco cambia el equipo del granadero creado por el jugador.
 
+## Estado inicial de cada personaje
+
+En **Estado inicial** podés definir salud, energía, fatiga, sangrado y heridas vendadas. La salud va de 1 al máximo de la ficha. Energía y fatiga van de 0 a 100; sangrado, de 0 a 10. Las heridas vendadas no pueden superar la salud perdida. Para que haya sangrado debe quedar una herida sin vendar. Todos los valores son enteros. Si reducís el atributo Salud, revisá el estado inicial: el editor bloquea valores incompatibles.
+
+**Restablecer estado sano** recupera la salud máxima, 100 de energía y cero fatiga, sangrado y heridas vendadas. Duplicar copia estos valores; deshacer permite recuperar los anteriores. Se asignan una sola vez al crear la campaña. Guardar, renovar o volver a contratar conserva los cambios del juego. Un candidato del boletín sigue fuera del mapa hasta su llegada contratada.
+
+Podés crear un habitante herido con 1 de salud y energía mayor que 0. Primero habrá que estabilizarlo con vendas para conversar. Una vez incorporado puede recibir atención médica y recuperar la salud restante. El sangrado avanza mientras su sector está abierto. Un habitante con energía 0 no puede conversar; su recuperación de energía fuera del servicio sigue pendiente. Usá energía positiva para un contacto que deba hablar. La [verificación del estado inicial](../verification/character-starting-condition.md) registra los recorridos y los límites.
+
 ## Crear habitantes del mundo
 
 «Crear habitante» agrega una identidad propia. Puede tener retrato, apariencia, atributos, saludo, habilidades y una ubicación fija, sorteada al inicio o elegida cada día entre las celdas marcadas. No ocupa un puesto histórico ni aparece en el boletín. Sin una aparición configurada queda fuera del mapa.
