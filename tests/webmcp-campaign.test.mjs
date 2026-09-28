@@ -1,12 +1,11 @@
+import {mountCampaign as mount} from './mounted-campaign-fixture.mjs';
 import {survivalPackage} from './quest-survival-fixture.mjs';
 import {questPackage} from './content-quest-fixture.mjs';
 import {dialoguePackage} from './dialogue-fixture.mjs';
 import {readyLocal,localId,localNPC,tactical as localTactical,order as localOrder,leave as leaveLocal,visit as visitLocal} from './local-contract-fixture.mjs';
-import {register} from 'node:module';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {JSDOM,VirtualConsole} from '../web/node_modules/jsdom/lib/api.js';
-import {createElement as h,act} from '../web/node_modules/react/index.js';
+import {act} from '../web/node_modules/react/index.js';
 import {initialCampaign,dispatchCampaign} from '../game/campaign.js';
 import {defaultContentPackage} from '../game/content-package.js';
 import {CONTENT_SAVE_KEY} from '../game/content-launch.js';
@@ -15,7 +14,6 @@ import {actBattle,endTurn,getReachable} from '../game/tactical.js';
 import {withCharacterSpeech} from '../game/character-events.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
-register('./tactical-render-loader.mjs',import.meta.url);
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
 function fixture({residents=false,late=false}={}){
  const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=0;
@@ -110,21 +108,6 @@ test('the mounted conversation reveals a day-gated choice when the actual tactic
  await act(async()=>{for(let i=0;i<6;i++)m.issue({type:'rest'});});assert.ok(m.read().campaign.hour>=24);assert.match(m.document.querySelector('[aria-label="Conversación"]').textContent,/Contame sobre el norte/);assert.deepEqual(m.saved(),pair(m.read()));
 });
 
-async function mount(t,saved){
- const console=new VirtualConsole();console.on('jsdomError',error=>{throw error;});
- const dom=new JSDOM('<!doctype html><div id="root"></div>',{url:'https://granaderos.test/?content=1',pretendToBeVisual:true,virtualConsole:console});dom.window.scrollTo=()=>{};
- if(saved)dom.window.localStorage.setItem(CONTENT_SAVE_KEY,encodeSave(saved.campaign,saved.battle));
- const registrations=[];dom.window.document.modelContext={registerTool(tool,{signal}){registrations.push({...tool,signal});}};
- const globals={window:dom.window,document:dom.window.document,navigator:dom.window.navigator,localStorage:dom.window.localStorage,sessionStorage:dom.window.sessionStorage,HTMLElement:dom.window.HTMLElement,Element:dom.window.Element,Node:dom.window.Node,Document:dom.window.Document,ShadowRoot:dom.window.ShadowRoot,MutationObserver:dom.window.MutationObserver,getComputedStyle:dom.window.getComputedStyle.bind(dom.window),requestAnimationFrame:dom.window.requestAnimationFrame.bind(dom.window),cancelAnimationFrame:dom.window.cancelAnimationFrame.bind(dom.window),ResizeObserver:class{observe(){}disconnect(){}},IS_REACT_ACT_ENVIRONMENT:true};
- const previous=new Map(Object.keys(globals).map(key=>[key,Object.getOwnPropertyDescriptor(globalThis,key)]));for(const [key,value]of Object.entries(globals))Object.defineProperty(globalThis,key,{configurable:true,writable:true,value});
- const {default:Home}=await import('../web/app/page.tsx'),{createRoot}=await import('../web/node_modules/react-dom/client.js');const root=createRoot(dom.window.document.getElementById('root'));let mounted=true;
- const unmount=async()=>{if(mounted){await act(async()=>root.unmount());mounted=false;}};
- t.after(async()=>{try{await unmount();}finally{dom.window.close();for(const [key,descriptor]of previous){if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];}}});
- await act(async()=>root.render(h(Home)));const document=dom.window.document;
- const click=async text=>{const b=[...document.querySelectorAll('button')].find(b=>b.textContent.trim().startsWith(text));assert.ok(b,text);await act(async()=>b.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));};
- if(saved){await click('Continuar campaña');if(saved.battle.mode==='exploration')await click('Pausar exploración');}
- return {dom,document,registrations,unmount,click,read:()=>registrations.find(t=>t.name==='read_granaderos_state').execute(),issue:action=>registrations.find(t=>t.name==='issue_granaderos_tactical_order').execute(action),saved:()=>decodeSave(dom.window.localStorage.getItem(CONTENT_SAVE_KEY))};
-}
 
 test('the mounted conversation shows reward terms, applies them once and saves the receipt after a double click',async t=>{
  const d=dialoguePackage();d.characters.at(-1).encounter.dialogue.nodes[0].choices[0].effects=[{type:'treasury',operation:'receive',amount:175}];const p=readyLocal(undefined,d),cash=p.campaign.resources.treasury,m=await mount(t,p),npc=m.document.querySelector('[data-unit-id="authored-alma-contract"]');
@@ -167,10 +150,4 @@ test('the mounted conversation starts movement in the active sector and autosave
  await act(async()=>npc.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));await m.click('Conversar');assert.match(m.document.querySelector('[aria-label="Conversación"]').textContent,/Llamar a Pablo/);const before=m.read().battle.npcs.find(n=>n.contentId==='pablo');
  await m.click('Contame sobre el norte.');let p=m.read(),guest=p.battle.npcs.find(n=>n.contentId==='pablo');assert.deepEqual([guest.x,guest.y],[before.x,before.y]);assert.equal(p.campaign.dialogueMovements.length,1);assert.match(m.document.querySelector('[aria-label="Conversación"]').textContent,/Pablo recibió la llamada/);assert.equal(guest.scriptedMove.order,0);assert.deepEqual(m.saved(),pair(p));await m.click('Cerrar conversación');
  await act(async()=>m.issue({type:'rest'}));p=m.read();guest=p.battle.npcs.find(n=>n.contentId==='pablo');assert.deepEqual({x:guest.x,y:guest.y},guest.scriptedMove.target);assert.deepEqual(m.saved(),pair(p));
-});
-
-test('the mounted meeting conversation waits for the guest before completing and saving its quest reward',async t=>{
- const {arrivalPackage}=await import('./meeting-arrival-fixture.mjs');const m=await mount(t,readyLocal(undefined,arrivalPackage()));
- const open=async()=>{const npc=m.document.querySelector('[data-unit-id="authored-alma-contract"]');await act(async()=>npc.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));await m.click('Conversar');};await open();const cash=m.read().campaign.resources.treasury;await m.click('Contame sobre el norte.');assert.ok(![...m.document.querySelectorAll('[aria-label="Conversación"] button')].some(b=>b.textContent.startsWith('Ya estamos reunidos.')));assert.equal(m.read().campaign.contentQuestEvents.at(-1).to,'active');await m.click('Cerrar conversación');
- await act(async()=>m.issue({type:'rest'}));await open();await m.click('Ya estamos reunidos.');assert.equal(m.read().campaign.contentQuestEvents.at(-1).to,'completed');assert.equal(m.read().campaign.resources.treasury,cash+100);assert.deepEqual(m.saved(),pair(m.read()));
 });
