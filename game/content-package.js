@@ -1,3 +1,4 @@
+import {defaultStartingTerritory,validateStartingTerritory} from './content-territory.js';
 import {DEFAULT_CAMPAIGN_RULES,validateCampaignRules} from './campaign-rules.js';
 import {validateContentQuests} from './content-quests.js';
 import {validateDialogue} from './content-dialogue.js';
@@ -47,6 +48,7 @@ export function defaultContentPackage() {
     name: "Granaderos",
     quests: [],
     rules: {...DEFAULT_CAMPAIGN_RULES},
+    startingTerritory: defaultStartingTerritory(),
     arrivalSites: defaultArrivalSites(),
     oppositionEquipment: defaultForceEquipment('oppositionEquipment'),
     militiaEquipment: defaultForceEquipment('militiaEquipment'),
@@ -112,7 +114,7 @@ export function validateContentPackage(value) {
     );
   text(value.name, "Nombre", 100);
   try{validateContentQuests(value.quests,new Set((Array.isArray(value.characters)?value.characters:[]).map(c=>c?.id)));}catch(error){errors.push(error.message);}
-  errors.push(...validateCampaignRules(value.rules));
+  errors.push(...validateCampaignRules(value.rules),...validateStartingTerritory(value.startingTerritory));
   if (value.arrivalSites !== undefined) errors.push(...validateArrivalSites(value.arrivalSites));
   for (const key of ["characters", "weapons", "placements"])
     check(
