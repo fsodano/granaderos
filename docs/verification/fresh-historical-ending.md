@@ -1,5 +1,9 @@
 # Fresh historical victory and saved continuation
 
+Later partial-loading integration changes the route tactics, costs and casualties.
+See [the partial-loading record](partial-firearm-reloads.md) for that source and
+its new checkpoints; the results below retain their original source.
+
 One untouched published stock campaign now completes all thirteen strategic
 localities with actual combat, paid service and permanent losses. It starts in
 Retiro with default content, seed 8 and 3,200 pesos. The created officer dies during

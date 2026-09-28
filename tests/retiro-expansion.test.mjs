@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,contractQuote,rosterFor,isSupplied} from '../game/campaign.js';
 import {defaultContentPackage} from '../game/content-package.js';
-import {fight} from './opening-driver.mjs';
+import {fight} from './coastal-route-driver.mjs';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {syncBattleTime} from '../game/time.js';
 import {enterSector} from '../game/world.js';

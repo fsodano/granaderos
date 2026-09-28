@@ -18,11 +18,12 @@ function approach(p,npc,{medical=false}={}){
  return {pair:spot.cost?tactical(p,{type:'move',unitId:actor.id,x:spot.x,y:spot.y}):p,actorId:actor.id};
 }
 function incorporate(s,id,{earlyCommanderCheck=false}={}){
+ if(id===57&&s.squad.length===6){const resting=[...s.squad].sort((a,b)=>s.operativeState[a].hp-s.operativeState[b].hp)[0];s=order(s,{type:'squad',ids:s.squad.filter(other=>other!==resting)});assert.equal(s.operativeState[resting].location,s.location);}
  let p=visit(s);const npc=p.battle.npcs.find(n=>n.operativeId===id);assert.ok(npc&&npc.hp>0);
  if(npc.bleeding){const medic=approach(p,npc,{medical:true});p=tactical(medic.pair,{type:'heal',unitId:medic.actorId,targetId:npc.id});assert.equal(p.battle.npcs.find(n=>n.id===npc.id).bleeding,0);}
  const {pair,actorId}=approach(p,p.battle.npcs.find(n=>n.id===npc.id));p=pair;
  const campaign=order(p.campaign,{type:'talkNPC',npcId:npc.id,unitId:Number(actorId),approach:'recruit',sectorState:p.battle}),record=campaign.pendingBattle.squad.find(u=>u.id===id),current=p.battle.npcs.find(n=>n.id===npc.id);
- assert.ok(record);p.battle.npcs=p.battle.npcs.filter(n=>n.id!==npc.id);p.battle.units.push({...createBattle([record],{width:p.battle.width,height:p.battle.height,exploration:true,enemies:[]}).units[0],x:current.x,y:current.y});p=saved({campaign,battle:p.battle});
+ assert.ok(campaign.recruited.includes(id));p.battle.npcs=p.battle.npcs.filter(n=>n.id!==npc.id);if(record)p.battle.units.push({...createBattle([record],{width:p.battle.width,height:p.battle.height,exploration:true,enemies:[]}).units[0],x:current.x,y:current.y});p=saved({campaign,battle:p.battle});
  if(earlyCommanderCheck){const commander=p.battle.npcs.find(n=>n.operativeId===57),near=approach(p,commander);p=near.pair;const denied=dispatchCampaign(p.campaign,{type:'talkNPC',npcId:commander.id,unitId:Number(near.actorId),approach:'recruit',sectorState:p.battle});assert.match(denied.lastError,/preparativos/);assert.ok(!denied.recruited.includes(57));}
  return saved({campaign:leave(p)}).campaign;
 }
@@ -31,7 +32,7 @@ export function freshCuyoRoute({onCheckpoint}={}){
  for(const sector of Object.keys(s.sectors).filter(id=>s.sectors[id].owner==='patriot'))s=order(s,{type:'fortify',sector});
  s=order(s,{type:'travel',sector:'cordoba'});s=order(s,{type:'recruitCivic',id:108,term:'week',destination:'cordoba'});s=order(s,{type:'wait',hours:6});s=workshop(s);
  for(const id of s.squad)if(rosterFor(s).find(o=>o.id===id).weapon!==1802)s=musket(s,id);
- s=saved({campaign:s}).campaign;assert.equal(s.hour,120);assert.equal(s.resources.treasury,2587);
+ s=saved({campaign:s}).campaign;assert.equal(s.hour,120);assert.equal(s.resources.treasury,3034);
  for(const sector of ['mendoza','uspallata','los_patos']){
   if(sector==='los_patos'){
    // The mountain casualties need replacements from the controlled reception

@@ -5,12 +5,13 @@ import {order,saved} from './local-contract-fixture.mjs';
 
 // Existing workshop purchases and doctor/patient/rest orders only. Select both
 // roles from current survivors; no fixed doctor, free kit or restored casualty.
-export function prepareLocalOpening(s){
+export function prepareLocalOpening(s,{buyWeapons=true}={}){
+ const returnSector=s.location;
  s=order(s,{type:'travel',sector:'retiro'});
  const care={hours:0,dressingsBought:0,dressingCost:0,weaponCost:0,workshopCost:0};
  for(const id of s.squad){
-  const before=s.resources.treasury;s=order(s,{type:'purchaseEquipment',item:'firearm-1801',quantity:1});care.weaponCost+=before-s.resources.treasury;
-  const gun=s.armoryItems.find(i=>i.contentWeapon?.template===1801);assert.ok(gun);s=order(s,{type:'equip',operativeId:id,slot:'weapon',itemId:'firearm-1801',instanceId:gun.id});
+  if(buyWeapons){const before=s.resources.treasury;s=order(s,{type:'purchaseEquipment',item:'firearm-1801',quantity:1});care.weaponCost+=before-s.resources.treasury;
+  const gun=s.armoryItems.find(i=>i.contentWeapon?.template===1801);assert.ok(gun);s=order(s,{type:'equip',operativeId:id,slot:'weapon',itemId:'firearm-1801',instanceId:gun.id});}
   for(const type of ['resupply','repairWeapon']){const n=dispatchCampaign(s,{type,operativeId:id});if(!n.lastError){assert.ok(n.resources.treasury<s.resources.treasury);care.workshopCost+=s.resources.treasury-n.resources.treasury;s=n;}}
  }
  while(true){
@@ -23,8 +24,8 @@ export function prepareLocalOpening(s){
   const stock=s.operativeState[doctor.id].medkits;s=saved({campaign:order(s,{type:'wait',hours:1})}).campaign;assert.equal(s.operativeState[doctor.id].medkits,stock-1);care.hours++;
  }
  for(const id of s.squad)s=order(s,{type:'assignCare',id,assignment:'rest'});s=order(s,{type:'wait',hours:6});
- for(const id of s.squad)s=order(s,{type:'assignCare',id,assignment:'active'});s=order(s,{type:'travel',sector:'buenos_aires'});
- assert.equal(care.dressingCost,care.dressingsBought*10);assert.equal(care.weaponCost,s.squad.length*230);
+ for(const id of s.squad)s=order(s,{type:'assignCare',id,assignment:'active'});s=order(s,{type:'travel',sector:returnSector});
+ assert.equal(care.dressingCost,care.dressingsBought*10);assert.equal(care.weaponCost,buyWeapons?s.squad.length*230:0);
  for(const o of rosterFor(s).filter(o=>s.squad.includes(o.id))){assert.equal(s.operativeState[o.id].hp,o.maxHp);assert.equal(s.operativeState[o.id].energy,100);}
  return {campaign:saved({campaign:s}).campaign,care};
 }

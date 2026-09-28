@@ -31,6 +31,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Dialogue-triggered local meetings](dialogue-movements.md)
 - [Arrival-gated dialogue and quest effects](meeting-arrivals.md)
 - [Ending a local meeting](meeting-release.md)
+- [Partial firearm loading](partial-firearm-reloads.md)
 - [Authored melee weapons](authored-blades.md)
 - [Primary and secondary troop blade loadouts](force-blades.md)
 - [Initial funds and cartridge allotments](campaign-supply-rules.md)

@@ -61,7 +61,7 @@ export function finishPostCampaign({onCheckpoint}={}){
     const stock=s.operativeState[doctor.id].medkits;s=saved({campaign:order(s,{type:'wait',hours:1})}).campaign;assert.equal(s.operativeState[doctor.id].medkits,stock-1);care.hours++;
    }
    for(const id of s.squad)s=order(s,{type:'assignCare',id,assignment:'active'});
-   assert.ok(care.hours>0);assert.ok(care.dressingsBought>0);assert.equal(care.cost,care.dressingsBought*10);
+   assert.ok(rosterFor(s).filter(o=>s.squad.includes(o.id)).every(o=>s.operativeState[o.id].hp===o.maxHp&&!s.operativeState[o.id].bleeding),'all actual survivors must be healthy before departure');assert.equal(care.cost,care.dressingsBought*10);if(!care.hours)assert.equal(care.dressingsBought,0);
    for(const id of s.squad){const n=dispatchCampaign(s,{type:'resupply',operativeId:id});if(!n.lastError)s=n;}
    for(const id of s.squad){s=order(s,{type:'purchaseEquipment',item:'firearm-1801',quantity:1});const item=s.armoryItems.find(i=>i.contentWeapon?.template===1801);assert.ok(item);s=order(s,{type:'equip',operativeId:id,slot:'weapon',itemId:'firearm-1801',instanceId:item.id});}
    s=order(s,{type:'travel',sector:'tucuman'});

@@ -107,7 +107,7 @@ test('authored command holds morale only in the proper formation and support res
 test('loading support changes actual firearm and artillery admission and the displayed reload cost',()=>{
  const make=abilities=>battle([{id:'gunner',x:1,y:1,loaded:0},subject(abilities,{x:2,y:1})],[{id:'enemy',x:12,y:8}],{artillery:[{id:'gun',type:'bronze4',side:'player',x:1,y:2,loaded:false,ammo:3}]});
  const supported=make(['loading_support']),plain=make([]);supported.units[0].ap=36;plain.units[0].ap=36;
- assert.equal(pa(supported,'reload'),36);assert.equal(pa(plain,'reload'),45);assert.equal(act(supported,{type:'reload',unitId:'gunner'}).units[0].loaded,1);assert.ok(actBattle(plain,{type:'reload',unitId:'gunner'}).lastError);
+ assert.equal(pa(supported,'reload'),36);assert.equal(pa(plain,'reload'),36);assert.equal(act(supported,{type:'reload',unitId:'gunner'}).units[0].loaded,1);const partial=act(plain,{type:'reload',unitId:'gunner'});assert.equal(partial.units[0].loaded,0);assert.equal(partial.units[0].ammo,plain.units[0].ammo);assert.equal(partial.units[0].reloadProgress,.8);
  for(const u of supported.units.filter(u=>u.side==='player'))u.ap=50;for(const u of plain.units.filter(u=>u.side==='player'))u.ap=50;
  assert.equal(act(supported,{type:'artilleryReload',unitId:'gunner',artilleryId:'gun'}).artillery[0].loaded,true);assert.ok(actBattle(plain,{type:'artilleryReload',unitId:'gunner',artilleryId:'gun'}).lastError);
 });

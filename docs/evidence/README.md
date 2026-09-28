@@ -11,6 +11,8 @@ using a result. Published acceptance is recorded in [published progress](../veri
 
 ## Campaign and route records
 
+- [Campaign routes with partial firearm loading](partial-reload-routes-2026-09-28.json) and [verification scope](../verification/partial-firearm-reloads.md).
+
 - [Campaign routes with finite field aid](finite-first-aid-routes-2026-09-28.json) and [verification scope](../verification/finite-first-aid.md).
 
 - [Fresh historical victory](fresh-historical-ending-2026-09-28.json) and [verification scope](../verification/fresh-historical-ending.md).

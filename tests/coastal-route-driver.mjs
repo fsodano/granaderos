@@ -1,8 +1,10 @@
 // Acceptance controller: ordinary orders only, with visible targets and remembered
 // positions. It cannot grant AP, supplies, health, territory or a battle outcome.
 // This is one reproducible strategy, not the game AI or a general balance proof.
+// Prefer cover to unfinished loading; complete an affordable charge first and
+// spend otherwise unused AP on the remaining partial work.
 import {enterSector} from '../game/world.js';
-import {actBattle,endTurn,getReachable,bladeFor,weaponFor,actionCosts,hasFirearm,shotChance,teamCanSee} from '../game/tactical.js';
+import {actBattle,endTurn,reloadPlan,getReachable,bladeFor,weaponFor,actionCosts,hasFirearm,shotChance,teamCanSee} from '../game/tactical.js';
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y),live=u=>u.hp>0&&!u.routed&&!u.unconscious;
 export function fight(request,previous=null,{scoutCostWeight=.1}={}){let b=enterSector(request,previous),actions=0;const orders=[];let known=[];
 for(let round=0;round<80&&b.status==='active';round++){
@@ -19,7 +21,7 @@ for(let round=0;round<80&&b.status==='active';round++){
     const shots=visible.map(t=>{let aim=0;while(aim<4&&c.fire+(aim+1)*c.aim<=u.ap&&shotChance(b,u,t,aim)<75)aim++;const chance=shotChance(b,u,t,aim);return {t,aim,chance,score:chance*Math.min(t.hp,weaponFor(u).damage)};}).filter(x=>x.chance>=30).sort((a,b)=>b.score-a.score);
     if(shots[0])opts.push({type:'fire',targetId:shots[0].t.id,aim:shots[0].aim});
    }
-   if(hasFirearm(u)&&!u.loaded&&u.ammo&&visible.length)opts.push({type:'reload'});
+   if(hasFirearm(u)&&!u.loaded&&u.ammo&&visible.length&&!reloadPlan(u,b).partial)opts.push({type:'reload'});
    const goal=visible.length?visible:known.length?known:[{x:b.width-3,y:Math.round(b.height/2)}];
    const currentDistance=Math.min(...goal.map(t=>dist(u,t)));
    const moves=getReachable(b,u).filter(p=>p.cost>0&&!visited.has(`${p.x},${p.y}`));

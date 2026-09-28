@@ -100,7 +100,7 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
         </div>
         <div>
           <button className={showSight ? 'active' : ''} aria-pressed={showSight} disabled={busyDisabled} onClick={onToggleSight}>{showSight ? 'Ocultar' : 'Mostrar'} campo de visión</button>
-          {STANCE_IDS.map(id => { const d = def(id); if (!d) return null; return <button key={id} disabled={d.disabled} aria-label={d.label} onClick={() => { if (d.kind === 'mode') onMode(id); else onOrder(orderAction(battle, unit, {}, id)); }}>{d.label}{d.pa !== undefined ? ` · ${d.pa} PA` : ''}</button>; })}
+          {STANCE_IDS.map(id => { const d = def(id); if (!d) return null; return <button key={id} disabled={d.disabled} aria-label={d.label} title={d.detail} onClick={() => { if (d.kind === 'mode') onMode(id); else onOrder(orderAction(battle, unit, {}, id)); }}>{d.label}{d.seconds!==undefined?` · ${d.seconds} s`:d.pa !== undefined ? ` · ${d.pa} PA` : ''}{d.id==='reload'&&d.detail&&<small style={{display:'block'}}>{d.detail}</small>}</button>; })}
         </div>
       </div>
       <div className="paper-doll">
