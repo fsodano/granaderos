@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-27",
-  "baseline": "a6730e4cf0dd9fff4198d55d31ece77f4388bfde",
+  "baseline": "ce371e5af7a5925fc84e5a8fed9b7d836e62f5e2",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -74,7 +74,13 @@
     {
       "id": "E-TACTICAL-ORDER-SYNC",
       "path": "docs/verification/tactical-order-sync.md",
-      "description": "Mounted game-page tools synchronize campaign time, finite supplies, civilian death and successor schedules with active autosaves. Consecutive calls, UI controls, stale results, invalid orders and standalone combat are covered. Does not establish browser protocol compatibility, player-known projection or full campaign acceptance."
+      "description": "Mounted game-page tools synchronize campaign time, finite supplies, civilian death and successor schedules with active autosaves. Consecutive calls, UI controls, stale results, invalid orders and standalone combat are covered. Does not establish browser protocol compatibility, player-known projection or full campaign acceptance.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36367141842/job/108755694489"
+    },
+    {
+      "id": "E-LOCAL-CONTRACTS",
+      "path": "docs/verification/local-contracts.md",
+      "description": "Authored world residents offer local day, week or month service with visible prices. Real conversation, payment, wounds, deferred expiry, return, renewal, rehire and save rejection pass. Bulletin candidates remain separate. Does not establish NPC belongings, custody or a full campaign route."
     }
   ],
   "queue": [
@@ -95,7 +101,7 @@
       "ids": [
         "STORY-02"
       ],
-      "action": "Extend world identities, health and successor activation into belongings, custody, paid local contracts and explicit role/stock transfer, as separate deliveries."
+      "action": "Extend world identities, health and successor activation into belongings, custody and explicit role/stock transfer, as separate deliveries."
     },
     {
       "order": 3,
@@ -123,6 +129,31 @@
   ],
   "requirements": [
     {
+      "id": "LOCAL-01",
+      "group": "Published deliveries",
+      "requirement": "Author and sign finite local service contracts with world residents",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Choose permanent unpaid or paid local service in the editor. The conversation displays all term prices, blocks insufficient funds and starts service in place. Wounds, expiry, renewal, dismissal and rehire persist without bulletin admission.",
+      "local": "Uses the accepted published contract and presence rules; no advanced economy or transport import.",
+      "remaining": "",
+      "acceptance": "Author service and wage, undo/copy and launch; physically meet and hire for each term with one charge; block unaffordable, invalid and duplicate hires. Retain wounds through active expiry, return and rehire; renew, dismiss and reject a forged permanent contract. Verify real conversation controls and active autosave.",
+      "evidence": [
+        "E-LOCAL-CONTRACTS"
+      ],
+      "parents": [
+        "STORY-02",
+        "REC-02"
+      ],
+      "testFiles": [
+        "tests/local-contracts.test.mjs",
+        "tests/authored-residents.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/webmcp-campaign.test.mjs",
+        "tests/contracts-web.test.mjs"
+      ]
+    },
+    {
       "id": "TOOL-01",
       "group": "Published deliveries",
       "requirement": "Registered tactical orders commit the same campaign and battle state as game controls",
@@ -143,7 +174,8 @@
         "tests/webmcp-campaign.test.mjs",
         "tests/time-bridge.test.mjs",
         "tests/death-successors.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/36"
     },
     {
       "id": "SUCCESSOR-01",
@@ -663,15 +695,24 @@
       "id": "REC-02",
       "group": "Original design",
       "requirement": "Civic bulletin, low-cost provincial recruits and growth",
-      "status": "PARTIAL",
+      "status": "VERIFIED",
       "priority": "P1",
-      "published": "Replaceable paid roster, progression, equipment and controlled arrivals.",
+      "published": "The searchable civic bulletin provides low-cost paid provincial recruits with starting equipment and experience growth. Replaceable candidates remain off-map until controlled arrival; authored world residents have separate local recruitment and service.",
       "local": "See local suite and preserved parity source; not equivalent to published integration.",
-      "remaining": "Preserve off-map candidates while adding separate authored encounter identities.",
-      "acceptance": "Recruitment, starting equipment and progression",
+      "remaining": "",
+      "acceptance": "Search and hire stock/new candidates, retain starting equipment and paid arrival, gain experience through combat, save, dismiss and rehire without changing identity or health. Authored world residents must use actual local encounters and cannot enter the bulletin.",
       "evidence": [
         "E-PUBLISHED",
-        "E-CONFLICTS"
+        "E-AUTHORED-RESIDENTS",
+        "E-LOCAL-CONTRACTS"
+      ],
+      "testFiles": [
+        "tests/recruitment-web.test.mjs",
+        "tests/mercenary-roster.test.mjs",
+        "tests/content-roster.test.mjs",
+        "tests/hiring-arrivals.test.mjs",
+        "tests/local-contracts.test.mjs",
+        "tests/story-editor.test.mjs"
       ]
     },
     {
@@ -1085,13 +1126,14 @@
       "requirement": "All 13 historical operatives, exact stats and loadouts",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "All 13 baseline stat profiles match; names, sheets, gear and portraits are configurable.",
+      "published": "All 13 baseline stat profiles match; names, sheets, gear and portraits are configurable. Independent authored encounter identities are supported.",
       "local": "See local suite and preserved parity source; not equivalent to published integration.",
-      "remaining": "Extract campaign roles, add encounter identities and verify all recruit conditions.",
+      "remaining": "Extract historical campaign roles and verify every historical recruitment condition through the complete campaign.",
       "acceptance": "Data validation and recruitment in running game",
       "evidence": [
         "E-PUBLISHED",
-        "E-CONFLICTS"
+        "E-CONFLICTS",
+        "E-AUTHORED-RESIDENTS"
       ]
     },
     {
@@ -1274,15 +1316,16 @@
       "requirement": "New world identities, persistent residents and death successors",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "New and existing world residents retain physical identity. Confirmed civilian or active military death can activate a distinct new world successor after a saved delay; earlier bodies and each character health stay separate.",
+      "published": "New and existing world residents retain physical identity. Confirmed civilian or active military death can activate a distinct new world successor after a saved delay; earlier bodies and each character health stay separate. New residents can offer paid local service for all published terms, with quoted prices and persistent expiry, renewal and return.",
       "local": "Preview transitions supplied the core schedule. Published identity, health and successor activation are connected; advanced inventories and role transfer remain separate.",
-      "remaining": "Connect editable belongings, NPC looting, custody, paid local contracts and explicit role/stock transfer. Strategic civilian care and unloaded-sector bleeding remain separate work.",
+      "remaining": "Connect editable belongings, NPC looting, custody and explicit role/stock transfer. Strategic civilian care and unloaded-sector bleeding remain separate work.",
       "acceptance": "Move an injured NPC, reload, recruit it, confirm death and activate one distinct successor without healing or duplicating goods.",
       "evidence": [
         "E-CONFLICTS",
         "E-CIVILIAN-STATE",
         "E-AUTHORED-RESIDENTS",
-        "E-DEATH-SUCCESSORS"
+        "E-DEATH-SUCCESSORS",
+        "E-LOCAL-CONTRACTS"
       ]
     },
     {
@@ -3144,13 +3187,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "a6730e4cf0dd9fff4198d55d31ece77f4388bfde",
-    "total": 603,
-    "passed": 603,
+    "source": "ce371e5af7a5925fc84e5a8fed9b7d836e62f5e2",
+    "total": 611,
+    "passed": 611,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-TACTICAL-ORDER-SYNC"
+    "evidenceId": "E-LOCAL-CONTRACTS"
   }
 }

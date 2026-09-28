@@ -48,8 +48,10 @@ is claimed.
 
 ## Remaining work
 
-STORY-02 remains partial. Personal NPC inventory, looting, custody, paid local
-contracts and explicit role/stock transfer are still open. Only new world residents
+At this checkpoint, STORY-02 remained partial: personal NPC inventory, looting,
+custody, paid local contracts and explicit role/stock transfer were open.
+[The later local-contract delivery](local-contracts.md) closes paid local service.
+See the [current ledger](published-progress.md) for the remaining scope. Only new world residents
 can be conditional successors; stock historical roles keep their original gates.
 Death of an indispensable stock commander still ends the campaign. Dialogue/quest
 graphs and authored tactical movement remain separate deliveries.

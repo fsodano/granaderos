@@ -18,7 +18,8 @@ localities and control of a named locality. Retiro and Buenos Aires count as one
 locality, as in the existing encounter rules. Paid candidates remain off-map
 until their separate hiring and arrival process completes.
 
-Recruitable residents join locally with permanent, unpaid service. A non-recruitable
+At this checkpoint, recruitable residents join locally with permanent, unpaid service.
+[The later local-contract delivery](local-contracts.md) adds selectable paid terms. A non-recruitable
 resident cannot join through dialogue or the bulletin. The dialogue hides the
 recruitment action; campaign orders and save admission enforce the same policy.
 New identities do not inherit historical campaign powers or a player-officer profile.

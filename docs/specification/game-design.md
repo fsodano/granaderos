@@ -106,11 +106,13 @@ traits, abilities, personality, event speech and service policy. Campaign roles
 such as commander, contact or merchant bind to identities; changing a person's
 name must not change their abilities or silently move a campaign role.
 
-Paid hiring has a complete quote, advance payment, journey, controlled destination,
+Bulletin hiring has a complete quote, advance payment, journey, controlled destination,
 arrival, service start, expiry, renewal, cancellation and death policy. Delayed
 arrivals remain off-map when a location becomes unsafe or is currently loaded.
-Historical encounter recruits require actual presence, conversation and authored
-conditions. Independent squads have at most six members; reassignment requires
+World residents require actual presence, conversation and authored conditions.
+An authored resident can offer permanent unpaid service or local day, week and
+month contracts with a visible price. Local service starts in place; it has no
+bulletin arrival. Historical encounter roles retain their original service policy. Independent squads have at most six members; reassignment requires
 real co-location. The player officer has one persistent identity.
 
 Health, bleeding, breath, fatigue, morale, experience, learned skills, inventory,
