@@ -1,6 +1,6 @@
 import {FORCE_EQUIPMENT,defaultForceEquipment,validateForceEquipment} from './content-force-equipment.js';
 import {legacyCharacterAbilities,validCharacterAbilities} from './character-abilities.js';
-import {legacyOperativeId} from './content-character-ids.js';
+import {legacyOperativeId,isWorldCharacter} from './content-character-ids.js';
 import {characterProfile,SPEECH_EVENTS} from './characters.js';
 import {SPEECH_LINE_LIMIT} from './content-character-presentation.js';
 import {SPRITE_APPEARANCES,spriteAppearance} from './sprite-appearances.js';
@@ -129,7 +129,18 @@ export function validateContentPackage(value) {
   }
   for(const field of Object.keys(FORCE_EQUIPMENT))if(value[field]!==undefined)errors.push(...validateForceEquipment(field,value[field],sets.weapons));
   for (const c of value.characters.filter(record)) {
-    if(legacyOperativeId(c.id)===undefined)check(c.recruitmentSource==='contract'&&c.service==='contract'&&['experience','fixed'].includes(c.progression)&&Array.isArray(c.traits),c.id,'los personajes nuevos necesitan contratación, servicio por contrato, progreso y especialidades explícitos.');
+    if(legacyOperativeId(c.id)===undefined)check(['contract','encounter'].includes(c.recruitmentSource)&&['contract','permanent'].includes(c.service)&&['experience','fixed'].includes(c.progression)&&Array.isArray(c.traits),c.id,'los personajes nuevos necesitan origen, servicio, progreso y especialidades explícitos.');
+    if(isWorldCharacter(c)){
+      const e=c.encounter;
+      check(c.service==='permanent'&&c.monthlyPay===0&&c.arrivalHours===undefined,c.id,'los habitantes se incorporan en el lugar, con servicio permanente y sin paga.');
+      check(record(e)&&Object.keys(e).length===5&&Object.keys(e).every(k=>['recruitable','greeting','requiredLeadership','requiredLiberated','requiredSector'].includes(k)),c.id,'la configuración del encuentro no es válida.');
+      if(record(e)){
+        check(typeof e.recruitable==='boolean',c.id,'elegí si puede incorporarse.');
+        text(e.greeting,`${c.id}.encounter.greeting`,1000,true);
+        check(integer(e.requiredLeadership,0,100)&&integer(e.requiredLiberated,0,12),c.id,'los requisitos del encuentro están fuera de rango.');
+        check(e.requiredSector===null||CAMPAIGN_SECTORS.some(s=>s.id===e.requiredSector),c.id,'la localidad requerida no existe.');
+      }
+    }else check(c.encounter===undefined,c.id,'el encuentro editable pertenece a un habitante nuevo.');
     if(c.recruitmentSource!==undefined)check(['contract','encounter'].includes(c.recruitmentSource),c.id,'origen de contratación inválido.');
     if(c.service!==undefined)check(['contract','permanent'].includes(c.service),c.id,'servicio inválido.');
     if(c.progression!==undefined)check(['experience','fixed'].includes(c.progression),c.id,'progreso inválido.');

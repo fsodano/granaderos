@@ -25,7 +25,7 @@ import { campaignContentReport } from '../../../game/campaign-content.js';
 import { CONTENT_LAUNCH_KEY } from '../../../game/content-launch.js';
 import './editor.css';
 import {CHARACTER_ABILITIES,legacyCharacterAbilities} from '../../../game/character-abilities.js';
-import {isContractCharacter,legacyOperativeId} from '../../../game/content-character-ids.js';
+import {isContractCharacter,isHistoricalCharacter,isWorldCharacter,legacyOperativeId} from '../../../game/content-character-ids.js';
 import CharacterPresentation from './CharacterPresentation';
 import {SPEECH_EVENTS} from '../../../game/characters.js';
 import {characterPresentationDefaults} from '../../../game/content-character-presentation.js';
@@ -33,6 +33,7 @@ import {CONTENT_TRAITS} from '../../../game/content-character-options.js';
 import {FIREARM_PRICES} from '../../../game/weapon-definition.js';
 import {WEAPONS as BASE_FIREARMS} from '../../../game/firearm-definitions.js';
 import {WEAPONS as BASE_ITEMS} from '../../../game/data.js';
+import {CAMPAIGN_SECTORS} from '../../../game/data.js';
 import PlacementMap from './PlacementMap';
 import ArrivalSites from './ArrivalSites';
 import ForceEquipment from './ForceEquipment';
@@ -179,7 +180,7 @@ export default function ContentEditor() {
           id: nextId('placement', draft.placements),
           character: item.id,
           mode: 'fixed',
-          sectors: [CONTENT_SECTORS[0].id],
+          sectors: ['retiro'],
           moveChance: 100,
           afterDeath: null,
           delayMin: 0,
@@ -211,7 +212,7 @@ export default function ContentEditor() {
       setNotice(e.message);
     }
   }
-  function add() {
+  function add(kind='contract') {
     let added: any;
     if (collection === 'characters')
       added = {
@@ -235,25 +236,29 @@ export default function ContentEditor() {
         id: nextId('firearm', draft.weapons),
         name: 'Nueva arma',
       };
+    if(collection==='characters'&&kind==='encounter'){
+      delete added.arrivalHours;
+      Object.assign(added,{name:'Nuevo habitante',nickname:'Habitante',role:'Habitante',recruitmentSource:'encounter',service:'permanent',monthlyPay:0,weapon:null,spriteAppearance:'worker',encounter:{recruitable:false,greeting:'Buen día.',requiredLeadership:0,requiredLiberated:0,requiredSector:null}});
+    }
     change({ ...draft, [collection]: [...items, added] });
     setSelected(added.id);
     setSearches((current) => ({ ...current, [collection]: '' }));
   }
   function duplicateCharacter() {
-    if (collection !== 'characters' || !isContractCharacter(item)) return;
-    const added = {...structuredClone(item), ...structuredClone(characterPresentationDefaults(item)), abilities:[...(item.abilities??legacyCharacterAbilities(legacyOperativeId(item.id)))], recruitmentSource:'contract', service:'contract', progression:item.progression??'experience', traits:[...characterTraits], ridingSkill, id: nextId('person', draft.characters), name: `${item.name.slice(0, 92)} (copia)`};
-    change({...draft, characters: [...draft.characters, added]});
+    if (collection !== 'characters' || isHistoricalCharacter(item)) return;
+    const added = {...structuredClone(item), ...structuredClone(characterPresentationDefaults(item)), abilities:[...(item.abilities??legacyCharacterAbilities(legacyOperativeId(item.id)))], recruitmentSource:item.recruitmentSource??'contract', service:item.service??'contract', progression:item.progression??'experience', traits:[...characterTraits], ridingSkill, id: nextId('person', draft.characters), name: `${item.name.slice(0, 92)} (copia)`};
+    change({...draft, characters: [...draft.characters, added],placements:placement?[...draft.placements,{...structuredClone(placement),id:nextId('placement',draft.placements),character:added.id}]:draft.placements});
     setSelected(added.id);
     setSearches(current=>({...current,characters:''}));
   }
   function remove() {
-    if(collection==='characters'&&!isContractCharacter(item)){setNotice('Los mandos históricos todavía tienen funciones de campaña. No se pueden eliminar hasta separar esas funciones.');return;}
+    if(collection==='characters'&&isHistoricalCharacter(item)){setNotice('Los mandos históricos todavía tienen funciones de campaña. No se pueden eliminar hasta separar esas funciones.');return;}
     if(collection==='weapons'&&forceWeaponUsers(draft,item.id).length){setNotice('Asigná otra arma a las tropas que la usan.');return;}
 
     if (
       collection === 'characters' &&
       draft.placements.some(
-        (p: any) => p.character === item.id || p.afterDeath === item.id,
+        (p: any) => p.afterDeath === item.id,
       )
     ) {
       setNotice(
@@ -271,6 +276,7 @@ export default function ContentEditor() {
     change({
       ...draft,
       [collection]: items.filter((i: any) => i.id !== item.id),
+      placements: collection==='characters'?draft.placements.filter((p:any)=>p.character!==item.id):draft.placements,
     });
     setSelected('');
     setSearches(current=>({...current,[collection]:''}));
@@ -495,7 +501,8 @@ export default function ContentEditor() {
                   : items.length}
               </small>
             </h2>
-            <button className="primary" onClick={add}>
+            {tab==='characters'&&<button onClick={()=>add('encounter')}>Crear habitante</button>}
+            <button className="primary" onClick={()=>add()}>
               + Crear{' '}
               {tab === 'characters'
                 ? 'personaje'
@@ -552,7 +559,7 @@ export default function ContentEditor() {
                     <code>{item.id}</code>
                   </div>
                   <div>
-                    {tab==='characters'&&isContractCharacter(item)&&<button onClick={duplicateCharacter}>Duplicar personaje</button>}
+                    {tab==='characters'&&!isHistoricalCharacter(item)&&<button onClick={duplicateCharacter}>Duplicar personaje</button>}
                     <button onClick={remove}>Eliminar</button>
                   </div>
                 </div>
@@ -640,7 +647,7 @@ export default function ContentEditor() {
                       <input type="number" min={0} max={168} value={item.arrivalHours ?? 0} onChange={e=>update({arrivalHours:e.target.valueAsNumber})}/>
                       <small>El contrato comienza al llegar. Con 0, la llegada es inmediata si el destino es seguro.</small>
                     </label>}
-                    {isContractCharacter(item)&&<fieldset>
+                    {!isHistoricalCharacter(item)&&<fieldset>
                       <legend>Formación y progreso</legend>
                       <label>Progreso por combate
                         <select value={item.progression??'experience'} onChange={e=>update({progression:e.target.value})}>
@@ -659,6 +666,28 @@ export default function ContentEditor() {
                           {trait.name}
                         </label>)}
                       </div>
+                    </fieldset>}
+                    {isWorldCharacter(item)&&<fieldset aria-label="Encuentro del habitante">
+                      <legend>Encuentro</legend>
+                      <label>Saludo al conversar
+                        <textarea rows={3} maxLength={1000} value={item.encounter.greeting} onChange={e=>update({encounter:{...item.encounter,greeting:e.target.value}})}/>
+                      </label>
+                      <label><input type="checkbox" checked={item.encounter.recruitable} onChange={e=>update({encounter:{...item.encounter,recruitable:e.target.checked}})}/>Puede incorporarse a la escuadra</label>
+                      {item.encounter.recruitable&&<>
+                        <p>Se incorpora donde lo encontrás, sin paga y con servicio permanente. Conserva sus heridas.</p>
+                        <label>Liderazgo mínimo del interlocutor
+                          <input type="number" min={0} max={100} value={item.encounter.requiredLeadership} onChange={e=>update({encounter:{...item.encounter,requiredLeadership:e.target.valueAsNumber}})}/>
+                        </label>
+                        <label>Localidades seguras necesarias
+                          <input type="number" min={0} max={12} value={item.encounter.requiredLiberated} onChange={e=>update({encounter:{...item.encounter,requiredLiberated:e.target.valueAsNumber}})}/>
+                        </label>
+                        <label>Localidad que debe estar liberada
+                          <select value={item.encounter.requiredSector??''} onChange={e=>update({encounter:{...item.encounter,requiredSector:e.target.value||null}})}>
+                            <option value="">Ninguna</option>
+                            {CAMPAIGN_SECTORS.map(s=><option key={s.id} value={s.id}>{s.name}</option>)}
+                          </select>
+                        </label>
+                      </>}
                     </fieldset>}
                     <fieldset aria-label="Habilidades de combate">
                       <legend>Habilidades de combate</legend>

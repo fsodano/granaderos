@@ -4,7 +4,7 @@ El editor de historia se abre en `/story`, desde el menú del juego o desde el c
 
 ## Fichas aplicadas a la campaña
 
-Nombres, apodos, retratos, biografías, función mostrada, diez atributos iniciales y paga mensual. El catálogo permite crear, duplicar y quitar personajes contratables. Se pueden buscar personajes, deshacer y rehacer cambios, recuperar el borrador e importar o exportar el paquete. Los retratos pueden usar imágenes locales o archivos PNG, JPEG y WebP de hasta 250 KB.
+Nombres, apodos, retratos, biografías, función mostrada, diez atributos iniciales y paga mensual. El catálogo permite crear, duplicar y quitar contratables y habitantes nuevos. Se pueden buscar personajes, deshacer y rehacer cambios, recuperar el borrador e importar o exportar el paquete. Los retratos pueden usar imágenes locales o archivos PNG, JPEG y WebP de hasta 250 KB.
 
 “Iniciar campaña con estas fichas” crea una campaña real con una copia validada de las definiciones. La identidad SHA-256 acompaña al paquete y se comprueba al importar la partida. El perfil editado llega a la contratación, al despliegue táctico y al guardado. Las campañas del editor tienen su propio guardado; no reemplazan la campaña normal ni la de pruebas.
 
@@ -22,6 +22,18 @@ La ficha permite elegir especialidades aplicadas por las reglas actuales, equita
 
 Todos estos candidatos se incorporan por contrato desde el boletín. Una paga de cero es un contrato gratuito con el plazo elegido, no servicio permanente. El editor protege a los mandos históricos de eliminación y duplicación hasta separar sus funciones de campaña. El arma blanca inicial todavía usa el valor general existente.
 
+## Crear habitantes del mundo
+
+«Crear habitante» agrega una identidad propia. Puede tener retrato, apariencia, atributos, saludo, habilidades y una ubicación fija, sorteada al inicio o elegida cada día entre las celdas marcadas. No ocupa un puesto histórico ni aparece en el boletín. Sin una aparición configurada queda fuera del mapa.
+
+La opción «Puede incorporarse a la escuadra» permite elegir entre un interlocutor civil y un recluta local. Para incorporarlo hay que encontrarlo y conversar junto a él. Su ficha define el liderazgo mínimo, la cantidad de localidades seguras y una localidad concreta que deba estar liberada, si corresponde. Retiro y Buenos Aires cuentan como una localidad para ese requisito. Un habitante muerto, inconsciente o cautivo no puede incorporarse.
+
+En esta versión, los habitantes reclutables sirven sin paga y de forma permanente. La contratación local por un plazo y un precio queda pendiente. El arma de la ficha se entrega al incorporarse; todavía no representa un inventario de NPC que se pueda saquear. El equipo blanco inicial conserva la regla general del juego.
+
+Duplicar un habitante copia su configuración y sus celdas con otra identidad. Eliminarlo quita su aparición; si otra regla depende de él, primero se debe quitar esa referencia. Deshacer, rehacer, exportar y recuperar el borrador conservan estos cambios. Las campañas ya iniciadas mantienen su propio paquete. Los mandos históricos siguen protegidos hasta separar sus funciones de campaña.
+
+Los habitantes usan la salud persistente: cambiar de celda, guardar o incorporarse no los cura. Si dejan la escuadra, vuelven con su estado de soldado. Su progreso puede conservar el nivel inicial o ganar experiencia según la ficha.
+
 ## Habilidades de combate
 
 Cada personaje puede recibir o perder cualquiera de las 19 habilidades de combate. La lista incluye protección de compañeros, contragolpe, tiro y movimiento rápidos, atención médica, exploración nocturna, carga montada, intimidación y apoyo de mando, recarga y artillería. Cada opción explica su efecto. Ninguna casilla marcada significa que el personaje no tiene esas ventajas, aunque conserve un nombre o identidad históricos. Los personajes nuevos empiezan sin habilidades; duplicar conserva la selección efectiva.
@@ -36,7 +48,7 @@ Cada ficha puede elegir un retrato de la biblioteca, conservar una imagen import
 
 El carácter describe al personaje en su hoja de servicio, sin modificar su moral. Las siete frases corresponden a incorporación, detección de enemigos, sector asegurado, herida, agotamiento, muerte y fin de campaña. Cada frase admite hasta 800 caracteres; una frase vacía mantiene el silencio. El contratado pronuncia su incorporación al llegar, una sola vez. Las frases tácticas se disparan por los eventos reales y el cierre de campaña usa las frases de los compañeros vivos.
 
-Estas opciones participan en la recuperación del borrador, deshacer/rehacer, duplicación, exportación, inicio y guardado. Los paquetes anteriores sin estos campos conservan sus perfiles. Las partidas rechazan voces o apariencias que difieren de la definición incluida. Los saludos, las conversaciones ramificadas, las misiones y los finales alternativos todavía requieren sus propios editores y reglas.
+Estas opciones participan en la recuperación del borrador, deshacer/rehacer, duplicación, exportación, inicio y guardado. Los paquetes anteriores sin estos campos conservan sus perfiles. Las partidas rechazan voces o apariencias que difieren de la definición incluida. Los habitantes nuevos tienen un saludo editable. Las conversaciones ramificadas, las misiones y los finales alternativos todavía requieren sus propios editores y reglas.
 
 La prueba de incorporación también detectó que Cabral, Dorrego y Paroissien no tenían una condición regional adicional y se rechazaban después de cumplir el encuentro. Ahora pueden incorporarse al cumplir su conversación local, liderazgo, control y demás condiciones del encuentro. La contratación remota sigue bloqueada para ellos.
 
@@ -88,7 +100,7 @@ La campaña conserva el reloj y un estado aleatorio propio para estas decisiones
 
 Al trasladarse se elimina la copia de la escena anterior. La nueva escena inicia una rutina local; no copia coordenadas, casas o destinos del sector anterior. Volver al mismo sector sin un traslado conserva la rutina guardada. La correspondencia muestra la ubicación fija conocida o el último encuentro; no revela el resultado de los sorteos.
 
-Esta entrega integra los personajes de encuentro existentes. La salud y la muerte de estos personajes ya se conservan en campaña. No incorpora todavía inventarios de NPC editables, cautiverio, nuevas identidades de encuentro ni transferencia de funciones a un sucesor. Las condiciones de muerte se pueden simular en el editor, pero bloquean el inicio de campaña hasta completar esas funciones. Las escenas de misión especiales conservan su elenco propio.
+Los personajes de encuentro existentes y los habitantes nuevos usan estas apariciones. La salud y la muerte se conservan en campaña. Todavía faltan inventarios de NPC editables, cautiverio y transferencia de funciones a un sucesor. Las condiciones de muerte se pueden simular en el editor, pero bloquean el inicio de campaña hasta completar esas funciones. Las escenas de misión especiales conservan su elenco propio.
 
 Las partidas anteriores mantienen sus encuentros originales. Las nuevas campañas usan una versión explícita con presencia guardada; quitar ese registro o cambiar posiciones por fuera del rango invalida el archivo. Las pruebas exportadas del simulador pasan a la versión 2 por el cambio en las reglas de sorteo: los archivos de prueba de versión 1 se rechazan con un aviso para crear una prueba nueva. El paquete de contenido y las partidas anteriores mantienen su compatibilidad.
 
@@ -100,13 +112,13 @@ En el campo táctico podés usar los cursores normales para atacar o atender a u
 
 La muerte cancela los traslados y el reclutamiento. El cuerpo queda en su escena. La campaña aplica una vez la consecuencia local de lealtad y marca como fallido un encargo pendiente de ese contacto. Si muere un mando indispensable de la historia original, la campaña termina. San Martín comparte su salud entre sus funciones de contacto y aliado.
 
-Esto todavía no permite crear NPC nuevos, editar sus pertenencias, saquearlos, mantenerlos cautivos ni activar sucesores. No se inventa equipo para sus cuerpos. Las heridas se conservan fuera de la escena, pero todavía no se simula atención médica o hemorragia mientras el sector está cerrado. La [verificación](../verification/civilian-state.md) detalla las pruebas y los límites.
+Todavía no se pueden editar sus pertenencias, saquearlos, mantenerlos cautivos ni activar sucesores. No se inventa equipo para sus cuerpos. Las heridas se conservan fuera de la escena, pero todavía no se simula atención médica o hemorragia mientras el sector está cerrado. La [verificación](../verification/civilian-state.md) detalla las pruebas y los límites.
 
 ## Borradores que todavía no llegan a la campaña
 
-El mapa permite marcar cualquier celda con una X desde la ficha del personaje, incluido terreno fuera de las localidades. Se pueden simular ubicaciones con una semilla. Las ubicaciones fijas, el sorteo inicial y los cambios diarios ya se aplican a las nuevas campañas. Crear personajes de encuentro, eliminar mandos históricos y usar opciones de historia no compatibles todavía bloquea el inicio de campaña.
+El mapa permite marcar cualquier celda con una X desde la ficha del personaje, incluido terreno fuera de las localidades. Se pueden simular ubicaciones con una semilla. Las ubicaciones fijas, el sorteo inicial y los cambios diarios ya se aplican a las nuevas campañas. Eliminar mandos históricos y usar opciones de historia no compatibles todavía bloquea el inicio de campaña.
 
-Los mandos históricos conservan su servicio permanente, requisitos de reclutamiento y funciones de campaña. Sus habilidades de combate ya son configurables. Quedan pendientes su extracción, las identidades nuevas de encuentro, las sucesiones por muerte, los diálogos y encargos editables, las escenas dirigidas y la composición completa de campaña. Esta entrega no completa todo el editor de historia.
+Los mandos históricos conservan su servicio permanente, requisitos de reclutamiento y funciones de campaña. Sus habilidades de combate ya son configurables. Quedan pendientes su extracción, las sucesiones por muerte, los diálogos y encargos editables, las escenas dirigidas y la composición completa de campaña. Esta entrega no completa todo el editor de historia.
 
 ## Validación
 
@@ -132,3 +144,5 @@ Los mandos históricos conservan su servicio permanente, requisitos de reclutami
 `tests/campaign-presence.test.mjs` comprueba conversación e incorporación en una celda rural mediante movimiento táctico real, guardado activo, reentrada, sorteo único, recorridos diarios, protección de escenas a las 04:00, eliminación de copias antiguas y rechazo de registros inválidos. También comprueba la aparición en un ataque real a un sector enemigo y su guardado activo. Comprueba correspondencia sin revelar sorteos y conservación de contratos fuera del mapa. El editor montado configura las celdas y reglas, usa deshacer/rehacer e inicia un encuentro real. No prueba bajas civiles ni una campaña completa.
 
 `tests/civilian-state.test.mjs` comprueba heridas, muerte, cambios de celda, incorporación, baja del servicio, misiones, lealtad y guardados. `tests/civilian-interaction.test.mjs` usa los controles del campo táctico montado para atacar y atender a un NPC. No equivalen a un recorrido completo de campaña.
+
+`tests/authored-residents.test.mjs` comprueba habitantes nuevos con saludo, retrato, salud, celdas fijas o sorteadas, traslado diario, incorporación local, condiciones, muerte, progreso, retiro del servicio y guardados. El formulario montado crea un habitante, marca celdas, duplica, elimina, deshace e inicia una campaña con ese encuentro. Los controles de conversación ocultan la incorporación para un habitante no reclutable. Son pruebas acotadas, no una campaña completa.

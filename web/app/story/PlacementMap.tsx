@@ -203,9 +203,9 @@ export default function PlacementMap({
         {hovered || 'Columnas y filas de la cuadrícula del mapa.'}
       </p>
       <small>
-        Teclado: flechas para recorrer las celdas; espacio para marcar. Estas
-        ubicaciones se usan en las pruebas del editor; su integración en la
-        campaña sigue pendiente.
+        Teclado: flechas para recorrer las celdas; espacio para marcar. Las
+        apariciones usan estas celdas en la campaña. Elegí tierra firme; las
+        celdas de agua todavía no admiten encuentros.
       </small>
     </div>
   );

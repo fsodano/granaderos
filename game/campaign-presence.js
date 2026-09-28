@@ -1,5 +1,5 @@
 import {civilianDiedHere} from './campaign-civilians.js';
-import {ENCOUNTERS} from './encounters.js';
+import {encounterDefinitions} from './encounters.js';
 import {createContentSession,advancePlacementState,changePlacementStatus} from './content-placement.js';
 import {isContractCharacter,operativeIdForCharacter,characterForOperative} from './content-character-ids.js';
 import {contentCellIds} from './content-map.js';
@@ -16,8 +16,8 @@ export function characterPresentInSector(state,characterId,sector){
   return Boolean(person?.alive&&!person.recruited&&!person.suspended&&person.appeared&&locationId(person.sector)===locationId(sector));
 }
 function currentResident(state,npc,sector){
-  const original=ENCOUNTERS.find(n=>n.id===npc.id);
-  if(original?.operativeId!==npc.operativeId)return false;
+  const original=encounterDefinitions(state).find(n=>n.id===npc.id);
+  if(!original||original.operativeId!==npc.operativeId||original.contentId!==undefined&&original.contentId!==npc.contentId)return false;
   if(npc.hp===0)return civilianDiedHere(state,npc,sector);
   const character=characterForOperative(state,npc.operativeId);
   if(!character)return npc.operativeId===undefined&&npc.contentId===undefined;

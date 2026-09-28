@@ -65,8 +65,9 @@ The complete local suite passed **582/582 tests**, with no failures or skips, in
 asset references). The baseline audit passed all 36 comparisons. Documentation
 checks retained 171 requirements, including all 50 original and 87 parity rows.
 All 44 local links in changed documents resolved. The
-[requirement register](requirements.json) records this source. Exact-head CI must
-pass before merge.
+[requirement register](requirements.json) records this source. [PR #33](https://github.com/fsodano/granaderos/pull/33) was
+merged at `5812d9b9c2e1bfae180216b4e413a0ebf4845097` after
+[CI for `c00c6af`](https://github.com/fsodano/granaderos/actions/runs/36363917668/job/108746414452) passed.
 No new browser playthrough or loaded-combat performance measurement was made.
 
 ## Remaining work

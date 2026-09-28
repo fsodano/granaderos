@@ -1,8 +1,8 @@
 import {validWorldLocation} from './world-cells.js';
 import {OPERATIVES} from './data.js';
-import {ENCOUNTERS} from './encounters.js';
+import {encounterDefinitions} from './encounters.js';
 import {YATASTO_NPCS} from './missions.js';
-import {authoredOperative} from './content-roster.js';
+import {authoredOperative,authoredRoster} from './content-roster.js';
 import {civilianMaxHp,civilianRestoredHp,seedCivilianHealth,migrateCivilianHealth} from './civilian-health.js';
 import {civilianIncidents,validateCivilianWounds} from './civilian-harm.js';
 import {recordCityLoyalty} from './cities.js';
@@ -14,13 +14,13 @@ const physical=n=>Object.fromEntries(fields.filter(k=>n[k]!==undefined).map(k=>[
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
 const operativeId=n=>n.id==='yatasto-san-martin'?57:n.operativeId;
 export const civilianKey=n=>operativeId(n)!==undefined?`person-${operativeId(n)}`:`npc-${n.id}`;
-function definition(n){
- const original=[...ENCOUNTERS,...YATASTO_NPCS].find(v=>v.id===n.id);
+function definition(s,n){
+ const original=[...encounterDefinitions(s),...YATASTO_NPCS].find(v=>v.id===n.id);
  need(original&&original.operativeId===n.operativeId,'El habitante no pertenece a este mundo.');
  return original;
 }
 function service(s,n){
- const id=operativeId(n),base=OPERATIVES.find(o=>o.id===id);
+ const id=operativeId(n),base=authoredRoster(s,OPERATIVES).find(o=>o.id===id);
  if(!base)return undefined;
  const current={...authoredOperative(s,base),...s.operativeState[id]},prior=id===57?s.missionAllies?.san_lorenzo:null;
  // Old saves kept mission wounds only on the retained ally. Until a civilian
@@ -79,7 +79,7 @@ export function acknowledgeCivilians(s,snapshot){
  const expected=request.npcs??[];
  need(snapshot.npcs.length===expected.length,'Faltan habitantes en el parte del sector.');
  for(const n of snapshot.npcs){
-  definition(n);validateCivilianWounds(n,snapshot);
+  definition(s,n);validateCivilianWounds(n,snapshot);
   const prior=expected.find(v=>v.id===n.id);
   need(prior&&prior.operativeId===n.operativeId&&prior.contentId===n.contentId&&prior.presenceRevision===n.presenceRevision&&!s.recruited.includes(operativeId(n)));
   const previous=campaignCivilian(s,prior);compareHistory(previous,n);
@@ -112,7 +112,7 @@ export function transferCivilian(s,n){
 export function validateCivilianScene(s,scene,{active=false}={}){
  if(active)need(scene.npcs.length===(s.pendingBattle.npcs??[]).length&&(s.pendingBattle.npcs??[]).every(n=>scene.npcs.some(v=>v.id===n.id)),'Faltan habitantes en el sector guardado.');
  for(const n of scene.npcs??[]){
-  definition(n);validateCivilianWounds(n,scene);
+  definition(s,n);validateCivilianWounds(n,scene);
   const record=s.civilianState?.people[civilianKey(n)];
   need(!s.recruited.includes(operativeId(n)));
   need(same(physical(n),physical(campaignCivilian(s,n))));
@@ -123,9 +123,9 @@ export function validateCivilianScene(s,scene,{active=false}={}){
 export function validateCampaignCivilians(s){
  const ledger=s.civilianState;
  need(ledger&&ledger.version===1&&ledger.people&&typeof ledger.people==='object'&&!Array.isArray(ledger.people));
- need(Object.keys(ledger).length===2&&Object.keys(ledger.people).length<=ENCOUNTERS.length+YATASTO_NPCS.length);
+ need(Object.keys(ledger).length===2&&Object.keys(ledger.people).length<=encounterDefinitions(s).length+YATASTO_NPCS.length);
  for(const [key,r]of Object.entries(ledger.people)){
-  const n=definition({id:r.npcId,operativeId:ENCOUNTERS.find(n=>n.id===r.npcId)?.operativeId});
+  const n=definition(s,{id:r.npcId,operativeId:encounterDefinitions(s).find(n=>n.id===r.npcId)?.operativeId});
   need(civilianKey(n)===key&&Object.keys(r).every(k=>['npcId','sector','sceneId','health','inService'].includes(k)));
   need((validWorldLocation(r.sector)||r.sector==='san_lorenzo')&&(r.sceneId===null||r.sceneId==='yatasto')&&r.health&&Object.keys(r.health).every(k=>fields.includes(k)));
   validateCivilianWounds(r.health);
@@ -143,7 +143,7 @@ export function migrateCampaignCivilians(s){
  const scenes=[...Object.values(s.sectorStates),...Object.values(s.sceneStates),...(s.pendingBattle?[s.pendingBattle]:[])];
  for(const scene of scenes)scene.npcs=(scene.npcs??[]).filter(n=>!s.recruited.includes(operativeId(n)));
  for(const scene of scenes)for(const n of scene.npcs??[]){
-  definition(n);migrateCivilianHealth(n,service(s,n));
+  definition(s,n);migrateCivilianHealth(n,service(s,n));
   const old=s.civilianState.people[civilianKey(n)];
   if(!old||n.hp<old.health.hp)remember(s,n,scene);
  }

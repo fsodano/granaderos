@@ -14,6 +14,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Authored world presence verification](character-presence.md)
 - [Retiro opening verification](retiro-opening.md)
 - [Civilian state verification](civilian-state.md)
+- [Authored resident verification](authored-residents.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 

@@ -1,6 +1,6 @@
 import {validateAbilityReferences} from './content-character-abilities.js';
 import {validatePresentationReferences} from './content-character-presentation.js';
-import {isContractCharacter,operativeIdForCharacter} from './content-character-ids.js';
+import {isContractCharacter,isHistoricalCharacter,isWorldCharacter,operativeIdForCharacter} from './content-character-ids.js';
 import {weaponMetadata,validateWeaponReferences,restoreWeaponReferences} from './weapon-definition.js';
 import {contentIdentity,canonicalContent} from "./content-identity.js";
 import { defaultContentPackage, resolveContent } from "./content-package.js";
@@ -13,20 +13,20 @@ export function campaignContentReport(content) {
     blocked = [],
     pending = [];
   const supported=new Set(['format','version','id','name','characters','weapons','placements','arrivalSites','oppositionEquipment','militiaEquipment']);
-  const characterFields=new Set(['id','name','nickname','role','biography','portrait','monthlyPay','weapon','attributes','arrivalHours','recruitmentSource','service','progression','traits','ridingSkill','personality','speech','spriteAppearance','abilities']);
+  const characterFields=new Set(['id','name','nickname','role','biography','portrait','monthlyPay','weapon','attributes','arrivalHours','recruitmentSource','service','progression','traits','ridingSkill','personality','speech','spriteAppearance','abilities','encounter']);
   if(Object.keys(value).some(key=>!supported.has(key))||value.characters.some(c=>Object.keys(c).some(key=>!characterFields.has(key))))
     blocked.push('Este paquete incluye opciones de historia que esta versión todavía no puede aplicar.');
   if(value.characters.some(c=>!isContractCharacter(c)&&c.arrivalHours!==undefined))
     blocked.push("El tiempo de llegada se configura solo para los contratables del boletín.");
-  if(value.characters.some(c=>!isContractCharacter(c)&&c.monthlyPay!==baseline.characters.find(b=>b.id===c.id)?.monthlyPay))
+  if(value.characters.some(c=>isHistoricalCharacter(c)&&c.monthlyPay!==baseline.characters.find(b=>b.id===c.id)?.monthlyPay))
     blocked.push('Los personajes históricos conservan su servicio permanente; su paga todavía no se puede cambiar.');
   const ids=new Set(value.characters.map(c=>c.id));
   if(baseline.characters.some(c=>!isContractCharacter(c)&&!ids.has(c.id)))
     blocked.push('Los mandos históricos todavía cumplen funciones de campaña y no se pueden quitar.');
-  if(value.characters.some(c=>!isContractCharacter(c)&&['recruitmentSource','service','progression','traits','ridingSkill'].some(key=>c[key]!==undefined)))
+  if(value.characters.some(c=>isHistoricalCharacter(c)&&['recruitmentSource','service','progression','traits','ridingSkill'].some(key=>c[key]!==undefined)))
     blocked.push('El servicio, el progreso y las especialidades de los mandos históricos todavía conservan sus reglas originales.');
   if(value.characters.some(c=>isContractCharacter(c)&&(c.recruitmentSource==='encounter'||c.service==='permanent')))
-    blocked.push('Los candidatos de esta entrega se incorporan por contrato; el servicio permanente sigue reservado a los mandos de historia.');
+    blocked.push('Los candidatos del boletín se incorporan por contrato. Para servicio permanente, creá un habitante.');
   const weaponFields=new Set(['id','template','name','damage','fireAP','aimAP','reloadAP','range','readyAP','capacity','weight','price','art']);
   if(value.weapons.some(w=>Object.keys(w).some(key=>!weaponFields.has(key))||w.readyAP!==0))
     blocked.push("Este paquete incluye manejo de armas que esta versión todavía no puede aplicar.");
@@ -76,6 +76,7 @@ export function validateCampaignContent(state) {
   if (report.blocked.length) throw Error(report.blocked.join("\n"));
   if(canonicalContent(context.identity)!==canonicalContent(contentIdentity(definitions)))throw Error("El contenido de campaña no coincide con su identidad guardada.");
   if(context.adapter!=='character-presence-v1'){
+    if(definitions.characters.some(isWorldCharacter))throw Error('Los habitantes nuevos necesitan una campaña con presencia de personajes.');
     const locations=list=>list.map(p=>({...p,sectors:contentCellIds(p.sectors)}));
     if(canonicalContent(locations(definitions.placements))!==canonicalContent(locations(defaultContentPackage().placements)))
       throw Error('Las apariciones editadas necesitan una campaña nueva con presencia de personajes.');
