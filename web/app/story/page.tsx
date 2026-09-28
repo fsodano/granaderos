@@ -81,7 +81,7 @@ function download(text: string, name: string) {
 }
 function nextId(prefix: string, items: any[]) {
   let n = 1;
-  while (items.some((i) => i.id === `${prefix}-${n}`)) n++;
+  while (items.some((i) => i.id === `${prefix}-${n}`)||(prefix==='person'&&legacyOperativeId(`${prefix}-${n}`)!==undefined)) n++;
   return `${prefix}-${n}`;
 }
 export default function ContentEditor() {
@@ -253,14 +253,15 @@ export default function ContentEditor() {
     setSearches((current) => ({ ...current, [collection]: '' }));
   }
   function duplicateCharacter() {
-    if (collection !== 'characters' || isHistoricalCharacter(item)) return;
+    if (collection !== 'characters' || isHistoricalCharacter(item)&&!draft.campaignStory) return;
     const added = {...structuredClone(item), ...structuredClone(characterPresentationDefaults(item)), abilities:[...(item.abilities??legacyCharacterAbilities(legacyOperativeId(item.id)))], recruitmentSource:item.recruitmentSource??'contract', service:item.service??'contract', progression:item.progression??'experience', traits:[...characterTraits], ridingSkill, id: nextId('person', draft.characters), name: `${item.name.slice(0, 92)} (copia)`};
+    if(isHistoricalCharacter(item))Object.assign(added,{recruitmentSource:'encounter',service:'permanent',monthlyPay:0,progression:'experience',encounter:{recruitable:true,greeting:'Buen día. Hablemos de la campaña.',requiredLeadership:0,requiredLiberated:0,requiredSector:null}});
     change({...draft, characters: [...draft.characters, added],placements:placement?[...draft.placements,{...structuredClone(placement),id:nextId('placement',draft.placements),character:added.id}]:draft.placements});
     setSelected(added.id);
     setSearches(current=>({...current,characters:''}));
   }
   function remove() {
-    if(collection==='characters'&&isHistoricalCharacter(item)){setNotice('Los mandos históricos todavía tienen funciones de campaña. No se pueden eliminar hasta separar esas funciones.');return;}
+    if(collection==='characters'&&isHistoricalCharacter(item)&&!draft.campaignStory){setNotice('El avance histórico necesita sus mandos. Elegí capítulos propios en Reglas para quitar este personaje.');return;}
     if(collection==='weapons'&&forceWeaponUsers(draft,item.id).length){setNotice('Asigná otra arma a las tropas que la usan.');return;}
 
     if (
@@ -569,7 +570,7 @@ export default function ContentEditor() {
                     <code>{item.id}</code>
                   </div>
                   <div>
-                    {tab==='characters'&&!isHistoricalCharacter(item)&&<button onClick={duplicateCharacter}>Duplicar personaje</button>}
+                    {tab==='characters'&&(!isHistoricalCharacter(item)||draft.campaignStory)&&<button onClick={duplicateCharacter}>{isHistoricalCharacter(item)?'Copiar como habitante independiente':'Duplicar personaje'}</button>}
                     <button onClick={remove}>Eliminar</button>
                   </div>
                 </div>

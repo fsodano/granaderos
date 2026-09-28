@@ -10,7 +10,9 @@ export default function CampaignStory({draft,onChange}:{draft:any;onChange:(valu
  return <section aria-label="Objetivos de campaña"><h2>Objetivos y final de campaña</h2>
   <label>Avance de la historia<select value={story?'authored':'original'} onChange={e=>onChange({...draft,campaignStory:e.target.value==='authored'?defaultCampaignStory():null})}><option value="original">Campaña histórica original</option><option value="authored">Capítulos propios</option></select></label>
   <p>Los capítulos propios reemplazan el avance y el final históricos. El mundo, las reglas de combate, la economía y los requisitos de los personajes históricos siguen vigentes. San Lorenzo y Yatasto pertenecen al avance original.</p>
-  {story&&<>
+  <label><input type="checkbox" checked={draft.includeOriginalResidents!==false} onChange={e=>onChange({...draft,includeOriginalResidents:e.target.checked})}/>Incluir habitantes genéricos del mapa original</label>
+  <p>Incluye los contactos como el sargento del cuartel y los guías de las postas. Desactivalos para usar tus propios habitantes. Los personajes con ficha se administran desde Personajes.</p>
+  {story&&<><p>Podés eliminar personajes históricos desde sus fichas o copiarlos como habitantes independientes. La copia conserva su ficha, equipo, retrato y habilidades editables; tiene incorporación local sin requisitos históricos. Su diálogo, servicio y apariciones se editan como los de cualquier habitante nuevo. Las funciones históricas no se transfieren.</p>
    <label>Introducción de campaña<textarea maxLength={1000} value={story.introduction} onChange={e=>update({introduction:e.target.value})}/></label>
    <label>Texto de victoria<textarea maxLength={1000} value={story.victory} onChange={e=>update({victory:e.target.value})}/></label>
    <label>Texto de derrota<textarea maxLength={1000} value={story.defeat} onChange={e=>update({defeat:e.target.value})}/></label>
