@@ -29,6 +29,15 @@ function orderFor(s,scene,n){
  const orders=s.dialogueMovements??[];
  for(let i=orders.length-1;i>=0;i--){const o=orders[i];if(o.character===id&&o.sector===sector&&o.revision===n.presenceRevision)return {order:i,target:{...o.target}};}
 }
+// This is current physical presence, not a timer or a historical completion flag.
+export function atDialogueMeeting(s,characterId,battle){
+ const request=s.pendingBattle;
+ if(!request||!battle||battle.sceneId||battle.sectorId!==request.sector||battle.battleId&&battle.battleId!==request.id)return false;
+ const person=s.contentPresence?.people[characterId],n=battle.npcs?.find(n=>character(s,n)===characterId);
+ if(!person?.alive||person.recruited||!n||person.revision!==n.presenceRevision||n.hp<=0||n.unconscious||n.departure||n.surrendered||n.ai?.threat&&(battle.elapsedSeconds??0)<n.ai.safeAfter)return false;
+ const order=orderFor(s,battle,n);
+ return Boolean(order&&same(n.scriptedMove,order)&&n.x===order.target.x&&n.y===order.target.y);
+}
 export function applyDialogueMovements(s,scene){
  for(const n of scene.npcs??[]){const order=orderFor(s,scene,n);if(order)n.scriptedMove=order;else delete n.scriptedMove;}
  return scene;

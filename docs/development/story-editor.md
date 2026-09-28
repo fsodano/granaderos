@@ -58,6 +58,8 @@ El personaje camina, abre puertas utilizables y espera al llegar. Un bloqueo pau
 
 Cada opción emite una sola orden. Otra opción puede darle otro destino. Repetir una opción ya usada no repite la orden anterior. Si faltan el personaje o el camino, la opción explica el problema. Un pago o un cambio de encargo de esa misma opción tampoco se aplica. La referencia impide eliminar al personaje desde el editor.
 
+Para esperar la llegada, agregá la condición «Personaje en su encuentro» a la opción que sigue. Elegí el habitante que debe llegar. La opción aparece cuando está consciente, sin peligro inmediato y en el destino de su última llamada dentro del sector abierto. Una orden pendiente o un tiempo transcurrido no bastan. Podés combinar esta condición con otras y usar la misma opción para completar un encargo o pagar una recompensa una sola vez. Guardar y volver al sector conservan la llegada si el personaje sigue en ese lugar.
+
 Por ahora el destino es el lugar del interlocutor. Faltan los marcadores del mapa, las acciones al llegar, las secuencias de varios actores y los disparadores automáticos. Esta función no permite llamar a candidatos del boletín ni cambia las escenas históricas.
 
 ## Encargos
@@ -216,3 +218,5 @@ Los mandos históricos conservan su servicio permanente, requisitos de reclutami
 `tests/quest-survival.test.mjs` comprueba muerte civil real, una baja militar en una batalla compacta preparada, aceptación bloqueada tras una muerte, resultados ya completos, heridas y cambios de servicio. El editor montado conserva y protege las referencias; la página del juego registra una muerte real y muestra el fallo guardado. La [verificación de supervivencia](../verification/quest-survival.md) separa esas pruebas de una campaña completa.
 
 `tests/dialogue-movements.test.mjs` comprueba la llamada real, marcha, espera, guardado, reentrada, nuevas órdenes, muerte y cambio diario de sector. Las pruebas de rutinas usan casas preparadas para comprobar puertas, obstáculos, alarma y refugio. El editor y el juego montados comprueban creación, referencias y ejecución con guardado. La [verificación de encuentros](../verification/dialogue-movements.md) detalla sus límites.
+
+`tests/meeting-arrivals.test.mjs` comprueba llegada real, rechazo anticipado, reentrada y recompensa única. Algunos casos preparados aíslan alarma, incapacidad y bloqueo; la recuperación usa el reloj y la marcha habituales. El editor y el juego montados verifican la condición y su guardado. La [verificación de llegada](../verification/meeting-arrivals.md) registra el alcance.
