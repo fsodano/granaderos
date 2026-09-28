@@ -1,13 +1,15 @@
 # Militia wounds outside the loaded sector
 
-Runtime/test source: `5de9a17a2f29731cd660a2a09c2fca0f466542bb`.
+Runtime/test source: `61bdfa00e0ded0d88effae5c54ae6094d621d3f8`.
+Initial implementation: `5de9a17a2f29731cd660a2a09c2fca0f466542bb`.
 
 Retained local militia now use the campaign's authored hourly bleeding rule.
 Each campaign hour, local physicians work first. A soldier whose wound remains
 open loses `ceil(bleeding × bleedingDamagePercent / 100)` health. The default
 percentage is 25; zero disables this strategic damage. Waiting, squad travel and
-tactical time in another sector share that clock. The currently loaded sector
-keeps its tactical damage and receives no second strategic charge.
+tactical time in another sector share that clock. Actually deployed militia keep their tactical damage and receive no second
+strategic charge. Opening the separate Yatasto conference does not freeze the
+town garrison or the physician left to treat it.
 
 The screen shows the expected hourly loss beside each bleeding militiaman.
 Stabilizing a patient consumes an actual dressing and prevents that hour's
@@ -24,8 +26,9 @@ New paid cohorts receive new identities and do not replace the old casualty.
 
 ## Verification
 
-Six new simulations and one mounted production campaign-screen test pass in a
-**30/30** overlapping group covering care, training and military remains. The
+Eight new simulations and one mounted production campaign-screen test pass.
+The initial overlapping group passed **30/30**; the final reviewed group,
+including mission and recruited-person care checks, passes **49/49**. The
 shared fixture authors a controlled capital and port, pays for a cohort and a
 physician, waits the actual course interval and uses an actual enemy pistol shot
 in declared compact barrier geometry. The body-recovery variant leaves a real
@@ -47,6 +50,10 @@ Checks cover:
 - Explicit older-record compatibility when no retained scene supplies a body
   position; no position or replacement soldier is invented.
 - Visible hourly loss, a real wait, local assignment, finite treatment and save.
+- A separate Yatasto scene anchored in Tucumán while the town militia stays
+  outside it, including a local physician left in another squad. The northern
+  headquarters, paid cohort and enemy wound are real; only the historical
+  conference gate is explicitly prepared. This is not a northern-route victory.
 
 The earlier locality-care test now stabilizes its critical militiaman before
 leaving on the long march. Its previous untreated patient died under the new
@@ -55,12 +62,20 @@ initial new travel check incorrectly assumed that march alone lasted until
 death; the reviewed check measures the actual travel loss and continues through
 the next real tactical hour in Buenos Aires.
 
-Types and all 36 reference baseline comparisons pass. Complete regression passes
-**956/956 tests**, zero failures or skips (229,642.844 ms). Production export
-passes with 722 files and 632 asset references. The documentation audit passes
-with 229 requirements and 68 evidence records, retaining all 50 original and
-87 parity rows. Successful exact-head GitHub CI is required before merge; this
-delivery is not yet on main.
+The first complete source `5de9a17` passes **956/956**, zero failures or skips
+(229,642.844 ms). Review then added a separate-scene regression: a wounded town
+soldier incorrectly stayed at 13 health during Yatasto, instead of falling to
+12. Exclusion now checks actual deployed identities. A second check showed that
+the physician left in town was also blocked: the patient fell to 10 instead of
+remaining at 13 after finite stabilization. The town-care boundary is now
+separate from the conference. Both regression checks pass in the reviewed group.
+
+Types and all 36 reference baseline comparisons pass. Final complete regression
+on `61bdfa0` passes **958/958**, zero failures or skips (229,423.091 ms).
+Production export passes with 722 files and 632 asset references. The
+documentation audit passes with 229 requirements and 68 evidence records,
+including all 50 original and 87 parity rows. Successful exact-head GitHub CI is required before merge; this delivery is
+not yet on main.
 
 ## Limits
 

@@ -592,7 +592,8 @@ count-only courses retain their earlier contract. See the
 ### Militia wounds outside the active scene
 
 Retained militia share the authored hourly bleeding rate after local physician
-work. The loaded sector uses only its tactical clock. A death reduces the
+work. Actually deployed defenders use only their tactical clock. A separate mission
+scene leaves the town garrison and its physician on their strategic clocks. A death reduces the
 existing rank count once and retains the actual corpse and finite possessions
 in the known saved scene. Older records without a scene cannot establish a body
 position. See [wound and remains verification](../verification/unloaded-militia-wounds.md)
