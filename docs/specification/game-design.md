@@ -190,6 +190,10 @@ handling rules. An authored blade retains its identity, image, damage, attack
 cost, reach, weight and price across equipped slots, storage and campaign returns.
 Its family selects the existing melee techniques; technique authoring is separate.
 Older content without a blade assignment retains the original character loadout.
+Enemy roles and militia ranks can select primary weapons and secondary blades
+independently. Only newly issued soldiers receive those selections; retained
+soldiers keep their actual gear. A blade primary receives no firearm cartridges
+or priming powder. An unspecified secondary selection retains the role default.
 Merchant stock, prices, buyback and replenishment are authored
 rules, not uncontrolled duplication of owned items.
 

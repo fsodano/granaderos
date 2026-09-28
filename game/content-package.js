@@ -134,7 +134,10 @@ export function validateContentPackage(value) {
       sets[key].add(item.id);
     }
   }
-  for(const field of Object.keys(FORCE_EQUIPMENT))if(value[field]!==undefined)errors.push(...validateForceEquipment(field,value[field],new Set(value.weapons.filter(w=>WEAPONS[w?.template]).map(w=>w.id))));
+  for(const [field,group]of Object.entries(FORCE_EQUIPMENT)){
+    if(value[field]!==undefined)errors.push(...validateForceEquipment(field,value[field],sets.weapons));
+    if(value[group.bladeField]!==undefined)errors.push(...validateForceEquipment(field,value[group.bladeField],new Set(value.weapons.filter(w=>BLADES[w?.template]).map(w=>w.id))));
+  }
   for (const c of value.characters.filter(record)) {
     if(legacyOperativeId(c.id)===undefined)check(['contract','encounter'].includes(c.recruitmentSource)&&['contract','permanent'].includes(c.service)&&['experience','fixed'].includes(c.progression)&&Array.isArray(c.traits),c.id,'los personajes nuevos necesitan origen, servicio, progreso y especialidades explícitos.');
     if(isWorldCharacter(c)){
@@ -176,7 +179,7 @@ export function validateContentPackage(value) {
     if (c.arrivalHours !== undefined) check(integer(c.arrivalHours, 0, 168), `${c.id}.arrivalHours`, "el viaje debe durar de 0 a 168 horas.");
     check(integer(c.monthlyPay, 0, 1000000), `${c.id}.monthlyPay`, "paga inválida.");
     check(c.weapon === null || sets.weapons.has(c.weapon), `${c.id}.weapon`, "el arma no existe.");
-    if(c.blade!==undefined)check(value.weapons.some(w=>w.id===c.blade&&BLADES[w.template]),`${c.id}.blade`,"el arma blanca no existe.");
+    if(c.blade!==undefined)check(value.weapons.some(w=>w?.id===c.blade&&BLADES[w.template]),`${c.id}.blade`,"el arma blanca no existe.");
     check(record(c.attributes) && Object.keys(c.attributes).length === ATTRIBUTE_FIELDS.length && Object.keys(c.attributes).every(k => ATTRIBUTE_FIELDS.includes(k)), `${c.id}.attributes`, "la lista de atributos no es válida.");
     for (const k of ATTRIBUTE_FIELDS)
       check(

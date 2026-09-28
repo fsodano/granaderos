@@ -12,5 +12,5 @@ test('the mounted inventory shows the authored secondary picture, changes hands 
  const m=await mountCampaign(t,{campaign,battle:enterSector(campaign.pendingBattle)});
  await m.click('Equipo y órdenes');
  const slot=m.document.querySelector('.hand-slot.blade');assert.ok(slot);assert.match(slot.textContent,/Bayoneta azul/);assert.equal(slot.querySelector('img').getAttribute('src'),'/art/weapon-1810.png');
- await act(async()=>slot.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));const current=m.read();assert.equal(current.battle.units.find(u=>u.id==='110').activeSlot,'blade');assert.equal(current.battle.units.find(u=>u.id==='110').bladeMetadata.contentWeapon.ap,21);assert.deepEqual(m.saved(),{campaign:current.campaign,battle:current.battle});
+ await act(async()=>slot.dispatchEvent(new m.dom.window.MouseEvent('click',{bubbles:true})));assert.match(m.document.querySelector('[aria-label="Calar bayoneta"]').textContent,/21 PA/);const current=m.read();assert.equal(current.battle.units.find(u=>u.id==='110').activeSlot,'blade');assert.equal(current.battle.units.find(u=>u.id==='110').bladeMetadata.contentWeapon.ap,21);assert.deepEqual(m.saved(),{campaign:current.campaign,battle:current.battle});
 });
