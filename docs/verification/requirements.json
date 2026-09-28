@@ -444,7 +444,12 @@
     {
       "id": "E-BATTERY-CHOICE",
       "path": "docs/verification/explicit-artillery-selection.md",
-      "description": "Explicit empty and named battery choices survive actual paid purchases, attack requests, tactical entry and full saves. Effective model counts drive deployment; unavailable quantities cannot invent another model. Four simulations and one mounted production-game check pass within 18 overlapping cases. Full regression passes 1021/1021, zero failures/skips, with types, export and all 36 reference checks; exact-head publication remains required and stationed cannon persistence and autonomous crews remain separate."
+      "description": "Explicit empty and named battery choices survive actual paid purchases, attack requests, tactical entry and full saves. Effective model counts drive deployment; unavailable quantities cannot invent another model. Four simulations and one mounted production-game check pass within 18 overlapping cases. Full regression passes 1021/1021, zero failures/skips, with types, export and all 36 reference checks; published by PR #99 after successful exact-head CI and stationed cannon persistence and autonomous crews remain separate."
+    },
+    {
+      "id": "E-STATIONED-ARTILLERY",
+      "path": "docs/verification/stationed-artillery.md",
+      "description": "New paid guns leave unissued stock once and retain physical identity, ownership, position, load and finite ammunition through actual victory, withdrawal, recapture, firing, reload and saved visits. Ten simulations and one mounted production-game case pass; the earlier artillery overlap passes 22/22 and final scene group 14/14. Full regression passes 1032/1032, zero failures/skips, with types, export and all 36 reference checks. Legacy projections reconcile once; transport, resupply, loading across turns and autonomous crews remain separate. Exact-head publication remains required."
     }
   ],
   "queue": [
@@ -493,12 +498,37 @@
   ],
   "requirements": [
     {
+      "id": "EMPLACEMENT-01",
+      "group": "Published deliveries",
+      "requirement": "Issue artillery once and preserve physical sector emplacements, finite ammunition, capture and saved ownership",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Paid attack guns become retained sector pieces rather than reusable stock projections.",
+      "local": "Ten simulations and one mounted production-game check pass. Full regression passes 1032/1032, zero failures/skips, with types, export and 36 baseline comparisons. Actual established-area combat and paid guns are distinguished from prepared migration and conference boundaries.",
+      "remaining": "",
+      "acceptance": "Buy and issue actual guns, settle real combat outcomes, fire and reload finite rounds, return through full saves with unchanged positions and ammunition, join a second purchased piece, reject identity/ammunition corruption and migrate old reusable projections without creating additional paid guns.",
+      "evidence": [
+        "E-STATIONED-ARTILLERY"
+      ],
+      "parents": [
+        "TAC-08",
+        "ITEM-02",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/stationed-artillery.test.mjs",
+        "tests/stationed-artillery-render.test.mjs",
+        "tests/artillery.test.mjs",
+        "tests/artillery-selection.test.mjs"
+      ]
+    },
+    {
       "id": "BATTERYCHOICE-01",
       "group": "Published deliveries",
       "requirement": "Respect explicit empty or named artillery choices in controls, finite model selection and saved deployment",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Empty and named artillery choices retain their meaning through saves and actual tactical entry.",
+      "published": "Published by PR #99 after successful exact-head CI. Empty and named artillery choices retain their meaning through saves and actual tactical entry.",
       "local": "Four simulations and one mounted production-game check pass within 18 overlapping cases. Actual paid stock stays unselected after saving an empty choice; new purchases cannot change it, and later valid choices deploy their exact models. Full regression passes 1021/1021, zero failures/skips, with types, export and all 36 baseline comparisons.",
       "remaining": "",
       "acceptance": "Display effective automatic stock, save explicit no-gun choice, reject invalid model quantities, preserve older selection semantics, and honor the exact selected manifest through tactical entry and complete saves.",
@@ -515,7 +545,8 @@
         "tests/equipment-web.test.mjs",
         "tests/artillery.test.mjs",
         "tests/workshop-service-render.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/99"
     },
     {
       "id": "PATROLRULES-01",
@@ -2928,12 +2959,13 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Three crew-served gun profiles and artillery actions.",
-      "local": "See local suite and preserved parity source; not equivalent to published integration.",
-      "remaining": "Integrate persistent emplacement, individual crews, ammunition and transport.",
+      "local": "See local suite and preserved parity source; not equivalent to published integration. EMPLACEMENT-01 accepts bounded physical sector persistence, finite first issue, capture and migration.",
+      "remaining": "Publish accepted physical emplacements after exact-head CI; integrate partial crew loading, autonomous crews, resupply and strategic recovery/transport.",
       "acceptance": "Crew requirements, movement/pivot AP and range",
       "evidence": [
         "E-PUBLISHED",
-        "E-CONFLICTS"
+        "E-CONFLICTS",
+        "E-STATIONED-ARTILLERY"
       ]
     },
     {
@@ -3127,12 +3159,13 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Three artillery profiles and period supply actions.",
-      "local": "See local suite and preserved parity source; not equivalent to published integration.",
+      "local": "See local suite and preserved parity source; not equivalent to published integration. EMPLACEMENT-01 accepts bounded physical sector persistence, finite first issue, capture and migration.",
       "remaining": "Complete authoring, finite stores, transport, consumption and saved ownership.",
       "acceptance": "Data and actual consumption/carry effects",
       "evidence": [
         "E-PUBLISHED",
-        "E-CONFLICTS"
+        "E-CONFLICTS",
+        "E-STATIONED-ARTILLERY"
       ]
     },
     {
@@ -5270,13 +5303,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "40010d251b5527560e78f521a72d9607fd9ba64e",
-    "total": 1016,
-    "passed": 1016,
+    "source": "f18756ca8104b7c827599404d7c78d14bac9e19a",
+    "total": 1021,
+    "passed": 1021,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-PATROL-RULES"
+    "evidenceId": "E-BATTERY-CHOICE"
   }
 }

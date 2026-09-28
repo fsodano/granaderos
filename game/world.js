@@ -20,6 +20,14 @@ export function enterSector(request,previous=null){
    // A new occupation creates a garrison. An unfinished engagement retains its survivors.
    if(!request.exploration&&!previous.sectorCleared)map.enemies=structuredClone(previous.units.filter(u=>u.side==='enemy'));
  }
+ // Restore stationed full-map coordinates after template placement and scaling.
+ const stationed=(request.artillery??[]).filter(g=>g.stationed),reserved=new Set(stationed.map(g=>`${g.x},${g.y}`));
+ map.artillery=map.artillery.map(gun=>{
+  const old=stationed.find(g=>g.id===gun.id);if(old)return structuredClone(old);
+  const candidates=map.tiles.filter(t=>!t.blocked&&!t.buildingId&&t.type!=='water'&&!propBlocksAt(map,t.x,t.y)&&!reserved.has(`${t.x},${t.y}`));
+  candidates.sort((a,b)=>Math.abs(a.x-gun.x)+Math.abs(a.y-gun.y)-Math.abs(b.x-gun.x)-Math.abs(b.y-gun.y)||a.y-b.y||a.x-b.x);if(!candidates.length)throw Error('No queda espacio para la artillería.');
+  const {x,y}=candidates[0];reserved.add(`${x},${y}`);return {...gun,x,y};
+ });
  const state=createBattle([...map.squad,...(map.garrison??[]),...(map.missionAllies??[])],map);
  if(previous){
    for(const unit of state.units.filter(u=>u.side==='player'&&u.hp>0)){const old=previous.units.find(u=>u.id===unit.id&&u.side==='player');for(const key of ['practiceTiles','ridingPracticeTiles'])if(old?.[key])unit[key]=structuredClone(old[key]);}

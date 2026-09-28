@@ -673,3 +673,16 @@ of those actual models. An explicit empty tactical manifest cannot fall back to
 a stock count. Selection spends no money, time or stock. See
 [verification](../verification/explicit-artillery-selection.md) for actual paid
 attack entry and the separate stationed-artillery integration.
+
+### Physical artillery emplacements
+
+New attack batteries consume unissued stock once. Each cannon then retains its
+identity, model, position, facing, loaded shot and finite reserve in its sector.
+Victory captures the pieces; withdrawal leaves them to surviving occupants.
+Reentry and saved continuation do not refill or recreate them. Reports and saves
+reject duplicate or missing pieces and ammunition increases. The armory shows
+resident ownership and load separately from the next attack's stock selection.
+Friendly stationed pieces count toward the historical army requirement. Legacy
+stock projections migrate once, prioritizing the active battery and then the
+latest retained scenes. [Verification and limits](../verification/stationed-artillery.md)
+distinguish actual combat from prepared migration and separate-scene boundaries.

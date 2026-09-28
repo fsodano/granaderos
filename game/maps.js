@@ -36,7 +36,7 @@ function buildCompactSectorMap(request={}){
  const squad=(request.squad??[]).map((op,i)=>({...clone(op),...choose({x:id==='san_lorenzo'?2:1,y:id==='san_lorenzo'?(i%2===0?2:12)+Math.floor(i/2):4+i},'player')}));
  const enemyCount=request.enemies?.length??Math.max(3,squad.length+(request.difficulty??1)-1);
  const enemies=Array.from({length:enemyCount},(_,i)=>({id:`enemy-${i}`,name:`Soldado realista ${i+1}`,weapon:i%3===0?1801:1800,marksmanship:50+(request.difficulty??1)*5,morale:60+(request.difficulty??1)*5,...clone(request.enemies?.[i]??{}),...choose({x:id==='santa_fe'?15:id==='san_lorenzo'?15:17,y:3+i%10},'enemy')}));
- const artillery=(request.artillery??Array.from({length:Math.min(request.cannons??0,3)},()=>({type:'bronze4',side:'player',loaded:true,ammo:6}))).map((gun,i)=>({...clone(gun),...choose({x:3,y:4+i*3},'player')}));
+ const artillery=(request.artillery??Array.from({length:Math.min(request.cannons??0,3)},()=>({type:'bronze4',side:'player',loaded:true,ammo:6}))).map((gun,i)=>gun.stationed?clone(gun):({...clone(gun),...choose({x:3,y:4+i*3},'player')}));
  return {...clone(request),...(authored.worldCell?{worldCell:true}:{}),sector:request.sceneId?request.sector:id,name:request.name??names[id]??worldCell(id)?.name,width:WIDTH,height:HEIGHT,tiles,decor:authored.decor,props:authored.props,groundItems:authored.groundItems,sourceMapId:authored.sourceMapId,sourceMapRevision:authored.sourceMapRevision,buildings:authored.buildings,lights:authored.lights,squad,enemies,artillery,mapTitle:names[id]??worldCell(id)?.name};
 }
 
