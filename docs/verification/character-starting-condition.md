@@ -50,3 +50,7 @@ must give a resident positive energy if it must later converse. The editor calls
 out that constraint. Critical military incapacitation, automatic first aid,
 physical kit custody and complete advanced gameplay acceptance remain open.
 Simulation and mounted-DOM checks do not establish live-browser usability or FPS.
+
+[PR #75](https://github.com/fsodano/granaderos/pull/75) merged after
+[GitHub CI](https://github.com/fsodano/granaderos/actions/runs/36428925176/job/108949773670)
+passed at `79594f06010f68b995169674de59d512b6b06d7f`.

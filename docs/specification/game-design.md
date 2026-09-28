@@ -273,8 +273,14 @@ medic's skill. Each effective stroke consumes one dressing and the existing
 18/20/25 action-point cost; exploration spends time instead. Care does not grant
 patient energy, AP or posture. Bandaged wounds persist through campaign return,
 recruitment and saved deployment, and strategic recovery reduces those wounds.
-Automatic service and the complete military critical-condition pipeline remain
-separate integrations. These stroke and indivisible-dressing rules are explicit
+Automatic service remains a separate integration. Living military actors below
+15 health or with zero energy cannot act. Breath recovery cannot heal critical
+wounds; stabilization grants no immediate AP. Critical casualties cannot hold the
+field, but exhaustion alone does not settle a battle. Incapacitated enemy wounds
+and finite equipment persist across visits and a distinct new occupation.
+Complete shock, wound/AP, custody and transport behavior retain separate work.
+See [critical condition acceptance](../verification/critical-military-condition.md).
+These stroke and indivisible-dressing rules are explicit
 Granaderos adaptations. See [manual care](../gameplay/characters/field-first-aid.md).
 
 The editor supports these appearance rules:
