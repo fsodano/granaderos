@@ -425,3 +425,17 @@ Guardar, cambiar de arma o recogerla conserva su avance. En exploración se gast
 tiempo: el contacto con un enemigo o la caída del soldado interrumpe el trabajo.
 El avance no se completa gratis al pasar a combate. La artillería mantiene sus
 reglas separadas. Véase la [verificación de recargas](../verification/partial-firearm-reloads.md).
+
+### Precio de los cartuchos
+
+En **Reglas → Fondos y abastecimiento**, el **Precio del cartucho** acepta un
+importe entero entre cero y un millón de pesos. Si no se configura, vale un
+peso, igual que antes. La escuadra paga al entrar o atacar un sector. La salida
+devuelve el valor de los cartuchos que realmente quedan. Por ejemplo, siete
+cartuchos a tres pesos cuestan 21; si se dispara uno, se devuelven 18.
+
+El precio queda guardado con la campaña. Cambiar el borrador no modifica una
+partida en curso. Restaurar las reglas originales devuelve el precio a un peso
+y restaura los fondos y cantidades iniciales. El precio cero conserva las
+cantidades y permite abastecer sin pago. La armería y el botón de entrada muestran
+el precio de esa partida. Véase la [verificación](../verification/authored-cartridge-price.md).
