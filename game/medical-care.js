@@ -21,7 +21,7 @@ export function careAssignmentReason(s,op,value){
  if(!safe(s,op.id))return 'La atención necesita un sector bajo control patriota y sin combate.';
  if(value==='doctor'){
   const r=s.operativeState[op.id];
-  if(op.medical<20)return 'Necesita al menos 20 de medicina.';
+  if((op.medical??0)<20)return 'Necesita al menos 20 de medicina.';
   if(r.hp<15||r.bleeding>0||(r.energy??100)<=10)return 'El médico debe estar estable y tener más de 10 de energía.';
   if((r.medkits??2)<1)return 'El médico no tiene vendas.';
  }
