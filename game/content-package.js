@@ -106,7 +106,7 @@ export function validateContentPackage(value) {
       `texto inválido (máximo ${max} caracteres).`,
     );
   text(value.name, "Nombre", 100);
-  try{validateContentQuests(value.quests);}catch(error){errors.push(error.message);}
+  try{validateContentQuests(value.quests,new Set((Array.isArray(value.characters)?value.characters:[]).map(c=>c?.id)));}catch(error){errors.push(error.message);}
   if (value.arrivalSites !== undefined) errors.push(...validateArrivalSites(value.arrivalSites));
   for (const key of ["characters", "weapons", "placements"])
     check(

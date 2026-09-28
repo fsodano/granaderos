@@ -1,3 +1,4 @@
+import {questPackage} from './content-quest-fixture.mjs';
 import {contentQuestJournal} from '../game/content-quests.js';
 import {dialoguePackage} from './dialogue-fixture.mjs';
 import {dialogueConditionsMet} from '../game/dialogue-conditions.js';
@@ -413,4 +414,10 @@ test('the editor creates a quest, protects its references and launches an author
  await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.deepEqual(contentQuestJournal(campaign),[]);campaign=dispatchCampaign(campaign,{type:'recruitCivic',id:110,term:'month'});campaign=dispatchCampaign(campaign,{type:'travel',sector:'cell-27-27'});campaign=dispatchCampaign(campaign,{type:'visitSector'});assert.equal(campaign.lastError,null);
  let battle=enterSector({...campaign.pendingBattle,hour:campaign.hour}),npc=battle.npcs.find(n=>n.contentId==='alma-contract'),unit=battle.units.find(u=>u.side==='player'),tile=getReachable(battle,unit.id).find(t=>Math.abs(t.x-npc.x)+Math.abs(t.y-npc.y)===1);assert.ok(tile);if(tile.cost)battle=actBattle(battle,{type:'move',unitId:unit.id,x:tile.x,y:tile.y});assert.equal(battle.lastError,null);({campaign,battle}=syncBattleTime(campaign,battle));
  campaign=dispatchCampaign(campaign,{type:'talkNPC',npcId:npc.id,unitId:unit.id,approach:'dialogue',dialogueNode:'start',dialogueChoice:'north',sectorState:battle});assert.equal(campaign.lastError,null);const saved=decodeSave(encodeSave(campaign,battle));assert.equal(contentQuestJournal(saved.campaign)[0].title,'La posta nueva');assert.equal(contentQuestJournal(saved.campaign)[0].status,'active');assert.equal(contentQuestJournal(saved.campaign)[0].remainingMinutes,60);
+});
+
+test('the editor configures required survivors, protects character references and preserves them through copy and launch',async t=>{
+ const m=await mount(t,JSON.stringify(questPackage())),draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));await m.click(m.button('Encargos'));await m.input(m.label('Personaje que debe sobrevivir'),'person-110');await m.click(m.button('Agregar personaje necesario'));assert.deepEqual(draft().quests[0].requiredAlive,['person-110']);await m.click(m.button('Deshacer'));assert.deepEqual(draft().quests[0].requiredAlive??[],[]);await m.click(m.button('Rehacer'));await m.click(m.button('Duplicar encargo'));assert.deepEqual(draft().quests[1].requiredAlive,['person-110']);
+ await m.click(m.button('Personajes'));await m.input(m.document.querySelector('input[type="search"]'),'person-110');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Eliminar'));assert.ok(draft().characters.some(c=>c.id==='person-110'));assert.match(m.document.body.textContent,/Quitá primero las apariciones y condiciones/);
+ await m.click(m.button('Iniciar campaña con estas fichas'));const {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.deepEqual(campaign.contentCampaign.package.quests.map(q=>q.requiredAlive),[['person-110'],['person-110']]);assert.deepEqual(contentQuestJournal(campaign),[]);
 });
