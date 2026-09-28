@@ -451,7 +451,7 @@ test('the editor creates and assigns a blade with undo, dependency protection an
  await m.input(m.label('Daño'),37);await m.input(m.label('PA de ataque'),19);await m.input(m.label('Alcance cuerpo a cuerpo'),2.7);await m.input(m.label('Peso (kg)'),2);await m.input(m.label('Precio (pesos)'),95);
  assert.equal(m.document.querySelector('.weapon-preview').getAttribute('src'),'/art/weapon-1812.png');assert.ok(!m.document.body.textContent.includes('Capacidad de carga'));
  await m.click(m.button('Deshacer'));assert.notEqual(m.label('Precio (pesos)').value,'95');await m.click(m.button('Rehacer'));assert.equal(m.label('Precio (pesos)').value,'95');
- const blade=draft().weapons.at(-1);assert.equal(blade.reach,2.7);assert.equal(m.label('Oficiales enemigos').querySelector(`option[value="${blade.id}"]`),null);
+ const blade=draft().weapons.at(-1);assert.equal(blade.reach,2.7);assert.ok(m.label('Oficiales enemigos').querySelector(`option[value="${blade.id}"]`));
  await m.click(m.button('Personajes'));await m.input(m.document.querySelector('input[type="search"]'),'person-110');await m.click(m.document.querySelector('.entry-list button'));await m.input(m.label('Arma blanca'),blade.id);
  await m.click(m.button('Duplicar personaje'));assert.equal(draft().characters.at(-1).blade,blade.id);
  await m.click(m.button('Armas'));await m.input(m.document.querySelector('input[type="search"]'),blade.id);await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Eliminar'));assert.match(m.document.querySelector('.notice').textContent,/personajes que la usan/);
@@ -465,4 +465,17 @@ test('the mounted armory sells an authored blade and keeps its displayed identit
  let s=initialCampaign(5,d);s=dispatchCampaign(s,{type:'recruitCivic',id:110,term:'week'});s=dispatchCampaign(s,{type:'wait',hours:6});const before=s.resources.treasury;
  const m=await mount(t,undefined,null,s,'armory');const article=[...m.document.querySelectorAll('.armory-catalog article')].find(a=>a.textContent.includes('Sable del editor'));assert.ok(article);assert.equal(article.querySelector('img').getAttribute('src'),'/art/weapon-1810.png');await m.click(article.querySelector('button'));assert.equal(m.campaign.resources.treasury,before-73);
  const instance=m.campaign.armoryItems.find(i=>i.contentWeapon?.id==='sable-editor');await m.input(m.document.querySelector('#armory-blade'),instance.id);assert.match(m.document.querySelector('#armory-blade option[value="equipped"]').textContent,/Sable del editor/);assert.equal(decodeSave(encodeSave(m.campaign)).campaign.operativeState[110].bladeMetadata.contentWeapon.id,'sable-editor');
+});
+
+test('the editor configures both troop slots, protects references and launches actual blade-equipped enemies',async t=>{
+ const d=defaultContentPackage();d.weapons.push({id:'lanza-editor',template:1812,name:'Lanza del ejército',damage:27,ap:19,reach:2.5});
+ const m=await mount(t,JSON.stringify(d));const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));await m.click(m.button('Armas'));
+ await m.input(m.label('Infantería enemiga'),'lanza-editor');await m.click(m.button('Configurar armas blancas de enemigos'));await m.click(m.button('Configurar armas blancas de milicias'));
+ await m.input(m.label('Arma blanca · Oficiales enemigos'),'lanza-editor');await m.input(m.label('Arma blanca · Montoneros'),'lanza-editor');await m.input(m.label('Arma blanca · Veteranos enemigos'),'');
+ assert.equal(draft().oppositionBlades.veteran,null);await m.click(m.button('Deshacer'));assert.equal(draft().oppositionBlades.veteran,'blade-1811');await m.click(m.button('Rehacer'));assert.equal(draft().oppositionBlades.veteran,null);
+ assert.equal(m.label('Arma blanca · Oficiales enemigos').querySelector('option[value="firearm-1800"]'),null);
+ await m.input(m.document.querySelector('input[type="search"]'),'lanza-editor');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Eliminar'));assert.match(m.document.querySelector('.notice').textContent,/tropas que la usan/);
+ await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));
+ for(const action of [{type:'recruitCivic',id:110,term:'week'},{type:'wait',hours:6},{type:'attack',sector:'buenos_aires'}]){campaign=dispatchCampaign(campaign,action);assert.equal(campaign.lastError,null);}
+ const pair=decodeSave(encodeSave(campaign,enterSector(campaign.pendingBattle)));assert.equal(pair.battle.units.find(u=>u.id==='enemy-0').bladeMetadata.contentWeapon.id,'lanza-editor');const line=pair.battle.units.find(u=>u.id==='enemy-1');assert.equal(line.weaponMetadata.contentWeapon.id,'lanza-editor');assert.deepEqual([line.loaded,line.ammo,line.priming],[0,0,0]);
 });
