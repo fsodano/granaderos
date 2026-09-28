@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "b063d878f39e9db2bf5af2c63b57f1ef39765046",
+  "baseline": "898b5574caf9482817381b35e0e799a0ade88eca",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -212,7 +212,13 @@
     {
       "id": "E-MILITARY-REMAINS",
       "path": "docs/verification/military-remains.md",
-      "description": "Actual capital casualties retain identity, positions and finite gear through saved visits. Real ammunition/weapon recovery cannot repeat; prior deaths do not rejoin service or become new report casualties. Prepared reoccupation isolates reused enemy IDs and accounting, followed by a real second battle and saved settlement. No body restoration from already erased snapshots, custody/transport, full campaign or live-browser acceptance is claimed."
+      "description": "Actual capital casualties retain identity, positions and finite gear through saved visits. Real ammunition/weapon recovery cannot repeat; prior deaths do not rejoin service or become new report casualties. Prepared reoccupation isolates reused enemy IDs and accounting, followed by a real second battle and saved settlement. No body restoration from already erased snapshots, custody/transport, full campaign or live-browser acceptance is claimed.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36392192468/job/108830307723"
+    },
+    {
+      "id": "E-MISSION-SETTLEMENT",
+      "path": "docs/verification/post-victory-mission.md",
+      "description": "A prepared compact San Lorenzo endpoint wins through actual combat, explores, uses a finite medical dressing, recovers a weapon, saves and settles. The mounted game uses its normal victory/explore/return controls. Active enemies, missing clearance and failed combat reject victory; a commander who dies during exploration still causes defeat. This does not accept the full fresh San Lorenzo route."
     }
   ],
   "queue": [
@@ -565,6 +571,29 @@
         "tests/story-editor.test.mjs"
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/57"
+    },
+    {
+      "id": "MISSION-01",
+      "group": "Published deliveries",
+      "requirement": "Settle San Lorenzo after safe post-victory exploration",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "The cleared mission can return from exploration after medical care or equipment recovery. Living unrouted enemies still block victory, and commander death still forces mission and campaign defeat. The normal return control saves the completed mission and recovered equipment.",
+      "local": "Prepared territory and compact final opposition isolate settlement. Victory, exploration, care, recovery and death use actual tactical actions; the full fresh historical route remains open.",
+      "remaining": "",
+      "acceptance": "Win the final encounter, explore, treat the allied commander, recover equipment, reload and settle with the ordinary UI; reject inconsistent or contested victories and retain defeat if the commander dies afterward.",
+      "evidence": [
+        "E-MISSION-SETTLEMENT"
+      ],
+      "parents": [
+        "NAR-03",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/post-victory-mission.test.mjs",
+        "tests/missions-web.test.mjs",
+        "tests/campaign-story.test.mjs"
+      ]
     },
     {
       "id": "CASUALTY-01",
@@ -1258,13 +1287,14 @@
       "requirement": "San Lorenzo river ambush",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Authored San Lorenzo mission and win/loss tests.",
+      "published": "Authored San Lorenzo mission and win/loss tests. Post-victory exploration, care, recovery and normal return now preserve the mission result while commander death remains terminal.",
       "local": "See local suite and preserved parity source; not equivalent to published integration.",
       "remaining": "Fresh prototype route loses; repeat under consolidated rules with actual supplies and casualties.",
       "acceptance": "Authored playable tactical map, force composition and win/loss conditions",
       "evidence": [
         "E-PUBLISHED",
-        "E-CONFLICTS"
+        "E-CONFLICTS",
+        "E-MISSION-SETTLEMENT"
       ]
     },
     {
@@ -3899,17 +3929,18 @@
         "tests/world-web.test.mjs",
         "tests/ammunition-web.test.mjs",
         "tests/contract-casualty-presence.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/59"
     }
   ],
   "latestPublishedCheck": {
-    "source": "b063d878f39e9db2bf5af2c63b57f1ef39765046",
-    "total": 786,
-    "passed": 786,
+    "source": "898b5574caf9482817381b35e0e799a0ade88eca",
+    "total": 790,
+    "passed": 790,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-MILITARY-REMAINS"
+    "evidenceId": "E-MISSION-SETTLEMENT"
   }
 }

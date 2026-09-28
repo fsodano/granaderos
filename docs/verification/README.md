@@ -40,6 +40,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Project conditions in chapters and dialogue](project-conditions.md)
 - [Deceased contracts and saved continuation](contract-casualty-presence.md)
 - [Military bodies and finite equipment on reentry](military-remains.md)
+- [San Lorenzo settlement after exploration](post-victory-mission.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 
