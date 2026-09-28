@@ -2,6 +2,11 @@
 
 Runtime/test source: `e00ec37002ce0b2e30208dfb35de9bebd0582560`.
 
+Published in [PR #97](https://github.com/fsodano/granaderos/pull/97).
+[Exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36479547644/job/109121542622)
+passed at `d4e6d5211dac5cc6603a4d35c721a89f944a38f1` on
+2026-09-28 at 20:46:53 UTC. Merge: `1dc6946c5fdaeaceb118e8b017610e6f40c6831d`.
+
 The campaign offers manual destination, rank and quantity controls, plus a
 previewed automatic distribution. Transfers use connected controlled sectors
 inside the existing operational city area. Buenos Aires, Retiro and Ensenada
