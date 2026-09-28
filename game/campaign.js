@@ -1,3 +1,4 @@
+import {foundryFor} from './campaign-foundry.js';
 import {campaignRole,campaignRoleActive,foundryReason} from './campaign-roles.js';
 import {campaignStory,campaignChapterIndex,advanceCampaignStory,validateCampaignProgress} from './campaign-story.js';
 import {importRulesFor,importOrderReason} from './campaign-imports.js';
@@ -118,7 +119,7 @@ export function recruitmentStatus(s,id,local=false){
     8:[s.flags.northPact,'Acuerda la defensa autónoma del norte.'],
     9:[s.sectors.cordoba.owner==='patriot'&&s.reputation.gauchos>=10,'Libera Córdoba y respeta a las milicias provinciales.'],
     11:[s.sectors.cordoba.owner==='patriot','Libera Córdoba.'],
-    57:[s.phase>=4,'Completa los preparativos de El Plumerillo.'],
+    57:[s.phase>=4,`Completa los preparativos de ${foundryFor(s).name}.`],
   };
   if(!local&&encounterForOperative(id))return {available:false,reason:`Buscá a ${encounterForOperative(id).name} en su localidad y hablá con él o ella.`};
   const [available,reason]=conditions[id]??[false,'No está disponible.'];return {available,reason:available?'Disponible para incorporarse.':reason};
@@ -143,9 +144,9 @@ function progress(s){
   if(s.phase===1&&s.flags.sanLorenzo){s.phase=2;standing(s,'directory',15);note(s,'Victoria en San Lorenzo. San Martín marcha al norte para estudiar la situación del Ejército del Norte.');}
   if(s.phase===2&&s.missions?.yatasto?.completed&&s.sectors.tucuman.owner==='patriot'&&s.flags.northPact&&isSupplied(s,'salta')){s.phase=3;s.flags.mentoring=true;note(s,'En Yatasto, San Martín confía el norte a Güemes. El esfuerzo principal se traslada a Cuyo.');}
   if(s.phase===3&&s.flags.foundry&&s.flags.parliament&&s.flags.armyFunded&&artilleryCount(s)>=3&&['mendoza','uspallata','los_patos'].every(id=>s.sectors[id].owner==='patriot'&&s.sectors[id].fort>=1)){
-    s.phase=4;note(s,'El Plumerillo alcanza plena capacidad. Tres mil infantes, artillería y pasos seguros: San Martín puede incorporarse al ejército.');
+    s.phase=4;note(s,`${foundryFor(s).name} alcanza plena capacidad. Tres mil infantes, artillería y pasos seguros: San Martín puede incorporarse al ejército.`);
   }
-  if(!s.completed&&s.phase===4&&s.recruited.includes(57)&&Object.values(s.sectors).every(x=>x.owner==='patriot')&&!s.blockade&&!s.pendingBattle){s.completed=true;note(s,'¡Campaña concluida! Las provincias están libres y el Ejército de los Andes queda preparado para la liberación continental.');endingSpeech(s);}
+  if(!s.completed&&s.phase===4&&s.recruited.includes(57)&&Object.values(s.sectors).every(x=>x.owner==='patriot')&&!s.blockade&&!s.pendingBattle){s.completed=true;note(s,`¡Campaña concluida! Las provincias están libres y el ${foundryFor(s).armyName} queda preparado para la liberación continental.`);endingSpeech(s);}
   if(s.sectors[headquartersFor(s)].owner!=='patriot'){s.defeated=true;note(s,`El cuartel de ${headquartersName(s)} ha caído. El ejército debe reorganizarse desde una nueva campaña.`);}
 }
 function raid(s,theater,forcedTarget=null){
@@ -243,7 +244,7 @@ export function dispatchCampaign(previous,action){
       }
       case 'resupply':case 'repairWeapon':{
         const id=Number(action.operativeId),op=rosterFor(s).find(o=>o.id===id),record=s.operativeState[id];requireThat(op&&s.recruited.includes(id)&&record.alive,'El combatiente no está disponible.');
-        requireThat(hasWorkshop(s,s.location)&&s.sectors[s.location].owner==='patriot'&&isSupplied(s,s.location),'Debes llegar a un taller comunicado: el cuartel general, Retiro, Córdoba o Mendoza.');
+        requireThat(hasWorkshop(s,s.location)&&s.sectors[s.location].owner==='patriot'&&isSupplied(s,s.location),'Debes llegar a un taller bajo tu control y comunicado con el cuartel general.');
         const cost=action.type==='resupply'?refillCost(record):firearmRepairCost(record);requireThat(cost>0,action.type==='resupply'?'Las provisiones ya están completas.':'El arma ya está en perfecto estado.');pay(s,{treasury:cost});
         if(action.type==='resupply'){record.priming=Math.max(50,record.priming??50);record.flints=Math.max(4,record.flints??4);record.rations=Math.max(2,record.rations??2);record.torches=Math.max(2,record.torches??2);record.medkits=Math.max(2,record.medkits??2);note(s,`${op.name} recibe vendas, sílex, cargas de cebo y raciones por ${cost} pesos.`);}else{record.condition=100;note(s,`La maestranza repara el arma de ${op.name} por ${cost} pesos.`);}break;
       }
@@ -350,8 +351,8 @@ export function dispatchCampaign(previous,action){
         for(const id of s.squad)s.operativeState[id].fatigue=Math.min(90,s.operativeState[id].fatigue+(campaignRoleActive(s,'marchCommander')?0:mountain?20:8));note(s,`El destacamento llega a ${sector(s.location).name}.`);break;
       }
       case 'transport':requireThat(['posta','flotilla','carts','mules'].includes(action.mode),'Transporte desconocido.');requireThat(!s.routes[action.mode],'Ese transporte ya está organizado.');pay(s,action.mode==='posta'?{treasury:150}:action.mode==='flotilla'?{treasury:400}:action.mode==='mules'?{treasury:120}:{treasury:180});s.routes[action.mode]=true;note(s,'La nueva red de transporte queda disponible.');break;
-      case 'fundArmy':requireThat(s.flags.foundry,'Primero organizá El Plumerillo.');requireThat(!s.flags.armyFunded,'El ejército ya está financiado.');pay(s,{treasury:3000});s.flags.armyFunded=true;note(s,'Se abonan 3000 pesos para instruir y equipar al Ejército de los Andes.');break;
-      case 'foundry':{const reason=foundryReason(s);requireThat(!reason,reason);requireThat(!s.flags.foundry,'El Plumerillo ya está organizado.');pay(s,{treasury:500});s.flags.foundry=true;note(s,`${campaignRole(s,'foundryEngineer').name} organiza El Plumerillo.`);break;}
+      case 'fundArmy':{const f=foundryFor(s);requireThat(s.flags.foundry,`Primero organizá ${f.name}.`);requireThat(!s.flags.armyFunded,'El ejército ya está financiado.');pay(s,{treasury:f.fundingCost});s.flags.armyFunded=true;note(s,`Se abonan ${f.fundingCost} pesos para instruir y equipar al ${f.armyName}.`);break;}
+      case 'foundry':{const reason=foundryReason(s);requireThat(!reason,reason);const f=foundryFor(s);requireThat(!s.flags.foundry,`${f.name} ya está organizado.`);pay(s,{treasury:f.setupCost});s.flags.foundry=true;note(s,`${campaignRole(s,'foundryEngineer').name} organiza ${f.name}.`);break;}
       case 'policy':{applyPolicy(s,action.kind);break;}
       case 'diplomacy':{
         const kind=action.kind;
@@ -412,7 +413,7 @@ export function dispatchCampaign(previous,action){
       default:throw Error('Orden desconocida.');
     }
     updateContentQuests(s);releaseDeferred(s);receiveDueHires(s);synchronizeSquad(s);synchronizeCampaignPresence(s);synchronizeDialogueMovements(s);progress(s);
-    for(const [flag,at] of Object.entries({academy:headquartersFor(s),foundry:'mendoza',northPact:'salta',partisanSupply:'tucuman',parliament:'mendoza',emancipation:'buenos_aires',commission:'buenos_aires'}))if(s.flags[flag]&&!previous.flags[flag])recordCityLoyalty(s,{sectorId:at,kind:'quest',eventId:`quest-${flag}`});
+    for(const [flag,at] of Object.entries({academy:headquartersFor(s),foundry:foundryFor(s).sector,northPact:'salta',partisanSupply:'tucuman',parliament:'mendoza',emancipation:'buenos_aires',commission:'buenos_aires'}))if(s.flags[flag]&&!previous.flags[flag])recordCityLoyalty(s,{sectorId:at,kind:'quest',eventId:`quest-${flag}`});
     return s;
   }catch(error){const rejected=clone(previous);rejected.lastError=error.message;return rejected;}
 }

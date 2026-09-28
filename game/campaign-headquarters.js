@@ -1,3 +1,4 @@
+import {foundryFor,foundryLocationName} from './campaign-foundry.js';
 import {campaignStory} from './campaign-story.js';
 import {CAMPAIGN_SECTORS,PHASES} from './data.js';
 import {arrivalFacilityOptions} from './arrival-sites.js';
@@ -10,8 +11,7 @@ export function validateHeadquarters(value){
 }
 export function campaignChapters(state){
  if(campaignStory(state))return campaignStory(state).chapters;
- if(headquartersFor(state)==='retiro')return PHASES;
- const name=headquartersName(state);
- return PHASES.map((p,i)=>i===0?{...p,name:`I · Formación en ${name}`,objective:`Creá tu granadero o recibí a tu primer contratado en ${name}.`}:p);
+ const foundry=foundryFor(state),customFoundry=state?.contentCampaign?.package.foundry!==undefined;
+ return PHASES.map((p,i)=>i===0&&headquartersFor(state)!=='retiro'?{...p,name:`I · Formación en ${headquartersName(state)}`,objective:`Creá tu granadero o recibí a tu primer contratado en ${headquartersName(state)}.`}:i===3&&customFoundry?{...p,name:`IV · Preparativos de ${foundry.name}`,objective:`Organizá ${foundry.name} en ${foundryLocationName(state)}, financiá el ejército con ${foundry.fundingCost} pesos, comprá tres cañones, controlá y fortificá Mendoza y los pasos de Cuyo, y acordá el paso con los pehuenches.`}:i===4&&customFoundry?{...p,name:`V · ${foundry.armyName}`}:p);
 }
-export const hasWorkshop= (state,id)=>[headquartersFor(state),'retiro','cordoba','mendoza'].includes(id);
+export const hasWorkshop= (state,id)=>[headquartersFor(state),'retiro','cordoba','mendoza'].includes(id)||Boolean(state.flags.foundry&&id===foundryFor(state).sector);

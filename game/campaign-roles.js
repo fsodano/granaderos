@@ -1,3 +1,4 @@
+import {foundryFor,foundryLocationName} from './campaign-foundry.js';
 import {OPERATIVES} from './data.js';
 import {operativeIdForCharacter} from './content-character-ids.js';
 
@@ -26,7 +27,7 @@ export function campaignRoleActive(state,key){
 export function foundryReason(state){
  const role=campaignRole(state,'foundryEngineer');
  if(!role)return 'Esta campaña no tiene responsable de fundición.';
- if(state.sectors.mendoza.owner!=='patriot')return 'La fundición necesita Mendoza bajo control patriota.';
+ if(state.sectors[foundryFor(state).sector].owner!=='patriot')return `La fundición necesita ${foundryLocationName(state)} bajo control patriota.`;
  if(!campaignRoleActive(state,'foundryEngineer'))return `Incorporá a ${role.name}; debe estar con vida, libre y en servicio.`;
  return null;
 }
