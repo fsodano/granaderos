@@ -65,7 +65,11 @@ export function finishPostCampaign({onCheckpoint}={}){
    for(const id of s.squad){const n=dispatchCampaign(s,{type:'resupply',operativeId:id});if(!n.lastError)s=n;}
    for(const id of s.squad){s=order(s,{type:'purchaseEquipment',item:'firearm-1801',quantity:1});const item=s.armoryItems.find(i=>i.contentWeapon?.template===1801);assert.ok(item);s=order(s,{type:'equip',operativeId:id,slot:'weapon',itemId:'firearm-1801',instanceId:item.id});}
    s=order(s,{type:'travel',sector:'tucuman'});
-   notes.push({stage:'relief',care,...summary(s)});onCheckpoint?.('relief',s,notes);
+   // The attack approach takes 12 hours. Leave in time to reach Salta in
+   // daylight after the medical delay; waiting spends real campaign time.
+   const arrivalHour=(s.hour+12)%24,daylightWait=arrivalHour<6?6-arrivalHour:arrivalHour>=20?30-arrivalHour:0;
+   if(daylightWait)s=order(s,{type:'wait',hours:daylightWait});
+   notes.push({stage:'relief',care,daylightWait,...summary(s)});onCheckpoint?.('relief',s,notes);
   }
 
  }

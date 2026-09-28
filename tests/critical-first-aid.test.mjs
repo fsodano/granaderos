@@ -46,3 +46,8 @@ test('bandaged military wounds survive actual campaign return and require strate
  let s=saved({campaign:leave(p)}).campaign;const bandaged=s.operativeState[PATIENT].bandaged;assert.ok(bandaged>0);p=visit(s);assert.equal(p.battle.units.find(u=>u.id===String(PATIENT)).bandaged,bandaged);s=leave(p);
  s=order(s,{type:'assignCare',id:DOCTOR,assignment:'doctor'});s=order(s,{type:'assignCare',id:PATIENT,assignment:'patient'});s=order(s,{type:'wait',hours:1});assert.equal(s.operativeState[PATIENT].hp,hp+6);assert.equal(s.operativeState[PATIENT].bandaged,bandaged-6);assert.ok(saved({campaign:s}));
 });
+
+test('saved bandaged wounds reject invalid quantities while older service records remain loadable',()=>{
+ const old=preparedCare();delete old.operativeState[PATIENT].bandaged;const loaded=saved({campaign:old}).campaign;assert.equal(loaded.operativeState[PATIENT].hp,old.operativeState[PATIENT].hp);assert.equal(loaded.operativeState[PATIENT].medkits,old.operativeState[PATIENT].medkits);
+ for(const value of [-1,Infinity,'3',101]){const bad=field({}, {bandaged:value});assert.throws(()=>validateBattleSnapshot(bad),/vendadas|números inválidos/);const s=structuredClone(old);s.operativeState[PATIENT].bandaged=value;assert.throws(()=>saved({campaign:s}),/vendadas|números inválidos/);}
+});
