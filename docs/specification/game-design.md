@@ -513,3 +513,14 @@ pays elapsed time and preserves partial work when contact or incapacity interrup
 it. Controls preview the current cost and remaining work using the same plan.
 Artillery and full strategic ammunition custody are separate integration steps.
 See the [verification record](../verification/partial-firearm-reloads.md).
+
+### Authored firearm preparation
+
+The authored first-shot AP total includes its optional preparation component.
+A later shot from the retained firing position pays discharge and aim only.
+Physical handling and incapacity lower the weapon; accepted shots establish the
+position after payment, including failed ignition. Readiness belongs to the
+actor and active scene, not to an inventory gun or a fresh deployment. Zero is
+the existing default and remains the fallback for unconfigured older weapons.
+See the [bounded acceptance record](../verification/authored-weapon-readiness.md);
+directional turning and independent hands remain separate requirements.

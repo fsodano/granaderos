@@ -33,7 +33,7 @@ export function campaignContentReport(content) {
   if(value.characters.some(c=>isContractCharacter(c)&&(c.recruitmentSource==='encounter'||c.service==='permanent')))
     blocked.push('Los candidatos del boletín se incorporan por contrato. Para servicio permanente, creá un habitante.');
   const weaponFields=new Set(['id','template','name','damage','fireAP','aimAP','reloadAP','range','readyAP','capacity','weight','price','art','ap','reach']);
-  if(value.weapons.some(w=>Object.keys(w).some(key=>!weaponFields.has(key))||(w.template<1809&&w.readyAP!==0)||(w.template>=1809&&['fireAP','aimAP','reloadAP','range','readyAP','capacity'].some(key=>Object.hasOwn(w,key)))||(w.template<1809&&['ap','reach'].some(key=>Object.hasOwn(w,key)))))
+  if(value.weapons.some(w=>Object.keys(w).some(key=>!weaponFields.has(key))||(w.template>=1809&&['fireAP','aimAP','reloadAP','range','readyAP','capacity'].some(key=>Object.hasOwn(w,key)))||(w.template<1809&&['ap','reach'].some(key=>Object.hasOwn(w,key)))))
     blocked.push("Este paquete incluye manejo de armas que esta versión todavía no puede aplicar.");
   const placementFields=new Set(['id','character','mode','sectors','moveChance','afterDeath','delayMin','delayMax','selection','loadedGuard']);
   if(value.placements.some(p=>Object.keys(p).some(k=>!placementFields.has(k))))

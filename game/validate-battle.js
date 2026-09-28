@@ -28,6 +28,7 @@ need(integer(u.weapon,0,65535),'armas');validateWeaponCarrier(u);if(u.blade!==un
 for(const k of ['ammo','priming','flints','rations','torches','boleadoras','medkits','strengthTraining'])if(u[k]!==undefined)need(integer(u[k],0,1000000),'suministros');
 for(const k of ['unconscious','knockedDown','weaponDropped','fled','braced','mounted','horse','canMount','jammed','routed','entangled','poncho','overwatch'])if(u[k]!==undefined)need(typeof u[k]==='boolean','estados del soldado');
 need(['standing','prone'].includes(u.stance)&&['primary','blade'].includes(u.activeSlot)&&['walk','run','crouch','prone'].includes(u.movementMode),'posturas');
+validateWeaponReadiness(u,(weaponSpecification(u)?.capacity??0)>0);
 if(legacyCondition)refreshMilitaryCondition(u);
 need(u.unconscious===isUnconscious(u),'consciencia');
 if(u.hp<=0||u.unconscious)need(u.ap===0&&(u.maxAP===undefined||u.maxAP===0)&&!u.mounted&&!u.braced&&!u.overwatch,'acciones de un combatiente incapacitado');
@@ -69,3 +70,4 @@ const propIds=new Set();for(const p of s.props){need(coord(p)&&text(p.id)&&p.id.
 for(const d of s.decor)need(coord(d)&&integer(d.width,1,s.width)&&integer(d.height,1,s.height)&&d.x+d.width<=s.width&&d.y+d.height<=s.height&&text(d.type),'decoración');
 for(const b of s.buildings){need(coord(b)&&text(b.id)&&integer(b.width,1,s.width)&&integer(b.height,1,s.height)&&b.x+b.width<=s.width&&b.y+b.height<=s.height&&Array.isArray(b.rooms),'edificios');for(const room of b.rooms)need(object(room)&&text(room.id)&&Array.isArray(room.cells)&&room.cells.every(coord),'habitaciones');}need(s.revealedRooms.every(text),'habitaciones vistas');return s;
 }
+import {validateWeaponReadiness} from './weapon-readiness.js';

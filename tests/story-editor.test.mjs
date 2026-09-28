@@ -13,7 +13,7 @@ import {CONTENT_LAUNCH_KEY,CONTENT_SAVE_KEY} from '../game/content-launch.js';
 import {decodeSave,encodeSave} from '../game/save.js';
 import {initialCampaign,dispatchCampaign,rosterFor,CAMPAIGN_SECTORS} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';
-import {actBattle,getReachable} from '../game/tactical.js';
+import {actBattle,getReachable,actionCosts} from '../game/tactical.js';
 import {syncBattleTime} from '../game/time.js';
 import {operativeIdForCharacter} from '../game/content-character-ids.js';
 register('./tactical-render-loader.mjs',import.meta.url);
@@ -667,4 +667,15 @@ test('the editor authors personal supply ranges with undo, validation, copy, pro
 test('the campaign editor authors a supply objective and the launched campaign completes it only after actual purchase',async t=>{
  const {defaultCampaignStory}=await import('../game/campaign-story.js');const {order,saved}=await import('./local-contract-fixture.mjs');const d=dialoguePackage();d.campaignStory=defaultCampaignStory();const m=await mount(t,JSON.stringify(d));await m.click(m.button('Reglas'));await m.input(m.label('Tipo de condición'),'supply');await m.input(m.label('Personaje que lleva los suministros'),'person-110');await m.input(m.label('Cantidad mínima'),5);await m.input(m.label('Cantidad máxima (opcional)'),5);await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));assert.equal(campaign.completed,false);campaign=order(campaign,{type:'recruitCivic',id:110,term:'week'});assert.equal(campaign.completed,false);const before=campaign.resources.treasury;campaign=order(campaign,{type:'purchaseMedicalSupplies',id:110,quantity:3});assert.equal(campaign.resources.treasury,before-30);campaign=saved({campaign}).campaign;assert.equal(campaign.completed,true);assert.equal(campaign.operativeState[110].medkits,5);
  await m.click(m.button('Personajes'));await m.input(m.document.querySelector('input[type="search"]'),'person-110');await m.click(m.document.querySelector('.entry-list button'));await m.click(m.button('Eliminar'));assert.match(m.document.body.textContent,/Quitá primero las apariciones y condiciones/);assert.ok(parseContentPackage(m.dom.window.localStorage.getItem(draftKey)).characters.some(c=>c.id==='person-110'));
+});
+
+
+test('the weapon editor authors included preparation cost through validation, undo and a pinned paid deployment',async t=>{
+ const m=await mount(t);await m.click(m.button('Armas'));await m.click(m.button('+ Crear arma'));await m.input(m.label('Nombre'),'Pistola preparada');await m.input(m.label('Familia de funcionamiento'),'1808');await m.input(m.label('PA de disparo'),20);await m.input(m.label('PA para levantar el arma'),7);await m.input(m.label('Capacidad de carga'),3);
+ const draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));let gun=draft().weapons.find(w=>w.name==='Pistola preparada');assert.equal(gun.readyAP,7);assert.match(m.document.body.textContent,/incluidos en el primer disparo/);assert.equal(m.button('Iniciar campaña con estas fichas').disabled,false);
+ await m.click(m.button('Deshacer'));assert.equal(m.label('Capacidad de carga').value,'2');await m.click(m.button('Deshacer'));assert.equal(m.label('PA para levantar el arma').value,'0');await m.click(m.button('Rehacer'));assert.equal(m.label('PA para levantar el arma').value,'7');await m.click(m.button('Rehacer'));
+ await m.input(m.label('PA para levantar el arma'),20);assert.equal(m.button('Iniciar campaña con estas fichas').disabled,true);await m.click(m.button('Deshacer'));assert.equal(m.button('Iniciar campaña con estas fichas').disabled,false);
+ gun=draft().weapons.find(w=>w.name==='Pistola preparada');await m.click(m.button('Personajes'));await m.input(m.document.querySelector('input[type="search"]'),'person-110');await m.click(m.document.querySelector('.entry-list button'));await m.input(m.label('Arma principal'),gun.id);await m.click(m.button('Iniciar campaña con estas fichas'));
+ let s=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY)).campaign;for(const a of [{type:'recruitCivic',id:110,term:'week'},{type:'wait',hours:6},{type:'visitSector'}]){s=dispatchCampaign(s,a);assert.equal(s.lastError,null);}
+ const restored=decodeSave(encodeSave(s,enterSector(s.pendingBattle))),u=restored.battle.units.find(u=>u.id==='110');assert.equal(u.weaponMetadata.contentWeapon.readyAP,7);assert.equal(u.loaded,3);assert.equal(u.weaponReady,undefined);assert.equal(actionCosts(restored.battle,u).ready,7);assert.equal(actionCosts(restored.battle,u).fire,20);
 });
