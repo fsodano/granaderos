@@ -243,9 +243,9 @@ Este control reemplaza el avance, los objetivos y el final originales. San Loren
 
 En **Reglas** podés definir los fondos iniciales y los cartuchos por combatiente de la escuadra, enemigo nuevo y miliciano nuevo. Los fondos permiten entre 0 y 1.000.000 de pesos; cada cantidad permite entre 0 y 100 cartuchos enteros. **Restaurar fondos y cartuchos originales** vuelve a 3.200 pesos y 10, 13 y 6 cartuchos, respectivamente. Deshacer recupera los valores anteriores.
 
-Los fondos se entregan una sola vez al crear la campaña. Cada entrada o ataque compra la cantidad indicada por cada arma principal de fuego de la escuadra, a 1 peso por cartucho. La carga nunca supera la capacidad del arma; el resto queda en reserva. Salir devuelve el valor de los cartuchos restantes según las reglas de recuperación existentes. La pantalla de campaña muestra el precio real antes de entrar.
+Los fondos se entregan una sola vez al crear la campaña. Cada entrada o ataque compra la cantidad indicada por cada arma principal de fuego de la escuadra, al precio configurado (1 peso por defecto). La carga nunca supera la capacidad del arma; el resto queda en reserva. Salir devuelve el valor de los cartuchos restantes según las reglas de recuperación existentes. La pantalla de campaña muestra el precio real antes de entrar.
 
-Cero deja las armas descargadas y sin reserva. Las armas principales blancas no reciben cartuchos. Las tropas guardadas conservan lo que les queda; la regla de enemigos y milicias solo se aplica al crear soldados. Los aliados temporales de misiones conservan su abastecimiento propio. El cebo, las piedras, los tipos de munición y el precio por cartucho aún no son configurables.
+Cero deja las armas descargadas y sin reserva. Las armas principales blancas no reciben cartuchos. Las tropas guardadas conservan lo que les queda; la regla de enemigos y milicias solo se aplica al crear soldados. Los aliados temporales de misiones conservan su abastecimiento propio. El precio por cartucho se configura en la misma sección. El cebo, las piedras y los tipos de munición aún no son configurables.
 
 Un borrador anterior usa los valores originales. La campaña guarda su propia copia de las reglas: cambiar el borrador no cambia una partida existente, y cargar una partida no vuelve a entregar los fondos iniciales.
 
@@ -270,6 +270,24 @@ La atención necesita presencia segura y real en la misma celda. Los mismos
 valores rigen para **Médico de milicias**, que atiende a los heridos de la
 guarnición con sus propias vendas. La pantalla de campaña muestra su salud y la pérdida horaria por hemorragia. La milicia herida fuera del sector abierto usa el mismo porcentaje de daño horario; el médico trabaja antes de ese daño. Abrir la conferencia de Yatasto no detiene las heridas ni la atención de la guarnición que quedó en la ciudad. Si un soldado muere, deja de contar como defensor. Su cuerpo y sus objetos permanecen en la escena guardada conocida. [Heridas de milicias verificadas](../verification/unloaded-militia-wounds.md).
 [Atención a milicias verificada](../verification/strategic-militia-care.md).
+
+**Restaurar atención y descanso originales** recupera los valores originales.
+Podés deshacerlo. Las partidas iniciadas conservan sus reglas y las horas de
+recuperación ya transcurridas. Cambiar el borrador no cambia una partida guardada.
+El umbral crítico, los primeros auxilios tácticos y la recuperación diaria
+mantienen sus valores actuales. La recuperación diaria no cura a una persona que
+sigue sangrando o tiene menos de 15 de salud. [Reglas de atención verificadas](../verification/authored-care-rules.md).
+
+**Daño horario de hemorragia (%)** admite de 0 a 100 y usa 25 por defecto.
+Fuera del despliegue táctico, cada cambio de hora resta ese porcentaje de la
+intensidad de la hemorragia, redondeado hacia arriba. Por ejemplo, intensidad 5
+al 25 % resta 2 de salud. Cero desactiva ese daño. El médico atiende primero;
+el descanso solo no detiene la pérdida. La regla también se aplica durante la
+marcha y mientras usás otra escuadra. Los candidatos no contratados y los que
+todavía están llegando quedan fuera de este reloj. Las bajas y el momento de
+muerte se conservan al guardar. [Alcance verificado](../verification/strategic-military-wounds.md).
+
+## Ascensos de milicias
 
 Los nuevos cursos de ascenso promueven a tres cívicos a montoneros y conservan
 a los tres soldados que participan.
@@ -299,22 +317,6 @@ mejoras 8, 5 y 1. Podés deshacer el cambio. Las reglas quedan guardadas al inic
 la campaña; cambiar el borrador después no cambia la partida. El mapa muestra
 los umbrales de esa partida. El precio y la duración de los cursos siguen sus
 reglas actuales. [Verificación de reglas editables](../verification/authored-militia-progression.md).
-
-**Restaurar atención y descanso originales** recupera los valores originales.
-Podés deshacerlo. Las partidas iniciadas conservan sus reglas y las horas de
-recuperación ya transcurridas. Cambiar el borrador no cambia una partida guardada.
-El umbral crítico, los primeros auxilios tácticos y la recuperación diaria
-mantienen sus valores actuales. La recuperación diaria no cura a una persona que
-sigue sangrando o tiene menos de 15 de salud. [Reglas de atención verificadas](../verification/authored-care-rules.md).
-
-**Daño horario de hemorragia (%)** admite de 0 a 100 y usa 25 por defecto.
-Fuera del despliegue táctico, cada cambio de hora resta ese porcentaje de la
-intensidad de la hemorragia, redondeado hacia arriba. Por ejemplo, intensidad 5
-al 25 % resta 2 de salud. Cero desactiva ese daño. El médico atiende primero;
-el descanso solo no detiene la pérdida. La regla también se aplica durante la
-marcha y mientras usás otra escuadra. Los candidatos no contratados y los que
-todavía están llegando quedan fuera de este reloj. Las bajas y el momento de
-muerte se conservan al guardar. [Alcance verificado](../verification/strategic-military-wounds.md).
 
 ## Territorio inicial
 
