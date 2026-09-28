@@ -7,6 +7,8 @@ accepted features on GitHub `main`, approved scope changes and open work.
 
 ## Published baseline
 
+- [Finite artillery transport and local depots](finite-artillery-transport.md)
+
 - [Authored artillery models and images](authored-artillery-profiles.md)
 - [Autonomous local artillery crews](autonomous-artillery-crews.md)
 - [Authored finite artillery replenishment](authored-artillery-supply.md)

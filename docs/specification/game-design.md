@@ -736,3 +736,18 @@ Scene saves reference the pinned package to avoid repeated uploaded images;
 inline definitions and references reject mismatches. See
 [verification](../verification/authored-artillery-profiles.md) for field limits,
 actual paid use and the separate transport/trade scope.
+
+
+### Finite artillery transport and depots
+
+A local friendly emplacement can travel by an organized cart or coastal flotilla
+route with sufficient local crew. The armory quotes the actual eligibility and
+arrival time. Dispatch, shipment, depot and subsequent attack carry one exact
+piece with its remaining load, reserves and unfinished work. Local depot choices
+refer to that identity. No new ammunition or generic gun appears on delivery.
+Control loss, blockade, enemies at the destination or full storage delays arrival.
+An occupied depot cannot supply a friendly battery. Current fixed rates are
+18 hours per cart link and five per flotilla link, with no dispatch fee after
+organizing the network. Mountain crossings by assembled guns, arbitrary-cell
+routes, bulk capacity and convoy combat remain outside this delivery. See
+[verification and prepared boundaries](../verification/finite-artillery-transport.md).
