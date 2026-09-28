@@ -326,7 +326,8 @@
     {
       "id": "E-TREATMENT-SPEECH",
       "path": "docs/verification/authored-treatment-speech.md",
-      "description": "Optional authored first-aid responses follow actual finite care for another conscious person. Paid military and resident routes, invalid and silent cases, civilian recovery timing, saved voice integrity and editor undo/copy/pinned launch are covered. 871 passing tests, zero failures/skips, types, export and baseline checks; physical inventory and complete medical integration remain separate."
+      "description": "Optional authored first-aid responses follow actual finite care for another conscious person. Paid military and resident routes, invalid and silent cases, civilian recovery timing, saved voice integrity and editor undo/copy/pinned launch are covered. 871 passing tests, zero failures/skips, types, export and baseline checks; physical inventory and complete medical integration remain separate.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36437714941/job/108979835409"
     },
     {
       "id": "E-LOCAL-OPENING",
@@ -437,7 +438,7 @@
       "requirement": "Author conscious patient responses to actual first aid",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "A living conscious patient can speak an optional authored line after another person spends a dressing on actual tactical care. Loading, later recovery, self-care and invalid orders do not trigger a response.",
+      "published": "A living conscious patient can speak an optional authored line after another person spends a dressing on actual tactical care. Loading, later recovery, self-care and invalid orders do not trigger a response. Merged through PR #79 after exact-head CI.",
       "local": "Five simulation cases cover strict optional content, actual paid critical military and resident care, spent supplies, saved voice, older identity, silent and rejected boundaries and civilian phase timing. A mounted editor case covers undo, duplicate, clear and pinned launch.",
       "remaining": "",
       "acceptance": "Author a response, stabilize an actual critical patient through finite care and saved continuation, speak on consciousness and retain spent supplies without replaying speech from load or later recovery.",
@@ -454,7 +455,8 @@
         "tests/treatment-speech.test.mjs",
         "tests/content-presentation.test.mjs",
         "tests/story-editor.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/79"
     },
     {
       "id": "HEALTHCONDITION-01",
@@ -4630,13 +4632,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "ea854d4b0d1ccdf61e32f771f5be95dd00b09823",
-    "total": 865,
-    "passed": 865,
+    "source": "2f7f0187d95b0b199c0b7a3fe767ff527910ae99",
+    "total": 871,
+    "passed": 871,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-HEALTH-CONDITIONS"
+    "evidenceId": "E-TREATMENT-SPEECH"
   }
 }
