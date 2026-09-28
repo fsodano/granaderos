@@ -254,7 +254,8 @@
     {
       "id": "E-CARTRIDGE-SAVE",
       "path": "docs/verification/authored-cartridge-save.md",
-      "description": "A normal authored campaign with 14 initial cartridges reproduced a stale ten-reserve save limit. Pending deployment validation now uses its pinned rule. Real exploration and combat deployments cover 0, 10, 11, 14 and 100, invalid excess reserves, paid issue/refund and duplicate settlement rejection. Actual firing, reload and active save preserve consumption with a 100-round allocation."
+      "description": "A normal authored campaign with 14 initial cartridges reproduced a stale ten-reserve save limit. Pending deployment validation now uses its pinned rule. Real exploration and combat deployments cover 0, 10, 11, 14 and 100, invalid excess reserves, paid issue/refund and duplicate settlement rejection. Actual firing, reload and active save preserve consumption with a 100-round allocation. PR #67 merged after CI passed at 1f77280fc516baede6f694233789a769a1f3a9b9.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36414937984/job/108903700414"
     },
     {
       "id": "E-POST-CAMPAIGN",
@@ -364,7 +365,7 @@
       "requirement": "Save every supported authored cartridge allocation through actual deployment",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Pending squad reserve validation follows the pinned cartridge allowance instead of a fixed ten-round maximum. Authored allocations through 100 save in exploration and combat; out-of-range reserves remain rejected.",
+      "published": "Pending squad reserve validation follows the pinned cartridge allowance instead of a fixed ten-round maximum. Authored allocations through 100 save in exploration and combat; out-of-range reserves remain rejected. Merged through PR #67 after exact-head CI.",
       "local": "The new scenario exposed a real rejected save at 14 cartridges. Regression coverage includes zero, boundary values, paid issue/refund, finite firing/reload, active save and rejected duplicate departure.",
       "remaining": "",
       "acceptance": "Launch a valid authored allowance above the old reserve cap, enter a real scene, save/reload, expend ammunition and settle once without rejecting valid quantities or replenishing spent rounds.",
@@ -377,7 +378,8 @@
       ],
       "testFiles": [
         "tests/authored-cartridge-save.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/67"
     },
     {
       "id": "SUPPLIES-01",
@@ -4237,13 +4239,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "61d7130e2e2f9c78ad163b560765d29d9275d7a4",
-    "total": 800,
-    "passed": 800,
+    "source": "32f7dc096cbdb3c152a79996a337d1fc1f885443",
+    "total": 807,
+    "passed": 807,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-FRESH-ENDING"
+    "evidenceId": "E-CARTRIDGE-SAVE"
   }
 }

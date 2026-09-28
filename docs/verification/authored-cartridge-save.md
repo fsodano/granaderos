@@ -28,7 +28,9 @@ regression, not a claimed campaign victory.
 Release checks: **807/807 tests**, zero failures or skips (192,756 ms); type
 check; production export (721 files, 631 asset references); 36 baseline checks;
 documentation audit (205 requirements, all 50 original and 87 parity rows,
-44 evidence records). Exact-head GitHub CI is required before merge.
+44 evidence records). [PR #67](https://github.com/fsodano/granaderos/pull/67)
+merged after [CI](https://github.com/fsodano/granaderos/actions/runs/36414937984/job/108903700414)
+passed at `1f77280fc516baede6f694233789a769a1f3a9b9`.
 
 ## Limits
 
