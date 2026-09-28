@@ -437,9 +437,8 @@ Arrival and local recruitment retain it; later treatment, rest, service changes
 and saved continuation retain the mutable condition instead of reapplying the
 initial values. Omission preserves the original healthy defaults. This is not
 initial death/capture authoring. A resident with zero energy cannot converse;
-loaded phases restore breath under the civilian recovery rule. Previously
-recorded civilian wounds also advance outside the loaded sector, as described
-below.
+loaded phases restore breath under the civilian recovery rule. Civilian wounds advance from actual world appearance, including residents not
+yet encountered, as described below.
 
 Drafts have validation, undo/redo, import/export and recovery. A campaign pins an
 immutable content version and assets. Editing a draft cannot alter an active save.
@@ -539,7 +538,15 @@ this price from ammunition types, merchant pricing and strategic custody.
 
 ### Civilian wound continuity
 
-A recorded civilian wound retains its unfinished six-second interval while its
+An authored resident starts its initial bleeding clock when it actually appears
+in the world, even before the first encounter. Dormant successors wait until
+appearance; a loaded-cell guard postpones both appearance and the wound clock.
+Daily moves carry the same wound to the new cell; a later corpse stays there.
+Bulletin candidates remain outside this civilian clock. Older saves start unseen
+wounds from their saved condition and time without retroactive damage. See
+[unseen-resident verification](../verification/unseen-resident-wounds.md).
+
+A civilian wound retains its unfinished six-second interval while its
 sector is closed. Campaign time and loaded tactical time each process their own
 actors once. Reentry and saving cannot stop bleeding; finite aid can. Off-screen
 death is recorded at its actual minute, with one set of consequences and the

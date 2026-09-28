@@ -500,6 +500,11 @@
       "id": "E-ARTILLERY-TRADING-RULES",
       "path": "docs/verification/authored-artillery-trading.md",
       "description": "Pinned optional workshop cash, trade permission, buying/repurchase percentages and named local overrides drive exact finite artillery exchanges. Six simulations and two mounted editor/armory checks pass; overlap 19/19 plus editor. Actual workshop and headquarters trades, exact integer rounding, zero rates and finite subsidies are covered. Complete regression 1123/1123, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
+    },
+    {
+      "id": "E-UNSEEN-RESIDENT-WOUNDS",
+      "path": "docs/verification/unseen-resident-wounds.md",
+      "description": "Initial resident wounds advance from actual placement without waiting for an encounter. Eight simulations cover unseen death and bodies, bulletin/dormant exclusions, successive deaths, loaded-scene deferral, daily relocation, batched/incremental checkpoints, old-save migration and finite first aid. Related checks pass 56/56 and complete regression 1131/1131, zero failures/skips, with types, export and 36 baseline comparisons. Exact-head publication remains required."
     }
   ],
   "queue": [
@@ -3610,8 +3615,8 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "New and existing world residents retain physical identity. Confirmed civilian or active military death can activate a distinct new world successor after a saved delay; earlier bodies and each character health stay separate. New residents can offer paid local service for all published terms, with quoted prices and persistent expiry, renewal and return. Authored progression can omit historical identities or copy them into independent residents; generic original residents are optional. Confirmed casualties can leave the service ledger through expiry or dismissal without invalidating saves; known stale deceased-service bits are repaired. Military bodies and finite equipment now persist through reentry and renewed occupation without rejoining service. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Each character can author initial wounds, energy and fatigue, assigned once and retained through actual treatment, care and service changes. Residents retain six finite personal supply quantities. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. This bounded PR advances previously recorded civilian wounds outside the loaded sector, retaining partial intervals, actual death times and one set of consequences. Exact-head CI remains required before merge.",
-      "local": "Preview transitions supplied the core schedule. Published identity, health and successor activation are connected; advanced inventories and role transfer remain separate.",
-      "remaining": "Extend starting allocations into complete editable belongings, civilian weapon and armour looting, custody and explicit role/stock transfer. Strategic civilian care, unseen starting-wound simulation and the handoff from departed military service remain separate work.",
+      "local": "Preview transitions supplied the core schedule. Published identity, health and successor activation are connected; advanced inventories and role transfer remain separate. UNSEENWOUND-01 tracks initial physical wounds from actual world appearance, including successor and daily-placement clock boundaries.",
+      "remaining": "Extend starting allocations into complete editable belongings, civilian weapon and armour looting, custody and explicit role/stock transfer. Strategic civilian care and off-screen breath/fatigue recovery remain separate work. CIVILIANRETURN-01 and UNSEENWOUND-01 cover bounded service departure and initial world-wound continuity.",
       "acceptance": "Move an injured NPC, reload, recruit it, confirm death and activate one distinct successor without healing or duplicating goods.",
       "evidence": [
         "E-CONFLICTS",
@@ -3625,7 +3630,8 @@
         "E-CHARACTER-SUPPLIES",
         "E-CHARACTER-CONDITION",
         "E-CIVILIAN-SUPPLIES",
-        "E-UNLOADED-CIVILIAN"
+        "E-UNLOADED-CIVILIAN",
+        "E-UNSEEN-RESIDENT-WOUNDS"
       ]
     },
     {
@@ -5630,6 +5636,30 @@
         "tools/test-shard-selftest.mjs"
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/104"
+    },
+    {
+      "id": "UNSEENWOUND-01",
+      "group": "Published deliveries",
+      "requirement": "Advance authored resident wounds from actual appearance before the first encounter",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Initial wounds start at actual world appearance, including unblocked successors and daily relocation.",
+      "local": "Eight new simulations pass; the related civilian/presence group passes 56/56. Complete regression passes 1131/1131 with zero failures/skips, plus types, export and 36 reference comparisons.",
+      "remaining": "",
+      "acceptance": "Advance initial wounds from campaign placement, start successors at actual unblocked arrival, preserve wounds and corpse location through daily movement, keep bulletin/dormant characters off the civilian clock, retain loaded/off-screen timing and saves, and migrate old unseen wounds without retroactive damage.",
+      "evidence": [
+        "E-UNSEEN-RESIDENT-WOUNDS"
+      ],
+      "parents": [
+        "STORY-02",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/unseen-resident-wounds.test.mjs",
+        "tests/character-condition.test.mjs",
+        "tests/unloaded-civilian-bleeding.test.mjs",
+        "tests/campaign-presence.test.mjs"
+      ]
     }
   ],
   "latestPublishedCheck": {
