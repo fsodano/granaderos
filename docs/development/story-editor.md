@@ -560,3 +560,16 @@ partida en curso. Restaurar las reglas originales devuelve el precio a un peso
 y restaura los fondos y cantidades iniciales. El precio cero conserva las
 cantidades y permite abastecer sin pago. La armería y el botón de entrada muestran
 el precio de esa partida. Véase la [verificación](../verification/authored-cartridge-price.md).
+
+## Recargar una pieza entre turnos
+
+Seleccioná el cañón y usá **Recargar pieza**. El control muestra el coste por
+artillero y el trabajo pendiente. La carga conserva su porcentaje al terminar
+el turno, cambiar de dotación, mover la pieza o guardar la partida. La munición
+sale de reserva cuando la carga se completa.
+
+La dotación debe estar de pie o agachada, próxima y disponible. Cada integrante
+asignado paga el mismo paso; los ayudantes que no participan conservan sus puntos.
+La escuadra no usa los puntos de acción de la milicia. Durante la exploración,
+el trabajo consume tiempo y no resta puntos de combate.
+[Verificación y alcance](../verification/artillery-crew-loading.md).
