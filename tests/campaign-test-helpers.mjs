@@ -24,5 +24,8 @@ export function meetLocalRecruit(state,action){
  const map=buildSectorMap(s.pendingBattle);let battle=createBattle(map.squad,map);const actor=battle.units.filter(u=>u.side==='player').sort((a,b)=>b.leadership-a.leadership)[0];
  const local=battle.npcs.find(n=>n.id===npc.id),target=getReachable(battle,actor).filter(p=>Math.abs(p.x-local.x)+Math.abs(p.y-local.y)===1).sort((a,b)=>a.cost-b.cost)[0];if(!target)throw Error('Local recruit is unreachable');if(target.cost)battle=actBattle(battle,{type:'move',unitId:actor.id,x:target.x,y:target.y});if(battle.lastError)throw Error(battle.lastError);
  s=dispatchCampaign(s,{type:'talkNPC',npcId:npc.id,approach:'recruit',unitId:Number(actor.id),sectorState:battle});if(s.lastError)return s;
+ // Match the game's NPC-to-squad transfer before submitting the next snapshot.
+ battle.npcs=battle.npcs.filter(n=>n.id!==npc.id);const record=s.pendingBattle.squad.find(u=>u.id===npc.operativeId);
+ if(record&&!battle.units.some(u=>Number(u.id)===record.id))battle.units.push({...createBattle([record],{width:battle.width,height:battle.height,exploration:true,enemies:[]}).units[0],x:local.x,y:local.y});
  return dispatchCampaign(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:battle,survivors:battle.units.filter(u=>u.side==='player').map(u=>({...u,id:Number(u.id)}))});
 }

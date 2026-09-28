@@ -1,3 +1,4 @@
+import {campaignCivilian,civilianDiedHere} from './campaign-civilians.js';
 import {campaignPlace} from './world-cells.js';
 import {characterForOperative} from './content-character-ids.js';
 import {characterPresentInSector} from './campaign-presence.js';
@@ -25,6 +26,8 @@ export const ENCOUNTERS=[...local.map(n=>({...n,name:[...OPERATIVES,...CIVIC_REC
 export function encounterForOperative(id){return ENCOUNTERS.find(n=>n.operativeId===Number(id));}
 export function encountersFor(s,sector){
  return ENCOUNTERS.filter(n=>{
+  if(civilianDiedHere(s,n,sector))return true;
+  if(s.civilianState?.people[`npc-${n.id}`]?.health.hp===0)return false;
   if(n.operativeId===undefined)return n.sector===sector;
   if(n.operativeId>=100||s.recruited.includes(n.operativeId)||s.operativeState?.[n.operativeId]?.alive===false)return false;
   const character=characterForOperative(s,n.operativeId);
@@ -32,7 +35,7 @@ export function encountersFor(s,sector){
  }).map(n=>{
   const op=n.operativeId===undefined?null:authoredOperative(s,{id:n.operativeId,name:n.name});
   const person=op?.contentId?s.contentPresence?.people[op.contentId]:null;
-  return op?.contentId?{...n,sector,name:op.name,portraitId:op.portraitId,contentId:op.contentId,...(person?{presenceRevision:person.revision}:{}),...(op.abilities===undefined?{}:{abilities:[...op.abilities]}),...(op.storyProfile?{storyProfile:op.storyProfile}:{}),...(op.spriteAppearance?{spriteAppearance:op.spriteAppearance}:{})}:{...n};
+  return campaignCivilian(s,op?.contentId?{...n,sector,name:op.name,portraitId:op.portraitId,contentId:op.contentId,...(person?{presenceRevision:person.revision}:{}),...(op.abilities===undefined?{}:{abilities:[...op.abilities]}),...(op.storyProfile?{storyProfile:op.storyProfile}:{}),...(op.spriteAppearance?{spriteAppearance:op.spriteAppearance}:{})}:{...n});
  });
 }
 export function encounterRequirements(s,npc,actor){
