@@ -194,8 +194,11 @@ track explicit state, participants, receipts and completion/failure consequences
 Authored quests begin unstarted, become active and then complete or fail. Terminal
 states do not reopen. Dialogue conditions define the requirements; an accepted
 choice applies its quest change and optional treasury operation atomically. An
-ordered event record persists progress and supplies the player journal. Automatic
-failure policies and item objectives require their own authored rules.
+ordered event record persists progress and supplies the player journal. An optional
+deadline starts at acceptance with campaign-second precision. Tactical actions,
+travel and waiting advance the same limit; expiration fails an active quest once.
+Unstarted quests have no running timer and completed quests keep their result.
+Automatic death/escort failures and item objectives require their own authored rules.
 A scene can order an existing actor to walk to a marker, approach, face, wait and
 speak. It uses ordinary movement, doors, time, combat interruptions and saved
 continuation. Arrival is an actual reached location, never a teleport or timer-only

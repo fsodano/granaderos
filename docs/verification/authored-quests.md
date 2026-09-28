@@ -29,8 +29,8 @@ descriptions and start/resolution days. Unstarted quests remain undisclosed.
 Runtime source: `9c9e57221af4d725c454ff27b6766cead3f99899`.
 The complete local suite passed **645/645 tests**, without failures or skips.
 Types, production export and all 36 baseline comparisons passed. The register
-retains 179 requirements and 18 evidence records. Exact-head CI is required before
-merge.
+retains 179 requirements and 18 evidence records. [PR #41](https://github.com/fsodano/granaderos/pull/41) merged after
+[exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36371571238/job/108768867498) passed.
 
 - `tests/campaign-content.test.mjs`: supported quest data is admitted while
   unimplemented scene/rules settings still reject launch.
@@ -48,9 +48,11 @@ merge.
 
 ## Limits
 
-QUEST-01 is bounded; STORY-03 remains partial. These transitions are explicitly
+At this checkpoint, QUEST-01 is bounded; STORY-03 remains partial. These transitions are explicitly
 chosen through authored dialogue. Automatic failure on death/time, item delivery,
 escort or area objectives, role transfer, historical dialogue overrides and
 scripted movement remain open. Existing historical errands keep their rules.
 There is no claim of a complete campaign, live-browser acceptance or performance
 acceptance. Save consistency is not cryptographic anti-cheat protection.
+
+[Automatic deadlines](quest-deadlines.md) extend quest failure in the following checkpoint.
