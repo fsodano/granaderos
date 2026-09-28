@@ -1,6 +1,7 @@
 'use client';
 import DialogueEditor from './DialogueEditor';
 import QuestEditor from './QuestEditor';
+import CampaignRules from './CampaignRules';
 import { useEffect, useRef, useState } from 'react';
 import {
   ATTRIBUTE_FIELDS,
@@ -477,6 +478,7 @@ export default function ContentEditor() {
           ['characters', 'Personajes'],
           ['weapons', 'Armas'],
           ['arrivals', 'Llegadas'],
+          ['rules', 'Reglas'],
           ['quests', 'Encargos'],
           ['test', 'Pruebas'],
         ].map(([id, name]) => (
@@ -492,7 +494,7 @@ export default function ContentEditor() {
           </button>
         ))}
       </nav>
-      {tab === 'quests' ? <QuestEditor draft={draft} onChange={change}/> : tab === 'arrivals' ? <ArrivalSites draft={draft} onChange={change}/> : tab !== 'test' ? (
+      {tab === 'rules' ? <CampaignRules draft={draft} onChange={change}/> : tab === 'quests' ? <QuestEditor draft={draft} onChange={change}/> : tab === 'arrivals' ? <ArrivalSites draft={draft} onChange={change}/> : tab !== 'test' ? (
         <div className="editor-columns">
           <aside>
             <h2>

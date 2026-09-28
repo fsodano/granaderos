@@ -1,3 +1,4 @@
+import {campaignRules} from './campaign-rules.js';
 import {authoredForceEquipment,MILITIA_EQUIPMENT_ROLES,validateForceWeapon} from './content-force-equipment.js';
 import {weaponSpecification} from './weapon-definition.js';
 import {validatePersonalInventory} from './squads.js';
@@ -14,7 +15,7 @@ export function prepareGarrison(s,sector){
  for(let rank=0;rank<3;rank++){
   const count=Math.min(slots,s.sectors[sector].militia[rank]);slots-=count;
   const retained=old.filter(u=>u.militiaRank===rank&&u.hp>0).slice(0,count);next.push(...retained);
-  for(let i=retained.length;i<count;i++){const stats=GARRISON_RANKS[rank],rounds=6;next.push(authoredForceEquipment(s,'militiaEquipment',MILITIA_EQUIPMENT_ROLES[rank],{...stats,id:s.nextMilitiaId++,name:`${stats.name} de la guarnición`,hp:stats.maxHp,militia:true,militiaRank:rank,leadership:30+rank*15,wisdom:55,dexterity:55,medical:15,loaded:Math.min(1,rounds),ammo:Math.max(0,rounds-1),condition:85,priming:6,flints:0,rations:0,medkits:0,torches:0,boleadoras:rank===1?1:0,inventory:{},overwatch:true},rounds));}
+  for(let i=retained.length;i<count;i++){const stats=GARRISON_RANKS[rank],rounds=campaignRules(s).militiaCartridges;next.push(authoredForceEquipment(s,'militiaEquipment',MILITIA_EQUIPMENT_ROLES[rank],{...stats,id:s.nextMilitiaId++,name:`${stats.name} de la guarnición`,hp:stats.maxHp,militia:true,militiaRank:rank,leadership:30+rank*15,wisdom:55,dexterity:55,medical:15,loaded:Math.min(1,rounds),ammo:Math.max(0,rounds-1),condition:85,priming:6,flints:0,rations:0,medkits:0,torches:0,boleadoras:rank===1?1:0,inventory:{},overwatch:true},rounds));}
  }
  // Training fees include the garrison kit; existing soldiers keep their remaining ammunition.
  s.garrisons[sector]=next;return structuredClone(next);
