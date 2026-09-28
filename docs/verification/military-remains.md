@@ -14,6 +14,8 @@ as its finite allowance. Shared sources are counted once. A revived prior body,
 an unrelated report or a request to redeploy a dead player is rejected.
 
 Runtime source: `b063d878f39e9db2bf5af2c63b57f1ef39765046`.
+Merged through [PR #59](https://github.com/fsodano/granaderos/pull/59);
+[exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36392192468/job/108830307723) passed.
 
 ## Verification
 
