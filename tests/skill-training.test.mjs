@@ -10,7 +10,7 @@ test('a real discharged round advances marksmanship while invalid repeat fire ca
  assert.doesNotThrow(()=>validateTraining(JSON.parse(JSON.stringify(u))));
 });
 test('finite successful healing and maintenance train relevant skills only',()=>{
- let s=make({hp:50,maxHp:100,condition:50,skillPractice:{medical:39,mechanical:39}});
+ let s=make({hp:50,maxHp:100,bleeding:4,condition:50,skillPractice:{medical:39,mechanical:39}});
  s=actBattle(s,{type:'heal',unitId:1000});assert.equal(s.units[0].medical,41);assert.equal(s.units[0].medkits,1);
  s=actBattle(s,{type:'repair',unitId:1000});assert.equal(s.units[0].mechanical,41);assert.equal(s.units[0].flints,3);
  s=actBattle(s,{type:'repair',unitId:1000});const before=structuredClone(s.units[0]);const n=actBattle(s,{type:'repair',unitId:1000});assert.ok(n.lastError);assert.deepEqual(n.units[0],before);
@@ -27,7 +27,7 @@ test('NPC cells block destinations and paths while adjacent interaction cells re
  assert.ok(actBattle(s,{type:'move',unitId:1000,x:2,y:1}).lastError);
 });
 test('ten earned points cap practice growth and malformed training is rejected',()=>{
- let s=make({hp:50,maxHp:100,medical:50,trainedStats:{medical:10},skillPractice:{medical:39}});
+ let s=make({hp:50,maxHp:100,bleeding:4,medical:50,trainedStats:{medical:10},skillPractice:{medical:39}});
  s=actBattle(s,{type:'heal',unitId:1000});assert.equal(s.lastError,null);assert.equal(s.units[0].medical,50);assert.equal(s.units[0].trainedStats.medical,10);assert.equal(s.units[0].skillPractice.medical,39);
  assert.throws(()=>validateTraining({trainedStats:{medical:11}}));assert.throws(()=>validateTraining({skillPractice:{medical:-1}}));
 });

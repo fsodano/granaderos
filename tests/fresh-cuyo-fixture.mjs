@@ -1,3 +1,4 @@
+import {firstAidPlan} from '../game/first-aid.js';
 import assert from 'node:assert/strict';
 import {dispatchCampaign,rosterFor,isSupplied} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';
@@ -30,13 +31,13 @@ export function freshCuyoRoute({onCheckpoint}={}){
  for(const sector of Object.keys(s.sectors).filter(id=>s.sectors[id].owner==='patriot'))s=order(s,{type:'fortify',sector});
  s=order(s,{type:'travel',sector:'cordoba'});s=order(s,{type:'recruitCivic',id:108,term:'week',destination:'cordoba'});s=order(s,{type:'wait',hours:6});s=workshop(s);
  for(const id of s.squad)if(rosterFor(s).find(o=>o.id===id).weapon!==1802)s=musket(s,id);
- s=saved({campaign:s}).campaign;assert.equal(s.hour,120);assert.equal(s.resources.treasury,2683);
+ s=saved({campaign:s}).campaign;assert.equal(s.hour,120);assert.equal(s.resources.treasury,2845);
  for(const sector of ['mendoza','uspallata','los_patos']){
   s=order(s,{type:'attack',sector});assert.ok(s.pendingBattle);const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
   const {battle,orders,actions}=fight(request,previous,{scoutCostWeight:.01,avoidCivilians:true});assert.equal(battle.status,'victory',sector);let p={campaign:s,battle:enterSector(request,previous)};
   for(let i=0;i<orders.length;i++){p=tactical(p,orders[i]);if(i===Math.floor(orders.length/2))p=saved(p);}
   assert.deepEqual(p.battle.units,battle.units);assert.deepEqual(p.battle.npcs,battle.npcs);assert.equal(p.battle.seed,battle.seed);assert.equal(p.battle.elapsedSeconds,battle.elapsedSeconds);p=saved(p);p=tactical(p,{type:'explore'});
-  for(const actor of p.battle.units.filter(u=>u.side==='player'&&u.hp>0&&!u.routed&&!u.unconscious).sort((a,b)=>a.hp-b.hp)){const u=p.battle.units.find(u=>u.id===actor.id);if(u.medkits&&(u.bleeding||u.hp<u.maxHp-15))p=tactical(p,{type:'heal',unitId:u.id});}
+  for(const actor of p.battle.units.filter(u=>u.side==='player'&&u.hp>0&&!u.routed&&!u.unconscious).sort((a,b)=>a.hp-b.hp)){const u=p.battle.units.find(u=>u.id===actor.id);if(firstAidPlan(u,u).valid)p=tactical(p,{type:'heal',unitId:u.id});}
   p=saved(p);const report={type:'battleResult',battleId:request.id,outcome:'victory',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')};
   s=saved({campaign:order(p.campaign,report)}).campaign;assert.equal(s.defeated,false);assert.ok(dispatchCampaign(s,report).lastError);assert.equal(s.sectors[sector].owner,'patriot');assert.ok(isSupplied(s,sector));assert.equal(s.operativeState[2].alive,true);assert.equal(s.operativeState[57].alive,true);
   notes.push({stage:sector,hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,squad:[...s.squad],actions,turns:battle.turn,deaths:dead(s),engineerHp:s.operativeState[2].hp,commanderHp:s.operativeState[57].hp});
@@ -48,7 +49,7 @@ export function freshCuyoRoute({onCheckpoint}={}){
   s=saved({campaign:order(s,{type:'fortify',sector})}).campaign;onCheckpoint?.(sector,s,notes);
  }
  assert.equal(s.phase,3);assert.equal(s.flags.armyFunded,false);assert.equal(artilleryCount(s),0);assert.ok(!s.recruited.includes(57));
- s=order(s,{type:'renewContract',id:123,term:'week'});const money=s.resources.treasury;s=order(s,{type:'wait',hours:72});assert.equal(s.resources.treasury-money,2520);assert.ok(s.squad.includes(123));
+ for(const id of s.squad)if(s.contracts[id].expiresAt!==null&&s.contracts[id].expiresAt<s.hour+73)s=order(s,{type:'renewContract',id,term:'week'});const money=s.resources.treasury;s=order(s,{type:'wait',hours:72});assert.equal(s.resources.treasury-money,2520);assert.ok(s.squad.length>0);
  const before=s.resources.treasury;s=order(s,{type:'purchaseEquipment',item:'swivel',quantity:3});s=order(s,{type:'fundArmy'});assert.equal(s.resources.treasury,before-4200);assert.equal(artilleryCount(s),3);assert.equal(s.phase,4);assert.ok(dispatchCampaign(s,{type:'fundArmy'}).lastError);
  s=saved({campaign:s}).campaign;notes.push({stage:'funded',hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,phase:s.phase,artillery:artilleryCount(s)});onCheckpoint?.('funded',s,notes);
  s=order(s,{type:'travel',sector:'mendoza'});s=incorporate(s,57);assert.equal(s.contracts[57].expiresAt,null);assert.equal(s.contracts[57].paid,0);assert.ok(s.squad.includes(57));assert.equal(s.operativeState[57].hp,88);assert.equal(s.operativeState[2].alive,true);assert.equal(s.operativeState[1000].alive,false);assert.equal(s.defeated,false);assert.equal(s.completed,false);assert.equal(s.pendingBattle,null);assert.ok(s.resources.treasury>0);

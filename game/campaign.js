@@ -61,7 +61,7 @@ function returnEquipment(s,id,report,snapshot){
  validateWeaponCarrier(actual);validateWeaponReferences(s,actual);
  if(report.inventory!==undefined)requireThat(JSON.stringify(report.inventory)===JSON.stringify(actual.inventory),'El inventario del parte no coincide con el sector.');
  const record=s.operativeState[id];
- record.medkits=actual.medkits??0;record.bleeding=actual.bleeding??0;
+ record.medkits=actual.medkits??0;record.bleeding=actual.bleeding??0;if(actual.bandaged!==undefined)record.bandaged=actual.bandaged;
  s.loadouts[id]={...s.loadouts[id],weapon:actual.weaponDropped?0:actual.weapon,...(actual.blade===undefined?{}:{blade:actual.blade})};
  setWeaponDefinition(record,weaponRecord(actual,'blade'),'blade');
  setWeaponDefinition(record,actual.weaponDropped?{}:actual);record.jammed=actual.weaponDropped?false:Boolean(actual.jammed);
@@ -187,7 +187,7 @@ function tick(s,hours,{joinArrivals=true,stopOnDefeat=true,traveling=[]}={}){
       const income=dailyIncome(s);
       for(const def of CAMPAIGN_SECTORS)if(isSupplied(s,def.id))s.sectors[def.id].loyalty=Math.min(100,s.sectors[def.id].loyalty+1);
       add(s,{treasury:income});
-      for(const id of s.recruited){const op=s.operativeState[id];if(op.alive&&!deployed(s,id)&&isSupplied(s,operativeLocation(s,id))){op.hp=Math.min(rosterFor(s).find(o=>o.id===id).maxHp,op.hp+5);op.fatigue=Math.max(0,op.fatigue-10);}}
+      for(const id of s.recruited){const op=s.operativeState[id];if(op.alive&&!deployed(s,id)&&isSupplied(s,operativeLocation(s,id))){op.hp=Math.min(rosterFor(s).find(o=>o.id===id).maxHp,op.hp+5);if(op.bandaged!==undefined)op.bandaged=Math.min(op.bandaged,rosterFor(s).find(o=>o.id===id).maxHp-op.hp);op.fatigue=Math.max(0,op.fatigue-10);}}
       note(s,`Las estancias y aduanas aportaron ${income} pesos a la tesorería.`);
     }
     if(s.hour%720===0){const payroll=s.recruited.filter(id=>s.contracts?.[id]?.kind==='legacy').reduce((sum,id)=>sum+rosterFor(s).find(o=>o.id===id).monthlyPay,0);if(payroll>0){if(s.resources.treasury>=payroll){s.resources.treasury-=payroll;standing(s,'foreign',5);note(s,`Se abonaron ${payroll} pesos en estipendios mensuales.`);}else{standing(s,'foreign',-20);standing(s,'directory',-10);note(s,'La tesorería no pudo abonar los sueldos. Los voluntarios reclaman el pago.');}}}
@@ -473,7 +473,7 @@ export function restoreCampaign(text){
   validateHireArrivals(s,rosterFor(s));
   requireThat(object(s.flags)&&Object.keys(base.flags).every(k=>typeof s.flags[k]==='boolean')&&object(s.routes)&&Object.keys(base.routes).every(k=>typeof s.routes[k]==='boolean'),'Los acuerdos del archivo son inválidos.');
   validateCampaignProgress(s);
-  validateMedicalCare(s,rosterFor(s));
+  validateMedicalCare(s,rosterFor(s));for(const o of rosterFor(s)){const r=s.operativeState[o.id];if(r.bandaged!==undefined)requireThat(Number.isFinite(r.bandaged)&&r.bandaged>=0&&r.bandaged<=o.maxHp-r.hp,'Las heridas vendadas guardadas son inválidas.');}
   requireThat(['blockade','completed','defeated'].every(k=>typeof s[k]==='boolean')&&Array.isArray(s.log)&&s.log.length<=80&&s.log.every(p=>object(p)&&integer(p.hour,0,1e9)&&typeof p.text==='string'&&p.text.length<=1000),'El registro del archivo es inválido.');
   if(s.pendingBattle!==null){const b=s.pendingBattle;requireThat((!b.sceneId||(b.sceneId==='yatasto'&&b.sector==='tucuman'&&b.exploration===true))&&(!b.missionAllies||(b.sector==='san_lorenzo'&&Array.isArray(b.missionAllies)&&b.missionAllies.length===1&&Number(b.missionAllies[0].id)===57&&b.missionAllies[0].missionAlly===true)),'La escena pendiente es inválida.');requireThat(object(b)&&typeof b.id==='string'&&b.id.length<100&&(validWorldLocation(b.sector)||b.sector==='san_lorenzo')&&integer(b.seed,0,4294967295)&&Array.isArray(b.squad)&&b.squad.length<=6&&b.squad.every(o=>object(o)&&s.squad.includes(o.id)&&integer(o.loaded,0,weaponSpecification(o)?.capacity??0)&&integer(o.ammo,0,campaignRules(s).deploymentCartridges)&&integer(o.hp,1,100)),'La batalla guardada es inválida.');if(!sector(b.sector)&&b.sector!=='san_lorenzo')requireThat(b.exploration===true&&b.sector===s.location,'La visita guardada no corresponde a la celda actual.');if(b.origin!==undefined)requireThat(validWorldLocation(b.origin),'El origen del despliegue es inválido.');}
 

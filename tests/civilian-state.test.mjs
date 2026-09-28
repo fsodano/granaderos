@@ -13,9 +13,9 @@ import {missionContacts,sanLorenzoAlly} from '../game/missions.js';
 const A='cell-27-27',B='cell-26-27';
 const order=(s,a)=>{const next=dispatchCampaign(s,a);assert.equal(next.lastError,null,`${a.type}: ${next.lastError}`);return next;};
 const saved=({campaign,battle=null})=>decodeSave(encodeSave(campaign,battle));
-function ready(daily=true){
+function ready(daily=true,medical){
  const d=defaultContentPackage();Object.assign(d.placements.find(p=>p.character==='person-3'),{mode:daily?'daily':'fixed',sectors:daily?[A,B]:[A],selection:daily?'alternate':'random'});
- Object.assign(d.characters.find(c=>c.id==='person-110'),{arrivalHours:0});d.characters.find(c=>c.id==='person-110').attributes.leadership=100;
+ Object.assign(d.characters.find(c=>c.id==='person-110'),{arrivalHours:0});if(medical!==undefined)d.characters.find(c=>c.id==='person-110').attributes.medical=medical;d.characters.find(c=>c.id==='person-110').attributes.leadership=100;
  let s=order(initialCampaign(42,d),{type:'recruitCivic',id:110,term:'month'});
  return order(s,{type:'travel',sector:s.contentPresence.people['person-3'].sector});
 }
@@ -121,11 +121,13 @@ test('an incidental firearm hit hurts the resident in front of the target and re
 });
 
 test('a former recruit returns with the service record, rather than the old civilian health cache',()=>{
- let pair=approach(visit(ready(false)));pair=act(pair,{type:'melee',targetId:'cabral'});pair=act(pair,{type:'heal',targetId:'cabral'});
+ let pair=approach(visit(ready(false,80)));pair=act(pair,{type:'melee',targetId:'cabral'});pair=act(pair,{type:'heal',targetId:'cabral'});
  let s=order(pair.campaign,{type:'talkNPC',npcId:'cabral',unitId:110,approach:'recruit',sectorState:pair.battle});
  const local=npc(pair),record=s.pendingBattle.squad.find(u=>u.id===3);pair.battle.npcs=[];pair.battle.units.push({...createBattle([record],{width:8,height:8,enemies:[],exploration:true}).units[0],x:local.x,y:local.y});
- // Real soldier aid can restore health under the existing combatant rules.
- pair=act({campaign:s,battle:pair.battle},{type:'heal',targetId:'3'});const hp=pair.battle.units.find(u=>u.id==='3').hp;s=leave(pair);s=order(s,{type:'dismiss',id:3});s=saved({campaign:s}).campaign;
+ // Field aid has already bandaged this wound. Actual strategic treatment must
+ // provide any further recovery before the resident returns to the world.
+ pair=saved({campaign:s,battle:pair.battle});const repeated=actBattle(pair.battle,{type:'heal',unitId:'110',targetId:'3'});assert.ok(repeated.lastError);assert.equal(repeated.units[0].medkits,pair.battle.units[0].medkits);
+ s=order(leave(pair),{type:'travel',sector:'retiro'});s=order(s,{type:'assignCare',id:110,assignment:'doctor'});s=order(s,{type:'assignCare',id:3,assignment:'patient'});s=order(s,{type:'wait',hours:1});const hp=s.operativeState[3].hp;s=order(s,{type:'dismiss',id:3});s=order(s,{type:'assignCare',id:110,assignment:'active'});s=order(saved({campaign:s}).campaign,{type:'travel',sector:A});
  pair=visit(s);assert.equal(npc(pair).hp,hp);assert.ok(npc(pair).hp>local.hp);assert.ok(saved(pair));
 });
 

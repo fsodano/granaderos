@@ -91,7 +91,7 @@ const ORDER_DEFS = [
   {id: 'fire', label: 'Disparar', kind: 'mode'},
   {id: 'melee', label: 'Atacar', kind: 'mode'},
   {id: 'charge', label: 'Cargar', kind: 'mode'},
-  {id: 'heal', label: 'Curar', kind: 'mode'},
+  {id: 'heal', label: 'Vendar', kind: 'mode'},
   {id: 'loot', label: 'Recoger equipo', kind: 'mode'},
   {id: 'reload', label: 'Recargar', kind: 'order'},
   {id: 'reprime', label: 'Cebar', kind: 'order'},

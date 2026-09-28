@@ -1,4 +1,5 @@
-import {seedCivilianHealth,isCivilianUnconscious,CRITICAL_HEALTH,civilianRestoredHp} from './civilian-health.js';
+import {firstAidPlan} from './first-aid.js';
+import {seedCivilianHealth,isCivilianUnconscious,civilianRestoredHp} from './civilian-health.js';
 import {applyCivilianHarm,advanceCivilianBleeding} from './civilian-harm.js';
 import {hasCharacterAbility} from './character-abilities.js';
 import {weaponSpecification,contentWeaponOf,weaponRecord,setWeaponDefinition,validateWeaponCarrier} from './weapon-definition.js';
@@ -191,7 +192,14 @@ else if(a.type==='brace'){if(bladeFor(u).id!==1811)return fail('Se necesita una 
 else if(a.type==='weapon'){if(!['primary','blade'].includes(a.slot))return fail('Selecciona arma principal o arma blanca.');if(a.slot==='blade'&&!BLADES[u.blade])return fail('No hay un arma blanca secundaria equipada.');if((u.activeSlot||'primary')===a.slot)return fail('Esa arma ya está en la mano.');if(!pay(4))return fail('Cambiar de arma requiere 4 PA.');u.activeSlot=a.slot;u.momentum=0;say(s,`${u.name} prepara ${weaponFor(u).name}.`);}
 else if(a.type==='overwatch'){if(!hasFirearm(u)||!u.loaded||u.jammed)return fail('Necesitas un arma cargada y cebada para cubrir el frente.');u.overwatch=true;say(s,`${u.name} queda preparado para fuego de reacción.`);}
 else if(a.type==='mount'){if(!u.horse)return fail('Este soldado no tiene una montura asignada.');if(!u.mounted&&u.mount&&(u.mount.stamina<20||u.mount.condition<30))return fail('El caballo necesita descanso y cuidados antes de la monta.');const cost=actionCosts(s,u).mount;if(!pay(cost))return fail(`Montar o desmontar requiere ${cost} PA.`);u.mounted=!u.mounted;u.stance='standing';u.momentum=0;say(s,`${u.name} ${u.mounted?'monta a caballo':'desmonta'}.`);} 
-else if(a.type==='heal'){const t=target||u,isCivilian=civilian(s,t);if((isCivilian?t.hp<=0:t.side!==u.side||!alive(t))||dist(u,t)>1.5)return fail('El herido debe estar a tu lado.');if(!u.medkits)return fail('No quedan vendas.');if(!t.bleeding&&(isCivilian?t.hp>=Math.min(CRITICAL_HEALTH,t.maxHp):t.hp===t.maxHp))return fail('El herido no necesita primeros auxilios.');const medicalCost=actionCosts(s,u).heal;if(!pay(medicalCost))return fail(`Curar requiere ${medicalCost} PA.`);u.medkits--;practice(u,'medical',3);t.bleeding=0;if(isCivilian){const before=t.hp;t.hp=Math.max(t.hp,Math.min(CRITICAL_HEALTH,t.maxHp));delete t.bleedSource;t.civilianWoundVersion=1;t.bandaged=t.maxHp-t.hp;if(t.hp>before)t.civilianFirstAid={version:1,hpRestored:civilianRestoredHp(t)+t.hp-before};t.unconscious=isCivilianUnconscious(t);}else t.hp=Math.min(t.maxHp,t.hp+10+Math.round(u.medical*.25));say(s,`${u.name} atiende a ${t.name} y detiene la hemorragia.`);}
+else if(a.type==='heal'){
+ if(a.targetId!==undefined&&!target)return fail('No se encuentra al herido.');
+ const t=target||u,isCivilian=civilian(s,t);if(t.hp<=0||(!isCivilian&&t.side!==u.side)||dist(u,t)>1.5)return fail('El herido debe estar a tu lado.');
+ const plan=firstAidPlan(u,t,{baseCost:actionCosts(s,u).heal,budgetAP:s.mode==='exploration'?Infinity:u.ap,targetKind:isCivilian?'npc':'unit'});if(!plan.valid)return fail(plan.reason);if(!pay(plan.paCost))return fail(`Vendar requiere ${plan.paCost} PA.`);
+ const before=t.hp;u.medkits-=plan.dressingsUsed;practice(u,'medical',3);t.hp=plan.hpAfter;t.bleeding=plan.bleedingAfter;t.bandaged=plan.bandagedAfter;
+ if(isCivilian){if(!t.bleeding)delete t.bleedSource;t.civilianWoundVersion=1;if(t.hp>before)t.civilianFirstAid={version:1,hpRestored:civilianRestoredHp(t)+t.hp-before};t.unconscious=isCivilianUnconscious(t);}
+ say(s,plan.partial?`${u.name} estabiliza a ${t.name}; el tratamiento debe continuar.`:`${u.name} venda a ${t.name}. La recuperación de salud continúa en campaña.`);
+}
 else if(a.type==='stance'){if(u.mounted)return fail('Debes desmontar antes de cambiar de postura.');if(!['standing','prone'].includes(a.stance)||u.stance===a.stance)return fail('Postura no válida.');const cost=u.knockedDown?12:6;if(!pay(cost))return fail(`Cambiar de postura requiere ${cost} PA.`);u.stance=a.stance;if(a.stance==='standing')u.knockedDown=false;u.momentum=0;say(s,`${u.name} ${a.stance==='prone'?'se tiende cuerpo a tierra':'se pone de pie'}.`);}
 else return fail('Orden desconocida.');checkEnd(s);return true;}
 export function actBattle(state,action){

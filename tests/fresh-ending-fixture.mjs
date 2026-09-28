@@ -1,3 +1,4 @@
+import {firstAidPlan} from '../game/first-aid.js';
 import assert from 'node:assert/strict';
 import {dispatchCampaign,isSupplied} from '../game/campaign.js';
 import {enterSector} from '../game/world.js';
@@ -24,7 +25,7 @@ export function freshHistoricalEnding({onCheckpoint}={}){
   const {battle,orders,actions}=fight(request,previous,{scoutCostWeight:.01,avoidCivilians:true});assert.equal(battle.status,'victory',sector);let p={campaign:s,battle:enterSector(request,previous)};
   for(let i=0;i<orders.length;i++){p=tactical(p,orders[i]);if(i===Math.floor(orders.length/2))p=saved(p);}
   assert.deepEqual(p.battle.units,battle.units);assert.deepEqual(p.battle.npcs,battle.npcs);assert.equal(p.battle.seed,battle.seed);assert.equal(p.battle.elapsedSeconds,battle.elapsedSeconds);p=saved(p);assert.equal(p.campaign.completed,false,'victory waits for campaign settlement');p=tactical(p,{type:'explore'});
-  for(const actor of p.battle.units.filter(u=>u.side==='player'&&u.hp>0&&!u.routed&&!u.unconscious).sort((a,b)=>a.hp-b.hp)){const u=p.battle.units.find(u=>u.id===actor.id);if(u.medkits&&(u.bleeding||u.hp<u.maxHp-15))p=tactical(p,{type:'heal',unitId:u.id});}
+  for(const actor of p.battle.units.filter(u=>u.side==='player'&&u.hp>0&&!u.routed&&!u.unconscious).sort((a,b)=>a.hp-b.hp)){const u=p.battle.units.find(u=>u.id===actor.id);if(firstAidPlan(u,u).valid)p=tactical(p,{type:'heal',unitId:u.id});}
   p=saved(p);const report={type:'battleResult',battleId:request.id,outcome:'victory',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')};s=saved({campaign:order(p.campaign,report)}).campaign;assert.equal(s.defeated,false);assert.ok(dispatchCampaign(s,report).lastError);assert.equal(s.sectors[sector].owner,'patriot');assert.ok(isSupplied(s,sector));assert.equal(s.operativeState[57].alive,true);assert.equal(s.completed,sector==='humahuaca');
   notes.push({stage:sector,hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,squad:[...s.squad],actions,turns:battle.turn,deaths:deaths(s),commanderHp:s.operativeState[57].hp,completed:s.completed});onCheckpoint?.(sector,s,notes);
   if(!s.completed)s=order(s,{type:'fortify',sector});
