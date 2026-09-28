@@ -33,6 +33,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Starting territorial control and loyalty](starting-territory.md)
 - [Configurable campaign headquarters](campaign-headquarters.md)
 - [Import ports and saved delivery windows](import-supply-rules.md)
+- [Authored campaign chapters and endings](campaign-story.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 

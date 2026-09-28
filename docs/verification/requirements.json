@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "c5787476d3082c8ea1b85e1d1aed55e646680d7d",
+  "baseline": "8b8ea9abbbe799d0641e1ffd72109b97cc275ea1",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -170,7 +170,13 @@
     {
       "id": "E-IMPORT-RULES",
       "path": "docs/verification/import-supply-rules.md",
-      "description": "Four plausible import ports or disabled orders, saved seeded delivery windows, real payments, unique authored instances, equipping and active saves are covered. Occupation/blockade fixtures check delayed reception; a real same-hour naval raid now precedes delivery. Mounted editor/armory controls preserve settings, orders, disabled states and delay explanations. Physical port custody and transport remain unaccepted."
+      "description": "Four plausible import ports or disabled orders, saved seeded delivery windows, real payments, unique authored instances, equipping and active saves are covered. Occupation/blockade fixtures check delayed reception; a real same-hour naval raid now precedes delivery. Mounted editor/armory controls preserve settings, orders, disabled states and delay explanations. Physical port custody and transport remain unaccepted.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36383572048/job/108804160822"
+    },
+    {
+      "id": "E-CAMPAIGN-STORY",
+      "path": "docs/verification/campaign-story.md",
+      "description": "Ordered authored chapters, introduction and victory/defeat text use real paid arrival, dialogue quest completion, contract expiry, deadline and tactical death outcomes. Saves preserve pinned definitions and ordered terminal history. Mounted authoring and rendered game views are covered. Original role/world composition and a second full independent campaign remain open."
     }
   ],
   "queue": [
@@ -390,6 +396,32 @@
         "tests/equipment-imports.test.mjs",
         "tests/hiring-arrivals.test.mjs",
         "tests/story-editor.test.mjs"
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/52"
+    },
+    {
+      "id": "CHAPTERS-01",
+      "group": "Published deliveries",
+      "requirement": "Author ordered campaign chapters and persistent victory or defeat",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "The editor authors one to twelve chapters, campaign conditions, introductory text and terminal text. Real arrival, dialogue, deadlines and deaths drive progress; completed chapters and the ending persist. Victory waits for scene settlement; failure takes precedence. Ends during approach cannot open a new battle. Desk, journal and map show authored objectives.",
+      "local": "Replaces original progression only. Historical contacts, recruitment and economic roles, factions, raids and geography remain in the published world.",
+      "remaining": "",
+      "acceptance": "Author and reorder chapters with undo; protect referenced characters and quests; launch real arrival and dialogue routes to victory; verify actual contract expiry, timed failure, tactical death, simultaneous outcomes and interrupted approaches; preserve ordered progress and pinned content across saves; render current and terminal states; retain original campaigns.",
+      "evidence": [
+        "E-CAMPAIGN-STORY"
+      ],
+      "parents": [
+        "STORY-05",
+        "STORY-07"
+      ],
+      "testFiles": [
+        "tests/campaign-story.test.mjs",
+        "tests/campaign-story-render.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/civilian-state.test.mjs",
+        "tests/quest-deadlines.test.mjs"
       ]
     },
     {
@@ -1831,9 +1863,9 @@
       "requirement": "Configurable game rules and campaign roles",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss. Import port, disabled orders and delivery windows are configurable.",
+      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss. Import port, disabled orders and delivery windows are configurable. Ordered campaign chapters, global completion/failure conditions and ending text are authored separately from historical progression.",
       "local": "Larger systems still embed many rules and historical identity gates.",
-      "remaining": "Extract remaining care, combat, economy, progression, opposition and historical campaign identity rules.",
+      "remaining": "Extract remaining care, combat, economy, character progression, opposition and historical campaign identity rules.",
       "acceptance": "Change supported rules and replace role identities through the editor, then run/save the resulting campaign.",
       "evidence": [
         "E-PUBLISHED",
@@ -1841,7 +1873,8 @@
         "E-SUPPLY-RULES",
         "E-STARTING-TERRITORY",
         "E-HEADQUARTERS",
-        "E-IMPORT-RULES"
+        "E-IMPORT-RULES",
+        "E-CAMPAIGN-STORY"
       ]
     },
     {
@@ -1869,15 +1902,16 @@
       "requirement": "Campaign composition and an independent second campaign",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Initial funds, cartridge allotments, locality control/loyalty, headquarters and import port are configurable. Historical contacts, later chapter and ending logic still define the campaign.",
+      "published": "Initial funds, cartridge allotments, locality control/loyalty, headquarters and imports are configurable. Optional authored chapters replace historical progression with ordered conditions and persistent victory/defeat, driven by real campaign actions. Original world and role composition remain.",
       "local": "No second complete campaign accepted.",
-      "remaining": "Author chapters, role identities, objectives and endings; finish an independent second campaign.",
+      "remaining": "Separate historical identity/recruitment/economic roles, factions, calendar events and world composition; finish an independent second full campaign.",
       "acceptance": "Build and finish a distinct campaign with no engine source changes.",
       "evidence": [
         "E-CONFLICTS",
         "E-SUPPLY-RULES",
         "E-STARTING-TERRITORY",
-        "E-HEADQUARTERS"
+        "E-HEADQUARTERS",
+        "E-CAMPAIGN-STORY"
       ]
     },
     {
@@ -3666,13 +3700,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "c5787476d3082c8ea1b85e1d1aed55e646680d7d",
-    "total": 736,
-    "passed": 736,
+    "source": "8b8ea9abbbe799d0641e1ffd72109b97cc275ea1",
+    "total": 750,
+    "passed": 750,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-IMPORT-RULES"
+    "evidenceId": "E-CAMPAIGN-STORY"
   }
 }

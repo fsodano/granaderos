@@ -45,14 +45,18 @@ Final runtime source: `c5787476d3082c8ea1b85e1d1aed55e646680d7d`.
 Release validation on the final runtime: **736/736 tests**, zero failures or skips
 (186,057 ms); type check; production export (721 files, 631 asset references);
 36 baseline checks; documentation audit (190 requirements, including all 50
-original and 87 parity rows, and 29 evidence records). Exact-head GitHub checks
-are required before merge.
+original and 87 parity rows, and 29 evidence records). Exact-head GitHub checks passed for
+`cfb4f77b3d807d471925b643fc66d121272daa05` in
+[run 36383572048](https://github.com/fsodano/granaderos/actions/runs/36383572048/job/108804160822).
+[PR #52](https://github.com/fsodano/granaderos/pull/52) merged as
+`3840ff47b7de5af959b5836dcffa1fda595c4a7c`.
 
 ## Limits
 
 IMPORT-01 is bounded; equipment, economy and general rule authoring remain partial.
 Imported-family selection, finite merchant stocks, physical port depots, cargo
 transport, cancellation/refunds and independent historical campaign roles remain
-open. Reception retains the published ownership/blockade model; this does not
+open. Authored chapter progression is covered by the subsequent
+[chapter delivery](campaign-story.md). Reception retains the published ownership/blockade model; this does not
 integrate advanced port defense or physical cargo. No complete campaign, live
 browser or sustained loaded-battle performance acceptance is claimed.
