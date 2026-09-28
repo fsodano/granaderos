@@ -342,8 +342,21 @@ avanzar una casilla y gastar energía, sin consumir puntos de acción ni munici�
 Si el paso las dejaría con menos de 50 de energía, descansan ese intervalo.
 El contacto real con enemigos detiene la patrulla e inicia los turnos. Pausar
 la exploración o esconder la pestaña detiene ese reloj. El guardado conserva
-posiciones, energía y ritmo de patrulla. Estos valores de patrulla aún no son
-campos editables. [Verificación](../verification/militia-exploration-patrols.md).
+posiciones, energía y ritmo de patrulla. [Verificación](../verification/militia-exploration-patrols.md).
+
+En **Reglas → Patrullas de milicias** podés activar o desactivar las patrullas y
+la búsqueda, cambiar los intervalos por punto y definir la reserva de energía
+y su recuperación. Los valores originales son 8 intervalos, 50 de reserva y 10
+de recuperación. En exploración cada intervalo dura seis segundos; durante la
+búsqueda en combate equivale a un turno. La recuperación se aplica al descanso
+de patrulla en exploración y nunca supera 100. No cura heridas ni repone munición.
+
+Desactivar las patrullas deja a la milicia en su puesto cuando no ve enemigos.
+Puede seguir combatiendo y reaccionando. **Restaurar patrullas de milicias
+originales** recupera las opciones iniciales. Podés deshacer o rehacer los cambios.
+La configuración queda guardada con la campaña nueva, aunque después cambies el
+borrador. Los puntos del recorrido y los límites de búsqueda en combate aún son
+fijos. [Reglas verificadas](../verification/authored-militia-patrols.md).
 
 ## Distribuir milicias
 
