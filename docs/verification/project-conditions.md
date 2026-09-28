@@ -38,6 +38,11 @@ documentation audit (195 requirements, all 50 original and 87 parity rows,
 34 evidence records); 116 changed local links. Exact-head GitHub checks are
 required before merge.
 
+Accepted in [PR #57](https://github.com/fsodano/granaderos/pull/57) at
+`87cf6ba3d7404bd7d8c1e4f2ef10097ec75b5161`, with
+[successful exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36389860350/job/108823085104).
+Merged into `main` as `6c889c8925baaf17be5c3fda77624183ed57b3c3`.
+
 ## Limits
 
 PROJECTS-01 exposes two existing completed steps. It does not author arbitrary
