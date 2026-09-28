@@ -331,6 +331,14 @@ remains in reserve. Blade primaries receive none. Existing troops retain spent
 supplies; mission allies keep their separate allotments. Broader care, priming,
 progression and economy rules remain separate authoring requirements.
 
+Each catalogued character can author an initial allocation of priming, flints,
+rations, torches, dressings and boleadoras (integer 0–1000 for each). The campaign
+seeds it once; bulletin arrival or local incorporation receives the actual saved
+amounts. Consumption, reload, renewal and rehire cannot grant another allocation.
+Older packages retain the original 50/4/2/2/2/1 defaults. This is separate from paid
+cartridge deployment and workshop refill targets. Civilian lootable belongings,
+item custody and the player-created officer's own allocation remain separate work.
+
 Drafts have validation, undo/redo, import/export and recovery. A campaign pins an
 immutable content version and assets. Editing a draft cannot alter an active save.
 Random results, pending events, exact item custody and all actor identities survive

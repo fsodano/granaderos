@@ -1,4 +1,5 @@
 import {initializeCampaignStory} from './campaign-story.js';
+import {startingCharacterSupplies} from './character-supplies.js';
 import {applyStartingTerritory} from './content-territory.js';
 import {campaignRules} from './campaign-rules.js';
 import {validateAbilityReferences} from './content-character-abilities.js';
@@ -16,7 +17,7 @@ export function campaignContentReport(content) {
     blocked = [],
     pending = [];
   const supported=new Set(['format','version','id','name','characters','weapons','placements','arrivalSites','oppositionEquipment','militiaEquipment','oppositionBlades','militiaBlades','quests','rules','startingTerritory','headquarters','imports','campaignStory','includeOriginalResidents','campaignRoles','foundry']);
-  const characterFields=new Set(['id','name','nickname','role','biography','portrait','monthlyPay','weapon','blade','attributes','arrivalHours','recruitmentSource','service','progression','traits','ridingSkill','personality','speech','spriteAppearance','abilities','encounter']);
+  const characterFields=new Set(['id','name','nickname','role','biography','portrait','monthlyPay','weapon','blade','attributes','arrivalHours','recruitmentSource','service','progression','traits','ridingSkill','personality','speech','spriteAppearance','abilities','encounter','startingSupplies']);
   if(Object.keys(value).some(key=>!supported.has(key))||value.characters.some(c=>Object.keys(c).some(key=>!characterFields.has(key))))
     blocked.push('Este paquete incluye opciones de historia que esta versión todavía no puede aplicar.');
   if(value.characters.some(c=>!isContractCharacter(c)&&c.arrivalHours!==undefined))
@@ -58,6 +59,7 @@ export function attachCampaignContent(state, content) {
   for (const c of definitions.characters) {
     const id=operativeIdForCharacter(definitions,c.id);
     const record=state.operativeState[id]??={hp:c.attributes.maxHp,fatigue:0,alive:true,xp:0,priming:50,flints:4,rations:2,torches:2,condition:100};
+    Object.assign(record,startingCharacterSupplies(c));
     const weapon=definitions.weapons.find(w=>w.id===c.weapon);
     state.loadouts[id]={...state.loadouts[id],weapon:weapon?.template??0};
     if(weapon)record.weaponMetadata=weaponMetadata(weapon);

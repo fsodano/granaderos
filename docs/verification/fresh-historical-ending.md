@@ -42,7 +42,9 @@ is not repeated, dead characters stay dead and the army cannot be funded twice.
 Release checks: **800/800 tests**, zero failures or skips (195,002 ms); type
 check; production export (721 files, 631 asset references); 36 baseline checks;
 documentation audit (203 requirements, all 50 original and 87 parity rows,
-42 evidence records). Exact-head GitHub CI is required before merge.
+42 evidence records). [PR #65](https://github.com/fsodano/granaderos/pull/65) merged
+after [GitHub CI](https://github.com/fsodano/granaderos/actions/runs/36411691221/job/108893140167)
+passed at `c45127b32c074346ca8e085545dc69dfe1d9629d`.
 
 Victory is recorded at hour 414, second 485, with eighteen permanent deaths. The
 post-victory visit leaves hour 462, second 485, 5,361 pesos and four active squad
