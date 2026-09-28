@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "2f1287020a76ce47d5422c28d4361d76a557c8fd",
+  "baseline": "9574d6f73b59bff42904fe70b3e7d8252de2ee84",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -134,7 +134,13 @@
     {
       "id": "E-MEETING-RELEASE",
       "path": "docs/verification/meeting-release.md",
-      "description": "Actual dialogue releases another resident or the speaker from a commanded meeting, with saved routine return and atomic quest/payment effects. Later orders, once-only replay, rollback, invalid saves and mounted editor/game double-click acceptance pass. Does not add automatic choreography or prove a full campaign."
+      "description": "Actual dialogue releases another resident or the speaker from a commanded meeting, with saved routine return and atomic quest/payment effects. Later orders, once-only replay, rollback, invalid saves and mounted editor/game double-click acceptance pass. Does not add automatic choreography or prove a full campaign.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36376899052/job/108784480770"
+    },
+    {
+      "id": "E-AUTHORED-BLADES",
+      "path": "docs/verification/authored-blades.md",
+      "description": "Edited blade damage, AP, reach, weight, price and images drive character equipment, actual melee/AI/interception, armory instances, tactical swaps, campaign return and saved references. Mounted editor, armory and active inventory pass. Older packages remain compatible. Does not establish complete inventory, generic troop blades, merchant rules or full campaign acceptance."
     }
   ],
   "queue": [
@@ -203,6 +209,31 @@
         "tests/meeting-release.test.mjs",
         "tests/story-editor.test.mjs",
         "tests/meeting-release-ui.test.mjs"
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/46"
+    },
+    {
+      "id": "BLADE-01",
+      "group": "Published deliveries",
+      "requirement": "Author blade variants and retain them in character equipment, combat and saves",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Five blade families support authored names, pictures, damage, AP, reach, weight and price. Character primary/secondary equipment, melee and bayonet interception, armory instances, recovered primary weapons, swaps, campaign returns and saves preserve the actual definition. Old packages retain their original blade gear.",
+      "local": "Uses the published equipment and combat model; the advanced physical-hand and fitting systems remain separate.",
+      "remaining": "",
+      "acceptance": "Create and assign a blade with undo/copy/deletion guards; buy and exchange distinct variants; execute edited melee, interception and enemy attacks; retain condition and identity through both slots and campaign return; reject invalid saves; verify mounted hand images and exact active autosave.",
+      "evidence": [
+        "E-AUTHORED-BLADES"
+      ],
+      "parents": [
+        "ITEM-01",
+        "STORY-06"
+      ],
+      "testFiles": [
+        "tests/content-blades.test.mjs",
+        "tests/content-blades-ui.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/ja2-hud.test.mjs"
       ]
     },
     {
@@ -1423,13 +1454,14 @@
       "requirement": "All 9 firearms and 5 melee weapons",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "9 firearms and 5 blades match reference values; firearm variants/images are authored.",
+      "published": "Nine firearms and five blade families match reference base values. Firearm and blade variants/images are authored and retained in character equipment, combat and saves.",
       "local": "See local suite and preserved parity source; not equivalent to published integration.",
-      "remaining": "Author melee/fittings/ammunition and integrate physical inventory/condition.",
+      "remaining": "Author fittings/ammunition and generic troop blades; finish physical inventory, secondary corpse looting, wear and unarmed behavior.",
       "acceptance": "XML values, inventory images, sounds and use in combat",
       "evidence": [
         "E-PUBLISHED",
-        "E-CONFLICTS"
+        "E-CONFLICTS",
+        "E-AUTHORED-BLADES"
       ]
     },
     {
@@ -1656,13 +1688,14 @@
       "requirement": "Complete equipment and merchant authoring",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Firearms, images, variants and generated loadouts work.",
+      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character loadouts, armory instances and returns retain definitions. Generic troop authoring currently selects firearms.",
       "local": "Physical inventory, fittings and merchants are more complete locally but not generally authored.",
-      "remaining": "Add melee, artillery, ammunition, fittings, stock, price and replenishment authoring.",
+      "remaining": "Add generic troop blades, artillery, ammunition, fittings, merchant stock, buyback and replenishment authoring; integrate civilian belongings and complete physical custody.",
       "acceptance": "Create each supported equipment type; buy/use/trade/reload without duplication or lost instance data.",
       "evidence": [
         "E-PUBLISHED",
-        "E-PARITY"
+        "E-PARITY",
+        "E-AUTHORED-BLADES"
       ]
     },
     {
@@ -3465,13 +3498,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "2f1287020a76ce47d5422c28d4361d76a557c8fd",
-    "total": 689,
-    "passed": 689,
+    "source": "9574d6f73b59bff42904fe70b3e7d8252de2ee84",
+    "total": 698,
+    "passed": 698,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-MEETING-RELEASE"
+    "evidenceId": "E-AUTHORED-BLADES"
   }
 }

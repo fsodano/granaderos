@@ -27,6 +27,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Dialogue-triggered local meetings](dialogue-movements.md)
 - [Arrival-gated dialogue and quest effects](meeting-arrivals.md)
 - [Ending a local meeting](meeting-release.md)
+- [Authored melee weapons](authored-blades.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 
