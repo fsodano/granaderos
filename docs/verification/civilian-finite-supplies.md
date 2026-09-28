@@ -46,7 +46,6 @@ Six new simulations cover:
 - The actual San Lorenzo mission scene after a declared controlled-approach
   fixture: the ally moves, consumes its ration, saves and exposes zero remaining
   rations and dressings in its later named contact.
-
 - Explicit authored supplies and actual collection before San Lorenzo. The
   resident is stabilized through finite care, then enters the actual allied role
   with empty stock. The mission cannot replace the collected quantities.
@@ -55,8 +54,11 @@ A mounted battlefield case uses the actual loot control, pointer selection and
 keyboard repeat. Three dressings transfer once, the log names them, a repeated
 empty collection is rejected and no dialogue opens. The existing civilian,
 starting-stock and local-service group passed 22 checks; the extended group passed
-24 and the final controls/stock group passed seven. These groups overlap. Full
-release checks are pending at the source above. The first release candidate,
+24 and the final controls/stock group passed seven. These groups overlap. The
+final release run at the source above passed **879/879 tests**, with zero failures
+and zero skips, in 207,585.514 ms. Type checking, production export (722 files,
+632 asset references), all 36 baseline checks and the documentation audit passed.
+Exact-head GitHub CI is required before merging this delivery. The first release candidate,
 `8e602735e07386819756a35eceb2be967e988508`, passed 877/878 tests. Its one failure
 was the final treasury assertion: the historical route completed but retained
 5,478 rather than 5,564 pesos. Conserving the commander's actual stock requires
