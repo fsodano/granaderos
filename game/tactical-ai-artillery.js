@@ -1,4 +1,5 @@
-import {ARTILLERY,artilleryCosts,artilleryContact,artilleryCrewPlan,artilleryReloadPreview,artilleryShotTrace,artilleryCanisterContains,canSee,hasLineOfSight,getReachable} from './tactical.js';
+import {artilleryProfile} from './artillery-definitions.js';
+import {artilleryCosts,artilleryContact,artilleryCrewPlan,artilleryReloadPreview,artilleryShotTrace,artilleryCanisterContains,canSee,hasLineOfSight,getReachable} from './tactical.js';
 import {isUnconscious} from './actor-condition.js';
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const available=u=>u.hp>=15&&!isUnconscious(u)&&!u.departure&&!u.fled&&!u.routed&&!u.surrendered&&!u.knockedDown&&!u.entangled&&!u.mounted;
@@ -6,7 +7,7 @@ const compareId=(a,b)=>String(a.id).localeCompare(String(b.id));
 function localPost(s,u){
  if(!available(u)||u.side==='player'&&!u.militia)return null;
  const guns=(s.artillery??[]).filter(g=>g.side===u.side&&(g.loaded||g.ammo>0)&&distance(u,g)<=6).sort((a,b)=>distance(u,a)-distance(u,b)||compareId(a,b));
- for(const gun of guns){const count=ARTILLERY[gun.type].crew,members=s.units.filter(v=>v.side===u.side&&Boolean(v.militia)===Boolean(u.militia)&&available(v)&&distance(v,gun)<=6&&hasLineOfSight(s,v,gun)).sort((a,b)=>distance(a,gun)-distance(b,gun)||compareId(a,b)).slice(0,count);if(members.length===count&&members.some(v=>v.id===u.id))return gun;}
+ for(const gun of guns){const count=artilleryProfile(s,gun).crew,members=s.units.filter(v=>v.side===u.side&&Boolean(v.militia)===Boolean(u.militia)&&available(v)&&distance(v,gun)<=6&&hasLineOfSight(s,v,gun)).sort((a,b)=>distance(a,gun)-distance(b,gun)||compareId(a,b)).slice(0,count);if(members.length===count&&members.some(v=>v.id===u.id))return gun;}
  return null;
 }
 export function holdsArtilleryPost(s,u){const gun=localPost(s,u);return Boolean(gun&&artilleryContact(s,u,gun));}
@@ -21,7 +22,7 @@ export function chooseArtilleryAction(s,u,targets){
  if(!gun.loaded){const p=artilleryReloadPreview(s,u,gun);return p.valid?{type:'artilleryReload',unitId:u.id,artilleryId:gun.id}:null;}
  const costs=artilleryCosts(s,u,gun),choices=[];
  for(const target of [...targets].sort(compareId)){
-  if(target.hp<15||target.surrendered||target.routed||isUnconscious(target)||!canSee(s,u,target)||distance(gun,target)<1||distance(gun,target)>ARTILLERY[gun.type].range)continue;
+  if(target.hp<15||target.surrendered||target.routed||isUnconscious(target)||!canSee(s,u,target)||distance(gun,target)<1||distance(gun,target)>artilleryProfile(s,gun).range)continue;
   const angle=Math.atan2(target.y-gun.y,target.x-gun.x),pivot=Number.isFinite(gun.facing)&&Math.abs(Math.atan2(Math.sin(angle-gun.facing),Math.cos(angle-gun.facing)))>Math.PI/4;
   if(artilleryCrewPlan(s,u,gun,costs.fire+(pivot?costs.pivot:0)).reason)continue;
   for(const mode of ['solid','canister']){

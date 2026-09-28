@@ -1,4 +1,5 @@
 'use client';
+import {artilleryProfile} from '../../game/artillery-definitions.js';
 // JA2 bottom-strip disposition (DESIGN.md MODE A / MODE B). Root switches content on inventoryId.
 // Pure read model (game/ja2-hud.js orderDescriptors/orderAction); all mutations are caller-provided callbacks.
 import {useState} from 'react';
@@ -65,7 +66,7 @@ export default function JA2Strip({battle, selected, unit, players, missionAllies
         </div>
         {(artillery || []).length > 0 && <div className="ja2-artillery">
           <p className="eyebrow">ARTILLERÍA DE CAMPAÑA</p>
-          <select aria-label="Seleccionar pieza de artillería" value={cannonId} onChange={e => onCannonChange(e.target.value)}><option value="">Elegir cañón</option>{artillery.map((a: any) => <option key={a.id} value={a.id}>{(ARTILLERY as any)[a.type]?.name ?? a.type} · {a.loaded ? 'cargado' : a.reloadProgress?`recarga ${Math.floor(a.reloadProgress*100)}%`:'descargado'}</option>)}</select>
+          <select aria-label="Seleccionar pieza de artillería" value={cannonId} onChange={e => onCannonChange(e.target.value)}><option value="">Elegir cañón</option>{artillery.map((a: any) => <option key={a.id} value={a.id}>{artilleryProfile(battle,a)?.name ?? a.type} · {a.loaded ? 'cargado' : a.reloadProgress?`recarga ${Math.floor(a.reloadProgress*100)}%`:'descargado'}</option>)}</select>
           <select aria-label="Munición de artillería" value={shotType} onChange={e => onShotTypeChange(e.target.value)}><option value="solid">Bala rasa</option><option value="canister">Metralla</option></select>
           <div>
             {gunOrders.map(d=><button key={d.id} className="line-button" disabled={d.disabled} title={d.detail} onClick={()=>d.kind==='mode'?onMode(d.id):onOrder({type:d.id,artilleryId:cannonId})}>{({artillery:'Disparar',artilleryMove:'Desplazar',artilleryPivot:'Girar',artilleryReload:'Recargar pieza'} as Record<string,string>)[d.id]} · {d.seconds!==undefined?`${d.seconds} s`:`${d.pa} PA`}</button>)}

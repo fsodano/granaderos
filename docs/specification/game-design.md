@@ -723,3 +723,16 @@ with known-friendly and visible-civilian checks. Hired soldiers retain manual
 control. [Verification](../verification/autonomous-artillery-crews.md) separates
 real paid-gun/cohort continuation from prepared geometry. Strategic transport,
 gun authoring, remote assembly and advanced AI remain separate.
+
+
+### Authored artillery models
+
+The editor can change the three existing artillery families' names, images,
+prices, crew sizes, action costs, range, damage, penetration, canister scale and
+initial ammunition. Campaigns pin optional model definitions. Purchases and
+physical deployment use those values once; later visits preserve actual load
+and reserves. Shared player, enemy and militia rules consume the same profile.
+Scene saves reference the pinned package to avoid repeated uploaded images;
+inline definitions and references reject mismatches. See
+[verification](../verification/authored-artillery-profiles.md) for field limits,
+actual paid use and the separate transport/trade scope.

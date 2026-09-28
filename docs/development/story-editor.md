@@ -203,7 +203,7 @@ Las partidas nuevas del editor guardan estas definiciones por referencia al paqu
 
 La munición mantiene la economía existente: se compra la cantidad de cartuchos configurada en **Reglas** por arma de fuego al entrar al sector (diez por defecto) y se devuelve el valor de los cartuchos restantes al salir. Los cartuchos de un arma guardada en la mochila siguen en esa arma. Cambiar un arma en la armería se hace fuera del sector y devuelve el arma descargada. La disponibilidad comercial sigue siendo ilimitada; todavía no hay cantidades y reposición configurables por comerciante.
 
-Los perfiles de artillería, los accesorios y los tipos de munición siguen pendientes de edición. Las opciones de manejo todavía no integradas bloquean el inicio de campaña.
+Los accesorios y los tipos de munición siguen pendientes de edición. Los tres modelos de artillería se editan en Armas → Artillería. Las opciones de manejo todavía no integradas bloquean el inicio de campaña.
 
 ## Armas blancas aplicadas a la campaña
 
@@ -392,8 +392,7 @@ el combate captura las piezas. Retirarse puede dejarlas en manos realistas.
 Preparar una batería vacía no retira los cañones que ya están allí.
 
 La recuperación estratégica y el transporte de esas piezas siguen pendientes
-de integración. La reposición se configura en las reglas que se describen abajo. Los perfiles de artillería todavía no
-se editan desde la ficha de armas. [Verificación](../verification/stationed-artillery.md).
+de integración. La reposición se configura en las reglas que se describen abajo. Los tres modelos se editan en Armas → Artillería. [Verificación](../verification/stationed-artillery.md).
 
 ## Territorio inicial
 
@@ -588,7 +587,7 @@ La pantalla indica por qué una compra no está disponible.
 
 Comprar no carga la pieza ni borra una recarga parcial. La dotación debe cargarla
 en el campo. El límite no elimina munición que ya existe, ni cambia la entrega
-inicial de una carga y seis reservas. [Verificación](../verification/authored-artillery-supply.md).
+inicial de cada modelo (una carga y seis reservas por defecto). [Verificación](../verification/authored-artillery-supply.md).
 
 
 ## Dotaciones automáticas
@@ -602,5 +601,23 @@ Las piezas sin munición liberan a la dotación para otras acciones.
 El disparo exige un objetivo visible. La dotación evita trayectorias que alcancen
 aliados o civiles visibles. Una amenaza muy cercana tiene prioridad. Las escuadras
 contratadas conservan el control manual; no prestan sus PA a las milicias.
-Guardar conserva los recursos reales. El traslado estratégico y los perfiles
-editables de cañones siguen pendientes. [Verificación](../verification/autonomous-artillery-crews.md).
+Guardar conserva los recursos reales. El traslado estratégico sigue pendiente. [Verificación](../verification/autonomous-artillery-crews.md).
+
+
+## Editar modelos de artillería
+
+En **Armas → Artillería** podés buscar y editar los tres modelos. Cada uno tiene
+nombre, imagen, precio, dotación, PA por acción, alcance, daño, penetración y
+escala de metralla. También podés definir si se entrega cargado y cuántas
+municiones lleva en reserva al comprarlo. Las recargas de más de un turno
+conservan el trabajo de toda la dotación.
+
+La imagen y el nombre aparecen en la armería y en el campo. **Cambiar imagen de
+artillería** admite PNG, JPEG o WebP de hasta 250 KB. Podés restaurar la imagen,
+restaurar los modelos o deshacer los cambios. El inicio de campaña se bloquea si
+un dato no es válido. La partida conserva los modelos con los que fue iniciada.
+
+Las piezas compradas reciben su munición inicial una sola vez. Volver al sector
+conserva la carga real. Las reglas de reposición siguen en **Reglas**. La edición
+se aplica tanto a los cañones propios como a los enemigos de ese modelo. No crea
+familias adicionales. [Verificación](../verification/authored-artillery-profiles.md).

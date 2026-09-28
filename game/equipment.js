@@ -1,3 +1,4 @@
+import {artilleryProfile} from './artillery-definitions.js';
 import {importRulesFor,importPortName,importDelayReason} from './campaign-imports.js';
 import {compileWeaponDefinition} from './weapon-definition.js';
 import {usesAuthoredEquipment,equipmentKey,addArmoryStock} from './armory-items.js';
@@ -9,8 +10,9 @@ export const EQUIPMENT_CATALOG=[
  {item:'swivel',id:1822,name:'Pedrero de regala',category:'artillery',price:400,crew:1},
 ];
 export function equipmentCatalog(s){
- if(!usesAuthoredEquipment(s))return EQUIPMENT_CATALOG;
- return [...s.contentCampaign.package.weapons.map(w=>{const contentWeapon=compileWeaponDefinition(w);return {...contentWeapon,id:w.template,item:w.id,stockKey:w.id,category:w.template<1809?'firearm':'blade',contentWeapon};}),...EQUIPMENT_CATALOG.filter(w=>w.category!=='firearm'&&!s.contentCampaign.package.weapons.some(authored=>authored.template===w.id))];
+ const catalog=EQUIPMENT_CATALOG.map(w=>w.category==='artillery'?{...w,...(s.contentCampaign?.package.artilleryProfiles?artilleryProfile(s,w.item):{}),art:artilleryProfile(s,w.item).art}:w);
+ if(!usesAuthoredEquipment(s))return catalog;
+ return [...s.contentCampaign.package.weapons.map(w=>{const contentWeapon=compileWeaponDefinition(w);return {...contentWeapon,id:w.template,item:w.id,stockKey:w.id,category:w.template<1809?'firearm':'blade',contentWeapon};}),...catalog.filter(w=>w.category!=='firearm'&&!s.contentCampaign.package.weapons.some(authored=>authored.template===w.id))];
 }
 export function armoryInventory(s){return equipmentCatalog(s).map(item=>({...item,quantity:s.armory?.[item.stockKey??item.item]??0}));}
 export function armoryOptions(s,op,slot){
@@ -29,7 +31,7 @@ export function deployedArtillery(s){
  const available={...s.armory},types=[];
  const chosen=s.artillerySelectionExplicit||s.artillerySelection?.length?s.artillerySelection??[]:['field8','swivel','bronze4'].flatMap(type=>Array.from({length:Math.min(3,available[type]??0)},()=>type));
  for(const type of chosen)if(types.length<3&&(available[type]??0)>0){types.push(type);available[type]--;}
- return types.map((type,i)=>({id:`gun-${i}`,type,side:'player',loaded:true,ammo:6}));
+ return types.map((type,i)=>({id:`gun-${i}`,type,side:'player',loaded:artilleryProfile(s,type).initialLoaded,ammo:artilleryProfile(s,type).initialAmmo}));
 }
 
 export function isImportedEquipment(item){return [1800,1802].includes(Number(item?.contentWeapon?.template??item?.item));}
