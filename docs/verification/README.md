@@ -45,6 +45,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Fresh historical victory and saved continuation](fresh-historical-ending.md)
 - [Fresh Cuyo preparation and late commander recruitment](fresh-cuyo-preparation.md)
 - [Explicit loss of indispensable historical actors](historical-campaign-loss.md)
+- [Essential-character loss with a full diary](civilian-loss-log.md)
 - [Fresh northern continuation through Yatasto](fresh-northern-opening.md)
 - [Character starting supplies](character-starting-supplies.md)
 - [Saving authored cartridge allocations](authored-cartridge-save.md)

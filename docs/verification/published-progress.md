@@ -5,7 +5,7 @@
 Updated 2026-09-28. **The complete game and story editor are not accepted.**
 
 Read [the design](../specification/game-design.md) for the target and [the formal audit](formal-audit-2026-09-27.md) for evidence and limits.
-The published baseline assessed here is `8274f58b959b6408bfdc8a97540421836f78e204`. Later PRs must update this register.
+The published baseline assessed here is `f203f74dc49b8f0f9ea6f212e91e7b31450240a8`. Later PRs must update this register.
 The larger local sources and the editor prototype are separate from published main.
 
 ## Verified results and current failures
@@ -29,7 +29,7 @@ The advanced local suite has three independent failure points; a failed child al
 - UNVERIFIED: available evidence does not establish acceptance.
 - SUPERSEDED: an explicit design change replaced the old requirement.
 
-The register retains 210 entries: 59 VERIFIED, 102 PARTIAL, 35 LOCAL_ONLY, 2 MISSING, 9 FAILED, 2 UNVERIFIED, 1 SUPERSEDED.
+The register retains 211 entries: 60 VERIFIED, 102 PARTIAL, 35 LOCAL_ONLY, 2 MISSING, 9 FAILED, 2 UNVERIFIED, 1 SUPERSEDED.
 Rows overlap in scope. Neither these counts nor test totals are a completion percentage.
 
 Edit [requirements.json](requirements.json), record exact source/checks and remaining gaps, then run `npm run docs:progress` and `npm run audit:docs`. Update the design for policy changes. A dated audit stays an evidence snapshot. Do not mark a local branch as published or close a broad row from one passing fixture.
@@ -51,6 +51,7 @@ Finish one bounded feature, its controls and persistence, update evidence, pass 
 
 | ID | Requirement | Status | Published scope | Remaining work / acceptance |
 |---|---|---|---|---|
+| LOSSLOG-01 | Save essential civilian deaths with a full campaign journal | VERIFIED | Essential civilian death notices retain the newest 80 journal entries without losing the fatal state. Actual active saves, repeated acknowledgement, departure and saved defeat remain valid. | Fill the journal, cause an actual essential civilian death, save/reload the active scene, settle it and preserve the death, defeat and bounded once-only notice. |
 | CARERULES-01 | Author and pin medical work, rest recovery and dressing prices | VERIFIED | The Rules tab accepts nine care values with bounded integers, undo and reset. Campaigns preserve them across saves and use the same dressing price for both workshop paths, including free legitimate replenishment. | Edit valid and invalid care rules, launch and use them through real campaign actions, verify both dressing purchase paths and save partial recovery without rerolling or restoring stock. |
 | REST-01 [PR](https://github.com/fsodano/granaderos/pull/71) | Rest serving personnel and resume work through persistent strategic assignments | VERIFIED | Squad controls assign explicit rest, show energy/fatigue and stop deployment until service resumes. Safe hourly recovery preserves partial stable healing; patients recover breath while waiting. Assignment changes and contract expiry grant no extra interval. Merged through PR #71 after exact-head CI. | Spend campaign time to recover an exhausted person, save mid-rest, resume care or deployment, and reject incompatible work while preserving finite supplies and health. |
 | WORKSHOP-01 [PR](https://github.com/fsodano/granaderos/pull/70) | Require actual local presence for paid workshop replenishment and repair | VERIFIED | The selected workshop can service only a person actually present there. The armory shows the person location and blocks remote service with a reason. Explicit dressing purchases share the same eligibility. Merged through PR #70 after exact-head CI. | Separate two serving people by real travel; reject distant service without changing state; return and pay through normal controls; retain the actual supplies and condition in saves and deployment. |
@@ -340,5 +341,6 @@ Finish one bounded feature, its controls and persistence, update evidence, pass 
 | E-LOCAL-WORKSHOP | [Record](local-workshop-service.md) · [CI](https://github.com/fsodano/granaderos/actions/runs/36419410898/job/108918251655) | A two-squad paid-hire route reproduced remote repair and replenishment. Shared workshop eligibility now checks the recipient exact location, availability, control and supply. Real return travel, payment, repeat rejection, saves, deployment and mounted armory controls pass. Wear is a declared prepared fixture; timed repair, stock custody and armory transfers remain separate. |
 | E-STRATEGIC-REST | [Record](strategic-rest.md) · [CI](https://github.com/fsodano/granaderos/actions/runs/36421115971/job/108923796823) | Explicit rest and waiting patients recover energy and fatigue during safe campaign hours. Stable rest wounds recover once per six continuous hours; saves retain partial time and changes cannot grant health. Exhausted care, actual physician work/rest, remote squad travel, contract expiry, occupation, invalid saves and mounted controls pass. Automatic sleep, collapse, global energy capacity and advanced route parity remain open. |
 | E-CARE-RULES | [Record](authored-care-rules.md) | Nine optional pinned settings control actual medical eligibility, healing, effort, rest progress and dressing prices across bulk purchase and workshop refill. Old identities/defaults, strict validation, custom and zero values, saved intervals, finite costs and mounted editor undo/reset/launch pass. Prepared wounds/stocks are declared; arbitrary balance and advanced care remain separate. |
+| E-CIVILIAN-LOSS-LOG | [Record](civilian-loss-log.md) | A full diary reproduces an 81-entry invalid save on essential civilian death. The fix preserves the newest 80 entries, active save/load, once-only death acknowledgement, departure and permanent defeat. Prepared chapter/diary; real fatal orders. 834 passing tests, types, build and baseline checks. |
 
 Per-row acceptance, local assessment, source notes and test paths are retained in [the register](requirements.json). The full 87-row historical parity assessment is preserved in the audit; its old implementation claims are not fresh certification. Earlier milestones remain in [the historical log](../archive/published-progress-through-pr28.md).
