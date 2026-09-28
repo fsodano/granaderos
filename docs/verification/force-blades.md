@@ -29,7 +29,10 @@ the displayed bayonet AP reserve and guarded malformed weapon entries; all
 with no failures or skips (185653 ms). Types, production export (721 files,
 631 asset references), all 36 numerical baseline checks and the documentation
 audit passed. The register retains 186 requirements and 25 evidence records.
-Exact-head CI is required before merge.
+[PR #48](https://github.com/fsodano/granaderos/pull/48) was accepted at
+`b6a145977b3d0b798820cc68c09f6608aec604f5` after
+[exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36379604045/job/108792435761)
+passed; merge commit `122c8a0b498e1f270bf7ea22e3f0040966f6c19d`.
 
 - `tests/force-blades.test.mjs`: both maps and reference guards; actual campaign
   attack issuance; zero cartridges for primary blades; real enemy turns with
@@ -51,6 +54,7 @@ Exact-head CI is required before merge.
 TROOP-01 is bounded. Complete equipment authoring, merchant rules and full gameplay
 remain partial. This does not add secondary corpse looting, civilian belongings,
 blade wear, editable special techniques, artillery, fittings, cartridge authoring
-or complete hand/weapon custody. The legacy unarmed and fallback bayonet model
+or complete hand/weapon custody at this checkpoint. A later delivery adds
+[cartridge allotments](campaign-supply-rules.md), not ammunition types. The legacy unarmed and fallback bayonet model
 still needs integration with the advanced hand system. No full campaign, live
 browser or sustained loaded-battle performance acceptance is claimed.

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "19457d4a200cdb4b74610952ea3a7db7f8d28199",
+  "baseline": "faf262934a02efe6ba9fa5fe7682cb267ff269c7",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -146,7 +146,13 @@
     {
       "id": "E-FORCE-BLADES",
       "path": "docs/verification/force-blades.md",
-      "description": "Primary and optional secondary blade selections apply to newly issued enemies and militia. Actual attacks, finite ammunition, AI hand changes, trained-militia return, primary corpse recovery and saved reentry pass. Mounted editor launches both selections; the inventory displays the authored bayonet reserve. Compact scenes do not prove full campaign or inventory parity."
+      "description": "Primary and optional secondary blade selections apply to newly issued enemies and militia. Actual attacks, finite ammunition, AI hand changes, trained-militia return, primary corpse recovery and saved reentry pass. Mounted editor launches both selections; the inventory displays the authored bayonet reserve. Compact scenes do not prove full campaign or inventory parity.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36379604045/job/108792435761"
+    },
+    {
+      "id": "E-SUPPLY-RULES",
+      "path": "docs/verification/campaign-supply-rules.md",
+      "description": "Initial treasury and per-firearm player/enemy/militia cartridge allotments are pinned in content. Actual entry, attack, payment/refund, militia firing and save/reentry preserve supplies. Mounted editor and game cover authoring, launch, price and exact autosave. Does not establish broad economy, ammunition types or full campaign balance."
     }
   ],
   "queue": [
@@ -266,6 +272,30 @@
         "tests/story-editor.test.mjs",
         "tests/content-blades-ui.test.mjs",
         "tests/ja2-hud.test.mjs"
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/48"
+    },
+    {
+      "id": "RULES-01",
+      "group": "Published deliveries",
+      "requirement": "Configure initial treasury and cartridge allotments for the squad, new enemies and new militia",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Rules apply once at campaign creation or fresh issue. Player sector entry and attacks charge the configured quantity; capacity separates loaded cartridges from reserves. Existing troops keep remaining supplies. The editor, campaign price and saves use the same pinned settings. Older packages retain 3200 pesos and 10/13/6 cartridges.",
+      "local": "Uses the published supply and return model; advanced equipment custody and broader authoring remain separate.",
+      "remaining": "",
+      "acceptance": "Author valid values, undo and restore defaults; launch a real attack; verify initial funds once, free personal creation at zero, zero allocations, firearm capacity, blade exclusions, paid entry, returns, militia consumption and save/reentry; reject malformed rules and altered content. Check mounted game price, charge and exact active autosave.",
+      "evidence": [
+        "E-SUPPLY-RULES"
+      ],
+      "parents": [
+        "STORY-05",
+        "STORY-06"
+      ],
+      "testFiles": [
+        "tests/campaign-rules.test.mjs",
+        "tests/campaign-rules-ui.test.mjs",
+        "tests/story-editor.test.mjs"
       ]
     },
     {
@@ -1706,13 +1736,14 @@
       "requirement": "Configurable game rules and campaign roles",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Character sheets, firearm stats, classes and abilities are configurable.",
+      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves.",
       "local": "Larger systems still embed many rules and historical identity gates.",
-      "remaining": "Extract supported care, combat, economy, progression, opposition and role rules.",
+      "remaining": "Extract remaining care, combat, economy, progression, opposition and role rules, including starting ownership and campaign identity gates.",
       "acceptance": "Change supported rules and replace role identities through the editor, then run/save the resulting campaign.",
       "evidence": [
         "E-PUBLISHED",
-        "E-CONFLICTS"
+        "E-CONFLICTS",
+        "E-SUPPLY-RULES"
       ]
     },
     {
@@ -1721,15 +1752,16 @@
       "requirement": "Complete equipment and merchant authoring",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently.",
+      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops.",
       "local": "Physical inventory, fittings and merchants are more complete locally but not generally authored.",
-      "remaining": "Add artillery, ammunition, fittings, merchant stock, buyback and replenishment authoring; integrate civilian belongings and complete physical custody.",
+      "remaining": "Add artillery, ammunition types and pricing, fittings, merchant stock, buyback and replenishment authoring; integrate civilian belongings and complete physical custody.",
       "acceptance": "Create each supported equipment type; buy/use/trade/reload without duplication or lost instance data.",
       "evidence": [
         "E-PUBLISHED",
         "E-PARITY",
         "E-AUTHORED-BLADES",
-        "E-FORCE-BLADES"
+        "E-FORCE-BLADES",
+        "E-SUPPLY-RULES"
       ]
     },
     {
@@ -3532,13 +3564,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "19457d4a200cdb4b74610952ea3a7db7f8d28199",
-    "total": 704,
-    "passed": 704,
+    "source": "faf262934a02efe6ba9fa5fe7682cb267ff269c7",
+    "total": 711,
+    "passed": 711,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-FORCE-BLADES"
+    "evidenceId": "E-SUPPLY-RULES"
   }
 }
