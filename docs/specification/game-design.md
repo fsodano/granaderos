@@ -286,6 +286,15 @@ movement in that same phase, health, AP or cleared wound history. Critical healt
 still requires care, corpses remain dead and unloaded scenes do not recover.
 Saved partial intervals and identity preserve recovery through visits and service
 changes. See [civilian breath recovery](../verification/civilian-breath-recovery.md).
+
+Authored character conditions can query consciousness, unconsciousness, wounds,
+bleeding, stable consciousness or full health in dialogue and campaign rules.
+They use the current maximum and matching active actor, including mission allies.
+A deployed actor without its matching scene has unknown physical condition, not
+an inferred result from an older service sheet. Validated tactical checkpoints
+resolve failure rules; chapter success still waits for settlement. Health does
+not imply presence, service, automatic speech or rewards. See
+[story health conditions](../verification/story-health-conditions.md).
 These stroke and indivisible-dressing rules are explicit
 Granaderos adaptations. See [manual care](../gameplay/characters/field-first-aid.md).
 
