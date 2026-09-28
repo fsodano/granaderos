@@ -289,6 +289,15 @@ muerte se conservan al guardar. [Alcance verificado](../verification/strategic-m
 
 ## Ascensos de milicias
 
+En la carta de campaña, **Tipo de instrucción** permite elegir entre formar
+tres nuevos cívicos o ascender a tres cívicos a montoneros. Podés ampliar la
+guarnición aunque ya haya candidatos para ascender. La pantalla muestra el
+precio y las horas del curso elegido. Si faltan pesos, plazas, abastecimiento,
+un instructor o participantes estables, explica el motivo y bloquea el cobro.
+La elección se conserva mientras seguís viendo esa localidad; al volver a
+abrirla se muestra la sugerencia inicial. El curso ya pagado sí queda guardado
+con la campaña. [Controles verificados](../verification/militia-course-choice.md).
+
 Los nuevos cursos de ascenso promueven a tres cívicos a montoneros y conservan
 a los tres soldados que participan.
 Necesitan al menos 15 de salud, más de 10 de energía y no pueden estar sangrando,

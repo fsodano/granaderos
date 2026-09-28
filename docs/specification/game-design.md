@@ -581,7 +581,11 @@ for the separate unloaded-militia wound clock and custody requirements.
 
 ### Individual militia promotion
 
-New paid promotion courses reserve three fit cívicos to become montoneros. Completion
+The campaign offers an explicit choice between three fresh cívicos and
+promotion of three existing fit cívicos to montoneros. The selected quote shows
+actual cost and duration; missing funds, space, supply or participants block
+payment with a reason. See [course controls](../verification/militia-course-choice.md).
+New paid promotion courses reserve the actual participants. Completion
 changes their rank and training attributes without replacing their health,
 weapons or finite supplies. Cancellation or instructor departure returns them
 at the previous rank. Saved identities remain separate from a deployed garrison,

@@ -409,6 +409,11 @@
       "id": "E-MILITIA-RULES",
       "path": "docs/verification/authored-militia-progression.md",
       "description": "Optional pinned militia promotion thresholds and attribute gains are authored through editor controls, saved launch and real paid instruction. Three actual reaction kills exercise authored thresholds and retain wounds, finite shots and wear. Initial full regression passes 973/973, zero failures/skips. A subsequently added boundary check reproduced exhausted opponent credit; the correction passes a 59/59 reviewed group. Final full regression passes 974/974, zero failures/skips, with types, export, all 36 reference comparisons and documentation validation passing. Exact-head CI remains required before merge. Full allied AI and defense routes remain separate."
+    },
+    {
+      "id": "E-MILITIA-CHOICE",
+      "path": "docs/verification/militia-course-choice.md",
+      "description": "The production campaign lets the player select new c\u00edvicos or promotion despite existing candidates. Actual payment, course time, saved wounded participants and finite possessions pass; a prepared low-treasury case cannot spend through the disabled control. The overlapping group passes 11/11, types and 36 reference comparisons pass. Complete regression passes 976/976, zero failures/skips. Export and documentation validation pass; exact-head publication remains required."
     }
   ],
   "queue": [
@@ -456,6 +461,29 @@
     }
   ],
   "requirements": [
+    {
+      "id": "MILITIACHOICE-01",
+      "group": "Published deliveries",
+      "requirement": "Choose fresh militia cohorts or individual promotion through practical campaign controls",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. The campaign explicitly chooses fresh c\u00edvicos or individual promotion, shows the actual quote and blocks unavailable or unaffordable orders.",
+      "local": "Two new mounted campaign tests pass in an 11/11 overlapping group. New paid cohorts no longer require promoting the existing wounded candidates first; selected promotion retains those same people and finite equipment. Types and all 36 reference comparisons pass. Complete regression passes 976/976, zero failures/skips. Export and documentation validation pass.",
+      "remaining": "",
+      "acceptance": "Select and pay for new militia despite existing promotion candidates, complete the actual hours, then select and finish promotion with the original wounded identities. Display and enforce the real selected cost and availability; preserve course and participants through saved campaign controls.",
+      "evidence": [
+        "E-MILITIA-CHOICE"
+      ],
+      "parents": [
+        "MIL-01",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/militia-course-choice.test.mjs",
+        "tests/militia-training-identities-render.test.mjs",
+        "tests/militia-web.test.mjs"
+      ]
+    },
     {
       "id": "MILITIARULES-01",
       "group": "Published deliveries",
@@ -2602,7 +2630,7 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Paid local militia cohorts materialize with historical loadouts, fight as local allies and retain actual tactical wounds, casualties and depleted equipment through saved reentry. Individual promotion and advanced militia behavior are tracked separately. PR #89 adds local physician care with finite dressings. PR #90 preserves individual participants through paid promotion. PR #91 advances unloaded wounds and preserves actual finite remains. PR #92 adds combat-earned promotion with persistent opponent credit and disallows new paid veteran courses.",
-      "local": "Individual promotion acceptance is tracked by MILITIATRAIN-01; local physician work by MILITIACARE-01. The larger preserved parity source is not equivalent to published integration. Retained militia wound time is tracked by MILITIAWOUND-01. Combat-earned promotion is tracked by MILITIAXP-01. Editable progression is tracked by MILITIARULES-01.",
+      "local": "Individual promotion acceptance is tracked by MILITIATRAIN-01; local physician work by MILITIACARE-01. The larger preserved parity source is not equivalent to published integration. Retained militia wound time is tracked by MILITIAWOUND-01. Combat-earned promotion is tracked by MILITIAXP-01. Editable progression is tracked by MILITIARULES-01. The practical course selector is tracked by MILITIACHOICE-01.",
       "remaining": "Publish configurable progression and its high-credit correction, then integrate allied autonomy, redistribution, custody and the remaining advanced militia behavior.",
       "acceptance": "Training, historical loadouts and distinct behavior",
       "evidence": [
@@ -2612,7 +2640,8 @@
         "E-MILITIA-CARE",
         "E-MILITIA-WOUNDS",
         "E-MILITIA-COMBAT",
-        "E-MILITIA-RULES"
+        "E-MILITIA-RULES",
+        "E-MILITIA-CHOICE"
       ]
     },
     {
