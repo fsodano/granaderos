@@ -76,3 +76,7 @@ prisoner custody or the full advanced militia behavior. The new course preserves
 its participants' health until completion or cancellation. A wounded but stable
 participant must return from the course before receiving local militia care.
 Mounted checks are not live-browser or performance acceptance.
+
+The subsequent [unloaded militia wound integration](unloaded-militia-wounds.md)
+tracks hourly loss and retained local bodies separately, with its own publication
+status and compatibility limits.

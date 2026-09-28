@@ -19,6 +19,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Military wounds during strategic hours](strategic-military-wounds.md)
 - [Local militia medical care](strategic-militia-care.md)
 - [Individual militia promotion courses](militia-training-identities.md)
+- [Militia wounds outside the loaded sector](unloaded-militia-wounds.md)
 - [Finite civilian supplies](civilian-finite-supplies.md)
 - [Authored resident verification](authored-residents.md)
 - [Death successor verification](death-successors.md)

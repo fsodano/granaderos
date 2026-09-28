@@ -99,3 +99,7 @@ travel. Remaining possessions are retained in the service record; this is not
 complete corpse inventory or custody integration. Full travel/incapacity parity,
 route balance across seeds, browser performance and full-game completion remain
 open requirements.
+
+The subsequent [unloaded militia wound integration](unloaded-militia-wounds.md)
+tracks hourly loss and retained local bodies separately, with its own publication
+status and compatibility limits.
