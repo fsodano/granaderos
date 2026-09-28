@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "e12d99a476615b7f1793e43ce6a46a35c7fba46b",
+  "baseline": "b3d1387cb3a6e0e3b7028e9545154c0cf7af9cf4",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -182,7 +182,13 @@
     {
       "id": "E-CAMPAIGN-CAST",
       "path": "docs/verification/campaign-cast.md",
-      "description": "An all-authored two-person cast follows real paid arrival, exact-cell encounter, dialogue quest and saved chapter victory. Empty casts create a free officer and visit a real sector. Optional original ambient residents, absence of removed contacts, pinned saves, mounted historical copy/removal, independent local service and real march fatigue are covered. Strategic role transfer and complete world composition remain open."
+      "description": "An all-authored two-person cast follows real paid arrival, exact-cell encounter, dialogue quest and saved chapter victory. Empty casts create a free officer and visit a real sector. Optional original ambient residents, absence of removed contacts, pinned saves, mounted historical copy/removal, independent local service and real march fatigue are covered. Strategic role transfer and complete world composition remain open.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36386862263/job/108813938115"
+    },
+    {
+      "id": "E-CAMPAIGN-ROLES",
+      "path": "docs/verification/campaign-roles.md",
+      "description": "Two strategic roles bind to authored character identities. Real paid arrival activates them; actual contract expiry and tactical death remove them. Exact cell/locality travel, one-time foundry/funding payments, pinned saves, mounted editor reference controls and actual treasury controls are covered. Custody and occupation checks use prepared states. Other roles, function values and full campaign composition remain open."
     }
   ],
   "queue": [
@@ -455,6 +461,31 @@
         "tests/story-editor.test.mjs",
         "tests/content-roster.test.mjs",
         "tests/authored-residents.test.mjs"
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/54"
+    },
+    {
+      "id": "ROLES-01",
+      "group": "Published deliveries",
+      "requirement": "Assign foundry and global marching privileges to authored characters",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "The editor assigns or disables foundry and marching roles by character identity. Real arrival and current living, free service gate the functions. Contract expiry and death remove privileges; completed foundry preparation persists. Treasury uses the assigned name and availability. Explicit references protect deletion; omitted roles preserve remaining original identities.",
+      "local": "Uses the existing Mendoza workshop, fixed prices and global marching effect. Mission roles and successor transfer are separate.",
+      "remaining": "",
+      "acceptance": "Author, undo and reset both roles; prevent deleting explicit role references; launch actual paid arrival, cell and locality marches, single workshop/funding payments; remove privileges through actual expiry and tactical death; reject invalid and altered saved references; retain legacy roles.",
+      "evidence": [
+        "E-CAMPAIGN-ROLES"
+      ],
+      "parents": [
+        "STORY-05",
+        "STORY-07"
+      ],
+      "testFiles": [
+        "tests/campaign-roles.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/campaign-cast-render.test.mjs",
+        "tests/campaign-web.test.mjs"
       ]
     },
     {
@@ -1897,7 +1928,7 @@
       "requirement": "Configurable game rules and campaign roles",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss. Import port, disabled orders and delivery windows are configurable. Ordered campaign chapters, global completion/failure conditions and ending text are authored separately from historical progression. Historical profiles can be copied without their implicit roles and removed from an authored campaign.",
+      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss. Import port, disabled orders and delivery windows are configurable. Ordered campaign chapters, global completion/failure conditions and ending text are authored separately from historical progression. Historical profiles can be copied without their implicit roles and removed from an authored campaign. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks.",
       "local": "Larger systems still embed many rules and historical identity gates.",
       "remaining": "Extract remaining care, combat, economy, character progression, opposition and historical campaign identity rules.",
       "acceptance": "Change supported rules and replace role identities through the editor, then run/save the resulting campaign.",
@@ -1909,7 +1940,8 @@
         "E-HEADQUARTERS",
         "E-IMPORT-RULES",
         "E-CAMPAIGN-STORY",
-        "E-CAMPAIGN-CAST"
+        "E-CAMPAIGN-CAST",
+        "E-CAMPAIGN-ROLES"
       ]
     },
     {
@@ -1937,9 +1969,9 @@
       "requirement": "Campaign composition and an independent second campaign",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Initial funds, cartridge allotments, locality control/loyalty, headquarters and imports are configurable. Optional authored chapters replace historical progression with ordered conditions and persistent victory/defeat, driven by real campaign actions. Original world and role composition remain. A wholly authored cast now completes a short hire/encounter/quest/ending route without historical roster identities. Original generic residents are optional.",
+      "published": "Initial funds, cartridge allotments, locality control/loyalty, headquarters and imports are configurable. Optional authored chapters replace historical progression with ordered conditions and persistent victory/defeat, driven by real campaign actions. Original world and role composition remain. A wholly authored cast now completes a short hire/encounter/quest/ending route without historical roster identities. Original generic residents are optional. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks.",
       "local": "No second complete campaign accepted.",
-      "remaining": "Compose and reassign recruitment/economic roles, factions, opposition commanders, diplomacy, calendar events and world geography; finish an independent second full campaign.",
+      "remaining": "Compose and reassign remaining recruitment/economic roles and strategic function values, factions, opposition commanders, diplomacy, calendar events and world geography; finish an independent second full campaign.",
       "acceptance": "Build and finish a distinct campaign with no engine source changes.",
       "evidence": [
         "E-CONFLICTS",
@@ -1947,7 +1979,8 @@
         "E-STARTING-TERRITORY",
         "E-HEADQUARTERS",
         "E-CAMPAIGN-STORY",
-        "E-CAMPAIGN-CAST"
+        "E-CAMPAIGN-CAST",
+        "E-CAMPAIGN-ROLES"
       ]
     },
     {
@@ -3736,13 +3769,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "e12d99a476615b7f1793e43ce6a46a35c7fba46b",
-    "total": 758,
-    "passed": 758,
+    "source": "b3d1387cb3a6e0e3b7028e9545154c0cf7af9cf4",
+    "total": 767,
+    "passed": 767,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-CAMPAIGN-CAST"
+    "evidenceId": "E-CAMPAIGN-ROLES"
   }
 }
