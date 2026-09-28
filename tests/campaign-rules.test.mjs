@@ -6,7 +6,7 @@ import {initialCampaign,dispatchCampaign,deploymentCost} from '../game/campaign.
 import {prepareGarrison} from '../game/garrison.js';
 import {oppositionFor} from '../game/narrative.js';
 import {enterSector} from '../game/world.js';
-import {actBattle} from '../game/tactical.js';
+import {createBattle,endTurn} from '../game/tactical.js';
 import {syncBattleTime} from '../game/time.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {defaultProfile} from '../game/character-profile.js';
@@ -41,8 +41,8 @@ test('zero allocations and blade primaries receive no cartridges, while actual a
 });
 
 test('trained militia receive the configured total once and save their spent supply on return',()=>{
- const d=content({militiaCartridges:9});d.militiaEquipment.green='firearm-1808';let s=order(secureArea(initialCampaign(8,d),'buenos_aires','ensenada'),{type:'createOfficer',name:'Isabel',profile:defaultProfile(),answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally',specialty:'teacher',temperament:'steady'}});s=order(s,{type:'militia',trainerId:1000,rank:0});s=order(s,{type:'wait',hours:s.militiaTraining[0].remaining});s=order(s,{type:'visitSector'});let b=enterSector(s.pendingBattle),u=b.units.find(u=>u.militia);assert.deepEqual([u.loaded,u.ammo],[8,1]);
- // Prepare a nearby hostile in the actual issued militia scene to consume one shot.
- b.units.push({...structuredClone(b.units[0]),id:'target',side:'enemy',x:u.x+1,y:u.y,overwatch:false});b.mode='combat';b.sectorCleared=false;b=actBattle(b,{type:'fire',unitId:u.id,targetId:'target'});assert.equal(b.lastError,null);assert.equal(b.units.find(v=>v.id===u.id).loaded,7);s=leave(s,b);s=save(s).campaign;s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);u=b.units.find(v=>v.id===u.id);assert.deepEqual([u.loaded,u.ammo],[7,1]);assert.ok(save(s,b));
+ const d=content({militiaCartridges:9});d.militiaEquipment.green='firearm-1808';let s=order(secureArea(initialCampaign(8,d),'buenos_aires','ensenada'),{type:'createOfficer',name:'Isabel',profile:defaultProfile(),answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally',specialty:'teacher',temperament:'steady'}});s=order(s,{type:'militia',trainerId:1000,rank:0});s=order(s,{type:'wait',hours:s.militiaTraining[0].remaining});if(s.hour%24<6||s.hour%24>=20)s=order(s,{type:'wait',hours:(30-s.hour%24)%24});s=order(s,{type:'visitSector'});const r=s.pendingBattle;let b=createBattle([...r.squad.map((u,i)=>({...u,x:1,y:8+i})),...r.garrison.map((u,i)=>({...u,x:1,y:1+i*3}))],{...r,exploration:false,width:14,height:10,tiles:Array.from({length:140},(_,i)=>({x:i%14,y:Math.floor(i/14),type:'grass',blocked:false,cover:0})),enemies:[{id:'target',x:10,y:1,weapon:1813,blade:1813,hp:100,maxHp:100,patrol:false}]}),u=b.units.find(u=>u.militia);assert.deepEqual([u.loaded,u.ammo],[8,1]);
+ // Actual enemy and allied phases consume the authored finite allotment.
+ const id=u.id;b=endTurn(b);assert.equal(b.lastError,null);u=b.units.find(v=>v.id===id);assert.ok(u.loaded+u.ammo<9);const remaining=[u.loaded,u.ammo];s=leave(s,b);s=save(s).campaign;s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);u=b.units.find(v=>v.id===id);assert.deepEqual([u.loaded,u.ammo],remaining);assert.ok(save(s,b));
  const old=content({militiaCartridges:0});delete old.militiaEquipment;const state=initialCampaign(8,old);state.sectors.retiro.militia=[1,0,0];assert.deepEqual(prepareGarrison(state,'retiro').map(u=>[u.loaded,u.ammo]),[[0,0]]);
 });
