@@ -1,3 +1,4 @@
+import {artillerySupplyQuote} from './artillery-supply.js';
 import {migrateArtilleryState,prepareSectorArtillery,validateArtilleryReport,settleSectorArtillery,validateCampaignArtillery,ownedArtilleryCount} from './campaign-artillery.js';
 import {validateCampaignPatrol} from './militia-patrol-rules.js';
 import {redistributeMilitia} from './militia-distribution.js';
@@ -239,7 +240,7 @@ export function dispatchCampaign(previous,action){
     requireThat(action&&typeof action.type==='string','La orden no es válida.');
     if(action.sectorState){validateCampaignPatrol(s,action.sectorState);validateArtilleryReport(s.pendingBattle,action.sectorState);}
     requireThat(!s.defeated||s.pendingBattle&&['syncTacticalTime','leaveSector','battleResult'].includes(action.type),'La campaña ha terminado. Inicia otra campaña para continuar.');
-    requireThat(!s.completed||['syncTacticalTime','wait','travel','visitSector','leaveSector','talkNPC','createSquad','selectSquad','squad','equip','resupply','repairWeapon','purchaseEquipment','configureArtillery','transport','militia','cancelMilitia','transferMilitia','distributeMilitia','renewContract','dismiss','redirectHire','cancelHireArrival','assignCare','purchaseMedicalSupplies'].includes(action.type),'La campaña está ganada. Puedes recorrer las provincias y atender a tus escuadras.');
+    requireThat(!s.completed||['syncTacticalTime','wait','travel','visitSector','leaveSector','talkNPC','createSquad','selectSquad','squad','equip','resupply','repairWeapon','purchaseEquipment','configureArtillery','resupplyArtillery','transport','militia','cancelMilitia','transferMilitia','distributeMilitia','renewContract','dismiss','redirectHire','cancelHireArrival','assignCare','purchaseMedicalSupplies'].includes(action.type),'La campaña está ganada. Puedes recorrer las provincias y atender a tus escuadras.');
     requireThat(!s.pendingBattle||['battleResult','leaveSector','talkNPC','finishMission','syncTacticalTime'].includes(action.type),'Hay una batalla pendiente. Resuélvela antes de dar nuevas órdenes.');
     if(['travel','attack','visitSector'].includes(action.type))requireThat(!s.squad.some(id=>militiaAssignment(s,id)),'Un instructor de la escuadra está asignado a las milicias. Cancelá su curso o dejalo en una escuadra de guarnición.');
     if(['travel','attack','visitSector','visitMission'].includes(action.type))requireThat(!s.squad.some(id=>careAssignmentBusy(s.operativeState[id].assignment)),'Volvé a poner en servicio a los médicos, pacientes y combatientes en descanso de la escuadra antes de marchar o entrar al sector.');
@@ -261,6 +262,9 @@ export function dispatchCampaign(previous,action){
         // A death is confirmed at this tactical checkpoint, after its time has elapsed.
         if(snapshot){acknowledgeCivilians(s,snapshot);acknowledgeSuccessionDeaths(s,snapshot);if(campaignStory(s))advanceCampaignStory(s,snapshot);}
         s.pendingBattle.syncedSeconds=elapsed;break;
+      }
+      case 'resupplyArtillery':{
+        const quote=artillerySupplyQuote(s,action.sector,action.artilleryId,isSupplied(s,s.location));requireThat(quote.available,quote.reason);pay(s,{treasury:quote.cost});const gun=s.sectorStates[action.sector].artillery.find(g=>g.id===action.artilleryId);gun.ammo++;note(s,`Se compra una munición de artillería por ${quote.cost} pesos. Queda en reserva junto a la pieza.`);break;
       }
       case 'wait':tick(s,action.hours??24);break;
       case 'assignCare':{const op=rosterFor(s).find(o=>o.id===Number(action.id));assignMedicalCare(s,op,action.assignment);note(s,`${op.name}: ${CARE_ASSIGNMENTS[action.assignment]}.`);break;}

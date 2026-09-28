@@ -454,7 +454,12 @@
     {
       "id": "E-ARTILLERY-CREW-LOADING",
       "path": "docs/verification/artillery-crew-loading.md",
-      "description": "Retained partial cannon loading uses simultaneous eligible crews, finite ammunition and shared UI costs. Ten simulations and two mounted field checks pass; final ability/loading group 23/23. The first full run recorded 1042 pass and two outdated rejection expectations; after replacing those with partial-work, finite-round and specialist-advantage assertions, full regression passes 1044/1044 with no failures/skips. Types, export and 36 reference comparisons pass. Actual paid guns preserve work through saves/withdrawal and exhaust seven issued shots; prepared crew boundaries are distinct. Exact-head publication remains required."
+      "description": "Retained partial cannon loading uses simultaneous eligible crews, finite ammunition and shared UI costs. Ten simulations and two mounted field checks pass; final ability/loading group 23/23. The first full run recorded 1042 pass and two outdated rejection expectations; after replacing those with partial-work, finite-round and specialist-advantage assertions, full regression passes 1044/1044 with no failures/skips. Types, export and 36 reference comparisons pass. Actual paid guns preserve work through saves/withdrawal and exhaust seven issued shots; prepared crew boundaries are distinct. Published by PR #101 after successful exact-head CI."
+    },
+    {
+      "id": "E-ARTILLERY-SUPPLY",
+      "path": "docs/verification/authored-artillery-supply.md",
+      "description": "Pinned optional supply permission, three model prices and a purchase reserve cap drive exact local cannon replenishment under the published pesos economy. Seven simulations, two mounted armory cases and one mounted editor case pass; overlapping artillery group 28/28. Full regression passes 1054/1054, zero failures/skips, with types, export and 36 reference comparisons. An actually exhausted paid gun purchases one round, saves unloaded, and loads through its ordinary crew. Prepared eligibility/model/work boundaries remain explicit. Exact-head publication remains required."
     }
   ],
   "queue": [
@@ -503,12 +508,38 @@
   ],
   "requirements": [
     {
+      "id": "ARTILLERYSUPPLY-01",
+      "group": "Published deliveries",
+      "requirement": "Configure and buy finite reserve ammunition for an exact local artillery emplacement without changing its retained work",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. One paid reserve round preserves the exact gun, load and unfinished work; permission, model prices and purchase cap are pinned by the story editor.",
+      "local": "Seven simulations, two mounted armory cases and one mounted editor case pass. Full regression passes 1054/1054, zero failures/skips, with types, export and all 36 reference comparisons. Actual paid depletion and replenishment are distinguished from prepared eligibility and model-price boundaries.",
+      "remaining": "",
+      "acceptance": "Exhaust a purchased gun through real shots, buy one reserve through the displayed quote, preserve complete saves and load through the real crew; enforce pinned prices, free/disabled supply, caps, control, connection, personnel and funds atomically, while the editor supports undo, reset, validation and saved launch.",
+      "evidence": [
+        "E-ARTILLERY-SUPPLY"
+      ],
+      "parents": [
+        "TAC-08",
+        "ITEM-02",
+        "STORY-06",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/artillery-supply.test.mjs",
+        "tests/artillery-supply-render.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/artillery-crew-loading.test.mjs"
+      ]
+    },
+    {
       "id": "CREWLOAD-01",
       "group": "Published deliveries",
       "requirement": "Retain simultaneous artillery crew loading across turns and full saves with finite reserve and shared controls",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Actual assigned crew AP limits each loading step, and completion consumes one reserve shot.",
+      "published": "Published by PR #101 after successful exact-head CI. Actual assigned crew AP limits each loading step, and completion consumes one reserve shot.",
       "local": "Ten new simulations and two mounted field cases pass 12/12; final ability/loading group 23/23. Complete regression passes 1044/1044, zero failures/skips, with types, export and 36 baseline comparisons. Two earlier legacy rejection expectations were replaced with retained-work and finite-ammunition checks.",
       "remaining": "",
       "acceptance": "Use real tactical turns and paid gun manifests to retain unfinished work, choose capable helpers, apply authored specialist costs, conserve ammunition through completion and full saves, retain captured work on reentry and share disabled-state reasons with mounted controls.",
@@ -525,7 +556,8 @@
         "tests/artillery-crew-render.test.mjs",
         "tests/content-abilities.test.mjs",
         "tests/artillery.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/101"
     },
     {
       "id": "EMPLACEMENT-01",
@@ -2990,14 +3022,15 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Three crew-served gun profiles and artillery actions.",
-      "local": "See local suite and preserved parity source; not equivalent to published integration. EMPLACEMENT-01 accepts bounded physical sector persistence, finite first issue, capture and migration. CREWLOAD-01 accepts retained individual crew work, finite completed shots and shared controls.",
-      "remaining": "Publish accepted physical emplacements and partial crew loading after exact-head CI; integrate autonomous crews, resupply and strategic recovery/transport.",
+      "local": "See local suite and preserved parity source; not equivalent to published integration. EMPLACEMENT-01 accepts bounded physical sector persistence, finite first issue, capture and migration. CREWLOAD-01 accepts retained individual crew work, finite completed shots and shared controls. ARTILLERYSUPPLY-01 accepts pinned pesos prices, supply permission, reserve cap and finite local replenishment.",
+      "remaining": "Publish accepted physical emplacements, partial crew loading and authored replenishment after exact-head CI; integrate autonomous crews and strategic recovery/transport.",
       "acceptance": "Crew requirements, movement/pivot AP and range",
       "evidence": [
         "E-PUBLISHED",
         "E-CONFLICTS",
         "E-STATIONED-ARTILLERY",
-        "E-ARTILLERY-CREW-LOADING"
+        "E-ARTILLERY-CREW-LOADING",
+        "E-ARTILLERY-SUPPLY"
       ]
     },
     {
@@ -3191,14 +3224,15 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Three artillery profiles and period supply actions.",
-      "local": "See local suite and preserved parity source; not equivalent to published integration. EMPLACEMENT-01 accepts bounded physical sector persistence, finite first issue, capture and migration. CREWLOAD-01 accepts retained individual crew work, finite completed shots and shared controls.",
+      "local": "See local suite and preserved parity source; not equivalent to published integration. EMPLACEMENT-01 accepts bounded physical sector persistence, finite first issue, capture and migration. CREWLOAD-01 accepts retained individual crew work, finite completed shots and shared controls. ARTILLERYSUPPLY-01 accepts pinned pesos prices, supply permission, reserve cap and finite local replenishment.",
       "remaining": "Complete authoring, finite stores, transport, consumption and saved ownership.",
       "acceptance": "Data and actual consumption/carry effects",
       "evidence": [
         "E-PUBLISHED",
         "E-CONFLICTS",
         "E-STATIONED-ARTILLERY",
-        "E-ARTILLERY-CREW-LOADING"
+        "E-ARTILLERY-CREW-LOADING",
+        "E-ARTILLERY-SUPPLY"
       ]
     },
     {
@@ -3438,7 +3472,7 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain six finite personal supply quantities. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of six personal supply types can gate dialogue, chapters and failure. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI. PR #85 publishes an optional pinned cartridge unit price for deployment and finite return credit, after exact-head CI. PR #98 adds pinned editable militia patrol rules.",
-      "local": "Physical inventory, fittings and merchants are more complete locally but not generally authored. PATROLRULES-01 tracks optional patrol activation, timing and exploration energy settings.",
+      "local": "Physical inventory, fittings and merchants are more complete locally but not generally authored. PATROLRULES-01 tracks optional patrol activation, timing and exploration energy settings. ARTILLERYSUPPLY-01 accepts pinned pesos prices, supply permission, reserve cap and finite local replenishment.",
       "remaining": "Add artillery, ammunition types and dealer pricing, fittings, merchant stock, buyback and replenishment authoring; integrate civilian belongings and complete physical custody.",
       "acceptance": "Create each supported equipment type; buy/use/trade/reload without duplication or lost instance data.",
       "evidence": [
@@ -3454,7 +3488,8 @@
         "E-PARTIAL-RELOAD",
         "E-WEAPON-READINESS",
         "E-CARTRIDGE-PRICE",
-        "E-PATROL-RULES"
+        "E-PATROL-RULES",
+        "E-ARTILLERY-SUPPLY"
       ]
     },
     {
@@ -5336,13 +5371,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "75b6409fa12ade7c00f1ea0207e421f59245f579",
-    "total": 1032,
-    "passed": 1032,
+    "source": "8f6410ddbd641c161d1a31e9dc18694d1bf4b348",
+    "total": 1044,
+    "passed": 1044,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-STATIONED-ARTILLERY"
+    "evidenceId": "E-ARTILLERY-CREW-LOADING"
   }
 }
