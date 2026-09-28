@@ -52,13 +52,17 @@ Activá «Cambiar los pesos al elegir esta opción», elegí si el jugador paga 
 
 ## Movimientos por diálogo
 
-En una opción, activá «Llamar a otro personaje al elegir esta opción» y elegí otro habitante creado en el editor. Debe estar consciente en el mismo sector y tener un camino libre. El juego elige una casilla disponible junto al interlocutor. El destino queda fijado en ese lugar, aunque después el interlocutor se mueva.
+En una opción, activá «Dar una orden de movimiento al elegir esta opción», elegí «Venir a este lugar» y seleccioná otro habitante creado en el editor. Debe estar consciente en el mismo sector y tener un camino libre. El juego elige una casilla disponible junto al interlocutor. El destino queda fijado en ese lugar, aunque después el interlocutor se mueva.
 
 El personaje camina, abre puertas utilizables y espera al llegar. Un bloqueo pausa la marcha; el peligro lo hace buscar refugio y después retomar el camino. Las heridas incapacitantes detienen el movimiento. Guardar y volver al sector conservan la orden. Si su rutina diaria lo lleva a otra celda, esa orden local deja de aplicarse. Incorporarlo lo quita de la escena; si vuelve a la misma aparición, puede retomar el encuentro.
 
 Cada opción emite una sola orden. Otra opción puede darle otro destino. Repetir una opción ya usada no repite la orden anterior. Si faltan el personaje o el camino, la opción explica el problema. Un pago o un cambio de encargo de esa misma opción tampoco se aplica. La referencia impide eliminar al personaje desde el editor.
 
 Para esperar la llegada, agregá la condición «Personaje en su encuentro» a la opción que sigue. Elegí el habitante que debe llegar. La opción aparece cuando está consciente, sin peligro inmediato y en el destino de su última llamada dentro del sector abierto. Una orden pendiente o un tiempo transcurrido no bastan. Podés combinar esta condición con otras y usar la misma opción para completar un encargo o pagar una recompensa una sola vez. Guardar y volver al sector conservan la llegada si el personaje sigue en ese lugar.
+
+Para terminar el encuentro, elegí «Retomar su rutina» en «Orden del personaje». Podés elegir al propio interlocutor o a otro habitante. Debe estar consciente en el sector y tener un encuentro pendiente. La orden libera su destino; las reglas habituales de peligro y conversación siguen vigentes. La condición «Personaje en su encuentro» deja de cumplirse al liberarlo, aunque todavía esté parado en esa casilla.
+
+Podés combinar esa salida con completar el encargo y pagar una recompensa. Todo se aplica junto. Si falta un requisito o dinero, el encuentro conserva su estado. Guardar conserva la salida. Una opción ya usada no libera un encuentro posterior ni repite el pago; para otro encuentro usá otra opción.
 
 Por ahora el destino es el lugar del interlocutor. Faltan los marcadores del mapa, las acciones al llegar, las secuencias de varios actores y los disparadores automáticos. Esta función no permite llamar a candidatos del boletín ni cambia las escenas históricas.
 
@@ -220,3 +224,5 @@ Los mandos históricos conservan su servicio permanente, requisitos de reclutami
 `tests/dialogue-movements.test.mjs` comprueba la llamada real, marcha, espera, guardado, reentrada, nuevas órdenes, muerte y cambio diario de sector. Las pruebas de rutinas usan casas preparadas para comprobar puertas, obstáculos, alarma y refugio. El editor y el juego montados comprueban creación, referencias y ejecución con guardado. La [verificación de encuentros](../verification/dialogue-movements.md) detalla sus límites.
 
 `tests/meeting-arrivals.test.mjs` comprueba llegada real, rechazo anticipado, reentrada y recompensa única. Algunos casos preparados aíslan alarma, incapacidad y bloqueo; la recuperación usa el reloj y la marcha habituales. El editor y el juego montados verifican la condición y su guardado. La [verificación de llegada](../verification/meeting-arrivals.md) registra el alcance.
+
+`tests/meeting-release.test.mjs` comprueba salida real, rutina posterior, guardado, salida desde el propio personaje y transacciones combinadas. El editor montado conserva la orden; el juego montado verifica una salida y una recompensa tras un doble clic. La [verificación de salida](../verification/meeting-release.md) registra el alcance.
