@@ -24,7 +24,10 @@ Runtime source: `faf262934a02efe6ba9fa5fe7682cb267ff269c7`.
 The full suite passed **711/711 tests**, with no failures or skips (186799 ms).
 Types, production export (721 files, 631 asset references) and all 36 numerical
 baseline checks passed. The documentation audit retains 187 requirements and
-26 evidence records. Exact-head CI is required before merge.
+26 evidence records. [PR #49](https://github.com/fsodano/granaderos/pull/49)
+was accepted at `62c2930c4053a08a6b0a12a296e9c0026d2410ca` after
+[exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36380575045/job/108795325989)
+passed; merge commit `ab5d50441c8d1ab9f4a3888421fd4e19205c3fa7`.
 
 - `tests/campaign-rules.test.mjs`: package round-trip and malformed values; original
   defaults; initial funds once; actual hiring and free personal-character creation
@@ -49,7 +52,9 @@ baseline checks passed. The documentation audit retains 187 requirements and
 RULES-01 closes only this supply subset. STORY-05 and STORY-06 remain partial.
 Mission allies retain their own supplies. Priming powder, flints, ammunition
 types, cartridge prices, care, progression, merchant stocks, starting ownership
-and campaign roles still need authoring. A zero-money campaign may require a free
-personal character and zero-cost deployment settings; authoring does not promise
+and campaign roles still needed authoring at this checkpoint. A later delivery
+adds [starting control and loyalty](starting-territory.md), while alternate
+headquarters and historical role rules remain open. A zero-money campaign may
+require a free personal character and zero-cost deployment settings; authoring does not promise
 that arbitrary settings produce a balanced or completable scenario. No complete
 campaign, live-browser or sustained loaded-battle performance acceptance is claimed.

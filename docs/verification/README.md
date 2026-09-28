@@ -30,6 +30,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Authored melee weapons](authored-blades.md)
 - [Primary and secondary troop blade loadouts](force-blades.md)
 - [Initial funds and cartridge allotments](campaign-supply-rules.md)
+- [Starting territorial control and loyalty](starting-territory.md)
 - [Story editor](../development/story-editor.md)
 - [Sector editor](../development/sector-editor.md)
 

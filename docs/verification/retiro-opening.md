@@ -1,7 +1,7 @@
 # Retiro opening: accepted scope and limits
 
-New stock campaigns and campaigns launched with the story editor start with
-Retiro as the only controlled sector. They have 3,200 pesos, no recruits and no
+At this checkpoint, new stock campaigns and campaigns launched with the story
+editor start with Retiro as the only controlled sector. They have 3,200 pesos, no recruits and no
 custom character. Initial daily income is Retiro's 80 pesos. Buenos Aires and
 Ensenada must be liberated; an ordinary travel order cannot grant control.
 
@@ -63,7 +63,9 @@ lost a custom-only seed-8 assault; one-person departure is not a promise that a
 solo character can win every battle. No combat rules or enemy strength were
 changed to obtain the hired-squad result.
 
-Starting ownership is not yet editable in the story package. The broader rule
-editor remains separate work. No new browser playthrough or loaded-combat
-performance measurement was done here. Existing route failures in the dated
+Starting ownership was not editable at this checkpoint. Later deliveries add
+[funds and cartridge allotments](campaign-supply-rules.md) and
+[starting control and loyalty](starting-territory.md); the stock and default
+package retain this opening. The broader rule editor remains separate work.
+No new browser playthrough or loaded-combat performance measurement was done here. Existing route failures in the dated
 formal audit are retained until their own acceptance passes.

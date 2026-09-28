@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-09-28",
-  "baseline": "faf262934a02efe6ba9fa5fe7682cb267ff269c7",
+  "baseline": "275d98d60df50d715ed906dc7058f596c62aec87",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
   "evidence": [
@@ -152,7 +152,13 @@
     {
       "id": "E-SUPPLY-RULES",
       "path": "docs/verification/campaign-supply-rules.md",
-      "description": "Initial treasury and per-firearm player/enemy/militia cartridge allotments are pinned in content. Actual entry, attack, payment/refund, militia firing and save/reentry preserve supplies. Mounted editor and game cover authoring, launch, price and exact autosave. Does not establish broad economy, ammunition types or full campaign balance."
+      "description": "Initial treasury and per-firearm player/enemy/militia cartridge allotments are pinned in content. Actual entry, attack, payment/refund, militia firing and save/reentry preserve supplies. Mounted editor and game cover authoring, launch, price and exact autosave. Does not establish broad economy, ammunition types or full campaign balance.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36380575045/job/108795325989"
+    },
+    {
+      "id": "E-STARTING-TERRITORY",
+      "path": "docs/verification/starting-territory.md",
+      "description": "Authored starting control and loyalty apply once to the thirteen localities. Actual hire destinations, arrival, supply connectivity, daily income, militia eligibility, travel, exploration entry and hostile attack use the resulting state. Mounted editor and rendered desk/map show the choices. Later territorial changes use an explicitly prepared saved-state fixture; no complete campaign or alternate headquarters is accepted."
     }
   ],
   "queue": [
@@ -296,6 +302,31 @@
         "tests/campaign-rules.test.mjs",
         "tests/campaign-rules-ui.test.mjs",
         "tests/story-editor.test.mjs"
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/49"
+    },
+    {
+      "id": "TERRITORY-01",
+      "group": "Published deliveries",
+      "requirement": "Author initial locality control and loyalty without resetting later campaign territory",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "The Rules form sets patriot/royalist control and 0\u2013100 loyalty for all thirteen localities. Retiro remains the required headquarters. Actual campaign systems use the chosen state; startup grants no victory, reward or militia. The desk describes the initial map and the strategic map shows current ownership. Saves retain later changes.",
+      "local": "Open land stays neutral and districts share locality control. Alternate headquarters and campaign role composition remain separate.",
+      "remaining": "",
+      "acceptance": "Validate complete territory maps and original/older defaults; author, undo and restore through editor controls; launch real arrivals, travel, sector entry, neighbor assault and daily income; check supply and militia requirements; preserve later saved ownership and reject altered pinned content; render initial/current territory accurately.",
+      "evidence": [
+        "E-STARTING-TERRITORY"
+      ],
+      "parents": [
+        "STORY-05",
+        "STORY-07"
+      ],
+      "testFiles": [
+        "tests/starting-territory.test.mjs",
+        "tests/starting-territory-render.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/retiro-start-render.test.mjs"
       ]
     },
     {
@@ -616,7 +647,7 @@
       "requirement": "Retiro-only startup and free first-person phase advance with saved continuation",
       "status": "VERIFIED",
       "priority": "P0",
-      "published": "Stock and authored starts have only Retiro, pesos-only finance, optional free personal creation, all paid terms and arrival-gated service. Hired-only saves open the map. A real first conquest retains casualties and saves.",
+      "published": "Stock and default authored starts have only Retiro, pesos-only finance, optional free personal creation, all paid terms and arrival-gated service. Hired-only saves open the map. A real first conquest retains casualties and saves.",
       "local": "Earlier broader development-workspace opening and route evidence remains separate.",
       "remaining": "",
       "acceptance": "Empty, custom, hired and mixed starts; no fee or unlock from a failed/cancelled/pending hire; controlled reception; headquarters supply/loss; prior saves; real first hired-squad battle and return. Full San Lorenzo and complete campaign routes are outside this bounded row.",
@@ -1736,14 +1767,15 @@
       "requirement": "Configurable game rules and campaign roles",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves.",
+      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with Retiro retained as headquarters.",
       "local": "Larger systems still embed many rules and historical identity gates.",
-      "remaining": "Extract remaining care, combat, economy, progression, opposition and role rules, including starting ownership and campaign identity gates.",
+      "remaining": "Extract remaining care, combat, economy, progression, opposition and role rules, including alternate headquarters and campaign identity gates.",
       "acceptance": "Change supported rules and replace role identities through the editor, then run/save the resulting campaign.",
       "evidence": [
         "E-PUBLISHED",
         "E-CONFLICTS",
-        "E-SUPPLY-RULES"
+        "E-SUPPLY-RULES",
+        "E-STARTING-TERRITORY"
       ]
     },
     {
@@ -1768,14 +1800,16 @@
       "id": "STORY-07",
       "group": "Story and integration",
       "requirement": "Campaign composition and an independent second campaign",
-      "status": "MISSING",
+      "status": "PARTIAL",
       "priority": "P1",
-      "published": "Existing historical chapter and ending logic.",
+      "published": "Initial funds, cartridge allotments and locality control/loyalty are configurable. Historical headquarters, chapter and ending logic still define the campaign.",
       "local": "No second complete campaign accepted.",
-      "remaining": "Author starting ownership/resources, chapters, roles, objectives and endings.",
+      "remaining": "Author alternate headquarters, chapters, roles, objectives and endings; finish an independent second campaign.",
       "acceptance": "Build and finish a distinct campaign with no engine source changes.",
       "evidence": [
-        "E-CONFLICTS"
+        "E-CONFLICTS",
+        "E-SUPPLY-RULES",
+        "E-STARTING-TERRITORY"
       ]
     },
     {
@@ -3564,13 +3598,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "faf262934a02efe6ba9fa5fe7682cb267ff269c7",
-    "total": 711,
-    "passed": 711,
+    "source": "275d98d60df50d715ed906dc7058f596c62aec87",
+    "total": 717,
+    "passed": 717,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-SUPPLY-RULES"
+    "evidenceId": "E-STARTING-TERRITORY"
   }
 }
