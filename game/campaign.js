@@ -7,7 +7,7 @@ import {updateContentQuests} from './content-quests.js';
 import {dialogueForNPC,chooseDialogue,validateSavedDialogues} from './content-dialogue.js';
 import {acknowledgeCivilians,transferCivilian,validateCampaignCivilians,migrateCampaignCivilians} from './campaign-civilians.js';
 import {synchronizeCampaignPresence,validateCampaignPresence,acknowledgeSuccessionDeaths} from './campaign-presence.js';
-import {gainsExperience,characterForOperative,isWorldCharacter} from './content-character-ids.js';
+import {isContractOperative,gainsExperience,characterForOperative,isWorldCharacter} from './content-character-ids.js';
 import {campaignPlace,worldCell,locationId,validWorldLocation,worldOwner,cellTravelPlan,cellTravelReason,cellStepHours,adjacentCells} from './world-cells.js';
 import {compactCellScene,expandCellScene,cellSceneSaveReplacer} from './cell-scene-storage.js';
 import {validateForceWeapon} from './content-force-equipment.js';
@@ -126,7 +126,7 @@ export function campaignObjectives(s){
   const index=campaignChapterIndex(s);return campaignChapters(s).map((p,i)=>({...p,complete:campaignStory(s)?i<s.campaignProgress.completed.length:i<s.phase||(i===4&&s.completed),active:i===index&&!s.completed&&!s.defeated}));
 }
 export function availableActions(s){
-  return {recruits:OPERATIVES.map(o=>({...o,...recruitmentStatus(s,o.id)})),destinations:CAMPAIGN_SECTORS.filter(x=>x.id!==s.location),phase:campaignChapters(s)[campaignChapterIndex(s)]};
+  return {recruits:rosterFor(s).filter(o=>o.id!==1000&&!isContractOperative(s,o)).map(o=>({...o,...recruitmentStatus(s,o.id)})),destinations:CAMPAIGN_SECTORS.filter(x=>x.id!==s.location),phase:campaignChapters(s)[campaignChapterIndex(s)]};
 }
 function hasReadyCombatant(s){return s.recruited.some(id=>s.operativeState[id]?.alive&&s.operativeState[id].hp>0&&!s.operativeState[id].captured);}
 function endingSpeech(s){for(const op of rosterFor(s).filter(o=>s.recruited.includes(o.id)&&s.operativeState[o.id]?.alive)){const line=speechFor(op,'ending');if(line?.trim())note(s,`${op.name}: «${line}»`);}}

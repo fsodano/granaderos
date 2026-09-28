@@ -20,7 +20,7 @@ Las identidades nuevas no reciben poderes por ocupar el número de un mando hist
 
 La ficha permite elegir especialidades aplicadas por las reglas actuales, equitación y progreso por experiencia o nivel fijo. Equitación experta garantiza una destreza ecuestre mínima de 80. Con ambas opciones de progreso se conserva el entrenamiento práctico de atributos. Las especialidades llegan al combate y a la instrucción de milicia; un instructor nuevo puede guardar y continuar un curso. Los contratables nuevos pueden tener carácter, frases y apariencia propios. Los habitantes nuevos tienen diálogos con opciones. Los encargos editables se conectan a las opciones de diálogo y tienen un registro en la carta de campaña.
 
-Todos estos candidatos se incorporan por contrato desde el boletín. Una paga de cero es un contrato gratuito con el plazo elegido, no servicio permanente. El editor protege a los mandos históricos de eliminación y duplicación hasta separar sus funciones de campaña. La ficha permite elegir el arma principal y el arma blanca inicial. Un paquete anterior sin esta selección conserva el equipo original del personaje.
+Todos estos candidatos se incorporan por contrato desde el boletín. Una paga de cero es un contrato gratuito con el plazo elegido, no servicio permanente. El avance histórico protege a sus mandos. Con capítulos propios, podés quitarlos o copiarlos como habitantes independientes, sin transferir sus funciones históricas. La ficha permite elegir el arma principal y el arma blanca inicial. Un paquete anterior sin esta selección conserva el equipo original del personaje.
 
 ## Crear habitantes del mundo
 
@@ -32,9 +32,21 @@ El «Tipo de servicio» permite elegir servicio permanente sin paga o contrato p
 
 La conversación muestra el plazo y el precio antes de contratar; el botón queda deshabilitado si faltan pesos. El servicio empieza en esa celda, sin viaje de llegada. Al vencer durante un despliegue, el personaje espera a que salgas del sector. Después vuelve según su aparición configurada, conservando su salud. Puede renovarse el contrato desde la campaña. Despedirlo no devuelve el anticipo.
 
-Duplicar un habitante copia su configuración y sus celdas con otra identidad. Eliminarlo quita su aparición; si otra regla depende de él, primero se debe quitar esa referencia. Deshacer, rehacer, exportar y recuperar el borrador conservan estos cambios. Las campañas ya iniciadas mantienen su propio paquete. Los mandos históricos siguen protegidos hasta separar sus funciones de campaña.
+Duplicar un habitante copia su configuración y sus celdas con otra identidad. Eliminarlo quita su aparición; si otra regla depende de él, primero se debe quitar esa referencia. Deshacer, rehacer, exportar y recuperar el borrador conservan estos cambios. Las campañas ya iniciadas mantienen su propio paquete. Los mandos necesarios siguen protegidos en el avance histórico; los capítulos propios permiten reemplazar su elenco.
 
 Los habitantes usan la salud persistente: cambiar de celda, guardar o incorporarse no los cura. Si dejan la escuadra, vuelven con su estado de soldado. Su progreso puede conservar el nivel inicial o ganar experiencia según la ficha.
+
+## Reemplazar el elenco histórico
+
+Elegí **Capítulos propios** en **Reglas**. Después podés eliminar un personaje histórico desde su ficha. Si un capítulo, diálogo, encargo o sucesor lo usa, primero quitá o cambiá esa referencia. Eliminarlo también quita su aparición. La campaña nueva no lo restaura como contacto ni al guardar y cargar.
+
+**Copiar como habitante independiente** conserva la ficha, retrato, equipo, voz, apariencia, habilidades y celdas del personaje en una identidad nueva. La copia empieza como recluta local, con servicio permanente sin paga, progreso por experiencia y sin requisitos históricos de incorporación. Su saludo, diálogo, servicio y apariciones se pueden editar. No recibe funciones estratégicas por tener el retrato o los atributos del original. Podés cambiarle el nombre y después quitar al original. Deshacer y rehacer conservan ambos pasos.
+
+En **Reglas**, **Incluir habitantes genéricos del mapa original** controla los contactos sin ficha original, como el sargento del cuartel o los guías de las postas. Desactivá la opción para usar solamente los habitantes de tu catálogo. No elimina personajes con ficha. Las campañas normales y los paquetes anteriores incluyen esos contactos.
+
+Podés quitar todo el elenco y crear otro. Un catálogo vacío permite crear al granadero del jugador al iniciar. El editor no reutiliza los puestos reservados de personajes originales para una identidad nueva. Las campañas iniciadas conservan su propio catálogo y esta opción, aunque después cambies el borrador.
+
+Si volvés al avance histórico con mandos faltantes, el inicio queda bloqueado hasta recuperarlos. El botón para preparar El Plumerillo no aparece si Beltrán no forma parte del catálogo. La copia de un mando no hereda ese taller, su bonificación estratégica ni su papel de misión. La reasignación de esas funciones, las facciones, los mandos enemigos, la diplomacia y los eventos del mundo todavía requieren su propia edición.
 
 ## Diálogos con opciones
 
@@ -150,7 +162,7 @@ Un encuentro táctico puede completar un encargo, pero el capítulo y la victori
 
 El contenido y la secuencia de capítulos cumplidos quedan en la partida. Cambiar el borrador no cambia una campaña iniciada. No se puede eliminar un personaje o encargo usado por estos objetivos. Elegir **Campaña histórica original** recupera el avance original; deshacer recupera los capítulos propios anteriores.
 
-Este control reemplaza el avance, los objetivos y el final originales. San Lorenzo y Yatasto quedan disponibles solamente con el avance histórico. El mapa, la economía, las incursiones, los contactos y los requisitos de reclutamiento históricos siguen vigentes. Los capítulos propios no habilitan esas funciones por su número. Bouchard y San Martín conservan requisitos de incorporación ligados a las misiones originales y no pueden incorporarse con capítulos propios. Para esos papeles, usá habitantes nuevos hasta disponer de funciones históricas editables. Todavía no se pueden quitar o reasignar todos los mandos históricos ni crear una segunda campaña completamente independiente.
+Este control reemplaza el avance, los objetivos y el final originales. San Lorenzo y Yatasto quedan disponibles solamente con el avance histórico. El mapa, la economía, las incursiones, los contactos y los requisitos de reclutamiento históricos siguen vigentes. Los capítulos propios no habilitan esas funciones por su número. Bouchard y San Martín conservan requisitos de incorporación ligados a las misiones originales y no pueden incorporarse con capítulos propios. Para esos papeles, usá habitantes nuevos hasta disponer de funciones históricas editables. Los capítulos propios permiten quitar y copiar los mandos como habitantes independientes. Sus funciones históricas todavía no se reasignan, y la composición completa de una segunda campaña sigue pendiente.
 
 ## Fondos y abastecimiento
 
@@ -230,7 +242,7 @@ Esta opción activa habitantes nuevos. Los mandos históricos conservan sus func
 
 ## Borradores que todavía no llegan a la campaña
 
-El mapa permite marcar cualquier celda con una X desde la ficha del personaje, incluido terreno fuera de las localidades. Se pueden simular ubicaciones con una semilla. Las ubicaciones fijas, el sorteo inicial y los cambios diarios ya se aplican a las nuevas campañas. Eliminar mandos históricos y usar opciones de historia no compatibles todavía bloquea el inicio de campaña.
+El mapa permite marcar cualquier celda con una X desde la ficha del personaje, incluido terreno fuera de las localidades. Se pueden simular ubicaciones con una semilla. Las ubicaciones fijas, el sorteo inicial y los cambios diarios ya se aplican a las nuevas campañas. Eliminar mandos históricos bloquea el inicio si se conserva el avance histórico. Las opciones de historia no compatibles también impiden iniciar.
 
 Los mandos históricos conservan su servicio permanente, requisitos de reclutamiento y funciones de campaña. Sus habilidades de combate ya son configurables. Quedan pendientes su extracción, las transferencias de funciones a sucesores, los efectos sobre objetos y funciones de campaña, los objetivos sobre objetos y escoltas, las escenas dirigidas y la composición completa de campaña. Esta entrega no completa todo el editor de historia.
 
@@ -298,3 +310,5 @@ Los mandos históricos conservan su servicio permanente, requisitos de reclutami
 `tests/import-supply-rules.test.mjs` verifica puertos, plazos, pedidos deshabilitados, cobro único, plazo guardado, entrega, bloqueo y ocupación, variantes equipadas y guardados. Una incursión naval real que coincide con la entrega conserva el pedido pendiente. El editor y la armería montados cubren los controles, deshacer, lanzar, comprar y mostrar las demoras. Ver [importaciones configurables](../verification/import-supply-rules.md).
 
 `tests/campaign-story.test.mjs` verifica capítulos ordenados, llegada pagada, vencimiento de contrato, encargos resueltos por diálogo, derrota por plazo y muerte táctica real, finales simultáneos, interrupción de viajes y guardados inválidos. El editor montado cubre orden, condiciones, referencias, deshacer y lanzamiento; las vistas muestran el objetivo y el final propios. La [verificación de capítulos](../verification/campaign-story.md) distingue estas rutas breves de la campaña completa pendiente.
+
+`tests/campaign-cast.test.mjs` recorre contratación, encuentro, diálogo, encargo y final con solo dos identidades nuevas; comprueba un elenco vacío con granadero gratuito, los habitantes genéricos opcionales y que los personajes eliminados no vuelvan al cargar. El editor montado copia y reemplaza un mando, guarda su incorporación local y verifica que no herede la bonificación de marcha. La [verificación del elenco](../verification/campaign-cast.md) registra los límites.

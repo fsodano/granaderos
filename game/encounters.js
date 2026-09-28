@@ -1,7 +1,7 @@
 import {contractQuote,CONTRACT_TERMS} from './contracts.js';
 import {campaignCivilian,civilianDiedHere} from './campaign-civilians.js';
 import {campaignPlace} from './world-cells.js';
-import {characterForOperative,isWorldCharacter,isContractOperative,operativeIdForCharacter} from './content-character-ids.js';
+import {legacyOperativeId,characterForOperative,isWorldCharacter,isContractOperative,operativeIdForCharacter} from './content-character-ids.js';
 import {characterPresentInSector} from './campaign-presence.js';
 import {authoredOperative} from './content-roster.js';
 import {CAMPAIGN_SECTORS,OPERATIVES} from './data.js';
@@ -27,7 +27,8 @@ export const ENCOUNTERS=[...local.map(n=>({...n,name:[...OPERATIVES,...CIVIC_REC
 export const canRecruitEncounter=n=>n.operativeId!==undefined&&n.recruitable!==false;
 export function encounterDefinitions(s){
  const content=s.contentCampaign?.package;
- return [...ENCOUNTERS,...(content?.characters??[]).filter(isWorldCharacter).map(c=>{
+ const original=ENCOUNTERS.filter(n=>n.operativeId===undefined?content?.includeOriginalResidents!==false:!content||content.characters.some(c=>legacyOperativeId(c.id)===n.operativeId));
+ return [...original,...(content?.characters??[]).filter(isWorldCharacter).map(c=>{
   const {dialogue,...encounter}=c.encounter;
   return {id:`authored-${c.id}`,contentId:c.id,operativeId:operativeIdForCharacter(content,c.id),name:c.name,sector:null,x:3,y:7,...encounter};
  })];
@@ -39,7 +40,7 @@ export function encountersFor(s,sector){
   if(s.civilianState?.people[`npc-${n.id}`]?.health.hp===0)return false;
   if(n.operativeId===undefined)return n.sector===sector;
   const character=characterForOperative(s,n.operativeId);
-  if((n.operativeId>=100&&!character)||isContractOperative(s,{id:n.operativeId})||s.recruited.includes(n.operativeId)||s.operativeState?.[n.operativeId]?.alive===false)return false;
+  if((s.contentCampaign&&!character)||isContractOperative(s,{id:n.operativeId})||s.recruited.includes(n.operativeId)||s.operativeState?.[n.operativeId]?.alive===false)return false;
   return s.contentPresence&&character?characterPresentInSector(s,character.id,sector):n.sector===sector;
  }).map(n=>{
   const op=n.operativeId===undefined?null:authoredOperative(s,{id:n.operativeId,name:n.name});
