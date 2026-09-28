@@ -73,3 +73,11 @@ merchant stock, arbitrary item definitions or authored transfer of a predecessor
 role and inventory. Stock possession does not make a civilian an armed fighter.
 The separate complete inventory and custody requirements stay open. Simulation
 and mounted DOM checks do not establish live-browser usability or performance.
+
+## Publication
+
+[PR #81](https://github.com/fsodano/granaderos/pull/81) merged at
+2026-09-28 15:23:26 UTC as `08f18b09d207f98096e64a147be67756847a4af8`.
+[GitHub verification](https://github.com/fsodano/granaderos/actions/runs/36441194515/job/108991791999)
+passed at 15:21:57 UTC for the exact PR head
+`c01fa0db1ff85837dee9389a719959a4d207e0f9`.

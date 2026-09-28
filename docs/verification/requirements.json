@@ -338,7 +338,8 @@
     {
       "id": "E-CIVILIAN-SUPPLIES",
       "path": "docs/verification/civilian-finite-supplies.md",
-      "description": "Six finite personal supply quantities belong to the resident identity. Actual collection, partial transfers, critical aid, daily movement, recruitment, return, death succession, named ally consumption, legacy admission and pointer/keyboard controls are covered. 879 passing tests with zero failures/skips, types, production export and all 36 baseline checks; complete equipment, inventory and custody remain open."
+      "description": "Six finite personal supply quantities belong to the resident identity. Actual collection, partial transfers, critical aid, daily movement, recruitment, return, death succession, named ally consumption, legacy admission and pointer/keyboard controls are covered. 879 passing tests with zero failures/skips, types, production export and all 36 baseline checks; complete equipment, inventory and custody remain open.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36441194515/job/108991791999"
     },
     {
       "id": "E-SUPPLY-CONDITIONS",
@@ -421,7 +422,7 @@
       "requirement": "Keep finite resident supplies through collection, movement and service",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "The six personal supply quantities come from each resident identity. Paid adjacent collection from a body or unconscious resident reduces its stock; ordinary movement, service changes and saves retain the remainder. A successor keeps its separate allocation.",
+      "published": "The six personal supply quantities come from each resident identity. Paid adjacent collection from a body or unconscious resident reduces its stock; ordinary movement, service changes and saves retain the remainder. A successor keeps its separate allocation. Merged through PR #81 after exact-head CI.",
       "local": "Six simulations cover actual collection and finite aid, daily relocation, local recruitment and dismissal, actual death and successor, rejected/partial/capped transfers, older saves and actual named ally ration use. Mounted pointer and keyboard collection preserves quantities and reports them. A formerly collected resident entering the actual allied role also keeps its empty stock. The initial broad run reached historical victory but found an outdated treasury expectation: actual replenishment costs 86 pesos. The final corrected release source passes 879 tests with zero failures/skips; types, production export and all 36 baseline checks pass.",
       "remaining": "",
       "acceptance": "Author finite resident supplies, collect and spend them through actual orders, save and relocate, then recruit and return without replenishment. Confirm death, retain the empty body and activate a distinct successor with its own stock.",
@@ -439,7 +440,8 @@
         "tests/civilian-interaction.test.mjs",
         "tests/character-supplies.test.mjs",
         "tests/civilian-state.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/81"
     },
     {
       "id": "LOCALOPENING-01",
@@ -4669,13 +4671,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "6866d1d78bab58d9abc873eadcb028ad32e0f014",
-    "total": 872,
-    "passed": 872,
+    "source": "082ee305e239dbc1e6a2c53d446f2eca3ae9b15e",
+    "total": 879,
+    "passed": 879,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-LOCAL-OPENING"
+    "evidenceId": "E-CIVILIAN-SUPPLIES"
   }
 }
