@@ -1,7 +1,7 @@
 import {weaponSpecification} from './weapon-definition.js';
 // Pure HUD model for the tactical battle inspector and squad strip.
 // Read-only descriptors plus action-object constructors; no game rules.
-import {weaponFor, bladeFor, actionCosts, hasFirearm, carriedWeight, carryCapacity, WEAPONS, BLADES} from './tactical.js';
+import {weaponFor, bladeFor, actionCosts, reloadPlan, hasFirearm, carriedWeight, carryCapacity, WEAPONS, BLADES} from './tactical.js';
 
 const alive = u => u.hp > 0 && !u.routed && !u.unconscious;
 const hasTrait = (u, id) => Array.isArray(u.traits) && u.traits.includes(id);
@@ -121,6 +121,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
   const baseDisabled = !unitAlive || busy || !statusActive;
   const firearm = hasFirearm(u);
   const blade = bladeFor(u);
+  const loading=reloadPlan(u,state);
   const hasGun = (state.artillery || []).some(g => g.side === 'player');
   const cannonSelected = Boolean(ctx.cannonId);
 
@@ -131,7 +132,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
     charge: false,
     heal: false,
     loot: false,
-    reload: !firearm,
+    reload: !firearm || u.jammed || !loading.pa,
     reprime: !firearm,
     weapon: false,
     stance: false,
@@ -155,7 +156,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
   const pa = {
     fire: costs.fire,
     melee: costs.melee,
-    reload: costs.reload,
+    reload: state.mode==='exploration'?0:loading.pa,
     reprime: hasTrait(u, 'gunsmith_artillerist') ? 10 : 15,
     repair: hasTrait(u, 'gunsmith_artillerist') ? 18 : 25,
     brace: blade.ap,
@@ -179,6 +180,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
     const d = {id: def.id, label: def.label, kind: def.kind, disabled: baseDisabled || disabled[def.id]};
     if (def.id in pa) d.pa = pa[def.id];
     if (def.id in active) d.active = active[def.id];
+    if(def.id==='reload'){if(state.mode==='exploration')d.seconds=loading.pa?Math.max(1,Math.ceil(loading.pa*.06)):0;d.detail=loading.partial?`${loading.rounds} cartuchos; después faltan ${loading.remainingPA} PA.`:`${loading.rounds} cartuchos; recarga completa.`;}
     return d;
   });
 }

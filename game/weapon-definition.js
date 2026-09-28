@@ -1,3 +1,4 @@
+import {validateReloadProgress} from './weapon-reload.js';
 import {WEAPONS as ITEMS} from './data.js';
 import {WEAPONS as FIREARMS} from './firearm-definitions.js';
 import {BLADES} from './blade-definitions.js';
@@ -45,6 +46,7 @@ export function validateWeaponCarrier(value){
  if(value.jammed!==undefined)need(typeof value.jammed==='boolean','El atasco del arma no es válido.');
  const host=typeof value.weapon==='object'?value.weapon.id:value.weapon;
  const definition=contentWeaponOf(value);validateWeaponDefinition(definition,host);
+ validateReloadProgress(value.reloadProgress,weaponSpecification(value)?.capacity??0,value.loaded??0,Boolean(value.weaponDropped));
  if(value.weaponMetadata!==undefined)need(value.weaponMetadata&&typeof value.weaponMetadata==='object'&&Object.keys(value.weaponMetadata).length===1&&Object.hasOwn(value.weaponMetadata,'contentWeapon'),'Los datos del arma no son válidos.');
  const blade=contentWeaponOf(value,'blade');validateWeaponDefinition(blade,value.blade);
  if(value.bladeMetadata!==undefined)need(BLADES[value.blade]&&value.bladeMetadata&&Object.keys(value.bladeMetadata).length===1&&Object.hasOwn(value.bladeMetadata,'contentWeapon')&&blade,'Los datos del arma blanca no son válidos.');
@@ -67,7 +69,7 @@ export function validateWeaponReferences(state,value){
 export function weaponRecord(carrier,slot='primary'){
  const raw=slot==='blade'?carrier.blade:carrier.weapon,weapon=typeof raw==='object'?raw.id:raw;
  const definition=contentWeaponOf(carrier,slot);
- return {count:1,weapon,weight:definition?.weight??(FIREARMS[weapon]?4:1.3),loaded:slot==='primary'?(carrier.loaded??0):0,condition:slot==='primary'?(carrier.condition??100):(carrier.bladeCondition??100),jammed:slot==='primary'?Boolean(carrier.jammed):Boolean(carrier.bladeJammed),...(definition?{contentWeapon:structuredClone(definition)}:{})};
+ return {count:1,weapon,weight:definition?.weight??(FIREARMS[weapon]?4:1.3),loaded:slot==='primary'?(carrier.loaded??0):0,condition:slot==='primary'?(carrier.condition??100):(carrier.bladeCondition??100),jammed:slot==='primary'?Boolean(carrier.jammed):Boolean(carrier.bladeJammed),...(slot==='primary'&&carrier.reloadProgress!==undefined?{reloadProgress:carrier.reloadProgress}:{}),...(definition?{contentWeapon:structuredClone(definition)}:{})};
 }
 export function setWeaponDefinition(carrier,source,slot='primary'){
  const definition=contentWeaponOf(source);
