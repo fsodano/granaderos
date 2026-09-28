@@ -1,5 +1,5 @@
 import {acknowledgeCivilians,transferCivilian,validateCampaignCivilians,migrateCampaignCivilians} from './campaign-civilians.js';
-import {synchronizeCampaignPresence,validateCampaignPresence} from './campaign-presence.js';
+import {synchronizeCampaignPresence,validateCampaignPresence,acknowledgeSuccessionDeaths} from './campaign-presence.js';
 import {gainsExperience,characterForOperative,isWorldCharacter} from './content-character-ids.js';
 import {campaignPlace,worldCell,locationId,validWorldLocation,worldOwner,cellTravelPlan,cellTravelReason,cellStepHours,adjacentCells} from './world-cells.js';
 import {compactCellScene,expandCellScene,cellSceneSaveReplacer} from './cell-scene-storage.js';
@@ -42,6 +42,7 @@ export function rosterFor(s){return baseRosterFor(s).map(o=>{const record=s.oper
 export function deploymentCost(s){const roster=rosterFor(s);return s.squad.reduce((total,id)=>total+(weaponSpecification(roster.find(o=>o.id===id))?.capacity?10:0),0);}
 function returnTraining(s,id,report){validateTraining(report);for(const field of ['trainedStats','skillPractice'])if(report[field]!==undefined)s.operativeState[id][field]=clone(report[field]);}
 function returnEquipment(s,id,report,snapshot){
+ requireThat(s.operativeState[id].deathMinute===undefined||report.hp===0,'Una muerte confirmada no puede revertirse en el parte.');
  const actual=snapshot?.units.find(u=>u.side==='player'&&Number(u.id)===id);if(!actual)return;
  validateWeaponCarrier(actual);validateWeaponReferences(s,actual);
  if(report.inventory!==undefined)requireThat(JSON.stringify(report.inventory)===JSON.stringify(actual.inventory),'El inventario del parte no coincide con el sector.');
@@ -193,7 +194,7 @@ export function dispatchCampaign(previous,action){
         const seconds=(s.secondOfHour??0)+elapsed-previous,hours=Math.floor(seconds/3600);
         s.secondOfHour=seconds%3600;if(hours)tick(s,hours);
         // A death is confirmed at this tactical checkpoint, after its time has elapsed.
-        if(snapshot)acknowledgeCivilians(s,snapshot);
+        if(snapshot){acknowledgeCivilians(s,snapshot);acknowledgeSuccessionDeaths(s,snapshot);}
         s.pendingBattle.syncedSeconds=elapsed;break;
       }
       case 'wait':tick(s,action.hours??24);break;

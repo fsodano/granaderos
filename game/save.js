@@ -1,5 +1,5 @@
 import {validateCivilianScene,migrateActiveCivilians} from './campaign-civilians.js';
-import {validatePresenceScene,synchronizeCampaignPresence} from './campaign-presence.js';
+import {validatePresenceScene,synchronizeCampaignPresence,validateActiveSuccessionDeaths} from './campaign-presence.js';
 import {validateAbilityReferences} from './content-character-abilities.js';
 import {validatePresentationReferences} from './content-character-presentation.js';
 import {validateWeaponReferences,weaponSaveReplacer,restoreWeaponReferences} from './weapon-definition.js';
@@ -22,6 +22,6 @@ export function decodeSave(text){
   if(battle&&battle.battleId&&battle.battleId!==campaign.pendingBattle.id)throw Error('El reloj pertenece a otro despliegue.');
   if(battle&&(battle.sectorId!==campaign.pendingBattle.sector||!campaign.pendingBattle.squad.every(u=>battle.units.some(t=>t.side==='player'&&String(t.id)===String(u.id)))))throw Error('El destacamento guardado no corresponde al sector.');
   if(battle&&worldCell(battle.sectorId)?.anchor===false&&battle.sourceMapId!==battle.sectorId)throw Error('La escena guardada no corresponde a la celda.');
-  if(battle){migrateActiveCivilians(campaign,battle,{legacy:legacyCivilians});if(legacyCivilians)synchronizeCampaignPresence(campaign);validateCivilianScene(campaign,battle,{active:true});validatePresenceScene(campaign,battle);validateWeaponReferences(campaign,battle);validatePresentationReferences(campaign,battle);validateAbilityReferences(campaign,battle);}
+  if(battle){migrateActiveCivilians(campaign,battle,{legacy:legacyCivilians});if(legacyCivilians)synchronizeCampaignPresence(campaign);validateCivilianScene(campaign,battle,{active:true});validatePresenceScene(campaign,battle);validateActiveSuccessionDeaths(campaign,battle);validateWeaponReferences(campaign,battle);validatePresentationReferences(campaign,battle);validateAbilityReferences(campaign,battle);}
   return {campaign,battle};
 }

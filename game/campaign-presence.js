@@ -45,6 +45,21 @@ export function synchronizeCampaignPresence(state){
   if(state.pendingBattle&&!state.pendingBattle.sceneId)
     state.pendingBattle.npcs=(state.pendingBattle.npcs??[]).filter(n=>currentResident(state,n,state.pendingBattle.sector));
 }
+function successionActors(state,snapshot){
+ if(!state.contentPresence)return [];
+ const content=state.contentCampaign.package,sources=new Set(content.placements.filter(p=>p.afterDeath!==null).map(p=>operativeIdForCharacter(content,p.afterDeath)));
+ return snapshot.units.filter(u=>u.side==='player'&&!u.militia&&sources.has(Number(u.id))&&state.pendingBattle?.squad.some(o=>o.id===Number(u.id)));
+}
+export function acknowledgeSuccessionDeaths(state,snapshot){
+ for(const unit of successionActors(state,snapshot)){
+  const record=state.operativeState[Number(unit.id)];
+  need(record.deathMinute===undefined||unit.hp===0);
+  if(unit.hp===0){record.hp=0;record.alive=false;record.bleeding=0;}
+ }
+}
+export function validateActiveSuccessionDeaths(state,snapshot){
+ for(const unit of successionActors(state,snapshot))need(state.operativeState[Number(unit.id)].alive===(unit.hp>0));
+}
 export function validatePresenceScene(state,scene){
   if(!state.contentPresence||scene.sceneId)return;
   for(const npc of scene.npcs??[])need(currentResident(state,npc,scene.sectorId??scene.sector));

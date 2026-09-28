@@ -74,7 +74,9 @@ test('death during military service activates the same successor without restori
  let p=recruit(visit(ready(authored({delayMin:0,delayMax:0}))), 'pablo'),s=leave(p),id=numeric(s,'pablo');secureArea(s,'buenos_aires');
  s=order(s,{type:'travel',sector:'retiro'});s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});const request=s.pendingBattle;
  let b=createBattle(request.squad.map(u=>({...u,x:1,y:u.id===id?1:6})),{width:12,height:8,id:request.id,sector:request.sector,npcs:request.npcs,seed:45,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[{id:'guard',x:7,y:1,weapon:1802,ammo:0,fatigue:100,marksmanship:100}]});
- b=endTurn(b);assert.equal(b.units.find(u=>u.id===String(id)).hp,0);p=synced({campaign:s,battle:b});assert.equal(person(p.campaign,'sal').appeared,false);
+ b=endTurn(b);assert.equal(b.units.find(u=>u.id===String(id)).hp,0);p=synced({campaign:s,battle:b});assert.equal(person(p.campaign,'sal').appeared,true);p=save(p);assert.equal(p.campaign.operativeState[id].alive,false);
+ const forged=JSON.parse(encodeSave(p.campaign,p.battle));forged.battle.units.find(u=>u.id===String(id)).hp=1;assert.throws(()=>decodeSave(JSON.stringify(forged)));
+ const revived=p.battle.units.filter(u=>u.side==='player').map(u=>u.id===String(id)?{...u,hp:1}:u);assert.match(dispatchCampaign(p.campaign,{type:'battleResult',battleId:request.id,outcome:'retreat',sectorState:p.battle,survivors:revived}).lastError,/muerte confirmada/);
  s=order(p.campaign,{type:'battleResult',battleId:request.id,outcome:'retreat',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});assert.equal(s.operativeState[id].alive,false);assert.equal(person(s,'sal').appeared,true);assert.equal(s.contentPresence.receipts.length,1);assert.ok(!encountersFor(s,A).some(n=>n.contentId==='pablo'));assert.ok(save({campaign:s}));
 });
 
