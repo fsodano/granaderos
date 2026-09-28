@@ -44,8 +44,10 @@ No live-browser visual or performance acceptance is claimed.
 Release checks: **817/817 tests**, zero failures or skips (199,559 ms); type
 check; production export (722 files, 632 asset references); 36 baseline checks;
 documentation audit (207 requirements, all 50 original and 87 parity rows,
-46 evidence records); 171 changed-document local links. Exact-head GitHub CI
-is required before merge.
+46 evidence records); 171 changed-document local links.
+[PR #69](https://github.com/fsodano/granaderos/pull/69) merged after
+[CI](https://github.com/fsodano/granaderos/actions/runs/36417819140/job/108913070330)
+passed at `5ac433282f4c8d8caea6ab4686c5498391f8607a`.
 
 ## Limits
 
