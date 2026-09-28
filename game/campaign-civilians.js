@@ -96,6 +96,7 @@ export function acknowledgeCivilians(s,snapshot){
   const record=s.civilianState.people[civilianKey(n)];
   if((record||operativeId(n)===57)&&!s.recruited.includes(operativeId(n))){const current=physical(campaignCivilian(s,n));if(!same(physical(n),current)){for(const k of fields)delete n[k];Object.assign(n,current);}}
  }
+ for(const scene of [...Object.values(s.sectorStates),...Object.values(s.sceneStates),request])scene.npcs=(scene.npcs??[]).filter(n=>n.hp>0||civilianDiedHere(s,n,scene.sectorId??scene.sector,scene.sceneId??null));
 }
 export function transferCivilian(s,n){
  const key=civilianKey(n);
@@ -141,7 +142,10 @@ export function migrateCampaignCivilians(s){
   const old=s.civilianState.people[civilianKey(n)];
   if(!old||n.hp<old.health.hp)remember(s,n,scene);
  }
- for(const scene of scenes)for(const n of scene.npcs??[])Object.assign(n,structuredClone(s.civilianState.people[civilianKey(n)].health));
+ for(const scene of scenes){
+  for(const n of scene.npcs??[])Object.assign(n,structuredClone(s.civilianState.people[civilianKey(n)].health));
+  scene.npcs=(scene.npcs??[]).filter(n=>n.hp>0||civilianDiedHere(s,n,scene.sectorId??scene.sector,scene.sceneId??null));
+ }
  return true;
 }
 export function migrateActiveCivilians(s,battle,{legacy=false}={}){

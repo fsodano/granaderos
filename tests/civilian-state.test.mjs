@@ -131,12 +131,15 @@ test('a former recruit returns with the service record, rather than the old civi
 
 test('mission contacts share San Martín health and a dead essential speaker causes a saved explicit defeat',()=>{
  let s=order(initialCampaign(8),{type:'recruitCivic',id:110,term:'month'});s.phase=2;s.flags.sanLorenzo=true;s.flags.northPact=true;
- for(const id of ['buenos_aires','cordoba','tucuman','salta'])s.sectors[id].owner='patriot';
+ // Established northern-chapter fixture includes the retained earlier ally.
+ s.missionAllies.san_lorenzo=createBattle([sanLorenzoAlly(s)],{width:8,height:8,enemies:[],exploration:true}).units[0];
+ for(const id of ['buenos_aires','cordoba','mendoza','tucuman','salta'])s.sectors[id].owner='patriot';
+ s=order(s,{type:'travel',sector:'mendoza'});s=leave(visit(s));assert.ok(s.sectorStates.mendoza.npcs.some(n=>n.id==='san-martin'));
  s=order(s,{type:'travel',sector:'tucuman'});s=order(s,{type:'visitMission',mission:'yatasto'});let pair={campaign:s,battle:enterSector(s.pendingBattle)};
  pair=approach(pair,'yatasto-san-martin');pair=act(pair,{type:'melee',targetId:'yatasto-san-martin'});assert.equal(pair.campaign.operativeState[57].hp,pair.battle.npcs.find(n=>n.id==='yatasto-san-martin').hp);
  const hp=pair.campaign.operativeState[57].hp;assert.equal(sanLorenzoAlly(pair.campaign).hp,hp);assert.equal(encountersFor(pair.campaign,'mendoza').find(n=>n.id==='san-martin').hp,hp);
  while(pair.battle.npcs.find(n=>n.id==='yatasto-san-martin').hp>0)pair=act(pair,{type:'melee',targetId:'yatasto-san-martin'});
- assert.equal(pair.campaign.defeated,true);assert.equal(pair.campaign.missions.yatasto.stage,'failed');pair=saved(pair);s=leave(pair);assert.equal(s.defeated,true);assert.ok(saved({campaign:s}));assert.equal(encountersFor(s,'mendoza').some(n=>n.id==='san-martin'),false);
+ assert.equal(pair.campaign.defeated,true);assert.equal(sanLorenzoAlly(pair.campaign).hp,0);assert.equal(pair.campaign.missions.yatasto.stage,'failed');assert.ok(!pair.campaign.sectorStates.mendoza.npcs.some(n=>n.id==='san-martin'));pair=saved(pair);s=leave(pair);assert.equal(s.defeated,true);assert.ok(saved({campaign:s}));assert.equal(encountersFor(s,'mendoza').some(n=>n.id==='san-martin'),false);
 });
 
 
