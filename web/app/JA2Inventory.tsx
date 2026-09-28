@@ -64,6 +64,7 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
   const def = (id: string) => descriptors.find((d: any) => d.id === id);
   const busyDisabled = busy || battle.status !== 'active' || !inv.unitAlive;
   const equipDisabled = busyDisabled || (battle.mode !== 'exploration' && unit.ap < 6);
+  const dropDisabled = busyDisabled || (battle.mode !== 'exploration' && unit.ap < 4);
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
       const editing = Boolean((e.target as HTMLElement)?.closest('input,select,textarea,[contenteditable]:not([contenteditable="false"]),[role="textbox"]'));
@@ -129,6 +130,7 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
               {item.equippable && <>
                 <button className="line-button" disabled={equipDisabled} onClick={() => onOrder(backpackEquipAction(item.key, 'primary'))}>Equipar principal · 6 PA</button>
                 {blade && <button className="line-button" disabled={equipDisabled} onClick={() => onOrder(backpackEquipAction(item.key, 'blade'))}>Equipar secundaria · 6 PA</button>}
+                <button className="line-button" disabled={dropDisabled} onClick={() => onOrder({type:'drop',inventoryKey:item.key})}>Dejar una pieza en el suelo · {battle.mode==='exploration'?'1 s':'4 PA'}</button>
               </>}
             </div>
           );

@@ -61,7 +61,7 @@ export function inventoryModel(state, unit) {
     {id: 'torches', label: 'Antorchas', count: unit.torches},
   ];
   const backpack = Object.entries(unit.inventory || {})
-    .filter(([, record]) => record && typeof record === 'object')
+    .filter(([, record]) => record && typeof record === 'object' && record.count > 0)
     .map(([key, record]) => {
       const weapon = weaponSpecification(record);
       const blade = BLADES[record.weapon];
