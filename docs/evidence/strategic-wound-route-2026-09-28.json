@@ -1,0 +1,93 @@
+{
+  "date": "2026-09-28",
+  "source": "3963284a8146b9097cb01f987223cf06f77d48bf",
+  "method": "Fresh unchanged default content, seed 8; actual battle orders, finite field and strategic care, paid supplies and normal save codec. Extracted from the passing historical route in the complete release run. The final complete suite passes; this does not establish live-browser performance.",
+  "previousFailedSource": {
+    "source": "560b41b37151e336f56501a29edb85675b0dce99",
+    "total": 932,
+    "passed": 931,
+    "failed": 1,
+    "skipped": 0,
+    "failure": "Historical route reached victory with commander HP 49 versus prior expectation 88 after untreated critical casualties changed later forces and battles."
+  },
+  "acceptedRoute": {
+    "victory": {
+      "hour": 582,
+      "second": 512,
+      "treasury": 7048,
+      "squad": [
+        57,
+        105,
+        103,
+        112,
+        104
+      ],
+      "commanderHp": 88,
+      "dead": [
+        0,
+        3,
+        4,
+        9,
+        10,
+        11,
+        110,
+        113,
+        120,
+        123,
+        127,
+        128,
+        137,
+        141,
+        142,
+        1000
+      ]
+    },
+    "care": [
+      {
+        "stage": "santa_fe-stabilization",
+        "hours": 3,
+        "dressingsUsed": 6,
+        "dressingsBought": 0,
+        "cost": 0
+      },
+      {
+        "stage": "coastal-care",
+        "hours": 18,
+        "dressingsBought": 14,
+        "cost": 140
+      },
+      {
+        "stage": "ensenada-stabilization",
+        "hours": 4,
+        "dressingsUsed": 4,
+        "dressingsBought": 0,
+        "cost": 0
+      }
+    ],
+    "continuation": {
+      "hour": 630,
+      "second": 512,
+      "treasury": 9478,
+      "squad": [
+        57
+      ],
+      "commanderHp": 88,
+      "expired": [
+        103,
+        104,
+        105,
+        112
+      ]
+    }
+  },
+  "finalCheck": {
+    "total": 932,
+    "passed": 932,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 220608.376542,
+    "types": "PASS",
+    "build": "PASS",
+    "baselineComparisons": 36
+  }
+}

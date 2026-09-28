@@ -372,7 +372,13 @@
     {
       "id": "E-CIVILIAN-RETURN",
       "path": "docs/verification/civilian-service-return.md",
-      "description": "Known world residents resume current service wounds and finite supplies at dismissal or expiry. Five simulations cover actual enemy injuries and death, a spent torch, actual medical care, saved rehire and strict conversion of older departed flags. Existing civilian/supply/casualty/wound group passes 30 checks. Complete regression passes 924/924, zero failures/skips; types, production export and all 36 baseline comparisons pass. Exact-head CI is required before merge; unseen actors, military wound time and custody stay separate."
+      "description": "Known world residents resume current service wounds and finite supplies at dismissal or expiry. Five simulations cover actual enemy injuries and death, a spent torch, actual medical care, saved rehire and strict conversion of older departed flags. Existing civilian/supply/casualty/wound group passes 30 checks. Complete regression passes 924/924, zero failures/skips; types, production export and all 36 baseline comparisons pass. Published through PR #87 after successful exact-head CI; unseen actors, military wound time and custody stay separate.",
+      "url": "https://github.com/fsodano/granaderos/actions/runs/36456204052/job/109043065947"
+    },
+    {
+      "id": "E-MILITARY-WOUNDS",
+      "path": "docs/verification/strategic-military-wounds.md",
+      "description": "Configurable hourly military bleeding follows finite doctor work, excludes loaded or out-of-service identities, preserves deaths and cancels survivorless travel. Seven new simulations cover actual enemy injuries, paid travel, saves, a successor and an authored loss; one new mounted editor case covers authoring and paid service. The overlapping group passes 29 checks and two mounted care checks pass. Types and all 36 baseline comparisons pass; the first complete source passes 931/932, zero skips, with historical commander health 49 instead of the previous expected 88 after victory. The revised route uses finite local treatment before marches and reaches victory with actual saved continuation; the final complete source passes 932/932, zero failures/skips, types, export and all 36 baseline comparisons. Exact-head CI remains required before merge. Fractional military time, custody and physical strategic remains stay separate."
     }
   ],
   "queue": [
@@ -421,12 +427,38 @@
   ],
   "requirements": [
     {
+      "id": "MILITARYWOUND-01",
+      "group": "Published deliveries",
+      "requirement": "Advance authored military bleeding during strategic hours and retain real deaths",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Still-serving, nondeployed actors lose configured health each hour when their bleeding remains untreated; local doctors work first.",
+      "local": "Seven new simulations use declared actual-shot geometry, paid service and ordinary clocks; death preserves the last reached cell, one successor and saved campaign loss. The new mounted control pins its rate. The overlapping medical group passes 29 checks and two mounted care checks pass. The first full source passes 931/932, zero skips; the completed historical route returns commander health 49 instead of the prior expected 88. Types, export and all 36 baseline comparisons pass. The revised fresh route spends seven urgent-care hours and ten existing dressings, then 18 recovery hours with 14 purchased dressings for 140 pesos. Actual victory is at hour 582 with 7,048 pesos and commander health 88; saved 48-hour continuation, four expiries and a sector visit pass. The final complete source passes 932/932, zero failures/skips; types, production export and all 36 baseline comparisons also pass.",
+      "remaining": "",
+      "acceptance": "Wound a paid recruit, retreat, wait or march through real hours and save. Retain actual loss, finite treatment, one death and successor timing; stop a march with no survivors. Author and pin the rate through the editor.",
+      "evidence": [
+        "E-MILITARY-WOUNDS"
+      ],
+      "parents": [
+        "INTEGRATION-01",
+        "JA2-C06",
+        "JA2-A01"
+      ],
+      "testFiles": [
+        "tests/strategic-military-wounds.test.mjs",
+        "tests/civilian-service-fixture.mjs",
+        "tests/medical-care.test.mjs",
+        "tests/strategic-rest.test.mjs",
+        "tests/story-editor.test.mjs"
+      ]
+    },
+    {
       "id": "CIVILIANRETURN-01",
       "group": "Published deliveries",
       "requirement": "Resume known world residents from current condition when military service ends",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Previously recorded residents return with current service wounds and finite supplies when dismissed or their contract expires, without waiting for another encounter.",
+      "published": "Published on main through PR #87 on 2026-09-28 after successful exact-head CI. Previously recorded residents return with current service wounds and finite supplies when dismissed or their contract expires, without waiting for another encounter.",
       "local": "Five simulations use paid local service, an actual enemy pistol shot and torch expenditure in compact geometry, ordinary retreat, medical care, dismissal/expiry, rehire and saves. Earlier invalid records are checked before conversion; real casualties remain military bodies. Complete regression passes 924/924 with zero failures/skips; types, production export and all 36 baseline comparisons pass.",
       "remaining": "",
       "acceptance": "Wound a hired world resident in an actual battle, retreat, dismiss or let its contract expire, save and continue civilian time. Keep current health and stock, preserve treatment, reject resurrection and do not duplicate the active actor.",
@@ -442,7 +474,8 @@
         "tests/civilian-state.test.mjs",
         "tests/civilian-supplies.test.mjs",
         "tests/contract-casualty-presence.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/87"
     },
     {
       "id": "CIVILIANWOUND-01",
@@ -4842,13 +4875,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "abff99203b5086194efa6ece6308f6de3a2f7c0e",
-    "total": 919,
-    "passed": 919,
+    "source": "7f6ce719985858d7f35cf5198ea2e74c5652037f",
+    "total": 924,
+    "passed": 924,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-UNLOADED-CIVILIAN"
+    "evidenceId": "E-CIVILIAN-RETURN"
   }
 }

@@ -10,9 +10,12 @@ export const CARE_RULE_FIELDS=Object.freeze([
  ['restFatigue','Fatiga recuperada por hora de descanso (base)',0,100],
  ['restHealingHours','Horas de descanso por cada punto de salud',1,168],
 ]);
+export const DEFAULT_STRATEGIC_BLEEDING_PERCENT=25;
+export const STRATEGIC_BLEEDING_FIELD=['bleedingDamagePercent','Daño horario de hemorragia (%)',0,100];
+export const strategicBleedingPercent=s=>careRules(s).bleedingDamagePercent??DEFAULT_STRATEGIC_BLEEDING_PERCENT;
 export function validateCareRules(value){
  if(value===undefined)return [];
- if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).length!==CARE_RULE_FIELDS.length||!CARE_RULE_FIELDS.every(([key])=>Object.hasOwn(value,key)))return ['Atención y descanso: configurá todas las reglas, sin campos adicionales.'];
- return CARE_RULE_FIELDS.flatMap(([key,label,min,max])=>Number.isSafeInteger(value[key])&&value[key]>=min&&value[key]<=max?[]:[`${label}: elegí un entero de ${min} a ${max}.`]);
+ if(!value||typeof value!=='object'||Array.isArray(value)||Object.keys(value).some(k=>!CARE_RULE_FIELDS.some(([key])=>key===k)&&k!=='bleedingDamagePercent')||!CARE_RULE_FIELDS.every(([key])=>Object.hasOwn(value,key)))return ['Atención y descanso: configurá todas las reglas, sin campos adicionales.'];
+ return [...CARE_RULE_FIELDS,...(Object.hasOwn(value,'bleedingDamagePercent')?[STRATEGIC_BLEEDING_FIELD]:[])].flatMap(([key,label,min,max])=>Number.isSafeInteger(value[key])&&value[key]>=min&&value[key]<=max?[]:[`${label}: elegí un entero de ${min} a ${max}.`]);
 }
 export const careRules=s=>s?.contentCampaign?.package.careRules??DEFAULT_CARE_RULES;

@@ -1,5 +1,5 @@
 import {workshopServiceQuote} from './workshop-service.js';
-import {CARE_ASSIGNMENTS,assignMedicalCare,advanceMedicalCare,validateMedicalCare,medicalSupplyQuote} from './medical-care.js';
+import {CARE_ASSIGNMENTS,assignMedicalCare,advanceMedicalCare,advanceMilitaryWounds,validateMedicalCare,medicalSupplyQuote} from './medical-care.js';
 import {enforceHistoricalLoss} from './historical-loss.js';
 import {previousDeploymentScene,withoutPreviousCasualties} from './military-remains.js';
 import {completedTacticalVictory} from './battle-outcome.js';
@@ -195,13 +195,24 @@ function tick(s,hours,{joinArrivals=true,stopOnDefeat=true,traveling=[],civilian
       if(!s.operativeState[course.trainerId]?.alive||operativeLocation(s,course.trainerId)!==course.sector||!isSupplied(s,course.sector)||!militiaEligibility(s,course.sector).eligible)continue;
       course.remaining--;if(course.remaining<=0){s.sectors[course.sector].militia[course.rank]+=course.count;s.militiaTraining=s.militiaTraining.filter(t=>t!==course);note(s,`Tres milicianos completan su instrucción en ${sector(course.sector).name}.`);}
     }
-    advanceMedicalCare(s,rosterFor(s),{traveling});
+    const careRoster=rosterFor(s);advanceMedicalCare(s,careRoster,{traveling});
+    const woundDeaths=advanceMilitaryWounds(s,careRoster);
+    for(const id of woundDeaths){
+      s.operativeState[id].location=operativeLocation(s,id);
+      s.squad=s.squad.filter(member=>member!==id);for(const squad of s.squads)squad.members=squad.members.filter(member=>member!==id);
+      for(const course of s.militiaTraining.filter(t=>t.trainerId===id))if(course.rank>0&&s.sectors[course.sector].owner==='patriot')s.sectors[course.sector].militia[course.rank-1]+=course.count;
+      s.militiaTraining=s.militiaTraining.filter(t=>t.trainerId!==id);
+      note(s,`${careRoster.find(o=>o.id===id).name} fallece por sus heridas.`);
+    }
     if(s.hour%24===0){
       dailyPolitics(s);
       const income=dailyIncome(s);
       for(const def of CAMPAIGN_SECTORS)if(isSupplied(s,def.id))s.sectors[def.id].loyalty=Math.min(100,s.sectors[def.id].loyalty+1);
       add(s,{treasury:income});
-      for(const id of s.recruited){const op=s.operativeState[id];if(op.alive&&!deployed(s,id)&&isSupplied(s,operativeLocation(s,id))){op.hp=Math.min(rosterFor(s).find(o=>o.id===id).maxHp,op.hp+5);if(op.bandaged!==undefined)op.bandaged=Math.min(op.bandaged,rosterFor(s).find(o=>o.id===id).maxHp-op.hp);op.fatigue=Math.max(0,op.fatigue-10);}}
+      for(const id of s.recruited){const op=s.operativeState[id];if(!op.alive||deployed(s,id)||!isSupplied(s,operativeLocation(s,id)))continue;
+        if(!op.bleeding&&op.hp>=15){const max=careRoster.find(o=>o.id===id).maxHp;op.hp=Math.min(max,op.hp+5);if(op.bandaged!==undefined)op.bandaged=Math.min(op.bandaged,max-op.hp);}
+        op.fatigue=Math.max(0,op.fatigue-10);
+      }
       note(s,`Las estancias y aduanas aportaron ${income} pesos a la tesorería.`);
     }
     if(s.hour%720===0){const payroll=s.recruited.filter(id=>s.contracts?.[id]?.kind==='legacy').reduce((sum,id)=>sum+rosterFor(s).find(o=>o.id===id).monthlyPay,0);if(payroll>0){if(s.resources.treasury>=payroll){s.resources.treasury-=payroll;standing(s,'foreign',5);note(s,`Se abonaron ${payroll} pesos en estipendios mensuales.`);}else{standing(s,'foreign',-20);standing(s,'directory',-10);note(s,'La tesorería no pudo abonar los sueldos. Los voluntarios reclaman el pago.');}}}
@@ -210,7 +221,7 @@ function tick(s,hours,{joinArrivals=true,stopOnDefeat=true,traveling=[],civilian
     if(!s.completed&&s.hour%144===0)raid(s,'interior');
     // Resolve same-hour occupation and blockade before admitting imported goods.
     deliverEquipmentShipments(s);
-    receiveDueHires(s,joinArrivals);synchronizeSquad(s);synchronizeCampaignPresence(s);synchronizeDialogueMovements(s);progress(s);if(s.defeated&&stopOnDefeat)break;
+    receiveDueHires(s,joinArrivals);synchronizeSquad(s);synchronizeCampaignPresence(s);synchronizeDialogueMovements(s);progress(s);if((s.defeated&&stopOnDefeat)||(woundDeaths.length&&traveling.length&&!traveling.some(id=>s.squad.includes(id))))break;
   }
 }
 function travelPath(s,from,to){
@@ -376,7 +387,7 @@ export function dispatchCampaign(previous,action){
         if(mode==='flotilla')requireThat(!s.blockade&&path.every(id=>sector(id).theater==='coast'),'La flotilla requiere una ruta costera sin bloqueo.');
         const mountain=path.some(id=>sector(id).biome==='mountain');requireThat(!(path.some(id=>['uspallata','los_patos'].includes(id))&&campaignDate(s).month>=6&&campaignDate(s).month<=8),'La nieve invernal ha cerrado los pasos.');
         if(mode==='posta')pay(s,{treasury:10*Math.max(1,path.length-1)});
-        const hours=Math.max(1,Math.ceil((path.length-1)*(mode==='posta'?4:mode==='flotilla'?5:mode==='carts'?18:12)*(mountain?1.5:1)));tick(s,hours,{joinArrivals:false,traveling:[...s.squad]});if(s.defeated){note(s,'La marcha se interrumpe: la campaña ha terminado.');break;}if(!s.squad.length){note(s,'La marcha se cancela al terminar el último contrato.');break;}const openPath=[];for(const id of path){if(s.sectors[id].owner!=='patriot')break;openPath.push(id);}s.location=openPath.at(-1)??s.location;if(s.location!==action.sector)note(s,'El avance se detiene: una incursión cortó la ruta durante la marcha.');
+        const hours=Math.max(1,Math.ceil((path.length-1)*(mode==='posta'?4:mode==='flotilla'?5:mode==='carts'?18:12)*(mountain?1.5:1)));tick(s,hours,{joinArrivals:false,traveling:[...s.squad]});if(s.defeated){note(s,'La marcha se interrumpe: la campaña ha terminado.');break;}if(!s.squad.length){note(s,'La marcha se cancela: no quedan combatientes en la escuadra.');break;}const openPath=[];for(const id of path){if(s.sectors[id].owner!=='patriot')break;openPath.push(id);}s.location=openPath.at(-1)??s.location;if(s.location!==action.sector)note(s,'El avance se detiene: una incursión cortó la ruta durante la marcha.');
         for(const id of s.squad)s.operativeState[id].fatigue=Math.min(90,s.operativeState[id].fatigue+(campaignRoleActive(s,'marchCommander')?0:mountain?20:8));note(s,`El destacamento llega a ${sector(s.location).name}.`);break;
       }
       case 'transport':requireThat(['posta','flotilla','carts','mules'].includes(action.mode),'Transporte desconocido.');requireThat(!s.routes[action.mode],'Ese transporte ya está organizado.');pay(s,action.mode==='posta'?{treasury:150}:action.mode==='flotilla'?{treasury:400}:action.mode==='mules'?{treasury:120}:{treasury:180});s.routes[action.mode]=true;note(s,'La nueva red de transporte queda disponible.');break;
@@ -414,7 +425,7 @@ export function dispatchCampaign(previous,action){
         if(san)requireThat(!campaignStory(s),'Esta campaña utiliza sus propios objetivos.');
         if(san)requireThat(s.phase>=1&&!s.flags.sanLorenzo&&s.sectors.san_nicolas.owner==='patriot','Organiza Retiro y libera San Nicolás antes de combatir en San Lorenzo.');
         else {requireThat(s.sectors[at].owner==='royalist'||(s.blockade&&def.theater==='coast'),'El sector ya está bajo control patriota.');requireThat(def.neighbors.some(id=>s.sectors[id].owner==='patriot'&&isSupplied(s,id)),'Debes abrir una ruta hasta el frente.');}
-        const origin=s.location;if(!san&&s.location!==at){tick(s,12,{joinArrivals:false,traveling:[...s.squad]});if(s.completed||s.defeated){note(s,'El despliegue se cancela: la campaña ha terminado.');break;}if(!s.squad.length){note(s,'El despliegue se cancela: no quedan contratos vigentes en la escuadra.');break;}s.location=at;}
+        const origin=s.location;if(!san&&s.location!==at){tick(s,12,{joinArrivals:false,traveling:[...s.squad]});if(s.completed||s.defeated){note(s,'El despliegue se cancela: la campaña ha terminado.');break;}if(!s.squad.length){note(s,'El despliegue se cancela: no quedan combatientes en la escuadra.');break;}s.location=at;}
         const allocated={};let issued=0;
         for(const id of s.squad){const op=rosterFor(s).find(o=>o.id===id),capacity=weaponSpecification(op)?.capacity??0,rounds=capacity?campaignRules(s).deploymentCartridges:0;allocated[id]={loaded:Math.min(capacity,rounds),ammo:Math.max(0,rounds-capacity)};issued+=rounds;}
         pay(s,{treasury:issued*cartridgePrice(s)});
