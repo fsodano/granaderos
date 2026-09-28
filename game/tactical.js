@@ -14,7 +14,7 @@ export {WEAPONS} from './firearm-definitions.js';
 export const ARTILLERY={bronze4:{name:'Cañón de Bronce de 4 lb',crew:2,fireAP:30,reloadAP:60,radius:4,range:80,damage:85},field8:{name:'Cañón de Campaña de 8 lb',crew:3,fireAP:40,reloadAP:75,radius:6,range:110,damage:110},swivel:{name:'Pedrero de Regala',crew:1,fireAP:20,reloadAP:35,radius:3,range:35,damage:65}};
 import {BLADES} from './blade-definitions.js';
 export {BLADES} from './blade-definitions.js';
-export function bladeFor(unit){const secondary=unit.activeSlot==='blade'&&BLADES[unit.blade];return secondary?weaponSpecification(unit,'blade'):BLADES[unit.weapon]?weaponSpecification(unit):BLADES[1811];}
+export function bladeFor(unit){const secondary=unit.activeSlot==='blade'&&BLADES[unit.blade];if(secondary)return contentWeaponOf(unit,'blade')?weaponSpecification(unit,'blade'):secondary;return BLADES[unit.weapon]?(contentWeaponOf(unit)?weaponSpecification(unit):BLADES[unit.weapon]):BLADES[1811];}
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const present=u=>u.hp>0&&!u.routed;
