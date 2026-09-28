@@ -27,10 +27,10 @@ export const ENCOUNTERS=[...local.map(n=>({...n,name:[...OPERATIVES,...CIVIC_REC
 export const canRecruitEncounter=n=>n.operativeId!==undefined&&n.recruitable!==false;
 export function encounterDefinitions(s){
  const content=s.contentCampaign?.package;
- return [...ENCOUNTERS,...(content?.characters??[]).filter(isWorldCharacter).map(c=>({
-  id:`authored-${c.id}`,contentId:c.id,operativeId:operativeIdForCharacter(content,c.id),name:c.name,
-  sector:null,x:3,y:7,...c.encounter,
- }))];
+ return [...ENCOUNTERS,...(content?.characters??[]).filter(isWorldCharacter).map(c=>{
+  const {dialogue,...encounter}=c.encounter;
+  return {id:`authored-${c.id}`,contentId:c.id,operativeId:operativeIdForCharacter(content,c.id),name:c.name,sector:null,x:3,y:7,...encounter};
+ })];
 }
 export function encounterForOperative(id){return ENCOUNTERS.find(n=>n.operativeId===Number(id));}
 export function encountersFor(s,sector){
