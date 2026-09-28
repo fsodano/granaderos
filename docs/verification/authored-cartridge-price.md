@@ -46,8 +46,7 @@ The complete runtime/test source passes **911/911 tests**, with zero failures
 or skips (210,255.967 ms). Types, production export (722 files and 632 asset
 references), all 36 baseline comparisons and the documentation audit (223
 requirements, 62 evidence records, retaining all 50 original and 87 parity rows)
-also pass. Exact-head GitHub CI remains required before merge. This delivery is
-not yet on main.
+also pass. Exact-head GitHub CI also passed; see the publication record below.
 
 ## Limits
 
@@ -55,3 +54,11 @@ This is the campaign's shared cartridge unit price. It does not add ammunition
 calibres, separate dealer prices, physical strategic cartridge custody, magazine
 items, buyback discounts or artillery ammunition authoring. Mounted DOM and
 simulation checks do not establish loaded-browser performance.
+
+## Publication
+
+[PR #85](https://github.com/fsodano/granaderos/pull/85) merged at
+2026-09-28 16:39:50 UTC as `26580f24a6c6616ad638eadc1201664cc434ed46`.
+[GitHub verification](https://github.com/fsodano/granaderos/actions/runs/36450580957/job/109024007924)
+passed at 16:38:47 UTC for the exact PR head
+`eeb567348892036425552979950307db97faaf8c`.

@@ -85,3 +85,7 @@ also remain separate. This delivery does not establish full campaign completion.
 
 New world identities were subsequently connected by the [resident delivery](authored-residents.md).
 See the [requirement register](requirements.json) for current status.
+
+A later [wound-continuity delivery](unloaded-civilian-bleeding.md) advances
+previously recorded civilian bleeding outside the loaded sector. The earlier
+checkpoint above is preserved; strategic civilian care remains separate.

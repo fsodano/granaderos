@@ -436,8 +436,10 @@ is validated against maximum health and assigned once at campaign creation.
 Arrival and local recruitment retain it; later treatment, rest, service changes
 and saved continuation retain the mutable condition instead of reapplying the
 initial values. Omission preserves the original healthy defaults. This is not
-initial death/capture authoring or unloaded civilian bleeding. A resident with
-zero energy cannot converse; civilian breath recovery remains separate work.
+initial death/capture authoring. A resident with zero energy cannot converse;
+loaded phases restore breath under the civilian recovery rule. Previously
+recorded civilian wounds also advance outside the loaded sector, as described
+below.
 
 Drafts have validation, undo/redo, import/export and recovery. A campaign pins an
 immutable content version and assets. Editing a draft cannot alter an active save.
@@ -534,3 +536,14 @@ remain quantities. Actual spent/lost rounds are not refunded, and a settled
 request cannot be credited twice. Zero price is an authored economic choice.
 The [verification record](../verification/authored-cartridge-price.md) separates
 this price from ammunition types, merchant pricing and strategic custody.
+
+### Civilian wound continuity
+
+A recorded civilian wound retains its unfinished six-second interval while its
+sector is closed. Campaign time and loaded tactical time each process their own
+actors once. Reentry and saving cannot stop bleeding; finite aid can. Off-screen
+death is recorded at its actual minute, with one set of consequences and the
+original successor delay. Bodies and successors remain separate identities.
+See the [bounded acceptance record](../verification/unloaded-civilian-bleeding.md).
+Strategic civilian care, off-screen recovery and military wound clocks remain
+separate requirements.
