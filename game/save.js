@@ -1,3 +1,4 @@
+import {validateArtilleryReport} from './campaign-artillery.js';
 import {validateCampaignPatrol} from './militia-patrol-rules.js';
 import {validateMovementScene} from './dialogue-movement.js';
 import {validateCivilianScene,migrateActiveCivilians} from './campaign-civilians.js';
@@ -24,6 +25,6 @@ export function decodeSave(text){
   if(battle&&battle.battleId&&battle.battleId!==campaign.pendingBattle.id)throw Error('El reloj pertenece a otro despliegue.');
   if(battle&&(battle.sectorId!==campaign.pendingBattle.sector||!campaign.pendingBattle.squad.every(u=>battle.units.some(t=>t.side==='player'&&String(t.id)===String(u.id)))))throw Error('El destacamento guardado no corresponde al sector.');
   if(battle&&worldCell(battle.sectorId)?.anchor===false&&battle.sourceMapId!==battle.sectorId)throw Error('La escena guardada no corresponde a la celda.');
-  if(battle){validateCampaignPatrol(campaign,battle);migrateActiveCivilians(campaign,battle,{legacy:legacyCivilians});if(legacyCivilians)synchronizeCampaignPresence(campaign);validateCivilianScene(campaign,battle,{active:true});validatePresenceScene(campaign,battle);validateMovementScene(campaign,battle);validateActiveSuccessionDeaths(campaign,battle);validateWeaponReferences(campaign,battle);validatePresentationReferences(campaign,battle);validateAbilityReferences(campaign,battle);}
+  if(battle){validateArtilleryReport(campaign.pendingBattle,battle);validateCampaignPatrol(campaign,battle);migrateActiveCivilians(campaign,battle,{legacy:legacyCivilians});if(legacyCivilians)synchronizeCampaignPresence(campaign);validateCivilianScene(campaign,battle,{active:true});validatePresenceScene(campaign,battle);validateMovementScene(campaign,battle);validateActiveSuccessionDeaths(campaign,battle);validateWeaponReferences(campaign,battle);validatePresentationReferences(campaign,battle);validateAbilityReferences(campaign,battle);}
   return {campaign,battle};
 }
