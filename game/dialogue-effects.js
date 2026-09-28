@@ -18,7 +18,7 @@ export function dialogueEffectQuote(s,npc,node,choice){
  const money=choice.effects.find(e=>e.type==='treasury'),quest=choice.effects.find(e=>e.type==='quest'),transition=quest?questTransitionQuote(s,quest):null;
  const amount=amountFor(money),used=Boolean(receiptFor(s,npc,node,choice.id)),next=s.resources.treasury+amount;
  const reason=used?null:next<0?`Faltan ${-next} pesos.`:next>1000000000?'La tesorería no admite este importe.':transition?.reason??null;
- const labels=[...(money?[`${amount>0?'Recibir':'Pagar'} ${Math.abs(amount)} pesos · una sola vez`]:[]),...(transition?[`${transition.quest.title}: ${QUEST_STATE_LABELS[quest.status]}`]:[])];
+ const labels=[...(money?[`${amount>0?'Recibir':'Pagar'} ${Math.abs(amount)} pesos · una sola vez`]:[]),...(transition?[`${transition.quest.title}: ${QUEST_STATE_LABELS[quest.status]}${quest.status==='active'&&transition.quest.deadlineHours!=null?` · plazo de ${transition.quest.deadlineHours} h`:''}`]:[])];
  return {available:!reason,reason,label:used?'Operación ya realizada':labels.join(' · '),used,amount,...(quest?{quest:{id:quest.quest,title:transition.quest.title,status:quest.status}}:{})};
 }
 export function applyDialogueEffects(s,npc,node,choice){
