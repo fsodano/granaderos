@@ -66,3 +66,10 @@ test('a paid campaign saves the actual firing position and resumes the same chea
  let b=createBattle(r.squad.map(u=>({...u,x:1,y:1})),{...r,width:12,height:8,tiles:tiles(),seed:45,enemies:[{id:'guard',x:7,y:1,hp:1000,maxHp:1000,weapon:1813,ammo:0,patrol:false,overwatch:false}],npcs:(r.npcs??[]).map((n,i)=>({...n,x:8+i%3,y:4+Math.floor(i/3)}))});b=act(b,{type:'fire',unitId:'110',targetId:'guard'});assert.equal(b.units[0].weaponReady,true);const pair=sync({campaign:s,battle:b}),restored=saved(pair);assert.equal(restored.campaign.resources.treasury,pair.campaign.resources.treasury);assert.equal(actionCosts(restored.battle,restored.battle.units[0]).fire,13);
  const next={type:'fire',unitId:'110',targetId:'guard'};assert.deepEqual(actBattle(restored.battle,next),actBattle(pair.battle,next));const wire=JSON.parse(encodeSave(pair.campaign,pair.battle));wire.battle.units[0].weaponReady='true';assert.throws(()=>decodeSave(JSON.stringify(wire)));
 });
+
+
+test('exploration fire pays the actual displayed seconds for preparation and held discharge without combat AP',()=>{
+ let b=createBattle([{id:'p',name:'Tirador',x:1,y:1,weapon:1808,weaponMetadata:weaponMetadata(definition({fireAP:40,readyAP:25})),ammo:6}],{width:12,height:8,tiles:tiles(),seed:45,exploration:true,enemies:[],npcs:[{id:'resident',name:'Habitante',x:7,y:1,hp:100,maxHp:100,energy:100}]});const descriptor=s=>orderDescriptors(s,s.units[0]).find(d=>d.id==='fire');assert.equal(b.mode,'exploration');assert.equal(descriptor(b).seconds,3);assert.doesNotMatch(descriptor(b).detail,/PA/);
+ b=act(b,{type:'fire',targetId:'resident'});assert.equal(b.elapsedSeconds,3);assert.equal(b.units[0].ap,100);assert.equal(b.units[0].loaded,2);assert.equal(b.units[0].weaponReady,true);assert.equal(descriptor(b).seconds,1);assert.match(descriptor(b).detail,/posición de tiro/);
+ b=act(b,{type:'fire',targetId:'resident'});assert.equal(b.elapsedSeconds,4);assert.equal(b.units[0].ap,100);assert.equal(b.units[0].loaded,1);assert.equal(b.units[0].ammo,6);assert.ok(validateBattleSnapshot(b));
+});
