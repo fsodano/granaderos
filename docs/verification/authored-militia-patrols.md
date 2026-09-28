@@ -2,6 +2,11 @@
 
 Runtime/test source: `40010d251b5527560e78f521a72d9607fd9ba64e`.
 
+Published in [PR #98](https://github.com/fsodano/granaderos/pull/98).
+[Exact-head CI](https://github.com/fsodano/granaderos/actions/runs/36481924207/job/109129396391)
+passed at `c78b3728e00cb728aa2d808cd21c64c876732dd9` on
+2026-09-28 at 21:02:05 UTC. Merge: `e7dc3bfc75fde3f6269201cf6dd23ebbcb7da978`.
+
 The story editor now configures whether militia patrol and search, how many
 intervals each fixed map waypoint lasts, the exploration energy reserve, and
 the energy recovered when a patrol rests instead of moving. The original values
