@@ -127,6 +127,35 @@ function refreshCivilianScenes(s){
  }
  for(const scene of [...Object.values(s.sectorStates),...Object.values(s.sceneStates),...(request?[request]:[])])scene.npcs=(scene.npcs??[]).filter(n=>n.hp>0||civilianDiedHere(s,n,scene.sectorId??scene.sector,scene.sceneId??null));
 }
+// Start authored wounds when a living resident actually enters the world.
+// Bulletin candidates and dormant successors have no physical clock here.
+function placedResidents(s){
+ if(!s.contentPresence)return [];
+ return encounterDefinitions(s).flatMap(n=>{
+  const id=operativeId(n),c=id!==undefined&&characterForOperative(s,id),person=c&&s.contentPresence.people[c.id];
+  if(!person?.alive||!person.appeared||person.suspended||person.recruited||s.recruited.includes(id)||isContractOperative(s,{id})||s.operativeState[id]?.captured||s.pendingBattle?.missionAllies?.some(u=>Number(u.id)===id))return [];
+  const sector=locationId(person.sector);return sector?[{n,id,sector}]:[];
+ });
+}
+export function synchronizeResidentWounds(s){
+ if(!s.civilianState)return;
+ for(const {n,id,sector}of placedResidents(s)){
+  const record=s.civilianState.people[civilianKey(n)];
+  if(record){
+   // A mobile living identity carries its wounds to the new cell. A corpse
+   // retains the place of death, even if its former placement was mobile.
+   if(record.npcId===n.id&&!record.inService&&record.health.hp>0){record.sector=sector;record.sceneId=null;}
+  }else if(s.operativeState[id].bleeding>0){
+   remember(s,campaignCivilian(s,n),{sector,sceneId:null});
+  }
+ }
+}
+export function migrateResidentWounds(s){
+ if(s.civilianState.version!==1)return false;
+ // Start older unseen wounds from saved health and time, without damage for
+ // elapsed hours that the old version never simulated.
+ s.civilianState.version=2;synchronizeResidentWounds(s);return true;
+}
 function unloadedWounds(s){
  const excluded=new Set([...(s.pendingBattle?.npcs??[]).map(civilianKey),...s.recruited.map(id=>`person-${id}`)]);
  return Object.entries(s.civilianState?.people??{}).filter(([key,r])=>!excluded.has(key)&&!r.inService&&r.health.hp>0&&r.health.bleeding>0);
@@ -193,7 +222,7 @@ export function validateCivilianScene(s,scene,{active=false}={}){
 }
 export function validateCampaignCivilians(s){
  const ledger=s.civilianState;
- need(ledger&&ledger.version===1&&ledger.people&&typeof ledger.people==='object'&&!Array.isArray(ledger.people));
+ need(ledger&&[1,2].includes(ledger.version)&&ledger.people&&typeof ledger.people==='object'&&!Array.isArray(ledger.people));
  need(Object.keys(ledger).length===2&&Object.keys(ledger.people).length<=encounterDefinitions(s).length+YATASTO_NPCS.length);
  for(const [key,r]of Object.entries(ledger.people)){
   const n=definition(s,{id:r.npcId,operativeId:encounterDefinitions(s).find(n=>n.id===r.npcId)?.operativeId});
@@ -203,6 +232,11 @@ export function validateCampaignCivilians(s){
   const id=operativeId(n);
   need(r.inService===undefined||r.inService===true&&id!==undefined);
   if(id!==undefined&&!r.inService&&!s.recruited.includes(id))need(s.operativeState[id].hp===r.health.hp&&s.operativeState[id].alive===(r.health.hp>0));
+ }
+ if(ledger.version===2)for(const {n,id,sector}of placedResidents(s)){
+  const record=ledger.people[civilianKey(n)];
+  if(s.operativeState[id].bleeding>0)need(record,'Falta el reloj de un habitante herido.');
+  if(record?.npcId===n.id&&!record.inService&&record.health.hp>0)need(record.sector===sector&&record.sceneId===null,'La herida no corresponde a la ubicación del habitante.');
  }
  for(const scene of [...Object.values(s.sectorStates),...Object.values(s.sceneStates),...(s.pendingBattle?[s.pendingBattle]:[])])validateCivilianScene(s,scene);
 }

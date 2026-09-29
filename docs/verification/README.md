@@ -30,6 +30,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Retiro opening verification](retiro-opening.md)
 - [Civilian state verification](civilian-state.md)
 - [Civilian wounds outside the loaded sector](unloaded-civilian-bleeding.md)
+- [Wounds from actual world appearance](unseen-resident-wounds.md)
 - [Known residents returning from service](civilian-service-return.md)
 - [Military wounds during strategic hours](strategic-military-wounds.md)
 - [Local militia medical care](strategic-militia-care.md)
