@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updated": "2026-09-28",
+  "updated": "2026-09-29",
   "baseline": "082ee305e239dbc1e6a2c53d446f2eca3ae9b15e",
   "audit": "docs/verification/formal-audit-2026-09-27.md",
   "design": "docs/specification/game-design.md",
@@ -559,7 +559,7 @@
     {
       "id": "E-OCCUPIED-GROUND-COLLECTION",
       "path": "docs/verification/occupied-ground-collection.md",
-      "description": "Clicking a resident in collection mode can recover loose weapons or choose personal supply bundles beneath the figure without taking the residents own supplies. Three mounted production-game cases pass; related group 13/13. Complete regression passes 1203/1203, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
+      "description": "Clicking a resident in collection mode can recover loose weapons or choose personal supply bundles beneath the figure without taking the residents own supplies. Three mounted production-game cases pass; related group 13/13. Complete regression passes 1203/1203, zero failures/skips, with types, export and 36 reference comparisons. Published by PR #122 after successful exact-head CI."
     },
     {
       "id": "E-HELD-FIREARM-BUTTSTOCK",
@@ -6015,7 +6015,7 @@
       "requirement": "Keep loose field equipment accessible beneath a resident while retaining finite personal-body collection",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. A resident figure no longer hides loose field equipment, and personal supplies remain separate until actual body collection.",
+      "published": "Published by PR #122 after successful exact-head CI. A resident figure no longer hides loose field equipment, and personal supplies remain separate until actual body collection.",
       "local": "Three mounted production-game checks pass; related group 13/13. Complete regression 1203/1203, zero failures/skips, with types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Use the actual collection control and resident figure to recover a loose loaded weapon or open the exact ground-supply selector; leave the living residents health and personal supplies unchanged; after loose stock is gone, retain finite unconscious-resident collection; ignore entangled and container stock as free ground equipment; persist each resulting owner and ground record through normal saves.",
@@ -6033,7 +6033,8 @@
         "tests/drop-personal-supplies-render.test.mjs",
         "tests/drop-held-weapons-render.test.mjs",
         "tests/partial-ground-supply-pickup-render.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/122"
     },
     {
       "id": "BUTTSTOCK-01",
@@ -6063,13 +6064,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "d68ce4104b96e53888f2696d2a5933b50055f8d7",
-    "total": 1200,
-    "passed": 1200,
+    "source": "bf7a3384e02e723360017606ddb103dd12335473",
+    "total": 1203,
+    "passed": 1203,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-PARTIAL-GROUND-SUPPLY-PICKUP"
+    "evidenceId": "E-OCCUPIED-GROUND-COLLECTION"
   }
 }
