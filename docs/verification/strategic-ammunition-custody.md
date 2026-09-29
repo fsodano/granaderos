@@ -6,8 +6,8 @@ It adds strategic ownership to the published four-family runtime. The larger
 advanced physical-inventory implementation remains separate.
 
 Runtime/test source: `e90895c5bb0eadeb168533be118097300fba034e`.
-[PR #135](https://github.com/fsodano/granaderos/pull/135) carries this delivery. Merge requires all five final-head
-checks to pass; this record does not claim completion of the wider game.
+[PR #135](https://github.com/fsodano/granaderos/pull/135) merged this delivery as `6772c1cb719d729ae2b6da27728ef88cfc60f5cc`.
+All five final-head checks passed in [run 36641090948](https://github.com/fsodano/granaderos/actions/runs/36641090948); this record does not claim completion of the wider game.
 
 ## Rules and controls
 
@@ -31,8 +31,8 @@ The quote and charge use the pinned cartridge price, including a zero price.
 Merchants have finite stock. Initial capacities are 180 musket, 60 rifle,
 180 pistol and 120 shot rounds. Each 24 hours of controlled, supplied time adds
 18, 6, 18 and 12 rounds respectively, up to those caps. Stock and replenishment
-time survive saves. Each town has its own stock. Market tuning is fixed in this
-delivery; authored dealer stock and schedules remain open.
+time survive saves. Each town has its own stock. Market tuning was fixed in this delivery. The following
+[authored supplier delivery](authored-ammunition-markets.md) adds its editor controls.
 
 Sector return keeps actual ammunition. It does not refund unspent rounds.
 Loaded charges and partial reload work stay with the primary firearm. Changing

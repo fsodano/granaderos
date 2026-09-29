@@ -784,3 +784,17 @@ test('the weapon editor selects, restores and pins compatible ammunition with un
  const p=decodeSave(encodeSave(s,enterSector(s.pendingBattle))),u=p.battle.units.find(u=>u.id==='110');assert.equal(ammoTypeFor(u),'ammoRifle');assert.ok(ammoCount(u)>0);assert.equal(ammoCount(u,'ammoMusket'),0);
  await m.input(m.label('Familia de munición'),'ammoPistol');assert.equal(ammoTypeFor(p.battle.units.find(u=>u.id==='110')),'ammoRifle');assert.equal(m.dom.window.localStorage.getItem('granaderos.campaign.v1'),'ordinary save');
 });
+
+test('the editor authors local ammunition suppliers through validation, undo, reset and real campaign purchases',async t=>{
+ const {order,saved}=await import('./local-contract-fixture.mjs');const d=defaultContentPackage();d.characters.find(c=>c.id==='person-110').arrivalHours=0;
+ const m=await mount(t,JSON.stringify(d)),draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));await m.click(m.button('Reglas'));
+ const field=text=>{const group=m.document.querySelector('fieldset[aria-label="Cartuchos de mosquete"]');return [...group.querySelectorAll('label')].find(l=>l.firstChild.textContent===text).querySelector('input');};
+ await m.input(m.label('Proveedor a configurar'),'retiro');assert.equal(field('Existencias iniciales').closest('fieldset').parentElement.disabled,true);
+ await m.click(m.label('Usar reglas propias en esta localidad'));await m.input(field('Existencias iniciales'),4);await m.input(field('Máximo de existencias'),7);await m.input(field('Cartuchos por reposición'),2);await m.input(m.label('Horas de reposición'),3);
+ await m.click(field('Usar precio general'));await m.input(field('Precio por cartucho (pesos)'),8);
+ await m.click(m.button('Deshacer'));assert.equal(field('Precio por cartucho (pesos)').value,'1');await m.click(m.button('Rehacer'));assert.equal(draft().ammunitionMarket.locations.retiro.families.ammoMusket.price,8);
+ await m.input(field('Existencias iniciales'),8);assert.equal(m.button('Iniciar campaña con estas fichas').disabled,true);await m.click(m.button('Deshacer'));
+ await m.click(m.button('Restaurar proveedores de munición originales'));assert.equal(draft().ammunitionMarket,undefined);await m.click(m.button('Deshacer'));assert.equal(field('Precio por cartucho (pesos)').value,'8');
+ await m.input(m.label('Proveedor a configurar'),'');assert.equal(field('Existencias iniciales').value,'180');await m.input(field('Existencias iniciales'),100);await m.input(m.label('Proveedor a configurar'),'retiro');assert.equal(field('Existencias iniciales').value,'4');
+ await m.click(m.button('Iniciar campaña con estas fichas'));let {campaign}=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY));campaign=order(campaign,{type:'recruitCivic',id:110,term:'month'});const cash=campaign.resources.treasury;campaign=order(campaign,{type:'ammunition',operativeId:110,family:'ammoMusket',quantity:2,direction:'buy'});assert.equal(campaign.resources.treasury,cash-16);assert.equal(campaign.ammunitionShops.retiro.stock.ammoMusket,2);campaign=saved({campaign}).campaign;campaign=order(campaign,{type:'wait',hours:3});assert.equal(campaign.ammunitionShops.retiro.stock.ammoMusket,4);assert.equal(campaign.ammunitionShops.mendoza.stock.ammoMusket,100);
+});

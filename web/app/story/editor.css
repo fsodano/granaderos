@@ -336,3 +336,11 @@
 .content-editor .weapon-thumbnail {width:80px;height:44px;object-fit:contain;float:left;margin-right:10px}
 
 .character-presentation{margin-top:1.5rem;padding-top:1rem;border-top:1px solid #535d4c}.appearance-choice{display:flex;gap:1rem;align-items:center}.appearance-choice svg{flex:none;background:#182119;border-radius:.4rem}.appearance-choice label{flex:1;min-width:0}.character-presentation small{display:block;line-height:1.4}
+
+.content-editor .ammunition-market-profile,
+.content-editor .ammunition-market-profile > fieldset {
+  display: block;
+}
+.content-editor .ammunition-market-rules .check {
+  margin: 12px 0;
+}

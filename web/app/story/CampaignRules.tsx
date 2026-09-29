@@ -1,4 +1,5 @@
 'use client';
+import AmmunitionMarketRules from './AmmunitionMarketRules';
 import MilitiaRules from './MilitiaRules';
 import ArtillerySupplyRules from './ArtillerySupplyRules';
 import ArtilleryTransportRules from './ArtilleryTransportRules';
@@ -27,5 +28,5 @@ export default function CampaignRules({draft,onChange}:{draft:any;onChange:(valu
   <p>Esta cantidad es el objetivo de munición compatible para cada arma de fuego. Al entrar o partir de una localidad propia y comunicada, la escuadra compra solo lo que falta, al precio configurado y dentro de las existencias del proveedor y del espacio disponible. Los cartuchos restantes quedan con su dueño al salir; no se convierten en dinero.</p>
   <p>La escuadra conserva sus cartuchos y la carga del arma entre sectores. Un arma principal blanca no compra cartuchos. Cero impide la compra automática, pero conserva la munición que ya tiene cada combatiente. Los enemigos y milicianos reciben su cantidad solo al aparecer por primera vez. Estas cantidades no cambian las provisiones de los aliados temporales de las misiones.</p>
   <button onClick={()=>onChange({...draft,rules:{...DEFAULT_CAMPAIGN_RULES}})}>Restaurar fondos y cartuchos originales</button>
- </section><ArtillerySupplyRules draft={draft} onChange={onChange}/><ArtilleryTransportRules draft={draft} onChange={onChange}/><ArtilleryTradingRules draft={draft} onChange={onChange}/><MilitiaRules draft={draft} onChange={onChange}/><MilitiaPatrolRules draft={draft} onChange={onChange}/><CareRules draft={draft} onChange={onChange}/><CampaignStory draft={draft} onChange={onChange}/><CampaignRoles draft={draft} onChange={onChange}/><FoundryRules draft={draft} onChange={onChange}/><StartingTerritory draft={draft} onChange={onChange}/><ImportRules draft={draft} onChange={onChange}/></>;
+ </section><AmmunitionMarketRules draft={draft} onChange={onChange}/><ArtillerySupplyRules draft={draft} onChange={onChange}/><ArtilleryTransportRules draft={draft} onChange={onChange}/><ArtilleryTradingRules draft={draft} onChange={onChange}/><MilitiaRules draft={draft} onChange={onChange}/><MilitiaPatrolRules draft={draft} onChange={onChange}/><CareRules draft={draft} onChange={onChange}/><CampaignStory draft={draft} onChange={onChange}/><CampaignRoles draft={draft} onChange={onChange}/><FoundryRules draft={draft} onChange={onChange}/><StartingTerritory draft={draft} onChange={onChange}/><ImportRules draft={draft} onChange={onChange}/></>;
 }

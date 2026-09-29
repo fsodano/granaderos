@@ -1,0 +1,70 @@
+{
+  "feature": "Authored ammunition suppliers",
+  "source": "cd741d7263df639571f2e6239fabcd941199d220",
+  "base": "6772c1cb719d729ae2b6da27728ef88cfc60f5cc",
+  "checks": {
+    "regression": {
+      "total": 1312,
+      "passed": 1312,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 271178.581833,
+      "scope": "Full implementation run; final missing-supplier save guard and layout were subsequently covered by focused checks. Exact final head requires remote CI."
+    },
+    "finalCore": {
+      "total": 16,
+      "passed": 16
+    },
+    "finalEditor": {
+      "total": 1,
+      "passed": 1
+    },
+    "types": "PASS",
+    "build": {
+      "status": "PASS",
+      "files": 735,
+      "assetReferences": 637
+    },
+    "baseline": {
+      "passed": 36
+    },
+    "browser": {
+      "url": "http://localhost:3134/story",
+      "town": "retiro",
+      "retainedAfterReload": {
+        "restockHours": 3,
+        "ammoMusket": {
+          "initial": 4,
+          "capacity": 7,
+          "replenish": 2,
+          "price": 8
+        }
+      },
+      "consoleErrors": 0,
+      "consoleWarnings": 0
+    }
+  },
+  "sourceHashes": {
+    "game/ammunition-market-rules.js": "b9d48238ce7d86424e4fd696ae05b4974f458fcfb1ff1018efa14c9d9f0e2d43",
+    "game/campaign-ammunition.js": "121ee7b98a602bcba772157feb19c7e946ad397700cbd29997de043bb7585e37",
+    "game/campaign-content.js": "c0a9b8003221153c9394fb40c3adddfbe1497f32fcd8aaef627a594d3809e5ae",
+    "game/content-package.js": "1fa95f3820f5c23d4b008ccfb727c331bd7d9f7f3d980693a7a80a128aa3fd2e",
+    "tests/ammunition-market-rules.test.mjs": "64984786611f1d5ffc5bc623e20a630f579e7ee49abee245ae34ba9e25b732ce",
+    "tests/story-editor.test.mjs": "c0edd49ecbf3ba3d2de4e88c8729a90dd32c16a2ecfae4346193642eab1aa338",
+    "web/app/Armory.tsx": "17a0160abd70528cdc289a14d2a385d14bcfc884dd8f284e387a00ebe40fd56d",
+    "web/app/CampaignAmmunition.tsx": "163d78315a123857c64fe98fd698e2ae2850103697794ce5a82874a44bedbd8d",
+    "web/app/story/AmmunitionMarketRules.tsx": "c6484db3b350008d31e3dd420bb354b41a7ded23f7f74e4bd54bc01d87e9be41",
+    "web/app/story/CampaignRules.tsx": "50db18fe91915aa75c543c3b9492810782945780c6f88845e51ff0bdcca1699c",
+    "web/app/story/editor.css": "c941603d6a6176fb9497214f405fc69703fddb3e5c331e2468aa0507e3b10c26"
+  },
+  "screenshot": {
+    "path": "docs/evidence/authored-ammunition-markets.png",
+    "sha256": "2251d7273db410b65239c3e5dd89c6374350225790f8412d23956223b7f43e0f"
+  },
+  "limits": [
+    "Alternative loads for one gun remain open.",
+    "Advanced physical-inventory adapter remains unpublished.",
+    "This is not full game/editor acceptance."
+  ],
+  "pr": "https://github.com/fsodano/granaderos/pull/136"
+}

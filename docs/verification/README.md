@@ -178,3 +178,5 @@ test partition and retained publication gates. It is infrastructure evidence.
 - [Walking frame continuity](walking-frame-continuity.md): cell waits, fractional positions and remaining artwork limits.
 
 - [Advanced local supply-art integration](local-supply-art-2026-09-29.md): bounded port 3000 checks, separate from published gameplay.
+
+- [Authored ammunition suppliers](authored-ammunition-markets.md): town stock, prices, replenishment and automatic preparation rules.
