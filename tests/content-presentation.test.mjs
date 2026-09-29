@@ -1,3 +1,4 @@
+import {weaponMetadata} from '../game/weapon-definition.js';
 import {secureArea} from './controlled-area-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -43,7 +44,7 @@ test('actual tactical contact, wounds, exhaustion, clearance and death emit auth
  const {s,id,d}=hired(),op=rosterFor(s).find(o=>o.id===id),lines=d.characters.at(-1).speech;
  let before=field(op,[{id:'guard',x:19,y:1,weapon:1800,overwatch:false}]);
  let after=actBattle(before,{type:'move',unitId:String(id),x:4,y:1});assert.equal(after.lastError,null);assert.ok(characterEventLines(before,after).some(l=>l.includes(lines.contact)));
- before=field(op,[{id:'guard',x:10,y:1,weapon:1806,blade:1811,ammo:0,fatigue:100,marksmanship:100}]);
+ before=field(op,[{id:'guard',x:10,y:1,weapon:1806,blade:1811,bladeMetadata:weaponMetadata(defaultContentPackage().weapons.find(w=>w.id==='blade-1811')),ammo:0,fatigue:100,marksmanship:100}]);
  after=withCharacterSpeech(before,endTurn(before));assert.ok(after.units[0].hp<before.units[0].hp);assert.ok(after.log.some(l=>l.includes(lines.wounded)));
  for(let i=0;i<10&&after.units[0].hp>0;i++){before=after;after=withCharacterSpeech(before,endTurn(before));}
  assert.equal(after.units[0].hp,0);assert.equal(after.log.filter(l=>l.includes(lines.death)).length,1);

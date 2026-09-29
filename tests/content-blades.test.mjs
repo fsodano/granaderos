@@ -31,7 +31,7 @@ test('authored melee cost, damage, reach, weight and picture drive both equipped
 });
 
 test('authored bayonet interception and enemy melee use edited values while keeping family techniques',()=>{
- let b=field(blade({template:1811,ap:29,damage:31,reach:3}));b.units[0].x=4;b.units[1].x=1;b.units[1].activeSlot='primary';
+ let b=field(blade({template:1811,ap:29,damage:31,reach:3}));b.units[0].x=4;b.units[1].x=1;b.units[1].weapon=1811;b.units[1].loaded=0;b.units[1].activeSlot='primary';
  b=act(b,{type:'brace',unitId:'p'});b=endTurn(b);assert.ok(b.log.some(l=>l.includes('bayoneta calada')));assert.equal(b.units[1].hp,69);assert.ok(b.units[0].ap<=71);
  b=field();b.units=b.units.filter(u=>u.id!=='other');Object.assign(b.units[1],{x:3,weapon:1812,weaponMetadata:weaponMetadata(blade({ap:70,damage:13})),loaded:0,ammo:0});
  b=endTurn(b);assert.equal(b.units[0].hp,86);assert.equal(b.units[0].bleeding,1);assert.equal(b.units[1].ap,30);

@@ -46,7 +46,7 @@ test('real NPC wounds persist through save, daily relocation, recruitment and a 
 });
 
 test('death is global, leaves one body in its real cell and cannot be recruited, moved or resurrected',()=>{
- let pair=approach(visit(ready()));for(let i=0;i<3&&npc(pair).hp>0;i++)pair=act(pair,{type:'melee',targetId:'cabral'});
+ let pair=approach(visit(ready()));pair=act(pair,{type:'weapon',slot:'blade'});for(let i=0;i<3&&npc(pair).hp>0;i++)pair=act(pair,{type:'melee',targetId:'cabral'});
  assert.equal(npc(pair).hp,0);assert.equal(pair.campaign.operativeState[3].alive,false);assert.equal(pair.campaign.contentPresence.people['person-3'].alive,false);
  assert.equal(civilianIncidents(npc(pair)).at(-1).kind,'death');assert.ok(dispatchCampaign(pair.campaign,{type:'talkNPC',npcId:'cabral',unitId:110,approach:'recruit',sectorState:pair.battle}).lastError);
  const body={x:npc(pair).x,y:npc(pair).y};pair=saved(pair);let s=leave(pair);pair=visit(saved({campaign:s}).campaign);assert.equal(npc(pair).hp,0);assert.equal(npc(pair).stance,'prone');assert.deepEqual({x:npc(pair).x,y:npc(pair).y},body);
@@ -84,7 +84,7 @@ test('civilian snapshots reject altered HP, wound histories, missing residents a
 test('the first death applies city consequences once and closes an unfinished local errand',()=>{
  let s=order(initialCampaign(4),{type:'recruitCivic',id:110,term:'week'});let pair=approach(visit(s),'local-retiro');
  pair.campaign=order(pair.campaign,{type:'talkNPC',npcId:'local-retiro',unitId:110,approach:'quest',sectorState:pair.battle});
- const loyalty=pair.campaign.sectors.retiro.loyalty;
+ pair=act(pair,{type:'weapon',slot:'blade'});const loyalty=pair.campaign.sectors.retiro.loyalty;
  for(let i=0;i<3&&pair.battle.npcs.find(n=>n.id==='local-retiro').hp>0;i++)pair=act(pair,{type:'melee',targetId:'local-retiro'});
  assert.equal(pair.campaign.sectors.retiro.loyalty,loyalty-10);assert.equal(pair.campaign.quests['retiro-uniformes'].status,'failed');
  pair=saved(pair);pair=synced(pair);assert.equal(pair.campaign.sectors.retiro.loyalty,loyalty-10);assert.equal(pair.campaign.cityLoyaltyEvents.filter(e=>e.eventId==='civilian:npc-local-retiro').length,1);

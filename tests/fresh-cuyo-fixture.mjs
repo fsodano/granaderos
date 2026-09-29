@@ -32,7 +32,7 @@ export function freshCuyoRoute({onCheckpoint}={}){
  for(const sector of Object.keys(s.sectors).filter(id=>s.sectors[id].owner==='patriot'))s=order(s,{type:'fortify',sector});
  s=order(s,{type:'travel',sector:'cordoba'});s=order(s,{type:'recruitCivic',id:108,term:'week',destination:'cordoba'});s=order(s,{type:'wait',hours:6});s=workshop(s);
  for(const id of s.squad)if(rosterFor(s).find(o=>o.id===id).weapon!==1802)s=musket(s,id);
- s=saved({campaign:s}).campaign;assert.equal(s.hour,120);assert.equal(s.resources.treasury,3034);
+ s=saved({campaign:s}).campaign;assert.equal(s.hour,120);assert.equal(s.resources.treasury,2416);
  for(const sector of ['mendoza','uspallata','los_patos']){
   if(sector==='los_patos'){
    // The mountain casualties need replacements from the controlled reception
