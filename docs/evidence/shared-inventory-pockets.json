@@ -2,7 +2,7 @@
   "schema": 1,
   "date": "2026-09-29",
   "base": "45bcc53861e3891fec40058c862cb256e7912478",
-  "status": "verified-local",
+  "status": "published",
   "sourceManifest": {
     "game/campaign.js": "89d970cf8b39d13b33462b692149d2fcf8fa517e071d14f8054fc14feab46188",
     "game/ja2-hud.js": "bcbca074e87b3759a16733240d3ac833e457ee3d654c178b35c0b96de92bf032",
@@ -140,5 +140,42 @@
       "consoleErrors": 0
     },
     "priorFullSuite": "1268 tests and all remote checks passed before presentation-only artwork update"
+  },
+  "publication": {
+    "pr": "https://github.com/fsodano/granaderos/pull/128",
+    "head": "3915f1001a8d8405cf7bce40fa48da372e2d59eb",
+    "merge": "1b02d86e648f57aec4520ea307b17bb25173bfe6",
+    "mergedAt": "2026-09-29T15:44:12Z",
+    "workflow": "https://github.com/fsodano/granaderos/actions/runs/36589940563",
+    "checks": {
+      "Tests (1/4)": {
+        "passed": 246,
+        "failed": 0,
+        "skipped": 0
+      },
+      "Tests (2/4)": {
+        "passed": 321,
+        "failed": 0,
+        "skipped": 0
+      },
+      "Tests (3/4)": {
+        "passed": 333,
+        "failed": 0,
+        "skipped": 0
+      },
+      "Tests (4/4)": {
+        "passed": 368,
+        "failed": 0,
+        "skipped": 0
+      },
+      "web": "SUCCESS"
+    },
+    "tests": {
+      "passed": 1268,
+      "total": 1268,
+      "failed": 0,
+      "skipped": 0
+    },
+    "logSha256": "153af4fce9bf171745e9249aff64024429f29be3af95aef139f9c340ad5157fd"
   }
 }
