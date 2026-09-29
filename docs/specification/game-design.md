@@ -826,7 +826,8 @@ Each piece keeps its authored definition, image, weight, wear, load and partial
 reload through saves and sector return. Collection preserves other carried
 pieces even when fields have overlapping local indices. The selected held
 primary or secondary can also be left with the same cost and preservation rules.
-Supplies, throwing and full pocket organization remain separate. See
+Personal supplies use their exact-bundle controls. Throwing and full pocket
+organization remain separate. See
 [verification](../verification/drop-recovered-weapons.md).
 
 
@@ -887,3 +888,15 @@ move once between their actual holders; subsequent use and saved campaign return
 retain the remainders. Invalid or unavailable quantities fail in full before
 costs. Cartridge sharing and physical pocket capacity remain separate. See
 [verification](../verification/adjacent-supply-transfer.md).
+
+
+### Ground supply bundles
+
+An exact quantity of the six authored personal supplies can move to the current
+cell for four AP or one exploration second. Whole-bundle collection uses the
+ordinary eight-AP or one-second field action. Another adjacent soldier can
+collect it even while the owner occupies that cell. Source, ground and receiver
+retain finite quantities across save and campaign reentry. Numerical limits
+reject overflowing collection atomically; full physical pocket capacity and
+partial pickup selection remain separate. See
+[verification](../verification/drop-personal-supplies.md).

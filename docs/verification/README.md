@@ -7,6 +7,8 @@ accepted features on GitHub `main`, approved scope changes and open work.
 
 ## Published baseline
 
+- [Persistent personal supply bundles](drop-personal-supplies.md)
+
 - [Exact personal supply handover](adjacent-supply-transfer.md)
 
 - [Give a held weapon to a companion](held-weapon-transfer.md)

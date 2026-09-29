@@ -719,7 +719,7 @@ equipo** y hacé clic en esa celda. También funciona si hay un soldado encima.
 La pieza conserva la imagen, los valores, el desgaste y la carga que tenía.
 Guardar, salir y volver al sector mantiene su estado. **Dejar arma en uso**
 permite hacer lo mismo con el arma principal o secundaria elegida. La mano queda
-vacía. Los suministros tienen seguimiento separado. [Verificación](../verification/drop-recovered-weapons.md).
+vacía. Para suministros, usá el panel Pertrechos. [Verificación](../verification/drop-recovered-weapons.md).
 
 
 ### Entregar un arma recuperada a un compañero
@@ -779,3 +779,15 @@ exploración. La cantidad debe estar disponible completa. El panel explica el
 motivo si no se puede entregar. El compañero puede usar lo recibido y cada uno
 conserva su sobrante al guardar y volver al sector. La entrega de cartuchos
 sigue pendiente. [Verificación](../verification/adjacent-supply-transfer.md).
+
+
+### Dejar suministros en el sector
+
+En **Equipo y órdenes → Pertrechos**, elegí el suministro y la cantidad. Usá
+**Dejar suministros en el suelo**. Cuesta 4 PA o un segundo en exploración.
+El bulto queda en la celda y aparece en el campo. Para recuperarlo, elegí
+**Recoger equipo** y hacé clic en la celda. Puede hacerlo el mismo soldado u otro
+compañero cercano, aunque haya alguien encima. La recogida toma el bulto completo
+y cuesta 8 PA o un segundo en exploración. Guardar, salir y volver conserva el
+bulto y los sobrantes. Esto cubre los seis suministros personales del panel;
+los cartuchos siguen pendientes. [Verificación](../verification/drop-personal-supplies.md).
