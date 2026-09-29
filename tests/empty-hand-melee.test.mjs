@@ -39,3 +39,16 @@ test('an actually disarmed paid arrival can recover, select the retained authore
 test('a punch against a civilian uses the existing incident and breath model with intentional attribution',()=>{
  const b=fixture();b.npcs.push(seedCivilianHealth({id:'civil',name:'Habitante',x:2,y:2},{hp:100,maxHp:100,energy:30}));const n=actBattle(b,{type:'melee',unitId:'p',targetId:'civil'});assert.equal(n.lastError,null);const npc=n.npcs[0];assert.equal(npc.hp,92);assert.equal(npc.energy,0);assert.equal(npc.unconscious,true);assert.equal(npc.bleedSource.attackerId,'p');assert.equal(npc.bleedSource.intentional,true);assert.ok(validateBattleSnapshot(n));
 });
+
+
+test('choosing empty hands preserves an owned firearm, partial load, condition and carried weight then permits its paid return',()=>{
+ const b=fixture({weapon:1800,loaded:0,reloadProgress:.4,condition:37,jammed:true,blade:1809,weaponReady:true});const weight=carriedWeight(b.units[0]);let n=actBattle(b,{type:'weapon',unitId:'p',slot:'unarmed'});assert.equal(n.lastError,null);assert.equal(n.units[0].activeSlot,'unarmed');assert.equal(n.units[0].ap,96);assert.equal(hasFirearm(n.units[0]),false);assert.equal(weaponFor(n.units[0]).id,0);assert.equal(n.units[0].weaponReady,undefined);assert.equal(carriedWeight(n.units[0]),weight);assert.ok(validateBattleSnapshot(n));
+ n=actBattle(n,{type:'weapon',unitId:'p',slot:'primary'});assert.equal(n.lastError,null);assert.equal(n.units[0].ap,92);assert.equal(n.units[0].weapon,1800);assert.equal(n.units[0].loaded,0);assert.equal(n.units[0].reloadProgress,.4);assert.equal(n.units[0].condition,37);assert.equal(n.units[0].jammed,true);assert.equal(carriedWeight(n.units[0]),weight);assert.ok(validateBattleSnapshot(n));
+});
+test('a refused or repeated empty-hand selection preserves equipment, AP and random state',()=>{
+ const b=fixture({weapon:1800});b.units[0].ap=3;const denied=actBattle(b,{type:'weapon',unitId:'p',slot:'unarmed'});assert.ok(denied.lastError);assert.deepEqual(denied.units,b.units);assert.equal(denied.seed,b.seed);
+ b.units[0].ap=100;const ready=actBattle(b,{type:'weapon',unitId:'p',slot:'unarmed'});for(const slot of ['unarmed','unknown']){const n=actBattle(ready,{type:'weapon',unitId:'p',slot});assert.ok(n.lastError);assert.deepEqual(n.units,ready.units);assert.equal(n.seed,ready.seed);}
+});
+test('exploration can put the firearm away and restore it for one second each without spending AP or charges',()=>{
+ let b=createBattle([{id:'p',weapon:1800,loaded:1}],{width:8,height:8,exploration:true,enemies:[]});b.units[0].ap=0;const start=b.elapsedSeconds;for(const slot of ['unarmed','primary']){b=actBattle(b,{type:'weapon',unitId:'p',slot});assert.equal(b.lastError,null);assert.equal(b.units[0].ap,0);assert.equal(b.units[0].loaded,1);}assert.equal(b.elapsedSeconds,start+2);assert.ok(validateBattleSnapshot(b));
+});

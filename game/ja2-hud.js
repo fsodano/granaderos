@@ -31,8 +31,8 @@ export function rosterCells(players, selectedId) {
   return cells;
 }
 
-export function slotAction(unit) {
-  return {type: 'weapon', slot: unit.activeSlot === 'blade' ? 'primary' : 'blade'};
+export function slotAction(unit, slot = null) {
+  return {type: 'weapon', slot: slot ?? (unit.activeSlot === 'blade' || unit.activeSlot === 'unarmed' ? 'primary' : 'blade')};
 }
 
 export function backpackEquipAction(key, slot) {

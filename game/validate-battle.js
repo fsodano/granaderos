@@ -32,7 +32,7 @@ need(number(u.maxHp,1,1000)&&number(u.hp,0,u.maxHp)&&number(u.ap,0,100),'salud o
 need(integer(u.weapon,0,65535),'armas');validateWeaponCarrier(u);if(u.blade!==undefined)need(integer(u.blade,0,65535),'armas blancas');need(integer(u.loaded,0,weaponSpecification(u)?.capacity??(BLADES[u.weapon]?0:100)),'cargas');
 for(const k of ['ammo','priming','flints','rations','torches','boleadoras','medkits','strengthTraining'])if(u[k]!==undefined)need(integer(u[k],0,1000000),'suministros');
 for(const k of ['unconscious','knockedDown','weaponDropped','fled','braced','mounted','horse','canMount','jammed','routed','entangled','poncho','overwatch'])if(u[k]!==undefined)need(typeof u[k]==='boolean','estados del soldado');
-need(['standing','prone'].includes(u.stance)&&['primary','blade'].includes(u.activeSlot)&&['walk','run','crouch','prone'].includes(u.movementMode),'posturas');
+need(['standing','prone'].includes(u.stance)&&['primary','blade','unarmed'].includes(u.activeSlot)&&['walk','run','crouch','prone'].includes(u.movementMode),'posturas');
 validateWeaponReadiness(u,(weaponSpecification(u)?.capacity??0)>0);
 if(legacyCondition)refreshMilitaryCondition(u);
 need(u.unconscious===isUnconscious(u),'consciencia');
