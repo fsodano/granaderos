@@ -886,7 +886,8 @@ priming, flints, rations, torches, dressings or bolas. The sender pays four AP
 or one exploration second, and the recipient pays no action points. Supplies
 move once between their actual holders; subsequent use and saved campaign return
 retain the remainders. Invalid or unavailable quantities fail in full before
-costs. Cartridge sharing and physical pocket capacity remain separate. See
+costs. Loose cartridges use the same handover controls with shared witnessed
+settlement; physical pocket capacity remains separate. See
 [verification](../verification/adjacent-supply-transfer.md).
 
 
@@ -900,3 +901,15 @@ retain finite quantities across save and campaign reentry. Numerical limits
 reject overflowing collection atomically; full physical pocket capacity and
 partial pickup selection remain separate. See
 [verification](../verification/drop-personal-supplies.md).
+
+
+### Shared deployment cartridge settlement
+
+Loose cartridge reserves can move between adjacent conscious squad members
+without moving either gun's loaded charge. Active saves and carried mass follow
+the actual holders. A witnessed retreat report refunds the shared surviving
+force total, capped by issued and actually recovered cartridges. Legacy reports
+without a matching tactical holder keep their individual ceilings. The campaign
+still issues and refunds deployment cartridges; independent physical custody
+between deployments and typed rounds remain separate. See
+[verification](../verification/adjacent-cartridge-transfer.md).

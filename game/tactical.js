@@ -9,7 +9,7 @@ import {planReload,reloadRoundCost} from './weapon-reload.js';
 import {firstAidPlan} from './first-aid.js';
 import {speechFor} from './characters.js';
 import {civilianSupplyLoot} from './civilian-supplies.js';
-import {CHARACTER_SUPPLY_LABELS} from './character-supplies.js';
+import {CHARACTER_SUPPLY_LABELS,TRANSFER_SUPPLY_LABELS} from './character-supplies.js';
 import {isUnconscious,fieldCapable,refreshMilitaryCondition} from './actor-condition.js';
 import {seedCivilianHealth,isCivilianUnconscious,civilianRestoredHp} from './civilian-health.js';
 import {applyCivilianHarm,advanceCivilianWoundTime} from './civilian-harm.js';
@@ -269,7 +269,7 @@ else if(a.type==='transferSupply'){
  const plan=supplyTransferPreview(s,u,target,a.item,a.count);if(plan.reason)return fail(plan.reason);
  if(!pay(4))return fail('Entregar suministros requiere 4 PA.');
  u[a.item]-=a.count;target[a.item]=(target[a.item]??0)+a.count;
- lowerWeapon(u);say(s,`${u.name} entrega ${a.count} ${CHARACTER_SUPPLY_LABELS[a.item].toLowerCase()} a ${target.name}.`);
+ lowerWeapon(u);say(s,`${u.name} entrega ${a.count} ${TRANSFER_SUPPLY_LABELS[a.item].toLowerCase()} a ${target.name}.`);
 }
 else if(a.type==='transfer'){
  const plan=weaponTransferPreview(s,u,target,a.inventoryKey,a.slot);if(plan.reason)return fail(plan.reason);
@@ -365,8 +365,8 @@ function companionTransferReason(s,u,target){
  return null;
 }
 const personalSupplyLimit=item=>item==='medkits'?1000000:100000;
-function personalSupplyStockReason(u,item,count){
- if(!Object.hasOwn(CHARACTER_SUPPLY_LABELS,item))return 'Elegí un suministro personal disponible.';
+function personalSupplyStockReason(u,item,count,includeCartridges=false){
+ if(!Object.hasOwn(includeCartridges?TRANSFER_SUPPLY_LABELS:CHARACTER_SUPPLY_LABELS,item))return 'Elegí un suministro personal disponible.';
  if(!Number.isSafeInteger(count)||count<1)return 'La cantidad debe ser un número entero positivo.';
  const available=u[item]??0;
  if(!Number.isSafeInteger(available)||available<count)return 'No quedan suficientes suministros de ese tipo.';
@@ -375,6 +375,7 @@ function personalSupplyStockReason(u,item,count){
 export function supplyDropPreview(s,u,item,count){
  const reject=reason=>({reason,pa:4,seconds:s.mode==='exploration'?1:undefined});
  if(s.status!=='active'||!u||u.side!=='player'||u.militia||!alive(u)||u.fled||u.departure||u.knockedDown)return reject('Seleccioná un integrante de la escuadra que pueda actuar.');
+ if(item==='ammo')return reject('Los cartuchos solo se pueden entregar a un compañero.');
  const reason=personalSupplyStockReason(u,item,count);if(reason)return reject(reason);
  if(count>personalSupplyLimit(item))return reject('Esa cantidad supera el límite de un bulto.');
  if(s.groundItems.length>=2000)return reject('No queda espacio para otro objeto en el sector.');
@@ -383,9 +384,9 @@ export function supplyDropPreview(s,u,item,count){
 }
 export function supplyTransferPreview(s,u,target,item,count){
  const reject=reason=>({reason,pa:4,seconds:s.mode==='exploration'?1:undefined}),reason=companionTransferReason(s,u,target);if(reason)return reject(reason);
- const stockReason=personalSupplyStockReason(u,item,count);if(stockReason)return reject(stockReason);
+ const stockReason=personalSupplyStockReason(u,item,count,true);if(stockReason)return reject(stockReason);
  const received=target[item]??0;
- if(!Number.isSafeInteger(received)||received<0||received+count>personalSupplyLimit(item))return reject('El compañero no puede guardar esa cantidad de suministros.');
+ if(!Number.isSafeInteger(received)||received<0||received+count>(item==='ammo'?100000-(target.loaded??0):personalSupplyLimit(item)))return reject('El compañero no puede guardar esa cantidad de suministros.');
  if(s.mode!=='exploration'&&u.ap<4)return reject('Entregar suministros requiere 4 PA.');
  return {reason:null,pa:4,seconds:s.mode==='exploration'?1:undefined};
 }

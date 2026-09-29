@@ -43,5 +43,9 @@ handover. These are mounted DOM checks, not live-browser acceptance.
 
 The ordinary collection takes the whole chosen bundle. Partial pickup selection,
 cartridge placement, physical pocket capacity and weight, container inventories,
-remote inventory and broader campaign acceptance remain open. Exact-head CI
-remains required before publication.
+remote inventory and broader campaign acceptance remain open. Exact-head CI passed before publication.
+
+## Publication
+
+Published in [PR #119](https://github.com/fsodano/granaderos/pull/119) on 2026-09-29 01:53:56 UTC.
+Exact head `0fc1b42a1d05ccc7be8ed0a7b65e1b5b2f9267af` passed [CI run 36509271204](https://github.com/fsodano/granaderos/actions/runs/36509271204), including the full suite, types and production build. Merge commit: `a8fc3b141ee9c1494ebcf962026c12eb57c8bf66`. This publication does not close the broader game or campaign requirements.

@@ -8,3 +8,6 @@ export function validStartingSupplies(value){
   return value!==null&&typeof value==='object'&&!Array.isArray(value)&&
     Object.keys(value).length===fields.length&&fields.every(k=>Object.hasOwn(value,k)&&Number.isSafeInteger(value[k])&&value[k]>=0&&value[k]<=CHARACTER_SUPPLY_LIMIT);
 }
+
+// Deployment cartridges can move between soldiers without changing authored starting allocations.
+export const TRANSFER_SUPPLY_LABELS=Object.freeze({ammo:'Cartuchos',...CHARACTER_SUPPLY_LABELS});

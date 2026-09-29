@@ -7,6 +7,8 @@ accepted features on GitHub `main`, approved scope changes and open work.
 
 ## Published baseline
 
+- [Shared loose cartridges and bounded settlement](adjacent-cartridge-transfer.md)
+
 - [Persistent personal supply bundles](drop-personal-supplies.md)
 
 - [Exact personal supply handover](adjacent-supply-transfer.md)
