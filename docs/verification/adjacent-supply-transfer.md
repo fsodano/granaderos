@@ -45,5 +45,9 @@ was updated from six supply rows to seven to include actual dressings.
 
 Ground placement, cartridge sharing, physical pockets, remote relay and throwing
 remain open. These are simulations and mounted DOM checks, not live-browser,
-performance or complete campaign acceptance. Exact-head CI remains required
-before publication.
+performance or complete campaign acceptance. Exact-head CI passed before publication.
+
+## Publication
+
+Published in [PR #118](https://github.com/fsodano/granaderos/pull/118) on 2026-09-29 01:42:33 UTC.
+Exact head `2d0ff258098cea9140eaeea09f05908775ec39fa` passed [CI run 36508356384](https://github.com/fsodano/granaderos/actions/runs/36508356384), including the full suite, types and production build. Merge commit: `f2771452b09db0b5ed9e21988a084e2a3c4b91db`. This publication does not close the broader game or campaign requirements.
