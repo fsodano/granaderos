@@ -1,4 +1,5 @@
 'use client';
+import {ammoCount,ammoTypeFor,AMMO_TYPES,ammunitionForWeapon} from '../../game/ammo-types.js';
 // MODE A left zone: squad portrait strip (up to 6 cells + empty placeholders).
 // Pure read model (game/ja2-hud.js rosterCells); all mutations are caller-provided callbacks.
 import {rosterCells} from '../../game/ja2-hud.js';
@@ -38,7 +39,7 @@ export default function JA2Roster({players, selected, onSelect, onOpenInventory}
               <span title="Puntos de acción"><i className="action" style={{height: `${Math.max(0, Math.min(100, (u.ap / (u.maxAP || 100)) * 100))}%`}} /></span>
               <span title="Energía"><i className="energy" style={{height: `${Math.max(0, Math.min(100, u.energy ?? 100))}%`}} /></span>
             </span>
-            <span className="ja2-weapon-line">{weapon.name} · {loadState(u, firearm)}{firearm ? ` · ${u.ammo} cartuchos` : ''}</span>
+            <span className="ja2-weapon-line">{weapon.name} · {loadState(u, firearm)}{firearm ? ` · ${ammoCount(u)} ${ammunitionForWeapon(u)?.name.toLowerCase()??'municiones'}` : ''}</span>
             <span className="portrait-numbers">{cell.fallen ? 'Fuera de combate' : `${Math.ceil(u.hp)} SAL · ${u.ap} PA · ${Math.round(u.energy ?? 100)} EN`}</span>
           </button>
         );

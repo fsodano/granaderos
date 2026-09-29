@@ -9,7 +9,7 @@ function field({firstSide='player',militia={},enemies,wall=6}={}){return createB
 const defender=s=>s.units.find(u=>u.id==='militia');
 
 test('a local defender independently loads and fires finite ammunition through normal combat rounds',()=>{
- let b=field();const before=structuredClone(defender(b));for(let i=0;i<5&&b.status==='active';i++)b=endTurn(b);assert.equal(b.lastError,null);assert.equal(b.status,'victory');const u=defender(b);assert.ok(u.loaded+u.ammo<before.loaded+before.ammo);assert.ok(u.priming<before.priming);assert.ok(u.condition<before.condition);assert.equal(u.hp,before.hp);assert.equal(u.militiaExperience,3);assert.ok(b.log.some(e=>e.includes('actúa la guarnición')));assert.ok(b.log.some(e=>e.includes('Defensor')&&e.includes('recarga')));assert.ok(validateBattleSnapshot(b));
+ let b=field();const before=structuredClone(defender(b));for(let i=0;i<5&&b.status==='active';i++)b=endTurn(b);assert.equal(b.lastError,null);assert.equal(b.status,'victory');const u=defender(b);assert.ok(u.loaded+u.ammo<before.loaded+before.ammo);assert.equal('priming'in u,false);assert.ok(u.condition<before.condition);assert.equal(u.hp,before.hp);assert.equal(u.militiaExperience,3);assert.ok(b.log.some(e=>e.includes('actúa la guarnición')));assert.ok(b.log.some(e=>e.includes('Defensor')&&e.includes('recarga')));assert.ok(validateBattleSnapshot(b));
 });
 
 test('militia spend remaining AP after actual reactions without receiving another issue in the allied phase',()=>{

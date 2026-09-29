@@ -1,3 +1,4 @@
+import {normalizeAmmo,migrateAmmoGround,removeIgnitionSupplies} from './ammo-types.js';
 import {militiaArrivalTerrain} from './militia-arrival.js';
 import {seedCivilianHealth} from './civilian-health.js';
 import {sectorCash} from './economy.js';
@@ -71,5 +72,6 @@ export function enterSector(request,previous=null){
  }
  state.sceneId=request.sceneId??null;state.missionId=request.missionId??request.sceneId??null;
  state.enteredHour=request.hour??0;
- return state;
+ for(const unit of state.units)normalizeAmmo(unit);state.groundItems=migrateAmmoGround(state.groundItems);
+ return removeIgnitionSupplies(state);
 }

@@ -1,3 +1,4 @@
+import {AMMO_KEYS,AMMO_TYPES,ammoCount} from './ammo-types.js';
 import {personalPockets} from './personal-pockets.js';
 import {weaponSpecification} from './weapon-definition.js';
 // Pure HUD model for the tactical battle inspector and squad strip.
@@ -59,9 +60,7 @@ export function inventoryModel(state, unit) {
   ];
   const supplies = [
     {id: 'medkits', label: 'Vendas', count: unit.medkits??0},
-    {id: 'ammo', label: 'Cartuchos', count: unit.ammo},
-    {id: 'priming', label: 'Cebado', count: unit.priming},
-    {id: 'flints', label: 'Sílex', count: unit.flints},
+    ...AMMO_KEYS.map(id=>({id,label:AMMO_TYPES[id].name,count:ammoCount(unit,id)})),
     {id: 'rations', label: 'Raciones', count: unit.rations},
     {id: 'boleadoras', label: 'Boleadoras', count: unit.boleadoras},
     {id: 'torches', label: 'Antorchas', count: unit.torches},
@@ -101,13 +100,13 @@ const ORDER_DEFS = [
   {id: 'heal', label: 'Vendar', kind: 'mode'},
   {id: 'loot', label: 'Recoger equipo', kind: 'mode'},
   {id: 'reload', label: 'Recargar', kind: 'order'},
-  {id: 'reprime', label: 'Cebar', kind: 'order'},
+  {id: 'reprime', label: 'Resolver fallo', kind: 'order'},
   {id: 'weapon', label: 'Cambiar arma', kind: 'order'},
   {id: 'stance', label: 'Postura', kind: 'order'},
   {id: 'overwatch', label: 'Cubrir', kind: 'order'},
   {id: 'mount', label: 'Montar', kind: 'order'},
   {id: 'brace', label: 'Calar bayoneta', kind: 'order'},
-  {id: 'repair', label: 'Cambiar sílex', kind: 'order'},
+  {id: 'repair', label: 'Mantener arma', kind: 'order'},
   {id: 'ration', label: 'Tasajo y vendas', kind: 'order'},
   {id: 'torch', label: 'Arrojar antorcha', kind: 'mode'},
   {id: 'bolas', label: 'Lanzar boleadoras', kind: 'mode'},
@@ -146,7 +145,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
     overwatch: !firearm,
     mount: !u.horse,
     brace: blade.id !== 1811 || u.ap < blade.ap,
-    repair: !firearm || (u.flints ?? 4) < 1,
+    repair: !firearm || u.condition>=100,
     ration: (u.rations ?? 2) < 1,
     torch: (u.torches ?? 2) < 1,
     bolas: (u.boleadoras ?? 0) < 1,

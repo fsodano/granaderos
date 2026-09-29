@@ -1,3 +1,4 @@
+import {setReserve} from './typed-ammo-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {actBattle,createBattle,carriedWeight,supplyTransferPreview} from '../game/tactical.js';
 import {returnAmmunition} from '../game/ammunition.js';
@@ -20,8 +21,8 @@ test('shared refund accounting remains bounded, excludes dead holders and requir
 });
 test('empty reserves, loaded-only sources, quantity overflow and excessive receiving totals cannot change cartridge custody',()=>{
  const fixture=()=>createBattle([{id:'sender',x:1,y:1,ammo:3,loaded:1},{id:'receiver',x:2,y:1,ammo:2,loaded:1}],{width:8,height:8,enemies:[{id:'guard',x:7,y:7,patrol:false}]});
- for(const [change,a]of [[b=>b.units[0].ammo=0,{count:1}],[()=>{},{item:'loaded',count:1}],[()=>{},{count:4}],[()=>{},{count:1.5}],[b=>b.units[1].ammo=99999,{count:1}],[b=>b.units[0].ap=3,{count:1}],[b=>b.units[1].x=6,{count:1}]]){const b=fixture();change(b);const action={type:'transferSupply',unitId:'sender',targetId:'receiver',item:'ammo',count:1,...a};assert.ok(supplyTransferPreview(b,b.units[0],b.units[1],action.item,action.count).reason);const n=actBattle(b,action);assert.ok(n.lastError);assert.deepEqual(physical(n),physical(b));}
- const b=fixture();b.units[1].ammo=99998;const n=actBattle(b,{type:'transferSupply',unitId:'sender',targetId:'receiver',item:'ammo',count:1});assert.match(n.lastError,/bolsillo/);assert.deepEqual(physical(n),physical(b));
+ for(const [change,a]of [[b=>setReserve(b.units[0],0),{count:1}],[()=>{},{item:'loaded',count:1}],[()=>{},{count:4}],[()=>{},{count:1.5}],[b=>setReserve(b.units[1],99999),{count:1}],[b=>b.units[0].ap=3,{count:1}],[b=>b.units[1].x=6,{count:1}]]){const b=fixture();change(b);const action={type:'transferSupply',unitId:'sender',targetId:'receiver',item:'ammo',count:1,...a};assert.ok(supplyTransferPreview(b,b.units[0],b.units[1],action.item,action.count).reason);const n=actBattle(b,action);assert.ok(n.lastError);assert.deepEqual(physical(n),physical(b));}
+ const b=fixture();setReserve(b.units[1],99998);const n=actBattle(b,{type:'transferSupply',unitId:'sender',targetId:'receiver',item:'ammo',count:1});assert.match(n.lastError,/bolsillo/);assert.deepEqual(physical(n),physical(b));
 });
 test('exploration shares only loose cartridges for one second and cannot use the unsupported ground placement path',()=>{
  const b=createBattle([{id:'sender',x:1,y:1,ammo:3,loaded:1},{id:'receiver',x:2,y:1,ammo:0,loaded:1}],{width:8,height:8,enemies:[],exploration:true});b.units[0].ap=0;b.units[1].ap=0;const n=actBattle(b,{type:'transferSupply',unitId:'sender',targetId:'receiver',item:'ammo',count:3});assert.equal(n.lastError,null);assert.equal(n.elapsedSeconds,b.elapsedSeconds+1);assert.equal(n.units[0].ammo,0);assert.equal(n.units[1].ammo,3);assert.equal(n.units[0].loaded,1);assert.equal(n.units[1].loaded,1);assert.equal(n.units[0].ap,0);assert.equal(n.units[1].ap,0);const rejected=actBattle(n,{type:'dropSupply',unitId:'receiver',item:'ammo',count:1});assert.ok(rejected.lastError);assert.deepEqual(physical(rejected),physical(n));

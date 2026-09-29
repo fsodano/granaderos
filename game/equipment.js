@@ -20,8 +20,8 @@ export function armoryOptions(s,op,slot){
  if(!usesAuthoredEquipment(s))return EQUIPMENT_CATALOG.filter(w=>typeof w.item==='number'&&(slot==='weapon'||w.category==='blade')&&(w.item===op[slot]||(s.armory?.[w.item]??0)>0)).map(w=>({...w,key:String(w.item),equipped:w.item===op[slot]}));
  return s.armoryItems.filter(i=>slot==='weapon'||i.weapon>=1809).map(i=>({key:i.id,item:equipmentKey(i),instanceId:i.id,name:i.contentWeapon?.name??WEAPONS[i.weapon].name,condition:i.condition}));
 }
-export function needsResupply(record){return [['priming',50],['flints',4],['rations',2],['torches',2],['medkits',2]].some(([key,target])=>(record[key]??target)<target);}
-export function refillCost(record,dressingPrice=10){return Math.ceil(Math.max(0,50-(record.priming??50))*.4+Math.max(0,4-(record.flints??4))*8+Math.max(0,2-(record.rations??2))*10+Math.max(0,2-(record.torches??2))*8+Math.max(0,2-(record.medkits??2))*dressingPrice);}
+export function needsResupply(record){return [['rations',2],['torches',2],['medkits',2]].some(([key,target])=>(record[key]??target)<target);}
+export function refillCost(record,dressingPrice=10){return Math.ceil(Math.max(0,2-(record.rations??2))*10+Math.max(0,2-(record.torches??2))*8+Math.max(0,2-(record.medkits??2))*dressingPrice);}
 export function firearmRepairCost(record){return Math.ceil(Math.max(0,100-(record.condition??100))*1.5);}
 export function artillerySelectionReason(s,types){
  const depot=localArtilleryDepot(s);

@@ -29,7 +29,7 @@ The advanced local suite has three independent failure points; a failed child al
 - UNVERIFIED: available evidence does not establish acceptance.
 - SUPERSEDED: an explicit design change replaced the old requirement.
 
-The register retains 266 entries: 117 VERIFIED, 103 PARTIAL, 32 LOCAL_ONLY, 2 MISSING, 9 FAILED, 2 UNVERIFIED, 1 SUPERSEDED.
+The register retains 267 entries: 117 VERIFIED, 103 PARTIAL, 33 LOCAL_ONLY, 2 MISSING, 9 FAILED, 2 UNVERIFIED, 1 SUPERSEDED.
 Rows overlap in scope. Neither these counts nor test totals are a completion percentage.
 
 Edit [requirements.json](requirements.json), record exact source/checks and remaining gaps, then run `npm run docs:progress` and `npm run audit:docs`. Update the design for policy changes. A dated audit stays an evidence snapshot. Do not mark a local branch as published or close a broad row from one passing fixture.
@@ -189,7 +189,7 @@ Finish one bounded feature, its controls and persistence, update evidence, pass 
 | TAC-01 | 100 AP, exact weapon cycles, long reloads, prone penalty | PARTIAL | 100 AP and reference firearm cycles. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI. | Integrate partial loading/readiness and shared costs through interruptions and saves. |
 | TAC-02 | Smoothbore dispersion and Baker precision | PARTIAL | Range-dependent firearm combat and distinct weapons. | Integrate newer range/cover model; verify the reference distances and visible predictions. |
 | TAC-03 | Expanding persistent smoke, LOS/CTH/interrupt effects | PARTIAL | Powder-smoke state, aging and visibility effects. | Integrate later spreading visuals; verify volleys, dissipation and interruption costs. |
-| TAC-04 | Weather/fouling misfires, 15 AP re-prime, flint durability | PARTIAL | Ignition, weather, priming and weapon condition. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. | Integrate both hands, full strategic cartridge custody and repair without free charges. |
+| TAC-04 | Weather/fouling misfires, paid recovery and weapon condition with implicit ignition kit | PARTIAL | Ignition, weather, priming and weapon condition. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. | Integrate both hands, full strategic cartridge custody and repair without free charges. User decision on 2026-09-29 removes separate flint durability/stock and priming inventory; AMMOFAMILY-01 tracks this replacement. |
 | TAC-05 | Straight-line charge and +10% damage per tile | PARTIAL | Mounted charge path, AP and momentum tests. | Integrate shared advanced movement, facing, equipment and saved interruption behavior. |
 | TAC-06 | Sabre bleeding/parry, bayonet reach/intercepts, lance knockdown, facón defense | PARTIAL | Distinct held blade actions and reactions. | Integrate physical fittings, gun strikes, wounds and actual finite item ownership. |
 | TAC-07 | Formation morale shock and routing | PARTIAL | Morale, rout and dropped equipment. | Integrate persistent morale, actual exit/capture and survivor settlement. |
@@ -343,6 +343,12 @@ Finish one bounded feature, its controls and persistence, update evidence, pass 
 | FIX-03 | Physical prisoner rescue ends in defeat instead of retreat | FAILED | These larger acceptance routes are not present in the published suite. | Preserve actual exit, wounds, finite gear and captive identity; complete paid rescue and return. |
 | FIX-04 | Prototype fresh route loses at San Lorenzo | FAILED | Two fresh published routes now win the actual coastal opening under the supported economy, preserving real losses and saves. The separate prototype failing route has not been rerun or repaired on its own source. | Reconcile the failing route with the supported opening/economy; pass the battle and continue without overriding results. |
 
+## Inventory and equipment
+
+| ID | Requirement | Status | Published scope | Remaining work / acceptance |
+|---|---|---|---|---|
+| AMMOFAMILY-01 [PR](https://github.com/fsodano/granaderos/pull/130) | Use weapon-compatible ammunition families and assume basic ignition kit | LOCAL_ONLY | PR #130 is open. Its initial head passed all five remote checks; the combined head and recovered-ground correction require final checks before merge. | Merge the combined source after successful exact-head checks; integrate the separate advanced checkout, strategic family custody and further authored ammunition variants. |
+
 ## Evidence index
 
 | ID | Evidence | Scope and limits |
@@ -453,5 +459,6 @@ Finish one bounded feature, its controls and persistence, update evidence, pass 
 | E-ENEMY-WORKER-EXPORT | [Record](enemy-worker-export.md) | Enemy-turn worker uses the emitted HTTP asset. Build guard rejects the retained PR #125 file-URL constructor and checks the deployed worker exists. Complete regression 1244/1244, types and 723-file export pass; normal production turn control passes. Exact-head CI required before merge; broad performance remains open. |
 | E-WALKING-FRAME-CONTINUITY | [Record](walking-frame-continuity.md) | Movement-time gait phase and fractional illustrated-sprite positions. Regression tests reproduce skipped poses during cell waits and integer-position sticking before the correction. Artwork completeness remains open. |
 | E-SHARED-POCKETS | [Record](shared-inventory-pockets.md) · [CI](https://github.com/fsodano/granaderos/pull/128) | Published PR #128: four large and eight small pockets share weapons and supplies, finite collection and transfer, saved layout and hand, preserved legacy excess, supply images and desktop controls. Exact-head CI totals 1268/1268, with zero failures/skips; web build passed. Broad inventory, merchant and advanced integration gaps remain open. |
+| E-TYPED-AMMUNITION | [Record](typed-ammunition.md) · [CI](https://github.com/fsodano/granaderos/pull/130) | Four compatible ammunition families, implicit ignition kit, migration and saved ground-bundle settlement. Combined source a464ee32 passes 1282/1282, types, export, all 36 baseline checks and desktop partial pickup. Final remote checks and publication are recorded in the linked report. |
 
 Per-row acceptance, local assessment, source notes and test paths are retained in [the register](requirements.json). The full 87-row historical parity assessment is preserved in the audit; its old implementation claims are not fresh certification. Earlier milestones remain in [the historical log](../archive/published-progress-through-pr28.md).

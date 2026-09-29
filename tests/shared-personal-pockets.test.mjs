@@ -6,7 +6,7 @@ import {validateBattleSnapshot} from '../game/validate-battle.js';
 import {dispatchCampaign,deploymentCost} from '../game/campaign.js';
 import {supplyCareField} from './supply-transfer-fixture.mjs';
 import {saved,tactical,leave,visit} from './local-contract-fixture.mjs';
-const empty={ammo:0,priming:0,flints:0,rations:0,torches:0,medkits:0,boleadoras:0};
+const empty={ammo:0,rations:0,torches:0,medkits:0,boleadoras:0};
 const rifle={weapon:1800,count:1,weight:4,loaded:1,condition:63,jammed:true};
 const knife={weapon:1813,count:1,weight:1.3,loaded:0,condition:71};
 function field(){return createBattle([{id:'a',x:1,y:1,weapon:1800,blade:1813,...empty},{id:'b',x:2,y:1,weapon:1800,blade:0,...empty}],{width:8,height:8,enemies:[{id:'e',x:7,y:7,patrol:false}]});}
@@ -59,6 +59,6 @@ test('campaign medical purchases cannot bypass pockets or charge a rejected purc
 });
 
 test('an empty body reports no equipment without claiming that the collectors pockets are full',()=>{
- const b=field(),corpse=b.units[2];Object.assign(corpse,{hp:0,ap:0,maxAP:0,overwatch:false,x:1,y:2,...empty,weapon:0,blade:0,inventory:{}});
+ const b=field(),corpse=b.units[2];Object.assign(corpse,{hp:0,ap:0,maxAP:0,overwatch:false,x:1,y:2,...empty,weapon:0,blade:0,inventory:{},ammunition:{}});
  const n=order(b,{type:'loot',targetId:corpse.id});assert.equal(n.lastError,'No queda equipo que recoger.');assert.deepEqual(physical(n),physical(b));
 });

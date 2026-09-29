@@ -1,5 +1,5 @@
 import {MERCENARY_ADDITIONS} from './mercenaries.js';
-export const CIVIC_DEFAULTS={dexterity:60,wisdom:60,mechanical:20,explosives:15,medical:20,leadership:35,hp:70,maxHp:70,agility:65,strength:65,marksmanship:50,weapon:1804,blade:1813,priming:50,flints:4,rations:2};
+export const CIVIC_DEFAULTS={dexterity:60,wisdom:60,mechanical:20,explosives:15,medical:20,leadership:35,hp:70,maxHp:70,agility:65,strength:65,marksmanship:50,weapon:1804,blade:1813,rations:2};
 export const CIVIC_RECRUITS=[
  {...CIVIC_DEFAULTS,id:100,classId:'gaucho',name:'Rafael Sosa',nickname:'Sosa',role:'Peón y miliciano provincial',biography:'Un peón de la campaña que acude al boletín del Cabildo. Su experiencia con caballos y facón compensa una instrucción militar todavía escasa.',monthlyPay:180,weeklyPay:42,agility:72,strength:78,marksmanship:43,traits:['cavalry_commander'],sector:'buenos_aires'},
  {...CIVIC_DEFAULTS,id:101,classId:'baqueano',name:'Tomasa Ríos',nickname:'Ríos',role:'Exploradora del Litoral',biography:'Conoce los senderos y bañados del Litoral. Se incorpora para proteger los pueblos ribereños y aprende con rapidez durante las incursiones.',monthlyPay:220,weeklyPay:51,agility:80,wisdom:74,marksmanship:48,traits:['guerrilla_tactician'],sector:'san_nicolas'},

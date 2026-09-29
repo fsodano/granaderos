@@ -59,7 +59,7 @@ export function attachCampaignContent(state, content) {
   state.armoryItems=[];state.nextArmoryItemId=1;
   for (const c of definitions.characters) {
     const id=operativeIdForCharacter(definitions,c.id);
-    const record=state.operativeState[id]??={hp:c.attributes.maxHp,fatigue:0,alive:true,xp:0,priming:50,flints:4,rations:2,torches:2,condition:100};
+    const record=state.operativeState[id]??={hp:c.attributes.maxHp,fatigue:0,alive:true,xp:0,rations:2,torches:2,condition:100};
     Object.assign(record,startingCharacterSupplies(c));
     const weapon=definitions.weapons.find(w=>w.id===c.weapon);
     state.loadouts[id]={...state.loadouts[id],weapon:weapon?.template??0};

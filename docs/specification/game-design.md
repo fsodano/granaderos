@@ -322,7 +322,7 @@ visible policy. A movement changes the existing resident's location and local
 routine; it does not create another person. The player sees discovered/reported
 locations and the time of the report, not private random state.
 
-Residents with a character sheet carry the six current personal supply quantities
+Residents with a character sheet carry the four current personal supply quantities
 from their shared identity. Adjacent dead or unconscious residents can be looted
 through ordinary paid orders. Collection reduces the original holder; movement,
 service changes, saves and distinct successors cannot replenish or duplicate it.
@@ -393,7 +393,7 @@ Older content without a blade assignment retains the original character loadout.
 Enemy roles and militia ranks can select primary weapons and secondary blades
 independently. Only newly issued soldiers receive those selections; retained
 soldiers keep their actual gear. A blade primary receives no firearm cartridges
-or priming powder. An unspecified secondary selection retains the role default.
+and needs no separate ignition supplies. An unspecified secondary selection retains the role default.
 Merchant stock, prices, buyback and replenishment are authored
 rules, not uncontrolled duplication of owned items.
 
@@ -427,14 +427,14 @@ pesos and 10/13/6 cartridges. Initial funds are delivered once; loading a save
 never restores them. Each player cartridge costs one peso under the existing
 return/refund rules. Zero is valid. Capacity caps the loaded portion and the rest
 remains in reserve. Blade primaries receive none. Existing troops retain spent
-supplies; mission allies keep their separate allotments. Broader care, priming,
+supplies; mission allies keep their separate allotments. Broader care,
 progression and economy rules remain separate authoring requirements.
 
-Each catalogued character can author an initial allocation of priming, flints,
-rations, torches, dressings and boleadoras (integer 0–1000 for each). The campaign
+Each catalogued character can author an initial allocation of rations, torches,
+dressings and boleadoras (integer 0–1000 for each). The campaign
 seeds it once; bulletin arrival or local incorporation receives the actual saved
 amounts. Consumption, reload, renewal and rehire cannot grant another allocation.
-Older packages retain the original 50/4/2/2/2/1 defaults. This is separate from paid
+Older packages retain the four remaining 2/2/2/1 defaults. Ignition kit is implicit. This is separate from paid
 cartridge deployment and workshop refill targets. Civilian lootable belongings,
 item custody and the player-created officer's own allocation remain separate work.
 
@@ -509,7 +509,7 @@ Dialogue choices, authored chapters and campaign failure may require a named
 character to retain an inclusive supply quantity range. Current tactical stock
 overrides the deployed service snapshot; absent tactical state is unknown, not
 empty. The check does not grant or consume goods and does not imply life, presence
-or service. Existing six personal supplies share this rule. Arbitrary inventory
+or service. The four current personal supplies share this rule. Arbitrary inventory
 and dialogue transfers remain separate work. See the
 [verification record](../verification/story-supply-conditions.md).
 
@@ -890,7 +890,7 @@ separate. See
 ### Exact personal supply handover
 
 An adjacent conscious squad member can receive an exact whole quantity of
-priming, flints, rations, torches, dressings or bolas. The sender pays four AP
+compatible ammunition, rations, torches, dressings or bolas. The sender pays four AP
 or one exploration second, and the recipient pays no action points. Supplies
 move once between their actual holders; subsequent use and saved campaign return
 retain the remainders. Invalid or unavailable quantities fail in full before
@@ -901,13 +901,13 @@ settlement; physical pocket capacity remains separate. See
 
 ### Ground supply bundles
 
-An exact quantity of the six authored personal supplies can move to the current
+An exact quantity of ammunition or the four authored personal supplies can move to the current
 cell for four AP or one exploration second. The field picker chooses a bundle
 and quantity with the ordinary eight-AP or one-second collection action. Another adjacent soldier can
 collect it even while the owner occupies that cell. Source, ground and receiver
 retain finite quantities across save and campaign reentry. Numerical limits
 reject overflowing collection atomically; the selected quantity can be reduced.
-Full physical pocket capacity remains separate. See
+Shared physical pocket capacity limits both dropping and collection. See
 [verification](../verification/drop-personal-supplies.md).
 
 
@@ -965,3 +965,20 @@ fields. Undo, validation, launch, weapon custody and full saves retain the autho
 profile. This extends stock contact configuration; physical fittings and separate
 stock accuracy/breath rules remain open. See
 [verification](../verification/authored-firearm-melee.md).
+
+
+### Ammunition families and implicit ignition kit
+
+User decision, 29 September 2026: do not track priming charges or flints as
+inventory supplies. Assume each soldier has the kit needed to ignite and maintain
+their firearm. Keep misfires, condition and action/time costs. This decision
+supersedes older separate-kit requirements in the historical notes.
+
+Use separate musket, rifle, pistol and shot ammunition, each with its own image
+and stack. A firearm consumes only its compatible family. Keep existing ammunition
+when a weapon changes; never convert incompatible reserves. Old saves migrate
+carried generic rounds according to the primary weapon. Ground bundles keep their
+family, quantity and identity through saved visits. Under the existing paid issue
+and refund rules, only recovered stock from an earlier bundle can increase the
+return allowance; dropping and picking up a new bundle cannot mint credit. See the bounded
+[implementation and verification](../verification/typed-ammunition.md).

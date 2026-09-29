@@ -12,7 +12,7 @@ test('a real discharged round advances marksmanship while invalid repeat fire ca
 test('finite successful healing and maintenance train relevant skills only',()=>{
  let s=make({hp:50,maxHp:100,bleeding:4,condition:50,skillPractice:{medical:39,mechanical:39}});
  s=actBattle(s,{type:'heal',unitId:1000});assert.equal(s.units[0].medical,41);assert.equal(s.units[0].medkits,1);
- s=actBattle(s,{type:'repair',unitId:1000});assert.equal(s.units[0].mechanical,41);assert.equal(s.units[0].flints,3);
+ s=actBattle(s,{type:'repair',unitId:1000});assert.equal(s.units[0].mechanical,41);assert.equal(s.units[0].flints,undefined);
  s=actBattle(s,{type:'repair',unitId:1000});const before=structuredClone(s.units[0]);const n=actBattle(s,{type:'repair',unitId:1000});assert.ok(n.lastError);assert.deepEqual(n.units[0],before);
 });
 test('sneaking past unseen nearby enemies practices each tile only once',()=>{

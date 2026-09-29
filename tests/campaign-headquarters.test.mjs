@@ -28,8 +28,8 @@ test('an alternate headquarters starts a free officer, chapter, workshop and rea
  s=order(s,create);assert.equal(s.resources.treasury,3200);assert.equal(s.phase,1);assert.equal(s.operativeState[1000].location,'salta');assert.equal(s.cityLoyaltyEvents.find(e=>e.eventId==='quest-academy').sectorId,'salta');assert.equal(s.sectors.retiro.loyalty,25);
  s=order(s,{type:'purchaseEquipment',item:'firearm-1801'});assert.equal(s.armoryItems.length,1);assert.ok(s.resources.treasury<3200);assert.equal(s.sectors.retiro.owner,'royalist');
  // Prepared worn supplies isolate access and exact workshop payment.
- s.operativeState[1000].condition=40;s.operativeState[1000].priming=0;const repair=firearmRepairCost(s.operativeState[1000]),refill=refillCost(s.operativeState[1000]),funds=s.resources.treasury;
- s=order(s,{type:'repairWeapon',operativeId:1000});s=order(s,{type:'resupply',operativeId:1000});assert.equal(s.resources.treasury,funds-repair-refill);assert.equal(s.operativeState[1000].condition,100);assert.equal(s.operativeState[1000].priming,50);
+ s.operativeState[1000].condition=40;s.operativeState[1000].rations=0;const repair=firearmRepairCost(s.operativeState[1000]),refill=refillCost(s.operativeState[1000]),funds=s.resources.treasury;
+ s=order(s,{type:'repairWeapon',operativeId:1000});s=order(s,{type:'resupply',operativeId:1000});assert.equal(s.resources.treasury,funds-repair-refill);assert.equal(s.operativeState[1000].condition,100);assert.equal(s.operativeState[1000].rations,2);
  s=order(s,{type:'visitSector'});let b=enterSector(s.pendingBattle);assert.equal(b.mode,'exploration');assert.equal(b.sectorId,'salta');const active=save(s,b);const pair=syncBattleTime(active.campaign,active.battle);assert.equal(pair.error,null);s=order(pair.campaign,{type:'leaveSector',battleId:pair.campaign.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});assert.equal(save(s).campaign.location,'salta');
 });
 

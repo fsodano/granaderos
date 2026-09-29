@@ -7,14 +7,14 @@ import {initialCampaign,refillCost} from '../game/campaign.js';
 import {encountersFor} from '../game/encounters.js';
 import {actBattle,getReachable} from '../game/tactical.js';
 import {order,saved,visit,tactical,leave,localPackage,localId,readyLocal,hireLocal,localNPC} from './local-contract-fixture.mjs';
-const allocation={priming:7,flints:0,rations:3,torches:1,medkits:0,boleadoras:0};
+const allocation={rations:3,torches:1,medkits:0,boleadoras:0};
 const supplies=o=>Object.fromEntries(Object.keys(DEFAULT_CHARACTER_SUPPLIES).map(k=>[k,o[k]]));
 const person=(d,id=110)=>d.characters.find(c=>c.id===`person-${id}`);
 const unit=(p,id)=>p.battle.units.find(u=>u.id===String(id));
 
 test('starting supplies accept only complete bounded integer allocations and old packages keep their defaults',()=>{
  const d=defaultContentPackage();assert.equal(person(d).startingSupplies,undefined);
- for(const bad of [null,[],{},allocation.priming,{...allocation,torches:-1},{...allocation,rations:1.5},{...allocation,flints:1001},{...allocation,medkits:'2'},{...allocation,ammo:10},{...allocation,boleadoras:Infinity}]){
+ for(const bad of [null,[],{},allocation.rations,{...allocation,torches:-1},{...allocation,rations:1.5},{...allocation,torches:1001},{...allocation,medkits:'2'},{...allocation,ammo:10},{...allocation,boleadoras:Infinity}]){
   person(d).startingSupplies=bad;assert.ok(validateContentPackage(d).some(e=>e.includes('startingSupplies')));assert.throws(()=>initialCampaign(42,d));
  }
  person(d).startingSupplies=allocation;assert.deepEqual(campaignContentReport(d).blocked,[]);

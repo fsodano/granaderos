@@ -1,0 +1,23 @@
+{
+  "mode": "built-in image_gen",
+  "assets": [
+    {
+      "key": "rifle",
+      "path": "web/public/art/supplies/ammo-rifle-v1.webp",
+      "source": "/Users/fsodano/.codex/generated_images/01a0eda3-30b9-7753-b8f6-6112f07dc644/exec-aca98cdd-bfc9-4a9a-b8df-979bb3476361.png",
+      "prompt": "Use case: historical-scene. Individual inventory artwork for Argentine 1810s game Granaderos. Three dark grey spherical lead rifle balls resting on three round off-white linen patches, compact grouping. No paper cartridges. Realistic museum-quality painted equipment illustration, muted natural materials, crisp textures, soft upper-left lighting. Square compact centered composition fills 85 percent, clear at 42 pixels. Genuinely transparent alpha background. No ground plane, text, labels, watermark, border, modern ammunition, modern materials or cartoon style."
+    },
+    {
+      "key": "pistol",
+      "path": "web/public/art/supplies/ammo-pistol-v1.webp",
+      "source": "/Users/fsodano/.codex/generated_images/01a0eda3-30b9-7753-b8f6-6112f07dc644/exec-925cce5b-12f3-441f-8da3-027b61903e40.png",
+      "prompt": "Use case: historical-scene. Individual inventory artwork for Argentine 1810s game Granaderos. Two short slender tan paper pistol cartridges tied at the ends with thin thread, alongside one small spherical dark lead ball. No metal cases. Realistic museum-quality painted equipment illustration, muted natural materials, crisp textures, soft upper-left lighting. Square compact centered composition fills 85 percent, clear at 42 pixels. Genuinely transparent alpha background. No ground plane, text, labels, watermark, border, modern ammunition, modern materials or cartoon style."
+    },
+    {
+      "key": "shot",
+      "path": "web/public/art/supplies/ammo-shot-v1.webp",
+      "source": "/Users/fsodano/.codex/generated_images/01a0eda3-30b9-7753-b8f6-6112f07dc644/exec-2819ce32-c0df-4b2a-8b03-e95fdd57e58e.png",
+      "prompt": "Use case: historical-scene. Individual inventory artwork for Argentine 1810s game Granaderos. A small open brown leather pouch filled with many small round dull grey lead pellets, a few pellets beside it. No gun or cartridges. Realistic museum-quality painted equipment illustration, muted natural materials, crisp textures, soft upper-left lighting. Square compact centered composition fills 85 percent, clear at 42 pixels. Genuinely transparent alpha background. No ground plane, text, labels, watermark, border, modern ammunition, modern materials or cartoon style."
+    }
+  ]
+}

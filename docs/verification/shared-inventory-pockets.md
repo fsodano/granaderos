@@ -57,3 +57,5 @@ repeated preflights and are not added again to that total.
 The separate advanced game now uses the supply artwork and descriptions in its
 existing pockets and detail cards. See the [bounded local integration report](local-supply-art-2026-09-29.md).
 The advanced equipment reducer and the published reducer are still different.
+
+The later [typed-ammunition change](typed-ammunition.md) replaces the ignition-supply design above. Its verification and publication status are recorded separately.

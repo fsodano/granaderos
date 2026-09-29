@@ -7,9 +7,11 @@ accepted features on GitHub `main`, approved scope changes and open work.
 
 ## Pending integration
 
-- [Shared desktop inventory pockets](shared-inventory-pockets.md)
+- [Compatible ammunition and implicit ignition kit](typed-ammunition.md) — PR #130.
 
 ## Published baseline
+
+- [Shared desktop inventory pockets](shared-inventory-pockets.md) — merged PR #128.
 
 - [Observed enemy turns and retained scenery](visible-enemy-turns.md)
 

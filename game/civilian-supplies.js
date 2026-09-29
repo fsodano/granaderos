@@ -4,7 +4,7 @@ import {isUnconscious} from './actor-condition.js';
 export const CIVILIAN_SUPPLY_FIELDS=Object.keys(DEFAULT_CHARACTER_SUPPLIES);
 const limit=key=>key==='medkits'?1000000:100000;
 export function civilianSuppliesFor(record){return {version:1,...Object.fromEntries(CIVILIAN_SUPPLY_FIELDS.map(k=>[k,record?(record[k]??DEFAULT_CHARACTER_SUPPLIES[k]):0]))};}
-export function validCivilianSupplies(value){return value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).length===7&&value.version===1&&CIVILIAN_SUPPLY_FIELDS.every(k=>Object.hasOwn(value,k)&&Number.isSafeInteger(value[k])&&value[k]>=0&&value[k]<=limit(k));}
+export function validCivilianSupplies(value){return value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).every(k=>['version','priming','flints',...CIVILIAN_SUPPLY_FIELDS].includes(k))&&value.version===1&&CIVILIAN_SUPPLY_FIELDS.every(k=>Object.hasOwn(value,k)&&Number.isSafeInteger(value[k])&&value[k]>=0&&value[k]<=limit(k));}
 
 // The service sheet owns these six finite quantities. A civilian scene is a
 // projection of the same holder, never a fresh starting allocation.

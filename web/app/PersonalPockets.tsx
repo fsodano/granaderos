@@ -1,4 +1,5 @@
 'use client';
+import {ammoTypeFor,AMMO_TYPES,ammunitionForWeapon} from '../../game/ammo-types.js';
 import {useState} from 'react';
 import {Package} from 'lucide-react';
 import {personalPockets} from '../../game/personal-pockets.js';
@@ -26,6 +27,7 @@ export default function PersonalPockets({unit,battle,busy,onOrder}: {unit:any;ba
    <strong>{entry.name} · {entry.count}</strong>
    {entry.art&&<img className="pocket-detail-art" src={entry.art} alt=""/>}
    {entry.description&&<p>{entry.description}</p>}
+   {isWeapon&&ammoTypeFor(entry)&&<p>Munición: {ammunitionForWeapon(entry).name}</p>}
    {entry.condition!==undefined&&<span>Estado: {entry.condition}%{entry.loaded?` · ${entry.loaded} carga(s)`:''}</span>}
    {isWeapon&&<button disabled={disabled||battle.mode!=='exploration'&&unit.ap<(stowed?4:6)} onClick={()=>onOrder(stowed?{type:'weapon',slot:entry.slot}:{type:'equipLoot',inventoryKey:entry.key,slot:'primary'})}>{stowed?'Usar en la mano':'Equipar principal'} · {cost(stowed?4:6)}</button>}
    {isWeapon&&!stowed&&entry.weapon>=1809&&<button disabled={disabled||battle.mode!=='exploration'&&unit.ap<6} onClick={()=>onOrder({type:'equipLoot',inventoryKey:entry.key,slot:'blade'})}>Equipar secundaria · {cost(6)}</button>}
