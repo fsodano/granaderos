@@ -815,3 +815,15 @@ Saved tactical return, later entry and surviving militia storage preserve the
 empty slot. A later armory purchase provides a new piece through the normal paid
 path. This does not add civilian weapons, stealth theft, armour, fitting rules
 or complete inventory custody. See [secondary recovery](../verification/secondary-weapon-recovery.md).
+
+
+### Leave recovered weapons on the field
+
+A recovered firearm or blade can move from the backpack to the current cell,
+one piece per order. The action costs four combat AP or one exploration second.
+The normal collection control can recover a loose piece underneath a soldier.
+Each piece keeps its authored definition, image, weight, wear, load and partial
+reload through saves and sector return. Collection preserves other carried
+pieces even when fields have overlapping local indices. Held weapons, supplies,
+throwing and full pocket organization remain separate. See
+[verification](../verification/drop-recovered-weapons.md).
