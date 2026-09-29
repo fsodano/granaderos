@@ -520,6 +520,11 @@
       "id": "E-ADJACENT-WEAPON-TRANSFER",
       "path": "docs/verification/adjacent-weapon-transfer.md",
       "description": "Recovered weapons transfer once to an adjacent conscious squad member, preserving authored identity and mechanism through full saves and campaign return. Five simulations and two mounted production-game cases pass; related group 30/30. Complete regression passes 1151/1151, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
+    },
+    {
+      "id": "E-EMPTY-HAND-MELEE",
+      "path": "docs/verification/empty-hand-melee.md",
+      "description": "Lost or empty selected weapons use real empty-hand attacks; an actually retained secondary stays usable after primary recovery. Seven simulations and one mounted production-game case pass; related group 28/28. Complete regression passes 1159/1159, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
     }
   ],
   "queue": [
@@ -3455,7 +3460,7 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Nine firearms and five blade families match reference base values. Firearm and blade variants/images are authored and retained in character equipment, combat and saves. Enemy roles and militia ranks now support independent primary and secondary blade selections.",
-      "local": "See local suite and preserved parity source; not equivalent to published integration. BATTERYCHOICE-01 tracks explicit saved artillery choice and exact model availability. SECONDARYLOOT-01 tracks finite recovery of military secondary weapons, their authored identity and saved empty source slots. DROPWEAPON-01 tracks finite ground placement and collection of recovered weapons. WEAPONHANDOVER-01 tracks adjacent transfer of recovered weapons with saved recipient ownership.",
+      "local": "See local suite and preserved parity source; not equivalent to published integration. BATTERYCHOICE-01 tracks explicit saved artillery choice and exact model availability. SECONDARYLOOT-01 tracks finite recovery of military secondary weapons, their authored identity and saved empty source slots. DROPWEAPON-01 tracks finite ground placement and collection of recovered weapons. WEAPONHANDOVER-01 tracks adjacent transfer of recovered weapons with saved recipient ownership. EMPTYHAND-01 tracks genuine empty-hand attacks after weapon loss and retained secondary use.",
       "remaining": "Author fittings/ammunition; finish complete physical inventory, civilian equipment looting, wear and unarmed behavior. SECONDARYLOOT-01 accepts bounded military secondary recovery.",
       "acceptance": "XML values, inventory images, sounds and use in combat",
       "evidence": [
@@ -3466,7 +3471,8 @@
         "E-BATTERY-CHOICE",
         "E-SECONDARY-RECOVERY",
         "E-DROP-RECOVERED-WEAPONS",
-        "E-ADJACENT-WEAPON-TRANSFER"
+        "E-ADJACENT-WEAPON-TRANSFER",
+        "E-EMPTY-HAND-MELEE"
       ]
     },
     {
@@ -4158,13 +4164,14 @@
       "status": "LOCAL_ONLY",
       "priority": "P1",
       "published": "This complete capability is not accepted in the published release.",
-      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
+      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check. EMPTYHAND-01 tracks genuine empty-hand attacks after weapon loss and retained secondary use.",
       "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-EMPTY-HAND-MELEE"
       ],
       "sourceRow": "JA2-C08",
       "sourceNotes": "The unarmed chance/damage values are Granaderos tuning. Hand selection must remain explicit; a dropped or missing blade cannot create an unowned bayonet. Contested held-weapon grabs now use I10."
@@ -5757,6 +5764,31 @@
         "tests/adjacent-weapon-transfer-render.test.mjs",
         "tests/drop-recovered-weapons.test.mjs",
         "tests/secondary-loot.test.mjs"
+      ]
+    },
+    {
+      "id": "EMPTYHAND-01",
+      "group": "Published deliveries",
+      "requirement": "Retain usable secondary weapons after primary loss and resolve empty hands as punches instead of an unowned blade",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Empty selected hands use punches; retained authored secondaries remain usable after primary loss, with actual weight and saved return.",
+      "local": "Seven simulations and one mounted production-game check pass; related group 28/28. Complete regression 1159/1159, zero failures/skips, with types, export and 36 reference comparisons.",
+      "remaining": "",
+      "acceptance": "Recover a real paid arrival primary, stabilize that soldier, select the retained authored secondary through normal controls, and save and return with actual equipment. With empty hands, spend twelve AP, resolve seeded hit/miss, apply small injury and separate breath loss, allow finite unconscious-target recovery, reject charge/brace/range/AP misuse, retain civilian responsibility and exclude nonexistent weapon weight.",
+      "evidence": [
+        "E-EMPTY-HAND-MELEE"
+      ],
+      "parents": [
+        "ITEM-01",
+        "JA2-C08",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/empty-hand-melee.test.mjs",
+        "tests/empty-hand-melee-render.test.mjs",
+        "tests/secondary-loot.test.mjs",
+        "tests/critical-military-condition.test.mjs"
       ]
     }
   ],

@@ -732,3 +732,14 @@ imagen, los valores, el desgaste y la carga, incluso después de guardar y
 volver al sector. Si no se puede entregar, el panel explica el motivo.
 Esta operación cubre las armas recuperadas guardadas; los suministros y las
 entregas a distancia siguen pendientes. [Verificación](../verification/adjacent-weapon-transfer.md).
+
+
+### Manos vacías y arma secundaria
+
+Si un soldado pierde el arma principal, puede seguir usando la secundaria que
+conserva. El panel muestra su nombre y retrato configurados. Si la mano elegida
+está vacía, muestra **Puños** y **Golpear con las manos vacías**. El ataque cuesta
+12 PA; puede fallar y, al acertar, causa una lesión pequeña y pérdida de energía.
+No permite una carga con arma ni calar una bayoneta inexistente. Guardar y volver
+al sector conserva el equipo real. La elección voluntaria de guardar el arma
+para usar los puños se integra por separado. [Verificación](../verification/empty-hand-melee.md).

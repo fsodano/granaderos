@@ -839,3 +839,14 @@ image and mechanism follow the piece through saves and later sector entry.
 The inventory shows actual eligibility before sending the order. Broader item
 transfers, relays and throwing remain separate. See
 [verification](../verification/adjacent-weapon-transfer.md).
+
+
+### Empty hands after weapon loss
+
+Removing the primary weapon leaves any actual secondary available. Empty hands
+use punches, with a twelve-AP attack, condition/attribute-dependent hit chance,
+small injury and separate breath loss. Unconscious soldiers can provide only
+their real remaining equipment. Empty hands cannot brace or execute a weapon
+charge, and do not add weapon weight. Normal civilian consequences and injury
+rules still apply. Physical fittings and deliberate unarmed hand selection
+remain separate. See [verification](../verification/empty-hand-melee.md).
