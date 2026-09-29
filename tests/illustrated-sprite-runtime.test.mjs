@@ -82,3 +82,16 @@ test('four authored motion frames play at five fps and action/breathing clocks u
  assert.deepEqual([0,199,200,600,800,5000].map(t=>spriteAnimationFrame('action',t,4,5)),[0,0,1,3,3,3]);
  assert.deepEqual([0,500,1500,2000].map(t=>spriteAnimationFrame('breathing',t,4,2)),[0,1,3,0]);
 });
+
+
+test('illustrated movement keeps fractional ground positions while native pixel art stays snapped',()=>{
+ const illustrated=spriteRender({},motion,'idle','soldier',{'granadero-idle':atlas('granadero-idle')});
+ const native=spriteRender({},motion,'idle','soldier',{});
+ const positions=Array.from({length:9},(_,i)=>({x:100+i/8,y:100+i/16}));
+ const views=positions.map(position=>spriteViewport(illustrated,position,3,0));
+ assert.equal(new Set(views.map(view=>view.x)).size,positions.length,'small frame movements must not stick to the same pixel');
+ for(let i=1;i<views.length;i++){
+  assert.equal(views[i].x-views[i-1].x,1/8);assert.equal(views[i].y-views[i-1].y,1/16);
+ }
+ for(const position of positions){const view=spriteViewport(native,position,3,0);assert.ok(Number.isInteger(view.x)&&Number.isInteger(view.y));}
+});

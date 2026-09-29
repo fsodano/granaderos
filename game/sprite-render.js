@@ -37,7 +37,10 @@ export function spriteViewport(sprite,position,direction,frame,drawSize=52){
  // Authored cells have triple raster density but the same logical scale.
  // Wider action/prone/horse padding must not make the body smaller.
  const density=sprite.cell/sprite.logicalCell,scale=drawSize/52/density;
- return {x:Math.round(position.x-sprite.anchor[0]*scale),y:Math.round(position.y-sprite.anchor[1]*scale),
+ // Smoothly sampled illustrated art follows fractional camera positions. The
+ // legacy native-pixel fallback retains its original integer alignment.
+ const align=sprite.style==='illustrated-pixel-art'?(value=>value):Math.round;
+ return {x:align(position.x-sprite.anchor[0]*scale),y:align(position.y-sprite.anchor[1]*scale),
   width:sprite.cell*scale,height:sprite.cell*scale,
   viewBox:`${(animated?phase:dir)*sprite.cell} ${animated?dir*sprite.cell:0} ${sprite.cell} ${sprite.cell}`};
 }
