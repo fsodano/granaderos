@@ -65,3 +65,8 @@ fallback until fitting is integrated. The bounded fix removes the unowned blade
 only when the selected hand is actually empty. There is no live-browser,
 equipment-specific sprite, performance or full-campaign acceptance. Exact-head CI remains required before
 publication.
+
+## Publication
+
+Published in [PR #115](https://github.com/fsodano/granaderos/pull/115) on 2026-09-29 01:07:01 UTC.
+Exact head `64392709d2fd3e9216b3e5b4edfb9eb7979791cf` passed [CI run 36505613032](https://github.com/fsodano/granaderos/actions/runs/36505613032), including the full suite, types and production build. Merge commit: `b5bfa82a9f7da68cddd36eea54c8eee2bc933b0f`. This publication does not close the broader game or campaign requirements.

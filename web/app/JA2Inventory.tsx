@@ -117,6 +117,7 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
         </button>
         <div className="paper-readouts">
           <button className={`line-button ${unit.activeSlot==='unarmed'?'active':''}`} aria-label="Usar manos vacías" aria-pressed={unit.activeSlot==='unarmed'} disabled={busyDisabled || unit.activeSlot==='unarmed' || (battle.mode!=='exploration' && unit.ap<4)} onClick={()=>onOrder(slotAction(unit, 'unarmed'))}>Manos vacías · {battle.mode==='exploration'?'1 s':'4 PA'}</button>
+          <button className="line-button" disabled={dropDisabled || (unit.activeSlot==='blade'?!unit.blade:unit.activeSlot==='unarmed'||unit.weaponDropped||!unit.weapon)} onClick={()=>onOrder({type:'drop',slot:unit.activeSlot||'primary'})}>Dejar arma en uso · {battle.mode==='exploration'?'1 s':'4 PA'}</button>
           <span className="armor"><small>Armadura</small><b>{inv.poncho ? 'Sí' : '—'}</b></span>
           <span className="weight"><small>Peso</small><b>{inv.weight.toFixed(1)} / {inv.capacity.toFixed(1)} kg</b></span>
           <span className="camo"><small>Camuflaje</small><b>—</b></span>

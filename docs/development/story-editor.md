@@ -717,9 +717,9 @@ suelo**. La pieza queda en la celda del soldado. Cuesta 4 PA en combate o un
 segundo en exploración. Para recuperarla, cerrá el inventario, elegí **Recoger
 equipo** y hacé clic en esa celda. También funciona si hay un soldado encima.
 La pieza conserva la imagen, los valores, el desgaste y la carga que tenía.
-Guardar, salir y volver al sector mantiene su estado. Por ahora, esta operación
-se aplica a las armas recuperadas guardadas en la mochila. Las armas en uso y
-los suministros tienen seguimiento separado. [Verificación](../verification/drop-recovered-weapons.md).
+Guardar, salir y volver al sector mantiene su estado. **Dejar arma en uso**
+permite hacer lo mismo con el arma principal o secundaria elegida. La mano queda
+vacía. Los suministros tienen seguimiento separado. [Verificación](../verification/drop-recovered-weapons.md).
 
 
 ### Entregar un arma recuperada a un compañero
@@ -745,3 +745,13 @@ al sector conserva el equipo real. **Manos vacías** permite guardar voluntariam
 cambiar su carga o desgaste. Cuesta 4 PA o un segundo en exploración. Hacé clic
 en el arma principal o secundaria para volver a usarla. Guardar conserva la
 selección de manos vacías en el combate activo. [Verificación](../verification/empty-hand-melee.md).
+
+
+### Dejar el arma en uso
+
+En **Equipo y órdenes**, elegí la mano y usá **Dejar arma en uso**. Cuesta 4 PA
+o un segundo en exploración. La pieza queda en la celda y la mano queda vacía.
+Podés recogerla y equiparla con los controles habituales. Su imagen, desgaste,
+carga y recarga incompleta se conservan, incluso al guardar y volver. Los
+cartuchos sueltos mantienen la regla de devolución a tesorería al retirarse;
+la carga dentro del arma en el suelo sigue en esa pieza. [Verificación](../verification/drop-held-weapons.md).

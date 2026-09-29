@@ -115,7 +115,7 @@ function tile(s,x,y){const at=s.tiles[y*s.width+x];return at?.x===x&&at?.y===y?a
 
 function occupied(s,x,y,except){return propBlocksAt(s,x,y)||(s.npcs||[]).some(n=>n.hp>0&&!n.unconscious&&n.x===x&&n.y===y)||s.units.some(u=>alive(u)&&u.id!==except&&u.x===x&&u.y===y);}
 export function carryCapacity(u){return Math.max(10,(u.strength||50)*.5);}
-export function carriedWeight(u){const inventory=Object.values(u.inventory||{}).reduce((sum,item)=>sum+(typeof item==='object'?(item.count||0)*(item.weight||0):0),0);return Number(u.weight??u.carryWeight??0)+inventory+((u.loaded||0)+(u.ammo||0))*.04+(contentWeaponOf(u,'blade')?.weight??0)+(u.weaponDropped||!u.weapon?0:(contentWeaponOf(u)?.weight??(WEAPONS[u.weapon]?4:1.3)));}
+export function carriedWeight(u){const inventory=Object.values(u.inventory||{}).reduce((sum,item)=>sum+(typeof item==='object'?(item.count||0)*((item.weight||0)+(WEAPONS[item.weapon]?(item.loaded||0)*.04:0)):0),0);return Number(u.weight??u.carryWeight??0)+inventory+((u.loaded||0)+(u.ammo||0))*.04+(u.blade?(contentWeaponOf(u,'blade')?.weight??(BLADES[u.blade]?1.3:0)):0)+(u.weaponDropped||!u.weapon?0:(contentWeaponOf(u)?.weight??(WEAPONS[u.weapon]?4:1.3)));}
 function weightPenalty(u){return Math.max(1,carriedWeight(u)/carryCapacity(u));}
 export function movementEnergy(u,t){const style=u.movementMode||'walk',base={walk:1,run:3,crouch:2,prone:3}[style]||1;return Math.max(1,Math.ceil(base*weightPenalty(u)*(u.mounted?1-Math.min(100,u.ridingSkill||0)*.005:1)*(t?.type==='mud'?1.5:1)*(hasTrait(u,'guerrilla_tactician')?.75:1)));}
 function exhaust(s,u,cost){if(u.mounted&&u.mount){u.mount.stamina=Math.max(0,u.mount.stamina-Math.max(1,Math.ceil(cost*(1-Math.min(100,u.ridingSkill||0)*.005))));if(u.mount.stamina===0){u.mounted=false;say(s,`${u.name} desmonta: su caballo está agotado.`);}}u.energy=Math.max(0,(u.energy??100)-cost);if(u.energy===0){u.unconscious=true;u.ap=0;u.mounted=false;say(s,`${u.name} cae inconsciente por agotamiento.`);}}
@@ -242,14 +242,21 @@ else if(a.type==='door'){const door=a.doorId?s.tiles.find(t=>t.doorId===a.doorId
 else if(a.type==='throwTorch'){const point={x:a.x,y:a.y};if(!Number.isInteger(a.x)||!Number.isInteger(a.y)||!tile(s,a.x,a.y)||tile(s,a.x,a.y).blocked||dist(u,point)>8||!hasLineOfSight(s,u,point))return fail('La antorcha debe caer en terreno accesible a ocho casillas o menos.');if(!u.torches)return fail('No quedan antorchas.');if(!pay(10))return fail('Lanzar la antorcha requiere 10 PA.');u.torches--;s.lights.push({id:`torch-${u.id}-${s.turn}-${s.lights.length}`,type:'torch',x:a.x,y:a.y,radius:4,intensity:1,turns:s.weather.rain>50?4:8,age:0});say(s,`${u.name} lanza una antorcha encendida.`);}
 else if(a.type==='movement'){if(!['walk','run','crouch','prone'].includes(a.movement))return fail('Elige caminar, correr, agacharte o arrastrarte.');u.movementMode=a.movement;u.stance=a.movement==='prone'?'prone':'standing';say(s,`${u.name} cambia su forma de desplazarse.`);}
 else if(a.type==='drop'){
- const key=a.inventoryKey,record=u.inventory?.[key];
- if(!record||typeof record!=='object'||!Number.isSafeInteger(record.count)||record.count<1||!(WEAPONS[record.weapon]||BLADES[record.weapon]))return fail('Elegí un arma recuperada disponible para dejar en el suelo.');
+ const key=a.inventoryKey,held=a.slot!==undefined;
+ if(held&&(!['primary','blade'].includes(a.slot)||key!==undefined))return fail('Elegí una sola mano o un arma de la mochila.');
+ if(held&&(a.slot==='primary'?(u.weaponDropped||!u.weapon):!BLADES[u.blade]))return fail('Esa mano no tiene un arma para dejar.');
+ const record=held?weaponRecord(u,a.slot):u.inventory?.[key];
+ if(!record||typeof record!=='object'||!Number.isSafeInteger(record.count)||record.count<1||!(WEAPONS[record.weapon]||BLADES[record.weapon]))return fail('Elegí un arma disponible para dejar en el suelo.');
  try{validateWeaponCarrier(record);}catch(error){return fail(error.message);}
  const spec=weaponSpecification(record);if(!Number.isFinite(record.weight)||record.weight<0||record.weight>10000||!Number.isInteger(record.loaded??0)||(record.loaded??0)<0||(record.loaded??0)>(spec.capacity??0)||!Number.isFinite(record.condition??100)||(record.condition??100)<0||(record.condition??100)>100)return fail('El estado del arma recuperada no es válido.');
  if(s.droppedWeapons.length>=2000)return fail('No queda espacio para otro objeto en el sector.');
  if(!pay(4))return fail('Dejar una pieza en el suelo requiere 4 PA.');
  s.droppedWeapons.push({...weaponRecord(record),weight:record.weight,unitId:u.id,x:u.x,y:u.y});
- record.count--;if(!record.count)delete u.inventory[key];
+ if(held){
+  if(a.slot==='primary'){u.weaponDropped=true;u.loaded=0;delete u.reloadProgress;}
+  else{u.blade=0;delete u.bladeMetadata;delete u.bladeCondition;delete u.bladeJammed;}
+  if((u.activeSlot||'primary')===a.slot)u.activeSlot='unarmed';u.braced=false;
+ }else{record.count--;if(!record.count)delete u.inventory[key];}
  say(s,`${u.name} deja ${weaponSpecification(record).name} en el suelo.`);
 }
 else if(a.type==='transfer'){
