@@ -1,6 +1,7 @@
 'use client';
 import {useEffect,useRef,useState,useMemo} from 'react';
 import {presentedEndTurn} from '../../game/tactical.js';
+import enemyWorkerUrl from './enemy-turn-worker.ts?worker&url';
 const stepMs=120;
 export function useEnemyPlayback(committed:any,onChange:(state:any)=>any,onBusy?:(busy:boolean)=>void,validate?:(state:any)=>boolean,onFrame?:(before:any,after:any)=>void){
  const [frame,setFrame]=useState<any>(null),[busy,setBusy]=useState(false);
@@ -9,7 +10,7 @@ export function useEnemyPlayback(committed:any,onChange:(state:any)=>any,onBusy?
  useEffect(()=>{
   live.current=true;epoch.current++;
   try{
-   const w=new Worker(new URL('./enemy-turn-worker.ts',import.meta.url),{type:'module'});worker.current=w;
+   const w=new Worker(enemyWorkerUrl,{type:'module'});worker.current=w;
    w.onmessage=({data})=>{const r=request.current;if(worker.current!==w||!r||data.id!==r.id)return;request.current=null;data.error?r.reject(Error(data.error)):r.resolve(data.result);};
    const fail=()=>{request.current?.reject(Error('No se pudo completar el turno. Intentá de nuevo.'));request.current=null;w.terminate();worker.current=null;};w.onerror=fail;w.onmessageerror=fail;
   }catch{worker.current=null;}

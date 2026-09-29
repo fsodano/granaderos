@@ -2,6 +2,7 @@
 import {readFileSync,existsSync} from 'node:fs';
 import ts from '../web/node_modules/typescript/lib/typescript.js';
 export function resolve(specifier,context,next){
+ if(specifier.endsWith('?worker&url'))return {url:new URL(specifier,context.parentURL).href,shortCircuit:true};
  if(specifier.startsWith('@/')){
   const base=new URL(`../web/${specifier.slice(2)}`,import.meta.url);
   const extension=['','.tsx','.ts','.js'].find(ext=>existsSync(new URL(`${base.href}${ext}`)));
@@ -14,6 +15,7 @@ export function resolve(specifier,context,next){
  return next(specifier,context);
 }
 export function load(url,context,next){
+ if(url.endsWith('?worker&url'))return {format:'module',shortCircuit:true,source:`export default ${JSON.stringify(url)};`};
  if(url.endsWith('.css'))return {format:'module',shortCircuit:true,source:'export default {};'};
  if(url.endsWith('.json'))return next(url,{...context,importAttributes:{...context.importAttributes,type:'json'}});
  if(/\.tsx?$/.test(url))return {format:'module',shortCircuit:true,source:ts.transpileModule(readFileSync(new URL(url),'utf8'),{compilerOptions:{jsx:ts.JsxEmit.ReactJSX,module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText};
