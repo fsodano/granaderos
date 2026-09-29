@@ -99,3 +99,7 @@ smooth walking artwork, loaded-combat performance, advanced authored family
 selection and alternative loads are not accepted by this change.
 
 [Evidence record](../evidence/four-ammunition-families.json).
+
+Follow-up: [alternative firearm loads](alternate-firearm-loads.md) implements
+multiple existing families per firearm. Earlier limits above describe this
+document’s original delivery; the advanced inventory adapter remains separate.

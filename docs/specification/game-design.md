@@ -995,8 +995,13 @@ Each firearm may select one of the four compatible ammunition families. Omitted
 selection follows the original firearm template. The chosen family belongs to the
 pinned weapon definition and survives issue, reload, drops, collection and saves.
 Changing guns never converts the owner's reserve. Blades cannot select ammunition.
-This is one family per firearm; alternative loads and new family definitions
-remain separate requirements. See [verification](../verification/authored-ammunition-family.md).
+This selects the primary family. Alternative profiles can add the other existing
+families, with their own damage, range and single-target or cone pattern. Select
+a profile only with an empty gun and no unfinished reload. Unloading returns
+the actual family to pockets; reloading consumes that family at the normal cost.
+Choices survive physical custody and saves. New family definitions remain open.
+See [primary-family verification](../verification/authored-ammunition-family.md)
+and [alternative-load verification](../verification/alternate-firearm-loads.md).
 
 ### Shared family definitions and old physical stacks
 
