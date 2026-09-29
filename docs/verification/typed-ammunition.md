@@ -1,5 +1,10 @@
 # Compatible ammunition and implicit ignition kit
 
+> Historical verification record. The
+> [persistent ammunition delivery](strategic-ammunition-custody.md) replaces
+> automatic return refunds with physical carried and sector stock. Its current
+> checks supersede the refund expectations below; the original results remain history.
+
 Implementation in [PR #130](https://github.com/fsodano/granaderos/pull/130),
 updated to include the published documentation from PR #129. Runtime source
 `a464ee32e4ee98937168fda35b136aad9b916b83` includes the recovered-ground correction.

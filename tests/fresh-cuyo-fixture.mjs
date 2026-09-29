@@ -32,7 +32,7 @@ export function freshCuyoRoute({onCheckpoint}={}){
  for(const sector of Object.keys(s.sectors).filter(id=>s.sectors[id].owner==='patriot'))s=order(s,{type:'fortify',sector});
  s=order(s,{type:'travel',sector:'cordoba'});s=order(s,{type:'recruitCivic',id:108,term:'week',destination:'cordoba'});s=order(s,{type:'wait',hours:6});s=workshop(s);
  for(const id of s.squad)if(rosterFor(s).find(o=>o.id===id).weapon!==1802)s=musket(s,id);
- s=saved({campaign:s}).campaign;assert.equal(s.hour,120);assert.equal(s.resources.treasury,2442);
+ s=saved({campaign:s}).campaign;assert.equal(s.hour,120);assert.equal(s.resources.treasury,3202);
  for(const sector of ['mendoza','uspallata','los_patos']){
   if(sector==='los_patos'){
    // The mountain casualties need replacements from the controlled reception
@@ -60,7 +60,10 @@ export function freshCuyoRoute({onCheckpoint}={}){
  for(const id of s.squad)if(s.contracts[id].expiresAt!==null&&s.contracts[id].expiresAt<s.hour+73)s=order(s,{type:'renewContract',id,term:'week'});const money=s.resources.treasury;s=order(s,{type:'wait',hours:72});assert.equal(s.resources.treasury-money,2520);assert.ok(s.squad.length>0);
  const before=s.resources.treasury;s=order(s,{type:'purchaseEquipment',item:'swivel',quantity:3});s=order(s,{type:'fundArmy'});assert.equal(s.resources.treasury,before-4200);assert.equal(artilleryCount(s),3);assert.equal(s.phase,4);assert.ok(dispatchCampaign(s,{type:'fundArmy'}).lastError);
  s=saved({campaign:s}).campaign;notes.push({stage:'funded',hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,phase:s.phase,artillery:artilleryCount(s)});onCheckpoint?.('funded',s,notes);
- s=order(s,{type:'travel',sector:'mendoza'});s=incorporate(s,57);assert.equal(s.contracts[57].expiresAt,null);assert.equal(s.contracts[57].paid,0);assert.ok(s.squad.includes(57));assert.equal(s.operativeState[57].hp,88);assert.equal(s.operativeState[2].alive,true);assert.equal(s.operativeState[1000].alive,false);assert.equal(s.defeated,false);assert.equal(s.completed,false);assert.equal(s.pendingBattle,null);assert.ok(s.resources.treasury>0);
+ // Keep the surviving interpreter under contract through the return march.
+ // Waiting to fund the army must not silently leave the squad without a leader.
+ for(const id of s.squad)if(s.contracts[id].expiresAt!==null&&s.contracts[id].expiresAt<=s.hour+12)s=order(s,{type:'renewContract',id,term:'week'});
+ s=order(s,{type:'travel',sector:'mendoza'});assert.ok(rosterFor(s).some(o=>s.squad.includes(o.id)&&o.leadership>=80));s=incorporate(s,57);assert.equal(s.contracts[57].expiresAt,null);assert.equal(s.contracts[57].paid,0);assert.ok(s.squad.includes(57));assert.equal(s.operativeState[57].hp,88);assert.equal(s.operativeState[2].alive,true);assert.equal(s.operativeState[1000].alive,false);assert.equal(s.defeated,false);assert.equal(s.completed,false);assert.equal(s.pendingBattle,null);assert.ok(s.resources.treasury>0);
  notes.push({stage:'commander',hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,phase:s.phase,squad:[...s.squad],deaths:dead(s),engineerHp:s.operativeState[2].hp,commanderHp:s.operativeState[57].hp});onCheckpoint?.('commander',s,notes);
  return {campaign:s,notes,prefix:prefix.notes};
 }

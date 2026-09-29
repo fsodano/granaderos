@@ -23,7 +23,10 @@ The published ammunition adapter reads the shared catalog. Existing public IDs,
 names, images, default compatibility and authored overrides remain unchanged.
 All thirteen catalog, typed-ammunition and authored-family checks pass. Types,
 the production export (735 files, 637 asset references) and all 36 reference
-comparisons pass. Complete remote checks gate the final PR head.
+comparisons pass. PR #134 merged at `b6b081c9e206d8dda5cec00a10b24c1ebe02c67c`.
+All five checks passed for final head
+`bdd973186ae8377b218494392c6d863336e3314d`, including **1,294/1,294** tests
+with no failures or skips. See the [published run](https://github.com/fsodano/granaderos/actions/runs/36623585469).
 
 ## Advanced local integration
 

@@ -424,9 +424,12 @@ embedded in content. Unsupported options must block launch with a useful reason.
 The authored supply rules set initial treasury and cartridge allotments for each
 player firearm deployment, new enemy and new militiaman. Defaults remain 3200
 pesos and 10/13/6 cartridges. Initial funds are delivered once; loading a save
-never restores them. Each player cartridge costs one peso under the existing
-return/refund rules. Zero is valid. Capacity caps the loaded portion and the rest
-remains in reserve. Blade primaries receive none. Existing troops retain spent
+never restores them. The player allotment is a preparation target at a supplied
+controlled town: buy only its shortfall from finite local stock at the pinned
+cartridge price. Owned rounds stay with soldiers or local stores; no cash refund
+occurs on return. Zero is valid. Capacity caps the loaded portion and the rest
+remains in shared pockets. Blade primaries receive no new cartridges but retain
+any owned families. Existing troops retain spent
 supplies; mission allies keep their separate allotments. Broader care,
 progression and economy rules remain separate authoring requirements.
 
@@ -520,7 +523,9 @@ only completed charges consume reserve cartridges. Unfinished work belongs to
 the specific gun through active saves, swaps, storage and recovery. Exploration
 pays elapsed time and preserves partial work when contact or incapacity interrupts
 it. Controls preview the current cost and remaining work using the same plan.
-Artillery and full strategic ammunition custody are separate integration steps.
+Strategic returns retain this partial work on the equipped firearm. Moving that
+partially loaded firearm into the abstract campaign armory requires completing
+its loading first; tactical physical swaps retain unfinished work.
 See the [verification record](../verification/partial-firearm-reloads.md).
 
 ### Authored firearm preparation
@@ -537,12 +542,13 @@ directional turning and independent hands remain separate requirements.
 ### Authored cartridge price
 
 A campaign can pin an optional shared cartridge unit price. An absent value
-preserves one peso and older content identities. Deployment payment and finite
-return credit use the same price while issued, held and returned cartridges
-remain quantities. Actual spent/lost rounds are not refunded, and a settled
-request cannot be credited twice. Zero price is an authored economic choice.
+preserves one peso and older content identities. Purchases use that price while
+issued, held and returned cartridges remain physical quantities. Returns do not
+credit money. A settled request cannot deliver stock twice. Zero price is an
+authored economic choice.
 The [verification record](../verification/authored-cartridge-price.md) separates
-this price from ammunition types, merchant pricing and strategic custody.
+the original price delivery from later ammunition types and
+[persistent strategic custody](../verification/strategic-ammunition-custody.md).
 
 ### Civilian wound continuity
 
@@ -871,8 +877,8 @@ current field cell for four AP or one exploration second. Selecting an emptied
 hand leaves fists; an inactive hand can be emptied without hiding the other
 selected weapon. Mechanism and authored identity follow the actual piece.
 Packed loaded charges and legacy secondary blades contribute their real carried
-weight. Campaign loose-cartridge refunds remain separate from the charge kept
-inside a grounded weapon. See [verification](../verification/drop-held-weapons.md).
+weight. Loose rounds remain with their actual holder on campaign return, and
+a grounded weapon keeps its own charge. See [verification](../verification/drop-held-weapons.md).
 
 
 ### Give a held weapon directly
@@ -915,11 +921,11 @@ Shared physical pocket capacity limits both dropping and collection. See
 
 Loose cartridge reserves can move between adjacent conscious squad members
 without moving either gun's loaded charge. Active saves and carried mass follow
-the actual holders. A witnessed retreat report refunds the shared surviving
-force total, capped by issued and actually recovered cartridges. Legacy reports
-without a matching tactical holder keep their individual ceilings. The campaign
-still issues and refunds deployment cartridges; independent physical custody
-between deployments and typed rounds remain separate. See
+the actual holders. Returns preserve each living holder's actual typed reserve
+and loaded firearm. Each family is bounded by the initial force and retained
+field stock; a report cannot convert one family into another. Legacy reports
+without a matching tactical holder keep their individual source ceilings.
+Campaign returns do not convert these rounds into money. See
 [verification](../verification/adjacent-cartridge-transfer.md).
 
 
@@ -978,9 +984,9 @@ Use separate musket, rifle, pistol and shot ammunition, each with its own image
 and stack. A firearm consumes only its compatible family. Keep existing ammunition
 when a weapon changes; never convert incompatible reserves. Old saves migrate
 carried generic rounds according to the primary weapon. Ground bundles keep their
-family, quantity and identity through saved visits. Under the existing paid issue
-and refund rules, only recovered stock from an earlier bundle can increase the
-return allowance; dropping and picking up a new bundle cannot mint credit. See the bounded
+family, quantity and identity through saved visits. Under the persistent custody
+rules, collected rounds stay with their actual owner. Per-family conservation includes retained bundles and bodies; dropping
+and picking up a bundle cannot create stock or money. See the bounded
 [implementation and verification](../verification/typed-ammunition.md).
 
 ### Authored firearm ammunition family
@@ -1001,3 +1007,32 @@ quantity. Do not merge physical lots or refill guns during conversion. Purchases
 production and imports show four family choices and compatible firearm names.
 The advanced adapter remains local until its dependencies are published. See
 [scope and verification](../verification/four-ammunition-families.md).
+
+
+### Persistent campaign ammunition
+
+Purchased rounds belong to the soldier until moved, consumed or lost. The armory
+has one family selector with its image, quantity, buy, store and take controls.
+A sector store remains at that location. A soldier must be alive, available and
+in the controlled sector to use it. Store transfers do not cost money.
+
+A supplied controlled town with plausible land reception can sell ammunition.
+Wilderness cells and mountain passes cannot sell it. Preparation at town entry,
+attack departure or ordinary travel fills only the configured compatible
+shortfall, within pocket space and local merchant stock. It pays before departure.
+Elsewhere, the squad deploys its actual owned loose rounds and loaded charges.
+Changing a firearm preserves all families and unloads its actual charge into
+available pocket space; it never converts or refunds ammunition.
+
+The four starting merchant caps are 180 musket, 60 rifle, 180 pistol and 120 shot.
+Every 24 supplied hours restore up to 18/6/18/12 respectively. Occupation or a
+broken supply route stops that clock. Each direct order is limited to 60 rounds.
+These are current game defaults. Individual merchant stock and schedule authoring
+remain open; the editor already controls firearm family, price and target load.
+
+Old settled saves receive no free reserve because their former returns already
+refunded unused rounds. A pending paid scene returns its actual remaining
+ammunition once. Dead soldiers leave their rounds on the field. Loaded guns,
+partial work, mixed reserves, ground bundles and recovered weapons retain their
+physical quantities across saves and repeated entries. See
+[persistent ammunition verification](../verification/strategic-ammunition-custody.md).

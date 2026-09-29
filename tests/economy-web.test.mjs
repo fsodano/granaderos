@@ -41,7 +41,7 @@ test('cash is found through tactical looting and paid once after save and re-ent
  b=actBattle(b,{type:'loot',unitId:'1000',groundId:ground.id});assert.equal(b.lastError,null);assert.ok(actBattle(b,{type:'loot',unitId:'1000',groundId:ground.id}).lastError);
  const synced=syncBattleTime(s,b);assert.equal(synced.error,null);s=synced.campaign;b=synced.battle;const loaded=decodeSave(encodeSave(s,b));s=loaded.campaign;b=loaded.battle;
  const leave=()=>{s=step(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});};
- const issued=s.pendingBattle.issuedCartridges;leave();assert.equal(s.resources.treasury,initial+issued+sectorCash('retiro'));assert.deepEqual(s.foundMoney,['retiro']);
+ const issued=s.pendingBattle.issuedCartridges;leave();assert.equal(s.resources.treasury,initial+sectorCash('retiro'));assert.deepEqual(s.foundMoney,['retiro']);assert.equal(s.operativeState[1000].ammo+s.operativeState[1000].carriedLoaded,issued);
  const cash=s.resources.treasury;s=decodeSave(encodeSave(s)).campaign;s=step(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);assert.equal(b.groundItems.find(g=>g.type==='money').count,0);leave();assert.equal(s.resources.treasury,cash);
 });
 test('old economy saves are rejected without conversion; invalid cash is rejected',()=>{

@@ -1,5 +1,9 @@
 # Fresh Cuyo preparation and late commander recruitment
 
+The [persistent ammunition record](strategic-ammunition-custody.md) contains
+the later route checkpoints, actual costs and surviving force. The original
+source and dated results below remain historical evidence.
+
 One untouched stock campaign now reaches saved phase 4 with the Cuyo prerequisites
 paid and San Martín physically recruited. It continues the same mixed force from
 Retiro through the accepted [coast](fresh-coastal-opening.md) and

@@ -12,6 +12,7 @@ Player-facing text is Spanish. Code and documentation are English.
 | Read the current game design | [Game design](specification/game-design.md) |
 | Review formal cross-branch verification | [27 September audit](verification/formal-audit-2026-09-27.md) |
 | Check published features and remaining work | [Published progress ledger](verification/published-progress.md) |
+| Review ammunition ownership and current limits | [Persistent ammunition](verification/strategic-ammunition-custody.md) |
 | Edit campaign content | [Story editor](development/story-editor.md) |
 | Play or modify the independent example | [La ruta de las postas](development/example-post-campaign.md) |
 | Build tactical sectors | [Sector editor](development/sector-editor.md) |

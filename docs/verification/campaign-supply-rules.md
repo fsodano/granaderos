@@ -1,5 +1,10 @@
 # Initial funds and cartridge allotments
 
+> Historical verification record. The
+> [persistent ammunition delivery](strategic-ammunition-custody.md) replaces
+> automatic return refunds with physical carried and sector stock. Its current
+> checks supersede the refund expectations below; the original results remain history.
+
 The story package can set initial treasury and separate cartridge allotments for
 each squad firearm deployment, freshly generated enemy and freshly issued
 militiaman. Values are whole numbers: 0–1,000,000 pesos and 0–100 cartridges.

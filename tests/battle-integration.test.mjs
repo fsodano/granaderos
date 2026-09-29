@@ -37,8 +37,8 @@ test('actual opening battle connects campaign resources, deterministic tactics a
   assert.equal(result.lastError,null);
   assert.equal(result.sectors.san_nicolas.owner,'patriot');
   assert.equal(result.pendingBattle,null);
-  assert.equal(result.resources.treasury,campaign.resources.treasury+returned+250);
-  for(const u of survivors){assert.equal(result.operativeState[Number(u.id)].hp,u.hp);assert.equal(result.operativeState[Number(u.id)].alive,true);}
+  assert.equal(result.resources.treasury,campaign.resources.treasury+250);
+  for(const u of survivors){assert.equal(result.operativeState[Number(u.id)].hp,u.hp);assert.equal(result.operativeState[Number(u.id)].alive,true);assert.equal(result.operativeState[Number(u.id)].ammo+result.operativeState[Number(u.id)].carriedLoaded,u.ammo+u.loaded);}
   assert.deepEqual(restoreCampaign(serializeCampaign(result)),result);
 });
 test('real defeat preserves actual wounds and deaths in campaign operative IDs',()=>{

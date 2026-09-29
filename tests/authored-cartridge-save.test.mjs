@@ -14,8 +14,8 @@ test('every authored cartridge allocation can save an actual peaceful and combat
   let s=ready(rounds),before=s.resources.treasury;s=order(s,action);assert.equal(s.resources.treasury,before-rounds);
   const request=s.pendingBattle,record=request.squad[0];assert.equal(record.ammo+record.loaded,rounds);
   const b=enterSector({...request,hour:s.hour,secondOfHour:s.secondOfHour??0},s.sectorStates[request.sector]);let p=saved({campaign:s,battle:b});const u=p.battle.units.find(u=>u.id==='110');assert.equal(u.ammo+u.loaded,rounds);
-  const forged=JSON.parse(encodeSave(p.campaign,p.battle));forged.campaign.pendingBattle.squad[0].ammo=rounds+1;assert.throws(()=>decodeSave(JSON.stringify(forged)),/batalla guardada/);
-  if(action.type==='visitSector'){const after=leave(p);assert.equal(after.resources.treasury,before,'unused issued cartridges are refunded once');assert.ok(dispatchCampaign(after,{type:'leaveSector',battleId:request.id,sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')}).lastError);}
+  const forged=JSON.parse(encodeSave(p.campaign,p.battle));forged.campaign.pendingBattle.squad[0].ammo=rounds+1;assert.throws(()=>decodeSave(JSON.stringify(forged)),/munición/);
+  if(action.type==='visitSector'){const after=leave(p);assert.equal(after.resources.treasury,before-rounds);assert.equal(after.operativeState[110].ammo+after.operativeState[110].carriedLoaded,rounds);assert.ok(dispatchCampaign(after,{type:'leaveSector',battleId:request.id,sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')}).lastError);}
  }
 });
 
@@ -25,5 +25,5 @@ test('a large authored allocation survives real firing, time synchronization and
  if(spot.cost){const b=actBattle(p.battle,{type:'move',unitId:u.id,x:spot.x,y:spot.y});assert.equal(b.lastError,null);p=sync({campaign:p.campaign,battle:b});}
  const battle=actBattle(p.battle,{type:'fire',unitId:u.id,targetId:npc.id});assert.equal(battle.lastError,null);p=saved(sync({campaign:p.campaign,battle}));const spent=p.battle.units.find(v=>v.id===u.id);assert.equal(spent.ammo+spent.loaded,99);
  const n=actBattle(p.battle,{type:'reload',unitId:u.id});assert.equal(n.lastError,null);p=saved(sync({campaign:p.campaign,battle:n}));assert.equal(p.battle.units.find(v=>v.id===u.id).ammo+p.battle.units.find(v=>v.id===u.id).loaded,99);
- s=leave(p);assert.equal(s.resources.treasury,ready(100).resources.treasury-1);assert.ok(saved({campaign:s}));
+ s=leave(p);assert.equal(s.resources.treasury,ready(100).resources.treasury-100);assert.equal(s.operativeState[110].ammo+s.operativeState[110].carriedLoaded,99);assert.ok(saved({campaign:s}));
 });

@@ -19,7 +19,7 @@ test('legal authored-map opening campaign wins San Nicolás then San Lorenzo',()
   assert.equal(b.status,'victory',JSON.stringify(transcript));
   order({type:'battleResult',battleId:request.id,outcome:b.status,survivors:b.units.filter(u=>u.side==='player'&&u.hp>0),sectorState:b});
  }
- assert.equal(c.operativeState[3].alive,true,'cover and actual fire preserve Cabral through both deployments');assert.equal(c.operativeState[3].hp,52);assert.deepEqual(c.squad,[3,4,10]);
+ assert.equal(c.operativeState[3].alive,true,'cover and actual fire preserve Cabral through both deployments');assert.equal(c.operativeState[3].hp,38);assert.deepEqual(c.squad,[3,4,10]);
  assert.equal(c.phase,2);assert.equal(c.flags.sanLorenzo,true);
  console.log('Opening playthrough:',JSON.stringify(transcript));
 });

@@ -1,5 +1,10 @@
 # Saving authored cartridge allocations
 
+> Historical verification record. The
+> [persistent ammunition delivery](strategic-ammunition-custody.md) replaces
+> automatic return refunds with physical carried and sector stock. Its current
+> checks supersede the refund expectations below; the original results remain history.
+
 Source: `32f7dc096cbdb3c152a79996a337d1fc1f885443`.
 
 An independently authored campaign configured fourteen deployment cartridges. Its

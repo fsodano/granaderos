@@ -22,5 +22,5 @@ test('conversation requires adjacency and a cleared tactical situation',()=>{
 });
 test('visits issue and return finite ammunition instead of erasing or generating rounds',()=>{
  let s=initialCampaign();const total=s.resources.treasury;s=order(s,{type:'visitSector'});const issued=s.pendingBattle.issuedCartridges;assert.equal(issued,20);assert.equal(s.resources.treasury,total-issued);const map=buildSectorMap(s.pendingBattle),battle=createBattle(map.squad,map);
- s=order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:battle,survivors:battle.units.filter(u=>u.side==='player').map(u=>({...u,id:Number(u.id)}))});assert.equal(s.resources.treasury,total);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
+ s=order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:battle,survivors:battle.units.filter(u=>u.side==='player').map(u=>({...u,id:Number(u.id)}))});assert.equal(s.resources.treasury,total-issued);assert.equal(s.squad.reduce((n,id)=>n+s.operativeState[id].ammo+s.operativeState[id].carriedLoaded,0),issued);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
 });

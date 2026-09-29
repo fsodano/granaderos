@@ -26,7 +26,7 @@ test('the actual campaign map selects exact cells, previews the march, enters, s
  await act(async()=>root.render(h(Screen)));
  assert.equal(dom.window.document.querySelectorAll('[data-map-cell]').length,1188);
  await click(cell('cell-26-27'));assert.equal(cell('cell-26-27').getAttribute('aria-pressed'),'true');assert.match(dom.window.document.body.textContent,/Marcha a pie · 4 horas/);
- assert.ok(dom.window.document.querySelector('[data-cell-route]'));await click(button('Mover escuadra aquí'));
+ assert.ok(dom.window.document.querySelector('[data-cell-route]'));await click(button('Mover escuadra aquí · 10 pesos de munición'));
  assert.equal(current.location,'cell-26-27');assert.equal(current.hour,4);assert.equal(current.lastError,null);
  assert.equal(dom.window.document.querySelector('[data-squad-cell]').getAttribute('data-squad-cell'),'cell-26-27');
  await click([...dom.window.document.querySelectorAll('button')].find(b=>b.textContent.startsWith('Entrar al sector ·')));
@@ -35,9 +35,9 @@ test('the actual campaign map selects exact cells, previews the march, enters, s
  await act(async()=>dispatch({type:'leaveSector',battleId:current.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units}));assert.equal(current.lastError,null);
  await click(dom.window.document.querySelector('button[aria-label="Objetos"]'));assert.match(dom.window.document.querySelector('.atlas-stock').textContent,/rations: 3/);
  await click(cell('cell-26-28'));assert.equal(cell('cell-26-28').getAttribute('aria-pressed'),'true');assert.ok(!dom.window.document.querySelector('.atlas-stock').textContent.includes('rations: 3'));
- await click(button('Mover escuadra aquí'));assert.equal(current.location,'cell-26-28');assert.equal(current.lastError,null);
+ await click(button('Mover escuadra aquí · 0 pesos de munición'));assert.equal(current.location,'cell-26-28');assert.equal(current.lastError,null);
  await click(dom.window.document.querySelector('button[aria-label="Escuadras"]'));assert.match(dom.window.document.querySelector('.squad-card').textContent,/Celda 27,29/);
- const water=WORLD_CELLS.find(c=>!c.land);await click(cell(water.id));assert.equal(button('Mover escuadra aquí').disabled,true);assert.match(dom.window.document.body.textContent,/agua abierta/i);
+ const water=WORLD_CELLS.find(c=>!c.land);await click(cell(water.id));assert.equal(button('Mover escuadra aquí · 0 pesos de munición').disabled,true);assert.match(dom.window.document.body.textContent,/agua abierta/i);
  await click(cell('cell-26-28'));await act(async()=>cell('cell-26-28').dispatchEvent(new dom.window.KeyboardEvent('keydown',{key:'ArrowDown',bubbles:true})));
  assert.equal(cell('cell-26-29').getAttribute('aria-pressed'),'true');assert.equal(cell('cell-26-29').getAttribute('tabindex'),'0');
 });

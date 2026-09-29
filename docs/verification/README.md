@@ -7,6 +7,8 @@ accepted features on GitHub `main`, approved scope changes and open work.
 
 ## Published baseline
 
+- [Persistent campaign ammunition](strategic-ammunition-custody.md).
+
 - [Shared four-family catalog and advanced local integration](four-ammunition-families.md).
 
 - [Safe migration to an implicit ignition kit](implicit-ignition-integration.md).
@@ -90,7 +92,7 @@ accepted features on GitHub `main`, approved scope changes and open work.
 - [Dialogue-triggered local meetings](dialogue-movements.md)
 - [Arrival-gated dialogue and quest effects](meeting-arrivals.md)
 - [Ending a local meeting](meeting-release.md)
-- [Authored cartridge price](authored-cartridge-price.md) — pinned deployment costs and finite return value.
+- [Authored cartridge price](authored-cartridge-price.md) — pinned purchase costs; persistent custody supersedes return refunds.
 - [Authored firearm preparation](authored-weapon-readiness.md) — included first-shot cost, held firing position and saved controls.
 - [Partial firearm loading](partial-firearm-reloads.md)
 - [Authored melee weapons](authored-blades.md)

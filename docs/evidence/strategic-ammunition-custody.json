@@ -1,0 +1,373 @@
+{
+  "status": "locally verified; final PR checks gate publication",
+  "base": "b6b081c9e206d8dda5cec00a10b24c1ebe02c67c",
+  "scope": "Published runtime only; the larger advanced adapter remains separate",
+  "browser": {
+    "pistolPurchase": 20,
+    "cost": 20,
+    "merchantBefore": 180,
+    "merchantAfter": 160,
+    "stored": 12,
+    "taken": 5,
+    "carriedAfterReload": 13,
+    "storeAfterReload": 7,
+    "treasuryAfterReload": 3175,
+    "errors": [],
+    "capture": "docs/evidence/strategic-ammunition-preview.png",
+    "captureSha256": "55057b0128f839ccfbf77bdf489bdb56ea1b270c821126255e59fd35fbb2803f"
+  },
+  "freshCampaign": {
+    "victory": {
+      "hour": 582,
+      "second": 516,
+      "treasury": 5126,
+      "controlledLocalities": 13,
+      "squad": [
+        108,
+        134,
+        111,
+        57,
+        128,
+        142
+      ],
+      "commanderHp": 61,
+      "dead": [
+        0,
+        3,
+        4,
+        9,
+        10,
+        113,
+        115,
+        120,
+        131,
+        136,
+        137,
+        141,
+        1000
+      ]
+    },
+    "notes": [
+      {
+        "stage": "cuyo-relief",
+        "commanderRestock": 46,
+        "hour": 348,
+        "second": 406,
+        "funds": 3914,
+        "relief": [
+          103
+        ],
+        "squad": [
+          108,
+          134,
+          111,
+          125,
+          57,
+          103
+        ]
+      },
+      {
+        "stage": "santa_fe",
+        "hour": 372,
+        "second": 426,
+        "funds": 4754,
+        "squad": [
+          108,
+          134,
+          111,
+          125,
+          57,
+          103
+        ],
+        "actions": 75,
+        "turns": 3,
+        "deaths": [
+          0,
+          3,
+          4,
+          9,
+          10,
+          113,
+          115,
+          120,
+          131,
+          136,
+          137,
+          141,
+          1000
+        ],
+        "commanderHp": 88,
+        "completed": false
+      },
+      {
+        "stage": "santa_fe-stabilization",
+        "hour": 376,
+        "second": 426,
+        "funds": 4754,
+        "care": {
+          "hours": 4,
+          "dressingsUsed": 4,
+          "dressingsBought": 0,
+          "cost": 0
+        },
+        "squad": [
+          108,
+          134,
+          111,
+          125,
+          57,
+          103
+        ]
+      },
+      {
+        "stage": "coastal-care",
+        "hour": 438,
+        "second": 426,
+        "funds": 6702,
+        "relief": [],
+        "care": {
+          "hours": 26,
+          "dressingsBought": 26,
+          "cost": 260
+        },
+        "squad": [
+          108,
+          134,
+          111,
+          125,
+          57,
+          103
+        ]
+      },
+      {
+        "stage": "ensenada",
+        "hour": 464,
+        "second": 444,
+        "funds": 7752,
+        "squad": [
+          108,
+          134,
+          111,
+          125,
+          57,
+          103
+        ],
+        "actions": 86,
+        "turns": 3,
+        "deaths": [
+          0,
+          3,
+          4,
+          9,
+          10,
+          113,
+          115,
+          120,
+          131,
+          136,
+          137,
+          141,
+          1000
+        ],
+        "commanderHp": 36,
+        "completed": false
+      },
+      {
+        "stage": "northern-relief",
+        "hour": 542,
+        "second": 444,
+        "funds": 8086,
+        "squad": [
+          108,
+          134,
+          111,
+          57,
+          128,
+          142
+        ]
+      },
+      {
+        "stage": "jujuy",
+        "hour": 560,
+        "second": 474,
+        "funds": 6646,
+        "squad": [
+          108,
+          134,
+          111,
+          57,
+          128,
+          142
+        ],
+        "actions": 107,
+        "turns": 5,
+        "deaths": [
+          0,
+          3,
+          4,
+          9,
+          10,
+          113,
+          115,
+          120,
+          131,
+          136,
+          137,
+          141,
+          1000
+        ],
+        "commanderHp": 56,
+        "completed": false
+      },
+      {
+        "stage": "final-relief",
+        "hour": 560,
+        "second": 474,
+        "funds": 6496,
+        "squad": [
+          108,
+          134,
+          111,
+          57,
+          128,
+          142
+        ],
+        "relief": []
+      },
+      {
+        "stage": "humahuaca",
+        "hour": 582,
+        "second": 516,
+        "funds": 5126,
+        "squad": [
+          108,
+          134,
+          111,
+          57,
+          128,
+          142
+        ],
+        "actions": 111,
+        "turns": 7,
+        "deaths": [
+          0,
+          3,
+          4,
+          9,
+          10,
+          113,
+          115,
+          120,
+          131,
+          136,
+          137,
+          141,
+          1000
+        ],
+        "commanderHp": 61,
+        "completed": true
+      }
+    ],
+    "continuation": {
+      "hour": 632,
+      "second": 516,
+      "treasury": 7547,
+      "squad": [
+        134,
+        111,
+        57
+      ],
+      "commanderHp": 71,
+      "expired": [
+        108,
+        128,
+        142
+      ],
+      "allExpiredAlive": true
+    },
+    "postVictoryCare": {
+      "hours": 2,
+      "dressingsUsed": 2,
+      "dressingsBought": 0,
+      "cost": 0
+    }
+  },
+  "sourceHashes": {
+    "game/campaign.js": "3de2224fe6dfdcc256ad28c8bad147f8976cc5ccb5c2781e2a7ededc4a12e8a7",
+    "game/campaign-ammunition.js": "05806eac9a8b8856a10b76c9c9832641687698be838dbbe076f6dbbd02a84f26",
+    "tests/adjacent-cartridge-transfer.test.mjs": "aee5fcb83ba9c55a522a8fc622601aae85e04c36592fa7fbe94d75d2d8bda90d",
+    "tests/authored-cartridge-price.test.mjs": "518a51c239b5323ea9f5a991534dea7364ee99aa49f538c30b4edea46afe5076",
+    "tests/authored-cartridge-save.test.mjs": "872e26a59cfdbc63092f0ba3423f1942b5a130463f8fd12916fd52f8edbc70a7",
+    "tests/battle-integration.test.mjs": "ec1ba049c25b0bedc8e6a0daaf84a3587b0b4a079f6e1e5cf29490f87ecc3dcb",
+    "tests/campaign-roles.test.mjs": "646c82260ea3a10f8ca34f158f4ac0fad09dcdde924ef1435e26090899dbe570",
+    "tests/campaign-rules-ui.test.mjs": "d7049f000fd0a69aab8939c3cb96c4f7d10a5e614bf994583edef22cdd08f9ac",
+    "tests/campaign-rules.test.mjs": "7c541b12cd1dda1dcada93360a85e03636b0a9c8605436f8c757c5c99a5cd8e5",
+    "tests/campaign-web.test.mjs": "fe81e896b8d83ed4bc38455fdd51a45a4b4dc6284cdf5094ad90c6e13fc9c8af",
+    "tests/content-force-equipment.test.mjs": "102b318f91ef0d85358b3f0a9a8f50c51020989356763edd906f65ae5f6f3990",
+    "tests/content-weapons.test.mjs": "b4f70a3a5d331aa3ea74ab2f7355069424f28669cd79f6a53627fd8038644725",
+    "tests/drop-held-weapons.test.mjs": "24826d77c36edd3408a32e6ff4a0345e3287a3ecd320f007e57f4d334067d111",
+    "tests/dropped-cartridges.test.mjs": "06d806c217a43b974160ece4e387af813320218db246d6458985ea896492003b",
+    "tests/economy-web.test.mjs": "34a094b7f666656e62b81465e8f76125b869f8db6244d19cbb2499aa4c515433",
+    "tests/encounters-web.test.mjs": "ef1941c1c6e432c088926e19e24308b40374acdf240340d9db5cada9f0acdaaa",
+    "tests/force-blades.test.mjs": "5b9e912fd9c16b4ed2dfc58fb4b997c7d3a8d80205356652fe98f02057b1bc1b",
+    "tests/fresh-coastal-fixture.mjs": "50adffe78367c44fa3dad08ee7c986e8956d989bd6b0e393023658bbee7ecad4",
+    "tests/fresh-coastal-route.test.mjs": "443d3ef081c4cdd59a2607500d70c065dc5325bffa1884b19ba481d58033c021",
+    "tests/fresh-cuyo-fixture.mjs": "2a174a6447b9cdfecf48bb90ea49564806183c3dfd75a1e55bdab6b1ff268dfe",
+    "tests/fresh-ending-fixture.mjs": "0ad482230c87711f2d931f6bdb2b67847f24166bc167327858ca06e2fc36fa16",
+    "tests/fresh-ending-route.test.mjs": "6ee40deeea5aebfd8c8a31d82c240a14a081d065e9e3a35f611f7fa1058e93a7",
+    "tests/garrison-web.test.mjs": "f52905da89324a0d21f5ee17444201593842ea5a1480bf610ce7eb0d2db15922",
+    "tests/historical-loss-fixture.mjs": "dc3bbdad6a97957aee9bce7093d71084205ba063340e0826635d9c505d805c64",
+    "tests/military-remains.test.mjs": "813ea676d35c4fc56b8ffb567376a356b271a3118d0571e3a48fd169f2186389",
+    "tests/militia-care-fixture.mjs": "e2d1d4743cb078d5921e30807cac51008f27973084807ca95a6232c4c15761e5",
+    "tests/militia-combat-fixture.mjs": "efc95c68432c089f6f80ce33a1f7973f0cc51ca3f8f2fafeef85807e2117eb30",
+    "tests/opening-playthrough.test.mjs": "23b08efb606194c272f98d513ebd0e4d140d471976a46ca9973a2e14a6618ee6",
+    "tests/retiro-expansion.test.mjs": "87ac9b4ac291321a28af0975fdf1413b51f6204c5febd862aad43750613e4f6d",
+    "tests/shared-personal-pockets.test.mjs": "e78226d0ea61115bf20391db7c094c08550a400fc8ef7d52dda4fef63f8be8ad",
+    "tests/squads-web.test.mjs": "f00c5fb00a1897db26e467d33fffb3f2141e834d45b93c645670881a061cb76b",
+    "tests/unloaded-militia-wounds.test.mjs": "b0e0fc8221fea473ed7108dab70dd6124e1b6318fb5f25388ad04de6588c997b",
+    "tests/world-cells-render.test.mjs": "3e6f171ec06af15695c5faeacd721582140d4573a04ad414a4ab9d2965dc8f54",
+    "tests/campaign-ammunition-custody.test.mjs": "24b0333f6d3ec02b6041354b92d0e61931d60b59e23a0a7815df01251f83d23a",
+    "tests/campaign-ammunition-render.test.mjs": "814cd2c2b20bab44007b1738601988ba032a209d5042af49387a9fe75c08ccfe",
+    "web/app/Armory.tsx": "849bf76d7dd83a74b184070fa7d7e3e3e0adbc7339600e6670989d6ce16e399f",
+    "web/app/Campaign.tsx": "047696046f0004a778c491b8efb0bea75e8948837bb51eb8f5f17e22b56fb8ac",
+    "web/app/armory.css": "210bf1f0e55c0ea36105e56fa93755a4e670c2ccb10ee6fae8858c2870faaa48",
+    "web/app/CampaignAmmunition.tsx": "251f79752a2aaaaacd3df860bdff0d43f0ce0c4073cbbf46d87113255ff7144a"
+  },
+  "checks": {
+    "focused": {
+      "passed": 12,
+      "failed": 0
+    },
+    "types": "PASS",
+    "build": {
+      "status": "PASS",
+      "files": 735,
+      "assetReferences": 637
+    },
+    "baseline": {
+      "passed": 36
+    },
+    "documentation": {
+      "requirements": 271,
+      "evidenceRecords": 111,
+      "originalRequirements": 50,
+      "parityRequirements": 87,
+      "changedDocumentLinks": 379
+    },
+    "complete": {
+      "total": 1306,
+      "passed": 1306,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 266279.902333
+    }
+  },
+  "logs": {
+    "custody-final-focused": "d974334931511fd7b0273aa9207860818e8b2b32a9599ccad76d5eebd795116d",
+    "custody-typecheck-final": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30",
+    "custody-build-final": "9301bfff9dbd90fea8d62df1d6d1057ced0e0bfdf6bd0e9ab4e4a0c6e57e8f61",
+    "custody-baseline-final": "e49c0172bb277e7c62bd4490b57e84a4f572ea15f5930838a918acc012052177",
+    "custody-docs-check": "06aa7f2aca3babd0083614e74e3455787c94d1eadcaf506ddb76dbd059984c6a",
+    "strategic-ammunition-release-complete": "3479fd860a691a786006897e4a9537687610aaa0a1fe0e25c84bf0c05739bb8d"
+  }
+}

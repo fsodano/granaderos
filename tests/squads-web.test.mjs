@@ -15,7 +15,8 @@ test('remote attacks reject; genuine march and frontier entry advance time and l
 });
 test('friendly tactical visits preserve sector and inventory without capture rewards',()=>{
  let s=order(initialCampaign(),{type:'visitSector',sector:'retiro'});assert.equal(s.pendingBattle.exploration,true);assert.deepEqual(s.pendingBattle.enemies,[]);const request=s.pendingBattle,map=buildSectorMap(request),battle=createBattle(map.squad,map),cash=s.resources.treasury;
- battle.units[0].inventory={'weapon:1801:enemy-1':{count:1,weight:4,weapon:1801,loaded:1,condition:90}};
+ // Declared inventory-only fixture: an empty recovered gun adds no rounds.
+ battle.units[0].inventory={'weapon:1801:enemy-1':{count:1,weight:4,weapon:1801,loaded:0,condition:90}};
  s=order(s,{type:'leaveSector',battleId:request.id,sectorState:battle,survivors:battle.units.filter(o=>o.side==='player').map(o=>({id:o.id,hp:o.hp,energy:60,inventory:o.inventory??{}}))});assert.equal(s.resources.treasury,cash);assert.equal(s.pendingBattle,null);assert.equal(s.operativeState[3].energy,60);assert.ok(s.sectorStates.retiro);assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);
  s=order(s,{type:'visitSector'});assert.equal(s.pendingBattle.squad.find(o=>o.id===3).inventory['weapon:1801:enemy-1'].weapon,1801);
 });

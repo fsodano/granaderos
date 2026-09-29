@@ -1,5 +1,10 @@
 # Leave held weapons on the field
 
+> Historical verification record. The
+> [persistent ammunition delivery](strategic-ammunition-custody.md) replaces
+> automatic return refunds with physical carried and sector stock. Its current
+> checks supersede the refund expectations below; the original results remain history.
+
 Runtime/test source: `eb8d414db4a850e47016547a0f20dc9e5e01a2a6`.
 
 The production inventory can leave the selected primary or secondary weapon at

@@ -620,7 +620,13 @@
     {
       "id": "E-AMMO-FAMILIES",
       "path": "docs/verification/four-ammunition-families.md",
-      "description": "Shared four-family catalog, thirteen passing published checks and separate advanced physical-stack conversion. Actual old campaign migration preserves all eleven tactical units and finite rounds. Source hashes, tests, browser purchase and publication boundaries are recorded explicitly."
+      "description": "PR #134 merged at b6b081c9e206d8dda5cec00a10b24c1ebe02c67c after all five checks passed for bdd973186ae8377b218494392c6d863336e3314d. All 1294 published tests pass, with no failures or skips. The catalog is published; the documented 56-file advanced physical-stack migration remains local and has separate full-suite failures.",
+      "url": "https://github.com/fsodano/granaderos/pull/134"
+    },
+    {
+      "id": "E-AMMO-CUSTODY",
+      "path": "docs/verification/strategic-ammunition-custody.md",
+      "description": "Strategic family ownership, exact sector stores and finite town shops, preserving loaded charges and partial reloads without refunds. All 1306 published-runtime tests pass, with no failures or skips; types, export, reference checks, documentation and live armory persistence pass. Fresh victory and saved continuation use actual combat, paid contracts, finite care and permanent casualties. Final-head checks gate merge."
     }
   ],
   "queue": [
@@ -1310,10 +1316,10 @@
       "requirement": "Author a pinned cartridge unit price for paid issue and finite returns",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Optional cartridge price preserves the one-peso legacy default and multiplies the same finite quantity for deployment payment and return credit. Merged through PR #85 after exact-head CI.",
+      "published": "PR #85 added an optional pinned cartridge price with a one-peso default. AMMOCUSTODY-01 retains that price for actual finite purchases, replacing automatic return credit with owned cartridges.",
       "local": "Five simulations and two mounted cases cover strict optional content, legacy identity, real paid entry, a real discharge and saved retreat, duplicate report rejection, zero and unaffordable prices, overflow refusal, editor undo and actual campaign controls. Complete regression passes 911/911, zero failures/skips; types, production export and all 36 baseline comparisons also pass.",
       "remaining": "",
-      "acceptance": "Author and pin a unit price, pay the real deployment quote, discharge a cartridge and refund only the unspent quantity after save. Reject changed pinned prices, excess credit and repeated settlement.",
+      "acceptance": "Author and pin a unit price, pay for actual purchased cartridges, discharge a cartridge and retain the unspent physical quantity after save. Reject changed pinned prices, invented ammunition and repeated settlement.",
       "evidence": [
         "E-CARTRIDGE-PRICE"
       ],
@@ -1775,7 +1781,7 @@
       "status": "VERIFIED",
       "priority": "P1",
       "published": "Pending squad reserve validation follows the pinned cartridge allowance instead of a fixed ten-round maximum. Authored allocations through 100 save in exploration and combat; out-of-range reserves remain rejected. Merged through PR #67 after exact-head CI.",
-      "local": "The new scenario exposed a real rejected save at 14 cartridges. Regression coverage includes zero, boundary values, paid issue/refund, finite firing/reload, active save and rejected duplicate departure.",
+      "local": "The new scenario exposed a real rejected save at 14 cartridges. Regression coverage includes zero, boundary values, paid issue and physical return, finite firing/reload, active save and rejected duplicate departure.",
       "remaining": "",
       "acceptance": "Launch a valid authored allowance above the old reserve cap, enter a real scene, save/reload, expend ammunition and settle once without rejecting valid quantities or replenishing spent rounds.",
       "evidence": [
@@ -1819,13 +1825,14 @@
       "requirement": "Finish a fresh stock historical campaign and continue after saved victory",
       "status": "VERIFIED",
       "priority": "P0",
-      "published": "The complete mixed Retiro route wins all thirteen localities without injected outcomes or resources. Real paid service, supplies, finite care, controlled arrivals and losses lead to historical victory with San Martin alive. The created actor stays dead. A 48-hour continuation receives income, expires a daily contract and re-enters the sector without restoring the former hire or repeating the ending. Merged through PR #65 after exact-head CI. The later finite-first-aid regression replays the full route with additional paid replacements, victory at hour 450 and a saved 48-hour continuation.",
+      "published": "The complete mixed Retiro route wins all thirteen localities without injected outcomes or resources. Real paid service, supplies, finite care, controlled arrivals and losses lead to historical victory with San Martin alive. The created actor stays dead. A 48-hour continuation receives income, expires a daily contract and re-enters the sector without restoring the former hire or repeating the ending. Merged through PR #65 after exact-head CI. The later finite-first-aid regression replays the full route with additional paid replacements, victory at hour 450 and a saved 48-hour continuation. The persistent-ammunition regression reaches victory at hour 582 and saved continuation at hour 632 after two hours of ordinary post-victory care. Thirteen deaths stay permanent, and three hires leave alive when their contracts expire.",
       "local": "Published stock seed 8 and one strategy only. The hired-only and unpaid-only full routes, larger advanced gameplay, authored second campaign and live performance remain separate requirements.",
       "remaining": "",
       "acceptance": "Run the complete fresh mixed historical campaign through actual battle settlement and original gates, replay/save the final battles, preserve casualties and real treasury costs, then save victory and continue through income, contract expiry and retained-sector re-entry.",
       "evidence": [
         "E-FRESH-ENDING",
-        "E-FIRST-AID"
+        "E-FIRST-AID",
+        "E-AMMO-CUSTODY"
       ],
       "parents": [
         "INTEGRATION-01",
@@ -1851,7 +1858,8 @@
       "acceptance": "From untouched Retiro complete the coast, north and three Cuyo victories with real losses/purchases, treat and recruit the engineer, satisfy the pesos-only preparations, reject early commander service and retain actual late incorporation at saved phase 4.",
       "evidence": [
         "E-FRESH-CUYO",
-        "E-FIRST-AID"
+        "E-FIRST-AID",
+        "E-AMMO-CUSTODY"
       ],
       "parents": [
         "NAR-05",
@@ -2232,7 +2240,8 @@
       "acceptance": "From untouched stock campaigns, reach saved phase 2 through Buenos Aires, San Nicolas and San Lorenzo with a mixed created force and a hire-only force, real costs/losses, finite care, controlled arrivals, deterministic legal-order replay and permanent-death checks.",
       "evidence": [
         "E-FRESH-COASTAL",
-        "E-FIRST-AID"
+        "E-FIRST-AID",
+        "E-AMMO-CUSTODY"
       ],
       "parents": [
         "START-01",
@@ -3160,7 +3169,7 @@
       "requirement": "British imports and timed deliveries",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Imported firearm orders are bought in pesos with authored ports and delivery windows, stored deadlines, blockade/occupation delays, same-hour raid precedence and unique authored instances. PR #85 publishes an optional pinned cartridge unit price for deployment and finite return credit, after exact-head CI.",
+      "published": "Imported firearm orders are bought in pesos with authored ports and delivery windows, stored deadlines, blockade/occupation delays, same-hour raid precedence and unique authored instances. PR #85 adds an optional pinned cartridge unit price. AMMOCUSTODY-01 retains that price for finite purchases and replaces return credit with owned cartridges.",
       "local": "See local suite and preserved parity source; not equivalent to published integration.",
       "remaining": "Integrate finite merchant stock, physical port custody and cargo transport under control/blockade changes.",
       "acceptance": "Purchase in pesos, inventory and delivery under control/blockade changes; silver resource replaced by PR #12",
@@ -3562,7 +3571,7 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Nine firearms and five blade families match reference base values. Firearm and blade variants/images are authored and retained in character equipment, combat and saves. Enemy roles and militia ranks now support independent primary and secondary blade selections.",
-      "local": "See local suite and preserved parity source; not equivalent to published integration. BATTERYCHOICE-01 tracks explicit saved artillery choice and exact model availability. SECONDARYLOOT-01 tracks finite recovery of military secondary weapons, their authored identity and saved empty source slots. DROPWEAPON-01 tracks finite ground placement and collection of recovered weapons. WEAPONHANDOVER-01 tracks adjacent transfer of recovered weapons with saved recipient ownership. EMPTYHAND-01 tracks genuine empty-hand attacks after weapon loss and retained secondary use.",
+      "local": "See local suite and preserved parity source; not equivalent to published integration. BATTERYCHOICE-01 tracks explicit saved artillery choice and exact model availability. SECONDARYLOOT-01 tracks finite recovery of military secondary weapons, their authored identity and saved empty source slots. DROPWEAPON-01 tracks finite ground placement and collection of recovered weapons. WEAPONHANDOVER-01 tracks adjacent transfer of recovered weapons with saved recipient ownership. EMPTYHAND-01 tracks genuine empty-hand attacks after weapon loss and retained secondary use. AMMOCUSTODY-01 tracks strategic family custody, exact sector stores and finite town shops in the published runtime. It does not publish the advanced inventory adapter.",
       "remaining": "Author fittings and further ammunition variants; finish complete physical inventory, civilian equipment looting, wear and unarmed behavior. SECONDARYLOOT-01 accepts bounded military secondary recovery.",
       "acceptance": "XML values, inventory images, sounds and use in combat",
       "evidence": [
@@ -3574,7 +3583,8 @@
         "E-SECONDARY-RECOVERY",
         "E-DROP-RECOVERED-WEAPONS",
         "E-ADJACENT-WEAPON-TRANSFER",
-        "E-EMPTY-HAND-MELEE"
+        "E-EMPTY-HAND-MELEE",
+        "E-AMMO-CUSTODY"
       ]
     },
     {
@@ -3811,7 +3821,7 @@
       "requirement": "Configurable game rules and campaign roles",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss. Import port, disabled orders and delivery windows are configurable. Ordered campaign chapters, global completion/failure conditions and ending text are authored separately from historical progression. Historical profiles can be copied without their implicit roles and removed from an authored campaign. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Pending scene saves accept the full supported authored cartridge range, including zero and 100, without resetting spent rounds. Medical eligibility, hourly healing and effort, rest rates/intervals and dressing prices are authored and pinned; both workshop purchase paths use that price. Current quantities of six personal supply types can gate dialogue, chapters and failure. Active scenes override stale deployed records; the check does not grant or consume goods. PR #85 publishes an optional pinned cartridge unit price for deployment and finite return credit, after exact-head CI. PR #93 publishes optional militia promotion thresholds and attribute gains, pinned per campaign and used by actual combat and paid regular instruction.",
+      "published": "Character sheets, firearm and blade stats, classes and abilities are configurable. Initial treasury and player/new-enemy/new-militia cartridge allotments are authored and pinned in saves. Initial locality control and loyalty are authored, with an explicit headquarters that drives supply, workshops and loss. Import port, disabled orders and delivery windows are configurable. Ordered campaign chapters, global completion/failure conditions and ending text are authored separately from historical progression. Historical profiles can be copied without their implicit roles and removed from an authored campaign. Foundry and global marching privileges can be assigned to independent characters or disabled, with actual service, life and custody checks. Foundry locality, names and both prices are authored; preparation activates its supplied repair/resupply workshop and local loyalty reward. Completed or pending foundry preparation and army funding can gate dialogue choices, authored chapters and failure conditions. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Pending scene saves accept the full supported authored cartridge range, including zero and 100, without resetting spent rounds. Medical eligibility, hourly healing and effort, rest rates/intervals and dressing prices are authored and pinned; both workshop purchase paths use that price. Current quantities of six personal supply types can gate dialogue, chapters and failure. Active scenes override stale deployed records; the check does not grant or consume goods. PR #85 adds an optional pinned cartridge unit price. AMMOCUSTODY-01 retains that price for finite purchases and replaces return credit with owned cartridges. PR #93 publishes optional militia promotion thresholds and attribute gains, pinned per campaign and used by actual combat and paid regular instruction.",
       "local": "Larger systems still embed many rules and historical identity gates. Authored militia progression thresholds and gains are tracked by MILITIARULES-01; this local delivery does not close the remaining rules.",
       "remaining": "Extract remaining care, combat, economy, character progression, opposition and historical campaign identity rules.",
       "acceptance": "Change supported rules and replace role identities through the editor, then run/save the resulting campaign.",
@@ -3841,8 +3851,8 @@
       "requirement": "Complete equipment and merchant authoring",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain four finite personal supply quantities; separate ignition stocks were removed by PR #130. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of four personal supply types can gate dialogue, chapters and failure; legacy ignition conditions see the implicit full kit. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI. PR #85 publishes an optional pinned cartridge unit price for deployment and finite return credit, after exact-head CI. PR #98 adds pinned editable militia patrol rules. PR #128 publishes shared physical pockets and finite capacity across collection, transfer, purchases and deployment; the capacity and stack tuning remain fixed. AMMOAUTHOR-01 adds a pinned compatible family selector to each authored firearm.",
-      "local": "Advanced physical inventory controls, fittings and merchants remain more complete locally and are not generally authored. PATROLRULES-01 tracks optional patrol activation, timing and exploration energy settings. ARTILLERYSUPPLY-01 accepts pinned pesos prices, supply permission, reserve cap and finite local replenishment. ARTILLERYPROFILE-01 accepts editing the three gun families, model images, costs, crew, ballistics and finite initial ammunition with saved package references. ARTILLERYTRANSPORTRULES-01 accepts pinned transfer permission, route rates and one-time fees. ARTILLERYTRADERULES-01 tracks authored cash, prices and named workshop overrides. AMMOFAMILY-01 accepts four published tactical families and the approved implicit ignition kit. AMMOFAMILIES-01 records completed local four-family custody and save migration. Publishing that advanced adapter, authored local family overrides and alternative loads remains open.",
+      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain four finite personal supply quantities; separate ignition stocks were removed by PR #130. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of four personal supply types can gate dialogue, chapters and failure; legacy ignition conditions see the implicit full kit. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI. PR #85 adds an optional pinned cartridge unit price. AMMOCUSTODY-01 retains that price for finite purchases and replaces return credit with owned cartridges. PR #98 adds pinned editable militia patrol rules. PR #128 publishes shared physical pockets and finite capacity across collection, transfer, purchases and deployment; the capacity and stack tuning remain fixed. AMMOAUTHOR-01 adds a pinned compatible family selector to each authored firearm.",
+      "local": "Advanced physical inventory controls, fittings and merchants remain more complete locally and are not generally authored. PATROLRULES-01 tracks optional patrol activation, timing and exploration energy settings. ARTILLERYSUPPLY-01 accepts pinned pesos prices, supply permission, reserve cap and finite local replenishment. ARTILLERYPROFILE-01 accepts editing the three gun families, model images, costs, crew, ballistics and finite initial ammunition with saved package references. ARTILLERYTRANSPORTRULES-01 accepts pinned transfer permission, route rates and one-time fees. ARTILLERYTRADERULES-01 tracks authored cash, prices and named workshop overrides. AMMOFAMILY-01 accepts four published tactical families and the approved implicit ignition kit. AMMOFAMILIES-01 records completed local four-family custody and save migration. Publishing that advanced adapter, authored local family overrides and alternative loads remains open. AMMOCUSTODY-01 tracks strategic family custody, exact sector stores and finite town shops in the published runtime. It does not publish the advanced inventory adapter.",
       "remaining": "Author new ammunition families, alternate loads and dealer pricing, fittings, merchant stock, buyback and replenishment authoring; integrate civilian belongings and complete physical custody. Add pocket/stack authoring and portable item custody; shared pockets alone do not close equipment authoring.",
       "acceptance": "Create each supported equipment type; buy/use/trade/reload without duplication or lost instance data.",
       "evidence": [
@@ -3865,7 +3875,8 @@
         "E-ARTILLERY-TRADING-RULES",
         "E-SHARED-POCKETS",
         "E-TYPED-AMMUNITION",
-        "E-AMMO-FAMILIES"
+        "E-AMMO-FAMILIES",
+        "E-AMMO-CUSTODY"
       ]
     },
     {
@@ -3914,7 +3925,7 @@
       "status": "FAILED",
       "priority": "P0",
       "published": "The published rules now accept a complete fresh mixed historical route, a hired-only coastal opening, explicit historical loss and saved post-victory continuation. Editable content, paid arrivals, permanent casualties, story gates and treasury costs are exercised. Most advanced local gameplay is still outside this integrated release. A complete compact independent authored scenario is also accepted, with its own ending and real deadline failure.",
-      "local": "The preserved advanced/prototype audits contain failures and policy differences. Those source-specific results are not replaced by the published route; later concurrent local changes are not yet accepted in main. The advanced local implicit-kit migration and maintenance wiring pass focused checks; its full source-specific audit retains movement and campaign-route failures. AMMOFAMILIES-01 records the completed local four-family conversion and actual-save verification on port 3000. Its physical inventory adapter is not yet published; the full local run still has movement and campaign-route failures.",
+      "local": "The preserved advanced/prototype audits contain failures and policy differences. Those source-specific results are not replaced by the published route; later concurrent local changes are not yet accepted in main. The advanced local implicit-kit migration and maintenance wiring pass focused checks; its full source-specific audit retains movement and campaign-route failures. AMMOFAMILIES-01 records the completed local four-family conversion and actual-save verification on port 3000. Its physical inventory adapter is not yet published; the full local run still has movement and campaign-route failures. AMMOCUSTODY-01 tracks strategic family custody, exact sector stores and finite town shops in the published runtime. It does not publish the advanced inventory adapter.",
       "remaining": "Import one bounded capability at a time, preserve approved policy and carry its tests into main.",
       "acceptance": "One release has the full combined behavior, passing combined suite, legal complete routes and no undocumented policy regressions.",
       "evidence": [
@@ -3929,7 +3940,8 @@
         "E-FRESH-ENDING",
         "E-POST-CAMPAIGN",
         "E-IGNITION-MIGRATION",
-        "E-AMMO-FAMILIES"
+        "E-AMMO-FAMILIES",
+        "E-AMMO-CUSTODY"
       ]
     },
     {
@@ -4671,7 +4683,7 @@
       "requirement": "Nearby allies can give/pass items; distant allies can catch a thrown item with an explicit risk/cost. G14; M22-25.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "One stored recovered weapon can be handed directly to an adjacent conscious squad member for four sender AP or one exploration second. Shared preview/execution rejects blocked contact or unavailable recipients and preserves actual ownership, mechanism and full saves. WEAPONHANDOVER-01 records this bounded delivery. HELDHANDOVER-01 also delivers the actual primary or secondary directly, leaving the source hand empty. SUPPLYHANDOVER-01 transfers exact quantities of authored priming, flints, rations, torches, dressings and bolas, including received medical use and saved reentry. CARTRIDGEHANDOVER-01 adds adjacent loose-cartridge sharing and preserves its actual force refund.",
+      "published": "One stored recovered weapon can be handed directly to an adjacent conscious squad member for four sender AP or one exploration second. Shared preview/execution rejects blocked contact or unavailable recipients and preserves actual ownership, mechanism and full saves. WEAPONHANDOVER-01 records this bounded delivery. HELDHANDOVER-01 also delivers the actual primary or secondary directly, leaving the source hand empty. SUPPLYHANDOVER-01 transfers exact quantities of authored priming, flints, rations, torches, dressings and bolas, including received medical use and saved reentry. CARTRIDGEHANDOVER-01 adds adjacent loose-cartridge sharing and preserves actual force ownership on return.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check. WEAPONHANDOVER-01 tracks adjacent transfer of recovered weapons with saved recipient ownership.",
       "remaining": "Integrate other carried items, physical capacity, relay chains and throwing/catching with their visible costs and risks. Preserve the advanced-workspace source notes as separate evidence until those paths are accepted on main.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
@@ -4789,15 +4801,16 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "PR #130 publishes four compatible gameplay families, implicit ignition equipment, separate pocket artwork and bounded ground recovery. Each firearm accepts one family.",
-      "local": "AMMOFAMILIES-01 records four-family compatibility in the advanced physical inventory game, with conserved old saves, finite stocks, paired reloads and the running port 3000 build. This local integration is not yet published. Full campaign acceptance and advanced authored family overrides remain open.",
-      "remaining": "Alternate period loads for the same firearm, published strategic family custody and full interaction parity remain open. Publish the advanced physical inventory adapter and its dependencies.",
+      "local": "AMMOFAMILIES-01 records four-family compatibility in the advanced physical inventory game, with conserved old saves, finite stocks, paired reloads and the running port 3000 build. This local integration is not yet published. Full campaign acceptance and advanced authored family overrides remain open. AMMOCUSTODY-01 tracks strategic family custody, exact sector stores and finite town shops in the published runtime. It does not publish the advanced inventory adapter.",
+      "remaining": "Alternate period loads for the same firearm and full interaction parity remain open. Publish the advanced physical inventory adapter and its dependencies.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
         "E-PUBLISHED",
         "E-TYPED-AMMUNITION",
-        "E-AMMO-FAMILIES"
+        "E-AMMO-FAMILIES",
+        "E-AMMO-CUSTODY"
       ],
       "sourceRow": "JA2-I08",
       "sourceNotes": "Alternate loads for one gun remain absent. Caliber/load mapping, initial stock, prices and production costs are Granaderos tuning. Modern AP/HP cartridges are inappropriate. Artillery ammunition remains a separate model."
@@ -5927,7 +5940,7 @@
       "published": "Published by PR #116 after successful exact-head CI. Held primary and secondary weapons move once to the field and retain their actual authored definition and mechanism through saved return.",
       "local": "Five simulations and one mounted production-game check pass; related group 38/38. Complete regression 1169/1169, zero failures/skips, with types, export and 36 reference comparisons.",
       "remaining": "",
-      "acceptance": "Use the production inventory to drop the selected held weapon for four combat AP or one exploration second; keep an inactive selected secondary usable when dropping the primary; preserve authored definition, image, wear, loaded charge, partial loading and jam through full save, return and equip; account for held and packed weapon weight; preserve the existing campaign loose-round refund; reject absent, ambiguous or unavailable sources atomically.",
+      "acceptance": "Use the production inventory to drop the selected held weapon for four combat AP or one exploration second; keep an inactive selected secondary usable when dropping the primary; preserve authored definition, image, wear, loaded charge, partial loading and jam through full save, return and equip; account for held and packed weapon weight; preserve actual campaign loose-round ownership; reject absent, ambiguous or unavailable sources atomically.",
       "evidence": [
         "E-HELD-WEAPON-DROP"
       ],
@@ -6026,7 +6039,7 @@
     {
       "id": "CARTRIDGEHANDOVER-01",
       "group": "Published deliveries",
-      "requirement": "Share actual loose deployment cartridges without losing them during the witnessed retreat refund",
+      "requirement": "Share actual loose cartridges without losing ownership during witnessed return",
       "status": "VERIFIED",
       "priority": "P1",
       "published": "Published by PR #120 after successful exact-head CI. Loose issued cartridges move between actual adjacent soldiers, support firing and reloading, and settle against the shared witnessed force total without losing valid redistributed rounds.",
@@ -6348,7 +6361,7 @@
       "requirement": "Use four shared ammunition families in the advanced physical inventory game",
       "status": "LOCAL_ONLY",
       "priority": "P1",
-      "published": "The shared catalog feeds the existing published ammunition adapter. Its four IDs, images, default compatibility and authored family override remain unchanged. Thirteen related tests, types, build and 36 reference checks pass; full remote checks gate merge.",
+      "published": "PR #134 publishes the shared catalog and existing public adapter at b6b081c9e206d8dda5cec00a10b24c1ebe02c67c. All five final-head checks pass, including 1294/1294 tests, types and build. The four IDs, images, default compatibility and authored family override are preserved. The larger physical-inventory adapter remains local.",
       "local": "Physical stacks, hands, cursor, pockets, campaign stocks, delivery receipts and old saves migrate to four families. The actual eleven-unit Buenos Aires save preserves health, positions, loaded rounds and loose quantities. The 56-file integration is running on port 3000; exact hashes and limits are retained. The original-checkout regression has 3223/3231 passes, five failures (including a parent) and three skips. The later purchase-limit form guard passes both related cases, types and build. The fresh route now stops earlier at an unavailable recovered gun in Cordoba; recapture retreats instead of winning. Those changed outcomes are not accepted.",
       "remaining": "Publish the advanced physical-inventory runtime and its dependencies. Integrate advanced authored family selection and alternative loads separately. The complete campaign and performance acceptance remain open.",
       "acceptance": "Group historical loads without losing or adding rounds, changing ownership or reissuing stock; retain old saves, rejected invalid references, finite shops, compatible reloads and readable images.",
@@ -6365,17 +6378,45 @@
         "JA2-I08",
         "STORY-06",
         "INTEGRATION-01"
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/134"
+    },
+    {
+      "id": "AMMOCUSTODY-01",
+      "group": "Published deliveries",
+      "requirement": "Keep each ammunition family with soldiers or exact sector stores across deployments and saves",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "This delivery adds exact family purchases, controlled sector stores and finite town shops. Supplied controlled towns buy only a marching shortfall. Return retains real carried ammunition, loaded charges and unfinished reloads without an automatic refund. Final-head checks gate merge.",
+      "local": "All 1306 published-runtime tests pass, with no failures or skips. The twelve new core and mounted cases, types, production export, 36 reference checks and browser persistence pass. The fresh stock campaign wins all thirteen localities, retains permanent losses and continues after actual post-victory care and contract expiry. The advanced physical-inventory adapter remains separate.",
+      "remaining": "",
+      "acceptance": "Buy and move exact family quantities with finite pesos, local stock and pocket limits. Preserve owners, loaded charges and partial work through return, weapon replacement, old-save migration and repeated restoration. Reject invented stock, family conversion and incomplete living reports. Keep complete fresh campaign victory and saved continuation through normal orders.",
+      "evidence": [
+        "E-AMMO-CUSTODY"
+      ],
+      "parents": [
+        "ITEM-01",
+        "JA2-I08",
+        "STORY-06",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/campaign-ammunition-custody.test.mjs",
+        "tests/campaign-ammunition-render.test.mjs",
+        "tests/fresh-coastal-route.test.mjs",
+        "tests/fresh-cuyo-route.test.mjs",
+        "tests/fresh-ending-route.test.mjs"
       ]
     }
   ],
   "latestPublishedCheck": {
-    "source": "9a3530d0fa847a549c09512d77894e3661f1b57d",
-    "total": 1293,
-    "passed": 1293,
+    "source": "bdd973186ae8377b218494392c6d863336e3314d",
+    "total": 1294,
+    "passed": 1294,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-IGNITION-MIGRATION"
+    "evidenceId": "E-AMMO-FAMILIES"
   }
 }

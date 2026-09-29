@@ -33,7 +33,7 @@ function recoverSquad(s){
 
 // Treat urgent wounds before moving the force. This uses ordinary local
 // assignments, actual finite dressings and hourly work; it never edits health.
-function stabilizeBeforeMarch(s){
+export function stabilizeBeforeMarch(s){
  const care={hours:0,dressingsUsed:0,dressingsBought:0,cost:0};
  while(true){
   const roster=rosterFor(s).filter(o=>s.squad.includes(o.id)),patients=roster.filter(o=>s.operativeState[o.id].bleeding||s.operativeState[o.id].hp<15);
@@ -101,6 +101,6 @@ export function finishHistoricalFromCuyo(prefix,{onCheckpoint}={}){
   notes.push({stage:sector,hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,squad:[...s.squad],actions,turns:battle.turn,deaths:deaths(s),commanderHp:s.operativeState[57].hp,completed:s.completed});onCheckpoint?.(sector,s,notes);
   if(!s.completed){const recovery=stabilizeBeforeMarch(s);s=recovery.campaign;if(recovery.care.hours){notes.push({stage:`${sector}-stabilization`,hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,care:recovery.care,squad:[...s.squad]});onCheckpoint?.(`${sector}-stabilization`,s,notes);}s=order(s,{type:'fortify',sector});}
  }
- assert.equal(s.completed,true);assert.equal(s.defeated,false);assert.equal(s.pendingBattle,null);assert.equal(s.blockade,false);assert.equal(s.phase,4);assert.equal(Object.keys(s.sectors).length,13);assert.ok(Object.values(s.sectors).every(r=>r.owner==='patriot'));assert.equal(s.operativeState[57].hp,59);assert.ok(s.recruited.includes(57));assert.equal(s.contracts[57].expiresAt,null);assert.equal(s.resources.treasury,8276);for(const id of [1000,103,123,137])assert.equal(s.operativeState[id].alive,false);
+ assert.equal(s.completed,true);assert.equal(s.defeated,false);assert.equal(s.pendingBattle,null);assert.equal(s.blockade,false);assert.equal(s.phase,4);assert.equal(Object.keys(s.sectors).length,13);assert.ok(Object.values(s.sectors).every(r=>r.owner==='patriot'));assert.equal(s.operativeState[57].hp,61);assert.ok(s.recruited.includes(57));assert.equal(s.contracts[57].expiresAt,null);assert.equal(s.resources.treasury,5126);assert.deepEqual(deaths(s),[0,3,4,9,10,113,115,120,131,136,137,141,1000]);
  return {campaign:s,notes,prefix:prefix.notes};
 }
