@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "source": "a464ee32e4ee98937168fda35b136aad9b916b83",
+  "pr": "https://github.com/fsodano/granaderos/pull/130",
+  "sourceHashes": {
+    "game/ammo-types.js": "64c06eef52083c1ba6e264ef9b42e6dc3c7ec01a7db28c1d03dd2db316227a9e",
+    "game/ammunition.js": "f8efb3ba60e69ce224d87c402334ed4e55d92fb0761993deceada54f6431eb57",
+    "game/tactical.js": "b11aa7ce34bb74d043dcf98e05b68b9c64f22f802cfcd012ce97cce0649b796b",
+    "game/campaign.js": "ceac1eb89ac74736d28b323f51e57dbb08fb73327c6638f2924019c7ae9a71aa",
+    "game/validate-battle.js": "f14837fe98d49502512ab72d42fa7ee77d4b79be2007756f829626805df7f522",
+    "game/world.js": "35b0668d2db666af5a037ee979b5fabe7e74aa06641c2fa268516237583c0056",
+    "tests/typed-ammunition.test.mjs": "d1e7f18f41d3fe5e2889f5e20abf7657d04a31d6374be549275a53214867d4b0",
+    "tests/dropped-cartridges.test.mjs": "c37c5ffd29793db27feba0b90e69fd4c3f629d9f93f19133c8606ce0c892ce40",
+    "tests/dropped-cartridges-render.test.mjs": "41f6f0ed4f09fe41f96027e3a94d619625675037caaf5db3a63dcb2f447e21e9"
+  },
+  "checks": {
+    "regression": {
+      "tests": 1282,
+      "passed": 1282,
+      "failed": 0,
+      "skipped": 0
+    },
+    "focused": {
+      "passed": 21
+    },
+    "types": "PASS",
+    "build": {
+      "status": "PASS",
+      "files": 735,
+      "assetReferences": 637
+    },
+    "baseline": {
+      "passed": 36,
+      "failed": 0
+    }
+  },
+  "regressionBeforeFix": {
+    "tests": 5,
+    "passed": 1,
+    "failed": 4,
+    "issue": "Recovered previous ground ammunition lost from the return allowance."
+  },
+  "logs": {
+    "/tmp/ammo130-return-before.log": "7bd44b879c10f62032e7f8e04c39498a6670c7c8a1e6ccab3f1dfad23047e16c",
+    "/tmp/ammo130-return-after.log": "c0e622d52bedd665a5c68013e9af94a3f2a67c0b8b09df085269c3553a9a66ed",
+    "/tmp/ammo130-final-full.log": "e4e1996f10d3ab4412140cddbc27eee0f76cb56ae6d7804cf1eb4946a2de54ef",
+    "/tmp/ammo130-final-types.log": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30",
+    "/tmp/ammo130-final-build.log": "a7fc9e3d6546b5cb43e4339f7989435578b71b47e6928c413ffdc1e513c733c5",
+    "/tmp/ammo130-final-baseline.log": "1b3a86aa3300bafc6d309b9d804ce50341f0b02c57bac6490e817690892787ce"
+  },
+  "browser": {
+    "url": "http://localhost:3134/?qa=1",
+    "viewport": [
+      1280,
+      720
+    ],
+    "fixture": "Imported separate paid-arrival QA save plus two pistol rounds for presentation review. Not a normal player save.",
+    "actions": [
+      "drop four musket cartridges through inventory",
+      "collect two through field quantity picker"
+    ],
+    "result": {
+      "loaded": 1,
+      "ammoMusket": 7,
+      "ammoPistol": 2,
+      "groundMusket": 2,
+      "inventoryImagesLoaded": 8,
+      "consoleErrors": 0
+    },
+    "screenshot": "docs/evidence/typed-ammunition.png",
+    "sha256": "94829719bb1c84eea75a797433bb3e3f0457035e14d32a14ab3ee961174e5a09"
+  },
+  "publication": {
+    "status": "pending final remote verification and merge"
+  },
+  "limitations": [
+    "Full strategic ammunition custody and authored variants remain open.",
+    "The advanced checkout on port 3000 has separate systems and is not integrated by this PR.",
+    "This does not establish full campaign parity or combat performance."
+  ]
+}

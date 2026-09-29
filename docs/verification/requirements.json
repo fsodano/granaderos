@@ -602,7 +602,8 @@
     {
       "id": "E-TYPED-AMMUNITION",
       "path": "docs/verification/typed-ammunition.md",
-      "description": "Local four-family ammunition and implicit ignition kit implementation. 1275/1276 full regression followed by passing corrected ending-route rerun; eight new cases, types, export, baseline and desktop checks pass. Publication remains pending."
+      "description": "Four compatible ammunition families, implicit ignition kit, migration and saved ground-bundle settlement. Combined source a464ee32 passes 1282/1282, types, export, all 36 baseline checks and desktop partial pickup. Final remote checks and publication are recorded in the linked report.",
+      "url": "https://github.com/fsodano/granaderos/pull/130"
     }
   ],
   "queue": [
@@ -3288,12 +3289,12 @@
     {
       "id": "TAC-04",
       "group": "Original design",
-      "requirement": "Weather/fouling misfires, 15 AP re-prime, flint durability",
+      "requirement": "Weather/fouling misfires, paid recovery and weapon condition with implicit ignition kit",
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Ignition, weather, priming and weapon condition. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI.",
       "local": "See local suite and preserved parity source; not equivalent to published integration.",
-      "remaining": "Integrate both hands, full strategic cartridge custody and repair without free charges.",
+      "remaining": "Integrate both hands, full strategic cartridge custody and repair without free charges. User decision on 2026-09-29 removes separate flint durability/stock and priming inventory; AMMOFAMILY-01 tracks this replacement.",
       "acceptance": "Failed ignition consumes trigger AP but preserves main charge; repair cycle",
       "evidence": [
         "E-PUBLISHED",
@@ -3824,7 +3825,7 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain six finite personal supply quantities. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of six personal supply types can gate dialogue, chapters and failure. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI. PR #85 publishes an optional pinned cartridge unit price for deployment and finite return credit, after exact-head CI. PR #98 adds pinned editable militia patrol rules. PR #128 publishes shared physical pockets and finite capacity across collection, transfer, purchases and deployment; the capacity and stack tuning remain fixed.",
-      "local": "Advanced physical inventory controls, fittings and merchants remain more complete locally and are not generally authored. PATROLRULES-01 tracks optional patrol activation, timing and exploration energy settings. ARTILLERYSUPPLY-01 accepts pinned pesos prices, supply permission, reserve cap and finite local replenishment. ARTILLERYPROFILE-01 accepts editing the three gun families, model images, costs, crew, ballistics and finite initial ammunition with saved package references. ARTILLERYTRANSPORTRULES-01 accepts pinned transfer permission, route rates and one-time fees. ARTILLERYTRADERULES-01 tracks authored cash, prices and named workshop overrides.",
+      "local": "Advanced physical inventory controls, fittings and merchants remain more complete locally and are not generally authored. PATROLRULES-01 tracks optional patrol activation, timing and exploration energy settings. ARTILLERYSUPPLY-01 accepts pinned pesos prices, supply permission, reserve cap and finite local replenishment. ARTILLERYPROFILE-01 accepts editing the three gun families, model images, costs, crew, ballistics and finite initial ammunition with saved package references. ARTILLERYTRANSPORTRULES-01 accepts pinned transfer permission, route rates and one-time fees. ARTILLERYTRADERULES-01 tracks authored cash, prices and named workshop overrides. AMMOFAMILY-01 tracks four compatible tactical families and the approved implicit ignition kit; strategic family custody and advanced integration remain open.",
       "remaining": "Add ammunition types and dealer pricing, fittings, merchant stock, buyback and replenishment authoring; integrate civilian belongings and complete physical custody. Add pocket/stack authoring and portable item custody; shared pockets alone do not close equipment authoring.",
       "acceptance": "Create each supported equipment type; buy/use/trade/reload without duplication or lost instance data.",
       "evidence": [
@@ -3845,7 +3846,8 @@
         "E-ARTILLERY-PROFILES",
         "E-ARTILLERY-TRANSPORT-RULES",
         "E-ARTILLERY-TRADING-RULES",
-        "E-SHARED-POCKETS"
+        "E-SHARED-POCKETS",
+        "E-TYPED-AMMUNITION"
       ]
     },
     {
@@ -4767,13 +4769,14 @@
       "status": "LOCAL_ONLY",
       "priority": "P1",
       "published": "This complete capability is not accepted in the published release.",
-      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
+      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check. AMMOFAMILY-01 tracks four compatible tactical families and the approved implicit ignition kit; strategic family custody and advanced integration remain open.",
       "remaining": "Local caliber compatibility exists. Alternate period loads and complete interaction parity remain open.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-TYPED-AMMUNITION"
       ],
       "sourceRow": "JA2-I08",
       "sourceNotes": "Alternate loads for one gun remain absent. Caliber/load mapping, initial stock, prices and production costs are Granaderos tuning. Modern AP/HP cartridges are inappropriate. Artillery ammunition remains a separate model."
@@ -6246,17 +6249,26 @@
       "requirement": "Use weapon-compatible ammunition families and assume basic ignition kit",
       "status": "LOCAL_ONLY",
       "priority": "P1",
-      "published": "Pending this separate PR; main retains the earlier supply model.",
-      "local": "Source 8a06687d implements four ammunition families, separate artwork, exact transfers and legacy save migration. Ignition supplies and their refill costs are removed; maintenance and misfire action costs remain.",
-      "remaining": "Review and publication on main; advanced-checkout integration is separate.",
-      "acceptance": "All nine firearms consume only their compatible reserve. Family and quantity survive transfers, collection, weapon changes and active saves. Legacy rounds migrate once. No separate priming or flint inventory is shown.",
+      "published": "PR #130 is open. Its initial head passed all five remote checks; the combined head and recovered-ground correction require final checks before merge.",
+      "local": "Four ammunition families and separate artwork replace generic tactical reserves. Ignition kit is implicit. Source a464ee32 adds saved ground-bundle settlement after four regression failures reproduced lost recovery credit. The 21 focused ammunition, UI and settlement cases pass; complete combined regression passes 1282/1282 with no failures or skips; types, 735-file export, all 36 reference checks and the desktop inventory/drop/pickup review pass.",
+      "remaining": "Merge the combined source after successful exact-head checks; integrate the separate advanced checkout, strategic family custody and further authored ammunition variants.",
+      "acceptance": "All nine firearms consume only their compatible reserve. Family and quantity survive transfers, collection, weapon changes and active saves. Legacy rounds migrate once. No separate priming or flint inventory is shown. Retained ground bundles can be recovered after peaceful return or combat retreat without losing paid rounds or duplicating stock/credit.",
       "evidence": [
         "E-TYPED-AMMUNITION"
       ],
       "testFiles": [
         "tests/typed-ammunition.test.mjs",
-        "tests/fresh-ending-route.test.mjs"
-      ]
+        "tests/fresh-ending-route.test.mjs",
+        "tests/dropped-cartridges.test.mjs",
+        "tests/dropped-cartridges-render.test.mjs"
+      ],
+      "parents": [
+        "ITEM-01",
+        "JA2-I08",
+        "STORY-06",
+        "INTEGRATION-01"
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/130"
     }
   ],
   "latestPublishedCheck": {
