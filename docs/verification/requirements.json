@@ -555,6 +555,11 @@
       "id": "E-PARTIAL-GROUND-SUPPLY-PICKUP",
       "path": "docs/verification/partial-ground-supply-pickup.md",
       "description": "The field picker selects an actual colocated personal supply bundle and exact quantity, preserving the remainder through saves and campaign return. Four simulations and three mounted production-game checks pass; related group 32/32. Complete regression passes 1200/1200, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
+    },
+    {
+      "id": "E-OCCUPIED-GROUND-COLLECTION",
+      "path": "docs/verification/occupied-ground-collection.md",
+      "description": "Clicking a resident in collection mode can recover loose weapons or choose personal supply bundles beneath the figure without taking the residents own supplies. Three mounted production-game cases pass; related group 13/13. Complete regression passes 1203/1203, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
     }
   ],
   "queue": [
@@ -4618,7 +4623,7 @@
       "requirement": "Items can be dropped, picked up, split, stacked, and stored persistently in the sector. G20,64-66,110-111; M21-25.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Held and recovered firearms and blades can be left one at a time at the current cell and collected even under a soldier. Their authored identity, load, wear and weight survive full saves and sector return. Distinct fields cannot overwrite a previously carried weapon through a reused local drop index. DROPWEAPON-01 and HELDWEAPONDROP-01 record the bounded ordinary controls. SUPPLYDROP-01 adds exact bundles of the six personal supplies, retained field quantities and normal whole-bundle collection after saved return. GROUNDSUPPLYPICKER-01 selects a nearby loose personal supply bundle and exact partial pickup quantity, preserving untouched stock and pausing exploration while choosing.",
+      "published": "Held and recovered firearms and blades can be left one at a time at the current cell and collected even under a soldier. Their authored identity, load, wear and weight survive full saves and sector return. Distinct fields cannot overwrite a previously carried weapon through a reused local drop index. DROPWEAPON-01 and HELDWEAPONDROP-01 record the bounded ordinary controls. SUPPLYDROP-01 adds exact bundles of the six personal supplies, retained field quantities and normal whole-bundle collection after saved return. GROUNDSUPPLYPICKER-01 selects a nearby loose personal supply bundle and exact partial pickup quantity, preserving untouched stock and pausing exploration while choosing. OCCUPIEDGROUND-01 keeps loose weapons and personal supply bundles accessible through an occupying resident figure.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check. DROPWEAPON-01 tracks finite ground placement and collection of recovered weapons. HELDWEAPONDROP-01 extends the same custody to actual hand slots.",
       "remaining": "Integrate cartridge placement and other equipment, stacking, complete selectable body/ground/container inventories, multi-item pickup, physical capacity, walking approaches and strategic/mission sector storage. The advanced-workspace implementations in the source notes remain separate from published acceptance.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
@@ -4629,7 +4634,8 @@
         "E-DROP-RECOVERED-WEAPONS",
         "E-HELD-WEAPON-DROP",
         "E-PERSONAL-SUPPLY-DROP",
-        "E-PARTIAL-GROUND-SUPPLY-PICKUP"
+        "E-PARTIAL-GROUND-SUPPLY-PICKUP",
+        "E-OCCUPIED-GROUND-COLLECTION"
       ],
       "sourceRow": "JA2-I03",
       "sourceNotes": "Strategic sector access now lists discovered equipment and supports exact local pickup/drop quantities in safe sectors. It checks walking access, capacity and current source contents, preserves loaded/fitted weapons and personal cartridges, and uses validated save/reentry paths. Seventeen simulation/save tests and two component checks cover the new flow; see [sector inventory](sector-inventory.md). Depleted ground objects cannot be picked up again. A controlled live body/ground picker spent actual approach and pickup AP, took partial cartridges and a loaded fitted musket, and retained both sources and receiver after reload. Ten approach cases, eleven batch cases and two component tests cover the picker contract. Select All and per-row quantities share one atomic 8 AP pickup from a single tile. Live full selection, capacity rejection and reduction to a valid partial selection passed; see [loot approach](loot-approach.md). Live tactical dropping, strategic partial pickup/drop, quantity rejection, save loading and reentry now pass. The check found and fixed loss of a carried loaded gun charge on campaign return; the repeated loop preserved the exact ammunition total. See [sector inventory](sector-inventory.md). Blocked paths, full packs and body/container variants remain automated-test evidence. Visited mission sites now appear under their parent sector through a labelled site selector, with separate source pools and shared local-presence, occupation and path checks. Real San Lorenzo remains can be recovered after victory; completed Yatasto pickup/drop and saves pass simulation checks. A live production-component harness recovered one dressing and one cartridge from the real San Lorenzo save and preserved the distinct town stock after saving/loading. See [sector inventory](sector-inventory.md). Carried weapons can now be equipped directly from a safe town, without entering the tactical map. Prepared load, partial work, condition and fittings survive the supported map/armory/deployment/return paths; capture/rescue and finite ammunition are tested. A live C\u00f3rdoba recovery pickup/equip/save/load check passed. See [carried weapon equipment](campaign-carried-equip.md)."
@@ -5989,6 +5995,32 @@
         "tests/partial-ground-supply-pickup-render.test.mjs",
         "tests/drop-personal-supplies.test.mjs",
         "tests/drop-personal-supplies-render.test.mjs"
+      ]
+    },
+    {
+      "id": "OCCUPIEDGROUND-01",
+      "group": "Published deliveries",
+      "requirement": "Keep loose field equipment accessible beneath a resident while retaining finite personal-body collection",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. A resident figure no longer hides loose field equipment, and personal supplies remain separate until actual body collection.",
+      "local": "Three mounted production-game checks pass; related group 13/13. Complete regression 1203/1203, zero failures/skips, with types, export and 36 reference comparisons.",
+      "remaining": "",
+      "acceptance": "Use the actual collection control and resident figure to recover a loose loaded weapon or open the exact ground-supply selector; leave the living residents health and personal supplies unchanged; after loose stock is gone, retain finite unconscious-resident collection; ignore entangled and container stock as free ground equipment; persist each resulting owner and ground record through normal saves.",
+      "evidence": [
+        "E-OCCUPIED-GROUND-COLLECTION"
+      ],
+      "parents": [
+        "ITEM-01",
+        "JA2-I03",
+        "JA2-I10",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/occupied-ground-collection-render.test.mjs",
+        "tests/drop-personal-supplies-render.test.mjs",
+        "tests/drop-held-weapons-render.test.mjs",
+        "tests/partial-ground-supply-pickup-render.test.mjs"
       ]
     }
   ],

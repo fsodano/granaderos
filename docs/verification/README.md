@@ -7,6 +7,8 @@ accepted features on GitHub `main`, approved scope changes and open work.
 
 ## Published baseline
 
+- [Collect loose equipment beneath residents](occupied-ground-collection.md)
+
 - [Choose ground supply bundles and exact quantities](partial-ground-supply-pickup.md)
 
 - [Shared loose cartridges and bounded settlement](adjacent-cartridge-transfer.md)

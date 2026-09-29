@@ -925,3 +925,13 @@ AP, stock and receiving numeric bounds, so an excessive whole bundle can be
 reduced to an accepted partial selection. Body/container inventories, batch
 pickup and physical pockets remain separate. See
 [verification](../verification/partial-ground-supply-pickup.md).
+
+
+### Residents over loose equipment
+
+Collection through a resident's figure uses loose-ground priority, matching the
+cell and soldier controls. It can recover a dropped weapon or open the personal
+supply picker without searching the resident. With no free item remaining, the
+existing unconscious-resident supply action remains available. Held and container
+records are excluded from loose stock. See
+[verification](../verification/occupied-ground-collection.md).
