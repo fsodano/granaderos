@@ -107,15 +107,16 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
         </div>
       </div>
       <div className="paper-doll">
-        <button className={`hand-slot primary ${inv.activeSlot === 'primary' ? 'active' : ''}`} disabled={busyDisabled} aria-label={`Arma principal: ${slots.primary?.name ?? '—'}. Cambiar a arma secundaria`} onClick={() => onOrder(slotAction(unit))}>
+        <button className={`hand-slot primary ${inv.activeSlot === 'primary' ? 'active' : ''}`} disabled={busyDisabled} aria-label={`Usar arma principal: ${slots.primary?.name ?? '—'}`} onClick={() => onOrder(slotAction(unit, 'primary'))}>
           {slots.primary?.id >= 1800 && slots.primary?.id <= 1813 && <img src={slots.primary.art??`/art/weapon-${slots.primary.id}.png`} alt="" />}
           <span>{slots.primary?.name ?? '—'}</span>
         </button>
-        <button className={`hand-slot blade ${inv.activeSlot === 'blade' ? 'active' : ''}`} disabled={busyDisabled} aria-label={`Arma secundaria: ${slots.blade?.name ?? '—'}. Cambiar a arma principal`} onClick={() => onOrder(slotAction(unit))}>
+        <button className={`hand-slot blade ${inv.activeSlot === 'blade' ? 'active' : ''}`} disabled={busyDisabled} aria-label={`Usar arma secundaria: ${slots.blade?.name ?? '—'}`} onClick={() => onOrder(slotAction(unit, 'blade'))}>
           {slots.blade?.id >= 1800 && slots.blade?.id <= 1813 && <img src={slots.blade.art??`/art/weapon-${slots.blade.id}.png`} alt="" />}
           <span>{slots.blade?.name ?? '—'}</span>
         </button>
         <div className="paper-readouts">
+          <button className={`line-button ${unit.activeSlot==='unarmed'?'active':''}`} aria-label="Usar manos vacías" aria-pressed={unit.activeSlot==='unarmed'} disabled={busyDisabled || unit.activeSlot==='unarmed' || (battle.mode!=='exploration' && unit.ap<4)} onClick={()=>onOrder(slotAction(unit, 'unarmed'))}>Manos vacías · {battle.mode==='exploration'?'1 s':'4 PA'}</button>
           <span className="armor"><small>Armadura</small><b>{inv.poncho ? 'Sí' : '—'}</b></span>
           <span className="weight"><small>Peso</small><b>{inv.weight.toFixed(1)} / {inv.capacity.toFixed(1)} kg</b></span>
           <span className="camo"><small>Camuflaje</small><b>—</b></span>

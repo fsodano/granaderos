@@ -519,7 +519,12 @@
     {
       "id": "E-ADJACENT-WEAPON-TRANSFER",
       "path": "docs/verification/adjacent-weapon-transfer.md",
-      "description": "Recovered weapons transfer once to an adjacent conscious squad member, preserving authored identity and mechanism through full saves and campaign return. Five simulations and two mounted production-game cases pass; related group 30/30. Complete regression passes 1151/1151, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
+      "description": "Recovered weapons transfer once to an adjacent conscious squad member, preserving authored identity and mechanism through full saves and campaign return. Five simulations and two mounted production-game cases pass; related group 30/30. Complete regression passes 1151/1151, zero failures/skips, with types, export and 36 reference comparisons. Published by PR #114 after successful exact-head CI."
+    },
+    {
+      "id": "E-EMPTY-HAND-MELEE",
+      "path": "docs/verification/empty-hand-melee.md",
+      "description": "Manual empty-hand selection retains actual equipment; lost or empty selected weapons use punches and a retained secondary stays usable. Ten simulations and two mounted production-game checks pass; related group 32/32. Complete regression passes 1163/1163, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
     }
   ],
   "queue": [
@@ -3461,7 +3466,7 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Nine firearms and five blade families match reference base values. Firearm and blade variants/images are authored and retained in character equipment, combat and saves. Enemy roles and militia ranks now support independent primary and secondary blade selections.",
-      "local": "See local suite and preserved parity source; not equivalent to published integration. BATTERYCHOICE-01 tracks explicit saved artillery choice and exact model availability. SECONDARYLOOT-01 tracks finite recovery of military secondary weapons, their authored identity and saved empty source slots. DROPWEAPON-01 tracks finite ground placement and collection of recovered weapons. WEAPONHANDOVER-01 tracks adjacent transfer of recovered weapons with saved recipient ownership.",
+      "local": "See local suite and preserved parity source; not equivalent to published integration. BATTERYCHOICE-01 tracks explicit saved artillery choice and exact model availability. SECONDARYLOOT-01 tracks finite recovery of military secondary weapons, their authored identity and saved empty source slots. DROPWEAPON-01 tracks finite ground placement and collection of recovered weapons. WEAPONHANDOVER-01 tracks adjacent transfer of recovered weapons with saved recipient ownership. EMPTYHAND-01 tracks genuine empty-hand attacks after weapon loss and retained secondary use.",
       "remaining": "Author fittings/ammunition; finish complete physical inventory, civilian equipment looting, wear and unarmed behavior. SECONDARYLOOT-01 accepts bounded military secondary recovery.",
       "acceptance": "XML values, inventory images, sounds and use in combat",
       "evidence": [
@@ -3472,7 +3477,8 @@
         "E-BATTERY-CHOICE",
         "E-SECONDARY-RECOVERY",
         "E-DROP-RECOVERED-WEAPONS",
-        "E-ADJACENT-WEAPON-TRANSFER"
+        "E-ADJACENT-WEAPON-TRANSFER",
+        "E-EMPTY-HAND-MELEE"
       ]
     },
     {
@@ -4161,16 +4167,17 @@
       "id": "JA2-C08",
       "group": "JA2 gameplay parity",
       "requirement": "Unarmed attacks can exhaust/incapacitate rather than simply substitute a blade. G27-29,64-66; M31.",
-      "status": "LOCAL_ONLY",
+      "status": "PARTIAL",
       "priority": "P1",
-      "published": "This complete capability is not accepted in the published release.",
-      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
-      "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
+      "published": "Manual empty-hand selection and actual empty selected hands use paid punches with small injury and separate breath loss. Retained authored secondaries remain usable after primary loss. EMPTYHAND-01 records the bounded controls, physical state and saved continuation.",
+      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check. EMPTYHAND-01 tracks genuine empty-hand attacks after weapon loss and retained secondary use.",
+      "remaining": "Replace held-firearm melee that still assumes an unowned bayonet with actual fittings or blunt firearm behavior. Verify the remaining equipment-dependent melee behavior through ordinary controls and saved continuation. Contested grabs belong to JA2-I10.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-EMPTY-HAND-MELEE"
       ],
       "sourceRow": "JA2-C08",
       "sourceNotes": "The unarmed chance/damage values are Granaderos tuning. Hand selection must remain explicit; a dropped or missing blade cannot create an unowned bayonet. Contested held-weapon grabs now use I10."
@@ -5749,7 +5756,7 @@
       "requirement": "Give a recovered weapon to an adjacent companion without duplicating or losing the physical piece",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Recovered weapons move once to an adjacent conscious companion, retaining identity, weight and mechanism through saved campaign return.",
+      "published": "Published by PR #114 after successful exact-head CI. Recovered weapons move once to an adjacent conscious companion, retaining identity, weight and mechanism through saved campaign return.",
       "local": "Five simulations and two mounted production-game checks pass; related group 30/30. Complete regression 1151/1151, zero failures/skips, with types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Choose the actual recipient in production inventory; deliver one recovered piece for four sender AP or one exploration second; preserve its authored image, weight, wear, load, jam and unfinished reload; reject unavailable recipients, blocked adjacency, insufficient AP, absent items and full stored-record limits atomically; save, return and equip it on the same recipient.",
@@ -5766,17 +5773,43 @@
         "tests/adjacent-weapon-transfer-render.test.mjs",
         "tests/drop-recovered-weapons.test.mjs",
         "tests/secondary-loot.test.mjs"
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/114"
+    },
+    {
+      "id": "EMPTYHAND-01",
+      "group": "Published deliveries",
+      "requirement": "Retain usable secondary weapons after primary loss and resolve empty hands as punches instead of an unowned blade",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Manual empty-hand selection retains owned weapons and their mechanisms; actual empty hands use punches, while retained authored secondaries remain usable after primary loss.",
+      "local": "Ten simulations and two mounted production-game checks pass; related group 32/32. Complete regression 1163/1163, zero failures/skips, with types, export and 36 reference comparisons.",
+      "remaining": "",
+      "acceptance": "Recover a real paid arrival primary, stabilize that soldier, select the retained authored secondary through normal controls, and save and return with actual equipment. With empty hands, spend twelve AP, resolve seeded hit/miss, apply small injury and separate breath loss, allow finite unconscious-target recovery, reject charge/brace/range/AP misuse, retain civilian responsibility and exclude nonexistent weapon weight. Choose empty hands while retaining an owned weapon, its weight and mechanism; save that selected mode, and explicitly select either actual hand again with normal AP/time costs.",
+      "evidence": [
+        "E-EMPTY-HAND-MELEE"
+      ],
+      "parents": [
+        "ITEM-01",
+        "JA2-C08",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/empty-hand-melee.test.mjs",
+        "tests/empty-hand-melee-render.test.mjs",
+        "tests/secondary-loot.test.mjs",
+        "tests/critical-military-condition.test.mjs"
       ]
     }
   ],
   "latestPublishedCheck": {
-    "source": "f2176b48d9a7e53c7529fda4d5515329bde892e4",
-    "total": 1144,
-    "passed": 1144,
+    "source": "23397f74ed197beea0b6603a1b568196aea9e198",
+    "total": 1151,
+    "passed": 1151,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-DROP-RECOVERED-WEAPONS"
+    "evidenceId": "E-ADJACENT-WEAPON-TRANSFER"
   }
 }

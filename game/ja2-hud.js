@@ -31,8 +31,12 @@ export function rosterCells(players, selectedId) {
   return cells;
 }
 
-export function slotAction(unit) {
-  return {type: 'weapon', slot: unit.activeSlot === 'blade' ? 'primary' : 'blade'};
+/**
+ * @param {any} unit
+ * @param {'primary' | 'blade' | 'unarmed' | null} [slot]
+ */
+export function slotAction(unit, slot = null) {
+  return {type: 'weapon', slot: slot ?? (unit.activeSlot === 'blade' || unit.activeSlot === 'unarmed' ? 'primary' : 'blade')};
 }
 
 export function backpackEquipAction(key, slot) {
@@ -129,7 +133,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
     move: false,
     fire: !firearm,
     melee: false,
-    charge: false,
+    charge: blade.id === 0,
     heal: false,
     loot: false,
     reload: !firearm || u.jammed || !loading.pa,
@@ -178,6 +182,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
 
   return ORDER_DEFS.map(def => {
     const d = {id: def.id, label: def.label, kind: def.kind, disabled: baseDisabled || disabled[def.id]};
+    if(def.id==='melee'&&blade.id===0)d.label='Golpear con las manos vacías';
     if (def.id in pa) d.pa = pa[def.id];
     if (def.id in active) d.active = active[def.id];
     if(def.id in gunPlans){
