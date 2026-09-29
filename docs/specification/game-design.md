@@ -894,12 +894,12 @@ settlement; physical pocket capacity remains separate. See
 ### Ground supply bundles
 
 An exact quantity of the six authored personal supplies can move to the current
-cell for four AP or one exploration second. Whole-bundle collection uses the
-ordinary eight-AP or one-second field action. Another adjacent soldier can
+cell for four AP or one exploration second. The field picker chooses a bundle
+and quantity with the ordinary eight-AP or one-second collection action. Another adjacent soldier can
 collect it even while the owner occupies that cell. Source, ground and receiver
 retain finite quantities across save and campaign reentry. Numerical limits
-reject overflowing collection atomically; full physical pocket capacity and
-partial pickup selection remain separate. See
+reject overflowing collection atomically; the selected quantity can be reduced.
+Full physical pocket capacity remains separate. See
 [verification](../verification/drop-personal-supplies.md).
 
 
@@ -913,3 +913,15 @@ without a matching tactical holder keep their individual ceilings. The campaign
 still issues and refunds deployment cartridges; independent physical custody
 between deployments and typed rounds remain separate. See
 [verification](../verification/adjacent-cartridge-transfer.md).
+
+
+### Exact ground supply selection
+
+Nearby loose personal supply bundles expose a field selector for one actual
+bundle and exact whole quantity. Confirmation costs eight AP or one exploration
+second and retains untouched stock. Choosing or canceling has no cost and pauses
+the ambient exploration interval. Shared current eligibility handles obstacles,
+AP, stock and receiving numeric bounds, so an excessive whole bundle can be
+reduced to an accepted partial selection. Body/container inventories, batch
+pickup and physical pockets remain separate. See
+[verification](../verification/partial-ground-supply-pickup.md).

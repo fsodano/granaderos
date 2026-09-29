@@ -136,3 +136,6 @@
 @media(max-width:700px){.battle-layout .ja2-portrait-cell{min-height:120px}.battle-layout .ja2-inventory{flex-direction:row}.battle-layout .ja2-inv-header{min-height:115px}.battle-layout .ja2-inventory>*{flex-basis:100%;flex-grow:0;flex-shrink:0}.battle-layout .ja2-stats,.battle-layout .ja2-stance-grid,.battle-layout .paper-doll{overflow:visible}.battle-layout .ja2-inventory .ja2-right{flex-basis:100%}}
 .battle-layout .ja2-inventory .ja2-radar .tactical-minimap{height:48px}
 @media(min-width:701px) and (max-width:1100px){.battle-layout .ja2-roster{grid-template-columns:repeat(6,78px);overflow-x:auto}}
+
+/* Field supply selection pauses exploration until the player confirms or closes it. */
+.field-supply-overlay{position:absolute;inset:0;z-index:80;background:#10181099;display:grid;place-items:center;padding:16px}.field-supply-picker{width:min(460px,100%);max-height:100%;overflow:auto;padding:20px;background:#253128;color:#f1e5c7;border:1px solid #aaa077;box-shadow:0 12px 35px #0009}.field-supply-picker h2{font-size:20px;margin-top:0}.field-supply-picker label{display:grid;gap:5px;margin:14px 0}.field-supply-picker input,.field-supply-picker select{width:100%;min-height:36px;padding:6px;color:inherit;background:#172019;border:1px solid #75836d}.field-supply-picker>div{display:flex;gap:12px;flex-wrap:wrap}.field-supply-picker [role=status]{color:#eed598}

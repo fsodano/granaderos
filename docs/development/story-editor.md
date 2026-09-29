@@ -786,8 +786,8 @@ En **Equipo y órdenes → Pertrechos**, elegí el suministro y la cantidad. Us�
 **Dejar suministros en el suelo**. Cuesta 4 PA o un segundo en exploración.
 El bulto queda en la celda y aparece en el campo. Para recuperarlo, elegí
 **Recoger equipo** y hacé clic en la celda. Puede hacerlo el mismo soldado u otro
-compañero cercano, aunque haya alguien encima. La recogida toma el bulto completo
-y cuesta 8 PA o un segundo en exploración. Guardar, salir y volver conserva el
+compañero cercano, aunque haya alguien encima. La recogida abre un selector de bulto y cantidad.
+Cuesta 8 PA o un segundo en exploración. Guardar, salir y volver conserva el
 bulto y los sobrantes. Esto cubre los seis suministros personales del panel;
 los cartuchos solo se entregan directamente a un compañero. [Verificación](../verification/drop-personal-supplies.md).
 
@@ -801,3 +801,14 @@ recargar. Cuesta 4 PA o un segundo en exploración. Al retirarse, la escuadra
 recibe el valor de su munición restante aunque haya cambiado de dueño durante
 el combate. Guardar conserva las reservas. Por ahora, los cartuchos no se dejan
 en el suelo desde este panel. [Verificación](../verification/adjacent-cartridge-transfer.md).
+
+
+### Elegir qué recoger del suelo
+
+Con **Recoger equipo**, hacé clic en una celda cercana que tenga suministros.
+Elegí el bulto y la cantidad en el panel. **Recoger cantidad** toma solo lo que
+indicás; el resto queda allí. Si hay varios bultos en la celda, podés elegir
+cualquiera de los suministros disponibles. El panel muestra cuánto hay, cuánto
+llevás y el costo. Si no podés tomar todo, reducí la cantidad. Mientras elegís,
+el reloj de exploración se detiene. **Cancelar** o Esc cierran sin gastar PA ni
+suministros. Guardar y volver conserva los sobrantes. [Verificación](../verification/partial-ground-supply-pickup.md).

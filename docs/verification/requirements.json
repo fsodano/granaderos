@@ -549,7 +549,12 @@
     {
       "id": "E-ADJACENT-CARTRIDGE-TRANSFER",
       "path": "docs/verification/adjacent-cartridge-transfer.md",
-      "description": "Actual loose deployment cartridges move to an adjacent companion, remain separate from loaded charges, support firing/reloading and settle against the shared witnessed force total. Four simulations and one mounted production-game case pass; related group 28/28. Complete regression passes 1193/1193, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
+      "description": "Actual loose deployment cartridges move to an adjacent companion, remain separate from loaded charges, support firing/reloading and settle against the shared witnessed force total. Four simulations and one mounted production-game case pass; related group 28/28. Complete regression passes 1193/1193, zero failures/skips, with types, export and 36 reference comparisons. Published by PR #120 after successful exact-head CI."
+    },
+    {
+      "id": "E-PARTIAL-GROUND-SUPPLY-PICKUP",
+      "path": "docs/verification/partial-ground-supply-pickup.md",
+      "description": "The field picker selects an actual colocated personal supply bundle and exact quantity, preserving the remainder through saves and campaign return. Four simulations and three mounted production-game checks pass; related group 32/32. Complete regression passes 1200/1200, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
     }
   ],
   "queue": [
@@ -4613,9 +4618,9 @@
       "requirement": "Items can be dropped, picked up, split, stacked, and stored persistently in the sector. G20,64-66,110-111; M21-25.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Held and recovered firearms and blades can be left one at a time at the current cell and collected even under a soldier. Their authored identity, load, wear and weight survive full saves and sector return. Distinct fields cannot overwrite a previously carried weapon through a reused local drop index. DROPWEAPON-01 and HELDWEAPONDROP-01 record the bounded ordinary controls. SUPPLYDROP-01 adds exact bundles of the six personal supplies, retained field quantities and normal whole-bundle collection after saved return.",
+      "published": "Held and recovered firearms and blades can be left one at a time at the current cell and collected even under a soldier. Their authored identity, load, wear and weight survive full saves and sector return. Distinct fields cannot overwrite a previously carried weapon through a reused local drop index. DROPWEAPON-01 and HELDWEAPONDROP-01 record the bounded ordinary controls. SUPPLYDROP-01 adds exact bundles of the six personal supplies, retained field quantities and normal whole-bundle collection after saved return. GROUNDSUPPLYPICKER-01 selects a nearby loose personal supply bundle and exact partial pickup quantity, preserving untouched stock and pausing exploration while choosing.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check. DROPWEAPON-01 tracks finite ground placement and collection of recovered weapons. HELDWEAPONDROP-01 extends the same custody to actual hand slots.",
-      "remaining": "Integrate cartridge placement and other equipment, partial pickup selection, stacking, selectable body/ground/container inventories, physical capacity, walking approaches and strategic/mission sector storage. The advanced-workspace implementations in the source notes remain separate from published acceptance.",
+      "remaining": "Integrate cartridge placement and other equipment, stacking, complete selectable body/ground/container inventories, multi-item pickup, physical capacity, walking approaches and strategic/mission sector storage. The advanced-workspace implementations in the source notes remain separate from published acceptance.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
@@ -4623,7 +4628,8 @@
         "E-PUBLISHED",
         "E-DROP-RECOVERED-WEAPONS",
         "E-HELD-WEAPON-DROP",
-        "E-PERSONAL-SUPPLY-DROP"
+        "E-PERSONAL-SUPPLY-DROP",
+        "E-PARTIAL-GROUND-SUPPLY-PICKUP"
       ],
       "sourceRow": "JA2-I03",
       "sourceNotes": "Strategic sector access now lists discovered equipment and supports exact local pickup/drop quantities in safe sectors. It checks walking access, capacity and current source contents, preserves loaded/fitted weapons and personal cartridges, and uses validated save/reentry paths. Seventeen simulation/save tests and two component checks cover the new flow; see [sector inventory](sector-inventory.md). Depleted ground objects cannot be picked up again. A controlled live body/ground picker spent actual approach and pickup AP, took partial cartridges and a loaded fitted musket, and retained both sources and receiver after reload. Ten approach cases, eleven batch cases and two component tests cover the picker contract. Select All and per-row quantities share one atomic 8 AP pickup from a single tile. Live full selection, capacity rejection and reduction to a valid partial selection passed; see [loot approach](loot-approach.md). Live tactical dropping, strategic partial pickup/drop, quantity rejection, save loading and reentry now pass. The check found and fixed loss of a carried loaded gun charge on campaign return; the repeated loop preserved the exact ammunition total. See [sector inventory](sector-inventory.md). Blocked paths, full packs and body/container variants remain automated-test evidence. Visited mission sites now appear under their parent sector through a labelled site selector, with separate source pools and shared local-presence, occupation and path checks. Real San Lorenzo remains can be recovered after victory; completed Yatasto pickup/drop and saves pass simulation checks. A live production-component harness recovered one dressing and one cartridge from the real San Lorenzo save and preserved the distinct town stock after saving/loading. See [sector inventory](sector-inventory.md). Carried weapons can now be equipped directly from a safe town, without entering the tactical map. Prepared load, partial work, condition and fittings survive the supported map/armory/deployment/return paths; capture/rescue and finite ammunition are tested. A live C\u00f3rdoba recovery pickup/equip/save/load check passed. See [carried weapon equipment](campaign-carried-equip.md)."
@@ -5943,7 +5949,7 @@
       "requirement": "Share actual loose deployment cartridges without losing them during the witnessed retreat refund",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Loose issued cartridges move between actual adjacent soldiers, support firing and reloading, and settle against the shared witnessed force total without losing valid redistributed rounds.",
+      "published": "Published by PR #120 after successful exact-head CI. Loose issued cartridges move between actual adjacent soldiers, support firing and reloading, and settle against the shared witnessed force total without losing valid redistributed rounds.",
       "local": "Four simulations and one mounted production-game check pass; related group 28/28. Complete regression 1193/1193, zero failures/skips, with types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Select cartridges, an exact reserve quantity and adjacent recipient through production inventory; transfer for four sender AP or one exploration second without changing loaded charges; preserve weight and save; fire and reload the received reserve; settle the actual remainder without clipping it to each original holder allocation; retain the force-wide issued-plus-recovered ceiling, dead-holder exclusion and stricter legacy evidence limits; reject invalid counts, loaded-source misuse, receiving total overflow, AP and geometry before mutation.",
@@ -5962,17 +5968,43 @@
         "tests/ammunition-web.test.mjs",
         "tests/authored-cartridge-price.test.mjs",
         "tests/military-remains.test.mjs"
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/120"
+    },
+    {
+      "id": "GROUNDSUPPLYPICKER-01",
+      "group": "Published deliveries",
+      "requirement": "Choose a ground supply bundle and exact pickup quantity while preserving its remainder",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. The normal field selector chooses one nearby personal supply bundle and exact pickup quantity, retaining the rest through saved campaign return.",
+      "local": "Four simulations and three mounted production-game checks pass; related group 32/32. Complete regression 1200/1200, zero failures/skips, with types, export and 36 reference comparisons.",
+      "remaining": "",
+      "acceptance": "Open the ordinary ground supply picker from a nearby occupied cell, choose among colocated supported bundles and take an exact whole quantity for eight AP or one exploration second; retain untouched bundles and partial remainders across saves and campaign return; reject stale, invalid, blocked, unavailable, overflowing or unaffordable picks atomically; reduce an overflowing selection to a valid amount; pause the ordinary exploration timer while choosing; cancel or Escape without cost.",
+      "evidence": [
+        "E-PARTIAL-GROUND-SUPPLY-PICKUP"
+      ],
+      "parents": [
+        "ITEM-01",
+        "JA2-I03",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/partial-ground-supply-pickup.test.mjs",
+        "tests/partial-ground-supply-pickup-render.test.mjs",
+        "tests/drop-personal-supplies.test.mjs",
+        "tests/drop-personal-supplies-render.test.mjs"
       ]
     }
   ],
   "latestPublishedCheck": {
-    "source": "b47d13b542e0801a9794cc8f91619bfa56e2e34b",
-    "total": 1188,
-    "passed": 1188,
+    "source": "cd31016d65c2d4bb4d69d449244a4fb129a71dba",
+    "total": 1193,
+    "passed": 1193,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-PERSONAL-SUPPLY-DROP"
+    "evidenceId": "E-ADJACENT-CARTRIDGE-TRANSFER"
   }
 }
