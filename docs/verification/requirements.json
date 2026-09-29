@@ -509,7 +509,7 @@
     {
       "id": "E-SECONDARY-RECOVERY",
       "path": "docs/verification/secondary-weapon-recovery.md",
-      "description": "Military secondary blades transfer once into carried inventory through ordinary body looting, retaining authored definitions and wear. Five simulations and one mounted production-game case pass; related equipment group passes 27/27. Complete regression passes 1137/1137, zero failures/skips, with types, export and 36 baseline comparisons. Exact-head publication remains required."
+      "description": "Military secondary blades transfer once into carried inventory through ordinary body looting, retaining authored definitions and wear. Five simulations and one mounted production-game case pass; related equipment group passes 27/27. Complete regression passes 1137/1137, zero failures/skips, with types, export and 36 baseline comparisons. Published by PR #112 after successful exact-head CI."
     },
     {
       "id": "E-DROP-RECOVERED-WEAPONS",
@@ -5689,7 +5689,7 @@
       "requirement": "Recover military secondary blades once with saved empty source slots and authored identity",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Military secondary weapons move once into inventory, preserve authored identity and wear, and leave saved empty source slots.",
+      "published": "Published by PR #112 after successful exact-head CI. Military secondary weapons move once into inventory, preserve authored identity and wear, and leave saved empty source slots.",
       "local": "Five simulations and one mounted production-game check pass; related equipment group 27/27. Complete regression 1137/1137, zero failures/skips, with types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Collect a real killed soldier with the normal control, recover both slots or its blade alone, keep authored name/image/wear and ordinary AP/range checks, equip it, save and return without restoring the source blade, preserve an unconscious hired or militia survivor with an empty slot, and replace it only through another real item.",
@@ -5706,7 +5706,8 @@
         "tests/secondary-loot-render.test.mjs",
         "tests/content-blades.test.mjs",
         "tests/equip-loot.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/112"
     },
     {
       "id": "DROPWEAPON-01",
@@ -5736,13 +5737,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "f8ffaa247cc084b9313a8d7df7a6e156a56564b0",
-    "total": 1131,
-    "passed": 1131,
+    "source": "dac3f896ee53a5e69cb937f4db0270661a8dba52",
+    "total": 1137,
+    "passed": 1137,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-UNSEEN-RESIDENT-WOUNDS"
+    "evidenceId": "E-SECONDARY-RECOVERY"
   }
 }
