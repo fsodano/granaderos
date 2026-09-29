@@ -18,8 +18,8 @@ Types and the production export pass: **723 files and 633 asset references**.
 [Recorded evidence](../evidence/enemy-worker-export.json) identifies the exact
 source, log checksums and before/after export results. The normal production
 San Lorenzo controls show `0:enemy-0:prepare:fire`, disable input during playback,
-and restore input on turn 2 without console errors. Exact-head CI is required
-before merge.
+and restore input on turn 2 without console errors. PR #126 merged as `554ceafe617aea03893f056b6b5ec6de48b32c23` after all five
+checks passed on head `78fe01207022ed076bf73169aa01d9e2b2328872`.
 
 This fixes worker loading. It does not add walking artwork, establish sustained
 60 FPS, close large-battle performance acceptance or complete campaign parity.

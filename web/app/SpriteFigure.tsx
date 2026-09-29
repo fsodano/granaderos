@@ -23,5 +23,6 @@ export default function SpriteFigure({unit,position,motion,pose='idle',drawSize=
  },[name,playback,actionKey,frames,fps]);
  const frame=playback==='movement'?spriteMovementFrame(motion,frames,fps):clock.name===name?clock.frame:0;
  const viewport=spriteViewport(sprite,position,motion.direction,frame,drawSize);
- return <g pointerEvents="none" data-sprite={name} data-requested-sprite={sprite.requestedName} data-playback={playback} data-sprite-style={sprite.style} data-sprite-fallback={sprite.fallbackReason??undefined}><ellipse cx={Math.round(position.x)} cy={Math.round(position.y)} rx={mounted?drawSize*.22:drawSize*.115} ry={drawSize*.045} fill="#171812" opacity=".36"/><svg {...viewport} overflow="hidden"><image href={sprite.href} width={sprite.size[0]} height={sprite.size[1]} style={{imageRendering:'pixelated'}}/></svg></g>;
+ const illustrated=sprite.style==='illustrated-pixel-art';
+ return <g pointerEvents="none" data-sprite={name} data-requested-sprite={sprite.requestedName} data-playback={playback} data-sprite-style={sprite.style} data-sprite-fallback={sprite.fallbackReason??undefined}><ellipse cx={illustrated?position.x:Math.round(position.x)} cy={illustrated?position.y:Math.round(position.y)} rx={mounted?drawSize*.22:drawSize*.115} ry={drawSize*.045} fill="#171812" opacity=".36"/><svg {...viewport} overflow="hidden"><image href={sprite.href} width={sprite.size[0]} height={sprite.size[1]} style={{imageRendering:illustrated?'auto':'pixelated'}}/></svg></g>;
 }

@@ -48,3 +48,32 @@ test('an enemy first observed at a cell does not animate its hidden approach',as
  await env.draw({...seen,units:seen.units.map(u=>u.id==='e'?{...u,x:5}:u)});await env.tick(60);
  assert.equal(env.motion.positions.e.x,4.5);assert.equal(env.motion.positions.e.elapsedMs,60);
 });
+
+
+test('waiting at a reached cell does not skip walking poses when the next cell arrives',async t=>{
+ const env=await mount(t);let state={...field(),presentationVisibleIds:['p','e'],presentationStepMs:120};await env.draw(state);
+ const observed=[];
+ for(let step=1;step<=8;step++){
+  state={...state,presentationMovingUnitId:'e',units:state.units.map(u=>u.id==='e'?{...u,x:3+step}:u)};await env.draw(state);
+  assert.equal(env.motion.positions.e.elapsedMs,(step-1)*120,'only time spent moving advances the gait');
+  for(let frame=0;frame<6;frame++){
+   await env.tick(20);const movement=env.motion.positions.e,sprite=spriteRender(state.units.find(u=>u.id==='e'),movement);
+   const phase=spriteMovementFrame(movement,sprite.frames,sprite.fps);if(observed.at(-1)!==phase)observed.push(phase);
+  }
+  assert.equal(env.pending,0,'a waiting actor needs no animation callbacks');
+  const held={...env.motion.positions.e};await env.tick(450);assert.deepEqual(env.motion.positions.e,held);
+ }
+ assert.deepEqual(observed,[0,1,2,3,0],'each authored phase remains in order after long cell preparation waits');
+ await env.draw({...state,presentationMovingUnitId:null});
+ state={...state,units:state.units.map(u=>u.id==='e'?{...u,x:u.x+1}:u)};await env.draw(state);
+ assert.equal(env.motion.positions.e.elapsedMs,0,'a separate order starts a new cycle');
+});
+
+test('a late endpoint callback does not add waiting time to the next step',async t=>{
+ const env=await mount(t);let state={...field(),presentationVisibleIds:['p','e'],presentationStepMs:120};await env.draw(state);
+ state={...state,presentationMovingUnitId:'e',units:state.units.map(u=>u.id==='e'?{...u,x:4}:u)};await env.draw(state);
+ await env.tick(340);assert.equal(env.motion.positions.e.x,4);
+ assert.equal(env.motion.positions.e.elapsedMs,120,'the finished cell contributes only its actual duration');
+ state={...state,units:state.units.map(u=>u.id==='e'?{...u,x:5}:u)};await env.draw(state);await env.tick(60);
+ assert.equal(env.motion.positions.e.x,4.5);assert.equal(env.motion.positions.e.elapsedMs,180);
+});

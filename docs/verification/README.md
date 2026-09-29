@@ -162,3 +162,5 @@ establish gameplay correctness.
 test partition and retained publication gates. It is infrastructure evidence.
 
 - [Enemy-turn worker export](enemy-worker-export.md): production URL correction and release guard.
+
+- [Walking frame continuity](walking-frame-continuity.md): cell waits, fractional positions and remaining artwork limits.

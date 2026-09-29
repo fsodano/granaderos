@@ -1,0 +1,160 @@
+{
+  "source": "bc530c869910922fa59f39b2b8eb8b9f2f4045aa",
+  "runtimeSource": "762c96715de5814f7757207a951480f14cc8b92d",
+  "tests": {
+    "total": 1247,
+    "passed": 1247,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 260765.237166
+  },
+  "types": "PASS",
+  "build": {
+    "status": "PASS",
+    "files": 723,
+    "assetReferences": 633
+  },
+  "baseline": {
+    "passed": 36,
+    "failed": 0
+  },
+  "beforeFix": {
+    "cellWait": {
+      "actualElapsedMs": 570,
+      "expectedElapsedMs": 120
+    },
+    "lateEndpoint": {
+      "actualElapsedMs": 340,
+      "expectedElapsedMs": 120
+    },
+    "fractionalPositions": {
+      "rendered": 2,
+      "expected": 9
+    }
+  },
+  "afterFix": {
+    "focusedTests": 10,
+    "passed": 10,
+    "renderedSceneTests": 12,
+    "renderedPassed": 12
+  },
+  "browser": {
+    "scope": "Published implementation production build on port 3131",
+    "playerMove": {
+      "unitId": "3",
+      "from": {
+        "x": 34,
+        "y": 18
+      },
+      "to": {
+        "x": 38,
+        "y": 18
+      },
+      "apBefore": 100,
+      "apAfter": 68
+    },
+    "ordinaryEndTurn": true,
+    "finalTurn": 2,
+    "phase": "player",
+    "inputRestored": true,
+    "consoleErrors": 0,
+    "outcomeNote": "The advance exposes the actor to enemy fire and he dies on that turn; the test does not assert victory or altered combat outcomes."
+  },
+  "advancedLocal": {
+    "scope": "Advanced local checkout served on port 3000; not published-main or full-game acceptance",
+    "base": "eb39ef7e903fa33f1d463b2af0db2de3c66cf93c",
+    "files": {
+      "web/app/useUnitMotion.ts": "ec17527c34e31ad1a1129cf043e02ef9eb136bfe8a0410ca492c4bd0ed3dfd02",
+      "game/sprite-render.js": "d60230c70e95b1533c7bb7206f964d054af37756ee236b066a2545e45d27ae9e",
+      "web/app/SpriteFigure.tsx": "5b56a4c186fde488909c6be32d9eeeac7c18bc2db7b3c4abda51f2b8a2760bb0",
+      "tests/enemy-motion-gait.test.mjs": "3ed949c071ae00671f4427b6b5a15a5e954cd0e6f19baae76772f6a3cd588065",
+      "tests/illustrated-sprite-runtime.test.mjs": "4d392b0cea47327fda8eef32310694933f6dd176376929c9a107cfa1fca70a4a",
+      "web/app/CampaignPerformance.tsx": "b3c56c3d83b8eea416b9656869fbd7d803ac43c280634a28a13777766b37b2e0"
+    },
+    "browser": {
+      "origin": "http://localhost:3000/?qa=1&performance=1",
+      "sector": "retiro",
+      "scalePercent": 100,
+      "captureSeconds": 20,
+      "visible": true,
+      "start": {
+        "x": 23,
+        "y": 20,
+        "energy": 98.8
+      },
+      "end": {
+        "x": 23,
+        "y": 14,
+        "energy": 98.5
+      },
+      "actors": 1,
+      "all": {
+        "frames": 609,
+        "meanMs": 32.868144499179,
+        "p95Ms": 34.20000000001164,
+        "maxMs": 34.300000000046566
+      },
+      "moving": {
+        "frames": 56,
+        "meanMs": 28.275000000000414,
+        "p95Ms": 33.40000000002328,
+        "maxMs": 33.70000000001164
+      },
+      "positionUpdates": {
+        "frames": 48,
+        "meanMs": 32.29375000000073,
+        "p95Ms": 33.70000000001164,
+        "maxMs": 66.70000000001164
+      },
+      "walkingSprites": [
+        {
+          "unitId": "110",
+          "name": "granadero-walk",
+          "direction": 1,
+          "phases": [
+            0,
+            1,
+            2,
+            3,
+            0,
+            1,
+            2,
+            3
+          ],
+          "samples": 56,
+          "fractionalPositions": 56
+        }
+      ],
+      "longTasks": [],
+      "slowFrames": [],
+      "consoleErrors": 0,
+      "conditions": "Test runners stopped. Battery power at 18 percent. Browser display enabled for this capture. The earlier hidden capture also ran near 30 FPS. Energy-saving throttling is possible but not established; no system or browser power setting was changed.",
+      "limits": "All existing poses appear in order, but only four poses at five FPS exist. This is not sustained 60 FPS or complete walking-art acceptance."
+    }
+  },
+  "limits": [
+    "Walking artwork remains four poses at five FPS.",
+    "Four generated candidates failed visual review and were not published.",
+    "No sustained 60 FPS, large battle or full campaign acceptance."
+  ],
+  "logs": {
+    "tests": {
+      "sha256": "18dcaa08d6590352d3d9fe48d8410582e69bd6b2eb8b509f5bda370c7cedbd99"
+    },
+    "types": {
+      "sha256": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30"
+    },
+    "build": {
+      "sha256": "e0ee86f5d168e656976634d6344e2995e00ef543341f6a8a92c255531827e327"
+    },
+    "beforeFix": {
+      "sha256": "3112931bee2877e56918c968a02668d46a5f52c740e58577ed15146c77c4957a"
+    },
+    "focused": {
+      "sha256": "890628c7b7163f08e2a669e590371d8896990eb9a0bacfebfef43c8d0338e864"
+    },
+    "rendered": {
+      "sha256": "438f58ffc727323032fe96f8154a43bf8f72d1c8475aa53f3216469dc8663be3"
+    }
+  }
+}
