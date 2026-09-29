@@ -48,3 +48,8 @@ and physical medical delivery remain separate. The 1000-record guard is a saved
 state limit, not acceptance of pocket capacity. These are simulations and mounted
 DOM checks, not live-browser, balance or performance acceptance. Exact-head CI
 remains required before publication.
+
+## Publication
+
+Published in [PR #114](https://github.com/fsodano/granaderos/pull/114) on 2026-09-29 00:57:03 UTC.
+Exact head `62a11216e7aed7bf39c739c5d45b697c700384bd` passed [CI run 36504933866](https://github.com/fsodano/granaderos/actions/runs/36504933866), including the full suite, types and production build. Merge commit: `f11fe879f7a7bf476e317ef1adb5c5d0bb79c928`. This publication does not close the broader game or campaign requirements.
