@@ -62,3 +62,15 @@ export function removeIgnitionSupplies(value){
  for(const [key,child]of Object.entries(value))if(!['contentCampaign','startingSupplies'].includes(key))removeIgnitionSupplies(child);
  return value;
 }
+
+// Typed campaign records also live outside the loaded tactical snapshot. Validate
+// their original totals before restoration can normalize them. Do not traverse
+// the immutable authored package or create reserves on legacy scalar records.
+export function validateStoredAmmo(value){
+ if(!value||typeof value!=='object')return;
+ if(Object.hasOwn(value,'ammunition')){
+  if(!Number.isSafeInteger(value.ammo))throw Error('El total de munición guardado no es válido.');
+  validateAmmo({...value});
+ }
+ for(const [key,child]of Object.entries(value))if(key!=='contentCampaign')validateStoredAmmo(child);
+}
