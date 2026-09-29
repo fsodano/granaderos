@@ -6,7 +6,7 @@ import TacticalMinimap from './TacticalMinimap';
 import TrainingProgress from './TrainingProgress';
 import {inventoryModel, orderDescriptors, orderAction, slotAction, backpackEquipAction, levelFor} from '../../game/ja2-hud.js';
 import {WEAPONS, BLADES, hasFirearm, ignitionRisk, visibleEnemies, weaponTransferPreview, supplyTransferPreview, supplyDropPreview} from '../../game/tactical.js';
-import {CHARACTER_SUPPLY_LABELS} from '../../game/character-supplies.js';
+import {TRANSFER_SUPPLY_LABELS} from '../../game/character-supplies.js';
 import {portraitFor} from '../lib/portraits';
 
 const short = (u: any) => u.nickname || String(u.name || '').split(' ').slice(-1)[0] || '';
@@ -157,7 +157,7 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
       <div className="pertrechos">
         <p className="eyebrow">PERTRECHOS</p>
         <p>{inv.supplies.map((sp: any) => `${sp.count} ${sp.label}`).join(' · ')}</p>
-        <label>Suministro <select aria-label="Suministro personal" value={supply} disabled={busyDisabled} onChange={e=>setSupply(e.target.value)}>{Object.entries(CHARACTER_SUPPLY_LABELS).map(([id,label])=><option key={id} value={id}>{label} · {unit[id]??0}</option>)}</select></label>
+        <label>Suministro <select aria-label="Suministro personal" value={supply} disabled={busyDisabled} onChange={e=>setSupply(e.target.value)}>{Object.entries(TRANSFER_SUPPLY_LABELS).map(([id,label])=><option key={id} value={id}>{label} · {unit[id]??0}</option>)}</select></label>
         <label>Cantidad <input aria-label="Cantidad de suministros" type="number" min="1" max={unit[supply]??0} step="1" value={amount} disabled={busyDisabled} onChange={e=>setAmount(e.target.value)}/></label>
         <button className="line-button" disabled={busyDisabled || Boolean(supplyDrop.reason)} onClick={()=>onOrder({type:'dropSupply',item:supply,count:Number(amount)})}>Dejar suministros en el suelo · {battle.mode==='exploration'?'1 s':'4 PA'}</button>
         {supplyDrop.reason && <small>{supplyDrop.reason}</small>}

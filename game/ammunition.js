@@ -16,8 +16,11 @@ export function returnAmmunition(request,reports,snapshot,previous=null){
   if(report.hp<=0)continue;
   const issued=request.squad.find(o=>o.id===Number(report.id));if(!issued)continue;
   const count=Math.max(0,Math.floor(report.loaded??0))+Math.max(0,Math.floor(report.ammo??0));if(!Number.isFinite(count)||count>100000)throw Error('La munición del parte es inválida.');
-  if(snapshot&&report.loaded!==undefined&&report.ammo!==undefined){const actual=snapshot.units.find(u=>u.side==='player'&&Number(u.id)===Number(report.id));if(actual&&(Number(actual.loaded??0)!==Number(report.loaded??0)||Number(actual.ammo??0)!==Number(report.ammo??0)))throw Error('El parte de munición no coincide con el sector.');}
-  returned+=Math.min(count,(issued.loaded??0)+(issued.ammo??0)+looted);
+  let matched=false;
+  if(snapshot&&report.loaded!==undefined&&report.ammo!==undefined){const actual=snapshot.units.find(u=>u.side==='player'&&Number(u.id)===Number(report.id));if(actual&&(Number(actual.loaded??0)!==Number(report.loaded??0)||Number(actual.ammo??0)!==Number(report.ammo??0)))throw Error('El parte de munición no coincide con el sector.');matched=Boolean(actual);}
+  // A witnessed handover can leave one survivor carrying another soldier's issue.
+  // The total refund still cannot exceed the force's issued and actually looted rounds.
+  returned+=Math.min(count,(matched?(request.issuedCartridges??0):(issued.loaded??0)+(issued.ammo??0))+looted);
  }
  return Math.min((request.issuedCartridges??0)+looted,returned);
 }
