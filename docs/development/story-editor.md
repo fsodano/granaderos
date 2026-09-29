@@ -812,3 +812,13 @@ cualquiera de los suministros disponibles. El panel muestra cuánto hay, cuánto
 llevás y el costo. Si no podés tomar todo, reducí la cantidad. Mientras elegís,
 el reloj de exploración se detiene. **Cancelar** o Esc cierran sin gastar PA ni
 suministros. Guardar y volver conserva los sobrantes. [Verificación](../verification/partial-ground-supply-pickup.md).
+
+
+### Recoger debajo de un habitante
+
+Si un habitante está sobre un arma o un bulto, elegí **Recoger equipo** y hacé
+clic en su figura. Se recoge el equipo suelto o se abre el selector del bulto.
+Los suministros personales del habitante quedan intactos. Si no queda equipo
+suelto, la misma acción permite registrar a un habitante inconsciente. Los
+objetos enredados o dentro de un contenedor no cuentan como equipo suelto.
+[Verificación](../verification/occupied-ground-collection.md).
