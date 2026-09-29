@@ -7,6 +7,8 @@ accepted features on GitHub `main`, approved scope changes and open work.
 
 ## Published baseline
 
+- [Choose ground supply bundles and exact quantities](partial-ground-supply-pickup.md)
+
 - [Shared loose cartridges and bounded settlement](adjacent-cartridge-transfer.md)
 
 - [Persistent personal supply bundles](drop-personal-supplies.md)
