@@ -841,12 +841,14 @@ transfers, relays and throwing remain separate. See
 [verification](../verification/adjacent-weapon-transfer.md).
 
 
-### Empty hands after weapon loss
+### Empty hands and selected weapons
 
+The inventory selects the primary, secondary or empty hands. Putting a weapon
+away costs four combat AP or one exploration second and retains its actual
+weight, load and mechanism. Saved active battles retain the selected mode.
 Removing the primary weapon leaves any actual secondary available. Empty hands
 use punches, with a twelve-AP attack, condition/attribute-dependent hit chance,
 small injury and separate breath loss. Unconscious soldiers can provide only
 their real remaining equipment. Empty hands cannot brace or execute a weapon
 charge, and do not add weapon weight. Normal civilian consequences and injury
-rules still apply. Physical fittings and deliberate unarmed hand selection
-remain separate. See [verification](../verification/empty-hand-melee.md).
+rules still apply. Physical fittings and blunt firearm strikes remain separate. See [verification](../verification/empty-hand-melee.md).

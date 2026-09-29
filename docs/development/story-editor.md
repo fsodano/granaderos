@@ -741,5 +741,7 @@ conserva. El panel muestra su nombre y retrato configurados. Si la mano elegida
 está vacía, muestra **Puños** y **Golpear con las manos vacías**. El ataque cuesta
 12 PA; puede fallar y, al acertar, causa una lesión pequeña y pérdida de energía.
 No permite una carga con arma ni calar una bayoneta inexistente. Guardar y volver
-al sector conserva el equipo real. La elección voluntaria de guardar el arma
-para usar los puños se integra por separado. [Verificación](../verification/empty-hand-melee.md).
+al sector conserva el equipo real. **Manos vacías** permite guardar voluntariamente el arma sin perderla ni
+cambiar su carga o desgaste. Cuesta 4 PA o un segundo en exploración. Hacé clic
+en el arma principal o secundaria para volver a usarla. Guardar conserva la
+selección de manos vacías en el combate activo. [Verificación](../verification/empty-hand-melee.md).

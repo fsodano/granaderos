@@ -1,6 +1,13 @@
 # Empty hands and retained secondary weapons
 
-Runtime/test source: `cfc605fc3645cf7e08407241c6e8d8116e395789`.
+Runtime/test source: `09c3850edb777543affbd1e8cd3b4fc9d8a7cea7`.
+
+The inventory explicitly selects primary, secondary or empty hands. Putting an
+owned weapon away costs four combat AP or one exploration second, keeps its
+load, partial work, jam, wear and carried weight, and lowers readiness. The active
+save retains the chosen empty-hand mode. Each actual hand button selects that
+hand directly; returning to a gun or blade uses the ordinary switching cost.
+Repeated, unknown or unaffordable selections fail before changing state.
 
 A dropped/recovered primary no longer hides a retained selected secondary.
 The secondary keeps its actual authored definition and picture. An empty
@@ -19,11 +26,11 @@ normal campaign semantics.
 
 ## Verification
 
-Seven simulations and one mounted production-game case pass **8/8**. The related
-HUD, recovery, equip and military-condition group passes **28/28**. Complete
-regression passes **1159/1159**, zero failures or skips, in 269,357 ms. Types,
-production export (722 files, 632 asset references), 36 baseline comparisons and
-documentation audit (253 requirements, 92 evidence records) pass.
+Ten simulations and two mounted production-game cases pass **12/12**. The related
+HUD, recovery, equip and military-condition group passes **32/32**. Complete
+regression passes **1163/1163**, zero failures or skips, in 265,668 ms. Types,
+production export (722 files, 632 asset references), 36 reference comparisons
+and documentation audit (253 requirements, 92 evidence records) pass.
 
 Prepared combat fields check a seeded hit and miss, twelve-AP payment, health
 and breath separation, unconsciousness, preserved horse stamina, actual finite
@@ -43,12 +50,18 @@ The first return assertion expected the transient dropped-primary flag; campaign
 settlement correctly stores an empty primary as weapon zero. The check now
 asserts the actual empty slot and inability to fire. The civilian boundary fixture
 now uses the real health initializer with explicit breath. No engine restrictions
-were relaxed for either correction.
+were relaxed for either correction. The optional hand selector also required
+an explicit type declaration; the final type check passes.
 
-This does not add a deliberate put-away/unarmed hand selector, blunt firearm
-strikes, physical bayonet fitting, conscious theft, specialized counters or
+Additional simulations verify manual selection, finite mechanism/weight, AP,
+exploration time and rejected selections. A second mounted check selects empty
+hands with an owned firearm, reads the saved mode, then explicitly chooses the
+blade and the gun while retaining declared partial loading, wear and jam.
+
+This does not add blunt firearm strikes, physical bayonet fitting, conscious
+theft, specialized counters or
 complete contact-combat parity. Held firearm melee retains the prior bayonet
 fallback until fitting is integrated. The bounded fix removes the unowned blade
 only when the selected hand is actually empty. There is no live-browser,
-performance or full-campaign acceptance. Exact-head CI remains required before
+equipment-specific sprite, performance or full-campaign acceptance. Exact-head CI remains required before
 publication.
