@@ -982,3 +982,12 @@ family, quantity and identity through saved visits. Under the existing paid issu
 and refund rules, only recovered stock from an earlier bundle can increase the
 return allowance; dropping and picking up a new bundle cannot mint credit. See the bounded
 [implementation and verification](../verification/typed-ammunition.md).
+
+### Authored firearm ammunition family
+
+Each firearm may select one of the four compatible ammunition families. Omitted
+selection follows the original firearm template. The chosen family belongs to the
+pinned weapon definition and survives issue, reload, drops, collection and saves.
+Changing guns never converts the owner's reserve. Blades cannot select ammunition.
+This is one family per firearm; alternative loads and new family definitions
+remain separate requirements. See [verification](../verification/authored-ammunition-family.md).

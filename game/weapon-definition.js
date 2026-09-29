@@ -1,3 +1,4 @@
+import {AMMO_TYPES} from './ammo-types.js';
 import {validateReloadProgress} from './weapon-reload.js';
 import {WEAPONS as ITEMS} from './data.js';
 import {WEAPONS as FIREARMS} from './firearm-definitions.js';
@@ -12,21 +13,23 @@ const need=(ok,message)=>{if(!ok)throw Error(message);};
 export const validWeaponArt=value=>typeof value==='string'&&(/^\/art\/[a-zA-Z0-9_-]+\.(webp|png|jpg)$/.test(value)||(/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(value)&&value.length<350000));
 export function compileWeaponDefinition(authored){
  if(isBladeDefinition(authored)){
+  need(authored.ammunitionFamily===undefined,'La munición solo se configura en armas de fuego.');
   need(!FIREARM_MELEE_FIELDS.some(key=>Object.hasOwn(authored,key)),'El golpe con la culata solo se configura en armas de fuego.');
   const result={version:1,id:authored.id,template:authored.template,name:authored.name,damage:authored.damage,ap:authored.ap,reach:authored.reach,weight:authored.weight??ITEMS[authored.template].weight,price:authored.price??BLADE_PRICES[authored.template],art:authored.art??`/art/weapon-${authored.template}.png`};
   validateWeaponDefinition(result,authored.template);return result;
  }
  const base=FIREARMS[authored.template];need(base,'La familia del arma no es válida.');
  const melee=Object.fromEntries(FIREARM_MELEE_FIELDS.filter(key=>Object.hasOwn(authored,key)).map(key=>[key,authored[key]]));
- const result={...melee,version:1,id:authored.id,template:base.id,name:authored.name,damage:authored.damage,fireAP:authored.fireAP,aimAP:authored.aimAP,reloadAP:authored.reloadAP,range:authored.range,readyAP:authored.readyAP??0,capacity:authored.capacity??base.capacity,weight:authored.weight??ITEMS[base.id].weight,price:authored.price??FIREARM_PRICES[base.id],art:authored.art??`/art/weapon-${base.id}.png`};
+ const result={...melee,...(Object.hasOwn(authored,'ammunitionFamily')?{ammunitionFamily:authored.ammunitionFamily}:{}),version:1,id:authored.id,template:base.id,name:authored.name,damage:authored.damage,fireAP:authored.fireAP,aimAP:authored.aimAP,reloadAP:authored.reloadAP,range:authored.range,readyAP:authored.readyAP??0,capacity:authored.capacity??base.capacity,weight:authored.weight??ITEMS[base.id].weight,price:authored.price??FIREARM_PRICES[base.id],art:authored.art??`/art/weapon-${base.id}.png`};
  validateWeaponDefinition(result,base.id);return result;
 }
 export function validateWeaponDefinition(value,host){
  if(value===undefined)return;
  const blade=Boolean(BLADES[host]);
  const keys=blade?['version','id','template','name','damage','ap','reach','weight','price','art']:['version','id','template','name','damage','fireAP','aimAP','reloadAP','range','readyAP','capacity','weight','price','art'];
- need(value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).every(k=>keys.includes(k)||!blade&&FIREARM_MELEE_FIELDS.includes(k))&&keys.every(k=>Object.hasOwn(value,k)),'La definición del arma no es válida.');
+ need(value&&typeof value==='object'&&!Array.isArray(value)&&Object.keys(value).every(k=>keys.includes(k)||!blade&&(FIREARM_MELEE_FIELDS.includes(k)||k==='ammunitionFamily'))&&keys.every(k=>Object.hasOwn(value,k)),'La definición del arma no es válida.');
  need(value.version===1&&(FIREARMS[host]||BLADES[host])&&value.template===host,'La definición del arma no coincide con su familia.');
+ if(Object.hasOwn(value,'ammunitionFamily'))need(!blade&&typeof value.ammunitionFamily==='string'&&Object.hasOwn(AMMO_TYPES,value.ammunitionFamily),'La familia de munición no es válida.');
  need(typeof value.id==='string'&&/^[a-z][a-z0-9-]{0,79}$/.test(value.id)&&!['constructor','prototype','bronze4','field8','swivel'].includes(value.id),'La identidad del arma no es válida.');
  need(typeof value.name==='string'&&value.name.trim().length>0&&value.name.length<=100,'El nombre del arma no es válido.');
  if(blade){need(integer(value.damage,1,100)&&integer(value.ap,1,100)&&Number.isFinite(value.reach)&&value.reach>=1&&value.reach<=4,'Los valores del arma blanca no son válidos.');}

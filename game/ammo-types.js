@@ -9,7 +9,11 @@ export const AMMO_KEYS=Object.freeze(Object.keys(AMMO_TYPES));
 export function ammoTypeFor(value){
  const raw=typeof value==='object'&&value!==null?value.weapon??value.primary??value.template??value.id:value;
  const id=typeof raw==='object'?raw.id:raw;
- return AMMO_KEYS.find(key=>AMMO_TYPES[key].weapons.includes(id))??null;
+ const fallback=AMMO_KEYS.find(key=>AMMO_TYPES[key].weapons.includes(id))??null;
+ if(!fallback)return null;
+ const definition=value?.contentWeapon??value?.weaponMetadata?.contentWeapon??value;
+ const authored=definition?.ammunitionFamily;
+ return authored===undefined?fallback:Object.hasOwn(AMMO_TYPES,authored)?authored:null;
 }
 export function ammoStock(unit){
  if(unit?.ammunition!==undefined)return {...unit.ammunition};
@@ -57,4 +61,21 @@ export function removeIgnitionSupplies(value){
  delete value.priming;delete value.flints;
  for(const [key,child]of Object.entries(value))if(!['contentCampaign','startingSupplies'].includes(key))removeIgnitionSupplies(child);
  return value;
+}
+
+// Strategic ammunition owners also exist outside the loaded scene. Inspect the
+// known record collections; inventory keys and authored data are not unit fields.
+export function validateStoredAmmo(state){
+ const values=value=>value&&typeof value==='object'?Object.values(value):[];
+ const list=value=>Array.isArray(value)?value:[];
+ const request=state.pendingBattle;
+ const records=[...values(state.operativeState),...values(state.missionAllies),
+  ...values(state.garrisons).flatMap(list),
+  ...list(state.militiaTraining).flatMap(course=>list(course?.trainees)),
+  ...['squad','garrison','missionAllies','enemies','ammunitionSources','garrisonLootSources','casualtyLootSources'].flatMap(key=>list(request?.[key]))];
+ for(const record of records){
+  if(!record||typeof record!=='object'||!Object.hasOwn(record,'ammunition'))continue;
+  if(!Number.isSafeInteger(record.ammo))throw Error('El total de munición guardado no es válido.');
+  validateAmmo({...record});
+ }
 }

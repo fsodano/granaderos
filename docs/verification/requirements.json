@@ -604,6 +604,12 @@
       "path": "docs/verification/typed-ammunition.md",
       "description": "Four compatible ammunition families, implicit ignition kit, migration and saved ground-bundle settlement. Source aaef467c1c6652971f3749cb7f3cc7cc9f6a4515 passed 1282/1282 in all four complete remote test groups; types, export, all 36 baseline checks and desktop partial pickup passed. Merged in PR #130; alternative loads, strategic custody and the separate advanced checkout remain open.",
       "url": "https://github.com/fsodano/granaderos/pull/130"
+    },
+    {
+      "id": "E-AMMO-AUTHOR",
+      "path": "docs/verification/authored-ammunition-family.md",
+      "description": "Optional pinned weapon ammunition family drives paid deployment, compatible reloads, enemy issue and recovered weapons. Seven new simulation/editor cases include strategic reserve admission. Full regression 1289/1289 precedes a final scope correction, which passes 26 related tests, types and export. Source/log/browser evidence distinguishes those runs; the complete remote suite gates publication. Alternative loads and advanced custody remain open.",
+      "url": "https://github.com/fsodano/granaderos/pull/132"
     }
   ],
   "queue": [
@@ -3546,7 +3552,7 @@
       "priority": "P1",
       "published": "Nine firearms and five blade families match reference base values. Firearm and blade variants/images are authored and retained in character equipment, combat and saves. Enemy roles and militia ranks now support independent primary and secondary blade selections.",
       "local": "See local suite and preserved parity source; not equivalent to published integration. BATTERYCHOICE-01 tracks explicit saved artillery choice and exact model availability. SECONDARYLOOT-01 tracks finite recovery of military secondary weapons, their authored identity and saved empty source slots. DROPWEAPON-01 tracks finite ground placement and collection of recovered weapons. WEAPONHANDOVER-01 tracks adjacent transfer of recovered weapons with saved recipient ownership. EMPTYHAND-01 tracks genuine empty-hand attacks after weapon loss and retained secondary use.",
-      "remaining": "Author fittings/ammunition; finish complete physical inventory, civilian equipment looting, wear and unarmed behavior. SECONDARYLOOT-01 accepts bounded military secondary recovery.",
+      "remaining": "Author fittings and further ammunition variants; finish complete physical inventory, civilian equipment looting, wear and unarmed behavior. SECONDARYLOOT-01 accepts bounded military secondary recovery.",
       "acceptance": "XML values, inventory images, sounds and use in combat",
       "evidence": [
         "E-PUBLISHED",
@@ -3824,9 +3830,9 @@
       "requirement": "Complete equipment and merchant authoring",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain four finite personal supply quantities; separate ignition stocks were removed by PR #130. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of four personal supply types can gate dialogue, chapters and failure; legacy ignition conditions see the implicit full kit. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI. PR #85 publishes an optional pinned cartridge unit price for deployment and finite return credit, after exact-head CI. PR #98 adds pinned editable militia patrol rules. PR #128 publishes shared physical pockets and finite capacity across collection, transfer, purchases and deployment; the capacity and stack tuning remain fixed.",
+      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain four finite personal supply quantities; separate ignition stocks were removed by PR #130. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of four personal supply types can gate dialogue, chapters and failure; legacy ignition conditions see the implicit full kit. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI. PR #85 publishes an optional pinned cartridge unit price for deployment and finite return credit, after exact-head CI. PR #98 adds pinned editable militia patrol rules. PR #128 publishes shared physical pockets and finite capacity across collection, transfer, purchases and deployment; the capacity and stack tuning remain fixed. AMMOAUTHOR-01 adds a pinned compatible family selector to each authored firearm.",
       "local": "Advanced physical inventory controls, fittings and merchants remain more complete locally and are not generally authored. PATROLRULES-01 tracks optional patrol activation, timing and exploration energy settings. ARTILLERYSUPPLY-01 accepts pinned pesos prices, supply permission, reserve cap and finite local replenishment. ARTILLERYPROFILE-01 accepts editing the three gun families, model images, costs, crew, ballistics and finite initial ammunition with saved package references. ARTILLERYTRANSPORTRULES-01 accepts pinned transfer permission, route rates and one-time fees. ARTILLERYTRADERULES-01 tracks authored cash, prices and named workshop overrides. AMMOFAMILY-01 accepts four published tactical families and the approved implicit ignition kit. Strategic family custody, alternative loads and advanced integration remain open.",
-      "remaining": "Author ammunition families, alternate loads and dealer pricing, fittings, merchant stock, buyback and replenishment authoring; integrate civilian belongings and complete physical custody. Add pocket/stack authoring and portable item custody; shared pockets alone do not close equipment authoring.",
+      "remaining": "Author new ammunition families, alternate loads and dealer pricing, fittings, merchant stock, buyback and replenishment authoring; integrate civilian belongings and complete physical custody. Add pocket/stack authoring and portable item custody; shared pockets alone do not close equipment authoring.",
       "acceptance": "Create each supported equipment type; buy/use/trade/reload without duplication or lost instance data.",
       "evidence": [
         "E-PUBLISHED",
@@ -6269,16 +6275,42 @@
         "INTEGRATION-01"
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/130"
+    },
+    {
+      "id": "AMMOAUTHOR-01",
+      "group": "Published deliveries",
+      "requirement": "Select a compatible ammunition family for each authored firearm",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "The weapon editor selects one of four compatible ammunition families or the template default. Saved weapon definitions retain the choice through deployment, reload, drops and recovery. Existing definitions remain unchanged. Typed strategic records reject malformed or inconsistent reserves without rejecting ordinary inventory keys.",
+      "local": "Full regression source b8d269b688df6d99bdc2f6f6f11b33155a25546a passes 1289/1289 with zero failures or skips. Final source e29bca955c048df91943a45348720fa971e8ae73 narrows saved-reserve validation to known unit records and passes all 26 related cases, types and export. The actual editor selects, undoes, redoes and reloads the choice without errors; paid launch and later draft isolation pass. Complete remote checks gate the final PR head.",
+      "remaining": "",
+      "acceptance": "Choose and restore a weapon family through normal editor controls; consume compatible rounds only, reject wrong-family loads and forged definitions, preserve old saves, paid issue, enemy issue, recovered weapons and campaign pinning. Reject corrupt militia/deployment reserves while preserving valid mixed reserves, legacy scalar saves and named inventory objects.",
+      "evidence": [
+        "E-AMMO-AUTHOR"
+      ],
+      "testFiles": [
+        "tests/authored-ammunition-family.test.mjs",
+        "tests/story-editor.test.mjs",
+        "tests/campaign-ammunition-admission.test.mjs"
+      ],
+      "parents": [
+        "ITEM-01",
+        "STORY-06",
+        "JA2-I08",
+        "INTEGRATION-01"
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/132"
     }
   ],
   "latestPublishedCheck": {
-    "source": "aaef467c1c6652971f3749cb7f3cc7cc9f6a4515",
-    "total": 1282,
-    "passed": 1282,
+    "source": "b8d269b688df6d99bdc2f6f6f11b33155a25546a",
+    "total": 1289,
+    "passed": 1289,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-TYPED-AMMUNITION"
+    "evidenceId": "E-AMMO-AUTHOR"
   }
 }

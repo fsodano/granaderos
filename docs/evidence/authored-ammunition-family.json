@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "source": "e29bca955c048df91943a45348720fa971e8ae73",
+  "sourceHashes": {
+    "game/ammo-types.js": "e8f70ec5007aa759bdabd306a46c1e4efdc2aca8a37702f27ef9d9f3c39b7a43",
+    "game/campaign-content.js": "c4a272e6b0452253dabd3ceabe8bf797f94fa91da21dfbca6279c3fc4e11db85",
+    "game/weapon-definition.js": "72a530a01fe87699d7a7f403721939e3c40f79fdbcf37e51f2a356264ea09415",
+    "web/app/story/page.tsx": "091ea1a6756af743106cb84e9da48f89f8a88ef9c47b667e7e7ef9eb5ccd9126",
+    "tests/authored-ammunition-family.test.mjs": "d02e82a1047ea5c84746b3dd6b01168b9e4ee71ad2a79c7bb50d366182b280bc",
+    "tests/story-editor.test.mjs": "5f3385d02f982aab49c6f4ef4fa9868c8c64bf7f655b77fd09dad248748cd401",
+    "game/campaign.js": "792206c009bb03563bc8d4d857f6db724803914d8801a75abcd6006ea16689ec",
+    "tests/campaign-ammunition-admission.test.mjs": "f8273365c18267e1acad7d754a2de3cb484d2fea7da42e37845f25392a6e8dc2"
+  },
+  "checks": {
+    "regression": {
+      "source": "b8d269b688df6d99bdc2f6f6f11b33155a25546a",
+      "total": 1289,
+      "passed": 1289,
+      "failed": 0,
+      "skipped": 0
+    },
+    "types": "PASS",
+    "build": {
+      "status": "PASS",
+      "files": 735,
+      "assetReferences": 637
+    },
+    "baseline": {
+      "passed": 36,
+      "failed": 0
+    },
+    "focused": {
+      "source": "e29bca955c048df91943a45348720fa971e8ae73",
+      "passed": 26,
+      "failed": 0,
+      "note": "Final validation is limited to known unit records; ordinary inventory keys remain valid."
+    }
+  },
+  "logs": {
+    "/tmp/authored-ammo-full.log": "e3f87f8ce66b17d45e0b22896293e7220bc1abebb6f56fa210993f26bbf2d60b",
+    "/tmp/authored-ammo-types.log": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30",
+    "/tmp/authored-ammo-build.log": "fe8606945a5616d594556fa8c00e4eb5b823f91385bef0ff11659be642610f62",
+    "/tmp/authored-ammo-baseline.log": "fcb8b056be28e395a5129941f095e19b2a224581dce717c8a86063e298cad907",
+    "/tmp/authored-ammo-editor.log": "46366a98926219ca6efc44cef8c005b6cd3cfaf245b969024ae39b7322c4821c",
+    "/tmp/authored-ammo-final-full.log": "ed6e59d3ebe3b775ca1f06817b3c69aa9d395643465331fe7e5ccd55e2ee3386",
+    "/tmp/authored-ammo-final-focused.log": "54ef4608553958f13e2a497073e6f9e812d776e61eedf47e875bad4f10fa05f7",
+    "/tmp/authored-ammo-types-final2.log": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30",
+    "/tmp/authored-ammo-build-final2.log": "85a1a6169a3318543b8e4f98923f8d98250d47a76182f50ba33f90132ee8c125",
+    "/tmp/authored-ammo-admission-before.log": "170e86836be80444b8dae5befc8e3aac7231f2b9b305062f5e1641487e3625ac"
+  },
+  "browser": {
+    "url": "http://localhost:3134/story",
+    "actions": [
+      "select rifle ammunition for a musket template",
+      "undo to original musket ammunition",
+      "redo to rifle ammunition",
+      "reload page and reopen weapons"
+    ],
+    "result": "The selected family persists, content stays valid, and the console reports no errors.",
+    "screenshot": "docs/evidence/authored-ammunition-family.png",
+    "sha256": "f98e554d57f7dde431a0b6bee8c3f7d3b61787b08ddc84803ffb53ad991cff07"
+  },
+  "limitations": [
+    "One compatible family per firearm; alternate loads and new families remain open.",
+    "No advanced local-checkout or full strategic custody claim."
+  ],
+  "pr": "https://github.com/fsodano/granaderos/pull/132",
+  "regressions": [
+    "Typed militia maps were admitted without key, quantity or aggregate validation.",
+    "The first broad validator confused an ordinary inventory key with a unit field; the final version inspects only known owner collections."
+  ]
+}

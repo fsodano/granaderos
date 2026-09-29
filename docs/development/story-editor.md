@@ -810,8 +810,13 @@ La Brown Bess, el Charleville y la tercerola usan cartuchos de mosquete. El Bake
 usa munición de fusil. Las tres pistolas usan cartuchos de pistola. La escopeta y
 el trabuco usan cargas de perdigones. Cada familia tiene su imagen y ocupa los
 bolsillos compartidos en pilas de hasta 20. Cambiar de arma no convierte la reserva.
-Todavía no se pueden configurar familias nuevas ni elegir cargas alternativas
-con efectos distintos para una misma arma.
+En **Armas → Munición compatible → Familia de munición** podés elegir la familia
+que usa cada arma de fuego. **Original** recupera la familia del modelo base.
+Deshacer y rehacer conservan la selección. La campaña guarda su propia definición;
+editar el borrador después no cambia sus armas. Los enemigos y las milicias usan
+la familia de las armas que les asignes. Todavía no se pueden crear familias
+nuevas ni elegir cargas alternativas con efectos distintos para una misma arma.
+[Verificación](../verification/authored-ammunition-family.md).
 
 
 ### Elegir qué recoger del suelo
