@@ -777,8 +777,7 @@ pedernales, cebo, antorchas y boleadoras. El compañero debe estar al lado,
 consciente y sin obstáculos. Cuesta 4 PA del que entrega o un segundo en
 exploración. La cantidad debe estar disponible completa. El panel explica el
 motivo si no se puede entregar. El compañero puede usar lo recibido y cada uno
-conserva su sobrante al guardar y volver al sector. La entrega de cartuchos
-sigue pendiente. [Verificación](../verification/adjacent-supply-transfer.md).
+conserva su sobrante al guardar y volver al sector. Los cartuchos también se pueden entregar a un compañero. [Verificación](../verification/adjacent-supply-transfer.md).
 
 
 ### Dejar suministros en el sector
@@ -790,4 +789,15 @@ El bulto queda en la celda y aparece en el campo. Para recuperarlo, elegí
 compañero cercano, aunque haya alguien encima. La recogida toma el bulto completo
 y cuesta 8 PA o un segundo en exploración. Guardar, salir y volver conserva el
 bulto y los sobrantes. Esto cubre los seis suministros personales del panel;
-los cartuchos siguen pendientes. [Verificación](../verification/drop-personal-supplies.md).
+los cartuchos solo se entregan directamente a un compañero. [Verificación](../verification/drop-personal-supplies.md).
+
+
+### Pasar cartuchos a un compañero
+
+Elegí **Cartuchos** en el selector de suministros, indicá la cantidad y el
+compañero cercano. La entrega usa solamente la reserva suelta; la carga dentro
+de cada arma queda en su sitio. El compañero puede usar esos cartuchos para
+recargar. Cuesta 4 PA o un segundo en exploración. Al retirarse, la escuadra
+recibe el valor de su munición restante aunque haya cambiado de dueño durante
+el combate. Guardar conserva las reservas. Por ahora, los cartuchos no se dejan
+en el suelo desde este panel. [Verificación](../verification/adjacent-cartridge-transfer.md).
