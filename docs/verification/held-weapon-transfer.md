@@ -44,3 +44,8 @@ Supplies, remote relay, throwing/catching, complete pocket capacity and broad
 campaign acceptance remain open. These are simulations and mounted DOM checks,
 not live-browser or performance acceptance. Exact-head CI remains required
 before publication.
+
+## Publication
+
+Published in [PR #117](https://github.com/fsodano/granaderos/pull/117) on 2026-09-29 01:31:16 UTC.
+Exact head `34c8ff805e746fdb781739412d22241f07732a33` passed [CI run 36507315323](https://github.com/fsodano/granaderos/actions/runs/36507315323), including the full suite, types and production build. Merge commit: `ba67aed4a2c90655ce03a9b8a5a0dce7403c87b7`. This publication does not close the broader game or campaign requirements.
