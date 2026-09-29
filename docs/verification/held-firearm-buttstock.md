@@ -23,7 +23,7 @@ Complete regression passes **1209/1209**, zero failures or skips, in 284,322 ms.
 The related melee, HUD, reload and empty-hand group passes **53/53**. Types,
 production export (722 files, 632 asset references), 36 reference comparisons
 and the documentation audit (261 requirements, 100 evidence records) pass.
-Exact-head CI remains required before publication.
+Exact-head CI passed before publication.
 
 Five new simulations and one mounted production-game check cover all nine gun
 families, loaded and jammed/partial mechanisms, exact AP, contact range, atomic
@@ -66,3 +66,8 @@ complete with thirteen controlled localities, 10,598 pesos, squad 125/57 and
 commander 69 HP through normal recovery. Contracts 112/113/142 expire. Their
 actors are absent from the scene and all recorded deaths remain permanent.
 This is one reproducible simulation route, not general balance acceptance.
+
+## Publication
+
+Published in [PR #123](https://github.com/fsodano/granaderos/pull/123) on 2026-09-29 11:33:53 UTC.
+Exact head `730161a529bdb956a956baae8e28cb8be06796cf` passed [CI run 36561492784](https://github.com/fsodano/granaderos/actions/runs/36561492784), including the full suite, types and production build. Merge commit: `d4347595764c3ba43604c423ddb7bb46a32604e4`. This publication does not close the broader game or campaign requirements.

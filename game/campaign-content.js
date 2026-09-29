@@ -6,7 +6,7 @@ import {campaignRules} from './campaign-rules.js';
 import {validateAbilityReferences} from './content-character-abilities.js';
 import {validatePresentationReferences} from './content-character-presentation.js';
 import {isContractCharacter,isHistoricalCharacter,isWorldCharacter,operativeIdForCharacter} from './content-character-ids.js';
-import {weaponMetadata,validateWeaponReferences,restoreWeaponReferences} from './weapon-definition.js';
+import {FIREARM_MELEE_FIELDS,weaponMetadata,validateWeaponReferences,restoreWeaponReferences} from './weapon-definition.js';
 import {contentIdentity,canonicalContent} from "./content-identity.js";
 import { defaultContentPackage, resolveContent } from "./content-package.js";
 import {contentCellIds} from "./content-map.js";
@@ -32,8 +32,8 @@ export function campaignContentReport(content) {
     blocked.push('El servicio, el progreso y las especialidades de los mandos históricos todavía conservan sus reglas originales.');
   if(value.characters.some(c=>isContractCharacter(c)&&(c.recruitmentSource==='encounter'||c.service==='permanent')))
     blocked.push('Los candidatos del boletín se incorporan por contrato. Para servicio permanente, creá un habitante.');
-  const weaponFields=new Set(['id','template','name','damage','fireAP','aimAP','reloadAP','range','readyAP','capacity','weight','price','art','ap','reach']);
-  if(value.weapons.some(w=>Object.keys(w).some(key=>!weaponFields.has(key))||(w.template>=1809&&['fireAP','aimAP','reloadAP','range','readyAP','capacity'].some(key=>Object.hasOwn(w,key)))||(w.template<1809&&['ap','reach'].some(key=>Object.hasOwn(w,key)))))
+  const weaponFields=new Set(['id','template','name','damage','fireAP','aimAP','reloadAP','range','readyAP','capacity','weight','price','art','ap','reach',...FIREARM_MELEE_FIELDS]);
+  if(value.weapons.some(w=>Object.keys(w).some(key=>!weaponFields.has(key))||(w.template>=1809&&['fireAP','aimAP','reloadAP','range','readyAP','capacity',...FIREARM_MELEE_FIELDS].some(key=>Object.hasOwn(w,key)))||(w.template<1809&&['ap','reach'].some(key=>Object.hasOwn(w,key)))))
     blocked.push("Este paquete incluye manejo de armas que esta versión todavía no puede aplicar.");
   const placementFields=new Set(['id','character','mode','sectors','moveChance','afterDeath','delayMin','delayMax','selection','loadedGuard']);
   if(value.placements.some(p=>Object.keys(p).some(k=>!placementFields.has(k))))

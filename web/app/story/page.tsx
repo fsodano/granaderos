@@ -40,6 +40,7 @@ import {SPEECH_EVENTS} from '../../../game/characters.js';
 import {characterPresentationDefaults} from '../../../game/content-character-presentation.js';
 import {CONTENT_TRAITS} from '../../../game/content-character-options.js';
 import {FIREARM_PRICES,BLADE_PRICES,isBladeDefinition} from '../../../game/weapon-definition.js';
+import {BUTTSTOCK} from '../../../game/unarmed-combat.js';
 import {WEAPONS as BASE_FIREARMS} from '../../../game/firearm-definitions.js';
 import {WEAPONS as BASE_ITEMS} from '../../../game/data.js';
 import {CAMPAIGN_SECTORS} from '../../../game/data.js';
@@ -67,6 +68,9 @@ const labels: Record<string, string> = {
   reloadAP: 'PA de recarga completa',
   range: 'Alcance',
   readyAP: 'PA para levantar el arma',
+  stockAP: 'PA del golpe con la culata',
+  stockDamage: 'Daño de la culata',
+  stockReach: 'Alcance de la culata',
   capacity: 'Capacidad de carga',
   weight: 'Peso (kg)',
   price: 'Precio (pesos)',
@@ -340,9 +344,9 @@ export default function ContentEditor() {
         <input
           type="number"
           value={Number.isFinite(value) ? value : ''}
-          min={key === 'maxHp' ? 15 : 0}
-          max={key === 'reloadAP' ? 500 : key === 'price' ? 1000000 : key === 'weight' ? 30 : key === 'capacity' ? 8 : key==='reach'?4:100}
-          step={['weight','reach'].includes(key) ? .1 : 1}
+          min={key === 'maxHp' ? 15 : key.startsWith('stock') ? 1 : 0}
+          max={key === 'stockReach' ? 1.5 : key === 'reloadAP' ? 500 : key === 'price' ? 1000000 : key === 'weight' ? 30 : key === 'capacity' ? 8 : key==='reach'?4:100}
+          step={['weight','reach','stockReach'].includes(key) ? .1 : 1}
           onChange={(e) =>
             update(
               attributes
@@ -798,6 +802,7 @@ export default function ContentEditor() {
                         'reloadAP',
                         'range',
                       ]).map((k) => numeric(k, item[k]))}
+                      {!isBladeDefinition(item)&&<fieldset><legend>Golpe con la culata</legend><p>Se usa al atacar cuerpo a cuerpo con esta arma de fuego. No consume cartuchos. Su alcance máximo es una casilla contigua, incluidas las diagonales. Para cargar, seleccioná un arma blanca.</p>{numeric('stockAP',item.stockAP??BUTTSTOCK.ap)}{numeric('stockDamage',item.stockDamage??BUTTSTOCK.damage)}{numeric('stockReach',item.stockReach??BUTTSTOCK.reach)}</fieldset>}
                       {!isBladeDefinition(item)&&numeric('capacity',item.capacity??BASE_FIREARMS[item.template]?.capacity)}
                       {numeric('weight',item.weight??(BASE_ITEMS as any)[item.template]?.weight)}
                       {numeric('price',item.price??({...FIREARM_PRICES,...BLADE_PRICES} as any)[item.template])}
