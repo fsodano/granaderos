@@ -13,18 +13,19 @@ async function mount(t,battle){
  t.after(async()=>{await act(async()=>root.unmount());dom.window.close();for(const [key,descriptor]of previous)if(descriptor)Object.defineProperty(globalThis,key,descriptor);else delete globalThis[key];});
  await act(async()=>root.render(h(Screen)));const doc=dom.window.document;
  const click=async element=>{assert.ok(element);await act(async()=>element.dispatchEvent(new dom.window.MouseEvent('click',{bubbles:true})));};
- return {doc,read:()=>current,click};
+ const nextTurn=async()=>{const before=current;await click(doc.querySelector('button.end-turn'));const deadline=Date.now()+10000;while(current===before&&Date.now()<deadline)await act(async()=>new Promise(resolve=>setTimeout(resolve,20)));assert.notEqual(current,before,'the visible turn must finish and commit');};
+ return {doc,read:()=>current,click,nextTurn};
 }
 
 test('mounted end-turn control advances a heavy enemy reload across saved real budgets',async t=>{
  const b=artilleryField({loaded:false,hidden:true,crew:{fatigue:90}}),m=await mount(t,b);
- await m.click(m.doc.querySelector('button.end-turn'));await act(async()=>new Promise(resolve=>setTimeout(resolve,500)));
+ await m.nextTurn();
  assert.equal(m.read().lastError,null);assert.equal(m.read().artillery[0].reloadProgress,64/75);assert.equal(m.read().artillery[0].ammo,2);assert.ok(m.read().units.filter(u=>u.side==='enemy').every(u=>u.ap===0));assert.ok(validateBattleSnapshot(JSON.parse(JSON.stringify(m.read()))));
- await m.click(m.doc.querySelector('button.end-turn'));await act(async()=>new Promise(resolve=>setTimeout(resolve,500)));
+ await m.nextTurn();
  assert.equal(m.read().artillery[0].loaded,true);assert.equal(m.read().artillery[0].ammo,1);assert.equal(m.read().artillery[0].reloadProgress,undefined);assert.ok(m.read().units.filter(u=>u.side==='enemy').every(u=>u.ap===53));assert.ok(m.read().log.some(line=>line.includes('completa la recarga')));
 });
 test('mounted allied turn shows actual autonomous artillery damage without manual militia orders',async t=>{
  const b=artilleryField({side:'player',type:'swivel',ammo:0}),m=await mount(t,b),officer=b.units.find(u=>u.id==='officer');
- await m.click(m.doc.querySelector('button.end-turn'));await act(async()=>new Promise(resolve=>setTimeout(resolve,500)));
+ await m.nextTurn();
  assert.equal(m.read().lastError,null);assert.equal(m.read().artillery[0].loaded,false);assert.equal(m.read().artillery[0].ammo,0);assert.ok(m.read().units.find(u=>u.id==='target').hp<300);assert.equal(m.read().units.find(u=>u.id==='officer').hp,officer.hp);assert.ok(m.read().log.some(line=>line.includes('dispara una bala rasa')));assert.ok(validateBattleSnapshot(m.read()));
 });

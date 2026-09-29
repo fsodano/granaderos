@@ -31,7 +31,7 @@ test('mounted selection skips militia while the visible garrison remains a legal
 
 test('mounted end-turn resolves an actual paid defender reaction and saves its wound, finite gear and earned rank',async t=>{
  const prepared=combatMilitia(),encounter=militiaEncounter(prepared.s,prepared.id),{doc,read,click}=await mount(t,encounter.battle),before=structuredClone(encounter.battle.units.find(u=>Number(u.id)===prepared.id));
- await click(doc.querySelector('button.end-turn'));await act(async()=>new Promise(resolve=>setTimeout(resolve,500)));
+ const prior=read();await click(doc.querySelector('button.end-turn'));const deadline=Date.now()+10000;while(read()===prior&&Date.now()<deadline)await act(async()=>new Promise(resolve=>setTimeout(resolve,20)));assert.notEqual(read(),prior,'the visible defender turn must commit');
  const b=read(),defender=b.units.find(u=>Number(u.id)===prepared.id);assert.equal(b.lastError,null);assert.equal(b.status,'victory');assert.match(doc.body.textContent,/¡Victoria patriota!/);assert.equal(defender.loaded,before.loaded-1);assert.equal(defender.hp,44);assert.equal(defender.militiaExperience,3);
  const returned=saved({campaign:leave(saved(sync({campaign:encounter.s,battle:b})))}).campaign,retained=returned.garrisons.retiro.find(u=>u.id===prepared.id);
  assert.equal(retained.militiaRank,1);assert.equal(retained.hp,44);assert.equal(retained.loaded,defender.loaded);assert.equal(retained.condition,defender.condition);assert.deepEqual(retained.militiaCombatCredit,defender.militiaCombatCredit);

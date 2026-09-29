@@ -68,11 +68,13 @@ test('registered orders retain standalone combat and unregister when the game un
  await m.unmount();assert.ok(m.registrations.every(r=>r.signal.aborted));
 });
 
-test('a delayed UI turn cannot overwrite a newer accepted tool order',async t=>{
- const m=await mount(t,fixture()),before=structuredClone(pair(m.read()));const unitId=before.battle.units.find(u=>u.side==='player').id;
- const action={type:'movement',unitId,movement:'crouch'},want=expected(before,action);
- await act(async()=>{m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'d',bubbles:true}));m.issue(action);await new Promise(resolve=>setTimeout(resolve,500));});
- assert.deepEqual(pair(m.read()),want);assert.deepEqual(m.saved(),want);assert.match(m.document.querySelector('[role="status"]').textContent,/combate cambió/);
+test('a pending visible UI turn rejects competing tool orders and commits one synchronized save',async t=>{
+ const m=await mount(t,fixture()),source=m.read().battle,before=structuredClone(pair(m.read()));const unitId=before.battle.units.find(u=>u.side==='player').id;
+ const action={type:'movement',unitId,movement:'crouch'},turn=expected(before,{type:'endTurn'});
+ await act(async()=>{m.document.body.dispatchEvent(new m.dom.window.KeyboardEvent('keydown',{key:'d',bubbles:true}));assert.throws(()=>m.issue(action),/termine el movimiento/);assert.deepEqual(pair(m.read()),before);assert.deepEqual(m.saved(),before);});
+ const deadline=Date.now()+10000;while(m.read().battle===source&&Date.now()<deadline)await act(async()=>new Promise(resolve=>setTimeout(resolve,20)));
+ assert.deepEqual(pair(m.read()),turn);assert.deepEqual(m.saved(),turn);
+ const want=expected(turn,action);await act(async()=>m.issue(action));assert.deepEqual(pair(m.read()),want);assert.deepEqual(m.saved(),want);
 });
 
 test('the actual conversation displays a local contract price and hires the wounded resident for the selected term',async t=>{
