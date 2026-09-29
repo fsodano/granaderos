@@ -1,0 +1,43 @@
+{
+  "source": "46b512bbb09ed6719c5b81cb0f95921af3e231df",
+  "tests": {
+    "total": 1244,
+    "passed": 1244,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 357722.752959
+  },
+  "types": "PASS",
+  "build": {
+    "status": "PASS",
+    "files": 723,
+    "assetReferences": 633
+  },
+  "logs": {
+    "tests": {
+      "sha256": "798d04cf19c1c0934801d81e874ce2145e312dc286f6379cb4dce33131a54424"
+    },
+    "types": {
+      "sha256": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30"
+    },
+    "build": {
+      "sha256": "23161af0a7e08eded11b2f59031e28f449415715888d7cc8fe57e3153e1c239d"
+    }
+  },
+  "exportComparison": {
+    "previousMerge": "45dc74af797bfd96672102beab6d991d783585a2",
+    "previousWorkerBase": "file:///ROOT/lib/useEnemyPlayback.ts",
+    "previousRejected": true,
+    "correctedWorker": "/_next/static/enemy-turn-worker-DmO9Q1TZ.js",
+    "correctedAssetExists": true,
+    "correctedRejected": false
+  },
+  "browser": {
+    "scenario": "Production San Lorenzo ordinary start and end-turn controls",
+    "intermediateFrame": "0:enemy-0:prepare:fire",
+    "finalTurn": 2,
+    "inputRestored": true,
+    "consoleErrors": 0,
+    "limits": "No loaded-combat FPS or full-campaign acceptance."
+  }
+}

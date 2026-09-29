@@ -35,5 +35,14 @@
     "inputRestored": true,
     "consoleErrors": 0,
     "limits": "Bounded interaction; no main-branch sustained FPS or full-campaign acceptance."
-  }
+  },
+  "publication": {
+    "pr": 125,
+    "head": "f0ef6b59300fb4ee42b3288eb8ca7d2992471ec6",
+    "merge": "45dc74af797bfd96672102beab6d991d783585a2",
+    "ciRun": 36572455830,
+    "checks": 5,
+    "status": "PASS"
+  },
+  "correction": "The original production worker constructor used a file URL and could fall back to main-thread simulation. The UI evidence did not establish worker execution. Corrected in docs/verification/enemy-worker-export.md."
 }
