@@ -614,7 +614,13 @@
     {
       "id": "E-IGNITION-MIGRATION",
       "path": "docs/verification/implicit-ignition-integration.md",
-      "description": "Known-holder migration preserves ordinary inventory, pinned content and physical cartridges while removing retired ignition stocks/references. Four new tests, ten focused checks, types, export and 36 baseline comparisons pass; remote checks gate the final head. Advanced local integration has separate source hashes and unresolved route/movement failures."
+      "description": "Merged PR #133 at b0dd1805572f70211a4d5333cba1ba82c4513e73. All five final-head checks passed for 9a3530d0fa847a549c09512d77894e3661f1b57d, including 1293/1293 gameplay tests with no skips. The advanced local suite has 3215 passes, five failures including a failed parent, and three skips; movement and campaign acceptance remain open.",
+      "url": "https://github.com/fsodano/granaderos/pull/133"
+    },
+    {
+      "id": "E-AMMO-FAMILIES",
+      "path": "docs/verification/four-ammunition-families.md",
+      "description": "Shared four-family catalog, thirteen passing published checks and separate advanced physical-stack conversion. Actual old campaign migration preserves all eleven tactical units and finite rounds. Source hashes, tests, browser purchase and publication boundaries are recorded explicitly."
     }
   ],
   "queue": [
@@ -6314,8 +6320,8 @@
       "requirement": "Preserve ordinary inventory and pinned content during ignition-kit migration",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "The migration removes obsolete counters and their direct equipment references only from known unit/scene holders. Ordinary inventory entries named priming or flints survive; pinned packages and extension dictionaries remain unchanged.",
-      "local": "Source 20b21e38a87ad93a63bf3a1297b1dec13ee89f71 passes ten focused migration/save cases, types, export and 36 reference checks. Advanced local wiring and its route failures are recorded separately. Final-head remote regression gates publication.",
+      "published": "Merged in PR #133 after all five final-head checks passed (1293/1293 gameplay tests, no failures or skips). The migration removes obsolete counters and their direct equipment references only from known unit/scene holders. Ordinary inventory entries named priming or flints survive; pinned packages and extension dictionaries remain unchanged.",
+      "local": "The original advanced checkout passes 3215/3223 cases, with five failures (including a failed parent) and three skips. Types and build pass; the actual local save resumes without inventory loss. Movement timing, relief medic, recapture and rescue failures remain open.",
       "remaining": "",
       "acceptance": "Migrate old holders, hands, cursor, pockets, ground and containers without deleting normal named objects or changing cartridge quantities. Restore an actual campaign twice with stable content identity and immutable input.",
       "evidence": [
@@ -6330,17 +6336,43 @@
         "JA2-I08",
         "STORY-06",
         "INTEGRATION-01"
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/133"
+    },
+    {
+      "id": "AMMOFAMILIES-01",
+      "group": "Integration",
+      "requirement": "Use four shared ammunition families in the advanced physical inventory game",
+      "status": "LOCAL_ONLY",
+      "priority": "P1",
+      "published": "The shared catalog feeds the existing published ammunition adapter. Its four IDs, images, default compatibility and authored family override remain unchanged. Thirteen related tests, types, build and 36 reference checks pass; full remote checks gate merge.",
+      "local": "Physical stacks, hands, cursor, pockets, campaign stocks, delivery receipts and old saves migrate to four families. The actual eleven-unit Buenos Aires save preserves health, positions, loaded rounds and loose quantities. The 56-file integration is running on port 3000; exact hashes and limits are retained. The original-checkout regression has 3223/3231 passes, five existing failures (including a parent) and three skips. The later purchase-limit form guard passes both related cases, types and build.",
+      "remaining": "Publish the advanced physical-inventory runtime and its dependencies. Integrate advanced authored family selection and alternative loads separately. The complete campaign and performance acceptance remain open.",
+      "acceptance": "Group historical loads without losing or adding rounds, changing ownership or reissuing stock; retain old saves, rejected invalid references, finite shops, compatible reloads and readable images.",
+      "evidence": [
+        "E-AMMO-FAMILIES"
+      ],
+      "testFiles": [
+        "tests/ammunition-families.test.mjs",
+        "tests/typed-ammunition.test.mjs",
+        "tests/authored-ammunition-family.test.mjs"
+      ],
+      "parents": [
+        "ITEM-01",
+        "JA2-I08",
+        "STORY-06",
+        "INTEGRATION-01"
       ]
     }
   ],
   "latestPublishedCheck": {
-    "source": "ca374364ddf6dcce85db78ffedb39ee61f81831a",
-    "total": 1289,
-    "passed": 1289,
+    "source": "9a3530d0fa847a549c09512d77894e3661f1b57d",
+    "total": 1293,
+    "passed": 1293,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-AMMO-AUTHOR"
+    "evidenceId": "E-IGNITION-MIGRATION"
   }
 }

@@ -22,6 +22,11 @@ reference comparisons pass. The complete remote suite gates the final PR head.
 The earlier local full run passed 1,292 tests, but preceded the final correction
 and fourth new test; it is not final-source acceptance.
 
+Final publication: [PR #133](https://github.com/fsodano/granaderos/pull/133) merged
+at `b0dd1805572f70211a4d5333cba1ba82c4513e73`. All five remote checks passed for
+`9a3530d0fa847a549c09512d77894e3661f1b57d`; the complete gameplay suite passed
+**1,293/1,293**, with no failures or skips.
+
 ## Separate advanced local game
 
 The same migration helper is integrated with the advanced local game. Reloads,
@@ -64,10 +69,15 @@ loaded/spare ammunition values; its pockets omit the retired supplies. No new
 campaign or gameplay order was issued.
 [Existing campaign capture](../evidence/implicit-ignition-live.png).
 
+The final original-checkout regression passed **3,215 of 3,223** cases: five
+failures (including the failed route parent) and three skipped later milestones.
+The four independent failure points are movement timing, missing relief medic,
+Córdoba recapture and prisoner relief.
+
 ## Remaining work
 
-The advanced local game still has nine historical cartridge keys. Its conversion
-to the four published families, integration of authored family selection and
+The subsequent [four-family integration](four-ammunition-families.md) replaces
+the nine local cartridge labels. Advanced authored family selection and
 alternative loads per firearm remain open. This change does not close full
 campaign, complete story editor, movement artwork or performance acceptance.
 
