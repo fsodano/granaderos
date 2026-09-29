@@ -731,7 +731,7 @@ El compañero recibe la pieza en su mochila y puede equiparla. Conserva la
 imagen, los valores, el desgaste y la carga, incluso después de guardar y
 volver al sector. Si no se puede entregar, el panel explica el motivo.
 También podés seleccionar el arma principal o secundaria y usar **Entregar arma
-en uso** con el compañero elegido. Los suministros y las entregas a distancia
+en uso** con el compañero elegido. Para los suministros, usá el panel Pertrechos. Las entregas a distancia
 siguen pendientes. [Verificación](../verification/adjacent-weapon-transfer.md).
 
 
