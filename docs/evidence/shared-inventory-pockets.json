@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "date": "2026-09-29",
+  "base": "45bcc53861e3891fec40058c862cb256e7912478",
+  "status": "verified-local",
+  "sourceManifest": {
+    "game/campaign.js": "89d970cf8b39d13b33462b692149d2fcf8fa517e071d14f8054fc14feab46188",
+    "game/ja2-hud.js": "bcbca074e87b3759a16733240d3ac833e457ee3d654c178b35c0b96de92bf032",
+    "game/tactical.js": "21f81287ffaa1ba1d3c920da84baf12be6636c0073c43cf5e8d9ac085854fee8",
+    "game/validate-battle.js": "5f3fae68a2cf58d4493b8f48d55f967df38ef874f5ad27214678f63b9c9b4647",
+    "game/inventory-pockets.js": "0aa0441b4462aede88b969ea3b06aa4aa05e51b1c10a2b469d0f139d2d1c9876",
+    "game/personal-pockets.js": "6c25e8fedb83b695ad7b1f07b146973e7a418c7aa09e6f7e3dea21b77f36c74b",
+    "tests/adjacent-cartridge-transfer-render.test.mjs": "90a9554f78a306e87216ceab454dfbd2edd1011b38b27580900827028f183da7",
+    "tests/adjacent-cartridge-transfer.test.mjs": "200208d11056d5a738b9c43cf356a1411b34726a4ee239219bcc78b6502ca39c",
+    "tests/adjacent-supply-transfer-render.test.mjs": "92714f58b9ebda77dbdf26a90214f3780025d35fc1526a88f07b15fe6bd0e954",
+    "tests/adjacent-weapon-transfer-render.test.mjs": "bcb0ad047fe0cb49753ed92aef4a977d3e59fe90eacdf674c9a34972308a6614",
+    "tests/civilian-supplies.test.mjs": "939e17c714aace7d2d8256b82df5dd8f590b22da7f578adf21c2f620a9974e09",
+    "tests/content-blades-ui.test.mjs": "42443d02919d16b8a43108803fcf3aa139fa9a0dd80d1e7dd920dc745a25531a",
+    "tests/drop-held-weapons-render.test.mjs": "00fa720a02454df71f64d7aac79190cd7f24df619bae9bfd226a1d3d47779c3d",
+    "tests/drop-personal-supplies-render.test.mjs": "77572a629f4028e773e96c23ba27898297c37b477128e6f6807e0f4f35b20a43",
+    "tests/drop-personal-supplies.test.mjs": "5ed25d56b83be4873d60dba6d87c427ae301434501e0e7e54794559df1114e1c",
+    "tests/drop-recovered-weapons-render.test.mjs": "5ccf18a7f083198337e84c7487fd866066258ddf49408fd736b3a530d0479a27",
+    "tests/empty-hand-melee-render.test.mjs": "6785cb1f2785e76ca8266e48e1351971e3979bb02b389a2e6dc11224cc6fba9e",
+    "tests/held-firearm-buttstock-render.test.mjs": "ad6362eb8572ce18c07ab56deaaace03ad8af153586fef5d8db1761398ad329e",
+    "tests/held-weapon-transfer-render.test.mjs": "3080b6322061acbb92fba11dd63c5215346e7f7af58d31be53c7083872c920f5",
+    "tests/occupied-ground-collection-render.test.mjs": "73001aaf628bed412c81c75c9e023a12aaa23bc0ff5526d52753bdbb3b2f4516",
+    "tests/partial-ground-supply-pickup-render.test.mjs": "e8dc091d8bdb0c4e1a46a5343bff80c8b643947615451272cb13eae4a31853a5",
+    "tests/partial-ground-supply-pickup.test.mjs": "dc0a0d95bc8c5ddee8da52aedb7c856cfbeff950efb3fda2189cf21bacc502e7",
+    "tests/secondary-loot-render.test.mjs": "a1f767aa43c93d7fecb000c9576328bd952b89ae2743ce5f90f5cdf4ca2985a4",
+    "tests/validate-battle.test.mjs": "276aa021df0500ec14ce32234c06d073bce4bde6d7d39ee75358863e810508f3",
+    "tests/world-cells.test.mjs": "094bdef2eb47e45be2bb1ba6d5d117369be5eb7402817d9edb7dc563be7470e7",
+    "tests/pocket-capacity-fixture.mjs": "aa5b54e827f257ec76cfd64086877795a1901bd523eb190261465fc9eeec6d3a",
+    "tests/pocket-partitions.test.mjs": "8cfb2df2f5473637d1461b3955a4167dc3f4e59960c6173bf3a5dcd8ee51c016",
+    "tests/pocket-render-fixture.mjs": "f400f085d99bf4e59b1147d3197b0f432ab5a8eb1bf20ab4b9a954c6b53517e9",
+    "tests/shared-personal-pockets.test.mjs": "775060cdd93c5346b2ea9da001509e526e2411241490954687274c44ace43095",
+    "tests/shared-pockets-render.test.mjs": "9ecffb79d83cd6a29c734d31e9f1e80491ce03246ee9c58e524750bd0c22b83d",
+    "web/app/JA2Inventory.tsx": "40e561527f7ad2625b3eea7cdde31dea9bd86ecd39e7fc9b33434dc693bb4b16",
+    "web/app/PersonalPockets.tsx": "c7fcd5ede861fe5aafc346331a67a14c8ad8e8435e05fbc56275fd8e7ae80f53",
+    "web/app/page.tsx": "8333854363cc59f54d6cf748567fad7486fc248c9d693103ff80443a697078e6",
+    "web/app/tactical-hud.css": "7eb18d7eacfd822f78ef6447e791aa207dc953a64304096f62a3df7cfa35facc"
+  },
+  "types": "PASS",
+  "build": {
+    "status": "PASS",
+    "exportedFiles": 723,
+    "assetReferences": 633
+  },
+  "baseline": {
+    "passed": 36,
+    "total": 36
+  },
+  "desktopBrowser": {
+    "url": "http://localhost:3132/?qa=1",
+    "viewport": [
+      1280,
+      720
+    ],
+    "pocketCount": 12,
+    "large": 4,
+    "small": 8,
+    "movedSupply": {
+      "item": "medkits",
+      "count": 2,
+      "from": "small-5",
+      "to": "large-4"
+    },
+    "horizontalPageOverflow": false,
+    "missingInventoryImages": 0,
+    "consoleErrors": []
+  },
+  "scope": "Desktop only. Shared large and small pockets, finite collection and transfers, preserved legacy excess, saved hand and positions.",
+  "remaining": [
+    "Integration with the advanced port 3000 checkout",
+    "Full inventory parity including attachments, typed ammunition and civilian weapon ownership",
+    "Improved walking artwork",
+    "Full campaign and sustained 60 FPS acceptance"
+  ],
+  "source": "9ee4e28add5dc0e275b6f311deab38466ec0ab09",
+  "tests": {
+    "total": 1268,
+    "passed": 1268,
+    "failed": 0,
+    "skipped": 0
+  },
+  "documentationAudit": "PASS",
+  "logs": {
+    "suite": {
+      "sha256": "12910a906539e370d64b45f907426bc0de7e773dee6224d3ab32fff3b2acb825"
+    },
+    "types": {
+      "sha256": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30"
+    },
+    "build": {
+      "sha256": "44373ad861ccad872f8d0ceed72b5c64bd4422e2a2731aeb6fca1baf34301f33"
+    },
+    "baseline": {
+      "sha256": "e149fd6997ee4548f464ec0a289c2901648619ab481c2daeddeb6b0294534559"
+    },
+    "docs": {
+      "sha256": "b715bc6123c39bb0cda422a602708bf687888b859549f0597561138465a21e6e"
+    }
+  }
+}
