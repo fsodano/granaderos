@@ -832,3 +832,15 @@ celdas. El golpe conserva la carga, los cartuchos, el desgaste, el atasco y el
 trabajo de recarga. Para cargar con un arma blanca, elegila en la mano secundaria.
 La culata no agrega una bayoneta al inventario. Los accesorios físicos siguen
 pendientes. [Verificación](../verification/held-firearm-buttstock.md).
+
+### Configurar la culata de cada arma
+
+En **Armas**, elegí un arma de fuego y abrí **Golpe con la culata**. Podés editar
+los PA, el daño base y el alcance. Los PA y el daño aceptan enteros de 1 a 100;
+el alcance acepta de 1 a 1,5 casillas. Deshacer y rehacer también incluyen estos
+cambios. Un valor inválido impide iniciar la campaña.
+
+Si no definís un valor, se usan 16 PA, 18 de daño base y 1,5 casillas. Las armas
+ya guardadas conservan su definición. El golpe no consume cartuchos; las heridas
+y la protección siguen las reglas de combate. Los accesorios físicos de bayoneta
+siguen pendientes. [Verificación](../verification/authored-firearm-melee.md).

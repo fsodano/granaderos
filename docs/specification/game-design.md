@@ -946,3 +946,14 @@ momentum, parries, counters and injury rules apply. The gun does not provide an
 unowned bayonet. To charge or brace, select an actual suitable blade. Physical
 fittings and separate stock accuracy/breath calculations remain open. See
 [verification](../verification/held-firearm-buttstock.md).
+
+### Authored stock profile
+
+Each firearm can override stock AP, base injury and contact reach independently
+in the normal story weapon editor. Omitted values use 16 AP, 18 injury and
+1.5-cell reach without changing older pinned weapon definitions. AP and injury
+are integers from 1 to 100; reach is between 1 and 1.5 cells. Blades reject these
+fields. Undo, validation, launch, weapon custody and full saves retain the authored
+profile. This extends stock contact configuration; physical fittings and separate
+stock accuracy/breath rules remain open. See
+[verification](../verification/authored-firearm-melee.md).

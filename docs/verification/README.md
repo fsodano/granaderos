@@ -7,6 +7,8 @@ accepted features on GitHub `main`, approved scope changes and open work.
 
 ## Published baseline
 
+- [Configure firearm stock attacks in the story editor](authored-firearm-melee.md)
+
 - [Actual held firearm stock attacks](held-firearm-buttstock.md)
 
 - [Collect loose equipment beneath residents](occupied-ground-collection.md)
