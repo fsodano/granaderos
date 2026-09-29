@@ -1,0 +1,184 @@
+{
+  "schema": 1,
+  "source": "20b21e38a87ad93a63bf3a1297b1dec13ee89f71",
+  "sourceHashes": {
+    "game/ammo-types.js": "cda4586eca57ddcda49c3cc4eaa51082172ac71558d0ab9151ba165bdaf4b5d8",
+    "game/ignition-kit.js": "a20a4dd1ea68036b1c3b6d7f6f38515d656b55506022bd137a9044dbae0819d2",
+    "tests/ignition-kit-save.test.mjs": "f16917938101ad10b5ccd1ca280f86cbda84122ebe542ab9f1c38f62202c6389",
+    "tests/ignition-kit.test.mjs": "be023356ae1384beaea150c90f4f09873c873582af9a123c4cfccd80c885125d"
+  },
+  "checks": {
+    "focused": {
+      "passed": 10,
+      "failed": 0
+    },
+    "types": "PASS",
+    "build": {
+      "status": "PASS",
+      "files": 735,
+      "assetReferences": 637
+    },
+    "baseline": {
+      "passed": 36,
+      "failed": 0
+    },
+    "complete": "Final-head remote suite required before merge."
+  },
+  "advancedLocal": {
+    "files": {
+      "game/missions.js": "7ba75e3ea12379179897c2398ae9ec34b201b0a81656962ac4c90700c70d5b8b",
+      "game/enemy-groups.js": "1a196fc2abc637aeafbde1e0bb128c451e0e6132a944bbabfeb372ac44a2903c",
+      "game/tactical-inventory.js": "e9d376bc868baeb280583cd72e389a9c454ff4e57759aee4eb8f13d8620623ba",
+      "game/deployment-return.js": "8d4f04d6444aa0566f3ac7a902de0a60c2e417103b53282a97a6435a0d8451a2",
+      "game/tactical-ai.js": "7830a53fae24d402029c00e230b3ea130938a2d2bd8988cdafa323560f49650d",
+      "game/mercenaries.js": "362571408985664eed5bfb638e985402ffcf69550e4d1666ab884fac8142fd77",
+      "game/recruitment.js": "33ab9aeddc6869234a08d7992c619da54575f8ed9d2ab66248a13f95a1ce4394",
+      "game/equipment.js": "54b14d3ab0b34335722708e326b5cfc890912ca6734d29ad4764ec68e7a0ed58",
+      "game/sector-inventory.js": "ebc2386d0b618470d7df2474bbba713ab947bd19c5afaca6b974638d467ae3f2",
+      "game/validate-battle.js": "2676f63fc16e5e0318e64955e7377022a3dda05e05e182c257a5ea92a1229e13",
+      "game/supply-presentation.js": "69a1011ea7b5c681ee1db3b775d17c3d7bdffb7704fcd2af66638fba5dff43d5",
+      "game/roster-hands.js": "0cca9eb318d30890b6b2a19b595fde18f09a7f0f6fe5fefcf99bd5bea2672801",
+      "game/weapon-reprime.js": "d49d01e9f203619c4952c05534fc1e5c1f802b74cbee88a68bb94aa5a0314a21",
+      "game/tactical-ai-scavenging.js": "14a5ecb03426504c8cc0338dc577437a0769078d375360bc4957999b7d7d06b1",
+      "game/player-known-state.js": "f10e4ce1940d6ce6211e06e95ac978c0c23b850ab589fac9fd1701de19b7b79c",
+      "game/ja2-hud.js": "dc9b9a3c7753b6f00f0662659a938eb6b29530d395d334c3352e19401052119c",
+      "game/ignition-kit.js": "a20a4dd1ea68036b1c3b6d7f6f38515d656b55506022bd137a9044dbae0819d2",
+      "game/tactical.js": "15e99d7a1d9c6272db009be5fe3af9cc5e5873dab9ee0f521bcbc8a52cbb6512",
+      "game/campaign.js": "7aab890ec4c3f50b641fc915aa3868eb703cc71524c1212a656c85d904b40e0e",
+      "game/garrison.js": "6d967e7700cdac954890bfc931458219d31a90b56f0ae6ba52f8f9f880760073",
+      "game/equipment-cursor.js": "b19adf99780939da5fa52e910145f9095622c79d1a579b95f92f45545436ca58",
+      "tests/battle-report.test.mjs": "fa8f06d75cce53aa7394066abb204fbb02fdd775ebb27cabf7bc88d8dbe58a5c",
+      "tests/inventory-relay.test.mjs": "2c4e24b913e84fa2099f025741235e0062b9dbcbe41568f0c9efed2dfd9f5951",
+      "tests/equipment-ammunition-loading.test.mjs": "b792bb10dd2bc2d45e969705328e8f4ba05bde44a50ed7fac6d3ac56fe58532b",
+      "tests/ja2-hud.test.mjs": "1285950a952b7f15d8bac96bf2d0bbdd822669948bf318c132e1f6507109f51e",
+      "tests/contract-attention.test.mjs": "da44d606a8d4c2558c466c9586a7c942817b68553567eb8054f0a6703907dba7",
+      "tests/tactical-ai.test.mjs": "b095c57842d02800e2cf57de578a7bdb677e2f976a21045e2bc01569964ab3f8",
+      "tests/ignition-kit.test.mjs": "be023356ae1384beaea150c90f4f09873c873582af9a123c4cfccd80c885125d",
+      "tests/equipment-ammunition-held-supplies.test.mjs": "5911219f82e5d38db1d0435db9e40ec8670dd5d30814b6a811fdd35b049062ac",
+      "tests/paired-reprime-ui.test.mjs": "e487d094157bb4c1c60fe72e48adcb9dc0b3f3152393f98bfeb8052d10697d59",
+      "tests/custom-traits.test.mjs": "a713eb3b00547fe4563b965877428213fad09be8ff2ad1e169c4de2167554b59",
+      "tests/reload-progress.test.mjs": "e0acd9a0b16944424da46a9764234ba3adde946ec7d1267ff8dd94bad2e81120",
+      "tests/merchants.test.mjs": "34d3a3e0421df350a89380cdf3571ba3ada973afb456382fc16edb36c645c2e7",
+      "tests/inventory-equip-save.test.mjs": "78b15b996e4862566604b561c5d02ba41b4110c18add046ae8ad91993ca29818",
+      "tests/contracts-web.test.mjs": "bc782b94633d1cec50a1d62dc3d9a3bdfe65bf088876686a33811b01b3a636ad",
+      "tests/implicit-ignition-game.test.mjs": "b2b3660e4c0a8b95de3c1c96330dfec0ed09a7b3f37eaa12aa0e40bf1c186e30",
+      "tests/equipment-cursor-tactical.test.mjs": "9903c3433ca66a3b1b59f3744517290a334fa316637de4c7678f81a020f0df47",
+      "tests/paired-reload.test.mjs": "7a901ee7493403b9d0300d893d87627cdf1e59168ddf8a8202ac64e107028dbf",
+      "tests/equipment-cursor-lifecycle.test.mjs": "42d520ba149961bdde5236ddc802617c9abcbff937d3a205aed91cc79c8e24fd",
+      "tests/campaign-attachment-slots.test.mjs": "5bd44c4b701c15b3282665e4006198634d3adb169f170d0c5188e6126866be94",
+      "tests/skill-training.test.mjs": "2a0e50cdda157f65fbd5269b1faf3a9f140cd5d95d7e1687139762c28a764531",
+      "tests/campaign-main-hand.test.mjs": "640c4d6c0bceaaaa141eece59c23e791794fa06b7ffe7531826123d9684fafc1",
+      "tests/equipment-placement.test.mjs": "e73a4ff2f47c301a02388eefdd9e1f247cf871d931c6475ffef78f6bdc8a9865",
+      "tests/environment-transactions.test.mjs": "f89fc72ac92a91e8d797da271be95c55c4484f65b3a710ddfc831c210347b199",
+      "tests/tactical-ai-equipment.test.mjs": "bb293284f718a6915f3ffb313139aff6e9b7c62caad989bc405b984174777ff4",
+      "tests/paired-reload-hud.test.mjs": "b0648ea00e77f275fc611edfc07ee229acabe3391e7f57311821fd8bd163b104",
+      "tests/campaign-cursor-ammunition.test.mjs": "711016c7d3810195e3aa9a148273dc16b0d276c58be073ef1a48746ea31aaf61",
+      "tests/paired-reprime.test.mjs": "455c9a06ae982fe8b926fa13b6293f75f2ce447465a44dd4e3cbdbde08367b3f",
+      "tests/equipment-web.test.mjs": "a471a5456154f4c59132139dd24c8adb303f2ccd9ea564ab3755977adfb6ad1c",
+      "tests/recruitment-web.test.mjs": "b2455b5f725bd73b4ab938950c2d272f59beaa78d163e94bcbda4be65666fc3e",
+      "tests/visit-report.test.mjs": "92deb184931363f1f00474f4b0e083eba16d79b58f4e2362dc9fdb1fe138b619",
+      "tests/inventory-transactions.test.mjs": "d9935ed28f548425b370de64d800de1a528f77a185e00c353634b5e327a42e0c",
+      "tests/sector-inventory.test.mjs": "53dfca32d69ea9433724b0021063c80bff67e1ea3c8dd6422341a9bb59cf90af",
+      "tests/tactical-ai-scavenging.test.mjs": "30af9408b3ccf0e61f0b3663873e67717fdd470bcb0cca5718ad0f15ddd6a8a0",
+      "tests/main-hand-objects.test.mjs": "d23bcd9820d839cf63be6688147b80cee48dc5d1675af7469cb9bf6096f78082",
+      "tests/tactical-inventory.test.mjs": "1475028585b83d55708e0d5b9a752226d909d335a9c99ef882307c5498d30298",
+      "web/app/JA2Pockets.tsx": "88efd8909e72c217193d3b16cb1d9eb8446861103fc9b469823beb2410fc0c44",
+      "web/app/JA2Roster.tsx": "7726ec008e661420081f56b5bcb4432ac31df6f0c56fd4d4b7d959456e5fc88e",
+      "web/app/Armory.tsx": "b585601d7c9cee630444f7638db58151023ac7e11126be3a4d5c105d6e8047b3",
+      "tests/opening-driver.mjs": "bd25fb8f72bd87cb25f96058fa2bd1b58b15c66fd405a2805230d708daa6c31d"
+    },
+    "regressionBeforeDriverUpdate": {
+      "total": 3216,
+      "passed": 3210,
+      "failed": 6,
+      "skipped": 0
+    },
+    "types": "PASS",
+    "build": {
+      "status": "PASS",
+      "files": 1107,
+      "assetReferences": 993
+    },
+    "baselineComparison": {
+      "portraitSources": "Both original checks pass; mirror lacks source manifests.",
+      "movement": "The 315-versus-365 ms late-worker failure reproduces in untouched original.",
+      "routes": "Before and after use identical source tests. Both reach the same medical recovery, Cordoba recapture and prisoner-rescue failures after correcting the test controller. The three San Lorenzo/Cordoba opening child milestones pass; three later children skip after failed recapture."
+    },
+    "routeRerunAfterDriverUpdate": {
+      "total": 10,
+      "passed": 3,
+      "failed": 4,
+      "skipped": 3,
+      "independentFailures": [
+        "Fresh northern doctor recovery has no surviving medic",
+        "Cordoba recapture ends in defeat; its parent fails and three later milestones are skipped",
+        "Prisoner relief ends in defeat instead of retreat"
+      ],
+      "comparison": "The same independent failures reproduce in the unchanged original checkout. San Lorenzo succeeds after the controller uses the implicit ignition kit."
+    },
+    "appliedToPort3000": {
+      "files": 60,
+      "conflicts": 0,
+      "beforeHashRecordSha256": "1fb10c25f57ff5125d6190c49a008ad7fd828d0a50ee59af9bcc42d1f6cf2770",
+      "focused": {
+        "passed": 62,
+        "failed": 0,
+        "skipped": 0
+      },
+      "types": "PASS",
+      "build": {
+        "status": "PASS",
+        "files": 1107,
+        "assetReferences": 993
+      }
+    }
+  },
+  "browser": {
+    "url": "http://localhost:3134/",
+    "actions": [
+      "Hire Alistair Kerr through normal recruitment",
+      "Inspect workshop service",
+      "Enter Retiro and open equipment"
+    ],
+    "result": "No personal priming/flint counters or pockets. One loaded shotgun round, nine spare rounds, six occupied small pockets, two empty small pockets. No console errors.",
+    "screenshot": "docs/evidence/implicit-ignition-integration.png",
+    "sha256": "579fd3c6ed44576458d31727ce78e4ec8f83822f8753b263074c94d517f88006"
+  },
+  "logs": {
+    "/tmp/implicit-ignition-published-10-final.log": "ba0c14aec0116a00359a93ea0c517bdd7930e090289f581ff177f71edd8f19d6",
+    "/tmp/implicit-ignition-published-types-final.log": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30",
+    "/tmp/implicit-ignition-published-build.log": "f8fd25fd824e4cbaae50548a38490e1fd6d0ee14f37cc320a9db0e77e8f9f019",
+    "/tmp/implicit-ignition-published-baseline.log": "4c06cb40ae579927f1f82c07a28210cd1b25584853c74bc5c84de1d69bbe8f35",
+    "/tmp/implicit-ignition-before-probe.log": "1d1d060b22dad1641ecd6755325e00c52b4a75407a9e98785461c6cd2c0b5efa",
+    "/tmp/implicit-ignition-advanced-final.log": "4e54bd432d0d2d9021b22e3963a6b2889c608fe9bb6bed3c7df8f6392f0fbc6e",
+    "/tmp/implicit-ignition-original-movement.log": "eb6a7ac608612aae31581b0300d52fe94dce244315b3a163439d5ada28405881",
+    "/tmp/implicit-ignition-original-routes.log": "59660dbd8f7ae7a27b9289aba0a581bdcdf2070b17969455d069240914e7d141",
+    "/tmp/implicit-ignition-capacity-tests.log": "48654a08d79f1a2fa96bd1d470fe6a2fa02190f8892153e3218e3db9fc03354d",
+    "/tmp/implicit-ignition-related3.log": "b84552416f97d06fb843a147eda06e293cb462867f4b679a7bdf83be5bc78716",
+    "/tmp/implicit-ignition-types.log": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30",
+    "/tmp/implicit-ignition-build.log": "6d3a28c2cc9d4037a2c5ea2598c4ab4dd9a370f69b96fbc26aaaa6838b7b629c",
+    "/tmp/implicit-ignition-updated-routes.log": "7e3671696d2227a1e673f9f8c0268759d831c62ae7153871797250f576339603",
+    "/tmp/implicit-ignition-live-focused.log": "e0bae20abed53d3ca644d7fa93b2a01c2cea139a3b8d3f9ddb312c90a123c18a",
+    "/tmp/implicit-ignition-live-types.log": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30",
+    "/tmp/implicit-ignition-live-build.log": "e4a94ce511a3196fb8f6ccfff5d816bd2700520910a8610200bc5b19997c736b",
+    "/tmp/implicit-ignition-applied.json": "1fb10c25f57ff5125d6190c49a008ad7fd828d0a50ee59af9bcc42d1f6cf2770"
+  },
+  "limitations": [
+    "Published correction and advanced local integration are separate sources.",
+    "Advanced nine-to-four cartridge conversion and authored-family integration remain open.",
+    "Alternative ammunition loads per firearm remain open.",
+    "No full campaign, movement artwork or performance acceptance."
+  ],
+  "liveBrowser": {
+    "url": "http://localhost:3000/",
+    "actions": [
+      "Open the existing campaign before restart",
+      "Export the campaign through its normal control",
+      "Restart the verified local production server after passing focused tests and build",
+      "Reload, continue the existing saved campaign, open equipment"
+    ],
+    "result": "Existing Buenos Aires exploration opens with the same visible roster health and loaded/spare quantities. Bellanger keeps pistol and facon, rations 2, dressings 2, boleadoras 1, torches 2. No separate priming/flint pockets. No console errors. No new campaign or gameplay order issued.",
+    "screenshot": "docs/evidence/implicit-ignition-live.png",
+    "sha256": "7e3489133b7f82461e7400cb9a94385cc8390e9b8938aac64fea6a13a21a83ba"
+  }
+}

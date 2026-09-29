@@ -608,8 +608,13 @@
     {
       "id": "E-AMMO-AUTHOR",
       "path": "docs/verification/authored-ammunition-family.md",
-      "description": "Optional pinned weapon ammunition family drives paid deployment, compatible reloads, enemy issue and recovered weapons. Seven new simulation/editor cases include strategic reserve admission. Full regression 1289/1289 precedes a final scope correction, which passes 26 related tests, types and export. Source/log/browser evidence distinguishes those runs; the complete remote suite gates publication. Alternative loads and advanced custody remain open.",
+      "description": "Merged PR #132 at 01364bbdf99f9057d7871370b12b92c60e5b04e7. All five checks pass for ca374364ddf6dcce85db78ffedb39ee61f81831a; four complete groups total 1289/1289, with no failures or skips. Optional pinned weapon ammunition family drives deployment, reload, enemy issue and recovery. Alternative loads and advanced custody remain open.",
       "url": "https://github.com/fsodano/granaderos/pull/132"
+    },
+    {
+      "id": "E-IGNITION-MIGRATION",
+      "path": "docs/verification/implicit-ignition-integration.md",
+      "description": "Known-holder migration preserves ordinary inventory, pinned content and physical cartridges while removing retired ignition stocks/references. Four new tests, ten focused checks, types, export and 36 baseline comparisons pass; remote checks gate the final head. Advanced local integration has separate source hashes and unresolved route/movement failures."
     }
   ],
   "queue": [
@@ -3902,7 +3907,7 @@
       "status": "FAILED",
       "priority": "P0",
       "published": "The published rules now accept a complete fresh mixed historical route, a hired-only coastal opening, explicit historical loss and saved post-victory continuation. Editable content, paid arrivals, permanent casualties, story gates and treasury costs are exercised. Most advanced local gameplay is still outside this integrated release. A complete compact independent authored scenario is also accepted, with its own ending and real deadline failure.",
-      "local": "The preserved advanced/prototype audits contain failures and policy differences. Those source-specific results are not replaced by the published route; later concurrent local changes are not yet accepted in main.",
+      "local": "The preserved advanced/prototype audits contain failures and policy differences. Those source-specific results are not replaced by the published route; later concurrent local changes are not yet accepted in main. The advanced local implicit-kit migration and maintenance wiring pass focused checks; its full source-specific audit retains movement and campaign-route failures. Four-family conversion is still pending there.",
       "remaining": "Import one bounded capability at a time, preserve approved policy and carry its tests into main.",
       "acceptance": "One release has the full combined behavior, passing combined suite, legal complete routes and no undocumented policy regressions.",
       "evidence": [
@@ -3915,7 +3920,8 @@
         "E-HISTORICAL-LOSS",
         "E-FRESH-CUYO",
         "E-FRESH-ENDING",
-        "E-POST-CAMPAIGN"
+        "E-POST-CAMPAIGN",
+        "E-IGNITION-MIGRATION"
       ]
     },
     {
@@ -6282,7 +6288,7 @@
       "requirement": "Select a compatible ammunition family for each authored firearm",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "The weapon editor selects one of four compatible ammunition families or the template default. Saved weapon definitions retain the choice through deployment, reload, drops and recovery. Existing definitions remain unchanged. Typed strategic records reject malformed or inconsistent reserves without rejecting ordinary inventory keys.",
+      "published": "Merged in PR #132 after all five final-head checks passed (1289/1289 gameplay tests, no failures or skips). The weapon editor selects one of four compatible ammunition families or the template default. Saved weapon definitions retain the choice through deployment, reload, drops and recovery. Existing definitions remain unchanged. Typed strategic records reject malformed or inconsistent reserves without rejecting ordinary inventory keys.",
       "local": "Full regression source b8d269b688df6d99bdc2f6f6f11b33155a25546a passes 1289/1289 with zero failures or skips. Final source e29bca955c048df91943a45348720fa971e8ae73 narrows saved-reserve validation to known unit records and passes all 26 related cases, types and export. The actual editor selects, undoes, redoes and reloads the choice without errors; paid launch and later draft isolation pass. Complete remote checks gate the final PR head.",
       "remaining": "",
       "acceptance": "Choose and restore a weapon family through normal editor controls; consume compatible rounds only, reject wrong-family loads and forged definitions, preserve old saves, paid issue, enemy issue, recovered weapons and campaign pinning. Reject corrupt militia/deployment reserves while preserving valid mixed reserves, legacy scalar saves and named inventory objects.",
@@ -6301,10 +6307,34 @@
         "INTEGRATION-01"
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/132"
+    },
+    {
+      "id": "IGNITIONMIGRATION-01",
+      "group": "Published deliveries",
+      "requirement": "Preserve ordinary inventory and pinned content during ignition-kit migration",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "The migration removes obsolete counters and their direct equipment references only from known unit/scene holders. Ordinary inventory entries named priming or flints survive; pinned packages and extension dictionaries remain unchanged.",
+      "local": "Source 20b21e38a87ad93a63bf3a1297b1dec13ee89f71 passes ten focused migration/save cases, types, export and 36 reference checks. Advanced local wiring and its route failures are recorded separately. Final-head remote regression gates publication.",
+      "remaining": "",
+      "acceptance": "Migrate old holders, hands, cursor, pockets, ground and containers without deleting normal named objects or changing cartridge quantities. Restore an actual campaign twice with stable content identity and immutable input.",
+      "evidence": [
+        "E-IGNITION-MIGRATION"
+      ],
+      "testFiles": [
+        "tests/ignition-kit.test.mjs",
+        "tests/ignition-kit-save.test.mjs"
+      ],
+      "parents": [
+        "ITEM-01",
+        "JA2-I08",
+        "STORY-06",
+        "INTEGRATION-01"
+      ]
     }
   ],
   "latestPublishedCheck": {
-    "source": "b8d269b688df6d99bdc2f6f6f11b33155a25546a",
+    "source": "ca374364ddf6dcce85db78ffedb39ee61f81831a",
     "total": 1289,
     "passed": 1289,
     "failed": 0,

@@ -7,6 +7,8 @@ accepted features on GitHub `main`, approved scope changes and open work.
 
 ## Published baseline
 
+- [Safe migration to an implicit ignition kit](implicit-ignition-integration.md).
+
 - [Weapon ammunition selection in the story editor](authored-ammunition-family.md).
 
 - [Compatible ammunition and implicit ignition kit](typed-ammunition.md) — merged PR #130.
