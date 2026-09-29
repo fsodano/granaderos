@@ -697,3 +697,14 @@ taller paga más al comprar que al revender, beneficia al jugador hasta agotar s
 fondos. La armería muestra el pago local y la caja reales. Deshacer, rehacer,
 restaurar y la validación funcionan; los cambios del borrador no alteran partidas
 iniciadas. [Verificación](../verification/authored-artillery-trading.md).
+
+### Recuperar el arma secundaria
+
+**Recoger equipo** también toma el arma blanca secundaria de un soldado muerto o
+inconsciente. Conserva el nombre, la imagen y los valores que configuraste en el
+editor. La pieza pasa al inventario y deja un espacio vacío en el cuerpo. Podés
+equiparla en cualquiera de las dos manos; el arma que reemplazás queda guardada.
+Guardar, salir y volver al sector conserva ese cambio. Una compra posterior
+puede equipar otra pieza. Esto aún no incluye las armas y armaduras de habitantes
+civiles. La [verificación](../verification/secondary-weapon-recovery.md) registra
+los casos de recuperación, regreso y guardado.

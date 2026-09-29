@@ -504,7 +504,12 @@
     {
       "id": "E-UNSEEN-RESIDENT-WOUNDS",
       "path": "docs/verification/unseen-resident-wounds.md",
-      "description": "Initial resident wounds advance from actual placement without waiting for an encounter. Eight simulations cover unseen death and bodies, bulletin/dormant exclusions, successive deaths, loaded-scene deferral, daily relocation, batched/incremental checkpoints, old-save migration and finite first aid. Related checks pass 56/56 and complete regression 1131/1131, zero failures/skips, with types, export and 36 baseline comparisons. Exact-head publication remains required."
+      "description": "Initial resident wounds advance from actual placement without waiting for an encounter. Eight simulations cover unseen death and bodies, bulletin/dormant exclusions, successive deaths, loaded-scene deferral, daily relocation, batched/incremental checkpoints, old-save migration and finite first aid. Related checks pass 56/56 and complete regression 1131/1131, zero failures/skips, with types, export and 36 baseline comparisons. Published by PR #111 after successful exact-head CI."
+    },
+    {
+      "id": "E-SECONDARY-RECOVERY",
+      "path": "docs/verification/secondary-weapon-recovery.md",
+      "description": "Military secondary blades transfer once into carried inventory through ordinary body looting, retaining authored definitions and wear. Five simulations and one mounted production-game case pass; related equipment group passes 27/27. Complete regression passes 1137/1137, zero failures/skips, with types, export and 36 baseline comparisons. Exact-head publication remains required."
     }
   ],
   "queue": [
@@ -3446,15 +3451,16 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Nine firearms and five blade families match reference base values. Firearm and blade variants/images are authored and retained in character equipment, combat and saves. Enemy roles and militia ranks now support independent primary and secondary blade selections.",
-      "local": "See local suite and preserved parity source; not equivalent to published integration. BATTERYCHOICE-01 tracks explicit saved artillery choice and exact model availability.",
-      "remaining": "Author fittings/ammunition; finish physical inventory, secondary corpse looting, wear and unarmed behavior.",
+      "local": "See local suite and preserved parity source; not equivalent to published integration. BATTERYCHOICE-01 tracks explicit saved artillery choice and exact model availability. SECONDARYLOOT-01 tracks finite recovery of military secondary weapons, their authored identity and saved empty source slots.",
+      "remaining": "Author fittings/ammunition; finish complete physical inventory, civilian equipment looting, wear and unarmed behavior. SECONDARYLOOT-01 accepts bounded military secondary recovery.",
       "acceptance": "XML values, inventory images, sounds and use in combat",
       "evidence": [
         "E-PUBLISHED",
         "E-CONFLICTS",
         "E-AUTHORED-BLADES",
         "E-FORCE-BLADES",
-        "E-BATTERY-CHOICE"
+        "E-BATTERY-CHOICE",
+        "E-SECONDARY-RECOVERY"
       ]
     },
     {
@@ -4688,13 +4694,14 @@
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Published related core exists; full parity acceptance is not established.",
-      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
+      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check. SECONDARYLOOT-01 tracks finite recovery of military secondary weapons, their authored identity and saved empty source slots.",
       "remaining": "Consolidate the local behavior, close the preserved row-specific gaps, and verify normal controls plus saved continuation on main.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
-        "E-PUBLISHED"
+        "E-PUBLISHED",
+        "E-SECONDARY-RECOVERY"
       ],
       "sourceRow": "JA2-I10",
       "sourceNotes": "The minimum AP, energy and probability weights are game tuning. Enemy-initiated theft and a full inventory-choice policy remain absent. Prepared pack guns now use paid capacity-checked swaps; see [AI field equipment](ai-field-equipment.md). This does not permit taking hidden pack contents from a conscious opponent. Dead-body searches now approach before showing inventory; a live partial pickup and reload retained fifteen of nineteen body cartridges. See [loot approach](loot-approach.md)."
@@ -5649,7 +5656,7 @@
       "requirement": "Advance authored resident wounds from actual appearance before the first encounter",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Initial wounds start at actual world appearance, including unblocked successors and daily relocation.",
+      "published": "Published by PR #111 after successful exact-head CI. Initial wounds start at actual world appearance, including unblocked successors and daily relocation.",
       "local": "Eight new simulations pass; the related civilian/presence group passes 56/56. Complete regression passes 1131/1131 with zero failures/skips, plus types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Advance initial wounds from campaign placement, start successors at actual unblocked arrival, preserve wounds and corpse location through daily movement, keep bulletin/dormant characters off the civilian clock, retain loaded/off-screen timing and saves, and migrate old unseen wounds without retroactive damage.",
@@ -5665,17 +5672,43 @@
         "tests/character-condition.test.mjs",
         "tests/unloaded-civilian-bleeding.test.mjs",
         "tests/campaign-presence.test.mjs"
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/111"
+    },
+    {
+      "id": "SECONDARYLOOT-01",
+      "group": "Published deliveries",
+      "requirement": "Recover military secondary blades once with saved empty source slots and authored identity",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Military secondary weapons move once into inventory, preserve authored identity and wear, and leave saved empty source slots.",
+      "local": "Five simulations and one mounted production-game check pass; related equipment group 27/27. Complete regression 1137/1137, zero failures/skips, with types, export and 36 reference comparisons.",
+      "remaining": "",
+      "acceptance": "Collect a real killed soldier with the normal control, recover both slots or its blade alone, keep authored name/image/wear and ordinary AP/range checks, equip it, save and return without restoring the source blade, preserve an unconscious hired or militia survivor with an empty slot, and replace it only through another real item.",
+      "evidence": [
+        "E-SECONDARY-RECOVERY"
+      ],
+      "parents": [
+        "ITEM-01",
+        "JA2-I10",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/secondary-loot.test.mjs",
+        "tests/secondary-loot-render.test.mjs",
+        "tests/content-blades.test.mjs",
+        "tests/equip-loot.test.mjs"
       ]
     }
   ],
   "latestPublishedCheck": {
-    "source": "a9fcb41672e520a1928a9ba84447f77c55ea16f7",
-    "total": 1123,
-    "passed": 1123,
+    "source": "f8ffaa247cc084b9313a8d7df7a6e156a56564b0",
+    "total": 1131,
+    "passed": 1131,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-ARTILLERY-TRADING-RULES"
+    "evidenceId": "E-UNSEEN-RESIDENT-WOUNDS"
   }
 }
