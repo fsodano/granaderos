@@ -55,4 +55,9 @@ are mounted DOM and simulation checks, not live-browser or performance results.
 The broader artillery, item and story-rule requirements remain partial. Trading,
 physical stock, configurable general transport and advanced logistics are
 separate deliveries. See the [finite transport boundary](finite-artillery-transport.md).
-Exact-head CI remains required before publication.
+Exact-head CI passed before publication.
+
+## Publication
+
+Published in [PR #107](https://github.com/fsodano/granaderos/pull/107) on 2026-09-28 23:47:20 UTC.
+Exact head `a4c5cfa4a2ae9fa62b88a61c81b830948baded7c` passed [CI run 36498846140](https://github.com/fsodano/granaderos/actions/runs/36498846140), including the full suite, types and production build. Merge commit: `38e426907cc6f75ac8c005cb48750254b3df5f36`. This publication does not close the broader artillery or campaign requirements.

@@ -46,4 +46,9 @@ cannot send it again. These are simulations and mounted DOM checks, not
 live-browser, campaign-balance or performance acceptance.
 
 Broader logistics, artillery and integration requirements remain partial.
-Exact-head CI remains required before publication.
+Exact-head CI passed before publication.
+
+## Publication
+
+Published in [PR #109](https://github.com/fsodano/granaderos/pull/109) on 2026-09-29 00:07:30 UTC.
+Exact head `7856199dfe201864a9e067a634234d1da81fa5f2` passed [CI run 36500779535](https://github.com/fsodano/granaderos/actions/runs/36500779535), including the full suite, types and production build. Merge commit: `a085dbbe8b7b777c3fbeddbc811372d247d2b2cb`. This publication does not close the broader artillery or campaign requirements.
