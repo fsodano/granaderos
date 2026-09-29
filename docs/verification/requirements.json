@@ -4578,7 +4578,7 @@
       "priority": "P1",
       "published": "One stored recovered weapon can be handed directly to an adjacent conscious squad member for four sender AP or one exploration second. Shared preview/execution rejects blocked contact or unavailable recipients and preserves actual ownership, mechanism and full saves. WEAPONHANDOVER-01 records this bounded delivery. HELDHANDOVER-01 also delivers the actual primary or secondary directly, leaving the source hand empty.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check. WEAPONHANDOVER-01 tracks adjacent transfer of recovered weapons with saved recipient ownership.",
-      "remaining": "Extend transfer to held equipment and supplies; integrate physical capacity, relay chains, throwing/catching and their visible costs and risk. Preserve the advanced-workspace source notes as separate evidence until those paths are accepted on main.",
+      "remaining": "Extend transfer to nonweapon equipment and supplies; integrate physical capacity, relay chains, throwing/catching and their visible costs and risk. Preserve the advanced-workspace source notes as separate evidence until those paths are accepted on main.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
