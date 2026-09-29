@@ -514,7 +514,7 @@
     {
       "id": "E-DROP-RECOVERED-WEAPONS",
       "path": "docs/verification/drop-recovered-weapons.md",
-      "description": "One recovered firearm or blade moves from carried inventory to the field and back through normal controls, retaining its authored image, definition, weight and mechanism. Six simulations and one mounted production-game case pass; related group 31/31. Complete regression passes 1144/1144, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
+      "description": "One recovered firearm or blade moves from carried inventory to the field and back through normal controls, retaining its authored image, definition, weight and mechanism. Six simulations and one mounted production-game case pass; related group 31/31. Complete regression passes 1144/1144, zero failures/skips, with types, export and 36 reference comparisons. Published by PR #113 after successful exact-head CI."
     },
     {
       "id": "E-ADJACENT-WEAPON-TRANSFER",
@@ -5722,7 +5722,7 @@
       "requirement": "Leave recovered weapons on the field and recover each piece without lost or duplicate custody",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Recovered weapons move once between carried inventory and field cells, retaining authored identity, weight and mechanism through saved return.",
+      "published": "Published by PR #113 after successful exact-head CI. Recovered weapons move once between carried inventory and field cells, retaining authored identity, weight and mechanism through saved return.",
       "local": "Six simulations and one mounted production-game check pass; related group 31/31. Complete regression 1144/1144, zero failures/skips, with types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Use the real inventory to leave one stored weapon at the soldier feet for four combat AP or one exploration second; collect it from an occupied cell; preserve definition, image, weight, wear, jam, load and unfinished reload through full saves and sector return; keep both pieces when local drop indices collide across fields; reject invalid, absent or unavailable equipment without changing custody.",
@@ -5740,7 +5740,8 @@
         "tests/drop-recovered-weapons-render.test.mjs",
         "tests/secondary-loot.test.mjs",
         "tests/equip-loot.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/113"
     },
     {
       "id": "WEAPONHANDOVER-01",
@@ -5769,13 +5770,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "dac3f896ee53a5e69cb937f4db0270661a8dba52",
-    "total": 1137,
-    "passed": 1137,
+    "source": "f2176b48d9a7e53c7529fda4d5515329bde892e4",
+    "total": 1144,
+    "passed": 1144,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-SECONDARY-RECOVERY"
+    "evidenceId": "E-DROP-RECOVERED-WEAPONS"
   }
 }
