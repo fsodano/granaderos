@@ -11,7 +11,7 @@ import {secureArea} from './controlled-area-fixture.mjs';
 import {order,saved,visit,leave,tactical,localPackage,localNPC,localId,hireLocal,sync,A} from './local-contract-fixture.mjs';
 const B='cell-26-27',person=(d,id)=>d.characters.find(c=>c.id===`person-${id}`);
 const stock={priming:6,flints:4,rations:3,torches:2,medkits:7,boleadoras:1};
-function content({daily=false,critical=true}={}){const d=localPackage();d.characters.at(-1).startingSupplies={...stock};if(critical)d.characters.at(-1).startingCondition={hp:1,energy:100,fatigue:0,bleeding:0,bandaged:0};person(d,110).attributes.medical=80;person(d,110).startingSupplies={...stock,medkits:0};if(daily)Object.assign(d.placements.at(-1),{mode:'daily',sectors:[A,B],selection:'alternate'});return d;}
+function content({daily=false,critical=true}={}){const d=localPackage();d.characters.at(-1).startingSupplies={...stock};if(critical)d.characters.at(-1).startingCondition={hp:1,energy:100,fatigue:0,bleeding:0,bandaged:0};person(d,110).attributes.medical=80;person(d,110).startingSupplies=Object.fromEntries(Object.keys(stock).map(k=>[k,0]));if(daily)Object.assign(d.placements.at(-1),{mode:'daily',sectors:[A,B],selection:'alternate'});return d;}
 function approach(p){const n=localNPC(p.battle),u=p.battle.units.find(u=>u.side==='player'),spot=getReachable(p.battle,u).find(t=>Math.abs(t.x-n.x)+Math.abs(t.y-n.y)===1);assert.ok(spot);return spot.cost?tactical(p,{type:'move',unitId:u.id,x:spot.x,y:spot.y}):p;}
 function ready(d=content()){let s=order(initialCampaign(42,d),{type:'recruitCivic',id:110,term:'month'});s=order(s,{type:'travel',sector:s.contentPresence.people['alma-contract'].sector});return approach(visit(s));}
 const loot=(p,extra={})=>tactical(p,{type:'loot',targetId:localNPC(p.battle).id,...extra});
@@ -47,7 +47,7 @@ test('civilian looting uses ordinary range and AP, validates quantity, preserves
  for(const a of [{count:-1},{count:1.5},{count:0},{item:'weapon'},{item:'ammo'}]){const denied=take(b,a);assert.ok(denied.lastError);assert.deepEqual(denied.units,b.units);assert.deepEqual(denied.npcs,b.npcs);}
  for(const before of [field({hp:100}),field({departure:true}),field({x:5,y:5}),field({civilianSupplies:undefined}),field({}, {medkits:1000000})]){const denied=take(before,{item:'medkits'});assert.ok(denied.lastError);assert.deepEqual(denied.units,before.units);assert.deepEqual(denied.npcs,before.npcs);}
  const low=field();low.units[0].ap=7;assert.ok(take(low).lastError);assert.equal(low.npcs[0].civilianSupplies.medkits,7);
- const capped=take(field({}, {medkits:999999}),{item:'medkits'});assert.equal(capped.units[0].medkits,1000000);assert.equal(capped.npcs[0].civilianSupplies.medkits,6);assert.ok(validateBattleSnapshot(capped));
+ const capped=take(field({}, {medkits:999999}),{item:'medkits'});assert.match(capped.lastError,/bolsillo/);assert.equal(capped.units[0].medkits,999999);assert.equal(capped.npcs[0].civilianSupplies.medkits,7);assert.ok(validateBattleSnapshot(capped));
 });
 
 test('the real temporary commander stock reaches its shared identity and later mission contact without a default refill',()=>{
@@ -59,7 +59,7 @@ test('the real temporary commander stock reaches its shared identity and later m
 });
 
 test('authored and previously collected resident supplies remain finite when that identity becomes the mission ally',()=>{
- const d=defaultContentPackage(),c=person(d,57);c.startingSupplies={...stock};c.startingCondition={hp:1,energy:100,fatigue:0,bleeding:0,bandaged:0};Object.assign(d.placements.find(p=>p.character===c.id),{mode:'fixed',sectors:['retiro']});person(d,110).arrivalHours=0;person(d,110).attributes.medical=80;
+ const d=defaultContentPackage(),c=person(d,57);c.startingSupplies={...stock};c.startingCondition={hp:1,energy:100,fatigue:0,bleeding:0,bandaged:0};Object.assign(d.placements.find(p=>p.character===c.id),{mode:'fixed',sectors:['retiro']});person(d,110).arrivalHours=0;person(d,110).attributes.medical=80;person(d,110).startingSupplies=Object.fromEntries(Object.keys(stock).map(k=>[k,0]));
  let s=initialCampaign(42,d);assert.equal(sanLorenzoAlly(s).medkits,7);s=order(s,{type:'recruitCivic',id:110,term:'month'});let p=visit(s);const n=p.battle.npcs.find(n=>n.operativeId===57);for(let i=0;i<12;i++){const target=p.battle.npcs.find(x=>x.id===n.id),u=p.battle.units[0];if(Math.hypot(u.x-target.x,u.y-target.y)<=1.5)break;const spot=getReachable(p.battle,u).filter(t=>Math.abs(t.x-target.x)+Math.abs(t.y-target.y)===1).sort((a,b)=>a.cost-b.cost)[0];assert.ok(spot);p=tactical(p,{type:'move',x:spot.x,y:spot.y});}p=tactical(p,{type:'loot',targetId:n.id});
  for(let i=0;i<2;i++)p=tactical(p,{type:'heal',targetId:n.id});s=saved({campaign:leave(p)}).campaign;for(const k of Object.keys(stock))assert.equal(sanLorenzoAlly(s)[k],0,k);
  // Prepared territorial approach isolates the actual subsequent role transition.

@@ -1,3 +1,4 @@
+import {pocketChangeReason,supplyRoom,inventoryRoom,movePocket,POCKET_FULL} from './personal-pockets.js';
 import {recordBattleFrame,captureBattlePresentation} from './battle-presentation.js';
 import {FISTS,BUTTSTOCK,unarmedChance,unarmedImpact} from './unarmed-combat.js';
 import {ARTILLERY,artilleryProfile} from './artillery-definitions.js';
@@ -248,6 +249,10 @@ if(s.mode==='exploration')s.actionDurationSeconds=Math.max(1,Math.ceil(cost*.06)
 else if(a.type==='door'){const door=a.doorId?s.tiles.find(t=>t.doorId===a.doorId):tile(s,a.x,a.y);if(!door||door.type!=='door'||dist(u,door)>1.5)return fail('Acércate a la hoja de puerta que quieres accionar.');if(door.locked)return fail('La puerta está cerrada con llave.');if(!pay(4))return fail('Accionar la puerta requiere 4 PA.');door.open=typeof a.open==='boolean'?a.open:!door.open;door.blocked=!door.open;door.blocksSight=!door.open;say(s,`${u.name} ${door.open?'abre':'cierra'} la puerta.`);}
 else if(a.type==='throwTorch'){const point={x:a.x,y:a.y};if(!Number.isInteger(a.x)||!Number.isInteger(a.y)||!tile(s,a.x,a.y)||tile(s,a.x,a.y).blocked||dist(u,point)>8||!hasLineOfSight(s,u,point))return fail('La antorcha debe caer en terreno accesible a ocho casillas o menos.');if(!u.torches)return fail('No quedan antorchas.');if(!pay(10))return fail('Lanzar la antorcha requiere 10 PA.');u.torches--;s.lights.push({id:`torch-${u.id}-${s.turn}-${s.lights.length}`,type:'torch',x:a.x,y:a.y,radius:4,intensity:1,turns:s.weather.rain>50?4:8,age:0});say(s,`${u.name} lanza una antorcha encendida.`);}
 else if(a.type==='movement'){if(!['walk','run','crouch','prone'].includes(a.movement))return fail('Elige caminar, correr, agacharte o arrastrarte.');u.movementMode=a.movement;u.stance=a.movement==='prone'?'prone':'standing';say(s,`${u.name} cambia su forma de desplazarse.`);}
+else if(a.type==='pocket'){
+ try{u.pocketOrder=movePocket(u,a.source,a.destination);}catch(error){return fail(error.message);}
+ s.actionDurationSeconds=1;
+}
 else if(a.type==='drop'){
  const key=a.inventoryKey,held=a.slot!==undefined;
  if(held&&(!['primary','blade'].includes(a.slot)||key!==undefined))return fail('Elegí una sola mano o un arma de la mochila.');
@@ -310,11 +315,60 @@ else if(a.type==='loot'&&civilian(s,target)){
  if(dist(u,target)>1.5)return fail('Acércate al cuerpo o habitante que quieres registrar.');
  const plan=civilianSupplyLoot(target,u,a);if(!plan.valid)return fail(plan.reason);
  if(!pay(8))return fail('Registrar los suministros requiere 8 PA.');
- for(const [key,count]of Object.entries(plan.amounts)){u[key]=(u[key]??0)+count;target.civilianSupplies[key]-=count;}
- const collected=Object.entries(plan.amounts).map(([key,count])=>`${count} ${CHARACTER_SUPPLY_LABELS[key].toLowerCase()}`).join(', ');
+ const amounts={};for(const [key,wanted]of Object.entries(plan.amounts)){const count=supplyRoom(u,key,wanted);if(a.count!==undefined&&count<wanted)return fail(POCKET_FULL);if(count){amounts[key]=count;u[key]=(u[key]??0)+count;target.civilianSupplies[key]-=count;}}
+ if(!Object.keys(amounts).length)return fail(POCKET_FULL);
+ const collected=Object.entries(amounts).map(([key,count])=>`${count} ${CHARACTER_SUPPLY_LABELS[key].toLowerCase()}`).join(', ');
  say(s,`${u.name} recoge de ${target.name}: ${collected}.`);
 }
-else if(a.type==='loot'){const source=target;const drop=a.dropIndex!==undefined?s.droppedWeapons[a.dropIndex]:null;const ground=a.groundId?s.groundItems.find(g=>g.id===a.groundId):null;let pos=source||drop||ground;if(!pos||dist(u,pos)>1.5)return fail('Acércate al cuerpo o equipo que quieres registrar.');if(source&&source.hp>0&&!source.unconscious&&!source.routed)return fail('Solo puedes registrar un cuerpo o una persona inconsciente.');if(drop?.taken||ground?.count===0||ground?.heldBy)return fail('Ese objeto ya fue recogido o sigue enredado.');if(ground&&Object.hasOwn(CHARACTER_SUPPLY_LABELS,ground.type)&&(source||drop))return fail('Elegí solamente un bulto del suelo.');const supplyPickup=ground&&Object.hasOwn(CHARACTER_SUPPLY_LABELS,ground.type)?groundSupplyPickupPreview(s,u,ground.id,a.count===undefined?ground.count:a.count):null;if(supplyPickup?.reason)return fail(supplyPickup.reason);const keys=['ammo','priming','flints','rations','boleadoras','medkits','torches'],item=a.item||'all';if(source&&item!=='all'&&item!=='weapon'&&item!=='blade'&&!keys.includes(item))return fail('Ese objeto no se puede saquear.');const weaponAvailable=source?!source.weaponDropped&&Boolean(source.weapon):drop&&!drop.taken,bladeAvailable=source&&Boolean(BLADES[source.blade]);const available=source?(item==='all'?(keys.some(k=>(source[k]||0)>0)||weaponAvailable||bladeAvailable||Object.values(source.inventory||{}).some(v=>(v.count||0)>0)):item==='weapon'?weaponAvailable:item==='blade'?bladeAvailable:(source[item]||0)>0):Boolean(drop||ground);if(!available)return fail('No queda equipo que recoger.');if(!pay(8))return fail('Registrar el equipo requiere 8 PA.');if(source){for(const key of keys){if(item!=='all'&&item!==key)continue;const count=Math.min(source[key]||0,a.count??Infinity);if(count>0){u[key]=(u[key]||0)+count;source[key]-=count;}}if(item==='all'){for(const[key,record]of Object.entries(source.inventory||{})){if(record.count>0){let serial=0,unique=`${key}:from${source.id}`;while(u.inventory[unique])unique=`${key}:from${source.id}:${++serial}`;u.inventory[unique]=structuredClone(record);record.count=0;}}}if((item==='all'||item==='weapon')&&weaponAvailable){let serial=0,key=`weapon:${typeof source.weapon==='object'?source.weapon.id:source.weapon}:${source.id}`;while(u.inventory[key])key=`weapon:${typeof source.weapon==='object'?source.weapon.id:source.weapon}:${source.id}:${++serial}`;u.inventory[key]=weaponRecord(source);source.weaponDropped=true;source.loaded=0;delete source.reloadProgress;}if((item==='all'||item==='blade')&&bladeAvailable){let serial=0,key=`blade:${source.blade}:${source.id}`;while(u.inventory[key])key=`blade:${source.blade}:${source.id}:${++serial}`;u.inventory[key]=weaponRecord(source,'blade');source.blade=0;delete source.bladeMetadata;delete source.bladeCondition;delete source.bladeJammed;if(source.activeSlot==='blade')source.activeSlot='primary';source.braced=false;}}else if(drop){let serial=0,key=`weapon:${drop.weapon}:drop${a.dropIndex}`;while(u.inventory[key])key=`weapon:${drop.weapon}:drop${a.dropIndex}:${++serial}`;u.inventory[key]={...weaponRecord(drop),...(drop.weight===undefined?{}:{weight:drop.weight})};drop.taken=true;}else{if(ground.type==='money'){u.inventory[ground.id]={count:ground.count,weight:0};say(s,`${u.name} encuentra ${ground.count} pesos. Se entregarán a la tesorería al salir del sector.`);}else{const kind=['ammo','priming','flints','rations','boleadoras','medkits','torches'].includes(ground.type)?ground.type:'boleadoras';u[kind]=(u[kind]||0)+(supplyPickup?.amount??ground.count);}ground.count-=supplyPickup?.amount??ground.count;}say(s,`${u.name} recoge el equipo disponible.`);}
+else if(a.type==='loot'){
+ const source=target,drop=a.dropIndex!==undefined?s.droppedWeapons[a.dropIndex]:null,ground=a.groundId?s.groundItems.find(g=>g.id===a.groundId):null;
+ if([source,drop,ground].filter(Boolean).length!==1)return fail('Elegí un solo cuerpo u objeto.');
+ const pos=source||drop||ground;
+ if(!pos||!artilleryContact(s,u,pos))return fail('Acércate al equipo, sin obstáculos entre ambos.');
+ if(source&&source.hp>0&&!source.unconscious&&!source.routed)return fail('Solo puedes registrar un cuerpo o una persona inconsciente.');
+ if(drop?.taken||ground?.count===0||ground?.heldBy||ground?.containerId)return fail('Ese objeto ya fue recogido o no está disponible.');
+ if(a.count!==undefined&&(!Number.isSafeInteger(a.count)||a.count<1))return fail('La cantidad debe ser un número entero positivo.');
+ const keys=['ammo','priming','flints','rations','boleadoras','medkits','torches'],item=a.item||'all';
+ if(source&&item!=='all'&&item!=='weapon'&&item!=='blade'&&!keys.includes(item))return fail('Ese objeto no se puede saquear.');
+ const hasWeapon=source&&!source.weaponDropped&&Boolean(source.weapon),hasBlade=source&&Boolean(BLADES[source.blade]);
+ const available=source?(item==='all'?(hasWeapon||hasBlade||keys.some(key=>source[key]>0)||Object.values(source.inventory??{}).some(record=>(typeof record==='number'?record:record.count)>0)):item==='weapon'?hasWeapon:item==='blade'?hasBlade:source[item]>0):Boolean(drop||ground?.count);
+ if(!available)return fail('No queda equipo que recoger.');
+ let collected=0;
+ const addRecord=(base,record)=>{
+  let key=base,serial=0;while(u.inventory[key])key=`${base}:${++serial}`;
+  const amount=inventoryRoom(u,key,record);if(amount){u.inventory[key]={...structuredClone(record),count:amount};collected+=amount;}return amount;
+ };
+ const addSupply=(key,available)=>{
+  const wanted=Math.min(available,a.count??available),amount=supplyRoom(u,key,wanted);
+  if(a.count!==undefined&&(a.count>available||amount<a.count))return 0;
+  if(amount){u[key]=(u[key]??0)+amount;collected+=amount;}return amount;
+ };
+ if(source){
+  if((item==='all'||item==='weapon')&&!source.weaponDropped&&source.weapon){
+   if(addRecord(`weapon:${source.weapon}:${source.id}`,weaponRecord(source))){source.weaponDropped=true;source.loaded=0;delete source.reloadProgress;}
+  }
+  if((item==='all'||item==='blade')&&BLADES[source.blade]){
+   if(addRecord(`blade:${source.blade}:${source.id}`,weaponRecord(source,'blade'))){source.blade=0;delete source.bladeMetadata;delete source.bladeCondition;delete source.bladeJammed;if(source.activeSlot==='blade')source.activeSlot='primary';source.braced=false;}
+  }
+  for(const key of keys)if(item==='all'||item===key)source[key]=(source[key]??0)-addSupply(key,source[key]??0);
+  if(item==='all')for(const [key,value]of Object.entries(source.inventory??{})){
+   const record=typeof value==='number'?{count:value,weight:0}:value;
+   if(record.count>0){const amount=addRecord(`${key}:from${source.id}`,record);if(typeof value==='number')source.inventory[key]-=amount;else record.count-=amount;}
+  }
+ }else if(drop){
+  if(addRecord(`weapon:${drop.weapon}:drop${a.dropIndex}`,{...weaponRecord(drop),...(drop.weight===undefined?{}:{weight:drop.weight})}))drop.taken=true;
+ }else if(ground.type==='money'){
+  // Money is one finite purse. Keep its provenance key for treasury settlement.
+  if(inventoryRoom(u,ground.id,{count:ground.count,weight:0})===ground.count){u.inventory[ground.id]={count:ground.count,weight:0};collected=ground.count;ground.count=0;}
+ }else if(keys.includes(ground.type)){
+  const wanted=a.count??Math.min(ground.count,supplyRoom(u,ground.type,ground.count));
+  if(Object.hasOwn(CHARACTER_SUPPLY_LABELS,ground.type)){const plan=groundSupplyPickupPreview(s,u,ground.id,wanted);if(plan.reason)return fail(plan.reason);}
+  ground.count-=addSupply(ground.type,ground.count);
+ }else return fail('Ese objeto no se puede recoger.');
+ if(!collected)return fail(POCKET_FULL);
+ if(!pay(8))return fail('Registrar el equipo requiere 8 PA.');
+ say(s,`${u.name} recoge el equipo que cabe en sus bolsillos. El resto queda en el lugar.`);
+}
 else if(a.type==='boleadoras'){if(civilian(s,target))return fail('Las boleadoras requieren un combatiente enemigo.');if(!target||target.side===u.side||!alive(target)||dist(u,target)>8||!hasLineOfSight(s,u,target))return fail('El blanco de las boleadoras debe estar visible y a ocho casillas o menos.');if(!u.boleadoras)return fail('No quedan boleadoras.');if(!pay(12))return fail('Lanzar boleadoras requiere 12 PA.');u.boleadoras--;target.entangled=true;target.mounted=false;exhaust(s,target,20);s.groundItems.push({id:`bola-${u.id}-${s.turn}-${s.groundItems.length}`,type:'boleadoras',x:target.x,y:target.y,count:1,heldBy:target.id});say(s,`${u.name} enreda a ${target.name} con las boleadoras.`);}
 else if(a.type==='free'){if(!u.entangled)return fail('El soldado no está enredado.');if(!pay(15))return fail('Soltarse requiere 15 PA.');u.entangled=false;for(const g of s.groundItems)if(g.heldBy===u.id)g.heldBy=null;say(s,`${u.name} se libera de las boleadoras.`);}
 else if(a.type==='breach'){const wall=tile(s,a.x,a.y);if(!wall?.blocked||dist(u,{x:a.x,y:a.y})>1.5)return fail('Acércate a una barricada o pared de adobe.');if(wall.material==='stone'||['stone','cliff','water'].includes(wall.type))return fail('La piedra requiere artillería; no puede abrirse a mano.');const cost=actionCosts(s,u).breach;if(!pay(cost))return fail(`Abrir la brecha requiere ${cost} PA.`);wall.blocked=false;wall.blocksSight=false;wall.type='rubble';wall.cover=15;say(s,`${u.name} abre una brecha para el asalto.`);}
@@ -353,7 +407,12 @@ export function actBattle(state,action){
  if(s.units.find(u=>u.id===String(action.unitId))?.militia){s.lastError='Las milicias actúan por su cuenta; seleccioná un integrante de la escuadra.';say(s,s.lastError);return s;}
  const oldMode=s.mode;delete s.actionDurationSeconds;
  if(action.type==='move')s.approachingNpcIds=s.npcs.filter(n=>Math.abs(n.x-action.x)+Math.abs(n.y-action.y)===1).map(n=>n.id);
+ const inventoryAction=['loot','drop','dropSupply','transfer','transferSupply','equipLoot','weapon','pocket'].includes(action.type);
  const success=apply(s,action);
+ if(inventoryAction){
+  const reason=s.lastError||s.units.filter(u=>u.side==='player').map(u=>pocketChangeReason(state.units.find(v=>v.id===u.id)??u,u)).find(Boolean);
+  if(success===false||reason){const rejected=clone(state);rejected.lastError=reason||POCKET_FULL;say(rejected,rejected.lastError);return rejected;}
+ }
  if(success!==false&&!s.lastError){
   if(oldMode==='exploration')advanceExploration(s,Math.max(0,(s.actionDurationSeconds??6)-(s.actionTimeAppliedSeconds??0)));
   else if(!s.roundTimeCharged){advanceBattleClock(s,COMBAT_ROUND_SECONDS);s.roundTimeCharged=true;}
@@ -389,6 +448,7 @@ export function groundSupplyPickupPreview(s,u,groundId,count){
  if(count>source.count)return reject('No queda esa cantidad en el bulto.');
  const carried=u[source.type]??0;
  if(!Number.isSafeInteger(carried)||carried<0||carried+count>personalSupplyLimit(source.type))return reject('No puedes guardar toda la cantidad de ese suministro.');
+ if(supplyRoom(u,source.type,count)<count)return reject(POCKET_FULL);
  if(s.mode!=='exploration'&&u.ap<8)return reject('Recoger suministros requiere 8 PA.');
  return {reason:null,amount:count,pa:8,seconds:s.mode==='exploration'?1:undefined};
 }
@@ -407,6 +467,7 @@ export function supplyTransferPreview(s,u,target,item,count){
  const stockReason=personalSupplyStockReason(u,item,count,true);if(stockReason)return reject(stockReason);
  const received=target[item]??0;
  if(!Number.isSafeInteger(received)||received<0||received+count>(item==='ammo'?100000-(target.loaded??0):personalSupplyLimit(item)))return reject('El compañero no puede guardar esa cantidad de suministros.');
+ if(supplyRoom(target,item,count)<count)return reject(POCKET_FULL);
  if(s.mode!=='exploration'&&u.ap<4)return reject('Entregar suministros requiere 4 PA.');
  return {reason:null,pa:4,seconds:s.mode==='exploration'?1:undefined};
 }
@@ -423,6 +484,8 @@ export function weaponTransferPreview(s,u,target,inventoryKey,slot=undefined){
  try{validateWeaponCarrier(record);}catch(error){return reject(error.message);}
  const spec=weaponSpecification(record);if(!Number.isFinite(record.weight)||record.weight<0||record.weight>10000||!Number.isInteger(record.loaded??0)||(record.loaded??0)<0||(record.loaded??0)>(spec.capacity??0)||!Number.isFinite(record.condition??100)||(record.condition??100)<0||(record.condition??100)>100)return reject('El estado del arma recuperada no es válido.');
  if(Object.keys(target.inventory??{}).length>=1000)return reject('El compañero no puede guardar más equipo.');
+ let key='incoming';while(Object.hasOwn(target.inventory??{},key))key+='-';
+ if(inventoryRoom(target,key,record,1)<1)return reject(POCKET_FULL);
  if(s.mode!=='exploration'&&u.ap<4)return reject('Entregar una pieza requiere 4 PA.');
  return {reason:null,pa:4,seconds:s.mode==='exploration'?1:undefined};
 }

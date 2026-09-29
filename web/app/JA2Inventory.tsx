@@ -4,9 +4,9 @@
 import {useEffect, useState} from 'react';
 import TacticalMinimap from './TacticalMinimap';
 import TrainingProgress from './TrainingProgress';
-import {inventoryModel, orderDescriptors, orderAction, slotAction, backpackEquipAction, levelFor} from '../../game/ja2-hud.js';
-import {WEAPONS, BLADES, hasFirearm, ignitionRisk, visibleEnemies, weaponTransferPreview, supplyTransferPreview, supplyDropPreview} from '../../game/tactical.js';
-import {TRANSFER_SUPPLY_LABELS} from '../../game/character-supplies.js';
+import PersonalPockets from './PersonalPockets';
+import {inventoryModel, orderDescriptors, orderAction, slotAction, levelFor} from '../../game/ja2-hud.js';
+import {hasFirearm, ignitionRisk, visibleEnemies, weaponTransferPreview} from '../../game/tactical.js';
 import {portraitFor} from '../lib/portraits';
 
 const short = (u: any) => u.nickname || String(u.name || '').split(' ').slice(-1)[0] || '';
@@ -61,17 +61,12 @@ type Props = {
 };
 export default function JA2Inventory({unit, battle, mode, showSight, busy, units, selected, missionAllies, localMilitia, vw, vh, cameraRect, project, zoom, onOrder, onMode, onToggleSight, onSelect, onRetreat, onCameraCenter, onCameraPan, onZoom, onCloseInventory}: Props) {
   const [recipient, setRecipient] = useState('');
-  const [supply, setSupply] = useState('medkits');
-  const [amount, setAmount] = useState('1');
   const recipients = battle.units.filter((u:any) => u.side === unit.side && u.id !== unit.id && !u.militia && !u.fled && !u.departure);
   const heldTransfer = weaponTransferPreview(battle, unit, recipients.find((u:any) => u.id === recipient), undefined, unit.activeSlot || 'primary');
-  const supplyTransfer = supplyTransferPreview(battle, unit, recipients.find((u:any) => u.id === recipient), supply, Number(amount));
-  const supplyDrop = supplyDropPreview(battle, unit, supply, Number(amount));
   const inv: any = inventoryModel(battle, unit);
   const descriptors: any[] = orderDescriptors(battle, unit, {busy});
   const def = (id: string) => descriptors.find((d: any) => d.id === id);
   const busyDisabled = busy || battle.status !== 'active' || !inv.unitAlive;
-  const equipDisabled = busyDisabled || (battle.mode !== 'exploration' && unit.ap < 6);
   const dropDisabled = busyDisabled || (battle.mode !== 'exploration' && unit.ap < 4);
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
@@ -113,14 +108,10 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
         </div>
       </div>
       <div className="paper-doll">
-        <button className={`hand-slot primary ${inv.activeSlot === 'primary' ? 'active' : ''}`} disabled={busyDisabled} aria-label={`Usar arma principal: ${slots.primary?.name ?? '—'}`} onClick={() => onOrder(slotAction(unit, 'primary'))}>
-          {slots.primary?.id >= 1800 && slots.primary?.id <= 1813 && <img src={slots.primary.art??`/art/weapon-${slots.primary.id}.png`} alt="" />}
-          <span>{slots.primary?.name ?? '—'}</span>
-        </button>
-        <button className={`hand-slot blade ${inv.activeSlot === 'blade' ? 'active' : ''}`} disabled={busyDisabled} aria-label={`Usar arma secundaria: ${slots.blade?.name ?? '—'}`} onClick={() => onOrder(slotAction(unit, 'blade'))}>
-          {slots.blade?.id >= 1800 && slots.blade?.id <= 1813 && <img src={slots.blade.art??`/art/weapon-${slots.blade.id}.png`} alt="" />}
-          <span>{slots.blade?.name ?? '—'}</span>
-        </button>
+        <div className="hand-slot active held-weapon" aria-label="Arma en uso">
+          {inv.activeSlot !== 'unarmed' && slots[inv.activeSlot||'primary']?.id > 0 && <img src={slots[inv.activeSlot||'primary'].art??`/art/weapon-${slots[inv.activeSlot||'primary'].id}.png`} alt=""/>}
+          <span>{inv.activeSlot==='unarmed'?'Manos vacías':slots[inv.activeSlot||'primary']?.name??'Manos vacías'}</span>
+        </div>
         <div className="paper-readouts">
           <button className={`line-button ${unit.activeSlot==='unarmed'?'active':''}`} aria-label="Usar manos vacías" aria-pressed={unit.activeSlot==='unarmed'} disabled={busyDisabled || unit.activeSlot==='unarmed' || (battle.mode!=='exploration' && unit.ap<4)} onClick={()=>onOrder(slotAction(unit, 'unarmed'))}>Manos vacías · {battle.mode==='exploration'?'1 s':'4 PA'}</button>
           <button className="line-button" disabled={dropDisabled || (unit.activeSlot==='blade'?!unit.blade:unit.activeSlot==='unarmed'||unit.weaponDropped||!unit.weapon)} onClick={()=>onOrder({type:'drop',slot:unit.activeSlot||'primary'})}>Dejar arma en uso · {battle.mode==='exploration'?'1 s':'4 PA'}</button>
@@ -132,40 +123,7 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
           <span className="camo"><small>Camuflaje</small><b>—</b></span>
         </div>
       </div>
-      <div className="slot-grid">
-        {inv.backpack.map((item: any) => {
-          const gun = (WEAPONS as any)[item.weapon];
-          const blade = (BLADES as any)[item.weapon];
-          const transfer = weaponTransferPreview(battle, unit, recipients.find((u:any) => u.id === recipient), item.key);
-          return (
-            <div key={item.key} className={`slot-cell ${item.equippable ? 'equippable' : ''}`}>
-              {item.art&&<img src={item.art} alt="" style={{width:"100%",height:45,objectFit:"contain"}}/>}
-              <span>{item.name ?? 'Pertrechos'} · {item.count}{gun ? ` · ${item.loaded || 0} carga(s)` : ''}{item.condition !== undefined ? ` · estado ${item.condition}%` : ''}</span>
-              {item.equippable && <>
-                <button className="line-button" disabled={equipDisabled} onClick={() => onOrder(backpackEquipAction(item.key, 'primary'))}>Equipar principal · 6 PA</button>
-                {blade && <button className="line-button" disabled={equipDisabled} onClick={() => onOrder(backpackEquipAction(item.key, 'blade'))}>Equipar secundaria · 6 PA</button>}
-                <button className="line-button" disabled={dropDisabled} onClick={() => onOrder({type:'drop',inventoryKey:item.key})}>Dejar una pieza en el suelo · {battle.mode==='exploration'?'1 s':'4 PA'}</button>
-                <label>Entregar a <select aria-label={`Entregar ${item.name} a`} value={recipient} disabled={busyDisabled} onChange={e=>setRecipient(e.target.value)}><option value="">Elegí un compañero</option>{recipients.map((u:any)=><option key={u.id} value={u.id}>{u.name}</option>)}</select></label>
-                <button className="line-button" disabled={busyDisabled || Boolean(transfer.reason)} title={transfer.reason??'Entregar una pieza al compañero elegido'} onClick={()=>onOrder({type:'transfer',inventoryKey:item.key,targetId:recipient})}>Entregar una pieza · {battle.mode==='exploration'?'1 s':'4 PA'}</button>
-                {recipient && transfer.reason && <small>{transfer.reason}</small>}
-              </>}
-            </div>
-          );
-        })}
-        {Array.from({length: Math.max(0, 12 - inv.backpack.length)}, (_, i) => <div className="slot-cell" aria-hidden="true" key={`empty-${i}`} />)}
-      </div>
-      <div className="pertrechos">
-        <p className="eyebrow">PERTRECHOS</p>
-        <p>{inv.supplies.map((sp: any) => `${sp.count} ${sp.label}`).join(' · ')}</p>
-        <label>Suministro <select aria-label="Suministro personal" value={supply} disabled={busyDisabled} onChange={e=>setSupply(e.target.value)}>{Object.entries(TRANSFER_SUPPLY_LABELS).map(([id,label])=><option key={id} value={id}>{label} · {unit[id]??0}</option>)}</select></label>
-        <label>Cantidad <input aria-label="Cantidad de suministros" type="number" min="1" max={unit[supply]??0} step="1" value={amount} disabled={busyDisabled} onChange={e=>setAmount(e.target.value)}/></label>
-        <button className="line-button" disabled={busyDisabled || Boolean(supplyDrop.reason)} onClick={()=>onOrder({type:'dropSupply',item:supply,count:Number(amount)})}>Dejar suministros en el suelo · {battle.mode==='exploration'?'1 s':'4 PA'}</button>
-        {supplyDrop.reason && <small>{supplyDrop.reason}</small>}
-        <label>Entregar a <select aria-label="Entregar suministros a" value={recipient} disabled={busyDisabled} onChange={e=>setRecipient(e.target.value)}><option value="">Elegí un compañero</option>{recipients.map((u:any)=><option key={u.id} value={u.id}>{u.name}</option>)}</select></label>
-        <button className="line-button" disabled={busyDisabled || Boolean(supplyTransfer.reason)} onClick={()=>onOrder({type:'transferSupply',item:supply,count:Number(amount),targetId:recipient})}>Entregar suministros · {battle.mode==='exploration'?'1 s':'4 PA'}</button>
-        {recipient && supplyTransfer.reason && <small>{supplyTransfer.reason}</small>}
-        <small>La cantidad sale del equipo del soldado y pasa al compañero elegido.</small>
-      </div>
+      <PersonalPockets key={unit.id} unit={unit} battle={battle} busy={busy} onOrder={onOrder}/>
       <div className="ja2-right">
         <RadarCluster battle={battle} units={units} selected={selected} project={project} vw={vw} vh={vh} cameraRect={cameraRect} zoom={zoom} mode={mode} missionAllies={missionAllies} localMilitia={localMilitia} onSelect={onSelect} onRetreat={onRetreat} onCameraCenter={onCameraCenter} onCameraPan={onCameraPan} onZoom={onZoom} />
         <button className="ja2-done gold-button" onClick={onCloseInventory}>Listo</button>
