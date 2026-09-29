@@ -99,5 +99,46 @@
     "docs": {
       "sha256": "b715bc6123c39bb0cda422a602708bf687888b859549f0597561138465a21e6e"
     }
+  },
+  "supplyArtwork": {
+    "source": "d46f28385ee81d124cb9e2418717984f9bff20dd",
+    "mode": "built-in image_gen",
+    "assets": 7,
+    "sourceManifest": {
+      "game/character-supplies.js": "e5afcf2e28aa98b32e83eb8acd5dc5a347a9a26ce6f132eb074eb7b5bc2df397",
+      "game/personal-pockets.js": "a25529b90a49e90535fff0b7740349fc52051f7de4cecfb737707c517a101026",
+      "web/app/PersonalPockets.tsx": "330d900b2875ed81ee306072ba7e5dfede86b7e164a82ecc1c80f7c877852fe6",
+      "web/app/tactical-hud.css": "702d04c166676a794396d91de8cf74b72906ed67b3c430758c9338b13a03a502",
+      "web/public/art/supplies/ammo-v1.webp": "93cfdf45ca9d1244e85eb654036af197569d89f5e31d4ce81195f89d7fcc7c11",
+      "web/public/art/supplies/boleadoras-v1.webp": "9de27be138862937864074fa3899b931bca8a889594f610887e74ba25050fb77",
+      "web/public/art/supplies/flints-v1.webp": "91071cba7e7c7cb3d614c3909a2c717547a03b75adf2ec9128d5ec24eae4500a",
+      "web/public/art/supplies/medkits-v1.webp": "5ba9bc4dd708857a8515a15cb6f9be12c16854044bc8b19adcf44a6d53a5103d",
+      "web/public/art/supplies/priming-v1.webp": "c9aa5bc6748ff437dbe44784ffff4146057f35f185fe09de1b9bdfae0bfbb048",
+      "web/public/art/supplies/prompts.json": "45a7716c0d1c88552a65bc5320f3d2d7688a048cd072101a38914cb56d230539",
+      "web/public/art/supplies/rations-v1.webp": "88bf16df934cf1d71495f1352d67c1d53cfc52b7751bac0f4ffd4d84c98c45b8",
+      "web/public/art/supplies/torches-v1.webp": "b3378381c83e65bc0cf57198307b5a7af2a6d982a7ce5fa399cbdf255907f30e"
+    },
+    "tests": {
+      "passed": 10,
+      "failed": 0,
+      "scope": "shared-personal-pockets and shared-pockets-render"
+    },
+    "types": "PASS",
+    "build": {
+      "status": "PASS",
+      "exportedFiles": 731,
+      "assetReferences": 633
+    },
+    "desktopBrowser": {
+      "viewport": [
+        1280,
+        720
+      ],
+      "supplyImagesLoaded": 7,
+      "detailImageLoaded": true,
+      "primingAndFlintDescriptionsVerified": true,
+      "consoleErrors": 0
+    },
+    "priorFullSuite": "1268 tests and all remote checks passed before presentation-only artwork update"
   }
 }

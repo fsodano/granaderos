@@ -37,3 +37,12 @@ Exact source hashes and log checksums are recorded in the companion [evidence fi
 This change does not establish full JA2 inventory parity, complete campaign
 acceptance, smoother walking artwork or sustained 60 FPS. Fittings, typed ammunition,
 civilian weapon ownership and the advanced checkout integration remain separate.
+
+Supply-art update on source `d46f28385ee81d124cb9e2418717984f9bff20dd` adds seven distinct transparent
+images and Spanish item descriptions. The built-in image generator produced the
+artwork; [prompts and asset paths](../../web/public/art/supplies/prompts.json) are saved.
+The images total 134,870 bytes after WebP compression. All seven load in the
+1280 x 720 desktop inventory; selected priming and flint details show correctly,
+with no console errors. The ten focused pocket tests, type check and production
+export (731 files / 633 asset references) pass. The full-suite result above applies
+to the earlier source; this follow-up changes presentation only.
