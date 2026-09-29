@@ -7,6 +7,8 @@ accepted features on GitHub `main`, approved scope changes and open work.
 
 ## Published baseline
 
+- [Weapon ammunition selection in the story editor](authored-ammunition-family.md).
+
 - [Compatible ammunition and implicit ignition kit](typed-ammunition.md) — merged PR #130.
 
 - [Shared desktop inventory pockets](shared-inventory-pockets.md) — merged PR #128.
