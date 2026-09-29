@@ -59,3 +59,7 @@ and draft persistence. The current full-suite result and source hashes are in
 All five checks at the final PR head must pass before merge. This record does not
 close general merchant trading, alternative ammunition loads, advanced inventory
 publication, or complete game/editor acceptance.
+
+Follow-up: [alternative firearm loads](alternate-firearm-loads.md) implements
+multiple existing families per firearm. Earlier limits above describe this
+document’s original delivery; the advanced inventory adapter remains separate.

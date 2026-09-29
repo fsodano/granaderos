@@ -1,10 +1,11 @@
+import {alternativeLoadsFor} from './firearm-loads.js';
 import {AMMUNITION_FAMILIES} from './ammunition-families.js';
 import {removeUnitIgnitionSupplies} from './ignition-kit.js';
 // Gameplay families deliberately group historical calibers. No loose ignition kit is tracked.
 /** @type {Readonly<Record<string, Readonly<{name:string,art:string,description:string,weapons:readonly number[]}>>>} */
 export const AMMO_TYPES=Object.freeze(Object.fromEntries(Object.values(AMMUNITION_FAMILIES).map(({id,name,art,description,weapons})=>[id,Object.freeze({name,art,description,weapons})])));
 export const AMMO_KEYS=Object.freeze(Object.keys(AMMO_TYPES));
-export function ammoTypeFor(value){
+export function primaryAmmoTypeFor(value){
  const raw=typeof value==='object'&&value!==null?value.weapon??value.primary??value.template??value.id:value;
  const id=typeof raw==='object'?raw.id:raw;
  const fallback=AMMO_KEYS.find(key=>AMMO_TYPES[key].weapons.includes(id))??null;
@@ -12,6 +13,21 @@ export function ammoTypeFor(value){
  const definition=value?.contentWeapon??value?.weaponMetadata?.contentWeapon??value;
  const authored=definition?.ammunitionFamily;
  return authored===undefined?fallback:Object.hasOwn(AMMO_TYPES,authored)?authored:null;
+}
+export function ammunitionLoadsFor(value){
+ const primary=primaryAmmoTypeFor(value);if(!primary)return [];
+ return [{family:primary},...alternativeLoadsFor(value)];
+}
+export function ammoTypeFor(value){return value?.ammunitionChoice??primaryAmmoTypeFor(value);}
+export function selectedAmmunitionLoad(value){return ammunitionLoadsFor(value).find(load=>load.family===ammoTypeFor(value));}
+export function ammunitionChoiceReason(unit,family){
+ if(!ammunitionLoadsFor(unit).some(load=>load.family===family))return 'El arma no admite esa carga.';
+ if(unit.weaponDropped||unit.activeSlot==='unarmed'||unit.activeSlot==='blade')return 'Tené el arma de fuego en la mano.';
+ if((unit.loaded??0)>0||unit.reloadProgress)return 'Vaciá el arma y terminá la recarga antes de cambiar de carga.';
+ return null;
+}
+export function validateAmmunitionChoice(unit){
+ if(unit.ammunitionChoice!==undefined&&(!Object.hasOwn(AMMO_TYPES,unit.ammunitionChoice)||!selectedAmmunitionLoad(unit)))throw Error('La carga elegida no corresponde al arma.');
 }
 export function ammoStock(unit){
  if(unit?.ammunition!==undefined)return {...unit.ammunition};

@@ -54,3 +54,7 @@ All five [remote checks](https://github.com/fsodano/granaderos/actions/runs/3661
 passed for `ca374364ddf6dcce85db78ffedb39ee61f81831a`. The complete four gameplay
 groups total **1,289/1,289**, with no failures or skips. Runner preflight cases
 are excluded from that count.
+
+Follow-up: [alternative firearm loads](alternate-firearm-loads.md) implements
+multiple existing families per firearm. Earlier limits above describe this
+document’s original delivery; the advanced inventory adapter remains separate.

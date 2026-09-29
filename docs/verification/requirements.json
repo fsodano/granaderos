@@ -414,7 +414,7 @@
     {
       "id": "E-MILITIA-CHOICE",
       "path": "docs/verification/militia-course-choice.md",
-      "description": "The production campaign lets the player select new c\u00edvicos or promotion despite existing candidates. Actual payment, course time, saved wounded participants and finite possessions pass; a prepared low-treasury case cannot spend through the disabled control. The overlapping group passes 11/11, types and 36 reference comparisons pass. Complete regression passes 976/976, zero failures/skips. Export and documentation validation pass; PR #94 merged after successful exact-head CI at 00ba9d8f18e41902cb86de01f60b3c3c051d2728.",
+      "description": "The production campaign lets the player select new cívicos or promotion despite existing candidates. Actual payment, course time, saved wounded participants and finite possessions pass; a prepared low-treasury case cannot spend through the disabled control. The overlapping group passes 11/11, types and 36 reference comparisons pass. Complete regression passes 976/976, zero failures/skips. Export and documentation validation pass; PR #94 merged after successful exact-head CI at 00ba9d8f18e41902cb86de01f60b3c3c051d2728.",
       "url": "https://github.com/fsodano/granaderos/actions/runs/36472716979/job/109098703148"
     },
     {
@@ -634,6 +634,11 @@
       "path": "docs/verification/authored-ammunition-markets.md",
       "description": "Pinned global and per-town supplier stock, prices, replenishment and preparation rules; focused runtime and mounted editor launch checks. Does not publish advanced inventory or alternative loads.",
       "url": "https://github.com/fsodano/granaderos/pull/136"
+    },
+    {
+      "id": "E-AMMO-LOADS",
+      "path": "docs/evidence/alternate-firearm-loads.json",
+      "description": "Selectable authored load effects, conserved custody, mounted editor and game controls, production browser check. Advanced inventory and custom families remain open."
     }
   ],
   "queue": [
@@ -1086,7 +1091,7 @@
       "requirement": "Choose fresh militia cohorts or individual promotion through practical campaign controls",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Published on main through PR #94 on 2026-09-28 after successful exact-head CI. The campaign explicitly chooses fresh c\u00edvicos or individual promotion, shows the actual quote and blocks unavailable or unaffordable orders.",
+      "published": "Published on main through PR #94 on 2026-09-28 after successful exact-head CI. The campaign explicitly chooses fresh cívicos or individual promotion, shows the actual quote and blocks unavailable or unaffordable orders.",
       "local": "Two new mounted campaign tests pass in an 11/11 overlapping group. New paid cohorts no longer require promoting the existing wounded candidates first; selected promotion retains those same people and finite equipment. Types and all 36 reference comparisons pass. Complete regression passes 976/976, zero failures/skips. Export and documentation validation pass.",
       "remaining": "",
       "acceptance": "Select and pay for new militia despite existing promotion candidates, complete the actual hours, then select and finish promotion with the original wounded identities. Display and enforce the real selected cost and availability; preserve course and participants through saved campaign controls.",
@@ -1458,7 +1463,7 @@
       "requirement": "Complete a fresh coastal opening with the created officer and local recruits only",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "A legal free officer and actual local encounters complete Buenos Aires, San Nicol\u00e1s and San Lorenzo without bulletin hires, preserving paid preparation, finite care and permanent losses. Merged through PR #80 after exact-head CI.",
+      "published": "A legal free officer and actual local encounters complete Buenos Aires, San Nicolás and San Lorenzo without bulletin hires, preserving paid preparation, finite care and permanent losses. Merged through PR #80 after exact-head CI.",
       "local": "Three opening routes pass; the local force pays 230 pesos for its first musket, 920 for later muskets, 27 for workshop service and 180 for 18 dressings. Nineteen care hours and six hours of rest precede the remaining victories and saved hour-80 continuation.",
       "remaining": "",
       "acceptance": "Start with Retiro and no people, create the free officer, recruit only actual residents, pay normal equipment and treatment costs, win through ordinary orders and preserve all deaths and wounds through save/replay and continued play.",
@@ -1762,7 +1767,7 @@
       "status": "VERIFIED",
       "priority": "P1",
       "published": "La ruta de las postas is a downloadable three-chapter scenario with thirteen independent identities, paid service, two actual locality battles, world contacts, a timed objective and its own ending. The editor loads it with undo and the verified seed. Merged through PR #68 after exact-head CI. The later finite-first-aid regression completes after eight hours of paid medical work, actual weapon purchases and a daylight approach to Salta.",
-      "local": "A fresh seed-8 route pays for replacements and supplies, preserves three deaths, returns to C\u00f3rdoba and saves victory; a separate fresh timed route loses. Mounted controls load, edit, undo and launch real play.",
+      "local": "A fresh seed-8 route pays for replacements and supplies, preserves three deaths, returns to Córdoba and saves victory; a separate fresh timed route loses. Mounted controls load, edit, undo and launch real play.",
       "remaining": "",
       "acceptance": "Use a portable package without engine-specific scenario code; launch and complete its declared beginning, middle and ending through actual campaign actions, with losses, costs, saved continuation and a real failure path.",
       "evidence": [
@@ -2010,7 +2015,7 @@
       "requirement": "Author initial locality control and loyalty without resetting later campaign territory",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "The Rules form sets patriot/royalist control and 0\u2013100 loyalty for all thirteen localities. The selected headquarters must start controlled (originally Retiro; see HQ-01). Actual campaign systems use the chosen state; startup grants no victory, reward or militia. The desk describes the initial map and the strategic map shows current ownership. Saves retain later changes.",
+      "published": "The Rules form sets patriot/royalist control and 0–100 loyalty for all thirteen localities. The selected headquarters must start controlled (originally Retiro; see HQ-01). Actual campaign systems use the chosen state; startup grants no victory, reward or militia. The desk describes the initial map and the strategic map shows current ownership. Saves retain later changes.",
       "local": "Open land stays neutral and districts share locality control. Broader campaign role composition remains separate.",
       "remaining": "",
       "acceptance": "Validate complete territory maps and original/older defaults; author, undo and restore through editor controls; launch real arrivals, travel, sector entry, neighbor assault and daily income; check supply and militia requirements; preserve later saved ownership and reject altered pinned content; render initial/current territory accurately.",
@@ -2060,7 +2065,7 @@
       "requirement": "Author the import port and saved delivery window for imported firearm orders",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Four existing river ports or disabled orders and 1\u2013720-hour delivery windows are authored. A paid order samples its due time once. Ownership, blockade and same-hour raids gate delivery; delayed orders retain their due time and charge. Delivered variants retain their definition and can be equipped. Mounted editor/armory controls show real availability and delay reasons.",
+      "published": "Four existing river ports or disabled orders and 1–720-hour delivery windows are authored. A paid order samples its due time once. Ownership, blockade and same-hour raids gate delivery; delayed orders retain their due time and charge. Delivered variants retain their definition and can be equipped. Mounted editor/armory controls show real availability and delay reasons.",
       "local": "Uses the published general armory and original imported families; physical port depots and cargo transport remain separate.",
       "remaining": "",
       "acceptance": "Validate ports, limits and older defaults; author with undo/restoration and launch a delivered order; pay once, save and retain the sampled deadline; hold occupied/blocked and same-hour-raid deliveries; deliver once and equip a variant; reject invalid or altered content; keep local purchases and existing carried imports when new orders are disabled.",
@@ -2389,7 +2394,7 @@
       "requirement": "Author precise quest deadlines with automatic persistent failure",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "An optional 1\u2013720 hour limit starts at actual quest acceptance. Tactical and strategic time expire it once, with ordered evidence and visible remaining time. Completed quests retain their result and unstarted quests do not tick.",
+      "published": "An optional 1–720 hour limit starts at actual quest acceptance. Tactical and strategic time expire it once, with ordered evidence and visible remaining time. Completed quests retain their result and unstarted quests do not tick.",
       "local": "Uses published campaign time and quest events. No wall-clock timer or advanced scheduler is imported.",
       "remaining": "",
       "acceptance": "Author a deadline through undo/copy/launch. Accept at a nonzero campaign second, preserve the last ten minutes through save, then expire after actual tactical actions. Verify strategic waiting/travel, sorted simultaneous due work, early completion, untimed legacy quests and rejection of altered or missing expiration records. Show remaining time and expiry in the mounted game.",
@@ -2944,7 +2949,7 @@
     {
       "id": "NAR-01",
       "group": "Original design",
-      "requirement": "El\u00edo/Vigodet, Pezuela, Trist\u00e1n, Romarate and Loyalist commands",
+      "requirement": "Elío/Vigodet, Pezuela, Tristán, Romarate and Loyalist commands",
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Named commands and campaign narrative exist.",
@@ -3003,7 +3008,7 @@
       "published": "A fresh mixed force wins the actual Cordoba, Tucuman and Salta maps with casualties and paid replacements, pays the northern pact and partisan supply, travels to the physical Yatasto conference and completes its ordered reports and frontier agreement. Saved phase 3 preserves the created officer death and the surviving temporary commander.",
       "local": "The separate advanced northern medical-relief failure remains FIX-01. This row accepts the published narrative transition, not that larger medical model.",
       "remaining": "",
-      "acceptance": "Triggered sequence and G\u00fcemes frontier assignment",
+      "acceptance": "Triggered sequence and Güemes frontier assignment",
       "evidence": [
         "E-PUBLISHED",
         "E-CONFLICTS",
@@ -3038,7 +3043,7 @@
     {
       "id": "NAR-06",
       "group": "Original design",
-      "requirement": "Pehuenche diplomacy and San Mart\u00edn final unlock",
+      "requirement": "Pehuenche diplomacy and San Martín final unlock",
       "status": "VERIFIED",
       "priority": "P1",
       "published": "The fresh Cuyo route pays the Pehuenche agreement, rejects physical San Martin recruitment during phase 3, completes the funded/fortified/artillery prerequisites, returns to Mendoza and recruits him in person into permanent unpaid service at phase 4.",
@@ -3190,7 +3195,7 @@
     {
       "id": "ECO-02",
       "group": "Original design",
-      "requirement": "Retiro/Beltr\u00e1n raw-material production chains",
+      "requirement": "Retiro/Beltrán raw-material production chains",
       "status": "SUPERSEDED",
       "priority": "P1",
       "published": "Removed by PR #12.",
@@ -3250,7 +3255,7 @@
     {
       "id": "MIL-01",
       "group": "Original design",
-      "requirement": "C\u00edvicos, Montoneras and veteran line/Granaderos tiers",
+      "requirement": "Cívicos, Montoneras and veteran line/Granaderos tiers",
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Paid local militia cohorts materialize with historical loadouts, fight as local allies and retain actual tactical wounds, casualties and depleted equipment through saved reentry. Individual promotion and advanced militia behavior are tracked separately. PR #89 adds local physician care with finite dressings. PR #90 preserves individual participants through paid promotion. PR #91 advances unloaded wounds and preserves actual finite remains. PR #92 adds combat-earned promotion with persistent opponent credit and disallows new paid veteran courses. PR #93 pins authored promotion thresholds and attribute gains and fixes the large-encounter credit boundary. PR #94 adds an explicit choice between fresh cohorts and individual promotion with the actual quote and eligibility. PR #95 integrates autonomous allied turns, finite reactions and distinct militia controls. PR #96 publishes finite local exploration patrols, real contact and synchronized saved continuation. PR #97 publishes connected-city transfers, automatic balancing and saved physical arrivals. PR #98 pins authored patrol activation, waypoint timing and exploration reserve/recovery.",
@@ -3353,7 +3358,7 @@
     {
       "id": "TAC-06",
       "group": "Original design",
-      "requirement": "Sabre bleeding/parry, bayonet reach/intercepts, lance knockdown, fac\u00f3n defense",
+      "requirement": "Sabre bleeding/parry, bayonet reach/intercepts, lance knockdown, facón defense",
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Distinct held blade actions and reactions.",
@@ -3453,7 +3458,7 @@
     {
       "id": "MAP-02",
       "group": "Original design",
-      "requirement": "Camino Real, Paran\u00e1 choke point and Andean supply routes",
+      "requirement": "Camino Real, Paraná choke point and Andean supply routes",
       "status": "PARTIAL",
       "priority": "P1",
       "published": "Land routes and exact-cell tactical entry.",
@@ -3504,7 +3509,7 @@
       "published": "Northern pressure events and objectives.",
       "local": "See local suite and preserved parity source; not equivalent to published integration.",
       "remaining": "Integrate physical forces, finite reserves, routes, garrisons and defense.",
-      "acceptance": "Royalist corps advances Humahuaca\u2013Jujuy\u2013Salta\u2013Tucum\u00e1n",
+      "acceptance": "Royalist corps advances Humahuaca–Jujuy–Salta–Tucumán",
       "evidence": [
         "E-PUBLISHED",
         "E-CONFLICTS"
@@ -3577,7 +3582,7 @@
       "requirement": "All 9 firearms and 5 melee weapons",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Nine firearms and five blade families match reference base values. Firearm and blade variants/images are authored and retained in character equipment, combat and saves. Enemy roles and militia ranks now support independent primary and secondary blade selections.",
+      "published": "Nine firearms and five blade families match reference base values. Firearm and blade variants/images are authored and retained in character equipment, combat and saves. Enemy roles and militia ranks now support independent primary and secondary blade selections. AMMOLOADS-01 adds multiple existing ammunition families per firearm with authored effects and conserved load choices.",
       "local": "See local suite and preserved parity source; not equivalent to published integration. BATTERYCHOICE-01 tracks explicit saved artillery choice and exact model availability. SECONDARYLOOT-01 tracks finite recovery of military secondary weapons, their authored identity and saved empty source slots. DROPWEAPON-01 tracks finite ground placement and collection of recovered weapons. WEAPONHANDOVER-01 tracks adjacent transfer of recovered weapons with saved recipient ownership. EMPTYHAND-01 tracks genuine empty-hand attacks after weapon loss and retained secondary use. AMMOCUSTODY-01 tracks strategic family custody, exact sector stores and finite town shops in the published runtime. It does not publish the advanced inventory adapter.",
       "remaining": "Author fittings and further ammunition variants; finish complete physical inventory, civilian equipment looting, wear and unarmed behavior. SECONDARYLOOT-01 accepts bounded military secondary recovery.",
       "acceptance": "XML values, inventory images, sounds and use in combat",
@@ -3591,7 +3596,8 @@
         "E-DROP-RECOVERED-WEAPONS",
         "E-ADJACENT-WEAPON-TRANSFER",
         "E-EMPTY-HAND-MELEE",
-        "E-AMMO-CUSTODY"
+        "E-AMMO-CUSTODY",
+        "E-AMMO-LOADS"
       ]
     },
     {
@@ -3858,9 +3864,9 @@
       "requirement": "Complete equipment and merchant authoring",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain four finite personal supply quantities; separate ignition stocks were removed by PR #130. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of four personal supply types can gate dialogue, chapters and failure; legacy ignition conditions see the implicit full kit. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI. PR #85 adds an optional pinned cartridge unit price. AMMOCUSTODY-01 retains that price for finite purchases and replaces return credit with owned cartridges. PR #98 adds pinned editable militia patrol rules. PR #128 publishes shared physical pockets and finite capacity across collection, transfer, purchases and deployment; the capacity and stack tuning remain fixed. AMMOAUTHOR-01 adds a pinned compatible family selector to each authored firearm. AMMOMARKETS-01 adds pinned global and per-town ammunition prices, stock caps, replenishment and automatic-purchase permissions.",
+      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain four finite personal supply quantities; separate ignition stocks were removed by PR #130. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of four personal supply types can gate dialogue, chapters and failure; legacy ignition conditions see the implicit full kit. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI. PR #85 adds an optional pinned cartridge unit price. AMMOCUSTODY-01 retains that price for finite purchases and replaces return credit with owned cartridges. PR #98 adds pinned editable militia patrol rules. PR #128 publishes shared physical pockets and finite capacity across collection, transfer, purchases and deployment; the capacity and stack tuning remain fixed. AMMOAUTHOR-01 adds a pinned compatible family selector to each authored firearm. AMMOMARKETS-01 adds pinned global and per-town ammunition prices, stock caps, replenishment and automatic-purchase permissions. AMMOLOADS-01 adds multiple existing ammunition families per firearm with authored effects and conserved load choices.",
       "local": "Advanced physical inventory controls, fittings and merchants remain more complete locally and are not generally authored. PATROLRULES-01 tracks optional patrol activation, timing and exploration energy settings. ARTILLERYSUPPLY-01 accepts pinned pesos prices, supply permission, reserve cap and finite local replenishment. ARTILLERYPROFILE-01 accepts editing the three gun families, model images, costs, crew, ballistics and finite initial ammunition with saved package references. ARTILLERYTRANSPORTRULES-01 accepts pinned transfer permission, route rates and one-time fees. ARTILLERYTRADERULES-01 tracks authored cash, prices and named workshop overrides. AMMOFAMILY-01 accepts four published tactical families and the approved implicit ignition kit. AMMOFAMILIES-01 records completed local four-family custody and save migration. Publishing that advanced adapter, authored local family overrides and alternative loads remains open. AMMOCUSTODY-01 tracks strategic family custody, exact sector stores and finite town shops in the published runtime. It does not publish the advanced inventory adapter.",
-      "remaining": "Author new ammunition families, alternate loads, fittings and non-ammunition merchant stock, prices, buyback and replenishment; integrate civilian belongings and complete physical custody. Add pocket/stack authoring and portable item custody; shared pockets and ammunition supplier rules alone do not close equipment authoring.",
+      "remaining": "Author new ammunition families, fittings and non-ammunition merchant stock, prices, buyback and replenishment; integrate civilian belongings and complete physical custody. Add pocket/stack authoring and portable item custody; shared pockets and ammunition supplier rules alone do not close equipment authoring.",
       "acceptance": "Create each supported equipment type; buy/use/trade/reload without duplication or lost instance data.",
       "evidence": [
         "E-PUBLISHED",
@@ -3884,7 +3890,8 @@
         "E-TYPED-AMMUNITION",
         "E-AMMO-FAMILIES",
         "E-AMMO-CUSTODY",
-        "E-AMMO-MARKETS"
+        "E-AMMO-MARKETS",
+        "E-AMMO-LOADS"
       ]
     },
     {
@@ -4323,7 +4330,7 @@
         "E-PUBLISHED"
       ],
       "sourceRow": "JA2-C09",
-      "sourceNotes": "Geometry, cursor, combat, inventory and fresh Retiro save/reentry checks pass; live aiming, cancellation, energy-only exploration, pickup and re-equipping are checked. A dedicated illustrated throw pose remains missing. Improvised fac\u00f3n throws, range/AP/damage tuning and supported recovery are period-game adaptations; no standard military throwing doctrine or automatic stealth kill is claimed."
+      "sourceNotes": "Geometry, cursor, combat, inventory and fresh Retiro save/reentry checks pass; live aiming, cancellation, energy-only exploration, pickup and re-equipping are checked. A dedicated illustrated throw pose remains missing. Improvised facón throws, range/AP/damage tuning and supported recovery are period-game adaptations; no standard military throwing doctrine or automatic stealth kill is claimed."
     },
     {
       "id": "JA2-C10",
@@ -4611,7 +4618,7 @@
         "E-PUBLISHED"
       ],
       "sourceRow": "JA2-P03",
-      "sourceNotes": "Preserve-facing AP costs `ceil(normal step AP \u00d7 1.25)`; time uses a 1.25 multiplier before final rounding, with no extra energy multiplier. Mounted and running movement reject this intent. These are Granaderos adaptations. Group movement uses ordinary facing; Alt returns to an individual order. All posture, interruption and moving-sprite combinations remain unverified live."
+      "sourceNotes": "Preserve-facing AP costs `ceil(normal step AP × 1.25)`; time uses a 1.25 multiplier before final rounding, with no extra energy multiplier. Mounted and running movement reject this intent. These are Granaderos adaptations. Group movement uses ordinary facing; Alt returns to an individual order. All posture, interruption and moving-sprite combinations remain unverified live."
     },
     {
       "id": "JA2-P04",
@@ -4728,7 +4735,7 @@
         "E-OCCUPIED-GROUND-COLLECTION"
       ],
       "sourceRow": "JA2-I03",
-      "sourceNotes": "Strategic sector access now lists discovered equipment and supports exact local pickup/drop quantities in safe sectors. It checks walking access, capacity and current source contents, preserves loaded/fitted weapons and personal cartridges, and uses validated save/reentry paths. Seventeen simulation/save tests and two component checks cover the new flow; see [sector inventory](sector-inventory.md). Depleted ground objects cannot be picked up again. A controlled live body/ground picker spent actual approach and pickup AP, took partial cartridges and a loaded fitted musket, and retained both sources and receiver after reload. Ten approach cases, eleven batch cases and two component tests cover the picker contract. Select All and per-row quantities share one atomic 8 AP pickup from a single tile. Live full selection, capacity rejection and reduction to a valid partial selection passed; see [loot approach](loot-approach.md). Live tactical dropping, strategic partial pickup/drop, quantity rejection, save loading and reentry now pass. The check found and fixed loss of a carried loaded gun charge on campaign return; the repeated loop preserved the exact ammunition total. See [sector inventory](sector-inventory.md). Blocked paths, full packs and body/container variants remain automated-test evidence. Visited mission sites now appear under their parent sector through a labelled site selector, with separate source pools and shared local-presence, occupation and path checks. Real San Lorenzo remains can be recovered after victory; completed Yatasto pickup/drop and saves pass simulation checks. A live production-component harness recovered one dressing and one cartridge from the real San Lorenzo save and preserved the distinct town stock after saving/loading. See [sector inventory](sector-inventory.md). Carried weapons can now be equipped directly from a safe town, without entering the tactical map. Prepared load, partial work, condition and fittings survive the supported map/armory/deployment/return paths; capture/rescue and finite ammunition are tested. A live C\u00f3rdoba recovery pickup/equip/save/load check passed. See [carried weapon equipment](campaign-carried-equip.md)."
+      "sourceNotes": "Strategic sector access now lists discovered equipment and supports exact local pickup/drop quantities in safe sectors. It checks walking access, capacity and current source contents, preserves loaded/fitted weapons and personal cartridges, and uses validated save/reentry paths. Seventeen simulation/save tests and two component checks cover the new flow; see [sector inventory](sector-inventory.md). Depleted ground objects cannot be picked up again. A controlled live body/ground picker spent actual approach and pickup AP, took partial cartridges and a loaded fitted musket, and retained both sources and receiver after reload. Ten approach cases, eleven batch cases and two component tests cover the picker contract. Select All and per-row quantities share one atomic 8 AP pickup from a single tile. Live full selection, capacity rejection and reduction to a valid partial selection passed; see [loot approach](loot-approach.md). Live tactical dropping, strategic partial pickup/drop, quantity rejection, save loading and reentry now pass. The check found and fixed loss of a carried loaded gun charge on campaign return; the repeated loop preserved the exact ammunition total. See [sector inventory](sector-inventory.md). Blocked paths, full packs and body/container variants remain automated-test evidence. Visited mission sites now appear under their parent sector through a labelled site selector, with separate source pools and shared local-presence, occupation and path checks. Real San Lorenzo remains can be recovered after victory; completed Yatasto pickup/drop and saves pass simulation checks. A live production-component harness recovered one dressing and one cartridge from the real San Lorenzo save and preserved the distinct town stock after saving/loading. See [sector inventory](sector-inventory.md). Carried weapons can now be equipped directly from a safe town, without entering the tactical map. Prepared load, partial work, condition and fittings survive the supported map/armory/deployment/return paths; capture/rescue and finite ammunition are tested. A live Córdoba recovery pickup/equip/save/load check passed. See [carried weapon equipment](campaign-carried-equip.md)."
     },
     {
       "id": "JA2-I04",
@@ -4808,9 +4815,9 @@
       "requirement": "Ammunition is typed and compatible with a weapon, not interchangeable abstract shots. G49-50; M21-24.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "PR #130 publishes four compatible gameplay families, implicit ignition equipment, separate pocket artwork and bounded ground recovery. Each firearm accepts one family.",
+      "published": "PR #130 publishes four compatible gameplay families, implicit ignition equipment, separate pocket artwork and bounded ground recovery. Each firearm accepts one family. AMMOLOADS-01 adds multiple existing ammunition families per firearm with authored effects and conserved load choices.",
       "local": "AMMOFAMILIES-01 records four-family compatibility in the advanced physical inventory game, with conserved old saves, finite stocks, paired reloads and the running port 3000 build. This local integration is not yet published. Full campaign acceptance and advanced authored family overrides remain open. AMMOCUSTODY-01 tracks strategic family custody, exact sector stores and finite town shops in the published runtime. It does not publish the advanced inventory adapter.",
-      "remaining": "Alternate period loads for the same firearm and full interaction parity remain open. Publish the advanced physical inventory adapter and its dependencies.",
+      "remaining": "Full ammunition interaction parity remains open. Publish the advanced physical inventory adapter and its dependencies; alternative loads within the four families are covered by AMMOLOADS-01.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
@@ -4818,7 +4825,8 @@
         "E-PUBLISHED",
         "E-TYPED-AMMUNITION",
         "E-AMMO-FAMILIES",
-        "E-AMMO-CUSTODY"
+        "E-AMMO-CUSTODY",
+        "E-AMMO-LOADS"
       ],
       "sourceRow": "JA2-I08",
       "sourceNotes": "Alternate loads for one gun remain absent. Caliber/load mapping, initial stock, prices and production costs are Granaderos tuning. Modern AP/HP cartridges are inappropriate. Artillery ammunition remains a separate model."
@@ -5287,7 +5295,7 @@
       "status": "VERIFIED",
       "priority": "P1",
       "published": "PRs #92 and #93 distinguish paid regular instruction from combat-earned veteran rank, preserve wounded individual participants and finite equipment, retain prior paid veteran contracts and save bounded opponent credit. The editor can pin Granaderos thresholds and gains. Both deliveries merged after successful exact-head CI.",
-      "local": "Actual reaction kills, finite shots, both combat ranks, paid regular instruction, invalid new veteran tuition, prior count-only and individual contracts, repeated-credit rejection, the large-encounter ledger boundary and saved continuation pass. The mounted campaign and editor checks cover actual course controls and pinned launch. Local finite militia care is published by PRs #89\u201391. The separate autonomy, control and redistribution scope stays in JA2-S05.",
+      "local": "Actual reaction kills, finite shots, both combat ranks, paid regular instruction, invalid new veteran tuition, prior count-only and individual contracts, repeated-credit rejection, the large-encounter ledger boundary and saved continuation pass. The mounted campaign and editor checks cover actual course controls and pinned launch. Local finite militia care is published by PRs #89–91. The separate autonomy, control and redistribution scope stays in JA2-S05.",
       "remaining": "",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
@@ -5319,7 +5327,7 @@
       "requirement": "Local militia fight and suffer persistent casualties; direct control differs from hired soldiers. G59-60.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Paid local militia and saved tactical casualties are published. PRs #89\u201391 add finite local physician care, individual training and unloaded wound deaths with retained actual remains. PR #95 integrates autonomous allied turns, finite reactions and distinct militia controls. PR #96 publishes finite local exploration patrols, real contact and synchronized saved continuation. PR #97 publishes connected-city transfers, automatic balancing and saved physical arrivals. PR #98 pins authored patrol activation, waypoint timing and exploration reserve/recovery.",
+      "published": "Paid local militia and saved tactical casualties are published. PRs #89–91 add finite local physician care, individual training and unloaded wound deaths with retained actual remains. PR #95 integrates autonomous allied turns, finite reactions and distinct militia controls. PR #96 publishes finite local exploration patrols, real contact and synchronized saved continuation. PR #97 publishes connected-city transfers, automatic balancing and saved physical arrivals. PR #98 pins authored patrol activation, waypoint timing and exploration reserve/recovery.",
       "local": "MILITIAAI-01 accepts the bounded published-engine autonomous phases, saved reactions and control restrictions with actual paid wounded survivors. The preserved advanced source still contains separate patrol, artillery and redistribution scope. MILITIAPATROL-01 accepts bounded peaceful patrols, contact and saved UI clock controls. MILITIADIST-01 tracks city transfers, automatic balancing and safe saved arrivals. PATROLRULES-01 tracks optional patrol activation, timing and exploration energy settings. ARTILLERYAI-01 accepts local automatic gun crews, shared budgets, safe observed targeting and saved finite resources.",
       "remaining": "Integrate advanced support, custody, configurable city rules and the remaining defense acceptance.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
@@ -5518,7 +5526,7 @@
         "E-PUBLISHED"
       ],
       "sourceRow": "JA2-W06",
-      "sourceNotes": "Tucum\u00e1n now accepts three physically carried dressings through selected single or partial-batch offers. Excess and wrong items are refused, exact custody survives saves/reentry, the notebook tracks acknowledged quantities, and the loyalty reward occurs once. All 49 focused checks, type checking and the build pass; live partial delivery, excess refusal, cursor return, completion and reload/notebook checks also pass. See [medical delivery](physical-medical-delivery.md). Extend physical giving to other suitable portable quest goods and NPC responses. The bulk powder and cavalry-supply errands still consume campaign resources."
+      "sourceNotes": "Tucumán now accepts three physically carried dressings through selected single or partial-batch offers. Excess and wrong items are refused, exact custody survives saves/reentry, the notebook tracks acknowledged quantities, and the loyalty reward occurs once. All 49 focused checks, type checking and the build pass; live partial delivery, excess refusal, cursor return, completion and reload/notebook checks also pass. See [medical delivery](physical-medical-delivery.md). Extend physical giving to other suitable portable quest goods and NPC responses. The bulk powder and cavalry-supply errands still consume campaign resources."
     },
     {
       "id": "JA2-W07",
@@ -5582,7 +5590,7 @@
       "priority": "P0",
       "published": "This complete capability is not accepted in the published release.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check.",
-      "remaining": "Fresh route fails at northern medical relief; established C\u00f3rdoba recapture and prisoner-rescue routes also fail.",
+      "remaining": "Fresh route fails at northern medical relief; established Córdoba recapture and prisoner-rescue routes also fail.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
@@ -5590,7 +5598,7 @@
         "E-PUBLISHED"
       ],
       "sourceRow": "JA2-W10",
-      "sourceNotes": "Complete real medical relief, then revalidate the remaining route and actual ending with paid supplies and real casualties. Established C\u00f3rdoba recapture and physical Humahuaca rescue also fail. Scripted victory reports isolate subsystem settlement; they do not prove campaign playability or general balance."
+      "sourceNotes": "Complete real medical relief, then revalidate the remaining route and actual ending with paid supplies and real casualties. Established Córdoba recapture and physical Humahuaca rescue also fail. Scripted victory reports isolate subsystem settlement; they do not prove campaign playability or general balance."
     },
     {
       "id": "UX-01",
@@ -5722,7 +5730,7 @@
     {
       "id": "FIX-02",
       "group": "Failed acceptance routes",
-      "requirement": "Established recovery loses C\u00f3rdoba to its persistent garrison",
+      "requirement": "Established recovery loses Córdoba to its persistent garrison",
       "status": "FAILED",
       "priority": "P0",
       "published": "These larger acceptance routes are not present in the published suite.",
@@ -6423,7 +6431,7 @@
       "requirement": "Configure ammunition suppliers globally and by town through the story editor",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "This delivery adds optional pinned supplier profiles with initial stock, caps, replenishment quantities and supplied-hour intervals, per-family prices, enablement and automatic-purchase controls. Final-head checks gate merge.",
+      "published": "This delivery adds optional pinned supplier profiles with initial stock, caps, replenishment quantities and supplied-hour intervals, per-family prices, enablement and automatic-purchase controls. Final-head checks gate merge. PR #136 merged as 7ea5fccea8e2b41274a6ed1ab16119d481fd5a19 after all five final-head checks passed (run 36643395677, 1312 gameplay tests).",
       "local": "Five runtime tests and a mounted full-editor launch test pass; old packages keep their identities. The advanced local physical-inventory adapter remains separate. The full implementation run passes 1312/1312 without failures or skips. Final save-guard and layout changes pass 16 core and one mounted editor check; types, export and 36 reference checks pass. Browser editing and reload retain the town profile.",
       "remaining": "",
       "acceptance": "Author and validate global and independent town profiles; launch, purchase, deploy and replenish finite ammunition at configured prices. Preserve stock, clocks and pinned rules through saves. Empty suppliers replenish; disabled or disconnected suppliers do not.",
@@ -6441,16 +6449,42 @@
         "tests/story-editor.test.mjs"
       ],
       "pr": "https://github.com/fsodano/granaderos/pull/136"
+    },
+    {
+      "id": "AMMOLOADS-01",
+      "group": "Published deliveries",
+      "requirement": "Choose and author multiple compatible ammunition loads for one firearm",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "This delivery adds selectable primary and alternative loads, authored damage/range/pattern, conserved unloading and saved gun choices. All five final-head checks gate merge.",
+      "local": "Eight runtime, two mounted interface and one mounted editor cases cover actual use. Production browser verifies immediate reset validity, campaign launch, safe hire, unloading and selection.",
+      "remaining": "",
+      "acceptance": "Author unique alternate families and effects; unload actual charges without conversion; select only with an empty gun and no unfinished reload; purchase, reload, fire, transfer, drop, return and save the selected load with conserved rounds.",
+      "evidence": [
+        "E-AMMO-LOADS"
+      ],
+      "parents": [
+        "STORY-06",
+        "ITEM-01",
+        "JA2-I08",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/alternate-firearm-loads.test.mjs",
+        "tests/alternate-firearm-loads-render.test.mjs",
+        "tests/story-editor.test.mjs"
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/137"
     }
   ],
   "latestPublishedCheck": {
-    "source": "e90895c5bb0eadeb168533be118097300fba034e",
-    "total": 1306,
-    "passed": 1306,
+    "source": "c1c368fde297ee7b407b28fe40b2061e91d91acc",
+    "total": 1312,
+    "passed": 1312,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-AMMO-CUSTODY"
+    "evidenceId": "E-AMMO-MARKETS"
   }
 }

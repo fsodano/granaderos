@@ -1,4 +1,5 @@
 'use client';
+import AmmunitionLoadChoice from './AmmunitionLoadChoice';
 import {ammoCount,ammoTypeFor,AMMO_TYPES,ammunitionForWeapon} from '../../game/ammo-types.js';
 // MODE B: single-merc inventory panel (header / stats / stance grid / paper-doll / slot-grid / pertrechos / far-right cluster).
 // Pure read model (game/ja2-hud.js inventoryModel/orderDescriptors); all mutations are caller-provided callbacks.
@@ -113,6 +114,7 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
           {inv.activeSlot !== 'unarmed' && slots[inv.activeSlot||'primary']?.id > 0 && <img src={slots[inv.activeSlot||'primary'].art??`/art/weapon-${slots[inv.activeSlot||'primary'].id}.png`} alt=""/>}
           <span>{inv.activeSlot==='unarmed'?'Manos vacías':slots[inv.activeSlot||'primary']?.name??'Manos vacías'}</span>
           {hasFirearm(unit)&&<small>Munición: {ammunitionForWeapon(unit)?.name} · {ammoCount(unit)} disponibles</small>}
+      <AmmunitionLoadChoice unit={unit} disabled={busyDisabled} unloadCost={battle.mode==='exploration'?' · 1 s':' · 4 PA'} onUnload={()=>onOrder({type:'unloadAmmunition',unitId:unit.id})} onSelect={family=>onOrder({type:'selectAmmunitionLoad',unitId:unit.id,family})}/>
         </div>
         <div className="paper-readouts">
           <button className={`line-button ${unit.activeSlot==='unarmed'?'active':''}`} aria-label="Usar manos vacías" aria-pressed={unit.activeSlot==='unarmed'} disabled={busyDisabled || unit.activeSlot==='unarmed' || (battle.mode!=='exploration' && unit.ap<4)} onClick={()=>onOrder(slotAction(unit, 'unarmed'))}>Manos vacías · {battle.mode==='exploration'?'1 s':'4 PA'}</button>

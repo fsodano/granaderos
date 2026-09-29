@@ -1,0 +1,75 @@
+{
+  "feature": "Alternative firearm loads",
+  "source": "f394da16e2c56308637ba1ff0265fa3bffd45ef3",
+  "base": "7ea5fccea8e2b41274a6ed1ab16119d481fd5a19",
+  "checks": {
+    "focused": {
+      "passed": 14,
+      "failed": 0,
+      "scope": "8 alternative-load runtime, 2 mounted interface, 4 authored-family cases"
+    },
+    "editor": {
+      "passed": 1,
+      "failed": 0
+    },
+    "types": "PASS",
+    "build": {
+      "status": "PASS",
+      "files": 735,
+      "assetReferences": 637
+    },
+    "browser": {
+      "url": "http://localhost:3134/?content=1",
+      "resetLaunchEnabled": true,
+      "actor": "Baltasar Acosta",
+      "unloadedMusketReserve": 4,
+      "selectedLoad": {
+        "family": "ammoShot",
+        "damage": 19,
+        "range": 7,
+        "pattern": "single"
+      },
+      "consoleErrors": 0,
+      "consoleWarnings": 0
+    },
+    "coneRegression": {
+      "passed": 14,
+      "failed": 0,
+      "scope": "6 existing cold-steel cases and 8 alternative-load runtime cases; assertion updated for the generalized cone message."
+    },
+    "baseline": {
+      "passed": 36
+    }
+  },
+  "sourceHashes": {
+    "game/ammo-types.js": "054b07c99f20f6e88286dfe12e12989a46ee5203ab5521c4be9fa9ad0e8790e2",
+    "game/campaign-ammunition.js": "e105dbf56ef97a89f8acdfb3b4b55fabf4c54889cd98c1bcd49b51a8636e30ff",
+    "game/campaign-content.js": "25251e90134f264a8dbda8f2b7ad61f332e3987670f94d790ac9a5dde113d72e",
+    "game/campaign.js": "efcae26e3b082f89521cf2cdab402e86faf97414f1a8bfcf56f42154ef1e245e",
+    "game/firearm-loads.js": "836599fe89cf609378ababbae9c4d63fc31c381d044810cc5872af907677695d",
+    "game/sprite-order-pose.js": "ffa57d0222a55254d60541327453024cc6e1c70cdac6734e29571871ea478c4a",
+    "game/tactical.js": "daa23c5182568522088d5c2d6833d8083c284091a6621fb907b51c0a3ee362cc",
+    "game/weapon-definition.js": "2efda1356ac76ee49aca269db06fec52de3ffedc5929d4a88bc31e2a82ef7b28",
+    "tests/alternate-firearm-loads-render.test.mjs": "ed01d0d6876693cdeba591c3816efc8d8af3168f548d8c65cc7813ea59c45491",
+    "tests/alternate-firearm-loads.test.mjs": "7e3a670f571038a0f7a5e4af1d82d2625ab6ba3577c017b6a0e5ef35b87b4f2c",
+    "tests/story-editor.test.mjs": "e7ce0030ec8987672284c7086cf41b413e463ebf5addef802d321e40d9e8fec2",
+    "web/app/AmmunitionLoadChoice.tsx": "29a31e5d9f3deaf9c0e6b6026e00559f306d66ec35be661bb87498663e44c2bb",
+    "web/app/CampaignAmmunition.tsx": "a09d3c81b33f2bf6cf250cca7ab5694896f556e3b23d11da131f20996f452c49",
+    "web/app/JA2Inventory.tsx": "8b1043e9db0566d7a3bed8ddf9a4e3ef6dc80691a3fb95c8b120c7d78a70d328",
+    "web/app/page.tsx": "44df8843daa87c241788051421fe6531ac93d70d961e59f5e105534df3561963",
+    "web/app/story/AlternativeLoads.tsx": "3b5fc3fdae4658ee77c593767ed7dfbaefcdd1f60afc74964ee2209059443dfb",
+    "web/app/story/page.tsx": "47e12f01d9a1c173f27e82aec5a94ae86ed80c5543dabd14add54decb5bbc2d0",
+    "web/app/tactical-hud.css": "b9e5966a54af7739380901747a0a555831a06d7a7aaa3a8da0557a623bdc22b3",
+    "tests/cold-steel.test.mjs": "a2510ca896cffd7bf9612e40b53f9d6d882cb8a312cf8397b0282269ac241bc4"
+  },
+  "screenshots": [
+    "docs/evidence/alternate-firearm-loads-editor.png",
+    "docs/evidence/alternate-firearm-loads-game.png"
+  ],
+  "limits": [
+    "Advanced local physical inventory adapter remains unpublished.",
+    "Four ammunition families only.",
+    "Gameplay tuning is not historical ballistic measurement.",
+    "Full game and editor acceptance remains open."
+  ]
+}

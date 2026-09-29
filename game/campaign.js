@@ -1,4 +1,4 @@
-import {migrateAmmunitionCustody,validateAmmunitionCustody,restockAmmunitionShops,prepareCampaignAmmunition,retainReturnedAmmunition,moveCampaignAmmunition,unloadCampaignWeapon,carriedAmmunition} from './campaign-ammunition.js';
+import {unloadOwnedCampaignAmmunition,selectCampaignAmmunitionLoad,migrateAmmunitionCustody,validateAmmunitionCustody,restockAmmunitionShops,prepareCampaignAmmunition,retainReturnedAmmunition,moveCampaignAmmunition,unloadCampaignWeapon,carriedAmmunition} from './campaign-ammunition.js';
 import {removeIgnitionSupplies,validateStoredAmmo} from './ammo-types.js';
 import {personalPockets,pocketChangeReason,POCKET_FULL} from './personal-pockets.js';
 import {sellArtillery,repurchaseArtillery,validateArtilleryMerchants} from './artillery-trading.js';
@@ -63,7 +63,7 @@ export {CIVIC_RECRUITS} from './recruitment.js';
 export function civicStatus(s,id,local=false){return baseCivicStatus(s,id);}
 import {OPERATIVES, WEAPONS, CAMPAIGN_SECTORS, FACTIONS, PHASES, RESOURCE_NAMES} from './data.js';
 export {OPERATIVES, WEAPONS, CAMPAIGN_SECTORS, FACTIONS, PHASES, RESOURCE_NAMES};
-export function rosterFor(s){return baseRosterFor(s).map(o=>{const record=s.operativeState?.[o.id]??{};return {...o,...(s.loadouts?.[o.id]??{}),...(record.weaponMetadata?{weaponMetadata:record.weaponMetadata}:{}),...(record.bladeMetadata?{bladeMetadata:record.bladeMetadata}:{}),...Object.fromEntries(TRAINABLE_SKILLS.map(skill=>[skill,Math.min(100,(o[skill]??0)+(record.trainedStats?.[skill]??0))])),strength:Math.max(o.strength,Math.min(100,record.strength??o.strength))};});}
+export function rosterFor(s){return baseRosterFor(s).map(o=>{const record=s.operativeState?.[o.id]??{};return {...o,...(s.loadouts?.[o.id]??{}),...(record.ammunitionChoice!==undefined?{ammunitionChoice:record.ammunitionChoice}:{}),...(record.weaponMetadata?{weaponMetadata:record.weaponMetadata}:{}),...(record.bladeMetadata?{bladeMetadata:record.bladeMetadata}:{}),...Object.fromEntries(TRAINABLE_SKILLS.map(skill=>[skill,Math.min(100,(o[skill]??0)+(record.trainedStats?.[skill]??0))])),strength:Math.max(o.strength,Math.min(100,record.strength??o.strength))};});}
 export function deploymentCost(s){return prepareCampaignAmmunition(s,rosterFor(s),s.squad,{supplied:isSupplied(s,s.location)}).cost;}
 function returnTraining(s,id,report){validateTraining(report);for(const field of ['trainedStats','skillPractice'])if(report[field]!==undefined)s.operativeState[id][field]=clone(report[field]);}
 function returnEquipment(s,id,report,snapshot){
@@ -247,11 +247,13 @@ export function dispatchCampaign(previous,action){
     requireThat(action&&typeof action.type==='string','La orden no es válida.');
     if(action.sectorState){validateCampaignPatrol(s,action.sectorState);validateCampaignArtilleryProfiles(s,action.sectorState);validateArtilleryReport(s.pendingBattle,action.sectorState);}
     requireThat(!s.defeated||s.pendingBattle&&['syncTacticalTime','leaveSector','battleResult'].includes(action.type),'La campaña ha terminado. Inicia otra campaña para continuar.');
-    requireThat(!s.completed||['syncTacticalTime','wait','travel','visitSector','leaveSector','talkNPC','createSquad','selectSquad','squad','equip','resupply','repairWeapon','purchaseEquipment','configureArtillery','resupplyArtillery','transportArtillery','sellArtillery','repurchaseArtillery','transport','militia','cancelMilitia','transferMilitia','distributeMilitia','renewContract','dismiss','redirectHire','cancelHireArrival','assignCare','purchaseMedicalSupplies','ammunition'].includes(action.type),'La campaña está ganada. Puedes recorrer las provincias y atender a tus escuadras.');
+    requireThat(!s.completed||['syncTacticalTime','wait','travel','visitSector','leaveSector','talkNPC','createSquad','selectSquad','squad','equip','resupply','repairWeapon','purchaseEquipment','configureArtillery','resupplyArtillery','transportArtillery','sellArtillery','repurchaseArtillery','transport','militia','cancelMilitia','transferMilitia','distributeMilitia','renewContract','dismiss','redirectHire','cancelHireArrival','assignCare','purchaseMedicalSupplies','ammunition','selectAmmunitionLoad','unloadAmmunition'].includes(action.type),'La campaña está ganada. Puedes recorrer las provincias y atender a tus escuadras.');
     requireThat(!s.pendingBattle||['battleResult','leaveSector','talkNPC','finishMission','syncTacticalTime'].includes(action.type),'Hay una batalla pendiente. Resuélvela antes de dar nuevas órdenes.');
     if(['travel','attack','visitSector'].includes(action.type))requireThat(!s.squad.some(id=>militiaAssignment(s,id)),'Un instructor de la escuadra está asignado a las milicias. Cancelá su curso o dejalo en una escuadra de guarnición.');
     if(['travel','attack','visitSector','visitMission'].includes(action.type))requireThat(!s.squad.some(id=>careAssignmentBusy(s.operativeState[id].assignment)),'Volvé a poner en servicio a los médicos, pacientes y combatientes en descanso de la escuadra antes de marchar o entrar al sector.');
     switch(action.type){
+      case 'unloadAmmunition':{unloadOwnedCampaignAmmunition(s,rosterFor(s).find(o=>o.id===action.operativeId));break;}
+      case 'selectAmmunitionLoad':{selectCampaignAmmunitionLoad(s,rosterFor(s).find(o=>o.id===action.operativeId),action.family);break;}
       case 'ammunition':{
         const op=rosterFor(s).find(o=>o.id===Number(action.operativeId));
         const quote=moveCampaignAmmunition(s,op,action.family,action.quantity,action.direction,isSupplied(s,s.location));
@@ -305,6 +307,7 @@ export function dispatchCampaign(previous,action){
         requireThat(op&&s.recruited.includes(id)&&s.operativeState[id].alive,'El combatiente no está disponible.');requireThat(['weapon','blade'].includes(slot),'Elegí el arma principal o el arma blanca.');
         requireThat(Number.isInteger(itemId)&&itemId>=1800&&itemId<=1813&&(slot!=='blade'||itemId>=1809),'Esta arma no corresponde a ese espacio.');
         requireThat(op[slot]!==itemId,'El combatiente ya lleva esa arma.');requireThat((s.armory?.[itemId]??0)>0,'No quedan unidades de esa arma en la armería.');
+        if(slot==='weapon')delete s.operativeState[id].ammunitionChoice;
         s.armory[itemId]--;s.armory[op[slot]]=(s.armory[op[slot]]??0)+1;s.loadouts??={};s.loadouts[id]={...(s.loadouts[id]??{}),[slot]:itemId};note(s,`${op.name} recibe ${WEAPONS[itemId].name}.`);break;
       }
       case 'resupply':case 'repairWeapon':{

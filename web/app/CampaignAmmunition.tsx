@@ -1,7 +1,8 @@
 'use client';
+import AmmunitionLoadChoice from './AmmunitionLoadChoice';
 import {useState} from 'react';
 import {AMMO_KEYS,AMMO_TYPES,ammoTypeFor} from '../../game/ammo-types.js';
-import {ammunitionOrderQuote,AMMUNITION_ORDER_LIMIT,hasAmmunitionMarket} from '../../game/campaign-ammunition.js';
+import {ammunitionOrderQuote,AMMUNITION_ORDER_LIMIT,hasAmmunitionMarket,carriedAmmunition} from '../../game/campaign-ammunition.js';
 import {isSupplied} from '../../game/campaign.js';
 import {campaignPlace} from '../../game/world-cells.js';
 
@@ -18,6 +19,7 @@ export default function CampaignAmmunition({state:s,operative,dispatch}:{state:a
   <div className="campaign-ammunition-actions"><button className="line-button" disabled={!quotes.buy.available} title={quotes.buy.reason??undefined} onClick={()=>act('buy')}>Comprar · {Number.isSafeInteger(quotes.buy.cost)?quotes.buy.cost:0} pesos</button><button className="line-button" disabled={!quotes.store.available} title={quotes.store.reason??undefined} onClick={()=>act('store')}>Guardar en este sector</button><button className="line-button" disabled={!quotes.take.available} title={quotes.take.reason??undefined} onClick={()=>act('take')}>Retirar del depósito</button></div>
   {hasAmmunitionMarket(s,s.location)&&<p>{quotes.buy.stock} disponibles con el proveedor · {quotes.buy.unitPrice} {quotes.buy.unitPrice===1?'peso':'pesos'} por cartucho.</p>}
   {quotes.buy.reason&&<p role="status">{quotes.buy.reason}</p>}
+  <AmmunitionLoadChoice unit={{...carriedAmmunition(operative,s.operativeState[operative?.id]),activeSlot:'primary'}} disabled={!!s.pendingBattle} onUnload={()=>dispatch({type:'unloadAmmunition',operativeId:operative?.id})} onSelect={family=>{dispatch({type:'selectAmmunitionLoad',operativeId:operative?.id,family});setFamily(family);}}/>
   <small>Los cartuchos conservan su familia. El depósito queda en este sector. Al entrar o partir de una localidad propia y comunicada se compra solo lo que falta para la carga configurada; fuera de esas localidades llevás tu munición actual.</small>
  </section>;
 }
