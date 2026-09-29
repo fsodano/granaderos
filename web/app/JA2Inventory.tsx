@@ -1,11 +1,11 @@
 'use client';
 // MODE B: single-merc inventory panel (header / stats / stance grid / paper-doll / slot-grid / pertrechos / far-right cluster).
 // Pure read model (game/ja2-hud.js inventoryModel/orderDescriptors); all mutations are caller-provided callbacks.
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import TacticalMinimap from './TacticalMinimap';
 import TrainingProgress from './TrainingProgress';
 import {inventoryModel, orderDescriptors, orderAction, slotAction, backpackEquipAction, levelFor} from '../../game/ja2-hud.js';
-import {WEAPONS, BLADES, hasFirearm, ignitionRisk, visibleEnemies} from '../../game/tactical.js';
+import {WEAPONS, BLADES, hasFirearm, ignitionRisk, visibleEnemies, weaponTransferPreview} from '../../game/tactical.js';
 import {portraitFor} from '../lib/portraits';
 
 const short = (u: any) => u.nickname || String(u.name || '').split(' ').slice(-1)[0] || '';
@@ -59,6 +59,8 @@ type Props = {
   onRetreat: () => void; onCameraCenter: () => void; onCameraPan: (dx: number, dy: number) => void; onZoom: (delta: number) => void; onCloseInventory: () => void;
 };
 export default function JA2Inventory({unit, battle, mode, showSight, busy, units, selected, missionAllies, localMilitia, vw, vh, cameraRect, project, zoom, onOrder, onMode, onToggleSight, onSelect, onRetreat, onCameraCenter, onCameraPan, onZoom, onCloseInventory}: Props) {
+  const [recipient, setRecipient] = useState('');
+  const recipients = battle.units.filter((u:any) => u.side === unit.side && u.id !== unit.id && !u.militia && !u.fled && !u.departure);
   const inv: any = inventoryModel(battle, unit);
   const descriptors: any[] = orderDescriptors(battle, unit, {busy});
   const def = (id: string) => descriptors.find((d: any) => d.id === id);
@@ -123,6 +125,7 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
         {inv.backpack.map((item: any) => {
           const gun = (WEAPONS as any)[item.weapon];
           const blade = (BLADES as any)[item.weapon];
+          const transfer = weaponTransferPreview(battle, unit, recipients.find((u:any) => u.id === recipient), item.key);
           return (
             <div key={item.key} className={`slot-cell ${item.equippable ? 'equippable' : ''}`}>
               {item.art&&<img src={item.art} alt="" style={{width:"100%",height:45,objectFit:"contain"}}/>}
@@ -131,6 +134,9 @@ export default function JA2Inventory({unit, battle, mode, showSight, busy, units
                 <button className="line-button" disabled={equipDisabled} onClick={() => onOrder(backpackEquipAction(item.key, 'primary'))}>Equipar principal · 6 PA</button>
                 {blade && <button className="line-button" disabled={equipDisabled} onClick={() => onOrder(backpackEquipAction(item.key, 'blade'))}>Equipar secundaria · 6 PA</button>}
                 <button className="line-button" disabled={dropDisabled} onClick={() => onOrder({type:'drop',inventoryKey:item.key})}>Dejar una pieza en el suelo · {battle.mode==='exploration'?'1 s':'4 PA'}</button>
+                <label>Entregar a <select aria-label={`Entregar ${item.name} a`} value={recipient} disabled={busyDisabled} onChange={e=>setRecipient(e.target.value)}><option value="">Elegí un compañero</option>{recipients.map((u:any)=><option key={u.id} value={u.id}>{u.name}</option>)}</select></label>
+                <button className="line-button" disabled={busyDisabled || Boolean(transfer.reason)} title={transfer.reason??'Entregar una pieza al compañero elegido'} onClick={()=>onOrder({type:'transfer',inventoryKey:item.key,targetId:recipient})}>Entregar una pieza · {battle.mode==='exploration'?'1 s':'4 PA'}</button>
+                {recipient && transfer.reason && <small>{transfer.reason}</small>}
               </>}
             </div>
           );

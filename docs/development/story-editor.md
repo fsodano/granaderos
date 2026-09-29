@@ -720,3 +720,15 @@ La pieza conserva la imagen, los valores, el desgaste y la carga que tenía.
 Guardar, salir y volver al sector mantiene su estado. Por ahora, esta operación
 se aplica a las armas recuperadas guardadas en la mochila. Las armas en uso y
 los suministros tienen seguimiento separado. [Verificación](../verification/drop-recovered-weapons.md).
+
+
+### Entregar un arma recuperada a un compañero
+
+En **Equipo y órdenes**, elegí un compañero en **Entregar a** y usá **Entregar
+una pieza**. Debe estar al lado, consciente y sin obstáculos entre ambos. La
+acción cuesta 4 PA del soldado que entrega, o un segundo en exploración.
+El compañero recibe la pieza en su mochila y puede equiparla. Conserva la
+imagen, los valores, el desgaste y la carga, incluso después de guardar y
+volver al sector. Si no se puede entregar, el panel explica el motivo.
+Esta operación cubre las armas recuperadas guardadas; los suministros y las
+entregas a distancia siguen pendientes. [Verificación](../verification/adjacent-weapon-transfer.md).

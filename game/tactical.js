@@ -251,6 +251,14 @@ else if(a.type==='drop'){
  record.count--;if(!record.count)delete u.inventory[key];
  say(s,`${u.name} deja ${weaponSpecification(record).name} en el suelo.`);
 }
+else if(a.type==='transfer'){
+ const plan=weaponTransferPreview(s,u,target,a.inventoryKey);if(plan.reason)return fail(plan.reason);
+ if(!pay(4))return fail('Entregar una pieza requiere 4 PA.');
+ const record=u.inventory[a.inventoryKey];let serial=0,key=`transfer:${u.id}:${a.inventoryKey}`;
+ while(target.inventory[key])key=`transfer:${u.id}:${a.inventoryKey}:${++serial}`;
+ target.inventory[key]={...weaponRecord(record),weight:record.weight};record.count--;if(!record.count)delete u.inventory[a.inventoryKey];
+ lowerWeapon(u);say(s,`${u.name} entrega ${weaponSpecification(target.inventory[key]).name} a ${target.name}.`);
+}
 else if(a.type==='equipLoot'){
  const key=a.inventoryKey,record=u.inventory?.[key],slot=a.slot||'primary';
  if(!record||typeof record!=='object'||record.count<1||!['primary','blade'].includes(slot))return fail('Selecciona un arma recuperada disponible.');
@@ -322,6 +330,20 @@ export function actBattle(state,action){
   else if(!s.roundTimeCharged){advanceBattleClock(s,COMBAT_ROUND_SECONDS);s.roundTimeCharged=true;}
  }
  delete s.actionDurationSeconds;delete s.actionTimeAppliedSeconds;delete s.approachingNpcIds;detectContact(s);revealRooms(s);return resolveFirstContact(s);
+}
+// Shared preflight for the inventory control and execution; it never mutates.
+export function weaponTransferPreview(s,u,target,inventoryKey){
+ const reject=reason=>({reason,pa:4,seconds:s.mode==='exploration'?1:undefined});
+ if(s.status!=='active'||!u||u.side!=='player'||u.militia||!alive(u)||u.fled||u.departure||u.knockedDown)return reject('Seleccioná un integrante de la escuadra que pueda actuar.');
+ if(!target||target===u||target.id===u.id||target.side!==u.side||target.militia||!alive(target)||target.fled||target.departure||target.knockedDown||target.entangled)return reject('Elegí otro integrante consciente de la escuadra.');
+ if(!artilleryContact(s,u,target))return reject('El compañero debe estar al lado, sin obstáculos entre ambos.');
+ const record=u.inventory?.[inventoryKey];
+ if(!record||typeof record!=='object'||!Number.isSafeInteger(record.count)||record.count<1||!(WEAPONS[record.weapon]||BLADES[record.weapon]))return reject('Elegí un arma recuperada disponible para entregar.');
+ try{validateWeaponCarrier(record);}catch(error){return reject(error.message);}
+ const spec=weaponSpecification(record);if(!Number.isFinite(record.weight)||record.weight<0||record.weight>10000||!Number.isInteger(record.loaded??0)||(record.loaded??0)<0||(record.loaded??0)>(spec.capacity??0)||!Number.isFinite(record.condition??100)||(record.condition??100)<0||(record.condition??100)>100)return reject('El estado del arma recuperada no es válido.');
+ if(Object.keys(target.inventory??{}).length>=1000)return reject('El compañero no puede guardar más equipo.');
+ if(s.mode!=='exploration'&&u.ap<4)return reject('Entregar una pieza requiere 4 PA.');
+ return {reason:null,pa:4,seconds:s.mode==='exploration'?1:undefined};
 }
 export function endTurn(state){
  const s=clone(state);s.lastError=null;if(s.status!=='active')return s;

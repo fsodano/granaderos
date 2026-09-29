@@ -827,3 +827,15 @@ reload through saves and sector return. Collection preserves other carried
 pieces even when fields have overlapping local indices. Held weapons, supplies,
 throwing and full pocket organization remain separate. See
 [verification](../verification/drop-recovered-weapons.md).
+
+
+### Hand recovered weapons to a companion
+
+Stored recovered weapons can move directly to an adjacent conscious squad
+member. Each order transfers one exact piece, costs the sender four combat AP
+or one exploration second, and preserves the recipient's other equipment.
+Walls, furniture and closed diagonal corners block handover. Authored identity,
+image and mechanism follow the piece through saves and later sector entry.
+The inventory shows actual eligibility before sending the order. Broader item
+transfers, relays and throwing remain separate. See
+[verification](../verification/adjacent-weapon-transfer.md).
