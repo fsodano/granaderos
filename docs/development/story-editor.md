@@ -730,8 +730,9 @@ acción cuesta 4 PA del soldado que entrega, o un segundo en exploración.
 El compañero recibe la pieza en su mochila y puede equiparla. Conserva la
 imagen, los valores, el desgaste y la carga, incluso después de guardar y
 volver al sector. Si no se puede entregar, el panel explica el motivo.
-Esta operación cubre las armas recuperadas guardadas; los suministros y las
-entregas a distancia siguen pendientes. [Verificación](../verification/adjacent-weapon-transfer.md).
+También podés seleccionar el arma principal o secundaria y usar **Entregar arma
+en uso** con el compañero elegido. Los suministros y las entregas a distancia
+siguen pendientes. [Verificación](../verification/adjacent-weapon-transfer.md).
 
 
 ### Manos vacías y arma secundaria
@@ -755,3 +756,14 @@ Podés recogerla y equiparla con los controles habituales. Su imagen, desgaste,
 carga y recarga incompleta se conservan, incluso al guardar y volver. Los
 cartuchos sueltos mantienen la regla de devolución a tesorería al retirarse;
 la carga dentro del arma en el suelo sigue en esa pieza. [Verificación](../verification/drop-held-weapons.md).
+
+
+### Entregar el arma en uso
+
+Elegí la mano principal o secundaria en **Equipo y órdenes**. Seleccioná un
+compañero en **Entregar a** y usá **Entregar arma en uso**. El compañero debe
+estar al lado, consciente y sin obstáculos entre ambos. Cuesta 4 PA del que
+entrega o un segundo en exploración. La mano queda vacía y la pieza pasa a la
+mochila del compañero, con su imagen, carga, desgaste y recarga incompleta.
+Puede equiparla y conservarla al guardar y volver al sector. El panel muestra
+el motivo si la entrega no está disponible. [Verificación](../verification/held-weapon-transfer.md).

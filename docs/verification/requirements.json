@@ -529,7 +529,12 @@
     {
       "id": "E-HELD-WEAPON-DROP",
       "path": "docs/verification/drop-held-weapons.md",
-      "description": "Held primary and secondary weapons move once to the field and retain their authored state, loaded rounds and weight through pickup, full saves and campaign return. Five simulations and one mounted production-game case pass; related group 38/38. Complete regression passes 1169/1169, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
+      "description": "Held primary and secondary weapons move once to the field and retain their authored state, loaded rounds and weight through pickup, full saves and campaign return. Five simulations and one mounted production-game case pass; related group 38/38. Complete regression passes 1169/1169, zero failures/skips, with types, export and 36 reference comparisons. Published by PR #116 after successful exact-head CI."
+    },
+    {
+      "id": "E-HELD-WEAPON-TRANSFER",
+      "path": "docs/verification/held-weapon-transfer.md",
+      "description": "An actual held primary or secondary moves directly to an adjacent conscious companion, preserving the piece, image, loaded charge, weight and mechanism. Five simulations and two mounted production-game cases pass; related group 27/27. Complete regression passes 1176/1176, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
     }
   ],
   "queue": [
@@ -4571,15 +4576,16 @@
       "requirement": "Nearby allies can give/pass items; distant allies can catch a thrown item with an explicit risk/cost. G14; M22-25.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "One stored recovered weapon can be handed directly to an adjacent conscious squad member for four sender AP or one exploration second. Shared preview/execution rejects blocked contact or unavailable recipients and preserves actual ownership, mechanism and full saves. WEAPONHANDOVER-01 records this bounded delivery.",
+      "published": "One stored recovered weapon can be handed directly to an adjacent conscious squad member for four sender AP or one exploration second. Shared preview/execution rejects blocked contact or unavailable recipients and preserves actual ownership, mechanism and full saves. WEAPONHANDOVER-01 records this bounded delivery. HELDHANDOVER-01 also delivers the actual primary or secondary directly, leaving the source hand empty.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check. WEAPONHANDOVER-01 tracks adjacent transfer of recovered weapons with saved recipient ownership.",
-      "remaining": "Extend transfer to held equipment and supplies; integrate physical capacity, relay chains, throwing/catching and their visible costs and risk. Preserve the advanced-workspace source notes as separate evidence until those paths are accepted on main.",
+      "remaining": "Extend transfer to nonweapon equipment and supplies; integrate physical capacity, relay chains, throwing/catching and their visible costs and risk. Preserve the advanced-workspace source notes as separate evidence until those paths are accepted on main.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
         "E-PUBLISHED",
-        "E-ADJACENT-WEAPON-TRANSFER"
+        "E-ADJACENT-WEAPON-TRANSFER",
+        "E-HELD-WEAPON-TRANSFER"
       ],
       "sourceRow": "JA2-I02",
       "sourceNotes": "Twelve new relay cases cover routes, obstacles, current control windows, AP, capacity, atomic rejection, weapon identity and metadata, exploration time, and campaign saves. Live production-inventory checks passed three cartridges through two intermediates, then verified separate 95% successful and 5% failed throws and restoration. Exact tuning and atomic relay limits are documented in [inventory relay](inventory-relay.md). The full suite passed 1,397 tests. Direct [map cursor controls](inventory-map-cursor.md) now expose these transfers and checked ground tosses; AP and catch formulas remain Granaderos tuning."
@@ -5814,7 +5820,7 @@
       "requirement": "Leave an actual held primary or secondary weapon on the field and recover the same piece",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Held primary and secondary weapons move once to the field and retain their actual authored definition and mechanism through saved return.",
+      "published": "Published by PR #116 after successful exact-head CI. Held primary and secondary weapons move once to the field and retain their actual authored definition and mechanism through saved return.",
       "local": "Five simulations and one mounted production-game check pass; related group 38/38. Complete regression 1169/1169, zero failures/skips, with types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Use the production inventory to drop the selected held weapon for four combat AP or one exploration second; keep an inactive selected secondary usable when dropping the primary; preserve authored definition, image, wear, loaded charge, partial loading and jam through full save, return and equip; account for held and packed weapon weight; preserve the existing campaign loose-round refund; reject absent, ambiguous or unavailable sources atomically.",
@@ -5832,17 +5838,43 @@
         "tests/drop-held-weapons-render.test.mjs",
         "tests/drop-recovered-weapons.test.mjs",
         "tests/empty-hand-melee.test.mjs"
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/116"
+    },
+    {
+      "id": "HELDHANDOVER-01",
+      "group": "Published deliveries",
+      "requirement": "Give a held weapon directly to an adjacent companion while preserving actual custody and state",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. An actual held primary or secondary moves directly to an adjacent companion, preserving authored identity and mechanism through saved return.",
+      "local": "Five simulations and two mounted production-game checks pass; related group 27/27. Complete regression 1176/1176, zero failures/skips, with types, export and 36 reference comparisons.",
+      "remaining": "",
+      "acceptance": "Select the actual primary or secondary and recipient through production inventory; spend four sender AP or one exploration second; preserve authored image, weight, load, wear, jam and partial work; leave the selected source hand empty, or retain the other selected hand; preserve recipient equipment and colliding stored keys; save, return and equip on the actual recipient; reject unavailable, ambiguous and blocked transfers before custody changes.",
+      "evidence": [
+        "E-HELD-WEAPON-TRANSFER"
+      ],
+      "parents": [
+        "ITEM-01",
+        "JA2-I02",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/held-weapon-transfer.test.mjs",
+        "tests/held-weapon-transfer-render.test.mjs",
+        "tests/adjacent-weapon-transfer.test.mjs",
+        "tests/drop-held-weapons.test.mjs"
       ]
     }
   ],
   "latestPublishedCheck": {
-    "source": "09c3850edb777543affbd1e8cd3b4fc9d8a7cea7",
-    "total": 1163,
-    "passed": 1163,
+    "source": "eb8d414db4a850e47016547a0f20dc9e5e01a2a6",
+    "total": 1169,
+    "passed": 1169,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-EMPTY-HAND-MELEE"
+    "evidenceId": "E-HELD-WEAPON-DROP"
   }
 }
