@@ -1,0 +1,48 @@
+{
+  "mode": "built-in image_gen",
+  "assets": [
+    {
+      "key": "ammo",
+      "path": "web/public/art/supplies/ammo-v1.webp",
+      "source": "/Users/fsodano/.codex/generated_images/01a0eda3-30b9-7753-b8f6-6112f07dc644/exec-a8f4bde5-1ec0-4912-928a-926cf9814c43.png",
+      "prompt": "Use case: historical-scene. Asset type: individual inventory item artwork for Granaderos, an Argentine 1810s historical game. Subject: Three early 1800s paper musket cartridges, folded tan paper tubes with twisted ends, one small dull grey spherical lead ball alongside. No brass cases or modern bullets. Style: realistic hand-painted museum-quality equipment illustration, muted natural materials, precise texture, soft upper-left lighting. Composition: single centered compact object group, square canvas, fills 85 percent of frame, crisp silhouette readable at 48 pixels. Background: genuinely transparent alpha, no backdrop, no ground plane. No text, border, labels, logos, watermark, modern materials, cartoon style or extra objects."
+    },
+    {
+      "key": "priming",
+      "path": "web/public/art/supplies/priming-v1.webp",
+      "source": "/Users/fsodano/.codex/generated_images/01a0eda3-30b9-7753-b8f6-6112f07dc644/exec-fe1c5ba9-9af2-498b-83dd-85f6f33ab7e2.png",
+      "prompt": "Use case: historical-scene. Asset type: individual inventory item artwork for Granaderos, an Argentine 1810s historical game. Subject: One small early 1800s priming powder horn, curved honey-colored horn with dark wooden stopper and simple leather cord. No ammunition cartridges. Style: realistic hand-painted museum-quality equipment illustration, muted natural materials, precise texture, soft upper-left lighting. Composition: single centered compact object group, square canvas, fills 85 percent of frame, crisp silhouette readable at 48 pixels. Background: genuinely transparent alpha, no backdrop, no ground plane. No text, border, labels, logos, watermark, modern materials, cartoon style or extra objects."
+    },
+    {
+      "key": "flints",
+      "path": "web/public/art/supplies/flints-v1.webp",
+      "source": "/Users/fsodano/.codex/generated_images/01a0eda3-30b9-7753-b8f6-6112f07dc644/exec-5878ff44-e510-421c-bd95-3df1bcfe3c2f.png",
+      "prompt": "Use case: historical-scene. Asset type: individual inventory item artwork for Granaderos, an Argentine 1810s historical game. Subject: Three small knapped gun flints, dark grey and amber grey wedge-shaped chipped stones with sharp flaked edges. No gems, crystals or metal. Style: realistic hand-painted museum-quality equipment illustration, muted natural materials, precise texture, soft upper-left lighting. Composition: single centered compact object group, square canvas, fills 85 percent of frame, crisp silhouette readable at 48 pixels. Background: genuinely transparent alpha, no backdrop, no ground plane. No text, border, labels, logos, watermark, modern materials, cartoon style or extra objects."
+    },
+    {
+      "key": "rations",
+      "path": "web/public/art/supplies/rations-v1.webp",
+      "source": "/Users/fsodano/.codex/generated_images/01a0eda3-30b9-7753-b8f6-6112f07dc644/exec-f66e16a5-0d20-46a3-bb84-df25d7d67c08.png",
+      "prompt": "Use case: historical-scene. Asset type: individual inventory item artwork for Granaderos, an Argentine 1810s historical game. Subject: A modest bundle of Argentine tasajo dried beef strips resting on folded coarse linen, early 1800s field ration. No packaging or cutlery. Style: realistic hand-painted museum-quality equipment illustration, muted natural materials, precise texture, soft upper-left lighting. Composition: single centered compact object group, square canvas, fills 85 percent of frame, crisp silhouette readable at 48 pixels. Background: genuinely transparent alpha, no backdrop, no ground plane. No text, border, labels, logos, watermark, modern materials, cartoon style or extra objects."
+    },
+    {
+      "key": "medkits",
+      "path": "web/public/art/supplies/medkits-v1.webp",
+      "source": "/Users/fsodano/.codex/generated_images/01a0eda3-30b9-7753-b8f6-6112f07dc644/exec-fe0e73a3-c9d9-46f1-859c-e438a27f03f2.png",
+      "prompt": "Use case: historical-scene. Asset type: individual inventory item artwork for Granaderos, an Argentine 1810s historical game. Subject: Two rolled unbleached linen bandages, one with a short loose fabric tail, early 1800s field dressings. No modern medical symbols or packaging. Style: realistic hand-painted museum-quality equipment illustration, muted natural materials, precise texture, soft upper-left lighting. Composition: single centered compact object group, square canvas, fills 85 percent of frame, crisp silhouette readable at 48 pixels. Background: genuinely transparent alpha, no backdrop, no ground plane. No text, border, labels, logos, watermark, modern materials, cartoon style or extra objects."
+    },
+    {
+      "key": "torches",
+      "path": "web/public/art/supplies/torches-v1.webp",
+      "source": "/Users/fsodano/.codex/generated_images/01a0eda3-30b9-7753-b8f6-6112f07dc644/exec-73d03f6e-5851-4e85-948d-1baa693e1274.png",
+      "prompt": "Use case: historical-scene. Asset type: individual inventory item artwork for Granaderos, an Argentine 1810s historical game. Subject: One unlit early 1800s wooden hand torch, dark wooden shaft with coarse cloth tightly wrapped around its head. Diagonal placement, whole object visible. No flame. Style: realistic hand-painted museum-quality equipment illustration, muted natural materials, precise texture, soft upper-left lighting. Composition: single centered compact object group, square canvas, fills 85 percent of frame, crisp silhouette readable at 48 pixels. Background: genuinely transparent alpha, no backdrop, no ground plane. No text, border, labels, logos, watermark, modern materials, cartoon style or extra objects."
+    },
+    {
+      "key": "boleadoras",
+      "path": "web/public/art/supplies/boleadoras-v1.webp",
+      "source": "/Users/fsodano/.codex/generated_images/01a0eda3-30b9-7753-b8f6-6112f07dc644/exec-2d2670a3-ef4d-434d-a8e2-ec5c55028860.png",
+      "prompt": "Use case: historical-scene. Asset type: individual inventory item artwork for Granaderos, an Argentine 1810s historical game. Subject: One Argentine three-ball boleadoras, three leather-wrapped rounded weights connected by braided rawhide cords, carefully spread in a compact triangular composition so all three weights and joined cords are visible. Style: realistic hand-painted museum-quality equipment illustration, muted natural materials, precise texture, soft upper-left lighting. Composition: single centered compact object group, square canvas, fills 85 percent of frame, crisp silhouette readable at 48 pixels. Background: genuinely transparent alpha, no backdrop, no ground plane. No text, border, labels, logos, watermark, modern materials, cartoon style or extra objects."
+    }
+  ],
+  "optimization": "WebP quality 90, 256 x 256, alpha preserved"
+}

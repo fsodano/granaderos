@@ -1,3 +1,4 @@
+import {personalPockets} from './personal-pockets.js';
 import {validateArtilleryProfiles} from './artillery-definitions.js';
 import {validateMilitiaPatrol} from './militia-patrol-rules.js';
 import {validateReloadProgress} from './weapon-reload.js';
@@ -40,6 +41,7 @@ if(u.hp<=0||u.unconscious)need(u.ap===0&&(u.maxAP===undefined||u.maxAP===0)&&!u.
 for(const key of ['leadership','wisdom','dexterity','mechanical','explosives','maxAP'])if(u[key]!==undefined)need(number(u[key],0,100),'atributos adicionales');for(const key of ['reactionSpent','reactionTurn','interceptTurn','parryTurn','counterTurn','braceTurn','momentum'])if(u[key]!==undefined)need(number(u[key],0,1000000000),'iniciativa');if(u.lastDirection!=null)need(text(u.lastDirection),'dirección');
 if(u.abilities!==undefined)need(validCharacterAbilities(u.abilities),'habilidades');
 if(u.traits!==undefined)need(Array.isArray(u.traits)&&u.traits.length<=30&&u.traits.every(text),'rasgos');
+personalPockets(u);
 need(object(u.inventory)&&Object.keys(u.inventory).length<=1000,'inventario');for(const record of Object.values(u.inventory)){if(typeof record==='number'){need(integer(record,0,1000000),'cantidades');continue;}need(object(record)&&integer(record.count,0,1000000)&&number(record.weight,0,10000),'pertrechos');if(record.weapon!==undefined)need(integer(record.weapon,0,65535),'objetos recuperados');validateWeaponCarrier(record);if(record.loaded!==undefined)need(integer(record.loaded,0,100),'cargas recuperadas');if(record.condition!==undefined)need(number(record.condition,0,100),'condición recuperada');}
 for(const k of ['weight','carryWeight','ridingSkill'])if(u[k]!==undefined)need(number(u[k],0,k==='ridingSkill'?100:100000),'peso o equitación');if(u.mount!==undefined)need(object(u.mount)&&text(u.mount.id)&&number(u.mount.stamina,0,100)&&number(u.mount.condition,0,100),'monturas');if(u.fleePath!==undefined)need(Array.isArray(u.fleePath)&&u.fleePath.every(coord),'retirada');}
 for(const key of ['smoke','artillery','log','decor','props','npcs','groundItems','droppedWeapons','lights','buildings','revealedRooms']){if(s[key]===undefined)s[key]=[];need(Array.isArray(s[key])&&s[key].length<=2000,key);}

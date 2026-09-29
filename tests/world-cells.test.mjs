@@ -40,8 +40,8 @@ test('real travel and visits preserve two rural and two urban cells across campa
  for(const [index,id]of locations.entries()){
   s=travel(s,id);let pair=visit(s);assert.equal(pair.battle.groundItems.length,1);assert.equal(pair.battle.groundItems[0].id,`supplies-${index}`);
   const count=pair.battle.units[0].rations;pair.battle=actBattle(pair.battle,{type:'loot',unitId:'110',groundId:`supplies-${index}`});assert.equal(pair.battle.lastError,null);
-  assert.equal(pair.battle.units[0].rations,count+index+1);s=saved(leave(pair)).campaign;
-  pair=visit(s);assert.equal(pair.battle.groundItems[0].count,0);s=leave(pair);
+  const collected=pair.battle.units[0].rations-count;assert.ok(collected>0&&collected<=index+1);const remainder=index+1-collected;assert.equal(pair.battle.groundItems[0].count,remainder);s=saved(leave(pair)).campaign;
+  pair=visit(s);assert.equal(pair.battle.groundItems[0].count,remainder);s=leave(pair);
  }
 });
 test('separate city districts retain different terrain, doors and source identities without copying landmark loot',()=>{

@@ -11,3 +11,14 @@ export function validStartingSupplies(value){
 
 // Deployment cartridges can move between soldiers without changing authored starting allocations.
 export const TRANSFER_SUPPLY_LABELS=Object.freeze({ammo:'Cartuchos',...CHARACTER_SUPPLY_LABELS});
+
+// Presentation only: existing supply keys and quantities remain save-compatible.
+export const SUPPLY_PRESENTATION=Object.freeze(Object.fromEntries(Object.entries({
+ ammo:'Cartucho de papel con pólvora y una bala de plomo. Es la munición de recarga.',
+ priming:'Pólvora de cebado para encender la carga del arma. El número indica dosis, no frascos. El juego lleva esta reserva por separado.',
+ flints:'Piedras de sílex que producen la chispa del arma. Se consumen al reparar su mecanismo.',
+ rations:'Provisión de tasajo y lino. En el juego recupera fuerzas y detiene la hemorragia.',
+ torches:'Antorchas para iluminar el entorno.',
+ medkits:'Vendas de tela para atender heridas.',
+ boleadoras:'Pesos unidos por tientos de cuero para trabar al objetivo.',
+}).map(([key,description])=>[key,Object.freeze({art:`/art/supplies/${key}-v1.webp`,description})])));

@@ -5,6 +5,10 @@
 Read the [published progress ledger](published-progress.md) first. It records
 accepted features on GitHub `main`, approved scope changes and open work.
 
+## Pending integration
+
+- [Shared desktop inventory pockets](shared-inventory-pockets.md)
+
 ## Published baseline
 
 - [Observed enemy turns and retained scenery](visible-enemy-turns.md)

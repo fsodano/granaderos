@@ -1,3 +1,4 @@
+import {personalPockets,pocketChangeReason,supplyRoom,POCKET_FULL} from './personal-pockets.js';
 import {sellArtillery,repurchaseArtillery,validateArtilleryMerchants} from './artillery-trading.js';
 import {dispatchArtilleryTransport,deliverArtilleryTransfers,validateArtilleryTransport} from './artillery-transport.js';
 import {validateCampaignArtilleryProfiles,artillerySaveReplacer,restoreArtilleryReferences} from './artillery-definitions.js';
@@ -62,7 +63,13 @@ export function civicStatus(s,id,local=false){return baseCivicStatus(s,id);}
 import {OPERATIVES, WEAPONS, CAMPAIGN_SECTORS, FACTIONS, PHASES, RESOURCE_NAMES} from './data.js';
 export {OPERATIVES, WEAPONS, CAMPAIGN_SECTORS, FACTIONS, PHASES, RESOURCE_NAMES};
 export function rosterFor(s){return baseRosterFor(s).map(o=>{const record=s.operativeState?.[o.id]??{};return {...o,...(s.loadouts?.[o.id]??{}),...(record.weaponMetadata?{weaponMetadata:record.weaponMetadata}:{}),...(record.bladeMetadata?{bladeMetadata:record.bladeMetadata}:{}),...Object.fromEntries(TRAINABLE_SKILLS.map(skill=>[skill,Math.min(100,(o[skill]??0)+(record.trainedStats?.[skill]??0))])),strength:Math.max(o.strength,Math.min(100,record.strength??o.strength))};});}
-export function deploymentCost(s){const roster=rosterFor(s);return s.squad.reduce((total,id)=>total+(weaponSpecification(roster.find(o=>o.id===id))?.capacity?campaignRules(s).deploymentCartridges:0),0)*cartridgePrice(s);}
+function deploymentRounds(s,id){
+ const op=rosterFor(s).find(o=>o.id===id),capacity=weaponSpecification(op)?.capacity??0;
+ if(!capacity)return 0;
+ const requested=campaignRules(s).deploymentCartridges,loaded=Math.min(capacity,requested);
+ return loaded+supplyRoom({...op,...s.operativeState[id],ammo:0},'ammo',requested-loaded);
+}
+export function deploymentCost(s){return s.squad.reduce((total,id)=>total+deploymentRounds(s,id),0)*cartridgePrice(s);}
 function returnTraining(s,id,report){validateTraining(report);for(const field of ['trainedStats','skillPractice'])if(report[field]!==undefined)s.operativeState[id][field]=clone(report[field]);}
 function returnEquipment(s,id,report,snapshot){
  requireThat(s.operativeState[id].deathMinute===undefined||report.hp===0,'Una muerte confirmada no puede revertirse en el parte.');
@@ -75,6 +82,7 @@ function returnEquipment(s,id,report,snapshot){
  setWeaponDefinition(record,weaponRecord(actual,'blade'),'blade');
  setWeaponDefinition(record,actual.weaponDropped?{}:actual);record.jammed=actual.weaponDropped?false:Boolean(actual.jammed);
  record.inventory=clone(validatePersonalInventory(actual.inventory));
+ record.activeSlot=actual.activeSlot??'primary';record.pocketOrder=clone(actual.pocketOrder??[]);
 }
 function removeFromService(s,id){
   const location=operativeLocation(s,id);s.operativeState[id].location=location;if(s.operativeState[id].assignment!==undefined)s.operativeState[id].assignment='active';if(s.operativeState[id].recoveryHours!==undefined)s.operativeState[id].recoveryHours=0;s.recruited=s.recruited.filter(x=>x!==id);s.squad=s.squad.filter(x=>x!==id);for(const squad of s.squads)squad.members=squad.members.filter(x=>x!==id);
@@ -366,7 +374,7 @@ export function dispatchCampaign(previous,action){
         const result=dispatchCampaign(s,{...action,type:'leaveSector'});requireThat(!result.lastError,result.lastError);Object.assign(s,result);s.missions.yatasto.completed=true;s.missions.yatasto.stage='completed';note(s,'La conferencia de Yatasto concluye. Belgrano entrega el mando y la preparación continental se orienta hacia Cuyo.');break;
       }
       case 'visitSector':{
-        const at=locationId(action.sector??s.location);requireThat(at===s.location,'La escuadra debe viajar al sector antes de entrar.');requireThat(validWorldLocation(at)&&worldOwner(s,at)!=='royalist','El sector está ocupado; prepará un ataque.');requireThat(s.squad.length>0,'La escuadra no tiene combatientes.');const def=campaignPlace(at),allocated={};let issued=0;for(const id of s.squad){const capacity=weaponSpecification(rosterFor(s).find(o=>o.id===id))?.capacity??0,rounds=capacity?campaignRules(s).deploymentCartridges:0;allocated[id]={loaded:Math.min(capacity,rounds),ammo:Math.max(0,rounds-capacity)};issued+=rounds;}pay(s,{treasury:issued*cartridgePrice(s)});
+        const at=locationId(action.sector??s.location);requireThat(at===s.location,'La escuadra debe viajar al sector antes de entrar.');requireThat(validWorldLocation(at)&&worldOwner(s,at)!=='royalist','El sector está ocupado; prepará un ataque.');requireThat(s.squad.length>0,'La escuadra no tiene combatientes.');const def=campaignPlace(at),allocated={};let issued=0;for(const id of s.squad){const capacity=weaponSpecification(rosterFor(s).find(o=>o.id===id))?.capacity??0,rounds=deploymentRounds(s,id);allocated[id]={loaded:Math.min(capacity,rounds),ammo:Math.max(0,rounds-capacity)};issued+=rounds;}pay(s,{treasury:issued*cartridgePrice(s)});
         s.pendingBattle={id:`visit-${at}-${s.hour}-${s.seed}`,sector:at,name:def.name,biome:def.biome,theater:def.theater,seed:s.seed,exploration:true,night:s.hour%24<6||s.hour%24>=20,issuedCartridges:issued,ammunitionSources:(s.sectorStates[at]?.units??[]).filter(u=>u.side==='enemy').map(u=>({id:u.id,ammo:u.ammo??0,loaded:u.loaded??0})),wasRoyalist:false,npcs:encountersFor(s,at),squad:s.squad.map(id=>({...clone(rosterFor(s).find(o=>o.id===id)),...clone(s.operativeState[id]),...allocated[id],canMount:true})),enemies:[],artillery:[],weather:{rain:false,humidity:def.theater==='coast'?.8:.3}};s.pendingBattle.garrison=prepareGarrison(s,at);s.pendingBattle.garrisonLootSources=(s.sectorStates[at]?.units??[]).filter(u=>u.militia&&u.hp<=0).map(u=>({id:u.id,ammo:u.ammo??0,loaded:u.loaded??0}));note(s,`La escuadra entra en ${def.name} para reconocer el lugar y hablar con sus habitantes.`);break;
       }
       case 'leaveSector':{
@@ -442,7 +450,7 @@ export function dispatchCampaign(previous,action){
         else {requireThat(s.sectors[at].owner==='royalist'||(s.blockade&&def.theater==='coast'),'El sector ya está bajo control patriota.');requireThat(def.neighbors.some(id=>s.sectors[id].owner==='patriot'&&isSupplied(s,id)),'Debes abrir una ruta hasta el frente.');}
         const origin=s.location;if(!san&&s.location!==at){tick(s,12,{joinArrivals:false,traveling:[...s.squad]});if(s.completed||s.defeated){note(s,'El despliegue se cancela: la campaña ha terminado.');break;}if(!s.squad.length){note(s,'El despliegue se cancela: no quedan combatientes en la escuadra.');break;}s.location=at;}
         const allocated={};let issued=0;
-        for(const id of s.squad){const op=rosterFor(s).find(o=>o.id===id),capacity=weaponSpecification(op)?.capacity??0,rounds=capacity?campaignRules(s).deploymentCartridges:0;allocated[id]={loaded:Math.min(capacity,rounds),ammo:Math.max(0,rounds-capacity)};issued+=rounds;}
+        for(const id of s.squad){const op=rosterFor(s).find(o=>o.id===id),capacity=weaponSpecification(op)?.capacity??0,rounds=deploymentRounds(s,id);allocated[id]={loaded:Math.min(capacity,rounds),ammo:Math.max(0,rounds-capacity)};issued+=rounds;}
         pay(s,{treasury:issued*cartridgePrice(s)});
         s.pendingBattle={id:`${at}-${s.hour}-${s.seed}`,origin,sector:at,name:def.name,biome:def.biome,theater:def.theater,seed:Math.floor(random(s)*4294967296),issuedCartridges:issued,wasRoyalist:!san&&s.sectors[at].owner==='royalist',npcs:encountersFor(s,at),squad:s.squad.map(id=>({...clone(rosterFor(s).find(o=>o.id===id)),...clone(s.operativeState[id]),...allocated[id],canMount:true,poncho:true})),difficulty:san?2:Math.min(4,1+Math.floor(s.hour/240)+(def.theater==='north'?1:0)),weather:{rain:def.biome==='wetland'||random(s)<0.2,humidity:def.theater==='coast'?0.8:0.3},cannons:artilleryCount(s)};s.pendingBattle.artillery=deployedArtillery({...s,location:origin});s.pendingBattle.cannons=s.pendingBattle.artillery.length;Object.assign(s.pendingBattle,oppositionFor(s.pendingBattle,s));const retainedEnemies=s.sectorStates[at];if(retainedEnemies&&!retainedEnemies.sectorCleared)s.pendingBattle.ammunitionSources=retainedEnemies.units.filter(u=>u.side==='enemy').map(u=>({id:u.id,ammo:u.ammo??0,loaded:u.loaded??0}));if(san){s.pendingBattle.missionId='san_lorenzo';s.pendingBattle.missionAllies=[sanLorenzoAlly(s)];}s.pendingBattle.garrison=prepareGarrison(s,at);s.pendingBattle.garrisonLootSources=(s.sectorStates[at]?.units??[]).filter(u=>u.militia&&u.hp<=0).map(u=>({id:u.id,ammo:u.ammo??0,loaded:u.loaded??0}));note(s,`El destacamento se despliega para ${def.name}. Mando enemigo: ${s.pendingBattle.enemyCommander}.`);break;
       }
@@ -472,6 +480,16 @@ export function dispatchCampaign(previous,action){
     if(s.pendingBattle&&s.pendingBattle.id!==previous.pendingBattle?.id&&s.contentCampaign?.package.artilleryProfiles!==undefined)s.pendingBattle.artilleryDefinitions=clone(s.contentCampaign.package.artilleryProfiles);
     updateContentQuests(s);releaseDeferred(s);receiveDueHires(s);synchronizeSquad(s);synchronizeCampaignPresence(s);synchronizeDialogueMovements(s);progress(s);
     for(const [flag,at] of Object.entries({academy:headquartersFor(s),foundry:foundryFor(s).sector,northPact:'salta',partisanSupply:'tucuman',parliament:'mendoza',emancipation:'buenos_aires',commission:'buenos_aires'}))if(s.flags[flag]&&!previous.flags[flag])recordCityLoyalty(s,{sectorId:at,kind:'quest',eventId:`quest-${flag}`});
+    if(['purchaseMedicalSupplies','resupply','equip'].includes(action.type)){
+     const oldRoster=rosterFor(previous);
+     for(const op of rosterFor(s)){
+      const before={...oldRoster.find(o=>o.id===op.id),...previous.operativeState[op.id],ammo:0},after={...op,...s.operativeState[op.id],ammo:0};
+      requireThat(!pocketChangeReason(before,after),POCKET_FULL);
+     }
+    }
+    if(s.pendingBattle&&s.pendingBattle.id!==previous.pendingBattle?.id)for(const unit of s.pendingBattle.squad){
+     const before={...unit,ammo:0};requireThat(!pocketChangeReason(before,unit),`${unit.name}: ${POCKET_FULL}`);
+    }
     return s;
   }catch(error){const rejected=clone(previous);rejected.lastError=error.message;return rejected;}
 }
@@ -498,7 +516,7 @@ export function restoreCampaign(text){
   requireThat(object(s.operativeState),'Las hojas de servicio son inválidas.');
   for(const op of s.contentCampaign?[]:CIVIC_RECRUITS)s.operativeState[op.id]??={hp:op.maxHp,fatigue:0,alive:true,xp:0,priming:50,flints:4,rations:2,torches:2,condition:100};
   for(const op of Object.values(s.operativeState)){requireThat(object(op),'Las hojas de servicio son inválidas.');if(op.missionSuppliesVersion!==undefined)requireThat(op.missionSuppliesVersion===1,'La versión de suministros del aliado no es válida.');validateTraining(op);for(const k of ['medkits','bleeding'])if(op[k]!==undefined)requireThat(Number.isInteger(op[k]),'Los suministros y heridas guardados son inválidos.');op.xp??=0;if(op.inventory!==undefined)validatePersonalInventory(op.inventory);for(const [field,limit]of Object.entries({energy:100,bleeding:10,medkits:1000000,weight:1000,strength:100,strengthTraining:10000,boleadoras:100000})){if(op[field]!==undefined)requireThat(Number.isFinite(op[field])&&op[field]>=0&&op[field]<=limit,'El estado físico guardado es inválido.');}for(const [field,baseline] of Object.entries({priming:50,flints:4,rations:2,torches:2,condition:100})){op[field]??=baseline;requireThat(integer(op[field],0,field==='condition'?100:100000),'Los suministros guardados son inválidos.');}requireThat(integer(op.xp,0,1e7),'La experiencia guardada es inválida.');}
-  for(const op of rosterFor(s))validateWeaponCarrier({...s.operativeState[op.id],weapon:op.weapon,blade:op.blade});
+  for(const op of rosterFor(s)){const unit={...op,...s.operativeState[op.id]};validateWeaponCarrier(unit);personalPockets(unit);requireThat(unit.activeSlot===undefined||['primary','blade','unarmed'].includes(unit.activeSlot),'La mano guardada no es válida.');}
   s.missions??={};s.sceneStates??={};s.missionAllies??={};requireThat(validateMissions(s)&&object(s.sceneStates)&&Object.entries(s.sceneStates).every(([id,b])=>id==='yatasto'&&b.sceneId===id&&validateSectorSnapshot(b))&&object(s.missionAllies)&&Object.entries(s.missionAllies).every(([id,u])=>id==='san_lorenzo'&&object(u)&&u.missionAlly===true&&Number(u.id)===57&&typeof u.name==='string'&&Number.isInteger(u.weapon)&&(u.weapon===0||u.weapon>=1800&&u.weapon<=1813)&&Number.isInteger(u.blade)&&u.blade>=1809&&u.blade<=1813&&Number.isInteger(u.ammo)&&u.ammo>=0&&u.ammo<=100000&&Number.isInteger(u.loaded)&&u.loaded>=0&&u.loaded<=(weaponSpecification(u)?.capacity??0)&&Number.isFinite(u.hp)&&u.hp>=0&&u.hp<=100),'Las escenas guardadas son inválidas.');
   s.garrisons??={};s.nextMilitiaId??=20000;requireThat(validGarrisons(s),'Las guarniciones guardadas son inválidas.');
   requireThat(s.militiaTraining.every(course=>validMilitiaTrainees(s,course)),'Los milicianos en instrucción son inválidos.');

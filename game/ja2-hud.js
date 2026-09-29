@@ -1,3 +1,4 @@
+import {personalPockets} from './personal-pockets.js';
 import {weaponSpecification} from './weapon-definition.js';
 // Pure HUD model for the tactical battle inspector and squad strip.
 // Read-only descriptors plus action-object constructors; no game rules.
@@ -87,6 +88,7 @@ export function inventoryModel(state, unit) {
     poncho: Boolean(unit.poncho),
     supplies,
     backpack,
+    pockets: personalPockets(unit),
     unitAlive: alive(unit),
   };
 }

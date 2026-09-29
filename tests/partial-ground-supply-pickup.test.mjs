@@ -1,3 +1,4 @@
+import {fillSparePockets} from './pocket-capacity-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {actBattle,createBattle,groundSupplyPickupPreview} from '../game/tactical.js';
 import {CHARACTER_SUPPLY_LABELS} from '../game/character-supplies.js';
@@ -22,5 +23,5 @@ test('invalid amounts, stale bundles, blocked access and unaffordable pickups re
  for(const action of [{targetId:'collector'},{dropIndex:0}]){const b=fixture();if(action.dropIndex===0)b.droppedWeapons=[{weapon:1800,x:2,y:1,loaded:0,condition:100}];const n=take(b,action);assert.ok(n.lastError);assert.deepEqual(physical(n),physical(b));}
 });
 test('an overflowing whole bundle can be reduced to an exact accepted quantity without clipping or deleting the excess',()=>{
- const b=fixture();b.units[0].medkits=999999;assert.ok(groundSupplyPickupPreview(b,b.units[0],'bundle',5).reason);const refused=take(b,{count:5});assert.ok(refused.lastError);assert.deepEqual(physical(refused),physical(b));const accepted=take(b,{count:1});assert.equal(accepted.lastError,null);assert.equal(accepted.units[0].medkits,1000000);assert.equal(accepted.groundItems[0].count,4);assert.ok(validateBattleSnapshot(accepted));
+ const b=fixture();b.units[0].medkits=4;fillSparePockets(b.units[0]);assert.ok(groundSupplyPickupPreview(b,b.units[0],'bundle',5).reason);const refused=take(b,{count:5});assert.ok(refused.lastError);assert.deepEqual(physical(refused),physical(b));const accepted=take(b,{count:1});assert.equal(accepted.lastError,null);assert.equal(accepted.units[0].medkits,5);assert.equal(accepted.groundItems[0].count,4);assert.ok(validateBattleSnapshot(accepted));
 });
