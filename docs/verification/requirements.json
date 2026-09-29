@@ -549,7 +549,7 @@
     {
       "id": "E-ADJACENT-CARTRIDGE-TRANSFER",
       "path": "docs/verification/adjacent-cartridge-transfer.md",
-      "description": "Actual loose deployment cartridges move to an adjacent companion, remain separate from loaded charges, support firing/reloading and settle against the shared witnessed force total. Four simulations and one mounted production-game case pass; related group 28/28. Complete regression passes 1193/1193, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
+      "description": "Actual loose deployment cartridges move to an adjacent companion, remain separate from loaded charges, support firing/reloading and settle against the shared witnessed force total. Four simulations and one mounted production-game case pass; related group 28/28. Complete regression passes 1193/1193, zero failures/skips, with types, export and 36 reference comparisons. Published by PR #120 after successful exact-head CI."
     },
     {
       "id": "E-PARTIAL-GROUND-SUPPLY-PICKUP",
@@ -5949,7 +5949,7 @@
       "requirement": "Share actual loose deployment cartridges without losing them during the witnessed retreat refund",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Loose issued cartridges move between actual adjacent soldiers, support firing and reloading, and settle against the shared witnessed force total without losing valid redistributed rounds.",
+      "published": "Published by PR #120 after successful exact-head CI. Loose issued cartridges move between actual adjacent soldiers, support firing and reloading, and settle against the shared witnessed force total without losing valid redistributed rounds.",
       "local": "Four simulations and one mounted production-game check pass; related group 28/28. Complete regression 1193/1193, zero failures/skips, with types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Select cartridges, an exact reserve quantity and adjacent recipient through production inventory; transfer for four sender AP or one exploration second without changing loaded charges; preserve weight and save; fire and reload the received reserve; settle the actual remainder without clipping it to each original holder allocation; retain the force-wide issued-plus-recovered ceiling, dead-holder exclusion and stricter legacy evidence limits; reject invalid counts, loaded-source misuse, receiving total overflow, AP and geometry before mutation.",
@@ -5968,7 +5968,8 @@
         "tests/ammunition-web.test.mjs",
         "tests/authored-cartridge-price.test.mjs",
         "tests/military-remains.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/120"
     },
     {
       "id": "GROUNDSUPPLYPICKER-01",
@@ -5997,13 +5998,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "b47d13b542e0801a9794cc8f91619bfa56e2e34b",
-    "total": 1188,
-    "passed": 1188,
+    "source": "cd31016d65c2d4bb4d69d449244a4fb129a71dba",
+    "total": 1193,
+    "passed": 1193,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-PERSONAL-SUPPLY-DROP"
+    "evidenceId": "E-ADJACENT-CARTRIDGE-TRANSFER"
   }
 }
