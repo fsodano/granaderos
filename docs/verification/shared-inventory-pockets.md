@@ -1,7 +1,6 @@
 # Shared inventory pockets
 
-This focused checkout resumes the interrupted shared-pocket work from task
-`01a0e2c0-642e-7f51-8f7c-225c4e286cd9`. Its base is
+The shared-pocket delivery starts from
 `45bcc53861e3891fec40058c862cb256e7912478` (the merged walking timing fix).
 The advanced checkout and its port 3000 build are separate.
 
@@ -46,5 +45,17 @@ The images total 134,870 bytes after WebP compression. All seven load in the
 with no console errors. The ten focused pocket tests, type check and production
 export (731 files / 633 asset references) pass. The full-suite result above applies
 to the earlier source; this follow-up changes presentation only.
+
+Publication confirmed: [PR #128](https://github.com/fsodano/granaderos/pull/128)
+merged as `1b02d86e648f57aec4520ea307b17bb25173bfe6` on September 29.
+[All five checks](https://github.com/fsodano/granaderos/actions/runs/36589940563)
+passed for exact head `3915f1001a8d8405cf7bce40fa48da372e2d59eb`, including
+the artwork follow-up. The four final test shards pass 246, 321, 333 and 368 tests:
+**1268/1268**, with zero failures or skips. Initial four-test worker probes are
+repeated preflights and are not added again to that total.
+
+The separate advanced game now uses the supply artwork and descriptions in its
+existing pockets and detail cards. See the [bounded local integration report](local-supply-art-2026-09-29.md).
+The advanced equipment reducer and the published reducer are still different.
 
 The later [typed-ammunition change](typed-ammunition.md) replaces the ignition-supply design above. Its verification and publication status are recorded separately.

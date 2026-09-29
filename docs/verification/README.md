@@ -169,4 +169,6 @@ test partition and retained publication gates. It is infrastructure evidence.
 
 - [Walking frame continuity](walking-frame-continuity.md): cell waits, fractional positions and remaining artwork limits.
 
+- [Advanced local supply-art integration](local-supply-art-2026-09-29.md): bounded port 3000 checks, separate from published gameplay.
+
 - [Compatible ammunition](typed-ammunition.md): four weapon families, implicit ignition kit and save migration (local change).

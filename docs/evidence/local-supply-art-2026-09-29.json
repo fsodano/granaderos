@@ -1,0 +1,53 @@
+{
+  "date": "2026-09-29",
+  "scope": "Advanced local checkout presentation integration only; not full gameplay convergence.",
+  "sourceManifest": {
+    "game/tactical-inventory.js": "1badceb516de9366f11dbb7addeaa0d37c6b2b8902a82c3a766dc6d97fbb68c3",
+    "game/item-inspection.js": "1536aa24986a277865e6f339e31331ba6fecf21a0e277239684e8dda4c70b982",
+    "web/app/JA2Pockets.tsx": "ea3dfecb67a2c6a55402ab454e00c2b3035b642038177e295fe5863ccf94573a",
+    "web/app/JA2ItemCard.tsx": "82ebe799ba32005b398c39afb6448cf347031dbfc1ea2939542b8d86658e5133",
+    "web/app/ja2-pockets.css": "9df2e8f4629d2969ff2df31a84230c27d11f62e09f68df3017f9b87c2043f1bc",
+    "game/supply-presentation.js": "90fe424ea195c5deb19a9fd1e12b31015cd7bad29ee18c50c01dfdbfe899e559",
+    "web/public/art/supplies/ammo-v1.webp": "93cfdf45ca9d1244e85eb654036af197569d89f5e31d4ce81195f89d7fcc7c11",
+    "web/public/art/supplies/medkits-v1.webp": "5ba9bc4dd708857a8515a15cb6f9be12c16854044bc8b19adcf44a6d53a5103d",
+    "web/public/art/supplies/boleadoras-v1.webp": "9de27be138862937864074fa3899b931bca8a889594f610887e74ba25050fb77",
+    "web/public/art/supplies/torches-v1.webp": "b3378381c83e65bc0cf57198307b5a7af2a6d982a7ce5fa399cbdf255907f30e",
+    "web/public/art/supplies/rations-v1.webp": "88bf16df934cf1d71495f1352d67c1d53cfc52b7751bac0f4ffd4d84c98c45b8",
+    "web/public/art/supplies/flints-v1.webp": "91071cba7e7c7cb3d614c3909a2c717547a03b75adf2ec9128d5ec24eae4500a",
+    "web/public/art/supplies/prompts.json": "45a7716c0d1c88552a65bc5320f3d2d7688a048cd072101a38914cb56d230539",
+    "web/public/art/supplies/priming-v1.webp": "c9aa5bc6748ff437dbe44784ffff4146057f35f185fe09de1b9bdfae0bfbb048"
+  },
+  "tests": {
+    "passed": 41,
+    "failed": 0,
+    "skipped": 0,
+    "files": [
+      "tests/tactical-inventory.test.mjs",
+      "tests/equipment-click-components.test.mjs",
+      "tests/equipment-ammunition-controls.test.mjs",
+      "tests/equipment-unload-control.test.mjs",
+      "tests/pocket-partitions.test.mjs"
+    ]
+  },
+  "types": "PASS",
+  "build": {
+    "status": "PASS",
+    "files": 1107,
+    "assetReferences": 993
+  },
+  "browser": {
+    "url": "http://localhost:3000/?qa=1",
+    "viewport": [
+      1280,
+      720
+    ],
+    "loadedSupplyImages": 7,
+    "detail": "Priming powder description and image verified",
+    "consoleErrors": 0
+  },
+  "logs": {
+    "tests": "e3b8c78fb4de9c8ba68f6741b27993d47cf16e25e83f98815ea0b66a6ce746bd",
+    "types": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30",
+    "build": "a1bb21973fb6d807ed226a77c9780fafd90e3d8757a8a6970499bc1deb6b4d6f"
+  }
+}
