@@ -6470,7 +6470,8 @@
         "tests/alternate-firearm-loads.test.mjs",
         "tests/alternate-firearm-loads-render.test.mjs",
         "tests/story-editor.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/137"
     }
   ],
   "latestPublishedCheck": {

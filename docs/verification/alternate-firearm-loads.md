@@ -1,5 +1,7 @@
 # Alternative firearm loads
 
+[PR #137](https://github.com/fsodano/granaderos/pull/137) carries this delivery.
+
 A firearm can now use its primary ammunition family and up to three alternative
 families. The four shared families remain musket, rifle, pistol and shot.
 This delivery does not introduce new family definitions.
