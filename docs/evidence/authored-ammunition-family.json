@@ -68,5 +68,23 @@
   "regressions": [
     "Typed militia maps were admitted without key, quantity or aggregate validation.",
     "The first broad validator confused an ordinary inventory key with a unit field; the final version inspects only known owner collections."
-  ]
+  ],
+  "publication": {
+    "testedHead": "ca374364ddf6dcce85db78ffedb39ee61f81831a",
+    "merge": "01364bbdf99f9057d7871370b12b92c60e5b04e7",
+    "run": "https://github.com/fsodano/granaderos/actions/runs/36612467413",
+    "checks": 5,
+    "success": 5,
+    "gameplayGroups": [
+      281,
+      327,
+      338,
+      343
+    ],
+    "total": 1289,
+    "passed": 1289,
+    "failed": 0,
+    "skipped": 0,
+    "note": "Four runner preflight tests per group are excluded from gameplay totals."
+  }
 }

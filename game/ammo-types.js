@@ -1,3 +1,4 @@
+import {removeUnitIgnitionSupplies} from './ignition-kit.js';
 // Gameplay families deliberately group historical calibers. No loose ignition kit is tracked.
 export const AMMO_TYPES=Object.freeze({
  ammoMusket:Object.freeze({name:'Cartuchos de mosquete',art:'/art/supplies/ammo-v1.webp',description:'Munición para mosquetes y tercerolas.',weapons:[1800,1801,1803]}),
@@ -25,8 +26,7 @@ export function totalAmmo(unit){return Object.values(ammoStock(unit)).reduce((su
 export function normalizeAmmo(unit){
  const legacy=unit.ammunition===undefined;unit.ammunition=ammoStock(unit);unit.ammo=totalAmmo(unit);
  if(legacy&&Array.isArray(unit.pocketOrder))unit.pocketOrder=unit.pocketOrder.filter(p=>!['priming','flints'].includes(p.item)).map(p=>p.item==='ammo'?{...p,item:ammoTypeFor(unit)??'ammoMusket'}:p);
- delete unit.priming;delete unit.flints;
- return unit;
+ return removeUnitIgnitionSupplies(unit);
 }
 export function changeAmmo(unit,key,delta){
  if(!Object.hasOwn(AMMO_TYPES,key))throw Error('El tipo de munición no es válido.');
@@ -55,13 +55,7 @@ export function migrateAmmoGround(items=[]){
 
 export function ammunitionForWeapon(value){return AMMO_TYPES[ammoTypeFor(value)]??null;}
 
-// Preserve immutable authored packages; remove obsolete mutable kit counters only.
-export function removeIgnitionSupplies(value){
- if(!value||typeof value!=='object')return value;
- delete value.priming;delete value.flints;
- for(const [key,child]of Object.entries(value))if(!['contentCampaign','startingSupplies'].includes(key))removeIgnitionSupplies(child);
- return value;
-}
+export {removeIgnitionSupplies} from './ignition-kit.js';
 
 // Strategic ammunition owners also exist outside the loaded scene. Inspect the
 // known record collections; inventory keys and authored data are not unit fields.

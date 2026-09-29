@@ -10,7 +10,9 @@ Use **R**, or click to fire an empty gun, to start loading. Loading consumes com
 
 > **Design change, 29 September 2026:** the published game groups these nine
 > historical loads into four compatible families and assumes an ignition kit.
-> The separate development checkout described below still needs that integration.
+> The separate development checkout below now uses the implicit ignition kit,
+> but still needs the four-family conversion.
+> See the [integration evidence](../../verification/implicit-ignition-integration.md).
 > Use the [published ammunition record](../../verification/typed-ammunition.md)
 > for the current rule. Alternative loads for one firearm remain open.
 

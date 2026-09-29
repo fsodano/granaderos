@@ -48,3 +48,9 @@ The broader equipment and story requirements remain open.
 
 The [evidence record](../evidence/authored-ammunition-family.json) retains the
 source and verification log hashes. Remote checks gate publication of this source.
+
+Final publication: PR #132 merged at `01364bbdf99f9057d7871370b12b92c60e5b04e7`.
+All five [remote checks](https://github.com/fsodano/granaderos/actions/runs/36612467413)
+passed for `ca374364ddf6dcce85db78ffedb39ee61f81831a`. The complete four gameplay
+groups total **1,289/1,289**, with no failures or skips. Runner preflight cases
+are excluded from that count.
