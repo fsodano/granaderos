@@ -864,3 +864,14 @@ selected weapon. Mechanism and authored identity follow the actual piece.
 Packed loaded charges and legacy secondary blades contribute their real carried
 weight. Campaign loose-cartridge refunds remain separate from the charge kept
 inside a grounded weapon. See [verification](../verification/drop-held-weapons.md).
+
+
+### Give a held weapon directly
+
+The selected primary or secondary can move directly into an adjacent conscious
+companion's pack for four sender AP or one exploration second. It uses the same
+obstacle and eligibility checks as stored-weapon handover. Emptying the selected
+hand leaves fists; the recipient retains its own equipment and can equip the
+received piece normally. Authored identity and mechanism survive saved campaign
+return. Supplies and remote delivery remain separate. See
+[verification](../verification/held-weapon-transfer.md).
