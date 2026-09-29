@@ -469,22 +469,22 @@
     {
       "id": "E-ARTILLERY-PROFILES",
       "path": "docs/verification/authored-artillery-profiles.md",
-      "description": "Eight simulations and three mounted checks cover all three authored cannon families, model images/names, actual purchase prices, crew and action costs, ballistics, finite initial ammunition, saved physical use, compact references and pinned launch. Full regression passes 1084/1084, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required; gun transport/trade, extra families and distinct ammunition stocks remain open."
+      "description": "Eight simulations and three mounted checks cover all three authored cannon families, model images/names, actual purchase prices, crew and action costs, ballistics, finite initial ammunition, saved physical use, compact references and pinned launch. Full regression passes 1084/1084, zero failures/skips, with types, export and 36 reference comparisons. Published by PR #105 after successful exact-head CI; gun transport/trade, extra families and distinct ammunition stocks remain open."
     },
     {
       "id": "E-ARTILLERY-TRANSPORT",
       "path": "docs/verification/finite-artillery-transport.md",
-      "description": "Exact-gun field dispatch, organized controlled routes, delayed arrival, local depot selection and actual attack deployment retain finite identity, ammunition and loading. Ten simulations and two mounted checks pass; final overlap 22/22 and complete regression 1096/1096 with no failures/skips. Types, export and 36 reference checks pass. A separate malformed-facing probe drove the final shared validation correction. No weight, arbitrary-cell routes or convoy battle claim. Exact-head publication remains required."
+      "description": "Exact-gun field dispatch, organized controlled routes, delayed arrival, local depot selection and actual attack deployment retain finite identity, ammunition and loading. Ten simulations and two mounted checks pass; final overlap 22/22 and complete regression 1096/1096 with no failures/skips. Types, export and 36 reference checks pass. A separate malformed-facing probe drove the final shared validation correction. No weight, arbitrary-cell routes or convoy battle claim. Published by PR #106 after successful exact-head CI."
     },
     {
       "id": "E-ARTILLERY-TRANSPORT-RULES",
       "path": "docs/verification/authored-artillery-transport.md",
-      "description": "Pinned permission, cart/flotilla link durations and one-time dispatch fees preserve optional legacy package identity, editor undo/reset/validation and saved launch. Four simulations, two mounted armory checks and one mounted editor case pass; overlap 18/18 plus editor. Full regression passes 1103/1103 with no failures/skips, types, export and 36 reference comparisons. The initial missing supported-package registration was corrected before acceptance. Exact-head publication remains required."
+      "description": "Pinned permission, cart/flotilla link durations and one-time dispatch fees preserve optional legacy package identity, editor undo/reset/validation and saved launch. Four simulations, two mounted armory checks and one mounted editor case pass; overlap 18/18 plus editor. Full regression passes 1103/1103 with no failures/skips, types, export and 36 reference comparisons. The initial missing supported-package registration was corrected before acceptance. Published by PR #107 after successful exact-head CI."
     },
     {
       "id": "E-ARTILLERY-TRADING",
       "path": "docs/verification/finite-artillery-trading.md",
-      "description": "Local workshop sales and repurchases retain exact field/depot guns, finite funds, load and unfinished work; unissued stock converts once using authored allowance. Six simulations and two mounted production-game cases pass, overlap 40/40 and complete regression 1111/1111, zero failures/skips. Types, export and 36 reference checks pass. Real purchased/fired guns and configured workshops are distinguished from prepared custody/rejection boundaries; two invalid initial test-fixture assumptions were corrected without relaxing engine restrictions. Exact-head publication remains required."
+      "description": "Local workshop sales and repurchases retain exact field/depot guns, finite funds, load and unfinished work; unissued stock converts once using authored allowance. Six simulations and two mounted production-game cases pass, overlap 40/40 and complete regression 1111/1111, zero failures/skips. Types, export and 36 reference checks pass. Real purchased/fired guns and configured workshops are distinguished from prepared custody/rejection boundaries; two invalid initial test-fixture assumptions were corrected without relaxing engine restrictions. Published by PR #108 after successful exact-head CI."
     },
     {
       "id": "E-PARALLEL-VERIFICATION",
@@ -494,22 +494,22 @@
     {
       "id": "E-DEPOT-ARTILLERY-TRANSPORT",
       "path": "docs/verification/depot-artillery-transport.md",
-      "description": "Exact depot guns can move onward under existing authored transport rules. Three simulations and one mounted production-game case pass; overlap 26/26 and full regression 1115/1115, zero failures/skips, with types, export and 36 baseline comparisons. Actual purchased/fired and repurchased guns move through headquarters/workshop depots to neighboring combat without fresh ammunition; prepared partial-work and rejection boundaries are explicit. Exact-head publication remains required."
+      "description": "Exact depot guns can move onward under existing authored transport rules. Three simulations and one mounted production-game case pass; overlap 26/26 and full regression 1115/1115, zero failures/skips, with types, export and 36 baseline comparisons. Actual purchased/fired and repurchased guns move through headquarters/workshop depots to neighboring combat without fresh ammunition; prepared partial-work and rejection boundaries are explicit. Published by PR #109 after successful exact-head CI."
     },
     {
       "id": "E-ARTILLERY-TRADING-RULES",
       "path": "docs/verification/authored-artillery-trading.md",
-      "description": "Pinned optional workshop cash, trade permission, buying/repurchase percentages and named local overrides drive exact finite artillery exchanges. Six simulations and two mounted editor/armory checks pass; overlap 19/19 plus editor. Actual workshop and headquarters trades, exact integer rounding, zero rates and finite subsidies are covered. Complete regression 1123/1123, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
+      "description": "Pinned optional workshop cash, trade permission, buying/repurchase percentages and named local overrides drive exact finite artillery exchanges. Six simulations and two mounted editor/armory checks pass; overlap 19/19 plus editor. Actual workshop and headquarters trades, exact integer rounding, zero rates and finite subsidies are covered. Complete regression 1123/1123, zero failures/skips, with types, export and 36 reference comparisons. Published by PR #110 after successful exact-head CI."
     },
     {
       "id": "E-UNSEEN-RESIDENT-WOUNDS",
       "path": "docs/verification/unseen-resident-wounds.md",
-      "description": "Initial resident wounds advance from actual placement without waiting for an encounter. Eight simulations cover unseen death and bodies, bulletin/dormant exclusions, successive deaths, loaded-scene deferral, daily relocation, batched/incremental checkpoints, old-save migration and finite first aid. Related checks pass 56/56 and complete regression 1131/1131, zero failures/skips, with types, export and 36 baseline comparisons. Exact-head publication remains required."
+      "description": "Initial resident wounds advance from actual placement without waiting for an encounter. Eight simulations cover unseen death and bodies, bulletin/dormant exclusions, successive deaths, loaded-scene deferral, daily relocation, batched/incremental checkpoints, old-save migration and finite first aid. Related checks pass 56/56 and complete regression 1131/1131, zero failures/skips, with types, export and 36 baseline comparisons. Published by PR #111 after successful exact-head CI."
     },
     {
       "id": "E-SECONDARY-RECOVERY",
       "path": "docs/verification/secondary-weapon-recovery.md",
-      "description": "Military secondary blades transfer once into carried inventory through ordinary body looting, retaining authored definitions and wear. Five simulations and one mounted production-game case pass; related equipment group passes 27/27. Complete regression passes 1137/1137, zero failures/skips, with types, export and 36 baseline comparisons. Exact-head publication remains required."
+      "description": "Military secondary blades transfer once into carried inventory through ordinary body looting, retaining authored definitions and wear. Five simulations and one mounted production-game case pass; related equipment group passes 27/27. Complete regression passes 1137/1137, zero failures/skips, with types, export and 36 baseline comparisons. Published by PR #112 after successful exact-head CI."
     },
     {
       "id": "E-DROP-RECOVERED-WEAPONS",
@@ -578,7 +578,7 @@
       "requirement": "Author finite workshop funds and general/local artillery buying and repurchase prices",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Pinned workshop cash, permission and general/local percentages drive finite actual trades.",
+      "published": "Published by PR #110 after successful exact-head CI. Pinned workshop cash, permission and general/local percentages drive finite actual trades.",
       "local": "Six simulations and two mounted editor/production-armory checks pass; overlap 19/19 plus editor. Complete regression 1123/1123, zero failures/skips, with types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Edit cash, permissions and rates; add, relocate and remove local overrides with undo/reset/validation and pinned launch; apply actual displayed fees, preserve shop balances and exact guns across saves, allow zero rates, reject unaffordable/disabled offers and stop authored subsidies at finite funds.",
@@ -595,7 +595,8 @@
         "tests/authored-artillery-trading.test.mjs",
         "tests/artillery-trading-render.test.mjs",
         "tests/story-editor.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/110"
     },
     {
       "id": "DEPOTARTILLERY-01",
@@ -603,7 +604,7 @@
       "requirement": "Forward an exact stored or repurchased artillery piece from its local depot to the front",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Field/depot source selection preserves one gun through onward transport and actual neighboring attack entry.",
+      "published": "Published by PR #109 after successful exact-head CI. Field/depot source selection preserves one gun through onward transport and actual neighboring attack entry.",
       "local": "Three simulations and one mounted production-game check pass; overlap 26/26 and complete regression 1115/1115, zero failures/skips, with types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Return an actual fired gun through headquarters and onward to the front, forward a repurchased piece with declared unfinished work, charge each authored leg once, retain complete saves and finite ammo, reject invalid/stale/remote source or duplicate saved custody, and operate the real depot controls.",
@@ -620,7 +621,8 @@
         "tests/artillery-depot-transport-render.test.mjs",
         "tests/artillery-transport.test.mjs",
         "tests/artillery-trading.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/109"
     },
     {
       "id": "ARTILLERYTRADE-01",
@@ -628,7 +630,7 @@
       "requirement": "Sell and repurchase exact local artillery with finite workshop funds, saved custody and unchanged ammunition",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Local field/depot/unissued gun sales and repurchases conserve physical identity, load and both finite balances.",
+      "published": "Published by PR #108 after successful exact-head CI. Local field/depot/unissued gun sales and repurchases conserve physical identity, load and both finite balances.",
       "local": "Six simulations and two mounted production-game checks pass; overlap 40/40 and complete regression 1111/1111, zero failures/skips, with types, export and 36 reference checks.",
       "remaining": "",
       "acceptance": "Trade actual purchased and fired guns through valid configured workshops, retain load and declared partial work through full saves and real redeployment, issue stock identity once, reject repeats, stale stock, unavailable access/crew/funds, capacity overflow and duplicate ownership, and show matching prices/reasons in the armory.",
@@ -645,7 +647,8 @@
         "tests/artillery-trading-render.test.mjs",
         "tests/artillery-transport.test.mjs",
         "tests/stationed-artillery.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/108"
     },
     {
       "id": "ARTILLERYTRANSPORTRULES-01",
@@ -653,7 +656,7 @@
       "requirement": "Author artillery transport permission, saved route rates and finite one-time dispatch fees",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. The story editor pins transfer permission, cart/flotilla rates and dispatch fees used by the armory, runtime and saves.",
+      "published": "Published by PR #107 after successful exact-head CI. The story editor pins transfer permission, cart/flotilla rates and dispatch fees used by the armory, runtime and saves.",
       "local": "Four simulations and three mounted editor/armory cases pass; overlap 18/18 plus editor. Complete regression passes 1103/1103, zero failures/skips, with types, export and 36 reference checks.",
       "remaining": "",
       "acceptance": "Edit all rates and fees through undo, reset, validation and pinned launch; quote and pay the actual fee once for purchased/fired guns, retain authored due times through saves and delayed delivery, reject unaffordable/disabled/repeated sends without changing custody.",
@@ -670,7 +673,8 @@
         "tests/authored-artillery-transport.test.mjs",
         "tests/artillery-transport-render.test.mjs",
         "tests/story-editor.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/107"
     },
     {
       "id": "ARTILLERYTRANSPORT-01",
@@ -678,7 +682,7 @@
       "requirement": "Transport one retained artillery piece to a controlled local depot and redeploy it without fresh ammunition",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. One retained gun travels to a controlled local depot and enters the next attack with its exact finite load and work.",
+      "published": "Published by PR #106 after successful exact-head CI. One retained gun travels to a controlled local depot and enters the next attack with its exact finite load and work.",
       "local": "Ten simulations and two mounted production-game checks pass 12/12; earlier overlap 37/37 and final transport/emplacement group 22/22. Complete regression passes 1096/1096, zero failures/skips, with types, export and 36 reference checks. A malformed-facing probe was corrected and covered before the final full run.",
       "remaining": "",
       "acceptance": "Recover an actual purchased and fired gun with available local crew, quote organized controlled cart/coastal routes, retain finite load and unfinished work through full saves, delay interrupted delivery, choose the exact local depot gun and consume it once on real attack entry.",
@@ -695,7 +699,8 @@
         "tests/artillery-transport-render.test.mjs",
         "tests/artillery-selection.test.mjs",
         "tests/stationed-artillery.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/106"
     },
     {
       "id": "ARTILLERYPROFILE-01",
@@ -703,7 +708,7 @@
       "requirement": "Author all three cannon families and their images, costs, crew, ballistics and one-time ammunition allowance",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. The story editor pins complete gun profiles used by purchases, controls, player/enemy/militia combat and saved physical emplacements.",
+      "published": "Published by PR #105 after successful exact-head CI. The story editor pins complete gun profiles used by purchases, controls, player/enemy/militia combat and saved physical emplacements.",
       "local": "Eight simulations and three mounted editor/armory/production-field checks pass. Full regression passes 1084/1084, zero failures/skips, with types, export and all 36 baseline comparisons. An initial default-label regression is corrected in the final runtime.",
       "remaining": "",
       "acceptance": "Search/edit model names and images, validate strict fields, undo/reset/launch, charge actual authored prices, use authored costs/crew/ballistics and finite initial load, retain real gun ammunition on reentry and reject changed scene definitions while storing uploaded assets once.",
@@ -721,7 +726,8 @@
         "tests/artillery-profiles-render.test.mjs",
         "tests/story-editor.test.mjs",
         "tests/stationed-artillery-render.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/105"
     },
     {
       "id": "ARTILLERYAI-01",
@@ -5672,7 +5678,7 @@
       "requirement": "Advance authored resident wounds from actual appearance before the first encounter",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Initial wounds start at actual world appearance, including unblocked successors and daily relocation.",
+      "published": "Published by PR #111 after successful exact-head CI. Initial wounds start at actual world appearance, including unblocked successors and daily relocation.",
       "local": "Eight new simulations pass; the related civilian/presence group passes 56/56. Complete regression passes 1131/1131 with zero failures/skips, plus types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Advance initial wounds from campaign placement, start successors at actual unblocked arrival, preserve wounds and corpse location through daily movement, keep bulletin/dormant characters off the civilian clock, retain loaded/off-screen timing and saves, and migrate old unseen wounds without retroactive damage.",
@@ -5688,7 +5694,8 @@
         "tests/character-condition.test.mjs",
         "tests/unloaded-civilian-bleeding.test.mjs",
         "tests/campaign-presence.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/111"
     },
     {
       "id": "SECONDARYLOOT-01",
@@ -5696,7 +5703,7 @@
       "requirement": "Recover military secondary blades once with saved empty source slots and authored identity",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Military secondary weapons move once into inventory, preserve authored identity and wear, and leave saved empty source slots.",
+      "published": "Published by PR #112 after successful exact-head CI. Military secondary weapons move once into inventory, preserve authored identity and wear, and leave saved empty source slots.",
       "local": "Five simulations and one mounted production-game check pass; related equipment group 27/27. Complete regression 1137/1137, zero failures/skips, with types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Collect a real killed soldier with the normal control, recover both slots or its blade alone, keep authored name/image/wear and ordinary AP/range checks, equip it, save and return without restoring the source blade, preserve an unconscious hired or militia survivor with an empty slot, and replace it only through another real item.",
@@ -5713,7 +5720,8 @@
         "tests/secondary-loot-render.test.mjs",
         "tests/content-blades.test.mjs",
         "tests/equip-loot.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/112"
     },
     {
       "id": "DROPWEAPON-01",
@@ -5793,13 +5801,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "5ff4186b334a6596eee40c49c4112fac2917f204",
-    "total": 1073,
-    "passed": 1073,
+    "source": "dac3f896ee53a5e69cb937f4db0270661a8dba52",
+    "total": 1137,
+    "passed": 1137,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-PARALLEL-VERIFICATION"
+    "evidenceId": "E-SECONDARY-RECOVERY"
   }
 }
