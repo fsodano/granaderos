@@ -504,7 +504,7 @@
     {
       "id": "E-UNSEEN-RESIDENT-WOUNDS",
       "path": "docs/verification/unseen-resident-wounds.md",
-      "description": "Initial resident wounds advance from actual placement without waiting for an encounter. Eight simulations cover unseen death and bodies, bulletin/dormant exclusions, successive deaths, loaded-scene deferral, daily relocation, batched/incremental checkpoints, old-save migration and finite first aid. Related checks pass 56/56 and complete regression 1131/1131, zero failures/skips, with types, export and 36 baseline comparisons. Exact-head publication remains required."
+      "description": "Initial resident wounds advance from actual placement without waiting for an encounter. Eight simulations cover unseen death and bodies, bulletin/dormant exclusions, successive deaths, loaded-scene deferral, daily relocation, batched/incremental checkpoints, old-save migration and finite first aid. Related checks pass 56/56 and complete regression 1131/1131, zero failures/skips, with types, export and 36 baseline comparisons. Published by PR #111 after successful exact-head CI."
     },
     {
       "id": "E-SECONDARY-RECOVERY",
@@ -5656,7 +5656,7 @@
       "requirement": "Advance authored resident wounds from actual appearance before the first encounter",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Initial wounds start at actual world appearance, including unblocked successors and daily relocation.",
+      "published": "Published by PR #111 after successful exact-head CI. Initial wounds start at actual world appearance, including unblocked successors and daily relocation.",
       "local": "Eight new simulations pass; the related civilian/presence group passes 56/56. Complete regression passes 1131/1131 with zero failures/skips, plus types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Advance initial wounds from campaign placement, start successors at actual unblocked arrival, preserve wounds and corpse location through daily movement, keep bulletin/dormant characters off the civilian clock, retain loaded/off-screen timing and saves, and migrate old unseen wounds without retroactive damage.",
@@ -5672,7 +5672,8 @@
         "tests/character-condition.test.mjs",
         "tests/unloaded-civilian-bleeding.test.mjs",
         "tests/campaign-presence.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/111"
     },
     {
       "id": "SECONDARYLOOT-01",
@@ -5701,13 +5702,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "a9fcb41672e520a1928a9ba84447f77c55ea16f7",
-    "total": 1123,
-    "passed": 1123,
+    "source": "f8ffaa247cc084b9313a8d7df7a6e156a56564b0",
+    "total": 1131,
+    "passed": 1131,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-ARTILLERY-TRADING-RULES"
+    "evidenceId": "E-UNSEEN-RESIDENT-WOUNDS"
   }
 }
