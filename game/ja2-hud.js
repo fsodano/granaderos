@@ -129,7 +129,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
     move: false,
     fire: !firearm,
     melee: false,
-    charge: false,
+    charge: blade.id === 0,
     heal: false,
     loot: false,
     reload: !firearm || u.jammed || !loading.pa,
@@ -178,6 +178,7 @@ export function orderDescriptors(state, unit, ctx = {}) {
 
   return ORDER_DEFS.map(def => {
     const d = {id: def.id, label: def.label, kind: def.kind, disabled: baseDisabled || disabled[def.id]};
+    if(def.id==='melee'&&blade.id===0)d.label='Golpear con las manos vacías';
     if (def.id in pa) d.pa = pa[def.id];
     if (def.id in active) d.active = active[def.id];
     if(def.id in gunPlans){
