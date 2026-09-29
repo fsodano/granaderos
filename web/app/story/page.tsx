@@ -40,6 +40,7 @@ import {SPEECH_EVENTS} from '../../../game/characters.js';
 import {characterPresentationDefaults} from '../../../game/content-character-presentation.js';
 import {CONTENT_TRAITS} from '../../../game/content-character-options.js';
 import {FIREARM_PRICES,BLADE_PRICES,isBladeDefinition} from '../../../game/weapon-definition.js';
+import {AMMO_TYPES,ammunitionForWeapon} from '../../../game/ammo-types.js';
 import {BUTTSTOCK} from '../../../game/unarmed-combat.js';
 import {WEAPONS as BASE_FIREARMS} from '../../../game/firearm-definitions.js';
 import {WEAPONS as BASE_ITEMS} from '../../../game/data.js';
@@ -789,6 +790,13 @@ export default function ContentEditor() {
                         ))}
                       </select>
                     </label>
+                    {!isBladeDefinition(item)&&<fieldset><legend>Munición compatible</legend>
+                      <label>Familia de munición<select value={item.ammunitionFamily??''} onChange={e=>update({ammunitionFamily:e.target.value||undefined})}>
+                        <option value="">Original · {ammunitionForWeapon(item.template)?.name}</option>
+                        {Object.entries(AMMO_TYPES).map(([id,ammo])=><option key={id} value={id}>{ammo.name}</option>)}
+                      </select></label>
+                      <p>Esta arma carga solo la familia elegida. Cambiar de arma no convierte los cartuchos que ya lleva el soldado. La elección se conserva en la campaña guardada.</p>
+                    </fieldset>}
                     <p>
                       La familia conserva sus técnicas de combate. El nombre, la imagen y estos valores se usan en la campaña, la armería y el equipo recuperado. La prueba de tiro admite armas de fuego.
                     </p>

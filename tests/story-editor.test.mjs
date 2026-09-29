@@ -773,3 +773,14 @@ test('the weapon editor changes stock cost, force and contact reach through undo
  const d=parseContentPackage(m.dom.window.localStorage.getItem(draftKey)),gun=d.weapons.find(w=>w.id==='firearm-1800');assert.equal(gun.stockDamage,9);await m.click(m.button('Iniciar campaña con estas fichas'));let s=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY)).campaign;
  for(const a of [{type:'recruitCivic',id:110,term:'week'},{type:'wait',hours:6},{type:'visitSector'}]){s=dispatchCampaign(s,a);assert.equal(s.lastError,null);}const p=decodeSave(encodeSave(s,enterSector(s.pendingBattle))),u=p.battle.units.find(u=>u.id==='110');assert.equal(actionCosts(p.battle,u).melee,23);assert.equal(u.weaponMetadata.contentWeapon.stockDamage,9);assert.equal(u.weaponMetadata.contentWeapon.stockReach,1);
 });
+
+test('the weapon editor selects, restores and pins compatible ammunition with undo and paid deployment',async t=>{
+ const {ammoTypeFor,ammoCount}=await import('../game/ammo-types.js');
+ const m=await mount(t),draft=()=>parseContentPackage(m.dom.window.localStorage.getItem(draftKey));await m.click(m.button('Armas'));await m.input(m.document.querySelector('input[type="search"]'),'firearm-1800');await m.click(m.document.querySelector('.entry-list button'));
+ assert.equal(m.label('Familia de munición').value,'');await m.input(m.label('Familia de munición'),'ammoRifle');await m.click(m.button('Deshacer'));assert.equal(m.label('Familia de munición').value,'');await m.click(m.button('Rehacer'));assert.equal(m.label('Familia de munición').value,'ammoRifle');
+ await m.input(m.label('Familia de munición'),'');assert.equal(draft().weapons.find(w=>w.id==='firearm-1800').ammunitionFamily,undefined);await m.click(m.button('Deshacer'));
+ assert.equal(m.button('Iniciar campaña con estas fichas').disabled,false);await m.click(m.button('Iniciar campaña con estas fichas'));let s=decodeSave(m.dom.window.sessionStorage.getItem(CONTENT_LAUNCH_KEY)).campaign;
+ for(const a of [{type:'recruitCivic',id:110,term:'week'},{type:'wait',hours:6},{type:'visitSector'}]){s=dispatchCampaign(s,a);assert.equal(s.lastError,null);}
+ const p=decodeSave(encodeSave(s,enterSector(s.pendingBattle))),u=p.battle.units.find(u=>u.id==='110');assert.equal(ammoTypeFor(u),'ammoRifle');assert.ok(ammoCount(u)>0);assert.equal(ammoCount(u,'ammoMusket'),0);
+ await m.input(m.label('Familia de munición'),'ammoPistol');assert.equal(ammoTypeFor(p.battle.units.find(u=>u.id==='110')),'ammoRifle');assert.equal(m.dom.window.localStorage.getItem('granaderos.campaign.v1'),'ordinary save');
+});

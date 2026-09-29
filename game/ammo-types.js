@@ -9,7 +9,11 @@ export const AMMO_KEYS=Object.freeze(Object.keys(AMMO_TYPES));
 export function ammoTypeFor(value){
  const raw=typeof value==='object'&&value!==null?value.weapon??value.primary??value.template??value.id:value;
  const id=typeof raw==='object'?raw.id:raw;
- return AMMO_KEYS.find(key=>AMMO_TYPES[key].weapons.includes(id))??null;
+ const fallback=AMMO_KEYS.find(key=>AMMO_TYPES[key].weapons.includes(id))??null;
+ if(!fallback)return null;
+ const definition=value?.contentWeapon??value?.weaponMetadata?.contentWeapon??value;
+ const authored=definition?.ammunitionFamily;
+ return authored===undefined?fallback:Object.hasOwn(AMMO_TYPES,authored)?authored:null;
 }
 export function ammoStock(unit){
  if(unit?.ammunition!==undefined)return {...unit.ammunition};
