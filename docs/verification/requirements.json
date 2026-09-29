@@ -529,7 +529,7 @@
     {
       "id": "E-HELD-WEAPON-DROP",
       "path": "docs/verification/drop-held-weapons.md",
-      "description": "Held primary and secondary weapons move once to the field and retain their authored state, loaded rounds and weight through pickup, full saves and campaign return. Five simulations and one mounted production-game case pass; related group 38/38. Complete regression passes 1169/1169, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
+      "description": "Held primary and secondary weapons move once to the field and retain their authored state, loaded rounds and weight through pickup, full saves and campaign return. Five simulations and one mounted production-game case pass; related group 38/38. Complete regression passes 1169/1169, zero failures/skips, with types, export and 36 reference comparisons. Published by PR #116 after successful exact-head CI."
     },
     {
       "id": "E-HELD-WEAPON-TRANSFER",
@@ -5820,7 +5820,7 @@
       "requirement": "Leave an actual held primary or secondary weapon on the field and recover the same piece",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Held primary and secondary weapons move once to the field and retain their actual authored definition and mechanism through saved return.",
+      "published": "Published by PR #116 after successful exact-head CI. Held primary and secondary weapons move once to the field and retain their actual authored definition and mechanism through saved return.",
       "local": "Five simulations and one mounted production-game check pass; related group 38/38. Complete regression 1169/1169, zero failures/skips, with types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Use the production inventory to drop the selected held weapon for four combat AP or one exploration second; keep an inactive selected secondary usable when dropping the primary; preserve authored definition, image, wear, loaded charge, partial loading and jam through full save, return and equip; account for held and packed weapon weight; preserve the existing campaign loose-round refund; reject absent, ambiguous or unavailable sources atomically.",
@@ -5838,7 +5838,8 @@
         "tests/drop-held-weapons-render.test.mjs",
         "tests/drop-recovered-weapons.test.mjs",
         "tests/empty-hand-melee.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/116"
     },
     {
       "id": "HELDHANDOVER-01",
@@ -5867,13 +5868,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "09c3850edb777543affbd1e8cd3b4fc9d8a7cea7",
-    "total": 1163,
-    "passed": 1163,
+    "source": "eb8d414db4a850e47016547a0f20dc9e5e01a2a6",
+    "total": 1169,
+    "passed": 1169,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-EMPTY-HAND-MELEE"
+    "evidenceId": "E-HELD-WEAPON-DROP"
   }
 }
