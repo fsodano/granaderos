@@ -28,7 +28,7 @@ export {WEAPONS} from './firearm-definitions.js';
 
 import {BLADES} from './blade-definitions.js';
 export {BLADES} from './blade-definitions.js';
-export function bladeFor(unit){if(unit.activeSlot==='unarmed')return FISTS;if(unit.activeSlot==='blade')return BLADES[unit.blade]?(contentWeaponOf(unit,'blade')?weaponSpecification(unit,'blade'):BLADES[unit.blade]):FISTS;if(unit.weaponDropped||!unit.weapon)return FISTS;return BLADES[unit.weapon]?(contentWeaponOf(unit)?weaponSpecification(unit):BLADES[unit.weapon]):WEAPONS[unit.weapon]?BUTTSTOCK:FISTS;}
+export function bladeFor(unit){if(unit.activeSlot==='unarmed')return FISTS;if(unit.activeSlot==='blade')return BLADES[unit.blade]?(contentWeaponOf(unit,'blade')?weaponSpecification(unit,'blade'):BLADES[unit.blade]):FISTS;if(unit.weaponDropped||!unit.weapon)return FISTS;return BLADES[unit.weapon]?(contentWeaponOf(unit)?weaponSpecification(unit):BLADES[unit.weapon]):WEAPONS[unit.weapon]?{...BUTTSTOCK,ap:contentWeaponOf(unit)?.stockAP??BUTTSTOCK.ap,damage:contentWeaponOf(unit)?.stockDamage??BUTTSTOCK.damage,reach:contentWeaponOf(unit)?.stockReach??BUTTSTOCK.reach}:FISTS;}
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const present=u=>u.hp>0&&!u.routed;

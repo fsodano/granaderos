@@ -4,9 +4,9 @@ import {enterSector} from '../game/world.js';
 import {createBattle} from '../game/tactical.js';
 import {order,saved,sync} from './local-contract-fixture.mjs';
 
-export function buttstockField(){
+export function buttstockField({stock={}}={}){
  const d=defaultContentPackage();
- Object.assign(d.weapons.find(w=>w.id==='firearm-1800'),{name:'Fusil de Acosta',art:'/art/weapon-1801.png',damage:61,weight:4.8});
+ Object.assign(d.weapons.find(w=>w.id==='firearm-1800'),{name:'Fusil de Acosta',art:'/art/weapon-1801.png',damage:61,weight:4.8,...stock});
  Object.assign(d.characters.find(c=>c.id==='person-110'),{arrivalHours:0,blade:'blade-1809'});
  let campaign=order(initialCampaign(45,d),{type:'recruitCivic',id:110,term:'week'});
  campaign=order(campaign,{type:'attack',sector:'buenos_aires'});
