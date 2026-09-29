@@ -592,6 +592,12 @@
       "id": "E-WALKING-FRAME-CONTINUITY",
       "path": "docs/verification/walking-frame-continuity.md",
       "description": "Movement-time gait phase and fractional illustrated-sprite positions. Regression tests reproduce skipped poses during cell waits and integer-position sticking before the correction. Artwork completeness remains open."
+    },
+    {
+      "id": "E-SHARED-POCKETS",
+      "path": "docs/verification/shared-inventory-pockets.md",
+      "description": "Published PR #128: four large and eight small pockets share weapons and supplies, finite collection and transfer, saved layout and hand, preserved legacy excess, supply images and desktop controls. Exact-head CI totals 1268/1268, with zero failures/skips; web build passed. Broad inventory, merchant and advanced integration gaps remain open.",
+      "url": "https://github.com/fsodano/granaderos/pull/128"
     }
   ],
   "queue": [
@@ -3812,9 +3818,9 @@
       "requirement": "Complete equipment and merchant authoring",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain six finite personal supply quantities. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of six personal supply types can gate dialogue, chapters and failure. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI. PR #85 publishes an optional pinned cartridge unit price for deployment and finite return credit, after exact-head CI. PR #98 adds pinned editable militia patrol rules.",
-      "local": "Physical inventory, fittings and merchants are more complete locally but not generally authored. PATROLRULES-01 tracks optional patrol activation, timing and exploration energy settings. ARTILLERYSUPPLY-01 accepts pinned pesos prices, supply permission, reserve cap and finite local replenishment. ARTILLERYPROFILE-01 accepts editing the three gun families, model images, costs, crew, ballistics and finite initial ammunition with saved package references. ARTILLERYTRANSPORTRULES-01 accepts pinned transfer permission, route rates and one-time fees. ARTILLERYTRADERULES-01 tracks authored cash, prices and named workshop overrides.",
-      "remaining": "Add ammunition types and dealer pricing, fittings, merchant stock, buyback and replenishment authoring; integrate civilian belongings and complete physical custody.",
+      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain six finite personal supply quantities. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of six personal supply types can gate dialogue, chapters and failure. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI. PR #85 publishes an optional pinned cartridge unit price for deployment and finite return credit, after exact-head CI. PR #98 adds pinned editable militia patrol rules. PR #128 publishes shared physical pockets and finite capacity across collection, transfer, purchases and deployment; the capacity and stack tuning remain fixed.",
+      "local": "Advanced physical inventory controls, fittings and merchants remain more complete locally and are not generally authored. PATROLRULES-01 tracks optional patrol activation, timing and exploration energy settings. ARTILLERYSUPPLY-01 accepts pinned pesos prices, supply permission, reserve cap and finite local replenishment. ARTILLERYPROFILE-01 accepts editing the three gun families, model images, costs, crew, ballistics and finite initial ammunition with saved package references. ARTILLERYTRANSPORTRULES-01 accepts pinned transfer permission, route rates and one-time fees. ARTILLERYTRADERULES-01 tracks authored cash, prices and named workshop overrides.",
+      "remaining": "Add ammunition types and dealer pricing, fittings, merchant stock, buyback and replenishment authoring; integrate civilian belongings and complete physical custody. Add pocket/stack authoring and portable item custody; shared pockets alone do not close equipment authoring.",
       "acceptance": "Create each supported equipment type; buy/use/trade/reload without duplication or lost instance data.",
       "evidence": [
         "E-PUBLISHED",
@@ -3833,7 +3839,8 @@
         "E-ARTILLERY-SUPPLY",
         "E-ARTILLERY-PROFILES",
         "E-ARTILLERY-TRANSPORT-RULES",
-        "E-ARTILLERY-TRADING-RULES"
+        "E-ARTILLERY-TRADING-RULES",
+        "E-SHARED-POCKETS"
       ]
     },
     {
@@ -6182,7 +6189,7 @@
       "requirement": "Keep walking poses continuous through cell preparation waits and fractional screen movement",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Bounded delivery proposed by this PR; exact-head CI is required before merge. Gait carries completed movement time between cells, excluding preparation waits.",
+      "published": "Merged by PR #127 at 45bcc53861e3891fec40058c862cb256e7912478 after all five checks passed for fca80a22f9a97c57ab825d4402b0bbc64f01c80e. Gait carries completed movement time between cells, excluding preparation waits.",
       "local": "Runtime 762c96715de5814f7757207a951480f14cc8b92d; test source bc530c869910922fa59f39b2b8eb8b9f2f4045aa passes 1247/1247, with zero failures/skips. Types, export and 36 baseline checks pass. Ordinary production controls and the integrated port 3000 QA walk pass their bounded checks.",
       "remaining": "",
       "acceptance": "Delay the next cell by 450 ms and keep every authored pose in order; cap late endpoint callbacks to the actual movement duration; start separate orders at phase zero; preserve hidden-enemy filtering; retain fractional illustrated sprite and shadow positions while keeping the native pixel fallback aligned.",
@@ -6198,17 +6205,45 @@
         "tests/enemy-motion-gait.test.mjs",
         "tests/illustrated-sprite-runtime.test.mjs",
         "tests/tactical-render.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/127"
+    },
+    {
+      "id": "SHAREDPOCKETS-01",
+      "group": "Published deliveries",
+      "requirement": "Use four large and eight small pockets for all loose weapons and supplies",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Merged by PR #128 at 1b02d86e648f57aec4520ea307b17bb25173bfe6 after all five checks passed for 3915f1001a8d8405cf7bce40fa48da372e2d59eb. Pocket capacity covers transfers, collection, stowed weapons, purchases and deployment cartridges. Seven supplies have distinct images and descriptions.",
+      "local": "The complete published suite passed 1268/1268 without failures or skips. Desktop controls preserve moved stacks and clear stale details. A separate bounded port 3000 presentation integration passes 41 equipment checks, types, export and a live inventory review; this does not reconcile the two full gameplay versions.",
+      "remaining": "",
+      "acceptance": "Mix supplies and weapons in one finite layout; require large pockets for long weapons; collect only what fits; reject unaffordable or oversized transfers atomically; preserve remaining stock, authored weapon data, old-save excess, selected hand and layout across campaign return; show all seven supply images.",
+      "evidence": [
+        "E-SHARED-POCKETS"
+      ],
+      "parents": [
+        "TAC-08",
+        "ITEM-02",
+        "STORY-06",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/shared-personal-pockets.test.mjs",
+        "tests/shared-pockets-render.test.mjs",
+        "tests/pocket-partitions.test.mjs",
+        "tests/adjacent-weapon-transfer.test.mjs"
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/128"
     }
   ],
   "latestPublishedCheck": {
-    "source": "78fe01207022ed076bf73169aa01d9e2b2328872",
-    "total": 1244,
-    "passed": 1244,
+    "source": "3915f1001a8d8405cf7bce40fa48da372e2d59eb",
+    "total": 1268,
+    "passed": 1268,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-ENEMY-WORKER-EXPORT"
+    "evidenceId": "E-SHARED-POCKETS"
   }
 }
