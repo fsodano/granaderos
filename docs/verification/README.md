@@ -168,3 +168,5 @@ test partition and retained publication gates. It is infrastructure evidence.
 - [Enemy-turn worker export](enemy-worker-export.md): production URL correction and release guard.
 
 - [Walking frame continuity](walking-frame-continuity.md): cell waits, fractional positions and remaining artwork limits.
+
+- [Compatible ammunition](typed-ammunition.md): four weapon families, implicit ignition kit and save migration (local change).

@@ -592,6 +592,11 @@
       "id": "E-WALKING-FRAME-CONTINUITY",
       "path": "docs/verification/walking-frame-continuity.md",
       "description": "Movement-time gait phase and fractional illustrated-sprite positions. Regression tests reproduce skipped poses during cell waits and integer-position sticking before the correction. Artwork completeness remains open."
+    },
+    {
+      "id": "E-TYPED-AMMUNITION",
+      "path": "docs/verification/typed-ammunition.md",
+      "description": "Local four-family ammunition and implicit ignition kit implementation. 1275/1276 full regression followed by passing corrected ending-route rerun; eight new cases, types, export, baseline and desktop checks pass. Publication remains pending."
     }
   ],
   "queue": [
@@ -6198,6 +6203,24 @@
         "tests/enemy-motion-gait.test.mjs",
         "tests/illustrated-sprite-runtime.test.mjs",
         "tests/tactical-render.test.mjs"
+      ]
+    },
+    {
+      "id": "AMMOFAMILY-01",
+      "group": "Inventory and equipment",
+      "requirement": "Use weapon-compatible ammunition families and assume basic ignition kit",
+      "status": "LOCAL_ONLY",
+      "priority": "P1",
+      "published": "Pending this separate PR; main retains the earlier supply model.",
+      "local": "Source 8a06687d implements four ammunition families, separate artwork, exact transfers and legacy save migration. Ignition supplies and their refill costs are removed; maintenance and misfire action costs remain.",
+      "remaining": "Review and publication on main; advanced-checkout integration is separate.",
+      "acceptance": "All nine firearms consume only their compatible reserve. Family and quantity survive transfers, collection, weapon changes and active saves. Legacy rounds migrate once. No separate priming or flint inventory is shown.",
+      "evidence": [
+        "E-TYPED-AMMUNITION"
+      ],
+      "testFiles": [
+        "tests/typed-ammunition.test.mjs",
+        "tests/fresh-ending-route.test.mjs"
       ]
     }
   ],

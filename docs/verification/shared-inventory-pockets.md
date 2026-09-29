@@ -46,3 +46,5 @@ The images total 134,870 bytes after WebP compression. All seven load in the
 with no console errors. The ten focused pocket tests, type check and production
 export (731 files / 633 asset references) pass. The full-suite result above applies
 to the earlier source; this follow-up changes presentation only.
+
+The later [typed-ammunition change](typed-ammunition.md) replaces the ignition-supply design above. Its verification and publication status are recorded separately.

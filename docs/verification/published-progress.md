@@ -29,7 +29,7 @@ The advanced local suite has three independent failure points; a failed child al
 - UNVERIFIED: available evidence does not establish acceptance.
 - SUPERSEDED: an explicit design change replaced the old requirement.
 
-The register retains 265 entries: 116 VERIFIED, 103 PARTIAL, 32 LOCAL_ONLY, 2 MISSING, 9 FAILED, 2 UNVERIFIED, 1 SUPERSEDED.
+The register retains 266 entries: 116 VERIFIED, 103 PARTIAL, 33 LOCAL_ONLY, 2 MISSING, 9 FAILED, 2 UNVERIFIED, 1 SUPERSEDED.
 Rows overlap in scope. Neither these counts nor test totals are a completion percentage.
 
 Edit [requirements.json](requirements.json), record exact source/checks and remaining gaps, then run `npm run docs:progress` and `npm run audit:docs`. Update the design for policy changes. A dated audit stays an evidence snapshot. Do not mark a local branch as published or close a broad row from one passing fixture.
@@ -342,6 +342,12 @@ Finish one bounded feature, its controls and persistence, update evidence, pass 
 | FIX-03 | Physical prisoner rescue ends in defeat instead of retreat | FAILED | These larger acceptance routes are not present in the published suite. | Preserve actual exit, wounds, finite gear and captive identity; complete paid rescue and return. |
 | FIX-04 | Prototype fresh route loses at San Lorenzo | FAILED | Two fresh published routes now win the actual coastal opening under the supported economy, preserving real losses and saves. The separate prototype failing route has not been rerun or repaired on its own source. | Reconcile the failing route with the supported opening/economy; pass the battle and continue without overriding results. |
 
+## Inventory and equipment
+
+| ID | Requirement | Status | Published scope | Remaining work / acceptance |
+|---|---|---|---|---|
+| AMMOFAMILY-01 | Use weapon-compatible ammunition families and assume basic ignition kit | LOCAL_ONLY | Pending this separate PR; main retains the earlier supply model. | Review and publication on main; advanced-checkout integration is separate. |
+
 ## Evidence index
 
 | ID | Evidence | Scope and limits |
@@ -451,5 +457,6 @@ Finish one bounded feature, its controls and persistence, update evidence, pass 
 | E-RETIRO-WALK-LOCAL | [Record](retained-scenery-movement-2026-09-29.md) | Separate advanced checkout on port 3000: one-player night Retiro walk, development versus production timings, retained scenery, 41 focused checks and saved continuation. Not a main-branch or loaded-combat measurement; four-pose art and full performance acceptance remain open. |
 | E-ENEMY-WORKER-EXPORT | [Record](enemy-worker-export.md) | Enemy-turn worker uses the emitted HTTP asset. Build guard rejects the retained PR #125 file-URL constructor and checks the deployed worker exists. Complete regression 1244/1244, types and 723-file export pass; normal production turn control passes. Exact-head CI required before merge; broad performance remains open. |
 | E-WALKING-FRAME-CONTINUITY | [Record](walking-frame-continuity.md) | Movement-time gait phase and fractional illustrated-sprite positions. Regression tests reproduce skipped poses during cell waits and integer-position sticking before the correction. Artwork completeness remains open. |
+| E-TYPED-AMMUNITION | [Record](typed-ammunition.md) | Local four-family ammunition and implicit ignition kit implementation. 1275/1276 full regression followed by passing corrected ending-route rerun; eight new cases, types, export, baseline and desktop checks pass. Publication remains pending. |
 
 Per-row acceptance, local assessment, source notes and test paths are retained in [the register](requirements.json). The full 87-row historical parity assessment is preserved in the audit; its old implementation claims are not fresh certification. Earlier milestones remain in [the historical log](../archive/published-progress-through-pr28.md).
