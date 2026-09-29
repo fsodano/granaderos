@@ -3582,7 +3582,7 @@
       "requirement": "All 9 firearms and 5 melee weapons",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Nine firearms and five blade families match reference base values. Firearm and blade variants/images are authored and retained in character equipment, combat and saves. Enemy roles and militia ranks now support independent primary and secondary blade selections.",
+      "published": "Nine firearms and five blade families match reference base values. Firearm and blade variants/images are authored and retained in character equipment, combat and saves. Enemy roles and militia ranks now support independent primary and secondary blade selections. AMMOLOADS-01 adds multiple existing ammunition families per firearm with authored effects and conserved load choices.",
       "local": "See local suite and preserved parity source; not equivalent to published integration. BATTERYCHOICE-01 tracks explicit saved artillery choice and exact model availability. SECONDARYLOOT-01 tracks finite recovery of military secondary weapons, their authored identity and saved empty source slots. DROPWEAPON-01 tracks finite ground placement and collection of recovered weapons. WEAPONHANDOVER-01 tracks adjacent transfer of recovered weapons with saved recipient ownership. EMPTYHAND-01 tracks genuine empty-hand attacks after weapon loss and retained secondary use. AMMOCUSTODY-01 tracks strategic family custody, exact sector stores and finite town shops in the published runtime. It does not publish the advanced inventory adapter.",
       "remaining": "Author fittings and further ammunition variants; finish complete physical inventory, civilian equipment looting, wear and unarmed behavior. SECONDARYLOOT-01 accepts bounded military secondary recovery.",
       "acceptance": "XML values, inventory images, sounds and use in combat",
@@ -3596,7 +3596,8 @@
         "E-DROP-RECOVERED-WEAPONS",
         "E-ADJACENT-WEAPON-TRANSFER",
         "E-EMPTY-HAND-MELEE",
-        "E-AMMO-CUSTODY"
+        "E-AMMO-CUSTODY",
+        "E-AMMO-LOADS"
       ]
     },
     {
@@ -3863,9 +3864,9 @@
       "requirement": "Complete equipment and merchant authoring",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain four finite personal supply quantities; separate ignition stocks were removed by PR #130. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of four personal supply types can gate dialogue, chapters and failure; legacy ignition conditions see the implicit full kit. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI. PR #85 adds an optional pinned cartridge unit price. AMMOCUSTODY-01 retains that price for finite purchases and replaces return credit with owned cartridges. PR #98 adds pinned editable militia patrol rules. PR #128 publishes shared physical pockets and finite capacity across collection, transfer, purchases and deployment; the capacity and stack tuning remain fixed. AMMOAUTHOR-01 adds a pinned compatible family selector to each authored firearm. AMMOMARKETS-01 adds pinned global and per-town ammunition prices, stock caps, replenishment and automatic-purchase permissions.",
+      "published": "Firearm and blade variants include images and edited combat, weight and price values. Character and generated troop loadouts, armory instances and returns retain definitions. Enemy roles and militia ranks select primary weapons and secondary blades independently. Cartridge allotments are configurable for player deployment and fresh generated troops. Import orders use authored port and delivery windows. Each character can configure finite initial personal supplies, retained through actual service and saves without free rehire replenishment. Residents retain four finite personal supply quantities; separate ignition stocks were removed by PR #130. Adjacent collection from a dead or unconscious resident, saved movement and service changes preserve the remainder; named allied roles cannot grant a replacement allocation. Current quantities of four personal supply types can gate dialogue, chapters and failure; legacy ignition conditions see the implicit full kit. Active scenes override stale deployed records; the check does not grant or consume goods. PR #83 adds paid partial loading for authored firearms, retained tactical weapon work and interruption-aware exploration time. Merged after exact-head CI. PR #84 publishes authored preparation within the first shot, retained firing position and actual AP/time controls, after exact-head CI. PR #85 adds an optional pinned cartridge unit price. AMMOCUSTODY-01 retains that price for finite purchases and replaces return credit with owned cartridges. PR #98 adds pinned editable militia patrol rules. PR #128 publishes shared physical pockets and finite capacity across collection, transfer, purchases and deployment; the capacity and stack tuning remain fixed. AMMOAUTHOR-01 adds a pinned compatible family selector to each authored firearm. AMMOMARKETS-01 adds pinned global and per-town ammunition prices, stock caps, replenishment and automatic-purchase permissions. AMMOLOADS-01 adds multiple existing ammunition families per firearm with authored effects and conserved load choices.",
       "local": "Advanced physical inventory controls, fittings and merchants remain more complete locally and are not generally authored. PATROLRULES-01 tracks optional patrol activation, timing and exploration energy settings. ARTILLERYSUPPLY-01 accepts pinned pesos prices, supply permission, reserve cap and finite local replenishment. ARTILLERYPROFILE-01 accepts editing the three gun families, model images, costs, crew, ballistics and finite initial ammunition with saved package references. ARTILLERYTRANSPORTRULES-01 accepts pinned transfer permission, route rates and one-time fees. ARTILLERYTRADERULES-01 tracks authored cash, prices and named workshop overrides. AMMOFAMILY-01 accepts four published tactical families and the approved implicit ignition kit. AMMOFAMILIES-01 records completed local four-family custody and save migration. Publishing that advanced adapter, authored local family overrides and alternative loads remains open. AMMOCUSTODY-01 tracks strategic family custody, exact sector stores and finite town shops in the published runtime. It does not publish the advanced inventory adapter.",
-      "remaining": "Author new ammunition families, alternate loads, fittings and non-ammunition merchant stock, prices, buyback and replenishment; integrate civilian belongings and complete physical custody. Add pocket/stack authoring and portable item custody; shared pockets and ammunition supplier rules alone do not close equipment authoring.",
+      "remaining": "Author new ammunition families, fittings and non-ammunition merchant stock, prices, buyback and replenishment; integrate civilian belongings and complete physical custody. Add pocket/stack authoring and portable item custody; shared pockets and ammunition supplier rules alone do not close equipment authoring.",
       "acceptance": "Create each supported equipment type; buy/use/trade/reload without duplication or lost instance data.",
       "evidence": [
         "E-PUBLISHED",
@@ -3889,7 +3890,8 @@
         "E-TYPED-AMMUNITION",
         "E-AMMO-FAMILIES",
         "E-AMMO-CUSTODY",
-        "E-AMMO-MARKETS"
+        "E-AMMO-MARKETS",
+        "E-AMMO-LOADS"
       ]
     },
     {
@@ -4813,9 +4815,9 @@
       "requirement": "Ammunition is typed and compatible with a weapon, not interchangeable abstract shots. G49-50; M21-24.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "PR #130 publishes four compatible gameplay families, implicit ignition equipment, separate pocket artwork and bounded ground recovery. Each firearm accepts one family.",
+      "published": "PR #130 publishes four compatible gameplay families, implicit ignition equipment, separate pocket artwork and bounded ground recovery. Each firearm accepts one family. AMMOLOADS-01 adds multiple existing ammunition families per firearm with authored effects and conserved load choices.",
       "local": "AMMOFAMILIES-01 records four-family compatibility in the advanced physical inventory game, with conserved old saves, finite stocks, paired reloads and the running port 3000 build. This local integration is not yet published. Full campaign acceptance and advanced authored family overrides remain open. AMMOCUSTODY-01 tracks strategic family custody, exact sector stores and finite town shops in the published runtime. It does not publish the advanced inventory adapter.",
-      "remaining": "Alternate period loads for the same firearm and full interaction parity remain open. Publish the advanced physical inventory adapter and its dependencies.",
+      "remaining": "Full ammunition interaction parity remains open. Publish the advanced physical inventory adapter and its dependencies; alternative loads within the four families are covered by AMMOLOADS-01.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
@@ -4823,7 +4825,8 @@
         "E-PUBLISHED",
         "E-TYPED-AMMUNITION",
         "E-AMMO-FAMILIES",
-        "E-AMMO-CUSTODY"
+        "E-AMMO-CUSTODY",
+        "E-AMMO-LOADS"
       ],
       "sourceRow": "JA2-I08",
       "sourceNotes": "Alternate loads for one gun remain absent. Caliber/load mapping, initial stock, prices and production costs are Granaderos tuning. Modern AP/HP cartridges are inappropriate. Artillery ammunition remains a separate model."
