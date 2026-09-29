@@ -331,7 +331,8 @@
     "web/app/Armory.tsx": "849bf76d7dd83a74b184070fa7d7e3e3e0adbc7339600e6670989d6ce16e399f",
     "web/app/Campaign.tsx": "047696046f0004a778c491b8efb0bea75e8948837bb51eb8f5f17e22b56fb8ac",
     "web/app/armory.css": "210bf1f0e55c0ea36105e56fa93755a4e670c2ccb10ee6fae8858c2870faaa48",
-    "web/app/CampaignAmmunition.tsx": "251f79752a2aaaaacd3df860bdff0d43f0ce0c4073cbbf46d87113255ff7144a"
+    "web/app/CampaignAmmunition.tsx": "251f79752a2aaaaacd3df860bdff0d43f0ce0c4073cbbf46d87113255ff7144a",
+    "web/app/story/CampaignRules.tsx": "bc7f12a3cc3ee3a39766589f74032840003ff95787d03972b582aa1872982433"
   },
   "checks": {
     "focused": {
@@ -360,6 +361,13 @@
       "failed": 0,
       "skipped": 0,
       "durationMs": 266279.902333
+    },
+    "editorGuidanceFollowup": {
+      "scope": "Help text only: shortfall purchases, retained rounds and zero-target behavior",
+      "passed": 3,
+      "failed": 0,
+      "types": "PASS",
+      "build": "PASS"
     }
   },
   "logs": {
@@ -368,7 +376,10 @@
     "custody-build-final": "9301bfff9dbd90fea8d62df1d6d1057ced0e0bfdf6bd0e9ab4e4a0c6e57e8f61",
     "custody-baseline-final": "e49c0172bb277e7c62bd4490b57e84a4f572ea15f5930838a918acc012052177",
     "custody-docs-check": "06aa7f2aca3babd0083614e74e3455787c94d1eadcaf506ddb76dbd059984c6a",
-    "strategic-ammunition-release-complete": "3479fd860a691a786006897e4a9537687610aaa0a1fe0e25c84bf0c05739bb8d"
+    "strategic-ammunition-release-complete": "3479fd860a691a786006897e4a9537687610aaa0a1fe0e25c84bf0c05739bb8d",
+    "custody-editor-guidance-tests": "2fc92a9c7e59154147805f20f7c869faaa6f8cb6eec32b5f72978097847f915e",
+    "custody-guidance-types": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30",
+    "custody-guidance-build": "50132f48bb29bbd49e7c4e63b4aca69535a30b266e997769910b0a2e3498e15f"
   },
   "runtimeTestSource": "e90895c5bb0eadeb168533be118097300fba034e",
   "pr": "https://github.com/fsodano/granaderos/pull/135"

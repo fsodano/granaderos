@@ -92,7 +92,10 @@ The 12 focused core and mounted checks pass. Types, the 735-file production expo
 with 637 asset references, and all 36 reference comparisons pass. The complete suite passes **1,306/1,306**, with no failures or skips.
 The documentation audit retains 271 requirements and 111 evidence records; all
 379 local links in the changed documents resolve. Final-head remote checks gate
-publication. Machine-readable results are in the
+publication. After the complete run, the story editor help text was corrected
+to describe shortfall purchases, retained rounds and a zero target. All three
+related mounted checks, types and export pass after this text-only correction.
+Machine-readable results are in the
 [evidence record](../evidence/strategic-ammunition-custody.json).
 
 ## Limits
