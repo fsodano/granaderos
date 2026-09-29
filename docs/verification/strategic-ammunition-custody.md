@@ -5,6 +5,10 @@ on published commit `b6b081c9e206d8dda5cec00a10b24c1ebe02c67c` (PR #134).
 It adds strategic ownership to the published four-family runtime. The larger
 advanced physical-inventory implementation remains separate.
 
+Runtime/test source: `e90895c5bb0eadeb168533be118097300fba034e`.
+[PR #135](https://github.com/fsodano/granaderos/pull/135) carries this delivery. Merge requires all five final-head
+checks to pass; this record does not claim completion of the wider game.
+
 ## Rules and controls
 
 The armory has a **Munición y depósito** panel for the selected soldier. Choose

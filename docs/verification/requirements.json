@@ -626,7 +626,8 @@
     {
       "id": "E-AMMO-CUSTODY",
       "path": "docs/verification/strategic-ammunition-custody.md",
-      "description": "Strategic family ownership, exact sector stores and finite town shops, preserving loaded charges and partial reloads without refunds. All 1306 published-runtime tests pass, with no failures or skips; types, export, reference checks, documentation and live armory persistence pass. Fresh victory and saved continuation use actual combat, paid contracts, finite care and permanent casualties. Final-head checks gate merge."
+      "description": "Strategic family ownership, exact sector stores and finite town shops, preserving loaded charges and partial reloads without refunds. All 1306 published-runtime tests pass, with no failures or skips; types, export, reference checks, documentation and live armory persistence pass. Fresh victory and saved continuation use actual combat, paid contracts, finite care and permanent casualties. Final-head checks gate merge.",
+      "url": "https://github.com/fsodano/granaderos/pull/135"
     }
   ],
   "queue": [
@@ -6388,7 +6389,7 @@
       "status": "VERIFIED",
       "priority": "P1",
       "published": "This delivery adds exact family purchases, controlled sector stores and finite town shops. Supplied controlled towns buy only a marching shortfall. Return retains real carried ammunition, loaded charges and unfinished reloads without an automatic refund. Final-head checks gate merge.",
-      "local": "All 1306 published-runtime tests pass, with no failures or skips. The twelve new core and mounted cases, types, production export, 36 reference checks and browser persistence pass. The fresh stock campaign wins all thirteen localities, retains permanent losses and continues after actual post-victory care and contract expiry. The advanced physical-inventory adapter remains separate.",
+      "local": "Runtime/test source e90895c5bb0eadeb168533be118097300fba034e. All 1306 published-runtime tests pass, with no failures or skips. The twelve new core and mounted cases, types, production export, 36 reference checks and browser persistence pass. The fresh stock campaign wins all thirteen localities, retains permanent losses and continues after actual post-victory care and contract expiry. The advanced physical-inventory adapter remains separate.",
       "remaining": "",
       "acceptance": "Buy and move exact family quantities with finite pesos, local stock and pocket limits. Preserve owners, loaded charges and partial work through return, weapon replacement, old-save migration and repeated restoration. Reject invented stock, family conversion and incomplete living reports. Keep complete fresh campaign victory and saved continuation through normal orders.",
       "evidence": [
@@ -6406,7 +6407,8 @@
         "tests/fresh-coastal-route.test.mjs",
         "tests/fresh-cuyo-route.test.mjs",
         "tests/fresh-ending-route.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/135"
     }
   ],
   "latestPublishedCheck": {

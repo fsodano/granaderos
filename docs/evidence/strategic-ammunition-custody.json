@@ -369,5 +369,7 @@
     "custody-baseline-final": "e49c0172bb277e7c62bd4490b57e84a4f572ea15f5930838a918acc012052177",
     "custody-docs-check": "06aa7f2aca3babd0083614e74e3455787c94d1eadcaf506ddb76dbd059984c6a",
     "strategic-ammunition-release-complete": "3479fd860a691a786006897e4a9537687610aaa0a1fe0e25c84bf0c05739bb8d"
-  }
+  },
+  "runtimeTestSource": "e90895c5bb0eadeb168533be118097300fba034e",
+  "pr": "https://github.com/fsodano/granaderos/pull/135"
 }
