@@ -544,7 +544,7 @@
     {
       "id": "E-PERSONAL-SUPPLY-DROP",
       "path": "docs/verification/drop-personal-supplies.md",
-      "description": "An exact bundle of authored personal supplies moves to the field, persists through saved sector return and can be collected once by another actual soldier. Five simulations and one mounted production-game case pass; related group 25/25. Complete regression passes 1188/1188, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
+      "description": "An exact bundle of authored personal supplies moves to the field, persists through saved sector return and can be collected once by another actual soldier. Five simulations and one mounted production-game case pass; related group 25/25. Complete regression passes 1188/1188, zero failures/skips, with types, export and 36 reference comparisons. Published by PR #119 after successful exact-head CI."
     },
     {
       "id": "E-ADJACENT-CARTRIDGE-TRANSFER",
@@ -5917,7 +5917,7 @@
       "requirement": "Leave an exact finite supply bundle in a sector and recover it after saved return",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Exact personal supply bundles persist on the field through saved sector return and can be recovered once by the owner or another companion.",
+      "published": "Published by PR #119 after successful exact-head CI. Exact personal supply bundles persist on the field through saved sector return and can be recovered once by the owner or another companion.",
       "local": "Five simulations and one mounted production-game check pass; related group 25/25. Complete regression 1188/1188, zero failures/skips, with types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Select a supported personal supply and exact quantity in normal inventory; leave the bundle for four combat AP or one exploration second; show its ground marker; recover it through the ordinary occupied-cell collection control; preserve both holders and ground quantity through full saves and campaign return; retain distinct ground identities; reject invalid stock/counts, field limits, AP and recipient numeric overflow before mutation.",
@@ -5934,7 +5934,8 @@
         "tests/drop-personal-supplies-render.test.mjs",
         "tests/adjacent-supply-transfer.test.mjs",
         "tests/drop-held-weapons.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/119"
     },
     {
       "id": "CARTRIDGEHANDOVER-01",
@@ -5965,13 +5966,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "2bf4933335961174805127bea6fc66bcd2380b64",
-    "total": 1182,
-    "passed": 1182,
+    "source": "b47d13b542e0801a9794cc8f91619bfa56e2e34b",
+    "total": 1188,
+    "passed": 1188,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-ADJACENT-SUPPLY-TRANSFER"
+    "evidenceId": "E-PERSONAL-SUPPLY-DROP"
   }
 }
