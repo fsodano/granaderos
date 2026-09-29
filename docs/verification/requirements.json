@@ -554,7 +554,7 @@
     {
       "id": "E-PARTIAL-GROUND-SUPPLY-PICKUP",
       "path": "docs/verification/partial-ground-supply-pickup.md",
-      "description": "The field picker selects an actual colocated personal supply bundle and exact quantity, preserving the remainder through saves and campaign return. Four simulations and three mounted production-game checks pass; related group 32/32. Complete regression passes 1200/1200, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
+      "description": "The field picker selects an actual colocated personal supply bundle and exact quantity, preserving the remainder through saves and campaign return. Four simulations and three mounted production-game checks pass; related group 32/32. Complete regression passes 1200/1200, zero failures/skips, with types, export and 36 reference comparisons. Published by PR #121 after successful exact-head CI."
     },
     {
       "id": "E-OCCUPIED-GROUND-COLLECTION",
@@ -5983,7 +5983,7 @@
       "requirement": "Choose a ground supply bundle and exact pickup quantity while preserving its remainder",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. The normal field selector chooses one nearby personal supply bundle and exact pickup quantity, retaining the rest through saved campaign return.",
+      "published": "Published by PR #121 after successful exact-head CI. The normal field selector chooses one nearby personal supply bundle and exact pickup quantity, retaining the rest through saved campaign return.",
       "local": "Four simulations and three mounted production-game checks pass; related group 32/32. Complete regression 1200/1200, zero failures/skips, with types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Open the ordinary ground supply picker from a nearby occupied cell, choose among colocated supported bundles and take an exact whole quantity for eight AP or one exploration second; retain untouched bundles and partial remainders across saves and campaign return; reject stale, invalid, blocked, unavailable, overflowing or unaffordable picks atomically; reduce an overflowing selection to a valid amount; pause the ordinary exploration timer while choosing; cancel or Escape without cost.",
@@ -6000,7 +6000,8 @@
         "tests/partial-ground-supply-pickup-render.test.mjs",
         "tests/drop-personal-supplies.test.mjs",
         "tests/drop-personal-supplies-render.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/121"
     },
     {
       "id": "OCCUPIEDGROUND-01",
@@ -6030,13 +6031,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "cd31016d65c2d4bb4d69d449244a4fb129a71dba",
-    "total": 1193,
-    "passed": 1193,
+    "source": "d68ce4104b96e53888f2696d2a5933b50055f8d7",
+    "total": 1200,
+    "passed": 1200,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-ADJACENT-CARTRIDGE-TRANSFER"
+    "evidenceId": "E-PARTIAL-GROUND-SUPPLY-PICKUP"
   }
 }
