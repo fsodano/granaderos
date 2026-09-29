@@ -853,7 +853,7 @@ use punches, with a twelve-AP attack, condition/attribute-dependent hit chance,
 small injury and separate breath loss. Unconscious soldiers can provide only
 their real remaining equipment. Empty hands cannot brace or execute a weapon
 charge, and do not add weapon weight. Normal civilian consequences and injury
-rules still apply. Physical fittings and blunt firearm strikes remain separate. See [verification](../verification/empty-hand-melee.md).
+rules still apply. Physical fittings remain separate. Held firearms now use the stock behavior described below. See [verification](../verification/empty-hand-melee.md).
 
 
 ### Leave the held weapon
@@ -935,3 +935,14 @@ supply picker without searching the resident. With no free item remaining, the
 existing unconscious-resident supply action remains available. Held and container
 records are excluded from loose stock. See
 [verification](../verification/occupied-ground-collection.md).
+
+
+### Close strikes with a held firearm
+
+The normal melee order uses the selected firearm's stock at short contact range.
+Its default profile is 16 AP, 18 base injury and 1.5-cell reach. It preserves the
+same gun, loaded cartridges, reserves, partial reload, jam and wear. Existing
+momentum, parries, counters and injury rules apply. The gun does not provide an
+unowned bayonet. To charge or brace, select an actual suitable blade. Physical
+fittings and separate stock accuracy/breath calculations remain open. See
+[verification](../verification/held-firearm-buttstock.md).
