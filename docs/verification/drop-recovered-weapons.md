@@ -42,3 +42,8 @@ medical items, throwing or direct handoff, complete pocket capacity, global item
 identities, live-browser interaction or performance acceptance. Broader physical
 inventory and campaign requirements remain open. Exact-head CI remains required
 before publication.
+
+## Publication
+
+Published in [PR #113](https://github.com/fsodano/granaderos/pull/113) on 2026-09-29 00:48:11 UTC.
+Exact head `35827ec3f220d22165362f54b5e871154f349156` passed [CI run 36504032756](https://github.com/fsodano/granaderos/actions/runs/36504032756), including the full suite, types and production build. Merge commit: `7416b85b27451575dd2149c04a14471a2cf66ed0`. This publication does not close the broader game or campaign requirements.

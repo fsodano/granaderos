@@ -824,8 +824,9 @@ one piece per order. The action costs four combat AP or one exploration second.
 The normal collection control can recover a loose piece underneath a soldier.
 Each piece keeps its authored definition, image, weight, wear, load and partial
 reload through saves and sector return. Collection preserves other carried
-pieces even when fields have overlapping local indices. Held weapons, supplies,
-throwing and full pocket organization remain separate. See
+pieces even when fields have overlapping local indices. The selected held
+primary or secondary can also be left with the same cost and preservation rules.
+Supplies, throwing and full pocket organization remain separate. See
 [verification](../verification/drop-recovered-weapons.md).
 
 
@@ -852,3 +853,14 @@ small injury and separate breath loss. Unconscious soldiers can provide only
 their real remaining equipment. Empty hands cannot brace or execute a weapon
 charge, and do not add weapon weight. Normal civilian consequences and injury
 rules still apply. Physical fittings and blunt firearm strikes remain separate. See [verification](../verification/empty-hand-melee.md).
+
+
+### Leave the held weapon
+
+Primary and secondary hand slots can relinquish their actual piece to the
+current field cell for four AP or one exploration second. Selecting an emptied
+hand leaves fists; an inactive hand can be emptied without hiding the other
+selected weapon. Mechanism and authored identity follow the actual piece.
+Packed loaded charges and legacy secondary blades contribute their real carried
+weight. Campaign loose-cartridge refunds remain separate from the charge kept
+inside a grounded weapon. See [verification](../verification/drop-held-weapons.md).

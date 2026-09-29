@@ -7,6 +7,8 @@ accepted features on GitHub `main`, approved scope changes and open work.
 
 ## Published baseline
 
+- [Leave held weapons on the field](drop-held-weapons.md)
+
 - [Authored workshop funds and local artillery prices](authored-artillery-trading.md)
 
 - [Forwarding stored artillery to the front](depot-artillery-transport.md)

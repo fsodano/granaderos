@@ -514,17 +514,22 @@
     {
       "id": "E-DROP-RECOVERED-WEAPONS",
       "path": "docs/verification/drop-recovered-weapons.md",
-      "description": "One recovered firearm or blade moves from carried inventory to the field and back through normal controls, retaining its authored image, definition, weight and mechanism. Six simulations and one mounted production-game case pass; related group 31/31. Complete regression passes 1144/1144, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
+      "description": "One recovered firearm or blade moves from carried inventory to the field and back through normal controls, retaining its authored image, definition, weight and mechanism. Six simulations and one mounted production-game case pass; related group 31/31. Complete regression passes 1144/1144, zero failures/skips, with types, export and 36 reference comparisons. Published by PR #113 after successful exact-head CI."
     },
     {
       "id": "E-ADJACENT-WEAPON-TRANSFER",
       "path": "docs/verification/adjacent-weapon-transfer.md",
-      "description": "Recovered weapons transfer once to an adjacent conscious squad member, preserving authored identity and mechanism through full saves and campaign return. Five simulations and two mounted production-game cases pass; related group 30/30. Complete regression passes 1151/1151, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
+      "description": "Recovered weapons transfer once to an adjacent conscious squad member, preserving authored identity and mechanism through full saves and campaign return. Five simulations and two mounted production-game cases pass; related group 30/30. Complete regression passes 1151/1151, zero failures/skips, with types, export and 36 reference comparisons. Published by PR #114 after successful exact-head CI."
     },
     {
       "id": "E-EMPTY-HAND-MELEE",
       "path": "docs/verification/empty-hand-melee.md",
       "description": "Manual empty-hand selection retains actual equipment; lost or empty selected weapons use punches and a retained secondary stays usable. Ten simulations and two mounted production-game checks pass; related group 32/32. Complete regression passes 1163/1163, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
+    },
+    {
+      "id": "E-HELD-WEAPON-DROP",
+      "path": "docs/verification/drop-held-weapons.md",
+      "description": "Held primary and secondary weapons move once to the field and retain their authored state, loaded rounds and weight through pickup, full saves and campaign return. Five simulations and one mounted production-game case pass; related group 38/38. Complete regression passes 1169/1169, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
     }
   ],
   "queue": [
@@ -4585,15 +4590,16 @@
       "requirement": "Items can be dropped, picked up, split, stacked, and stored persistently in the sector. G20,64-66,110-111; M21-25.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Recovered firearms and blades can be left one at a time at the current cell and collected even under a soldier. Their authored identity, load, wear and weight survive full saves and sector return. Distinct fields cannot overwrite a previously carried weapon through a reused local drop index. DROPWEAPON-01 records the bounded ordinary controls.",
-      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check. DROPWEAPON-01 tracks finite ground placement and collection of recovered weapons.",
-      "remaining": "Integrate held equipment and supplies, arbitrary partial stack quantities, stacking, selectable body/ground/container inventories, physical capacity, walking approaches and strategic/mission sector storage. The advanced-workspace implementations in the source notes remain separate from published acceptance.",
+      "published": "Held and recovered firearms and blades can be left one at a time at the current cell and collected even under a soldier. Their authored identity, load, wear and weight survive full saves and sector return. Distinct fields cannot overwrite a previously carried weapon through a reused local drop index. DROPWEAPON-01 and HELDWEAPONDROP-01 record the bounded ordinary controls.",
+      "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check. DROPWEAPON-01 tracks finite ground placement and collection of recovered weapons. HELDWEAPONDROP-01 extends the same custody to actual hand slots.",
+      "remaining": "Integrate supplies and nonweapon equipment, arbitrary partial stack quantities, stacking, selectable body/ground/container inventories, physical capacity, walking approaches and strategic/mission sector storage. The advanced-workspace implementations in the source notes remain separate from published acceptance.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
         "E-PUBLISHED",
-        "E-DROP-RECOVERED-WEAPONS"
+        "E-DROP-RECOVERED-WEAPONS",
+        "E-HELD-WEAPON-DROP"
       ],
       "sourceRow": "JA2-I03",
       "sourceNotes": "Strategic sector access now lists discovered equipment and supports exact local pickup/drop quantities in safe sectors. It checks walking access, capacity and current source contents, preserves loaded/fitted weapons and personal cartridges, and uses validated save/reentry paths. Seventeen simulation/save tests and two component checks cover the new flow; see [sector inventory](sector-inventory.md). Depleted ground objects cannot be picked up again. A controlled live body/ground picker spent actual approach and pickup AP, took partial cartridges and a loaded fitted musket, and retained both sources and receiver after reload. Ten approach cases, eleven batch cases and two component tests cover the picker contract. Select All and per-row quantities share one atomic 8 AP pickup from a single tile. Live full selection, capacity rejection and reduction to a valid partial selection passed; see [loot approach](loot-approach.md). Live tactical dropping, strategic partial pickup/drop, quantity rejection, save loading and reentry now pass. The check found and fixed loss of a carried loaded gun charge on campaign return; the repeated loop preserved the exact ammunition total. See [sector inventory](sector-inventory.md). Blocked paths, full packs and body/container variants remain automated-test evidence. Visited mission sites now appear under their parent sector through a labelled site selector, with separate source pools and shared local-presence, occupation and path checks. Real San Lorenzo remains can be recovered after victory; completed Yatasto pickup/drop and saves pass simulation checks. A live production-component harness recovered one dressing and one cartridge from the real San Lorenzo save and preserved the distinct town stock after saving/loading. See [sector inventory](sector-inventory.md). Carried weapons can now be equipped directly from a safe town, without entering the tactical map. Prepared load, partial work, condition and fittings survive the supported map/armory/deployment/return paths; capture/rescue and finite ammunition are tested. A live C\u00f3rdoba recovery pickup/equip/save/load check passed. See [carried weapon equipment](campaign-carried-equip.md)."
@@ -5729,7 +5735,7 @@
       "requirement": "Leave recovered weapons on the field and recover each piece without lost or duplicate custody",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Recovered weapons move once between carried inventory and field cells, retaining authored identity, weight and mechanism through saved return.",
+      "published": "Published by PR #113 after successful exact-head CI. Recovered weapons move once between carried inventory and field cells, retaining authored identity, weight and mechanism through saved return.",
       "local": "Six simulations and one mounted production-game check pass; related group 31/31. Complete regression 1144/1144, zero failures/skips, with types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Use the real inventory to leave one stored weapon at the soldier feet for four combat AP or one exploration second; collect it from an occupied cell; preserve definition, image, weight, wear, jam, load and unfinished reload through full saves and sector return; keep both pieces when local drop indices collide across fields; reject invalid, absent or unavailable equipment without changing custody.",
@@ -5747,7 +5753,8 @@
         "tests/drop-recovered-weapons-render.test.mjs",
         "tests/secondary-loot.test.mjs",
         "tests/equip-loot.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/113"
     },
     {
       "id": "WEAPONHANDOVER-01",
@@ -5755,7 +5762,7 @@
       "requirement": "Give a recovered weapon to an adjacent companion without duplicating or losing the physical piece",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Recovered weapons move once to an adjacent conscious companion, retaining identity, weight and mechanism through saved campaign return.",
+      "published": "Published by PR #114 after successful exact-head CI. Recovered weapons move once to an adjacent conscious companion, retaining identity, weight and mechanism through saved campaign return.",
       "local": "Five simulations and two mounted production-game checks pass; related group 30/30. Complete regression 1151/1151, zero failures/skips, with types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Choose the actual recipient in production inventory; deliver one recovered piece for four sender AP or one exploration second; preserve its authored image, weight, wear, load, jam and unfinished reload; reject unavailable recipients, blocked adjacency, insufficient AP, absent items and full stored-record limits atomically; save, return and equip it on the same recipient.",
@@ -5772,7 +5779,8 @@
         "tests/adjacent-weapon-transfer-render.test.mjs",
         "tests/drop-recovered-weapons.test.mjs",
         "tests/secondary-loot.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/114"
     },
     {
       "id": "EMPTYHAND-01",
@@ -5798,16 +5806,42 @@
         "tests/secondary-loot.test.mjs",
         "tests/critical-military-condition.test.mjs"
       ]
+    },
+    {
+      "id": "HELDWEAPONDROP-01",
+      "group": "Published deliveries",
+      "requirement": "Leave an actual held primary or secondary weapon on the field and recover the same piece",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Held primary and secondary weapons move once to the field and retain their actual authored definition and mechanism through saved return.",
+      "local": "Five simulations and one mounted production-game check pass; related group 38/38. Complete regression 1169/1169, zero failures/skips, with types, export and 36 reference comparisons.",
+      "remaining": "",
+      "acceptance": "Use the production inventory to drop the selected held weapon for four combat AP or one exploration second; keep an inactive selected secondary usable when dropping the primary; preserve authored definition, image, wear, loaded charge, partial loading and jam through full save, return and equip; account for held and packed weapon weight; preserve the existing campaign loose-round refund; reject absent, ambiguous or unavailable sources atomically.",
+      "evidence": [
+        "E-HELD-WEAPON-DROP"
+      ],
+      "parents": [
+        "ITEM-01",
+        "JA2-I03",
+        "JA2-I10",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/drop-held-weapons.test.mjs",
+        "tests/drop-held-weapons-render.test.mjs",
+        "tests/drop-recovered-weapons.test.mjs",
+        "tests/empty-hand-melee.test.mjs"
+      ]
     }
   ],
   "latestPublishedCheck": {
-    "source": "dac3f896ee53a5e69cb937f4db0270661a8dba52",
-    "total": 1137,
-    "passed": 1137,
+    "source": "23397f74ed197beea0b6603a1b568196aea9e198",
+    "total": 1151,
+    "passed": 1151,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-SECONDARY-RECOVERY"
+    "evidenceId": "E-ADJACENT-WEAPON-TRANSFER"
   }
 }
