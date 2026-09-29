@@ -34,7 +34,7 @@ export function authoredForceEquipment(state,field,role,unit,cartridges){
   result={...result,...gear};
  }
  const capacity=weaponSpecification(result)?.capacity??0,loaded=Math.min(capacity,cartridges);
- result={...result,loaded,ammo:capacity?cartridges-loaded:0,...(capacity?{}:{priming:0})};
+ result={...result,loaded,ammo:capacity?cartridges-loaded:0};
  const blades=content?.[FORCE_EQUIPMENT[field].bladeField],id=blades?.[role];
  // A null secondary assignment retains the original role's blade.
  if(id!==undefined&&id!==null){

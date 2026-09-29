@@ -10,7 +10,7 @@ import {enterSector} from '../game/world.js';
 import {secureArea} from './controlled-area-fixture.mjs';
 import {order,saved,visit,leave,tactical,localPackage,localNPC,localId,hireLocal,sync,A} from './local-contract-fixture.mjs';
 const B='cell-26-27',person=(d,id)=>d.characters.find(c=>c.id===`person-${id}`);
-const stock={priming:6,flints:4,rations:3,torches:2,medkits:7,boleadoras:1};
+const stock={rations:3,torches:2,medkits:7,boleadoras:1};
 function content({daily=false,critical=true}={}){const d=localPackage();d.characters.at(-1).startingSupplies={...stock};if(critical)d.characters.at(-1).startingCondition={hp:1,energy:100,fatigue:0,bleeding:0,bandaged:0};person(d,110).attributes.medical=80;person(d,110).startingSupplies=Object.fromEntries(Object.keys(stock).map(k=>[k,0]));if(daily)Object.assign(d.placements.at(-1),{mode:'daily',sectors:[A,B],selection:'alternate'});return d;}
 function approach(p){const n=localNPC(p.battle),u=p.battle.units.find(u=>u.side==='player'),spot=getReachable(p.battle,u).find(t=>Math.abs(t.x-n.x)+Math.abs(t.y-n.y)===1);assert.ok(spot);return spot.cost?tactical(p,{type:'move',unitId:u.id,x:spot.x,y:spot.y}):p;}
 function ready(d=content()){let s=order(initialCampaign(42,d),{type:'recruitCivic',id:110,term:'month'});s=order(s,{type:'travel',sector:s.contentPresence.people['alma-contract'].sector});return approach(visit(s));}
@@ -34,7 +34,7 @@ test('a looted body keeps its empty stock while a death successor receives only 
 
 test('saved stocks reject grants and malformed quantities, while missing legacy projections use remaining canonical stock',()=>{
  let p=loot(ready(),{item:'medkits',count:2});p=saved(p);const wire=encodeSave(p.campaign,p.battle);
- for(const mutate of [n=>n.civilianSupplies.medkits++,n=>n.civilianSupplies.medkits=-1,n=>n.civilianSupplies.medkits='5',n=>n.civilianSupplies.version=2,n=>delete n.civilianSupplies.flints,n=>n.civilianSupplies.weapon=1801]){const v=JSON.parse(wire);mutate(localNPC(v.battle));assert.throws(()=>decodeSave(JSON.stringify(v)));}
+ for(const mutate of [n=>n.civilianSupplies.medkits++,n=>n.civilianSupplies.medkits=-1,n=>n.civilianSupplies.medkits='5',n=>n.civilianSupplies.version=2,n=>delete n.civilianSupplies.torches,n=>n.civilianSupplies.weapon=1801]){const v=JSON.parse(wire);mutate(localNPC(v.battle));assert.throws(()=>decodeSave(JSON.stringify(v)));}
  const forged=structuredClone(p.battle);localNPC(forged).civilianSupplies.medkits++;assert.ok(dispatchCampaign(p.campaign,{type:'syncTacticalTime',battleId:p.campaign.pendingBattle.id,elapsedSeconds:forged.elapsedSeconds,sectorState:forged}).lastError);
  const old=JSON.parse(wire);for(const scene of [...Object.values(old.campaign.sectorStates),...Object.values(old.campaign.sceneStates),old.campaign.pendingBattle,old.battle])for(const n of scene.npcs??[])delete n.civilianSupplies;
  p=decodeSave(JSON.stringify(old));assert.equal(localNPC(p.battle).civilianSupplies.medkits,5);assert.equal(p.battle.units[0].medkits,2);assert.equal(p.campaign.operativeState[localId(p.campaign)].medkits,5);assert.ok(saved(p));

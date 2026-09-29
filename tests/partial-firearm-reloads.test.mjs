@@ -1,3 +1,4 @@
+import {setReserve} from './typed-ammo-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {createBattle,actBattle,endTurn,reloadPlan,reloadCost} from '../game/tactical.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
@@ -14,12 +15,12 @@ const field=(changes={},others=[])=>createBattle([{id:'p',name:'Soldado',x:1,y:1
 const reload=b=>{const n=actBattle(b,{type:'reload',unitId:'p'});assert.equal(n.lastError,null,n.lastError);return n;};
 
 test('long authored firearm loading spans real turns and saved snapshots without consuming unfinished charges',()=>{
- let b=field({weaponMetadata:weaponMetadata(definition())}),paid=0,turns=0;const before=structuredClone(b);while(b.units[0].loaded===0){const plan=reloadPlan(b.units[0],b);assert.ok(plan.pa>0);const prior=b.units[0].ap;b=reload(b);paid+=prior-b.units[0].ap;assert.equal(b.units[0].ammo,6-b.units[0].loaded);assert.equal(b.units[0].priming,50-b.units[0].loaded);b=validateBattleSnapshot(JSON.parse(JSON.stringify(b)));if(!b.units[0].loaded){assert.equal(b.units[0].ap,0);b=endTurn(b);turns++;assert.ok(turns<5);}}
+ let b=field({weaponMetadata:weaponMetadata(definition())}),paid=0,turns=0;const before=structuredClone(b);while(b.units[0].loaded===0){const plan=reloadPlan(b.units[0],b);assert.ok(plan.pa>0);const prior=b.units[0].ap;b=reload(b);paid+=prior-b.units[0].ap;assert.equal(b.units[0].ammo,6-b.units[0].loaded);assert.equal(b.units[0].priming,undefined);b=validateBattleSnapshot(JSON.parse(JSON.stringify(b)));if(!b.units[0].loaded){assert.equal(b.units[0].ap,0);b=endTurn(b);turns++;assert.ok(turns<5);}}
  assert.ok(turns>=2);assert.equal(paid,250);assert.equal(b.units[0].loaded,1);assert.equal(b.units[0].ammo,5);assert.equal(b.units[0].reloadProgress,undefined);assert.equal(before.units[0].loaded,0);assert.equal(before.units[0].ammo,6);assert.equal(before.units[0].reloadProgress,undefined);
 });
 
 test('each finished barrel consumes one cartridge and partial work adapts to stance without becoming free ammunition',()=>{
- let b=field({weapon:1808});b.units[0].ap=41;b=reload(b);assert.equal(b.units[0].loaded,1);assert.equal(b.units[0].ammo,5);assert.equal(b.units[0].priming,49);assert.equal(reloadCost(b.units[0],b),14);assert.ok(b.units[0].reloadProgress>0&&b.units[0].reloadProgress<1);b=endTurn(b);b=actBattle(b,{type:'stance',unitId:'p',stance:'prone'});assert.equal(b.lastError,null);assert.equal(reloadCost(b.units[0],b),21);const ap=b.units[0].ap;b=reload(b);assert.equal(b.units[0].ap,ap-21);assert.equal(b.units[0].loaded,2);assert.equal(b.units[0].ammo,4);assert.equal(b.units[0].priming,48);assert.equal(b.units[0].reloadProgress,undefined);assert.ok(actBattle(b,{type:'reload',unitId:'p'}).lastError);
+ let b=field({weapon:1808});b.units[0].ap=41;b=reload(b);assert.equal(b.units[0].loaded,1);assert.equal(b.units[0].ammo,5);assert.equal(b.units[0].priming,undefined);assert.equal(reloadCost(b.units[0],b),14);assert.ok(b.units[0].reloadProgress>0&&b.units[0].reloadProgress<1);b=endTurn(b);b=actBattle(b,{type:'stance',unitId:'p',stance:'prone'});assert.equal(b.lastError,null);assert.equal(reloadCost(b.units[0],b),21);const ap=b.units[0].ap;b=reload(b);assert.equal(b.units[0].ap,ap-21);assert.equal(b.units[0].loaded,2);assert.equal(b.units[0].ammo,4);assert.equal(b.units[0].priming,undefined);assert.equal(b.units[0].reloadProgress,undefined);assert.ok(actBattle(b,{type:'reload',unitId:'p'}).lastError);
 });
 
 test('partial progress belongs to the gun through actual swaps and finite corpse collection',()=>{
@@ -31,7 +32,7 @@ test('partial progress belongs to the gun through actual swaps and finite corpse
 test('invalid progress and unavailable reloads are rejected without creating charges or work',()=>{
  const b=field();for(const value of [-1,0,1,2,'0.5',null,NaN]){const bad=structuredClone(b);bad.units[0].reloadProgress=value;assert.throws(()=>validateBattleSnapshot(bad));}
  for(const patch of [{loaded:1,reloadProgress:.5},{weapon:1813,reloadProgress:.5},{weaponDropped:true,reloadProgress:.5}]){const bad=structuredClone(b);Object.assign(bad.units[0],patch);assert.throws(()=>validateBattleSnapshot(bad));}
- for(const patch of [{ap:0},{ammo:0},{jammed:true},{loaded:1}]){const source=structuredClone(b);Object.assign(source.units[0],patch);const denied=actBattle(source,{type:'reload',unitId:'p'});assert.ok(denied.lastError);assert.deepEqual(denied.units,source.units);}
+ for(const patch of [{ap:0},{ammo:0},{jammed:true},{loaded:1}]){const source=structuredClone(b);Object.assign(source.units[0],patch);if(patch.ammo!==undefined)setReserve(source.units[0],patch.ammo);const denied=actBattle(source,{type:'reload',unitId:'p'});assert.ok(denied.lastError);assert.deepEqual(denied.units,source.units);}
  let peaceful=field({weaponMetadata:weaponMetadata(definition())});peaceful.mode='exploration';peaceful.units=peaceful.units.filter(u=>u.side==='player');const ap=peaceful.units[0].ap;peaceful=reload(peaceful);assert.equal(peaceful.units[0].ap,ap);assert.equal(peaceful.elapsedSeconds,15);assert.equal(peaceful.units[0].loaded,1);assert.equal(peaceful.units[0].ammo,5);assert.match(peaceful.log.at(-1),/15 s/);assert.doesNotMatch(peaceful.log.at(-1),/PA/);
 });
 
@@ -45,6 +46,6 @@ test('a paid campaign soldier saves actual partial weapon work and resumes witho
 
 
 test('long exploration loading stops on actual contact or collapse and keeps only the elapsed work',()=>{
- let contact=field({weaponMetadata:weaponMetadata(definition())});contact.mode='exploration';contact=reload(contact);assert.equal(contact.mode,'combat');assert.equal(contact.elapsedSeconds,6);assert.equal(contact.units[0].loaded,0);assert.equal(contact.units[0].ammo,6);assert.equal(contact.units[0].priming,50);assert.equal(contact.units[0].reloadProgress,.4);assert.match(contact.log.at(-1),/6 s/);assert.ok(validateBattleSnapshot(contact));
+ let contact=field({weaponMetadata:weaponMetadata(definition())});contact.mode='exploration';contact=reload(contact);assert.equal(contact.mode,'combat');assert.equal(contact.elapsedSeconds,6);assert.equal(contact.units[0].loaded,0);assert.equal(contact.units[0].ammo,6);assert.equal(contact.units[0].priming,undefined);assert.equal(contact.units[0].reloadProgress,.4);assert.match(contact.log.at(-1),/6 s/);assert.ok(validateBattleSnapshot(contact));
  let collapse=field({weaponMetadata:weaponMetadata(definition()),hp:15,bleeding:1});collapse.mode='exploration';collapse.units=collapse.units.filter(u=>u.side==='player');collapse=reload(collapse);assert.equal(collapse.status,'defeat');assert.equal(collapse.elapsedSeconds,6);assert.equal(collapse.units[0].hp,14);assert.equal(collapse.units[0].loaded,0);assert.equal(collapse.units[0].ammo,6);assert.equal(collapse.units[0].reloadProgress,.4);assert.ok(validateBattleSnapshot(collapse));
 });

@@ -53,7 +53,7 @@ test('an actual attack generates each authored role with finite ammunition and s
  assert.deepEqual(enemies.map(u=>[u.loaded,u.ammo]),[[4,9],[8,5],[8,5],[3,10]]);
  for(const u of enemies){assert.equal(weaponFor(u).art,'/art/weapon-1808.png');assert.equal(u.loaded+u.ammo,13);}
  const d=content();d.oppositionEquipment={officer:null,line:null,veteran:null};const noGuns=attack(d),empty=enterSector(noGuns.pendingBattle);
- assert.ok(empty.units.filter(u=>u.side==='enemy').every(u=>u.weapon===0&&u.loaded===0&&u.ammo===0&&u.priming===0));assert.ok(save(noGuns,empty));
+ assert.ok(empty.units.filter(u=>u.side==='enemy').every(u=>u.weapon===0&&u.loaded===0&&u.ammo===0&&!('priming'in u)));assert.ok(save(noGuns,empty));
 });
 test('generated enemy AI spends the edited firing cost and consumes its own ammunition',()=>{
  const d=content();Object.assign(d.weapons.find(w=>w.id==='guard-pistol'),{fireAP:70,damage:1,range:100});const s=attack(d),enemy=s.pendingBattle.enemies[0];

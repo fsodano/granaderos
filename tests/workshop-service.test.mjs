@@ -12,9 +12,9 @@ test('a selected headquarters squad cannot replenish or repair a person in a dif
 
 test('a real return to the workshop enables paid service once and preserves it on deployment',()=>{
  let s=returnToWorkshop(separatedWorkshop());const before=s.resources.treasury,record=s.operativeState[REMOTE],cost=refillCost(record)+firearmRepairCost(record);
- s=order(s,{type:'resupply',operativeId:REMOTE});s=order(s,{type:'repairWeapon',operativeId:REMOTE});assert.equal(s.resources.treasury,before-cost);assert.equal(s.operativeState[REMOTE].condition,100);assert.equal(s.operativeState[REMOTE].priming,50);
+ s=order(s,{type:'resupply',operativeId:REMOTE});s=order(s,{type:'repairWeapon',operativeId:REMOTE});assert.equal(s.resources.treasury,before-cost);assert.equal(s.operativeState[REMOTE].condition,100);assert.equal(s.operativeState[REMOTE].priming,undefined);
  for(const type of ['resupply','repairWeapon']){const n=dispatchCampaign(s,{type,operativeId:REMOTE});assert.ok(n.lastError);assert.equal(n.resources.treasury,s.resources.treasury);}
- const p=visit(saved({campaign:s}).campaign),u=p.battle.units.find(u=>u.id===String(REMOTE));assert.equal(u.condition,100);assert.equal(u.priming,50);assert.equal(u.medkits,2);assert.ok(saved(p));
+ const p=visit(saved({campaign:s}).campaign),u=p.battle.units.find(u=>u.id===String(REMOTE));assert.equal(u.condition,100);assert.equal(u.priming,undefined);assert.equal(u.medkits,2);assert.ok(saved(p));
 });
 
 test('local workshop service still requires an available person, an actual workshop, supply and funds',()=>{

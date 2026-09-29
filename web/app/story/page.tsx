@@ -1252,7 +1252,7 @@ export default function ContentEditor() {
                     )
                   }
                 >
-                  Cebar llave
+                  Resolver fallo
                 </button>
                 <button
                   onClick={() => safely(() => setBattle(endTurn(battle)))}

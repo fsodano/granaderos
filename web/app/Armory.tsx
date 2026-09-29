@@ -1,4 +1,5 @@
 'use client';
+import {ammunitionForWeapon} from '../../game/ammo-types.js';
 import {SendArtillery,ArtilleryStorage} from './ArtilleryTransport';
 import ArtilleryTrading from './ArtilleryTrading';
 import {localArtilleryDepot,depotSelection} from '../../game/artillery-transport.js';
@@ -30,7 +31,8 @@ export default function Armory({state:s,dispatch}:Props){
    {armoryOptions(s,op,slot).map((w:any)=><option key={w.key} value={w.key}>{w.name}{w.equipped?' · Equipada':authored?` · Estado ${w.condition}% · ${w.key}`:` · ${s.armory[w.item]} disponibles`}</option>)}
   </select></label>)}
 
-  <div className="armory-condition"><span>Estado del arma <b>{record?.condition??100}%</b></span><span>Cargas de cebo <b>{record?.priming??50}/50</b></span><span>Piedras de sílex <b>{record?.flints??4}/4</b></span><span>Raciones <b>{record?.rations??2}/2</b></span></div>
+  {ammunitionForWeapon(op)&&<p>Munición compatible: {ammunitionForWeapon(op).name}</p>}
+  <div className="armory-condition"><span>Estado del arma <b>{record?.condition??100}%</b></span><span>Raciones <b>{record?.rations??2}/2</b></span></div>
   <button className="line-button" disabled={!resupply.available} title={resupply.reason||undefined} onClick={()=>dispatch({type:'resupply',operativeId:op.id})}>Reponer provisiones · {resupply.cost} pesos</button>
   <button className="line-button" disabled={!repair.available} title={repair.reason||undefined} onClick={()=>dispatch({type:'repairWeapon',operativeId:op.id})}>Reparar arma · {repair.cost} pesos</button><small>{resupply.reason===repair.reason?resupply.reason||'La reposición y la reparación se realizan para esta persona en el taller actual.':[resupply.reason&&`Provisiones: ${resupply.reason}`,repair.reason&&`Reparación: ${repair.reason}`].filter(Boolean).join(' ')}</small></>}
   {emplacements.length>0&&<section aria-label="Artillería emplazada"><h3>Piezas emplazadas en este sector</h3><p>Conservan su posición y munición al volver. Permanecen aquí cuando la escuadra sale. Para moverlas, organizá un traslado. Al retirarte de un combate pueden quedar en manos realistas.</p>{emplacements.map(({sector,gun}:any)=>{const quote=artillerySupplyQuote(s,sector,gun.id,isSupplied(s,s.location));return <div key={`${sector}:${gun.id}`} data-artillery-id={gun.id}><p>{equipmentCatalog(s).find(item=>item.item===gun.type)?.name} · {gun.loaded?'Cargada':gun.reloadProgress?`Recarga ${Math.floor(gun.reloadProgress*100)}%`:'Descargada'} · {gun.ammo} en reserva · {gun.side==='player'?'Propia':'Realista'}</p><button className="line-button" disabled={!quote.available} title={quote.reason||undefined} onClick={()=>dispatch({type:'resupplyArtillery',sector,artilleryId:gun.id})}>Comprar 1 munición · {quote.cost} pesos</button><small>{quote.reason||`Se entrega en reserva, sin cargar la pieza. Límite de reposición: ${quote.limit}.`}</small><SendArtillery state={s} sector={sector} gun={gun} dispatch={dispatch}/></div>;})}</section>}

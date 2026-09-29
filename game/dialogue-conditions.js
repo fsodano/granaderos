@@ -18,7 +18,7 @@ export function validateDialogueConditions(conditions,characters,quests){
  for(const c of conditions){
   need(object(c),'La condición del diálogo no es válida.');
   if(c.type==='character')need(exact(c,['type','character','state'])&&characters?.has(c.character)&&DIALOGUE_PERSON_STATES.includes(c.state),'La condición necesita un personaje y un estado válidos.');
-  else if(c.type==='supply')need(exact(c,['type','character','item','min','max'])&&characters?.has(c.character)&&Object.hasOwn(CHARACTER_SUPPLY_LABELS,c.item)&&integer(c.min,0,c.item==='medkits'?1000000:100000)&&(c.max===null||integer(c.max,c.min,c.item==='medkits'?1000000:100000)),'La condición necesita un personaje, un suministro y un intervalo válidos.');
+  else if(c.type==='supply')need(exact(c,['type','character','item','min','max'])&&characters?.has(c.character)&&(Object.hasOwn(CHARACTER_SUPPLY_LABELS,c.item)||['priming','flints'].includes(c.item))&&integer(c.min,0,c.item==='medkits'?1000000:100000)&&(c.max===null||integer(c.max,c.min,c.item==='medkits'?1000000:100000)),'La condición necesita un personaje, un suministro y un intervalo válidos.');
   else if(c.type==='meeting')need(exact(c,['type','character'])&&characters?.has(c.character),'La condición del encuentro necesita un personaje válido.');
   else if(c.type==='quest')need(exact(c,['type','quest','status'])&&quests?.has(c.quest)&&CONTENT_QUEST_STATES.includes(c.status),'La condición necesita un encargo y un estado válidos.');
   else if(c.type==='project')need(exact(c,['type','project','completed'])&&Object.hasOwn(CAMPAIGN_PROJECT_LABELS,c.project)&&typeof c.completed==='boolean','La condición necesita un proyecto y un estado válidos.');
@@ -46,6 +46,8 @@ export function dialogueConditionsMet(s,conditions,battle=null){
  return (conditions??[]).every(c=>{
   if(c.type==='character')return characterState(s,c.character,battle,c.state)[c.state]===true;
   if(c.type==='supply'){
+   // Legacy stories see a complete implicit kit; it is no longer consumed.
+   if(['priming','flints'].includes(c.item)){const value=c.item==='priming'?50:4;return value>=c.min&&(c.max===null||value<=c.max);}
    const {record,deployed,unit,resident}=characterPhysical(s,c.character,battle);
    // Deployed stock lives in the open scene; the service sheet is a stale snapshot.
    if(deployed&&!unit)return false;

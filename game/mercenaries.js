@@ -215,7 +215,7 @@ export const MERCENARY_ADDITIONS=recruits.map(([id,name,nickname,role,classId,se
  id,name,nickname,role,classId,sector,monthlyPay,weeklyPay:Math.ceil(monthlyPay/30)*7,
  ...Object.fromEntries(attributes.map((key,i)=>[key,stats[i]])),hp:stats[0],traits,
  weapon:traits.includes('line_marksman')?1802:equipment[classId][0],blade:id===117?1812:equipment[classId][1],
- ridingSkill:classId==='gaucho'?80:20,priming:50,flints:4,rations:2,
+ ridingSkill:classId==='gaucho'?80:20,rations:2,
  foreign:(id>=138&&id<=144)||FORMER_OFFICER_IDS.includes(id),tier:elites.has(id)?'elite':'regular',
  biography:`Personaje ficticio. ${biography}`,personalityText:personality,lines,appearance,
 }));

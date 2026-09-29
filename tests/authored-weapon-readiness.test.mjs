@@ -40,7 +40,7 @@ test('accepted physical work lowers the weapon, while unavailable orders and fre
 
 test('an actual misfire keeps its paid preparation and charge, but paid repriming lowers the gun',()=>{
  let s=field();s.seed=1;s.weather={rain:100,humidity:100};const first=shoot(s);assert.equal(first.units[0].jammed,true);assert.equal(first.units[0].loaded,3);assert.equal(first.units[0].weaponReady,true);assert.equal(first.units[0].ap,80);
- const fixed=act(first,{type:'reprime'});assert.equal(fixed.units[0].weaponReady,undefined);assert.equal(fixed.units[0].loaded,3);assert.equal(fixed.units[0].priming,49);assert.equal(actionCosts(fixed,fixed.units[0]).fire,20);
+ const fixed=act(first,{type:'reprime'});assert.equal(fixed.units[0].weaponReady,undefined);assert.equal(fixed.units[0].loaded,3);assert.equal(fixed.units[0].priming,undefined);assert.equal(actionCosts(fixed,fixed.units[0]).fire,20);
 });
 
 test('readiness is an actor position, absent from recovered guns and reset on a new deployment',()=>{

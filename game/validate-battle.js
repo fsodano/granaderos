@@ -1,3 +1,4 @@
+import {validateAmmo,migrateAmmoGround} from './ammo-types.js';
 import {personalPockets} from './personal-pockets.js';
 import {validateArtilleryProfiles} from './artillery-definitions.js';
 import {validateMilitiaPatrol} from './militia-patrol-rules.js';
@@ -28,7 +29,7 @@ need(!validateArtilleryProfiles(s.artilleryDefinitions).length,'modelos de artil
 need(s.conditionVersion===undefined||s.conditionVersion===1,'versión del estado físico');const legacyCondition=s.conditionVersion===undefined;s.conditionVersion=1;
 need(Array.isArray(s.units)&&s.units.length<=200,'combatientes');const ids=new Set();
 for(const u of s.units){need(validMilitiaArrival(u,s.sectorId),'llegada de milicia');need(validMilitiaExperience(u),'experiencia de milicia');if(u.militiaCreditId!==undefined)need(typeof u.militiaCreditId==='string'&&u.militiaCreditId.length>0&&u.militiaCreditId.length<=2400,'identidad de experiencia');need(coord(u)&&text(u.id)&&!ids.has(u.id)&&text(u.name)&&['player','enemy'].includes(u.side),'combatientes');ids.add(u.id);
-const defaults={maxHp:100,ap:100,morale:80,condition:100,marksmanship:50,agility:50,strength:50,medical:30,bleeding:0,loaded:0,ammo:0,weapon:1800,stance:'standing',activeSlot:'primary',energy:100,unconscious:u.energy===0,movementMode:'walk',fatigue:0,priming:50,flints:4,rations:2,torches:2,boleadoras:1,strengthTraining:0,inventory:{}};for(const[k,v]of Object.entries(defaults))if(u[k]===undefined)u[k]=v;
+const defaults={maxHp:100,ap:100,morale:80,condition:100,marksmanship:50,agility:50,strength:50,medical:30,bleeding:0,loaded:0,ammo:0,weapon:1800,stance:'standing',activeSlot:'primary',energy:100,unconscious:u.energy===0,movementMode:'walk',fatigue:0,rations:2,torches:2,boleadoras:1,strengthTraining:0,inventory:{}};for(const[k,v]of Object.entries(defaults))if(u[k]===undefined)u[k]=v;
 need(number(u.maxHp,1,1000)&&number(u.hp,0,u.maxHp)&&number(u.ap,0,100),'salud o acción');if(u.bandaged!==undefined)need(number(u.bandaged,0,u.maxHp-u.hp),'heridas vendadas');for(const key of ['morale','condition','marksmanship','agility','strength','medical','bleeding','energy','fatigue'])need(number(u[key],0,100),'atributos');
 need(integer(u.weapon,0,65535),'armas');validateWeaponCarrier(u);if(u.blade!==undefined)need(integer(u.blade,0,65535),'armas blancas');need(integer(u.loaded,0,weaponSpecification(u)?.capacity??(BLADES[u.weapon]?0:100)),'cargas');
 for(const k of ['ammo','priming','flints','rations','torches','boleadoras','medkits','strengthTraining'])if(u[k]!==undefined)need(integer(u[k],0,1000000),'suministros');
@@ -41,7 +42,7 @@ if(u.hp<=0||u.unconscious)need(u.ap===0&&(u.maxAP===undefined||u.maxAP===0)&&!u.
 for(const key of ['leadership','wisdom','dexterity','mechanical','explosives','maxAP'])if(u[key]!==undefined)need(number(u[key],0,100),'atributos adicionales');for(const key of ['reactionSpent','reactionTurn','interceptTurn','parryTurn','counterTurn','braceTurn','momentum'])if(u[key]!==undefined)need(number(u[key],0,1000000000),'iniciativa');if(u.lastDirection!=null)need(text(u.lastDirection),'dirección');
 if(u.abilities!==undefined)need(validCharacterAbilities(u.abilities),'habilidades');
 if(u.traits!==undefined)need(Array.isArray(u.traits)&&u.traits.length<=30&&u.traits.every(text),'rasgos');
-personalPockets(u);
+validateAmmo(u);personalPockets(u);
 need(object(u.inventory)&&Object.keys(u.inventory).length<=1000,'inventario');for(const record of Object.values(u.inventory)){if(typeof record==='number'){need(integer(record,0,1000000),'cantidades');continue;}need(object(record)&&integer(record.count,0,1000000)&&number(record.weight,0,10000),'pertrechos');if(record.weapon!==undefined)need(integer(record.weapon,0,65535),'objetos recuperados');validateWeaponCarrier(record);if(record.loaded!==undefined)need(integer(record.loaded,0,100),'cargas recuperadas');if(record.condition!==undefined)need(number(record.condition,0,100),'condición recuperada');}
 for(const k of ['weight','carryWeight','ridingSkill'])if(u[k]!==undefined)need(number(u[k],0,k==='ridingSkill'?100:100000),'peso o equitación');if(u.mount!==undefined)need(object(u.mount)&&text(u.mount.id)&&number(u.mount.stamina,0,100)&&number(u.mount.condition,0,100),'monturas');if(u.fleePath!==undefined)need(Array.isArray(u.fleePath)&&u.fleePath.every(coord),'retirada');}
 for(const key of ['smoke','artillery','log','decor','props','npcs','groundItems','droppedWeapons','lights','buildings','revealedRooms']){if(s[key]===undefined)s[key]=[];need(Array.isArray(s[key])&&s[key].length<=2000,key);}
@@ -71,6 +72,7 @@ for(const n of s.npcs){
   if(a.threat!==undefined)need(coord(a.threat)&&integer(a.threat.turn,1,s.turn)&&['fire','explosion','alarm'].includes(a.threat.kind)&&number(a.threat.uncertainty,0,20)&&Object.keys(a.threat).every(k=>['x','y','turn','kind','uncertainty'].includes(k))&&a.safeAfter!==undefined,'alarma civil');
  }
 }
+s.groundItems=migrateAmmoGround(s.groundItems);
 for(const g of s.groundItems)need(coord(g)&&text(g.id)&&text(g.type)&&integer(g.count,0,1000000)&&(g.heldBy==null||text(g.heldBy)),'objetos del suelo');
 for(const d of s.droppedWeapons){validateWeaponCarrier(d);if(d.weight!==undefined)need(number(d.weight,0,10000),'peso abandonado');if(d.count!==undefined)need(d.count===1,'cantidad abandonada');need(coord(d)&&integer(d.weapon,0,65535)&&number(d.condition,0,100)&&integer(d.loaded,0,100)&&(d.taken===undefined||typeof d.taken==='boolean'),'equipo abandonado');}
 const propIds=new Set();for(const p of s.props){need(coord(p)&&text(p.id)&&p.id.length>0&&!propIds.has(p.id)&&['table','bench','bed','chest','barrels','hay'].includes(p.type),'mobiliario');if(p.footprint!==undefined)need(object(p.footprint),'huella del mobiliario');const size=propSize(p);need(object(size)&&integer(size.width,1,8)&&integer(size.height,1,8),'dimensiones del mobiliario');need(propCells(p).every(coord),'huella del mobiliario');if(p.blocksMovement!==undefined)need(typeof p.blocksMovement==='boolean','colisión del mobiliario');propIds.add(p.id);for(const key of ['buildingId','roomId'])if(p[key]!=null)need(text(p[key]),'habitación del mobiliario');}

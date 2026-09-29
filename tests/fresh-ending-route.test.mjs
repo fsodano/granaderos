@@ -3,7 +3,7 @@ import {dispatchCampaign} from '../game/campaign.js';import {incomeSummary} from
 import {order,saved,visit,leave} from './local-contract-fixture.mjs';import {freshHistoricalEnding} from './fresh-ending-fixture.mjs';
 
 test('a fresh stock campaign wins all localities with actual combat and continues after saved victory and service expiry',t=>{
- const {campaign:won,notes}=freshHistoricalEnding();assert.equal(notes.find(n=>n.stage==='cuyo-relief').commanderRestock,87);assert.deepEqual(notes.filter(n=>n.actions).map(n=>n.stage),['santa_fe','ensenada','jujuy','humahuaca']);assert.equal(won.hour,558);assert.equal(won.operativeState[57].hp,59);assert.ok(won.log.some(e=>e.text.includes('¡Campaña concluida!')));
+ const {campaign:won,notes}=freshHistoricalEnding();assert.equal(notes.find(n=>n.stage==='cuyo-relief').commanderRestock,46);assert.deepEqual(notes.filter(n=>n.actions).map(n=>n.stage),['santa_fe','ensenada','jujuy','humahuaca']);assert.equal(won.hour,558);assert.equal(won.operativeState[57].hp,59);assert.ok(won.log.some(e=>e.text.includes('¡Campaña concluida!')));
  assert.deepEqual(notes.find(n=>n.stage==='coastal-care').care,{hours:14,dressingsBought:13,cost:130});assert.equal(won.sectors.buenos_aires.fort,2);
  assert.deepEqual(notes.filter(n=>n.stage.endsWith('-stabilization')).map(n=>({stage:n.stage,...n.care})),[]);
  const expiring=Object.entries(won.contracts).filter(([id,c])=>won.operativeState[id].alive&&c.expiresAt!==null&&c.expiresAt<=won.hour+48).map(([id])=>Number(id));assert.deepEqual(expiring,[112,113,142]);

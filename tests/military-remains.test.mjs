@@ -1,3 +1,4 @@
+import {setReserve} from './typed-ammo-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {dispatchCampaign} from '../game/campaign.js';
@@ -42,7 +43,7 @@ test('fresh occupation keeps older enemy bodies separate from reused garrison id
  const nextRequest={...request,id:'second',issuedCartridges:10},next=enterSector(nextRequest,first),bodies=next.units.filter(u=>u.hp===0);
  assert.equal(bodies.length,1);const body=bodies[0];assert.notEqual(body.id,'enemy-0');assert.equal(body.originalUnitId,'enemy-0');assert.equal(body.ammo,7);assert.deepEqual(body.inventory,old.inventory);assert.equal(next.units.find(u=>u.id==='enemy-0').hp,80);assert.doesNotThrow(()=>validateBattleSnapshot(next));
  // Isolate accounting from combat: both the old remains and the new defender can carry ammunition.
- const player=next.units.find(u=>u.side==='player');body.ammo=0;player.ammo+=7;
+ const player=next.units.find(u=>u.side==='player');setReserve(body,0);setReserve(player,player.ammo+7);
  assert.equal(returnAmmunition(nextRequest,[player],next,first),17);
  const again=enterSector(nextRequest,next);assert.equal(again.units.filter(u=>u.hp===0).length,1);assert.equal(again.units.find(u=>u.id===body.id).ammo,0);
  assert.equal(returnAmmunition(nextRequest,[player],next,next),10);
