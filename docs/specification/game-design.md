@@ -348,6 +348,14 @@ route replacement and interruption must preserve each completed step and cost.
 Walls, doors, windows, height, cover, light and sound affect observation and fire.
 Private enemy positions must not leak through paths, previews, logs or selection.
 
+Observed automatic turns must show movement through the visible cells and attack
+preparation before the resulting injury. The interface must not replace the
+whole enemy turn with one final set of positions. An actor first seen inside the
+field starts at its observed cell; its unseen approach remains private. Walking
+cycles continue across consecutive cells. Input waits for the visible sequence,
+and the campaign stores the authoritative result once, without saving transient
+animation frames. See [the bounded implementation record](../verification/visible-enemy-turns.md).
+
 Weapons require owned, compatible ammunition and equipment. Aiming, readying,
 firing, partial reloads, misfires, priming, wear and hand changes must conserve
 charges and condition. Smoke spreads and dissipates with actual sight consequences.

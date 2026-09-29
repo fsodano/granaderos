@@ -1,0 +1,39 @@
+{
+  "source": "180e13ec1e54aa569ec4afca0d69e24c69b9dbee",
+  "tests": {
+    "total": 1242,
+    "passed": 1242,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 279209.91275
+  },
+  "types": "PASS",
+  "build": {
+    "status": "PASS",
+    "files": 723,
+    "assetReferences": 632
+  },
+  "referenceComparisons": 36,
+  "logs": {
+    "tests": {
+      "sha256": "f4585ab300a3a90fe3e05093d19d087bca21f11df4803912569ceacadf8972bd"
+    },
+    "types": {
+      "sha256": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30"
+    },
+    "build": {
+      "sha256": "e305af5fb7d9eec3fa55a8ef5c3af8cd6c9b322d58a34805c534ebff3f45310e"
+    },
+    "baseline": {
+      "sha256": "feb4ff1e91c550cfe45ebee57295143036164c661eb75c8e96b358fab92a821d"
+    }
+  },
+  "browser": {
+    "scenario": "Production San Lorenzo normal start/end-turn controls",
+    "intermediateFrame": "1:enemy-0:result:fire",
+    "completed": true,
+    "inputRestored": true,
+    "consoleErrors": 0,
+    "limits": "Bounded interaction; no main-branch sustained FPS or full-campaign acceptance."
+  }
+}

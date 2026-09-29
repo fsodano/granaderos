@@ -7,6 +7,8 @@ accepted features on GitHub `main`, approved scope changes and open work.
 
 ## Published baseline
 
+- [Observed enemy turns and retained scenery](visible-enemy-turns.md)
+
 - [Configure firearm stock attacks in the story editor](authored-firearm-melee.md)
 
 - [Actual held firearm stock attacks](held-firearm-buttstock.md)

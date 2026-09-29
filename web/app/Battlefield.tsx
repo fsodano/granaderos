@@ -1,4 +1,7 @@
 'use client';
+import {useEnemyPlayback} from '../lib/useEnemyPlayback';
+import BattlePerformance from './BattlePerformance';
+import {tacticalViewport} from '../../game/tactical-viewport.js';
 import {spriteOrderPose} from '../../game/sprite-order-pose.js';
 import {tacticalGridLabel} from '../../game/tactical-grid.js';
 
@@ -9,14 +12,15 @@ import {tacticalCamera} from '../../game/tactical-camera.js';
 import JA2Strip from './JA2Strip';
 import './tactical-hud.css';
 import {TACTICAL_KEYS,tacticalShortcut} from '../../game/hotkeys.js';
-import { useEffect, useMemo, useState, useRef } from 'react';
+import { useEffect, useMemo, useState, useRef, useCallback } from 'react';
 import { useUnitMotion } from './useUnitMotion';
 import { ChevronRight } from 'lucide-react';
-import { actBattle, endTurn, getReachable, weaponFor, hasFirearm, bladeFor, actionCosts, artilleryCosts, visibleEnemies, visibleTiles, visibleRooms, canSee, groundSupplyPickupPreview } from '../../game/tactical.js';
+import { actBattle, getReachable, weaponFor, hasFirearm, bladeFor, actionCosts, artilleryCosts, visibleEnemies, visibleTiles, visibleRooms, canSee, groundSupplyPickupPreview } from '../../game/tactical.js';
 
-type Props = {battle:any; onChange:(s:any)=>void; onFinish:()=>void; onRetreat:()=>void; onMap?:()=>void; onMissionFinish?:()=>void; mission?:any; conversation?:any; quests?:any; onTalk?:(npcId:string,approach:string,unitId:string,term?:string,choice?:{node:string;id:string})=>void; dialogues?:Record<string,any>; hireTerms?:Record<string,any[]>};
+type Props = {onPlaybackBusy?:(busy:boolean)=>void;onPlaybackValidate?:(state:any)=>boolean;onPlaybackFrame?:(before:any,after:any)=>void;battle:any; onChange:(s:any)=>void; onFinish:()=>void; onRetreat:()=>void; onMap?:()=>void; onMissionFinish?:()=>void; mission?:any; conversation?:any; quests?:any; onTalk?:(npcId:string,approach:string,unitId:string,term?:string,choice?:{node:string;id:string})=>void; dialogues?:Record<string,any>; hireTerms?:Record<string,any[]>};
 const isAlive=(u:any)=>u.hp>0&&!u.routed&&!u.unconscious;
-export default function Battlefield({battle:s,onChange,onFinish,onRetreat,conversation,onTalk,onMap,quests,onMissionFinish,mission,hireTerms,dialogues}:Props){
+export default function Battlefield({battle:committed,onPlaybackBusy,onPlaybackValidate,onPlaybackFrame,onChange,onFinish,onRetreat,conversation,onTalk,onMap,quests,onMissionFinish,mission,hireTerms,dialogues}:Props){
+  const presentation=useEnemyPlayback(committed,onChange,onPlaybackBusy,onPlaybackValidate,onPlaybackFrame),s=presentation.state;
   const motion=useUnitMotion(s);
   const fieldRef=useRef<SVGSVGElement>(null);
   const [fieldSize,setFieldSize]=useState({width:960,height:540});
@@ -36,11 +40,15 @@ export default function Battlefield({battle:s,onChange,onFinish,onRetreat,conver
   const [selected,setSelected]=useState(s.units.find((u:any)=>u.side==='player'&&!u.militia)?.id);
   const poseTimers=useRef<Record<string,ReturnType<typeof setTimeout>>>({});
   useEffect(()=>()=>Object.values(poseTimers.current).forEach(clearTimeout),[]);
-  const [poses,setPoses]=useState<Record<string,string>>({});const [directions,setDirections]=useState<Record<string,number>>({});const [zoom,setZoom]=useState(2);const [cameraOffset,setCameraOffset]=useState({x:0,y:0});const [cameraFollowsSelection,setCameraFollowsSelection]=useState(false);const cameraSelection=useRef(selected);const [inventoryId,setInventoryId]=useState<string|null>(null);const [mode,setMode]=useState('move');const [aim,setAim]=useState(0);const [hover,setHover]=useState<any>(null);const [turnBusy,setBusy]=useState(false);const busy=turnBusy||motion.moving;
-  const u=s.units.find((u:any)=>u.id===selected);const players=s.units.filter((u:any)=>u.side==='player');const enemies=visibleEnemies(s);const renderedUnits=s.units.filter((v:any)=>v.side==='player'||players.some((p:any)=>canSee(s,p,v)));const sight=new Set<string>(u?visibleTiles(s,u).map((t:any)=>`${t.x},${t.y}`):[]);
+  const [poses,setPoses]=useState<Record<string,string>>({});const [directions,setDirections]=useState<Record<string,number>>({});const [zoom,setZoom]=useState(2);const [cameraOffset,setCameraOffset]=useState({x:0,y:0});const [cameraFollowsSelection,setCameraFollowsSelection]=useState(false);const cameraSelection=useRef(selected);const [inventoryId,setInventoryId]=useState<string|null>(null);const [mode,setMode]=useState('move');const [aim,setAim]=useState(0);const [hover,setHover]=useState<any>(null);const busy=presentation.busy||motion.moving;
+  const u=s.units.find((u:any)=>u.id===selected);
+  const players=useMemo(()=>s.units.filter((u:any)=>u.side==='player'),[s]);
+  const enemies=useMemo(()=>visibleEnemies(s),[s]);
+  const renderedUnits=useMemo(()=>s.units.filter((v:any)=>v.side==='player'||players.some((p:any)=>canSee(s,p,v))),[s,players]);
+  const sight=useMemo(()=>new Set<string>(showSight&&u?visibleTiles(s,u).map((t:any)=>`${t.x},${t.y}`):[]),[s,u,showSight]);
   const revealedBuildingRooms=useMemo(()=>new Set<string>([...(s.revealedRooms||[]),...visibleRooms(s)]),[s]);
   const hiredPlayers=players.filter((p:any)=>!p.militia&&!p.missionAlly),missionAllies=players.filter((p:any)=>p.missionAlly),localMilitia=players.filter((p:any)=>p.militia);
-  const reachable=useMemo(()=>u?getReachable(s,u):[],[s,u]);
+  const reachable=useMemo(()=>!presentation.busy&&u?getReachable(s,u):[],[s,u,presentation.busy]);
   const costs=u?actionCosts(s,u):null;const weapon=u?weaponFor(u):null;const firearm=u&&hasFirearm(u);const [cannonId,setCannonId]=useState('');const [shotType,setShotType]=useState('solid');const gun=s.artillery?.find((g:any)=>g.id===cannonId);const gunCosts=u&&gun?artilleryCosts(s,u,gun):null;
   useEffect(()=>{
     if(s.mode!=='exploration'||s.status!=='active'||s.phase!=='player'||busy||talking||inventoryId||lootTile||ambientPaused)return;
@@ -48,8 +56,8 @@ export default function Battlefield({battle:s,onChange,onFinish,onRetreat,conver
     return()=>clearInterval(timer);
   },[s,busy,talking,inventoryId,lootTile,ambientPaused,onChange]);
   const order=(a:any)=>{if(!u||u.militia||busy)return;const next=actBattle(s,{unitId:selected,aim,...a});if(!next.lastError){const target=[...s.units,...(s.npcs??[])].find((t:any)=>t.id===a.targetId)||a;if(Number.isFinite(target.x)&&Number.isFinite(target.y))setDirections(d=>({...d,[selected]:(Math.round(Math.atan2((target.x-u.x)-(target.y-u.y),-((target.x-u.x)+(target.y-u.y)))/(Math.PI/4))+8)%8}));const pose=spriteOrderPose(a.type);clearTimeout(poseTimers.current[selected]);setPoses(p=>({...p,[selected]:pose}));poseTimers.current[selected]=setTimeout(()=>setPoses(p=>({...p,[selected]:'idle'})),1000);}onChange(next);return next;};
-  function nextTurn(){if(lootTile||busy||s.status!=='active')return;setBusy(true);setTimeout(()=>{onChange(endTurn(s));setBusy(false);},450);}
-  useEffect(()=>{if(!u||u.militia||!isAlive(u))setSelected(players.find((p:any)=>!p.militia&&isAlive(p))?.id);},[s]);
+  function nextTurn(){if(lootTile||busy||s.status!=='active')return;void presentation.run();}
+  useEffect(()=>{if(!presentation.busy&&(!u||u.militia||!isAlive(u)))setSelected(players.find((p:any)=>!p.militia&&isAlive(p))?.id);},[s]);
   useEffect(()=>{if(lootTile&&(lootTile.actorId!==selected||s.status!=='active'))setLootTile(null);},[lootTile,selected,s.status]);
   useEffect(()=>{const key=(e:KeyboardEvent)=>{
     const editing=Boolean((e.target as HTMLElement)?.closest('input,select,textarea,[contenteditable]:not([contenteditable="false"]),[role="textbox"]'));
@@ -79,12 +87,14 @@ export default function Battlefield({battle:s,onChange,onFinish,onRetreat,conver
     else if(shortcut==='aim-up'||shortcut==='aim-down')setAim(v=>Math.max(0,Math.min(4,v+(shortcut==='aim-up'?1:-1))));
   };window.addEventListener('keydown',key);return()=>window.removeEventListener('keydown',key);});
 
-  const hw=26,hh=14,origin=s.height*hw+28,project=(x:number,y:number)=>({x:origin+(x-y)*hw,y:65+(x+y)*hh});
+  const hw=26,hh=14,origin=s.height*hw+28,project=useCallback((x:number,y:number)=>({x:origin+(x-y)*hw,y:65+(x+y)*hh}),[origin]);
   const vw=(s.width+s.height)*hw+60,vh=(s.width+s.height)*hh+155;
-  const followed=cameraFollowsSelection&&u?project(motion.positions[u.id]?.x??u.x,motion.positions[u.id]?.y??u.y):{x:vw/2,y:vh/2};
+  const followed=presentation.frame?.cameraFocus?project(presentation.frame.cameraFocus.x,presentation.frame.cameraFocus.y):cameraFollowsSelection&&u?project(motion.positions[u.id]?.x??u.x,motion.positions[u.id]?.y??u.y):{x:vw/2,y:vh/2};
   // Match the SVG viewport to its CSS dimensions: one logical pixel occupies
   // exactly zoom CSS pixels, including on narrow screens. Snap camera translation.
-  const {x:cameraX,y:cameraY,width:viewWidth,height:viewHeight}=tacticalCamera({width:vw,height:vh},fieldSize,followed,cameraOffset,zoom);
+  const {x:cameraX,y:cameraY,width:viewWidth,height:viewHeight}=tacticalCamera({width:vw,height:vh},fieldSize,followed,presentation.busy?{x:0,y:0}:cameraOffset,zoom);
+  const viewBounds=tacticalViewport({x:cameraX,y:cameraY,width:viewWidth,height:viewHeight});
+  const sceneViewport=useMemo(()=>viewBounds,[viewBounds.x,viewBounds.y,viewBounds.width,viewBounds.height]);
   const panCamera=(dx:number,dy:number)=>setCameraOffset({x:Math.max(0,Math.min(Math.max(0,vw-viewWidth),cameraX+dx))+viewWidth/2-followed.x,y:Math.max(0,Math.min(Math.max(0,vh-viewHeight),cameraY+dy))+viewHeight/2-followed.y});
   useEffect(()=>{if(cameraSelection.current!==selected){cameraSelection.current=selected;setCameraFollowsSelection(true);setCameraOffset({x:0,y:0});}},[selected]);
   const diamond=(x:number,y:number)=>`${x},${y-hh} ${x+hw},${y} ${x},${y+hh} ${x-hw},${y}`;
@@ -97,10 +107,10 @@ export default function Battlefield({battle:s,onChange,onFinish,onRetreat,conver
     {mission&&<details className="hud-mission" aria-label="Objetivos de la misión"><summary>{mission.name} · Objetivos</summary><ul>{(mission.objectives||[]).map((objective:any,index:number)=><li key={index}>{typeof objective==='string'?objective:`${objective.done?'✓ ':''}${objective.text||objective.label||objective.name}`}</li>)}</ul>{s.sceneId==='yatasto'&&onMissionFinish&&<button className="line-button" disabled={busy||!(mission.objectives||[]).every((o:any)=>o.done)} onClick={onMissionFinish}>Concluir el encuentro</button>}</details>}
     <div className="tactical-help-toggle"><button className="line-button" aria-expanded={keyHelp} aria-controls="tactical-key-reference" onClick={()=>setKeyHelp(v=>!v)}>Atajos de teclado · H</button>{keyHelp&&<section id="tactical-key-reference" aria-label="Atajos de teclado" style={{padding:'1rem',background:'#20332c',color:'#f1e5c7'}}><h2>Órdenes de teclado</h2><p>Los cursores requieren seleccionar una casilla o un objetivo. Las órdenes respetan los puntos de acción y el equipo disponible.</p><dl style={{display:'grid',gridTemplateColumns:'minmax(120px, 1fr) 3fr',gap:'.35rem 1rem'}}>{TACTICAL_KEYS.map(([keys,label])=><div key={keys} style={{display:'contents'}}><dt><kbd>{keys}</kbd></dt><dd style={{margin:0}}>{label}</dd></div>)}</dl><p>Mientras escribís o conversás, los atajos se suspenden. Ctrl y ⌘ quedan reservados al navegador.</p><button className="line-button" onClick={()=>setKeyHelp(false)}>Cerrar ayuda · Esc</button></section>}</div>
     <div className="battle-middle"><div className="field-wrap"><div className="map-caption"><span>↑ NORTE</span><span>{mode==='move'?'Seleccioná una casilla para avanzar':mode==='heal'?'Seleccioná una persona herida':mode==='artilleryMove'?'Seleccioná una casilla contigua al cañón':mode==='artilleryPivot'?'Seleccioná hacia dónde apuntar':'Seleccioná un enemigo'}{hover&&` · ${tacticalGridLabel(hover.x,hover.y)}`}</span><span className="map-zoom"><button aria-label="Desplazar cámara a la izquierda" onClick={()=>panCamera(-90,0)}>←</button><button aria-label="Desplazar cámara hacia arriba" onClick={()=>panCamera(0,-65)}>↑</button><button aria-label="Centrar cámara en el combatiente seleccionado" onClick={()=>{setCameraFollowsSelection(true);setCameraOffset({x:0,y:0});}}>◎</button><button aria-label="Desplazar cámara hacia abajo" onClick={()=>panCamera(0,65)}>↓</button><button aria-label="Desplazar cámara a la derecha" onClick={()=>panCamera(90,0)}>→</button><button aria-label="Alejar campo" disabled={zoom<=1} onClick={()=>setZoom(Math.max(1,zoom-1))}>−</button><span>{Math.round(zoom*100)}%</span><button aria-label="Acercar campo" disabled={zoom>=3} onClick={()=>setZoom(Math.min(3,zoom+1))}>+</button></span></div>
-      <svg ref={fieldRef} className="tactical-field" viewBox={`${cameraX} ${cameraY} ${viewWidth} ${viewHeight}`} role="group" aria-label="Campo táctico. Seleccioná un soldado y una casilla.">
-        <TacticalScene state={s} selected={selected} unit={u} players={players} units={renderedUnits} positions={motion.positions} poses={poses} directions={directions} hover={hover} mode={mode} aim={aim} reachable={reachable} showSight={showSight} sight={sight} revealed={revealedBuildingRooms} project={project} onTile={tileClick} onHover={setHover} onTalk={npcClick} onCannon={(id)=>{setCannonId(id);setMode('artillery')}} cannonId={cannonId}/>
+      <BattlePerformance/><svg data-enemy-frame={presentation.frame?`${presentation.frame.index}:${presentation.frame.unitId??"unseen"}:${presentation.frame.type}:${presentation.frame.action}`:undefined} ref={fieldRef} className="tactical-field" viewBox={`${cameraX} ${cameraY} ${viewWidth} ${viewHeight}`} role="group" aria-label="Campo táctico. Seleccioná un soldado y una casilla.">
+        <TacticalScene viewport={sceneViewport} state={s} selected={selected} unit={u} players={players} units={renderedUnits} positions={motion.positions} poses={presentation.frame?.unitId?{...poses,[presentation.frame.unitId]:spriteOrderPose(presentation.frame.action)}:poses} directions={directions} hover={hover} mode={mode} aim={aim} reachable={reachable} showSight={showSight} sight={sight} revealed={revealedBuildingRooms} project={project} onTile={tileClick} onHover={setHover} onTalk={npcClick} onCannon={(id)=>{setCannonId(id);setMode('artillery')}} cannonId={cannonId}/>
       </svg>
-      {s.lastError&&<p className="battle-error" role="alert">{s.lastError}</p>}{s.status!=='active'&&<div className="battle-result"><p className="eyebrow">PARTE DE GUERRA</p><h2>{s.status==='victory'?'¡Victoria patriota!':'La escuadra ha caído'}</h2><p>{s.status==='victory'?'El enemigo abandona el campo. La patria avanza.':'Reorganizá las tropas y prepará una nueva ofensiva.'}</p><>{s.status==='victory'&&<button className="line-button" onClick={()=>onChange(actBattle(s,{type:'explore'}))}>Explorar el sector y recoger equipo</button>}<button className="gold-button" onClick={onFinish}>Volver a la campaña <ChevronRight size={16}/></button></></div>}
+      {s.lastError&&<p className="battle-error" role="alert">{s.lastError}</p>}{!presentation.busy&&s.status!=='active'&&<div className="battle-result"><p className="eyebrow">PARTE DE GUERRA</p><h2>{s.status==='victory'?'¡Victoria patriota!':'La escuadra ha caído'}</h2><p>{s.status==='victory'?'El enemigo abandona el campo. La patria avanza.':'Reorganizá las tropas y prepará una nueva ofensiva.'}</p><>{s.status==='victory'&&<button className="line-button" onClick={()=>onChange(actBattle(s,{type:'explore'}))}>Explorar el sector y recoger equipo</button>}<button className="gold-button" onClick={onFinish}>Volver a la campaña <ChevronRight size={16}/></button></></div>}
     </div>
     </div>
     <JA2Strip
@@ -134,7 +144,7 @@ export default function Battlefield({battle:s,onChange,onFinish,onRetreat,conver
       onMode={setMode}
       onToggleSight={()=>setShowSight(!showSight)}
       onEndTurn={nextTurn}
-      onRetreat={onRetreat}
+      onRetreat={()=>{if(!busy)onRetreat();}}
       onOpenInventory={(id)=>{const p=players.find((x:any)=>x.id===id);if(p&&!p.militia&&isAlive(p)){setSelected(id);setInventoryId(id);}}}
       onCloseInventory={()=>setInventoryId(null)}
       onCameraCenter={()=>{setCameraFollowsSelection(true);setCameraOffset({x:0,y:0});}}

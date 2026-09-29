@@ -1,6 +1,6 @@
 'use client';
 import {useEffect,useState} from 'react';
-import {spriteAnimationFrame} from '../../game/sprite-state.js';
+import {startSpriteAnimation} from '../lib/sprite-animation-clock.js';
 import {spriteRender,spriteMovementFrame,spriteViewport} from '../../game/sprite-render.js';
 type Motion={direction:number;frame:number;moving:boolean;elapsedMs?:number};
 type Props={unit:any;position:{x:number;y:number};motion:Motion;pose?:string;drawSize?:number;appearance?:'soldier'|'civilian'};
@@ -19,14 +19,7 @@ export default function SpriteFigure({unit,position,motion,pose='idle',drawSize=
  const actionKey=playback==='action'?`${unit.ap}:${unit.loaded}`:'';
  useEffect(()=>{
   if(playback!=='action'&&playback!=='breathing')return;
-  let handle=0;const start=performance.now();
-  const tick=(now:number)=>{
-   const frame=spriteAnimationFrame(playback,now-start,frames,fps);
-   setClock(previous=>previous.name===name&&previous.frame===frame?previous:{name,frame});
-   if(playback==='breathing'||now-start<frames*1000/fps)handle=requestAnimationFrame(tick);
-  };
-  setClock({name,frame:0});handle=requestAnimationFrame(tick);
-  return()=>cancelAnimationFrame(handle);
+  return startSpriteAnimation({playback,frames,fps,onFrame:(frame:number)=>setClock(previous=>previous.name===name&&previous.frame===frame?previous:{name,frame})});
  },[name,playback,actionKey,frames,fps]);
  const frame=playback==='movement'?spriteMovementFrame(motion,frames,fps):clock.name===name?clock.frame:0;
  const viewport=spriteViewport(sprite,position,motion.direction,frame,drawSize);
