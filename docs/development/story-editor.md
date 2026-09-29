@@ -26,7 +26,7 @@ Todos estos candidatos se incorporan por contrato desde el boletín. Una paga de
 
 ## Suministros iniciales de cada personaje
 
-En la ficha, **Suministros iniciales** permite configurar cargas de cebo, pedernales, raciones, antorchas, vendas y boleadoras. Cada cantidad debe ser un entero de 0 a 1000. Cero significa que no lleva ese suministro. **Restablecer suministros originales** recupera 50 cargas, 4 pedernales, 2 raciones, 2 antorchas, 2 vendas y 1 juego de boleadoras.
+En la ficha, **Suministros iniciales** permite configurar raciones, antorchas, vendas y boleadoras. Cada cantidad debe ser un entero de 0 a 1000. Cero significa que no lleva ese suministro. **Restablecer suministros originales** recupera 2 raciones, 2 antorchas, 2 vendas y 1 juego de boleadoras. El equipo de encendido es implícito: no se administran cargas de cebo ni pedernales. El mantenimiento y la eliminación de un fallo conservan su costo de tiempo o PA.
 
 La campaña asigna esas cantidades una sola vez. El personaje las lleva al incorporarse, tanto por llegada contratada como por reclutamiento en el lugar. Guardar, renovar, despedir y volver a contratar conservan lo que quede; no entregan otro lote. Duplicar copia las cantidades con una identidad distinta. Los paquetes anteriores conservan los valores originales. Deshacer, rehacer, importar y exportar incluyen esta configuración.
 
@@ -119,7 +119,7 @@ Activá «Cambiar los pesos al elegir esta opción», elegí si el jugador paga 
 
 ## Condiciones sobre suministros
 
-En una condición de diálogo, capítulo o derrota, elegí **Suministros de un personaje**. Seleccioná el personaje, el suministro, la cantidad mínima y un máximo opcional. Podés comprobar cargas de cebo, pedernales, raciones, antorchas, vendas o boleadoras. Los límites son inclusivos. Para exigir que no queden vendas, usá mínimo 0 y máximo 0. Un máximo vacío no tiene tope adicional.
+En una condición de diálogo, capítulo o derrota, elegí **Suministros de un personaje**. Seleccioná el personaje, el suministro, la cantidad mínima y un máximo opcional. Podés comprobar raciones, antorchas, vendas o boleadoras. Las condiciones de paquetes anteriores sobre cebo o pedernales conservan valores implícitos de 50 y 4, respectivamente; el editor ya no ofrece esas condiciones para contenido nuevo. Los límites son inclusivos. Para exigir que no queden vendas, usá mínimo 0 y máximo 0. Un máximo vacío no tiene tope adicional.
 
 Por ejemplo, una respuesta puede exigir que el sanitario conserve cinco vendas después de atender al habitante. Un capítulo puede exigir una compra real de suministros. La condición consulta la cantidad actual y no entrega ni consume objetos. Si también exigís que la persona viva, esté presente o esté incorporada, agregá esas condiciones.
 
@@ -773,7 +773,7 @@ el motivo si la entrega no está disponible. [Verificación](../verification/hel
 
 En **Equipo y órdenes → Pertrechos**, elegí el suministro, la cantidad y el
 compañero. Usá **Entregar suministros**. Podés entregar vendas, raciones,
-pedernales, cebo, antorchas y boleadoras. El compañero debe estar al lado,
+antorchas, boleadoras y las cuatro familias de munición. El compañero debe estar al lado,
 consciente y sin obstáculos. Cuesta 4 PA del que entrega o un segundo en
 exploración. La cantidad debe estar disponible completa. El panel explica el
 motivo si no se puede entregar. El compañero puede usar lo recibido y cada uno
@@ -788,19 +788,30 @@ El bulto queda en la celda y aparece en el campo. Para recuperarlo, elegí
 **Recoger equipo** y hacé clic en la celda. Puede hacerlo el mismo soldado u otro
 compañero cercano, aunque haya alguien encima. La recogida abre un selector de bulto y cantidad.
 Cuesta 8 PA o un segundo en exploración. Guardar, salir y volver conserva el
-bulto y los sobrantes. Esto cubre los seis suministros personales del panel;
-los cartuchos solo se entregan directamente a un compañero. [Verificación](../verification/drop-personal-supplies.md).
+bulto y los sobrantes. Esto cubre los cuatro suministros personales y las cuatro
+familias de munición. La reserva suelta se separa de la carga dentro del arma.
+[Verificación de suministros](../verification/drop-personal-supplies.md) y
+[munición compatible](../verification/typed-ammunition.md).
 
 
 ### Pasar cartuchos a un compañero
 
-Elegí **Cartuchos** en el selector de suministros, indicá la cantidad y el
-compañero cercano. La entrega usa solamente la reserva suelta; la carga dentro
-de cada arma queda en su sitio. El compañero puede usar esos cartuchos para
-recargar. Cuesta 4 PA o un segundo en exploración. Al retirarse, la escuadra
-recibe el valor de su munición restante aunque haya cambiado de dueño durante
-el combate. Guardar conserva las reservas. Por ahora, los cartuchos no se dejan
-en el suelo desde este panel. [Verificación](../verification/adjacent-cartridge-transfer.md).
+Elegí la familia de munición en el selector de suministros, indicá la cantidad
+y el compañero cercano. La entrega usa solamente la reserva suelta; la carga
+dentro de cada arma queda en su sitio. El compañero puede llevar cualquier
+familia, pero solo puede recargar un arma compatible. Cuesta 4 PA o un segundo
+en exploración. También podés dejar cartuchos en el suelo y recoger una parte.
+Guardar conserva la familia y las cantidades restantes. Al retirarse, la escuadra
+recibe el valor de las cargas restantes dentro del límite de munición entregada
+y recuperada de fuentes previas. Volver a recoger el mismo bulto no duplica ese
+valor. [Verificación](../verification/typed-ammunition.md).
+
+La Brown Bess, el Charleville y la tercerola usan cartuchos de mosquete. El Baker
+usa munición de fusil. Las tres pistolas usan cartuchos de pistola. La escopeta y
+el trabuco usan cargas de perdigones. Cada familia tiene su imagen y ocupa los
+bolsillos compartidos en pilas de hasta 20. Cambiar de arma no convierte la reserva.
+Todavía no se pueden configurar familias nuevas ni elegir cargas alternativas
+con efectos distintos para una misma arma.
 
 
 ### Elegir qué recoger del suelo

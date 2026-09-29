@@ -46,7 +46,8 @@
     "/tmp/ammo130-final-full.log": "e4e1996f10d3ab4412140cddbc27eee0f76cb56ae6d7804cf1eb4946a2de54ef",
     "/tmp/ammo130-final-types.log": "618e2b7cc2f862b8b6b986380544b0379d2b322c250298a73c22eb1239b0ee30",
     "/tmp/ammo130-final-build.log": "a7fc9e3d6546b5cb43e4339f7989435578b71b47e6928c413ffdc1e513c733c5",
-    "/tmp/ammo130-final-baseline.log": "1b3a86aa3300bafc6d309b9d804ce50341f0b02c57bac6490e817690892787ce"
+    "/tmp/ammo130-final-baseline.log": "1b3a86aa3300bafc6d309b9d804ce50341f0b02c57bac6490e817690892787ce",
+    "/tmp/ammo130-final-ci.log": "b1bf5206dd957abefe1e2a4f9e8b8d11ae824272c72e5362b0f9e9983b9faaef"
   },
   "browser": {
     "url": "http://localhost:3134/?qa=1",
@@ -71,7 +72,22 @@
     "sha256": "94829719bb1c84eea75a797433bb3e3f0457035e14d32a14ab3ee961174e5a09"
   },
   "publication": {
-    "status": "pending final remote verification and merge"
+    "status": "merged",
+    "head": "aaef467c1c6652971f3749cb7f3cc7cc9f6a4515",
+    "merge": "d08c24ecb0fafe4517440c4a6dc98f74dc6a5c35",
+    "mergedAt": "2026-09-29T18:03:58Z",
+    "run": "https://github.com/fsodano/granaderos/actions/runs/36608142474",
+    "checks": "all five passed",
+    "groups": [
+      328,
+      314,
+      291,
+      349
+    ],
+    "total": 1282,
+    "passed": 1282,
+    "failed": 0,
+    "skipped": 0
   },
   "limitations": [
     "Full strategic ammunition custody and authored variants remain open.",

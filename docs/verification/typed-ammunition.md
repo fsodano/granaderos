@@ -3,7 +3,8 @@
 Implementation in [PR #130](https://github.com/fsodano/granaderos/pull/130),
 updated to include the published documentation from PR #129. Runtime source
 `a464ee32e4ee98937168fda35b136aad9b916b83` includes the recovered-ground correction.
-Publication of this combined source is pending final checks and merge.
+Merged into `main` at `d08c24ecb0fafe4517440c4a6dc98f74dc6a5c35` after all five checks passed
+for `aaef467c1c6652971f3749cb7f3cc7cc9f6a4515` in [run 36608142474](https://github.com/fsodano/granaderos/actions/runs/36608142474).
 
 The user removed separate priming charges and flints from the inventory design.
 Soldiers have the basic ignition and maintenance kit. Misfires, weapon condition,
@@ -43,6 +44,10 @@ saved scene.
 
 ## Verification
 
+- Final remote verification: the complete groups passed 328 + 314 + 291 + 349 =
+  **1282/1282**, with zero failures or skips. The four repeated partition-runner
+  self-tests per job are not included in this gameplay total.
+
 - Initial remote verification on `3e1777128550a2f6ed32254ccc921a2774efd182`:
   all five checks passed in [run 36598764414](https://github.com/fsodano/granaderos/actions/runs/36598764414).
   The complete shards passed 259 + 286 + 359 + 372 = **1276/1276**. This supersedes
@@ -77,4 +82,5 @@ individual historical calibers or sustained combat frame rate.
 
 The [combined evidence record](../evidence/typed-ammunition.json) contains source
 and log hashes. The [desktop capture](../evidence/typed-ammunition.png) shows the
-separate stacks after partial collection. Final remote checks and merge are pending.
+separate stacks after partial collection. The story-editor guide now describes
+the current supplies, compatibility, transfers, drops and partial collection.
