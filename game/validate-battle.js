@@ -1,3 +1,4 @@
+import {validateCivilianWeapons} from './civilian-weapons.js';
 import {validateAmmo,migrateAmmoGround} from './ammo-types.js';
 import {personalPockets} from './personal-pockets.js';
 import {validateArtilleryProfiles} from './artillery-definitions.js';
@@ -58,6 +59,7 @@ if(s.civilianSeconds!==undefined)need(number(s.civilianSeconds,0,6)&&s.civilianS
 const npcIds=new Set();
 for(const n of s.npcs){
  validateCivilianWounds(n,s);
+ if(n.civilianWeapons!==undefined)validateCivilianWeapons(n.civilianWeapons);
  if(n.civilianSupplies!==undefined)need(validCivilianSupplies(n.civilianSupplies),'suministros civiles');
  need(coord(n)&&text(n.id)&&text(n.name)&&!ids.has(n.id)&&!npcIds.has(n.id),'personajes');npcIds.add(n.id);
  if(n.abilities!==undefined)need(validCharacterAbilities(n.abilities),'habilidades del personaje');

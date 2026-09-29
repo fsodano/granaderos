@@ -132,6 +132,7 @@ export function assertAmmunitionConservation(request,snapshot,previous){
  const deployed=[...(request.squad??[]),...(request.garrison??[]),...(request.missionAllies??[]),...enemies.map(u=>({...u,weapon:u.weapon??u.primary??1800,ammo:u.ammo??12,loaded:u.loaded??weaponSpecification({...u,weapon:u.weapon??u.primary??1800})?.capacity??0}))];
  const bodies=retainedMilitaryBodies(previous,deployed,request.sector);
  const initial=fieldCounts([...deployed,...bodies],previous??{}),current=fieldCounts(snapshot.units,snapshot);
+ for(const receipt of request.civilianWeaponRecoveries??[]){const key=ammoTypeFor(receipt.gun);if(key)initial[key]+=receipt.gun.loaded??0;}
  for(const key of AMMO_KEYS)need(current[key]<=initial[key],`El parte añade ${AMMO_TYPES[key].name.toLowerCase()} sin una fuente física.`);
 }
 export function retainReturnedAmmunition(s,request,reports,snapshot,previous=null){
