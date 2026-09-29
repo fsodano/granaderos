@@ -31,6 +31,10 @@ export function rosterCells(players, selectedId) {
   return cells;
 }
 
+/**
+ * @param {any} unit
+ * @param {'primary' | 'blade' | 'unarmed' | null} [slot]
+ */
 export function slotAction(unit, slot = null) {
   return {type: 'weapon', slot: slot ?? (unit.activeSlot === 'blade' || unit.activeSlot === 'unarmed' ? 'primary' : 'blade')};
 }
