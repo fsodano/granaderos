@@ -72,8 +72,12 @@ family labels and no console errors. No gameplay order was issued in that save.
 [Local campaign capture](../evidence/four-ammunition-live.png).
 
 The complete original-checkout regression passes **3,223 of 3,231** cases.
-Five failures include the four existing movement/campaign failure points and a
-failed parent. Three later route milestones are skipped. The eight added catalog
+Five failures include movement timing, the fresh campaign route, Córdoba
+recapture and prisoner relief, plus a failed route parent. Three later route
+milestones are skipped. The fresh route now stops earlier because its controller
+expects an unavailable recovered gun in Córdoba; the earlier baseline reached
+the northern relief-medic failure. The recapture now retreats instead of winning.
+These changed campaign outcomes need further work. The eight added catalog
 and migration cases pass; this result does not accept the full game.
 
 ## Limits
@@ -85,8 +89,9 @@ form correction.
 The advanced adapter and physical inventory runtime are still separate local
 source. This published PR shares the catalog and records the local integration;
 it does not publish the full advanced runtime. The evidence record stores exact
-file hashes and test results. Old movement-worker timing, relief-medic, Córdoba
-recapture and prisoner-rescue acceptance failures remain open. Complete campaign,
+file hashes and test results. Movement-worker timing, the fresh-route recovered-gun shortage, Córdoba
+recapture and prisoner-rescue failures remain open; the later relief-medic
+acceptance cannot be re-established until the earlier route succeeds. Complete campaign,
 smooth walking artwork, loaded-combat performance, advanced authored family
 selection and alternative loads are not accepted by this change.
 

@@ -294,7 +294,7 @@
       "failed": 5,
       "skipped": 3,
       "logSha256": "160f9d88193509c681d2db1aa81a67d6a7cba75691ba7c12010c7886506e9a31",
-      "limits": "Four independent pre-existing failure points and a failed parent: worker movement timing, relief medic, Cordoba recapture, prisoner rescue. Three later opening milestones skipped. Full run precedes final form purchase-limit guard; two related checks, types and export pass after that correction."
+      "limits": "Four independent failure points and a failed parent: worker movement timing, unavailable recovered gun during fresh Cordoba recovery, Cordoba recapture retreat instead of victory, prisoner-rescue defeat instead of retreat. The fresh route stops earlier than the prior northern relief-medic baseline. Three later opening milestones skipped. Full run precedes final form purchase-limit guard; two related checks, types and export pass after that correction."
     },
     "purchaseLimitFollowup": {
       "passed": 2,
