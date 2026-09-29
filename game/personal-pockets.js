@@ -1,5 +1,5 @@
 import {allocatePockets, rearrangePockets} from './inventory-pockets.js';
-import {DEFAULT_CHARACTER_SUPPLIES, TRANSFER_SUPPLY_LABELS} from './character-supplies.js';
+import {DEFAULT_CHARACTER_SUPPLIES, TRANSFER_SUPPLY_LABELS, SUPPLY_PRESENTATION} from './character-supplies.js';
 import {weaponSpecification, weaponRecord} from './weapon-definition.js';
 
 // Quantities remain in their existing save records. These descriptors allocate
@@ -8,7 +8,7 @@ export const SUPPLY_STACKS=Object.freeze({ammo:20,priming:50,flints:4,rations:2,
 const compactWeapons=new Set([1805,1806,1808,1811,1813]);
 export const POCKET_FULL='No queda un bolsillo del tamaño necesario. Dejá o entregá equipo antes de recoger más.';
 export function pocketItems(unit){
- const items=Object.entries(SUPPLY_STACKS).map(([item,stackLimit])=>({item,kind:'supply',name:TRANSFER_SUPPLY_LABELS[item],count:unit[item]??DEFAULT_CHARACTER_SUPPLIES[item]??0,stackLimit,slotSize:1}));
+ const items=Object.entries(SUPPLY_STACKS).map(([item,stackLimit])=>({item,kind:'supply',name:TRANSFER_SUPPLY_LABELS[item],...SUPPLY_PRESENTATION[item],count:unit[item]??DEFAULT_CHARACTER_SUPPLIES[item]??0,stackLimit,slotSize:1}));
  const describe=(item,record,extra={})=>{
   const spec=weaponSpecification(record),money=item.startsWith('inventory:cash:');
   return {...record,...extra,item,name:spec?.name??(money?'Pesos encontrados':record.name??'Pertrechos'),art:spec?.art,weapon:spec?.id,count:record.count??0,stackLimit:spec?1:money?1000000:(record.weight??0)>2?1:4,slotSize:spec?(compactWeapons.has(spec.id)?1:2):(record.weight??0)>2?2:1};

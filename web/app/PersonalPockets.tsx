@@ -1,6 +1,6 @@
 'use client';
 import {useState} from 'react';
-import {CircleDot,Cross,Flame,Gem,Package,Utensils} from 'lucide-react';
+import {Package} from 'lucide-react';
 import {personalPockets} from '../../game/personal-pockets.js';
 import {supplyDropPreview,supplyTransferPreview,weaponTransferPreview} from '../../game/tactical.js';
 
@@ -13,7 +13,7 @@ export default function PersonalPockets({unit,battle,busy,onOrder}: {unit:any;ba
  const drop=isSupply?supplyDropPreview(battle,unit,entry.item,count):{reason:!isWeapon?'Este objeto se conserva hasta salir del sector.':battle.mode!=='exploration'&&unit.ap<4?'Requiere 4 PA.':null};
  const transfer=isSupply?supplyTransferPreview(battle,unit,target,entry.item,count):weaponTransferPreview(battle,unit,target,stowed?undefined:entry?.key,stowed?entry.slot:undefined);
  const select=(id:string)=>{if(moving){onOrder({type:'pocket',source:moving,destination:id});setMoving('');}else{setSelection(id);setSelectedItem(layout.slots.find((p:any)=>p.id===id)?.entry?.item??layout.overflow.find((p:any)=>`overflow:${p.item}`===id)?.item??'');setAmount('1');}};
- const icon=(item:any)=>{if(item.art)return <img src={item.art} alt=""/>;const Icon=({ammo:Package,priming:CircleDot,flints:Gem,rations:Utensils,medkits:Cross,torches:Flame} as any)[item.item]??CircleDot;return <Icon aria-hidden="true" size={22}/>;};
+ const icon=(item:any)=>item.art?<img src={item.art} alt=""/>:<Package aria-hidden="true" size={22}/>;
  const cost=(ap:number)=>battle.mode==='exploration'?'1 s':`${ap} PA`;
  return <section className="personal-pockets" aria-label="Bolsillos del combatiente">
   <h3>Bolsillos · 4 grandes / 8 pequeños</h3>
@@ -24,6 +24,8 @@ export default function PersonalPockets({unit,battle,busy,onOrder}: {unit:any;ba
   {layout.overflow.length>0&&<div className="pocket-overflow" role="status"><p>Este equipo excede los bolsillos. Conservamos todos los objetos de la partida. Dejá o entregá el exceso para recoger más.</p>{layout.overflow.map((item:any)=><button key={item.item} disabled={disabled} onClick={()=>select(`overflow:${item.item}`)}>{item.name} · {item.count}</button>)}</div>}
   {entry&&<div className="pocket-details" aria-label={`Detalles de ${entry.name}`}>
    <strong>{entry.name} · {entry.count}</strong>
+   {entry.art&&<img className="pocket-detail-art" src={entry.art} alt=""/>}
+   {entry.description&&<p>{entry.description}</p>}
    {entry.condition!==undefined&&<span>Estado: {entry.condition}%{entry.loaded?` · ${entry.loaded} carga(s)`:''}</span>}
    {isWeapon&&<button disabled={disabled||battle.mode!=='exploration'&&unit.ap<(stowed?4:6)} onClick={()=>onOrder(stowed?{type:'weapon',slot:entry.slot}:{type:'equipLoot',inventoryKey:entry.key,slot:'primary'})}>{stowed?'Usar en la mano':'Equipar principal'} · {cost(stowed?4:6)}</button>}
    {isWeapon&&!stowed&&entry.weapon>=1809&&<button disabled={disabled||battle.mode!=='exploration'&&unit.ap<6} onClick={()=>onOrder({type:'equipLoot',inventoryKey:entry.key,slot:'blade'})}>Equipar secundaria · {cost(6)}</button>}
