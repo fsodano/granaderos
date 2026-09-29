@@ -540,6 +540,11 @@
       "id": "E-ADJACENT-SUPPLY-TRANSFER",
       "path": "docs/verification/adjacent-supply-transfer.md",
       "description": "Exact quantities of six authored personal supplies transfer to an adjacent companion and remain finite through use, save and campaign return. Four simulations and two mounted production-game checks pass; related group 30/30. Complete regression passes 1182/1182, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
+    },
+    {
+      "id": "E-PERSONAL-SUPPLY-DROP",
+      "path": "docs/verification/drop-personal-supplies.md",
+      "description": "An exact bundle of authored personal supplies moves to the field, persists through saved sector return and can be collected once by another actual soldier. Five simulations and one mounted production-game case pass; related group 25/25. Complete regression passes 1188/1188, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
     }
   ],
   "queue": [
@@ -4602,16 +4607,17 @@
       "requirement": "Items can be dropped, picked up, split, stacked, and stored persistently in the sector. G20,64-66,110-111; M21-25.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "Held and recovered firearms and blades can be left one at a time at the current cell and collected even under a soldier. Their authored identity, load, wear and weight survive full saves and sector return. Distinct fields cannot overwrite a previously carried weapon through a reused local drop index. DROPWEAPON-01 and HELDWEAPONDROP-01 record the bounded ordinary controls.",
+      "published": "Held and recovered firearms and blades can be left one at a time at the current cell and collected even under a soldier. Their authored identity, load, wear and weight survive full saves and sector return. Distinct fields cannot overwrite a previously carried weapon through a reused local drop index. DROPWEAPON-01 and HELDWEAPONDROP-01 record the bounded ordinary controls. SUPPLYDROP-01 adds exact bundles of the six personal supplies, retained field quantities and normal whole-bundle collection after saved return.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check. DROPWEAPON-01 tracks finite ground placement and collection of recovered weapons. HELDWEAPONDROP-01 extends the same custody to actual hand slots.",
-      "remaining": "Integrate supplies and nonweapon equipment, arbitrary partial stack quantities, stacking, selectable body/ground/container inventories, physical capacity, walking approaches and strategic/mission sector storage. The advanced-workspace implementations in the source notes remain separate from published acceptance.",
+      "remaining": "Integrate cartridge placement and other equipment, partial pickup selection, stacking, selectable body/ground/container inventories, physical capacity, walking approaches and strategic/mission sector storage. The advanced-workspace implementations in the source notes remain separate from published acceptance.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
       "evidence": [
         "E-PARITY",
         "E-LOCAL",
         "E-PUBLISHED",
         "E-DROP-RECOVERED-WEAPONS",
-        "E-HELD-WEAPON-DROP"
+        "E-HELD-WEAPON-DROP",
+        "E-PERSONAL-SUPPLY-DROP"
       ],
       "sourceRow": "JA2-I03",
       "sourceNotes": "Strategic sector access now lists discovered equipment and supports exact local pickup/drop quantities in safe sectors. It checks walking access, capacity and current source contents, preserves loaded/fitted weapons and personal cartridges, and uses validated save/reentry paths. Seventeen simulation/save tests and two component checks cover the new flow; see [sector inventory](sector-inventory.md). Depleted ground objects cannot be picked up again. A controlled live body/ground picker spent actual approach and pickup AP, took partial cartridges and a loaded fitted musket, and retained both sources and receiver after reload. Ten approach cases, eleven batch cases and two component tests cover the picker contract. Select All and per-row quantities share one atomic 8 AP pickup from a single tile. Live full selection, capacity rejection and reduction to a valid partial selection passed; see [loot approach](loot-approach.md). Live tactical dropping, strategic partial pickup/drop, quantity rejection, save loading and reentry now pass. The check found and fixed loss of a carried loaded gun charge on campaign return; the repeated loop preserved the exact ammunition total. See [sector inventory](sector-inventory.md). Blocked paths, full packs and body/container variants remain automated-test evidence. Visited mission sites now appear under their parent sector through a labelled site selector, with separate source pools and shared local-presence, occupation and path checks. Real San Lorenzo remains can be recovered after victory; completed Yatasto pickup/drop and saves pass simulation checks. A live production-component harness recovered one dressing and one cartridge from the real San Lorenzo save and preserved the distinct town stock after saving/loading. See [sector inventory](sector-inventory.md). Carried weapons can now be equipped directly from a safe town, without entering the tactical map. Prepared load, partial work, condition and fittings survive the supported map/armory/deployment/return paths; capture/rescue and finite ammunition are tested. A live C\u00f3rdoba recovery pickup/equip/save/load check passed. See [carried weapon equipment](campaign-carried-equip.md)."
@@ -5894,6 +5900,31 @@
         "tests/adjacent-supply-transfer-render.test.mjs",
         "tests/character-supplies.test.mjs",
         "tests/ja2-hud.test.mjs"
+      ]
+    },
+    {
+      "id": "SUPPLYDROP-01",
+      "group": "Published deliveries",
+      "requirement": "Leave an exact finite supply bundle in a sector and recover it after saved return",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Exact personal supply bundles persist on the field through saved sector return and can be recovered once by the owner or another companion.",
+      "local": "Five simulations and one mounted production-game check pass; related group 25/25. Complete regression 1188/1188, zero failures/skips, with types, export and 36 reference comparisons.",
+      "remaining": "",
+      "acceptance": "Select a supported personal supply and exact quantity in normal inventory; leave the bundle for four combat AP or one exploration second; show its ground marker; recover it through the ordinary occupied-cell collection control; preserve both holders and ground quantity through full saves and campaign return; retain distinct ground identities; reject invalid stock/counts, field limits, AP and recipient numeric overflow before mutation.",
+      "evidence": [
+        "E-PERSONAL-SUPPLY-DROP"
+      ],
+      "parents": [
+        "ITEM-01",
+        "JA2-I03",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/drop-personal-supplies.test.mjs",
+        "tests/drop-personal-supplies-render.test.mjs",
+        "tests/adjacent-supply-transfer.test.mjs",
+        "tests/drop-held-weapons.test.mjs"
       ]
     }
   ],
