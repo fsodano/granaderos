@@ -731,7 +731,7 @@ El compañero recibe la pieza en su mochila y puede equiparla. Conserva la
 imagen, los valores, el desgaste y la carga, incluso después de guardar y
 volver al sector. Si no se puede entregar, el panel explica el motivo.
 También podés seleccionar el arma principal o secundaria y usar **Entregar arma
-en uso** con el compañero elegido. Los suministros y las entregas a distancia
+en uso** con el compañero elegido. Para los suministros, usá el panel Pertrechos. Las entregas a distancia
 siguen pendientes. [Verificación](../verification/adjacent-weapon-transfer.md).
 
 
@@ -767,3 +767,15 @@ entrega o un segundo en exploración. La mano queda vacía y la pieza pasa a la
 mochila del compañero, con su imagen, carga, desgaste y recarga incompleta.
 Puede equiparla y conservarla al guardar y volver al sector. El panel muestra
 el motivo si la entrega no está disponible. [Verificación](../verification/held-weapon-transfer.md).
+
+
+### Entregar suministros
+
+En **Equipo y órdenes → Pertrechos**, elegí el suministro, la cantidad y el
+compañero. Usá **Entregar suministros**. Podés entregar vendas, raciones,
+pedernales, cebo, antorchas y boleadoras. El compañero debe estar al lado,
+consciente y sin obstáculos. Cuesta 4 PA del que entrega o un segundo en
+exploración. La cantidad debe estar disponible completa. El panel explica el
+motivo si no se puede entregar. El compañero puede usar lo recibido y cada uno
+conserva su sobrante al guardar y volver al sector. La entrega de cartuchos
+sigue pendiente. [Verificación](../verification/adjacent-supply-transfer.md).
