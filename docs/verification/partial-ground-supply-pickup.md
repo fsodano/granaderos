@@ -53,3 +53,8 @@ weapon inventories, multi-item batches, automatic walking, cartridge ground
 custody or physical pockets. These are mounted DOM and simulation checks, not
 live-browser, performance or full-campaign acceptance. Exact-head CI remains
 required before publication.
+
+## Publication
+
+Published in [PR #121](https://github.com/fsodano/granaderos/pull/121) on 2026-09-29 02:16:19 UTC.
+Exact head `f1d9cac5c2b817968beb31f51703cdc706b3b9eb` passed [CI run 36511051493](https://github.com/fsodano/granaderos/actions/runs/36511051493), including the full suite, types and production build. Merge commit: `8e69ae42ff6bd39fe0b315665a3fcf16e307b306`. This publication does not close the broader game or campaign requirements.

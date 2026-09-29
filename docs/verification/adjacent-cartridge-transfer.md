@@ -49,4 +49,9 @@ unavailable ground action and reads the normal persisted reserves.
 Typed ammunition, independent loading/custody between deployments, cartridge
 ground placement, full pockets and complete campaign acceptance remain open.
 These are simulations and mounted DOM checks, not live-browser or performance
-acceptance. Exact-head CI remains required before publication.
+acceptance. Exact-head CI passed before publication.
+
+## Publication
+
+Published in [PR #120](https://github.com/fsodano/granaderos/pull/120) on 2026-09-29 02:05:19 UTC.
+Exact head `d8cd09dfb5c4924386e5985973f5a56566ace941` passed [CI run 36510133457](https://github.com/fsodano/granaderos/actions/runs/36510133457), including the full suite, types and production build. Merge commit: `ef5952c78d02d39967c70bcfa4f11b42b1b34076`. This publication does not close the broader game or campaign requirements.
