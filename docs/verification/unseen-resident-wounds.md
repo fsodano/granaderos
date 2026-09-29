@@ -62,3 +62,8 @@ Complete regression passes **1131/1131**, zero failures or skips, in
 acceptance. Civilian strategic medical care, off-screen breath recovery, physical
 equipment custody and broader game completion remain open. Exact-head CI remains
 required before publication.
+
+## Publication
+
+Published in [PR #111](https://github.com/fsodano/granaderos/pull/111) on 2026-09-29 00:27:41 UTC.
+Exact head `884db10759a325bd623d9bf0c0c2ca5fcbf89328` passed [CI run 36502456198](https://github.com/fsodano/granaderos/actions/runs/36502456198), including the full suite, types and production build. Merge commit: `135f44ccb80a1eb31a0c837cbd4c5d1247647d43`. This publication does not close the broader game or campaign requirements.

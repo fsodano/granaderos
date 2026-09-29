@@ -49,3 +49,8 @@ Civilian weapons/armour, conscious theft, complete physical custody, inventory
 capacity/organization and unarmed/fitting combat rules remain separate. There
 is no live-browser, performance or whole-campaign acceptance. Exact-head CI remains
 required before publication.
+
+## Publication
+
+Published in [PR #112](https://github.com/fsodano/granaderos/pull/112) on 2026-09-29 00:37:12 UTC.
+Exact head `d66674319b722d67a3f12d5332a5914bd814d9e9` passed [CI run 36503345324](https://github.com/fsodano/granaderos/actions/runs/36503345324), including the full suite, types and production build. Merge commit: `20b40c7fbf0cf200d2babfc4311215e2f31eb86a`. This publication does not close the broader game or campaign requirements.
