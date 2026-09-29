@@ -35,7 +35,7 @@ test('all conditions must hold and ownership follows prepared, save-admitted loc
 
 test('confirmed civilian death opens a character-gated branch immediately without changing its owner identity',()=>{
  const d=content([{type:'character',character:'pablo-gate',state:'dead'}]),base=structuredClone(d.characters.at(-1));delete base.encounter.dialogue;d.characters.push({...base,id:'pablo-gate',name:'Pablo',attributes:{...base.attributes,maxHp:30}});d.placements.push({...structuredClone(d.placements.at(-1)),id:'pablo-place',character:'pablo-gate'});
- let p=readyLocal(undefined,d);assert.equal(visible(p),false);let npc=p.battle.npcs.find(n=>n.contentId==='pablo-gate');p=approach(p,npc);p=tactical(p,{type:'melee',targetId:npc.id});assert.equal(p.battle.npcs.find(n=>n.id===npc.id).hp,0);p=approach(p,localNPC(p.battle));p=saved(p);assert.equal(visible(p),true);assert.equal(select(p).lastConversation.dialogueNode,'north');
+ let p=readyLocal(undefined,d);assert.equal(visible(p),false);let npc=p.battle.npcs.find(n=>n.contentId==='pablo-gate');p=approach(p,npc);p=tactical(p,{type:'weapon',slot:'blade'});p=tactical(p,{type:'melee',targetId:npc.id});assert.equal(p.battle.npcs.find(n=>n.id===npc.id).hp,0);p=approach(p,localNPC(p.battle));p=saved(p);assert.equal(visible(p),true);assert.equal(select(p).lastConversation.dialogueNode,'north');
 });
 
 test('character conditions distinguish presence, service and accepted deployed health',()=>{

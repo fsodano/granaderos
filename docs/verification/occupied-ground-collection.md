@@ -35,4 +35,9 @@ replaced with real authored initialization. No save restriction was relaxed.
 This fixes access through an occupying resident. Full body/container selection,
 weapon batch selection, automatic approach, physical pockets, performance and
 complete campaign acceptance remain separate. These are mounted DOM checks,
-not live-browser acceptance. Exact-head CI remains required before publication.
+not live-browser acceptance. Exact-head CI passed before publication.
+
+## Publication
+
+Published in [PR #122](https://github.com/fsodano/granaderos/pull/122) on 2026-09-29 11:21:28 UTC.
+Exact head `98778112361d98a534aa23cf3e6fda00105f3a35` passed [CI run 36511879391](https://github.com/fsodano/granaderos/actions/runs/36511879391), including the full suite, types and production build. Merge commit: `d15d7684a75e6c4c1eb1f46c45d79b5c1dfab99c`. This publication does not close the broader game or campaign requirements.

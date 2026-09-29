@@ -1,6 +1,7 @@
 // JA2 separates unarmed injury from loss of breath (Patusco pp. 27–29, 64–66).
 // These values adapt that choice to Granaderos' 100-point breath/AP scale.
 export const FISTS=Object.freeze({id:0,name:'Puños',ap:12,damage:6,reach:1.5});
+export const BUTTSTOCK=Object.freeze({id:-1,name:'Culata',ap:16,damage:18,reach:1.5});
 const clamp=(n,lo,hi)=>Math.max(lo,Math.min(hi,n));
 export function unarmedChance(attacker,target,{aware=true}={}){
  if(target.unconscious)return 95;
