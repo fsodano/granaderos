@@ -494,7 +494,7 @@
     {
       "id": "E-DEPOT-ARTILLERY-TRANSPORT",
       "path": "docs/verification/depot-artillery-transport.md",
-      "description": "Exact depot guns can move onward under existing authored transport rules. Three simulations and one mounted production-game case pass; overlap 26/26 and full regression 1115/1115, zero failures/skips, with types, export and 36 baseline comparisons. Actual purchased/fired and repurchased guns move through headquarters/workshop depots to neighboring combat without fresh ammunition; prepared partial-work and rejection boundaries are explicit. Exact-head publication remains required."
+      "description": "Exact depot guns can move onward under existing authored transport rules. Three simulations and one mounted production-game case pass; overlap 26/26 and full regression 1115/1115, zero failures/skips, with types, export and 36 baseline comparisons. Actual purchased/fired and repurchased guns move through headquarters/workshop depots to neighboring combat without fresh ammunition; prepared partial-work and rejection boundaries are explicit. Published by PR #109 after successful exact-head CI."
     },
     {
       "id": "E-ARTILLERY-TRADING-RULES",
@@ -578,7 +578,7 @@
       "requirement": "Forward an exact stored or repurchased artillery piece from its local depot to the front",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Field/depot source selection preserves one gun through onward transport and actual neighboring attack entry.",
+      "published": "Published by PR #109 after successful exact-head CI. Field/depot source selection preserves one gun through onward transport and actual neighboring attack entry.",
       "local": "Three simulations and one mounted production-game check pass; overlap 26/26 and complete regression 1115/1115, zero failures/skips, with types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Return an actual fired gun through headquarters and onward to the front, forward a repurchased piece with declared unfinished work, charge each authored leg once, retain complete saves and finite ammo, reject invalid/stale/remote source or duplicate saved custody, and operate the real depot controls.",
@@ -595,7 +595,8 @@
         "tests/artillery-depot-transport-render.test.mjs",
         "tests/artillery-transport.test.mjs",
         "tests/artillery-trading.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/109"
     },
     {
       "id": "ARTILLERYTRADE-01",
@@ -5637,13 +5638,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "9aada7fe1a4e649112817832bf721534153c50ad",
-    "total": 1111,
-    "passed": 1111,
+    "source": "fa29eeabe5c71b0560a77950274de42546cfef91",
+    "total": 1115,
+    "passed": 1115,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-ARTILLERY-TRADING"
+    "evidenceId": "E-DEPOT-ARTILLERY-TRANSPORT"
   }
 }
