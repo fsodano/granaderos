@@ -90,6 +90,8 @@ export function finishHistoricalFromCuyo(prefix,{onCheckpoint}={}){
    // through ordinary waiting and the same twelve-hour assault journey.
    const arrivalHour=(s.hour+12)%24,daylightWait=arrivalHour<8?8-arrivalHour:arrivalHour>=20?32-arrivalHour:0;if(daylightWait)s=order(s,{type:'wait',hours:daylightWait});
   }
+  // Renew against the actual departure clock, including all medical and daylight waits.
+  s=renew(s,24);
   onCheckpoint?.(`approach-${sector}`,s,notes);s=order(s,{type:'attack',sector});assert.ok(s.pendingBattle);const request={...s.pendingBattle,hour:s.hour,secondOfHour:s.secondOfHour??0},previous=s.sectorStates[sector];
   const {battle,orders,actions}=fight(request,previous,{scoutCostWeight:.01,avoidCivilians:true,holdPosition:['ensenada','humahuaca'].includes(sector)?['57']:[]});assert.equal(battle.status,'victory',sector);let p={campaign:s,battle:enterSector(request,previous)};
   for(let i=0;i<orders.length;i++){p=tactical(p,orders[i]);if(i===Math.floor(orders.length/2))p=saved(p);}
@@ -99,6 +101,6 @@ export function finishHistoricalFromCuyo(prefix,{onCheckpoint}={}){
   notes.push({stage:sector,hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,squad:[...s.squad],actions,turns:battle.turn,deaths:deaths(s),commanderHp:s.operativeState[57].hp,completed:s.completed});onCheckpoint?.(sector,s,notes);
   if(!s.completed){const recovery=stabilizeBeforeMarch(s);s=recovery.campaign;if(recovery.care.hours){notes.push({stage:`${sector}-stabilization`,hour:s.hour,second:s.secondOfHour,funds:s.resources.treasury,care:recovery.care,squad:[...s.squad]});onCheckpoint?.(`${sector}-stabilization`,s,notes);}s=order(s,{type:'fortify',sector});}
  }
- assert.equal(s.completed,true);assert.equal(s.defeated,false);assert.equal(s.pendingBattle,null);assert.equal(s.blockade,false);assert.equal(s.phase,4);assert.equal(Object.keys(s.sectors).length,13);assert.ok(Object.values(s.sectors).every(r=>r.owner==='patriot'));assert.equal(s.operativeState[57].hp,88);assert.ok(s.recruited.includes(57));assert.equal(s.contracts[57].expiresAt,null);assert.equal(s.resources.treasury,7048);for(const id of [1000,123,127])assert.equal(s.operativeState[id].alive,false);
+ assert.equal(s.completed,true);assert.equal(s.defeated,false);assert.equal(s.pendingBattle,null);assert.equal(s.blockade,false);assert.equal(s.phase,4);assert.equal(Object.keys(s.sectors).length,13);assert.ok(Object.values(s.sectors).every(r=>r.owner==='patriot'));assert.equal(s.operativeState[57].hp,59);assert.ok(s.recruited.includes(57));assert.equal(s.contracts[57].expiresAt,null);assert.equal(s.resources.treasury,8168);for(const id of [1000,103,123,137])assert.equal(s.operativeState[id].alive,false);
  return {campaign:s,notes,prefix:prefix.notes};
 }
