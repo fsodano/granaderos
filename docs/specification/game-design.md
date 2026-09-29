@@ -1027,8 +1027,11 @@ available pocket space; it never converts or refunds ammunition.
 The four starting merchant caps are 180 musket, 60 rifle, 180 pistol and 120 shot.
 Every 24 supplied hours restore up to 18/6/18/12 respectively. Occupation or a
 broken supply route stops that clock. Each direct order is limited to 60 rounds.
-These are current game defaults. Individual merchant stock and schedule authoring
-remain open; the editor already controls firearm family, price and target load.
+These are the default rules. The story editor can override supplier availability,
+automatic purchases, initial stock, maximum stock, replenishment amount and interval,
+and per-family prices, globally or by town. Each campaign pins those rules.
+An empty authored supplier can replenish without a first purchase. See
+[authored supplier verification](../verification/authored-ammunition-markets.md).
 
 Old settled saves receive no free reserve because their former returns already
 refunded unused rounds. A pending paid scene returns its actual remaining
