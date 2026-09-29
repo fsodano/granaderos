@@ -47,3 +47,8 @@ performance acceptance.
 Loose supplies, arbitrary quantities, container selection, pockets, throwing and
 full campaign acceptance remain open. Exact-head CI remains required before
 publication.
+
+## Publication
+
+Published in [PR #116](https://github.com/fsodano/granaderos/pull/116) on 2026-09-29 01:18:18 UTC.
+Exact head `3aa7008e1f1f89fe71cffb4228ae0990bdfa0916` passed [CI run 36506403187](https://github.com/fsodano/granaderos/actions/runs/36506403187), including the full suite, types and production build. Merge commit: `c0c41e3cd7e3625128fd968499fc0f03a43d677d`. This publication does not close the broader game or campaign requirements.
