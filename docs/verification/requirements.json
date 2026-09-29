@@ -529,17 +529,17 @@
     {
       "id": "E-HELD-WEAPON-DROP",
       "path": "docs/verification/drop-held-weapons.md",
-      "description": "Held primary and secondary weapons move once to the field and retain their authored state, loaded rounds and weight through pickup, full saves and campaign return. Five simulations and one mounted production-game case pass; related group 38/38. Complete regression passes 1169/1169, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
+      "description": "Held primary and secondary weapons move once to the field and retain their authored state, loaded rounds and weight through pickup, full saves and campaign return. Five simulations and one mounted production-game case pass; related group 38/38. Complete regression passes 1169/1169, zero failures/skips, with types, export and 36 reference comparisons. Published by PR #116 after successful exact-head CI."
     },
     {
       "id": "E-HELD-WEAPON-TRANSFER",
       "path": "docs/verification/held-weapon-transfer.md",
-      "description": "An actual held primary or secondary moves directly to an adjacent conscious companion, preserving the piece, image, loaded charge, weight and mechanism. Five simulations and two mounted production-game cases pass; related group 27/27. Complete regression passes 1176/1176, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
+      "description": "An actual held primary or secondary moves directly to an adjacent conscious companion, preserving the piece, image, loaded charge, weight and mechanism. Five simulations and two mounted production-game cases pass; related group 27/27. Complete regression passes 1176/1176, zero failures/skips, with types, export and 36 reference comparisons. Published by PR #117 after successful exact-head CI."
     },
     {
       "id": "E-ADJACENT-SUPPLY-TRANSFER",
       "path": "docs/verification/adjacent-supply-transfer.md",
-      "description": "Exact quantities of six authored personal supplies transfer to an adjacent companion and remain finite through use, save and campaign return. Four simulations and two mounted production-game checks pass; related group 30/30. Complete regression passes 1182/1182, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
+      "description": "Exact quantities of six authored personal supplies transfer to an adjacent companion and remain finite through use, save and campaign return. Four simulations and two mounted production-game checks pass; related group 30/30. Complete regression passes 1182/1182, zero failures/skips, with types, export and 36 reference comparisons. Published by PR #118 after successful exact-head CI."
     },
     {
       "id": "E-PERSONAL-SUPPLY-DROP",
@@ -5838,7 +5838,7 @@
       "requirement": "Leave an actual held primary or secondary weapon on the field and recover the same piece",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Held primary and secondary weapons move once to the field and retain their actual authored definition and mechanism through saved return.",
+      "published": "Published by PR #116 after successful exact-head CI. Held primary and secondary weapons move once to the field and retain their actual authored definition and mechanism through saved return.",
       "local": "Five simulations and one mounted production-game check pass; related group 38/38. Complete regression 1169/1169, zero failures/skips, with types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Use the production inventory to drop the selected held weapon for four combat AP or one exploration second; keep an inactive selected secondary usable when dropping the primary; preserve authored definition, image, wear, loaded charge, partial loading and jam through full save, return and equip; account for held and packed weapon weight; preserve the existing campaign loose-round refund; reject absent, ambiguous or unavailable sources atomically.",
@@ -5856,7 +5856,8 @@
         "tests/drop-held-weapons-render.test.mjs",
         "tests/drop-recovered-weapons.test.mjs",
         "tests/empty-hand-melee.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/116"
     },
     {
       "id": "HELDHANDOVER-01",
@@ -5864,7 +5865,7 @@
       "requirement": "Give a held weapon directly to an adjacent companion while preserving actual custody and state",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. An actual held primary or secondary moves directly to an adjacent companion, preserving authored identity and mechanism through saved return.",
+      "published": "Published by PR #117 after successful exact-head CI. An actual held primary or secondary moves directly to an adjacent companion, preserving authored identity and mechanism through saved return.",
       "local": "Five simulations and two mounted production-game checks pass; related group 27/27. Complete regression 1176/1176, zero failures/skips, with types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Select the actual primary or secondary and recipient through production inventory; spend four sender AP or one exploration second; preserve authored image, weight, load, wear, jam and partial work; leave the selected source hand empty, or retain the other selected hand; preserve recipient equipment and colliding stored keys; save, return and equip on the actual recipient; reject unavailable, ambiguous and blocked transfers before custody changes.",
@@ -5881,7 +5882,8 @@
         "tests/held-weapon-transfer-render.test.mjs",
         "tests/adjacent-weapon-transfer.test.mjs",
         "tests/drop-held-weapons.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/117"
     },
     {
       "id": "SUPPLYHANDOVER-01",
@@ -5889,7 +5891,7 @@
       "requirement": "Give an exact quantity of personal supplies to an adjacent companion and retain the finite remainder",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Exact quantities of six personal supplies pass to an adjacent companion and remain finite through actual use and saved campaign return.",
+      "published": "Published by PR #118 after successful exact-head CI. Exact quantities of six personal supplies pass to an adjacent companion and remain finite through actual use and saved campaign return.",
       "local": "Four simulations and two mounted production-game checks pass; related group 30/30. Complete regression 1182/1182, zero failures/skips, with types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Use ordinary inventory selectors for the actual supply, exact quantity and recipient; move authored priming, flints, rations, torches, dressings or bolas for four sender AP or one exploration second; use received dressings to stabilize a real paid critical arrival; preserve each remainder across save, exit and reentry; reject invalid/excess quantities, bounds, unavailable recipients, blocked adjacency and insufficient AP before mutation.",
@@ -5906,7 +5908,8 @@
         "tests/adjacent-supply-transfer-render.test.mjs",
         "tests/character-supplies.test.mjs",
         "tests/ja2-hud.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/118"
     },
     {
       "id": "SUPPLYDROP-01",
@@ -5962,13 +5965,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "09c3850edb777543affbd1e8cd3b4fc9d8a7cea7",
-    "total": 1163,
-    "passed": 1163,
+    "source": "2bf4933335961174805127bea6fc66bcd2380b64",
+    "total": 1182,
+    "passed": 1182,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-EMPTY-HAND-MELEE"
+    "evidenceId": "E-ADJACENT-SUPPLY-TRANSFER"
   }
 }
