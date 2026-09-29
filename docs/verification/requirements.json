@@ -6412,13 +6412,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "bdd973186ae8377b218494392c6d863336e3314d",
-    "total": 1294,
-    "passed": 1294,
+    "source": "e90895c5bb0eadeb168533be118097300fba034e",
+    "total": 1306,
+    "passed": 1306,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-AMMO-FAMILIES"
+    "evidenceId": "E-AMMO-CUSTODY"
   }
 }

@@ -12,7 +12,7 @@ The larger local sources and the editor prototype are separate from published ma
 
 | Source | Passing / total | Failed | Skipped | Types / build |
 |---|---:|---:|---:|---|
-| published | 1294 / 1294 | 0 | 0 | PASS / PASS |
+| published | 1306 / 1306 | 0 | 0 | PASS / PASS |
 | original | 3040 / 3047 | 4 | 3 | PASS / PASS |
 | prototype | 2895 / 2896 | 1 | 0 | PASS / PASS |
 | presence | 548 / 548 | 0 | 0 | PASS / PASS |
