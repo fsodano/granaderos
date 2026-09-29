@@ -30,14 +30,14 @@ test('actual military casualties persist through saved sector visits with finite
  const recovered=Object.values(p.battle.units.find(u=>u.id===actor.id).inventory).find(item=>item.weapon===body.weapon);assert.ok(recovered);assert.deepEqual(weaponSpecification(recovered),weaponSpecification(body));
  assert.equal(p.battle.units.find(u=>u.id===body.id).weaponDropped,true);
  const cash=p.campaign.resources.treasury,issued=p.campaign.pendingBattle.issuedCartridges;
- let s=saved({campaign:leave(p)}).campaign;assert.equal(s.resources.treasury,cash+issued+ammo);
+ let s=saved({campaign:leave(p)}).campaign;assert.equal(s.resources.treasury,cash);assert.equal(s.operativeState[actor.id].ammo+s.operativeState[actor.id].carriedLoaded,cartridges+ammo);
  assert.equal(s.operativeState[id].deathMinute,death);assert.equal(s.operativeState[id].alive,false);
  p=visit(s);assert.equal(p.battle.units.find(u=>u.id===body.id).ammo,0);assert.equal(p.battle.units.find(u=>u.id===body.id).weaponDropped,true);assert.ok(actBattle(p.battle,{type:'loot',unitId:actor.id,targetId:body.id,item:'weapon'}).lastError);assert.equal(p.battle.units.filter(u=>u.hp===0).length,bodies.length);
- s=saved({campaign:leave(p)}).campaign;assert.equal(s.resources.treasury,cash+issued+ammo);
+ s=saved({campaign:leave(p)}).campaign;assert.equal(s.resources.treasury,cash);assert.equal(s.operativeState[actor.id].ammo+s.operativeState[actor.id].carriedLoaded,cartridges+ammo);
  assert.deepEqual(s.contentPresence.events,before.contentPresence.events);
 });
 
-test('fresh occupation keeps older enemy bodies separate from reused garrison identities and refunds their finite ammunition once',()=>{
+test('fresh occupation keeps older enemy bodies separate from reused garrison identities and counts their finite ammunition once in the legacy helper',()=>{
  const request={id:'first',sector:'san_nicolas',squad:[{...OPERATIVES.find(u=>u.id===3),weapon:1800,loaded:1,ammo:9}],enemies:[{id:'enemy-0',hp:80,maxHp:80,ammo:7,loaded:1,weapon:1800}]};
  const first=enterSector(request);const old=first.units.find(u=>u.side==='enemy');old.hp=0;old.inventory.keepsake={count:1,weight:1};first.sectorCleared=true;
  const nextRequest={...request,id:'second',issuedCartridges:10},next=enterSector(nextRequest,first),bodies=next.units.filter(u=>u.hp===0);

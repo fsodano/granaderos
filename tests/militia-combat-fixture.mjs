@@ -10,7 +10,7 @@ export function militiaEncounter(s,id){
  s=order(s,{type:'visitSector'});const r=s.pendingBattle;
  // Ordinary reaction fire in an explicitly declared compact encounter. A real
  // enemy approach supplies the shot and casualty; no health/result/credit edit.
- let battle=createBattle([...r.squad.map((u,i)=>({...u,x:1,y:6+i})),...r.garrison.map((u,i)=>({...u,x:u.id===id?1:4+i*2,y:u.id===id?1:6}))],{...r,hour:s.hour,secondOfHour:s.secondOfHour??0,exploration:false,width:14,height:10,props:[],tiles:Array.from({length:140},(_,i)=>({x:i%14,y:Math.floor(i/14),type:Math.floor(i/14)===4?'wall':'grass',blocked:Math.floor(i/14)===4,blocksSight:Math.floor(i/14)===4,cover:0})),enemies:[{id:'raider',name:'Asaltante',x:4,y:1,weapon:1813,blade:1813,hp:30,maxHp:30,morale:100,patrol:false}]});
+ let battle=createBattle([...r.squad.map((u,i)=>({...u,x:1,y:6+i})),...r.garrison.map((u,i)=>({...u,x:u.id===id?1:4+i*2,y:u.id===id?1:6}))],{...r,hour:s.hour,secondOfHour:s.secondOfHour??0,exploration:false,width:14,height:10,props:[],tiles:Array.from({length:140},(_,i)=>({x:i%14,y:Math.floor(i/14),type:Math.floor(i/14)===4?'wall':'grass',blocked:Math.floor(i/14)===4,blocksSight:Math.floor(i/14)===4,cover:0})),enemies:[{id:'raider',name:'Asaltante',x:4,y:1,weapon:1813,blade:1813,ammo:0,hp:30,maxHp:30,morale:100,patrol:false}]});
  return {s,battle};
 }
 export function militiaReaction(campaign,id){

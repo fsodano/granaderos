@@ -1,5 +1,10 @@
 # Share loose deployment cartridges
 
+> Historical verification record. The
+> [persistent ammunition delivery](strategic-ammunition-custody.md) replaces
+> automatic return refunds with physical carried and sector stock. Its current
+> checks supersede the refund expectations below; the original results remain history.
+
 Runtime/test source: `cd31016d65c2d4bb4d69d449244a4fb129a71dba`.
 
 The production supply selector includes loose cartridges. An exact reserve

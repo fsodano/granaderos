@@ -55,7 +55,7 @@ test('pocket placement and active hand persist through save, campaign return and
 test('campaign medical purchases cannot bypass pockets or charge a rejected purchase, and legacy full packs can enter to unload',()=>{
  let p=supplyCareField(),s=leave(p);const id=110;s.operativeState[id].medkits=100;
  const rejected=dispatchCampaign(s,{type:'purchaseMedicalSupplies',id,quantity:1});assert.match(rejected.lastError,/bolsillo/);assert.deepEqual(rejected.resources,s.resources);assert.deepEqual(rejected.operativeState,s.operativeState);
- s.operativeState[id].medkits=1000000;const cost=deploymentCost(s),entered=dispatchCampaign(s,{type:'visitSector'});assert.equal(entered.lastError,null);const unit=entered.pendingBattle.squad.find(u=>u.id===id);assert.equal(unit.ammo,0);assert.equal(unit.medkits,1000000);assert.equal(s.resources.treasury-entered.resources.treasury,cost);
+ s.operativeState[id].medkits=1000000;const cost=deploymentCost(s),entered=dispatchCampaign(s,{type:'visitSector'});assert.equal(entered.lastError,null);const unit=entered.pendingBattle.squad.find(u=>u.id===id);assert.equal(unit.ammo,s.operativeState[id].ammo);assert.equal(unit.medkits,1000000);assert.equal(s.resources.treasury-entered.resources.treasury,cost);
 });
 
 test('an empty body reports no equipment without claiming that the collectors pockets are full',()=>{

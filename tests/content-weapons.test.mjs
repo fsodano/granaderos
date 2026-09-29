@@ -70,7 +70,9 @@ test('a gun taken in combat survives retreat, campaign save and redeployment',()
  let s=order(initialCampaign(8,d),{type:'recruitCivic',id:110,term:'week'});secureArea(s,'buenos_aires');s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});
  // A compact combat fixture uses the real campaign deployment and return handlers.
  const request=s.pendingBattle,north=d.weapons.find(w=>w.id==='pistola-del-norte');
- let b=createBattle(request.squad.map(u=>({...u,x:1,y:1})),{width:12,height:8,id:request.id,sector:request.sector,npcs:request.npcs,seed:45,tiles:field().tiles,enemies:[{id:'guard',x:2,y:1,hp:10,weapon:north.template,weaponMetadata:weaponMetadata(north),loaded:3,condition:44},{id:'other',x:11,y:7,weapon:1800}]});
+ // Declare this compact encounter and its finite ammunition before any tactical order.
+ request.enemies=[{id:'guard',x:2,y:1,hp:10,weapon:north.template,weaponMetadata:weaponMetadata(north),loaded:3,condition:44},{id:'other',x:11,y:7,weapon:1800}];
+ let b=createBattle(request.squad.map(u=>({...u,x:1,y:1})),{width:12,height:8,id:request.id,sector:request.sector,npcs:request.npcs,seed:45,tiles:field().tiles,enemies:request.enemies});
  b=actBattle(b,{type:'fire',unitId:'110',targetId:'guard'});assert.equal(b.lastError,null);assert.equal(b.units.find(u=>u.id==='guard').hp,0);
  b=actBattle(b,{type:'loot',unitId:'110',targetId:'guard',item:'weapon'});assert.equal(b.lastError,null);
  const key=Object.keys(b.units[0].inventory).find(k=>k.startsWith('weapon:'));

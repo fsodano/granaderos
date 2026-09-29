@@ -1,5 +1,9 @@
 # Fresh historical victory and saved continuation
 
+The [persistent ammunition record](strategic-ammunition-custody.md) contains
+the later route checkpoints, actual costs and surviving force. The original
+source and dated results below remain historical evidence.
+
 Later partial-loading integration changes the route tactics, costs and casualties.
 See [the partial-loading record](partial-firearm-reloads.md) for that source and
 its new checkpoints; the results below retain their original source.

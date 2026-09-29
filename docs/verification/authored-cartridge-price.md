@@ -1,5 +1,10 @@
 # Authored cartridge price and finite return value
 
+> Historical verification record. The
+> [persistent ammunition delivery](strategic-ammunition-custody.md) replaces
+> automatic return refunds with physical carried and sector stock. Its current
+> checks supersede the refund expectations below; the original results remain history.
+
 Runtime/test source: `6beb6cdf4d028b839592d0d2902face825936fc7`.
 
 The campaign rules editor can set an optional integer cartridge price from zero

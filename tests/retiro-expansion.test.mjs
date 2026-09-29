@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {initialCampaign,dispatchCampaign,contractQuote,rosterFor,isSupplied} from '../game/campaign.js';
+import {initialCampaign,dispatchCampaign,contractQuote,rosterFor,isSupplied,deploymentCost} from '../game/campaign.js';
 import {defaultContentPackage} from '../game/content-package.js';
 import {fight} from './coastal-route-driver.mjs';
 import {encodeSave,decodeSave} from '../game/save.js';
@@ -25,10 +25,10 @@ for(const authored of [false,true])test(`Retiro-only hired squad earns Buenos Ai
  assert.deepEqual(owned(s),['buenos_aires','retiro']);assert.equal(isSupplied(s,'buenos_aires'),true);assert.equal(s.sectors.ensenada.owner,'royalist');
  for(const u of dead){assert.equal(s.operativeState[u.id].alive,false);assert.equal(s.operativeState[u.id].hp,0);assert.ok(!s.squad.includes(Number(u.id)));}
  for(const u of survivors){assert.equal(s.operativeState[u.id].hp,u.hp);assert.equal(s.operativeState[u.id].condition,u.condition);}
- const beforeSave=structuredClone(s);s=decodeSave(encodeSave(s)).campaign;assert.deepEqual(s,beforeSave);const cash=s.resources.treasury;
+ const beforeSave=structuredClone(s);s=decodeSave(encodeSave(s)).campaign;assert.deepEqual(s,beforeSave);const cash=s.resources.treasury,shortfall=deploymentCost(s);
  order({type:'visitSector'});const revisited=enterSector(s.pendingBattle,s.sectorStates.buenos_aires);assert.equal(revisited.mode,'exploration');assert.equal(revisited.sectorCleared,true);
  for(const u of survivors)assert.equal(revisited.units.find(v=>v.id===u.id).hp,u.hp);
  for(const u of dead)assert.ok(!revisited.units.some(v=>v.id===u.id&&v.hp>0));
  const pair=decodeSave(encodeSave(s,revisited));s=pair.campaign;order({type:'leaveSector',battleId:s.pendingBattle.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});
- assert.equal(s.resources.treasury,cash,'peaceful return refunds its issued loads without another conquest reward');assert.deepEqual(owned(s),['buenos_aires','retiro']);assert.equal(s.officer,null);assert.deepEqual(decodeSave(encodeSave(s)).campaign,s);
+ assert.equal(s.resources.treasury,cash-shortfall,'peaceful reentry pays only its shortfall and preserves the owned rounds');assert.equal(s.squad.reduce((n,id)=>n+s.operativeState[id].ammo+s.operativeState[id].carriedLoaded,0),survivors.length*10);assert.deepEqual(owned(s),['buenos_aires','retiro']);assert.equal(s.officer,null);assert.deepEqual(decodeSave(encodeSave(s)).campaign,s);
 });

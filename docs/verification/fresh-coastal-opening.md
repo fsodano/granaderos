@@ -1,5 +1,9 @@
 # Fresh coastal opening: mixed created force and hired force
 
+The [persistent ammunition record](strategic-ammunition-custody.md) contains
+the later route checkpoints, actual costs and surviving force. The original
+source and dated results below remain historical evidence.
+
 Two new campaigns now complete the published coastal opening with actual combat,
 paid service, permanent losses and saved mission settlement. They start from
 default content, seed 8, Retiro alone, no personnel and 3,200 pesos. Neither route

@@ -70,8 +70,8 @@ test('a generated enemy firearm can be recovered and retained through campaign r
  b=actBattle(b,{type:'loot',unitId:'110',targetId:'enemy-0',item:'weapon'});assert.equal(b.lastError,null);
  const key=Object.keys(b.units[0].inventory).find(k=>k.startsWith('weapon:'));b=actBattle(b,{type:'equipLoot',unitId:'110',inventoryKey:key});assert.equal(b.lastError,null);
  assert.equal(weaponFor(b.units[0]).contentId,'guard-pistol');assert.equal(b.units[0].loaded,4);
- const pair=syncBattleTime(s,b);assert.equal(pair.error,null);const funds=pair.campaign.resources.treasury,refund=pair.battle.units.filter(u=>u.side==='player').reduce((n,u)=>n+u.ammo+u.loaded,0);s=order(pair.campaign,{type:'battleResult',outcome:'retreat',battleId:request.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});
- assert.equal(s.resources.treasury,funds+refund);s=save(s).campaign;s=order(s,{type:'attack',sector:'san_nicolas'});assert.equal(s.pendingBattle.ammunitionSources.find(u=>u.id==='enemy-0').loaded,0);b=enterSector(s.pendingBattle,s.sectorStates.san_nicolas);
+ const pair=syncBattleTime(s,b);assert.equal(pair.error,null);const funds=pair.campaign.resources.treasury,returned=pair.battle.units.filter(u=>u.side==='player').reduce((n,u)=>n+u.ammo+u.loaded,0);s=order(pair.campaign,{type:'battleResult',outcome:'retreat',battleId:request.id,sectorState:pair.battle,survivors:pair.battle.units.filter(u=>u.side==='player')});
+ assert.equal(s.resources.treasury,funds);assert.equal(s.squad.reduce((n,id)=>n+s.operativeState[id].ammo+s.operativeState[id].carriedLoaded,0),returned);s=save(s).campaign;s=order(s,{type:'attack',sector:'san_nicolas'});assert.equal(s.pendingBattle.ammunitionSources.find(u=>u.id==='enemy-0').loaded,0);b=enterSector(s.pendingBattle,s.sectorStates.san_nicolas);
  assert.equal(b.units.find(u=>u.id==='enemy-0').hp,0);assert.equal(b.units.find(u=>u.id==='enemy-0').weaponDropped,true);
  assert.equal(weaponFor(b.units.find(u=>u.id==='110')).contentId,'guard-pistol');assert.ok(save(s,b));
 });
@@ -80,7 +80,7 @@ test('trained militia retain their authored weapons, identity, wear and spent am
  let s=order(secureArea(initialCampaign(42,d),'buenos_aires','ensenada'),{type:'createOfficer',name:'Isabel del Valle',answers:{origin:'cabildo',doctrine:'line_marksman',crisis:'rally'}});
  s=train(s,0);if(s.hour%24<6||s.hour%24>=20)s=order(s,{type:'wait',hours:(30-s.hour%24)%24});s=order(s,{type:'visitSector'});let request=s.pendingBattle;assert.equal(request.garrison.length,3);
  assert.ok(request.garrison.every(u=>contentWeaponOf(u).id==='line-pistol'&&u.loaded===6&&u.ammo===0));
- let b=createBattle([...request.squad.map(u=>({...u,x:1,y:8})),...request.garrison.map((u,i)=>({...u,x:1,y:1+i*2}))],{...request,exploration:false,width:14,height:10,tiles,seed:request.seed,enemies:[{id:'raider',x:11,y:1,weapon:1813,blade:1813,hp:20,maxHp:20}]});
+ let b=createBattle([...request.squad.map(u=>({...u,x:1,y:8})),...request.garrison.map((u,i)=>({...u,x:1,y:1+i*2}))],{...request,exploration:false,width:14,height:10,tiles,seed:request.seed,enemies:[{id:'raider',x:11,y:1,weapon:1813,blade:1813,ammo:0,hp:20,maxHp:20}]});
  const shooter=b.units.find(u=>u.militia),id=shooter.id;b=endTurn(b);assert.equal(b.lastError,null);
  const remaining=b.units.find(u=>u.id===id);assert.ok(remaining.loaded<6,JSON.stringify({night:b.night,log:b.log,units:b.units.map(u=>({id:u.id,hp:u.hp,loaded:u.loaded,condition:u.condition,rank:u.militiaRank}))}));assert.ok(remaining.condition<85);const loaded=remaining.loaded,condition=remaining.condition;
  s=save(leave(s,b)).campaign;s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);

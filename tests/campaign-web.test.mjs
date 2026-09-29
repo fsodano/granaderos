@@ -43,10 +43,11 @@ test('save reload is deterministic and invalid version rejected',()=>{
  const s=order(initialCampaign(17),{type:'purchaseEquipment',item:1802});assert.deepEqual(restoreCampaign(serializeCampaign(s)),s);assert.deepEqual(dispatch(s,{type:'wait',hours:96}),dispatch(restoreCampaign(serializeCampaign(s)),{type:'wait',hours:96}));assert.throws(()=>restoreCampaign('{"version":99}'));
 });
 
-test('deployment buys ammunition and refunds no more than verified returns',()=>{
- let s=initialCampaign();s=order(s,{type:'travel',sector:'buenos_aires'});const cash=s.resources.treasury;s=order(s,{type:'attack',sector:'san_nicolas'});const issued=s.pendingBattle.issuedCartridges;assert.equal(s.resources.treasury,cash+440-issued);assert.ok(issued>0);
- const before=s.resources.treasury;s=order(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'retreat',survivors:s.pendingBattle.squad.map(o=>({id:String(o.id),hp:o.hp,loaded:100,ammo:100}))});assert.equal(s.resources.treasury,before+issued);
- s.resources.treasury=0;assert.ok(dispatch(s,{type:'visitSector'}).lastError);
+test('departure purchases physical rounds once and rejects a return that creates cartridges',()=>{
+ let s=initialCampaign();const departure=s.resources.treasury;s=order(s,{type:'travel',sector:'buenos_aires'});const cash=s.resources.treasury;s=order(s,{type:'attack',sector:'san_nicolas'});const issued=s.pendingBattle.issuedCartridges;assert.equal(s.resources.treasury,cash+440);assert.ok(issued>0);assert.equal(cash,departure-issued);
+ const before=s.resources.treasury,forged=dispatch(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'retreat',survivors:s.pendingBattle.squad.map(o=>({id:String(o.id),hp:o.hp,loaded:100,ammo:100}))});assert.ok(forged.lastError);assert.equal(forged.resources.treasury,before);
+ s=order(s,{type:'battleResult',battleId:s.pendingBattle.id,outcome:'retreat',survivors:s.pendingBattle.squad});assert.equal(s.resources.treasury,before);assert.equal(s.squad.reduce((n,id)=>n+s.operativeState[id].ammo+s.operativeState[id].carriedLoaded,0),issued);
+ s.resources.treasury=0;assert.equal(dispatch(s,{type:'visitSector'}).lastError,null,'owned rounds need no second purchase');
 });
 test('monthly stipend is charged at30 days, no weekly deduction',()=>{
  let s=initialCampaign();

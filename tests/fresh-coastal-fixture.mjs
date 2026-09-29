@@ -37,7 +37,7 @@ export function freshCoastalRoute(kind,{onCheckpoint}={}){
  }else assert.equal(kind,'hired');
  if(kind==='local'){
   s=order(s,{type:'purchaseEquipment',item:'firearm-1801',quantity:1});const gun=s.armoryItems.find(i=>i.contentWeapon?.template===1801);
-  s=order(s,{type:'equip',operativeId:3,slot:'weapon',itemId:'firearm-1801',instanceId:gun.id});assert.equal(s.resources.treasury,2970);
+  s=order(s,{type:'equip',operativeId:3,slot:'weapon',itemId:'firearm-1801',instanceId:gun.id});assert.equal(s.resources.treasury,2960);assert.equal(s.operativeState[1000].ammo+s.operativeState[1000].carriedLoaded,10);
  }
  const first=kind==='local'?[]:kind==='created'?[110,136,141,120]:[110,114,136,141,120,131];
  for(const id of first)s=order(s,{type:'recruitCivic',id,term:'week'});
