@@ -822,3 +822,13 @@ Los suministros personales del habitante quedan intactos. Si no queda equipo
 suelto, la misma acción permite registrar a un habitante inconsciente. Los
 objetos enredados o dentro de un contenedor no cuentan como equipo suelto.
 [Verificación](../verification/occupied-ground-collection.md).
+
+
+### Golpear con el arma de fuego
+
+Con el arma de fuego en uso, **Golpear con la culata** permite atacar a corta
+distancia. El valor original es 16 PA y 18 de daño base, con alcance de 1,5
+celdas. El golpe conserva la carga, los cartuchos, el desgaste, el atasco y el
+trabajo de recarga. Para cargar con un arma blanca, elegila en la mano secundaria.
+La culata no agrega una bayoneta al inventario. Los accesorios físicos siguen
+pendientes. [Verificación](../verification/held-firearm-buttstock.md).
