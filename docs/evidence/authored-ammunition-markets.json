@@ -65,5 +65,6 @@
     "Alternative loads for one gun remain open.",
     "Advanced physical-inventory adapter remains unpublished.",
     "This is not full game/editor acceptance."
-  ]
+  ],
+  "pr": "https://github.com/fsodano/granaderos/pull/136"
 }

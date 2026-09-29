@@ -7,6 +7,8 @@ adapter and alternative loads per firearm remain separate work.
 
 Runtime and test source: `cd741d7263df639571f2e6239fabcd941199d220`.
 
+[PR #136](https://github.com/fsodano/granaderos/pull/136) carries this delivery.
+
 ## Authoring and use
 
 Open **Reglas → Proveedores de munición**. Select general rules or a town.

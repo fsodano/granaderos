@@ -632,7 +632,8 @@
     {
       "id": "E-AMMO-MARKETS",
       "path": "docs/verification/authored-ammunition-markets.md",
-      "description": "Pinned global and per-town supplier stock, prices, replenishment and preparation rules; focused runtime and mounted editor launch checks. Does not publish advanced inventory or alternative loads."
+      "description": "Pinned global and per-town supplier stock, prices, replenishment and preparation rules; focused runtime and mounted editor launch checks. Does not publish advanced inventory or alternative loads.",
+      "url": "https://github.com/fsodano/granaderos/pull/136"
     }
   ],
   "queue": [
@@ -6437,7 +6438,8 @@
       "testFiles": [
         "tests/ammunition-market-rules.test.mjs",
         "tests/story-editor.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/136"
     }
   ],
   "latestPublishedCheck": {
