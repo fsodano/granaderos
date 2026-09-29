@@ -81,7 +81,7 @@ test('death during military service activates the same successor without restori
 });
 
 test('a batched tactical checkpoint starts the delay at confirmed death time, after its elapsed hours',()=>{
- let p=approach(visit(ready())),n=resident(p.battle,'pablo');
+ let p=approach(visit(ready())),n=resident(p.battle,'pablo');p=act(p,{type:'weapon',slot:'blade'});
  p.battle=actBattle(p.battle,{type:'melee',unitId:'110',targetId:n.id});assert.equal(p.battle.lastError,null);assert.equal(resident(p.battle,'pablo').hp,0);
  for(let i=0;i<12;i++){p.battle=actBattle(p.battle,{type:'rest',unitId:'110'});assert.equal(p.battle.lastError,null);}
  p=synced(p);const r=p.campaign.contentPresence,receipt=r.receipts[0];assert.equal(receipt.minute,r.minute);assert.ok(receipt.at>=r.minute+60);assert.equal(person(p.campaign,'sal').appeared,false);assert.ok(save(p));
