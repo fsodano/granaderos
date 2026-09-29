@@ -57,4 +57,9 @@ both balances. These are mounted DOM and simulation checks, not live-browser,
 balance, historical-market or performance acceptance.
 
 Broader story, equipment, economy and integration requirements remain partial.
-Exact-head CI remains required before publication.
+Exact-head CI passed before publication.
+
+## Publication
+
+Published in [PR #110](https://github.com/fsodano/granaderos/pull/110) on 2026-09-29 00:18:13 UTC.
+Exact head `3a4f5cea488d10da97c763fbb156c5619169e4c4` passed [CI run 36501585135](https://github.com/fsodano/granaderos/actions/runs/36501585135), including the full suite, types and production build. Merge commit: `c5a5f46498e295b70440f7ea281bbcba9d276527`. This publication does not close the broader artillery or campaign requirements.

@@ -73,3 +73,8 @@ logistics and physical supply ownership remain separate. The old
 [development trading record](../gameplay/campaign/artillery-trade.md) describes a
 larger development system and its dated evidence. Exact-head CI remains required
 before publication.
+
+## Publication
+
+Published in [PR #108](https://github.com/fsodano/granaderos/pull/108) on 2026-09-28 23:57:29 UTC.
+Exact head `4ae971559f3393c1ba71883ed7fc3a99ce97036a` passed [CI run 36499919513](https://github.com/fsodano/granaderos/actions/runs/36499919513), including the full suite, types and production build. Merge commit: `a48e78ab231d13c020d8812e53cc6c1fa1c39fe5`. This publication does not close the broader artillery or campaign requirements.
