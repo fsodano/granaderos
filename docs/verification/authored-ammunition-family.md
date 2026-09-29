@@ -8,7 +8,11 @@ and inline saves do not gain a new property or change their identity.
 In **Armas → Munición compatible → Familia de munición**, choose the family or
 **Original**. Undo and redo preserve the choice. Launching a campaign pins it;
 later draft changes do not change that campaign. Blades cannot define ammunition.
-Unknown families and altered saved definitions are rejected.
+Unknown families and altered saved definitions are rejected. Strategic militia,
+trainees, mission allies and pending deployment records also validate typed
+reserves before restoration can normalize them. Missing totals, unknown types,
+negative or fractional quantities and mismatched totals are rejected. Validation
+checks the known ammunition owners, not arbitrary inventory keys.
 
 Deployment, compatible reserve display, reload, ground recovery and weapon
 inventory use the authored family. Fresh enemy troops receive the family of
@@ -17,16 +21,21 @@ ammunition already carried by its owner. Dropped guns keep their definition.
 
 ## Verification
 
-Runtime source: `f5ced0b8e5630754649600bd2faf06d4b980295a` (subsequent publication merges change documentation only).
+Final runtime source: `e29bca955c048df91943a45348720fa971e8ae73`. Publication is tracked in [PR #132](https://github.com/fsodano/granaderos/pull/132).
 
 - Four new simulations cover every selectable family, consumption of compatible
   stock only, wrong-family rejection, old definitions, invalid input, pinned-save
   protection, actual paid deployment, enemy issue, drops and recovered weapons.
+- Two additional save tests reproduce the earlier unchecked militia map, reject
+  malformed retained/deployment reserves and preserve valid mixed stock and old
+  scalar saves. A legitimate inventory entry named `ammunition` also survives.
 - One mounted editor test covers select, undo, redo, restore-original, real campaign
   launch, paid arrival and deployment, saved ammunition, later draft isolation and
   preservation of the ordinary campaign save.
 - Types, production export (735 files, 637 asset references) and all 36 reference
-  comparisons pass. Full regression passes **1287/1287**, with zero failures or skips.
+  comparisons pass. The complete regression on `b8d269b688df6d99bdc2f6f6f11b33155a25546a` passes
+  **1289/1289**, with zero failures or skips. The final validator scope correction
+  passes all 26 related tests; the complete remote suite gates the final PR head.
 - The production browser on port 3134 shows the original musket family, accepts
   rifle ammunition and correctly restores both selections with undo and redo.
   The chosen family survives a page reload.

@@ -608,7 +608,8 @@
     {
       "id": "E-AMMO-AUTHOR",
       "path": "docs/verification/authored-ammunition-family.md",
-      "description": "Optional pinned weapon ammunition family drives paid deployment, compatible reloads, enemy issue and recovered weapons. Five new simulation/mounted-editor checks; complete regression 1287/1287, types, 735-file export, all 36 baseline comparisons and browser select/undo/redo/reload pass. Alternate loads and advanced custody remain open."
+      "description": "Optional pinned weapon ammunition family drives paid deployment, compatible reloads, enemy issue and recovered weapons. Seven new simulation/editor cases include strategic reserve admission. Full regression 1289/1289 precedes a final scope correction, which passes 26 related tests, types and export. Source/log/browser evidence distinguishes those runs; the complete remote suite gates publication. Alternative loads and advanced custody remain open.",
+      "url": "https://github.com/fsodano/granaderos/pull/132"
     }
   ],
   "queue": [
@@ -6281,29 +6282,31 @@
       "requirement": "Select a compatible ammunition family for each authored firearm",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "The weapon editor selects one of four compatible ammunition families or the template default. Saved weapon definitions retain the choice through deployment, reload, drops and recovery. Existing definitions remain unchanged.",
-      "local": "Source f5ced0b8e5630754649600bd2faf06d4b980295a passes 1287/1287 with zero failures or skips, types, export and all 36 baseline checks. The actual editor selects, undoes, redoes and reloads the chosen family without console errors; paid campaign launch and later draft isolation pass.",
+      "published": "The weapon editor selects one of four compatible ammunition families or the template default. Saved weapon definitions retain the choice through deployment, reload, drops and recovery. Existing definitions remain unchanged. Typed strategic records reject malformed or inconsistent reserves without rejecting ordinary inventory keys.",
+      "local": "Full regression source b8d269b688df6d99bdc2f6f6f11b33155a25546a passes 1289/1289 with zero failures or skips. Final source e29bca955c048df91943a45348720fa971e8ae73 narrows saved-reserve validation to known unit records and passes all 26 related cases, types and export. The actual editor selects, undoes, redoes and reloads the choice without errors; paid launch and later draft isolation pass. Complete remote checks gate the final PR head.",
       "remaining": "",
-      "acceptance": "Choose and restore a weapon family through normal editor controls; consume compatible rounds only, reject wrong-family loads and forged definitions, preserve old saves, paid issue, enemy issue, recovered weapons and campaign pinning.",
+      "acceptance": "Choose and restore a weapon family through normal editor controls; consume compatible rounds only, reject wrong-family loads and forged definitions, preserve old saves, paid issue, enemy issue, recovered weapons and campaign pinning. Reject corrupt militia/deployment reserves while preserving valid mixed reserves, legacy scalar saves and named inventory objects.",
       "evidence": [
         "E-AMMO-AUTHOR"
       ],
       "testFiles": [
         "tests/authored-ammunition-family.test.mjs",
-        "tests/story-editor.test.mjs"
+        "tests/story-editor.test.mjs",
+        "tests/campaign-ammunition-admission.test.mjs"
       ],
       "parents": [
         "ITEM-01",
         "STORY-06",
         "JA2-I08",
         "INTEGRATION-01"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/132"
     }
   ],
   "latestPublishedCheck": {
-    "source": "f5ced0b8e5630754649600bd2faf06d4b980295a",
-    "total": 1287,
-    "passed": 1287,
+    "source": "b8d269b688df6d99bdc2f6f6f11b33155a25546a",
+    "total": 1289,
+    "passed": 1289,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
