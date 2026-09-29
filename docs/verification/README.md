@@ -5,11 +5,9 @@
 Read the [published progress ledger](published-progress.md) first. It records
 accepted features on GitHub `main`, approved scope changes and open work.
 
-## Pending integration
-
-- [Compatible ammunition and implicit ignition kit](typed-ammunition.md) — PR #130.
-
 ## Published baseline
+
+- [Compatible ammunition and implicit ignition kit](typed-ammunition.md) — merged PR #130.
 
 - [Shared desktop inventory pockets](shared-inventory-pockets.md) — merged PR #128.
 

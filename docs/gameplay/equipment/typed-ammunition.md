@@ -8,6 +8,12 @@ The nine handheld firearms now use compatible prepared loads. Changing the gun d
 
 Use **R**, or click to fire an empty gun, to start loading. Loading consumes compatible cartridges only when a charge is completed. Existing work stays on the physical gun across turns, hand changes, drops, campaign returns and saves. Two pistols use their own types and the same available AP budget. Exploration does not spend AP.
 
+> **Design change, 29 September 2026:** the published game groups these nine
+> historical loads into four compatible families and assumes an ignition kit.
+> The separate development checkout described below still needs that integration.
+> Use the [published ammunition record](../../verification/typed-ammunition.md)
+> for the current rule. Alternative loads for one firearm remain open.
+
 ## Loads and supply
 
 | Weapon | Prepared load |
