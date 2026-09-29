@@ -1,4 +1,5 @@
 'use client';
+import AlternativeLoads from './AlternativeLoads';
 import {storyReferences} from '../../../game/campaign-story.js';
 import DialogueEditor from './DialogueEditor';
 import QuestEditor from './QuestEditor';
@@ -791,12 +792,13 @@ export default function ContentEditor() {
                       </select>
                     </label>
                     {!isBladeDefinition(item)&&<fieldset><legend>Munición compatible</legend>
-                      <label>Familia de munición<select value={item.ammunitionFamily??''} onChange={e=>update({ammunitionFamily:e.target.value||undefined})}>
+                      <label>Familia de munición<select value={item.ammunitionFamily??''} onChange={e=>update({ammunitionFamily:e.target.value||undefined,alternativeLoads:undefined})}>
                         <option value="">Original · {ammunitionForWeapon(item.template)?.name}</option>
                         {Object.entries(AMMO_TYPES).map(([id,ammo])=><option key={id} value={id}>{ammo.name}</option>)}
                       </select></label>
-                      <p>Esta arma carga solo la familia elegida. Cambiar de arma no convierte los cartuchos que ya lleva el soldado. La elección se conserva en la campaña guardada.</p>
+                      <p>Esta es la familia principal del arma. Cambiar de arma no convierte los cartuchos que ya lleva el soldado. La elección se conserva en la campaña guardada.</p>
                     </fieldset>}
+                    {!isBladeDefinition(item)&&<AlternativeLoads weapon={item} onChange={update}/>}
                     <p>
                       La familia conserva sus técnicas de combate. El nombre, la imagen y estos valores se usan en la campaña, la armería y el equipo recuperado. La prueba de tiro admite armas de fuego.
                     </p>

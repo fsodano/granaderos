@@ -1,4 +1,4 @@
-import {AMMO_KEYS,AMMO_TYPES,ammoTypeFor,ammoStock,ammoCount,totalAmmo,changeAmmo,validateAmmo} from './ammo-types.js';
+import {AMMO_KEYS,AMMO_TYPES,ammoTypeFor,ammoStock,ammoCount,totalAmmo,changeAmmo,validateAmmo,validateAmmunitionChoice,ammunitionChoiceReason} from './ammo-types.js';
 import {AMMUNITION_MARKET_LOCATIONS,ammunitionMarketRules,ammunitionUnitPrice} from './ammunition-market-rules.js';
 import {campaignRules} from './campaign-rules.js';
 import {arrivalFacilityOptions} from './arrival-sites.js';
@@ -18,7 +18,7 @@ const freshShop=(s,at)=>({stock:Object.fromEntries(AMMO_KEYS.map(key=>[key,ammun
 const shop=(s,at=s.location)=>s.ammunitionShops?.[at]??freshShop(s,at);
 const loaded=record=>record?.carriedLoaded??0;
 export function carriedAmmunition(op,record){return {...op,...record,loaded:loaded(record),ammunition:{...(record?.ammunition??{})},ammo:totalAmmo({ammunition:record?.ammunition??{}}),...(record?.carriedReloadProgress?{reloadProgress:record.carriedReloadProgress}:{})};}
-function keep(record,unit){record.ammunition={...unit.ammunition};record.ammo=totalAmmo(unit);record.carriedLoaded=unit.loaded??0;if(unit.reloadProgress)record.carriedReloadProgress=unit.reloadProgress;else delete record.carriedReloadProgress;}
+function keep(record,unit){if(unit.ammunitionChoice!==undefined)record.ammunitionChoice=unit.ammunitionChoice;else delete record.ammunitionChoice;record.ammunition={...unit.ammunition};record.ammo=totalAmmo(unit);record.carriedLoaded=unit.loaded??0;if(unit.reloadProgress)record.carriedReloadProgress=unit.reloadProgress;else delete record.carriedReloadProgress;}
 function validateCounts(value){need(object(value)&&Object.entries(value).every(([key,n])=>Object.hasOwn(AMMO_TYPES,key)&&count(n)),'La reserva de munición no es válida.');}
 
 // Previously settled cartridges were refunded. They do not become free stock.
@@ -41,7 +41,7 @@ export function validateAmmunitionCustody(s,roster){
   need(arrivalFacilityOptions(at).length>0&&object(merchant)&&object(merchant.stock)&&Object.keys(merchant.stock).length===AMMO_KEYS.length&&AMMO_KEYS.every(key=>count(merchant.stock[key])&&merchant.stock[key]<=ammunitionShopCapacity(key,s,at))&&Number.isInteger(merchant.restockHours)&&merchant.restockHours>=0&&merchant.restockHours<ammunitionMarketRules(s,at).restockHours,'Las existencias de munición del proveedor no son válidas.');
  }
  for(const op of roster){
-  const record=s.operativeState[op.id];if(!record)continue;
+  const record=s.operativeState[op.id];if(!record)continue;validateAmmunitionChoice(carriedAmmunition(op,record));
   if(record.ammunition!==undefined){validateCounts(record.ammunition);need(record.ammo===totalAmmo(record),'El total de munición personal no coincide.');}
   need(count(loaded(record))&&loaded(record)<=(weaponSpecification(op)?.capacity??0),'La carga personal del arma no es válida.');
   if(record.carriedReloadProgress!==undefined)need(Number.isFinite(record.carriedReloadProgress)&&record.carriedReloadProgress>0&&record.carriedReloadProgress<1&&loaded(record)<(weaponSpecification(op)?.capacity??0),'La recarga personal no es válida.');
@@ -71,6 +71,12 @@ export function ammunitionOrderQuote(s,op,key,quantity,direction,supplied){
  if(!reason&&direction!=='store'&&supplyRoom(unit,key,quantity)<quantity)reason='No queda espacio en los bolsillos para esos cartuchos.';
  return {available:!reason,reason,cost,unitPrice,carried,stored:store,stock:merchant,loaded:loaded(record),key,quantity,direction};
 }
+export function unloadOwnedCampaignAmmunition(s,op){const reason=accessReason(s,op);need(!reason,reason);need(loaded(s.operativeState[op.id])>0,'El arma está vacía.');unloadCampaignWeapon(s,op);s.operativeState[op.id].jammed=false;}
+export function selectCampaignAmmunitionLoad(s,op,family){
+ const reason=accessReason(s,op);need(!reason,reason);
+ const unit={...carriedAmmunition(op,s.operativeState[op.id]),activeSlot:'primary'},choice=ammunitionChoiceReason(unit,family);need(!choice,choice);
+ s.operativeState[op.id].ammunitionChoice=family;
+}
 export function moveCampaignAmmunition(s,op,key,quantity,direction,supplied){
  const quote=ammunitionOrderQuote(s,op,key,quantity,direction,supplied);need(quote.available,quote.reason);
  const record=s.operativeState[op.id],unit=carriedAmmunition(op,record);
@@ -88,13 +94,13 @@ export function prepareCampaignAmmunition(s,roster,ids,{at=s.location,supplied=f
  const state=commit?s:structuredClone(s);migrateAmmunitionCustody(state);
  const allocation={};let cost=0,issued=0;
  for(const id of ids){
-  const op=roster.find(o=>o.id===id),record=state.operativeState[id],unit=carriedAmmunition(op,record),key=ammoTypeFor(op),capacity=weaponSpecification(op)?.capacity??0;
+  const op=roster.find(o=>o.id===id),record=state.operativeState[id],unit=carriedAmmunition(op,record),key=ammoTypeFor(unit),capacity=weaponSpecification(op)?.capacity??0;
   if(key&&arrivalFacilityOptions(at).length>0&&worldOwner(state,at)==='patriot'&&supplied){
    if(!record.carriedReloadProgress){const charges=Math.min(capacity-unit.loaded,ammoCount(unit,key));unit.loaded+=charges;changeAmmo(unit,key,-charges);}
    const wanted=Math.max(0,campaignRules(state).deploymentCartridges-unit.loaded-ammoCount(unit,key)),roomInGun=record.carriedReloadProgress?0:Math.min(wanted,capacity-unit.loaded),quantity=!hasAmmunitionMarket(state,at)||!ammunitionMarketRules(state,at).automaticPurchase?0:Math.min(shop(state,at).stock[key],roomInGun+supplyRoom(unit,key,wanted-roomInGun));
    if(quantity){state.ammunitionShops[at]??=freshShop(state,at);state.ammunitionShops[at].stock[key]-=quantity;const charges=Math.min(roomInGun,quantity);unit.loaded+=charges;changeAmmo(unit,key,quantity-charges);cost+=quantity*ammunitionUnitPrice(state,at,key);}
   }
-  allocation[id]={loaded:unit.loaded,ammo:totalAmmo(unit),ammunition:{...unit.ammunition},...(record.carriedReloadProgress?{reloadProgress:record.carriedReloadProgress}:{})};
+  allocation[id]={...(unit.ammunitionChoice!==undefined?{ammunitionChoice:unit.ammunitionChoice}:{}),loaded:unit.loaded,ammo:totalAmmo(unit),ammunition:{...unit.ammunition},...(record.carriedReloadProgress?{reloadProgress:record.carriedReloadProgress}:{})};
   issued+=unit.loaded+totalAmmo(unit);keep(record,unit);
  }
  need(Number.isSafeInteger(cost)&&(!commit||state.resources.treasury>=cost),'No hay suficientes pesos para completar la munición de la escuadra.');
@@ -105,7 +111,7 @@ export function prepareCampaignAmmunition(s,roster,ids,{at=s.location,supplied=f
 // Changing a firearm does not convert or sell its charges. Unload its actual
 // family into the owner's pockets before the weapon moves to the armory.
 export function unloadCampaignWeapon(s,op){
- const record=s.operativeState[op.id],before=carriedAmmunition(op,record),after=structuredClone(before),key=ammoTypeFor(op);
+ const record=s.operativeState[op.id],before=carriedAmmunition(op,record),after=structuredClone(before),key=ammoTypeFor(before);
  need(!record.carriedReloadProgress,'Terminá la recarga antes de guardar el arma en la armería.');
  if(before.loaded){need(key,'La carga del arma no tiene familia.');changeAmmo(after,key,before.loaded);after.loaded=0;const reason=pocketChangeReason(before,after);need(!reason,reason);}
  delete after.reloadProgress;keep(record,after);

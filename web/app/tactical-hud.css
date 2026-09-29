@@ -178,3 +178,7 @@
 .battle-layout .ja2-stats>div{white-space:normal;align-items:baseline}
 .battle-layout .ja2-stats>div>span{min-width:0;overflow-wrap:anywhere}
 .battle-layout .ja2-stats>div>b{flex-shrink:0}
+
+.ammunition-load-choice{display:flex;flex-direction:column;gap:6px;min-width:0;width:100%;text-align:left}
+.ammunition-load-choice label,.ammunition-load-choice select{display:block;max-width:100%;width:100%;box-sizing:border-box}
+.ammunition-load-choice small{white-space:normal}
