@@ -564,7 +564,7 @@
     {
       "id": "E-HELD-FIREARM-BUTTSTOCK",
       "path": "docs/verification/held-firearm-buttstock.md",
-      "description": "Actual held firearms use their stock instead of an unowned bayonet. Five new simulations and one mounted production-game check pass; related group 53/53. Complete regression 1209/1209, zero failures/skips, with types, export and 36 reference comparisons. Fresh campaign and saved continuation include actual renewed travelling contracts and changed permanent casualties. Exact-head CI remains required before merge."
+      "description": "Actual held firearms use their stock instead of an unowned bayonet. Five new simulations and one mounted production-game check pass; related group 53/53. Complete regression 1209/1209, zero failures/skips, with types, export and 36 reference comparisons. Fresh campaign and saved continuation include actual renewed travelling contracts and changed permanent casualties. Published by PR #123 after successful exact-head CI."
     },
     {
       "id": "E-AUTHORED-FIREARM-MELEE",
@@ -6048,7 +6048,7 @@
       "requirement": "Use the actual held firearm stock for close melee without inventing a bayonet or changing weapon custody",
       "status": "VERIFIED",
       "priority": "P1",
-      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. A held firearm uses its stock at contact and cannot execute a blade charge or brace without selecting an actual blade.",
+      "published": "Published by PR #123 after successful exact-head CI. A held firearm uses its stock at contact and cannot execute a blade charge or brace without selecting an actual blade.",
       "local": "Five new simulations and one mounted production-game check pass; related group 53/53. Complete regression 1209/1209, zero failures/skips, with types, export and 36 reference comparisons.",
       "remaining": "",
       "acceptance": "Use the ordinary melee control with a real paid authored firearm against a living enemy; conserve loaded and loose ammunition, weight, identity, image, wear, jam and unfinished work; save, withdraw and reenter with the same gun and secondary; reject unsupported charge, brace, range and AP orders atomically; select actual owned secondary or empty hands; automatic bare firearms strike at contact and reload at distance; complete the fresh historical route and post-victory save continuation using ordinary paid orders.",
@@ -6066,7 +6066,8 @@
         "tests/cold-steel.test.mjs",
         "tests/fresh-ending-route.test.mjs",
         "tests/fresh-coastal-route.test.mjs"
-      ]
+      ],
+      "pr": "https://github.com/fsodano/granaderos/pull/123"
     },
     {
       "id": "AUTHOREDSTOCK-01",
@@ -6094,13 +6095,13 @@
     }
   ],
   "latestPublishedCheck": {
-    "source": "bf7a3384e02e723360017606ddb103dd12335473",
-    "total": 1203,
-    "passed": 1203,
+    "source": "918277451e811988139e0f7b250cf48680f27e58",
+    "total": 1209,
+    "passed": 1209,
     "failed": 0,
     "skipped": 0,
     "types": "PASS",
     "build": "PASS",
-    "evidenceId": "E-OCCUPIED-GROUND-COLLECTION"
+    "evidenceId": "E-HELD-FIREARM-BUTTSTOCK"
   }
 }
