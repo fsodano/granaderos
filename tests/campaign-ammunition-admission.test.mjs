@@ -17,9 +17,10 @@ test('campaign admission rejects malformed or inconsistent typed reserves in ret
 
 test('campaign admission keeps valid mixed militia reserves and legacy scalar records stable across repeated saves',()=>{
  const {campaign,patientId}=woundedGarrison(),wire=JSON.parse(encodeSave(campaign)),u=wire.campaign.garrisons.retiro.find(u=>u.id===patientId);
- u.ammunition={ammoMusket:2,ammoShot:3};u.ammo=5;
+ u.ammunition={ammoMusket:2,ammoShot:3};u.ammo=5;u.inventory.ammunition={name:'Estuche',count:1,weight:.1};
  const first=decodeSave(JSON.stringify(wire)),second=decodeSave(encodeSave(first.campaign));
  assert.deepEqual(second.campaign.garrisons.retiro.find(u=>u.id===patientId).ammunition,u.ammunition);
  assert.equal(second.campaign.garrisons.retiro.find(u=>u.id===patientId).ammo,5);
+ assert.deepEqual(second.campaign.garrisons.retiro.find(u=>u.id===patientId).inventory.ammunition,u.inventory.ammunition);
  delete u.ammunition;const legacy=decodeSave(JSON.stringify(wire));assert.equal(legacy.campaign.garrisons.retiro.find(u=>u.id===patientId).ammo,5);
 });

@@ -63,14 +63,19 @@ export function removeIgnitionSupplies(value){
  return value;
 }
 
-// Typed campaign records also live outside the loaded tactical snapshot. Validate
-// their original totals before restoration can normalize them. Do not traverse
-// the immutable authored package or create reserves on legacy scalar records.
-export function validateStoredAmmo(value){
- if(!value||typeof value!=='object')return;
- if(Object.hasOwn(value,'ammunition')){
-  if(!Number.isSafeInteger(value.ammo))throw Error('El total de munición guardado no es válido.');
-  validateAmmo({...value});
+// Strategic ammunition owners also exist outside the loaded scene. Inspect the
+// known record collections; inventory keys and authored data are not unit fields.
+export function validateStoredAmmo(state){
+ const values=value=>value&&typeof value==='object'?Object.values(value):[];
+ const list=value=>Array.isArray(value)?value:[];
+ const request=state.pendingBattle;
+ const records=[...values(state.operativeState),...values(state.missionAllies),
+  ...values(state.garrisons).flatMap(list),
+  ...list(state.militiaTraining).flatMap(course=>list(course?.trainees)),
+  ...['squad','garrison','missionAllies','enemies','ammunitionSources','garrisonLootSources','casualtyLootSources'].flatMap(key=>list(request?.[key]))];
+ for(const record of records){
+  if(!record||typeof record!=='object'||!Object.hasOwn(record,'ammunition'))continue;
+  if(!Number.isSafeInteger(record.ammo))throw Error('El total de munición guardado no es válido.');
+  validateAmmo({...record});
  }
- for(const [key,child]of Object.entries(value))if(key!=='contentCampaign')validateStoredAmmo(child);
 }
