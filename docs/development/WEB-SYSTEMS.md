@@ -6,6 +6,11 @@
 
 The requested delivery target is now a browser game. `game/campaign.js` is the strategic reducer; `game/data.js` contains authored Spanish game content. Source code and these documents remain English. This implementation reuses the requested historical structure and JA2-inspired data/mechanics; it does not execute the Windows JA2 binary in a browser.
 
+> The approved ammunition change removes separate priming and flint inventory.
+> References to finite ignition supplies below describe earlier checkpoints.
+> See [compatible ammunition and implicit kit](../verification/typed-ammunition.md)
+> for the current inventory, reload and resupply rules.
+
 ## Source references
 
 - User-provided **GRANADEROS: Jagged Alliance 2 Engine Historical Conversion Specification**, sections 1 (five-phase San Martín arc and six factions), 2 (recruitment, stipends, transports, foundries, economy and militia), 4 (thirteen sector table, supply routes, biomes and strategic AI), 5 (thirteen operatives), and 6 (weapons and equipment). The original supplied attachment is the authoritative requested design. Map grid labels are the specification's campaign references, not real geographic coordinates.
