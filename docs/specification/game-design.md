@@ -873,5 +873,17 @@ companion's pack for four sender AP or one exploration second. It uses the same
 obstacle and eligibility checks as stored-weapon handover. Emptying the selected
 hand leaves fists; the recipient retains its own equipment and can equip the
 received piece normally. Authored identity and mechanism survive saved campaign
-return. Supplies and remote delivery remain separate. See
+return. The supply controls handle personal allocations; remote delivery remains
+separate. See
 [verification](../verification/held-weapon-transfer.md).
+
+
+### Exact personal supply handover
+
+An adjacent conscious squad member can receive an exact whole quantity of
+priming, flints, rations, torches, dressings or bolas. The sender pays four AP
+or one exploration second, and the recipient pays no action points. Supplies
+move once between their actual holders; subsequent use and saved campaign return
+retain the remainders. Invalid or unavailable quantities fail in full before
+costs. Cartridge sharing and physical pocket capacity remain separate. See
+[verification](../verification/adjacent-supply-transfer.md).

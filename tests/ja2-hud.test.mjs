@@ -48,10 +48,10 @@ test('S2 inventory: Güemes stats, hand slots, slotAction, backpack records, sup
   u.inventory.junk={count:1,weight:2,weapon:9999,loaded:0};
   assert.equal(inventoryModel(s,u).backpack.find(b=>b.key==='junk').equippable,false);
   const supplies=inventoryModel(s,u).supplies;
-  assert.equal(supplies.length,6);
+  assert.equal(supplies.length,7);
   const byId=Object.fromEntries(supplies.map(x=>[x.id,x]));
-  assert.deepEqual(Object.keys(byId).sort(),['ammo','boleadoras','flints','priming','rations','torches']);
-  assert.equal(byId.ammo.count,u.ammo);assert.equal(byId.priming.count,u.priming);assert.equal(byId.flints.count,u.flints);assert.equal(byId.rations.count,u.rations);assert.equal(byId.boleadoras.count,u.boleadoras);assert.equal(byId.torches.count,u.torches);
+  assert.deepEqual(Object.keys(byId).sort(),['ammo','boleadoras','flints','medkits','priming','rations','torches']);
+  assert.equal(byId.medkits.count,u.medkits??0);assert.equal(byId.ammo.count,u.ammo);assert.equal(byId.priming.count,u.priming);assert.equal(byId.flints.count,u.flints);assert.equal(byId.rations.count,u.rations);assert.equal(byId.boleadoras.count,u.boleadoras);assert.equal(byId.torches.count,u.torches);
   for(const x of supplies){assert.ok(x.label&&x.label.length>0);assert.equal(typeof x.count,'number');}
   const m2=inventoryModel(s,u);
   assert.equal(m2.weight,carriedWeight(u));assert.equal(m2.capacity,carryCapacity(u));assert.equal(m2.poncho,false);

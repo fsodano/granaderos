@@ -57,6 +57,7 @@ export function inventoryModel(state, unit) {
     {id: 'medical', label: 'Medicina', value: unit.medical},
   ];
   const supplies = [
+    {id: 'medkits', label: 'Vendas', count: unit.medkits??0},
     {id: 'ammo', label: 'Cartuchos', count: unit.ammo},
     {id: 'priming', label: 'Cebado', count: unit.priming},
     {id: 'flints', label: 'Sílex', count: unit.flints},

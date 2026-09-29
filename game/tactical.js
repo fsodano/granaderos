@@ -256,6 +256,13 @@ else if(a.type==='drop'){
  else{record.count--;if(!record.count)delete u.inventory[key];}
  say(s,`${u.name} deja ${weaponSpecification(record).name} en el suelo.`);
 }
+else if(a.type==='transferSupply'){
+ if(a.slot!==undefined||a.inventoryKey!==undefined)return fail('Elegí solamente el suministro y la cantidad para entregar.');
+ const plan=supplyTransferPreview(s,u,target,a.item,a.count);if(plan.reason)return fail(plan.reason);
+ if(!pay(4))return fail('Entregar suministros requiere 4 PA.');
+ u[a.item]-=a.count;target[a.item]=(target[a.item]??0)+a.count;
+ lowerWeapon(u);say(s,`${u.name} entrega ${a.count} ${CHARACTER_SUPPLY_LABELS[a.item].toLowerCase()} a ${target.name}.`);
+}
 else if(a.type==='transfer'){
  const plan=weaponTransferPreview(s,u,target,a.inventoryKey,a.slot);if(plan.reason)return fail(plan.reason);
  if(!pay(4))return fail('Entregar una pieza requiere 4 PA.');
@@ -343,13 +350,27 @@ function releaseHeldWeapon(u,slot){
  else{u.blade=0;delete u.bladeMetadata;delete u.bladeCondition;delete u.bladeJammed;}
  if((u.activeSlot||'primary')===slot)u.activeSlot='unarmed';u.braced=false;
 }
+function companionTransferReason(s,u,target){
+ if(s.status!=='active'||!u||u.side!=='player'||u.militia||!alive(u)||u.fled||u.departure||u.knockedDown)return 'Seleccioná un integrante de la escuadra que pueda actuar.';
+ if(!target||target===u||target.id===u.id||target.side!==u.side||target.militia||!alive(target)||target.fled||target.departure||target.knockedDown||target.entangled)return 'Elegí otro integrante consciente de la escuadra.';
+ if(!artilleryContact(s,u,target))return 'El compañero debe estar al lado, sin obstáculos entre ambos.';
+ return null;
+}
+export function supplyTransferPreview(s,u,target,item,count){
+ const reject=reason=>({reason,pa:4,seconds:s.mode==='exploration'?1:undefined}),reason=companionTransferReason(s,u,target);if(reason)return reject(reason);
+ if(!Object.hasOwn(CHARACTER_SUPPLY_LABELS,item))return reject('Elegí un suministro personal para entregar.');
+ if(!Number.isSafeInteger(count)||count<1)return reject('La cantidad debe ser un número entero positivo.');
+ const available=u[item]??0,received=target[item]??0,limit=item==='medkits'?1000000:100000;
+ if(!Number.isSafeInteger(available)||available<count)return reject('No quedan suficientes suministros de ese tipo.');
+ if(!Number.isSafeInteger(received)||received<0||received+count>limit)return reject('El compañero no puede guardar esa cantidad de suministros.');
+ if(s.mode!=='exploration'&&u.ap<4)return reject('Entregar suministros requiere 4 PA.');
+ return {reason:null,pa:4,seconds:s.mode==='exploration'?1:undefined};
+}
 // Shared preflight for the inventory control and execution; it never mutates.
 /** @param {'primary'|'blade'|'unarmed'} [slot] */
 export function weaponTransferPreview(s,u,target,inventoryKey,slot=undefined){
  const reject=reason=>({reason,pa:4,seconds:s.mode==='exploration'?1:undefined});
- if(s.status!=='active'||!u||u.side!=='player'||u.militia||!alive(u)||u.fled||u.departure||u.knockedDown)return reject('Seleccioná un integrante de la escuadra que pueda actuar.');
- if(!target||target===u||target.id===u.id||target.side!==u.side||target.militia||!alive(target)||target.fled||target.departure||target.knockedDown||target.entangled)return reject('Elegí otro integrante consciente de la escuadra.');
- if(!artilleryContact(s,u,target))return reject('El compañero debe estar al lado, sin obstáculos entre ambos.');
+ const reason=companionTransferReason(s,u,target);if(reason)return reject(reason);
  const held=slot!==undefined;
  if(held&&(!['primary','blade'].includes(slot)||inventoryKey!==undefined))return reject('Elegí una sola mano o un arma de la mochila.');
  if(held&&(slot==='primary'?(u.weaponDropped||!u.weapon):!BLADES[u.blade]))return reject('Esa mano no tiene un arma para entregar.');
