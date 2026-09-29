@@ -1,5 +1,7 @@
 # Observed enemy turns and retained scenery
 
+PR #125 merged as `45dc74af797bfd96672102beab6d991d783585a2` after all five checks passed on head `f0ef6b59300fb4ee42b3288eb8ca7d2992471ec6`.
+
 Runtime/test source: `180e13ec1e54aa569ec4afca0d69e24c69b9dbee`.
 
 The ordinary end-turn control presents observed movement one cell at a time.
@@ -7,6 +9,8 @@ Observed attack preparation appears before its resulting injury. Hidden actors
 do not acquire a figure or camera focus through the presentation record. When
 an actor first becomes visible, its presentation begins at the observed cell;
 its earlier hidden route is not replayed.
+
+**Export correction:** the original build embedded a local file URL in the worker constructor. Browser checks established visible playback but did not prove worker execution; the browser could use the main-thread fallback. [The follow-up correction](enemy-worker-export.md) fixes the emitted URL and adds a build guard.
 
 The simulation records transient frames without changing its random sequence,
 orders, AP, ammunition, injuries or final result. The worker computes the turn;
@@ -29,8 +33,7 @@ unmount. Sprite action clocks only wake when an authored pose can change.
 
 The complete regression passes **1242/1242**, with zero failures or skips, in
 279,210 ms. Browser types, the production export (723 files, 632 asset
-references), and 36 numerical reference comparisons pass. Exact-head CI remains
-required before merge. [Machine-readable results](../evidence/visible-enemy-turns.json)
+references), and 36 numerical reference comparisons pass. All five exact-head CI checks passed before merge. [Machine-readable results](../evidence/visible-enemy-turns.json)
 identify the source and retained check digests.
 The new simulations compare presentation with the original authoritative turn,
 including actual San Lorenzo attacks. Mounted checks cover duplicate orders,

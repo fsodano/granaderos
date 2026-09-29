@@ -1,4 +1,5 @@
 // Build the browser-only game and stage a verified static export for hosting.
+import {verifyBrowserWorkers} from './verify-browser-workers.mjs';
 import {verifyTacticalAssets} from './verify-tactical-assets.mjs';
 import {MERCENARY_ADDITIONS} from '../game/mercenaries.js';
 import {spawnSync} from 'node:child_process';
@@ -45,6 +46,7 @@ for(const file of sourceFiles){
   }
   if(extname(file)==='.js'){
     const javascript=await readFile(file,'utf8');
+    verifyBrowserWorkers(javascript,name,reference=>requireAsset(reference,name));
     for(const match of javascript.matchAll(/[\"'`](\/art\/[^\"'`$?#]+)[\"'`]/g))requireAsset(match[1],name);
   }
   if(extname(file)==='.css'){

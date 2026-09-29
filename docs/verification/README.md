@@ -160,3 +160,5 @@ establish gameplay correctness.
 
 [Complete parallel CI verification](parallel-verification.md) documents the full
 test partition and retained publication gates. It is infrastructure evidence.
+
+- [Enemy-turn worker export](enemy-worker-export.md): production URL correction and release guard.
