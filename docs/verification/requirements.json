@@ -535,6 +535,11 @@
       "id": "E-HELD-WEAPON-TRANSFER",
       "path": "docs/verification/held-weapon-transfer.md",
       "description": "An actual held primary or secondary moves directly to an adjacent conscious companion, preserving the piece, image, loaded charge, weight and mechanism. Five simulations and two mounted production-game cases pass; related group 27/27. Complete regression passes 1176/1176, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
+    },
+    {
+      "id": "E-ADJACENT-SUPPLY-TRANSFER",
+      "path": "docs/verification/adjacent-supply-transfer.md",
+      "description": "Exact quantities of six authored personal supplies transfer to an adjacent companion and remain finite through use, save and campaign return. Four simulations and two mounted production-game checks pass; related group 30/30. Complete regression passes 1182/1182, zero failures/skips, with types, export and 36 reference comparisons. Exact-head publication remains required."
     }
   ],
   "queue": [
@@ -4576,7 +4581,7 @@
       "requirement": "Nearby allies can give/pass items; distant allies can catch a thrown item with an explicit risk/cost. G14; M22-25.",
       "status": "PARTIAL",
       "priority": "P1",
-      "published": "One stored recovered weapon can be handed directly to an adjacent conscious squad member for four sender AP or one exploration second. Shared preview/execution rejects blocked contact or unavailable recipients and preserves actual ownership, mechanism and full saves. WEAPONHANDOVER-01 records this bounded delivery. HELDHANDOVER-01 also delivers the actual primary or secondary directly, leaving the source hand empty.",
+      "published": "One stored recovered weapon can be handed directly to an adjacent conscious squad member for four sender AP or one exploration second. Shared preview/execution rejects blocked contact or unavailable recipients and preserves actual ownership, mechanism and full saves. WEAPONHANDOVER-01 records this bounded delivery. HELDHANDOVER-01 also delivers the actual primary or secondary directly, leaving the source hand empty. SUPPLYHANDOVER-01 transfers exact quantities of authored priming, flints, rations, torches, dressings and bolas, including received medical use and saved reentry.",
       "local": "The preserved source records the local implementation and remaining gaps. The fresh broad run is not a new visual or per-row acceptance check. WEAPONHANDOVER-01 tracks adjacent transfer of recovered weapons with saved recipient ownership.",
       "remaining": "Extend transfer to held equipment and supplies; integrate physical capacity, relay chains, throwing/catching and their visible costs and risk. Preserve the advanced-workspace source notes as separate evidence until those paths are accepted on main.",
       "acceptance": "Demonstrate this entire requirement in the published game through actual orders, resource conservation, failure paths and save/load. Also resolve the source row acceptance notes.",
@@ -4585,7 +4590,8 @@
         "E-LOCAL",
         "E-PUBLISHED",
         "E-ADJACENT-WEAPON-TRANSFER",
-        "E-HELD-WEAPON-TRANSFER"
+        "E-HELD-WEAPON-TRANSFER",
+        "E-ADJACENT-SUPPLY-TRANSFER"
       ],
       "sourceRow": "JA2-I02",
       "sourceNotes": "Twelve new relay cases cover routes, obstacles, current control windows, AP, capacity, atomic rejection, weapon identity and metadata, exploration time, and campaign saves. Live production-inventory checks passed three cartridges through two intermediates, then verified separate 95% successful and 5% failed throws and restoration. Exact tuning and atomic relay limits are documented in [inventory relay](inventory-relay.md). The full suite passed 1,397 tests. Direct [map cursor controls](inventory-map-cursor.md) now expose these transfers and checked ground tosses; AP and catch formulas remain Granaderos tuning."
@@ -5862,6 +5868,31 @@
         "tests/held-weapon-transfer-render.test.mjs",
         "tests/adjacent-weapon-transfer.test.mjs",
         "tests/drop-held-weapons.test.mjs"
+      ]
+    },
+    {
+      "id": "SUPPLYHANDOVER-01",
+      "group": "Published deliveries",
+      "requirement": "Give an exact quantity of personal supplies to an adjacent companion and retain the finite remainder",
+      "status": "VERIFIED",
+      "priority": "P1",
+      "published": "Accepted bounded delivery for this PR; exact-head CI remains required before merge. Exact quantities of six personal supplies pass to an adjacent companion and remain finite through actual use and saved campaign return.",
+      "local": "Four simulations and two mounted production-game checks pass; related group 30/30. Complete regression 1182/1182, zero failures/skips, with types, export and 36 reference comparisons.",
+      "remaining": "",
+      "acceptance": "Use ordinary inventory selectors for the actual supply, exact quantity and recipient; move authored priming, flints, rations, torches, dressings or bolas for four sender AP or one exploration second; use received dressings to stabilize a real paid critical arrival; preserve each remainder across save, exit and reentry; reject invalid/excess quantities, bounds, unavailable recipients, blocked adjacency and insufficient AP before mutation.",
+      "evidence": [
+        "E-ADJACENT-SUPPLY-TRANSFER"
+      ],
+      "parents": [
+        "ITEM-01",
+        "JA2-I02",
+        "INTEGRATION-01"
+      ],
+      "testFiles": [
+        "tests/adjacent-supply-transfer.test.mjs",
+        "tests/adjacent-supply-transfer-render.test.mjs",
+        "tests/character-supplies.test.mjs",
+        "tests/ja2-hud.test.mjs"
       ]
     }
   ],
