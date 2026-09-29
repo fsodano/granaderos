@@ -772,5 +772,15 @@ and unfinished work. Each shop starts with 1,200 pesos, holds up to 100 guns and
 keeps its balance and stock through saves. Default buying rates are 40% at Retiro
 and other workshops, 30% in Córdoba and 50% in Mendoza; repurchase is 80%.
 These are game tuning. Merchant-held guns do not count toward the army. Remote
-sales, cash refresh, merchant authoring, depot forwarding and equipment-wide
+sales, cash refresh, merchant authoring and equipment-wide
 physical custody remain separate. [Verification](../verification/finite-artillery-trading.md).
+
+
+### Forwarding depot artillery
+
+A stored or repurchased piece can depart directly from its current local depot.
+The same crew, route, fee, control and arrival rules used for field recovery
+apply. The action explicitly selects field or depot custody and removes that
+exact gun once. Full saves and later attack entry retain its finite load and
+unfinished work. This permits returning a gun from headquarters to the front
+without inventing an intermediate battle. [Verification](../verification/depot-artillery-transport.md).
