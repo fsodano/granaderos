@@ -1,0 +1,330 @@
+{
+  "schema": 1,
+  "source": "05fc52514697eea83ee9d7eb88f3dedccc8c0f9e",
+  "published": {
+    "focused": {
+      "passed": 13,
+      "failed": 0
+    },
+    "types": "PASS",
+    "build": {
+      "status": "PASS",
+      "files": 735,
+      "assetReferences": 637
+    },
+    "baseline": {
+      "passed": 36,
+      "failed": 0
+    },
+    "complete": "Final-head remote checks required before merge."
+  },
+  "advancedLocal": {
+    "publication": "Local only; advanced adapter/runtime is not included in this PR.",
+    "files": {
+      "game/prisoner-escape-return.js": {
+        "before": "1351c46a0ffeca4ed8ba33ea36cd83e3163f10b7b2e5ca22c82ff6b03d9692e0",
+        "after": "705fa4cab743919ea5fcbe89d88bf89f389bc7ef1e19bc6a1d01cf65f8959d9c"
+      },
+      "game/tactical-inventory.js": {
+        "before": "e9d376bc868baeb280583cd72e389a9c454ff4e57759aee4eb8f13d8620623ba",
+        "after": "3c49e5383bfd5ab834c4379aa23918fcd78c7f1d9cb15f1e6a1cb9b081ac044e"
+      },
+      "game/deployment-return.js": {
+        "before": "8d4f04d6444aa0566f3ac7a902de0a60c2e417103b53282a97a6435a0d8451a2",
+        "after": "3441faf3f22c0269b938efbe541312593c00478889716feb39af5368eb77048c"
+      },
+      "game/equipment.js": {
+        "before": "54b14d3ab0b34335722708e326b5cfc890912ca6734d29ad4764ec68e7a0ed58",
+        "after": "21b7a390a760109c1fc46cd87a2e686c65fe9685fe138fe1ea500a9082b6c20c"
+      },
+      "game/sector-inventory.js": {
+        "before": "ebc2386d0b618470d7df2474bbba713ab947bd19c5afaca6b974638d467ae3f2",
+        "after": "a8ca92afecafc8891befed02176704bbed604bfcb1e6f47cc6552ba2b8ab02c2"
+      },
+      "game/validate-battle.js": {
+        "before": "2676f63fc16e5e0318e64955e7377022a3dda05e05e182c257a5ea92a1229e13",
+        "after": "5b2f15204302bb21d5d006e4468dd028eac97a3a355861840ac8f2c155fc5998"
+      },
+      "game/ja2-hud.js": {
+        "before": "dc9b9a3c7753b6f00f0662659a938eb6b29530d395d334c3352e19401052119c",
+        "after": "bcd3d2939d32a178c85b52f93911e8baf25e042a633987c6954b267db717df65"
+      },
+      "game/tactical-ammunition.js": {
+        "before": "7261dacb3c14562ed67ad8317dadcd30ff5358e7a9407d75514069242a33c6a2",
+        "after": "e73c8fdc400e0de23daf9c634bd4356259cb6cd6bc654dd946a6d515bc3ab6a8"
+      },
+      "game/campaign-ammunition.js": {
+        "before": "1a204b99b9ebcd3635a025d9efd9bbbfbabad30059ae5dd6665dfda60124b8be",
+        "after": "1eae196a5b4c7347d22a6eba38eeb33e7d5b0e5df8219d00238c71c60913157a"
+      },
+      "game/tactical.js": {
+        "before": "15e99d7a1d9c6272db009be5fe3af9cc5e5873dab9ee0f521bcbc8a52cbb6512",
+        "after": "bf7a61979657f68bfc8bd9adc0e971617a30859562b3b3aafc9604a4ecbf172a"
+      },
+      "game/campaign.js": {
+        "before": "7aab890ec4c3f50b641fc915aa3868eb703cc71524c1212a656c85d904b40e0e",
+        "after": "b14d6e5eb5916e2bbb606210b7c099d7b30715790ced17f1f1ffee84f55b71ac"
+      },
+      "game/ammunition-types.js": {
+        "before": "0fb2d8ca69a4c7262efbac672778700177e349656783cb948c52ca970f99354a",
+        "after": "ce66566218f65d1424e0c1ddca0def080ddfc9169dd6800d7bbce25013f84075"
+      },
+      "game/equipment-cursor.js": {
+        "before": "b19adf99780939da5fa52e910145f9095622c79d1a579b95f92f45545436ca58",
+        "after": "63ceda1012e3dc5c47ae87ccba21c73f8b7632692b6cd29f5cbf03df9cf930fa"
+      },
+      "tests/campaign-gun-loads.test.mjs": {
+        "before": "1788d360f2d4cb58acde3e935077aec7a92f8d5782f26dff2a25e7a176ae5d92",
+        "after": "fb0d0e57512e14ac8231a69775a85af542dfbd1acfb2fa8c45e97e9978298090"
+      },
+      "tests/equipment-unload.test.mjs": {
+        "before": "ed345874e3594511f472931c295ae0a564d28d27fe733ab6247838f86066172a",
+        "after": "80f65e541fe309e6904b01655f5dec468b563ddef354cc16d692b4f52cb20225"
+      },
+      "tests/tactical-exit-campaign.test.mjs": {
+        "before": "802f5907d6a52a22aae0cbb0091af8182dc222e9f413800d2c3ac315024bb773",
+        "after": "0c56733ca8ade9e7460732d8910077d9af487c4d2ff368915f722e7c7a977f49"
+      },
+      "tests/campaign-carried-equip.test.mjs": {
+        "before": "cdb65e5ecb1370e97dde0d26b8c8b978c25ede45f812a5f4b86d3c4518fc9a08",
+        "after": "08f4b88bf18cd18706b726a1d660b356180669df5b5270ddffc11ea48890bb5b"
+      },
+      "tests/equipment-ammunition-controls.test.mjs": {
+        "before": "aa8bb3b789bf9062eca493c64577f4b56b200ab25d16cf2645701f4e560cbc10",
+        "after": "dccea0dd3c3e4bb78e63d6cf44c829625ebe51e264b5f0a6212addc83a56eb66"
+      },
+      "tests/equipment-ammunition-loading.test.mjs": {
+        "before": "b792bb10dd2bc2d45e969705328e8f4ba05bde44a50ed7fac6d3ac56fe58532b",
+        "after": "23b46565676c5ca4e2583b89f8184ac286509ec45bbfbbb0eb7db8833307b1b8"
+      },
+      "tests/ja2-hud.test.mjs": {
+        "before": "1285950a952b7f15d8bac96bf2d0bbdd822669948bf318c132e1f6507109f51e",
+        "after": "424a3e4f3a7e6d1d4a67baea83e54dd5397c2edd64d470efff0db88144b95c7c"
+      },
+      "tests/typed-ammunition-ui.test.mjs": {
+        "before": "93740d49a2e80e7308d329fc1e7a3f0f863c545c4432a5120000e486c242ece5",
+        "after": "d4c7f1654d012674457f8d7057e2c00ade40d428518259d4589eccf4d33bb8f4"
+      },
+      "tests/equipment-ammunition-held-supplies.test.mjs": {
+        "before": "5911219f82e5d38db1d0435db9e40ec8670dd5d30814b6a811fdd35b049062ac",
+        "after": "21a4b1cbc14e3807b94db3b0a6bf52469f124db91da7d37691aa5bb613a541d9"
+      },
+      "tests/weapon-readiness.test.mjs": {
+        "before": "e7d2b78839d5aa80813899a9e22e2855f347b912f410c6f17d0df7ef10ef609a",
+        "after": "ebc9ee9384378658bb5a4f94ee3c326ffb56041f79609deceb6d0132eb216db2"
+      },
+      "tests/ammunition-types.test.mjs": {
+        "before": "ddb45413e78403ffe544f756f91767a7855004b678ebe772d520779358211d8f",
+        "after": "cf046d89203b6a5bad1798a046855c880e5eabe8a668e9d25543d2298246dfef"
+      },
+      "tests/logistics-attention.test.mjs": {
+        "before": "d9650ebe68d1078711876a5bd70b91244268c774019dac59f7109507ff2258d5",
+        "after": "8a15028aee50268faca4d264b7a3e9e29e2b64a6250479f97be5ef65e011cae5"
+      },
+      "tests/typed-ammunition-ai.test.mjs": {
+        "before": "a6a5b96faf5ad53e8be022a13492f39f1e23d9594136bc84bee8a58853834a95",
+        "after": "82ec7b1657904a5d529bd5cfa4282df6a3a6e1fb08dee4d6a2449e7e747c0ebc"
+      },
+      "tests/tactical-ai-sharing.test.mjs": {
+        "before": "9d8511fc3e86235426c18982a5f2e831758120596dccb892189dd3792acd2c30",
+        "after": "da8832aaa387c128bf06c6225d6b6992aa4f774b0d02bf6501a18fae73dbc4fb"
+      },
+      "tests/logistics-web.test.mjs": {
+        "before": "6ef27029065b0e032853721d21d8d9badf0994f6a84461ee145417d4cb974274",
+        "after": "047fb20de78e7dbe6a7d0d36e1e69aad9e60db72b2a5a4b6edb90316e07da4e9"
+      },
+      "tests/fresh-mountain-route.mjs": {
+        "before": "0fc37c3f5dc17db6fd386d55706a60ab6783e2e6235951e7bd88c63c19d0c0a7",
+        "after": "7695ce43cc424c954057f5c9ee14126144b57833c6ac02889d158866de64572e"
+      },
+      "tests/paired-reload.test.mjs": {
+        "before": "7a901ee7493403b9d0300d893d87627cdf1e59168ddf8a8202ac64e107028dbf",
+        "after": "ea1ceaa441748055f63522f1ca99b8b3f0cb0652fd86f616c895f547177f0e66"
+      },
+      "tests/paired-reload-ai.test.mjs": {
+        "before": "168ad843fd8ea06320649e3899bf70c38529cff473728c3ee77cc05b20f7cd28",
+        "after": "797d7bc423742e86b675d0b7d22c5777cf36509b808763b2517a790d59523e28"
+      },
+      "tests/fresh-coastal-route.mjs": {
+        "before": "bb63afe3f8ef7994579b0446d9902c831f278ace9c491e6aeff6c79c551d0572",
+        "after": "f3d50c017bea65c14b71daf81f098b132b9f7d449af0bb536dc7324b8d8462ff"
+      },
+      "tests/squads-web.test.mjs": {
+        "before": "123f84d5981920fbc591af1a95fd7ca897d595201ca793db5f071212b38444db",
+        "after": "98a1484946d44155558c1b4a3c96abf96930879b0d77463fd3c40542d0d069b4"
+      },
+      "tests/campaign-typed-ammunition.test.mjs": {
+        "before": "67caeb3f4e8679408cb36d436abf0f50e683e0e11d438c895031054e3f7bfb8b",
+        "after": "bd93e433060b467a101cef59819092939166d043b2c34f8b6b6e3f212d64a0e6"
+      },
+      "tests/typed-ammunition-inventory.test.mjs": {
+        "before": "a9b81b19b522b7c248463fded38f2e349f62f41108b48911113d7d3995db1cc0",
+        "after": "8fb24994935878f85973189520d694401738ea129f87664147bc46aa0bd236e5"
+      },
+      "tests/departed-remains-dimensions.test.mjs": {
+        "before": "e67835934f580f9bb5b4ec43e2c4caa3854daef5e50e2595e5cf0dfd415c3921",
+        "after": "6ef1d71a904b76dbf7c2e7213973858ea502e14c06eae63592ee6e0a834873d8"
+      },
+      "tests/tactical-ammunition.test.mjs": {
+        "before": "9d1a0bbcad74320ca3598f4ca8b0d59fe5613e5835c524c97d3637ea128fe7f0",
+        "after": "a2807d00b339d36e325d9ace4377b8b24f0b43fb68bc19ee294789edd3219c6a"
+      },
+      "tests/paired-reload-hud.test.mjs": {
+        "before": "b0648ea00e77f275fc611edfc07ee229acabe3391e7f57311821fd8bd163b104",
+        "after": "6c85de82c6136263e31d0b76846cb062534da2b3477a9e51c439ecf489fa21ed"
+      },
+      "tests/campaign-cursor-ammunition.test.mjs": {
+        "before": "711016c7d3810195e3aa9a148273dc16b0d276c58be073ef1a48746ea31aaf61",
+        "after": "902e29d084818d4f9e0f00804e6bd4b61dec9e4dbbdf0e670f418c0ab97ee2fd"
+      },
+      "tests/logistics-attention-render.test.mjs": {
+        "before": "e79bf168f7ac7704b618bf0d3b621f267b543c15db046650f6aa7e96e4a382ae",
+        "after": "04b13ba7db0c023bb5debba1611953ed32b508ac29827f4e8baa26723be00f44"
+      },
+      "tests/paired-reload-campaign.test.mjs": {
+        "before": "945d3b1201f9569f3eee3fe243896060d1283313e7d8b6683c373c5e5ad03b83",
+        "after": "a3d34ade00a989fd99c482131c750093785ddfddc0dbc7ded6402360223fe42e"
+      },
+      "tests/coordinated-assault.test.mjs": {
+        "before": "76382a5bc2dff670691c5cfe0645e43fad3dc269136849f64024404445dd88da",
+        "after": "983f57d62e30c4fd346d42cca6c72dc3aa43a0cc61bee2737ec7b57dacfdae73"
+      },
+      "tests/equipment-cursor-core.test.mjs": {
+        "before": "9d85ebf64096d6e16be017c08aa7a48c2278f1123851926bac33b6beb33fa7d7",
+        "after": "9097a60952718cd753978827c9a5155cb2c79acfd9d56a7c83a2a1c3619f5110"
+      },
+      "tests/sector-inventory.test.mjs": {
+        "before": "53dfca32d69ea9433724b0021063c80bff67e1ea3c8dd6422341a9bb59cf90af",
+        "after": "5dad08cb433abea9e64409cdfdb3162863b6970968349814bd906b7629b8b675"
+      },
+      "tests/campaign-web.test.mjs": {
+        "before": "8df3865d8ca3cbe2bfd69bfaa80da030278de7f229b4daf7bffed3d6151d3c94",
+        "after": "824ed3b6456d56859bb377ac282625e1cb4daac228f353d14f75cc2809023edb"
+      },
+      "tests/world-web.test.mjs": {
+        "before": "6717afcc5c9f5b418326b812357f9218c44c6e4af0702844d2d29e209acebba3",
+        "after": "73d3865792bbc9cec1f7cd9dde6ba4337076ad3dea7435f584fe29f81b4d70b5"
+      },
+      "web/app/CampaignOffice.tsx": {
+        "before": "b471aa4be966541e0144df2a660b5a1936b3f2495a369bf8e78446ac255a6a62",
+        "after": "54541e5cbb851da30162c1285b142d7b205cf8c4e52382be19fa58f52b77e32c"
+      },
+      "web/app/AmmunitionSupplies.tsx": {
+        "before": "310a6aa79eee74a29fe754d2e8f8dbc79c1e3f8d3857ddb0bf92554e72c30bec",
+        "after": "5a56fa797e89445683c18a322747fe2bc20f1911ab073d35738d1e4d4d599a53"
+      },
+      "game/ammunition-family-migration.js": {
+        "before": null,
+        "after": "042ac1fb66c05c0144b83b2721134a21c964118b58c6b7684545acd0fd885fc2"
+      },
+      "game/ammunition-families.js": {
+        "before": null,
+        "after": "1f13fba851672a15f7c9877ec86978cbbbf4a1c0c133d4ccae205cb297622194"
+      },
+      "tests/ammunition-family-migration.test.mjs": {
+        "before": null,
+        "after": "39f66f5fd4d421d303250b3e6c902d939bee3fe7076096b15dbc45003c07719b"
+      },
+      "tests/ammunition-families.test.mjs": {
+        "before": null,
+        "after": "0722373a7885ae0f2e87b575b20ec1539fa4ab68e549ba052c96c9ffe8818e15"
+      },
+      "tests/fixtures/ammunition-v1-save.json.gz": {
+        "before": null,
+        "after": "c6350f8eea47fef657da37881907eb55c9c53e8e4efd557fbc82a997bf408b2e"
+      },
+      "web/public/art/supplies/ammo-pistol-v1.webp": {
+        "before": null,
+        "after": "ac1ba73954ff1665a5fbea28322b2e9dc3ef3f3334a3859085c749f4ed32a82d"
+      },
+      "web/public/art/supplies/ammo-rifle-v1.webp": {
+        "before": null,
+        "after": "6c0092778040c39c4b9b0fd78c082fdcb9ea431656f1366973c46b30ae55459c"
+      },
+      "web/public/art/supplies/ammo-shot-v1.webp": {
+        "before": null,
+        "after": "a2378354c763ab3a1a2e1ad423efeaec7560839bcad54eb73d00179d4b05a5cc"
+      }
+    },
+    "protectedUnchangedFiles": 743,
+    "migration": {
+      "passed": 7,
+      "failed": 0
+    },
+    "admissionAndOwnership": {
+      "passed": 40,
+      "failed": 0
+    },
+    "types": "PASS",
+    "build": {
+      "status": "PASS",
+      "files": 1110,
+      "assetReferences": 997
+    },
+    "userSave": {
+      "sector": "buenos_aires",
+      "units": 11,
+      "fromVersion": 1,
+      "toVersion": 2,
+      "healthEnergyPositionLoadedAndPhysicalReserve": "unchanged",
+      "repeatRestore": "identical"
+    },
+    "browser": {
+      "allFourImagesLoaded": true,
+      "errors": [],
+      "purchase": {
+        "rounds": 20,
+        "reserve": [
+          50,
+          70
+        ],
+        "merchant": [
+          180,
+          160
+        ],
+        "treasury": [
+          3173,
+          3113
+        ]
+      }
+    },
+    "complete": {
+      "total": 3231,
+      "passed": 3223,
+      "failed": 5,
+      "skipped": 3,
+      "logSha256": "160f9d88193509c681d2db1aa81a67d6a7cba75691ba7c12010c7886506e9a31",
+      "limits": "Four independent failure points and a failed parent: worker movement timing, unavailable recovered gun during fresh Cordoba recovery, Cordoba recapture retreat instead of victory, prisoner-rescue defeat instead of retreat. The fresh route stops earlier than the prior northern relief-medic baseline. Three later opening milestones skipped. Full run precedes final form purchase-limit guard; two related checks, types and export pass after that correction."
+    },
+    "purchaseLimitFollowup": {
+      "passed": 2,
+      "failed": 0,
+      "maximumPerPurchase": 60
+    }
+  },
+  "sourceHashes": {
+    "game/ammunition-families.js": "1f13fba851672a15f7c9877ec86978cbbbf4a1c0c133d4ccae205cb297622194",
+    "game/ammo-types.js": "1f01ca1d4925281a803303479abdc6fe7631408e2dc4a1960b0f2777ebff531b",
+    "tests/ammunition-families.test.mjs": "0722373a7885ae0f2e87b575b20ec1539fa4ab68e549ba052c96c9ffe8818e15"
+  },
+  "logs": {
+    "families-published-focused-final": {
+      "sha256": "6e6280a144215003e31f02b29879c98db44a21d97135f82cc17bdb92bb85a8d6"
+    },
+    "families-published-build": {
+      "sha256": "1fc8929c1491fe07881b54e76ac81b792350a54abd920926d9f87c615b6615e5"
+    },
+    "families-baseline": {
+      "sha256": "58aa18efbe00f6969ebf348f616657e84fbd030dec49bec86c6a4a2c14e4d9d9"
+    },
+    "families-admission-final": {
+      "sha256": "fad8da7b45c174e57c02d5958af192713e08a83bbdc70cccacaf0ad949029579"
+    },
+    "families-live-purchase-cap": {
+      "sha256": "863136431f012b4ac0449f9ee1b08577f49769416ca3a404d19c2ab7bec05ee4"
+    },
+    "families-live-build-final": {
+      "sha256": "64cff59937356819cb746cb2fd21b7c76ef1a197e0aca72899391547d31b17a3"
+    }
+  }
+}

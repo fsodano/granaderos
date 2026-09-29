@@ -1,11 +1,8 @@
+import {AMMUNITION_FAMILIES} from './ammunition-families.js';
 import {removeUnitIgnitionSupplies} from './ignition-kit.js';
 // Gameplay families deliberately group historical calibers. No loose ignition kit is tracked.
-export const AMMO_TYPES=Object.freeze({
- ammoMusket:Object.freeze({name:'Cartuchos de mosquete',art:'/art/supplies/ammo-v1.webp',description:'Munición para mosquetes y tercerolas.',weapons:[1800,1801,1803]}),
- ammoRifle:Object.freeze({name:'Munición de fusil',art:'/art/supplies/ammo-rifle-v1.webp',description:'Bala con parche para fusiles de precisión.',weapons:[1802]}),
- ammoPistol:Object.freeze({name:'Cartuchos de pistola',art:'/art/supplies/ammo-pistol-v1.webp',description:'Munición para pistolas de uno o dos cañones.',weapons:[1805,1806,1808]}),
- ammoShot:Object.freeze({name:'Cargas de perdigones',art:'/art/supplies/ammo-shot-v1.webp',description:'Munición de perdigones para escopetas y trabucos.',weapons:[1804,1807]}),
-});
+/** @type {Readonly<Record<string, Readonly<{name:string,art:string,description:string,weapons:readonly number[]}>>>} */
+export const AMMO_TYPES=Object.freeze(Object.fromEntries(Object.values(AMMUNITION_FAMILIES).map(({id,name,art,description,weapons})=>[id,Object.freeze({name,art,description,weapons})])));
 export const AMMO_KEYS=Object.freeze(Object.keys(AMMO_TYPES));
 export function ammoTypeFor(value){
  const raw=typeof value==='object'&&value!==null?value.weapon??value.primary??value.template??value.id:value;

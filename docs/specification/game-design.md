@@ -991,3 +991,13 @@ pinned weapon definition and survives issue, reload, drops, collection and saves
 Changing guns never converts the owner's reserve. Blades cannot select ammunition.
 This is one family per firearm; alternative loads and new family definitions
 remain separate requirements. See [verification](../verification/authored-ammunition-family.md).
+
+### Shared family definitions and old physical stacks
+
+The published and advanced local variants read one four-family catalog. Convert
+old historical cartridge keys once when loading an advanced save. Preserve every
+physical owner, inventory key, hand reference, pocket partition and cartridge
+quantity. Do not merge physical lots or refill guns during conversion. Purchases,
+production and imports show four family choices and compatible firearm names.
+The advanced adapter remains local until its dependencies are published. See
+[scope and verification](../verification/four-ammunition-families.md).
