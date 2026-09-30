@@ -978,7 +978,11 @@ export function restoreCampaignValue(s){
 
   for(const unit of [...(s.pendingBattle?.squad??[]),...(s.pendingBattle?.missionAllies??[]),...Object.values(s.missionAllies??{})])validateWeaponCarrier(unit);
   for(const unit of [...(s.pendingBattle?.enemies??[]),...(s.pendingBattle?.garrison??[])]){validateForceWeapon(unit);requireThat(validMilitiaArrival(unit,s.pendingBattle.sector),'La llegada de la milicia es inválida.');requireThat(validMilitiaExperience(unit),'La experiencia de la tropa guardada es inválida.');}
-  if(s.pendingBattle)validateRegionalWeather(s.pendingBattle);
+  if(s.pendingBattle){
+    const request=s.pendingBattle;
+    requireThat((request.hour===undefined||integer(request.hour,0,s.hour))&&(request.secondOfHour===undefined||integer(request.secondOfHour,0,3599)),'La hora inicial del despliegue es inválida.');
+    validateRegionalWeather(request);
+  }
   if(s.pendingBattle)for(const unit of s.pendingBattle.squad){requireThat(unit.preserveLoading===undefined||typeof unit.preserveLoading==='boolean','El estado de carga del despliegue es inválido.');const op=rosterFor(s).find(o=>o.id===Number(unit.id)),maxHp=unit.maxHp??op.maxHp;requireThat(integer(maxHp,1,op.maxHp)&&unit.hp<=maxHp,'La salud del despliegue guardado es inválida.');for(const [field,limit] of Object.entries({bleeding:100,bandaged:maxHp-unit.hp,energy:100}))if(unit[field]!==undefined)requireThat(Number.isFinite(unit[field])&&unit[field]>=0&&unit[field]<=limit,'Las heridas del despliegue guardado son inválidas.');if(unit.medkits!==undefined)requireThat(integer(unit.medkits,0,100000),'Los botiquines del despliegue guardado son inválidos.');}
   s.horseState??={...initialHorseState(),hour:s.hour};
   requireThat(object(s.horseState)&&s.horseState.version===1&&integer(s.horseState.hour,0,s.hour)&&integer(s.horseState.nextId,1,100000)&&Array.isArray(s.horseState.horses)&&s.horseState.horses.length<=10000&&new Set(s.horseState.horses.map(h=>h?.id)).size===s.horseState.horses.length&&Array.isArray(s.horseState.log)&&s.horseState.log.length<=40&&s.horseState.log.every(t=>typeof t==='string'&&t.length<1000),'La caballada guardada es inválida.');

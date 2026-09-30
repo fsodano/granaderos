@@ -16,6 +16,7 @@ import {FITTING_RULES_VERSION,normalizeUnitFittings} from './weapon-fittings.js'
 const clone=value=>structuredClone(value);
 const need=(ok,message)=>{if(!ok)throw Error(message);};
 const sector=id=>validWorldLocation(id)||id==='san_lorenzo';
+const authorizedExits=(s,request)=>sectorExits(request.sector,request.sceneId??null).filter(e=>s.sectors[e.destination]?.owner==='patriot'&&!s.enemyGroups?.some(g=>g.target===e.destination&&['engaged','stationed'].includes(g.status)));
 export const strategicSector=request=>request.sector==='san_lorenzo'?'san_nicolas':request.sector;
 export function recordStrategicArrival(s,ids,fromSector,toSector,sceneId=null){
   const entry=entryFromSector(fromSector,toSector,sceneId);if(!entry)return;
@@ -29,7 +30,7 @@ export function prepareDeploymentExits(s,request){
   for(const enemy of request.enemies??[]){enemy.weapon??=1800;enemy.loaded??=WEAPONS[enemy.weapon]?.capacity??0;initializeUnitAmmunition(enemy,{defaultCount:12});}
   request.fittingRulesVersion=FITTING_RULES_VERSION;
   for(const unit of [...request.squad,...(request.garrison??[]),...(request.missionAllies??[])])normalizeUnitFittings(unit);
-  request.exits=sectorExits(request.sector,request.sceneId??null).filter(e=>s.sectors[e.destination]?.owner==='patriot'&&!s.enemyGroups?.some(g=>g.target===e.destination&&['engaged','stationed'].includes(g.status)));
+  request.exits=authorizedExits(s,request);
   request.exitRulesVersion=1;
   request.remains=clone(s.sectorRemains?.[strategicSector(request)]??[]);
   const previous=request.sceneId?s.sceneStates?.[request.sceneId]:s.sectorStates?.[request.sector];
@@ -158,6 +159,13 @@ function validateReturnLedger(snapshot){
 }
 export function validateDeploymentReturnState(s){
   const object=v=>v&&typeof v==='object'&&!Array.isArray(v),integer=(v,max)=>Number.isSafeInteger(v)&&v>=0&&v<=max;
+  const request=s.pendingBattle;
+  if(request){
+    // Legacy saves gain routes only. Do not reissue equipment, rebuild loot
+    // allowances, or infer that a soldier has already crossed a boundary.
+    if(request.exits===undefined&&request.exitRulesVersion===undefined){request.exits=authorizedExits(s,request);request.exitRulesVersion=1;}
+    need(request.exitRulesVersion===1&&validateSectorExits(request.sector,request.sceneId??null,request.exits),'Las rutas del despliegue son inválidas.');
+  }
   for(const field of ['fieldCartridges','storedCartridges'])need(s.pendingBattle?.[field]===undefined||integer(s.pendingBattle[field],1000000000000),'La munición previa del despliegue es inválida.');
   for(const source of [...(s.pendingBattle?.ammunitionSources??[]),...(s.pendingBattle?.garrisonLootSources??[]),...(s.pendingBattle?.casualtyLootSources??[])])need(source.cursorCartridges===undefined||integer(source.cursorCartridges,1000000),'La munición del cursor previo es inválida.');
   migrateDeploymentReturns(s);need(object(s.sectorRemains),'Los restos del campo son inválidos.');

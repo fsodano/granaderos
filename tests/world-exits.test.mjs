@@ -1,4 +1,5 @@
 import {initializeUnitAmmunition} from '../game/tactical-ammunition.js';
+import {refreshMilitaryCondition} from '../game/actor-condition.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {CAMPAIGN_SECTORS} from '../game/data.js';
@@ -12,7 +13,8 @@ import {validateBattleSnapshot} from '../game/validate-battle.js';
 const request = (sector = 'cordoba', extra = {}) => ({id: `entry-${sector}`, sector, exploration: true, compactLayout:true, squad: [{id: 'p'}], enemies: [], ...extra});
 const arrival = (id = 'p', entryEdge = 'W', entryAnchor = {x: 0, y: 7}, extra = {}) => ({id, entryReason: 'arrival', entryEdge, entryAnchor, ...extra});
 const unit = (s, id = 'p') => s.units.find(u => u.id === id);
-const dead = u => Object.assign(u, {hp: 0, bleeding: 0, unconscious: false, ap: 0});
+// A declared casualty still needs the canonical zero action budget.
+const dead = u => {Object.assign(u, {hp: 0, bleeding: 0, unconscious: false});refreshMilitaryCondition(u);return u;};
 const closeEdge = (s, edge, except = []) => {
   for (const t of s.tiles.filter(t => boundaryMatches(s, t, edge))) if (!except.some(p => p.x === t.x && p.y === t.y)) Object.assign(t, {type: 'wall', blocked: true, blocksSight: true});
 };

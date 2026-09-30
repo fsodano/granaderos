@@ -1,3 +1,4 @@
+import {refreshMilitaryCondition} from '../game/actor-condition.js';
 import {AMMUNITION_TYPES,ammunitionByType,totalReserveAmmunition,addAmmunition} from '../game/ammunition-types.js';
 import {syncCarriedAmmunition} from '../game/campaign-ammunition.js';
 import {initializeUnitAmmunition} from '../game/tactical-ammunition.js';
@@ -50,10 +51,10 @@ test('a loaded gun cursor survives live save, report, campaign save and reentry;
 });
 
 test('cursor cartridges remain finite through two reports and return to personal inventory only after placement',()=>{
- const total=cartridges(fresh());let {s,b}=visit(fresh());const u=actor(b);
+ let {s,b}=visit(fresh());const total=cartridges(s),cash=s.resources.treasury,shop=s.ammunitionShops.retiro.stock.ammoMusket,u=actor(b);
  b=act(b,cursorAction(u,'pickupEquipment',{sourceId:pocket(u,'inventory:ammo:musket_75'),count:5}));s=leave(s,b);assert.equal(cartridges(s),total);assert.equal(s.operativeState[110].equipmentCursor.stack.count,5);
  s=order(save(s),{type:'visitSector'});assert.equal(s.pendingBattle.storedCartridges,5);b=enterSector(s.pendingBattle,s.sectorStates.retiro);
- b=act(b,cursorAction(actor(b),'returnEquipmentCursor'));assert.equal(actor(b).equipmentCursor,undefined);s=leave(s,b);assert.equal(cartridges(s),total);assert.equal(s.operativeState[110].equipmentCursor,undefined);save(s);
+ b=act(b,cursorAction(actor(b),'returnEquipmentCursor'));assert.equal(actor(b).equipmentCursor,undefined);s=leave(s,b);assert.equal(cartridges(s),total+5);assert.equal(s.ammunitionShops.retiro.stock.ammoMusket,shop-5);assert.equal(s.resources.treasury,cash-5);assert.equal(s.operativeState[110].equipmentCursor,undefined);save(s);
 });
 
 function displacedBulky(s){
@@ -103,7 +104,7 @@ test('unavailable body cursor remains lootable and its rounds receive one finite
 });
 
 test('two hands holding two ordinary cartridges retain both after a deployment report',()=>{
- let {s,b}=visit(fresh());const original=cartridges(fresh());
+ let {s,b}=visit(fresh());const original=cartridges(s);
  // Ammunition on a gun now loads it. Free both hands before holding rounds.
  b=act(b,cursorAction(actor(b),'pickupEquipment',{sourceId:'hand:right'}));
  const gunPocket=inventoryUsage(actor(b)).slots.find(slot=>slot.size==='large'&&!slot.entry).id;
@@ -131,7 +132,7 @@ test('a known fallen soldier cursor can be collected through the strategic pool 
  let s=order(fresh(),{type:'recruitCivic',id:111,term:'week'});s.operativeState[110].weaponInstanceId='fallen-cursor-rifle';let b;({s,b}=visit(s));
  b=act(b,cursorAction(actor(b),'pickupEquipment',{sourceId:'hand:right'}));
  // A casualty snapshot exercises return custody without selecting a combat RNG outcome.
- Object.assign(actor(b),{hp:0,unconscious:false,bandaged:0,knownToPlayer:true});validateBattleSnapshot(b);s=leave(s,b);assert.equal(s.operativeState[110].alive,false);
+ Object.assign(actor(b),{hp:0,unconscious:false,bandaged:0,knownToPlayer:true});refreshMilitaryCondition(actor(b));validateBattleSnapshot(b);s=leave(s,b);assert.equal(s.operativeState[110].alive,false);
  const row=sectorInventoryModel(s,'retiro',rosterFor(s),111).entries.find(r=>r.key===JSON.stringify(['body','110','cursor']));assert.ok(row?.reachable);assert.equal(JSON.parse(row.expected).instanceId,'fallen-cursor-rifle');
  s=order(s,{type:'sectorInventory',sector:'retiro',operativeId:111,direction:'take',sourceKey:row.key,expected:row.expected,count:1});assert.equal(s.sectorStates.retiro.units.find(u=>u.id==='110').equipmentCursor,undefined);assert.ok(Object.values(s.operativeState[111].inventory).some(item=>item.instanceId==='fallen-cursor-rifle'));
  s=save(s);assert.doesNotThrow(()=>validateEquipmentOwnership(s,rosterFor(s)));

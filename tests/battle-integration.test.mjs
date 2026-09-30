@@ -12,7 +12,7 @@ function stage(seed,{reinforce=false}={}){
  if(reinforce)for(const id of [110,113,115]){
   const resources={...c.resources},quote=contractQuote(c,rosterFor(c).find(op=>op.id===id),'week');
   c=order(c,{type:'recruitCivic',id,term:'week'});
-  assert.deepEqual(c.resources,{...resources,treasury:resources.treasury-quote.price,ponchos:resources.ponchos-1},'the contract and issued poncho use existing resources');
+  assert.deepEqual(c.resources,{treasury:resources.treasury-quote.price},'the contract uses treasury only; clothing belongs to the hire');
   assert.equal(c.contracts[id].paid,quote.price);
  }
  c=order(c,{type:'travel',sector:'buenos_aires'});
@@ -64,7 +64,7 @@ test('a controlled wet-weather battle connects campaign resources, deterministic
   assert.equal(result.sectors.san_nicolas.owner,'patriot');
   assert.equal(result.pendingBattle,null);
   assert.equal(result.resources.treasury,campaign.resources.treasury+250);
-  for(const u of survivors){assert.equal(result.operativeState[Number(u.id)].hp,u.hp);assert.equal(result.operativeState[Number(u.id)].alive,true);assert.equal(result.operativeState[Number(u.id)].ammo+result.operativeState[Number(u.id)].carriedLoaded,u.ammo+u.loaded);}
+  for(const u of survivors){assert.equal(result.operativeState[Number(u.id)].hp,u.hp);assert.equal(result.operativeState[Number(u.id)].alive,true);assert.equal(totalReserveAmmunition(result.operativeState[Number(u.id)])+(result.operativeState[Number(u.id)].carriedLoaded??0),totalReserveAmmunition(u)+u.loaded);}
 
   const deaths=battle.units.filter(u=>u.side==='player'&&u.hp===0);
   assert.ok(deaths.length>0,'the victory retains its real casualties');
