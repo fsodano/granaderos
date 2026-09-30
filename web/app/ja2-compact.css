@@ -23,6 +23,10 @@
 .battle-layout .ja2-hud .ja2-roster-paging button{padding:1px 10px}
 .battle-layout .ja2-hud .ja2-orders-menu{position:absolute;right:8px;bottom:100%;z-index:12;background:#202c23;border:1px solid #9a8b59;color:#ece1c4;font-size:11px}
 .battle-layout .ja2-hud .ja2-orders-menu>summary{cursor:pointer;padding:5px 12px;list-style:none}
+.battle-layout .ja2-hud .ja2-artillery-menu{position:absolute;right:8px;bottom:100%;z-index:12;background:#202c23;border:1px solid #9a8b59;color:#ece1c4;font-size:11px}
+.battle-layout .ja2-hud .ja2-artillery-menu>summary{cursor:pointer;padding:5px 12px}
+.battle-layout .ja2-hud .ja2-artillery-menu .ja2-artillery{position:absolute;bottom:100%;right:0;width:min(330px,calc(100vw - 32px));max-height:45svh;overflow:auto;box-sizing:border-box;gap:8px;background:#202c23;border:1px solid #9a8b59;padding:12px;box-shadow:0 0 24px #0008}
+.battle-layout .ja2-hud .ja2-artillery-menu p{flex-basis:100%;margin:0;font-size:11px}
 .battle-layout .ja2-hud .ja2-orders-menu .ja2-context{position:absolute;bottom:100%;right:0;width:min(470px,calc(100vw - 32px));max-height:55svh;overflow:auto;background:#202c23;border:1px solid #9a8b59;padding:12px;display:flex;gap:8px;box-shadow:0 0 24px #0008}
 .battle-layout .ja2-hud .ja2-orders-menu .ja2-context .ja2-equipped-help,.battle-layout .ja2-hud .ja2-orders-menu .ja2-action-readout small{display:none}
 .battle-layout .ja2-hud .ja2-right{min-width:0;display:flex;flex-direction:column;gap:3px;overflow:visible}

@@ -5,6 +5,7 @@ import './ja2-compact.css';
 import {memo,useMemo,useState} from 'react';
 import {StableJA2Roster as JA2Roster} from './JA2Roster';
 import JA2Inventory, {RadarCluster} from './JA2Inventory';
+import JA2ArtilleryMenu from './JA2ArtilleryMenu';
 import {turnModel, unitCanAct} from '../../game/ja2-hud.js';
 import {canSee} from '../../game/tactical.js';
 
@@ -51,6 +52,7 @@ export default function JA2Strip({battle, ambientPaused, onToggleAmbientPause, s
   return (
     <div className="ja2-hud">
     <section className="ja2-strip squad-view">
+      {artillery.length > 0 && <JA2ArtilleryMenu battle={battle} unit={unit} artillery={artillery} cannonId={cannonId} shotType={shotType} busy={busy} onCannonChange={onCannonChange} onShotTypeChange={onShotTypeChange} onOrder={onOrder} onMode={onMode}/>}
       <JA2Roster groupIds={groupIds} battle={battle} players={rosterPlayers} selected={selected} medicalTargeting={unit?.activeSlot === 'medical' && unitCanAct(battle, unit)} onSelect={onSelect} onOpenInventory={onOpenInventory} />
       <div className="ja2-right">
         <RadarCluster battle={battle} units={units} selected={selected} project={project} vw={vw} vh={vh} cameraRect={cameraRect} zoom={zoom} mode={mode} missionAllies={missionAllies} localMilitia={localMilitia} onSelect={onSelect} onRetreat={onRetreat} onCameraCenter={onCameraCenter} onCameraPan={onCameraPan} onZoom={onZoom} />

@@ -8,7 +8,7 @@ This extends the existing period artillery model. It follows the same retained-w
 
 ## Rules and controls
 
-Select a cannon in the artillery controls, then use **Recargar pieza**. The control displays the AP paid by each assigned artillerist in this step and the AP still needed afterward. The cannon selector displays the completed percentage. A loaded cannon cannot be reloaded, and an unfinished load cannot fire.
+Open **Artillería** above the squad strip, select a cannon, then use **Recargar pieza**. The compact menu stays closed until opened and does not calculate crew previews while closed. The same menu selects the shot type and provides fire, movement and turning orders. The control displays the AP paid by each assigned artillerist in this step and the AP still needed afterward. The cannon selector displays the completed percentage. A loaded cannon cannot be reloaded, and an unfinished load cannot fire.
 
 Loading progress belongs to the cannon. The whole required crew works simultaneously, so the member with the least available AP limits the step. The selected leader must participate. When extra helpers are present, the reload chooses capable helpers with more AP first, using stable ID ordering for ties. It does not spend an unassigned soldier's AP. The existing specialist modifiers apply to the unfinished fraction when leadership changes.
 

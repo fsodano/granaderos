@@ -1,9 +1,11 @@
+import {partiallyLoadedBattery} from './artillery-loading-fixture.mjs';
+import {secondaryRetreat} from './secondary-loot-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
-import {actBattle,endTurn,createBattle,artilleryReloadPreview} from '../game/tactical.js';
+import {actBattle,endTurn,artilleryReloadPreview} from '../game/tactical.js';
 import {orderDescriptors} from '../game/ja2-hud.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
-import {crewField,flatTiles} from './artillery-crew-fixture.mjs';
-import {issuedBattery,wonBattery,fireStationed} from './stationed-artillery-fixture.mjs';
+import {crewField} from './artillery-crew-fixture.mjs';
+import {wonBattery,fireStationed} from './stationed-artillery-fixture.mjs';
 import {order,saved,sync,visit,leave} from './local-contract-fixture.mjs';
 import {enterSector} from '../game/world.js';
 const preview=b=>artilleryReloadPreview(b,b.units[0],b.artillery[0]);
@@ -47,14 +49,9 @@ test('invalid saved work, loaded guns and exhausted ammunition reject without re
  const b=crewField();b.artillery[0].reloadProgress=.5;b.artillery[0].loaded=true;assert.throws(()=>validateBattleSnapshot(b));b.artillery[0].loaded=false;b.artillery[0].ammo=0;assert.match(preview(b).reason,/municiones/);const n=load(b);assert.ok(n.lastError);assert.equal(n.artillery[0].reloadProgress,.5);
 });
 test('a real purchased gun spends shots and partial work, saves the paired campaign and retains the fraction on withdrawal and reentry',()=>{
- let s=issuedBattery();const r=s.pendingBattle;let b=createBattle(r.squad.map((u,i)=>({...u,x:1+i,y:2})),{...r,hour:s.hour,width:40,height:8,tiles:flatTiles(),enemies:[{id:'guard',x:12,y:6,weapon:1813,patrol:false}],artillery:r.artillery.map(g=>({...g,x:2,y:3}))});const id=b.units[0].id,gun=b.artillery[0].id;
- // Declared compact combat boundary, using the actual purchased manifest and
- // hired squad. AP and ammunition are spent through ordinary cannon orders.
- for(const type of ['artillery','artilleryReload','artillery','artilleryReload']){b=actBattle(b,{type,unitId:id,artilleryId:gun,x:5,y:3});assert.equal(b.lastError,null);}
- assert.equal(b.artillery[0].loaded,false);assert.equal(b.artillery[0].ammo,5);assert.ok(b.artillery[0].reloadProgress>0);const progress=b.artillery[0].reloadProgress;
- const p=saved(sync({campaign:s,battle:b}));assert.equal(p.battle.artillery[0].reloadProgress,progress);
+ let p=partiallyLoadedBattery();let s=p.campaign;const r=s.pendingBattle,id=p.battle.units[0].id,gun=p.battle.artillery[0].id,progress=p.battle.artillery[0].reloadProgress;assert.equal(p.battle.artillery[0].reloadProgress,progress);
  const resumed=endTurn(p.battle),quote=artilleryReloadPreview(resumed,resumed.units.find(u=>u.id===id),resumed.artillery[0]),complete=actBattle(resumed,{type:'artilleryReload',unitId:id,artilleryId:gun});assert.equal(complete.lastError,null);assert.ok(quote.pa<35);assert.equal(complete.artillery[0].ammo,4);assert.equal(complete.artillery[0].loaded,true);assert.ok(saved(sync({campaign:p.campaign,battle:complete})));
- s=order(p.campaign,{type:'battleResult',battleId:r.id,outcome:'retreat',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});assert.equal(s.sectorStates.san_nicolas.artillery[0].reloadProgress,progress);s=order(saved({campaign:s}).campaign,{type:'attack',sector:'san_nicolas'});const returned=enterSector(s.pendingBattle,s.sectorStates.san_nicolas);assert.equal(returned.artillery[0].reloadProgress,progress);assert.equal(returned.artillery[0].side,'enemy');assert.ok(saved({campaign:s,battle:returned}));
+ p=secondaryRetreat(saved(sync({campaign:p.campaign,battle:endTurn(p.battle)})));s=order(p.campaign,{type:'battleResult',battleId:r.id,outcome:'retreat',sectorState:p.battle,survivors:p.battle.units.filter(u=>u.side==='player')});assert.equal(s.sectorStates.san_nicolas.artillery[0].reloadProgress,progress);s=order(saved({campaign:s}).campaign,{type:'attack',sector:'san_nicolas'});const returned=enterSector(s.pendingBattle,s.sectorStates.san_nicolas);assert.equal(returned.artillery[0].reloadProgress,progress);assert.equal(returned.artillery[0].side,'enemy');assert.ok(saved({campaign:s,battle:returned}));
  for(const edit of [g=>delete g.reloadProgress,g=>g.reloadProgress=.99,g=>g.facing=Math.PI]){const bad=structuredClone(s);edit(bad.pendingBattle.artillery[0]);assert.throws(()=>saved({campaign:bad,battle:returned}));}
 });
 test('an actual emplaced gun exhausts its issued ammunition through seven peaceful shots and six reloads with synchronized saves',()=>{

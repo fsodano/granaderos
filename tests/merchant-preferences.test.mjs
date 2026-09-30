@@ -28,9 +28,9 @@ test('a local preference prices the host and fitted bayonet separately and prese
  assert.ok(resaleBreakdown({...item,condition:24.99},'cordoba').reason);assert.equal(resaleBreakdown({...item,condition:25},'cordoba').reason,null);
 });
 test('El Plumerillo pays its artillery preference through direct sales and the same exchange offer',()=>{
- let s=prepared();s=order(s,{type:'travel',sector:'mendoza'});const gun={id:'local-gun',type:'field8',side:'player',loaded:false,ammo:1,reloadProgress:.6};s.artilleryStores={mendoza:[gun]};
+ let s=prepared();s=order(s,{type:'travel',sector:'mendoza'});const gun={id:'local-gun',type:'field8',side:'player',loaded:false,ammo:1,reloadProgress:.6};s.artilleryDepots={mendoza:[gun]};
  const plan=artilleryTradePreview(s,{sector:'mendoza',gunId:gun.id},isSupplied);assert.equal(plan.price,550);const a=proposal(s,`sell:artillery:stored:${gun.id}`);assert.equal(merchantExchangePreview(s,a,isSupplied).sales,550);
- const single=save(order(s,plan.action)),exchange=save(order(s,a));assert.equal(single.resources.treasury,exchange.resources.treasury);assert.equal(single.merchants.mendoza.cash,exchange.merchants.mendoza.cash);assert.deepEqual(exchange.merchants.mendoza.usedArtillery,[gun]);
+ const single=save(order(s,plan.action)),exchange=save(order(s,a));assert.equal(single.resources.treasury,exchange.resources.treasury);assert.equal(single.merchants.mendoza.cash,exchange.merchants.mendoza.cash);assert.deepEqual(exchange.artilleryMerchants.mendoza.guns,[gun]);
 });
 test('preferences cannot create a profitable used-buyback route or authorize buying outside a workshop',()=>{
  for(const item of EQUIPMENT_CATALOG)for(const at of ['retiro','cordoba','mendoza']){const terms=merchantBuyingTerms(at,item.item);assert.ok(terms.fraction<.8);assert.equal(terms.percent,Math.round(terms.fraction*100));}

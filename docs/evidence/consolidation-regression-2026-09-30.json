@@ -3367,5 +3367,37 @@
       "assetReferences": 1031
     },
     "limits": "No new full-suite or browser acceptance. Earlier material-economy saves remain unsupported, as documented on main."
+  },
+  "artilleryCustodyRepair": {
+    "source": "01e9090565fb61318e42dbdf81c62687448875eb307b0ab83ac7ce3ad355049b",
+    "fix": "Restores a lazy compact artillery menu, authored gun names and the legacy buy-back action through current physical stock and shared merchant cash. Fixtures use actual combat, boundary withdrawal, paid loading work, saved issued forces, real strategic rest and finite payments. Ammunition custody checks retain stored loaded weapons and reject forged physical stacks.",
+    "run": {
+      "log": "/tmp/granaderos-artillery-verified.tap",
+      "pass": 194,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 282851.256125,
+      "logSha256": "4f6ee192aa84c71c289c7cba292aa1b273d42fa220d19c674e68ae8856ccdd5d"
+    },
+    "types": "PASS",
+    "docs": "PASS",
+    "privateBuild": {
+      "status": "PASS",
+      "served": false,
+      "files": 1131,
+      "assetReferences": 1031
+    },
+    "limits": "Domain and mounted DOM checks. This is not final-head CI, full campaign, browser or loaded-performance acceptance. Current complete CI baseline at b18fa515 still has 385 failures and predates this repair.",
+    "finalFollowup": {
+      "log": "/tmp/granaderos-artillery-custody-final.tap",
+      "pass": 51,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0,
+      "durationMs": 32801.163959,
+      "logSha256": "33d0613023446aa374464398a88f4f07aea67993709da4e51c76c54d7cfaaa4b",
+      "scope": "Final ammunition-family rejection, physical buy-back exhaustion, partial loading, direct/exchange pricing and compatibility purchase checks after the last test-only refinements."
+    }
   }
 }

@@ -628,6 +628,7 @@ export function dispatchCampaign(previous,action){
         s.pendingBattle.syncedSeconds=elapsed;delete s.pendingBattle.resumeSnapshot;break;
       }
       case 'repurchaseArtillery':{const quote=repurchaseArtillery(s,action.artilleryId,isSupplied(s,s.location));note(s,`Se recupera la pieza del taller por ${quote.price} pesos. Queda en el depósito local con su munición.`);break;}
+      case 'purchaseUsedArtillery':{const quote=tradeArtillery(s,action,isSupplied);note(s,`Se recupera la pieza del taller por ${quote.price} pesos. Queda en el depósito local con su munición.`);break;}
       case 'resupplyArtillery':{
         const quote=artillerySupplyQuote(s,action.sector,action.artilleryId,isSupplied(s,s.location));requireThat(quote.available,quote.reason);pay(s,{treasury:quote.cost});const gun=s.sectorStates[action.sector].artillery.find(g=>g.id===action.artilleryId);gun.ammo++;note(s,`Se compra una munición de artillería por ${quote.cost} pesos. Queda en reserva junto a la pieza.`);break;
       }

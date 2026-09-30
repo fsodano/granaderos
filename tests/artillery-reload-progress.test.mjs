@@ -1,11 +1,10 @@
+import {partiallyLoadedBattery} from './artillery-loading-fixture.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createBattle,actBattle,endTurn,artilleryCosts,artilleryReloadPreview} from '../game/tactical.js';
 import {orderDescriptors} from '../game/ja2-hud.js';
 import {playerKnownBattle} from '../game/player-known-state.js';
 import {validateBattleSnapshot} from '../game/validate-battle.js';
-import {initialCampaign} from './legacy-campaign-fixture.mjs';
-import {dispatchCampaign} from '../game/campaign.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {syncBattleTime} from '../game/time.js';
 const tiles=()=>Array.from({length:320},(_,i)=>({x:i%40,y:Math.floor(i/40),type:'grass',cover:0,blocked:false}));
@@ -83,10 +82,10 @@ test('player projection exposes own work without leaking an observed enemy canno
  const visible=playerKnownBattle(s);assert.equal(visible.artillery.find(g=>g.id==='gun').reloadProgress,.4);const enemy=visible.artillery.find(g=>g.id==='enemy-gun');assert.ok(enemy);assert.equal(enemy.reloadProgress,undefined);assert.equal(enemy.ammo,undefined);assert.equal(enemy.loaded,undefined);
 });
 test('full campaign encoding resumes the remaining cost and finite gun ammunition',()=>{
- let c=dispatchCampaign(initialCampaign(),{type:'travel',sector:'buenos_aires'});c=dispatchCampaign(c,{type:'attack',sector:'san_nicolas'});assert.equal(c.lastError,null);
- const r=c.pendingBattle;let b=createBattle(r.squad.map((u,i)=>({...u,x:1+i,y:2})),{...r,width:40,height:8,tiles:tiles(),enemies:[{id:'e',x:38,y:6,patrol:false}],artillery:[{id:'gun',type:'swivel',side:'player',x:1,y:3,loaded:false,ammo:3}]});
- const u=b.units[0];u.ap=10;b=actBattle(b,{type:'artilleryReload',artilleryId:'gun',unitId:u.id});assert.equal(b.lastError,null);const pair=syncBattleTime(c,b);assert.equal(pair.error,null);
- const saved=decodeSave(encodeSave(pair.campaign,pair.battle));assert.deepEqual(saved.battle.artillery,b.artillery);const restored=saved.battle;restored.units[0].ap=100;
- const p=artilleryReloadPreview(restored,restored.units[0],restored.artillery[0]);assert.equal(p.totalPA,27); // The real commander's powder skill now makes this a 37 AP load; 10 were already spent.
-const n=actBattle(restored,{type:'artilleryReload',artilleryId:'gun',unitId:u.id});assert.equal(n.lastError,null);assert.equal(n.artillery[0].loaded,true);assert.equal(n.artillery[0].ammo,2);
+ const pair=partiallyLoadedBattery(),b=pair.battle,gun=b.artillery[0],id=b.units[0].id;
+ const before=artilleryReloadPreview(b,b.units[0],gun);assert.ok(gun.reloadProgress>0&&gun.reloadProgress<1);
+ const saved=decodeSave(encodeSave(pair.campaign,b));assert.deepEqual(saved.battle.artillery,b.artillery);
+ const resumed=endTurn(saved.battle),p=artilleryReloadPreview(resumed,resumed.units.find(u=>u.id===id),resumed.artillery[0]);assert.equal(p.totalPA,before.totalPA);assert.ok(p.totalPA<p.rate);
+ const n=actBattle(resumed,{type:'artilleryReload',artilleryId:gun.id,unitId:id});assert.equal(n.lastError,null);assert.equal(n.artillery[0].loaded,true);assert.equal(n.artillery[0].ammo,gun.ammo-1);assert.equal(n.artillery[0].reloadProgress,undefined);
+ const result=syncBattleTime(pair.campaign,n);assert.equal(result.error,null);assert.deepEqual(decodeSave(encodeSave(result.campaign,result.battle)).battle.artillery,n.artillery);
 });

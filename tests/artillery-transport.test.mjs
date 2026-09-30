@@ -1,3 +1,5 @@
+import {wakeBatteryCrew} from './stationed-artillery-fixture.mjs';
+import {advanceCampaignHours} from './campaign-wait-fixture.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';
 import {order,saved,visit} from './local-contract-fixture.mjs';
 import {artilleryTransportQuote,artilleryTransferDelay,localArtilleryDepot,depotSelection} from '../game/artillery-transport.js';
@@ -15,18 +17,18 @@ const assertSame=(a,b)=>{for(const key of ['id','type','side','loaded','ammo','r
 test('an actually purchased and fired gun travels once, arrives in a local depot and redeploys without fresh ammunition',()=>{
  let s=fieldGun();const gun=structuredClone(s.sectorStates.san_nicolas.artillery[0]),cash=s.resources.treasury,at=s.hour;const quote=artilleryTransportQuote(s,'san_nicolas',gun.id,'buenos_aires','carts');assert.equal(quote.available,true,quote.reason);assert.equal(quote.hours,18);assert.equal(quote.crew,1);
  s=send(s);assert.equal(s.resources.treasury,cash);assert.equal(s.hour,at);assert.deepEqual(s.sectorStates.san_nicolas.artillery,[]);assert.equal(s.artilleryTransfers.length,1);assertSame(s.artilleryTransfers[0].gun,gun);assert.equal(ownedArtilleryCount(s),1);assert.ok(dispatchCampaign(s,{type:'transportArtillery',sector:'san_nicolas',artilleryId:gun.id,to:'buenos_aires',mode:'carts'}).lastError);
- s=saved({campaign:s}).campaign;s=order(s,{type:'wait',hours:17});assert.equal(s.artilleryTransfers.length,1);s=order(s,{type:'wait',hours:1});assert.equal(s.artilleryTransfers.length,0);assertSame(s.artilleryDepots.buenos_aires[0],gun);assert.deepEqual(localArtilleryDepot(s),[]);assert.equal(ownedArtilleryCount(s),1);
+ s=saved({campaign:s}).campaign;s=advanceCampaignHours(s,17);assert.equal(s.artilleryTransfers.length,1);s=advanceCampaignHours(s,1);assert.equal(s.artilleryTransfers.length,0);assertSame(s.artilleryDepots.buenos_aires[0],gun);assert.deepEqual(localArtilleryDepot(s),[]);assert.equal(ownedArtilleryCount(s),1);
  s=order(saved({campaign:s}).campaign,{type:'travel',sector:'buenos_aires'});const token=depotSelection(gun);assert.equal(localArtilleryDepot(s).length,1);assert.equal(artillerySelectionReason(s,[token]),null);s=order(s,{type:'configureArtillery',types:[token]});s=saved({campaign:s}).campaign;assertSame(deployedArtillery(s)[0],gun);s=order(s,{type:'attack',sector:'ensenada'});assert.deepEqual(s.artilleryDepots.buenos_aires,[]);assertSame(s.pendingBattle.artillery[0],gun);assert.equal(s.pendingBattle.artillery[0].fromDepot,undefined);assert.equal(s.armory.swivel,0);
  const p=saved({campaign:s,battle:enterSector({...s.pendingBattle,hour:s.hour})});assertSame(p.battle.artillery[0],gun);assert.equal(p.battle.artillery[0].loaded,false);assert.equal(p.battle.artillery[0].ammo,6);assert.equal(ownedArtilleryCount(p.campaign),1);
 });
 
 test('a prepared interruption keeps the exact shipment until control returns and delivery cannot replay',()=>{
- let s=send(fieldGun()),gun=structuredClone(s.artilleryTransfers[0].gun);s.sectors.buenos_aires.owner='royalist';s=order(s,{type:'wait',hours:18});assert.equal(s.artilleryTransfers.length,1);assert.equal(s.artilleryDepots?.buenos_aires,undefined);assert.match(artilleryTransferDelay(s,s.artilleryTransfers[0]),/ocupación/);assertSame(saved({campaign:s}).campaign.artilleryTransfers[0].gun,gun);
- s.sectors.buenos_aires.owner='patriot';s=order(s,{type:'wait',hours:1});assert.equal(s.artilleryTransfers.length,0);assertSame(s.artilleryDepots.buenos_aires[0],gun);s=order(saved({campaign:s}).campaign,{type:'wait',hours:2});assert.equal(s.artilleryDepots.buenos_aires.length,1);assert.equal(ownedArtilleryCount(s),1);
+ let s=send(fieldGun()),gun=structuredClone(s.artilleryTransfers[0].gun);s.sectors.buenos_aires.owner='royalist';s=advanceCampaignHours(s,18);assert.equal(s.artilleryTransfers.length,1);assert.equal(s.artilleryDepots?.buenos_aires,undefined);assert.match(artilleryTransferDelay(s,s.artilleryTransfers[0]),/ocupación/);assertSame(saved({campaign:s}).campaign.artilleryTransfers[0].gun,gun);
+ s.sectors.buenos_aires.owner='patriot';s=advanceCampaignHours(s,1);assert.equal(s.artilleryTransfers.length,0);assertSame(s.artilleryDepots.buenos_aires[0],gun);s=advanceCampaignHours(saved({campaign:s}).campaign,2);assert.equal(s.artilleryDepots.buenos_aires.length,1);assert.equal(ownedArtilleryCount(s),1);
 });
 
 test('explicit empty, stale remote and duplicate depot selections cannot create or borrow a transported gun',()=>{
- let s=order(send(fieldGun()),{type:'wait',hours:18});const gun=s.artilleryDepots.buenos_aires[0],token=depotSelection(gun);assert.ok(artillerySelectionReason(s,[token]));s.artillerySelectionExplicit=true;s.artillerySelection=[token];assert.deepEqual(deployedArtillery(s),[]);s=saved({campaign:s}).campaign;s=order(s,{type:'travel',sector:'buenos_aires'});assert.equal(deployedArtillery(s)[0].id,gun.id);assert.ok(artillerySelectionReason(s,[token,token]));s=order(s,{type:'configureArtillery',types:[]});assert.deepEqual(deployedArtillery(s),[]);assert.equal(s.artilleryDepots.buenos_aires.length,1);s=order(s,{type:'attack',sector:'ensenada'});assert.deepEqual(s.pendingBattle.artillery,[]);assert.equal(s.artilleryDepots.buenos_aires.length,1);assert.ok(saved({campaign:s,battle:enterSector(s.pendingBattle)}));
+ let s=advanceCampaignHours(send(fieldGun()),18);const gun=s.artilleryDepots.buenos_aires[0],token=depotSelection(gun);assert.ok(artillerySelectionReason(s,[token]));s.artillerySelectionExplicit=true;s.artillerySelection=[token];assert.deepEqual(deployedArtillery(s),[]);s=saved({campaign:s}).campaign;s=order(s,{type:'travel',sector:'buenos_aires'});s=wakeBatteryCrew(s);assert.equal(deployedArtillery(s)[0].id,gun.id);assert.ok(artillerySelectionReason(s,[token,token]));s=order(s,{type:'configureArtillery',types:[]});assert.deepEqual(deployedArtillery(s),[]);assert.equal(s.artilleryDepots.buenos_aires.length,1);s=order(s,{type:'attack',sector:'ensenada'});assert.deepEqual(s.pendingBattle.artillery,[]);assert.equal(s.artilleryDepots.buenos_aires.length,1);assert.ok(saved({campaign:s,battle:enterSector(s.pendingBattle)}));
 });
 
 test('prepared crew, control, hostile, route and mode boundaries reject atomically',()=>{
@@ -37,7 +39,7 @@ test('prepared crew, control, hostile, route and mode boundaries reject atomical
 });
 
 test('a paid flotilla takes the coastal duration and a prepared blockade delays the same saved gun',()=>{
- let s=order(fieldGun(),{type:'transport',mode:'flotilla'}),gun=structuredClone(s.sectorStates.san_nicolas.artillery[0]);assert.equal(artilleryTransportQuote(s,'san_nicolas',gun.id,'buenos_aires','flotilla').hours,5);s=order(s,{type:'transportArtillery',sector:'san_nicolas',artilleryId:gun.id,to:'buenos_aires',mode:'flotilla'});s.blockade=true;s=order(s,{type:'wait',hours:5});assert.equal(s.artilleryTransfers.length,1);assert.match(artilleryTransferDelay(s,s.artilleryTransfers[0]),/bloqueo/);s=saved({campaign:s}).campaign;s.blockade=false;s=order(s,{type:'wait',hours:1});assertSame(s.artilleryDepots.buenos_aires[0],gun);
+ let s=order(fieldGun(),{type:'transport',mode:'flotilla'}),gun=structuredClone(s.sectorStates.san_nicolas.artillery[0]);assert.equal(artilleryTransportQuote(s,'san_nicolas',gun.id,'buenos_aires','flotilla').hours,5);s=order(s,{type:'transportArtillery',sector:'san_nicolas',artilleryId:gun.id,to:'buenos_aires',mode:'flotilla'});s.blockade=true;s=advanceCampaignHours(s,5);assert.equal(s.artilleryTransfers.length,1);assert.match(artilleryTransferDelay(s,s.artilleryTransfers[0]),/bloqueo/);s=saved({campaign:s}).campaign;s.blockade=false;s=advanceCampaignHours(s,1);assertSame(s.artilleryDepots.buenos_aires[0],gun);
 });
 
 test('full saves reject malformed routes and duplicate gun ownership across fields, transfers and depots',()=>{
@@ -51,16 +53,16 @@ test('full saves reject malformed routes and duplicate gun ownership across fiel
 test('a declared unfinished-load boundary keeps exact work and facing through transport, save and redeployment',()=>{
  // Crew loading has separate actual-AP coverage; this prepared fraction isolates custody.
  let s=fieldGun();s.sectorStates.san_nicolas.artillery[0].reloadProgress=.4;const gun=structuredClone(s.sectorStates.san_nicolas.artillery[0]);
- s=order(send(saved({campaign:s}).campaign),{type:'wait',hours:18});assertSame(s.artilleryDepots.buenos_aires[0],gun);s=order(saved({campaign:s}).campaign,{type:'travel',sector:'buenos_aires'});
+ s=advanceCampaignHours(send(saved({campaign:s}).campaign),18);assertSame(s.artilleryDepots.buenos_aires[0],gun);s=order(saved({campaign:s}).campaign,{type:'travel',sector:'buenos_aires'});
  assert.equal(deployedArtillery(s)[0].reloadProgress,.4);s=order(s,{type:'attack',sector:'ensenada'});const p=saved({campaign:s,battle:enterSector(s.pendingBattle)});assertSame(p.battle.artillery[0],gun);assert.equal(p.battle.artillery[0].loaded,false);assert.equal(p.battle.artillery[0].ammo,6);
 });
 
 test('declared destination threats and full depots delay arrival, and occupied depots cannot supply a battery',()=>{
  const transit=send(fieldGun()),gun=structuredClone(transit.artilleryTransfers[0].gun);
  let s=structuredClone(transit);s.sectorStates.buenos_aires={units:[{id:'guard',side:'enemy',hp:100,energy:100}]};
- assert.match(artilleryTransferDelay(s,s.artilleryTransfers[0]),/despejado/);s=order(s,{type:'wait',hours:18});assert.equal(s.artilleryTransfers.length,1);assert.equal(s.artilleryDepots?.buenos_aires,undefined);
- s.sectorStates.buenos_aires.units[0].hp=0;s=order(s,{type:'wait',hours:1});assertSame(s.artilleryDepots.buenos_aires[0],gun);
- let full=structuredClone(transit);full.artilleryDepots={buenos_aires:Array.from({length:2000},(_,i)=>({...gun,id:`stored-${i}`}))};assert.match(artilleryTransferDelay(full,full.artilleryTransfers[0]),/lleno/);const source=fieldGun();source.artilleryDepots=structuredClone(full.artilleryDepots);assert.match(artilleryTransportQuote(source,'san_nicolas',gun.id,'buenos_aires','carts').reason,/no tiene lugar/);full=order(full,{type:'wait',hours:18});assert.equal(full.artilleryTransfers.length,1);assert.equal(full.artilleryDepots.buenos_aires.length,2000);full.artilleryDepots.buenos_aires.pop();full=order(full,{type:'wait',hours:1});assert.equal(full.artilleryTransfers.length,0);assert.equal(full.artilleryDepots.buenos_aires.length,2000);assertSame(full.artilleryDepots.buenos_aires.at(-1),gun);
+ assert.match(artilleryTransferDelay(s,s.artilleryTransfers[0]),/despejado/);s=advanceCampaignHours(s,18);assert.equal(s.artilleryTransfers.length,1);assert.equal(s.artilleryDepots?.buenos_aires,undefined);
+ s.sectorStates.buenos_aires.units[0].hp=0;s=advanceCampaignHours(s,1);assertSame(s.artilleryDepots.buenos_aires[0],gun);
+ let full=structuredClone(transit);full.artilleryDepots={buenos_aires:Array.from({length:2000},(_,i)=>({...gun,id:`stored-${i}`}))};assert.match(artilleryTransferDelay(full,full.artilleryTransfers[0]),/lleno/);const source=fieldGun();source.artilleryDepots=structuredClone(full.artilleryDepots);assert.match(artilleryTransportQuote(source,'san_nicolas',gun.id,'buenos_aires','carts').reason,/no tiene lugar/);full=advanceCampaignHours(full,18);assert.equal(full.artilleryTransfers.length,1);assert.equal(full.artilleryDepots.buenos_aires.length,2000);full.artilleryDepots.buenos_aires.pop();full=advanceCampaignHours(full,1);assert.equal(full.artilleryTransfers.length,0);assert.equal(full.artilleryDepots.buenos_aires.length,2000);assertSame(full.artilleryDepots.buenos_aires.at(-1),gun);
  s.location='buenos_aires';s.sectors.buenos_aires.owner='royalist';assert.deepEqual(localArtilleryDepot(s),[]);assert.deepEqual(deployedArtillery(s),[]);assert.equal(ownedArtilleryCount(s),0);assertSame(s.artilleryDepots.buenos_aires[0],gun);
 });
 
@@ -74,7 +76,7 @@ test('prepared route geography and authored crew sizes constrain dispatch withou
 
 
 test('saved transit and depot pieces reject invalid facing before they can poison a later deployment',()=>{
- const transit=send(fieldGun()),arrived=order(transit,{type:'wait',hours:18});
+ const transit=send(fieldGun()),arrived=advanceCampaignHours(transit,18);
  for(const state of [transit,arrived])for(const facing of ['north',null,7,-7]){
   const wire=JSON.parse(encodeSave(state)),gun=wire.campaign.artilleryTransfers[0]?.gun??wire.campaign.artilleryDepots.buenos_aires[0];gun.facing=facing;assert.throws(()=>decodeSave(JSON.stringify(wire)),/artillería/);
  }
