@@ -1,11 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,campaignObjectives,availableActions} from '../game/campaign.js';
+import {approachNPC} from './approach-npc.mjs';
 import {defaultContentPackage} from '../game/content-package.js';
 import {defaultCampaignStory,campaignChapterIndex} from '../game/campaign-story.js';
 import {encodeSave,decodeSave} from '../game/save.js';
 import {questPackage} from './content-quest-fixture.mjs';
-import {order,saved,readyLocal,talk,leave,tactical} from './local-contract-fixture.mjs';
+import {order,saved,readyLocal,talk,leave,tactical,sync} from './local-contract-fixture.mjs';
 const chapter=(id,conditions)=>({id,name:`Objetivo ${id}`,objective:`Cumplir ${id}.`,conditions});
 const day=min=>({type:'day',min,max:null});
 const story=()=>({...defaultCampaignStory(),introduction:'Cuidá el puesto de la ribera.',victory:'El parte llegó a destino.',defeat:'Se perdió el parte.'});
@@ -62,11 +63,10 @@ test('a completed service chapter survives the actual contract expiry without re
 });
 
 test('an authored death condition uses an actual tactical death and historical names do not impose an implicit custom-story defeat',async()=>{
- const {getReachable}=await import('../game/tactical.js');
  for(const critical of [false,true]){
   const d=fixture();const c=d.characters.find(c=>c.id==='person-57');c.attributes.maxHp=30;c.abilities=[];d.placements.find(p=>p.character===c.id).sectors=[d.placements.at(-1).sectors[0]];d.campaignStory.chapters=[chapter('later',[day(50)])];d.campaignStory.failureConditions=critical?[{type:'character',character:c.id,state:'dead'}]:[];
-  let p=readyLocal(undefined,d);const target=()=>p.battle.npcs.find(n=>n.operativeId===57),unit=p.battle.units.find(u=>u.side==='player'),tile=getReachable(p.battle,unit.id).find(t=>Math.abs(t.x-target().x)+Math.abs(t.y-target().y)===1);assert.ok(tile);if(tile.cost)p=tactical(p,{type:'move',x:tile.x,y:tile.y});
-  for(let i=0;i<6&&target().hp>0;i++)p=tactical(p,{type:'melee',targetId:target().id,targetKind:'npc'});assert.equal(target().hp,0);p=saved(p);assert.equal(p.campaign.operativeState[57].alive,false);assert.equal(p.campaign.defeated,critical);assert.equal(p.campaign.campaignProgress.outcome?.type??null,critical?'defeat':null);assert.ok(saved({campaign:leave(p)}));
+  let p=readyLocal(undefined,d);const target=()=>p.battle.npcs.find(n=>n.operativeId===57),unit=p.battle.units.find(u=>u.side==='player');p=sync({campaign:p.campaign,battle:approachNPC(p.battle,unit.id,target().id)});
+  p=tactical(p,{type:'weapon',slot:'blade'});for(let i=0;i<12&&target().hp>0;i++)p=tactical(p,{type:'melee',targetId:target().id,targetKind:'npc'});assert.equal(target().hp,0);p=saved(p);assert.equal(p.campaign.operativeState[57].alive,false);assert.equal(p.campaign.defeated,critical);assert.equal(p.campaign.campaignProgress.outcome?.type??null,critical?'defeat':null);assert.ok(saved({campaign:leave(p)}));
  }
 });
 
@@ -85,6 +85,12 @@ test('a batched tactical checkpoint retains all elapsed time when a deadline end
 
 test('a death condition on a serving character resolves from the actual enemy turn before battle settlement',async()=>{
  const {createBattle,endTurn}=await import('../game/tactical.js'),{sync,hireLocal}=await import('./local-contract-fixture.mjs');const d=fixture();d.characters.find(c=>c.id==='person-110').attributes.maxHp=30;d.startingTerritory.buenos_aires.owner='patriot';d.campaignStory.failureConditions=[{type:'character',character:'person-110',state:'dead'}];let p=hireLocal(readyLocal(undefined,d)),s=leave(p);s=order(s,{type:'travel',sector:'retiro'});s=order(s,{type:'travel',sector:'buenos_aires'});s=order(s,{type:'attack',sector:'san_nicolas'});const r=s.pendingBattle;
- let battle=createBattle(r.squad.map(u=>({...u,x:1,y:u.id===110?1:6})),{width:12,height:8,id:r.id,sector:r.sector,npcs:r.npcs,seed:45,tiles:Array.from({length:96},(_,i)=>({x:i%12,y:Math.floor(i/12),type:'grass',blocked:false,cover:0})),enemies:[{id:'guard',x:7,y:1,facing:6,weapon:1802,ammo:0,fatigue:0,marksmanship:100}]});battle=endTurn(battle);assert.equal(battle.units.find(u=>u.id==='110').hp,0);p=saved(sync({campaign:s,battle}));assert.equal(p.campaign.operativeState[110].alive,false);assert.equal(p.campaign.defeated,true);assert.equal(p.campaign.completed,false);assert.equal(p.campaign.campaignProgress.outcome.type,'defeat');assert.ok(p.campaign.pendingBattle);assert.equal(p.campaign.contentQuestEvents?.length??0,0);
+ // The open-field setup keeps every issued enemy and round. Continue real
+ // enemy turns until the wounded character dies; a single shot is not lethal
+ // with every seed or weapon, and no fabricated death can satisfy the chapter.
+ const {enterSector}=await import('../game/world.js'),issued=enterSector(r),enemies=issued.units.filter(u=>u.side==='enemy');
+ let battle=createBattle(r.squad.map(u=>({...u,x:1,y:u.id===110?1:6})),{...r,width:20,height:20,seed:45,tiles:Array.from({length:400},(_,i)=>({x:i%20,y:Math.floor(i/20),type:'grass',blocked:false,cover:0})),npcs:r.npcs.map((n,i)=>({...n,x:10+i%3,y:10+Math.floor(i/3)})),enemies:enemies.map((u,i)=>{const at={x:i?19:6,y:i?19-i:1};return {...u,...at,patrolOrigin:at,overwatch:false,patrol:false};})});
+ for(let turn=0;turn<8&&battle.units.find(u=>u.id==='110').hp>0;turn++){battle=endTurn(battle);assert.equal(battle.lastError,null);}
+ assert.equal(battle.units.find(u=>u.id==='110').hp,0);p=saved(sync({campaign:s,battle}));assert.equal(p.campaign.operativeState[110].alive,false);assert.equal(p.campaign.defeated,true);assert.equal(p.campaign.completed,false);assert.equal(p.campaign.campaignProgress.outcome.type,'defeat');assert.ok(p.campaign.pendingBattle);assert.equal(p.campaign.contentQuestEvents?.length??0,0);
  const bad=JSON.parse(encodeSave(p.campaign,p.battle));bad.battle.units.find(u=>u.id==='110').hp=1;assert.throws(()=>decodeSave(JSON.stringify(bad)));
 });

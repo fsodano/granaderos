@@ -1,5 +1,7 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {initialCampaign,dispatchCampaign,isSupplied,rosterFor} from '../game/campaign.js';
+import {sectorInventoryModel} from '../game/sector-inventory.js';
+import {equipmentFingerprint} from '../game/tactical-inventory.js';
 import {defaultProfile} from '../game/character-profile.js';
 import {transportPath} from '../game/logistics.js';import {encodeSave,decodeSave} from '../game/save.js';import {prepareCampaignBattle} from '../game/battle-handoff.js';
 const order=(s,a)=>{const n=dispatchCampaign(s,a);assert.equal(n.lastError,null,n.lastError);return n;};
@@ -36,10 +38,16 @@ test('one paid hire automatically starts the campaign without regiment funding o
  assert.equal(pair.error,null);assert.equal(pair.battle.units.filter(u=>u.side==='player').length,1);
  assert.deepEqual(decodeSave(encodeSave(pair.campaign,pair.battle)),{campaign:pair.campaign,battle:pair.battle});
 });
-test('one created character can start and deploy with no treasury balance',()=>{
+test('one created character can start at zero treasury and deploy without purchasing ammunition',()=>{
  const before=initialCampaign(8);before.resources.treasury=0;
  let s=order(before,create);assert.equal(s.resources.treasury,0);assert.equal(s.phase,1);assert.equal(s.flags.academy,true);assert.deepEqual(s.squad,[1000]);
  for(const key of ['horses','muskets','textiles'])assert.equal(s.resources[key],before.resources[key]);
+ // Starting is free; cartridges are not. Stow the empty firearm with the
+ // ordinary map equipment controls, then deploy with the existing blade.
+ const denied=dispatchCampaign(s,{type:'visitSector'});assert.ok(denied.lastError);assert.equal(denied.resources.treasury,0);assert.equal(denied.pendingBattle,null);
+ const actor=sectorInventoryModel(s,'retiro',rosterFor(s),1000).personal;
+ s=order(s,{type:'sectorInventory',sector:'retiro',operativeId:1000,direction:'arrange',kind:'cursor',cursorAction:'dragEquipment',sourceId:'hand:right',destinationId:'large-1',expectedSource:equipmentFingerprint(actor,'hand:right'),expectedDestination:equipmentFingerprint(actor,'large-1'),count:1});
+ assert.equal(s.resources.treasury,0);assert.equal(s.operativeState[1000].weaponDropped,true);assert.ok(Object.values(s.operativeState[1000].inventory).some(i=>i.weapon===actor.weapon));
  s=order(s,{type:'visitSector'});const pair=prepareCampaignBattle(s);assert.equal(pair.error,null);
  assert.deepEqual(pair.battle.units.filter(u=>u.side==='player').map(u=>u.id),['1000']);
  assert.deepEqual(decodeSave(encodeSave(pair.campaign,pair.battle)),{campaign:pair.campaign,battle:pair.battle});

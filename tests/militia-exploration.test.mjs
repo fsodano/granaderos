@@ -53,5 +53,6 @@ test('actual paid garrison patrols survive campaign clock synchronization, save 
 
 test('lost-contact combat uses the same map search and pays from the remaining allied budget',()=>{
  const b=field();b.mode='combat';b.units[0].ap=28;const before=structuredClone(b),n=endTurn(b),u=n.units[0];
- assert.equal(n.lastError,null);assert.equal(n.mode,'combat');assert.equal(Math.abs(u.x-before.units[0].x)+Math.abs(u.y-before.units[0].y),1);assert.ok(u.fatigue>before.units[0].fatigue);assert.ok(n.log.some(line=>line.includes('avanza (8 PA)')));assert.equal(u.loaded,before.units[0].loaded);assert.equal(u.ammo,before.units[0].ammo);assert.deepEqual(position(n.units[1]),position(before.units[1]));assert.ok(validateBattleSnapshot(n));
+ assert.equal(n.lastError,null);assert.equal(n.mode,'exploration','quiet rounds return to exploration after the paid patrol step');assert.equal(Math.abs(u.x-before.units[0].x)+Math.abs(u.y-before.units[0].y),1);assert.equal(u.carriedAP,20);assert.equal(getReachable(before,before.units[0]).find(p=>p.x===u.x&&p.y===u.y).cost,8);assert.equal(u.loaded,before.units[0].loaded);assert.equal(u.ammo,before.units[0].ammo);assert.deepEqual(position(n.units[1]),position(before.units[1]));assert.ok(validateBattleSnapshot(n));
+ const short=structuredClone(b);short.units[0].ap=25;const held=endTurn(short);assert.deepEqual(position(held.units[0]),position(short.units[0]),'25 PA cannot fund a step and retain the 20-PA reserve');
 });

@@ -30,9 +30,9 @@ function poolSources(snapshot){
  if(!snapshot)return [];
  const rows=[];
  const add=(key,source,stack,extra={})=>{if(stack.count>0)rows.push({key,source,stack,label:stackLabel(stack),...planningPoint(source),...extra});};
- for(const g of snapshot.groundItems??[])if(['item','boleadoras'].includes(g.type)&&g.knownToPlayer&&!g.heldBy&&g.count>0){
+ for(const g of snapshot.groundItems??[])if((g.type==='item'||Object.hasOwn(SUPPLY_ITEMS,g.type)&&g.type!=='ammo')&&g.knownToPlayer&&!g.heldBy&&g.count>0){
   const {id,type,x,y,tacticalLevel,heldBy,knownToPlayer,...data}=g;
-  add(`ground:${g.id}`,g,g.type==='boleadoras'?{item:'boleadoras',count:g.count,weight:.8}:data,{kind:'ground'});
+  add(`ground:${g.id}`,g,g.type==='item'?data:{item:g.type,count:g.count,weight:SUPPLY_ITEMS[g.type].weight},{kind:'ground'});
  }
  for(const [index,d] of (snapshot.droppedWeapons??[]).entries())if(d.knownToPlayer&&!d.taken){
   add(`drop:${index}`,d,droppedWeaponStack(d),{kind:'drop'});

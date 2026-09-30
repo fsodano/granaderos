@@ -15,6 +15,6 @@ test('the downloadable authored post campaign finishes its complete paid combat 
 });
 
 test('missing the authored seven-day deadline produces a saved loss instead of a false ending',()=>{
- const s=order(readyPostCampaign(),{type:'wait',hours:168}),restored=saved({campaign:s}).campaign;
+ let s=readyPostCampaign();const deadline=s.hour+168;while(s.hour<deadline&&!s.defeated){const before=s.hour;s=order(s,{type:'wait',hours:Math.min(24,deadline-s.hour)});assert.ok(s.hour>before);}const restored=saved({campaign:s}).campaign;
  assert.equal(contentQuestStatus(restored,'postas'),'failed');assert.equal(restored.defeated,true);assert.equal(restored.completed,false);assert.equal(restored.campaignProgress.outcome.type,'defeat');assert.ok(restored.contentQuestEvents.some(e=>e.quest==='postas'&&e.deadline!==undefined));assert.ok(restored.log.some(e=>e.text===postContent().campaignStory.defeat));
 });

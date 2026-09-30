@@ -209,3 +209,12 @@ test('moving a loaded gun between packs and ground never credits it twice, and c
  snapshot.groundItems=[];snapshot.units[1].loaded=1;const returned=planReturnAmmunition(request,snapshot,entries);assert.equal(returned.creditedCartridges,0);assert.deepEqual(returned.carried.q,{loaded:1});
  entries[1].kind='captured';const captive=planReturnAmmunition(request,snapshot,entries);assert.equal(captive.creditedCartridges,0);assert.deepEqual(captive.custody.q,{loaded:1,ammo:0,preserveLoading:true});
 });
+
+for(const item of ['rations','medkits','torches','boleadoras'])test(`legacy ${item} drops remain visible and recoverable on the strategic map after save`,()=>{
+ let {s,b}=entered();const before=b.units.find(u=>u.id==='4')[item];assert.ok(before>0);
+ b=act(b,{type:'dropSupply',unitId:'4',item,count:1});s=leave(s,b);s=decodeSave(encodeSave(s)).campaign;
+ const row=model(s).entries.find(r=>JSON.parse(r.expected).item===item);assert.ok(row);assert.equal(row.count,1);assert.equal(row.reachable,true);assert.equal(s.operativeState[4][item],before-1);
+ s=take(s,row);assert.equal(s.operativeState[4][item],before);assert.ok(!model(s).entries.some(r=>r.key===row.key));
+ reject(s,{type:'sectorInventory',sector:'retiro',operativeId:4,direction:'take',sourceKey:row.key,expected:row.expected,count:1});
+ s=decodeSave(encodeSave(s)).campaign;s=order(s,{type:'visitSector'});b=enterSector(s.pendingBattle,s.sectorStates.retiro);assert.equal(b.units.find(u=>u.id==='4')[item],before);assert.ok(!b.groundItems.some(g=>g.type===item&&g.count>0));
+});

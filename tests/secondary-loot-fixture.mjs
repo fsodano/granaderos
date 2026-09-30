@@ -32,7 +32,11 @@ export function secondaryRetreat(pair){
    const after=p.battle.units.find(u=>u.id===id);assert.notDeepEqual({x:after.x,y:after.y},before,'withdrawal must make a real paid step after contact interrupts a route');
   }
   assert.ok(onEdge(p.battle.units.find(u=>u.id===id)));
-  p=secondaryOrder(p,{type:'exit',unitIds:[id],exitId:exit.id});
+  // A reaction can interrupt the exit without spending its final AP. Retry
+  // the same ordinary exit after each opponent's finite reaction is used.
+  const attempts=p.battle.units.filter(u=>u.side==='enemy'&&u.hp>0).length+1;
+  for(let attempt=0;attempt<attempts&&!p.battle.units.find(u=>u.id===id).departure;attempt++)p=secondaryOrder(p,{type:'exit',unitIds:[id],exitId:exit.id});
+  assert.ok(p.battle.units.find(u=>u.id===id).departure,'the soldier must actually leave at the boundary');
  }
- assert.equal(p.battle.status,'retreat');return p;
+ assert.equal(p.battle.status,'retreat',JSON.stringify({units:p.battle.units.map(u=>({id:u.id,side:u.side,hp:u.hp,departure:u.departure,x:u.x,y:u.y,missionAlly:u.missionAlly})),exits:p.battle.exits,log:p.battle.log.slice(-5)}));return p;
 }
