@@ -1,3 +1,6 @@
+import {fieldCapable} from './actor-condition.js';
+export {fieldCapable};
+export {completedTacticalVictory} from './battle-outcome.js';
 import {AMMUNITION_FAMILIES} from './ammunition-families.js';
 import {AMMO_TYPES,ammoTypeFor,ammunitionChoiceReason} from './ammo-types.js';
 import {migrateBattleAmmunition,initializeGroundAmmunition} from './physical-ammunition.js';
@@ -80,7 +83,6 @@ const spaceDistance=(s,a,b)=>Math.hypot(a.x-b.x,a.y-b.y,(surfaceHeight(s,a)??0)-
 const onField=u=>(u.hp??100)>0&&!u.departure&&!u.fled;
 const targetable=u=>onField(u)&&!u.surrendered;
 const present=u=>targetable(u)&&!u.routed;
-export const fieldCapable=u=>Boolean(onField(u)&&!u.surrendered&&u.hp>=CRITICAL_HEALTH);
 const alive=u=>present(u)&&!isUnconscious(u);
 const clone=s=>{const copy=removeIgnitionSupplies(structuredClone(s));copy.fittingRulesVersion??=FITTING_RULES_VERSION;migrateBattleAmmunition(copy);copy.conditionVersion=1;for(const u of copy.units){if(u.side==='enemy'&&u.patrol!==false)u.patrolOrigin??=positionOf(u);normalizeUnitFittings(u);u.activeSlot??='primary';u.facing??=u.side==='enemy'?6:2;u.stealthMode??=false;u.reactionSpent??=0;u.reactionTurn??=0;u.interceptTurn??=0;u.fatigue??=0;u.rations??=2;u.parryTurn??=0;u.counterTurn??=0;u.braceTurn??=0;u.knockedDown??=false;u.braced??=false;u.energy??=100;if(s.conditionVersion!==1)refreshCondition(u);u.movementMode??='walk';u.inventory??={};u.boleadoras??=1;u.torches??=2;u.strengthTraining??=0;u.bandaged??=u.bleeding?0:Math.max(0,u.maxHp-u.hp);u.shock??=0;u.experienceLevel??=4;u.carriedAP??=0;}copy.artillery??=[];copy.mode??='combat';copy.groundItems??=[];copy.lights??=[];copy.buildings??=[];copy.revealedRooms??=[];copy.sectorCleared??=false;copy.enemyTurns??=copy.mode==='combat'?Math.max(0,copy.turn-1):0;copy.droppedWeapons??=[];return copy;};
 function random(s){s.seed=(Math.imul(s.seed,1664525)+1013904223)>>>0;return s.seed/4294967296;}
@@ -557,11 +559,6 @@ function directedFireImpact(s,u,target,hitLocation,hit,source=u){
     if(flight.damageFactor<1&&observedBody(s,victim))say(s,'El disparo atraviesa la cobertura y pierde fuerza.');
     physicalImpact(s,victim,amount*flight.damageFactor,source,{hitLocation:flight.hitLocation,intentional:victim.id===target.id});
   }
-}
-export function completedTacticalVictory(snapshot){
-  const playersRemain=snapshot.units.some(u=>u.side==='player'&&fieldCapable(u)),enemiesRemain=snapshot.units.some(u=>u.side==='enemy'&&fieldCapable(u));
-  const clearedExploration=snapshot.status==='active'&&snapshot.mode==='exploration'&&snapshot.phase==='player'&&snapshot.sectorCleared===true&&!snapshot.enemyTurn&&!snapshot.interrupt&&!snapshot.reactionStack;
-  return playersRemain&&!enemiesRemain&&(snapshot.status==='victory'||clearedExploration);
 }
 function checkEnd(s){
   for(const unit of s.units)refreshCondition(unit);

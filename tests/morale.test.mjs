@@ -1,8 +1,9 @@
+import {refreshMilitaryCondition} from '../game/actor-condition.js';
 import {scriptedBattleReport} from './scripted-battle-report.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {initialCampaign} from './legacy-campaign-fixture.mjs';
-import {dispatchCampaign as dispatch,restoreCampaign,serializeCampaign,rosterFor} from '../game/campaign.js';
+import {dispatchCampaign as dispatch,restoreCampaign,serializeCampaign,rosterFor,deploymentCost} from '../game/campaign.js';
 import {baseMorale,cohesionBonus,advanceMorale} from '../game/morale.js';
 import {enterSector} from '../game/world.js';
 import {createBattle,shotChance} from '../game/tactical.js';
@@ -41,7 +42,7 @@ test('losing a companion lowers morale and a long-serving companion causes a lar
 });
 
 test('a casualty in an exploration report also affects the returning squad once',()=>{
- let s=order(initialCampaign(),{type:'visitSector'});const b=enterSector(s.pendingBattle),dead=b.units.find(u=>u.id==='4');Object.assign(dead,{hp:0,unconscious:false,bleeding:0,ap:0});s=order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});assert.equal(s.operativeState[3].morale,74);s=visit(s);assert.equal(s.operativeState[3].morale,74);
+ let s=order(initialCampaign(),{type:'visitSector'});const b=enterSector(s.pendingBattle),dead=b.units.find(u=>u.id==='4');Object.assign(dead,{hp:0,unconscious:false,bleeding:0,ap:0});refreshMilitaryCondition(dead);s=order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});assert.equal(s.operativeState[3].morale,74);s=visit(s);assert.equal(s.operativeState[3].morale,74);
 });
 
 test('safe rest and patient recovery restore morale slowly only toward the personal baseline',()=>{
@@ -68,7 +69,7 @@ test('renewal morale is paid, bounded to once per day, and absent after failed p
 });
 
 test('unpaid legacy payroll lowers morale and is not lost when a deployed soldier returns',()=>{
- let s=initialCampaign();s.hour=719;s.resources.treasury=0;for(const place of Object.values(s.sectors))place.damageUntil=900;s=order(s,{type:'visitSector'});const b=enterSector(s.pendingBattle);s=order(s,{type:'syncTacticalTime',battleId:s.pendingBattle.id,elapsedSeconds:3600});b.elapsedSeconds=3600;b.syncedSeconds=3600;assert.equal(s.operativeState[3].morale,70);
+ let s=initialCampaign();s.hour=719;s.resources.treasury=deploymentCost(s);for(const place of Object.values(s.sectors))place.damageUntil=900;s=order(s,{type:'visitSector'});assert.equal(s.resources.treasury,0,'the final pesos bought the actual ammunition issue');const b=enterSector(s.pendingBattle);s=order(s,{type:'syncTacticalTime',battleId:s.pendingBattle.id,elapsedSeconds:3600});b.elapsedSeconds=3600;b.syncedSeconds=3600;assert.equal(s.operativeState[3].morale,70);
  s=order(s,{type:'leaveSector',battleId:s.pendingBattle.id,sectorState:b,survivors:b.units.filter(u=>u.side==='player')});assert.equal(s.operativeState[3].morale,70);
  let paid=initialCampaign();paid.hour=719;paid.resources.treasury=10000;paid=order(paid,{type:'wait',hours:1});assert.equal(paid.operativeState[3].morale,82);
 });
